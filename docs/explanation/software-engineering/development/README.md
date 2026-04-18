@@ -175,16 +175,12 @@ See [TDD Standards](test-driven-development-tdd/README.md) and [BDD Standards](b
 
 ### For Developers
 
-**Prerequisites**: Complete [AyoKoding TDD](../../../../apps/ayokoding-web/content/en/learn/software-engineering/development/test-driven-development-tdd/) and [AyoKoding BDD](../../../../apps/ayokoding-web/content/en/learn/software-engineering/development/behavior-driven-development-bdd/) learning paths first.
-
 1. **TDD Workflow** - Follow [TDD Cycle Standards](test-driven-development-tdd/tdd-cycle-standards.md) for Red-Green-Refactor
 2. **Testing Standards** - Apply [Testing Standards](test-driven-development-tdd/testing-standards.md) for FIRST principles
 3. **Domain Testing** - Follow [TDD with DDD Standards](test-driven-development-tdd/tdd-with-ddd-standards.md) for aggregates
 4. **Integration Tests** - Use [Integration Testing Standards](test-driven-development-tdd/integration-testing-standards.md) for Testcontainers
 
 ### For Teams Adopting BDD
-
-**Prerequisites**: Complete [AyoKoding BDD](../../../../apps/ayokoding-web/content/en/learn/software-engineering/development/behavior-driven-development-bdd/) learning path first.
 
 1. **Collaboration** - Follow [Three Amigos Standards](behavior-driven-development-bdd/three-amigos-standards.md) for discovery sessions
 2. **Gherkin Writing** - Apply [Gherkin Standards](behavior-driven-development-bdd/gherkin-standards.md) for feature files
@@ -193,16 +189,12 @@ See [TDD Standards](test-driven-development-tdd/README.md) and [BDD Standards](b
 
 ### For Architects and Technical Leads
 
-**Prerequisites**: Complete [AyoKoding TDD](../../../../apps/ayokoding-web/content/en/learn/software-engineering/development/test-driven-development-tdd/) and [AyoKoding BDD](../../../../apps/ayokoding-web/content/en/learn/software-engineering/development/behavior-driven-development-bdd/) learning paths first.
-
 1. **Review Complete Standards** - Read [TDD Standards](test-driven-development-tdd/README.md) and [BDD Standards](behavior-driven-development-bdd/README.md)
 2. **Architecture Integration** - Follow [TDD with DDD Standards](test-driven-development-tdd/tdd-with-ddd-standards.md)
 3. **Testing Strategy** - Use decision matrices above to guide team approach
 4. **Living Documentation** - Implement [Living Documentation Standards](behavior-driven-development-bdd/living-documentation-standards.md)
 
 ### For QA Engineers and Business Analysts
-
-**Prerequisites**: Complete [AyoKoding BDD](../../../../apps/ayokoding-web/content/en/learn/software-engineering/development/behavior-driven-development-bdd/) learning path first.
 
 1. **Collaboration Standards** - Follow [Three Amigos Standards](behavior-driven-development-bdd/three-amigos-standards.md)
 2. **Gherkin Writing** - Apply [Gherkin Standards](behavior-driven-development-bdd/gherkin-standards.md)

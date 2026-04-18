@@ -246,9 +246,6 @@ Java is a primary language for backend services, particularly for domain-driven 
 **Key Documentation:**
 
 - [Java OSE Standards](./java/README.md) - Authoritative coding standards for OSE Platform
-- [Java Learning Path](../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/java/_index.md) - Complete Java tutorials and examples
-- [Java By Example](../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/java/by-example/_index.md) - 157+ annotated code examples
-- [Java In Practice](../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/java/in-the-field/_index.md) - Best practices, anti-patterns, TDD, BDD, DDD
 
 **Use Java when you need:**
 
@@ -342,10 +339,8 @@ Languages in this documentation are chosen based on:
 
 ### For Backend Developers
 
-1. **Learn Java fundamentals** - [AyoKoding Java By Example](../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/java/by-example/_index.md)
-2. **Apply OSE standards** - [Java Coding Standards](./java/README.md)
-3. **Study best practices** - [Java In Practice](../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/java/in-the-field/_index.md)
-4. **Integrate with DDD** - [DDD Standards](./java/ddd-standards.md)
+1. **Apply OSE standards** - [Java Coding Standards](./java/README.md)
+2. **Integrate with DDD** - [DDD Standards](./java/ddd-standards.md)
 
 ### For Full-Stack Developers
 

@@ -6,7 +6,6 @@ This directory contains previously active applications that have been superseded
 
 | Directory             | Archived   | Reason                                | Successor                                      |
 | --------------------- | ---------- | ------------------------------------- | ---------------------------------------------- |
-| `ayokoding-web-hugo/` | 2026-03-24 | Replaced by Next.js 16 implementation | [`apps/ayokoding-web`](../apps/ayokoding-web/) |
 
 ## Notes
 

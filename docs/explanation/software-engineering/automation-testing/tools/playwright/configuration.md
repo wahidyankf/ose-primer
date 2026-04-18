@@ -22,11 +22,7 @@ updated: 2026-02-08
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: You MUST understand Playwright fundamentals from [AyoKoding Playwright Learning Path](../../../../../../apps/ayokoding-web/content/en/learn/software-engineering/automation-testing/tools/playwright/) before using these standards.
-
 **This document is OSE Platform-specific**, not a Playwright tutorial. We define HOW to configure Playwright in THIS codebase.
-
-**See**: [Programming Language Documentation Separation Convention](../../../../../../governance/conventions/structure/programming-language-docs-separation.md)
 
 ## Purpose
 
@@ -123,8 +119,6 @@ import { defineConfig } from "@playwright/test";
 import { defineBddConfig } from "playwright-bdd";
 
 const testDir = defineBddConfig({
-  featuresRoot: "../../specs/apps/organiclever-be",
-  features: "../../specs/apps/organiclever-be/**/*.feature",
   steps: "./tests/steps/**/*.ts",
 });
 

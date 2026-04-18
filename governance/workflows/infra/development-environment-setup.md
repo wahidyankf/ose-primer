@@ -54,7 +54,7 @@ All tools checked by `rhino-cli doctor`:
 | 2   | volta          | Any                   | (no config file)                              | curl script    |
 | 3   | node           | 24.13.1               | package.json > volta.node                     | Volta          |
 | 4   | npm            | 11.10.1               | package.json > volta.npm                      | Volta          |
-| 5   | java           | 25+ (major)           | apps/organiclever-be-jasb/pom.xml             | SDKMAN         |
+| 5   | java           | 25+ (major)           | apps/a-demo-be-fsharp-giraffe-jasb/pom.xml    | SDKMAN         |
 | 6   | maven          | Any                   | (no config file)                              | SDKMAN         |
 | 7   | golang         | >= go.mod directive   | apps/rhino-cli/go.mod                         | Brew/asdf      |
 | 8   | python         | >= .python-version    | apps/a-demo-be-python-fastapi/.python-version | pyenv/System   |
@@ -281,7 +281,7 @@ brew install clojure/tools/clojure
 
 ### Phase 5: Go Ecosystem (Sequential)
 
-Required for: `rhino-cli`, `ayokoding-cli`, `oseplatform-cli`, `a-demo-be-golang-gin`,
+Required for: `rhino-cli`, `rhino-cli`, `rhino-cli`, `a-demo-be-golang-gin`,
 `libs/golang-commons`
 
 #### 5.1 Install Go
@@ -411,7 +411,7 @@ The required version is pinned in `.tool-versions` (currently `elixir 1.19.5-otp
 
 **Condition**: `{input.scope} == full`
 
-Required for: `a-demo-be-fsharp-giraffe`, `a-demo-be-csharp-aspnetcore`, `organiclever-be`
+Required for: `a-demo-be-fsharp-giraffe`, `a-demo-be-csharp-aspnetcore`, `a-demo-be-fsharp-giraffe`
 
 #### 9.1 Install .NET SDK
 
@@ -510,7 +510,7 @@ This creates `.env` files from all `.env.example` templates in `infra/dev/`. Use
 to overwrite existing files.
 
 **Success criteria**: Restored files appear in their original app directories (e.g.,
-`apps/ayokoding-web/.env.local`, `apps/organiclever-be/.env`).
+`apps/a-demo-fs-ts-nextjs/.env.local`, `apps/a-demo-be-fsharp-giraffe/.env`).
 
 **On failure**: If no backup exists, copy `.env.example` to `.env` in each app you plan to
 work on and fill in the required values.

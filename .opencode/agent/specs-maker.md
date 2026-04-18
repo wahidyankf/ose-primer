@@ -48,7 +48,6 @@ target: specs/apps/a-demo/fe-react-nextjs
 target: specs/apps/a-demo/be/gherkin/health
 
 # Scaffold C4 diagrams for an existing spec area
-target: specs/apps/organiclever-be/c4
 ```
 
 ## Capabilities

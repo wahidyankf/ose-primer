@@ -369,8 +369,6 @@ Use this checklist when adding a new table or reviewing an existing one.
 
 **Project Plans:**
 
-- [Auth Register/Login Tech Docs](../../../plans/done/2026-03-09__auth-register-login/tech-docs.md) - Reference implementation of the `users` table applying this pattern
-
 **External (Java / Spring Boot):**
 
 - [Spring Data JPA Auditing Reference](https://docs.spring.io/spring-data/jpa/reference/auditing.html)

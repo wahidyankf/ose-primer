@@ -386,7 +386,7 @@ The execution mode determines the git workflow:
 
 AI agents must check which mode they are operating in and follow the corresponding workflow. Mixing modes -- creating a branch while on main, or pushing directly to main from a worktree -- is incorrect. This rule applies equally to humans and AI agents: any commit authored from inside a `.claude/worktrees/` path (or any other `git worktree add` target) must land in a draft PR, never directly on `main`.
 
-Note: this rule does **not** affect environment branches (`prod-ayokoding-web`, `prod-oseplatform-web`, `prod-organiclever-web`). Those remain CI-managed and follow their own documented deployment workflows.
+Note: this rule does **not** affect environment branches (`prod-a-demo-fs-ts-nextjs`, `prod-a-demo-fs-ts-nextjs`, `prod-a-demo-web`). Those remain CI-managed and follow their own documented deployment workflows.
 
 ## When Branches Are Appropriate
 
@@ -440,25 +440,25 @@ Environment branches serve deployment purposes, not feature isolation:
 
 **Key distinction**: Environment branches reflect deployment state, not development work.
 
-**Example in this repository: `prod-ayokoding-web`**
+**Example in this repository: `prod-a-demo-fs-ts-nextjs`**
 
-The `apps/ayokoding-web/` project uses a production deployment branch:
+The `apps/a-demo-fs-ts-nextjs/` project uses a production deployment branch:
 
-- **Branch**: `prod-ayokoding-web`
-- **Purpose**: Triggers automatic deployment to ayokoding.com via Vercel
-- **Location**: Deploys `apps/ayokoding-web/` (Next.js 16 application)
+- **Branch**: `prod-a-demo-fs-ts-nextjs`
+- **Purpose**: Triggers automatic deployment to a-demo.com via Vercel
+- **Location**: Deploys `apps/a-demo-fs-ts-nextjs/` (Next.js 16 application)
 - **Workflow** (automated):
   1. All development happens in `main`
-  2. The `test-and-deploy-ayokoding-web.yml` GitHub Actions workflow runs at 6 AM and 6 PM WIB, detects changes in `apps/ayokoding-web/`, builds, then force-pushes `main` to `prod-ayokoding-web`
-  3. Push to `prod-ayokoding-web` triggers production deployment via Vercel
-- **Important**: Never commit directly to `prod-ayokoding-web` outside the CI automation
+  2. The `test-and-deploy-a-demo-fs-ts-nextjs.yml` GitHub Actions workflow runs at 6 AM and 6 PM WIB, detects changes in `apps/a-demo-fs-ts-nextjs/`, builds, then force-pushes `main` to `prod-a-demo-fs-ts-nextjs`
+  3. Push to `prod-a-demo-fs-ts-nextjs` triggers production deployment via Vercel
+- **Important**: Never commit directly to `prod-a-demo-fs-ts-nextjs` outside the CI automation
 
 **Why this is TBD-compliant**:
 
 - Development still happens on `main` (trunk)
 - No feature isolation in branches
-- `prod-ayokoding-web` is a deployment trigger, not a development workspace
-- Changes flow from `main` to `prod-ayokoding-web`, never the reverse
+- `prod-a-demo-fs-ts-nextjs` is a deployment trigger, not a development workspace
+- Changes flow from `main` to `prod-a-demo-fs-ts-nextjs`, never the reverse
 - Consistent with TBD principles: environment branches are for release management, not feature development
 
 **Reference**: [TrunkBasedDevelopment.com - Branch for Release](https://trunkbaseddevelopment.com/branch-for-release/) explicitly describes release branches as acceptable in TBD.

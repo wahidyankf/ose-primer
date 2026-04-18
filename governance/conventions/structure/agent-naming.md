@@ -34,7 +34,7 @@ Every agent filename (basename without the `.md` extension) MUST match the struc
 Token definitions:
 
 - **`<scope>`** — Exactly one token from the [Scope Vocabulary](#scope-vocabulary) below. Names the domain or subsystem the agent operates in. Appears first.
-- **`<qualifier>`** — Zero or more lowercase kebab tokens narrowing the scope. Each qualifier is a single hyphen-separated word or a compound kebab phrase (e.g., `ayokoding-web`, `by-example`, `file`). Qualifiers stack in order from broadest to narrowest. Each qualifier token must be `[a-z0-9]+` and separated from its neighbours by single hyphens.
+- **`<qualifier>`** — Zero or more lowercase kebab tokens narrowing the scope. Each qualifier is a single hyphen-separated word or a compound kebab phrase (e.g., `a-demo-fs-ts-nextjs`, `by-example`, `file`). Qualifiers stack in order from broadest to narrowest. Each qualifier token must be `[a-z0-9]+` and separated from its neighbours by single hyphens.
 - **`<role>`** — Exactly one token from the [Role Vocabulary](#role-vocabulary) below. Names the functional responsibility. Appears last.
 
 **No exceptions.** Every agent has exactly one scope (first) and exactly one role (last); everything between is qualifier. Filenames that cannot be parsed against this structure are governance violations regardless of history, context, or convenience.
@@ -69,7 +69,7 @@ Exactly one of the following tokens MUST appear as the last token of every agent
 | `checker`  | Validates an artifact against standards                     | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
 | `fixer`    | Applies validated checker findings                          | `plan-fixer`, `swe-ui-fixer`                                 |
 | `dev`      | Writes code in a language or test framework                 | `swe-rust-dev`, `swe-e2e-dev`                                |
-| `deployer` | Deploys an application to an environment                    | `apps-ayokoding-web-deployer`                                |
+| `deployer` | Deploys an application to an environment                    | `apps-a-demo-fs-ts-nextjs-deployer`                          |
 | `manager`  | Performs file or resource operations (rename, move, delete) | `docs-file-manager`                                          |
 
 No other role suffixes are permitted. Introducing a new role requires amending this table first.
@@ -100,11 +100,11 @@ Any non-empty output is a governance violation. Every line printed is an agent f
 
 Current agents, grouped by role, all conforming to the rule:
 
-- **`maker`** — `docs-maker` (scope `docs`, no qualifier, role `maker`), `web-research-maker` (scope `web`, qualifier `research`, role `maker`), `apps-ayokoding-web-by-example-maker` (scope `apps`, qualifiers `ayokoding-web-by-example`, role `maker`)
+- **`maker`** — `docs-maker` (scope `docs`, no qualifier, role `maker`), `web-research-maker` (scope `web`, qualifier `research`, role `maker`), `apps-a-demo-fs-ts-nextjs-by-example-maker` (scope `apps`, qualifiers `a-demo-fs-ts-nextjs-by-example`, role `maker`)
 - **`checker`** — `plan-checker` (scope `plan`, role `checker`), `plan-execution-checker` (scope `plan`, qualifier `execution`, role `checker`), `swe-code-checker` (scope `swe`, qualifier `code`, role `checker`)
 - **`fixer`** — `plan-fixer` (scope `plan`, role `fixer`), `swe-ui-fixer` (scope `swe`, qualifier `ui`, role `fixer`)
 - **`dev`** — `swe-rust-dev` (scope `swe`, qualifier `rust`, role `dev`), `swe-e2e-dev` (scope `swe`, qualifier `e2e`, role `dev`)
-- **`deployer`** — `apps-ayokoding-web-deployer` (scope `apps`, qualifiers `ayokoding-web`, role `deployer`)
+- **`deployer`** — `apps-a-demo-fs-ts-nextjs-deployer` (scope `apps`, qualifiers `a-demo-fs-ts-nextjs`, role `deployer`)
 - **`manager`** — `docs-file-manager` (scope `docs`, qualifier `file`, role `manager`)
 
 ## Related

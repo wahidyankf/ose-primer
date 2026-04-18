@@ -178,8 +178,6 @@ With the frontend running, execute the web Playwright suite:
 nx run organiclever-fe-e2e:test:e2e
 ```
 
-See [`apps/organiclever-fe-e2e/`](../../apps/organiclever-fe-e2e/README.md) for setup and options.
-
 ### 7. Stop Services
 
 ```bash
@@ -689,7 +687,6 @@ export DOCKER_BUILDKIT=1
 ### 2. Optimize Image Size
 
 - Use Alpine-based images
-- Multi-stage builds for compiled languages (see `apps/a-demo-be-java-springboot Dockerfile` and `apps/organiclever-fe/Dockerfile` for production examples)
 - Remove unnecessary files
 
 ### 3. Cache Dependencies
@@ -743,8 +740,6 @@ docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml up -d
 
 ## CI/CD Integration
 
-**Production Dockerfiles**: Multi-stage production Dockerfiles are co-located with each app (`apps/a-demo-be-java-springboot/Dockerfile`, `apps/organiclever-fe/Dockerfile`). These build optimized, non-root images suitable for Kubernetes deployment.
-
 Docker Compose can be used in CI/CD pipelines:
 
 ```bash
@@ -762,7 +757,6 @@ Docker Compose can be used in CI/CD pipelines:
 ## Related Documentation
 
 - [Demo Backend (JASB) Infrastructure README](../../infra/dev/a-demo-be-java-springboot/README.md)
-- [organiclever-fe Infrastructure README](../../infra/dev/organiclever/README.md)
 - [Docker Documentation](https://docs.docker.com/)
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [Reproducible Environments Convention](../../governance/development/workflow/reproducible-environments.md)

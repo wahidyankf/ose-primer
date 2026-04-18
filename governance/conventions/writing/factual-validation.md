@@ -15,7 +15,7 @@ updated: 2026-02-02
 
 # Factual Validation Convention
 
-This document defines the **universal methodology** for validating factual correctness across all content in the repository. This convention provides shared verification patterns that apply to documentation, Hugo sites, plans, and README files.
+This document defines the **universal methodology** for validating factual correctness across all content in the repository. This convention provides shared verification patterns that apply to documentation, legacy sites, plans, and README files.
 
 ## Principles Implemented/Respected
 
@@ -45,7 +45,7 @@ This convention establishes a systematic methodology for verifying factual corre
 
 - **Link checking** - Covered by dedicated link-checker agents
 - **Content accuracy of opinions or recommendations** - This only validates verifiable facts
-- **Hugo site deployment** - Covered in deployment conventions
+- **static-site site deployment** - Covered in deployment conventions
 - **Automated fact checking** - This is a manual methodology, not automated tooling
 
 ## Overview
@@ -88,7 +88,7 @@ This convention applies to **all content types** across the repository:
 | Content Type                | Validation Focus                                                    |
 | --------------------------- | ------------------------------------------------------------------- |
 | **Documentation** (`docs/`) | Technical accuracy, command syntax, code examples, version numbers  |
-| **Hugo Sites**              | Educational accuracy, tutorial code, bilingual consistency          |
+| **static-site Sites**       | Educational accuracy, tutorial code, bilingual consistency          |
 | **Plans** (`plans/`)        | Technology choices, codebase assumptions, documentation URLs        |
 | **README Files**            | Installation instructions, version requirements, feature claims     |
 | **Convention Documents**    | Referenced standards, tool capabilities, specification URLs         |
@@ -765,7 +765,7 @@ Recommendation: Clarify which context applies or use HTTPS everywhere
 
 **Agent:** `docs-checker`, `docs-fixer`
 
-### Hugo Educational Content (ayokoding-web)
+### static-site Educational Content (a-demo-fs-ts-nextjs)
 
 **Validation Focus:**
 
@@ -775,9 +775,9 @@ Recommendation: Clarify which context applies or use HTTPS everywhere
 - Indonesian/English consistency
 - Educational sequences are logical
 
-**Agent:** `apps-ayokoding-web-facts-checker`, `apps-ayokoding-web-facts-fixer`
+**Agent:** `apps-a-demo-fs-ts-nextjs-facts-checker`, `apps-a-demo-fs-ts-nextjs-facts-fixer`
 
-### Hugo Platform Content (oseplatform-web)
+### static-site Platform Content (a-demo-fs-ts-nextjs)
 
 **Validation Focus:**
 
@@ -813,7 +813,7 @@ Recommendation: Clarify which context applies or use HTTPS everywhere
 **Implementation Agents:**
 
 - `docs-checker.md` - Documentation factual accuracy validator (implements this convention for `docs/`)
-- `apps-ayokoding-web-facts-checker.md` - Educational content factual validator (implements this convention for ayokoding-web)
+- `apps-a-demo-fs-ts-nextjs-facts-checker.md` - Educational content factual validator (implements this convention for a-demo-fs-ts-nextjs)
 - `plan-checker.md` - Plan accuracy validator (implements portions of this convention)
 
 **Quality Standards:**
@@ -821,8 +821,6 @@ Recommendation: Clarify which context applies or use HTTPS everywhere
 - [Content Quality Principles](./quality.md) - Universal markdown quality standards
 - [Mathematical Notation Convention](../formatting/mathematical-notation.md) - LaTeX notation standards
 - [Color Accessibility Convention](../formatting/color-accessibility.md) - Accessible color palette
-- [Hugo Content Convention - Shared](../hugo/shared.md) - Hugo content standards
-- [Hugo Content Convention - ayokoding](../hugo/ayokoding.md) - ayokoding-web specifics
 
 **Development Practices:**
 

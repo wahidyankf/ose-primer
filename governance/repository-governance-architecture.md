@@ -237,7 +237,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 **Scope**:
 
 - **docs/** directory (all documentation)
-- **Hugo sites (historical)** (conventions preserved for reference)
+- **legacy sites (historical)** (conventions preserved for reference)
 - **plans/** directory (project planning)
 - **README files** (repository root and project READMEs)
 
@@ -246,8 +246,6 @@ Development: AI Agents Convention — agent colors use accessible palette
 - **Structure**: File naming, Diátaxis framework, plans organization, programming language docs separation
 - **Formatting**: Linking, indentation, emoji usage, diagrams, color accessibility, mathematical notation, timestamp, nested code fences
 - **Writing**: Content quality, README quality, factual validation, conventions writing, dynamic collection references, OSS documentation
-- **Linking**: Internal AyoKoding references and cross-repository linking patterns
-- **Hugo-Specific (historical)**: AyoKoding content, OSE Platform content, shared patterns, Indonesian content policy
 - **Tutorials**: Tutorial types, naming, programming language content and structure
 
 **Example Conventions**:
@@ -282,7 +280,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 **Scope**:
 
 - **Source code** (TypeScript, Go, Java, Kotlin, Python, Elixir, F#, Rust, C#, Clojure, Dart)
-- **Hugo themes and layouts (historical)** (Go templates)
+- **static-site themes and layouts (historical)** (Go templates)
 - **Build systems** (Nx, npm, Volta)
 - **AI agents** (.claude/agents/)
 - **Git workflows** (commits, branches, hooks)
@@ -293,7 +291,6 @@ Development: AI Agents Convention — agent colors use accessible palette
 - **Quality**: Code quality, criticality levels, fixer confidence, repository validation
 - **Workflows**: Trunk-based development, commit messages, implementation workflow, reproducible environments
 - **Infrastructure**: Temporary files, AI agents convention
-- **Hugo-Specific (historical)**: Development practices for Hugo sites
 - **Frontend**: Design tokens, component patterns, accessibility, styling conventions
 - **Practices**: Proactive Preexisting Error Resolution (and future practice-level guidance)
 

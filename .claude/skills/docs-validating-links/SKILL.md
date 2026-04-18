@@ -43,7 +43,6 @@ Use this Skill when:
 **What to validate**:
 
 - Internal markdown links (docs/, governance/, plans/)
-- Content links (apps/ayokoding-web/, apps/oseplatform-web/)
 - External URLs (HTTP/HTTPS)
 - Image links (relative paths)
 - Anchor links (same-page headings)
@@ -66,8 +65,6 @@ Use this Skill when:
 ❌ FAIL: [File Naming Convention](../meta/file-naming) ← Missing .md extension
 ❌ FAIL: [[file-naming]] ← Wiki-link syntax (GitHub does not render these)
 ❌ FAIL: [file-naming.md](../meta/file-naming.md) ← Using filename as link text
-
-**Note**: Both `apps/ayokoding-web/` and `apps/oseplatform-web/` have migrated to Next.js 16. Their content links are validated by their respective CLI tools (`ayokoding-cli links check`, `oseplatform-cli links check`), not by this Skill's Hugo link rules.
 
 ### Validation Methodology
 

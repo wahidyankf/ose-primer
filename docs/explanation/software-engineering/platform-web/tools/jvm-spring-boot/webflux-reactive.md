@@ -36,8 +36,6 @@ related:
 
 **This document is OSE Platform-specific**, not a Spring Boot WebFlux tutorial. We define WHEN and HOW to use WebFlux in THIS platform, not WHAT WebFlux is.
 
-**See**: [Programming Language Documentation Separation Convention](../../../../../../governance/conventions/structure/programming-language-docs-separation.md)
-
 ## Purpose
 
 This document defines **reactive programming standards** for Spring Boot applications in the OSE Platform. Spring WebFlux provides non-blocking, reactive programming model for high-concurrency scenarios where thread efficiency is critical.

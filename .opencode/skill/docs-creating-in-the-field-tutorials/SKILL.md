@@ -264,11 +264,8 @@ void transfer_shouldMoveMoneyBetweenAccounts() {
 
 ## References
 
-**Primary Convention**: [In-the-Field Tutorial Convention](../../../governance/conventions/tutorials/in-the-field.md)
-
 **Related Conventions**:
 
-- [Tutorial Naming Convention](../../../governance/conventions/tutorials/naming.md) - In-the-field type definition
 - [Content Quality Principles](../../../governance/conventions/writing/quality.md) - Code annotation standards
 
 **Related Skills**:

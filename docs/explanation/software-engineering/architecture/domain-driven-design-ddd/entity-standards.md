@@ -17,8 +17,6 @@ updated: 2026-02-09
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: Complete [AyoKoding DDD Entities](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/architecture/domain-driven-design-ddd/by-example/) before using these standards.
-
 ## Purpose
 
 OSE Platform entity standards for identity and lifecycle management.

@@ -66,7 +66,7 @@ order:
 | 1    | Validate `.claude/` and `.opencode/` config (YAML, tools, model, skills, semantic equivalence) | Blocks commit               |
 | 2    | Validate `docker-compose` files found in staged changes                                        | Blocks commit               |
 | 3    | Run `nx affected run-pre-commit` (format checks, lightweight per-project hooks)                | Warn only — does not block  |
-| 4    | Stage `ayokoding-web` content files (auto-generated link data)                                 | N/A (staging step)          |
+| 4    | Stage `a-demo-fs-ts-nextjs` content files (auto-generated link data)                           | N/A (staging step)          |
 | 5    | Run lint-staged (format all staged files by language)                                          | Blocks commit               |
 | 6    | Sync app `package-lock.json` files                                                             | Blocks commit if sync fails |
 | 7    | Validate docs file naming convention across staged files                                       | Blocks commit               |
@@ -171,16 +171,16 @@ per-backend implementation patterns, see the
 Each app type implements the three levels according to its domain. The table below shows how each
 app type realises each level.
 
-| App Type                                                  | Unit (`test:unit`)                                              | Integration (`test:integration`)                                                                   | E2E (`test:e2e`)                                     |
-| --------------------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| **BE API** (`a-demo-be-*`)                                | Godog/BDD, mocked repos, calls service fns directly             | Godog/BDD, real PostgreSQL via docker-compose, calls service fns directly (no HTTP)                | Playwright, real HTTP + real PostgreSQL              |
-| **FE** (`a-demo-fe-*`, `organiclever-fe`)                 | Vitest/Flutter test, all API calls mocked (MSW / mock services) | MSW with real DOM; in-process mocking only                                                         | Playwright against running FE + default BE           |
-| **Fullstack** (`a-demo-fs-*`)                             | Vitest, all DB calls mocked                                     | MSW / in-process mocking                                                                           | Playwright, self-contained (own API routes)          |
-| **CLI** (`*-cli`)                                         | Godog, all I/O mocked via function variables                    | Godog (`//go:build integration`), real filesystem via `/tmp` fixtures, in-process via `cmd.RunE()` | Not applicable                                       |
-| **Content platform** (`ayokoding-web`, `oseplatform-web`) | Vitest, components and tRPC routes mocked                       | MSW, in-process mocking                                                                            | Playwright BE E2E (`*-be-e2e`) + FE E2E (`*-fe-e2e`) |
-| **Library** (`golang-commons`)                            | Unit tests + Godog, mock closures                               | Godog, tmpdir mocks, cacheable                                                                     | Not applicable                                       |
-| **Hugo site** (historical -- no active Hugo sites remain) | Not applicable                                                  | Not applicable                                                                                     | Not applicable                                       |
-| **E2E runner** (`*-e2e`)                                  | Not applicable                                                  | Not applicable                                                                                     | Playwright — this project IS the E2E suite           |
+| App Type                                                            | Unit (`test:unit`)                                              | Integration (`test:integration`)                                                                   | E2E (`test:e2e`)                                     |
+| ------------------------------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **BE API** (`a-demo-be-*`)                                          | Godog/BDD, mocked repos, calls service fns directly             | Godog/BDD, real PostgreSQL via docker-compose, calls service fns directly (no HTTP)                | Playwright, real HTTP + real PostgreSQL              |
+| **FE** (`a-demo-fe-*`, `a-demo-fe-ts-nextjs`)                       | Vitest/Flutter test, all API calls mocked (MSW / mock services) | MSW with real DOM; in-process mocking only                                                         | Playwright against running FE + default BE           |
+| **Fullstack** (`a-demo-fs-*`)                                       | Vitest, all DB calls mocked                                     | MSW / in-process mocking                                                                           | Playwright, self-contained (own API routes)          |
+| **CLI** (`*-cli`)                                                   | Godog, all I/O mocked via function variables                    | Godog (`//go:build integration`), real filesystem via `/tmp` fixtures, in-process via `cmd.RunE()` | Not applicable                                       |
+| **Content platform** (`a-demo-fs-ts-nextjs`, `a-demo-fs-ts-nextjs`) | Vitest, components and tRPC routes mocked                       | MSW, in-process mocking                                                                            | Playwright BE E2E (`*-be-e2e`) + FE E2E (`*-fe-e2e`) |
+| **Library** (`golang-commons`)                                      | Unit tests + Godog, mock closures                               | Godog, tmpdir mocks, cacheable                                                                     | Not applicable                                       |
+| **Hugo site** (historical -- no active Hugo sites remain)           | Not applicable                                                  | Not applicable                                                                                     | Not applicable                                       |
+| **E2E runner** (`*-e2e`)                                            | Not applicable                                                  | Not applicable                                                                                     | Playwright — this project IS the E2E suite           |
 
 ## Gherkin Consumption Matrix
 
@@ -208,9 +208,9 @@ unit tests.
 | Threshold | App Types                                                                       | Rationale                                                                                                                                                                       |
 | --------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **90%**   | BE API backends, CLI apps, Go libs, TypeScript backends (`a-demo-be-ts-effect`) | Core business logic with high mock isolation. Service functions operate on pure data structures; 90% is achievable without heroic effort.                                       |
-| **80%**   | Content platforms (`ayokoding-web`, `oseplatform-web`)                          | Significant UI rendering code and Next.js route handlers that are harder to unit-test. Some RSC rendering paths are excluded by design.                                         |
+| **80%**   | Content platforms (`a-demo-fs-ts-nextjs`, `a-demo-fs-ts-nextjs`)                | Significant UI rendering code and Next.js route handlers that are harder to unit-test. Some RSC rendering paths are excluded by design.                                         |
 | **75%**   | Fullstack apps (`a-demo-fs-ts-nextjs`)                                          | Mixed server and client code in the same project. API routes and React components pull the achievable threshold below 80%.                                                      |
-| **70%**   | FE apps (`a-demo-fe-*`, `organiclever-fe`), Dart FE                             | API, auth, and query layers are mocked by design; the mock boundaries limit what can be covered by unit tests. Lower threshold reflects this intentional architecture decision. |
+| **70%**   | FE apps (`a-demo-fe-*`, `a-demo-fe-ts-nextjs`), Dart FE                         | API, auth, and query layers are mocked by design; the mock boundaries limit what can be covered by unit tests. Lower threshold reflects this intentional architecture decision. |
 
 Coverage is measured via the appropriate reporter for each language and converted to LCOV or
 JaCoCo XML before being passed to `rhino-cli test-coverage validate`. See `CLAUDE.md` for the
@@ -355,8 +355,8 @@ variant-specific inputs.
 
 ### CRON Schedule
 
-Scheduled workflows (the production `test-and-deploy-*.yml` trio for ayokoding-web,
-oseplatform-web, and organiclever) run twice daily aligned to WIB (UTC+7) business hours:
+Scheduled workflows (the production `test-and-deploy-*.yml` trio for a-demo-fs-ts-nextjs,
+a-demo-fs-ts-nextjs, and a-demo) run twice daily aligned to WIB (UTC+7) business hours:
 
 | WIB Time | UTC Time             | Purpose                                     |
 | -------- | -------------------- | ------------------------------------------- |
@@ -393,7 +393,7 @@ services themselves run in parallel across matrix entries.
 | Test workflow       | `test-{app-name}.yml`                                                                     | `test-a-demo-be-golang-gin.yml`           |
 | Reusable workflow   | `_reusable-{purpose}.yml`                                                                 | `_reusable-backend-e2e.yml`               |
 | Composite action    | `.github/actions/{name}/action.yml`                                                       | `.github/actions/setup-golang/action.yml` |
-| Deploy workflow     | `test-and-deploy-{app}.yml`                                                               | `test-and-deploy-organiclever.yml`        |
+| Deploy workflow     | `test-and-deploy-{app}.yml`                                                               | `test-and-deploy-a-demo.yml`              |
 | PR workflow         | `pr-{purpose}.yml`                                                                        | `pr-quality-gate.yml`                     |
 
 See [GitHub Actions Workflow Naming Convention](./github-actions-workflow-naming.md) for the full
@@ -437,7 +437,7 @@ is exercised against a stable, known-good partner.
 | Frontend (`a-demo-fe-*`)  | Default backend — `a-demo-be-golang-gin` | `a-demo-fe-ts-nextjs` + `a-demo-be-golang-gin` |
 | Fullstack (`a-demo-fs-*`) | Self-contained — own API routes          | `a-demo-fs-ts-nextjs` (no external backend)    |
 
-Non-demo apps (`organiclever-*`, `ayokoding-web`, `oseplatform-web`) pair their own dedicated E2E
+Non-demo apps (`a-demo-*`, `a-demo-fs-ts-nextjs`, `a-demo-fs-ts-nextjs`) pair their own dedicated E2E
 runner projects (`*-be-e2e`, `*-fe-e2e`) rather than using the default demo pairing.
 
 ## Environment Variable Standard

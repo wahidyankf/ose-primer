@@ -186,10 +186,9 @@ graph TB
 
 **Steps:**
 
-1. Detect changes in `apps/oseplatform-web/` vs `prod-oseplatform-web` branch
-2. If changes exist (or `force_deploy=true`): setup Volta, Go 1.26.0, Hugo 0.156.0 extended
-3. Install dependencies and run `nx build oseplatform-web`
-4. Force-push `main` to `prod-oseplatform-web`; Vercel auto-builds
+1. If changes exist (or `force_deploy=true`): setup Volta, Go 1.26.0, Hugo 0.156.0 extended
+2. Install dependencies and run `nx build oseplatform-web`
+3. Force-push `main` to `prod-oseplatform-web`; Vercel auto-builds
 
 **Purpose**: Automated scheduled deployments for oseplatform.com with change detection to avoid unnecessary builds
 
@@ -206,8 +205,7 @@ graph TB
 3. Run `be-integration` tests with docker-compose (real PostgreSQL)
 4. Run `fe-integration` tests (MSW-mocked)
 5. Run combined `e2e` stage: full stack via docker-compose, then `organiclever-be-e2e` and `organiclever-fe-e2e` Playwright tests
-6. `detect-changes`: check `apps/organiclever-fe/` vs previous commit
-7. `deploy` (gated on all test jobs + `detect-changes == true`): force-push `HEAD` to `prod-organiclever-web`; Vercel auto-builds
+6. `deploy` (gated on all test jobs + `detect-changes == true`): force-push `HEAD` to `prod-organiclever-web`; Vercel auto-builds
 
 **Purpose**: Automated scheduled deployments for www.organiclever.com, gated on full FE+BE test suite, with change detection to avoid unnecessary builds
 

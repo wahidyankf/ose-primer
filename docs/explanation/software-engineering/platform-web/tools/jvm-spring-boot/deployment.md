@@ -35,8 +35,6 @@ related:
 
 **This document is OSE Platform-specific**, not a Spring Boot tutorial. We define HOW to deploy Spring Boot in THIS platform, not WHAT Spring Boot deployment is.
 
-**See**: [Programming Language Documentation Separation Convention](../../../../../../governance/conventions/structure/programming-language-docs-separation.md)
-
 ## Purpose
 
 This document defines **deployment standards** for Spring Boot applications in the OSE Platform. Spring Boot revolutionizes deployment through executable JARs with embedded servers, eliminating traditional WAR deployment to application servers.

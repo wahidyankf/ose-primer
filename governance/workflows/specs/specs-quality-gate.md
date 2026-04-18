@@ -91,7 +91,7 @@ the preferred approach when these agents exist as defined subagent types.
 ```
 User: "Run specs validation for specs/apps/a-demo/be"
 User: "Run specs validation for specs/apps/a-demo/be and specs/apps/a-demo/fe in strict mode"
-User: "Run specs validation for specs/apps/a-demo/be, specs/apps/a-demo/fe, specs/apps/organiclever-be with max-iterations=5"
+User: "Run specs validation for specs/apps/a-demo/be, specs/apps/a-demo/fe, specs/apps/a-demo-be-fsharp-giraffe with max-iterations=5"
 ```
 
 The AI will:
@@ -315,7 +315,7 @@ The AI will:
 ### Comprehensive Audit (OCD Mode with Bounds)
 
 ```
-User: "Run specs validation for specs/apps/a-demo/be, specs/apps/a-demo/fe, specs/apps/organiclever-be in ocd mode with max-iterations=10"
+User: "Run specs validation for specs/apps/a-demo/be, specs/apps/a-demo/fe, specs/apps/a-demo-be-fsharp-giraffe in ocd mode with max-iterations=10"
 ```
 
 The AI will:

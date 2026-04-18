@@ -15,7 +15,7 @@ updated: 2026-03-28
 
 # Styling Convention
 
-CSS and Tailwind v4 conventions for all frontend applications in the open-sharia-enterprise monorepo. These rules govern how styles are written, organized, and maintained across `organiclever-fe`, `ayokoding-web`, `a-demo-fe-ts-nextjs`, and `a-demo-fs-ts-nextjs`.
+CSS and Tailwind v4 conventions for all frontend applications in the open-sharia-enterprise monorepo. These rules govern how styles are written, organized, and maintained across `a-demo-fe-ts-nextjs`, `a-demo-fs-ts-nextjs`, `a-demo-fe-ts-nextjs`, and `a-demo-fs-ts-nextjs`.
 
 ## Tailwind v4 Directives
 
@@ -26,11 +26,11 @@ Each app's `globals.css` uses a specific set of Tailwind v4 directives. Use only
 @import "tailwindcss";
 
 /* Content scan path — required when files live outside the default scan root */
-/* ayokoding-web uses this because source lives in a non-default location */
+/* a-demo-fs-ts-nextjs uses this because source lives in a non-default location */
 @source "../../src/**/*.{ts,tsx}";
 
 /* Tailwind plugins */
-/* ayokoding-web uses @tailwindcss/typography for prose content */
+/* a-demo-fs-ts-nextjs uses @tailwindcss/typography for prose content */
 @plugin "@tailwindcss/typography";
 
 /* Dark mode variant — class-based (.dark), not media-query-based */
@@ -55,7 +55,7 @@ Each app's `globals.css` uses a specific set of Tailwind v4 directives. Use only
 }
 ```
 
-See `apps/organiclever-fe/src/app/globals.css` and `apps/ayokoding-web/src/app/globals.css` for the full reference implementations.
+See `apps/a-demo-fe-ts-nextjs/src/app/globals.css` and `apps/a-demo-fs-ts-nextjs/src/app/globals.css` for the full reference implementations.
 
 ## Utility-First Approach
 
@@ -98,7 +98,7 @@ Never use `!important`. Use `@layer` ordering or Tailwind modifiers for specific
 }
 ```
 
-**Known violation**: `ayokoding-web/src/app/globals.css` contains 10 `!important` declarations in code block styles to override `@tailwindcss/typography` defaults. These are scheduled for removal by replacing them with rules placed outside `@layer base`.
+**Known violation**: `a-demo-fs-ts-nextjs/src/app/globals.css` contains 10 `!important` declarations in code block styles to override `@tailwindcss/typography` defaults. These are scheduled for removal by replacing them with rules placed outside `@layer base`.
 
 ## No `@apply` Outside `@layer base`
 
@@ -260,7 +260,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-**Known violation**: `organiclever-fe/src/app/globals.css` declares `font-family: Arial, Helvetica, sans-serif` inside `@layer utilities`. This is scheduled for removal in favour of a `next/font` declaration in the app's root layout.
+**Known violation**: `a-demo-fe-ts-nextjs/src/app/globals.css` declares `font-family: Arial, Helvetica, sans-serif` inside `@layer utilities`. This is scheduled for removal in favour of a `next/font` declaration in the app's root layout.
 
 ## Fluid Typography
 

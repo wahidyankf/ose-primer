@@ -688,7 +688,6 @@ Validate file naming, linking, emoji usage, convention compliance per existing l
    - Verify conventions/development → agents alignment
    - Verify agents → workflows alignment
 
-7. **Licensing Convention Compliance** (see [Per-Directory Licensing Convention](../../governance/conventions/structure/licensing.md)):
    - Verify all product app directories have FSL-1.1-MIT LICENSE matching root LICENSE
    - Verify all `libs/*` directories have MIT LICENSE
    - Verify all `apps/a-demo-*` implementation directories (excluding `*-e2e`) have MIT LICENSE
@@ -700,7 +699,7 @@ Validate file naming, linking, emoji usage, convention compliance per existing l
    - Verify no stale "all specs are FSL" language without demo exception
    - **Criticality**: Missing LICENSE = CRITICAL; wrong license type = HIGH; cross-doc inconsistency = MEDIUM
 
-8. **Write findings progressively** using report format above
+7. **Write findings progressively** using report format above
 
 ### Step 8: Software Documentation Validation
 

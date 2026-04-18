@@ -72,7 +72,6 @@ docker compose -f infra/dev/organiclever-fe/docker-compose.yml up organiclever-f
 ## Project Structure
 
 ```
-apps/organiclever-fe/
 ├── src/
 │   ├── app/                    # Next.js App Router pages
 │   │   ├── dashboard/          # Dashboard route
@@ -146,7 +145,6 @@ Use the `apps-organiclever-fe-deployer` agent for guided deployment.
 Build a production container image using the multi-stage Dockerfile (from repo root):
 
 ```bash
-docker build -f apps/organiclever-fe/Dockerfile -t organiclever-fe:latest .
 ```
 
 Run the image:
@@ -171,7 +169,6 @@ specs from [`specs/apps/organiclever/`](../../specs/apps/organiclever/).
 | ----------- | ------------------------ | --------------------------------------------- | ----------------------------------------- | ----------------- | ------- |
 | Unit        | Vitest + RTL             | `src/components/*.unit.test.tsx`              | `nx run organiclever-fe:test:unit`        | No                | Yes     |
 | Integration | Vitest + vitest-cucumber | `src/test/integration/*.integration.test.tsx` | `nx run organiclever-fe:test:integration` | No                | Yes     |
-| E2E         | playwright-bdd           | `apps/organiclever-fe-e2e/`                   | `nx run organiclever-fe-e2e:test:e2e`     | Yes (port 3200)   | No      |
 
 `test:quick` runs unit + integration in parallel (no running server needed).
 
@@ -185,8 +182,6 @@ prevent auto-cleanup between Cucumber steps; `AfterEachScenario` calls `cleanup(
 scenario.
 
 ## E2E Tests
-
-E2E tests live in [`apps/organiclever-fe-e2e/`](../../apps/organiclever-fe-e2e/). See that directory's README for details.
 
 ## Shared UI Components
 

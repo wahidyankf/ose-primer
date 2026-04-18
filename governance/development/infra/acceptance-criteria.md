@@ -480,7 +480,6 @@ graph TD
 
 - [BDD Spec-to-Test Mapping Convention](./bdd-spec-test-mapping.md) - Mandatory 1:1 mapping between CLI commands and Gherkin specifications
 - [Plans Organization Convention](../../conventions/structure/plans.md) - Where to use acceptance criteria in plans
-- [Tutorial Convention](../../conventions/tutorials/general.md) - Acceptance criteria for tutorial quality
 - [Content Quality Principles](../../conventions/writing/quality.md) - Writing clear, testable content
 
 ## Summary

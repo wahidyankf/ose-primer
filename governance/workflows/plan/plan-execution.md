@@ -463,7 +463,6 @@ Report final status, archive plan if successful, and update all related READMEs.
 
 **Status determination**:
 
-- PASS: **Success** (`pass`): Zero findings after validation, all requirements met, plan moved to `plans/done/`
 - **Partial** (`partial`): Findings remain after max-iterations, plan stays in current location
 - FAIL: **Failure** (`fail`): Technical errors during execution or checking, plan stays in current location
 
@@ -499,7 +498,6 @@ with a note explaining why it was skipped rather than silently omitting it.
 
 ## Termination Criteria
 
-- PASS: **Success** (`pass`): Zero findings of ANY confidence level (HIGH, MEDIUM, MINOR) in final validation, all deliverables complete, plan archived to `plans/done/`
 - **Partial** (`partial`): Findings remain after max-iterations cycles, plan requires manual intervention
 - FAIL: **Failure** (`fail`): Orchestrator or checker encountered technical errors preventing completion
 
@@ -518,7 +516,6 @@ The calling context orchestrates directly and invokes specialized agents via the
 - Tick checkboxes progressively as each item completes (Atomic Sync Ritual)
 - Validate implementation by invoking `plan-execution-checker` subagent
 - Iterate until zero findings and all deliverables complete
-- Move plan folder to plans/done/ on success
 
 ### Execute with Extended Iterations
 
@@ -541,7 +538,6 @@ The AI will invoke agents regardless of folder location:
 
 - Implement plan requirements via orchestrated specialized agents
 - Won't move to done until zero findings achieved
-- Plan archived to plans/done/ only on complete success
 
 ### Quick Validation Only
 

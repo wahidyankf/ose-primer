@@ -81,29 +81,29 @@ The result must exactly match the filename (without path).
 
 Every workflow currently in the repository follows this rule:
 
-| `name:` field                                | Filename                               |
-| -------------------------------------------- | -------------------------------------- |
-| `Main CI`                                    | `main-ci.yml`                          |
-| `PR - Quality Gate`                          | `pr-quality-gate.yml`                  |
-| `PR - Format`                                | `pr-format.yml`                        |
-| `PR - Validate Links`                        | `pr-validate-links.yml`                |
-| `Test and Deploy - AyoKoding Web`            | `test-and-deploy-ayokoding-web.yml`    |
-| `Test and Deploy - OSE Platform Web`         | `test-and-deploy-oseplatform-web.yml`  |
-| `Test and Deploy - OrganicLever`             | `test-and-deploy-organiclever.yml`     |
-| `Test - Demo BE (Java/Spring Boot)`          | `test-a-demo-be-java-springboot.yml`   |
-| `Test - Demo BE (Java/Vert.x)`               | `test-a-demo-be-java-vertx.yml`        |
-| `Test - Demo BE (Elixir/Phoenix)`            | `test-a-demo-be-elixir-phoenix.yml`    |
-| `Test - Demo BE (F#/Giraffe)`                | `test-a-demo-be-fsharp-giraffe.yml`    |
-| `Test - Demo BE (Go/Gin)`                    | `test-a-demo-be-golang-gin.yml`        |
-| `Test - Demo BE (Python/FastAPI)`            | `test-a-demo-be-python-fastapi.yml`    |
-| `Test - Demo BE (Rust/Axum)`                 | `test-a-demo-be-rust-axum.yml`         |
-| `Test - Demo BE (Kotlin/Ktor)`               | `test-a-demo-be-kotlin-ktor.yml`       |
-| `Test - Demo BE (TypeScript/Effect)`         | `test-a-demo-be-ts-effect.yml`         |
-| `Test - Demo BE (C#/ASP.NET Core)`           | `test-a-demo-be-csharp-aspnetcore.yml` |
-| `Test - Demo BE (Clojure/Pedestal)`          | `test-a-demo-be-clojure-pedestal.yml`  |
-| `Test - Demo FE (TypeScript/Next.js)`        | `test-a-demo-fe-ts-nextjs.yml`         |
-| `Test - Demo FE (TypeScript/TanStack Start)` | `test-a-demo-fe-ts-tanstack-start.yml` |
-| `Test - Demo FE (Dart/Flutter Web)`          | `test-a-demo-fe-dart-flutterweb.yml`   |
+| `name:` field                                | Filename                                  |
+| -------------------------------------------- | ----------------------------------------- |
+| `Main CI`                                    | `main-ci.yml`                             |
+| `PR - Quality Gate`                          | `pr-quality-gate.yml`                     |
+| `PR - Format`                                | `pr-format.yml`                           |
+| `PR - Validate Links`                        | `pr-validate-links.yml`                   |
+| `Test and Deploy - a-demo Web`               | `test-and-deploy-a-demo-fs-ts-nextjs.yml` |
+| `Test and Deploy - a-demo Web`               | `test-and-deploy-a-demo-fs-ts-nextjs.yml` |
+| `Test and Deploy - a-demo`                   | `test-and-deploy-a-demo.yml`              |
+| `Test - Demo BE (Java/Spring Boot)`          | `test-a-demo-be-java-springboot.yml`      |
+| `Test - Demo BE (Java/Vert.x)`               | `test-a-demo-be-java-vertx.yml`           |
+| `Test - Demo BE (Elixir/Phoenix)`            | `test-a-demo-be-elixir-phoenix.yml`       |
+| `Test - Demo BE (F#/Giraffe)`                | `test-a-demo-be-fsharp-giraffe.yml`       |
+| `Test - Demo BE (Go/Gin)`                    | `test-a-demo-be-golang-gin.yml`           |
+| `Test - Demo BE (Python/FastAPI)`            | `test-a-demo-be-python-fastapi.yml`       |
+| `Test - Demo BE (Rust/Axum)`                 | `test-a-demo-be-rust-axum.yml`            |
+| `Test - Demo BE (Kotlin/Ktor)`               | `test-a-demo-be-kotlin-ktor.yml`          |
+| `Test - Demo BE (TypeScript/Effect)`         | `test-a-demo-be-ts-effect.yml`            |
+| `Test - Demo BE (C#/ASP.NET Core)`           | `test-a-demo-be-csharp-aspnetcore.yml`    |
+| `Test - Demo BE (Clojure/Pedestal)`          | `test-a-demo-be-clojure-pedestal.yml`     |
+| `Test - Demo FE (TypeScript/Next.js)`        | `test-a-demo-fe-ts-nextjs.yml`            |
+| `Test - Demo FE (TypeScript/TanStack Start)` | `test-a-demo-fe-ts-tanstack-start.yml`    |
+| `Test - Demo FE (Dart/Flutter Web)`          | `test-a-demo-fe-dart-flutterweb.yml`      |
 
 ## Examples
 

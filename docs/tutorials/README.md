@@ -19,18 +19,13 @@ updated: 2025-12-08
 Tutorials are now available at:
 
 - **Website**: [ayokoding.com](https://ayokoding.com) (when deployed)
-- **Source**: `apps/ayokoding-web/content/en/learn/`
 
 ## 📚 Migrated Content
 
 The following content has been migrated:
 
-- **AI Engineering** → `/apps/ayokoding-web/content/en/learn/ai/`
-- **Business & Finance** → `/apps/ayokoding-web/content/en/learn/business/`
-- **Programming Languages** → `/apps/ayokoding-web/content/en/learn/swe/lang/`
-  - Golang tutorials (Initial Setup, Quick Start, Beginner, Intermediate, Advanced, Cookbook)
-  - Java tutorials (Initial Setup, Quick Start, Beginner, Intermediate, Advanced, Cookbook)
-- **System Design** → `/apps/ayokoding-web/content/en/learn/swe/system-design/`
+- Golang tutorials (Initial Setup, Quick Start, Beginner, Intermediate, Advanced, Cookbook)
+- Java tutorials (Initial Setup, Quick Start, Beginner, Intermediate, Advanced, Cookbook)
 
 ## 🔄 Migration Date
 

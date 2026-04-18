@@ -918,7 +918,6 @@ npm run dev
 **Project Structure**:
 
 ```
-apps/oseplatform-web-app/
 ├── src/
 │   ├── features/          # Feature modules
 │   ├── shared/            # Shared code

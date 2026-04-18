@@ -8,9 +8,7 @@ Linking conventions ensure consistent, maintainable internal references across t
 
 ## Conventions
 
-### [Internal AyoKoding References](./internal-ayokoding-references.md)
-
-Standards for linking between AyoKoding educational content and OSE Platform documentation, including language prefix requirements, absolute path conventions, and cross-repository reference patterns.
+Standards for linking between a-demo educational content and a-demo documentation, including language prefix requirements, absolute path conventions, and cross-repository reference patterns.
 
 ## Principles Implemented/Respected
 
@@ -22,7 +20,6 @@ Standards for linking between AyoKoding educational content and OSE Platform doc
 
 - [File Naming Convention](../structure/file-naming.md) - Correct file names enable accurate linking
 - [Diátaxis Framework](../structure/diataxis-framework.md) - Documentation organization affects link paths
-- [Hugo Linking Conventions](../hugo/README.md) - Hugo-specific linking patterns
 
 ---
 

@@ -566,8 +566,6 @@ public class ZakatCalculatorController {
 
 **Hands-on Learning (AyoKoding)**:
 
-- [Spring In-the-Field - API Development](../../../../../../apps/ayokoding-web/content/en/learn/software-engineering/platform-web/tools/jvm-spring/in-the-field/rest-apis.md) - Production APIs
-
 **Spring Boot Extension**:
 
 - [Spring Boot REST APIs](../jvm-spring-boot/rest-apis.md) - Auto-configured REST

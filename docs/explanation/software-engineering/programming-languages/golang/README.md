@@ -79,24 +79,15 @@ OSE Platform Go applications MUST use the following stack:
 - **Previous**: Go 1.25 - Green Tea GC (experimental), encoding/json/v2, container-aware GOMAXPROCS
 - **Latest**: Go 1.26 (RECOMMENDED for new projects) - Current stable release used across all OSE Platform Go modules
 
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md) for Go-specific release documentation location
-
 ## Prerequisite Knowledge
 
 **REQUIRED**: This documentation assumes you have completed the AyoKoding Go learning path. These are **OSE Platform-specific style guides**, not educational tutorials.
 
 **You MUST understand Go fundamentals before using these standards:**
 
-- **[Go Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/golang/)** - Complete 0-95% language coverage
-- **[Go By Example](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/golang/by-example/)** - 75-85 annotated code examples (beginner to advanced)
-- **[Go In the Field](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/golang/in-the-field/)** - Production patterns and design approaches
-- **[Go Release Highlights](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/golang/release-highlights/)** - Go 1.18-1.26 features (generics, fuzzing, PGO, iterators, Green Tea GC)
-
 **What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply Go knowledge in THIS codebase.
 
 **What this documentation does NOT cover**: Go syntax, language fundamentals, generic patterns (those are in ayokoding-web).
-
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md) for content separation rules.
 
 ## Software Engineering Principles
 
@@ -157,8 +148,6 @@ OSE Platform follows a three-tier Go versioning strategy focused on modern featu
 - `io.ReadAll()` ~2x faster, ~50% less memory
 
 **Unlike Java's LTS model**: Go releases every 6 months with backward compatibility guarantees (Go 1 compatibility promise). No LTS distinction exists; all releases receive security patches for one year. Platform strategy focuses on staying current with stable releases.
-
-**See**: [Go Release Highlights](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/golang/release-highlights/) for detailed feature documentation
 
 ## OSE Platform Coding Standards (Authoritative)
 

@@ -48,8 +48,8 @@ All CLI apps in this monorepo use **Cobra subcommands** grouped by domain. The d
 
 ```
 rhino-cli {domain} {action}
-ayokoding-cli {domain} {action}
-oseplatform-cli {domain} {action}
+rhino-cli {domain} {action}
+rhino-cli {domain} {action}
 ```
 
 ## Mapping Layers
@@ -174,7 +174,7 @@ expects. This will be addressed in a follow-up plan.
 
 ## CLI Apps: Dual-Level Spec Consumption
 
-Go CLI apps (`rhino-cli`, `ayokoding-cli`, `oseplatform-cli`) consume Gherkin specs at both the unit and integration test levels. The same feature files serve as the contract for both levels — only the step implementations differ.
+Go CLI apps (`rhino-cli`, `rhino-cli`, `rhino-cli`) consume Gherkin specs at both the unit and integration test levels. The same feature files serve as the contract for both levels — only the step implementations differ.
 
 ### Architecture
 

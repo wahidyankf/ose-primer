@@ -49,7 +49,6 @@ Think of it as "learning in public" at scale: our practical work on Open Sharia 
 brew install hugo
 
 # Navigate to project
-cd apps/ayokoding-web
 ```
 
 ### Development
@@ -316,7 +315,6 @@ The project uses a dedicated production branch for automatic deployment to ayoko
 Deployment is automated via the `test-and-deploy-ayokoding-web.yml` GitHub Actions workflow:
 
 - **Schedule**: Runs at **6 AM and 6 PM WIB** (UTC+7) every day
-- **Change detection**: Compares `HEAD` on `main` against `prod-ayokoding-web`, scoped to `apps/ayokoding-web/`. Skips build and deploy if nothing changed
 - **Build**: Runs `nx build ayokoding-web` (Hugo extended build)
 - **Deploy**: Force-pushes `main` to `prod-ayokoding-web`; Vercel detects the push and builds automatically
 
@@ -342,7 +340,6 @@ git push --force origin HEAD:prod-ayokoding-web
 **Why This Approach?**
 
 - **Automated deployments**: Content updates deploy automatically without manual intervention
-- **Change-gated**: Builds only run when `apps/ayokoding-web/` content has actually changed, keeping CI costs low
 - **Clean deployment trigger**: Vercel watches `prod-ayokoding-web` for production
 - **Compliant with Trunk Based Development**: Environment branches serve deployment purposes only, not feature isolation
 - **Simple rollback**: Revert `prod-ayokoding-web` to a previous commit if needed
@@ -405,7 +402,6 @@ nx run ayokoding-web:test:quick
 nx run ayokoding-web:links:check
 
 # Or run the binary directly (requires CLI already built)
-./apps/ayokoding-cli/dist/ayokoding-cli links check
 ```
 
 **What gets validated:**

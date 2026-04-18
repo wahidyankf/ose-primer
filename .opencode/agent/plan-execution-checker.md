@@ -281,7 +281,6 @@ After verifying manual assertions (Step 5c), verify that the plan was properly a
 #### What to Validate
 
 1. **Plan Moved to done/**
-   - Verify the plan folder exists in `plans/done/` (not in `plans/in-progress/` or `plans/backlog/`)
    - If plan is still in `in-progress/`: CRITICAL finding
    - Use `git log` to confirm `git mv` was used (preserves history)
 
@@ -291,7 +290,6 @@ After verifying manual assertions (Step 5c), verify that the plan was properly a
    - If the plan entry still exists: HIGH finding
 
 3. **done README Updated**
-   - Read `plans/done/README.md`
    - Verify the plan entry has been ADDED with completion date
    - If the plan entry is missing: HIGH finding
 

@@ -18,8 +18,6 @@ updated: 2026-02-09
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: Complete [AyoKoding BDD By Example](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/development/behavior-driven-development-bdd/by-example/) before using these standards.
-
 ## Purpose
 
 OSE Platform standards for Gherkin feature files and scenario structure.

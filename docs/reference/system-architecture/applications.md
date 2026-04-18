@@ -28,7 +28,6 @@ The platform consists of 9 applications across 4 technology stacks:
 - **Deployment**: Vercel (via `prod-oseplatform-web` branch)
 - **Build Command**: `nx build oseplatform-web`
 - **Dev Command**: `nx dev oseplatform-web`
-- **Location**: `apps/oseplatform-web/`
 
 ### Web Applications (Next.js)
 
@@ -41,8 +40,6 @@ The platform consists of 9 applications across 4 technology stacks:
 - **Deployment**: Vercel (via `prod-ayokoding-web` branch)
 - **Build Command**: `nx build ayokoding-web`
 - **Dev Command**: `nx dev ayokoding-web`
-- **Location**: `apps/ayokoding-web/`
-- **Content**: Co-located at `apps/ayokoding-web/content/`
 
 ### CLI Tools (Go)
 
@@ -51,7 +48,6 @@ The platform consists of 9 applications across 4 technology stacks:
 - **Purpose**: Link validation for ayokoding-web content
 - **Language**: Go 1.26
 - **Build Command**: `nx build ayokoding-cli`
-- **Location**: `apps/ayokoding-cli/`
 - **Features**:
   - Link validation for ayokoding-web content
 - **Usage**: Runs as part of ayokoding-web quality checks
@@ -69,7 +65,6 @@ The platform consists of 9 applications across 4 technology stacks:
 - **Purpose**: OSE Platform site link validation
 - **Language**: Go 1.26
 - **Build Command**: `nx build oseplatform-cli`
-- **Location**: `apps/oseplatform-cli/`
 - **Features**:
   - Validates all internal links in oseplatform-web content
   - Text, JSON, and markdown output formats
@@ -85,7 +80,6 @@ The platform consists of 9 applications across 4 technology stacks:
 - **Deployment**: Vercel (via `prod-organiclever-web` branch)
 - **Build Command**: `nx build organiclever-fe`
 - **Dev Command**: `nx dev organiclever-fe`
-- **Location**: `apps/organiclever-fe/`
 - **Features**:
   - Radix UI / shadcn-ui component library
   - Cookie-based authentication
@@ -100,7 +94,6 @@ The platform consists of 9 applications across 4 technology stacks:
 - **Technology**: F# + Giraffe + .NET
 - **Build Command**: `nx build organiclever-be`
 - **Dev Command**: `nx dev organiclever-be`
-- **Location**: `apps/organiclever-be/`
 - **Features**:
   - AltCover code coverage enforcement (>=90%)
   - Production Dockerfile with multi-stage build
@@ -113,14 +106,12 @@ The platform consists of 9 applications across 4 technology stacks:
 - **Purpose**: End-to-end tests for organiclever-fe
 - **Technology**: Playwright
 - **Run Command**: `nx run organiclever-fe-e2e:test:e2e`
-- **Location**: `apps/organiclever-fe-e2e/`
 
 #### organiclever-be-e2e
 
 - **Purpose**: End-to-end tests for organiclever-be REST API
 - **Technology**: Playwright
 - **Run Command**: `nx run organiclever-be-e2e:test:e2e`
-- **Location**: `apps/organiclever-be-e2e/`
 
 #### a-demo-be-e2e
 
@@ -210,4 +201,3 @@ CLI Tools:
 **Link Validation Pipeline (ayokoding-web):**
 
 ayokoding-cli validates internal links in ayokoding-web content as part of the quality gate.
-Content is co-located at `apps/ayokoding-web/content/` and served by the Next.js application.

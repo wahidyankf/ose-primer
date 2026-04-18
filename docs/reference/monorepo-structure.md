@@ -96,7 +96,6 @@ Flat structure - all apps at the same level, no subdirectories.
 ### App Structure (Hugo Static Site)
 
 ```
-apps/oseplatform-web/
 ├── content/                   # Markdown content files
 ├── layouts/                   # Hugo templates
 ├── static/                    # Static assets (images, CSS, JS)
@@ -116,7 +115,6 @@ apps/oseplatform-web/
 ### App Structure (Go CLI Application)
 
 ```
-apps/ayokoding-cli/
 ├── cmd/                       # CLI commands
 ├── internal/                  # Internal packages
 ├── dist/                      # Build output (gitignored)
@@ -129,7 +127,6 @@ apps/ayokoding-cli/
 ### App Structure (Next.js Application)
 
 ```
-apps/organiclever-fe/
 ├── src/                       # Source code
 ├── public/                    # Static assets
 ├── .storybook/                # Storybook configuration
@@ -288,8 +285,6 @@ The repository contains two distinct project structures with different purposes 
 - Quick prototypes without monorepo integration overhead
 - Temporary experiments that might be deleted after evaluation
 
-**Note on Nx integration**: Even projects with non-Node.js toolchains (like Hugo, Go, Python) can be integrated with Nx using the `nx:run-commands` executor to wrap their CLI commands. This provides benefits like task caching, unified command interface, and dependency graph visualization. See `apps/oseplatform-web/` as an example of a Hugo static site integrated with Nx monorepo.
-
 ### Key Differences
 
 | Aspect                     | Nx Monorepo (`apps/`, `libs/`)    | Experimental (`apps-labs/`)          |
@@ -330,29 +325,25 @@ Location: `apps/[app-name]/project.json` or `libs/[lib-name]/project.json`
 ```json
 {
   "name": "oseplatform-web",
-  "sourceRoot": "apps/oseplatform-web",
   "projectType": "application",
   "targets": {
     "dev": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "hugo server --buildDrafts --buildFuture",
-        "cwd": "apps/oseplatform-web"
+        "command": "hugo server --buildDrafts --buildFuture"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "bash build.sh",
-        "cwd": "apps/oseplatform-web"
+        "command": "bash build.sh"
       },
       "outputs": ["{projectRoot}/public"]
     },
     "clean": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "rm -rf public resources",
-        "cwd": "apps/oseplatform-web"
+        "command": "rm -rf public resources"
       }
     }
   },
@@ -497,7 +488,6 @@ All projects use a standard four-dimension tag scheme:
 **Hugo Apps** do not require `package.json` as they use Hugo's native configuration:
 
 ```yaml
-# apps/oseplatform-web/hugo.yaml
 baseURL: https://oseplatform.com/
 languageCode: en-us
 title: Open Sharia Enterprise Platform
@@ -507,8 +497,6 @@ theme: PaperMod
 **Go Apps** use `go.mod` for dependency management:
 
 ```go
-// apps/ayokoding-cli/go.mod
-module github.com/wahidyankf/ose-public/apps/ayokoding-cli
 
 go 1.26
 ```
@@ -558,7 +546,6 @@ go 1.26
 **Apps importing libs** (TypeScript apps):
 
 ```typescript
-// In apps/organiclever-fe/app/page.tsx
 import { formatDate } from "@open-sharia-enterprise/ts-utils";
 ```
 

@@ -20,8 +20,6 @@ updated: 2026-03-04
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: Complete [AyoKoding TDD By Example](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/development/test-driven-development-tdd/by-example/) before using these standards.
-
 **REQUIRED**: Read [Three-Tier Testing Model](./three-tier-testing.md) first. Integration tests are one of three distinct tiers. Understanding all three tiers before applying these standards is essential.
 
 ## Purpose
@@ -331,7 +329,6 @@ import { server } from "../server";
 import { MOCK_MEMBERS } from "../helpers/mock-data";
 import { http, HttpResponse } from "msw";
 
-const feature = await loadFeature("../../specs/apps/organiclever-fe/members/member-list.feature");
 
 describeFeature(feature, ({ Scenario }) => {
   Scenario("Viewing the member list as a logged-in user", ({ Given, When, Then }) => {

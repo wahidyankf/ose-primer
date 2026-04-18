@@ -108,7 +108,6 @@ graph TB
 
 - **Next.js App Router**: Static generation and routing for educational content
 - **tRPC API**: Backend API for content retrieval, search, and navigation
-- **Content Directory**: Co-located markdown content at `apps/ayokoding-web/content/`
 - **Bilingual Support**: Default English with Indonesian content
 
 ## C4 Level 4: Code Architecture

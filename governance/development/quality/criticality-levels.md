@@ -32,7 +32,7 @@ This convention establishes a universal **four-level criticality system** (CRITI
 **Problem**: Seven different severity classification systems existed across checker agents, causing confusion and inconsistency:
 
 - `repo-rules-checker`: Critical/Important/Minor
-- `apps-ayokoding-web-general-checker`: Must Fix/Warnings/Suggestions
+- `apps-a-demo-fs-ts-nextjs-general-checker`: Must Fix/Warnings/Suggestions
 - `readme-checker`: High/Medium/Low Priority
 - `docs-checker`: [Verified]/[Error]/[Outdated] (verification-based, NOT severity)
 - `docs-link-checker`: [OK]/[BROKEN]/[REDIRECT] (status-based, NOT severity)
@@ -56,7 +56,7 @@ See [Fixer Confidence Levels Convention](./fixer-confidence-levels.md) for compl
 
 ### 1. Missing Required Field Breaks Content Validation
 
-**File**: `apps/ayokoding-web/content/en/programming/python/_index.md:3`
+**File**: `apps/a-demo-fs-ts-nextjs/content/en/programming/python/_index.md:3`
 **Criticality**: CRITICAL - Breaks Next.js content validation
 **Confidence**: HIGH - Field objectively missing from frontmatter
 
@@ -95,7 +95,7 @@ See [Fixer Confidence Levels Convention](./fixer-confidence-levels.md) for compl
 - Agent `name` field doesn't match filename (breaks agent discovery)
 - Broken internal link to non-existent file in documentation
 
-**Next.js Content (ayokoding-web/oseplatform-web)**:
+**Next.js Content (a-demo-fs-ts-nextjs/a-demo-fs-ts-nextjs)**:
 
 - Missing required `title` field (content validation fails)
 - Invalid frontmatter syntax (YAML parsing error)
@@ -547,9 +547,9 @@ Run `{agent-family}-fixer` on this audit report:
 
 - `docs-checker` - Verification labels ([Verified], [Error], [Outdated], [Unverified])
 - `docs-tutorial-checker` - Verification labels
-- `apps-ayokoding-web-facts-checker` - Verification labels
+- `apps-a-demo-fs-ts-nextjs-facts-checker` - Verification labels
 - `docs-link-checker` - Status labels ([OK], [BROKEN], [REDIRECT])
-- `apps-ayokoding-web-link-checker` - Status labels
+- `apps-a-demo-fs-ts-nextjs-link-checker` - Status labels
 
 **Format for dual-label findings**:
 
@@ -654,7 +654,7 @@ Update link to current documentation URL or find alternative resource
 - Consider alternative organization
 - Potential future sections
 
-### Next.js Content - ayokoding-web (general-checker, facts-checker, link-checker)
+### Next.js Content - a-demo-fs-ts-nextjs (general-checker, facts-checker, link-checker)
 
 **CRITICAL**:
 
@@ -684,7 +684,7 @@ Update link to current documentation URL or find alternative resource
 - Potential cross-linking opportunity
 - Suggest mentioning alternative approach
 
-### Next.js Content - oseplatform-web (content-checker)
+### Next.js Content - a-demo-fs-ts-nextjs (content-checker)
 
 **CRITICAL**:
 
@@ -819,7 +819,7 @@ Update link to current documentation URL or find alternative resource
 - Consider alternative agent selection
 - Potential optimization
 
-### By-Example Tutorials (apps-ayokoding-web-by-example-checker)
+### By-Example Tutorials (apps-a-demo-fs-ts-nextjs-by-example-checker)
 
 **CRITICAL**:
 
@@ -1375,10 +1375,10 @@ Existing agents using different terminology should migrate to this convention.
 
 **Severity-Based Family**:
 
-- apps-ayokoding-web-general-checker
-- apps-ayokoding-web-by-example-checker
-- apps-ayokoding-web-in-the-field-checker
-- apps-oseplatform-web-content-checker
+- apps-a-demo-fs-ts-nextjs-general-checker
+- apps-a-demo-fs-ts-nextjs-by-example-checker
+- apps-a-demo-fs-ts-nextjs-in-the-field-checker
+- apps-a-demo-fs-ts-nextjs-content-checker
 - repo-workflow-checker
 
 **Dual-Label Family** (preserve existing labels + add criticality):
@@ -1386,8 +1386,8 @@ Existing agents using different terminology should migrate to this convention.
 - docs-checker ([Verified]/[Error]/[Outdated] + CRITICAL/HIGH/MEDIUM/LOW)
 - docs-tutorial-checker
 - docs-software-engineering-separation-checker
-- apps-ayokoding-web-facts-checker
-- apps-ayokoding-web-link-checker
+- apps-a-demo-fs-ts-nextjs-facts-checker
+- apps-a-demo-fs-ts-nextjs-link-checker
 - docs-link-checker ([OK]/[BROKEN]/[REDIRECT] + CRITICAL/HIGH/MEDIUM/LOW)
 - repo-rules-checker
 
@@ -1402,14 +1402,14 @@ Existing agents using different terminology should migrate to this convention.
 Update all fixer agents to use priority-based execution:
 
 - repo-rules-fixer (pilot)
-- apps-ayokoding-web-general-fixer
-- apps-ayokoding-web-by-example-fixer
-- apps-ayokoding-web-facts-fixer
-- apps-ayokoding-web-in-the-field-fixer
-- apps-ayokoding-web-link-fixer
+- apps-a-demo-fs-ts-nextjs-general-fixer
+- apps-a-demo-fs-ts-nextjs-by-example-fixer
+- apps-a-demo-fs-ts-nextjs-facts-fixer
+- apps-a-demo-fs-ts-nextjs-in-the-field-fixer
+- apps-a-demo-fs-ts-nextjs-link-fixer
 - docs-tutorial-fixer
 - docs-software-engineering-separation-fixer
-- apps-oseplatform-web-content-fixer
+- apps-a-demo-fs-ts-nextjs-content-fixer
 - readme-fixer
 - docs-fixer
 - plan-fixer
