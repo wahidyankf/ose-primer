@@ -27,7 +27,7 @@ updated: 2026-01-24
 
 ## Overview
 
-Python dependency management ensures reproducible environments and explicit package versioning. For OSE Platform financial applications, locked dependencies prevent unexpected behavior from library updates.
+Python dependency management ensures reproducible environments and explicit package versioning. For a-demo financial applications, locked dependencies prevent unexpected behavior from library updates.
 
 ## pip Basics
 
@@ -217,11 +217,11 @@ build-backend = "hatchling.build"
 [project]
 name = "ose-zakat-service"
 version = "1.0.0"
-description = "Zakat calculation service for OSE Platform"
+description = "Zakat calculation service for a-demo"
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [
-    {name = "OSE Team", email = "team@oseplatform.com"},
+    {name = "OSE Team", email = "team@example.com"},
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -547,7 +547,7 @@ graph TD
 
 **Last Updated**: 2026-01-24
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
-**Maintainers**: OSE Platform Documentation Team
+**Maintainers**: a-demo Documentation Team
 
 ## Python Package Management
 

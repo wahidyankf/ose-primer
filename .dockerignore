@@ -5,10 +5,10 @@ coverage
 *.log
 .DS_Store
 .idea
-apps/organiclever-be/target
-apps/ayokoding-cli
+apps/a-demo-be-fsharp-giraffe/target
+apps/rhino-cli
 archived
-apps/oseplatform-cli
+apps/rhino-cli
 apps/rhino-cli
 apps-labs
 docs
@@ -20,9 +20,9 @@ specs
 !specs/apps/a-demo/be/gherkin
 !specs/apps/a-demo/fe/gherkin
 !specs/apps/a-demo/contracts/generated
-!specs/apps/organiclever/be/gherkin
-!specs/apps/organiclever/fe/gherkin
-!specs/apps/organiclever/contracts/generated
+!specs/apps/a-demo/be/gherkin
+!specs/apps/a-demo/fe/gherkin
+!specs/apps/a-demo/contracts/generated
 infra
 .claude
 .opencode

@@ -1,6 +1,6 @@
 ---
 title: "F# Security Standards"
-description: Authoritative OSE Platform F# security standards — type-driven validation, Giraffe auth, parameterized queries
+description: Authoritative a-demo F# security standards — type-driven validation, Giraffe auth, parameterized queries
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not an F# tutorial.
+**This document is a-demo-specific**, not an F# tutorial.
 
 ## Purpose
 
-This document defines **authoritative security standards** for F# development in OSE Platform. F# type system enables security-by-construction: invalid and dangerous inputs are rejected at the type level before reaching business logic.
+This document defines **authoritative security standards** for F# development in a-demo. F# type system enables security-by-construction: invalid and dangerous inputs are rejected at the type level before reaching business logic.
 
-**Target Audience**: OSE Platform F# developers building web services and data pipelines
+**Target Audience**: a-demo F# developers building web services and data pipelines
 
 **Scope**: Type-driven input validation, Giraffe/Saturn authentication, secrets management, SQL injection prevention, logging hygiene
 

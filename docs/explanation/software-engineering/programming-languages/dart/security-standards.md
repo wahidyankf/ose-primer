@@ -1,6 +1,6 @@
 ---
 title: "Dart Security Standards"
-description: Authoritative OSE Platform Dart security standards (input-validation, encryption, secure-storage)
+description: Authoritative a-demo Dart security standards (input-validation, encryption, secure-storage)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -22,13 +22,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Dart tutorial. We define HOW to implement security in THIS codebase, not WHAT security is.
+**This document is a-demo-specific**, not a Dart tutorial. We define HOW to implement security in THIS codebase, not WHAT security is.
 
 ## Purpose
 
-This document defines **authoritative security standards** for Dart development in the OSE Platform. Security is non-negotiable — financial and personal data from Zakat and Murabaha operations requires the highest protection.
+This document defines **authoritative security standards** for Dart development in the a-demo. Security is non-negotiable — financial and personal data from Zakat and Murabaha operations requires the highest protection.
 
-**Target Audience**: OSE Platform Dart developers, security reviewers
+**Target Audience**: a-demo Dart developers, security reviewers
 
 **Scope**: Input validation, PII protection, `flutter_secure_storage`, `dart:crypto`, HTTP security, SQL injection prevention, JSON deserialization safety
 
@@ -189,7 +189,7 @@ class SecurityConfig {
         ),
       ),
       allowedOrigins:
-          (Platform.environment['ALLOWED_ORIGINS'] ?? 'https://oseplatform.com')
+          (Platform.environment['ALLOWED_ORIGINS'] ?? 'https://example.com')
               .split(','),
     );
   }

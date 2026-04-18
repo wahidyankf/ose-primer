@@ -1,6 +1,6 @@
 ---
 title: Elixir Code Quality Standards
-description: Authoritative OSE Platform code quality standards (mix format, Credo, Dialyzer, module organization, code metrics)
+description: Authoritative a-demo code quality standards (mix format, Credo, Dialyzer, module organization, code metrics)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,9 +24,9 @@ updated: 2026-02-05
 
 ## Purpose
 
-This document defines **authoritative code quality standards** for Elixir development in the OSE Platform. These prescriptive rules govern automated code formatting, static analysis, type checking, module organization, and code metrics enforcement.
+This document defines **authoritative code quality standards** for Elixir development in the a-demo. These prescriptive rules govern automated code formatting, static analysis, type checking, module organization, and code metrics enforcement.
 
-**Target Audience**: OSE Platform Elixir developers, build engineers, technical reviewers
+**Target Audience**: a-demo Elixir developers, build engineers, technical reviewers
 
 **Scope**: mix format auto-formatting, Credo linting, Dialyzer type checking, module organization quality, code metrics
 
@@ -115,7 +115,7 @@ end
 
 ### Credo Configuration - Required Checks
 
-**MUST** configure Credo with OSE Platform standards (.credo.exs):
+**MUST** configure Credo with a-demo standards (.credo.exs):
 
 ```elixir
 # .credo.exs

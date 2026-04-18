@@ -1,6 +1,6 @@
 ---
 title: "Kotlin API Standards"
-description: Authoritative OSE Platform Kotlin API standards (Ktor routing DSL, content negotiation, REST conventions)
+description: Authoritative a-demo Kotlin API standards (Ktor routing DSL, content negotiation, REST conventions)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Kotlin tutorial. We define HOW to build APIs in THIS codebase.
+**This document is a-demo-specific**, not a Kotlin tutorial. We define HOW to build APIs in THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative API standards** for Kotlin development in the OSE Platform. It covers Ktor routing DSL, `call.respond`/`call.receive` patterns, content negotiation, StatusPages for error handling, authentication plugins, REST conventions, pagination, and request/response data classes.
+This document defines **authoritative API standards** for Kotlin development in the a-demo. It covers Ktor routing DSL, `call.respond`/`call.receive` patterns, content negotiation, StatusPages for error handling, authentication plugins, REST conventions, pagination, and request/response data classes.
 
-**Target Audience**: OSE Platform Kotlin developers, API designers, technical reviewers
+**Target Audience**: a-demo Kotlin developers, API designers, technical reviewers
 
 **Scope**: Ktor 3.x API patterns, REST conventions, HTTP status codes, request/response modeling, error responses
 

@@ -1,6 +1,6 @@
 ---
 title: "Rust Error Handling Standards"
-description: Authoritative OSE Platform Rust error handling standards (Result, Option, thiserror, anyhow)
+description: Authoritative a-demo Rust error handling standards (Result, Option, thiserror, anyhow)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Rust tutorial.
+**This document is a-demo-specific**, not a Rust tutorial.
 
 ## Purpose
 
-This document defines **authoritative error handling standards** for Rust development in the OSE Platform. Rust's error handling model — using `Result<T, E>` and `Option<T>` — is a core language feature. These standards ensure consistent, informative, and maintainable error handling across all Rust projects.
+This document defines **authoritative error handling standards** for Rust development in the a-demo. Rust's error handling model — using `Result<T, E>` and `Option<T>` — is a core language feature. These standards ensure consistent, informative, and maintainable error handling across all Rust projects.
 
-**Target Audience**: OSE Platform Rust developers, technical reviewers
+**Target Audience**: a-demo Rust developers, technical reviewers
 
 **Scope**: Result and Option usage, ? operator, thiserror, anyhow, error design, anti-patterns
 

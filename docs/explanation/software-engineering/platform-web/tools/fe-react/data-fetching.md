@@ -905,7 +905,7 @@ export const Dashboard: React.FC = () => (
 );
 ```
 
-## OSE Platform Data Fetching Examples
+## a-demo Data Fetching Examples
 
 ### Zakat Calculation API
 

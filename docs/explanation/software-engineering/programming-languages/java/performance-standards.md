@@ -1,5 +1,5 @@
 ---
-title: Java Performance Standards for OSE Platform
+title: Java Performance Standards for a-demo
 description: Prescriptive performance requirements for Shariah-compliant financial systems
 category: explanation
 subcategory: prog-lang
@@ -19,15 +19,15 @@ updated: 2026-02-03
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
+**This document is a-demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
 
-# Java Performance Standards for OSE Platform
+# Java Performance Standards for a-demo
 
 **OSE-specific prescriptive standards** for performance in Shariah-compliant financial applications. This document defines **mandatory requirements** using RFC 2119 keywords (MUST, SHOULD, MAY).
 
 ## Purpose
 
-Performance in OSE Platform is critical for:
+Performance in a-demo is critical for:
 
 - **Transaction Throughput**: Process thousands of donations, Zakat calculations, and Qard Hasan operations per second
 - **Latency Requirements**: Sub-100ms response times for user-facing financial operations
@@ -37,7 +37,7 @@ Performance in OSE Platform is critical for:
 
 ### Latency Requirements
 
-**REQUIRED**: All OSE Platform services MUST meet the following latency targets (p95).
+**REQUIRED**: All a-demo services MUST meet the following latency targets (p95).
 
 | Service Type           | p95 Latency | p99 Latency | Notes                                |
 | ---------------------- | ----------- | ----------- | ------------------------------------ |
@@ -60,7 +60,7 @@ public Result<DonationReceipt, DonationError> processDonation(
 
 ### Throughput Requirements
 
-**REQUIRED**: OSE Platform services MUST support minimum throughput targets.
+**REQUIRED**: a-demo services MUST support minimum throughput targets.
 
 | Service Type        | Min Throughput | Target Throughput | Notes                      |
 | ------------------- | -------------- | ----------------- | -------------------------- |
@@ -418,7 +418,7 @@ management:
 - Heap usage > 80%
 - Database query time > 500ms
 
-### OSE Platform Standards
+### a-demo Standards
 
 - [Concurrency Standards](./concurrency-standards.md) - Thread pool sizing, parallel processing
 - [Error Handling Standards](./error-handling-standards.md) - Error handling performance
@@ -428,7 +428,7 @@ management:
 
 For learning Java fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Java basics from ayokoding-web. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Java basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ### Software Engineering Principles
 
@@ -481,4 +481,4 @@ Before deploying financial services, verify:
 
 **Last Updated**: 2026-02-04
 
-**Status**: Active (mandatory for all OSE Platform Java services)
+**Status**: Active (mandatory for all a-demo Java services)

@@ -1,6 +1,6 @@
 ---
 title: "Kotlin DDD Standards"
-description: Authoritative OSE Platform Kotlin Domain-Driven Design standards (value objects, sealed states, aggregates, domain events)
+description: Authoritative a-demo Kotlin Domain-Driven Design standards (value objects, sealed states, aggregates, domain events)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Kotlin tutorial. We define HOW to apply Domain-Driven Design in THIS codebase.
+**This document is a-demo-specific**, not a Kotlin tutorial. We define HOW to apply Domain-Driven Design in THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative Domain-Driven Design standards** for Kotlin development in the OSE Platform. It covers Value Objects with data classes, sealed classes for domain states, Entity identity, Aggregate invariant enforcement, Repository interfaces, Domain Events, and functional domain modeling.
+This document defines **authoritative Domain-Driven Design standards** for Kotlin development in the a-demo. It covers Value Objects with data classes, sealed classes for domain states, Entity identity, Aggregate invariant enforcement, Repository interfaces, Domain Events, and functional domain modeling.
 
-**Target Audience**: OSE Platform Kotlin developers, domain architects, technical reviewers
+**Target Audience**: a-demo Kotlin developers, domain architects, technical reviewers
 
 **Scope**: DDD tactical patterns in Kotlin - aggregates, value objects, domain events, repositories
 

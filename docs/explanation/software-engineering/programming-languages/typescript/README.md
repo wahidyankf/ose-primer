@@ -1,6 +1,6 @@
 ---
 title: "TypeScript Documentation Index"
-description: Comprehensive TypeScript guide for OSE Platform
+description: Comprehensive TypeScript guide for a-demo
 category: explanation
 subcategory: prog-lang
 tags:
@@ -35,7 +35,7 @@ Complete TypeScript guide for the Open Sharia Enterprise (OSE) Platform. Covers 
 
 ## Overview
 
-TypeScript is the primary language for OSE Platform development. It provides static typing, modern ECMAScript features, and excellent tooling for building robust financial applications.
+TypeScript is the primary language for a-demo development. It provides static typing, modern ECMAScript features, and excellent tooling for building robust financial applications.
 
 ### Why TypeScript?
 
@@ -48,13 +48,13 @@ TypeScript is the primary language for OSE Platform development. It provides sta
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the AyoKoding TypeScript learning path. These are **OSE Platform-specific style guides**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the a-demo TypeScript learning path. These are **a-demo-specific style guides**, not educational tutorials.
 
 **You MUST understand TypeScript fundamentals before using these standards:**
 
-**What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply TypeScript knowledge in THIS codebase.
+**What this documentation covers**: a-demo naming conventions, framework choices, repository-specific patterns, how to apply TypeScript knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: TypeScript syntax, language fundamentals, generic patterns (those are in ayokoding-web).
+**What this documentation does NOT cover**: TypeScript syntax, language fundamentals, generic patterns (those are in a-demo-fs-ts-nextjs).
 
 ## Coding Standards
 
@@ -217,7 +217,7 @@ timeline
 
 **CLI Tools**:
 
-- ayokoding-cli for content automation and Hugo integration
+- rhino-cli for content automation and Hugo integration
 - rhino-cli for repository management and hygiene
 - Build tools and code generators
 - Database migration scripts
@@ -486,7 +486,7 @@ const event: ZakatCalculatedEvent = {
 eventBus.publish(event);
 ```
 
-### Real-World OSE Platform Examples
+### Real-World a-demo Examples
 
 **Example 1: Zakat Calculation Service**:
 
@@ -667,9 +667,9 @@ export class CampaignController {
 
 ```
 apps/
-├── oseplatform-web/         # Hugo static site (TypeScript for build scripts)
-├── ayokoding-web/            # Hugo static site (TypeScript for build scripts)
-├── ayokoding-cli/            # Go CLI tool
+├── a-demo-fs-ts-nextjs/         # Hugo static site (TypeScript for build scripts)
+├── a-demo-fs-ts-nextjs/            # Hugo static site (TypeScript for build scripts)
+├── rhino-cli/            # Go CLI tool
 └── rhino-cli/               # Go CLI tool
 
 libs/
@@ -898,7 +898,7 @@ ENABLE_MURABAHA_CONTRACTS=true
 #!/bin/bash
 set -e
 
-echo "🔧 Setting up OSE Platform development environment..."
+echo "🔧 Setting up a-demo development environment..."
 
 # Check Node.js version
 REQUIRED_NODE_VERSION="24.13.1"
@@ -1389,7 +1389,7 @@ Master-level TypeScript development:
 
 ## Code Examples from Platform
 
-All examples use OSE Platform domain: donations, Zakat calculation, Murabaha contracts, campaign management.
+All examples use a-demo domain: donations, Zakat calculation, Murabaha contracts, campaign management.
 
 ### Money Value Object
 
@@ -1481,7 +1481,7 @@ async function processDonation(data: DonationInput): Promise<Result<Donation, Er
 - [TypeScript Release Notes](https://www.typescriptlang.org/docs/handbook/release-notes/overview.html)
 - [Node.js Documentation](https://nodejs.org/docs/)
 
-### OSE Platform Conventions
+### a-demo Conventions
 
 - [File Naming Convention](../../../../../governance/conventions/structure/file-naming.md)
 - [Diátaxis Framework](../../../../../governance/conventions/structure/diataxis-framework.md)

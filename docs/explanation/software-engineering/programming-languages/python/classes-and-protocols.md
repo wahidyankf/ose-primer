@@ -28,7 +28,7 @@ updated: 2025-01-23
 
 ## Overview
 
-Python's object model supports multiple programming paradigms. For financial domain modeling in the OSE Platform, classes provide structure for entities like Zakat calculations, Murabaha contracts, and QardHasan loans while maintaining type safety and validation.
+Python's object model supports multiple programming paradigms. For financial domain modeling in the a-demo, classes provide structure for entities like Zakat calculations, Murabaha contracts, and QardHasan loans while maintaining type safety and validation.
 
 ### Why Object-Oriented Design Matters
 
@@ -704,7 +704,7 @@ graph TD
 
 **Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
-**Maintainers**: OSE Platform Documentation Team
+**Maintainers**: a-demo Documentation Team
 
 ## Python Class System
 

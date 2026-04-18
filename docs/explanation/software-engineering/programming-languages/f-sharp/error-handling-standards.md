@@ -1,6 +1,6 @@
 ---
 title: "F# Error Handling Standards"
-description: Authoritative OSE Platform F# error handling standards — railway-oriented programming, Result type, Option, FsToolkit
+description: Authoritative a-demo F# error handling standards — railway-oriented programming, Result type, Option, FsToolkit
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not an F# tutorial.
+**This document is a-demo-specific**, not an F# tutorial.
 
 ## Purpose
 
-This document defines **authoritative error handling standards** for F# development in OSE Platform. F# uses railway-oriented programming (ROP) with `Result<'T, 'TError>` for domain errors and `Option<'T>` for nullable values. Bare exceptions are reserved for infrastructure failures, not domain logic.
+This document defines **authoritative error handling standards** for F# development in a-demo. F# uses railway-oriented programming (ROP) with `Result<'T, 'TError>` for domain errors and `Option<'T>` for nullable values. Bare exceptions are reserved for infrastructure failures, not domain logic.
 
-**Target Audience**: OSE Platform F# developers, technical reviewers
+**Target Audience**: a-demo F# developers, technical reviewers
 
 **Scope**: Result type patterns, Option handling, computation expressions for error chaining, custom error DUs, exception interop
 

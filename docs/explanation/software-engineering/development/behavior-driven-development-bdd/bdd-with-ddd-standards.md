@@ -1,6 +1,6 @@
 ---
 title: "BDD with DDD Standards"
-description: OSE Platform standards for integrating BDD scenarios with DDD bounded contexts and ubiquitous language
+description: a-demo standards for integrating BDD scenarios with DDD bounded contexts and ubiquitous language
 category: explanation
 subcategory: development
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-OSE Platform standards for integrating BDD scenarios with DDD patterns.
+a-demo standards for integrating BDD scenarios with DDD patterns.
 
 ## REQUIRED: One Feature per Bounded Context Capability
 
@@ -122,7 +122,7 @@ Feature: Donation and Zakat Processing
     ...
 ```
 
-## OSE Platform Examples
+## a-demo Examples
 
 ### Zakat Context Scenarios
 

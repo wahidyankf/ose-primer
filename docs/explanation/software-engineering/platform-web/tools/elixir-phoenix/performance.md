@@ -1074,7 +1074,7 @@ upstream phoenix_backend {
 
 server {
     listen 80;
-    server_name oseplatform.com;
+    server_name example.com;
 
     location / {
         proxy_pass http://phoenix_backend;

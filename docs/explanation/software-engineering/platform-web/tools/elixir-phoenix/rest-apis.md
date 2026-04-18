@@ -477,8 +477,8 @@ defmodule OsePlatformWeb.Plugs.APIVersion do
     assign(conn, :api_version, version)
   end
 
-  defp parse_version("application/vnd.oseplatform.v1+json"), do: :v1
-  defp parse_version("application/vnd.oseplatform.v2+json"), do: :v2
+  defp parse_version("application/vnd.a-demo.v1+json"), do: :v1
+  defp parse_version("application/vnd.a-demo.v2+json"), do: :v2
   defp parse_version(_), do: :v1  # Default to v1
 end
 
@@ -1118,12 +1118,12 @@ defmodule OsePlatformWeb.ApiSpec do
   def spec do
     %OpenApi{
       info: %Info{
-        title: "OSE Platform API",
+        title: "a-demo API",
         version: "1.0.0",
         description: "API for Islamic finance operations including Zakat calculations and charitable donations"
       },
       servers: [
-        %Server{url: "https://api.oseplatform.com"},
+        %Server{url: "https://api.example.com"},
         %Server{url: "http://localhost:4000"}
       ],
       paths: Paths.from_router(OsePlatformWeb.Router)

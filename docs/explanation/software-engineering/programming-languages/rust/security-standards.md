@@ -1,6 +1,6 @@
 ---
 title: "Rust Security Standards"
-description: Authoritative OSE Platform Rust security standards (memory safety, cargo audit, secrecy crate, safe code)
+description: Authoritative a-demo Rust security standards (memory safety, cargo audit, secrecy crate, safe code)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Rust tutorial.
+**This document is a-demo-specific**, not a Rust tutorial.
 
 ## Purpose
 
-This document defines **authoritative security standards** for Rust development in the OSE Platform. Rust's memory safety model eliminates entire classes of vulnerabilities that affect C/C++ and other languages.
+This document defines **authoritative security standards** for Rust development in the a-demo. Rust's memory safety model eliminates entire classes of vulnerabilities that affect C/C++ and other languages.
 
-**Target Audience**: OSE Platform Rust developers, security reviewers
+**Target Audience**: a-demo Rust developers, security reviewers
 
 **Scope**: Memory safety, input validation, cargo audit, secrets management, safe code policy, cryptography
 

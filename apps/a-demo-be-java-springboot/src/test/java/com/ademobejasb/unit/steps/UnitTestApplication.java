@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Profile;
  * only.
  *
  * <p>The {@code @Profile("unit-test")} guard ensures this application class is not picked up as a
- * configuration candidate when the integration-test context loads {@code OrganicLeverApplication}
+ * configuration candidate when the integration-test context loads {@code ADemoApplication}
  * and scans all sub-packages.
  */
 @SpringBootApplication(

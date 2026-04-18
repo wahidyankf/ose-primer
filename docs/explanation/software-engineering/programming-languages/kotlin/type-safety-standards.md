@@ -1,6 +1,6 @@
 ---
 title: "Kotlin Type Safety Standards"
-description: Authoritative OSE Platform Kotlin type safety standards (null safety, sealed classes, data classes, generics, value classes)
+description: Authoritative a-demo Kotlin type safety standards (null safety, sealed classes, data classes, generics, value classes)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -26,13 +26,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Kotlin tutorial. We define HOW to use Kotlin's type system in THIS codebase.
+**This document is a-demo-specific**, not a Kotlin tutorial. We define HOW to use Kotlin's type system in THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative type safety standards** for Kotlin development in the OSE Platform. It covers Kotlin's null safety system, sealed classes for exhaustive `when`, data classes for value types, inline value classes, generics with variance (`in`/`out`), reified generics, type aliases, and prohibitions on `Any`/dynamic patterns.
+This document defines **authoritative type safety standards** for Kotlin development in the a-demo. It covers Kotlin's null safety system, sealed classes for exhaustive `when`, data classes for value types, inline value classes, generics with variance (`in`/`out`), reified generics, type aliases, and prohibitions on `Any`/dynamic patterns.
 
-**Target Audience**: OSE Platform Kotlin developers, technical reviewers
+**Target Audience**: a-demo Kotlin developers, technical reviewers
 
 **Scope**: Kotlin type system usage patterns, null safety discipline, generic design, type alias usage
 

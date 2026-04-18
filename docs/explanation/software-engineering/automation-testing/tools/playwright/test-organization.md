@@ -1,6 +1,6 @@
 ---
 title: "Playwright Test Organization Standards"
-description: Authoritative OSE Platform Playwright test organization standards (structure, naming, grouping, fixtures)
+description: Authoritative a-demo Playwright test organization standards (structure, naming, grouping, fixtures)
 category: explanation
 subcategory: automation-testing
 tags:
@@ -22,15 +22,15 @@ updated: 2026-02-08
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Playwright tutorial. We define HOW to organize tests in THIS codebase, not WHAT Playwright test organization is.
+**This document is a-demo-specific**, not a Playwright tutorial. We define HOW to organize tests in THIS codebase, not WHAT Playwright test organization is.
 
 ## Purpose
 
-This document defines **authoritative test organization standards** for Playwright end-to-end testing in the OSE Platform. These are prescriptive rules that MUST be followed across all E2E test projects to ensure consistency, maintainability, and alignment with platform architecture.
+This document defines **authoritative test organization standards** for Playwright end-to-end testing in the a-demo. These are prescriptive rules that MUST be followed across all E2E test projects to ensure consistency, maintainability, and alignment with platform architecture.
 
-**Target Audience**: OSE Platform E2E test developers, technical reviewers, automated test quality tools
+**Target Audience**: a-demo E2E test developers, technical reviewers, automated test quality tools
 
-**Scope**: OSE Platform test structure, naming conventions, fixture patterns, test grouping, and organization best practices
+**Scope**: a-demo test structure, naming conventions, fixture patterns, test grouping, and organization best practices
 
 ## Software Engineering Principles
 

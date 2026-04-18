@@ -1,6 +1,6 @@
 ---
 title: "Three Amigos Collaboration Standards"
-description: OSE Platform standards for Business-Development-QA collaboration sessions
+description: a-demo standards for Business-Development-QA collaboration sessions
 category: explanation
 subcategory: development
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-OSE Platform standards for Three Amigos collaborative specification sessions.
+a-demo standards for Three Amigos collaborative specification sessions.
 
 ## REQUIRED: Three Roles
 
@@ -55,7 +55,7 @@ OSE Platform standards for Three Amigos collaborative specification sessions.
 - **Green** = Examples (concrete scenarios illustrating rules)
 - **Red** = Questions (open questions nobody can answer)
 
-## OSE Platform Examples
+## a-demo Examples
 
 ### Zakat Calculation Session
 

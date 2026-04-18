@@ -26,7 +26,7 @@ Tools checked:
   volta          — any version (no config file)
   node           — from package.json → volta.node
   npm            — from package.json → volta.npm
-  java           — from apps/organiclever-be-jasb/pom.xml → <java.version>
+  java           — from apps/a-demo-be-fsharp-giraffe-jasb/pom.xml → <java.version>
   maven          — any version (no config file)
   golang         — from apps/rhino-cli/go.mod → go directive
   python         — from apps/a-demo-be-python-fastapi/.python-version

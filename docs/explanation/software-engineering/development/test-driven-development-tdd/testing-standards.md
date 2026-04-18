@@ -1,6 +1,6 @@
 ---
 title: "TDD Testing Standards"
-description: OSE Platform standards for test structure, FIRST principles, and test organization
+description: a-demo standards for test structure, FIRST principles, and test organization
 category: explanation
 subcategory: development
 tags:
@@ -21,7 +21,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-OSE Platform testing standards for test structure and organization.
+a-demo testing standards for test structure and organization.
 
 ## REQUIRED: FIRST Principles
 
@@ -129,7 +129,7 @@ void shouldSaveDonation() {
 
 **See**: [Three-Tier Testing Model](./three-tier-testing.md) for full definitions and examples.
 
-## OSE Platform Test Organization
+## a-demo Test Organization
 
 **REQUIRED Directory Structure:**
 

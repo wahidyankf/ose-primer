@@ -1,6 +1,6 @@
 ---
 title: "Dart Framework Integration Standards"
-description: Authoritative OSE Platform Dart framework integration standards (Flutter, shelf, Riverpod)
+description: Authoritative a-demo Dart framework integration standards (Flutter, shelf, Riverpod)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Dart tutorial. We define HOW to integrate frameworks in THIS codebase, not WHAT Flutter or Riverpod are.
+**This document is a-demo-specific**, not a Dart tutorial. We define HOW to integrate frameworks in THIS codebase, not WHAT Flutter or Riverpod are.
 
 ## Purpose
 
-This document defines **authoritative framework integration standards** for Dart development in the OSE Platform. Consistent framework usage patterns reduce bugs, improve testability, and ensure maintainable Flutter and server-side Dart applications.
+This document defines **authoritative framework integration standards** for Dart development in the a-demo. Consistent framework usage patterns reduce bugs, improve testability, and ensure maintainable Flutter and server-side Dart applications.
 
-**Target Audience**: OSE Platform Dart developers building Flutter apps or shelf HTTP services
+**Target Audience**: a-demo Dart developers building Flutter apps or shelf HTTP services
 
 **Scope**: Flutter widget patterns, Riverpod state management, shelf server setup with Router and Pipeline, shelf_router for REST APIs, dio interceptors
 

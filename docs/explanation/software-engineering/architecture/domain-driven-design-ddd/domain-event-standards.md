@@ -1,6 +1,6 @@
 ---
 title: "DDD Domain Event Standards"
-description: OSE Platform standards for domain event design, naming, and publishing
+description: a-demo standards for domain event design, naming, and publishing
 category: explanation
 subcategory: architecture
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-OSE Platform domain event standards for event-driven architecture.
+a-demo domain event standards for event-driven architecture.
 
 ## REQUIRED: Capture Business Occurrences
 
@@ -55,7 +55,7 @@ public record ZakatCalculated(
 }
 ```
 
-## OSE Platform Domain Events
+## a-demo Domain Events
 
 | Event                   | When                           | Contains                |
 | ----------------------- | ------------------------------ | ----------------------- |

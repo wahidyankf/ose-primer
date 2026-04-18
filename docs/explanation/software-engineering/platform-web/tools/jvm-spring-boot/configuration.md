@@ -36,7 +36,7 @@ related:
 - [Secrets Management](#secrets-management) - Vault integration, encryption
 - [Feature Flags](#feature-flags) - Feature toggles for gradual rollout
 - [Configuration Testing](#configuration-testing) - Testing different configurations
-- [OSE Platform Examples](#ose-platform-examples) - Real-world configuration patterns
+- [a-demo Examples](#ose-platform-examples) - Real-world configuration patterns
 - [Configuration Checklist](#configuration-checklist) - Best practices
 - [Related Documentation](#related-documentation)
 
@@ -193,7 +193,7 @@ management:
 logging:
   level:
     root: INFO
-    com.oseplatform: DEBUG
+    com.a-demo: DEBUG
     org.springframework.web: INFO
     org.hibernate.SQL: DEBUG
 ```
@@ -214,7 +214,7 @@ spring:
 
 logging:
   level:
-    com.oseplatform: DEBUG
+    com.a-demo: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
@@ -240,7 +240,7 @@ spring:
 logging:
   level:
     root: WARN
-    com.oseplatform: INFO
+    com.a-demo: INFO
 
 # Production features
 ose:
@@ -280,7 +280,7 @@ public class ZakatProperties {
     public static class Notifications {
         private boolean emailEnabled = true;
         private boolean smsEnabled = false;
-        private String fromEmail = "noreply@oseplatform.com";
+        private String fromEmail = "noreply@example.com";
 
         // Getters and setters
     }
@@ -306,7 +306,7 @@ ose:
     notifications:
       email-enabled: true
       sms-enabled: false
-      from-email: noreply@oseplatform.com
+      from-email: noreply@example.com
 ```
 
 ### Local Development (.env)
@@ -918,7 +918,7 @@ public class ZakatProperties {
         private boolean smsEnabled = false;
 
         @Email
-        private String fromEmail = "noreply@oseplatform.com";
+        private String fromEmail = "noreply@example.com";
 
         @NotBlank
         private String zakatDueTemplate = "zakat-due-email";
@@ -944,7 +944,7 @@ ose:
     notifications:
       email-enabled: true
       sms-enabled: false
-      from-email: noreply@oseplatform.com
+      from-email: noreply@example.com
       zakat-due-template: zakat-due-email
 ```
 
@@ -1144,7 +1144,7 @@ public class WaqfProperties {
         private boolean annualReportsEnabled = true;
 
         @NotEmpty
-        private List<String> reportRecipients = List.of("admin@oseplatform.com");
+        private List<String> reportRecipients = List.of("admin@example.com");
 
         // Getters and setters
     }
@@ -1176,8 +1176,8 @@ ose:
       quarterly-reports-enabled: true
       annual-reports-enabled: true
       report-recipients:
-        - admin@oseplatform.com
-        - finance@oseplatform.com
+        - admin@example.com
+        - finance@example.com
 ```
 
 ### Externalization

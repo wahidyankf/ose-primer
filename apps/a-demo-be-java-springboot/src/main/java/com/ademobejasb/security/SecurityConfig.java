@@ -67,7 +67,7 @@ public class SecurityConfig {
                 List.of(
                         "http://localhost:3200",
                         "http://localhost:3301",
-                        "https://www.organiclever.com"));
+                        "https://www.example.com"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
         config.setAllowCredentials(false);

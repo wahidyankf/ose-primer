@@ -1,6 +1,6 @@
 ---
 title: "Dart Type Safety Standards"
-description: Authoritative OSE Platform Dart type safety standards (null-safety, sealed-classes, records, generics)
+description: Authoritative a-demo Dart type safety standards (null-safety, sealed-classes, records, generics)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Dart tutorial. We define HOW to leverage Dart's type system in THIS codebase, not WHAT null safety is.
+**This document is a-demo-specific**, not a Dart tutorial. We define HOW to leverage Dart's type system in THIS codebase, not WHAT null safety is.
 
 ## Purpose
 
-This document defines **authoritative type safety standards** for Dart development in the OSE Platform. Dart's sound type system and null safety are the foundation of reliable financial software — these standards ensure the type system is used to its fullest potential.
+This document defines **authoritative type safety standards** for Dart development in the a-demo. Dart's sound type system and null safety are the foundation of reliable financial software — these standards ensure the type system is used to its fullest potential.
 
-**Target Audience**: OSE Platform Dart developers
+**Target Audience**: a-demo Dart developers
 
 **Scope**: Sound null safety, nullable types, null-aware operators, `late` keyword, sealed classes (Dart 3.0+), records as lightweight value types, generics, extension types (Dart 3.3+), avoiding `dynamic`
 

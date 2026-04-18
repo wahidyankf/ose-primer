@@ -1,5 +1,5 @@
 ---
-title: Elixir Error Handling Standards for OSE Platform
+title: Elixir Error Handling Standards for a-demo
 description: Prescriptive error handling requirements for Elixir services in Shariah-compliant financial systems
 category: explanation
 subcategory: prog-lang
@@ -25,15 +25,15 @@ updated: 2026-02-05
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not an Elixir tutorial. We define HOW to apply Elixir in THIS codebase, not WHAT Elixir is.
+**This document is a-demo-specific**, not an Elixir tutorial. We define HOW to apply Elixir in THIS codebase, not WHAT Elixir is.
 
-# Elixir Error Handling Standards for OSE Platform
+# Elixir Error Handling Standards for a-demo
 
 **OSE-specific prescriptive standards** for error handling in Elixir-based Shariah-compliant financial services. This document defines **mandatory requirements** using RFC 2119 keywords (MUST, SHOULD, MAY).
 
 ## Purpose
 
-Error handling in OSE Platform Elixir services serves critical functions:
+Error handling in a-demo Elixir services serves critical functions:
 
 - **Financial Integrity**: Preventing partial transactions that violate Islamic finance principles
 - **Audit Compliance**: Complete error trails for regulatory review
@@ -803,7 +803,7 @@ defmodule FinancialDomain.Zakat.CalculatorTest do
 end
 ```
 
-### OSE Platform Standards
+### a-demo Standards
 
 - [Concurrency Standards](./concurrency-standards.md) - Process-based concurrency and message passing
 - [OTP Supervisor](./otp-supervisor.md) - Supervision strategies and restart policies
@@ -813,7 +813,7 @@ end
 
 For learning Elixir fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Elixir basics from ayokoding-web. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Elixir basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ### Software Engineering Principles
 
@@ -858,4 +858,4 @@ Before deploying Elixir financial services, verify:
 
 **Last Updated**: 2026-02-05
 
-**Status**: Active (mandatory for all OSE Platform Elixir services)
+**Status**: Active (mandatory for all a-demo Elixir services)

@@ -32,13 +32,13 @@ related:
 
 **REQUIRED**: You MUST understand blocking I/O and thread-per-request models before learning reactive programming. Review [Spring Boot REST APIs](rest-apis.md) for blocking model baseline.
 
-**STRONGLY RECOMMENDED**: Complete AyoKoding Spring Boot Learning Path and Reactive Programming module for practical reactive experience.
+**STRONGLY RECOMMENDED**: Complete a-demo Spring Boot Learning Path and Reactive Programming module for practical reactive experience.
 
-**This document is OSE Platform-specific**, not a Spring Boot WebFlux tutorial. We define WHEN and HOW to use WebFlux in THIS platform, not WHAT WebFlux is.
+**This document is a-demo-specific**, not a Spring Boot WebFlux tutorial. We define WHEN and HOW to use WebFlux in THIS platform, not WHAT WebFlux is.
 
 ## Purpose
 
-This document defines **reactive programming standards** for Spring Boot applications in the OSE Platform. Spring WebFlux provides non-blocking, reactive programming model for high-concurrency scenarios where thread efficiency is critical.
+This document defines **reactive programming standards** for Spring Boot applications in the a-demo. Spring WebFlux provides non-blocking, reactive programming model for high-concurrency scenarios where thread efficiency is critical.
 
 **Target Audience**: Spring Boot developers building high-concurrency services
 
@@ -67,7 +67,7 @@ This document defines **reactive programming standards** for Spring Boot applica
 | **Team Experience**       | Familiar with blocking I/O | Comfortable with reactive      |
 | **Complexity**            | Simple, straightforward    | Complex, steep learning curve  |
 | **Debugging**             | Easy stack traces          | Challenging async stack traces |
-| **OSE Platform Default**  | ✅ Default                 | ⚠️ Use when justified          |
+| **a-demo Default**        | ✅ Default                 | ⚠️ Use when justified          |
 
 ### Use Spring Web MVC When
 
@@ -123,7 +123,7 @@ class WaqfStreamController(
 }
 ```
 
-### OSE Platform Guidelines
+### a-demo Guidelines
 
 **Default**: Use **Spring Web MVC** unless specific reactive requirements justify WebFlux.
 
@@ -661,7 +661,7 @@ class ReactiveMurabahaControllerTest {
 }
 ```
 
-### Benchmarks (OSE Platform)
+### Benchmarks (a-demo)
 
 **Scenario**: 5000 concurrent requests, each making 3 external API calls (credit check, KYC, risk assessment)
 
@@ -891,6 +891,6 @@ These reactive programming standards enforce the the software engineering princi
 
 ---
 
-**Status**: Optional (use when justified) for OSE Platform Spring Boot applications
+**Status**: Optional (use when justified) for a-demo Spring Boot applications
 **Maintainers**: Platform Documentation Team
 **Last Updated**: 2026-02-06

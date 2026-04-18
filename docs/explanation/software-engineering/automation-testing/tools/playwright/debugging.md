@@ -1,6 +1,6 @@
 ---
 title: "Playwright Debugging Standards"
-description: Authoritative OSE Platform Playwright debugging standards (trace viewer, inspector, debug mode, screenshot on failure)
+description: Authoritative a-demo Playwright debugging standards (trace viewer, inspector, debug mode, screenshot on failure)
 category: explanation
 subcategory: automation-testing
 tags:
@@ -23,13 +23,13 @@ updated: 2026-02-08
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Playwright tutorial.
+**This document is a-demo-specific**, not a Playwright tutorial.
 
 ## Purpose
 
-This document defines **debugging strategies** for Playwright tests in the OSE Platform.
+This document defines **debugging strategies** for Playwright tests in the a-demo.
 
-**Target Audience**: OSE Platform E2E test developers
+**Target Audience**: a-demo E2E test developers
 
 **Scope**: Trace viewer, inspector, debug mode
 

@@ -21,9 +21,9 @@ Technology stack summary, quality tools, and future architecture considerations 
 **Static Sites** (Hugo):
 
 - **Hugo**: 0.156.0 Extended
-- **Themes**: PaperMod (oseplatform-web)
+- **Themes**: PaperMod (a-demo-fs-ts-nextjs)
 - **Deployment**: Vercel
-- **Applications**: oseplatform-web
+- **Applications**: a-demo-fs-ts-nextjs
 
 **Web Applications** (Next.js):
 
@@ -31,7 +31,7 @@ Technology stack summary, quality tools, and future architecture considerations 
 - **React**: 19
 - **Styling**: TailwindCSS + Radix UI / shadcn-ui
 - **Deployment**: Vercel
-- **Applications**: organiclever-fe, ayokoding-web (with tRPC backend)
+- **Applications**: a-demo-fe-ts-nextjs, a-demo-fs-ts-nextjs (with tRPC backend)
 
 ### Backend
 
@@ -48,7 +48,7 @@ Technology stack summary, quality tools, and future architecture considerations 
 - **Language**: Go 1.26
 - **Build**: Native Go toolchain via Nx
 - **Distribution**: Local binaries
-- **Applications**: ayokoding-cli, rhino-cli, oseplatform-cli
+- **Applications**: rhino-cli, rhino-cli, rhino-cli
 
 ### Infrastructure
 

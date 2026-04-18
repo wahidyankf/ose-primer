@@ -47,11 +47,11 @@ Spring Boot builds on Spring Framework and auto-configures Spring concepts. You 
 
 **2. Learn Spring Boot Fundamentals**:
 
-**What this documentation covers**: OSE Platform Spring Boot standards, naming conventions, auto-configuration patterns, how to apply Spring Boot knowledge in THIS codebase.
+**What this documentation covers**: a-demo Spring Boot standards, naming conventions, auto-configuration patterns, how to apply Spring Boot knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Spring Boot tutorials, basic auto-configuration concepts, generic patterns (those are in ayokoding-web).
+**What this documentation does NOT cover**: Spring Boot tutorials, basic auto-configuration concepts, generic patterns (those are in a-demo-fs-ts-nextjs).
 
-**This documentation is OSE Platform-specific explanation**, not Spring Boot tutorials.
+**This documentation is a-demo-specific explanation**, not Spring Boot tutorials.
 
 ## Framework Standards
 
@@ -654,7 +654,7 @@ public record Money(BigDecimal amount, String currency) {
 Typical Spring Boot project structure aligned with clean architecture:
 
 ```
-src/main/java/com/oseplatform/[bounded-context]/
+src/main/java/com/a-demo/[bounded-context]/
 ├── domain/                    # Domain layer (pure business logic)
 │   ├── model/                # Aggregates, entities, value objects
 │   ├── repository/           # Repository interfaces (ports)
@@ -676,7 +676,7 @@ src/main/java/com/oseplatform/[bounded-context]/
 **Package by Feature** (Alternative):
 
 ```
-src/main/java/com/oseplatform/[bounded-context]/
+src/main/java/com/a-demo/[bounded-context]/
 ├── murabaha/
 │   ├── MurabahaContract.java       # Aggregate
 │   ├── MurabahaContractRepository.java
@@ -794,7 +794,7 @@ curl https://start.spring.io/starter.zip \
   -d language=java \
   -d bootVersion=3.3.0 \
   -d baseDir=payment-service \
-  -d groupId=com.oseplatform \
+  -d groupId=com.a-demo \
   -d artifactId=payment-service \
   -o payment-service.zip
 
@@ -871,7 +871,7 @@ management:
 # Logging
 logging:
   level:
-    com.oseplatform: DEBUG
+    com.a-demo: DEBUG
     org.springframework.web: INFO
     org.hibernate.SQL: DEBUG
 ```
@@ -896,7 +896,7 @@ spring:
       maximum-pool-size: 20
 logging:
   level:
-    com.oseplatform: INFO
+    com.a-demo: INFO
 ```
 
 ### Testing Strategy
@@ -1191,7 +1191,7 @@ public interface MurabahaContractRepository extends JpaRepository<MurabahaContra
 
     // Projection for read models
     @Query("""
-        SELECT new com.oseplatform.murabaha.dto.ContractSummary(
+        SELECT new com.a-demo.murabaha.dto.ContractSummary(
             c.id,
             c.assetCost,
             c.status,
@@ -1384,7 +1384,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.4"
 }
 
-group = "com.oseplatform"
+group = "com.a-demo"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 

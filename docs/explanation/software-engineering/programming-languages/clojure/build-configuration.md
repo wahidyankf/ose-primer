@@ -1,6 +1,6 @@
 ---
 title: "Clojure Build Configuration"
-description: Authoritative OSE Platform Clojure build configuration standards (deps.edn, tools.build, Leiningen, Babashka)
+description: Authoritative a-demo Clojure build configuration standards (deps.edn, tools.build, Leiningen, Babashka)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Clojure tutorial.
+**This document is a-demo-specific**, not a Clojure tutorial.
 
 ## Purpose
 
-This document defines the build configuration standards for Clojure projects in OSE Platform. `deps.edn` + `tools.deps` is the modern preferred approach; Leiningen remains supported for legacy projects.
+This document defines the build configuration standards for Clojure projects in a-demo. `deps.edn` + `tools.deps` is the modern preferred approach; Leiningen remains supported for legacy projects.
 
-**Target Audience**: OSE Platform Clojure developers, DevOps engineers
+**Target Audience**: a-demo Clojure developers, DevOps engineers
 
 **Scope**: deps.edn structure, aliases, tools.build (build.clj), Leiningen project.clj, Babashka scripts, REPL startup config, ClojureScript shared code
 
@@ -68,7 +68,7 @@ Build artifacts are immutable: each build produces a versioned, content-addressa
 **MUST** use this structure for all new Clojure projects:
 
 ```clojure
-;; CORRECT: Full deps.edn structure for OSE Platform Clojure project
+;; CORRECT: Full deps.edn structure for a-demo Clojure project
 {:paths ["src" "resources"]
 
  :deps
@@ -213,7 +213,7 @@ clojure -T:build clean   ;; Clean target directory
 ```clojure
 ;; CORRECT: project.clj for Leiningen projects
 (defproject ose/zakat-service "1.0.0"
-  :description "Zakat calculation service for OSE Platform"
+  :description "Zakat calculation service for a-demo"
   :url "https://github.com/open-sharia-enterprise/zakat-service"
   :license {:name "MIT"
             :url "https://opensource.org/licenses/MIT"}

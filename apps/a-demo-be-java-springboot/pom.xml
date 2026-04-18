@@ -301,7 +301,7 @@
                     <destFile>${project.build.directory}/jacoco.exec</destFile>
                     <dataFile>${project.build.directory}/jacoco.exec</dataFile>
                     <excludes>
-                        <exclude>**/OrganicLeverApplication.class</exclude>
+                        <exclude>**/a-demoApplication.class</exclude>
                         <exclude>**/package-info.class</exclude>
                         <exclude>**/JpaAuditingConfig.class</exclude>
                         <!-- JPA entity models: auto-generated getters/setters/equals/hashCode -->
@@ -403,7 +403,7 @@
                             <destFile>${project.build.directory}/jacoco-integration.exec</destFile>
                             <dataFile>${project.build.directory}/jacoco-integration.exec</dataFile>
                             <excludes>
-                                <exclude>**/OrganicLeverApplication.class</exclude>
+                                <exclude>**/a-demoApplication.class</exclude>
                                 <exclude>**/package-info.class</exclude>
                                 <exclude>**/JpaAuditingConfig.class</exclude>
                                 <!-- JPA entity models: auto-generated getters/setters/equals/hashCode -->

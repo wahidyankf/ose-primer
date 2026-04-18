@@ -51,7 +51,7 @@ Organize Spring projects following clean architecture principles with clear laye
 **Standard Package Structure**:
 
 ```
-src/main/java/com/oseplatform/[bounded-context]/
+src/main/java/com/a-demo/[bounded-context]/
 ├── domain/                    # Domain layer (pure business logic)
 │   ├── model/                # Aggregates, entities, value objects
 │   │   ├── ZakatCalculation.java
@@ -91,7 +91,7 @@ src/main/java/com/oseplatform/[bounded-context]/
 
 ```java
 // domain/model/ZakatCalculation.java
-package com.oseplatform.zakat.domain.model;
+package com.a-demo.zakat.domain.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -166,7 +166,7 @@ public class ZakatCalculation {
 
 ```kotlin
 // domain/model/ZakatCalculation.kt
-package com.oseplatform.zakat.domain.model
+package com.a-demo.zakat.domain.model
 
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -206,7 +206,7 @@ Separate configuration classes by concern for better maintainability.
 ```java
 // infrastructure/config/ApplicationConfig.java
 @Configuration
-@ComponentScan(basePackages = "com.oseplatform.zakat")
+@ComponentScan(basePackages = "com.a-demo.zakat")
 @Import({DataSourceConfig.class, TransactionConfig.class, WebConfig.class})
 public class ApplicationConfig {
   // Application-wide beans
@@ -257,7 +257,7 @@ public class TransactionConfig {
 ```kotlin
 // infrastructure/config/ApplicationConfig.kt
 @Configuration
-@ComponentScan(basePackages = ["com.oseplatform.zakat"])
+@ComponentScan(basePackages = ["com.a-demo.zakat"])
 @Import(DataSourceConfig::class, TransactionConfig::class, WebConfig::class)
 class ApplicationConfig {
   // Application-wide beans
@@ -327,7 +327,7 @@ murabaha.profit-rate.max=0.15
 murabaha.asset.min-value=1000
 
 # Logging
-logging.level.com.oseplatform=INFO
+logging.level.com.a-demo=INFO
 logging.level.org.springframework.jdbc=DEBUG
 ```
 

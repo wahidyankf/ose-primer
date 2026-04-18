@@ -74,7 +74,7 @@ This document provides proven best practices for building production-ready Sprin
 **Recommended: Package by Feature (Bounded Context)**
 
 ```
-src/main/java/com/oseplatform/[domain]/
+src/main/java/com/a-demo/[domain]/
 ├── zakat/                              # Zakat bounded context
 │   ├── ZakatCalculation.java          # Aggregate root
 │   ├── ZakatCalculationService.java   # Application service
@@ -103,7 +103,7 @@ src/main/java/com/oseplatform/[domain]/
 **Alternative: Layered Architecture**
 
 ```
-src/main/java/com/oseplatform/[domain]/
+src/main/java/com/a-demo/[domain]/
 ├── domain/                    # Domain layer
 │   ├── model/                # Entities, value objects
 │   ├── repository/           # Repository interfaces
@@ -314,7 +314,7 @@ spring:
     show-sql: true
 logging:
   level:
-    com.oseplatform: DEBUG
+    com.a-demo: DEBUG
 
 # application-prod.yml
 spring:
@@ -323,7 +323,7 @@ spring:
       maximum-pool-size: 20
 logging:
   level:
-    com.oseplatform: INFO
+    com.a-demo: INFO
 ```
 
 ### Always Use Constructor Injection
@@ -676,7 +676,7 @@ public interface ZakatCalculationRepository extends JpaRepository<ZakatCalculati
 
     // Projection for read models
     @Query("""
-        SELECT new com.oseplatform.zakat.dto.ZakatSummary(
+        SELECT new com.a-demo.zakat.dto.ZakatSummary(
             z.id,
             z.zakatAmount,
             z.calculationDate

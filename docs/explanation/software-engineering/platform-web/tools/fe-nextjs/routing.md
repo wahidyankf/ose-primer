@@ -79,7 +79,7 @@ app/
 - `page.tsx` makes route publicly accessible
 - Nested folders create nested routes
 
-### OSE Platform Example
+### a-demo Example
 
 ```
 app/
@@ -185,7 +185,7 @@ export default async function ProductPage({ params }: PageProps) {
 }
 ```
 
-### OSE Platform: Murabaha Application
+### a-demo: Murabaha Application
 
 ```typescript
 // app/(platform)/murabaha/applications/[id]/page.tsx
@@ -308,7 +308,7 @@ export default async function DocsPage({ params }: PageProps) {
 }
 ```
 
-### OSE Platform: Nested Documentation
+### a-demo: Nested Documentation
 
 ```typescript
 // app/docs/[...slug]/page.tsx
@@ -435,7 +435,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
       </nav>
       {children}
       <footer className="bg-gray-100 mt-8 p-4">
-        <p>&copy; 2026 OSE Platform</p>
+        <p>&copy; 2026 a-demo</p>
       </footer>
     </div>
   );
@@ -512,7 +512,7 @@ export default function DashboardLayout({
 }
 ```
 
-### OSE Platform: Dashboard with Parallel Routes
+### a-demo: Dashboard with Parallel Routes
 
 ```
 app/
@@ -604,7 +604,7 @@ app/
 | `(..)(..)` | Two levels up |
 | `(...)`    | From root     |
 
-### OSE Platform: Application Modal
+### a-demo: Application Modal
 
 ```
 app/
@@ -722,7 +722,7 @@ export function Links() {
 }
 ```
 
-### OSE Platform Navigation
+### a-demo Navigation
 
 ```typescript
 // components/PlatformNav.tsx
@@ -818,7 +818,7 @@ export function NavigationExamples() {
 }
 ```
 
-### OSE Platform: Post-Action Navigation
+### a-demo: Post-Action Navigation
 
 ```typescript
 'use client';

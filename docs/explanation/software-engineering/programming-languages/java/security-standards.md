@@ -1,5 +1,5 @@
 ---
-title: Java Security Standards for OSE Platform
+title: Java Security Standards for a-demo
 description: Prescriptive security requirements for Shariah-compliant financial systems
 category: explanation
 subcategory: prog-lang
@@ -20,15 +20,15 @@ updated: 2026-02-03
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
+**This document is a-demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
 
-# Java Security Standards for OSE Platform
+# Java Security Standards for a-demo
 
 **OSE-specific prescriptive standards** for security in Shariah-compliant financial applications. This document defines **mandatory requirements** using RFC 2119 keywords (MUST, SHOULD, MAY).
 
 ## Purpose
 
-Security in OSE Platform protects critical assets:
+Security in a-demo protects critical assets:
 
 - **Data Protection**: Safeguard donor information, account balances, and financial transactions
 - **Regulatory Compliance**: Meet GDPR, PCI-DSS requirements for audit trails and data privacy
@@ -37,7 +37,7 @@ Security in OSE Platform protects critical assets:
 
 ### OAuth2 and JWT Requirements
 
-**REQUIRED**: All OSE Platform APIs MUST use OAuth2 with JWT tokens for authentication.
+**REQUIRED**: All a-demo APIs MUST use OAuth2 with JWT tokens for authentication.
 
 ```java
 // REQUIRED: OAuth2 resource server configuration
@@ -457,7 +457,7 @@ public class AuditLogger {
 
 ### Approved Dependencies
 
-**REQUIRED**: Only pre-approved libraries MAY be used in OSE Platform.
+**REQUIRED**: Only pre-approved libraries MAY be used in a-demo.
 
 **Approved cryptography libraries**:
 
@@ -542,8 +542,8 @@ public class CorsConfig implements WebMvcConfigurer {
  public void addCorsMappings(CorsRegistry registry) {
   registry.addMapping("/api/**")
    .allowedOrigins(
-    "https://oseplatform.com",
-    "https://admin.oseplatform.com"
+    "https://example.com",
+    "https://admin.example.com"
    )  // REQUIRED: Explicit origins (not "*")
    .allowedMethods("GET", "POST", "PUT", "DELETE")
    .allowedHeaders("Authorization", "Content-Type")
@@ -557,7 +557,7 @@ public class CorsConfig implements WebMvcConfigurer {
 
 ## Penetration Testing Requirements
 
-**REQUIRED**: OSE Platform MUST undergo annual penetration testing.
+**REQUIRED**: a-demo MUST undergo annual penetration testing.
 
 **Required test scope**:
 
@@ -570,7 +570,7 @@ public class CorsConfig implements WebMvcConfigurer {
 
 **REQUIRED**: Critical and high vulnerabilities MUST be remediated within 30 days.
 
-### OSE Platform Standards
+### a-demo Standards
 
 - [Error Handling Standards](./error-handling-standards.md) - Secure error messages
 - [API Standards](./api-standards.md) - API security requirements
@@ -580,7 +580,7 @@ public class CorsConfig implements WebMvcConfigurer {
 
 For learning Java fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Java basics from ayokoding-web. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Java basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ### Software Engineering Principles
 
@@ -640,4 +640,4 @@ Before deploying financial services, verify:
 
 **Last Updated**: 2026-02-04
 
-**Status**: Active (mandatory for all OSE Platform Java services)
+**Status**: Active (mandatory for all a-demo Java services)

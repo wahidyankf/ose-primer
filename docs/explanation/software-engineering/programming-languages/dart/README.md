@@ -35,7 +35,7 @@ updated: 2026-03-09
 
 Dart is a modern, object-oriented programming language developed by Google, designed for building fast apps on any platform. Within the Open Sharia Enterprise platform, Dart serves critical roles in cross-platform mobile applications (Flutter), web frontends, server-side services, and command-line tools requiring type safety and high performance.
 
-### Why Dart for OSE Platform
+### Why Dart for a-demo
 
 Dart excels in domains essential to the platform:
 
@@ -59,17 +59,17 @@ Dart's design principles guide development:
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the AyoKoding Dart learning path. These are **OSE Platform-specific style guides**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the a-demo Dart learning path. These are **a-demo-specific style guides**, not educational tutorials.
 
 **You MUST understand Dart fundamentals before using these standards:**
 
-**What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply Dart knowledge in THIS codebase.
+**What this documentation covers**: a-demo naming conventions, framework choices, repository-specific patterns, how to apply Dart knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Dart syntax, language fundamentals, generic patterns (those are in ayokoding-web).
+**What this documentation does NOT cover**: Dart syntax, language fundamentals, generic patterns (those are in a-demo-fs-ts-nextjs).
 
-## OSE Platform Coding Standards (Authoritative)
+## a-demo Coding Standards (Authoritative)
 
-**MUST follow these mandatory standards for all Dart code in OSE Platform:**
+**MUST follow these mandatory standards for all Dart code in a-demo:**
 
 1. **[Coding Standards](./coding-standards.md)** - Naming conventions, package organization, Dart idioms, anti-patterns
 2. **[Testing Standards](./testing-standards.md)** - package:test, mockito, widget tests, coverage requirements

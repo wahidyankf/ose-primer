@@ -1,6 +1,6 @@
 ---
 title: "Dart API Standards"
-description: Authoritative OSE Platform Dart API standards (http, REST, shelf, request-response modeling)
+description: Authoritative a-demo Dart API standards (http, REST, shelf, request-response modeling)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Dart tutorial. We define HOW to build APIs in THIS codebase, not WHAT REST is.
+**This document is a-demo-specific**, not a Dart tutorial. We define HOW to build APIs in THIS codebase, not WHAT REST is.
 
 ## Purpose
 
-This document defines **authoritative API standards** for Dart development in the OSE Platform. These standards ensure consistent, secure, and maintainable HTTP APIs across all Dart services.
+This document defines **authoritative API standards** for Dart development in the a-demo. These standards ensure consistent, secure, and maintainable HTTP APIs across all Dart services.
 
-**Target Audience**: OSE Platform Dart developers building HTTP APIs or consuming external services
+**Target Audience**: a-demo Dart developers building HTTP APIs or consuming external services
 
 **Scope**: http/dio package usage, RESTful conventions, request/response modeling with json_serializable, error response handling, shelf server setup, middleware, pagination
 
@@ -254,7 +254,7 @@ import 'package:dio/dio.dart';
 Dio createZakatDioClient({required String apiKey}) {
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'https://api.oseplatform.com',
+      baseUrl: 'https://api.example.com',
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 30),
       headers: {
@@ -601,7 +601,7 @@ Middleware authenticate() {
           ).toJson()),
           headers: {
             'Content-Type': 'application/json',
-            'WWW-Authenticate': 'Bearer realm="OSE Platform API"',
+            'WWW-Authenticate': 'Bearer realm="a-demo API"',
           },
         );
       }

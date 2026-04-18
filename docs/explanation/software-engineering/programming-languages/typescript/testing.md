@@ -1,6 +1,6 @@
 ---
 title: TypeScript Testing
-description: OSE Platform TypeScript testing standards — unit tests with Vitest and vi.fn, integration tests with vitest-cucumber and MSW, E2E tests with Playwright
+description: a-demo TypeScript testing standards — unit tests with Vitest and vi.fn, integration tests with vitest-cucumber and MSW, E2E tests with Playwright
 category: explanation
 subcategory: prog-lang
 tags:
@@ -408,8 +408,8 @@ Then("the user is redirected to the dashboard", async () => {
 ### Nx targets for E2E
 
 ```bash
-nx run organiclever-fe-e2e:test:e2e        # Headless — real system, no mocking
-nx run organiclever-fe-e2e:test:e2e:ui     # Playwright UI mode
+nx run a-demo-fe-e2e:test:e2e        # Headless — real system, no mocking
+nx run a-demo-fe-e2e:test:e2e:ui     # Playwright UI mode
 ```
 
 ---

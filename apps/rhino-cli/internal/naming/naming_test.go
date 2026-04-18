@@ -17,7 +17,7 @@ func TestValidateSuffix(t *testing.T) {
 	}{
 		{"agent with maker suffix", "/x/plan-maker.md", roles, "role-suffix", false},
 		{"agent with dev suffix", "/x/swe-golang-dev.md", roles, "role-suffix", false},
-		{"agent multi qualifier", "/x/apps-ayokoding-web-general-checker.md", roles, "role-suffix", false},
+		{"agent multi qualifier", "/x/apps-a-demo-fs-ts-nextjs-general-checker.md", roles, "role-suffix", false},
 		{"agent wrong suffix", "/x/web-researcher.md", roles, "role-suffix", true},
 		{"agent bare suffix no scope", "/x/maker.md", roles, "role-suffix", true},
 		{"agent empty-like", "/x/something-else.md", roles, "role-suffix", true},

@@ -1,5 +1,5 @@
 /**
- * Root package for the OrganicLever backend application.
+ * Root package for the a-demo backend application.
  */
 @NullMarked
 package com.ademobejasb;

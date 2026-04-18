@@ -1,6 +1,6 @@
 ---
 title: "C# Framework Integration Standards"
-description: Authoritative OSE Platform C# framework integration standards (ASP.NET Core DI, EF Core, SignalR, middleware pipeline)
+description: Authoritative a-demo C# framework integration standards (ASP.NET Core DI, EF Core, SignalR, middleware pipeline)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a C# tutorial.
+**This document is a-demo-specific**, not a C# tutorial.
 
 ## Purpose
 
-This document defines **authoritative framework integration standards** for C# in the OSE Platform.
+This document defines **authoritative framework integration standards** for C# in the a-demo.
 
-**Target Audience**: OSE Platform C# developers configuring ASP.NET Core, EF Core, and related frameworks
+**Target Audience**: a-demo C# developers configuring ASP.NET Core, EF Core, and related frameworks
 
 **Scope**: ASP.NET Core DI container, lifetime management, EF Core configuration, migrations, owned entities, Repository with EF Core, SignalR Hub, Minimal API with groups, middleware pipeline order
 

@@ -1,6 +1,6 @@
 ---
 title: "Playwright Idioms"
-description: Authoritative OSE Platform Playwright idioms (framework-specific patterns, auto-waiting, fixture patterns, locator chaining)
+description: Authoritative a-demo Playwright idioms (framework-specific patterns, auto-waiting, fixture patterns, locator chaining)
 category: explanation
 subcategory: automation-testing
 tags:
@@ -22,13 +22,13 @@ updated: 2026-02-08
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Playwright tutorial.
+**This document is a-demo-specific**, not a Playwright tutorial.
 
 ## Purpose
 
-This document defines **Playwright-specific idioms** for the OSE Platform.
+This document defines **Playwright-specific idioms** for the a-demo.
 
-**Target Audience**: OSE Platform E2E test developers
+**Target Audience**: a-demo E2E test developers
 
 **Scope**: Framework patterns, auto-waiting, fixtures
 

@@ -524,7 +524,7 @@ Validate that all BDD feature spec files have matching test implementations. Des
 the spec-to-test direction for test suites that use explicit file loading (e.g. vitest-cucumber).
 
 ```bash
-# Check organiclever-fe spec coverage
+# Check a-demo-fe-ts-nextjs spec coverage
 
 # Output as JSON
 
@@ -1299,7 +1299,7 @@ rhino-cli say
 - Go-specific line filtering: excludes blank, comment-only, and brace-only lines
 - Three output formats: text, JSON, markdown
 - Replaces `scripts/validate-test-coverage.py`, eliminating the Python dependency
-- Integrated into `test:quick` targets for all Go projects and `organiclever-fe`
+- Integrated into `test:quick` targets for all Go projects and `a-demo-fe-ts-nextjs`
 
 ### v0.9.0 (2026-03-05)
 
@@ -1327,7 +1327,7 @@ rhino-cli say
 - Added `spec-coverage validate` command for BDD spec-to-test coverage validation
 - Walks any `<specs-dir>` for `.feature` files and checks for matching test files under `<app-dir>`
 - Closes the vitest-cucumber gap: new specs silently ignored unless matched by an integration test
-- Integrated into `organiclever-fe` `test:quick` target
+- Integrated into `a-demo-fe-ts-nextjs` `test:quick` target
 - Three output formats: text, JSON, markdown
 - ≥85% test coverage with temp dir fixtures
 

@@ -5,7 +5,7 @@ import { validateResponseAgainstContract } from "../utils/contract-validator";
 
 const { Given, Then } = createBdd();
 
-Given("the OrganicLever API is running", async () => {
+Given("the a-demo API is running", async () => {
   // No-op: the test suite assumes the API is running at baseURL.
 });
 

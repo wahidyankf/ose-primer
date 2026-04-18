@@ -1,6 +1,6 @@
 ---
 title: Go Performance Standards
-description: Authoritative performance and memory management standards for Go development in OSE Platform, including benchmarking, profiling, GC tuning, and optimization techniques
+description: Authoritative performance and memory management standards for Go development in a-demo, including benchmarking, profiling, GC tuning, and optimization techniques
 category: explanation
 subcategory: prog-lang
 tags:
@@ -35,7 +35,7 @@ updated: 2026-03-06
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Go tutorial. This document assumes you have completed:
+**This document is a-demo-specific**, not a Go tutorial. This document assumes you have completed:
 
 - Go syntax and basic programming concepts
 - Functions, methods, and interfaces
@@ -46,9 +46,9 @@ Without this foundational knowledge, you will struggle to apply these performanc
 
 ## Purpose
 
-This document defines **authoritative performance standards** for Go development in the OSE Platform. These are prescriptive rules for writing performant, memory-efficient code that MUST be followed for production applications.
+This document defines **authoritative performance standards** for Go development in the a-demo. These are prescriptive rules for writing performant, memory-efficient code that MUST be followed for production applications.
 
-**Target Audience**: OSE Platform Go developers optimizing for performance
+**Target Audience**: a-demo Go developers optimizing for performance
 
 **Scope**: Benchmarking, profiling, memory optimization, garbage collection tuning, escape analysis, and performance patterns
 

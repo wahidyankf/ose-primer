@@ -1,6 +1,6 @@
 ---
 title: "Dart Error Handling Standards"
-description: Authoritative OSE Platform Dart error handling standards (exceptions, result-type, try-catch)
+description: Authoritative a-demo Dart error handling standards (exceptions, result-type, try-catch)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -22,13 +22,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Dart tutorial. We define HOW to handle errors in THIS codebase, not WHAT exceptions are.
+**This document is a-demo-specific**, not a Dart tutorial. We define HOW to handle errors in THIS codebase, not WHAT exceptions are.
 
 ## Purpose
 
-This document defines **authoritative error handling standards** for Dart development in the OSE Platform. Consistent error handling prevents silent failures, improves debuggability, and ensures business domain errors are communicated clearly.
+This document defines **authoritative error handling standards** for Dart development in the a-demo. Consistent error handling prevents silent failures, improves debuggability, and ensures business domain errors are communicated clearly.
 
-**Target Audience**: OSE Platform Dart developers, API designers, technical reviewers
+**Target Audience**: a-demo Dart developers, API designers, technical reviewers
 
 **Scope**: Exception hierarchy, try/catch patterns, custom exceptions, Result type pattern, rethrow vs throw
 

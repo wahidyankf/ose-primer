@@ -20,13 +20,13 @@ updated: 2026-02-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a C4 tutorial. We define HOW to apply C4 notation in THIS codebase, not WHAT C4 notation is.
+**This document is a-demo-specific**, not a C4 tutorial. We define HOW to apply C4 notation in THIS codebase, not WHAT C4 notation is.
 
 ## Purpose
 
-This document defines **authoritative notation standards** for C4 diagrams in OSE Platform, ensuring accessibility, consistency, and maintainability.
+This document defines **authoritative notation standards** for C4 diagrams in a-demo, ensuring accessibility, consistency, and maintainability.
 
-**Target Audience**: OSE Platform architects, developers, technical writers
+**Target Audience**: a-demo architects, developers, technical writers
 
 **Scope**: WCAG colors, Mermaid syntax, labeling conventions, accessibility requirements
 

@@ -31,13 +31,13 @@ related:
 
 **REQUIRED**: You MUST understand [Spring Framework Deployment](../jvm-spring/deployment.md) before reading this document. This covers Spring Boot-specific deployment features built on top of Spring Framework.
 
-**STRONGLY RECOMMENDED**: Complete AyoKoding Spring Boot Learning Path for practical deployment experience.
+**STRONGLY RECOMMENDED**: Complete a-demo Spring Boot Learning Path for practical deployment experience.
 
-**This document is OSE Platform-specific**, not a Spring Boot tutorial. We define HOW to deploy Spring Boot in THIS platform, not WHAT Spring Boot deployment is.
+**This document is a-demo-specific**, not a Spring Boot tutorial. We define HOW to deploy Spring Boot in THIS platform, not WHAT Spring Boot deployment is.
 
 ## Purpose
 
-This document defines **deployment standards** for Spring Boot applications in the OSE Platform. Spring Boot revolutionizes deployment through executable JARs with embedded servers, eliminating traditional WAR deployment to application servers.
+This document defines **deployment standards** for Spring Boot applications in the a-demo. Spring Boot revolutionizes deployment through executable JARs with embedded servers, eliminating traditional WAR deployment to application servers.
 
 **Target Audience**: DevOps engineers, platform operators, Spring Boot developers
 
@@ -155,7 +155,7 @@ fun main(args: Array<String>) {
 - ✅ Organization mandates specific app server (WebLogic, WebSphere)
 - ✅ Shared hosting environment
 
-**OSE Platform Standard**: **Executable JAR with embedded server** for all new applications.
+**a-demo Standard**: **Executable JAR with embedded server** for all new applications.
 
 ### Tomcat (Default)
 
@@ -247,7 +247,7 @@ server:
     direct-buffers: true
 ```
 
-**Performance Comparison** (OSE Platform benchmarks, 1000 req/s):
+**Performance Comparison** (a-demo benchmarks, 1000 req/s):
 
 | Server   | Memory (MB) | Response Time (ms) | Throughput (req/s) |
 | -------- | ----------- | ------------------ | ------------------ |
@@ -255,7 +255,7 @@ server:
 | Jetty    | 150         | 42                 | 1100               |
 | Undertow | 120         | 38                 | 1200               |
 
-**OSE Platform Standard**: **Tomcat** (default) unless specific performance requirements demand Undertow.
+**a-demo Standard**: **Tomcat** (default) unless specific performance requirements demand Undertow.
 
 ## Executable JAR Structure
 
@@ -267,7 +267,7 @@ Spring Boot executable JAR uses custom layout with nested JARs.
 zakat-service.jar
 ├── BOOT-INF/
 │   ├── classes/             # Application classes
-│   │   ├── com/oseplatform/zakat/
+│   │   ├── com/a-demo/zakat/
 │   │   ├── application.yml
 │   │   └── db/migration/
 │   └── lib/                 # Dependencies (nested JARs)
@@ -287,7 +287,7 @@ zakat-service.jar
 ```
 Manifest-Version: 1.0
 Main-Class: org.springframework.boot.loader.launch.JarLauncher
-Start-Class: com.oseplatform.zakat.ZakatApplication
+Start-Class: com.a-demo.zakat.ZakatApplication
 Spring-Boot-Version: 3.2.2
 Spring-Boot-Classes: BOOT-INF/classes/
 Spring-Boot-Lib: BOOT-INF/lib/
@@ -436,7 +436,7 @@ ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
 - **Reduced bandwidth**: Fewer bytes transferred on updates
 - **Faster deployments**: Pull cached layers from registry
 
-**Benchmark** (OSE Platform, application update):
+**Benchmark** (a-demo, application update):
 
 | Approach     | Image Size | Build Time | Pull Time |
 | ------------ | ---------- | ---------- | --------- |
@@ -444,7 +444,7 @@ ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
 | Layered JAR  | 250 MB     | 3m 25s     | 8s        |
 | Native Image | 85 MB      | 8m 15s     | 12s       |
 
-**OSE Platform Standard**: **Layered JAR** for all Spring Boot Docker images.
+**a-demo Standard**: **Layered JAR** for all Spring Boot Docker images.
 
 ## GraalVM Native Images with Spring Boot 3
 
@@ -462,7 +462,7 @@ graalvmNative {
     binaries {
         named("main") {
             imageName.set("zakat-service")
-            mainClass.set("com.oseplatform.zakat.ZakatApplicationKt")
+            mainClass.set("com.a-demo.zakat.ZakatApplicationKt")
             buildArgs.add("--verbose")
             buildArgs.add("-H:+ReportExceptionStackTraces")
         }
@@ -537,7 +537,7 @@ ENTRYPOINT ["./app"]
 - ❌ Build time critical (native compilation slower)
 - ❌ Maximum throughput required (JVM JIT better for sustained load)
 
-**OSE Platform Standard**: **JVM JAR** (default), **Native Image** for specific use cases (serverless, aggressive scaling).
+**a-demo Standard**: **JVM JAR** (default), **Native Image** for specific use cases (serverless, aggressive scaling).
 
 ### Deployment Manifest
 
@@ -577,7 +577,7 @@ spec:
 
       containers:
         - name: zakat-service
-          image: oseplatform/zakat-service:1.0.0
+          image: a-demo/zakat-service:1.0.0
           imagePullPolicy: IfNotPresent
 
           ports:
@@ -691,10 +691,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - api.oseplatform.com
+        - api.example.com
       secretName: zakat-service-tls
   rules:
-    - host: api.oseplatform.com
+    - host: api.example.com
       http:
         paths:
           - path: /api/v1/zakat
@@ -866,7 +866,7 @@ spring:
 
 logging:
   level:
-    com.oseplatform: DEBUG
+    com.a-demo: DEBUG
     org.hibernate.SQL: DEBUG
 ```
 
@@ -885,7 +885,7 @@ spring:
 logging:
   level:
     root: WARN
-    com.oseplatform: INFO
+    com.a-demo: INFO
 
 management:
   endpoints:
@@ -1066,6 +1066,6 @@ These deployment standards enforce the the software engineering principles:
 
 ---
 
-**Status**: Mandatory for all Spring Boot applications in OSE Platform
+**Status**: Mandatory for all Spring Boot applications in a-demo
 **Maintainers**: Platform Documentation Team
 **Last Updated**: 2026-02-06

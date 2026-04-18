@@ -1,6 +1,6 @@
 ---
 title: "Playwright Selector Standards"
-description: Authoritative OSE Platform Playwright selector standards (locator strategies, accessibility-first selectors, selector resilience)
+description: Authoritative a-demo Playwright selector standards (locator strategies, accessibility-first selectors, selector resilience)
 category: explanation
 subcategory: automation-testing
 tags:
@@ -23,15 +23,15 @@ updated: 2026-02-08
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Playwright tutorial. We define HOW to select elements in THIS codebase, not WHAT Playwright selectors are.
+**This document is a-demo-specific**, not a Playwright tutorial. We define HOW to select elements in THIS codebase, not WHAT Playwright selectors are.
 
 ## Purpose
 
-This document defines **authoritative selector standards** for Playwright end-to-end testing in the OSE Platform. These are prescriptive rules that MUST be followed to ensure accessible, maintainable, and resilient test selectors.
+This document defines **authoritative selector standards** for Playwright end-to-end testing in the a-demo. These are prescriptive rules that MUST be followed to ensure accessible, maintainable, and resilient test selectors.
 
-**Target Audience**: OSE Platform E2E test developers, technical reviewers, automated test quality tools
+**Target Audience**: a-demo E2E test developers, technical reviewers, automated test quality tools
 
-**Scope**: OSE Platform selector strategies, locator patterns, accessibility-first approaches, and selector resilience standards
+**Scope**: a-demo selector strategies, locator patterns, accessibility-first approaches, and selector resilience standards
 
 ## Software Engineering Principles
 
@@ -370,7 +370,7 @@ const allButtons = await page.getByRole("button", { name: "Edit" }).all();
 page.getByRole("row", { name: /Transaction #12345/ }).getByRole("button", { name: "Edit" });
 ```
 
-## OSE Platform Selector Conventions
+## a-demo Selector Conventions
 
 ### Islamic Finance Domain Selectors
 

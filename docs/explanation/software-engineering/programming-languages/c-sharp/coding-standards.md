@@ -1,6 +1,6 @@
 ---
 title: "C# Coding Standards"
-description: Authoritative OSE Platform C# coding standards (naming conventions, idioms, best practices, anti-patterns)
+description: Authoritative a-demo C# coding standards (naming conventions, idioms, best practices, anti-patterns)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,15 +24,15 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a C# tutorial. We define HOW to apply C# in THIS codebase, not WHAT C# is.
+**This document is a-demo-specific**, not a C# tutorial. We define HOW to apply C# in THIS codebase, not WHAT C# is.
 
 ## Purpose
 
-This document defines **authoritative coding standards** for C# development in the OSE Platform. These are prescriptive rules that MUST be followed across all C# projects to ensure consistency, maintainability, and alignment with platform architecture.
+This document defines **authoritative coding standards** for C# development in the a-demo. These are prescriptive rules that MUST be followed across all C# projects to ensure consistency, maintainability, and alignment with platform architecture.
 
-**Target Audience**: OSE Platform C# developers, technical reviewers, automated code quality tools
+**Target Audience**: a-demo C# developers, technical reviewers, automated code quality tools
 
-**Scope**: OSE Platform naming conventions, namespace organization, C# 12 idioms, best practices, and anti-patterns to avoid
+**Scope**: a-demo naming conventions, namespace organization, C# 12 idioms, best practices, and anti-patterns to avoid
 
 ## Software Engineering Principles
 

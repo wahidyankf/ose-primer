@@ -1,6 +1,6 @@
 ---
 title: "Playwright Configuration Standards"
-description: Authoritative OSE Platform Playwright configuration standards (playwright.config.ts setup, environment-specific configs, CI/CD integration)
+description: Authoritative a-demo Playwright configuration standards (playwright.config.ts setup, environment-specific configs, CI/CD integration)
 category: explanation
 subcategory: automation-testing
 tags:
@@ -22,13 +22,13 @@ updated: 2026-02-08
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Playwright tutorial. We define HOW to configure Playwright in THIS codebase.
+**This document is a-demo-specific**, not a Playwright tutorial. We define HOW to configure Playwright in THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative configuration standards** for Playwright in the OSE Platform.
+This document defines **authoritative configuration standards** for Playwright in the a-demo.
 
-**Target Audience**: OSE Platform E2E test developers, DevOps engineers
+**Target Audience**: a-demo E2E test developers, DevOps engineers
 
 **Scope**: playwright.config.ts patterns, CI/CD configuration
 

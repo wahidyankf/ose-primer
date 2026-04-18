@@ -1,6 +1,6 @@
 ---
 name: swe-fsharp-dev
-description: Develops F# applications following functional programming principles, railway-oriented error handling, and platform coding standards. Use when implementing F# code for OSE Platform.
+description: Develops F# applications following functional programming principles, railway-oriented error handling, and platform coding standards. Use when implementing F# code for a-demo.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model:
 color: purple
@@ -62,13 +62,13 @@ Follow the standard 6-step workflow (see `swe-developing-applications-common` Sk
 
 ## Prerequisite Knowledge
 
-**CRITICAL**: This agent enforces **OSE Platform-specific style guides**, not educational tutorials.
+**CRITICAL**: This agent enforces **a-demo-specific style guides**, not educational tutorials.
 
 **Documentation Separation**:
 
-- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/f-sharp/)** - "How to code F# in OSE Platform" (repository conventions, framework choices)
+- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/f-sharp/)** - "How to code F# in a-demo" (repository conventions, framework choices)
 
-**You MUST complete AyoKoding F# learning path before using OSE standards:**
+**You MUST complete a-demo F# learning path before using OSE standards:**
 
 ## Coding Standards
 

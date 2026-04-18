@@ -610,7 +610,7 @@ const DonationForm: React.FC = () => {
 };
 ```
 
-## OSE Platform Migration Examples
+## a-demo Migration Examples
 
 ### Zakat Calculator Migration (Class → Functional)
 

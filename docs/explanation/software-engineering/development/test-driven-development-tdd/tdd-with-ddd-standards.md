@@ -1,6 +1,6 @@
 ---
 title: "TDD with DDD Standards"
-description: OSE Platform standards for testing aggregates, value objects, entities, and domain events
+description: a-demo standards for testing aggregates, value objects, entities, and domain events
 category: explanation
 subcategory: development
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-OSE Platform standards for testing DDD tactical patterns.
+a-demo standards for testing DDD tactical patterns.
 
 ## REQUIRED: Test Aggregate Invariants
 
@@ -152,7 +152,7 @@ void shouldBeEqualByIdentity() {
 }
 ```
 
-## OSE Platform Examples
+## a-demo Examples
 
 ### Testing Zakat Aggregate
 

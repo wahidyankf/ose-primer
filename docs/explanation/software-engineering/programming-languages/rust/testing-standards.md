@@ -1,6 +1,6 @@
 ---
 title: "Rust Testing Standards"
-description: Authoritative OSE Platform Rust testing standards (cargo test, proptest, mockall, async tests)
+description: Authoritative a-demo Rust testing standards (cargo test, proptest, mockall, async tests)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Rust tutorial.
+**This document is a-demo-specific**, not a Rust tutorial.
 
 ## Purpose
 
-This document defines **authoritative testing standards** for Rust development in the OSE Platform. These are prescriptive rules that MUST be followed across all Rust projects to ensure consistent, maintainable, and reliable test suites.
+This document defines **authoritative testing standards** for Rust development in the a-demo. These are prescriptive rules that MUST be followed across all Rust projects to ensure consistent, maintainable, and reliable test suites.
 
-**Target Audience**: OSE Platform Rust developers, technical reviewers, QA engineers
+**Target Audience**: a-demo Rust developers, technical reviewers, QA engineers
 
 **Scope**: Unit tests, integration tests, async tests, property-based testing, mocking, doc tests, and coverage requirements
 

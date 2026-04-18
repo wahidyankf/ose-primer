@@ -1,6 +1,6 @@
 ---
 title: "Clojure Concurrency Standards"
-description: Authoritative OSE Platform Clojure concurrency standards (atoms, refs, agents, core.async)
+description: Authoritative a-demo Clojure concurrency standards (atoms, refs, agents, core.async)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Clojure tutorial.
+**This document is a-demo-specific**, not a Clojure tutorial.
 
 ## Purpose
 
-This document defines authoritative concurrency standards for Clojure development in OSE Platform. Clojure's four concurrency primitives (atoms, refs, agents, vars) and core.async channels provide safe concurrency with immutable data at their core.
+This document defines authoritative concurrency standards for Clojure development in a-demo. Clojure's four concurrency primitives (atoms, refs, agents, vars) and core.async channels provide safe concurrency with immutable data at their core.
 
-**Target Audience**: OSE Platform Clojure developers working on concurrent and asynchronous systems
+**Target Audience**: a-demo Clojure developers working on concurrent and asynchronous systems
 
 **Scope**: Atoms, refs with STM, agents, dynamic vars with binding, core.async channels, concurrency primitive selection
 

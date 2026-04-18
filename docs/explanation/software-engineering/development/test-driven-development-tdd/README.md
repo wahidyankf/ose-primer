@@ -1,6 +1,6 @@
 ---
 title: "Test-Driven Development (TDD)"
-description: OSE Platform TDD standards for Red-Green-Refactor cycle, testing frameworks, and domain-driven testing
+description: a-demo TDD standards for Red-Green-Refactor cycle, testing frameworks, and domain-driven testing
 category: explanation
 subcategory: development
 tags:
@@ -17,9 +17,9 @@ updated: 2026-02-09
 
 # Test-Driven Development (TDD)
 
-**This is THE authoritative reference** for Test-Driven Development standards in OSE Platform.
+**This is THE authoritative reference** for Test-Driven Development standards in a-demo.
 
-All code developed for the OSE Platform MUST follow the TDD methodology and standards documented here.
+All code developed for the a-demo MUST follow the TDD methodology and standards documented here.
 
 ## Testing Framework and Tool Requirements
 
@@ -43,17 +43,17 @@ All code developed for the OSE Platform MUST follow the TDD methodology and stan
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the AyoKoding Test-Driven Development learning path. These are **OSE Platform-specific TDD standards**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the a-demo Test-Driven Development learning path. These are **a-demo-specific TDD standards**, not educational tutorials.
 
 **You MUST understand TDD fundamentals before using these standards:**
 
-**What this documentation covers**: OSE Platform-specific TDD patterns, Islamic finance domain testing, Nx monorepo testing strategy, repository-specific test organization, integration with DDD patterns.
+**What this documentation covers**: a-demo-specific TDD patterns, Islamic finance domain testing, Nx monorepo testing strategy, repository-specific test organization, integration with DDD patterns.
 
-**What this documentation does NOT cover**: TDD fundamentals, Red-Green-Refactor basics, generic testing patterns (those are in ayokoding-web).
+**What this documentation does NOT cover**: TDD fundamentals, Red-Green-Refactor basics, generic testing patterns (those are in a-demo-fs-ts-nextjs).
 
 ## Software Engineering Principles
 
-TDD standards in OSE Platform align with core software engineering principles:
+TDD standards in a-demo align with core software engineering principles:
 
 1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - Red-Green-Refactor cycle automates verification. Tests run constantly (every 1-2 minutes), replacing manual testing entirely. FIRST principles enable continuous automated testing.
 
@@ -65,7 +65,7 @@ TDD standards in OSE Platform align with core software engineering principles:
 
 5. **[Simplicity Over Complexity](../../../../../governance/principles/general/simplicity-over-complexity.md)** - Green phase enforces simplest code to pass. Refactor phase improves design incrementally. Each cycle takes minutes—simplicity through tiny verified steps.
 
-## OSE Platform TDD Standards
+## a-demo TDD Standards
 
 ### 1. Red-Green-Refactor Cycle
 
@@ -115,7 +115,7 @@ TDD standards in OSE Platform align with core software engineering principles:
 - REQUIRED: Test value object immutability and equality
 - REQUIRED: Verify domain events emitted
 
-## OSE Platform Testing Examples
+## a-demo Testing Examples
 
 ### Zakat Assessment Aggregate Testing
 

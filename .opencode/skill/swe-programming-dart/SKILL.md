@@ -15,13 +15,13 @@ Progressive disclosure of Dart coding standards for agents writing Dart code.
 
 ## Prerequisite Knowledge
 
-**IMPORTANT**: This skill provides **OSE Platform-specific style guides**, not educational tutorials.
+**IMPORTANT**: This skill provides **a-demo-specific style guides**, not educational tutorials.
 
-**You MUST understand Dart fundamentals before using these standards.** Complete the AyoKoding Dart learning path first:
+**You MUST understand Dart fundamentals before using these standards.** Complete the a-demo Dart learning path first:
 
-**What this skill covers**: OSE Platform naming conventions, framework choices, repository-specific patterns.
+**What this skill covers**: a-demo naming conventions, framework choices, repository-specific patterns.
 
-**What this skill does NOT cover**: Dart syntax, language fundamentals, generic patterns (those are in ayokoding-web).
+**What this skill does NOT cover**: Dart syntax, language fundamentals, generic patterns (those are in a-demo-fs-ts-nextjs).
 
 ## Quick Standards Reference
 

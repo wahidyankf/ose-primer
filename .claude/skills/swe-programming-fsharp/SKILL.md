@@ -15,13 +15,13 @@ Progressive disclosure of F# coding standards for agents writing F# code.
 
 ## Prerequisite Knowledge
 
-**IMPORTANT**: This skill provides **OSE Platform-specific style guides**, not educational tutorials.
+**IMPORTANT**: This skill provides **a-demo-specific style guides**, not educational tutorials.
 
-**You MUST understand F# fundamentals before using these standards.** Complete the AyoKoding F# learning path first:
+**You MUST understand F# fundamentals before using these standards.** Complete the a-demo F# learning path first:
 
-**What this skill covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply F# knowledge in THIS codebase.
+**What this skill covers**: a-demo naming conventions, framework choices, repository-specific patterns, how to apply F# knowledge in THIS codebase.
 
-**What this skill does NOT cover**: F# syntax, language fundamentals, generic patterns (those are in ayokoding-web).
+**What this skill does NOT cover**: F# syntax, language fundamentals, generic patterns (those are in a-demo-fs-ts-nextjs).
 
 ## Quick Standards Reference
 

@@ -1,6 +1,6 @@
 ---
 title: "Dart Code Quality Standards"
-description: Authoritative OSE Platform Dart code quality standards (dart-analyze, lints, analysis-options)
+description: Authoritative a-demo Dart code quality standards (dart-analyze, lints, analysis-options)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Dart tutorial. We define HOW to enforce code quality in THIS codebase, not WHAT linting is.
+**This document is a-demo-specific**, not a Dart tutorial. We define HOW to enforce code quality in THIS codebase, not WHAT linting is.
 
 ## Purpose
 
-This document defines **authoritative code quality standards** for Dart development in the OSE Platform. These standards ensure consistent code style, prevent common bugs, and maintain a high baseline of code health across all Dart projects.
+This document defines **authoritative code quality standards** for Dart development in the a-demo. These standards ensure consistent code style, prevent common bugs, and maintain a high baseline of code health across all Dart projects.
 
-**Target Audience**: OSE Platform Dart developers, CI/CD pipeline maintainers, code reviewers
+**Target Audience**: a-demo Dart developers, CI/CD pipeline maintainers, code reviewers
 
 **Scope**: `analysis_options.yaml` configuration, `dart analyze`, `dart format`, `dart_code_metrics`, pre-commit quality enforcement
 
@@ -149,7 +149,7 @@ include: package:lints/recommended.yaml
 **MUST** create `analysis_options.yaml` in every Dart project root.
 
 ```yaml
-# analysis_options.yaml - OSE Platform standard configuration
+# analysis_options.yaml - a-demo standard configuration
 include: package:lints/recommended.yaml
 
 analyzer:
@@ -284,7 +284,7 @@ dart format lib/src/domain/zakat_calculator.dart
 dart format .
 
 # WRONG: Do not customize line length without approval
-dart format --line-length=120 . # Not allowed in OSE Platform
+dart format --line-length=120 . # Not allowed in a-demo
 ```
 
 ### Pre-commit Hook Configuration

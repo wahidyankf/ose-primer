@@ -1,6 +1,6 @@
 ---
 title: "Elixir Performance Standards"
-description: Prescriptive performance requirements for BEAM VM-based financial systems in OSE Platform
+description: Prescriptive performance requirements for BEAM VM-based financial systems in a-demo
 category: explanation
 subcategory: prog-lang
 tags:
@@ -27,13 +27,13 @@ updated: 2026-02-05
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not an Elixir tutorial. We define HOW to apply Elixir in THIS codebase, not WHAT Elixir is.
+**This document is a-demo-specific**, not an Elixir tutorial. We define HOW to apply Elixir in THIS codebase, not WHAT Elixir is.
 
 ## Purpose
 
-This document defines **authoritative performance standards** for Elixir development in the OSE Platform. These standards ensure BEAM VM-based systems meet latency, throughput, and resource efficiency requirements for Shariah-compliant financial applications.
+This document defines **authoritative performance standards** for Elixir development in the a-demo. These standards ensure BEAM VM-based systems meet latency, throughput, and resource efficiency requirements for Shariah-compliant financial applications.
 
-**Target Audience**: OSE Platform Elixir developers optimizing for production performance
+**Target Audience**: a-demo Elixir developers optimizing for production performance
 
 **Scope**: Profiling, benchmarking, BEAM VM optimization, memory management, ETS caching, and concurrency patterns
 
@@ -96,7 +96,7 @@ end
 
 ## Service Level Objectives (SLOs)
 
-**REQUIRED**: All OSE Platform Elixir services MUST meet the following latency targets (p95).
+**REQUIRED**: All a-demo Elixir services MUST meet the following latency targets (p95).
 
 | Service Type          | p95 Latency | p99 Latency | Notes                                 |
 | --------------------- | ----------- | ----------- | ------------------------------------- |
@@ -927,7 +927,7 @@ end
 
 ---
 
-### OSE Platform Standards
+### a-demo Standards
 
 - [Concurrency and Parallelism](./concurrency-standards.md) - Concurrency patterns, OTP, supervision trees
 - [Memory Management](./memory-management-standards.md) - Memory optimization, garbage collection
@@ -937,7 +937,7 @@ end
 
 For learning Elixir fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Elixir basics from ayokoding-web. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Elixir basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ### Software Engineering Principles
 
@@ -973,4 +973,4 @@ Before deploying Elixir services to production:
 
 **Last Updated**: 2026-02-05
 
-**Status**: Active (mandatory for all OSE Platform Elixir services)
+**Status**: Active (mandatory for all a-demo Elixir services)

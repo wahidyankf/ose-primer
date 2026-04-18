@@ -1766,7 +1766,7 @@ import (
 
 func CORS() gin.HandlerFunc {
     return cors.New(cors.Config{
-        AllowOrigins:     []string{"https://oseplatform.com"},
+        AllowOrigins:     []string{"https://example.com"},
         AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
         AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "X-Request-ID"},
         ExposeHeaders:    []string{"X-Request-ID", "X-RateLimit-Remaining"},
@@ -2217,7 +2217,7 @@ func main() {
     app.Use(logger.New())
     app.Use(recover.New())
     app.Use(cors.New(cors.Config{
-        AllowOrigins: "https://oseplatform.com",
+        AllowOrigins: "https://example.com",
         AllowHeaders: "Origin, Content-Type, Accept, Authorization",
     }))
 
@@ -2322,7 +2322,7 @@ app := fiber.New(fiber.Config{
     CaseSensitive:         true,
     StrictRouting:         false,
     DisableStartupMessage: false,
-    ServerHeader:          "OSE Platform",
+    ServerHeader:          "a-demo",
     AppName:               "Financial Platform v1.0.0",
     BodyLimit:             10 * 1024 * 1024,
     ReadBufferSize:        8192,

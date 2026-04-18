@@ -109,7 +109,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "cdn.oseplatform.com",
+        hostname: "cdn.example.com",
         pathname: "/images/**",
       },
     ],
@@ -131,7 +131,7 @@ const nextConfig: NextConfig = {
 export default nextConfig;
 ```
 
-### OSE Platform: Optimized Waqf Project Images
+### a-demo: Optimized Waqf Project Images
 
 ```typescript
 // app/waqf/projects/[id]/page.tsx
@@ -272,7 +272,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-### OSE Platform: Arabic + English Fonts
+### a-demo: Arabic + English Fonts
 
 ```typescript
 // app/layout.tsx
@@ -710,7 +710,7 @@ export function ProfiledComponent({ children }: { children: React.ReactNode }) {
 
 ```bash
 # Run Lighthouse
-lighthouse https://oseplatform.com --view
+lighthouse https://example.com --view
 
 # CI/CD integration
 npm install -g @lhci/cli
@@ -846,7 +846,7 @@ export async function generateStaticParams() {
 export const dynamicParams = true;
 ```
 
-## OSE Platform: Complete Performance Strategy
+## a-demo: Complete Performance Strategy
 
 ```typescript
 // app/(platform)/layout.tsx

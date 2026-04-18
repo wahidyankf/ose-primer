@@ -1,6 +1,6 @@
 ---
 title: "Dart Testing Standards"
-description: Authoritative OSE Platform Dart testing standards (package:test, mockito, flutter-test, coverage)
+description: Authoritative a-demo Dart testing standards (package:test, mockito, flutter-test, coverage)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Dart tutorial. We define HOW to write tests in THIS codebase, not WHAT testing is.
+**This document is a-demo-specific**, not a Dart tutorial. We define HOW to write tests in THIS codebase, not WHAT testing is.
 
 ## Purpose
 
-This document defines **authoritative testing standards** for Dart development in the OSE Platform. These standards ensure consistent, reliable, and maintainable test suites across all Dart projects.
+This document defines **authoritative testing standards** for Dart development in the a-demo. These standards ensure consistent, reliable, and maintainable test suites across all Dart projects.
 
-**Target Audience**: OSE Platform Dart developers, QA engineers, CI/CD pipeline maintainers
+**Target Audience**: a-demo Dart developers, QA engineers, CI/CD pipeline maintainers
 
 **Scope**: package:test patterns, mocking with mockito, Flutter widget testing, integration tests, coverage enforcement
 

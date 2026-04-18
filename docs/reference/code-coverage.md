@@ -42,16 +42,16 @@ Partial lines count as NOT covered, matching Codecov's badge calculation.
 
 ## Thresholds
 
-| Project Type      | Threshold | Rationale                                     |
-| ----------------- | --------- | --------------------------------------------- |
-| Demo backends     | >= 90%    | Service-layer code with full Gherkin coverage |
-| CLI tools         | >= 90%    | Core business logic                           |
-| Go libraries      | >= 90%    | Shared utilities                              |
-| Elixir libraries  | >= 90%    | Shared libraries                              |
-| Clojure libraries | >= 90%    | Codegen library                               |
-| organiclever-fe   | >= 70%    | Frontend app with MSW integration tests       |
-| organiclever-be   | >= 90%    | F#/Giraffe backend API                        |
-| Demo frontends    | >= 70%    | API/auth/query layers fully mocked by design  |
+| Project Type             | Threshold | Rationale                                     |
+| ------------------------ | --------- | --------------------------------------------- |
+| Demo backends            | >= 90%    | Service-layer code with full Gherkin coverage |
+| CLI tools                | >= 90%    | Core business logic                           |
+| Go libraries             | >= 90%    | Shared utilities                              |
+| Elixir libraries         | >= 90%    | Shared libraries                              |
+| Clojure libraries        | >= 90%    | Codegen library                               |
+| a-demo-fe-ts-nextjs      | >= 70%    | Frontend app with MSW integration tests       |
+| a-demo-be-fsharp-giraffe | >= 90%    | F#/Giraffe backend API                        |
+| Demo frontends           | >= 70%    | API/auth/query layers fully mocked by design  |
 
 ## Per-Project Coverage Details
 
@@ -63,10 +63,10 @@ Partial lines count as NOT covered, matching Codecov's badge calculation.
 | Project              | Coverage File               | Threshold | Exclusions                                          |
 | -------------------- | --------------------------- | --------- | --------------------------------------------------- |
 | rhino-cli            | `cover.out`                 | 90%       | None                                                |
-| ayokoding-cli        | `cover.out`                 | 90%       | None                                                |
-| oseplatform-cli      | `cover.out`                 | 90%       | None                                                |
+| rhino-cli            | `cover.out`                 | 90%       | None                                                |
+| rhino-cli            | `cover.out`                 | 90%       | None                                                |
 | golang-commons       | `cover.out`                 | 90%       | None                                                |
-| hugo-commons         | `cover.out`                 | 90%       | None                                                |
+| golang-commons       | `cover.out`                 | 90%       | None                                                |
 | a-demo-be-golang-gin | `cover_unit.out` (filtered) | 90%       | gorm_store, server, cmd/server, generated-contracts |
 
 **Go exclusion caveat**: Go's `go test -coverprofile` has no built-in
@@ -105,7 +105,7 @@ The XML output already reflects exclusions, so rhino-cli and Codecov agree.
 | Project                     | Threshold | Exclusions                                              |
 | --------------------------- | --------- | ------------------------------------------------------- |
 | a-demo-be-ts-effect         | 90%       | `main.ts`, `routes/test-api.ts` (in `vitest.config.ts`) |
-| organiclever-fe             | 70%       | None                                                    |
+| a-demo-fe-ts-nextjs         | 70%       | None                                                    |
 | a-demo-fe-ts-nextjs         | 70%       | None                                                    |
 | a-demo-fe-ts-tanstack-start | 70%       | None                                                    |
 

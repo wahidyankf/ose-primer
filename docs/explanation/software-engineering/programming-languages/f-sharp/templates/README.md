@@ -1,6 +1,6 @@
 ---
 title: F# Documentation Templates
-description: Reusable templates for F# development patterns in OSE Platform
+description: Reusable templates for F# development patterns in a-demo
 category: explanation
 subcategory: prog-lang
 tags:

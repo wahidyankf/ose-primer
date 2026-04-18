@@ -37,7 +37,7 @@ graph TB
 
     subgraph "Quality Gates"
         PRETTIER[Prettier Format]
-        AYOKODING[AyoKoding Content Update]
+        AYOKODING[a-demo Content Update]
         LINK_VAL[Link Validator]
         COMMITLINT[Commitlint]
         TEST_QUICK[Nx Affected Tests]
@@ -100,8 +100,8 @@ graph TB
 
 **Execution Order:**
 
-1. **AyoKoding Content Processing** (if affected):
-   - Validate links in ayokoding-web content
+1. **a-demo Content Processing** (if affected):
+   - Validate links in a-demo-fs-ts-nextjs content
 2. **Prettier Formatting** (via lint-staged):
    - Format all staged files
    - Auto-stage formatted changes
@@ -172,42 +172,42 @@ graph TB
 
 **Purpose**: Prevent merging PRs with broken markdown links
 
-### Deploy AyoKoding Web
+### Deploy a-demo Web
 
-**Deployment**: Force-push `main` to `prod-ayokoding-web` branch; Vercel auto-builds the Next.js application.
+**Deployment**: Force-push `main` to `prod-a-demo-fs-ts-nextjs` branch; Vercel auto-builds the Next.js application.
 
-**Purpose**: Deploy ayokoding.com (Next.js 16 fullstack content platform)
+**Purpose**: Deploy example.com (Next.js 16 fullstack content platform)
 
-### Test and Deploy OSE Platform Web Workflow
+### Test and Deploy a-demo Web Workflow
 
-**File**: `.github/workflows/test-and-deploy-oseplatform-web.yml`
+**File**: `.github/workflows/test-and-deploy-a-demo-fs-ts-nextjs.yml`
 
 **Trigger**: Scheduled (6 AM and 6 PM WIB daily) or manual `workflow_dispatch`
 
 **Steps:**
 
 1. If changes exist (or `force_deploy=true`): setup Volta, Go 1.26.0, Hugo 0.156.0 extended
-2. Install dependencies and run `nx build oseplatform-web`
-3. Force-push `main` to `prod-oseplatform-web`; Vercel auto-builds
+2. Install dependencies and run `nx build a-demo-fs-ts-nextjs`
+3. Force-push `main` to `prod-a-demo-fs-ts-nextjs`; Vercel auto-builds
 
-**Purpose**: Automated scheduled deployments for oseplatform.com with change detection to avoid unnecessary builds
+**Purpose**: Automated scheduled deployments for example.com with change detection to avoid unnecessary builds
 
-### Test and Deploy OrganicLever Workflow
+### Test and Deploy a-demo Workflow
 
-**File**: `.github/workflows/test-and-deploy-organiclever.yml`
+**File**: `.github/workflows/test-and-deploy-a-demo.yml`
 
 **Trigger**: Scheduled (6 AM and 6 PM WIB daily) or manual `workflow_dispatch`
 
 **Steps:**
 
-1. Run `spec-coverage` across all OrganicLever projects (`organiclever-be`, `organiclever-fe`, `organiclever-be-e2e`, `organiclever-fe-e2e`)
-2. Run `fe-lint` for `organiclever-fe`
+1. Run `spec-coverage` across all a-demo projects (`a-demo-be-fsharp-giraffe`, `a-demo-fe-ts-nextjs`, `a-demo-be-e2e`, `a-demo-fe-e2e`)
+2. Run `fe-lint` for `a-demo-fe-ts-nextjs`
 3. Run `be-integration` tests with docker-compose (real PostgreSQL)
 4. Run `fe-integration` tests (MSW-mocked)
-5. Run combined `e2e` stage: full stack via docker-compose, then `organiclever-be-e2e` and `organiclever-fe-e2e` Playwright tests
-6. `deploy` (gated on all test jobs + `detect-changes == true`): force-push `HEAD` to `prod-organiclever-web`; Vercel auto-builds
+5. Run combined `e2e` stage: full stack via docker-compose, then `a-demo-be-e2e` and `a-demo-fe-e2e` Playwright tests
+6. `deploy` (gated on all test jobs + `detect-changes == true`): force-push `HEAD` to `prod-a-demo-web`; Vercel auto-builds
 
-**Purpose**: Automated scheduled deployments for www.organiclever.com, gated on full FE+BE test suite, with change detection to avoid unnecessary builds
+**Purpose**: Automated scheduled deployments for www.example.com, gated on full FE+BE test suite, with change detection to avoid unnecessary builds
 
 ### Main CI Workflow
 
@@ -325,7 +325,7 @@ Each backend workflow runs its own backend stack — never a different backend.
 
    - Pre-commit hook runs:
      - Formats code with Prettier
-     - Processes ayokoding-web content if affected
+     - Processes a-demo-fs-ts-nextjs content if affected
      - Validates links
    - Commit-msg hook validates format
    - Commit created
@@ -416,7 +416,7 @@ graph TB
 **Auto-fix Gates** (Non-blocking with automatic fixes):
 
 - Prettier formatting
-- AyoKoding content processing
+- a-demo content processing
 - PR format workflow
 
 **Blocking Gates** (Must pass to proceed):

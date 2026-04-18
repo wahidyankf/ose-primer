@@ -33,7 +33,7 @@ Functional Programming (FP) emphasizes immutability, pure functions, and composi
 - [Async FP](#-async-fp) - Functional async patterns
 - [React Server Components](#-react-server-components) - FP with RSC
 - [State Management](#-state-management) - Functional state patterns
-- [OSE Platform Examples](#-ose-platform-examples) - Islamic finance FP patterns
+- [a-demo Examples](#-ose-platform-examples) - Islamic finance FP patterns
 - [Best Practices](#-best-practices) - Production FP guidelines
 - [Related Documentation](#-related-documentation) - Cross-references
 
@@ -860,7 +860,7 @@ export function AssetManagerWithReducer() {
 }
 ```
 
-## 🕌 OSE Platform Examples
+## 🕌 a-demo Examples
 
 Functional programming for Islamic finance features.
 

@@ -1,6 +1,6 @@
 ---
 title: Clojure
-description: OSE Platform Authoritative Clojure Coding Standards and Framework Stack (Clojure 1.12)
+description: a-demo Authoritative Clojure Coding Standards and Framework Stack (Clojure 1.12)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 # Clojure
 
-**This is THE authoritative reference** for Clojure coding standards in OSE Platform.
+**This is THE authoritative reference** for Clojure coding standards in a-demo.
 
-All Clojure code written for the OSE Platform MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
+All Clojure code written for the a-demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
 
 ## Framework Stack
 
-OSE Platform Clojure applications MUST use the following stack:
+a-demo Clojure applications MUST use the following stack:
 
 **Build and Dependency Management**:
 
@@ -80,17 +80,17 @@ OSE Platform Clojure applications MUST use the following stack:
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the AyoKoding Clojure learning path. These are **OSE Platform-specific style guides**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the a-demo Clojure learning path. These are **a-demo-specific style guides**, not educational tutorials.
 
 **You MUST understand Clojure fundamentals before using these standards:**
 
-**What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply Clojure knowledge in THIS codebase.
+**What this documentation covers**: a-demo naming conventions, framework choices, repository-specific patterns, how to apply Clojure knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Clojure syntax, language fundamentals, REPL basics, S-expression syntax (those are in ayokoding-web).
+**What this documentation does NOT cover**: Clojure syntax, language fundamentals, REPL basics, S-expression syntax (those are in a-demo-fs-ts-nextjs).
 
 ## Software Engineering Principles
 
-Clojure development in OSE Platform enforces foundational software engineering principles. Clojure's design **naturally enforces** many of these principles through immutable persistent data structures, pure functions as the default, and the functional programming model:
+Clojure development in a-demo enforces foundational software engineering principles. Clojure's design **naturally enforces** many of these principles through immutable persistent data structures, pure functions as the default, and the functional programming model:
 
 1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - MUST automate through `clj-kondo` linting, `cljfmt` formatting, `cloverage` coverage measurement, `tools.build` for artifact creation, and CI/CD integration for all quality gates
 
@@ -104,7 +104,7 @@ Clojure development in OSE Platform enforces foundational software engineering p
 
 ## Clojure Version Strategy
 
-OSE Platform follows a three-tier Clojure versioning strategy:
+a-demo follows a three-tier Clojure versioning strategy:
 
 **Clojure 1.10 (Minimum - Required)**:
 
@@ -133,9 +133,9 @@ OSE Platform follows a three-tier Clojure versioning strategy:
 
 **See**: [Clojure Release Notes](https://clojure.org/releases/devchangelog) for detailed feature documentation
 
-## OSE Platform Coding Standards (Authoritative)
+## a-demo Coding Standards (Authoritative)
 
-**MUST follow these mandatory standards for all Clojure code in OSE Platform:**
+**MUST follow these mandatory standards for all Clojure code in a-demo:**
 
 1. **[Coding Standards](./coding-standards.md)** - Naming conventions, namespace organization, REPL-driven development, threading macros, destructuring
 2. **[Testing Standards](./testing-standards.md)** - clojure.test, Midje, test.check, cloverage, REPL-based test running
@@ -179,10 +179,10 @@ OSE Platform follows a three-tier Clojure versioning strategy:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["Clojure Standards Index<br/>(OSE Platform)"]:::blue
+    A["Clojure Standards Index<br/>(a-demo)"]:::blue
     B["Core Standards"]:::orange
     C["Specialized Standards"]:::teal
-    D["Learning Resources<br/>(AyoKoding)"]:::purple
+    D["Learning Resources<br/>(a-demo)"]:::purple
 
     A --> B
     A --> C
@@ -211,7 +211,7 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
-## Primary Use Cases in OSE Platform
+## Primary Use Cases in a-demo
 
 **Financial Rule Engines**:
 

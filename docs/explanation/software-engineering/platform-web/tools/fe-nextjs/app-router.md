@@ -83,7 +83,7 @@ app/
 - **`page.tsx` makes route public** - Without it, folder is not routable
 - **Nesting creates URL paths** - `app/blog/posts/page.tsx` → `/blog/posts`
 
-### OSE Platform Example
+### a-demo Example
 
 ```
 app/
@@ -222,8 +222,8 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | OSE Platform',
-    default: 'OSE Platform - Sharia-Compliant Financial Solutions',
+    template: '%s | a-demo',
+    default: 'a-demo - Sharia-Compliant Financial Solutions',
   },
   description: 'Enterprise platform for Islamic finance',
 };
@@ -689,7 +689,7 @@ export default function Layout({
 }
 ```
 
-### OSE Platform Example
+### a-demo Example
 
 ```
 app/

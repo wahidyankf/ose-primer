@@ -1,6 +1,6 @@
 ---
 title: "Dart Build Configuration"
-description: Authoritative OSE Platform Dart build configuration standards (pubspec, dart-pub, build-runner, CI/CD)
+description: Authoritative a-demo Dart build configuration standards (pubspec, dart-pub, build-runner, CI/CD)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -22,13 +22,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Dart tutorial. We define HOW to configure Dart builds in THIS codebase, not WHAT Dart pub is.
+**This document is a-demo-specific**, not a Dart tutorial. We define HOW to configure Dart builds in THIS codebase, not WHAT Dart pub is.
 
 ## Purpose
 
-This document defines **authoritative build configuration standards** for Dart development in the OSE Platform. These standards ensure reproducible builds, consistent dependency management, and reliable CI/CD integration across all Dart projects.
+This document defines **authoritative build configuration standards** for Dart development in the a-demo. These standards ensure reproducible builds, consistent dependency management, and reliable CI/CD integration across all Dart projects.
 
-**Target Audience**: OSE Platform Dart developers, DevOps engineers, CI/CD pipeline maintainers
+**Target Audience**: a-demo Dart developers, DevOps engineers, CI/CD pipeline maintainers
 
 **Scope**: `pubspec.yaml` structure, `pubspec.lock`, `dart pub` commands, `build_runner` code generation, CI/CD integration, AOT compilation
 
@@ -139,13 +139,13 @@ environment:
 **MUST** follow this structure for all Dart projects:
 
 ```yaml
-# pubspec.yaml - OSE Platform standard structure
+# pubspec.yaml - a-demo standard structure
 name: zakat_service # lowercase_with_underscores
 description: |
-  Zakat calculation and recording service for OSE Platform.
+  Zakat calculation and recording service for a-demo.
   Handles wealth assessment, nisab comparison, and transaction recording.
 version: 1.0.0 # Semantic versioning: MAJOR.MINOR.PATCH
-homepage: https://oseplatform.com
+homepage: https://example.com
 repository: https://github.com/open-sharia-enterprise/open-sharia-enterprise
 
 # SDK constraint - specify exact minimum version
@@ -198,7 +198,7 @@ dev_dependencies:
 ```yaml
 # pubspec.yaml - Flutter application
 name: zakat_mobile_app
-description: Zakat calculator mobile app for OSE Platform
+description: Zakat calculator mobile app for a-demo
 version: 1.0.0+1 # version+build_number for Flutter
 
 environment:

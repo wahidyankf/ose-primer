@@ -13,7 +13,7 @@ Demo Backend - Spring Boot REST API
 - **Database**: PostgreSQL (dev/prod/integration tests) / mocked repositories with InMemoryDataStore (unit tests)
 - **Schema Migration**: Liquibase SQL formatted changesets
 
-**CORS Configuration**: Restricted to `http://localhost:3200` and `https://www.organiclever.com`
+**CORS Configuration**: Restricted to `http://localhost:3200` and `https://www.example.com`
 (configured in `SecurityConfig.java`).
 
 ## Prerequisites
@@ -25,12 +25,12 @@ Demo Backend - Spring Boot REST API
 
 ## Environment Variables
 
-| Variable                     | Required       | Default                                          | Description                                                 |
-| ---------------------------- | -------------- | ------------------------------------------------ | ----------------------------------------------------------- |
-| `APP_JWT_SECRET`             | Yes (prod)     | `change-me-in-production-at-least-32-chars-long` | JWT signing secret (min 32 chars for HS256)                 |
-| `SPRING_DATASOURCE_URL`      | Yes (non-test) | —                                                | JDBC URL (e.g., `jdbc:postgresql://host:5432/organiclever`) |
-| `SPRING_DATASOURCE_USERNAME` | Yes (non-test) | —                                                | Database username                                           |
-| `SPRING_DATASOURCE_PASSWORD` | Yes (non-test) | —                                                | Database password                                           |
+| Variable                     | Required       | Default                                          | Description                                           |
+| ---------------------------- | -------------- | ------------------------------------------------ | ----------------------------------------------------- |
+| `APP_JWT_SECRET`             | Yes (prod)     | `change-me-in-production-at-least-32-chars-long` | JWT signing secret (min 32 chars for HS256)           |
+| `SPRING_DATASOURCE_URL`      | Yes (non-test) | —                                                | JDBC URL (e.g., `jdbc:postgresql://host:5432/a-demo`) |
+| `SPRING_DATASOURCE_USERNAME` | Yes (non-test) | —                                                | Database username                                     |
+| `SPRING_DATASOURCE_PASSWORD` | Yes (non-test) | —                                                | Database password                                     |
 
 **Security note**: Set a strong `APP_JWT_SECRET` in production (min 32 random characters).
 Never commit real secrets to version control. Copy `infra/dev/a-demo-be-java-springboot/.env.example`
@@ -112,7 +112,7 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 npm run demo-be:dev
 ```
 
-Wait for: `Started OrganicLeverApplication in X seconds`
+Wait for: `Started a-demoApplication in X seconds`
 
 ### Step 2: Test baseline
 
@@ -124,7 +124,7 @@ Expected: `{"message":"world"}`
 
 ### Step 3: Modify code
 
-Edit `apps/a-demo-be-java-springboot/src/main/java/com/organiclever/be/hello/controller/HelloController.java`:
+Edit `apps/a-demo-be-java-springboot/src/main/java/com/a-demo/be/hello/controller/HelloController.java`:
 
 ```java
 return Map.of("message", "auto-reload works!");
@@ -428,8 +428,8 @@ docker compose build
 
 ```
 apps/a-demo-be-java-springboot/
-├── src/main/java/com/organiclever/be/
-│   ├── OrganicLeverApplication.java
+├── src/main/java/com/a-demo/be/
+│   ├── a-demoApplication.java
 │   ├── auth/
 │   │   ├── controller/AuthController.java        # POST /register, POST /login
 │   │   ├── dto/                                  # RegisterRequest, LoginRequest, RegisterResponse, AuthResponse
@@ -457,7 +457,7 @@ apps/a-demo-be-java-springboot/
 ├── docker-compose.integration.yml                # PostgreSQL + test-runner for integration tests
 ├── Dockerfile.integration                        # Java 25 + Maven image for integration test runner
 └── src/test/
-    ├── java/com/organiclever/be/
+    ├── java/com/a-demo/be/
     │   ├── integration/                          # Integration tests (real PostgreSQL)
     │   │   ├── ResponseStore.java                # Shared response state (@Component @Scope)
     │   │   ├── DatabaseCleaner.java              # Truncates all tables between scenarios

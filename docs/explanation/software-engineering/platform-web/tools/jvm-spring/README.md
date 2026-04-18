@@ -36,13 +36,13 @@ This documentation covers Spring Framework 6.x (latest stable) with Java 17+ and
 
 ## Prerequisite Knowledge
 
-**This documentation is OSE Platform-specific explanation**, not Spring Framework tutorials. We assume you have completed the learning content.
+**This documentation is a-demo-specific explanation**, not Spring Framework tutorials. We assume you have completed the learning content.
 
 **Before Reading These Docs**:
 
-**What this documentation covers**: OSE Platform Spring Framework standards, naming conventions, framework integration patterns, how to apply Spring knowledge in THIS codebase.
+**What this documentation covers**: a-demo Spring Framework standards, naming conventions, framework integration patterns, how to apply Spring knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Spring Framework tutorials, basic IoC/DI concepts, generic patterns (those are in ayokoding-web).
+**What this documentation does NOT cover**: Spring Framework tutorials, basic IoC/DI concepts, generic patterns (those are in a-demo-fs-ts-nextjs).
 
 ## Framework Standards
 
@@ -751,7 +751,7 @@ public record Money(BigDecimal amount, String currency) {
 Typical Spring application structure aligned with clean architecture:
 
 ```
-src/main/java/com/oseplatform/[bounded-context]/
+src/main/java/com/a-demo/[bounded-context]/
 ├── domain/                    # Domain layer (pure business logic)
 │   ├── model/                # Aggregates, entities, value objects
 │   ├── repository/           # Repository interfaces (ports)
@@ -774,7 +774,7 @@ src/main/java/com/oseplatform/[bounded-context]/
 
 ```java
 @Configuration
-@ComponentScan(basePackages = "com.oseplatform.murabaha")
+@ComponentScan(basePackages = "com.a-demo.murabaha")
 @PropertySource("classpath:application.properties")
 public class MurabahaApplicationConfig {
 
@@ -924,7 +924,7 @@ public class DonationReportService {
 ```java
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com.oseplatform.zakat")
+@ComponentScan(basePackages = "com.a-demo.zakat")
 @PropertySource("classpath:application.properties")
 public class ZakatApplicationConfig {
 
@@ -978,7 +978,7 @@ public class ZakatApplication {
 ```kotlin
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = ["com.oseplatform.zakat"])
+@ComponentScan(basePackages = ["com.a-demo.zakat"])
 @PropertySource("classpath:application.properties")
 class ZakatApplicationConfig {
 
@@ -1405,7 +1405,7 @@ public class JdbcZakatCalculationRepository implements ZakatCalculationRepositor
 public class LoggingAspect {
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-    @Around("execution(* com.oseplatform..service.*.*(..))")
+    @Around("execution(* com.a-demo..service.*.*(..))")
     public Object logServiceMethods(ProceedingJoinPoint joinPoint) throws Throwable {
         String methodName = joinPoint.getSignature().toShortString();
         long startTime = System.currentTimeMillis();
@@ -1424,7 +1424,7 @@ public class LoggingAspect {
     }
 
     @AfterThrowing(
-        pointcut = "execution(* com.oseplatform..repository.*.*(..))",
+        pointcut = "execution(* com.a-demo..repository.*.*(..))",
         throwing = "ex"
     )
     public void logRepositoryExceptions(JoinPoint joinPoint, Exception ex) {

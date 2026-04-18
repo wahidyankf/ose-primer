@@ -1,6 +1,6 @@
 ---
 title: "Three-Tier Testing Model"
-description: Authoritative OSE Platform definition of unit, integration, and E2E test tiers — scope, mocking rules, tools, and when to use each
+description: Authoritative a-demo definition of unit, integration, and E2E test tiers — scope, mocking rules, tools, and when to use each
 category: explanation
 subcategory: development
 tags:

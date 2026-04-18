@@ -1,6 +1,6 @@
 ---
 title: "Clojure API Standards"
-description: Authoritative OSE Platform Clojure API standards (Ring handlers, Reitit routing, middleware, REST conventions)
+description: Authoritative a-demo Clojure API standards (Ring handlers, Reitit routing, middleware, REST conventions)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Clojure tutorial.
+**This document is a-demo-specific**, not a Clojure tutorial.
 
 ## Purpose
 
-This document defines authoritative API standards for Clojure web service development in OSE Platform using Ring, Reitit, and related libraries.
+This document defines authoritative API standards for Clojure web service development in a-demo using Ring, Reitit, and related libraries.
 
-**Target Audience**: OSE Platform Clojure developers building REST APIs and web services
+**Target Audience**: a-demo Clojure developers building REST APIs and web services
 
 **Scope**: Ring request/response maps, Reitit data-driven routing, Compojure macro routing, middleware composition, content negotiation with muuntaja, HTTP response helpers, JSON serialization with Cheshire, REST conventions
 
@@ -296,7 +296,7 @@ Ring request and response maps are immutable. Middleware wraps handlers by retur
 **MUST** follow these HTTP status code conventions:
 
 ```clojure
-;; CORRECT: Status code conventions for OSE Platform APIs
+;; CORRECT: Status code conventions for a-demo APIs
 (require '[ring.util.response :as response])
 
 ;; 200 OK — successful GET, PUT, PATCH
@@ -344,7 +344,7 @@ Ring request and response maps are immutable. Middleware wraps handlers by retur
 
 ## REST Conventions
 
-**MUST** follow REST conventions for OSE Platform APIs:
+**MUST** follow REST conventions for a-demo APIs:
 
 - **Nouns in URLs, not verbs**: `/api/zakat` not `/api/calculate-zakat`
 - **Plural resource names**: `/api/zakat-payments` not `/api/zakat-payment`

@@ -1125,7 +1125,7 @@ public class OAuth2ClientConfig {
       .tokenUri(tokenUri)
       .userInfoUri(userInfoUri)
       .userNameAttributeName("email")
-      .clientName("OSE Platform")
+      .clientName("a-demo")
       .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
       .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
       .build();
@@ -1542,8 +1542,8 @@ public class CorsSecurityConfig {
 
     // Allowed origins
     configuration.setAllowedOrigins(Arrays.asList(
-      "https://oseplatform.com",
-      "https://ayokoding.com",
+      "https://example.com",
+      "https://example.com",
       "http://localhost:3000"  // Development
     ));
 
@@ -1609,8 +1609,8 @@ class CorsSecurityConfig {
     val configuration = CorsConfiguration().apply {
       // Allowed origins
       allowedOrigins = listOf(
-        "https://oseplatform.com",
-        "https://ayokoding.com",
+        "https://example.com",
+        "https://example.com",
         "http://localhost:3000"  // Development
       )
 
@@ -1652,7 +1652,7 @@ class CorsSecurityConfig {
 @RestController
 @RequestMapping("/api/v1/zakat")
 @CrossOrigin(
-  origins = {"https://oseplatform.com", "http://localhost:3000"},
+  origins = {"https://example.com", "http://localhost:3000"},
   methods = {RequestMethod.GET, RequestMethod.POST},
   allowedHeaders = {"Authorization", "Content-Type"},
   exposedHeaders = {"X-Total-Count"},
@@ -1668,7 +1668,7 @@ public class ZakatController {
   }
 
   @PostMapping("/calculate")
-  @CrossOrigin(origins = "https://oseplatform.com")  // Method-level override
+  @CrossOrigin(origins = "https://example.com")  // Method-level override
   public ResponseEntity<ZakatCalculationResponse> calculateZakat(
     @RequestBody @Valid CalculateZakatRequest request
   ) {

@@ -1,6 +1,6 @@
 ---
 title: Go Build Configuration
-description: Authoritative build and deployment standards for Go projects in the OSE Platform
+description: Authoritative build and deployment standards for Go projects in the a-demo
 category: explanation
 subcategory: prog-lang
 tags:
@@ -52,7 +52,7 @@ updated: 2026-03-06
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Go tutorial.
+**This document is a-demo-specific**, not a Go tutorial.
 
 **What you need to know before reading**:
 
@@ -63,9 +63,9 @@ updated: 2026-03-06
 
 ## 🎯 Purpose
 
-This document defines **authoritative build and configuration standards** for Go development in the OSE Platform. These rules ensure consistent, reproducible builds across all environments and developers.
+This document defines **authoritative build and configuration standards** for Go development in the a-demo. These rules ensure consistent, reproducible builds across all environments and developers.
 
-**Target Audience**: OSE Platform Go developers configuring builds, CI/CD pipelines, and deployments.
+**Target Audience**: a-demo Go developers configuring builds, CI/CD pipelines, and deployments.
 
 **Scope**: go.mod management, Makefile patterns, compilation flags, cross-compilation, Docker builds, CI/CD configuration, release automation.
 

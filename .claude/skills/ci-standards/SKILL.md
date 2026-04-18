@@ -29,12 +29,12 @@ Inline skill providing CI/CD standards knowledge from the governance documentati
 
 ## Coverage Thresholds
 
-| Threshold | Projects                                                    |
-| --------- | ----------------------------------------------------------- |
-| 90%       | Demo-be backends, CLI apps, Go libs, TS backend (ts-effect) |
-| 80%       | Content platforms (ayokoding-web, oseplatform-web)          |
-| 75%       | Fullstack (a-demo-fs-ts-nextjs)                             |
-| 70%       | FE apps, organiclever-fe, Dart FE                           |
+| Threshold | Projects                                                     |
+| --------- | ------------------------------------------------------------ |
+| 90%       | Demo-be backends, CLI apps, Go libs, TS backend (ts-effect)  |
+| 80%       | Content platforms (a-demo-fs-ts-nextjs, a-demo-fs-ts-nextjs) |
+| 75%       | Fullstack (a-demo-fs-ts-nextjs)                              |
+| 70%       | FE apps, a-demo-fe-ts-nextjs, Dart FE                        |
 
 ## Docker Setup Requirements
 

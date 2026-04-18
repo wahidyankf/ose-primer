@@ -1,6 +1,6 @@
 ---
 title: "F# Concurrency Standards"
-description: Authoritative OSE Platform F# concurrency standards — async workflows, MailboxProcessor actor model, Task interop
+description: Authoritative a-demo F# concurrency standards — async workflows, MailboxProcessor actor model, Task interop
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not an F# tutorial.
+**This document is a-demo-specific**, not an F# tutorial.
 
 ## Purpose
 
-This document defines **authoritative concurrency standards** for F# development in OSE Platform. F# async workflows, MailboxProcessor actors, and Task computation expressions provide composable, safe concurrency without shared mutable state.
+This document defines **authoritative concurrency standards** for F# development in a-demo. F# async workflows, MailboxProcessor actors, and Task computation expressions provide composable, safe concurrency without shared mutable state.
 
-**Target Audience**: OSE Platform F# developers working on concurrent systems
+**Target Audience**: a-demo F# developers working on concurrent systems
 
 **Scope**: F# `async {}` workflows, `task {}` CE, MailboxProcessor, `Async.Parallel`, cancellation tokens, C# interop
 

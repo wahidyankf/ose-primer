@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset organiclever:001-create-users-table dbms:postgresql
+-- changeset a-demo:001-create-users-table dbms:postgresql
 CREATE TABLE users (
     id            UUID         NOT NULL DEFAULT gen_random_uuid(),
     username      VARCHAR(50)  NOT NULL,

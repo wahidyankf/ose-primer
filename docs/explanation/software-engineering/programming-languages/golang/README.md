@@ -1,6 +1,6 @@
 ---
 title: Golang
-description: OSE Platform Authoritative Go Coding Standards and Framework Stack (Go 1.21+)
+description: a-demo Authoritative Go Coding Standards and Framework Stack (Go 1.21+)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -27,13 +27,13 @@ updated: 2026-03-06
 
 # Golang
 
-**This is THE authoritative reference** for Go coding standards in OSE Platform.
+**This is THE authoritative reference** for Go coding standards in a-demo.
 
-All Go code written for the OSE Platform MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
+All Go code written for the a-demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
 
 ## Framework Stack
 
-OSE Platform Go applications MUST use the following stack:
+a-demo Go applications MUST use the following stack:
 
 **Standard Library (Primary)**:
 
@@ -77,21 +77,21 @@ OSE Platform Go applications MUST use the following stack:
 - **Baseline**: Go 1.21+ (MUST use minimum) - PGO production-ready, built-in min/max/clear
 - **Recommended**: Go 1.23+ (SHOULD migrate to) - Iterator functions, unique package, timer changes
 - **Previous**: Go 1.25 - Green Tea GC (experimental), encoding/json/v2, container-aware GOMAXPROCS
-- **Latest**: Go 1.26 (RECOMMENDED for new projects) - Current stable release used across all OSE Platform Go modules
+- **Latest**: Go 1.26 (RECOMMENDED for new projects) - Current stable release used across all a-demo Go modules
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the AyoKoding Go learning path. These are **OSE Platform-specific style guides**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the a-demo Go learning path. These are **a-demo-specific style guides**, not educational tutorials.
 
 **You MUST understand Go fundamentals before using these standards:**
 
-**What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply Go knowledge in THIS codebase.
+**What this documentation covers**: a-demo naming conventions, framework choices, repository-specific patterns, how to apply Go knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Go syntax, language fundamentals, generic patterns (those are in ayokoding-web).
+**What this documentation does NOT cover**: Go syntax, language fundamentals, generic patterns (those are in a-demo-fs-ts-nextjs).
 
 ## Software Engineering Principles
 
-Go development in OSE Platform enforces foundational software engineering principles:
+Go development in a-demo enforces foundational software engineering principles:
 
 1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - MUST automate through code generation (`protoc`, `mockgen`, `stringer`), `go generate`, `golangci-lint`, `gofmt`, `go test`, and CI/CD integration for testing and linting
 
@@ -105,7 +105,7 @@ Go development in OSE Platform enforces foundational software engineering princi
 
 ## Go Version Strategy
 
-OSE Platform follows a three-tier Go versioning strategy focused on modern features:
+a-demo follows a three-tier Go versioning strategy focused on modern features:
 
 **Go 1.21+ (Baseline - REQUIRED)**:
 
@@ -135,7 +135,7 @@ OSE Platform follows a three-tier Go versioning strategy focused on modern featu
 **Go 1.26 (Latest - RECOMMENDED)**:
 
 - New projects SHOULD use Go 1.26 for the latest stable features
-- Current stable release used across all OSE Platform Go modules
+- Current stable release used across all a-demo Go modules
 - Green Tea GC now default (10-40% GC overhead reduction)
 - Self-referential generic type constraints (language change)
 - Enhanced `new()` with expression support
@@ -149,9 +149,9 @@ OSE Platform follows a three-tier Go versioning strategy focused on modern featu
 
 **Unlike Java's LTS model**: Go releases every 6 months with backward compatibility guarantees (Go 1 compatibility promise). No LTS distinction exists; all releases receive security patches for one year. Platform strategy focuses on staying current with stable releases.
 
-## OSE Platform Coding Standards (Authoritative)
+## a-demo Coding Standards (Authoritative)
 
-**MUST follow these mandatory standards for all Go code in OSE Platform:**
+**MUST follow these mandatory standards for all Go code in a-demo:**
 
 1. **[Coding Standards](./coding-standards.md)** - Naming conventions, package organization, Effective Go idioms
 2. **[Testing Standards](./testing-standards.md)** - Table-driven tests, testify, gomock, TestContainers, Godog
@@ -196,10 +196,10 @@ OSE Platform follows a three-tier Go versioning strategy focused on modern featu
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["Go Standards Index<br/>(OSE Platform)"]:::blue
+    A["Go Standards Index<br/>(a-demo)"]:::blue
     B["Core Standards"]:::orange
     C["Specialized Standards"]:::teal
-    D["Learning Resources<br/>(AyoKoding)"]:::purple
+    D["Learning Resources<br/>(a-demo)"]:::purple
 
     A --> B
     A --> C
@@ -230,16 +230,16 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
-## Primary Use Cases in OSE Platform
+## Primary Use Cases in a-demo
 
 **CLI Tools**:
 
-- ayokoding-cli MUST use Go for content automation (Hugo navigation generation, title updates)
+- rhino-cli MUST use Go for content automation (Hugo navigation generation, title updates)
 - rhino-cli MUST use Go for repository management (RHINO = Repository Hygiene & INtegration Orchestrator; includes `java validate-annotations` for Java null-safety annotation validation)
-- oseplatform-cli MUST use Go for OSE Platform site validation (link checking)
+- rhino-cli MUST use Go for a-demo site validation (link checking)
 - Administrative tools SHOULD use Go for fast startup and easy distribution (single binary)
 - Code generation and scaffolding MAY use Go with `text/template` or `html/template`
-- All OSE Platform CLI apps MUST use domain-prefixed Cobra subcommands (`{cli-name} {domain} {action}`) — see [BDD Spec-to-Test Mapping Convention](../../../../../governance/development/infra/bdd-spec-test-mapping.md) for source file and Gherkin tag naming rules
+- All a-demo CLI apps MUST use domain-prefixed Cobra subcommands (`{cli-name} {domain} {action}`) — see [BDD Spec-to-Test Mapping Convention](../../../../../governance/development/infra/bdd-spec-test-mapping.md) for source file and Gherkin tag naming rules
 
 **High-Performance Services**:
 

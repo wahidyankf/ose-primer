@@ -1,6 +1,6 @@
 ---
 title: "Playwright BDD Integration (playwright-bdd)"
-description: OSE Platform standards for playwright-bdd — driving Playwright tests from Gherkin feature files
+description: a-demo standards for playwright-bdd — driving Playwright tests from Gherkin feature files
 category: explanation
 subcategory: automation-testing
 tags:
@@ -20,7 +20,7 @@ updated: 2026-03-04
 
 # Playwright BDD Integration (playwright-bdd)
 
-**This is the authoritative OSE Platform reference** for using playwright-bdd to drive Playwright
+**This is the authoritative a-demo reference** for using playwright-bdd to drive Playwright
 tests from Gherkin feature files.
 
 ## Prerequisite Knowledge

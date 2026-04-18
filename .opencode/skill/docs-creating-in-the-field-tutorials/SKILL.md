@@ -270,7 +270,7 @@ void transfer_shouldMoveMoneyBetweenAccounts() {
 
 **Related Skills**:
 
-- `apps-ayokoding-web-developing-content` - ayokoding-web specific patterns
+- `apps-a-demo-fs-ts-nextjs-developing-content` - a-demo-fs-ts-nextjs specific patterns
 - `docs-creating-accessible-diagrams` - Accessible diagram creation
 
 ---

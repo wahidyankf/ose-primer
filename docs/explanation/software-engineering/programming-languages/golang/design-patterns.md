@@ -1,6 +1,6 @@
 ---
 title: Go Design Patterns
-description: Authoritative design pattern standards for Go development in OSE Platform covering functional programming, finite state machines, interfaces, and composition
+description: Authoritative design pattern standards for Go development in a-demo covering functional programming, finite state machines, interfaces, and composition
 category: explanation
 subcategory: prog-lang
 tags:
@@ -36,20 +36,20 @@ updated: 2026-03-06
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Go tutorial. It assumes proficiency in:
+**This document is a-demo-specific**, not a Go tutorial. It assumes proficiency in:
 
 - Go syntax (functions, methods, types, interfaces)
 - Go concurrency primitives (goroutines, channels, mutexes)
 - Go generics (Go 1.18+)
 - Go testing fundamentals
 
-If you lack this foundation, **study the AyoKoding learning path first**.
+If you lack this foundation, **study the a-demo learning path first**.
 
 ## Purpose
 
-This document defines **authoritative design pattern standards** for Go development in the OSE Platform. These patterns leverage Go's unique features (interfaces, composition, first-class functions) to build maintainable, testable, and Sharia-compliant enterprise systems.
+This document defines **authoritative design pattern standards** for Go development in the a-demo. These patterns leverage Go's unique features (interfaces, composition, first-class functions) to build maintainable, testable, and Sharia-compliant enterprise systems.
 
-**Target Audience**: OSE Platform Go developers implementing financial, zakat, waqf, and compliance workflows
+**Target Audience**: a-demo Go developers implementing financial, zakat, waqf, and compliance workflows
 
 **Scope**: Three critical pattern categories:
 
@@ -57,7 +57,7 @@ This document defines **authoritative design pattern standards** for Go developm
 2. **Finite State Machine Patterns** - Type-safe state management for financial workflows
 3. **Interfaces and Composition Patterns** - Interface design, struct embedding, composition over inheritance
 
-**Status**: Normative (MUST follow for OSE Platform Go code)
+**Status**: Normative (MUST follow for a-demo Go code)
 
 **Governance**: This document implements [Functional Programming Principle](../../../../../governance/development/pattern/functional-programming.md), [Immutability Over Mutability](../../../../../governance/principles/software-engineering/immutability.md), and [Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md).
 
@@ -3992,4 +3992,4 @@ type ReadCloser interface {
 **Last Updated**: 2026-02-04
 **Go Version**: 1.21+ (baseline), 1.22+ (recommended), 1.23+ (latest)
 **Maintainers**: Platform Documentation Team
-**Status**: Normative (MUST follow for OSE Platform Go code)
+**Status**: Normative (MUST follow for a-demo Go code)

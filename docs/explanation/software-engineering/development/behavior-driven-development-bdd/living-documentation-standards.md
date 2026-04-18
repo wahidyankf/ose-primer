@@ -1,6 +1,6 @@
 ---
 title: "Living Documentation Standards"
-description: OSE Platform standards for executable specifications and documentation dashboards
+description: a-demo standards for executable specifications and documentation dashboards
 category: explanation
 subcategory: development
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-OSE Platform standards for maintaining living documentation through executable scenarios.
+a-demo standards for maintaining living documentation through executable scenarios.
 
 ## REQUIRED: Scenarios Execute in CI/CD
 
@@ -102,7 +102,7 @@ features/
     donation-processing.feature
 ```
 
-## OSE Platform Examples
+## a-demo Examples
 
 ### Campaign Feature Status
 

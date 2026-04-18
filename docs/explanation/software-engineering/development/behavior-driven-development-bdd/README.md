@@ -1,6 +1,6 @@
 ---
 title: "Behavior-Driven Development (BDD)"
-description: OSE Platform BDD standards for Gherkin scenarios, Three Amigos collaboration, and acceptance testing
+description: a-demo BDD standards for Gherkin scenarios, Three Amigos collaboration, and acceptance testing
 category: explanation
 subcategory: development
 tags:
@@ -18,7 +18,7 @@ updated: 2026-02-09
 
 # Behavior-Driven Development (BDD)
 
-**This is THE authoritative reference** for Behavior-Driven Development standards in OSE Platform.
+**This is THE authoritative reference** for Behavior-Driven Development standards in a-demo.
 
 All acceptance criteria and stakeholder-facing specifications MUST follow the BDD methodology and standards documented here.
 
@@ -45,17 +45,17 @@ All acceptance criteria and stakeholder-facing specifications MUST follow the BD
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the AyoKoding Behavior-Driven Development learning path. These are **OSE Platform-specific BDD standards**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the a-demo Behavior-Driven Development learning path. These are **a-demo-specific BDD standards**, not educational tutorials.
 
 **You MUST understand BDD fundamentals before using these standards:**
 
-**What this documentation covers**: OSE Platform-specific BDD patterns, Islamic finance scenarios, Three Amigos with Shariah scholars, repository-specific feature organization, integration with DDD bounded contexts.
+**What this documentation covers**: a-demo-specific BDD patterns, Islamic finance scenarios, Three Amigos with Shariah scholars, repository-specific feature organization, integration with DDD bounded contexts.
 
-**What this documentation does NOT cover**: BDD fundamentals, basic Gherkin syntax, generic collaboration techniques (those are in ayokoding-web).
+**What this documentation does NOT cover**: BDD fundamentals, basic Gherkin syntax, generic collaboration techniques (those are in a-demo-fs-ts-nextjs).
 
 ## Software Engineering Principles
 
-BDD standards in OSE Platform align with core software engineering principles:
+BDD standards in a-demo align with core software engineering principles:
 
 1. **[Documentation First](../../../../../governance/principles/content/documentation-first.md)** - Gherkin scenarios serve as executable specifications written before implementation. Living documentation stays synchronized with code through automated testing.
 
@@ -67,7 +67,7 @@ BDD standards in OSE Platform align with core software engineering principles:
 
 5. **[Reproducibility First](../../../../../governance/principles/software-engineering/reproducibility.md)** - Scenarios in version control ensure reproducible specifications. Deterministic Given steps produce consistent outcomes.
 
-## OSE Platform BDD Standards
+## a-demo BDD Standards
 
 ### 1. Gherkin Syntax
 
@@ -109,7 +109,7 @@ BDD standards in OSE Platform align with core software engineering principles:
 - REQUIRED: Use ubiquitous language in scenarios
 - REQUIRED: Domain events in Then steps
 
-## OSE Platform BDD Examples
+## a-demo BDD Examples
 
 ### Zakat Calculation Feature
 

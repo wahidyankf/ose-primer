@@ -44,11 +44,11 @@ Playwright is written in TypeScript and provides first-class TypeScript support.
 
 **2. Learn Playwright Fundamentals**:
 
-**What this documentation covers**: OSE Platform Playwright standards, test organization, page object patterns, how to apply Playwright knowledge in THIS codebase.
+**What this documentation covers**: a-demo Playwright standards, test organization, page object patterns, how to apply Playwright knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Playwright tutorials, basic selectors, generic patterns (those are in ayokoding-web).
+**What this documentation does NOT cover**: Playwright tutorials, basic selectors, generic patterns (those are in a-demo-fs-ts-nextjs).
 
-**This documentation is OSE Platform-specific explanation**, not Playwright tutorials.
+**This documentation is a-demo-specific explanation**, not Playwright tutorials.
 
 ## Framework Standards
 

@@ -436,7 +436,7 @@ ECTO_IPV6=false
 
 # Endpoint (required)
 SECRET_KEY_BASE=LONG_SECURE_RANDOM_STRING_64_CHARS
-PHX_HOST=oseplatform.com
+PHX_HOST=example.com
 PORT=4000
 
 # External APIs (required)
@@ -817,7 +817,7 @@ config :ose_platform, :donations,
 
   # Tax receipt configuration
   enable_tax_receipts: true,
-  tax_receipt_email_from: "receipts@oseplatform.com",
+  tax_receipt_email_from: "receipts@example.com",
 
   # Anonymous donations
   allow_anonymous: true

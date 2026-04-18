@@ -1,6 +1,6 @@
 ---
 title: "Clojure Code Quality Standards"
-description: Authoritative OSE Platform Clojure code quality standards (clj-kondo, cljfmt, Eastwood)
+description: Authoritative a-demo Clojure code quality standards (clj-kondo, cljfmt, Eastwood)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Clojure tutorial.
+**This document is a-demo-specific**, not a Clojure tutorial.
 
 ## Purpose
 
-This document defines the mandatory code quality toolchain for Clojure development in OSE Platform. All tools run automatically in pre-commit hooks and CI/CD — manual code quality checks are insufficient.
+This document defines the mandatory code quality toolchain for Clojure development in a-demo. All tools run automatically in pre-commit hooks and CI/CD — manual code quality checks are insufficient.
 
-**Target Audience**: OSE Platform Clojure developers, DevOps engineers, automated quality tools
+**Target Audience**: a-demo Clojure developers, DevOps engineers, automated quality tools
 
 **Scope**: clj-kondo configuration, cljfmt formatting rules, Eastwood additional linting, reflection warnings, namespace aliases, code hygiene rules
 
@@ -93,10 +93,10 @@ Eastwood catches functions that silently ignore return values, which often indic
  :config-paths [".clj-kondo"]}
 ```
 
-### Custom Lint Rules for OSE Platform
+### Custom Lint Rules for a-demo
 
 ```clojure
-;; CORRECT: Extended config for OSE Platform conventions
+;; CORRECT: Extended config for a-demo conventions
 {:linters
  {:unused-namespace {:level :error}
   :unused-referred-var {:level :error}

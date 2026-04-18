@@ -91,7 +91,7 @@ const nextConfig: NextConfig = {
 export default nextConfig;
 ```
 
-### OSE Platform Configuration
+### a-demo Configuration
 
 ```typescript
 // next.config.ts
@@ -120,7 +120,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "cdn.oseplatform.com",
+        hostname: "cdn.example.com",
         pathname: "/images/**",
       },
       {
@@ -136,7 +136,7 @@ const nextConfig: NextConfig = {
   // Environment variables exposed to browser
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-    NEXT_PUBLIC_SITE_NAME: "OSE Platform",
+    NEXT_PUBLIC_SITE_NAME: "a-demo",
   },
 
   // Security headers
@@ -191,7 +191,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/v2/:path*",
-        destination: "https://api-v2.oseplatform.com/:path*",
+        destination: "https://api-v2.example.com/:path*",
       },
     ];
   },
@@ -227,8 +227,8 @@ project/
 
 ```bash
 # API Configuration
-NEXT_PUBLIC_API_URL=https://api.oseplatform.com
-NEXT_PUBLIC_SITE_NAME=OSE Platform
+NEXT_PUBLIC_API_URL=https://api.example.com
+NEXT_PUBLIC_SITE_NAME=a-demo
 
 # Database
 DATABASE_URL=postgresql://user:password@localhost:5432/ose_platform
@@ -555,7 +555,7 @@ const nextConfig: NextConfig = {
     // Server Actions (stable in Next.js 16)
     serverActions: {
       bodySizeLimit: "2mb",
-      allowedOrigins: ["oseplatform.com"],
+      allowedOrigins: ["example.com"],
     },
 
     // Turbo (bundler)
@@ -590,7 +590,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "cdn.oseplatform.com",
+        hostname: "cdn.example.com",
         port: "",
         pathname: "/images/**",
       },
@@ -700,13 +700,13 @@ const nextConfig: NextConfig = {
       // External API rewrite
       {
         source: "/api/v2/:path*",
-        destination: "https://api-v2.oseplatform.com/:path*",
+        destination: "https://api-v2.example.com/:path*",
       },
 
       // Proxy rewrite
       {
         source: "/legacy/:path*",
-        destination: "https://legacy.oseplatform.com/:path*",
+        destination: "https://legacy.example.com/:path*",
       },
 
       // Fallback rewrites
@@ -781,7 +781,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: "https://oseplatform.com",
+            value: "https://example.com",
           },
           {
             key: "Access-Control-Allow-Methods",
@@ -811,15 +811,15 @@ const nextConfig: NextConfig = {
     localeDetection: true,
     domains: [
       {
-        domain: "oseplatform.com",
+        domain: "example.com",
         defaultLocale: "en",
       },
       {
-        domain: "id.oseplatform.com",
+        domain: "id.example.com",
         defaultLocale: "id",
       },
       {
-        domain: "ar.oseplatform.com",
+        domain: "ar.example.com",
         defaultLocale: "ar",
       },
     ],

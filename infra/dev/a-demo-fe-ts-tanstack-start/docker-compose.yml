@@ -7,14 +7,14 @@ services:
     container_name: a-demo-fe-tsst-db
     environment:
       POSTGRES_DB: demo_be
-      POSTGRES_USER: ${POSTGRES_USER:-organiclever}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-organiclever}
+      POSTGRES_USER: ${POSTGRES_USER:-a-demo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-a-demo}
     ports:
       - "5432:5432"
     volumes:
       - a-demo-fe-tsst-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-organiclever} -d demo_be"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-a-demo} -d demo_be"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -35,7 +35,7 @@ services:
         condition: service_healthy
     environment:
       - PORT=8201
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-organiclever}:${POSTGRES_PASSWORD:-organiclever}@a-demo-be-db:5432/demo_be
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-a-demo}:${POSTGRES_PASSWORD:-a-demo}@a-demo-be-db:5432/demo_be
       - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
       - ENABLE_TEST_API=true
     healthcheck:

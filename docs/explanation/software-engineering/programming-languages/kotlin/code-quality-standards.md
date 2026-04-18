@@ -1,6 +1,6 @@
 ---
 title: "Kotlin Code Quality Standards"
-description: Authoritative OSE Platform Kotlin code quality standards (ktlint, Detekt, compiler configuration)
+description: Authoritative a-demo Kotlin code quality standards (ktlint, Detekt, compiler configuration)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Kotlin tutorial. We define HOW to enforce code quality in THIS codebase.
+**This document is a-demo-specific**, not a Kotlin tutorial. We define HOW to enforce code quality in THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative code quality standards** for Kotlin development in the OSE Platform. It covers ktlint formatting enforcement, Detekt static analysis configuration, Kotlin compiler configuration, and Gradle build task integration.
+This document defines **authoritative code quality standards** for Kotlin development in the a-demo. It covers ktlint formatting enforcement, Detekt static analysis configuration, Kotlin compiler configuration, and Gradle build task integration.
 
-**Target Audience**: OSE Platform Kotlin developers, DevOps engineers, technical reviewers
+**Target Audience**: a-demo Kotlin developers, DevOps engineers, technical reviewers
 
 **Scope**: ktlint rules, Detekt configuration, compiler flags, pre-commit hooks, CI/CD quality gates
 
@@ -227,7 +227,7 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 ### detekt.yml Configuration
 
 ```yaml
-# config/detekt.yml - OSE Platform Detekt configuration
+# config/detekt.yml - a-demo Detekt configuration
 
 build:
   maxIssues: 0 # Fail build on any violation

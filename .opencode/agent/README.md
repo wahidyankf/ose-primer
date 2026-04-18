@@ -61,59 +61,59 @@
 - Orchestrated directly by the [Plan Execution Workflow](../../governance/workflows/plan/plan-execution.md) — the calling context reads the workflow, manages the Task list, and delegates per-item work to specialized agents. No dedicated executor subagent.
 - **plan-execution-checker** - Final validation of completed plan implementation (runs in an isolated subagent context for independent judgment)
 
-### ayokoding-web Family
+### a-demo-fs-ts-nextjs Family
 
 **General Content** (Maker-Checker-Fixer):
 
-- **apps-ayokoding-web-general-maker** - Creates general content (by-concept tutorials, guides)
-- **apps-ayokoding-web-general-checker** - Validates general content quality
-- **apps-ayokoding-web-general-fixer** - Applies validated fixes to general content
+- **apps-a-demo-fs-ts-nextjs-general-maker** - Creates general content (by-concept tutorials, guides)
+- **apps-a-demo-fs-ts-nextjs-general-checker** - Validates general content quality
+- **apps-a-demo-fs-ts-nextjs-general-fixer** - Applies validated fixes to general content
 
 **By-Example Content** (Maker-Checker-Fixer):
 
-- **apps-ayokoding-web-by-example-maker** - Creates by-example tutorials (75-90 annotated examples)
-- **apps-ayokoding-web-by-example-checker** - Validates by-example annotation density (1-2.25 ratio)
-- **apps-ayokoding-web-by-example-fixer** - Applies validated fixes to by-example content
+- **apps-a-demo-fs-ts-nextjs-by-example-maker** - Creates by-example tutorials (75-90 annotated examples)
+- **apps-a-demo-fs-ts-nextjs-by-example-checker** - Validates by-example annotation density (1-2.25 ratio)
+- **apps-a-demo-fs-ts-nextjs-by-example-fixer** - Applies validated fixes to by-example content
 
 **Facts Validation** (Checker-Fixer):
 
-- **apps-ayokoding-web-facts-checker** - Validates factual accuracy using WebSearch/WebFetch
-- **apps-ayokoding-web-facts-fixer** - Applies validated factual fixes
+- **apps-a-demo-fs-ts-nextjs-facts-checker** - Validates factual accuracy using WebSearch/WebFetch
+- **apps-a-demo-fs-ts-nextjs-facts-fixer** - Applies validated factual fixes
 
 **Link Validation** (Checker-Fixer):
 
-- **apps-ayokoding-web-link-checker** - Validates links (hybrid: validator + cache manager)
-- **apps-ayokoding-web-link-fixer** - Applies validated link fixes
+- **apps-a-demo-fs-ts-nextjs-link-checker** - Validates links (hybrid: validator + cache manager)
+- **apps-a-demo-fs-ts-nextjs-link-fixer** - Applies validated link fixes
 
 **Structure Management** (Maker-Checker-Fixer):
 
-- **apps-ayokoding-web-structure-maker** - Creates folder structure and \_index.md files
-- **apps-ayokoding-web-structure-checker** - Validates folder organization and navigation depth
-- **apps-ayokoding-web-structure-fixer** - Applies validated structure fixes
+- **apps-a-demo-fs-ts-nextjs-structure-maker** - Creates folder structure and \_index.md files
+- **apps-a-demo-fs-ts-nextjs-structure-checker** - Validates folder organization and navigation depth
+- **apps-a-demo-fs-ts-nextjs-structure-fixer** - Applies validated structure fixes
 
 **Specialized**:
 
-- **apps-ayokoding-web-navigation-maker** - Updates prev/next navigation links in frontmatter
-- **apps-ayokoding-web-title-maker** - Generates appropriate titles based on content type and level
-- **apps-ayokoding-web-deployer** - Deploys to production branch (prod-ayokoding-web)
+- **apps-a-demo-fs-ts-nextjs-navigation-maker** - Updates prev/next navigation links in frontmatter
+- **apps-a-demo-fs-ts-nextjs-title-maker** - Generates appropriate titles based on content type and level
+- **apps-a-demo-fs-ts-nextjs-deployer** - Deploys to production branch (prod-a-demo-fs-ts-nextjs)
 
 **In-the-Field Content** (Maker-Checker-Fixer):
 
-- **apps-ayokoding-web-in-the-field-maker** - Creates in-the-field tutorials from real-world experiences
-- **apps-ayokoding-web-in-the-field-checker** - Validates in-the-field tutorial quality
-- **apps-ayokoding-web-in-the-field-fixer** - Applies validated fixes to in-the-field tutorials
+- **apps-a-demo-fs-ts-nextjs-in-the-field-maker** - Creates in-the-field tutorials from real-world experiences
+- **apps-a-demo-fs-ts-nextjs-in-the-field-checker** - Validates in-the-field tutorial quality
+- **apps-a-demo-fs-ts-nextjs-in-the-field-fixer** - Applies validated fixes to in-the-field tutorials
 
-### oseplatform-web Family
+### a-demo-fs-ts-nextjs Family
 
 **Maker-Checker-Fixer Pattern**:
 
-- **apps-oseplatform-web-content-maker** - Creates landing page content (PaperMod theme, English-only)
-- **apps-oseplatform-web-content-checker** - Validates PaperMod theme compliance
-- **apps-oseplatform-web-content-fixer** - Applies validated fixes
+- **apps-a-demo-fs-ts-nextjs-content-maker** - Creates landing page content (PaperMod theme, English-only)
+- **apps-a-demo-fs-ts-nextjs-content-checker** - Validates PaperMod theme compliance
+- **apps-a-demo-fs-ts-nextjs-content-fixer** - Applies validated fixes
 
 **Deployment**:
 
-- **apps-oseplatform-web-deployer** - Deploys to production branch (prod-oseplatform-web)
+- **apps-a-demo-fs-ts-nextjs-deployer** - Deploys to production branch (prod-a-demo-fs-ts-nextjs)
 
 ### Repository Governance Family
 
@@ -199,16 +199,16 @@ opencode agent list
 5. [Move to plans/done/ if validation passes]
    \`\`\`
 
-**Hugo Content (ayokoding-web)**:
+**Hugo Content (a-demo-fs-ts-nextjs)**:
 \`\`\`bash
 
-1. apps-ayokoding-web-general-maker → Create content
-2. apps-ayokoding-web-general-checker → Validate quality
-3. apps-ayokoding-web-facts-checker → Verify factual accuracy
-4. apps-ayokoding-web-link-checker → Validate links
+1. apps-a-demo-fs-ts-nextjs-general-maker → Create content
+2. apps-a-demo-fs-ts-nextjs-general-checker → Validate quality
+3. apps-a-demo-fs-ts-nextjs-facts-checker → Verify factual accuracy
+4. apps-a-demo-fs-ts-nextjs-link-checker → Validate links
 5. [User reviews all audit reports]
-6. apps-ayokoding-web-general-fixer → Apply validated fixes
-7. apps-ayokoding-web-deployer → Deploy to production
+6. apps-a-demo-fs-ts-nextjs-general-fixer → Apply validated fixes
+7. apps-a-demo-fs-ts-nextjs-deployer → Deploy to production
    \`\`\`
 
 ## Agent Patterns
@@ -242,7 +242,7 @@ opencode agent list
 
 **Purpose**: Combine validation + state management
 **Tools**: Standard + write (for cache only)
-**Examples**: docs-link-checker, apps-ayokoding-web-link-checker
+**Examples**: docs-link-checker, apps-a-demo-fs-ts-nextjs-link-checker
 
 ## Skills Integration
 

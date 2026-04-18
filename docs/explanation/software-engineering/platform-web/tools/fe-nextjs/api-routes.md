@@ -115,7 +115,7 @@ export async function PATCH(request: Request) {
 }
 ```
 
-### OSE Platform: Zakat API
+### a-demo: Zakat API
 
 ```typescript
 // app/api/zakat/calculations/route.ts
@@ -294,7 +294,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 }
 ```
 
-### OSE Platform: Murabaha Application API
+### a-demo: Murabaha Application API
 
 ```typescript
 // app/api/murabaha/applications/[id]/route.ts
@@ -525,7 +525,7 @@ export async function POST(request: Request) {
 }
 ```
 
-### OSE Platform: Error Responses
+### a-demo: Error Responses
 
 ```typescript
 // app/api/waqf/donations/route.ts

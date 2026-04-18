@@ -1,6 +1,6 @@
 ---
 title: "C# Concurrency Standards"
-description: Authoritative OSE Platform C# concurrency standards (async/await, CancellationToken, Channel<T>, Parallel.ForEachAsync)
+description: Authoritative a-demo C# concurrency standards (async/await, CancellationToken, Channel<T>, Parallel.ForEachAsync)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a C# tutorial.
+**This document is a-demo-specific**, not a C# tutorial.
 
 ## Purpose
 
-This document defines **authoritative concurrency standards** for C# in the OSE Platform.
+This document defines **authoritative concurrency standards** for C# in the a-demo.
 
-**Target Audience**: OSE Platform C# developers writing asynchronous or parallel code
+**Target Audience**: a-demo C# developers writing asynchronous or parallel code
 
 **Scope**: async/await best practices, Task vs ValueTask, CancellationToken, Channel<T>, Parallel.ForEachAsync, PLINQ, SemaphoreSlim, deadlock prevention
 

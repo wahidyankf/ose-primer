@@ -41,7 +41,7 @@ open-sharia-enterprise/
 │   └── k8s/                  # Kubernetes deployments
 ├── specs/                     # Gherkin acceptance specs and OpenAPI contracts
 │   ├── apps/                  # Per-app specs
-│   │   └── [domain]/         # e.g. a-demo/, organiclever/
+│   │   └── [domain]/         # e.g. a-demo/, a-demo/
 │   │       ├── contracts/    # OpenAPI 3.1 contract spec
 │   │       ├── be/gherkin/   # Backend acceptance specs
 │   │       ├── fe/gherkin/   # Frontend acceptance specs
@@ -83,15 +83,15 @@ Flat structure - all apps at the same level, no subdirectories.
 
 **Current Apps**:
 
-- `oseplatform-web` - OSE Platform website (Hugo static site)
-- `ayokoding-web` - AyoKoding educational platform (Next.js 16 fullstack content platform)
-- `ayokoding-cli` - AyoKoding CLI tool (Go application)
+- `a-demo-fs-ts-nextjs` - a-demo website (Hugo static site)
+- `a-demo-fs-ts-nextjs` - a-demo educational platform (Next.js 16 fullstack content platform)
+- `rhino-cli` - a-demo CLI tool (Go application)
 - `rhino-cli` - Repository management CLI, includes `java validate-annotations` (Go application)
-- `oseplatform-cli` - OSE Platform site maintenance CLI (Go application)
-- `organiclever-fe` - OrganicLever landing website (Next.js application)
-- `organiclever-be` - OrganicLever REST API backend (F#/Giraffe application)
-- `organiclever-fe-e2e` - Playwright FE E2E tests for organiclever-fe
-- `organiclever-be-e2e` - Playwright BE E2E tests for organiclever-be
+- `rhino-cli` - a-demo site maintenance CLI (Go application)
+- `a-demo-fe-ts-nextjs` - a-demo landing website (Next.js application)
+- `a-demo-be-fsharp-giraffe` - a-demo REST API backend (F#/Giraffe application)
+- `a-demo-fe-e2e` - Playwright FE E2E tests for a-demo-fe-ts-nextjs
+- `a-demo-be-e2e` - Playwright BE E2E tests for a-demo-be-fsharp-giraffe
 
 ### App Structure (Hugo Static Site)
 
@@ -186,7 +186,7 @@ Contains reusable library packages.
 **Current Libraries**:
 
 - `golang-commons` - Shared Go utilities (links checker + output functions)
-- `hugo-commons` - Shared Hugo utilities (Godog BDD testing)
+- `golang-commons` - Shared Hugo utilities (Godog BDD testing)
 
 **Examples** (planned):
 
@@ -227,7 +227,7 @@ libs/ts-utils/
 
 ### Current Scope
 
-Go (`golang-commons`, `hugo-commons`) and future TypeScript, Java, Kotlin, Python libraries.
+Go (`golang-commons`, `golang-commons`) and future TypeScript, Java, Kotlin, Python libraries.
 
 ## Experimental Projects vs Monorepo Projects
 
@@ -320,11 +320,11 @@ The repository contains two distinct project structures with different purposes 
 
 Location: `apps/[app-name]/project.json` or `libs/[lib-name]/project.json`
 
-**Hugo App Example** (`oseplatform-web`):
+**Hugo App Example** (`a-demo-fs-ts-nextjs`):
 
 ```json
 {
-  "name": "oseplatform-web",
+  "name": "a-demo-fs-ts-nextjs",
   "projectType": "application",
   "targets": {
     "dev": {
@@ -347,7 +347,7 @@ Location: `apps/[app-name]/project.json` or `libs/[lib-name]/project.json`
       }
     }
   },
-  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:oseplatform"]
+  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:a-demo"]
 }
 ```
 
@@ -418,12 +418,12 @@ Location: `apps/[app-name]/project.json` or `libs/[lib-name]/project.json`
 
 All projects use a standard four-dimension tag scheme:
 
-| Dimension   | Values                                                | Required                 | Purpose                 |
-| ----------- | ----------------------------------------------------- | ------------------------ | ----------------------- |
-| `type:`     | `app`, `lib`, `e2e`                                   | Yes                      | Project kind            |
-| `platform:` | `hugo`, `cli`, `nextjs`, `spring-boot`, `playwright`  | For apps/e2e             | Framework/runtime       |
-| `lang:`     | `golang`, `ts`, `java`                                | Where source code exists | Primary language        |
-| `domain:`   | `ayokoding`, `oseplatform`, `organiclever`, `tooling` | Yes                      | Business/product domain |
+| Dimension   | Values                                               | Required                 | Purpose                 |
+| ----------- | ---------------------------------------------------- | ------------------------ | ----------------------- |
+| `type:`     | `app`, `lib`, `e2e`                                  | Yes                      | Project kind            |
+| `platform:` | `hugo`, `cli`, `nextjs`, `spring-boot`, `playwright` | For apps/e2e             | Framework/runtime       |
+| `lang:`     | `golang`, `ts`, `java`                               | Where source code exists | Primary language        |
+| `domain:`   | `a-demo`, `a-demo`, `a-demo`, `tooling`              | Yes                      | Business/product domain |
 
 **Notes**:
 
@@ -488,7 +488,7 @@ All projects use a standard four-dimension tag scheme:
 **Hugo Apps** do not require `package.json` as they use Hugo's native configuration:
 
 ```yaml
-baseURL: https://oseplatform.com/
+baseURL: https://example.com/
 languageCode: en-us
 title: Open Sharia Enterprise Platform
 theme: PaperMod
@@ -571,7 +571,7 @@ import { formatDate } from "@open-sharia-enterprise/ts-utils";
 nx graph
 
 # View specific project dependencies
-nx graph --focus=oseplatform-web
+nx graph --focus=a-demo-fs-ts-nextjs
 
 # View affected projects
 nx affected:graph

@@ -1,6 +1,6 @@
 ---
 title: "F# Type Safety Standards"
-description: Authoritative OSE Platform F# type safety standards — making illegal states unrepresentable, units of measure, single-case DUs, generics
+description: Authoritative a-demo F# type safety standards — making illegal states unrepresentable, units of measure, single-case DUs, generics
 category: explanation
 subcategory: prog-lang
 tags:
@@ -26,13 +26,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not an F# tutorial.
+**This document is a-demo-specific**, not an F# tutorial.
 
 ## Purpose
 
-This document defines **authoritative type safety standards** for F# development in OSE Platform. F# offers some of the strongest type-level safety in the .NET ecosystem. The guiding principle: **make illegal states unrepresentable** — encode domain invariants in the type system so the compiler prevents mistakes before tests even run.
+This document defines **authoritative type safety standards** for F# development in a-demo. F# offers some of the strongest type-level safety in the .NET ecosystem. The guiding principle: **make illegal states unrepresentable** — encode domain invariants in the type system so the compiler prevents mistakes before tests even run.
 
-**Target Audience**: OSE Platform F# developers working on domain modeling, financial calculation, and data integration
+**Target Audience**: a-demo F# developers working on domain modeling, financial calculation, and data integration
 
 **Scope**: Making illegal states unrepresentable, units of measure for dimensional analysis, single-case DUs for strong IDs, phantom types, type providers, avoiding boxing
 

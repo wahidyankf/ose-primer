@@ -41,7 +41,7 @@ Building production-ready RESTful APIs requires proper controller design, reques
 - [Filtering and Searching](#-filtering-and-searching) - Query parameters
 - [CORS Configuration](#-cors-configuration) - Cross-origin requests
 - [Content Negotiation](#-content-negotiation) - JSON, XML responses
-- [OSE Platform Examples](#-ose-platform-examples) - Islamic finance APIs
+- [a-demo Examples](#-ose-platform-examples) - Islamic finance APIs
 - [Best Practices](#-best-practices) - Production guidelines
 - [Related Documentation](#-related-documentation) - Cross-references
 
@@ -138,10 +138,10 @@ Spring Boot controllers handle HTTP requests and return responses.
 
 ```java
 // ZakatCalculationController.java
-package com.oseplatform.zakat.controller;
+package com.a-demo.zakat.controller;
 
-import com.oseplatform.zakat.dto.*;
-import com.oseplatform.zakat.service.ZakatCalculationService;
+import com.a-demo.zakat.dto.*;
+import com.a-demo.zakat.service.ZakatCalculationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -350,7 +350,7 @@ Data Transfer Objects separate API contract from domain model.
 
 ```java
 // ZakatCalculationRequest.java
-package com.oseplatform.zakat.dto;
+package com.a-demo.zakat.dto;
 
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
@@ -394,7 +394,7 @@ public class ZakatCalculationRequest {
 
 ```java
 // ZakatCalculationResponse.java
-package com.oseplatform.zakat.dto;
+package com.a-demo.zakat.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -465,11 +465,11 @@ public class ZakatCalculationResponse {
 
 ```java
 // ZakatCalculationMapper.java
-package com.oseplatform.zakat.mapper;
+package com.a-demo.zakat.mapper;
 
-import com.oseplatform.zakat.dto.ZakatCalculationRequest;
-import com.oseplatform.zakat.dto.ZakatCalculationResponse;
-import com.oseplatform.zakat.entity.ZakatCalculation;
+import com.a-demo.zakat.dto.ZakatCalculationRequest;
+import com.a-demo.zakat.dto.ZakatCalculationResponse;
+import com.a-demo.zakat.entity.ZakatCalculation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -626,7 +626,7 @@ Global exception handling provides consistent error responses.
 
 ```java
 // GlobalExceptionHandler.java
-package com.oseplatform.exception;
+package com.a-demo.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -742,7 +742,7 @@ public class GlobalExceptionHandler {
 
 ```java
 // ErrorResponse.java
-package com.oseplatform.exception;
+package com.a-demo.exception;
 
 import java.time.Instant;
 import java.util.Map;
@@ -791,7 +791,7 @@ public class ErrorResponse {
 
 ```java
 // ResourceNotFoundException.java
-package com.oseplatform.exception;
+package com.a-demo.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
 
@@ -801,7 +801,7 @@ public class ResourceNotFoundException extends RuntimeException {
 }
 
 // BusinessException.java
-package com.oseplatform.exception;
+package com.a-demo.exception;
 
 public class BusinessException extends RuntimeException {
 
@@ -815,7 +815,7 @@ public class BusinessException extends RuntimeException {
 }
 
 // UnauthorizedException.java
-package com.oseplatform.exception;
+package com.a-demo.exception;
 
 public class UnauthorizedException extends RuntimeException {
 
@@ -1062,7 +1062,7 @@ private Sort.Order[] parseSortOrders(String[] sort) {
 
 ```java
 // PageResponse.java
-package com.oseplatform.common.dto;
+package com.example.common.dto;
 
 import java.util.List;
 
@@ -1125,9 +1125,9 @@ public ResponseEntity<List<ZakatCalculationResponse>> search(
 
 ```java
 // ZakatCalculationSpecification.java
-package com.oseplatform.zakat.specification;
+package com.a-demo.zakat.specification;
 
-import com.oseplatform.zakat.entity.ZakatCalculation;
+import com.a-demo.zakat.entity.ZakatCalculation;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
@@ -1198,7 +1198,7 @@ Cross-Origin Resource Sharing allows browser requests from different origins.
 
 ```java
 // CorsConfig.java
-package com.oseplatform.config;
+package com.a-demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -1218,8 +1218,8 @@ public class CorsConfig {
         config.setAllowCredentials(true);
 
         // Allow specific origins
-        config.addAllowedOrigin("https://app.oseplatform.com");
-        config.addAllowedOrigin("https://admin.oseplatform.com");
+        config.addAllowedOrigin("https://app.example.com");
+        config.addAllowedOrigin("https://admin.example.com");
 
         // Allow all headers
         config.addAllowedHeader("*");
@@ -1253,7 +1253,7 @@ public class CorsConfig {
 @RestController
 @RequestMapping("/api/v1/zakat")
 @CrossOrigin(
-    origins = "https://app.oseplatform.com",
+    origins = "https://app.example.com",
     methods = {RequestMethod.GET, RequestMethod.POST},
     maxAge = 3600
 )
@@ -1319,7 +1319,7 @@ public ResponseEntity<ZakatCalculationResponse> get(@PathVariable String id) {
 }
 ```
 
-## 💼 OSE Platform Examples
+## 💼 a-demo Examples
 
 Complete REST API patterns for Islamic finance operations.
 

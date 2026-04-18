@@ -811,7 +811,7 @@ public class ZakatCalculationController {
   "timestamp": "2026-01-25T10:30:00.000+00:00",
   "status": 500,
   "error": "Internal Server Error",
-  "trace": "com.oseplatform.zakat.ZakatNotFoundException: Zakat not found: zakat-123\n\tat com.oseplatform...",
+  "trace": "com.a-demo.zakat.ZakatNotFoundException: Zakat not found: zakat-123\n\tat com.a-demo...",
   "message": "Zakat not found: zakat-123",
   "path": "/api/v1/zakat/zakat-123"
 }

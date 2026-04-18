@@ -7,14 +7,14 @@ services:
     container_name: a-demo-be-db
     environment:
       POSTGRES_DB: demo_be
-      POSTGRES_USER: ${POSTGRES_USER:-organiclever}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-organiclever}
+      POSTGRES_USER: ${POSTGRES_USER:-a-demo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-a-demo}
     ports:
       - "5432:5432"
     volumes:
       - a-demo-be-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-organiclever} -d demo_be"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-a-demo} -d demo_be"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -49,8 +49,8 @@ services:
       - SERVER_PORT=8201
       - MAVEN_OPTS=${MAVEN_OPTS:--Xmx512m}
       - SPRING_DATASOURCE_URL=jdbc:postgresql://a-demo-be-db:5432/demo_be
-      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-organiclever}
-      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-organiclever}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-a-demo}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-a-demo}
       - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
 
     # Run Spring Boot with DevTools for auto-reload

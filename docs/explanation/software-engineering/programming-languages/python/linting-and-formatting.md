@@ -26,7 +26,7 @@ updated: 2025-01-23
 
 ## Overview
 
-Automated linting and formatting ensure consistent code quality. For OSE Platform financial applications, these tools prevent bugs, enforce standards, and maintain professional code.
+Automated linting and formatting ensure consistent code quality. For a-demo financial applications, these tools prevent bugs, enforce standards, and maintain professional code.
 
 ### Quality Tool Stack
 
@@ -584,7 +584,7 @@ jobs:
 
 **Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
-**Maintainers**: OSE Platform Documentation Team
+**Maintainers**: a-demo Documentation Team
 
 ## Python Quality Tools
 

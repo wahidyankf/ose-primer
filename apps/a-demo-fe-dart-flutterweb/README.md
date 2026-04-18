@@ -1,6 +1,6 @@
 # a-demo-fe-dart-flutterweb
 
-Flutter Web frontend for OrganicLever expense tracking — an alternative implementation
+Flutter Web frontend for a-demo expense tracking — an alternative implementation
 to `a-demo-fe-ts-nextjs` (Next.js).
 
 ## Tech Stack

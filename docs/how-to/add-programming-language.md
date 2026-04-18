@@ -1,10 +1,10 @@
 ---
 title: "How to Add a Programming Language"
-description: "Step-by-step guide for adding programming languages to ayokoding-web following the Programming Language Content Standard"
+description: "Step-by-step guide for adding programming languages to a-demo-fs-ts-nextjs following the Programming Language Content Standard"
 category: how-to
 tags:
   - programming-languages
-  - ayokoding
+  - a-demo
   - content-creation
   - tutorials
   - implementation
@@ -14,9 +14,9 @@ updated: 2025-12-18
 
 # How to Add a Programming Language
 
-**Step-by-step guide for adding a new programming language to ayokoding-web following the Programming Language Content Standard.**
+**Step-by-step guide for adding a new programming language to a-demo-fs-ts-nextjs following the Programming Language Content Standard.**
 
-This guide walks you through the complete process of adding a new programming language (e.g., Kotlin, TypeScript, Rust, Clojure) to ayokoding-web. Follow these steps to ensure your content meets quality standards and integrates seamlessly with existing content.
+This guide walks you through the complete process of adding a new programming language (e.g., Kotlin, TypeScript, Rust, Clojure) to a-demo-fs-ts-nextjs. Follow these steps to ensure your content meets quality standards and integrates seamlessly with existing content.
 
 ## Prerequisites
 
@@ -26,12 +26,12 @@ Before starting, ensure you have:
 - [ ] **Familiarity with conventions**:
   - [Content Quality Principles](../../governance/conventions/writing/quality.md)
 - [ ] **AI agents available**:
-  - `ayokoding-web-general-maker` (general content creation)
-  - `ayokoding-web-by-example-maker` (by-example tutorial creation)
-  - `ayokoding-web-general-checker` (general quality validation)
-  - `ayokoding-web-by-example-checker` (by-example tutorial validation)
-  - `ayokoding-web-facts-checker` (factual verification)
-  - `ayokoding-web-link-checker` (link validation)
+  - `a-demo-fs-ts-nextjs-general-maker` (general content creation)
+  - `a-demo-fs-ts-nextjs-by-example-maker` (by-example tutorial creation)
+  - `a-demo-fs-ts-nextjs-general-checker` (general quality validation)
+  - `a-demo-fs-ts-nextjs-by-example-checker` (by-example tutorial validation)
+  - `a-demo-fs-ts-nextjs-facts-checker` (factual verification)
+  - `a-demo-fs-ts-nextjs-link-checker` (link validation)
 - [ ] **Reference implementations** studied (review Golang, Python, or Java content)
 
 **Time Investment:** Adding a complete programming language requires creating 12,000-15,000 lines of high-quality content. Plan accordingly.
@@ -40,7 +40,7 @@ Before starting, ensure you have:
 
 ### Step 1.1: Choose Language and Validate Demand
 
-**Why:** Ensure the language addition provides value to ayokoding-web users.
+**Why:** Ensure the language addition provides value to a-demo-fs-ts-nextjs users.
 
 **Actions:**
 
@@ -98,7 +98,7 @@ Before starting, ensure you have:
 
 **Actions:**
 
-1. Navigate to ayokoding-web content directory:
+1. Navigate to a-demo-fs-ts-nextjs content directory:
 
    ```bash
 
@@ -218,10 +218,10 @@ Before starting, ensure you have:
 
 **Actions:**
 
-1. **Use ayokoding-web-general-maker agent**:
+1. **Use a-demo-fs-ts-nextjs-general-maker agent**:
 
    ```
-   Spawn ayokoding-web-general-maker agent:
+   Spawn a-demo-fs-ts-nextjs-general-maker agent:
 
    Coverage: 0-5% (Installation and verification)
    Topics: Installation (Windows/macOS/Linux), version verification, first Hello World program, basic tool setup
@@ -266,10 +266,10 @@ Before starting, ensure you have:
    - Use color-blind friendly palette (#0173B2, #DE8F05, #029E73)
    - Show progression: Concept A → Concept B → ... → Ready!
 
-3. **Use ayokoding-web-general-maker agent**:
+3. **Use a-demo-fs-ts-nextjs-general-maker agent**:
 
    ```
-   Spawn ayokoding-web-general-maker agent:
+   Spawn a-demo-fs-ts-nextjs-general-maker agent:
 
    Coverage: 5-30% (Touchpoints and core concepts)
    Touchpoints: [Your 8-12 concepts]
@@ -312,10 +312,10 @@ Before starting, ensure you have:
    - Level 3: Combine concepts
    - Level 4: Problem-solving challenges
 
-3. **Use ayokoding-web-general-maker agent**:
+3. **Use a-demo-fs-ts-nextjs-general-maker agent**:
 
    ```
-   Spawn ayokoding-web-general-maker agent:
+   Spawn a-demo-fs-ts-nextjs-general-maker agent:
 
    Coverage: 0-60% (Comprehensive fundamentals)
    Topics: [Your 10-15 major sections]
@@ -352,10 +352,10 @@ Before starting, ensure you have:
    - Security best practices
    - Deployment patterns
 
-2. **Use ayokoding-web-general-maker agent**:
+2. **Use a-demo-fs-ts-nextjs-general-maker agent**:
 
    ```
-   Spawn ayokoding-web-general-maker agent:
+   Spawn a-demo-fs-ts-nextjs-general-maker agent:
 
    Coverage: 60-85% (Production-grade techniques)
    Topics: [Your 8-12 production topics]
@@ -390,10 +390,10 @@ Before starting, ensure you have:
    - Debugging strategies
    - Tooling and ecosystem
 
-2. **Use ayokoding-web-general-maker agent**:
+2. **Use a-demo-fs-ts-nextjs-general-maker agent**:
 
    ```
-   Spawn ayokoding-web-general-maker agent:
+   Spawn a-demo-fs-ts-nextjs-general-maker agent:
 
    Coverage: 85-95% (Expert mastery)
    Topics: [Your 6-10 expert topics]
@@ -452,10 +452,10 @@ Before starting, ensure you have:
 
    ```
 
-3. **Use ayokoding-web-general-maker agent**:
+3. **Use a-demo-fs-ts-nextjs-general-maker agent**:
 
    ```
-   Spawn ayokoding-web-general-maker agent:
+   Spawn a-demo-fs-ts-nextjs-general-maker agent:
 
    Include: 30-40 recipes organized by category
    Format: Problem → Solution → How It Works → Use Cases for each recipe
@@ -499,7 +499,7 @@ Before starting, ensure you have:
 3. **Create each guide** (can parallelize with agent):
 
    ```
-   Spawn ayokoding-web-general-maker agent:
+   Spawn a-demo-fs-ts-nextjs-general-maker agent:
 
    Include: Problem statement, solution (step-by-step), how it works, variations, common pitfalls
    Reference: [Link to similar guide in reference language]"
@@ -542,10 +542,10 @@ Before starting, ensure you have:
 
 3. **Include "What Makes [Language] Special" section**
 
-4. **Use ayokoding-web-general-maker agent**:
+4. **Use a-demo-fs-ts-nextjs-general-maker agent**:
 
    ```
-   Spawn ayokoding-web-general-maker agent:
+   Spawn a-demo-fs-ts-nextjs-general-maker agent:
 
    Include: Language philosophy, idiomatic patterns, good/bad examples, category organization
    Reference: [Link to reference language best-practices.md]"
@@ -579,10 +579,10 @@ Before starting, ensure you have:
    - Major (performance, maintainability)
    - Minor (style, idioms)
 
-4. **Use ayokoding-web-general-maker agent**:
+4. **Use a-demo-fs-ts-nextjs-general-maker agent**:
 
    ```
-   Spawn ayokoding-web-general-maker agent:
+   Spawn a-demo-fs-ts-nextjs-general-maker agent:
 
    Include: Common mistakes, bad/better examples, severity categorization
    Reference: [Link to reference language anti-patterns.md]"
@@ -618,10 +618,10 @@ Before starting, ensure you have:
 
 **Actions:**
 
-1. **Run ayokoding-web-general-checker**:
+1. **Run a-demo-fs-ts-nextjs-general-checker**:
 
    ```
-   Spawn ayokoding-web-general-checker agent:
+   Spawn a-demo-fs-ts-nextjs-general-checker agent:
 
    Check: Hugo conventions, content quality principles, structure compliance"
    ```
@@ -640,10 +640,10 @@ Before starting, ensure you have:
 
 **Actions:**
 
-1. **Run ayokoding-web-facts-checker**:
+1. **Run a-demo-fs-ts-nextjs-facts-checker**:
 
    ```
-   Spawn ayokoding-web-facts-checker agent:
+   Spawn a-demo-fs-ts-nextjs-facts-checker agent:
 
    Validate: Code examples, command syntax, version numbers, external references, technical claims"
    ```
@@ -662,10 +662,10 @@ Before starting, ensure you have:
 
 **Actions:**
 
-1. **Run ayokoding-web-link-checker**:
+1. **Run a-demo-fs-ts-nextjs-link-checker**:
 
    ```
-   Spawn ayokoding-web-link-checker agent:
+   Spawn a-demo-fs-ts-nextjs-link-checker agent:
 
    Check: Internal links, external URLs, cross-references"
    ```
@@ -723,19 +723,19 @@ Before starting, ensure you have:
 
 ### Step 5.2: Deploy to Production
 
-**Why:** Make content available to ayokoding-web users.
+**Why:** Make content available to a-demo-fs-ts-nextjs users.
 
 **Actions:**
 
 1. **Verify on main branch**: Ensure all changes are committed to `main`
 
-2. **Run ayokoding-web-deployer**:
+2. **Run a-demo-fs-ts-nextjs-deployer**:
 
    ```
-   Spawn ayokoding-web-deployer agent:
-   "Deploy ayokoding-web to production (ayokoding.com)
+   Spawn a-demo-fs-ts-nextjs-deployer agent:
+   "Deploy a-demo-fs-ts-nextjs to production (example.com)
 
-   This will sync prod-ayokoding-web branch with main and trigger Vercel deployment."
+   This will sync prod-a-demo-fs-ts-nextjs branch with main and trigger Vercel deployment."
    ```
 
 3. **Verify deployment**:
@@ -743,7 +743,7 @@ Before starting, ensure you have:
    - Navigate through tutorials
    - Test a few code examples
 
-**Deliverable:** Live content on ayokoding.com
+**Deliverable:** Live content on example.com
 
 ### Step 5.3: Announce Launch
 
@@ -772,14 +772,14 @@ Before starting, ensure you have:
 
 1. Make updates on `main` branch (Trunk Based Development)
 2. Run validation agents (content-checker, facts-checker, link-checker)
-3. Deploy via ayokoding-web-deployer
+3. Deploy via a-demo-fs-ts-nextjs-deployer
 4. No need for feature branches for small updates
 
 ## Troubleshooting
 
 ### Common Issues
 
-**Issue:** ayokoding-web-general-checker reports Hugo convention violations
+**Issue:** a-demo-fs-ts-nextjs-general-checker reports Hugo convention violations
 
 - Missing frontmatter fields
 - Incorrect weight values (use level-based system with correct levels)
@@ -798,7 +798,7 @@ Before starting, ensure you have:
   - `tutorials/overview.md`: **1000000** (level 7)
   - `how-to/overview.md`: **1000000** (RESET - different parent)
 
-**Issue:** ayokoding-web-facts-checker reports ❌ Error or 📅 Outdated
+**Issue:** a-demo-fs-ts-nextjs-facts-checker reports ❌ Error or 📅 Outdated
 
 **Solution:** Update technical claims with current information:
 
@@ -858,9 +858,9 @@ Use this final checklist to verify completion:
 
 ### Quality
 
-- [ ] ayokoding-web-general-checker audit clean
-- [ ] ayokoding-web-facts-checker audit clean (✅ Verified)
-- [ ] ayokoding-web-link-checker validation passed
+- [ ] a-demo-fs-ts-nextjs-general-checker audit clean
+- [ ] a-demo-fs-ts-nextjs-facts-checker audit clean (✅ Verified)
+- [ ] a-demo-fs-ts-nextjs-link-checker validation passed
 - [ ] Manual quality review complete
 - [ ] All code examples tested and runnable
 - [ ] Mermaid diagrams use approved color palette
@@ -869,8 +869,8 @@ Use this final checklist to verify completion:
 ### Publishing
 
 - [ ] Content committed to main branch
-- [ ] Deployed to production via ayokoding-web-deployer
-- [ ] Verified live on ayokoding.com
+- [ ] Deployed to production via a-demo-fs-ts-nextjs-deployer
+- [ ] Verified live on example.com
 - [ ] Announcement published
 
 ### Metrics (Target Values)
@@ -882,7 +882,7 @@ Use this final checklist to verify completion:
 - [ ] Cross-references: 15+ per tutorial
 - [ ] Code examples: 25+ per major tutorial
 
-**Congratulations!** You've successfully added a new programming language to ayokoding-web following the Programming Language Content Standard. Your content is now part of a consistent, high-quality educational platform.
+**Congratulations!** You've successfully added a new programming language to a-demo-fs-ts-nextjs following the Programming Language Content Standard. Your content is now part of a consistent, high-quality educational platform.
 
 ## Related Documentation
 

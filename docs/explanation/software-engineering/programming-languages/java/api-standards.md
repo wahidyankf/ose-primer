@@ -1,5 +1,5 @@
 ---
-title: Java API Standards for OSE Platform
+title: Java API Standards for a-demo
 description: Prescriptive API design requirements for Shariah-compliant financial systems
 category: explanation
 subcategory: prog-lang
@@ -20,15 +20,15 @@ updated: 2026-02-03
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
+**This document is a-demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
 
-# Java API Standards for OSE Platform
+# Java API Standards for a-demo
 
 **OSE-specific prescriptive standards** for API design in Shariah-compliant financial applications. This document defines **mandatory requirements** using RFC 2119 keywords (MUST, SHOULD, MAY).
 
 ## Purpose
 
-API standards in OSE Platform ensure:
+API standards in a-demo ensure:
 
 - **Consistency**: Uniform API patterns across all services
 - **Developer Experience**: Intuitive, predictable APIs
@@ -506,20 +506,20 @@ public class OpenApiConfig {
  public OpenAPI oseOpenAPI() {
   return new OpenAPI()
    .info(new Info()
-    .title("OSE Platform Donation API")
+    .title("a-demo Donation API")
     .version("v1")
     .description("API for managing donations and Zakat payments")
     .contact(new Contact()
-     .name("OSE Platform Team")
-     .email("api-support@oseplatform.com")
+     .name("a-demo Team")
+     .email("api-support@example.com")
     )
    )
    .servers(List.of(
     new Server()
-     .url("https://api.oseplatform.com")
+     .url("https://api.example.com")
      .description("Production"),
     new Server()
-     .url("https://staging.api.oseplatform.com")
+     .url("https://staging.api.example.com")
      .description("Staging")
    ))
    .components(new Components()
@@ -544,7 +544,7 @@ public class OpenApiConfig {
 - Example requests and responses
 - Error codes and descriptions
 
-### OSE Platform Standards
+### a-demo Standards
 
 - [Security Standards](./security-standards.md) - API authentication and authorization
 - [Error Handling Standards](./error-handling-standards.md) - Error response formats
@@ -554,7 +554,7 @@ public class OpenApiConfig {
 
 For learning Java fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Java basics from ayokoding-web. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Java basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ### Software Engineering Principles
 
@@ -608,4 +608,4 @@ Before deploying APIs, verify:
 
 **Last Updated**: 2026-02-04
 
-**Status**: Active (mandatory for all OSE Platform APIs)
+**Status**: Active (mandatory for all a-demo APIs)
