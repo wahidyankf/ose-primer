@@ -115,7 +115,7 @@ This target is **not cached** (`cache: false`) because it exercises an external 
 ### Coverage
 
 Coverage is measured via cloverage LCOV output (`coverage/lcov.info`) and validated by
-`rhino-cli test-coverage validate` using the Codecov line-based algorithm. The threshold is ≥90%.
+`rhino-cli test-coverage validate` using the 3-state line-based algorithm. The threshold is ≥90%.
 The `demo-be-cjpd.main` namespace is excluded from coverage (entry point only).
 
 ## Nx Targets
@@ -219,7 +219,7 @@ src/demo_be_cjpd/
 ## Related Documentation
 
 - [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
-- [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools, thresholds, and local vs Codecov
+- [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
 - [Backend Gherkin Specs](../../specs/apps/demo/be/gherkin/README.md) — Shared feature files (source of truth)
 - [OpenAPI Contract](../../specs/apps/demo/contracts/README.md) — API contract and codegen

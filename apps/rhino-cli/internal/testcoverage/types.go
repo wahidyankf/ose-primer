@@ -1,4 +1,4 @@
-// Package testcoverage provides test coverage measurement using Codecov's line coverage algorithm.
+// Package testcoverage provides test coverage measurement using a 3-state line coverage algorithm.
 package testcoverage
 
 // Format represents the coverage file format.

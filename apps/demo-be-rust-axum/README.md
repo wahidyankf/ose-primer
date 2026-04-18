@@ -61,7 +61,7 @@ and is a dependency of `typecheck`, `build`, `test:quick`, and `test:unit`.
 
 ## API Endpoints
 
-See [plan README](../../plans/done/2026-03-11__demo-be-rust-axum/README.md) for the full API surface.
+See the [OpenAPI contract](../../specs/apps/demo/contracts/README.md) for the full API surface.
 
 ## Test Architecture
 
@@ -99,7 +99,7 @@ nx run demo-be-rust-axum:test:integration
 ## Related Documentation
 
 - [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
-- [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools, thresholds, and local vs Codecov
+- [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
 - [Backend Gherkin Specs](../../specs/apps/demo/be/gherkin/README.md) — Shared feature files (source of truth)
 - [OpenAPI Contract](../../specs/apps/demo/contracts/README.md) — API contract and codegen
