@@ -245,7 +245,7 @@ nx graph                # Visualize dependencies
 
 **FAIL: Bad** (corporate, distant):
 ```markdown
-This project is licensed under the FSL-1.1-MIT License. Users are granted broad rights while maintaining proper attribution requirements as specified in the license agreement.
+This project is licensed under the MIT License. Users are granted broad rights while maintaining proper attribution requirements as specified in the license agreement.
 ````
 
 **PASS: Good** (friendly, clear):
@@ -254,7 +254,7 @@ This project is licensed under the FSL-1.1-MIT License. Users are granted broad 
 This project uses a per-directory licensing strategy:
 
 - **Implementation code** (HOW) -- MIT license (shared libraries, demo/reference apps)
-- **Behavioral specifications** (WHAT) -- FSL-1.1-MIT (specs, E2E tests, product apps)
+- **Behavioral specifications** (WHAT) -- MIT (specs, E2E tests, product apps)
 
 FSL-licensed code **converts to MIT after 2 years** on a rolling per-commit basis.
 
