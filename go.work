@@ -4,4 +4,5 @@ use (
 	./apps/a-demo-be-golang-gin
 	./apps/rhino-cli
 	./libs/golang-commons
+	./libs/hugo-commons
 )

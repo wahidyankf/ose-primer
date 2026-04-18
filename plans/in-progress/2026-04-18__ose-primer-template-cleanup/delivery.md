@@ -114,24 +114,36 @@
   - Date: 2026-04-18
   - Status: done
   - Notes: all apps removed. `organiclever-contracts` persists (tied to `specs/apps/organiclever/`) — will cascade-delete in Phase 2 as planned.
-- [ ] Run `rtk npx nx affected -t typecheck lint --base=HEAD`
+- [x] Run `rtk npx nx affected -t typecheck lint --base=HEAD`
+  - Date: 2026-04-18
+  - Status: done
+  - Notes: Ran as `rtk nx affected -t typecheck lint --base=HEAD`. Exit 0.
 - [x] Fix any failure surfaced (may be preexisting — address root cause)
   - Date: 2026-04-18
   - Status: done
   - Notes: No failures surfaced.
 - [x] Commit: `rtk git commit -m "chore(cleanup): remove product apps (ayokoding, oseplatform, organiclever)"`
   - Date: 2026-04-18
-  - Status: pending until after commit below
+  - Status: done (commit d251ed7e)
+  - Files Changed: 1463 (12 apps + go.work cleanup — go.work stripped of deleted module refs to unblock pre-commit hook)
+  - Notes: Pre-commit blocked on stale `go.work` (still listed ayokoding-cli, oseplatform-cli, hugo-commons). Fixed in same commit.
 
 ## Phase 2 — Remove product specs
 
-- [ ] `rtk git rm -r specs/apps/ayokoding`
-- [ ] `rtk git rm -r specs/apps/organiclever`
-- [ ] `rtk git rm -r specs/apps/oseplatform`
-- [ ] Run `rtk npx nx affected -t lint spec-coverage --base=HEAD`
-- [ ] Fix any failure surfaced
-- [ ] Run `rtk npx nx show projects` and confirm `organiclever-contracts` is no longer listed (spec-tree deletion cascades into contract project removal)
-- [ ] Commit: `rtk git commit -m "chore(cleanup): remove product-app Gherkin specs"`
+- [x] `rtk git rm -r specs/apps/ayokoding`
+  - Date: 2026-04-18 — done
+- [x] `rtk git rm -r specs/apps/organiclever`
+  - Date: 2026-04-18 — done
+- [x] `rtk git rm -r specs/apps/oseplatform`
+  - Date: 2026-04-18 — done
+- [x] Run `rtk npx nx affected -t lint spec-coverage --base=HEAD`
+  - Date: 2026-04-18 — done; exit 0 after go.work/hugo-commons re-add (removal deferred to Phase 3)
+- [x] Fix any failure surfaced
+  - Date: 2026-04-18 — done; hugo-commons lint failed after Phase 1's go.work prune dropped it; re-added `./libs/hugo-commons` to `go.work` until Phase 3 deletes the lib itself.
+- [x] Run `rtk npx nx show projects` and confirm `organiclever-contracts` is no longer listed (spec-tree deletion cascades into contract project removal)
+  - Date: 2026-04-18 — done; no ayokoding/oseplatform/organiclever projects remain.
+- [x] Commit: `rtk git commit -m "chore(cleanup): remove product-app Gherkin specs"`
+  - Date: 2026-04-18 — pending until after commit below
 
 ## Phase 3 — Remove deprecated libs
 
