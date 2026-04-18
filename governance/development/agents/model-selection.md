@@ -74,9 +74,6 @@ Model selection directly affects agent quality, latency, and resource efficiency
 - **SWE developers** (all language-specific agents) -- generate and refactor production code across diverse language ecosystems, requiring deep understanding of idioms, patterns, and trade-offs
 - **plan-maker** -- creates project plans requiring scope analysis, dependency mapping, and strategic sequencing
 - **docs-tutorial-maker** -- produces tutorial content requiring pedagogical reasoning, narrative flow, and learning progression design
-- **apps-demo-fs-ts-nextjs-by-example-maker** -- creates 75-85 heavily annotated code examples requiring pedagogical progression and bilingual content
-- **apps-demo-fs-ts-nextjs-in-the-field-maker** -- produces production implementation guides requiring framework integration and quality bar judgment
-- **apps-demo-fs-ts-nextjs-general-maker** -- creates bilingual educational content requiring audience awareness and language nuance
 - **swe-ui-maker** -- creates UI components requiring CVA variants, Radix composition, accessibility, tests, and stories in one pass
 - **repo-rules-maker** -- creates governance documents requiring architectural reasoning about layer relationships and traceability
 
@@ -109,10 +106,10 @@ Note: `model` field is omitted — inherits opus tier (creative reasoning, code 
 
 **Agent examples**:
 
-- **All checkers** -- validate content against conventions using defined rulesets and produce structured audit reports (docs-checker, docs-tutorial-checker, docs-software-engineering-separation-checker, readme-checker, specs-checker, repo-rules-checker, repo-workflow-checker, plan-checker, plan-execution-checker, swe-code-checker, swe-ui-checker, ci-checker, apps-\*-checker)
-- **Most fixers** -- apply corrections from checker audit reports following documented fix procedures (docs-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, readme-fixer, specs-fixer, repo-rules-fixer, repo-workflow-fixer, plan-fixer, swe-ui-fixer, ci-fixer, apps-\*-fixer)
+- **All checkers** -- validate content against conventions using defined rulesets and produce structured audit reports (docs-checker, docs-tutorial-checker, readme-checker, specs-checker, repo-rules-checker, repo-workflow-checker, plan-checker, plan-execution-checker, swe-code-checker, swe-ui-checker, ci-checker)
+- **Most fixers** -- apply corrections from checker audit reports following documented fix procedures (docs-fixer, docs-tutorial-fixer, readme-fixer, specs-fixer, repo-rules-fixer, repo-workflow-fixer, plan-fixer, swe-ui-fixer, ci-fixer)
 - **social-linkedin-post-maker** -- generates social media posts following a defined template and tone guidelines
-- **Structured makers** -- makers with tight, well-defined skills that pin down most decisions, making them rule-following rather than open-ended creation (docs-maker, readme-maker, agent-maker, specs-maker, repo-workflow-maker, apps-demo-fs-ts-nextjs-content-maker)
+- **Structured makers** -- makers with tight, well-defined skills that pin down most decisions, making them rule-following rather than open-ended creation (docs-maker, readme-maker, agent-maker, specs-maker, repo-workflow-maker)
 - **swe-e2e-dev** -- writes Playwright E2E tests following a dedicated skill with defined patterns (locators, fixtures, waits); lower stakes than production code written by language developer agents
 
 **Frontmatter**: Specify `model: sonnet` explicitly.
@@ -143,16 +140,16 @@ color: green
 
 **Agent examples**:
 
-- **Deployers** (apps-demo-fs-ts-nextjs-deployer, apps-demo-fs-ts-nextjs-deployer, apps-demo-fe-ts-nextjs-deployer) -- execute git branch operations and deployment commands following a fixed procedure
-- **Link checkers** (docs-link-checker, apps-demo-fs-ts-nextjs-link-checker) -- validate URLs by checking HTTP status codes and managing cache files
+- **Deployers** -- execute git branch operations and deployment commands following a fixed procedure
+- **Link checkers** (docs-link-checker) -- validate URLs by checking HTTP status codes and managing cache files
 - **docs-file-manager** -- performs deterministic file operations (move, rename, delete) with `git mv`, kebab-case pattern matching, and mechanical link updates; no judgment calls required
 
 **Frontmatter**: Specify `model: haiku` explicitly.
 
 ```yaml
 ---
-name: apps-demo-fs-ts-nextjs-deployer
-description: Expert deployment orchestrator...
+name: docs-file-manager
+description: Expert file organization manager...
 tools: [Bash, Read, Glob, Grep]
 model: haiku
 color: purple
@@ -256,7 +253,7 @@ Some agents straddle tier boundaries. When uncertain:
 
 ### Link Checkers as Haiku
 
-Link checker agents (docs-link-checker, apps-demo-fs-ts-nextjs-link-checker) use haiku despite being categorized as checkers (green). This is because their validation is purely mechanical (HTTP status code checking), not rule-based reasoning. The checker color reflects their role in the maker-checker-fixer workflow, while the model reflects their cognitive requirements.
+The docs-link-checker agent uses haiku despite being categorized as a checker (green). This is because their validation is purely mechanical (HTTP status code checking), not rule-based reasoning. The checker color reflects their role in the maker-checker-fixer workflow, while the model reflects their cognitive requirements.
 
 ### Social Media Maker as Sonnet
 
@@ -264,7 +261,7 @@ The social-linkedin-post-maker uses sonnet despite being a "maker" agent. This i
 
 ### Structured Makers as Sonnet
 
-Several maker agents use sonnet because their output is structured by tight skills with well-defined rubrics (docs-maker, readme-maker, agent-maker, specs-maker, repo-workflow-maker, apps-demo-fs-ts-nextjs-content-maker). Each has a sonnet checker and sonnet fixer in its maker-checker-fixer trio, and the skill pins down most decisions. Contrast with opus-tier makers (plan-maker, docs-tutorial-maker, swe-ui-maker, apps-demo-fs-ts-nextjs-\*-maker) where the creative work is open-ended, pedagogically demanding, or multi-concern.
+Several maker agents use sonnet because their output is structured by tight skills with well-defined rubrics (docs-maker, readme-maker, agent-maker, specs-maker, repo-workflow-maker). Each has a sonnet checker and sonnet fixer in its maker-checker-fixer trio, and the skill pins down most decisions. Contrast with opus-tier makers (plan-maker, docs-tutorial-maker, swe-ui-maker) where the creative work is open-ended, pedagogically demanding, or multi-concern.
 
 ### E2E Test Developer as Sonnet
 

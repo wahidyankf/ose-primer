@@ -22,7 +22,6 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **docs-checker** - Factual accuracy validation
 - **docs-tutorial-checker** - Tutorial quality validation
 - **docs-link-checker** - Link validity checking
-- **docs-software-engineering-separation-checker** - Programming language docs separation validation
 - **readme-checker** - README quality validation
 - **plan-checker** - Project plan validation
 - **plan-execution-checker** - Plan execution validation
@@ -38,7 +37,6 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **docs-file-manager** - File organization and management
 - **docs-fixer** - Apply validated documentation fixes
 - **docs-tutorial-fixer** - Apply tutorial fixes
-- **docs-software-engineering-separation-fixer** - Fix programming language docs separation issues
 - **readme-fixer** - Apply README fixes
 - **plan-fixer** - Apply plan fixes
 - **repo-rules-fixer** - Fix governance compliance issues

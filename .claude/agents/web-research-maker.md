@@ -29,7 +29,7 @@ The main agent's training data has a cutoff and can hallucinate modern library a
 
 This agent is pure research — it discovers and cites information. Other agents consume its output:
 
-- `docs-checker`, `apps-demo-fs-ts-nextjs-facts-checker` — validate existing repo content against facts; may invoke `web-research-maker` when they need current data before producing findings
+- `docs-checker`, `docs-tutorial-checker` — validate existing repo content against facts; may invoke `web-research-maker` when they need current data before producing findings
 - `plan-checker` — verifies commands, versions, and tool names in plans; delegates out to `web-research-maker` for anything unfamiliar
 - `docs-maker`, `docs-tutorial-maker`, `apps-*-maker` — commission research before writing content so the draft starts accurate
 

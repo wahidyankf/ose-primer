@@ -409,7 +409,7 @@ This convention works with:
 
 - **[Content Quality Principles](../writing/quality.md)**: Proper code block formatting is part of content quality
 - **[Indentation Convention](./indentation.md)**: Code blocks use language-specific indentation
-- **[Tutorial Convention](../tutorials/general.md)**: Tutorials often demonstrate markdown syntax
+- **`docs-creating-by-example-tutorials` skill**: Tutorials often demonstrate markdown syntax
 
 ## Related Conventions
 
@@ -421,7 +421,7 @@ This convention works with:
 
 **Context-Specific**:
 
-- [Tutorial Convention](../tutorials/general.md) - Teaching markdown syntax in tutorials
+- `docs-creating-by-example-tutorials` skill - Teaching markdown syntax in tutorials
 - [README Quality Convention](../writing/readme-quality.md) - Code examples in README files
 
 ## Examples in Documentation Types

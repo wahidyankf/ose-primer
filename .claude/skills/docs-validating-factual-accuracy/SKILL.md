@@ -404,7 +404,6 @@ Three agents implement this methodology end-to-end (check → finding → fix):
 
 - **docs-checker** — Validates documentation factual accuracy
 - **docs-tutorial-checker** — Validates tutorial factual accuracy
-- **apps-demo-fs-ts-nextjs-facts-checker** — Validates demo-fs-ts-nextjs factual accuracy
 
 All use the same validation workflow and confidence classification.
 
@@ -519,7 +518,6 @@ Step 3: Compare and classify
 
 - `docs-checker` - Documentation factual validation
 - `docs-tutorial-checker` - Tutorial factual validation
-- `apps-demo-fs-ts-nextjs-facts-checker` - demo-fs-ts-nextjs factual validation
 
 ---
 

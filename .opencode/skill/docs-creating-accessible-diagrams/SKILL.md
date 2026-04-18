@@ -307,7 +307,6 @@ See `examples.md` in this Skill directory for complete working examples:
 ## Related Skills
 
 - `repository-architecture` - Understanding how accessibility fits into governance layers
-- `apps-demo-fs-ts-nextjs-developing-content` - demo-fs-ts-nextjs diagram requirements
 - `factual-validation-methodology` (Phase 2) - Verifying color accessibility claims
 
 ---

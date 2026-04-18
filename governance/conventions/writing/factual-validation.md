@@ -775,7 +775,7 @@ Recommendation: Clarify which context applies or use HTTPS everywhere
 - Indonesian/English consistency
 - Educational sequences are logical
 
-**Agent:** `apps-demo-fs-ts-nextjs-facts-checker`, `apps-demo-fs-ts-nextjs-facts-fixer`
+**Agent:** `docs-tutorial-checker`, `docs-tutorial-fixer`
 
 ### static-site Platform Content (demo-fs-ts-nextjs)
 
@@ -813,7 +813,7 @@ Recommendation: Clarify which context applies or use HTTPS everywhere
 **Implementation Agents:**
 
 - `docs-checker.md` - Documentation factual accuracy validator (implements this convention for `docs/`)
-- `apps-demo-fs-ts-nextjs-facts-checker.md` - Educational content factual validator (implements this convention for demo-fs-ts-nextjs)
+- `docs-tutorial-checker.md` - Tutorial content factual validator (implements this convention for tutorials)
 - `plan-checker.md` - Plan accuracy validator (implements portions of this convention)
 
 **Quality Standards:**

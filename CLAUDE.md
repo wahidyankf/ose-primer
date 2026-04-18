@@ -374,9 +374,9 @@ Plan mode for non-trivial tasks (3+ steps or architecture decisions), subagents 
 
 **Content Creation**: docs-maker, docs-tutorial-maker, readme-maker, specs-maker, swe-ui-maker
 
-**Validation**: docs-checker, docs-tutorial-checker, docs-link-checker, docs-software-engineering-separation-checker, readme-checker, specs-checker, swe-code-checker, swe-ui-checker, ci-checker
+**Validation**: docs-checker, docs-tutorial-checker, docs-link-checker, readme-checker, specs-checker, swe-code-checker, swe-ui-checker, ci-checker
 
-**Fixing**: docs-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, readme-fixer, specs-fixer, docs-file-manager, swe-ui-fixer, ci-fixer
+**Fixing**: docs-fixer, docs-tutorial-fixer, readme-fixer, specs-fixer, docs-file-manager, swe-ui-fixer, ci-fixer
 
 **Planning**: plan-maker, plan-checker, plan-execution-checker, plan-fixer (see [plan-execution workflow](./governance/workflows/plan/plan-execution.md))
 

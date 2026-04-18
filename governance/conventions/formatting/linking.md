@@ -40,7 +40,7 @@ This convention establishes the standard linking format for all markdown files i
 
 ### What This Convention Does NOT Cover
 
-- **Link validation** - Covered by docs-link-checker and apps-demo-fs-ts-nextjs-link-checker agents
+- **Link validation** - Covered by the docs-link-checker agent
 - **Link text quality** - Descriptive link text is covered in [Content Quality Principles](../writing/quality.md)
 - **Hugo site URLs** - Hugo-specific linking covered in Hugo content conventions
 - **Anchor links** - Deep linking to specific sections (implementation detail)

@@ -307,7 +307,7 @@ Works alongside:
 
 - `repo-assessing-criticality-confidence` - Categorize findings by severity
 - `repo-applying-maker-checker-fixer` - Fixer agents read these reports
-- Domain Skills (`apps-demo-fs-ts-nextjs-developing-content`, etc.) - Provide validation criteria
+- Domain Skills (e.g., `docs-applying-content-quality`) - Provide validation criteria
 
 ## Benefits
 
