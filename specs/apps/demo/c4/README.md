@@ -50,7 +50,7 @@ implementations conform to the same API contract and Gherkin specifications.
 ### CI Workflows
 
 - **Main CI** (`main-ci.yml`): Runs `typecheck`, `lint`, `test:quick` for all
-  projects on push to `main`. Uploads coverage to Codecov.
+  projects on push to `main`. Coverage is enforced locally by `rhino-cli test-coverage validate` inside `test:quick`.
 - **Per-app E2E** (`test-demo-be-*.yml`, `test-demo-fe-*.yml`): Manual
   `workflow_dispatch` only (cron schedules removed to conserve resources).
   Starts full stack via Docker Compose, runs Playwright E2E tests.
