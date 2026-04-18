@@ -473,7 +473,7 @@ automatically on every `test:quick` run via `rhino-cli links check`.
 
 - Internal links are validated for correctness
 - External links (`http://`, `https://`, `mailto:`) are NOT validated by this tool — use the
-  `apps-demo-fs-ts-nextjs-link-checker` AI agent for those
+  `docs-link-checker` AI agent for those
 - Same-page anchors (`#section`) are not validated
 
 **Examples:**

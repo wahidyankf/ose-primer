@@ -69,7 +69,7 @@ Exactly one of the following tokens MUST appear as the last token of every agent
 | `checker`  | Validates an artifact against standards                     | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
 | `fixer`    | Applies validated checker findings                          | `plan-fixer`, `swe-ui-fixer`                                 |
 | `dev`      | Writes code in a language or test framework                 | `swe-rust-dev`, `swe-e2e-dev`                                |
-| `deployer` | Deploys an application to an environment                    | `apps-demo-fs-ts-nextjs-deployer`                            |
+| `deployer` | Deploys an application to an environment                    | `apps-<scope>-deployer` (scope-specific deployer)            |
 | `manager`  | Performs file or resource operations (rename, move, delete) | `docs-file-manager`                                          |
 
 No other role suffixes are permitted. Introducing a new role requires amending this table first.
@@ -100,11 +100,11 @@ Any non-empty output is a governance violation. Every line printed is an agent f
 
 Current agents, grouped by role, all conforming to the rule:
 
-- **`maker`** — `docs-maker` (scope `docs`, no qualifier, role `maker`), `web-research-maker` (scope `web`, qualifier `research`, role `maker`), `apps-demo-fs-ts-nextjs-by-example-maker` (scope `apps`, qualifiers `demo-fs-ts-nextjs-by-example`, role `maker`)
+- **`maker`** — `docs-maker` (scope `docs`, no qualifier, role `maker`), `web-research-maker` (scope `web`, qualifier `research`, role `maker`), `docs-tutorial-maker` (scope `docs`, qualifier `tutorial`, role `maker`)
 - **`checker`** — `plan-checker` (scope `plan`, role `checker`), `plan-execution-checker` (scope `plan`, qualifier `execution`, role `checker`), `swe-code-checker` (scope `swe`, qualifier `code`, role `checker`)
 - **`fixer`** — `plan-fixer` (scope `plan`, role `fixer`), `swe-ui-fixer` (scope `swe`, qualifier `ui`, role `fixer`)
 - **`dev`** — `swe-rust-dev` (scope `swe`, qualifier `rust`, role `dev`), `swe-e2e-dev` (scope `swe`, qualifier `e2e`, role `dev`)
-- **`deployer`** — `apps-demo-fs-ts-nextjs-deployer` (scope `apps`, qualifiers `demo-fs-ts-nextjs`, role `deployer`)
+- **`deployer`** — `apps-<scope>-deployer` (scope `apps`, qualifiers identify the target app, role `deployer`)
 - **`manager`** — `docs-file-manager` (scope `docs`, qualifier `file`, role `manager`)
 
 ## Related

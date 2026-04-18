@@ -15,7 +15,7 @@ updated: 2025-12-15
 
 # Fixer Confidence Levels Convention
 
-This document defines the universal confidence level system used by all fixer agents (repo-rules-fixer, apps-demo-fs-ts-nextjs-general-fixer, apps-demo-fs-ts-nextjs-by-example-fixer, apps-demo-fs-ts-nextjs-facts-fixer, docs-tutorial-fixer, apps-demo-fs-ts-nextjs-content-fixer, readme-fixer, docs-fixer, plan-fixer) to assess findings from checker agents and determine which fixes can be applied automatically versus which require manual review.
+This document defines the universal confidence level system used by all fixer agents (repo-rules-fixer, docs-tutorial-fixer, readme-fixer, docs-fixer, plan-fixer, repo-workflow-fixer, specs-fixer, swe-ui-fixer, ci-fixer) to assess findings from checker agents and determine which fixes can be applied automatically versus which require manual review.
 
 ## Principles Implemented/Respected
 
@@ -110,19 +110,17 @@ Confidence levels serve multiple critical purposes:
 
 All fixer agents implement this confidence level system:
 
+See [AI Agents Index](../../../.claude/agents/README.md) for the complete list. Current fixers include:
+
 - **repo-rules-fixer** - Repository-wide structural consistency fixes
-- **apps-demo-fs-ts-nextjs-general-fixer** - demo-fs-ts-nextjs general content fixes
-- **apps-demo-fs-ts-nextjs-by-example-fixer** - demo-fs-ts-nextjs by-example tutorial fixes
-- **apps-demo-fs-ts-nextjs-facts-fixer** - demo-fs-ts-nextjs factual accuracy fixes
-- **apps-demo-fs-ts-nextjs-in-the-field-fixer** - demo-fs-ts-nextjs in-the-field tutorial fixes
-- **apps-demo-fs-ts-nextjs-link-fixer** - demo-fs-ts-nextjs link validation fixes
 - **docs-tutorial-fixer** - Tutorial quality fixes
-- **apps-demo-fs-ts-nextjs-content-fixer** - demo-fs-ts-nextjs Next.js content fixes
 - **readme-fixer** - README quality fixes
 - **docs-fixer** - Documentation factual accuracy fixes
 - **plan-fixer** - Plan structural and format fixes
-- **docs-software-engineering-separation-fixer** - Software engineering documentation separation fixes
 - **repo-workflow-fixer** - Repository workflow structural consistency fixes
+- **specs-fixer** - Gherkin/BDD specs fixes
+- **swe-ui-fixer** - UI component fixes
+- **ci-fixer** - CI/CD standards fixes
 
 ### Universal Application
 
@@ -159,12 +157,12 @@ The three confidence levels (HIGH, MEDIUM, FALSE_POSITIVE) are universal. Each a
 - Wrong field value verified by comparing actual vs expected value
 - File naming convention violation verified by checking filename against the kebab-case pattern
 
-**apps-demo-fs-ts-nextjs-general-fixer:**
+**swe-ui-fixer:**
 
-- Missing `draft: false` field verified by re-reading frontmatter
-- Wrong date format verified by regex pattern match (missing UTC+7 timezone)
-- Weight field error verified for \_index.md (should be 1, found 10)
-- Relative link in navigation content verified (should use absolute with language prefix)
+- Missing required component prop verified by re-reading component file
+- Wrong color token verified by comparing against color accessibility palette
+- Inaccessible aria attribute verified against WCAG AA requirements
+- Broken import reference verified by checking file exists at target path
 
 **docs-tutorial-fixer:**
 
@@ -173,12 +171,12 @@ The three confidence levels (HIGH, MEDIUM, FALSE_POSITIVE) are universal. Each a
 - Wrong tutorial type naming verified against convention patterns
 - Time estimate violation verified by keyword search (forbidden in tutorials)
 
-**apps-demo-fs-ts-nextjs-content-fixer:**
+**ci-fixer:**
 
-- Missing required frontmatter field verified (title, date, draft)
-- Wrong date format verified by regex (missing timezone)
-- Missing cover.alt verified when cover.image exists
-- Multiple H1 headings verified by counting (should be only 1)
+- Missing required Nx target verified by checking project.json
+- Wrong coverage threshold verified by comparing against standards
+- Missing test file verified by checking expected path
+- Multiple entry points verified by counting (should be only 1)
 
 **readme-fixer:**
 
@@ -226,12 +224,12 @@ The three confidence levels (HIGH, MEDIUM, FALSE_POSITIVE) are universal. Each a
 - Link target unclear (file missing, but can't determine correct target automatically)
 - Field value could be valid in specific context (non-standard but potentially intentional)
 
-**apps-demo-fs-ts-nextjs-general-fixer:**
+**swe-ui-fixer:**
 
-- Description length borderline (145 chars vs 150-160 optimal - functional but could improve)
-- Line length slightly over 100 characters (breaking might harm readability)
-- Alt text could be more descriptive but not completely missing
-- Content structure acceptable but could be improved
+- Component variant slightly non-standard but functional (style preference, not violation)
+- Aria label present but could be more descriptive
+- Color choice acceptable but slightly outside optimal range
+- Structure valid but could be reorganized for better readability
 
 **docs-tutorial-fixer:**
 
@@ -241,12 +239,12 @@ The three confidence levels (HIGH, MEDIUM, FALSE_POSITIVE) are universal. Each a
 - Content balance assessments (theory vs practice ratio)
 - Example quality assessments (examples work but could be better)
 
-**apps-demo-fs-ts-nextjs-content-fixer:**
+**ci-fixer:**
 
-- Summary length is short but functional (85 chars vs 150-160 optimal)
-- Image alt text vague but not missing ("screenshot" - need image context to improve)
-- Line length exceeds limit but breaking would harm readability
-- Broken link with unclear correct target (file missing, multiple possibilities)
+- Coverage threshold borderline (89.8% vs ≥90% - may be rounding issue)
+- Docker setup present but uses non-standard port (functional but non-conventional)
+- Build step ordering could be improved but doesn't cause failures
+- Test target present but uses alternative naming pattern
 
 **readme-fixer:**
 
@@ -294,11 +292,11 @@ The three confidence levels (HIGH, MEDIUM, FALSE_POSITIVE) are universal. Each a
 - Checker reported missing field that actually exists (case sensitivity issue)
 - Checker misinterpreted file content (wrong pattern match)
 
-**apps-demo-fs-ts-nextjs-general-fixer:**
+**swe-ui-fixer:**
 
-- Checker flagged overview.md in English folder but file is correct (checker confused /en/ with /id/)
-- Checker flagged missing ikhtisar.md in blogging content (learning-only rule applied to wrong directory)
-- Checker misidentified language path when validating filenames
+- Checker flagged valid Radix component pattern as anti-pattern (checker used outdated component API)
+- Checker reported missing test file that exists under different convention name
+- Checker misidentified design token reference as invalid color
 
 **docs-tutorial-fixer:**
 
@@ -306,11 +304,11 @@ The three confidence levels (HIGH, MEDIUM, FALSE_POSITIVE) are universal. Each a
 - Checker reported missing diagram but diagram exists (different Mermaid syntax or placement)
 - Checker misinterpreted tutorial type (tutorial follows convention correctly)
 
-**apps-demo-fs-ts-nextjs-content-fixer:**
+**ci-fixer:**
 
-- Checker flagged Next.js MDX link as broken (doesn't recognize component-style link syntax)
-- Checker applied post validation rules to static page (about.md doesn't need date field)
-- Checker counted code block as prose paragraph (wrong content type detection)
+- Checker flagged valid workflow syntax as incorrect (checker used outdated schema)
+- Checker reported missing required target that exists with different case
+- Checker counted skipped test as failing test (wrong status detection)
 
 **readme-fixer:**
 
@@ -476,12 +474,12 @@ Each fixer agent has domain-specific validation checks:
 - File naming convention compliance
 - Structural consistency across repository
 
-**apps-demo-fs-ts-nextjs-general-fixer:**
+**swe-ui-fixer:**
 
-- Next.js/MDX frontmatter for demo-fs-ts-nextjs
-- Bilingual content validation (en/id)
-- Learning content specific rules (overview/ikhtisar, weight ordering)
-- Navigation link format (absolute paths with language prefix)
+- UI component structure (CVA variants, Radix composition)
+- Accessibility requirements (WCAG AA, aria attributes)
+- Design token compliance
+- Test and Storybook story requirements
 
 **docs-tutorial-fixer:**
 
@@ -490,12 +488,12 @@ Each fixer agent has domain-specific validation checks:
 - Tutorial naming patterns by type
 - No time estimates rule
 
-**apps-demo-fs-ts-nextjs-content-fixer:**
+**ci-fixer:**
 
-- Next.js/MDX frontmatter for demo-fs-ts-nextjs
-- English-only content validation
-- Cover image alt text requirements
-- Heading hierarchy (single H1 rule)
+- Nx target presence and naming (build, lint, test:unit, test:quick)
+- Coverage threshold compliance by project type
+- Docker setup and docker-compose conventions
+- Gherkin spec consumption requirements
 
 **readme-fixer:**
 
@@ -884,19 +882,17 @@ FAIL: All agent files - Frontmatter comment detection
 
 ### Fixer Agents Using This Convention
 
+See [AI Agents Index](../../../.claude/agents/README.md) for the complete and current list of fixer agents. Key fixers include:
+
 - [repo-rules-fixer.md](../../../.claude/agents/repo-rules-fixer.md) - Repository structural consistency fixer
-- [apps-demo-fs-ts-nextjs-general-fixer.md](../../../.claude/agents/apps-demo-fs-ts-nextjs-general-fixer.md) - demo-fs-ts-nextjs general Next.js content fixer
-- [apps-demo-fs-ts-nextjs-by-example-fixer.md](../../../.claude/agents/apps-demo-fs-ts-nextjs-by-example-fixer.md) - demo-fs-ts-nextjs by-example tutorial fixer
-- [apps-demo-fs-ts-nextjs-facts-fixer.md](../../../.claude/agents/apps-demo-fs-ts-nextjs-facts-fixer.md) - demo-fs-ts-nextjs factual accuracy fixer
 - [docs-tutorial-fixer.md](../../../.claude/agents/docs-tutorial-fixer.md) - Tutorial quality fixer
-- [apps-demo-fs-ts-nextjs-content-fixer.md](../../../.claude/agents/apps-demo-fs-ts-nextjs-content-fixer.md) - demo-fs-ts-nextjs Next.js content fixer
 - [readme-fixer.md](../../../.claude/agents/readme-fixer.md) - README quality fixer
 - [plan-fixer.md](../../../.claude/agents/plan-fixer.md) - Plan structural and format fixer
 - [docs-fixer.md](../../../.claude/agents/docs-fixer.md) - Documentation factual accuracy fixer
-- [apps-demo-fs-ts-nextjs-in-the-field-fixer.md](../../../.claude/agents/apps-demo-fs-ts-nextjs-in-the-field-fixer.md) - demo-fs-ts-nextjs in-the-field tutorial fixer
-- [apps-demo-fs-ts-nextjs-link-fixer.md](../../../.claude/agents/apps-demo-fs-ts-nextjs-link-fixer.md) - demo-fs-ts-nextjs link validation fixer
-- [docs-software-engineering-separation-fixer.md](../../../.claude/agents/docs-software-engineering-separation-fixer.md) - Software engineering documentation separation fixer
 - [repo-workflow-fixer.md](../../../.claude/agents/repo-workflow-fixer.md) - Repository workflow structural consistency fixer
+- [specs-fixer.md](../../../.claude/agents/specs-fixer.md) - Specs structural and accuracy fixer
+- [swe-ui-fixer.md](../../../.claude/agents/swe-ui-fixer.md) - UI component fixer
+- [ci-fixer.md](../../../.claude/agents/ci-fixer.md) - CI/CD standards fixer
 
 ### Related Conventions
 

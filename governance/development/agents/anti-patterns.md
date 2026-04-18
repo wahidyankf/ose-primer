@@ -308,7 +308,7 @@ tool.md
 
 ```
 docs-tutorial-checker.md
-apps-demo-fs-ts-nextjs-deployer.md
+docs-file-manager.md
 plan-execution-checker.md
 readme-maker.md
 ```

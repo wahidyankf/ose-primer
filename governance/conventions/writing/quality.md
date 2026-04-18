@@ -894,7 +894,7 @@ Before committing markdown content, verify:
 
 - [File Naming Convention](../structure/file-naming.md) - File naming standards
 - [Linking Convention](../formatting/linking.md) - Internal and external linking
-- [Tutorial Convention](../tutorials/general.md) - Tutorial structure and pedagogy
+- `docs-creating-by-example-tutorials` skill - Tutorial structure and pedagogy
 - [Diátaxis Framework](../structure/diataxis-framework.md) - Documentation organization
 
 ## References

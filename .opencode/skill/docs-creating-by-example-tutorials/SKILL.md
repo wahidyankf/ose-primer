@@ -491,7 +491,6 @@ int x = 10;  // This line declares a variable named x and assigns it the integer
 
 **Related Skills**:
 
-- `apps-demo-fs-ts-nextjs-developing-content` - demo-fs-ts-nextjs specific patterns for hosting tutorials
 - `docs-creating-accessible-diagrams` - Accessible diagram creation for complex examples
 
 ---

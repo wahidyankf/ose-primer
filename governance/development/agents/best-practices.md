@@ -207,7 +207,7 @@ context: |
 
 ```
 docs-checker.md
-apps-demo-fs-ts-nextjs-general-maker.md
+swe-typescript-dev.md
 plan-execution-checker.md
 ```
 

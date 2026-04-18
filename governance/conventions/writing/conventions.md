@@ -538,8 +538,7 @@ Conventions are most effective when enforced or assisted by agents:
 
 - **docs-checker** - Validates documentation follows conventions
 - **docs-link-checker** - Enforces linking convention
-- **apps-demo-fs-ts-nextjs-general-checker** - Validates general Hugo content conventions
-- **apps-demo-fs-ts-nextjs-by-example-checker** - Validates by-example tutorial conventions
+- **docs-tutorial-checker** - Validates tutorial conventions
 - **repo-rules-checker** - Audits convention compliance
 
 ### Agent Integration Checklist

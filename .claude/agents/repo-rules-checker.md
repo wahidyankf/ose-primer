@@ -152,7 +152,7 @@ Skill: `repo-generating-validation-reports` (progressive streaming)
 - UUID generation logic (should reference `repo-generating-validation-reports`)
 - Criticality level definitions (should reference `repo-assessing-criticality-confidence`)
 - Mode parameter handling (should reference `repo-applying-maker-checker-fixer`)
-- Content organization systems (should reference `apps-demo-fs-ts-nextjs-developing-content`)
+- Content organization systems (should reference `docs-applying-content-quality`)
 - Color palettes (should reference `docs-creating-accessible-diagrams`)
 - Report templates (should reference `repo-generating-validation-reports`)
 - Annotation density (should reference `docs-creating-by-example-tutorials`)
@@ -602,10 +602,6 @@ Validate file naming, linking, emoji usage, convention compliance per existing l
 ```
 
 **Domain-Specific Exemptions** (DO NOT flag these):
-
-- `apps-demo-fs-ts-nextjs-developing-content` vs `apps-demo-fs-ts-nextjs-developing-content`
-  - **Reason**: Different audiences and content types (educational platform vs project landing page), despite both using Next.js 16
-  - **Keep Separate**: Platform-specific skills serve different apps
 
 - `repo-assessing-criticality-confidence` vs `repo-generating-validation-reports`
   - **Reason**: Orthogonal concerns (what to assess vs how to report)

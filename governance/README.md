@@ -83,7 +83,7 @@ graph TD
 #### Layer 2: Conventions (WHAT - Documentation Rules)
 
 - **[Conventions](./conventions/README.md)** - Documentation writing and organization standards
-  - Conventions organized across categories (formatting, linking, writing, structure, tutorials)
+  - Conventions organized across categories (formatting, linking, writing, structure)
   - Implements principles in concrete documentation rules
   - Each convention includes "Principles Implemented/Respected" section
   - Enforced by AI agents (docs-checker, docs-maker, etc.)
@@ -107,7 +107,7 @@ graph TD
 #### Layer 5: Workflows (WHEN - Multi-Step Processes)
 
 - **[Workflows](./workflows/README.md)** - Orchestrated multi-step processes composing AI agents
-  - Workflows across categories (demo-fs-ts-nextjs, ci, docs, meta, plan, repository, specs, ui)
+  - Workflows across categories (ci, docs, infra, meta, plan, repo, specs, ui)
   - Define sequences (sequential/parallel/conditional), state management, termination criteria
   - Examples: Maker-Checker-Fixer, Plan-Execute-Validate
   - Orchestrate agents from Layer 4

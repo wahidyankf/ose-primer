@@ -58,22 +58,17 @@ This convention establishes designated directories for temporary files created b
 All checker agents in the following families MUST write audit reports to `generated-reports/`:
 
 1. **repo-rules-checker** - Repository consistency validation
-2. **apps-demo-fs-ts-nextjs-general-checker** - General content validation (demo-fs-ts-nextjs)
-3. **apps-demo-fs-ts-nextjs-by-example-checker** - By-example tutorial validation (demo-fs-ts-nextjs)
-4. **apps-demo-fs-ts-nextjs-facts-checker** - Educational content factual accuracy validation
-5. **apps-demo-fs-ts-nextjs-link-checker** - Link validation (demo-fs-ts-nextjs)
-6. **apps-demo-fs-ts-nextjs-content-checker** - Content validation (demo-fs-ts-nextjs, Next.js)
-7. **docs-checker** - Documentation factual accuracy validation
-8. **docs-link-checker** - External and internal link validation
-9. **docs-tutorial-checker** - Tutorial quality validation
-10. **readme-checker** - README quality validation
-11. **plan-checker** - Plan readiness validation
-12. **plan-execution-checker** - Implementation validation
-13. **apps-demo-fs-ts-nextjs-in-the-field-checker** - In-the-field content validation (demo-fs-ts-nextjs)
-14. **docs-software-engineering-separation-checker** - Software engineering docs separation validation
-15. **repo-workflow-checker** - Workflow documentation quality validation
-16. **specs-checker** - Gherkin/BDD specs directory structural and content validation
-17. **swe-code-checker** - Software code quality validation
+2. **docs-checker** - Documentation factual accuracy validation
+3. **docs-link-checker** - External and internal link validation
+4. **docs-tutorial-checker** - Tutorial quality validation
+5. **readme-checker** - README quality validation
+6. **plan-checker** - Plan readiness validation
+7. **plan-execution-checker** - Implementation validation
+8. **repo-workflow-checker** - Workflow documentation quality validation
+9. **specs-checker** - Gherkin/BDD specs directory structural and content validation
+10. **swe-code-checker** - Software code quality validation
+11. **swe-ui-checker** - UI component quality validation
+12. **ci-checker** - CI/CD standards validation
 
 **NO EXCEPTIONS**: Checker agents MUST NOT output results in conversation only. All validation findings MUST be written to audit report files.
 
@@ -397,22 +392,17 @@ This progressive approach ensures findings persist even if context is compacted 
 ALL \*-checker agents must implement progressive writing:
 
 1. repo-rules-checker
-2. apps-demo-fs-ts-nextjs-general-checker
-3. apps-demo-fs-ts-nextjs-by-example-checker
-4. apps-demo-fs-ts-nextjs-facts-checker
-5. apps-demo-fs-ts-nextjs-link-checker
-6. apps-demo-fs-ts-nextjs-content-checker
-7. docs-checker
-8. docs-link-checker
-9. docs-tutorial-checker
-10. readme-checker
-11. plan-checker
-12. plan-execution-checker
-13. apps-demo-fs-ts-nextjs-in-the-field-checker
-14. docs-software-engineering-separation-checker
-15. repo-workflow-checker
-16. specs-checker
-17. swe-code-checker
+2. docs-checker
+3. docs-link-checker
+4. docs-tutorial-checker
+5. readme-checker
+6. plan-checker
+7. plan-execution-checker
+8. repo-workflow-checker
+9. specs-checker
+10. swe-code-checker
+11. swe-ui-checker
+12. ci-checker
 
 **Validation**: See repo-rules-checker agent for validation rules that verify progressive writing compliance across all checker agents.
 
@@ -524,7 +514,7 @@ filename="repo-rules__${uuid}__${timestamp}__audit.md"
 
 #### Fixer Reports (Universal Pattern)
 
-**Agents**: All fixer agents (repo-rules-fixer, apps-demo-fs-ts-nextjs-general-fixer, apps-demo-fs-ts-nextjs-by-example-fixer, apps-demo-fs-ts-nextjs-facts-fixer, apps-demo-fs-ts-nextjs-in-the-field-fixer, apps-demo-fs-ts-nextjs-link-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, apps-demo-fs-ts-nextjs-content-fixer, readme-fixer, docs-fixer, plan-fixer, repo-workflow-fixer, specs-fixer)
+**Agents**: All fixer agents. See [AI Agents Index](../../../.claude/agents/README.md) for the complete list. Key fixers: repo-rules-fixer, docs-tutorial-fixer, readme-fixer, docs-fixer, plan-fixer, repo-workflow-fixer, specs-fixer, swe-ui-fixer, ci-fixer
 
 **Pattern**: `{agent-family}__{uuid-chain}__{YYYY-MM-DD--HH-MM}__fix.md`
 
@@ -606,17 +596,12 @@ All fixer reports include these sections:
 
 #### Content Validation Reports
 
-**Agents**: apps-demo-fs-ts-nextjs-general-checker, apps-demo-fs-ts-nextjs-by-example-checker, apps-demo-fs-ts-nextjs-facts-checker, apps-demo-fs-ts-nextjs-in-the-field-checker, apps-demo-fs-ts-nextjs-link-checker, apps-demo-fs-ts-nextjs-content-checker
-**Pattern**: `{site}__{uuid-chain}__{YYYY-MM-DD--HH-MM}__audit.md`
+**Agents**: docs-tutorial-checker and other content checker agents. See [AI Agents Index](../../../.claude/agents/README.md) for the complete list.
+**Pattern**: `{agent-family}__{uuid-chain}__{YYYY-MM-DD--HH-MM}__audit.md`
 
 **Examples**:
 
-- `demo-fs-ts-nextjs-general__a1b2c3__2025-12-14--15-30__audit.md`
-- `demo-fs-ts-nextjs-by-example__d4e5f6__2025-12-14--15-45__audit.md`
-- `demo-fs-ts-nextjs-facts__a1b2c3__2025-12-14--15-50__audit.md`
-- `demo-fs-ts-nextjs-in-the-field__d4e5f6__2025-12-14--15-55__audit.md`
-- `demo-fs-ts-nextjs-link__g7h8i9__2025-12-14--16-00__audit.md`
-- `demo-fs-ts-nextjs-content__g7h8i9__2025-12-14--16-10__audit.md`
+- `docs-tutorial__a1b2c3__2025-12-14--15-30__audit.md`
 
 **Content**: Content validation results (quality, factual accuracy, links)
 

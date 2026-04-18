@@ -9,6 +9,7 @@ skills:
   - docs-applying-content-quality
   - docs-applying-diataxis-framework
   - docs-creating-by-example-tutorials
+  - docs-creating-in-the-field-tutorials
 ---
 
 # Tutorial Documentation Maker Agent

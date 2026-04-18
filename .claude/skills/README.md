@@ -13,7 +13,6 @@ This directory contains skill packages that provide progressive knowledge delive
 - **docs-creating-in-the-field-tutorials** - In-the-field tutorial creation methodology
 - **docs-validating-factual-accuracy** - Factual verification methodology with web research
 - **docs-validating-links** - Link validity checking and fixing procedures
-- **docs-validating-software-engineering-separation** - Programming language docs separation validation
 
 ### 📋 README Skills
 
@@ -60,12 +59,6 @@ This directory contains skill packages that provide progressive knowledge delive
 - **swe-programming-python** - Python coding standards quick reference
 - **swe-programming-rust** - Rust coding standards quick reference
 - **swe-programming-typescript** - TypeScript coding standards quick reference
-
-### 🌐 Site Development Skills
-
-- **apps-demo-fs-ts-nextjs-developing-content** - demo content development standards (Next.js)
-- **apps-demo-fe-ts-nextjs-developing-content** - demo frontend content development standards
-- **apps-demo-fs-ts-nextjs-developing-content** - demo content development standards
 
 ## Skill Structure
 

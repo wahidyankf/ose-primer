@@ -302,13 +302,8 @@ Finding: [BROKEN] - Internal Link to Non-Existent File
 - repo-applying-maker-checker-fixer - Checker workflow patterns
 - repo-generating-validation-reports - Report format and progressive writing
 
-**Domain Skills**:
-
-- apps-demo-fs-ts-nextjs-developing-content - demo-fs-ts-nextjs content linking patterns (Next.js)
-
 ## Related Agents
 
 **Link Validation Agents**:
 
 - docs-link-checker - Validates links in docs/, governance/, plans/
-- apps-demo-fs-ts-nextjs-link-checker - Validates links in demo-fs-ts-nextjs content
