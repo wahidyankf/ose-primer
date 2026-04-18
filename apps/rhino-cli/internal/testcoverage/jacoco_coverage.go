@@ -47,7 +47,7 @@ func parseJaCoCo(filename string) (jacocoReport, error) {
 	return report, nil
 }
 
-// ComputeJaCoCoResult computes line coverage from a JaCoCo XML report using Codecov's algorithm.
+// ComputeJaCoCoResult computes line coverage from a JaCoCo XML report using the 3-state algorithm.
 //
 // For each <line> element:
 //   - ci > 0 AND mb == 0 → Covered
