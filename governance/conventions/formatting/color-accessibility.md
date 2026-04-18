@@ -107,7 +107,7 @@ Before publishing content with colors:
 4. Confirm shape differentiation is sufficient
 5. Test in both light and dark modes
 
-## Verified Accessible Color Palette
+## 🎨 Verified Accessible Color Palette
 
 This palette has been scientifically verified to be safe for all types of color blindness and meets WCAG AA standards in both light and dark modes.
 
@@ -151,7 +151,7 @@ For quick copy-paste in code:
 #808080 - Gray
 ```
 
-## Colors to Avoid
+## ⚠️ Colors to Avoid
 
 **CRITICAL**: Never use these colors in any context where color is meant to convey information:
 
@@ -206,7 +206,7 @@ For quick copy-paste in code:
 
 **Testing tool**: [Coblis Tritanopia Simulator](https://www.color-blindness.com/coblis-color-blindness-simulator/)
 
-## Application Contexts
+## 🏗️ Application Contexts
 
 This section distinguishes between two different color usage contexts with different accessibility requirements.
 
@@ -530,7 +530,7 @@ Before committing content with colors:
 4. PASS: Check light and dark modes
 5. PASS: Confirm shape differentiation is sufficient
 
-## Testing and Verification
+## 🧪 Testing and Verification
 
 ### Required Tools
 
@@ -908,7 +908,7 @@ The verified accessible color palette is based on scientific consensus:
    - Comprehensive epidemiological data
    - Documents global prevalence of ~300 million affected
 
-## Related Conventions
+## 🔗 Related Conventions
 
 - [Diagram and Schema Convention](./diagrams.md) - Standards for Mermaid diagrams with color accessibility requirements
 - [Emoji Usage Convention](./emoji.md) - Emoji usage including colored square emoji accessibility guidance

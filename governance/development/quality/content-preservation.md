@@ -50,7 +50,7 @@ This convention applies to:
 - **Documentation deduplication** - Eliminating cross-file duplication
 - **Convention extraction** - Moving shared patterns to convention docs
 
-## The Fundamental Principle: MOVE, NOT DELETE
+## 📋 The Fundamental Principle: MOVE, NOT DELETE
 
 **CRITICAL REQUIREMENT:** All condensation must preserve content by moving it to convention or development documents. Zero content loss is non-negotiable.
 
@@ -351,7 +351,7 @@ Follow this systematic process when offloading content:
 - Eliminate duplication across repository
 - Maintain consistent terminology
 
-## Verification Checklist
+## ✅ Verification Checklist
 
 Before completing a content offload, verify:
 
@@ -491,9 +491,9 @@ When creating documentation files:
 - Content/format standards → conventions/
 - Process/workflow standards → development/
 
-## Common Anti-Patterns
+## ❌ Common Anti-Patterns
 
-### FAIL: Anti-Pattern 1: Deleting Content Without Offload
+### ❌ Anti-Pattern 1: Deleting Content Without Offload
 
 ```markdown
 Before: AGENTS.md has 500 lines on file naming
@@ -505,7 +505,7 @@ Problem: Need to recreate later, knowledge erosion
 
 **PASS: Correct Approach:** Offload to `governance/conventions/structure/file-naming.md`, link from AGENTS.md
 
-### FAIL: Anti-Pattern 2: Incomplete Offload
+### ❌ Anti-Pattern 2: Incomplete Offload
 
 ```markdown
 Before: Agent has 300 lines on testing
@@ -517,7 +517,7 @@ Problem: Lost unique details, incomplete documentation
 
 **PASS: Correct Approach:** Move ALL 300 lines to convention, comprehensive documentation
 
-### FAIL: Anti-Pattern 3: Wrong Folder Choice
+### ❌ Anti-Pattern 3: Wrong Folder Choice
 
 ```markdown
 Before: Testing strategy duplicated across agents
@@ -529,7 +529,7 @@ Problem: Violates convention/development separation
 
 **PASS: Correct Approach:** Create `governance/development/quality/testing-strategy.md`
 
-### FAIL: Anti-Pattern 4: Offloading Agent-Specific Logic
+### ❌ Anti-Pattern 4: Offloading Agent-Specific Logic
 
 ```markdown
 Before: Agent has workflow for applying file naming convention
@@ -579,7 +579,7 @@ When creating new convention or development documents during offload, `docs-make
 - Add frontmatter with appropriate subcategory
 - Update index files
 
-## Related Conventions
+## 🔗 Related Conventions
 
 - [AI Agents Convention](../agents/ai-agents.md) - Agent file size tiers and condensation
 - [Convention Writing Convention](../../conventions/writing/conventions.md) - How to structure convention documents

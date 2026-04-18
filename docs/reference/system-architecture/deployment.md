@@ -14,7 +14,7 @@ updated: 2026-03-06
 
 Deployment architecture, environment branches, and Vercel configuration for the Open Sharia Enterprise platform.
 
-## Deployment Diagram
+## 🏗️ Deployment Diagram
 
 ```mermaid
 graph TB
@@ -75,7 +75,7 @@ graph TB
     style LOCAL fill:#6a4c93,stroke:#22223b,color:#ffffff
 ```
 
-## Deployment Configuration
+## ⚙️ Deployment Configuration
 
 ### Vercel Deployment
 

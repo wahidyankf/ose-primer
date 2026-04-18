@@ -52,7 +52,7 @@ Model selection directly affects agent quality, latency, and resource efficiency
 - Agent naming and file structure (see [AI Agents Convention](./ai-agents.md))
 - Workflow orchestration (see [Agent Workflow Orchestration](./agent-workflow-orchestration.md))
 
-## Model Tiers
+## 🎯 Model Tiers
 
 ### Opus (Inherit / No Model Specified)
 
@@ -156,7 +156,7 @@ color: purple
 ---
 ```
 
-## Model Selection Decision Tree
+## 🌳 Model Selection Decision Tree
 
 ```
 Start: Choosing Agent Model
@@ -230,7 +230,7 @@ For a deployer agent:
 | **Error recovery**     | Adapts to unexpected states | Follows fallback rules              | Fails or retries                       |
 | **Typical agents**     | Creative makers, developers | Checkers, fixers, structured makers | Deployers, link checkers, file manager |
 
-## Common Mistakes
+## ❌ Common Mistakes
 
 | Mistake                                   | Problem                                                          | Correction                                                |
 | ----------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------- |
@@ -279,7 +279,7 @@ The following agents enforce or assist with model selection:
 - **repo-rules-checker** -- validates that all agents have model justification blocks and appropriate tier assignments
 - **repo-rules-fixer** -- corrects model selection issues identified by the checker
 
-## References
+## 🔗 References
 
 **Related Development Practices:**
 

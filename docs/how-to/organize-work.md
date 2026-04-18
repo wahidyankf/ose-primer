@@ -13,13 +13,13 @@ updated: 2025-11-26
 
 # How to Organize Your Work
 
-## Problem
+## 📋 Problem
 
 You're starting new work and need to know: **Where should I put this?** Should it go in `plans/` or `docs/`?
 
 This guide helps you choose the right location based on the type and lifecycle of your work.
 
-## Quick Decision Tree
+## 🚀 Quick Decision Tree
 
 %% Color palette: Blue #0173B2, Orange #DE8F05, Brown #CA9161, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
@@ -352,7 +352,7 @@ This project is complete. See the following documentation:
 | Project roadmap (current work)             | `plans/`             | Multiple plans in backlog/in-progress           |
 | Project roadmap (historical documentation) | `docs/explanation/`  | Summary of completed work and direction         |
 
-## Troubleshooting
+## 🔬 Troubleshooting
 
 ### "I'm not sure if this should be temporary or permanent"
 
@@ -406,7 +406,7 @@ This project is complete. See the following documentation:
 | Proof of concept       | `plans/in-progress/` | Structured exploration with deliverable |
 | Research findings      | `docs/explanation/`  | Permanent knowledge                     |
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Diátaxis Framework](../../governance/conventions/structure/diataxis-framework.md) - Understanding the four documentation types
 - [File Naming Convention](../../governance/conventions/structure/file-naming.md) - How to name files in `docs/`

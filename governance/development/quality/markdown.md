@@ -21,7 +21,7 @@ updated: 2026-01-17
 **Status**: Active
 **Last Updated**: 2026-01-17
 
-## Overview
+## 📋 Overview
 
 This repository uses two complementary tools to maintain markdown quality:
 
@@ -30,7 +30,7 @@ This repository uses two complementary tools to maintain markdown quality:
 
 Both tools work together to ensure markdown files are well-formatted and follow best practices.
 
-## Tools
+## 🛠️ Tools
 
 ### Prettier (v3.6.2)
 
@@ -132,7 +132,7 @@ These rules are intentionally disabled to align with repository conventions:
 - **MD059**: Descriptive link text (contextually clear links)
 - **MD060**: Table column style (intentional styling)
 
-## Common Violations and Fixes
+## ❌ Common Violations and Fixes
 
 ### Bare URLs
 
@@ -278,7 +278,7 @@ The following directories are excluded from linting and formatting:
 - `generated-reports/`
 - `.vscode/`, `.idea/` (IDE files)
 
-## Troubleshooting
+## 🔧 Troubleshooting
 
 ### Pre-push hook blocks my push
 
@@ -309,7 +309,7 @@ Configuration has been tuned to disable overly strict rules. If you still see ma
 3. Most violations should be automatically fixed
 4. Remaining violations are usually intentional patterns
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Content Quality Convention](../../conventions/writing/quality.md)
 - [Indentation Convention](../../conventions/formatting/indentation.md)

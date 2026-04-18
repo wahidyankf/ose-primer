@@ -78,7 +78,7 @@ graph TD
     style E fill:#CA9161,stroke:#000,color:#000
 ```
 
-## Writing Style and Tone
+## ✍️ Writing Style and Tone
 
 ### Active Voice
 
@@ -217,7 +217,7 @@ Token lifetime: 3600s (configurable via `TOKEN_EXPIRY` env var).
 Refresh tokens supported with sliding expiration.
 ```
 
-## Heading Hierarchy
+## 🗂️ Heading Hierarchy
 
 ### Single H1 Rule
 
@@ -335,7 +335,7 @@ This is important content.
 More content continues here...
 ```
 
-## Accessibility Standards
+## ♿ Accessibility Standards
 
 ### Alt Text for Images
 
@@ -466,7 +466,7 @@ FAIL: **Avoid (Generic Link Text)**:
 For setup instructions, click [here](./auth-guide.md).
 ```
 
-## Formatting Conventions
+## 🎨 Formatting Conventions
 
 ### Code Block Formatting
 
@@ -844,7 +844,7 @@ continue which is a security measure that prevents unauthorized access
 attempts.
 ```
 
-## Quality Checklist
+## ✅ Quality Checklist
 
 Before committing markdown content, verify:
 

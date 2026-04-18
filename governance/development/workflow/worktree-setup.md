@@ -41,7 +41,7 @@ This practice respects the following core principles:
 
 This practice does not directly implement Layer 2 documentation conventions. The operational context for this practice is governed by development practices referenced in the Related Documentation section.
 
-## The Rule
+## 📋 The Rule
 
 **After every `git worktree add`, `EnterWorktree` invocation, or any other entry into a worktree session (human or agent), run BOTH of the following in the root repository worktree, in order:**
 
@@ -155,7 +155,7 @@ Agents that create or enter worktrees via `git worktree add`, the `EnterWorktree
 
 The root worktree path is available from the environment context or can be confirmed with `git worktree list`. See the [Git Worktree Awareness](../agents/ai-agents.md#git-worktree-awareness) section of the AI Agents Convention for the full set of rules governing agent behavior in worktrees.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Reproducible Environments](./reproducible-environments.md) - Practices for consistent development environments, including Volta pinning and lockfile management
 - [Native-First Toolchain Management](./native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` for toolchain management across 11 languages

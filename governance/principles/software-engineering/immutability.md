@@ -73,11 +73,11 @@ This principle serves the [Open Sharia Enterprise Vision](../../vision/open-shar
 
 **Use immutability when**:
 
-- PASS: Building concurrent or parallel systems
-- PASS: Implementing business logic with multiple calculations
-- PASS: Creating audit trails or event logs
-- PASS: Handling user input or external data
-- PASS: Working with complex state management
+- Building concurrent or parallel systems
+- Implementing business logic with multiple calculations
+- Creating audit trails or event logs
+- Handling user input or external data
+- Working with complex state management
 
 **Mutability acceptable when**:
 
@@ -92,11 +92,11 @@ This principle serves the [Open Sharia Enterprise Vision](../../vision/open-shar
 
 **Context**: Variable declarations in TypeScript/JavaScript.
 
-PASS: **Immutable (Preferred)**:
+✅ **Immutable (Preferred)**:
 
 ```typescript
 const user = { name: "Ahmad", balance: 1000 };
-// user = { ... }  // FAIL: Error: Cannot reassign const
+// user = { ... }  // Error: Cannot reassign const
 
 // Create new object instead of modifying
 const updatedUser = { ...user, balance: 1200 };
@@ -106,7 +106,7 @@ const updatedUser = { ...user, balance: 1200 };
 
 **Why this works**: `const` prevents reassignment. Spread operator creates new object. Original data preserved.
 
-FAIL: **Mutable (Avoid)**:
+❌ **Mutable (Avoid)**:
 
 ```typescript
 let user = { name: "Ahmad", balance: 1000 };
@@ -120,7 +120,7 @@ user.balance = 1200; // Mutates original object
 
 **Context**: Working with arrays.
 
-PASS: **Immutable (Preferred)**:
+✅ **Immutable (Preferred)**:
 
 ```typescript
 const transactions = [
@@ -143,7 +143,7 @@ console.log(transactions); // Still [{id:1, amount:100}, {id:2, amount:200}]
 
 **Why this works**: Each operation creates new array. Original preserved. Clear data lineage.
 
-FAIL: **Mutable (Avoid)**:
+❌ **Mutable (Avoid)**:
 
 ```typescript
 const transactions = [
@@ -164,7 +164,7 @@ transactions[0].amount = 250; // Mutates object in array
 
 **Context**: Updating nested objects.
 
-PASS: **Immutable (Preferred)**:
+✅ **Immutable (Preferred)**:
 
 ```typescript
 interface Account {
@@ -195,7 +195,7 @@ console.log(updatedAccount.holder.email); // "ahmad.new@example.com"
 
 **Why this works**: Nested spread creates new objects at each level. Original preserved.
 
-FAIL: **Mutable (Avoid)**:
+❌ **Mutable (Avoid)**:
 
 ```typescript
 const account = {
@@ -214,7 +214,7 @@ account.holder.email = "ahmad.new@example.com"; // Mutates nested object
 
 **Context**: Deep nested structures are cumbersome with spread operators.
 
-PASS: **Immutable with Immer (Preferred for complex structures)**:
+✅ **Immutable with Immer (Preferred for complex structures)**:
 
 ```typescript
 import { produce } from "immer";
@@ -242,7 +242,7 @@ console.log(newState.users[0].profile.settings.theme); // "light"
 
 **Context**: Preventing accidental mutations at runtime.
 
-PASS: **Deeply Frozen (Maximum Safety)**:
+✅ **Deeply Frozen (Maximum Safety)**:
 
 ```typescript
 const transaction = Object.freeze({
@@ -259,14 +259,14 @@ transaction.items[0].price = 600; // Error
 
 **Why this works**: `Object.freeze()` makes objects truly immutable at runtime. TypeScript enforces at compile time.
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
 ### Mutating Function Arguments
 
-FAIL: **Problem**: Function modifies input data.
+❌ **Problem**: Function modifies input data.
 
 ```typescript
-// FAIL: Mutates input array
+// Mutates input array
 function addTransaction(transactions, newTx) {
   transactions.push(newTx); // MUTATES INPUT
   return transactions;
@@ -279,7 +279,7 @@ addTransaction(myTransactions, { id: 2, amount: 200 });
 
 **Why it's bad**: Caller's data changed unexpectedly. Breaks assumptions. Hard to debug.
 
-PASS: **Solution**:
+✅ **Solution**:
 
 ```typescript
 function addTransaction(transactions, newTx) {
@@ -293,10 +293,10 @@ const updated = addTransaction(myTransactions, { id: 2, amount: 200 });
 
 ### Shared Mutable State
 
-FAIL: **Problem**: Multiple parts of code share and mutate same object.
+❌ **Problem**: Multiple parts of code share and mutate same object.
 
 ```typescript
-// FAIL: Shared mutable state
+// Shared mutable state
 const appState = { currentUser: null, balance: 0 };
 
 function login(user) {
@@ -312,7 +312,7 @@ function updateBalance(amount) {
 
 **Why it's bad**: Changes happen anywhere in codebase. Difficult to trace bugs. Race conditions in concurrent code.
 
-PASS: **Solution**:
+✅ **Solution**:
 
 ```typescript
 interface AppState {
@@ -333,10 +333,10 @@ function updateBalance(state: AppState, amount: number): AppState {
 
 ### Hidden Mutations in Methods
 
-FAIL: **Problem**: Class methods mutate internal state.
+❌ **Problem**: Class methods mutate internal state.
 
 ```typescript
-// FAIL: Mutable class
+// Mutable class
 class ShoppingCart {
   private items = [];
 
@@ -356,7 +356,7 @@ cart.addItem({ id: 1, name: "Book" });
 
 **Why it's bad**: State changes invisible to caller. Can't track history. Concurrent access unsafe.
 
-PASS: **Solution** (Functional approach):
+✅ **Solution** (Functional approach):
 
 ```typescript
 interface ShoppingCart {
@@ -376,16 +376,19 @@ cart = addItem(cart, { id: 1, name: "Book" });
 // Each operation creates new cart, history preserved
 ```
 
-## PASS: Best Practices
+## ✅ Best Practices
 
 ### 1. Use const by Default
 
 **Always start with const**:
 
 ```typescript
-PASS: const user = { name: "Ahmad" };
-let user = { name: "Ahmad" }; // Only if you MUST reassign
-FAIL: var user = { name: "Ahmad" }; // Never use var
+// Preferred:
+const user = { name: "Ahmad" };
+// Only if you MUST reassign:
+let user = { name: "Ahmad" };
+// Never use var:
+var user = { name: "Ahmad" };
 ```
 
 ### 2. Use Immutable Array Methods
@@ -393,12 +396,12 @@ FAIL: var user = { name: "Ahmad" }; // Never use var
 **Prefer map/filter/reduce over loops**:
 
 ```typescript
-// PASS: Immutable transformations
+// Immutable transformations
 const doubled = numbers.map((n) => n * 2);
 const evens = numbers.filter((n) => n % 2 === 0);
 const sum = numbers.reduce((acc, n) => acc + n, 0);
 
-// FAIL: Avoid mutation in loops
+// Avoid mutation in loops
 const doubled = [];
 for (let i = 0; i < numbers.length; i++) {
   doubled.push(numbers[i] * 2); // Creates and mutates array
@@ -410,10 +413,10 @@ for (let i = 0; i < numbers.length; i++) {
 **Copy objects and arrays**:
 
 ```typescript
-// PASS: Objects
+// Objects
 const updated = { ...original, field: newValue };
 
-// PASS: Arrays
+// Arrays
 const newArray = [...oldArray, newItem];
 const merged = [...array1, ...array2];
 ```
@@ -425,7 +428,7 @@ const merged = [...array1, ...array2];
 ```typescript
 import { produce } from "immer";
 
-// PASS: Complex update with Immer
+// Complex update with Immer
 const newState = produce(state, (draft) => {
   draft.users[userId].profile.settings.theme = "dark";
   draft.users[userId].lastUpdated = Date.now();
@@ -453,12 +456,12 @@ type ReadonlyArray<T> = readonly T[];
 **Never mutate, always return**:
 
 ```typescript
-// PASS: Pure function returning new value
+// Pure function returning new value
 function calculateZakat(wealth: number): number {
   return wealth * 0.025;
 }
 
-// PASS: Returns new object
+// Returns new object
 function applyDiscount(order: Order, discount: number): Order {
   return {
     ...order,
@@ -471,7 +474,7 @@ function applyDiscount(order: Order, discount: number): Order {
 
 **Scenario**: Calculating Murabaha (cost-plus financing) profit distribution.
 
-FAIL: **Mutable approach** (avoid):
+❌ **Mutable approach** (avoid):
 
 ```typescript
 let contract = {
@@ -495,7 +498,7 @@ addPayment(11000);
 // Original contract state lost, can't audit calculation
 ```
 
-PASS: **Immutable approach** (preferred):
+✅ **Immutable approach** (preferred):
 
 ```typescript
 interface MurabahaContract {

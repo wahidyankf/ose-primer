@@ -43,7 +43,7 @@ Development conventions and standards for the open-sharia-enterprise project. Th
 - Visual documentation elements (diagrams, colors in docs)
 - Documentation quality and accessibility
 
-## 🧪 The Layer Test for Development
+## The Layer Test for Development
 
 **Question**: Does this document answer "**HOW do we develop software?**"
 
@@ -68,7 +68,7 @@ Development conventions and standards for the open-sharia-enterprise project. Th
 - "Markdown files use 2-space indentation" → ❌ Convention (documentation rule)
 - "Why we automate repetitive tasks" → ❌ Principle (foundational value)
 
-## 📂 Document Types
+## Document Types
 
 Development practices in this directory fall into several categories:
 
@@ -157,7 +157,7 @@ Development practices in this directory fall into several categories:
 - [Accessibility Convention](./frontend/accessibility.md) - WCAG AA compliance, focus-visible management, reduced-motion support, ARIA attributes by component type, hit targets, and form input requirements
 - [Styling Convention](./frontend/styling.md) - Tailwind v4 patterns, utility-first approach, class ordering via prettier-plugin-tailwindcss, responsive design, and defensive CSS
 
-## 📚 Companion Documents
+## Companion Documents
 
 Each primary practice document in this directory has companion files providing practical guidance:
 

@@ -14,7 +14,7 @@ updated: 2026-03-06
 
 Complete reference for Nx workspace configuration files, options, and settings.
 
-## Configuration Files Overview
+## 📋 Configuration Files Overview
 
 | File                 | Location    | Purpose                                          |
 | -------------------- | ----------- | ------------------------------------------------ |
@@ -682,7 +682,7 @@ coverage/
 - Glob patterns supported
 - Comments start with `#`
 
-## Environment Variables
+## ⚙️ Environment Variables
 
 ### Nx Environment Variables
 
@@ -706,7 +706,7 @@ Enable/disable Nx daemon.
 NX_DAEMON=false nx build demo-fs-ts-nextjs
 ```
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Nx Target Standards](../../governance/development/infra/nx-targets.md) - Canonical target names, mandatory targets per project type, caching rules, and build output conventions
 - [How to Add New App](../how-to/add-new-app.md)

@@ -70,7 +70,7 @@ Does this define HOW TO WRITE OR FORMAT DOCUMENTATION?
 | How to name files                | `conventions/structure/file-naming.md`     | About **documentation** organization |
 | How to write commit messages     | `development/workflow/commit-messages.md`  | About **git workflow**               |
 
-## Convention Document Structure
+## 🏗️ Convention Document Structure
 
 All convention documents SHOULD follow this structure:
 
@@ -254,7 +254,7 @@ Reference agents or tools that enforce or assist with this convention:
 - **FAQ** - Common questions (use sparingly; prefer clear standards)
 - **Rationale** - Deeper explanation of design decisions (for complex conventions)
 
-## Quality Checklist
+## ✅ Quality Checklist
 
 Before publishing a convention document, verify:
 
@@ -300,7 +300,7 @@ Before publishing a convention document, verify:
 - [ ] Acronyms defined on first use
 - [ ] Clear hierarchy (proper heading nesting)
 
-## When to Create New vs Update Existing
+## 🎯 When to Create New vs Update Existing
 
 ### Create a NEW convention when
 
@@ -422,7 +422,7 @@ Looking for inspiration? These conventions exemplify different structural approa
 - **[Color Accessibility Convention](../formatting/color-accessibility.md)** - Comprehensive reference convention with detailed palette specifications, contrast ratios, and tool-specific guidance
 - **[Indentation Convention](../formatting/indentation.md)** - Simple, focused convention addressing a single technical standard with clear examples
 
-## Examples
+## 📖 Examples
 
 ### Good Convention Document Structure
 
@@ -513,7 +513,7 @@ The end.
 - FAIL: Vague, unconvincing content
 - FAIL: No rationale for rules
 
-## Common Mistakes to Avoid
+## ⚠️ Common Mistakes to Avoid
 
 | Mistake                 | FAIL: Problem                                       | PASS: Solution                                      |
 | ----------------------- | --------------------------------------------------- | --------------------------------------------------- |

@@ -23,7 +23,7 @@ updated: 2025-12-27
 
 ---
 
-## Overview
+## 📋 Overview
 
 This convention establishes a universal **four-level criticality system** (CRITICAL/HIGH/MEDIUM/LOW) for categorizing validation findings across all checker agents. Criticality measures **importance and urgency** of fixing an issue, answering "how soon must this be fixed?"
 
@@ -65,7 +65,7 @@ See [Fixer Confidence Levels Convention](./fixer-confidence-levels.md) for compl
 
 ---
 
-## Four Universal Criticality Levels
+## 🎯 Four Universal Criticality Levels
 
 ### CRITICAL
 
@@ -325,7 +325,7 @@ See [Fixer Confidence Levels Convention](./fixer-confidence-levels.md) for compl
 
 ---
 
-## Criticality × Confidence Decision Matrix
+## 🧮 Criticality × Confidence Decision Matrix
 
 This matrix shows how criticality and confidence combine to determine **priority** and **fix strategy**.
 
@@ -844,7 +844,7 @@ Update link to current documentation URL or find alternative resource
 
 ---
 
-## Implementation Guidelines for Checker Agents
+## ✅ Implementation Guidelines for Checker Agents
 
 ### Assessment Decision Tree
 
@@ -1414,7 +1414,7 @@ Update all fixer agents to use priority-based execution:
 
 ---
 
-## Frequently Asked Questions
+## ❓ Frequently Asked Questions
 
 ### Why four levels instead of three?
 

@@ -51,7 +51,7 @@ level definitions, coverage thresholds, Docker patterns, GitHub Actions structur
   definitions (unit, integration, E2E) and the isolation rules enforced here derive from the
   authoritative three-level testing standard.
 
-## Git Hooks Standard
+## 🪝 Git Hooks Standard
 
 All developer machines run three Husky hooks. Hook logic is implemented via `rhino-cli` subcommands
 to keep the raw hook files thin and testable.
@@ -151,7 +151,7 @@ Key targets referenced throughout this document:
 | `lint`             | Static analysis                                                 |
 | `typecheck`        | Type verification without producing artifacts                   |
 
-## Three-Level Testing Definitions
+## 🧪 Three-Level Testing Definitions
 
 The three levels apply universally across all project types. The isolation boundary at each level
 is fixed — only the step implementation details change per language and framework.
@@ -216,7 +216,7 @@ Coverage is measured via the appropriate reporter for each language and converte
 JaCoCo XML before being passed to `rhino-cli test-coverage validate`. See `CLAUDE.md` for the
 exact command per language.
 
-## Docker Conventions
+## 🐳 Docker Conventions
 
 ### Dockerfile Template
 
@@ -302,7 +302,7 @@ Use broad exclusions with narrow inclusions rather than enumerating every exclud
 Broad exclusion prevents accidentally including large directories (e.g., `node_modules`, `.git`,
 `generated-reports`) that would bloat the build context and slow transfers.
 
-## GitHub Actions Conventions
+## ⚙️ GitHub Actions Conventions
 
 ### File Organisation
 

@@ -15,7 +15,7 @@ This document provides:
 - Solutions and corrections for each anti-pattern
 - Organizational and operational considerations
 
-## Common Anti-Patterns
+## ❌ Common Anti-Patterns
 
 ### Anti-Pattern 1: Scattered Temporary Files
 
@@ -325,7 +325,7 @@ local-temp/temp-backup-v2.tar.gz
 - Retention policies unknown
 - Documentation prevents confusion
 
-## Summary of Anti-Patterns
+## 📋 Summary of Anti-Patterns
 
 | Anti-Pattern                  | Problem                | Solution                           |
 | ----------------------------- | ---------------------- | ---------------------------------- |
@@ -340,7 +340,7 @@ local-temp/temp-backup-v2.tar.gz
 | **Conversation-Only Output**  | Lost during compaction | Write report files                 |
 | **Undocumented Temp Files**   | Purpose unclear        | Add README documentation           |
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Temporary Files Convention](./temporary-files.md) - Complete temporary file standards
 - [Acceptance Criteria Convention](./acceptance-criteria.md) - Gherkin acceptance criteria guide

@@ -17,7 +17,7 @@ updated: 2026-04-02
 
 Defines the standard Nx targets that apps and libs expose, what each target must do, and naming conventions that keep all projects consistent across the workspace.
 
-## Execution Model
+## ⚙️ Execution Model
 
 ### Quality Gates (pre-push enforcement)
 
@@ -96,7 +96,7 @@ flowchart TD
 
 - **[Three-Level Testing Standard](../quality/three-level-testing-standard.md)**: The `test:unit`, `test:integration`, and `test:e2e` targets defined here map to the mandatory three-level testing architecture. Each target's isolation boundaries, caching rules, and CI schedule derive from that standard.
 
-## Target Naming Standards
+## 📋 Target Naming Standards
 
 Use these canonical names. Aliases (`serve`, `start:dev`, `unit-test`) are anti-patterns.
 
@@ -210,7 +210,7 @@ A Go lib has no platform boundary and no domain, so it omits both:
 - **Adding a `stack:` dimension**: The four-dimension scheme captures type, platform, language, and domain. A separate `stack:` field duplicates `platform:` and `lang:` without adding information. Use the defined dimensions instead.
 - **Tagging apps with `domain:tooling` when they belong to a product**: `domain:tooling` is for general-purpose dev utilities with no product affiliation. An app that serves a specific product must carry that product's domain tag.
 
-## Mandatory Targets by Project Type
+## ✅ Mandatory Targets by Project Type
 
 ### Summary Matrix
 
@@ -659,7 +659,7 @@ test compilation.
 targets) keeps the dependency graph minimal and avoids running codegen redundantly during test
 runs when artifacts already exist from a prior `build` or `typecheck` execution.
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
 - **Non-standard target names**: `serve` instead of `dev`/`start`, `unit-test` instead of `test:unit`, `integration-test` instead of `test:integration`, `check` instead of `lint` or `typecheck`, bare `test` or `test:full` instead of a specific `test:*` variant
 - **Missing `test:quick`**: Omitting the pre-push gate target silently excludes the project from `nx affected -t test:quick` — this breaks the workspace-wide hook

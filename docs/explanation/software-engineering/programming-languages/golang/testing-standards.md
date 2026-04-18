@@ -120,7 +120,7 @@ package main
 // 5. Less debugging - bugs caught early
 ```
 
-### 🔴🟢🟣 TDD Cycle (Red-Green-Refactor)
+### 🔄 TDD Cycle (Red-Green-Refactor)
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC

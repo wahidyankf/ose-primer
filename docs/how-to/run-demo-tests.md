@@ -20,14 +20,14 @@ This guide explains how to run integration and E2E tests for demo backends and f
 locally. Unit tests run without any external dependencies; integration and E2E tests require
 Docker and/or Playwright.
 
-## Prerequisites
+## 📋 Prerequisites
 
 - Docker and Docker Compose installed
 - Node.js 24 (managed by Volta)
 - `npm install` completed at the workspace root
 - Playwright browsers installed: `npx playwright install`
 
-## Unit Tests (No Docker Required)
+## 🧪 Unit Tests (No Docker Required)
 
 Unit tests use mocked dependencies and run fast. They are the default for local development.
 
@@ -153,7 +153,7 @@ In CI, integration and E2E tests run together in per-service GitHub Actions work
 
 See [CI/CD Reference](../reference/system-architecture/ci-cd.md) for workflow details.
 
-## Summary
+## 📊 Summary
 
 | Level       | Command                             | Requires        | Cached |
 | ----------- | ----------------------------------- | --------------- | ------ |
@@ -163,7 +163,7 @@ See [CI/CD Reference](../reference/system-architecture/ci-cd.md) for workflow de
 | E2E (BE)    | `nx run demo-be-e2e:test:e2e`       | Running backend | No     |
 | E2E (FE)    | `nx run demo-fe-e2e:test:e2e`       | Running stack   | No     |
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md)
 - [Nx Target Standards](../../governance/development/infra/nx-targets.md)

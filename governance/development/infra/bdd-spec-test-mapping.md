@@ -34,7 +34,7 @@ This practice respects the following core principles:
 
 - **[Acceptance Criteria Convention](./acceptance-criteria.md)**: Feature files follow Gherkin standards defined there.
 
-## CLI Apps: Command-to-Spec Mapping
+## 📋 CLI Apps: Command-to-Spec Mapping
 
 ### Core Rule
 
@@ -143,7 +143,7 @@ func TestIntegrationValidateSync(t *testing.T) {
 
 **The universal rule**: All Go files (command, unit test, integration test) use underscores. Feature files and `@tag`s use hyphens. The `spec-coverage validate` tool normalises hyphens to underscores when matching feature stems to Go test files.
 
-## Coverage Enforcement
+## ✅ Coverage Enforcement
 
 The `spec-coverage validate` command enforces this mapping at three levels:
 
@@ -281,7 +281,7 @@ nx run demo-be-e2e:test:e2e
 
 All three commands must report all scenarios passing. The Gherkin feature files serve as the single source of truth — if a scenario fails at any level, the backend is non-compliant.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Acceptance Criteria Convention](./acceptance-criteria.md) - Gherkin format standards
 - [Specs Directory Structure Convention](../../conventions/structure/specs-directory-structure.md) - Canonical path patterns and domain subdirectory rules

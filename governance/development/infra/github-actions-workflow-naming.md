@@ -107,7 +107,7 @@ Every workflow currently in the repository follows this rule:
 
 ## Examples
 
-### PASS: Correctly aligned name and filename
+### ✅ Correctly aligned name and filename
 
 ```yaml
 # File: .github/workflows/pr-quality-gate.yml
@@ -127,7 +127,7 @@ Derivation: `Test - Demo BE (Java/Spring Boot)` → lowercase → `test - demo b
 
 The actual filename is `test-demo-be-java-springboot.yml`. `Java/Spring Boot` maps to `java-springboot` (slash removed, space removed). See the Special Considerations section below.
 
-### FAIL: Misaligned name and filename
+### ❌ Misaligned name and filename
 
 ```yaml
 # File: .github/workflows/quality-gate.yml  ← missing "pr-" prefix
@@ -192,7 +192,7 @@ When creating a new workflow:
 
 Currently no automated validator enforces this rule. The `repo-rules-checker` agent validates adherence during governance audits.
 
-## References
+## 🔗 References
 
 **Related Development Standards:**
 

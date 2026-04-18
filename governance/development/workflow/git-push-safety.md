@@ -122,9 +122,9 @@ The prompt must include:
 
 Execute the command exactly as described. Do not modify the flags or target. If any parameter changes after approval is granted, stop and re-seek approval.
 
-## Examples
+## 📋 Examples
 
-### PASS: Correct agent behavior
+### ✅ Correct agent behavior
 
 ```
 Agent: I need your explicit approval before running:
@@ -142,14 +142,14 @@ User: yes
 Agent: Running git push --force-with-lease origin feature/auth...
 ```
 
-### FAIL: Incorrect agent behavior — executing without approval
+### ❌ Incorrect agent behavior — executing without approval
 
 ```
 Agent: Rebasing is complete. Pushing with --force-with-lease.
 [runs git push --force-with-lease without asking]
 ```
 
-### FAIL: Incorrect agent behavior — reusing prior approval
+### ❌ Incorrect agent behavior — reusing prior approval
 
 ```
 User: [earlier] Yes, go ahead with the force-push.
@@ -157,7 +157,7 @@ Agent: [30 minutes later, different situation] Reusing your earlier approval
        to run git push --force again.
 ```
 
-### FAIL: Incorrect agent behavior — treating --no-verify as routine
+### ❌ Incorrect agent behavior — treating --no-verify as routine
 
 ```
 Agent: The pre-push hook is taking too long. Running with --no-verify
@@ -178,7 +178,7 @@ It does not apply to:
 - Normal `git push` without destructive flags — agents may run these autonomously.
 - `git commit --no-verify` — that is covered separately in the [Code Quality Convention](../quality/code.md) under "Bypassing Hooks".
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Code Quality Convention](../quality/code.md) — Git hooks (Husky, lint-staged, pre-push) that `--no-verify` bypasses.
 - [Trunk Based Development Convention](./trunk-based-development.md) — Git workflow and the specific environment branches (`prod-demo-fs-ts-nextjs`, etc.) where CI-managed force-push is explicitly documented.

@@ -16,7 +16,7 @@ Provide actionable guidance for:
 - Environment reproducibility
 - Development process standards
 
-## Best Practices
+## ✅ Best Practices
 
 ### Practice 1: Commit Directly to Main
 
@@ -732,7 +732,7 @@ git rebase --abort
 git pull origin main  # Use merge instead
 ```
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Trunk Based Development Convention](./trunk-based-development.md) - Complete TBD workflow
 - [Commit Message Convention](./commit-messages.md) - Conventional Commits guide

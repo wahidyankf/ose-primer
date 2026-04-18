@@ -34,7 +34,7 @@ The `governance/` directory groups all governance documentation together:
 
 See [Repository Governance Architecture](./repository-governance-architecture.md) for complete explanation of the six-layer architecture, layer characteristics, traceability examples, and usage guidance.
 
-## 📊 Six-Layer Architecture
+## Six-Layer Architecture
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Sky Blue #56B4E9
@@ -62,7 +62,7 @@ graph TD
  style L5 fill:#56B4E9,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
-## 📋 Contents
+## Contents
 
 ### Core Governance Layers
 
@@ -137,7 +137,7 @@ Agents: docs-checker, docs-fixer (Layer 4) - validate/fix colors
 Workflow: Maker-Checker-Fixer (Layer 5) - automated quality gate
 ```
 
-## 🧪 Layer Test: Where Does My Document Belong?
+## Layer Test: Where Does My Document Belong?
 
 Use these questions to determine the correct subdirectory:
 
@@ -192,7 +192,7 @@ Is it about WHY the project exists?
                 └─ NO → Wrong category (try how-to/ or reference/)
 ```
 
-## 🔑 Key Principles
+## Key Principles
 
 ### Immutability Decreases Down the Layers
 

@@ -139,10 +139,10 @@ Undocumented knowledge often includes:
 
 **Institutional memory** - the collective knowledge of an organization or project - is stored in:
 
-- FAIL: **People's heads**: Lost when people leave
-- FAIL: **Chat logs**: Buried, unsearchable, forgotten
-- FAIL: **Email threads**: Scattered, inaccessible, lost to time
-- PASS: **Documentation**: Permanent, searchable, accessible, versioned
+- ❌ **People's heads**: Lost when people leave
+- ❌ **Chat logs**: Buried, unsearchable, forgotten
+- ❌ **Email threads**: Scattered, inaccessible, lost to time
+- ✅ **Documentation**: Permanent, searchable, accessible, versioned
 
 Well-documented projects survive personnel changes. Knowledge persists regardless of who is present.
 
@@ -162,28 +162,28 @@ Undocumented code is **locked knowledge**. It exists but is not accessible. Docu
 
 **Requirements**:
 
-PASS: **Every library** has a README explaining:
+✅ **Every library** has a README explaining:
 
 - What it does (purpose and scope)
 - Why it exists (problem it solves)
 - How to use it (quick start and examples)
 - Key concepts (important abstractions and patterns)
 
-PASS: **Every application** has a README explaining:
+✅ **Every application** has a README explaining:
 
 - What it is (application purpose)
 - Who it's for (target users)
 - How to run it (setup, configuration, deployment)
 - How to contribute (development setup)
 
-PASS: **Complex functions** have inline comments explaining:
+✅ **Complex functions** have inline comments explaining:
 
 - Non-obvious algorithm choices
 - Performance considerations
 - Edge cases and why they're handled that way
 - Security implications
 
-PASS: **Public APIs** have documentation for:
+✅ **Public APIs** have documentation for:
 
 - Function signatures (parameters, return types)
 - Parameter meanings and constraints
@@ -191,7 +191,7 @@ PASS: **Public APIs** have documentation for:
 - Example usage
 - Error conditions
 
-FAIL: **Anti-pattern**: "The code is self-documenting"
+❌ **Anti-pattern**: "The code is self-documenting"
 
 ````typescript
 // NO DOCUMENTATION - UNMAINTAINABLE
@@ -229,7 +229,7 @@ function calculateMurabahahProfitRate(cost: number, markup_percentage: number, c
 
 **Requirements**:
 
-PASS: **Every convention** has a document explaining:
+✅ **Every convention** has a document explaining:
 
 - What the convention is (the rule)
 - Why it exists (the rationale)
@@ -237,7 +237,7 @@ PASS: **Every convention** has a document explaining:
 - When exceptions are allowed (if any)
 - Principles it implements (traceability)
 
-FAIL: **Anti-pattern**: "We just follow this convention, everyone knows it"
+❌ **Anti-pattern**: "We just follow this convention, everyone knows it"
 
 **Example**: Instead of just enforcing file naming via checker agents, we have [File Naming Convention](../../conventions/structure/file-naming.md) explaining:
 
@@ -254,13 +254,13 @@ FAIL: **Anti-pattern**: "We just follow this convention, everyone knows it"
 
 **Requirements**:
 
-PASS: **Every feature** has documentation including:
+✅ **Every feature** has documentation including:
 
 - **How-to guide**: Step-by-step instructions for using the feature
 - **Reference documentation**: Complete technical details (API, configuration, options)
 - **Explanation**: Why the feature exists, what problem it solves, design decisions
 
-FAIL: **Anti-pattern**: "The feature is live, users will figure it out"
+❌ **Anti-pattern**: "The feature is live, users will figure it out"
 
 **Example**: When adding a new Islamic finance calculation (e.g., Murabahah profit calculation), document:
 
@@ -276,7 +276,7 @@ FAIL: **Anti-pattern**: "The feature is live, users will figure it out"
 
 **Requirements**:
 
-PASS: **Every architectural decision** is documented with:
+✅ **Every architectural decision** is documented with:
 
 - **Context**: What problem are we solving?
 - **Decision**: What approach did we choose?
@@ -284,7 +284,7 @@ PASS: **Every architectural decision** is documented with:
 - **Consequences**: What trade-offs does this create?
 - **Alternatives considered**: What did we NOT choose and why?
 
-FAIL: **Anti-pattern**: "We chose Express because I like it"
+❌ **Anti-pattern**: "We chose Express because I like it"
 
 **Example**: Decision to use Nx monorepo:
 
@@ -323,7 +323,7 @@ FAIL: **Anti-pattern**: "We chose Express because I like it"
 
 **Requirements**:
 
-PASS: **Every workflow** is documented with:
+✅ **Every workflow** is documented with:
 
 - **Purpose**: What the workflow achieves
 - **Steps**: Exact sequence of actions
@@ -332,7 +332,7 @@ PASS: **Every workflow** is documented with:
 - **Outputs**: What is produced
 - **Error handling**: What to do when things fail
 
-FAIL: **Anti-pattern**: "Just run these commands in order (which order? what do they do?)"
+❌ **Anti-pattern**: "Just run these commands in order (which order? what do they do?)"
 
 **Example**: See [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md):
 
@@ -343,11 +343,11 @@ FAIL: **Anti-pattern**: "Just run these commands in order (which order? what do 
 
 **Why this works**: Anyone can execute the workflow correctly without tribal knowledge or guessing.
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
 ### "Self-Documenting Code" Excuse
 
-FAIL: **Problem**: Claiming code doesn't need documentation because it's "readable".
+❌ **Problem**: Claiming code doesn't need documentation because it's "readable".
 
 ```typescript
 // CLAIMED TO BE "SELF-DOCUMENTING"
@@ -364,7 +364,7 @@ const result = items
 - What does this result represent?
 - When should this calculation be used?
 
-PASS: **Solution**: Add documentation explaining context and rationale.
+✅ **Solution**: Add documentation explaining context and rationale.
 
 ```typescript
 /**
@@ -386,7 +386,7 @@ function calculateTotalMurabahahProfit(items: Contract[]): number {
 
 ### "We'll Document It Later"
 
-FAIL: **Problem**: Writing code without documentation, planning to add it "later".
+❌ **Problem**: Writing code without documentation, planning to add it "later".
 
 **Why it's bad**:
 
@@ -395,7 +395,7 @@ FAIL: **Problem**: Writing code without documentation, planning to add it "later
 - Technical debt accumulates (undocumented code breeds more undocumented code)
 - Quality suffers (documentation is treated as optional, not essential)
 
-PASS: **Solution**: Documentation First - write docs BEFORE or WITH code, not after.
+✅ **Solution**: Documentation First - write docs BEFORE or WITH code, not after.
 
 **Workflow**:
 
@@ -407,7 +407,7 @@ PASS: **Solution**: Documentation First - write docs BEFORE or WITH code, not af
 
 ### Verbal Tradition Instead of Written Documentation
 
-FAIL: **Problem**: Knowledge passed verbally but never written down.
+❌ **Problem**: Knowledge passed verbally but never written down.
 
 **Symptoms**:
 
@@ -421,15 +421,15 @@ FAIL: **Problem**: Knowledge passed verbally but never written down.
 - Meeting discussions are not searchable or permanent
 - "Everyone knows" excludes newcomers and future contributors
 
-PASS: **Solution**: Document all important knowledge in permanent, searchable formats (markdown docs, code comments, convention documents).
+✅ **Solution**: Document all important knowledge in permanent, searchable formats (markdown docs, code comments, convention documents).
 
 ### README-less Repositories
 
-FAIL: **Problem**: Repositories without README files.
+❌ **Problem**: Repositories without README files.
 
 **Why it's bad**: No entry point for understanding what the code does, why it exists, or how to use it.
 
-PASS: **Solution**: Every repository, library, and application MUST have a README explaining:
+✅ **Solution**: Every repository, library, and application MUST have a README explaining:
 
 - What it is
 - Why it exists
@@ -438,11 +438,11 @@ PASS: **Solution**: Every repository, library, and application MUST have a READM
 
 ### Outdated Documentation
 
-FAIL: **Problem**: Documentation that doesn't match current reality.
+❌ **Problem**: Documentation that doesn't match current reality.
 
 **Why it's bad**: Worse than no documentation - misleads users and maintainers.
 
-PASS: **Solution**:
+✅ **Solution**:
 
 - Update documentation when changing code (documentation is part of the change)
 - Use automated validation (checker agents verify docs match reality)
@@ -451,7 +451,7 @@ PASS: **Solution**:
 
 ### Documentation Without Context
 
-FAIL: **Problem**: Technical details without explanation of WHY.
+❌ **Problem**: Technical details without explanation of WHY.
 
 ```markdown
 ## Configuration
@@ -461,7 +461,7 @@ Set `PROFIT_RATE=15` in environment variables.
 
 **Why it's bad**: Doesn't explain WHY 15, whether it can change, or what it represents.
 
-PASS: **Solution**: Always provide context.
+✅ **Solution**: Always provide context.
 
 ```markdown
 ## Configuration
@@ -479,7 +479,7 @@ This rate must be:
 Example: `PROFIT_RATE=15`
 ```
 
-## PASS: Best Practices
+## ✅ Best Practices
 
 ### 1. Write Documentation BEFORE or WITH Code
 
@@ -511,13 +511,13 @@ See [Diátaxis Framework](../../conventions/structure/diataxis-framework.md) for
 **Code shows WHAT**. Comments and documentation explain **WHY**.
 
 ```typescript
-// FAIL: BAD COMMENT - Repeats what code already shows
+// BAD COMMENT - Repeats what code already shows
 // Loop through items and add them
 for (const item of items) {
   total += item.value;
 }
 
-// PASS: GOOD COMMENT - Explains WHY
+// GOOD COMMENT - Explains WHY
 // Murabahah contracts require total cost calculation before applying
 // markup. This ensures profit is calculated on actual asset cost, not
 // estimated values (Shariah compliance requirement).
@@ -561,11 +561,11 @@ Every piece of documentation should include examples:
 
 **Use checker agents** to validate:
 
-- PASS: README files exist in all libraries and apps
-- PASS: Links in documentation are valid
-- PASS: Code examples in docs actually work
-- PASS: API documentation matches actual code signatures
-- PASS: Convention documents exist for all enforced rules
+- README files exist in all libraries and apps
+- Links in documentation are valid
+- Code examples in docs actually work
+- API documentation matches actual code signatures
+- Convention documents exist for all enforced rules
 
 **Why this works**: Automation catches documentation drift. Agents ensure docs stay accurate as code evolves.
 

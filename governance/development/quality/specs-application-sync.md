@@ -180,9 +180,9 @@ CLI apps (`rhino-cli`, `rhino-cli`, `rhino-cli`) use the automated enforcement p
 
 See [BDD Spec-to-Test Mapping](../infra/bdd-spec-test-mapping.md) for the full CLI mapping rules.
 
-## Examples
+## 📋 Examples
 
-### PASS: Adding an endpoint with synchronized specs
+### ✅ Adding an endpoint with synchronized specs
 
 A developer adds a `GET /api/products/:id` endpoint to `demo-be-golang-gin`.
 
@@ -196,7 +196,7 @@ They:
 
 All changes are in a single commit or PR.
 
-### FAIL: Adding an endpoint without updating specs
+### ❌ Adding an endpoint without updating specs
 
 A developer adds `GET /api/products/:id` to `apps/demo-be-golang-gin/` but does not update the OpenAPI contract, Gherkin feature files, or C4 diagrams.
 
@@ -204,7 +204,7 @@ The `codegen` target dependency fails at `typecheck` because the generated types
 
 This is a violation of the sync convention.
 
-### PASS: Removing an app with synchronized cleanup
+### ✅ Removing an app with synchronized cleanup
 
 The `apps/demo-be-clojure-pedestal/` app is removed from the monorepo.
 
@@ -216,19 +216,19 @@ The developer also:
 
 The C4 diagram in `specs/apps/demo/c4/` is updated to remove the Clojure container if it was represented separately.
 
-### FAIL: Renaming an app without updating specs
+### ❌ Renaming an app without updating specs
 
 The team renames `apps/demo-fe-ts-nextjs` to `apps/demo-landing`. The `specs/apps/demo-fe-ts-nextjs/` folder is not renamed.
 
 CI now has a mismatch: the app path and the spec path use different names. Reviewers and new contributors cannot determine whether `specs/apps/demo-fe-ts-nextjs/` refers to the current `demo-landing` app or a removed app. This is a violation.
 
-### PASS: Bug fix with no spec change
+### ✅ Bug fix with no spec change
 
 A developer fixes a null pointer dereference in a Go repository function. The bug caused a 500 response where a 200 was expected. The existing Gherkin scenario for that endpoint already described the expected 200 behavior — the bug caused a deviation from the spec, and the fix restores compliance.
 
 No spec changes are needed: the spec was correct and the code was wrong.
 
-### PASS: Internal refactor with no spec change
+### ✅ Internal refactor with no spec change
 
 A developer extracts a large tRPC router into two smaller routers for maintainability. The API surface (procedure names, input shapes, output shapes) is unchanged. No new procedures are added.
 
@@ -257,7 +257,7 @@ It does not apply to:
 - **`demo-contracts` codegen target**: Generates types from the OpenAPI spec. Declared as a dependency of `typecheck` and `build`, so stale contracts are caught in CI before merge.
 - **`repo-rules-checker`**: Validates that specs folders exist for apps that require them. Flags missing or misnamed spec folders.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Three-Level Testing Standard](./three-level-testing-standard.md) - How all three test levels consume shared Gherkin specs
 - [BDD Spec-to-Test Mapping](../infra/bdd-spec-test-mapping.md) - Mandatory 1:1 mapping for CLI apps; three-level consumption for demo-be backends

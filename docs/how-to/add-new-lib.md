@@ -15,13 +15,13 @@ updated: 2026-03-06
 
 This guide shows you how to create a new reusable library in the `libs/` folder of the Nx monorepo.
 
-## Prerequisites
+## 📋 Prerequisites
 
 - Node.js 24.13.1 and npm 11.10.1 (managed by Volta)
 - Nx workspace initialized
 - Understanding of the library's purpose and scope
 
-## Steps
+## 🛠️ Steps
 
 ### Step 1: Choose Library Name
 
@@ -284,7 +284,7 @@ export default function Component() {
 }
 ```
 
-## Verification Checklist
+## ✅ Verification Checklist
 
 - [ ] Library directory created in `libs/` with language prefix
 - [ ] Library name follows `ts-[name]` convention
@@ -381,7 +381,7 @@ npm install -D tsx
 
 **Solution**: Ensure `project.json` exists with valid JSON and `name` field matches folder name (without `libs/` prefix).
 
-## Next Steps
+## 🚀 Next Steps
 
 - Add comprehensive tests
 - Configure linting
@@ -389,7 +389,7 @@ npm install -D tsx
 - Document all public APIs
 - Consider breaking large libraries into smaller, focused libraries
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Add New App](./add-new-app.md)
 - [Run Nx Commands](./run-nx-commands.md)

@@ -42,7 +42,7 @@ This convention establishes consistent indentation standards for all markdown fi
 - **Hugo template indentation** - Covered in Hugo development practices
 - **Diagram indentation** - Mermaid diagrams have their own syntax rules
 
-## Core Principle
+## 🎯 Core Principle
 
 **All markdown files use STANDARD MARKDOWN bullet formatting** with space indentation.
 
@@ -220,7 +220,7 @@ const oauth = new OAuth2Provider({
 #authentication #oauth #implementation
 ````
 
-## Indentation Checklist
+## ✅ Indentation Checklist
 
 Before committing files in `docs/`:
 

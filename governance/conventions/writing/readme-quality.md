@@ -17,7 +17,7 @@ updated: 2026-04-04
 
 This document defines quality standards for README.md files to ensure they are engaging, accessible, and welcoming to contributors of all backgrounds while maintaining technical accuracy.
 
-## Philosophy
+## 🎯 Philosophy
 
 **README as Navigation Document**: The README should be a clear, scannable guide that helps readers understand what the project is, why it matters, and where to find detailed information. It is NOT a comprehensive manual—link to detailed documentation instead.
 
@@ -266,7 +266,7 @@ See LICENSING-NOTICE.md and the Per-Directory Licensing Convention for details.
 **FAIL: Bad**: "You must follow these steps exactly"
 **PASS: Good**: "Here's how to get started:"
 
-## Quality Checklist
+## ✅ Quality Checklist
 
 Use this checklist when writing or reviewing README content:
 
@@ -309,7 +309,7 @@ Use this checklist when writing or reviewing README content:
 - [ ] Short sentences (mostly 15-25 words)?
 - [ ] Specific examples provided where helpful?
 
-## Section-Specific Guidelines
+## 🗂️ Section-Specific Guidelines
 
 ### Opening (Project Name & Tagline)
 
@@ -408,7 +408,7 @@ Our mission is to [clear, inspiring goal].
 
 **Accessibility**: Emojis should enhance, not replace, clear text.
 
-## Common Mistakes
+## ⚠️ Common Mistakes
 
 ### 1. Corporate Speak
 
@@ -501,7 +501,7 @@ See [Feature Overview](../../features.md) for complete list.
 
 **Rule**: Every acronym needs context, not just expansion.
 
-## Examples from This Project
+## 📖 Examples from This Project
 
 ### Good Example: Motivation Hook
 

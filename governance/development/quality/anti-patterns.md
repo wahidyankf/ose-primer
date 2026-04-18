@@ -15,7 +15,7 @@ This document provides:
 - Solutions and corrections for each anti-pattern
 - Quality and maintenance considerations
 
-## Common Anti-Patterns
+## ❌ Common Anti-Patterns
 
 ### Anti-Pattern 1: Manual Quality Checks
 
@@ -400,7 +400,7 @@ void createProduct() {
 
 **See**: [Three-Level Testing Standard](./three-level-testing-standard.md) for the full level definitions and boundaries.
 
-## Summary of Anti-Patterns
+## 📋 Summary of Anti-Patterns
 
 | Anti-Pattern              | Problem                              | Solution                          |
 | ------------------------- | ------------------------------------ | --------------------------------- |
@@ -416,7 +416,7 @@ void createProduct() {
 | **Format All Files**      | Slow, unintended changes             | Lint-staged for staged files only |
 | **Mixing Test Levels**    | HTTP in integration; real DB in unit | Follow three-level boundaries     |
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Code Quality Convention](./code.md) - Automated quality tools and git hooks
 - [Three-Level Testing Standard](./three-level-testing-standard.md) - Mandatory unit/integration/E2E boundaries for all projects

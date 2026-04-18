@@ -15,7 +15,7 @@ updated: 2026-03-31
 
 Complete reference for the Nx monorepo structure, folder organization, and file formats.
 
-## Overview
+## 📋 Overview
 
 This project uses **Nx** as a monorepo build system with a plugin-free "vanilla Nx" approach. The Nx monorepo consists of two main folders:
 
@@ -24,7 +24,7 @@ This project uses **Nx** as a monorepo build system with a plugin-free "vanilla 
 
 **Note**: The repository also contains `apps-labs/` directory for experimental applications and POCs that are NOT part of the Nx monorepo. These experimental projects have independent build systems and no Nx workspace integration. See [Experimental Projects vs Monorepo Projects](#experimental-projects-vs-monorepo-projects) section for details.
 
-## Root Structure
+## 🏗️ Root Structure
 
 ```
 open-sharia-enterprise/
@@ -314,7 +314,7 @@ The repository contains two distinct project structures with different purposes 
 - Testing technology stacks without monorepo integration commitment
 - Quick prototyping without Nx overhead
 
-## File Format Reference
+## 📖 File Format Reference
 
 ### `project.json` (Nx Configuration)
 
@@ -615,7 +615,7 @@ Configured in `tsconfig.base.json`:
 
 All build outputs are gitignored.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Nx Target Standards](../../governance/development/infra/nx-targets.md) - Canonical target names, mandatory targets per project type, caching rules, and build output conventions
 - [How to Add New App](../how-to/add-new-app.md)

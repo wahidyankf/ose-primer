@@ -46,7 +46,7 @@ updated: 2026-04-02
 
 ---
 
-## Overview
+## 🎯 Overview
 
 The **open-sharia-enterprise** repository employs a six-layer governance architecture that provides complete traceability from foundational vision to executable workflows. Each layer builds on the foundation above, creating a coherent system where every rule, practice, and automation can be traced back to core values.
 
@@ -98,7 +98,7 @@ This governance architecture itself follows core repository principles:
 
 ---
 
-## The Six Layers
+## 🏛️ The Six Layers
 
 ```
 Layer 0: Vision       WHY WE EXIST       (foundational purpose)
@@ -519,7 +519,7 @@ Skills (context: fork) ──delegates to──> Isolated Agent Context
 
 ---
 
-## Complete Traceability Example
+## 🔗 Complete Traceability Example
 
 ### Color Accessibility (Vision → Agents)
 
@@ -712,7 +712,7 @@ Skills ──does NOT govern──> Agents
 
 ---
 
-## Common Misconceptions
+## ⚠️ Common Misconceptions
 
 ### Misconception 1: "Skills are Layer 4.5"
 

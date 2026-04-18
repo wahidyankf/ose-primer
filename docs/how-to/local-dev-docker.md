@@ -12,13 +12,13 @@ updated: 2026-03-31
 
 # How to Set Up Reproducible Local Development with Docker
 
-## Overview
+## 📋 Overview
 
 This guide explains how to set up a reproducible local development environment using Docker and Docker Compose for all services in the open-sharia-enterprise platform.
 
 **Goal**: Ensure all developers work in identical environments, regardless of their host operating system or installed tools.
 
-## Prerequisites
+## ⚙️ Prerequisites
 
 - **Docker Desktop** (macOS/Windows) or **Docker Engine + Docker Compose v2** (Linux):
   - Docker Engine: 20.10+ ([Install Docker](https://docs.docker.com/get-docker/))
@@ -63,7 +63,7 @@ infra/
     └── demo/          # demo K8s deployments
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
 ### 1. Clone Repository
 
@@ -508,7 +508,7 @@ curl http://localhost:8201/health
 - Startup grace period
 - Configurable intervals and retries
 
-## Troubleshooting
+## 🔬 Troubleshooting
 
 ### Docker Daemon Not Running
 
@@ -752,7 +752,7 @@ Docker Compose can be used in CI/CD pipelines:
   run: docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml down
 ```
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Demo Backend (JASB) Infrastructure README](../../infra/dev/demo-be-java-springboot/README.md)
 - [Docker Documentation](https://docs.docker.com/)

@@ -94,7 +94,7 @@ This convention applies to **all content types** across the repository:
 | **Convention Documents**    | Referenced standards, tool capabilities, specification URLs         |
 | **Agent Definitions**       | Tool permissions, model capabilities, reference documentation links |
 
-## Core Validation Methodology
+## 🎯 Core Validation Methodology
 
 ### 1. Command Syntax Verification
 
@@ -382,7 +382,7 @@ PASS: CORRECT - Spaces before dash:
 
 **Rationale:** Code blocks must use language-specific idiomatic indentation to ensure examples can be copied and pasted correctly into actual code files.
 
-## Web Verification Workflow
+## 🔧 Web Verification Workflow
 
 ### WebSearch Usage Patterns
 
@@ -460,7 +460,7 @@ Some sites block automated tools (Wikipedia, GitHub, etc.):
 - Unofficial wikis or third-party docs
 - Forums or discussion threads
 
-## Validation Priorities
+## 🎯 Validation Priorities
 
 ### High Priority - Always Verify
 
@@ -555,9 +555,9 @@ Concern: Node.js 24 is now LTS (as of 2025-10-29)
 Suggestion: Update to recommend Node.js 24 LTS
 ```
 
-## ️ Confidence Level Classification
+## 📊 Confidence Level Classification
 
-### PASS: Verified
+### ✅ Verified
 
 **Criteria:**
 
@@ -589,7 +589,7 @@ Reason: No public benchmark data available
 Action Required: Manual performance testing
 ```
 
-### FAIL: Error
+### ❌ Error
 
 **Criteria:**
 
@@ -623,7 +623,7 @@ Issue: Node.js 24 is now LTS (since 2025-10-29)
 Correction: Update to Node.js 24
 ```
 
-## Common Verification Scenarios
+## 📖 Common Verification Scenarios
 
 ### Scenario 1: Technical Tool Documentation
 

@@ -15,7 +15,7 @@ updated: 2026-03-23
 
 The foundational purpose and change we seek through Open Sharia Enterprise - democratizing Shariah-compliant enterprise and making ethical Islamic business solutions accessible to everyone.
 
-## Purpose
+## 🎯 Purpose
 
 This directory contains the vision documents that establish **WHY** the Open Sharia Enterprise project exists and **WHAT CHANGE** we seek to create in the world. Vision is the top layer (Layer 0) of our six-layer architecture - it governs and gives purpose to all principles, conventions, development practices, agents, and workflows.
 

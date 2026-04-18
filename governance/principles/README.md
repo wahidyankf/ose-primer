@@ -60,7 +60,7 @@ graph TD
 - **Development** (Layer 3) - Software practices embodying these principles
 - **Implementation** (Layer 4+) - Actual code, agents, workflows, and content following conventions and practices
 
-## 🧪 The Layer Test for Principles
+## The Layer Test for Principles
 
 **Question**: Does this document answer "**WHY do we value this?**"
 
@@ -247,7 +247,7 @@ Development environments and builds should be reproducible from the start. Elimi
 - Docker for complex service dependencies
 - Documented setup processes
 
-## 🔗 Traceability: From Principles to Implementation
+## Traceability: From Principles to Implementation
 
 Every principle should be traceable through three layers:
 
@@ -323,7 +323,7 @@ tools: Read, Glob, Grep
 
 **Result**: Code quality maintained automatically without manual intervention
 
-## 🧭 Using These Principles
+## Using These Principles
 
 ### When Creating Conventions or Practices
 

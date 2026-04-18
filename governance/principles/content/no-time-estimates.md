@@ -85,7 +85,7 @@ This principle serves the [Open Sharia Enterprise Vision](../../vision/open-shar
 
 **Context**: Educational documentation and learning materials.
 
-PASS: **Outcome-Focused (Correct)**:
+✅ **Outcome-Focused (Correct)**:
 
 ```markdown
 # React Quick Start
@@ -102,7 +102,7 @@ Coverage: 5-30% of React fundamentals
 
 **Why this works**: Describes WHAT you'll learn. No pressure. Clear outcomes.
 
-FAIL: **Time-Based (Avoid)**:
+❌ **Time-Based (Avoid)**:
 
 ```markdown
 # React Quick Start
@@ -118,7 +118,7 @@ This tutorial will teach you React basics in under 3 hours.
 
 **Context**: Problem-solving documentation.
 
-PASS: **Outcome-Focused (Correct)**:
+✅ **Outcome-Focused (Correct)**:
 
 ```markdown
 # How to Deploy to Production
@@ -135,7 +135,7 @@ You'll have a working production deployment by the end.
 
 **Why this works**: Describes outcome (working deployment). No time pressure.
 
-FAIL: **Time-Based (Avoid)**:
+❌ **Time-Based (Avoid)**:
 
 ```markdown
 # How to Deploy to Production
@@ -151,7 +151,7 @@ Quick 30-minute deployment guide.
 
 **Context**: Indicating tutorial depth.
 
-PASS: **Coverage Percentages (Correct)**:
+✅ **Coverage Percentages (Correct)**:
 
 ```markdown
 # Beginner Tutorial
@@ -169,7 +169,7 @@ Teaches fundamentals needed for 90% of real-world use cases.
 
 **Context**: Project management documents in `plans/`.
 
-PASS: **Time Estimates Allowed (In Planning Context)**:
+✅ **Time Estimates Allowed (In Planning Context)**:
 
 ```markdown
 # Project Plan
@@ -187,11 +187,11 @@ Tasks:
 
 **Not applicable to**: Educational content, tutorials, documentation, how-to guides.
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
 ### Tutorial Time Estimates
 
-FAIL: **Problem**: Adding time estimates to educational content.
+❌ **Problem**: Adding time estimates to educational content.
 
 ```markdown
 # Python for Beginners
@@ -213,7 +213,7 @@ Suggested pace: 2 hours/day for 5 days
 
 ### "Quick" or "In X Minutes" Titles
 
-FAIL: **Problem**: Using time in titles.
+❌ **Problem**: Using time in titles.
 
 ```markdown
 - "React in 30 Minutes"
@@ -230,7 +230,7 @@ FAIL: **Problem**: Using time in titles.
 
 ### Speed as a Selling Point
 
-FAIL: **Problem**: Emphasizing speed over mastery.
+❌ **Problem**: Emphasizing speed over mastery.
 
 ```markdown
 Learn React FAST! Complete this bootcamp in just 2 weeks!
@@ -248,7 +248,7 @@ Fast-track to employment
 
 ### Comparing Learning Speeds
 
-FAIL: **Problem**: Suggesting "normal" learning speeds.
+❌ **Problem**: Suggesting "normal" learning speeds.
 
 ```markdown
 Most people complete this tutorial in 3-4 hours.
@@ -261,21 +261,21 @@ Most people complete this tutorial in 3-4 hours.
 - No basis for "most people" claim
 - Unhelpful and harmful
 
-## PASS: Best Practices
+## ✅ Best Practices
 
 ### 1. Describe Outcomes, Not Duration
 
 **Focus on what learners will achieve**:
 
 ```markdown
-PASS: By the end of this tutorial, you'll be able to:
+✅ By the end of this tutorial, you'll be able to:
 
 - Build REST APIs with Express
 - Implement authentication
 - Connect to databases
 - Deploy to production
 
-FAIL: This tutorial takes 4-6 hours
+❌ This tutorial takes 4-6 hours
 ```
 
 ### 2. Use Coverage Percentages for Depth
@@ -283,12 +283,12 @@ FAIL: This tutorial takes 4-6 hours
 **Indicate scope, not time**:
 
 ```markdown
-PASS: Coverage: 60-85% of domain knowledge (intermediate depth)
+✅ Coverage: 60-85% of domain knowledge (intermediate depth)
 
 This tutorial covers professional-level techniques for production
 systems. Builds on beginner foundation.
 
-FAIL: This is a 3-week intermediate course
+❌ This is a 3-week intermediate course
 ```
 
 ### 3. Provide Completion Criteria
@@ -296,13 +296,13 @@ FAIL: This is a 3-week intermediate course
 **Describe how learners know they're done**:
 
 ```markdown
-PASS: You've completed this tutorial when you can:
+✅ You've completed this tutorial when you can:
 
 - [ ] Create components independently
 - [ ] Debug React applications
 - [ ] Build a working app from scratch
 
-FAIL: You should finish this in 2-3 days
+❌ You should finish this in 2-3 days
 ```
 
 ### 4. Use Section Headings, Not Time Blocks
@@ -310,13 +310,13 @@ FAIL: You should finish this in 2-3 days
 **Organize by topic, not duration**:
 
 ```markdown
-PASS: ## Core Concepts
+✅ ## Core Concepts
 
 - Variables and types
 - Control flow
 - Functions
 
-FAIL: ## Day 1 (2 hours)
+❌ ## Day 1 (2 hours)
 
 - Variables and types
 - Control flow
@@ -327,10 +327,10 @@ FAIL: ## Day 1 (2 hours)
 **Value understanding, not completion time**:
 
 ```markdown
-PASS: Take your time to understand each concept. Experiment with the
+✅ Take your time to understand each concept. Experiment with the
 code examples. Learning thoroughly now saves time debugging later.
 
-FAIL: Try to complete each section in 30 minutes to stay on track.
+❌ Try to complete each section in 30 minutes to stay on track.
 ```
 
 ## Examples from This Repository
@@ -363,14 +363,14 @@ try examples, and solve simple problems on their own.
 Do NOT include time estimates in educational or tutorial content.
 
 Forbidden:
-FAIL: "This tutorial takes 2-3 hours to complete"
-FAIL: "Estimated time: 45 minutes"
-FAIL: "You'll learn this in 30 minutes"
+❌ "This tutorial takes 2-3 hours to complete"
+❌ "Estimated time: 45 minutes"
+❌ "You'll learn this in 30 minutes"
 
 Correct:
-PASS: "By the end of this tutorial, you'll be able to..."
-PASS: "This tutorial covers the fundamentals of..."
-PASS: "Coverage: 60-85% of domain knowledge (intermediate depth)"
+✅ "By the end of this tutorial, you'll be able to..."
+✅ "This tutorial covers the fundamentals of..."
+✅ "Coverage: 60-85% of domain knowledge (intermediate depth)"
 ```
 
 ### Tutorial Structure

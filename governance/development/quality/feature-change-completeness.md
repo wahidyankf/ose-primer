@@ -134,9 +134,9 @@ This convention applies to ALL changes that alter observable behavior:
 | Dependency upgrade with no behavior change | No                            | None                                   |
 | Dependency upgrade with behavior change    | Yes                           | All affected artifacts                 |
 
-## Examples
+## 📋 Examples
 
-### PASS: Complete feature addition
+### ✅ Complete feature addition
 
 A developer adds a `GET /api/products/:id` endpoint to a demo backend.
 
@@ -149,15 +149,15 @@ They update, in the same commit or PR:
 5. E2E tests -- test full HTTP flow
 6. `specs/apps/demo/c4/` -- update component diagram if new component
 
-### FAIL: Code without specs
+### ❌ Code without specs
 
 A developer adds the endpoint but does not add Gherkin scenarios or update the OpenAPI contract. `spec-coverage` fails. `codegen` produces stale types. The change is incomplete.
 
-### FAIL: Code and specs without tests
+### ❌ Code and specs without tests
 
 A developer adds the endpoint and updates specs and contracts but does not write tests. Coverage drops below 90%. `test:quick` fails. The change is incomplete.
 
-### PASS: Complete feature deletion
+### ✅ Complete feature deletion
 
 A developer removes the `DELETE /api/products/:id` endpoint.
 
@@ -168,7 +168,7 @@ They update, in the same commit or PR:
 3. Remove related unit, integration, and E2E tests
 4. Update any documentation that referenced the endpoint
 
-### PASS: Bug fix with no spec change
+### ✅ Bug fix with no spec change
 
 A developer fixes a null pointer in the product service. The existing Gherkin scenario already described the correct behavior. The fix restores compliance with the spec.
 
@@ -197,7 +197,7 @@ It does not apply to:
 - **Nx cache inputs**: Gherkin specs are declared as inputs for test targets, invalidating caches when specs change.
 - **`repo-rules-checker`**: Validates that specs folders exist for apps that require them.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Specs-Application Sync Convention](./specs-application-sync.md) -- Bidirectional sync between specs/ and application code
 - [Three-Level Testing Standard](./three-level-testing-standard.md) -- Unit, integration, and E2E testing architecture

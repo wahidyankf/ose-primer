@@ -54,7 +54,7 @@ This convention establishes that documentation MUST NOT hardcode counts for dyna
 - Counts that are part of a code example or configuration file
 - Counts of static sets that do not change (e.g., "four Diátaxis categories")
 
-## Standards
+## 🎯 Standards
 
 ### Rule 1: Never Hardcode Dynamic Collection Counts in Documentation
 
@@ -167,7 +167,7 @@ If a count is needed anywhere, the index document for that collection is the sin
 | BE Gherkin Specs | `specs/apps/demo/be/gherkin/README.md` |
 | FE Gherkin Specs | `specs/apps/demo/fe/gherkin/README.md` |
 
-## Examples
+## 📖 Examples
 
 ### Converting Existing References
 
@@ -253,7 +253,7 @@ Workflow counts in documentation are covered by this convention and must be remo
 
 When you encounter a hardcoded count in an existing document, update it to remove the count. Do not leave it for later. The convention applies to all documents, not just new ones. If the update is large in scope, create a plan in `plans/` and address it systematically.
 
-## Tools and Automation
+## 🔧 Tools and Automation
 
 The following agents check and enforce this convention:
 

@@ -15,7 +15,7 @@ This document provides:
 - Solutions and corrections for each anti-pattern
 - Workflow and code quality considerations
 
-## Common Anti-Patterns
+## ❌ Common Anti-Patterns
 
 ### Anti-Pattern 1: God Agent in Maker-Checker-Fixer
 
@@ -378,7 +378,7 @@ User: "Fix issues from the latest audit report"
 - Fixers handle validated remediation
 - Prevents tool misuse
 
-## Summary of Anti-Patterns
+## 📋 Summary of Anti-Patterns
 
 | Anti-Pattern                 | Problem                     | Solution                          |
 | ---------------------------- | --------------------------- | --------------------------------- |
@@ -393,7 +393,7 @@ User: "Fix issues from the latest audit report"
 | **Side Effects Everywhere**  | Mixed concerns              | Functional core, imperative shell |
 | **Wrong Tool Selection**     | Mismatched workflow         | Maker vs fixer clarity            |
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Maker-Checker-Fixer Pattern](./maker-checker-fixer.md) - Complete pattern documentation
 - [Functional Programming Practices](./functional-programming.md) - Functional programming guide

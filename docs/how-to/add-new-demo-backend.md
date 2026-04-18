@@ -19,13 +19,13 @@ This guide walks you through creating a new `demo-be-{lang}-{framework}` backend
 the shared demo API contract. The new backend will consume the same OpenAPI spec and Gherkin
 scenarios as all other demo backends.
 
-## Prerequisites
+## 📋 Prerequisites
 
 - The language runtime installed locally
 - Familiarity with the [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md)
 - Understanding of the [OpenAPI contract](../../specs/apps/demo/contracts/README.md)
 
-## Steps
+## 🛠️ Steps
 
 ### 1. Create the App Directory
 
@@ -778,7 +778,7 @@ nx run demo-be-{lang}-{framework}:test:quick
 nx graph
 ```
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md)
 - [CI/CD Conventions](../../governance/development/infra/ci-conventions.md)

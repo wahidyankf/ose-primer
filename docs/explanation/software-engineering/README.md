@@ -18,7 +18,7 @@ updated: 2026-03-26
 
 **Understanding-oriented documentation** on software design patterns, architectural models, and design practices for building complex enterprise systems.
 
-## What is Software Design?
+## 📋 What is Software Design?
 
 Software design encompasses the fundamental structures of a software system—the building blocks, their relationships, and the principles governing their design and evolution. Good design documentation helps teams:
 
@@ -107,7 +107,7 @@ This section covers two complementary approaches to software architecture:
 
 ## C4 and DDD Overview
 
-### 🎨 C4 Architecture Model
+### C4 Architecture Model
 
 **Visualizing software architecture through hierarchical abstraction levels**
 
@@ -131,7 +131,7 @@ The C4 model provides a systematic way to create architecture diagrams at four l
 - Dynamic diagrams (runtime behavior)
 - Deployment diagrams (infrastructure mapping)
 
-### 🏛️ Domain-Driven Design (DDD)
+### Domain-Driven Design (DDD)
 
 **Strategic and tactical patterns for modeling complex business domains**
 
@@ -223,7 +223,7 @@ The open-sharia-enterprise project applies both C4 and DDD principles:
 2. **Learn workshop techniques** - Read [Strategic Design Process](./architecture/domain-driven-design-ddd/README.md)
 3. **Visualize system context** - Read [C4 System Context](./architecture/c4-architecture-model/README.md)
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - **[Explanation Documentation Index](../README.md)** - All conceptual documentation
 - **[Repository Governance Architecture](../../../governance/repository-governance-architecture.md)** - Six-layer governance hierarchy

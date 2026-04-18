@@ -2,7 +2,7 @@
 
 Repository template for OSE-style polyglot Nx monorepos. Clone it whole or cherry-pick the parts you need to bootstrap a new repo that ships with governance, AI agents, skills, polyglot demo apps, and shared repo tooling already wired together.
 
-## What this is
+## 🎯 What this is
 
 `ose-primer` is a **clean, opinionated starting point** — not a product. It is everything a new OSE-style monorepo needs on day one: Nx workspace wiring, a Husky + lint-staged + commitlint pre-commit/pre-push stack, markdown tooling, doctor-based polyglot toolchain convergence, the `rhino-cli` repo-management CLI, the Diátaxis governance tree, and a ready-to-run three-level testing standard demonstrated across eleven backend and three frontend stacks.
 
@@ -32,7 +32,7 @@ The template practices **Trunk Based Development**: one branch (`main`), small c
 - **Node.js 24.13.1** + **npm 11.10.1** via [Volta](https://docs.volta.sh/guide/getting-started).
 - Everything else (Go, Java, Python, Rust, Elixir, Kotlin, C#, Clojure, Dart, Docker, jq, Playwright) is auto-installed by `npm run doctor -- --fix`.
 
-## Common commands
+## 🛠️ Common commands
 
 ```bash
 npm install                      # Install deps + set up Husky hooks
@@ -55,7 +55,7 @@ npm run validate:opencode        # Lint .opencode/ output format
 
 See [CLAUDE.md](./CLAUDE.md) for the full command + convention reference tailored for AI-assisted sessions.
 
-## Governance & conventions
+## 📚 Governance & conventions
 
 The `governance/` tree is the rulebook:
 
@@ -68,7 +68,7 @@ The `governance/` tree is the rulebook:
 
 Agents live under `.claude/agents/` (source of truth) and `.opencode/agent/` (mirror). Skills live under `.claude/skills/` and `.opencode/skill/`. See [.claude/agents/README.md](./.claude/agents/README.md).
 
-## Repository layout
+## 📂 Repository layout
 
 ```
 ose-primer/

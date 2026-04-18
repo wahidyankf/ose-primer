@@ -60,10 +60,10 @@ Root cause orientation prevents these failure modes by demanding proper analysis
 **Don't**: Apply the first change that makes the symptom disappear.
 
 ```
-PASS: "The test fails because the function returns nil when the input map has no key.
-       I'll add a guard for the missing-key case and return a proper default."
+✅ "The test fails because the function returns nil when the input map has no key.
+   I'll add a guard for the missing-key case and return a proper default."
 
-FAIL: "The test fails. I'll catch the nil pointer and return an empty string to stop the crash."
+❌ "The test fails. I'll catch the nil pointer and return an empty string to stop the crash."
 ```
 
 **Diagnosis checklist**:
@@ -80,10 +80,10 @@ FAIL: "The test fails. I'll catch the nil pointer and return an empty string to 
 **Don't**: Improve adjacent code, rename things you disagree with, or refactor while fixing.
 
 ```
-PASS: Fix the one function that incorrectly handles the edge case.
+✅ Fix the one function that incorrectly handles the edge case.
 
-FAIL: Fix the function AND rename variables you find unclear AND restructure the file
-      because it seemed like a good opportunity.
+❌ Fix the function AND rename variables you find unclear AND restructure the file
+   because it seemed like a good opportunity.
 ```
 
 **Minimal impact rules**:
@@ -102,10 +102,10 @@ See [Implementation Workflow - Surgical Changes](../../development/workflow/impl
 **Don't**: Ship the first solution that passes the test or satisfies the literal requirement.
 
 ```
-PASS: The fix handles the immediate case, all edge cases, does not break existing behavior,
-      and does not introduce unnecessary complexity.
+✅ The fix handles the immediate case, all edge cases, does not break existing behavior,
+   and does not introduce unnecessary complexity.
 
-FAIL: The fix passes the test. Moving on.
+❌ The fix passes the test. Moving on.
 ```
 
 **Senior engineer test questions**:

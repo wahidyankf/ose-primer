@@ -17,7 +17,7 @@ Documentation conventions and standards for the open-sharia-enterprise project. 
 
 **Governance**: All conventions in this directory serve the [Vision](../vision/open-sharia-enterprise.md) (Layer 0) and implement the [Core Principles](../principles/README.md) (Layer 1) as part of the six-layer architecture. Each convention MUST include a "Principles Implemented/Respected" section that explicitly traces back to foundational principles. See [Repository Governance Architecture](../repository-governance-architecture.md) for complete governance model and [Convention Writing Convention](./writing/conventions.md) for structure requirements.
 
-## Scope
+## 🎯 Scope
 
 **This directory contains conventions for DOCUMENTATION:**
 
@@ -42,7 +42,7 @@ Documentation conventions and standards for the open-sharia-enterprise project. 
 - AI agent development standards
 - Code quality and testing practices
 
-## The Layer Test for Conventions
+## 🧭 The Layer Test for Conventions
 
 **Question**: Does this document answer "**WHAT are the documentation rules?**"
 
@@ -66,7 +66,7 @@ Documentation conventions and standards for the open-sharia-enterprise project. 
 - "Web app themes use Tailwind CSS" - Development (software practice)
 - "Why we avoid time estimates in tutorials" - Principle (foundational value)
 
-## Directory Structure
+## 📂 Directory Structure
 
 Conventions are organized into 6 semantic categories:
 
@@ -77,7 +77,7 @@ Conventions are organized into 6 semantic categories:
 
 ---
 
-## Formatting
+## 🎨 Formatting
 
 Standards for markdown formatting, syntax, and visual elements.
 
@@ -96,7 +96,7 @@ Standards for cross-referencing and internal linking between repository content.
 
 See the `governance/conventions/linking/` directory for linking conventions. No standalone convention files are currently defined here; linking standards are covered by [Linking Convention](./formatting/linking.md) in the Formatting section.
 
-## Writing
+## ✍️ Writing
 
 Content quality standards, validation methodology, and writing guidelines.
 
@@ -108,7 +108,7 @@ Content quality standards, validation methodology, and writing guidelines.
 - [README Quality](./writing/readme-quality.md) - Quality standards for README.md files ensuring engagement, accessibility, and scannability. Defines problem-solution hooks, jargon elimination (plain language over corporate speak), acronym context requirements, benefits-focused language, navigation structure, and paragraph length limits. **Agents**: readme-maker, readme-checker
 - [Web Research Delegation](./writing/web-research-delegation.md) - Normative rule requiring AI agents to delegate public-web information gathering to the `web-research-maker` subagent when research exceeds the delegation threshold (2+ `WebSearch` calls or 3+ `WebFetch` calls for a single claim). Enumerates three exceptions (single-shot known URL; fixer re-validation; link-reachability checkers). **Agents**: web-research-maker, repo-rules-checker
 
-## Structure
+## 🗂️ Structure
 
 Documentation organization frameworks, file naming, and project planning structure.
 
@@ -132,7 +132,7 @@ These skills build upon and extend the writing conventions above.
 
 static-site site-specific content conventions. **All legacy sites have migrated to Next.js 16.** These conventions are preserved for historical reference only.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Repository Governance Architecture](../repository-governance-architecture.md) - Complete six-layer architecture (Layer 2: Conventions)
 - [Core Principles](../principles/README.md) - Layer 1: Foundational values that govern conventions

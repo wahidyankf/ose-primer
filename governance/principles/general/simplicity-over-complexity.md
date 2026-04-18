@@ -79,7 +79,7 @@ This principle serves the [Open Sharia Enterprise Vision](../../vision/open-shar
 
 **Context**: Organizing libraries in `libs/` directory.
 
-PASS: **Simple (Correct)**:
+✅ **Simple (Correct)**:
 
 ```
 libs/
@@ -91,7 +91,7 @@ libs/
 
 **Why this works**: Flat structure. Easy to find libraries. No mental model of hierarchy needed.
 
-FAIL: **Complex (Avoid)**:
+❌ **Complex (Avoid)**:
 
 ```
 libs/
@@ -113,7 +113,7 @@ libs/
 
 **Context**: Agent responsibilities.
 
-PASS: **Simple (Correct)**:
+✅ **Simple (Correct)**:
 
 ```
 docs-maker.md - Creates documentation
@@ -122,7 +122,7 @@ docs-checker.md - Validates documentation
 
 **Why this works**: One agent, one job. Clear responsibility. Easy to invoke.
 
-FAIL: **Complex (Avoid)**:
+❌ **Complex (Avoid)**:
 
 ```
 docs-manager.md - Creates, validates, fixes, organizes, and links documentation
@@ -134,7 +134,7 @@ docs-manager.md - Creates, validates, fixes, organizes, and links documentation
 
 **Context**: Document metadata.
 
-PASS: **Simple (Correct)**:
+✅ **Simple (Correct)**:
 
 ```yaml
 ---
@@ -151,7 +151,7 @@ updated: 2025-12-15
 
 **Why this works**: Only essential fields. No unnecessary metadata. Self-explanatory.
 
-FAIL: **Complex (Avoid)**:
+❌ **Complex (Avoid)**:
 
 ```yaml
 ---
@@ -187,7 +187,7 @@ next_review: 2026-01-15
 
 **Context**: Documentation format.
 
-PASS: **Simple (Correct)**:
+✅ **Simple (Correct)**:
 
 ```markdown
 # Document Title
@@ -199,7 +199,7 @@ Content here...
 
 **Why this works**: Standard markdown. Works everywhere. Easy to write and read.
 
-FAIL: **Complex (Avoid)**:
+❌ **Complex (Avoid)**:
 
 ```
 {{< section title="Section" >}}
@@ -215,7 +215,7 @@ FAIL: **Complex (Avoid)**:
 
 **Context**: Establishing standards.
 
-PASS: **Simple (Correct)**:
+✅ **Simple (Correct)**:
 
 ```
 governance/conventions/
@@ -225,7 +225,7 @@ governance/conventions/
 
 **Why this works**: Markdown documents. Searchable. Easy to update. Human-readable.
 
-FAIL: **Complex (Avoid)**:
+❌ **Complex (Avoid)**:
 
 ```
 .conventions/
@@ -240,11 +240,11 @@ FAIL: **Complex (Avoid)**:
 
 **Why this fails**: Over-engineered framework. Requires tooling. Harder to understand and modify. Building a system before validating need.
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
 ### Premature Abstraction
 
-FAIL: **Problem**: Creating abstraction before third use.
+❌ **Problem**: Creating abstraction before third use.
 
 ```typescript
 // First use - just write the code directly
@@ -252,7 +252,7 @@ function createUser(name: string) {
   return { name, createdAt: new Date() };
 }
 
-// FAIL: WRONG: Immediately abstracting
+// WRONG: Immediately abstracting
 class EntityFactory<T> {
   create(data: Partial<T>): T {
     return {
@@ -267,7 +267,7 @@ class EntityFactory<T> {
 
 ### Configuration Explosion
 
-FAIL: **Problem**: Too many configuration options.
+❌ **Problem**: Too many configuration options.
 
 ```json
 {
@@ -291,7 +291,7 @@ FAIL: **Problem**: Too many configuration options.
 
 ### Deep Inheritance Hierarchies
 
-FAIL: **Problem**: Multi-level inheritance.
+❌ **Problem**: Multi-level inheritance.
 
 ```typescript
 class Entity {}
@@ -305,7 +305,7 @@ class AdminUser extends PremiumUser {}
 
 ### Over-Generic Code
 
-FAIL: **Problem**: Solving problems you don't have.
+❌ **Problem**: Solving problems you don't have.
 
 ```typescript
 class GenericRepository<T, K extends keyof T, V extends T[K]> {
@@ -317,7 +317,7 @@ class GenericRepository<T, K extends keyof T, V extends T[K]> {
 
 **Why it's bad**: Generic for genericity's sake. Harder to read. Probably simpler to write specific implementations.
 
-## PASS: Best Practices
+## ✅ Best Practices
 
 ### 1. Start Concrete, Abstract Later
 
@@ -348,13 +348,15 @@ function validateEmail(email: string): boolean {
 **Instead of inheritance**:
 
 ```typescript
-FAIL: class AdminUser extends PremiumUser {}
+// Avoid:
+class AdminUser extends PremiumUser {}
 ```
 
 **Use composition**:
 
 ```typescript
-PASS: interface User {
+// Prefer:
+interface User {
   name: string;
   roles: Role[];
   subscription: Subscription;
@@ -366,12 +368,12 @@ PASS: interface User {
 **For file structure, data, and organization**:
 
 ```
-PASS: Flat:
+Prefer flat:
 libs/
   ts-validation/
   ts-auth/
 
-FAIL: Nested:
+Avoid nested:
 libs/
   shared/
     core/
@@ -383,20 +385,22 @@ libs/
 **Single-purpose functions/agents**:
 
 ```typescript
-PASS: function validateEmail(email: string): boolean {}
-PASS: function sendEmail(to: string, subject: string): void {}
+// Prefer:
+function validateEmail(email: string): boolean {}
+function sendEmail(to: string, subject: string): void {}
 
-FAIL: function handleEmail(email: string, action: string): any {}
+// Avoid:
+function handleEmail(email: string, action: string): any {}
 ```
 
 ### 5. Wait for Pain Before Refactoring
 
 **Don't refactor speculatively**:
 
-- FAIL: "We might need this to be configurable someday"
-- FAIL: "What if we need to support multiple databases?"
-- PASS: "We're duplicating this in three places - time to abstract"
-- PASS: "This function has 200 lines - time to split it"
+- ❌ "We might need this to be configurable someday"
+- ❌ "What if we need to support multiple databases?"
+- ✅ "We're duplicating this in three places - time to abstract"
+- ✅ "This function has 200 lines - time to split it"
 
 ## Examples from This Repository
 
@@ -416,10 +420,10 @@ docs/          # Flat category directories
 
 **Simplicity features**:
 
-- PASS: Two-level maximum depth
-- PASS: Clear categorization
-- PASS: Easy to navigate
-- PASS: No premature organization
+- Two-level maximum depth
+- Clear categorization
+- Easy to navigate
+- No premature organization
 
 ### Agent Responsibilities
 
@@ -435,8 +439,8 @@ Each agent has **one clear job**:
 
 **Not**:
 
-- FAIL: `docs-manager.md` - Does everything
-- FAIL: `universal-agent.md` - Multi-purpose
+- ❌ `docs-manager.md` - Does everything
+- ❌ `universal-agent.md` - Multi-purpose
 
 ### Diátaxis Framework
 
@@ -451,8 +455,8 @@ Four simple categories:
 
 **Not**:
 
-- FAIL: 15 categories with overlapping purposes
-- FAIL: Complex taxonomy requiring study
+- ❌ 15 categories with overlapping purposes
+- ❌ Complex taxonomy requiring study
 
 ### Convention Documents
 
@@ -468,9 +472,9 @@ color-accessibility.md
 
 **Not**:
 
-- FAIL: JSON schemas with validators
-- FAIL: Custom DSL for conventions
-- FAIL: Code generation framework
+- ❌ JSON schemas with validators
+- ❌ Custom DSL for conventions
+- ❌ Code generation framework
 
 ## Implementation Guidelines
 
@@ -524,7 +528,7 @@ If yes, simplify. Keep asking until the answer is no.
 
 ### Example 1: Feature Request - "Add a dark mode toggle"
 
-**FAIL: Over-engineered**:
+❌ **Over-engineered**:
 
 ```typescript
 // 200+ lines with theme system, configuration, persistence, animation...
@@ -540,7 +544,7 @@ class ThemeManager {
 }
 ```
 
-**PASS: Minimal solution**:
+✅ **Minimal solution**:
 
 ```typescript
 // 20 lines - just what was asked
@@ -555,7 +559,7 @@ return (
 
 ### Example 2: API Error Handling
 
-**FAIL: Defensive for impossible scenarios**:
+❌ **Defensive for impossible scenarios**:
 
 ```typescript
 async function getUser(id: string) {
@@ -574,7 +578,7 @@ async function getUser(id: string) {
 }
 ```
 
-**PASS: Validate at boundaries only**:
+✅ **Validate at boundaries only**:
 
 ```typescript
 async function getUser(id: string) {
@@ -589,7 +593,7 @@ async function getUser(id: string) {
 
 ### Example 3: Utility Functions
 
-**FAIL: Premature abstraction**:
+❌ **Premature abstraction**:
 
 ```typescript
 // Created utility for one use case
@@ -605,7 +609,7 @@ function formatUserDisplay(user: User, options?: DisplayOptions): string {
 const display = formatUserDisplay(user, { includeEmail: true });
 ```
 
-**PASS: Inline for single use**:
+✅ **Inline for single use**:
 
 ```typescript
 // Just write it inline
@@ -639,22 +643,22 @@ See the "Principles Implemented/Respected" section in [AI Agents Convention](../
 ### Violation 1: Anticipating Future Requirements
 
 ```
-FAIL: "I'll make this configurable in case you need different behavior later"
-PASS: "Here's the solution for your current requirement. We can make it configurable if needed."
+❌ "I'll make this configurable in case you need different behavior later"
+✅ "Here's the solution for your current requirement. We can make it configurable if needed."
 ```
 
 ### Violation 2: Creating Abstractions Prematurely
 
 ```
-FAIL: [Creates BaseRepository class and generic CRUD utilities for one model]
-PASS: [Writes direct database calls. Extracts patterns after third similar implementation]
+❌ [Creates BaseRepository class and generic CRUD utilities for one model]
+✅ [Writes direct database calls. Extracts patterns after third similar implementation]
 ```
 
 ### Violation 3: Defensive Programming for Type-Safe Code
 
 ```
-FAIL: if (typeof user.id === 'number') { ... } // TypeScript already guarantees this
-PASS: const userId = user.id; // Trust the type system
+❌ if (typeof user.id === 'number') { ... } // TypeScript already guarantees this
+✅ const userId = user.id; // Trust the type system
 ```
 
 ## Summary

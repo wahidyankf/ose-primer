@@ -71,18 +71,18 @@ This principle serves the [Open Sharia Enterprise Vision](../../vision/open-shar
 
 **Automate when**:
 
-- PASS: Task is performed repeatedly (more than 3 times)
-- PASS: Task follows clear, mechanical rules
-- PASS: Human error causes problems
-- PASS: Consistency is important
-- PASS: Automation time < manual time saved
+- Task is performed repeatedly (more than 3 times)
+- Task follows clear, mechanical rules
+- Human error causes problems
+- Consistency is important
+- Automation time < manual time saved
 
 **Don't automate when**:
 
-- FAIL: Task requires creativity or judgment
-- FAIL: Task is performed once or twice
-- FAIL: Task changes frequently
-- FAIL: Automation is more complex than the task
+- Task requires creativity or judgment
+- Task is performed once or twice
+- Task changes frequently
+- Automation is more complex than the task
 
 ## How It Applies
 
@@ -109,7 +109,7 @@ npx lint-staged
 **Manual alternative** (what we avoid):
 
 ```bash
-# FAIL: Manual process - error-prone
+# Manual process - error-prone
 # 1. Developer remembers to run Prettier
 # 2. Developer runs on all files (slow)
 # 3. Developer might forget
@@ -139,7 +139,7 @@ npx commitlint --edit $1
 **Manual alternative** (what we avoid):
 
 ```bash
-# FAIL: Manual review - inconsistent
+# Manual review - inconsistent
 # 1. Developer writes commit message
 # 2. Reviewer checks format (maybe)
 # 3. Format inconsistencies slip through
@@ -163,7 +163,7 @@ npx commitlint --edit $1
 **Manual alternative** (what we avoid):
 
 ```bash
-# FAIL: Manual review - time-consuming, incomplete
+# Manual review - time-consuming, incomplete
 # 1. Reviewer reads all documentation
 # 2. Manually checks file names
 # 3. Manually clicks all links
@@ -190,7 +190,7 @@ npx commitlint --edit $1
 **Manual alternative** (what we avoid):
 
 ```bash
-# FAIL: Manual link checking - impractical
+# Manual link checking - impractical
 # 1. Click every external link
 # 2. Record status and redirects
 # 3. Repeat for every documentation update
@@ -226,21 +226,21 @@ npx commitlint --edit $1
 **Manual alternative** (what we avoid):
 
 ```bash
-# FAIL: Manual formatting - waste of time
+# Manual formatting - waste of time
 # 1. Developer manually formats code
 # 2. Different developers format differently
 # 3. Code review wastes time on style
 # 4. Inconsistent codebase
 ```
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
 ### Manual Quality Checks
 
-FAIL: **Problem**: Relying on humans to remember checks.
+❌ **Problem**: Relying on humans to remember checks.
 
 ```bash
-# FAIL: Manual checklist - often skipped
+# Manual checklist - often skipped
 # Before committing:
 # - Did I run Prettier? (maybe)
 # - Did I check the commit message format? (probably not)
@@ -251,10 +251,10 @@ FAIL: **Problem**: Relying on humans to remember checks.
 
 ### No Validation Until PR
 
-FAIL: **Problem**: Catching errors in code review instead of pre-commit.
+❌ **Problem**: Catching errors in code review instead of pre-commit.
 
 ```bash
-# FAIL: Errors discovered in PR review
+# Errors discovered in PR review
 git commit -m "added feature"  # Invalid format
 git push
 # PR reviewer: "Please fix commit message format"
@@ -265,7 +265,7 @@ git push
 
 ### Inconsistent Tooling
 
-FAIL: **Problem**: Different developers use different formatters.
+❌ **Problem**: Different developers use different formatters.
 
 ```bash
 # Developer A uses Prettier
@@ -278,10 +278,10 @@ FAIL: **Problem**: Different developers use different formatters.
 
 ### Manual Link Checking
 
-FAIL: **Problem**: Clicking links manually to verify they work.
+❌ **Problem**: Clicking links manually to verify they work.
 
 ```bash
-# FAIL: Manual link verification
+# Manual link verification
 # 1. Open each documentation file
 # 2. Click every external link
 # 3. Record which ones work
@@ -290,24 +290,24 @@ FAIL: **Problem**: Clicking links manually to verify they work.
 
 **Why it's bad**: Time-consuming. Error-prone. Unsustainable at scale.
 
-## PASS: Best Practices
+## ✅ Best Practices
 
 ### 1. Automate at the Right Layer
 
 **Git hooks** for pre-commit checks:
 
 ```bash
-PASS: pre-commit: Format code, validate syntax
-PASS: commit-msg: Validate commit message format
-FAIL: CI/CD: Don't wait for CI to catch formatting (too slow)
+✅ pre-commit: Format code, validate syntax
+✅ commit-msg: Validate commit message format
+❌ CI/CD: Don't wait for CI to catch formatting (too slow)
 ```
 
 **AI agents** for deep validation:
 
 ```bash
-PASS: docs-checker: Validate conventions, detect contradictions
-PASS: plan-checker: Verify plan completeness
-FAIL: Git hooks: Don't run deep validation pre-commit (too slow)
+✅ docs-checker: Validate conventions, detect contradictions
+✅ plan-checker: Verify plan completeness
+❌ Git hooks: Don't run deep validation pre-commit (too slow)
 ```
 
 ### 2. Make Automation Fast
@@ -325,7 +325,7 @@ FAIL: Git hooks: Don't run deep validation pre-commit (too slow)
 **Not** entire codebase:
 
 ```bash
-FAIL: prettier --write "**/*.ts"  # Too slow for pre-commit
+❌ prettier --write "**/*.ts"  # Too slow for pre-commit
 ```
 
 ### 3. Provide Clear Error Messages
@@ -345,7 +345,7 @@ Example: feat(api): add user authentication endpoint
 **Bad error message**:
 
 ```
-FAIL: Invalid format
+❌ Invalid format
 ```
 
 ### 4. Cache Expensive Operations
@@ -364,7 +364,7 @@ links:
 **Not** checking every time:
 
 ```bash
-FAIL: curl every link on every run  # Too slow, wasteful
+❌ curl every link on every run  # Too slow, wasteful
 ```
 
 ### 5. Document What's Automated
@@ -397,10 +397,10 @@ The project enforces code quality through automated git hooks:
 
 **Automation benefits**:
 
-- PASS: Runs on every commit (no forgetting)
-- PASS: Fast (only staged files)
-- PASS: Consistent across all developers
-- PASS: Blocks invalid commits immediately
+- Runs on every commit (no forgetting)
+- Fast (only staged files)
+- Consistent across all developers
+- Blocks invalid commits immediately
 
 ### AI Validation Agents
 
@@ -415,10 +415,10 @@ The project enforces code quality through automated git hooks:
 
 **Automation benefits**:
 
-- PASS: Deep validation (beyond git hooks)
-- PASS: Generates detailed reports
-- PASS: Catches complex issues (contradictions, broken links)
-- PASS: On-demand (not every commit)
+- Deep validation (beyond git hooks)
+- Generates detailed reports
+- Catches complex issues (contradictions, broken links)
+- On-demand (not every commit)
 
 ### Prettier Configuration
 
@@ -433,10 +433,10 @@ The project enforces code quality through automated git hooks:
 
 **Automation benefits**:
 
-- PASS: No style debates
-- PASS: Consistent codebase
-- PASS: Automatic on commit
-- PASS: Fast (only changed files)
+- No style debates
+- Consistent codebase
+- Automatic on commit
+- Fast (only changed files)
 
 ### Link Verification Cache
 
@@ -451,10 +451,10 @@ The project enforces code quality through automated git hooks:
 
 **Automation benefits**:
 
-- PASS: Fast (cached results)
-- PASS: Reduces external requests
-- PASS: Timestamps for expiry
-- PASS: Centralized link status
+- Fast (cached results)
+- Reduces external requests
+- Timestamps for expiry
+- Centralized link status
 
 ## Relationship to Other Principles
 

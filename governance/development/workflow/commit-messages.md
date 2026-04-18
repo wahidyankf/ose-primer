@@ -42,7 +42,7 @@ This practice implements/respects the following conventions:
 
 - **[Content Quality Principles](../../conventions/writing/quality.md)**: Commit messages use active voice (imperative mood) and clear, concise descriptions - aligning with content quality standards for communication.
 
-## What are Conventional Commits?
+## 📋 What are Conventional Commits?
 
 **Conventional Commits** is a specification for writing human and machine-readable commit messages. It provides a standardized format that clearly communicates the nature of changes in the repository.
 
@@ -222,7 +222,7 @@ docs(readme): update installation steps
 refactor(db): extract query builder
 ```
 
-## Real-World Examples
+## 📋 Real-World Examples
 
 ### Good Examples
 
@@ -415,7 +415,7 @@ module.exports = {
 6. Developer fixes message and tries again
 ```
 
-## Common Errors and Fixes
+## ❌ Common Errors and Fixes
 
 ### Error: "type may not be empty"
 
@@ -490,7 +490,7 @@ multiple lines to ensure each line stays under 100
 characters for better readability.
 ```
 
-## Best Practices
+## ✅ Best Practices
 
 ### Write Clear Descriptions
 
@@ -818,7 +818,7 @@ and refresh token handling.
 Closes #123
 ```
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [AI Agents Convention](../agents/ai-agents.md) - Standards for AI agents
 - [Code Quality Convention](../quality/code.md) - Automated tools and git hooks for code formatting and commit validation

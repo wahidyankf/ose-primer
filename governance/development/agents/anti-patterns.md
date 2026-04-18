@@ -26,7 +26,7 @@ This companion document respects:
 
 This companion document supports the conventions in this directory by providing practical examples and guidance.
 
-## Common Anti-Patterns
+## ❌ Common Anti-Patterns
 
 ### Anti-Pattern 1: God Agent
 
@@ -319,7 +319,7 @@ readme-maker.md
 - Easy discovery
 - Self-documenting
 
-## Summary of Anti-Patterns
+## 📋 Summary of Anti-Patterns
 
 | Anti-Pattern                   | Problem                          | Solution                           |
 | ------------------------------ | -------------------------------- | ---------------------------------- |
@@ -333,7 +333,7 @@ readme-maker.md
 | **No Testing**                 | Production issues                | Test edge cases before deployment  |
 | **Generic Names**              | Hard to discover and categorize  | Use descriptive, categorized names |
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [AI Agents Convention](./ai-agents.md) - Complete agent development standards
 - [Best Practices](./best-practices.md) - Recommended patterns

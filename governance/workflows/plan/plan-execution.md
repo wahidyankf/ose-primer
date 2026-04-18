@@ -464,7 +464,7 @@ Report final status, archive plan if successful, and update all related READMEs.
 **Status determination**:
 
 - **Partial** (`partial`): Findings remain after max-iterations, plan stays in current location
-- FAIL: **Failure** (`fail`): Technical errors during execution or checking, plan stays in current location
+- **Failure** (`fail`): Technical errors during execution or checking, plan stays in current location
 
 **Depends on**: Reaching this step from step 4, 6, or 7
 
@@ -499,7 +499,7 @@ with a note explaining why it was skipped rather than silently omitting it.
 ## Termination Criteria
 
 - **Partial** (`partial`): Findings remain after max-iterations cycles, plan requires manual intervention
-- FAIL: **Failure** (`fail`): Orchestrator or checker encountered technical errors preventing completion
+- **Failure** (`fail`): Orchestrator or checker encountered technical errors preventing completion
 
 ## Example Usage
 
@@ -680,12 +680,12 @@ This workflow ensures complete plan execution with validated quality, making it 
 
 ## Principles Implemented/Respected
 
-- PASS: **Explicit Over Implicit**: All steps, conditions, termination criteria, and agent selection rules clearly defined
-- PASS: **Automation Over Manual**: Fully automated execution, validation, and archival with specialized agent delegation
-- PASS: **Simplicity Over Complexity**: Clear linear flow with loop control, bounded iterations, and domain-specific agents
-- PASS: **Accessibility First**: Generates human-readable validation reports for transparency
-- PASS: **Progressive Disclosure**: Configurable iterations and plan paths for different use cases
-- PASS: **No Time Estimates**: Focus on quality outcomes and completion criteria, not duration
+- **Explicit Over Implicit**: All steps, conditions, termination criteria, and agent selection rules clearly defined
+- **Automation Over Manual**: Fully automated execution, validation, and archival with specialized agent delegation
+- **Simplicity Over Complexity**: Clear linear flow with loop control, bounded iterations, and domain-specific agents
+- **Accessibility First**: Generates human-readable validation reports for transparency
+- **Progressive Disclosure**: Configurable iterations and plan paths for different use cases
+- **No Time Estimates**: Focus on quality outcomes and completion criteria, not duration
 
 ## Conventions Implemented/Respected
 

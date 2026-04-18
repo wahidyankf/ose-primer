@@ -33,7 +33,7 @@ Defines the mandatory three-level testing architecture for all projects in the m
 
 - **[BDD Spec-to-Test Mapping](../infra/bdd-spec-test-mapping.md)**: All levels consume Gherkin feature files from the shared `specs/` directory, maintaining the 1:1 spec-to-test mapping.
 
-## The Three Levels
+## 🧪 The Three Levels
 
 ### Level 1: Unit Tests (`test:unit`)
 
@@ -167,7 +167,7 @@ by the pre-push hook and all scheduled Test CI workflows. Projects with genuine 
 target deferred temporarily until step implementations are complete. See [Nx Target
 Standards](../infra/nx-targets.md) for the full project-by-project status and command flags.
 
-## Coverage Enforcement
+## ✅ Coverage Enforcement
 
 Coverage is enforced at three gates:
 
@@ -425,7 +425,7 @@ _\* Hugo sites run `test:quick` for link checking only, not test execution._
 - **Demo-fe frontends**: Two-level testing (unit + E2E); no integration tier; all consume Gherkin specs from `specs/apps/demo/fe/gherkin/`; E2E via centralized `demo-fe-e2e` Playwright suite
 - **Hugo sites**: Exempt from all test levels (only `test:quick` for link checking)
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
 - **Using HTTP simulation in integration tests**: MockMvc, TestClient, httptest, ConnTest, WebApplicationFactory, fetch, clj-http, Router.oneshot, and similar are all HTTP dispatch mechanisms. Integration tests must bypass the HTTP layer entirely.
 - **Using in-memory repositories in integration tests**: The purpose of integration tests is to verify real database behavior. In-memory repositories defeat this purpose.
@@ -454,6 +454,6 @@ See [Nx Target Standards](../infra/nx-targets.md) for CI schedule details.
 | No HTTP in integration tests                          | [Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)      |
 | Coverage measured only at unit level                  | [Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)      |
 
-## See Also
+## 🔗 See Also
 
 - [Code Coverage Reference](../../../docs/reference/code-coverage.md) - How coverage is measured (rhino-cli algorithm, per-project tools, exclusion patterns, local vs Codecov differences)

@@ -45,7 +45,7 @@ This practice implements/respects the following conventions:
 
 - **[Code Quality Convention](../quality/code.md)**: Pre-push hooks run affected tests before pushing to main, enforcing quality gates in the TBD workflow.
 
-## What is Trunk Based Development?
+## 📋 What is Trunk Based Development?
 
 **Trunk Based Development** is a source control branching model where developers work primarily on a single branch called the "trunk" (in Git, this is typically the `main` branch). Unlike feature-branch workflows, TBD minimizes long-lived branches and emphasizes frequent integration.
 
@@ -75,7 +75,7 @@ TBD addresses common problems with long-lived feature branches:
 
 **Reference**: [TrunkBasedDevelopment.com](https://trunkbaseddevelopment.com/)
 
-## Our TBD Implementation
+## ⚙️ Our TBD Implementation
 
 ### Default Branch: `main`
 
@@ -463,7 +463,7 @@ The `apps/demo-fs-ts-nextjs/` project uses a production deployment branch:
 
 **Reference**: [TrunkBasedDevelopment.com - Branch for Release](https://trunkbaseddevelopment.com/branch-for-release/) explicitly describes release branches as acceptable in TBD.
 
-## What NOT to Do
+## ❌ What NOT to Do
 
 | FAIL: Anti-Pattern                   | PASS: TBD Approach                                                                          |
 | ------------------------------------ | ------------------------------------------------------------------------------------------- |
@@ -530,7 +530,7 @@ Only specify a branch in a plan if:
 **Decision Point**: After 2 days, decide to merge or discard based on performance results.
 ```
 
-## TBD Benefits for This Project
+## ✅ TBD Benefits for This Project
 
 ### For Solo/Small Team Development
 
@@ -608,7 +608,7 @@ If you're used to feature-branch workflows (GitFlow, GitHub Flow), here's how to
 - PASS: Use feature flags to isolate risk
 - PASS: Commit small changes, easier to verify
 
-## Related Practices
+## 🔗 Related Practices
 
 TBD works best when combined with:
 

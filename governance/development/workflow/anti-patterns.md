@@ -15,7 +15,7 @@ This document provides:
 - Solutions and corrections for each anti-pattern
 - Team collaboration and efficiency considerations
 
-## Common Anti-Patterns
+## ❌ Common Anti-Patterns
 
 ### Anti-Pattern 1: Long-Lived Feature Branches
 
@@ -470,7 +470,7 @@ git pull origin main  # Always rebases for main branch
 - Reduces merge friction
 - **Professional appearance with linear commit history**
 
-## Summary of Anti-Patterns
+## 📋 Summary of Anti-Patterns
 
 | Anti-Pattern                | Problem                      | Solution                        |
 | --------------------------- | ---------------------------- | ------------------------------- |
@@ -486,7 +486,7 @@ git pull origin main  # Always rebases for main branch
 | **Skipping Local Tests**    | Slow feedback                | Test before pushing             |
 | **Pushing Without Pulling** | Push failures, merge commits | Pull with rebase before pushing |
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Trunk Based Development Convention](./trunk-based-development.md) - Complete TBD workflow
 - [Commit Message Convention](./commit-messages.md) - Conventional Commits guide

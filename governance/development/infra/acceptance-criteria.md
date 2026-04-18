@@ -103,7 +103,7 @@ Scenario: [Concise description of behavior]
  But [constraint or exception]
 ```
 
-## Best Practices
+## ✅ Best Practices
 
 ### 1. Be Specific with Concrete Values
 
@@ -297,9 +297,9 @@ Scenario: Tutorial content passes quality validation
  And Mermaid diagrams should use accessible color palette
 ```
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
-### FAIL: Vague or Ambiguous Language
+### ❌ Vague or Ambiguous Language
 
 ```gherkin
 Then the system should work correctly
@@ -309,7 +309,7 @@ Then users should be happy
 
 **Better**: Define specific, measurable criteria
 
-### FAIL: Testing Implementation Details
+### ❌ Testing Implementation Details
 
 ```gherkin
 Then the Redux store should be updated
@@ -319,7 +319,7 @@ Then the cache should be invalidated
 
 **Better**: Focus on observable behavior from user perspective
 
-### FAIL: Multiple Behaviors in One Scenario
+### ❌ Multiple Behaviors in One Scenario
 
 ```gherkin
 Scenario: Complete user workflow
@@ -328,7 +328,7 @@ Scenario: Complete user workflow
 
 **Better**: Split into separate scenarios (one behavior each)
 
-### FAIL: Missing Context
+### ❌ Missing Context
 
 ```gherkin
 When the button is clicked
@@ -339,25 +339,25 @@ Then something happens
 
 ## When to Use Acceptance Criteria
 
-### PASS: Project Plans
+### ✅ Project Plans
 
 - **Product requirements files** (`plans/*/prd.md`): Define Gherkin acceptance criteria for each user story (legacy plans may still use `requirements.md`)
 - **Delivery checklists**: Validate implementation against Gherkin scenarios
 - See [Plans Organization Convention](../../conventions/structure/plans.md)
 
-### PASS: Feature Specifications
+### ✅ Feature Specifications
 
 - **Feature docs**: Describe expected behavior for new features
 - **RFC documents**: Define acceptance criteria for proposed changes
 - **ADRs**: Specify outcomes of architectural decisions
 
-### PASS: API Documentation
+### ✅ API Documentation
 
 - **Endpoint specifications**: Describe request/response scenarios
 - **Error handling**: Define error conditions and responses
 - **Integration scenarios**: Describe cross-service behavior
 
-### PASS: Test Documentation
+### ✅ Test Documentation
 
 - **Test plans**: Structure test cases as Gherkin scenarios
 - **QA checklists**: Verify manual testing scenarios
@@ -476,7 +476,7 @@ graph TD
  style J fill:#CC78BC,stroke:#000,color:#fff
 ```
 
-## Related Conventions
+## 🔗 Related Conventions
 
 - [BDD Spec-to-Test Mapping Convention](./bdd-spec-test-mapping.md) - Mandatory 1:1 mapping between CLI commands and Gherkin specifications
 - [Plans Organization Convention](../../conventions/structure/plans.md) - Where to use acceptance criteria in plans

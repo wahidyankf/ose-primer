@@ -8,12 +8,12 @@
 
 This folder contains temporary, ephemeral project planning documents, distinct from permanent documentation in `docs/`.
 
-## Quick Reference
+## 🧭 Quick Reference
 
 - **ideas.md** - Quick 1-3 liner ideas not yet formalized into plans
-- **backlog/** - Planned projects for future implementation
-- **in-progress/** - Active plans currently being worked on
-- **done/** - Completed and archived plans
+- ⏳ **backlog/** - Planned projects for future implementation
+- 🚧 **in-progress/** - Active plans currently being worked on
+- ✅ **done/** - Completed and archived plans
 
 ## Complete Documentation
 
