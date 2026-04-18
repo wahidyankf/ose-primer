@@ -1,196 +1,103 @@
-# 🌙 Open Sharia Enterprise
+# ose-primer
 
-✨ An enterprise solutions platform for Sharia-compliant business systems.
+Repository template for OSE-style polyglot Nx monorepos. Clone it whole or cherry-pick the parts you need to bootstrap a new repo that ships with governance, AI agents, skills, polyglot demo apps, and shared repo tooling already wired together.
 
-🌐 **Live Sites**:
+## What this is
 
-- **OSE Platform** ([oseplatform.com](https://oseplatform.com)) - Main platform website (under construction)
-- **AyoKoding** ([ayokoding.com](https://ayokoding.com)) - Engineering research and learnings from this project, shared publicly as educational content
-- **OrganicLever** ([organiclever.com](https://www.organiclever.com/)) - Landing and promotional website (Phase 1, in development)
+`ose-primer` is a **clean, opinionated starting point** — not a product. It is everything a new OSE-style monorepo needs on day one: Nx workspace wiring, a Husky + lint-staged + commitlint pre-commit/pre-push stack, markdown tooling, doctor-based polyglot toolchain convergence, the `rhino-cli` repo-management CLI, the Diátaxis governance tree, and a ready-to-run three-level testing standard demonstrated across eleven backend and three frontend stacks.
 
-## 🚧 Project Status
+Use it by forking, cloning, or copying the directories that fit your project — the template itself is intentionally minimal and **MIT-licensed** so you can relicense freely downstream.
 
-> ⚠️ **Phase 1 - In Development** - APIs and implementations may change significantly. **Contributions and pull requests are not being accepted** at this time.
+## What it ships
 
-**Current Phase: Phase 1 (OrganicLever - Productivity Tracker)**
+- **Polyglot `a-demo-*` scaffolding** — 11 backend demos (Go, Java/Spring, Elixir/Phoenix, F#/Giraffe, Python/FastAPI, Rust/Axum, Kotlin/Ktor, Java/Vert.x, TypeScript/Effect, C#/ASP.NET, Clojure/Pedestal), 3 frontends (Next.js, TanStack Start, Flutter Web), one fullstack (Next.js), 2 E2E harnesses, and a shared OpenAPI contract (`a-demo-contracts`) that drives codegen across all of them.
+- **`rhino-cli`** — Go CLI for repository hygiene: `doctor`, `test-coverage`, `spec-coverage`, `agents validate-naming`, `workflows validate-naming`, `env backup|restore`, and more.
+- **Shared libs** — `golang-commons` and small TypeScript utilities.
+- **Governance** — six-layer hierarchy (Vision → Principles → Conventions → Development → Agents → Workflows) under `governance/`.
+- **Generic AI agents + skills** — Maker/Checker/Fixer pattern for plans, repo rules, workflows, UI, code, docs, CI; plus language-specific development agents (`swe-*-dev`). No product-specific agents.
+- **Dual-mode configuration** — `.claude/` (source of truth) auto-synced to `.opencode/`.
+- **Planning infrastructure** — `plans/ideas.md`, `plans/backlog/`, `plans/in-progress/`, `plans/done/` with a five-document plan convention and orchestrated `plan-execution` + `plan-quality-gate` workflows.
 
-Building OrganicLever, a full-stack individual productivity tracker:
+## How to use this template
 
-- 🌐 **Landing site**: [organiclever.com](https://www.organiclever.com/) ([organiclever-fe](./apps/organiclever-fe/)) - Next.js promotional website
-- ✅ **Phase 0 complete**: [ayokoding.com](https://ayokoding.com), [oseplatform.com](https://oseplatform.com), AI agents, governance, CLI tools
+1. **Clone or fork**: `git clone git@github.com:wahidyankf/ose-primer.git my-new-repo && cd my-new-repo`.
+2. **Bootstrap the toolchain**: `npm install && npm run doctor -- --fix`. This pins Node via Volta, installs npm workspaces, and converges 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node).
+3. **Keep what you need, delete what you don't** — every `a-demo-*` variant is independently deletable with a single `git rm -r apps/<name>` (plus its `specs/apps/a-demo/be/gherkin/<name>/` entries, if present). The `rhino-cli`, `governance/`, `docs/`, `.claude/`, `.opencode/`, and `plans/` trees are expected to survive; the rest is opt-in.
+4. **Rename to your project** — search-and-replace `ose-primer` across the repo, point `origin` at your new remote, and push to `main`.
+5. **Start your own plans** — drop quick ideas into `plans/ideas.md` and promote mature ones to a `plans/backlog/YYYY-MM-DD__[identifier]/` folder following the five-document convention.
 
-**Next Phase: Phase 2 (SMB Application)** - Small and medium business application building on OrganicLever's foundation.
+The template practices **Trunk Based Development**: one branch (`main`), small commits, Husky-enforced quality gates. No PRs within the template itself — downstream forks decide their own branching and deployment policy.
 
-**What to Expect:**
+## Prerequisites
 
-- 🔄 Breaking changes without notice
-- 📐 Architecture still evolving
-- 🧪 Experimental implementations
+- **Node.js 24.13.1** + **npm 11.10.1** via [Volta](https://docs.volta.sh/guide/getting-started).
+- Everything else (Go, Java, Python, Rust, Elixir, Kotlin, C#, Clojure, Dart, Docker, jq, Playwright) is auto-installed by `npm run doctor -- --fix`.
 
-See **[ROADMAP.md](./ROADMAP.md)** for complete development phases and strategy.
-
-## 🚀 Getting Started
-
-### 📋 Prerequisites
-
-- **Node.js** 24.13.1 LTS & **npm** 11.10.1 (managed via [Volta](https://docs.volta.sh/guide/getting-started))
-
-### 📥 Installation
+## Common commands
 
 ```bash
-npm install
+npm install                      # Install deps + set up Husky hooks
+npm run doctor                   # Check polyglot toolchain
+npm run doctor -- --fix          # Auto-install missing tools
+
+npm run lint:md                  # Lint all markdown
+npm run lint:md:fix              # Auto-fix markdown violations
+
+nx dev [app-name]                # Start a dev server
+nx build [app-name]              # Build one project
+nx affected -t typecheck lint test:quick spec-coverage  # Pre-push gate
+nx run-many -t typecheck lint test:quick spec-coverage  # Full workspace gate
+nx graph                         # Visualise dependencies
+
+npm run sync:claude-to-opencode  # Regenerate .opencode/ from .claude/
+npm run validate:claude          # Lint .claude/ source format
+npm run validate:opencode        # Lint .opencode/ output format
 ```
 
-## 🛠️ Tech Stack
+See [CLAUDE.md](./CLAUDE.md) for the full command + convention reference tailored for AI-assisted sessions.
 
-**Guiding Principle**: Technologies that keep you free - open formats, portable data, no vendor lock-in.
+## Governance & conventions
 
-**Phase 0 (Complete):**
+The `governance/` tree is the rulebook:
 
-- Node.js & npm (via Volta) - Tooling and development infrastructure
-- Hugo (Extended) - Static sites (oseplatform-web)
-- Golang - CLI tools ([ayokoding-cli](./apps/ayokoding-cli/), [rhino-cli](./apps/rhino-cli/)) and future security infrastructure
+- **[principles/](./governance/principles/README.md)** — Root values (Simplicity Over Complexity, Root Cause Orientation, Reproducibility First, No Time Estimates, …).
+- **[conventions/](./governance/conventions/README.md)** — File naming, linking, indentation, emoji, diagrams, agent naming, workflow naming, plans.
+- **[development/](./governance/development/README.md)** — Three-level testing standard, Nx targets, code quality, commit messages, worktree setup.
+- **[workflows/](./governance/workflows/README.md)** — Orchestrated multi-agent processes (plan-quality-gate, plan-execution, repo-rules-quality-gate, docs-quality-gate, specs-quality-gate, ci-quality-gate).
+- **[vision/](./governance/vision/README.md)** — High-level purpose.
+- **[repository-governance-architecture.md](./governance/repository-governance-architecture.md)** — How the six layers compose.
 
-**Current Phase 1 (OrganicLever):**
+Agents live under `.claude/agents/` (source of truth) and `.opencode/agent/` (mirror). Skills live under `.claude/skills/` and `.opencode/skill/`. See [.claude/agents/README.md](./.claude/agents/README.md).
 
-- Frontend (landing): Next.js + TypeScript
-- Infrastructure: Kubernetes
-
-See **[ROADMAP.md](./ROADMAP.md)** for complete tech stack evolution across all phases.
-
-## 📂 Project Structure
-
-This project uses **Nx** to manage applications and libraries:
+## Repository layout
 
 ```
-open-sharia-enterprise/
-├── apps/                  # Deployable applications (Nx monorepo)
-├── apps-labs/             # Experimental apps and POCs (NOT in Nx monorepo)
-│   └── README.md          # Labs directory documentation
-├── libs/                  # Reusable libraries (Nx monorepo, flat structure)
-├── docs/                  # Project documentation (Diataxis framework)
-│   ├── tutorials/         # Learning-oriented guides
-│   ├── how-to/            # Problem-oriented guides
-│   ├── reference/         # Technical reference
-│   └── explanation/       # Conceptual documentation
-├── plans/                 # Project planning documents
-│   ├── in-progress/       # Active project plans
-│   ├── backlog/           # Planned projects for future
-│   └── done/              # Completed and archived plans
-├── nx.json                # Nx workspace configuration
-├── tsconfig.base.json     # Base TypeScript configuration
-├── package.json           # Project manifest with npm workspaces
-└── README.md              # This file
+ose-primer/
+├── apps/                      # Deployable applications (Nx)
+│   ├── rhino-cli/
+│   ├── a-demo-be-*/           # 11 polyglot backend demos
+│   ├── a-demo-be-e2e/
+│   ├── a-demo-fe-*/           # 3 frontend variants
+│   ├── a-demo-fe-e2e/
+│   └── a-demo-fs-ts-nextjs/   # Fullstack demo
+├── apps-labs/                 # Experimental apps (not in Nx)
+├── libs/                      # Shared libraries (flat)
+├── specs/                     # Gherkin, OpenAPI contracts, C4
+├── docs/                      # Diátaxis docs (tutorials/how-to/reference/explanation)
+├── governance/                # Principles, conventions, development, workflows, vision
+├── plans/                     # ideas.md, backlog/, in-progress/, done/
+├── .claude/                   # Claude Code agents, skills, settings
+├── .opencode/                 # OpenCode mirror (auto-generated)
+├── .husky/                    # Git hooks
+├── infra/                     # docker-compose infra for demo backends
+├── nx.json                    # Nx workspace config
+├── tsconfig.base.json         # Base TS config
+├── CLAUDE.md                  # Full repo guidance for Claude Code sessions
+└── AGENTS.md                  # OpenCode equivalent of CLAUDE.md
 ```
 
-**Applications** (`apps/`):
+## License
 
-- **Sites**: [`oseplatform-web`](./apps/oseplatform-web/), [`ayokoding-web`](./apps/ayokoding-web/), [`organiclever-fe`](./apps/organiclever-fe/), [`organiclever-be`](./apps/organiclever-be/), [`organiclever-fe-e2e`](./apps/organiclever-fe-e2e/), [`organiclever-be-e2e`](./apps/organiclever-be-e2e/)
-- **CLI tools**: [`ayokoding-cli`](./apps/ayokoding-cli/), [`rhino-cli`](./apps/rhino-cli/), [`oseplatform-cli`](./apps/oseplatform-cli/)
-- **Demo apps**: 11 backend implementations (Go, Java, Elixir, F#, Python, Rust, Kotlin, TypeScript, C#, Clojure) + 3 frontends (Next.js, TanStack Start, Flutter Web) — see [Demo Apps CI & Coverage](./docs/reference/demo-apps-ci-coverage.md)
+**MIT** across the entire repo. See [LICENSE](./LICENSE) and [LICENSING-NOTICE.md](./LICENSING-NOTICE.md).
 
-**Libraries** (`libs/`): Reusable shared code
-
-**Labs** (`apps-labs/`): Standalone experiments and POCs (outside Nx)
-
-**Learn More**: [Monorepo Structure Reference](./docs/reference/monorepo-structure.md) | [How to Add New App](./docs/how-to/add-new-app.md) | [How to Add New Library](./docs/how-to/add-new-lib.md) | [How to Run Nx Commands](./docs/how-to/run-nx-commands.md)
-
-## 💻 Development
-
-**Code Quality**: Automated checks run on every commit (Prettier formatting, Commitlint validation, markdown linting).
-
-**Common Commands**:
-
-```bash
-npm run build                    # Build all projects
-npm run test                     # Run tests
-npm run lint                     # Lint code
-nx dev [app-name]                # Start development server
-nx build [app-name]              # Build specific project
-nx affected -t build             # Build only affected projects
-nx affected -t test:quick        # Run fast quality gate for affected projects
-nx graph                         # Visualize dependencies
-```
-
-See [Code Quality](./governance/development/quality/code.md) and [Commit Messages](./governance/development/workflow/commit-messages.md) for details.
-
-## 📊 CI & Test Coverage
-
-All projects enforce ≥90% test coverage as part of `test:quick`. Coverage is uploaded to [Codecov](https://codecov.io/gh/wahidyankf/ose-public) on every push to `main`.
-
-**Quality gates**: pre-commit hooks (formatting, linting), pre-push hooks (`typecheck`, `lint`, `test:quick` for affected projects), [PR Quality Gate](./.github/workflows/pr-quality-gate.yml), and [Codecov Upload](./.github/workflows/codecov-upload.yml) on push to `main`.
-
-- OSE Platform
-  - [![Deploy](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-oseplatform-web.yml/badge.svg)](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-oseplatform-web.yml)
-  - [`oseplatform-web`](./apps/oseplatform-web/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=oseplatform-web)](https://codecov.io/gh/wahidyankf/ose-public)
-  - [`oseplatform-cli`](./apps/oseplatform-cli/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=oseplatform-cli)](https://codecov.io/gh/wahidyankf/ose-public)
-- AyoKoding
-  - [![Deploy](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-ayokoding-web.yml/badge.svg)](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-ayokoding-web.yml)
-  - [`ayokoding-web`](./apps/ayokoding-web/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=ayokoding-web)](https://codecov.io/gh/wahidyankf/ose-public)
-  - [`ayokoding-cli`](./apps/ayokoding-cli/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=ayokoding-cli)](https://codecov.io/gh/wahidyankf/ose-public)
-- OrganicLever
-  - [![Deploy](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-organiclever.yml/badge.svg)](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-organiclever.yml)
-  - [`organiclever-fe`](./apps/organiclever-fe/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=organiclever-fe)](https://codecov.io/gh/wahidyankf/ose-public)
-  - [`organiclever-be`](./apps/organiclever-be/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=organiclever-be)](https://codecov.io/gh/wahidyankf/ose-public)
-- [`rhino-cli`](./apps/rhino-cli/)
-  - [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=rhino-cli)](https://codecov.io/gh/wahidyankf/ose-public)
-
-For demo app CI badges, see [Demo Apps CI & Coverage](./docs/reference/demo-apps-ci-coverage.md).
-
-## 📚 Documentation
-
-Organized using the [Diátaxis framework](https://diataxis.fr/): [Tutorials](./docs/tutorials/) (learning), [How-To](./docs/how-to/) (problem-solving), [Reference](./docs/reference/) (lookup), [Explanation](./docs/explanation/) (understanding).
-
-See [`docs/README.md`](./docs/README.md) for details.
-
-## 🎯 Motivation
-
-Our mission is to democratize access to trustworthy, Sharia-compliant enterprise technology for organizations of all sizes, regardless of region or industry.
-
-**The Opportunity:**
-
-- Islamic enterprise (finance, commerce, cooperatives) is a multi-trillion dollar global market
-- Existing platforms are proprietary, expensive, and domain-limited
-- Most organizations rely on legacy systems retrofitted for Sharia compliance
-- The gap: open-source, compliance-first solutions with radical transparency
-
-**Our Solution:**
-
-- Progressive complexity: individual (Phase 1) → SMB (Phase 2) → enterprise (Phase 3)
-- Each phase funds the next; Phase 1/2 success funds Phase 3's certification budget
-- Sharia-compliance built in from the ground up, not bolted on after
-
-**What We Believe:**
-
-- 🕌 **Sharia-compliance as a foundation** - Built in from the ground up, not bolted on later
-- 🔓 **Transparency builds trust** - Open source code enables community verification of Sharia compliance
-- 🤖 **AI-assisted development** - Systematic use of AI tools to enhance productivity and code quality
-- 🛡️ **Security and governance from day one** - Architectural foundations, not afterthoughts
-- 📚 **Learning in public** - Share our research and knowledge through [ayokoding.com](https://ayokoding.com)
-- 🏗️ **Long-term foundation over quick wins** - Building solid foundations for a life-long project
-
-For complete principles, see [governance/principles/](./governance/principles/README.md).
-
-## 🤝 Contributing
-
-🔒 **Contributions are currently closed** while we stabilize the architecture and patterns.
-
-🎉 **Forking is welcome!** Build your own version for your region or use case — once the foundation is solid, we'll open contributions to the community.
-
-## 📜 License
-
-This repository uses **per-directory licensing** guided by: implementation code (HOW) can be MIT;
-behavioral specifications (WHAT) must be FSL to prevent clean-room engineering of competing products.
-
-- **Product apps and behavioral specs** ([FSL-1.1-MIT](./LICENSE)): Product apps, product specs,
-  and all E2E test suites (including `a-demo-*-e2e`) are FSL-licensed. Each product app scopes
-  the competing-use restriction to its domain
-- **Shared libraries and demo code/specs** ([MIT](./libs/golang-commons/LICENSE)): All `libs/`,
-  `apps/a-demo-*` implementation directories (excluding `*-e2e`), and `specs/apps/a-demo/`
-
-The FSL-1.1-MIT license converts to MIT on a **rolling per-version basis**: each commit becomes
-MIT-licensed 2 years after its first public distribution.
-
-See [LICENSING-NOTICE.md](./LICENSING-NOTICE.md) for full details |
-[LICENSE](./LICENSE) for the root license text |
-[Licensing Convention](./governance/conventions/structure/licensing.md) for internal rules.
+MIT is the lowest-friction choice for a template: downstream cloners can relicense freely without encountering FSL or other delayed-open-source constraints they did not choose.
