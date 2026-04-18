@@ -1,0 +1,315 @@
+# Delivery Checklist — ose-primer Template Cleanup
+
+**Working directory for every command**: `/Users/wkf/ose-projects/ose-primer/`
+**Branch**: `main` (trunk-based; no branches, no PRs)
+**Remote**: `origin` → `git@github.com:wahidyankf/ose-primer.git`
+**Command prefix**: all `git`, `nx`, and shell commands use `rtk` prefix.
+
+> **Fix-all-issues rule**: fix ALL failures found during quality gates, not just those caused by your changes. Root Cause Orientation principle — proactively fix preexisting errors encountered during work. Preexisting fixes go in their own thematic commits, separate from cleanup commits. Never bypass gates with `--no-verify`.
+
+## Environment Setup
+
+- [ ] Install dependencies in the root worktree: `rtk npm install`
+- [ ] Converge the full polyglot toolchain: `rtk npm run doctor -- --fix` (required — `postinstall` runs `doctor || true` and tolerates drift silently; see [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md))
+- [ ] Verify `rhino-cli` builds cleanly: `rtk nx build rhino-cli`
+- [ ] Run existing full typecheck + lint to establish baseline: `rtk nx run-many -t typecheck lint`
+- [ ] Note any preexisting failures in `local-temp/preexisting-failures.txt` for fixing during execution
+- [ ] Run existing `test:quick` for a kept a-demo app to confirm baseline: `rtk nx run a-demo-be-golang-gin:test:quick`
+
+## Phase 0 — Preflight
+
+- [ ] Run `rtk git status` and confirm working tree is clean
+- [ ] Run `rtk git remote -v` and confirm `origin` = `git@github.com:wahidyankf/ose-primer.git`
+- [ ] Run `rtk git branch --show-current` and confirm branch is `main`
+- [ ] Record current project list: `rtk npx nx show projects > local-temp/pre-cleanup-nx-projects.txt`
+- [ ] Record current file count: `rtk git ls-files | wc -l > local-temp/pre-cleanup-filecount.txt`
+- [ ] Record current agent count: `ls .claude/agents/*.md | wc -l > local-temp/pre-cleanup-agent-count.txt`
+- [ ] Record current skill count: `ls -d .claude/skills/*/ | wc -l > local-temp/pre-cleanup-skill-count.txt`
+
+## Phase 1 — Remove product apps
+
+- [ ] `rtk git rm -r apps/ayokoding-web`
+- [ ] `rtk git rm -r apps/ayokoding-web-be-e2e`
+- [ ] `rtk git rm -r apps/ayokoding-web-fe-e2e`
+- [ ] `rtk git rm -r apps/ayokoding-cli`
+- [ ] `rtk git rm -r apps/oseplatform-web`
+- [ ] `rtk git rm -r apps/oseplatform-web-be-e2e`
+- [ ] `rtk git rm -r apps/oseplatform-web-fe-e2e`
+- [ ] `rtk git rm -r apps/oseplatform-cli`
+- [ ] `rtk git rm -r apps/organiclever-fe`
+- [ ] `rtk git rm -r apps/organiclever-fe-e2e`
+- [ ] `rtk git rm -r apps/organiclever-be`
+- [ ] `rtk git rm -r apps/organiclever-be-e2e`
+- [ ] Run `rtk npx nx show projects` and verify no `ayokoding-*`, `oseplatform-*`, `organiclever-*` projects remain
+- [ ] Run `rtk npx nx affected -t typecheck lint --base=HEAD`
+- [ ] Fix any failure surfaced (may be preexisting — address root cause)
+- [ ] Commit: `rtk git commit -m "chore(cleanup): remove product apps (ayokoding, oseplatform, organiclever)"`
+
+## Phase 2 — Remove product specs
+
+- [ ] `rtk git rm -r specs/apps/ayokoding`
+- [ ] `rtk git rm -r specs/apps/organiclever`
+- [ ] `rtk git rm -r specs/apps/oseplatform`
+- [ ] Run `rtk npx nx affected -t lint spec-coverage --base=HEAD`
+- [ ] Fix any failure surfaced
+- [ ] Run `rtk npx nx show projects` and confirm `organiclever-contracts` is no longer listed (spec-tree deletion cascades into contract project removal)
+- [ ] Commit: `rtk git commit -m "chore(cleanup): remove product-app Gherkin specs"`
+
+## Phase 3 — Remove deprecated libs
+
+- [ ] `rtk grep -r "hugo-commons" apps/ libs/` and confirm no hits (demo apps must not import it)
+- [ ] `rtk git rm -r libs/hugo-commons`
+- [ ] `rtk git rm -r specs/libs/hugo-commons`
+- [ ] Run `rtk npx nx affected -t typecheck lint --base=HEAD`
+- [ ] Fix any failure surfaced
+- [ ] Commit: `rtk git commit -m "chore(cleanup): remove deprecated hugo-commons lib"`
+
+## Phase 4 — Remove product agents (.claude side)
+
+- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-by-example-maker.md`
+- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-by-example-checker.md`
+- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-by-example-fixer.md`
+- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-in-the-field-maker.md`
+- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-in-the-field-checker.md`
+- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-in-the-field-fixer.md`
+- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-general-maker.md`
+- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-general-checker.md`
+- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-general-fixer.md`
+- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-facts-checker.md`
+- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-facts-fixer.md`
+- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-link-checker.md`
+- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-link-fixer.md`
+- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-deployer.md`
+- [ ] `rtk git rm .claude/agents/apps-oseplatform-web-content-maker.md`
+- [ ] `rtk git rm .claude/agents/apps-oseplatform-web-content-checker.md`
+- [ ] `rtk git rm .claude/agents/apps-oseplatform-web-content-fixer.md`
+- [ ] `rtk git rm .claude/agents/apps-oseplatform-web-deployer.md`
+- [ ] `rtk git rm .claude/agents/apps-organiclever-fe-deployer.md`
+- [ ] `rtk git rm .claude/agents/swe-hugo-dev.md`
+- [ ] Run `rtk npm run validate:claude` and verify .claude format remains valid
+- [ ] Commit: `rtk git commit -m "chore(cleanup): remove product-specific agents from .claude"`
+
+## Phase 5 — Remove product skills (.claude side)
+
+- [ ] `rtk git rm -r .claude/skills/apps-ayokoding-web-developing-content`
+- [ ] `rtk git rm -r .claude/skills/apps-organiclever-fe-developing-content`
+- [ ] `rtk git rm -r .claude/skills/apps-oseplatform-web-developing-content`
+- [ ] Run `rtk npm run validate:claude`
+- [ ] Commit: `rtk git commit -m "chore(cleanup): remove product-specific skills from .claude"`
+
+## Phase 6 — Remove product plans + generated-socials
+
+- [ ] `rtk git rm -r plans/in-progress/2026-04-16__organiclever-fe-local-first`
+- [ ] Edit `plans/in-progress/README.md` — remove the `2026-04-16__organiclever-fe-local-first` bullet from the Active Plans list
+- [ ] Run `ls generated-socials 2>/dev/null` — if present, `rtk git rm -r generated-socials`; if absent, skip
+- [ ] Run `rtk npm run lint:md:fix`
+- [ ] Commit: `rtk git commit -m "chore(cleanup): remove product plans and generated-socials"`
+
+## Phase 7 — Rewrite CLAUDE.md
+
+- [ ] Edit `CLAUDE.md` — rewrite "Project Overview" paragraph: drop "Phase 1 (OrganicLever - Productivity Tracker)"; reframe as "Repository template for OSE-style polyglot monorepos"
+- [ ] Edit `CLAUDE.md` — "Current Apps" list: delete every bullet for `ayokoding-*`, `oseplatform-*`, `organiclever-*` (keep only `a-demo-*`, `rhino-cli`, `a-demo-contracts`)
+- [ ] Edit `CLAUDE.md` — "Project Structure" ASCII tree: strip the same apps
+- [ ] Edit `CLAUDE.md` — "Coverage thresholds" table: remove rows for `ayokoding-web`, `oseplatform-web`, `organiclever-fe`, `organiclever-be`
+- [ ] Edit `CLAUDE.md` — "Git Workflow" section: delete the three `prod-*` env-branch bullets
+- [ ] Edit `CLAUDE.md` — "AI Agents" catalog: drop every removed agent from each role grouping (Content Creation, Validation, Fixing, Operations, SWE)
+- [ ] Edit `CLAUDE.md` — delete the entire "Web Sites" section (oseplatform-web, ayokoding-web, organiclever-fe, organiclever-be sub-sections)
+- [ ] Verify: `rtk grep -n "ayokoding\|oseplatform\|organiclever\|hugo-commons" CLAUDE.md` returns empty
+- [ ] Run `rtk npm run lint:md:fix`
+- [ ] Run `rtk npm run lint:md` and confirm pass
+- [ ] Commit: `rtk git commit -m "docs(claude): reframe CLAUDE.md as repository template guidance"`
+
+## Phase 8 — Rewrite top-level README.md
+
+- [ ] Read existing `README.md` once to understand its current framing
+- [ ] Draft new section order: "What this is", "What it ships", "How to use this template", "Prerequisites", "Common commands", "Governance & conventions", "Repository layout", "License"
+- [ ] Write "What this is" — 2-3 sentences framing ose-primer as a cloneable/cherry-pickable template for OSE-style polyglot monorepos
+- [ ] Write "What it ships" — bullet list: polyglot `a-demo-*` scaffolding (11 backends, 3 frontends, 1 fullstack, contracts, E2E), `rhino-cli` repo tooling, shared libs, governance, generic agents/skills, planning infrastructure
+- [ ] Write "How to use this template" — step-by-step: `git clone`, choose `a-demo-*` variants to keep, delete unwanted variants, rename via search-and-replace or `rhino-cli` helpers, point `origin` at the new remote, push to `main`
+- [ ] Write "Prerequisites" — Volta + Node pinned version; single-command setup `npm install && npm run doctor -- --fix`
+- [ ] Write "Common commands" — `nx build`, `nx affected -t …`, `npm run lint:md`, `npm run doctor`, `npm run sync:claude-to-opencode`
+- [ ] Write "Governance & conventions" — link to `governance/README.md` and list top-level principle categories
+- [ ] Write "Repository layout" — brief ASCII or bullet tree showing `apps/`, `libs/`, `specs/`, `governance/`, `docs/`, `plans/`, `.claude/`, `.opencode/`
+- [ ] Write "License" — short statement: "MIT. See `LICENSE` and `LICENSING-NOTICE.md`."
+- [ ] Remove any product-site links (`oseplatform.com`, `ayokoding.com`, `www.organiclever.com`)
+- [ ] Remove any "Phase 1 (OrganicLever)" or product-app framing left over from `ose-public`
+- [ ] Verify: `rtk grep -n "ayokoding\|oseplatform\|organiclever\|hugo-commons" README.md` returns empty
+- [ ] Run `rtk npm run lint:md:fix`
+- [ ] Run `rtk npm run lint:md` and confirm pass
+- [ ] Commit: `rtk git commit -m "docs(readme): rewrite root README as ose-primer template entry point"`
+
+## Phase 9 — Update AGENTS.md (OpenCode mirror)
+
+- [ ] Apply Phase 7 edits to `AGENTS.md` — same overview reframe, same app-list pruning, same agent-catalog pruning, same Web Sites deletion
+- [ ] Verify: `rtk grep -n "ayokoding\|oseplatform\|organiclever\|hugo-commons" AGENTS.md` returns empty
+- [ ] Run `rtk npm run lint:md:fix`
+- [ ] Run `rtk npm run lint:md` and confirm pass
+- [ ] Commit: `rtk git commit -m "docs(agents): sync AGENTS.md with CLAUDE.md template framing"`
+
+## Phase 10 — Update .claude/agents/README.md + .claude/settings.json
+
+- [ ] Edit `.claude/agents/README.md` — drop every removed agent from catalog tables and role groupings
+- [ ] Verify: `rtk grep -n "apps-ayokoding-web\|apps-oseplatform-web\|apps-organiclever-fe-deployer\|swe-hugo-dev" .claude/agents/README.md` returns empty
+- [ ] Open `.claude/settings.json` and scan for permission entries scoped to removed paths (`apps/ayokoding-web/**`, `apps/oseplatform-web/**`, `apps/organiclever-*/**`, `libs/hugo-commons/**`); strip any matches — expected no-op, verified 2026-04-18 that current file contains only generic `.claude/**`, `.opencode/**`, `/tmp/**` entries
+- [ ] Run `rtk npm run validate:claude`
+- [ ] Run `rtk npm run lint:md:fix`
+- [ ] Commit: `rtk git commit -m "chore(claude): prune agent catalog and settings of removed product paths"`
+
+## Phase 11 — Audit and prune governance docs
+
+- [ ] Enumerate hits: `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" governance/ > local-temp/governance-hits.txt`
+- [ ] For each listed file, decide: rewrite (generalise the example) or delete (product-sole subject)
+- [ ] Apply edits subgrouping by subgrouping (conventions, development, principles, workflows, vision)
+- [ ] Run `docs-link-checker` agent on `governance/` subtree and address any broken-link findings
+- [ ] Verify: `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" governance/` returns empty
+- [ ] Run `rtk npm run lint:md:fix`
+- [ ] Run `rtk npm run lint:md` and confirm pass
+- [ ] Commit conventions subgrouping: `rtk git commit -m "docs(governance): drop product-specific references from conventions"`
+- [ ] Commit development subgrouping: `rtk git commit -m "docs(governance): drop product-specific references from development"`
+- [ ] Commit workflows subgrouping: `rtk git commit -m "docs(governance): drop product-specific references from workflows"`
+- [ ] Commit principles + vision if touched: `rtk git commit -m "docs(governance): drop product-specific references from principles and vision"`
+
+## Phase 12 — Audit and prune Diátaxis docs
+
+- [ ] Enumerate hits: `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" docs/ > local-temp/docs-hits.txt`
+- [ ] For each listed file, decide: rewrite (generalise) or delete (product-sole subject)
+- [ ] Apply edits
+- [ ] Run `docs-link-checker` agent on `docs/` subtree and address any broken-link findings
+- [ ] Verify: `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" docs/` returns empty
+- [ ] Run `rtk npm run lint:md:fix`
+- [ ] Run `rtk npm run lint:md` and confirm pass
+- [ ] Commit: `rtk git commit -m "docs(diataxis): remove product-scoped tutorials, how-tos, and references"`
+
+## Phase 13 — Switch to MIT license
+
+- [ ] Read existing `LICENSE` to capture copyright holder name
+- [ ] Replace `LICENSE` body with standard MIT license text (year 2026, same copyright holder)
+- [ ] Read existing `LICENSING-NOTICE.md`
+- [ ] Rewrite `LICENSING-NOTICE.md` as short MIT-only notice (no FSL split; pointer to `LICENSE`; one-line "policy shift from ose-public" note)
+- [ ] Edit root `package.json`: change `"license": "FSL-1.1-MIT"` to `"license": "MIT"`
+- [ ] Enumerate embedded license metadata: `rtk grep -rn "FSL-1.1-MIT" apps libs specs`
+- [ ] For each hit, change the license identifier to `MIT`
+- [ ] Verify zero hits remain: `rtk grep -rn "FSL-1.1-MIT" .` (exclude `plans/done/` and `.git/`); output must be empty
+- [ ] Verify root `LICENSE` contains standard MIT text: `rtk head -3 LICENSE | rtk grep -i "MIT License"` returns a match
+- [ ] Run `rtk npm run lint:md:fix`
+- [ ] Commit: `rtk git commit -m "docs(license): switch ose-primer to MIT license (template repo policy)"`
+
+## Phase 14 — Update tooling files (package.json, nx.json, tsconfig.base.json, .github/workflows, infra/dev, archived)
+
+- [ ] Edit `package.json` — remove scripts: `organiclever:dev`, `organiclever:dev:restart`, `dev:ayokoding-web`, `dev:oseplatform-web`, `dev:organiclever`, `dev:ayokoding-cli`, `dev:oseplatform-cli`
+- [ ] Audit `package.json` for any other scripts referencing removed apps (grep `ayokoding\|oseplatform\|organiclever`)
+- [ ] Read `nx.json` and confirm `targetDefaults`, `namedInputs`, `defaultBase` are project-agnostic (no edits expected)
+- [ ] Read `tsconfig.base.json` and confirm `compilerOptions.paths` has no alias for `hugo-commons` or any removed lib; strip any that exist
+- [ ] `rtk git rm .github/workflows/test-and-deploy-ayokoding-web.yml`
+- [ ] `rtk git rm .github/workflows/test-and-deploy-oseplatform-web.yml`
+- [ ] `rtk git rm .github/workflows/test-and-deploy-organiclever.yml`
+- [ ] Confirm `_reusable-test-and-deploy.yml` has zero remaining callers via `rtk grep -l "_reusable-test-and-deploy" .github/workflows`; if empty, `rtk git rm .github/workflows/_reusable-test-and-deploy.yml`
+- [ ] Audit `.github/workflows/pr-quality-gate.yml` for references (`needs:`, `uses:`, job filters) to removed workflows or removed projects; strip matches
+- [ ] Audit `.github/workflows/_reusable-*.yml` for the same; strip matches
+- [ ] Audit `.github/workflows/codecov-upload.yml` for references to removed projects; strip product-specific matrix entries, job filters, or path triggers
+- [ ] Inspect `.github/workflows/test-a-demo-be-java-springboot.yml` for product-brand mentions (confirmed on 2026-04-18 via grep); scrub any stale product references (comments, matrix entries, job names) without deleting the workflow — the `a-demo-be-java-springboot` app is a KEPT app
+- [ ] `rtk git rm -r infra/dev/ayokoding-web`
+- [ ] `rtk git rm -r infra/dev/oseplatform-web`
+- [ ] `rtk git rm -r infra/dev/organiclever`
+- [ ] `rtk git rm -r infra/dev/ayokoding-cli`
+- [ ] `rtk git rm -r infra/dev/oseplatform-cli`
+- [ ] `rtk git rm -r infra/k8s/organiclever`
+- [ ] `rtk git rm -r archived/ayokoding-web-hugo`
+- [ ] `rtk git rm -r archived/organiclever-web`
+- [ ] `rtk git rm -r archived/oseplatform-web-hugo`
+- [ ] Run `rtk npx nx affected -t typecheck lint test:quick --base=HEAD`
+- [ ] Run `rtk npm run lint:md:fix`
+- [ ] Commit: `rtk git commit -m "chore(tooling): prune Nx/package/workflow/infra references to removed apps"`
+
+## Phase 15 — Sync .opencode from .claude
+
+- [ ] Run `rtk npm run sync:claude-to-opencode`
+- [ ] Verify `.opencode/agent/` no longer contains any `apps-ayokoding-web-*`, `apps-oseplatform-web-*`, `apps-organiclever-fe-deployer.md`, or `swe-hugo-dev.md`
+- [ ] Verify `.opencode/skill/` no longer contains `apps-ayokoding-web-developing-content/`, `apps-organiclever-fe-developing-content/`, `apps-oseplatform-web-developing-content/`
+- [ ] Run `rtk npm run validate:opencode`
+- [ ] Run `rtk git status` and `rtk git diff --stat .opencode/` to review sync delta
+- [ ] Commit: `rtk git commit -m "chore(opencode): sync after .claude cleanup"`
+
+## Phase 16 — Final validation
+
+### Local Quality Gates
+
+- [ ] `rtk npm run doctor`
+- [ ] `rtk npm run lint:md`
+- [ ] `rtk npx nx run-many -t typecheck`
+- [ ] `rtk npx nx run-many -t lint`
+- [ ] `rtk npx nx run-many -t test:quick`
+- [ ] `rtk npx nx run-many -t spec-coverage`
+- [ ] Fix ALL failures surfaced — including preexisting issues; commit each preexisting fix separately with an accurate Conventional Commits message
+- [ ] Re-run all gates until zero failures
+
+### Residual Brand Sweep
+
+- [ ] Run the multi-term sweep:
+      `rtk grep -R -in "ayokoding\|oseplatform\|organiclever\|hugo-commons" apps libs specs scripts infra archived .github .claude .opencode governance docs README.md CLAUDE.md AGENTS.md LICENSING-NOTICE.md package.json nx.json tsconfig.base.json | rg -v "plans/done/"`
+- [ ] Output MUST be empty. If not empty, fix the residual hit, re-run, then proceed.
+- [ ] Run `rtk grep -R -in "FSL-1.1-MIT" . --exclude-dir=plans/done --exclude-dir=.git`. Output MUST be empty. If not empty, fix and re-run.
+- [ ] If residual fix produced changes: `rtk git commit -m "chore(cleanup): final sweep of product references"`
+
+### Nx Graph Sanity
+
+- [ ] `rtk npx nx show projects > local-temp/post-cleanup-nx-projects.txt`
+- [ ] `rtk diff local-temp/pre-cleanup-nx-projects.txt local-temp/post-cleanup-nx-projects.txt` and confirm removed projects are gone and no unintended kept-project changes
+
+### Governance Audit
+
+- [ ] Invoke `repo-rules-checker` agent in normal strictness mode; report writes to `generated-reports/`
+- [ ] Read the produced report
+- [ ] If report lists any CRITICAL or HIGH findings, invoke `repo-rules-fixer` and re-run `repo-rules-checker`; loop until double-zero pass
+- [ ] Commit any repo-rules-fixer changes per subgrouping with accurate Conventional Commits messages
+
+### Push to main
+
+- [ ] Run `rtk git log --oneline origin/main..HEAD` to review the full commit set about to land
+- [ ] `rtk git push origin main` (Husky pre-push gate runs; must exit 0)
+- [ ] Monitor GitHub Actions on the push via `rtk gh run list --branch main --limit 5`
+- [ ] Stream the latest run: `rtk gh run watch`
+- [ ] If any CI check fails, fix root cause, commit with accurate Conventional Commits message, and push follow-up
+- [ ] Repeat until ALL CI checks pass green
+
+## Phase 17 — Plan Archival
+
+- [ ] Verify every checkbox above is ticked
+- [ ] Verify `repo-rules-checker` is double-zero
+- [ ] Verify post-push CI is green
+- [ ] `rtk git mv plans/in-progress/2026-04-18__ose-primer-template-cleanup plans/done/2026-04-18__ose-primer-template-cleanup`
+- [ ] Edit `plans/in-progress/README.md` — confirm no entry for this plan exists (should already be absent since Phase 6 never added one for this plan itself; the plan folder was there from creation but this plan's own entry line, if present, must be removed)
+- [ ] Edit `plans/done/README.md` — add an entry under "Completed Projects" using this template (paste as a single bullet line; the relative link resolves from `plans/done/README.md`, not from this file):
+
+```text
+- [2026-04-18: ose-primer Template Cleanup](./2026-04-18__ose-primer-template-cleanup/README.md) — Strip all product-specific content (ayokoding, oseplatform, organiclever, hugo-commons) from the ose-primer repo so it functions as a clean repository template. Removed 12 apps, 3 spec trees, 1 deprecated lib, 3 archived product snapshots, 5 infra/dev configs, 22 product agents (both .claude/ and .opencode/ mirrors), 3 product skills, 1 product plan, 3 product CI workflows. Rewrote CLAUDE.md, AGENTS.md, README.md, .claude/agents/README.md, LICENSING-NOTICE.md, and pruned governance + docs enumerations. Trunk-based direct push to main. Post-cleanup: zero product-brand grep hits outside plans/done/, nx affected + full run-many green, repo-rules-checker double-zero (Completed: 2026-04-18)
+```
+
+- [ ] Run `rtk npm run lint:md:fix`
+- [ ] Commit: `rtk git commit -m "chore(plans): archive 2026-04-18__ose-primer-template-cleanup to done"`
+- [ ] `rtk git push origin main`
+- [ ] Confirm CI green on archival push via `rtk gh run watch`
+
+## Quality Gates (Summary)
+
+Gates that MUST pass at each commit boundary and at final push:
+
+1. `rtk npm run doctor` — polyglot toolchain convergence
+2. `rtk npx nx affected -t typecheck lint test:quick spec-coverage --base=HEAD~1` — between-phase affected gate
+3. `rtk npx nx run-many -t typecheck lint test:quick spec-coverage` — full workspace gate (Phase 16)
+4. `rtk npm run lint:md` — markdown lint
+5. `docs-link-checker` — governance + docs link integrity (Phases 11 + 12)
+6. `repo-rules-checker` in normal strictness mode — double-zero CRITICAL/HIGH (Phase 16)
+7. GitHub Actions CI on `main` push — all checks green
+
+**No bypass**: never pass `--no-verify`, `--force`, or any other flag that skips gates. If a gate fires, fix root cause in its own commit, then proceed.
+
+## Verification (how to confirm this plan's outcome)
+
+Three independent confirmations:
+
+1. **File-system state**: `rtk npx nx show projects` lists only `a-demo-*` projects + `rhino-cli` + `a-demo-contracts` (if tracked as project) + kept libs. `ls apps/` does not list any `ayokoding-*`, `oseplatform-*`, or `organiclever-*`. `ls .claude/agents/ .claude/skills/` does not list any product agent / skill.
+2. **Grep cleanliness**: `rtk grep -R -in "ayokoding\|oseplatform\|organiclever\|hugo-commons" apps libs specs scripts infra archived .github .claude .opencode governance docs README.md CLAUDE.md AGENTS.md LICENSING-NOTICE.md package.json nx.json tsconfig.base.json | rg -v "plans/done/"` returns empty. `rtk grep -R -in "FSL-1.1-MIT" . --exclude-dir=plans/done --exclude-dir=.git` returns empty.
+3. **Build cleanliness**: a fresh `git clone git@github.com:wahidyankf/ose-primer.git && cd ose-primer && rtk npm install && rtk npm run doctor && rtk npx nx run-many -t typecheck lint test:quick spec-coverage` exits 0 end-to-end.
+
+All three must hold simultaneously to consider the plan complete.
