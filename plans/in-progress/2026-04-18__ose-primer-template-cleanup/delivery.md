@@ -23,8 +23,8 @@
 - [ ] Run `rtk git branch --show-current` and confirm branch is `main`
 - [ ] Record current project list: `rtk npx nx show projects > local-temp/pre-cleanup-nx-projects.txt`
 - [ ] Record current file count: `rtk git ls-files | wc -l > local-temp/pre-cleanup-filecount.txt`
-- [ ] Record current agent count: `ls .claude/agents/*.md | wc -l > local-temp/pre-cleanup-agent-count.txt`
-- [ ] Record current skill count: `ls -d .claude/skills/*/ | wc -l > local-temp/pre-cleanup-skill-count.txt`
+- [ ] Record current agent count: `rtk ls .claude/agents/*.md | wc -l > local-temp/pre-cleanup-agent-count.txt`
+- [ ] Record current skill count: `rtk ls -d .claude/skills/*/ | wc -l > local-temp/pre-cleanup-skill-count.txt`
 
 ## Phase 1 — Remove product apps
 
@@ -101,7 +101,7 @@
 
 - [ ] `rtk git rm -r plans/in-progress/2026-04-16__organiclever-fe-local-first`
 - [ ] Edit `plans/in-progress/README.md` — remove the `2026-04-16__organiclever-fe-local-first` bullet from the Active Plans list
-- [ ] Run `ls plans/done/` and confirm count of YYYY-MM-DD\_\_\* entries matches the expected 52 snapshot taken at plan creation
+- [ ] Run `rtk ls plans/done/` and confirm count of YYYY-MM-DD\_\_\* entries matches the expected 53 snapshot taken at plan creation
 - [ ] `rtk git rm -r plans/done/2026-01-02__rules-consolidation`
 - [ ] `rtk git rm -r plans/done/2026-01-02__skills-layer-implementation`
 - [ ] `rtk git rm -r plans/done/2026-01-03__agent-skills-simplification`
@@ -155,12 +155,12 @@
 - [ ] `rtk git rm -r plans/done/2026-04-11__remove-obsidian-compat`
 - [ ] `rtk git rm -r plans/done/2026-04-17__agent-and-workflow-naming-consistency`
 - [ ] `rtk git rm -r plans/done/2026-04-18__plan-convention-brd-prd-split`
-- [ ] Verify `plans/done/` now contains only `README.md`: `ls plans/done/` should show `README.md` and no `YYYY-MM-DD__*` entries
+- [ ] Verify `plans/done/` now contains only `README.md`: `rtk ls plans/done/` should show `README.md` and no `YYYY-MM-DD__*` entries
 - [ ] Edit `plans/done/README.md` — rewrite to reflect empty archive: retain H1 "# Completed Plans" and "Completed Projects" section heading; replace the bulleted list body with a short line such as "_No completed plans yet in this template._"
 - [ ] Read `plans/backlog/README.md` — confirm it describes an empty backlog; no edit expected
 - [ ] Rewrite `plans/ideas.md` — replace body with template-generic placeholder: keep H1 "# Ideas" and the one-line description, then replace the section bullets with a single placeholder line such as "_No ideas yet. Capture 1-3 liner ideas here and promote mature ones to backlog/ plans._"
 - [ ] Verify `rtk grep -n "ayokoding\|oseplatform\|organiclever\|FSL" plans/ideas.md` returns empty
-- [ ] Run `ls generated-socials 2>/dev/null` — if present, `rtk git rm -r generated-socials`; if absent, skip
+- [ ] Run `rtk ls generated-socials 2>/dev/null` — if present, `rtk git rm -r generated-socials`; if absent, skip
 - [ ] Run `rtk npm run lint:md:fix`
 - [ ] Commit: `rtk git commit -m "chore(cleanup): remove all other plans, reset ideas, drop generated-socials"`
 
@@ -218,7 +218,10 @@
 
 - [ ] Enumerate hits: `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" governance/ > local-temp/governance-hits.txt`
 - [ ] For each listed file, decide: rewrite (generalise the example) or delete (product-sole subject)
-- [ ] Apply edits subgrouping by subgrouping (conventions, development, principles, workflows, vision)
+- [ ] Apply edits to conventions files (`governance/conventions/`)
+- [ ] Apply edits to development files (`governance/development/`)
+- [ ] Apply edits to workflow files (`governance/workflows/`)
+- [ ] Apply edits to principles + vision files if touched (`governance/principles/`, `governance/vision/`)
 - [ ] Run `docs-link-checker` agent on `governance/` subtree and address any broken-link findings
 - [ ] Verify: `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" governance/` returns empty
 - [ ] Run `rtk npm run lint:md:fix`
@@ -232,7 +235,8 @@
 
 - [ ] Enumerate hits: `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" docs/ > local-temp/docs-hits.txt`
 - [ ] For each listed file, decide: rewrite (generalise) or delete (product-sole subject)
-- [ ] Apply edits
+- [ ] Apply edits to tutorials + how-to files (`docs/tutorials/`, `docs/how-to/`)
+- [ ] Apply edits to reference + explanation files (`docs/reference/`, `docs/explanation/`)
 - [ ] Run `docs-link-checker` agent on `docs/` subtree and address any broken-link findings
 - [ ] Verify: `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" docs/` returns empty
 - [ ] Run `rtk npm run lint:md:fix`
@@ -364,7 +368,7 @@
 - [ ] Edit `plans/done/README.md` — replace the "_No completed plans yet in this template._" placeholder with the first archival entry (paste as a single bullet line; the relative link resolves from `plans/done/README.md`, not from this file):
 
 ```text
-- [2026-04-18: ose-primer Template Cleanup](./2026-04-18__ose-primer-template-cleanup/README.md) — Strip all product-specific content (ayokoding, oseplatform, organiclever, hugo-commons) from the ose-primer repo so it functions as a clean repository template. Removed 12 apps, 3 spec trees, 1 deprecated lib, 3 archived product snapshots, 5 infra/dev configs, 22 product agents (both .claude/ and .opencode/ mirrors), 3 product skills, 1 product plan, 3 product CI workflows. Rewrote CLAUDE.md, AGENTS.md, README.md, .claude/agents/README.md, LICENSING-NOTICE.md, and pruned governance + docs enumerations. Trunk-based direct push to main. Post-cleanup: zero product-brand grep hits outside plans/done/, nx affected + full run-many green, repo-rules-checker double-zero (Completed: 2026-04-18)
+- [2026-04-18: ose-primer Template Cleanup](./2026-04-18__ose-primer-template-cleanup/README.md) — Strip all product-specific content (ayokoding, oseplatform, organiclever, hugo-commons) from the ose-primer repo so it functions as a clean repository template. Removed 12 apps, 3 spec trees, 1 deprecated lib, 3 archived product snapshots, 6 infra directories (5 infra/dev + 1 infra/k8s), 20 product agents (both .claude/ and .opencode/ mirrors), 3 product skills, 1 product plan, 4 CI workflow files (3 test-and-deploy + 1 orphan reusable). Rewrote CLAUDE.md, AGENTS.md, README.md, .claude/agents/README.md, LICENSING-NOTICE.md, and pruned governance + docs enumerations. Trunk-based direct push to main. Post-cleanup: zero product-brand grep hits outside plans/done/, nx affected + full run-many green, repo-rules-checker double-zero (Completed: 2026-04-18)
 ```
 
 - [ ] Run `rtk npm run lint:md:fix`
@@ -385,6 +389,13 @@ Gates that MUST pass at each commit boundary and at final push:
 7. GitHub Actions CI on `main` push — all checks green
 
 **No bypass**: never pass `--no-verify`, `--force`, or any other flag that skips gates. If a gate fires, fix root cause in its own commit, then proceed.
+
+### Commit Guidelines
+
+- [ ] Commit changes thematically — group related changes into logically cohesive commits
+- [ ] Follow Conventional Commits format: `<type>(<scope>): <description>`
+- [ ] Split different domains/concerns into separate commits
+- [ ] Do NOT bundle unrelated fixes into a single commit
 
 ## Verification (how to confirm this plan's outcome)
 

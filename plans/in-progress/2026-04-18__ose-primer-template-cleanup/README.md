@@ -26,9 +26,9 @@ This plan scopes the cleanup that strips product content while preserving everyt
 - **Libs** (1): `hugo-commons` (deprecated; `swe-hugo-dev` agent marked DEPRECATED)
 - **Archived** (3): `archived/ayokoding-web-hugo/`, `archived/organiclever-web/`, `archived/oseplatform-web-hugo/`
 - **Infra configs** (6): `infra/dev/ayokoding-web/`, `infra/dev/oseplatform-web/`, `infra/dev/organiclever/`, `infra/dev/ayokoding-cli/`, `infra/dev/oseplatform-cli/`, `infra/k8s/organiclever/`
-- **Agents** (22): all `apps-ayokoding-web-*` (12), all `apps-oseplatform-web-*` (4), `apps-organiclever-fe-deployer`, `swe-hugo-dev` — in both `.claude/agents/` and `.opencode/agent/`
+- **Agents** (20): all `apps-ayokoding-web-*` (14), all `apps-oseplatform-web-*` (4), `apps-organiclever-fe-deployer`, `swe-hugo-dev` — in both `.claude/agents/` and `.opencode/agent/`
 - **Skills** (3): `apps-ayokoding-web-developing-content`, `apps-organiclever-fe-developing-content`, `apps-oseplatform-web-developing-content` — in both `.claude/skills/` and `.opencode/skill/`
-- **Plans (53)**: the product in-progress plan `plans/in-progress/2026-04-16__organiclever-fe-local-first/`, plus all 52 archived plans under `plans/done/` — template should ship with empty plans history; only the current cleanup plan (`plans/in-progress/2026-04-18__ose-primer-template-cleanup/`) is kept, and it will itself archive to `plans/done/` in Phase 17
+- **Plans (54)**: the product in-progress plan `plans/in-progress/2026-04-16__organiclever-fe-local-first/`, plus all 53 archived plans under `plans/done/` — template should ship with empty plans history; only the current cleanup plan (`plans/in-progress/2026-04-18__ose-primer-template-cleanup/`) is kept, and it will itself archive to `plans/done/` in Phase 17
 - **CI workflows** (3 product + 1 orphan reusable = 4): `.github/workflows/test-and-deploy-ayokoding-web.yml`, `test-and-deploy-oseplatform-web.yml`, `test-and-deploy-organiclever.yml`, `_reusable-test-and-deploy.yml` (no remaining callers after the three product workflows are deleted)
 
 **File rewrites** (plans/ cleanup + audit + prune enumerations):
@@ -70,15 +70,15 @@ This plan scopes the cleanup that strips product content while preserving everyt
 
 ## Approach Summary
 
-Phased execution in 17 phases (plus Phase 12.5), ordered so dependencies flow correctly:
+Phased execution across 19 sections (Phase 0 through Phase 17, plus Phase 12.5), ordered so dependencies flow correctly:
 
 1. **Preflight** — snapshot state, confirm clean tree and correct remote
 2. **Remove product apps** (12 Nx projects)
 3. **Remove product specs** (3 spec trees)
 4. **Remove deprecated libs** (`hugo-commons`)
-5. **Remove product agents** (22 agents in `.claude/agents/`)
+5. **Remove product agents** (20 agents in `.claude/agents/`)
 6. **Remove product skills** (3 skills in `.claude/skills/`)
-7. **Remove all other plans + clean ideas + generated-socials** (53 plans removed: 1 product in-progress + 52 archived; `plans/ideas.md` reset; `generated-socials/` absent)
+7. **Remove all other plans + clean ideas + generated-socials** (54 plans removed: 1 product in-progress + 53 archived; `plans/ideas.md` reset; `generated-socials/` absent)
 8. **Rewrite `CLAUDE.md`** as template guidance
 9. **Rewrite top-level `README.md`** as template usage guide
 10. **Update `AGENTS.md`** (OpenCode mirror) to match `CLAUDE.md`
@@ -86,7 +86,7 @@ Phased execution in 17 phases (plus Phase 12.5), ordered so dependencies flow co
 12. **Audit and prune `governance/` enumerations**
 13. **Audit and prune `docs/` Diátaxis content**
 14. **Phase 12.5 — Audit every remaining markdown file under kept paths**
-15. **Update `LICENSING-NOTICE.md`**
+15. **Switch to MIT license** — replace `LICENSE` body, rewrite `LICENSING-NOTICE.md`, update `package.json` and per-project license metadata
 16. **Update tooling files** (`package.json`, `nx.json`, `tsconfig.base.json`, `.github/workflows/`, `infra/dev/`, `archived/`)
 17. **Sync `.opencode/` from `.claude/`**
 18. **Final validation + residual grep sweep + push**

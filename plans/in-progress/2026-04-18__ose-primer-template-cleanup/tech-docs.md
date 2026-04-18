@@ -48,7 +48,7 @@ Kept under `specs/apps/`: `a-demo/`, `rhino/`. Kept under `specs/libs/`: `golang
 
 ### Phase 4 — Product agents (delete, both mirrors)
 
-Per `.claude/agents/` and `.opencode/agent/` (22 agents × 2 trees = 44 files):
+Per `.claude/agents/` and `.opencode/agent/` (20 agents × 2 trees = 40 files):
 
 - `apps-ayokoding-web-by-example-{maker,checker,fixer}.md` (3)
 - `apps-ayokoding-web-in-the-field-{maker,checker,fixer}.md` (3)
@@ -76,7 +76,7 @@ Same rule as agents: delete `.claude/` in Phase 5, let Phase 16 sync reconcile `
 ### Phase 6 — Remove all other plans + clean ideas + generated-socials
 
 - Delete the product in-progress plan `plans/in-progress/2026-04-16__organiclever-fe-local-first/` (unchanged).
-- Delete all 52 archived plans under `plans/done/*/` (each is a directory of plan files; use `git rm -r` per directory or one `git rm -r` with a glob).
+- Delete all 53 archived plans under `plans/done/*/` (each is a directory of plan files; use `git rm -r` per directory or one `git rm -r` with a glob).
 - Rewrite `plans/ideas.md` to a minimal template-generic state — a single H1, a one-sentence description, and an empty bullet list (no inherited product ideas).
 - Update `plans/done/README.md` index to reflect empty state (heading + "no completed plans yet in this template" placeholder).
 - Verify `plans/backlog/README.md` is untouched (already empty).
@@ -207,7 +207,7 @@ Per the Root Cause Orientation principle and `governance/development/quality/ci-
 
 ### D8 — Template ships with empty plans history
 
-`plans/done/` is wiped of all 52 inherited archive entries because a template should not carry its source repo's development history. The cleanup plan itself archives into `plans/done/` at Phase 17, so by the time a cloner clones, `plans/done/` has exactly one entry — the plan that created the template.
+`plans/done/` is wiped of all 53 inherited archive entries because a template should not carry its source repo's development history. The cleanup plan itself archives into `plans/done/` at Phase 17, so by the time a cloner clones, `plans/done/` has exactly one entry — the plan that created the template.
 
 ### D9 — Explicit per-file markdown audit as safety net
 
