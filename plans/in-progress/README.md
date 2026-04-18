@@ -4,7 +4,7 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- [2026-04-16\_\_organiclever-fe-local-first](./2026-04-16__organiclever-fe-local-first/README.md) — Pivot `organiclever-fe` to local-first deploy on Vercel; BE kept dormant; add `/system/status/be` diagnostic page with graceful degradation.
+- [2026-04-18\_\_ose-primer-template-cleanup](./2026-04-18__ose-primer-template-cleanup/README.md) — Strip product-specific content from ose-primer so it functions as a clean repository template.
 
 ## Instructions
 

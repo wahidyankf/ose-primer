@@ -184,15 +184,21 @@
 - [x] `rtk git rm .claude/agents/swe-hugo-dev.md`
 - [x] Run `rtk npm run validate:claude` and verify .claude format remains valid
   - Date: 2026-04-18 — done; 769/769 passed.
-- [ ] Commit: `rtk git commit -m "chore(cleanup): remove product-specific agents from .claude"`
+- [x] Commit: `rtk git commit -m "chore(cleanup): remove product-specific agents from .claude"`
+  - Date: 2026-04-18 — done (commit 11dc8683). Pre-commit hook required `.opencode/agent/` sync; combined both into single commit (same 20 product agents + 1 swe-hugo-dev on both sides). Message widened to "...from .claude and .opencode".
 
 ## Phase 5 — Remove product skills (.claude side)
 
-- [ ] `rtk git rm -r .claude/skills/apps-ayokoding-web-developing-content`
-- [ ] `rtk git rm -r .claude/skills/apps-organiclever-fe-developing-content`
-- [ ] `rtk git rm -r .claude/skills/apps-oseplatform-web-developing-content`
-- [ ] Run `rtk npm run validate:claude`
-- [ ] Commit: `rtk git commit -m "chore(cleanup): remove product-specific skills from .claude"`
+- [x] `rtk git rm -r .claude/skills/apps-ayokoding-web-developing-content`
+  - Date: 2026-04-18 — done
+- [x] `rtk git rm -r .claude/skills/apps-organiclever-fe-developing-content`
+  - Date: 2026-04-18 — done
+- [x] `rtk git rm -r .claude/skills/apps-oseplatform-web-developing-content`
+  - Date: 2026-04-18 — done
+- [x] Run `rtk npm run validate:claude`
+  - Date: 2026-04-18 — done; 748/748 passed.
+- [x] Commit: `rtk git commit -m "chore(cleanup): remove product-specific skills from .claude"`
+  - Date: 2026-04-18 — done (commit c312a474). `.opencode/skill/` mirrors removed in same commit.
 
 ## Phase 6 — Remove all other plans + clean ideas.md + generated-socials
 
