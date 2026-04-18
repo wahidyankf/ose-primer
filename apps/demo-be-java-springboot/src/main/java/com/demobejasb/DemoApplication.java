@@ -5,9 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /** Entry point for the demo Spring Boot application. */
 @SpringBootApplication
-public final class ADemoApplication {
+public final class DemoApplication {
 
-    private ADemoApplication() {
+    private DemoApplication() {
     }
 
     /**
@@ -16,6 +16,6 @@ public final class ADemoApplication {
      * @param args command-line arguments passed to the application
      */
     public static void main(final String[] args) {
-        SpringApplication.run(ADemoApplication.class, args);
+        SpringApplication.run(DemoApplication.class, args);
     }
 }

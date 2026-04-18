@@ -35,7 +35,7 @@ public class CommonSteps {
     }
 
     @Given("the demo API is running")
-    public void theADemoApiIsRunning() {
+    public void theDemoApiIsRunning() {
         // No-op: Spring Boot context is always ready when scenarios execute.
     }
 
