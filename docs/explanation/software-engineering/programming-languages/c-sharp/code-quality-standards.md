@@ -1,6 +1,6 @@
 ---
 title: "C# Code Quality Standards"
-description: Authoritative OSE Platform C# code quality standards (Roslyn analyzers, dotnet format, editorconfig, nullable reference types)
+description: Authoritative a-demo C# code quality standards (Roslyn analyzers, dotnet format, editorconfig, nullable reference types)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a C# tutorial.
+**This document is a-demo-specific**, not a C# tutorial.
 
 ## Purpose
 
-This document defines **authoritative code quality standards** for C# in the OSE Platform, covering tooling configuration, enforcement rules, and automated quality gates.
+This document defines **authoritative code quality standards** for C# in the a-demo, covering tooling configuration, enforcement rules, and automated quality gates.
 
-**Target Audience**: OSE Platform C# developers, CI/CD pipeline engineers, code reviewers
+**Target Audience**: a-demo C# developers, CI/CD pipeline engineers, code reviewers
 
 **Scope**: .editorconfig rules, dotnet format, Roslyn analyzers, nullable reference types, SonarAnalyzer
 

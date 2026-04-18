@@ -629,7 +629,7 @@ func setupCheckAllRepo(t *testing.T) string {
 	tmpDir := t.TempDir()
 
 	for _, dir := range []string{
-		"apps/organiclever-be-jasb",
+		"apps/a-demo-be-fsharp-giraffe-jasb",
 		"apps/rhino-cli",
 		"apps/a-demo-be-python-fastapi",
 		"apps/a-demo-be-fsharp-giraffe",
@@ -642,8 +642,8 @@ func setupCheckAllRepo(t *testing.T) string {
 	}
 
 	files := map[string]string{
-		"package.json":                                  `{"volta":{"node":"24.11.1","npm":"11.6.3"}}`,
-		"apps/organiclever-be-jasb/pom.xml":             `<project><properties><java.version>25</java.version></properties></project>`,
+		"package.json": `{"volta":{"node":"24.11.1","npm":"11.6.3"}}`,
+		"apps/a-demo-be-fsharp-giraffe-jasb/pom.xml":    `<project><properties><java.version>25</java.version></properties></project>`,
 		"apps/rhino-cli/go.mod":                         "module foo\n\ngo 1.24.2\n",
 		"apps/a-demo-be-python-fastapi/.python-version": "3.13\n",
 		".tool-versions":                                "erlang 27.3\nelixir 1.19.5-otp-27\n",

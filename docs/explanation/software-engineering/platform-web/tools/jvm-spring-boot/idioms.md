@@ -496,7 +496,7 @@ spring:
 
 logging:
   level:
-    com.oseplatform: INFO
+    com.a-demo: INFO
 ```
 
 **application-dev.yml**:
@@ -514,7 +514,7 @@ spring:
 
 logging:
   level:
-    com.oseplatform: DEBUG
+    com.a-demo: DEBUG
     org.hibernate.SQL: DEBUG
 ```
 
@@ -537,7 +537,7 @@ management:
 
 logging:
   level:
-    com.oseplatform: INFO
+    com.a-demo: INFO
 ```
 
 **Profile-Specific Beans**:
@@ -1168,9 +1168,9 @@ public class DataSourceMonitoringAutoConfiguration {
 **Register Auto-Configuration** (`META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`):
 
 ```text
-com.oseplatform.autoconfigure.ZakatAutoConfiguration
-com.oseplatform.autoconfigure.MurabahaAutoConfiguration
-com.oseplatform.autoconfigure.DonationAutoConfiguration
+com.a-demo.autoconfigure.ZakatAutoConfiguration
+com.a-demo.autoconfigure.MurabahaAutoConfiguration
+com.a-demo.autoconfigure.DonationAutoConfiguration
 ```
 
 **Using the Auto-Configuration**:

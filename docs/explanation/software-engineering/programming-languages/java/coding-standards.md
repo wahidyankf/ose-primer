@@ -1,6 +1,6 @@
 ---
 title: "Java Coding Standards"
-description: Authoritative OSE Platform Java coding standards (naming conventions, package organization, code structure)
+description: Authoritative a-demo Java coding standards (naming conventions, package organization, code structure)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -20,15 +20,15 @@ updated: 2026-02-03
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
+**This document is a-demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
 
 ## Purpose
 
-This document defines **authoritative coding standards** for Java development in the OSE Platform. These are prescriptive rules that MUST be followed across all Java projects to ensure consistency, maintainability, and alignment with platform architecture.
+This document defines **authoritative coding standards** for Java development in the a-demo. These are prescriptive rules that MUST be followed across all Java projects to ensure consistency, maintainability, and alignment with platform architecture.
 
-**Target Audience**: OSE Platform Java developers, technical reviewers, automated code quality tools
+**Target Audience**: a-demo Java developers, technical reviewers, automated code quality tools
 
-**Scope**: OSE Platform naming conventions, package organization, project structure, code organization rules
+**Scope**: a-demo naming conventions, package organization, project structure, code organization rules
 
 ## Naming Conventions
 
@@ -91,14 +91,14 @@ This document defines **authoritative coding standards** for Java development in
 
 **MUST** use lowercase with dot notation for all package names.
 
-**Format**: `com.oseplatform.[domain].[layer]`
+**Format**: `com.a-demo.[domain].[layer]`
 
 **Examples**:
 
-- `com.oseplatform.tax.domain` (domain models)
-- `com.oseplatform.invoice.application` (use cases)
-- `com.oseplatform.payment.infrastructure` (adapters)
-- `com.oseplatform.order.api` (REST endpoints)
+- `com.a-demo.tax.domain` (domain models)
+- `com.a-demo.invoice.application` (use cases)
+- `com.a-demo.payment.infrastructure` (adapters)
+- `com.a-demo.order.api` (REST endpoints)
 
 **Prohibited**:
 
@@ -112,7 +112,7 @@ This document defines **authoritative coding standards** for Java development in
 ### Standard Package Structure
 
 ```
-com.oseplatform.[domain]/
+com.a-demo.[domain]/
 ├── domain/                     # Domain models, value objects, domain services
 │   ├── model/                  # Entities and aggregates
 │   ├── service/                # Domain services
@@ -140,8 +140,8 @@ com.oseplatform.[domain]/
 
 **Example**:
 
-- ✅ `com.oseplatform.tax.domain.repository.TaxRepository` (interface in domain)
-- ✅ `com.oseplatform.tax.infrastructure.persistence.JpaTaxRepository` (implementation in infrastructure)
+- ✅ `com.a-demo.tax.domain.repository.TaxRepository` (interface in domain)
+- ✅ `com.a-demo.tax.infrastructure.persistence.JpaTaxRepository` (implementation in infrastructure)
 
 ## Project Structure
 

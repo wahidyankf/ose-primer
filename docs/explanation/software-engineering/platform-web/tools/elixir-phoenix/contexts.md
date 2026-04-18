@@ -1160,7 +1160,7 @@ end
 
 ## Cross-Context Communication
 
-### Context Boundaries in OSE Platform
+### Context Boundaries in a-demo
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161

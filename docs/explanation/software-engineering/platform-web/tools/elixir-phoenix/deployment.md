@@ -243,13 +243,13 @@ ENV LC_ALL en_US.UTF-8
 WORKDIR /app
 
 # Create non-root user
-RUN groupadd -r oseplatform && useradd -r -g oseplatform oseplatform
-RUN chown -R oseplatform:oseplatform /app
+RUN groupadd -r a-demo && useradd -r -g a-demo a-demo
+RUN chown -R a-demo:a-demo /app
 
-USER oseplatform
+USER a-demo
 
 # Copy release from builder
-COPY --from=builder --chown=oseplatform:oseplatform /app/_build/prod/rel/ose_platform ./
+COPY --from=builder --chown=a-demo:a-demo /app/_build/prod/rel/ose_platform ./
 
 ENV HOME=/app
 
@@ -273,15 +273,15 @@ services:
   postgres:
     image: postgres:15-alpine
     environment:
-      POSTGRES_USER: oseplatform
+      POSTGRES_USER: a-demo
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: oseplatform_prod
+      POSTGRES_DB: a-demo_prod
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U oseplatform"]
+      test: ["CMD-SHELL", "pg_isready -U a-demo"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -305,7 +305,7 @@ services:
     ports:
       - "4000:4000"
     environment:
-      DATABASE_URL: ecto://oseplatform:postgres@postgres/oseplatform_prod
+      DATABASE_URL: ecto://a-demo:postgres@postgres/a-demo_prod
       REDIS_URL: redis://redis:6379
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
       PORT: 4000
@@ -550,10 +550,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - api.oseplatform.com
+        - api.example.com
       secretName: ose-platform-tls
   rules:
-    - host: api.oseplatform.com
+    - host: api.example.com
       http:
         paths:
           - path: /
@@ -575,7 +575,7 @@ metadata:
   name: ose-platform-secrets
 type: Opaque
 stringData:
-  database-url: "ecto://user:pass@postgres:5432/oseplatform_prod"
+  database-url: "ecto://user:pass@postgres:5432/a-demo_prod"
   secret-key-base: "your-secret-key-base-here"
   erlang-cookie: "your-erlang-cookie-here"
 ```
@@ -850,7 +850,7 @@ metadata:
   name: ose-platform
 spec:
   hosts:
-    - api.oseplatform.com
+    - api.example.com
   http:
     - match:
         - headers:
@@ -899,7 +899,7 @@ if config_env() == :prod do
   secret_key_base = System.get_env("SECRET_KEY_BASE") ||
     raise "environment variable SECRET_KEY_BASE is missing."
 
-  host = System.get_env("PHX_HOST") || "api.oseplatform.com"
+  host = System.get_env("PHX_HOST") || "api.example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :ose_platform, OsePlatformWeb.Endpoint,
@@ -973,7 +973,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: admin@oseplatform.com
+    email: admin@example.com
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:

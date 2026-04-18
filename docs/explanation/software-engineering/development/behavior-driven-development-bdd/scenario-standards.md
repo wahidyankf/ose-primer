@@ -1,6 +1,6 @@
 ---
 title: "BDD Scenario Standards"
-description: OSE Platform standards for scenario independence, naming, and organization
+description: a-demo standards for scenario independence, naming, and organization
 category: explanation
 subcategory: development
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-OSE Platform standards for scenario structure and independence.
+a-demo standards for scenario structure and independence.
 
 ## REQUIRED: Scenario Independence
 
@@ -119,7 +119,7 @@ Feature: Donation Processing
     Then the donation should be processed
 ```
 
-## OSE Platform Examples
+## a-demo Examples
 
 ### Campaign Management Scenarios
 

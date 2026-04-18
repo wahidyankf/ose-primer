@@ -1,6 +1,6 @@
 ---
 title: "Spring Framework Code Quality"
-description: Authoritative OSE Platform code quality standards for Spring Framework projects (Spotless, Error Prone, NullAway, ArchUnit for layer boundaries)
+description: Authoritative a-demo code quality standards for Spring Framework projects (Spotless, Error Prone, NullAway, ArchUnit for layer boundaries)
 category: explanation
 subcategory: platform-web-tools
 tags:
@@ -23,13 +23,13 @@ updated: 2026-02-06
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Spring Framework tutorial.
+**This document is a-demo-specific**, not a Spring Framework tutorial.
 
 ## Purpose
 
-This document defines **authoritative code quality standards** for Spring Framework projects in OSE Platform. These prescriptive rules govern code formatting (Spotless), compile-time bug detection (Error Prone), null safety (NullAway), and architectural enforcement (ArchUnit).
+This document defines **authoritative code quality standards** for Spring Framework projects in a-demo. These prescriptive rules govern code formatting (Spotless), compile-time bug detection (Error Prone), null safety (NullAway), and architectural enforcement (ArchUnit).
 
-**Target Audience**: OSE Platform Spring Framework developers, CI/CD engineers
+**Target Audience**: a-demo Spring Framework developers, CI/CD engineers
 
 **Scope**: Static analysis tools, formatting rules, architectural constraints for Spring applications
 
@@ -74,7 +74,7 @@ All Spring Framework code MUST use Google Java Format enforced by Spotless Maven
 
 ```java
 @Configuration
-@ComponentScan(basePackages = "com.oseplatform.zakat")
+@ComponentScan(basePackages = "com.a-demo.zakat")
 public class ZakatApplicationConfig {
 
   @Bean
@@ -196,7 +196,7 @@ Spring Framework projects MUST use NullAway for null safety enforcement.
       <configuration>
         <compilerArgs>
           <arg>-XDcompilePolicy=simple</arg>
-          <arg>-Xplugin:ErrorProne -Xep:NullAway:ERROR -XepOpt:NullAway:AnnotatedPackages=com.oseplatform</arg>
+          <arg>-Xplugin:ErrorProne -Xep:NullAway:ERROR -XepOpt:NullAway:AnnotatedPackages=com.a-demo</arg>
         </compilerArgs>
         <annotationProcessorPaths>
           <path>
@@ -298,7 +298,7 @@ import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 class ArchitectureTest {
 
   private static final JavaClasses classes =
-      new ClassFileImporter().importPackages("com.oseplatform.zakat");
+      new ClassFileImporter().importPackages("com.a-demo.zakat");
 
   @Test
   void layeredArchitectureShouldBeRespected() {
@@ -525,7 +525,7 @@ mvn clean verify
 
 ## Related Standards
 
-**OSE Platform Standards**:
+**a-demo Standards**:
 
 - [Java Code Quality](../../../programming-languages/java/code-quality.md) - Java baseline
 - [Spring Framework Build Configuration](./build-configuration.md) - Maven plugins

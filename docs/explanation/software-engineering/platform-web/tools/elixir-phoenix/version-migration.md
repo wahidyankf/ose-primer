@@ -450,7 +450,7 @@ Phoenix 1.7 changes how layouts work.
 <!DOCTYPE html>
 <html>
   <head>
-    <title>OSE Platform</title>
+    <title>a-demo</title>
   </head>
   <body>
     <header>
@@ -476,9 +476,9 @@ Phoenix 1.7 changes how layouts work.
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><%= assigns[:page_title] || "OSE Platform" %></title>
+    <title><%= assigns[:page_title] || "a-demo" %></title>
     <.live_title_tag>
-      <%= assigns[:page_title] || "OSE Platform" %>
+      <%= assigns[:page_title] || "a-demo" %>
     </.live_title_tag>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>

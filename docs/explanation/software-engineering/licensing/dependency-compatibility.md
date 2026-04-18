@@ -27,18 +27,18 @@ project's FSL-1.1-MIT license.
 
 ## Production Dependency License Summary
 
-| App               | Ecosystem | Result                                        |
-| ----------------- | --------- | --------------------------------------------- |
-| `ayokoding-web`   | npm       | All permissive after LGPL removal (see below) |
-| `oseplatform-web` | npm       | All permissive after LGPL removal (see below) |
-| `organiclever-fe` | npm       | All permissive after LGPL removal (see below) |
-| `organiclever-be` | .NET/F#   | All permissive (MIT, Apache-2.0, PostgreSQL)  |
-| `rhino-cli`       | Go        | MPL-2.0 indirect (see below)                  |
-| `ayokoding-cli`   | Go        | MPL-2.0 indirect (see below)                  |
-| `oseplatform-cli` | Go        | MPL-2.0 indirect (see below)                  |
-| `golang-commons`  | Go        | MPL-2.0 indirect (see below)                  |
-| `elixir-cabbage`  | Elixir    | All permissive (MIT, Apache-2.0)              |
-| `elixir-gherkin`  | Elixir    | All permissive (MIT, Apache-2.0)              |
+| App                        | Ecosystem | Result                                        |
+| -------------------------- | --------- | --------------------------------------------- |
+| `a-demo-fs-ts-nextjs`      | npm       | All permissive after LGPL removal (see below) |
+| `a-demo-fs-ts-nextjs`      | npm       | All permissive after LGPL removal (see below) |
+| `a-demo-fe-ts-nextjs`      | npm       | All permissive after LGPL removal (see below) |
+| `a-demo-be-fsharp-giraffe` | .NET/F#   | All permissive (MIT, Apache-2.0, PostgreSQL)  |
+| `rhino-cli`                | Go        | MPL-2.0 indirect (see below)                  |
+| `rhino-cli`                | Go        | MPL-2.0 indirect (see below)                  |
+| `rhino-cli`                | Go        | MPL-2.0 indirect (see below)                  |
+| `golang-commons`           | Go        | MPL-2.0 indirect (see below)                  |
+| `elixir-cabbage`           | Elixir    | All permissive (MIT, Apache-2.0)              |
+| `elixir-gherkin`           | Elixir    | All permissive (MIT, Apache-2.0)              |
 
 ## LGPL-3.0 Elimination: `@img/sharp-libvips`
 

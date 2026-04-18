@@ -15,10 +15,10 @@ Where `{part}` describes the role and technology stack:
 | `be-{lang}-{framework}` | `be-golang-gin`, `be-java-springboot`, `be-ts-effect` | Backend service                          |
 | `fe-{lang}-{framework}` | `fe-ts-nextjs`, `fe-dart-flutterweb`                  | Frontend application                     |
 | `fs-{lang}-{framework}` | `fs-ts-nextjs`                                        | Fullstack application (FE + BE combined) |
-| `cli`                   | `ayokoding-cli`, `rhino-cli`, `oseplatform-cli`       | CLI tool                                 |
-| `web`                   | `ayokoding-web`, `oseplatform-web`                    | Web platform (content site)              |
-| `{role}-e2e`            | `be-e2e`, `fe-e2e`, `organiclever-fe-e2e`             | E2E test project for the named role      |
-| `be` / `fe`             | `organiclever-be`, `organiclever-fe`                  | Simple single-technology projects        |
+| `cli`                   | `rhino-cli`, `rhino-cli`, `rhino-cli`                 | CLI tool                                 |
+| `web`                   | `a-demo-fs-ts-nextjs`, `a-demo-fs-ts-nextjs`          | Web platform (content site)              |
+| `{role}-e2e`            | `be-e2e`, `fe-e2e`, `a-demo-fe-e2e`                   | E2E test project for the named role      |
+| `be` / `fe`             | `a-demo-be-fsharp-giraffe`, `a-demo-fe-ts-nextjs`     | Simple single-technology projects        |
 
 **Language abbreviations** (`{lang}`): `ts` (TypeScript), `golang` (Go), `java` (Java), `kt` (Kotlin),
 `py` (Python), `rs` (Rust), `cs` (C#), `fs` (F#), `clj` (Clojure), `dart` (Dart), `ex` (Elixir).
@@ -28,18 +28,18 @@ Where `{part}` describes the role and technology stack:
 
 ### Current Apps
 
-- `oseplatform-web` - OSE Platform website ([oseplatform.com](https://oseplatform.com)) - Hugo static site
-- `ayokoding-web` - AyoKoding educational platform ([ayokoding.com](https://ayokoding.com)) - Next.js 16 fullstack content platform (TypeScript, tRPC)
-- `ayokoding-web-be-e2e` - Playwright BE E2E tests for ayokoding-web tRPC API
-- `ayokoding-web-fe-e2e` - Playwright FE E2E tests for ayokoding-web UI
-- `ayokoding-cli` - AyoKoding CLI tool for link validation - Go application
+- `a-demo-fs-ts-nextjs` - a-demo website ([example.com](https://example.com)) - Hugo static site
+- `a-demo-fs-ts-nextjs` - a-demo educational platform ([example.com](https://example.com)) - Next.js 16 fullstack content platform (TypeScript, tRPC)
+- `a-demo-be-e2e` - Playwright BE E2E tests for a-demo-fs-ts-nextjs tRPC API
+- `a-demo-fe-e2e` - Playwright FE E2E tests for a-demo-fs-ts-nextjs UI
+- `rhino-cli` - a-demo CLI tool for link validation - Go application
 - `rhino-cli` - Repository management CLI tools (includes `java validate-annotations`) - Go application
-- `oseplatform-cli` - OSE Platform CLI tool for link validation - Go application
-- `organiclever-fe` - OrganicLever landing website (www.organiclever.com) - Next.js app (port 3200)
-- `organiclever-be` - OrganicLever backend API (F#/Giraffe) - F# application (port 8202)
-- `organiclever-fe-e2e` - FE E2E tests for organiclever-fe - Playwright (browser testing)
-- `organiclever-be-e2e` - BE E2E tests for organiclever-be - Playwright (API testing)
-- `a-demo-be-golang-gin` - OrganicLever backend API (Go/Gin) - Go application (port 8201)
+- `rhino-cli` - a-demo CLI tool for link validation - Go application
+- `a-demo-fe-ts-nextjs` - a-demo landing website (www.example.com) - Next.js app (port 3200)
+- `a-demo-be-fsharp-giraffe` - a-demo backend API (F#/Giraffe) - F# application (port 8202)
+- `a-demo-fe-e2e` - FE E2E tests for a-demo-fe-ts-nextjs - Playwright (browser testing)
+- `a-demo-be-e2e` - BE E2E tests for a-demo-be-fsharp-giraffe - Playwright (API testing)
+- `a-demo-be-golang-gin` - a-demo backend API (Go/Gin) - Go application (port 8201)
 - `a-demo-be-e2e` - E2E tests for demo-be REST API - Playwright (API testing)
 
 ## Application Characteristics
@@ -52,7 +52,7 @@ Where `{part}` describes the role and technology stack:
 
 ## App Structure Examples
 
-### Hugo Static Site (oseplatform-web)
+### Hugo Static Site (a-demo-fs-ts-nextjs)
 
 ```
 ├── content/                 # Markdown content files
@@ -171,11 +171,11 @@ Kotlin, Python apps will have language-specific structures and tooling.
 
 Each app must have a `project.json` file with Nx configuration.
 
-**Hugo App Example** (`oseplatform-web`):
+**Hugo App Example** (`a-demo-fs-ts-nextjs`):
 
 ```json
 {
-  "name": "oseplatform-web",
+  "name": "a-demo-fs-ts-nextjs",
   "projectType": "application",
   "targets": {
     "dev": {
@@ -198,7 +198,7 @@ Each app must have a `project.json` file with Nx configuration.
       }
     }
   },
-  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:oseplatform"]
+  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:a-demo"]
 }
 ```
 
@@ -228,27 +228,27 @@ Use Nx commands to run apps:
 
 ```bash
 # Development mode (Hugo site)
-nx dev oseplatform-web
+nx dev a-demo-fs-ts-nextjs
 
 # Development mode (Next.js)
-nx dev organiclever-fe
-nx dev ayokoding-web
+nx dev a-demo-fe-ts-nextjs
+nx dev a-demo-fs-ts-nextjs
 
 # Build for production
-nx build oseplatform-web
-nx build ayokoding-web
-nx build ayokoding-cli
+nx build a-demo-fs-ts-nextjs
+nx build a-demo-fs-ts-nextjs
 nx build rhino-cli
-nx build organiclever-fe
+nx build rhino-cli
+nx build a-demo-fe-ts-nextjs
 
 # Run CLI applications
 nx run rhino-cli
 
 # Clean build artifacts
-nx clean oseplatform-web
+nx clean a-demo-fs-ts-nextjs
 
-# Run E2E tests for organiclever-fe (organiclever-fe must be running first)
-nx run organiclever-fe-e2e:test:e2e
+# Run E2E tests for a-demo-fe-ts-nextjs (a-demo-fe-ts-nextjs must be running first)
+nx run a-demo-fe-e2e:test:e2e
 
 # Run API E2E tests (backend must be running first)
 nx run a-demo-be-e2e:test:e2e
@@ -258,40 +258,40 @@ nx run a-demo-be-e2e:test:e2e
 
 Vercel-deployed apps use dedicated production branches (deployment-only — never commit directly):
 
-| Branch                  | Production URL                                        | App             |
-| ----------------------- | ----------------------------------------------------- | --------------- |
-| `prod-ayokoding-web`    | [ayokoding.com](https://ayokoding.com)                | ayokoding-web   |
-| `prod-oseplatform-web`  | [oseplatform.com](https://oseplatform.com)            | oseplatform-web |
-| `prod-organiclever-web` | [www.organiclever.com](https://www.organiclever.com/) | organiclever-fe |
+| Branch                     | Production URL                              | App                 |
+| -------------------------- | ------------------------------------------- | ------------------- |
+| `prod-a-demo-fs-ts-nextjs` | [example.com](https://example.com)          | a-demo-fs-ts-nextjs |
+| `prod-a-demo-fs-ts-nextjs` | [example.com](https://example.com)          | a-demo-fs-ts-nextjs |
+| `prod-a-demo-web`          | [www.example.com](https://www.example.com/) | a-demo-fe-ts-nextjs |
 
-**ayokoding-web**: Deploy by force-pushing `main` to the production branch:
+**a-demo-fs-ts-nextjs**: Deploy by force-pushing `main` to the production branch:
 
 ```bash
-git push origin main:prod-ayokoding-web --force
+git push origin main:prod-a-demo-fs-ts-nextjs --force
 ```
 
-**oseplatform-web**: Deployed automatically by scheduled GitHub Actions
-workflow (`test-and-deploy-oseplatform-web.yml`) running at 6 AM and 6 PM
+**a-demo-fs-ts-nextjs**: Deployed automatically by scheduled GitHub Actions
+workflow (`test-and-deploy-a-demo-fs-ts-nextjs.yml`) running at 6 AM and 6 PM
 WIB. The workflow detects changes scoped to the app directory before building and deploying.
 Trigger on-demand from the GitHub Actions UI (set `force_deploy=true` to skip change detection).
 
-**organiclever-fe**: Deploy by force-pushing `main` to the production branch:
+**a-demo-fe-ts-nextjs**: Deploy by force-pushing `main` to the production branch:
 
 ```bash
-git push origin main:prod-organiclever-web --force
+git push origin main:prod-a-demo-web --force
 ```
 
-Use the corresponding deployer agent (e.g. `apps-organiclever-fe-deployer`) for guided deployment.
+Use the corresponding deployer agent (e.g. `apps-a-demo-fe-ts-nextjs-deployer`) for guided deployment.
 
 ## Language Support
 
 Currently:
 
-- **Hugo** (static sites) - oseplatform-web
-- **Go** (CLI tools) - ayokoding-cli, rhino-cli
-- **TypeScript/Next.js** (web applications) - organiclever-fe, ayokoding-web
-- **F#/Giraffe** (backend API) - organiclever-be
+- **Hugo** (static sites) - a-demo-fs-ts-nextjs
+- **Go** (CLI tools) - rhino-cli, rhino-cli
+- **TypeScript/Next.js** (web applications) - a-demo-fe-ts-nextjs, a-demo-fs-ts-nextjs
+- **F#/Giraffe** (backend API) - a-demo-be-fsharp-giraffe
 - **Go/Gin** (backend API) - a-demo-be-golang-gin
-- **TypeScript/Playwright** (E2E testing) - a-demo-be-e2e, organiclever-fe-e2e, organiclever-be-e2e
+- **TypeScript/Playwright** (E2E testing) - a-demo-be-e2e, a-demo-fe-e2e, a-demo-be-e2e
 
 Future: Kotlin, Python apps (each language will have language-specific structure and tooling)

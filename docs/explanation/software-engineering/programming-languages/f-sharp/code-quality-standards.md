@@ -1,6 +1,6 @@
 ---
 title: "F# Code Quality Standards"
-description: Authoritative OSE Platform F# code quality standards — Fantomas formatter, FSharpLint, compiler warnings as errors
+description: Authoritative a-demo F# code quality standards — Fantomas formatter, FSharpLint, compiler warnings as errors
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not an F# tutorial.
+**This document is a-demo-specific**, not an F# tutorial.
 
 ## Purpose
 
-This document defines **authoritative code quality standards** for F# development in OSE Platform. Fantomas is MANDATORY and non-negotiable. Compiler warnings are treated as errors. Incomplete pattern matches MUST be resolved, never suppressed.
+This document defines **authoritative code quality standards** for F# development in a-demo. Fantomas is MANDATORY and non-negotiable. Compiler warnings are treated as errors. Incomplete pattern matches MUST be resolved, never suppressed.
 
-**Target Audience**: OSE Platform F# developers, CI/CD pipeline configuration, code reviewers
+**Target Audience**: a-demo F# developers, CI/CD pipeline configuration, code reviewers
 
 **Scope**: Fantomas configuration, FSharpLint rules, `.editorconfig`, compiler settings, exhaustive pattern matching enforcement
 

@@ -33,20 +33,20 @@ updated: 2026-03-06
 
 ## 📚 Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Go tutorial. It assumes:
+**This document is a-demo-specific**, not a Go tutorial. It assumes:
 
 - Go syntax and language features (variables, functions, types, interfaces)
 - Go project structure and module system
 - Basic understanding of testing concepts
 - Familiarity with command-line tools
 
-If you need to learn Go fundamentals first, visit the AyoKoding Go learning path.
+If you need to learn Go fundamentals first, visit the a-demo Go learning path.
 
 ## 🎯 Purpose
 
-This document defines **authoritative testing standards** for Go development in the OSE Platform. These are prescriptive rules that MUST be followed across all Go projects to ensure consistent, maintainable, and reliable test suites.
+This document defines **authoritative testing standards** for Go development in the a-demo. These are prescriptive rules that MUST be followed across all Go projects to ensure consistent, maintainable, and reliable test suites.
 
-**Target Audience**: OSE Platform Go developers, technical reviewers, QA engineers
+**Target Audience**: a-demo Go developers, technical reviewers, QA engineers
 
 **Scope**: Test-Driven Development (TDD) practices, Behaviour-Driven Development (BDD) practices, table-driven tests, integration testing, test organization, and quality standards
 
@@ -54,7 +54,7 @@ This document defines **authoritative testing standards** for Go development in 
 
 ## ⚙️ Alignment with Software Engineering Principles
 
-These testing standards directly support OSE Platform's [Software Engineering Principles](../../../../../governance/principles/README.md):
+These testing standards directly support a-demo's [Software Engineering Principles](../../../../../governance/principles/README.md):
 
 - **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)**: Automated test suites replace manual validation
 - **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**: Tests explicitly document expected behavior and edge cases

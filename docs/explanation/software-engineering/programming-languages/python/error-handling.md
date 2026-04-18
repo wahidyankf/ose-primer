@@ -924,7 +924,7 @@ def calculate_zakat_safe(
 
 **Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
-**Maintainers**: OSE Platform Documentation Team
+**Maintainers**: a-demo Documentation Team
 
 ## Python Error Handling
 

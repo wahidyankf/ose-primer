@@ -1,5 +1,5 @@
 ---
-title: Elixir Finite State Machine Standards for OSE Platform
+title: Elixir Finite State Machine Standards for a-demo
 description: Prescriptive FSM implementation requirements using GenServer, gen_statem, and functional patterns for Shariah-compliant financial state management
 category: explanation
 subcategory: prog-lang
@@ -29,19 +29,19 @@ updated: 2026-02-05
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not an Elixir tutorial. We define HOW to apply FSMs in THIS codebase, not WHAT FSMs are.
+**This document is a-demo-specific**, not an Elixir tutorial. We define HOW to apply FSMs in THIS codebase, not WHAT FSMs are.
 
-# Elixir Finite State Machine Standards for OSE Platform
+# Elixir Finite State Machine Standards for a-demo
 
 **OSE-specific prescriptive standards** for implementing finite state machines in Elixir-based Shariah-compliant financial services. This document defines **mandatory requirements** using RFC 2119 keywords (MUST, SHOULD, MAY).
 
-**Prerequisites**: Understanding of FSM fundamentals and Elixir patterns from AyoKoding.
+**Prerequisites**: Understanding of FSM fundamentals and Elixir patterns from a-demo.
 
 **Quick Reference**: [Purpose](#purpose) | [FSM Pattern Selection](#fsm-pattern-selection-requirements) | [GenServer FSM](#genserver-fsm-requirements) | [gen_statem](#gen_statem-requirements) | [Functional FSM](#functional-fsm-requirements) | [State Transition](#state-transition-requirements) | [Supervision](#supervision-requirements) | [Testing](#testing-requirements) | [Validation Checklist](#validation-checklist)
 
 ## Purpose
 
-Finite State Machines enforce deterministic state transitions in OSE Platform's Shariah-compliant financial workflows:
+Finite State Machines enforce deterministic state transitions in a-demo's Shariah-compliant financial workflows:
 
 - **Zakat Payment Processing**: Enforce donation lifecycle (pending → verified → approved → distributed)
 - **Murabaha Contract Management**: Control Islamic financing approval workflows

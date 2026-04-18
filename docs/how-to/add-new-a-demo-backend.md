@@ -684,7 +684,7 @@ are imported at compile time), add the app to the existing `Generate contract ty
 - name: Generate contract types (required before typecheck/test:quick)
   run: |
     npx nx run a-demo-contracts:bundle
-    npx nx run-many -t codegen --projects=demo-*,organiclever-*
+    npx nx run-many -t codegen --projects=demo-*,a-demo-*
     # The run-many above covers all demo-* projects including the new backend
     # if the project.json declares the codegen target correctly.
 ```

@@ -1,6 +1,6 @@
 ---
 title: "Elixir Coding Standards"
-description: Authoritative OSE Platform Elixir coding standards (idioms, best practices, anti-patterns to avoid)
+description: Authoritative a-demo Elixir coding standards (idioms, best practices, anti-patterns to avoid)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -26,15 +26,15 @@ updated: 2026-02-05
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not an Elixir tutorial. We define HOW to apply Elixir in THIS codebase, not WHAT Elixir is.
+**This document is a-demo-specific**, not an Elixir tutorial. We define HOW to apply Elixir in THIS codebase, not WHAT Elixir is.
 
 ## Purpose
 
-This document defines **authoritative coding standards** for Elixir development in the OSE Platform. These are prescriptive rules that MUST be followed across all Elixir projects to ensure consistency, maintainability, and alignment with platform architecture.
+This document defines **authoritative coding standards** for Elixir development in the a-demo. These are prescriptive rules that MUST be followed across all Elixir projects to ensure consistency, maintainability, and alignment with platform architecture.
 
-**Target Audience**: OSE Platform Elixir developers, technical reviewers, automated code quality tools
+**Target Audience**: a-demo Elixir developers, technical reviewers, automated code quality tools
 
-**Scope**: OSE Platform idioms, naming conventions, OTP patterns, best practices, and anti-patterns to avoid
+**Scope**: a-demo idioms, naming conventions, OTP patterns, best practices, and anti-patterns to avoid
 
 ## Quick Reference
 

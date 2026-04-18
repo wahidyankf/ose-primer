@@ -1,5 +1,5 @@
 ---
-description: Develops end-to-end tests using Playwright following OSE Platform testing patterns and standards. Use when implementing E2E tests for OSE Platform applications.
+description: Develops end-to-end tests using Playwright following a-demo testing patterns and standards. Use when implementing E2E tests for a-demo applications.
 model: zai-coding-plan/glm-5.1
 tools:
   bash: true
@@ -154,7 +154,7 @@ test.describe("Login", () => {
 });
 ```
 
-### OSE Platform Context
+### a-demo Context
 
 Test Islamic finance features with domain context:
 

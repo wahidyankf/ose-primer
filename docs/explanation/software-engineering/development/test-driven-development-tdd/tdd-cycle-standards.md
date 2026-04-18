@@ -1,6 +1,6 @@
 ---
 title: "TDD Red-Green-Refactor Cycle Standards"
-description: OSE Platform standards for the three-phase TDD rhythm
+description: a-demo standards for the three-phase TDD rhythm
 category: explanation
 subcategory: development
 tags:
@@ -21,7 +21,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-OSE Platform standards for the Red-Green-Refactor TDD cycle.
+a-demo standards for the Red-Green-Refactor TDD cycle.
 
 ## REQUIRED: Follow Three-Phase Rhythm
 
@@ -93,7 +93,7 @@ class ZakatCalculator {
 
 **If longer**: Break into smaller steps.
 
-## OSE Platform Examples
+## a-demo Examples
 
 ### Contract Activation Workflow
 

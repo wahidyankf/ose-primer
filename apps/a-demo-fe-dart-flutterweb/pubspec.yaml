@@ -1,5 +1,5 @@
 name: a_demo_fe_dart_flutterweb
-description: Flutter Web frontend for OrganicLever expense tracking (alternative to a-demo-fe-ts-nextjs)
+description: Flutter Web frontend for a-demo expense tracking (alternative to a-demo-fe-ts-nextjs)
 publish_to: "none"
 version: 1.0.0+1
 

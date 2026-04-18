@@ -1,5 +1,5 @@
 ---
-title: Java Error Handling Standards for OSE Platform
+title: Java Error Handling Standards for a-demo
 description: Prescriptive error handling requirements for Shariah-compliant financial systems
 category: explanation
 subcategory: prog-lang
@@ -18,15 +18,15 @@ updated: 2026-02-03
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
+**This document is a-demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
 
-# Java Error Handling Standards for OSE Platform
+# Java Error Handling Standards for a-demo
 
 **OSE-specific prescriptive standards** for error handling in Shariah-compliant financial applications. This document defines **mandatory requirements** using RFC 2119 keywords (MUST, SHOULD, MAY).
 
 ## Purpose
 
-Error handling in OSE Platform serves critical functions beyond typical application development:
+Error handling in a-demo serves critical functions beyond typical application development:
 
 - **Financial Integrity**: Preventing partial transactions that violate Islamic finance principles
 - **Audit Compliance**: Complete error trails for regulatory review
@@ -35,7 +35,7 @@ Error handling in OSE Platform serves critical functions beyond typical applicat
 
 ### Custom Exception Requirements
 
-**REQUIRED**: All OSE Platform services MUST implement a domain-specific sealed exception hierarchy.
+**REQUIRED**: All a-demo services MUST implement a domain-specific sealed exception hierarchy.
 
 ```java
 // Root exception - sealed to control permitted subtypes
@@ -387,7 +387,7 @@ void zakatShouldBeTwoPointFivePercent(
 }
 ```
 
-### OSE Platform Standards
+### a-demo Standards
 
 - [API Standards](./api-standards.md) - REST API error responses
 - [Security Standards](./security-standards.md) - Security error handling
@@ -397,7 +397,7 @@ void zakatShouldBeTwoPointFivePercent(
 
 For learning Java fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Java basics from ayokoding-web. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Java basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ### Software Engineering Principles
 
@@ -455,4 +455,4 @@ Before deploying financial services, verify:
 
 **Last Updated**: 2026-02-04
 
-**Status**: Active (mandatory for all OSE Platform Java services)
+**Status**: Active (mandatory for all a-demo Java services)

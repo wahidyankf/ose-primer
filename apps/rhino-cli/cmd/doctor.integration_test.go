@@ -128,7 +128,7 @@ func detectGoVersion() string {
 // writeDoctorConfigFiles writes all config files into tmpDir using the provided version strings.
 func writeDoctorConfigFiles(tmpDir, nodeVer, npmVer, javaMajor, goVer string) error {
 	dirs := []string{
-		"apps/organiclever-be-jasb",
+		"apps/a-demo-be-fsharp-giraffe-jasb",
 		"apps/rhino-cli",
 		"apps/a-demo-be-python-fastapi",
 		"apps/a-demo-be-fsharp-giraffe",
@@ -142,9 +142,9 @@ func writeDoctorConfigFiles(tmpDir, nodeVer, npmVer, javaMajor, goVer string) er
 	}
 
 	files := map[string]string{
-		"package.json":                      fmt.Sprintf(`{"name":"test","volta":{"node":%q,"npm":%q}}`, nodeVer, npmVer),
-		"apps/organiclever-be-jasb/pom.xml": fmt.Sprintf(`<project><properties><java.version>%s</java.version></properties></project>`, javaMajor),
-		"apps/rhino-cli/go.mod":             fmt.Sprintf("module foo\n\ngo %s\n", goVer),
+		"package.json": fmt.Sprintf(`{"name":"test","volta":{"node":%q,"npm":%q}}`, nodeVer, npmVer),
+		"apps/a-demo-be-fsharp-giraffe-jasb/pom.xml": fmt.Sprintf(`<project><properties><java.version>%s</java.version></properties></project>`, javaMajor),
+		"apps/rhino-cli/go.mod":                      fmt.Sprintf("module foo\n\ngo %s\n", goVer),
 		// Tool config files — use sensible defaults that match common installed versions
 		"apps/a-demo-be-python-fastapi/.python-version": "3.13\n",
 		".tool-versions": "erlang 27.3\nelixir 1.19.5-otp-27\n",

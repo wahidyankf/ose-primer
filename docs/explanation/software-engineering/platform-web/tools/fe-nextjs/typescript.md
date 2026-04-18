@@ -34,7 +34,7 @@ Next.js provides first-class TypeScript support with automatic type checking, ty
 - [Context and Provider Types](#-context-and-provider-types) - Context API typing
 - [Environment Variables](#-environment-variables) - Type-safe env vars
 - [Utility Types](#-utility-types) - Helper types for Next.js
-- [OSE Platform Examples](#-ose-platform-examples) - Islamic finance type patterns
+- [a-demo Examples](#-ose-platform-examples) - Islamic finance type patterns
 - [Best Practices](#-best-practices) - Production typing guidelines
 - [Related Documentation](#-related-documentation) - Cross-references
 
@@ -291,8 +291,8 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: {
-    default: 'OSE Platform',
-    template: '%s | OSE Platform',
+    default: 'a-demo',
+    template: '%s | a-demo',
   },
   description: 'Islamic finance platform',
 };
@@ -1674,7 +1674,7 @@ export async function POST(request: NextRequest) {
 }
 ```
 
-## 🕌 OSE Platform Examples
+## 🕌 a-demo Examples
 
 Real-world TypeScript patterns for Islamic finance features.
 

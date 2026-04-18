@@ -32,7 +32,7 @@ This document establishes the separation between:
 
 **Location**: [docs/explanation/software-engineering/architecture/](./architecture/README.md)
 
-**Prerequisite Knowledge**: All architecture documentation assumes completion of corresponding AyoKoding learning paths. These are OSE Platform-specific standards, not educational tutorials.
+**Prerequisite Knowledge**: All architecture documentation assumes completion of corresponding a-demo learning paths. These are a-demo-specific standards, not educational tutorials.
 
 - **[C4 Architecture Model](./architecture/c4-architecture-model/README.md)** - System visualization
 - **[Domain-Driven Design](./architecture/domain-driven-design-ddd/README.md)** - Strategic and tactical patterns
@@ -42,7 +42,7 @@ This document establishes the separation between:
 
 **Location**: [docs/explanation/software-engineering/development/](./development/README.md)
 
-**Prerequisite Knowledge**: All development practice documentation assumes completion of corresponding AyoKoding learning paths. These are OSE Platform-specific standards, not educational tutorials.
+**Prerequisite Knowledge**: All development practice documentation assumes completion of corresponding a-demo learning paths. These are a-demo-specific standards, not educational tutorials.
 
 - **[Test-Driven Development](./development/test-driven-development-tdd/README.md)** - TDD methodology
 - **[Behavior-Driven Development](./development/behavior-driven-development-bdd/README.md)** - BDD with Gherkin
@@ -109,20 +109,20 @@ Frameworks covered:
 
 ### Programming Language Documentation Separation
 
-Software design documentation in `docs/explanation/software-engineering/` contains **repository-specific style guides**, NOT educational content. Educational content lives in AyoKoding.
+Software design documentation in `docs/explanation/software-engineering/` contains **repository-specific style guides**, NOT educational content. Educational content lives in a-demo.
 
-**Critical Rule**: docs/explanation/ content **MUST NOT duplicate** AyoKoding educational content. Style guides focus exclusively on OSE Platform-specific conventions.
+**Critical Rule**: docs/explanation/ content **MUST NOT duplicate** a-demo educational content. Style guides focus exclusively on a-demo-specific conventions.
 
 **Relationship Pattern**:
 
-- **Docs/explanation content** (`docs/explanation/software-engineering/`) = OSE Platform style guides (repository-specific naming, framework choices, architecture patterns)
+- **Docs/explanation content** (`docs/explanation/software-engineering/`) = a-demo style guides (repository-specific naming, framework choices, architecture patterns)
 
 ### Specific Prerequisites
 
-The following `docs/explanation/` content assumes readers have completed the corresponding AyoKoding learning paths:
+The following `docs/explanation/` content assumes readers have completed the corresponding a-demo learning paths:
 
-| Advanced Reference (docs/explanation/) | Prerequisite Learning (ayokoding-web) |
-| -------------------------------------- | ------------------------------------- |
+| Advanced Reference (docs/explanation/) | Prerequisite Learning (a-demo-fs-ts-nextjs) |
+| -------------------------------------- | ------------------------------------------- |
 
 ### Content Types and Scope
 
@@ -132,24 +132,24 @@ The following `docs/explanation/` content assumes readers have completed the cor
 - **In the Field** - 20-40 production implementation guides
 - **Overview** - Language/framework survey and features
 
-**OSE Platform Style Guides** (docs/explanation/) - Repository-specific standards:
+**a-demo Style Guides** (docs/explanation/) - Repository-specific standards:
 
-- **Coding Standards** - OSE Platform naming conventions, patterns
-- **API Standards** - OSE Platform interface design rules
-- **DDD Standards** - OSE Platform domain modeling patterns
-- **Security Standards** - OSE Platform security requirements
-- **Performance Standards** - OSE Platform optimization guidelines
+- **Coding Standards** - a-demo naming conventions, patterns
+- **API Standards** - a-demo interface design rules
+- **DDD Standards** - a-demo domain modeling patterns
+- **Security Standards** - a-demo security requirements
+- **Performance Standards** - a-demo optimization guidelines
 
-**Key Difference**: AyoKoding teaches languages/frameworks generically; docs/explanation/ defines how to use them in OSE Platform specifically.
+**Key Difference**: a-demo teaches languages/frameworks generically; docs/explanation/ defines how to use them in a-demo specifically.
 
 ### Validation
 
 The `docs-software-engineering-separation-checker` agent validates:
 
-- Prerequisite statements exist in docs/explanation READMEs (referencing AyoKoding)
-- No duplication between docs/explanation and AyoKoding educational content
+- Prerequisite statements exist in docs/explanation READMEs (referencing a-demo)
+- No duplication between docs/explanation and a-demo educational content
 - Style guides focus on repository-specific conventions only
-- AyoKoding learning paths are complete (required prerequisite content exists)
+- a-demo learning paths are complete (required prerequisite content exists)
 - Cross-references follow Programming Language Documentation Separation Convention
 
 ## For AI Agents

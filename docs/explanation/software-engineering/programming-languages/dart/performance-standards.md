@@ -1,6 +1,6 @@
 ---
 title: "Dart Performance Standards"
-description: Authoritative OSE Platform Dart performance standards (benchmarks, profiling, optimization)
+description: Authoritative a-demo Dart performance standards (benchmarks, profiling, optimization)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -22,13 +22,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Dart tutorial. We define HOW to measure and optimize Dart performance in THIS codebase, not WHAT performance optimization is.
+**This document is a-demo-specific**, not a Dart tutorial. We define HOW to measure and optimize Dart performance in THIS codebase, not WHAT performance optimization is.
 
 ## Purpose
 
-This document defines **authoritative performance standards** for Dart development in the OSE Platform. Performance work MUST follow the principle: measure first, optimize with evidence.
+This document defines **authoritative performance standards** for Dart development in the a-demo. Performance work MUST follow the principle: measure first, optimize with evidence.
 
-**Target Audience**: OSE Platform Dart developers tackling performance-sensitive code paths
+**Target Audience**: a-demo Dart developers tackling performance-sensitive code paths
 
 **Scope**: const constructors, lazy initialization, collection performance, profiling with Flutter DevTools, `dart:developer` Timeline, `benchmark_harness`, AOT benefits
 
@@ -251,7 +251,7 @@ class NisabRateService {
 
   Future<Map<String, double>> _fetchRatesFromApi() async {
     // Network call
-    final response = await http.get(Uri.parse('https://api.oseplatform.com/nisab-rates'));
+    final response = await http.get(Uri.parse('https://api.example.com/nisab-rates'));
     return Map.fromEntries(
       (jsonDecode(response.body) as List).map(
         (e) => MapEntry(e['currency'] as String, (e['rate'] as num).toDouble()),

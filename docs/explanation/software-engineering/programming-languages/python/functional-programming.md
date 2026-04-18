@@ -29,7 +29,7 @@ updated: 2026-01-24
 
 Functional programming in Python emphasizes pure functions, immutable data, and function composition. While Python is multi-paradigm, adopting functional patterns improves code predictability, testability, and maintainability—critical for financial applications handling Zakat calculations and Islamic finance operations.
 
-### Why Functional Programming for OSE Platform
+### Why Functional Programming for a-demo
 
 **Predictability**: Pure functions always produce same output for same input.
 
@@ -707,7 +707,7 @@ graph LR
 
 **Last Updated**: 2026-01-24
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
-**Maintainers**: OSE Platform Documentation Team
+**Maintainers**: a-demo Documentation Team
 
 ## Python Functional Programming
 

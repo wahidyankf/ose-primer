@@ -1,6 +1,6 @@
 ---
 name: swe-elixir-dev
-description: Develops Elixir applications following functional programming principles, OTP patterns, and platform coding standards. Use when implementing Elixir code for OSE Platform.
+description: Develops Elixir applications following functional programming principles, OTP patterns, and platform coding standards. Use when implementing Elixir code for a-demo.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model:
 color: purple

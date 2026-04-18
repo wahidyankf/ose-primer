@@ -1,6 +1,6 @@
 # Demo API Contract
 
-OpenAPI 3.1 specification for the OrganicLever demo expense tracker REST API.
+OpenAPI 3.1 specification for the a-demo demo expense tracker REST API.
 
 ## Purpose
 

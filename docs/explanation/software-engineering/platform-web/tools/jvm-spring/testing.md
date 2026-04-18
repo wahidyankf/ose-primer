@@ -296,7 +296,7 @@ class DonationServiceTest {
 ```java
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com.oseplatform.zakat")
+@ComponentScan(basePackages = "com.a-demo.zakat")
 public class TestConfig {
 
   @Bean
@@ -327,7 +327,7 @@ public class TestConfig {
 ```kotlin
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = ["com.oseplatform.zakat"])
+@ComponentScan(basePackages = ["com.a-demo.zakat"])
 class TestConfig {
 
   @Bean

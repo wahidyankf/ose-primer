@@ -1,6 +1,6 @@
 ---
 title: F#
-description: OSE Platform Authoritative F# Coding Standards and Framework Stack (F# 8 / .NET 8 LTS)
+description: a-demo Authoritative F# Coding Standards and Framework Stack (F# 8 / .NET 8 LTS)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -26,13 +26,13 @@ updated: 2026-03-09
 
 # F
 
-**This is THE authoritative reference** for F# coding standards in OSE Platform.
+**This is THE authoritative reference** for F# coding standards in a-demo.
 
-All F# code written for the OSE Platform MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
+All F# code written for the a-demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
 
 ## Framework Stack
 
-OSE Platform F# applications MUST use the following stack:
+a-demo F# applications MUST use the following stack:
 
 **Web Frameworks**:
 
@@ -76,17 +76,17 @@ OSE Platform F# applications MUST use the following stack:
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the AyoKoding F# learning path. These are **OSE Platform-specific style guides**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the a-demo F# learning path. These are **a-demo-specific style guides**, not educational tutorials.
 
 **You MUST understand F# fundamentals before using these standards:**
 
-**What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply F# knowledge in THIS codebase.
+**What this documentation covers**: a-demo naming conventions, framework choices, repository-specific patterns, how to apply F# knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: F# syntax, language fundamentals, discriminated union semantics, computation expression mechanics (those are in ayokoding-web).
+**What this documentation does NOT cover**: F# syntax, language fundamentals, discriminated union semantics, computation expression mechanics (those are in a-demo-fs-ts-nextjs).
 
 ## Software Engineering Principles
 
-F# development in OSE Platform enforces foundational software engineering principles. F# naturally enforces most of them — the language design makes compliance the path of least resistance:
+F# development in a-demo enforces foundational software engineering principles. F# naturally enforces most of them — the language design makes compliance the path of least resistance:
 
 1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - MUST automate through Fantomas formatting, FSharpLint, `dotnet test`, Coverlet coverage collection, and CI/CD integration. F# `dotnet` tooling integrates directly with Nx via project targets.
 
@@ -100,7 +100,7 @@ F# development in OSE Platform enforces foundational software engineering princi
 
 ## F# Version Strategy
 
-OSE Platform follows a three-tier F# versioning strategy aligned with .NET LTS releases:
+a-demo follows a three-tier F# versioning strategy aligned with .NET LTS releases:
 
 **F# 6 / .NET 6 (Minimum - REQUIRED)**:
 
@@ -130,9 +130,9 @@ OSE Platform follows a three-tier F# versioning strategy aligned with .NET LTS r
 
 **Unlike Go**: .NET follows an annual release cycle with LTS releases every two years. F# version numbers track .NET SDK versions. The platform strategy is: target the current LTS for stability, adopt latest features on new projects.
 
-## OSE Platform Coding Standards (Authoritative)
+## a-demo Coding Standards (Authoritative)
 
-**MUST follow these mandatory standards for all F# code in OSE Platform:**
+**MUST follow these mandatory standards for all F# code in a-demo:**
 
 1. **[Coding Standards](coding-standards.md)** - Naming conventions, module organization, pipeline idioms, discriminated unions
 2. **[Testing Standards](testing-standards.md)** - Expecto, FsCheck property-based testing, coverage requirements
@@ -176,10 +176,10 @@ OSE Platform follows a three-tier F# versioning strategy aligned with .NET LTS r
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["F# Standards Index<br/>(OSE Platform)"]:::blue
+    A["F# Standards Index<br/>(a-demo)"]:::blue
     B["Core Standards"]:::orange
     C["Specialized Standards"]:::teal
-    D["Learning Resources<br/>(AyoKoding)"]:::purple
+    D["Learning Resources<br/>(a-demo)"]:::purple
 
     A --> B
     A --> C
@@ -208,7 +208,7 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
-## Primary Use Cases in OSE Platform
+## Primary Use Cases in a-demo
 
 **Financial Domain Computation**:
 

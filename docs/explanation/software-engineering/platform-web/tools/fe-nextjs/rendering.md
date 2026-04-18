@@ -100,7 +100,7 @@ All routes are **statically rendered by default** at build time:
 export default function AboutPage() {
   return (
     <div>
-      <h1>About OSE Platform</h1>
+      <h1>About a-demo</h1>
       <p>Sharia-compliant financial solutions for enterprises.</p>
       <p>Our mission is to democratize access to Islamic finance.</p>
     </div>
@@ -181,7 +181,7 @@ export default async function BlogPostPage({
 }
 ```
 
-### OSE Platform: Waqf Project Pages
+### a-demo: Waqf Project Pages
 
 ```typescript
 // app/waqf/projects/[id]/page.tsx
@@ -327,7 +327,7 @@ export default async function ZakatCalculatePage() {
 }
 ```
 
-### OSE Platform: User-Specific Dashboard
+### a-demo: User-Specific Dashboard
 
 ```typescript
 // app/(platform)/dashboard/page.tsx
@@ -553,7 +553,7 @@ export async function updateNisabThreshold(data: NisabData) {
 }
 ```
 
-### OSE Platform: Blog Posts with ISR
+### a-demo: Blog Posts with ISR
 
 ```typescript
 // app/blog/[slug]/page.tsx
@@ -696,7 +696,7 @@ export default function ExamplePage() {
 }
 ```
 
-### OSE Platform Configuration Examples
+### a-demo Configuration Examples
 
 **Static Marketing Page**:
 

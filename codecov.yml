@@ -18,25 +18,13 @@ ignore:
   - "**/generated-contracts/**"
 
 flags:
-  oseplatform-web:
-    paths:
-      - apps/oseplatform-web/
-    carryforward: true
-  ayokoding-web:
-    paths:
-      - apps/ayokoding-web/
-    carryforward: true
   rhino-cli:
     paths:
       - apps/rhino-cli/
     carryforward: true
-  ayokoding-cli:
+  golang-commons:
     paths:
-      - apps/ayokoding-cli/
-    carryforward: true
-  oseplatform-cli:
-    paths:
-      - apps/oseplatform-cli/
+      - libs/golang-commons/
     carryforward: true
   a-demo-fs-ts-nextjs:
     paths:
@@ -45,22 +33,6 @@ flags:
   a-demo-be-java-springboot:
     paths:
       - apps/a-demo-be-java-springboot/
-    carryforward: true
-  organiclever-fe:
-    paths:
-      - apps/organiclever-fe/
-    carryforward: true
-  organiclever-be:
-    paths:
-      - apps/organiclever-be/
-    carryforward: true
-  golang-commons:
-    paths:
-      - libs/golang-commons/
-    carryforward: true
-  hugo-commons:
-    paths:
-      - libs/hugo-commons/
     carryforward: true
   a-demo-be-elixir-phoenix:
     paths:

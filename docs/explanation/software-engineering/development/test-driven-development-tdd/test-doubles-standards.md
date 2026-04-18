@@ -1,6 +1,6 @@
 ---
 title: "TDD Test Doubles Standards"
-description: OSE Platform standards for mocks, stubs, spies, and fakes
+description: a-demo standards for mocks, stubs, spies, and fakes
 category: explanation
 subcategory: development
 tags:
@@ -21,7 +21,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-OSE Platform standards for using test doubles (mocks, stubs, fakes).
+a-demo standards for using test doubles (mocks, stubs, fakes).
 
 ## REQUIRED: Prefer In-Memory Implementations
 
@@ -143,7 +143,7 @@ void shouldCalculateZakat() {
 }
 ```
 
-## OSE Platform Examples
+## a-demo Examples
 
 ### Testing with In-Memory Repository
 

@@ -1,6 +1,6 @@
 ---
 title: "Rust API Standards"
-description: Authoritative OSE Platform Rust API standards (Axum routing, extractors, Tower middleware, AppState)
+description: Authoritative a-demo Rust API standards (Axum routing, extractors, Tower middleware, AppState)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Rust tutorial.
+**This document is a-demo-specific**, not a Rust tutorial.
 
 ## Purpose
 
-This document defines **authoritative API standards** for Rust web development in the OSE Platform. The standard web framework is **Axum 0.8** with Tokio runtime and Tower middleware.
+This document defines **authoritative API standards** for Rust web development in the a-demo. The standard web framework is **Axum 0.8** with Tokio runtime and Tower middleware.
 
-**Target Audience**: OSE Platform Rust developers building REST APIs and web services
+**Target Audience**: a-demo Rust developers building REST APIs and web services
 
 **Scope**: Axum routing, extractors, Tower middleware, AppState, error handling, OpenAPI, testing
 
@@ -209,7 +209,7 @@ fn apply_middleware(router: Router) -> Router {
             .layer(TraceLayer::new_for_http())
             .layer(
                 CorsLayer::new()
-                    .allow_origin(["https://app.oseplatform.com".parse().unwrap()])
+                    .allow_origin(["https://app.example.com".parse().unwrap()])
                     .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
                     .allow_headers([CONTENT_TYPE, AUTHORIZATION]),
             ),

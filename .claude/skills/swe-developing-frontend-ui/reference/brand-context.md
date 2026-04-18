@@ -2,10 +2,10 @@
 
 Per-app brand guidance for UI development decisions.
 
-## organiclever-fe
+## a-demo-fe-ts-nextjs
 
-- **Product**: Business productivity tracker (OrganicLever)
-- **URL**: www.organiclever.com
+- **Product**: Business productivity tracker (a-demo)
+- **URL**: www.example.com
 - **Audience**: Business professionals, team managers
 - **Personality**: Professional, efficient, trustworthy
 - **Tone**: Formal but approachable, data-driven
@@ -15,10 +15,10 @@ Per-app brand guidance for UI development decisions.
 - **UI character**: Dense data tables, charts, minimal decoration, productivity-focused
 - **Framework**: Next.js 16, Tailwind v4, shadcn/ui, Storybook
 
-## ayokoding-web
+## a-demo-fs-ts-nextjs
 
-- **Product**: Educational coding platform (AyoKoding)
-- **URL**: ayokoding.com
+- **Product**: Educational coding platform (a-demo)
+- **URL**: example.com
 - **Audience**: Indonesian tech community, developers learning programming
 - **Personality**: Approachable, educational, encouraging
 - **Tone**: Informal, tutorial-oriented, bilingual (English + Indonesian)
@@ -45,9 +45,9 @@ Per-app brand guidance for UI development decisions.
 - **Palette**: Material 3 theme defaults
 - **Note**: Cannot share React components — can consume CSS tokens via generated Dart constants
 
-## oseplatform-web
+## a-demo-fs-ts-nextjs
 
-- **Product**: OSE Platform marketing site
-- **URL**: oseplatform.com
+- **Product**: a-demo marketing site
+- **URL**: example.com
 - **Framework**: Next.js 16 (App Router, TypeScript, tRPC)
 - **Note**: Uses React components — can share UI components following the standard component patterns

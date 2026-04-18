@@ -1,6 +1,6 @@
 ---
 title: "DDD Value Object Standards"
-description: OSE Platform standards for immutable value objects in Islamic finance domains
+description: a-demo standards for immutable value objects in Islamic finance domains
 category: explanation
 subcategory: architecture
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-OSE Platform value object standards for domain primitives.
+a-demo value object standards for domain primitives.
 
 ## REQUIRED: Use Immutable Value Objects
 
@@ -32,7 +32,7 @@ OSE Platform value object standards for domain primitives.
 - **TypeScript**: Use `readonly` properties
 - **Go**: Use immutable structs
 
-## OSE Platform Value Objects
+## a-demo Value Objects
 
 ### Money
 

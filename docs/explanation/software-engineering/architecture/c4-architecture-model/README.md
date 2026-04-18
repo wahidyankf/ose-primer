@@ -1,6 +1,6 @@
 ---
 title: "C4 Architecture Model"
-description: OSE Platform Authoritative C4 Diagram Standards for System Visualization
+description: a-demo Authoritative C4 Diagram Standards for System Visualization
 category: explanation
 subcategory: architecture
 tags:
@@ -19,13 +19,13 @@ updated: 2026-02-09
 
 # C4 Architecture Model
 
-**This is THE authoritative reference** for C4 architecture diagrams in OSE Platform.
+**This is THE authoritative reference** for C4 architecture diagrams in a-demo.
 
-All C4 diagrams created for the OSE Platform MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks documentation review and merge approval.
+All C4 diagrams created for the a-demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks documentation review and merge approval.
 
 ## Tool and Notation Stack
 
-OSE Platform C4 diagrams MUST use the following tools and conventions:
+a-demo C4 diagrams MUST use the following tools and conventions:
 
 **Primary Diagramming Tool:**
 
@@ -54,17 +54,17 @@ OSE Platform C4 diagrams MUST use the following tools and conventions:
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the AyoKoding C4 Architecture Model learning path. These are **OSE Platform-specific C4 standards**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the a-demo C4 Architecture Model learning path. These are **a-demo-specific C4 standards**, not educational tutorials.
 
 **You MUST understand C4 fundamentals before using these standards:**
 
-**What this documentation covers**: OSE Platform-specific C4 patterns, Mermaid syntax conventions, color-blind friendly palettes, integration with DDD bounded contexts, repository diagram standards.
+**What this documentation covers**: a-demo-specific C4 patterns, Mermaid syntax conventions, color-blind friendly palettes, integration with DDD bounded contexts, repository diagram standards.
 
-**What this documentation does NOT cover**: C4 fundamentals, basic diagram types, generic C4 notation (those are in ayokoding-web).
+**What this documentation does NOT cover**: C4 fundamentals, basic diagram types, generic C4 notation (those are in a-demo-fs-ts-nextjs).
 
 ## Software Engineering Principles
 
-C4 Architecture diagrams in OSE Platform enforce foundational software engineering principles:
+C4 Architecture diagrams in a-demo enforce foundational software engineering principles:
 
 1. **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - MUST make system boundaries explicit through clear diagram levels, label all relationships with protocols and data formats, show technology choices on all containers, and define explicit integration patterns between bounded contexts
 
@@ -72,9 +72,9 @@ C4 Architecture diagrams in OSE Platform enforce foundational software engineeri
 
 3. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - MUST automate diagram generation from code when possible, validate diagram accessibility in CI/CD, use consistent Mermaid templates, and regenerate diagrams from architectural changes
 
-## OSE Platform C4 Standards (Authoritative)
+## a-demo C4 Standards (Authoritative)
 
-**MUST follow these mandatory standards for all C4 diagrams in OSE Platform:**
+**MUST follow these mandatory standards for all C4 diagrams in a-demo:**
 
 1. **[Diagram Standards](./diagram-standards.md)** - When to create diagrams, diagram levels (Context/Container/Component), OSE-specific patterns
 2. **[Notation Standards](./notation-standards.md)** - WCAG colors, Mermaid syntax, labeling conventions, accessibility requirements
@@ -82,11 +82,11 @@ C4 Architecture diagrams in OSE Platform enforce foundational software engineeri
 4. **[Nx Workspace Visualization](./nx-workspace-visualization.md)** - Representing Nx apps and libs in C4 container diagrams
 5. **[Tooling Standards](./tooling-standards.md)** - Mermaid setup, diagram validation, accessibility testing
 
-## C4 Levels in OSE Platform
+## C4 Levels in a-demo
 
 ### Level 1: System Context (REQUIRED)
 
-**REQUIRED**: All OSE Platform systems MUST have a System Context diagram.
+**REQUIRED**: All a-demo systems MUST have a System Context diagram.
 
 **Purpose**: Show how the system fits into the broader ecosystem.
 
@@ -144,7 +144,7 @@ C4 Architecture diagrams in OSE Platform enforce foundational software engineeri
 
 **Prefer instead**: IntelliJ IDEA UML diagrams, JavaDoc class hierarchies, code comments.
 
-## Integration with OSE Platform Architecture
+## Integration with a-demo Architecture
 
 ### DDD Bounded Contexts
 

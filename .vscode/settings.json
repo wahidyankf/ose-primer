@@ -2,7 +2,7 @@
   "java.compile.nullAnalysis.mode": "disabled",
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.import.exclusions": [
-    "**/apps/organiclever-app/**",
+    "**/apps/a-demo-app/**",
     "**/.claude/worktrees/**"
   ],
   "gopls": {

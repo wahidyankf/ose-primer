@@ -1,6 +1,6 @@
 ---
 title: "DDD Entity Standards"
-description: OSE Platform standards for entity identity management and lifecycle tracking
+description: a-demo standards for entity identity management and lifecycle tracking
 category: explanation
 subcategory: architecture
 tags:
@@ -19,7 +19,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-OSE Platform entity standards for identity and lifecycle management.
+a-demo entity standards for identity and lifecycle management.
 
 ## REQUIRED: Identity-Based Equality
 

@@ -119,7 +119,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 **Scope**:
 
 - docs/ directory (all markdown)
-- ayokoding-web (Next.js), oseplatform-web (Next.js)
+- a-demo-fs-ts-nextjs (Next.js), a-demo-fs-ts-nextjs (Next.js)
 - plans/ directory
 - README files
 
@@ -148,7 +148,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 **Scope**:
 
 - Source code (JS, TS, future: Java, Kotlin, Python)
-- Next.js 16 web applications (ayokoding-web, oseplatform-web)
+- Next.js 16 web applications (a-demo-fs-ts-nextjs, a-demo-fs-ts-nextjs)
 - Build systems and tooling
 - AI agents (.claude/agents/ primary, .opencode/agent/ auto-generated secondary)
 - Git workflows

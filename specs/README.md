@@ -1,6 +1,6 @@
 # Specs
 
-Gherkin acceptance specifications for OSE Platform applications.
+Gherkin acceptance specifications for a-demo applications.
 
 ## What This Is
 
@@ -26,14 +26,14 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 
 ## App Specs
 
-- **[organiclever/](./apps/organiclever/README.md)** — OrganicLever specifications (backend REST API +
+- **[a-demo/](./apps/a-demo/README.md)** — a-demo specifications (backend REST API +
   frontend landing page)
 
 - **[a-demo/](./apps/a-demo/README.md)** — Demo application specifications
   (platform-agnostic Gherkin — see [be/gherkin](./apps/a-demo/be/gherkin/README.md) and [fe/gherkin](./apps/a-demo/fe/gherkin/README.md) for details)
 - **[rhino/](./apps/rhino/README.md)** — Repository management CLI specifications (Go, godog)
-- **[ayokoding/](./apps/ayokoding/README.md)** — Content automation CLI specifications (Go, godog)
-- **[oseplatform/](./apps/oseplatform/README.md)** — OSE Platform site CLI specifications (Go, godog)
+- **[a-demo/](./apps/a-demo/README.md)** — Content automation CLI specifications (Go, godog)
+- **[a-demo/](./apps/a-demo/README.md)** — a-demo site CLI specifications (Go, godog)
 
 ## Experimental App Specs
 
@@ -43,7 +43,7 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 ## Library Specs
 
 - **[golang-commons/](./libs/golang-commons/)** — Shared Go utility specifications (godog)
-- **[hugo-commons/](./libs/hugo-commons/)** — Hugo site utility specifications (godog)
+- **[golang-commons/](./libs/golang-commons/)** — Hugo site utility specifications (godog)
 
 ## Standard Folder Pattern
 
@@ -75,7 +75,7 @@ context, container, and component levels.
 
 ## Standards
 
-All feature files follow the OSE Platform BDD standards:
+All feature files follow the a-demo BDD standards:
 
 - [BDD Standards](../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md) —
   framework requirements, Three Amigos process, coverage rules

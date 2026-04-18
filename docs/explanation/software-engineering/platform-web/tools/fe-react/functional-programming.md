@@ -940,7 +940,7 @@ export const ExpandableSection: React.FC<{ title: string; content: string }> = (
 );
 ```
 
-## OSE Platform Functional Examples
+## a-demo Functional Examples
 
 ### Zakat Calculation Pipeline
 

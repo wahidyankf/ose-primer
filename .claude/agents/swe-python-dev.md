@@ -1,6 +1,6 @@
 ---
 name: swe-python-dev
-description: Develops Python applications following Pythonic principles, data processing patterns, and platform coding standards. Use when implementing Python code for OSE Platform.
+description: Develops Python applications following Pythonic principles, data processing patterns, and platform coding standards. Use when implementing Python code for a-demo.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model:
 color: purple

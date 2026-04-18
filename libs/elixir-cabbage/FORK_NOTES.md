@@ -10,7 +10,7 @@
 
 ## Rationale
 
-See `plans/in-progress/2026-03-09__organiclever-be-exph/tech-docs.md` — "Why We Fork" section.
+See `plans/in-progress/2026-03-09__a-demo-be-fsharp-giraffe-exph/tech-docs.md` — "Why We Fork" section.
 
 ## Changes from Upstream
 

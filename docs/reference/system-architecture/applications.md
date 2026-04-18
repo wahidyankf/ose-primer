@@ -20,37 +20,37 @@ The platform consists of 9 applications across 4 technology stacks:
 
 ### Frontend Applications (Hugo Static Sites)
 
-#### oseplatform-web
+#### a-demo-fs-ts-nextjs
 
-- **Purpose**: Marketing and documentation website for OSE Platform
-- **URL**: <https://oseplatform.com>
+- **Purpose**: Marketing and documentation website for a-demo
+- **URL**: <https://example.com>
 - **Technology**: Hugo 0.156.0 Extended + PaperMod theme
-- **Deployment**: Vercel (via `prod-oseplatform-web` branch)
-- **Build Command**: `nx build oseplatform-web`
-- **Dev Command**: `nx dev oseplatform-web`
+- **Deployment**: Vercel (via `prod-a-demo-fs-ts-nextjs` branch)
+- **Build Command**: `nx build a-demo-fs-ts-nextjs`
+- **Dev Command**: `nx dev a-demo-fs-ts-nextjs`
 
 ### Web Applications (Next.js)
 
-#### ayokoding-web
+#### a-demo-fs-ts-nextjs
 
 - **Purpose**: Educational platform for programming, AI, and security
-- **URL**: <https://ayokoding.com>
+- **URL**: <https://example.com>
 - **Technology**: Next.js 16 (App Router) + TypeScript + tRPC
 - **Languages**: Bilingual (default English)
-- **Deployment**: Vercel (via `prod-ayokoding-web` branch)
-- **Build Command**: `nx build ayokoding-web`
-- **Dev Command**: `nx dev ayokoding-web`
+- **Deployment**: Vercel (via `prod-a-demo-fs-ts-nextjs` branch)
+- **Build Command**: `nx build a-demo-fs-ts-nextjs`
+- **Dev Command**: `nx dev a-demo-fs-ts-nextjs`
 
 ### CLI Tools (Go)
 
-#### ayokoding-cli
+#### rhino-cli
 
-- **Purpose**: Link validation for ayokoding-web content
+- **Purpose**: Link validation for a-demo-fs-ts-nextjs content
 - **Language**: Go 1.26
-- **Build Command**: `nx build ayokoding-cli`
+- **Build Command**: `nx build rhino-cli`
 - **Features**:
-  - Link validation for ayokoding-web content
-- **Usage**: Runs as part of ayokoding-web quality checks
+  - Link validation for a-demo-fs-ts-nextjs content
+- **Usage**: Runs as part of a-demo-fs-ts-nextjs quality checks
 
 #### rhino-cli
 
@@ -60,26 +60,26 @@ The platform consists of 9 applications across 4 technology stacks:
 - **Location**: `apps/rhino-cli/`
 - **Status**: Active development
 
-#### oseplatform-cli
+#### rhino-cli
 
-- **Purpose**: OSE Platform site link validation
+- **Purpose**: a-demo site link validation
 - **Language**: Go 1.26
-- **Build Command**: `nx build oseplatform-cli`
+- **Build Command**: `nx build rhino-cli`
 - **Features**:
-  - Validates all internal links in oseplatform-web content
+  - Validates all internal links in a-demo-fs-ts-nextjs content
   - Text, JSON, and markdown output formats
-- **Usage**: Runs as first step of `oseplatform-web`'s `test:quick` target
+- **Usage**: Runs as first step of `a-demo-fs-ts-nextjs`'s `test:quick` target
 
 ### Web Applications (Next.js)
 
-#### organiclever-fe
+#### a-demo-fe-ts-nextjs
 
-- **Purpose**: Landing and promotional website for OrganicLever
-- **URL**: <https://www.organiclever.com>
+- **Purpose**: Landing and promotional website for a-demo
+- **URL**: <https://www.example.com>
 - **Technology**: Next.js 16 (App Router) + React 19 + TailwindCSS
-- **Deployment**: Vercel (via `prod-organiclever-web` branch)
-- **Build Command**: `nx build organiclever-fe`
-- **Dev Command**: `nx dev organiclever-fe`
+- **Deployment**: Vercel (via `prod-a-demo-web` branch)
+- **Build Command**: `nx build a-demo-fe-ts-nextjs`
+- **Dev Command**: `nx dev a-demo-fe-ts-nextjs`
 - **Features**:
   - Radix UI / shadcn-ui component library
   - Cookie-based authentication
@@ -88,12 +88,12 @@ The platform consists of 9 applications across 4 technology stacks:
 
 ### Backend Services
 
-#### organiclever-be
+#### a-demo-be-fsharp-giraffe
 
-- **Purpose**: REST API backend for OrganicLever (F#/Giraffe implementation)
+- **Purpose**: REST API backend for a-demo (F#/Giraffe implementation)
 - **Technology**: F# + Giraffe + .NET
-- **Build Command**: `nx build organiclever-be`
-- **Dev Command**: `nx dev organiclever-be`
+- **Build Command**: `nx build a-demo-be-fsharp-giraffe`
+- **Dev Command**: `nx dev a-demo-be-fsharp-giraffe`
 - **Features**:
   - AltCover code coverage enforcement (>=90%)
   - Production Dockerfile with multi-stage build
@@ -101,17 +101,17 @@ The platform consists of 9 applications across 4 technology stacks:
 
 ### E2E Test Suites (Playwright)
 
-#### organiclever-fe-e2e
+#### a-demo-fe-e2e
 
-- **Purpose**: End-to-end tests for organiclever-fe
+- **Purpose**: End-to-end tests for a-demo-fe-ts-nextjs
 - **Technology**: Playwright
-- **Run Command**: `nx run organiclever-fe-e2e:test:e2e`
+- **Run Command**: `nx run a-demo-fe-e2e:test:e2e`
 
-#### organiclever-be-e2e
+#### a-demo-be-e2e
 
-- **Purpose**: End-to-end tests for organiclever-be REST API
+- **Purpose**: End-to-end tests for a-demo-be-fsharp-giraffe REST API
 - **Technology**: Playwright
-- **Run Command**: `nx run organiclever-be-e2e:test:e2e`
+- **Run Command**: `nx run a-demo-be-e2e:test:e2e`
 
 #### a-demo-be-e2e
 
@@ -127,26 +127,26 @@ Shows the high-level technical building blocks (containers) of the system. In C4
 ```mermaid
 graph TB
     subgraph "Marketing & Education Sites"
-        OSE[oseplatform-web<br/>Hugo Static Site]
-        AYO[ayokoding-web<br/>Next.js App]
+        OSE[a-demo-fs-ts-nextjs<br/>Hugo Static Site]
+        AYO[a-demo-fs-ts-nextjs<br/>Next.js App]
     end
 
-    subgraph "OrganicLever Platform"
-        OL_FE[organiclever-fe<br/>Next.js App]
-        OL_BE[organiclever-be<br/>F#/Giraffe API]
-        OL_FE_E2E[organiclever-fe-e2e<br/>Playwright E2E]
-        OL_BE_E2E[organiclever-be-e2e<br/>Playwright E2E]
+    subgraph "a-demo Platform"
+        OL_FE[a-demo-fe-ts-nextjs<br/>Next.js App]
+        OL_BE[a-demo-be-fsharp-giraffe<br/>F#/Giraffe API]
+        OL_FE_E2E[a-demo-fe-e2e<br/>Playwright E2E]
+        OL_BE_E2E[a-demo-be-e2e<br/>Playwright E2E]
     end
 
     subgraph "CLI Tools"
-        AYOCLI[ayokoding-cli<br/>Go CLI]
+        AYOCLI[rhino-cli<br/>Go CLI]
         RHINO[rhino-cli<br/>Go CLI]
-        OSECLI[oseplatform-cli<br/>Go CLI]
+        OSECLI[rhino-cli<br/>Go CLI]
     end
 
     subgraph "Shared Infrastructure"
         NX[Nx Workspace<br/>Build Orchestration]
-        LIBS[Shared Libraries<br/>golang-commons, hugo-commons]
+        LIBS[Shared Libraries<br/>golang-commons, golang-commons]
     end
 
     AYOCLI -->|Validates links| AYO
@@ -184,12 +184,12 @@ graph TB
 
 Marketing & Education Sites:
 
-- oseplatform-web: Fully independent static site
-- ayokoding-web: Next.js fullstack content platform (with CLI link validation)
+- a-demo-fs-ts-nextjs: Fully independent static site
+- a-demo-fs-ts-nextjs: Next.js fullstack content platform (with CLI link validation)
 
 CLI Tools:
 
-- ayokoding-cli: Validates links in ayokoding-web content
+- rhino-cli: Validates links in a-demo-fs-ts-nextjs content
 - rhino-cli: Repository management automation
 
 **Build-Time Dependencies:**
@@ -198,6 +198,6 @@ CLI Tools:
 - CLI tools executed during build processes
 - Shared libraries may be imported at build time via `@open-sharia-enterprise/[lib-name]`
 
-**Link Validation Pipeline (ayokoding-web):**
+**Link Validation Pipeline (a-demo-fs-ts-nextjs):**
 
-ayokoding-cli validates internal links in ayokoding-web content as part of the quality gate.
+rhino-cli validates internal links in a-demo-fs-ts-nextjs content as part of the quality gate.

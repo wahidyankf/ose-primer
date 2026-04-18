@@ -126,7 +126,7 @@ From: governance/conventions/formatting/linking.md (3 levels deep)
 **Criticality**: MEDIUM - Poor accessibility and readability
 **Detection**: Check if link text matches filename pattern or contains file extension
 
-_(Note: Hugo-specific error examples (Error 5, Error 6) removed — both oseplatform-web and ayokoding-web have migrated to Next.js 16. See Historical section below.)_
+_(Note: Hugo-specific error examples (Error 5, Error 6) removed — both a-demo-fs-ts-nextjs and a-demo-fs-ts-nextjs have migrated to Next.js 16. See Historical section below.)_
 
 ## External Link Validation
 
@@ -194,12 +194,12 @@ _(Note: Hugo-specific error examples (Error 5, Error 6) removed — both oseplat
 
 ## Historical: Hugo-Specific Link Validation (DEPRECATED)
 
-**Note**: Both `oseplatform-web` and `ayokoding-web` have migrated to Next.js 16. Hugo-specific link rules no longer apply to either site. This section is preserved for historical reference only.
+**Note**: Both `a-demo-fs-ts-nextjs` and `a-demo-fs-ts-nextjs` have migrated to Next.js 16. Hugo-specific link rules no longer apply to either site. This section is preserved for historical reference only.
 
 Both sites' content links are validated by their respective CLI tools, not by Hugo link rules:
 
-- `ayokoding-cli links check` — validates ayokoding-web content links
-- `oseplatform-cli links check` — validates oseplatform-web content links
+- `rhino-cli links check` — validates a-demo-fs-ts-nextjs content links
+- `rhino-cli links check` — validates a-demo-fs-ts-nextjs content links
 
 For active sites, apply standard docs/ linking rules: relative paths with `.md` extension.
 
@@ -304,11 +304,11 @@ Finding: [BROKEN] - Internal Link to Non-Existent File
 
 **Domain Skills**:
 
-- apps-ayokoding-web-developing-content - ayokoding-web content linking patterns (Next.js)
+- apps-a-demo-fs-ts-nextjs-developing-content - a-demo-fs-ts-nextjs content linking patterns (Next.js)
 
 ## Related Agents
 
 **Link Validation Agents**:
 
 - docs-link-checker - Validates links in docs/, governance/, plans/
-- apps-ayokoding-web-link-checker - Validates links in ayokoding-web content
+- apps-a-demo-fs-ts-nextjs-link-checker - Validates links in a-demo-fs-ts-nextjs content

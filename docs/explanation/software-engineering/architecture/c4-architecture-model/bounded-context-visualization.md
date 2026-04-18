@@ -20,13 +20,13 @@ updated: 2026-02-09
 
 **REQUIRED**: You MUST understand both C4 and DDD fundamentals before using these standards:
 
-**This document is OSE Platform-specific**, defining how to visualize DDD bounded contexts in C4 diagrams for THIS codebase.
+**This document is a-demo-specific**, defining how to visualize DDD bounded contexts in C4 diagrams for THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative standards** for visualizing DDD bounded contexts using C4 architecture diagrams in OSE Platform.
+This document defines **authoritative standards** for visualizing DDD bounded contexts using C4 architecture diagrams in a-demo.
 
-**Target Audience**: OSE Platform architects, DDD practitioners
+**Target Audience**: a-demo architects, DDD practitioners
 
 **Scope**: Mapping bounded contexts to C4 containers, visualizing context mapping patterns
 
@@ -107,7 +107,7 @@ This document defines **authoritative standards** for visualizing DDD bounded co
 | Open Host Service    | `"Exposes API<br/>[Pattern: Open Host]<br/>[HTTPS/REST]"`          | Zakat Context exposes public API                            |
 | Published Language   | `"Uses standard<br/>[Pattern: Published Language]<br/>[HTTPS]"`    | Multiple contexts use standard JSON Schema                  |
 
-## Example: OSE Platform Bounded Contexts
+## Example: a-demo Bounded Contexts
 
 ### System Context (Enterprise Context Map)
 

@@ -27,7 +27,7 @@ updated: 2025-01-23
 
 ## Overview
 
-Finite State Machines (FSM) model systems that exist in one state at a time and transition between states based on events. For OSE Platform financial applications, FSMs manage loan lifecycles, campaign statuses, and payment workflows with clear state transitions and validation rules.
+Finite State Machines (FSM) model systems that exist in one state at a time and transition between states based on events. For a-demo financial applications, FSMs manage loan lifecycles, campaign statuses, and payment workflows with clear state transitions and validation rules.
 
 ```mermaid
 stateDiagram-v2
@@ -1597,4 +1597,4 @@ machine = Machine(
 
 **Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
-**Maintainers**: OSE Platform Documentation Team
+**Maintainers**: a-demo Documentation Team

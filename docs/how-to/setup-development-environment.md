@@ -150,7 +150,7 @@ volta install npm@11.10.1
 
 ### Step 4: Go
 
-Required for `rhino-cli`, `ayokoding-cli`, `oseplatform-cli`, `a-demo-be-golang-gin`,
+Required for `rhino-cli`, `rhino-cli`, `rhino-cli`, `a-demo-be-golang-gin`,
 and `libs/golang-commons`.
 
 ```bash
@@ -271,7 +271,7 @@ sudo apt-get install -y build-essential autoconf libncurses-dev libssl-dev
 
 ### Step 10: .NET SDK
 
-Required for `a-demo-be-fsharp-giraffe`, `a-demo-be-csharp-aspnetcore`, `organiclever-be`.
+Required for `a-demo-be-fsharp-giraffe`, `a-demo-be-csharp-aspnetcore`, `a-demo-be-fsharp-giraffe`.
 
 The required major version is in `apps/a-demo-be-fsharp-giraffe/global.json`.
 
@@ -304,7 +304,7 @@ dart --version
 
 ### Step 12: Hugo
 
-Hugo is a legacy doctor entry (oseplatform-web migrated to Next.js). No active projects
+Hugo is a legacy doctor entry (a-demo-fs-ts-nextjs migrated to Next.js). No active projects
 use Hugo, but installing it prevents a doctor warning.
 
 ```bash

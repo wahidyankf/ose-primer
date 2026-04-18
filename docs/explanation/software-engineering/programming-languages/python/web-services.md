@@ -28,7 +28,7 @@ updated: 2025-01-23
 
 ## Overview
 
-Python offers three major web frameworks, each with distinct philosophies. For OSE Platform financial services, framework choice depends on project requirements: FastAPI for modern async APIs, Django for full-featured web apps, Flask for microservices.
+Python offers three major web frameworks, each with distinct philosophies. For a-demo financial services, framework choice depends on project requirements: FastAPI for modern async APIs, Django for full-featured web apps, Flask for microservices.
 
 ```mermaid
 graph TB
@@ -94,7 +94,7 @@ from typing import Optional
 from datetime import datetime
 
 app = FastAPI(
-    title="OSE Platform API",
+    title="a-demo API",
     description="Sharia-compliant financial services",
     version="1.0.0",
 )
@@ -925,7 +925,7 @@ def custom_openapi():
         return app.openapi_schema
 
     openapi_schema = get_openapi(
-        title="OSE Platform API",
+        title="a-demo API",
         version="1.0.0",
         description="""
         ## Sharia-Compliant Financial Services API
@@ -948,7 +948,7 @@ def custom_openapi():
 
     # Add custom fields
     openapi_schema["info"]["x-logo"] = {
-        "url": "https://oseplatform.com/logo.png"
+        "url": "https://example.com/logo.png"
     }
 
     app.openapi_schema = openapi_schema
@@ -1588,7 +1588,7 @@ app.add_middleware(RequestIDMiddleware)
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://oseplatform.com"],
+    allow_origins=["https://example.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -1995,7 +1995,7 @@ async def create_donation_with_broadcast(
 
 **Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
-**Maintainers**: OSE Platform Documentation Team
+**Maintainers**: a-demo Documentation Team
 
 ## FastAPI Architecture
 

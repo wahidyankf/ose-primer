@@ -1,6 +1,6 @@
 ---
 title: "Clojure Error Handling Standards"
-description: Authoritative OSE Platform Clojure error handling standards (ex-info, structured errors, try/catch, Result maps)
+description: Authoritative a-demo Clojure error handling standards (ex-info, structured errors, try/catch, Result maps)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Clojure tutorial.
+**This document is a-demo-specific**, not a Clojure tutorial.
 
 ## Purpose
 
-This document defines authoritative error handling standards for Clojure development in OSE Platform. Clojure's `ex-info` with structured data maps provides richer error context than plain Java exceptions.
+This document defines authoritative error handling standards for Clojure development in a-demo. Clojure's `ex-info` with structured data maps provides richer error context than plain Java exceptions.
 
-**Target Audience**: OSE Platform Clojure developers, technical reviewers
+**Target Audience**: a-demo Clojure developers, technical reviewers
 
 **Scope**: ex-info structured errors, try/catch/finally, Java interop exception handling, Result-like patterns, error data conventions
 
@@ -95,7 +95,7 @@ Error handling is validated automatically via clj-kondo (unused catch bindings, 
 
 ## ex-info — Structured Exceptions
 
-**MUST** use `ex-info` for all application-level exceptions in OSE Platform.
+**MUST** use `ex-info` for all application-level exceptions in a-demo.
 
 ### Creating ex-info
 

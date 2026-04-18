@@ -38,7 +38,7 @@ Security is critical for production applications. This guide covers comprehensiv
 - [API Security](#-api-security) - API route protection
 - [Environment Variables](#-environment-variables) - Secrets management
 - [OWASP Top 10](#-owasp-top-10) - Common vulnerability defenses
-- [OSE Platform Examples](#-ose-platform-examples) - Islamic finance security patterns
+- [a-demo Examples](#-ose-platform-examples) - Islamic finance security patterns
 - [Security Checklist](#-security-checklist) - Production deployment checklist
 - [Related Documentation](#-related-documentation) - Cross-references
 
@@ -1582,7 +1582,7 @@ function isPrivateIP(hostname: string): boolean {
 }
 ```
 
-## 🕌 OSE Platform Examples
+## 🕌 a-demo Examples
 
 Real-world security patterns for Islamic finance features.
 

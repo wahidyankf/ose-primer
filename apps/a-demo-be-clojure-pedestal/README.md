@@ -1,6 +1,6 @@
 # a-demo-be-clojure-pedestal
 
-A Clojure/Pedestal REST API backend implementing the OrganicLever expense tracking API. This is a
+A Clojure/Pedestal REST API backend implementing the a-demo expense tracking API. This is a
 functional twin of the other demo-be implementations (Java/Spring Boot, Go/Gin, Elixir/Phoenix,
 etc.) using the same Gherkin scenarios.
 

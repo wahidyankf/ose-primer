@@ -1,6 +1,6 @@
 ---
 title: "FSM State Machine Standards"
-description: When to use FSM, state design rules, OSE Platform Islamic finance state machines
+description: When to use FSM, state design rules, a-demo Islamic finance state machines
 category: explanation
 subcategory: architecture
 tags:
@@ -31,7 +31,7 @@ updated: 2026-02-09
 
 **Examples**: `DRAFT`, `CALCULATED`, `PAID`, `LEGAL_REVIEW`, `SHARIAH_REVIEW`
 
-## OSE Platform State Machines
+## a-demo State Machines
 
 ### Zakat Assessment
 

@@ -30,7 +30,7 @@ func parseTrimVersion(s string) string {
 // To add a new tool, add a new entry to the slice below — no other file needs to change.
 func buildToolDefs(repoRoot string) []toolDef {
 	packageJSONPath := filepath.Join(repoRoot, "package.json")
-	pomXMLPath := filepath.Join(repoRoot, "apps", "organiclever-be-jasb", "pom.xml")
+	pomXMLPath := filepath.Join(repoRoot, "apps", "a-demo-be-fsharp-giraffe-jasb", "pom.xml")
 	goModPath := filepath.Join(repoRoot, "apps", "rhino-cli", "go.mod")
 	pythonVersionPath := filepath.Join(repoRoot, "apps", "a-demo-be-python-fastapi", ".python-version")
 	toolVersionsPath := filepath.Join(repoRoot, ".tool-versions")
@@ -96,7 +96,7 @@ func buildToolDefs(repoRoot string) []toolDef {
 		{
 			name:      "java",
 			binary:    "java",
-			source:    "apps/organiclever-be-jasb/pom.xml → <java.version>",
+			source:    "apps/a-demo-be-fsharp-giraffe-jasb/pom.xml → <java.version>",
 			args:      []string{"-version"},
 			useStderr: true, // java -version writes to stderr, not stdout
 			parseVer:  parseJavaVersion,

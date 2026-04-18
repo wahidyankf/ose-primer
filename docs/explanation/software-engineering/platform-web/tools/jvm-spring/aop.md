@@ -80,13 +80,13 @@ class AopConfiguration {
 public class LoggingAspect {
   private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-  @Before("execution(* com.oseplatform.zakat.service.*.*(..))")
+  @Before("execution(* com.a-demo.zakat.service.*.*(..))")
   public void logBefore(JoinPoint joinPoint) {
     logger.info("Entering method: {}", joinPoint.getSignature().toShortString());
   }
 
   @AfterReturning(
-    pointcut = "execution(* com.oseplatform.zakat.service.*.*(..))",
+    pointcut = "execution(* com.a-demo.zakat.service.*.*(..))",
     returning = "result"
   )
   public void logAfterReturning(JoinPoint joinPoint, Object result) {
@@ -95,7 +95,7 @@ public class LoggingAspect {
   }
 
   @AfterThrowing(
-    pointcut = "execution(* com.oseplatform.zakat.service.*.*(..))",
+    pointcut = "execution(* com.a-demo.zakat.service.*.*(..))",
     throwing = "exception"
   )
   public void logAfterThrowing(JoinPoint joinPoint, Exception exception) {
@@ -115,13 +115,13 @@ class LoggingAspect {
     private val logger = LoggerFactory.getLogger(LoggingAspect::class.java)
   }
 
-  @Before("execution(* com.oseplatform.zakat.service.*.*(..))")
+  @Before("execution(* com.a-demo.zakat.service.*.*(..))")
   fun logBefore(joinPoint: JoinPoint) {
     logger.info("Entering method: {}", joinPoint.signature.toShortString())
   }
 
   @AfterReturning(
-    pointcut = "execution(* com.oseplatform.zakat.service.*.*(..))",
+    pointcut = "execution(* com.a-demo.zakat.service.*.*(..))",
     returning = "result"
   )
   fun logAfterReturning(joinPoint: JoinPoint, result: Any?) {
@@ -130,7 +130,7 @@ class LoggingAspect {
   }
 
   @AfterThrowing(
-    pointcut = "execution(* com.oseplatform.zakat.service.*.*(..))",
+    pointcut = "execution(* com.a-demo.zakat.service.*.*(..))",
     throwing = "exception"
   )
   fun logAfterThrowing(joinPoint: JoinPoint, exception: Exception) {
@@ -150,7 +150,7 @@ class LoggingAspect {
 public class PointcutExamples {
 
   // All methods in service package
-  @Pointcut("execution(* com.oseplatform.zakat.service.*.*(..))")
+  @Pointcut("execution(* com.a-demo.zakat.service.*.*(..))")
   public void serviceMethods() {}
 
   // All public methods
@@ -158,7 +158,7 @@ public class PointcutExamples {
   public void publicMethods() {}
 
   // Methods returning ZakatCalculationResponse
-  @Pointcut("execution(com.oseplatform.zakat.dto.ZakatCalculationResponse *(..))")
+  @Pointcut("execution(com.a-demo.zakat.dto.ZakatCalculationResponse *(..))")
   public void zakatCalculationMethods() {}
 
   // Methods with @Transactional annotation
@@ -182,7 +182,7 @@ public class PointcutExamples {
 class PointcutExamples {
 
   // All methods in service package
-  @Pointcut("execution(* com.oseplatform.zakat.service.*.*(..))")
+  @Pointcut("execution(* com.a-demo.zakat.service.*.*(..))")
   fun serviceMethods() {}
 
   // All public methods
@@ -190,7 +190,7 @@ class PointcutExamples {
   fun publicMethods() {}
 
   // Methods returning ZakatCalculationResponse
-  @Pointcut("execution(com.oseplatform.zakat.dto.ZakatCalculationResponse *(..))")
+  @Pointcut("execution(com.a-demo.zakat.dto.ZakatCalculationResponse *(..))")
   fun zakatCalculationMethods() {}
 
   // Methods with @Transactional annotation
@@ -215,7 +215,7 @@ class PointcutExamples {
 @Component
 public class ValidationAspect {
 
-  @Before("execution(* com.oseplatform.donation.service.*.processDonation(..))")
+  @Before("execution(* com.a-demo.donation.service.*.processDonation(..))")
   public void validateDonation(JoinPoint joinPoint) {
     Object[] args = joinPoint.getArgs();
     if (args.length > 0 && args[0] instanceof CreateDonationRequest request) {
@@ -237,7 +237,7 @@ public class ValidationAspect {
 public class PerformanceMonitoringAspect {
   private static final Logger logger = LoggerFactory.getLogger(PerformanceMonitoringAspect.class);
 
-  @Around("execution(* com.oseplatform.murabaha.service.*.*(..))")
+  @Around("execution(* com.a-demo.murabaha.service.*.*(..))")
   public Object monitorPerformance(ProceedingJoinPoint joinPoint) throws Throwable {
     String methodName = joinPoint.getSignature().toShortString();
     long startTime = System.currentTimeMillis();
@@ -272,7 +272,7 @@ class PerformanceMonitoringAspect {
     private val logger = LoggerFactory.getLogger(PerformanceMonitoringAspect::class.java)
   }
 
-  @Around("execution(* com.oseplatform.murabaha.service.*.*(..))")
+  @Around("execution(* com.a-demo.murabaha.service.*.*(..))")
   fun monitorPerformance(joinPoint: ProceedingJoinPoint): Any? {
     val methodName = joinPoint.signature.toShortString()
     val startTime = System.currentTimeMillis()
@@ -381,7 +381,7 @@ public class MetricsAspect {
     this.meterRegistry = meterRegistry;
   }
 
-  @Around("execution(* com.oseplatform.zakat.service.*.*(..))")
+  @Around("execution(* com.a-demo.zakat.service.*.*(..))")
   public Object recordMetrics(ProceedingJoinPoint joinPoint) throws Throwable {
     String methodName = joinPoint.getSignature().toShortString();
     Timer.Sample sample = Timer.start(meterRegistry);

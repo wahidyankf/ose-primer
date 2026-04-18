@@ -250,7 +250,7 @@ export const config = {
 };
 ```
 
-### OSE Platform: Role-Based Access
+### a-demo: Role-Based Access
 
 ```typescript
 // middleware.ts
@@ -595,7 +595,7 @@ export const config = {
 };
 ```
 
-## OSE Platform: Complete Middleware
+## a-demo: Complete Middleware
 
 ```typescript
 // middleware.ts

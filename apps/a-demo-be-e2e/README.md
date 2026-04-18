@@ -88,11 +88,11 @@ nx run a-demo-be-e2e:test:quick
 
 ## Environment Variables
 
-| Variable       | Default                                                         | Description                              |
-| -------------- | --------------------------------------------------------------- | ---------------------------------------- |
-| `BASE_URL`     | `http://localhost:8201`                                         | Backend base URL                         |
-| `DATABASE_URL` | `postgresql://organiclever:organiclever@localhost:5432/demo_be` | PostgreSQL connection string for cleanup |
-| `CI`           | unset                                                           | Enables CI mode                          |
+| Variable       | Default                                             | Description                              |
+| -------------- | --------------------------------------------------- | ---------------------------------------- |
+| `BASE_URL`     | `http://localhost:8201`                             | Backend base URL                         |
+| `DATABASE_URL` | `postgresql://a-demo:a-demo@localhost:5432/demo_be` | PostgreSQL connection string for cleanup |
+| `CI`           | unset                                               | Enables CI mode                          |
 
 The `DATABASE_URL` is used by `tests/fixtures/db-cleanup.ts` to delete all rows from `users`
 before each scenario. This requires the `pg` package (installed as a devDependency).

@@ -564,7 +564,7 @@ public class ZakatCalculatorController {
 - [Spring Framework Web MVC](./web-mvc.md) - MVC foundation
 - [Spring Framework Security](./security.md) - API security
 
-**Hands-on Learning (AyoKoding)**:
+**Hands-on Learning (a-demo)**:
 
 **Spring Boot Extension**:
 

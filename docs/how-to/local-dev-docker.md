@@ -55,12 +55,12 @@ infra/
 │   ├── a-demo-be-elixir-phoenix/         # Demo Backend (Elixir/Phoenix) stack
 │   │   ├── docker-compose.yml
 │   │   └── README.md
-│   ├── organiclever-fe/     # organiclever-fe (Next.js) stack
+│   ├── a-demo-fe-ts-nextjs/     # a-demo-fe-ts-nextjs (Next.js) stack
 │   │   ├── docker-compose.yml
 │   │   └── README.md
 │   └── [other-service]/       # Other service ecosystems
 └── k8s/                        # Kubernetes configs
-    └── organiclever/          # OrganicLever K8s deployments
+    └── a-demo/          # a-demo K8s deployments
 ```
 
 ## Quick Start
@@ -97,17 +97,17 @@ docker compose -f infra/dev/a-demo-fs-ts-nextjs/docker-compose.yml up
 **Content platform**:
 
 ```bash
-# AyoKoding
-docker compose -f infra/dev/ayokoding-web/docker-compose.yml up
+# a-demo
+docker compose -f infra/dev/a-demo-fs-ts-nextjs/docker-compose.yml up
 
-# OSE Platform
-docker compose -f infra/dev/oseplatform-web/docker-compose.yml up
+# a-demo
+docker compose -f infra/dev/a-demo-fs-ts-nextjs/docker-compose.yml up
 ```
 
-**OrganicLever** (frontend + backend + database):
+**a-demo** (frontend + backend + database):
 
 ```bash
-docker compose -f infra/dev/organiclever/docker-compose.yml up
+docker compose -f infra/dev/a-demo/docker-compose.yml up
 ```
 
 > **Note**: All `a-demo-be-*` backends bind port 8201 and are mutually exclusive — do not run two backend stacks simultaneously.
@@ -175,7 +175,7 @@ See [`apps/a-demo-be-e2e/`](../../apps/a-demo-be-e2e/README.md) for setup and op
 With the frontend running, execute the web Playwright suite:
 
 ```bash
-nx run organiclever-fe-e2e:test:e2e
+nx run a-demo-fe-e2e:test:e2e
 ```
 
 ### 7. Stop Services
@@ -209,23 +209,21 @@ npm run demo-be:dev
 
 **Documentation**: [Demo Backend (JASB) Infrastructure README](../../infra/dev/a-demo-be-java-springboot/README.md)
 
-### organiclever-fe (`infra/dev/organiclever-fe/`)
+### a-demo-fe-ts-nextjs (`infra/dev/a-demo-fe-ts-nextjs/`)
 
 **Services (Docker Compose)**:
 
-- `organiclever-fe` - Next.js landing website (port 3200)
+- `a-demo-fe-ts-nextjs` - Next.js landing website (port 3200)
 
 **Related Apps (run separately)**:
 
-- `organiclever-fe-e2e` - Playwright browser E2E tests — `nx run organiclever-fe-e2e:test:e2e`
+- `a-demo-fe-e2e` - Playwright browser E2E tests — `nx run a-demo-fe-e2e:test:e2e`
 
 **Quick Start**:
 
 ```bash
-npm run organiclever-fe:dev
+npm run a-demo-fe-ts-nextjs:dev
 ```
-
-**Documentation**: [organiclever-fe Infrastructure README](../../infra/dev/organiclever/README.md)
 
 ### Future Ecosystems
 
@@ -366,7 +364,7 @@ APP_JWT_SECRET=dev-jwt-secret-at-least-32-chars-long!!
 ENABLE_TEST_API=true
 ```
 
-**OrganicLever** (requires OAuth setup):
+**a-demo** (requires OAuth setup):
 
 ```bash
 # Required: Google OAuth credentials for login
@@ -377,9 +375,9 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 APP_JWT_SECRET=dev-jwt-secret-at-least-32-characters-long
 
 # PostgreSQL — no need to change for local dev
-POSTGRES_USER=organiclever
-POSTGRES_PASSWORD=organiclever
-POSTGRES_DB=organiclever
+POSTGRES_USER=a-demo
+POSTGRES_PASSWORD=a-demo
+POSTGRES_DB=a-demo
 ```
 
 **Java Spring Boot**:
@@ -392,16 +390,16 @@ JAVA_OPTS=-Xms256m -Xmx512m -XX:+UseZGC
 
 ### What Each Variable Controls
 
-| Variable                    | Used By                 | Purpose                                        |
-| --------------------------- | ----------------------- | ---------------------------------------------- |
-| `DATABASE_URL`              | All backends with DB    | Connection string for PostgreSQL               |
-| `ENABLE_TEST_API`           | a-demo-fs-ts-nextjs     | Enables test-only HTTP routes for E2E teardown |
-| `APP_JWT_SECRET`            | fs-nextjs, organiclever | Signs JWT tokens (min 32 chars for HS256)      |
-| `GOOGLE_CLIENT_ID`          | organiclever-fe         | Google OAuth client identifier                 |
-| `GOOGLE_CLIENT_SECRET`      | organiclever            | Google OAuth client secret (server-side only)  |
-| `SPRING_PROFILES_ACTIVE`    | Java Spring Boot        | Selects Spring Boot configuration profile      |
-| `JAVA_OPTS` / `MAVEN_OPTS`  | Java backends           | JVM and Maven memory settings                  |
-| `POSTGRES_USER/PASSWORD/DB` | organiclever, jasb      | PostgreSQL credentials (dev defaults provided) |
+| Variable                    | Used By              | Purpose                                        |
+| --------------------------- | -------------------- | ---------------------------------------------- |
+| `DATABASE_URL`              | All backends with DB | Connection string for PostgreSQL               |
+| `ENABLE_TEST_API`           | a-demo-fs-ts-nextjs  | Enables test-only HTTP routes for E2E teardown |
+| `APP_JWT_SECRET`            | fs-nextjs, a-demo    | Signs JWT tokens (min 32 chars for HS256)      |
+| `GOOGLE_CLIENT_ID`          | a-demo-fe-ts-nextjs  | Google OAuth client identifier                 |
+| `GOOGLE_CLIENT_SECRET`      | a-demo               | Google OAuth client secret (server-side only)  |
+| `SPRING_PROFILES_ACTIVE`    | Java Spring Boot     | Selects Spring Boot configuration profile      |
+| `JAVA_OPTS` / `MAVEN_OPTS`  | Java backends        | JVM and Maven memory settings                  |
+| `POSTGRES_USER/PASSWORD/DB` | a-demo, jasb         | PostgreSQL credentials (dev defaults provided) |
 
 ## Database Seeding and Migration
 
@@ -469,26 +467,26 @@ Services in the same Docker Compose network can communicate by service name:
 http://a-demo-be-java-springboot:8201/api/v1/hello
 
 # Example: Backend connecting to database
-jdbc:postgresql://organiclever-db:5432/organiclever
+jdbc:postgresql://a-demo-db:5432/a-demo
 ```
 
 ### Port Mapping
 
 Services expose ports to the host:
 
-| App / Service                    | Host Port | Service Type             |
-| -------------------------------- | --------- | ------------------------ |
-| a-demo-be-\* (all backends)      | 8201      | Backend API              |
-| a-demo-fe-ts-nextjs              | 3301      | Frontend dev server      |
-| a-demo-fe-ts-tanstack-start      | 3301      | Frontend dev server      |
-| a-demo-fe-dart-flutterweb        | 3301      | Frontend dev server      |
-| a-demo-fs-ts-nextjs              | 3401      | Full-stack dev server    |
-| ayokoding-web                    | 3101      | Content platform         |
-| oseplatform-web                  | 3100      | Content platform         |
-| organiclever-fe                  | 3200      | OrganicLever frontend    |
-| organiclever-be                  | 8202      | OrganicLever backend API |
-| PostgreSQL (most backends)       | 5432      | Database                 |
-| PostgreSQL (a-demo-fs-ts-nextjs) | 5438      | Database                 |
+| App / Service                    | Host Port | Service Type          |
+| -------------------------------- | --------- | --------------------- |
+| a-demo-be-\* (all backends)      | 8201      | Backend API           |
+| a-demo-fe-ts-nextjs              | 3301      | Frontend dev server   |
+| a-demo-fe-ts-tanstack-start      | 3301      | Frontend dev server   |
+| a-demo-fe-dart-flutterweb        | 3301      | Frontend dev server   |
+| a-demo-fs-ts-nextjs              | 3401      | Full-stack dev server |
+| a-demo-fs-ts-nextjs              | 3101      | Content platform      |
+| a-demo-fs-ts-nextjs              | 3100      | Content platform      |
+| a-demo-fe-ts-nextjs              | 3200      | a-demo frontend       |
+| a-demo-be-fsharp-giraffe         | 8202      | a-demo backend API    |
+| PostgreSQL (most backends)       | 5432      | Database              |
+| PostgreSQL (a-demo-fs-ts-nextjs) | 5438      | Database              |
 
 > **Note**: Frontend stacks (`a-demo-fe-*`) are mutually exclusive — they all expose port 3301 and include the Go/Gin backend on port 8201. Do not run two frontend stacks simultaneously.
 
@@ -659,9 +657,9 @@ healthcheck:
 
 ```yaml
 networks:
-  organiclever-network:
+  a-demo-network:
     driver: bridge
-    name: organiclever-network
+    name: a-demo-network
 ```
 
 ### 6. Document Port Assignments
@@ -670,8 +668,8 @@ Maintain a central registry of ports to avoid conflicts. See the [Port Mapping](
 
 - 8201: All `a-demo-be-*` backends (shared, mutually exclusive)
 - 3301: All `a-demo-fe-*` frontends (shared, mutually exclusive)
-- 3200: organiclever-fe
-- 8202: organiclever-be
+- 3200: a-demo-fe-ts-nextjs
+- 8202: a-demo-be-fsharp-giraffe
 - 5432: PostgreSQL for most backends
 - 5438: PostgreSQL for a-demo-fs-ts-nextjs
 

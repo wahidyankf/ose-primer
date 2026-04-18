@@ -1,6 +1,6 @@
 ---
 title: "F# Functional Programming Standards"
-description: Authoritative OSE Platform F# functional programming standards — computation expressions, monadic composition, applicative validation
+description: Authoritative a-demo F# functional programming standards — computation expressions, monadic composition, applicative validation
 category: explanation
 subcategory: prog-lang
 tags:
@@ -27,13 +27,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not an F# tutorial.
+**This document is a-demo-specific**, not an F# tutorial.
 
 ## Purpose
 
-This document defines **authoritative functional programming standards** for F# development in OSE Platform. F# is a functional-first language — these patterns are idiomatic, not optional. OOP patterns (mutable classes, inheritance hierarchies) are explicitly avoided in domain code.
+This document defines **authoritative functional programming standards** for F# development in a-demo. F# is a functional-first language — these patterns are idiomatic, not optional. OOP patterns (mutable classes, inheritance hierarchies) are explicitly avoided in domain code.
 
-**Target Audience**: OSE Platform F# developers applying FP patterns in domain modeling and service logic
+**Target Audience**: a-demo F# developers applying FP patterns in domain modeling and service logic
 
 **Scope**: Computation expressions, monadic composition, applicative validation, higher-order functions, function composition, currying, avoiding OOP patterns
 

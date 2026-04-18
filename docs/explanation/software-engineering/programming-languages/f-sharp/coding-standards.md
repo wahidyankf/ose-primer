@@ -1,6 +1,6 @@
 ---
 title: "F# Coding Standards"
-description: Authoritative OSE Platform F# coding standards — naming, module organization, pipeline idioms, discriminated unions
+description: Authoritative a-demo F# coding standards — naming, module organization, pipeline idioms, discriminated unions
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,15 +25,15 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not an F# tutorial. We define HOW to apply F# in THIS codebase, not WHAT F# is.
+**This document is a-demo-specific**, not an F# tutorial. We define HOW to apply F# in THIS codebase, not WHAT F# is.
 
 ## Purpose
 
-This document defines **authoritative coding standards** for F# development in OSE Platform. These are prescriptive rules that MUST be followed across all F# projects to ensure consistency, maintainability, and alignment with platform architecture.
+This document defines **authoritative coding standards** for F# development in a-demo. These are prescriptive rules that MUST be followed across all F# projects to ensure consistency, maintainability, and alignment with platform architecture.
 
-**Target Audience**: OSE Platform F# developers, technical reviewers, automated code quality tools
+**Target Audience**: a-demo F# developers, technical reviewers, automated code quality tools
 
-**Scope**: OSE Platform naming conventions, module organization, pipeline idioms, discriminated union modeling, and anti-patterns to avoid
+**Scope**: a-demo naming conventions, module organization, pipeline idioms, discriminated union modeling, and anti-patterns to avoid
 
 ## Software Engineering Principles
 

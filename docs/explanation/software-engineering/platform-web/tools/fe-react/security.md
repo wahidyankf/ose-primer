@@ -572,7 +572,7 @@ export async function calculateZakatSecure(wealth: number, userId: string): Prom
   style-src 'self' 'unsafe-inline';
   img-src 'self' data: https:;
   font-src 'self' data:;
-  connect-src 'self' https://api.oseplatform.com;
+  connect-src 'self' https://api.example.com;
   frame-ancestors 'none';
   base-uri 'self';
   form-action 'self';
@@ -1125,7 +1125,7 @@ export const DonationSearch: React.FC = () => {
 };
 ```
 
-## OSE Platform Security Examples
+## a-demo Security Examples
 
 ### Zakat Calculation Security
 

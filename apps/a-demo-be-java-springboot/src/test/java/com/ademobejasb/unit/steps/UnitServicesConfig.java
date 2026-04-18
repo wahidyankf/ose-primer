@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
  * security filter chain — pure service/repository wiring with the in-memory data store.
  *
  * <p>Active only under the {@code unit-test} profile to prevent this configuration from being
- * picked up by the integration-test context, which loads the full {@code OrganicLeverApplication}
+ * picked up by the integration-test context, which loads the full {@code ADemoApplication}
  * and scans all sub-packages.
  */
 @Configuration

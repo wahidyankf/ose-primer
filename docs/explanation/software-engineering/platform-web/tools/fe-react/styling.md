@@ -931,7 +931,7 @@ export const CustomSelect: React.FC<{
 };
 ```
 
-## OSE Platform Styling Examples
+## a-demo Styling Examples
 
 ### Zakat Calculator Styling
 

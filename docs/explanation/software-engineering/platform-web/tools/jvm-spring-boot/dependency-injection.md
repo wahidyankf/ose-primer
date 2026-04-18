@@ -38,7 +38,7 @@ updated: 2026-01-26
 - [Configuration Classes](#configuration-classes)
 - [Circular Dependencies](#circular-dependencies)
 - [Testing with DI](#testing-with-dependency-injection)
-- [OSE Platform DI Examples](#ose-platform-di-examples)
+- [a-demo DI Examples](#ose-platform-di-examples)
 - [Related Documentation](#related-documentation)
 
 ## Overview
@@ -1305,6 +1305,6 @@ public class OseApplicationConfig {
 - [Spring Boot Idioms](./idioms.md) - DI patterns
 - [Spring Boot Configuration](./configuration.md) - Bean configuration
 
-**Hands-on Learning (AyoKoding)**:
+**Hands-on Learning (a-demo)**:
 
 **Last Updated**: 2026-01-26

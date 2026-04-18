@@ -1,6 +1,6 @@
 ---
 title: "C# Testing Standards"
-description: Authoritative OSE Platform C# testing standards (xUnit, FluentAssertions, Moq, TestContainers.Net)
+description: Authoritative a-demo C# testing standards (xUnit, FluentAssertions, Moq, TestContainers.Net)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a C# tutorial.
+**This document is a-demo-specific**, not a C# tutorial.
 
 ## Purpose
 
-This document defines **authoritative testing standards** for C# development in the OSE Platform. These rules MUST be followed across all C# test projects to ensure reliable, readable, and maintainable tests.
+This document defines **authoritative testing standards** for C# development in the a-demo. These rules MUST be followed across all C# test projects to ensure reliable, readable, and maintainable tests.
 
-**Target Audience**: OSE Platform C# developers writing or reviewing tests
+**Target Audience**: a-demo C# developers writing or reviewing tests
 
 **Scope**: xUnit patterns, assertion style, mocking, async tests, database integration, coverage requirements
 

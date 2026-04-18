@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/organiclever
-    username: ${POSTGRES_USER:organiclever}
-    password: ${POSTGRES_PASSWORD:organiclever}
+    url: jdbc:postgresql://localhost:5432/a-demo
+    username: ${POSTGRES_USER:a-demo}
+    password: ${POSTGRES_PASSWORD:a-demo}
   jpa:
     hibernate:
       ddl-auto: validate

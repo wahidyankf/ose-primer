@@ -1,6 +1,6 @@
 ---
 title: "Playwright Page Object Standards"
-description: Authoritative OSE Platform Playwright Page Object Model standards (class-based patterns, locator composition, TypeScript typing)
+description: Authoritative a-demo Playwright Page Object Model standards (class-based patterns, locator composition, TypeScript typing)
 category: explanation
 subcategory: automation-testing
 tags:
@@ -23,13 +23,13 @@ updated: 2026-02-08
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Playwright tutorial. We define HOW to write Page Objects in THIS codebase, not WHAT Page Object Model is.
+**This document is a-demo-specific**, not a Playwright tutorial. We define HOW to write Page Objects in THIS codebase, not WHAT Page Object Model is.
 
 ## Purpose
 
-This document defines **authoritative Page Object Model standards** for Playwright end-to-end testing in the OSE Platform.
+This document defines **authoritative Page Object Model standards** for Playwright end-to-end testing in the a-demo.
 
-**Target Audience**: OSE Platform E2E test developers, technical reviewers
+**Target Audience**: a-demo E2E test developers, technical reviewers
 
 **Scope**: Page object patterns, class structure, locator encapsulation
 

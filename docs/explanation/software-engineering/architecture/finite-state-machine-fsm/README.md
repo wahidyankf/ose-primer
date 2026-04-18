@@ -1,6 +1,6 @@
 ---
 title: Finite State Machine (FSM)
-description: OSE Platform Authoritative FSM Standards for Entity Lifecycle Management
+description: a-demo Authoritative FSM Standards for Entity Lifecycle Management
 category: explanation
 subcategory: architecture
 tags:
@@ -18,13 +18,13 @@ updated: 2026-02-09
 
 # Finite State Machine (FSM)
 
-**This is THE authoritative reference** for Finite State Machine standards in OSE Platform.
+**This is THE authoritative reference** for Finite State Machine standards in a-demo.
 
-All FSM implementations in OSE Platform MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
+All FSM implementations in a-demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
 
 ## Framework and Tool Requirements
 
-OSE Platform FSM implementations MUST use the following frameworks:
+a-demo FSM implementations MUST use the following frameworks:
 
 **Java (Spring Boot)**:
 
@@ -51,17 +51,17 @@ OSE Platform FSM implementations MUST use the following frameworks:
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the AyoKoding Finite State Machine learning path. These are **OSE Platform-specific FSM standards**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the a-demo Finite State Machine learning path. These are **a-demo-specific FSM standards**, not educational tutorials.
 
 **You MUST understand FSM fundamentals before using these standards:**
 
-**What this documentation covers**: OSE Platform-specific FSM patterns, Islamic finance state machines (Zakat lifecycle, contract approval, donation campaigns), framework choices (Spring State Machine, XState), integration with DDD aggregates, repository-specific FSM conventions.
+**What this documentation covers**: a-demo-specific FSM patterns, Islamic finance state machines (Zakat lifecycle, contract approval, donation campaigns), framework choices (Spring State Machine, XState), integration with DDD aggregates, repository-specific FSM conventions.
 
-**What this documentation does NOT cover**: FSM fundamentals, basic state/transition concepts, generic FSM theory (those are in ayokoding-web).
+**What this documentation does NOT cover**: FSM fundamentals, basic state/transition concepts, generic FSM theory (those are in a-demo-fs-ts-nextjs).
 
 ## Software Engineering Principles
 
-FSM in OSE Platform enforces foundational software engineering principles:
+FSM in a-demo enforces foundational software engineering principles:
 
 1. **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - MUST make entity state explicit (not inferred from boolean flags), transition rules must be explicit in state machine configuration, guards must explicitly define allowed transitions
 
@@ -69,9 +69,9 @@ FSM in OSE Platform enforces foundational software engineering principles:
 
 3. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - MUST automate state validation through FSM, audit trail logging must be automated, state transition permissions must be enforced by FSM not manual checks
 
-## OSE Platform FSM Standards (Authoritative)
+## a-demo FSM Standards (Authoritative)
 
-**MUST follow these mandatory standards for all FSM implementations in OSE Platform:**
+**MUST follow these mandatory standards for all FSM implementations in a-demo:**
 
 1. **[State Machine Standards](./state-machine-standards.md)** - When to use FSM, state design, Islamic finance state machines
 2. **[Framework Standards](./framework-standards.md)** - Spring State Machine (Java), XState (TypeScript), framework selection
@@ -88,7 +88,7 @@ FSM in OSE Platform enforces foundational software engineering principles:
 - State-dependent validation rules exist
 - Audit trail of state changes is required
 
-**Examples in OSE Platform**:
+**Examples in a-demo**:
 
 - **Zakat Assessment**: `DRAFT` → `CALCULATED` → `PAID`
 - **Donation Campaign**: `PLANNING` → `ACTIVE` → `FUNDED` → `COMPLETED`
@@ -103,7 +103,7 @@ FSM in OSE Platform enforces foundational software engineering principles:
 
 **See**: [State Machine Standards](./state-machine-standards.md)
 
-## OSE Platform State Machines
+## a-demo State Machines
 
 ### Zakat Assessment FSM
 

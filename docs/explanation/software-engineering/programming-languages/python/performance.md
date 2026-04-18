@@ -25,7 +25,7 @@ updated: 2025-01-23
 
 ## Overview
 
-Performance optimization improves application speed and resource usage. For OSE Platform processing thousands of Zakat calculations, optimizing hot paths significantly reduces processing time.
+Performance optimization improves application speed and resource usage. For a-demo processing thousands of Zakat calculations, optimizing hot paths significantly reduces processing time.
 
 ### Performance Principles
 
@@ -430,7 +430,7 @@ def calculate_zakat_generator(wealth_items: List[Decimal]):
 
 **Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
-**Maintainers**: OSE Platform Documentation Team
+**Maintainers**: a-demo Documentation Team
 
 ## Python Performance Optimization
 

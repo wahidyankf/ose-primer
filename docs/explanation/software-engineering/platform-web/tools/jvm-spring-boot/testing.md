@@ -39,12 +39,12 @@ updated: 2026-01-26
 - [Test Configuration](#test-configuration)
 - [Advanced Testing Techniques](#advanced-testing-techniques)
 - [Testing Best Practices](#testing-best-practices)
-- [OSE Platform Testing Examples](#ose-platform-testing-examples)
+- [a-demo Testing Examples](#ose-platform-testing-examples)
 - [Related Documentation](#related-documentation)
 
 ## Overview
 
-Testing is fundamental to Spring Boot application quality. This guide covers the complete testing spectrum from fast unit tests to comprehensive integration tests, with practical OSE Platform examples for Zakat, Murabaha, and Waqf domains.
+Testing is fundamental to Spring Boot application quality. This guide covers the complete testing spectrum from fast unit tests to comprehensive integration tests, with practical a-demo examples for Zakat, Murabaha, and Waqf domains.
 
 ### Testing Pyramid
 
@@ -1663,6 +1663,6 @@ class CompleteWaqfTest {
 - [Spring Boot Idioms](./idioms.md) - Testing patterns
 - [Spring Boot Best Practices](./best-practices.md) - Test standards
 
-**Hands-on Learning (AyoKoding)**:
+**Hands-on Learning (a-demo)**:
 
 **Last Updated**: 2026-01-26

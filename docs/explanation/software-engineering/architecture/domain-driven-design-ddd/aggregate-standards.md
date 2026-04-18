@@ -1,6 +1,6 @@
 ---
 title: "DDD Aggregate Standards"
-description: OSE Platform standards for aggregate design, consistency boundaries, and Islamic finance invariants
+description: a-demo standards for aggregate design, consistency boundaries, and Islamic finance invariants
 category: explanation
 subcategory: architecture
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-OSE Platform aggregate design standards for Islamic finance systems.
+a-demo aggregate design standards for Islamic finance systems.
 
 ## REQUIRED: Aggregates Enforce Business Invariants
 

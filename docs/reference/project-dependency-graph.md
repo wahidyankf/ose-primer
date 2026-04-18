@@ -62,7 +62,7 @@ graph RL
 
   %% Go libs (leaf / near-leaf)
   GC[golang-commons]
-  HC[hugo-commons]
+  HC[golang-commons]
 
   %% Elixir libs
   EG[elixir-gherkin]
@@ -74,16 +74,16 @@ graph RL
 
   %% CLI tools
   RC[rhino-cli]
-  AKC[ayokoding-cli]
-  OPC[oseplatform-cli]
+  AKC[rhino-cli]
+  OPC[rhino-cli]
 
   %% Hugo sites
-  AKW[ayokoding-web]
-  OPW[oseplatform-web]
+  AKW[a-demo-fs-ts-nextjs]
+  OPW[a-demo-fs-ts-nextjs]
 
-  %% OrganicLever
-  OLW[organiclever-fe]
-  OLE[organiclever-fe-e2e]
+  %% a-demo
+  OLW[a-demo-fe-ts-nextjs]
+  OLE[a-demo-fe-e2e]
 
   %% Demo backends (grouped)
   GOLANG[a-demo-be-golang-gin]
@@ -133,7 +133,7 @@ graph RL
   COC --> DC
   COC --> RC
 
-  %% OrganicLever
+  %% a-demo
   OLW --> RC
   OLE --> OLW
 
@@ -241,7 +241,7 @@ Repository management CLI used by most projects for coverage validation
 contract post-processing (`contracts java-clean-imports`, `contracts dart-scaffold`),
 and annotation validation (`java validate-annotations`).
 
-- **Dependents**: 22 projects (all demo apps, CLI tools, libs, organiclever-fe)
+- **Dependents**: 22 projects (all demo apps, CLI tools, libs, a-demo-fe-ts-nextjs)
 - **Mechanism**: `implicitDependencies`
 - **Own dependency**: `golang-commons`
 - **Note**: `golang-commons` does NOT depend on `rhino-cli` to avoid a circular
@@ -254,7 +254,7 @@ and annotation validation (`java validate-annotations`).
 
 Shared Go utilities (time formatting, test helpers, output capture).
 
-- **Dependents**: `rhino-cli`, `hugo-commons`, `ayokoding-cli`, `oseplatform-cli`
+- **Dependents**: `rhino-cli`, `golang-commons`, `rhino-cli`, `rhino-cli`
 - **Mechanism**: Go module `replace` directives + `implicitDependencies`
 
 ## Project Dependency Table
@@ -297,11 +297,11 @@ All demo backends share the same dependency pattern.
 
 ### E2E Test Projects
 
-| Project             | Dependencies                                   | Spec Inputs                                |
-| ------------------- | ---------------------------------------------- | ------------------------------------------ |
-| a-demo-be-e2e       | all 11 a-demo-be-\* backends, a-demo-contracts | be/gherkin/\* (typecheck, test:quick)      |
-| a-demo-fe-e2e       | all 3 a-demo-fe-\* frontends, a-demo-contracts | fe/gherkin/\* (typecheck, test:quick)      |
-| organiclever-fe-e2e | organiclever-fe                                | organiclever-fe/\* (typecheck, test:quick) |
+| Project       | Dependencies                                   | Spec Inputs                                    |
+| ------------- | ---------------------------------------------- | ---------------------------------------------- |
+| a-demo-be-e2e | all 11 a-demo-be-\* backends, a-demo-contracts | be/gherkin/\* (typecheck, test:quick)          |
+| a-demo-fe-e2e | all 3 a-demo-fe-\* frontends, a-demo-contracts | fe/gherkin/\* (typecheck, test:quick)          |
+| a-demo-fe-e2e | a-demo-fe-ts-nextjs                            | a-demo-fe-ts-nextjs/\* (typecheck, test:quick) |
 
 E2E projects use `bddgen` to generate TypeScript from `.feature` files in
 `test:quick` and `typecheck`. Gherkin spec inputs ensure cache invalidation
@@ -309,41 +309,41 @@ when feature files change.
 
 ### Hugo Sites
 
-| Project         | Dependencies    | Spec Inputs |
-| --------------- | --------------- | ----------- |
-| oseplatform-web | oseplatform-cli | (none)      |
+| Project             | Dependencies | Spec Inputs |
+| ------------------- | ------------ | ----------- |
+| a-demo-fs-ts-nextjs | rhino-cli    | (none)      |
 
 Hugo sites depend on their CLI tools for content automation (link checking).
 The CLI tools are built via `dependsOn` in `links:check` and `test:quick` targets.
 
 ### Next.js Content Platforms
 
-| Project       | Dependencies  | Spec Inputs |
-| ------------- | ------------- | ----------- |
-| ayokoding-web | ayokoding-cli | (none)      |
+| Project             | Dependencies | Spec Inputs |
+| ------------------- | ------------ | ----------- |
+| a-demo-fs-ts-nextjs | rhino-cli    | (none)      |
 
-ayokoding-web depends on ayokoding-cli for link validation.
+a-demo-fs-ts-nextjs depends on rhino-cli for link validation.
 
 ### CLI Tools
 
-| Project         | Dependencies                            | Spec Inputs                           |
-| --------------- | --------------------------------------- | ------------------------------------- |
-| ayokoding-cli   | golang-commons, hugo-commons, rhino-cli | ayokoding-cli/\* (test:integration)   |
-| oseplatform-cli | golang-commons, hugo-commons, rhino-cli | oseplatform-cli/\* (test:integration) |
-| rhino-cli       | golang-commons                          | rhino-cli/\* (test:integration)       |
+| Project   | Dependencies                              | Spec Inputs                     |
+| --------- | ----------------------------------------- | ------------------------------- |
+| rhino-cli | golang-commons, golang-commons, rhino-cli | rhino-cli/\* (test:integration) |
+| rhino-cli | golang-commons, golang-commons, rhino-cli | rhino-cli/\* (test:integration) |
+| rhino-cli | golang-commons                            | rhino-cli/\* (test:integration) |
 
-### OrganicLever
+### a-demo
 
-| Project         | Dependencies | Spec Inputs                           |
-| --------------- | ------------ | ------------------------------------- |
-| organiclever-fe | rhino-cli    | organiclever-fe/\* (test:integration) |
+| Project             | Dependencies | Spec Inputs                               |
+| ------------------- | ------------ | ----------------------------------------- |
+| a-demo-fe-ts-nextjs | rhino-cli    | a-demo-fe-ts-nextjs/\* (test:integration) |
 
 ### Libraries
 
 | Project                 | Dependencies                | Spec Inputs                          |
 | ----------------------- | --------------------------- | ------------------------------------ |
 | golang-commons          | (none)                      | golang-commons/\* (test:integration) |
-| hugo-commons            | golang-commons, rhino-cli   | hugo-commons/\* (test:integration)   |
+| golang-commons          | golang-commons, rhino-cli   | golang-commons/\* (test:integration) |
 | elixir-gherkin          | rhino-cli                   | (none)                               |
 | elixir-cabbage          | elixir-gherkin, rhino-cli   | (none)                               |
 | elixir-openapi-codegen  | a-demo-contracts, rhino-cli | (none)                               |
@@ -366,10 +366,10 @@ All Gherkin specs and API contracts live under `specs/` and are consumed via
 | `specs/apps/a-demo/be/gherkin/` | 11 demo backends + a-demo-be-e2e | test:unit, test:quick, typecheck |
 | `specs/apps/a-demo/fe/gherkin/` | 3 demo frontends + a-demo-fe-e2e | test:unit, test:quick, typecheck |
 | `specs/apps/rhino/`             | rhino-cli                        | test:integration                 |
-| `specs/apps/ayokoding/`         | ayokoding-cli, ayokoding-web     | test:integration                 |
-| `specs/apps/oseplatform/`       | oseplatform-cli, oseplatform-web | test:integration                 |
+| `specs/apps/a-demo/`            | rhino-cli, a-demo-fs-ts-nextjs   | test:integration                 |
+| `specs/apps/a-demo/`            | rhino-cli, a-demo-fs-ts-nextjs   | test:integration                 |
 | `specs/libs/golang-commons/`    | golang-commons                   | test:integration                 |
-| `specs/libs/hugo-commons/`      | hugo-commons                     | test:integration                 |
+| `specs/libs/golang-commons/`    | golang-commons                   | test:integration                 |
 
 ## Design Decisions
 
@@ -391,7 +391,7 @@ consuming apps.
 
 ### Why E2E projects need spec inputs
 
-E2E projects (`a-demo-be-e2e`, `a-demo-fe-e2e`, `organiclever-fe-e2e`) use
+E2E projects (`a-demo-be-e2e`, `a-demo-fe-e2e`, `a-demo-fe-e2e`) use
 `bddgen` to generate TypeScript from `.feature` files in their `test:quick`
 and `typecheck` targets. Without spec inputs, feature file changes would not
 invalidate the cache, causing stale generated code.

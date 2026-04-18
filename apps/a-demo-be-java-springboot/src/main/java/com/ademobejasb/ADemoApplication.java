@@ -3,11 +3,11 @@ package com.ademobejasb;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/** Entry point for the OrganicLever Spring Boot application. */
+/** Entry point for the a-demo Spring Boot application. */
 @SpringBootApplication
-public final class OrganicLeverApplication {
+public final class ADemoApplication {
 
-    private OrganicLeverApplication() {
+    private ADemoApplication() {
     }
 
     /**
@@ -16,6 +16,6 @@ public final class OrganicLeverApplication {
      * @param args command-line arguments passed to the application
      */
     public static void main(final String[] args) {
-        SpringApplication.run(OrganicLeverApplication.class, args);
+        SpringApplication.run(ADemoApplication.class, args);
     }
 }

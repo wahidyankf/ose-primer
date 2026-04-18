@@ -34,8 +34,8 @@ public class CommonSteps {
         databaseCleaner.truncateAll();
     }
 
-    @Given("the OrganicLever API is running")
-    public void theOrganicLeverApiIsRunning() {
+    @Given("the a-demo API is running")
+    public void theADemoApiIsRunning() {
         // No-op: Spring Boot context is always ready when scenarios execute.
     }
 

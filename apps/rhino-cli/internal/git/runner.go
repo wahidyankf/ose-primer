@@ -240,15 +240,15 @@ func step3NxPreCommit(gitRoot string, deps Deps) {
 	}
 }
 
-// step4StageAyokoding auto-stages ayokoding-web content changes so they are
-// included in the current commit. The ayokoding-web content directory may be
+// step4StageAyokoding auto-stages a-demo-fs-ts-nextjs content changes so they are
+// included in the current commit. The a-demo-fs-ts-nextjs content directory may be
 // modified by content-generation scripts or tooling that runs outside of the
 // normal edit-stage workflow. This step ensures those modifications are not
 // silently left unstaged and forgotten. Errors are intentionally ignored
 // because the step is best-effort: if git add fails (e.g. no changes), the
 // commit should still proceed normally.
 func step4StageAyokoding(gitRoot string, deps Deps) {
-	cmd := deps.ExecCommand("git", "add", "apps/ayokoding-web/content/")
+	cmd := deps.ExecCommand("git", "add", "apps/a-demo-fs-ts-nextjs/content/")
 	cmd.Dir = gitRoot
 	_ = cmd.Run()
 }
@@ -267,7 +267,7 @@ func step5LintStaged(gitRoot string, deps Deps) error {
 
 // step5bSyncLockfiles regenerates app-level package-lock.json when package.json is staged.
 //
-// Some apps (e.g. a-demo-be-ts-effect, organiclever-fe) have their own package-lock.json
+// Some apps (e.g. a-demo-be-ts-effect, a-demo-fe-ts-nextjs) have their own package-lock.json
 // used by Dockerfile for `npm ci`. If package.json is updated but the lockfile is not
 // regenerated, `npm ci` fails in Docker builds (EUSAGE: lockfile out of sync).
 //

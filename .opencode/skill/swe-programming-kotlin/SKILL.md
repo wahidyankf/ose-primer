@@ -15,13 +15,13 @@ Progressive disclosure of Kotlin coding standards for agents writing Kotlin code
 
 ## Prerequisite Knowledge
 
-**IMPORTANT**: This skill provides **OSE Platform-specific style guides**, not educational tutorials.
+**IMPORTANT**: This skill provides **a-demo-specific style guides**, not educational tutorials.
 
-**You MUST understand Kotlin fundamentals before using these standards.** Complete the AyoKoding Kotlin learning path first:
+**You MUST understand Kotlin fundamentals before using these standards.** Complete the a-demo Kotlin learning path first:
 
-**What this skill covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply Kotlin knowledge in THIS codebase.
+**What this skill covers**: a-demo naming conventions, framework choices, repository-specific patterns, how to apply Kotlin knowledge in THIS codebase.
 
-**What this skill does NOT cover**: Kotlin syntax, language fundamentals, generic patterns (those are in ayokoding-web).
+**What this skill does NOT cover**: Kotlin syntax, language fundamentals, generic patterns (those are in a-demo-fs-ts-nextjs).
 
 ## Quick Standards Reference
 

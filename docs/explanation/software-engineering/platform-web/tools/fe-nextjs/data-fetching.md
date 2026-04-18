@@ -227,7 +227,7 @@ const res = await fetch("https://api.example.com/data", {
 });
 ```
 
-### OSE Platform: Murabaha Vendor Pricing
+### a-demo: Murabaha Vendor Pricing
 
 ```typescript
 // app/(platform)/murabaha/vendors/[id]/page.tsx
@@ -247,7 +247,7 @@ interface Vendor {
 }
 
 async function getVendorPricing(vendorId: string): Promise<Vendor> {
-  const res = await fetch(`https://api.oseplatform.com/vendors/${vendorId}/pricing`, {
+  const res = await fetch(`https://api.example.com/vendors/${vendorId}/pricing`, {
     headers: {
       'Authorization': `Bearer ${process.env.API_KEY}`,
     },

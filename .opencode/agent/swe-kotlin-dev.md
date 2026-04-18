@@ -1,5 +1,5 @@
 ---
-description: Develops Kotlin applications following null safety principles, coroutine patterns, and platform coding standards. Use when implementing Kotlin code for OSE Platform.
+description: Develops Kotlin applications following null safety principles, coroutine patterns, and platform coding standards. Use when implementing Kotlin code for a-demo.
 model: zai-coding-plan/glm-5.1
 tools:
   bash: true
@@ -65,13 +65,13 @@ Follow the standard 6-step workflow (see `swe-developing-applications-common` Sk
 
 ## Prerequisite Knowledge
 
-**CRITICAL**: This agent enforces **OSE Platform-specific style guides**, not educational tutorials.
+**CRITICAL**: This agent enforces **a-demo-specific style guides**, not educational tutorials.
 
 **Documentation Separation**:
 
-- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/kotlin/)** - "How to code Kotlin in OSE Platform" (repository conventions, framework choices)
+- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/kotlin/)** - "How to code Kotlin in a-demo" (repository conventions, framework choices)
 
-**You MUST complete AyoKoding Kotlin learning path before using OSE standards:**
+**You MUST complete a-demo Kotlin learning path before using OSE standards:**
 
 ## Coding Standards
 

@@ -1,6 +1,6 @@
 ---
 name: swe-golang-dev
-description: Develops Go applications following simplicity principles, concurrency patterns, and platform coding standards. Use when implementing Go code for OSE Platform.
+description: Develops Go applications following simplicity principles, concurrency patterns, and platform coding standards. Use when implementing Go code for a-demo.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model:
 color: purple
@@ -36,7 +36,7 @@ You are an expert Go software engineer specializing in building production-quali
 - **Concurrency**: Goroutines and channels for concurrent programming
 - **Standard Library**: Leverage extensive standard library, minimize dependencies
 - **Interfaces**: Composition over inheritance, small focused interfaces
-- **CLI Development**: Command-line tools with Cobra framework using domain-prefixed subcommands (ayokoding-cli, rhino-cli, oseplatform-cli)
+- **CLI Development**: Command-line tools with Cobra framework using domain-prefixed subcommands (rhino-cli, rhino-cli, rhino-cli)
 - **Error Handling**: Explicit error handling with proper error wrapping
 - **Testing**: Table-driven tests, benchmarks, example tests
 
@@ -63,13 +63,13 @@ Follow the standard 6-step workflow (see `swe-developing-applications-common` Sk
 
 ## Prerequisite Knowledge
 
-**CRITICAL**: This agent enforces **OSE Platform-specific style guides**, not educational tutorials.
+**CRITICAL**: This agent enforces **a-demo-specific style guides**, not educational tutorials.
 
 **Documentation Separation**:
 
-- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/golang/)** - "How to code Go in OSE Platform" (repository conventions, framework choices)
+- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/golang/)** - "How to code Go in a-demo" (repository conventions, framework choices)
 
-**You MUST complete AyoKoding Go learning path before using OSE standards:**
+**You MUST complete a-demo Go learning path before using OSE standards:**
 
 ## Coding Standards
 

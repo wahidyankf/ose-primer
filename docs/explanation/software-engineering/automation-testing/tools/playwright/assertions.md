@@ -1,6 +1,6 @@
 ---
 title: "Playwright Assertion Standards"
-description: Authoritative OSE Platform Playwright assertion standards (web-first assertions, auto-waiting, assertion patterns)
+description: Authoritative a-demo Playwright assertion standards (web-first assertions, auto-waiting, assertion patterns)
 category: explanation
 subcategory: automation-testing
 tags:
@@ -23,15 +23,15 @@ updated: 2026-02-08
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Playwright tutorial. We define HOW to write assertions in THIS codebase, not WHAT Playwright assertions are.
+**This document is a-demo-specific**, not a Playwright tutorial. We define HOW to write assertions in THIS codebase, not WHAT Playwright assertions are.
 
 ## Purpose
 
-This document defines **authoritative assertion standards** for Playwright end-to-end testing in the OSE Platform. These are prescriptive rules that MUST be followed to ensure reliable, maintainable, and expressive test assertions.
+This document defines **authoritative assertion standards** for Playwright end-to-end testing in the a-demo. These are prescriptive rules that MUST be followed to ensure reliable, maintainable, and expressive test assertions.
 
-**Target Audience**: OSE Platform E2E test developers, technical reviewers, automated test quality tools
+**Target Audience**: a-demo E2E test developers, technical reviewers, automated test quality tools
 
-**Scope**: OSE Platform assertion patterns, web-first assertions, auto-waiting behavior, and assertion best practices
+**Scope**: a-demo assertion patterns, web-first assertions, auto-waiting behavior, and assertion best practices
 
 ## Software Engineering Principles
 
@@ -297,7 +297,7 @@ await expect(page.getByRole("row")).toHaveCount(10);
 await expect(page.getByRole("button", { name: "Edit" })).toHaveCount(5);
 ```
 
-## OSE Platform Assertion Patterns
+## a-demo Assertion Patterns
 
 ### Financial Amount Assertions
 

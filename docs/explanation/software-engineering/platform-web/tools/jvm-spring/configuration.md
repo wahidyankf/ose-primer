@@ -52,7 +52,7 @@ Java configuration uses `@Configuration` classes with `@Bean` methods to define 
 ```java
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com.oseplatform.zakat")
+@ComponentScan(basePackages = "com.a-demo.zakat")
 @PropertySource("classpath:application.properties")
 public class ZakatApplicationConfig {
 
@@ -110,7 +110,7 @@ public class ZakatApplicationConfig {
 ```kotlin
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = ["com.oseplatform.zakat"])
+@ComponentScan(basePackages = ["com.a-demo.zakat"])
 @PropertySource("classpath:application.properties")
 class ZakatApplicationConfig {
 
@@ -220,9 +220,9 @@ fun main() {
 @Configuration
 @ComponentScan(
   basePackages = {
-    "com.oseplatform.murabaha.domain",
-    "com.oseplatform.murabaha.application",
-    "com.oseplatform.murabaha.infrastructure"
+    "com.a-demo.murabaha.domain",
+    "com.a-demo.murabaha.application",
+    "com.a-demo.murabaha.infrastructure"
   },
   includeFilters = @ComponentScan.Filter(
     type = FilterType.ANNOTATION,
@@ -230,7 +230,7 @@ fun main() {
   ),
   excludeFilters = @ComponentScan.Filter(
     type = FilterType.REGEX,
-    pattern = "com\\.oseplatform\\.murabaha\\..*\\.test\\..*"
+    pattern = "com\\.a-demo\\.murabaha\\..*\\.test\\..*"
   )
 )
 public class MurabahaApplicationConfig {
@@ -244,9 +244,9 @@ public class MurabahaApplicationConfig {
 @Configuration
 @ComponentScan(
   basePackages = [
-    "com.oseplatform.murabaha.domain",
-    "com.oseplatform.murabaha.application",
-    "com.oseplatform.murabaha.infrastructure"
+    "com.a-demo.murabaha.domain",
+    "com.a-demo.murabaha.application",
+    "com.a-demo.murabaha.infrastructure"
   ],
   includeFilters = [
     ComponentScan.Filter(
@@ -257,7 +257,7 @@ public class MurabahaApplicationConfig {
   excludeFilters = [
     ComponentScan.Filter(
       type = FilterType.REGEX,
-      pattern = ["com\\.oseplatform\\.murabaha\\..*\\.test\\..*"]
+      pattern = ["com\\.a-demo\\.murabaha\\..*\\.test\\..*"]
     )
   ]
 )
@@ -669,7 +669,7 @@ donation.max-amount=1000000.00
 notification.email.enabled=true
 notification.sms.enabled=false
 notification.email.smtp-host=smtp.gmail.com
-notification.email.from=noreply@oseplatform.com
+notification.email.from=noreply@example.com
 ```
 
 ### Using Environment Interface
@@ -972,7 +972,7 @@ class WebConfig : WebMvcConfigurer {
   <context:property-placeholder location="classpath:application.properties"/>
 
   <!-- Component scanning -->
-  <context:component-scan base-package="com.oseplatform.zakat"/>
+  <context:component-scan base-package="com.a-demo.zakat"/>
 
   <!-- DataSource bean -->
   <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
@@ -1021,7 +1021,7 @@ public class ZakatApplication {
 
 ```java
 @Configuration
-@ComponentScan(basePackages = "com.oseplatform.zakat")
+@ComponentScan(basePackages = "com.a-demo.zakat")
 public class HybridConfiguration {
 
   // Explicit bean definitions for infrastructure
@@ -1044,7 +1044,7 @@ public class HybridConfiguration {
 
 ```kotlin
 @Configuration
-@ComponentScan(basePackages = ["com.oseplatform.zakat"])
+@ComponentScan(basePackages = ["com.a-demo.zakat"])
 class HybridConfiguration {
 
   // Explicit bean definitions for infrastructure

@@ -1,6 +1,6 @@
 ---
 title: "F# Performance Standards"
-description: Authoritative OSE Platform F# performance standards — tail recursion, struct DUs, BenchmarkDotNet, AltCover profiling
+description: Authoritative a-demo F# performance standards — tail recursion, struct DUs, BenchmarkDotNet, AltCover profiling
 category: explanation
 subcategory: prog-lang
 tags:
@@ -26,13 +26,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not an F# tutorial.
+**This document is a-demo-specific**, not an F# tutorial.
 
 ## Purpose
 
-This document defines **authoritative performance standards** for F# development in OSE Platform. Performance optimization follows the principle: make it work → make it right → make it fast. Premature optimization is prohibited. Measure first, optimize second.
+This document defines **authoritative performance standards** for F# development in a-demo. Performance optimization follows the principle: make it work → make it right → make it fast. Premature optimization is prohibited. Measure first, optimize second.
 
-**Target Audience**: OSE Platform F# developers working on performance-sensitive components
+**Target Audience**: a-demo F# developers working on performance-sensitive components
 
 **Scope**: Tail recursion, struct discriminated unions, sequence vs list vs array, BenchmarkDotNet, AltCover, closure costs
 

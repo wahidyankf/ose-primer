@@ -76,7 +76,7 @@ graph TD
 ```java
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "com.oseplatform.zakat.api")
+@ComponentScan(basePackages = "com.a-demo.zakat.api")
 public class WebConfig implements WebMvcConfigurer {
 
   @Override
@@ -105,7 +105,7 @@ public class WebConfig implements WebMvcConfigurer {
 ```kotlin
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = ["com.oseplatform.zakat.api"])
+@ComponentScan(basePackages = ["com.a-demo.zakat.api"])
 class WebConfig : WebMvcConfigurer {
 
   override fun configureViewResolvers(registry: ViewResolverRegistry) {
@@ -598,7 +598,7 @@ public class WebConfig implements WebMvcConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/api/**")
-      .allowedOrigins("https://oseplatform.com", "https://app.oseplatform.com")
+      .allowedOrigins("https://example.com", "https://app.example.com")
       .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
       .allowedHeaders("*")
       .allowCredentials(true)
@@ -615,7 +615,7 @@ class WebConfig : WebMvcConfigurer {
 
   override fun addCorsMappings(registry: CorsRegistry) {
     registry.addMapping("/api/**")
-      .allowedOrigins("https://oseplatform.com", "https://app.oseplatform.com")
+      .allowedOrigins("https://example.com", "https://app.example.com")
       .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
       .allowedHeaders("*")
       .allowCredentials(true)

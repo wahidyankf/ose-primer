@@ -53,7 +53,7 @@ Used for Java-based configuration without XML.
 ```java
 // Configuration class
 @Configuration
-@ComponentScan(basePackages = "com.oseplatform.zakat")
+@ComponentScan(basePackages = "com.a-demo.zakat")
 public class ZakatApplicationConfig {
 
   @Bean
@@ -82,7 +82,7 @@ public class ZakatApplication {
 ```kotlin
 // Configuration class
 @Configuration
-@ComponentScan(basePackages = ["com.oseplatform.zakat"])
+@ComponentScan(basePackages = ["com.a-demo.zakat"])
 class ZakatApplicationConfig {
 
   @Bean
@@ -125,7 +125,7 @@ Used for web applications.
 ```java
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "com.oseplatform.murabaha.api")
+@ComponentScan(basePackages = "com.a-demo.murabaha.api")
 public class WebConfig implements WebMvcConfigurer {
   // Web configuration
 }
@@ -1000,7 +1000,7 @@ public class DonationService {
 - [Spring Framework Configuration](./configuration.md) - Bean configuration
 - [Spring Framework Best Practices](./best-practices.md) - DI best practices
 
-**Hands-on Learning (AyoKoding)**:
+**Hands-on Learning (a-demo)**:
 
 **Spring Boot Extension**:
 

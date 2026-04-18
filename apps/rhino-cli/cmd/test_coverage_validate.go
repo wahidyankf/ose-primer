@@ -38,7 +38,7 @@ The coverage file path is relative to the git repository root.`,
   rhino-cli test-coverage validate apps/rhino-cli/cover.out 85
 
   # Check LCOV coverage
-  rhino-cli test-coverage validate apps/organiclever-fe/coverage/lcov.info 85
+  rhino-cli test-coverage validate apps/a-demo-fe-ts-nextjs/coverage/lcov.info 85
 
   # Check JaCoCo XML coverage
   rhino-cli test-coverage validate apps/a-demo-be-java-springboot/target/site/jacoco-integration/jacoco.xml 85

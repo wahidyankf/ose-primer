@@ -35,8 +35,8 @@ Progressive disclosure of Java stack coding standards for agents writing Java co
 
 **Packages**: lowercase with dots
 
-- `com.oseplatform.domain.account`
-- `com.oseplatform.infrastructure.persistence`
+- `com.a-demo.domain.account`
+- `com.a-demo.infrastructure.persistence`
 
 ### Modern Java Features (Java 17+)
 

@@ -1,6 +1,6 @@
 ---
 title: "Spring Framework Build Configuration"
-description: Authoritative OSE Platform Maven build standards for Spring Framework projects (POM structure, dependency management, Spring-specific plugins)
+description: Authoritative a-demo Maven build standards for Spring Framework projects (POM structure, dependency management, Spring-specific plugins)
 category: explanation
 subcategory: platform-web-tools
 tags:
@@ -21,13 +21,13 @@ updated: 2026-02-06
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Spring Framework tutorial.
+**This document is a-demo-specific**, not a Spring Framework tutorial.
 
 ## Purpose
 
-This document defines **authoritative build configuration standards** for Spring Framework (non-Boot) projects in OSE Platform. These prescriptive rules govern Maven POM structure, Spring dependency management, plugin configuration, and multi-module organization.
+This document defines **authoritative build configuration standards** for Spring Framework (non-Boot) projects in a-demo. These prescriptive rules govern Maven POM structure, Spring dependency management, plugin configuration, and multi-module organization.
 
-**Target Audience**: OSE Platform Spring Framework developers, build engineers, DevOps teams
+**Target Audience**: a-demo Spring Framework developers, build engineers, DevOps teams
 
 **Scope**: Maven multi-module structure, Spring Framework dependencies, Spring-specific plugins, WAR packaging for servlet containers
 
@@ -46,7 +46,7 @@ Spring Framework projects MUST use parent-child POM pattern with Spring dependen
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.oseplatform</groupId>
+  <groupId>com.a-demo</groupId>
   <artifactId>zakat-service-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -242,7 +242,7 @@ Child modules MUST inherit from parent and declare dependencies WITHOUT versions
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.oseplatform</groupId>
+    <groupId>com.a-demo</groupId>
     <artifactId>zakat-service-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
@@ -620,7 +620,7 @@ api → application → domain ← infrastructure
 
 ## Related Standards
 
-**OSE Platform Standards**:
+**a-demo Standards**:
 
 - [Java Build Configuration](../../../programming-languages/java/build-configuration.md) - Java Maven baseline
 - [Spring Framework Code Quality](./code-quality.md) - Spotless, Error Prone, NullAway

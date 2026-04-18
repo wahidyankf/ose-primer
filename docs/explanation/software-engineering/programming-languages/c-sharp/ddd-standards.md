@@ -1,6 +1,6 @@
 ---
 title: "C# DDD Standards"
-description: Authoritative OSE Platform C# Domain-Driven Design standards (Value Objects with records, Aggregate roots, Domain Events, Clean Architecture)
+description: Authoritative a-demo C# Domain-Driven Design standards (Value Objects with records, Aggregate roots, Domain Events, Clean Architecture)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a C# tutorial.
+**This document is a-demo-specific**, not a C# tutorial.
 
 ## Purpose
 
-This document defines **authoritative Domain-Driven Design standards** for C# in the OSE Platform.
+This document defines **authoritative Domain-Driven Design standards** for C# in the a-demo.
 
-**Target Audience**: OSE Platform C# developers modeling Sharia-compliant financial domain
+**Target Audience**: a-demo C# developers modeling Sharia-compliant financial domain
 
 **Scope**: Value Objects with records, Entity<TId> base class, Aggregate roots with invariants, Repository pattern, Domain Events with MediatR, Specification pattern, strongly-typed IDs, Clean Architecture layers
 

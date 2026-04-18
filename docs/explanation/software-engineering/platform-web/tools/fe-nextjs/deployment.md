@@ -107,13 +107,13 @@ vercel --prod
 
 ```bash
 # Environment variables in Vercel
-NEXT_PUBLIC_API_URL=https://api.oseplatform.com
+NEXT_PUBLIC_API_URL=https://api.example.com
 DATABASE_URL=postgresql://...
 JWT_SECRET=...
 GOLD_API_KEY=...
 ```
 
-### OSE Platform Vercel Configuration
+### a-demo Vercel Configuration
 
 ```json
 // vercel.json
@@ -143,7 +143,7 @@ GOLD_API_KEY=...
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://api-internal.oseplatform.com/:path*"
+      "destination": "https://api-internal.example.com/:path*"
     }
   ]
 }
@@ -238,7 +238,7 @@ upstream nextjs_app {
 
 server {
   listen 80;
-  server_name oseplatform.com www.oseplatform.com;
+  server_name example.com www.example.com;
 
   # Redirect HTTP to HTTPS
   return 301 https://$server_name$request_uri;
@@ -246,10 +246,10 @@ server {
 
 server {
   listen 443 ssl http2;
-  server_name oseplatform.com www.oseplatform.com;
+  server_name example.com www.example.com;
 
-  ssl_certificate /etc/letsencrypt/live/oseplatform.com/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/oseplatform.com/privkey.pem;
+  ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
 
   # Security headers
   add_header X-Frame-Options "DENY" always;
@@ -443,7 +443,7 @@ JWT_SECRET=your-secret-key
 GOLD_API_KEY=your-api-key
 
 # .env.production (commit - no secrets!)
-NEXT_PUBLIC_API_URL=https://api.oseplatform.com
+NEXT_PUBLIC_API_URL=https://api.example.com
 NEXT_PUBLIC_ENABLE_ANALYTICS=true
 ```
 
@@ -452,7 +452,7 @@ NEXT_PUBLIC_ENABLE_ANALYTICS=true
 ```bash
 # Public (exposed to browser)
 NEXT_PUBLIC_API_URL=https://api.example.com
-NEXT_PUBLIC_SITE_NAME=OSE Platform
+NEXT_PUBLIC_SITE_NAME=a-demo
 
 # Private (server-only)
 DATABASE_URL=postgresql://...

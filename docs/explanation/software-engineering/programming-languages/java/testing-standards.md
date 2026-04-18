@@ -1,6 +1,6 @@
 ---
 title: "Java Testing Standards"
-description: Authoritative OSE Platform testing standards (JUnit 6, AssertJ, Mockito, TestContainers, Cucumber BDD)
+description: Authoritative a-demo testing standards (JUnit 6, AssertJ, Mockito, TestContainers, Cucumber BDD)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-02-03
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
+**This document is a-demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
 
 ## Purpose
 
-This document defines **authoritative testing standards** for Java development in the OSE Platform. These prescriptive rules govern test frameworks, naming conventions, test organization, and testing patterns.
+This document defines **authoritative testing standards** for Java development in the a-demo. These prescriptive rules govern test frameworks, naming conventions, test organization, and testing patterns.
 
-**Target Audience**: OSE Platform Java developers, QA engineers, technical reviewers
+**Target Audience**: a-demo Java developers, QA engineers, technical reviewers
 
 **Scope**: JUnit 6 setup, assertion libraries, mocking patterns, integration testing, BDD acceptance tests
 
@@ -438,7 +438,7 @@ Feature: Tax Calculation
 
 ### Step Definitions
 
-**Location**: Test packages (e.g., `com.oseplatform.tax.steps`)
+**Location**: Test packages (e.g., `com.a-demo.tax.steps`)
 
 **Example**:
 
@@ -523,7 +523,7 @@ Testing standards are enforced through:
 
 For learning Java fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Java basics from ayokoding-web. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Java basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ## Related Standards
 

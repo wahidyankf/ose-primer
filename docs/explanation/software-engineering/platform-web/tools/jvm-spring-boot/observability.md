@@ -36,7 +36,7 @@ updated: 2026-01-26
 - [Structured Logging](#structured-logging)
 - [Alerting and Dashboards](#alerting-and-dashboards)
 - [Production Monitoring](#production-monitoring)
-- [OSE Platform Observability Examples](#ose-platform-observability-examples)
+- [a-demo Observability Examples](#ose-platform-observability-examples)
 - [Related Documentation](#related-documentation)
 
 ## Overview
@@ -935,7 +935,7 @@ groups:
 ```json
 {
   "dashboard": {
-    "title": "OSE Platform - Zakat Service",
+    "title": "a-demo - Zakat Service",
     "panels": [
       {
         "title": "Zakat Calculations per Minute",
@@ -1119,6 +1119,6 @@ public class ZakatCalculationService {
 - [Spring Boot Idioms](./idioms.md) - Observability patterns
 - [Spring Boot Performance](./performance.md) - Performance metrics
 
-**Hands-on Learning (AyoKoding)**:
+**Hands-on Learning (a-demo)**:
 
 **Last Updated**: 2026-01-26

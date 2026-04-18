@@ -43,8 +43,8 @@ public class UnitCommonSteps {
         dataStore.reset();
     }
 
-    @Given("the OrganicLever API is running")
-    public void theOrganicLeverApiIsRunning() {
+    @Given("the a-demo API is running")
+    public void theADemoApiIsRunning() {
         // No-op: services are always ready when scenarios execute.
     }
 

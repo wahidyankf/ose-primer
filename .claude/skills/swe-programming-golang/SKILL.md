@@ -15,13 +15,13 @@ Progressive disclosure of Go coding standards for agents writing Go code.
 
 ## Prerequisite Knowledge
 
-**IMPORTANT**: This skill provides **OSE Platform-specific style guides**, not educational tutorials.
+**IMPORTANT**: This skill provides **a-demo-specific style guides**, not educational tutorials.
 
-**You MUST understand Go fundamentals before using these standards.** Complete the AyoKoding Go learning path first:
+**You MUST understand Go fundamentals before using these standards.** Complete the a-demo Go learning path first:
 
-**What this skill covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply Go knowledge in THIS codebase.
+**What this skill covers**: a-demo naming conventions, framework choices, repository-specific patterns, how to apply Go knowledge in THIS codebase.
 
-**What this skill does NOT cover**: Go syntax, language fundamentals, generic patterns (those are in ayokoding-web).
+**What this skill does NOT cover**: Go syntax, language fundamentals, generic patterns (those are in a-demo-fs-ts-nextjs).
 
 ## Quick Standards Reference
 

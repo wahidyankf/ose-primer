@@ -1,6 +1,6 @@
 ---
 title: "FSM Framework Standards"
-description: Spring State Machine, XState configuration standards for OSE Platform
+description: Spring State Machine, XState configuration standards for a-demo
 category: explanation
 subcategory: architecture
 tags:

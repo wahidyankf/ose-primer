@@ -1,6 +1,6 @@
 ---
 title: "C# Build Configuration Standards"
-description: Authoritative OSE Platform C# build configuration standards (.csproj, Directory.Build.props, NuGet Central Package Management)
+description: Authoritative a-demo C# build configuration standards (.csproj, Directory.Build.props, NuGet Central Package Management)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a C# tutorial.
+**This document is a-demo-specific**, not a C# tutorial.
 
 ## Purpose
 
-This document defines **authoritative build configuration standards** for C# projects in the OSE Platform.
+This document defines **authoritative build configuration standards** for C# projects in the a-demo.
 
-**Target Audience**: OSE Platform C# developers and DevOps engineers
+**Target Audience**: a-demo C# developers and DevOps engineers
 
 **Scope**: .csproj SDK-style format, Directory.Build.props, NuGet Central Package Management, global.json, dotnet CLI commands, multi-targeting, single-file publish
 
@@ -172,7 +172,7 @@ dotnet nuget verify --all
     <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
 
     <!-- Build metadata -->
-    <Authors>OSE Platform Team</Authors>
+    <Authors>a-demo Team</Authors>
     <Company>Open Sharia Enterprise</Company>
     <Copyright>Copyright © Open Sharia Enterprise 2026</Copyright>
   </PropertyGroup>

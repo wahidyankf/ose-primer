@@ -1,6 +1,6 @@
 ---
 title: "Clojure Testing Standards"
-description: Authoritative OSE Platform Clojure testing standards (clojure.test, Midje, test.check, cloverage)
+description: Authoritative a-demo Clojure testing standards (clojure.test, Midje, test.check, cloverage)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Clojure tutorial.
+**This document is a-demo-specific**, not a Clojure tutorial.
 
 ## Purpose
 
-This document defines authoritative testing standards for Clojure development in OSE Platform. Because Clojure encourages pure functions by default, testing is exceptionally straightforward — pure functions require no mocking and can be tested in isolation at the REPL.
+This document defines authoritative testing standards for Clojure development in a-demo. Because Clojure encourages pure functions by default, testing is exceptionally straightforward — pure functions require no mocking and can be tested in isolation at the REPL.
 
-**Target Audience**: OSE Platform Clojure developers, QA engineers, automated quality tools
+**Target Audience**: a-demo Clojure developers, QA engineers, automated quality tools
 
 **Scope**: clojure.test structure, Midje BDD-style assertions, test.check property-based testing, cloverage coverage requirements, REPL-based test workflows
 

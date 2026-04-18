@@ -1,6 +1,6 @@
 ---
 title: "C# Performance Standards"
-description: Authoritative OSE Platform C# performance standards (Span<T>, ArrayPool, BenchmarkDotNet, dotnet-trace profiling, IAsyncEnumerable)
+description: Authoritative a-demo C# performance standards (Span<T>, ArrayPool, BenchmarkDotNet, dotnet-trace profiling, IAsyncEnumerable)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a C# tutorial.
+**This document is a-demo-specific**, not a C# tutorial.
 
 ## Purpose
 
-This document defines **authoritative performance standards** for C# in the OSE Platform.
+This document defines **authoritative performance standards** for C# in the a-demo.
 
-**Target Audience**: OSE Platform C# developers optimizing memory usage or CPU-bound paths
+**Target Audience**: a-demo C# developers optimizing memory usage or CPU-bound paths
 
 **Scope**: Span<T>/Memory<T>, ArrayPool<T>, stackalloc, struct vs class, BenchmarkDotNet, dotnet-trace/dotnet-counters, IAsyncEnumerable, ValueTask<T>
 

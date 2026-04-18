@@ -32,8 +32,8 @@ to date.
 
 | Variable            | Default                                    | Description                      |
 | ------------------- | ------------------------------------------ | -------------------------------- |
-| `POSTGRES_USER`     | `organiclever`                             | PostgreSQL username              |
-| `POSTGRES_PASSWORD` | `organiclever`                             | PostgreSQL password              |
+| `POSTGRES_USER`     | `a-demo`                                   | PostgreSQL username              |
+| `POSTGRES_PASSWORD` | `a-demo`                                   | PostgreSQL password              |
 | `APP_JWT_SECRET`    | `change-me-in-dev-only-not-for-production` | JWT signing secret (HMAC-SHA256) |
 
 Override defaults by setting variables in your shell or in a `.env` file alongside

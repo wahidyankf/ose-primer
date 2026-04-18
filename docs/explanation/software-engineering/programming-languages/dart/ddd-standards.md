@@ -1,6 +1,6 @@
 ---
 title: "Dart DDD Standards"
-description: Authoritative OSE Platform Dart domain-driven design standards (aggregates, value-objects, repositories)
+description: Authoritative a-demo Dart domain-driven design standards (aggregates, value-objects, repositories)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is OSE Platform-specific**, not a Dart tutorial. We define HOW to implement Domain-Driven Design in THIS codebase, not WHAT DDD is.
+**This document is a-demo-specific**, not a Dart tutorial. We define HOW to implement Domain-Driven Design in THIS codebase, not WHAT DDD is.
 
 ## Purpose
 
-This document defines **authoritative DDD standards** for Dart development in the OSE Platform. Sharia-compliant financial domains (Zakat, Murabaha) require rich domain models with enforced invariants.
+This document defines **authoritative DDD standards** for Dart development in the a-demo. Sharia-compliant financial domains (Zakat, Murabaha) require rich domain models with enforced invariants.
 
-**Target Audience**: OSE Platform Dart developers implementing domain models for Zakat calculation, Murabaha contracts, and Islamic finance
+**Target Audience**: a-demo Dart developers implementing domain models for Zakat calculation, Murabaha contracts, and Islamic finance
 
 **Scope**: Value Objects (records and immutable classes), Entities, Aggregate Roots, Repository interfaces, Domain Events, `freezed` for immutable models, sealed classes for domain states
 
