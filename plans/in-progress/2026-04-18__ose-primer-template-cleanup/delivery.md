@@ -202,70 +202,80 @@
 
 ## Phase 6 — Remove all other plans + clean ideas.md + generated-socials
 
-- [ ] `rtk git rm -r plans/in-progress/2026-04-16__organiclever-fe-local-first`
-- [ ] Edit `plans/in-progress/README.md` — remove the `2026-04-16__organiclever-fe-local-first` bullet from the Active Plans list
-- [ ] Run `rtk ls plans/done/` and confirm count of YYYY-MM-DD\_\_\* entries matches the expected 53 snapshot taken at plan creation
-- [ ] `rtk git rm -r plans/done/2026-01-02__rules-consolidation`
-- [ ] `rtk git rm -r plans/done/2026-01-02__skills-layer-implementation`
-- [ ] `rtk git rm -r plans/done/2026-01-03__agent-skills-simplification`
-- [ ] `rtk git rm -r plans/done/2026-01-03__opencode-adoption`
-- [ ] `rtk git rm -r plans/done/2026-01-06__move-rules-to-root`
-- [ ] `rtk git rm -r plans/done/2026-01-12__claude-code-full-migration`
-- [ ] `rtk git rm -r plans/done/2026-01-17__dolphin-be-init`
-- [ ] `rtk git rm -r plans/done/2026-01-17__markdown-linting`
-- [ ] `rtk git rm -r plans/done/2026-01-17__repository-link-remediation`
-- [ ] `rtk git rm -r plans/done/2026-01-22__stack-lang-golang`
-- [ ] `rtk git rm -r plans/done/2026-02-03__go-docs-alignment`
-- [ ] `rtk git rm -r plans/done/2026-02-14__orca-grid-be-removal`
-- [ ] `rtk git rm -r plans/done/2026-02-23__local-ci-standardization`
-- [ ] `rtk git rm -r plans/done/2026-02-24__dependency-update`
-- [ ] `rtk git rm -r plans/done/2026-03-09__auth-register-login`
-- [ ] `rtk git rm -r plans/done/2026-03-09__organiclever-be-exph`
-- [ ] `rtk git rm -r plans/done/2026-03-11__demo-be-fsharp-giraffe`
-- [ ] `rtk git rm -r plans/done/2026-03-11__demo-be-golang-gin`
-- [ ] `rtk git rm -r plans/done/2026-03-11__demo-be-java-vertx`
-- [ ] `rtk git rm -r plans/done/2026-03-11__demo-be-kotlin-ktor`
-- [ ] `rtk git rm -r plans/done/2026-03-11__demo-be-python-fastapi`
-- [ ] `rtk git rm -r plans/done/2026-03-11__demo-be-rust-axum`
-- [ ] `rtk git rm -r plans/done/2026-03-12__demo-be-clojure-pedestal`
-- [ ] `rtk git rm -r plans/done/2026-03-12__demo-be-csharp-aspnetcore`
-- [ ] `rtk git rm -r plans/done/2026-03-12__demo-be-ts-effect`
-- [ ] `rtk git rm -r plans/done/2026-03-13__demo-specs-consolidation`
-- [ ] `rtk git rm -r plans/done/2026-03-13__testing-standardization`
-- [ ] `rtk git rm -r plans/done/2026-03-17__demo-api-contract-enforcement`
-- [ ] `rtk git rm -r plans/done/2026-03-17__demo-fe-ts-tanstack-start`
-- [ ] `rtk git rm -r plans/done/2026-03-18__api-contract-adoption`
-- [ ] `rtk git rm -r plans/done/2026-03-19__demo-ci-test-standardization`
-- [ ] `rtk git rm -r plans/done/2026-03-20__rhino-cli-coverage-improvements`
-- [ ] `rtk git rm -r plans/done/2026-03-22__demo-fs-ts-nextjs`
-- [ ] `rtk git rm -r plans/done/2026-03-23__ayokoding-web-v2`
-- [ ] `rtk git rm -r plans/done/2026-03-24__ayokoding-web-v1-to-v2-migration`
-- [ ] `rtk git rm -r plans/done/2026-03-25__ayokoding-web-ci-quality-standardization`
-- [ ] `rtk git rm -r plans/done/2026-03-26__database-migration-tooling`
-- [ ] `rtk git rm -r plans/done/2026-03-27__demo-repository-pattern`
-- [ ] `rtk git rm -r plans/done/2026-03-27__ui-development-improvement`
-- [ ] `rtk git rm -r plans/done/2026-03-28__organiclever-fullstack-evolution`
-- [ ] `rtk git rm -r plans/done/2026-03-28__oseplatform-web-nextjs-rewrite`
-- [ ] `rtk git rm -r plans/done/2026-03-30__cli-testing-alignment`
-- [ ] `rtk git rm -r plans/done/2026-03-30__env-backup-restore`
-- [ ] `rtk git rm -r plans/done/2026-03-30__oseplatform-web-e2e-apps`
-- [ ] `rtk git rm -r plans/done/2026-03-31__ci-standardization`
-- [ ] `rtk git rm -r plans/done/2026-03-31__env-enhanced-backup-restore`
-- [ ] `rtk git rm -r plans/done/2026-04-02__spec-coverage-full-enforcement`
-- [ ] `rtk git rm -r plans/done/2026-04-02__specs-structure-consistency`
-- [ ] `rtk git rm -r plans/done/2026-04-04__fsl-license-migration`
-- [ ] `rtk git rm -r plans/done/2026-04-04__native-dev-setup-improvements`
-- [ ] `rtk git rm -r plans/done/2026-04-11__remove-obsidian-compat`
-- [ ] `rtk git rm -r plans/done/2026-04-17__agent-and-workflow-naming-consistency`
-- [ ] `rtk git rm -r plans/done/2026-04-18__plan-convention-brd-prd-split`
-- [ ] Verify `plans/done/` now contains only `README.md`: `rtk ls plans/done/` should show `README.md` and no `YYYY-MM-DD__*` entries
-- [ ] Edit `plans/done/README.md` — rewrite to reflect empty archive: retain H1 "# Completed Plans" and "Completed Projects" section heading; replace the bulleted list body with a short line such as "_No completed plans yet in this template._"
-- [ ] Read `plans/backlog/README.md` — confirm it describes an empty backlog; no edit expected
-- [ ] Rewrite `plans/ideas.md` — replace body with template-generic placeholder: keep H1 "# Ideas" and the one-line description, then replace the section bullets with a single placeholder line such as "_No ideas yet. Capture 1-3 liner ideas here and promote mature ones to backlog/ plans._"
-- [ ] Verify `rtk grep -n "ayokoding\|oseplatform\|organiclever\|FSL" plans/ideas.md` returns empty
-- [ ] Run `rtk ls generated-socials 2>/dev/null` — if present, `rtk git rm -r generated-socials`; if absent, skip
-- [ ] Run `rtk npm run lint:md:fix`
-- [ ] Commit: `rtk git commit -m "chore(cleanup): remove all other plans, reset ideas, drop generated-socials"`
+- [x] `rtk git rm -r plans/in-progress/2026-04-16__organiclever-fe-local-first`
+- [x] Edit `plans/in-progress/README.md` — remove the `2026-04-16__organiclever-fe-local-first` bullet from the Active Plans list
+  - Date: 2026-04-18 — done; replaced with this cleanup plan's own entry until Phase 17 archives it.
+- [x] Run `rtk ls plans/done/` and confirm count of YYYY-MM-DD\_\_\* entries matches the expected 53 snapshot taken at plan creation
+  - Date: 2026-04-18 — done; 53 entries confirmed and deleted.
+- [x] `rtk git rm -r plans/done/2026-01-02__rules-consolidation`
+- [x] `rtk git rm -r plans/done/2026-01-02__skills-layer-implementation`
+- [x] `rtk git rm -r plans/done/2026-01-03__agent-skills-simplification`
+- [x] `rtk git rm -r plans/done/2026-01-03__opencode-adoption`
+- [x] `rtk git rm -r plans/done/2026-01-06__move-rules-to-root`
+- [x] `rtk git rm -r plans/done/2026-01-12__claude-code-full-migration`
+- [x] `rtk git rm -r plans/done/2026-01-17__dolphin-be-init`
+- [x] `rtk git rm -r plans/done/2026-01-17__markdown-linting`
+- [x] `rtk git rm -r plans/done/2026-01-17__repository-link-remediation`
+- [x] `rtk git rm -r plans/done/2026-01-22__stack-lang-golang`
+- [x] `rtk git rm -r plans/done/2026-02-03__go-docs-alignment`
+- [x] `rtk git rm -r plans/done/2026-02-14__orca-grid-be-removal`
+- [x] `rtk git rm -r plans/done/2026-02-23__local-ci-standardization`
+- [x] `rtk git rm -r plans/done/2026-02-24__dependency-update`
+- [x] `rtk git rm -r plans/done/2026-03-09__auth-register-login`
+- [x] `rtk git rm -r plans/done/2026-03-09__organiclever-be-exph`
+- [x] `rtk git rm -r plans/done/2026-03-11__demo-be-fsharp-giraffe`
+- [x] `rtk git rm -r plans/done/2026-03-11__demo-be-golang-gin`
+- [x] `rtk git rm -r plans/done/2026-03-11__demo-be-java-vertx`
+- [x] `rtk git rm -r plans/done/2026-03-11__demo-be-kotlin-ktor`
+- [x] `rtk git rm -r plans/done/2026-03-11__demo-be-python-fastapi`
+- [x] `rtk git rm -r plans/done/2026-03-11__demo-be-rust-axum`
+- [x] `rtk git rm -r plans/done/2026-03-12__demo-be-clojure-pedestal`
+- [x] `rtk git rm -r plans/done/2026-03-12__demo-be-csharp-aspnetcore`
+- [x] `rtk git rm -r plans/done/2026-03-12__demo-be-ts-effect`
+- [x] `rtk git rm -r plans/done/2026-03-13__demo-specs-consolidation`
+- [x] `rtk git rm -r plans/done/2026-03-13__testing-standardization`
+- [x] `rtk git rm -r plans/done/2026-03-17__demo-api-contract-enforcement`
+- [x] `rtk git rm -r plans/done/2026-03-17__demo-fe-ts-tanstack-start`
+- [x] `rtk git rm -r plans/done/2026-03-18__api-contract-adoption`
+- [x] `rtk git rm -r plans/done/2026-03-19__demo-ci-test-standardization`
+- [x] `rtk git rm -r plans/done/2026-03-20__rhino-cli-coverage-improvements`
+- [x] `rtk git rm -r plans/done/2026-03-22__demo-fs-ts-nextjs`
+- [x] `rtk git rm -r plans/done/2026-03-23__ayokoding-web-v2`
+- [x] `rtk git rm -r plans/done/2026-03-24__ayokoding-web-v1-to-v2-migration`
+- [x] `rtk git rm -r plans/done/2026-03-25__ayokoding-web-ci-quality-standardization`
+- [x] `rtk git rm -r plans/done/2026-03-26__database-migration-tooling`
+- [x] `rtk git rm -r plans/done/2026-03-27__demo-repository-pattern`
+- [x] `rtk git rm -r plans/done/2026-03-27__ui-development-improvement`
+- [x] `rtk git rm -r plans/done/2026-03-28__organiclever-fullstack-evolution`
+- [x] `rtk git rm -r plans/done/2026-03-28__oseplatform-web-nextjs-rewrite`
+- [x] `rtk git rm -r plans/done/2026-03-30__cli-testing-alignment`
+- [x] `rtk git rm -r plans/done/2026-03-30__env-backup-restore`
+- [x] `rtk git rm -r plans/done/2026-03-30__oseplatform-web-e2e-apps`
+- [x] `rtk git rm -r plans/done/2026-03-31__ci-standardization`
+- [x] `rtk git rm -r plans/done/2026-03-31__env-enhanced-backup-restore`
+- [x] `rtk git rm -r plans/done/2026-04-02__spec-coverage-full-enforcement`
+- [x] `rtk git rm -r plans/done/2026-04-02__specs-structure-consistency`
+- [x] `rtk git rm -r plans/done/2026-04-04__fsl-license-migration`
+- [x] `rtk git rm -r plans/done/2026-04-04__native-dev-setup-improvements`
+- [x] `rtk git rm -r plans/done/2026-04-11__remove-obsidian-compat`
+- [x] `rtk git rm -r plans/done/2026-04-17__agent-and-workflow-naming-consistency`
+- [x] `rtk git rm -r plans/done/2026-04-18__plan-convention-brd-prd-split`
+- [x] Verify `plans/done/` now contains only `README.md`: `rtk ls plans/done/` should show `README.md` and no `YYYY-MM-DD__*` entries
+  - Date: 2026-04-18 — done; only README.md remains.
+- [x] Edit `plans/done/README.md` — rewrite to reflect empty archive: retain H1 "# Completed Plans" and "Completed Projects" section heading; replace the bulleted list body with a short line such as "_No completed plans yet in this template._"
+  - Date: 2026-04-18 — done.
+- [x] Read `plans/backlog/README.md` — confirm it describes an empty backlog; no edit expected
+  - Date: 2026-04-18 — confirmed empty.
+- [x] Rewrite `plans/ideas.md` — replace body with template-generic placeholder: keep H1 "# Ideas" and the one-line description, then replace the section bullets with a single placeholder line such as "_No ideas yet. Capture 1-3 liner ideas here and promote mature ones to backlog/ plans._"
+  - Date: 2026-04-18 — done.
+- [x] Verify `rtk grep -n "ayokoding\|oseplatform\|organiclever\|FSL" plans/ideas.md` returns empty
+  - Date: 2026-04-18 — confirmed 0 matches.
+- [x] Run `rtk ls generated-socials 2>/dev/null` — if present, `rtk git rm -r generated-socials`; if absent, skip
+  - Date: 2026-04-18 — absent, skipped.
+- [x] Run `rtk npm run lint:md:fix`
+  - Date: 2026-04-18 — 785 files, 0 errors.
+- [x] Commit: `rtk git commit -m "chore(cleanup): remove all other plans, reset ideas, drop generated-socials"`
+  - Date: 2026-04-18 — done (commit 2afe8f28).
 
 ## Phase 7 — Rewrite CLAUDE.md
 

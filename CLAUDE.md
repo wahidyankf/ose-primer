@@ -4,10 +4,9 @@ Guidance for Claude Code (claude.ai/code) working with code in this repository.
 
 ## Project Overview
 
-**open-sharia-enterprise** - Enterprise platform for Sharia-compliant business systems, Nx monorepo.
+**ose-primer** — repository template for OSE-style polyglot Nx monorepos. Ship it as a cloneable or cherry-pickable source so new repos bootstrap with governance, agents, skills, demo scaffolding, and repo tooling already wired together.
 
-**Status**: Phase 1 (OrganicLever - Productivity Tracker)
-**License**: FSL-1.1-MIT for product apps and behavioral specs (WHAT); MIT for libs and demo implementation code (HOW)
+**License**: MIT across the entire repo.
 **Main Branch**: `main` (Trunk Based Development)
 
 ### Tech Stack
@@ -16,98 +15,68 @@ Guidance for Claude Code (claude.ai/code) working with code in this repository.
 - **npm**: 11.10.1
 - **Monorepo**: Nx workspace
 - **Current Apps**:
-  - `oseplatform-web` - Next.js 16 content platform (TypeScript, tRPC)
-  - `oseplatform-web-be-e2e` - Playwright BE E2E tests for oseplatform-web tRPC API
-  - `oseplatform-web-fe-e2e` - Playwright FE E2E tests for oseplatform-web UI
-  - `ayokoding-web` - Next.js 16 fullstack content platform (TypeScript, tRPC)
-  - `ayokoding-web-be-e2e` - Playwright BE E2E tests for ayokoding-web tRPC API
-  - `ayokoding-web-fe-e2e` - Playwright FE E2E tests for ayokoding-web UI
-  - `ayokoding-cli` - Go CLI tool for content link validation
-  - `rhino-cli` - Go CLI tool for repository management (Repository Hygiene & INtegration Orchestrator; includes `java validate-annotations`)
-  - `oseplatform-cli` - Go CLI tool for OSE Platform site maintenance (link validation)
-  - `organiclever-fe` - Next.js 16 landing and promotional website (www.organiclever.com)
-  - `organiclever-be` - F#/Giraffe REST API backend for OrganicLever
-  - `organiclever-fe-e2e` - Playwright FE E2E tests for organiclever-fe
-  - `organiclever-be-e2e` - Playwright BE E2E tests for organiclever-be
-  - `organiclever-contracts` - OpenAPI 3.1 API contract spec (in `specs/apps/organiclever/contracts/`); generates types + encoders/decoders for organiclever apps via `codegen` Nx target
-  - `a-demo-be-golang-gin` - Go/Gin REST API backend (default backend)
-  - `a-demo-be-java-springboot` - Spring Boot REST API backend (Java Spring Boot, alternative to a-demo-be-golang-gin)
-  - `a-demo-be-elixir-phoenix` - Elixir/Phoenix REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-fsharp-giraffe` - F#/Giraffe REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-python-fastapi` - Python/FastAPI REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-rust-axum` - Rust/Axum REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-kotlin-ktor` - Kotlin/Ktor REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-java-vertx` - Java/Vert.x REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-ts-effect` - TypeScript/Effect REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-csharp-aspnetcore` - C#/ASP.NET Core REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-clojure-pedestal` - Clojure/Pedestal REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-contracts` - OpenAPI 3.1 API contract spec (in `specs/apps/a-demo/contracts/`); generates types + encoders/decoders for all demo apps via `codegen` Nx target
-  - `a-demo-be-e2e` - Playwright E2E tests for demo-be REST API backends
-  - `a-demo-fe-ts-nextjs` - Next.js 16 frontend (TypeScript, App Router)
-  - `a-demo-fe-ts-tanstack-start` - TanStack Start frontend (TypeScript, alternative to a-demo-fe-ts-nextjs)
-  - `a-demo-fe-dart-flutterweb` - Flutter Web frontend (Dart, alternative to a-demo-fe-ts-nextjs)
-  - `a-demo-fe-e2e` - Playwright E2E tests for demo-fe frontends
-  - `a-demo-fs-ts-nextjs` - Next.js 16 fullstack app (TypeScript, App Router + Route Handlers)
+  - `rhino-cli` — Go CLI for repository management (Repository Hygiene & INtegration Orchestrator; includes `java validate-annotations`, `test-coverage`, `spec-coverage`, `agents validate-naming`, `workflows validate-naming`, `env backup|restore`, and `doctor`).
+  - `a-demo-be-golang-gin` — Go/Gin REST API backend (default backend).
+  - `a-demo-be-java-springboot` — Spring Boot REST API (alternative).
+  - `a-demo-be-elixir-phoenix` — Elixir/Phoenix REST API (alternative).
+  - `a-demo-be-fsharp-giraffe` — F#/Giraffe REST API (alternative).
+  - `a-demo-be-python-fastapi` — Python/FastAPI REST API (alternative).
+  - `a-demo-be-rust-axum` — Rust/Axum REST API (alternative).
+  - `a-demo-be-kotlin-ktor` — Kotlin/Ktor REST API (alternative).
+  - `a-demo-be-java-vertx` — Java/Vert.x REST API (alternative).
+  - `a-demo-be-ts-effect` — TypeScript/Effect REST API (alternative).
+  - `a-demo-be-csharp-aspnetcore` — C#/ASP.NET Core REST API (alternative).
+  - `a-demo-be-clojure-pedestal` — Clojure/Pedestal REST API (alternative).
+  - `a-demo-contracts` — OpenAPI 3.1 API contract spec at `specs/apps/a-demo/contracts/`; generates types + encoders/decoders for all demo apps via `codegen` Nx target.
+  - `a-demo-be-e2e` — Playwright E2E tests for demo-be backends.
+  - `a-demo-fe-ts-nextjs` — Next.js 16 frontend (TypeScript, App Router).
+  - `a-demo-fe-ts-tanstack-start` — TanStack Start frontend (TypeScript, alternative).
+  - `a-demo-fe-dart-flutterweb` — Flutter Web frontend (Dart, alternative).
+  - `a-demo-fe-e2e` — Playwright E2E tests for demo-fe frontends.
+  - `a-demo-fs-ts-nextjs` — Next.js 16 fullstack (TypeScript, App Router + Route Handlers).
 
 ## Project Structure
 
 ```
-ose-public/
-├── apps/                     # Deployable applications (Nx)
-│   ├── oseplatform-web/    # OSE Platform website
-│   ├── oseplatform-web-be-e2e/ # Playwright BE E2E tests for oseplatform-web
-│   ├── oseplatform-web-fe-e2e/ # Playwright FE E2E tests for oseplatform-web
-│   ├── ayokoding-web/       # AyoKoding website (Next.js 16)
-│   ├── ayokoding-web-be-e2e/ # Playwright BE E2E tests for ayokoding-web
-│   ├── ayokoding-web-fe-e2e/ # Playwright FE E2E tests for ayokoding-web
-│   ├── ayokoding-cli/       # Content link validation CLI
-│   ├── rhino-cli/          # Repository management CLI (java validate-annotations)
-│   ├── oseplatform-cli/     # OSE Platform site CLI
-│   ├── organiclever-fe/      # OrganicLever landing website (Next.js)
-│   ├── organiclever-be/      # OrganicLever F#/Giraffe REST API backend
-│   ├── organiclever-fe-e2e/  # Playwright FE E2E tests for organiclever-fe
-│   ├── organiclever-be-e2e/  # Playwright BE E2E tests for organiclever-be
-│   ├── a-demo-be-java-springboot/ # Spring Boot REST API (Java Spring Boot)
-│   ├── a-demo-be-elixir-phoenix/ # Elixir/Phoenix REST API (alternative implementation)
-│   ├── a-demo-be-fsharp-giraffe/ # F#/Giraffe REST API (alternative implementation)
-│   ├── a-demo-be-golang-gin/ # Go/Gin REST API (alternative implementation)
-│   ├── a-demo-be-python-fastapi/ # Python/FastAPI REST API (alternative implementation)
-│   ├── a-demo-be-rust-axum/ # Rust/Axum REST API (alternative implementation)
-│   ├── a-demo-be-kotlin-ktor/ # Kotlin/Ktor REST API (alternative implementation)
-│   ├── a-demo-be-java-vertx/ # Java/Vert.x REST API (alternative implementation)
-│   ├── a-demo-be-ts-effect/ # TypeScript/Effect REST API (alternative implementation)
-│   ├── a-demo-be-csharp-aspnetcore/ # C#/ASP.NET Core REST API (alternative implementation)
-│   ├── a-demo-be-clojure-pedestal/ # Clojure/Pedestal REST API (alternative implementation)
-│   ├── a-demo-be-e2e/ # Playwright E2E tests for backend
-│   ├── a-demo-fe-ts-nextjs/ # Next.js 16 frontend (TypeScript)
-│   ├── a-demo-fe-ts-tanstack-start/ # TanStack Start frontend (TypeScript)
-│   ├── a-demo-fe-dart-flutterweb/ # Flutter Web frontend (Dart)
-│   ├── a-demo-fe-e2e/ # Playwright E2E tests for frontend
-├── archived/                 # Archived applications (no longer active)
-├── apps-labs/                # Experimental apps (NOT in Nx)
-├── libs/                     # Reusable libraries (Nx, flat structure)
-│   └── golang-commons/      # Shared Go utilities (links checker, output)
-├── docs/                     # Documentation (Diátaxis framework)
-│   ├── tutorials/           # Learning-oriented
-│   ├── how-to/              # Problem-solving
-│   ├── reference/           # Technical reference
-│   └── explanation/         # Conceptual understanding
-├── governance/              # Governance documentation
-│   ├── conventions/         # Documentation standards
-│   ├── development/         # Development practices
-│   ├── principles/          # Core principles
-│   ├── workflows/           # Multi-step processes
-│   └── vision/              # Project vision
-├── plans/                   # Project planning
-│   ├── in-progress/         # Active plans
-│   ├── backlog/             # Future plans
-│   └── done/                # Completed plans
-├── .claude/                 # Claude Code configuration
-│   ├── agents/              # specialized AI agents
-│   └── skills/              # skill packages
-├── .husky/                  # Git hooks
-├── nx.json                  # Nx workspace config
-└── package.json             # Volta pinning + npm workspaces
+ose-primer/
+├── apps/                      # Deployable applications (Nx)
+│   ├── rhino-cli/             # Repository management CLI
+│   ├── a-demo-be-*/           # 11 polyglot backend demos (Go, Java, Elixir, F#, Python, Rust, Kotlin, Java/Vertx, TS/Effect, C#, Clojure)
+│   ├── a-demo-be-e2e/         # Playwright E2E for backends
+│   ├── a-demo-fe-ts-nextjs/   # Next.js 16 frontend
+│   ├── a-demo-fe-ts-tanstack-start/  # TanStack Start frontend
+│   ├── a-demo-fe-dart-flutterweb/    # Flutter Web frontend
+│   ├── a-demo-fe-e2e/         # Playwright E2E for frontends
+│   └── a-demo-fs-ts-nextjs/   # Next.js 16 fullstack
+├── apps-labs/                 # Experimental apps (NOT in Nx)
+├── libs/                      # Reusable libraries (Nx, flat structure)
+│   └── golang-commons/        # Shared Go utilities
+├── specs/                     # Gherkin specs, OpenAPI contracts, C4 diagrams
+│   ├── apps/a-demo/           # Demo app specs (be/, fe/, contracts/)
+│   └── apps/rhino/            # rhino-cli specs
+├── docs/                      # Documentation (Diátaxis framework)
+│   ├── tutorials/             # Learning-oriented
+│   ├── how-to/                # Problem-solving
+│   ├── reference/             # Technical reference
+│   └── explanation/           # Conceptual understanding
+├── governance/                # Governance documentation
+│   ├── conventions/           # Documentation standards
+│   ├── development/           # Development practices
+│   ├── principles/            # Core principles
+│   ├── workflows/             # Multi-step processes
+│   └── vision/                # Project vision
+├── plans/                     # Project planning
+│   ├── ideas.md
+│   ├── in-progress/
+│   ├── backlog/
+│   └── done/
+├── .claude/                   # Claude Code configuration
+│   ├── agents/                # specialized AI agents
+│   └── skills/                # skill packages
+├── .opencode/                 # OpenCode mirror (auto-generated from .claude/)
+├── .husky/                    # Git hooks
+├── nx.json                    # Nx workspace config
+└── package.json               # Volta pinning + npm workspaces
 ```
 
 ## Common Development Commands
@@ -133,14 +102,14 @@ nx affected -t lint
 
 # Three-level test targets
 nx run [project-name]:test:unit          # Mocked dependencies, no Docker, cacheable
-nx run [project-name]:test:integration   # Demo-be: real PostgreSQL via docker-compose; others: MSW/Godog. NOT cacheable
+nx run [project-name]:test:integration   # Demo-be: real PostgreSQL via docker-compose; others: MSW/Godog. NOT cacheable by default
 nx run [project-name]:test:e2e           # Real HTTP via Playwright. NOT cacheable
 
 # Contract codegen (generates types from OpenAPI spec into generated-contracts/)
 nx run a-demo-contracts:lint       # Lint + bundle the OpenAPI spec
 nx run a-demo-contracts:docs       # Generate browsable API documentation
-nx run [project-name]:codegen    # Generate types for a specific app
-nx run-many -t codegen --projects=demo-*  # Generate for all demo apps
+nx run [project-name]:codegen      # Generate types for a specific app
+nx run-many -t codegen --projects=a-demo-*  # Generate for all demo apps
 
 # Dependency graph
 nx graph
@@ -164,23 +133,22 @@ npm run doctor -- --scope minimal # Check only core tools (git, volta, node, npm
 
 **Coverage thresholds** (all enforced via `rhino-cli test-coverage validate` in `test:quick`):
 
-| Project(s)                                                                                                                            | Threshold | Report format                         | Notes                                                  |
-| ------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------------------------------------- | ------------------------------------------------------ |
-| Go CLI projects (`ayokoding-cli`, `oseplatform-cli`, `rhino-cli`, `libs/golang-commons`, `libs/hugo-commons`, `a-demo-be-golang-gin`) | ≥90%      | `cover.out` (go test)                 |                                                        |
-| `a-demo-be-ts-effect`                                                                                                                 | ≥90%      | LCOV (Vitest)                         |                                                        |
-| `a-demo-be-java-springboot`, `a-demo-be-java-vertx`                                                                                   | ≥90%      | JaCoCo XML                            |                                                        |
-| `a-demo-be-kotlin-ktor`                                                                                                               | ≥90%      | Kover JaCoCo XML                      |                                                        |
-| `a-demo-be-python-fastapi`                                                                                                            | ≥90%      | LCOV (coverage.py)                    |                                                        |
-| `a-demo-be-rust-axum`                                                                                                                 | ≥90%      | LCOV (cargo-llvm-cov)                 |                                                        |
-| `a-demo-be-fsharp-giraffe`, `organiclever-be`                                                                                         | ≥90%      | AltCover LCOV (`altcov.info`)         | Uses `--linecover` to avoid F# `task{}` BRDA inflation |
-| `a-demo-be-csharp-aspnetcore`                                                                                                         | ≥90%      | Coverlet LCOV (`coverage.info`)       |                                                        |
-| `a-demo-be-clojure-pedestal`                                                                                                          | ≥90%      | cloverage LCOV (`--lcov`)             |                                                        |
-| `a-demo-be-elixir-phoenix`                                                                                                            | ≥90%      | LCOV (ExCoveralls, `cover/lcov.info`) |                                                        |
-| `a-demo-fs-ts-nextjs`                                                                                                                 | ≥75%      | LCOV (Vitest)                         |                                                        |
-| `ayokoding-web`, `oseplatform-web`                                                                                                    | ≥80%      | LCOV (Vitest)                         |                                                        |
-| `organiclever-fe`, `a-demo-fe-ts-nextjs`, `a-demo-fe-dart-flutterweb`                                                                 | ≥70%      | LCOV                                  | fe threshold: API/auth layers fully mocked by design   |
+| Project(s)                                                               | Threshold | Report format                         | Notes                                                  |
+| ------------------------------------------------------------------------ | --------- | ------------------------------------- | ------------------------------------------------------ |
+| Go projects (`rhino-cli`, `libs/golang-commons`, `a-demo-be-golang-gin`) | ≥90%      | `cover.out` (go test)                 |                                                        |
+| `a-demo-be-ts-effect`                                                    | ≥90%      | LCOV (Vitest)                         |                                                        |
+| `a-demo-be-java-springboot`, `a-demo-be-java-vertx`                      | ≥90%      | JaCoCo XML                            |                                                        |
+| `a-demo-be-kotlin-ktor`                                                  | ≥90%      | Kover JaCoCo XML                      |                                                        |
+| `a-demo-be-python-fastapi`                                               | ≥90%      | LCOV (coverage.py)                    |                                                        |
+| `a-demo-be-rust-axum`                                                    | ≥90%      | LCOV (cargo-llvm-cov)                 |                                                        |
+| `a-demo-be-fsharp-giraffe`                                               | ≥90%      | AltCover LCOV (`altcov.info`)         | Uses `--linecover` to avoid F# `task{}` BRDA inflation |
+| `a-demo-be-csharp-aspnetcore`                                            | ≥90%      | Coverlet LCOV (`coverage.info`)       |                                                        |
+| `a-demo-be-clojure-pedestal`                                             | ≥90%      | cloverage LCOV (`--lcov`)             |                                                        |
+| `a-demo-be-elixir-phoenix`                                               | ≥90%      | LCOV (ExCoveralls, `cover/lcov.info`) |                                                        |
+| `a-demo-fs-ts-nextjs`                                                    | ≥75%      | LCOV (Vitest)                         |                                                        |
+| `a-demo-fe-ts-nextjs`, `a-demo-fe-dart-flutterweb`                       | ≥70%      | LCOV                                  | fe threshold: API/auth layers fully mocked by design   |
 
-**`test:integration` caching**: Default `cache: false` in `nx.json`. Demo-be backends use docker-compose with real PostgreSQL — non-deterministic, must never cache. Projects using in-process mocking only (MSW, Godog) override to `cache: true` in their `project.json`: `organiclever-fe` (MSW), Go CLI apps (Godog at both unit and integration levels), `hugo-commons` (Godog + tmpdir mocks), `golang-commons` (Godog + mock closures).
+**`test:integration` caching**: Default `cache: false` in `nx.json`. Demo-be backends use docker-compose with real PostgreSQL — non-deterministic, must never cache. Projects using in-process mocking only (MSW, Godog) override to `cache: true` in their `project.json`: Go CLI apps (Godog at both unit and integration levels), `golang-commons` (Godog + mock closures).
 
 **Three-level testing standard** (demo-be backends):
 
@@ -201,8 +169,6 @@ Both unit and integration levels consume same Gherkin specs — step implementat
 **Mandatory Nx targets for demo apps**: All `a-demo-be-*` and `a-demo-fe-*` apps must have 7 targets: `codegen`, `typecheck`, `lint`, `build`, `test:unit`, `test:quick`, `test:integration`. Coverage thresholds: backends ≥90%, frontends ≥70%.
 
 **Contract enforcement**: All demo apps have `codegen` Nx target generating types + encoders/decoders from OpenAPI spec at `specs/apps/a-demo/contracts/`. Generated code lives in `generated-contracts/` (gitignored). `codegen` target is dependency of `typecheck` and `build` — contract violations caught by `nx affected -t typecheck` and `test:quick` in pre-push hook and PR quality gate. (Exception: Rust and Flutter also declare `codegen` as dependency of `test:unit` due to generated code required at compile time.)
-
-**OrganicLever contract enforcement**: `organiclever-be` and `organiclever-fe` share OpenAPI 3.1 contract spec at `specs/apps/organiclever/contracts/`. `organiclever-contracts` project lints and bundles spec. Both apps have `codegen` Nx target generating types into `generated-contracts/` (gitignored), same pattern as demo apps.
 
 **See**: [governance/development/quality/three-level-testing-standard.md](./governance/development/quality/three-level-testing-standard.md)
 
@@ -250,19 +216,17 @@ nx graph                     # Visualize dependencies
 
 ## Git Workflow
 
-**Trunk Based Development** - All development on `main`:
+**Trunk Based Development** — all development on `main`:
 
 - **Default branch**: `main`
-- **Environment branches** (Vercel deployment only — never commit directly):
-  - `prod-ayokoding-web` → [ayokoding.com](https://ayokoding.com)
-  - `prod-oseplatform-web` → [oseplatform.com](https://oseplatform.com)
-  - `prod-organiclever-web` → [www.organiclever.com](https://www.organiclever.com/)
 - **Commit format**: Conventional Commits `<type>(<scope>): <description>`
   - Types: feat, fix, docs, style, refactor, perf, test, chore, ci, revert
   - Scope optional but recommended
   - Imperative mood (e.g., "add" not "added")
   - No period at end
 - **Split commits by domain**: Different types/domains/concerns = separate commits
+
+Cloners who deploy to Vercel (or similar) typically mint their own `prod-*` env branches downstream; the template ships with none.
 
 **See**: [governance/development/workflow/commit-messages.md](./governance/development/workflow/commit-messages.md)
 
@@ -337,8 +301,7 @@ Exception: `README.md` for index files, `docs/metadata/` files
 
 ### Linking
 
-GitHub-compatible markdown: `Text` with `.md` extension
-Next.js sites (ayokoding-web, oseplatform-web) use standard GitHub-compatible markdown links with `.md` extension
+GitHub-compatible markdown: `[Text](path.md)` with `.md` extension for internal references.
 
 **See**: [governance/conventions/formatting/linking.md](./governance/conventions/formatting/linking.md)
 
@@ -408,17 +371,15 @@ Plan mode for non-trivial tasks (3+ steps or architecture decisions), subagents 
 
 ## AI Agents
 
-**Content Creation**: docs-maker, docs-tutorial-maker, readme-maker, specs-maker, apps-ayokoding-web-general-maker, apps-ayokoding-web-by-example-maker, apps-ayokoding-web-in-the-field-maker, apps-oseplatform-web-content-maker, swe-ui-maker
+**Content Creation**: docs-maker, docs-tutorial-maker, readme-maker, specs-maker, swe-ui-maker
 
-**Validation**: docs-checker, docs-tutorial-checker, docs-link-checker, docs-software-engineering-separation-checker, readme-checker, specs-checker, apps-ayokoding-web-general-checker, apps-ayokoding-web-by-example-checker, apps-ayokoding-web-in-the-field-checker, apps-ayokoding-web-facts-checker, apps-ayokoding-web-link-checker, apps-oseplatform-web-content-checker, swe-code-checker, swe-ui-checker, ci-checker
+**Validation**: docs-checker, docs-tutorial-checker, docs-link-checker, docs-software-engineering-separation-checker, readme-checker, specs-checker, swe-code-checker, swe-ui-checker, ci-checker
 
-**Fixing**: docs-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, readme-fixer, specs-fixer, apps-ayokoding-web-general-fixer, apps-ayokoding-web-by-example-fixer, apps-ayokoding-web-in-the-field-fixer, apps-ayokoding-web-facts-fixer, apps-ayokoding-web-link-fixer, apps-oseplatform-web-content-fixer, docs-file-manager, swe-ui-fixer, ci-fixer
+**Fixing**: docs-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, readme-fixer, specs-fixer, docs-file-manager, swe-ui-fixer, ci-fixer
 
 **Planning**: plan-maker, plan-checker, plan-execution-checker, plan-fixer (see [plan-execution workflow](./governance/workflows/plan/plan-execution.md))
 
 **Development**: swe-elixir-dev, swe-golang-dev, swe-java-dev, swe-python-dev, swe-typescript-dev, swe-e2e-dev, swe-dart-dev, swe-kotlin-dev, swe-csharp-dev, swe-fsharp-dev, swe-clojure-dev, swe-rust-dev
-
-**Operations**: apps-ayokoding-web-deployer, apps-oseplatform-web-deployer, apps-organiclever-fe-deployer
 
 **Meta** _(CLAUDE.md grouping — in [agents/README.md](./.claude/agents/README.md) distributed by role: Makers, Checkers, Fixers)_: agent-maker, repo-rules-maker, repo-rules-checker, repo-rules-fixer, repo-workflow-maker, repo-workflow-checker, repo-workflow-fixer, social-linkedin-post-maker
 
@@ -476,7 +437,7 @@ Repo maintains **dual compatibility** with Claude Code and OpenCode:
 
 Six-layer governance hierarchy:
 
-- **Layer 0: Vision** - WHY we exist (democratize Shariah-compliant enterprise)
+- **Layer 0: Vision** - WHY we exist (repository template enabling polyglot monorepo bootstrap)
 - **Layer 1: Principles** - WHY we value approaches
 - **Layer 2: Conventions** - WHAT documentation rules
 - **Layer 3: Development** - HOW we develop
@@ -490,93 +451,6 @@ Six-layer governance hierarchy:
 - Service relationship: Skills serve agents but don't govern them
 
 **See**: [governance/repository-governance-architecture.md](./governance/repository-governance-architecture.md)
-
-## Web Sites
-
-### oseplatform-web
-
-- **URL**: <https://oseplatform.com>
-- **Production branch**: `prod-oseplatform-web` → oseplatform.com
-- **Framework**: Next.js 16 (App Router, TypeScript, tRPC)
-- **Deployment**: Vercel
-- **Content**: Marketing site for platform
-- **Dev port**: 3100
-- **E2E tests**: `oseplatform-web-be-e2e`, `oseplatform-web-fe-e2e`
-
-**Commands**:
-
-```bash
-nx dev oseplatform-web                           # Development server (localhost:3100)
-nx build oseplatform-web                         # Production build
-nx run oseplatform-web:test:quick                # Unit tests + coverage + link validation
-nx run oseplatform-web:test:integration          # Integration tests
-nx run oseplatform-web-be-e2e:test:e2e           # Backend E2E tests
-nx run oseplatform-web-fe-e2e:test:e2e           # Frontend E2E tests
-```
-
-**See**: [apps/oseplatform-web/README.md](./apps/oseplatform-web/README.md)
-
-### ayokoding-web
-
-- **URL**: <https://ayokoding.com>
-- **Production branch**: `prod-ayokoding-web` → ayokoding.com
-- **Framework**: Next.js 16 (App Router, TypeScript, tRPC)
-- **Languages**: English (primary), Indonesian
-- **Deployment**: Vercel
-- **Content**: Educational platform (programming, AI, security)
-- **E2E tests**: `ayokoding-web-be-e2e`, `ayokoding-web-fe-e2e`
-
-**Commands**:
-
-```bash
-nx dev ayokoding-web                           # Development server (localhost:3101)
-nx build ayokoding-web                         # Production build
-nx run ayokoding-web:test:quick                # Unit tests + coverage + link validation
-nx run ayokoding-web-be-e2e:test:e2e           # Backend E2E tests
-nx run ayokoding-web-fe-e2e:test:e2e           # Frontend E2E tests
-```
-
-**See**: [apps/ayokoding-web/README.md](./apps/ayokoding-web/README.md)
-
-### organiclever-fe
-
-- **URL**: <https://www.organiclever.com/>
-- **Production branch**: `prod-organiclever-web` → www.organiclever.com
-- **Framework**: Next.js 16 (App Router)
-- **Deployment**: Vercel
-- **Content**: Landing and promotional website for OrganicLever
-- **E2E tests**: `organiclever-fe-e2e`
-- **Dev port**: 3200
-
-**Commands**:
-
-```bash
-nx dev organiclever-fe                     # Development server (localhost:3200)
-nx build organiclever-fe                   # Production build
-nx run organiclever-fe-e2e:test:e2e        # Run FE E2E tests headlessly
-nx run organiclever-fe-e2e:test:e2e:ui    # Run FE E2E tests with Playwright UI
-```
-
-**See**: [apps/organiclever-fe/README.md](./apps/organiclever-fe/README.md), [.claude/skills/apps-organiclever-fe-developing-content/SKILL.md](./.claude/skills/apps-organiclever-fe-developing-content/SKILL.md)
-
-### organiclever-be
-
-- **Framework**: F#/Giraffe REST API
-- **Deployment**: Kubernetes (staging/production)
-- **Content**: Backend API for OrganicLever productivity tracker
-- **E2E tests**: `organiclever-be-e2e`
-- **Dev port**: 8202
-- **Contract**: OpenAPI 3.1 spec at `specs/apps/organiclever/contracts/`
-
-**Commands**:
-
-```bash
-nx dev organiclever-be                     # Development server (localhost:8202)
-nx build organiclever-be                   # Production build
-nx run organiclever-be:test:quick          # Unit tests + coverage validation
-nx run organiclever-be:test:integration    # Integration tests with real DB
-nx run organiclever-be-e2e:test:e2e        # Run BE E2E tests headlessly
-```
 
 ## Temporary Files for AI Agents
 
@@ -605,7 +479,7 @@ Project planning in `plans/` folder:
 ## Important Notes
 
 - **Do NOT stage or commit** unless explicitly instructed. Per-request commits one-time only.
-- **License**: FSL-1.1-MIT for product apps and behavioral specs (WHAT); MIT for libs and demo code (HOW). See [LICENSING-NOTICE.md](./LICENSING-NOTICE.md)
+- **License**: MIT across the entire repo. See [LICENSE](./LICENSE) and [LICENSING-NOTICE.md](./LICENSING-NOTICE.md).
 - **AI agent invocation**: Use natural language to invoke agents/workflows
 - **Token budget**: Don't worry about token limits - reliable compaction available
 - **No time estimates**: Never give time estimates. Focus on what needs doing, not how long.
