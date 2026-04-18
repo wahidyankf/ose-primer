@@ -184,7 +184,7 @@ We welcome contributions! Please read our [Contributing Guide](../../../CONTRIBU
 
 ## License
 
-This project uses per-directory licensing: FSL-1.1-MIT for product apps and behavioral specifications (WHAT), MIT for shared libraries and reference implementations (HOW). See [LICENSING-NOTICE.md](./LICENSING-NOTICE.md) for details.
+This project uses uniform MIT licensing across the entire repository. See [LICENSING-NOTICE.md](./LICENSING-NOTICE.md) for details.
 ````
 
 ### References

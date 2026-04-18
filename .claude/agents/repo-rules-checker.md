@@ -685,11 +685,11 @@ Validate file naming, linking, emoji usage, convention compliance per existing l
    - Verify conventions/development → agents alignment
    - Verify agents → workflows alignment
 
-   - Verify all product app directories have FSL-1.1-MIT LICENSE matching root LICENSE
+   - Verify all product app directories have MIT LICENSE matching root LICENSE
    - Verify all `libs/*` directories have MIT LICENSE
    - Verify all `apps/a-demo-*` implementation directories (excluding `*-e2e`) have MIT LICENSE
-   - Verify `apps/a-demo-be-e2e/` and `apps/a-demo-fe-e2e/` have FSL-1.1-MIT LICENSE
-   - Verify `specs/` root has FSL-1.1-MIT LICENSE
+   - Verify `apps/a-demo-be-e2e/` and `apps/a-demo-fe-e2e/` have MIT LICENSE
+   - Verify `specs/` root has MIT LICENSE
    - Verify `specs/apps/a-demo/` has MIT LICENSE (demo specs are educational)
    - Verify LICENSING-NOTICE.md table matches actual LICENSE files on disk
    - Verify CLAUDE.md, README.md, and a-demo-fs-ts-nextjs about.md license descriptions are consistent with LICENSING-NOTICE.md
