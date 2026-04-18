@@ -158,31 +158,32 @@
 - [x] Fix any failure surfaced
   - Date: 2026-04-18 — done; stripped `./libs/hugo-commons` from go.work.
 - [x] Commit: `rtk git commit -m "chore(cleanup): remove deprecated hugo-commons lib"`
-  - Date: 2026-04-18 — pending commit below
+  - Date: 2026-04-18 — done (commit 01177063)
 
 ## Phase 4 — Remove product agents (.claude side)
 
-- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-by-example-maker.md`
-- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-by-example-checker.md`
-- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-by-example-fixer.md`
-- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-in-the-field-maker.md`
-- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-in-the-field-checker.md`
-- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-in-the-field-fixer.md`
-- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-general-maker.md`
-- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-general-checker.md`
-- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-general-fixer.md`
-- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-facts-checker.md`
-- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-facts-fixer.md`
-- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-link-checker.md`
-- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-link-fixer.md`
-- [ ] `rtk git rm .claude/agents/apps-ayokoding-web-deployer.md`
-- [ ] `rtk git rm .claude/agents/apps-oseplatform-web-content-maker.md`
-- [ ] `rtk git rm .claude/agents/apps-oseplatform-web-content-checker.md`
-- [ ] `rtk git rm .claude/agents/apps-oseplatform-web-content-fixer.md`
-- [ ] `rtk git rm .claude/agents/apps-oseplatform-web-deployer.md`
-- [ ] `rtk git rm .claude/agents/apps-organiclever-fe-deployer.md`
-- [ ] `rtk git rm .claude/agents/swe-hugo-dev.md`
-- [ ] Run `rtk npm run validate:claude` and verify .claude format remains valid
+- [x] `rtk git rm .claude/agents/apps-ayokoding-web-by-example-maker.md`
+- [x] `rtk git rm .claude/agents/apps-ayokoding-web-by-example-checker.md`
+- [x] `rtk git rm .claude/agents/apps-ayokoding-web-by-example-fixer.md`
+- [x] `rtk git rm .claude/agents/apps-ayokoding-web-in-the-field-maker.md`
+- [x] `rtk git rm .claude/agents/apps-ayokoding-web-in-the-field-checker.md`
+- [x] `rtk git rm .claude/agents/apps-ayokoding-web-in-the-field-fixer.md`
+- [x] `rtk git rm .claude/agents/apps-ayokoding-web-general-maker.md`
+- [x] `rtk git rm .claude/agents/apps-ayokoding-web-general-checker.md`
+- [x] `rtk git rm .claude/agents/apps-ayokoding-web-general-fixer.md`
+- [x] `rtk git rm .claude/agents/apps-ayokoding-web-facts-checker.md`
+- [x] `rtk git rm .claude/agents/apps-ayokoding-web-facts-fixer.md`
+- [x] `rtk git rm .claude/agents/apps-ayokoding-web-link-checker.md`
+- [x] `rtk git rm .claude/agents/apps-ayokoding-web-link-fixer.md`
+- [x] `rtk git rm .claude/agents/apps-ayokoding-web-deployer.md`
+- [x] `rtk git rm .claude/agents/apps-oseplatform-web-content-maker.md`
+- [x] `rtk git rm .claude/agents/apps-oseplatform-web-content-checker.md`
+- [x] `rtk git rm .claude/agents/apps-oseplatform-web-content-fixer.md`
+- [x] `rtk git rm .claude/agents/apps-oseplatform-web-deployer.md`
+- [x] `rtk git rm .claude/agents/apps-organiclever-fe-deployer.md`
+- [x] `rtk git rm .claude/agents/swe-hugo-dev.md`
+- [x] Run `rtk npm run validate:claude` and verify .claude format remains valid
+  - Date: 2026-04-18 — done; 769/769 passed.
 - [ ] Commit: `rtk git commit -m "chore(cleanup): remove product-specific agents from .claude"`
 
 ## Phase 5 — Remove product skills (.claude side)
