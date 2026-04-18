@@ -143,16 +143,22 @@
 - [x] Run `rtk npx nx show projects` and confirm `organiclever-contracts` is no longer listed (spec-tree deletion cascades into contract project removal)
   - Date: 2026-04-18 — done; no ayokoding/oseplatform/organiclever projects remain.
 - [x] Commit: `rtk git commit -m "chore(cleanup): remove product-app Gherkin specs"`
-  - Date: 2026-04-18 — pending until after commit below
+  - Date: 2026-04-18 — done (commit a8eaf74a)
 
 ## Phase 3 — Remove deprecated libs
 
-- [ ] `rtk grep -r "hugo-commons" apps/ libs/` and confirm no hits (demo apps must not import it)
-- [ ] `rtk git rm -r libs/hugo-commons`
-- [ ] `rtk git rm -r specs/libs/hugo-commons`
-- [ ] Run `rtk npx nx affected -t typecheck lint --base=HEAD`
-- [ ] Fix any failure surfaced
-- [ ] Commit: `rtk git commit -m "chore(cleanup): remove deprecated hugo-commons lib"`
+- [x] `rtk grep -r "hugo-commons" apps/ libs/` and confirm no hits (demo apps must not import it)
+  - Date: 2026-04-18 — done; only self-refs in libs/hugo-commons/, none in apps/ or other libs/.
+- [x] `rtk git rm -r libs/hugo-commons`
+  - Date: 2026-04-18 — done
+- [x] `rtk git rm -r specs/libs/hugo-commons`
+  - Date: 2026-04-18 — done
+- [x] Run `rtk npx nx affected -t typecheck lint --base=HEAD`
+  - Date: 2026-04-18 — done; exit 0 after go.work pruned.
+- [x] Fix any failure surfaced
+  - Date: 2026-04-18 — done; stripped `./libs/hugo-commons` from go.work.
+- [x] Commit: `rtk git commit -m "chore(cleanup): remove deprecated hugo-commons lib"`
+  - Date: 2026-04-18 — pending commit below
 
 ## Phase 4 — Remove product agents (.claude side)
 
