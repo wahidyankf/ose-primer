@@ -1,11 +1,11 @@
 openapi: 3.1.0
 info:
-  title: OrganicLever Demo API
-  description: REST API contract for the OrganicLever expense tracker demo application
+  title: a-demo API
+  description: REST API contract for the polyglot a-demo expense tracker demo application
   version: 1.0.0
   contact:
-    name: Open Sharia Enterprise
-    url: https://github.com/wahidyankf/ose-public
+    name: ose-primer
+    url: https://github.com/wahidyankf/ose-primer
 
 servers:
   - url: http://localhost:8080
