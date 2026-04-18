@@ -1,6 +1,6 @@
 ---
 title: "Rust Code Quality Standards"
-description: Authoritative a-demo Rust code quality standards (rustfmt, Clippy, cargo audit, unsafe policy)
+description: Authoritative demo Rust code quality standards (rustfmt, Clippy, cargo audit, unsafe policy)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Rust tutorial.
+**This document is demo-specific**, not a Rust tutorial.
 
 ## Purpose
 
-This document defines **authoritative code quality standards** for Rust development in the a-demo. All Rust projects MUST meet these quality requirements before code review approval.
+This document defines **authoritative code quality standards** for Rust development in the demo. All Rust projects MUST meet these quality requirements before code review approval.
 
-**Target Audience**: a-demo Rust developers, CI/CD pipeline maintainers, technical reviewers
+**Target Audience**: demo Rust developers, CI/CD pipeline maintainers, technical reviewers
 
 **Scope**: rustfmt configuration, Clippy lint set, cargo audit, cargo deny, unsafe code policy
 

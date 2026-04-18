@@ -226,7 +226,7 @@ public void method() {
 
 ```java
 @Configuration
-@ComponentScan(basePackages = "com.a-demo.zakat")
+@ComponentScan(basePackages = "com.demo.zakat")
 public class ApplicationConfig {
   // Configuration
 }
@@ -236,7 +236,7 @@ public class ApplicationConfig {
 
 ```java
 @Configuration
-@ComponentScan(basePackages = "com.a-demo.zakat")
+@ComponentScan(basePackages = "com.demo.zakat")
 public class ApplicationConfig {
   // Same configuration
   // Enhanced AOT (Ahead-of-Time) compilation support

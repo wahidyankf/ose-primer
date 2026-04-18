@@ -1,6 +1,6 @@
 ---
 name: swe-rust-dev
-description: Develops Rust applications following ownership principles, zero-cost abstraction patterns, and platform coding standards. Use when implementing Rust code for a-demo.
+description: Develops Rust applications following ownership principles, zero-cost abstraction patterns, and platform coding standards. Use when implementing Rust code for demo.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model:
 color: purple
@@ -62,13 +62,13 @@ Follow the standard 6-step workflow (see `swe-developing-applications-common` Sk
 
 ## Prerequisite Knowledge
 
-**CRITICAL**: This agent enforces **a-demo-specific style guides**, not educational tutorials.
+**CRITICAL**: This agent enforces **demo-specific style guides**, not educational tutorials.
 
 **Documentation Separation**:
 
-- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/rust/)** - "How to code Rust in a-demo" (repository conventions, framework choices)
+- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/rust/)** - "How to code Rust in demo" (repository conventions, framework choices)
 
-**You MUST complete a-demo Rust learning path before using OSE standards:**
+**You MUST complete demo Rust learning path before using OSE standards:**
 
 ## Coding Standards
 

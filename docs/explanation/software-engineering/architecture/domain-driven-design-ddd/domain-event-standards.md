@@ -1,6 +1,6 @@
 ---
 title: "DDD Domain Event Standards"
-description: a-demo standards for domain event design, naming, and publishing
+description: demo standards for domain event design, naming, and publishing
 category: explanation
 subcategory: architecture
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-a-demo domain event standards for event-driven architecture.
+demo domain event standards for event-driven architecture.
 
 ## REQUIRED: Capture Business Occurrences
 
@@ -55,7 +55,7 @@ public record ZakatCalculated(
 }
 ```
 
-## a-demo Domain Events
+## demo Domain Events
 
 | Event                   | When                           | Contains                |
 | ----------------------- | ------------------------------ | ----------------------- |

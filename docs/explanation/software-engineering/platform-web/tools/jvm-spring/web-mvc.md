@@ -76,7 +76,7 @@ graph TD
 ```java
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "com.a-demo.zakat.api")
+@ComponentScan(basePackages = "com.demo.zakat.api")
 public class WebConfig implements WebMvcConfigurer {
 
   @Override
@@ -105,7 +105,7 @@ public class WebConfig implements WebMvcConfigurer {
 ```kotlin
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = ["com.a-demo.zakat.api"])
+@ComponentScan(basePackages = ["com.demo.zakat.api"])
 class WebConfig : WebMvcConfigurer {
 
   override fun configureViewResolvers(registry: ViewResolverRegistry) {

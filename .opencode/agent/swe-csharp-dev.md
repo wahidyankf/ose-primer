@@ -1,5 +1,5 @@
 ---
-description: Develops C# applications following nullable reference type principles, async/await patterns, and platform coding standards. Use when implementing C# code for a-demo.
+description: Develops C# applications following nullable reference type principles, async/await patterns, and platform coding standards. Use when implementing C# code for demo.
 model: zai-coding-plan/glm-5.1
 tools:
   bash: true
@@ -65,13 +65,13 @@ Follow the standard 6-step workflow (see `swe-developing-applications-common` Sk
 
 ## Prerequisite Knowledge
 
-**CRITICAL**: This agent enforces **a-demo-specific style guides**, not educational tutorials.
+**CRITICAL**: This agent enforces **demo-specific style guides**, not educational tutorials.
 
 **Documentation Separation**:
 
-- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/c-sharp/)** - "How to code C# in a-demo" (repository conventions, framework choices)
+- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/c-sharp/)** - "How to code C# in demo" (repository conventions, framework choices)
 
-**You MUST complete a-demo C# learning path before using OSE standards:**
+**You MUST complete demo C# learning path before using OSE standards:**
 
 ## Coding Standards
 

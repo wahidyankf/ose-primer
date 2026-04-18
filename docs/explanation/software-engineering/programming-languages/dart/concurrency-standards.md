@@ -1,6 +1,6 @@
 ---
 title: "Dart Concurrency Standards"
-description: Authoritative a-demo Dart concurrency standards (async-await, Future, Stream, Isolates)
+description: Authoritative demo Dart concurrency standards (async-await, Future, Stream, Isolates)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Dart tutorial. We define HOW to handle concurrency in THIS codebase, not WHAT async/await is.
+**This document is demo-specific**, not a Dart tutorial. We define HOW to handle concurrency in THIS codebase, not WHAT async/await is.
 
 ## Purpose
 
-This document defines **authoritative concurrency standards** for Dart development in the a-demo. Correct concurrency patterns prevent race conditions, avoid blocking the event loop, and enable efficient I/O-bound and CPU-bound processing.
+This document defines **authoritative concurrency standards** for Dart development in the demo. Correct concurrency patterns prevent race conditions, avoid blocking the event loop, and enable efficient I/O-bound and CPU-bound processing.
 
-**Target Audience**: a-demo Dart developers working with async operations, background processing, or stream-based data
+**Target Audience**: demo Dart developers working with async operations, background processing, or stream-based data
 
 **Scope**: async/await patterns, Future vs Stream selection, StreamController, async generators, Isolates for CPU work, event loop management
 

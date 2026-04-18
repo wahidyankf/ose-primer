@@ -33,7 +33,7 @@ Migrating Next.js applications requires careful planning whether upgrading versi
 - [Migration Strategies](#-migration-strategies) - Incremental vs full migration
 - [Testing Migration](#-testing-migration) - Validation strategies
 - [Common Issues](#-common-issues) - Troubleshooting guide
-- [a-demo Migration](#-ose-platform-migration) - Real-world example
+- [demo Migration](#-ose-platform-migration) - Real-world example
 - [Migration Checklist](#-migration-checklist) - Pre/post-migration verification
 - [Related Documentation](#-related-documentation) - Cross-references
 
@@ -374,8 +374,8 @@ export default function AboutPage() {
   return (
     <>
       <Head>
-        <title>About Us - a-demo</title>
-        <meta name="description" content="Learn about a-demo" />
+        <title>About Us - demo</title>
+        <meta name="description" content="Learn about demo" />
       </Head>
       <div>{/* Content */}</div>
     </>
@@ -390,8 +390,8 @@ export default function AboutPage() {
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About Us - a-demo',
-  description: 'Learn about a-demo',
+  title: 'About Us - demo',
+  description: 'Learn about demo',
 };
 
 export default function AboutPage() {
@@ -1059,7 +1059,7 @@ export default function Page() {
 }
 ```
 
-## 🕌 a-demo Migration
+## 🕌 demo Migration
 
 Real-world migration example for Islamic finance platform.
 

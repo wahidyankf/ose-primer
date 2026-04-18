@@ -1,6 +1,6 @@
 ---
 title: "Clojure Security Standards"
-description: Authoritative a-demo Clojure security standards (input validation, encryption, parameterized queries)
+description: Authoritative demo Clojure security standards (input validation, encryption, parameterized queries)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -22,13 +22,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Clojure tutorial.
+**This document is demo-specific**, not a Clojure tutorial.
 
 ## Purpose
 
-This document defines mandatory security standards for Clojure development in a-demo. Financial systems handling Sharia-compliant transactions require rigorous input validation, parameterized queries, and proper secret management.
+This document defines mandatory security standards for Clojure development in demo. Financial systems handling Sharia-compliant transactions require rigorous input validation, parameterized queries, and proper secret management.
 
-**Target Audience**: a-demo Clojure developers building user-facing services and financial APIs
+**Target Audience**: demo Clojure developers building user-facing services and financial APIs
 
 **Scope**: Input validation with clojure.spec, eval prohibition, parameterized queries with next.jdbc, Ring CSRF protection, buddy authentication/encryption, secret management, sensitive data logging prevention
 

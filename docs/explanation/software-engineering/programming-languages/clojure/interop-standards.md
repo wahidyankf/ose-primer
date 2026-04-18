@@ -1,6 +1,6 @@
 ---
 title: "Clojure Java Interop Standards"
-description: Authoritative a-demo Clojure Java interop standards (JVM integration, type hints, collection conversion, doto macro)
+description: Authoritative demo Clojure Java interop standards (JVM integration, type hints, collection conversion, doto macro)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -22,13 +22,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Clojure tutorial.
+**This document is demo-specific**, not a Clojure tutorial.
 
 ## Purpose
 
-This document defines standards for Java interoperability in Clojure development at a-demo. Clojure runs on the JVM and provides seamless Java interop — enabling access to the rich Java ecosystem while maintaining Clojure's functional idioms.
+This document defines standards for Java interoperability in Clojure development at demo. Clojure runs on the JVM and provides seamless Java interop — enabling access to the rich Java ecosystem while maintaining Clojure's functional idioms.
 
-**Target Audience**: a-demo Clojure developers integrating with Java libraries (JDBC, cryptography, ML)
+**Target Audience**: demo Clojure developers integrating with Java libraries (JDBC, cryptography, ML)
 
 **Scope**: Java method call syntax, constructors, static methods, type hints to avoid reflection, converting between Java and Clojure collections, importing Java classes, doto macro for builder patterns, functional interfaces in Clojure 1.12
 

@@ -1969,7 +1969,7 @@ describe("DonationController (security)", () => {
 **Last Updated**: 2026-01-24
 **TypeScript Version**: 5.0+ (baseline), 5.7+ (stable maintenance), 5.9.x (latest stable)
 **Node.js Version**: 18+ (baseline), 20+ (LTS recommended)
-**Maintainers**: a-demo Documentation Team
+**Maintainers**: demo Documentation Team
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%

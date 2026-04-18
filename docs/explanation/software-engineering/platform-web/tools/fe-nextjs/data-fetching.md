@@ -227,7 +227,7 @@ const res = await fetch("https://api.example.com/data", {
 });
 ```
 
-### a-demo: Murabaha Vendor Pricing
+### demo: Murabaha Vendor Pricing
 
 ```typescript
 // app/(platform)/murabaha/vendors/[id]/page.tsx

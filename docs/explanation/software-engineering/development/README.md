@@ -69,7 +69,7 @@ graph TD
 
 Test-Driven Development is a software development approach where tests are written before production code. The practice follows a simple cycle: write a failing test (Red), make it pass with minimal code (Green), then improve the design (Refactor).
 
-**a-demo Standards:**
+**demo Standards:**
 
 - [TDD Standards Overview](test-driven-development-tdd/README.md) - Complete prescriptive TDD style guide ⭐
 - [TDD Cycle Standards](test-driven-development-tdd/tdd-cycle-standards.md) - Red-Green-Refactor requirements
@@ -92,7 +92,7 @@ Test-Driven Development is a software development approach where tests are writt
 
 Behavior-Driven Development extends TDD by focusing on behavior specification through concrete examples written in natural language. BDD emphasizes collaboration between developers, QA, and business stakeholders using a shared vocabulary (Gherkin syntax with Given-When-Then).
 
-**a-demo Standards:**
+**demo Standards:**
 
 - [BDD Standards Overview](behavior-driven-development-bdd/README.md) - Complete prescriptive BDD style guide ⭐
 - [Gherkin Standards](behavior-driven-development-bdd/gherkin-standards.md) - Feature file structure, Given-When-Then requirements
@@ -169,7 +169,7 @@ graph TD
 
 **Legend**: 🟢 Teal = Passing tests (GREEN) | 🟠 Orange = Failing tests (RED) | 🟤 Brown = Refactoring
 
-See [TDD Standards](test-driven-development-tdd/README.md) and [BDD Standards](behavior-driven-development-bdd/README.md) for comprehensive integration patterns and a-demo examples.
+See [TDD Standards](test-driven-development-tdd/README.md) and [BDD Standards](behavior-driven-development-bdd/README.md) for comprehensive integration patterns and demo examples.
 
 ## Applying Standards by Role
 

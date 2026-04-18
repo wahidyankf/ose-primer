@@ -76,12 +76,6 @@ End-to-end testing frameworks and browser automation tools:
 - **[Automation Testing](./automation-testing/README.md)** - E2E testing frameworks and browser automation
   - **[Playwright](./automation-testing/tools/playwright/README.md)** - Cross-browser E2E testing for web applications
 
-### ⚖️ [Licensing](./licensing/README.md)
-
-License analysis and compliance decisions for open-source dependencies:
-
-- **[Licensing Decisions](licensing/licensing-decisions.md)** - Analysis for Liquibase FSL-1.1-ALv2, Hibernate LGPL-2.1, sharp-libvips LGPL-3.0, and Logback EPL-1.0/LGPL-2.1. Includes quarterly audit schedule.
-
 ### 📚 Cross-References
 
 - **[Software Design Reference](./software-design-reference.md)** - Cross-reference index to all software design documentation. Links architecture patterns, development practices, and language-specific standards

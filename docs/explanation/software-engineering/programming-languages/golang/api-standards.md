@@ -2322,7 +2322,7 @@ app := fiber.New(fiber.Config{
     CaseSensitive:         true,
     StrictRouting:         false,
     DisableStartupMessage: false,
-    ServerHeader:          "a-demo",
+    ServerHeader:          "demo",
     AppName:               "Financial Platform v1.0.0",
     BodyLimit:             10 * 1024 * 1024,
     ReadBufferSize:        8192,

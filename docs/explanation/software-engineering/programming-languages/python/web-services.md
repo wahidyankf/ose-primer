@@ -28,7 +28,7 @@ updated: 2025-01-23
 
 ## Overview
 
-Python offers three major web frameworks, each with distinct philosophies. For a-demo financial services, framework choice depends on project requirements: FastAPI for modern async APIs, Django for full-featured web apps, Flask for microservices.
+Python offers three major web frameworks, each with distinct philosophies. For demo financial services, framework choice depends on project requirements: FastAPI for modern async APIs, Django for full-featured web apps, Flask for microservices.
 
 ```mermaid
 graph TB
@@ -94,7 +94,7 @@ from typing import Optional
 from datetime import datetime
 
 app = FastAPI(
-    title="a-demo API",
+    title="demo API",
     description="Sharia-compliant financial services",
     version="1.0.0",
 )
@@ -925,7 +925,7 @@ def custom_openapi():
         return app.openapi_schema
 
     openapi_schema = get_openapi(
-        title="a-demo API",
+        title="demo API",
         version="1.0.0",
         description="""
         ## Sharia-Compliant Financial Services API
@@ -1995,7 +1995,7 @@ async def create_donation_with_broadcast(
 
 **Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
-**Maintainers**: a-demo Documentation Team
+**Maintainers**: demo Documentation Team
 
 ## FastAPI Architecture
 

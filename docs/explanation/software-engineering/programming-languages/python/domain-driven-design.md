@@ -29,7 +29,7 @@ updated: 2025-01-23
 
 ## Overview
 
-Domain-Driven Design (DDD) structures software around business domain concepts. For Islamic finance in the a-demo, DDD models Zakat obligations, Murabaha contracts, and QardHasan loans as first-class domain objects with clear boundaries and invariants.
+Domain-Driven Design (DDD) structures software around business domain concepts. For Islamic finance in the demo, DDD models Zakat obligations, Murabaha contracts, and QardHasan loans as first-class domain objects with clear boundaries and invariants.
 
 ### Why DDD for Financial Domain
 
@@ -665,7 +665,7 @@ graph TD
 
 **Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
-**Maintainers**: a-demo Documentation Team
+**Maintainers**: demo Documentation Team
 
 ## Python DDD Architecture
 

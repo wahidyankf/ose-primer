@@ -30,13 +30,13 @@ related:
 
 **REQUIRED**: You MUST understand [Spring Framework AOP](../jvm-spring/aop.md) before reading this document. This covers Spring Boot-specific AOP features and auto-configuration.
 
-**STRONGLY RECOMMENDED**: Complete a-demo Spring Boot Learning Path for practical AOP experience.
+**STRONGLY RECOMMENDED**: Complete demo Spring Boot Learning Path for practical AOP experience.
 
-**This document is a-demo-specific**, not a Spring Boot tutorial. We define HOW to apply AOP in THIS platform, not WHAT AOP is.
+**This document is demo-specific**, not a Spring Boot tutorial. We define HOW to apply AOP in THIS platform, not WHAT AOP is.
 
 ## Purpose
 
-This document defines **AOP standards** for Spring Boot applications in the a-demo. Spring Boot auto-configures AOP support and integrates aspects with Actuator metrics, distributed tracing, and Boot-specific features.
+This document defines **AOP standards** for Spring Boot applications in the demo. Spring Boot auto-configures AOP support and integrates aspects with Actuator metrics, distributed tracing, and Boot-specific features.
 
 **Target Audience**: Spring Boot developers implementing cross-cutting concerns
 
@@ -101,7 +101,7 @@ class LoggingAspect {
         private val logger = LoggerFactory.getLogger(LoggingAspect::class.java)
     }
 
-    @Before("execution(* com.a-demo..controller..*(..))")
+    @Before("execution(* com.demo..controller..*(..))")
     fun logControllerEntry(joinPoint: JoinPoint) {
         val signature = joinPoint.signature.toShortString()
         val args = joinPoint.args.joinToString(", ") { it.toString() }
@@ -109,7 +109,7 @@ class LoggingAspect {
     }
 
     @AfterReturning(
-        pointcut = "execution(* com.a-demo..service..*(..))",
+        pointcut = "execution(* com.demo..service..*(..))",
         returning = "result"
     )
     fun logServiceReturn(joinPoint: JoinPoint, result: Any?) {
@@ -118,7 +118,7 @@ class LoggingAspect {
     }
 
     @AfterThrowing(
-        pointcut = "execution(* com.a-demo..service..*(..))",
+        pointcut = "execution(* com.demo..service..*(..))",
         throwing = "exception"
     )
     fun logServiceException(joinPoint: JoinPoint, exception: Exception) {
@@ -218,7 +218,7 @@ class PerformanceMonitoringAspect {
         private const val SLOW_THRESHOLD_MS = 1000L
     }
 
-    @Around("execution(* com.a-demo..service..*(..))")
+    @Around("execution(* com.demo..service..*(..))")
     fun monitorPerformance(joinPoint: ProceedingJoinPoint): Any? {
         val signature = joinPoint.signature.toShortString()
         val startTime = System.currentTimeMillis()
@@ -265,7 +265,7 @@ class ControllerAspects {
     fun requestMappings() {}
 
     // Zakat-related endpoints
-    @Pointcut("execution(* com.a-demo.zakat.controller..*(..))")
+    @Pointcut("execution(* com.demo.zakat.controller..*(..))")
     fun zakatControllers() {}
 
     // Public API methods (combines pointcuts)
@@ -295,11 +295,11 @@ class ServiceAspects {
     fun transactional() {}
 
     // Domain service methods (business logic)
-    @Pointcut("execution(* com.a-demo..service..*Service.*(..))")
+    @Pointcut("execution(* com.demo..service..*Service.*(..))")
     fun domainServices() {}
 
     // Murabaha application processing
-    @Pointcut("execution(* com.a-demo.murabaha.service.MurabahaApplicationService.process*(..))")
+    @Pointcut("execution(* com.demo.murabaha.service.MurabahaApplicationService.process*(..))")
     fun murabahaProcessing() {}
 }
 ```
@@ -344,7 +344,7 @@ class MetricsAspect(
     private val meterRegistry: MeterRegistry
 ) {
 
-    @Around("execution(* com.a-demo.zakat.service.ZakatCalculationService.calculate(..))")
+    @Around("execution(* com.demo.zakat.service.ZakatCalculationService.calculate(..))")
     fun recordZakatCalculationMetrics(joinPoint: ProceedingJoinPoint): Any? {
         val sample = Timer.start(meterRegistry)
 
@@ -389,7 +389,7 @@ class DistributedTracingAspect(
     private val tracer: Tracer
 ) {
 
-    @Around("execution(* com.a-demo..service..*(..))")
+    @Around("execution(* com.demo..service..*(..))")
     fun addTracingContext(joinPoint: ProceedingJoinPoint): Any? {
         val span = tracer.nextSpan()
             .name(joinPoint.signature.toShortString())
@@ -592,7 +592,7 @@ class DomainEventPublishingAspect(
     }
 
     @AfterReturning(
-        pointcut = "execution(* com.a-demo..repository.*Repository.save(..))",
+        pointcut = "execution(* com.demo..repository.*Repository.save(..))",
         returning = "entity"
     )
     fun publishDomainEvents(joinPoint: JoinPoint, entity: Any) {
@@ -691,7 +691,7 @@ class ZakatEventListener {
 
 ### AOP Performance Impact
 
-**Benchmarks** (a-demo, 10,000 method calls):
+**Benchmarks** (demo, 10,000 method calls):
 
 | Scenario                  | Time (ms) | Overhead |
 | ------------------------- | --------- | -------- |
@@ -707,13 +707,13 @@ class ZakatEventListener {
 
 ```kotlin
 // ✅ GOOD - Specific pointcut (fast)
-@Around("execution(* com.a-demo.zakat.service.ZakatCalculationService.calculate(..))")
+@Around("execution(* com.demo.zakat.service.ZakatCalculationService.calculate(..))")
 fun monitorZakatCalculation(joinPoint: ProceedingJoinPoint): Any? {
     // Aspect logic
 }
 
 // ❌ BAD - Overly broad pointcut (slow)
-@Around("execution(* com.a-demo..*(..))")  // Matches EVERYTHING
+@Around("execution(* com.demo..*(..))")  // Matches EVERYTHING
 fun monitorEverything(joinPoint: ProceedingJoinPoint): Any? {
     // Too many method calls intercepted
 }
@@ -726,7 +726,7 @@ fun monitorEverything(joinPoint: ProceedingJoinPoint): Any? {
 @Component
 class ConditionalLoggingAspect {
 
-    @Around("execution(* com.a-demo..service..*(..))")
+    @Around("execution(* com.demo..service..*(..))")
     fun conditionalLogging(joinPoint: ProceedingJoinPoint): Any? {
         // Only log if debug enabled (avoid overhead in production)
         val shouldLog = logger.isDebugEnabled
@@ -752,7 +752,7 @@ class ConditionalLoggingAspect {
 @Component
 class BadAspect(private val repository: AuditLogRepository) {
 
-    @Before("execution(* com.a-demo..service..*(..))")
+    @Before("execution(* com.demo..service..*(..))")
     fun logToDatabase(joinPoint: JoinPoint) {
         // ❌ Synchronous database write on EVERY service method
         repository.save(AuditLog(joinPoint.signature.toString(), Instant.now()))
@@ -764,7 +764,7 @@ class BadAspect(private val repository: AuditLogRepository) {
 @Component
 class GoodAspect(private val asyncAuditService: AsyncAuditService) {
 
-    @Before("execution(* com.a-demo..service..*(..))")
+    @Before("execution(* com.demo..service..*(..))")
     fun logAsynchronously(joinPoint: JoinPoint) {
         // ✅ Async processing (doesn't block method execution)
         asyncAuditService.logAsync(joinPoint.signature.toString())
@@ -783,7 +783,7 @@ class SelfMonitoringAspect {
 
     private val aspectOverheadTimer = ConcurrentHashMap<String, AtomicLong>()
 
-    @Around("execution(* com.a-demo..service..*(..))")
+    @Around("execution(* com.demo..service..*(..))")
     fun measureAspectOverhead(joinPoint: ProceedingJoinPoint): Any? {
         val methodName = joinPoint.signature.toShortString()
 
@@ -855,6 +855,6 @@ These AOP standards enforce the the software engineering principles:
 
 ---
 
-**Status**: Mandatory for cross-cutting concerns in a-demo Spring Boot applications
+**Status**: Mandatory for cross-cutting concerns in demo Spring Boot applications
 **Maintainers**: Platform Documentation Team
 **Last Updated**: 2026-02-06

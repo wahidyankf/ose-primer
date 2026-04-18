@@ -91,7 +91,7 @@ const nextConfig: NextConfig = {
 export default nextConfig;
 ```
 
-### a-demo Configuration
+### demo Configuration
 
 ```typescript
 // next.config.ts
@@ -136,7 +136,7 @@ const nextConfig: NextConfig = {
   // Environment variables exposed to browser
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-    NEXT_PUBLIC_SITE_NAME: "a-demo",
+    NEXT_PUBLIC_SITE_NAME: "demo",
   },
 
   // Security headers
@@ -228,7 +228,7 @@ project/
 ```bash
 # API Configuration
 NEXT_PUBLIC_API_URL=https://api.example.com
-NEXT_PUBLIC_SITE_NAME=a-demo
+NEXT_PUBLIC_SITE_NAME=demo
 
 # Database
 DATABASE_URL=postgresql://user:password@localhost:5432/ose_platform

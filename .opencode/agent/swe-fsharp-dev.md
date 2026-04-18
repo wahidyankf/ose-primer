@@ -1,5 +1,5 @@
 ---
-description: Develops F# applications following functional programming principles, railway-oriented error handling, and platform coding standards. Use when implementing F# code for a-demo.
+description: Develops F# applications following functional programming principles, railway-oriented error handling, and platform coding standards. Use when implementing F# code for demo.
 model: zai-coding-plan/glm-5.1
 tools:
   bash: true
@@ -66,13 +66,13 @@ Follow the standard 6-step workflow (see `swe-developing-applications-common` Sk
 
 ## Prerequisite Knowledge
 
-**CRITICAL**: This agent enforces **a-demo-specific style guides**, not educational tutorials.
+**CRITICAL**: This agent enforces **demo-specific style guides**, not educational tutorials.
 
 **Documentation Separation**:
 
-- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/f-sharp/)** - "How to code F# in a-demo" (repository conventions, framework choices)
+- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/f-sharp/)** - "How to code F# in demo" (repository conventions, framework choices)
 
-**You MUST complete a-demo F# learning path before using OSE standards:**
+**You MUST complete demo F# learning path before using OSE standards:**
 
 ## Coding Standards
 

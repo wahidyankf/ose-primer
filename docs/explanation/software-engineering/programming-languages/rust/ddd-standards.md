@@ -1,6 +1,6 @@
 ---
 title: "Rust DDD Standards"
-description: Authoritative a-demo Rust Domain-Driven Design standards (value objects, aggregates, Repository trait, domain events)
+description: Authoritative demo Rust Domain-Driven Design standards (value objects, aggregates, Repository trait, domain events)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Rust tutorial.
+**This document is demo-specific**, not a Rust tutorial.
 
 ## Purpose
 
-This document defines **authoritative Domain-Driven Design (DDD) standards** for Rust development in the a-demo. Rust's type system is exceptionally well-suited for DDD — the newtype pattern, enums, and trait system enable rich domain models that make invalid states unrepresentable.
+This document defines **authoritative Domain-Driven Design (DDD) standards** for Rust development in the demo. Rust's type system is exceptionally well-suited for DDD — the newtype pattern, enums, and trait system enable rich domain models that make invalid states unrepresentable.
 
-**Target Audience**: a-demo Rust developers working on domain models and business logic
+**Target Audience**: demo Rust developers working on domain models and business logic
 
 **Scope**: Value objects, entities, aggregates, Repository trait, domain events, sealed traits
 

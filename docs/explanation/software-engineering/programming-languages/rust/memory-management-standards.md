@@ -1,6 +1,6 @@
 ---
 title: "Rust Memory Management Standards"
-description: Authoritative a-demo Rust memory management standards (ownership, borrowing, lifetimes, smart pointers)
+description: Authoritative demo Rust memory management standards (ownership, borrowing, lifetimes, smart pointers)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Rust tutorial.
+**This document is demo-specific**, not a Rust tutorial.
 
 ## Purpose
 
-This document defines **authoritative memory management standards** for Rust development in the a-demo. Rust's ownership system is its most distinctive feature — it provides memory safety without a garbage collector, with zero runtime overhead.
+This document defines **authoritative memory management standards** for Rust development in the demo. Rust's ownership system is its most distinctive feature — it provides memory safety without a garbage collector, with zero runtime overhead.
 
-**Target Audience**: a-demo Rust developers, especially those transitioning from GC languages
+**Target Audience**: demo Rust developers, especially those transitioning from GC languages
 
 **Scope**: Ownership rules, borrowing, lifetime annotations, smart pointers, RAII, Pin/Unpin
 

@@ -1,5 +1,5 @@
 ---
-title: Spring Framework API Standards for a-demo
+title: Spring Framework API Standards for demo
 description: Prescriptive REST API design requirements for Spring-based Shariah-compliant financial systems
 category: explanation
 subcategory: platform-web
@@ -20,19 +20,19 @@ updated: 2026-02-06
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: You MUST understand Spring Framework fundamentals from a-demo Spring Learning Path before using these standards.
+**REQUIRED**: You MUST understand Spring Framework fundamentals from demo Spring Learning Path before using these standards.
 
-**This document is a-demo-specific**, not a Spring tutorial. We define HOW to apply Spring in THIS codebase, not WHAT Spring is.
+**This document is demo-specific**, not a Spring tutorial. We define HOW to apply Spring in THIS codebase, not WHAT Spring is.
 
-# Spring Framework API Standards for a-demo
+# Spring Framework API Standards for demo
 
 **OSE-specific prescriptive standards** for REST API design in Spring-based Shariah-compliant financial applications. This document defines **mandatory requirements** using RFC 2119 keywords (MUST, SHOULD, MAY).
 
-**Prerequisites**: Understanding of Spring Framework fundamentals from a-demo Spring Framework and HTTP/REST API principles.
+**Prerequisites**: Understanding of Spring Framework fundamentals from demo Spring Framework and HTTP/REST API principles.
 
 ## Purpose
 
-REST API design in Spring-based a-demo services enables:
+REST API design in Spring-based demo services enables:
 
 - **RESTful Resource Design**: Standard HTTP methods and status codes for financial operations
 - **Content Negotiation**: JSON/XML support for diverse client requirements
@@ -688,7 +688,7 @@ public class DonationControllerV2 {
 - Maintain backward compatibility within major version
 - Document breaking changes in release notes
 
-### a-demo Standards
+### demo Standards
 
 - **[Spring Error Handling Standards](./error-handling-standards.md)** - Error response format
 - **[Spring DDD Standards](./ddd-standards.md)** - Domain model to DTO conversion (this file references the DDD standards file to be created)
@@ -703,7 +703,7 @@ public class DonationControllerV2 {
 
 For learning Spring Framework fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Spring basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Spring basics from demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ### Software Engineering Principles
 
@@ -756,4 +756,4 @@ Before deploying Spring REST APIs, verify:
 
 **Last Updated**: 2026-02-06
 
-**Status**: Mandatory (required for all a-demo Spring REST APIs)
+**Status**: Mandatory (required for all demo Spring REST APIs)

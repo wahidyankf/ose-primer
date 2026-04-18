@@ -28,7 +28,7 @@ updated: 2025-01-23
 
 ## Overview
 
-Concurrency and parallelism enable Python applications to handle multiple operations simultaneously. For the a-demo processing Zakat calculations, API requests, and financial transactions, understanding async patterns and GIL implications is critical for performance.
+Concurrency and parallelism enable Python applications to handle multiple operations simultaneously. For the demo processing Zakat calculations, API requests, and financial transactions, understanding async patterns and GIL implications is critical for performance.
 
 ### Concurrency vs Parallelism
 
@@ -1476,4 +1476,4 @@ print(f"Free-threaded execution: {elapsed:.4f}s")
 
 **Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable with free-threaded mode)
-**Maintainers**: a-demo Documentation Team
+**Maintainers**: demo Documentation Team

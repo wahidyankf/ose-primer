@@ -1,6 +1,6 @@
 ---
 title: "Kotlin Coding Standards"
-description: Authoritative a-demo Kotlin coding standards (idioms, best practices, anti-patterns to avoid)
+description: Authoritative demo Kotlin coding standards (idioms, best practices, anti-patterns to avoid)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,15 +23,15 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Kotlin tutorial. We define HOW to apply Kotlin in THIS codebase, not WHAT Kotlin is.
+**This document is demo-specific**, not a Kotlin tutorial. We define HOW to apply Kotlin in THIS codebase, not WHAT Kotlin is.
 
 ## Purpose
 
-This document defines **authoritative coding standards** for Kotlin development in the a-demo. These are prescriptive rules that MUST be followed across all Kotlin projects to ensure consistency, maintainability, and alignment with platform architecture.
+This document defines **authoritative coding standards** for Kotlin development in the demo. These are prescriptive rules that MUST be followed across all Kotlin projects to ensure consistency, maintainability, and alignment with platform architecture.
 
-**Target Audience**: a-demo Kotlin developers, technical reviewers, automated code quality tools
+**Target Audience**: demo Kotlin developers, technical reviewers, automated code quality tools
 
-**Scope**: a-demo idioms, naming conventions, package organization, Effective Kotlin idioms, scope functions, null safety patterns, and anti-patterns to avoid
+**Scope**: demo idioms, naming conventions, package organization, Effective Kotlin idioms, scope functions, null safety patterns, and anti-patterns to avoid
 
 ## Software Engineering Principles
 

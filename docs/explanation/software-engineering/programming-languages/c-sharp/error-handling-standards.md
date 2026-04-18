@@ -1,6 +1,6 @@
 ---
 title: "C# Error Handling Standards"
-description: Authoritative a-demo C# error handling standards (exception hierarchy, ProblemDetails, Result pattern, global middleware)
+description: Authoritative demo C# error handling standards (exception hierarchy, ProblemDetails, Result pattern, global middleware)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a C# tutorial.
+**This document is demo-specific**, not a C# tutorial.
 
 ## Purpose
 
-This document defines **authoritative error handling standards** for C# in the a-demo.
+This document defines **authoritative error handling standards** for C# in the demo.
 
-**Target Audience**: a-demo C# developers designing error flows and API responses
+**Target Audience**: demo C# developers designing error flows and API responses
 
 **Scope**: Custom exception hierarchy, ProblemDetails RFC 7807, Result<T,E> pattern, global exception middleware, cancellation handling
 

@@ -58,7 +58,7 @@ Spring provides several ApplicationContext implementations for different configu
 ```java
 // Configuration class
 @Configuration
-@ComponentScan(basePackages = "com.a-demo.zakat")
+@ComponentScan(basePackages = "com.demo.zakat")
 @PropertySource("classpath:application.properties")
 public class ZakatApplicationConfig {
 
@@ -106,7 +106,7 @@ public class ZakatApplication {
 ```kotlin
 // Configuration class
 @Configuration
-@ComponentScan(basePackages = ["com.a-demo.zakat"])
+@ComponentScan(basePackages = ["com.demo.zakat"])
 @PropertySource("classpath:application.properties")
 class ZakatApplicationConfig {
 
@@ -149,7 +149,7 @@ fun main() {
 ```java
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "com.a-demo.murabaha")
+@ComponentScan(basePackages = "com.demo.murabaha")
 public class WebConfig implements WebMvcConfigurer {
 
   @Override
@@ -184,7 +184,7 @@ public class WebConfig implements WebMvcConfigurer {
 ```kotlin
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = ["com.a-demo.murabaha"])
+@ComponentScan(basePackages = ["com.demo.murabaha"])
 class WebConfig : WebMvcConfigurer {
 
   override fun configureViewResolvers(registry: ViewResolverRegistry) {
@@ -553,9 +553,9 @@ class DonationEventHandler {
 @Configuration
 @ComponentScan(
   basePackages = {
-    "com.a-demo.zakat",
-    "com.a-demo.murabaha",
-    "com.a-demo.donation"
+    "com.demo.zakat",
+    "com.demo.murabaha",
+    "com.demo.donation"
   },
   includeFilters = @ComponentScan.Filter(
     type = FilterType.ANNOTATION,
@@ -563,7 +563,7 @@ class DonationEventHandler {
   ),
   excludeFilters = @ComponentScan.Filter(
     type = FilterType.REGEX,
-    pattern = "com\\.a-demo\\..*\\.test\\..*"
+    pattern = "com\\.demo\\..*\\.test\\..*"
   )
 )
 public class ApplicationConfig {
@@ -577,9 +577,9 @@ public class ApplicationConfig {
 @Configuration
 @ComponentScan(
   basePackages = [
-    "com.a-demo.zakat",
-    "com.a-demo.murabaha",
-    "com.a-demo.donation"
+    "com.demo.zakat",
+    "com.demo.murabaha",
+    "com.demo.donation"
   ],
   includeFilters = [
     ComponentScan.Filter(
@@ -590,7 +590,7 @@ public class ApplicationConfig {
   excludeFilters = [
     ComponentScan.Filter(
       type = FilterType.REGEX,
-      pattern = ["com\\.a-demo\\..*\\.test\\..*"]
+      pattern = ["com\\.demo\\..*\\.test\\..*"]
     )
   ]
 )
@@ -1797,11 +1797,11 @@ fun main() {
 }
 ```
 
-### a-demo Spring By-Example Resources
+### demo Spring By-Example Resources
 
 Hands-on examples demonstrating Spring Framework idioms:
 
-### a-demo Spring In-The-Field Guides
+### demo Spring In-The-Field Guides
 
 Production patterns using Spring Framework idioms:
 
@@ -1825,7 +1825,7 @@ Production patterns using Spring Framework idioms:
 - **[Functional Programming](../../../../../../governance/development/pattern/functional-programming.md)** - FP principles
 - **[Test-Driven Development](../../../development/test-driven-development-tdd/README.md)** - TDD practices
 
-### a-demo Principles
+### demo Principles
 
 - **[Explicit Over Implicit](../../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - Configuration clarity
 - **[Automation Over Manual](../../../../../../governance/principles/software-engineering/automation-over-manual.md)** - Spring IoC automation
@@ -1841,7 +1841,7 @@ Production patterns using Spring Framework idioms:
 - [Spring Framework Configuration](./configuration.md) - Configuration patterns
 - [Spring Framework Dependency Injection](./dependency-injection.md) - DI deep dive
 
-**Hands-on Learning (a-demo)**:
+**Hands-on Learning (demo)**:
 
 **Spring Boot Extension**:
 

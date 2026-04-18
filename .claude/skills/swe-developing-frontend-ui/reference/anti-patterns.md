@@ -7,7 +7,7 @@
 **Severity**: HIGH
 
 ```css
-/* WRONG — a-demo-fs-ts-nextjs globals.css */
+/* WRONG — demo-fs-ts-nextjs globals.css */
 .prose pre {
   background-color: #f6f8fa !important;
 }

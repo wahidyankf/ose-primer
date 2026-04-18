@@ -31,20 +31,20 @@ updated: 2026-02-05
 
 ## 📚 Prerequisite Knowledge
 
-**This document is a-demo-specific**, not an Elixir tutorial. It assumes:
+**This document is demo-specific**, not an Elixir tutorial. It assumes:
 
 - Elixir syntax and language features (pattern matching, pipelines, processes)
 - Mix project structure and configuration
 - Basic understanding of testing concepts
 - Familiarity with functional programming principles
 
-If you need to learn Elixir fundamentals first, visit the a-demo Elixir learning path.
+If you need to learn Elixir fundamentals first, visit the demo Elixir learning path.
 
 ## 🎯 Purpose
 
-This document defines **authoritative testing standards** for Elixir development in the a-demo. These are prescriptive rules that MUST be followed across all Elixir projects to ensure consistent, maintainable, and reliable test suites.
+This document defines **authoritative testing standards** for Elixir development in the demo. These are prescriptive rules that MUST be followed across all Elixir projects to ensure consistent, maintainable, and reliable test suites.
 
-**Target Audience**: a-demo Elixir developers, technical reviewers, QA engineers
+**Target Audience**: demo Elixir developers, technical reviewers, QA engineers
 
 **Scope**: Test-Driven Development (TDD) practices, Behaviour-Driven Development (BDD) practices, property-based testing, mocking patterns, integration testing, test organization, and quality standards
 
@@ -52,7 +52,7 @@ This document defines **authoritative testing standards** for Elixir development
 
 ## ⚙️ Alignment with Software Engineering Principles
 
-These testing standards directly support a-demo's [Software Engineering Principles](../../../../../governance/principles/README.md):
+These testing standards directly support demo's [Software Engineering Principles](../../../../../governance/principles/README.md):
 
 - **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)**: Automated test suites replace manual validation
 - **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**: Tests explicitly document expected behavior and edge cases
@@ -888,7 +888,7 @@ Testing standards are enforced through:
 
 For learning Elixir fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Elixir basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Elixir basics from demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ---
 

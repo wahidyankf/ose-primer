@@ -131,7 +131,7 @@ const nextConfig: NextConfig = {
 export default nextConfig;
 ```
 
-### a-demo: Optimized Waqf Project Images
+### demo: Optimized Waqf Project Images
 
 ```typescript
 // app/waqf/projects/[id]/page.tsx
@@ -272,7 +272,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-### a-demo: Arabic + English Fonts
+### demo: Arabic + English Fonts
 
 ```typescript
 // app/layout.tsx
@@ -846,7 +846,7 @@ export async function generateStaticParams() {
 export const dynamicParams = true;
 ```
 
-## a-demo: Complete Performance Strategy
+## demo: Complete Performance Strategy
 
 ```typescript
 // app/(platform)/layout.tsx

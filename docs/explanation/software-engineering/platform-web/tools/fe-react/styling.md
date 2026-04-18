@@ -931,7 +931,7 @@ export const CustomSelect: React.FC<{
 };
 ```
 
-## a-demo Styling Examples
+## demo Styling Examples
 
 ### Zakat Calculator Styling
 

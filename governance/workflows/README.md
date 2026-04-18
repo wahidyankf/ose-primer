@@ -81,7 +81,7 @@ All workflows support standard input parameters:
 | [Plan Quality Gate](./plan/plan-quality-gate.md)                                                                          | Validate plan completeness and accuracy, apply fixes iteratively until ZERO findings                                                                                     | plan-checker, plan-fixer                                                                 | Medium     |
 | [Plan Execution](./plan/plan-execution.md)                                                                                | Execute plan tasks systematically with validation and completion tracking (calling context orchestrates, delegates per-item to specialized agents)                       | plan-execution-checker                                                                   | Medium     |
 | [Documentation Quality Gate](./docs/docs-quality-gate.md)                                                                 | Validate all docs/ content quality (factual accuracy, pedagogical structure, link validity), apply fixes iteratively until ZERO findings                                 | docs-checker, docs-tutorial-checker, docs-link-checker, docs-fixer, docs-tutorial-fixer  | High       |
-| [Documentation Software Engineering Separation Quality Gate](./docs/docs-software-engineering-separation-quality-gate.md) | Validate software engineering documentation separation between a-demo style guides and a-demo educational content, apply fixes iteratively until ZERO findings           | docs-software-engineering-separation-checker, docs-software-engineering-separation-fixer | Medium     |
+| [Documentation Software Engineering Separation Quality Gate](./docs/docs-software-engineering-separation-quality-gate.md) | Validate software engineering documentation separation between demo style guides and demo educational content, apply fixes iteratively until ZERO findings               | docs-software-engineering-separation-checker, docs-software-engineering-separation-fixer | Medium     |
 | [Specs Validation](./specs/specs-quality-gate.md)                                                                         | Validate specs/ directory for structural completeness, content accuracy, cross-spec consistency, and C4 diagram correctness, apply fixes iteratively until ZERO findings | specs-checker, specs-fixer                                                               | Medium     |
 | [UI Quality Gate](./ui/ui-quality-gate.md)                                                                                | Validate UI component quality (tokens, accessibility, patterns, dark mode, responsive), apply fixes iteratively until ZERO findings                                      | swe-ui-checker, swe-ui-fixer                                                             | Medium     |
 | [CI Quality Gate](./ci/ci-quality-gate.md)                                                                                | Validate all projects conform to CI/CD standards (Nx targets, coverage, Docker, Gherkin, workflows), apply fixes iteratively until ZERO findings                         | ci-checker, ci-fixer                                                                     | Medium     |
@@ -93,7 +93,7 @@ All _-quality-gate workflows follow the [_-check-fix Workflow Pattern](./meta/wo
 
 Every workflow filename follows: `<scope>(-<qualifier>)*-<type>`
 
-- `scope` — top-level domain matching the parent directory (`ci`, `docs`, `plan`, `repo`, `specs`, `ui`, `infra`, `a-demo-fs-ts-nextjs`, etc.).
+- `scope` — top-level domain matching the parent directory (`ci`, `docs`, `plan`, `repo`, `specs`, `ui`, `infra`, `demo-fs-ts-nextjs`, etc.).
 - `qualifier` — zero or more refinement tokens (e.g., `rules`, `by-example`, `software-engineering-separation`).
 - `type` — exactly one trailing token from the Type Vocabulary below.
 
@@ -129,10 +129,10 @@ Workflows for creating and validating documentation:
 
 Workflows for web application content (Next.js sites, formerly Hugo):
 
-- **a-demo-fs-ts-nextjs**: a-demo-fs-ts-nextjs content creation and validation
-- **a-demo-facts**: Factual accuracy validation for a-demo-fs-ts-nextjs (planned - no workflow file yet)
-- **a-demo-structure**: Navigation structure and weight management (planned - no workflow file yet)
-- **a-demo-fs-ts-nextjs-content**: a-demo-fs-ts-nextjs content (planned - no workflow file yet)
+- **demo-fs-ts-nextjs**: demo-fs-ts-nextjs content creation and validation
+- **demo-facts**: Factual accuracy validation for demo-fs-ts-nextjs (planned - no workflow file yet)
+- **demo-structure**: Navigation structure and weight management (planned - no workflow file yet)
+- **demo-fs-ts-nextjs-content**: demo-fs-ts-nextjs content (planned - no workflow file yet)
 
 ### Specification Workflows
 

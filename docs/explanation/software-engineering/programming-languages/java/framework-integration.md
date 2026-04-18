@@ -1,6 +1,6 @@
 ---
 title: "Java Framework Integration"
-description: Authoritative standards for Spring Boot 4 and Jakarta EE 11 integration in a-demo
+description: Authoritative standards for Spring Boot 4 and Jakarta EE 11 integration in demo
 category: explanation
 subcategory: prog-lang
 tags:
@@ -21,13 +21,13 @@ updated: 2026-02-03
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
+**This document is demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
 
 ## Purpose
 
-This document defines **authoritative framework integration standards** for Java development in the a-demo. These prescriptive rules govern how Spring Boot 4 and Jakarta EE 11 are used across all Java applications.
+This document defines **authoritative framework integration standards** for Java development in the demo. These prescriptive rules govern how Spring Boot 4 and Jakarta EE 11 are used across all Java applications.
 
-**Target Audience**: a-demo Java developers, framework architects, technical reviewers
+**Target Audience**: demo Java developers, framework architects, technical reviewers
 
 **Scope**: Spring Boot configuration, Jakarta EE integration, dependency injection patterns, transaction management
 
@@ -65,8 +65,8 @@ public class TaxServiceConfiguration {
 ```java
 @SpringBootApplication
 @ComponentScan(basePackages = {
-  "com.a-demo.tax.application",
-  "com.a-demo.tax.infrastructure"
+  "com.demo.tax.application",
+  "com.demo.tax.infrastructure"
 })
 public class TaxServiceApplication {
   // ...
@@ -326,7 +326,7 @@ See [Java Code Quality](./code-quality.md) for ArchUnit configuration.
 
 For learning Java fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Java basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Java basics from demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ## Related Standards
 

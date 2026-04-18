@@ -2,7 +2,7 @@
   "java.compile.nullAnalysis.mode": "disabled",
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.import.exclusions": [
-    "**/apps/a-demo-app/**",
+    "**/apps/demo-app/**",
     "**/.claude/worktrees/**"
   ],
   "gopls": {

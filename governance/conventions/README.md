@@ -94,7 +94,7 @@ Standards for markdown formatting, syntax, and visual elements.
 
 Standards for cross-referencing and internal linking between repository content.
 
-- [Internal a-demo Reference Links](./linking/internal-a-demo-references.md) - Standards for linking from docs/ to apps/a-demo-fs-ts-nextjs/ content using relative paths instead of public web URLs. Ensures links work during local development, testing, and remain portable across environments. Defines path calculation method, common patterns, and enforcement mechanisms for repository-internal references
+- [Internal demo Reference Links](./linking/internal-demo-references.md) - Standards for linking from docs/ to apps/demo-fs-ts-nextjs/ content using relative paths instead of public web URLs. Ensures links work during local development, testing, and remain portable across environments. Defines path calculation method, common patterns, and enforcement mechanisms for repository-internal references
 
 ## Writing
 
@@ -121,7 +121,7 @@ Documentation organization frameworks, file naming, and project planning structu
 
 ## Tutorials
 
-Tutorial creation, structure, naming, and content standards applying to **all tutorial content** (docs/, a-demo-fs-ts-nextjs, a-demo-fs-ts-nextjs, anywhere). These conventions **build upon and extend** the writing conventions above.
+Tutorial creation, structure, naming, and content standards applying to **all tutorial content** (docs/, demo-fs-ts-nextjs, demo-fs-ts-nextjs, anywhere). These conventions **build upon and extend** the writing conventions above.
 
 ## static-site (Historical)
 

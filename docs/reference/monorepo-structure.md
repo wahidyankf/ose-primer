@@ -41,7 +41,7 @@ open-sharia-enterprise/
 │   └── k8s/                  # Kubernetes deployments
 ├── specs/                     # Gherkin acceptance specs and OpenAPI contracts
 │   ├── apps/                  # Per-app specs
-│   │   └── [domain]/         # e.g. a-demo/, a-demo/
+│   │   └── [domain]/         # e.g. demo/, demo/
 │   │       ├── contracts/    # OpenAPI 3.1 contract spec
 │   │       ├── be/gherkin/   # Backend acceptance specs
 │   │       ├── fe/gherkin/   # Frontend acceptance specs
@@ -83,15 +83,15 @@ Flat structure - all apps at the same level, no subdirectories.
 
 **Current Apps**:
 
-- `a-demo-fs-ts-nextjs` - a-demo website (Hugo static site)
-- `a-demo-fs-ts-nextjs` - a-demo educational platform (Next.js 16 fullstack content platform)
-- `rhino-cli` - a-demo CLI tool (Go application)
+- `demo-fs-ts-nextjs` - demo website (Hugo static site)
+- `demo-fs-ts-nextjs` - demo educational platform (Next.js 16 fullstack content platform)
+- `rhino-cli` - demo CLI tool (Go application)
 - `rhino-cli` - Repository management CLI, includes `java validate-annotations` (Go application)
-- `rhino-cli` - a-demo site maintenance CLI (Go application)
-- `a-demo-fe-ts-nextjs` - a-demo landing website (Next.js application)
-- `a-demo-be-fsharp-giraffe` - a-demo REST API backend (F#/Giraffe application)
-- `a-demo-fe-e2e` - Playwright FE E2E tests for a-demo-fe-ts-nextjs
-- `a-demo-be-e2e` - Playwright BE E2E tests for a-demo-be-fsharp-giraffe
+- `rhino-cli` - demo site maintenance CLI (Go application)
+- `demo-fe-ts-nextjs` - demo landing website (Next.js application)
+- `demo-be-fsharp-giraffe` - demo REST API backend (F#/Giraffe application)
+- `demo-fe-e2e` - Playwright FE E2E tests for demo-fe-ts-nextjs
+- `demo-be-e2e` - Playwright BE E2E tests for demo-be-fsharp-giraffe
 
 ### App Structure (Hugo Static Site)
 
@@ -139,7 +139,7 @@ Flat structure - all apps at the same level, no subdirectories.
 ### App Structure (Spring Boot Application)
 
 ```
-apps/a-demo-be-java-springboot/
+apps/demo-be-java-springboot/
 ├── src/                       # Source code (main + test)
 ├── target/                    # Build output (gitignored)
 ├── Dockerfile                 # Production multi-stage build
@@ -320,11 +320,11 @@ The repository contains two distinct project structures with different purposes 
 
 Location: `apps/[app-name]/project.json` or `libs/[lib-name]/project.json`
 
-**Hugo App Example** (`a-demo-fs-ts-nextjs`):
+**Hugo App Example** (`demo-fs-ts-nextjs`):
 
 ```json
 {
-  "name": "a-demo-fs-ts-nextjs",
+  "name": "demo-fs-ts-nextjs",
   "projectType": "application",
   "targets": {
     "dev": {
@@ -347,7 +347,7 @@ Location: `apps/[app-name]/project.json` or `libs/[lib-name]/project.json`
       }
     }
   },
-  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:a-demo"]
+  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:demo"]
 }
 ```
 
@@ -423,7 +423,7 @@ All projects use a standard four-dimension tag scheme:
 | `type:`     | `app`, `lib`, `e2e`                                  | Yes                      | Project kind            |
 | `platform:` | `hugo`, `cli`, `nextjs`, `spring-boot`, `playwright` | For apps/e2e             | Framework/runtime       |
 | `lang:`     | `golang`, `ts`, `java`                               | Where source code exists | Primary language        |
-| `domain:`   | `a-demo`, `a-demo`, `a-demo`, `tooling`              | Yes                      | Business/product domain |
+| `domain:`   | `demo`, `demo`, `demo`, `tooling`                    | Yes                      | Business/product domain |
 
 **Notes**:
 
@@ -571,7 +571,7 @@ import { formatDate } from "@open-sharia-enterprise/ts-utils";
 nx graph
 
 # View specific project dependencies
-nx graph --focus=a-demo-fs-ts-nextjs
+nx graph --focus=demo-fs-ts-nextjs
 
 # View affected projects
 nx affected:graph

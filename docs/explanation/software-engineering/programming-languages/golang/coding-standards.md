@@ -1,6 +1,6 @@
 ---
 title: "Go Coding Standards"
-description: Authoritative a-demo Go coding standards (idioms, best practices, anti-patterns to avoid)
+description: Authoritative demo Go coding standards (idioms, best practices, anti-patterns to avoid)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -30,15 +30,15 @@ updated: 2026-03-06
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Go tutorial. We define HOW to apply Go in THIS codebase, not WHAT Go is.
+**This document is demo-specific**, not a Go tutorial. We define HOW to apply Go in THIS codebase, not WHAT Go is.
 
 ## Purpose
 
-This document defines **authoritative coding standards** for Go development in the a-demo. These are prescriptive rules that MUST be followed across all Go projects to ensure consistency, maintainability, and alignment with platform architecture.
+This document defines **authoritative coding standards** for Go development in the demo. These are prescriptive rules that MUST be followed across all Go projects to ensure consistency, maintainability, and alignment with platform architecture.
 
-**Target Audience**: a-demo Go developers, technical reviewers, automated code quality tools
+**Target Audience**: demo Go developers, technical reviewers, automated code quality tools
 
-**Scope**: a-demo idioms, naming conventions, package organization, best practices, and anti-patterns to avoid
+**Scope**: demo idioms, naming conventions, package organization, best practices, and anti-patterns to avoid
 
 ## Quick Reference
 

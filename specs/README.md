@@ -1,6 +1,6 @@
 # Specs
 
-Gherkin acceptance specifications for a-demo applications.
+Gherkin acceptance specifications for demo applications.
 
 ## What This Is
 
@@ -26,14 +26,14 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 
 ## App Specs
 
-- **[a-demo/](./apps/a-demo/README.md)** — a-demo specifications (backend REST API +
+- **[demo/](./apps/demo/README.md)** — demo specifications (backend REST API +
   frontend landing page)
 
-- **[a-demo/](./apps/a-demo/README.md)** — Demo application specifications
-  (platform-agnostic Gherkin — see [be/gherkin](./apps/a-demo/be/gherkin/README.md) and [fe/gherkin](./apps/a-demo/fe/gherkin/README.md) for details)
+- **[demo/](./apps/demo/README.md)** — Demo application specifications
+  (platform-agnostic Gherkin — see [be/gherkin](./apps/demo/be/gherkin/README.md) and [fe/gherkin](./apps/demo/fe/gherkin/README.md) for details)
 - **[rhino/](./apps/rhino/README.md)** — Repository management CLI specifications (Go, godog)
-- **[a-demo/](./apps/a-demo/README.md)** — Content automation CLI specifications (Go, godog)
-- **[a-demo/](./apps/a-demo/README.md)** — a-demo site CLI specifications (Go, godog)
+- **[demo/](./apps/demo/README.md)** — Content automation CLI specifications (Go, godog)
+- **[demo/](./apps/demo/README.md)** — demo site CLI specifications (Go, godog)
 
 ## Experimental App Specs
 
@@ -75,7 +75,7 @@ context, container, and component levels.
 
 ## Standards
 
-All feature files follow the a-demo BDD standards:
+All feature files follow the demo BDD standards:
 
 - [BDD Standards](../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md) —
   framework requirements, Three Amigos process, coverage rules

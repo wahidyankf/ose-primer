@@ -1092,7 +1092,7 @@ XML configuration is verbose, not type-safe, and harder to maintain than Java co
     <constructor-arg ref="dataSource"/>
   </bean>
 
-  <bean id="zakatCalculationService" class="com.a-demo.zakat.service.ZakatCalculationService">
+  <bean id="zakatCalculationService" class="com.demo.zakat.service.ZakatCalculationService">
     <constructor-arg ref="zakatCalculator"/>
     <constructor-arg ref="zakatCalculationRepository"/>
   </bean>

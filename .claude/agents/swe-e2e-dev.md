@@ -1,6 +1,6 @@
 ---
 name: swe-e2e-dev
-description: Develops end-to-end tests using Playwright following a-demo testing patterns and standards. Use when implementing E2E tests for a-demo applications.
+description: Develops end-to-end tests using Playwright following demo testing patterns and standards. Use when implementing E2E tests for demo applications.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: sonnet
 color: purple
@@ -150,7 +150,7 @@ test.describe("Login", () => {
 });
 ```
 
-### a-demo Context
+### demo Context
 
 Test Islamic finance features with domain context:
 

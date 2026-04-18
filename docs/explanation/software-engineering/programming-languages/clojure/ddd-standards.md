@@ -1,6 +1,6 @@
 ---
 title: "Clojure DDD Standards"
-description: Authoritative a-demo Clojure Domain-Driven Design standards (records, protocols, multimethods, specs as invariants)
+description: Authoritative demo Clojure Domain-Driven Design standards (records, protocols, multimethods, specs as invariants)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Clojure tutorial.
+**This document is demo-specific**, not a Clojure tutorial.
 
 ## Purpose
 
-This document defines Clojure's data-driven approach to Domain-Driven Design (DDD) in a-demo. Clojure DDD differs fundamentally from OOP DDD: domain concepts are expressed as immutable data maps rather than classes, and behavior is attached via protocols and multimethods rather than methods.
+This document defines Clojure's data-driven approach to Domain-Driven Design (DDD) in demo. Clojure DDD differs fundamentally from OOP DDD: domain concepts are expressed as immutable data maps rather than classes, and behavior is attached via protocols and multimethods rather than methods.
 
-**Target Audience**: a-demo Clojure developers modeling Sharia-compliant financial domains
+**Target Audience**: demo Clojure developers modeling Sharia-compliant financial domains
 
 **Scope**: Plain maps as value objects, records for performance-critical types, protocols for polymorphism, multimethods for open dispatch, Clojure specs as domain invariants, namespaced keywords for domain concepts
 

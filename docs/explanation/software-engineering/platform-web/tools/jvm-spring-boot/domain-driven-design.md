@@ -40,7 +40,7 @@ updated: 2026-01-26
 - [Application Services](#application-services)
 - [Domain Services](#domain-services)
 - [DDD Best Practices](#ddd-best-practices)
-- [a-demo DDD Examples](#ose-platform-ddd-examples)
+- [demo DDD Examples](#ose-platform-ddd-examples)
 - [Related Documentation](#related-documentation)
 
 ## Overview
@@ -243,7 +243,7 @@ public class ZakatCalculation {
 }
 ```
 
-### a-demo Value Objects
+### demo Value Objects
 
 ```java
 // Zakat Rate Value Object
@@ -1097,7 +1097,7 @@ public class ZakatNotificationHandler {
 }
 ```
 
-### a-demo Domain Events
+### demo Domain Events
 
 ```java
 // Murabaha payment event
@@ -1144,13 +1144,13 @@ public class WaqfProjectEventHandler {
 
 Bounded contexts define explicit boundaries around domain models.
 
-### a-demo Bounded Contexts
+### demo Bounded Contexts
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph TD
-    subgraph "a-demo"
+    subgraph "demo"
         subgraph "Zakat Context"
             ZC[Zakat Calculation<br/>Aggregate]
             ZR[Zakat Rate<br/>Value Object]
@@ -1824,6 +1824,6 @@ public class MurabahaApplicationService {
 - [Spring Boot Idioms](./idioms.md) - DDD patterns
 - [Spring Boot Data Access](./data-access.md) - Repository implementation
 
-**Hands-on Learning (a-demo)**:
+**Hands-on Learning (demo)**:
 
 **Last Updated**: 2026-01-26

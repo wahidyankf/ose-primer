@@ -60,7 +60,7 @@ These tools work together to ensure code consistency and quality without manual 
 - YAML: `*.{yml,yaml}`
 - CSS/SCSS: `*.{css,scss}`
 
-**Note**: Hugo archetype template files (`apps/a-demo-fs-ts-nextjs/archetypes/**/*.md`) are excluded from Prettier formatting as they contain Go template syntax.
+**Note**: Hugo archetype template files (`apps/demo-fs-ts-nextjs/archetypes/**/*.md`) are excluded from Prettier formatting as they contain Go template syntax.
 
 **When It Runs**: Automatically on staged files before each commit via the pre-commit hook.
 
@@ -95,7 +95,7 @@ npx prettier --write [file-path]
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": "prettier --write",
     "*.json": "prettier --write",
-    "apps/a-demo-fs-ts-nextjs/archetypes/**/*.md": "echo 'Skipping Hugo archetype'",
+    "apps/demo-fs-ts-nextjs/archetypes/**/*.md": "echo 'Skipping Hugo archetype'",
     "*.md": "prettier --write",
     "*.{yml,yaml}": "prettier --write",
     "*.{css,scss}": "prettier --write"
@@ -133,7 +133,7 @@ npx prettier --write [file-path]
 | 1    | `.claude/` or `.opencode/` staged | Validate → Sync → Validate-sync                                       | exit 1     |
 | 2    | `docker-compose.ya?ml` staged     | `docker compose -f <file> config` per file                            | exit 1     |
 | 3    | always                            | `nx affected -t run-pre-commit --skip-nx-cache`                       | warn only  |
-| 4    | always                            | `git add apps/a-demo-fs-ts-nextjs/content/`                           | ignored    |
+| 4    | always                            | `git add apps/demo-fs-ts-nextjs/content/`                             | ignored    |
 | 5    | always                            | `npx lint-staged`                                                     | exit 1     |
 | 6    | `.ex`/`.exs` staged, `mix` found  | `mix format <files>` per project root, then `git add`                 | exit 1     |
 | 7    | `docs/` staged                    | Validate + auto-fix naming, then `git add docs/ governance/ .claude/` | exit 1     |
@@ -263,25 +263,25 @@ $ git push origin main
 > nx affected -t typecheck
 
  Running target typecheck for affected projects...
-   a-demo-fe-ts-nextjs
+   demo-fe-ts-nextjs
  All checks passed
 
 > nx affected -t lint
 
  Running target lint for affected projects...
-   a-demo-fe-ts-nextjs
+   demo-fe-ts-nextjs
  All checks passed
 
 > nx affected -t test:quick
 
  Running target test:quick for affected projects...
-   a-demo-fe-ts-nextjs
+   demo-fe-ts-nextjs
  All checks passed
 
 > nx affected -t spec-coverage
 
  Running target spec-coverage for affected projects...
-   a-demo-fe-ts-nextjs
+   demo-fe-ts-nextjs
  All checks passed
 
 Enumerating objects: 5, done.
@@ -464,16 +464,16 @@ git commit -m "fix: correct validation logic"
 # Commit includes formatted version automatically
 ```
 
-## a-demo-fs-ts-nextjs Link Validation
+## demo-fs-ts-nextjs Link Validation
 
-Internal links in a-demo-fs-ts-nextjs content are validated
+Internal links in demo-fs-ts-nextjs content are validated
 automatically on every `test:quick` run via `rhino-cli links check`.
 
 **Convention:**
 
 - Internal links are validated for correctness
 - External links (`http://`, `https://`, `mailto:`) are NOT validated by this tool — use the
-  `apps-a-demo-fs-ts-nextjs-link-checker` AI agent for those
+  `apps-demo-fs-ts-nextjs-link-checker` AI agent for those
 - Same-page anchors (`#section`) are not validated
 
 **Examples:**
@@ -500,10 +500,10 @@ automatically on every `test:quick` run via `rhino-cli links check`.
 
 ```bash
 # Full quality gate including link check
-nx run a-demo-fs-ts-nextjs:test:quick
+nx run demo-fs-ts-nextjs:test:quick
 
 # Link check only (standalone)
-nx run a-demo-fs-ts-nextjs:links:check
+nx run demo-fs-ts-nextjs:links:check
 ```
 
 **When broken links are found:**
@@ -511,9 +511,9 @@ nx run a-demo-fs-ts-nextjs:links:check
 1. The command exits with code 1 — CI fails
 2. Output table shows source file, line number, link text, and broken target
 3. Fix by correcting the target path in the source file
-4. Re-run `nx run a-demo-fs-ts-nextjs:links:check` to confirm
+4. Re-run `nx run demo-fs-ts-nextjs:links:check` to confirm
 
-**Dependency chain:** `rhino-cli:build` → `a-demo-fs-ts-nextjs:links:check` → `a-demo-fs-ts-nextjs:test:quick`
+**Dependency chain:** `rhino-cli:build` → `demo-fs-ts-nextjs:links:check` → `demo-fs-ts-nextjs:test:quick`
 
 ## Go CLI Linting
 
@@ -547,13 +547,13 @@ golangci-lint run -v ./... 2>&1 | grep "Config"
 ## Elixir Formatting
 
 **Purpose**: Auto-format Elixir source files to maintain consistent style across the three Elixir
-projects: `apps/a-demo-be-fsharp-giraffe-exph`, `libs/elixir-gherkin`, and `libs/elixir-cabbage`.
+projects: `apps/demo-be-fsharp-giraffe-exph`, `libs/elixir-gherkin`, and `libs/elixir-cabbage`.
 
 **Tool**: `mix format`
 
 **Why a Separate Hook Step (Not lint-staged)**:
 
-`a-demo-be-fsharp-giraffe-exph`'s `.formatter.exs` uses `import_deps: [:ecto, :ecto_sql, :phoenix]`, which
+`demo-be-fsharp-giraffe-exph`'s `.formatter.exs` uses `import_deps: [:ecto, :ecto_sql, :phoenix]`, which
 loads `locals_without_parens` rules from those dependencies (e.g. Phoenix route macros, Ecto schema
 macros). `mix format` must run from the project root where `mix.exs` and `_build/` are present.
 Running from the repository root (no `mix.exs`) would silently apply incorrect formatting —
@@ -579,7 +579,7 @@ from each one.
 **Manual Formatting**:
 
 ```bash
-# From a project root (e.g. apps/a-demo-be-fsharp-giraffe-exph)
+# From a project root (e.g. apps/demo-be-fsharp-giraffe-exph)
 mix format
 
 # Format specific file

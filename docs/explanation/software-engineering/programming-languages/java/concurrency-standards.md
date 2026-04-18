@@ -1,5 +1,5 @@
 ---
-title: Java Concurrency Standards for a-demo
+title: Java Concurrency Standards for demo
 description: Prescriptive concurrency requirements for Shariah-compliant financial systems
 category: explanation
 subcategory: prog-lang
@@ -19,15 +19,15 @@ updated: 2026-02-03
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
+**This document is demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
 
-# Java Concurrency Standards for a-demo
+# Java Concurrency Standards for demo
 
 **OSE-specific prescriptive standards** for concurrency in Shariah-compliant financial applications. This document defines **mandatory requirements** using RFC 2119 keywords (MUST, SHOULD, MAY).
 
 ## Purpose
 
-Concurrency in a-demo enables critical capabilities for financial operations:
+Concurrency in demo enables critical capabilities for financial operations:
 
 - **Throughput**: Process 10,000+ concurrent transactions without blocking
 - **Responsiveness**: Keep UI responsive during complex Zakat calculations
@@ -447,7 +447,7 @@ public void monitorConcurrency() {
 - Thread pool saturation
 - Deadlock detection
 
-### a-demo Standards
+### demo Standards
 
 - [Error Handling Standards](./error-handling-standards.md) - Concurrent error propagation
 - [Performance Standards](./performance-standards.md) - Performance implications of concurrency
@@ -457,7 +457,7 @@ public void monitorConcurrency() {
 
 For learning Java fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Java basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Java basics from demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ### Software Engineering Principles
 
@@ -514,4 +514,4 @@ Before deploying concurrent financial services, verify:
 
 **Last Updated**: 2026-02-04
 
-**Status**: Active (mandatory for all a-demo Java services)
+**Status**: Active (mandatory for all demo Java services)

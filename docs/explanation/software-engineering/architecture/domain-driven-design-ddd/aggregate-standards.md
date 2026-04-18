@@ -1,6 +1,6 @@
 ---
 title: "DDD Aggregate Standards"
-description: a-demo standards for aggregate design, consistency boundaries, and Islamic finance invariants
+description: demo standards for aggregate design, consistency boundaries, and Islamic finance invariants
 category: explanation
 subcategory: architecture
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-a-demo aggregate design standards for Islamic finance systems.
+demo aggregate design standards for Islamic finance systems.
 
 ## REQUIRED: Aggregates Enforce Business Invariants
 

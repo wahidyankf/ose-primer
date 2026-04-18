@@ -1,6 +1,6 @@
 ---
 title: "Playwright Best Practices"
-description: Authoritative a-demo Playwright best practices (test isolation, idempotency, deterministic tests)
+description: Authoritative demo Playwright best practices (test isolation, idempotency, deterministic tests)
 category: explanation
 subcategory: automation-testing
 tags:
@@ -22,13 +22,13 @@ updated: 2026-02-08
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Playwright tutorial.
+**This document is demo-specific**, not a Playwright tutorial.
 
 ## Purpose
 
-This document defines **best practices** for reliable Playwright tests in the a-demo.
+This document defines **best practices** for reliable Playwright tests in the demo.
 
-**Target Audience**: a-demo E2E test developers
+**Target Audience**: demo E2E test developers
 
 **Scope**: Test isolation, idempotency, reliability patterns
 

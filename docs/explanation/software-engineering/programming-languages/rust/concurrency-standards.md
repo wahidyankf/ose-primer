@@ -1,6 +1,6 @@
 ---
 title: "Rust Concurrency Standards"
-description: Authoritative a-demo Rust concurrency standards (Send/Sync, async/await, Tokio, Arc/Mutex, channels)
+description: Authoritative demo Rust concurrency standards (Send/Sync, async/await, Tokio, Arc/Mutex, channels)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Rust tutorial.
+**This document is demo-specific**, not a Rust tutorial.
 
 ## Purpose
 
-This document defines **authoritative concurrency standards** for Rust development in the a-demo. Rust's unique value proposition is "fearless concurrency" — the compiler prevents data races at compile time through the ownership system and `Send`/`Sync` traits.
+This document defines **authoritative concurrency standards** for Rust development in the demo. Rust's unique value proposition is "fearless concurrency" — the compiler prevents data races at compile time through the ownership system and `Send`/`Sync` traits.
 
-**Target Audience**: a-demo Rust developers, platform architects, technical reviewers
+**Target Audience**: demo Rust developers, platform architects, technical reviewers
 
 **Scope**: Send/Sync traits, async/await with Tokio, Arc/Mutex patterns, channels, rayon for data parallelism
 

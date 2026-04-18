@@ -55,5 +55,5 @@
       "cache": true
     }
   },
-  "implicitDependencies": ["a-demo-contracts", "rhino-cli"]
+  "implicitDependencies": ["demo-contracts", "rhino-cli"]
 }

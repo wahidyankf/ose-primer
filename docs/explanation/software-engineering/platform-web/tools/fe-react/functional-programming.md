@@ -940,7 +940,7 @@ export const ExpandableSection: React.FC<{ title: string; content: string }> = (
 );
 ```
 
-## a-demo Functional Examples
+## demo Functional Examples
 
 ### Zakat Calculation Pipeline
 

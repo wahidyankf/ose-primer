@@ -1,6 +1,6 @@
 ---
 title: "DDD Entity Standards"
-description: a-demo standards for entity identity management and lifecycle tracking
+description: demo standards for entity identity management and lifecycle tracking
 category: explanation
 subcategory: architecture
 tags:
@@ -19,7 +19,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-a-demo entity standards for identity and lifecycle management.
+demo entity standards for identity and lifecycle management.
 
 ## REQUIRED: Identity-Based Equality
 

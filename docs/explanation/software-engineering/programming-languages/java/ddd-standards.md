@@ -1,5 +1,5 @@
 ---
-title: Java DDD Standards for a-demo
+title: Java DDD Standards for demo
 description: Prescriptive Domain-Driven Design requirements for Shariah-compliant financial systems
 category: explanation
 subcategory: prog-lang
@@ -20,15 +20,15 @@ updated: 2026-02-03
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
+**This document is demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
 
-# Java DDD Standards for a-demo
+# Java DDD Standards for demo
 
 **OSE-specific prescriptive standards** for Domain-Driven Design in Shariah-compliant financial applications. This document defines **mandatory requirements** using RFC 2119 keywords (MUST, SHOULD, MAY).
 
 ## Purpose
 
-Domain-Driven Design in a-demo ensures:
+Domain-Driven Design in demo ensures:
 
 - **Modeling Complex Business Rules**: Zakat calculations, Qard Hasan contracts, donation allocations
 - **Data Consistency**: Aggregates maintain financial invariants
@@ -38,7 +38,7 @@ Domain-Driven Design in a-demo ensures:
 
 ### Domain Boundaries
 
-**REQUIRED**: a-demo MUST organize code into bounded contexts aligned with business domains.
+**REQUIRED**: demo MUST organize code into bounded contexts aligned with business domains.
 
 ```
 ose-platform/
@@ -240,7 +240,7 @@ public record Money(BigDecimal value, String currencyCode) {
 - Return new instances from operations (not mutate)
 - Implement domain operations (add, subtract, multiply)
 
-**REQUIRED**: Common value objects in a-demo:
+**REQUIRED**: Common value objects in demo:
 
 - **Money**: Amount + currency code
 - **AccountId**: Strong-typed account identifier
@@ -551,7 +551,7 @@ class DonationTest {
 - Domain event publication
 - Edge cases and error conditions
 
-### a-demo Standards
+### demo Standards
 
 - [Error Handling Standards](./error-handling-standards.md) - Domain exception handling
 - [Concurrency Standards](./concurrency-standards.md) - Aggregate thread-safety
@@ -561,7 +561,7 @@ class DonationTest {
 
 For learning Java fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Java basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Java basics from demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ### Software Engineering Principles
 
@@ -621,4 +621,4 @@ Before deploying DDD-based services, verify:
 
 **Last Updated**: 2026-02-04
 
-**Status**: Active (mandatory for all a-demo domain-driven services)
+**Status**: Active (mandatory for all demo domain-driven services)

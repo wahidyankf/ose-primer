@@ -41,7 +41,7 @@ Security is critical for production Spring Boot applications. This guide covers 
 - [Rate Limiting](#-rate-limiting) - API abuse prevention
 - [Secrets Management](#-secrets-management) - Configuration security
 - [OWASP Top 10](#-owasp-top-10) - Common vulnerability defenses
-- [a-demo Examples](#-ose-platform-examples) - Islamic finance security patterns
+- [demo Examples](#-ose-platform-examples) - Islamic finance security patterns
 - [Security Checklist](#-security-checklist) - Production deployment checklist
 - [Related Documentation](#-related-documentation) - Cross-references
 
@@ -55,7 +55,7 @@ Spring Security automatically protects form-based applications:
 
 ```java
 // SecurityConfig.java
-package com.a-demo.config;
+package com.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -120,7 +120,7 @@ public class SecurityConfig {
 
 ```java
 // CsrfTokenService.java
-package com.a-demo.security;
+package com.demo.security;
 
 import org.springframework.stereotype.Service;
 import javax.crypto.Mac;
@@ -167,9 +167,9 @@ public class CsrfTokenService {
 
 ```java
 // CsrfController.java
-package com.a-demo.controller;
+package com.demo.controller;
 
-import com.a-demo.security.CsrfTokenService;
+import com.demo.security.CsrfTokenService;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -209,15 +209,15 @@ public class CsrfController {
 }
 ```
 
-### a-demo Example: Zakat Calculation Endpoint
+### demo Example: Zakat Calculation Endpoint
 
 ```java
 // ZakatController.java
-package com.a-demo.zakat.controller;
+package com.demo.zakat.controller;
 
-import com.a-demo.zakat.dto.ZakatCalculationRequest;
-import com.a-demo.zakat.dto.ZakatCalculationResponse;
-import com.a-demo.zakat.service.ZakatService;
+import com.demo.zakat.dto.ZakatCalculationRequest;
+import com.demo.zakat.dto.ZakatCalculationResponse;
+import com.demo.zakat.service.ZakatService;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -285,7 +285,7 @@ Thymeleaf automatically escapes HTML by default:
 
 ```java
 // SanitizationService.java
-package com.a-demo.security;
+package com.demo.security;
 
 import org.owasp.encoder.Encode;
 import org.springframework.stereotype.Service;
@@ -331,10 +331,10 @@ public class SanitizationService {
 
 ```java
 // MurabahaController.java
-package com.a-demo.murabaha.controller;
+package com.demo.murabaha.controller;
 
-import com.a-demo.murabaha.dto.MurabahaApplicationResponse;
-import com.a-demo.security.SanitizationService;
+import com.demo.murabaha.dto.MurabahaApplicationResponse;
+import com.demo.security.SanitizationService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -369,7 +369,7 @@ public class MurabahaController {
 
 ```java
 // SecurityHeadersConfig.java
-package com.a-demo.config;
+package com.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -417,7 +417,7 @@ public class SecurityHeadersConfig {
 
 ```java
 // ZakatCalculationRequest.java
-package com.a-demo.zakat.dto;
+package com.demo.zakat.dto;
 
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
@@ -484,7 +484,7 @@ public class ZakatController {
 
 ```java
 // GlobalExceptionHandler.java
-package com.a-demo.exception;
+package com.demo.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -533,7 +533,7 @@ public class GlobalExceptionHandler {
 
 ```java
 // IslamicDate.java (custom annotation)
-package com.a-demo.validation;
+package com.demo.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -552,7 +552,7 @@ public @interface IslamicDate {
 
 ```java
 // IslamicDateValidator.java
-package com.a-demo.validation;
+package com.demo.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -576,9 +576,9 @@ public class IslamicDateValidator implements ConstraintValidator<IslamicDate, St
 
 ```java
 // WaqfDonationRequest.java (using custom validator)
-package com.a-demo.waqf.dto;
+package com.demo.waqf.dto;
 
-import com.a-demo.validation.IslamicDate;
+import com.demo.validation.IslamicDate;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 
@@ -617,9 +617,9 @@ public class WaqfDonationRequest {
 
 ```java
 // MurabahaApplicationRequest.java
-package com.a-demo.murabaha.dto;
+package com.demo.murabaha.dto;
 
-import com.a-demo.validation.ValidMurabahaApplication;
+import com.demo.validation.ValidMurabahaApplication;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 
@@ -660,7 +660,7 @@ public class MurabahaApplicationRequest {
 
 ```java
 // ValidMurabahaApplication.java
-package com.a-demo.validation;
+package com.demo.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -679,9 +679,9 @@ public @interface ValidMurabahaApplication {
 
 ```java
 // MurabahaApplicationValidator.java
-package com.a-demo.validation;
+package com.demo.validation;
 
-import com.a-demo.murabaha.dto.MurabahaApplicationRequest;
+import com.demo.murabaha.dto.MurabahaApplicationRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -814,7 +814,7 @@ eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyQG9zZS5jb20iLCJhdXRob3JpdGllcyI6WyJST0xFX1V
 
 ```java
 // JwtService.java
-package com.a-demo.security;
+package com.demo.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -881,7 +881,7 @@ public class JwtService {
 
 ```java
 // JwtAuthenticationFilter.java
-package com.a-demo.security;
+package com.demo.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -951,11 +951,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 ```java
 // AuthController.java
-package com.a-demo.auth.controller;
+package com.demo.auth.controller;
 
-import com.a-demo.auth.dto.LoginRequest;
-import com.a-demo.auth.dto.LoginResponse;
-import com.a-demo.security.JwtService;
+import com.demo.auth.dto.LoginRequest;
+import com.demo.auth.dto.LoginResponse;
+import com.demo.security.JwtService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -1009,7 +1009,7 @@ spring:
 
 ```java
 // OAuth2SecurityConfig.java
-package com.a-demo.config;
+package com.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -1059,7 +1059,7 @@ public class OAuth2SecurityConfig {
 
 ```java
 // PasswordConfig.java
-package com.a-demo.config;
+package com.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -1079,10 +1079,10 @@ public class PasswordConfig {
 
 ```java
 // UserService.java
-package com.a-demo.user.service;
+package com.demo.user.service;
 
-import com.a-demo.user.entity.User;
-import com.a-demo.user.repository.UserRepository;
+import com.demo.user.entity.User;
+import com.demo.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -1198,7 +1198,7 @@ graph TD
 
 ```java
 // MethodSecurityConfig.java
-package com.a-demo.config;
+package com.demo.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -1211,10 +1211,10 @@ public class MethodSecurityConfig {
 
 ```java
 // ZakatService.java
-package com.a-demo.zakat.service;
+package com.demo.zakat.service;
 
-import com.a-demo.zakat.dto.ZakatCalculationRequest;
-import com.a-demo.zakat.dto.ZakatCalculationResponse;
+import com.demo.zakat.dto.ZakatCalculationRequest;
+import com.demo.zakat.dto.ZakatCalculationResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -1248,9 +1248,9 @@ public class ZakatService {
 
 ```java
 // MurabahaService.java
-package com.a-demo.murabaha.service;
+package com.demo.murabaha.service;
 
-import com.a-demo.murabaha.entity.MurabahaApplication;
+import com.demo.murabaha.entity.MurabahaApplication;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -1277,9 +1277,9 @@ public class MurabahaService {
 
 ```java
 // MurabahaPermissionEvaluator.java
-package com.a-demo.security;
+package com.demo.security;
 
-import com.a-demo.murabaha.repository.MurabahaApplicationRepository;
+import com.demo.murabaha.repository.MurabahaApplicationRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -1313,7 +1313,7 @@ public class MurabahaPermissionEvaluator {
 
 ```java
 // RoleHierarchyConfig.java
-package com.a-demo.config;
+package com.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -1339,13 +1339,13 @@ public class RoleHierarchyConfig {
 }
 ```
 
-### a-demo Example: Waqf Project Management
+### demo Example: Waqf Project Management
 
 ```java
 // WaqfProjectService.java
-package com.a-demo.waqf.service;
+package com.demo.waqf.service;
 
-import com.a-demo.waqf.entity.WaqfProject;
+import com.demo.waqf.entity.WaqfProject;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -1397,9 +1397,9 @@ Spring Data JPA and proper query parameterization prevent SQL injection attacks.
 
 ```java
 // ZakatCalculationRepository.java
-package com.a-demo.zakat.repository;
+package com.demo.zakat.repository;
 
-import com.a-demo.zakat.entity.ZakatCalculation;
+import com.demo.zakat.entity.ZakatCalculation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -1422,9 +1422,9 @@ public interface ZakatCalculationRepository extends JpaRepository<ZakatCalculati
 
 ```java
 // MurabahaApplicationRepository.java
-package com.a-demo.murabaha.repository;
+package com.demo.murabaha.repository;
 
-import com.a-demo.murabaha.entity.MurabahaApplication;
+import com.demo.murabaha.entity.MurabahaApplication;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -1464,9 +1464,9 @@ public interface MurabahaApplicationRepository extends JpaRepository<MurabahaApp
 
 ```java
 // WaqfProjectRepository.java
-package com.a-demo.waqf.repository;
+package com.demo.waqf.repository;
 
-import com.a-demo.waqf.entity.WaqfProject;
+import com.demo.waqf.entity.WaqfProject;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -1531,7 +1531,7 @@ public class SafeService {
 
 ```java
 // ZakatReportService.java
-package com.a-demo.zakat.service;
+package com.demo.zakat.service;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -1575,7 +1575,7 @@ Spring Security provides comprehensive HTTP security headers protection.
 
 ```java
 // SecurityHeadersConfig.java
-package com.a-demo.config;
+package com.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -1635,7 +1635,7 @@ public class SecurityHeadersConfig {
 
 ```java
 // CustomSecurityHeadersFilter.java
-package com.a-demo.security;
+package com.demo.security;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletResponse;
@@ -1686,7 +1686,7 @@ Protect APIs from abuse with rate limiting using Bucket4j and Redis.
 
 ```java
 // RateLimitingService.java
-package com.a-demo.security;
+package com.demo.security;
 
 import io.github.bucket4j.*;
 import org.springframework.stereotype.Service;
@@ -1720,7 +1720,7 @@ public class RateLimitingService {
 
 ```java
 // RateLimitingFilter.java
-package com.a-demo.security;
+package com.demo.security;
 
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.ConsumptionProbe;
@@ -1770,13 +1770,13 @@ public class RateLimitingFilter implements Filter {
 }
 ```
 
-### a-demo Example: Zakat Calculation Rate Limiting
+### demo Example: Zakat Calculation Rate Limiting
 
 ```java
 // ZakatRateLimitingInterceptor.java
-package com.a-demo.zakat.interceptor;
+package com.demo.zakat.interceptor;
 
-import com.a-demo.security.RateLimitingService;
+import com.demo.security.RateLimitingService;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.ConsumptionProbe;
 import jakarta.servlet.http.HttpServletRequest;
@@ -1880,7 +1880,7 @@ spring:
 
 ```java
 // SecretsConfig.java
-package com.a-demo.config;
+package com.demo.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -2085,7 +2085,7 @@ public class SignatureVerificationService {
 
 ```java
 // SecurityAuditLogger.java
-package com.a-demo.security;
+package com.demo.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -2148,7 +2148,7 @@ public class UrlValidationService {
 }
 ```
 
-## 💼 a-demo Examples
+## 💼 demo Examples
 
 Comprehensive security examples for Islamic finance operations.
 
@@ -2156,9 +2156,9 @@ Comprehensive security examples for Islamic finance operations.
 
 ```java
 // ZakatSecurityService.java
-package com.a-demo.zakat.security;
+package com.demo.zakat.security;
 
-import com.a-demo.zakat.dto.ZakatCalculationRequest;
+import com.demo.zakat.dto.ZakatCalculationRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -2197,9 +2197,9 @@ public class ZakatSecurityService {
 
 ```java
 // MurabahaSecurityService.java
-package com.a-demo.murabaha.security;
+package com.demo.murabaha.security;
 
-import com.a-demo.murabaha.entity.MurabahaApplication;
+import com.demo.murabaha.entity.MurabahaApplication;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -2242,9 +2242,9 @@ public class MurabahaSecurityService {
 
 ```java
 // WaqfSecurityService.java
-package com.a-demo.waqf.security;
+package com.demo.waqf.security;
 
-import com.a-demo.waqf.dto.WaqfDonationRequest;
+import com.demo.waqf.dto.WaqfDonationRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -2294,7 +2294,7 @@ public class WaqfSecurityService {
 
 ```java
 // IslamicFinanceAuditService.java
-package com.a-demo.audit;
+package com.demo.audit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -2345,9 +2345,9 @@ public class IslamicFinanceAuditService {
 }
 ```
 
-### a-demo Platform: JWT + Spring Security Setup
+### demo Platform: JWT + Spring Security Setup
 
-The a-demo backend uses a stateless JWT filter chain. The architecture follows the
+The demo backend uses a stateless JWT filter chain. The architecture follows the
 standard `OncePerRequestFilter` → `SecurityContextHolder` pattern, with three project-specific
 choices documented here.
 
@@ -2569,7 +2569,7 @@ Production deployment security checklist for Spring Boot applications.
 - [Spring Boot Idioms](./idioms.md) - Security patterns
 - [Spring Boot REST APIs](./rest-apis.md) - Securing APIs
 
-**Hands-on Learning (a-demo)**:
+**Hands-on Learning (demo)**:
 
 ---
 

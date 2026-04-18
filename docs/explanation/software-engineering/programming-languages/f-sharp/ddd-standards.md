@@ -1,6 +1,6 @@
 ---
 title: "F# DDD Standards"
-description: Authoritative a-demo F# domain-driven design standards — discriminated unions, value objects, aggregate pattern
+description: Authoritative demo F# domain-driven design standards — discriminated unions, value objects, aggregate pattern
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not an F# tutorial.
+**This document is demo-specific**, not an F# tutorial.
 
 ## Purpose
 
-This document defines **authoritative domain-driven design (DDD) standards** for F# development in a-demo. F# is uniquely suited for DDD: discriminated unions model domain states, records model value objects, and the type system enforces invariants at compile time. "Make illegal states unrepresentable" is the core F# DDD principle.
+This document defines **authoritative domain-driven design (DDD) standards** for F# development in demo. F# is uniquely suited for DDD: discriminated unions model domain states, records model value objects, and the type system enforces invariants at compile time. "Make illegal states unrepresentable" is the core F# DDD principle.
 
-**Target Audience**: a-demo F# developers modeling Sharia finance domains
+**Target Audience**: demo F# developers modeling Sharia finance domains
 
 **Scope**: DU-driven domain modeling, value objects as records, single-case DUs for strong typing, aggregate pattern in functional style, domain events
 

@@ -37,7 +37,7 @@ graph TB
 
     subgraph "Quality Gates"
         PRETTIER[Prettier Format]
-        AYOKODING[a-demo Content Update]
+        AYOKODING[demo Content Update]
         LINK_VAL[Link Validator]
         COMMITLINT[Commitlint]
         TEST_QUICK[Nx Affected Tests]
@@ -100,8 +100,8 @@ graph TB
 
 **Execution Order:**
 
-1. **a-demo Content Processing** (if affected):
-   - Validate links in a-demo-fs-ts-nextjs content
+1. **demo Content Processing** (if affected):
+   - Validate links in demo-fs-ts-nextjs content
 2. **Prettier Formatting** (via lint-staged):
    - Format all staged files
    - Auto-stage formatted changes
@@ -172,40 +172,40 @@ graph TB
 
 **Purpose**: Prevent merging PRs with broken markdown links
 
-### Deploy a-demo Web
+### Deploy demo Web
 
-**Deployment**: Force-push `main` to `prod-a-demo-fs-ts-nextjs` branch; Vercel auto-builds the Next.js application.
+**Deployment**: Force-push `main` to `prod-demo-fs-ts-nextjs` branch; Vercel auto-builds the Next.js application.
 
 **Purpose**: Deploy example.com (Next.js 16 fullstack content platform)
 
-### Test and Deploy a-demo Web Workflow
+### Test and Deploy demo Web Workflow
 
-**File**: `.github/workflows/test-and-deploy-a-demo-fs-ts-nextjs.yml`
+**File**: `.github/workflows/test-and-deploy-demo-fs-ts-nextjs.yml`
 
 **Trigger**: Scheduled (6 AM and 6 PM WIB daily) or manual `workflow_dispatch`
 
 **Steps:**
 
 1. If changes exist (or `force_deploy=true`): setup Volta, Go 1.26.0, Hugo 0.156.0 extended
-2. Install dependencies and run `nx build a-demo-fs-ts-nextjs`
-3. Force-push `main` to `prod-a-demo-fs-ts-nextjs`; Vercel auto-builds
+2. Install dependencies and run `nx build demo-fs-ts-nextjs`
+3. Force-push `main` to `prod-demo-fs-ts-nextjs`; Vercel auto-builds
 
 **Purpose**: Automated scheduled deployments for example.com with change detection to avoid unnecessary builds
 
-### Test and Deploy a-demo Workflow
+### Test and Deploy demo Workflow
 
-**File**: `.github/workflows/test-and-deploy-a-demo.yml`
+**File**: `.github/workflows/test-and-deploy-demo.yml`
 
 **Trigger**: Scheduled (6 AM and 6 PM WIB daily) or manual `workflow_dispatch`
 
 **Steps:**
 
-1. Run `spec-coverage` across all a-demo projects (`a-demo-be-fsharp-giraffe`, `a-demo-fe-ts-nextjs`, `a-demo-be-e2e`, `a-demo-fe-e2e`)
-2. Run `fe-lint` for `a-demo-fe-ts-nextjs`
+1. Run `spec-coverage` across all demo projects (`demo-be-fsharp-giraffe`, `demo-fe-ts-nextjs`, `demo-be-e2e`, `demo-fe-e2e`)
+2. Run `fe-lint` for `demo-fe-ts-nextjs`
 3. Run `be-integration` tests with docker-compose (real PostgreSQL)
 4. Run `fe-integration` tests (MSW-mocked)
-5. Run combined `e2e` stage: full stack via docker-compose, then `a-demo-be-e2e` and `a-demo-fe-e2e` Playwright tests
-6. `deploy` (gated on all test jobs + `detect-changes == true`): force-push `HEAD` to `prod-a-demo-web`; Vercel auto-builds
+5. Run combined `e2e` stage: full stack via docker-compose, then `demo-be-e2e` and `demo-fe-e2e` Playwright tests
+6. `deploy` (gated on all test jobs + `detect-changes == true`): force-push `HEAD` to `prod-demo-web`; Vercel auto-builds
 
 **Purpose**: Automated scheduled deployments for www.example.com, gated on full FE+BE test suite, with change detection to avoid unnecessary builds
 
@@ -227,7 +227,7 @@ graph TB
 
 ### Demo Backend Workflows
 
-**Files**: `.github/workflows/test-a-demo-be-*.yml` (one per backend)
+**Files**: `.github/workflows/test-demo-be-*.yml` (one per backend)
 
 **Backends**: golang-gin, java-springboot, java-vertx, elixir-phoenix, fsharp-giraffe, python-fastapi, rust-axum, kotlin-ktor, ts-effect, csharp-aspnetcore, clojure-pedestal
 
@@ -250,24 +250,24 @@ Each backend workflow runs its own backend stack — never a different backend.
 
 1. **`integration-tests`** (golang-gin only) or **`integration-e2e-be`** (all others):
    - Runs backend integration tests via `docker-compose.integration.yml`
-   - Starts backend + runs `a-demo-be-e2e:test:e2e` against it
+   - Starts backend + runs `demo-be-e2e:test:e2e` against it
    - Uses the backend's own infra compose files
 
 2. **`e2e-fe`** (all backends):
-   - Starts the full stack: DB + this backend (with `ENABLE_TEST_API=true`) + `a-demo-fe-ts-nextjs`
+   - Starts the full stack: DB + this backend (with `ENABLE_TEST_API=true`) + `demo-fe-ts-nextjs`
    - Waits for the frontend on port 3301
-   - Runs `a-demo-fe-e2e:test:e2e` against the full stack
+   - Runs `demo-fe-e2e:test:e2e` against the full stack
    - Uploads artifact: `playwright-report-fe-e2e-<backend-slug>`
 
-**Why per-backend FE E2E**: Every backend implements the test-only API (`POST /api/v1/test/reset-db`, `POST /api/v1/test/promote-admin`) enabled via `ENABLE_TEST_API=true`. This allows `a-demo-fe-e2e` to reset database state between scenarios against any backend. Running FE E2E against each backend independently ensures the frontend works correctly with all supported API implementations, not just the reference Go/Gin backend.
+**Why per-backend FE E2E**: Every backend implements the test-only API (`POST /api/v1/test/reset-db`, `POST /api/v1/test/promote-admin`) enabled via `ENABLE_TEST_API=true`. This allows `demo-fe-e2e` to reset database state between scenarios against any backend. Running FE E2E against each backend independently ensures the frontend works correctly with all supported API implementations, not just the reference Go/Gin backend.
 
 ### Demo Frontend Workflow
 
-**File**: `.github/workflows/test-a-demo-fe-ts-nextjs.yml`
+**File**: `.github/workflows/test-demo-fe-ts-nextjs.yml`
 
 **Trigger**: Manual `workflow_dispatch` only. Cron schedules removed to conserve CI resources; trigger from the GitHub Actions UI when needed.
 
-**Purpose**: Dedicated FE E2E workflow using the Go/Gin reference backend stack via `infra/dev/a-demo-fe-ts-nextjs/docker-compose.yml`
+**Purpose**: Dedicated FE E2E workflow using the Go/Gin reference backend stack via `infra/dev/demo-fe-ts-nextjs/docker-compose.yml`
 
 ## Nx Build System
 
@@ -325,7 +325,7 @@ Each backend workflow runs its own backend stack — never a different backend.
 
    - Pre-commit hook runs:
      - Formats code with Prettier
-     - Processes a-demo-fs-ts-nextjs content if affected
+     - Processes demo-fs-ts-nextjs content if affected
      - Validates links
    - Commit-msg hook validates format
    - Commit created
@@ -416,7 +416,7 @@ graph TB
 **Auto-fix Gates** (Non-blocking with automatic fixes):
 
 - Prettier formatting
-- a-demo content processing
+- demo content processing
 - PR format workflow
 
 **Blocking Gates** (Must pass to proceed):

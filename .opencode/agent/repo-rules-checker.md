@@ -155,7 +155,7 @@ Skill: `repo-generating-validation-reports` (progressive streaming)
 - UUID generation logic (should reference `repo-generating-validation-reports`)
 - Criticality level definitions (should reference `repo-assessing-criticality-confidence`)
 - Mode parameter handling (should reference `repo-applying-maker-checker-fixer`)
-- Content organization systems (should reference `apps-a-demo-fs-ts-nextjs-developing-content`)
+- Content organization systems (should reference `apps-demo-fs-ts-nextjs-developing-content`)
 - Color palettes (should reference `docs-creating-accessible-diagrams`)
 - Report templates (should reference `repo-generating-validation-reports`)
 - Annotation density (should reference `docs-creating-by-example-tutorials`)
@@ -606,7 +606,7 @@ Validate file naming, linking, emoji usage, convention compliance per existing l
 
 **Domain-Specific Exemptions** (DO NOT flag these):
 
-- `apps-a-demo-fs-ts-nextjs-developing-content` vs `apps-a-demo-fs-ts-nextjs-developing-content`
+- `apps-demo-fs-ts-nextjs-developing-content` vs `apps-demo-fs-ts-nextjs-developing-content`
   - **Reason**: Different audiences and content types (educational platform vs project landing page), despite both using Next.js 16
   - **Keep Separate**: Platform-specific skills serve different apps
 
@@ -690,12 +690,12 @@ Validate file naming, linking, emoji usage, convention compliance per existing l
 
    - Verify all product app directories have MIT LICENSE matching root LICENSE
    - Verify all `libs/*` directories have MIT LICENSE
-   - Verify all `apps/a-demo-*` implementation directories (excluding `*-e2e`) have MIT LICENSE
-   - Verify `apps/a-demo-be-e2e/` and `apps/a-demo-fe-e2e/` have MIT LICENSE
+   - Verify all `apps/demo-*` implementation directories (excluding `*-e2e`) have MIT LICENSE
+   - Verify `apps/demo-be-e2e/` and `apps/demo-fe-e2e/` have MIT LICENSE
    - Verify `specs/` root has MIT LICENSE
-   - Verify `specs/apps/a-demo/` has MIT LICENSE (demo specs are educational)
+   - Verify `specs/apps/demo/` has MIT LICENSE (demo specs are educational)
    - Verify LICENSING-NOTICE.md table matches actual LICENSE files on disk
-   - Verify CLAUDE.md, README.md, and a-demo-fs-ts-nextjs about.md license descriptions are consistent with LICENSING-NOTICE.md
+   - Verify CLAUDE.md, README.md, and demo-fs-ts-nextjs about.md license descriptions are consistent with LICENSING-NOTICE.md
    - Verify no stale "all specs are FSL" language without demo exception
    - **Criticality**: Missing LICENSE = CRITICAL; wrong license type = HIGH; cross-doc inconsistency = MEDIUM
 

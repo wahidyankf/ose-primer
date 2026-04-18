@@ -1,6 +1,6 @@
 ---
 title: "Kotlin Performance Standards"
-description: Authoritative a-demo Kotlin performance standards (inline functions, lazy initialization, sequences, benchmarks)
+description: Authoritative demo Kotlin performance standards (inline functions, lazy initialization, sequences, benchmarks)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -26,13 +26,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Kotlin tutorial. We define HOW to optimize performance in THIS codebase.
+**This document is demo-specific**, not a Kotlin tutorial. We define HOW to optimize performance in THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative performance standards** for Kotlin development in the a-demo. It covers inline functions for lambda overhead elimination, reified generics, lazy initialization, sequence vs eager collection operations, JVM JIT considerations, JMH benchmarking, and memory allocation profiling.
+This document defines **authoritative performance standards** for Kotlin development in the demo. It covers inline functions for lambda overhead elimination, reified generics, lazy initialization, sequence vs eager collection operations, JVM JIT considerations, JMH benchmarking, and memory allocation profiling.
 
-**Target Audience**: a-demo Kotlin developers, performance engineers, technical reviewers
+**Target Audience**: demo Kotlin developers, performance engineers, technical reviewers
 
 **Scope**: Kotlin-specific performance optimizations, measurement approaches, when to optimize
 

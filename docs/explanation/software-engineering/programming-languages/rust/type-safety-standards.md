@@ -1,6 +1,6 @@
 ---
 title: "Rust Type Safety Standards"
-description: Authoritative a-demo Rust type safety standards (traits, generics, algebraic types, phantom types)
+description: Authoritative demo Rust type safety standards (traits, generics, algebraic types, phantom types)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Rust tutorial.
+**This document is demo-specific**, not a Rust tutorial.
 
 ## Purpose
 
-This document defines **authoritative type safety standards** for Rust development in the a-demo. Rust's type system is among the most expressive in mainstream languages. Used correctly, it makes entire categories of bugs impossible at compile time.
+This document defines **authoritative type safety standards** for Rust development in the demo. Rust's type system is among the most expressive in mainstream languages. Used correctly, it makes entire categories of bugs impossible at compile time.
 
-**Target Audience**: a-demo Rust developers, technical reviewers
+**Target Audience**: demo Rust developers, technical reviewers
 
 **Scope**: Algebraic types, trait bounds, generics, associated types, phantom types, From/Into conversions, sealed traits, stringly-typed API avoidance
 

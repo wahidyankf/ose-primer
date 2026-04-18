@@ -41,7 +41,7 @@ Building production-ready RESTful APIs requires proper controller design, reques
 - [Filtering and Searching](#-filtering-and-searching) - Query parameters
 - [CORS Configuration](#-cors-configuration) - Cross-origin requests
 - [Content Negotiation](#-content-negotiation) - JSON, XML responses
-- [a-demo Examples](#-ose-platform-examples) - Islamic finance APIs
+- [demo Examples](#-ose-platform-examples) - Islamic finance APIs
 - [Best Practices](#-best-practices) - Production guidelines
 - [Related Documentation](#-related-documentation) - Cross-references
 
@@ -138,10 +138,10 @@ Spring Boot controllers handle HTTP requests and return responses.
 
 ```java
 // ZakatCalculationController.java
-package com.a-demo.zakat.controller;
+package com.demo.zakat.controller;
 
-import com.a-demo.zakat.dto.*;
-import com.a-demo.zakat.service.ZakatCalculationService;
+import com.demo.zakat.dto.*;
+import com.demo.zakat.service.ZakatCalculationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -350,7 +350,7 @@ Data Transfer Objects separate API contract from domain model.
 
 ```java
 // ZakatCalculationRequest.java
-package com.a-demo.zakat.dto;
+package com.demo.zakat.dto;
 
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
@@ -394,7 +394,7 @@ public class ZakatCalculationRequest {
 
 ```java
 // ZakatCalculationResponse.java
-package com.a-demo.zakat.dto;
+package com.demo.zakat.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -465,11 +465,11 @@ public class ZakatCalculationResponse {
 
 ```java
 // ZakatCalculationMapper.java
-package com.a-demo.zakat.mapper;
+package com.demo.zakat.mapper;
 
-import com.a-demo.zakat.dto.ZakatCalculationRequest;
-import com.a-demo.zakat.dto.ZakatCalculationResponse;
-import com.a-demo.zakat.entity.ZakatCalculation;
+import com.demo.zakat.dto.ZakatCalculationRequest;
+import com.demo.zakat.dto.ZakatCalculationResponse;
+import com.demo.zakat.entity.ZakatCalculation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -626,7 +626,7 @@ Global exception handling provides consistent error responses.
 
 ```java
 // GlobalExceptionHandler.java
-package com.a-demo.exception;
+package com.demo.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -742,7 +742,7 @@ public class GlobalExceptionHandler {
 
 ```java
 // ErrorResponse.java
-package com.a-demo.exception;
+package com.demo.exception;
 
 import java.time.Instant;
 import java.util.Map;
@@ -791,7 +791,7 @@ public class ErrorResponse {
 
 ```java
 // ResourceNotFoundException.java
-package com.a-demo.exception;
+package com.demo.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
 
@@ -801,7 +801,7 @@ public class ResourceNotFoundException extends RuntimeException {
 }
 
 // BusinessException.java
-package com.a-demo.exception;
+package com.demo.exception;
 
 public class BusinessException extends RuntimeException {
 
@@ -815,7 +815,7 @@ public class BusinessException extends RuntimeException {
 }
 
 // UnauthorizedException.java
-package com.a-demo.exception;
+package com.demo.exception;
 
 public class UnauthorizedException extends RuntimeException {
 
@@ -1125,9 +1125,9 @@ public ResponseEntity<List<ZakatCalculationResponse>> search(
 
 ```java
 // ZakatCalculationSpecification.java
-package com.a-demo.zakat.specification;
+package com.demo.zakat.specification;
 
-import com.a-demo.zakat.entity.ZakatCalculation;
+import com.demo.zakat.entity.ZakatCalculation;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
@@ -1198,7 +1198,7 @@ Cross-Origin Resource Sharing allows browser requests from different origins.
 
 ```java
 // CorsConfig.java
-package com.a-demo.config;
+package com.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -1319,7 +1319,7 @@ public ResponseEntity<ZakatCalculationResponse> get(@PathVariable String id) {
 }
 ```
 
-## 💼 a-demo Examples
+## 💼 demo Examples
 
 Complete REST API patterns for Islamic finance operations.
 

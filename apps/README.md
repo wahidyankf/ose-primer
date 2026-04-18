@@ -16,9 +16,9 @@ Where `{part}` describes the role and technology stack:
 | `fe-{lang}-{framework}` | `fe-ts-nextjs`, `fe-dart-flutterweb`                  | Frontend application                     |
 | `fs-{lang}-{framework}` | `fs-ts-nextjs`                                        | Fullstack application (FE + BE combined) |
 | `cli`                   | `rhino-cli`, `rhino-cli`, `rhino-cli`                 | CLI tool                                 |
-| `web`                   | `a-demo-fs-ts-nextjs`, `a-demo-fs-ts-nextjs`          | Web platform (content site)              |
-| `{role}-e2e`            | `be-e2e`, `fe-e2e`, `a-demo-fe-e2e`                   | E2E test project for the named role      |
-| `be` / `fe`             | `a-demo-be-fsharp-giraffe`, `a-demo-fe-ts-nextjs`     | Simple single-technology projects        |
+| `web`                   | `demo-fs-ts-nextjs`, `demo-fs-ts-nextjs`              | Web platform (content site)              |
+| `{role}-e2e`            | `be-e2e`, `fe-e2e`, `demo-fe-e2e`                     | E2E test project for the named role      |
+| `be` / `fe`             | `demo-be-fsharp-giraffe`, `demo-fe-ts-nextjs`         | Simple single-technology projects        |
 
 **Language abbreviations** (`{lang}`): `ts` (TypeScript), `golang` (Go), `java` (Java), `kt` (Kotlin),
 `py` (Python), `rs` (Rust), `cs` (C#), `fs` (F#), `clj` (Clojure), `dart` (Dart), `ex` (Elixir).
@@ -28,19 +28,19 @@ Where `{part}` describes the role and technology stack:
 
 ### Current Apps
 
-- `a-demo-fs-ts-nextjs` - a-demo website ([example.com](https://example.com)) - Hugo static site
-- `a-demo-fs-ts-nextjs` - a-demo educational platform ([example.com](https://example.com)) - Next.js 16 fullstack content platform (TypeScript, tRPC)
-- `a-demo-be-e2e` - Playwright BE E2E tests for a-demo-fs-ts-nextjs tRPC API
-- `a-demo-fe-e2e` - Playwright FE E2E tests for a-demo-fs-ts-nextjs UI
-- `rhino-cli` - a-demo CLI tool for link validation - Go application
+- `demo-fs-ts-nextjs` - demo website ([example.com](https://example.com)) - Hugo static site
+- `demo-fs-ts-nextjs` - demo educational platform ([example.com](https://example.com)) - Next.js 16 fullstack content platform (TypeScript, tRPC)
+- `demo-be-e2e` - Playwright BE E2E tests for demo-fs-ts-nextjs tRPC API
+- `demo-fe-e2e` - Playwright FE E2E tests for demo-fs-ts-nextjs UI
+- `rhino-cli` - demo CLI tool for link validation - Go application
 - `rhino-cli` - Repository management CLI tools (includes `java validate-annotations`) - Go application
-- `rhino-cli` - a-demo CLI tool for link validation - Go application
-- `a-demo-fe-ts-nextjs` - a-demo landing website (www.example.com) - Next.js app (port 3200)
-- `a-demo-be-fsharp-giraffe` - a-demo backend API (F#/Giraffe) - F# application (port 8202)
-- `a-demo-fe-e2e` - FE E2E tests for a-demo-fe-ts-nextjs - Playwright (browser testing)
-- `a-demo-be-e2e` - BE E2E tests for a-demo-be-fsharp-giraffe - Playwright (API testing)
-- `a-demo-be-golang-gin` - a-demo backend API (Go/Gin) - Go application (port 8201)
-- `a-demo-be-e2e` - E2E tests for demo-be REST API - Playwright (API testing)
+- `rhino-cli` - demo CLI tool for link validation - Go application
+- `demo-fe-ts-nextjs` - demo landing website (www.example.com) - Next.js app (port 3200)
+- `demo-be-fsharp-giraffe` - demo backend API (F#/Giraffe) - F# application (port 8202)
+- `demo-fe-e2e` - FE E2E tests for demo-fe-ts-nextjs - Playwright (browser testing)
+- `demo-be-e2e` - BE E2E tests for demo-be-fsharp-giraffe - Playwright (API testing)
+- `demo-be-golang-gin` - demo backend API (Go/Gin) - Go application (port 8201)
+- `demo-be-e2e` - E2E tests for demo-be REST API - Playwright (API testing)
 
 ## Application Characteristics
 
@@ -52,7 +52,7 @@ Where `{part}` describes the role and technology stack:
 
 ## App Structure Examples
 
-### Hugo Static Site (a-demo-fs-ts-nextjs)
+### Hugo Static Site (demo-fs-ts-nextjs)
 
 ```
 ├── content/                 # Markdown content files
@@ -103,7 +103,7 @@ apps/rhino-cli/
 ### Go/Gin Application (Current Default)
 
 ```
-apps/a-demo-be-golang-gin/
+apps/demo-be-golang-gin/
 ├── cmd/server/              # Main entry point
 │   └── main.go
 ├── internal/                # Internal packages
@@ -122,7 +122,7 @@ apps/a-demo-be-golang-gin/
 ### Playwright E2E Test App (Current)
 
 ```
-apps/a-demo-be-e2e/
+apps/demo-be-e2e/
 ├── playwright.config.ts         # Playwright configuration (baseURL, reporters)
 ├── package.json                 # Pinned @playwright/test dependency
 ├── tsconfig.json                # TypeScript config (extends workspace base)
@@ -171,11 +171,11 @@ Kotlin, Python apps will have language-specific structures and tooling.
 
 Each app must have a `project.json` file with Nx configuration.
 
-**Hugo App Example** (`a-demo-fs-ts-nextjs`):
+**Hugo App Example** (`demo-fs-ts-nextjs`):
 
 ```json
 {
-  "name": "a-demo-fs-ts-nextjs",
+  "name": "demo-fs-ts-nextjs",
   "projectType": "application",
   "targets": {
     "dev": {
@@ -198,7 +198,7 @@ Each app must have a `project.json` file with Nx configuration.
       }
     }
   },
-  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:a-demo"]
+  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:demo"]
 }
 ```
 
@@ -228,70 +228,70 @@ Use Nx commands to run apps:
 
 ```bash
 # Development mode (Hugo site)
-nx dev a-demo-fs-ts-nextjs
+nx dev demo-fs-ts-nextjs
 
 # Development mode (Next.js)
-nx dev a-demo-fe-ts-nextjs
-nx dev a-demo-fs-ts-nextjs
+nx dev demo-fe-ts-nextjs
+nx dev demo-fs-ts-nextjs
 
 # Build for production
-nx build a-demo-fs-ts-nextjs
-nx build a-demo-fs-ts-nextjs
+nx build demo-fs-ts-nextjs
+nx build demo-fs-ts-nextjs
 nx build rhino-cli
 nx build rhino-cli
-nx build a-demo-fe-ts-nextjs
+nx build demo-fe-ts-nextjs
 
 # Run CLI applications
 nx run rhino-cli
 
 # Clean build artifacts
-nx clean a-demo-fs-ts-nextjs
+nx clean demo-fs-ts-nextjs
 
-# Run E2E tests for a-demo-fe-ts-nextjs (a-demo-fe-ts-nextjs must be running first)
-nx run a-demo-fe-e2e:test:e2e
+# Run E2E tests for demo-fe-ts-nextjs (demo-fe-ts-nextjs must be running first)
+nx run demo-fe-e2e:test:e2e
 
 # Run API E2E tests (backend must be running first)
-nx run a-demo-be-e2e:test:e2e
+nx run demo-be-e2e:test:e2e
 ```
 
 ## Deployment Branches
 
 Vercel-deployed apps use dedicated production branches (deployment-only — never commit directly):
 
-| Branch                     | Production URL                              | App                 |
-| -------------------------- | ------------------------------------------- | ------------------- |
-| `prod-a-demo-fs-ts-nextjs` | [example.com](https://example.com)          | a-demo-fs-ts-nextjs |
-| `prod-a-demo-fs-ts-nextjs` | [example.com](https://example.com)          | a-demo-fs-ts-nextjs |
-| `prod-a-demo-web`          | [www.example.com](https://www.example.com/) | a-demo-fe-ts-nextjs |
+| Branch                   | Production URL                              | App               |
+| ------------------------ | ------------------------------------------- | ----------------- |
+| `prod-demo-fs-ts-nextjs` | [example.com](https://example.com)          | demo-fs-ts-nextjs |
+| `prod-demo-fs-ts-nextjs` | [example.com](https://example.com)          | demo-fs-ts-nextjs |
+| `prod-demo-web`          | [www.example.com](https://www.example.com/) | demo-fe-ts-nextjs |
 
-**a-demo-fs-ts-nextjs**: Deploy by force-pushing `main` to the production branch:
+**demo-fs-ts-nextjs**: Deploy by force-pushing `main` to the production branch:
 
 ```bash
-git push origin main:prod-a-demo-fs-ts-nextjs --force
+git push origin main:prod-demo-fs-ts-nextjs --force
 ```
 
-**a-demo-fs-ts-nextjs**: Deployed automatically by scheduled GitHub Actions
-workflow (`test-and-deploy-a-demo-fs-ts-nextjs.yml`) running at 6 AM and 6 PM
+**demo-fs-ts-nextjs**: Deployed automatically by scheduled GitHub Actions
+workflow (`test-and-deploy-demo-fs-ts-nextjs.yml`) running at 6 AM and 6 PM
 WIB. The workflow detects changes scoped to the app directory before building and deploying.
 Trigger on-demand from the GitHub Actions UI (set `force_deploy=true` to skip change detection).
 
-**a-demo-fe-ts-nextjs**: Deploy by force-pushing `main` to the production branch:
+**demo-fe-ts-nextjs**: Deploy by force-pushing `main` to the production branch:
 
 ```bash
-git push origin main:prod-a-demo-web --force
+git push origin main:prod-demo-web --force
 ```
 
-Use the corresponding deployer agent (e.g. `apps-a-demo-fe-ts-nextjs-deployer`) for guided deployment.
+Use the corresponding deployer agent (e.g. `apps-demo-fe-ts-nextjs-deployer`) for guided deployment.
 
 ## Language Support
 
 Currently:
 
-- **Hugo** (static sites) - a-demo-fs-ts-nextjs
+- **Hugo** (static sites) - demo-fs-ts-nextjs
 - **Go** (CLI tools) - rhino-cli, rhino-cli
-- **TypeScript/Next.js** (web applications) - a-demo-fe-ts-nextjs, a-demo-fs-ts-nextjs
-- **F#/Giraffe** (backend API) - a-demo-be-fsharp-giraffe
-- **Go/Gin** (backend API) - a-demo-be-golang-gin
-- **TypeScript/Playwright** (E2E testing) - a-demo-be-e2e, a-demo-fe-e2e, a-demo-be-e2e
+- **TypeScript/Next.js** (web applications) - demo-fe-ts-nextjs, demo-fs-ts-nextjs
+- **F#/Giraffe** (backend API) - demo-be-fsharp-giraffe
+- **Go/Gin** (backend API) - demo-be-golang-gin
+- **TypeScript/Playwright** (E2E testing) - demo-be-e2e, demo-fe-e2e, demo-be-e2e
 
 Future: Kotlin, Python apps (each language will have language-specific structure and tooling)

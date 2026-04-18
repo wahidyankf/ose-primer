@@ -106,8 +106,8 @@ Brand tokens express each app's visual identity. Apps define these in their own 
 
 **App-specific extensions**
 
-- `a-demo-fe-ts-nextjs`: chart tokens `--chart-1` through `--chart-5`
-- `a-demo-fs-ts-nextjs`: sidebar tokens `--sidebar-background`, `--sidebar-foreground`, `--sidebar-primary`, `--sidebar-primary-foreground`, `--sidebar-accent`, `--sidebar-accent-foreground`, `--sidebar-border`, `--sidebar-ring`
+- `demo-fe-ts-nextjs`: chart tokens `--chart-1` through `--chart-5`
+- `demo-fs-ts-nextjs`: sidebar tokens `--sidebar-background`, `--sidebar-foreground`, `--sidebar-primary`, `--sidebar-primary-foreground`, `--sidebar-accent`, `--sidebar-accent-foreground`, `--sidebar-border`, `--sidebar-ring`
 
 ## Naming Convention
 
@@ -135,7 +135,7 @@ The `--color-{name}` form is what Tailwind v4 resolves to utility classes like `
 
 The monorepo currently has two formatting approaches in production apps.
 
-**Double indirection** (`a-demo-fe-ts-nextjs`):
+**Double indirection** (`demo-fe-ts-nextjs`):
 
 ```css
 /* globals.css */
@@ -150,7 +150,7 @@ The monorepo currently has two formatting approaches in production apps.
 
 The bare variable holds only the HSL components (no `hsl()` wrapper), and the `@theme` alias wraps it.
 
-**Direct value** (`a-demo-fs-ts-nextjs`):
+**Direct value** (`demo-fs-ts-nextjs`):
 
 ```css
 /* globals.css */

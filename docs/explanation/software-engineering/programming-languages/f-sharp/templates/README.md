@@ -1,6 +1,6 @@
 ---
 title: F# Documentation Templates
-description: Reusable templates for F# development patterns in a-demo
+description: Reusable templates for F# development patterns in demo
 category: explanation
 subcategory: prog-lang
 tags:

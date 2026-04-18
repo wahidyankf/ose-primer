@@ -1,6 +1,6 @@
 ---
 title: C#
-description: a-demo Authoritative C# Coding Standards and Framework Stack (C# 12 / .NET 8 LTS)
+description: demo Authoritative C# Coding Standards and Framework Stack (C# 12 / .NET 8 LTS)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -27,13 +27,13 @@ updated: 2026-03-09
 
 # C
 
-**This is THE authoritative reference** for C# coding standards in a-demo.
+**This is THE authoritative reference** for C# coding standards in demo.
 
-All C# code written for the a-demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
+All C# code written for the demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
 
 ## Framework Stack
 
-a-demo C# applications MUST use the following stack:
+demo C# applications MUST use the following stack:
 
 **Primary Framework**:
 
@@ -79,17 +79,17 @@ a-demo C# applications MUST use the following stack:
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the a-demo C# learning path. These are **a-demo-specific style guides**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the demo C# learning path. These are **demo-specific style guides**, not educational tutorials.
 
 **You MUST understand C# fundamentals before using these standards:**
 
-**What this documentation covers**: a-demo naming conventions, framework choices, repository-specific patterns, how to apply C# knowledge in THIS codebase.
+**What this documentation covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply C# knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: C# syntax, language fundamentals, generic patterns (those are in a-demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: C# syntax, language fundamentals, generic patterns (those are in demo-fs-ts-nextjs).
 
 ## Software Engineering Principles
 
-C# development in a-demo enforces foundational software engineering principles:
+C# development in demo enforces foundational software engineering principles:
 
 1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - MUST automate through Roslyn analyzers, `dotnet format`, `dotnet test`, NuGet restore, CI/CD pipelines, Coverlet coverage measurement, and code generation via Source Generators
 
@@ -103,7 +103,7 @@ C# development in a-demo enforces foundational software engineering principles:
 
 ## .NET Version Strategy
 
-a-demo follows a three-tier .NET versioning strategy aligned with Microsoft's LTS cadence:
+demo follows a three-tier .NET versioning strategy aligned with Microsoft's LTS cadence:
 
 **.NET 6 LTS (Baseline - Minimum Supported)**:
 
@@ -113,7 +113,7 @@ a-demo follows a three-tier .NET versioning strategy aligned with Microsoft's LT
 
 **.NET 8 LTS (Recommended - REQUIRED for new projects)**:
 
-- All new a-demo C# projects MUST target .NET 8 LTS
+- All new demo C# projects MUST target .NET 8 LTS
 - C# 12: primary constructors, collection expressions, `ref readonly` parameters, alias any type
 - Native AOT compilation for CLI tools and serverless functions
 - `FrozenDictionary<TKey,TValue>` for immutable high-performance lookups
@@ -137,13 +137,13 @@ a-demo follows a three-tier .NET versioning strategy aligned with Microsoft's LT
 - C# 14: collection extensions, `params` improvements (planned)
 - .NET MAUI improvements, Blazor enhancements
 
-**Unlike Go's 6-month cadence**: .NET follows an annual release cycle with every other release being LTS (Long-Term Support, 3 years). a-demo targets LTS releases for production services; STS releases for experimental features and tooling.
+**Unlike Go's 6-month cadence**: .NET follows an annual release cycle with every other release being LTS (Long-Term Support, 3 years). demo targets LTS releases for production services; STS releases for experimental features and tooling.
 
 **See**: C# release highlights documentation (when available) for detailed feature documentation
 
-## a-demo Coding Standards (Authoritative)
+## demo Coding Standards (Authoritative)
 
-**MUST follow these mandatory standards for all C# code in a-demo:**
+**MUST follow these mandatory standards for all C# code in demo:**
 
 1. **[Coding Standards](coding-standards.md)** - Naming conventions, namespace organization, C# 12 idioms, anti-patterns
 2. **[Testing Standards](testing-standards.md)** - xUnit, FluentAssertions, Moq, TestContainers.Net, WebApplicationFactory
@@ -187,10 +187,10 @@ a-demo follows a three-tier .NET versioning strategy aligned with Microsoft's LT
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["C# Standards Index<br/>(a-demo)"]:::blue
+    A["C# Standards Index<br/>(demo)"]:::blue
     B["Core Standards"]:::orange
     C["Specialized Standards"]:::teal
-    D["Learning Resources<br/>(a-demo)"]:::purple
+    D["Learning Resources<br/>(demo)"]:::purple
 
     A --> B
     A --> C
@@ -220,7 +220,7 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
-## Primary Use Cases in a-demo
+## Primary Use Cases in demo
 
 **Backend Services**:
 

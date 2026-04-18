@@ -18,7 +18,7 @@ These workflows define **WHEN and HOW to validate repository rules**, orchestrat
 **❌ Not Included:**
 
 - Content quality validation (that's docs/)
-- Hugo content validation (that's a-demo-fs-ts-nextjs/)
+- Hugo content validation (that's demo-fs-ts-nextjs/)
 - Plan validation (that's plan/)
 
 ## Workflows

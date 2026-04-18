@@ -1,6 +1,6 @@
 ---
 title: "Dart Coding Standards"
-description: Authoritative a-demo Dart coding standards (idioms, best practices, anti-patterns, null-safety, dart-3)
+description: Authoritative demo Dart coding standards (idioms, best practices, anti-patterns, null-safety, dart-3)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,15 +25,15 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Dart tutorial. We define HOW to apply Dart in THIS codebase, not WHAT Dart is.
+**This document is demo-specific**, not a Dart tutorial. We define HOW to apply Dart in THIS codebase, not WHAT Dart is.
 
 ## Purpose
 
-This document defines **authoritative coding standards** for Dart development in the a-demo. These are prescriptive rules that MUST be followed across all Dart projects to ensure consistency, maintainability, and alignment with platform architecture.
+This document defines **authoritative coding standards** for Dart development in the demo. These are prescriptive rules that MUST be followed across all Dart projects to ensure consistency, maintainability, and alignment with platform architecture.
 
-**Target Audience**: a-demo Dart developers, technical reviewers, automated code quality tools
+**Target Audience**: demo Dart developers, technical reviewers, automated code quality tools
 
-**Scope**: a-demo idioms, naming conventions, package organization, best practices, and anti-patterns to avoid
+**Scope**: demo idioms, naming conventions, package organization, best practices, and anti-patterns to avoid
 
 ## Software Engineering Principles
 

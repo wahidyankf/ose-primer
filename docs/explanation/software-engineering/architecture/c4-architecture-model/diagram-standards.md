@@ -1,6 +1,6 @@
 ---
 title: "C4 Diagram Standards"
-description: Prescriptive standards for when and how to create C4 diagrams in a-demo
+description: Prescriptive standards for when and how to create C4 diagrams in demo
 category: explanation
 subcategory: architecture
 tags:
@@ -19,13 +19,13 @@ updated: 2026-02-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a C4 tutorial. We define HOW to apply C4 in THIS codebase, not WHAT C4 is.
+**This document is demo-specific**, not a C4 tutorial. We define HOW to apply C4 in THIS codebase, not WHAT C4 is.
 
 ## Purpose
 
-This document defines **authoritative standards** for creating C4 architecture diagrams in the a-demo. These are prescriptive rules that MUST be followed to ensure consistency, maintainability, and alignment with platform architecture.
+This document defines **authoritative standards** for creating C4 architecture diagrams in the demo. These are prescriptive rules that MUST be followed to ensure consistency, maintainability, and alignment with platform architecture.
 
-**Target Audience**: a-demo architects, developers, technical writers
+**Target Audience**: demo architects, developers, technical writers
 
 **Scope**: When to create diagrams, required diagram levels, OSE-specific patterns
 
@@ -33,7 +33,7 @@ This document defines **authoritative standards** for creating C4 architecture d
 
 ### System Context (Level 1)
 
-**REQUIRED**: All a-demo systems MUST have a System Context diagram.
+**REQUIRED**: All demo systems MUST have a System Context diagram.
 
 **Create when**:
 

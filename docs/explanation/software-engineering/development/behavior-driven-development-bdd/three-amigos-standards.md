@@ -1,6 +1,6 @@
 ---
 title: "Three Amigos Collaboration Standards"
-description: a-demo standards for Business-Development-QA collaboration sessions
+description: demo standards for Business-Development-QA collaboration sessions
 category: explanation
 subcategory: development
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-a-demo standards for Three Amigos collaborative specification sessions.
+demo standards for Three Amigos collaborative specification sessions.
 
 ## REQUIRED: Three Roles
 
@@ -55,7 +55,7 @@ a-demo standards for Three Amigos collaborative specification sessions.
 - **Green** = Examples (concrete scenarios illustrating rules)
 - **Red** = Questions (open questions nobody can answer)
 
-## a-demo Examples
+## demo Examples
 
 ### Zakat Calculation Session
 

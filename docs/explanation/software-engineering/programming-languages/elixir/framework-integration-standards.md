@@ -1,6 +1,6 @@
 ---
 title: "Elixir Framework Integration Standards"
-description: a-demo standards for Phoenix, Ecto, Nx, Broadway, and web services integration with prescriptive patterns and mandatory requirements
+description: demo standards for Phoenix, Ecto, Nx, Broadway, and web services integration with prescriptive patterns and mandatory requirements
 category: explanation
 subcategory: prog-lang
 tags:
@@ -31,7 +31,7 @@ updated: 2026-02-05
 
 # Framework Integration Standards
 
-**This document establishes authoritative standards** for integrating Phoenix, Ecto, Broadway, Nx, and web services frameworks in a-demo Elixir applications. All framework integration MUST follow these mandatory standards.
+**This document establishes authoritative standards** for integrating Phoenix, Ecto, Broadway, Nx, and web services frameworks in demo Elixir applications. All framework integration MUST follow these mandatory standards.
 
 **Architecture Philosophy**: "Standard Library → Limitations → Framework" progression. Understand Plug foundation before Phoenix, understand Elixir data structures before Ecto, understand GenServer before Broadway.
 
@@ -174,7 +174,7 @@ end
 
 ## Part 2: Phoenix Framework (Web Applications)
 
-**Mandatory**: Phoenix 1.7+ for all a-demo web applications.
+**Mandatory**: Phoenix 1.7+ for all demo web applications.
 
 ### 📊 Phoenix Setup - Mandatory Configuration
 
@@ -1294,7 +1294,7 @@ end
 **NOT for**: General application logic, simple arithmetic.
 
 ```elixir
-# Example use case (Nx not yet in a-demo stack)
+# Example use case (Nx not yet in demo stack)
 # Future consideration for complex financial calculations
 
 # PASS - Nx for Zakat calculation matrices

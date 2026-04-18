@@ -1125,7 +1125,7 @@ public class OAuth2ClientConfig {
       .tokenUri(tokenUri)
       .userInfoUri(userInfoUri)
       .userNameAttributeName("email")
-      .clientName("a-demo")
+      .clientName("demo")
       .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
       .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
       .build();

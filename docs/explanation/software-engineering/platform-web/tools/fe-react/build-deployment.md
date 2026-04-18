@@ -89,11 +89,11 @@ export default defineConfig({
 ```typescript
 // .env.development
 VITE_API_URL=http://localhost:8080/api
-VITE_APP_TITLE=a-demo (Dev)
+VITE_APP_TITLE=demo (Dev)
 
 // .env.production
 VITE_API_URL=https://api.example.com
-VITE_APP_TITLE=a-demo
+VITE_APP_TITLE=demo
 
 // src/config.ts
 export const config = {
@@ -317,7 +317,7 @@ jobs:
         run: npm run build
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
-          VITE_APP_TITLE: "a-demo"
+          VITE_APP_TITLE: "demo"
 
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
@@ -485,14 +485,14 @@ deploy-production:
 npm run build
 
 # Upload to S3
-aws s3 sync dist/ s3://a-demo-fs-ts-nextjs \
+aws s3 sync dist/ s3://demo-fs-ts-nextjs \
   --delete \
   --cache-control "public, max-age=31536000" \
   --exclude "index.html" \
   --exclude "*.map"
 
 # Upload index.html without cache
-aws s3 cp dist/index.html s3://a-demo-fs-ts-nextjs/index.html \
+aws s3 cp dist/index.html s3://demo-fs-ts-nextjs/index.html \
   --cache-control "no-cache, no-store, must-revalidate" \
   --metadata-directive REPLACE
 
@@ -510,7 +510,7 @@ aws cloudfront create-invalidation \
     "WebsiteBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": "a-demo-fs-ts-nextjs",
+        "BucketName": "demo-fs-ts-nextjs",
         "WebsiteConfiguration": {
           "IndexDocument": "index.html",
           "ErrorDocument": "index.html"
@@ -523,7 +523,7 @@ aws cloudfront create-invalidation \
         "DistributionConfig": {
           "Origins": [
             {
-              "DomainName": "a-demo-fs-ts-nextjs.s3-website-us-east-1.amazonaws.com",
+              "DomainName": "demo-fs-ts-nextjs.s3-website-us-east-1.amazonaws.com",
               "Id": "S3Origin",
               "CustomOriginConfig": {
                 "HTTPPort": 80,
@@ -572,7 +572,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/a-demo
+      - DATABASE_URL=postgresql://postgres:password@db:5432/demo
     depends_on:
       - db
     networks:
@@ -583,7 +583,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=a-demo
+      - POSTGRES_DB=demo
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -604,21 +604,21 @@ volumes:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: a-demo-fs-ts-nextjs
+  name: demo-fs-ts-nextjs
   namespace: production
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: a-demo-fs-ts-nextjs
+      app: demo-fs-ts-nextjs
   template:
     metadata:
       labels:
-        app: a-demo-fs-ts-nextjs
+        app: demo-fs-ts-nextjs
     spec:
       containers:
         - name: web
-          image: a-demo-fs-ts-nextjs:latest
+          image: demo-fs-ts-nextjs:latest
           ports:
             - containerPort: 80
           env:
@@ -651,12 +651,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: a-demo-fs-ts-nextjs
+  name: demo-fs-ts-nextjs
   namespace: production
 spec:
   type: LoadBalancer
   selector:
-    app: a-demo-fs-ts-nextjs
+    app: demo-fs-ts-nextjs
   ports:
     - protocol: TCP
       port: 80
@@ -679,7 +679,7 @@ data:
 replicaCount: 3
 
 image:
-  repository: a-demo-fs-ts-nextjs
+  repository: demo-fs-ts-nextjs
   tag: latest
   pullPolicy: Always
 
@@ -1037,7 +1037,7 @@ export const HealthCheck: React.FC = () => {
 };
 ```
 
-## a-demo Deployment Examples
+## demo Deployment Examples
 
 ### Zakat Service Deployment
 

@@ -177,7 +177,7 @@ Phoenix provides a productive framework for web development while leveraging the
 Phoenix uses Contexts to organize code into clear API boundaries:
 
 ```
-lib/a-demo/
+lib/demo/
 ├── accounts/          # Accounts context
 │   ├── user.ex        # Schema
 │   ├── queries.ex     # Queries
@@ -211,8 +211,8 @@ Phoenix contexts align well with DDD bounded contexts:
 
 ```bash
 # Create new Phoenix app
-mix phx.new a-demo_api --no-html --no-assets  # API only
-mix phx.new a-demo_web                         # Full-stack
+mix phx.new demo_api --no-html --no-assets  # API only
+mix phx.new demo_web                         # Full-stack
 
 # Install dependencies
 mix deps.get

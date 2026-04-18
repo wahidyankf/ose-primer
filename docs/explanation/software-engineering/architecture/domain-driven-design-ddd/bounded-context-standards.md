@@ -1,6 +1,6 @@
 ---
 title: "DDD Bounded Context Standards"
-description: a-demo standards for bounded context organization, Nx app alignment, and context mapping
+description: demo standards for bounded context organization, Nx app alignment, and context mapping
 category: explanation
 subcategory: architecture
 tags:
@@ -18,11 +18,11 @@ updated: 2026-02-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, defining how to organize bounded contexts in THIS codebase.
+**This document is demo-specific**, defining how to organize bounded contexts in THIS codebase.
 
 ## Purpose
 
-a-demo bounded context organization standards. MUST/SHOULD/MAY rules for context boundaries.
+demo bounded context organization standards. MUST/SHOULD/MAY rules for context boundaries.
 
 ## Bounded Context to Nx App Mapping
 

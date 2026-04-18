@@ -1,6 +1,6 @@
 ---
 title: "TDD with DDD Standards"
-description: a-demo standards for testing aggregates, value objects, entities, and domain events
+description: demo standards for testing aggregates, value objects, entities, and domain events
 category: explanation
 subcategory: development
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-a-demo standards for testing DDD tactical patterns.
+demo standards for testing DDD tactical patterns.
 
 ## REQUIRED: Test Aggregate Invariants
 
@@ -152,7 +152,7 @@ void shouldBeEqualByIdentity() {
 }
 ```
 
-## a-demo Examples
+## demo Examples
 
 ### Testing Zakat Aggregate
 

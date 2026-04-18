@@ -23,7 +23,7 @@ All reports follow the 4-part pattern:
 
 **Components**:
 
-- `{agent-family}`: Agent name WITHOUT `-checker` suffix (e.g., `docs`, `a-demo-fs-ts-nextjs`, `plan`)
+- `{agent-family}`: Agent name WITHOUT `-checker` suffix (e.g., `docs`, `demo-fs-ts-nextjs`, `plan`)
 - `{uuid-chain}`: Execution hierarchy as 6-char hex UUIDs separated by underscores
 - `{YYYY-MM-DD--HH-MM}`: UTC+7 timestamp (double dash between date and time)
 - `{type}`: Report type (`audit`, `validation`, `fix`)
@@ -33,7 +33,7 @@ All reports follow the 4-part pattern:
 ```
 generated-reports/docs__a1b2c3__2026-01-03--14-30__audit.md
 generated-reports/plan__d4e5f6__2026-01-03--15-00__validation.md
-generated-reports/a-demo-facts__a1b2c3_d4e5f6__2026-01-03--16-45__audit.md
+generated-reports/demo-facts__a1b2c3_d4e5f6__2026-01-03--16-45__audit.md
 ```
 
 ### UUID Generation
@@ -191,15 +191,15 @@ Final Step: Finalize Report
 
 Common scopes for execution tracking:
 
-| Agent Family           | Scope           | Tracking File                    |
-| ---------------------- | --------------- | -------------------------------- |
-| repo-rules-checker     | `repo-rules`    | `.execution-chain-repo-rules`    |
-| docs-checker           | `docs`          | `.execution-chain-docs`          |
-| docs-tutorial-checker  | `docs-tutorial` | `.execution-chain-docs-tutorial` |
-| readme-checker         | `readme`        | `.execution-chain-readme`        |
-| plan-checker           | `plan`          | `.execution-chain-plan`          |
-| a-demo-fs-ts-nextjs-\* | `a-demo-[lang]` | `.execution-chain-a-demo-[lang]` |
-| a-demo-fs-ts-nextjs-\* | `ose-platform`  | `.execution-chain-ose-platform`  |
+| Agent Family          | Scope           | Tracking File                    |
+| --------------------- | --------------- | -------------------------------- |
+| repo-rules-checker    | `repo-rules`    | `.execution-chain-repo-rules`    |
+| docs-checker          | `docs`          | `.execution-chain-docs`          |
+| docs-tutorial-checker | `docs-tutorial` | `.execution-chain-docs-tutorial` |
+| readme-checker        | `readme`        | `.execution-chain-readme`        |
+| plan-checker          | `plan`          | `.execution-chain-plan`          |
+| demo-fs-ts-nextjs-\*  | `demo-[lang]`   | `.execution-chain-demo-[lang]`   |
+| demo-fs-ts-nextjs-\*  | `ose-platform`  | `.execution-chain-ose-platform`  |
 
 ### Tool Requirements
 
@@ -307,7 +307,7 @@ Works alongside:
 
 - `repo-assessing-criticality-confidence` - Categorize findings by severity
 - `repo-applying-maker-checker-fixer` - Fixer agents read these reports
-- Domain Skills (`apps-a-demo-fs-ts-nextjs-developing-content`, etc.) - Provide validation criteria
+- Domain Skills (`apps-demo-fs-ts-nextjs-developing-content`, etc.) - Provide validation criteria
 
 ## Benefits
 

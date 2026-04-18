@@ -1,6 +1,6 @@
 ---
 title: "C# Security Standards"
-description: Authoritative a-demo C# security standards (ASP.NET Core Data Protection, JWT, FluentValidation, CORS, secrets management)
+description: Authoritative demo C# security standards (ASP.NET Core Data Protection, JWT, FluentValidation, CORS, secrets management)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a C# tutorial.
+**This document is demo-specific**, not a C# tutorial.
 
 ## Purpose
 
-This document defines **authoritative security standards** for C# in the a-demo.
+This document defines **authoritative security standards** for C# in the demo.
 
-**Target Audience**: a-demo C# developers building user-facing APIs and services
+**Target Audience**: demo C# developers building user-facing APIs and services
 
 **Scope**: ASP.NET Core Data Protection, JWT validation, input validation with FluentValidation, anti-forgery, CORS, secrets management, SQL injection prevention, HTTPS, SameSite cookies
 

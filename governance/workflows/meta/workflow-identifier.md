@@ -228,7 +228,7 @@ Steps execute one after another. Later steps can reference outputs from earlier 
 
 **Agent**: `swe-typescript-dev`
 
-- **Args**: `action: build, project: a-demo-fs-ts-nextjs`
+- **Args**: `action: build, project: demo-fs-ts-nextjs`
 - **Output**: `{build-artifacts}`
 
 ### 2. Run Tests (Sequential)
@@ -455,7 +455,7 @@ A specialized workflow pattern that achieves **perfect quality state** by fixing
 **When to use**:
 
 - Repository-wide validation (repo-rules-quality-gate)
-- Content quality assurance (plan-quality-gate, a-demo-fs-ts-nextjs-content-quality-gate)
+- Content quality assurance (plan-quality-gate, demo-fs-ts-nextjs-content-quality-gate)
 - Pre-release quality gates
 - Periodic health checks
 
@@ -731,7 +731,7 @@ termination: Content passes all quality checks
 inputs:
   - name: content-type
     type: enum
-    values: [docs, a-demo, ose-platform, readme]
+    values: [docs, demo, ose-platform, readme]
     required: true
   - name: scope
     type: string

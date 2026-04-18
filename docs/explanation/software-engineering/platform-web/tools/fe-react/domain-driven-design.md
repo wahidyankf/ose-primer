@@ -1184,7 +1184,7 @@ export const ZakatPaymentFlow: React.FC = () => {
 };
 ```
 
-## a-demo Examples
+## demo Examples
 
 ### Complete Zakat Aggregate with Business Rules
 

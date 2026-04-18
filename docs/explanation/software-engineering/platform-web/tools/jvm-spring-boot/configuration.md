@@ -36,7 +36,7 @@ related:
 - [Secrets Management](#secrets-management) - Vault integration, encryption
 - [Feature Flags](#feature-flags) - Feature toggles for gradual rollout
 - [Configuration Testing](#configuration-testing) - Testing different configurations
-- [a-demo Examples](#ose-platform-examples) - Real-world configuration patterns
+- [demo Examples](#ose-platform-examples) - Real-world configuration patterns
 - [Configuration Checklist](#configuration-checklist) - Best practices
 - [Related Documentation](#related-documentation)
 
@@ -193,7 +193,7 @@ management:
 logging:
   level:
     root: INFO
-    com.a-demo: DEBUG
+    com.demo: DEBUG
     org.springframework.web: INFO
     org.hibernate.SQL: DEBUG
 ```
@@ -214,7 +214,7 @@ spring:
 
 logging:
   level:
-    com.a-demo: DEBUG
+    com.demo: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
@@ -240,7 +240,7 @@ spring:
 logging:
   level:
     root: WARN
-    com.a-demo: INFO
+    com.demo: INFO
 
 # Production features
 ose:

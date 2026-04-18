@@ -1,6 +1,6 @@
 ---
 title: "Rust Performance Standards"
-description: Authoritative a-demo Rust performance standards (zero-cost abstractions, benchmarks, profiling, allocations)
+description: Authoritative demo Rust performance standards (zero-cost abstractions, benchmarks, profiling, allocations)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Rust tutorial.
+**This document is demo-specific**, not a Rust tutorial.
 
 ## Purpose
 
-This document defines **authoritative performance standards** for Rust development in the a-demo. Rust's defining characteristic is "zero-cost abstractions" — high-level code compiles to the same machine code as hand-written C.
+This document defines **authoritative performance standards** for Rust development in the demo. Rust's defining characteristic is "zero-cost abstractions" — high-level code compiles to the same machine code as hand-written C.
 
-**Target Audience**: a-demo Rust developers, performance engineers
+**Target Audience**: demo Rust developers, performance engineers
 
 **Scope**: Zero-cost abstractions, criterion.rs benchmarking, profiling, allocation patterns, iterator usage
 

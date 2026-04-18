@@ -1,6 +1,6 @@
 ---
 title: "Java Code Quality"
-description: Authoritative a-demo code quality standards (Spotless, Error Prone, NullAway, Checkstyle, SpotBugs, JaCoCo)
+description: Authoritative demo code quality standards (Spotless, Error Prone, NullAway, Checkstyle, SpotBugs, JaCoCo)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-02-03
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
+**This document is demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
 
 ## Purpose
 
-This document defines **authoritative code quality standards** for Java development in the a-demo. These prescriptive rules govern automated code formatting, static analysis, null safety, and code coverage enforcement.
+This document defines **authoritative code quality standards** for Java development in the demo. These prescriptive rules govern automated code formatting, static analysis, null safety, and code coverage enforcement.
 
-**Target Audience**: a-demo Java developers, build engineers, technical reviewers
+**Target Audience**: demo Java developers, build engineers, technical reviewers
 
 **Scope**: Spotless auto-formatting, Error Prone compile-time checks, NullAway null safety, Checkstyle style validation, SpotBugs bug detection, JaCoCo coverage
 
@@ -171,7 +171,7 @@ This document defines **authoritative code quality standards** for Java developm
   <artifactId>maven-compiler-plugin</artifactId>
   <configuration>
     <compilerArgs>
-      <arg>-Xplugin:ErrorProne -XepOpt:NullAway:AnnotatedPackages=com.a-demo</arg>
+      <arg>-Xplugin:ErrorProne -XepOpt:NullAway:AnnotatedPackages=com.demo</arg>
     </compilerArgs>
     <annotationProcessorPaths>
       <path>
@@ -422,7 +422,7 @@ public class InvoiceService {
 
 For learning Java fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Java basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Java basics from demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ## Related Standards
 

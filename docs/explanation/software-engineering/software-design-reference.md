@@ -32,7 +32,7 @@ This document establishes the separation between:
 
 **Location**: [docs/explanation/software-engineering/architecture/](./architecture/README.md)
 
-**Prerequisite Knowledge**: All architecture documentation assumes completion of corresponding a-demo learning paths. These are a-demo-specific standards, not educational tutorials.
+**Prerequisite Knowledge**: All architecture documentation assumes completion of corresponding demo learning paths. These are demo-specific standards, not educational tutorials.
 
 - **[C4 Architecture Model](./architecture/c4-architecture-model/README.md)** - System visualization
 - **[Domain-Driven Design](./architecture/domain-driven-design-ddd/README.md)** - Strategic and tactical patterns
@@ -42,7 +42,7 @@ This document establishes the separation between:
 
 **Location**: [docs/explanation/software-engineering/development/](./development/README.md)
 
-**Prerequisite Knowledge**: All development practice documentation assumes completion of corresponding a-demo learning paths. These are a-demo-specific standards, not educational tutorials.
+**Prerequisite Knowledge**: All development practice documentation assumes completion of corresponding demo learning paths. These are demo-specific standards, not educational tutorials.
 
 - **[Test-Driven Development](./development/test-driven-development-tdd/README.md)** - TDD methodology
 - **[Behavior-Driven Development](./development/behavior-driven-development-bdd/README.md)** - BDD with Gherkin
@@ -109,20 +109,20 @@ Frameworks covered:
 
 ### Programming Language Documentation Separation
 
-Software design documentation in `docs/explanation/software-engineering/` contains **repository-specific style guides**, NOT educational content. Educational content lives in a-demo.
+Software design documentation in `docs/explanation/software-engineering/` contains **repository-specific style guides**, NOT educational content. Educational content lives in demo.
 
-**Critical Rule**: docs/explanation/ content **MUST NOT duplicate** a-demo educational content. Style guides focus exclusively on a-demo-specific conventions.
+**Critical Rule**: docs/explanation/ content **MUST NOT duplicate** demo educational content. Style guides focus exclusively on demo-specific conventions.
 
 **Relationship Pattern**:
 
-- **Docs/explanation content** (`docs/explanation/software-engineering/`) = a-demo style guides (repository-specific naming, framework choices, architecture patterns)
+- **Docs/explanation content** (`docs/explanation/software-engineering/`) = demo style guides (repository-specific naming, framework choices, architecture patterns)
 
 ### Specific Prerequisites
 
-The following `docs/explanation/` content assumes readers have completed the corresponding a-demo learning paths:
+The following `docs/explanation/` content assumes readers have completed the corresponding demo learning paths:
 
-| Advanced Reference (docs/explanation/) | Prerequisite Learning (a-demo-fs-ts-nextjs) |
-| -------------------------------------- | ------------------------------------------- |
+| Advanced Reference (docs/explanation/) | Prerequisite Learning (demo-fs-ts-nextjs) |
+| -------------------------------------- | ----------------------------------------- |
 
 ### Content Types and Scope
 
@@ -132,24 +132,24 @@ The following `docs/explanation/` content assumes readers have completed the cor
 - **In the Field** - 20-40 production implementation guides
 - **Overview** - Language/framework survey and features
 
-**a-demo Style Guides** (docs/explanation/) - Repository-specific standards:
+**demo Style Guides** (docs/explanation/) - Repository-specific standards:
 
-- **Coding Standards** - a-demo naming conventions, patterns
-- **API Standards** - a-demo interface design rules
-- **DDD Standards** - a-demo domain modeling patterns
-- **Security Standards** - a-demo security requirements
-- **Performance Standards** - a-demo optimization guidelines
+- **Coding Standards** - demo naming conventions, patterns
+- **API Standards** - demo interface design rules
+- **DDD Standards** - demo domain modeling patterns
+- **Security Standards** - demo security requirements
+- **Performance Standards** - demo optimization guidelines
 
-**Key Difference**: a-demo teaches languages/frameworks generically; docs/explanation/ defines how to use them in a-demo specifically.
+**Key Difference**: demo teaches languages/frameworks generically; docs/explanation/ defines how to use them in demo specifically.
 
 ### Validation
 
 The `docs-software-engineering-separation-checker` agent validates:
 
-- Prerequisite statements exist in docs/explanation READMEs (referencing a-demo)
-- No duplication between docs/explanation and a-demo educational content
+- Prerequisite statements exist in docs/explanation READMEs (referencing demo)
+- No duplication between docs/explanation and demo educational content
 - Style guides focus on repository-specific conventions only
-- a-demo learning paths are complete (required prerequisite content exists)
+- demo learning paths are complete (required prerequisite content exists)
 - Cross-references follow Programming Language Documentation Separation Convention
 
 ## For AI Agents

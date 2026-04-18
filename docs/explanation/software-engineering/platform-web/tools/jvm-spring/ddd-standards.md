@@ -1,5 +1,5 @@
 ---
-title: Spring Framework DDD Standards for a-demo
+title: Spring Framework DDD Standards for demo
 description: Prescriptive Domain-Driven Design requirements for Spring-based Shariah-compliant financial systems
 category: explanation
 subcategory: platform-web
@@ -22,19 +22,19 @@ updated: 2026-02-06
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: You MUST understand Spring Framework fundamentals from a-demo Spring Learning Path before using these standards.
+**REQUIRED**: You MUST understand Spring Framework fundamentals from demo Spring Learning Path before using these standards.
 
-**This document is a-demo-specific**, not a Spring tutorial. We define HOW to apply Spring in THIS codebase, not WHAT Spring is.
+**This document is demo-specific**, not a Spring tutorial. We define HOW to apply Spring in THIS codebase, not WHAT Spring is.
 
-# Spring Framework DDD Standards for a-demo
+# Spring Framework DDD Standards for demo
 
 **OSE-specific prescriptive standards** for Domain-Driven Design in Spring-based Shariah-compliant financial applications. This document defines **mandatory requirements** using RFC 2119 keywords (MUST, SHOULD, MAY).
 
-**Prerequisites**: Understanding of Spring Framework fundamentals from a-demo Spring Framework and Domain-Driven Design concepts.
+**Prerequisites**: Understanding of Spring Framework fundamentals from demo Spring Framework and Domain-Driven Design concepts.
 
 ## Purpose
 
-Domain-Driven Design in Spring-based a-demo services enables:
+Domain-Driven Design in Spring-based demo services enables:
 
 - **Aggregate Pattern**: Consistency boundaries for financial transactions
 - **Repository Pattern**: Data access abstraction with Spring Data JPA
@@ -721,7 +721,7 @@ public class Account {
 **REQUIRED**: Organize Spring applications by bounded context.
 
 ```
-com.a-demo.zakat/
+com.demo.zakat/
 ├── domain/                    # Domain layer
 │   ├── model/
 │   │   ├── ZakatCalculation.java
@@ -746,7 +746,7 @@ com.a-demo.zakat/
     └── api/
         └── ZakatController.java
 
-com.a-demo.donation/
+com.demo.donation/
 ├── domain/
 ├── application/
 ├── infrastructure/
@@ -759,7 +759,7 @@ com.a-demo.donation/
 - Separate domain, application, infrastructure, presentation layers
 - Avoid cross-context dependencies (use events for communication)
 
-### a-demo Standards
+### demo Standards
 
 - **[Spring Error Handling Standards](./error-handling-standards.md)** - Domain exception hierarchy
 - **[Spring API Standards](./api-standards.md)** - DTO to domain model conversion
@@ -775,7 +775,7 @@ com.a-demo.donation/
 
 For learning Spring Framework fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Spring basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Spring basics from demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ### Software Engineering Principles
 
@@ -828,4 +828,4 @@ Before deploying Spring DDD applications, verify:
 
 **Last Updated**: 2026-02-06
 
-**Status**: Mandatory (required for all a-demo Spring services)
+**Status**: Mandatory (required for all demo Spring services)

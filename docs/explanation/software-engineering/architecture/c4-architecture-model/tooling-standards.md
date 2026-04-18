@@ -19,13 +19,13 @@ updated: 2026-02-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, defining required tools and validation methods for THIS codebase.
+**This document is demo-specific**, defining required tools and validation methods for THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative tooling standards** for creating and validating C4 diagrams in a-demo.
+This document defines **authoritative tooling standards** for creating and validating C4 diagrams in demo.
 
-**Target Audience**: a-demo architects, developers, technical writers
+**Target Audience**: demo architects, developers, technical writers
 
 **Scope**: Tool selection, setup, validation, automation
 

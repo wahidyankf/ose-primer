@@ -212,12 +212,12 @@ specs/apps/rhino/cli/gherkin/agents-sync.feature  (contains @agents-sync + @agen
 
 ## Demo-be Backend: Three-Level Spec Consumption
 
-All 11 demo-be backends consume the **same shared Gherkin scenarios** from [`specs/apps/a-demo/be/gherkin/`](../../../specs/apps/a-demo/be/gherkin/README.md) at three test levels. The feature files are the shared contract — only the step implementations change per level.
+All 11 demo-be backends consume the **same shared Gherkin scenarios** from [`specs/apps/demo/be/gherkin/`](../../../specs/apps/demo/be/gherkin/README.md) at three test levels. The feature files are the shared contract — only the step implementations change per level.
 
 ### Shared Specs
 
 ```
-specs/apps/a-demo/be/gherkin/
+specs/apps/demo/be/gherkin/
 ├── auth/
 │   ├── login.feature
 │   ├── register.feature
@@ -257,12 +257,12 @@ Integration steps call application service/repository functions directly against
 
 ### E2E-Level Step Definitions
 
-E2E tests live in `apps/a-demo-be-e2e/` (shared Playwright suite). Steps make real HTTP requests to a running backend via `playwright-bdd`.
+E2E tests live in `apps/demo-be-e2e/` (shared Playwright suite). Steps make real HTTP requests to a running backend via `playwright-bdd`.
 
 - Runs against any of the 11 backends
 - Tests the full HTTP API contract
 - Must run all shared scenarios
-- Managed by `a-demo-be-e2e` project, not individual backends
+- Managed by `demo-be-e2e` project, not individual backends
 
 ### Validation
 
@@ -270,13 +270,13 @@ To verify all scenarios pass at each level for a given backend:
 
 ```bash
 # Unit tests (mocked dependencies)
-nx run a-demo-be-{lang}-{framework}:test:unit
+nx run demo-be-{lang}-{framework}:test:unit
 
 # Integration tests (real PostgreSQL via docker-compose)
-nx run a-demo-be-{lang}-{framework}:test:integration
+nx run demo-be-{lang}-{framework}:test:integration
 
 # E2E tests (Playwright HTTP against running backend)
-nx run a-demo-be-e2e:test:e2e
+nx run demo-be-e2e:test:e2e
 ```
 
 All three commands must report all scenarios passing. The Gherkin feature files serve as the single source of truth — if a scenario fails at any level, the backend is non-compliant.
@@ -289,4 +289,4 @@ All three commands must report all scenarios passing. The Gherkin feature files 
 - [Nx Target Standards](./nx-targets.md) - `test:integration` target definitions and caching rules
 - [specs/README.md](../../../specs/README.md) - Spec directory organization
 - [specs/apps/rhino/README.md](../../../specs/apps/rhino/README.md) - rhino-cli spec structure
-- [specs/apps/a-demo/be/README.md](../../../specs/apps/a-demo/be/README.md) - Demo-be spec structure and three-level consumption
+- [specs/apps/demo/be/README.md](../../../specs/apps/demo/be/README.md) - Demo-be spec structure and three-level consumption

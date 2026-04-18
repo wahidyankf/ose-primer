@@ -1,6 +1,6 @@
 ---
 title: Kotlin
-description: a-demo Authoritative Kotlin Coding Standards and Framework Stack (Kotlin 2.1+)
+description: demo Authoritative Kotlin Coding Standards and Framework Stack (Kotlin 2.1+)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -26,13 +26,13 @@ updated: 2026-03-09
 
 # Kotlin
 
-**This is THE authoritative reference** for Kotlin coding standards in a-demo.
+**This is THE authoritative reference** for Kotlin coding standards in demo.
 
-All Kotlin code written for the a-demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
+All Kotlin code written for the demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
 
 ## Framework Stack
 
-a-demo Kotlin applications MUST use the following stack:
+demo Kotlin applications MUST use the following stack:
 
 **HTTP Server Frameworks**:
 
@@ -80,17 +80,17 @@ a-demo Kotlin applications MUST use the following stack:
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the a-demo Kotlin learning path. These are **a-demo-specific style guides**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the demo Kotlin learning path. These are **demo-specific style guides**, not educational tutorials.
 
 **You MUST understand Kotlin fundamentals before using these standards:**
 
-**What this documentation covers**: a-demo naming conventions, framework choices, repository-specific patterns, how to apply Kotlin knowledge in THIS codebase.
+**What this documentation covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply Kotlin knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Kotlin syntax, language fundamentals, generic patterns (those are in a-demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: Kotlin syntax, language fundamentals, generic patterns (those are in demo-fs-ts-nextjs).
 
 ## Software Engineering Principles
 
-Kotlin development in a-demo enforces foundational software engineering principles:
+Kotlin development in demo enforces foundational software engineering principles:
 
 1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - MUST automate through Gradle tasks, ktlint, Detekt, Kover, GitHub Actions CI/CD, Kotlin compiler plugins, and code generation via `ksp` (Kotlin Symbol Processing)
 
@@ -104,7 +104,7 @@ Kotlin development in a-demo enforces foundational software engineering principl
 
 ## Kotlin Version Strategy
 
-a-demo follows a three-tier Kotlin versioning strategy focused on modern, stable features:
+demo follows a three-tier Kotlin versioning strategy focused on modern, stable features:
 
 **Kotlin 1.9 LTS (Baseline - REQUIRED)**:
 
@@ -141,9 +141,9 @@ a-demo follows a three-tier Kotlin versioning strategy focused on modern, stable
 
 **See**: Kotlin release highlights documentation (when available) for detailed feature documentation
 
-## a-demo Coding Standards (Authoritative)
+## demo Coding Standards (Authoritative)
 
-**MUST follow these mandatory standards for all Kotlin code in a-demo:**
+**MUST follow these mandatory standards for all Kotlin code in demo:**
 
 1. **[Coding Standards](./coding-standards.md)** - Naming conventions, package organization, Effective Kotlin idioms
 2. **[Testing Standards](./testing-standards.md)** - JUnit 5, Kotest, MockK, coroutine testing, coverage requirements
@@ -187,10 +187,10 @@ a-demo follows a three-tier Kotlin versioning strategy focused on modern, stable
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["Kotlin Standards Index<br/>(a-demo)"]:::blue
+    A["Kotlin Standards Index<br/>(demo)"]:::blue
     B["Core Standards"]:::orange
     C["Specialized Standards"]:::teal
-    D["Learning Resources<br/>(a-demo)"]:::purple
+    D["Learning Resources<br/>(demo)"]:::purple
 
     A --> B
     A --> C
@@ -220,7 +220,7 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
-## Primary Use Cases in a-demo
+## Primary Use Cases in demo
 
 **HTTP Services with Ktor**:
 

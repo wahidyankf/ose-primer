@@ -995,7 +995,7 @@ mix hex.outdated
 
 ## Related Documentation
 
-### a-demo Standards
+### demo Standards
 
 - [Best Practices](./coding-standards.md) - Elixir coding standards
 - [Web Services](./framework-integration-standards.md) - Phoenix API security
