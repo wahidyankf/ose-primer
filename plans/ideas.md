@@ -6,21 +6,4 @@ When an idea is ready for implementation, create a proper plan folder in `backlo
 
 ## Ideas List
 
-### Infrastructure
-
-- Create IAM (Identity and Access Management) service/module for authentication and authorization
-
-### Demo Apps
-
-- Recheck all standards.
-
-### Development Experience
-
-- Standardize CIs
-- .env backup scripts for rhino-cli
-- simplify ayokoding-cli and oseplatform-cli
-- libraries update
-
-### Generic
-
-- FSL standards
+_No ideas yet. Capture 1-3 liner ideas here and promote mature ones to `backlog/` plans._
