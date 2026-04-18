@@ -34,7 +34,7 @@ This practice implements/respects the following conventions:
 
 - **[File Naming Convention](../../conventions/structure/file-naming.md)**: Configuration template files follow the standard naming pattern (e.g., `.env.example`) so they are discoverable and version-controlled without exposing real values.
 
-## Overview
+## 📋 Overview
 
 Every developer works on a different machine. Absolute paths, usernames, local IP addresses, and environment-specific configuration reflect one person's setup. When these values enter the git history, they cause two classes of harm:
 
@@ -43,7 +43,7 @@ Every developer works on a different machine. Absolute paths, usernames, local I
 
 This practice defines what constitutes machine-specific information, where the line sits between prohibited values and acceptable test data, and how to handle runtime configuration correctly.
 
-## What Counts as Machine-Specific Information
+## ❌ What Counts as Machine-Specific Information
 
 The following categories must never appear in committed files:
 
@@ -76,7 +76,7 @@ Addresses such as `192.168.1.42`, `10.0.0.5`, or a machine's local hostname refl
 
 Database connection strings, API keys, secret tokens, or tool paths that differ between developer machines and CI/CD must not appear as literal values in committed files.
 
-## Acceptable Test Data
+## ✅ Acceptable Test Data
 
 Test data that simulates realistic tool or system output is acceptable even when it resembles machine-specific information, provided it tests parsing logic rather than encoding actual machine identity.
 
@@ -211,7 +211,7 @@ If machine-specific information has already been committed:
 
 For non-sensitive path leaks (e.g., a developer's home directory appeared in a test), a simple corrective commit is sufficient.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Code Quality Convention](./code.md) - Git hooks and pre-commit automation that help catch violations before they reach the remote
 - [Reproducible Environments](../workflow/reproducible-environments.md) - Volta pinning, package-lock.json, and `.env.example` templates for consistent developer environments

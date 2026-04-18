@@ -16,7 +16,7 @@ updated: 2026-03-22
 Complete reference for how projects depend on each other in the Nx monorepo.
 Run `nx graph` to visualize this interactively.
 
-## Dependency Mechanisms
+## 📋 Dependency Mechanisms
 
 Nx tracks project relationships through three mechanisms:
 
@@ -53,7 +53,7 @@ invalidated and `nx affected` flags the project.
 ]
 ```
 
-## Visual Dependency Graph
+## 🏗️ Visual Dependency Graph
 
 ```mermaid
 graph RL
@@ -257,7 +257,7 @@ Shared Go utilities (time formatting, test helpers, output capture).
 - **Dependents**: `rhino-cli`, `golang-commons`, `rhino-cli`, `rhino-cli`
 - **Mechanism**: Go module `replace` directives + `implicitDependencies`
 
-## Project Dependency Table
+## 📊 Project Dependency Table
 
 ### Demo Backends
 
@@ -396,7 +396,7 @@ E2E projects (`demo-be-e2e`, `demo-fe-e2e`, `demo-fe-e2e`) use
 and `typecheck` targets. Without spec inputs, feature file changes would not
 invalidate the cache, causing stale generated code.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Monorepo Structure Reference](./monorepo-structure.md) - Folder organization and file formats
 - [Nx Configuration Reference](./nx-configuration.md) - Workspace configuration options

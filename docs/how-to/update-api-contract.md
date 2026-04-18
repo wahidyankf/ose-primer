@@ -17,7 +17,7 @@ updated: 2026-03-22
 This guide explains how to modify the shared OpenAPI 3.1 specification and propagate changes
 to all demo apps via codegen.
 
-## Overview
+## 📋 Overview
 
 The contract lives at `specs/apps/demo/contracts/` and is consumed by all demo apps:
 
@@ -26,7 +26,7 @@ OpenAPI spec  -->  bundle  -->  codegen  -->  generated-contracts/
 (YAML files)     (bundled)     (per app)    (language-specific types)
 ```
 
-## Steps
+## 🛠️ Steps
 
 ### 1. Modify the OpenAPI Spec
 
@@ -118,7 +118,7 @@ The pre-push hook runs `nx affected -t test:quick`, which includes:
 
 If the contract change breaks any app, the pre-push hook catches it.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [OpenAPI Contract](../../specs/apps/demo/contracts/README.md) — Spec structure and conventions
 - [Project Dependency Graph](../reference/project-dependency-graph.md) — How contract changes propagate

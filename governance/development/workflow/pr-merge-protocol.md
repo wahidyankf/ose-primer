@@ -156,9 +156,9 @@ Quality gates:
 I will investigate and fix the lint errors before asking to merge.
 ```
 
-## Examples
+## 📋 Examples
 
-### PASS: Correct agent behavior
+### ✅ Correct agent behavior
 
 ```
 Agent: All quality gates have passed for PR #42. Here is the summary:
@@ -176,14 +176,14 @@ User: Yes, merge it.
 Agent: Merging PR #42...
 ```
 
-### FAIL: Incorrect agent behavior -- auto-merging
+### ❌ Incorrect agent behavior -- auto-merging
 
 ```
 Agent: I created PR #42 and all checks passed. Merging now.
 [merges without asking]
 ```
 
-### FAIL: Incorrect agent behavior -- merging with failing gates
+### ❌ Incorrect agent behavior -- merging with failing gates
 
 ```
 Agent: PR #42 has a failing lint check, but the rest passed.
@@ -191,14 +191,14 @@ Agent: PR #42 has a failing lint check, but the rest passed.
 [merges despite failing gate]
 ```
 
-### FAIL: Incorrect agent behavior -- reusing prior approval
+### ❌ Incorrect agent behavior -- reusing prior approval
 
 ```
 User: [earlier] Yes, merge PR #42.
 Agent: [later, different PR] Reusing your earlier approval to merge PR #43.
 ```
 
-### PASS: User explicitly bypasses a gate
+### ✅ User explicitly bypasses a gate
 
 ```
 Agent: PR #42 has all gates passing except spec-coverage, which
@@ -219,7 +219,7 @@ This rule applies to:
 - All automation scripts, npm scripts, and CI workflows that could trigger a PR merge.
 - All pull requests targeting any branch in the repository.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Git Push Safety Convention](./git-push-safety.md) -- Per-instance approval for destructive git operations
 - [Code Quality Convention](../quality/code.md) -- Quality gates enforced by git hooks

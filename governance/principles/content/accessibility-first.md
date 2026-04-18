@@ -84,7 +84,7 @@ Accessibility improvements help **everyone**, not just users with disabilities:
 
 **Requirement**: Use only color-blind friendly palette.
 
-PASS: **Accessible Palette** (Correct):
+✅ **Accessible Palette** (Correct):
 
 ```css
 /* Verified safe for all color blindness types */
@@ -95,7 +95,7 @@ PASS: **Accessible Palette** (Correct):
 #CA9161  /* Brown */
 ```
 
-FAIL: **Inaccessible Colors** (Avoid):
+❌ **Inaccessible Colors** (Avoid):
 
 ```css
 /* Invisible or problematic for color-blind users */
@@ -112,7 +112,7 @@ FAIL: **Inaccessible Colors** (Avoid):
 
 **Requirement**: Descriptive alt text for every image.
 
-PASS: **Good Alt Text**:
+✅ **Good Alt Text**:
 
 ```markdown
 ![Architecture diagram showing client-server communication flow with database](./images/architecture.png)
@@ -120,7 +120,7 @@ PASS: **Good Alt Text**:
 
 **Why this works**: Describes what the image shows and its purpose. Screen reader users understand the content.
 
-FAIL: **Bad Alt Text**:
+❌ **Bad Alt Text**:
 
 ```markdown
 ![image](./images/architecture.png)
@@ -134,7 +134,7 @@ FAIL: **Bad Alt Text**:
 
 **Requirement**: Single H1, proper H2-H6 nesting, no skipped levels.
 
-PASS: **Correct Hierarchy**:
+✅ **Correct Hierarchy**:
 
 ```markdown
 # Document Title (H1)
@@ -150,7 +150,7 @@ PASS: **Correct Hierarchy**:
 
 **Why this works**: Screen readers build document outline from headings. Proper nesting creates logical structure.
 
-FAIL: **Incorrect Hierarchy**:
+❌ **Incorrect Hierarchy**:
 
 ```markdown
 # Document Title (H1)
@@ -174,14 +174,14 @@ FAIL: **Incorrect Hierarchy**:
 - Large text (18pt+ or 14pt+ bold): **3:1** minimum
 - UI components: **3:1** minimum
 
-PASS: **Sufficient Contrast**:
+✅ **Sufficient Contrast**:
 
 ```
 Blue (#0173B2) on White (#FFFFFF): 8.59:1 (AAA)
 Orange (#DE8F05) on White: 6.48:1 (AAA)
 ```
 
-FAIL: **Insufficient Contrast**:
+❌ **Insufficient Contrast**:
 
 ```
 Light gray on white: 2:1 (fails WCAG AA)
@@ -194,7 +194,7 @@ Yellow on white: 1.5:1 (fails WCAG AA)
 
 **Requirement**: Use semantic elements, not styling hacks.
 
-PASS: **Semantic Structure**:
+✅ **Semantic Structure**:
 
 ```markdown
 ## Section Heading
@@ -207,7 +207,7 @@ PASS: **Semantic Structure**:
 
 **Why this works**: Proper markdown syntax creates semantic HTML. Screen readers understand structure.
 
-FAIL: **Non-Semantic**:
+❌ **Non-Semantic**:
 
 ```markdown
 **Section Heading**
@@ -220,11 +220,11 @@ FAIL: **Non-Semantic**:
 
 **Why this fails**: Manual formatting doesn't create semantic HTML. Screen readers see only styled text.
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
 ### Using Color Alone
 
-FAIL: **Problem**: Information conveyed only through color.
+❌ **Problem**: Information conveyed only through color.
 
 ```mermaid
 graph TD
@@ -237,7 +237,7 @@ graph TD
 
 **Why it's bad**: Red-blind and green-blind users cannot distinguish these. Information is lost.
 
-PASS: **Solution**: Combine color with text labels and shapes.
+✅ **Solution**: Combine color with text labels and shapes.
 
 ```mermaid
 graph TD
@@ -250,7 +250,7 @@ graph TD
 
 ### Missing Alt Text
 
-FAIL: **Problem**: Images without descriptive alt text.
+❌ **Problem**: Images without descriptive alt text.
 
 ```markdown
 ![](screenshot.png)
@@ -260,13 +260,13 @@ FAIL: **Problem**: Images without descriptive alt text.
 
 ### Red-Green Combinations
 
-FAIL: **Problem**: Using red and green together.
+❌ **Problem**: Using red and green together.
 
 **Why it's bad**: ~99% of color-blind users cannot distinguish red from green. Both appear as brownish-yellow.
 
 ### Low Contrast Text
 
-FAIL: **Problem**: Light gray text on white background.
+❌ **Problem**: Light gray text on white background.
 
 ```css
 color: #cccccc;
@@ -276,7 +276,7 @@ background: #ffffff;
 
 **Why it's bad**: Hard to read for everyone, impossible for vision-impaired users.
 
-## PASS: Best Practices
+## ✅ Best Practices
 
 ### 1. Always Use Accessible Color Palette
 
@@ -339,10 +339,10 @@ background: #ffffff;
 
 **Never rely on a single visual cue**:
 
-- PASS: Color + shape + text label
-- PASS: Color + icon + position
-- FAIL: Color alone
-- FAIL: Shape alone without labels
+- ✅ Color + shape + text label
+- ✅ Color + icon + position
+- ❌ Color alone
+- ❌ Shape alone without labels
 
 ## Examples from This Repository
 
@@ -368,11 +368,11 @@ graph TD
 
 **Accessibility features**:
 
-- PASS: Color-blind friendly palette
-- PASS: Black borders for shape definition
-- PASS: White text for contrast
-- PASS: Text labels describe each element
-- PASS: Shape differentiation (rectangle vs diamond)
+- Color-blind friendly palette
+- Black borders for shape definition
+- White text for contrast
+- Text labels describe each element
+- Shape differentiation (rectangle vs diamond)
 
 ### AI Agent Categorization
 
@@ -386,11 +386,11 @@ Expert documentation writer specializing in GitHub-compatible markdown and Diát
 
 **Accessibility features**:
 
-- PASS: Colored square emoji (supplementary)
-- PASS: Agent name (primary identifier)
-- PASS: Description text (semantic meaning)
-- PASS: Accessible blue color (#0173B2)
-- PASS: Multiple visual cues, not color alone
+- Colored square emoji (supplementary)
+- Agent name (primary identifier)
+- Description text (semantic meaning)
+- Accessible blue color (#0173B2)
+- Multiple visual cues, not color alone
 
 ### Document Frontmatter
 
@@ -409,10 +409,10 @@ tags:
 
 **Accessibility features**:
 
-- PASS: Descriptive title
-- PASS: Clear description for search engines
-- PASS: Semantic categorization
-- PASS: Machine-readable structure
+- Descriptive title
+- Clear description for search engines
+- Semantic categorization
+- Machine-readable structure
 
 ## Relationship to Other Principles
 

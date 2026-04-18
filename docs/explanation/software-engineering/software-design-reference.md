@@ -19,14 +19,14 @@ updated: 2026-02-07
 
 **Cross-reference to authoritative software design and coding standards documentation.**
 
-## Purpose
+## 🎯 Purpose
 
 This document establishes the separation between:
 
 - **Governance conventions** (governance/conventions/) - Cross-language, repository-wide rules
 - **Software design documentation** (docs/explanation/software-engineering/) - Language-specific, framework-specific, architecture-specific guidance
 
-## Authoritative Sources
+## 📚 Authoritative Sources
 
 ### Architecture Patterns
 
@@ -170,7 +170,7 @@ Skills available for quick reference:
 - `swe-programming-python` - Python coding standards
 - `swe-programming-elixir` - Elixir coding standards
 
-## Validation
+## ✅ Validation
 
 The `repo-rules-checker` agent validates:
 
@@ -187,7 +187,7 @@ This document implements/respects the following core principles:
 
 - **[Documentation First](../../../governance/principles/content/documentation-first.md)**: By creating a clear reference structure pointing to authoritative software design documentation, this document ensures documentation exists and is discoverable. AI agents and developers have explicit paths to language-specific standards, architecture patterns, and framework guidance.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - **[Programming Languages Overview](./programming-languages/README.md)** - Language comparison and selection
 - **[Architecture Overview](./architecture/README.md)** - Architecture patterns

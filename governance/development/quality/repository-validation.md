@@ -40,7 +40,7 @@ This practice implements/respects the following conventions:
 
 - **[Indentation Convention](../../conventions/formatting/indentation.md)**: Frontmatter extraction assumes 2-space YAML indentation when parsing nested structures.
 
-## Overview
+## 📋 Overview
 
 ### Why Standardized Validation Methods?
 
@@ -148,7 +148,7 @@ color: blue
 4. If not found → mark as compliant
 5. Never flag content in markdown body (after second `---`)
 
-## Standard Validation Checks
+## ✅ Standard Validation Checks
 
 ### 1. Frontmatter Comment Detection
 
@@ -317,7 +317,7 @@ fi
 - Handle special cases: `README.md`, `docs/metadata/`, date-prefixed files (`YYYY-MM-DD-*`)
 - Directory hierarchy encodes category — no prefix required on filenames
 
-## Best Practices
+## ✅ Best Practices
 
 ### Always Extract Frontmatter First
 
@@ -409,7 +409,7 @@ CONTEXT: |
 EXPECTED: Clean frontmatter without comments (no # symbols)
 ```
 
-## Common Pitfalls
+## ❌ Common Pitfalls
 
 ### False Positives from Markdown Headings
 
@@ -484,7 +484,7 @@ grep "^$escaped:" frontmatter.txt
 grep -F "^$field:" frontmatter.txt
 ```
 
-## Related Conventions
+## 🔗 Related Conventions
 
 - [AI Agents Convention](../agents/ai-agents.md) - Agents that use these validation methods
 - [File Naming Convention](../../conventions/structure/file-naming.md) - What we validate (naming patterns)

@@ -39,11 +39,11 @@ This practice implements/respects the following conventions:
 
 The monorepo requires developers to install and maintain toolchains for Node.js, Go, Java (Maven + SDKMAN), Rust, Elixir (Mix), Python (pyenv), .NET, Dart (Flutter), Clojure (Leiningen), Kotlin, and C#. The question was evaluated: should Docker Dev Containers, Terraform, or Ansible manage this development environment?
 
-## Decision
+## 🎯 Decision
 
 **Use native toolchain management via `rhino-cli doctor` and package managers.** Do NOT use Terraform, Ansible, or Docker Dev Containers for development environment setup.
 
-## Rationale
+## 📋 Rationale
 
 ### 1. Package Managers Are Already Idempotent
 
@@ -175,7 +175,7 @@ Revisit this architectural decision if any of the following conditions change:
 - **Cloud development**: A cloud development environment (GitHub Codespaces) becomes necessary for external contributors who cannot install toolchains locally
 - **Toolchain count**: The toolchain count exceeds what `rhino-cli doctor` can reasonably manage as a flat list of checks
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Reproducible Environments](./reproducible-environments.md) - Broader reproducibility practices (Volta, lockfiles, Docker for services)
 - [Development Environment Setup](../../workflows/infra/development-environment-setup.md) - Workflow for setting up a development environment

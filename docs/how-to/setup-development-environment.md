@@ -22,7 +22,7 @@ This guide walks you through installing every tool required to work on any proje
 monorepo. After completing it, your pre-commit hooks, pre-push hooks, unit tests, integration
 tests, and E2E tests will all work locally.
 
-## Overview
+## 📋 Overview
 
 The monorepo contains projects in 11 languages (TypeScript, Go, Java, Kotlin, Python, Rust,
 Elixir, F#, C#, Clojure, Dart). Each language has its own runtime, but they all share the
@@ -43,7 +43,7 @@ same Nx build system and git hooks.
 - **Admin access** to install system packages.
 - **~10 GB disk space** for all runtimes, Docker images, and Playwright browsers.
 
-## Quick Start (Minimal Setup)
+## 🚀 Quick Start (Minimal Setup)
 
 If you only work on TypeScript or Go projects, this is all you need:
 
@@ -365,7 +365,7 @@ On Linux, also install system dependencies:
 npx playwright install-deps
 ```
 
-## Verification
+## ✅ Verification
 
 ### Check all tools
 
@@ -415,7 +415,7 @@ nx run demo-be-e2e:test:e2e
 kill %1
 ```
 
-## Troubleshooting
+## 🔬 Troubleshooting
 
 ### Doctor reports a tool as "missing"
 
@@ -514,7 +514,7 @@ All version requirements are auto-detected by `npm run doctor` from these config
 
 Never hardcode version numbers in scripts — always read from these source-of-truth files.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Development Environment Setup Workflow](../../governance/workflows/infra/development-environment-setup.md) —
   Granular workflow with phases and success criteria

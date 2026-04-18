@@ -44,7 +44,7 @@ This practice implements/respects the following conventions:
 
 - **[Content Quality Principles](../../conventions/writing/quality.md)**: Checker agents validate content against quality standards (active voice, heading hierarchy, alt text, WCAG compliance). Fixer agents apply quality improvements when findings have HIGH confidence.
 
-## Overview
+## 📋 Overview
 
 ### What is the Maker-Checker-Fixer Pattern?
 
@@ -84,7 +84,7 @@ This pattern is used across multiple agent families. See [AI Agents Index](../..
 5. **plan-\*** - Plan completeness and structure
 6. **repo-workflow-\*** - Workflow documentation completeness
 
-## The Three Stages
+## 🔄 The Three Stages
 
 ### Stage 1: Maker (Comprehensive Content Management)
 
@@ -277,7 +277,7 @@ Fixer Agent (docs-tutorial-fixer):
 6. Reports summary: 18 fixed, 4 manual review needed, 3 false positives detected
 ```
 
-## Common Workflows
+## ⚙️ Common Workflows
 
 ### Basic Workflow: Create → Validate → Fix
 
@@ -571,7 +571,7 @@ User: "Fix issues from the latest audit report" → Use FIXER (validation-driven
 - Jargon detected → Manual (context-dependent rewording)
 ```
 
-## Benefits of the Pattern
+## ✅ Benefits of the Pattern
 
 ### 1. Separation of Concerns
 
@@ -696,7 +696,7 @@ If verification fails, log the fix as FAILED (not applied). Do NOT log as "fixed
 
 **Goal**: The workflow should converge in 1-3 iterations. If it hasn't converged after 5 iterations, stop and escalate to maker.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 **Pattern Implementation**:
 

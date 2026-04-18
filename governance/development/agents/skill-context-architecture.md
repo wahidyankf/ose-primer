@@ -41,7 +41,7 @@ This architectural decision establishes that all skills stored in the `.claude/s
 - Repository maintainers reviewing skill contributions
 - Anyone designing agent workflows involving skills
 
-## The Architectural Constraint
+## 🏗️ The Architectural Constraint
 
 ### Core Limitation
 
@@ -157,7 +157,7 @@ Valid use cases for fork skills (in project-specific directories):
 
 **Key constraint**: These must be used from main conversation, never from subagents.
 
-## Validation and Compliance
+## ✅ Validation and Compliance
 
 ### Skill Validation Checklist
 
@@ -261,7 +261,7 @@ graph TD
 - Brown: Convention documents (governance layer)
 - Red dashed: Architectural constraint (cannot do)
 
-## Related Documentation
+## 🔗 Related Documentation
 
 ### Core Architecture
 

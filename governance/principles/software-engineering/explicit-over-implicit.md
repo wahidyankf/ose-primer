@@ -72,7 +72,7 @@ This principle serves the [Open Sharia Enterprise Vision](../../vision/open-shar
 
 **Context**: Agent files specify which tools they can use.
 
-PASS: **Explicit (Correct)**:
+✅ **Explicit (Correct)**:
 
 ```yaml
 ---
@@ -83,7 +83,7 @@ tools: Read, Glob, Grep
 
 **Why this works**: Clear whitelist of exactly three tools. Anyone reading this knows the agent can read files, glob patterns, and grep content. No surprises.
 
-FAIL: **Implicit (Avoid)**:
+❌ **Implicit (Avoid)**:
 
 ```yaml
 ---
@@ -98,7 +98,7 @@ tools: all
 
 **Context**: Filenames should clearly describe their content so readers can identify a file without opening it.
 
-PASS: **Explicit (Correct)**:
+✅ **Explicit (Correct)**:
 
 ```
 explicit-over-implicit.md
@@ -106,7 +106,7 @@ explicit-over-implicit.md
 
 **Why this works**: The basename is a full, readable kebab-case description of the content. The directory hierarchy (`governance/principles/software-engineering/`) explicitly encodes the category.
 
-FAIL: **Implicit (Avoid)**:
+❌ **Implicit (Avoid)**:
 
 ```
 eoi.md  # "clever" abbreviation
@@ -118,7 +118,7 @@ eoi.md  # "clever" abbreviation
 
 **Context**: Mermaid diagrams use colors.
 
-PASS: **Explicit (Correct)**:
+✅ **Explicit (Correct)**:
 
 ```css
 fill: #0173b2;
@@ -126,7 +126,7 @@ fill: #0173b2;
 
 **Why this works**: Exact hex code. Renders identically everywhere. No ambiguity about which blue.
 
-FAIL: **Implicit (Avoid)**:
+❌ **Implicit (Avoid)**:
 
 ```css
 fill: blue;
@@ -138,7 +138,7 @@ fill: blue;
 
 **Context**: Document metadata in YAML frontmatter.
 
-PASS: **Explicit (Correct)**:
+✅ **Explicit (Correct)**:
 
 ```yaml
 ---
@@ -156,7 +156,7 @@ updated: 2025-12-15
 
 **Why this works**: All fields present. No guessing about category, tags, or dates. Self-contained.
 
-FAIL: **Implicit (Avoid)**:
+❌ **Implicit (Avoid)**:
 
 ```yaml
 ---
@@ -170,7 +170,7 @@ title: "Explicit Over Implicit"
 
 **Context**: Code imports and dependencies.
 
-PASS: **Explicit (Correct)**:
+✅ **Explicit (Correct)**:
 
 ```typescript
 import { validateEmail } from "@open-sharia-enterprise/ts-validation";
@@ -179,7 +179,7 @@ import { createUser } from "./user-service";
 
 **Why this works**: Clear dependency on validation library and local service. Path mappings defined in `tsconfig.base.json`. Traceable.
 
-FAIL: **Implicit (Avoid)**:
+❌ **Implicit (Avoid)**:
 
 ```typescript
 // Assumes global validateEmail function exists
@@ -192,7 +192,7 @@ FAIL: **Implicit (Avoid)**:
 
 **Context**: Application configuration.
 
-PASS: **Explicit (Correct)**:
+✅ **Explicit (Correct)**:
 
 ```json
 {
@@ -206,7 +206,7 @@ PASS: **Explicit (Correct)**:
 
 **Why this works**: All settings visible. No hidden defaults. Behavior is predictable.
 
-FAIL: **Implicit (Avoid)**:
+❌ **Implicit (Avoid)**:
 
 ```json
 {
@@ -218,11 +218,11 @@ FAIL: **Implicit (Avoid)**:
 
 **Why this fails**: What's the timeout? How many retries? Relies on code defaults. Behavior unclear from config.
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
 ### Magic Conventions
 
-FAIL: **Problem**: Files named `index.ts` auto-import in certain contexts.
+❌ **Problem**: Files named `index.ts` auto-import in certain contexts.
 
 ```
 src/
@@ -234,7 +234,7 @@ src/
 
 ### Hidden Defaults
 
-FAIL: **Problem**: Agent assumes it has Write access if not specified.
+❌ **Problem**: Agent assumes it has Write access if not specified.
 
 ```yaml
 ---
@@ -247,7 +247,7 @@ name: example-agent
 
 ### Global State
 
-FAIL: **Problem**: Functions rely on global variables.
+❌ **Problem**: Functions rely on global variables.
 
 ```typescript
 // Somewhere else: global.config = { ... }
@@ -262,7 +262,7 @@ function processData(data) {
 
 ### Convention-Based Routing
 
-FAIL: **Problem**: File location determines route.
+❌ **Problem**: File location determines route.
 
 ```
 pages/
@@ -271,7 +271,7 @@ pages/
 
 **Why it's bad** (for our context): Route not visible in code. Requires knowing framework conventions. (Note: This is fine in Next.js/Nuxt where it's the standard pattern, but avoid inventing new conventions like this.)
 
-## PASS: Best Practices
+## ✅ Best Practices
 
 ### 1. Write It Out
 

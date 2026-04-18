@@ -17,7 +17,7 @@ updated: 2026-03-22
 This guide explains how to add a new Gherkin scenario to the shared specs and implement
 step definitions at each test level.
 
-## Overview
+## 📋 Overview
 
 Gherkin feature files are shared across all implementations:
 
@@ -26,7 +26,7 @@ Gherkin feature files are shared across all implementations:
 
 When you add a scenario, every implementation must add step definitions for it.
 
-## Steps (Backend Example)
+## 🛠️ Steps (Backend Example)
 
 ### 1. Choose or Create a Feature File
 
@@ -128,7 +128,7 @@ step definitions:
 - **Unit steps**: Component logic tests with mocked API
 - **E2E steps**: Playwright browser interactions in `apps/demo-fe-e2e/`
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Backend Gherkin Specs](../../specs/apps/demo/be/gherkin/README.md) — Feature file conventions
 - [Frontend Gherkin Specs](../../specs/apps/demo/fe/gherkin/README.md) — Frontend feature conventions

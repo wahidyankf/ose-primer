@@ -107,15 +107,15 @@ graph TD
 
 **Why this works**:
 
-- PASS: **Initial Setup (0-5%)**: Get running in 5 minutes
-- PASS: **Quick Start (5-30%)**: Learn enough to explore independently
-- PASS: **Beginner (0-60%)**: Comprehensive foundation
-- PASS: **Intermediate (60-85%)**: Production-ready skills
-- PASS: **Advanced (85-95%)**: Expert-level mastery
+- **Initial Setup (0-5%)**: Get running in 5 minutes
+- **Quick Start (5-30%)**: Learn enough to explore independently
+- **Beginner (0-60%)**: Comprehensive foundation
+- **Intermediate (60-85%)**: Production-ready skills
+- **Advanced (85-95%)**: Expert-level mastery
 
 **Alternative** (what we avoid):
 
-FAIL: **Single "Complete Guide"**: 1,000 pages covering everything at once. Overwhelming.
+❌ **Single "Complete Guide"**: 1,000 pages covering everything at once. Overwhelming.
 
 ### Diátaxis Framework
 
@@ -130,16 +130,16 @@ Tutorials → How-To → Reference → Explanation
 
 **Why this works**:
 
-- PASS: **Tutorials**: Guided learning for beginners
-- PASS: **How-To**: Problem-solving for practitioners
-- PASS: **Reference**: Quick lookup for experts
-- PASS: **Explanation**: Deep understanding for architects
+- **Tutorials**: Guided learning for beginners
+- **How-To**: Problem-solving for practitioners
+- **Reference**: Quick lookup for experts
+- **Explanation**: Deep understanding for architects
 
 **Not** a single type of documentation:
 
-FAIL: Everything in one giant README
-FAIL: Reference manual for beginners
-FAIL: Tutorial for expert lookup
+- ❌ Everything in one giant README
+- ❌ Reference manual for beginners
+- ❌ Tutorial for expert lookup
 
 ### File Naming Convention
 
@@ -156,13 +156,13 @@ Kebab-case filenames describing the content. Category is conveyed by the directo
 
 **Why this works**:
 
-- PASS: One rule covers every directory
-- PASS: Filenames read as English, not codes
-- PASS: No abbreviation tables to memorize
+- One rule covers every directory
+- Filenames read as English, not codes
+- No abbreviation tables to memorize
 
 **Alternative** (what we avoid):
 
-FAIL: **Complex classification system**: `L2-CAT3-TYPE1-SUBTYPE4-file.md`
+❌ **Complex classification system**: `L2-CAT3-TYPE1-SUBTYPE4-file.md`
 
 Too complex. No progressive learning.
 
@@ -198,10 +198,10 @@ Complete API/configuration details.
 
 **Why this works**:
 
-- PASS: Beginners read Overview + Quick Start
-- PASS: Practitioners read Basic Usage
-- PASS: Experts jump to Advanced Usage
-- PASS: All levels served
+- Beginners read Overview + Quick Start
+- Practitioners read Basic Usage
+- Experts jump to Advanced Usage
+- All levels served
 
 ### Convention Documents
 
@@ -235,16 +235,16 @@ What to avoid (for advanced users).
 
 **Why this works**:
 
-- PASS: "What" and "Why" for beginners
-- PASS: "How It Applies" for practitioners
-- PASS: "Advanced Patterns" for experts
-- PASS: Each level optional
+- "What" and "Why" for beginners
+- "How It Applies" for practitioners
+- "Advanced Patterns" for experts
+- Each level optional
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
 ### Front-Loading Complexity
 
-FAIL: **Problem**: Teaching advanced concepts before basics.
+❌ **Problem**: Teaching advanced concepts before basics.
 
 ```markdown
 # React Tutorial
@@ -258,7 +258,7 @@ Before we learn basic components, let's understand HoCs...
 
 ### No Clear Starting Point
 
-FAIL: **Problem**: Documentation without "start here" guidance.
+❌ **Problem**: Documentation without "start here" guidance.
 
 ```
 docs/
@@ -273,7 +273,7 @@ docs/
 
 ### All-or-Nothing Documentation
 
-FAIL: **Problem**: Either 10-page reference manual or nothing.
+❌ **Problem**: Either 10-page reference manual or nothing.
 
 **No middle ground**: No quick start, no intermediate guides.
 
@@ -281,7 +281,7 @@ FAIL: **Problem**: Either 10-page reference manual or nothing.
 
 ### Requiring Expert Knowledge for Basics
 
-FAIL: **Problem**: Basic tasks require understanding internals.
+❌ **Problem**: Basic tasks require understanding internals.
 
 ```markdown
 ## Creating a Component
@@ -291,14 +291,14 @@ First, understand the reconciliation algorithm and virtual DOM diffing...
 
 **Why it's bad**: Unnecessary complexity for basic tasks.
 
-## PASS: Best Practices
+## ✅ Best Practices
 
 ### 1. Start with Minimal Viable Example
 
 **Hello World first**:
 
 ```typescript
-// PASS: Simplest possible example
+// Simplest possible example
 console.log("Hello, World!");
 ```
 
@@ -352,14 +352,14 @@ Internals and customization.
 
 **Each level is self-contained**:
 
-- PASS: Beginner tutorial teaches 0-60% completely
-- PASS: Beginner can build real projects with 60% knowledge
-- PASS: Intermediate builds on beginner (not replacement)
+- ✅ Beginner tutorial teaches 0-60% completely
+- ✅ Beginner can build real projects with 60% knowledge
+- ✅ Intermediate builds on beginner (not replacement)
 
 **Not**:
 
-- FAIL: Beginner tutorial leaves gaps
-- FAIL: Must read intermediate to be productive
+- ❌ Beginner tutorial leaves gaps
+- ❌ Must read intermediate to be productive
 
 ## Examples from This Repository
 
@@ -376,10 +376,10 @@ Internals and customization.
 
 **Progressive disclosure features**:
 
-- PASS: Clear percentage ranges (depth, not time)
-- PASS: Each level complete and useful
-- PASS: Linear progression
-- PASS: Cookbook as parallel practical track
+- Clear percentage ranges (depth, not time)
+- Each level complete and useful
+- Linear progression
+- Cookbook as parallel practical track
 
 ### Documentation Structure
 
@@ -395,10 +395,10 @@ docs/
 
 **Progressive disclosure features**:
 
-- PASS: Clear starting point (tutorials)
-- PASS: Progression path visible
-- PASS: Each category serves different need
-- PASS: Beginners and experts both served
+- Clear starting point (tutorials)
+- Progression path visible
+- Each category serves different need
+- Beginners and experts both served
 
 ### Agent Tool Permissions
 
@@ -422,10 +422,10 @@ tools: Read, Write, Edit, Glob, Grep, Bash
 
 **Progressive disclosure features**:
 
-- PASS: Start with minimal tools
-- PASS: Add tools as needed
-- PASS: Explicit at each level
-- PASS: Security through progressive access
+- Start with minimal tools
+- Add tools as needed
+- Explicit at each level
+- Security through progressive access
 
 ### File Naming
 
@@ -441,10 +441,10 @@ docs/explanation/infrastructure/security/security-basics.md
 
 **Progressive disclosure features**:
 
-- PASS: Single rule for every file — kebab-case describing the content
-- PASS: Category is conveyed by the directory path, which deepens as context grows
-- PASS: Filename meaning is obvious without a prefix lookup table
-- PASS: Easy for new contributors to follow on day one
+- Single rule for every file — kebab-case describing the content
+- Category is conveyed by the directory path, which deepens as context grows
+- Filename meaning is obvious without a prefix lookup table
+- Easy for new contributors to follow on day one
 
 ## Relationship to Other Principles
 

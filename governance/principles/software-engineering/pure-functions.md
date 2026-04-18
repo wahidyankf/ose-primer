@@ -69,12 +69,12 @@ This principle serves the [Open Sharia Enterprise Vision](../../vision/open-shar
 
 **Use pure functions for**:
 
-- PASS: Business logic and calculations
-- PASS: Data transformations
-- PASS: Validation rules
-- PASS: Formatting and parsing
-- PASS: Mathematical operations
-- PASS: Filters, maps, reduces
+- Business logic and calculations
+- Data transformations
+- Validation rules
+- Formatting and parsing
+- Mathematical operations
+- Filters, maps, reduces
 
 **Side effects necessary for**:
 
@@ -93,7 +93,7 @@ This principle serves the [Open Sharia Enterprise Vision](../../vision/open-shar
 
 **Context**: Calculating Zakat (Islamic wealth tax - 2.5% on qualifying wealth).
 
-PASS: **Pure (Preferred)**:
+✅ **Pure (Preferred)**:
 
 ```typescript
 // Pure function - deterministic, no side effects
@@ -112,7 +112,7 @@ expect(calculateZakat(10000, 5000)).toBe(250); // Same result every time
 
 **Why this works**: No external dependencies. Same inputs always produce same output. Trivial to test and verify.
 
-FAIL: **Impure (Avoid)**:
+❌ **Impure (Avoid)**:
 
 ```typescript
 // Impure - depends on external state
@@ -141,7 +141,7 @@ function calculateZakat(wealth: number): number {
 
 **Context**: Applying profit-sharing ratio to investment returns (Musharakah).
 
-PASS: **Pure (Preferred)**:
+✅ **Pure (Preferred)**:
 
 ```typescript
 interface Investment {
@@ -177,7 +177,7 @@ const distribution = distributeProfits(investment, partners);
 
 **Why this works**: Pure calculation. No side effects. Easy to verify Shariah compliance (60/40 split).
 
-FAIL: **Impure (Avoid)**:
+❌ **Impure (Avoid)**:
 
 ```typescript
 const partnerBalances = { Ahmad: 0, Fatima: 0 };
@@ -200,7 +200,7 @@ function distributeProfits(investment, partners) {
 
 **Context**: Saving Murabaha contract to database.
 
-PASS: **Pure core + Impure shell (Preferred architecture)**:
+✅ **Pure core + Impure shell (Preferred architecture)**:
 
 ```typescript
 // FUNCTIONAL CORE: Pure business logic
@@ -258,7 +258,7 @@ async function saveMurabahaContract(cost: number, markupRate: number): Promise<v
 
 **Context**: Formatting currency for display.
 
-PASS: **Pure (Preferred)**:
+✅ **Pure (Preferred)**:
 
 ```typescript
 // Pure function - all dependencies explicit
@@ -276,7 +276,7 @@ formatCurrency(1000, "USD", "en-US"); // "$1,000.00"
 
 **Why this works**: All dependencies passed as arguments. Same inputs = same output.
 
-FAIL: **Impure (Avoid)**:
+❌ **Impure (Avoid)**:
 
 ```typescript
 // Impure - depends on global configuration
@@ -300,14 +300,14 @@ function formatCurrency(amount: number): string {
 
 **Why this fails**: Hidden dependency on global config. Different results if config changes. Hard to test.
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
 ### Functions with Side Effects
 
-FAIL: **Problem**: Function modifies external state.
+❌ **Problem**: Function modifies external state.
 
 ```typescript
-// FAIL: Impure - modifies database
+// Impure - modifies database
 function addTransaction(transaction) {
   database.transactions.insert(transaction); // SIDE EFFECT
   return transaction.id;
@@ -318,10 +318,10 @@ function addTransaction(transaction) {
 // Concurrency issues
 ```
 
-PASS: **Solution**: Separate pure logic from I/O.
+✅ **Solution**: Separate pure logic from I/O.
 
 ```typescript
-// PASS: Pure - prepares data
+// Pure - prepares data
 function prepareTransaction(from: string, to: string, amount: number): Transaction {
   return {
     id: generateId(),
@@ -332,7 +332,7 @@ function prepareTransaction(from: string, to: string, amount: number): Transacti
   };
 }
 
-// PASS: Impure shell - handles I/O
+// Impure shell - handles I/O
 async function saveTransaction(transaction: Transaction): Promise<void> {
   await database.transactions.insert(transaction);
 }
@@ -342,10 +342,10 @@ async function saveTransaction(transaction: Transaction): Promise<void> {
 
 ### Hidden Randomness
 
-FAIL: **Problem**: Function uses random values internally.
+❌ **Problem**: Function uses random values internally.
 
 ```typescript
-// FAIL: Non-deterministic
+// Non-deterministic
 function generateContractId(): string {
   return `CONTRACT-${Math.random()}`; // RANDOM
 }
@@ -355,10 +355,10 @@ generateContractId(); // "CONTRACT-0.123"
 generateContractId(); // "CONTRACT-0.456"
 ```
 
-PASS: **Solution**: Pass randomness as input.
+✅ **Solution**: Pass randomness as input.
 
 ```typescript
-// PASS: Deterministic - randomness passed in
+// Deterministic - randomness passed in
 function generateContractId(random: number): string {
   return `CONTRACT-${random}`;
 }
@@ -370,10 +370,10 @@ generateContractId(0.5); // Deterministic for testing
 
 ### Reading Current Time
 
-FAIL: **Problem**: Function reads current time internally.
+❌ **Problem**: Function reads current time internally.
 
 ```typescript
-// FAIL: Non-deterministic
+// Non-deterministic
 function isContractExpired(expiryDate: Date): boolean {
   const now = new Date(); // READS CURRENT TIME
   return now > expiryDate;
@@ -382,10 +382,10 @@ function isContractExpired(expiryDate: Date): boolean {
 // Different result at different times
 ```
 
-PASS: **Solution**: Pass current time as input.
+✅ **Solution**: Pass current time as input.
 
 ```typescript
-// PASS: Deterministic
+// Deterministic
 function isContractExpired(expiryDate: Date, now: Date): boolean {
   return now > expiryDate;
 }
@@ -397,10 +397,10 @@ isContractExpired(expiryDate, new Date("2025-12-28")); // Fixed time for testing
 
 ### Global State Dependencies
 
-FAIL: **Problem**: Function depends on global variable.
+❌ **Problem**: Function depends on global variable.
 
 ```typescript
-// FAIL: Depends on global
+// Depends on global
 let exchangeRate = 3.75; // SAR to USD
 
 function convertToUSD(sar: number): number {
@@ -411,10 +411,10 @@ function convertToUSD(sar: number): number {
 // Hard to test with different rates
 ```
 
-PASS: **Solution**: Pass dependencies explicitly.
+✅ **Solution**: Pass dependencies explicitly.
 
 ```typescript
-// PASS: Explicit dependency
+// Explicit dependency
 function convertToUSD(sar: number, exchangeRate: number): number {
   return sar / exchangeRate;
 }
@@ -424,14 +424,14 @@ convertToUSD(1000, 3.75); // 266.67
 convertToUSD(1000, 4.0); // 250 (different rate)
 ```
 
-## PASS: Best Practices
+## ✅ Best Practices
 
 ### 1. Make Dependencies Explicit
 
 **Pass everything as arguments**:
 
 ```typescript
-// PASS: All dependencies explicit
+// All dependencies explicit
 function calculateMurabahaTotal(cost: number, markupRate: number, taxRate: number): number {
   const markup = cost * markupRate;
   const subtotal = cost + markup;
@@ -445,12 +445,12 @@ function calculateMurabahaTotal(cost: number, markupRate: number, taxRate: numbe
 **Create new data instead of mutating**:
 
 ```typescript
-// PASS: Returns new array
+// Returns new array
 function addItem(items: readonly Item[], newItem: Item): readonly Item[] {
   return [...items, newItem];
 }
 
-// FAIL: Mutates input
+// Mutates input
 function addItem(items: Item[], newItem: Item): Item[] {
   items.push(newItem); // MUTATION
   return items;
@@ -462,7 +462,7 @@ function addItem(items: Item[], newItem: Item): Item[] {
 **All business rules should be pure**:
 
 ```typescript
-// PASS: Pure business logic
+// Pure business logic
 function isEligibleForZakat(wealth: number, nisab: number): boolean {
   return wealth >= nisab;
 }
@@ -526,7 +526,7 @@ describe("calculateZakat", () => {
 **Compose pure functions**:
 
 ```typescript
-// PASS: Pure higher-order functions
+// Pure higher-order functions
 const pipe =
   (...fns) =>
   (x) =>
@@ -546,7 +546,7 @@ const result = processData(input);
 
 **Scenario**: Calculating profit distribution in Mudharabah (profit-sharing partnership).
 
-FAIL: **Impure approach** (avoid):
+❌ **Impure approach** (avoid):
 
 ```typescript
 let totalProfits = 0;
@@ -566,7 +566,7 @@ distributeMudharabahProfits(10000, 0.7);
 // Hard to test, non-deterministic, concurrent-unsafe
 ```
 
-PASS: **Pure approach** (preferred):
+✅ **Pure approach** (preferred):
 
 ```typescript
 interface MudharabahDistribution {

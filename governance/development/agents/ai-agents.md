@@ -17,7 +17,7 @@ updated: 2026-04-11
 
 This document defines the standards for creating, structuring, and managing AI agents in the `.claude/agents/` directory (primary source of truth) and `.opencode/agent/` directory (auto-generated). **Edit `.claude/agents/` first, then sync to `.opencode/`.** All agents must follow these conventions to ensure consistency, maintainability, and proper integration with the project.
 
-## Overview
+## 📋 Overview
 
 ### What are AI Agents?
 
@@ -137,7 +137,7 @@ This practice implements/respects the following conventions:
 
 - **[Timestamp Format Convention](../../conventions/formatting/timestamp.md)**: Defines UTC+7 timestamp format (YYYY-MM-DD--HH-MM) for audit reports and validation workflows.
 
-## Agent File Structure
+## 🏗️ Agent File Structure
 
 ### Required Frontmatter
 
@@ -562,7 +562,7 @@ name: swe-typescript-dev # Includes scope prefix
 description: Expert at creating general Next.js content for demo-fs-ts-nextjs. Use when creating or updating general content pages for the demo website. # Detailed usage guidance
 ```
 
-## Tool Access Patterns
+## 🔒 Tool Access Patterns
 
 Tool permissions follow the **principle of least privilege**: agents should only have access to tools they actually need.
 
@@ -1183,7 +1183,7 @@ Task(Explore, "find authentication code")
 
 ### Required Section: Reference Documentation
 
-**Every agent MUST include a "Reference Documentation" section** at the end. See the [Agent Creation Template](#agent-creation-template) below for the complete format.
+**Every agent MUST include a "Reference Documentation" section** at the end. See the [Agent Template](#agent-template) below for the complete format.
 
 ### Reference Categories
 
@@ -2099,7 +2099,7 @@ If an agent is no longer needed:
 | **Missing Reference Section**    | No references to conventions or AGENTS.md                           | Include Reference Documentation section with links to AGENTS.md and ai-agents.md                                                                                               |
 | **Overlapping Responsibilities** | `docs-maker-and-checker` (multiple responsibilities)                | Separate `docs-maker` and `docs-checker` agents                                                                                                                                |
 
-## Validation and Compliance
+## ✅ Validation and Compliance
 
 ### Repo-Rule-Checker Integration
 
@@ -2428,7 +2428,7 @@ When simplifying an agent:
 
 See [Skills README](../../../.claude/skills/README.md) for complete catalog.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Development Index](../README.md) - Overview of development conventions
 - [Conventions Index](../../conventions/README.md) - Documentation conventions

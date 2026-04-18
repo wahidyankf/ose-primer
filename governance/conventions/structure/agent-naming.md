@@ -23,7 +23,7 @@ A uniform, exception-free naming rule gives the repository three concrete guaran
 - **Zero-exception discipline**: Exceptions erode conventions. Once one agent is allowed a bespoke suffix, reviewers lose the ability to reject the next one on principle alone. Holding every agent to the same structure keeps the rule teachable in one sentence and cheap to enforce forever.
 - **Harness parity**: Claude Code reads `.claude/agents/*.md` and OpenCode reads `.opencode/agent/*.md`. The sync pipeline assumes a filename-for-filename mirror between the two directories. Drift in either direction — a rename in one tree but not the other, a `.claude/` agent with no `.opencode/` twin — breaks cross-harness invocation silently. A shared naming rule makes the mirror check a trivial set-difference.
 
-## The Rule
+## 🎯 The Rule
 
 Every agent filename (basename without the `.md` extension) MUST match the structure:
 
@@ -83,7 +83,7 @@ This convention applies to both:
 
 Filenames MUST be identical pair-for-pair between the two directories. Every `.claude/agents/<name>.md` has exactly one corresponding `.opencode/agent/<name>.md`, and vice versa. Any asymmetry (orphan file in either tree, rename in one tree but not the other) is a governance violation.
 
-## Enforcement
+## ✅ Enforcement
 
 `repo-rules-checker` MUST run the following audit command as part of every governance pass:
 
@@ -96,7 +96,7 @@ ls .claude/agents/*.md \
 
 Any non-empty output is a governance violation. Every line printed is an agent filename whose suffix does not match the Role Vocabulary; each such file MUST be renamed to a compliant name before the checker can pass. The same command SHOULD be run against `.opencode/agent/*.md` to detect mirror drift.
 
-## Examples
+## 📖 Examples
 
 Current agents, grouped by role, all conforming to the rule:
 

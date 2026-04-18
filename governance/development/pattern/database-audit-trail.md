@@ -38,7 +38,7 @@ This pattern respects the following conventions:
 
 - **[Acceptance Criteria Convention](../infra/acceptance-criteria.md)**: The compliance checklist at the end of this document provides testable, concrete criteria for verifying a table meets this pattern.
 
-## Required Audit Columns
+## 📋 Required Audit Columns
 
 Every table MUST include all six columns in the order listed below.
 
@@ -311,7 +311,7 @@ All packages use `@NullMarked` (JSpecify). The audit field nullability must matc
 
 Under `@NullMarked`, all types are non-null by default. Only `deletedAt` and `deletedBy` require an explicit `@Nullable` annotation.
 
-## Compliance Checklist
+## ✅ Compliance Checklist
 
 Use this checklist when adding a new table or reviewing an existing one.
 
@@ -356,7 +356,7 @@ Use this checklist when adding a new table or reviewing an existing one.
 - [ ] No native SQL queries bypass `deleted_at IS NULL` filtering without explicit justification
 - [ ] Admin/audit queries that intentionally include soft-deleted rows are named clearly and access-restricted
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Acceptance Criteria Convention](../infra/acceptance-criteria.md) - Writing testable criteria for features involving audited entities
 - [Functional Programming Practices](./functional-programming.md) - Pure functions for business logic separate from audit side effects
@@ -385,7 +385,7 @@ Use this checklist when adding a new table or reviewing an existing one.
 - [@effect/sql Migrator (TypeScript)](https://effect.website/docs/sql/sql-migrator)
 - [Drizzle migrations (TypeScript)](https://orm.drizzle.team/docs/migrations)
 
-## Migration Tooling Pitfalls
+## ⚠️ Migration Tooling Pitfalls
 
 Lessons from adding migration tooling across 8 language ecosystems (2026-03-27). These apply to any
 project replacing programmatic DDL (`AutoMigrate`, `create_all`, `EnsureCreated`, `SchemaUtils.create`)

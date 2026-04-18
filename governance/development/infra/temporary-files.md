@@ -651,7 +651,7 @@ local-temp/temp-analysis.json
 local-temp/scratch-notes.txt
 ```
 
-## PASS: When This Applies
+## ✅ When This Applies
 
 Use these directories when:
 
@@ -662,7 +662,7 @@ Use these directories when:
 - Any file that is **not meant to be committed** to version control
 - Files intended for immediate review/use only
 
-## FAIL: When NOT to Use These Directories
+## ❌ When NOT to Use These Directories
 
 Do NOT use these directories for:
 
@@ -724,7 +724,7 @@ Agents creating miscellaneous temporary files should:
 3. Clean up files after use (when appropriate)
 4. Document the purpose of temporary files if they're long-lived
 
-## ️ Directory Status
+## ⚠️ Directory Status
 
 Both directories are **gitignored** (not tracked by version control):
 
@@ -759,7 +759,7 @@ The rule includes "unless specified otherwise by other governance/conventions":
 - Task-specific requirements may specify different locations
 - User instructions may explicitly request different locations
 
-## Related Conventions
+## 🔗 Related Conventions
 
 - [File Naming Convention](../../conventions/structure/file-naming.md) - For permanent documentation files
 - [AI Agents Convention](../agents/ai-agents.md) - For agent design and tool access

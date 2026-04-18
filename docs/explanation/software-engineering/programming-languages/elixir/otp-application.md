@@ -32,11 +32,11 @@ Applications are the fundamental unit of code organization in Elixir/OTP. An app
 
 **Key Benefits**:
 
-- 📦 **Modularity**: Self-contained units of functionality
-- 🔄 **Lifecycle**: Controlled start/stop behavior
-- ⚙️ **Configuration**: Environment-based configuration
-- 📚 **Dependencies**: Explicit dependency management
-- 🎯 **Packaging**: Deployable as releases
+- **Modularity**: Self-contained units of functionality
+- **Lifecycle**: Controlled start/stop behavior
+- **Configuration**: Environment-based configuration
+- **Dependencies**: Explicit dependency management
+- **Packaging**: Deployable as releases
 
 ## Quick Reference
 

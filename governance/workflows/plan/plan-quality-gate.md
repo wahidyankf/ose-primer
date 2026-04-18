@@ -204,9 +204,9 @@ Report final status and summary.
 
 ## Termination Criteria
 
-- PASS: **Success** (`pass`): Zero findings of ANY confidence level (HIGH, MEDIUM, MINOR) on **two consecutive** validations (consecutive pass requirement)
+- **Success** (`pass`): Zero findings of ANY confidence level (HIGH, MEDIUM, MINOR) on **two consecutive** validations (consecutive pass requirement)
 - **Partial** (`partial`): Any findings remain after max-iterations cycles
-- FAIL: **Failure** (`fail`): Checker or fixer encountered technical errors
+- **Failure** (`fail`): Checker or fixer encountered technical errors
 
 ## Example Usage
 
@@ -355,12 +355,12 @@ This workflow ensures plan quality and implementation readiness through iterativ
 
 ## Principles Implemented/Respected
 
-- PASS: **Explicit Over Implicit**: All steps, conditions, and termination criteria are explicit
-- PASS: **Automation Over Manual**: Fully automated validation and fixing without human intervention
-- PASS: **Simplicity Over Complexity**: Clear linear flow with loop control
-- PASS: **Accessibility First**: Generates human-readable audit reports
-- PASS: **Progressive Disclosure**: Can run with different scopes and iteration limits
-- PASS: **No Time Estimates**: Focus on quality outcomes, not duration
+- **Explicit Over Implicit**: All steps, conditions, and termination criteria are explicit
+- **Automation Over Manual**: Fully automated validation and fixing without human intervention
+- **Simplicity Over Complexity**: Clear linear flow with loop control
+- **Accessibility First**: Generates human-readable audit reports
+- **Progressive Disclosure**: Can run with different scopes and iteration limits
+- **No Time Estimates**: Focus on quality outcomes, not duration
 
 ## Conventions Implemented/Respected
 

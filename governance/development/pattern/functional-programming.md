@@ -37,7 +37,7 @@ This practice implements/respects the following conventions:
 
 - **[Implementation Workflow](../workflow/implementation.md)**: Functional patterns introduced in "Make it Right" stage after functionality works. Start simple, refactor to functional style, then optimize if needed.
 
-## Overview
+## 📋 Overview
 
 Functional programming in TypeScript/JavaScript emphasizes:
 
@@ -48,7 +48,7 @@ Functional programming in TypeScript/JavaScript emphasizes:
 
 This approach makes code more predictable, testable, and maintainable - especially important for Shariah-compliant business logic that must be verifiable and auditable.
 
-## Immutability Patterns
+## 🔒 Immutability Patterns
 
 ### Use const by Default
 
@@ -338,7 +338,7 @@ apply10Percent(100); // 90
 apply25Percent(100); // 75
 ```
 
-## Avoiding Common Pitfalls
+## ❌ Avoiding Common Pitfalls
 
 ### Don't Mutate Function Arguments
 
@@ -700,7 +700,7 @@ describe("calculateZakat", () => {
 4. **Test coverage**: Ensure tests before refactoring
 5. **Document decisions**: Note why certain code remains imperative
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Immutability Over Mutability](../../principles/software-engineering/immutability.md) - WHY immutability matters
 - [Pure Functions Over Side Effects](../../principles/software-engineering/pure-functions.md) - WHY pure functions matter

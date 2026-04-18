@@ -15,7 +15,7 @@ updated: 2026-03-06
 
 Git hooks, GitHub Actions workflows, Nx build system, and development workflow for the Open Sharia Enterprise platform.
 
-## CI/CD Pipeline Overview
+## 📋 CI/CD Pipeline Overview
 
 The platform uses a multi-layered quality assurance strategy combining local git hooks, GitHub Actions workflows (CI), and Nx caching. All continuous integration is handled through GitHub Actions.
 
@@ -92,7 +92,7 @@ graph TB
     style VERCEL fill:#e76f51,stroke:#9d0208,color:#ffffff
 ```
 
-## Git Hooks (Local Quality Gates)
+## ✅ Git Hooks (Local Quality Gates)
 
 ### Pre-commit Hook
 

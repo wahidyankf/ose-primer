@@ -50,7 +50,7 @@ This convention establishes Mermaid diagrams as the primary visualization format
 - **Interactive diagram features** - Platform-specific interactivity (zoom, pan) is implementation detail
 - **Diagram export formats** - Exporting Mermaid to PNG, SVG, PDF (tool-specific, not repository standard)
 
-## The Core Principle
+## 🎯 The Core Principle
 
 **Mermaid diagrams are the primary and preferred format for all markdown files** in this repository, both inside and outside the `docs/` directory.
 
@@ -86,7 +86,7 @@ ASCII art is now **optional** and only recommended for rare edge cases:
 
 **In practice**: Most users will view markdown files through GitHub or modern text editors, all of which support Mermaid.
 
-## Mermaid Diagrams: Primary Format for All Markdown Files
+## 🏗️ Mermaid Diagrams: Primary Format for All Markdown Files
 
 ### When to Use
 
@@ -581,7 +581,7 @@ When creating Mermaid diagrams:
 - [Coblis Color Blindness Simulator](https://www.color-blindness.com/coblis-color-blindness-simulator/) - Test diagrams for accessibility
 - [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/) - Verify WCAG compliance
 
-## ASCII Art: Optional Fallback
+## 📝 ASCII Art: Optional Fallback
 
 ### When to Use
 
@@ -1004,7 +1004,7 @@ With widespread Mermaid support, there's no reason to convert Mermaid diagrams t
 2. Updating your editor/viewer to support Mermaid
 3. Only in extreme edge cases: create an ASCII fallback
 
-## Verification Checklist
+## ✅ Verification Checklist
 
 Before committing documentation with diagrams:
 
@@ -1034,7 +1034,7 @@ Before committing documentation with diagrams:
 - [ ] Diagram serves the documentation purpose
 - [ ] Vertical orientation preferred (horizontal only if clarity requires it)
 
-## Common Mermaid Syntax Errors
+## ⚠️ Common Mermaid Syntax Errors
 
 This section documents critical Mermaid syntax rules discovered through debugging production diagrams. These errors cause "syntax error in text" or rendering failures.
 

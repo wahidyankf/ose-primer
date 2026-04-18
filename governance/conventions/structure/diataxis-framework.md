@@ -60,7 +60,7 @@ Problem-oriented    │ HOW-TO GUIDES      │ REFERENCE    │
 
 Each category serves a different purpose and addresses different user needs.
 
-## The Four Categories
+## 🗂️ The Four Categories
 
 ### Tutorials (Learning-Oriented)
 
@@ -189,7 +189,7 @@ Each category serves a different purpose and addresses different user needs.
 3. **Completeness** - Framework reveals gaps in coverage
 4. **Onboarding** - New contributors understand documentation structure
 
-## ️ How Diátaxis is Implemented
+## 🏗️ How Diátaxis is Implemented
 
 ### Directory Structure
 
@@ -244,7 +244,7 @@ updated: YYYY-MM-DD
 ---
 ```
 
-## Choosing the Right Category
+## 🎯 Choosing the Right Category
 
 When creating new documentation, ask:
 
@@ -269,7 +269,7 @@ Start here
         └─ Need context/reasoning? → Explanation
 ```
 
-## Common Mistakes to Avoid
+## ⚠️ Common Mistakes to Avoid
 
 ### FAIL: Mixing Categories
 

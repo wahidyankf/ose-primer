@@ -50,27 +50,27 @@ Workflows define:
 
 ## What Workflows Are NOT
 
-- FAIL: **Not a replacement for agents** - Workflows orchestrate, agents execute
-- FAIL: **Not ad-hoc scripts** - Workflows are documented, validated, reusable processes
-- FAIL: **Not project plans** - Plans are strategic documents, workflows are executable processes
-- FAIL: **Not a new conceptual layer violating principles** - Workflows respect all layers above them
+- **Not a replacement for agents** - Workflows orchestrate, agents execute
+- **Not ad-hoc scripts** - Workflows are documented, validated, reusable processes
+- **Not project plans** - Plans are strategic documents, workflows are executable processes
+- **Not a new conceptual layer violating principles** - Workflows respect all layers above them
 
 ## When to Create a Workflow
 
 Create a workflow when:
 
-- PASS: A task requires **2 or more agents in sequence**
-- PASS: The same sequence is **repeated multiple times**
-- PASS: The process has **conditional logic** (if X, then Y)
-- PASS: Steps need to run in **parallel** for efficiency
-- PASS: **Human approval** is required at specific checkpoints
-- PASS: **Outputs from one step** feed into another step
+- A task requires **2 or more agents in sequence**
+- The same sequence is **repeated multiple times**
+- The process has **conditional logic** (if X, then Y)
+- Steps need to run in **parallel** for efficiency
+- **Human approval** is required at specific checkpoints
+- **Outputs from one step** feed into another step
 
 Don't create a workflow when:
 
-- FAIL: A single agent can handle the task
-- FAIL: The sequence is one-time only (use ad-hoc approach)
-- FAIL: The logic is too complex (break into smaller workflows)
+- A single agent can handle the task
+- The sequence is one-time only (use ad-hoc approach)
+- The logic is too complex (break into smaller workflows)
 
 ## Workflow Structure
 
@@ -125,9 +125,9 @@ Description of what this step does.
 
 ## Termination Criteria
 
-- PASS: **Success**: Conditions for successful completion
+- **Success**: Conditions for successful completion
 - **Partial**: Conditions for partial success
-- FAIL: **Failure**: Conditions for failure
+- **Failure**: Conditions for failure
 
 ## Example Usage
 
@@ -365,12 +365,12 @@ Common patterns:
 
 Workflows must be validated before execution:
 
-- PASS: **Frontmatter schema**: All required fields present
-- PASS: **Agent references**: All agents exist in `.claude/agents/` (primary) or `.opencode/agent/` (secondary)
-- PASS: **Input/output types**: Valid type declarations
-- PASS: **Step dependencies**: No circular dependencies
-- PASS: **State references**: All references resolve
-- PASS: **File naming**: Plain name in correct subdirectory of `governance/workflows/`
+- **Frontmatter schema**: All required fields present
+- **Agent references**: All agents exist in `.claude/agents/` (primary) or `.opencode/agent/` (secondary)
+- **Input/output types**: Valid type declarations
+- **Step dependencies**: No circular dependencies
+- **State references**: All references resolve
+- **File naming**: Plain name in correct subdirectory of `governance/workflows/`
 
 Validation performed by `workflow-validator` (future agent).
 
@@ -796,9 +796,9 @@ subagent types, it falls back to executing workflow logic directly.
 
 ## Termination Criteria
 
-- PASS: Success: Zero threshold-level findings (based on mode)
+- Success: Zero threshold-level findings (based on mode)
 - Partial: Findings remain after max-iterations
-- FAIL: Failure: Technical errors
+- Failure: Technical errors
 ```
 
 ## Documentation Requirements
@@ -844,12 +844,12 @@ Workflows naturally consume more tokens than single agent invocations because th
 
 This convention respects:
 
-- PASS: **Explicit Over Implicit**: All workflow logic is visible in markdown
-- PASS: **Automation Over Manual**: Workflows automate complex multi-agent tasks
-- PASS: **Simplicity Over Complexity**: Structured markdown, not complex DSL
-- PASS: **Progressive Disclosure**: Simple workflows stay simple, complex is possible
-- PASS: **Accessibility First**: Human-readable format, clear documentation
-- PASS: **No Time Estimates**: Focus on what/how, not duration
+- **Explicit Over Implicit**: All workflow logic is visible in markdown
+- **Automation Over Manual**: Workflows automate complex multi-agent tasks
+- **Simplicity Over Complexity**: Structured markdown, not complex DSL
+- **Progressive Disclosure**: Simple workflows stay simple, complex is possible
+- **Accessibility First**: Human-readable format, clear documentation
+- **No Time Estimates**: Focus on what/how, not duration
 
 ## Conventions Implemented/Respected
 

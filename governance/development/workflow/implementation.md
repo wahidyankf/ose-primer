@@ -20,7 +20,7 @@ updated: 2026-03-28
 
 **Make it work, make it right, make it fast** - a three-stage development workflow that prioritizes functionality first, quality second, and optimization last (only when proven necessary).
 
-## Workflow Overview
+## 📋 Workflow Overview
 
 The implementation workflow follows three sequential stages:
 
@@ -74,7 +74,7 @@ This practice implements/respects the following conventions:
 > "Premature optimization is the root of all evil (or at least most of it) in programming."
 > — Donald Knuth, "The Art of Computer Programming"
 
-## How It Applies
+## 🔄 How It Applies
 
 ### Stage 1: Make It Work
 
@@ -673,7 +673,7 @@ Agents must practice goal-driven execution by:
 
 This practice enables agents to work more independently by having clear, objective measures of success rather than needing constant clarification on "is this right?"
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
 ### Premature Optimization
 
@@ -741,7 +741,7 @@ FAIL: **Problem**: Guessing which parts are slow.
 
 **Why it's bad**: Optimizing the wrong thing. Real bottleneck remains unoptimized.
 
-## Best Practices
+## ✅ Best Practices
 
 ### 1. Always Start Simple
 
@@ -930,7 +930,7 @@ function processVideoFrame(frame: Frame): ProcessedFrame {
 - [JavaScript Performance](https://developer.mozilla.org/en-US/docs/Web/Performance) - MDN Web Docs
 - [Web Performance Optimization](https://web.dev/fast/) - Google Web Fundamentals
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md) - Start simple principle
 - [Root Cause Orientation](../../principles/general/root-cause-orientation.md) - Surgical changes implement the minimal impact practice from this principle

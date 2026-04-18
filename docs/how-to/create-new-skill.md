@@ -14,13 +14,13 @@ updated: 2026-03-06
 
 This guide explains how to create a new Skill in `.claude/skills/` for Claude Code's Skills auto-loading feature.
 
-## Prerequisites
+## 📋 Prerequisites
 
 - Familiarity with [AI Agents Convention](../../governance/development/agents/ai-agents.md) (Skills field requirements)
 - Understanding of [Repository Architecture](../../governance/repository-governance-architecture.md) (Skills as Layer 2 delivery infrastructure)
 - Review existing Skills in `.claude/skills/` for reference
 
-## When to Create a Skill
+## 🎯 When to Create a Skill
 
 Create a new Skill when you need to:
 
@@ -333,7 +333,7 @@ skills: [domain__your-skill-name] # Add your Skill here
 
 **Why**: Auto-loading behavior is critical. Untested Skills may not load when needed or may load when irrelevant.
 
-## Examples
+## 💡 Examples
 
 ### Example 1: Simple Workflow Skill (Single-File)
 
@@ -449,7 +449,7 @@ wow__understanding-repository-architecture/
 - [Content Quality Principles](../../governance/conventions/writing/quality.md) - Quality standards
 - [Skills Directory README](./README.md) - Skills overview and index
 
-## Related How-To Guides
+## 🔗 Related How-To Guides
 
 - [How to Add a New App](./add-new-app.md) - Creating apps that use Skills-powered agents
 - [AI Agents Convention](../../governance/development/agents/ai-agents.md) - Creating agents that reference Skills

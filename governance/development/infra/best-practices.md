@@ -16,7 +16,7 @@ Provide actionable guidance for:
 - Build artifact management
 - Development infrastructure patterns
 
-## Best Practices
+## ✅ Best Practices
 
 ### Practice 1: Use Designated Temporary Directories
 
@@ -337,7 +337,7 @@ local-temp/temp-final-v2.txt
 - Prevents accidental deletion of important data
 - Documents retention policies
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Temporary Files Convention](./temporary-files.md) - Complete temporary file standards
 - [Acceptance Criteria Convention](./acceptance-criteria.md) - Gherkin acceptance criteria guide

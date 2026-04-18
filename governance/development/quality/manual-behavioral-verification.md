@@ -154,9 +154,9 @@ Manual verification does **not** replace automated tests. The relationship is co
 
 A feature is not complete until **both** automated tests pass **and** manual verification confirms the expected behavior.
 
-## Examples
+## 📋 Examples
 
-### PASS: Complete verification workflow
+### ✅ Complete verification workflow
 
 ```
 1. Implement the feature (code changes)
@@ -169,7 +169,7 @@ A feature is not complete until **both** automated tests pass **and** manual ver
 8. Declare the feature complete
 ```
 
-### FAIL: Skipping manual verification
+### ❌ Skipping manual verification
 
 ```
 1. Implement the feature
@@ -179,7 +179,7 @@ A feature is not complete until **both** automated tests pass **and** manual ver
    [No manual verification -- visual regression ships to production]
 ```
 
-### FAIL: Manual verification without automated tests
+### ❌ Manual verification without automated tests
 
 ```
 1. Implement the feature
@@ -209,7 +209,7 @@ It does not apply to:
 - **curl**: Available via Bash for API verification
 - **jq**: Available via Bash for JSON response inspection
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Three-Level Testing Standard](./three-level-testing-standard.md) -- Automated testing architecture that manual verification complements
 - [Code Quality Convention](./code.md) -- Automated quality gates (typecheck, lint, test:quick)

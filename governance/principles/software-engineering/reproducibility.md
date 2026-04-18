@@ -75,11 +75,11 @@ This principle serves the [Open Sharia Enterprise Vision](../../vision/open-shar
 
 **Apply from day one for**:
 
-- PASS: Runtime versions (Node.js, npm, Python, Java)
-- PASS: Dependency versions (package-lock.json, yarn.lock)
-- PASS: Build tool versions (webpack, TypeScript)
-- PASS: Development tools (linters, formatters)
-- PASS: Environment configuration (env vars, config files)
+- Runtime versions (Node.js, npm, Python, Java)
+- Dependency versions (package-lock.json, yarn.lock)
+- Build tool versions (webpack, TypeScript)
+- Development tools (linters, formatters)
+- Environment configuration (env vars, config files)
 
 **Acceptable variance for**:
 
@@ -93,7 +93,7 @@ This principle serves the [Open Sharia Enterprise Vision](../../vision/open-shar
 
 **Context**: Ensuring consistent Node.js and npm versions.
 
-PASS: **Reproducible (Our Approach)**:
+✅ **Reproducible (Our Approach)**:
 
 ```json
 // package.json
@@ -113,10 +113,10 @@ PASS: **Reproducible (Our Approach)**:
 - CI/CD uses same versions
 - No manual version management needed
 
-FAIL: **Non-reproducible (Avoid)**:
+❌ **Non-reproducible (Avoid)**:
 
 ```bash
-# FAIL: Just use whatever Node.js you have installed
+# Just use whatever Node.js you have installed
 node --version  # Developer A: v20.x
 node --version  # Developer B: v22.x
 node --version  # CI: v23.x
@@ -130,7 +130,7 @@ node --version  # CI: v23.x
 
 **Context**: Ensuring identical dependency trees.
 
-PASS: **Reproducible (Required)**:
+✅ **Reproducible (Required)**:
 
 ```bash
 # Install from lockfile - exact versions
@@ -143,13 +143,13 @@ git commit -m "chore: update dependencies"
 
 **Why this works**: `package-lock.json` locks exact versions of all dependencies and sub-dependencies. `npm ci` installs exactly what's in lockfile.
 
-FAIL: **Non-reproducible (Avoid)**:
+❌ **Non-reproducible (Avoid)**:
 
 ```bash
-# FAIL: Install from package.json - floating versions
+# Install from package.json - floating versions
 npm install  # Gets latest within semver range
 
-# FAIL: Lockfile gitignored
+# Lockfile gitignored
 echo "package-lock.json" >> .gitignore
 ```
 
@@ -163,7 +163,7 @@ echo "package-lock.json" >> .gitignore
 
 **Context**: Specifying dependency versions in package.json.
 
-PASS: **Reproducible (Recommended)**:
+✅ **Reproducible (Recommended)**:
 
 ```json
 {
@@ -193,7 +193,7 @@ PASS: **Reproducible (Recommended)**:
 
 **Why this is acceptable**: With `package-lock.json` committed, everyone gets same version. `^` allows patch updates when you run `npm update`.
 
-FAIL: **Non-reproducible (Avoid)**:
+❌ **Non-reproducible (Avoid)**:
 
 ```json
 {
@@ -210,7 +210,7 @@ FAIL: **Non-reproducible (Avoid)**:
 
 **Context**: Managing environment variables.
 
-PASS: **Reproducible (Best Practice)**:
+✅ **Reproducible (Best Practice)**:
 
 ```bash
 # .env.example (committed to git)
@@ -239,7 +239,7 @@ cp .env.example .env
 - Secrets stay in gitignored `.env`
 - Everyone knows what config is needed
 
-FAIL: **Non-reproducible (Avoid)**:
+❌ **Non-reproducible (Avoid)**:
 
 ```bash
 # No example file
@@ -253,7 +253,7 @@ FAIL: **Non-reproducible (Avoid)**:
 
 **Context**: Applications with multiple services (database, cache, queue).
 
-PASS: **Reproducible (Excellent for complex setups)**:
+✅ **Reproducible (Excellent for complex setups)**:
 
 ```yaml
 # docker-compose.yml
@@ -300,7 +300,7 @@ docker-compose up
 
 **Context**: Onboarding new contributors.
 
-PASS: **Reproducible (Required)**:
+✅ **Reproducible (Required)**:
 
 ```markdown
 ## Environment Setup
@@ -317,7 +317,7 @@ Expected result: Application running at http://localhost:3000
 
 **Why this works**: Step-by-step instructions. Anyone can follow. Clear success criteria.
 
-FAIL: **Non-reproducible (Avoid)**:
+❌ **Non-reproducible (Avoid)**:
 
 ```markdown
 ## Setup
@@ -327,29 +327,29 @@ Install dependencies and run it.
 
 **Why this fails**: No specifics. Assumes too much knowledge. Leaves room for errors.
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
 ### "Works on My Machine"
 
-FAIL: **Problem**: Code works locally but fails in CI/production.
+❌ **Problem**: Code works locally but fails in CI/production.
 
 ```bash
 # Developer's machine
 node --version  # v24.13.1 (local)
-npm test        # PASS: All pass
+npm test        # All pass
 
 # CI server
 node --version  # v20.x (different)
-npm test        # FAIL: Failures
+npm test        # Failures
 ```
 
 **Why it's bad**: Different environments = different behavior. Wastes time debugging environment instead of code.
 
-PASS: **Solution**: Use Volta to pin versions across all environments.
+✅ **Solution**: Use Volta to pin versions across all environments.
 
 ### Floating Dependencies
 
-FAIL: **Problem**: Different dependency versions on each install.
+❌ **Problem**: Different dependency versions on each install.
 
 ```json
 // package.json
@@ -367,11 +367,11 @@ FAIL: **Problem**: Different dependency versions on each install.
 
 **Why it's bad**: Non-deterministic. Builds differ. Hard to debug.
 
-PASS: **Solution**: Commit `package-lock.json`. Use `npm ci` in CI.
+✅ **Solution**: Commit `package-lock.json`. Use `npm ci` in CI.
 
 ### Undocumented System Dependencies
 
-FAIL: **Problem**: Code requires specific system packages but doesn't document them.
+❌ **Problem**: Code requires specific system packages but doesn't document them.
 
 ```typescript
 // Uses native crypto library
@@ -384,7 +384,7 @@ import crypto from "crypto";
 
 **Why it's bad**: Contributors waste time discovering hidden dependencies.
 
-PASS: **Solution**: Document system dependencies in README.
+✅ **Solution**: Document system dependencies in README.
 
 ```markdown
 ## System Requirements
@@ -395,7 +395,7 @@ PASS: **Solution**: Document system dependencies in README.
 
 ### Manual Environment Setup
 
-FAIL: **Problem**: Complex manual steps required.
+❌ **Problem**: Complex manual steps required.
 
 ```bash
 # Undocumented tribal knowledge
@@ -410,7 +410,7 @@ FAIL: **Problem**: Complex manual steps required.
 
 **Why it's bad**: High barrier to contribution. Knowledge silos.
 
-PASS: **Solution**: Automate with scripts or containers.
+✅ **Solution**: Automate with scripts or containers.
 
 ```bash
 # setup.sh
@@ -419,7 +419,7 @@ PASS: **Solution**: Automate with scripts or containers.
 ./scripts/seed-database.sh
 ```
 
-## PASS: Best Practices
+## ✅ Best Practices
 
 ### 1. Pin Runtime Versions
 

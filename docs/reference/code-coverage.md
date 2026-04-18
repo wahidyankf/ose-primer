@@ -17,7 +17,7 @@ updated: 2026-03-22
 How code coverage is measured locally via `rhino-cli`, uploaded to Codecov,
 and why the two can differ.
 
-## Coverage Algorithm
+## 📋 Coverage Algorithm
 
 All projects use `rhino-cli test-coverage validate` which implements
 Codecov's line-based algorithm:
@@ -53,7 +53,7 @@ Partial lines count as NOT covered, matching Codecov's badge calculation.
 | demo-be-fsharp-giraffe | >= 90%    | F#/Giraffe backend API                        |
 | Demo frontends         | >= 70%    | API/auth/query layers fully mocked by design  |
 
-## Per-Project Coverage Details
+## 📊 Per-Project Coverage Details
 
 ### Go Projects
 
@@ -261,7 +261,7 @@ flags:
     carryforward: true
 ```
 
-## Troubleshooting
+## 🔬 Troubleshooting
 
 ### Codecov shows lower coverage than local
 
@@ -282,7 +282,7 @@ runtime exclusion without modifying the coverage file. Note: glob matching
 may not work with Go's full module paths in `cover.out` — use `grep -v`
 for Go projects instead.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md) - Coverage thresholds and testing levels
 - [Project Dependency Graph](./project-dependency-graph.md) - Which projects depend on rhino-cli

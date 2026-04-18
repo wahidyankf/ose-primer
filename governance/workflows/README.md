@@ -22,12 +22,12 @@ updated: 2026-03-28
 
 Workflows are **composed processes** that:
 
-- 🔄 Orchestrate multiple AI agents in sequence
-- 🎯 Have clear goals and termination criteria
-- 📊 Manage state between steps
-- ⚡ Support parallel, sequential, and conditional execution
-- 👤 Include human approval checkpoints
-- ♻️ Are reusable and composable
+- Orchestrate multiple AI agents in sequence
+- Have clear goals and termination criteria
+- Manage state between steps
+- Support parallel, sequential, and conditional execution
+- Include human approval checkpoints
+- Are reusable and composable
 
 **Key insight**: Workflows are to Agents what Agents are to Tools - a composition layer.
 
@@ -211,10 +211,10 @@ Enables branching logic and human decision points.
 
 Workflows pause for user approval at critical points:
 
-- 🔍 **Review audit reports** - Before applying fixes
-- ✅ **Approve deployments** - Before pushing to production
-- 🎯 **Choose approach** - When multiple valid options exist
-- 🛑 **Handle errors** - When automated recovery is insufficient
+- **Review audit reports** - Before applying fixes
+- **Approve deployments** - Before pushing to production
+- **Choose approach** - When multiple valid options exist
+- **Handle errors** - When automated recovery is insufficient
 
 Human checkpoints use the `AskUserQuestion` tool.
 
@@ -258,13 +258,13 @@ See [Workflow Pattern Convention](./meta/workflow-identifier.md) for complete re
 
 All workflows should be validated for:
 
-- ✅ **Frontmatter completeness** - All required fields present
-- ✅ **Agent existence** - All referenced agents exist in `.claude/agents/` (primary) or `.opencode/agent/` (secondary)
-- ✅ **Type correctness** - Inputs/outputs use valid types
-- ✅ **Dependency acyclicity** - No circular step dependencies
-- ✅ **Reference resolution** - All `{stepN.outputs}` references resolve
-- ✅ **File naming** - Plain name in correct subdirectory of `governance/workflows/`
-- ✅ **Documentation quality** - Clear purpose, examples, termination criteria
+- **Frontmatter completeness** - All required fields present
+- **Agent existence** - All referenced agents exist in `.claude/agents/` (primary) or `.opencode/agent/` (secondary)
+- **Type correctness** - Inputs/outputs use valid types
+- **Dependency acyclicity** - No circular step dependencies
+- **Reference resolution** - All `{stepN.outputs}` references resolve
+- **File naming** - Plain name in correct subdirectory of `governance/workflows/`
+- **Documentation quality** - Clear purpose, examples, termination criteria
 
 Future: `workflow-validator` agent will automate this validation.
 
@@ -282,12 +282,12 @@ Track workflow performance:
 
 All workflows must respect core principles:
 
-- ✅ **Explicit Over Implicit** - All steps, dependencies, conditions visible
-- ✅ **Automation Over Manual** - Automate complex multi-step processes
-- ✅ **Simplicity Over Complexity** - Break complex workflows into smaller ones
-- ✅ **Progressive Disclosure** - Simple workflows stay simple
-- ✅ **Accessibility First** - Human-readable format, clear documentation
-- ✅ **No Time Estimates** - Define WHAT and HOW, not WHEN or HOW LONG
+- **Explicit Over Implicit** - All steps, dependencies, conditions visible
+- **Automation Over Manual** - Automate complex multi-step processes
+- **Simplicity Over Complexity** - Break complex workflows into smaller ones
+- **Progressive Disclosure** - Simple workflows stay simple
+- **Accessibility First** - Human-readable format, clear documentation
+- **No Time Estimates** - Define WHAT and HOW, not WHEN or HOW LONG
 
 ## Related Documentation
 
@@ -317,13 +317,13 @@ All workflows must respect core principles:
 
 Planned workflow features:
 
-- 🤖 **Workflow Executor Agent** - Automate workflow execution
-- 📊 **Workflow Visualization** - Auto-generate diagrams from definitions
-- 🧪 **Workflow Testing** - Dry-run mode, validation suite
-- 📈 **Metrics Dashboard** - Track workflow performance
-- 🔄 **Workflow Composition** - Nest workflows within workflows
-- ⏱️ **Timeouts and Retries** - Handle long-running or failing steps
-- 🔙 **Rollback Support** - Undo steps on failure
+- **Workflow Executor Agent** - Automate workflow execution
+- **Workflow Visualization** - Auto-generate diagrams from definitions
+- **Workflow Testing** - Dry-run mode, validation suite
+- **Metrics Dashboard** - Track workflow performance
+- **Workflow Composition** - Nest workflows within workflows
+- **Timeouts and Retries** - Handle long-running or failing steps
+- **Rollback Support** - Undo steps on failure
 
 ## Questions?
 

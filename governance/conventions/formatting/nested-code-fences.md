@@ -55,7 +55,7 @@ This convention applies to markdown content in:
 
 **Universal Application**: Any markdown file that shows "how to write markdown" needs nested code fences.
 
-## The Problem: Orphaned Closing Fences
+## ⚠️ The Problem: Orphaned Closing Fences
 
 When documenting markdown structure (showing "how to write markdown"), we need to display code fences within code fences. Incorrect nesting breaks rendering:
 
@@ -83,7 +83,7 @@ const x = 5;
 
 **Why it breaks**: Markdown parser sees the orphaned ``` and treats remaining content as literal code, not formatted markdown.
 
-## The Solution: Fence Depth Rules
+## 🎯 The Solution: Fence Depth Rules
 
 ### Rule 1: Outer Fence Uses 4 Backticks
 
@@ -127,7 +127,7 @@ const x = 5;
 - 4-backtick open → 4-backtick close (outer pair)
 - 3-backtick open → 3-backtick close (inner pair)
 
-## Complete Nesting Examples
+## 📖 Complete Nesting Examples
 
 ### Example 1: Single Code Block in Markdown
 
@@ -335,7 +335,7 @@ code here
 
 **Fix**: Each fence pair must use same depth (3-3 or 4-4, not 3-4).
 
-## Validation Checklist
+## ✅ Validation Checklist
 
 Before committing markdown with nested fences:
 

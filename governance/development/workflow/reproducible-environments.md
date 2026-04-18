@@ -38,7 +38,7 @@ This practice implements/respects the following conventions:
 
 - **[Trunk Based Development](./trunk-based-development.md)**: Reproducible CI/CD environments ensure consistent validation of commits to main branch. No environment-specific failures.
 
-## Overview
+## 📋 Overview
 
 Reproducible environments require:
 
@@ -48,7 +48,7 @@ Reproducible environments require:
 4. **Container definitions**: Docker/docker-compose for complex setups
 5. **Documentation**: Clear setup instructions for onboarding
 
-## Runtime Version Management with Volta
+## ⚙️ Runtime Version Management with Volta
 
 ### Why Volta
 
@@ -351,7 +351,7 @@ export function validateEnvironment(): void {
 validateEnvironment();
 ```
 
-## Containerization for Complex Environments
+## 🐳 Containerization for Complex Environments
 
 ### Docker Compose for Local Development
 
@@ -724,7 +724,7 @@ verify();
 - All developers resolve imports identically
 - TypeScript compilation deterministic
 
-## Troubleshooting
+## 🔧 Troubleshooting
 
 ### Common Issues
 
@@ -811,7 +811,7 @@ verify();
    - Provide docker-compose up instructions
    - Document how to access services
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Reproducibility First](../../principles/software-engineering/reproducibility.md) - WHY reproducibility matters
 - [Native-First Toolchain Management](./native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` instead of IaC tools for dev environment setup

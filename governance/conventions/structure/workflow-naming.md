@@ -23,7 +23,7 @@ A uniform, exception-free naming rule gives the repository three concrete guaran
 - **Zero-exception discipline**: Exceptions erode conventions. Once one workflow is allowed a bespoke suffix, reviewers lose the ability to reject the next one on principle alone. Holding every workflow to the same structure keeps the rule teachable in one sentence and cheap to enforce forever.
 - **Semantic clarity**: The suffix immediately communicates the workflow's execution model. A reader sees `*-quality-gate` and knows to expect an iterative maker → checker → fixer loop terminating on zero findings; `*-execution` is a single forward procedure; `*-setup` provisions once and exits. No body scan required.
 
-## The Rule
+## 🎯 The Rule
 
 Every workflow filename (basename without the `.md` extension) MUST match the structure:
 
@@ -82,7 +82,7 @@ This convention applies to:
   - `governance/workflows/README.md` and any per-scope `governance/workflows/<scope>/README.md` index files.
   - Everything under `governance/workflows/meta/` (reference material).
 
-## Enforcement
+## ✅ Enforcement
 
 `repo-rules-checker` MUST run the following audit command as part of every governance pass:
 
@@ -96,7 +96,7 @@ Any non-empty output is a governance violation. Each line printed is a workflow 
 
 The `rhino-cli workflows validate-naming` subcommand wraps this check plus a frontmatter `name:` field consistency check and is wired into Husky pre-push and the CI quality gate.
 
-## Examples
+## 📖 Examples
 
 Current workflows, grouped by type, all conforming to the rule:
 

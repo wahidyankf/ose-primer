@@ -47,7 +47,7 @@ This convention establishes UTC+7 timezone with ISO 8601 format as the standard 
 
 All timestamps in this repository use **UTC+7 (WIB - Western Indonesian Time)** by default with ISO 8601 format.
 
-## Standard Format
+## 🎯 Standard Format
 
 **Format:** `YYYY-MM-DDTHH:MM:SS+07:00`
 
@@ -85,7 +85,7 @@ All timestamps in this repository use **UTC+7 (WIB - Western Indonesian Time)** 
 - **User-facing timestamps** - Use user's local timezone in UI/UX
 - **Database timestamps** - Follow database conventions (usually UTC for storage, convert on display)
 
-## Implementation Examples
+## 📖 Implementation Examples
 
 ### Cache Files
 
@@ -242,7 +242,7 @@ If you have a UTC timestamp and need to convert to WIB:
 - `2025-11-30T15:45:00Z` (UTC) → `2025-11-30T22:45:00+07:00` (WIB)
 - `2025-11-30T00:00:00Z` (UTC) → `2025-11-30T07:00:00+07:00` (WIB)
 
-## Validation
+## ✅ Validation
 
 **Valid timestamps:**
 

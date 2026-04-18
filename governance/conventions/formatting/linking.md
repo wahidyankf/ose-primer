@@ -55,7 +55,7 @@ We use standard markdown link syntax with explicit relative paths to ensure:
 4. **Version Control** - Easier to track changes and validate links in CI/CD
 5. **No Ambiguity** - Full paths prevent confusion when files have similar names
 
-## Link Syntax Standard
+## 🎯 Link Syntax Standard
 
 ### Required Format
 
@@ -90,7 +90,7 @@ Use standard markdown link syntax with relative paths:
    - FAIL: `[[filename|Display Text]]`
    - Reason: GitHub does not render `[[...]]` as links.
 
-## Examples by Location
+## 📖 Examples by Location
 
 ### Linking from Root README (`docs/README.md`)
 
@@ -206,7 +206,7 @@ For links to external resources:
 [GitHub](https://github.com/wahidyankf/ose-public)
 ```
 
-## Nested Directory Linking
+## 🗂️ Nested Directory Linking
 
 Understanding relative paths is crucial when linking from files at different nesting depths. The number of `../` you need depends on how deep your current file is nested.
 
@@ -366,7 +366,7 @@ When creating documentation, verify links by:
 
 **Last Updated**: 2026-03-09
 
-## When to Link Rule References
+## 🔗 When to Link Rule References
 
 When referencing repository rules (visions, principles, conventions, development practices, workflows), use a **two-tier formatting approach**:
 

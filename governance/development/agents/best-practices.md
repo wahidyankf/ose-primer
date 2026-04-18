@@ -16,7 +16,7 @@ Provide actionable guidance for:
 - Testing and validation
 - Documentation standards
 
-## Best Practices
+## ✅ Best Practices
 
 ### Practice 1: Single Responsibility Per Agent
 
@@ -246,7 +246,7 @@ dependencies:
 - Easier troubleshooting
 - Better onboarding
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [AI Agents Convention](./ai-agents.md) - Complete agent development standards
 - [Anti-Patterns](./anti-patterns.md) - Common mistakes to avoid

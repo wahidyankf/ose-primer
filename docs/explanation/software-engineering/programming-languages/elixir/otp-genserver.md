@@ -30,11 +30,11 @@ GenServer is a behavior module for implementing the server side of a client-serv
 
 **Key Benefits**:
 
-- 🎯 **Standardized**: Common interface across all GenServers
-- 🔄 **State Management**: Encapsulated mutable state
-- 🔧 **Lifecycle Hooks**: init, terminate, handle_continue
-- 🚀 **Performance**: Optimized message handling
-- 🛡️ **Supervision**: Works seamlessly with supervisors
+- **Standardized**: Common interface across all GenServers
+- **State Management**: Encapsulated mutable state
+- **Lifecycle Hooks**: init, terminate, handle_continue
+- **Performance**: Optimized message handling
+- **Supervision**: Works seamlessly with supervisors
 
 ## Quick Reference
 

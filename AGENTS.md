@@ -18,7 +18,7 @@
 
 Instructions for AI agents working with this repository via OpenCode.
 
-## Project Overview
+## 🎯 Project Overview
 
 **ose-primer** — repository template for OSE-style polyglot Nx monorepos. Node.js-based, Nx workspace, MIT-licensed.
 

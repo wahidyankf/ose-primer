@@ -31,11 +31,11 @@ Supervisors are processes that monitor other processes (called child processes) 
 
 **Key Benefits**:
 
-- 🛡️ **Fault Tolerance**: Automatic recovery from crashes
-- 🔄 **Self-Healing**: System recovers without manual intervention
-- 📊 **Hierarchical**: Tree structure for organizing processes
-- ⚙️ **Configurable**: Multiple strategies and restart intensities
-- 🎯 **"Let It Crash"**: Embrace failures, rely on supervision
+- **Fault Tolerance**: Automatic recovery from crashes
+- **Self-Healing**: System recovers without manual intervention
+- **Hierarchical**: Tree structure for organizing processes
+- **Configurable**: Multiple strategies and restart intensities
+- **"Let It Crash"**: Embrace failures, rely on supervision
 
 ## Quick Reference
 

@@ -14,7 +14,7 @@ updated: 2026-03-06
 
 C4 Level 3 component diagrams and Level 4 code architecture for the Open Sharia Enterprise platform.
 
-## C4 Level 3: Component Diagrams
+## 🏗️ C4 Level 3: Component Diagrams
 
 Shows the internal components within each container. Components are groupings of related functionality behind a well-defined interface.
 
@@ -110,7 +110,7 @@ graph TB
 - **tRPC API**: Backend API for content retrieval, search, and navigation
 - **Bilingual Support**: Default English with Indonesian content
 
-## C4 Level 4: Code Architecture
+## 📋 C4 Level 4: Code Architecture
 
 Shows implementation details for critical components. Focus on Go CLI tool package structures and key implementation patterns.
 

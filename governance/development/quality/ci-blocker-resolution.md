@@ -40,7 +40,7 @@ This practice implements/respects the following conventions:
 
 - **[Trunk Based Development Convention](../workflow/trunk-based-development.md)**: TBD requires that `main` is always in a releasable state. Preexisting CI failures on `main` violate that requirement. This convention mandates fixing them rather than tolerating them.
 
-## The Rule
+## 📋 The Rule
 
 **When CI is blocked by a preexisting issue, you MUST:**
 
@@ -49,7 +49,7 @@ This practice implements/respects the following conventions:
 3. **Commit the fix separately.** Preexisting fixes go in their own commit with an appropriate conventional commit message (typically `fix(scope):` or `chore(scope):`), separate from your feature work.
 4. **Verify the fix.** Re-run the affected quality gates and confirm they pass before proceeding with your original work.
 
-## Forbidden Actions
+## ❌ Forbidden Actions
 
 The following actions are **explicitly forbidden** as responses to preexisting CI blockers:
 
@@ -152,7 +152,7 @@ fix(project-name): add missing Gherkin step definitions for existing commands
 
 ## Examples
 
-### PASS: Fixing a preexisting blocker
+### ✅ Fixing a preexisting blocker
 
 ```
 Developer: I'm implementing a new feature in demo-fe-ts-nextjs.
@@ -166,7 +166,7 @@ Action:
 4. Continue with demo-fe-ts-nextjs feature work
 ```
 
-### FAIL: Bypassing the blocker
+### ❌ Bypassing the blocker
 
 ```
 Developer: I'm implementing a new feature in demo-fe-ts-nextjs.
@@ -177,7 +177,7 @@ Action: git push --no-verify
 Result: Broken code reaches remote. CI fails for everyone.
 ```
 
-### FAIL: Deferring the fix
+### ❌ Deferring the fix
 
 ```
 Developer: I see the preexisting failure. I'll create a ticket
@@ -188,7 +188,7 @@ Result: Test coverage decreases. The failure is hidden, not fixed.
         The ticket sits in the backlog indefinitely.
 ```
 
-### PASS: Multiple preexisting issues
+### ✅ Multiple preexisting issues
 
 ```
 Developer: I encounter three preexisting issues across two projects.
@@ -215,7 +215,7 @@ It does not apply to:
 - Intentional test removals that are part of a documented refactoring plan (the plan itself must justify the removal)
 - CI infrastructure failures unrelated to code (GitHub Actions outage, runner disk full, network timeout) -- these are operational issues, not code quality issues
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Code Quality Convention](./code.md) -- Quality gates that this convention protects
 - [Git Push Safety Convention](../workflow/git-push-safety.md) -- Per-instance approval for `--no-verify`

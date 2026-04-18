@@ -60,7 +60,7 @@ This convention establishes the canonical directory layout for the `specs/` dire
 - **OpenAPI spec authoring** (covered by contract project documentation)
 - **Test implementation** (covered by [Three-Level Testing Standard](../../development/quality/three-level-testing-standard.md))
 
-## Canonical Path Pattern
+## 🎯 Canonical Path Pattern
 
 ### Gherkin Feature Files
 
@@ -122,7 +122,7 @@ specs/libs/ts-ui/gherkin/dialog/dialog.feature
 specs/libs/golang-commons/gherkin/links/check-links.feature
 ```
 
-## Full Directory Structure
+## 🗂️ Full Directory Structure
 
 The complete `specs/` directory follows this layout:
 
@@ -213,7 +213,7 @@ README files serve as entry points when browsing the specs directory on GitHub, 
 3. Create `gherkin/` directly under the lib name (no layer segment)
 4. Create package subdirectories under `gherkin/` matching the lib's module structure
 
-## Enforcement
+## ✅ Enforcement
 
 ### Automated Validation
 

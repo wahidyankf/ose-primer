@@ -14,7 +14,7 @@ updated: 2026-03-06
 
 Application inventory and C4 Level 2 container diagram for the Open Sharia Enterprise platform.
 
-## Applications Inventory
+## 📋 Applications Inventory
 
 The platform consists of 9 applications across 4 technology stacks:
 
@@ -120,7 +120,7 @@ The platform consists of 9 applications across 4 technology stacks:
 - **Run Command**: `nx run demo-be-e2e:test:e2e`
 - **Location**: `apps/demo-be-e2e/`
 
-## C4 Level 2: Container Diagram
+## 🏗️ C4 Level 2: Container Diagram
 
 Shows the high-level technical building blocks (containers) of the system. In C4 terminology, a "container" is a deployable/executable unit (web app, database, file system, etc.), not a Docker container.
 
@@ -178,7 +178,7 @@ graph TB
     style LIBS fill:#457b9d,stroke:#1d3557,color:#ffffff
 ```
 
-## Application Interactions
+## 🔄 Application Interactions
 
 **Independent Application Suites:**
 

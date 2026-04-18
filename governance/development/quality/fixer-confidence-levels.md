@@ -39,7 +39,7 @@ This practice implements/respects the following conventions:
 
 - **[Timestamp Format Convention](../../conventions/formatting/timestamp.md)**: Fix report filenames use UTC+7 timestamps in format YYYY-MM-DD--HH-MM (hyphen-separated for filesystem compatibility).
 
-## Overview
+## 📋 Overview
 
 ### What This Convention Defines
 
@@ -133,7 +133,7 @@ The three confidence levels (HIGH, MEDIUM, FALSE_POSITIVE) are universal. Each a
 5. **Skips MEDIUM and FALSE_POSITIVE** with explanations
 6. **Generates fix reports** documenting all decisions
 
-## The Three Confidence Levels
+## 🎯 The Three Confidence Levels
 
 ### HIGH_CONFIDENCE → Apply Fix Automatically
 
@@ -363,7 +363,7 @@ Checker Report → Read Finding → Re-execute Validation → Assess Confidence 
 
 **See:** [Repository Validation Methodology Convention](./repository-validation.md) for standard re-validation patterns.
 
-## Confidence Assessment Process
+## ⚙️ Confidence Assessment Process
 
 ### How Fixers Determine Confidence Level
 
@@ -878,7 +878,7 @@ FAIL: All agent files - Frontmatter comment detection
 - Checker accuracy improves over time
 - Trust in automation increases
 
-##  References
+## 🔗 References
 
 ### Fixer Agents Using This Convention
 
@@ -909,7 +909,7 @@ See [AI Agents Index](../../../.claude/agents/README.md) for the complete and cu
 **Infrastructure:**
 - [Temporary Files Convention](../infra/temporary-files.md) - Where to store fix reports (`generated-reports/`)
 
-##  Maintenance
+## 🔧 Maintenance
 
 ### When to Update This Convention
 

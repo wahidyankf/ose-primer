@@ -36,7 +36,7 @@ This practice respects the following conventions:
 
 - **[Content Quality Principles](../../conventions/writing/quality.md)**: Plan documents and lessons files follow active voice, clear structure, and actionable content - not vague notes.
 
-## When to Plan
+## 📋 When to Plan
 
 Enter plan mode for any non-trivial task. A task is non-trivial if it meets any of these criteria:
 
@@ -97,7 +97,7 @@ Offload work to subagents when:
 
 Do not spawn a subagent for simple reads or lookups that take one or two tool calls. The overhead is not worth it for small operations.
 
-## Verification Before Done
+## ✅ Verification Before Done
 
 Never declare a task complete without proving it works.
 
@@ -284,7 +284,7 @@ Add a review section to `local-temp/todo.md` after completing the task. The revi
 
 After any correction, update `local-temp/lessons.md`. This is the direct application of the self-improvement loop to task management.
 
-## Anti-Patterns
+## ❌ Anti-Patterns
 
 ### Pushing Through When Lost
 
@@ -318,7 +318,7 @@ After any correction, update `local-temp/lessons.md`. This is the direct applica
 
 **Fix**: Write rules that name the specific trigger and the specific check. Test the rule against the original failure: "Would this rule have prevented the mistake?"
 
-## References
+## 🔗 References
 
 **Related Principles:**
 

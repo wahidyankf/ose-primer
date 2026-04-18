@@ -14,7 +14,7 @@ updated: 2025-12-24
 
 # Open Sharia Enterprise Vision
 
-## Why We Exist
+## 🎯 Why We Exist
 
 To democratize Shariah-compliant enterprise, making ethical Islamic business solutions accessible to everyone - not just those who can afford proprietary systems or work with established Islamic institutions.
 
@@ -24,7 +24,7 @@ Traditional Islamic enterprise (including finance, commerce, and cooperative bus
 
 We believe profit is halal and necessary for growth. But we also believe the path to profit should be through value creation and transparency, not through monopolistic control or information hiding. By keeping our source code open as long as possible, we create a foundation where anyone can build profitable, ethical businesses that serve the ummah.
 
-## The Problem We Solve
+## 🔍 The Problem We Solve
 
 ### Current State of Islamic Enterprise Technology
 
@@ -56,7 +56,7 @@ We believe profit is halal and necessary for growth. But we also believe the pat
 
 Islamic enterprise principles are universal and accessible to all. Yet the technology to implement them is locked away, creating artificial scarcity where abundance should exist.
 
-## The Change We Seek
+## 🌱 The Change We Seek
 
 We envision a world where:
 
@@ -246,7 +246,7 @@ This vision serves Islamic values and principles in several ways:
 - Word-of-mouth promotion
 - Community support and advocacy
 
-## Success Vision: What the World Looks Like When We Succeed
+## 🏁 Success Vision: What the World Looks Like When We Succeed
 
 ### Technology Landscape
 

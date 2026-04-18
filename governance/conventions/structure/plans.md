@@ -54,7 +54,7 @@ This convention establishes the organizational structure for project planning do
 - **Task tracking** - Covered by the [plan-execution workflow](../../workflows/plan/plan-execution.md) (orchestrated directly by the calling context)
 - **Deployment scheduling** - Covered in deployment conventions
 
-## Overview
+## 📋 Overview
 
 The `plans/` folder serves as the workspace for project planning activities:
 
@@ -65,7 +65,7 @@ The `plans/` folder serves as the workspace for project planning activities:
 
 **Key Distinction**: Plans are temporary working documents that eventually move to `done/` and may be archived, while `docs/` contains permanent documentation that evolves over time.
 
-## ️ Folder Structure
+## 🗂️ Folder Structure
 
 The `plans/` folder is organized into four main components:
 
@@ -139,7 +139,7 @@ When an idea is ready for formal planning:
 3. Remove or check off the idea from `ideas.md`
 4. The idea now has a structured plan with requirements, technical docs, and delivery timeline
 
-## Plan Folder Naming
+## 🎯 Plan Folder Naming
 
 **CRITICAL**: Every plan folder MUST follow this naming pattern:
 
@@ -308,7 +308,7 @@ Plans differ from `docs/` in several important ways:
 | **Longevity**    | Temporary (archived in done/)         | Permanent (evolves over time)        |
 | **Organization** | By project and status                 | By Diátaxis category                 |
 
-## Working with Plans
+## 🔧 Working with Plans
 
 ### Creating Plans
 
@@ -486,7 +486,7 @@ Use the verification tip from the [Linking Convention](../formatting/linking.md#
 - Review past plans to learn from successes and challenges
 - Use completed plans as templates for similar future work
 
-## Examples
+## 📖 Examples
 
 ### Example: Small Plan (Single-File)
 

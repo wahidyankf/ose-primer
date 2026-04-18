@@ -52,7 +52,7 @@ This convention exists to:
 - **Content authorship and writing style** — see [Content Quality Principles](./quality.md) and [Convention Writing Convention](./conventions.md).
 - **Verification methodology itself** — the confidence classifications, source priority tiers, and validation patterns live in [Factual Validation Convention](./factual-validation.md). This convention governs _who does the research_, not _how verification is classified_.
 
-## The Rule
+## 🎯 The Rule
 
 **Any AI agent that needs to gather information from the public web MUST delegate to the `web-research-maker` subagent unless a documented exception applies.**
 
@@ -97,7 +97,7 @@ Skills that describe web verification (for example `docs-validating-factual-accu
 
 Workflows under `governance/workflows/` that include factual verification steps point to this convention at the relevant step rather than duplicating the threshold.
 
-## Examples
+## 📖 Examples
 
 ### Good — a checker delegating multi-page research
 
@@ -131,7 +131,7 @@ Use WebSearch and WebFetch to check the claim, then write the finding.
 
 **Problems:** no threshold, no delegation default, no citation to the convention or the subagent. An author reading this has no guidance on when to delegate and no paper trail justifying the choice either way.
 
-## Validation
+## ✅ Validation
 
 To validate an agent complies with this convention:
 

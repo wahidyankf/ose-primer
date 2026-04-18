@@ -16,13 +16,13 @@ updated: 2026-03-31
 
 This guide shows you how to create a new application in the `apps/` folder of the Nx monorepo.
 
-## Prerequisites
+## 📋 Prerequisites
 
 - Node.js 24.13.1 and npm 11.10.1 (managed by Volta)
 - Nx workspace initialized
 - Understanding of the app you want to create (Next.js, Express API, etc.)
 
-## Steps
+## 🛠️ Steps
 
 ### Step 1: Choose App Name
 
@@ -271,7 +271,7 @@ import { functionName } from "@open-sharia-enterprise/ts-[lib-name]";
 
 TypeScript path mappings are configured in `tsconfig.base.json`.
 
-## Verification Checklist
+## ✅ Verification Checklist
 
 - [ ] App directory created in `apps/`
 - [ ] App name follows `[domain]-[type]` convention
@@ -346,14 +346,14 @@ specs/apps/[domain]/
 
 **Solution**: Ensure `project.json` exists with valid JSON and `name` field matches folder name.
 
-## Next Steps
+## 🚀 Next Steps
 
 - Add tests for your app
 - Configure linting (ESLint)
 - Set up environment variables
 - Add to CI/CD pipeline
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Add New Library](./add-new-lib.md)
 - [Run Nx Commands](./run-nx-commands.md)

@@ -37,7 +37,7 @@ This practice implements/respects the following conventions:
 
 - **[File Naming Convention](../../conventions/structure/file-naming.md)**: Pre-commit hook formats all files matching the repository's file naming patterns without altering the naming structure.
 
-## Overview
+## 📋 Overview
 
 This project enforces code quality through automated tools that run during the development workflow:
 
@@ -116,7 +116,7 @@ npx prettier --write [file-path]
 - Only formats files you're committing
 - Prevents incorrectly formatted code from being committed
 
-## Git Hook Workflow
+## 🪝 Git Hook Workflow
 
 ### Pre-commit Hook
 
@@ -295,7 +295,7 @@ Enumerating objects: 5, done.
 - Catches type errors, lint violations, and test failures before CI/CD
 - Nx caching means repeated checks on unchanged code are near-instant
 
-## Bypassing Hooks (Not Recommended)
+## ⚠️ Bypassing Hooks (Not Recommended)
 
 You can bypass git hooks using `--no-verify`:
 
@@ -604,7 +604,7 @@ language-specific formatters run automatically as part of the pre-commit hook or
 Each formatter uses its language's standard style conventions. No custom configuration is applied
 unless a project-specific config file exists (e.g., `rustfmt.toml`, `pyproject.toml`).
 
-## Best Practices
+## ✅ Best Practices
 
 1. **Trust the Tools**: Let Prettier handle formatting - don't fight it
 2. **Commit Often**: Smaller commits = faster hook execution
@@ -612,7 +612,7 @@ unless a project-specific config file exists (e.g., `rustfmt.toml`, `pyproject.t
 4. **Don't Bypass**: Resist temptation to use `--no-verify`
 5. **Keep Updated**: Run `npm install` after pulling changes to sync hook versions
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Commit Message Convention](../workflow/commit-messages.md) - Detailed commit message rules
 - [No Machine-Specific Information in Commits](./no-machine-specific-commits.md) - Practice prohibiting machine-specific paths and credentials from committed code

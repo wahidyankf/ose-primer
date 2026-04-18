@@ -16,7 +16,7 @@ Provide actionable guidance for:
 - Content preservation during refactoring
 - Quality gate implementation
 
-## Best Practices
+## ✅ Best Practices
 
 ### Practice 1: Automate Quality Checks in Git Hooks
 
@@ -379,7 +379,7 @@ Check alt text.
 
 **See**: [Nx Target Standards](../infra/nx-targets.md) for the full execution model and CI integration rules.
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Code Quality Convention](./code.md) - Automated quality tools and git hooks
 - [Three-Level Testing Standard](./three-level-testing-standard.md) - Mandatory unit/integration/E2E testing architecture and level boundaries for all projects

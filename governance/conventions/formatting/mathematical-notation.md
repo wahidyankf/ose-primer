@@ -88,7 +88,7 @@ LaTeX is plain text, making it:
 - **Searchable** - Full-text search works on formulas
 - **Maintainable** - No binary image files to manage
 
-## LaTeX Syntax
+## 🎯 LaTeX Syntax
 
 ### Inline Math
 
@@ -205,7 +205,7 @@ $
 - **Display math** (standalone): `$$...$$` on separate lines
 - **Multi-line equations**: Always use `$$` with `\begin{aligned}` (NOT `\begin{align}`)
 
-## PASS: Where to Use LaTeX
+## ✅ Where to Use LaTeX
 
 ### Documentation Files in `docs/`
 
@@ -260,7 +260,7 @@ $$
 Where $w_i$ are portfolio weights and $R_i$ are asset returns.
 ```
 
-## FAIL: Where NOT to Use LaTeX
+## ❌ Where NOT to Use LaTeX
 
 ### Code Blocks
 
@@ -327,7 +327,7 @@ financial_formulas:
   wacc: "$WACC = \\frac{E}{V} \\times r_e + \\frac{D}{V} \\times r_d \\times (1 - T_c)$"
 ```
 
-## Common LaTeX Patterns
+## 📖 Common LaTeX Patterns
 
 ### Subscripts and Superscripts
 
@@ -665,7 +665,7 @@ Where:
 - $t$ = time
 - $e$ = Euler's number ($\approx 2.71828$)
 
-## Testing LaTeX Rendering
+## 🧪 Testing LaTeX Rendering
 
 ### On GitHub
 
@@ -911,7 +911,7 @@ $$
 | $\rho$    | `\rho`        | Correlation               |
 | $\lambda$ | `\lambda`     | Lambda, adjustment factor |
 
-## PASS: Validation Checklist
+## ✅ Validation Checklist
 
 When adding or reviewing mathematical notation:
 

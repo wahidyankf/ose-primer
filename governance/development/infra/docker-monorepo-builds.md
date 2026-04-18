@@ -19,7 +19,7 @@ Patterns and pitfalls for building Docker images for individual apps in an npm w
 Workspace symlinks do not survive Docker builds. This document explains why, and shows the
 canonical workaround.
 
-## The Problem: Workspace Symlinks Break Inside Docker
+## ⚠️ The Problem: Workspace Symlinks Break Inside Docker
 
 npm workspaces install shared packages (e.g., `@open-sharia-enterprise/ts-ui-tokens`) as symlinks
 in the root `node_modules/`. When `npm ci` runs inside a Docker build context that only contains
@@ -36,7 +36,7 @@ Docker build context. A naive `COPY . .` from the repo root is insufficient beca
 are created by `npm ci`, which runs after `COPY` — and `npm ci` in a standalone container does not
 know about the workspace siblings.
 
-## The Pattern: Direct node_modules Injection
+## ✅ The Pattern: Direct node_modules Injection
 
 Instead of relying on workspace symlinks, copy shared library source files directly into
 `node_modules/@scope/package/` in the Docker build stage **after** `npm install` or `npm ci`. This
@@ -148,7 +148,7 @@ When a new package is added under `libs/`:
 - [ ] Confirm or set build context to repo root for each affected docker-compose file
 - [ ] Test locally: `docker compose -f infra/dev/<app>/docker-compose.yml build`
 
-## Common Pitfalls
+## ❌ Common Pitfalls
 
 ### Pitfall 1: Build context scoped to the app directory
 
@@ -200,7 +200,7 @@ The E2E CI workflow for each frontend app runs a full Docker build as part of it
 A green CI run on the app's E2E workflow confirms the Docker build and the injected libraries are
 both working.
 
-## References
+## 🔗 References
 
 **Related Development Standards:**
 

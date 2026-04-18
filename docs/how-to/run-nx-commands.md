@@ -15,7 +15,7 @@ updated: 2025-11-30
 
 This guide covers common Nx workflows and commands for working with the monorepo.
 
-## Basic Project Commands
+## 📋 Basic Project Commands
 
 > **Standard target names**: All target names follow [Nx Target Standards](../../governance/development/infra/nx-targets.md). Use `test:quick` for the pre-push gate, `test:unit` for isolated unit tests, `dev` for development servers, `start` for production server mode. Avoid `nx test`, `nx serve`, and other non-standard names.
 
@@ -241,7 +241,7 @@ npx nx --version
 nx report
 ```
 
-## Common Workflows
+## 🔄 Common Workflows
 
 ### Development Workflow
 
@@ -400,7 +400,7 @@ nx run-many -t build --parallel=3
 nx build ts-utils --watch
 ```
 
-## Troubleshooting
+## 🔬 Troubleshooting
 
 ### Cache Issues
 
@@ -483,7 +483,7 @@ nx graph --file=graph.json
 nx graph --file=graph.json | jq '.dependencies'
 ```
 
-## Related Documentation
+## 🔗 Related Documentation
 
 - [Nx Target Standards](../../governance/development/infra/nx-targets.md) - Canonical target names, mandatory targets per project type, caching rules, and execution model
 - [Add New App](./add-new-app.md)
