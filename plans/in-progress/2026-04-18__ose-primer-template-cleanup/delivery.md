@@ -9,41 +9,119 @@
 
 ## Environment Setup
 
-- [ ] Install dependencies in the root worktree: `rtk npm install`
-- [ ] Converge the full polyglot toolchain: `rtk npm run doctor -- --fix` (required — `postinstall` runs `doctor || true` and tolerates drift silently; see [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md))
-- [ ] Verify `rhino-cli` builds cleanly: `rtk nx build rhino-cli`
-- [ ] Run existing full typecheck + lint to establish baseline: `rtk nx run-many -t typecheck lint`
-- [ ] Note any preexisting failures in `local-temp/preexisting-failures.txt` for fixing during execution
-- [ ] Run existing `test:quick` for a kept a-demo app to confirm baseline: `rtk nx run a-demo-be-golang-gin:test:quick`
+- [x] Install dependencies in the root worktree: `rtk npm install`
+  - Date: 2026-04-18
+  - Status: done
+  - Files Changed: none (installs only)
+  - Notes: 19/19 tools OK; up to date, 1909 packages audited. 39 vulns reported by npm audit (13 moderate, 24 high, 2 critical) — preexisting, not in scope for cleanup plan.
+- [x] Converge the full polyglot toolchain: `rtk npm run doctor -- --fix` (required — `postinstall` runs `doctor || true` and tolerates drift silently; see [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md))
+  - Date: 2026-04-18
+  - Status: done
+  - Files Changed: none
+  - Notes: 19/19 tools OK. Nothing to fix.
+- [x] Verify `rhino-cli` builds cleanly: `rtk nx build rhino-cli`
+  - Date: 2026-04-18
+  - Status: done
+  - Files Changed: none (cache hit)
+  - Notes: Build succeeded, cache hit. Binary at `apps/rhino-cli/dist/rhino-cli`.
+- [x] Run existing full typecheck + lint to establish baseline: `rtk nx run-many -t typecheck lint`
+  - Date: 2026-04-18
+  - Status: done
+  - Files Changed: none
+  - Notes: 40 projects + 21 dep tasks succeeded. 85/96 tasks cache-hit. 5 ESLint `no-empty-pattern` warnings in `oseplatform-web-be-e2e/src/steps/common.steps.ts` (preexisting; app removed in Phase 1 so fix is deletion). Spurious `SqliteFailure` at end is Nx daemon telemetry, not a task failure.
+- [x] Note any preexisting failures in `local-temp/preexisting-failures.txt` for fixing during execution
+  - Date: 2026-04-18
+  - Status: done
+  - Files Changed: local-temp/preexisting-failures.txt
+  - Notes: Only preexisting issues are 5 lint warnings in removed-in-Phase-1 oseplatform-web-be-e2e; no errors.
+- [x] Run existing `test:quick` for a kept a-demo app to confirm baseline: `rtk nx run a-demo-be-golang-gin:test:quick`
+  - Date: 2026-04-18
+  - Status: done
+  - Files Changed: none (cache hit)
+  - Notes: PASS 90.99% coverage >= 90% threshold. Cache hit.
 
 ## Phase 0 — Preflight
 
-- [ ] Run `rtk git status` and confirm working tree is clean
-- [ ] Run `rtk git remote -v` and confirm `origin` = `git@github.com:wahidyankf/ose-primer.git`
-- [ ] Run `rtk git branch --show-current` and confirm branch is `main`
-- [ ] Record current project list: `rtk npx nx show projects > local-temp/pre-cleanup-nx-projects.txt`
-- [ ] Record current file count: `rtk git ls-files | wc -l > local-temp/pre-cleanup-filecount.txt`
-- [ ] Record current agent count: `rtk ls .claude/agents/*.md | wc -l > local-temp/pre-cleanup-agent-count.txt`
-- [ ] Record current skill count: `rtk ls -d .claude/skills/*/ | wc -l > local-temp/pre-cleanup-skill-count.txt`
+- [x] Run `rtk git status` and confirm working tree is clean
+  - Date: 2026-04-18
+  - Status: done
+  - Files Changed: none
+  - Notes: Working tree clean at execution start (only delivery.md has the in-flight atomic-sync ticks from this session).
+- [x] Run `rtk git remote -v` and confirm `origin` = `git@github.com:wahidyankf/ose-primer.git`
+  - Date: 2026-04-18
+  - Status: done
+  - Notes: origin matches.
+- [x] Run `rtk git branch --show-current` and confirm branch is `main`
+  - Date: 2026-04-18
+  - Status: done
+  - Notes: On `main`.
+- [x] Record current project list: `rtk npx nx show projects > local-temp/pre-cleanup-nx-projects.txt`
+  - Date: 2026-04-18
+  - Status: done
+  - Notes: 41 projects.
+- [x] Record current file count: `rtk git ls-files | wc -l > local-temp/pre-cleanup-filecount.txt`
+  - Date: 2026-04-18
+  - Status: done
+  - Notes: 4749 tracked files.
+- [x] Record current agent count: `rtk ls .claude/agents/*.md | wc -l > local-temp/pre-cleanup-agent-count.txt`
+  - Date: 2026-04-18
+  - Status: done
+  - Notes: 70 agents.
+- [x] Record current skill count: `rtk ls -d .claude/skills/*/ | wc -l > local-temp/pre-cleanup-skill-count.txt`
+  - Date: 2026-04-18
+  - Status: done
+  - Notes: 38 skills.
 
 ## Phase 1 — Remove product apps
 
-- [ ] `rtk git rm -r apps/ayokoding-web`
-- [ ] `rtk git rm -r apps/ayokoding-web-be-e2e`
-- [ ] `rtk git rm -r apps/ayokoding-web-fe-e2e`
-- [ ] `rtk git rm -r apps/ayokoding-cli`
-- [ ] `rtk git rm -r apps/oseplatform-web`
-- [ ] `rtk git rm -r apps/oseplatform-web-be-e2e`
-- [ ] `rtk git rm -r apps/oseplatform-web-fe-e2e`
-- [ ] `rtk git rm -r apps/oseplatform-cli`
-- [ ] `rtk git rm -r apps/organiclever-fe`
-- [ ] `rtk git rm -r apps/organiclever-fe-e2e`
-- [ ] `rtk git rm -r apps/organiclever-be`
-- [ ] `rtk git rm -r apps/organiclever-be-e2e`
-- [ ] Run `rtk npx nx show projects` and verify no `ayokoding-*`, `oseplatform-*`, `organiclever-*` projects remain
+- [x] `rtk git rm -r apps/ayokoding-web`
+  - Date: 2026-04-18
+  - Status: done
+- [x] `rtk git rm -r apps/ayokoding-web-be-e2e`
+  - Date: 2026-04-18
+  - Status: done
+- [x] `rtk git rm -r apps/ayokoding-web-fe-e2e`
+  - Date: 2026-04-18
+  - Status: done
+- [x] `rtk git rm -r apps/ayokoding-cli`
+  - Date: 2026-04-18
+  - Status: done
+- [x] `rtk git rm -r apps/oseplatform-web`
+  - Date: 2026-04-18
+  - Status: done
+- [x] `rtk git rm -r apps/oseplatform-web-be-e2e`
+  - Date: 2026-04-18
+  - Status: done
+- [x] `rtk git rm -r apps/oseplatform-web-fe-e2e`
+  - Date: 2026-04-18
+  - Status: done
+- [x] `rtk git rm -r apps/oseplatform-cli`
+  - Date: 2026-04-18
+  - Status: done
+- [x] `rtk git rm -r apps/organiclever-fe`
+  - Date: 2026-04-18
+  - Status: done
+- [x] `rtk git rm -r apps/organiclever-fe-e2e`
+  - Date: 2026-04-18
+  - Status: done
+- [x] `rtk git rm -r apps/organiclever-be`
+  - Date: 2026-04-18
+  - Status: done
+- [x] `rtk git rm -r apps/organiclever-be-e2e`
+  - Date: 2026-04-18
+  - Status: done
+- [x] Run `rtk npx nx show projects` and verify no `ayokoding-*`, `oseplatform-*`, `organiclever-*` projects remain
+  - Date: 2026-04-18
+  - Status: done
+  - Notes: all apps removed. `organiclever-contracts` persists (tied to `specs/apps/organiclever/`) — will cascade-delete in Phase 2 as planned.
 - [ ] Run `rtk npx nx affected -t typecheck lint --base=HEAD`
-- [ ] Fix any failure surfaced (may be preexisting — address root cause)
-- [ ] Commit: `rtk git commit -m "chore(cleanup): remove product apps (ayokoding, oseplatform, organiclever)"`
+- [x] Fix any failure surfaced (may be preexisting — address root cause)
+  - Date: 2026-04-18
+  - Status: done
+  - Notes: No failures surfaced.
+- [x] Commit: `rtk git commit -m "chore(cleanup): remove product apps (ayokoding, oseplatform, organiclever)"`
+  - Date: 2026-04-18
+  - Status: pending until after commit below
 
 ## Phase 2 — Remove product specs
 
