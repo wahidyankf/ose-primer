@@ -73,13 +73,14 @@ Per `.claude/skills/` and `.opencode/skill/` (3 skills × 2 trees = 6 directorie
 
 Same rule as agents: delete `.claude/` in Phase 5, let Phase 16 sync reconcile `.opencode/`.
 
-### Phase 6 — Product plans + generated-socials
+### Phase 6 — Remove all other plans + clean ideas + generated-socials
 
-| Path                                                         | Action      | Notes                                                 |
-| ------------------------------------------------------------ | ----------- | ----------------------------------------------------- |
-| `plans/in-progress/2026-04-16__organiclever-fe-local-first/` | `git rm -r` | Only product plan in-progress                         |
-| `plans/in-progress/README.md`                                | edit        | Remove organiclever-fe entry                          |
-| `generated-socials/` (if present)                            | `git rm -r` | Verified absent via `ls` (2026-04-18); no-op expected |
+- Delete the product in-progress plan `plans/in-progress/2026-04-16__organiclever-fe-local-first/` (unchanged).
+- Delete all 52 archived plans under `plans/done/*/` (each is a directory of plan files; use `git rm -r` per directory or one `git rm -r` with a glob).
+- Rewrite `plans/ideas.md` to a minimal template-generic state — a single H1, a one-sentence description, and an empty bullet list (no inherited product ideas).
+- Update `plans/done/README.md` index to reflect empty state (heading + "no completed plans yet in this template" placeholder).
+- Verify `plans/backlog/README.md` is untouched (already empty).
+- `generated-socials/` removal remains the existing no-op verification.
 
 ### Phase 7 — Rewrite `CLAUDE.md`
 
@@ -133,6 +134,10 @@ Run `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" governance/`. Exp
 ### Phase 12 — Docs audit (`docs/**`)
 
 Same approach as Phase 11 but targeting `docs/tutorials/`, `docs/how-to/`, `docs/reference/`, `docs/explanation/`, `docs/metadata/`. Product-sole-subject tutorials (e.g., any tutorial walking through deploying AyoKoding) get deleted. Generic tutorials that happen to use a product example get the example generalised.
+
+### Phase 12.5 — Audit every remaining markdown file under kept paths
+
+All remaining `.md` files under `apps/`, `libs/`, `specs/`, `infra/`, `apps-labs/`, `archived/`, `.claude/`, `.opencode/`, `governance/`, `docs/`, and `plans/` must be scrubbed of product-brand references. Earlier phases cover governance and docs trees; this phase extends the audit explicitly to per-app READMEs, per-lib READMEs, kept agent bodies, kept skill bodies and their reference modules, spec READMEs, infra-dev READMEs, archived README, and apps-labs README. Generic placeholder substitutions are preferred over deletion; a file is deleted only when its sole subject is a removed product. This phase is a **safety-net audit** — if earlier phases caught everything, this phase is a no-op; if anything slipped, this phase catches it.
 
 ### Phase 13 — `LICENSE` + `LICENSING-NOTICE.md` + license metadata (MIT switch)
 
@@ -200,6 +205,14 @@ Every commit passes the Husky pre-push gate (`nx affected -t typecheck lint test
 
 Per the Root Cause Orientation principle and `governance/development/quality/ci-blocker-resolution.md`: any preexisting `typecheck` / `lint` / `test:quick` failure surfaced during cleanup gets fixed in its own thematic commit (e.g., `fix(a-demo-be-fsharp-giraffe): repair typecheck regression surfaced during template cleanup`), not deferred.
 
+### D8 — Template ships with empty plans history
+
+`plans/done/` is wiped of all 52 inherited archive entries because a template should not carry its source repo's development history. The cleanup plan itself archives into `plans/done/` at Phase 17, so by the time a cloner clones, `plans/done/` has exactly one entry — the plan that created the template.
+
+### D9 — Explicit per-file markdown audit as safety net
+
+A comprehensive sweep covers all product-brand references, but an explicit per-file audit of every surviving markdown file provides defense in depth. A cloner opening `apps/a-demo-be-golang-gin/README.md` first must not find a product reference left over from the source repo; the explicit audit guarantees this, rather than relying on the reviewer having inspected the sweep output.
+
 ## Dependencies
 
 - Node 24.13.1, npm 11.10.1 (Volta-pinned).
@@ -234,7 +247,7 @@ No history rewrite (`rebase -i`, `push --force`) under any circumstance.
 - **Per-phase post-commit check**: Husky pre-push gate runs automatically if `git push` is issued between phases; if not pushing between phases, that's fine — final push (Phase 16) runs the gate once at the end.
 - **Full workspace sweep (Phase 16)**: `npx nx run-many -t typecheck lint test:quick spec-coverage`.
 - **Governance sweep (Phase 16)**: `repo-rules-checker` agent produces a report under `generated-reports/`. If it flags CRITICAL or HIGH findings, `repo-rules-fixer` loop runs until double-zero.
-- **Residual brand grep (Phase 16)**: `rtk grep -R -in "ayokoding\|oseplatform\|organiclever\|hugo-commons" apps libs specs scripts infra archived .github .claude .opencode governance docs README.md CLAUDE.md AGENTS.md LICENSING-NOTICE.md package.json nx.json tsconfig.base.json | rg -v "plans/done/"` — empty output is the pass condition.
+- **Residual brand grep (Phase 16)**: `rtk grep -R -in "ayokoding\|oseplatform\|organiclever\|hugo-commons" apps libs specs scripts infra archived .github .claude .opencode governance docs README.md CLAUDE.md AGENTS.md LICENSING-NOTICE.md package.json nx.json tsconfig.base.json | rg -v "plans/done/"` — empty output is the pass condition. The `plans/done/` exclusion is retained as a safety net; post-cleanup `plans/done/` is empty until the current plan archives itself at Phase 17, then contains exactly one entry. The exclusion ensures that future archived plans that reference product names historically (e.g., when migrating old repos from `ose-public`) will not trigger the sweep.
 
 ## Out-of-Scope but Worth Noting
 

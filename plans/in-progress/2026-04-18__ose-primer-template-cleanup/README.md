@@ -28,11 +28,18 @@ This plan scopes the cleanup that strips product content while preserving everyt
 - **Infra configs** (6): `infra/dev/ayokoding-web/`, `infra/dev/oseplatform-web/`, `infra/dev/organiclever/`, `infra/dev/ayokoding-cli/`, `infra/dev/oseplatform-cli/`, `infra/k8s/organiclever/`
 - **Agents** (22): all `apps-ayokoding-web-*` (12), all `apps-oseplatform-web-*` (4), `apps-organiclever-fe-deployer`, `swe-hugo-dev` — in both `.claude/agents/` and `.opencode/agent/`
 - **Skills** (3): `apps-ayokoding-web-developing-content`, `apps-organiclever-fe-developing-content`, `apps-oseplatform-web-developing-content` — in both `.claude/skills/` and `.opencode/skill/`
-- **Plan** (1): `plans/in-progress/2026-04-16__organiclever-fe-local-first/`
+- **Plans (53)**: the product in-progress plan `plans/in-progress/2026-04-16__organiclever-fe-local-first/`, plus all 52 archived plans under `plans/done/` — template should ship with empty plans history; only the current cleanup plan (`plans/in-progress/2026-04-18__ose-primer-template-cleanup/`) is kept, and it will itself archive to `plans/done/` in Phase 17
 - **CI workflows** (3 product + 1 orphan reusable = 4): `.github/workflows/test-and-deploy-ayokoding-web.yml`, `test-and-deploy-oseplatform-web.yml`, `test-and-deploy-organiclever.yml`, `_reusable-test-and-deploy.yml` (no remaining callers after the three product workflows are deleted)
+
+**File rewrites** (plans/ cleanup + audit + prune enumerations):
+
+- `plans/ideas.md` — reset to template-generic placeholder (drop product-specific ideas like `simplify ayokoding-cli and oseplatform-cli`, `FSL standards`)
+- `plans/done/README.md` — update to reflect empty archive state (heading + "no completed plans yet" note until this plan archives)
+- `plans/backlog/README.md` — confirm already empty; no edit expected beyond verification
 
 **File rewrites** (audit + prune enumerations):
 
+- **ALL remaining markdown files** under `apps/`, `libs/`, `specs/`, `infra/`, `apps-labs/`, `archived/`, `.claude/`, `.opencode/`, `governance/`, `docs/`, and `plans/` (including per-app/lib READMEs, kept agent bodies, kept skill bodies + references) — audit every surviving `.md` for product-brand references (`ayokoding`, `oseplatform`, `organiclever`, `hugo-commons`, `FSL-1.1-MIT`); rewrite in place or delete product-sole-subject files. This is comprehensive, not selective.
 - `CLAUDE.md` — drop product app list, product website sections, env-branch table, removed agents; reframe as repository template
 - `AGENTS.md` — mirror CLAUDE.md changes
 - Top-level `README.md` — reframe as ose-primer template entry point — full rewrite, not a stub; first-read onboarding doc for new cloners
@@ -63,7 +70,7 @@ This plan scopes the cleanup that strips product content while preserving everyt
 
 ## Approach Summary
 
-Phased execution in 17 phases, ordered so dependencies flow correctly:
+Phased execution in 17 phases (plus Phase 12.5), ordered so dependencies flow correctly:
 
 1. **Preflight** — snapshot state, confirm clean tree and correct remote
 2. **Remove product apps** (12 Nx projects)
@@ -71,17 +78,19 @@ Phased execution in 17 phases, ordered so dependencies flow correctly:
 4. **Remove deprecated libs** (`hugo-commons`)
 5. **Remove product agents** (22 agents in `.claude/agents/`)
 6. **Remove product skills** (3 skills in `.claude/skills/`)
-7. **Remove product plans + generated-socials** (plans/in-progress entry; `generated-socials/` absent)
+7. **Remove all other plans + clean ideas + generated-socials** (53 plans removed: 1 product in-progress + 52 archived; `plans/ideas.md` reset; `generated-socials/` absent)
 8. **Rewrite `CLAUDE.md`** as template guidance
 9. **Rewrite top-level `README.md`** as template usage guide
 10. **Update `AGENTS.md`** (OpenCode mirror) to match `CLAUDE.md`
 11. **Update agent catalog + `.claude/settings.json`**
 12. **Audit and prune `governance/` enumerations**
 13. **Audit and prune `docs/` Diátaxis content**
-14. **Update `LICENSING-NOTICE.md`**
-15. **Update tooling files** (`package.json`, `nx.json`, `tsconfig.base.json`, `.github/workflows/`, `infra/dev/`, `archived/`)
-16. **Sync `.opencode/` from `.claude/`**
-17. **Final validation + residual grep sweep + push**
+14. **Phase 12.5 — Audit every remaining markdown file under kept paths**
+15. **Update `LICENSING-NOTICE.md`**
+16. **Update tooling files** (`package.json`, `nx.json`, `tsconfig.base.json`, `.github/workflows/`, `infra/dev/`, `archived/`)
+17. **Sync `.opencode/` from `.claude/`**
+18. **Final validation + residual grep sweep + push**
+19. **Plan archival** (archive this cleanup plan to `plans/done/`)
 
 Each phase commits independently using Conventional Commits. No force-push, no `--no-verify`, no branch creation — this is direct trunk-based work on `main`.
 

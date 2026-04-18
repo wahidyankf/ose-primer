@@ -97,13 +97,72 @@
 - [ ] Run `rtk npm run validate:claude`
 - [ ] Commit: `rtk git commit -m "chore(cleanup): remove product-specific skills from .claude"`
 
-## Phase 6 — Remove product plans + generated-socials
+## Phase 6 — Remove all other plans + clean ideas.md + generated-socials
 
 - [ ] `rtk git rm -r plans/in-progress/2026-04-16__organiclever-fe-local-first`
 - [ ] Edit `plans/in-progress/README.md` — remove the `2026-04-16__organiclever-fe-local-first` bullet from the Active Plans list
+- [ ] Run `ls plans/done/` and confirm count of YYYY-MM-DD\_\_\* entries matches the expected 52 snapshot taken at plan creation
+- [ ] `rtk git rm -r plans/done/2026-01-02__rules-consolidation`
+- [ ] `rtk git rm -r plans/done/2026-01-02__skills-layer-implementation`
+- [ ] `rtk git rm -r plans/done/2026-01-03__agent-skills-simplification`
+- [ ] `rtk git rm -r plans/done/2026-01-03__opencode-adoption`
+- [ ] `rtk git rm -r plans/done/2026-01-06__move-rules-to-root`
+- [ ] `rtk git rm -r plans/done/2026-01-12__claude-code-full-migration`
+- [ ] `rtk git rm -r plans/done/2026-01-17__dolphin-be-init`
+- [ ] `rtk git rm -r plans/done/2026-01-17__markdown-linting`
+- [ ] `rtk git rm -r plans/done/2026-01-17__repository-link-remediation`
+- [ ] `rtk git rm -r plans/done/2026-01-22__stack-lang-golang`
+- [ ] `rtk git rm -r plans/done/2026-02-03__go-docs-alignment`
+- [ ] `rtk git rm -r plans/done/2026-02-14__orca-grid-be-removal`
+- [ ] `rtk git rm -r plans/done/2026-02-23__local-ci-standardization`
+- [ ] `rtk git rm -r plans/done/2026-02-24__dependency-update`
+- [ ] `rtk git rm -r plans/done/2026-03-09__auth-register-login`
+- [ ] `rtk git rm -r plans/done/2026-03-09__organiclever-be-exph`
+- [ ] `rtk git rm -r plans/done/2026-03-11__demo-be-fsharp-giraffe`
+- [ ] `rtk git rm -r plans/done/2026-03-11__demo-be-golang-gin`
+- [ ] `rtk git rm -r plans/done/2026-03-11__demo-be-java-vertx`
+- [ ] `rtk git rm -r plans/done/2026-03-11__demo-be-kotlin-ktor`
+- [ ] `rtk git rm -r plans/done/2026-03-11__demo-be-python-fastapi`
+- [ ] `rtk git rm -r plans/done/2026-03-11__demo-be-rust-axum`
+- [ ] `rtk git rm -r plans/done/2026-03-12__demo-be-clojure-pedestal`
+- [ ] `rtk git rm -r plans/done/2026-03-12__demo-be-csharp-aspnetcore`
+- [ ] `rtk git rm -r plans/done/2026-03-12__demo-be-ts-effect`
+- [ ] `rtk git rm -r plans/done/2026-03-13__demo-specs-consolidation`
+- [ ] `rtk git rm -r plans/done/2026-03-13__testing-standardization`
+- [ ] `rtk git rm -r plans/done/2026-03-17__demo-api-contract-enforcement`
+- [ ] `rtk git rm -r plans/done/2026-03-17__demo-fe-ts-tanstack-start`
+- [ ] `rtk git rm -r plans/done/2026-03-18__api-contract-adoption`
+- [ ] `rtk git rm -r plans/done/2026-03-19__demo-ci-test-standardization`
+- [ ] `rtk git rm -r plans/done/2026-03-20__rhino-cli-coverage-improvements`
+- [ ] `rtk git rm -r plans/done/2026-03-22__demo-fs-ts-nextjs`
+- [ ] `rtk git rm -r plans/done/2026-03-23__ayokoding-web-v2`
+- [ ] `rtk git rm -r plans/done/2026-03-24__ayokoding-web-v1-to-v2-migration`
+- [ ] `rtk git rm -r plans/done/2026-03-25__ayokoding-web-ci-quality-standardization`
+- [ ] `rtk git rm -r plans/done/2026-03-26__database-migration-tooling`
+- [ ] `rtk git rm -r plans/done/2026-03-27__demo-repository-pattern`
+- [ ] `rtk git rm -r plans/done/2026-03-27__ui-development-improvement`
+- [ ] `rtk git rm -r plans/done/2026-03-28__organiclever-fullstack-evolution`
+- [ ] `rtk git rm -r plans/done/2026-03-28__oseplatform-web-nextjs-rewrite`
+- [ ] `rtk git rm -r plans/done/2026-03-30__cli-testing-alignment`
+- [ ] `rtk git rm -r plans/done/2026-03-30__env-backup-restore`
+- [ ] `rtk git rm -r plans/done/2026-03-30__oseplatform-web-e2e-apps`
+- [ ] `rtk git rm -r plans/done/2026-03-31__ci-standardization`
+- [ ] `rtk git rm -r plans/done/2026-03-31__env-enhanced-backup-restore`
+- [ ] `rtk git rm -r plans/done/2026-04-02__spec-coverage-full-enforcement`
+- [ ] `rtk git rm -r plans/done/2026-04-02__specs-structure-consistency`
+- [ ] `rtk git rm -r plans/done/2026-04-04__fsl-license-migration`
+- [ ] `rtk git rm -r plans/done/2026-04-04__native-dev-setup-improvements`
+- [ ] `rtk git rm -r plans/done/2026-04-11__remove-obsidian-compat`
+- [ ] `rtk git rm -r plans/done/2026-04-17__agent-and-workflow-naming-consistency`
+- [ ] `rtk git rm -r plans/done/2026-04-18__plan-convention-brd-prd-split`
+- [ ] Verify `plans/done/` now contains only `README.md`: `ls plans/done/` should show `README.md` and no `YYYY-MM-DD__*` entries
+- [ ] Edit `plans/done/README.md` — rewrite to reflect empty archive: retain H1 "# Completed Plans" and "Completed Projects" section heading; replace the bulleted list body with a short line such as "_No completed plans yet in this template._"
+- [ ] Read `plans/backlog/README.md` — confirm it describes an empty backlog; no edit expected
+- [ ] Rewrite `plans/ideas.md` — replace body with template-generic placeholder: keep H1 "# Ideas" and the one-line description, then replace the section bullets with a single placeholder line such as "_No ideas yet. Capture 1-3 liner ideas here and promote mature ones to backlog/ plans._"
+- [ ] Verify `rtk grep -n "ayokoding\|oseplatform\|organiclever\|FSL" plans/ideas.md` returns empty
 - [ ] Run `ls generated-socials 2>/dev/null` — if present, `rtk git rm -r generated-socials`; if absent, skip
 - [ ] Run `rtk npm run lint:md:fix`
-- [ ] Commit: `rtk git commit -m "chore(cleanup): remove product plans and generated-socials"`
+- [ ] Commit: `rtk git commit -m "chore(cleanup): remove all other plans, reset ideas, drop generated-socials"`
 
 ## Phase 7 — Rewrite CLAUDE.md
 
@@ -180,6 +239,27 @@
 - [ ] Run `rtk npm run lint:md` and confirm pass
 - [ ] Commit: `rtk git commit -m "docs(diataxis): remove product-scoped tutorials, how-tos, and references"`
 
+## Phase 12.5 — Audit every remaining markdown file under kept paths
+
+- [ ] Enumerate every surviving `.md` file under audit scope: `rtk find apps libs specs infra apps-labs archived .claude .opencode governance docs plans -name "*.md" -type f > local-temp/remaining-md-files.txt`
+- [ ] Enumerate hits: `xargs rtk grep -l "ayokoding\|oseplatform\|organiclever\|hugo-commons\|FSL-1.1-MIT" < local-temp/remaining-md-files.txt | rg -v "plans/done/" > local-temp/remaining-md-hits.txt || true`
+- [ ] For each file in `local-temp/remaining-md-hits.txt`, open and decide: rewrite (generalise) or delete (product-sole subject)
+- [ ] Scrub `apps/*/README.md` for every kept app (17 a-demo-\* + rhino-cli) — rewrite any leftover product mentions
+- [ ] Scrub `libs/*/README.md` for every kept lib (golang-commons, elixir-cabbage, elixir-gherkin, elixir-openapi-codegen, clojure-openapi-codegen, ts-ui, ts-ui-tokens) — rewrite any leftover product mentions
+- [ ] Scrub `.claude/agents/*.md` bodies (kept agents only; removed agents were deleted in Phase 4) — rewrite any leftover product mentions in agent descriptions, examples, or tool-use hints
+- [ ] Scrub `.claude/skills/*/SKILL.md` files — rewrite any leftover product mentions
+- [ ] Scrub `.claude/skills/*/reference/*.md` files (when present) — rewrite any leftover product mentions
+- [ ] Scrub `.opencode/agent/*.md` and `.opencode/skill/**/*.md` — note these are synced via Phase 15; verify post-sync that zero product refs exist, and fix the source in `.claude/` if any do
+- [ ] Scrub `specs/apps/a-demo/**/*.md` and `specs/apps/rhino/**/*.md` and `specs/libs/**/*.md` — rewrite any leftover product mentions
+- [ ] Scrub `infra/dev/*/README.md` (only the kept a-demo-\* and rhino-cli subdirs remain after Phase 14) — rewrite any leftover product mentions
+- [ ] Scrub `archived/README.md` — rewrite any references to removed snapshots (`ayokoding-web-hugo`, `organiclever-web`, `oseplatform-web-hugo` are deleted in Phase 14)
+- [ ] Scrub `apps-labs/README.md` — rewrite any leftover product mentions
+- [ ] Scrub `plans/backlog/README.md`, `plans/in-progress/README.md`, `plans/done/README.md` — rewrite any leftover product mentions (note Phase 6 already rewrote done/README.md to the empty-state placeholder)
+- [ ] Re-run enumeration: `xargs rtk grep -l "ayokoding\|oseplatform\|organiclever\|hugo-commons\|FSL-1.1-MIT" < local-temp/remaining-md-files.txt | rg -v "plans/done/"` — output MUST be empty
+- [ ] Run `rtk npm run lint:md:fix`
+- [ ] Run `rtk npm run lint:md` and confirm pass
+- [ ] Commit: `rtk git commit -m "docs(cleanup): scrub all remaining markdown files of product references"`
+
 ## Phase 13 — Switch to MIT license
 
 - [ ] Read existing `LICENSE` to capture copyright holder name
@@ -247,7 +327,9 @@
 
 - [ ] Run the multi-term sweep:
       `rtk grep -R -in "ayokoding\|oseplatform\|organiclever\|hugo-commons" apps libs specs scripts infra archived .github .claude .opencode governance docs README.md CLAUDE.md AGENTS.md LICENSING-NOTICE.md package.json nx.json tsconfig.base.json | rg -v "plans/done/"`
-- [ ] Output MUST be empty. If not empty, fix the residual hit, re-run, then proceed.
+- [ ] Output MUST be empty. If not empty, fix the residual hit, re-run, then proceed. Note: the `plans/done/` exclusion is retained as a safety net; post-cleanup `plans/done/` is empty until Phase 17 archives the current plan, then contains exactly one entry. The exclusion ensures future archived plans referencing product names historically will not trigger the sweep.
+- [ ] Run the per-file markdown sweep:
+      `xargs rtk grep -l "ayokoding\|oseplatform\|organiclever\|hugo-commons\|FSL-1.1-MIT" < local-temp/remaining-md-files.txt 2>/dev/null | rg -v "plans/done/"` — output MUST be empty
 - [ ] Run `rtk grep -R -in "FSL-1.1-MIT" . --exclude-dir=plans/done --exclude-dir=.git`. Output MUST be empty. If not empty, fix and re-run.
 - [ ] If residual fix produced changes: `rtk git commit -m "chore(cleanup): final sweep of product references"`
 
@@ -279,7 +361,7 @@
 - [ ] Verify post-push CI is green
 - [ ] `rtk git mv plans/in-progress/2026-04-18__ose-primer-template-cleanup plans/done/2026-04-18__ose-primer-template-cleanup`
 - [ ] Edit `plans/in-progress/README.md` — confirm no entry for this plan exists (should already be absent since Phase 6 never added one for this plan itself; the plan folder was there from creation but this plan's own entry line, if present, must be removed)
-- [ ] Edit `plans/done/README.md` — add an entry under "Completed Projects" using this template (paste as a single bullet line; the relative link resolves from `plans/done/README.md`, not from this file):
+- [ ] Edit `plans/done/README.md` — replace the "_No completed plans yet in this template._" placeholder with the first archival entry (paste as a single bullet line; the relative link resolves from `plans/done/README.md`, not from this file):
 
 ```text
 - [2026-04-18: ose-primer Template Cleanup](./2026-04-18__ose-primer-template-cleanup/README.md) — Strip all product-specific content (ayokoding, oseplatform, organiclever, hugo-commons) from the ose-primer repo so it functions as a clean repository template. Removed 12 apps, 3 spec trees, 1 deprecated lib, 3 archived product snapshots, 5 infra/dev configs, 22 product agents (both .claude/ and .opencode/ mirrors), 3 product skills, 1 product plan, 3 product CI workflows. Rewrote CLAUDE.md, AGENTS.md, README.md, .claude/agents/README.md, LICENSING-NOTICE.md, and pruned governance + docs enumerations. Trunk-based direct push to main. Post-cleanup: zero product-brand grep hits outside plans/done/, nx affected + full run-many green, repo-rules-checker double-zero (Completed: 2026-04-18)
