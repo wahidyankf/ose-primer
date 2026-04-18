@@ -317,14 +317,15 @@ Code: language-specific
 
 Allowed: `docs/`, README files, `plans/`, `governance/`, CLAUDE.md, `AGENTS.md`, `.claude/agents/`, `.opencode/agent/`, `.opencode/skill/`
 Forbidden: config files (`*.json`, `*.yaml`, `*.toml`), source code
+Tasteful usage: emojis must aid scannability (section markers, status indicators, plan checklist status) — at most ~1 per heading, ~1 per paragraph; no decorative emojis, no emoji-as-bullet, no emoji in every heading.
 
 **See**: [governance/conventions/formatting/emoji.md](./governance/conventions/formatting/emoji.md)
 
 ### Diagrams
 
-Mermaid diagrams with color-blind friendly palette, proper accessibility
+Mermaid diagrams with color-blind friendly palette, proper accessibility. Plans SHOULD include Mermaid diagrams when they clarify component interactions, sequence/flow between agents or systems, state transitions, or decision branches; text-only is fine for trivial plans. Palette and accessibility rules live in the `docs-creating-accessible-diagrams` skill — don't redefine them.
 
-**See**: [governance/conventions/formatting/diagrams.md](./governance/conventions/formatting/diagrams.md)
+**See**: [governance/conventions/formatting/diagrams.md](./governance/conventions/formatting/diagrams.md), [governance/conventions/structure/plans.md](./governance/conventions/structure/plans.md)
 
 ### Content Quality
 
