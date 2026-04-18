@@ -44,7 +44,7 @@ public class UnitCommonSteps {
     }
 
     @Given("the demo API is running")
-    public void theADemoApiIsRunning() {
+    public void theDemoApiIsRunning() {
         // No-op: services are always ready when scenarios execute.
     }
 
