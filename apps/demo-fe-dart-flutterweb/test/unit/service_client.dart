@@ -469,8 +469,9 @@ class ServiceClient {
       : _users.values.where((u) => u.id == _currentUserId).firstOrNull;
 
   void _requireAuth() {
-    if (_currentUserId == null)
+    if (_currentUserId == null) {
       throw const UnauthorizedError('Not authenticated');
+    }
     final user = _currentUser;
     if (user == null) throw const UnauthorizedError('User not found');
     if (user.status == 'INACTIVE') throw const AccountInactiveError();
@@ -812,8 +813,9 @@ class ServiceClient {
 
     final attachment = _attachments[attachmentId];
     if (attachment == null) throw const NotFoundError('Attachment not found');
-    if (attachment.expenseId != expenseId)
+    if (attachment.expenseId != expenseId) {
       throw const NotFoundError('Attachment not found');
+    }
 
     _attachments.remove(attachmentId);
   }
