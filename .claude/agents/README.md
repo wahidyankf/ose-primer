@@ -1,6 +1,6 @@
 # Claude Code Agents
 
-This directory contains specialized AI agents for the open-sharia-enterprise project. These agents are organized by role and follow the Maker-Checker-Fixer pattern where applicable.
+This directory contains specialized AI agents for the ose-primer repository template. These agents are organized by role and follow the Maker-Checker-Fixer pattern where applicable.
 
 ## Agent Organization
 
@@ -9,10 +9,6 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 - **docs-maker** - Expert documentation writer
 - **docs-tutorial-maker** - Tutorial creation specialist
 - **readme-maker** - README file writer
-- **apps-ayokoding-web-general-maker** - General content for AyoKoding
-- **apps-ayokoding-web-by-example-maker** - By-example tutorials
-- **apps-ayokoding-web-in-the-field-maker** - In-the-field tutorials for AyoKoding
-- **apps-oseplatform-web-content-maker** - OSE Platform content
 - **plan-maker** - Project plan creation
 - **repo-rules-maker** - Governance document creation
 - **repo-workflow-maker** - Workflow documentation
@@ -28,12 +24,6 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 - **docs-link-checker** - Link validity checking
 - **docs-software-engineering-separation-checker** - Programming language docs separation validation
 - **readme-checker** - README quality validation
-- **apps-ayokoding-web-general-checker** - General content validation
-- **apps-ayokoding-web-by-example-checker** - By-example validation
-- **apps-ayokoding-web-in-the-field-checker** - In-the-field content validation
-- **apps-ayokoding-web-facts-checker** - Factual accuracy for AyoKoding
-- **apps-ayokoding-web-link-checker** - Link validation for AyoKoding
-- **apps-oseplatform-web-content-checker** - OSE content validation
 - **plan-checker** - Project plan validation
 - **plan-execution-checker** - Plan execution validation
 - **repo-rules-checker** - Governance compliance validation
@@ -50,12 +40,6 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 - **docs-tutorial-fixer** - Apply tutorial fixes
 - **docs-software-engineering-separation-fixer** - Fix programming language docs separation issues
 - **readme-fixer** - Apply README fixes
-- **apps-ayokoding-web-general-fixer** - Apply general content fixes
-- **apps-ayokoding-web-by-example-fixer** - Apply by-example fixes
-- **apps-ayokoding-web-in-the-field-fixer** - Fix in-the-field content issues
-- **apps-ayokoding-web-facts-fixer** - Apply factual corrections
-- **apps-ayokoding-web-link-fixer** - Fix broken links
-- **apps-oseplatform-web-content-fixer** - Fix OSE content issues
 - **plan-fixer** - Apply plan fixes
 - **repo-rules-fixer** - Fix governance compliance issues
 - **repo-workflow-fixer** - Fix workflow documentation
@@ -67,12 +51,6 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 
 - **web-research-maker** - Read-only web research specialist; returns cited, structured findings with confidence tags in an isolated context (no file writes, no shell). Invoke for current API/library docs, fact verification, best-practice surveys.
 
-### 🟪 Operations
-
-- **apps-ayokoding-web-deployer** - AyoKoding deployment (Next.js via Vercel)
-- **apps-oseplatform-web-deployer** - OSE Platform deployment
-- **apps-organiclever-fe-deployer** - organiclever-fe deployment
-
 ### 💻 Development
 
 - **swe-clojure-dev** - Clojure application development
@@ -82,7 +60,6 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 - **swe-elixir-dev** - Elixir application development
 - **swe-fsharp-dev** - F# application development
 - **swe-golang-dev** - Go application development
-- **swe-hugo-dev** - **DEPRECATED** -- No active Hugo sites remain (formerly oseplatform-web)
 - **swe-java-dev** - Java application development
 - **swe-kotlin-dev** - Kotlin application development
 - **swe-python-dev** - Python application development
@@ -103,14 +80,13 @@ Normative source: [Agent Naming Convention](../../governance/conventions/structu
 
 ## Role Vocabulary
 
-| Role       | Semantics                                                 | Example agents                                               |
-| ---------- | --------------------------------------------------------- | ------------------------------------------------------------ |
-| `maker`    | Produces a content/research artifact                      | `docs-maker`, `web-research-maker`                           |
-| `checker`  | Validates an artifact against standards                   | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
-| `fixer`    | Applies validated checker findings                        | `plan-fixer`, `swe-ui-fixer`                                 |
-| `dev`      | Writes code in a language or test framework               | `swe-rust-dev`, `swe-e2e-dev`                                |
-| `deployer` | Deploys an application to an environment                  | `apps-ayokoding-web-deployer`                                |
-| `manager`  | Performs file or resource operations (rename/move/delete) | `docs-file-manager`                                          |
+| Role      | Semantics                                                 | Example agents                                               |
+| --------- | --------------------------------------------------------- | ------------------------------------------------------------ |
+| `maker`   | Produces a content/research artifact                      | `docs-maker`, `web-research-maker`                           |
+| `checker` | Validates an artifact against standards                   | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
+| `fixer`   | Applies validated checker findings                        | `plan-fixer`, `swe-ui-fixer`                                 |
+| `dev`     | Writes code in a language or test framework               | `swe-rust-dev`, `swe-e2e-dev`                                |
+| `manager` | Performs file or resource operations (rename/move/delete) | `docs-file-manager`                                          |
 
 Enforcement: `rhino-cli agents validate-naming` (wired into pre-push and CI).
 
