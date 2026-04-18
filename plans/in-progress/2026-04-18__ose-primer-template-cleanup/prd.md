@@ -53,6 +53,14 @@ As a **template maintainer**, I want `repo-rules-checker` to report zero CRITICA
 
 As a **future cloner**, I want the root `README.md` to explain what this repo ships, how to clone it as a template, and what the main entry points are, so that I can get oriented without reading `CLAUDE.md` first.
 
+### US-8 — Empty plans history for template
+
+As a **future cloner**, I want `plans/` to ship empty (no backlog folders, no archived plans, ideas file reset to template-generic placeholders) so that my new repo starts from a clean planning slate without inheriting the template's own development history.
+
+### US-9 — Every surviving markdown file is scrubbed
+
+As a **template maintainer**, I want every remaining `.md` file (app READMEs, lib READMEs, kept agent/skill bodies, spec READMEs, governance, docs, infra/dev READMEs) scrubbed of product-brand references, so that no reader encounters leftover product context no matter which file they open first.
+
 ## Acceptance Criteria (Gherkin)
 
 ### AC-1 — Demo scaffolding intact
@@ -211,14 +219,17 @@ Scenario: Markdown lint passes
 ```gherkin
 Scenario: Plan is archived to done at cleanup completion
   Given every cleanup phase has been committed and pushed
+  And Phase 17 archival has run
   When I run "ls plans/in-progress/"
   Then the output does not include "2026-04-18__ose-primer-template-cleanup"
   When I run "ls plans/done/"
-  Then the output includes "2026-04-18__ose-primer-template-cleanup"
+  Then the output contains "2026-04-18__ose-primer-template-cleanup"
+  And the output does not contain any other YYYY-MM-DD__* entry (this cleanup plan is the only archived entry)
   When I read "plans/in-progress/README.md"
   Then the entry for "2026-04-18__ose-primer-template-cleanup" is absent
   When I read "plans/done/README.md"
   Then an entry for "2026-04-18__ose-primer-template-cleanup" exists with completion date "2026-04-18"
+  And the "_No completed plans yet in this template._" placeholder is no longer present
 ```
 
 ### AC-10 — Root README contains required template sections and no product-brand strings
@@ -241,11 +252,71 @@ Scenario: Rewritten README contains no product-brand strings
   And the output is empty
 ```
 
+### AC-11 — Empty plans history for template
+
+```gherkin
+Scenario: plans/in-progress contains only the current cleanup plan pre-archival
+  Given the cleanup execution has completed but Phase 17 archival has not yet run
+  When I run "ls plans/in-progress/"
+  Then the output contains "2026-04-18__ose-primer-template-cleanup"
+  And the output does not contain "2026-04-16__organiclever-fe-local-first"
+  And the output does not contain any other YYYY-MM-DD__* entries
+
+Scenario: plans/done is empty pre-archival
+  Given the cleanup execution has completed but Phase 17 archival has not yet run
+  When I run "ls plans/done/"
+  Then the output contains "README.md"
+  And the output does not contain any YYYY-MM-DD__* entries
+
+Scenario: plans/backlog is empty
+  Given the cleanup execution has completed
+  When I run "ls plans/backlog/"
+  Then the output contains "README.md"
+  And the output does not contain any YYYY-MM-DD__* entries
+
+Scenario: plans/ideas.md has no product-specific entries
+  Given the cleanup execution has completed
+  When I read "plans/ideas.md"
+  Then it does not contain "ayokoding"
+  And it does not contain "oseplatform"
+  And it does not contain "organiclever"
+  And it does not contain "FSL"
+```
+
+### AC-12 — Every surviving markdown file is scrubbed
+
+```gherkin
+Scenario: All remaining markdown files are product-clean
+  Given the cleanup execution has completed
+  When I run "rtk find apps libs specs infra apps-labs archived .claude .opencode governance docs plans -name '*.md' -type f | xargs rtk grep -l 'ayokoding\|oseplatform\|organiclever\|hugo-commons\|FSL-1.1-MIT' 2>/dev/null | rg -v 'plans/done/'"
+  Then the output is empty
+
+Scenario: Each kept app has a product-clean README
+  Given the cleanup execution has completed
+  When I list every "apps/*/README.md" file
+  Then none contains "ayokoding", "oseplatform", "organiclever", "hugo-commons", or "FSL-1.1-MIT"
+
+Scenario: Each kept lib has a product-clean README
+  Given the cleanup execution has completed
+  When I list every "libs/*/README.md" file
+  Then none contains "ayokoding", "oseplatform", "organiclever", "hugo-commons", or "FSL-1.1-MIT"
+
+Scenario: Every kept agent body is product-clean
+  Given the cleanup execution has completed
+  When I list every ".claude/agents/*.md" file
+  Then none contains "ayokoding", "oseplatform", "organiclever", "hugo-commons", "FSL-1.1-MIT", or "swe-hugo-dev"
+
+Scenario: Every kept skill body is product-clean
+  Given the cleanup execution has completed
+  When I list every ".claude/skills/**/*.md" file
+  Then none contains "ayokoding", "oseplatform", "organiclever", "hugo-commons", or "FSL-1.1-MIT"
+```
+
 ## Product Scope
 
 ### In Scope
 
-- Deletion of 12 product apps, 3 spec trees, 1 deprecated lib, 3 archived product apps, 6 infra configs (5 `infra/dev/` + 1 `infra/k8s/organiclever/`), 22 product agents (in `.claude/` + `.opencode/`), 3 product skills (in `.claude/` + `.opencode/`), 1 product plan, 4 CI workflow files (3 product `test-and-deploy-*.yml` + 1 orphan reusable `_reusable-test-and-deploy.yml`).
+- Deletion of 12 product apps, 3 spec trees, 1 deprecated lib, 3 archived product apps, 6 infra configs (5 `infra/dev/` + 1 `infra/k8s/organiclever/`), 22 product agents (in `.claude/` + `.opencode/`), 3 product skills (in `.claude/` + `.opencode/`), 53 plans (52 archived + 1 product in-progress), ideas.md reset, 4 CI workflow files (3 product `test-and-deploy-*.yml` + 1 orphan reusable `_reusable-test-and-deploy.yml`).
 - Rewrite of `CLAUDE.md`, `AGENTS.md`, top-level `README.md`, `.claude/agents/README.md`, `.claude/settings.json`, `LICENSING-NOTICE.md`.
 - Audit and prune of governance enumerations (`governance/**`) and Diátaxis docs (`docs/**`) that reference removed products.
 - Removal of product-specific scripts from `package.json`.

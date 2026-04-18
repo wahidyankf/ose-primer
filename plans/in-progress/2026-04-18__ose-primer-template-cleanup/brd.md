@@ -13,6 +13,7 @@ Turn `ose-primer` into a production-ready repository template so future OSE-styl
 - Governance documents enumerate product apps in prose, making it non-obvious which examples are generic scaffolding vs brand-specific carryover.
 - `package.json` scripts, CI workflows, and `infra/dev/` Docker composes reference apps that no longer exist, producing broken commands on first clone.
 - `hugo-commons` lib and `swe-hugo-dev` agent stay live even though Hugo is formally deprecated across the org.
+- Historical `plans/done/` entries (52 of them, dating back to 2026-01) leak ose-public product-repo context into any cloned template; downstream cloners either inherit irrelevant history or must prune it manually.
 
 ### Expected benefits
 
@@ -20,6 +21,7 @@ Turn `ose-primer` into a production-ready repository template so future OSE-styl
 - Cloners can `git clone`, delete the `a-demo-*` variants they don't need, rename the repo, and start product work without further cleanup.
 - Agent / skill catalog contains only generic automation that applies to any new repo.
 - Command surface (`package.json` scripts, Nx targets, CI workflows) matches what exists on disk — no 404s.
+- `plans/` ships empty — the only entry post-cleanup is this cleanup plan (which archives itself at Phase 17); cloners start with a clean slate.
 
 ## Affected Roles
 
@@ -43,6 +45,9 @@ Metric honesty: observable facts, confirmable with a single shell command at the
 5. **Markdown lint clean**: `npm run lint:md` exits 0.
 6. **Nx project count drops correctly**: `nx show projects` lists only kept projects — 17 `a-demo-*` + `rhino-cli` + `a-demo-contracts` (if tracked) — and no `ayokoding-*`, `oseplatform-*`, or `organiclever-*`.
 7. **`repo-rules-checker` reports zero CRITICAL and zero HIGH findings** (or a clean double-zero pass) at cleanup end.
+8. **Only current plan exists pre-archival**: `ls plans/in-progress/` returns exactly one entry (`2026-04-18__ose-primer-template-cleanup`); `ls plans/backlog/` has no plan folders (only `README.md`); `ls plans/done/` has no plan folders (only `README.md`), until Phase 17 archives the current plan.
+9. **`plans/ideas.md` contains no product-specific entries**: `rtk grep -n 'ayokoding\|oseplatform\|organiclever' plans/ideas.md` returns empty.
+10. **All remaining markdown is product-clean**: `rtk find apps libs specs infra apps-labs archived .claude .opencode governance docs plans -name "*.md" -type f | xargs rtk grep -l "ayokoding\|oseplatform\|organiclever\|hugo-commons\|FSL-1.1-MIT" 2>/dev/null | rg -v "plans/done/"` returns zero files.
 
 ### Judgment call (labelled)
 
