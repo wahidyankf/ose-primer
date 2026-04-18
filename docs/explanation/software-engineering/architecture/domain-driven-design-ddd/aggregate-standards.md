@@ -18,8 +18,6 @@ updated: 2026-02-09
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: Complete [AyoKoding DDD Aggregates](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/architecture/domain-driven-design-ddd/by-example/) before using these standards.
-
 ## Purpose
 
 OSE Platform aggregate design standards for Islamic finance systems.

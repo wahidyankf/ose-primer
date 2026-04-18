@@ -234,9 +234,8 @@ grep -q "new-heading-text" .claude/agents/agent-name.md || echo "WARNING: Python
 **Missing LICENSE (CRITICAL)**:
 
 1. Re-validate LICENSE file is truly missing
-2. Determine correct license type per [Licensing Convention](../../governance/conventions/structure/licensing.md)
-3. Copy from reference: `cp LICENSE apps/[dir]/LICENSE` (FSL) or `cp libs/golang-commons/LICENSE apps/[dir]/LICENSE` (MIT)
-4. Confidence: HIGH (mechanical check, no ambiguity)
+2. Copy from reference: `cp LICENSE apps/[dir]/LICENSE` (FSL) or `cp libs/golang-commons/LICENSE apps/[dir]/LICENSE` (MIT)
+3. Confidence: HIGH (mechanical check, no ambiguity)
 
 **Wrong License Type (HIGH)**:
 

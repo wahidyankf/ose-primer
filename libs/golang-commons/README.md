@@ -49,7 +49,6 @@ Link-checking utilities for Hugo site CLIs.
 ```go
 import "github.com/wahidyankf/ose-public/libs/golang-commons/links"
 
-result, err := links.CheckLinks("apps/ayokoding-web/content")
 if err != nil {
     return err
 }

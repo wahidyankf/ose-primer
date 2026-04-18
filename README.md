@@ -16,7 +16,6 @@ Use it by forking, cloning, or copying the directories that fit your project —
 - **Governance** — six-layer hierarchy (Vision → Principles → Conventions → Development → Agents → Workflows) under `governance/`.
 - **Generic AI agents + skills** — Maker/Checker/Fixer pattern for plans, repo rules, workflows, UI, code, docs, CI; plus language-specific development agents (`swe-*-dev`). No product-specific agents.
 - **Dual-mode configuration** — `.claude/` (source of truth) auto-synced to `.opencode/`.
-- **Planning infrastructure** — `plans/ideas.md`, `plans/backlog/`, `plans/in-progress/`, `plans/done/` with a five-document plan convention and orchestrated `plan-execution` + `plan-quality-gate` workflows.
 
 ## How to use this template
 

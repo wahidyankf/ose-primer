@@ -13,7 +13,6 @@ Turn `ose-primer` into a production-ready repository template so future OSE-styl
 - Governance documents enumerate product apps in prose, making it non-obvious which examples are generic scaffolding vs brand-specific carryover.
 - `package.json` scripts, CI workflows, and `infra/dev/` Docker composes reference apps that no longer exist, producing broken commands on first clone.
 - `hugo-commons` lib and `swe-hugo-dev` agent stay live even though Hugo is formally deprecated across the org.
-- Historical `plans/done/` entries (53 of them, dating back to 2026-01) leak ose-public product-repo context into any cloned template; downstream cloners either inherit irrelevant history or must prune it manually.
 
 ### Expected benefits
 

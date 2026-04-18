@@ -24,11 +24,7 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: You MUST understand Rust fundamentals from [AyoKoding Rust Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/rust/_index.md) before using these standards.
-
 **This document is OSE Platform-specific**, not a Rust tutorial. We define HOW to apply Rust in THIS codebase, not WHAT Rust is.
-
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md)
 
 ## Purpose
 

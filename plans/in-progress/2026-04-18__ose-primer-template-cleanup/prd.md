@@ -316,13 +316,11 @@ Scenario: Every kept skill body is product-clean
 
 ### In Scope
 
-- Deletion of 12 product apps, 3 spec trees, 1 deprecated lib, 3 archived product apps, 6 infra configs (5 `infra/dev/` + 1 `infra/k8s/organiclever/`), 20 product agents (in `.claude/` + `.opencode/`), 3 product skills (in `.claude/` + `.opencode/`), 54 plans (53 archived + 1 product in-progress), ideas.md reset, 4 CI workflow files (3 product `test-and-deploy-*.yml` + 1 orphan reusable `_reusable-test-and-deploy.yml`).
 - Rewrite of `CLAUDE.md`, `AGENTS.md`, top-level `README.md`, `.claude/agents/README.md`, `.claude/settings.json`, `LICENSING-NOTICE.md`.
 - Audit and prune of governance enumerations (`governance/**`) and Diátaxis docs (`docs/**`) that reference removed products.
 - Removal of product-specific scripts from `package.json`.
 - Audit of `nx.json` and `tsconfig.base.json` for dangling references.
 - Sync of `.opencode/` from `.claude/` via `npm run sync:claude-to-opencode`.
-- Plan archival from `plans/in-progress/` to `plans/done/`.
 
 ### Out of Scope
 

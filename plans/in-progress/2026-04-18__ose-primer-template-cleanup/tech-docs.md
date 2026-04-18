@@ -75,10 +75,7 @@ Same rule as agents: delete `.claude/` in Phase 5, let Phase 16 sync reconcile `
 
 ### Phase 6 — Remove all other plans + clean ideas + generated-socials
 
-- Delete the product in-progress plan `plans/in-progress/2026-04-16__organiclever-fe-local-first/` (unchanged).
-- Delete all 53 archived plans under `plans/done/*/` (each is a directory of plan files; use `git rm -r` per directory or one `git rm -r` with a glob).
 - Rewrite `plans/ideas.md` to a minimal template-generic state — a single H1, a one-sentence description, and an empty bullet list (no inherited product ideas).
-- Update `plans/done/README.md` index to reflect empty state (heading + "no completed plans yet in this template" placeholder).
 - Verify `plans/backlog/README.md` is untouched (already empty).
 - `generated-socials/` removal remains the existing no-op verification.
 
@@ -117,7 +114,6 @@ Mirror the Phase 7 edits one-for-one. `AGENTS.md` is a parallel doc for OpenCode
 ### Phase 10 — `.claude/agents/README.md` + `.claude/settings.json`
 
 - `.claude/agents/README.md` — drop removed agents from every table and role grouping.
-- `.claude/settings.json` — scan for permission entries that scope Write/Edit to removed paths (`apps/ayokoding-web/**`, `apps/oseplatform-web/**`, `apps/organiclever-*/**`, `libs/hugo-commons/**`). If present, strip. Expected no-op: verified 2026-04-18 that the current file contains only generic `.claude/**`, `.opencode/**`, `/tmp/**` entries.
 
 ### Phase 11 — Governance audit (`governance/**`)
 
@@ -155,9 +151,6 @@ All remaining `.md` files under `apps/`, `libs/`, `specs/`, `infra/`, `apps-labs
 - `_reusable-test-and-deploy.yml` — the only callers are the three `test-and-deploy-*.yml` workflows deleted above. Once those are removed, this reusable has zero consumers and must be deleted in the same commit. Verify with `grep -l "_reusable-test-and-deploy" .github/workflows` before deleting.
 - `.github/workflows/pr-quality-gate.yml`, `_reusable-*.yml`, and `codecov-upload.yml` — audit for orphan `needs:` / `uses:` references to deleted workflows and for product-specific matrix entries, job filters, or path triggers pointing at removed projects; fix or strip matches.
 - `.github/workflows/test-a-demo-be-java-springboot.yml` — confirmed on 2026-04-18 to contain product-brand references via grep. Do NOT delete this file; the `a-demo-be-java-springboot` app is a KEPT app. Scrub only the stale product references (comments, matrix entries, job names) in place.
-- `infra/dev/ayokoding-web/`, `infra/dev/oseplatform-web/`, `infra/dev/organiclever/`, `infra/dev/ayokoding-cli/`, `infra/dev/oseplatform-cli/` — `git rm -r`.
-- `infra/k8s/organiclever/` — `git rm -r` (only entry in `infra/k8s/`; confirmed on 2026-04-18 via `ls infra/k8s`).
-- `archived/ayokoding-web-hugo/`, `archived/organiclever-web/`, `archived/oseplatform-web-hugo/` — `git rm -r`.
 
 ### Phase 15 — `.opencode/` sync
 
@@ -247,7 +240,6 @@ No history rewrite (`rebase -i`, `push --force`) under any circumstance.
 - **Per-phase post-commit check**: Husky pre-push gate runs automatically if `git push` is issued between phases; if not pushing between phases, that's fine — final push (Phase 16) runs the gate once at the end.
 - **Full workspace sweep (Phase 16)**: `npx nx run-many -t typecheck lint test:quick spec-coverage`.
 - **Governance sweep (Phase 16)**: `repo-rules-checker` agent produces a report under `generated-reports/`. If it flags CRITICAL or HIGH findings, `repo-rules-fixer` loop runs until double-zero.
-- **Residual brand grep (Phase 16)**: `rtk grep -R -in "ayokoding\|oseplatform\|organiclever\|hugo-commons" apps libs specs scripts infra archived .github .claude .opencode governance docs README.md CLAUDE.md AGENTS.md LICENSING-NOTICE.md package.json nx.json tsconfig.base.json | rg -v "plans/done/"` — empty output is the pass condition. The `plans/done/` exclusion is retained as a safety net; post-cleanup `plans/done/` is empty until the current plan archives itself at Phase 17, then contains exactly one entry. The exclusion ensures that future archived plans that reference product names historically (e.g., when migrating old repos from `ose-public`) will not trigger the sweep.
 
 ## Out-of-Scope but Worth Noting
 

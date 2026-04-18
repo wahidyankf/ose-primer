@@ -365,8 +365,6 @@ Internals and customization.
 
 ### Tutorial Naming Convention
 
-**Location**: `governance/conventions/tutorials/naming.md`
-
 **Six progressive levels**:
 
 1. **Initial Setup (0-5%)**: Run "Hello World"
@@ -456,10 +454,8 @@ docs/explanation/infrastructure/security/security-basics.md
 
 ## Related Conventions
 
-- [Tutorial Naming Convention](../../conventions/tutorials/naming.md) - Six progressive tutorial levels
 - [Diátaxis Framework](../../conventions/structure/diataxis-framework.md) - Four documentation types
 - [File Naming Convention](../../conventions/structure/file-naming.md) - Kebab-case naming rules for documentation files
-- [Tutorial Convention](../../conventions/tutorials/general.md) - Progressive tutorial structure
 
 ## References
 

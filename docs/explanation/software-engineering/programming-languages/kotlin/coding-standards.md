@@ -23,11 +23,7 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: You MUST understand Kotlin fundamentals from [AyoKoding Kotlin Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/kotlin/_index.md) before using these standards.
-
 **This document is OSE Platform-specific**, not a Kotlin tutorial. We define HOW to apply Kotlin in THIS codebase, not WHAT Kotlin is.
-
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md)
 
 ## Purpose
 
@@ -688,7 +684,6 @@ These standards are enforced through:
 
 ## Related Documentation
 
-- [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md)
 - [Functional Programming](../../../../../governance/development/pattern/functional-programming.md)
 - [Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)
 - [Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)

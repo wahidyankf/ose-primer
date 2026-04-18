@@ -342,9 +342,7 @@ ALWAYS include at the end of the delivery checklist:
 - [ ] Verify ALL delivery checklist items are ticked
 - [ ] Verify ALL quality gates pass (local + CI)
 - [ ] Verify ALL manual assertions pass (Playwright MCP / curl)
-- [ ] Move plan folder from `plans/in-progress/` to `plans/done/` via `git mv`
 - [ ] Update `plans/in-progress/README.md` — remove the plan entry
-- [ ] Update `plans/done/README.md` — add the plan entry with completion date
 - [ ] Update any other READMEs that reference this plan (e.g., plans/README.md)
 - [ ] Commit the archival: `chore(plans): move [plan-name] to done`
 ```

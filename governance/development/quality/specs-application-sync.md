@@ -161,18 +161,18 @@ Use this table when uncertain whether a change requires a spec update:
 
 When a new endpoint is added to the OpenAPI spec in `a-demo-contracts`, both the corresponding Gherkin scenarios and the C4 component diagram must be updated to reflect the new behavior and component.
 
-### ayokoding-web specs
+### a-demo-fs-ts-nextjs specs
 
-`specs/apps/ayokoding/` maintains C4 diagrams and Gherkin scenarios for the Next.js 16 fullstack platform:
+`specs/apps/a-demo/` maintains C4 diagrams and Gherkin scenarios for the Next.js 16 fullstack platform:
 
-- `specs/apps/ayokoding/c4/` — Architecture diagrams kept current with the Next.js App Router structure and tRPC routers
-- `specs/apps/ayokoding/be/gherkin/` — Scenarios for tRPC procedures consumed by `ayokoding-web-be-e2e`
+- `specs/apps/a-demo/c4/` — Architecture diagrams kept current with the Next.js App Router structure and tRPC routers
+- `specs/apps/a-demo/be/gherkin/` — Scenarios for tRPC procedures consumed by `a-demo-be-e2e`
 
-When a new tRPC router is added to `apps/ayokoding-web/`, a new component entry appears in the C4 component diagram and new scenarios are added to the Gherkin directory.
+When a new tRPC router is added to `apps/a-demo-fs-ts-nextjs/`, a new component entry appears in the C4 component diagram and new scenarios are added to the Gherkin directory.
 
 ### CLI apps
 
-CLI apps (`rhino-cli`, `ayokoding-cli`, `oseplatform-cli`) use the automated enforcement path:
+CLI apps (`rhino-cli`, `rhino-cli`, `rhino-cli`) use the automated enforcement path:
 
 - Each Cobra command file maps to a `@tag` in a Gherkin feature file
 - `rhino-cli spec-coverage validate` enforces the 1:1 mapping automatically
@@ -218,9 +218,9 @@ The C4 diagram in `specs/apps/a-demo/c4/` is updated to remove the Clojure conta
 
 ### FAIL: Renaming an app without updating specs
 
-The team renames `apps/organiclever-fe` to `apps/organiclever-landing`. The `specs/apps/organiclever-fe/` folder is not renamed.
+The team renames `apps/a-demo-fe-ts-nextjs` to `apps/a-demo-landing`. The `specs/apps/a-demo-fe-ts-nextjs/` folder is not renamed.
 
-CI now has a mismatch: the app path and the spec path use different names. Reviewers and new contributors cannot determine whether `specs/apps/organiclever-fe/` refers to the current `organiclever-landing` app or a removed app. This is a violation.
+CI now has a mismatch: the app path and the spec path use different names. Reviewers and new contributors cannot determine whether `specs/apps/a-demo-fe-ts-nextjs/` refers to the current `a-demo-landing` app or a removed app. This is a violation.
 
 ### PASS: Bug fix with no spec change
 

@@ -73,7 +73,7 @@ specs/{scope}/{name}/{layer}/gherkin/{domain}/{feature}.feature
 Where:
 
 - **`{scope}`** = `apps` or `libs`
-- **`{name}`** = project name (e.g., `a-demo`, `ayokoding`, `oseplatform`, `rhino`, `organiclever`, `golang-commons`, `ts-ui`)
+- **`{name}`** = project name (e.g., `a-demo`, `a-demo`, `a-demo`, `rhino`, `a-demo`, `golang-commons`, `ts-ui`)
 - **`{layer}`** = `be`, `fe`, `cli`, or `build-tools` (apps only; omitted for libs)
 - **`{domain}`** = business domain grouping folder (e.g., `expenses/`, `authentication/`, `health/`)
 - **`{feature}`** = feature file name describing the behavior
@@ -88,8 +88,8 @@ The rules for domain subdirectories vary by layer type:
 specs/apps/a-demo/be/gherkin/expenses/expense-management.feature
 specs/apps/a-demo/be/gherkin/expenses/attachments.feature
 specs/apps/a-demo/be/gherkin/authentication/password-login.feature
-specs/apps/ayokoding/fe/gherkin/accessibility/accessibility.feature
-specs/apps/organiclever/fe/gherkin/authentication/google-login.feature
+specs/apps/a-demo/fe/gherkin/accessibility/accessibility.feature
+specs/apps/a-demo/fe/gherkin/authentication/google-login.feature
 ```
 
 A domain folder may contain one or many feature files. Group features by business domain, not by technical concern.
@@ -100,8 +100,8 @@ A domain folder may contain one or many feature files. Group features by busines
 specs/apps/rhino/cli/gherkin/doctor.feature
 specs/apps/rhino/cli/gherkin/env-backup.feature
 specs/apps/rhino/cli/gherkin/spec-coverage-validate.feature
-specs/apps/ayokoding/cli/gherkin/links-check.feature
-specs/apps/oseplatform/cli/gherkin/links-check.feature
+specs/apps/a-demo/cli/gherkin/links-check.feature
+specs/apps/a-demo/cli/gherkin/links-check.feature
 ```
 
 **Rationale for CLI exception**: CLI commands are independent operations, not grouped into business domains. Domain folders containing one or two files each would add indirection without value. The flat structure communicates that each file is an independent command specification.
@@ -109,7 +109,7 @@ specs/apps/oseplatform/cli/gherkin/links-check.feature
 **Build-tools specs** use domain subdirectories under `gherkin/`:
 
 ```
-specs/apps/ayokoding/build-tools/gherkin/index-generation/index-generation.feature
+specs/apps/a-demo/build-tools/gherkin/index-generation/index-generation.feature
 ```
 
 **Lib specs** use package or module subdirectories under `gherkin/` (no layer segment because libs do not have BE/FE/CLI layers):
@@ -119,7 +119,7 @@ specs/libs/golang-commons/gherkin/testutil/capture-stdout.feature
 specs/libs/golang-commons/gherkin/timeutil/timestamp.feature
 specs/libs/ts-ui/gherkin/button/button.feature
 specs/libs/ts-ui/gherkin/dialog/dialog.feature
-specs/libs/hugo-commons/gherkin/links/check-links.feature
+specs/libs/golang-commons/gherkin/links/check-links.feature
 ```
 
 ## Full Directory Structure
@@ -179,8 +179,8 @@ specs/
 
 Not every project has all directories. The presence of `c4/`, `contracts/`, or specific layer directories depends on the project:
 
-- **`c4/`**: Present for multi-layer app groups (e.g., `a-demo`, `ayokoding`, `oseplatform`, `organiclever`)
-- **`contracts/`**: Present only for apps with OpenAPI contract specs (e.g., `a-demo`, `organiclever`)
+- **`c4/`**: Present for multi-layer app groups (e.g., `a-demo`, `a-demo`, `a-demo`, `a-demo`)
+- **`contracts/`**: Present only for apps with OpenAPI contract specs (e.g., `a-demo`, `a-demo`)
 - **Layer directories** (`be/`, `fe/`, `cli/`, `build-tools/`): Present only for layers that exist in the app group
 
 ## README Index Files

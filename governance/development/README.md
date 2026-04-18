@@ -26,7 +26,7 @@ Development conventions and standards for the open-sharia-enterprise project. Th
 
 - Software development methodologies (BDD, testing, agile practices)
 - Build processes, tooling, and automation workflows
-- Hugo **theme/layout development** (historical - no active Hugo sites remain)
+- static-site **theme/layout development** (historical - no active legacy sites remain)
 - Development infrastructure (temporary files, build artifacts, reports)
 - Git workflows and commit message standards
 - AI agent development and configuration
@@ -39,7 +39,7 @@ Development conventions and standards for the open-sharia-enterprise project. Th
 - Markdown writing standards and style guides
 - Documentation organization (Diátaxis framework)
 - File naming and linking in docs
-- Hugo **content** writing (historical - no active Hugo sites remain)
+- static-site **content** writing (historical - no active legacy sites remain)
 - Visual documentation elements (diagrams, colors in docs)
 - Documentation quality and accessibility
 
@@ -64,7 +64,7 @@ Development conventions and standards for the open-sharia-enterprise project. Th
 
 - "Use Trunk Based Development for git workflow" → ✅ Development (software practice)
 - "Commit messages must follow Conventional Commits" → ✅ Development (development workflow)
-- "Hugo themes use Hugo Pipes for asset processing" → ✅ Development (software development)
+- "static-site themes use static-site Pipes for asset processing" → ✅ Development (software development)
 - "Markdown files use 2-space indentation" → ❌ Convention (documentation rule)
 - "Why we automate repetitive tasks" → ❌ Principle (foundational value)
 
@@ -87,7 +87,6 @@ Development practices in this directory fall into several categories:
 ### Tool-Specific Documentation
 
 **Purpose:** Define technology-specific best practices
-**Examples:** Hugo Development, AI Agents
 **Structure:** Overview → Conventions → Patterns → Anti-patterns
 
 ### Infrastructure Documentation
@@ -148,7 +147,6 @@ Development practices in this directory fall into several categories:
 - [Acceptance Criteria Convention](./infra/acceptance-criteria.md) - Writing testable acceptance criteria using Gherkin format for clarity and automation. Covers Gherkin syntax and common patterns
 - [BDD Spec-to-Test Mapping Convention](./infra/bdd-spec-test-mapping.md) - Mandatory 1:1 mapping between CLI commands and Gherkin specifications. Covers domain-prefixed subcommand pattern, Go file naming (underscores), feature file naming (hyphens), and coverage enforcement via `spec-coverage validate`
 - [GitHub Actions Workflow Naming Convention](./infra/github-actions-workflow-naming.md) - Workflow filenames must mirror their `name:` field using a consistent kebab-case derivation rule, enabling developers to navigate between the GitHub UI and the filesystem without ambiguity
-- [Vercel Deployment Convention](./infra/vercel-deployment.md) - Rules for configuring `vercel.json` when Nx build targets must run before the framework build
 - [Docker Monorepo Build Patterns](./infra/docker-monorepo-builds.md) - Patterns and pitfalls for building Docker images in an npm workspace monorepo (workspace symlink resolution, direct node_modules injection, transitive dependency hoisting)
 - [CI/CD Conventions](./infra/ci-conventions.md) - Central reference for CI/CD conventions: git hooks, test level definitions, coverage thresholds, Docker patterns, GitHub Actions structure, and naming rules
 
@@ -159,10 +157,6 @@ Development practices in this directory fall into several categories:
 - [Accessibility Convention](./frontend/accessibility.md) - WCAG AA compliance, focus-visible management, reduced-motion support, ARIA attributes by component type, hit targets, and form input requirements
 - [Styling Convention](./frontend/styling.md) - Tailwind v4 patterns, utility-first approach, class ordering via prettier-plugin-tailwindcss, responsive design, and defensive CSS
 
-### Hugo Development Documentation
-
-- [Hugo Development Convention](./hugo/development.md) - **DEPRECATED** -- Historical standards for developing Hugo sites. Both ayokoding-web and oseplatform-web have migrated to Next.js 16. Preserved for reference only
-
 ## 📚 Companion Documents
 
 Each primary practice document in this directory has companion files providing practical guidance:
@@ -170,7 +164,7 @@ Each primary practice document in this directory has companion files providing p
 - **anti-patterns.md** - Common mistakes to avoid (with examples and corrections)
 - **best-practices.md** - Recommended patterns and techniques
 
-These companion files exist in each subdirectory: `workflow/`, `quality/`, `pattern/`, `agents/`, `infra/`, and `hugo/`. The `frontend/` directory embeds anti-patterns and best practices inline within its convention documents. The `practice/` subdirectory currently contains only one document; companion files will be added as the category grows.
+These companion files exist in each subdirectory: `workflow/`, `quality/`, `pattern/`, `agents/`, and `infra/`. The `frontend/` directory embeds anti-patterns and best practices inline within its convention documents. The `practice/` subdirectory currently contains only one document; companion files will be added as the category grows.
 
 ## 🔗 Related Documentation
 

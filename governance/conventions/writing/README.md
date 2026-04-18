@@ -17,7 +17,7 @@ Content quality standards, validation methodology, and writing guidelines for do
 
 ## Purpose
 
-This directory contains universal standards for writing documentation content that apply to ALL repository markdown contexts (docs/, Hugo sites, plans/, root files). These are the foundational writing conventions that all other content builds upon.
+This directory contains universal standards for writing documentation content that apply to ALL repository markdown contexts (docs/, legacy sites, plans/, root files). These are the foundational writing conventions that all other content builds upon.
 
 ## Documents
 
@@ -26,7 +26,6 @@ This directory contains universal standards for writing documentation content th
 - [Dynamic Collection References](./dynamic-collection-references.md) - Standards for referencing dynamic collections (agents, principles, conventions, practices, skills) without hardcoding counts. Prevents documentation drift by requiring count-free references with links to authoritative index documents
 - [Factual Validation](./factual-validation.md) - Universal methodology for validating factual correctness across all repository content using web verification (WebSearch + WebFetch). Defines core validation methodology, web verification workflow, confidence classification (Verified, Unverified, Error, Outdated)
 - [OSS Documentation](./oss-documentation.md) - Standards for repository documentation files (README, CONTRIBUTING, ADRs, security) following open source best practices
-- [Indonesian Content Policy](./indonesian-content-policy.md) - Policy defining when and how to create Indonesian content in ayokoding-web bilingual platform. Establishes English-first policy, defines Indonesian content categories (unique content, strategic translations, discouraged mirrors), and provides decision tree for language selection
 - [README Quality](./readme-quality.md) - Quality standards for README.md files ensuring engagement, accessibility, and scannability. Defines problem-solution hooks, jargon elimination, acronym context requirements, benefits-focused language, navigation structure, and paragraph length limits
 - [Web Research Delegation](./web-research-delegation.md) - Normative rule requiring AI agents to delegate public-web information gathering to the `web-research-maker` subagent when research exceeds the delegation threshold (2+ searches or 3+ fetches per claim). Enumerates three exceptions (single-shot known URL; fixer re-validation; link-reachability checkers)
 
@@ -34,8 +33,6 @@ This directory contains universal standards for writing documentation content th
 
 - [Formatting Conventions](../formatting/README.md) - Markdown syntax, visual elements
 - [Structure Conventions](../structure/README.md) - File organization and naming
-- [Tutorials Conventions](../tutorials/README.md) - Tutorial creation standards
-- [Hugo Conventions](../hugo/README.md) - Hugo site content standards
 
 ## Principles Implemented/Respected
 

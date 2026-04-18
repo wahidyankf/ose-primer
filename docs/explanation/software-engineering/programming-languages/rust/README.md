@@ -85,22 +85,15 @@ OSE Platform Rust applications MUST use the following stack:
 - **Upcoming**: Rust 2024 edition (SHOULD adopt when stabilized)
 - **Version**: Rust 1.82+ (stable)
 
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md) for Rust-specific release documentation location
-
 ## Prerequisite Knowledge
 
 **REQUIRED**: This documentation assumes you have completed the AyoKoding Rust learning path. These are **OSE Platform-specific style guides**, not educational tutorials.
 
 **You MUST understand Rust fundamentals before using these standards:**
 
-- **[Rust Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/rust/)** - Complete language coverage
-- **[Rust By Example](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/rust/by-example/)** - Annotated code examples from basic to advanced
-
 **What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply Rust knowledge in THIS codebase.
 
 **What this documentation does NOT cover**: Rust syntax, ownership/borrowing fundamentals, language concepts (those are in ayokoding-web).
-
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md) for content separation rules.
 
 ## Software Engineering Principles
 

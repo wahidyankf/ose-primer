@@ -26,8 +26,6 @@ updated: 2026-02-06
 
 **This document is OSE Platform-specific**, not a Spring tutorial. We define HOW to apply Spring in THIS codebase, not WHAT Spring is.
 
-**See**: [Programming Language Documentation Separation Convention](../../../../../../governance/conventions/structure/programming-language-docs-separation.md)
-
 # Spring Framework DDD Standards for OSE Platform
 
 **OSE-specific prescriptive standards** for Domain-Driven Design in Spring-based Shariah-compliant financial applications. This document defines **mandatory requirements** using RFC 2119 keywords (MUST, SHOULD, MAY).
@@ -776,8 +774,6 @@ com.oseplatform.donation/
 ### Learning Resources
 
 For learning Spring Framework fundamentals and concepts referenced in these standards, see:
-
-- **[Spring By Example](../../../../../../apps/ayokoding-web/content/en/learn/software-engineering/platform-web/tools/jvm-spring/by-example/_index.md)** - Annotated Spring code examples
 
 **Note**: These standards assume you've learned Spring basics from ayokoding-web. We don't re-explain fundamental concepts here.
 

@@ -205,7 +205,6 @@ both working.
 **Related Development Standards:**
 
 - [Nx Target Standards](./nx-targets.md) - Canonical target names and build dependency patterns
-- [Vercel Deployment Convention](./vercel-deployment.md) - Related build context and dependency
   chain considerations
 
 **Agents:**

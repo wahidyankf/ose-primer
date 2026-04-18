@@ -207,7 +207,7 @@ context: |
 
 ```
 docs-checker.md
-apps-ayokoding-web-general-maker.md
+apps-a-demo-fs-ts-nextjs-general-maker.md
 plan-execution-checker.md
 ```
 

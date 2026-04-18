@@ -64,14 +64,11 @@ Does this define HOW TO WRITE OR FORMAT DOCUMENTATION?
 
 ### Examples of Scope Boundaries
 
-| Topic                                             | Location                                        | Reasoning                            |
-| ------------------------------------------------- | ----------------------------------------------- | ------------------------------------ |
-| How to write Hugo content (frontmatter, markdown) | `conventions/hugo/hugo-content-ose-platform.md` | About **writing** content            |
-| How to develop Hugo themes (layouts, templates)   | `development/hugo/development.md`               | About **building** infrastructure    |
-| How to format tutorials                           | `conventions/tutorials/general.md`              | About **writing** tutorials          |
-| How to write acceptance criteria                  | `development/infra/acceptance-criteria.md`      | About **software quality** process   |
-| How to name files                                 | `conventions/structure/file-naming.md`          | About **documentation** organization |
-| How to write commit messages                      | `development/workflow/commit-messages.md`       | About **git workflow**               |
+| Topic                            | Location                                   | Reasoning                            |
+| -------------------------------- | ------------------------------------------ | ------------------------------------ |
+| How to write acceptance criteria | `development/infra/acceptance-criteria.md` | About **software quality** process   |
+| How to name files                | `conventions/structure/file-naming.md`     | About **documentation** organization |
+| How to write commit messages     | `development/workflow/commit-messages.md`  | About **git workflow**               |
 
 ## Convention Document Structure
 
@@ -423,7 +420,6 @@ If a convention becomes obsolete:
 Looking for inspiration? These conventions exemplify different structural approaches:
 
 - **[Color Accessibility Convention](../formatting/color-accessibility.md)** - Comprehensive reference convention with detailed palette specifications, contrast ratios, and tool-specific guidance
-- **[Tutorial Naming Convention](../tutorials/naming.md)** - Decision-tree convention with structured types, coverage percentages, and clear selection criteria
 - **[Indentation Convention](../formatting/indentation.md)** - Simple, focused convention addressing a single technical standard with clear examples
 
 ## Examples
@@ -542,8 +538,8 @@ Conventions are most effective when enforced or assisted by agents:
 
 - **docs-checker** - Validates documentation follows conventions
 - **docs-link-checker** - Enforces linking convention
-- **apps-ayokoding-web-general-checker** - Validates general Hugo content conventions
-- **apps-ayokoding-web-by-example-checker** - Validates by-example tutorial conventions
+- **apps-a-demo-fs-ts-nextjs-general-checker** - Validates general Hugo content conventions
+- **apps-a-demo-fs-ts-nextjs-by-example-checker** - Validates by-example tutorial conventions
 - **repo-rules-checker** - Audits convention compliance
 
 ### Agent Integration Checklist

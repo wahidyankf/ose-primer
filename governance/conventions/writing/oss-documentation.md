@@ -721,8 +721,6 @@ Instances of abusive, harassing, or otherwise unacceptable behavior may be repor
 - Include copyright holder name and year
 - Do not modify standard license text (except placeholders)
 
-**Current Project:** Per-directory licensing strategy with FSL-1.1-MIT (product apps, behavioral specifications) and MIT (shared libraries, reference implementations). See [Per-Directory Licensing Convention](../structure/licensing.md) for full details.
-
 ### CHANGELOG.md
 
 **Location:** `CHANGELOG.md` at repository root

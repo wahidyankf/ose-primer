@@ -52,8 +52,6 @@ updated: 2026-03-06
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: You MUST understand Go fundamentals from [AyoKoding Go Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/golang/_index.md) before using these standards.
-
 **This document is OSE Platform-specific**, not a Go tutorial.
 
 **What you need to know before reading**:
@@ -62,8 +60,6 @@ updated: 2026-03-06
 - Go modules basics
 - Command-line tools fundamentals
 - Basic Docker knowledge
-
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md)
 
 ## 🎯 Purpose
 

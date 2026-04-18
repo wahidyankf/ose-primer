@@ -58,18 +58,18 @@ This convention establishes designated directories for temporary files created b
 All checker agents in the following families MUST write audit reports to `generated-reports/`:
 
 1. **repo-rules-checker** - Repository consistency validation
-2. **apps-ayokoding-web-general-checker** - General content validation (ayokoding-web)
-3. **apps-ayokoding-web-by-example-checker** - By-example tutorial validation (ayokoding-web)
-4. **apps-ayokoding-web-facts-checker** - Educational content factual accuracy validation
-5. **apps-ayokoding-web-link-checker** - Link validation (ayokoding-web)
-6. **apps-oseplatform-web-content-checker** - Content validation (oseplatform-web, Next.js)
+2. **apps-a-demo-fs-ts-nextjs-general-checker** - General content validation (a-demo-fs-ts-nextjs)
+3. **apps-a-demo-fs-ts-nextjs-by-example-checker** - By-example tutorial validation (a-demo-fs-ts-nextjs)
+4. **apps-a-demo-fs-ts-nextjs-facts-checker** - Educational content factual accuracy validation
+5. **apps-a-demo-fs-ts-nextjs-link-checker** - Link validation (a-demo-fs-ts-nextjs)
+6. **apps-a-demo-fs-ts-nextjs-content-checker** - Content validation (a-demo-fs-ts-nextjs, Next.js)
 7. **docs-checker** - Documentation factual accuracy validation
 8. **docs-link-checker** - External and internal link validation
 9. **docs-tutorial-checker** - Tutorial quality validation
 10. **readme-checker** - README quality validation
 11. **plan-checker** - Plan readiness validation
 12. **plan-execution-checker** - Implementation validation
-13. **apps-ayokoding-web-in-the-field-checker** - In-the-field content validation (ayokoding-web)
+13. **apps-a-demo-fs-ts-nextjs-in-the-field-checker** - In-the-field content validation (a-demo-fs-ts-nextjs)
 14. **docs-software-engineering-separation-checker** - Software engineering docs separation validation
 15. **repo-workflow-checker** - Workflow documentation quality validation
 16. **specs-checker** - Gherkin/BDD specs directory structural and content validation
@@ -106,7 +106,7 @@ All checker agents MUST follow the universal naming pattern:
 
 **Components** (4 parts separated by `__`):
 
-- `{agent-family}`: Agent name WITHOUT the `-checker` suffix (e.g., `repo-rules`, `ayokoding-web`, `docs`, `plan`)
+- `{agent-family}`: Agent name WITHOUT the `-checker` suffix (e.g., `repo-rules`, `a-demo-fs-ts-nextjs`, `docs`, `plan`)
 - `{uuid-chain}`: Execution hierarchy as underscore-separated 6-char UUIDs (e.g., `a1b2c3`, `a1b2c3_d4e5f6`)
 - `{YYYY-MM-DD--HH-MM}`: Timestamp in UTC+7 (double dash between date and time)
 - `{type}`: Report type suffix (`audit`, `validation`, `fix`)
@@ -121,9 +121,9 @@ All checker agents MUST follow the universal naming pattern:
 
 ```
 generated-reports/repo-rules__a1b2c3__2025-12-14--20-45__audit.md
-generated-reports/ayokoding-web-general__d4e5f6__2025-12-14--15-30__audit.md
-generated-reports/ayokoding-web-by-example__a1b2c3_d4e5f6__2025-12-14--15-45__audit.md
-generated-reports/oseplatform-web-content__g7h8i9__2025-12-14--16-00__audit.md
+generated-reports/a-demo-fs-ts-nextjs-general__d4e5f6__2025-12-14--15-30__audit.md
+generated-reports/a-demo-fs-ts-nextjs-by-example__a1b2c3_d4e5f6__2025-12-14--15-45__audit.md
+generated-reports/a-demo-fs-ts-nextjs-content__g7h8i9__2025-12-14--16-00__audit.md
 generated-reports/docs__a1b2c3_d4e5f6_g7h8i9__2025-12-15--10-00__audit.md
 generated-reports/plan__b2c3d4__2025-12-15--11-30__validation.md
 generated-reports/plan-execution__c3d4e5__2025-12-15--14-00__validation.md
@@ -158,17 +158,17 @@ To enable accurate parent-child hierarchy tracking across concurrent workflow ru
 
 **Scope Definitions**:
 
-| Workflow/Agent            | Scope           | Tracking File                    |
-| ------------------------- | --------------- | -------------------------------- |
-| repo-rules-checker        | `repo-rules`    | `.execution-chain-repo-rules`    |
-| docs-checker              | `docs`          | `.execution-chain-docs`          |
-| docs-tutorial-checker     | `docs-tutorial` | `.execution-chain-docs-tutorial` |
-| readme-checker            | `readme`        | `.execution-chain-readme`        |
-| plan-checker              | `plan`          | `.execution-chain-plan`          |
-| docs-link-checker         | `docs-link`     | `.execution-chain-docs-link`     |
-| ayokoding-web-\* (golang) | `golang`        | `.execution-chain-golang`        |
-| ayokoding-web-\* (elixir) | `elixir`        | `.execution-chain-elixir`        |
-| oseplatform-web-\*        | `ose-platform`  | `.execution-chain-ose-platform`  |
+| Workflow/Agent                  | Scope           | Tracking File                    |
+| ------------------------------- | --------------- | -------------------------------- |
+| repo-rules-checker              | `repo-rules`    | `.execution-chain-repo-rules`    |
+| docs-checker                    | `docs`          | `.execution-chain-docs`          |
+| docs-tutorial-checker           | `docs-tutorial` | `.execution-chain-docs-tutorial` |
+| readme-checker                  | `readme`        | `.execution-chain-readme`        |
+| plan-checker                    | `plan`          | `.execution-chain-plan`          |
+| docs-link-checker               | `docs-link`     | `.execution-chain-docs-link`     |
+| a-demo-fs-ts-nextjs-\* (golang) | `golang`        | `.execution-chain-golang`        |
+| a-demo-fs-ts-nextjs-\* (elixir) | `elixir`        | `.execution-chain-elixir`        |
+| a-demo-fs-ts-nextjs-\*          | `ose-platform`  | `.execution-chain-ose-platform`  |
 
 **Tracking File Format**: `{unix-timestamp} {uuid-chain}`
 
@@ -397,18 +397,18 @@ This progressive approach ensures findings persist even if context is compacted 
 ALL \*-checker agents must implement progressive writing:
 
 1. repo-rules-checker
-2. apps-ayokoding-web-general-checker
-3. apps-ayokoding-web-by-example-checker
-4. apps-ayokoding-web-facts-checker
-5. apps-ayokoding-web-link-checker
-6. apps-oseplatform-web-content-checker
+2. apps-a-demo-fs-ts-nextjs-general-checker
+3. apps-a-demo-fs-ts-nextjs-by-example-checker
+4. apps-a-demo-fs-ts-nextjs-facts-checker
+5. apps-a-demo-fs-ts-nextjs-link-checker
+6. apps-a-demo-fs-ts-nextjs-content-checker
 7. docs-checker
 8. docs-link-checker
 9. docs-tutorial-checker
 10. readme-checker
 11. plan-checker
 12. plan-execution-checker
-13. apps-ayokoding-web-in-the-field-checker
+13. apps-a-demo-fs-ts-nextjs-in-the-field-checker
 14. docs-software-engineering-separation-checker
 15. repo-workflow-checker
 16. specs-checker
@@ -424,7 +424,7 @@ ALL \*-checker agents must implement progressive writing:
 
 **Components** (4 parts):
 
-- `{agent-family}`: Agent name WITHOUT checker/fixer/maker suffix (e.g., `repo-rules`, `ayokoding-web`, `docs`, `plan`, `plan-execution`)
+- `{agent-family}`: Agent name WITHOUT checker/fixer/maker suffix (e.g., `repo-rules`, `a-demo-fs-ts-nextjs`, `docs`, `plan`, `plan-execution`)
 - `{uuid-chain}`: Execution hierarchy as underscore-separated 6-char UUIDs (e.g., `a1b2c3`, `a1b2c3_d4e5f6`)
 - `{YYYY-MM-DD--HH-MM}`: Timestamp in UTC+7 with double dash between date and time
 - `{suffix}`: Report type suffix (`audit`, `fix`, `validation`)
@@ -451,9 +451,9 @@ ALL \*-checker agents must implement progressive writing:
 ```
 generated-reports/repo-rules__a1b2c3__2025-12-14--20-45__audit.md
 generated-reports/repo-rules__a1b2c3__2025-12-14--20-45__fix.md
-generated-reports/ayokoding-web__d4e5f6__2025-12-14--15-30__audit.md
-generated-reports/ayokoding-web__a1b2c3_d4e5f6__2025-12-14--15-30__audit.md
-generated-reports/oseplatform-web-content__g7h8i9__2025-12-14--15-30__audit.md
+generated-reports/a-demo-fs-ts-nextjs__d4e5f6__2025-12-14--15-30__audit.md
+generated-reports/a-demo-fs-ts-nextjs__a1b2c3_d4e5f6__2025-12-14--15-30__audit.md
+generated-reports/a-demo-fs-ts-nextjs-content__g7h8i9__2025-12-14--15-30__audit.md
 generated-reports/docs__b2c3d4__2025-12-15--10-00__validation.md
 generated-reports/plan__c3d4e5__2025-12-15--11-30__validation.md
 generated-reports/plan-execution__d4e5f6__2025-12-15--14-00__validation.md
@@ -467,7 +467,7 @@ generated-reports/plan-execution__d4e5f6__2025-12-15--14-00__validation.md
 - UUID MUST be 6 lowercase hex characters (generated via `uuidgen | head -c 6`)
 - Timestamp MUST be UTC+7 (YYYY-MM-DD--HH-MM format)
 - Zero-pad all timestamp components (01 not 1, 09 not 9)
-- Agent family is lowercase with single dashes (multi-word: `oseplatform-web-content`, `plan-execution`)
+- Agent family is lowercase with single dashes (multi-word: `a-demo-fs-ts-nextjs-content`, `plan-execution`)
 - Suffix is lowercase, no plurals (`audit` not `audits`)
 
 **CRITICAL - UUID and Timestamp Generation:**
@@ -524,7 +524,7 @@ filename="repo-rules__${uuid}__${timestamp}__audit.md"
 
 #### Fixer Reports (Universal Pattern)
 
-**Agents**: All fixer agents (repo-rules-fixer, apps-ayokoding-web-general-fixer, apps-ayokoding-web-by-example-fixer, apps-ayokoding-web-facts-fixer, apps-ayokoding-web-in-the-field-fixer, apps-ayokoding-web-link-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, apps-oseplatform-web-content-fixer, readme-fixer, docs-fixer, plan-fixer, repo-workflow-fixer, specs-fixer)
+**Agents**: All fixer agents (repo-rules-fixer, apps-a-demo-fs-ts-nextjs-general-fixer, apps-a-demo-fs-ts-nextjs-by-example-fixer, apps-a-demo-fs-ts-nextjs-facts-fixer, apps-a-demo-fs-ts-nextjs-in-the-field-fixer, apps-a-demo-fs-ts-nextjs-link-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, apps-a-demo-fs-ts-nextjs-content-fixer, readme-fixer, docs-fixer, plan-fixer, repo-workflow-fixer, specs-fixer)
 
 **Pattern**: `{agent-family}__{uuid-chain}__{YYYY-MM-DD--HH-MM}__fix.md`
 
@@ -538,15 +538,15 @@ filename="repo-rules__${uuid}__${timestamp}__audit.md"
 
 **Report Pairing Examples**:
 
-| Agent Family            | Audit Report                                                   | Fix Report                                                   |
-| ----------------------- | -------------------------------------------------------------- | ------------------------------------------------------------ |
-| repo-rules              | `repo-rules__a1b2c3__2025-12-14--20-45__audit.md`              | `repo-rules__a1b2c3__2025-12-14--20-45__fix.md`              |
-| ayokoding-web           | `ayokoding-web__d4e5f6__2025-12-14--15-30__audit.md`           | `ayokoding-web__d4e5f6__2025-12-14--15-30__fix.md`           |
-| oseplatform-web-content | `oseplatform-web-content__g7h8i9__2025-12-14--16-00__audit.md` | `oseplatform-web-content__g7h8i9__2025-12-14--16-00__fix.md` |
-| docs-tutorial           | `docs-tutorial__a1b2c3_d4e5f6__2025-12-14--10-15__audit.md`    | `docs-tutorial__a1b2c3_d4e5f6__2025-12-14--10-15__fix.md`    |
-| readme                  | `readme__b2c3d4__2025-12-14--09-45__audit.md`                  | `readme__b2c3d4__2025-12-14--09-45__fix.md`                  |
-| docs                    | `docs__c3d4e5__2025-12-15--10-00__validation.md`               | `docs__c3d4e5__2025-12-15--10-00__fix.md`                    |
-| plan                    | `plan__d4e5f6__2025-12-15--11-30__validation.md`               | `plan__d4e5f6__2025-12-15--11-30__fix.md`                    |
+| Agent Family                | Audit Report                                                       | Fix Report                                                       |
+| --------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| repo-rules                  | `repo-rules__a1b2c3__2025-12-14--20-45__audit.md`                  | `repo-rules__a1b2c3__2025-12-14--20-45__fix.md`                  |
+| a-demo-fs-ts-nextjs         | `a-demo-fs-ts-nextjs__d4e5f6__2025-12-14--15-30__audit.md`         | `a-demo-fs-ts-nextjs__d4e5f6__2025-12-14--15-30__fix.md`         |
+| a-demo-fs-ts-nextjs-content | `a-demo-fs-ts-nextjs-content__g7h8i9__2025-12-14--16-00__audit.md` | `a-demo-fs-ts-nextjs-content__g7h8i9__2025-12-14--16-00__fix.md` |
+| docs-tutorial               | `docs-tutorial__a1b2c3_d4e5f6__2025-12-14--10-15__audit.md`        | `docs-tutorial__a1b2c3_d4e5f6__2025-12-14--10-15__fix.md`        |
+| readme                      | `readme__b2c3d4__2025-12-14--09-45__audit.md`                      | `readme__b2c3d4__2025-12-14--09-45__fix.md`                      |
+| docs                        | `docs__c3d4e5__2025-12-15--10-00__validation.md`                   | `docs__c3d4e5__2025-12-15--10-00__fix.md`                        |
+| plan                        | `plan__d4e5f6__2025-12-15--11-30__validation.md`                   | `plan__d4e5f6__2025-12-15--11-30__fix.md`                        |
 
 **Why Same UUID and Timestamp?**
 
@@ -606,17 +606,17 @@ All fixer reports include these sections:
 
 #### Content Validation Reports
 
-**Agents**: apps-ayokoding-web-general-checker, apps-ayokoding-web-by-example-checker, apps-ayokoding-web-facts-checker, apps-ayokoding-web-in-the-field-checker, apps-ayokoding-web-link-checker, apps-oseplatform-web-content-checker
+**Agents**: apps-a-demo-fs-ts-nextjs-general-checker, apps-a-demo-fs-ts-nextjs-by-example-checker, apps-a-demo-fs-ts-nextjs-facts-checker, apps-a-demo-fs-ts-nextjs-in-the-field-checker, apps-a-demo-fs-ts-nextjs-link-checker, apps-a-demo-fs-ts-nextjs-content-checker
 **Pattern**: `{site}__{uuid-chain}__{YYYY-MM-DD--HH-MM}__audit.md`
 
 **Examples**:
 
-- `ayokoding-web-general__a1b2c3__2025-12-14--15-30__audit.md`
-- `ayokoding-web-by-example__d4e5f6__2025-12-14--15-45__audit.md`
-- `ayokoding-web-facts__a1b2c3__2025-12-14--15-50__audit.md`
-- `ayokoding-web-in-the-field__d4e5f6__2025-12-14--15-55__audit.md`
-- `ayokoding-web-link__g7h8i9__2025-12-14--16-00__audit.md`
-- `oseplatform-web-content__g7h8i9__2025-12-14--16-10__audit.md`
+- `a-demo-fs-ts-nextjs-general__a1b2c3__2025-12-14--15-30__audit.md`
+- `a-demo-fs-ts-nextjs-by-example__d4e5f6__2025-12-14--15-45__audit.md`
+- `a-demo-fs-ts-nextjs-facts__a1b2c3__2025-12-14--15-50__audit.md`
+- `a-demo-fs-ts-nextjs-in-the-field__d4e5f6__2025-12-14--15-55__audit.md`
+- `a-demo-fs-ts-nextjs-link__g7h8i9__2025-12-14--16-00__audit.md`
+- `a-demo-fs-ts-nextjs-content__g7h8i9__2025-12-14--16-10__audit.md`
 
 **Content**: Content validation results (quality, factual accuracy, links)
 

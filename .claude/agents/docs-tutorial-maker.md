@@ -59,8 +59,6 @@ Seven tutorial types with progressive coverage depth:
 6. **Cookbook** (varies) - Common recipes and solutions
 7. **By Example** (75-90% coverage) - Heavily annotated code examples for experienced developers
 
-**Coverage percentages** indicate topic depth, NOT time to complete. See [Tutorial Naming Convention](../../governance/conventions/tutorials/naming.md) for complete details.
-
 **CRITICAL: Never suggest time estimates** in tutorial content. Coverage percentages indicate comprehensiveness, not duration. Let users learn at their own pace.
 
 ## Mathematical Notation
@@ -297,8 +295,6 @@ return db.users.create({ username, hash });
 - Discuss design decisions, alternatives, and implications
 - Reference related examples or documentation
 
-See [Tutorial Naming Convention - By Example Requirements](../../governance/conventions/tutorials/naming.md#by-example-requirements) for complete annotation standards.
-
 ## File Naming
 
 Tutorial files follow the pattern: `tu-[content-identifier].md`
@@ -497,9 +493,6 @@ When updating tutorials:
 ## Reference Documentation
 
 **Tutorial Standards**:
-
-- [Tutorial Naming Convention](../../governance/conventions/tutorials/naming.md) - Types, coverage levels, naming patterns
-- [By Example Content Standard](../../governance/conventions/tutorials/programming-language-content.md) - Annotation requirements
 
 **Content Standards**:
 

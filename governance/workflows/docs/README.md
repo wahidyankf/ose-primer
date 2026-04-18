@@ -18,7 +18,7 @@ These workflows define **WHEN and HOW to validate documentation**, orchestrating
 
 **❌ Not Included:**
 
-- Hugo site validation (that's ayokoding-web/)
+- Hugo site validation (that's a-demo-fs-ts-nextjs/)
 - README validation (that's separate workflow)
 - Single-agent operations (use agents directly)
 
@@ -31,7 +31,6 @@ These workflows define **WHEN and HOW to validate documentation**, orchestrating
 
 - [Workflows Index](../README.md) - All orchestrated workflows
 - [Content Quality Principles](../../conventions/writing/quality.md) - Quality standards these workflows enforce
-- [Tutorial Convention](../../conventions/tutorials/general.md) - Tutorial standards
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md) - Core workflow pattern
 
 ---

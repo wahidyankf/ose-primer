@@ -40,7 +40,6 @@ This convention establishes the Diátaxis framework as the organizational struct
 
 ### What This Convention Does NOT Cover
 
-- **How to write content within categories** - Covered in category-specific conventions (e.g., [Tutorial Naming Convention](../tutorials/naming.md), [README Quality Convention](../writing/readme-quality.md))
 - **File naming within categories** - Covered in [File Naming Convention](./file-naming.md)
 - **Hugo site structure** - Covered in Hugo content conventions
 - **Content quality standards** - Covered in [Content Quality Principles](../writing/quality.md)

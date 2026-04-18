@@ -29,14 +29,14 @@ Documentation conventions and standards for the open-sharia-enterprise project. 
 - Visual elements in docs (diagrams, colors, emojis, math notation)
 - Content quality and accessibility standards
 - Documentation file formats (tutorials, plans)
-- Hugo **content** writing conventions (historical - no active Hugo sites remain)
+- static-site **content** writing conventions (historical - no active legacy sites remain)
 - Repository documentation standards (README, CONTRIBUTING)
 
 **Does NOT Belong Here (use [Development](../development/README.md) instead):**
 
 - Software development methodologies (BDD, testing, agile)
 - Build processes and tooling workflows
-- Hugo **theme/layout development** (historical - no active Hugo sites remain)
+- static-site **theme/layout development** (historical - no active legacy sites remain)
 - Development infrastructure (temporary files, build artifacts)
 - Git workflows and commit practices
 - AI agent development standards
@@ -74,8 +74,6 @@ Conventions are organized into 6 semantic categories:
 - **[linking/](#linking)** - Cross-reference and internal linking standards
 - **[writing/](#writing)** - Content quality, validation, writing standards
 - **[structure/](#structure)** - Documentation organization, file naming, plans
-- **[tutorials/](#tutorials)** - Tutorial creation and structure conventions
-- **[hugo/](#hugo)** - Hugo site content conventions (mostly deprecated — all active sites now use Next.js 16)
 
 ---
 
@@ -96,7 +94,7 @@ Standards for markdown formatting, syntax, and visual elements.
 
 Standards for cross-referencing and internal linking between repository content.
 
-- [Internal AyoKoding Reference Links](./linking/internal-ayokoding-references.md) - Standards for linking from docs/ to apps/ayokoding-web/ content using relative paths instead of public web URLs. Ensures links work during local development, testing, and remain portable across environments. Defines path calculation method, common patterns, and enforcement mechanisms for repository-internal references
+- [Internal a-demo Reference Links](./linking/internal-a-demo-references.md) - Standards for linking from docs/ to apps/a-demo-fs-ts-nextjs/ content using relative paths instead of public web URLs. Ensures links work during local development, testing, and remain portable across environments. Defines path calculation method, common patterns, and enforcement mechanisms for repository-internal references
 
 ## Writing
 
@@ -106,7 +104,6 @@ Content quality standards, validation methodology, and writing guidelines.
 - [Conventions](./writing/conventions.md) - **Meta-convention** defining how to write and organize convention documents. Covers document structure, scope boundaries, quality checklist, when to create new vs update existing, length guidelines, and integration with agents. Essential reading for creating or updating conventions
 - [Dynamic Collection References](./writing/dynamic-collection-references.md) - Standards for referencing dynamic collections (agents, principles, conventions, practices, skills) without hardcoding counts. Prevents documentation drift by requiring count-free references with links to authoritative index documents. **Agents**: repo-rules-checker, repo-rules-fixer
 - [Factual Validation](./writing/factual-validation.md) - Universal methodology for validating factual correctness across all repository content using web verification (WebSearch + WebFetch). Defines core validation methodology (command syntax, features, versions, code examples, external refs, mathematical notation, diagram colors), web verification workflow, confidence classification (Verified, Unverified, Error, Outdated)
-- [Indonesian Content Policy](./writing/indonesian-content-policy.md) - Policy defining when and how to create Indonesian content in ayokoding-web. Establishes English-first policy for technical tutorials, defines Indonesian content categories (unique content, strategic translations, discouraged mirrors), provides decision tree for language selection, and specifies agent behavior for content creation
 - [OSS Documentation](./writing/oss-documentation.md) - Standards for repository documentation files (README, CONTRIBUTING, ADRs, security) following open source best practices
 - [README Quality](./writing/readme-quality.md) - Quality standards for README.md files ensuring engagement, accessibility, and scannability. Defines problem-solution hooks, jargon elimination (plain language over corporate speak), acronym context requirements, benefits-focused language, navigation structure, and paragraph length limits. **Agents**: readme-maker, readme-checker
 - [Web Research Delegation](./writing/web-research-delegation.md) - Normative rule requiring AI agents to delegate public-web information gathering to the `web-research-maker` subagent when research exceeds the delegation threshold (2+ `WebSearch` calls or 3+ `WebFetch` calls for a single claim). Enumerates three exceptions (single-shot known URL; fixer re-validation; link-reachability checkers). **Agents**: web-research-maker, repo-rules-checker
@@ -118,32 +115,17 @@ Documentation organization frameworks, file naming, and project planning structu
 - [Agent Naming Convention](./structure/agent-naming.md) - Single exception-free filename rule for agent files in `.claude/agents/` and `.opencode/agent/`. Defines scope vocabulary, role vocabulary (maker, checker, fixer, dev, deployer, executor, manager), and the audit command enforced by `repo-rules-checker`
 - [Diataxis Framework](./structure/diataxis-framework.md) - Understanding the four-category documentation organization framework we use (Tutorials, How-To, Reference, Explanation)
 - [File Naming Convention](./structure/file-naming.md) - Lowercase kebab-case file names anchored on standard markdown and GitHub compatibility
-- [Per-Directory Licensing](./structure/licensing.md) - Standards for the per-directory licensing strategy using FSL-1.1-MIT for product apps, behavioral specifications (specs, E2E tests), and their supporting CLI tools, and MIT for shared libraries and reference implementations. Guiding principle: implementation code (HOW) can be MIT; behavioral specifications (WHAT) must be FSL to prevent clean-room engineering of competing products. Defines LICENSE file placement rules, template requirements, copyright notice format, and rules for new directories
 - [Plans Organization](./structure/plans.md) - Standards for organizing project planning documents in plans/ folder including structure (ideas.md, backlog/, in-progress/, done/), naming patterns (YYYY-MM-DD\_\_identifier/), lifecycle stages, and project identifiers. Defines how plans move from ideas - backlog - in-progress - done
-- [Programming Language Documentation Separation](./structure/programming-language-docs-separation.md) - Establishes clear separation between repository-specific programming language style guides (docs/explanation/) and educational programming language content (ayokoding-web). Defines scope boundaries, prerequisite knowledge requirements, cross-referencing patterns, and DRY principle application. Applies to all programming languages (Java, Python, Golang, TypeScript, Elixir, Kotlin, Dart, Rust, Clojure, F#, C#)
 - [Specs Directory Structure](./structure/specs-directory-structure.md) - Canonical directory structure for Gherkin feature files, C4 architecture diagrams, and OpenAPI contracts in the specs/ directory. Defines path patterns, domain subdirectory rules (required for BE/FE, flat for CLI), and lib spec organization
 - [Workflow Naming Convention](./structure/workflow-naming.md) - Single exception-free filename rule for workflow files under `governance/workflows/` (except `meta/` reference docs). Defines scope vocabulary, type vocabulary (quality-gate, execution, setup), and the audit command enforced by `repo-rules-checker` and `rhino-cli workflows validate-naming`
 
 ## Tutorials
 
-Tutorial creation, structure, naming, and content standards applying to **all tutorial content** (docs/, ayokoding-web, oseplatform-web, anywhere). These conventions **build upon and extend** the writing conventions above.
+Tutorial creation, structure, naming, and content standards applying to **all tutorial content** (docs/, a-demo-fs-ts-nextjs, a-demo-fs-ts-nextjs, anywhere). These conventions **build upon and extend** the writing conventions above.
 
-- [By Concept Tutorial](./tutorials/by-concept.md) - **Universal** standards for narrative-driven by-concept tutorials (Component 4 of Full Set Tutorial Package) achieving 95% coverage through comprehensive concept explanations. Applies to all programming language tutorials across the repository
-- [By Example Tutorial](./tutorials/by-example.md) - **Universal** standards for code-first by-example tutorials (Component 3 of Full Set Tutorial Package - PRIORITY) with 75-85 heavily annotated, self-contained, runnable examples achieving 95% coverage. Defines five-part example structure (brief explanation, optional Mermaid diagram, heavily annotated code with `// =>` notation, key takeaway), self-containment rules across beginner/intermediate/advanced levels, educational comment standards (1-2.25 ratio), and coverage progression (0-40%, 40-75%, 75-95%). Prioritized for fast learning ("move fast"). Applies to all programming language tutorials across the repository
-- [Cookbook Tutorial](./tutorials/cookbook.md) - **Universal** standards for problem-focused cookbook tutorials (Component 5 of Full Set Tutorial Package) with 30+ practical, copy-paste ready recipes organized by problem type. Defines recipe structure (Problem - Solution - Explanation - Pitfalls - Related), lighter annotation density (0.5-1.5 vs 1-2.25), recipe independence (no required reading order), and cross-level applicability (useful for all skill levels). Complements both by-example and by-concept tracks. Applies to all programming language tutorials across the repository
-- [Programming Language Content Standard](./tutorials/programming-language-content.md) - **Universal** Full Set Tutorial Package architecture for programming language education. Defines 5 mandatory components with by-example prioritized first (Component 3: code-first 75-85 examples for fast learning), by-concept second (Component 4: narrative-driven for deep learning), plus foundational tutorials, cookbook in tutorials/, and supporting docs. Coverage philosophy (0-30% foundational, 95% learning tracks), quality metrics, and completeness criteria. Applies to all programming language tutorials (docs/, ayokoding-web, anywhere). **See also**: [How to Add a Programming Language](../../docs/how-to/add-programming-language.md)
-- [Programming Language Tutorial Structure](./tutorials/programming-language-structure.md) - **Universal** directory structure for Full Set Tutorial Package with 5 mandatory components: foundational tutorials (initial-setup, quick-start), by-example track (Component 3 - PRIORITY: code-first with 75-85 examples, 95% coverage, "move fast"), by-concept track (Component 4: narrative-driven, 95% coverage, "learn deep"), and cookbook (Component 5: practical recipes in tutorials/cookbook/). Defines navigation pattern (by-example first), weight values, and creation order. All 5 components required for complete language content. Applies to all programming language tutorials across the repository
-- [Tutorial Convention](./tutorials/general.md) - **Universal** standards for creating learning-oriented tutorials with narrative flow, progressive scaffolding, and hands-on elements. Covers all 7 tutorial types that combine into Full Set Tutorial Package. Applies to all tutorial content (docs/, ayokoding-web, oseplatform-web, anywhere)
-- [Tutorial Naming](./tutorials/naming.md) - **Universal** Full Set Tutorial Package definition (5 mandatory components) and tutorial type standards (Initial Setup, Quick Start, Beginner, Intermediate, Advanced, Cookbook, By Example). Replaces old "Full Set" concept (5 sequential levels) with new architecture emphasizing component completeness. Applies to all tutorial content across the repository
-- [In-the-Field Tutorial Convention](./tutorials/in-the-field.md) - **Universal** standards for production-ready implementation guides that build on by-example and by-concept foundations by introducing frameworks, libraries, and enterprise patterns used in real-world systems. Targets developers ready to apply concepts in production environments. Applies to all in-the-field tutorial content across the repository
+## static-site (Historical)
 
-## Hugo (Historical)
-
-Hugo site-specific content conventions. **All Hugo sites have migrated to Next.js 16.** These conventions are preserved for historical reference only.
-
-- [Hugo Content - ayokoding](./hugo/ayokoding.md) - **DEPRECATED** — Historical Hugo conventions for ayokoding-web (Hextra theme). ayokoding-web has migrated to Next.js 16. Preserved for reference only
-- [Hugo Content - OSE Platform](./hugo/ose-platform.md) - **DEPRECATED** -- Historical Hugo conventions for oseplatform-web (PaperMod theme). oseplatform-web has migrated to Next.js 16. Preserved for reference only
-- [Hugo Content - Shared](./hugo/shared.md) - **DEPRECATED** -- Historical shared Hugo content conventions. No active Hugo sites remain. Preserved for reference only
+static-site site-specific content conventions. **All legacy sites have migrated to Next.js 16.** These conventions are preserved for historical reference only.
 
 ## Related Documentation
 

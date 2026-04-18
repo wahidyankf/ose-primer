@@ -136,16 +136,16 @@ Tags are the standard mechanism for attaching structured metadata to projects in
 
 Every project declares tags along four dimensions. Each dimension uses a fixed prefix and a controlled vocabulary.
 
-| Dimension | Prefix      | Allowed Values                                                                                                        | Required                       | Purpose                                                       |
-| --------- | ----------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
-| Type      | `type:`     | `app`, `lib`, `e2e`                                                                                                   | Always                         | Distinguishes deployable apps, reusable libs, and test suites |
-| Platform  | `platform:` | `hugo`, `cli`, `nextjs`, `spring-boot`, `phoenix`, `giraffe`, `gin`, `fastapi`, `axum`, `ktor`, `vertx`, `playwright` | Apps and e2e projects          | Framework or runtime environment                              |
-| Language  | `lang:`     | `golang`, `ts`, `java`, `elixir`, `fsharp`, `python`, `rust`, `kotlin`, `dart`                                        | Projects with application code | Primary language of source code                               |
-| Domain    | `domain:`   | `ayokoding`, `oseplatform`, `organiclever`, `demo-be`, `demo-fe`, `tooling`                                           | Always                         | Business or product domain                                    |
+| Dimension | Prefix      | Allowed Values                                                                                                | Required                       | Purpose                                                       |
+| --------- | ----------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
+| Type      | `type:`     | `app`, `lib`, `e2e`                                                                                           | Always                         | Distinguishes deployable apps, reusable libs, and test suites |
+| Platform  | `platform:` | `cli`, `nextjs`, `spring-boot`, `phoenix`, `giraffe`, `gin`, `fastapi`, `axum`, `ktor`, `vertx`, `playwright` | Apps and e2e projects          | Framework or runtime environment                              |
+| Language  | `lang:`     | `golang`, `ts`, `java`, `elixir`, `fsharp`, `python`, `rust`, `kotlin`, `dart`                                | Projects with application code | Primary language of source code                               |
+| Domain    | `domain:`   | `a-demo`, `a-demo`, `a-demo`, `demo-be`, `demo-fe`, `tooling`                                                 | Always                         | Business or product domain                                    |
 
 ### Special Rules
 
-**Hugo sites omit `lang:` (historical -- no active Hugo sites remain)**: Hugo sites consist of templates and markdown content; `go.mod` and `go.sum` present in a Hugo project are Hugo module dependency files, not application source code. No application code is written in Go, so `lang:` does not apply.
+**legacy sites omit `lang:` (historical -- no active legacy sites remain)**: legacy sites consist of templates and markdown content; `go.mod` and `go.sum` present in a static-site project are static-site module dependency files, not application source code. No application code is written in Go, so `lang:` does not apply.
 
 **Go libs omit `platform:`**: A Go library has no framework or runtime boundary — only a primary language. Declare `type:lib` and `lang:golang`; omit `platform:`.
 
@@ -153,34 +153,34 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 
 ### Current Project Tags
 
-| Project                     | Tags                                                                     |
-| --------------------------- | ------------------------------------------------------------------------ |
-| `ayokoding-web`             | `["type:app", "platform:nextjs", "lang:ts", "domain:ayokoding"]`         |
-| `ayokoding-cli`             | `["type:app", "platform:cli", "lang:golang", "domain:ayokoding"]`        |
-| `rhino-cli`                 | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`          |
-| `a-demo-be-java-springboot` | `["type:app", "platform:spring-boot", "lang:java", "domain:a-demo-be"]`  |
-| `a-demo-be-elixir-phoenix`  | `["type:app", "platform:phoenix", "lang:elixir", "domain:a-demo-be"]`    |
-| `a-demo-be-fsharp-giraffe`  | `["type:app", "platform:giraffe", "lang:fsharp", "domain:a-demo-be"]`    |
-| `a-demo-be-golang-gin`      | `["type:app", "platform:gin", "lang:golang", "domain:a-demo-be"]`        |
-| `a-demo-be-python-fastapi`  | `["type:app", "platform:fastapi", "lang:python", "domain:a-demo-be"]`    |
-| `a-demo-be-rust-axum`       | `["type:app", "platform:axum", "lang:rust", "domain:a-demo-be"]`         |
-| `a-demo-be-kotlin-ktor`     | `["type:app", "platform:ktor", "lang:kotlin", "domain:a-demo-be"]`       |
-| `a-demo-be-java-vertx`      | `["type:app", "platform:vertx", "lang:java", "domain:a-demo-be"]`        |
-| `a-demo-be-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:a-demo-be"]`     |
-| `organiclever-fe`           | `["type:app", "platform:nextjs", "lang:ts", "domain:organiclever"]`      |
-| `organiclever-be`           | `["type:app", "platform:giraffe", "lang:fsharp", "domain:organiclever"]` |
-| `organiclever-fe-e2e`       | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]`  |
-| `organiclever-be-e2e`       | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]`  |
-| `a-demo-fe-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:a-demo-fe"]`         |
-| `a-demo-fe-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:a-demo-fe"]`     |
-| `oseplatform-cli`           | `["type:app", "platform:cli", "lang:golang", "domain:oseplatform"]`      |
-| `oseplatform-web`           | `["type:app", "platform:nextjs", "lang:ts", "domain:oseplatform"]`       |
-| `hugo-commons`              | `["type:lib", "lang:golang"]`                                            |
-| `golang-commons`            | `["type:lib", "lang:golang"]`                                            |
-| `clojure-openapi-codegen`   | `["type:lib", "lang:clojure", "domain:tooling"]`                         |
-| `elixir-cabbage`            | `["type:lib", "lang:elixir", "domain:tooling"]`                          |
-| `elixir-gherkin`            | `["type:lib", "lang:elixir", "domain:tooling"]`                          |
-| `elixir-openapi-codegen`    | `["type:lib", "lang:elixir", "domain:tooling"]`                          |
+| Project                     | Tags                                                                    |
+| --------------------------- | ----------------------------------------------------------------------- |
+| `a-demo-fs-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:a-demo"]`           |
+| `rhino-cli`                 | `["type:app", "platform:cli", "lang:golang", "domain:a-demo"]`          |
+| `rhino-cli`                 | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`         |
+| `a-demo-be-java-springboot` | `["type:app", "platform:spring-boot", "lang:java", "domain:a-demo-be"]` |
+| `a-demo-be-elixir-phoenix`  | `["type:app", "platform:phoenix", "lang:elixir", "domain:a-demo-be"]`   |
+| `a-demo-be-fsharp-giraffe`  | `["type:app", "platform:giraffe", "lang:fsharp", "domain:a-demo-be"]`   |
+| `a-demo-be-golang-gin`      | `["type:app", "platform:gin", "lang:golang", "domain:a-demo-be"]`       |
+| `a-demo-be-python-fastapi`  | `["type:app", "platform:fastapi", "lang:python", "domain:a-demo-be"]`   |
+| `a-demo-be-rust-axum`       | `["type:app", "platform:axum", "lang:rust", "domain:a-demo-be"]`        |
+| `a-demo-be-kotlin-ktor`     | `["type:app", "platform:ktor", "lang:kotlin", "domain:a-demo-be"]`      |
+| `a-demo-be-java-vertx`      | `["type:app", "platform:vertx", "lang:java", "domain:a-demo-be"]`       |
+| `a-demo-be-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:a-demo-be"]`    |
+| `a-demo-fe-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:a-demo"]`           |
+| `a-demo-be-fsharp-giraffe`  | `["type:app", "platform:giraffe", "lang:fsharp", "domain:a-demo"]`      |
+| `a-demo-fe-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:a-demo"]`       |
+| `a-demo-be-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:a-demo"]`       |
+| `a-demo-fe-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:a-demo-fe"]`        |
+| `a-demo-fe-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:a-demo-fe"]`    |
+| `rhino-cli`                 | `["type:app", "platform:cli", "lang:golang", "domain:a-demo"]`          |
+| `a-demo-fs-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:a-demo"]`           |
+| `golang-commons`            | `["type:lib", "lang:golang"]`                                           |
+| `golang-commons`            | `["type:lib", "lang:golang"]`                                           |
+| `clojure-openapi-codegen`   | `["type:lib", "lang:clojure", "domain:tooling"]`                        |
+| `elixir-cabbage`            | `["type:lib", "lang:elixir", "domain:tooling"]`                         |
+| `elixir-gherkin`            | `["type:lib", "lang:elixir", "domain:tooling"]`                         |
+| `elixir-openapi-codegen`    | `["type:lib", "lang:elixir", "domain:tooling"]`                         |
 
 ### Example: Complete Tag Declaration
 
@@ -214,18 +214,18 @@ A Go lib has no platform boundary and no domain, so it omits both:
 
 ### Summary Matrix
 
-Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → integration tests, (3) All web apps (APIs + web UIs) → E2E tests. Hugo sites are exempt from all rules. `spec-coverage` is compulsory for all apps and E2E runners.
+Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → integration tests, (3) All web apps (APIs + web UIs) → E2E tests. legacy sites are exempt from all rules. `spec-coverage` is compulsory for all apps and E2E runners.
 
-| Project Type           | `test:unit` | `test:integration` | `test:e2e` | `test:quick` | `spec-coverage` | `lint` | `build` | `typecheck`  |
-| ---------------------- | ----------- | ------------------ | ---------- | ------------ | --------------- | ------ | ------- | ------------ |
-| API Backend            | Yes         | Yes (PG)           | Yes\*      | Yes          | Yes             | Yes    | Yes     | Yes (all 11) |
-| Web UI App             | Yes         | Yes (MSW)          | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
-| Demo-fe FE             | Yes         | —                  | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
-| Fullstack              | Yes         | Yes                | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
-| CLI App                | Yes         | Yes (Godog)        | —          | Yes          | Yes             | Yes    | Yes     | If typed     |
-| Library                | Yes         | Optional           | —          | Yes          | Yes             | Yes    | —       | If typed     |
-| Hugo Site (historical) | —           | —                  | —          | Yes          | —               | —      | Yes     | —            |
-| E2E Runner             | —           | —                  | Yes        | Yes          | Yes             | Yes    | —       | If typed     |
+| Project Type                  | `test:unit` | `test:integration` | `test:e2e` | `test:quick` | `spec-coverage` | `lint` | `build` | `typecheck`  |
+| ----------------------------- | ----------- | ------------------ | ---------- | ------------ | --------------- | ------ | ------- | ------------ |
+| API Backend                   | Yes         | Yes (PG)           | Yes\*      | Yes          | Yes             | Yes    | Yes     | Yes (all 11) |
+| Web UI App                    | Yes         | Yes (MSW)          | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
+| Demo-fe FE                    | Yes         | —                  | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
+| Fullstack                     | Yes         | Yes                | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
+| CLI App                       | Yes         | Yes (Godog)        | —          | Yes          | Yes             | Yes    | Yes     | If typed     |
+| Library                       | Yes         | Optional           | —          | Yes          | Yes             | Yes    | —       | If typed     |
+| static-site Site (historical) | —           | —                  | —          | Yes          | —               | —      | Yes     | —            |
+| E2E Runner                    | —           | —                  | Yes        | Yes          | Yes             | Yes    | —       | If typed     |
 
 **Demo-be backend `typecheck` commands** (all 11 backends have `typecheck` with `dependsOn: ["codegen"]`):
 
@@ -260,20 +260,20 @@ Every project in `apps/` and `libs/` must expose:
 
 **`test:quick` composition** — each project decides which fast checks form its gate. The target runs its checks directly (calling the underlying tools, not other Nx targets) to avoid double execution when `lint` or `typecheck` are also run standalone by the pre-push hook. Common compositions:
 
-| Project type           | Typical `test:quick` composition                                                                                                                                                                                                   |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TypeScript app         | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥90%                                                                                   |
-| Go app                 | `go test -coverprofile=cover.out ./... && rhino-cli test-coverage validate <project>/cover.out 90` — compiles and runs unit tests (excluding `//go:build integration` files), then enforces ≥90% line coverage (Codecov algorithm) |
-| Java/Spring Boot       | unit tests only (`mvn test`, includes `**/unit/**/*Test.java`); JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%. Integration tests run separately via `test:integration`                                  |
-| Java/Vert.x            | unit tests with Cucumber JVM (mocked dependencies); JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                       |
-| Kotlin/Ktor            | unit tests with Cucumber JVM (mocked dependencies); Kover JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                 |
-| Python/FastAPI         | unit tests with `pytest` (mocked dependencies) → LCOV → `rhino-cli test-coverage validate` ≥90%                                                                                                                                    |
-| Rust/Axum              | unit tests with `cargo test --lib` + `cargo llvm-cov --lcov` → `rhino-cli test-coverage validate` ≥90%                                                                                                                             |
-| Hugo site (historical) | link check via the site's CLI tool (build runs separately via `nx build`)                                                                                                                                                          |
-| Demo-fe TS app         | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥70%                                                                                   |
-| Demo-fe Dart/Flutter   | `flutter test test/unit --coverage`; LCOV coverage validated via `rhino-cli test-coverage validate` ≥70%                                                                                                                           |
-| Demo-be Elixir/Phoenix | unit tests (`mix coveralls.lcov --only unit`); LCOV coverage validated via `rhino-cli test-coverage validate` ≥90%                                                                                                                 |
-| Playwright `*-e2e`     | run the linter directly (no unit tests to add beyond linting)                                                                                                                                                                      |
+| Project type                  | Typical `test:quick` composition                                                                                                                                                                                                   |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TypeScript app                | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥90%                                                                                   |
+| Go app                        | `go test -coverprofile=cover.out ./... && rhino-cli test-coverage validate <project>/cover.out 90` — compiles and runs unit tests (excluding `//go:build integration` files), then enforces ≥90% line coverage (Codecov algorithm) |
+| Java/Spring Boot              | unit tests only (`mvn test`, includes `**/unit/**/*Test.java`); JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%. Integration tests run separately via `test:integration`                                  |
+| Java/Vert.x                   | unit tests with Cucumber JVM (mocked dependencies); JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                       |
+| Kotlin/Ktor                   | unit tests with Cucumber JVM (mocked dependencies); Kover JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                 |
+| Python/FastAPI                | unit tests with `pytest` (mocked dependencies) → LCOV → `rhino-cli test-coverage validate` ≥90%                                                                                                                                    |
+| Rust/Axum                     | unit tests with `cargo test --lib` + `cargo llvm-cov --lcov` → `rhino-cli test-coverage validate` ≥90%                                                                                                                             |
+| static-site site (historical) | link check via the site's CLI tool (build runs separately via `nx build`)                                                                                                                                                          |
+| Demo-fe TS app                | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥70%                                                                                   |
+| Demo-fe Dart/Flutter          | `flutter test test/unit --coverage`; LCOV coverage validated via `rhino-cli test-coverage validate` ≥70%                                                                                                                           |
+| Demo-be Elixir/Phoenix        | unit tests (`mix coveralls.lcov --only unit`); LCOV coverage validated via `rhino-cli test-coverage validate` ≥90%                                                                                                                 |
+| Playwright `*-e2e`            | run the linter directly (no unit tests to add beyond linting)                                                                                                                                                                      |
 
 The rule: include only checks that complete fast. If `test:unit` is slow for a project, exclude it from `test:quick` and run it separately. **The target must always exist** — even if it only runs the type checker — so the pre-push hook covers every project.
 
@@ -304,7 +304,7 @@ analysis pass is warranted. **Exceptions that do declare `typecheck`**:
 
 ### Compiled and Bundled Projects
 
-Projects that produce artifacts from a compilation or bundling step (Go, Java, Hugo, Next.js):
+Projects that produce artifacts from a compilation or bundling step (Go, Java, static-site, Next.js):
 
 | Target  | Requirement                                                          |
 | ------- | -------------------------------------------------------------------- |
@@ -314,7 +314,7 @@ Projects that produce artifacts from a compilation or bundling step (Go, Java, H
 
 ### Apps with Development Servers
 
-Hugo sites, Next.js, Spring Boot, Python web apps:
+legacy sites, Next.js, Spring Boot, Python web apps:
 
 | Target | Requirement                                       |
 | ------ | ------------------------------------------------- |
@@ -340,10 +340,10 @@ Spring Boot, Python apps, TypeScript apps:
 
 Two integration test patterns exist depending on project type:
 
-| Pattern             | Projects                                                  | Requirement                                                                                                                                                | Cacheable |
-| ------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| Docker + PostgreSQL | All 11 demo-be backends                                   | Real PostgreSQL via `docker-compose.integration.yml`; calls application code directly (no HTTP layer); runs all shared Gherkin scenarios; fresh DB per run | No        |
-| In-process mocking  | `organiclever-fe` (MSW), Go CLIs (Godog), Go libs (Godog) | In-process mocking only (MSW / godog `RunE` / mock fixtures); no real database or external services; fully deterministic                                   | Yes       |
+| Pattern             | Projects                                                      | Requirement                                                                                                                                                | Cacheable |
+| ------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| Docker + PostgreSQL | All 11 demo-be backends                                       | Real PostgreSQL via `docker-compose.integration.yml`; calls application code directly (no HTTP layer); runs all shared Gherkin scenarios; fresh DB per run | No        |
+| In-process mocking  | `a-demo-fe-ts-nextjs` (MSW), Go CLIs (Godog), Go libs (Godog) | In-process mocking only (MSW / godog `RunE` / mock fixtures); no real database or external services; fully deterministic                                   | Yes       |
 
 **Demo-be backends** expose `test:integration` which runs `docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`. This starts a fresh PostgreSQL container, runs migrations, and executes all shared Gherkin scenarios by calling application service/repository functions directly — no HTTP layer. Each backend has a `docker-compose.integration.yml` (postgres + test runner services) and a `Dockerfile.integration` (language runtime + test execution). Coverage is NOT measured at the integration level — coverage comes from `test:unit` only.
 
@@ -356,11 +356,11 @@ Both files are co-located in the same `cmd/` package (not a separate folder) to 
 [BDD Spec-to-Test Mapping Convention](./bdd-spec-test-mapping.md) for the mandatory 1:1 mapping
 between commands and feature file `@tags`.
 
-**Go libs** (`hugo-commons`, `golang-commons`) also expose `test:integration` using the same Godog
+**Go libs** (`golang-commons`, `golang-commons`) also expose `test:integration` using the same Godog
 BDD pattern. Because libs have no CLI commands, integration tests call the public package API
 directly and use external test packages (`package foo_test`). They test complete library pipelines
 (e.g., `CheckLinks` → `OutputLinksText/JSON/Markdown`) and realistic consumer scenarios rather than
-isolated functions. Mock filesystem fixtures (tmpdir with controlled `.md` files) replace real Hugo
+isolated functions. Mock filesystem fixtures (tmpdir with controlled `.md` files) replace real static-site
 sites; `testutil.CaptureStdout` captures stdout from output functions. Feature files live in
 `specs/{lib-name}/{package}/`.
 
@@ -416,18 +416,18 @@ the project's feature files has a matching step definition in the implementation
 
 **Project coverage status**:
 
-| Project group                                                 | Status   | Notes                                                                                       |
-| ------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------- |
-| Go CLI apps (`rhino-cli`, `ayokoding-cli`, `oseplatform-cli`) | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                    |
-| Demo-be backends (all 11)                                     | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| Demo-fe frontends                                             | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| Fullstack (`a-demo-fs-ts-nextjs`)                             | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| E2E runners (`a-demo-be-e2e`, `a-demo-fe-e2e`)                | Enforced | `--shared-steps` only; test-support steps are implemented here                              |
-| Content platforms (`ayokoding-web`, `oseplatform-web`)        | Enforced | `--shared-steps`                                                                            |
-| Web UI apps (`organiclever-fe`)                               | Enforced | `--shared-steps`                                                                            |
-| OrganicLever backend (`organiclever-be`)                      | Enforced | `--shared-steps`                                                                            |
-| Libraries (`golang-commons`, `hugo-commons`)                  | Enforced | `--shared-steps`                                                                            |
-| Projects with genuine step gaps                               | Deferred | `spec-coverage` target exists but validation deferred until step implementation is complete |
+| Project group                                                    | Status   | Notes                                                                                       |
+| ---------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------- |
+| Go CLI apps (`rhino-cli`, `rhino-cli`, `rhino-cli`)              | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                    |
+| Demo-be backends (all 11)                                        | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
+| Demo-fe frontends                                                | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
+| Fullstack (`a-demo-fs-ts-nextjs`)                                | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
+| E2E runners (`a-demo-be-e2e`, `a-demo-fe-e2e`)                   | Enforced | `--shared-steps` only; test-support steps are implemented here                              |
+| Content platforms (`a-demo-fs-ts-nextjs`, `a-demo-fs-ts-nextjs`) | Enforced | `--shared-steps`                                                                            |
+| Web UI apps (`a-demo-fe-ts-nextjs`)                              | Enforced | `--shared-steps`                                                                            |
+| a-demo backend (`a-demo-be-fsharp-giraffe`)                      | Enforced | `--shared-steps`                                                                            |
+| Libraries (`golang-commons`, `golang-commons`)                   | Enforced | `--shared-steps`                                                                            |
+| Projects with genuine step gaps                                  | Deferred | `spec-coverage` target exists but validation deferred until step implementation is complete |
 
 All apps and E2E runners are required to have a `spec-coverage` target. Projects with genuine step
 gaps have the target deferred temporarily until step implementations are complete.
@@ -459,11 +459,11 @@ Accessibility testing is compulsory for all UI-related projects. It operates at 
 **Static a11y linting** (enforced via the `lint` target at all three gates: pre-push hook, PR
 quality gate, and scheduled Test CI workflows):
 
-| Project                                                                     | Static a11y tool           |
-| --------------------------------------------------------------------------- | -------------------------- |
-| `a-demo-fe-ts-nextjs`, `a-demo-fe-ts-tanstack-start`, `a-demo-fs-ts-nextjs` | `oxlint --jsx-a11y-plugin` |
-| `organiclever-fe`, `ayokoding-web`, `oseplatform-web`, `libs/ts-ui`         | `oxlint --jsx-a11y-plugin` |
-| `a-demo-fe-dart-flutterweb`                                                 | `dart analyze`             |
+| Project                                                                           | Static a11y tool           |
+| --------------------------------------------------------------------------------- | -------------------------- |
+| `a-demo-fe-ts-nextjs`, `a-demo-fe-ts-tanstack-start`, `a-demo-fs-ts-nextjs`       | `oxlint --jsx-a11y-plugin` |
+| `a-demo-fe-ts-nextjs`, `a-demo-fs-ts-nextjs`, `a-demo-fs-ts-nextjs`, `libs/ts-ui` | `oxlint --jsx-a11y-plugin` |
+| `a-demo-fe-dart-flutterweb`                                                       | `dart analyze`             |
 
 Static a11y linting catches common accessibility violations at compile time: missing alt text,
 missing ARIA labels, invalid ARIA attributes, missing form labels, and incorrect role usage.
@@ -485,15 +485,15 @@ or `layout/accessibility.feature`). UI component library specs in
 `specs/libs/ts-ui/gherkin/<component>/` must include "Has no accessibility violations" scenarios for
 each component.
 
-### Hugo Sites (Historical -- No Active Hugo Sites Remain)
+### static-site Sites (Historical -- No Active static-site Sites Remain)
 
-| Target  | Requirement                                            |
-| ------- | ------------------------------------------------------ |
-| `clean` | Remove `public/`, `resources/`, and `.hugo_build.lock` |
+| Target  | Requirement                            |
+| ------- | -------------------------------------- |
+| `clean` | Remove `public/`, `resources/`, and `` |
 
 ## Workspace-Level Defaults
 
-`nx.json` `targetDefaults` provide inherited behaviour for standard targets. Individual `project.json` files override these when the project differs (e.g., Hugo sites output to `public/` not `dist/`).
+`nx.json` `targetDefaults` provide inherited behaviour for standard targets. Individual `project.json` files override these when the project differs (e.g., legacy sites output to `public/` not `dist/`).
 
 ```json
 {
@@ -552,14 +552,14 @@ each component.
 
 Declare the output directory in `project.json` `outputs` to enable Nx cache restoration.
 
-| Project Type           | Output Directory        |
-| ---------------------- | ----------------------- |
-| Go CLI                 | `{projectRoot}/dist/`   |
-| Hugo site (historical) | `{projectRoot}/public/` |
-| Next.js                | `{projectRoot}/.next/`  |
-| Spring Boot            | `{projectRoot}/target/` |
+| Project Type                  | Output Directory        |
+| ----------------------------- | ----------------------- |
+| Go CLI                        | `{projectRoot}/dist/`   |
+| static-site site (historical) | `{projectRoot}/public/` |
+| Next.js                       | `{projectRoot}/.next/`  |
+| Spring Boot                   | `{projectRoot}/target/` |
 
-Example override for a Hugo site:
+Example override for a static-site site:
 
 ```json
 {
@@ -604,13 +604,13 @@ language:
 **Note**: Python and Clojure use underscore in `generated_contracts/` (matching their language
 conventions). All other languages use hyphen in `generated-contracts/`.
 
-**Go CLI apps** (`rhino-cli`, `ayokoding-cli`, `oseplatform-cli`) also consume Gherkin specs in `test:unit` (godog unit step definitions run without a build tag). Their `test:unit` and `test:quick` inputs must include the CLI's own spec files:
+**Go CLI apps** (`rhino-cli`, `rhino-cli`, `rhino-cli`) also consume Gherkin specs in `test:unit` (godog unit step definitions run without a build tag). Their `test:unit` and `test:quick` inputs must include the CLI's own spec files:
 
-| CLI App           | Gherkin specs input                                   |
-| ----------------- | ----------------------------------------------------- |
-| `rhino-cli`       | `{workspaceRoot}/specs/apps/rhino/**/*.feature`       |
-| `ayokoding-cli`   | `{workspaceRoot}/specs/apps/ayokoding/**/*.feature`   |
-| `oseplatform-cli` | `{workspaceRoot}/specs/apps/oseplatform/**/*.feature` |
+| CLI App     | Gherkin specs input                              |
+| ----------- | ------------------------------------------------ |
+| `rhino-cli` | `{workspaceRoot}/specs/apps/rhino/**/*.feature`  |
+| `rhino-cli` | `{workspaceRoot}/specs/apps/a-demo/**/*.feature` |
+| `rhino-cli` | `{workspaceRoot}/specs/apps/a-demo/**/*.feature` |
 
 Example for `rhino-cli` `test:unit` inputs:
 

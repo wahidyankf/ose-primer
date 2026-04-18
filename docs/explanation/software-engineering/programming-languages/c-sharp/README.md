@@ -77,22 +77,15 @@ OSE Platform C# applications MUST use the following stack:
 - **Current**: .NET 9 (short-term support) - C# 13, Task.WhenEach, LINQ improvements
 - **Upcoming**: .NET 10 LTS (C# 14, planned 2025) - collection extensions, params improvements
 
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md) for C#-specific release documentation location
-
 ## Prerequisite Knowledge
 
 **REQUIRED**: This documentation assumes you have completed the AyoKoding C# learning path. These are **OSE Platform-specific style guides**, not educational tutorials.
 
 **You MUST understand C# fundamentals before using these standards:**
 
-- **[C# Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/c-sharp/)** - Complete 0-95% language coverage
-- **[C# By Example](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/c-sharp/by-example/)** - Annotated code examples (beginner to advanced)
-
 **What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply C# knowledge in THIS codebase.
 
 **What this documentation does NOT cover**: C# syntax, language fundamentals, generic patterns (those are in ayokoding-web).
-
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md) for content separation rules.
 
 ## Software Engineering Principles
 

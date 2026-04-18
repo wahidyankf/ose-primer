@@ -78,22 +78,15 @@ OSE Platform Kotlin applications MUST use the following stack:
 - **JDK 17** - Minimum required for Spring Boot 3.x and Ktor 3.x
 - **JDK 21** - Recommended for virtual threads integration and latest LTS features
 
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md) for Kotlin-specific release documentation location
-
 ## Prerequisite Knowledge
 
 **REQUIRED**: This documentation assumes you have completed the AyoKoding Kotlin learning path. These are **OSE Platform-specific style guides**, not educational tutorials.
 
 **You MUST understand Kotlin fundamentals before using these standards:**
 
-- **[Kotlin Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/kotlin/)** - Complete 0-95% language coverage
-- **[Kotlin By Example](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/kotlin/by-example/)** - Annotated code examples (beginner to advanced)
-
 **What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply Kotlin knowledge in THIS codebase.
 
 **What this documentation does NOT cover**: Kotlin syntax, language fundamentals, generic patterns (those are in ayokoding-web).
-
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md) for content separation rules.
 
 ## Software Engineering Principles
 

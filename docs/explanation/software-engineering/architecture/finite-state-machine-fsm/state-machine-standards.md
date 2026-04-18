@@ -17,8 +17,6 @@ updated: 2026-02-09
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: Complete [AyoKoding FSM](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/architecture/finite-state-machine-fsm/) before using these standards.
-
 ## When to Use FSM
 
 **REQUIRED**: Use FSM when entity has 3+ distinct lifecycle stages AND transitions have business meaning.

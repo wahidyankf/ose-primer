@@ -34,8 +34,6 @@ related:
 
 **This document is OSE Platform-specific**, not a Spring Boot tutorial. We define HOW to apply AOP in THIS platform, not WHAT AOP is.
 
-**See**: [Programming Language Documentation Separation Convention](../../../../../../governance/conventions/structure/programming-language-docs-separation.md)
-
 ## Purpose
 
 This document defines **AOP standards** for Spring Boot applications in the OSE Platform. Spring Boot auto-configures AOP support and integrates aspects with Actuator metrics, distributed tracing, and Boot-specific features.

@@ -35,11 +35,8 @@ This document establishes the separation between:
 **Prerequisite Knowledge**: All architecture documentation assumes completion of corresponding AyoKoding learning paths. These are OSE Platform-specific standards, not educational tutorials.
 
 - **[C4 Architecture Model](./architecture/c4-architecture-model/README.md)** - System visualization
-  - **Prerequisite**: [AyoKoding C4 Architecture Model](../../../apps/ayokoding-web/content/en/learn/software-engineering/architecture/c4-architecture-model/)
 - **[Domain-Driven Design](./architecture/domain-driven-design-ddd/README.md)** - Strategic and tactical patterns
-  - **Prerequisite**: [AyoKoding Domain-Driven Design](../../../apps/ayokoding-web/content/en/learn/software-engineering/architecture/domain-driven-design-ddd/)
 - **[Finite State Machines](./architecture/finite-state-machine-fsm/README.md)** - State management
-  - **Prerequisite**: [AyoKoding Finite State Machines](../../../apps/ayokoding-web/content/en/learn/software-engineering/architecture/finite-state-machine-fsm/)
 
 ### Development Practices
 
@@ -48,9 +45,7 @@ This document establishes the separation between:
 **Prerequisite Knowledge**: All development practice documentation assumes completion of corresponding AyoKoding learning paths. These are OSE Platform-specific standards, not educational tutorials.
 
 - **[Test-Driven Development](./development/test-driven-development-tdd/README.md)** - TDD methodology
-  - **Prerequisite**: [AyoKoding Test-Driven Development](../../../apps/ayokoding-web/content/en/learn/software-engineering/development/test-driven-development-tdd/)
 - **[Behavior-Driven Development](./development/behavior-driven-development-bdd/README.md)** - BDD with Gherkin
-  - **Prerequisite**: [AyoKoding Behavior-Driven Development](../../../apps/ayokoding-web/content/en/learn/software-engineering/development/behavior-driven-development-bdd/)
 
 ### Language-Specific Coding Standards
 
@@ -116,30 +111,20 @@ Frameworks covered:
 
 Software design documentation in `docs/explanation/software-engineering/` contains **repository-specific style guides**, NOT educational content. Educational content lives in AyoKoding.
 
-**See**: [Programming Language Documentation Separation Convention](../../../governance/conventions/structure/programming-language-docs-separation.md) for complete separation rules.
-
 **Critical Rule**: docs/explanation/ content **MUST NOT duplicate** AyoKoding educational content. Style guides focus exclusively on OSE Platform-specific conventions.
 
 **Relationship Pattern**:
 
-- **AyoKoding content** (`apps/ayokoding-web/content/en/learn/`) = Educational foundation (0-95% language coverage, by-example tutorials, in-the-field production guides)
 - **Docs/explanation content** (`docs/explanation/software-engineering/`) = OSE Platform style guides (repository-specific naming, framework choices, architecture patterns)
 
 ### Specific Prerequisites
 
 The following `docs/explanation/` content assumes readers have completed the corresponding AyoKoding learning paths:
 
-| Advanced Reference (docs/explanation/)                                       | Prerequisite Learning (ayokoding-web)                                                                                                                                   |
-| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [programming-languages/java/](./programming-languages/java/)                 | [learn/software-engineering/programming-languages/java/](../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/java/)                 |
-| [programming-languages/golang/](./programming-languages/golang/)             | [learn/software-engineering/programming-languages/golang/](../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/golang/)             |
-| [programming-languages/elixir/](./programming-languages/elixir/)             | [learn/software-engineering/programming-languages/elixir/](../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/elixir/)             |
-| [platform-web/tools/jvm-spring/](./platform-web/tools/jvm-spring/)           | [learn/software-engineering/platform-web/tools/jvm-spring/](../../../apps/ayokoding-web/content/en/learn/software-engineering/platform-web/tools/jvm-spring/)           |
-| [platform-web/tools/jvm-spring-boot/](./platform-web/tools/jvm-spring-boot/) | [learn/software-engineering/platform-web/tools/jvm-spring-boot/](../../../apps/ayokoding-web/content/en/learn/software-engineering/platform-web/tools/jvm-spring-boot/) |
+| Advanced Reference (docs/explanation/) | Prerequisite Learning (ayokoding-web) |
+| -------------------------------------- | ------------------------------------- |
 
 ### Content Types and Scope
-
-**AyoKoding Educational Content** (apps/ayokoding-web/) - Generic programming knowledge:
 
 - **Initial Setup** - Environment configuration, IDE setup
 - **Quick Start** - First programs, hello world

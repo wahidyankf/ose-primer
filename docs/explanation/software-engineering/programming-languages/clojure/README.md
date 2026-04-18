@@ -78,22 +78,15 @@ OSE Platform Clojure applications MUST use the following stack:
 - **1.11** (recommended) - `clojure.math`, `update-keys`/`update-vals`, keyword args from maps
 - **1.12** (latest, RECOMMENDED for new projects) - Method values, array class syntax, Java interop improvements
 
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md) for Clojure-specific documentation location
-
 ## Prerequisite Knowledge
 
 **REQUIRED**: This documentation assumes you have completed the AyoKoding Clojure learning path. These are **OSE Platform-specific style guides**, not educational tutorials.
 
 **You MUST understand Clojure fundamentals before using these standards:**
 
-- **[Clojure Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/clojure/)** - Complete language coverage
-- **[Clojure By Example](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/clojure/by-example/)** - Annotated code examples (beginner to advanced)
-
 **What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply Clojure knowledge in THIS codebase.
 
 **What this documentation does NOT cover**: Clojure syntax, language fundamentals, REPL basics, S-expression syntax (those are in ayokoding-web).
-
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md) for content separation rules.
 
 ## Software Engineering Principles
 

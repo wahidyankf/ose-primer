@@ -222,7 +222,7 @@ In addition to the six required fields, agents may include optional metadata fie
 - Update the `updated` field whenever making substantial changes to the agent
 - Use consistent date format (YYYY-MM-DD) matching the project's [Timestamp Format Convention](../../conventions/formatting/timestamp.md) (date-only format)
 - Place these fields after the six required fields in frontmatter
-- These fields align with documentation frontmatter best practices from Hugo, Jekyll, and Front Matter CMS
+- These fields align with documentation frontmatter best practices from static-site, Jekyll, and Front Matter CMS
 
 **Example with optional fields:**
 
@@ -315,13 +315,13 @@ Agents can reference multiple Skills that work together:
 
 ```yaml
 ---
-name: apps-ayokoding-web-general-maker
-description: Expert at creating general Next.js content for ayokoding-web. Use when creating or updating general content pages for the AyoKoding website.
+name: apps-a-demo-fs-ts-nextjs-general-maker
+description: Expert at creating general Next.js content for a-demo-fs-ts-nextjs. Use when creating or updating general content pages for the a-demo website.
 tools: Read, Write, Edit, Glob, Grep
 model: sonnet
 color: blue
 skills:
-  - apps-ayokoding-web-developing-content
+  - apps-a-demo-fs-ts-nextjs-developing-content
   - docs-creating-accessible-diagrams
   - docs-validating-factual-accuracy
 ---
@@ -449,7 +449,7 @@ After frontmatter, agents should follow this structure:
 
 **Required Sections:**
 
-1. **Title (H1)**: Must follow pattern `# [Name] Agent`. Exception: App-scoped agents may use `# [Role] for [app-name]` (e.g., `# Content Checker for oseplatform-web`)
+1. **Title (H1)**: Must follow pattern `# [Name] Agent`. Exception: App-scoped agents may use `# [Role] for [app-name]` (e.g., `# Content Checker for a-demo-fs-ts-nextjs`)
 2. **Core Expertise/Responsibility (H2)**: Clear purpose statement
 3. **Reference Documentation (H2)**: Links to relevant conventions and guidance
 
@@ -482,10 +482,10 @@ PASS: Good - General agents (no scope prefix):
 - readme-maker.md
 
 PASS: Good - App-scoped agents:
-- apps-ayokoding-web-general-maker.md
-- apps-ayokoding-web-by-example-checker.md
-- apps-oseplatform-web-content-maker.md
-- apps-oseplatform-web-deployer.md
+- apps-a-demo-fs-ts-nextjs-general-maker.md
+- apps-a-demo-fs-ts-nextjs-by-example-checker.md
+- apps-a-demo-fs-ts-nextjs-content-maker.md
+- apps-a-demo-fs-ts-nextjs-deployer.md
 
 PASS: Good - Lib-scoped agents (future):
 - libs__ts-auth__validator.md
@@ -498,8 +498,8 @@ FAIL: Bad:
 - DocWriter.md (PascalCase)
 - doc_writer.md (snake_case)
 - documentation-writer-agent.md (redundant suffix)
-- ayokoding-general-maker.md (missing scope delimiter)
-- apps_ayokoding-web_general-maker.md (wrong delimiter - use hyphens)
+- a-demo-general-maker.md (missing scope delimiter)
+- apps_a-demo-fs-ts-nextjs_general-maker.md (wrong delimiter - use hyphens)
 ```
 
 ### Scope Prefix Guidelines
@@ -507,9 +507,9 @@ FAIL: Bad:
 **When to use scope prefixes:**
 
 1. **`apps-[app-name]-`** - Agent works ONLY with a specific app
-   - Content creation for Next.js sites (ayokoding-web, oseplatform-web)
+   - Content creation for Next.js sites (a-demo-fs-ts-nextjs, a-demo-fs-ts-nextjs)
    - App-specific validation, deployment, structure management
-   - Examples: `apps-ayokoding-web-general-maker`, `apps-oseplatform-web-deployer`
+   - Examples: `apps-a-demo-fs-ts-nextjs-general-maker`, `apps-a-demo-fs-ts-nextjs-deployer`
 
 2. **`libs-[lib-name]-`** - Agent works ONLY with a specific library
    - Future use when monorepo has libraries with specific agents
@@ -529,7 +529,7 @@ FAIL: Bad:
 
 **Scope naming rules:**
 
-- App/lib names must match directory names exactly (e.g., `ayokoding-web` matches `apps/ayokoding-web/`)
+- App/lib names must match directory names exactly (e.g., `a-demo-fs-ts-nextjs` matches `apps/a-demo-fs-ts-nextjs/`)
 - Use kebab-case throughout (no camelCase, PascalCase, or snake_case)
 - Hyphens `-` separate all parts of the agent name (consistent kebab-case throughout)
 - Agent name after scope uses standard kebab-case patterns
@@ -558,8 +558,8 @@ description: Expert documentation writer specializing in GitHub-compatible markd
 Example - App-scoped agent:
 
 ```yaml
-name: apps-ayokoding-web-general-maker # Includes scope prefix
-description: Expert at creating general Next.js content for ayokoding-web. Use when creating or updating general content pages for the AyoKoding website. # Detailed usage guidance
+name: apps-a-demo-fs-ts-nextjs-general-maker # Includes scope prefix
+description: Expert at creating general Next.js content for a-demo-fs-ts-nextjs. Use when creating or updating general content pages for the a-demo website. # Detailed usage guidance
 ```
 
 ## Tool Access Patterns
@@ -599,12 +599,12 @@ ALL checker agents MUST write their validation/audit reports to `generated-repor
 
 1. repo-rules-checker
 2. repo-workflow-checker
-3. apps-ayokoding-web-general-checker
-4. apps-ayokoding-web-by-example-checker
-5. apps-ayokoding-web-in-the-field-checker
-6. apps-ayokoding-web-facts-checker
-7. apps-ayokoding-web-link-checker
-8. apps-oseplatform-web-content-checker
+3. apps-a-demo-fs-ts-nextjs-general-checker
+4. apps-a-demo-fs-ts-nextjs-by-example-checker
+5. apps-a-demo-fs-ts-nextjs-in-the-field-checker
+6. apps-a-demo-fs-ts-nextjs-facts-checker
+7. apps-a-demo-fs-ts-nextjs-link-checker
+8. apps-a-demo-fs-ts-nextjs-content-checker
 9. docs-checker
 10. docs-tutorial-checker
 11. docs-link-checker
@@ -731,18 +731,18 @@ color: blue
 
 Agents are categorized by their **primary role** which aligns with naming suffixes and tool permissions:
 
-| Color         | Role             | Purpose                               | Tool Pattern                            | Agents                                                                                                             |
-| ------------- | ---------------- | ------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| 🟦 **Blue**   | **Makers**       | Create new content from scratch       | Has `Write` tool                        | docs-maker<br>plan-maker<br>docs-tutorial-maker<br>repo-rules-maker                                                |
-| 🟩 **Green**  | **Checkers**     | Validate and generate reports         | Has `Write`, `Bash` (no `Edit`)\*\*     | repo-rules-checker<br>plan-checker<br>docs-checker<br>docs-link-checker\*\*<br>apps-ayokoding-web-link-checker\*\* |
-| 🟨 **Yellow** | **Fixers**       | Modify and propagate existing content | Has `Edit` (usually not `Write`)        | docs-file-manager<br>readme-fixer<br>repo-rules-fixer                                                              |
-| 🟪 **Purple** | **Implementors** | Execute plans with full tool access   | Has `Write`, `Edit`, `Bash` (or Bash)\* | deployers\*<br>swe-\*-dev agents<br>plan-execution-checker                                                         |
+| Color         | Role             | Purpose                               | Tool Pattern                            | Agents                                                                                                                   |
+| ------------- | ---------------- | ------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 🟦 **Blue**   | **Makers**       | Create new content from scratch       | Has `Write` tool                        | docs-maker<br>plan-maker<br>docs-tutorial-maker<br>repo-rules-maker                                                      |
+| 🟩 **Green**  | **Checkers**     | Validate and generate reports         | Has `Write`, `Bash` (no `Edit`)\*\*     | repo-rules-checker<br>plan-checker<br>docs-checker<br>docs-link-checker\*\*<br>apps-a-demo-fs-ts-nextjs-link-checker\*\* |
+| 🟨 **Yellow** | **Fixers**       | Modify and propagate existing content | Has `Edit` (usually not `Write`)        | docs-file-manager<br>readme-fixer<br>repo-rules-fixer                                                                    |
+| 🟪 **Purple** | **Implementors** | Execute plans with full tool access   | Has `Write`, `Edit`, `Bash` (or Bash)\* | deployers\*<br>swe-\*-dev agents<br>plan-execution-checker                                                               |
 
 **Edge Case Notes:**
 
 - **\*Yellow with Write**: Some Yellow fixer agents (e.g., readme-fixer, repo-rules-fixer) may have Write tool for audit report generation. Documented exception.
-- **\*Purple Bash-only**: Deployers (apps-ayokoding-web-deployer, apps-oseplatform-web-deployer, apps-organiclever-fe-deployer) only need Bash for git/deployment orchestration. Purple without Write/Edit is valid for Bash-only orchestrators.
-- **\*\*Green with Write + Edit**: Link checker agents (docs-link-checker, apps-ayokoding-web-link-checker) also have Edit and Write tools for cache file management, but their primary role is validation (checker). Color is green to reflect primary role. See "Link Checker Agents Note" below.
+- **\*Purple Bash-only**: Deployers (apps-a-demo-fs-ts-nextjs-deployer, apps-a-demo-fs-ts-nextjs-deployer, apps-a-demo-fe-ts-nextjs-deployer) only need Bash for git/deployment orchestration. Purple without Write/Edit is valid for Bash-only orchestrators.
+- **\*\*Green with Write + Edit**: Link checker agents (docs-link-checker, apps-a-demo-fs-ts-nextjs-link-checker) also have Edit and Write tools for cache file management, but their primary role is validation (checker). Color is green to reflect primary role. See "Link Checker Agents Note" below.
 
 **Color Accessibility Note**: All four colors (blue, green, yellow, purple) are from the verified accessible palette defined in [Color Accessibility Convention](../../conventions/formatting/color-accessibility.md) - the master reference for all color usage in this repository. These colors meet WCAG AA standards for both light and dark modes and work for all types of color blindness (protanopia, deuteranopia, and tritanopia). See the accessibility section below for details on how agents are identified beyond color. All color-related work must reference the Color Accessibility Convention as the authoritative source.
 
@@ -763,7 +763,7 @@ This role-based categorization was chosen because it:
 **Link Checker Agents:**
 
 - **docs-link-checker** - Validates documentation links + manages external-links-status.yaml cache
-- **apps-ayokoding-web-link-checker** - Validates ayokoding-web content links + manages ayokoding-links-status.yaml cache
+- **apps-a-demo-fs-ts-nextjs-link-checker** - Validates a-demo-fs-ts-nextjs content links + manages a-demo-links-status.yaml cache
 
 **Why green (not purple)?**
 
@@ -774,14 +774,14 @@ This role-based categorization was chosen because it:
 
 **Why they have Write + Edit tools (beyond standard green pattern):**
 
-- Cache files (`external-links-status.yaml`, `ayokoding-links-status.yaml`) are operational metadata, NOT temporary reports
+- Cache files (`external-links-status.yaml`, `a-demo-links-status.yaml`) are operational metadata, NOT temporary reports
 - Cache management is essential functionality, NOT general file writing capability
 - Write tool is scoped specifically to designated cache file paths (explicit over implicit)
 - This exception respects the Explicit Over Implicit principle by documenting the extended tool access
 
 **Cache files are NOT temporary:**
 
-- Location: `docs/metadata/` (docs-link-checker) and `apps/ayokoding-web/` (apps-ayokoding-web-link-checker)
+- Location: `docs/metadata/` (docs-link-checker) and `apps/a-demo-fs-ts-nextjs/` (apps-a-demo-fs-ts-nextjs-link-checker)
 - Purpose: Long-term link status tracking (6-month expiry), shared across team
 - Committed to git: Yes (operational metadata)
 - Updated every run: Yes (including lastFullScan timestamp)
@@ -830,12 +830,12 @@ Start: What is the agent's primary capability?
   - Write tool needed for audit reports in generated-reports/
   - Edit tool needed for cache file management (external-links-status.yaml updates)
   - Bash tool needed for UTC+7 timestamps
-  - Examples: docs-link-checker, apps-ayokoding-web-link-checker
+  - Examples: docs-link-checker, apps-a-demo-fs-ts-nextjs-link-checker
 - **Deployers with Bash only**: Use `purple` (Implementor)
   - Execute deployment orchestration (purple's "executes plans/orchestrates tasks")
   - Don't create or edit files, only run git/deployment commands
   - Edge case: purple without Write/Edit tools (Bash-only orchestration)
-  - Examples: apps-ayokoding-web-deployer, apps-oseplatform-web-deployer, apps-organiclever-fe-deployer
+  - Examples: apps-a-demo-fs-ts-nextjs-deployer, apps-a-demo-fs-ts-nextjs-deployer, apps-a-demo-fe-ts-nextjs-deployer
 - **Fixers with Write tool**: Investigate actual usage
   - Yellow (Fixers) should have Edit but NOT Write
   - If Write is needed for creating new convention files → keep yellow, document exception
@@ -988,7 +988,7 @@ color: yellow
 ```yaml
 ---
 name: swe-typescript-dev
-description: Develops TypeScript applications following type safety principles, modern patterns, and platform coding standards. Use when implementing TypeScript code for OSE Platform.
+description: Develops TypeScript applications following type safety principles, modern patterns, and platform coding standards. Use when implementing TypeScript code for a-demo.
 tools: Read, Write, Edit, Glob, Grep, Bash
 color: purple
 ---
@@ -1242,9 +1242,9 @@ Agent files are organized into **three complexity tiers** with corresponding siz
 
 **Examples**:
 
-- apps-ayokoding-web-deployer (deployment automation)
-- apps-oseplatform-web-deployer (deployment automation)
-- apps-organiclever-fe-deployer (deployment automation)
+- apps-a-demo-fs-ts-nextjs-deployer (deployment automation)
+- apps-a-demo-fs-ts-nextjs-deployer (deployment automation)
+- apps-a-demo-fe-ts-nextjs-deployer (deployment automation)
 - social-linkedin-post-maker (single-purpose content generation)
 - repo-workflow-maker (workflow document creation)
 
@@ -1276,9 +1276,9 @@ Agent files are organized into **three complexity tiers** with corresponding siz
 - docs-tutorial-checker (tutorial quality validation)
 - docs-file-manager (file organization, relative path calculation, link updates)
 - agent-maker (agent creation automation)
-- apps-ayokoding-web-general-maker (general Next.js content creation for ayokoding-web)
-- apps-ayokoding-web-by-example-maker (by-example tutorial creation)
-- apps-oseplatform-web-content-maker (Next.js content creation for oseplatform-web)
+- apps-a-demo-fs-ts-nextjs-general-maker (general Next.js content creation for a-demo-fs-ts-nextjs)
+- apps-a-demo-fs-ts-nextjs-by-example-maker (by-example tutorial creation)
+- apps-a-demo-fs-ts-nextjs-content-maker (Next.js content creation for a-demo-fs-ts-nextjs)
 
 **When to use this tier**:
 
@@ -1322,11 +1322,11 @@ Agent files are organized into **three complexity tiers** with corresponding siz
 
 Quick categorization for existing agents:
 
-| Tier                 | Agents                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Tier 1: Simple**   | apps-ayokoding-web-deployer, apps-oseplatform-web-deployer, apps-organiclever-fe-deployer, social-linkedin-post-maker, apps-ayokoding-web-facts-fixer, apps-ayokoding-web-link-fixer, apps-oseplatform-web-content-fixer, repo-workflow-maker, repo-workflow-checker, repo-workflow-fixer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **Tier 2: Standard** | docs-maker, docs-tutorial-maker, docs-checker, docs-tutorial-checker, docs-file-manager, docs-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, readme-maker, readme-checker, readme-fixer, agent-maker, plan-fixer, apps-ayokoding-web-general-maker, apps-ayokoding-web-general-checker, apps-ayokoding-web-general-fixer, apps-ayokoding-web-by-example-maker, apps-ayokoding-web-by-example-checker, apps-ayokoding-web-by-example-fixer, apps-ayokoding-web-in-the-field-maker, apps-ayokoding-web-in-the-field-checker, apps-ayokoding-web-in-the-field-fixer, apps-ayokoding-web-link-checker, apps-ayokoding-web-facts-checker, apps-oseplatform-web-content-maker, apps-oseplatform-web-content-checker, swe-python-dev, swe-typescript-dev, swe-elixir-dev, swe-java-dev, swe-golang-dev, swe-e2e-dev, swe-hugo-dev (DEPRECATED), swe-dart-dev, swe-kotlin-dev, swe-csharp-dev, swe-fsharp-dev, swe-clojure-dev, swe-rust-dev, swe-code-checker, specs-maker, specs-checker, specs-fixer |
-| **Tier 3: Complex**  | plan-maker, plan-checker, plan-execution-checker, repo-rules-maker, repo-rules-checker, repo-rules-fixer, docs-link-checker, docs-software-engineering-separation-checker                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Tier                 | Agents                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tier 1: Simple**   | apps-a-demo-fs-ts-nextjs-deployer, apps-a-demo-fs-ts-nextjs-deployer, apps-a-demo-fe-ts-nextjs-deployer, social-linkedin-post-maker, apps-a-demo-fs-ts-nextjs-facts-fixer, apps-a-demo-fs-ts-nextjs-link-fixer, apps-a-demo-fs-ts-nextjs-content-fixer, repo-workflow-maker, repo-workflow-checker, repo-workflow-fixer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| **Tier 2: Standard** | docs-maker, docs-tutorial-maker, docs-checker, docs-tutorial-checker, docs-file-manager, docs-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, readme-maker, readme-checker, readme-fixer, agent-maker, plan-fixer, apps-a-demo-fs-ts-nextjs-general-maker, apps-a-demo-fs-ts-nextjs-general-checker, apps-a-demo-fs-ts-nextjs-general-fixer, apps-a-demo-fs-ts-nextjs-by-example-maker, apps-a-demo-fs-ts-nextjs-by-example-checker, apps-a-demo-fs-ts-nextjs-by-example-fixer, apps-a-demo-fs-ts-nextjs-in-the-field-maker, apps-a-demo-fs-ts-nextjs-in-the-field-checker, apps-a-demo-fs-ts-nextjs-in-the-field-fixer, apps-a-demo-fs-ts-nextjs-link-checker, apps-a-demo-fs-ts-nextjs-facts-checker, apps-a-demo-fs-ts-nextjs-content-maker, apps-a-demo-fs-ts-nextjs-content-checker, swe-python-dev, swe-typescript-dev, swe-elixir-dev, swe-java-dev, swe-golang-dev, swe-e2e-dev, swe-dart-dev, swe-kotlin-dev, swe-csharp-dev, swe-fsharp-dev, swe-clojure-dev, swe-rust-dev, swe-code-checker, specs-maker, specs-checker, specs-fixer |
+| **Tier 3: Complex**  | plan-maker, plan-checker, plan-execution-checker, repo-rules-maker, repo-rules-checker, repo-rules-fixer, docs-link-checker, docs-software-engineering-separation-checker                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
 ### When to Condense or Split Agents
 
@@ -2179,7 +2179,7 @@ Is this knowledge...
    - Confidence assessment criteria
 
 2. **Domain Expertise**
-   - Hugo theme patterns (Hextra, PaperMod)
+   - static-site theme patterns (Hextra, PaperMod)
    - Content quality principles
    - Color accessibility palettes
    - Annotation density standards
@@ -2277,9 +2277,9 @@ See `repo-assessing-criticality-confidence` Skill for level definitions.
 **Before Simplification** (1,100+ lines):
 
 ```markdown
-# apps-ayokoding-web-by-example-maker
+# apps-a-demo-fs-ts-nextjs-by-example-maker
 
-## Hugo Weight System
+## static-site Weight System
 
 [150 lines explaining level-based weights]
 
@@ -2305,15 +2305,15 @@ See `repo-assessing-criticality-confidence` Skill for level definitions.
 ```markdown
 ---
 skills:
-  - apps-ayokoding-web-developing-content
+  - apps-a-demo-fs-ts-nextjs-developing-content
   - docs-creating-by-example-tutorials
 ---
 
-# apps-ayokoding-web-by-example-maker
+# apps-a-demo-fs-ts-nextjs-by-example-maker
 
-## Hugo Patterns
+## static-site Patterns
 
-See `apps-ayokoding-web-developing-content` Skill for weight system, bilingual strategy.
+See `apps-a-demo-fs-ts-nextjs-developing-content` Skill for weight system, bilingual strategy.
 
 ## Example Structure
 
@@ -2429,8 +2429,8 @@ When simplifying an agent:
 - `repo-generating-validation-reports` - Report generation, UUID chains, timestamps
 - `repo-assessing-criticality-confidence` - Criticality levels, confidence assessment
 - `repo-applying-maker-checker-fixer` - Three-stage workflow, mode handling
-- `apps-ayokoding-web-developing-content` - Next.js 16 content patterns for ayokoding-web, bilingual content strategy
-- `apps-oseplatform-web-developing-content` - Next.js 16 content patterns for oseplatform-web
+- `apps-a-demo-fs-ts-nextjs-developing-content` - Next.js 16 content patterns for a-demo-fs-ts-nextjs, bilingual content strategy
+- `apps-a-demo-fs-ts-nextjs-developing-content` - Next.js 16 content patterns for a-demo-fs-ts-nextjs
 - `docs-creating-by-example-tutorials` - Annotation standards, five-part structure
 - `docs-creating-accessible-diagrams` - Color palettes, accessibility
 - `docs-applying-content-quality` - Markdown quality standards

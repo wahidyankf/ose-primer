@@ -155,7 +155,7 @@ fix(project-name): add missing Gherkin step definitions for existing commands
 ### PASS: Fixing a preexisting blocker
 
 ```
-Developer: I'm implementing a new feature in organiclever-fe.
+Developer: I'm implementing a new feature in a-demo-fe-ts-nextjs.
            Running test:quick, I see that a-demo-be-golang-gin has
            a failing typecheck due to a stale codegen output.
 
@@ -163,13 +163,13 @@ Action:
 1. Run nx run a-demo-be-golang-gin:codegen to regenerate types
 2. Run nx run a-demo-be-golang-gin:typecheck to confirm it passes
 3. Commit: "fix(a-demo-be-golang-gin): regenerate types from updated contract"
-4. Continue with organiclever-fe feature work
+4. Continue with a-demo-fe-ts-nextjs feature work
 ```
 
 ### FAIL: Bypassing the blocker
 
 ```
-Developer: I'm implementing a new feature in organiclever-fe.
+Developer: I'm implementing a new feature in a-demo-fe-ts-nextjs.
            Running test:quick, I see that a-demo-be-golang-gin has
            a failing typecheck. That's not my project.
 

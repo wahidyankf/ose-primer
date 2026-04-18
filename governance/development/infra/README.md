@@ -31,7 +31,6 @@ These standards define **HOW to manage development infrastructure**, including w
 - [GitHub Actions Workflow Naming Convention](./github-actions-workflow-naming.md) - Workflow filenames must mirror their `name:` field using a consistent kebab-case derivation rule
 - [Nx Target Standards](./nx-targets.md) - Standard Nx targets that apps and libs must expose, canonical target names, caching rules, build output conventions, and the four-dimension tag scheme for `project.json`
 - [Temporary Files Convention](./temporary-files.md) - Guidelines for AI agents creating temporary uncommitted files and folders
-- [Vercel Deployment Convention](./vercel-deployment.md) - Rules for configuring `vercel.json` when Nx build targets must run before the framework build
 
 ## Companion Documents
 

@@ -266,29 +266,25 @@ Per-project:
 ```json
 {
   "name": "oseplatform-web",
-  "sourceRoot": "apps/oseplatform-web",
   "projectType": "application",
   "targets": {
     "dev": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "hugo server --buildDrafts --buildFuture",
-        "cwd": "apps/oseplatform-web"
+        "command": "hugo server --buildDrafts --buildFuture"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "bash build.sh",
-        "cwd": "apps/oseplatform-web"
+        "command": "bash build.sh"
       },
       "outputs": ["{projectRoot}/public"]
     },
     "clean": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "rm -rf public resources",
-        "cwd": "apps/oseplatform-web"
+        "command": "rm -rf public resources"
       }
     }
   },
@@ -388,7 +384,6 @@ Location of source code.
 
 **Examples**:
 
-- `"apps/oseplatform-web"` (app root)
 - `"libs/ts-utils/src"` (lib source)
 
 #### `projectType`
@@ -442,15 +437,13 @@ Executor options.
   - Examples: `"next build"`, `"tsc -p tsconfig.json"`
 - `cwd` (string): Working directory
   - Optional (defaults to workspace root)
-  - Examples: `"apps/oseplatform-web"`, `"."`
 
 **Example**:
 
 ```json
 {
   "options": {
-    "command": "next build",
-    "cwd": "apps/oseplatform-web"
+    "command": "next build"
   }
 }
 ```

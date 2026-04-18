@@ -24,9 +24,7 @@ This directory contains standards for how documentation is organized, named, and
 - [Agent Naming Convention](./agent-naming.md) - Single exception-free filename rule for agent files in `.claude/agents/` and `.opencode/agent/`. Defines scope vocabulary, role vocabulary (maker, checker, fixer, dev, deployer, executor, manager), and the audit command enforced by `repo-rules-checker`
 - [Diataxis Framework](./diataxis-framework.md) - Understanding the four-category documentation organization framework we use (Tutorials, How-To, Reference, Explanation). Foundational framework for all documentation structure
 - [File Naming Convention](./file-naming.md) - Kebab-case filename rules for docs/, governance/, and plans/ directories
-- [Per-Directory Licensing](./licensing.md) - Standards for the per-directory licensing strategy using FSL-1.1-MIT for product apps and behavioral specifications, and MIT for shared libraries and reference implementations
 - [Plans Organization](./plans.md) - Standards for organizing project planning documents in plans/ folder including structure (ideas.md, backlog/, in-progress/, done/), naming patterns (YYYY-MM-DD\_\_identifier/), lifecycle stages, and project identifiers
-- [Programming Language Documentation Separation](./programming-language-docs-separation.md) - Establishes clear separation between repository-specific programming language style guides (docs/explanation/) and educational content (ayokoding-web). Defines scope boundaries, prerequisite requirements, cross-referencing patterns, and DRY principle application
 - [Specs Directory Structure](./specs-directory-structure.md) - Canonical directory structure for Gherkin feature files, C4 architecture diagrams, and OpenAPI contracts in the specs/ directory. Defines path patterns, domain subdirectory rules (required for BE/FE, flat for CLI), and lib spec organization
 - [Workflow Naming Convention](./workflow-naming.md) - Single exception-free filename rule for workflow files under `governance/workflows/` (except `meta/` reference docs). Defines scope vocabulary, type vocabulary (quality-gate, execution, setup), and the audit command enforced by `repo-rules-checker` and `rhino-cli workflows validate-naming`
 
@@ -55,7 +53,6 @@ ideas.md → backlog/ → in-progress/ → done/
 
 - [Writing Conventions](../writing/README.md) - Content quality standards
 - [Formatting Conventions](../formatting/README.md) - Markdown syntax and visual elements
-- [Tutorials Conventions](../tutorials/README.md) - Tutorial creation standards
 - [Repository Governance Architecture](../../repository-governance-architecture.md) - Six-layer governance model
 
 ## Principles Implemented/Respected

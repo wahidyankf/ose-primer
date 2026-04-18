@@ -53,7 +53,6 @@ Validate project plans against standards defined in [Plans Organization Conventi
   - **Multi-file (default)** — five files: `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`. Flag missing files as HIGH finding.
   - **Single-file (exception)** — one `README.md` with eight mandatory sections: Context, Scope, Business Rationale (condensed BRD), Product Requirements (condensed PRD), Technical Approach, Delivery Checklist, Quality Gates, Verification. Flag missing sections as HIGH.
 - Required sections present per file (BRD: business goal / impact / affected roles / success metrics / non-goals / risks; PRD: product overview / personas / user stories / Gherkin acceptance criteria / product scope / product risks; tech-docs: architecture / decisions / file-impact / rollback; delivery: phased checkboxes with implementation-notes blocks)
-- Proper file organization; folder sits under `plans/backlog/`, `plans/in-progress/`, or `plans/done/`
 
 ### 2. Requirements Validation (BRD + PRD)
 

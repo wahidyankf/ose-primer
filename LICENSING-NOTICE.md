@@ -18,14 +18,8 @@ Each product application has its own FSL-1.1-MIT LICENSE file. The standard FSL 
 "the Software" as the code included with the license, which naturally scopes the competing-use
 restriction to that specific application's domain:
 
-| Application               | Directory               | Domain Protected                                           |
-| ------------------------- | ----------------------- | ---------------------------------------------------------- |
-| **AyoKoding Web**         | `apps/ayokoding-web/`   | Educational coding platform                                |
-| **AyoKoding CLI**         | `apps/ayokoding-cli/`   | Educational coding platform (tooling)                      |
-| **OrganicLever Frontend** | `apps/organiclever-fe/` | Non-enterprise productivity (individual, family, personal) |
-| **OrganicLever Backend**  | `apps/organiclever-be/` | Non-enterprise productivity (individual, family, personal) |
-| **OSE Platform Web**      | `apps/oseplatform-web/` | Enterprise platform site                                   |
-| **OSE Platform CLI**      | `apps/oseplatform-cli/` | Enterprise platform site (tooling)                         |
+| Application | Directory | Domain Protected |
+| ----------- | --------- | ---------------- |
 
 **What this means in practice**: Someone using the `organiclever-fe` code cannot build a competing
 non-enterprise productivity application (individual, family, or personal productivity). But they can
@@ -144,7 +138,6 @@ Some vendored or forked libraries in this repository are licensed under their or
 
 - `libs/elixir-cabbage/` — MIT (Matt Widmann, 2017)
 - `libs/elixir-gherkin/` — MIT (Matt Widmann, 2018)
-- `archived/ayokoding-web-hugo/` — MIT (Xin, 2023)
 
 Check the `LICENSE` file in each subdirectory for the applicable license.
 

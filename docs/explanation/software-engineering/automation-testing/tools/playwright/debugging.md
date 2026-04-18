@@ -23,11 +23,7 @@ updated: 2026-02-08
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: You MUST understand Playwright fundamentals from [AyoKoding Playwright Learning Path](../../../../../../apps/ayokoding-web/content/en/learn/software-engineering/automation-testing/tools/playwright/) before using these standards.
-
 **This document is OSE Platform-specific**, not a Playwright tutorial.
-
-**See**: [Programming Language Documentation Separation Convention](../../../../../../governance/conventions/structure/programming-language-docs-separation.md)
 
 ## Purpose
 

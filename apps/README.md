@@ -55,7 +55,6 @@ Where `{part}` describes the role and technology stack:
 ### Hugo Static Site (oseplatform-web)
 
 ```
-apps/oseplatform-web/
 ├── content/                 # Markdown content files
 ├── layouts/                 # Hugo templates
 ├── static/                  # Static assets (images, CSS, JS)
@@ -71,7 +70,6 @@ apps/oseplatform-web/
 ### Go CLI Application (Current)
 
 ```
-apps/ayokoding-cli/
 ├── cmd/                     # CLI commands
 ├── internal/                # Internal packages
 ├── dist/                    # Build output (gitignored)
@@ -93,7 +91,6 @@ apps/rhino-cli/
 ```
 
 ```
-apps/oseplatform-cli/
 ├── internal/                # Internal packages (links/)
 ├── cmd/                     # CLI commands
 ├── dist/                    # Build output (gitignored)
@@ -144,7 +141,6 @@ apps/a-demo-be-e2e/
 ### Next.js Application (Current)
 
 ```
-apps/organiclever-fe/
 ├── src/
 │   ├── app/                    # Next.js App Router pages
 │   │   ├── dashboard/          # Dashboard route
@@ -180,29 +176,25 @@ Each app must have a `project.json` file with Nx configuration.
 ```json
 {
   "name": "oseplatform-web",
-  "sourceRoot": "apps/oseplatform-web",
   "projectType": "application",
   "targets": {
     "dev": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "hugo server --buildDrafts --buildFuture",
-        "cwd": "apps/oseplatform-web"
+        "command": "hugo server --buildDrafts --buildFuture"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "bash build.sh",
-        "cwd": "apps/oseplatform-web"
+        "command": "bash build.sh"
       },
       "outputs": ["{projectRoot}/public"]
     },
     "clean": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "rm -rf public resources",
-        "cwd": "apps/oseplatform-web"
+        "command": "rm -rf public resources"
       }
     }
   },

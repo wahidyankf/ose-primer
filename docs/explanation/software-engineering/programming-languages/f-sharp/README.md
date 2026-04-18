@@ -74,22 +74,15 @@ OSE Platform F# applications MUST use the following stack:
 - **Recommended**: F# 8 / .NET 8 LTS (SHOULD use for production) — current LTS, improved type inference, `_.Property` shorthand
 - **Latest**: F# 9 / .NET 9 (RECOMMENDED for new projects) — nullable reference type integration, lock expression, improved `use!` in CEs
 
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md) for F#-specific release documentation location
-
 ## Prerequisite Knowledge
 
 **REQUIRED**: This documentation assumes you have completed the AyoKoding F# learning path. These are **OSE Platform-specific style guides**, not educational tutorials.
 
 **You MUST understand F# fundamentals before using these standards:**
 
-- **[F# Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/f-sharp/)** - Complete language coverage from basics to advanced
-- **[F# By Example](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/f-sharp/by-example/)** - Annotated code examples covering discriminated unions, computation expressions, and more
-
 **What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply F# knowledge in THIS codebase.
 
 **What this documentation does NOT cover**: F# syntax, language fundamentals, discriminated union semantics, computation expression mechanics (those are in ayokoding-web).
-
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md) for content separation rules.
 
 ## Software Engineering Principles
 
@@ -136,8 +129,6 @@ OSE Platform follows a three-tier F# versioning strategy aligned with .NET LTS r
 - Partial active patterns returning `voption` for zero-allocation matching
 
 **Unlike Go**: .NET follows an annual release cycle with LTS releases every two years. F# version numbers track .NET SDK versions. The platform strategy is: target the current LTS for stability, adopt latest features on new projects.
-
-**See**: [F# Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/f-sharp/) for detailed feature documentation
 
 ## OSE Platform Coding Standards (Authoritative)
 

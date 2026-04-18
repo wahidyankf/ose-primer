@@ -299,7 +299,7 @@ prettier --write .  # SLOW!
 
 # Running mix format from repo root (DO NOT DO THIS)
 # Silently applies wrong formatting — import_deps rules are missing
-mix format apps/organiclever-be-exph/lib/my_module.ex
+mix format apps/a-demo-be-fsharp-giraffe-exph/lib/my_module.ex
 ```
 
 **Rationale:**

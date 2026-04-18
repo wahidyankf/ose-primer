@@ -27,11 +27,7 @@ updated: 2026-02-05
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: You MUST understand Elixir fundamentals from [AyoKoding Elixir Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/elixir/_index.md) before using these standards.
-
 **This document is OSE Platform-specific**, not an Elixir tutorial. We define HOW to apply Elixir in THIS codebase, not WHAT Elixir is.
-
-**See**: [Programming Language Documentation Separation Convention](../../../../../governance/conventions/structure/programming-language-docs-separation.md)
 
 ## Purpose
 
@@ -940,10 +936,6 @@ end
 ### Learning Resources
 
 For learning Elixir fundamentals and concepts referenced in these standards, see:
-
-- **[Elixir Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/elixir/_index.md)** - Complete Elixir learning journey
-- **[Elixir By Example](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/elixir/by-example/_index.md)** - Annotated code examples
-- **[Elixir In Practice](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/elixir/in-the-field/_index.md)** - Performance optimization patterns
 
 **Note**: These standards assume you've learned Elixir basics from ayokoding-web. We don't re-explain fundamental concepts here.
 
