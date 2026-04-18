@@ -41,7 +41,7 @@ nx run demo-fe-dart-flutterweb:test:unit
 
 ## Testing
 
-`test:quick` runs `flutter test test/unit --coverage` followed by `rhino-cli test-coverage validate` (>=70% line coverage, Codecov algorithm). The cache inputs include `{projectRoot}/generated-contracts/**/*` so contract changes invalidate the cache.
+`test:quick` runs `flutter test test/unit --coverage` followed by `rhino-cli test-coverage validate` (>=70% line coverage, 3-state algorithm). The cache inputs include `{projectRoot}/generated-contracts/**/*` so contract changes invalidate the cache.
 
 `dart analyze` is the `lint` target only (not a separate `typecheck` step — both `lint` and `typecheck` run `dart analyze --fatal-infos` and depend on `codegen`).
 
@@ -90,7 +90,7 @@ nginx/
 ## Related Documentation
 
 - [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
-- [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools, thresholds, and local vs Codecov
+- [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
 - [Frontend Gherkin Specs](../../specs/apps/demo/fe/gherkin/README.md) — Shared feature files (source of truth)
 - [OpenAPI Contract](../../specs/apps/demo/contracts/README.md) — API contract and codegen

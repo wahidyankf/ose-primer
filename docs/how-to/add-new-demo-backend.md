@@ -696,62 +696,7 @@ mismatch), add an explicit call:
 npx nx run demo-be-{lang}-{framework}:codegen
 ```
 
-### 13. Add to `codecov-upload.yml`
-
-**`codecov.yml`** — Add a coverage flag:
-
-```yaml
-flags:
-  demo-be-{lang}-{framework}:
-    paths:
-      - apps/demo-be-{lang}-{framework}/
-    carryforward: true
-```
-
-**`.github/workflows/codecov-upload.yml`** — Add a coverage upload step after the existing backend
-upload steps. The step name follows the pattern `Upload coverage — {app-name}`. The `files` path
-depends on the coverage tool used by the language:
-
-```yaml
-- name: Upload coverage — demo-be-{lang}-{framework}
-  uses: codecov/codecov-action@v5
-  with:
-    token: ${{ secrets.CODECOV_TOKEN }}
-    files: apps/demo-be-{lang}-{framework}/{coverage-file}
-    flags: demo-be-{lang}-{framework}
-    disable_search: true
-    fail_ci_if_error: false
-```
-
-Common coverage file paths by language:
-
-| Language   | Coverage format  | Path example                                                 |
-| ---------- | ---------------- | ------------------------------------------------------------ |
-| Go         | go cover.out     | `apps/demo-be-golang-gin/cover.out`                          |
-| Java/Maven | JaCoCo XML       | `apps/demo-be-java-springboot/target/site/jacoco/jacoco.xml` |
-| Python     | LCOV             | `apps/demo-be-python-fastapi/coverage/lcov.info`             |
-| Rust       | LCOV             | `apps/demo-be-rust-axum/coverage/lcov.info`                  |
-| F#         | AltCover LCOV    | `apps/demo-be-fsharp-giraffe/coverage/altcov.info`           |
-| C#         | Coverlet LCOV    | `apps/demo-be-csharp-aspnetcore/coverage/**/coverage.info`   |
-| Kotlin     | Kover XML        | `apps/demo-be-kotlin-ktor/build/reports/kover/report.xml`    |
-| Clojure    | cloverage LCOV   | `apps/demo-be-clojure-pedestal/coverage/lcov.info`           |
-| Elixir     | excoveralls LCOV | `apps/demo-be-elixir-phoenix/cover/lcov.info`                |
-
-If the language emits relative `SF:` paths in the LCOV file (relative to the project root rather
-than the workspace root), add a path-fix step to the `codecov-upload.yml` alongside the existing
-fixes:
-
-```bash
-lcov="apps/demo-be-{lang}-{framework}/coverage/lcov.info"
-if [ -f "$lcov" ]; then
-  sed -i "s|^SF:|SF:apps/demo-be-{lang}-{framework}/|" "$lcov"
-fi
-```
-
-Also add the language runtime setup step to `codecov-upload.yml` if it is not already present,
-following the pattern of existing setup steps in that file.
-
-### 14. Create README.md
+### 13. Create README.md
 
 Follow the pattern of existing backend READMEs (e.g., `apps/demo-be-golang-gin/README.md`).
 Include:
@@ -765,7 +710,7 @@ Include:
 Do **not** hardcode scenario or feature counts — reference the
 [gherkin README](../../specs/apps/demo/be/gherkin/README.md) instead.
 
-### 15. Verify
+### 14. Verify
 
 ```bash
 # Codegen works
