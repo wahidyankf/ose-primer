@@ -227,8 +227,9 @@ void render(Element parent) {
       } else {
         final hints = <String>[];
         if (password.length < 12) hints.add('at least 12 characters');
-        if (!RegExp(r'[A-Z]').hasMatch(password))
+        if (!RegExp(r'[A-Z]').hasMatch(password)) {
           hints.add('1 uppercase letter');
+        }
         if (!RegExp(r'[^a-zA-Z0-9]').hasMatch(password)) {
           hints.add('1 special character');
         }
