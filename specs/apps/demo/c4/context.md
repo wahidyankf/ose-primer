@@ -20,7 +20,7 @@ graph TD
 
     SYSTEM["Demo Application<br/>──────────────────────<br/>Frontend SPA + Backend API<br/><br/>Auth lifecycle<br/>User management<br/>Expense management<br/>P&L reporting<br/>File attachments<br/>Responsive UI"]:::system
 
-    CI("CI Pipeline<br/>──────────────────<br/>Main CI: test:quick<br/>Per-app E2E: Playwright<br/>PR Quality Gate<br/>Codecov coverage"):::ci
+    CI("CI Pipeline<br/>──────────────────<br/>Main CI: test:quick<br/>Per-app E2E: Playwright<br/>PR Quality Gate<br/>Coverage via rhino-cli"):::ci
 
     SPEC("Specifications<br/>──────────────────<br/>OpenAPI 3.1 contract<br/>14 BE Gherkin features<br/>15 FE Gherkin features"):::spec
 
