@@ -1,6 +1,6 @@
 ---
 title: Automation Testing
-description: a-demo Automation Testing Documentation Index
+description: demo Automation Testing Documentation Index
 category: explanation
 subcategory: software-engineering
 tags:
@@ -18,11 +18,11 @@ updated: 2026-02-08
 
 # Automation Testing
 
-**a-demo authoritative documentation** for automation testing frameworks and tools.
+**demo authoritative documentation** for automation testing frameworks and tools.
 
 ## Overview
 
-This directory contains a-demo-specific standards for automation testing tools including end-to-end testing, API testing, and visual regression testing.
+This directory contains demo-specific standards for automation testing tools including end-to-end testing, API testing, and visual regression testing.
 
 ## Testing Tools
 

@@ -1,6 +1,6 @@
 ---
 title: "Playwright Anti-Patterns"
-description: Authoritative a-demo Playwright anti-patterns (common mistakes, problematic patterns to avoid)
+description: Authoritative demo Playwright anti-patterns (common mistakes, problematic patterns to avoid)
 category: explanation
 subcategory: automation-testing
 tags:
@@ -22,13 +22,13 @@ updated: 2026-02-08
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Playwright tutorial.
+**This document is demo-specific**, not a Playwright tutorial.
 
 ## Purpose
 
-This document defines **anti-patterns to avoid** in Playwright tests for the a-demo.
+This document defines **anti-patterns to avoid** in Playwright tests for the demo.
 
-**Target Audience**: a-demo E2E test developers
+**Target Audience**: demo E2E test developers
 
 **Scope**: Common mistakes, problematic patterns
 

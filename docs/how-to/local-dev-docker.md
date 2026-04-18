@@ -48,19 +48,19 @@ Docker Compose configurations are organized by deployment target:
 ```
 infra/
 ├── dev/                        # Local development environments
-│   ├── a-demo-be-java-springboot/         # Demo Backend (Spring Boot) stack
+│   ├── demo-be-java-springboot/         # Demo Backend (Spring Boot) stack
 │   │   ├── docker-compose.yml
 │   │   ├── .env.example
 │   │   └── README.md
-│   ├── a-demo-be-elixir-phoenix/         # Demo Backend (Elixir/Phoenix) stack
+│   ├── demo-be-elixir-phoenix/         # Demo Backend (Elixir/Phoenix) stack
 │   │   ├── docker-compose.yml
 │   │   └── README.md
-│   ├── a-demo-fe-ts-nextjs/     # a-demo-fe-ts-nextjs (Next.js) stack
+│   ├── demo-fe-ts-nextjs/     # demo-fe-ts-nextjs (Next.js) stack
 │   │   ├── docker-compose.yml
 │   │   └── README.md
 │   └── [other-service]/       # Other service ecosystems
 └── k8s/                        # Kubernetes configs
-    └── a-demo/          # a-demo K8s deployments
+    └── demo/          # demo K8s deployments
 ```
 
 ## Quick Start
@@ -79,38 +79,38 @@ Each app category has its own Docker Compose setup under `infra/dev/`. Pick the 
 **Backend (demo-be)**:
 
 ```bash
-docker compose -f infra/dev/a-demo-be-golang-gin/docker-compose.yml up
+docker compose -f infra/dev/demo-be-golang-gin/docker-compose.yml up
 ```
 
 **Frontend (demo-fe)**:
 
 ```bash
-docker compose -f infra/dev/a-demo-fe-ts-nextjs/docker-compose.yml up
+docker compose -f infra/dev/demo-fe-ts-nextjs/docker-compose.yml up
 ```
 
 **Full-stack (demo-fs)**:
 
 ```bash
-docker compose -f infra/dev/a-demo-fs-ts-nextjs/docker-compose.yml up
+docker compose -f infra/dev/demo-fs-ts-nextjs/docker-compose.yml up
 ```
 
 **Content platform**:
 
 ```bash
-# a-demo
-docker compose -f infra/dev/a-demo-fs-ts-nextjs/docker-compose.yml up
+# demo
+docker compose -f infra/dev/demo-fs-ts-nextjs/docker-compose.yml up
 
-# a-demo
-docker compose -f infra/dev/a-demo-fs-ts-nextjs/docker-compose.yml up
+# demo
+docker compose -f infra/dev/demo-fs-ts-nextjs/docker-compose.yml up
 ```
 
-**a-demo** (frontend + backend + database):
+**demo** (frontend + backend + database):
 
 ```bash
-docker compose -f infra/dev/a-demo/docker-compose.yml up
+docker compose -f infra/dev/demo/docker-compose.yml up
 ```
 
-> **Note**: All `a-demo-be-*` backends bind port 8201 and are mutually exclusive — do not run two backend stacks simultaneously.
+> **Note**: All `demo-be-*` backends bind port 8201 and are mutually exclusive — do not run two backend stacks simultaneously.
 
 ### 3. Configure Environment (Optional)
 
@@ -128,14 +128,14 @@ Some services require building before containerization:
 
 ```bash
 # Example: Spring Boot application
-cd ../../../apps/a-demo-be-java-springboot
+cd ../../../apps/demo-be-java-springboot
 mvn clean package -DskipTests
 
 # Or using Nx
-nx run a-demo-be-java-springboot:build
+nx run demo-be-java-springboot:build
 
 # Return to Docker Compose directory
-cd ../../infra/dev/a-demo-be-java-springboot
+cd ../../infra/dev/demo-be-java-springboot
 ```
 
 ### 5. Start Services
@@ -154,7 +154,7 @@ docker compose ps
 ### 6. Verify Services
 
 ```bash
-# Example: Test a-demo-be-java-springboot
+# Example: Test demo-be-java-springboot
 curl http://localhost:8201/api/v1/hello
 # Expected: {"message":"world"}
 
@@ -167,15 +167,15 @@ curl http://localhost:8201/health
 With the backend running, execute the API-level Playwright E2E suite from the repository root:
 
 ```bash
-nx run a-demo-be-e2e:test:e2e
+nx run demo-be-e2e:test:e2e
 ```
 
-See [`apps/a-demo-be-e2e/`](../../apps/a-demo-be-e2e/README.md) for setup and options.
+See [`apps/demo-be-e2e/`](../../apps/demo-be-e2e/README.md) for setup and options.
 
 With the frontend running, execute the web Playwright suite:
 
 ```bash
-nx run a-demo-fe-e2e:test:e2e
+nx run demo-fe-e2e:test:e2e
 ```
 
 ### 7. Stop Services
@@ -190,16 +190,16 @@ docker compose down -v
 
 ## Available Service Ecosystems
 
-### Demo Backend — JASB (`infra/dev/a-demo-be-java-springboot/`)
+### Demo Backend — JASB (`infra/dev/demo-be-java-springboot/`)
 
 **Services (Docker Compose)**:
 
-- `a-demo-be-db` - PostgreSQL 17 database (port 5432)
-- `a-demo-be-java-springboot` - Spring Boot backend (port 8201)
+- `demo-be-db` - PostgreSQL 17 database (port 5432)
+- `demo-be-java-springboot` - Spring Boot backend (port 8201)
 
 **Related Apps (run separately)**:
 
-- `a-demo-be-e2e` - Playwright API E2E tests — `nx run a-demo-be-e2e:test:e2e`
+- `demo-be-e2e` - Playwright API E2E tests — `nx run demo-be-e2e:test:e2e`
 
 **Quick Start**:
 
@@ -207,22 +207,22 @@ docker compose down -v
 npm run demo-be:dev
 ```
 
-**Documentation**: [Demo Backend (JASB) Infrastructure README](../../infra/dev/a-demo-be-java-springboot/README.md)
+**Documentation**: [Demo Backend (JASB) Infrastructure README](../../infra/dev/demo-be-java-springboot/README.md)
 
-### a-demo-fe-ts-nextjs (`infra/dev/a-demo-fe-ts-nextjs/`)
+### demo-fe-ts-nextjs (`infra/dev/demo-fe-ts-nextjs/`)
 
 **Services (Docker Compose)**:
 
-- `a-demo-fe-ts-nextjs` - Next.js landing website (port 3200)
+- `demo-fe-ts-nextjs` - Next.js landing website (port 3200)
 
 **Related Apps (run separately)**:
 
-- `a-demo-fe-e2e` - Playwright browser E2E tests — `nx run a-demo-fe-e2e:test:e2e`
+- `demo-fe-e2e` - Playwright browser E2E tests — `nx run demo-fe-e2e:test:e2e`
 
 **Quick Start**:
 
 ```bash
-npm run a-demo-fe-ts-nextjs:dev
+npm run demo-fe-ts-nextjs:dev
 ```
 
 ### Future Ecosystems
@@ -235,33 +235,33 @@ Additional service ecosystems will be added as the platform grows.
 
 ```bash
 # All services
-docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml logs -f
+docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml logs -f
 
 # Specific service
-docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml logs -f a-demo-be-java-springboot
+docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml logs -f demo-be-java-springboot
 
 # Last 100 lines
-docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml logs --tail=100 a-demo-be-java-springboot
+docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml logs --tail=100 demo-be-java-springboot
 ```
 
 ### Restart Services
 
 ```bash
 # Restart all
-docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml restart
+docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml restart
 
 # Restart specific service
-docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml restart a-demo-be-java-springboot
+docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml restart demo-be-java-springboot
 ```
 
 ### Rebuild After Code Changes
 
 ```bash
 # 1. Rebuild the application
-nx run a-demo-be-java-springboot:build
+nx run demo-be-java-springboot:build
 
 # 2. Restart the service
-docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml restart a-demo-be-java-springboot
+docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml restart demo-be-java-springboot
 ```
 
 ### Check Resource Usage
@@ -271,17 +271,17 @@ docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml restart
 docker stats
 
 # Compose service status
-docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml ps
+docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml ps
 ```
 
 ### Clean Up
 
 ```bash
 # Stop and remove containers
-docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml down
+docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml down
 
 # Remove volumes (caution: deletes data)
-docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml down -v
+docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml down -v
 
 # Remove unused Docker resources
 docker system prune
@@ -295,12 +295,12 @@ docker system prune
 
 ```bash
 # 1. Start services
-docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml up -d
+docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml up -d
 
 # 2. Make changes to code
 # 3. Rebuild and restart (Java requires rebuild; Go/Python restart is sufficient)
-nx run a-demo-be-java-springboot:build
-docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml restart a-demo-be-java-springboot
+nx run demo-be-java-springboot:build
+docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml restart demo-be-java-springboot
 
 # 4. Test changes
 curl http://localhost:8201/api/v1/hello
@@ -312,10 +312,10 @@ curl http://localhost:8201/api/v1/hello
 
 ```bash
 # Run the database in Docker only
-docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml up -d a-demo-be-db
+docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml up -d demo-be-db
 
 # Run the app directly on the host for faster iteration
-cd apps/a-demo-be-java-springboot
+cd apps/demo-be-java-springboot
 mvn spring-boot:run
 ```
 
@@ -325,7 +325,7 @@ mvn spring-boot:run
 
 ```bash
 # Run all services in Docker
-docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml up -d
+docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml up -d
 
 # All services share the same named bridge network and communicate by service name
 ```
@@ -355,7 +355,7 @@ The `.env` file is loaded automatically by Docker Compose. It is git-ignored —
 DATABASE_URL=postgresql://user:password@localhost:5432/dbname
 ```
 
-**Full-stack (`a-demo-fs-ts-nextjs`)**:
+**Full-stack (`demo-fs-ts-nextjs`)**:
 
 ```bash
 DATABASE_URL=postgresql://demo_fs_nextjs:demo_fs_nextjs@db:5432/demo_fs_nextjs
@@ -364,7 +364,7 @@ APP_JWT_SECRET=dev-jwt-secret-at-least-32-chars-long!!
 ENABLE_TEST_API=true
 ```
 
-**a-demo** (requires OAuth setup):
+**demo** (requires OAuth setup):
 
 ```bash
 # Required: Google OAuth credentials for login
@@ -375,9 +375,9 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 APP_JWT_SECRET=dev-jwt-secret-at-least-32-characters-long
 
 # PostgreSQL — no need to change for local dev
-POSTGRES_USER=a-demo
-POSTGRES_PASSWORD=a-demo
-POSTGRES_DB=a-demo
+POSTGRES_USER=demo
+POSTGRES_PASSWORD=demo
+POSTGRES_DB=demo
 ```
 
 **Java Spring Boot**:
@@ -393,13 +393,13 @@ JAVA_OPTS=-Xms256m -Xmx512m -XX:+UseZGC
 | Variable                    | Used By              | Purpose                                        |
 | --------------------------- | -------------------- | ---------------------------------------------- |
 | `DATABASE_URL`              | All backends with DB | Connection string for PostgreSQL               |
-| `ENABLE_TEST_API`           | a-demo-fs-ts-nextjs  | Enables test-only HTTP routes for E2E teardown |
-| `APP_JWT_SECRET`            | fs-nextjs, a-demo    | Signs JWT tokens (min 32 chars for HS256)      |
-| `GOOGLE_CLIENT_ID`          | a-demo-fe-ts-nextjs  | Google OAuth client identifier                 |
-| `GOOGLE_CLIENT_SECRET`      | a-demo               | Google OAuth client secret (server-side only)  |
+| `ENABLE_TEST_API`           | demo-fs-ts-nextjs    | Enables test-only HTTP routes for E2E teardown |
+| `APP_JWT_SECRET`            | fs-nextjs, demo      | Signs JWT tokens (min 32 chars for HS256)      |
+| `GOOGLE_CLIENT_ID`          | demo-fe-ts-nextjs    | Google OAuth client identifier                 |
+| `GOOGLE_CLIENT_SECRET`      | demo                 | Google OAuth client secret (server-side only)  |
 | `SPRING_PROFILES_ACTIVE`    | Java Spring Boot     | Selects Spring Boot configuration profile      |
 | `JAVA_OPTS` / `MAVEN_OPTS`  | Java backends        | JVM and Maven memory settings                  |
-| `POSTGRES_USER/PASSWORD/DB` | a-demo, jasb         | PostgreSQL credentials (dev defaults provided) |
+| `POSTGRES_USER/PASSWORD/DB` | demo, jasb           | PostgreSQL credentials (dev defaults provided) |
 
 ## Database Seeding and Migration
 
@@ -464,31 +464,31 @@ Services in the same Docker Compose network can communicate by service name:
 
 ```bash
 # Example: Frontend calling backend
-http://a-demo-be-java-springboot:8201/api/v1/hello
+http://demo-be-java-springboot:8201/api/v1/hello
 
 # Example: Backend connecting to database
-jdbc:postgresql://a-demo-db:5432/a-demo
+jdbc:postgresql://demo-db:5432/demo
 ```
 
 ### Port Mapping
 
 Services expose ports to the host:
 
-| App / Service                    | Host Port | Service Type          |
-| -------------------------------- | --------- | --------------------- |
-| a-demo-be-\* (all backends)      | 8201      | Backend API           |
-| a-demo-fe-ts-nextjs              | 3301      | Frontend dev server   |
-| a-demo-fe-ts-tanstack-start      | 3301      | Frontend dev server   |
-| a-demo-fe-dart-flutterweb        | 3301      | Frontend dev server   |
-| a-demo-fs-ts-nextjs              | 3401      | Full-stack dev server |
-| a-demo-fs-ts-nextjs              | 3101      | Content platform      |
-| a-demo-fs-ts-nextjs              | 3100      | Content platform      |
-| a-demo-fe-ts-nextjs              | 3200      | a-demo frontend       |
-| a-demo-be-fsharp-giraffe         | 8202      | a-demo backend API    |
-| PostgreSQL (most backends)       | 5432      | Database              |
-| PostgreSQL (a-demo-fs-ts-nextjs) | 5438      | Database              |
+| App / Service                  | Host Port | Service Type          |
+| ------------------------------ | --------- | --------------------- |
+| demo-be-\* (all backends)      | 8201      | Backend API           |
+| demo-fe-ts-nextjs              | 3301      | Frontend dev server   |
+| demo-fe-ts-tanstack-start      | 3301      | Frontend dev server   |
+| demo-fe-dart-flutterweb        | 3301      | Frontend dev server   |
+| demo-fs-ts-nextjs              | 3401      | Full-stack dev server |
+| demo-fs-ts-nextjs              | 3101      | Content platform      |
+| demo-fs-ts-nextjs              | 3100      | Content platform      |
+| demo-fe-ts-nextjs              | 3200      | demo frontend         |
+| demo-be-fsharp-giraffe         | 8202      | demo backend API      |
+| PostgreSQL (most backends)     | 5432      | Database              |
+| PostgreSQL (demo-fs-ts-nextjs) | 5438      | Database              |
 
-> **Note**: Frontend stacks (`a-demo-fe-*`) are mutually exclusive — they all expose port 3301 and include the Go/Gin backend on port 8201. Do not run two frontend stacks simultaneously.
+> **Note**: Frontend stacks (`demo-fe-*`) are mutually exclusive — they all expose port 3301 and include the Go/Gin backend on port 8201. Do not run two frontend stacks simultaneously.
 
 ## Health Checks
 
@@ -530,12 +530,12 @@ docker compose -f infra/dev/<ecosystem>/docker-compose.yml logs <service-name>
 lsof -i :8201
 
 # Verify application was built (Java apps)
-ls -lh apps/a-demo-be-java-springboot/target/*.jar
+ls -lh apps/demo-be-java-springboot/target/*.jar
 ```
 
 ### Port Conflicts
 
-All `a-demo-be-*` backends share port 8201. All `a-demo-fe-*` frontends share port 3301. Running two stacks simultaneously causes a bind error.
+All `demo-be-*` backends share port 8201. All `demo-fe-*` frontends share port 3301. Running two stacks simultaneously causes a bind error.
 
 ```bash
 # Find the process occupying the port
@@ -640,7 +640,7 @@ cp .env.example .env
 
 ```yaml
 volumes:
-  - ../../apps/a-demo-be-java-springboot/target/app.jar:/app/app.jar:ro
+  - ../../apps/demo-be-java-springboot/target/app.jar:/app/app.jar:ro
 ```
 
 ### 4. Include Health Checks
@@ -657,21 +657,21 @@ healthcheck:
 
 ```yaml
 networks:
-  a-demo-network:
+  demo-network:
     driver: bridge
-    name: a-demo-network
+    name: demo-network
 ```
 
 ### 6. Document Port Assignments
 
 Maintain a central registry of ports to avoid conflicts. See the [Port Mapping](#port-mapping) reference table in the Networking section above for the complete list. Key assignments:
 
-- 8201: All `a-demo-be-*` backends (shared, mutually exclusive)
-- 3301: All `a-demo-fe-*` frontends (shared, mutually exclusive)
-- 3200: a-demo-fe-ts-nextjs
-- 8202: a-demo-be-fsharp-giraffe
+- 8201: All `demo-be-*` backends (shared, mutually exclusive)
+- 3301: All `demo-fe-*` frontends (shared, mutually exclusive)
+- 3200: demo-fe-ts-nextjs
+- 8202: demo-be-fsharp-giraffe
 - 5432: PostgreSQL for most backends
-- 5438: PostgreSQL for a-demo-fs-ts-nextjs
+- 5438: PostgreSQL for demo-fs-ts-nextjs
 
 ## Performance Tips
 
@@ -726,7 +726,7 @@ mvn spring-boot:run
 ```bash
 # Install Docker (one time)
 # Start with Docker Compose (source is volume-mounted; no pre-build needed for most backends)
-docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml up -d
+docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml up -d
 ```
 
 ### Advantages
@@ -743,18 +743,18 @@ Docker Compose can be used in CI/CD pipelines:
 ```bash
 # GitHub Actions example
 - name: Start services
-  run: docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml up -d
+  run: docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml up -d
 
 - name: Run tests
-  run: docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml exec a-demo-be-java-springboot mvn test
+  run: docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml exec demo-be-java-springboot mvn test
 
 - name: Stop services
-  run: docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml down
+  run: docker compose -f infra/dev/demo-be-java-springboot/docker-compose.yml down
 ```
 
 ## Related Documentation
 
-- [Demo Backend (JASB) Infrastructure README](../../infra/dev/a-demo-be-java-springboot/README.md)
+- [Demo Backend (JASB) Infrastructure README](../../infra/dev/demo-be-java-springboot/README.md)
 - [Docker Documentation](https://docs.docker.com/)
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [Reproducible Environments Convention](../../governance/development/workflow/reproducible-environments.md)

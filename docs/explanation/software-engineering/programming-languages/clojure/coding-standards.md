@@ -1,6 +1,6 @@
 ---
 title: "Clojure Coding Standards"
-description: Authoritative a-demo Clojure coding standards (naming conventions, namespace organization, REPL-driven development, threading macros)
+description: Authoritative demo Clojure coding standards (naming conventions, namespace organization, REPL-driven development, threading macros)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,15 +23,15 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Clojure tutorial. We define HOW to apply Clojure in THIS codebase, not WHAT Clojure is.
+**This document is demo-specific**, not a Clojure tutorial. We define HOW to apply Clojure in THIS codebase, not WHAT Clojure is.
 
 ## Purpose
 
-This document defines **authoritative coding standards** for Clojure development in the a-demo. These prescriptive rules MUST be followed across all Clojure projects to ensure consistency, maintainability, and alignment with platform architecture.
+This document defines **authoritative coding standards** for Clojure development in the demo. These prescriptive rules MUST be followed across all Clojure projects to ensure consistency, maintainability, and alignment with platform architecture.
 
-**Target Audience**: a-demo Clojure developers, technical reviewers, automated code quality tools
+**Target Audience**: demo Clojure developers, technical reviewers, automated code quality tools
 
-**Scope**: a-demo naming conventions, namespace organization, REPL-driven development workflow, threading macros, destructuring patterns, docstring requirements
+**Scope**: demo naming conventions, namespace organization, REPL-driven development workflow, threading macros, destructuring patterns, docstring requirements
 
 ## Software Engineering Principles
 
@@ -364,7 +364,7 @@ These standards enforce the software engineering principles from `governance/pri
 ```clojure
 ;; CORRECT: Proper ns organization
 (ns ose.zakat.service
-  "Zakat calculation service for a-demo."
+  "Zakat calculation service for demo."
   (:require [clojure.spec.alpha :as s]
             [clojure.string :as str]
             [next.jdbc :as jdbc]

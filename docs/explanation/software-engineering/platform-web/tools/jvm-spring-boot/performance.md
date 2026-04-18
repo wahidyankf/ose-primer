@@ -37,7 +37,7 @@ related:
 - [Async Processing](#async-processing) - @Async, CompletableFuture, virtual threads
 - [Database Performance](#database-performance) - Connection pooling, query optimization, N+1 prevention
 - [HTTP Performance](#http-performance) - Response compression, HTTP/2, connection tuning
-- [a-demo Examples](#ose-platform-examples) - Real-world performance patterns
+- [demo Examples](#ose-platform-examples) - Real-world performance patterns
 - [Performance Checklist](#performance-checklist) - Production optimization checklist
 - [Related Documentation](#related-documentation)
 

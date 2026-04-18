@@ -1,5 +1,5 @@
 ---
-title: Spring Framework Concurrency Standards for a-demo
+title: Spring Framework Concurrency Standards for demo
 description: Prescriptive concurrency requirements for Spring-based Shariah-compliant financial systems
 category: explanation
 subcategory: platform-web
@@ -20,19 +20,19 @@ updated: 2026-02-06
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: You MUST understand Spring Framework fundamentals from a-demo Spring Learning Path before using these standards.
+**REQUIRED**: You MUST understand Spring Framework fundamentals from demo Spring Learning Path before using these standards.
 
-**This document is a-demo-specific**, not a Spring tutorial. We define HOW to apply Spring in THIS codebase, not WHAT Spring is.
+**This document is demo-specific**, not a Spring tutorial. We define HOW to apply Spring in THIS codebase, not WHAT Spring is.
 
-# Spring Framework Concurrency Standards for a-demo
+# Spring Framework Concurrency Standards for demo
 
 **OSE-specific prescriptive standards** for concurrency in Spring-based Shariah-compliant financial applications. This document defines **mandatory requirements** using RFC 2119 keywords (MUST, SHOULD, MAY).
 
-**Prerequisites**: Understanding of Spring Framework fundamentals from a-demo Spring Framework and Java concurrency from Java Concurrency Standards.
+**Prerequisites**: Understanding of Spring Framework fundamentals from demo Spring Framework and Java concurrency from Java Concurrency Standards.
 
 ## Purpose
 
-Concurrency in Spring-based a-demo services extends Java concurrency standards with Spring-specific mechanisms:
+Concurrency in Spring-based demo services extends Java concurrency standards with Spring-specific mechanisms:
 
 - **Virtual Threads with Spring**: Java 21+ virtual thread integration with Spring Boot 3.2+
 - **@Async Configuration**: Asynchronous method execution with ExecutorService configuration
@@ -604,7 +604,7 @@ management.metrics.enable.executor=true
 management.metrics.enable.jvm=true
 ```
 
-### a-demo Standards
+### demo Standards
 
 - **[Spring Error Handling Standards](./error-handling-standards.md)** - Async exception handling
 - **[Spring API Standards](./api-standards.md)** - Async REST API patterns (this file references the API standards file to be created)
@@ -619,7 +619,7 @@ management.metrics.enable.jvm=true
 
 For learning Spring Framework fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Spring basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Spring basics from demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ### Software Engineering Principles
 
@@ -672,4 +672,4 @@ Before deploying Spring-based concurrent financial services, verify:
 
 **Last Updated**: 2026-02-06
 
-**Status**: Mandatory (required for all a-demo Spring services)
+**Status**: Mandatory (required for all demo Spring services)

@@ -458,7 +458,7 @@ for zakat in gen_result:
 
 **Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
-**Maintainers**: a-demo Documentation Team
+**Maintainers**: demo Documentation Team
 
 ## Python Memory Management
 

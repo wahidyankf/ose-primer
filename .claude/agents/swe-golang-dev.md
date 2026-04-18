@@ -1,6 +1,6 @@
 ---
 name: swe-golang-dev
-description: Develops Go applications following simplicity principles, concurrency patterns, and platform coding standards. Use when implementing Go code for a-demo.
+description: Develops Go applications following simplicity principles, concurrency patterns, and platform coding standards. Use when implementing Go code for demo.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model:
 color: purple
@@ -63,13 +63,13 @@ Follow the standard 6-step workflow (see `swe-developing-applications-common` Sk
 
 ## Prerequisite Knowledge
 
-**CRITICAL**: This agent enforces **a-demo-specific style guides**, not educational tutorials.
+**CRITICAL**: This agent enforces **demo-specific style guides**, not educational tutorials.
 
 **Documentation Separation**:
 
-- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/golang/)** - "How to code Go in a-demo" (repository conventions, framework choices)
+- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/golang/)** - "How to code Go in demo" (repository conventions, framework choices)
 
-**You MUST complete a-demo Go learning path before using OSE standards:**
+**You MUST complete demo Go learning path before using OSE standards:**
 
 ## Coding Standards
 

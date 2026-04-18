@@ -1,6 +1,6 @@
 ---
 title: "Rust Coding Standards"
-description: Authoritative a-demo Rust coding standards (naming, modules, idioms, anti-patterns)
+description: Authoritative demo Rust coding standards (naming, modules, idioms, anti-patterns)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Rust tutorial. We define HOW to apply Rust in THIS codebase, not WHAT Rust is.
+**This document is demo-specific**, not a Rust tutorial. We define HOW to apply Rust in THIS codebase, not WHAT Rust is.
 
 ## Purpose
 
-This document defines **authoritative coding standards** for Rust development in the a-demo. These are prescriptive rules that MUST be followed across all Rust projects to ensure consistency, maintainability, and alignment with platform architecture.
+This document defines **authoritative coding standards** for Rust development in the demo. These are prescriptive rules that MUST be followed across all Rust projects to ensure consistency, maintainability, and alignment with platform architecture.
 
-**Target Audience**: a-demo Rust developers, technical reviewers, automated code quality tools
+**Target Audience**: demo Rust developers, technical reviewers, automated code quality tools
 
 **Scope**: Naming conventions, module organization, idiomatic Rust patterns, and anti-patterns to avoid
 

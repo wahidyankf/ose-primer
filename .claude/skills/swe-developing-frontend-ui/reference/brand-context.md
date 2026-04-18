@@ -2,9 +2,9 @@
 
 Per-app brand guidance for UI development decisions.
 
-## a-demo-fe-ts-nextjs
+## demo-fe-ts-nextjs
 
-- **Product**: Business productivity tracker (a-demo)
+- **Product**: Business productivity tracker (demo)
 - **URL**: www.example.com
 - **Audience**: Business professionals, team managers
 - **Personality**: Professional, efficient, trustworthy
@@ -15,9 +15,9 @@ Per-app brand guidance for UI development decisions.
 - **UI character**: Dense data tables, charts, minimal decoration, productivity-focused
 - **Framework**: Next.js 16, Tailwind v4, shadcn/ui, Storybook
 
-## a-demo-fs-ts-nextjs
+## demo-fs-ts-nextjs
 
-- **Product**: Educational coding platform (a-demo)
+- **Product**: Educational coding platform (demo)
 - **URL**: example.com
 - **Audience**: Indonesian tech community, developers learning programming
 - **Personality**: Approachable, educational, encouraging
@@ -28,7 +28,7 @@ Per-app brand guidance for UI development decisions.
 - **UI character**: Content-focused, long-form reading, code blocks with syntax highlighting
 - **Framework**: Next.js 16, Tailwind v4 + @tailwindcss/typography, shadcn/ui, rehype-pretty-code
 
-## a-demo-fe-ts-nextjs
+## demo-fe-ts-nextjs
 
 - **Product**: Technical demo frontend
 - **Audience**: Developers evaluating the platform
@@ -38,16 +38,16 @@ Per-app brand guidance for UI development decisions.
 - **UI character**: Clean layout, demonstrates API integration, minimal styling
 - **Framework**: Next.js 16, migrating to Tailwind v4 + shared tokens
 
-## a-demo-fe-dart-flutterweb
+## demo-fe-dart-flutterweb
 
 - **Product**: Flutter Web demo frontend
 - **Audience**: Developers evaluating Flutter
 - **Palette**: Material 3 theme defaults
 - **Note**: Cannot share React components — can consume CSS tokens via generated Dart constants
 
-## a-demo-fs-ts-nextjs
+## demo-fs-ts-nextjs
 
-- **Product**: a-demo marketing site
+- **Product**: demo marketing site
 - **URL**: example.com
 - **Framework**: Next.js 16 (App Router, TypeScript, tRPC)
 - **Note**: Uses React components — can share UI components following the standard component patterns

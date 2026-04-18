@@ -1,6 +1,6 @@
 ---
 title: Elixir Build Configuration Standards
-description: Authoritative a-demo build configuration standards for Mix, Hex, umbrella projects, release management, and version control with asdf/MISE
+description: Authoritative demo build configuration standards for Mix, Hex, umbrella projects, release management, and version control with asdf/MISE
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,15 +23,15 @@ updated: 2026-02-05
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not an Elixir tutorial. We define HOW to apply Elixir build tools in THIS codebase, not WHAT Mix or Hex are.
+**This document is demo-specific**, not an Elixir tutorial. We define HOW to apply Elixir build tools in THIS codebase, not WHAT Mix or Hex are.
 
 # Elixir Build Configuration Standards
 
 ## Purpose
 
-This document defines **authoritative build configuration standards** for Elixir development in the a-demo. These prescriptive rules govern Mix project structure, Hex dependency management, version control with asdf/MISE, umbrella project organization, and OTP release configuration.
+This document defines **authoritative build configuration standards** for Elixir development in the demo. These prescriptive rules govern Mix project structure, Hex dependency management, version control with asdf/MISE, umbrella project organization, and OTP release configuration.
 
-**Target Audience**: a-demo Elixir developers, build engineers, DevOps teams
+**Target Audience**: demo Elixir developers, build engineers, DevOps teams
 
 **Scope**: Mix build tool, Hex package manager, dependency versioning, umbrella projects, release configuration, version management, build automation
 
@@ -122,7 +122,7 @@ defmodule FinancialDomain.MixProject do
 
       # SHOULD: Documentation configuration
       name: "Financial Domain",
-      source_url: "https://github.com/a-demo/financial_domain",
+      source_url: "https://github.com/demo/financial_domain",
       docs: docs(),
 
       # SHOULD: Test coverage configuration
@@ -421,7 +421,7 @@ end
 
 ```bash
 # Authenticate with organization
-mix hex.organization auth a-demo
+mix hex.organization auth demo
 
 # Or set environment variable
 export HEX_ORGANIZATION_KEY=your-key-here
@@ -436,7 +436,7 @@ defp deps do
     {:phoenix, "~> 1.7.0"},
 
     # Private organization package
-    {:financial_core, "~> 1.0", organization: "a-demo"}
+    {:financial_core, "~> 1.0", organization: "demo"}
   ]
 end
 ```
@@ -506,7 +506,7 @@ mix deps.get --verbose
 **.tool-versions structure**:
 
 ```
-# a-demo standard versions
+# demo standard versions
 elixir 1.17.3-otp-27
 erlang 27.2
 ```
@@ -555,11 +555,11 @@ end
 
 **Version strategy alignment**:
 
-| Requirement Level   | Version Constraint  | Use Case                    |
-| ------------------- | ------------------- | --------------------------- |
-| Baseline (1.12+)    | `elixir: "~> 1.12"` | Legacy support              |
-| Recommended (1.17+) | `elixir: "~> 1.17"` | **Current a-demo standard** |
-| Latest (1.19)       | `elixir: "~> 1.19"` | New projects                |
+| Requirement Level   | Version Constraint  | Use Case                  |
+| ------------------- | ------------------- | ------------------------- |
+| Baseline (1.12+)    | `elixir: "~> 1.12"` | Legacy support            |
+| Recommended (1.17+) | `elixir: "~> 1.17"` | **Current demo standard** |
+| Latest (1.19)       | `elixir: "~> 1.19"` | New projects              |
 
 ### Erlang/OTP Version Compatibility (MUST Document)
 
@@ -941,7 +941,7 @@ secret_key_base = ConfigValidator.require_env!("SECRET_KEY_BASE")
 
 ### Hot Code Upgrades (When Appropriate - Rarely)
 
-**Hot code upgrades are RARELY appropriate in a-demo**.
+**Hot code upgrades are RARELY appropriate in demo**.
 
 **Use hot upgrades ONLY when**:
 

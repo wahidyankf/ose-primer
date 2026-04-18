@@ -27,7 +27,7 @@ updated: 2025-01-23
 
 ## Overview
 
-Behaviour-Driven Development (BDD) uses executable specifications written in natural language (Gherkin) to define system behavior. For a-demo financial applications, BDD ensures Islamic finance rules are correctly implemented and understood by both developers and domain experts.
+Behaviour-Driven Development (BDD) uses executable specifications written in natural language (Gherkin) to define system behavior. For demo financial applications, BDD ensures Islamic finance rules are correctly implemented and understood by both developers and domain experts.
 
 ### BDD Benefits for Financial Domain
 
@@ -594,4 +594,4 @@ Feature: Zakat Distribution
 
 **Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
-**Maintainers**: a-demo Documentation Team
+**Maintainers**: demo Documentation Team

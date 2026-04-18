@@ -1,6 +1,6 @@
 ---
 title: "C# API Standards"
-description: Authoritative a-demo C# API standards (ASP.NET Core REST, Minimal API, versioning, OpenAPI, CQRS with MediatR)
+description: Authoritative demo C# API standards (ASP.NET Core REST, Minimal API, versioning, OpenAPI, CQRS with MediatR)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a C# tutorial.
+**This document is demo-specific**, not a C# tutorial.
 
 ## Purpose
 
-This document defines **authoritative API standards** for C# in the a-demo.
+This document defines **authoritative API standards** for C# in the demo.
 
-**Target Audience**: a-demo C# developers building HTTP APIs
+**Target Audience**: demo C# developers building HTTP APIs
 
 **Scope**: Controller-based vs Minimal API, route naming, HTTP method conventions, ProblemDetails, API versioning, OpenAPI/Swagger, pagination, CQRS with MediatR
 
@@ -261,10 +261,10 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "a-demo Zakat API",
+        Title = "demo Zakat API",
         Version = "v1",
         Description = "Sharia-compliant Zakat calculation and management API.",
-        Contact = new OpenApiContact { Name = "a-demo Team" }
+        Contact = new OpenApiContact { Name = "demo Team" }
     });
 
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

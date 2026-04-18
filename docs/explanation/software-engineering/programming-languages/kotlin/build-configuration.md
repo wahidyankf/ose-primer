@@ -1,6 +1,6 @@
 ---
 title: "Kotlin Build Configuration Standards"
-description: Authoritative a-demo Kotlin build configuration (Gradle KTS, version catalog, Kotlin DSL)
+description: Authoritative demo Kotlin build configuration (Gradle KTS, version catalog, Kotlin DSL)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Kotlin tutorial. We define HOW to configure builds in THIS codebase.
+**This document is demo-specific**, not a Kotlin tutorial. We define HOW to configure builds in THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative build configuration standards** for Kotlin development in the a-demo. It covers `build.gradle.kts` structure, Kotlin Gradle DSL patterns, dependency management with `libs.versions.toml`, Gradle Wrapper, and Kotlin compiler configuration.
+This document defines **authoritative build configuration standards** for Kotlin development in the demo. It covers `build.gradle.kts` structure, Kotlin Gradle DSL patterns, dependency management with `libs.versions.toml`, Gradle Wrapper, and Kotlin compiler configuration.
 
-**Target Audience**: a-demo Kotlin developers, DevOps engineers, technical reviewers
+**Target Audience**: demo Kotlin developers, DevOps engineers, technical reviewers
 
 **Scope**: Gradle KTS file structure, plugin configuration, dependency management, test configuration, quality task integration
 

@@ -15,9 +15,9 @@ Progressive disclosure of Clojure coding standards for agents writing Clojure co
 
 ## Prerequisite Knowledge
 
-**IMPORTANT**: This skill provides **a-demo-specific style guides**, not educational tutorials.
+**IMPORTANT**: This skill provides **demo-specific style guides**, not educational tutorials.
 
-Complete the a-demo Clojure learning path first:
+Complete the demo Clojure learning path first:
 
 ## Quick Standards Reference
 
@@ -29,7 +29,7 @@ Complete the a-demo Clojure learning path first:
 
 **Side-effecting functions**: end with `!` - `save-transaction!`, `send-notification!`
 
-**Namespaces**: reverse-domain + feature - `com.a-demo.zakat.calculator`
+**Namespaces**: reverse-domain + feature - `com.demo.zakat.calculator`
 
 **Namespace aliases**: standard abbreviations - `(require [clojure.string :as str])`
 
@@ -131,9 +131,9 @@ Complete the a-demo Clojure learning path first:
 
 ```clojure
 ;; CORRECT: clojure.test with descriptive names
-(ns com.a-demo.zakat.calculator-test
+(ns com.demo.zakat.calculator-test
   (:require [clojure.test :refer [deftest testing is are]]
-            [com.a-demo.zakat.calculator :refer [calculate-zakat]]))
+            [com.demo.zakat.calculator :refer [calculate-zakat]]))
 
 (deftest calculate-zakat-test
   (testing "wealth above nisab"

@@ -18,7 +18,7 @@ These workflows define **WHEN and HOW to validate documentation**, orchestrating
 
 **❌ Not Included:**
 
-- Hugo site validation (that's a-demo-fs-ts-nextjs/)
+- Hugo site validation (that's demo-fs-ts-nextjs/)
 - README validation (that's separate workflow)
 - Single-agent operations (use agents directly)
 

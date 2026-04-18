@@ -26,18 +26,18 @@ Tools checked:
   volta          — any version (no config file)
   node           — from package.json → volta.node
   npm            — from package.json → volta.npm
-  java           — from apps/a-demo-be-fsharp-giraffe-jasb/pom.xml → <java.version>
+  java           — from apps/demo-be-fsharp-giraffe-jasb/pom.xml → <java.version>
   maven          — any version (no config file)
   golang         — from apps/rhino-cli/go.mod → go directive
-  python         — from apps/a-demo-be-python-fastapi/.python-version
-  rust           — from apps/a-demo-be-rust-axum/Cargo.toml → rust-version
+  python         — from apps/demo-be-python-fastapi/.python-version
+  rust           — from apps/demo-be-rust-axum/Cargo.toml → rust-version
   cargo-llvm-cov — any version (cargo subcommand)
   elixir         — from .tool-versions → elixir
   erlang         — from .tool-versions → erlang
-  dotnet         — from apps/a-demo-be-fsharp-giraffe/global.json → sdk.version
+  dotnet         — from apps/demo-be-fsharp-giraffe/global.json → sdk.version
   clojure        — any version (no config file)
-  dart           — from apps/a-demo-fe-dart-flutterweb/pubspec.yaml → environment.sdk
-  flutter        — from apps/a-demo-fe-dart-flutterweb/pubspec.yaml → environment.flutter
+  dart           — from apps/demo-fe-dart-flutterweb/pubspec.yaml → environment.sdk
+  flutter        — from apps/demo-fe-dart-flutterweb/pubspec.yaml → environment.flutter
   docker         — any version (no config file)
   jq             — any version (no config file)
   playwright     — browsers in Playwright cache directory

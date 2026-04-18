@@ -113,7 +113,7 @@ JWT_SECRET=...
 GOLD_API_KEY=...
 ```
 
-### a-demo Vercel Configuration
+### demo Vercel Configuration
 
 ```json
 // vercel.json
@@ -452,7 +452,7 @@ NEXT_PUBLIC_ENABLE_ANALYTICS=true
 ```bash
 # Public (exposed to browser)
 NEXT_PUBLIC_API_URL=https://api.example.com
-NEXT_PUBLIC_SITE_NAME=a-demo
+NEXT_PUBLIC_SITE_NAME=demo
 
 # Private (server-only)
 DATABASE_URL=postgresql://...

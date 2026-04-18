@@ -1,6 +1,6 @@
 ---
 title: "Elixir Type Safety Standards"
-description: Authoritative a-demo Elixir type safety standards (typespecs, Dialyzer, pattern matching)
+description: Authoritative demo Elixir type safety standards (typespecs, Dialyzer, pattern matching)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -27,13 +27,13 @@ updated: 2026-02-05
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not an Elixir tutorial. We define HOW to apply type safety in THIS codebase, not WHAT typespecs are.
+**This document is demo-specific**, not an Elixir tutorial. We define HOW to apply type safety in THIS codebase, not WHAT typespecs are.
 
 ## Purpose
 
-This document defines **authoritative type safety standards** for Elixir development in the a-demo. These are prescriptive rules that MUST be followed to ensure type correctness, runtime reliability, and alignment with platform type safety requirements.
+This document defines **authoritative type safety standards** for Elixir development in the demo. These are prescriptive rules that MUST be followed to ensure type correctness, runtime reliability, and alignment with platform type safety requirements.
 
-**Target Audience**: a-demo Elixir developers, technical reviewers, automated code quality tools
+**Target Audience**: demo Elixir developers, technical reviewers, automated code quality tools
 
 **Scope**: Typespecs, Dialyzer configuration, pattern matching type guards, compile-time checks
 
@@ -963,4 +963,4 @@ echo "All checks passed!"
 **Version**: 1.0.0
 **Elixir Version**: 1.19.0 (minimum 1.12+)
 **Last Updated**: 2026-02-05
-**Maintainers**: a-demo Engineering Team
+**Maintainers**: demo Engineering Team

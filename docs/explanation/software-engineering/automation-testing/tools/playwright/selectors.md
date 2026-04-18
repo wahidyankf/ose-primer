@@ -1,6 +1,6 @@
 ---
 title: "Playwright Selector Standards"
-description: Authoritative a-demo Playwright selector standards (locator strategies, accessibility-first selectors, selector resilience)
+description: Authoritative demo Playwright selector standards (locator strategies, accessibility-first selectors, selector resilience)
 category: explanation
 subcategory: automation-testing
 tags:
@@ -23,15 +23,15 @@ updated: 2026-02-08
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Playwright tutorial. We define HOW to select elements in THIS codebase, not WHAT Playwright selectors are.
+**This document is demo-specific**, not a Playwright tutorial. We define HOW to select elements in THIS codebase, not WHAT Playwright selectors are.
 
 ## Purpose
 
-This document defines **authoritative selector standards** for Playwright end-to-end testing in the a-demo. These are prescriptive rules that MUST be followed to ensure accessible, maintainable, and resilient test selectors.
+This document defines **authoritative selector standards** for Playwright end-to-end testing in the demo. These are prescriptive rules that MUST be followed to ensure accessible, maintainable, and resilient test selectors.
 
-**Target Audience**: a-demo E2E test developers, technical reviewers, automated test quality tools
+**Target Audience**: demo E2E test developers, technical reviewers, automated test quality tools
 
-**Scope**: a-demo selector strategies, locator patterns, accessibility-first approaches, and selector resilience standards
+**Scope**: demo selector strategies, locator patterns, accessibility-first approaches, and selector resilience standards
 
 ## Software Engineering Principles
 
@@ -370,7 +370,7 @@ const allButtons = await page.getByRole("button", { name: "Edit" }).all();
 page.getByRole("row", { name: /Transaction #12345/ }).getByRole("button", { name: "Edit" });
 ```
 
-## a-demo Selector Conventions
+## demo Selector Conventions
 
 ### Islamic Finance Domain Selectors
 

@@ -1,6 +1,6 @@
 ---
 title: Elixir
-description: a-demo Authoritative Elixir Coding Standards and Framework Stack (Elixir 1.12+)
+description: demo Authoritative Elixir Coding Standards and Framework Stack (Elixir 1.12+)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -26,13 +26,13 @@ updated: 2026-02-05
 
 # Elixir
 
-**This is THE authoritative reference** for Elixir coding standards in a-demo.
+**This is THE authoritative reference** for Elixir coding standards in demo.
 
-All Elixir code written for the a-demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
+All Elixir code written for the demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
 
 ## Framework Stack
 
-a-demo Elixir applications MUST use the following framework stack:
+demo Elixir applications MUST use the following framework stack:
 
 **Primary Framework:**
 
@@ -64,17 +64,17 @@ a-demo Elixir applications MUST use the following framework stack:
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the a-demo Elixir learning path. These are **a-demo-specific style guides**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the demo Elixir learning path. These are **demo-specific style guides**, not educational tutorials.
 
 **You MUST understand Elixir fundamentals before using these standards:**
 
-**What this documentation covers**: a-demo naming conventions, framework choices, repository-specific patterns, how to apply Elixir knowledge in THIS codebase.
+**What this documentation covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply Elixir knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Elixir syntax, language fundamentals, generic patterns (those are in a-demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: Elixir syntax, language fundamentals, generic patterns (those are in demo-fs-ts-nextjs).
 
 ## Software Engineering Principles
 
-Elixir development in a-demo enforces foundational software engineering principles:
+Elixir development in demo enforces foundational software engineering principles:
 
 1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - MUST automate through Mix build tool, ExUnit testing framework, mix format, Credo for code quality, Dialyzer for static type analysis, and doctests for documentation validation
 
@@ -88,7 +88,7 @@ Elixir development in a-demo enforces foundational software engineering principl
 
 ## Elixir Version Strategy
 
-a-demo follows a three-tier Elixir versioning strategy:
+demo follows a three-tier Elixir versioning strategy:
 
 **Elixir 1.12+ (Baseline - REQUIRED)**:
 
@@ -116,9 +116,9 @@ a-demo follows a three-tier Elixir versioning strategy:
 
 **Unlike Java's LTS model**: Elixir maintains excellent backward compatibility across versions. Code written for Elixir 1.12 runs on 1.19 without modifications in most cases. Platform strategy focuses on staying current with stable releases.
 
-## a-demo Coding Standards (Authoritative)
+## demo Coding Standards (Authoritative)
 
-**MUST follow these mandatory standards for all Elixir code in a-demo:**
+**MUST follow these mandatory standards for all Elixir code in demo:**
 
 1. **[Coding Standards](./coding-standards.md)** - Naming conventions, module organization, pattern matching idioms
 2. **[Framework Integration Standards](./framework-integration-standards.md)** - Phoenix, Ecto, OTP integration patterns
@@ -168,10 +168,10 @@ a-demo follows a three-tier Elixir versioning strategy:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["Elixir Standards Index<br/>#40;a-demo#41;"]:::blue
+    A["Elixir Standards Index<br/>#40;demo#41;"]:::blue
     B["Core Standards"]:::orange
     C["Specialized Standards"]:::teal
-    D["Learning Resources<br/>#40;a-demo#41;"]:::purple
+    D["Learning Resources<br/>#40;demo#41;"]:::purple
 
     A --> B
     A --> C
@@ -201,7 +201,7 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
-## Primary Use Cases in a-demo
+## Primary Use Cases in demo
 
 **Real-Time Web Applications**:
 

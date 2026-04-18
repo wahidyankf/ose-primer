@@ -487,11 +487,11 @@ int x = 10;  // This line declares a variable named x and assigns it the integer
 
 **Related Conventions**:
 
-- [Content Quality Principles](../../../governance/conventions/writing/quality.md) - Code annotation standards for a-demo-fs-ts-nextjs
+- [Content Quality Principles](../../../governance/conventions/writing/quality.md) - Code annotation standards for demo-fs-ts-nextjs
 
 **Related Skills**:
 
-- `apps-a-demo-fs-ts-nextjs-developing-content` - a-demo-fs-ts-nextjs specific patterns for hosting tutorials
+- `apps-demo-fs-ts-nextjs-developing-content` - demo-fs-ts-nextjs specific patterns for hosting tutorials
 - `docs-creating-accessible-diagrams` - Accessible diagram creation for complex examples
 
 ---

@@ -250,7 +250,7 @@ export const config = {
 };
 ```
 
-### a-demo: Role-Based Access
+### demo: Role-Based Access
 
 ```typescript
 // middleware.ts
@@ -595,7 +595,7 @@ export const config = {
 };
 ```
 
-## a-demo: Complete Middleware
+## demo: Complete Middleware
 
 ```typescript
 // middleware.ts

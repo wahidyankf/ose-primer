@@ -87,12 +87,12 @@ plugins {
 }
 
 application {
-  mainClass.set("com.a-demo.zakat.ZakatApplication")
+  mainClass.set("com.demo.zakat.ZakatApplication")
 }
 
 tasks.jar {
   manifest {
-    attributes["Main-Class"] = "com.a-demo.zakat.ZakatApplication"
+    attributes["Main-Class"] = "com.demo.zakat.ZakatApplication"
   }
 }
 ```
@@ -253,7 +253,7 @@ server.port=8080
 
 # Logging
 logging.level.root=INFO
-logging.level.com.a-demo=DEBUG
+logging.level.com.demo=DEBUG
 ```
 
 **application-dev.properties**:
@@ -282,7 +282,7 @@ db.pool.min-idle=10
 
 # Logging
 logging.level.root=WARN
-logging.level.com.a-demo=INFO
+logging.level.com.demo=INFO
 ```
 
 ### Environment Variables

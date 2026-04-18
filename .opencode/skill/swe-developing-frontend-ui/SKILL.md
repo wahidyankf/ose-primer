@@ -1,6 +1,6 @@
 ---
 name: swe-developing-frontend-ui
-description: UI development skill covering design token usage, shadcn/ui + Radix composition patterns, accessibility requirements, anti-patterns catalog, and brand context for a-demo and a-demo. Auto-loads when working on TSX components, CSS, or UI design tasks.
+description: UI development skill covering design token usage, shadcn/ui + Radix composition patterns, accessibility requirements, anti-patterns catalog, and brand context for demo and demo. Auto-loads when working on TSX components, CSS, or UI design tasks.
 ---
 
 # Frontend UI Development Skill

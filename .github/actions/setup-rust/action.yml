@@ -17,7 +17,7 @@ runs:
         path: |
           ~/.cargo/registry
           ~/.cargo/git
-          apps/a-demo-be-rust-axum/target
+          apps/demo-be-rust-axum/target
         key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
         restore-keys: |
           cargo-${{ runner.os }}-

@@ -36,7 +36,7 @@ related:
 - [Stream API](#stream-api) - Collection processing with streams
 - [Optional Usage](#optional-usage) - Null safety patterns
 - [Error Handling](#error-handling) - Either/Result pattern, Try monad
-- [a-demo Examples](#ose-platform-examples) - Real-world functional patterns
+- [demo Examples](#ose-platform-examples) - Real-world functional patterns
 - [Functional Programming Checklist](#functional-programming-checklist) - Best practices
 - [Related Documentation](#related-documentation)
 

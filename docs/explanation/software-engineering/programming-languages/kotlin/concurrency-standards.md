@@ -1,6 +1,6 @@
 ---
 title: "Kotlin Concurrency Standards"
-description: Authoritative a-demo Kotlin concurrency standards (coroutines, structured concurrency, Flow, channels)
+description: Authoritative demo Kotlin concurrency standards (coroutines, structured concurrency, Flow, channels)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Kotlin tutorial. We define HOW to use concurrency in THIS codebase.
+**This document is demo-specific**, not a Kotlin tutorial. We define HOW to use concurrency in THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative concurrency standards** for Kotlin development in the a-demo. It covers Kotlin Coroutines, structured concurrency, CoroutineScope lifecycle, Flow for reactive streams, StateFlow/SharedFlow, channels, Mutex, and CoroutineDispatcher selection.
+This document defines **authoritative concurrency standards** for Kotlin development in the demo. It covers Kotlin Coroutines, structured concurrency, CoroutineScope lifecycle, Flow for reactive streams, StateFlow/SharedFlow, channels, Mutex, and CoroutineDispatcher selection.
 
-**Target Audience**: a-demo Kotlin developers, technical reviewers
+**Target Audience**: demo Kotlin developers, technical reviewers
 
 **Scope**: Coroutine launch patterns, structured concurrency, Flow vs StateFlow, dispatcher selection, Mutex, avoiding thread blocking
 

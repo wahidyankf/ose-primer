@@ -1,6 +1,6 @@
 ---
 title: "Dart Performance Standards"
-description: Authoritative a-demo Dart performance standards (benchmarks, profiling, optimization)
+description: Authoritative demo Dart performance standards (benchmarks, profiling, optimization)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -22,13 +22,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Dart tutorial. We define HOW to measure and optimize Dart performance in THIS codebase, not WHAT performance optimization is.
+**This document is demo-specific**, not a Dart tutorial. We define HOW to measure and optimize Dart performance in THIS codebase, not WHAT performance optimization is.
 
 ## Purpose
 
-This document defines **authoritative performance standards** for Dart development in the a-demo. Performance work MUST follow the principle: measure first, optimize with evidence.
+This document defines **authoritative performance standards** for Dart development in the demo. Performance work MUST follow the principle: measure first, optimize with evidence.
 
-**Target Audience**: a-demo Dart developers tackling performance-sensitive code paths
+**Target Audience**: demo Dart developers tackling performance-sensitive code paths
 
 **Scope**: const constructors, lazy initialization, collection performance, profiling with Flutter DevTools, `dart:developer` Timeline, `benchmark_harness`, AOT benefits
 

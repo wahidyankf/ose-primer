@@ -1,6 +1,6 @@
 ---
 title: "TypeScript Documentation Index"
-description: Comprehensive TypeScript guide for a-demo
+description: Comprehensive TypeScript guide for demo
 category: explanation
 subcategory: prog-lang
 tags:
@@ -35,7 +35,7 @@ Complete TypeScript guide for the Open Sharia Enterprise (OSE) Platform. Covers 
 
 ## Overview
 
-TypeScript is the primary language for a-demo development. It provides static typing, modern ECMAScript features, and excellent tooling for building robust financial applications.
+TypeScript is the primary language for demo development. It provides static typing, modern ECMAScript features, and excellent tooling for building robust financial applications.
 
 ### Why TypeScript?
 
@@ -48,13 +48,13 @@ TypeScript is the primary language for a-demo development. It provides static ty
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the a-demo TypeScript learning path. These are **a-demo-specific style guides**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the demo TypeScript learning path. These are **demo-specific style guides**, not educational tutorials.
 
 **You MUST understand TypeScript fundamentals before using these standards:**
 
-**What this documentation covers**: a-demo naming conventions, framework choices, repository-specific patterns, how to apply TypeScript knowledge in THIS codebase.
+**What this documentation covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply TypeScript knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: TypeScript syntax, language fundamentals, generic patterns (those are in a-demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: TypeScript syntax, language fundamentals, generic patterns (those are in demo-fs-ts-nextjs).
 
 ## Coding Standards
 
@@ -486,7 +486,7 @@ const event: ZakatCalculatedEvent = {
 eventBus.publish(event);
 ```
 
-### Real-World a-demo Examples
+### Real-World demo Examples
 
 **Example 1: Zakat Calculation Service**:
 
@@ -667,8 +667,8 @@ export class CampaignController {
 
 ```
 apps/
-├── a-demo-fs-ts-nextjs/         # Hugo static site (TypeScript for build scripts)
-├── a-demo-fs-ts-nextjs/            # Hugo static site (TypeScript for build scripts)
+├── demo-fs-ts-nextjs/         # Hugo static site (TypeScript for build scripts)
+├── demo-fs-ts-nextjs/            # Hugo static site (TypeScript for build scripts)
 ├── rhino-cli/            # Go CLI tool
 └── rhino-cli/               # Go CLI tool
 
@@ -898,7 +898,7 @@ ENABLE_MURABAHA_CONTRACTS=true
 #!/bin/bash
 set -e
 
-echo "🔧 Setting up a-demo development environment..."
+echo "🔧 Setting up demo development environment..."
 
 # Check Node.js version
 REQUIRED_NODE_VERSION="24.13.1"
@@ -1389,7 +1389,7 @@ Master-level TypeScript development:
 
 ## Code Examples from Platform
 
-All examples use a-demo domain: donations, Zakat calculation, Murabaha contracts, campaign management.
+All examples use demo domain: donations, Zakat calculation, Murabaha contracts, campaign management.
 
 ### Money Value Object
 
@@ -1481,7 +1481,7 @@ async function processDonation(data: DonationInput): Promise<Result<Donation, Er
 - [TypeScript Release Notes](https://www.typescriptlang.org/docs/handbook/release-notes/overview.html)
 - [Node.js Documentation](https://nodejs.org/docs/)
 
-### a-demo Conventions
+### demo Conventions
 
 - [File Naming Convention](../../../../../governance/conventions/structure/file-naming.md)
 - [Diátaxis Framework](../../../../../governance/conventions/structure/diataxis-framework.md)

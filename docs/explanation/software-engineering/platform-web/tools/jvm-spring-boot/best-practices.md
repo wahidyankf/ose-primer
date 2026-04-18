@@ -74,7 +74,7 @@ This document provides proven best practices for building production-ready Sprin
 **Recommended: Package by Feature (Bounded Context)**
 
 ```
-src/main/java/com/a-demo/[domain]/
+src/main/java/com/demo/[domain]/
 ├── zakat/                              # Zakat bounded context
 │   ├── ZakatCalculation.java          # Aggregate root
 │   ├── ZakatCalculationService.java   # Application service
@@ -103,7 +103,7 @@ src/main/java/com/a-demo/[domain]/
 **Alternative: Layered Architecture**
 
 ```
-src/main/java/com/a-demo/[domain]/
+src/main/java/com/demo/[domain]/
 ├── domain/                    # Domain layer
 │   ├── model/                # Entities, value objects
 │   ├── repository/           # Repository interfaces
@@ -314,7 +314,7 @@ spring:
     show-sql: true
 logging:
   level:
-    com.a-demo: DEBUG
+    com.demo: DEBUG
 
 # application-prod.yml
 spring:
@@ -323,7 +323,7 @@ spring:
       maximum-pool-size: 20
 logging:
   level:
-    com.a-demo: INFO
+    com.demo: INFO
 ```
 
 ### Always Use Constructor Injection
@@ -676,7 +676,7 @@ public interface ZakatCalculationRepository extends JpaRepository<ZakatCalculati
 
     // Projection for read models
     @Query("""
-        SELECT new com.a-demo.zakat.dto.ZakatSummary(
+        SELECT new com.demo.zakat.dto.ZakatSummary(
             z.id,
             z.zakatAmount,
             z.calculationDate
@@ -999,7 +999,7 @@ Boot 4 approach is:
 
 ```java
 @NullMarked
-package com.ademobejasb.controller;
+package com.demobejasb.controller;
 
 import org.jspecify.annotations.NullMarked;
 ```
@@ -1032,7 +1032,7 @@ public class UserService {
 
 ```bash
 # Via Nx (preferred — wired into pre-push hook)
-nx typecheck a-demo-be-java-springboot
+nx typecheck demo-be-java-springboot
 
 # Via Maven directly
 mvn compile -Pnullcheck

@@ -15,9 +15,9 @@ Progressive disclosure of C# coding standards for agents writing C# code.
 
 ## Prerequisite Knowledge
 
-**IMPORTANT**: This skill provides **a-demo-specific style guides**, not educational tutorials.
+**IMPORTANT**: This skill provides **demo-specific style guides**, not educational tutorials.
 
-Complete the a-demo C# learning path first:
+Complete the demo C# learning path first:
 
 ## Quick Standards Reference
 

@@ -1,6 +1,6 @@
 ---
 title: Automation Testing Tools
-description: a-demo Automation Testing Tools Documentation Index
+description: demo Automation Testing Tools Documentation Index
 category: explanation
 subcategory: automation-testing
 tags:
@@ -18,7 +18,7 @@ updated: 2026-02-08
 
 # Automation Testing Tools
 
-**a-demo authoritative documentation** for specific automation testing tools.
+**demo authoritative documentation** for specific automation testing tools.
 
 ## Available Tools
 

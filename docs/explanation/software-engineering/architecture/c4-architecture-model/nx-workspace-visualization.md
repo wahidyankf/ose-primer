@@ -17,13 +17,13 @@ updated: 2026-02-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, defining how to visualize Nx workspace structure in C4 diagrams for THIS codebase.
+**This document is demo-specific**, defining how to visualize Nx workspace structure in C4 diagrams for THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative standards** for visualizing Nx monorepo structure using C4 container diagrams in a-demo.
+This document defines **authoritative standards** for visualizing Nx monorepo structure using C4 container diagrams in demo.
 
-**Target Audience**: a-demo architects, Nx developers
+**Target Audience**: demo architects, Nx developers
 
 **Scope**: Mapping Nx apps and libs to C4 containers, visualizing Nx project dependencies
 
@@ -37,8 +37,8 @@ This document defines **authoritative standards** for visualizing Nx monorepo st
 
 ```
 apps/
-├── a-demo-fs-ts-nextjs/        # Hugo static site
-├── a-demo-fs-ts-nextjs/          # Hugo static site
+├── demo-fs-ts-nextjs/        # Hugo static site
+├── demo-fs-ts-nextjs/          # Hugo static site
 ├── rhino-cli/          # Go CLI tool
 └── rhino-cli/              # Go CLI tool
 ```
@@ -47,9 +47,9 @@ apps/
 
 ```mermaid
 graph TD
-    OseWeb["a-demo Web<br/>[Container: Hugo/PaperMod]<br/>Landing page"]:::blue
-    AyoWeb["a-demo Web<br/>[Container: Hugo/Hextra]<br/>Educational content"]:::blue
-    AyoCLI["a-demo CLI<br/>[Container: Go]<br/>Content automation"]:::blue
+    OseWeb["demo Web<br/>[Container: Hugo/PaperMod]<br/>Landing page"]:::blue
+    AyoWeb["demo Web<br/>[Container: Hugo/Hextra]<br/>Educational content"]:::blue
+    AyoCLI["demo CLI<br/>[Container: Go]<br/>Content automation"]:::blue
     RhinoCLI["Rhino CLI<br/>[Container: Go]<br/>Repository management"]:::blue
 
     AyoCLI -->|"Generates content<br/>[File system]"| AyoWeb
@@ -81,7 +81,7 @@ graph TD
 
 **Example**:
 
-If `rhino-cli` has an Nx dependency on `a-demo-fs-ts-nextjs` (builds it), show this as a relationship in the container diagram.
+If `rhino-cli` has an Nx dependency on `demo-fs-ts-nextjs` (builds it), show this as a relationship in the container diagram.
 
 ## Container Naming for Nx Apps
 
@@ -93,23 +93,23 @@ If `rhino-cli` has an Nx dependency on `a-demo-fs-ts-nextjs` (builds it), show t
 
 **Examples**:
 
-- `"a-demo Web<br/>[Container: Hugo/PaperMod]<br/>Landing page and platform documentation"`
-- `"a-demo Web<br/>[Container: Hugo/Hextra]<br/>Bilingual educational content"`
-- `"a-demo CLI<br/>[Container: Go]<br/>Content automation for Hugo site"`
+- `"demo Web<br/>[Container: Hugo/PaperMod]<br/>Landing page and platform documentation"`
+- `"demo Web<br/>[Container: Hugo/Hextra]<br/>Bilingual educational content"`
+- `"demo CLI<br/>[Container: Go]<br/>Content automation for Hugo site"`
 - `"Zakat API<br/>[Container: Spring Boot]<br/>Zakat calculation business logic"`
 
-## Example: a-demo Container Diagram
+## Example: demo Container Diagram
 
 ### Full Platform View
 
 ```mermaid
 graph TD
     %% Hugo Sites
-    OseWeb["a-demo Web<br/>[Container: Hugo/PaperMod]<br/>Landing page"]:::blue
-    AyoWeb["a-demo Web<br/>[Container: Hugo/Hextra]<br/>Educational content"]:::blue
+    OseWeb["demo Web<br/>[Container: Hugo/PaperMod]<br/>Landing page"]:::blue
+    AyoWeb["demo Web<br/>[Container: Hugo/Hextra]<br/>Educational content"]:::blue
 
     %% CLI Tools
-    AyoCLI["a-demo CLI<br/>[Container: Go]<br/>Content automation"]:::blue
+    AyoCLI["demo CLI<br/>[Container: Go]<br/>Content automation"]:::blue
     RhinoCLI["Rhino CLI<br/>[Container: Go]<br/>Repository management"]:::blue
 
     %% Future Apps (example)

@@ -63,9 +63,9 @@ This directory contains skill packages that provide progressive knowledge delive
 
 ### 🌐 Site Development Skills
 
-- **apps-a-demo-fs-ts-nextjs-developing-content** - a-demo content development standards (Next.js)
-- **apps-a-demo-fe-ts-nextjs-developing-content** - a-demo frontend content development standards
-- **apps-a-demo-fs-ts-nextjs-developing-content** - a-demo content development standards
+- **apps-demo-fs-ts-nextjs-developing-content** - demo content development standards (Next.js)
+- **apps-demo-fe-ts-nextjs-developing-content** - demo frontend content development standards
+- **apps-demo-fs-ts-nextjs-developing-content** - demo content development standards
 
 ## Skill Structure
 

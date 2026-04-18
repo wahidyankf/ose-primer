@@ -37,7 +37,7 @@ Building accessible applications ensures everyone can use your software regardle
 - [Skip Links](#-skip-links) - Navigation shortcuts
 - [Responsive Accessibility](#-responsive-accessibility) - Mobile considerations
 - [Testing Accessibility](#-testing-accessibility) - Tools and techniques
-- [a-demo Examples](#-ose-platform-examples) - Islamic finance a11y patterns
+- [demo Examples](#-ose-platform-examples) - Islamic finance a11y patterns
 - [Accessibility Checklist](#-accessibility-checklist) - Production compliance
 - [Related Documentation](#-related-documentation) - Cross-references
 
@@ -1049,7 +1049,7 @@ export function ImageExamples() {
       <a href="/">
         <Image
           src="/logo.png"
-          alt="a-demo home page"
+          alt="demo home page"
           width={200}
           height={50}
         />
@@ -1392,7 +1392,7 @@ describe('Accessibility', () => {
 npx lighthouse https://your-site.com --only-categories=accessibility --view
 ```
 
-## 🕌 a-demo Examples
+## 🕌 demo Examples
 
 Accessible Islamic finance components.
 

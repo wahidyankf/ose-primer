@@ -1,6 +1,6 @@
 ---
 title: "Tutorials"
-description: Tutorials have been migrated to a-demo-fs-ts-nextjs
+description: Tutorials have been migrated to demo-fs-ts-nextjs
 category: tutorial
 tags:
   - index
@@ -12,7 +12,7 @@ updated: 2025-12-08
 
 # Tutorials
 
-**All tutorial content has been migrated to the a-demo website.**
+**All tutorial content has been migrated to the demo website.**
 
 ## 📍 New Location
 
@@ -31,7 +31,7 @@ The following content has been migrated:
 
 Content migrated: **December 8, 2025**
 
-All tutorials are now part of the a-demo educational platform and benefit from:
+All tutorials are now part of the demo educational platform and benefit from:
 
 - Better navigation and discoverability
 - Consistent Hugo/Hextra theme

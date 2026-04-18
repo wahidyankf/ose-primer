@@ -1,6 +1,6 @@
 ---
 title: "C# Type Safety Standards"
-description: Authoritative a-demo C# type safety standards (nullable reference types, generics, discriminated unions, pattern matching)
+description: Authoritative demo C# type safety standards (nullable reference types, generics, discriminated unions, pattern matching)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a C# tutorial.
+**This document is demo-specific**, not a C# tutorial.
 
 ## Purpose
 
-This document defines **authoritative type safety standards** for C# in the a-demo.
+This document defines **authoritative type safety standards** for C# in the demo.
 
-**Target Audience**: a-demo C# developers building type-safe domain models and APIs
+**Target Audience**: demo C# developers building type-safe domain models and APIs
 
 **Scope**: Nullable reference types, records for immutable value types, discriminated unions, generic constraints, pattern matching, generic math, avoiding `object`/`dynamic`
 

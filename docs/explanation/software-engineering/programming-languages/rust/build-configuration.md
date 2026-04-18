@@ -1,6 +1,6 @@
 ---
 title: "Rust Build Configuration"
-description: Authoritative a-demo Rust build configuration standards (Cargo.toml, workspaces, profiles, cargo-nextest)
+description: Authoritative demo Rust build configuration standards (Cargo.toml, workspaces, profiles, cargo-nextest)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Rust tutorial.
+**This document is demo-specific**, not a Rust tutorial.
 
 ## Purpose
 
-This document defines **authoritative build configuration standards** for Rust development in the a-demo. All Rust projects MUST follow these configuration rules for consistency and reproducibility.
+This document defines **authoritative build configuration standards** for Rust development in the demo. All Rust projects MUST follow these configuration rules for consistency and reproducibility.
 
-**Target Audience**: a-demo Rust developers, platform engineers, CI/CD maintainers
+**Target Audience**: demo Rust developers, platform engineers, CI/CD maintainers
 
 **Scope**: Cargo.toml structure, cargo workspaces, Cargo.lock policy, edition declaration, build profiles, build scripts, cargo-nextest
 
@@ -72,8 +72,8 @@ name = "zakat-service"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.82"
-authors = ["a-demo Team"]
-description = "Zakat calculation service for a-demo"
+authors = ["demo Team"]
+description = "Zakat calculation service for demo"
 license = "MIT"
 repository = "https://github.com/open-sharia-enterprise/ose-platform"
 ```

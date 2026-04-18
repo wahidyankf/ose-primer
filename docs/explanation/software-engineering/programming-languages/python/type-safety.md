@@ -31,7 +31,7 @@ updated: 2025-01-23
 
 Type safety in Python combines static type checking (mypy) with runtime validation (Pydantic) to catch errors before production. For financial applications handling Zakat calculations, Murabaha contracts, and QardHasan loans, type safety prevents costly errors and documents expectations.
 
-### Why Type Safety Matters for a-demo
+### Why Type Safety Matters for demo
 
 **Correctness**: Type errors caught during development, not in production.
 
@@ -939,7 +939,7 @@ zakat3 = calculate_category_zakat("invalid", Decimal("1000.00"))  # Type error
 
 **Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
-**Maintainers**: a-demo Documentation Team
+**Maintainers**: demo Documentation Team
 
 ## Python Type System
 

@@ -4,14 +4,14 @@ Shared React component library for the open-sharia-enterprise monorepo. Built on
 
 ## Components
 
-| Component | Source                           | Pattern                                     |
-| --------- | -------------------------------- | ------------------------------------------- |
-| Button    | a-demo-fs-ts-nextjs (reconciled) | CVA variants, 6 variants, 8 sizes, asChild  |
-| Alert     | a-demo-fs-ts-nextjs              | CVA variants, role="alert"                  |
-| Dialog    | a-demo-fs-ts-nextjs              | Radix Dialog, portal, overlay, close button |
-| Input     | a-demo-fs-ts-nextjs              | focus-visible, aria-invalid                 |
-| Card      | a-demo-fe-ts-nextjs (modernized) | Subcomponents with data-slot                |
-| Label     | a-demo-fe-ts-nextjs (modernized) | Radix Label                                 |
+| Component | Source                         | Pattern                                     |
+| --------- | ------------------------------ | ------------------------------------------- |
+| Button    | demo-fs-ts-nextjs (reconciled) | CVA variants, 6 variants, 8 sizes, asChild  |
+| Alert     | demo-fs-ts-nextjs              | CVA variants, role="alert"                  |
+| Dialog    | demo-fs-ts-nextjs              | Radix Dialog, portal, overlay, close button |
+| Input     | demo-fs-ts-nextjs              | focus-visible, aria-invalid                 |
+| Card      | demo-fe-ts-nextjs (modernized) | Subcomponents with data-slot                |
+| Label     | demo-fe-ts-nextjs (modernized) | Radix Label                                 |
 
 ## Usage
 

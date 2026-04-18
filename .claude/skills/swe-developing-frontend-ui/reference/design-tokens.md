@@ -9,7 +9,7 @@ The monorepo uses a two-tier token system:
 
 ## Current Token Values
 
-### a-demo-fe-ts-nextjs (Neutral/Professional)
+### demo-fe-ts-nextjs (Neutral/Professional)
 
 ```css
 /* Brand — neutral grayscale */
@@ -26,7 +26,7 @@ The monorepo uses a two-tier token system:
 /* App-specific: chart-1 through chart-5 */
 ```
 
-### a-demo-fs-ts-nextjs (Blue/Educational)
+### demo-fs-ts-nextjs (Blue/Educational)
 
 ```css
 /* Brand — blue tinted */
@@ -73,7 +73,7 @@ The monorepo uses a two-tier token system:
 
 ## Token Format Differences
 
-**a-demo-fe-ts-nextjs (double indirection)**:
+**demo-fe-ts-nextjs (double indirection)**:
 
 ```css
 @theme {
@@ -84,7 +84,7 @@ The monorepo uses a two-tier token system:
 }
 ```
 
-**a-demo-fs-ts-nextjs (direct values)**:
+**demo-fs-ts-nextjs (direct values)**:
 
 ```css
 @theme {
@@ -92,4 +92,4 @@ The monorepo uses a two-tier token system:
 }
 ```
 
-**Recommended for shared lib**: Direct value approach (a-demo-fs-ts-nextjs pattern) — simpler, no intermediate variable. Per-app overrides use CSS cascade in their own `@theme` block.
+**Recommended for shared lib**: Direct value approach (demo-fs-ts-nextjs pattern) — simpler, no intermediate variable. Per-app overrides use CSS cascade in their own `@theme` block.

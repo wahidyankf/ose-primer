@@ -1,6 +1,6 @@
 ---
 title: "Clojure Performance Standards"
-description: Authoritative a-demo Clojure performance standards (lazy sequences, transducers, type hints, criterium benchmarking)
+description: Authoritative demo Clojure performance standards (lazy sequences, transducers, type hints, criterium benchmarking)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Clojure tutorial.
+**This document is demo-specific**, not a Clojure tutorial.
 
 ## Purpose
 
-This document defines performance standards for Clojure development in a-demo. Follow the "make it work → make it right → make it fast" workflow — optimize only after profiling reveals a bottleneck.
+This document defines performance standards for Clojure development in demo. Follow the "make it work → make it right → make it fast" workflow — optimize only after profiling reveals a bottleneck.
 
-**Target Audience**: a-demo Clojure developers optimizing data pipelines and financial calculations
+**Target Audience**: demo Clojure developers optimizing data pipelines and financial calculations
 
 **Scope**: Lazy sequences vs eager evaluation, transducers for collection processing, type hints for reflection elimination, criterium benchmarking, VisualVM/YourKit profiling, memoize for pure functions
 

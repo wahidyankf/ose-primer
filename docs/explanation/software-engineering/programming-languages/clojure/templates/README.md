@@ -1,6 +1,6 @@
 ---
 title: Clojure Documentation Templates
-description: Reusable code templates and patterns for Clojure development in a-demo
+description: Reusable code templates and patterns for Clojure development in demo
 category: explanation
 subcategory: prog-lang
 tags:

@@ -1,6 +1,6 @@
 ---
 title: "Clojure Functional Programming Standards"
-description: Authoritative a-demo Clojure functional programming standards (transducers, macros, higher-order functions)
+description: Authoritative demo Clojure functional programming standards (transducers, macros, higher-order functions)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Clojure tutorial.
+**This document is demo-specific**, not a Clojure tutorial.
 
 ## Purpose
 
-This document defines functional programming standards for Clojure development in a-demo. Clojure is a functional language — these are not optional patterns but the idiomatic way to write Clojure code.
+This document defines functional programming standards for Clojure development in demo. Clojure is a functional language — these are not optional patterns but the idiomatic way to write Clojure code.
 
-**Target Audience**: a-demo Clojure developers implementing data pipelines, financial calculations, and rule engines
+**Target Audience**: demo Clojure developers implementing data pipelines, financial calculations, and rule engines
 
 **Scope**: map/filter/reduce idioms, transducers, threading macros, partial and comp, higher-order functions (apply/juxt/fnil/constantly), avoiding mutation, macros for DSLs
 

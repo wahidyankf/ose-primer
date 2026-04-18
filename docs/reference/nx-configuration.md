@@ -265,7 +265,7 @@ Per-project:
 
 ```json
 {
-  "name": "a-demo-fs-ts-nextjs",
+  "name": "demo-fs-ts-nextjs",
   "projectType": "application",
   "targets": {
     "dev": {
@@ -288,7 +288,7 @@ Per-project:
       }
     }
   },
-  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:a-demo"]
+  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:demo"]
 }
 ```
 
@@ -351,7 +351,7 @@ All projects use a standard four-dimension tag scheme:
 | `type:`     | `app`, `lib`, `e2e`                                             | Yes                      | Project kind            |
 | `platform:` | `hugo`, `cli`, `nextjs`, `flutter`, `spring-boot`, `playwright` | For apps/e2e             | Framework/runtime       |
 | `lang:`     | `golang`, `ts`, `java`, `dart`                                  | Where source code exists | Primary language        |
-| `domain:`   | `a-demo`, `a-demo`, `a-demo`, `tooling`                         | Yes                      | Business/product domain |
+| `domain:`   | `demo`, `demo`, `demo`, `tooling`                               | Yes                      | Business/product domain |
 
 **Notes**:
 
@@ -371,7 +371,7 @@ Project name used by Nx CLI.
 
 **Examples**:
 
-- `"a-demo-fs-ts-nextjs"` (app)
+- `"demo-fs-ts-nextjs"` (app)
 - `"ts-utils"` (lib)
 
 #### `sourceRoot`
@@ -693,7 +693,7 @@ Skip Nx cache.
 **Usage**:
 
 ```bash
-NX_SKIP_NX_CACHE=true nx build a-demo-fs-ts-nextjs
+NX_SKIP_NX_CACHE=true nx build demo-fs-ts-nextjs
 ```
 
 #### `NX_DAEMON`
@@ -703,7 +703,7 @@ Enable/disable Nx daemon.
 **Usage**:
 
 ```bash
-NX_DAEMON=false nx build a-demo-fs-ts-nextjs
+NX_DAEMON=false nx build demo-fs-ts-nextjs
 ```
 
 ## Related Documentation

@@ -36,7 +36,7 @@ jobs:
           backend-name: ${{ inputs.backend-name }}
       - name: Generate contract types
         run: |
-          npx nx run a-demo-contracts:bundle
+          npx nx run demo-contracts:bundle
           npx nx run ${{ inputs.backend-name }}:codegen
       - name: Run integration tests
         run: |

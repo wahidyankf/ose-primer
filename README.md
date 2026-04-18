@@ -10,7 +10,7 @@ Use it by forking, cloning, or copying the directories that fit your project —
 
 ## What it ships
 
-- **Polyglot `a-demo-*` scaffolding** — 11 backend demos (Go, Java/Spring, Elixir/Phoenix, F#/Giraffe, Python/FastAPI, Rust/Axum, Kotlin/Ktor, Java/Vert.x, TypeScript/Effect, C#/ASP.NET, Clojure/Pedestal), 3 frontends (Next.js, TanStack Start, Flutter Web), one fullstack (Next.js), 2 E2E harnesses, and a shared OpenAPI contract (`a-demo-contracts`) that drives codegen across all of them.
+- **Polyglot `demo-*` scaffolding** — 11 backend demos (Go, Java/Spring, Elixir/Phoenix, F#/Giraffe, Python/FastAPI, Rust/Axum, Kotlin/Ktor, Java/Vert.x, TypeScript/Effect, C#/ASP.NET, Clojure/Pedestal), 3 frontends (Next.js, TanStack Start, Flutter Web), one fullstack (Next.js), 2 E2E harnesses, and a shared OpenAPI contract (`demo-contracts`) that drives codegen across all of them.
 - **`rhino-cli`** — Go CLI for repository hygiene: `doctor`, `test-coverage`, `spec-coverage`, `agents validate-naming`, `workflows validate-naming`, `env backup|restore`, and more.
 - **Shared libs** — `golang-commons` and small TypeScript utilities.
 - **Governance** — six-layer hierarchy (Vision → Principles → Conventions → Development → Agents → Workflows) under `governance/`.
@@ -21,7 +21,7 @@ Use it by forking, cloning, or copying the directories that fit your project —
 
 1. **Clone or fork**: `git clone git@github.com:wahidyankf/ose-primer.git my-new-repo && cd my-new-repo`.
 2. **Bootstrap the toolchain**: `npm install && npm run doctor -- --fix`. This pins Node via Volta, installs npm workspaces, and converges 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node).
-3. **Keep what you need, delete what you don't** — every `a-demo-*` variant is independently deletable with a single `git rm -r apps/<name>` (plus its `specs/apps/a-demo/be/gherkin/<name>/` entries, if present). The `rhino-cli`, `governance/`, `docs/`, `.claude/`, `.opencode/`, and `plans/` trees are expected to survive; the rest is opt-in.
+3. **Keep what you need, delete what you don't** — every `demo-*` variant is independently deletable with a single `git rm -r apps/<name>` (plus its `specs/apps/demo/be/gherkin/<name>/` entries, if present). The `rhino-cli`, `governance/`, `docs/`, `.claude/`, `.opencode/`, and `plans/` trees are expected to survive; the rest is opt-in.
 4. **Rename to your project** — search-and-replace `ose-primer` across the repo, point `origin` at your new remote, and push to `main`.
 5. **Start your own plans** — drop quick ideas into `plans/ideas.md` and promote mature ones to a `plans/backlog/YYYY-MM-DD__[identifier]/` folder following the five-document convention.
 
@@ -74,11 +74,11 @@ Agents live under `.claude/agents/` (source of truth) and `.opencode/agent/` (mi
 ose-primer/
 ├── apps/                      # Deployable applications (Nx)
 │   ├── rhino-cli/
-│   ├── a-demo-be-*/           # 11 polyglot backend demos
-│   ├── a-demo-be-e2e/
-│   ├── a-demo-fe-*/           # 3 frontend variants
-│   ├── a-demo-fe-e2e/
-│   └── a-demo-fs-ts-nextjs/   # Fullstack demo
+│   ├── demo-be-*/           # 11 polyglot backend demos
+│   ├── demo-be-e2e/
+│   ├── demo-fe-*/           # 3 frontend variants
+│   ├── demo-fe-e2e/
+│   └── demo-fs-ts-nextjs/   # Fullstack demo
 ├── apps-labs/                 # Experimental apps (not in Nx)
 ├── libs/                      # Shared libraries (flat)
 ├── specs/                     # Gherkin, OpenAPI contracts, C4

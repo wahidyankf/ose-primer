@@ -1,6 +1,6 @@
 ---
 title: "F# API Standards"
-description: Authoritative a-demo F# API standards — Giraffe HttpHandler composition, Saturn controllers, JSON serialization
+description: Authoritative demo F# API standards — Giraffe HttpHandler composition, Saturn controllers, JSON serialization
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not an F# tutorial.
+**This document is demo-specific**, not an F# tutorial.
 
 ## Purpose
 
-This document defines **authoritative API standards** for F# HTTP service development in a-demo. Giraffe's `HttpHandler` composition model enables functional, composable HTTP pipelines. Saturn's computation expressions provide opinionated structure for larger services.
+This document defines **authoritative API standards** for F# HTTP service development in demo. Giraffe's `HttpHandler` composition model enables functional, composable HTTP pipelines. Saturn's computation expressions provide opinionated structure for larger services.
 
-**Target Audience**: a-demo F# developers building REST APIs
+**Target Audience**: demo F# developers building REST APIs
 
 **Scope**: Giraffe HttpHandler composition, the fish operator (`>=>`), Saturn controller pattern, routing, JSON serialization, error responses
 

@@ -1,6 +1,6 @@
 ---
 title: "BDD Scenario Standards"
-description: a-demo standards for scenario independence, naming, and organization
+description: demo standards for scenario independence, naming, and organization
 category: explanation
 subcategory: development
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-a-demo standards for scenario structure and independence.
+demo standards for scenario structure and independence.
 
 ## REQUIRED: Scenario Independence
 
@@ -119,7 +119,7 @@ Feature: Donation Processing
     Then the donation should be processed
 ```
 
-## a-demo Examples
+## demo Examples
 
 ### Campaign Management Scenarios
 

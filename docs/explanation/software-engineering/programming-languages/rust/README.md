@@ -1,6 +1,6 @@
 ---
 title: Rust
-description: a-demo Authoritative Rust Coding Standards and Framework Stack (Rust 1.82+)
+description: demo Authoritative Rust Coding Standards and Framework Stack (Rust 1.82+)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -23,13 +23,13 @@ updated: 2026-03-09
 
 # Rust
 
-**This is THE authoritative reference** for Rust coding standards in a-demo.
+**This is THE authoritative reference** for Rust coding standards in demo.
 
-All Rust code written for the a-demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
+All Rust code written for the demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
 
 ## Framework Stack
 
-a-demo Rust applications MUST use the following stack:
+demo Rust applications MUST use the following stack:
 
 **Web Framework**:
 
@@ -87,23 +87,23 @@ a-demo Rust applications MUST use the following stack:
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the a-demo Rust learning path. These are **a-demo-specific style guides**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the demo Rust learning path. These are **demo-specific style guides**, not educational tutorials.
 
 **You MUST understand Rust fundamentals before using these standards:**
 
-**What this documentation covers**: a-demo naming conventions, framework choices, repository-specific patterns, how to apply Rust knowledge in THIS codebase.
+**What this documentation covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply Rust knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Rust syntax, ownership/borrowing fundamentals, language concepts (those are in a-demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: Rust syntax, ownership/borrowing fundamentals, language concepts (those are in demo-fs-ts-nextjs).
 
 ## Software Engineering Principles
 
-Rust development in a-demo enforces foundational software engineering principles — and uniquely, Rust ENFORCES many of them at the compiler level rather than by convention:
+Rust development in demo enforces foundational software engineering principles — and uniquely, Rust ENFORCES many of them at the compiler level rather than by convention:
 
 1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - MUST automate through `rustfmt` (formatting), Clippy (linting), `cargo test` (testing), `cargo audit` (security), `cargo deny` (dependencies), and CI/CD integration. The compiler itself automates correctness verification.
 
 2. **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - MUST enforce explicitness through explicit error returns (`Result<T, E>`), explicit lifetime annotations when needed, explicit type declarations for public APIs, explicit `mut` declarations for mutability, and explicit `unsafe` blocks for unsafe operations.
 
-3. **[Immutability Over Mutability](../../../../../governance/principles/software-engineering/immutability.md)** - Rust ENFORCES immutability by default at the compiler level. All bindings are immutable unless explicitly declared `mut`. The ownership system prevents shared mutable state. No other language in the a-demo stack enforces this principle at compile time.
+3. **[Immutability Over Mutability](../../../../../governance/principles/software-engineering/immutability.md)** - Rust ENFORCES immutability by default at the compiler level. All bindings are immutable unless explicitly declared `mut`. The ownership system prevents shared mutable state. No other language in the demo stack enforces this principle at compile time.
 
 4. **[Pure Functions Over Side Effects](../../../../../governance/principles/software-engineering/pure-functions.md)** - MUST implement functional core/imperative shell architecture. Rust's ownership system naturally encourages pure functions (functions that take ownership or borrow data and return new values). Iterator combinators produce functional pipelines. The borrow checker prevents hidden shared mutable state.
 
@@ -111,7 +111,7 @@ Rust development in a-demo enforces foundational software engineering principles
 
 ## Rust Edition Strategy
 
-a-demo follows a three-tier Rust edition strategy:
+demo follows a three-tier Rust edition strategy:
 
 **Rust 2018 Edition (Minimum - REQUIRED)**:
 
@@ -138,9 +138,9 @@ a-demo follows a three-tier Rust edition strategy:
 
 **Unlike Java's LTS model**: Rust editions are backward compatible — Rust 2015 code compiles with Rust 2024 toolchains. Editions change language idioms, not remove features. Migrate editions using `cargo fix --edition`.
 
-## a-demo Coding Standards (Authoritative)
+## demo Coding Standards (Authoritative)
 
-**MUST follow these mandatory standards for all Rust code in a-demo:**
+**MUST follow these mandatory standards for all Rust code in demo:**
 
 1. **[Coding Standards](coding-standards.md)** - Naming conventions, module organization, idiomatic Rust
 2. **[Testing Standards](testing-standards.md)** - cargo test, proptest, mockall, tokio::test, coverage
@@ -184,10 +184,10 @@ a-demo follows a three-tier Rust edition strategy:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["Rust Standards Index<br/>(a-demo)"]:::blue
+    A["Rust Standards Index<br/>(demo)"]:::blue
     B["Core Standards"]:::orange
     C["Specialized Standards"]:::teal
-    D["Learning Resources<br/>(a-demo)"]:::purple
+    D["Learning Resources<br/>(demo)"]:::purple
 
     A --> B
     A --> C
@@ -216,7 +216,7 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
-## Primary Use Cases in a-demo
+## Primary Use Cases in demo
 
 **High-Performance Financial Computation**:
 

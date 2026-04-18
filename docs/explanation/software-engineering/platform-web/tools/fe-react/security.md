@@ -1125,7 +1125,7 @@ export const DonationSearch: React.FC = () => {
 };
 ```
 
-## a-demo Security Examples
+## demo Security Examples
 
 ### Zakat Calculation Security
 

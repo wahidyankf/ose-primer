@@ -34,7 +34,7 @@ updated: 2026-01-25
 
 Python is a high-level, dynamically-typed programming language emphasizing code readability and developer productivity. Within the Open Sharia Enterprise platform, Python serves critical roles in data processing, machine learning, automation, API services, and financial calculations requiring precision and clarity.
 
-### Why Python for a-demo
+### Why Python for demo
 
 Python excels in domains essential to the platform:
 
@@ -58,13 +58,13 @@ The [Zen of Python (PEP 20)](https://peps.python.org/pep-0020/) guides Python de
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the a-demo Python learning path. These are **a-demo-specific style guides**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the demo Python learning path. These are **demo-specific style guides**, not educational tutorials.
 
 **You MUST understand Python fundamentals before using these standards:**
 
-**What this documentation covers**: a-demo naming conventions, framework choices, repository-specific patterns, how to apply Python knowledge in THIS codebase.
+**What this documentation covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply Python knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Python syntax, language fundamentals, generic patterns (those are in a-demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: Python syntax, language fundamentals, generic patterns (those are in demo-fs-ts-nextjs).
 
 ## Coding Standards
 
@@ -503,7 +503,7 @@ event = ZakatCalculatedEvent(
 event_bus.publish(event)
 ```
 
-### Real-World a-demo Examples
+### Real-World demo Examples
 
 **Example 1: Murabaha Contract Validation**:
 
@@ -640,7 +640,7 @@ The Zen of Python provides philosophical guidance that aligns remarkably well wi
 
 **Python Principle**: Code should be aesthetically pleasing and well-structured.
 
-**a-demo Interpretation**: Financial code represents Amanah (trustworthiness). Beautiful, well-organized code demonstrates respect for responsibility and professionalism expected in Islamic business.
+**demo Interpretation**: Financial code represents Amanah (trustworthiness). Beautiful, well-organized code demonstrates respect for responsibility and professionalism expected in Islamic business.
 
 **Example**:
 
@@ -664,7 +664,7 @@ def z(w, n):
 
 **Python Principle**: Make behavior clear and obvious, avoid hidden magic.
 
-**a-demo Interpretation**: Transparency is fundamental to Shariah compliance. Explicit code enables scholars and auditors to verify Islamic finance logic without guessing hidden assumptions.
+**demo Interpretation**: Transparency is fundamental to Shariah compliance. Explicit code enables scholars and auditors to verify Islamic finance logic without guessing hidden assumptions.
 
 **Example**:
 
@@ -691,7 +691,7 @@ def calculate_murabaha_total(cost: Decimal, markup_rate: Decimal) -> Decimal:
 
 **Python Principle**: Favor simplicity over unnecessary complexity.
 
-**a-demo Interpretation**: Simple code is easier to audit for Shariah compliance. Complex abstractions make it harder for Islamic scholars to verify calculations follow Islamic law.
+**demo Interpretation**: Simple code is easier to audit for Shariah compliance. Complex abstractions make it harder for Islamic scholars to verify calculations follow Islamic law.
 
 **Example**:
 
@@ -713,7 +713,7 @@ class ZakatEligibilityChecker:
 
 **Python Principle**: Code is read far more often than written.
 
-**a-demo Interpretation**: Readable code serves as documentation for Shariah compliance. Future auditors, scholars, and developers must understand Islamic finance logic years after it was written.
+**demo Interpretation**: Readable code serves as documentation for Shariah compliance. Future auditors, scholars, and developers must understand Islamic finance logic years after it was written.
 
 **Example**:
 
@@ -748,7 +748,7 @@ def dp(p, r):  # distribute profit
 
 **Python Principle**: Prefer a single, obvious approach over multiple ways.
 
-**a-demo Interpretation**: Consistency in implementing Islamic finance rules prevents confusion. When calculating Zakat, there should be one standard, verified approach everyone uses.
+**demo Interpretation**: Consistency in implementing Islamic finance rules prevents confusion. When calculating Zakat, there should be one standard, verified approach everyone uses.
 
 **Example**:
 
@@ -772,7 +772,7 @@ def calculate_zakat_v2(wealth: int, nisab: int) -> int:
 
 ### Zen Principles Alignment Summary
 
-| Zen Principle                    | Islamic Value           | a-demo Benefit                            |
+| Zen Principle                    | Islamic Value           | demo Benefit                              |
 | -------------------------------- | ----------------------- | ----------------------------------------- |
 | Beautiful is better than ugly    | Ihsan (excellence)      | Professional code reflects Islamic values |
 | Explicit is better than implicit | Transparency (Amanah)   | Auditable Shariah compliance              |
@@ -1097,7 +1097,7 @@ ruff format .      # Formatting (Black-compatible)
 - Blueprints for modular applications
 - Jinja2 template engine
 
-**Framework Comparison for a-demo**:
+**Framework Comparison for demo**:
 
 | Framework | Best For                               | Performance | Learning Curve |
 | --------- | -------------------------------------- | ----------- | -------------- |
@@ -1261,7 +1261,7 @@ uv pip freeze > requirements.txt
 [project]
 name = "ose-zakat-service"
 version = "1.0.0"
-description = "Zakat calculation service for a-demo"
+description = "Zakat calculation service for demo"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115.0",
@@ -1365,7 +1365,7 @@ strict = true
 **Last Updated**: 2026-01-24
 **Python Versions**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.2 (latest stable)
 **Documentation**: Core files and version-specific files organized by category
-**Maintainers**: a-demo Documentation Team
+**Maintainers**: demo Documentation Team
 
 ## Python Ecosystem
 

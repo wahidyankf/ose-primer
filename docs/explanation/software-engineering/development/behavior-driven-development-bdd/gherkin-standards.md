@@ -1,6 +1,6 @@
 ---
 title: "Gherkin Syntax Standards"
-description: a-demo standards for feature files, scenarios, and Given-When-Then structure
+description: demo standards for feature files, scenarios, and Given-When-Then structure
 category: explanation
 subcategory: development
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-a-demo standards for Gherkin feature files and scenario structure.
+demo standards for Gherkin feature files and scenario structure.
 
 ## REQUIRED: Feature File Structure
 
@@ -91,7 +91,7 @@ Scenario: Contract activation
 - `murabaha-contract-approval.feature`
 - `donation-campaign-management.feature`
 
-## a-demo Examples
+## demo Examples
 
 ### Nisab Threshold Validation
 

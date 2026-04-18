@@ -1,5 +1,5 @@
 ---
-description: Develops Elixir applications following functional programming principles, OTP patterns, and platform coding standards. Use when implementing Elixir code for a-demo.
+description: Develops Elixir applications following functional programming principles, OTP patterns, and platform coding standards. Use when implementing Elixir code for demo.
 model: zai-coding-plan/glm-5.1
 tools:
   bash: true

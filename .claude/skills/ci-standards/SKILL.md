@@ -29,12 +29,12 @@ Inline skill providing CI/CD standards knowledge from the governance documentati
 
 ## Coverage Thresholds
 
-| Threshold | Projects                                                     |
-| --------- | ------------------------------------------------------------ |
-| 90%       | Demo-be backends, CLI apps, Go libs, TS backend (ts-effect)  |
-| 80%       | Content platforms (a-demo-fs-ts-nextjs, a-demo-fs-ts-nextjs) |
-| 75%       | Fullstack (a-demo-fs-ts-nextjs)                              |
-| 70%       | FE apps, a-demo-fe-ts-nextjs, Dart FE                        |
+| Threshold | Projects                                                    |
+| --------- | ----------------------------------------------------------- |
+| 90%       | Demo-be backends, CLI apps, Go libs, TS backend (ts-effect) |
+| 80%       | Content platforms (demo-fs-ts-nextjs, demo-fs-ts-nextjs)    |
+| 75%       | Fullstack (demo-fs-ts-nextjs)                               |
+| 70%       | FE apps, demo-fe-ts-nextjs, Dart FE                         |
 
 ## Docker Setup Requirements
 
@@ -47,11 +47,11 @@ Every app with a `dev` or `test:integration` target must have:
 
 ## E2E Pairing Rules
 
-| Variant Type             | Pairs With                             |
-| ------------------------ | -------------------------------------- |
-| Backend (a-demo-be-\*)   | Default frontend (a-demo-fe-ts-nextjs) |
-| Frontend (a-demo-fe-\*)  | Default backend (a-demo-be-golang-gin) |
-| Fullstack (a-demo-fs-\*) | Self-contained                         |
+| Variant Type           | Pairs With                           |
+| ---------------------- | ------------------------------------ |
+| Backend (demo-be-\*)   | Default frontend (demo-fe-ts-nextjs) |
+| Frontend (demo-fe-\*)  | Default backend (demo-be-golang-gin) |
+| Fullstack (demo-fs-\*) | Self-contained                       |
 
 ## Gherkin Consumption Mandate
 

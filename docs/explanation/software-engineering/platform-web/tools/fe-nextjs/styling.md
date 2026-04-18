@@ -35,7 +35,7 @@ Next.js provides multiple styling solutions optimized for performance, developer
 - [Responsive Design](#-responsive-design) - Mobile-first patterns
 - [RTL Support](#-rtl-support) - Right-to-left languages for Arabic
 - [Performance](#-performance) - CSS optimization strategies
-- [a-demo Examples](#-ose-platform-examples) - Islamic design patterns
+- [demo Examples](#-ose-platform-examples) - Islamic design patterns
 - [Best Practices](#-best-practices) - Production styling guidelines
 - [Related Documentation](#-related-documentation) - Cross-references
 
@@ -1531,7 +1531,7 @@ export default bundleAnalyzer(config);
 ANALYZE=true npm run build
 ```
 
-## 🕌 a-demo Examples
+## 🕌 demo Examples
 
 Real-world styling examples for Islamic finance features.
 

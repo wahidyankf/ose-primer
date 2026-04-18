@@ -71,7 +71,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 Every agent filename follows: `<scope>(-<qualifier>)*-<role>`
 
 - `scope` — top-level domain (`apps`, `docs`, `plan`, `repo`, `swe`, `ci`, `readme`, `specs`, `social`, `web`, `agent`).
-- `qualifier` — zero or more refinement tokens (e.g., `a-demo-fs-ts-nextjs`, `link`, `ui`, `execution`).
+- `qualifier` — zero or more refinement tokens (e.g., `demo-fs-ts-nextjs`, `link`, `ui`, `execution`).
 - `role` — exactly one trailing token from the Role Vocabulary below.
 
 No other structure is permitted. No exceptions.

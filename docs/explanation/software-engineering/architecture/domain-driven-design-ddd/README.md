@@ -1,6 +1,6 @@
 ---
 title: Domain-Driven Design (DDD)
-description: a-demo Authoritative DDD Standards for Islamic Finance Business Systems
+description: demo Authoritative DDD Standards for Islamic Finance Business Systems
 category: explanation
 subcategory: architecture
 tags:
@@ -19,13 +19,13 @@ updated: 2026-02-09
 
 # Domain-Driven Design (DDD)
 
-**This is THE authoritative reference** for Domain-Driven Design standards in a-demo.
+**This is THE authoritative reference** for Domain-Driven Design standards in demo.
 
-All DDD implementations in a-demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
+All DDD implementations in demo MUST comply with the standards documented here. These standards are mandatory, not optional. Non-compliance blocks code review and merge approval.
 
 ## DDD Pattern Requirements
 
-a-demo Islamic finance systems MUST use the following DDD patterns:
+demo Islamic finance systems MUST use the following DDD patterns:
 
 **Strategic Patterns:**
 
@@ -48,17 +48,17 @@ a-demo Islamic finance systems MUST use the following DDD patterns:
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: This documentation assumes you have completed the a-demo Domain-Driven Design learning path. These are **a-demo-specific DDD standards**, not educational tutorials.
+**REQUIRED**: This documentation assumes you have completed the demo Domain-Driven Design learning path. These are **demo-specific DDD standards**, not educational tutorials.
 
 **You MUST understand DDD fundamentals before using these standards:**
 
-**What this documentation covers**: a-demo-specific DDD patterns, Islamic finance domain modeling, aggregate boundaries, bounded context mapping in a-demo, integration with C4 and FSM, repository-specific tactical patterns.
+**What this documentation covers**: demo-specific DDD patterns, Islamic finance domain modeling, aggregate boundaries, bounded context mapping in demo, integration with C4 and FSM, repository-specific tactical patterns.
 
-**What this documentation does NOT cover**: DDD fundamentals, basic aggregate/entity/value object concepts, generic strategic design (those are in a-demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: DDD fundamentals, basic aggregate/entity/value object concepts, generic strategic design (those are in demo-fs-ts-nextjs).
 
 ## Software Engineering Principles
 
-DDD in a-demo enforces foundational software engineering principles:
+DDD in demo enforces foundational software engineering principles:
 
 1. **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - MUST make domain concepts explicit through Ubiquitous Language, bounded context boundaries must be explicit in code structure, business rules must be explicit in domain logic not hidden in infrastructure
 
@@ -66,9 +66,9 @@ DDD in a-demo enforces foundational software engineering principles:
 
 3. **[Pure Functions Over Side Effects](../../../../../governance/principles/software-engineering/pure-functions.md)** - MUST implement domain logic as pure functions, validation rules must be pure and deterministic, business calculations must have no side effects
 
-## a-demo DDD Standards (Authoritative)
+## demo DDD Standards (Authoritative)
 
-**MUST follow these mandatory standards for all DDD implementations in a-demo:**
+**MUST follow these mandatory standards for all DDD implementations in demo:**
 
 1. **[Bounded Context Standards](./bounded-context-standards.md)** - Nx app alignment, context mapping, ubiquitous language
 2. **[Aggregate Standards](./aggregate-standards.md)** - Consistency boundaries, transaction rules, Islamic finance invariants
@@ -142,7 +142,7 @@ apps/
 
 **REQUIRED**: All domain primitives MUST be value objects.
 
-**a-demo Value Objects**:
+**demo Value Objects**:
 
 - `Money` - Amount + Currency (e.g., "100.00 USD", "500.00 SAR")
 - `FiscalDate` - Islamic calendar date for Zakat calculations
@@ -164,7 +164,7 @@ apps/
 
 **REQUIRED**: All significant business occurrences MUST emit domain events.
 
-**a-demo Domain Events**:
+**demo Domain Events**:
 
 - `ZakatCalculated` - Zakat obligation calculated
 - `DonationReceived` - Donation accepted
@@ -180,7 +180,7 @@ apps/
 
 **See**: [Domain Event Standards](./domain-event-standards.md)
 
-## Integration with a-demo Architecture
+## Integration with demo Architecture
 
 ### C4 Container Alignment
 

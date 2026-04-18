@@ -1,5 +1,5 @@
 ---
-description: Develops Python applications following Pythonic principles, data processing patterns, and platform coding standards. Use when implementing Python code for a-demo.
+description: Develops Python applications following Pythonic principles, data processing patterns, and platform coding standards. Use when implementing Python code for demo.
 model: zai-coding-plan/glm-5.1
 tools:
   bash: true

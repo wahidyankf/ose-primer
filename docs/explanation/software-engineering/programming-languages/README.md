@@ -151,7 +151,7 @@ Each language directory contains a README.md (language overview and version info
 
 **C# development with ASP.NET Core, Entity Framework Core, and functional patterns**
 
-C# is a versatile, type-safe language on the .NET ecosystem. a-demo uses C# for enterprise backend services with ASP.NET Core, applying functional patterns through records, pattern matching, and nullable reference types.
+C# is a versatile, type-safe language on the .NET ecosystem. demo uses C# for enterprise backend services with ASP.NET Core, applying functional patterns through records, pattern matching, and nullable reference types.
 
 **Use C# when you need:**
 
@@ -164,7 +164,7 @@ C# is a versatile, type-safe language on the .NET ecosystem. a-demo uses C# for 
 
 **Clojure development with functional programming, REPL-driven development, and Ring/Reitit**
 
-Clojure is a functional Lisp running on the JVM with immutable persistent data structures at its core. a-demo leverages Clojure for data transformation pipelines, financial rule engines, and services where functional purity is paramount.
+Clojure is a functional Lisp running on the JVM with immutable persistent data structures at its core. demo leverages Clojure for data transformation pipelines, financial rule engines, and services where functional purity is paramount.
 
 **Use Clojure when you need:**
 
@@ -189,7 +189,7 @@ Dart is used for building cross-platform mobile and web applications with the Fl
 
 **F# development with functional-first programming, railway-oriented error handling, and Giraffe**
 
-F# is a functional-first .NET language where immutability is the default and discriminated unions enable type-driven domain modeling. a-demo uses F# for financial computation engines where the type system prevents invalid business states at compile time.
+F# is a functional-first .NET language where immutability is the default and discriminated unions enable type-driven domain modeling. demo uses F# for financial computation engines where the type system prevents invalid business states at compile time.
 
 **Use F# when you need:**
 
@@ -215,7 +215,7 @@ Elixir is used for building highly concurrent, fault-tolerant backend services. 
 
 **Kotlin development with coroutines, Ktor, and Spring Boot**
 
-Kotlin is a modern, concise JVM language with null safety, coroutines for structured concurrency, and seamless Java interop. a-demo uses Kotlin for backend services where coroutines and sealed class hierarchies improve over Java's verbosity.
+Kotlin is a modern, concise JVM language with null safety, coroutines for structured concurrency, and seamless Java interop. demo uses Kotlin for backend services where coroutines and sealed class hierarchies improve over Java's verbosity.
 
 **Use Kotlin when you need:**
 
@@ -245,7 +245,7 @@ Java is a primary language for backend services, particularly for domain-driven 
 
 **Key Documentation:**
 
-- [Java OSE Standards](./java/README.md) - Authoritative coding standards for a-demo
+- [Java OSE Standards](./java/README.md) - Authoritative coding standards for demo
 
 **Use Java when you need:**
 
@@ -259,7 +259,7 @@ Java is a primary language for backend services, particularly for domain-driven 
 
 **Rust development with ownership-based memory safety, zero-cost abstractions, and Axum**
 
-Rust guarantees memory safety and fearless concurrency without a garbage collector, making it ideal for high-performance, security-critical systems. a-demo uses Rust for performance-critical financial computation, WebAssembly targets, and infrastructure tooling.
+Rust guarantees memory safety and fearless concurrency without a garbage collector, making it ideal for high-performance, security-critical systems. demo uses Rust for performance-critical financial computation, WebAssembly targets, and infrastructure tooling.
 
 **Use Rust when you need:**
 
@@ -333,7 +333,7 @@ Languages in this documentation are chosen based on:
 | **Kotlin**     | Coroutine-based services, Ktor APIs             | 📋 Planned - Future integration  |
 | **Python**     | Data processing, AI/ML integration              | 📋 Planned - Future integration  |
 | **Rust**       | High-performance computation, WebAssembly       | 📋 Planned - Future integration  |
-| **TypeScript** | Frontend applications, Node.js services         | ✅ Active - a-demo-fe-ts-nextjs  |
+| **TypeScript** | Frontend applications, Node.js services         | ✅ Active - demo-fe-ts-nextjs    |
 
 **Legend**: ✅ Active (in use) | 📋 Planned (documentation ready, not yet implemented)
 

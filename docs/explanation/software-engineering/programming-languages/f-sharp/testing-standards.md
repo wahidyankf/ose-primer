@@ -1,6 +1,6 @@
 ---
 title: "F# Testing Standards"
-description: Authoritative a-demo F# testing standards — Expecto, FsCheck property-based testing, coverage requirements
+description: Authoritative demo F# testing standards — Expecto, FsCheck property-based testing, coverage requirements
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not an F# tutorial.
+**This document is demo-specific**, not an F# tutorial.
 
 ## Purpose
 
-This document defines **authoritative testing standards** for F# development in a-demo. These standards ensure consistent, high-quality test suites that verify domain correctness and maintain >=95% line coverage.
+This document defines **authoritative testing standards** for F# development in demo. These standards ensure consistent, high-quality test suites that verify domain correctness and maintain >=95% line coverage.
 
-**Target Audience**: a-demo F# developers, technical reviewers
+**Target Audience**: demo F# developers, technical reviewers
 
 **Scope**: Expecto test organization, FsCheck property-based testing, coverage enforcement, async test patterns
 

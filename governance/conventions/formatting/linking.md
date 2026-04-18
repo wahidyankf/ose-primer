@@ -40,7 +40,7 @@ This convention establishes the standard linking format for all markdown files i
 
 ### What This Convention Does NOT Cover
 
-- **Link validation** - Covered by docs-link-checker and apps-a-demo-fs-ts-nextjs-link-checker agents
+- **Link validation** - Covered by docs-link-checker and apps-demo-fs-ts-nextjs-link-checker agents
 - **Link text quality** - Descriptive link text is covered in [Content Quality Principles](../writing/quality.md)
 - **Hugo site URLs** - Hugo-specific linking covered in Hugo content conventions
 - **Anchor links** - Deep linking to specific sections (implementation detail)
@@ -305,7 +305,7 @@ Final path: ../../../docs/tutorials/README.md
 
 ## Historical: Hugo Content Linking (DEPRECATED)
 
-**Note**: Both `apps/a-demo-fs-ts-nextjs/` and `apps/a-demo-fs-ts-nextjs/` have migrated to Next.js 16. The Hugo-specific linking rules below no longer apply to active sites. This section is preserved for historical reference only.
+**Note**: Both `apps/demo-fs-ts-nextjs/` and `apps/demo-fs-ts-nextjs/` have migrated to Next.js 16. The Hugo-specific linking rules below no longer apply to active sites. This section is preserved for historical reference only.
 
 **Previous Hugo rules** (no longer applicable):
 

@@ -15,9 +15,9 @@ Progressive disclosure of Rust coding standards for agents writing Rust code.
 
 ## Prerequisite Knowledge
 
-**IMPORTANT**: This skill provides **a-demo-specific style guides**, not educational tutorials.
+**IMPORTANT**: This skill provides **demo-specific style guides**, not educational tutorials.
 
-Complete the a-demo Rust learning path first:
+Complete the demo Rust learning path first:
 
 ## Quick Standards Reference
 

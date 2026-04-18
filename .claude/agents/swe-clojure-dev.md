@@ -1,6 +1,6 @@
 ---
 name: swe-clojure-dev
-description: Develops Clojure applications following functional programming principles, REPL-driven development, and platform coding standards. Use when implementing Clojure code for a-demo.
+description: Develops Clojure applications following functional programming principles, REPL-driven development, and platform coding standards. Use when implementing Clojure code for demo.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model:
 color: purple
@@ -61,13 +61,13 @@ Follow the standard 6-step workflow (see `swe-developing-applications-common` Sk
 
 ## Prerequisite Knowledge
 
-**CRITICAL**: This agent enforces **a-demo-specific style guides**, not educational tutorials.
+**CRITICAL**: This agent enforces **demo-specific style guides**, not educational tutorials.
 
 **Documentation Separation**:
 
-- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/clojure/)** - "How to code Clojure in a-demo" (repository conventions, framework choices)
+- **[docs/explanation](../../docs/explanation/software-engineering/programming-languages/clojure/)** - "How to code Clojure in demo" (repository conventions, framework choices)
 
-**You MUST complete a-demo Clojure learning path before using OSE standards:**
+**You MUST complete demo Clojure learning path before using OSE standards:**
 
 ## Coding Standards
 

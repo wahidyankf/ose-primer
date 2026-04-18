@@ -39,7 +39,7 @@ Data persistence is fundamental to Spring Boot applications. This guide covers c
 - [Connection Pooling](#-connection-pooling) - HikariCP configuration
 - [Database Migrations](#-database-migrations) - Flyway integration
 - [Batch Operations](#-batch-operations) - Bulk insert/update patterns
-- [a-demo Examples](#-ose-platform-examples) - Islamic finance data patterns
+- [demo Examples](#-ose-platform-examples) - Islamic finance data patterns
 - [Best Practices](#-best-practices) - Production guidelines
 - [Related Documentation](#-related-documentation) - Cross-references
 
@@ -51,7 +51,7 @@ JPA entities represent database tables with proper mapping and relationships.
 
 ```java
 // ZakatCalculation.java
-package com.a-demo.zakat.entity;
+package com.demo.zakat.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -138,7 +138,7 @@ public class ZakatCalculation {
 
 ```java
 // MurabahaApplication.java
-package com.a-demo.murabaha.entity;
+package com.demo.murabaha.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -255,7 +255,7 @@ enum ApplicationStatus {
 
 ```java
 // MurabahaInstallment.java
-package com.a-demo.murabaha.entity;
+package com.demo.murabaha.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -341,7 +341,7 @@ public class MurabahaInstallment {
 
 ```java
 // WaqfProject.java
-package com.a-demo.waqf.entity;
+package com.demo.waqf.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -452,7 +452,7 @@ enum ProjectStatus {
 
 ```java
 // WaqfCategory.java
-package com.a-demo.waqf.entity;
+package com.demo.waqf.entity;
 
 import jakarta.persistence.*;
 import java.util.HashSet;
@@ -538,7 +538,7 @@ public class Address {
 
 ```java
 // User.java (using embedded object)
-package com.a-demo.user.entity;
+package com.demo.user.entity;
 
 import com.example.common.entity.Address;
 import jakarta.persistence.*;
@@ -594,9 +594,9 @@ Spring Data JPA repositories provide CRUD operations and query methods without b
 
 ```java
 // ZakatCalculationRepository.java
-package com.a-demo.zakat.repository;
+package com.demo.zakat.repository;
 
-import com.a-demo.zakat.entity.ZakatCalculation;
+import com.demo.zakat.entity.ZakatCalculation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -631,10 +631,10 @@ public interface ZakatCalculationRepository extends JpaRepository<ZakatCalculati
 
 ```java
 // MurabahaApplicationRepository.java
-package com.a-demo.murabaha.repository;
+package com.demo.murabaha.repository;
 
-import com.a-demo.murabaha.entity.MurabahaApplication;
-import com.a-demo.murabaha.entity.ApplicationStatus;
+import com.demo.murabaha.entity.MurabahaApplication;
+import com.demo.murabaha.entity.ApplicationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -713,10 +713,10 @@ public interface MurabahaApplicationRepository extends JpaRepository<MurabahaApp
 
 ```java
 // WaqfProjectRepository.java
-package com.a-demo.waqf.repository;
+package com.demo.waqf.repository;
 
-import com.a-demo.waqf.entity.WaqfProject;
-import com.a-demo.waqf.entity.ProjectStatus;
+import com.demo.waqf.entity.WaqfProject;
+import com.demo.waqf.entity.ProjectStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -823,7 +823,7 @@ public interface CustomQueryRepository extends JpaRepository<ZakatCalculation, S
 
     // Projection with specific fields
     @Query("""
-        SELECT NEW com.a-demo.zakat.dto.ZakatSummaryDto(
+        SELECT NEW com.demo.zakat.dto.ZakatSummaryDto(
             z.userId,
             SUM(z.zakatAmount),
             COUNT(z.id)
@@ -968,7 +968,7 @@ public class ZakatSummaryDto {
 public interface ZakatCalculationRepository extends JpaRepository<ZakatCalculation, String> {
 
     @Query("""
-        SELECT NEW com.a-demo.zakat.dto.ZakatSummaryDto(
+        SELECT NEW com.demo.zakat.dto.ZakatSummaryDto(
             z.userId,
             SUM(z.zakatAmount),
             COUNT(z.id)
@@ -1102,10 +1102,10 @@ graph TD
 
 ```java
 // ZakatService.java
-package com.a-demo.zakat.service;
+package com.demo.zakat.service;
 
-import com.a-demo.zakat.entity.ZakatCalculation;
-import com.a-demo.zakat.repository.ZakatCalculationRepository;
+import com.demo.zakat.entity.ZakatCalculation;
+import com.demo.zakat.repository.ZakatCalculationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -1319,7 +1319,7 @@ HikariCP is the default connection pool in Spring Boot, providing high performan
 # application.yml
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/a-demo
+    url: jdbc:postgresql://localhost:5432/demo
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -1357,7 +1357,7 @@ spring:
 
 ```java
 // HikariConfig.java
-package com.a-demo.config;
+package com.demo.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -1610,7 +1610,7 @@ public class InstallmentBatchService {
 }
 ```
 
-## 💼 a-demo Examples
+## 💼 demo Examples
 
 Complete data access patterns for Islamic finance operations.
 
@@ -1635,7 +1635,7 @@ public interface ZakatCalculationRepository extends JpaRepository<ZakatCalculati
 
     // Annual zakat summary
     @Query("""
-        SELECT NEW com.a-demo.zakat.dto.AnnualZakatSummary(
+        SELECT NEW com.demo.zakat.dto.AnnualZakatSummary(
             YEAR(z.calculationDate),
             SUM(z.zakatAmount),
             AVG(z.wealth),
@@ -1781,9 +1781,9 @@ public class WaqfProjectService {
 }
 ```
 
-### a-demo Platform: User Repository
+### demo Platform: User Repository
 
-The a-demo platform uses derived query methods exclusively — no `@Query` annotations —
+The demo platform uses derived query methods exclusively — no `@Query` annotations —
 to keep persistence logic minimal and let the JPA query engine enforce SQL injection safety
 by construction.
 

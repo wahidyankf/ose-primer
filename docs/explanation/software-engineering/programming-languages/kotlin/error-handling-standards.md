@@ -1,6 +1,6 @@
 ---
 title: "Kotlin Error Handling Standards"
-description: Authoritative a-demo Kotlin error handling standards (Result type, sealed hierarchies, coroutine exceptions)
+description: Authoritative demo Kotlin error handling standards (Result type, sealed hierarchies, coroutine exceptions)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Kotlin tutorial. We define HOW to handle errors in THIS codebase.
+**This document is demo-specific**, not a Kotlin tutorial. We define HOW to handle errors in THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative error handling standards** for Kotlin development in the a-demo. It covers Kotlin's `Result<T>` type, `runCatching`, sealed class error hierarchies, custom exception design, and coroutine-specific exception handling patterns.
+This document defines **authoritative error handling standards** for Kotlin development in the demo. It covers Kotlin's `Result<T>` type, `runCatching`, sealed class error hierarchies, custom exception design, and coroutine-specific exception handling patterns.
 
-**Target Audience**: a-demo Kotlin developers, technical reviewers
+**Target Audience**: demo Kotlin developers, technical reviewers
 
 **Scope**: Result<T> patterns, sealed error types, exception design, CoroutineExceptionHandler, supervisorScope
 
@@ -255,7 +255,7 @@ fun handleZakatError(error: ZakatDomainError): HttpResponse = when (error) {
 **MUST** create custom exceptions that extend `Exception` with stable error codes.
 
 ```kotlin
-// Base exception for a-demo
+// Base exception for demo
 abstract class OsePlatformException(
     val errorCode: String,
     message: String,

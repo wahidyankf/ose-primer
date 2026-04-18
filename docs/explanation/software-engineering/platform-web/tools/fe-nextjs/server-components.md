@@ -101,7 +101,7 @@ export default async function ZakatPage() {
 - Use libraries that depend on browser APIs
 - Use "use client" or "use server" directives
 
-### a-demo Example
+### demo Example
 
 ```typescript
 // app/(platform)/murabaha/applications/page.tsx

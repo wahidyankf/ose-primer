@@ -1,6 +1,6 @@
 ---
 title: "F# Build Configuration"
-description: Authoritative a-demo F# build configuration — .fsproj structure, file ordering, Paket, FAKE, global.json
+description: Authoritative demo F# build configuration — .fsproj structure, file ordering, Paket, FAKE, global.json
 category: explanation
 subcategory: prog-lang
 tags:
@@ -26,13 +26,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not an F# tutorial.
+**This document is demo-specific**, not an F# tutorial.
 
 ## Purpose
 
-This document defines **authoritative build configuration standards** for F# development in a-demo. F# has a unique compilation model where file order in `.fsproj` is semantically significant — this is the most common source of build errors for developers new to F#.
+This document defines **authoritative build configuration standards** for F# development in demo. F# has a unique compilation model where file order in `.fsproj` is semantically significant — this is the most common source of build errors for developers new to F#.
 
-**Target Audience**: a-demo F# developers, CI/CD engineers
+**Target Audience**: demo F# developers, CI/CD engineers
 
 **Scope**: `.fsproj` structure, file ordering rules, `Directory.Build.props`, `global.json`, Paket, FAKE, Nx integration
 

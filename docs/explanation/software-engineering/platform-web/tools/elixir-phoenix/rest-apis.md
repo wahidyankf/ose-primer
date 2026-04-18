@@ -477,8 +477,8 @@ defmodule OsePlatformWeb.Plugs.APIVersion do
     assign(conn, :api_version, version)
   end
 
-  defp parse_version("application/vnd.a-demo.v1+json"), do: :v1
-  defp parse_version("application/vnd.a-demo.v2+json"), do: :v2
+  defp parse_version("application/vnd.demo.v1+json"), do: :v1
+  defp parse_version("application/vnd.demo.v2+json"), do: :v2
   defp parse_version(_), do: :v1  # Default to v1
 end
 
@@ -1118,7 +1118,7 @@ defmodule OsePlatformWeb.ApiSpec do
   def spec do
     %OpenApi{
       info: %Info{
-        title: "a-demo API",
+        title: "demo API",
         version: "1.0.0",
         description: "API for Islamic finance operations including Zakat calculations and charitable donations"
       },

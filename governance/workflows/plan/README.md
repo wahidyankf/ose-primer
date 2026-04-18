@@ -19,7 +19,7 @@ These workflows define **WHEN and HOW to validate and execute plans**. The plan-
 **❌ Not Included:**
 
 - Content quality validation (that's docs/)
-- Hugo content validation (that's a-demo-fs-ts-nextjs/)
+- Hugo content validation (that's demo-fs-ts-nextjs/)
 - Single-agent operations (use agents directly)
 
 ## Workflows

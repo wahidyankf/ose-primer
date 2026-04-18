@@ -1,6 +1,6 @@
 ---
 title: "Kotlin Security Standards"
-description: Authoritative a-demo Kotlin security standards (input validation, Spring Security, JWT, encryption)
+description: Authoritative demo Kotlin security standards (input validation, Spring Security, JWT, encryption)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Kotlin tutorial. We define HOW to implement security in THIS codebase.
+**This document is demo-specific**, not a Kotlin tutorial. We define HOW to implement security in THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative security standards** for Kotlin development in the a-demo. It covers input validation, Spring Security integration, JWT validation, encrypted storage, SQL injection prevention, @Validated annotations, secrets management, and prohibitions on logging sensitive data.
+This document defines **authoritative security standards** for Kotlin development in the demo. It covers input validation, Spring Security integration, JWT validation, encrypted storage, SQL injection prevention, @Validated annotations, secrets management, and prohibitions on logging sensitive data.
 
-**Target Audience**: a-demo Kotlin developers, security reviewers, technical architects
+**Target Audience**: demo Kotlin developers, security reviewers, technical architects
 
 **Scope**: Input validation, authentication, authorization, data encryption, secrets management, secure coding patterns
 
@@ -243,7 +243,7 @@ val query = "SELECT * FROM payers WHERE id = '$payerId'"  // NEVER do this
 fun Application.configureSecurity(jwtConfig: JwtConfig) {
     install(Authentication) {
         jwt("zakat-auth") {
-            realm = "a-demo"
+            realm = "demo"
             verifier(
                 JWT.require(Algorithm.HMAC256(jwtConfig.secret))
                     .withIssuer(jwtConfig.issuer)

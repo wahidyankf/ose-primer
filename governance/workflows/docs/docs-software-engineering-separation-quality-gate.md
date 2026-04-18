@@ -1,6 +1,6 @@
 ---
 name: docs-software-engineering-separation-quality-gate
-goal: Validate software engineering documentation separation between a-demo style guides and a-demo educational content, apply fixes iteratively until zero findings achieved
+goal: Validate software engineering documentation separation between demo style guides and demo educational content, apply fixes iteratively until zero findings achieved
 termination: "Zero findings on two consecutive validations (max-iterations defaults to 10, escalation warning at 7)"
 inputs:
   - name: scope
@@ -38,7 +38,7 @@ outputs:
 
 # Software Engineering Documentation Separation Quality Gate Workflow
 
-**Purpose**: Automatically validate separation between a-demo style guides (docs/explanation/software-engineering/) and a-demo educational content (apps/a-demo-fs-ts-nextjs/), then apply fixes iteratively until all separation violations are resolved.
+**Purpose**: Automatically validate separation between demo style guides (docs/explanation/software-engineering/) and demo educational content (apps/demo-fs-ts-nextjs/), then apply fixes iteratively until all separation violations are resolved.
 
 **IMPORTANT - Validation Scope**:
 
@@ -52,7 +52,7 @@ This workflow validates **ONLY** explicit relationships listed in the Software D
 
 - After adding new prerequisite relationships to Software Design Reference
 - After updating docs/explanation style guide content
-- After updating a-demo educational content
+- After updating demo educational content
 - Before major releases to ensure no educational content duplicated in style guides
 - Periodically to ensure separation compliance
 
@@ -120,8 +120,8 @@ Analyze audit report to determine if fixes are needed.
 
 **Notes**:
 
-- Validates NO DUPLICATION between docs/explanation and a-demo
-- Checks prerequisite statements exist and reference a-demo correctly
+- Validates NO DUPLICATION between docs/explanation and demo
+- Checks prerequisite statements exist and reference demo correctly
 - Validates style guide focus on repository-specific conventions only
 
 ### 3. Apply Fixes (Sequential, Conditional)
@@ -263,7 +263,7 @@ Iteration 1:
   Check → 8 findings (missing prerequisites, duplicated content) → Fix → Re-check → 3 findings
 
 Iteration 2:
-  Check (reuse) → 3 findings (style guide lacks a-demo context) → Fix → Re-check → 0 findings (consecutive_zero: 1)
+  Check (reuse) → 3 findings (style guide lacks demo context) → Fix → Re-check → 0 findings (consecutive_zero: 1)
 
 Iteration 3 (confirmation):
   Re-check → 0 findings (consecutive_zero: 2 — double-zero confirmed)
@@ -304,10 +304,10 @@ Result: SUCCESS (3 iterations)
 
 The docs-software-engineering-separation-checker validates:
 
-- **No Duplication**: docs/explanation MUST NOT duplicate a-demo educational content
-- **Prerequisite Statements**: docs/explanation READMEs MUST reference a-demo learning paths
+- **No Duplication**: docs/explanation MUST NOT duplicate demo educational content
+- **Prerequisite Statements**: docs/explanation READMEs MUST reference demo learning paths
 - **Style Guide Focus**: docs/explanation MUST focus on repository-specific conventions only
-- **Learning Path Completeness**: a-demo MUST have required content (by-example, in-the-field)
+- **Learning Path Completeness**: demo MUST have required content (by-example, in-the-field)
 - **Cross-Reference Links**: Links between platforms MUST be correct and functional
 
 ## Related Workflows
@@ -337,7 +337,7 @@ Track across executions:
 - **Scope-aware**: Validates only explicit relationships in prerequisite table
 - **Incremental**: Enables gradual migration of content to separation model
 
-This workflow ensures documentation separation compliance through iterative validation and fixing, supporting the transition from duplicated content to a clean separation between educational (a-demo) and style guide (docs/explanation) content.
+This workflow ensures documentation separation compliance through iterative validation and fixing, supporting the transition from duplicated content to a clean separation between educational (demo) and style guide (docs/explanation) content.
 
 ## Principles Implemented/Respected
 

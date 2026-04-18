@@ -21,9 +21,9 @@ Technology stack summary, quality tools, and future architecture considerations 
 **Static Sites** (Hugo):
 
 - **Hugo**: 0.156.0 Extended
-- **Themes**: PaperMod (a-demo-fs-ts-nextjs)
+- **Themes**: PaperMod (demo-fs-ts-nextjs)
 - **Deployment**: Vercel
-- **Applications**: a-demo-fs-ts-nextjs
+- **Applications**: demo-fs-ts-nextjs
 
 **Web Applications** (Next.js):
 
@@ -31,7 +31,7 @@ Technology stack summary, quality tools, and future architecture considerations 
 - **React**: 19
 - **Styling**: TailwindCSS + Radix UI / shadcn-ui
 - **Deployment**: Vercel
-- **Applications**: a-demo-fe-ts-nextjs, a-demo-fs-ts-nextjs (with tRPC backend)
+- **Applications**: demo-fe-ts-nextjs, demo-fs-ts-nextjs (with tRPC backend)
 
 ### Backend
 
@@ -41,7 +41,7 @@ Technology stack summary, quality tools, and future architecture considerations 
 - **Language**: Java
 - **Build**: Maven
 - **Testing**: JaCoCo (>=90% coverage), MockMvc integration tests
-- **Applications**: a-demo-be-java-springboot
+- **Applications**: demo-be-java-springboot
 
 ### CLI Tools
 

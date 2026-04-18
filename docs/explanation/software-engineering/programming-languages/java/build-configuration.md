@@ -1,6 +1,6 @@
 ---
 title: "Java Build Configuration"
-description: Authoritative a-demo Maven build standards (POM structure, dependency management, version pinning, Maven Wrapper)
+description: Authoritative demo Maven build standards (POM structure, dependency management, version pinning, Maven Wrapper)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -22,13 +22,13 @@ updated: 2026-02-03
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
+**This document is demo-specific**, not a Java tutorial. We define HOW to apply Java in THIS codebase, not WHAT Java is.
 
 ## Purpose
 
-This document defines **authoritative build configuration standards** for Java development in the a-demo. These prescriptive rules govern Maven POM structure, dependency management, version pinning, and build reproducibility.
+This document defines **authoritative build configuration standards** for Java development in the demo. These prescriptive rules govern Maven POM structure, dependency management, version pinning, and build reproducibility.
 
-**Target Audience**: a-demo Java developers, build engineers, DevOps teams
+**Target Audience**: demo Java developers, build engineers, DevOps teams
 
 **Scope**: Maven multi-module structure, dependency management, version control, repository configuration, Maven Wrapper
 
@@ -51,7 +51,7 @@ This document defines **authoritative build configuration standards** for Java d
 
 ```xml
 <project>
-  <groupId>com.a-demo</groupId>
+  <groupId>com.demo</groupId>
   <artifactId>tax-service-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -98,7 +98,7 @@ This document defines **authoritative build configuration standards** for Java d
 ```xml
 <project>
   <parent>
-    <groupId>com.a-demo</groupId>
+    <groupId>com.demo</groupId>
     <artifactId>tax-service-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
@@ -270,18 +270,18 @@ java -version
 <repositories>
   <repository>
     <id>ose-nexus</id>
-    <url>https://nexus.a-demo.internal/repository/maven-public/</url>
+    <url>https://nexus.demo.internal/repository/maven-public/</url>
   </repository>
 </repositories>
 
 <distributionManagement>
   <repository>
     <id>ose-nexus-releases</id>
-    <url>https://nexus.a-demo.internal/repository/maven-releases/</url>
+    <url>https://nexus.demo.internal/repository/maven-releases/</url>
   </repository>
   <snapshotRepository>
     <id>ose-nexus-snapshots</id>
-    <url>https://nexus.a-demo.internal/repository/maven-snapshots/</url>
+    <url>https://nexus.demo.internal/repository/maven-snapshots/</url>
   </snapshotRepository>
 </distributionManagement>
 ```
@@ -372,7 +372,7 @@ Build configuration standards are enforced through:
 
 For learning Java fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Java basics from a-demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Java basics from demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ## Related Standards
 

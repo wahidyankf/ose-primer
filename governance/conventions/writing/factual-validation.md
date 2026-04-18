@@ -765,7 +765,7 @@ Recommendation: Clarify which context applies or use HTTPS everywhere
 
 **Agent:** `docs-checker`, `docs-fixer`
 
-### static-site Educational Content (a-demo-fs-ts-nextjs)
+### static-site Educational Content (demo-fs-ts-nextjs)
 
 **Validation Focus:**
 
@@ -775,9 +775,9 @@ Recommendation: Clarify which context applies or use HTTPS everywhere
 - Indonesian/English consistency
 - Educational sequences are logical
 
-**Agent:** `apps-a-demo-fs-ts-nextjs-facts-checker`, `apps-a-demo-fs-ts-nextjs-facts-fixer`
+**Agent:** `apps-demo-fs-ts-nextjs-facts-checker`, `apps-demo-fs-ts-nextjs-facts-fixer`
 
-### static-site Platform Content (a-demo-fs-ts-nextjs)
+### static-site Platform Content (demo-fs-ts-nextjs)
 
 **Validation Focus:**
 
@@ -813,7 +813,7 @@ Recommendation: Clarify which context applies or use HTTPS everywhere
 **Implementation Agents:**
 
 - `docs-checker.md` - Documentation factual accuracy validator (implements this convention for `docs/`)
-- `apps-a-demo-fs-ts-nextjs-facts-checker.md` - Educational content factual validator (implements this convention for a-demo-fs-ts-nextjs)
+- `apps-demo-fs-ts-nextjs-facts-checker.md` - Educational content factual validator (implements this convention for demo-fs-ts-nextjs)
 - `plan-checker.md` - Plan accuracy validator (implements portions of this convention)
 
 **Quality Standards:**

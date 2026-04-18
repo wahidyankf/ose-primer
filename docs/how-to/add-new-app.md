@@ -288,11 +288,11 @@ TypeScript path mappings are configured in `tsconfig.base.json`.
 
 ### Additional Checklist for New Demo Apps
 
-New `a-demo-be-*` and `a-demo-fe-*` apps must satisfy these additional requirements:
+New `demo-be-*` and `demo-fe-*` apps must satisfy these additional requirements:
 
 **Mandatory Nx targets** (all 7 required):
 
-- [ ] `codegen` — generates types + encoders/decoders from the OpenAPI spec at `specs/apps/a-demo/contracts/`
+- [ ] `codegen` — generates types + encoders/decoders from the OpenAPI spec at `specs/apps/demo/contracts/`
 - [ ] `typecheck` — verifies types compile; must include `dependsOn: ["codegen"]`
 - [ ] `lint` — static analysis / format check
 - [ ] `build` — production build; must include `dependsOn: ["codegen"]`
@@ -306,8 +306,8 @@ New `a-demo-be-*` and `a-demo-fe-*` apps must satisfy these additional requireme
 `docker-compose.integration.yml` at the app root. The file defines the database service and a
 `test-runner` service that runs the integration test suite. The `test:integration` target invokes
 `docker compose -f docker-compose.integration.yml up --abort-on-container-exit --exit-code-from test-runner --build`
-and must set `"cache": false` in `project.json`. See existing backends (e.g., `a-demo-be-golang-gin`,
-`a-demo-fs-ts-nextjs`) for reference implementations.
+and must set `"cache": false` in `project.json`. See existing backends (e.g., `demo-be-golang-gin`,
+`demo-fs-ts-nextjs`) for reference implementations.
 
 **Specs folder**: Create a `specs/apps/[domain]/` folder at the repository root with the following
 standard layout. Gherkin feature files must be placed here, not inside the app:
@@ -327,7 +327,7 @@ specs/apps/[domain]/
 **Canonical inputs for cache invalidation** (add to `test:unit` and `test:quick`):
 
 - Include `{projectRoot}/generated-contracts/**/*` (or `generated_contracts` for Python/Clojure)
-- Include `{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature` for backends
+- Include `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` for backends
 - Include language-specific source file globs (see `governance/development/infra/nx-targets.md` for per-language patterns)
 
 **See**: [Nx Target Standards](../../governance/development/infra/nx-targets.md) for canonical target names, caching rules, and per-language input patterns.

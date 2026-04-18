@@ -291,7 +291,7 @@ use: {
 },
 ```
 
-## a-demo Context
+## demo Context
 
 ### Islamic Finance Testing
 

@@ -1,6 +1,6 @@
 ---
 title: "Kotlin Testing Standards"
-description: Authoritative a-demo Kotlin testing standards (JUnit 5, Kotest, MockK, coroutine testing)
+description: Authoritative demo Kotlin testing standards (JUnit 5, Kotest, MockK, coroutine testing)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -25,13 +25,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Kotlin tutorial. We define HOW to apply Kotlin testing in THIS codebase.
+**This document is demo-specific**, not a Kotlin tutorial. We define HOW to apply Kotlin testing in THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative testing standards** for Kotlin development in the a-demo. It covers test framework selection, coroutine testing, mocking with MockK, coverage requirements, and integration test patterns.
+This document defines **authoritative testing standards** for Kotlin development in the demo. It covers test framework selection, coroutine testing, mocking with MockK, coverage requirements, and integration test patterns.
 
-**Target Audience**: a-demo Kotlin developers, technical reviewers, CI/CD automation
+**Target Audience**: demo Kotlin developers, technical reviewers, CI/CD automation
 
 **Scope**: Unit tests, integration tests, coroutine tests, BDD tests, coverage enforcement
 

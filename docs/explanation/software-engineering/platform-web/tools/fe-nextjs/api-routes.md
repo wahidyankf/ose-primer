@@ -115,7 +115,7 @@ export async function PATCH(request: Request) {
 }
 ```
 
-### a-demo: Zakat API
+### demo: Zakat API
 
 ```typescript
 // app/api/zakat/calculations/route.ts
@@ -294,7 +294,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 }
 ```
 
-### a-demo: Murabaha Application API
+### demo: Murabaha Application API
 
 ```typescript
 // app/api/murabaha/applications/[id]/route.ts
@@ -525,7 +525,7 @@ export async function POST(request: Request) {
 }
 ```
 
-### a-demo: Error Responses
+### demo: Error Responses
 
 ```typescript
 // app/api/waqf/donations/route.ts

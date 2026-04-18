@@ -48,7 +48,7 @@ This convention exists to:
 ### What This Convention Does NOT Cover
 
 - **Internal repository lookups** — `Read`, `Grep`, `Glob` against local files. This convention is about the public web, not the local checkout.
-- **Link reachability checks** (HTTP status, redirect chains) — covered by `docs-link-checker`, `apps-a-demo-fs-ts-nextjs-link-checker`, and their fixer counterparts. Their domain is URL liveness, not content research.
+- **Link reachability checks** (HTTP status, redirect chains) — covered by `docs-link-checker`, `apps-demo-fs-ts-nextjs-link-checker`, and their fixer counterparts. Their domain is URL liveness, not content research.
 - **Content authorship and writing style** — see [Content Quality Principles](./quality.md) and [Convention Writing Convention](./conventions.md).
 - **Verification methodology itself** — the confidence classifications, source priority tiers, and validation patterns live in [Factual Validation Convention](./factual-validation.md). This convention governs _who does the research_, not _how verification is classified_.
 
@@ -77,9 +77,9 @@ The rule has exactly three exceptions. Exceptions are closed-ended — adding a 
 
 1. **Single-shot verification of a known URL.** When an agent already has the authoritative URL (from checker notes, from an audit report, from explicit user instruction) and one `WebFetch` answers the question, run it in-context. Do not launch a subagent for one call.
 
-2. **Fixer agents re-validating a single audit finding.** Fixer agents (`docs-fixer`, `apps-a-demo-fs-ts-nextjs-facts-fixer`, `plan-fixer`, `apps-a-demo-fs-ts-nextjs-link-fixer`) intentionally operate in the same context as the audit they consume. Their re-validation must be decisive and paired with the fix; delegating to a subagent breaks that coupling. If a fixer discovers research much larger than the audit frame, it should escalate MEDIUM or FALSE_POSITIVE rather than spawn `web-research-maker` itself.
+2. **Fixer agents re-validating a single audit finding.** Fixer agents (`docs-fixer`, `apps-demo-fs-ts-nextjs-facts-fixer`, `plan-fixer`, `apps-demo-fs-ts-nextjs-link-fixer`) intentionally operate in the same context as the audit they consume. Their re-validation must be decisive and paired with the fix; delegating to a subagent breaks that coupling. If a fixer discovers research much larger than the audit frame, it should escalate MEDIUM or FALSE_POSITIVE rather than spawn `web-research-maker` itself.
 
-3. **Link-reachability checker and fixer agents.** `docs-link-checker`, `apps-a-demo-fs-ts-nextjs-link-checker`, and their fixer counterparts are scoped to URL liveness — HTTP status codes, redirect chains, cache freshness. Their domain is explicitly URL-reachability, not content research. They invoke `WebFetch` directly against the URL under test; delegating to `web-research-maker` would add latency without improving the signal (a 404 is a 404).
+3. **Link-reachability checker and fixer agents.** `docs-link-checker`, `apps-demo-fs-ts-nextjs-link-checker`, and their fixer counterparts are scoped to URL liveness — HTTP status codes, redirect chains, cache freshness. Their domain is explicitly URL-reachability, not content research. They invoke `WebFetch` directly against the URL under test; delegating to `web-research-maker` would add latency without improving the signal (a 404 is a 404).
 
 An exception agent still cites this convention in its body, stating which exception applies and why, so the rule is visible in the agent's own file rather than hidden in the convention.
 
@@ -160,10 +160,10 @@ To validate an agent complies with this convention:
 **Agents:**
 
 - [`web-research-maker`](../../../.claude/agents/web-research-maker.md) — the default research primitive
-- `docs-checker`, `docs-tutorial-checker`, `apps-a-demo-fs-ts-nextjs-facts-checker`, `plan-checker` — validation agents that delegate to `web-research-maker` above the threshold
+- `docs-checker`, `docs-tutorial-checker`, `apps-demo-fs-ts-nextjs-facts-checker`, `plan-checker` — validation agents that delegate to `web-research-maker` above the threshold
 - `docs-maker`, `docs-tutorial-maker`, `plan-maker` — authoring agents that commission research before writing
-- `docs-fixer`, `apps-a-demo-fs-ts-nextjs-facts-fixer`, `plan-fixer` — fixer agents invoking Exception 2 (same-context re-validation)
-- `docs-link-checker`, `apps-a-demo-fs-ts-nextjs-link-checker`, `apps-a-demo-fs-ts-nextjs-link-fixer` — link-reachability agents invoking Exception 3
+- `docs-fixer`, `apps-demo-fs-ts-nextjs-facts-fixer`, `plan-fixer` — fixer agents invoking Exception 2 (same-context re-validation)
+- `docs-link-checker`, `apps-demo-fs-ts-nextjs-link-checker`, `apps-demo-fs-ts-nextjs-link-fixer` — link-reachability agents invoking Exception 3
 
 **Skills:**
 

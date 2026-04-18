@@ -1,6 +1,6 @@
 ---
 title: "Integration Testing Standards"
-description: a-demo standards for integration testing — mocked external I/O, in-memory repositories, MSW, and WireMock patterns
+description: demo standards for integration testing — mocked external I/O, in-memory repositories, MSW, and WireMock patterns
 category: explanation
 subcategory: development
 tags:
@@ -24,7 +24,7 @@ updated: 2026-03-04
 
 ## Purpose
 
-a-demo standards for integration tests — tests that verify multiple internal layers working
+demo standards for integration tests — tests that verify multiple internal layers working
 together while keeping all external I/O controlled via mocking and in-memory implementations.
 
 ## Core Rule
@@ -255,10 +255,10 @@ class NotificationServiceIntegrationTest {
                 .withStatus(200)
                 .withBody("{\"status\": \"sent\"}")));
 
-        service.notify(MemberId.of("1"), "Welcome to a-demo");
+        service.notify(MemberId.of("1"), "Welcome to demo");
 
         wireMock.verify(postRequestedFor(urlEqualTo("/notifications"))
-            .withRequestBody(containing("Welcome to a-demo")));
+            .withRequestBody(containing("Welcome to demo")));
     }
 
     @Test
@@ -296,7 +296,7 @@ src/
       UserLoginIntegrationTest.java
 ```
 
-**TypeScript** (a-demo-fe-ts-nextjs pattern):
+**TypeScript** (demo-fe-ts-nextjs pattern):
 
 ```
 src/
@@ -315,7 +315,7 @@ src/
 
 ## BDD Integration Tests (Gherkin-Driven)
 
-Integration tests at a-demo use BDD Gherkin scenarios as the specification. The feature
+Integration tests at demo use BDD Gherkin scenarios as the specification. The feature
 files in `specs/` drive the integration test implementation.
 
 ### TypeScript — vitest-cucumber

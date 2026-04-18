@@ -20,13 +20,13 @@ updated: 2026-02-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a C4 tutorial. We define HOW to apply C4 notation in THIS codebase, not WHAT C4 notation is.
+**This document is demo-specific**, not a C4 tutorial. We define HOW to apply C4 notation in THIS codebase, not WHAT C4 notation is.
 
 ## Purpose
 
-This document defines **authoritative notation standards** for C4 diagrams in a-demo, ensuring accessibility, consistency, and maintainability.
+This document defines **authoritative notation standards** for C4 diagrams in demo, ensuring accessibility, consistency, and maintainability.
 
-**Target Audience**: a-demo architects, developers, technical writers
+**Target Audience**: demo architects, developers, technical writers
 
 **Scope**: WCAG colors, Mermaid syntax, labeling conventions, accessibility requirements
 

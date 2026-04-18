@@ -1,6 +1,6 @@
 ---
 title: "Kotlin Framework Integration Standards"
-description: Authoritative a-demo Kotlin framework integration standards (Ktor 3.x, Spring Boot 3.x, coroutine integration)
+description: Authoritative demo Kotlin framework integration standards (Ktor 3.x, Spring Boot 3.x, coroutine integration)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -24,13 +24,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Kotlin tutorial. We define HOW to integrate frameworks in THIS codebase.
+**This document is demo-specific**, not a Kotlin tutorial. We define HOW to integrate frameworks in THIS codebase.
 
 ## Purpose
 
-This document defines **authoritative framework integration standards** for Kotlin development in the a-demo. It covers Ktor 3.x server setup, Spring Boot 3.x with Kotlin idioms, Kotlin-specific Spring annotations, coroutine integration with Spring, and Android basics (ViewModel/LiveData/Compose).
+This document defines **authoritative framework integration standards** for Kotlin development in the demo. It covers Ktor 3.x server setup, Spring Boot 3.x with Kotlin idioms, Kotlin-specific Spring annotations, coroutine integration with Spring, and Android basics (ViewModel/LiveData/Compose).
 
-**Target Audience**: a-demo Kotlin developers, technical architects, technical reviewers
+**Target Audience**: demo Kotlin developers, technical architects, technical reviewers
 
 **Scope**: Ktor plugin installation, routing DSL, Spring Boot Kotlin idioms, coroutine-Spring bridge, framework selection criteria
 

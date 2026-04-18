@@ -1,6 +1,6 @@
 ---
 title: "BDD with DDD Standards"
-description: a-demo standards for integrating BDD scenarios with DDD bounded contexts and ubiquitous language
+description: demo standards for integrating BDD scenarios with DDD bounded contexts and ubiquitous language
 category: explanation
 subcategory: development
 tags:
@@ -20,7 +20,7 @@ updated: 2026-02-09
 
 ## Purpose
 
-a-demo standards for integrating BDD scenarios with DDD patterns.
+demo standards for integrating BDD scenarios with DDD patterns.
 
 ## REQUIRED: One Feature per Bounded Context Capability
 
@@ -122,7 +122,7 @@ Feature: Donation and Zakat Processing
     ...
 ```
 
-## a-demo Examples
+## demo Examples
 
 ### Zakat Context Scenarios
 

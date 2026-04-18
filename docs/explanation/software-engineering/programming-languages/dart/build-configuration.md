@@ -1,6 +1,6 @@
 ---
 title: "Dart Build Configuration"
-description: Authoritative a-demo Dart build configuration standards (pubspec, dart-pub, build-runner, CI/CD)
+description: Authoritative demo Dart build configuration standards (pubspec, dart-pub, build-runner, CI/CD)
 category: explanation
 subcategory: prog-lang
 tags:
@@ -22,13 +22,13 @@ updated: 2026-03-09
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Dart tutorial. We define HOW to configure Dart builds in THIS codebase, not WHAT Dart pub is.
+**This document is demo-specific**, not a Dart tutorial. We define HOW to configure Dart builds in THIS codebase, not WHAT Dart pub is.
 
 ## Purpose
 
-This document defines **authoritative build configuration standards** for Dart development in the a-demo. These standards ensure reproducible builds, consistent dependency management, and reliable CI/CD integration across all Dart projects.
+This document defines **authoritative build configuration standards** for Dart development in the demo. These standards ensure reproducible builds, consistent dependency management, and reliable CI/CD integration across all Dart projects.
 
-**Target Audience**: a-demo Dart developers, DevOps engineers, CI/CD pipeline maintainers
+**Target Audience**: demo Dart developers, DevOps engineers, CI/CD pipeline maintainers
 
 **Scope**: `pubspec.yaml` structure, `pubspec.lock`, `dart pub` commands, `build_runner` code generation, CI/CD integration, AOT compilation
 
@@ -139,10 +139,10 @@ environment:
 **MUST** follow this structure for all Dart projects:
 
 ```yaml
-# pubspec.yaml - a-demo standard structure
+# pubspec.yaml - demo standard structure
 name: zakat_service # lowercase_with_underscores
 description: |
-  Zakat calculation and recording service for a-demo.
+  Zakat calculation and recording service for demo.
   Handles wealth assessment, nisab comparison, and transaction recording.
 version: 1.0.0 # Semantic versioning: MAJOR.MINOR.PATCH
 homepage: https://example.com
@@ -198,7 +198,7 @@ dev_dependencies:
 ```yaml
 # pubspec.yaml - Flutter application
 name: zakat_mobile_app
-description: Zakat calculator mobile app for a-demo
+description: Zakat calculator mobile app for demo
 version: 1.0.0+1 # version+build_number for Flutter
 
 environment:

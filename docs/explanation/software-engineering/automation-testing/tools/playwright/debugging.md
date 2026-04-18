@@ -1,6 +1,6 @@
 ---
 title: "Playwright Debugging Standards"
-description: Authoritative a-demo Playwright debugging standards (trace viewer, inspector, debug mode, screenshot on failure)
+description: Authoritative demo Playwright debugging standards (trace viewer, inspector, debug mode, screenshot on failure)
 category: explanation
 subcategory: automation-testing
 tags:
@@ -23,13 +23,13 @@ updated: 2026-02-08
 
 ## Prerequisite Knowledge
 
-**This document is a-demo-specific**, not a Playwright tutorial.
+**This document is demo-specific**, not a Playwright tutorial.
 
 ## Purpose
 
-This document defines **debugging strategies** for Playwright tests in the a-demo.
+This document defines **debugging strategies** for Playwright tests in the demo.
 
-**Target Audience**: a-demo E2E test developers
+**Target Audience**: demo E2E test developers
 
 **Scope**: Trace viewer, inspector, debug mode
 
