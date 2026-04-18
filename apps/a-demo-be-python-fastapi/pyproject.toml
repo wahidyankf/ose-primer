@@ -55,12 +55,12 @@ markers = [
 source = ["a_demo_be_python_fastapi"]
 omit = [
     "tests/*",
-    "src/a_demo_be_python_fastapi/routers/*",
-    "src/a_demo_be_python_fastapi/main.py",
-    "src/a_demo_be_python_fastapi/dependencies.py",
-    "src/a_demo_be_python_fastapi/auth/dependencies.py",
-    "src/a_demo_be_python_fastapi/infrastructure/repositories.py",
-    "src/a_demo_be_python_fastapi/infrastructure/refresh_token_repository.py",
+    "*/a_demo_be_python_fastapi/routers/*",
+    "*/a_demo_be_python_fastapi/main.py",
+    "*/a_demo_be_python_fastapi/dependencies.py",
+    "*/a_demo_be_python_fastapi/auth/dependencies.py",
+    "*/a_demo_be_python_fastapi/infrastructure/repositories.py",
+    "*/a_demo_be_python_fastapi/infrastructure/refresh_token_repository.py",
 ]
 
 [tool.coverage.report]
