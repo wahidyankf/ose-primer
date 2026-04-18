@@ -4,7 +4,7 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- [2026-04-18\_\_ose-primer-template-cleanup](./2026-04-18__ose-primer-template-cleanup/README.md) — Strip product-specific content from ose-primer so it functions as a clean repository template.
+_No active plans._
 
 ## Instructions
 
