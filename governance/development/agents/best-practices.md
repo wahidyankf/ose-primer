@@ -83,7 +83,7 @@ tools: [Read, Write, Edit, Bash, WebFetch, WebSearch] # Excessive
 
 ### Practice 3: Use Appropriate Model for Task Complexity
 
-**Principle**: Match model to task complexity - use Haiku for simple tasks, Sonnet for complex reasoning.
+**Principle**: Match model to task complexity — omit for opus-tier (budget-adaptive), `sonnet` for structured tasks, `haiku` for purely mechanical tasks.
 
 **Good Example:**
 
@@ -93,16 +93,22 @@ tools: [Read, Write, Edit, Bash, WebFetch, WebSearch] # Excessive
 name: link-checker
 model: haiku
 ---
-# Complex reasoning task
+# Structured template-driven task
+---
+name: docs-checker
+model: sonnet
+---
+# Complex open-ended reasoning task (opus-tier: omit model)
 ---
 name: plan-maker
-model: sonnet
+model:
 ---
 ```
 
 **Rationale:**
 
-- Cost optimization
+- **Budget-adaptive inheritance**: Opus-tier agents omit `model` so the session's active model is inherited at runtime (Max/Team → Opus 4.7; Pro/Standard → Sonnet 4.6). Do NOT add `model: opus` — it bypasses this mechanism and forces Opus charges on all users.
+- Cost optimization — haiku for mechanical, sonnet for rule-based, opus-inherit for open reasoning
 - Performance optimization
 - Clear expectations
 

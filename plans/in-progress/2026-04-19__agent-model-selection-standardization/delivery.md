@@ -69,14 +69,18 @@
 
 ## Phase 3: Propagate to Related Governance Docs
 
-- [ ] **3.1** `governance/development/agents/ai-agents.md` — add budget-adaptive note to
-      model field spec and Model Selection Guidelines: opus-tier agents omit model by
-      design; warn against adding `model: opus`
-- [ ] **3.2** `governance/development/agents/best-practices.md` — add budget-adaptive
-      rationale; ensure plan-maker example shows omit (not `model: opus`)
-- [ ] **3.3** `.claude/agents/README.md` — add "Opus-tier agents omit `model` by design"
-      note to the model selection section
-- [ ] **3.4** Run `npm run lint:md` — confirm zero errors
+- [x] **3.1** `governance/development/agents/ai-agents.md` — add budget-adaptive note to
+    model field spec and Model Selection Guidelines: opus-tier agents omit model by
+    design; warn against adding `model: opus`
+<!-- 2026-04-19 | Status: Done | File: governance/development/agents/ai-agents.md | Added budget-adaptive note to model field spec and Opus tier in Model Selection Guidelines -->
+- [x] **3.2** `governance/development/agents/best-practices.md` — add budget-adaptive
+    rationale; ensure plan-maker example shows omit (not `model: opus`)
+<!-- 2026-04-19 | Status: Done | File: governance/development/agents/best-practices.md | Updated Practice 3 with omit example and budget-adaptive rationale; plan-maker now shows model: (omit) -->
+- [x] **3.3** `.claude/agents/README.md` — add "Opus-tier agents omit `model` by design"
+    note to the model selection section
+<!-- 2026-04-19 | Status: Done | File: .claude/agents/README.md | Added budget-adaptive blockquote after Model field description -->
+- [x] **3.4** Run `npm run lint:md` — confirm zero errors
+<!-- 2026-04-19 | Status: Done | 742 files linted, 0 errors -->
 - [ ] **3.5** Commit: `docs(agents): propagate budget-adaptive model inheritance note`
 
 ---
