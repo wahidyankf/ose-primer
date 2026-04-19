@@ -45,7 +45,6 @@ Additional filename rules inherit from the [File Naming Convention](./file-namin
 
 Workflow scope MUST match its parent directory under `governance/workflows/`. Current scopes:
 
-- **`demo-fs-ts-nextjs`** — Workflows scoped to the demo Web application (content quality gates).
 - **`ci`** — Workflows that diagnose, validate, or repair continuous-integration pipelines.
 - **`docs`** — Workflows scoped to the `docs/` tree (Diátaxis content, link integrity, software-engineering separation).
 - **`infra`** — Workflows that provision development environments or infrastructure resources.
@@ -100,7 +99,7 @@ The `rhino-cli workflows validate-naming` subcommand wraps this check plus a fro
 
 Current workflows, grouped by type, all conforming to the rule:
 
-- **`quality-gate`** — `plan-quality-gate` (scope `plan`, type `quality-gate`), `repo-rules-quality-gate` (scope `repo`, qualifier `rules`, type `quality-gate`), `specs-quality-gate` (scope `specs`, type `quality-gate`), `docs-quality-gate` (scope `docs`, type `quality-gate`), `ci-quality-gate` (scope `ci`, type `quality-gate`), `ui-quality-gate` (scope `ui`, type `quality-gate`), `demo-fs-ts-nextjs-by-example-quality-gate` (scope `demo-fs-ts-nextjs`, qualifier `by-example`, type `quality-gate`)
+- **`quality-gate`** — `plan-quality-gate` (scope `plan`, type `quality-gate`), `repo-rules-quality-gate` (scope `repo`, qualifier `rules`, type `quality-gate`), `specs-quality-gate` (scope `specs`, type `quality-gate`), `docs-quality-gate` (scope `docs`, type `quality-gate`), `ci-quality-gate` (scope `ci`, type `quality-gate`), `ui-quality-gate` (scope `ui`, type `quality-gate`)
 - **`execution`** — `plan-execution` (scope `plan`, type `execution`)
 - **`setup`** — `development-environment-setup` (scope `infra`, qualifiers `development-environment`, type `setup`)
 

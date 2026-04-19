@@ -75,7 +75,6 @@ Model selection directly affects agent quality, latency, and resource efficiency
 - **plan-maker** -- creates project plans requiring scope analysis, dependency mapping, and strategic sequencing
 - **docs-tutorial-maker** -- produces tutorial content requiring pedagogical reasoning, narrative flow, and learning progression design
 - **swe-ui-maker** -- creates UI components requiring CVA variants, Radix composition, accessibility, tests, and stories in one pass
-- **repo-rules-maker** -- creates governance documents requiring architectural reasoning about layer relationships and traceability
 
 **Frontmatter**: Omit the `model` field (inherits the default, which is opus-tier).
 
@@ -128,7 +127,7 @@ cost-efficiently.
 - **All checkers** -- validate content against conventions using defined rulesets and produce structured audit reports (docs-checker, docs-tutorial-checker, readme-checker, specs-checker, repo-rules-checker, repo-workflow-checker, plan-checker, plan-execution-checker, swe-code-checker, swe-ui-checker, ci-checker)
 - **Most fixers** -- apply corrections from checker audit reports following documented fix procedures (docs-fixer, docs-tutorial-fixer, readme-fixer, specs-fixer, repo-rules-fixer, repo-workflow-fixer, plan-fixer, swe-ui-fixer, ci-fixer)
 - **social-linkedin-post-maker** -- generates social media posts following a defined template and tone guidelines
-- **Structured makers** -- makers with tight, well-defined skills that pin down most decisions, making them rule-following rather than open-ended creation (docs-maker, readme-maker, agent-maker, specs-maker, repo-workflow-maker)
+- **Structured makers** -- makers with tight, well-defined skills that pin down most decisions, making them rule-following rather than open-ended creation (docs-maker, readme-maker, agent-maker, specs-maker, repo-workflow-maker, repo-rules-maker)
 - **swe-e2e-dev** -- writes Playwright E2E tests following a dedicated skill with defined patterns (locators, fixtures, waits); lower stakes than production code written by language developer agents
 
 **Frontmatter**: Specify `model: sonnet` explicitly.
