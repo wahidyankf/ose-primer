@@ -107,8 +107,14 @@ skills: []
 **Description**: Required field - when Claude should delegate to this agent
 **Tools**: Comma-separated string with capitalized tool names (only tools the agent needs)
 **Model**: Required field - omit for opus (default), or use \`sonnet\` or \`haiku\`
-**Color**: Required field - `blue` (makers), `green` (checkers), `yellow` (fixers), `purple` (implementors)
-**Skills**: Required field - list of Skill names (empty array `[]` if no Skills used)
+
+> **Opus-tier agents omit `model` by design** — this is budget-adaptive inheritance.
+> The session's active model is inherited at runtime: Max/Team accounts get Claude Opus 4.7;
+> Pro/Standard accounts get Claude Sonnet 4.6. Do NOT add `model: opus` to opus-tier agents
+> — it bypasses this mechanism and forces Opus charges on all users regardless of account tier.
+> See [model-selection.md](../../governance/development/agents/model-selection.md) for full tier mapping.
+> **Color**: Required field - `blue` (makers), `green` (checkers), `yellow` (fixers), `purple` (implementors)
+> **Skills**: Required field - list of Skill names (empty array `[]` if no Skills used)
 
 Note: Frontmatter MUST NOT contain YAML inline comments (# symbols). Put explanations in the document body.
 
