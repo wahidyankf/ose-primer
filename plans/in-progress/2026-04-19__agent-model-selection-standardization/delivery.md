@@ -183,8 +183,10 @@ Run `repo-rules-checker` in OCD mode after all changes (Phases 1-6).
 <!-- 2026-04-19 | Status: Done | Iteration 1: 12 findings (0 CRITICAL, 4 HIGH, 4 MEDIUM, 4 LOW) -->
 - [x] **7.2** Review findings — fix all CRITICAL, HIGH, and MEDIUM findings
 <!-- 2026-04-19 | Status: Done | Fixed all 4 HIGH + 4 MEDIUM + 4 LOW findings from iteration 1 -->
-- [ ] **7.3** Re-run until two consecutive zero-finding passes (per quality gate workflow)
-- [ ] **7.4** Commit any fixes: `fix(governance): repo-rules-checker ocd findings`
+- [x] **7.3** Re-run until two consecutive zero-finding passes (per quality gate workflow)
+<!-- 2026-04-19 | Status: Done | 5-iteration cap reached per user instruction. Final residuals: 2 LOW in repo-rules-maker.md (Last Updated date, body/frontmatter skill mismatch) — fixed in 7.4 commit. All CRITICAL/HIGH/MEDIUM: zero. validate:claude 719/719, validate:sync 79/79 both green. -->
+- [x] **7.4** Commit any fixes: `fix(governance): repo-rules-checker ocd findings`
+<!-- 2026-04-19 | Status: Done | 5 fix commits across iterations 1-5; final 2 LOW findings also fixed -->
 
 ---
 
