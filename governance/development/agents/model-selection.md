@@ -9,7 +9,7 @@ tags:
   - standards
   - development
 created: 2026-04-03
-updated: 2026-04-03
+updated: 2026-04-19
 ---
 
 # AI Agent Model Selection Convention

@@ -61,60 +61,6 @@
 - Orchestrated directly by the [Plan Execution Workflow](../../governance/workflows/plan/plan-execution.md) — the calling context reads the workflow, manages the Task list, and delegates per-item work to specialized agents. No dedicated executor subagent.
 - **plan-execution-checker** - Final validation of completed plan implementation (runs in an isolated subagent context for independent judgment)
 
-### demo-fs-ts-nextjs Family
-
-**General Content** (Maker-Checker-Fixer):
-
-- **apps-demo-fs-ts-nextjs-general-maker** - Creates general content (by-concept tutorials, guides)
-- **apps-demo-fs-ts-nextjs-general-checker** - Validates general content quality
-- **apps-demo-fs-ts-nextjs-general-fixer** - Applies validated fixes to general content
-
-**By-Example Content** (Maker-Checker-Fixer):
-
-- **apps-demo-fs-ts-nextjs-by-example-maker** - Creates by-example tutorials (75-90 annotated examples)
-- **apps-demo-fs-ts-nextjs-by-example-checker** - Validates by-example annotation density (1-2.25 ratio)
-- **apps-demo-fs-ts-nextjs-by-example-fixer** - Applies validated fixes to by-example content
-
-**Facts Validation** (Checker-Fixer):
-
-- **apps-demo-fs-ts-nextjs-facts-checker** - Validates factual accuracy using WebSearch/WebFetch
-- **apps-demo-fs-ts-nextjs-facts-fixer** - Applies validated factual fixes
-
-**Link Validation** (Checker-Fixer):
-
-- **apps-demo-fs-ts-nextjs-link-checker** - Validates links (hybrid: validator + cache manager)
-- **apps-demo-fs-ts-nextjs-link-fixer** - Applies validated link fixes
-
-**Structure Management** (Maker-Checker-Fixer):
-
-- **apps-demo-fs-ts-nextjs-structure-maker** - Creates folder structure and \_index.md files
-- **apps-demo-fs-ts-nextjs-structure-checker** - Validates folder organization and navigation depth
-- **apps-demo-fs-ts-nextjs-structure-fixer** - Applies validated structure fixes
-
-**Specialized**:
-
-- **apps-demo-fs-ts-nextjs-navigation-maker** - Updates prev/next navigation links in frontmatter
-- **apps-demo-fs-ts-nextjs-title-maker** - Generates appropriate titles based on content type and level
-- **apps-demo-fs-ts-nextjs-deployer** - Deploys to production branch (prod-demo-fs-ts-nextjs)
-
-**In-the-Field Content** (Maker-Checker-Fixer):
-
-- **apps-demo-fs-ts-nextjs-in-the-field-maker** - Creates in-the-field tutorials from real-world experiences
-- **apps-demo-fs-ts-nextjs-in-the-field-checker** - Validates in-the-field tutorial quality
-- **apps-demo-fs-ts-nextjs-in-the-field-fixer** - Applies validated fixes to in-the-field tutorials
-
-### demo-fs-ts-nextjs Family
-
-**Maker-Checker-Fixer Pattern**:
-
-- **apps-demo-fs-ts-nextjs-content-maker** - Creates landing page content (PaperMod theme, English-only)
-- **apps-demo-fs-ts-nextjs-content-checker** - Validates PaperMod theme compliance
-- **apps-demo-fs-ts-nextjs-content-fixer** - Applies validated fixes
-
-**Deployment**:
-
-- **apps-demo-fs-ts-nextjs-deployer** - Deploys to production branch (prod-demo-fs-ts-nextjs)
-
 ### Repository Governance Family
 
 **Rules Management** (Maker-Checker-Fixer):
@@ -128,6 +74,10 @@
 - **repo-workflow-maker** - Creates workflow documentation
 - **repo-workflow-checker** - Validates workflow pattern compliance
 - **repo-workflow-fixer** - Applies validated workflow fixes
+
+### Research Family
+
+- **web-research-maker** - Researches current, verifiable information from the web in an isolated context; returns cited findings
 
 ### Meta/Specialized Family
 
@@ -144,7 +94,6 @@
 - **swe-elixir-dev** - Elixir application development
 - **swe-fsharp-dev** - F# application development
 - **swe-golang-dev** - Go application development
-- **swe-hugo-dev** - Hugo site development (theme customization, templates)
 - **swe-java-dev** - Java application development
 - **swe-kotlin-dev** - Kotlin application development
 - **swe-python-dev** - Python application development
