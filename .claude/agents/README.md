@@ -78,13 +78,14 @@ Normative source: [Agent Naming Convention](../../governance/conventions/structu
 
 ## Role Vocabulary
 
-| Role      | Semantics                                                 | Example agents                                               |
-| --------- | --------------------------------------------------------- | ------------------------------------------------------------ |
-| `maker`   | Produces a content/research artifact                      | `docs-maker`, `web-research-maker`                           |
-| `checker` | Validates an artifact against standards                   | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
-| `fixer`   | Applies validated checker findings                        | `plan-fixer`, `swe-ui-fixer`                                 |
-| `dev`     | Writes code in a language or test framework               | `swe-rust-dev`, `swe-e2e-dev`                                |
-| `manager` | Performs file or resource operations (rename/move/delete) | `docs-file-manager`                                          |
+| Role       | Semantics                                                 | Example agents                                               |
+| ---------- | --------------------------------------------------------- | ------------------------------------------------------------ |
+| `maker`    | Produces a content/research artifact                      | `docs-maker`, `web-research-maker`                           |
+| `checker`  | Validates an artifact against standards                   | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
+| `fixer`    | Applies validated checker findings                        | `plan-fixer`, `swe-ui-fixer`                                 |
+| `dev`      | Writes code in a language or test framework               | `swe-rust-dev`, `swe-e2e-dev`                                |
+| `deployer` | Deploys an application to an environment                  | `apps-<scope>-deployer` (scope-specific deployer)            |
+| `manager`  | Performs file or resource operations (rename/move/delete) | `docs-file-manager`                                          |
 
 Enforcement: `rhino-cli agents validate-naming` (wired into pre-push and CI).
 
@@ -172,4 +173,4 @@ All agents follow governance principles:
 
 ---
 
-**Last Updated**: 2026-04-02
+**Last Updated**: 2026-04-19

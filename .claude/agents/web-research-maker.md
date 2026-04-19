@@ -14,8 +14,18 @@ skills:
 ## Agent Metadata
 
 - **Role**: Research (green — validation-adjacent; verifies external claims)
-- **Model**: `sonnet` — structured research with well-specified output; no deep cross-file reasoning required
 - **Tools**: read-only by design (no `Write`, `Edit`, `Bash`) — safe to invoke freely
+
+**Model Selection Justification**: This agent uses `model: sonnet` because it requires:
+
+- Structured research with well-specified output format (citations, confidence tags, source URLs)
+- Systematic search strategy execution following defined heuristics — not open-ended invention
+- Reliable pattern application across multiple source types (official docs, RFCs, changelogs)
+- No deep cross-file reasoning, architectural judgment, or creative synthesis required
+
+Web research is a structured, repeatable procedure. Sonnet
+([SWE-bench Verified: 79.6%](../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46))
+handles structured retrieval and synthesis reliably at lower cost than opus-tier.
 
 ## Why This Agent Exists
 

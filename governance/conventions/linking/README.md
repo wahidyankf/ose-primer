@@ -8,7 +8,7 @@ Linking conventions ensure consistent, maintainable internal references across t
 
 ## Conventions
 
-Standards for linking between demo educational content and demo documentation, including language prefix requirements, absolute path conventions, and cross-repository reference patterns.
+Standards for cross-referencing and internal linking in markdown documentation, including relative path conventions and GitHub-compatible link formats.
 
 ## Principles Implemented/Respected
 

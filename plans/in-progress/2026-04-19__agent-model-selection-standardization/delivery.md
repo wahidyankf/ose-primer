@@ -63,7 +63,8 @@
 <!-- 2026-04-19 | Status: Done | File: CLAUDE.md | Updated Models row with opus alias and budget-adaptive note -->
 - [x] **2.3** Run `npm run lint:md` — confirm zero errors
 <!-- 2026-04-19 | Status: Done | 742 files linted, 0 errors -->
-- [ ] **2.4** Commit: `docs(CLAUDE.md): add plan format description + update model format differences for opus alias`
+- [x] **2.4** Commit: `docs(CLAUDE.md): add plan format description + update model format differences for opus alias`
+<!-- 2026-04-19 | Status: Done | Committed: docs(CLAUDE.md): add plan format description + update model format differences for opus alias -->
 
 ---
 
@@ -137,7 +138,8 @@ Apply the definitive tier mapping from `tech-docs.md § Complete Agent Tier Mapp
 <!-- 2026-04-19 | Status: Done | Checked: plan-maker (omit), swe-golang-dev (omit), docs-checker (sonnet), docs-link-checker (haiku), specs-maker (sonnet) — all consistent -->
 - [x] **5.3** Run `npm run validate:claude` — expect zero errors
 <!-- 2026-04-19 | Status: Done | 719/719 checks passed -->
-- [ ] **5.4** Commit: `fix(agents): right-size repo-rules-maker tier OMIT→SONNET`
+- [x] **5.4** Commit: `fix(agents): right-size repo-rules-maker tier OMIT→SONNET`
+<!-- 2026-04-19 | Status: Done | Committed: fix(agents): right-size repo-rules-maker tier OMIT→SONNET -->
 
 ---
 
@@ -168,7 +170,8 @@ policy docs that make tier-based claims.
 <!-- 2026-04-19 | Status: Done | Tier Comparison Summary row and Current Model Versions column both link to anchors #claude-opus-47, #claude-sonnet-46, #claude-haiku-45 -->
 - [x] **6.4** Run `npm run lint:md` — confirm zero errors
 <!-- 2026-04-19 | Status: Done | 743 files linted, 0 errors -->
-- [ ] **6.5** Commit: `docs(governance): add benchmark citations to model-selection + agents README`
+- [x] **6.5** Commit: `docs(governance): add benchmark citations to model-selection + agents README`
+<!-- 2026-04-19 | Status: Done | Committed: docs(governance): add benchmark citations to model-selection + agents README -->
 
 ---
 
@@ -176,8 +179,10 @@ policy docs that make tier-based claims.
 
 Run `repo-rules-checker` in OCD mode after all changes (Phases 1-6).
 
-- [ ] **7.1** Invoke `repo-rules-checker` with `strictness: ocd`
-- [ ] **7.2** Review findings — fix all CRITICAL, HIGH, and MEDIUM findings
+- [x] **7.1** Invoke `repo-rules-checker` with `strictness: ocd`
+<!-- 2026-04-19 | Status: Done | Iteration 1: 12 findings (0 CRITICAL, 4 HIGH, 4 MEDIUM, 4 LOW) -->
+- [x] **7.2** Review findings — fix all CRITICAL, HIGH, and MEDIUM findings
+<!-- 2026-04-19 | Status: Done | Fixed all 4 HIGH + 4 MEDIUM + 4 LOW findings from iteration 1 -->
 - [ ] **7.3** Re-run until two consecutive zero-finding passes (per quality gate workflow)
 - [ ] **7.4** Commit any fixes: `fix(governance): repo-rules-checker ocd findings`
 
