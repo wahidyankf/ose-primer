@@ -317,7 +317,7 @@ The social-linkedin-post-maker uses sonnet despite being a "maker" agent. This i
 
 ### Structured Makers as Sonnet
 
-Several maker agents use sonnet because their output is structured by tight skills with well-defined rubrics (docs-maker, readme-maker, agent-maker, specs-maker, repo-workflow-maker). Each has a sonnet checker and sonnet fixer in its maker-checker-fixer trio, and the skill pins down most decisions. Contrast with opus-tier makers (plan-maker, docs-tutorial-maker, swe-ui-maker) where the creative work is open-ended, pedagogically demanding, or multi-concern.
+Several maker agents use sonnet because their output is structured by tight skills with well-defined rubrics (docs-maker, readme-maker, agent-maker, specs-maker, repo-workflow-maker, repo-rules-maker). Each has a sonnet checker and sonnet fixer in its maker-checker-fixer trio, and the skill pins down most decisions. Contrast with opus-tier makers (plan-maker, docs-tutorial-maker, swe-ui-maker) where the creative work is open-ended, pedagogically demanding, or multi-concern.
 
 ### E2E Test Developer as Sonnet
 
