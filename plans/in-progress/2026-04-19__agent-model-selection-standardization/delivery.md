@@ -81,7 +81,8 @@
 <!-- 2026-04-19 | Status: Done | File: .claude/agents/README.md | Added budget-adaptive blockquote after Model field description -->
 - [x] **3.4** Run `npm run lint:md` — confirm zero errors
 <!-- 2026-04-19 | Status: Done | 742 files linted, 0 errors -->
-- [ ] **3.5** Commit: `docs(agents): propagate budget-adaptive model inheritance note`
+- [x] **3.5** Commit: `docs(agents): propagate budget-adaptive model inheritance note`
+<!-- 2026-04-19 | Status: Done | Committed: docs(agents): propagate budget-adaptive model inheritance note -->
 
 ---
 
@@ -92,15 +93,21 @@ reference. All subsequent files that cite benchmark numbers link to this documen
 document links to primary sources. Structure and all benchmark data are fully specified in
 `tech-docs.md` under "Model Benchmark Data" and "Benchmark Reference Document Specification".
 
-- [ ] **4.1** Create `docs/reference/ai-model-benchmarks.md` following the spec in
-      `tech-docs.md § Benchmark Reference Document Specification`
-- [ ] **4.2** Verify every benchmark number has: source URL, publication date, confidence
-      level (`[Verified]` / `[Self-reported]` / `[Needs Verification]`)
-- [ ] **4.3** Verify the GLM-5-turbo section prominently flags that no standard benchmarks
-      are published for this model
-- [ ] **4.4** Verify the model capability summary table is present
-- [ ] **4.5** Add `ai-model-benchmarks.md` entry to `docs/reference/README.md`
-- [ ] **4.6** Run `npm run lint:md` — confirm zero errors on new file and updated README
+- [x] **4.1** Create `docs/reference/ai-model-benchmarks.md` following the spec in
+    `tech-docs.md § Benchmark Reference Document Specification`
+<!-- 2026-04-19 | Status: Done | File: docs/reference/ai-model-benchmarks.md | Created with all sections: Purpose, Benchmark Definitions, Claude Models, GLM Models, Model Selection Mapping, Limitations, Sources -->
+- [x] **4.2** Verify every benchmark number has: source URL, publication date, confidence
+    level (`[Verified]` / `[Self-reported]` / `[Needs Verification]`)
+<!-- 2026-04-19 | Status: Done | All scores have confidence level + source column in tables -->
+- [x] **4.3** Verify the GLM-5-turbo section prominently flags that no standard benchmarks
+    are published for this model
+<!-- 2026-04-19 | Status: Done | Critical flag blockquote in GLM-5-turbo section -->
+- [x] **4.4** Verify the model capability summary table is present
+<!-- 2026-04-19 | Status: Done | Model Selection Mapping table present with SWE-bench Verified column -->
+- [x] **4.5** Add `ai-model-benchmarks.md` entry to `docs/reference/README.md`
+<!-- 2026-04-19 | Status: Done | Added under new "AI Models" subsection in docs/reference/README.md -->
+- [x] **4.6** Run `npm run lint:md` — confirm zero errors on new file and updated README
+<!-- 2026-04-19 | Status: Done | 743 files linted, 0 errors -->
 - [ ] **4.7** Commit: `docs(reference): add ai-model-benchmarks reference with cited scores`
 
 ---

@@ -27,6 +27,10 @@ Technical reference documentation for the open-sharia-enterprise project. These 
 
 - [Code Coverage](./code-coverage.md) - How coverage is measured locally via rhino-cli, per-project details, exclusion patterns, and troubleshooting
 
+### AI Models
+
+- [AI Model Benchmarks](./ai-model-benchmarks.md) - Cited benchmark scores for all Claude and GLM models used in this project, with confidence levels and source URLs
+
 ---
 
 **Last Updated**: 2026-03-22
