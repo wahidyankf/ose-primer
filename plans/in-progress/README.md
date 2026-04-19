@@ -4,9 +4,7 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- [`2026-04-19__agent-model-selection-standardization/`](./2026-04-19__agent-model-selection-standardization/) —
-  Document budget-adaptive model inheritance, add OpenCode GLM mapping, create benchmark
-  reference doc, right-size `repo-rules-maker` tier (OMIT→SONNET), propagate citations.
+_(none currently)_
 
 ## Instructions
 
