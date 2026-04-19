@@ -93,7 +93,7 @@ All _-quality-gate workflows follow the [_-check-fix Workflow Pattern](./meta/wo
 
 Every workflow filename follows: `<scope>(-<qualifier>)*-<type>`
 
-- `scope` — top-level domain matching the parent directory (`ci`, `docs`, `plan`, `repo`, `specs`, `ui`, `infra`, `demo-fs-ts-nextjs`, etc.).
+- `scope` — top-level domain matching the parent directory (`ci`, `docs`, `plan`, `repo`, `specs`, `ui`, `infra`, etc.).
 - `qualifier` — zero or more refinement tokens (e.g., `rules`, `by-example`, `software-engineering-separation`).
 - `type` — exactly one trailing token from the Type Vocabulary below.
 
@@ -124,15 +124,6 @@ Workflows for creating and validating documentation:
 - **docs**: Project documentation (tutorials, how-to, reference, explanation)
 - **readme**: README.md quality and engagement (planned - no workflow file yet)
 - **plan**: Project planning documents
-
-### Web Content Workflows
-
-Workflows for web application content (Next.js sites, formerly Hugo):
-
-- **demo-fs-ts-nextjs**: demo-fs-ts-nextjs content creation and validation
-- **demo-facts**: Factual accuracy validation for demo-fs-ts-nextjs (planned - no workflow file yet)
-- **demo-structure**: Navigation structure and weight management (planned - no workflow file yet)
-- **demo-fs-ts-nextjs-content**: demo-fs-ts-nextjs content (planned - no workflow file yet)
 
 ### Specification Workflows
 

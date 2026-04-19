@@ -23,7 +23,7 @@ All reports follow the 4-part pattern:
 
 **Components**:
 
-- `{agent-family}`: Agent name WITHOUT `-checker` suffix (e.g., `docs`, `demo-fs-ts-nextjs`, `plan`)
+- `{agent-family}`: Agent name WITHOUT `-checker` suffix (e.g., `docs`, `readme`, `plan`)
 - `{uuid-chain}`: Execution hierarchy as 6-char hex UUIDs separated by underscores
 - `{YYYY-MM-DD--HH-MM}`: UTC+7 timestamp (double dash between date and time)
 - `{type}`: Report type (`audit`, `validation`, `fix`)
@@ -198,8 +198,8 @@ Common scopes for execution tracking:
 | docs-tutorial-checker | `docs-tutorial` | `.execution-chain-docs-tutorial` |
 | readme-checker        | `readme`        | `.execution-chain-readme`        |
 | plan-checker          | `plan`          | `.execution-chain-plan`          |
-| demo-fs-ts-nextjs-\*  | `demo-[lang]`   | `.execution-chain-demo-[lang]`   |
-| demo-fs-ts-nextjs-\*  | `ose-platform`  | `.execution-chain-ose-platform`  |
+| ci-checker            | `ci`            | `.execution-chain-ci`            |
+| specs-checker         | `specs`         | `.execution-chain-specs`         |
 
 ### Tool Requirements
 
