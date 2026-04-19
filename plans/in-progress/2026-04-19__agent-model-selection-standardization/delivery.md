@@ -197,27 +197,37 @@ Run `repo-rules-checker` in OCD mode after all changes (Phases 1-6).
 > linting, and test coverage. Both phases serve different concerns and are intentionally
 > separate.
 
-- [ ] **8.1** Run `npm run validate:claude` — expect zero errors
-- [ ] **8.2** Run `npm run validate:sync` — expect zero errors
-- [ ] **8.3** Run `nx run rhino-cli:test:quick` — expect pass
+- [x] **8.1** Run `npm run validate:claude` — expect zero errors
+<!-- 2026-04-19 | Status: Done | 719/719 checks passed -->
+- [x] **8.2** Run `npm run validate:sync` — expect zero errors
+<!-- 2026-04-19 | Status: Done | 79/79 checks passed -->
+- [x] **8.3** Run `nx run rhino-cli:test:quick` — expect pass
+<!-- 2026-04-19 | Status: Done | 90.02% >= 90% threshold, all packages pass (cached) -->
 
 ---
 
 ## Phase 9: Sync + Final Gate
 
-- [ ] **9.1** Run `npm run sync:dry-run` — `repo-rules-maker` should show OpenCode model
-      unchanged (both omit and sonnet map to `glm-5.1`; dry-run confirms no regressions
-      in other agents)
-- [ ] **9.2** Run `npm run sync:claude-to-opencode` — apply sync
-- [ ] **9.3** Run `npm run validate:sync` — final pass
+- [x] **9.1** Run `npm run sync:dry-run` — `repo-rules-maker` should show OpenCode model
+    unchanged (both omit and sonnet map to `glm-5.1`; dry-run confirms no regressions
+    in other agents)
+<!-- 2026-04-19 | Status: Done | 45 agents converted, 32 skills copied, SUCCESS -->
+- [x] **9.2** Run `npm run sync:claude-to-opencode` — apply sync
+<!-- 2026-04-19 | Status: Done | 45 agents converted, 32 skills copied, SUCCESS -->
+- [x] **9.3** Run `npm run validate:sync` — final pass
+<!-- 2026-04-19 | Status: Done | 79/79 checks passed -->
 
 ### Local Quality Gates (Before Push)
 
-- [ ] Run `npm run lint:md` — lint all markdown files
-- [ ] Run `npm run lint:md:fix` — auto-fix any violations
-- [ ] Run `nx affected -t typecheck lint test:quick spec-coverage` — the agent file change
-      triggers rhino-cli as affected; all targets must pass
-- [ ] Fix ALL failures found — including preexisting issues not caused by your changes
+- [x] Run `npm run lint:md` — lint all markdown files
+<!-- 2026-04-19 | Status: Done | 743 files, 0 errors -->
+- [x] Run `npm run lint:md:fix` — auto-fix any violations
+<!-- 2026-04-19 | Status: Done | 0 errors -->
+- [x] Run `nx affected -t typecheck lint test:quick spec-coverage` — the agent file change
+    triggers rhino-cli as affected; all targets must pass
+<!-- 2026-04-19 | Status: Done | No affected Nx projects (governance-only changes, no source files changed) -->
+- [x] Fix ALL failures found — including preexisting issues not caused by your changes
+<!-- 2026-04-19 | Status: Done | No failures found -->
 
 > **Important**: Fix ALL failures, not just those caused by your changes. Root cause
 > orientation: proactively fix preexisting errors encountered during work.

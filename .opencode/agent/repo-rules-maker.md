@@ -18,7 +18,7 @@ skills:
 
 - **Role**: Maker (blue)
 - **Created**: 2025-12-01
-- **Last Updated**: 2026-04-04
+- **Last Updated**: 2026-04-19
 
 **Model Selection Justification**: This agent uses `model: sonnet` because governance
 convention creation is template-driven and layer-hierarchy-bound, not open-ended creative
@@ -34,7 +34,7 @@ Create repository rules and conventions.
 ## Reference
 
 - [Convention Writing Convention](../../governance/conventions/writing/conventions.md)
-- Skills: `docs-applying-diataxis-framework`, `docs-applying-content-quality`
+- Skills: `docs-applying-content-quality` (see frontmatter)
 
 ## Workflow
 
