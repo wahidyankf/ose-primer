@@ -412,7 +412,7 @@ ALL \*-checker agents must implement progressive writing:
 
 **Components** (4 parts):
 
-- `{agent-family}`: Agent name WITHOUT checker/fixer/maker suffix (e.g., `repo-rules`, `demo-fs-ts-nextjs`, `docs`, `plan`, `plan-execution`)
+- `{agent-family}`: Agent name WITHOUT checker/fixer/maker suffix (e.g., `repo-rules`, `docs`, `readme`, `plan`, `plan-execution`)
 - `{uuid-chain}`: Execution hierarchy as underscore-separated 6-char UUIDs (e.g., `a1b2c3`, `a1b2c3_d4e5f6`)
 - `{YYYY-MM-DD--HH-MM}`: Timestamp in UTC+7 with double dash between date and time
 - `{suffix}`: Report type suffix (`audit`, `fix`, `validation`)
@@ -439,10 +439,8 @@ ALL \*-checker agents must implement progressive writing:
 ```
 generated-reports/repo-rules__a1b2c3__2025-12-14--20-45__audit.md
 generated-reports/repo-rules__a1b2c3__2025-12-14--20-45__fix.md
-generated-reports/demo-fs-ts-nextjs__d4e5f6__2025-12-14--15-30__audit.md
-generated-reports/demo-fs-ts-nextjs__a1b2c3_d4e5f6__2025-12-14--15-30__audit.md
-generated-reports/demo-fs-ts-nextjs-content__g7h8i9__2025-12-14--15-30__audit.md
 generated-reports/docs__b2c3d4__2025-12-15--10-00__validation.md
+generated-reports/readme__d4e5f6__2025-12-14--15-30__audit.md
 generated-reports/plan__c3d4e5__2025-12-15--11-30__validation.md
 generated-reports/plan-execution__d4e5f6__2025-12-15--14-00__validation.md
 ```
@@ -455,7 +453,7 @@ generated-reports/plan-execution__d4e5f6__2025-12-15--14-00__validation.md
 - UUID MUST be 6 lowercase hex characters (generated via `uuidgen | head -c 6`)
 - Timestamp MUST be UTC+7 (YYYY-MM-DD--HH-MM format)
 - Zero-pad all timestamp components (01 not 1, 09 not 9)
-- Agent family is lowercase with single dashes (multi-word: `demo-fs-ts-nextjs-content`, `plan-execution`)
+- Agent family is lowercase with single dashes (multi-word: `docs-tutorial`, `plan-execution`)
 - Suffix is lowercase, no plurals (`audit` not `audits`)
 
 **CRITICAL - UUID and Timestamp Generation:**
@@ -526,15 +524,15 @@ filename="repo-rules__${uuid}__${timestamp}__audit.md"
 
 **Report Pairing Examples**:
 
-| Agent Family              | Audit Report                                                     | Fix Report                                                     |
-| ------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------- |
-| repo-rules                | `repo-rules__a1b2c3__2025-12-14--20-45__audit.md`                | `repo-rules__a1b2c3__2025-12-14--20-45__fix.md`                |
-| demo-fs-ts-nextjs         | `demo-fs-ts-nextjs__d4e5f6__2025-12-14--15-30__audit.md`         | `demo-fs-ts-nextjs__d4e5f6__2025-12-14--15-30__fix.md`         |
-| demo-fs-ts-nextjs-content | `demo-fs-ts-nextjs-content__g7h8i9__2025-12-14--16-00__audit.md` | `demo-fs-ts-nextjs-content__g7h8i9__2025-12-14--16-00__fix.md` |
-| docs-tutorial             | `docs-tutorial__a1b2c3_d4e5f6__2025-12-14--10-15__audit.md`      | `docs-tutorial__a1b2c3_d4e5f6__2025-12-14--10-15__fix.md`      |
-| readme                    | `readme__b2c3d4__2025-12-14--09-45__audit.md`                    | `readme__b2c3d4__2025-12-14--09-45__fix.md`                    |
-| docs                      | `docs__c3d4e5__2025-12-15--10-00__validation.md`                 | `docs__c3d4e5__2025-12-15--10-00__fix.md`                      |
-| plan                      | `plan__d4e5f6__2025-12-15--11-30__validation.md`                 | `plan__d4e5f6__2025-12-15--11-30__fix.md`                      |
+| Agent Family  | Audit Report                                                | Fix Report                                                |
+| ------------- | ----------------------------------------------------------- | --------------------------------------------------------- |
+| repo-rules    | `repo-rules__a1b2c3__2025-12-14--20-45__audit.md`           | `repo-rules__a1b2c3__2025-12-14--20-45__fix.md`           |
+| ci            | `ci__d4e5f6__2025-12-14--15-30__audit.md`                   | `ci__d4e5f6__2025-12-14--15-30__fix.md`                   |
+| specs         | `specs__g7h8i9__2025-12-14--16-00__audit.md`                | `specs__g7h8i9__2025-12-14--16-00__fix.md`                |
+| docs-tutorial | `docs-tutorial__a1b2c3_d4e5f6__2025-12-14--10-15__audit.md` | `docs-tutorial__a1b2c3_d4e5f6__2025-12-14--10-15__fix.md` |
+| readme        | `readme__b2c3d4__2025-12-14--09-45__audit.md`               | `readme__b2c3d4__2025-12-14--09-45__fix.md`               |
+| docs          | `docs__c3d4e5__2025-12-15--10-00__validation.md`            | `docs__c3d4e5__2025-12-15--10-00__fix.md`                 |
+| plan          | `plan__d4e5f6__2025-12-15--11-30__validation.md`            | `plan__d4e5f6__2025-12-15--11-30__fix.md`                 |
 
 **Why Same UUID and Timestamp?**
 

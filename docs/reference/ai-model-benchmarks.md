@@ -1,3 +1,16 @@
+---
+title: "AI Model Benchmarks Reference"
+description: Cited benchmark scores for all Claude and GLM models used in this project, with confidence levels and source URLs
+category: reference
+tags:
+  - ai-models
+  - benchmarks
+  - model-selection
+  - reference
+created: 2026-04-19
+updated: 2026-04-19
+---
+
 # AI Model Benchmarks Reference
 
 Canonical benchmark reference for all AI models used in this project. All scores cited

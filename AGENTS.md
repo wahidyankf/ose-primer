@@ -40,7 +40,7 @@ This repository maintains **dual compatibility** with both Claude Code and OpenC
 **Format Differences**:
 
 - **Tools**: Claude Code uses arrays `[Read, Write]`, OpenCode uses `{ read: true, write: true }`
-- **Models**: Claude Code uses `sonnet`/`haiku`, OpenCode uses `zai-coding-plan/glm-5.1` or `zai-coding-plan/glm-5-turbo`
+- **Models**: Claude Code uses `sonnet`/`opus`/`haiku` (or omits for budget-adaptive inheritance); OpenCode uses `zai-coding-plan/glm-5.1` (opus/sonnet/omitted) or `zai-coding-plan/glm-5-turbo` (haiku)
 - **Skills**: Same format for both systems (SKILL.md)
 - **Permissions**: Claude Code uses `settings.json`, OpenCode uses `opencode.json` permission block (equivalent access configured)
 - **MCP/Plugins**: Claude Code uses plugins, OpenCode uses MCP servers (Playwright, Nx, Z.ai, Perplexity)
@@ -58,6 +58,7 @@ Specialized agents organized into families:
 5. **Repository Governance**: `repo-rules-maker`, `repo-rules-checker`, `repo-rules-fixer`, `repo-workflow-maker`, `repo-workflow-checker`, `repo-workflow-fixer`
 6. **Specs Validation**: `specs-maker`, `specs-checker`, `specs-fixer`
 7. **CI/CD**: `ci-checker`, `ci-fixer`
+8. **Research**: `web-research-maker`
 
 **Full agent catalog**: See [`.opencode/agent/README.md`](./.opencode/agent/README.md)
 
