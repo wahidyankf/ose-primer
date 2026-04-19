@@ -44,7 +44,7 @@ to primary sources.
 
 ## Claude Models (Anthropic)
 
-### Claude Opus 4.7 (`claude-opus-4-7`) {#claude-opus-47}
+### Claude Opus 4.7
 
 **Primary sources**:
 [Anthropic Models Overview](https://platform.claude.com/docs/en/about-claude/models/overview)
@@ -67,7 +67,7 @@ credible third-party outlets. Confirm against
 [Claude Opus 4.7 System Card](https://www.anthropic.com/claude-opus-4-7-system-card)
 when accessible.
 
-### Claude Sonnet 4.6 (`claude-sonnet-4-6`) {#claude-sonnet-46}
+### Claude Sonnet 4.6
 
 **Primary sources**:
 [Anthropic Models Overview](https://platform.claude.com/docs/en/about-claude/models/overview) ·
@@ -86,7 +86,7 @@ when accessible.
 **Usage in this repo**: Budget-adaptive inherit for Pro/Standard sessions; explicit
 `model: sonnet` for structured/validation tasks.
 
-### Claude Haiku 4.5 (`claude-haiku-4-5-20251001`) {#claude-haiku-45}
+### Claude Haiku 4.5
 
 **Primary sources**:
 [Anthropic Models Overview](https://platform.claude.com/docs/en/about-claude/models/overview) ·
@@ -109,7 +109,7 @@ confirmed. Haiku 3 (`claude-3-haiku-20240307`) was retired 2026-04-19.
 
 ## GLM Models (Z.ai Coding Plan / OpenCode)
 
-### GLM-5.1 (`zai-coding-plan/glm-5.1`) {#glm-51}
+### GLM-5.1
 
 **Primary sources**:
 [Z.ai GLM-5.1 release](https://officechai.com/ai/z-ai-glm-5-1-benchmarks-swe-bench-pro/) (OfficeChai, 2026-04-07) ·
@@ -133,7 +133,7 @@ from a third-party lab hasn't been published" (Awesome Agents review). SWE-bench
 is a self-reported headline claim. Arena.ai Code Elo (rank 3) provides partial
 corroboration only.
 
-### GLM-5-turbo (`zai-coding-plan/glm-5-turbo`) {#glm-5-turbo}
+### GLM-5-turbo
 
 **Primary sources**:
 [Z.ai GLM-5-turbo Developer Docs](https://docs.z.ai/guides/llm/glm-5-turbo) (official) ·

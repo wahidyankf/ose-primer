@@ -31,7 +31,7 @@ Create repository rules and conventions.
 ## Reference
 
 - [Convention Writing Convention](../../governance/conventions/writing/conventions.md)
-- Skills: `docs-applying-content-quality` (see frontmatter)
+- Skills: `docs-applying-content-quality`, `repo-understanding-repository-architecture` (see frontmatter)
 
 ## Workflow
 
