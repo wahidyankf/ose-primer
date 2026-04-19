@@ -177,11 +177,11 @@ color: purple
 
 ## Current Model Versions (April 2026)
 
-| Claude Code alias | Model ID                    | Context | Pricing (in/out per MTok) | Notes                                                          |
-| ----------------- | --------------------------- | ------- | ------------------------- | -------------------------------------------------------------- |
-| `opus` (inherit)  | `claude-opus-4-7`           | 1M      | $5 / $25                  | Budget-adaptive; Max/Team gets this                            |
-| `sonnet`          | `claude-sonnet-4-6`         | 1M      | $3 / $15                  | Budget-adaptive inherit for Pro/Standard; explicit sonnet-tier |
-| `haiku`           | `claude-haiku-4-5-20251001` | 200k    | $1 / $5                   | Haiku 3 (`claude-3-haiku`) retired 2026-04-19                  |
+| Claude Code alias | Model ID                    | Context | Pricing (in/out per MTok) | SWE-bench Verified                                                                    | Notes                                                          |
+| ----------------- | --------------------------- | ------- | ------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `opus` (inherit)  | `claude-opus-4-7`           | 1M      | $5 / $25                  | [87.6% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-opus-47)   | Budget-adaptive; Max/Team gets this                            |
+| `sonnet`          | `claude-sonnet-4-6`         | 1M      | $3 / $15                  | [79.6% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46) | Budget-adaptive inherit for Pro/Standard; explicit sonnet-tier |
+| `haiku`           | `claude-haiku-4-5-20251001` | 200k    | $1 / $5                   | [73.3% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-haiku-45)  | Haiku 3 (`claude-3-haiku`) retired 2026-04-19                  |
 
 > **Note**: Haiku 3 (`claude-3-haiku-20240307`) was retired on 2026-04-19. All haiku-tier
 > agents in this repo use `claude-haiku-4-5-20251001` via the `haiku` alias.
@@ -251,14 +251,15 @@ For a deployer agent:
 
 ## Tier Comparison Summary
 
-| Dimension              | Opus (inherit)              | Sonnet                              | Haiku                                  |
-| ---------------------- | --------------------------- | ----------------------------------- | -------------------------------------- |
-| **Reasoning depth**    | Deep, multi-step            | Moderate, rule-based                | Minimal, mechanical                    |
-| **Creativity**         | High (novel solutions)      | Low (follows templates)             | None (fixed procedures)                |
-| **Task ambiguity**     | Handles open-ended problems | Handles structured problems         | Requires deterministic flow            |
-| **Output originality** | Creates new content/code    | Transforms per rules                | Executes predefined steps              |
-| **Error recovery**     | Adapts to unexpected states | Follows fallback rules              | Fails or retries                       |
-| **Typical agents**     | Creative makers, developers | Checkers, fixers, structured makers | Deployers, link checkers, file manager |
+| Dimension              | Opus (inherit)                                                                                 | Sonnet                                                                                             | Haiku                                                                                            |
+| ---------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **Reasoning depth**    | Deep, multi-step                                                                               | Moderate, rule-based                                                                               | Minimal, mechanical                                                                              |
+| **Creativity**         | High (novel solutions)                                                                         | Low (follows templates)                                                                            | None (fixed procedures)                                                                          |
+| **Task ambiguity**     | Handles open-ended problems                                                                    | Handles structured problems                                                                        | Requires deterministic flow                                                                      |
+| **Output originality** | Creates new content/code                                                                       | Transforms per rules                                                                               | Executes predefined steps                                                                        |
+| **Error recovery**     | Adapts to unexpected states                                                                    | Follows fallback rules                                                                             | Fails or retries                                                                                 |
+| **Typical agents**     | Creative makers, developers                                                                    | Checkers, fixers, structured makers                                                                | Deployers, link checkers, file manager                                                           |
+| **SWE-bench Verified** | [87.6% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-opus-47) (Opus 4.7) | [79.6% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46) (Sonnet 4.6) | [73.3% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-haiku-45) (Haiku 4.5) |
 
 ## OpenCode / GLM Equivalents
 
@@ -281,8 +282,9 @@ model (`glm-5-turbo`).
 
 > ⚠️ **GLM-5-turbo has no published standard benchmark scores** (no SWE-bench, GPQA,
 > MMLU, or HumanEval data as of April 2026). Its use as the OpenCode fast tier is a
-> platform constraint, not a benchmark-validated choice. Benchmark citations added in
-> Phase 6 once the reference document is created.
+> platform constraint, not a benchmark-validated choice. See
+> [ai-model-benchmarks.md § GLM-5-turbo](../../../docs/reference/ai-model-benchmarks.md#glm-5-turbo)
+> for full sourcing details.
 
 ## ❌ Common Mistakes
 
