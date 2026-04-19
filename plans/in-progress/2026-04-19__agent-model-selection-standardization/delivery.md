@@ -108,7 +108,8 @@ document links to primary sources. Structure and all benchmark data are fully sp
 <!-- 2026-04-19 | Status: Done | Added under new "AI Models" subsection in docs/reference/README.md -->
 - [x] **4.6** Run `npm run lint:md` — confirm zero errors on new file and updated README
 <!-- 2026-04-19 | Status: Done | 743 files linted, 0 errors -->
-- [ ] **4.7** Commit: `docs(reference): add ai-model-benchmarks reference with cited scores`
+- [x] **4.7** Commit: `docs(reference): add ai-model-benchmarks reference with cited scores`
+<!-- 2026-04-19 | Status: Done | Committed: docs(reference): add ai-model-benchmarks reference with cited scores -->
 
 ---
 
@@ -125,14 +126,17 @@ Apply the definitive tier mapping from `tech-docs.md § Complete Agent Tier Mapp
 
 **Result**: opus-inherit 15→14 (−1), sonnet 28→29 (+1), haiku 2→2, total 45 unchanged.
 
-- [ ] **5.1** For `repo-rules-maker.md`:
+- [x] **5.1** For `repo-rules-maker.md`:
   - Update `model:` frontmatter from empty to `sonnet`
   - Update Model Selection Justification block text to reference sonnet tier and cite
     the benchmark comparison from `docs/reference/ai-model-benchmarks.md` where relevant
   - Do NOT change color, tools, or any other frontmatter field
-- [ ] **5.2** Spot-check 5 random unchanged agents to confirm their Model Selection
-      Justification blocks are present and consistent with their tier
-- [ ] **5.3** Run `npm run validate:claude` — expect zero errors
+  <!-- 2026-04-19 | Status: Done | File: .claude/agents/repo-rules-maker.md | model: → model: sonnet; Justification updated with sonnet rationale and benchmark link -->
+- [x] **5.2** Spot-check 5 random unchanged agents to confirm their Model Selection
+    Justification blocks are present and consistent with their tier
+<!-- 2026-04-19 | Status: Done | Checked: plan-maker (omit), swe-golang-dev (omit), docs-checker (sonnet), docs-link-checker (haiku), specs-maker (sonnet) — all consistent -->
+- [x] **5.3** Run `npm run validate:claude` — expect zero errors
+<!-- 2026-04-19 | Status: Done | 719/719 checks passed -->
 - [ ] **5.4** Commit: `fix(agents): right-size repo-rules-maker tier OMIT→SONNET`
 
 ---
