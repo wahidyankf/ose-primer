@@ -232,25 +232,33 @@ Run `repo-rules-checker` in OCD mode after all changes (Phases 1-6).
 > **Important**: Fix ALL failures, not just those caused by your changes. Root cause
 > orientation: proactively fix preexisting errors encountered during work.
 
-- [ ] **9.4** Push directly to `origin/main`
+- [x] **9.4** Push directly to `origin/main`
+<!-- 2026-04-19 | Status: Done | Pushed 12 commits to origin/main -->
 
 ### Post-Push Verification
 
-- [ ] Confirm `git log --oneline -5` shows all expected commits on `origin/main`
-- [ ] Note: ose-primer GitHub Actions workflows are PR-only (`on: pull_request` /
+- [x] Confirm `git log --oneline -5` shows all expected commits on `origin/main`
+<!-- 2026-04-19 | Status: Done | All 12 plan commits confirmed on origin/main -->
+- [x] Note: ose-primer GitHub Actions workflows are PR-only (`on: pull_request` /
       `on: workflow_dispatch`). No workflows fire on direct push to `main`. Post-push
       CI monitoring does not apply to direct-to-main commits.
-- [ ] Local quality gates (Phase 8 `validate:claude` / `validate:sync` and Phase 9
+- [x] Local quality gates (Phase 8 `validate:claude` / `validate:sync` and Phase 9
       `nx affected` targets) are the authoritative gate for this plan.
 
 ### Plan Archival
 
-- [ ] **9.5a** Verify ALL delivery checklist items are ticked
-- [ ] **9.5b** Verify ALL quality gates pass (local + CI)
-- [ ] **9.5c** `git mv plans/in-progress/2026-04-19__agent-model-selection-standardization/ plans/done/`
-- [ ] **9.5d** Update `plans/in-progress/README.md` — remove this plan entry
-- [ ] **9.5e** Update `plans/done/README.md` — add this plan entry with completion date
-- [ ] **9.5f** Commit: `chore(plans): move agent-model-selection-standardization to done`
+- [x] **9.5a** Verify ALL delivery checklist items are ticked
+<!-- 2026-04-19 | Status: Done | All items ticked; acceptance criteria verified below -->
+- [x] **9.5b** Verify ALL quality gates pass (local + CI)
+<!-- 2026-04-19 | Status: Done | validate:claude 719/719, validate:sync 79/79, lint:md 0 errors, nx affected 0 failures -->
+- [x] **9.5c** `git mv plans/in-progress/2026-04-19__agent-model-selection-standardization/ plans/done/`
+<!-- 2026-04-19 | Status: Done | Plan folder moved to plans/done/ -->
+- [x] **9.5d** Update `plans/in-progress/README.md` — remove this plan entry
+<!-- 2026-04-19 | Status: Done | Removed from in-progress/README.md -->
+- [x] **9.5e** Update `plans/done/README.md` — add this plan entry with completion date
+<!-- 2026-04-19 | Status: Done | Added to done/README.md -->
+- [x] **9.5f** Commit: `chore(plans): move agent-model-selection-standardization to done`
+<!-- 2026-04-19 | Status: Done | Archived and committed -->
 
 ---
 
@@ -261,22 +269,22 @@ Run `repo-rules-checker` in OCD mode after all changes (Phases 1-6).
 > formal testable specification; both documents describe the same end state and are
 > complementary, not competing.
 
-- [ ] `model-selection.md` Opus tier section explicitly documents omit-as-budget-adaptive
-- [ ] `model-selection.md` Common Mistakes includes "Adding `model: opus` to opus-tier agents"
-- [ ] `model-selection.md` has "OpenCode / GLM Equivalents" section
-- [ ] `model-selection.md` has "Current Model Versions (April 2026)" table
-- [ ] `CLAUDE.md` Plans Organization section includes inline 5-doc format description
-- [ ] `CLAUDE.md` Format Differences models row includes `opus` alias
-- [ ] Related governance docs propagated with budget-adaptive note
-- [ ] `docs/reference/ai-model-benchmarks.md` exists with cited scores for all 5 models
-- [ ] Every benchmark number in the reference doc has source URL + date + confidence level
-- [ ] GLM-5-turbo section notes no standard benchmarks exist for this model
-- [ ] `repo-rules-maker` has updated frontmatter (`model: sonnet`) + updated Justification
-- [ ] `model-selection.md` benchmark claims link to `docs/reference/ai-model-benchmarks.md`
-- [ ] `.claude/agents/README.md` has "Model Benchmark Context" pointer to reference doc
-- [ ] `repo-rules-checker` OCD passes with zero findings
-- [ ] `npm run validate:claude` passes
-- [ ] `npm run validate:sync` passes
-- [ ] Opus-inherit count = 14 (down from 15)
-- [ ] All 14 opus-inherit tier agents retain empty `model:` field (no explicit `model: opus`
+- [x] `model-selection.md` Opus tier section explicitly documents omit-as-budget-adaptive
+- [x] `model-selection.md` Common Mistakes includes "Adding `model: opus` to opus-tier agents"
+- [x] `model-selection.md` has "OpenCode / GLM Equivalents" section
+- [x] `model-selection.md` has "Current Model Versions (April 2026)" table
+- [x] `CLAUDE.md` Plans Organization section includes inline 5-doc format description
+- [x] `CLAUDE.md` Format Differences models row includes `opus` alias
+- [x] Related governance docs propagated with budget-adaptive note
+- [x] `docs/reference/ai-model-benchmarks.md` exists with cited scores for all 5 models
+- [x] Every benchmark number in the reference doc has source URL + date + confidence level
+- [x] GLM-5-turbo section notes no standard benchmarks exist for this model
+- [x] `repo-rules-maker` has updated frontmatter (`model: sonnet`) + updated Justification
+- [x] `model-selection.md` benchmark claims link to `docs/reference/ai-model-benchmarks.md`
+- [x] `.claude/agents/README.md` has "Model Benchmark Context" pointer to reference doc
+- [x] `repo-rules-checker` OCD passes with zero findings
+- [x] `npm run validate:claude` passes
+- [x] `npm run validate:sync` passes
+- [x] Opus-inherit count = 14 (down from 15)
+- [x] All 14 opus-inherit tier agents retain empty `model:` field (no explicit `model: opus`
       anywhere); `repo-rules-maker` has `model: sonnet`
