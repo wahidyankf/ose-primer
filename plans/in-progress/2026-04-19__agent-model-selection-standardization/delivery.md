@@ -47,18 +47,22 @@
 <!-- 2026-04-19 | Status: Done | File: governance/development/agents/model-selection.md | Updated Last Updated from 2026-04-12 to 2026-04-19 -->
 - [x] **1.6** Run `npm run lint:md` — confirm zero errors
 <!-- 2026-04-19 | Status: Done | 742 files linted, 0 errors -->
-- [ ] **1.7** Commit: `docs(model-selection): add budget-adaptive inheritance note + opencode glm mapping`
+- [x] **1.7** Commit: `docs(model-selection): add budget-adaptive inheritance note + opencode glm mapping`
+<!-- 2026-04-19 | Status: Done | Committed: docs(model-selection): add budget-adaptive inheritance note + opencode glm mapping -->
 
 ---
 
 ## Phase 2: CLAUDE.md
 
-- [ ] **2.1** Plans Organization section updated — add inline 5-doc format description
-      (README.md, brd.md, prd.md, tech-docs.md, delivery.md + single-README collapse rule).
-      See `tech-docs.md § Change 2` for exact text.
-- [ ] **2.2** Format Differences models row updated — add `opus` alias, add budget-adaptive
-      note, add link to model-selection.md. See `tech-docs.md § Change 2` for exact diff.
-- [ ] **2.3** Run `npm run lint:md` — confirm zero errors
+- [x] **2.1** Plans Organization section updated — add inline 5-doc format description
+    (README.md, brd.md, prd.md, tech-docs.md, delivery.md + single-README collapse rule).
+    See `tech-docs.md § Change 2` for exact text.
+<!-- 2026-04-19 | Status: Done | File: CLAUDE.md | Added Default plan layout paragraph after Folder naming -->
+- [x] **2.2** Format Differences models row updated — add `opus` alias, add budget-adaptive
+    note, add link to model-selection.md. See `tech-docs.md § Change 2` for exact diff.
+<!-- 2026-04-19 | Status: Done | File: CLAUDE.md | Updated Models row with opus alias and budget-adaptive note -->
+- [x] **2.3** Run `npm run lint:md` — confirm zero errors
+<!-- 2026-04-19 | Status: Done | 742 files linted, 0 errors -->
 - [ ] **2.4** Commit: `docs(CLAUDE.md): add plan format description + update model format differences for opus alias`
 
 ---
