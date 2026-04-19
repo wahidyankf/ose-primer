@@ -101,7 +101,7 @@ All checker agents MUST follow the universal naming pattern:
 
 **Components** (4 parts separated by `__`):
 
-- `{agent-family}`: Agent name WITHOUT the `-checker` suffix (e.g., `repo-rules`, `demo-fs-ts-nextjs`, `docs`, `plan`)
+- `{agent-family}`: Agent name WITHOUT the `-checker` suffix (e.g., `repo-rules`, `docs`, `readme`, `plan`)
 - `{uuid-chain}`: Execution hierarchy as underscore-separated 6-char UUIDs (e.g., `a1b2c3`, `a1b2c3_d4e5f6`)
 - `{YYYY-MM-DD--HH-MM}`: Timestamp in UTC+7 (double dash between date and time)
 - `{type}`: Report type suffix (`audit`, `validation`, `fix`)
@@ -116,10 +116,9 @@ All checker agents MUST follow the universal naming pattern:
 
 ```
 generated-reports/repo-rules__a1b2c3__2025-12-14--20-45__audit.md
-generated-reports/demo-fs-ts-nextjs-general__d4e5f6__2025-12-14--15-30__audit.md
-generated-reports/demo-fs-ts-nextjs-by-example__a1b2c3_d4e5f6__2025-12-14--15-45__audit.md
-generated-reports/demo-fs-ts-nextjs-content__g7h8i9__2025-12-14--16-00__audit.md
 generated-reports/docs__a1b2c3_d4e5f6_g7h8i9__2025-12-15--10-00__audit.md
+generated-reports/readme__d4e5f6__2025-12-14--15-30__audit.md
+generated-reports/ci__g7h8i9__2025-12-14--16-00__audit.md
 generated-reports/plan__b2c3d4__2025-12-15--11-30__validation.md
 generated-reports/plan-execution__c3d4e5__2025-12-15--14-00__validation.md
 ```
@@ -153,17 +152,16 @@ To enable accurate parent-child hierarchy tracking across concurrent workflow ru
 
 **Scope Definitions**:
 
-| Workflow/Agent                | Scope           | Tracking File                    |
-| ----------------------------- | --------------- | -------------------------------- |
-| repo-rules-checker            | `repo-rules`    | `.execution-chain-repo-rules`    |
-| docs-checker                  | `docs`          | `.execution-chain-docs`          |
-| docs-tutorial-checker         | `docs-tutorial` | `.execution-chain-docs-tutorial` |
-| readme-checker                | `readme`        | `.execution-chain-readme`        |
-| plan-checker                  | `plan`          | `.execution-chain-plan`          |
-| docs-link-checker             | `docs-link`     | `.execution-chain-docs-link`     |
-| demo-fs-ts-nextjs-\* (golang) | `golang`        | `.execution-chain-golang`        |
-| demo-fs-ts-nextjs-\* (elixir) | `elixir`        | `.execution-chain-elixir`        |
-| demo-fs-ts-nextjs-\*          | `ose-platform`  | `.execution-chain-ose-platform`  |
+| Workflow/Agent        | Scope           | Tracking File                    |
+| --------------------- | --------------- | -------------------------------- |
+| repo-rules-checker    | `repo-rules`    | `.execution-chain-repo-rules`    |
+| docs-checker          | `docs`          | `.execution-chain-docs`          |
+| docs-tutorial-checker | `docs-tutorial` | `.execution-chain-docs-tutorial` |
+| readme-checker        | `readme`        | `.execution-chain-readme`        |
+| plan-checker          | `plan`          | `.execution-chain-plan`          |
+| docs-link-checker     | `docs-link`     | `.execution-chain-docs-link`     |
+| ci-checker            | `ci`            | `.execution-chain-ci`            |
+| specs-checker         | `specs`         | `.execution-chain-specs`         |
 
 **Tracking File Format**: `{unix-timestamp} {uuid-chain}`
 

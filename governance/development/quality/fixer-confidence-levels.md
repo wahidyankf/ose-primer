@@ -933,7 +933,7 @@ When this convention is updated:
 
 ### Version History
 
-- **2025-12-14** - Initial convention established based on 5 fixer agents (repo-rules, demo-fs-ts-nextjs, docs-tutorial, demo-fs-ts-nextjs-content, readme)
+- **2025-12-14** - Initial convention established based on 5 fixer agents (repo-rules, docs-tutorial, readme, specs, ci)
 
 ---
 

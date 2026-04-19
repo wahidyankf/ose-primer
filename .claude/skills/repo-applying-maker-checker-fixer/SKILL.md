@@ -320,7 +320,7 @@ Checker:
 3. Checks content structure (heading hierarchy, links)
 4. Validates content conventions (links, structure)
 5. Checks content quality (alt text, accessible colors)
-6. Generates audit report: generated-reports/demo-fs-ts-nextjs**2025-12-14--20-45**audit.md
+6. Generates audit report: generated-reports/docs**2025-12-14--20-45**audit.md
 7. Reports findings summary in conversation
 8. Does NOT modify the tutorial file
 ```
@@ -602,18 +602,18 @@ Generate fix report in `generated-reports/` using same UUID chain as audit:
 **Example Workflow**:
 
 ```markdown
-User: "Apply fixes from latest demo-fs-ts-nextjs audit"
+User: "Apply fixes from latest docs audit"
 
 Fixer:
 
-1. Auto-detects latest: generated-reports/demo-fs-ts-nextjs**2025-12-14--20-45**audit.md
+1. Auto-detects latest: generated-reports/docs**2025-12-14--20-45**audit.md
 2. Parses findings (25 issues)
 3. Re-validates each finding:
    - 18 findings → HIGH confidence (apply)
    - 4 findings → MEDIUM confidence (skip, manual review)
    - 3 findings → FALSE_POSITIVE (skip, report for checker improvement)
 4. Applies 18 fixes
-5. Generates fix report: generated-reports/demo-fs-ts-nextjs**2025-12-14--20-45**fix.md
+5. Generates fix report: generated-reports/docs**2025-12-14--20-45**fix.md
 6. Summary: 18 fixed, 4 manual review, 3 false positives
 ```
 

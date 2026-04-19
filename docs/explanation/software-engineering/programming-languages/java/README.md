@@ -249,7 +249,7 @@ graph TD
 
 - All Java code MUST pass automated checks (Spotless, Error Prone, JaCoCo coverage)
 - Code reviewers MUST verify compliance with standards in this index
-- Non-compliance with mandatory standards (Idioms, Best Practices, Anti-Patterns) blocks merge
+- Non-compliance with mandatory standards ([Coding Standards](./coding-standards.md), [Code Quality](./code-quality.md), [Testing Standards](./testing-standards.md)) blocks merge
 
 ## Related Documentation
 
