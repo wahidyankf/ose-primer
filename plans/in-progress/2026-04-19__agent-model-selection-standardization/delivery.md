@@ -2,15 +2,22 @@
 
 ## Prerequisites
 
-- [ ] Update `plans/in-progress/README.md` — add this plan entry (required before execution;
-      removed at archival step 9.5d)
-- [ ] Run `npm install` to install workspace dependencies
-- [ ] Run `npm run doctor -- --fix` to converge the Go and Node toolchains (required
-      before any `validate:*` or `sync:*` script can invoke the rhino-cli binary)
-- [ ] Confirm running on `main` branch (no worktree — governance-only changes, no code)
-- [ ] Confirm `npm run validate:claude` passes on clean branch (baseline)
-- [ ] Confirm `npm run validate:sync` passes on clean branch (baseline)
-- [ ] Confirm `nx run rhino-cli:test:quick` passes on clean branch (baseline)
+- [x] Update `plans/in-progress/README.md` — add this plan entry (required before execution;
+    removed at archival step 9.5d)
+<!-- 2026-04-19 | Status: Done | Files: plans/in-progress/README.md | Already completed by plan-fixer during quality gate (F1 fix) -->
+- [x] Run `npm install` to install workspace dependencies
+<!-- 2026-04-19 | Status: Done | Completed: npm install ran, audit warnings only (not errors) -->
+- [x] Run `npm run doctor -- --fix` to converge the Go and Node toolchains (required
+    before any `validate:*` or `sync:*` script can invoke the rhino-cli binary)
+<!-- 2026-04-19 | Status: Done | 19/19 tools OK, 0 missing -->
+- [x] Confirm running on `main` branch (no worktree — governance-only changes, no code)
+<!-- 2026-04-19 | Status: Done | Branch: main confirmed -->
+- [x] Confirm `npm run validate:claude` passes on clean branch (baseline)
+<!-- 2026-04-19 | Status: Done | 719/719 checks passed -->
+- [x] Confirm `npm run validate:sync` passes on clean branch (baseline)
+<!-- 2026-04-19 | Status: Done | Fixed pre-existing drift (plan-checker, plan-maker, skill), now 79/79 passed. Committed separately as fix(sync) -->
+- [x] Confirm `nx run rhino-cli:test:quick` passes on clean branch (baseline)
+<!-- 2026-04-19 | Status: Done | 90.02% >= 90% threshold, all packages pass -->
 
 ### Commit Guidelines
 
@@ -24,16 +31,22 @@
 
 ## Phase 1: Update `governance/development/agents/model-selection.md`
 
-- [ ] **1.1** Budget-Adaptive Inheritance block added to Opus tier section
-      — explains omit = session inherit, account-tier table (Max/Team → Opus 4.7,
-      Pro/Standard → Sonnet 4.6), warning not to add `model: opus`
-- [ ] **1.2** "Current Model Versions (April 2026)" table added with Opus 4.7, Sonnet
-      4.6, Haiku 4.5-20251001; Haiku 3 retirement note (2026-04-19)
-- [ ] **1.3** "OpenCode / GLM Equivalents" section added with mapping table + 3-to-2
-      collapse explanation
-- [ ] **1.4** "Adding `model: opus` to opus-tier agents" row added to Common Mistakes
-- [ ] **1.5** "Last Updated" set to 2026-04-19
-- [ ] **1.6** Run `npm run lint:md` — confirm zero errors
+- [x] **1.1** Budget-Adaptive Inheritance block added to Opus tier section
+    — explains omit = session inherit, account-tier table (Max/Team → Opus 4.7,
+    Pro/Standard → Sonnet 4.6), warning not to add `model: opus`
+<!-- 2026-04-19 | Status: Done | File: governance/development/agents/model-selection.md | Added Budget-Adaptive Inheritance subsection with account-tier table and warning -->
+- [x] **1.2** "Current Model Versions (April 2026)" table added with Opus 4.7, Sonnet
+    4.6, Haiku 4.5-20251001; Haiku 3 retirement note (2026-04-19)
+<!-- 2026-04-19 | Status: Done | File: governance/development/agents/model-selection.md | Added "Current Model Versions (April 2026)" section with table and Haiku 3 retirement note -->
+- [x] **1.3** "OpenCode / GLM Equivalents" section added with mapping table + 3-to-2
+    collapse explanation
+<!-- 2026-04-19 | Status: Done | File: governance/development/agents/model-selection.md | Added "OpenCode / GLM Equivalents" section with mapping table, collapse explanation, GLM-5-turbo warning -->
+- [x] **1.4** "Adding `model: opus` to opus-tier agents" row added to Common Mistakes
+<!-- 2026-04-19 | Status: Done | File: governance/development/agents/model-selection.md | Added row to Common Mistakes table -->
+- [x] **1.5** "Last Updated" set to 2026-04-19
+<!-- 2026-04-19 | Status: Done | File: governance/development/agents/model-selection.md | Updated Last Updated from 2026-04-12 to 2026-04-19 -->
+- [x] **1.6** Run `npm run lint:md` — confirm zero errors
+<!-- 2026-04-19 | Status: Done | 742 files linted, 0 errors -->
 - [ ] **1.7** Commit: `docs(model-selection): add budget-adaptive inheritance note + opencode glm mapping`
 
 ---

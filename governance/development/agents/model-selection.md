@@ -90,6 +90,25 @@ color: purple
 
 Note: `model` field is omitted — inherits opus tier (creative reasoning, code generation). Do not add a YAML comment.
 
+#### Budget-Adaptive Inheritance
+
+Opus-tier agents intentionally omit the `model` field so each session inherits its active
+model. This is the **correct and intended** behavior:
+
+| Account tier         | Inherited model   | Effective behavior            |
+| -------------------- | ----------------- | ----------------------------- |
+| Max / Team Premium   | Claude Opus 4.7   | Full reasoning capability     |
+| Pro / Standard / API | Claude Sonnet 4.6 | Matches user's purchased tier |
+
+**Why this matters**: A Pro-tier user who gets Sonnet-quality output from `plan-maker` is
+receiving behavior that matches their account — not a bug. Budget-adaptive inheritance lets
+a single agent configuration serve users across all account tiers correctly and
+cost-efficiently.
+
+> ⚠️ **Do NOT add `model: opus` to opus-tier agents.** Adding an explicit `model: opus`
+> field bypasses the inheritance chain and forces Opus charges on all users regardless of
+> their account tier, breaking the budget-adaptive behavior.
+
 ### Sonnet
 
 **When to use**: Rule-based validation, applying validated fixes from audit reports, template-driven output, and structured pattern-following tasks.
@@ -155,6 +174,17 @@ model: haiku
 color: purple
 ---
 ```
+
+## Current Model Versions (April 2026)
+
+| Claude Code alias | Model ID                    | Context | Pricing (in/out per MTok) | Notes                                                          |
+| ----------------- | --------------------------- | ------- | ------------------------- | -------------------------------------------------------------- |
+| `opus` (inherit)  | `claude-opus-4-7`           | 1M      | $5 / $25                  | Budget-adaptive; Max/Team gets this                            |
+| `sonnet`          | `claude-sonnet-4-6`         | 1M      | $3 / $15                  | Budget-adaptive inherit for Pro/Standard; explicit sonnet-tier |
+| `haiku`           | `claude-haiku-4-5-20251001` | 200k    | $1 / $5                   | Haiku 3 (`claude-3-haiku`) retired 2026-04-19                  |
+
+> **Note**: Haiku 3 (`claude-3-haiku-20240307`) was retired on 2026-04-19. All haiku-tier
+> agents in this repo use `claude-haiku-4-5-20251001` via the `haiku` alias.
 
 ## 🌳 Model Selection Decision Tree
 
@@ -230,16 +260,41 @@ For a deployer agent:
 | **Error recovery**     | Adapts to unexpected states | Follows fallback rules              | Fails or retries                       |
 | **Typical agents**     | Creative makers, developers | Checkers, fixers, structured makers | Deployers, link checkers, file manager |
 
+## OpenCode / GLM Equivalents
+
+This repo runs on both Claude Code (`.claude/agents/`) and OpenCode (`.opencode/agent/`).
+The OpenCode runtime uses Z.ai Coding Plan models. The sync pipeline
+(`npm run sync:claude-to-opencode`) translates Claude model aliases automatically.
+
+| Claude Code alias | OpenCode model ID             | GLM tier                                      |
+| ----------------- | ----------------------------- | --------------------------------------------- |
+| `opus` (inherit)  | `zai-coding-plan/glm-5.1`     | 744B MoE; SWE-bench Pro 58.4 (self-reported)  |
+| `sonnet`          | `zai-coding-plan/glm-5.1`     | Same model as opus mapping                    |
+| `haiku`           | `zai-coding-plan/glm-5-turbo` | Purpose-built agentic; no standard benchmarks |
+| `""` (omit)       | `zai-coding-plan/glm-5.1`     | Default — same as opus/sonnet                 |
+
+**3-to-2 tier collapse**: Claude has three distinct tiers; Z.ai Coding Plan has two.
+Both `opus` and `sonnet` map to `glm-5.1` because it is the single top-tier option
+available. This means the cost/quality difference between `sonnet` and `omit` tiers
+disappears on OpenCode — both execute at `glm-5.1`. Only `haiku` selects a different
+model (`glm-5-turbo`).
+
+> ⚠️ **GLM-5-turbo has no published standard benchmark scores** (no SWE-bench, GPQA,
+> MMLU, or HumanEval data as of April 2026). Its use as the OpenCode fast tier is a
+> platform constraint, not a benchmark-validated choice. Benchmark citations added in
+> Phase 6 once the reference document is created.
+
 ## ❌ Common Mistakes
 
-| Mistake                                   | Problem                                                          | Correction                                                |
-| ----------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------- |
-| Using opus for validation tasks           | Wastes resources; opus may over-interpret instead of checking    | Use sonnet for checkers and fixers                        |
-| Using haiku for content creation          | Haiku lacks reasoning depth for original content                 | Use opus (inherit) for makers and developers              |
-| Using sonnet for deployment scripts       | Sonnet is overqualified for deterministic command sequences      | Use haiku for deployers and link checkers                 |
-| Omitting model justification              | Future maintainers cannot assess whether the tier is appropriate | Always include Model Selection Justification block        |
-| Defaulting to opus "just in case"         | Violates Simplicity Over Complexity principle                    | Analyze task requirements; use the simplest adequate tier |
-| Using haiku for tasks with error handling | Haiku cannot reason about unexpected states                      | Use sonnet or opus depending on error complexity          |
+| Mistake                                   | Problem                                                                                           | Correction                                                  |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Using opus for validation tasks           | Wastes resources; opus may over-interpret instead of checking                                     | Use sonnet for checkers and fixers                          |
+| Using haiku for content creation          | Haiku lacks reasoning depth for original content                                                  | Use opus (inherit) for makers and developers                |
+| Using sonnet for deployment scripts       | Sonnet is overqualified for deterministic command sequences                                       | Use haiku for deployers and link checkers                   |
+| Omitting model justification              | Future maintainers cannot assess whether the tier is appropriate                                  | Always include Model Selection Justification block          |
+| Defaulting to opus "just in case"         | Violates Simplicity Over Complexity principle                                                     | Analyze task requirements; use the simplest adequate tier   |
+| Using haiku for tasks with error handling | Haiku cannot reason about unexpected states                                                       | Use sonnet or opus depending on error complexity            |
+| Adding `model: opus` to opus-tier agents  | Bypasses budget-adaptive inheritance; forces Opus charges on all users regardless of account tier | Omit the field — inherit session model to match user's tier |
 
 ## Special Considerations
 
@@ -305,4 +360,4 @@ The following agents enforce or assist with model selection:
 
 ---
 
-**Last Updated**: 2026-04-12
+**Last Updated**: 2026-04-19
