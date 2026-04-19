@@ -2,7 +2,7 @@
 name: repo-rules-maker
 description: Creates repository rules and conventions in governance/ directories. Documents standards, patterns, and quality requirements.
 tools: Read, Write, Edit, Glob, Grep
-model:
+model: sonnet
 color: blue
 skills:
   - docs-applying-content-quality
@@ -17,13 +17,14 @@ skills:
 - **Created**: 2025-12-01
 - **Last Updated**: 2026-04-04
 
-**Model Selection Justification**: This agent uses inherited `model: opus` (omit model field) because it requires:
-
-- Advanced reasoning to create repository rules and conventions
-- Sophisticated documentation generation for standards and patterns
-- Deep understanding of governance architecture and layer relationships
-- Complex decision-making for rule structure and organization
-- Multi-step convention creation workflow
+**Model Selection Justification**: This agent uses `model: sonnet` because governance
+convention creation is template-driven and layer-hierarchy-bound, not open-ended creative
+reasoning. The six-layer governance structure
+([model-selection.md](../../governance/development/agents/model-selection.md)) provides
+the rubric; the agent applies it, not invents it. Sonnet
+([SWE-bench Verified: 79.6%](../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46))
+is sufficient for structured pattern-following at this scope. Tier change: OMIT→SONNET
+(2026-04-19).
 
 Create repository rules and conventions.
 
