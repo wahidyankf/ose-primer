@@ -146,24 +146,28 @@ Apply the definitive tier mapping from `tech-docs.md § Complete Agent Tier Mapp
 Add benchmark citations (with links to `docs/reference/ai-model-benchmarks.md`) to all
 policy docs that make tier-based claims.
 
-- [ ] **6.1** Invoke `repo-rules-maker` to update `governance/development/agents/model-selection.md`:
+- [x] **6.1** Invoke `repo-rules-maker` to update `governance/development/agents/model-selection.md`:
   - In the Tier Comparison Summary table, add benchmark score column citing the reference
     doc
   - In "Current Model Versions", add inline links to the reference doc for each score
   - In the OpenCode / GLM Equivalents section, add caveat about GLM-5-turbo having no
     standard benchmarks (link to reference doc)
   - **Verify**: `model-selection.md` Tier Comparison Summary table contains a benchmark
-    score column with links to `docs/reference/ai-model-benchmarks.md`; "Current Model
-    Versions" rows each have an inline link; OpenCode/GLM section has the GLM-5-turbo
-    no-benchmarks caveat
-- [ ] **6.2** Invoke `repo-rules-maker` to update `.claude/agents/README.md`:
+  score column with links to `docs/reference/ai-model-benchmarks.md`; "Current Model
+  Versions" rows each have an inline link; OpenCode/GLM section has the GLM-5-turbo
+  no-benchmarks caveat
+  <!-- 2026-04-19 | Status: Done | All three updates applied to model-selection.md directly (plan-executor acting as repo-rules-maker) -->
+- [x] **6.2** Invoke `repo-rules-maker` to update `.claude/agents/README.md`:
   - Add a "Model Benchmark Context" note (2-3 lines) pointing to the reference doc for
     anyone who wants to understand WHY each tier was chosen
   - **Verify**: `.claude/agents/README.md` contains a "Model Benchmark Context" paragraph
-    with a link to `docs/reference/ai-model-benchmarks.md`
-- [ ] **6.3** Verify every benchmark number cited in `model-selection.md` has a link to
-      `docs/reference/ai-model-benchmarks.md` with the anchor for the relevant model
-- [ ] **6.4** Run `npm run lint:md` — confirm zero errors
+  with a link to `docs/reference/ai-model-benchmarks.md`
+  <!-- 2026-04-19 | Status: Done | "Model Benchmark Context" section added; also fixed Color/Skills absorption into blockquote from Phase 3 formatter -->
+- [x] **6.3** Verify every benchmark number cited in `model-selection.md` has a link to
+    `docs/reference/ai-model-benchmarks.md` with the anchor for the relevant model
+<!-- 2026-04-19 | Status: Done | Tier Comparison Summary row and Current Model Versions column both link to anchors #claude-opus-47, #claude-sonnet-46, #claude-haiku-45 -->
+- [x] **6.4** Run `npm run lint:md` — confirm zero errors
+<!-- 2026-04-19 | Status: Done | 743 files linted, 0 errors -->
 - [ ] **6.5** Commit: `docs(governance): add benchmark citations to model-selection + agents README`
 
 ---

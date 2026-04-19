@@ -113,10 +113,19 @@ skills: []
 > Pro/Standard accounts get Claude Sonnet 4.6. Do NOT add `model: opus` to opus-tier agents
 > — it bypasses this mechanism and forces Opus charges on all users regardless of account tier.
 > See [model-selection.md](../../governance/development/agents/model-selection.md) for full tier mapping.
-> **Color**: Required field - `blue` (makers), `green` (checkers), `yellow` (fixers), `purple` (implementors)
-> **Skills**: Required field - list of Skill names (empty array `[]` if no Skills used)
+
+**Color**: Required field - `blue` (makers), `green` (checkers), `yellow` (fixers), `purple` (implementors)
+**Skills**: Required field - list of Skill names (empty array `[]` if no Skills used)
 
 Note: Frontmatter MUST NOT contain YAML inline comments (# symbols). Put explanations in the document body.
+
+### Model Benchmark Context
+
+Tier assignments are based on benchmark data for each model. For cited scores (SWE-bench
+Verified, GPQA Diamond, pricing, confidence levels) for all Claude and GLM models used in
+this project, see
+[docs/reference/ai-model-benchmarks.md](../../docs/reference/ai-model-benchmarks.md).
+That document is the canonical source — all policy docs link back to it.
 
 ## Maker-Checker-Fixer Pattern
 
