@@ -350,24 +350,31 @@ fmt.Printf("Length: %d, Capacity: %d\n", len(ch), cap(ch))
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
-%% All colors are color-blind friendly and meet WCAG AA contrast standards
+%% Unbuffered channel (synchronous)
 
 graph TD
-    subgraph Unbuffered["Unbuffered Channel #40;Synchronous#41;"]
-        U1["Sender<br/>#40;Murabaha Request#41;"]:::blue
-        U2["Channel<br/>#40;cap=0#41;"]:::purple
-        U3["Receiver<br/>#40;Processor#41;"]:::teal
-        U1 -->|"Blocks until<br/>receiver ready"| U2
-        U2 -->|"Handshake"| U3
-    end
+    U1["Sender<br/>#40;Murabaha Request#41;"]:::blue
+    U2["Channel<br/>#40;cap=0#41;"]:::purple
+    U3["Receiver<br/>#40;Processor#41;"]:::teal
+    U1 --> U2
+    U2 --> U3
 
-    subgraph Buffered["Buffered Channel #40;Asynchronous#41;"]
-        B1["Sender<br/>#40;Zakat Batch#41;"]:::blue
-        B2["Buffer<br/>#40;cap=5#41;"]:::orange
-        B3["Receiver<br/>#40;Calculator#41;"]:::teal
-        B1 -->|"Non-blocking<br/>until full"| B2
-        B2 -->|"Queued"| B3
-    end
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% Buffered channel (asynchronous)
+
+graph TD
+    B1["Sender<br/>#40;Zakat Batch#41;"]:::blue
+    B2["Buffer<br/>#40;cap=5#41;"]:::orange
+    B3["Receiver<br/>#40;Calculator#41;"]:::teal
+    B1 --> B2
+    B2 --> B3
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
@@ -575,24 +582,29 @@ case <-ch: // Never executes if ch is nil
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["Enter Select"]:::blue --> B["Evaluate All Cases"]:::orange
+    A["Enter Select"]:::blue
+    B["Evaluate All Cases"]:::orange
+    C{"Any Case<br/>Ready?"}:::orange
+    D["Random<br/>Selection"]:::purple
+    E["Execute<br/>That Case"]:::teal
+    F{"Has Default<br/>Case?"}:::orange
+    G["Execute<br/>Default"]:::brown
+    H["Block Until<br/>Case Ready"]:::purple
+    I{"Case Becomes<br/>Ready"}:::orange
+    J["Context Done"]:::brown
+    K["Select<br/>Completes"]:::teal
 
-    B --> C{"Any Case<br/>Ready?"}:::orange
-
-    C -->|"Multiple Ready"| D["🎲 Random<br/>Selection"]:::purple
-    C -->|"One Ready"| E["Execute<br/>That Case"]:::teal
-    C -->|"None Ready"| F{"Has Default<br/>Case?"}:::orange
-
+    A --> B --> C
+    C --> D
+    C --> E
+    C --> F
     D --> E
-
-    F -->|"Yes"| G["Execute<br/>Default"]:::brown
-    F -->|"No"| H["⏳ Block Until<br/>Case Ready"]:::purple
-
-    H --> I{"Case Becomes<br/>Ready"}:::orange
-    I -->|"Yes"| E
-    I -->|"Timeout/Cancel"| J["Context Done"]:::brown
-
-    E --> K["✅ Select<br/>Completes"]:::teal
+    F --> G
+    F --> H
+    H --> I
+    I --> E
+    I --> J
+    E --> K
     G --> K
     J --> K
 
@@ -774,26 +786,22 @@ The `sync` package provides synchronization primitives for coordinating goroutin
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["Need Goroutine<br/>Coordination?"]:::blue --> B{"What Type of<br/>Synchronization?"}:::orange
+    A["Need Goroutine<br/>Coordination?"]:::blue
+    B{"What Type of<br/>Synchronization?"}:::orange
+    C{"Read/Write<br/>Pattern?"}:::orange
+    D["sync.WaitGroup"]:::teal
+    E["sync.Once"]:::teal
+    F["sync.Pool"]:::purple
+    G["sync.Mutex<br/>(mutual exclusion)"]:::teal
+    H["sync.RWMutex<br/>(read-write lock)"]:::teal
 
-    B -->|"Shared State"| C{"Read/Write<br/>Pattern?"}:::orange
-    B -->|"Wait for Completion"| D["✅ sync.WaitGroup"]:::teal
-    B -->|"One-time Initialization"| E["✅ sync.Once"]:::teal
-    B -->|"Resource Pool"| F["✅ sync.Pool"]:::purple
-
-    C -->|"Exclusive Access"| G["✅ sync.Mutex<br/>(mutual exclusion)"]:::teal
-    C -->|"Many Reads,<br/>Few Writes"| H["✅ sync.RWMutex<br/>(read-write lock)"]:::teal
-
-    G --> G1["One goroutine<br/>at a time"]
-    H --> H1["Multiple readers<br/>OR single writer"]
-    D --> D1["Wait for N<br/>goroutines to finish"]
-    E --> E1["Execute code<br/>exactly once"]
-    F --> F1["Reuse temporary<br/>objects"]
-
-    Ex1["Example:<br/>Protect donation<br/>counter"]:::blue --> G
-    Ex2["Example:<br/>Cache with frequent<br/>reads"]:::blue --> H
-    Ex3["Example:<br/>Wait for batch<br/>processing"]:::blue --> D
-    Ex4["Example:<br/>Initialize DB<br/>connection once"]:::blue --> E
+    A --> B
+    B --> C
+    B --> D
+    B --> E
+    B --> F
+    C --> G
+    C --> H
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
@@ -1546,7 +1554,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph LR
+graph TD
     A["Job Producer<br/>#40;Zakat Calculations#41;"]:::blue --> B["Jobs Channel<br/>#40;buffered#41;"]:::purple
     B --> C["Worker 1"]:::orange
     B --> D["Worker 2"]:::orange
@@ -2370,7 +2378,7 @@ principles:
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Go Concurrency Patterns] --> B[Worker Pool<br/>Limited Goroutines]
     A --> C[Pipeline<br/>Stage Processing]
     A --> D[Fan-Out Fan-In<br/>Parallel + Merge]

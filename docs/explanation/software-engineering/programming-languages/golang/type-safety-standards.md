@@ -48,7 +48,7 @@ Go is a statically typed language with a strong emphasis on type safety. The typ
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Go Type System"]:::blue --> B["Basic Types"]:::orange
     A --> C["Composite Types"]:::orange
     A --> D["Interface Types"]:::orange
@@ -957,7 +957,7 @@ func main() {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Interface Value"]:::blue --> B["switch v := i.#40;type#41;"]:::purple
     B --> C["case int"]:::orange
     B --> D["case string"]:::orange
@@ -2835,7 +2835,7 @@ Type safety makes code more maintainable, refactorable, and less prone to bugs. 
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Go Type System] --> B[Basic Types]
     A --> C[Composite Types]
     A --> D[Interface Types]
