@@ -76,18 +76,10 @@ graph TD
     B --> D[Route /dashboard]
     B --> E[Route /zakat]
     B --> F[Route /donations]
-    B --> G[Route *]
-
     C --> H[HomePage]
     D --> I[DashboardPage]
     E --> J[ZakatCalculator]
     F --> K[DonationsList]
-    G --> L[NotFoundPage]
-
-    D --> M[Nested Routes]
-    M --> N[/dashboard/overview]
-    M --> O[/dashboard/reports]
-    M --> P[/dashboard/settings]
 
     style A fill:#0173B2
     style B fill:#029E73
@@ -95,8 +87,22 @@ graph TD
     style D fill:#DE8F05
     style E fill:#DE8F05
     style F fill:#DE8F05
-    style G fill:#CC78BC
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    D2[Route /dashboard] --> M[Nested Routes]
+    M --> N[/overview]
+    M --> O[/reports]
+    M --> P[/settings]
+    G[Route *] --> L[NotFoundPage]
+
+    style D2 fill:#DE8F05
     style M fill:#029E73
+    style G fill:#CC78BC
 ```
 
 **Route Structure**:

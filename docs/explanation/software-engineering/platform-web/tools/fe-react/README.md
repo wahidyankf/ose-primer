@@ -225,7 +225,7 @@ Common mistakes and problematic patterns to avoid.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-flowchart TD
+flowchart LR
     A["React Documentation"]:::blue
     B["Core Patterns"]:::teal
     C["Architecture"]:::teal

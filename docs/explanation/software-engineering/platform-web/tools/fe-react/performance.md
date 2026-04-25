@@ -43,7 +43,7 @@ Performance optimization ensures React applications remain responsive as complex
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A[Performance Issue?] --> B{Identify Problem}
 
     B -->|Slow Renders| C[Memoization]

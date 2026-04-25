@@ -46,7 +46,7 @@ React components follow a clear hierarchy based on their responsibilities:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A[React Components] --> B[Presentational]
     A --> C[Container]
     A --> D[Custom Hooks]
