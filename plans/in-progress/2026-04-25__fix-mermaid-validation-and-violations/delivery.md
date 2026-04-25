@@ -1,21 +1,40 @@
 # Delivery — Fix Mermaid Validation and Violations
 
-## Phase 0 — Direction-Aware Validator (rhino-cli)
+## Phase 0 — Direction-Aware Validator + Threshold Update (rhino-cli)
 
-- [ ] Read `apps/rhino-cli/internal/mermaid/validator.go` — understand current
-      `width_exceeded` block before editing
-- [ ] Apply direction-aware logic to `ValidateBlocks` per tech-docs.md Phase 0 spec:
-      use `diagram.Direction` to select `horizontal`/`vertical` dimensions before
-      comparing against `opts.MaxWidth` and `opts.MaxDepth`
-- [ ] Add direction-aware test cases to `validator_test.go` (7 cases per table in
-      tech-docs.md Phase 0)
+### 0a — `validator.go` changes
+
+- [ ] Add `import "math"` to `validator.go`
+- [ ] Change `DefaultValidateOptions()`: `MaxWidth: 3 → 4`, `MaxDepth: 5 → math.MaxInt`
+- [ ] Add direction-aware `horizontal`/`vertical` selection in `ValidateBlocks` per
+      tech-docs.md Phase 0 spec (switch on `diagram.Direction`, LR/RL → swap axes)
+
+### 0b — `validator_test.go` changes
+
+- [ ] Fix 3 tests broken by MaxWidth 3→4 (see tech-docs.md "Existing tests that break"):
+  - `"width at limit+1 violation"` → switch to `span5depth3Source`
+  - `"both exceeded warning only"` → use explicit `ValidateOptions{MaxWidth:3,MaxDepth:5}`
+  - `"width only exceeded violation"` → use explicit opts or span=5 source
+- [ ] Add `"width exactly at new limit 4 no violation"` (span=4, TD, defaultOpts)
+- [ ] Add new LR direction test cases (6 cases per table in tech-docs.md Phase 0)
+- [ ] Add new test sources: `span5depth3Source`, `lrDepth6Span2Source`,
+      `lrSpan5Depth2Source`, `lrDepth4Span6Source`
+
+### 0c — `docs_validate_mermaid.go` CLI flag defaults
+
+- [ ] Change `--max-width` default: `3 → 4`
+- [ ] Change `--max-depth` default: `5 → 0` (document: 0 = no limit)
+- [ ] In `runValidateMermaid`: map `MaxDepth ≤ 0 → math.MaxInt` before building opts
+
+### 0d — Verify and commit
+
 - [ ] Run: `npx nx run rhino-cli:test:unit` → must pass
 - [ ] Run: `npx nx run rhino-cli:test:quick` → must pass (coverage ≥ 90%)
-- [ ] Commit:
-      `fix(rhino-cli): make width_exceeded check direction-aware`
+- [ ] Commit: `fix(rhino-cli): direction-aware width check, MaxWidth=4, no depth limit`
 - [ ] Re-audit: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | tee local-temp/mermaid-audit-phase0.txt`
-- [ ] Update Phase 1 batch file lists from `local-temp/mermaid-audit-phase0.txt`
-      (some LR files may drop off; some deeply-chained LR files may appear)
+- [ ] Update Phase 1 batch file lists from the re-audit output
+      (LR-only-tall files may disappear; new LR-deeply-chained files may appear;
+      diagrams with old span=4 violations now pass)
 - [ ] Update the Violation Summary table in README.md with new counts
 
 ## Environment Setup
