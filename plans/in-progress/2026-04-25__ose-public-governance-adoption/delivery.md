@@ -1,5 +1,15 @@
 # Delivery Checklist
 
+## Phase 0 — Environment Setup
+
+- [ ] Install dependencies: `npm install`
+- [ ] Converge the full polyglot toolchain: `npm run doctor -- --fix` (required — the
+      `postinstall` hook runs `doctor || true` and silently tolerates drift)
+- [ ] Verify rhino-cli baseline build: `CGO_ENABLED=0 go build -C apps/rhino-cli ./...`
+- [ ] Verify existing tests pass before making changes:
+      `npx nx run rhino-cli:test:quick`
+- [ ] Note any preexisting failures — they must be fixed as part of this plan
+
 ## Phase 1 — Change A: git-push-default Convention
 
 - [ ] Create `governance/development/workflow/git-push-default.md` (adapt from ose-public,
@@ -21,16 +31,17 @@
       from frontmatter template example
 - [ ] Update `.claude/agents/docs-maker.md` — remove "Use for both created and updated
       fields" instruction
-- [ ] Update `.claude/skills/agent-developing-agents/SKILL.md` — remove
-      `- **Last Updated**: YYYY-MM-DD` template lines (~2 occurrences)
+- [ ] Update `.claude/skills/agent-developing-agents/SKILL.md` — remove both
+      `- **Created**: YYYY-MM-DD` and `- **Last Updated**: YYYY-MM-DD` template lines
+      (2 Agent Metadata template blocks, each has both rows)
 - [ ] Update `.claude/skills/repo-defining-workflows/SKILL.md` — remove `created:` /
       `updated:` from workflow frontmatter template
-- [ ] Run Pass 1: strip `- **Last Updated**: DATE` rows from all `.claude/agents/` files
-- [ ] Run Pass 2: strip `- **Last Updated**: DATE` rows from all `.claude/skills/` files
-- [ ] Run Pass 3: strip `created:` / `updated:` frontmatter from `governance/` files
-- [ ] Run Pass 4: strip `**Last Updated**: DATE` footer lines from `governance/` files
-- [ ] Run Pass 5: strip `created:` / `updated:` frontmatter from `docs/` files
-- [ ] Run Pass 6: strip `**Last Updated**: DATE` footer lines from `docs/` files
+- [ ] Run Pass 1: strip `- **Last Updated**: DATE` and `- **Created**: DATE` rows from
+      all `.claude/agents/` and `.claude/skills/` files (single sed pass covers both patterns)
+- [ ] Run Pass 2: strip `created:` / `updated:` frontmatter from `governance/` files
+- [ ] Run Pass 3: strip `**Last Updated**: DATE` footer lines from `governance/` files
+- [ ] Run Pass 4: strip `created:` / `updated:` frontmatter from `docs/` files
+- [ ] Run Pass 5: strip `**Last Updated**: DATE` footer lines from `docs/` files
 - [ ] Verify: grep for residual date metadata returns 0 matches
 - [ ] Verify: grep for `YYYY-MM-DD` placeholders in `.claude/` skill/agent templates
 
@@ -43,6 +54,8 @@
 - [ ] Create `apps/rhino-cli/cmd/docs_validate_mermaid_test.go`
 - [ ] Create `apps/rhino-cli/cmd/docs_validate_mermaid_helpers_test.go`
 - [ ] Create `apps/rhino-cli/cmd/docs_validate_mermaid.integration_test.go`
+- [ ] Update `apps/rhino-cli/cmd/steps_common_test.go` — append 30 step constant
+      declarations for mermaid scenarios (do NOT copy whole file; append block only)
 - [ ] Update `apps/rhino-cli/cmd/testable.go` — add 4 injectable vars + mermaid import
 - [ ] Update `apps/rhino-cli/project.json` — add `validate:mermaid` Nx target
 - [ ] Update `.husky/pre-push` — add mermaid check in md-files branch
@@ -57,15 +70,42 @@
 - [ ] `CGO_ENABLED=0 go build -C apps/rhino-cli ./...` — build passes
 - [ ] `npx nx run rhino-cli:test:quick` — unit tests pass with ≥90% coverage
 - [ ] `npx nx run rhino-cli:validate:mermaid` — exits 0 (fix any pre-existing violations)
-- [ ] Verify: `grep -rn "^- \*\*Last Updated\*\*:" .claude/agents/ .claude/skills/ | wc -l`
+- [ ] Verify: `grep -rn "^- \*\*Last Updated\*\*:\|^- \*\*Created\*\*:" .claude/agents/ .claude/skills/ | wc -l`
       → 0
 - [ ] Verify: `grep -rn "^created: \|^updated: " governance/ docs/ | wc -l` → 0
+- [ ] `npx nx affected -t typecheck` — passes
+- [ ] `npx nx affected -t lint` — passes
+- [ ] `npx nx affected -t test:quick` — passes
+- [ ] `npx nx affected -t spec-coverage` — passes
+
+> **Important**: Fix ALL failures found during quality gates, not just those caused by your
+> changes. This follows the root cause orientation principle — proactively fix preexisting
+> errors encountered during work.
 
 ## Phase 5 — OpenCode Sync + Lint + Commit
 
+Commit thematically — each commit below is one coherent change. Follow Conventional
+Commits format: `<type>(<scope>): <description>`. If during work you encounter unrelated
+preexisting issues and fix them, commit those fixes separately first.
+
 - [ ] `npm run sync:claude-to-opencode`
 - [ ] `npm run lint:md` — fix any violations with `npm run lint:md:fix`
+- [ ] Rebase before committing: `git pull --rebase origin main` (all changes must be
+      staged or committed — no unstaged edits — before rebasing)
 - [ ] Commit Change A: `feat(governance): add git-push-default convention and update plan agents`
 - [ ] Commit Change B: `feat(governance): add no-date-metadata convention and strip all manual dates`
 - [ ] Commit Change C: `feat(rhino-cli): port docs validate-mermaid with internal/mermaid package`
 - [ ] `git push origin main`
+
+> **Note**: `ose-primer` has no GitHub Actions (no org subscription). The Husky pre-push
+> hook is the final quality gate. Verify the push completes without pre-push hook failures.
+> If the hook fails, fix the issue and push again before proceeding to archival.
+
+## Phase 6 — Plan Archival
+
+- [ ] Verify ALL delivery checklist items above are ticked
+- [ ] Verify ALL quality gates pass (Phase 4 local gates + Phase 5 pre-push hook)
+- [ ] Move plan folder: `git mv plans/in-progress/2026-04-25__ose-public-governance-adoption plans/done/2026-04-25__ose-public-governance-adoption`
+- [ ] Update `plans/in-progress/README.md` — remove the plan entry
+- [ ] Update `plans/done/README.md` — add the plan entry with completion date
+- [ ] Commit: `chore(plans): move ose-public-governance-adoption to done`

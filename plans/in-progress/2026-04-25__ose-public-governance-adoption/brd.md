@@ -27,9 +27,10 @@ with the Explicit Over Implicit and Simplicity Over Complexity principles.
 ### B — no-date-metadata convention
 
 **Gap**: ~466 markdown files across `.claude/agents/`, `.claude/skills/`, `governance/`,
-and `docs/` carry manual `- **Last Updated**: DATE` rows, `created:` frontmatter, or
-`updated:` frontmatter. Some agent and skill template examples also show these fields,
-teaching consumers to include them.
+and `docs/` carry manual date metadata: `- **Last Updated**: DATE` rows, `- **Created**: DATE`
+rows in agent metadata sections, `created:` / `updated:` frontmatter fields, or standalone
+`**Last Updated**: DATE` footer annotations. Some agent and skill template examples also
+show these fields, teaching consumers to include them.
 
 **Impact of gap**: Manual dates rot immediately after creation — no process keeps them
 accurate, and git history already records this information with full precision. Template
@@ -37,8 +38,8 @@ examples with date fields produce clutter in consumer repos. Checking 466 files 
 stale dates is not a scalable maintenance practice.
 
 **Value of adoption**: Establishes git as the single source of truth for file age.
-Removes ~880 stale metadata lines from the codebase. Updates template examples so
-consumer repos do not inherit the anti-pattern.
+Removes over a thousand stale metadata lines (~1,259 as of plan creation) across governance, docs, agents, and skills.
+Updates template examples so consumer repos do not inherit the anti-pattern.
 
 ### C — rhino-cli `docs validate-mermaid`
 
