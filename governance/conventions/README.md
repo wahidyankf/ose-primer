@@ -7,8 +7,6 @@ tags:
   - index
   - conventions
   - standards
-created: 2025-11-22
-updated: 2026-04-04
 ---
 
 # Conventions
@@ -140,5 +138,3 @@ static-site site-specific content conventions. **All legacy sites have migrated 
 - [Software Design Reference](../../docs/explanation/software-engineering/software-design-reference.md) - Cross-reference to authoritative software design and coding standards
 
 ---
-
-**Last Updated**: 2026-04-04

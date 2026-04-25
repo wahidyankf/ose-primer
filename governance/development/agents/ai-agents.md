@@ -9,8 +9,6 @@ tags:
   - claude-code
   - development
   - standards
-created: 2025-11-23
-updated: 2026-04-19
 ---
 
 # AI Agents Convention
@@ -235,8 +233,6 @@ tools: Read, Glob, Grep
 model:
 color: blue
 skills: []
-created: 2025-11-23
-updated: 2025-12-03
 ---
 ```
 
@@ -1613,8 +1609,6 @@ tools: Read, Write, Edit
 model:
 color: blue
 skills: [docs-applying-content-quality, docs-creating-accessible-diagrams]
-created: YYYY-MM-DD
-updated: YYYY-MM-DD
 ---
 ```
 
@@ -2442,8 +2436,6 @@ See [Skills README](../../../.claude/skills/README.md) for complete catalog.
 - [Implementation Workflow Convention](../workflow/implementation.md) - Surgical changes (touch only what you must) and goal-driven execution (define success criteria, loop until verified) practices for agents
 
 ---
-
-**Last Updated**: 2026-03-27
 
 ---
 

@@ -10,8 +10,6 @@ tags:
   - api
   - quality
   - manual-testing
-created: 2026-04-04
-updated: 2026-04-04
 ---
 
 # Manual Behavioral Verification Convention

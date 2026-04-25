@@ -10,8 +10,6 @@ tags:
   - ubiquitous-language
 principles:
   - explicit-over-implicit
-created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # BDD with DDD Standards
@@ -179,5 +177,3 @@ Feature: Campaign Goal Tracking
 ```
 
 ---
-
-**Last Updated**: 2026-02-09

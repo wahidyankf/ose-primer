@@ -14,8 +14,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Clojure Security Standards
@@ -337,5 +335,5 @@ Pure validation functions (using `s/valid?`) are independently testable and cann
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Clojure Version**: 1.10+ (baseline), 1.12 (recommended)

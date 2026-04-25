@@ -12,8 +12,6 @@ tags:
   - dependencies
   - toolchain
   - doctor
-created: 2026-03-28
-updated: 2026-04-11
 ---
 
 # Worktree Toolchain Initialization

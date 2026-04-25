@@ -18,8 +18,6 @@ principles:
   - reproducibility
   - monitoring-and-observability
   - simplicity-over-complexity
-created: 2026-01-25
-updated: 2026-01-26
 related:
   - ./best-practices.md
   - ./observability.md

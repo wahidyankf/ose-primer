@@ -34,5 +34,3 @@ These workflows define **WHEN and HOW to validate specifications**, orchestratin
 - [BDD Spec-Test Mapping](../../development/infra/bdd-spec-test-mapping.md) - How specs map to test implementations
 
 ---
-
-**Last Updated**: 2026-03-13

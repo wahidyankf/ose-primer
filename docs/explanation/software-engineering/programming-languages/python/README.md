@@ -22,8 +22,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-01-24
-updated: 2026-01-25
 ---
 
 # Python Programming Language Documentation
@@ -1362,7 +1360,6 @@ strict = true
 
 ---
 
-**Last Updated**: 2026-01-24
 **Python Versions**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.2 (latest stable)
 **Documentation**: Core files and version-specific files organized by category
 **Maintainers**: demo Documentation Team

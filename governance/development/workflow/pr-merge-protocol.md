@@ -9,8 +9,6 @@ tags:
   - quality-gates
   - workflow
   - human-approval
-created: 2026-04-04
-updated: 2026-04-11
 ---
 
 # PR Merge Protocol

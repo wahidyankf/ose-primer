@@ -13,7 +13,6 @@ related:
   - ./idioms.md
 principles:
   - explicit-over-implicit
-updated: 2026-01-25
 ---
 
 # React Forms
@@ -537,5 +536,3 @@ const Step1: React.FC<{ methods: UseFormReturn<DonationFormData> }> = ({ methods
 - **[State Management](state-management.md)** - Form state patterns
 
 ---
-
-**Last Updated**: 2026-01-25

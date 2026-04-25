@@ -9,8 +9,6 @@ tags:
   - git-hooks
   - ai-agents
   - consistency
-created: 2025-12-15
-updated: 2025-12-24
 ---
 
 # Automation Over Manual
@@ -489,5 +487,3 @@ The project enforces code quality through automated git hooks:
 - [EditorConfig](https://editorconfig.org/) - Consistent coding styles
 
 ---
-
-**Last Updated**: 2025-12-24

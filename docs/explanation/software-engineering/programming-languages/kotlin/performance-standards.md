@@ -18,8 +18,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Kotlin Performance Standards
@@ -365,5 +363,5 @@ open class ZakatCalculationBenchmark {
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Kotlin Version**: 2.1 | Performance Tools: JMH 1.37, Kotlin inline functions, kotlinx.collections

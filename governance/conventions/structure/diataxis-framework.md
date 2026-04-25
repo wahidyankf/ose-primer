@@ -8,8 +8,6 @@ tags:
   - documentation-framework
   - organization
   - conventions
-created: 2025-11-22
-updated: 2025-12-05
 ---
 
 # Diátaxis Framework
@@ -239,8 +237,6 @@ description: Brief description
 category: tutorial # or how-to, reference, explanation
 tags:
   - relevant-tags
-created: YYYY-MM-DD
-updated: YYYY-MM-DD
 ---
 ```
 
@@ -378,5 +374,3 @@ Start here
 - [Diátaxis in Practice](https://diataxis.fr/application/)
 
 ---
-
-**Last Updated**: 2025-12-05

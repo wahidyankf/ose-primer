@@ -14,7 +14,6 @@ related:
   - ./anti-patterns.md
 principles:
   - explicit-over-implicit
-updated: 2026-01-25
 ---
 
 # React Security
@@ -1511,5 +1510,3 @@ export const SecureWaqfDonationForm: React.FC = () => {
 - **[State Management](state-management.md)** - Secure state handling
 
 ---
-
-**Last Updated**: 2026-01-26

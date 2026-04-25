@@ -9,8 +9,6 @@ tags:
   - environment
   - determinism
   - version-pinning
-created: 2025-12-28
-updated: 2025-12-28
 ---
 
 # Reproducibility First
@@ -611,5 +609,3 @@ npm install
 - [Reproducible Builds](https://reproducible-builds.org/docs/) - Best practices
 
 ---
-
-**Last Updated**: 2025-12-28

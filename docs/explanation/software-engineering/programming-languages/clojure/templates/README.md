@@ -7,8 +7,6 @@ tags:
   - clojure
   - templates
   - patterns
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Clojure Documentation Templates
@@ -49,5 +47,3 @@ Templates in this directory can be used as:
 - [File Naming Convention](../../../../../../governance/conventions/structure/file-naming.md) - Naming patterns
 
 ---
-
-**Last Updated**: 2026-03-09

@@ -7,8 +7,6 @@ tags:
   - testing
   - rhino-cli
   - quality
-created: 2026-03-22
-updated: 2026-04-18
 ---
 
 # Code Coverage Reference

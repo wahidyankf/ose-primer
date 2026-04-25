@@ -118,14 +118,14 @@ graph TB
     Check2 --> Step2
     Check3 --> Step2
 
-    Step2 -->|Zero findings| Step1
-    Step2 -->|Findings exist| Step3[Step 3: Apply<br/>Factual Fixes]
+    Step2 -- Findings exist --> Step3[Step 3: Apply<br/>Factual Fixes]
+    Step2 -- Zero findings --> Step6[Step 6: Final Report]
 
     Step3 --> Step4[Step 4: Apply<br/>Tutorial Fixes]
     Step4 --> Step5{Step 5: Iteration<br/>Control}
 
-    Step5 -->|Continue| Step1
-    Step5 -->|Done| Step6
+    Step5 -- Done --> Step6
+    Step5 -- Continue --> Restart([↩ Restart Step 1])
 
     Step6 --> End([End: pass/partial/fail])
 

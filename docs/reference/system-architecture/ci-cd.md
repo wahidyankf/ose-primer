@@ -7,8 +7,6 @@ tags:
   - ci-cd
   - github-actions
   - git-hooks
-created: 2025-11-29
-updated: 2026-03-06
 ---
 
 # CI/CD Pipeline

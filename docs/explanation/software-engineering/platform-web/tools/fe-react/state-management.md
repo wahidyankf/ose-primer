@@ -15,7 +15,6 @@ related:
 principles:
   - explicit-over-implicit
   - immutability
-updated: 2026-01-25
 ---
 
 # React State Management
@@ -1187,5 +1186,3 @@ graph TD
 - **[Data Fetching](data-fetching.md)** - API integration patterns
 
 ---
-
-**Last Updated**: 2026-01-25

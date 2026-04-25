@@ -9,8 +9,6 @@ tags:
   - scannability
   - conventions
   - markdown
-created: 2025-12-04
-updated: 2026-04-18
 ---
 
 # Emoji Usage Convention

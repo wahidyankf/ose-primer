@@ -20,7 +20,6 @@ related:
 principles:
   - simplicity-over-complexity
   - automation-over-manual
-updated: 2026-02-05
 ---
 
 # Elixir Performance Standards
@@ -970,7 +969,5 @@ Before deploying Elixir services to production:
 - [ ] Load tests passing SLO targets
 
 ---
-
-**Last Updated**: 2026-02-05
 
 **Status**: Active (mandatory for all demo Elixir services)

@@ -10,8 +10,6 @@ tags:
   - planning
   - verification
   - subagents
-created: 2026-03-09
-updated: 2026-03-28
 ---
 
 # Agent Workflow Orchestration Convention
@@ -339,5 +337,3 @@ After any correction, update `local-temp/lessons.md`. This is the direct applica
 - [plan-execution workflow](../../workflows/plan/plan-execution.md) - Execute plans with progress tracking and verification (calling context orchestrates; no dedicated subagent)
 
 ---
-
-**Last Updated**: 2026-03-28

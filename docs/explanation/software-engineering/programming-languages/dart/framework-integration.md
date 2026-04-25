@@ -15,8 +15,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Dart Framework Integration Standards
@@ -728,6 +726,6 @@ Framework integration standards are enforced through:
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Dart Version**: Dart 3.0+ (recommended), 3.5 (latest stable)
 **Framework Stack**: Flutter, Riverpod, shelf, shelf_router, dio

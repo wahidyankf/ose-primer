@@ -16,8 +16,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Kotlin Build Configuration Standards
@@ -474,5 +472,5 @@ zipStorePath=wrapper/dists
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Gradle Version**: 8.12 | Kotlin Version: 2.1.0 | Build Tool: Gradle KTS

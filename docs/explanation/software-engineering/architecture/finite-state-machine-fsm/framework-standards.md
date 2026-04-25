@@ -9,8 +9,6 @@ tags:
   - xstate
 principles:
   - automation-over-manual
-created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # FSM Framework Standards
@@ -67,5 +65,3 @@ const machine = createMachine({
 **MUST**: Use explicit state type (not strings).
 
 ---
-
-**Last Updated**: 2026-02-09

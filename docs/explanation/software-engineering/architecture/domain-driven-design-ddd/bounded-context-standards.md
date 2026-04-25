@@ -10,8 +10,6 @@ tags:
   - standards
 principles:
   - explicit-over-implicit
-created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # DDD Bounded Context Standards
@@ -123,5 +121,3 @@ zakat-context/
 | Anticorruption Layer | Internal → Legacy External (translates) | Adapter layer                |
 
 ---
-
-**Last Updated**: 2026-02-09

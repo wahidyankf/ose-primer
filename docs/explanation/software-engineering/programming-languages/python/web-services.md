@@ -19,7 +19,6 @@ related:
   - ./type-safety.md
 principles:
   - explicit-over-implicit
-updated: 2025-01-23
 ---
 
 # Python Web Services
@@ -1993,7 +1992,6 @@ async def create_donation_with_broadcast(
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: demo Documentation Team
 

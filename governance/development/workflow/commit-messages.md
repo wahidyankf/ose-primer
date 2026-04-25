@@ -8,8 +8,6 @@ tags:
   - git
   - development
   - code-quality
-created: 2025-11-24
-updated: 2025-11-29
 ---
 
 # Commit Message Convention
@@ -833,5 +831,3 @@ Closes #123
 - [Semantic Versioning](https://semver.org/) - Version numbering standard
 
 ---
-
-**Last Updated**: 2025-11-29

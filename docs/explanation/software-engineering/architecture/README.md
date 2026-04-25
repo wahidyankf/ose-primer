@@ -9,8 +9,6 @@ tags:
   - domain-driven-design
   - software-design
   - index
-created: 2026-01-20
-updated: 2026-01-20
 ---
 
 # Architecture
@@ -123,5 +121,3 @@ See DDD and C4 Integration for comprehensive examples and guidance.
 - **[Content Quality Standards](../../../../governance/conventions/writing/quality.md)** - Documentation writing guidelines
 
 ---
-
-**Last Updated**: 2026-01-20

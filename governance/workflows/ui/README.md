@@ -8,8 +8,6 @@ tags:
   - workflows
   - ui
   - components
-created: 2026-03-28
-updated: 2026-03-28
 ---
 
 # UI Workflows
@@ -29,5 +27,3 @@ Orchestrated multi-step processes for UI component quality automation.
 - [Workflows Index](../README.md) — All available workflows
 
 ---
-
-**Last Updated**: 2026-03-28

@@ -21,7 +21,6 @@ related:
 principles:
   - simplicity-over-complexity
   - explicit-over-implicit
-updated: 2026-01-24
 ---
 
 # Python Anti-Patterns
@@ -3824,7 +3823,6 @@ py-spy top --pid <PID>
 
 ---
 
-**Last Updated**: 2026-01-24
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: demo Documentation Team
 **Document Size**: 3,700+ lines (comprehensive anti-patterns guide)

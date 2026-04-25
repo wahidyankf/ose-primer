@@ -8,8 +8,6 @@ tags:
   - model-selection
   - standards
   - development
-created: 2026-04-03
-updated: 2026-04-19
 ---
 
 # AI Agent Model Selection Convention
@@ -360,5 +358,3 @@ The following agents enforce or assist with model selection:
 - `repo-rules-fixer` -- Fixes model selection issues
 
 ---
-
-**Last Updated**: 2026-04-19

@@ -1257,5 +1257,3 @@ end
 - **[Configuration](configuration.md)** - Performance-related configuration
 
 ---
-
-**Last Updated**: 2026-01-25

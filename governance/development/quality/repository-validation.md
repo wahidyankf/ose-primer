@@ -10,8 +10,6 @@ tags:
   - awk
   - frontmatter
   - automation
-created: 2025-12-14
-updated: 2025-12-14
 ---
 
 # Repository Validation Methodology Convention

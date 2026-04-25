@@ -10,8 +10,6 @@ tags:
   - domain-driven-design
   - patterns
   - index
-created: 2026-01-20
-updated: 2026-03-26
 ---
 
 # Software Design
@@ -232,5 +230,3 @@ The open-sharia-enterprise project applies both C4 and DDD principles:
 - **[Content Quality Standards](../../../governance/conventions/writing/quality.md)** - Documentation writing guidelines
 
 ---
-
-**Last Updated**: 2026-03-09

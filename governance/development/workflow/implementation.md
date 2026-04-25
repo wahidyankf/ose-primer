@@ -12,8 +12,6 @@ tags:
   - surgical-changes
   - goal-driven
   - test-driven
-created: 2025-12-15
-updated: 2026-03-28
 ---
 
 # Implementation Workflow
@@ -940,5 +938,3 @@ function processVideoFrame(frame: Frame): ProcessedFrame {
 - [Agent Workflow Orchestration](../agents/agent-workflow-orchestration.md) - How agents apply this workflow in multi-step task execution
 
 ---
-
-**Last Updated**: 2026-03-28

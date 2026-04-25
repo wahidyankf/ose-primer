@@ -22,5 +22,3 @@ Standards for cross-referencing and internal linking in markdown documentation, 
 - [Diátaxis Framework](../structure/diataxis-framework.md) - Documentation organization affects link paths
 
 ---
-
-**Last Updated**: 2026-02-07

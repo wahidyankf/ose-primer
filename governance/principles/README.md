@@ -8,8 +8,6 @@ tags:
   - values
   - philosophy
   - index
-created: 2025-12-15
-updated: 2026-03-28
 ---
 
 # Core Principles
@@ -408,5 +406,3 @@ Check that changes:
 - [Explanation Index](../../docs/explanation/README.md) - All conceptual documentation
 
 ---
-
-**Last Updated**: 2026-03-28

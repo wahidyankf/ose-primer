@@ -9,8 +9,6 @@ tags:
   - offload
   - zero-loss
   - documentation
-created: 2025-12-14
-updated: 2025-12-14
 ---
 
 # Content Preservation Convention

@@ -14,8 +14,6 @@ principles:
   - documentation-first
   - explicit-over-implicit
   - automation-over-manual
-created: 2026-03-04
-updated: 2026-03-04
 ---
 
 # Playwright BDD Integration (playwright-bdd)
@@ -302,5 +300,3 @@ npx bddgen && npx playwright test
   E2E test project README
 
 ---
-
-**Last Updated**: 2026-03-04

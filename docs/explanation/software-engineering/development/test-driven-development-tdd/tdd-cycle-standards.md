@@ -11,8 +11,6 @@ principles:
   - automation-over-manual
   - explicit-over-implicit
   - simplicity-over-complexity
-created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # TDD Red-Green-Refactor Cycle Standards
@@ -136,5 +134,3 @@ public void activate() {
 ```
 
 ---
-
-**Last Updated**: 2026-02-09

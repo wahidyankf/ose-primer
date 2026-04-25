@@ -33,5 +33,3 @@ These workflows define **WHEN and HOW to validate repository rules**, orchestrat
 - [Core Principles](../../principles/README.md) - Layer 1 governance
 
 ---
-
-**Last Updated**: 2026-01-01

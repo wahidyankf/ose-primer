@@ -11,8 +11,6 @@ tags:
 principles:
   - automation-over-manual
   - reproducibility
-created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # C4 Tooling Standards
@@ -278,5 +276,3 @@ Before committing a C4 diagram, verify:
 - **[Reproducibility First](../../../../../governance/principles/software-engineering/reproducibility.md)**: By mandating Mermaid with standardized syntax and color palette, diagrams can be consistently reproduced across environments, editors, and time periods.
 
 ---
-
-**Last Updated**: 2026-02-09

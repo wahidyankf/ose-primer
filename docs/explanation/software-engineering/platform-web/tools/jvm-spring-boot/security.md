@@ -16,8 +16,6 @@ principles:
   - explicit-over-implicit
   - simplicity-over-complexity
   - immutability
-created: 2026-01-26
-updated: 2026-01-26
 related:
   - ./best-practices.md
   - ./rest-apis.md
@@ -2572,5 +2570,3 @@ Production deployment security checklist for Spring Boot applications.
 **Hands-on Learning (demo)**:
 
 ---
-
-**Last Updated**: 2026-01-26

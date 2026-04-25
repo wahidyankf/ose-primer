@@ -16,8 +16,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # C# Type Safety Standards
@@ -361,5 +359,5 @@ public ZakatResult CalculateZakat(Money wealth, Money nisab) =>
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **.NET Version**: .NET 8 LTS (C# 12), Generic Math (C# 11+)

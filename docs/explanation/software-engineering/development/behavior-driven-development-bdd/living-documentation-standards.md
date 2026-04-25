@@ -10,8 +10,6 @@ tags:
 principles:
   - automation-over-manual
   - documentation-first
-created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # Living Documentation Standards
@@ -158,5 +156,3 @@ Shariah officer: Dr. Ahmad bin Abdullah
 ```
 
 ---
-
-**Last Updated**: 2026-02-09

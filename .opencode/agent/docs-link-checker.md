@@ -23,8 +23,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Checker (green)
-- **Created**: 2025-11-29
-- **Last Updated**: 2026-04-04
 
 ### UUID Chain Generation
 

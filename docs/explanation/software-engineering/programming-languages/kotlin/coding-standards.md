@@ -15,8 +15,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Kotlin Coding Standards
@@ -693,5 +691,5 @@ These standards are enforced through:
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Kotlin Version**: 2.1 (supports 1.9+)

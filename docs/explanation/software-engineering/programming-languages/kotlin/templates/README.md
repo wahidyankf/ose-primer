@@ -36,5 +36,3 @@ Templates in this directory can be used as:
 - [File Naming Convention](../../../../../../governance/conventions/structure/file-naming.md) - Naming patterns
 
 ---
-
-**Last Updated**: 2026-03-09

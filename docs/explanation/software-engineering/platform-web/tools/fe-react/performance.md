@@ -14,7 +14,6 @@ related:
   - ./best-practices.md
 principles:
   - automation-over-manual
-updated: 2026-01-25
 ---
 
 # React Performance
@@ -925,5 +924,3 @@ export const DonationCard = React.memo<DonationCardProps>(
 - **[Build & Deployment](build-deployment.md)** - Production optimization
 
 ---
-
-**Last Updated**: 2026-01-25

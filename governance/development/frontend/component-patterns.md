@@ -9,8 +9,6 @@ tags:
   - radix
   - cva
   - shadcn
-created: 2026-03-28
-updated: 2026-03-28
 ---
 
 # Component Patterns Convention
@@ -298,5 +296,3 @@ Note: `demo-fe-ts-nextjs` currently uses `React.forwardRef` and `@radix-ui/react
 - [Indentation Convention](../../conventions/formatting/indentation.md) — All TypeScript and TSX examples in this document use 2-space indentation per the project standard.
 
 ---
-
-**Last Updated**: 2026-03-28

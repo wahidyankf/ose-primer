@@ -9,8 +9,6 @@ tags:
   - delegation
   - factual-validation
   - governance
-created: 2026-04-16
-updated: 2026-04-16
 ---
 
 # Web Research Delegation Convention
@@ -180,5 +178,3 @@ To validate an agent complies with this convention:
 - [Repository Governance Architecture](../../repository-governance-architecture.md) — six-layer hierarchy. This convention is Layer 2, governing behaviour of Layer 4 agents consumed at runtime by Layer 5 workflows.
 
 ---
-
-**Last Updated**: 2026-04-16

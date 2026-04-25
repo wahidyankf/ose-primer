@@ -16,7 +16,6 @@ related:
 principles:
   - explicit-over-implicit
   - pure-functions
-updated: 2026-01-25
 ---
 
 # React Hooks
@@ -1220,5 +1219,3 @@ function ItemComponent({ item }) {
 - **[Best Practices](best-practices.md)** - Production standards
 
 ---
-
-**Last Updated**: 2026-01-25

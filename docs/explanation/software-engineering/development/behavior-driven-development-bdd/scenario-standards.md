@@ -10,8 +10,6 @@ tags:
 principles:
   - explicit-over-implicit
   - reproducibility
-created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # BDD Scenario Standards
@@ -142,5 +140,3 @@ Feature: Campaign Progress Tracking
 ```
 
 ---
-
-**Last Updated**: 2026-02-09

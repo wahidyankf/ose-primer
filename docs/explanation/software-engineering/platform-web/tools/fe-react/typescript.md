@@ -14,7 +14,6 @@ related:
   - ./best-practices.md
 principles:
   - explicit-over-implicit
-updated: 2026-01-25
 ---
 
 # React TypeScript Integration
@@ -969,5 +968,3 @@ if (response.success) {
 - **[TypeScript Language Guide](../../../programming-languages/typescript/README.md)** - TypeScript fundamentals
 
 ---
-
-**Last Updated**: 2026-01-25

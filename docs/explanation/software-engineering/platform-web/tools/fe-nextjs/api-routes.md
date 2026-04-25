@@ -18,8 +18,6 @@ principles:
   - explicit-over-implicit
   - pure-functions
   - automation-over-manual
-created: 2026-01-26
-updated: 2026-01-26
 ---
 
 # Next.js API Routes
@@ -915,5 +913,4 @@ export async function GET() {
 
 ---
 
-**Last Updated**: 2026-01-26
 **Next.js Version**: 14+ (Route Handlers stable)

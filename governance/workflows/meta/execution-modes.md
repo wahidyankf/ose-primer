@@ -8,8 +8,6 @@ tags:
   - execution-mode
   - orchestration
   - conventions
-created: 2026-01-05
-updated: 2026-03-24
 ---
 
 # Workflow Execution Mode Convention
@@ -353,5 +351,3 @@ Agent tool invokes plan-fixer subagent → fixes persist
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md) - Validation workflow pattern
 
 ---
-
-**Last Updated**: 2026-03-24

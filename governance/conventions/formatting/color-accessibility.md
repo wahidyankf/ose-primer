@@ -11,8 +11,6 @@ tags:
   - conventions
   - mermaid-diagrams
   - color-palette
-created: 2025-12-04
-updated: 2025-12-22
 ---
 
 # Color Accessibility Convention
@@ -929,5 +927,3 @@ Color accessibility benefits everyone. Clear, professional color usage:
 By following this convention, we create documentation and visualizations that are inclusive, professional, and universally accessible.
 
 ---
-
-**Last Updated**: 2025-12-22

@@ -6,8 +6,6 @@ tags:
   - architecture
   - c4-model
   - components
-created: 2025-11-29
-updated: 2026-03-06
 ---
 
 # Components & Code Architecture

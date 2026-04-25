@@ -50,5 +50,3 @@ This set of conventions implements/respects the following core principles:
 - **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: Formatting conventions use simple, consistent patterns (2-space indentation, relative paths, standard timestamps) rather than complex custom solutions.
 
 ---
-
-**Last Updated**: 2026-01-30

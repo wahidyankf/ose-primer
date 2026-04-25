@@ -9,8 +9,6 @@ tags:
   - integration
 principles:
   - explicit-over-implicit
-created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # FSM Integration Standards
@@ -47,5 +45,3 @@ public class ZakatAssessment {
 **REQUIRED**: Log all state changes with timestamp and user.
 
 ---
-
-**Last Updated**: 2026-02-09

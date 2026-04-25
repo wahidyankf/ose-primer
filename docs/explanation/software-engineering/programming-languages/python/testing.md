@@ -15,8 +15,6 @@ principles:
   - automation-over-manual
   - explicit-over-implicit
   - reproducibility
-created: 2026-02-22
-updated: 2026-02-22
 ---
 
 # Python Testing

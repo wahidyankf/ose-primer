@@ -10,8 +10,6 @@ tags:
 principles:
   - explicit-over-implicit
   - immutability
-created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # DDD Aggregate Standards
@@ -70,5 +68,3 @@ public record ZakatAssessment(
 **WHY**: Large aggregates cause performance issues and concurrency conflicts.
 
 ---
-
-**Last Updated**: 2026-02-09

@@ -16,8 +16,6 @@ principles:
   - explicit-over-implicit
   - simplicity-over-complexity
   - performance
-created: 2026-01-26
-updated: 2026-01-26
 related:
   - ./best-practices.md
   - ./security.md
@@ -1938,5 +1936,3 @@ Production guidelines for Spring Data JPA.
 - [Spring Boot Performance](./performance.md) - Query optimization
 
 ---
-
-**Last Updated**: 2026-01-26

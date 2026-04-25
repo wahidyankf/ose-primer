@@ -11,8 +11,6 @@ tags:
   - organization
   - c4-diagrams
   - openapi
-created: 2026-04-02
-updated: 2026-04-02
 ---
 
 # Specs Directory Structure Convention
@@ -245,5 +243,3 @@ When reviewing changes to the `specs/` directory, verify:
 - [Plans Organization Convention](./plans.md) - Similar convention for plans/ directory structure
 
 ---
-
-**Last Updated**: 2026-04-02

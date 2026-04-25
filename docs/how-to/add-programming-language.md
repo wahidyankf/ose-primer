@@ -8,8 +8,6 @@ tags:
   - content-creation
   - tutorials
   - implementation
-created: 2025-12-18
-updated: 2025-12-18
 ---
 
 # How to Add a Programming Language

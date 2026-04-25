@@ -58,5 +58,3 @@ This set of development practices respects the following conventions:
 - **[File Naming Convention](../../conventions/structure/file-naming.md)**: Agent files use lowercase kebab-case basenames (e.g., `docs-maker.md`, `repo-rules-checker.md`) following the repository naming convention.
 
 ---
-
-**Last Updated**: 2026-03-09

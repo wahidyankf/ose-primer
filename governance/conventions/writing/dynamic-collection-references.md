@@ -8,8 +8,6 @@ tags:
   - documentation
   - maintenance
   - collections
-created: 2026-02-22
-updated: 2026-02-22
 ---
 
 # Dynamic Collection References Convention
@@ -278,5 +276,3 @@ The following agents check and enforce this convention:
 - `repo-rules-fixer` - Fixes convention violations
 
 ---
-
-**Last Updated**: 2026-02-22

@@ -38,8 +38,6 @@ parameters:
     required: true | false
     default: value
     description: Parameter purpose
-created: YYYY-MM-DD
-updated: YYYY-MM-DD
 ---
 ```
 

@@ -16,8 +16,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Rust Memory Management Standards
@@ -392,5 +390,5 @@ struct ContractWithIdx {
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Rust Version**: 1.82+ (stable), Edition 2021

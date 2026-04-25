@@ -7,8 +7,6 @@ tags:
   - benchmarks
   - model-selection
   - reference
-created: 2026-04-19
-updated: 2026-04-19
 ---
 
 # AI Model Benchmarks Reference
@@ -206,5 +204,3 @@ above (e.g., `#claude-opus-47`, `#glm-51`).
 12. Arena.ai Code leaderboard — <https://arena.ai> (2026-04-17)
 
 ---
-
-**Last Updated**: 2026-04-19

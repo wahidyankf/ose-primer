@@ -19,8 +19,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # F# Functional Programming Standards
@@ -360,5 +358,5 @@ let processZakat (processor: ZakatProcessor) = { processor with Status = Process
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **F# Version**: F# 8 / .NET 8 LTS

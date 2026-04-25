@@ -19,7 +19,6 @@ principles:
   - explicit-over-implicit
   - simplicity-over-complexity
   - composition-over-inheritance
-updated: 2025-01-23
 ---
 
 # Python Classes and Protocols
@@ -702,7 +701,6 @@ graph TD
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: demo Documentation Team
 

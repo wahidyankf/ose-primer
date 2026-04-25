@@ -16,8 +16,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # C# Code Quality Standards
@@ -328,5 +326,5 @@ SonarAnalyzer.CSharp provides additional rules beyond the built-in Roslyn analyz
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **.NET Version**: .NET 8 LTS (C# 12)

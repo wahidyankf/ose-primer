@@ -14,8 +14,6 @@ tags:
 principles:
   - explicit-over-implicit
   - reproducibility
-created: 2026-02-06
-updated: 2026-02-06
 ---
 
 ## Prerequisite Knowledge
@@ -705,7 +703,5 @@ Before deploying Spring-based financial services, verify:
 - [Spring Boot REST APIs](../jvm-spring-boot/rest-apis.md) - Boot error handling
 
 ---
-
-**Last Updated**: 2026-02-06
 
 **Status**: Mandatory (required for all demo Spring services)

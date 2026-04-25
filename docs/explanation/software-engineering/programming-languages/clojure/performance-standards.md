@@ -15,8 +15,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Clojure Performance Standards
@@ -296,5 +294,5 @@ clojure -J-Xmx512m -J-verbose:gc -M:dev
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Clojure Version**: 1.10+ (baseline), 1.12 (recommended)

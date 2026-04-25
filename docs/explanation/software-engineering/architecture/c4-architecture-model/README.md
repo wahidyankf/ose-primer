@@ -13,8 +13,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
   - automation-over-manual
-created: 2026-01-18
-updated: 2026-02-09
 ---
 
 # C4 Architecture Model
@@ -262,5 +260,3 @@ This documentation implements/respects the following core principles:
 - **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)**: By using Mermaid syntax and automated validation tools, C4 diagram quality is enforced through CI/CD rather than manual review processes.
 
 ---
-
-**Last Updated**: 2026-02-09

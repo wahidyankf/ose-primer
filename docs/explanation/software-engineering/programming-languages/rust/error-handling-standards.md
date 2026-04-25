@@ -16,8 +16,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Rust Error Handling Standards
@@ -377,5 +375,5 @@ pub fn calculate_zakat(wealth: Decimal) -> Result<Decimal, ZakatError> {
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Rust Version**: 1.82+ (stable), Edition 2021

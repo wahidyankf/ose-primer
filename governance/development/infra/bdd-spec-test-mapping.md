@@ -9,8 +9,6 @@ tags:
   - integration-testing
   - spec-coverage
   - demo-be
-created: 2026-03-06
-updated: 2026-04-02
 ---
 
 # BDD Spec-to-Test Mapping Convention

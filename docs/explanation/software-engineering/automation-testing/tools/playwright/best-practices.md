@@ -14,8 +14,6 @@ principles:
   - automation-over-manual
   - explicit-over-implicit
   - reproducibility
-created: 2026-02-08
-updated: 2026-02-08
 ---
 
 # Playwright Best Practices
@@ -88,4 +86,3 @@ page.getByRole("button", { name: "Calculate Zakat" });
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-08

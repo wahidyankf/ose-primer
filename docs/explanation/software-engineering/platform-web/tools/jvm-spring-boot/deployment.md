@@ -16,8 +16,6 @@ principles:
   - reproducibility
   - explicit-over-implicit
   - automation-over-manual
-created: 2026-02-06
-updated: 2026-02-06
 related:
   - ./configuration.md
   - ./observability.md
@@ -1068,4 +1066,3 @@ These deployment standards enforce the the software engineering principles:
 
 **Status**: Mandatory for all Spring Boot applications in demo
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-06
