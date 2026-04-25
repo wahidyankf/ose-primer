@@ -4,7 +4,7 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- [Fix Mermaid Violations](./2026-04-25__fix-mermaid-violations/README.md) — Fix 247 mermaid violations (width_exceeded, label_too_long) across 101 files; warnings deferred
+- [Fix Mermaid Validation and Violations](./2026-04-25__fix-mermaid-validation-and-violations/README.md) — Direction-aware validator fix in rhino-cli (Phase 0) + fix 247 mermaid violations across docs/ (Phase 1)
 
 ## Instructions
 

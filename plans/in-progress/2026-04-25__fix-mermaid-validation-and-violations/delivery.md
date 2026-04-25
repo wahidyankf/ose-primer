@@ -1,4 +1,22 @@
-# Delivery — Fix Mermaid Violations
+# Delivery — Fix Mermaid Validation and Violations
+
+## Phase 0 — Direction-Aware Validator (rhino-cli)
+
+- [ ] Read `apps/rhino-cli/internal/mermaid/validator.go` — understand current
+      `width_exceeded` block before editing
+- [ ] Apply direction-aware logic to `ValidateBlocks` per tech-docs.md Phase 0 spec:
+      use `diagram.Direction` to select `horizontal`/`vertical` dimensions before
+      comparing against `opts.MaxWidth` and `opts.MaxDepth`
+- [ ] Add direction-aware test cases to `validator_test.go` (7 cases per table in
+      tech-docs.md Phase 0)
+- [ ] Run: `npx nx run rhino-cli:test:unit` → must pass
+- [ ] Run: `npx nx run rhino-cli:test:quick` → must pass (coverage ≥ 90%)
+- [ ] Commit:
+      `fix(rhino-cli): make width_exceeded check direction-aware`
+- [ ] Re-audit: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | tee local-temp/mermaid-audit-phase0.txt`
+- [ ] Update Phase 1 batch file lists from `local-temp/mermaid-audit-phase0.txt`
+      (some LR files may drop off; some deeply-chained LR files may appear)
+- [ ] Update the Violation Summary table in README.md with new counts
 
 ## Environment Setup
 
