@@ -88,7 +88,7 @@ end
 The following diagram shows the complete application supervision tree:
 
 ```mermaid
-graph TD
+graph LR
     App[Financial.Application<br/>Root Supervisor]
 
     Repo[Financial.Repo<br/>Database Connection]
@@ -423,7 +423,7 @@ graph TD
     Runtime --> Financial
     Crypto --> Financial
 
-    Note1[Start Order:<br/>1. kernel, stdlib<br/>2. logger, crypto, runtime_tools<br/>3. phoenix, ecto, postgrex<br/>4. financial]
+    Note1[Start Order:<br/>1. kernel, stdlib<br/>2. logger,crypto,runtime_tools<br/>3. phoenix, ecto, postgrex<br/>4. financial]
 
     Financial -.-> Note1
 
@@ -467,8 +467,8 @@ The following diagram shows how configuration is loaded at different stages:
 flowchart TD
     START[Mix Project Start] --> COMPILE{Compile Time}
 
-    COMPILE -->|config.exs| BASE[Base Configuration<br/>Common settings]
-    COMPILE -->|dev.exs/test.exs/prod.exs| ENV[Environment-Specific<br/>Config merged into base]
+    COMPILE --> BASE[Base Configuration<br/>Common settings]
+    COMPILE --> ENV[Environment-Specific<br/>Config merged into base]
 
     BASE --> MERGED[Merged Compile-Time Config]
     ENV --> MERGED
@@ -477,8 +477,8 @@ flowchart TD
 
     BUILD --> RUNTIME{Runtime}
 
-    RUNTIME -->|runtime.exs| RUNTIME_CONFIG[Runtime Configuration<br/>System.get_env]
-    RUNTIME -->|Application.put_env| DYNAMIC[Dynamic Configuration<br/>At application start]
+    RUNTIME --> RUNTIME_CONFIG[Runtime Configuration<br/>System.get_env]
+    RUNTIME --> DYNAMIC[Dynamic Configuration<br/>At application start]
 
     RUNTIME_CONFIG --> FINAL[Final Configuration]
     DYNAMIC --> FINAL
@@ -487,8 +487,8 @@ flowchart TD
 
     ACCESS --> APP[Running Application<br/>Uses configuration]
 
-    Note1[Compile-Time:<br/>- Static values<br/>- Development defaults<br/>- Cannot change without recompile]
-    Note2[Runtime:<br/>- Environment variables<br/>- Secrets from vault<br/>- Can change between deployments]
+    Note1[Compile-Time:<br/>- Static values<br/>- Development defaults<br/>- Needs recompile to change]
+    Note2[Runtime:<br/>- Environment variables<br/>- Secrets from vault<br/>- Can change per deployment]
 
     COMPILE -.-> Note1
     RUNTIME -.-> Note2
@@ -516,7 +516,7 @@ The following diagram shows the relationships between umbrella applications:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
-graph TD
+graph LR
     ROOT[Financial Umbrella<br/>Root Project]
 
     CORE[financial_core<br/>Business Logic & Domain]
@@ -531,10 +531,10 @@ graph TD
     ROOT --> WORKER
     ROOT --> ANALYTICS
 
-    WEB -->|depends on| CORE
-    API -->|depends on| CORE
-    WORKER -->|depends on| CORE
-    ANALYTICS -->|depends on| CORE
+    WEB --> CORE
+    API --> CORE
+    WORKER --> CORE
+    ANALYTICS --> CORE
 
     CORE_MODULES[Campaigns<br/>Donations<br/>Payments<br/>Zakat<br/>Repo]
     WEB_MODULES[Controllers<br/>LiveViews<br/>Templates<br/>Endpoint]
@@ -548,7 +548,7 @@ graph TD
     WORKER -.-> WORKER_MODULES
     ANALYTICS -.-> ANALYTICS_MODULES
 
-    Note1[Dependency Rule:<br/>Core has NO dependencies on other apps<br/>All other apps depend on Core<br/>Web/API/Worker/Analytics are independent]
+    Note1[Dependency Rule:<br/>Core has NO deps on other apps<br/>All other apps depend on Core<br/>Each app is independent]
 
     ROOT -.-> Note1
 

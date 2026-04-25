@@ -165,7 +165,7 @@ demo follows a three-tier Elixir versioning strategy:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Elixir Standards Index<br/>#40;demo#41;"]:::blue
     B["Core Standards"]:::orange
     C["Specialized Standards"]:::teal
