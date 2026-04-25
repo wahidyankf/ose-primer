@@ -68,7 +68,7 @@ Constructor injection is the preferred method in Spring Boot. Dependencies are p
 
 graph TD
     A[Application Start] --> B[Component Scan]
-    B --> C[Find @Component/@Service/@Repository]
+    B --> C[Find Annotated Components]
     C --> D[Build Dependency Graph]
 
     D --> E{Dependencies Ready?}
@@ -471,6 +471,8 @@ Spring manages bean lifecycle from creation to destruction.
 
 ### Spring Bean Lifecycle Flow
 
+**Bean instantiation**:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
@@ -480,33 +482,45 @@ graph TD
     B --> C[Bean Instantiation]
     C --> D[Constructor Called]
     D --> E[Populate Properties<br/>Setter Injection]
-    E --> F{BeanNameAware?}
-    F -->|Yes| G[setBeanName#40;#41;]
-    F -->|No| H[Skip]
-    G --> I{BeanFactoryAware?}
-    H --> I
-    I -->|Yes| J[setBeanFactory#40;#41;]
-    I -->|No| K[Skip]
-    J --> L{ApplicationContextAware?}
-    K --> L
-    L -->|Yes| M[setApplicationContext#40;#41;]
-    L -->|No| N[@PostConstruct Methods]
-    M --> N
+    E --> F[Aware Interfaces<br/>Optional Callbacks]
+
+    style A fill:#0173B2,color:#fff
+    style D fill:#029E73,color:#fff
+    style F fill:#CC78BC,color:#fff
+```
+
+**Bean initialization**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    F[Aware Interfaces<br/>Optional Callbacks]
+    F --> N[@PostConstruct Methods]
     N --> O[afterPropertiesSet#40;#41;<br/>InitializingBean]
     O --> P[Custom init-method]
     P --> Q[Bean Ready for Use]
 
-    Q --> R{Application Shutdown?}
-    R -->|No| Q
+    style F fill:#CC78BC,color:#fff
+    style N fill:#DE8F05,color:#fff
+    style P fill:#DE8F05,color:#fff
+    style Q fill:#CC78BC,color:#fff
+```
+
+**Bean destruction phase**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    Q[Bean Ready for Use] --> R{Application Shutdown?}
     R -->|Yes| S[@PreDestroy Methods]
     S --> T[destroy#40;#41;<br/>DisposableBean]
     T --> U[Custom destroy-method]
     U --> V[Bean Destroyed]
 
-    style A fill:#0173B2,color:#fff
-    style D fill:#029E73,color:#fff
-    style N fill:#DE8F05,color:#fff
-    style P fill:#DE8F05,color:#fff
     style Q fill:#CC78BC,color:#fff
     style S fill:#DE8F05,color:#fff
     style V fill:#0173B2,color:#fff

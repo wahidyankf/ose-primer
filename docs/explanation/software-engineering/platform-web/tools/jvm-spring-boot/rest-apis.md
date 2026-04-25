@@ -45,6 +45,8 @@ Building production-ready RESTful APIs requires proper controller design, reques
 
 ### Request Pipeline Architecture
 
+**Request routing and security**:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
@@ -56,54 +58,72 @@ graph TD
     D -->|Preflight| E[CORS Filter]
     D -->|No| F[Security Filter]
     E --> F
-
     F --> G{Authenticated?}
     G -->|No| H[401 Unauthorized]
     G -->|Yes| I[Handler Mapping]
-
     I --> J{Route Found?}
     J -->|No| K[404 Not Found]
     J -->|Yes| L[Controller Method]
 
-    L --> M{@Valid Present?}
+    style A fill:#0173B2,color:#fff
+    style L fill:#029E73,color:#fff
+```
+
+**Controller execution and service layer**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    L[Controller Method] --> M{@Valid Present?}
     M -->|Yes| N[Validate DTO]
     M -->|No| O[Execute Method]
-
     N --> P{Valid?}
-    P -->|No| Q[MethodArgumentNotValidException]
+    P -->|No| Q[Validation Exception]
     P -->|Yes| O
-
     O --> R[Service Layer]
     R --> S[(Database)]
     S --> T{Result?}
     T -->|Success| U[Map to Response DTO]
     T -->|Error| V[Business Exception]
 
-    U --> W[HTTP 200/201]
-    V --> X[ExceptionHandler]
+    style L fill:#029E73,color:#fff
+    style R fill:#CC78BC,color:#fff
+    style S fill:#DE8F05,color:#fff
+```
 
+**Exception handling**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    V[Business Exception] --> X[ExceptionHandler]
+    Q[Validation Exception] --> X
     X --> Y{Exception Type?}
     Y -->|Validation| Z[422 Unprocessable]
     Y -->|Not Found| AA[404 Not Found]
     Y -->|Other| AB[500 Server Error]
 
-    Q --> X
-
-    Z --> AC[Error Response JSON]
-    AA --> AC
-    AB --> AC
-    W --> AD[Success Response JSON]
-
-    AC --> AE[HTTP Response]
-    AD --> AE
-    H --> AE
-    K --> AE
-
-    style A fill:#0173B2,color:#fff
-    style L fill:#029E73,color:#fff
-    style R fill:#CC78BC,color:#fff
-    style S fill:#DE8F05,color:#fff
     style X fill:#029E73,color:#fff
+```
+
+**Response assembly**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    Z[422 Unprocessable] --> AC[Error Response JSON]
+    AA[404 Not Found] --> AC
+    AB[500 Server Error] --> AC
+    U[Map to Response DTO] --> W[HTTP 200/201]
+    AC --> AE[HTTP Response]
+    W --> AE
+
     style AE fill:#0173B2,color:#fff
 ```
 

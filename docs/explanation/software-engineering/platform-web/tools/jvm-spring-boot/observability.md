@@ -73,61 +73,79 @@ Observability is the ability to understand system internal state from external o
 
 ### Observability Architecture
 
+**Metrics collection**:
+
 ```mermaid
-%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph TD
-    subgraph "Spring Boot Application"
-        APP[Application Code<br/>Controllers, Services]
-        ACT[Spring Boot Actuator<br/>Endpoints]
-        MIC[Micrometer<br/>Metrics Facade]
-    end
-
-    subgraph "Metrics Pipeline"
-        PROM[Prometheus<br/>Time-Series DB]
-        GRAF[Grafana<br/>Visualization]
-        ALERT[AlertManager<br/>Notifications]
-    end
-
-    subgraph "Logging Pipeline"
-        LOG[Logback/Log4j2<br/>Structured Logging]
-        AGG[Log Aggregator<br/>ELK/Loki]
-        DASH[Log Dashboard<br/>Kibana]
-    end
-
-    subgraph "Tracing Pipeline"
-        OTEL[OpenTelemetry<br/>Instrumentation]
-        JAEGER[Jaeger/Zipkin<br/>Trace Storage]
-        TRACE[Trace Viewer<br/>Distributed Tracing]
-    end
+    APP[Application Code<br/>Controllers, Services]
+    ACT[Spring Boot Actuator]
+    MIC[Micrometer<br/>Metrics Facade]
+    PROM[Prometheus<br/>Time-Series DB]
 
     APP -->|Emits Metrics| MIC
-    APP -->|Writes Logs| LOG
-    APP -->|Spans| OTEL
     ACT -->|Exposes| MIC
-
-    MIC -->|Scrapes /actuator/prometheus| PROM
-    PROM -->|Queries| GRAF
-    PROM -->|Triggers| ALERT
-
-    LOG -->|Ships| AGG
-    AGG -->|Visualizes| DASH
-
-    OTEL -->|Exports| JAEGER
-    JAEGER -->|Displays| TRACE
+    MIC -->|Scrapes| PROM
 
     style APP fill:#0173B2,stroke:#000,color:#fff
     style ACT fill:#0173B2,stroke:#000,color:#fff
     style MIC fill:#0173B2,stroke:#000,color:#fff
     style PROM fill:#DE8F05,stroke:#000,color:#000
+```
+
+**Metrics visualization and alerting**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph TD
+    PROM[Prometheus<br/>Time-Series DB]
+    GRAF[Grafana<br/>Visualization]
+    ALERT[AlertManager<br/>Notifications]
+
+    PROM -->|Queries| GRAF
+    PROM -->|Triggers| ALERT
+
+    style PROM fill:#DE8F05,stroke:#000,color:#000
     style GRAF fill:#DE8F05,stroke:#000,color:#000
     style ALERT fill:#DE8F05,stroke:#000,color:#000
+```
+
+**Logging pipeline**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph TD
+    APP[Application Code<br/>Controllers, Services]
+    LOG[Logback/Log4j2<br/>Structured Logging]
+    AGG[Log Aggregator<br/>ELK/Loki]
+
+    APP -->|Writes Logs| LOG
+    LOG -->|Ships| AGG
+
+    style APP fill:#0173B2,stroke:#000,color:#fff
     style LOG fill:#029E73,stroke:#000,color:#fff
     style AGG fill:#029E73,stroke:#000,color:#fff
-    style DASH fill:#029E73,stroke:#000,color:#fff
+```
+
+**Tracing pipeline**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph TD
+    APP[Application Code<br/>Controllers, Services]
+    OTEL[OpenTelemetry<br/>Instrumentation]
+    JAEGER[Jaeger/Zipkin<br/>Trace Storage]
+
+    APP -->|Spans| OTEL
+    OTEL -->|Exports| JAEGER
+
+    style APP fill:#0173B2,stroke:#000,color:#fff
     style OTEL fill:#CC78BC,stroke:#000,color:#fff
     style JAEGER fill:#CC78BC,stroke:#000,color:#fff
-    style TRACE fill:#CC78BC,stroke:#000,color:#fff
 ```
 
 **Architecture Components**:

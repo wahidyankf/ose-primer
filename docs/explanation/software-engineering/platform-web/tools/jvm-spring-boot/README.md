@@ -231,46 +231,78 @@ Common mistakes and problematic patterns to avoid.
 
 ### Documentation Organization
 
+**Core patterns**:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 flowchart TD
-    A["Spring Boot Documentation"]:::blue
+    A["Spring Boot Docs"]:::blue
     B["Core Patterns"]:::teal
-    C["Application Layers"]:::teal
-    D["Advanced Topics"]:::purple
-    E["Integration"]:::orange
-    F["Templates"]:::purple
-
     A --> B
-    A --> C
-    A --> D
-    A --> E
-    A --> F
-
     B --> B1["Idioms"]
     B --> B2["Best Practices"]
     B --> B3["Anti-Patterns"]
 
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
+**Application layers**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+flowchart TD
+    A["Spring Boot Docs"]:::blue
+    C["Application Layers"]:::teal
+    A --> C
     C --> C1["Configuration"]
     C --> C2["Dependency Injection"]
     C --> C3["REST APIs"]
     C --> C4["Data Access"]
 
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
+**Advanced topics**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+flowchart TD
+    A["Spring Boot Docs"]:::blue
+    D["Advanced Topics"]:::purple
+    A --> D
     D --> D1["Security"]
     D --> D2["Testing"]
     D --> D3["Observability"]
     D --> D4["Performance"]
 
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+```
+
+**Integration topics**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+flowchart TD
+    A["Spring Boot Docs"]:::blue
+    E["Integration"]:::orange
+    A --> E
     E --> E1["Domain-Driven Design"]
     E --> E2["Functional Programming"]
     E --> E3["Version Migration"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Specialized Topics

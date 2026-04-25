@@ -57,6 +57,8 @@ Performance optimization is critical for production Spring Boot applications. Th
 
 ### Performance Optimization Decision Tree
 
+**CPU and Memory bottlenecks**:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
@@ -64,14 +66,32 @@ graph TD
     A[Performance Issue Detected] --> B{Identify Bottleneck}
     B -->|High CPU| C{CPU Type?}
     B -->|High Memory| D{Memory Type?}
-    B -->|Slow Response| E{Latency Source?}
-    B -->|Low Throughput| F{Throughput Limit?}
 
     C -->|GC Pauses| G[Tune GC<br/>Adjust Heap<br/>Choose Collector]
     C -->|Application Logic| H[Profile Code<br/>Optimize Algorithms<br/>Use Async]
 
     D -->|Heap Usage| I[Increase Heap<br/>Fix Memory Leaks<br/>Optimize Objects]
     D -->|Metaspace| J[Increase Metaspace<br/>Reduce Classes<br/>Check ClassLoaders]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#0173B2,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#DE8F05,stroke:#000,color:#000
+    style G fill:#029E73,stroke:#000,color:#fff
+    style H fill:#029E73,stroke:#000,color:#fff
+    style I fill:#029E73,stroke:#000,color:#fff
+    style J fill:#029E73,stroke:#000,color:#fff
+```
+
+**Response and Throughput bottlenecks**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph TD
+    A[Performance Issue Detected] --> B{Identify Bottleneck}
+    B -->|Slow Response| E{Latency Source?}
+    B -->|Low Throughput| F{Throughput Limit?}
 
     E -->|Database| K[Add Caching<br/>Optimize Queries<br/>Tune Connection Pool]
     E -->|External API| L[Use Circuit Breaker<br/>Add Timeout<br/>Cache Responses]
@@ -83,14 +103,8 @@ graph TD
 
     style A fill:#0173B2,stroke:#000,color:#fff
     style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#DE8F05,stroke:#000,color:#000
     style E fill:#DE8F05,stroke:#000,color:#000
     style F fill:#DE8F05,stroke:#000,color:#000
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#029E73,stroke:#000,color:#fff
-    style I fill:#029E73,stroke:#000,color:#fff
-    style J fill:#029E73,stroke:#000,color:#fff
     style K fill:#029E73,stroke:#000,color:#fff
     style L fill:#029E73,stroke:#000,color:#fff
     style M fill:#029E73,stroke:#000,color:#fff
