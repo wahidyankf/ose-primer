@@ -376,7 +376,7 @@ def filter_qualifying_wealth(
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
-graph LR
+graph TD
   A[Input List<br/>Wealth Amounts] --> B[filter<br/>amount >= nisab]
   B --> C[map<br/>amount * 0.025]
   C --> D[reduce<br/>sum all values]
@@ -656,7 +656,7 @@ total_zakat = sum_results(
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
-graph LR
+graph TD
   A[Iterable Object] --> B[__iter__#40;#41;<br/>Returns iterator]
   B --> C[Iterator Object]
 

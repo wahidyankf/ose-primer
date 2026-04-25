@@ -149,36 +149,16 @@ Comprehensions provide concise syntax for creating collections from iterables.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["Transform<br/>Collection?"]:::blue --> B{"Output<br/>Type?"}:::orange
+    A["Output Type?"]:::orange --> B["List: [x for x in]"]:::teal
+    A --> C["Dict: {k:v for}"]:::teal
+    A --> D["Set: {x for x in}"]:::teal
+    A --> E["Gen: (x for x in)"]:::teal
 
-    B -->|"List"| C["✅ List Comprehension<br/>[x*2 for x in items]"]:::teal
-    B -->|"Dict"| D["✅ Dict Comprehension<br/>{k: v for k, v in pairs}"]:::teal
-    B -->|"Set"| E["✅ Set Comprehension<br/>{x for x in items}"]:::teal
-    B -->|"Generator"| F["✅ Generator Expression<br/>(x*2 for x in items)"]:::teal
-
-    C --> G{"Need<br/>Filtering?"}:::orange
-    D --> G
-    E --> G
-    F --> G
-
-    G -->|"Yes"| H["Add if clause<br/>if condition"]:::purple
-    G -->|"No"| I["Simple transformation"]:::purple
-
-    H --> J["Comprehension Benefits"]:::teal
-    I --> J
-
-    J --> J1["• Faster than loops"]
-    J --> J2["• More readable"]
-    J --> J3["• Single expression"]
-    J --> J4["• Optimized in C"]
-
-    Note["Use generator<br/>for large datasets<br/>(lazy evaluation)"]
-
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
 ```
+
+**Choosing comprehension type**: list for ordered sequences, dict for key-value pairs, set for unique values, generator expression for large datasets (lazy evaluation, constant memory). Add `if condition` to any comprehension for filtering. All comprehension types are faster than equivalent loops and optimized at the C level.
 
 **Key Principles**:
 
@@ -537,7 +517,7 @@ Decorators modify or enhance functions and methods without changing their implem
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph LR
+graph TD
     A["Original Function<br/>def calculate()"]:::blue --> B["Apply Decorator<br/>@cache"]:::orange
 
     B --> C["Wrapped Function<br/>(enhanced)"]:::purple
@@ -551,8 +531,6 @@ graph LR
 
     G --> H["Cache<br/>Result"]:::purple
     H --> I["✅ Return<br/>Result"]:::teal
-
-    Note["Common Decorators:<br/>• @lru_cache (memoization)<br/>• @property (getter)<br/>• @staticmethod<br/>• @classmethod"]
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
@@ -684,32 +662,15 @@ Generators provide memory-efficient iteration over sequences.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["Process<br/>Collection?"]:::blue --> B{"Dataset<br/>Size?"}:::orange
+    A["Dataset Size?"]:::orange --> B["Large or single-pass:<br/>Generator (yield)"]:::teal
+    A --> C["Small or multi-pass:<br/>List (return)"]:::purple
 
-    B -->|"Large (>10K items)"| C["✅ Use Generator<br/>(yield values)"]:::teal
-    B -->|"Small (<10K items)"| D{"Multiple<br/>Passes Needed?"}:::orange
-
-    D -->|"Yes"| E["Use List<br/>(materialize)"]:::purple
-    D -->|"No"| C
-
-    C --> F["Generator Benefits"]:::teal
-    F --> F1["• Constant memory"]
-    F --> F2["• Lazy evaluation"]
-    F --> F3["• Stream processing"]
-    F --> F4["• Composable pipelines"]
-
-    E --> G["List Benefits"]:::purple
-    G --> G1["• Random access"]
-    G --> G2["• Multiple iterations"]
-    G --> G3["• Known length"]
-
-    Note["Use generator for:<br/>• File processing<br/>• Database cursors<br/>• Infinite sequences<br/>• Memory-constrained"]
-
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
     classDef purple fill:#CC78BC,stroke:#000,color:#000
 ```
+
+**Generator benefits**: constant memory, lazy evaluation, stream processing, composable pipelines — ideal for file processing, database cursors, infinite sequences, and memory-constrained environments. **List benefits**: random access, multiple iterations, known length — use when dataset is small or needs multiple passes.
 
 **Key Principles**:
 

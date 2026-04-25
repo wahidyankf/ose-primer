@@ -1047,24 +1047,13 @@ graph TD
     B --> B2[donation/]
     B --> B3[qard_hasan/]
 
-    B1 --> B1A[__init__.py]
-    B1 --> B1B[models.py]
-    B1 --> B1C[calculator.py]
-    B1 --> B1D[repository.py]
-
-    C --> C1[services/]
-    C --> C2[commands/]
-    C --> C3[queries/]
-
-    D --> D1[database/]
-    D --> D2[api/]
-    D --> D3[messaging/]
-
     style A fill:#0173B2,stroke:#000,color:#fff
     style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#000
 ```
+
+**Domain package example** (`domain/zakat/`): `__init__.py`, `models.py`, `calculator.py`, `repository.py`. Application layer subpackages: `services/`, `commands/`, `queries/`. Infrastructure layer subpackages: `database/`, `api/`, `messaging/`.
 
 **Package structure follows domain-driven design**:
 
@@ -1188,26 +1177,14 @@ def calculate_zakat_obligation(wealth_amount, nisab):
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
-    A["Function Call<br/>with try/except"]:::blue --> B{" Raises<br/>Exception?"}:::orange
+graph LR
+    A["Function Call"]:::blue --> B{"Raises<br/>Exception?"}:::orange
 
-    B -->|"No"| C["✅ Return<br/>Success Value"]:::teal
-    B -->|"Yes"| D{"Specific<br/>Exception?"}:::orange
+    B -->|"No"| C["✅ Success"]:::teal
+    B -->|"Yes"| D{"Known<br/>Type?"}:::orange
 
-    D -->|"Known Type"| E["Handle with<br/>except Type"]:::purple
-    D -->|"Unknown"| F["Propagate Up<br/>Call Stack"]:::brown
-
-    E --> G{"Need More<br/>Context?"}:::orange
-
-    G -->|"Yes"| H["Chain Exception<br/>raise NewError from e"]:::purple
-    G -->|"No"| I["Handle<br/>Gracefully"]:::teal
-
-    H --> J["Log Error<br/>with Context"]:::teal
-    I --> J
-
-    J --> K["Return Error<br/>or Raise"]:::brown
-
-    F --> L["Caught by<br/>Higher Level"]:::brown
+    D -->|"Yes"| E["Handle<br/>except Type"]:::purple
+    D -->|"No"| F["Propagate Up<br/>Call Stack"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
@@ -1215,6 +1192,8 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000,color:#000
     classDef brown fill:#CA9161,stroke:#000,color:#000
 ```
+
+**Exception handling continuation**: when a known exception is caught, check if more context is needed — if yes, chain with `raise NewError from e`, then log with context and return or re-raise. If no, handle gracefully and log. Unknown exceptions propagate up the call stack to be caught at a higher level.
 
 ### Validation at Boundaries
 
@@ -2618,52 +2597,30 @@ flowchart TD
     B --> B2[infrastructure/<br/>External]
     B --> B3[application/<br/>Use Cases]
 
-    C --> C1[unit/<br/>pytest]
-    C --> C2[integration/<br/>fixtures]
-    C --> C3[e2e/<br/>selenium]
-
-    D --> D1[Sphinx<br/>API Docs]
-    D --> D2[Markdown<br/>README]
-
-    E --> E1[pyproject.toml<br/>Modern Config]
-    E --> E2[.env<br/>Secrets]
-
-    B1 --> F[zakat_service.py]
-    B1 --> G[donation_service.py]
-
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
     style C fill:#029E73,color:#fff
     style D fill:#CC78BC,color:#fff
     style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
 ```
+
+**Directory details**: `src/domain/` contains `zakat_service.py`, `donation_service.py`, and other business logic. `tests/` has `unit/` (pytest), `integration/` (fixtures), and `e2e/` (selenium). `docs/` has Sphinx API docs and Markdown README. `config/` has `pyproject.toml` (modern config) and `.env` (secrets).
 
 ## Code Quality Pipeline
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart LR
-    A[Code] --> B[black<br/>Formatting]
-    B --> C[isort<br/>Import Sort]
-    C --> D[mypy<br/>Type Check]
-    D --> E[pylint<br/>Linting]
-    E --> F[pytest<br/>Testing]
-    F --> G{Pass?}
+flowchart TD
+    A[Code] --> B{Quality<br/>Gates Pass?}
+    B -->|Yes| C[Build]
+    B -->|No| D[Fix Issues]
 
-    G -->|Yes| H[Coverage Check]
-    G -->|No| I[Fix Issues]
-
-    H --> J{>85%?}
-    J -->|Yes| K[Build]
-    J -->|No| I
-
-    K --> L[Deploy]
+    C --> E[Deploy]
 
     style A fill:#0173B2,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style L fill:#0173B2,color:#fff
+    style B fill:#DE8F05,color:#fff
+    style C fill:#029E73,color:#fff
+    style E fill:#0173B2,color:#fff
 ```
+
+**Pipeline tools** (applied in order): `black` (formatting) → `isort` (import sorting) → `mypy` (type checking) → `pylint` (linting) → `pytest` (testing with >85% coverage) → build → deploy. Any failure loops back to "Fix Issues".

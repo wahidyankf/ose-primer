@@ -48,7 +48,7 @@ Type safety in Python combines static type checking (mypy) with runtime validati
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#0173B2', 'primaryTextColor': '#000', 'primaryBorderColor': '#0173B2', 'lineColor': '#DE8F05', 'secondaryColor': '#029E73', 'tertiaryColor': '#CC78BC', 'background': '#fff', 'mainBkg': '#fff'}}}%%
-graph LR
+graph TD
     A[Development] --> B[Type Hints]
     B --> C[mypy Static Check]
     A --> D[Pydantic Models]
@@ -839,7 +839,7 @@ zakat2 = calculate_zakat_with_override(
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
-graph LR
+graph TD
   A[Existing Untyped<br/>Python Code] --> B[Add Type Hints<br/>to Public APIs]
   B --> C[mypy Basic<br/>Configuration]
 

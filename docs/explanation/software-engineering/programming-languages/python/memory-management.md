@@ -329,7 +329,7 @@ def get_zakat_cached(payer_id: str) -> Decimal:
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
-graph LR
+graph TD
   A[Run Application] --> B[tracemalloc.start#40;#41;]
   B --> C[Execute Operations]
   C --> D[Take Snapshot]

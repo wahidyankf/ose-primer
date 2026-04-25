@@ -431,43 +431,24 @@ This diagram compares Protocol (structural typing) vs ABC (nominal typing):
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph LR
-  subgraph Protocol["Protocol #40;Structural Typing#41;"]
-    A1[Define Protocol]:::teal
-    A2[No inheritance needed]:::teal
-    A3[Duck typing + type safety]:::teal
-    A4[ZakatCalculator]:::teal
-    A5[SadaqahCalculator]:::teal
+graph TD
+  A[Define Interface]:::orange
+  B[Protocol<br/>Structural Typing]:::teal
+  C[ABC<br/>Nominal Typing]:::blue
+  D[Use Protocol<br/>for flexibility]:::teal
+  E[Use ABC for<br/>strict interfaces]:::blue
 
-    A1 --> A2
-    A2 --> A3
-    A3 --> A4
-    A3 --> A5
-  end
-
-  subgraph ABC["Abstract Base Class #40;Nominal Typing#41;"]
-    B1[Define ABC]:::blue
-    B2[Explicit inheritance required]:::blue
-    B3[Contract enforcement]:::blue
-    B4[StripePaymentProcessor]:::blue
-    B5[extends PaymentProcessor]:::blue
-
-    B1 --> B2
-    B2 --> B3
-    B3 --> B4
-    B4 --> B5
-  end
-
-  C[Use Protocol for flexibility]:::orange
-  D[Use ABC for strict interfaces]:::orange
-
-  Protocol --> C
-  ABC --> D
+  A --> B
+  A --> C
+  B --> D
+  C --> E
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+**Protocol**: no inheritance needed, duck typing with type safety (e.g., `ZakatCalculator`, `SadaqahCalculator`). **ABC**: explicit inheritance required, enforces contracts (e.g., `StripePaymentProcessor extends PaymentProcessor`).
 
 ## Abstract Base Classes
 
@@ -669,20 +650,14 @@ graph TD
   C --> D
   D --> E
 
-  F[MRO for D: D → B → C → A → object]:::purple
-
-  A -.-> F
-
-  note1[Method lookup order:<br/>1. D's methods<br/>2. B's methods<br/>3. C's methods<br/>4. A's methods<br/>5. object's methods]:::teal
-
-  F --> note1
-
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+**MRO for class D**: D → B → C → A → object. Method lookup checks each class in this order: D's methods first, then B, then C, then A, then object.
 
 ## References
 

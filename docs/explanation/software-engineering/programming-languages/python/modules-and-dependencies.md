@@ -76,7 +76,7 @@ This diagram shows how pip resolves and installs dependencies from requirements.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A[pip install -r requirements.txt]:::blue
+  A[pip install -r reqs.txt]:::blue
   B{Parse requirements.txt}:::orange
   C[Resolve dependencies]:::blue
   D{Check compatibility?}:::orange
@@ -499,33 +499,20 @@ This diagram shows Python's sys.path lookup order for module imports:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A[import package]:::blue
-  B{Check sys.path}:::orange
-  C[1. Current directory]:::blue
-  D[2. PYTHONPATH directories]:::blue
-  E[3. Standard library]:::blue
-  F[4. site-packages]:::blue
-  G{Module found?}:::orange
-  H[Import successful]:::teal
-  I[ModuleNotFoundError]:::purple
-
-  A --> B
-  B --> C
-  C --> G
-  G -->|Not found| D
-  D --> G
-  G -->|Not found| E
-  E --> G
-  G -->|Not found| F
-  F --> G
-  G -->|Found| H
-  G -->|Not found in any| I
+  A[import package]:::blue --> B[Current dir]:::blue
+  B --> C[PYTHONPATH]:::blue
+  C --> D[Standard lib]:::blue
+  D --> E{Found?}:::orange
+  E --> F[Import ok]:::teal
+  E --> G[ModuleNotFoundError]:::purple
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+**Search order**: Python checks each path in `sys.path` in order — (1) current directory, (2) `PYTHONPATH` directories, (3) standard library, (4) `site-packages` — and imports the first match. If not found in any location, raises `ModuleNotFoundError`.
 
 ## References
 
