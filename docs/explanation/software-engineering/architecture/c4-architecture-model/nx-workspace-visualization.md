@@ -101,7 +101,7 @@ If `rhino-cli` has an Nx dependency on `demo-fs-ts-nextjs` (builds it), show thi
 ### Full Platform View
 
 ```mermaid
-graph TD
+graph LR
     %% Hugo Sites
     OseWeb["demo Web<br/>[Container: Hugo/PaperMod]<br/>Landing page"]:::blue
     AyoWeb["demo Web<br/>[Container: Hugo/Hextra]<br/>Educational content"]:::blue

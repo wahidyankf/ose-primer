@@ -250,7 +250,7 @@ API["Zakat API [Container: Spring Boot] Business logic"]:::blue
 ### System Context Diagram
 
 ```mermaid
-graph TD
+graph LR
     ZMS["Zakat Management System"]:::blue
     Donor["Donor<br/>(Person)"]:::orange
     Beneficiary["Beneficiary<br/>(Person)"]:::orange
@@ -273,7 +273,7 @@ graph TD
 ### Container Diagram
 
 ```mermaid
-graph TD
+graph LR
     Web["Zakat Web UI<br/>[Container: Next.js]<br/>User interface"]:::blue
     API["Zakat API<br/>[Container: Spring Boot]<br/>Business logic"]:::blue
     DB["Zakat Database<br/>[Container: PostgreSQL]<br/>Assessment storage"]:::teal

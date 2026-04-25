@@ -134,7 +134,7 @@ Donor -->|"Submits Zakat<br/>calculation<br/>[HTTPS/JSON]"| ZMS
 **Example Context Diagram**:
 
 ```mermaid
-graph TD
+graph LR
     ZMS["Zakat Management System"]:::blue
     Donor["Donor<br/>(Person)"]:::orange
     Beneficiary["Beneficiary<br/>(Person)"]:::orange
@@ -196,7 +196,7 @@ All Container diagrams MUST include:
 **Example Container Diagram**:
 
 ```mermaid
-graph TD
+graph LR
     Web["Zakat Web UI<br/>[Container: Next.js]<br/>User interface"]:::blue
     API["Zakat API<br/>[Container: Spring Boot]<br/>Business logic"]:::blue
     CalcService["Calculation Service<br/>[Container: Spring Boot]<br/>Zakat calculations"]:::blue

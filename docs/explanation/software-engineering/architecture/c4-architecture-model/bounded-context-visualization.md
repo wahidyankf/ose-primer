@@ -110,7 +110,7 @@ This document defines **authoritative standards** for visualizing DDD bounded co
 ### System Context (Enterprise Context Map)
 
 ```mermaid
-graph TD
+graph LR
     ZC["Zakat Calculation<br/>Context"]:::blue
     DM["Donation Management<br/>Context"]:::blue
     BR["Beneficiary Registry<br/>Context"]:::blue
@@ -131,7 +131,7 @@ graph TD
 ### Container Diagram (Single System with Multiple Contexts)
 
 ```mermaid
-graph TD
+graph LR
     ZakatWeb["Zakat Web UI<br/>[Container: Next.js]<br/>User interface"]:::blue
 
     ZakatAPI["Zakat Calculation Context<br/>[Container: Spring Boot]<br/>Calculate Zakat obligations"]:::blue
@@ -167,7 +167,7 @@ graph TD
 **Example: Zakat Calculation Context Internals**
 
 ```mermaid
-graph TD
+graph LR
     Controller["Zakat Controller<br/>[Component: REST Controller]<br/>HTTP endpoints"]:::blue
     CalcService["Calculation Service<br/>[Component: Domain Service]<br/>Orchestrates calculations"]:::blue
     Assessment["Assessment Aggregate<br/>[Component: Aggregate Root]<br/>Zakat assessment lifecycle"]:::blue
