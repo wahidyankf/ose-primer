@@ -248,7 +248,7 @@ Middleware wraps handlers to add functionality:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% HTTP middleware chain for zakat API
 
-graph LR
+graph TD
     A["HTTP Request"]:::blue
     B["Logging Middleware<br/>Log request"]:::teal
     C["Auth Middleware<br/>Verify JWT"]:::orange
@@ -361,19 +361,32 @@ graph TD
     B["Router<br/>Match Route"]:::orange
     C["Middleware<br/>Auth & Logging"]:::teal
     D["Handler<br/>ProcessZakat"]:::purple
-    E["Service Layer<br/>Business Logic"]:::teal
-    F["Repository<br/>Database"]:::purple
-    G["JSON Response"]:::orange
 
     A -->|"POST /zakat"| B
     B --> C
     C --> D
+
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% REST API response lifecycle for zakat management
+
+graph TD
+    D["Handler<br/>ProcessZakat"]:::purple
+    E["Service Layer<br/>Business Logic"]:::teal
+    F["Repository<br/>Database"]:::purple
+    G["JSON Response<br/>201 Created"]:::orange
+
     D --> E
     E --> F
     F -->|"Success"| E
     E --> D
     D --> G
-    G -->|"201 Created"| A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -1013,7 +1026,7 @@ func main() {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% gRPC communication flow for donation processing
 
-graph LR
+graph TD
     A["gRPC Client<br/>Donation App"]:::blue
     B["Protobuf<br/>Serialize"]:::purple
     C["HTTP/2<br/>Transport"]:::orange
@@ -2372,7 +2385,7 @@ app.Use(func(c *fiber.Ctx) error {
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
     A[HTTP Server] --> B[Router<br/>chi/mux/gin]
-    B --> C[Middleware Chain]
+    B --> C[Middleware Chain<br/>Log/Auth/Rate/CORS]
     C --> D{Route Matching}
 
     D -->|/api/zakat| E[Zakat Handler]
@@ -2384,11 +2397,6 @@ flowchart TD
 
     H --> I[Repository Layer]
     I --> J[Database<br/>PostgreSQL]
-
-    C --> K[Logging]
-    C --> L[Auth]
-    C --> M[Rate Limit]
-    C --> N[CORS]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff

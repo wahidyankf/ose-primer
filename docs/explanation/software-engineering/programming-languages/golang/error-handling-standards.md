@@ -371,8 +371,8 @@ graph TD
     C["Repository Layer<br/>QueryUser#40;id#41;"]:::purple
     D{"Database<br/>Query"}:::orange
     E["Error: Not Found"]:::orange
-    F["Wrapped: get user from database"]:::teal
-    G["Wrapped: failed to get user"]:::blue
+    F["Wrapped: get user<br/>from database"]:::teal
+    G["Wrapped: failed<br/>to get user"]:::blue
 
     A --> B
     B --> C
@@ -380,7 +380,6 @@ graph TD
     D --> E
     E --> F
     F --> G
-    G --> A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -2142,11 +2141,11 @@ graph TD
     I["Return Error"]:::orange
 
     A --> B
-    B -->|"Yes"| C
-    B -->|"No"| F
+    B --> C
+    B --> F
     C --> G
-    G -->|"Yes"| H
-    G -->|"No"| D
+    G --> H
+    G --> D
     D --> E
     H --> F
 
@@ -2260,7 +2259,7 @@ principles:
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Error Types in Go] --> B[Sentinel Errors<br/>var ErrNotFound]
     A --> C[Custom Errors<br/>struct types]
     A --> D[Wrapped Errors<br/>fmt.Errorf %w]

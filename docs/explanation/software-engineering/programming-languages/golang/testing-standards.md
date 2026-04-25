@@ -125,7 +125,7 @@ package main
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% TDD Red-Green-Refactor cycle
 
-graph LR
+graph TD
   A["Write Test<br/>RED"]:::orange
   B["Run Test<br/>Fails"]:::orange
   C["Write Code<br/>GREEN"]:::teal

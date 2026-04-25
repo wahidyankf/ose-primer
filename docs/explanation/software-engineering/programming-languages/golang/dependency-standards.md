@@ -402,14 +402,22 @@ go mod verify
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["New Release"]:::blue --> B{Breaking<br/>Changes?}:::purple
-    B -->|Yes| C["Increment MAJOR<br/>#40;v2.0.0#41;"]:::orange
-    B -->|No| D{New<br/>Features?}:::purple
-    D -->|Yes| E["Increment MINOR<br/>#40;v1.2.0#41;"]:::teal
-    D -->|No| F["Increment PATCH<br/>#40;v1.1.1#41;"]:::teal
+    A["New Release"]:::blue
+    B{"Breaking<br/>Changes?"}:::purple
+    C["Increment MAJOR<br/>#40;v2.0.0#41;"]:::orange
+    D{"New<br/>Features?"}:::purple
+    E["Increment MINOR<br/>#40;v1.2.0#41;"]:::teal
+    F["Increment PATCH<br/>#40;v1.1.1#41;"]:::teal
+    G["Update import paths<br/>#40;github.com/pkg/v2#41;"]:::orange
+    H["Backward Compatible"]:::teal
 
-    C --> G["Update import paths<br/>#40;github.com/pkg/v2#41;"]:::orange
-    E --> H["Backward Compatible"]:::teal
+    A --> B
+    B --> C
+    B --> D
+    D --> E
+    D --> F
+    C --> G
+    E --> H
     F --> H
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px

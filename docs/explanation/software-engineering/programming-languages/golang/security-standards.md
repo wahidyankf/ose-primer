@@ -1010,14 +1010,14 @@ graph TD
 
     A --> B
     B --> C
-    C -->|"Yes"| D
-    C -->|"No"| F
+    C --> D
+    C --> F
     D --> E
     E --> G
     G --> H
     H --> I
-    I -->|"Yes"| J
-    I -->|"No"| K
+    I --> J
+    I --> K
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -1245,11 +1245,11 @@ graph TD
     A --> B
     B --> C
     C --> D
-    D -->|"Yes"| E
-    D -->|"No"| I
+    D --> E
+    D --> I
     E --> F
-    F -->|"Yes"| G
-    F -->|"No"| H
+    F --> G
+    F --> H
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -2806,7 +2806,7 @@ Security in Go requires:
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Zakat Platform Security] --> B[Input Validation]
     A --> C[Authentication]
     A --> D[Encryption]

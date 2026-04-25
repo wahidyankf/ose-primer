@@ -324,7 +324,7 @@ golangci-lint run --fix
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% Code quality pipeline with linting
 
-graph LR
+graph TD
     A["Write Code"]:::blue
     B["gofmt<br/>Format"]:::teal
     C["goimports<br/>Organize Imports"]:::teal
@@ -570,7 +570,7 @@ issues:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% Linter categories for comprehensive code quality
 
-graph TD
+graph LR
     A["golangci-lint"]:::blue
     B["Error Handling<br/>errcheck, goerr113"]:::orange
     C["Code Quality<br/>gocyclo, dupl"]:::teal
@@ -1386,7 +1386,7 @@ func handleNegative(x int) int {
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Go Code Quality] --> B[Format<br/>gofmt/goimports]
     A --> C[Lint<br/>golangci-lint]
     A --> D[Vet<br/>go vet]
@@ -1415,7 +1415,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart LR
+flowchart TD
     A[Code Push] --> B[gofmt Check]
     B --> C[goimports Check]
     C --> D[go vet]
