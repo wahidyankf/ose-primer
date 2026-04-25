@@ -16,8 +16,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Maker (blue)
-- **Created**: 2025-12-28
-- **Last Updated**: 2026-04-04
 
 **Model Selection Justification**: This agent uses inherited `model: opus` (omit model field) because it requires:
 
@@ -156,6 +154,9 @@ See [Trunk Based Development Convention](../../governance/development/workflow/t
 
 ### Delivery Checklist Quality
 
+- Delivery checklists MUST NOT include a `- [ ] Create PR` step (or any equivalent)
+  unless the user's original prompt or the plan's `prd.md`/`README.md` explicitly requests
+  a pull request. See [git-push-default convention](../../governance/development/workflow/git-push-default.md).
 - Steps are executable (clear actions)
 - Steps are sequential (proper order)
 - Steps are granular (not too broad)

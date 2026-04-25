@@ -24,8 +24,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Checker (green)
-- **Created**: 2025-12-28
-- **Last Updated**: 2026-04-04
 
 **Model Selection Justification**: This agent uses `model: sonnet` because it requires:
 
@@ -107,6 +105,8 @@ Per the [Content-Placement Rules](../../governance/conventions/structure/plans.m
 - Validation criteria are specific
 - Acceptance criteria are testable
 - Git workflow is specified
+- Unsolicited PR step: delivery.md contains a `- [ ] Create PR` or `- [ ] Open PR`
+  step with no explicit PR instruction in the user prompt or plan document. → **HIGH**
 
 ### 5. Consistency Validation
 

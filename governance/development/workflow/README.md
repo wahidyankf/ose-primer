@@ -30,6 +30,7 @@ These standards define **HOW to execute development workflows**, covering the th
 - [Trunk Based Development Convention](./trunk-based-development.md) - Git workflow using Trunk Based Development for continuous integration
 - [Worktree Toolchain Initialization](./worktree-setup.md) - Mandatory two-step init (`npm install` then `npm run doctor -- --fix`) in the root repository worktree after creating or entering a git worktree. The first step keeps `node_modules/` consistent with `package-lock.json`; the second actively converges the 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node) managed by `rhino-cli doctor` — required because `package.json`'s `postinstall` hook swallows doctor failures with `|| true`
 - [Git Push Safety Convention](./git-push-safety.md) - Requires explicit per-instance user approval before any AI agent or automation executes `git push --force`, `--force-with-lease`, or `--no-verify`; prior approval does not carry forward
+- [Git Push Default Convention](./git-push-default.md) - Default push behavior convention. Direct push to main; PR creation is opt-in. Governs plan-maker, plan-checker, plan-fixer, and plan-execution workflow.
 - [PR Merge Protocol](./pr-merge-protocol.md) - Requires explicit user approval before merging any pull request; all quality gates must pass before merge; no auto-merge by agents or automation
 - [Native-First Toolchain Management](./native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` instead of Terraform, Ansible, or Docker Dev Containers for development environment setup
 
@@ -66,5 +67,3 @@ This set of development practices respects the following conventions:
 - **[Nested Code Fences Convention](../../conventions/formatting/nested-code-fences.md)**: Workflow documentation uses proper code fence nesting when documenting markdown structure and patterns.
 
 ---
-
-**Last Updated**: 2026-04-11
