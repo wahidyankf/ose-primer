@@ -1,0 +1,78 @@
+# BRD — Fix Mermaid Violations
+
+## Business Problem
+
+**Problem 1 — Direction-blind validator (rhino-cli bug)**
+
+The `width_exceeded` rule in `apps/rhino-cli/internal/mermaid/validator.go` always
+checks `span` (max nodes per rank level) regardless of graph direction. This is correct
+for `graph TD`/`TB`/`BT` where span = horizontal width on screen. It is **wrong** for
+`graph LR`/`RL` where span = vertical height and `depth` (number of rank columns) is the
+horizontal dimension that causes overflow.
+
+Consequence: the validator fires false positives on LR diagrams that are vertically
+tall but horizontally fine, while silently passing LR diagrams that are horizontally
+overflowing. Every `width_exceeded` count in the current audit may include false
+positives; every passing LR diagram with deep rank chains is a silent false negative.
+
+Fixing this is a prerequisite for the doc fixes — applying topological changes to
+diagrams that are not actually overflowing wastes effort and can hurt readability.
+
+**Problem 2 — 247 violations in docs/**
+
+With or without the direction fix, a large number of real violations exist.
+`rhino-cli docs validate-mermaid` reports 107 files failing (audit: 2026-04-25). The
+pre-push hook targets only `governance/` and `.claude/`, so violations in `docs/` do
+not block pushes today. However, wide diagrams render poorly on GitHub and in VS Code
+preview, undermining documentation quality.
+
+## Business Goals
+
+1. Deliver a direction-aware validator that fires on the correct dimension per graph
+   orientation, eliminating both false positives and false negatives.
+2. Achieve zero validator errors across all `docs/` files on `main`.
+3. Improve diagram readability across GitHub, IDE previews, and any generated doc site.
+4. Establish a clean baseline so future violations are caught at the push boundary.
+
+## Affected Roles
+
+| Role                    | Hat worn                                                                    |
+| ----------------------- | --------------------------------------------------------------------------- |
+| Contributor / committer | Running pre-push hook; wanting clean validator output on future hook scopes |
+| Documentation reader    | Reading diagrams in GitHub preview or VS Code; needing non-overflowing view |
+| Plan executor           | Running the delivery checklist; fixing files batch-by-batch                 |
+
+## Scope
+
+- **In scope**:
+  - `apps/rhino-cli/internal/mermaid/validator.go` — direction-aware width check
+  - `apps/rhino-cli/internal/mermaid/validator_test.go` — direction-aware test cases
+  - All markdown files in `docs/` with `width_exceeded` or `label_too_long` violations
+    after the Phase 0 re-audit. (`governance/` audited clean — no violations.)
+- **Out of scope**: Other app source code, specs, test data files, generated files.
+- **No cross-repo dependency**: self-contained within ose-primer.
+
+## Non-Goals
+
+- Not fixing `complex_diagram` warnings — deferred. Warnings do not affect exit code.
+- Not changing `MaxWidth` (3) or `MaxDepth` (5) threshold values — only which dimension
+  is compared against `MaxWidth` for LR/RL graphs.
+- Not extending the pre-push hook's `validate:mermaid` target to scan `docs/` — separate
+  infrastructure change with its own risk profile.
+- Not improving diagram visual quality beyond passing the validator rules.
+
+## Success Criteria
+
+1. `nx run rhino-cli:test:quick` passes including direction-aware test cases.
+2. `go run ./apps/rhino-cli/main.go docs validate-mermaid` exits 0 with zero `✗` lines
+   after all Phase 1 batches committed to `main`.
+
+## Risks
+
+| Risk                                                               | Likelihood | Mitigation                                                                      |
+| ------------------------------------------------------------------ | ---------- | ------------------------------------------------------------------------------- |
+| Direction fix changes which docs files fail — Phase 1 scope shifts | High       | Phase 0 mandatory re-audit before starting Phase 1; batch lists are provisional |
+| Diagram restructuring breaks semantic meaning                      | Medium     | Re-read surrounding prose; preserve all node relationships                      |
+| Label truncation loses important context                           | Medium     | Move dropped detail into prose immediately before/after the diagram             |
+| Wide diagrams need splitting — increases doc length                | Low        | Acceptable trade-off; shorter focused diagrams are more scannable               |
+| direction-aware fix introduces regression on TD diagrams           | Low        | Existing `validator_test.go` TD cases must still pass after the change          |

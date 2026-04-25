@@ -1,4 +1,102 @@
-# Tech Docs — Fix Mermaid Violations
+# Tech Docs — Fix Mermaid Validation and Violations
+
+## Phase 0 — Direction-Aware Validator (rhino-cli Code Change)
+
+### File to change
+
+`apps/rhino-cli/internal/mermaid/validator.go` — function `ValidateBlocks`.
+
+### Current logic (direction-blind)
+
+```go
+span := MaxWidth(diagram.Nodes, diagram.Edges)
+depth := Depth(diagram.Nodes, diagram.Edges)
+
+if span > opts.MaxWidth && depth > opts.MaxDepth {
+    // Warning: complex_diagram
+} else if span > opts.MaxWidth {
+    // Violation: width_exceeded
+}
+```
+
+### Required change (direction-aware)
+
+```go
+span := MaxWidth(diagram.Nodes, diagram.Edges)
+depth := Depth(diagram.Nodes, diagram.Edges)
+
+// Select horizontal and vertical dimensions by direction.
+// LR/RL: rank columns flow left-to-right → depth is horizontal width.
+// TD/TB/BT (default): rank rows flow top-to-bottom → span is horizontal width.
+var horizontal, vertical int
+switch diagram.Direction {
+case DirectionLR, DirectionRL:
+    horizontal, vertical = depth, span
+default:
+    horizontal, vertical = span, depth
+}
+
+if horizontal > opts.MaxWidth && vertical > opts.MaxDepth {
+    warnings = append(warnings, Warning{
+        Kind:        WarningComplexDiagram,
+        FilePath:    block.FilePath,
+        BlockIndex:  block.BlockIndex,
+        StartLine:   block.StartLine,
+        ActualWidth: horizontal,
+        ActualDepth: vertical,
+        MaxWidth:    opts.MaxWidth,
+        MaxDepth:    opts.MaxDepth,
+    })
+} else if horizontal > opts.MaxWidth {
+    violations = append(violations, Violation{
+        Kind:        ViolationWidthExceeded,
+        FilePath:    block.FilePath,
+        BlockIndex:  block.BlockIndex,
+        StartLine:   block.StartLine,
+        ActualWidth: horizontal,
+        MaxWidth:    opts.MaxWidth,
+    })
+}
+```
+
+### Test cases to add (`validator_test.go`)
+
+Add to the existing `ValidateBlocks` test table:
+
+| Direction | Span | Depth | Expected                                                      |
+| --------- | ---- | ----- | ------------------------------------------------------------- |
+| LR        | 2    | 4     | `width_exceeded` (depth is horizontal, 4 > 3)                 |
+| LR        | 4    | 2     | no violation (span is vertical, not checked)                  |
+| LR        | 6    | 4     | `complex_diagram` warning (depth > MaxWidth, span > MaxDepth) |
+| RL        | 2    | 4     | `width_exceeded` (same as LR)                                 |
+| TD        | 4    | 2     | `width_exceeded` (span is horizontal, unchanged behaviour)    |
+| TD        | 2    | 4     | no violation (depth is vertical, not checked)                 |
+| BT        | 4    | 2     | `width_exceeded` (same as TD)                                 |
+
+### Verification
+
+```bash
+# Run unit tests
+npx nx run rhino-cli:test:unit
+
+# Run full quick check (includes coverage)
+npx nx run rhino-cli:test:quick
+
+# Re-audit docs to get updated Phase 1 baseline
+go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | tee local-temp/mermaid-audit-phase0.txt
+grep -c "^✗" local-temp/mermaid-audit-phase0.txt
+```
+
+### Commit
+
+```
+fix(rhino-cli): make width_exceeded check direction-aware
+
+For graph LR/RL, depth (rank columns) is the horizontal dimension.
+For graph TD/TB/BT, span (nodes per rank) is the horizontal dimension.
+Previously, span was always used, producing false positives on tall LR
+diagrams and false negatives on deeply chained LR diagrams.
+```
 
 ## Validator Rules
 

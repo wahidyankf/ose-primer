@@ -1,0 +1,159 @@
+# PRD — Fix Mermaid Violations
+
+## Product Overview
+
+This plan delivers two things:
+
+1. **Direction-aware validator** (Phase 0): a code change to
+   `apps/rhino-cli/internal/mermaid/validator.go` that uses `diagram.Direction` when
+   selecting the dimension to check for `width_exceeded`. For `graph LR`/`RL`, the
+   horizontal dimension is `depth`; for `graph TD`/`TB`/`BT`, it is `span` (current
+   behaviour). The `complex_diagram` warning follows the same axis swap.
+
+2. **Zero-violation docs** (Phase 1): edited markdown files in `docs/` where every
+   mermaid block passes the updated validator. Errors targeted: `width_exceeded` and
+   `label_too_long`.
+
+## Personas
+
+| Persona            | Description                                                                        |
+| ------------------ | ---------------------------------------------------------------------------------- |
+| As a contributor   | A developer pushing commits to `ose-primer` who wants clean validator output       |
+| As a docs reader   | A learner reading `docs/` in GitHub preview or VS Code who needs readable diagrams |
+| As a plan executor | The agent or human running the delivery checklist batch-by-batch                   |
+
+## User Stories
+
+**As a contributor**, I want the mermaid validator to check the correct axis per graph
+direction so that LR diagrams are not falsely flagged for vertical height and deeply
+chained LR diagrams that overflow horizontally are not silently passed.
+
+**As a contributor**, I want zero validator errors on `docs/` files so that any future
+expansion of the hook scope does not surface a backlog of pre-existing violations.
+
+**As a docs reader**, I want diagrams that fit within their containers without horizontal
+scrollbars so that I can read them without zooming or scrolling horizontally.
+
+**As a plan executor**, I want each batch to be independently verifiable before committing
+so that I can confirm my fixes are correct without running the full repo validator every
+time.
+
+## Requirements
+
+### R1 — Direction-aware `width_exceeded` check (rhino-cli)
+
+The validator must select the horizontal dimension based on graph direction before
+applying the `MaxWidth` (3) threshold:
+
+- `graph LR` / `graph RL` → horizontal dimension = **depth** (rank columns)
+- `graph TD` / `graph TB` / `graph BT` → horizontal dimension = **span** (nodes per rank)
+
+The `complex_diagram` warning (both dimensions exceeded) follows the same axis swap:
+for LR/RL, the warning fires when `depth > MaxWidth AND span > MaxDepth`.
+
+### R2 — Zero `width_exceeded` errors in docs
+
+After the direction-aware fix, all mermaid diagrams in `docs/` must pass the updated
+width check. The measured dimension (span for TD, depth for LR) must be ≤ 3.
+
+### R3 — Zero `label_too_long` errors
+
+All mermaid node labels must be ≤ 30 raw characters per line (measured after
+splitting on `<br/>`, before HTML-entity decoding). The constraint applies to each
+individual line of a multi-line label separately.
+
+### R4 — Semantic preservation
+
+Every fixed diagram must convey the same information as the original. Content
+removed from a label must appear in surrounding prose. Relationships between
+nodes must not change.
+
+### R5 — No regressions
+
+Files not listed in the audit must continue to pass. Each batch commit must leave
+the validator result for that batch's files at zero errors before moving to the
+next batch.
+
+## Product Scope
+
+**In scope**:
+
+- Direction-aware `width_exceeded` logic in `validator.go` (Phase 0)
+- Direction-aware test cases in `validator_test.go` (Phase 0)
+- Fixing `width_exceeded` and `label_too_long` violations in affected `docs/` files
+  after Phase 0 re-audit (Phase 1)
+- Preserving diagram semantics (node relationships, information content)
+
+**Out of scope**:
+
+- `complex_diagram` warnings — deferred to a future pass
+- Changing `MaxWidth` (3) or `MaxDepth` (5) threshold values
+- Changes to `governance/` or `.claude/` files — audited clean
+- Extending the pre-push hook to scan `docs/`
+- Adding new diagrams or expanding documentation content
+
+## Product Risks
+
+| Risk                                                                 | Impact | Note                                                                                                   |
+| -------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------ |
+| Diagram restructuring loses semantic meaning                         | High   | Re-read surrounding prose alongside each fix; preserve all node relationships                          |
+| Batch validation grep misses a fixed file (silent false pass)        | Medium | Batch 10 grep pattern must include `software-engineering/development` — see delivery                   |
+| Executor applies wrong fix strategy (visual change, not topological) | Medium | Strategy selection guide in tech-docs.md must be followed; changing direction alone does not fix width |
+
+## Acceptance Criteria
+
+```gherkin
+Feature: Direction-aware mermaid validation in rhino-cli
+
+  Background:
+    Given I am at the root of the ose-primer repository
+
+  Scenario: LR diagram wide in depth triggers width_exceeded
+    Given a graph LR diagram with depth 4 and span 2
+    When I run the mermaid validator
+    Then a width_exceeded violation is reported for that diagram
+
+  Scenario: LR diagram tall in span does not trigger width_exceeded
+    Given a graph LR diagram with span 4 and depth 2
+    When I run the mermaid validator
+    Then no width_exceeded violation is reported for that diagram
+
+  Scenario: TD diagram wide in span triggers width_exceeded
+    Given a graph TD diagram with span 4 and depth 2
+    When I run the mermaid validator
+    Then a width_exceeded violation is reported for that diagram
+
+  Scenario: TD diagram deep in depth does not trigger width_exceeded
+    Given a graph TD diagram with depth 4 and span 2
+    When I run the mermaid validator
+    Then no width_exceeded violation is reported for that diagram
+
+  Scenario: LR complex_diagram uses swapped axes
+    Given a graph LR diagram with depth 4 and span 6
+    When I run the mermaid validator
+    Then a complex_diagram warning is reported (both axes exceeded)
+    And no width_exceeded violation is reported
+
+Feature: Mermaid diagram compliance in docs/
+
+  Background:
+    Given I am at the root of the ose-primer repository
+    And the direction-aware validator is installed (Phase 0 complete)
+
+  Scenario: No error files remain after all Phase 1 batches
+    When I run `go run ./apps/rhino-cli/main.go docs validate-mermaid`
+    Then no output line starts with "✗"
+
+  Scenario: No width_exceeded errors remain
+    When I run `go run ./apps/rhino-cli/main.go docs validate-mermaid`
+    Then no output line contains "[width_exceeded]"
+
+  Scenario: No label_too_long errors remain
+    When I run `go run ./apps/rhino-cli/main.go docs validate-mermaid`
+    Then no output line contains "[label_too_long]"
+
+  Scenario: Diagram relationships are preserved
+    Given a diagram that was refactored to fix a width_exceeded error
+    When I read the surrounding prose and the fixed diagram together
+    Then all node relationships present in the original diagram are still represented
+```
