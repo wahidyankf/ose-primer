@@ -87,8 +87,8 @@ next batch.
 
 **Out of scope**:
 
-- `complex_diagram` warnings — deferred to a future pass
-- Changing `MaxWidth` (3) or `MaxDepth` (5) threshold values
+- `complex_diagram` warnings as a separate concern — they disappear after MaxDepth=math.MaxInt
+- Adding new threshold parameter types beyond MaxWidth/MaxDepth/MaxLabelLen
 - Changes to `governance/` or `.claude/` files — audited clean
 - Extending the pre-push hook to scan `docs/`
 - Adding new diagrams or expanding documentation content
@@ -110,7 +110,7 @@ Feature: Direction-aware mermaid validation in rhino-cli
     Given I am at the root of the ose-primer repository
 
   Scenario: LR diagram wide in depth triggers width_exceeded
-    Given a graph LR diagram with depth 4 and span 2
+    Given a graph LR diagram with depth 6 and span 2
     When I run the mermaid validator
     Then a width_exceeded violation is reported for that diagram
 
@@ -120,7 +120,7 @@ Feature: Direction-aware mermaid validation in rhino-cli
     Then no width_exceeded violation is reported for that diagram
 
   Scenario: TD diagram wide in span triggers width_exceeded
-    Given a graph TD diagram with span 4 and depth 2
+    Given a graph TD diagram with span 5 and depth 2
     When I run the mermaid validator
     Then a width_exceeded violation is reported for that diagram
 
@@ -128,12 +128,6 @@ Feature: Direction-aware mermaid validation in rhino-cli
     Given a graph TD diagram with depth 4 and span 2
     When I run the mermaid validator
     Then no width_exceeded violation is reported for that diagram
-
-  Scenario: LR complex_diagram uses swapped axes
-    Given a graph LR diagram with depth 4 and span 6
-    When I run the mermaid validator
-    Then a complex_diagram warning is reported (both axes exceeded)
-    And no width_exceeded violation is reported
 
 Feature: Mermaid diagram compliance in docs/
 

@@ -214,6 +214,8 @@ Kahn's BFS, longest-path variant:
 
 ### Step 5 — Rules Applied (`validator.go:ValidateBlocks`)
 
+**Current behavior (before Phase 0):**
+
 ````
 Rule 1  label_too_long   (Violation — exit 1):
   Split label on <br/>, <BR/>, <br>, <BR>, literal \n.
@@ -232,6 +234,30 @@ Rule 3  multiple_diagrams (Violation — exit 1):
 
   depth > 5 alone (span ≤ 3) → no output at all.
 ````
+
+**After Phase 0 (direction-aware, updated thresholds):**
+
+```
+Rule 1  label_too_long   (Violation — exit 1):
+  Unchanged — same label measurement logic as above.
+
+Rule 2a width_exceeded   (Violation — exit 1):
+  Compute horizontal = direction-aware dimension:
+    LR/RL → horizontal = depth; vertical = span
+    TD/TB/BT → horizontal = span; vertical = depth
+  If horizontal > 4 AND vertical ≤ MaxDepth(math.MaxInt) → violation.
+  (With MaxDepth=math.MaxInt, complex_diagram branch is unreachable.)
+
+Rule 2b complex_diagram  (Warning — exit 0, INACTIVE by default):
+  If horizontal > 4 AND vertical > MaxDepth → warning.
+  Only fires when user passes --max-depth N explicitly via CLI.
+  With default MaxDepth=math.MaxInt this branch never fires.
+
+Rule 3  multiple_diagrams (Violation — exit 1):
+  Unchanged.
+
+  vertical alone (horizontal ≤ 4) → no output at all (unlimited by default).
+```
 
 ### Key Implications for Fixers
 

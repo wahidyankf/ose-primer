@@ -1,5 +1,22 @@
 # Delivery — Fix Mermaid Validation and Violations
 
+## Environment Setup
+
+- [ ] Install dependencies: `npm install`
+- [ ] Converge the full polyglot toolchain: `npm run doctor -- --fix` (required — the
+      `postinstall` hook runs `doctor || true` and silently tolerates drift)
+- [ ] Verify Go is available: `go version` (rhino-cli requires Go to run the validator)
+- [ ] Verify existing tests pass before making changes:
+      `npx nx affected -t test:quick`
+
+## Pre-Work
+
+- [ ] Confirm baseline: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep -c "^\(✗\|⚠\)"` — note
+      the returned number is the count of violation/warning **lines** (not affected files);
+      expected to be approximately 247 lines (179 width_exceeded + 56 label_too_long +
+      12 complex_diagram). The README.md reports 107 **files** affected, which is a different count.
+- [ ] Save full audit to `local-temp/mermaid-audit-baseline.txt` for reference during fixes
+
 ## Phase 0 — Direction-Aware Validator + Threshold Update (rhino-cli)
 
 ### 0a — `validator.go` changes
@@ -28,6 +45,8 @@
 
 ### 0d — Verify and commit
 
+- [ ] Run: `npx nx run rhino-cli:lint` → must pass
+- [ ] Run: `npx nx run rhino-cli:typecheck` → must pass
 - [ ] Run: `npx nx run rhino-cli:test:unit` → must pass
 - [ ] Run: `npx nx run rhino-cli:test:quick` → must pass (coverage ≥ 90%)
 - [ ] Commit: `fix(rhino-cli): direction-aware width check, MaxWidth=4, no depth limit`
@@ -36,20 +55,6 @@
       (LR-only-tall files may disappear; new LR-deeply-chained files may appear;
       diagrams with old span=4 violations now pass)
 - [ ] Update the Violation Summary table in README.md with new counts
-
-## Environment Setup
-
-- [ ] Install dependencies: `npm install`
-- [ ] Converge the full polyglot toolchain: `npm run doctor -- --fix` (required — the
-      `postinstall` hook runs `doctor || true` and silently tolerates drift)
-- [ ] Verify Go is available: `go version` (rhino-cli requires Go to run the validator)
-- [ ] Verify existing tests pass before making changes:
-      `npx nx affected -t test:quick`
-
-## Pre-Work
-
-- [ ] Confirm baseline: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep -c "^\(✗\|⚠\)"` returns 107
-- [ ] Save full audit to `local-temp/mermaid-audit-baseline.txt` for reference during fixes
 
 ## Batch 1 — TypeScript (18 files)
 
@@ -186,7 +191,7 @@ Files: `docs/explanation/software-engineering/programming-languages/elixir/`
 - [ ] Fix `elixir/otp-genserver.md`
 - [ ] Fix `elixir/otp-supervisor.md`
 - [ ] Fix `elixir/protocols-behaviours-standards.md`
-- [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "/elixir/"` → no output
+- [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "programming-languages/elixir/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in elixir/ docs (batch 8/10)`
 
 ## Batch 9 — C4 Architecture (5 files)
@@ -231,6 +236,8 @@ Files: `docs/explanation/software-engineering/architecture/c4-architecture-model
 - [ ] Confirm zero lines starting with `✗` (warnings tolerated)
 - [ ] Confirm `[width_exceeded]` count = 0
 - [ ] Confirm `[label_too_long]` count = 0
+- [ ] Confirm prd.md Scenarios 1–4 (direction-aware discrimination) are covered by new
+      test cases in `validator_test.go`
 - [ ] Run affected quality gates: `npx nx affected -t typecheck lint test:quick spec-coverage`
 - [ ] Fix ALL failures found — including preexisting issues not caused by your changes
 
@@ -245,15 +252,16 @@ Files: `docs/explanation/software-engineering/architecture/c4-architecture-model
 ### Post-Push Verification
 
 - [ ] Push changes to `main`
-- [ ] Monitor GitHub Actions check for the push (if CI runs for ose-primer)
-- [ ] Verify `npm run lint:md` passes locally if CI is unavailable
+- [ ] ose-primer has no GitHub Actions CI — verify locally after push:
+  - `npm run lint:md` (markdown linting)
+  - `npx nx affected -t typecheck lint test:quick spec-coverage`
 - [ ] Confirm no regressions introduced by diagram changes before closing the plan
 
 ## Plan Archival
 
 - [ ] Verify ALL delivery checklist items are ticked
-- [ ] Verify ALL quality gates pass (local + CI)
-- [ ] Move `plans/in-progress/2026-04-25__fix-mermaid-violations/` → `plans/done/` via `git mv`
+- [ ] Verify ALL quality gates pass (local)
+- [ ] Move `plans/in-progress/2026-04-25__fix-mermaid-validation-and-violations/` → `plans/done/` via `git mv`
 - [ ] Update `plans/in-progress/README.md` — remove entry
 - [ ] Update `plans/done/README.md` — add entry with completion date
-- [ ] Commit: `chore(plans): move fix-mermaid-violations to done`
+- [ ] Commit: `chore(plans): move fix-mermaid-validation-and-violations to done`
