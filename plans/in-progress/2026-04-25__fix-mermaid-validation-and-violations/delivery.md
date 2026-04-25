@@ -2,18 +2,20 @@
 
 ## Environment Setup
 
-- [ ] Install dependencies: `npm install`
-- [ ] Converge the full polyglot toolchain: `npm run doctor -- --fix` (required — the
+- [x] Install dependencies: `npm install`
+- [x] Converge the full polyglot toolchain: `npm run doctor -- --fix` (required — the
       `postinstall` hook runs `doctor || true` and silently tolerates drift)
-- [ ] Verify Go is available: `go version` (rhino-cli requires Go to run the validator)
-- [ ] Verify existing tests pass before making changes:
+- [x] Verify Go is available: `go version` (rhino-cli requires Go to run the validator)
+- [x] Verify existing tests pass before making changes:
       `npx nx affected -t test:quick`
+
+<!-- 2026-04-25 | Status: Done | All 19/19 tools OK; rhino-cli:test:quick passes at 90.02% -->
 
 ## Pre-Work
 
-- [ ] Run full audit and save as baseline:
+- [x] Run full audit and save as baseline:
       `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | tee local-temp/mermaid-audit-baseline.txt`
-- [ ] Note counts (for your own reference — no expected value to match):
+- [x] Note counts (for your own reference — no expected value to match):
       `grep -c "^✗" local-temp/mermaid-audit-baseline.txt` # error lines
       `grep -c "^⚠" local-temp/mermaid-audit-baseline.txt` # warning lines
       `grep "^✗" local-temp/mermaid-audit-baseline.txt | grep -o '"[^"]*"' | sort -u | wc -l` # approx files
@@ -21,44 +23,54 @@
       the direction-aware fix reclassifies LR diagrams. Historical reference numbers are
       in README.md Violation Baseline section.
 
+<!-- 2026-04-25 | Status: Done | Baseline: 101 ✗ lines, 6 ⚠ lines, 235 total violations -->
+
 ## Phase 0 — Direction-Aware Validator + Threshold Update (rhino-cli)
 
 ### 0a — `validator.go` changes
 
-- [ ] Add `import "math"` to `validator.go`
-- [ ] Change `DefaultValidateOptions()`: `MaxWidth: 3 → 4`, `MaxDepth: 5 → math.MaxInt`
-- [ ] Add direction-aware `horizontal`/`vertical` selection in `ValidateBlocks` per
+- [x] Add `import "math"` to `validator.go`
+- [x] Change `DefaultValidateOptions()`: `MaxWidth: 3 → 4`, `MaxDepth: 5 → math.MaxInt`
+- [x] Add direction-aware `horizontal`/`vertical` selection in `ValidateBlocks` per
       tech-docs.md Phase 0 spec (switch on `diagram.Direction`, LR/RL → swap axes)
+
+<!-- 2026-04-25 | Status: Done | Files: validator.go rewritten with math import, new defaults, direction-aware switch -->
 
 ### 0b — `validator_test.go` changes
 
-- [ ] Fix 3 tests broken by MaxWidth 3→4 (see tech-docs.md "Existing tests that break"):
+- [x] Fix 3 tests broken by MaxWidth 3→4 (see tech-docs.md "Existing tests that break"):
   - `"width at limit+1 violation"` → switch to `span5depth3Source`
   - `"both exceeded warning only"` → use explicit `ValidateOptions{MaxWidth:3,MaxDepth:5}`
   - `"width only exceeded violation"` → use explicit opts or span=5 source
-- [ ] Add `"width exactly at new limit 4 no violation"` (span=4, TD, defaultOpts)
-- [ ] Add new LR direction test cases (6 cases per table in tech-docs.md Phase 0)
-- [ ] Add new test sources: `span5depth3Source`, `lrDepth6Span2Source`,
+- [x] Add `"width exactly at new limit 4 no violation"` (span=4, TD, defaultOpts)
+- [x] Add new LR direction test cases (6 cases per table in tech-docs.md Phase 0)
+- [x] Add new test sources: `span5depth3Source`, `lrDepth6Span2Source`,
       `lrSpan5Depth2Source`, `lrDepth4Span6Source`
+
+<!-- 2026-04-25 | Status: Done | Files: validator_test.go rewritten with fixed tests + 4 new sources + 6 direction-aware test cases -->
 
 ### 0c — `docs_validate_mermaid.go` CLI flag defaults
 
-- [ ] Change `--max-width` default: `3 → 4`
-- [ ] Change `--max-depth` default: `5 → 0` (document: 0 = no limit)
-- [ ] In `runValidateMermaid`: map `MaxDepth ≤ 0 → math.MaxInt` before building opts
+- [x] Change `--max-width` default: `3 → 4`
+- [x] Change `--max-depth` default: `5 → 0` (document: 0 = no limit)
+- [x] In `runValidateMermaid`: map `MaxDepth ≤ 0 → math.MaxInt` before building opts
+
+<!-- 2026-04-25 | Status: Done | Files: docs_validate_mermaid.go — added math import, updated flag defaults and MaxDepth mapping -->
 
 ### 0d — Verify and commit
 
-- [ ] Run: `npx nx run rhino-cli:lint` → must pass
-- [ ] Run: `npx nx run rhino-cli:typecheck` → must pass
-- [ ] Run: `npx nx run rhino-cli:test:unit` → must pass
-- [ ] Run: `npx nx run rhino-cli:test:quick` → must pass (coverage ≥ 90%)
-- [ ] Commit: `fix(rhino-cli): make width_exceeded check direction-aware`
-- [ ] Re-audit: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | tee local-temp/mermaid-audit-phase0.txt`
-- [ ] Update Phase 1 batch file lists from the re-audit output
+- [x] Run: `npx nx run rhino-cli:lint` → must pass
+- [x] Run: `npx nx run rhino-cli:typecheck` → must pass
+- [x] Run: `npx nx run rhino-cli:test:unit` → must pass
+- [x] Run: `npx nx run rhino-cli:test:quick` → must pass (coverage ≥ 90%)
+- [x] Commit: `fix(rhino-cli): make width_exceeded check direction-aware`
+- [x] Re-audit: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | tee local-temp/mermaid-audit-phase0.txt`
+- [x] Update Phase 1 batch file lists from the re-audit output
       (LR-only-tall files may disappear; new LR-deeply-chained files may appear;
       diagrams with old span=4 violations now pass)
-- [ ] Update the Violation Baseline table in README.md with new counts from Phase 0 re-audit
+- [x] Update the Violation Baseline table in README.md with new counts from Phase 0 re-audit
+
+<!-- 2026-04-25 | Status: Done | lint/typecheck/test:unit/test:quick all pass (90.04%); committed; re-audit: 161 width_exceeded + 56 label_too_long = 217 violations, 100 files, 0 warnings; batch lists updated -->
 
 > **Important**: The batch file lists below are provisional — based on the 2026-04-25
 > pre-Phase-0 audit with the direction-blind validator. After step 0d re-audit, update
@@ -66,7 +78,7 @@
 > longer appear in the re-audit output can be skipped; new files that appear must be added
 > to the appropriate batch. Do not begin Batch 1 until the file lists are updated.
 
-## Batch 1 — TypeScript (provisional file list)
+## Batch 1 — TypeScript (17 files — verified from Phase 0 re-audit)
 
 Files: `docs/explanation/software-engineering/programming-languages/typescript/`
 
@@ -85,35 +97,32 @@ Files: `docs/explanation/software-engineering/programming-languages/typescript/`
 - [ ] Fix `typescript/modules-and-dependencies.md`
 - [ ] Fix `typescript/performance.md`
 - [ ] Fix `typescript/security.md`
-- [ ] Fix `typescript/test-driven-development.md`
 - [ ] Fix `typescript/type-safety.md`
 - [ ] Fix `typescript/web-services.md`
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "typescript/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in typescript/ docs (batch 1/10)`
 
-## Batch 2 — Python (provisional file list)
+## Batch 2 — Python (13 files — verified from Phase 0 re-audit)
 
 Files: `docs/explanation/software-engineering/programming-languages/python/`
 
-- [ ] Fix `python/README.md`
 - [ ] Fix `python/anti-patterns.md`
 - [ ] Fix `python/best-practices.md`
 - [ ] Fix `python/classes-and-protocols.md`
 - [ ] Fix `python/concurrency-and-parallelism.md`
 - [ ] Fix `python/domain-driven-design.md`
 - [ ] Fix `python/error-handling.md`
-- [ ] Fix `python/finite-state-machine.md`
+- [ ] Fix `python/functional-programming.md`
 - [ ] Fix `python/idioms.md`
-- [ ] Fix `python/linting-and-formatting.md`
+- [ ] Fix `python/memory-management.md`
 - [ ] Fix `python/modules-and-dependencies.md`
 - [ ] Fix `python/performance.md`
-- [ ] Fix `python/security.md`
-- [ ] Fix `python/test-driven-development.md`
+- [ ] Fix `python/type-safety.md`
 - [ ] Fix `python/web-services.md`
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "python/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in python/ docs (batch 2/10)`
 
-## Batch 3 — Go (provisional file list)
+## Batch 3 — Go (12 files — verified from Phase 0 re-audit)
 
 Files: `docs/explanation/software-engineering/programming-languages/golang/`
 
@@ -127,11 +136,12 @@ Files: `docs/explanation/software-engineering/programming-languages/golang/`
 - [ ] Fix `golang/error-handling-standards.md`
 - [ ] Fix `golang/performance-standards.md`
 - [ ] Fix `golang/security-standards.md`
+- [ ] Fix `golang/testing-standards.md`
 - [ ] Fix `golang/type-safety-standards.md`
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "golang/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in golang/ docs (batch 3/10)`
 
-## Batch 4 — JVM Spring Boot (provisional file list)
+## Batch 4 — JVM Spring Boot (10 files — verified from Phase 0 re-audit)
 
 Files: `docs/explanation/software-engineering/platform-web/tools/jvm-spring-boot/`
 
@@ -148,22 +158,24 @@ Files: `docs/explanation/software-engineering/platform-web/tools/jvm-spring-boot
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "jvm-spring-boot/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in jvm-spring-boot/ docs (batch 4/10)`
 
-## Batch 5 — Elixir Phoenix (provisional file list)
+## Batch 5 — Elixir Phoenix (10 files — verified from Phase 0 re-audit)
 
 Files: `docs/explanation/software-engineering/platform-web/tools/elixir-phoenix/`
 
 - [ ] Fix `elixir-phoenix/channels.md`
+- [ ] Fix `elixir-phoenix/configuration.md`
 - [ ] Fix `elixir-phoenix/contexts.md`
 - [ ] Fix `elixir-phoenix/data-access.md`
 - [ ] Fix `elixir-phoenix/deployment.md`
 - [ ] Fix `elixir-phoenix/liveview.md`
 - [ ] Fix `elixir-phoenix/observability.md`
 - [ ] Fix `elixir-phoenix/performance.md`
+- [ ] Fix `elixir-phoenix/rest-apis.md`
 - [ ] Fix `elixir-phoenix/testing.md`
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "elixir-phoenix/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in elixir-phoenix/ docs (batch 5/10)`
 
-## Batch 6 — React (provisional file list)
+## Batch 6 — React (8 files — verified from Phase 0 re-audit)
 
 Files: `docs/explanation/software-engineering/platform-web/tools/fe-react/`
 
@@ -178,20 +190,17 @@ Files: `docs/explanation/software-engineering/platform-web/tools/fe-react/`
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "fe-react/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in fe-react/ docs (batch 6/10)`
 
-## Batch 7 — Next.js (provisional file list)
+## Batch 7 — Next.js (3 files — verified from Phase 0 re-audit)
 
 Files: `docs/explanation/software-engineering/platform-web/tools/fe-nextjs/`
 
 - [ ] Fix `fe-nextjs/README.md`
 - [ ] Fix `fe-nextjs/app-router.md`
-- [ ] Fix `fe-nextjs/data-fetching.md`
-- [ ] Fix `fe-nextjs/middleware.md`
-- [ ] Fix `fe-nextjs/performance.md`
 - [ ] Fix `fe-nextjs/rendering.md`
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "fe-nextjs/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in fe-nextjs/ docs (batch 7/10)`
 
-## Batch 8 — Elixir Language (provisional file list)
+## Batch 8 — Elixir Language (7 files — verified from Phase 0 re-audit)
 
 Files: `docs/explanation/software-engineering/programming-languages/elixir/`
 
@@ -201,10 +210,11 @@ Files: `docs/explanation/software-engineering/programming-languages/elixir/`
 - [ ] Fix `elixir/otp-genserver.md`
 - [ ] Fix `elixir/otp-supervisor.md`
 - [ ] Fix `elixir/protocols-behaviours-standards.md`
+- [ ] Fix `elixir/testing-standards.md`
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "programming-languages/elixir/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in elixir/ docs (batch 8/10)`
 
-## Batch 9 — C4 Architecture (provisional file list)
+## Batch 9 — C4 Architecture (5 files — verified from Phase 0 re-audit)
 
 Files: `docs/explanation/software-engineering/architecture/c4-architecture-model/`
 
@@ -216,7 +226,7 @@ Files: `docs/explanation/software-engineering/architecture/c4-architecture-model
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "c4-architecture-model/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in c4-architecture-model/ docs (batch 9/10)`
 
-## Batch 10 — Remaining errors (provisional file list)
+## Batch 10 — Remaining errors (15 files — verified from Phase 0 re-audit)
 
 - [ ] Fix `docs/explanation/software-engineering/programming-languages/c-sharp/README.md`
 - [ ] Fix `docs/explanation/software-engineering/programming-languages/clojure/README.md`
@@ -227,12 +237,13 @@ Files: `docs/explanation/software-engineering/architecture/c4-architecture-model
 - [ ] Fix `docs/explanation/software-engineering/platform-web/tools/jvm-spring/README.md`
 - [ ] Fix `docs/explanation/software-engineering/platform-web/tools/jvm-spring/web-mvc.md`
 - [ ] Fix `docs/explanation/software-engineering/development/README.md`
-- [ ] Fix `docs/how-to/organize-work.md`
+- [ ] Fix `docs/reference/project-dependency-graph.md`
 - [ ] Fix `docs/reference/system-architecture/README.md`
 - [ ] Fix `docs/reference/system-architecture/applications.md`
+- [ ] Fix `docs/reference/system-architecture/ci-cd.md`
 - [ ] Fix `docs/reference/system-architecture/components.md`
 - [ ] Fix `docs/reference/system-architecture/deployment.md`
-- [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep -E "(c-sharp|clojure|f-sharp|java/|kotlin|rust/|jvm-spring/|organize-work|system-architecture|software-engineering/development)"` → no output
+- [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep -E "(c-sharp|clojure|f-sharp|java/|kotlin|rust/|jvm-spring/|project-dependency-graph|system-architecture|software-engineering/development)"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in remaining docs (batch 10/10)`
 
 ## Final Validation
