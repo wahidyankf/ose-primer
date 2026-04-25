@@ -184,7 +184,7 @@ demo follows a three-tier .NET versioning strategy aligned with Microsoft's LTS 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["C# Standards Index<br/>(demo)"]:::blue
     B["Core Standards"]:::orange
     C["Specialized Standards"]:::teal

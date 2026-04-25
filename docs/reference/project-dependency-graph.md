@@ -53,117 +53,85 @@ invalidated and `nx affected` flags the project.
 
 ## 🏗️ Visual Dependency Graph
 
+The full dependency graph is shown across three focused diagrams below.
+
+### Shared Infrastructure
+
 ```mermaid
-graph RL
-  %% Specs (leaf)
-  DC[demo-contracts]
+graph LR
+  AKC[rhino-cli]:::cli
+  OPC[rhino-cli]:::cli
+  RC[rhino-cli]:::cli
+  HC[golang-commons]:::lib
+  GC[golang-commons]:::lib
 
-  %% Go libs (leaf / near-leaf)
-  GC[golang-commons]
-  HC[golang-commons]
-
-  %% Elixir libs
-  EG[elixir-gherkin]
-  EC[elixir-cabbage]
-  EOC[elixir-openapi-codegen]
-
-  %% Clojure lib
-  COC[clojure-openapi-codegen]
-
-  %% CLI tools
-  RC[rhino-cli]
-  AKC[rhino-cli]
-  OPC[rhino-cli]
-
-  %% Hugo sites
-  AKW[demo-fs-ts-nextjs]
-  OPW[demo-fs-ts-nextjs]
-
-  %% demo
-  OLW[demo-fe-ts-nextjs]
-  OLE[demo-fe-e2e]
-
-  %% Demo backends (grouped)
-  GOLANG[demo-be-golang-gin]
-  SPRING[demo-be-java-springboot]
-  VERTX[demo-be-java-vertx]
-  KOTLIN[demo-be-kotlin-ktor]
-  PYTHON[demo-be-python-fastapi]
-  RUST[demo-be-rust-axum]
-  EFFECT[demo-be-ts-effect]
-  FSHARP[demo-be-fsharp-giraffe]
-  CSHARP[demo-be-csharp-aspnetcore]
-  CLOJURE[demo-be-clojure-pedestal]
-  ELIXIR[demo-be-elixir-phoenix]
-
-  %% Demo frontends
-  NEXTJS[demo-fe-ts-nextjs]
-  TANSTACK[demo-fe-ts-tanstack-start]
-  FLUTTER[demo-fe-dart-flutterweb]
-
-  %% E2E
-  BEE2E[demo-be-e2e]
-  FEE2E[demo-fe-e2e]
-
-  %% --- Dependency edges ---
-
-  %% Go lib chain
-  RC --> GC
-  HC --> GC
-  HC --> RC
-  AKC --> GC
   AKC --> HC
   AKC --> RC
-  OPC --> GC
   OPC --> HC
   OPC --> RC
+  HC --> RC
+  HC --> GC
+  RC --> GC
 
-  %% Hugo sites
-  AKW --> AKC
-  OPW --> OPC
+  classDef lib fill:#029E73,stroke:#016B4E,color:#FFFFFF
+  classDef cli fill:#DE8F05,stroke:#A56A04,color:#FFFFFF
+```
 
-  %% Elixir lib chain
-  EC --> EG
-  EC --> RC
-  EG --> RC
-  EOC --> DC
-  EOC --> RC
-  COC --> DC
-  COC --> RC
+### Demo Backends
 
-  %% demo
-  OLW --> RC
-  OLE --> OLW
+```mermaid
+graph LR
+  BEE2E[demo-be-e2e]:::e2e
+  BE[demo-be-*]:::backend
+  CLOJURE[demo-be-clojure-pedestal]:::backend
+  COC[clojure-openapi-codegen]:::lib
+  ELIXIR[demo-be-elixir-phoenix]:::backend
+  EOC[elixir-openapi-codegen]:::lib
+  RC[rhino-cli]:::cli
+  DC[demo-contracts]:::spec
 
-  %% Demo backends -> shared deps
-  GOLANG --> DC
-  GOLANG --> RC
-  SPRING --> DC
-  SPRING --> RC
-  VERTX --> DC
-  VERTX --> RC
-  KOTLIN --> DC
-  KOTLIN --> RC
-  PYTHON --> DC
-  PYTHON --> RC
-  RUST --> DC
-  RUST --> RC
-  EFFECT --> DC
-  EFFECT --> RC
-  FSHARP --> DC
-  FSHARP --> RC
-  CSHARP --> DC
-  CSHARP --> RC
+  BEE2E --> BE
+  BEE2E --> CLOJURE
+  BEE2E --> ELIXIR
+  BE --> DC
+  BE --> RC
   CLOJURE --> COC
   CLOJURE --> DC
   CLOJURE --> RC
+  ELIXIR --> EOC
   ELIXIR --> DC
   ELIXIR --> RC
-  ELIXIR --> EG
-  ELIXIR --> EC
-  ELIXIR --> EOC
+  COC --> DC
+  COC --> RC
+  EOC --> DC
+  EOC --> RC
 
-  %% Demo frontends -> shared deps
+  classDef spec fill:#0173B2,stroke:#01537F,color:#FFFFFF
+  classDef lib fill:#029E73,stroke:#016B4E,color:#FFFFFF
+  classDef cli fill:#DE8F05,stroke:#A56A04,color:#FFFFFF
+  classDef backend fill:#CA9161,stroke:#977048,color:#FFFFFF
+  classDef e2e fill:#0173B2,stroke:#01537F,color:#FFFFFF
+```
+
+### Demo Frontends
+
+```mermaid
+graph LR
+  FEE2E[demo-fe-e2e]:::e2e
+  NEXTJS[demo-fe-ts-nextjs]:::frontend
+  TANSTACK[demo-fe-ts-tanstack-start]:::frontend
+  FLUTTER[demo-fe-dart-flutterweb]:::frontend
+  OLE[demo-fe-e2e]:::e2e
+  OLW[demo-fe-ts-nextjs]:::site
+  RC[rhino-cli]:::cli
+  DC[demo-contracts]:::spec
+
+  FEE2E --> NEXTJS
+  FEE2E --> TANSTACK
+  FEE2E --> FLUTTER
+  FEE2E --> DC
+  OLE --> OLW
+  OLW --> RC
   NEXTJS --> DC
   NEXTJS --> RC
   TANSTACK --> DC
@@ -171,40 +139,11 @@ graph RL
   FLUTTER --> DC
   FLUTTER --> RC
 
-  %% E2E -> apps
-  BEE2E --> GOLANG
-  BEE2E --> SPRING
-  BEE2E --> VERTX
-  BEE2E --> KOTLIN
-  BEE2E --> PYTHON
-  BEE2E --> RUST
-  BEE2E --> EFFECT
-  BEE2E --> FSHARP
-  BEE2E --> CSHARP
-  BEE2E --> CLOJURE
-  BEE2E --> ELIXIR
-  BEE2E --> DC
-  FEE2E --> NEXTJS
-  FEE2E --> TANSTACK
-  FEE2E --> FLUTTER
-  FEE2E --> DC
-
-  %% Styles
   classDef spec fill:#0173B2,stroke:#01537F,color:#FFFFFF
-  classDef lib fill:#029E73,stroke:#016B4E,color:#FFFFFF
   classDef cli fill:#DE8F05,stroke:#A56A04,color:#FFFFFF
   classDef site fill:#CC78BC,stroke:#9A5A8E,color:#FFFFFF
-  classDef backend fill:#CA9161,stroke:#977048,color:#FFFFFF
   classDef frontend fill:#808080,stroke:#606060,color:#FFFFFF
   classDef e2e fill:#0173B2,stroke:#01537F,color:#FFFFFF
-
-  class DC spec
-  class GC,HC,EG,EC,EOC,COC lib
-  class RC,AKC,OPC cli
-  class AKW,OPW,OLW site
-  class GOLANG,SPRING,VERTX,KOTLIN,PYTHON,RUST,EFFECT,FSHARP,CSHARP,CLOJURE,ELIXIR backend
-  class NEXTJS,TANSTACK,FLUTTER frontend
-  class BEE2E,FEE2E,OLE e2e
 ```
 
 **Legend**:

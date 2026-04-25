@@ -173,7 +173,7 @@ demo follows a three-tier F# versioning strategy aligned with .NET LTS releases:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["F# Standards Index<br/>(demo)"]:::blue
     B["Core Standards"]:::orange
     C["Specialized Standards"]:::teal
