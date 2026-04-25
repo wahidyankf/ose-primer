@@ -4,8 +4,6 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- [Fix Mermaid Validation and Violations](./2026-04-25__fix-mermaid-validation-and-violations/README.md) — Direction-aware validator fix in rhino-cli (Phase 0) + fix mermaid violations across docs/ (Phase 1) + propagate fix strategies to diagrams convention (Phase 2)
-
 ## Instructions
 
 **Quick Idea Capture**: For 1-3 liner ideas not ready for formal planning, use `../ideas.md`.
