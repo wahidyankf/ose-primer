@@ -1165,7 +1165,7 @@ end
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     subgraph "Domain Contexts"
         Zakat[Zakat Context<br/>Obligatory Charity]
         Donations[Donations Context<br/>Voluntary Giving]

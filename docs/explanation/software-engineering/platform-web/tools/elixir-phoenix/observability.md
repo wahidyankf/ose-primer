@@ -304,72 +304,43 @@ end
 
 ## Telemetry Events
 
-### Telemetry Architecture
+### Telemetry Event Sources
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    subgraph "Application Layer"
-        CTX[Context Modules]
-        CH[Channels/LiveView]
-        CTRL[Controllers]
-        BG[Background Jobs]
-    end
-
-    subgraph "Phoenix Framework"
-        EP[Endpoint]
-        RT[Router]
-        REPO[Ecto.Repo]
-        LV[LiveView]
-    end
-
-    subgraph "Telemetry Core"
-        TE[Telemetry.execute#40;#41;]
-        TH[Telemetry Handlers]
-    end
-
-    subgraph "Metrics & Reporting"
-        TM[Telemetry.Metrics]
-        LD[Phoenix.LiveDashboard]
-        PROM[Prometheus Exporter]
-        OTEL[OpenTelemetry]
-        SENT[Sentry]
-    end
-
-    subgraph "Storage & Visualization"
-        PS[(Prometheus)]
-        GF[Grafana]
-        JAEG[Jaeger Tracing]
-        LOG[Structured Logs]
-    end
-
-    CTX -->|custom events| TE
-    CH -->|phoenix.channel.*| TE
-    CTRL -->|phoenix.router.*| TE
-    BG -->|custom events| TE
-
-    EP -->|phoenix.endpoint.*| TE
-    RT -->|phoenix.router.*| TE
-    REPO -->|repo.query.*| TE
-    LV -->|phoenix.live_view.*| TE
-
-    TE --> TH
-    TH --> TM
-    TH --> LD
-    TH --> PROM
-    TH --> OTEL
-    TH --> SENT
-
-    PROM --> PS
-    PS --> GF
-    OTEL --> JAEG
-    TM --> LD
-    TH --> LOG
+    CTX[Context Modules] --> TE[Telemetry.execute]
+    CH[Channels/LiveView] --> TE
+    EP[Endpoint] --> TE
+    REPO[Ecto.Repo] --> TE
+    TE --> TH[Telemetry Handlers]
 
     style CTX fill:#CC78BC,color:#fff
+    style CH fill:#CC78BC,color:#fff
+    style EP fill:#CC78BC,color:#fff
+    style REPO fill:#CC78BC,color:#fff
     style TE fill:#DE8F05,color:#fff
+    style TH fill:#DE8F05,color:#fff
+```
+
+### Telemetry Reporting Pipeline
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    TH[Telemetry Handlers] --> TM[Telemetry.Metrics]
+    TH --> PROM[Prometheus Exporter]
+    TH --> OTEL[OpenTelemetry]
+    TH --> LOG[Structured Logs]
+    TM --> LD[Phoenix.LiveDashboard]
+    PROM --> PS[(Prometheus)]
+    PS --> GF[Grafana]
+    OTEL --> JAEG[Jaeger Tracing]
+
     style TH fill:#DE8F05,color:#fff
     style LD fill:#029E73,color:#fff
     style PROM fill:#029E73,color:#fff

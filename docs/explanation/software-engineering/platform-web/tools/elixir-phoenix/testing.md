@@ -50,7 +50,7 @@ Testing is essential for maintaining Phoenix applications. Phoenix provides exce
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     subgraph "Test Pyramid"
         subgraph "E2E Tests #40;Few#41;"
             E2E[End-to-End Tests<br/>Full application flow<br/>Browser automation]
