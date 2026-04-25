@@ -15,7 +15,6 @@ related:
 principles:
   - immutability
   - pure-functions
-updated: 2026-01-25
 ---
 
 # React Functional Programming
@@ -1153,5 +1152,3 @@ export const MurabahaApplicationForm: React.FC = () => {
 - **[Best Practices](best-practices.md)** - Production standards
 
 ---
-
-**Last Updated**: 2026-01-26

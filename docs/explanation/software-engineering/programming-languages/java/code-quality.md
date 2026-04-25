@@ -17,8 +17,6 @@ principles:
   - automation-over-manual
   - explicit-over-implicit
   - reproducibility
-created: 2026-02-03
-updated: 2026-02-03
 ---
 
 # Java Code Quality
@@ -469,4 +467,3 @@ These standards enforce the the software engineering principles:
 - [Testing Standards](./testing-standards.md) - JaCoCo coverage requirements and reporting
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-04

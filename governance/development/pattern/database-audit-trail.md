@@ -10,8 +10,6 @@ tags:
   - jpa
   - liquibase
   - migrations
-created: 2026-03-09
-updated: 2026-03-26
 ---
 
 # Database Audit Trail Pattern
@@ -45,25 +43,14 @@ Every table MUST include all six columns in the order listed below.
 ```mermaid
 graph TD
     T["Table<br/>(any domain entity)"]
-    C1["created_at<br/>TIMESTAMPTZ NOT NULL<br/>DEFAULT NOW()"]
-    C2["created_by<br/>VARCHAR(255) NOT NULL<br/>DEFAULT 'system'"]
-    C3["updated_at<br/>TIMESTAMPTZ NOT NULL<br/>DEFAULT NOW()"]
-    C4["updated_by<br/>VARCHAR(255) NOT NULL<br/>DEFAULT 'system'"]
-    C5["deleted_at<br/>TIMESTAMPTZ NULL<br/>(soft-delete marker)"]
-    C6["deleted_by<br/>VARCHAR(255) NULL<br/>(soft-delete actor)"]
+    REQ["Required: created_at<br/>created_by, updated_at<br/>updated_by"]
+    OPT["Optional: deleted_at<br/>deleted_by"]
 
-    T --> C1
-    T --> C2
-    T --> C3
-    T --> C4
-    T --> C5
-    T --> C6
+    T --> REQ
+    T --> OPT
 
-    classDef required fill:#0173B2,color:#ffffff,stroke:#0173B2
-    classDef optional fill:#029E73,color:#ffffff,stroke:#029E73
-
-    class C1,C2,C3,C4 required
-    class C5,C6 optional
+    style REQ fill:#0173B2,color:#ffffff,stroke:#0173B2
+    style OPT fill:#029E73,color:#ffffff,stroke:#029E73
 ```
 
 | Column       | Type           | Nullable | Default    | Description                         |
@@ -445,5 +432,3 @@ with volume mount) may behave differently:
   is aggressive.
 
 ---
-
-**Last Updated**: 2026-03-27

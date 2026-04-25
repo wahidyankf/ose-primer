@@ -7,8 +7,6 @@ tags:
   - agents
   - naming
   - conventions
-created: 2026-04-17
-updated: 2026-04-17
 ---
 
 # Agent Naming Convention
@@ -120,5 +118,3 @@ Current agents, grouped by role, all conforming to the rule:
 - **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)** — A single-line `grep` decides conformance, enabling mechanical enforcement by `repo-rules-checker`.
 
 ---
-
-**Last Updated**: 2026-04-17

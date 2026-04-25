@@ -9,8 +9,6 @@ tags:
   - safety
   - automation
   - human-approval
-created: 2026-03-30
-updated: 2026-03-30
 ---
 
 # Git Push Safety Convention

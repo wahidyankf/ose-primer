@@ -18,7 +18,6 @@ principles:
   - explicit-over-implicit
   - automation-over-manual
   - reproducibility
-updated: 2026-01-24
 ---
 
 # Python Modules and Dependencies
@@ -545,7 +544,6 @@ graph TD
 
 ---
 
-**Last Updated**: 2026-01-24
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: demo Documentation Team
 

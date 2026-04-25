@@ -11,8 +11,6 @@ tags:
   - conventions
   - development
   - workflows
-created: 2026-01-04
-updated: 2026-03-28
 ---
 
 # Rules - Repository Governance
@@ -46,13 +44,13 @@ graph TD
  L4[Layer 4: AI Agents<br/>WHO - Atomic Executors]
  L5[Layer 5: Workflows<br/>WHEN - Multi-Step Processes]
 
- L0 -->|inspires| L1
- L1 -->|governs| L2
- L1 -->|governs| L3
- L2 -->|governs| L3
- L2 -->|governs| L4
- L3 -->|governs| L4
- L4 -->|orchestrated by| L5
+ L0 -- inspires --> L1
+ L1 -- governs --> L2
+ L1 -- governs --> L3
+ L2 -- governs --> L3
+ L2 -- governs --> L4
+ L3 -- governs --> L4
+ L4 -- orchestrated by --> L5
 
  style L0 fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:3px
  style L1 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -215,5 +213,3 @@ Is it about WHY the project exists?
 When changing a layer, all lower layers may need updates. Use `repo-rules-maker` to propagate changes systematically.
 
 ---
-
-**Last Updated**: 2026-04-04

@@ -9,8 +9,6 @@ tags:
   - project-json
   - build
   - scripts
-created: 2026-02-23
-updated: 2026-04-02
 ---
 
 # Nx Target Standards
@@ -24,36 +22,39 @@ Defines the standard Nx targets that apps and libs expose, what each target must
 `typecheck`, `lint`, `test:quick`, and `spec-coverage` run at two mandatory checkpoints — locally
 before push and remotely before merge.
 
+**Pre-push hook:**
+
 ```mermaid
 flowchart TD
     A[Developer pushes code] --> B[Pre-push hook]
-    B --> C["typecheck<br/>nx affected -t typecheck"]
-    B --> D["lint<br/>nx affected -t lint"]
-    B --> E["test:quick<br/>nx affected -t test:quick"]
-    B --> SC["spec-coverage<br/>nx affected -t spec-coverage"]
+    B --> C["typecheck + lint"]
+    B --> E["test:quick<br/>+ spec-coverage"]
     C --> F{All pass?}
-    D --> F
     E --> F
-    SC --> F
     F -- No --> G[Push blocked]
     F -- Yes --> H[Push succeeds]
-
-    P[PR opened / updated] --> Q["GitHub Actions CI<br/>nx affected -t lint test:quick"]
-    Q --> R{Pass?}
-    R -- No --> S[PR merge blocked]
-    R -- Yes --> T[PR merge allowed]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
     style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
     style E fill:#029E73,color:#fff
-    style SC fill:#029E73,color:#fff
     style F fill:#DE8F05,color:#fff
     style G fill:#CC78BC,color:#fff
     style H fill:#029E73,color:#fff
+```
+
+**PR CI gate:**
+
+```mermaid
+flowchart TD
+    P[PR opened / updated] --> Q["GitHub Actions CI<br/>lint + test:quick"]
+    Q --> R{Pass?}
+    R -- No --> S[PR merge blocked]
+    R -- Yes --> T[PR merge allowed]
+
     style P fill:#0173B2,color:#fff
     style Q fill:#DE8F05,color:#fff
+    style R fill:#DE8F05,color:#fff
     style S fill:#CC78BC,color:#fff
     style T fill:#029E73,color:#fff
 ```
@@ -64,16 +65,24 @@ Deeper tests run outside the pre-push/PR cycle — on a schedule or triggered ex
 
 Scheduled CRON workflows run 5 parallel tracks: lint, typecheck, test:quick (with coverage), spec-coverage, and integration→e2e (sequential chain).
 
+**Scheduled (CRON):**
+
 ```mermaid
 flowchart TD
-    H2["GitHub Actions<br/>e2e-*.yml<br/>cron 2× per day<br/>(WIB 06, 18)"] --> I2["test:integration + test:e2e<br/>per service"]
-
-    J[On demand / CI matrix] --> K[test:unit]
-    J --> L[test:integration]
-    J --> M[test:e2e]
+    H2["GitHub Actions<br/>cron 2× per day"] --> I2["test:integration<br/>+ test:e2e"]
 
     style H2 fill:#0173B2,color:#fff
     style I2 fill:#CA9161,color:#fff
+```
+
+**On demand / CI matrix:**
+
+```mermaid
+flowchart TD
+    J[On demand / CI] --> K[test:unit]
+    J --> L[test:integration]
+    J --> M[test:e2e]
+
     style J fill:#0173B2,color:#fff
     style K fill:#CA9161,color:#fff
     style L fill:#CA9161,color:#fff

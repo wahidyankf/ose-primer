@@ -9,8 +9,6 @@ tags:
   - wcag
   - inclusive-design
   - universal-access
-created: 2025-12-15
-updated: 2025-12-24
 ---
 
 # Accessibility First
@@ -450,5 +448,3 @@ tags:
 - [WebAIM: Semantic Structure](https://webaim.org/techniques/semanticstructure/) - Importance of semantics
 
 ---
-
-**Last Updated**: 2025-12-24

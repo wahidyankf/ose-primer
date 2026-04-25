@@ -12,8 +12,6 @@ tags:
 principles:
   - automation-over-manual
   - reproducibility
-created: 2026-02-09
-updated: 2026-03-04
 ---
 
 # Integration Testing Standards
@@ -421,5 +419,3 @@ class MemberRepositoryIntegrationTest {
 - [TypeScript Testing](../../programming-languages/typescript/testing.md) — TypeScript-specific integration patterns
 
 ---
-
-**Last Updated**: 2026-03-04

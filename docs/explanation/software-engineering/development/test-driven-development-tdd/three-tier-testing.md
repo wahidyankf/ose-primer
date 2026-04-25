@@ -14,8 +14,6 @@ principles:
   - automation-over-manual
   - explicit-over-implicit
   - reproducibility
-created: 2026-03-04
-updated: 2026-03-04
 ---
 
 # Three-Tier Testing Model
@@ -236,5 +234,3 @@ test("user can log in", async ({ page }) => {
 - [TypeScript Testing](../../programming-languages/typescript/testing.md) — TypeScript-specific tools and patterns
 
 ---
-
-**Last Updated**: 2026-03-04

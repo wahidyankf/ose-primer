@@ -9,8 +9,6 @@ tags:
   - engagement
   - accessibility
   - writing
-created: 2025-12-07
-updated: 2026-04-04
 ---
 
 # README Quality Convention

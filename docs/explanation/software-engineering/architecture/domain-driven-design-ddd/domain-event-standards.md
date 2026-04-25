@@ -10,8 +10,6 @@ tags:
 principles:
   - immutability
   - explicit-over-implicit
-created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # DDD Domain Event Standards
@@ -73,5 +71,3 @@ public record ZakatCalculated(
 **PROHIBITED**: Publishing events before transaction commits.
 
 ---
-
-**Last Updated**: 2026-02-09

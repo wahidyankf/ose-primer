@@ -7,8 +7,6 @@ tags:
   - monorepo
   - libraries
   - typescript
-created: 2025-11-29
-updated: 2026-03-06
 ---
 
 # How to Add a New Library

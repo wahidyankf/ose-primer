@@ -35,5 +35,3 @@ This documentation defines **HOW workflows should be designed and documented**, 
 - [Repository Architecture](../../repository-governance-architecture.md) - Six-layer governance model (Layer 5: Workflows)
 
 ---
-
-**Last Updated**: 2026-01-01

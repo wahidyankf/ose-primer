@@ -14,8 +14,6 @@ principles:
   - automation-over-manual
   - explicit-over-implicit
   - reproducibility
-created: 2026-02-08
-updated: 2026-02-08
 ---
 
 # Playwright Anti-Patterns
@@ -120,4 +118,3 @@ test("login", async ({ page }) => {
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-08

@@ -19,7 +19,6 @@ related:
 principles:
   - simplicity-over-complexity
   - explicit-over-implicit
-updated: 2025-01-23
 ---
 
 # Python Concurrency and Parallelism
@@ -1474,6 +1473,5 @@ print(f"Free-threaded execution: {elapsed:.4f}s")
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable with free-threaded mode)
 **Maintainers**: demo Documentation Team

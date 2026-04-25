@@ -8,8 +8,6 @@ tags:
   - timestamps
   - timezone
   - formatting
-created: 2025-11-30
-updated: 2025-12-15
 ---
 
 # Timestamp Format Convention
@@ -99,8 +97,6 @@ lastChecked: 2025-11-30T07:00:00+07:00
 
 ```yaml
 ---
-created: 2025-11-30
-updated: 2025-11-30
 ---
 ```
 

@@ -9,8 +9,6 @@ tags:
   - learning
   - productivity
   - outcomes
-created: 2025-12-15
-updated: 2025-12-24
 ---
 
 # No Time Estimates
@@ -452,5 +450,3 @@ Focus on WHAT needs to be done or learned, not HOW LONG it takes.
 - [Diátaxis Framework](https://diataxis.fr/) - Tutorial structure without time constraints
 
 ---
-
-**Last Updated**: 2025-12-24

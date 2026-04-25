@@ -9,8 +9,6 @@ tags:
   - best-practices
   - antipatterns
   - index
-created: 2026-01-20
-updated: 2026-03-09
 ---
 
 # Programming Languages
@@ -425,5 +423,3 @@ To document a new language:
 - **[Code Quality Standards](../../../../governance/development/quality/code.md)** - Quality requirements
 
 ---
-
-**Last Updated**: 2026-03-09

@@ -15,8 +15,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # C# Error Handling Standards
@@ -419,5 +417,5 @@ if (payerId == Guid.Empty) throw new ArgumentException("PayerId cannot be empty.
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **.NET Version**: .NET 8 LTS (C# 12)

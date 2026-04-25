@@ -8,8 +8,6 @@ tags:
   - development
   - conventions
   - ai-agents
-created: 2025-11-23
-updated: 2026-04-11
 ---
 
 # Development
@@ -174,5 +172,3 @@ These companion files exist in each subdirectory: `workflow/`, `quality/`, `patt
 - [Workflows](../workflows/README.md) - Layer 5: Multi-step processes orchestrating agents
 
 ---
-
-**Last Updated**: 2026-04-11

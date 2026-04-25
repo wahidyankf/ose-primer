@@ -8,8 +8,6 @@ tags:
   - explicit-configuration
   - transparency
   - clarity
-created: 2025-12-15
-updated: 2025-12-24
 ---
 
 # Explicit Over Implicit
@@ -149,8 +147,6 @@ subcategory: principles
 tags:
   - principles
   - explicit-configuration
-created: 2025-12-15
-updated: 2025-12-15
 ---
 ```
 
@@ -446,5 +442,3 @@ npx lint-staged
 - [Principle of Least Privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege)
 
 ---
-
-**Last Updated**: 2025-12-24

@@ -9,8 +9,6 @@ tags:
   - doctor
   - environment
   - architecture-decision
-created: 2026-04-04
-updated: 2026-04-11
 ---
 
 # Native-First Toolchain Management
@@ -181,5 +179,3 @@ Revisit this architectural decision if any of the following conditions change:
 - [Development Environment Setup](../../workflows/infra/development-environment-setup.md) - Workflow for setting up a development environment
 
 ---
-
-**Last Updated**: 2026-04-11

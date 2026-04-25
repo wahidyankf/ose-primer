@@ -7,8 +7,6 @@ tags:
   - indentation
   - formatting
   - markdown
-created: 2025-12-12
-updated: 2025-12-15
 ---
 
 # Indentation Convention
@@ -104,8 +102,6 @@ category: explanation
 tags:
   - primary-topic # 2 spaces before dash
   - secondary-topic # 2 spaces before dash
-created: 2025-12-12
-updated: 2025-12-12
 ---
 ```
 
@@ -182,8 +178,6 @@ category: how-to
 tags:
   - auth # 2 spaces (frontmatter uses spaces)
   - oauth # 2 spaces (frontmatter uses spaces)
-created: 2025-12-12
-updated: 2025-12-12
 ---
 
 # Authentication Guide
@@ -254,5 +248,3 @@ Before committing files in `docs/`:
 - [CommonMark Specification](https://spec.commonmark.org/) - Standard markdown specification
 
 ---
-
-**Last Updated**: 2025-12-15

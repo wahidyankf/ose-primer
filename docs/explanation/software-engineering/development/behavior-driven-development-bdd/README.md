@@ -12,8 +12,6 @@ principles:
   - documentation-first
   - explicit-over-implicit
   - automation-over-manual
-created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # Behavior-Driven Development (BDD)
@@ -251,5 +249,3 @@ Before merging feature files, verify:
 - **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)**: By executing scenarios automatically in CI/CD, BDD eliminates manual acceptance testing and ensures living documentation stays current.
 
 ---
-
-**Last Updated**: 2026-02-09

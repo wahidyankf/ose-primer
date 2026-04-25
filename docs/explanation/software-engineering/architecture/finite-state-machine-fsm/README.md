@@ -12,8 +12,6 @@ principles:
   - explicit-over-implicit
   - immutability
   - automation-over-manual
-created: 2026-01-21
-updated: 2026-02-09
 ---
 
 # Finite State Machine (FSM)
@@ -289,5 +287,3 @@ FSM implementations MUST pass the following validation checks:
 - **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)**: By automating state validation, transition guards, and audit trail logging through FSM framework, manual error-prone checks are eliminated.
 
 ---
-
-**Last Updated**: 2026-02-09

@@ -15,8 +15,6 @@ principles:
   - automation-over-manual
   - explicit-over-implicit
   - reproducibility
-created: 2026-02-06
-updated: 2026-02-06
 ---
 
 # Spring Framework Code Quality
@@ -552,5 +550,5 @@ mvn clean verify
 ---
 
 **Status**: Mandatory
-**Last Updated**: 2026-02-06
+
 **Maintainers**: Platform Team

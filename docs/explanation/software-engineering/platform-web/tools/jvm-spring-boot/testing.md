@@ -22,8 +22,6 @@ related:
   - ./dependency-injection.md
   - ./data-access.md
   - ./rest-apis.md
-created: 2026-01-25
-updated: 2026-01-26
 ---
 
 # Spring Boot Testing
@@ -1664,5 +1662,3 @@ class CompleteWaqfTest {
 - [Spring Boot Best Practices](./best-practices.md) - Test standards
 
 **Hands-on Learning (demo)**:
-
-**Last Updated**: 2026-01-26

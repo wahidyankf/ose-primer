@@ -7,8 +7,6 @@ tags:
   - conventions
   - structure
   - organization
-created: 2026-01-30
-updated: 2026-04-02
 ---
 
 # Structure Conventions
@@ -66,5 +64,3 @@ This set of conventions implements/respects the following core principles:
 - **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: The four Diataxis categories provide a complete, minimal taxonomy that covers all documentation types without overlap or excessive granularity. File naming uses a single simple kebab-case rule with no prefix encoding to memorize.
 
 ---
-
-**Last Updated**: 2026-04-02

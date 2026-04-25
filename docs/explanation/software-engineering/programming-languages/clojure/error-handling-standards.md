@@ -15,8 +15,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Clojure Error Handling Standards
@@ -310,5 +308,5 @@ Error handling is validated automatically via clj-kondo (unused catch bindings, 
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Clojure Version**: 1.10+ (baseline), 1.12 (recommended)

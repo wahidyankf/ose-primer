@@ -18,8 +18,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # F# Performance Standards
@@ -316,5 +314,5 @@ let main _ =
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **F# Version**: F# 8 / .NET 8 LTS

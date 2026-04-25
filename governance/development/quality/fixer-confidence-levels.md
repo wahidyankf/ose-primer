@@ -9,8 +9,6 @@ tags:
   - validation
   - automation
   - quality-assurance
-created: 2025-12-14
-updated: 2025-12-15
 ---
 
 # Fixer Confidence Levels Convention

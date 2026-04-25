@@ -9,8 +9,6 @@ tags:
   - npm-workspaces
   - build
   - node_modules
-created: 2026-03-28
-updated: 2026-03-28
 ---
 
 # Docker Monorepo Build Patterns

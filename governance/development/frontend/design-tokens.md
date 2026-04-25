@@ -9,8 +9,6 @@ tags:
   - tailwind
   - theming
   - dark-mode
-created: 2026-03-28
-updated: 2026-03-28
 ---
 
 # Design Tokens Convention

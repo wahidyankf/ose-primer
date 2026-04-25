@@ -10,8 +10,6 @@ tags:
   - agent-patterns
   - validation
   - automation
-created: 2025-12-14
-updated: 2025-12-24
 ---
 
 # Maker-Checker-Fixer Pattern Convention

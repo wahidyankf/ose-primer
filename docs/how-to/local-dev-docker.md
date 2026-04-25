@@ -6,8 +6,6 @@ tags:
   - docker
   - local-development
   - docker-compose
-created: 2026-02-28
-updated: 2026-03-31
 ---
 
 # How to Set Up Reproducible Local Development with Docker

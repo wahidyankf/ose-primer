@@ -23,8 +23,6 @@ principles:
   - automation-over-manual
   - explicit-over-implicit
   - reproducibility
-created: 2026-02-04
-updated: 2026-03-06
 ---
 
 # Go Build Configuration
@@ -1157,6 +1155,5 @@ func main() {
 
 ---
 
-**Last Updated**: 2026-02-04
 **Go Version**: 1.18+ (baseline), 1.25.6 (current)
 **Maintainers**: Platform Documentation Team

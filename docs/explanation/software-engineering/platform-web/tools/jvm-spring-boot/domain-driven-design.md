@@ -22,8 +22,6 @@ related:
   - ./best-practices.md
   - ./data-access.md
   - ./functional-programming.md
-created: 2026-01-25
-updated: 2026-01-26
 ---
 
 # Spring Boot Domain-Driven Design
@@ -1825,5 +1823,3 @@ public class MurabahaApplicationService {
 - [Spring Boot Data Access](./data-access.md) - Repository implementation
 
 **Hands-on Learning (demo)**:
-
-**Last Updated**: 2026-01-26

@@ -8,8 +8,6 @@ tags:
   - ci-cd
   - naming
   - workflow
-created: 2026-03-13
-updated: 2026-03-13
 ---
 
 # GitHub Actions Workflow Naming Convention

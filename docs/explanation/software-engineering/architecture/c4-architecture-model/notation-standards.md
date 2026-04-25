@@ -12,8 +12,6 @@ tags:
 principles:
   - explicit-over-implicit
   - reproducibility
-created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # C4 Notation Standards
@@ -316,5 +314,3 @@ Before committing a C4 diagram, verify:
 - **[Reproducibility First](../../../../../governance/principles/software-engineering/reproducibility.md)**: Standardized WCAG color palette and Mermaid syntax ensures diagrams can be consistently reproduced across teams and time periods.
 
 ---
-
-**Last Updated**: 2026-02-09

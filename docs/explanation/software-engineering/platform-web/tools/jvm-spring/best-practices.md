@@ -15,8 +15,6 @@ principles:
   - automation-over-manual
   - immutability
   - reproducibility
-created: 2026-01-29
-updated: 2026-01-29
 ---
 
 # Spring Framework Best Practices
@@ -1601,6 +1599,5 @@ class DonationReportGenerator(
 
 ---
 
-**Last Updated**: 2026-01-29
 **Spring Framework Version**: 6.1+ (Java 17+, Kotlin 1.9+)
 **Maintainers**: Platform Documentation Team

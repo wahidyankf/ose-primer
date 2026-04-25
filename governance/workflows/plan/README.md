@@ -35,5 +35,3 @@ These workflows define **WHEN and HOW to validate and execute plans**. The plan-
 - [Repository Architecture](../../repository-governance-architecture.md) - Six-layer governance model
 
 ---
-
-**Last Updated**: 2026-01-01

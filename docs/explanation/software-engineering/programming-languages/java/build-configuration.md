@@ -14,8 +14,6 @@ principles:
   - reproducibility
   - explicit-over-implicit
   - automation-over-manual
-created: 2026-02-03
-updated: 2026-02-03
 ---
 
 # Java Build Configuration
@@ -418,4 +416,3 @@ These standards enforce the the software engineering principles:
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-04

@@ -13,8 +13,6 @@ principles:
   - explicit-over-implicit
   - immutability
   - pure-functions
-created: 2026-01-25
-updated: 2026-02-09
 ---
 
 # Domain-Driven Design (DDD)
@@ -323,5 +321,3 @@ This documentation implements/respects the following core principles:
 - **[Pure Functions Over Side Effects](../../../../../governance/principles/software-engineering/pure-functions.md)**: By requiring domain logic to be pure functions without side effects, business rules become testable, composable, and maintainable.
 
 ---
-
-**Last Updated**: 2026-02-09

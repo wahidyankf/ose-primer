@@ -10,8 +10,6 @@ tags:
   - e2e
   - demo-be
   - demo-fe
-created: 2026-03-22
-updated: 2026-03-22
 ---
 
 # How to Run Demo Integration and E2E Tests

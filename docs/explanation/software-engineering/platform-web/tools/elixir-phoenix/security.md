@@ -1330,5 +1330,3 @@ end
 - **[Configuration](configuration.md)** - Secure configuration management
 
 ---
-
-**Last Updated**: 2026-01-25

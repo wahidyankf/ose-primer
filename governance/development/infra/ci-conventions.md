@@ -11,8 +11,6 @@ tags:
   - testing
   - nx
   - coverage
-created: 2026-03-31
-updated: 2026-04-02
 ---
 
 # CI/CD Conventions

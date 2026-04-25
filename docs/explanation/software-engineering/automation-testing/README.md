@@ -12,8 +12,6 @@ principles:
   - automation-over-manual
   - explicit-over-implicit
   - reproducibility
-created: 2026-02-08
-updated: 2026-02-08
 ---
 
 # Automation Testing
@@ -38,5 +36,4 @@ This directory contains demo-specific standards for automation testing tools inc
 
 ---
 
-**Last Updated**: 2026-02-08
 **Maintainers**: Platform Documentation Team

@@ -15,8 +15,6 @@ principles:
   - explicit-over-implicit
   - automation-over-manual
   - separation-of-concerns
-created: 2026-02-06
-updated: 2026-02-06
 related:
   - ./observability.md
   - ./performance.md
@@ -857,4 +855,3 @@ These AOP standards enforce the the software engineering principles:
 
 **Status**: Mandatory for cross-cutting concerns in demo Spring Boot applications
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-06

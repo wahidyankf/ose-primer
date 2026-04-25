@@ -9,8 +9,6 @@ tags:
   - architecture
   - constraints
   - subagents
-created: 2026-01-22
-updated: 2026-02-22
 ---
 
 # Skill Context Architecture
@@ -230,26 +228,23 @@ For complex cases, spawn the analyzer agent... [delegation content]
 ```mermaid
 graph TD
     MC[Main Conversation]
-    SA[Subagent Forked Context]
     IS[Inline Skills<br/>.claude/skills/]
-    FS[Fork Skills<br/>project-specific dir]
-    CONV[Convention Documents<br/>governance/]
+    FS[Fork Skills<br/>project-specific]
+    CONV[Conventions<br/>governance/]
+    SA[Subagent Context]
 
-    MC -->|spawns| SA
-    MC -->|uses| IS
-    MC -->|uses| FS
-    SA -->|uses| IS
-    SA -->|CANNOT use| FS
-    IS -->|references| CONV
-    FS -->|spawns| SA
+    MC -- uses --> IS
+    MC -- uses --> FS
+    FS -- spawns --> SA
+    IS -- references --> CONV
+    SA -- uses --> IS
+    %% SA cannot use FS (architectural constraint: subagents cannot spawn subagents)
 
     style MC fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     style SA fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
     style IS fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:3px
     style FS fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     style CONV fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-
-    linkStyle 4 stroke:#FF0000,stroke-width:3px,stroke-dasharray:5
 ```
 
 **Key**:
@@ -318,5 +313,4 @@ This architectural decision ensures skills work predictably everywhere, enabling
 
 ---
 
-**Last Updated**: 2026-02-22
 **Status**: Active Standard

@@ -56,5 +56,3 @@ This set of development practices respects the following conventions:
 - **[Criticality Levels Convention](../quality/criticality-levels.md)**: Maker-Checker-Fixer pattern integrates with criticality assessment to prioritize and validate fixes systematically.
 
 ---
-
-**Last Updated**: 2026-01-01

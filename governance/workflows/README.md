@@ -8,8 +8,6 @@ tags:
   - workflows
   - orchestration
   - agents
-created: 2026-01-04
-updated: 2026-03-28
 ---
 
 # Workflows Index
@@ -328,5 +326,3 @@ Planned workflow features:
 See [Workflow Pattern Convention](./meta/workflow-identifier.md) and [Execution Modes Convention](./meta/execution-modes.md) for comprehensive answers.
 
 ---
-
-**Last Updated**: 2026-04-02

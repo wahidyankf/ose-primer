@@ -22,8 +22,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-02-04
-updated: 2026-03-06
 ---
 
 # Go Coding Standards
@@ -1410,5 +1408,5 @@ These standards are enforced through:
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-04
+
 **Go Version**: Go 1.26 (supports 1.18-1.26)

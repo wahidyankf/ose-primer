@@ -18,8 +18,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-created: 2026-02-05
-updated: 2026-02-05
 ---
 
 # Elixir Coding Standards
@@ -1719,5 +1717,5 @@ These standards are enforced through:
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-05
+
 **Elixir Version**: 1.19+ (supports 1.12-1.19)

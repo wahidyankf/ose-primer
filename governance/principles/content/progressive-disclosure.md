@@ -9,8 +9,6 @@ tags:
   - learning-paths
   - user-experience
   - complexity-management
-created: 2025-12-15
-updated: 2025-12-24
 ---
 
 # Progressive Disclosure
@@ -476,5 +474,3 @@ docs/explanation/infrastructure/security/security-basics.md
 - [Write the Docs](https://www.writethedocs.org/) - Documentation best practices
 
 ---
-
-**Last Updated**: 2025-12-24

@@ -23,8 +23,6 @@ principles:
   - automation-over-manual
   - explicit-over-implicit
   - reproducibility
-created: 2026-02-05
-updated: 2026-02-05
 ---
 
 # Elixir Testing Standards
@@ -900,5 +898,5 @@ For learning Elixir fundamentals and concepts referenced in these standards, see
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-05
+
 **Elixir Version**: 1.12+ (baseline), 1.17+ (recommended), 1.19.0 (latest)

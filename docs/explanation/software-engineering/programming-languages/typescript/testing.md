@@ -17,8 +17,6 @@ principles:
   - automation-over-manual
   - explicit-over-implicit
   - reproducibility
-created: 2026-02-22
-updated: 2026-03-04
 ---
 
 # TypeScript Testing
@@ -440,5 +438,3 @@ coverage threshold because they test flows, not line-by-line logic.
 - [TypeScript BDD](./behaviour-driven-development.md) — Gherkin, vitest-cucumber, playwright-bdd
 
 ---
-
-**Last Updated**: 2026-03-04

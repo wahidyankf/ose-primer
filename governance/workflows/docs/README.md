@@ -34,5 +34,3 @@ These workflows define **WHEN and HOW to validate documentation**, orchestrating
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md) - Core workflow pattern
 
 ---
-
-**Last Updated**: 2026-01-01

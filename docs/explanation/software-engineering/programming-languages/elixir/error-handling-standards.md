@@ -19,8 +19,6 @@ principles:
   - simplicity-over-complexity
   - explicit-over-implicit
   - reproducibility
-created: 2026-01-23
-updated: 2026-02-05
 ---
 
 ## Prerequisite Knowledge
@@ -855,7 +853,5 @@ Before deploying Elixir financial services, verify:
 - [ ] Integration tests verify supervision and rollback behavior
 
 ---
-
-**Last Updated**: 2026-02-05
 
 **Status**: Active (mandatory for all demo Elixir services)

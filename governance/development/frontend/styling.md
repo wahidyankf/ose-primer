@@ -9,8 +9,6 @@ tags:
   - css
   - responsive
   - mobile-first
-created: 2026-03-28
-updated: 2026-03-28
 ---
 
 # Styling Convention
@@ -298,5 +296,3 @@ Do not extract patterns in Stage 1. Copy-pasting class strings across components
 - [Indentation Convention](../../conventions/formatting/indentation.md) — All CSS and TSX code examples in this document use 2-space indentation (language-appropriate for CSS and TypeScript/JSX).
 
 ---
-
-**Last Updated**: 2026-03-28

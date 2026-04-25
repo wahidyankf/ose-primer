@@ -8,8 +8,6 @@ tags:
   - markdown
   - conventions
   - github-compatibility
-created: 2025-11-22
-updated: 2026-03-09
 ---
 
 # Documentation Linking Convention
@@ -363,8 +361,6 @@ When creating documentation, verify links by:
 - [Conventions Index](../README.md) - Overview of all documentation conventions
 
 ---
-
-**Last Updated**: 2026-03-09
 
 ## 🔗 When to Link Rule References
 

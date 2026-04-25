@@ -7,8 +7,6 @@ tags:
   - conventions
   - writing
   - quality
-created: 2026-01-30
-updated: 2026-02-22
 ---
 
 # Writing Conventions
@@ -28,6 +26,7 @@ This directory contains universal standards for writing documentation content th
 - [OSS Documentation](./oss-documentation.md) - Standards for repository documentation files (README, CONTRIBUTING, ADRs, security) following open source best practices
 - [README Quality](./readme-quality.md) - Quality standards for README.md files ensuring engagement, accessibility, and scannability. Defines problem-solution hooks, jargon elimination, acronym context requirements, benefits-focused language, navigation structure, and paragraph length limits
 - [Web Research Delegation](./web-research-delegation.md) - Normative rule requiring AI agents to delegate public-web information gathering to the `web-research-maker` subagent when research exceeds the delegation threshold (2+ searches or 3+ fetches per claim). Enumerates three exceptions (single-shot known URL; fixer re-validation; link-reachability checkers)
+- [No Date Metadata](./no-date-metadata.md) - Forbids manual date fields in markdown. Git history is the single source of truth for file age.
 
 ## Related Documentation
 
@@ -47,5 +46,3 @@ This set of conventions implements/respects the following core principles:
 - **[No Time Estimates](../../principles/content/no-time-estimates.md)**: Content Quality Principles explicitly prohibit time-based framing (e.g., "this takes 30 minutes"), ensuring documentation describes what will be accomplished rather than imposing artificial time pressure.
 
 ---
-
-**Last Updated**: 2026-02-22

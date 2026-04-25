@@ -14,8 +14,6 @@ tags:
 principles:
   - explicit-over-implicit
   - immutability
-created: 2026-02-03
-updated: 2026-02-03
 ---
 
 ## Prerequisite Knowledge
@@ -618,7 +616,5 @@ Before deploying DDD-based services, verify:
 **Concurrency**:
 
 - [Concurrency Standards](./concurrency-standards.md) - Thread-safe aggregate design and optimistic locking
-
-**Last Updated**: 2026-02-04
 
 **Status**: Active (mandatory for all demo domain-driven services)

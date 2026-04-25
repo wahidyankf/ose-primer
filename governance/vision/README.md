@@ -7,8 +7,6 @@ tags:
   - vision
   - purpose
   - index
-created: 2025-12-24
-updated: 2026-03-23
 ---
 
 # Vision
@@ -30,7 +28,7 @@ graph TD
     C[Conventions - WHAT rules]
     D[Development - HOW we build]
     E[Agents - WHO implements]
-    F[Workflows - WHEN we orchestrate]
+    F[Workflows - WHEN we run]
 
     A -->|inspires| B
     B --> C
@@ -182,5 +180,3 @@ Automation serves the mission:
 - [AGENTS.md](../../AGENTS.md) - Project guidance for all agents
 
 ---
-
-**Last Updated**: 2026-03-23

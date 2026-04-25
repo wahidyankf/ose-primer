@@ -32,5 +32,3 @@ These workflows define **WHEN and HOW to validate CI/CD standards**, orchestrati
 - [Repository Architecture](../../repository-governance-architecture.md) - Six-layer governance model
 
 ---
-
-**Last Updated**: 2026-04-02

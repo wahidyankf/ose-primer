@@ -15,8 +15,6 @@ principles:
   - automation-over-manual
   - explicit-over-implicit
   - reproducibility
-created: 2026-02-08
-updated: 2026-02-08
 ---
 
 # Playwright Framework
@@ -520,6 +518,5 @@ Read complementary documentation:
 
 ---
 
-**Last Updated**: 2026-02-08
 **Playwright Version**: 1.40+ (TypeScript, Node.js 18+)
 **Maintainers**: Platform Documentation Team

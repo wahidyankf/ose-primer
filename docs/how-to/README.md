@@ -6,8 +6,6 @@ tags:
   - index
   - how-to
   - guides
-created: 2025-11-22
-updated: 2026-04-04
 ---
 
 # How-To Guides
@@ -33,5 +31,3 @@ Problem-solving guides for common tasks in the open-sharia-enterprise project. T
 - [How to Update the API Contract](./update-api-contract.md) - Modifying the OpenAPI spec, regenerating types, and verifying all demo apps
 
 ---
-
-**Last Updated**: 2026-04-04

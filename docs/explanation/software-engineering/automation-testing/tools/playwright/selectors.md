@@ -15,8 +15,6 @@ principles:
   - automation-over-manual
   - explicit-over-implicit
   - accessibility-first
-created: 2026-02-08
-updated: 2026-02-08
 ---
 
 # Playwright Selector Standards
@@ -535,5 +533,5 @@ form.getByRole("textbox").nth(2); // Third textbox within specific form
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-08
+
 **Playwright Version**: Playwright 1.40+ (TypeScript, Node.js 18+)

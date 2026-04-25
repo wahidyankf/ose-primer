@@ -6,8 +6,6 @@ tags:
   - index
   - reference
   - technical
-created: 2025-11-22
-updated: 2026-04-19
 ---
 
 # Reference
@@ -33,5 +31,3 @@ Technical reference documentation for the open-sharia-enterprise project. These 
 - [AI Model Benchmarks](./ai-model-benchmarks.md) - Cited benchmark scores for all Claude and GLM models used in this project, with confidence levels and source URLs
 
 ---
-
-**Last Updated**: 2026-04-19

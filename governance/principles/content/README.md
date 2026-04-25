@@ -35,5 +35,3 @@ These principles define **WHY we value specific approaches to content creation**
 - [Repository Architecture](../../repository-governance-architecture.md) - Six-layer governance model
 
 ---
-
-**Last Updated**: 2026-01-01

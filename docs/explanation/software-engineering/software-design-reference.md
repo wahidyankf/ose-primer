@@ -11,8 +11,6 @@ tags:
 principles_implemented:
   - explicit-over-implicit
   - documentation-first
-created: 2026-01-25
-updated: 2026-02-07
 ---
 
 # Software Design Reference
@@ -194,5 +192,3 @@ This document implements/respects the following core principles:
 - **[Functional Programming Principles](../../../governance/development/pattern/functional-programming.md)** - Cross-language FP guidance
 
 ---
-
-**Last Updated**: 2026-01-30

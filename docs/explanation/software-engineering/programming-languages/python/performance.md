@@ -16,7 +16,6 @@ related:
   - ./memory-management.md
 principles:
   - simplicity-over-complexity
-updated: 2025-01-23
 ---
 
 # Python Performance
@@ -428,7 +427,6 @@ def calculate_zakat_generator(wealth_items: List[Decimal]):
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: demo Documentation Team
 

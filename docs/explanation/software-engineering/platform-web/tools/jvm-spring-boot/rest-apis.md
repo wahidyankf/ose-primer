@@ -16,8 +16,6 @@ principles:
   - explicit-over-implicit
   - simplicity-over-complexity
   - consistency
-created: 2026-01-26
-updated: 2026-01-26
 related:
   - ./best-practices.md
   - ./security.md
@@ -1639,5 +1637,3 @@ Production guidelines for REST API design.
 - [Spring Boot Security](./security.md) - API security
 
 ---
-
-**Last Updated**: 2026-01-26

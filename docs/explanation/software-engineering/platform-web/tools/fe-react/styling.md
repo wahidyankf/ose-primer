@@ -13,7 +13,6 @@ related:
   - ./best-practices.md
 principles:
   - explicit-over-implicit
-updated: 2026-01-25
 ---
 
 # React Styling
@@ -1422,5 +1421,3 @@ const OptimizedComponent = styled.div`
 - **[Performance](performance.md)** - Performance optimization
 
 ---
-
-**Last Updated**: 2026-01-26

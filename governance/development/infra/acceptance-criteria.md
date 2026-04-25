@@ -8,8 +8,6 @@ tags:
   - gherkin
   - testing
   - requirements
-created: 2025-12-07
-updated: 2026-02-02
 ---
 
 # Acceptance Criteria Convention
@@ -459,15 +457,15 @@ func (s *Suite) theUserShouldBeAuthenticated() error {
 
 ```mermaid
 graph TD
- A[Write Gherkin Scenario] -->|Define behavior| B[Scenario: Login Success]
+ A[Write Gherkin Scenario] -- define behavior --> B[Scenario: Login Success]
  B --> C[Given: Initial state]
  C --> D[When: User action]
  D --> E[Then: Expected outcome]
  E --> F{Implement Feature}
- F -->|Code written| G[Write Step Definitions]
+ F -- code written --> G[Write Step Definitions]
  G --> H[Run Automated Tests]
- H -->|Pass| I[Feature Complete ]
- H -->|Fail| J[Fix Implementation]
+ H -- pass --> I[Feature Complete]
+ H -- fail --> J[Fix Implementation]
  J --> H
 
  style A fill:#0173B2,stroke:#000,color:#fff

@@ -11,8 +11,6 @@ principles:
   - automation-over-manual
   - explicit-over-implicit
   - reproducibility
-created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # TDD Testing Standards
@@ -148,5 +146,3 @@ src/
 - E2E: `*.feature` + step definitions (Gherkin-driven via Playwright / Cucumber)
 
 ---
-
-**Last Updated**: 2026-02-09

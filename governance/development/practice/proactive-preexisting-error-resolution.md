@@ -10,8 +10,6 @@ tags:
   - proactive
   - bug-fixing
   - ai-agents
-created: 2026-03-28
-updated: 2026-03-28
 ---
 
 # Proactive Preexisting Error Resolution
@@ -200,5 +198,3 @@ The distinction is task origin. The behavior is identical.
 - [Deliberate Problem-Solving](../../principles/general/deliberate-problem-solving.md) - Think before acting; surface assumptions; do not proceed on broken foundations
 
 ---
-
-**Last Updated**: 2026-03-28

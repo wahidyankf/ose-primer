@@ -8,8 +8,6 @@ tags:
   - contracts
   - demo-be
   - demo-fe
-created: 2026-03-22
-updated: 2026-03-22
 ---
 
 # How to Update the API Contract

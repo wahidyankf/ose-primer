@@ -9,8 +9,6 @@ tags:
   - formulas
   - notation
   - conventions
-created: 2025-12-02
-updated: 2025-12-09
 ---
 
 # Mathematical Notation Convention
@@ -293,7 +291,7 @@ Mermaid diagrams don't process LaTeX. Use plain text notation:
 
 ```mermaid
 graph TD
- A[Input: r_f, beta, r_m] --> B[Calculate: r_e = r_f + beta * market_premium]
+ A[Input: r_f, beta, r_m] --> B["r_e = r_f + beta * premium"]
  B --> C[Output: Cost of Equity]
 ```
 
@@ -982,5 +980,3 @@ LaTeX math has good accessibility:
 - [GitHub Math Support Announcement](https://github.blog/2022-05-19-math-support-in-markdown/) - Official GitHub blog post (May 2022)
 
 ---
-
-**Last Updated**: 2025-12-09

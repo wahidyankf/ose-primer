@@ -14,7 +14,6 @@ related:
 principles:
   - automation-over-manual
   - reproducibility
-updated: 2026-01-25
 ---
 
 # React Build & Deployment
@@ -1268,5 +1267,3 @@ export default defineConfig({
 - **[Testing](testing.md)** - CI/CD testing
 
 ---
-
-**Last Updated**: 2026-01-26

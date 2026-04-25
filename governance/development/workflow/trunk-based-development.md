@@ -9,8 +9,6 @@ tags:
   - workflow
   - development
   - continuous-integration
-created: 2025-11-26
-updated: 2026-04-11
 ---
 
 # Trunk Based Development Convention
@@ -627,5 +625,3 @@ TBD works best when combined with:
 - **Development Practices**: [Development Index](../README.md)
 
 ---
-
-**Last Updated**: 2026-04-11

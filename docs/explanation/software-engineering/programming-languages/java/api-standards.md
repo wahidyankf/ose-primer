@@ -14,8 +14,6 @@ tags:
 principles:
   - explicit-over-implicit
   - simplicity-over-complexity
-created: 2026-02-03
-updated: 2026-02-03
 ---
 
 ## Prerequisite Knowledge
@@ -605,7 +603,5 @@ Before deploying APIs, verify:
 **Testing**:
 
 - [Testing Standards](./testing-standards.md) - API contract testing, REST API testing patterns, and integration tests
-
-**Last Updated**: 2026-02-04
 
 **Status**: Active (mandatory for all demo APIs)

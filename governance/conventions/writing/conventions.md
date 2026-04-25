@@ -8,8 +8,6 @@ tags:
   - conventions
   - standards
   - documentation
-created: 2025-12-07
-updated: 2025-12-24
 ---
 
 # Convention Writing Convention
@@ -87,8 +85,6 @@ subcategory: conventions
 tags:
   - relevant
   - tags
-created: YYYY-MM-DD
-updated: YYYY-MM-DD
 ---
 ```
 
@@ -435,8 +431,6 @@ subcategory: conventions
 tags:
   - example
   - standard
-created: 2025-01-15
-updated: 2025-01-15
 ---
 
 # Example Convention
@@ -578,5 +572,3 @@ When creating a convention:
 - `repo-rules-checker` - Validates convention compliance
 
 ---
-
-**Last Updated**: 2025-12-24

@@ -9,8 +9,6 @@ tags:
   - a11y
   - aria
   - focus
-created: 2026-03-28
-updated: 2026-03-28
 ---
 
 # Accessibility Convention
@@ -273,5 +271,3 @@ Dialogs require a **focus trap**: Tab and Shift+Tab must cycle only within the d
 - [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/) — Verify contrast ratios
 
 ---
-
-**Last Updated**: 2026-03-28

@@ -10,8 +10,6 @@ tags:
   - phoenix
   - react
   - index
-created: 2026-01-25
-updated: 2026-01-25
 ---
 
 # Libraries and Frameworks
@@ -279,5 +277,3 @@ All framework documentation follows the repository's core principles:
 - **[Monorepo Structure](../../../reference/monorepo-structure.md)** - Nx workspace organization
 
 ---
-
-**Last Updated**: 2026-01-25

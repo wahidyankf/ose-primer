@@ -6,8 +6,6 @@ tags:
   - skills
   - ai-agents
   - claude-code
-created: 2026-02-01
-updated: 2026-03-06
 ---
 
 # How to Create a New Skill

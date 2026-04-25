@@ -9,8 +9,6 @@ tags:
   - identity
 principles:
   - explicit-over-implicit
-created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # DDD Entity Standards
@@ -68,5 +66,3 @@ String donationId;  // Can be confused with other strings
 **See**: [FSM Standards](../finite-state-machine-fsm/README.md)
 
 ---
-
-**Last Updated**: 2026-02-09

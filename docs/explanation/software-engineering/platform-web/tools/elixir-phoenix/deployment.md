@@ -1172,5 +1172,3 @@ echo "Deployment complete!"
 - **[Security](security.md)** - Production security
 
 ---
-
-**Last Updated**: 2026-01-25

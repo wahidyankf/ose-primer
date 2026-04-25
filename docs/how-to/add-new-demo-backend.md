@@ -9,8 +9,6 @@ tags:
   - codegen
   - testing
   - bdd
-created: 2026-03-22
-updated: 2026-03-31
 ---
 
 # How to Add a New Demo Backend

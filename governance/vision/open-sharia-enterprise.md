@@ -8,8 +8,6 @@ tags:
   - purpose
   - islamic-enterprise
   - open-source
-created: 2025-12-24
-updated: 2025-12-24
 ---
 
 # Open Sharia Enterprise Vision
@@ -389,5 +387,3 @@ We know we're succeeding when:
 - [Workflows](../workflows/README.md) - Processes supporting our goals
 
 ---
-
-**Last Updated**: 2025-12-24

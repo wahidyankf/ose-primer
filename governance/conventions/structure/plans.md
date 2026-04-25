@@ -8,8 +8,6 @@ tags:
   - plans
   - project-planning
   - organization
-created: 2025-12-05
-updated: 2026-04-18
 ---
 
 # Plans Organization Convention
@@ -571,5 +569,3 @@ Quick ideas and todos that haven't been formalized into plans yet.
 ```
 
 ---
-
-**Last Updated**: 2026-04-18

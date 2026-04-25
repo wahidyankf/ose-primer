@@ -10,8 +10,6 @@ tags:
   - conventions
   - accessibility
   - styling
-created: 2026-03-28
-updated: 2026-03-28
 ---
 
 # Frontend Development
@@ -66,5 +64,3 @@ UI development conventions for the open-sharia-enterprise monorepo's frontend ap
 - [Indentation Convention](../../conventions/formatting/indentation.md) — All code examples in this directory use language-appropriate indentation (2 spaces for TypeScript/JSX/JSON)
 
 ---
-
-**Last Updated**: 2026-03-28
