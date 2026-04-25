@@ -199,7 +199,7 @@ financial_platform/
 
 ```mermaid
 %%{init: {'theme':'base'}}%%
-graph TD
+graph LR
     App[Financial Platform<br/>Umbrella Application]
 
     subgraph DonationBC["Donation Bounded Context"]
@@ -349,7 +349,7 @@ end
 
 ```mermaid
 %%{init: {'theme':'base'}}%%
-graph TD
+graph LR
     subgraph SharedKernel["Shared Kernel Pattern"]
         SK1[Donation Context]
         SK2[Zakat Context]

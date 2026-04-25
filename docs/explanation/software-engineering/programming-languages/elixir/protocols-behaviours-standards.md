@@ -185,21 +185,21 @@ The following diagram illustrates REQUIRED runtime dispatch behavior:
 
 ```mermaid
 graph TD
-    Call["Protocol Call<br/>Auditable.audit_trail#40;entity#41;"]
+    Call["Protocol Call<br/>Auditable.audit_trail(entity)"]
     TypeDetect["Runtime Type Detection"]
 
-    Donation["Donation Implementation<br/>defimpl Auditable, for: Donation"]
-    Zakat["ZakatPayment Implementation<br/>defimpl Auditable, for: ZakatPayment"]
-    Campaign["Campaign Implementation<br/>defimpl Auditable, for: Campaign"]
+    Donation["Donation Implementation<br/>defimpl Auditable<br/>for: Donation"]
+    Zakat["ZakatPayment Implementation<br/>defimpl Auditable<br/>for: ZakatPayment"]
+    Campaign["Campaign Implementation<br/>defimpl Auditable<br/>for: Campaign"]
     Fallback["Fallback: Any<br/>defimpl Auditable, for: Any"]
 
     Result["Execute Implementation<br/>Return Result"]
 
     Call --> TypeDetect
-    TypeDetect -->|%Donation{}| Donation
-    TypeDetect -->|%ZakatPayment{}| Zakat
-    TypeDetect -->|%Campaign{}| Campaign
-    TypeDetect -->|Other types| Fallback
+    TypeDetect --> Donation
+    TypeDetect --> Zakat
+    TypeDetect --> Campaign
+    TypeDetect --> Fallback
 
     Donation --> Result
     Zakat --> Result
@@ -398,13 +398,13 @@ end
 The following diagram illustrates REQUIRED compile-time verification:
 
 ```mermaid
-graph TD
+graph LR
     Behaviour["PaymentGateway Behaviour<br/>@callback Definitions"]
 
-    CB1["@callback init_payment<br/>amount, metadata<br/>→ {:ok, tx_id} | {:error, reason}"]
-    CB2["@callback process_payment<br/>transaction_id<br/>→ {:ok, result} | {:error, reason}"]
-    CB3["@callback refund_payment<br/>transaction_id, amount<br/>→ {:ok, refund_id} | {:error, reason}"]
-    CB4["@callback get_status<br/>transaction_id<br/>→ {:ok, status} | {:error, reason}"]
+    CB1["@callback init_payment<br/>amount, metadata<br/>→ {:ok,tx_id}|{:error,reason}"]
+    CB2["@callback process_payment<br/>transaction_id<br/>→ {:ok,result}|{:error,reason}"]
+    CB3["@callback refund_payment<br/>transaction_id, amount<br/>→ {:ok,refund_id}|{:error,rsn}"]
+    CB4["@callback get_status<br/>transaction_id<br/>→ {:ok,status}|{:error,reason}"]
     CB5["@callback validate_credentials<br/>credentials<br/>→ :ok | {:error, reason}"]
 
     Impl1["Stripe Implementation<br/>@behaviour PaymentGateway<br/>@impl true"]
@@ -435,7 +435,7 @@ graph TD
     CB4 -.->|MUST implement| Impl3
     CB5 -.->|MUST implement| Impl3
 
-    Note1["Compile-time verification:<br/>Missing callbacks = compiler error"]
+    Note1["Compile-time verification:<br/>Missing callbacks → error"]
     Behaviour -.-> Note1
 
     style Behaviour fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
