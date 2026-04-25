@@ -25,8 +25,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Fixer (yellow)
-- **Created**: 2025-12-28
-- **Last Updated**: 2026-04-04
 
 ## Confidence Assessment (Re-validation Required)
 
@@ -91,6 +89,11 @@ For EACH finding: Read → Re-validate → Assess confidence → Apply (HIGH) or
 ### 3. Fix Application
 
 Apply HIGH_CONFIDENCE fixes automatically, skip others, report summary.
+
+#### Delivery Checklist Fixes
+
+- Remove unsolicited `- [ ] Create PR` / `- [ ] Open PR` steps from `delivery.md` when
+  no explicit PR instruction exists in the prompt or plan (`prd.md`/`README.md`).
 
 #### BRD/PRD Content-Placement Fixes
 

@@ -230,6 +230,9 @@ Cloners who deploy to Vercel (or similar) typically mint their own `prod-*` env 
 
 **See**: [governance/development/workflow/commit-messages.md](./governance/development/workflow/commit-messages.md)
 
+**See**: [git-push-default convention](./governance/development/workflow/git-push-default.md) —
+explicit opt-in-PR rule for plan agents.
+
 ## Git Hooks (Automated Quality)
 
 Husky + lint-staged enforce quality:
@@ -338,6 +341,13 @@ Active voice, single H1, proper heading nesting, alt text for images, WCAG AA co
 Never hardcode counts of dynamic collections (agents, skills, conventions, practices, principles, workflows) in docs. Reference collection by name and link.
 
 **See**: [governance/conventions/writing/dynamic-collection-references.md](./governance/conventions/writing/dynamic-collection-references.md)
+
+### No Date Metadata
+
+Manual `created:`/`updated:` frontmatter and `**Last Updated**` rows are forbidden in
+all markdown files. Use `git log --follow -1 --pretty=%ai <file>` for dates.
+
+**See**: [governance/conventions/writing/no-date-metadata.md](./governance/conventions/writing/no-date-metadata.md)
 
 ## Development Practices
 
