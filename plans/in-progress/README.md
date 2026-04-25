@@ -4,7 +4,9 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-_(none currently)_
+- [ose-public Governance Adoption (Apr 2026)](./2026-04-25__ose-public-governance-adoption/) —
+  Adopts git-push-default convention, no-date-metadata convention, and rhino-cli
+  `docs validate-mermaid` command from ose-public.
 
 ## Instructions
 

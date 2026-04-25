@@ -10,7 +10,7 @@ No cross-change dependencies except the final OpenCode sync (applies after all
 
 `ose-primer/apps/rhino-cli/go.mod` declares:
 
-```
+```go
 module github.com/wahidyankf/ose-public/apps/rhino-cli
 ```
 
@@ -54,7 +54,7 @@ Add entry in the Documents section:
 
 Add to the delivery checklist authoring rules section a paragraph:
 
-```
+```text
 Delivery checklists MUST NOT include a `- [ ] Create PR` step (or any equivalent)
 unless the user's original prompt or the plan's prd.md/README.md explicitly requests
 a pull request. See [git-push-default convention](../../governance/development/workflow/
@@ -65,7 +65,7 @@ git-push-default.md).
 
 Add to the Delivery section a HIGH finding rule:
 
-```
+```text
 - Unsolicited PR step: delivery.md contains a `- [ ] Create PR` or `- [ ] Open PR`
   step with no explicit PR instruction in the user prompt or plan document. → HIGH
 ```
@@ -74,7 +74,7 @@ Add to the Delivery section a HIGH finding rule:
 
 Add to the fix rules:
 
-```
+```text
 - Remove unsolicited `- [ ] Create PR` / `- [ ] Open PR` steps from delivery.md when
   no explicit PR instruction exists in the prompt or plan.
 ```
@@ -83,7 +83,7 @@ Add to the fix rules:
 
 Before the push step, add:
 
-```
+```text
 Rebase before push to maintain linear history: `git pull --rebase origin main`. Never
 create a merge commit. Do not open a PR unless the active delivery checklist contains
 an explicit `- [ ] Create PR` step that satisfies the git-push-default convention.
@@ -149,7 +149,8 @@ block shown around lines 108-109.
 
 **`.claude/skills/agent-developing-agents/SKILL.md`**
 
-Remove `- **Last Updated**: YYYY-MM-DD` template lines (appear at lines ~414 and ~818).
+Remove both `- **Created**: YYYY-MM-DD` and `- **Last Updated**: YYYY-MM-DD` template
+lines. Both appear in two Agent Metadata template blocks (lines ~413-414 and ~817-818).
 
 **`.claude/skills/repo-defining-workflows/SKILL.md`**
 
@@ -163,59 +164,62 @@ fields when creating new docs" — this guidance contradicts the new convention.
 
 ### Mass Mechanical Cleanup
 
-Run the following sed passes. Execute each independently so failures are isolated.
+Run the following sed passes from the repo root. Execute each independently so failures
+are isolated.
 
-**Pass 1 — strip `- **Last Updated**: DATE` rows from agent and skill files:**
+**Pass 1 — strip `- **Last Updated**: DATE`and`- **Created**: DATE` rows from agent and skill files:**
 
 ```bash
-# Agents
-find /Users/wkf/ose-projects/ose-primer/.claude/agents -name "*.md" \
-  -exec sed -i '' '/^- \*\*Last Updated\*\*: /d' {} \;
+# Agents — both Created and Last Updated rows
+find .claude/agents -name "*.md" \
+  -exec sed -i '' '/^- \*\*Last Updated\*\*: /d; /^- \*\*Created\*\*: /d' {} \;
 
-# Skills (SKILL.md files and README)
-find /Users/wkf/ose-projects/ose-primer/.claude/skills -name "*.md" \
-  -exec sed -i '' '/^- \*\*Last Updated\*\*: /d' {} \;
+# Skills (SKILL.md files and README) — same patterns
+find .claude/skills -name "*.md" \
+  -exec sed -i '' '/^- \*\*Last Updated\*\*: /d; /^- \*\*Created\*\*: /d' {} \;
 ```
 
 **Pass 2 — strip `created:` / `updated:` frontmatter from governance:**
 
 ```bash
-find /Users/wkf/ose-projects/ose-primer/governance -name "*.md" \
+find governance -name "*.md" \
   -exec sed -i '' '/^created: /d; /^updated: /d' {} \;
 ```
 
 **Pass 3 — strip standalone `**Last Updated**: DATE` footer lines from governance:**
 
 ```bash
-find /Users/wkf/ose-projects/ose-primer/governance -name "*.md" \
+find governance -name "*.md" \
   -exec sed -i '' 's/^\*\*Last Updated\*\*: .*$//' {} \;
 ```
 
 **Pass 4 — strip `created:` / `updated:` frontmatter from docs:**
 
 ```bash
-find /Users/wkf/ose-projects/ose-primer/docs -name "*.md" \
+find docs -name "*.md" \
   -exec sed -i '' '/^created: /d; /^updated: /d' {} \;
 ```
 
 **Pass 5 — strip standalone `**Last Updated**: DATE` footer lines from docs:**
 
 ```bash
-find /Users/wkf/ose-projects/ose-primer/docs -name "*.md" \
+find docs -name "*.md" \
   -exec sed -i '' 's/^\*\*Last Updated\*\*: .*$//' {} \;
 ```
 
 **Verification after all passes:**
 
-```bash
-# Should return 0
-grep -rn "^- \*\*Last Updated\*\*:" \
-  /Users/wkf/ose-projects/ose-primer/.claude/agents/ \
-  /Users/wkf/ose-projects/ose-primer/.claude/skills/ | wc -l
+> Absolute paths below assume the repo root is `/Users/wkf/ose-projects/ose-primer`.
+> Substitute your actual checkout path if different, or run from the repo root using
+> relative paths (`./.claude/agents/`, `./governance/`, `./docs/`).
 
-grep -rn "^created: \|^updated: " \
-  /Users/wkf/ose-projects/ose-primer/governance/ \
-  /Users/wkf/ose-projects/ose-primer/docs/ | wc -l
+```bash
+# Should return 0 — Last Updated and Created rows in agents/skills
+grep -rn "^- \*\*Last Updated\*\*:\|^- \*\*Created\*\*:" \
+  .claude/agents/ .claude/skills/ | wc -l
+
+# Should return 0 — frontmatter in governance and docs
+grep -rn "^created: \|^updated: " governance/ docs/ | wc -l
 ```
 
 > **Note on template examples**: After the mass passes, grep for residual
@@ -257,6 +261,48 @@ grep -rn "YYYY-MM-DD" /Users/wkf/ose-projects/ose-primer/.claude/ --include="*.m
 | `apps/rhino-cli/cmd/docs_validate_mermaid_test.go`             | same relative path       |
 | `apps/rhino-cli/cmd/docs_validate_mermaid_helpers_test.go`     | same relative path       |
 | `apps/rhino-cli/cmd/docs_validate_mermaid.integration_test.go` | same relative path       |
+
+#### `apps/rhino-cli/cmd/steps_common_test.go` — append const block with 30 step constant declarations (~34 lines including wrapper and comment)
+
+`steps_common_test.go` already exists in ose-primer. Do NOT copy the whole file.
+Append the following block (taken verbatim from ose-public commit `4c8397b88`) at the
+end of the file, after the last existing `const` block:
+
+```go
+// Docs validate-mermaid step patterns.
+const (
+    stepMermaidFileCleanFlowchart                      = `^a markdown file containing a flowchart where every node label is within the limit$`
+    stepMermaidFileLabelTooLong                        = `^a markdown file containing a flowchart with a node label longer than the limit$`
+    stepMermaidFileNodeLabel35Chars                    = `^a markdown file containing a flowchart with a node label of 35 characters$`
+    stepMermaidFileTBChainedSequentially               = `^a markdown file containing a TB flowchart with 10 nodes chained sequentially$`
+    stepMermaidFileTBNoRankMoreThan3                   = `^a markdown file containing a TB flowchart where no rank has more than 3 nodes$`
+    stepMermaidFileTBOneRank4Nodes                     = `^a markdown file containing a TB flowchart where one rank has 4 parallel nodes$`
+    stepMermaidFileLRNoRankMoreThan3                   = `^a markdown file containing an LR flowchart where no rank has more than 3 nodes$`
+    stepMermaidFileLR4NodesSameDepth                   = `^a markdown file containing an LR flowchart where one rank has 4 nodes at the same depth$`
+    stepMermaidFileFlowchart4NodesOneRank              = `^a markdown file containing a flowchart with 4 nodes at one rank$`
+    stepMermaidFile4NodesMoreThan5Ranks                = `^a markdown file containing a flowchart with 4 nodes at one rank and more than 5 ranks deep$`
+    stepMermaidFile4NodesExactly4RanksDeep             = `^a markdown file containing a flowchart with 4 nodes at one rank and exactly 4 ranks deep$`
+    stepMermaidFileSingleFlowchart                     = `^a markdown file containing a mermaid code block with exactly one flowchart diagram$`
+    stepMermaidFileTwoFlowchartDeclarations            = `^a markdown file containing a mermaid code block with two flowchart declarations$`
+    stepMermaidFileGraphKeywordNoViolations            = `^a markdown file containing a mermaid block using the graph keyword instead of flowchart with no violations$`
+    stepMermaidFileOnlyNonFlowchart                    = `^a markdown file containing only sequenceDiagram and classDiagram mermaid blocks$`
+    stepMermaidFileNoMermaidBlocks                     = `^a markdown file containing no mermaid code blocks$`
+    stepMermaidViolationNotStagedInGit                 = `^a markdown file with a mermaid violation that has not been staged in git$`
+    stepMermaidViolationNotInPushRange                 = `^a markdown file with a mermaid violation that is not in the push range$`
+    stepMermaidFileLabelLengthViolation                = `^a markdown file containing a flowchart with a label length violation$`
+    stepMermaidFileNoViolations                        = `^a markdown file containing a flowchart with no violations$`
+    stepDeveloperRunsDocsValidateMermaid               = `^the developer runs docs validate-mermaid$`
+    stepDeveloperRunsDocsValidateMermaidMaxLabelLen40  = `^the developer runs docs validate-mermaid with --max-label-len 40$`
+    stepDeveloperRunsDocsValidateMermaidMaxWidth5      = `^the developer runs docs validate-mermaid with --max-width 5$`
+    stepDeveloperRunsDocsValidateMermaidMaxDepth3      = `^the developer runs docs validate-mermaid with --max-depth 3$`
+    stepDeveloperRunsDocsValidateMermaidStagedOnly     = `^the developer runs docs validate-mermaid with the --staged-only flag$`
+    stepDeveloperRunsDocsValidateMermaidChangedOnly    = `^the developer runs docs validate-mermaid with the --changed-only flag$`
+    stepDeveloperRunsDocsValidateMermaidJSONOutput     = `^the developer runs docs validate-mermaid with -o json$`
+    stepDeveloperRunsDocsValidateMermaidMarkdownOutput = `^the developer runs docs validate-mermaid with -o markdown$`
+    stepDeveloperRunsDocsValidateMermaidVerbose        = `^the developer runs docs validate-mermaid with --verbose$`
+    stepDeveloperRunsDocsValidateMermaidQuiet          = `^the developer runs docs validate-mermaid with --quiet$`
+)
+```
 
 #### `apps/rhino-cli/cmd/testable.go` — add four lines
 
@@ -364,6 +410,38 @@ npx nx run rhino-cli:validate:mermaid
 ```
 
 ---
+
+## Dependencies
+
+No new external Go dependencies are introduced. All new code uses packages already
+present in `apps/rhino-cli/go.mod`:
+
+- `github.com/spf13/cobra` — already used by all other cmd files
+- Standard library (`fmt`, `io/fs`, `os/exec`, `path/filepath`, `strings`) — no new
+  `require` entries needed
+
+Run `go mod tidy -C apps/rhino-cli` after porting to confirm no dependency drift.
+
+## Testing Strategy
+
+| Level                            | Tool                                                  | Scope                                                                                                          | Cacheable                       |
+| -------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| Unit (`test:unit`)               | `go test` + godog                                     | `internal/mermaid/*_test.go`, `cmd/docs_validate_mermaid_test.go`, `cmd/docs_validate_mermaid_helpers_test.go` | Yes                             |
+| Integration (`test:integration`) | `go test -tags integration`                           | `cmd/docs_validate_mermaid.integration_test.go` — real filesystem via `t.TempDir()`, no Docker                 | Yes (no non-deterministic deps) |
+| Coverage                         | `go test -coverprofile` via `rhino-cli test-coverage` | Same as unit                                                                                                   | —                               |
+
+`test:quick` runs unit tests only plus coverage validation at ≥90%. Integration tests
+run via `nx run rhino-cli:test:integration`.
+
+## Rollback
+
+If the mermaid port causes test failures or build errors that cannot be resolved:
+
+1. `git revert <commit-sha-of-Change-C>` — reverts all mermaid files in one step.
+2. Alternatively, delete `apps/rhino-cli/internal/mermaid/`, the four new cmd files,
+   and revert `testable.go`, `steps_common_test.go`, `project.json`, `.husky/pre-push`,
+   `specs/apps/rhino/cli/gherkin/docs-validate-mermaid.feature`.
+3. Changes A and B (governance only) are independent and do not need rollback.
 
 ## OpenCode Sync
 

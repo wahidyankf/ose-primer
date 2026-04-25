@@ -10,11 +10,13 @@ Adopt three governance improvements that landed in `ose-public` and are directly
 | B   | **no-date-metadata convention** — strip manual date fields from all non-website markdown, git is the truth | `76304d7b8`                                                     |
 | C   | **rhino-cli `docs validate-mermaid`** — new command + internal/mermaid package + Nx target + pre-push wire | `655e0f048`, `4c8397b88`, `1474dcf73`, `17b8a3a0d`, `c684b789d` |
 
-All three are `propagate`-direction candidates under the ose-primer sync classifier (generic governance patterns, not ose-public-specific content).
+All three are manual adoptions from `ose-public` (a sibling repo, not the parent). The ose-primer sync classifier governs the parent ↔ primer relationship; these changes originate from ose-public's own innovation cycle and are cherry-picked here because they represent generic template-level improvements.
 
 ## Scope
 
 Single-repo: `ose-primer` only. No parent gitlink bump required — changes are self-contained.
+Execution: direct on `main` branch — no worktree required (single-repo, no subrepo boundary
+crossed).
 
 ## Documents
 

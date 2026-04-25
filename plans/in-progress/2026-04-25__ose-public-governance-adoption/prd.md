@@ -10,8 +10,10 @@ commit sequence.
 
 - **Template consumer** — a team cloning `ose-primer` to bootstrap a new polyglot Nx
   monorepo. Inherits all agents, skills, governance, and tooling.
-- **AI agent** (`plan-maker`, `plan-checker`, `plan-fixer`) — operates in consumer repos
-  derived from this template; must exhibit correct push and PR behavior.
+- **AI agent** (`plan-maker`, `plan-checker`, `plan-fixer`; `plan-execution` workflow) —
+  operates in consumer repos derived from this template; must exhibit correct push and PR
+  behavior. (`plan-execution` workflow is also updated by Change A to enforce the
+  rebase + opt-in-PR rules.)
 - **Documentation author** — writes Mermaid diagrams in `governance/` or `docs/`; relies
   on automated structural feedback.
 
@@ -20,35 +22,45 @@ commit sequence.
 ### Change A — git-push-default
 
 - As an AI agent running `plan-maker`, I want explicit guidance that delivery checklists
-  must not include unsolicited `- [ ] Create PR` steps, so I do not generate unnecessary
-  PR workflow on TBD repos.
+  must not include unsolicited `- [ ] Create PR` steps,
+  So that I do not generate unnecessary PR workflow on trunk-based development (TBD) repos.
 - As an AI agent running `plan-checker`, I want a HIGH finding rule for unsolicited PR
-  steps in delivery checklists, so I can catch and flag violations before execution.
+  steps in delivery checklists,
+  So that I can catch and flag violations before execution.
 - As a developer reading the convention, I want a single canonical document that states
-  the default push behavior and when PRs are opt-in, so I do not have to infer it from
-  the TBD convention.
+  the default push behavior and when PRs are opt-in,
+  So that I do not have to infer it from the trunk-based development (TBD) convention.
+- As an AI agent running `plan-fixer`, I want to identify and remove unsolicited PR steps
+  from delivery.md,
+  So that plans I fix comply with the git-push-default convention without requiring manual
+  review of every checklist item.
 
 ### Change B — no-date-metadata
 
-- As a template consumer, I want agent files to not carry `- **Last Updated**: DATE`
-  rows, so my repo does not inherit stale metadata on first clone.
+- As a template consumer, I want agent files to not carry `- **Last Updated**: DATE` rows,
+  So that my repo does not inherit stale metadata on first clone.
 - As a documentation author, I want governance and docs files to not carry `created:` /
-  `updated:` frontmatter, so I can use `git log` as the single source of truth for dates.
+  `updated:` frontmatter,
+  So that I can use `git log` as the single source of truth for dates.
 - As a template consumer using `docs-tutorial-maker`, I want its frontmatter template
-  to not include `created:` / `updated:` fields, so tutorials I generate do not carry
-  the anti-pattern.
+  to not include `created:` / `updated:` fields,
+  So that tutorials I generate do not carry the anti-pattern.
 
 ### Change C — rhino-cli docs validate-mermaid
 
 - As a documentation author, I want `rhino-cli docs validate-mermaid` to flag node
-  labels exceeding 30 characters, so diagrams do not clip at Mermaid's wrapping width.
+  labels exceeding 30 characters,
+  So that diagrams do not clip at Mermaid's wrapping width.
 - As a documentation author, I want the tool to flag more than 3 parallel nodes at one
-  rank, so diagrams do not become overcrowded (with a warning-not-error exception when
-  both width and depth thresholds are exceeded).
+  rank (with a warning-not-error exception when both width and depth thresholds are
+  exceeded),
+  So that diagrams do not become overcrowded.
 - As a documentation author, I want the tool to flag mermaid blocks containing multiple
-  flowchart declarations, so each block renders exactly one diagram.
+  flowchart declarations,
+  So that each block renders exactly one diagram.
 - As a developer, I want `nx run rhino-cli:validate:mermaid` to run in CI (cacheable)
-  and the pre-push hook to check only changed `.md` files, so the feedback is fast.
+  and the pre-push hook to check only changed `.md` files,
+  So that the feedback is fast.
 
 ## Acceptance Criteria (Gherkin)
 
@@ -94,10 +106,10 @@ Feature: no-date-metadata convention
     And it states that manual Last Updated annotations are forbidden
     And it states that git log is the authoritative source for file dates
 
-  Scenario: No agent files carry Last Updated rows
+  Scenario: No agent files carry Last Updated or Created rows
     Given all files under .claude/agents/
-    When I search for "- **Last Updated**:" patterns
-    Then zero matches are found
+    When I search for "- **Last Updated**:" and "- **Created**:" patterns
+    Then zero matches are found for both
 
   Scenario: No governance files carry date frontmatter
     Given all files under governance/
@@ -161,6 +173,12 @@ Feature: docs validate-mermaid command
     When I run nx run rhino-cli:test:quick
     Then it exits successfully
     And coverage is at or above 90%
+
+  Scenario: Width exceeded with depth also exceeded produces warning not failure
+    Given a markdown file with a TB flowchart where one rank has 4 nodes and total depth exceeds 5 ranks
+    When I run rhino-cli docs validate-mermaid
+    Then the command exits successfully (warning only)
+    And the output reports a width-exceeded warning without failing
 
   Scenario: Gherkin spec exists for docs validate-mermaid
     Given specs/apps/rhino/cli/gherkin/
