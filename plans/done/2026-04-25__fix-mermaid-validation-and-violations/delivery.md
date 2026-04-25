@@ -312,14 +312,14 @@ Files: `docs/explanation/software-engineering/architecture/c4-architecture-model
 
 > See tech-docs.md Phase 2 section for the full content specification for each item above.
 
-- [ ] 2a-1: Invoke `repo-rules-maker` to add `### Flowchart Width Constraints (Automated
+- [x] 2a-1: Invoke `repo-rules-maker` to add `### Flowchart Width Constraints (Automated
 Enforcement)` subsection inside the "Mermaid Best Practices" area (after "Mermaid
       Best Practices" heading, before any sub-sections on size):
       — MaxWidth=4 (horizontal only, direction-aware)
       — Span vs. depth defined with LR/TD direction mapping table
       — Label length: 30 raw chars (validator rule) vs. ~20 chars (Hugo/Hextra clip)
       — `go run ./apps/rhino-cli/main.go docs validate-mermaid` command
-- [ ] 2a-2: Invoke `repo-rules-maker` to add `## Width Violation Fix Strategy Guide` H2
+- [x] 2a-2: Invoke `repo-rules-maker` to add `## Width Violation Fix Strategy Guide` H2
       section after "Flowchart Width Constraints", containing:
       — Selection decision tree (label_too_long → Strategy 4; width_exceeded → try
       direction flip first, then structural fix)
@@ -329,37 +329,45 @@ Enforcement)` subsection inside the "Mermaid Best Practices" area (after "Mermai
       — Strategy 3: Sequential chaining
       — Strategy 4a/4b: Label shortening (entity replacement + abbreviation)
       — Subgraph warning: parser skips subgraph/end lines; fixes must be topological
-- [ ] 2a-3: Invoke `repo-rules-maker` to update the "Diagram Orientation" section:
+- [x] 2a-3: Invoke `repo-rules-maker` to update the "Diagram Orientation" section:
       change the absolute "MUST use graph TD" rule to "TD by default; LR is preferred
       when it reduces horizontal width below MaxWidth=4 (Strategy 0)"
-- [ ] 2a-4: Invoke `repo-rules-maker` to remove duplicate Error 7 (identical content to
+- [x] 2a-4: Invoke `repo-rules-maker` to remove duplicate Error 7 (identical content to
       Error 5)
-- [ ] 2a-5: Invoke `repo-rules-maker` to clarify label length note in Error 9 /
+- [x] 2a-5: Invoke `repo-rules-maker` to clarify label length note in Error 9 /
       Verification Checklist: "30 raw chars = validator enforcement limit; ~20 chars =
       Hugo/Hextra rendering clip"
 
+<!-- 2026-04-25 | Status: Done | All 5 changes applied by repo-rules-maker; mermaid validator 0 violations; markdown lint 0 errors -->
+
 ### 2b — Validate and commit
 
-- [ ] Validate updated diagrams.md passes the mermaid validator:
+- [x] Validate updated diagrams.md passes the mermaid validator:
       `go run ./apps/rhino-cli/main.go docs validate-mermaid governance/conventions/formatting/`
       → no `✗` output
-- [ ] Run markdown lint: `npm run lint:md` → 0 errors
-- [ ] Commit: `docs(governance): add mermaid width constraints and fix strategies to diagrams convention`
+- [x] Run markdown lint: `npm run lint:md` → 0 errors
+- [x] Commit: `docs(governance): add mermaid width constraints and fix strategies to diagrams convention`
+
+<!-- 2026-04-25 | Status: Done | validator: 0 violations in 3 files (84 blocks); markdownlint: 0 errors in 755 files; committed -->
 
 ### 2c — Run repo-rules quality gate in strict mode
 
-- [ ] Invoke `repo-rules-quality-gate` workflow with `mode=strict`
+- [x] Invoke `repo-rules-quality-gate` workflow with `mode=strict`
       (see `governance/workflows/repo/repo-rules-quality-gate.md`)
-- [ ] Fix ALL CRITICAL, HIGH, and MEDIUM findings from the quality gate
-- [ ] If fixes needed: commit with `docs(governance): fix repo-rules quality gate findings`
-- [ ] Confirm quality gate passes with zero CRITICAL/HIGH/MEDIUM findings on two
+- [x] Fix ALL CRITICAL, HIGH, and MEDIUM findings from the quality gate
+- [x] If fixes needed: commit with `docs(governance): fix repo-rules quality gate findings`
+- [x] Confirm quality gate passes with zero CRITICAL/HIGH/MEDIUM findings on two
       consecutive passes
+
+<!-- 2026-04-25 | Status: Done | Pass 1: 2 HIGH + 2 MEDIUM fixed (heading hierarchy, "above"→"below", checklist LR exception, duplicate rationale, error renumbering). Pass 2: 0 CRITICAL/HIGH/MEDIUM. Quality gate PASSED -->
 
 ## Plan Archival
 
-- [ ] Verify ALL delivery checklist items are ticked
-- [ ] Verify ALL quality gates pass (local)
-- [ ] Move `plans/in-progress/2026-04-25__fix-mermaid-validation-and-violations/` → `plans/done/` via `git mv`
-- [ ] Update `plans/in-progress/README.md` — remove entry
-- [ ] Update `plans/done/README.md` — add entry with completion date
-- [ ] Commit: `chore(plans): move fix-mermaid-validation-and-violations to done`
+- [x] Verify ALL delivery checklist items are ticked
+- [x] Verify ALL quality gates pass (local)
+- [x] Move `plans/in-progress/2026-04-25__fix-mermaid-validation-and-violations/` → `plans/done/` via `git mv`
+- [x] Update `plans/in-progress/README.md` — remove entry
+- [x] Update `plans/done/README.md` — add entry with completion date
+- [x] Commit: `chore(plans): move fix-mermaid-validation-and-violations to done`
+
+<!-- 2026-04-25 | Status: Done | All items complete; plan archived to done/ -->
