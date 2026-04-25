@@ -1144,63 +1144,64 @@ Bounded contexts define explicit boundaries around domain models.
 
 ### demo Bounded Contexts
 
+**Aggregates and shared kernel**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph TD
+    SK[Shared Kernel<br/>Money + UserId]
+    ZC[Zakat Calculation<br/>Aggregate]
+    MA[Murabaha Application<br/>Aggregate]
+    WP[Waqf Project<br/>Aggregate]
+
+    ZC -.->|uses| SK
+    MA -.->|uses| SK
+    WP -.->|uses| SK
+
+    style SK fill:#CC78BC,stroke:#000,color:#fff
+    style ZC fill:#0173B2,stroke:#000,color:#fff
+    style MA fill:#DE8F05,stroke:#000,color:#000
+    style WP fill:#029E73,stroke:#000,color:#fff
+```
+
+**Domain events published to event bus**:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph TD
-    subgraph "demo"
-        subgraph "Zakat Context"
-            ZC[Zakat Calculation<br/>Aggregate]
-            ZR[Zakat Rate<br/>Value Object]
-            ZE[ZakatCalculated<br/>Event]
-        end
+    ZE[ZakatCalculated<br/>Event]
+    ME[PaymentProcessed<br/>Event]
+    WE[DonationReceived<br/>Event]
+    EB[Event Bus]
 
-        subgraph "Murabaha Context"
-            MA[Murabaha Application<br/>Aggregate]
-            MI[Installment<br/>Entity]
-            ME[PaymentProcessed<br/>Event]
-        end
-
-        subgraph "Waqf Context"
-            WP[Waqf Project<br/>Aggregate]
-            WD[Waqf Donation<br/>Entity]
-            WE[DonationReceived<br/>Event]
-        end
-
-        subgraph "Shared Kernel"
-            MONEY[Money<br/>Value Object]
-            USER[UserId<br/>Value Object]
-            TIME[Timestamp<br/>Value Object]
-        end
-    end
-
-    ZC -.->|uses| MONEY
-    ZC -.->|uses| USER
-    MA -.->|uses| MONEY
-    MA -.->|uses| USER
-    WP -.->|uses| MONEY
-    WP -.->|uses| USER
-
-    ZE -->|published to| EB[Event Bus]
+    ZE -->|published to| EB
     ME -->|published to| EB
     WE -->|published to| EB
+
+    style ZE fill:#0173B2,stroke:#000,color:#fff
+    style ME fill:#DE8F05,stroke:#000,color:#000
+    style WE fill:#029E73,stroke:#000,color:#fff
+    style EB fill:#CA9161,stroke:#000,color:#fff
+```
+
+**Event bus subscribers**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph TD
+    EB[Event Bus]
+    MA[Murabaha Application<br/>Aggregate]
+    WP[Waqf Project<br/>Aggregate]
 
     EB -.->|subscribed by| MA
     EB -.->|subscribed by| WP
 
-    style ZC fill:#0173B2,stroke:#000,color:#fff
-    style ZR fill:#0173B2,stroke:#000,color:#fff
-    style ZE fill:#0173B2,stroke:#000,color:#fff
-    style MA fill:#DE8F05,stroke:#000,color:#000
-    style MI fill:#DE8F05,stroke:#000,color:#000
-    style ME fill:#DE8F05,stroke:#000,color:#000
-    style WP fill:#029E73,stroke:#000,color:#fff
-    style WD fill:#029E73,stroke:#000,color:#fff
-    style WE fill:#029E73,stroke:#000,color:#fff
-    style MONEY fill:#CC78BC,stroke:#000,color:#fff
-    style USER fill:#CC78BC,stroke:#000,color:#fff
-    style TIME fill:#CC78BC,stroke:#000,color:#fff
     style EB fill:#CA9161,stroke:#000,color:#fff
+    style MA fill:#DE8F05,stroke:#000,color:#000
+    style WP fill:#029E73,stroke:#000,color:#fff
 ```
 
 **Context Boundaries**:

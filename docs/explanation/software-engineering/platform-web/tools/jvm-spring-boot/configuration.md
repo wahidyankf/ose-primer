@@ -65,41 +65,22 @@ Spring Boot provides flexible configuration management through properties files,
 
 ### Configuration Loading Hierarchy
 
+**Source priority chain** (highest to lowest precedence):
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph TD
-    A[Application Startup] --> B{Configuration Sources}
+    C1[1. Command Line<br/>--server.port=9000]
+    C2[2. System Properties<br/>-Dserver.port=9000]
+    C3[3. Environment Vars<br/>SERVER_PORT=9000]
+    C4[4. Profile Files<br/>application-prod.yml]
+    C5[5. Base Config<br/>application.yml]
+    C6[6. @PropertySource<br/>custom.properties]
+    C7[7. Defaults<br/>@ConfigProps]
 
-    B --> C1[1. Command Line<br/>--server.port=9000]
-    B --> C2[2. System Properties<br/>-Dserver.port=9000]
-    B --> C3[3. Environment Variables<br/>SERVER_PORT=9000]
-    B --> C4[4. Profile Files<br/>application-prod.yml]
-    B --> C5[5. Base Config<br/>application.yml]
-    B --> C6[6. @PropertySource<br/>custom.properties]
-    B --> C7[7. Defaults<br/>@ConfigurationProperties]
+    C1 --> C2 --> C3 --> C4 --> C5 --> C6 --> C7
 
-    C1 --> D[PropertySources]
-    C2 --> D
-    C3 --> D
-    C4 --> D
-    C5 --> D
-    C6 --> D
-    C7 --> D
-
-    D --> E{Property Resolution}
-    E -->|Merge with Precedence| F[Final Configuration]
-
-    F --> G[@Value Injection]
-    F --> H[@ConfigurationProperties Binding]
-    F --> I[Environment Bean]
-
-    G --> J[Application Context]
-    H --> J
-    I --> J
-
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
     style C1 fill:#DE8F05,stroke:#000,color:#000
     style C2 fill:#DE8F05,stroke:#000,color:#000
     style C3 fill:#DE8F05,stroke:#000,color:#000
@@ -107,6 +88,23 @@ graph TD
     style C5 fill:#029E73,stroke:#000,color:#fff
     style C6 fill:#029E73,stroke:#000,color:#fff
     style C7 fill:#029E73,stroke:#000,color:#fff
+```
+
+**Resolution and injection**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph TD
+    D[PropertySources] --> E{Property Resolution}
+    E -->|Merge with Precedence| F[Final Configuration]
+    F --> G[@Value Injection]
+    F --> H[@ConfigProps Binding]
+    F --> I[Environment Bean]
+    G --> J[Application Context]
+    H --> J
+    I --> J
+
     style D fill:#CC78BC,stroke:#000,color:#fff
     style E fill:#CC78BC,stroke:#000,color:#fff
     style F fill:#CC78BC,stroke:#000,color:#fff

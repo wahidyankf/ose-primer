@@ -1118,6 +1118,8 @@ Role-Based Access Control (RBAC) and method-level security with Spring Security.
 
 ### Authorization Decision Flow
 
+**Pre-authorization check**:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
@@ -1127,32 +1129,39 @@ graph TD
     B --> C{Authenticated?}
     C -->|No| D[AccessDeniedException<br/>401 Unauthorized]
     C -->|Yes| E{Expression Type?}
-
     E -->|hasRole| F{User has Role?}
     E -->|hasAuthority| G{User has Authority?}
-    E -->|Custom Expression| H[Evaluate SpEL]
-
     F -->|Yes| I[Allow Access]
     F -->|No| J[AccessDeniedException<br/>403 Forbidden]
-
     G -->|Yes| I
     G -->|No| J
-
-    H --> K{Expression Result?}
-    K -->|true| I
-    K -->|false| J
-
-    I --> L[Execute Method]
-    L --> M{@PostAuthorize?}
-    M -->|No| N[Return Result]
-    M -->|Yes| O{Post-condition Met?}
-
-    O -->|Yes| N
-    O -->|No| P[AccessDeniedException<br/>403 Forbidden]
 
     style A fill:#0173B2,color:#fff
     style B fill:#029E73,color:#fff
     style D fill:#DE8F05,color:#fff
+    style I fill:#CC78BC,color:#fff
+    style J fill:#DE8F05,color:#fff
+```
+
+**SpEL expression and post-authorization**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    E{Custom SpEL?} -->|Yes| H[Evaluate SpEL]
+    H --> K{Expression Result?}
+    K -->|true| I[Allow Access]
+    K -->|false| J[AccessDeniedException<br/>403 Forbidden]
+    I --> L[Execute Method]
+    L --> M{@PostAuthorize?}
+    M -->|No| N[Return Result]
+    M -->|Yes| O{Post-condition Met?}
+    O -->|Yes| N
+    O -->|No| P[AccessDeniedException<br/>403 Forbidden]
+
+    style E fill:#0173B2,color:#fff
     style I fill:#CC78BC,color:#fff
     style J fill:#DE8F05,color:#fff
     style L fill:#CC78BC,color:#fff
