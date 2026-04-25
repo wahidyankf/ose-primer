@@ -30,30 +30,18 @@ principles:
 Python offers three major web frameworks, each with distinct philosophies. For demo financial services, framework choice depends on project requirements: FastAPI for modern async APIs, Django for full-featured web apps, Flask for microservices.
 
 ```mermaid
-graph TB
-    subgraph "Framework Selection"
-        A[Project Requirements] --> B{Primary Need?}
-        B -->|High Performance API| C[FastAPI]
-        B -->|Full Web App| D[Django]
-        B -->|Microservice| E[Flask]
+graph TD
+    A[Primary Need?] --> B[FastAPI<br/>High-perf API]
+    A --> C[Django<br/>Full web app]
+    A --> D[Flask<br/>Microservice]
 
-        C --> F[Async/Await]
-        C --> G[Type Safety]
-        C --> H[Auto Docs]
-
-        D --> I[Admin Panel]
-        D --> J[ORM]
-        D --> K[Auth System]
-
-        E --> L[Minimal Core]
-        E --> M[Extensions]
-        E --> N[Flexibility]
-    end
-
-    style C fill:#0173B2
-    style D fill:#DE8F05
-    style E fill:#029E73
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#0173B2,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
 ```
+
+**Framework key features**: FastAPI — async/await, type safety, auto docs. Django — admin panel, ORM, auth system. Flask — minimal core, extensions, flexibility.
 
 ### Framework Comparison
 
@@ -2000,25 +1988,12 @@ async def create_donation_with_broadcast(
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
-    A[FastAPI App] --> B[Dependency Injection<br/>DI Container]
-    A --> C[Routers<br/>APIRouter]
-    A --> D[Middleware<br/>CORS/Auth]
-
-    B --> B1[Database Session<br/>SQLAlchemy]
-    B --> B2[Auth Service<br/>JWT]
-    B --> B3[Config<br/>Settings]
-
-    C --> C1[/api/zakat<br/>Zakat Router]
-    C --> C2[/api/donations<br/>Donation Router]
-    C --> C3[/api/auth<br/>Auth Router]
-
-    C1 --> E[Endpoint Functions]
-    C2 --> E
-    C3 --> E
-
-    E --> F[Pydantic Models<br/>Validation]
-    F --> G[Business Logic<br/>Services]
-    G --> H[Repository Layer<br/>Database]
+    A[FastAPI App] --> B[DI Container]
+    A --> C[Routers]
+    C --> E[Endpoint Functions]
+    E --> F[Pydantic Validation]
+    F --> G[Business Logic]
+    G --> H[Repository / DB]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
@@ -2026,6 +2001,8 @@ flowchart TD
     style E fill:#CC78BC,color:#fff
     style F fill:#0173B2,color:#fff
 ```
+
+**FastAPI components**: DI Container provides database session (SQLAlchemy), auth service (JWT), and config/settings. Routers (`APIRouter`) group endpoints by domain (`/api/zakat`, `/api/donations`, `/api/auth`). Middleware handles CORS and auth before routing.
 
 ## Request Lifecycle
 

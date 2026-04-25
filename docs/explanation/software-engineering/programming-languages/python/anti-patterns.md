@@ -803,7 +803,7 @@ This diagram illustrates how mutable default arguments create shared state bugs:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-  A[Function defined with mutable default]:::blue
+  A[Function with mutable default]:::blue
   B[First call]:::blue
   C{Default used?}:::orange
   D[Create new mutable object]:::purple
@@ -811,7 +811,7 @@ graph TD
   F[Append to list]:::blue
   G[Return list]:::teal
   H[Second call]:::blue
-  I[List already contains first call data!]:::purple
+  I[Stale data from prior call!]:::purple
   J[BUG: Shared state across calls]:::purple
 
   A --> B
@@ -1624,52 +1624,20 @@ This diagram shows strategies to break circular import dependencies:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A[Circular Import Problem]:::purple
-  B[Strategy 1: Use Protocols]:::teal
-  C[Strategy 2: Defer Import]:::teal
-  D[Strategy 3: Restructure]:::teal
-  E[models.py imports calculators.py]:::orange
-  F[calculators.py imports models.py]:::orange
-  G[ImportError!]:::purple
-
-  H[Define Protocol in models.py]:::blue
-  I[calculators.py imports Protocol]:::blue
-  J[No circular dependency]:::teal
-
-  K[Import inside function]:::blue
-  L[Import delayed until called]:::blue
-  M[Breaks circular chain]:::teal
-
-  N[Extract shared code to new module]:::blue
-  O[Both import from shared]:::blue
-  P[Linear dependency]:::teal
-
-  A --> E
-  A --> F
-  E --> G
-  F --> G
-
-  A --> B
-  A --> C
-  A --> D
-
-  B --> H
-  H --> I
-  I --> J
-
-  C --> K
-  K --> L
-  L --> M
-
-  D --> N
-  N --> O
-  O --> P
+  A[Circular Import]:::purple --> B[Use Protocol]:::teal
+  A --> C[Defer Import]:::teal
+  A --> D[Restructure]:::teal
+  B --> E[No circular dep]:::teal
+  C --> F[Breaks chain]:::teal
+  D --> G[Linear deps]:::teal
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+**Root cause**: `models.py` imports `calculators.py` and `calculators.py` imports `models.py` → `ImportError`. **Strategies**: (1) Use Protocols — define a Protocol in `models.py`, `calculators.py` imports only the Protocol, no circular dependency. (2) Defer import — move `import` inside the function body, delayed until called, breaks the chain. (3) Restructure — extract shared code to a new module, both files import from the shared module, creating linear dependencies.
 
 ## Type Hint Anti-Patterns
 
@@ -1695,28 +1663,17 @@ Type hints should clarify intent and catch errors early. Poor type hint practice
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["Need Type Hint?"]:::blue --> B{"Type<br/>Known?"}:::orange
+    A["Type known?"]:::orange --> B["Specific type<br/>Decimal, str, int"]:::teal
+    A --> C["Multiple types?<br/>Union[str, int]"]:::purple
+    C --> D["Generic?<br/>List[str]"]:::teal
+    C --> E["Protocol?<br/>Hashable, Sized"]:::purple
 
-    B -->|"Yes"| C["Use Specific Type<br/>(Decimal, str, int)"]:::teal
-    B -->|"No"| D{"Multiple<br/>Possible Types?"}:::orange
-
-    D -->|"Yes"| E["Use Union<br/>(str | int | None)"]:::purple
-    D -->|"No"| F{"Generic<br/>Container?"}:::orange
-
-    F -->|"Yes"| G["Use Generic<br/>(List[str], Dict[str, int])"]:::teal
-    F -->|"No"| H{"Protocol-based?"}:::orange
-
-    H -->|"Yes"| I["Use Protocol<br/>(Hashable, Sized)"]:::purple
-    H -->|"No"| J["❌ Last Resort:<br/>Use Any<br/>(document why!)"]:::brown
-
-    Note["Prefer:<br/>Specific > Union > Generic > Protocol > Any"]
-
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
     classDef purple fill:#CC78BC,stroke:#000,color:#000
-    classDef brown fill:#CA9161,stroke:#000,color:#000
 ```
+
+**Type hint preference order** (best to worst): Specific types → Union types → Generic containers → Protocols → `Any` (last resort, always document why). If the type is known, use it directly. For multiple possible types, use `Union` or `|` syntax. For containers, use generics. For structural typing, use `Protocol`.
 
 **Hierarchy of Type Hints** (from best to worst):
 
@@ -2346,31 +2303,16 @@ Python's `float` type uses binary floating-point arithmetic (IEEE 754), which ca
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["Need to Store<br/>Money/Currency?"]:::blue --> B{"Financial<br/>Calculations?"}:::orange
-
-    B -->|"Yes"| C["✅ Use Decimal<br/>(required for finance)"]:::teal
-    B -->|"No"| D{"Display<br/>Only?"}:::orange
-
-    D -->|"Yes"| E["✅ Store as Decimal<br/>Format for display"]:::teal
-    D -->|"No"| F{"Scientific/Engineering<br/>Calculations?"}:::orange
-
-    F -->|"Yes"| G["✅ Use float<br/>(physics, stats)"]:::purple
-    F -->|"No"| C
-
-    C --> H["Decimal Best Practices"]:::teal
-    H --> H1["• Set context precision"]
-    H --> H2["• Define rounding mode"]
-    H --> H3["• Validate inputs"]
-    H --> H4["• Never mix with float"]
-
-    Note["❌ NEVER:<br/>float for money<br/>int for cents (loses precision)<br/>string arithmetic"]:::brown
+    A["Money/Currency?"]:::blue --> B["Financial calc:<br/>Use Decimal"]:::teal
+    A --> C["Display only:<br/>Decimal + format"]:::teal
+    A --> D["Scientific calc:<br/>Use float"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
     classDef purple fill:#CC78BC,stroke:#000,color:#000
-    classDef brown fill:#CA9161,stroke:#000,color:#000
 ```
+
+**Golden Rule**: use `Decimal` for all financial calculations and storage. Never use `float` for money (binary precision errors), `int` for cents (loses precision), or string arithmetic. `Decimal` best practices: set context precision, define rounding mode, validate inputs, never mix with `float`.
 
 **Golden Rule**: If it represents money, use `Decimal`. No exceptions.
 

@@ -52,21 +52,19 @@ asyncio provides asynchronous I/O using async/await syntax.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-  A[Python Thread Executes] -->|GIL Acquired| B{Task Type?}
-  B -->|I/O-Bound| C[Release GIL During I/O]
-  B -->|CPU-Bound| D[Hold GIL, Block Other Threads]
-
-  C -->|I/O Complete| E[Re-acquire GIL]
-  E --> F[Continue Execution]
-
-  D --> G[Only One Thread Executes Python Bytecode]
+  A[Thread Executes] --> B{Task Type?}
+  B --> C[I/O-Bound:<br/>Release GIL]
+  B --> D[CPU-Bound:<br/>Hold GIL]
+  C --> E[Re-acquire GIL]
+  E --> F[Continue]
 
   style A fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
   style B fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
   style C fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
   style D fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
-  style G fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
 ```
+
+**GIL behavior**: CPU-bound tasks hold the GIL, blocking other threads — only one thread executes Python bytecode at a time. I/O-bound tasks release the GIL during the I/O wait, allowing other threads to run.
 
 **Why this matters**: The GIL #40;Global Interpreter Lock#41; allows only one thread to execute Python bytecode at a time. Threading benefits I/O-bound tasks #40;GIL released during I/O#41; but not CPU-bound tasks.
 
@@ -315,37 +313,17 @@ Multiprocessing bypasses GIL with separate processes.
 
 graph TD
     Main["Main Process"]:::blue --> Pool["Process Pool"]:::orange
-
-    Pool --> P1["Process 1<br/>(Separate GIL)"]:::teal
-    Pool --> P2["Process 2<br/>(Separate GIL)"]:::teal
-    Pool --> P3["Process 3<br/>(Separate GIL)"]:::teal
-    Pool --> P4["Process 4<br/>(Separate GIL)"]:::teal
-
-    P1 --> CPU1["CPU Core 1"]:::purple
-    P2 --> CPU2["CPU Core 2"]:::purple
-    P3 --> CPU3["CPU Core 3"]:::purple
-    P4 --> CPU4["CPU Core 4"]:::purple
-
-    CPU1 --> Calc1["Zakat Calc 1"]:::blue
-    CPU2 --> Calc2["Zakat Calc 2"]:::blue
-    CPU3 --> Calc3["Zakat Calc 3"]:::blue
-    CPU4 --> Calc4["Zakat Calc 4"]:::blue
-
-    Calc1 --> Results["Combined Results"]:::teal
-    Calc2 --> Results
-    Calc3 --> Results
-    Calc4 --> Results
-
-    Results --> Main
-
-    Note1["No GIL Contention:<br/>Each process has<br/>independent GIL<br/>and memory space"]
-    Note2["True Parallelism:<br/>4 CPU cores execute<br/>Python bytecode<br/>simultaneously"]
+    Pool --> P1["Process 1<br/>(own GIL)"]:::teal
+    Pool --> P2["Process 2<br/>(own GIL)"]:::teal
+    P1 --> Results["Combined Results"]:::blue
+    P2 --> Results
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
 ```
+
+**True parallelism**: each worker process gets its own GIL and independent memory space. A pool of N processes (typically `cpu_count()`) maps tasks across CPU cores simultaneously — no GIL contention. Results are merged back to the main process via pickling.
 
 **Key Principles**:
 
@@ -437,28 +415,19 @@ def io_intensive_zakat(wealth: Decimal) -> Decimal:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-  A[Task to Execute] --> B{Task Type?}
-  B -->|I/O-Bound<br/>#40;API calls, DB queries#41;| C{Single Thread Sufficient?}
-  B -->|CPU-Bound<br/>#40;Complex calculations#41;| D{Need True Parallelism?}
+  A[Task Type?] --> B[I/O-Bound]
+  A --> C[CPU-Bound]
+  B --> D[asyncio or<br/>threading]
+  C --> E[multiprocessing]
 
-  C -->|Yes, modern async| E[asyncio<br/>async/await]
-  C -->|No, need threads| F[threading<br/>ThreadPoolExecutor]
-
-  D -->|Yes, bypass GIL| G[multiprocessing<br/>ProcessPoolExecutor]
-  D -->|No, I/O dominates| H[asyncio with<br/>CPU-bound tasks]
-
-  E --> I[Zakat API calls<br/>concurrent async]
-  F --> J[Donation processing<br/>with shared memory]
-  G --> K[Complex Murabaha<br/>profit calculations]
-
-  style A fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-  style B fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
+  style A fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
+  style B fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
   style C fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-  style D fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
+  style D fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
   style E fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
-  style F fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
-  style G fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
 ```
+
+**Decision guide**: I/O-bound tasks → use `asyncio` (modern async/await, single thread, highest concurrency) or `threading` (shared memory, compatible with sync libraries). CPU-bound tasks → use `multiprocessing` (bypasses GIL, true parallelism across CPU cores).
 
 **Decision guide**:
 
@@ -477,30 +446,14 @@ High-level interface for threading and multiprocessing.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["Need Concurrent<br/>Execution?"]:::blue --> B{"Workload<br/>Type?"}:::orange
+    A["Workload Type?"]:::orange --> B["I/O-Bound:<br/>ThreadPoolExecutor"]:::teal
+    A --> C["CPU-Bound:<br/>ProcessPoolExecutor"]:::teal
 
-    B -->|"I/O-Bound"| C["✅ ThreadPoolExecutor<br/>(API calls, DB queries)"]:::teal
-    B -->|"CPU-Bound"| D["✅ ProcessPoolExecutor<br/>(Calculations, parsing)"]:::teal
-
-    C --> E["Thread Pool Features"]:::purple
-    D --> F["Process Pool Features"]:::purple
-
-    E --> E1["Shared memory"]
-    E --> E2["Lightweight"]
-    E --> E3["GIL-limited"]
-
-    F --> F1["Separate memory"]
-    F --> F2["True parallelism"]
-    F --> F3["No GIL"]
-
-    C --> Ex1["Example:<br/>Fetch 100 donation<br/>receipts from API"]:::blue
-    D --> Ex2["Example:<br/>Calculate Zakat for<br/>10,000 accounts"]:::blue
-
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
 ```
+
+**ThreadPoolExecutor** (I/O-bound): shared memory, lightweight, GIL-limited — use for API calls and DB queries (e.g., fetch 100 donation receipts). **ProcessPoolExecutor** (CPU-bound): separate memory, true parallelism, no GIL — use for calculations and parsing (e.g., calculate Zakat for 10,000 accounts).
 
 **Key Principles**:
 
@@ -735,39 +688,17 @@ Handle exceptions in async code properly.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["asyncio.gather(*tasks)"]:::blue --> B{"return_exceptions<br/>Parameter?"}:::orange
-
-    B -->|"False (default)"| C["Task Execution"]:::teal
-    B -->|"True"| D["Task Execution"]:::teal
-
-    C --> C1["Task 1: Success"]:::teal
-    C --> C2["Task 2: Exception!"]:::purple
-    C --> C3["Task 3: Not Started"]:::orange
-
-    C2 --> Fail["First Exception<br/>Propagates Immediately"]:::purple
-    Fail --> Cancel["Remaining Tasks<br/>Cancelled"]:::purple
-    Cancel --> Raise["Exception Raised<br/>to Caller"]:::purple
-
-    D --> D1["Task 1: Success"]:::teal
-    D --> D2["Task 2: Exception!"]:::purple
-    D --> D3["Task 3: Continues"]:::teal
-
-    D1 --> Results["All Results<br/>Collected"]:::teal
-    D2 --> Results
-    D3 --> Results
-
-    Results --> Check{"Check Each<br/>Result Type"}:::orange
-    Check -->|"Success"| Process["Process Value"]:::teal
-    Check -->|"Exception"| Handle["Handle Error"]:::purple
-
-    Note1["Without return_exceptions:<br/>Fail-fast behavior<br/>One error stops all"]
-    Note2["With return_exceptions:<br/>Resilient behavior<br/>All tasks complete"]
+    A["gather(*tasks)"]:::blue --> B["return_exceptions<br/>= False"]:::orange
+    A --> C["return_exceptions<br/>= True"]:::teal
+    B --> D["Fail-fast:<br/>first error cancels all"]:::orange
+    C --> E["Resilient:<br/>all tasks complete"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
 ```
+
+**`return_exceptions=False` (default)**: fail-fast behavior — the first exception immediately propagates to the caller, and remaining tasks are cancelled. **`return_exceptions=True`**: resilient behavior — all tasks run to completion, exceptions are returned as result values and the caller checks each result type.
 
 **Key Principles**:
 

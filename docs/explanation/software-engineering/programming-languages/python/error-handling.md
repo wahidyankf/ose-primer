@@ -61,7 +61,7 @@ Understanding Python's exception hierarchy enables appropriate exception handlin
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#0173B2', 'primaryTextColor': '#000', 'primaryBorderColor': '#0173B2', 'lineColor': '#DE8F05', 'secondaryColor': '#029E73', 'tertiaryColor': '#CC78BC', 'background': '#fff', 'mainBkg': '#fff'}}}%%
-graph TD
+graph LR
     A[BaseException] --> B[Exception]
     A --> C[SystemExit]
     A --> D[KeyboardInterrupt]
