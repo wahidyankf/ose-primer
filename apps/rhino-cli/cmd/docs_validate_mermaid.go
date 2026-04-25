@@ -29,9 +29,11 @@ var validateMermaidCmd = &cobra.Command{
 
 Three rules are enforced on flowchart and graph blocks:
   1. Node label length must not exceed --max-label-len (default 30)
-  2. Max parallel nodes at one rank must not exceed --max-width (default 3)
-     Exception: when BOTH span > max-width AND depth > max-depth, emits a
-     warning instead of an error (both-exceeded path).
+  2. Horizontal dimension must not exceed --max-width (default 4).
+     Horizontal is direction-aware: depth for graph LR/RL, span for graph TD/TB/BT.
+     Exception: when BOTH horizontal > max-width AND vertical > max-depth, emits a
+     warning instead of an error. With max-depth=0 (default, no limit) this path
+     is inactive.
   3. Each mermaid code block must contain exactly one diagram
 
 Non-flowchart Mermaid types (sequenceDiagram, classDiagram, gantt, etc.) are
