@@ -45,36 +45,49 @@ Cross-Site Scripting (XSS) prevention follows multiple defensive layers:
 
 graph TD
     A[User Input] --> B{Input Type?}
-
     B -->|Plain Text| C[React Auto-Escape]
     B -->|HTML Content| D[Sanitize with DOMPurify]
     B -->|URL| E[Validate URL]
-
     C --> F[Render Safely]
-
-    D --> G{Sanitized?}
-    G -->|Yes| H[dangerouslySetInnerHTML]
-    G -->|No| I[Reject]
-
-    E --> J{Valid Protocol?}
-    J -->|Yes| K[Allow]
-    J -->|No| L[Block]
-
-    H --> F
-    K --> F
-
-    I --> M[Log Security Event]
-    L --> M
-
-    F --> N[Content Security Policy]
-    N --> O[XSS Protection Headers]
 
     style A fill:#0173B2
     style C fill:#029E73
     style D fill:#DE8F05
     style F fill:#029E73
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    D2[Sanitize with DOMPurify] --> G{Sanitized?}
+    G -->|Yes| H[dangerouslySetInnerHTML]
+    G -->|No| I[Reject]
+    E2[Validate URL] --> J{Valid Protocol?}
+    J -->|Yes| K[Allow]
+    J -->|No| L[Block]
+
+    style D2 fill:#DE8F05
+    style H fill:#029E73
     style I fill:#DE8F05
+    style E2 fill:#DE8F05
     style L fill:#DE8F05
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    H2[Safe HTML/URL] --> F[Render Safely]
+    I2[Reject/Block] --> M[Log Security Event]
+    F --> N[Content Security Policy]
+    N --> O[XSS Protection Headers]
+
+    style H2 fill:#029E73
+    style F fill:#029E73
+    style I2 fill:#DE8F05
     style O fill:#029E73
 ```
 

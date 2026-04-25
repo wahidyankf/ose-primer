@@ -1157,21 +1157,27 @@ graph TD
     A[Need to manage state?] --> B{Single component?}
     B -->|Yes| C[useState/useReducer]
     B -->|No| D{Related components?}
-
     D -->|Parent-Child| E[Prop Drilling]
     D -->|Siblings/Deep Tree| F{Server state?}
 
-    F -->|Yes| G[React Query]
-    F -->|No| H{Simple or Complex?}
+    style C fill:#029E73
+    style E fill:#DE8F05
+    style F fill:#029E73
+```
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    F2{Server state?} -->|Yes| G[React Query]
+    F2 -->|No| H{Simple or Complex?}
     H -->|Simple| I[Context API]
     H -->|Complex| J[Zustand]
-
-    E --> K{Too deep?}
-    K -->|Yes| F
+    E2[Prop Drilling] --> K{Too deep?}
+    K -->|Yes| F2
     K -->|No| L[Keep as props]
 
-    style C fill:#029E73
     style G fill:#0173B2
     style I fill:#DE8F05
     style J fill:#CC78BC

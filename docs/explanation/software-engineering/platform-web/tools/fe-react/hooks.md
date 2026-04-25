@@ -232,25 +232,46 @@ export const RealtimeDonations: React.FC = () => {
 
 graph TD
     A[Component Mounts] --> B[Run Effect]
-    B --> C{Has Dependencies?}
-    C -->|Yes| D[Watch Dependencies]
-    C -->|No| E[Effect Runs Once]
-    D --> F{Dependencies Changed?}
-    F -->|Yes| G[Run Cleanup]
-    F -->|No| H[Skip Effect]
-    G --> B
-    H --> I[Component Renders]
-    E --> I
-    I --> J{Component Unmounting?}
-    J -->|Yes| K[Run Final Cleanup]
-    J -->|No| F
-    K --> L[Component Unmounted]
+    B --> C{Has Deps?}
+    C -->|No| E[Runs Once]
+    C -->|Yes| D[Watch Deps]
 
     style A fill:#0173B2
     style B fill:#029E73
+    style E fill:#029E73
+    style D fill:#029E73
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    D2[Watch Deps] --> F{Deps Changed?}
+    F -->|Yes| G[Run Cleanup]
+    F -->|No| H[Skip]
+    G --> B2[Re-run Effect]
+
+    style D2 fill:#029E73
     style G fill:#DE8F05
+    style B2 fill:#029E73
+    style H fill:#029E73
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    I[Component Renders] --> J{Unmounting?}
+    J -->|Yes| K[Final Cleanup]
+    J -->|No| D3[Watch Deps]
+    K --> L[Unmounted]
+
+    style I fill:#029E73
     style K fill:#DE8F05
     style L fill:#CC78BC
+    style D3 fill:#029E73
 ```
 
 The lifecycle follows this pattern:

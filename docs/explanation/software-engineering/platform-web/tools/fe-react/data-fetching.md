@@ -45,33 +45,46 @@ Data fetching is essential for React applications. This guide covers fetch API, 
 
 graph TD
     A[Need Data Fetching?] --> B{Complexity?}
-
     B -->|Simple| C{Caching Needed?}
     B -->|Complex| D[TanStack Query]
-
     C -->|No| E[useEffect + fetch]
     C -->|Yes| F{Auto Revalidation?}
-
     F -->|Yes| G[SWR]
     F -->|No| D
-
-    D --> H[Query Basics]
-    D --> I[Mutations]
-    D --> J[Optimistic Updates]
-
-    E --> K[Loading States]
-    E --> L[Error Handling]
-
-    G --> M[Stale-While-Revalidate]
-    G --> N[Auto Background Sync]
 
     style A fill:#0173B2
     style D fill:#029E73
     style E fill:#DE8F05
     style G fill:#CC78BC
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    D2[TanStack Query] --> H[Query Basics]
+    D2 --> I[Mutations]
+    D2 --> J[Optimistic Updates]
+
+    style D2 fill:#029E73
     style H fill:#029E73
     style I fill:#029E73
     style J fill:#029E73
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    E2[useEffect + fetch] --> K[Loading States]
+    E2 --> L[Error Handling]
+    G2[SWR] --> M[Stale-While-Revalidate]
+    G2 --> N[Auto Background Sync]
+
+    style E2 fill:#DE8F05
+    style G2 fill:#CC78BC
 ```
 
 **Recommendations**:
