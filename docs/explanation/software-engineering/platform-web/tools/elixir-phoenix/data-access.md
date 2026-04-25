@@ -543,7 +543,7 @@ attrs = %{
 
 ## Querying
 
-### Ecto Query Flow
+### Ecto Query Building
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
@@ -552,46 +552,41 @@ attrs = %{
 graph TD
     A[Context Function] --> B[Ecto.Query]
     B --> C{Query Type}
-
-    C -->|Simple| D[Repo.all#40;schema#41;]
-    C -->|Filtered| E[from#40;s in Schema,<br/>where: condition#41;]
-    C -->|Joined| F[from#40;s in Schema,<br/>join: assoc#41;]
-    C -->|Aggregate| G[from#40;s in Schema,<br/>select: aggregate#41;]
-
-    D --> H[Ecto.Adapters.Postgres]
+    C -->|Simple/Filtered| D[Basic Query]
+    C -->|Joined/Aggregate| E[Complex Query]
+    C -->|Schema only| F[Repo.all direct]
+    D --> H[Ecto Postgres Adapter]
     E --> H
     F --> H
-    G --> H
-
-    H --> I[SQL Generation]
-    I --> J{Prepared?}
-    J -->|No| K[Prepare Statement]
-    J -->|Yes| L[Use Cached]
-    K --> M[Query Cache]
-    L --> N[Execute Query]
-    M --> N
-
-    N --> O[PostgreSQL Database]
-    O --> P{Result}
-
-    P -->|Success| Q[Parse Rows]
-    P -->|Error| R[Ecto.QueryError]
-
-    Q --> S{Preload?}
-    S -->|Yes| T[Additional Queries]
-    S -->|No| U[Return Structs]
-    T --> U
-
-    U --> V[Context Returns Result]
-    R --> W[Context Handles Error]
 
     style A fill:#CC78BC,color:#fff
     style B fill:#029E73,color:#fff
     style H fill:#029E73,color:#fff
-    style O fill:#DE8F05,color:#fff
-    style U fill:#0173B2,color:#fff
-    style V fill:#CC78BC,color:#fff
+```
 
+### Ecto Query Execution and Results
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    A[Ecto Postgres Adapter] --> B[SQL Generation]
+    B --> C{Prepared?}
+    C -->|No| D[Prepare and Cache]
+    C -->|Yes| E[Execute Cached]
+    D --> F[PostgreSQL Database]
+    E --> F
+    F --> G{Result}
+    G -->|Success| H[Parse Rows]
+    G -->|Error| I[Ecto.QueryError]
+    H --> J[Return Structs]
+    J --> K[Context Returns Result]
+
+    style A fill:#029E73,color:#fff
+    style F fill:#DE8F05,color:#fff
+    style J fill:#0173B2,color:#fff
+    style K fill:#CC78BC,color:#fff
 ```
 
 **Query Execution Flow**:

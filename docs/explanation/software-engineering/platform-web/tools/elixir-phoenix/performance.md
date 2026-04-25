@@ -54,7 +54,7 @@ Phoenix applications can handle millions of concurrent connections, but performa
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A[Performance Issue Identified] --> B{Bottleneck Type?}
 
     B -->|Slow Queries| C[Database Optimization]

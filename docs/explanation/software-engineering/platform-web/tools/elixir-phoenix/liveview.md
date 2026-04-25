@@ -150,49 +150,50 @@ defmodule OseWeb.ZakatCalculatorLive do
 end
 ```
 
-**LiveView Lifecycle Flow**:
+**LiveView Initial Connection Flow**:
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A[HTTP Request] --> B[mount/3 #40;HTTP#41;]
+    A[HTTP Request] --> B[mount/3 HTTP]
     B --> C{connected?}
     C -->|false| D[Initial HTML Render]
-    D --> E[Send to Client]
-    E --> F[WebSocket Connection]
-    F --> G[mount/3 #40;WebSocket#41;]
-    G --> H{connected?}
-    H -->|true| I[Subscribe to Events]
-    I --> J[handle_params/3]
-    J --> K[render/1]
-    K --> L[Interactive UI]
-
-    L --> M{User Event?}
-    M -->|phx-click| N[handle_event/3]
-    M -->|phx-change| N
-    M -->|phx-submit| N
-    N --> O[Update Socket Assigns]
-    O --> K
-
-    L --> P{External Event?}
-    P -->|PubSub| Q[handle_info/2]
-    Q --> O
-
-    L --> R{Navigation?}
-    R -->|push_navigate| S[New LiveView]
-    R -->|push_patch| J
-
-    S --> A
+    D --> E[WebSocket Connect]
+    E --> F[mount/3 WebSocket]
+    F --> G[Subscribe to Events]
+    G --> H[render/1]
+    H --> I[Interactive UI]
 
     style A fill:#0173B2,color:#fff
     style B fill:#029E73,color:#fff
-    style G fill:#029E73,color:#fff
-    style J fill:#029E73,color:#fff
-    style K fill:#DE8F05,color:#fff
+    style F fill:#029E73,color:#fff
+    style H fill:#DE8F05,color:#fff
+    style I fill:#0173B2,color:#fff
+```
+
+**LiveView Event and Navigation Flow**:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    L[Interactive UI] --> M{Event Type?}
+    M -->|User Event| N[handle_event/3]
+    M -->|PubSub| Q[handle_info/2]
+    M -->|push_patch| J[handle_params/3]
+    M -->|push_navigate| S[New LiveView]
+    N --> K[render/1]
+    Q --> K
+    J --> K
+
+    style L fill:#0173B2,color:#fff
     style N fill:#CC78BC,color:#fff
     style Q fill:#CC78BC,color:#fff
+    style J fill:#029E73,color:#fff
+    style K fill:#DE8F05,color:#fff
 ```
 
 **Key Points**:

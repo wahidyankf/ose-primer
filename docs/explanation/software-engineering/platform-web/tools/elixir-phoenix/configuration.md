@@ -63,74 +63,53 @@ Phoenix uses Elixir's configuration system with compile-time (`config.exs`) and 
 - **Environment-Specific** - Different configs for dev/test/prod
 - **Runtime-Configurable** - Use `runtime.exs` for environment-dependent values
 
-### Configuration Loading Hierarchy
+### Compile-Time Configuration Loading
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A[Application Startup] --> B[Load config/config.exs]
+    A[Application Startup] --> B[config/config.exs]
     B --> C{MIX_ENV?}
-
-    C -->|dev| D[Load config/dev.exs]
-    C -->|test| E[Load config/test.exs]
-    C -->|prod| F[Load config/prod.exs]
-
-    D --> G[Merge Configurations]
+    C -->|dev| D[config/dev.exs]
+    C -->|test| E[config/test.exs]
+    C -->|prod| F[config/prod.exs]
+    D --> G[Merge and Compile]
     E --> G
     F --> G
 
-    G --> H[Compile Application]
-
-    H --> I[Release Build]
-    I --> J[Load config/runtime.exs]
-
-    J --> K{Environment Variables?}
-    K -->|DATABASE_URL| L[Override Database Config]
-    K -->|SECRET_KEY_BASE| M[Override Secret Config]
-    K -->|PHX_HOST| N[Override Endpoint Config]
-    K -->|Custom Vars| O[Override Custom Config]
-
-    L --> P[Final Application Config]
-    M --> P
-    N --> P
-    O --> P
-
-    P --> Q[Application.get_env#40;#41;]
-    Q --> R[Running Application]
-
-    subgraph "Compile Time #40;Mix#41;"
-        B
-        C
-        D
-        E
-        F
-        G
-        H
-    end
-
-    subgraph "Runtime #40;Release#41;"
-        I
-        J
-        K
-        L
-        M
-        N
-        O
-        P
-    end
-
+    style A fill:#0173B2,color:#fff
     style B fill:#0173B2,color:#fff
     style D fill:#0173B2,color:#fff
     style E fill:#0173B2,color:#fff
     style F fill:#0173B2,color:#fff
-    style J fill:#029E73,color:#fff
-    style L fill:#029E73,color:#fff
-    style M fill:#029E73,color:#fff
-    style N fill:#029E73,color:#fff
-    style P fill:#DE8F05,color:#fff
-    style R fill:#CC78BC,color:#fff
+    style G fill:#DE8F05,color:#fff
+```
+
+### Runtime Configuration Loading
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    A[Release Build] --> B[config/runtime.exs]
+    B --> C{Env Variables?}
+    C -->|DB/Secret vars| D[Override DB and Secret]
+    C -->|Host/Custom vars| E[Override Host and Custom]
+    C -->|No vars set| F[Use Compiled Defaults]
+    D --> H[Final App Config]
+    E --> H
+    F --> H
+    H --> I[Running Application]
+
+    style A fill:#029E73,color:#fff
+    style B fill:#029E73,color:#fff
+    style D fill:#029E73,color:#fff
+    style E fill:#029E73,color:#fff
+    style H fill:#DE8F05,color:#fff
+    style I fill:#CC78BC,color:#fff
 ```
 
 **Configuration Loading Phases**:

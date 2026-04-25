@@ -47,7 +47,7 @@ Phoenix excels at building high-performance RESTful APIs with clean architecture
 
 **Versions**: Phoenix 1.7+, Elixir 1.14+, Jason 1.4+
 
-### Request Pipeline Architecture
+### Request Routing Phase
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
@@ -55,48 +55,42 @@ Phoenix excels at building high-performance RESTful APIs with clean architecture
 
 graph TD
     A[HTTP Request] --> B[Endpoint]
-    B --> C{Content-Type?}
-    C -->|application/json| D[Plug.Parsers<br/>JSON Parser]
-    C -->|Other| E[Skip Parser]
-
-    D --> F[Router]
-    E --> F
-
-    F --> G[Pipeline Plugs]
-    G --> H[Rate Limiter]
-    H --> I[Authentication]
-    I --> J[CORS Headers]
-
-    J --> K{Route Match?}
-    K -->|Yes| L[Controller Action]
-    K -->|No| M[404 Not Found]
-
-    L --> N[Action Function]
-    N --> O[Context Call]
-    O --> P[Ecto Schema/Changeset]
-    P --> Q[(Database)]
-
-    Q --> R{Result?}
-    R -->|{:ok, data}| S[Render JSON View]
-    R -->|{:error, changeset}| T[FallbackController]
-
-    T --> U[render_error#40;422#41;]
-    S --> V[Format Response]
-    U --> V
-
-    V --> W[Add Headers]
-    W --> X[JSON Encode]
-    X --> Y[HTTP Response]
-
-    M --> Y
+    B --> C[Router]
+    C --> D[Pipeline Plugs]
+    D --> E[Rate Limiter]
+    E --> F[Authentication]
+    F --> G[CORS Headers]
+    G --> H{Route Match?}
+    H -->|Yes| I[Controller Action]
+    H -->|No| J[404 Not Found]
 
     style A fill:#0173B2,color:#fff
-    style L fill:#029E73,color:#fff
-    style N fill:#029E73,color:#fff
-    style O fill:#CC78BC,color:#fff
-    style Q fill:#DE8F05,color:#fff
-    style S fill:#029E73,color:#fff
-    style Y fill:#0173B2,color:#fff
+    style D fill:#029E73,color:#fff
+    style I fill:#029E73,color:#fff
+    style J fill:#0173B2,color:#fff
+```
+
+### Controller and Response Phase
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    A[Controller Action] --> B[Context Call]
+    B --> C[(Database)]
+    C --> D{Result?}
+    D -->|ok data| E[Render JSON]
+    D -->|error| F[FallbackController]
+    E --> G[JSON Encode]
+    F --> G
+    G --> H[HTTP Response]
+
+    style A fill:#029E73,color:#fff
+    style B fill:#CC78BC,color:#fff
+    style C fill:#DE8F05,color:#fff
+    style E fill:#029E73,color:#fff
+    style H fill:#0173B2,color:#fff
 ```
 
 **Pipeline Stages**:
