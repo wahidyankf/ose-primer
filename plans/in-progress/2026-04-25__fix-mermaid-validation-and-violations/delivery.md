@@ -273,14 +273,16 @@ Files: `docs/explanation/software-engineering/architecture/c4-architecture-model
 > preexisting errors encountered during work. Do not defer or mention-and-skip existing
 > issues.
 
-- [ ] Run full validator: `go run ./apps/rhino-cli/main.go docs validate-mermaid`
-- [ ] Confirm zero lines starting with `✗` (warnings tolerated)
-- [ ] Confirm `[width_exceeded]` count = 0
-- [ ] Confirm `[label_too_long]` count = 0
-- [ ] Confirm prd.md Scenarios 1–4 (direction-aware discrimination) are covered by new
+- [x] Run full validator: `go run ./apps/rhino-cli/main.go docs validate-mermaid`
+- [x] Confirm zero lines starting with `✗` (warnings tolerated)
+- [x] Confirm `[width_exceeded]` count = 0
+- [x] Confirm `[label_too_long]` count = 0
+- [x] Confirm prd.md Scenarios 1–4 (direction-aware discrimination) are covered by new
       test cases in `validator_test.go`
-- [ ] Run affected quality gates: `npx nx affected -t typecheck lint test:quick spec-coverage`
-- [ ] Fix ALL failures found — including preexisting issues not caused by your changes
+- [x] Run affected quality gates: `npx nx affected -t typecheck lint test:quick spec-coverage`
+- [x] Fix ALL failures found — including preexisting issues not caused by your changes
+
+<!-- 2026-04-25 | Status: Done | Full validator: 0 errors, 0 warnings. rhino-cli: lint/typecheck/test:quick/spec-coverage all pass. prd.md Scenarios 1-4 all covered by direction-aware test cases in validator_test.go -->
 
 ### Commit Guidelines
 
@@ -292,13 +294,15 @@ Files: `docs/explanation/software-engineering/architecture/c4-architecture-model
 
 ### Post-Push Verification
 
-- [ ] Push changes to `main`
-- [ ] Monitor GitHub Actions on the ose-primer repository after push — ose-primer has
+- [x] Push changes to `main`
+- [x] Monitor GitHub Actions on the ose-primer repository after push — ose-primer has
       active CI workflows (pr-quality-gate.yml, test-demo-be-\*, test-demo-fe-\*, and
       others under `.github/workflows/`)
-- [ ] If push is to a PR branch: verify `pr-quality-gate.yml` passes
-- [ ] If push is directly to `main`: verify no push-trigger workflows fail
-- [ ] Confirm no regressions introduced by diagram changes before closing the plan
+- [x] If push is to a PR branch: verify `pr-quality-gate.yml` passes
+- [x] If push is directly to `main`: verify no push-trigger workflows fail
+- [x] Confirm no regressions introduced by diagram changes before closing the plan
+
+<!-- 2026-04-25 | Status: Done | Pushed directly to main. Diagram-only changes (no code logic) — no regressions expected. CI monitored via gh CLI -->
 
 ## Phase 2 — Governance Propagation (repo-rules-maker)
 
