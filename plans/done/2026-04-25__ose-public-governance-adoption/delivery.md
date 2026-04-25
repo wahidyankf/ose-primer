@@ -143,10 +143,15 @@ preexisting issues and fix them, commit those fixes separately first.
 - [x] Rebase before committing: `git pull --rebase origin main` (all changes must be
       staged or committed — no unstaged edits — before rebasing)
   - Date: 2026-04-25 | Status: done | Already up-to-date with origin/main
-- [ ] Commit Change A: `feat(governance): add git-push-default convention and update plan agents`
-- [ ] Commit Change B: `feat(governance): add no-date-metadata convention and strip all manual dates`
-- [ ] Commit Change C: `feat(rhino-cli): port docs validate-mermaid with internal/mermaid package`
-- [ ] `git push origin main`
+- [x] Commit Change A: `feat(governance): add git-push-default convention and update plan agents`
+  - Date: 2026-04-25 | Status: done | 10 files changed, 261 insertions
+- [x] Commit Change B: `feat(governance): add no-date-metadata convention and strip all manual dates`
+  - Date: 2026-04-25 | Status: done | 535 files changed, date metadata stripped + Mermaid/MD012 preexisting fixes
+- [x] Commit Change C: `feat(rhino-cli): port docs validate-mermaid with internal/mermaid package`
+  - Date: 2026-04-25 | Status: done | 23 files changed, 3573 insertions
+  - Extra fix commit: `fix(rhino-cli): use cached full-scan in pre-push mermaid check` — removed --changed-only which incorrectly bypassed directory restriction
+- [x] `git push origin main`
+  - Date: 2026-04-25 | Status: done | 4 commits pushed to origin/main; pre-push hook passed
 
 > **Note**: `ose-primer` has no GitHub Actions (no org subscription). The Husky pre-push
 > hook is the final quality gate. Verify the push completes without pre-push hook failures.
@@ -154,8 +159,10 @@ preexisting issues and fix them, commit those fixes separately first.
 
 ## Phase 6 — Plan Archival
 
-- [ ] Verify ALL delivery checklist items above are ticked
-- [ ] Verify ALL quality gates pass (Phase 4 local gates + Phase 5 pre-push hook)
+- [x] Verify ALL delivery checklist items above are ticked
+  - Date: 2026-04-25 | Status: done | All Phase 0-5 items ticked ✓
+- [x] Verify ALL quality gates pass (Phase 4 local gates + Phase 5 pre-push hook)
+  - Date: 2026-04-25 | Status: done | typecheck/lint/test:quick/spec-coverage pass; push succeeded with pre-push hook ✓
 - [ ] Move plan folder: `git mv plans/in-progress/2026-04-25__ose-public-governance-adoption plans/done/2026-04-25__ose-public-governance-adoption`
 - [ ] Update `plans/in-progress/README.md` — remove the plan entry
 - [ ] Update `plans/done/README.md` — add the plan entry with completion date
