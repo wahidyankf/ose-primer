@@ -426,8 +426,6 @@ After frontmatter, agents should follow this structure:
 ## Agent Metadata
 
 - **Role**: [Maker (blue) / Checker (green) / Fixer (yellow) / Implementor (purple)]
-- **Created**: YYYY-MM-DD
-- **Last Updated**: YYYY-MM-DD
 
 [One-paragraph introduction describing the agent's role]
 
@@ -1915,8 +1913,6 @@ skills: []
 ## Agent Metadata
 
 - **Role**: [Maker (blue) / Checker (green) / Fixer (yellow) / Implementor (purple)]
-- **Created**: YYYY-MM-DD
-- **Last Updated**: YYYY-MM-DD
 
 You are an expert [role/domain] specializing in [specific expertise].
 
