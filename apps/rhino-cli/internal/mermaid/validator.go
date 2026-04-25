@@ -1,5 +1,7 @@
 package mermaid
 
+import "math"
+
 // ValidateOptions configures the thresholds used during validation.
 type ValidateOptions struct {
 	MaxLabelLen int
@@ -9,17 +11,23 @@ type ValidateOptions struct {
 
 // DefaultValidateOptions returns the standard validation thresholds.
 func DefaultValidateOptions() ValidateOptions {
-	return ValidateOptions{MaxLabelLen: 30, MaxWidth: 3, MaxDepth: 5}
+	return ValidateOptions{MaxLabelLen: 30, MaxWidth: 4, MaxDepth: math.MaxInt}
 }
 
 // ValidateBlocks validates a slice of MermaidBlocks against the given options.
 // It applies three rules:
 //  1. Node labels must not exceed MaxLabelLen runes.
-//  2. Diagram span (MaxWidth) must not exceed MaxWidth unless depth also exceeds MaxDepth.
+//  2. The horizontal dimension (direction-aware) must not exceed MaxWidth unless
+//     the vertical dimension also exceeds MaxDepth.
 //  3. A block must not contain more than one flowchart/graph header.
 //
-// Rule 2 special case: when BOTH span > MaxWidth AND depth > MaxDepth, a Warning
-// is emitted instead of a Violation.
+// Horizontal dimension is direction-aware:
+//   - graph LR / RL → horizontal = depth (rank columns), vertical = span
+//   - graph TD / TB / BT → horizontal = span (nodes per rank), vertical = depth
+//
+// Rule 2 special case: when BOTH horizontal > MaxWidth AND vertical > MaxDepth,
+// a Warning is emitted instead of a Violation. With default MaxDepth=math.MaxInt
+// this branch is inactive unless --max-depth N is passed explicitly.
 func ValidateBlocks(blocks []MermaidBlock, opts ValidateOptions) ValidationResult {
 	filesSeen := make(map[string]bool)
 	var violations []Violation
@@ -63,11 +71,21 @@ func ValidateBlocks(blocks []MermaidBlock, opts ValidateOptions) ValidationResul
 			}
 		}
 
-		// Rule 2: width/depth.
+		// Rule 2: direction-aware width/depth check.
 		span := MaxWidth(diagram.Nodes, diagram.Edges)
 		depth := Depth(diagram.Nodes, diagram.Edges)
 
-		if span > opts.MaxWidth && depth > opts.MaxDepth {
+		// LR/RL: rank columns flow horizontally → depth is the horizontal dimension.
+		// TD/TB/BT: nodes per rank flow horizontally → span is the horizontal dimension.
+		var horizontal, vertical int
+		switch diagram.Direction {
+		case DirectionLR, DirectionRL:
+			horizontal, vertical = depth, span
+		case DirectionTD, DirectionTB, DirectionBT:
+			horizontal, vertical = span, depth
+		}
+
+		if horizontal > opts.MaxWidth && vertical > opts.MaxDepth {
 			// Both exceeded → warning only.
 			warnings = append(warnings, Warning{
 				Kind:        WarningComplexDiagram,
@@ -79,8 +97,8 @@ func ValidateBlocks(blocks []MermaidBlock, opts ValidateOptions) ValidationResul
 				MaxWidth:    opts.MaxWidth,
 				MaxDepth:    opts.MaxDepth,
 			})
-		} else if span > opts.MaxWidth {
-			// Width exceeded alone → violation.
+		} else if horizontal > opts.MaxWidth {
+			// Horizontal exceeded alone → violation.
 			violations = append(violations, Violation{
 				Kind:        ViolationWidthExceeded,
 				FilePath:    block.FilePath,
@@ -90,7 +108,7 @@ func ValidateBlocks(blocks []MermaidBlock, opts ValidateOptions) ValidationResul
 				MaxWidth:    opts.MaxWidth,
 			})
 		}
-		// Depth exceeded alone → no output.
+		// Vertical exceeded alone → no output.
 	}
 
 	return ValidationResult{
