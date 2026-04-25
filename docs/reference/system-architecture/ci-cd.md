@@ -19,75 +19,28 @@ The platform uses a multi-layered quality assurance strategy combining local git
 
 ```mermaid
 graph TB
-    subgraph "Local Development"
-        COMMIT[Git Commit]
-        PRE_COMMIT[Pre-commit Hook]
-        COMMIT_MSG[Commit-msg Hook]
-        PUSH[Git Push]
-        PRE_PUSH[Pre-push Hook]
-    end
-
-    subgraph "Remote CI - GitHub Actions"
-        PR[Pull Request]
-        FORMAT[PR Format Check]
-        LINKS[PR Link Validation]
-    end
-
-    subgraph "Quality Gates"
-        PRETTIER[Prettier Format]
-        AYOKODING[demo Content Update]
-        LINK_VAL[Link Validator]
-        COMMITLINT[Commitlint]
-        TEST_QUICK[Nx Affected Tests]
-        MD_LINT[Markdown Lint]
-    end
-
-    subgraph "Deployment"
-        MERGE[Merge to main]
-        ENV_BRANCH[Environment Branch]
-        VERCEL[Vercel Build & Deploy]
-    end
+    COMMIT[Git Commit]
+    PRE_COMMIT[Pre-commit Hook]
+    PUSH[Git Push]
+    PRE_PUSH[Pre-push Hook]
+    PR[Pull Request]
+    DEPLOY[Vercel Deploy]
 
     COMMIT --> PRE_COMMIT
-    PRE_COMMIT --> AYOKODING
-    PRE_COMMIT --> PRETTIER
-    PRE_COMMIT --> LINK_VAL
-    PRE_COMMIT --> COMMIT_MSG
-
-    COMMIT_MSG --> COMMITLINT
-    COMMITLINT --> PUSH
+    PRE_COMMIT --> PUSH
 
     PUSH --> PRE_PUSH
-    PRE_PUSH --> TEST_QUICK
-    PRE_PUSH --> MD_LINT
-
     PUSH --> PR
-    PR --> FORMAT
-    PR --> LINKS
 
-    FORMAT --> PRETTIER
-    LINKS --> LINK_VAL
-
-    PR --> MERGE
-    MERGE --> ENV_BRANCH
-    ENV_BRANCH --> VERCEL
+    PRE_PUSH --> DEPLOY
+    PR --> DEPLOY
 
     style COMMIT fill:#0077b6,stroke:#03045e,color:#ffffff
     style PRE_COMMIT fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style COMMIT_MSG fill:#2a9d8f,stroke:#264653,color:#ffffff
+    style PUSH fill:#2a9d8f,stroke:#264653,color:#ffffff
     style PRE_PUSH fill:#2a9d8f,stroke:#264653,color:#ffffff
     style PR fill:#6a4c93,stroke:#22223b,color:#ffffff
-    style FORMAT fill:#6a4c93,stroke:#22223b,color:#ffffff
-    style LINKS fill:#6a4c93,stroke:#22223b,color:#ffffff
-    style PRETTIER fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style AYOKODING fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style LINK_VAL fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style COMMITLINT fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style TEST_QUICK fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style MD_LINT fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style MERGE fill:#e76f51,stroke:#9d0208,color:#ffffff
-    style ENV_BRANCH fill:#e76f51,stroke:#9d0208,color:#ffffff
-    style VERCEL fill:#e76f51,stroke:#9d0208,color:#ffffff
+    style DEPLOY fill:#e76f51,stroke:#9d0208,color:#ffffff
 ```
 
 ## ✅ Git Hooks (Local Quality Gates)

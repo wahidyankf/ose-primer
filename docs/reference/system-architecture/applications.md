@@ -123,7 +123,7 @@ The platform consists of 9 applications across 4 technology stacks:
 Shows the high-level technical building blocks (containers) of the system. In C4 terminology, a "container" is a deployable/executable unit (web app, database, file system, etc.), not a Docker container.
 
 ```mermaid
-graph TB
+graph LR
     subgraph "Marketing & Education Sites"
         OSE[demo-fs-ts-nextjs<br/>Hugo Static Site]
         AYO[demo-fs-ts-nextjs<br/>Next.js App]
