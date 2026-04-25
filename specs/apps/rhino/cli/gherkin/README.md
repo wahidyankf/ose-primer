@@ -24,6 +24,7 @@ Hygiene & INtegration Orchestrator CLI.
 | `test-coverage-merge.feature`          | `test-coverage merge`          | 3         |
 | `test-coverage-validate.feature`       | `test-coverage validate`       | 10        |
 | `workflows-validate-naming.feature`    | `workflows validate-naming`    | 4         |
+| `docs-validate-mermaid.feature`        | `docs validate-mermaid`        | 22        |
 
 ## Conventions
 

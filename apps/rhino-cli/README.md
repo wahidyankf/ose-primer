@@ -285,6 +285,38 @@ rhino-cli docs validate-links -q
 
 This command replaces the Python script at `scripts/validate-docs-links.py` with a faster, more maintainable Go implementation.
 
+### docs validate-mermaid
+
+Validate Mermaid flowchart diagrams in markdown files for structural issues. Enforces three rules: node label length ≤30 characters, at most 3 parallel nodes at one rank, and exactly one diagram per mermaid block.
+
+```bash
+# Validate all markdown files in default directories
+rhino-cli docs validate-mermaid
+
+# Validate specific directories
+rhino-cli docs validate-mermaid governance/ .claude/
+
+# Only validate files staged in git (pre-commit use)
+rhino-cli docs validate-mermaid --staged-only
+
+# Only validate files changed since upstream (pre-push use)
+rhino-cli docs validate-mermaid --changed-only
+
+# Output as JSON
+rhino-cli docs validate-mermaid -o json
+
+# Set custom thresholds
+rhino-cli docs validate-mermaid --max-label-len 20 --max-width 4
+```
+
+**What it does:**
+
+- Scans markdown files in core directories (docs/, governance/, .claude/, and root) by default
+- Validates Mermaid flowchart and graph blocks for structural issues
+- Non-flowchart types (sequenceDiagram, classDiagram, gantt, etc.) are silently ignored
+- The `--changed-only` flag limits the scan to files changed since upstream (used in pre-push hook)
+- Exception: when BOTH width and depth exceed their thresholds, emits a warning instead of a failure
+
 ### agents sync
 
 Sync Claude Code agents and skills to OpenCode format. Converts `.claude/` configuration to `.opencode/` format with proper YAML frontmatter transformation.
