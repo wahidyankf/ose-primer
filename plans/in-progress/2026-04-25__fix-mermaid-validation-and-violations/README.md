@@ -40,14 +40,23 @@ not from this document.
 > Run this before starting Phase 0 to capture your baseline, and again after Phase 0 to
 > discover the actual Phase 1 file list.
 
-| Error type         | Historical count (2026-04-25) | Severity  |
-| ------------------ | ----------------------------- | --------- |
-| `width_exceeded`   | 179                           | ✗ Error   |
-| `label_too_long`   | 56                            | ✗ Error   |
-| `complex_diagram`  | 12                            | ⚠ Warning |
-| **Files affected** | **107**                       | —         |
+**Pre-Phase-0 baseline** (direction-blind, MaxWidth=3, 2026-04-25):
 
-_Replace with counts from your Phase 0 re-audit after delivery step 0d._
+| Error type         | Count   | Severity  |
+| ------------------ | ------- | --------- |
+| `width_exceeded`   | 179     | ✗ Error   |
+| `label_too_long`   | 56      | ✗ Error   |
+| `complex_diagram`  | 12      | ⚠ Warning |
+| **Files affected** | **107** | —         |
+
+**Phase 0 re-audit** (direction-aware, MaxWidth=4, MaxDepth=∞, 2026-04-25):
+
+| Error type         | Count   | Severity  |
+| ------------------ | ------- | --------- |
+| `width_exceeded`   | 161     | ✗ Error   |
+| `label_too_long`   | 56      | ✗ Error   |
+| `complex_diagram`  | 0       | ⚠ Warning |
+| **Files affected** | **100** | —         |
 
 ## Approach Summary
 
