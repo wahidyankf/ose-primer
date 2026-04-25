@@ -45,8 +45,11 @@ preview, undermining documentation quality.
 ## Scope
 
 - **In scope**:
-  - `apps/rhino-cli/internal/mermaid/validator.go` — direction-aware width check
+  - `apps/rhino-cli/internal/mermaid/validator.go` — direction-aware width check and
+    updated `DefaultValidateOptions()` (MaxWidth 3→4, MaxDepth 5→math.MaxInt)
   - `apps/rhino-cli/internal/mermaid/validator_test.go` — direction-aware test cases
+  - `apps/rhino-cli/cmd/docs_validate_mermaid.go` — update CLI flag defaults
+    (`--max-width` 3→4, `--max-depth` 5→0 where 0 means no limit)
   - All markdown files in `docs/` with `width_exceeded` or `label_too_long` violations
     after the Phase 0 re-audit. (`governance/` audited clean — no violations.)
 - **Out of scope**: Other app source code, specs, test data files, generated files.
@@ -54,9 +57,9 @@ preview, undermining documentation quality.
 
 ## Non-Goals
 
-- Not fixing `complex_diagram` warnings — deferred. Warnings do not affect exit code.
-- Not changing `MaxWidth` (3) or `MaxDepth` (5) threshold values — only which dimension
-  is compared against `MaxWidth` for LR/RL graphs.
+- Not fixing `complex_diagram` warnings as a separate concern — they disappear automatically
+  after MaxDepth is set to math.MaxInt. Warnings do not affect exit code.
+- Not adding new threshold parameter types beyond `MaxWidth`, `MaxDepth`, and `MaxLabelLen`.
 - Not extending the pre-push hook's `validate:mermaid` target to scan `docs/` — separate
   infrastructure change with its own risk profile.
 - Not improving diagram visual quality beyond passing the validator rules.
@@ -66,6 +69,9 @@ preview, undermining documentation quality.
 1. `nx run rhino-cli:test:quick` passes including direction-aware test cases.
 2. `go run ./apps/rhino-cli/main.go docs validate-mermaid` exits 0 with zero `✗` lines
    after all Phase 1 batches committed to `main`.
+3. The `validate:mermaid` Nx target (pre-push hook) passes without explicit flags,
+   confirming CLI flag defaults in `docs_validate_mermaid.go` reflect new thresholds
+   (MaxWidth=4, MaxDepth=0/unlimited).
 
 ## Risks
 
