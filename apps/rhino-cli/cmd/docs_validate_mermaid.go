@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io/fs"
+	"math"
 	"os/exec"
 	"path/filepath"
 	"strings"
@@ -64,10 +65,10 @@ func init() {
 		"only validate files changed since upstream (pre-push use)")
 	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxLabelLen, "max-label-len", 30,
 		"max characters in a node label (default 30 ~ Mermaid wrappingWidth:200px at 16px font)")
-	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxWidth, "max-width", 3,
-		"max nodes at the same rank")
-	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxDepth, "max-depth", 5,
-		"depth threshold for the both-exceeded warning: when span>max-width AND depth>max-depth, emit warning not error")
+	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxWidth, "max-width", 4,
+		"max nodes on the horizontal axis (direction-aware: depth for LR/RL, span for TD/TB/BT)")
+	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxDepth, "max-depth", 0,
+		"vertical axis limit for the complex_diagram warning (0 = no limit; set to enable)")
 }
 
 func runValidateMermaid(cmd *cobra.Command, args []string) error {
@@ -116,10 +117,14 @@ func runValidateMermaid(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	maxDepth := validateMermaidMaxDepth
+	if maxDepth <= 0 {
+		maxDepth = math.MaxInt
+	}
 	opts := mermaid.ValidateOptions{
 		MaxLabelLen: validateMermaidMaxLabelLen,
 		MaxWidth:    validateMermaidMaxWidth,
-		MaxDepth:    validateMermaidMaxDepth,
+		MaxDepth:    maxDepth,
 	}
 	result := docsValidateMermaidFn(allBlocks, opts)
 	result.FilesScanned = len(fileSet)
