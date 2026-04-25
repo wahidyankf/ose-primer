@@ -189,7 +189,7 @@ python/test-driven-development.md
 python/web-services.md
 ```
 
-### Batch 3 — `programming-languages/golang/` (10 files)
+### Batch 3 — `programming-languages/golang/` (11 files)
 
 ```
 golang/README.md
@@ -205,7 +205,7 @@ golang/security-standards.md
 golang/type-safety-standards.md
 ```
 
-### Batch 4 — `platform-web/tools/jvm-spring-boot/` (9 files)
+### Batch 4 — `platform-web/tools/jvm-spring-boot/` (10 files)
 
 ```
 jvm-spring-boot/README.md
@@ -233,7 +233,7 @@ elixir-phoenix/performance.md
 elixir-phoenix/testing.md
 ```
 
-### Batch 6 — `platform-web/tools/fe-react/` (7 files)
+### Batch 6 — `platform-web/tools/fe-react/` (8 files)
 
 ```
 fe-react/README.md
@@ -257,7 +257,7 @@ fe-nextjs/performance.md
 fe-nextjs/rendering.md
 ```
 
-### Batch 8 — `programming-languages/elixir/` (5 files)
+### Batch 8 — `programming-languages/elixir/` (6 files)
 
 ```
 elixir/README.md
@@ -296,6 +296,73 @@ docs/reference/system-architecture/applications.md
 docs/reference/system-architecture/components.md
 docs/reference/system-architecture/deployment.md
 ```
+
+## Architecture
+
+The mermaid validator is a subcommand of `rhino-cli`, the repository's Go CLI tool
+located at `apps/rhino-cli/`. It integrates into the quality pipeline as follows:
+
+```
+git push
+  └─ .husky/pre-push
+       └─ npx nx run rhino-cli:validate:mermaid
+            └─ go run apps/rhino-cli/main.go docs validate-mermaid governance/ .claude/
+```
+
+The `validate:mermaid` Nx target (defined in `apps/rhino-cli/project.json`) passes
+`governance/` and `.claude/` as explicit path arguments, scoping hook enforcement to
+those directories. Running the validator without arguments (as done in this plan's
+delivery steps) scans all default directories including `docs/`, providing the
+full-repo quality check used to gate each batch.
+
+## File-Impact Analysis
+
+High-risk batches (most diagrams, highest semantic-loss risk):
+
+- **Batch 1 (TypeScript, 18 files)** — largest batch; most likely to have complex
+  domain-driven-design and architecture diagrams where subgraph grouping could obscure
+  layer relationships. Re-read surrounding prose carefully for each fix.
+- **Batch 4 (JVM Spring Boot, 10 files)** — Spring layered-architecture diagrams are
+  semantically dense; splitting is preferable to grouping when layers are genuinely
+  distinct.
+- **Batch 9 (C4 Architecture, 5 files)** — C4 diagrams document system boundaries;
+  any restructuring that merges containers or components risks losing architectural
+  meaning. Prefer label shortening over structural changes here.
+- **Batch 10 (Remaining, 14 files)** — spans multiple unrelated areas; validate each
+  file in isolation; the batch grep pattern must include `software-engineering/development`.
+
+Lower-risk batches (mostly label violations, fewer structural diagrams):
+
+- Batches 5, 6, 7 (Elixir Phoenix, React, Next.js) — primarily `label_too_long`
+  violations from HTML entities; Strategy 4a (entity replacement) resolves most without
+  structural changes.
+
+## Rollback
+
+Each batch is a single commit. To undo a batch after push:
+
+```bash
+# Find the batch commit SHA
+git log --oneline | grep "batch N/10"
+
+# Revert the batch commit (creates a new revert commit, safe for main)
+git revert <batch-commit-sha>
+
+# Confirm the revert restored the violations
+go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "batch-area-path/"
+```
+
+Re-fix the affected file(s) with the correct strategy and commit again as batch N/10.
+Do not use `git reset --hard` on `main` — revert is the safe path.
+
+## Dependencies
+
+- **Go** ≥ 1.21 — required to run rhino-cli. Verify: `go version`
+- **ose-primer repo** at `/Users/wkf/ose-projects/ose-primer` (or equivalent clone)
+- **rhino-cli source** at `apps/rhino-cli/` within the repo — no pre-built binary
+  required; `go run` compiles on demand
+- **npm** ≥ 10 and **Node.js** ≥ 20 — required for `npm install` and Nx commands
+- No Docker required (this plan touches only markdown files)
 
 ## Tooling
 
