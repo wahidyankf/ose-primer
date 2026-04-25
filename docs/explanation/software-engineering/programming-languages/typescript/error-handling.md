@@ -59,14 +59,13 @@ graph TD
     Domain -.->|Error| Application
     Application -.->|Error| Presentation
 
-    Note1["Errors flow upward<br/>Each layer transforms<br/>error into appropriate<br/>domain error"]
-    Note2["Result type carries<br/>success or failure<br/>explicitly"]
-
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+Errors flow upward through layers. Each layer transforms errors into appropriate domain errors. The Result type carries success or failure explicitly.
 
 ### Basic Result Type
 
@@ -686,7 +685,7 @@ async function calculateZakatWithContext(wealth: number, nisab: number): Promise
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Error Handling] --> B[Try-Catch<br/>Exceptions]
     A --> C[Result Type<br/>Success/Failure]
     A --> D[Error Union<br/>Type | Error]

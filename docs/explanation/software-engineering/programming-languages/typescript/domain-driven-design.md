@@ -49,7 +49,7 @@ graph TD
     Presentation["Presentation Layer<br/>#40;Controllers, UI#41;"]:::blue
     Application["Application Layer<br/>#40;Use Cases, Services#41;"]:::orange
     Domain["Domain Layer<br/>#40;Entities, Value Objects,<br/>Aggregates#41;"]:::teal
-    Infrastructure["Infrastructure Layer<br/>#40;Database, External APIs#41;"]:::purple
+    Infrastructure["Infrastructure Layer<br/>(Database, External APIs)"]:::purple
 
     Presentation --> Application
     Application --> Domain
@@ -912,34 +912,41 @@ Repositories abstract persistence for aggregates.
 
 ### Repository Pattern
 
+**Domain layer** defines the interface; infrastructure implements it:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
-    subgraph Domain["Domain Layer"]
-        Agg["Aggregate Root<br/>(DonationCampaign)"]:::blue
-        RepIntf["Repository Interface<br/>(CampaignRepository)"]:::blue
-    end
-
-    subgraph Application["Application Service"]
-        Svc["Application<br/>Service"]:::orange
-    end
-
-    subgraph Infrastructure["Infrastructure Layer"]
-        RepImpl["Repository Implementation<br/>(TypeORMCampaignRepository)"]:::teal
-        ORM["TypeORM<br/>Entity"]:::teal
-        DB[("PostgreSQL<br/>Database")]:::purple
-    end
+graph LR
+    Svc["Application<br/>Service"]:::orange
+    RepIntf["Repository Interface<br/>(CampaignRepository)"]:::blue
+    Agg["Aggregate Root<br/>(Campaign)"]:::blue
 
     Svc -->|"Uses Interface"| RepIntf
     Svc -->|"Works With"| Agg
+
+    classDef blue fill:#0173B2,stroke:#000,color:#fff
+    classDef orange fill:#DE8F05,stroke:#000,color:#000
+```
+
+**Infrastructure layer** maps domain objects to the database:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph LR
+    RepIntf["Repository Interface"]:::blue
+    RepImpl["Repository Implementation<br/>(TypeORM)"]:::teal
+    ORM["TypeORM<br/>Entity"]:::teal
+    DB[("PostgreSQL<br/>Database")]:::purple
+
     RepIntf -.->|"Implemented By"| RepImpl
     RepImpl -->|"Maps To/From"| ORM
     ORM -->|"Persists"| DB
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
     classDef purple fill:#CC78BC,stroke:#000,color:#000
 ```

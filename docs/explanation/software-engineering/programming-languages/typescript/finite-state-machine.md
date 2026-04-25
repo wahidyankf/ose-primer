@@ -50,16 +50,14 @@ graph TD
     Execute --> End
     Reject --> Start
 
-    Note1["Transition Table:<br/>State + Event -> Next State"]
-    Note2["Guards:<br/>Additional conditions<br/>for transitions"]
-    Note3["Actions:<br/>Side effects during<br/>transition"]
-
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+**Transition Table**: State + Event → Next State. **Guards**: Additional conditions for transitions. **Actions**: Side effects during transition.
 
 ## Basic FSM Implementation
 

@@ -36,23 +36,20 @@ Performance is critical for financial applications processing donations, calcula
 
 ### Optimization Pipeline
 
+Always measure before and after optimization.
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph LR
-    Measure["Measure<br/>#40;Profile, Benchmark#41;"]:::blue
-    Identify["Identify Bottlenecks<br/>#40;Hot paths#41;"]:::orange
-    Optimize["Optimize<br/>#40;Improve code#41;"]:::teal
-    Verify["Verify Improvement<br/>#40;Re-measure#41;"]:::purple
+graph TD
+    Measure["Measure<br/>(Profile, Benchmark)"]:::blue
+    Identify["Identify Bottlenecks<br/>(Hot paths)"]:::orange
+    Optimize["Optimize<br/>(Improve code)"]:::teal
+    Verify["Verify Improvement<br/>(Re-measure)"]:::purple
     Done{"Performance<br/>Goal Met?"}:::brown
 
-    Measure --> Identify
-    Identify --> Optimize
-    Optimize --> Verify
-    Verify --> Done
+    Measure --> Identify --> Optimize --> Verify --> Done
     Done -->|No| Measure
     Done -->|Yes| End["Complete"]:::teal
-
-    Note1["Always measure<br/>before and after<br/>optimization"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -970,7 +967,7 @@ setInterval(() => {
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[TS Performance] --> B[Compilation Speed]
     A --> C[Runtime Performance]
     A --> D[Bundle Size]
