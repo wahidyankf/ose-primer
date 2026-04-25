@@ -42,15 +42,15 @@ Type safety is TypeScript's core strength. A properly type-safe codebase prevent
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Unknown["unknown value"]:::blue
     TypeOf{"typeof"}:::orange
     InstanceOf{"instanceof"}:::orange
     In{"'property' in obj"}:::orange
     Custom{"Custom type guard"}:::purple
 
-    Narrowed1["Narrowed to primitive<br/>#40;string, number, etc#41;"]:::teal
-    Narrowed2["Narrowed to class<br/>#40;Money, Donation#41;"]:::teal
+    Narrowed1["Narrowed to primitive<br/>(string, number, etc)"]:::teal
+    Narrowed2["Narrowed to class<br/>(Money, Donation)"]:::teal
     Narrowed3["Narrowed to interface<br/>with property"]:::teal
     Narrowed4["Narrowed to<br/>custom type"]:::teal
 
@@ -59,18 +59,18 @@ graph TD
     Unknown --> In
     Unknown --> Custom
 
-    TypeOf -->|string, number,<br/>boolean, etc| Narrowed1
+    TypeOf -->|string/number/boolean| Narrowed1
     InstanceOf -->|Class instance| Narrowed2
     In -->|Has property| Narrowed3
     Custom -->|Type predicate| Narrowed4
-
-    Note1["Type guards narrow<br/>union types to<br/>specific types"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+Type guards narrow union types to specific types.
 
 ## Branded Types
 
@@ -85,7 +85,7 @@ graph TD
     Brand["Brand Helper<br/>type Brand#60;T, B#62;"]:::orange
     Branded["Branded Type<br/>#40;DonationId#41;"]:::teal
     Constructor["Smart Constructor<br/>createDonationId#40;#41;"]:::purple
-    Function["Type-Safe Function<br/>getDonation#40;id: DonationId#41;"]:::brown
+    Function["Type-Safe Function<br/>getDonation(id: DonationId)"]:::brown
 
     Primitive --> Brand
     Brand --> Branded
@@ -850,7 +850,7 @@ const handleUSD: USDHandler = handleMoney; // ✓ OK
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Type Safety in TS] --> B[Static Analysis<br/>Compile-Time]
     A --> C[Runtime Guards<br/>Type Predicates]
     A --> D[Branded Types<br/>Nominal Typing]

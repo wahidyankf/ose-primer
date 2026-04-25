@@ -130,13 +130,12 @@ graph TD
     Module3 --> Barrel
     Barrel --> Consumer
 
-    Note1["Barrel pattern:<br/>Single import point<br/>for related modules"]
-    Note2["import { Money, ZakatCalculator }<br/>from './domain'"]
-
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+The barrel pattern provides a single import point: `import { Money, ZakatCalculator } from './domain'`.
 
 ## Package Managers
 
@@ -164,7 +163,7 @@ graph TD
     Note2["Side effects prevent<br/>elimination"]
 
     subgraph Example["Example: Lodash"]
-        Import["import { map } from 'lodash-es'"]
+        Import["import map<br/>from 'lodash-es'"]
         Used["map function"]
         Unused["filter, reduce, etc."]
         Result["Bundle includes<br/>only map"]
@@ -263,38 +262,29 @@ graph TD
 
 ### Node.js Module Resolution Algorithm
 
+Resolution order: 1. Relative paths (resolved to current file), 2. Built-in modules, 3. node_modules (reading `package.json` exports/main field, then trying `index.js/ts`). Module Not Found error is thrown if all paths fail.
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
-    Import["import { X } from 'module'"]:::blue
-    Relative{"Relative path<br/>#40;./ or ../#41;?"}:::orange
-    Builtin{"Built-in<br/>module?"}:::orange
-    LocalFile["Resolve relative to<br/>current file"]:::teal
-    NodeModules["Search node_modules<br/>up directory tree"]:::purple
-    PackageJson["Read package.json<br/>exports/main field"]:::brown
-    IndexFile["Try index.js/ts"]:::brown
-    Success["Module Resolved"]:::teal
-    Error["Module Not Found Error"]:::purple
+graph LR
+    Import["import x<br/>from 'module'"]:::blue
+    Relative{"Relative path?"}:::orange
+    Builtin{"Built-in module?"}:::orange
+    LocalFile["Resolve to<br/>current file"]:::teal
+    NodeModules["Search<br/>node_modules"]:::purple
 
     Import --> Relative
     Relative -->|Yes| LocalFile
     Relative -->|No| Builtin
-    Builtin -->|Yes| Success
     Builtin -->|No| NodeModules
-    LocalFile --> Success
-    NodeModules --> PackageJson
-    PackageJson --> IndexFile
-    IndexFile --> Success
-    IndexFile -.->|Not Found| Error
-
-    Note1["Resolution order:<br/>1. Relative paths<br/>2. Built-in modules<br/>3. node_modules"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+Resolution order: 1. Relative paths, 2. Built-in modules, 3. node_modules.
 
 ```json
 // tsconfig.json
@@ -353,7 +343,7 @@ packages:
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[TS Module System] --> B[ES Modules<br/>import/export]
     A --> C[CommonJS<br/>require/module.exports]
     A --> D[AMD/UMD<br/>Legacy]

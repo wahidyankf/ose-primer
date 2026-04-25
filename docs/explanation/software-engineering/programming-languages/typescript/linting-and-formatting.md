@@ -68,14 +68,14 @@ graph TD
     TypeErrors -->|Yes| Fail
     TypeErrors -->|No| Success
 
-    Note1["Pre-commit hook<br/>runs all three tools"]
-
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+The pre-commit hook runs all three tools automatically.
 
 ## ESLint 9.x/10.x
 
@@ -93,7 +93,7 @@ graph TD
     UserConfig["Check ~/.eslintrc"]:::brown
     DefaultConfig["Use ESLint defaults"]:::purple
 
-    Merge["Merge Configurations<br/>#40;closer = higher priority#41;"]:::teal
+    Merge["Merge Configurations<br/>(closer = higher priority)"]:::teal
     ApplyRules["Apply Rules to File"]:::blue
     Result["Lint Results"]:::teal
 
@@ -198,7 +198,7 @@ When should you use `eslint --fix` vs manual fixes? This decision tree helps opt
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Start["ESLint Error Found"]:::blue
     SafeRule{"Safe to<br/>auto-fix?"}:::orange
     StyleOnly{"Style-only<br/>change?"}:::orange
@@ -212,14 +212,14 @@ graph TD
     StyleOnly -->|Yes| UseAutoFix
     StyleOnly -->|No| ReviewChange
 
-    Examples["Auto-fixable:<br/>- Missing semicolons<br/>- Unused imports<br/>- Spacing issues<br/><br/>Manual fixes:<br/>- Type errors<br/>- Logic errors<br/>- Security issues"]
-
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+Auto-fixable examples: missing semicolons, unused imports, spacing issues. Manual fixes: type errors, logic errors, security issues.
 
 ## Prettier 3.x
 
@@ -232,7 +232,7 @@ Different strategies for organizing imports affect readability and maintainabili
 graph LR
     Imports["Import Statements"]:::blue
 
-    ByType["By Type<br/>#40;Built-in, External, Internal#41;"]:::orange
+    ByType["By Type<br/>(Built-in, External, Internal)"]:::orange
     ByAlpha["Alphabetical<br/>#40;A-Z#41;"]:::teal
     ByUsage["By Usage Frequency<br/>#40;Most used first#41;"]:::purple
     ByLayer["By Architecture Layer<br/>#40;Domain, App, Infra#41;"]:::brown
@@ -246,7 +246,7 @@ graph LR
     AlphaExample["import { a } from 'a'<br/>import { b } from 'b'<br/>import { z } from 'z'"]
     LayerExample["1. Domain entities<br/>2. Application services<br/>3. Infrastructure"]
 
-    Note1["ESLint plugin:<br/>eslint-plugin-import<br/>or<br/>@trivago/prettier-plugin-sort-imports"]
+    Note1["ESLint plugin:<br/>eslint-plugin-import<br/>or prettier-plugin-<br/>sort-imports"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px

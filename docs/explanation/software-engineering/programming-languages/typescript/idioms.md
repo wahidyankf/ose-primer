@@ -139,7 +139,7 @@ Idiomatic TypeScript code:
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Patterns["TypeScript Idioms"]:::blue
     Type["Type Patterns"]:::orange
     Narrowing["Narrowing Patterns"]:::teal
@@ -203,22 +203,13 @@ graph TD
     E -->|"Yes"| F["✅ Check Discriminant<br/>(obj.kind === 'success')"]:::purple
     E -->|"No"| G["✅ Use 'in' operator<br/>('amount' in obj)"]:::purple
 
-    C --> H["Type Narrowing"]:::teal
-    D --> H
-    F --> H
-    G --> H
-
-    H --> H1["TypeScript narrows type"]
-    H --> H2["Autocomplete works"]
-    H --> H3["Type-safe operations"]
-
-    Note["Custom Guards:<br/>Function returning<br/>'value is Type'"]
-
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
     classDef purple fill:#CC78BC,stroke:#000,color:#000
 ```
+
+All paths result in type narrowing: TypeScript narrows the type, autocomplete works, and operations are type-safe. Custom guards use functions returning `'value is Type'` predicates.
 
 **Key Principles**:
 
@@ -395,33 +386,21 @@ TypeScript provides built-in utility types for common transformations.
 
 ### Utility Type Selection Guide
 
+Utilities can be combined: `Partial<Pick<T, K>>`. Common uses: API updates (Partial), Immutability (Readonly), Subset types (Pick/Omit), Union filtering (Extract).
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Transform<br/>Type?"]:::blue --> B{"What<br/>Change?"}:::orange
 
-    B -->|"Make optional"| C["✅ Partial<T><br/>(all props optional)"]:::teal
-    B -->|"Make required"| D["✅ Required<T><br/>(remove optional)"]:::teal
-    B -->|"Make readonly"| E["✅ Readonly<T><br/>(immutable)"]:::teal
-    B -->|"Extract properties"| F["✅ Pick<T, K><br/>(select fields)"]:::purple
-    B -->|"Remove properties"| G["✅ Omit<T, K><br/>(exclude fields)"]:::purple
-    B -->|"Extract type"| H["✅ Extract<T, U><br/>(filter union)"]:::purple
-
-    C --> I["Common Uses"]:::teal
-    D --> I
-    E --> I
-    F --> I
-    G --> I
-    H --> I
-
-    I --> I1["• API updates (Partial)"]
-    I --> I2["• Immutability (Readonly)"]
-    I --> I3["• Subset types (Pick/Omit)"]
-    I --> I4["• Union filtering (Extract)"]
-
-    Note["Combine utilities:<br/>Partial<Pick<T, K>>"]
+    B -->|"Make optional"| C["✅ Partial(T)<br/>(all props optional)"]:::teal
+    B -->|"Make required"| D["✅ Required(T)<br/>(remove optional)"]:::teal
+    B -->|"Make readonly"| E["✅ Readonly(T)<br/>(immutable)"]:::teal
+    B -->|"Extract props"| F["✅ Pick(T, K)<br/>(select fields)"]:::purple
+    B -->|"Remove props"| G["✅ Omit(T, K)<br/>(exclude fields)"]:::purple
+    B -->|"Extract type"| H["✅ Extract(T, U)<br/>(filter union)"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
@@ -705,23 +684,19 @@ type PaymentMethodArrays = ToArray<PaymentMethod>;
 
 ### Builder Pattern Flow
 
+The Builder Pattern provides a fluent API for complex object construction.
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph LR
-    Start["new Builder#40;#41;"]:::blue
-    Step1["setDonorId#40;id#41;"]:::orange
-    Step2["setAmount#40;money#41;"]:::orange
-    Step3["setCategory#40;cat#41;"]:::orange
-    Build["build#40;#41;"]:::teal
+graph TD
+    Start["new Builder()"]:::blue
+    Step1["setDonorId(id)"]:::orange
+    Step2["setAmount(money)"]:::orange
+    Step3["setCategory(cat)"]:::orange
+    Build["build()"]:::teal
     Result["Donation Object"]:::blue
 
-    Start --> Step1
-    Step1 --> Step2
-    Step2 --> Step3
-    Step3 --> Build
-    Build --> Result
-
-    Note1["Builder Pattern:<br/>Fluent API for<br/>complex object<br/>construction"]
+    Start --> Step1 --> Step2 --> Step3 --> Build --> Result
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -830,36 +805,25 @@ Mapped types transform all properties of an object type.
 
 ### Mapped Type Selection Guide
 
+All mapped type transformations affect all properties, are type-safe, and are compiler-enforced. Built-in utilities (Partial, Required, Readonly, Pick, Omit) cover common cases.
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
-    A["Need to Transform<br/>Object Type?"]:::blue --> B{"What<br/>Transformation?"}:::orange
+graph LR
+    A["Transform<br/>Object Type?"]:::blue --> B{"What<br/>Transformation?"}:::orange
 
     B -->|"Property Modifiers"| C{"Add or Remove<br/>Modifiers?"}:::orange
     B -->|"Key Changes"| D{"Rename or<br/>Filter Keys?"}:::orange
 
-    C -->|"Make Optional"| E["✅ Partial<T><br/>or [P in keyof T]?"]:::teal
-    C -->|"Make Required"| F["✅ Required<T><br/>or [P in keyof T]-?"]:::teal
-    C -->|"Make Readonly"| G["✅ Readonly<T><br/>or readonly [P in keyof T]"]:::teal
-    C -->|"Remove Readonly"| H["✅ -readonly [P in keyof T]"]:::purple
+    C -->|"Make Optional"| E["✅ Partial(T)"]:::teal
+    C -->|"Make Required"| F["✅ Required(T)"]:::teal
+    C -->|"Make Readonly"| G["✅ Readonly(T)"]:::teal
+    C -->|"Remove Readonly"| H["✅ -readonly modifier"]:::purple
 
     D -->|"Rename Keys"| I["✅ Key Remapping<br/>[P as NewKey]"]:::purple
-    D -->|"Filter Keys"| J["✅ Conditional Mapping<br/>[P as Condition ? P : never]"]:::purple
-
-    E --> K["Transformed Type"]:::teal
-    F --> K
-    G --> K
-    H --> K
-    I --> K
-    J --> K
-
-    K --> K1["All properties affected"]
-    K --> K2["Type-safe transformation"]
-    K --> K3["Compiler enforced"]
-
-    Note["Built-in Utilities:<br/>Partial, Required,<br/>Readonly, Pick, Omit<br/>cover common cases"]
+    D -->|"Filter Keys"| J["✅ Conditional Mapping<br/>[P as Cond ? P : never]"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000

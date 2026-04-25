@@ -75,21 +75,18 @@ const agricultureZakat = createZakatCalculator(0.1);
 
 ### Data Transformation Pipeline
 
+The pipeline applies: map (donations → amounts), filter (amounts ≥ 1000), reduce (sum all amounts).
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     Input["Input Data<br/>Donations Array"]:::blue
-    Map["map#40;#41;<br/>Transform each"]:::orange
-    Filter["filter#40;#41;<br/>Select subset"]:::orange
-    Reduce["reduce#40;#41;<br/>Aggregate result"]:::teal
+    Map["map()<br/>Transform each"]:::orange
+    Filter["filter()<br/>Select subset"]:::orange
+    Reduce["reduce()<br/>Aggregate result"]:::teal
     Output["Output<br/>Total amount"]:::blue
 
-    Input --> Map
-    Map --> Filter
-    Filter --> Reduce
-    Reduce --> Output
-
-    Note1["map: donations -> amounts<br/>filter: amounts >= 1000<br/>reduce: sum all amounts"]
+    Input --> Map --> Filter --> Reduce --> Output
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -122,20 +119,21 @@ const processDonation = pipe(validateAmount, applyFee, calculateNet);
 
 ### Functional Core / Imperative Shell
 
+**Functional Core**: Pure functions, no side effects, easy to test. **Imperative Shell**: I/O operations, side effects, thin layer.
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
-    Shell1["Imperative Shell<br/>#40;HTTP Handler#41;"]:::orange
-    Core["Functional Core<br/>#40;Pure Business Logic#41;"]:::teal
-    Shell2["Imperative Shell<br/>#40;Database Access#41;"]:::orange
+graph LR
+    Shell1["Imperative Shell<br/>(HTTP Handler)"]:::orange
+    Validation["Validate &<br/>Parse"]:::blue
+    Core["Functional Core<br/>(Pure Logic)"]:::teal
+    Transform["Transform<br/>for output"]:::blue
+    Shell2["Imperative Shell<br/>(Database Access)"]:::orange
 
-    Shell1 -->|Raw input| Validation["Validate &<br/>Parse"]:::blue
+    Shell1 -->|Raw input| Validation
     Validation -->|Clean data| Core
-    Core -->|Business result| Transform["Transform<br/>for output"]:::blue
+    Core -->|Business result| Transform
     Transform -->|Persist| Shell2
-
-    Note1["Functional Core:<br/>- Pure functions<br/>- No side effects<br/>- Easy to test"]
-    Note2["Imperative Shell:<br/>- I/O operations<br/>- Side effects<br/>- Thin layer"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px

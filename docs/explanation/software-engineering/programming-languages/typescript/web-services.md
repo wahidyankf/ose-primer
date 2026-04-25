@@ -201,31 +201,26 @@ app.use(errorHandler);
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     Request["Incoming Request"]:::blue
-    Logger["Logger Middleware<br/>Log request details"]:::orange
-    Auth["Auth Middleware<br/>Verify JWT token"]:::orange
-    Validator["Validator Middleware<br/>Check request body"]:::orange
-    Handler["Route Handler<br/>Process business logic"]:::teal
+    Middlewares["Logger → Auth → Validator<br/>Middleware Chain"]:::orange
+    Handler["Route Handler<br/>Business Logic"]:::teal
     Response["Send Response"]:::blue
-    Error["Error Handler<br/>Handle exceptions"]:::purple
+    Error["Error Handler"]:::purple
 
-    Request --> Logger
-    Logger -->|next#40;#41;| Auth
-    Auth -->|next#40;#41;| Validator
-    Validator -->|next#40;#41;| Handler
+    Request --> Middlewares
+    Middlewares -->|All pass| Handler
     Handler --> Response
 
-    Auth -.->|Unauthorized| Error
-    Validator -.->|Invalid| Error
+    Middlewares -.->|Error| Error
     Handler -.->|Exception| Error
     Error -.-> Response
-
-    Note1["Middleware chain:<br/>Functions called<br/>sequentially via<br/>next#40;#41; function"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+The middleware chain calls functions sequentially via the `next()` function.
 
 ### Express Router
 
@@ -1295,45 +1290,52 @@ export class DonationModule {}
 
 ## Express.js API Architecture
 
+**Express application layers** — middleware, routing, and error handling:
+
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
-    A[Express Application] --> B[Middleware Stack]
+flowchart LR
+    A[Express App] --> B[Middleware Stack]
     A --> C[Router Layer]
     A --> D[Error Handler]
 
-    B --> B1[Body Parser<br/>JSON]
-    B --> B2[CORS<br/>Cross-Origin]
-    B --> B3[Helmet<br/>Security Headers]
-    B --> B4[Morgan<br/>Logging]
+    B --> B1[Body Parser]
+    B --> B2[CORS]
+    B --> B3[Helmet]
+    B --> B4[Morgan]
 
-    C --> C1[/api/zakat<br/>Zakat Routes]
-    C --> C2[/api/donations<br/>Donation Routes]
-    C --> C3[/api/auth<br/>Auth Routes]
-
-    C1 --> E[Controller Layer]
-    C2 --> E
-    C3 --> E
-
-    E --> F[Service Layer]
-    F --> G[Repository Layer]
-    G --> H[Database<br/>TypeORM/Prisma]
+    C --> C1[/api/zakat]
+    C --> C2[/api/donations]
+    C --> C3[/api/auth]
 
     D --> I[Global Error Handler]
-    I --> J[Error Response]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
     style C fill:#029E73,color:#fff
+    style D fill:#CC78BC,color:#fff
+```
+
+**Request processing chain** — controllers, services, repository, and database:
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
+flowchart LR
+    E[Controller Layer] --> F[Service Layer]
+    F --> G[Repository Layer]
+    G --> H[Database<br/>TypeORM/Prisma]
+
     style E fill:#CC78BC,color:#fff
     style F fill:#0173B2,color:#fff
+    style G fill:#029E73,color:#fff
+    style H fill:#DE8F05,color:#fff
 ```
 
 ## NestJS Module Architecture
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[App Module] --> B[Zakat Module]
     A --> C[Donation Module]
     A --> D[Auth Module]

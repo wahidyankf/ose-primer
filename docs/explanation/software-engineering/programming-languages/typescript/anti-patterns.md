@@ -63,9 +63,11 @@ Anti-patterns are common solutions that appear beneficial but lead to problemati
 
 When should you use type assertions vs validation? This decision tree helps you choose the right approach.
 
+External data ALWAYS requires validation. Type assertions bypass runtime checks.
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Start["Data Source"]:::blue
     Internal{"Internal<br/>source?"}:::orange
     TrustSource{"Can trust<br/>structure?"}:::orange
@@ -82,9 +84,6 @@ graph TD
     TypeOnly -->|Yes| UseAssertion
     TypeOnly -->|No| TypeGuard
 
-    Note1["External data ALWAYS<br/>requires validation"]
-    Note2["Type assertions bypass<br/>runtime checks"]
-
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -98,41 +97,40 @@ graph TD
 
 Using `any` creates a ripple effect of type safety erosion throughout your codebase.
 
+With `any`, errors spread through the entire call chain and appear only at runtime. With proper types, errors are caught at compile time.
+
+**Unsafe path** (any spreads through call chain):
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
-    Input["User Input<br/>#40;any#41;"]:::blue
-    ProcessA["processDonation#40;data: any#41;"]:::orange
-    ProcessB["calculateFee#40;amount: any#41;"]:::orange
-    ProcessC["formatCurrency#40;value: any#41;"]:::orange
+graph LR
+    Input["User Input<br/>(any)"]:::blue
+    ProcessA["processDonation<br/>(data: any)"]:::orange
+    ProcessB["calculateFee<br/>(amount: any)"]:::orange
+    ProcessC["formatCurrency<br/>(value: any)"]:::orange
     Error["Runtime Error<br/>Uncaught TypeError"]:::purple
-    SafeInput["Validated Input<br/>#40;Donation#41;"]:::teal
-    SafeA["processDonation#40;data: Donation#41;"]:::teal
-    SafeB["calculateFee#40;amount: number#41;"]:::teal
-    SafeC["formatCurrency#40;value: number#41;"]:::teal
-    CompileError["Compile-time Error<br/>Type mismatch caught"]:::brown
 
-    subgraph Unsafe["Type Safety Erosion with any"]
-        Input --> ProcessA
-        ProcessA --> ProcessB
-        ProcessB --> ProcessC
-        ProcessC --> Error
-    end
-
-    subgraph Safe["Type Safety Preserved"]
-        SafeInput --> SafeA
-        SafeA --> SafeB
-        SafeB --> SafeC
-        SafeC -.-> CompileError
-    end
-
-    Note1["any spreads through<br/>entire call chain"]
-    Note2["Errors caught at<br/>compile time"]
+    Input --> ProcessA --> ProcessB --> ProcessC --> Error
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
+**Safe path** (proper types catch errors early):
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    SafeInput["Validated Input<br/>(Donation)"]:::teal
+    SafeA["processDonation<br/>(data: Donation)"]:::teal
+    SafeB["calculateFee<br/>(amount: number)"]:::teal
+    SafeC["formatCurrency<br/>(value: number)"]:::teal
+    CompileError["Compile-time Error<br/>Type mismatch caught"]:::brown
+
+    SafeInput --> SafeA --> SafeB --> SafeC -.-> CompileError
+
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 
@@ -962,29 +960,20 @@ interface DonationFilters {
 
 ### Error Handling Decision Flow
 
+Always log errors with context (userId, timestamp) before returning to the caller.
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Error Occurs"]:::blue --> B{"Can You<br/>Recover?"}:::orange
 
-    B -->|"Yes"| C["Handle Gracefully<br/>(retry, default value)"]:::teal
-    B -->|"No"| D{"Need to Add<br/>Context?"}:::orange
+    B -->|"Yes"| C["Handle Gracefully<br/>(retry, default)"]:::teal
+    B -->|"No"| D{"Add Context?"}:::orange
 
-    D -->|"Yes"| E["Wrap Error<br/>(custom error class)"]:::purple
-    D -->|"No"| F["Propagate<br/>(throw/return error)"]:::brown
-
-    C --> G{"Log?"}:::orange
-    E --> G
-    F --> G
-
-    G -->|"Yes"| H["Log with Context<br/>(userId, timestamp)"]:::teal
-    G -->|"No"| I["Return to Caller"]:::teal
-
-    H --> I
-
-    Note["❌ NEVER:<br/>Silent failures,<br/>Generic messages,<br/>Excessive try-catch"]
+    D -->|"Yes"| E["Wrap Error"]:::purple
+    D -->|"No"| F["Propagate Error"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
@@ -992,6 +981,8 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000,color:#000
     classDef brown fill:#CA9161,stroke:#000,color:#000
 ```
+
+**NEVER**: Silent failures, generic error messages, or excessive try-catch blocks.
 
 **Key Principles**:
 
@@ -1915,38 +1906,31 @@ async function processDonationsPaginated() {
 
 Abstraction is powerful but can be harmful when overdone. This flowchart helps detect over-abstraction.
 
+Good abstraction: 2+ use cases, reduces duplication, simplifies code, and is easy to understand. If any check fails, keep simple or refactor.
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Start["Adding Abstraction"]:::blue
-    Q1{"More than<br/>2 use cases?"}:::orange
-    Q2{"Reduces<br/>duplication?"}:::orange
-    Q3{"Simplifies<br/>code?"}:::orange
-    Q4{"Easy to<br/>understand?"}:::orange
-
-    KeepSimple["Keep It Simple<br/>No abstraction needed"]:::teal
-    GoodAbstraction["Good Abstraction<br/>Proceed"]:::teal
-    Refactor["Refactor<br/>Simplify abstraction"]:::brown
-    OverAbstraction["Over-Abstraction<br/>Harmful complexity"]:::purple
+    Q1{"2+ use cases<br/>AND reduces dup?"}:::orange
+    Q2{"Simplifies code<br/>AND easy to read?"}:::orange
+    Keep["Keep Simple"]:::teal
+    Good["Good Abstraction"]:::teal
+    Refactor["Refactor It"]:::brown
 
     Start --> Q1
-    Q1 -->|No| KeepSimple
+    Q1 -->|No| Keep
     Q1 -->|Yes| Q2
-    Q2 -->|No| KeepSimple
-    Q2 -->|Yes| Q3
-    Q3 -->|No| Refactor
-    Q3 -->|Yes| Q4
-    Q4 -->|No| Refactor
-    Q4 -->|Yes| GoodAbstraction
-
-    Warning["Warning Signs:<br/>- Generic names #40;Manager, Handler#41;<br/>- Many type parameters;<br/>- Callback inception;<br/>- Harder to read than duplicate code"]
+    Q2 -->|No| Refactor
+    Q2 -->|Yes| Good
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+**Warning signs of over-abstraction**: Generic names (Manager, Handler), many type parameters, callback inception, harder to read than duplicate code.
 
 ### God Object
 

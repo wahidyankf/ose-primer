@@ -26,28 +26,22 @@ TypeScript/JavaScript uses a single-threaded event loop with asynchronous operat
 
 ### Event Loop Phases
 
+Node.js event loop phases: **Timers** execute setTimeout/setInterval callbacks. **Poll** waits for and executes I/O callbacks. **Microtasks** (Promise.then) execute before the next phase.
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
-    Start["Start Event Loop"]:::blue --> Timers["Timers<br/>#40;setTimeout, setInterval#41;"]:::orange
-    Timers --> Pending["Pending Callbacks<br/>#40;I/O callbacks#41;"]:::orange
-    Pending --> Idle["Idle, Prepare<br/>#40;internal use#41;"]:::brown
-    Idle --> Poll["Poll<br/>#40;retrieve I/O events#41;"]:::teal
-    Poll --> Check["Check<br/>#40;setImmediate#41;"]:::orange
-    Check --> Close["Close Callbacks<br/>#40;socket.on#40;'close'#41;#41;"]:::orange
-    Close --> NextTick["process.nextTick#40;#41;"]:::purple
-    NextTick --> Microtasks["Microtasks<br/>#40;Promises#41;"]:::teal
-    Microtasks --> Timers
+graph LR
+    Timers["Timers<br/>(setTimeout)"]:::orange
+    Poll["Poll<br/>(I/O events)"]:::teal
+    Check["Check<br/>(setImmediate)"]:::orange
+    NextTick["process<br/>.nextTick()"]:::purple
+    Microtasks["Microtasks<br/>(Promises)"]:::teal
 
-    Note1["Timers: Execute callbacks<br/>scheduled by setTimeout<br/>and setInterval"]
-    Note2["Poll: Wait for I/O events,<br/>execute I/O callbacks"]
-    Note3["Microtasks: Execute before<br/>next phase #40;Promise.then#41;"]
+    Timers --> Poll --> Check --> NextTick --> Microtasks
 
-    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 
 ## Async/Await Patterns
@@ -197,7 +191,7 @@ async function processParallel(ids: string[]): Promise<Donation[]> {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Multiple Promises<br/>to Coordinate?"]:::blue --> B{"What<br/>Behavior?"}:::orange
 
     B -->|"All must succeed"| C["✅ Promise.all()<br/>(Fail-fast)"]:::teal
@@ -471,6 +465,8 @@ setTimeout(() => controller.abort(), 5000);
 
 ### Promise Error Propagation
 
+If a `.catch()` handler returns a value, the promise resolves (error recovered). If it re-throws, the error propagates further.
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
@@ -481,28 +477,21 @@ graph TD
     B -->|"Success"| C[".then() handler"]:::teal
     B -->|"Rejection"| D[".catch() handler"]:::purple
 
-    C --> C1["Process value"]:::teal
-    C1 --> C2{"Handler<br/>throws?"}:::orange
+    C --> C2{"Handler<br/>throws?"}:::orange
+    D --> D2{"Handler<br/>throws?"}:::orange
 
     C2 -->|"No"| Success["Promise resolves"]:::teal
-    C2 -->|"Yes"| Reject["Promise rejects"]:::purple
-
-    D --> D1["Handle error"]:::purple
-    D1 --> D2{"Handler<br/>throws?"}:::orange
-
-    D2 -->|"No"| Recover["Promise resolves<br/>(error recovered)"]:::teal
-    D2 -->|"Yes"| Propagate["Promise rejects<br/>(error propagates)"]:::purple
-
-    Reject --> Next1[".catch() or<br/>unhandled rejection"]:::purple
-    Propagate --> Next1
-
-    Note1["Unhandled rejection:<br/>- Browser: unhandledrejection event<br/>- Node.js: process warning"]
+    C2 -->|"Yes"| Next1["Rejects / Propagates"]:::purple
+    D2 -->|"No"| Success
+    D2 -->|"Yes"| Next1
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
     classDef purple fill:#CC78BC,stroke:#000,color:#000
 ```
+
+Unhandled rejections trigger `unhandledrejection` in browsers and a process warning in Node.js.
 
 **Key Principles**:
 
@@ -552,31 +541,27 @@ async function fetchDonationUnsafe(id: string): Promise<Donation> {
 
 ### Rate Limiting Pattern
 
+Rate limiting prevents API throttling, controls resource usage, and maintains system stability.
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Queue of Tasks<br/>(1000 items)"]:::blue --> B["Rate Limiter"]:::orange
 
-    B --> C["Concurrent Batch<br/>(max 10 at once)"]:::teal
+    B --> C["Concurrent Batch<br/>(max N at once)"]:::teal
 
     C --> T1["Task 1"]:::teal
     C --> T2["Task 2"]:::teal
-    C --> T3["Task 3"]:::teal
-    C --> T4["..."]:::teal
-    C --> T10["Task 10"]:::teal
+    C --> T3["Task ..."]:::teal
 
-    T1 --> Complete1["Complete"]:::purple
+    T1 --> Complete1["Batch Complete"]:::purple
     T2 --> Complete1
     T3 --> Complete1
-    T4 --> Complete1
-    T10 --> Complete1
 
-    Complete1 --> Next["Start Next Batch<br/>(Task 11-20)"]:::orange
+    Complete1 --> Next["Start Next Batch"]:::orange
     Next --> C
-
-    Note1["Rate Limiting:<br/>- Prevents API throttling<br/>- Controls resource usage<br/>- Maintains system stability"]
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000

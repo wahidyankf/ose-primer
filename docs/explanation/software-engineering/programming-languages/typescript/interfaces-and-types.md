@@ -31,7 +31,7 @@ TypeScript provides two primary ways to define object shapes: interfaces and typ
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Primitives["Primitives<br/>#40;string, number, boolean#41;"]:::blue
+    Primitives["Primitives<br/>(string, number, boolean)"]:::blue
     Literals["Literal Types<br/>#40;'USD', 42, true#41;"]:::orange
     Objects["Object Types<br/>#40;interfaces, types#41;"]:::teal
     Functions["Function Types<br/>#40;arrow, declarations#41;"]:::purple
@@ -165,15 +165,14 @@ graph TD
     Satisfied -->|Yes| Accept
     Satisfied -->|No| Reject
 
-    Note1["Constraint example:<br/>T extends { id: string }<br/>ensures T has id property"]
-    Note2["Multiple constraints:<br/>T extends A & B"]
-
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+Constraint example: `T extends { id: string }` ensures T has an id property. Multiple constraints: `T extends A & B`.
 
 ### Basic Generics
 
