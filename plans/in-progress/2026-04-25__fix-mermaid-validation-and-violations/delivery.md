@@ -11,11 +11,15 @@
 
 ## Pre-Work
 
-- [ ] Confirm baseline: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep -c "^\(✗\|⚠\)"` — note
-      the returned number is the count of violation/warning **lines** (not affected files);
-      expected to be approximately 247 lines (179 width_exceeded + 56 label_too_long +
-      12 complex_diagram). The README.md reports 107 **files** affected, which is a different count.
-- [ ] Save full audit to `local-temp/mermaid-audit-baseline.txt` for reference during fixes
+- [ ] Run full audit and save as baseline:
+      `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | tee local-temp/mermaid-audit-baseline.txt`
+- [ ] Note counts (for your own reference — no expected value to match):
+      `grep -c "^✗" local-temp/mermaid-audit-baseline.txt` # error lines
+      `grep -c "^⚠" local-temp/mermaid-audit-baseline.txt` # warning lines
+      `grep "^✗" local-temp/mermaid-audit-baseline.txt | grep -o '"[^"]*"' | sort -u | wc -l` # approx files
+      These counts are your pre-Phase-0 baseline. They will change after Phase 0 because
+      the direction-aware fix reclassifies LR diagrams. Historical reference numbers are
+      in README.md Violation Baseline section.
 
 ## Phase 0 — Direction-Aware Validator + Threshold Update (rhino-cli)
 
@@ -49,14 +53,20 @@
 - [ ] Run: `npx nx run rhino-cli:typecheck` → must pass
 - [ ] Run: `npx nx run rhino-cli:test:unit` → must pass
 - [ ] Run: `npx nx run rhino-cli:test:quick` → must pass (coverage ≥ 90%)
-- [ ] Commit: `fix(rhino-cli): direction-aware width check, MaxWidth=4, no depth limit`
+- [ ] Commit: `fix(rhino-cli): make width_exceeded check direction-aware`
 - [ ] Re-audit: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | tee local-temp/mermaid-audit-phase0.txt`
 - [ ] Update Phase 1 batch file lists from the re-audit output
       (LR-only-tall files may disappear; new LR-deeply-chained files may appear;
       diagrams with old span=4 violations now pass)
-- [ ] Update the Violation Summary table in README.md with new counts
+- [ ] Update the Violation Baseline table in README.md with new counts from Phase 0 re-audit
 
-## Batch 1 — TypeScript (18 files)
+> **Important**: The batch file lists below are provisional — based on the 2026-04-25
+> pre-Phase-0 audit with the direction-blind validator. After step 0d re-audit, update
+> each batch's file list to match `local-temp/mermaid-audit-phase0.txt`. Files that no
+> longer appear in the re-audit output can be skipped; new files that appear must be added
+> to the appropriate batch. Do not begin Batch 1 until the file lists are updated.
+
+## Batch 1 — TypeScript (provisional file list)
 
 Files: `docs/explanation/software-engineering/programming-languages/typescript/`
 
@@ -81,7 +91,7 @@ Files: `docs/explanation/software-engineering/programming-languages/typescript/`
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "typescript/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in typescript/ docs (batch 1/10)`
 
-## Batch 2 — Python (15 files)
+## Batch 2 — Python (provisional file list)
 
 Files: `docs/explanation/software-engineering/programming-languages/python/`
 
@@ -103,7 +113,7 @@ Files: `docs/explanation/software-engineering/programming-languages/python/`
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "python/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in python/ docs (batch 2/10)`
 
-## Batch 3 — Go (11 files)
+## Batch 3 — Go (provisional file list)
 
 Files: `docs/explanation/software-engineering/programming-languages/golang/`
 
@@ -121,7 +131,7 @@ Files: `docs/explanation/software-engineering/programming-languages/golang/`
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "golang/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in golang/ docs (batch 3/10)`
 
-## Batch 4 — JVM Spring Boot (10 files)
+## Batch 4 — JVM Spring Boot (provisional file list)
 
 Files: `docs/explanation/software-engineering/platform-web/tools/jvm-spring-boot/`
 
@@ -138,7 +148,7 @@ Files: `docs/explanation/software-engineering/platform-web/tools/jvm-spring-boot
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "jvm-spring-boot/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in jvm-spring-boot/ docs (batch 4/10)`
 
-## Batch 5 — Elixir Phoenix (8 files)
+## Batch 5 — Elixir Phoenix (provisional file list)
 
 Files: `docs/explanation/software-engineering/platform-web/tools/elixir-phoenix/`
 
@@ -153,7 +163,7 @@ Files: `docs/explanation/software-engineering/platform-web/tools/elixir-phoenix/
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "elixir-phoenix/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in elixir-phoenix/ docs (batch 5/10)`
 
-## Batch 6 — React (8 files)
+## Batch 6 — React (provisional file list)
 
 Files: `docs/explanation/software-engineering/platform-web/tools/fe-react/`
 
@@ -168,7 +178,7 @@ Files: `docs/explanation/software-engineering/platform-web/tools/fe-react/`
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "fe-react/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in fe-react/ docs (batch 6/10)`
 
-## Batch 7 — Next.js (6 files)
+## Batch 7 — Next.js (provisional file list)
 
 Files: `docs/explanation/software-engineering/platform-web/tools/fe-nextjs/`
 
@@ -181,7 +191,7 @@ Files: `docs/explanation/software-engineering/platform-web/tools/fe-nextjs/`
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "fe-nextjs/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in fe-nextjs/ docs (batch 7/10)`
 
-## Batch 8 — Elixir Language (6 files)
+## Batch 8 — Elixir Language (provisional file list)
 
 Files: `docs/explanation/software-engineering/programming-languages/elixir/`
 
@@ -194,7 +204,7 @@ Files: `docs/explanation/software-engineering/programming-languages/elixir/`
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "programming-languages/elixir/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in elixir/ docs (batch 8/10)`
 
-## Batch 9 — C4 Architecture (5 files)
+## Batch 9 — C4 Architecture (provisional file list)
 
 Files: `docs/explanation/software-engineering/architecture/c4-architecture-model/`
 
@@ -206,7 +216,7 @@ Files: `docs/explanation/software-engineering/architecture/c4-architecture-model
 - [ ] Validate: `go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | grep "c4-architecture-model/"` → no output
 - [ ] Commit: `fix(docs): fix mermaid violations in c4-architecture-model/ docs (batch 9/10)`
 
-## Batch 10 — Remaining errors (14 files)
+## Batch 10 — Remaining errors (provisional file list)
 
 - [ ] Fix `docs/explanation/software-engineering/programming-languages/c-sharp/README.md`
 - [ ] Fix `docs/explanation/software-engineering/programming-languages/clojure/README.md`
@@ -252,10 +262,63 @@ Files: `docs/explanation/software-engineering/architecture/c4-architecture-model
 ### Post-Push Verification
 
 - [ ] Push changes to `main`
-- [ ] ose-primer has no GitHub Actions CI — verify locally after push:
-  - `npm run lint:md` (markdown linting)
-  - `npx nx affected -t typecheck lint test:quick spec-coverage`
+- [ ] Monitor GitHub Actions on the ose-primer repository after push — ose-primer has
+      active CI workflows (pr-quality-gate.yml, test-demo-be-\*, test-demo-fe-\*, and
+      others under `.github/workflows/`)
+- [ ] If push is to a PR branch: verify `pr-quality-gate.yml` passes
+- [ ] If push is directly to `main`: verify no push-trigger workflows fail
 - [ ] Confirm no regressions introduced by diagram changes before closing the plan
+
+## Phase 2 — Governance Propagation (repo-rules-maker)
+
+> **Agent**: Use `repo-rules-maker` for all edits in this phase.
+
+### 2a — Update `governance/conventions/formatting/diagrams.md`
+
+> See tech-docs.md Phase 2 section for the full content specification for each item above.
+
+- [ ] 2a-1: Invoke `repo-rules-maker` to add `### Flowchart Width Constraints (Automated
+Enforcement)` subsection inside the "Mermaid Best Practices" area (after "Mermaid
+      Best Practices" heading, before any sub-sections on size):
+      — MaxWidth=4 (horizontal only, direction-aware)
+      — Span vs. depth defined with LR/TD direction mapping table
+      — Label length: 30 raw chars (validator rule) vs. ~20 chars (Hugo/Hextra clip)
+      — `go run ./apps/rhino-cli/main.go docs validate-mermaid` command
+- [ ] 2a-2: Invoke `repo-rules-maker` to add `## Width Violation Fix Strategy Guide` H2
+      section after "Flowchart Width Constraints", containing:
+      — Selection decision tree (label_too_long → Strategy 4; width_exceeded → try
+      direction flip first, then structural fix)
+      — Strategy 0: Direction flip — condition `min(span,depth) ≤ 4`, one-word fix
+      — Strategy 1: Intermediate grouping node (real edges, NOT subgraph)
+      — Strategy 2: Diagram splitting (reference existing "Diagram Size and Splitting")
+      — Strategy 3: Sequential chaining
+      — Strategy 4a/4b: Label shortening (entity replacement + abbreviation)
+      — Subgraph warning: parser skips subgraph/end lines; fixes must be topological
+- [ ] 2a-3: Invoke `repo-rules-maker` to update the "Diagram Orientation" section:
+      change the absolute "MUST use graph TD" rule to "TD by default; LR is preferred
+      when it reduces horizontal width below MaxWidth=4 (Strategy 0)"
+- [ ] 2a-4: Invoke `repo-rules-maker` to remove duplicate Error 7 (identical content to
+      Error 5)
+- [ ] 2a-5: Invoke `repo-rules-maker` to clarify label length note in Error 9 /
+      Verification Checklist: "30 raw chars = validator enforcement limit; ~20 chars =
+      Hugo/Hextra rendering clip"
+
+### 2b — Validate and commit
+
+- [ ] Validate updated diagrams.md passes the mermaid validator:
+      `go run ./apps/rhino-cli/main.go docs validate-mermaid governance/conventions/formatting/`
+      → no `✗` output
+- [ ] Run markdown lint: `npm run lint:md` → 0 errors
+- [ ] Commit: `docs(governance): add mermaid width constraints and fix strategies to diagrams convention`
+
+### 2c — Run repo-rules quality gate in strict mode
+
+- [ ] Invoke `repo-rules-quality-gate` workflow with `mode=strict`
+      (see `governance/workflows/repo/repo-rules-quality-gate.md`)
+- [ ] Fix ALL CRITICAL, HIGH, and MEDIUM findings from the quality gate
+- [ ] If fixes needed: commit with `docs(governance): fix repo-rules quality gate findings`
+- [ ] Confirm quality gate passes with zero CRITICAL/HIGH/MEDIUM findings on two
+      consecutive passes
 
 ## Plan Archival
 

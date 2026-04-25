@@ -660,3 +660,195 @@ fix(docs): fix mermaid violations in python/ docs (batch 2/10)
 ...
 fix(docs): fix mermaid violations in remaining docs (batch 10/10)
 ```
+
+## Phase 2 — Governance Propagation (repo-rules-maker)
+
+### Goal
+
+Promote validated knowledge from this plan's `tech-docs.md` into the permanent
+convention at `governance/conventions/formatting/diagrams.md`. After Phase 2, a
+contributor can find the diagram authoring rules and fix strategies in one place
+without consulting `plans/done/`.
+
+### Agent
+
+Use `repo-rules-maker` to make all changes in this phase. `repo-rules-maker` creates
+and updates governance artifacts while respecting linking, emoji, and content-quality
+conventions.
+
+### Current gaps in `diagrams.md`
+
+| Gap                         | Location in diagrams.md                     | What to add                                                     |
+| --------------------------- | ------------------------------------------- | --------------------------------------------------------------- |
+| No width constraint section | Missing entirely                            | New section: "Flowchart Width Constraints"                      |
+| No fix strategy guide       | Missing entirely                            | New section: "Width Violation Fix Strategy Guide"               |
+| Orientation rule too strict | "Diagram Orientation" → "MUST use graph TD" | Soften: TD is default; LR allowed for width optimization        |
+| Duplicate Error 7           | Lines ~1373–1437                            | Remove — exact copy of Error 5 (lines ~1209–1267)               |
+| Label length discrepancy    | Error 9 / Verification Checklist            | Clarify: validator=30 raw chars; Hugo rendering clips ~20 chars |
+
+### Section: "Flowchart Width Constraints (Automated Enforcement)"
+
+Add a new subsection inside "Mermaid Diagrams: Primary Format" (after "Mermaid Best
+Practices"), or as a standalone H2 section before "Diagram Size and Splitting". Content:
+
+````markdown
+### Flowchart Width Constraints (Automated Enforcement)
+
+`rhino-cli docs validate-mermaid` enforces three rules on every `flowchart`/`graph`
+block. Violations cause exit code 1 and block the pre-push hook.
+
+| Rule              | Threshold                         | Severity                      |
+| ----------------- | --------------------------------- | ----------------------------- |
+| `width_exceeded`  | Horizontal dimension > 4 nodes    | Error (exit 1)                |
+| `label_too_long`  | Any `<br/>`-split line > 30 chars | Error (exit 1)                |
+| `complex_diagram` | Horizontal > 4 AND vertical > N   | Warning (exit 0, opt-in only) |
+
+**Horizontal is direction-aware**:
+
+- `graph TD / TB / BT` → horizontal = **span** (nodes sharing the same rank row)
+- `graph LR / RL` → horizontal = **depth** (number of distinct rank columns)
+
+Vertical = the other axis. Vertical is unconstrained by default (`--max-depth` not set).
+
+**Span** = maximum number of nodes at any single rank level.
+**Depth** = number of distinct rank values (longest path + 1).
+
+Example: `graph TD` with A→B, A→C, A→D, A→E — span at rank 1 is 4 (B, C, D, E),
+depth is 2 (ranks 0 and 1). Horizontal = span = 4. `4 > 4` is false — passes.
+Add one more child (A→F): span=5 > 4 → `width_exceeded` violation.
+
+Same edges as `graph LR`: horizontal = depth = 2. `2 > 4` is false — passes, and span
+(vertical) is unconstrained — also passes. Switching to LR is a zero-cost fix here.
+
+**Label length**: the validator counts raw characters per `<br/>`-split segment.
+HTML entities are NOT decoded: `#40;` = 4 chars. Quoted labels accept literal `()`
+without escaping — replace `#40;` with `(` to recover 3 chars per entity. Note that
+Hugo/Hextra renders clip label text beyond ~20 chars without error — the 30-char limit
+is the validator rule; the 20-char limit is a content-quality recommendation for
+Hugo-rendered sites.
+
+Run the validator manually:
+
+```bash
+go run ./apps/rhino-cli/main.go docs validate-mermaid
+```
+````
+
+Or for a single directory:
+
+```bash
+go run ./apps/rhino-cli/main.go docs validate-mermaid docs/explanation/
+```
+
+````
+
+### Section: "Width Violation Fix Strategy Guide"
+
+Add as a new H2 section after "Flowchart Width Constraints". This is a condensed form
+of the strategies developed in this plan's tech-docs.md. Content:
+
+```markdown
+## Width Violation Fix Strategy Guide
+
+When `rhino-cli docs validate-mermaid` reports a `width_exceeded` violation, follow
+this selection guide:
+
+### Selection Decision Tree
+
+    Is the violation label_too_long?
+      → 4a: Replace HTML entities (#40; → () saves 3 chars per entity).
+      → Still over? 4b: Abbreviate label; move detail to prose.
+
+    Is the violation width_exceeded?
+      Step 1 — Try direction flip (Strategy 0, one-word fix):
+        Compute span and depth. Is min(span, depth) ≤ 4?
+          YES → flip to the direction that makes min(span, depth) the horizontal axis.
+                Use LR if depth < span; use TD if span ≤ depth. Done.
+          NO  → both dimensions exceed 4; structural change needed:
+
+      Step 2 — Structural fix:
+        Are the wide nodes genuinely sequential? → Strategy 3 (linear chain).
+        Can they be staged via a real intermediate node? → Strategy 1 (grouping).
+        Otherwise → Strategy 2 (split into focused diagrams).
+
+### Strategy 0 — Direction Flip (one-word fix)
+
+**Condition**: `min(span, depth) ≤ 4`.
+
+Change `graph TD` to `graph LR` (or vice versa) to put the smaller dimension on
+the horizontal axis. Because only horizontal is constrained, this is always valid when
+`min(span, depth) ≤ 4`.
+
+**When NOT applicable**: `min(span, depth) > 4` — both directions violate; use
+Strategy 1, 2, or 3.
+
+### Strategy 1 — Intermediate Grouping Node
+
+When wide children have a natural semantic grouping, introduce an intermediate node
+connected by **real edges** — not `subgraph` wrappers, which the parser skips and
+which can increase width by creating additional rank-0 sources.
+
+### Strategy 2 — Diagram Splitting
+
+Split one overloaded diagram into 2–3 focused diagrams. Add a bold header above each
+diagram. Connect them with prose, not duplicate nodes. See the existing
+["Diagram Size and Splitting"](#diagram-size-and-splitting) section for splitting
+guidelines and real-world examples.
+
+### Strategy 3 — Sequential Chaining
+
+When the fan-out nodes represent pipeline stages or ordered steps, replace parallel
+children with a linear chain. Changes semantic meaning — confirm the sequence is
+correct by reading surrounding prose.
+
+### Strategy 4 — Label Shortening
+
+**4a** — Replace HTML entities with literal characters: `#40;` → `(`, `#41;` → `)`.
+Valid in quoted labels (`Node["text"]`). Saves 3 chars per entity.
+
+**4b** — Abbreviate. Move dropped detail into surrounding prose immediately before or
+after the diagram. The diagram shows structure; prose explains detail.
+
+> **Subgraph warning**: `subgraph` / `end` lines are skipped by the parser entirely.
+> Standalone nodes inside subgraphs with no incoming edges become rank-0 sources,
+> potentially **increasing** width. All fixes must be topological (real edges).
+````
+
+### Orientation guidance update
+
+In the "Diagram Orientation" section, change the absolute rule to context-aware
+guidance. Replace:
+
+> **CRITICAL RULE**: Mermaid diagrams MUST use `graph TD` (top-down vertical layout)
+> by default.
+
+With:
+
+> **Default layout: Top-Down (`graph TD`)**
+>
+> Use `graph TD` by default for mobile-friendliness and reading consistency.
+> **Exception**: use `graph LR` when it reduces horizontal width below the 4-node
+> limit — this is a valid, preferred fix strategy (Strategy 0 above). Never use LR
+> solely for visual preference without checking the width impact.
+
+### Duplicate Error 7 removal
+
+Error 7 (starting at the `---` separator and `### Error 7: Sequence Diagram Participant
+Syntax with "as" Keyword` heading) is identical to Error 5 and must be removed. The
+removal keeps the document from having confusing duplicate content.
+
+### Verification after Phase 2
+
+```bash
+# Validate the updated diagrams.md passes the mermaid validator
+go run ./apps/rhino-cli/main.go docs validate-mermaid governance/conventions/formatting/
+
+# Run repo-rules quality gate in strict mode
+# (invoke repo-rules-quality-gate workflow with mode=strict)
+```
+
+### Commit
+
+```
+docs(governance): add mermaid width constraints and fix strategies to diagrams convention
+```

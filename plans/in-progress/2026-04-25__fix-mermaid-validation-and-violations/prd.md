@@ -2,7 +2,7 @@
 
 ## Product Overview
 
-This plan delivers two things:
+This plan delivers **three things**:
 
 1. **Direction-aware validator** (Phase 0): a code change to
    `apps/rhino-cli/internal/mermaid/validator.go` that uses `diagram.Direction` when
@@ -13,6 +13,11 @@ This plan delivers two things:
 2. **Zero-violation docs** (Phase 1): edited markdown files in `docs/` where every
    mermaid block passes the updated validator. Errors targeted: `width_exceeded` and
    `label_too_long`.
+
+3. **Governance propagation** (Phase 2): updates to
+   `governance/conventions/formatting/diagrams.md` (via `repo-rules-maker`) documenting
+   the direction-aware width rules and fix strategy guide so future contributors have a
+   canonical reference.
 
 ## Personas
 
@@ -75,6 +80,29 @@ Files not listed in the audit must continue to pass. Each batch commit must leav
 the validator result for that batch's files at zero errors before moving to the
 next batch.
 
+### R6 — Governance convention documents width constraints and fix strategies
+
+`governance/conventions/formatting/diagrams.md` must be updated (via `repo-rules-maker`)
+to include:
+
+1. A "Flowchart Width Constraints" section documenting:
+   - MaxWidth = 4 (horizontal nodes, direction-aware)
+   - Span vs. depth explained with the direction-aware rule (LR→depth horizontal,
+     TD→span horizontal)
+   - Label length: 30 raw chars per line (validator enforcement) vs. ~20 chars
+     (Hugo/Hextra rendering clip)
+   - Reference to `rhino-cli docs validate-mermaid` for automated enforcement
+2. A "Width Violation Fix Strategy Guide" section summarizing all fix strategies
+   (direction flip, sequential chaining, diagram splitting, label shortening) with
+   a selection decision tree
+3. An update to the "Diagram Orientation" section: soften the "MUST use TD" rule to
+   allow LR when it reduces horizontal width below MaxWidth=4
+4. Removal of duplicate Error 7 (identical to Error 5)
+5. Clarification of the label length discrepancy: validator enforces 30 raw chars;
+   Hugo/Hextra rendering clips at ~20 chars for displayed text
+
+The `repo-rules-quality-gate` must pass in strict mode after these changes.
+
 ## Product Scope
 
 **In scope**:
@@ -84,12 +112,15 @@ next batch.
 - Fixing `width_exceeded` and `label_too_long` violations in affected `docs/` files
   after Phase 0 re-audit (Phase 1)
 - Preserving diagram semantics (node relationships, information content)
+- Updating `governance/conventions/formatting/diagrams.md` with width constraints
+  and fix strategy guide (Phase 2, via `repo-rules-maker`)
 
 **Out of scope**:
 
 - `complex_diagram` warnings as a separate concern — they disappear after MaxDepth=math.MaxInt
 - Adding new threshold parameter types beyond MaxWidth/MaxDepth/MaxLabelLen
-- Changes to `governance/` or `.claude/` files — audited clean
+- Changes to `.claude/` files — audited clean; governance changes are limited to
+  `governance/conventions/formatting/diagrams.md` (Phase 2 only)
 - Extending the pre-push hook to scan `docs/`
 - Adding new diagrams or expanding documentation content
 
@@ -151,4 +182,28 @@ Feature: Mermaid diagram compliance in docs/
     Given a diagram that was refactored to fix a width_exceeded error
     When I read the surrounding prose and the fixed diagram together
     Then all node relationships present in the original diagram are still represented
+
+Feature: Mermaid width constraints documented in governance convention
+
+  Background:
+    Given I am at the root of the ose-primer repository
+    And Phase 2 (governance propagation) is complete
+
+  Scenario: diagrams.md documents direction-aware width constraints
+    When I read governance/conventions/formatting/diagrams.md
+    Then it contains a section documenting MaxWidth=4 as the horizontal limit
+    And it explains that horizontal dimension is direction-aware
+    And it states LR/RL diagrams use depth as horizontal
+    And it states TD/TB/BT diagrams use span as horizontal
+
+  Scenario: diagrams.md contains the fix strategy guide
+    When I read governance/conventions/formatting/diagrams.md
+    Then it contains a fix strategy section with direction flip as the first strategy
+    And it describes sequential chaining as a structural fix option
+    And it describes diagram splitting as an alternative fix
+    And it includes a selection decision tree
+
+  Scenario: repo-rules-quality-gate passes after Phase 2
+    When I run the repo-rules quality gate in strict mode
+    Then it reports zero CRITICAL, HIGH, and MEDIUM findings
 ```
