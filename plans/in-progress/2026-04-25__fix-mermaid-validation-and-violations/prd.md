@@ -40,21 +40,22 @@ time.
 
 ## Requirements
 
-### R1 — Direction-aware `width_exceeded` check (rhino-cli)
+### R1 — Direction-aware `width_exceeded` check with MaxWidth=4 (rhino-cli)
 
-The validator must select the horizontal dimension based on graph direction before
-applying the `MaxWidth` (3) threshold:
+The validator must:
 
-- `graph LR` / `graph RL` → horizontal dimension = **depth** (rank columns)
-- `graph TD` / `graph TB` / `graph BT` → horizontal dimension = **span** (nodes per rank)
-
-The `complex_diagram` warning (both dimensions exceeded) follows the same axis swap:
-for LR/RL, the warning fires when `depth > MaxWidth AND span > MaxDepth`.
+1. Select the horizontal dimension based on graph direction:
+   - `graph LR` / `graph RL` → horizontal = **depth** (rank columns)
+   - `graph TD` / `graph TB` / `graph BT` → horizontal = **span** (nodes per rank)
+2. Apply `MaxWidth = 4` (raised from 3) to the horizontal dimension only.
+3. Apply `MaxDepth = math.MaxInt` — no vertical limit. The `complex_diagram` warning
+   branch is inactive by default; it only fires when a user explicitly passes
+   `--max-depth N` via CLI.
 
 ### R2 — Zero `width_exceeded` errors in docs
 
-After the direction-aware fix, all mermaid diagrams in `docs/` must pass the updated
-width check. The measured dimension (span for TD, depth for LR) must be ≤ 3.
+After Phase 0, all mermaid diagrams in `docs/` must pass the updated check:
+horizontal dimension (span for TD, depth for LR) ≤ 4.
 
 ### R3 — Zero `label_too_long` errors
 

@@ -1,33 +1,51 @@
 # Tech Docs — Fix Mermaid Validation and Violations
 
-## Phase 0 — Direction-Aware Validator (rhino-cli Code Change)
+## Phase 0 — Direction-Aware Validator + Threshold Update (rhino-cli)
 
-### File to change
+### Files to change
 
-`apps/rhino-cli/internal/mermaid/validator.go` — function `ValidateBlocks`.
+- `apps/rhino-cli/internal/mermaid/validator.go` — defaults + `ValidateBlocks` logic
+- `apps/rhino-cli/internal/mermaid/validator_test.go` — fix broken tests + add LR cases
+- `apps/rhino-cli/cmd/docs_validate_mermaid.go` — update CLI flag defaults
 
-### Current logic (direction-blind)
+### Threshold changes
+
+| Setting    | Old | New           | Rationale                                            |
+| ---------- | --- | ------------- | ---------------------------------------------------- |
+| `MaxWidth` | 3   | 4             | 3 was too strict; 4 allows common 4-branch patterns  |
+| `MaxDepth` | 5   | `math.MaxInt` | No vertical limit — depth is unconstrained by design |
+
+`DefaultValidateOptions()` change:
 
 ```go
-span := MaxWidth(diagram.Nodes, diagram.Edges)
-depth := Depth(diagram.Nodes, diagram.Edges)
+// Before
+return ValidateOptions{MaxLabelLen: 30, MaxWidth: 3, MaxDepth: 5}
 
-if span > opts.MaxWidth && depth > opts.MaxDepth {
-    // Warning: complex_diagram
-} else if span > opts.MaxWidth {
-    // Violation: width_exceeded
-}
+// After
+return ValidateOptions{MaxLabelLen: 30, MaxWidth: 4, MaxDepth: math.MaxInt}
 ```
 
-### Required change (direction-aware)
+Consequence of `MaxDepth: math.MaxInt`: the `complex_diagram` warning branch
+(`horizontal > MaxWidth AND vertical > MaxDepth`) can never fire with default options
+because no integer exceeds `math.MaxInt`. The `complex_diagram` infrastructure is
+preserved for users who pass `--max-depth N` explicitly via CLI, but by default it is
+inactive. All current `complex_diagram` warnings disappear after this change.
+
+CLI flag defaults (`docs_validate_mermaid.go`):
+
+```go
+// --max-width: 3 → 4
+// --max-depth: 5 → 0  (0 = no limit; map 0 → math.MaxInt in runValidateMermaid)
+```
+
+### Direction-aware logic change (`ValidateBlocks`)
 
 ```go
 span := MaxWidth(diagram.Nodes, diagram.Edges)
 depth := Depth(diagram.Nodes, diagram.Edges)
 
-// Select horizontal and vertical dimensions by direction.
-// LR/RL: rank columns flow left-to-right → depth is horizontal width.
-// TD/TB/BT (default): rank rows flow top-to-bottom → span is horizontal width.
+// LR/RL: rank columns flow left-to-right → depth is the horizontal dimension.
+// TD/TB/BT (default): nodes per rank flow horizontally → span is horizontal.
 var horizontal, vertical int
 switch diagram.Direction {
 case DirectionLR, DirectionRL:
@@ -37,52 +55,58 @@ default:
 }
 
 if horizontal > opts.MaxWidth && vertical > opts.MaxDepth {
-    warnings = append(warnings, Warning{
-        Kind:        WarningComplexDiagram,
-        FilePath:    block.FilePath,
-        BlockIndex:  block.BlockIndex,
-        StartLine:   block.StartLine,
-        ActualWidth: horizontal,
-        ActualDepth: vertical,
-        MaxWidth:    opts.MaxWidth,
-        MaxDepth:    opts.MaxDepth,
-    })
+    // complex_diagram warning (inactive with default MaxDepth=math.MaxInt)
+    ...
 } else if horizontal > opts.MaxWidth {
-    violations = append(violations, Violation{
-        Kind:        ViolationWidthExceeded,
-        FilePath:    block.FilePath,
-        BlockIndex:  block.BlockIndex,
-        StartLine:   block.StartLine,
-        ActualWidth: horizontal,
-        MaxWidth:    opts.MaxWidth,
-    })
+    // width_exceeded violation
+    ...
 }
 ```
 
-### Test cases to add (`validator_test.go`)
+### Existing tests that break (must update)
 
-Add to the existing `ValidateBlocks` test table:
+Three existing test cases use `defaultOpts` and will fail after the threshold change:
 
-| Direction | Span | Depth | Expected                                                      |
-| --------- | ---- | ----- | ------------------------------------------------------------- |
-| LR        | 2    | 4     | `width_exceeded` (depth is horizontal, 4 > 3)                 |
-| LR        | 4    | 2     | no violation (span is vertical, not checked)                  |
-| LR        | 6    | 4     | `complex_diagram` warning (depth > MaxWidth, span > MaxDepth) |
-| RL        | 2    | 4     | `width_exceeded` (same as LR)                                 |
-| TD        | 4    | 2     | `width_exceeded` (span is horizontal, unchanged behaviour)    |
-| TD        | 2    | 4     | no violation (depth is vertical, not checked)                 |
-| BT        | 4    | 2     | `width_exceeded` (same as TD)                                 |
+| Test name                         | Why it breaks                                     | Fix                                                    |
+| --------------------------------- | ------------------------------------------------- | ------------------------------------------------------ |
+| `"width at limit+1 violation"`    | span=4 — no longer violates at MaxWidth=4         | Use span=5 source                                      |
+| `"both exceeded warning only"`    | span=4, depth=6 — horizontal(4) not > MaxWidth(4) | Use explicit `ValidateOptions{MaxWidth:3, MaxDepth:5}` |
+| `"width only exceeded violation"` | span=4 — no longer violates at MaxWidth=4         | Use explicit opts or span=5 source                     |
+
+Also add test that `"width exactly at limit no violation"` at span=4 passes (new
+at-limit case for MaxWidth=4).
+
+### New test sources needed
+
+```go
+// span5depth3Source: TD, span=5>4, depth=3 → width_exceeded with defaultOpts
+// span=5: A→B,C,D,E,F; B→G
+
+// lrDepth6Span2Source: LR, depth=6>4, span=2 → width_exceeded with defaultOpts
+// chain A→B→C→D→E→F, plus A→G (span=2 at rank 1)
+
+// lrSpan5Depth2Source: LR, span=5, depth=2 → no violation (span=vertical for LR)
+// A→B,C,D,E,F (all at rank 1, depth=2)
+```
+
+### New direction-aware test cases
+
+| Direction | Span | Depth | Opts                       | Expected                                     |
+| --------- | ---- | ----- | -------------------------- | -------------------------------------------- |
+| LR        | 2    | 6     | defaultOpts (MaxWidth=4)   | `width_exceeded` (LR horizontal=depth=6 > 4) |
+| LR        | 5    | 2     | defaultOpts                | no violation (LR horizontal=depth=2 ≤ 4)     |
+| TD        | 5    | 3     | defaultOpts                | `width_exceeded` (TD horizontal=span=5 > 4)  |
+| TD        | 2    | 6     | defaultOpts                | no violation (TD horizontal=span=2 ≤ 4)      |
+| TD        | 4    | —     | defaultOpts                | no violation (span=4 = MaxWidth=4, not >)    |
+| LR        | 6    | 4     | `{MaxWidth:3, MaxDepth:5}` | `complex_diagram` warning                    |
 
 ### Verification
 
 ```bash
-# Run unit tests
 npx nx run rhino-cli:test:unit
-
-# Run full quick check (includes coverage)
 npx nx run rhino-cli:test:quick
 
-# Re-audit docs to get updated Phase 1 baseline
+# Re-audit docs with updated validator
 go run ./apps/rhino-cli/main.go docs validate-mermaid 2>&1 | tee local-temp/mermaid-audit-phase0.txt
 grep -c "^✗" local-temp/mermaid-audit-phase0.txt
 ```
@@ -103,15 +127,18 @@ diagrams and false negatives on deeply chained LR diagrams.
 `rhino-cli docs validate-mermaid` scans every ` ```mermaid ` block in every `.md` file
 under the repo root. For each block it builds an adjacency model and applies three rules:
 
-| Rule              | Threshold                             | Severity  |
-| ----------------- | ------------------------------------- | --------- |
-| `width_exceeded`  | BFS level width > 3                   | ✗ Error   |
-| `label_too_long`  | Any `<br/>`-split line > 30 raw chars | ✗ Error   |
-| `complex_diagram` | Span > 3 **and** depth > 5 (both)     | ⚠ Warning |
+| Rule              | Threshold (after Phase 0)                      | Severity              |
+| ----------------- | ---------------------------------------------- | --------------------- |
+| `width_exceeded`  | Horizontal dimension > 4 (direction-aware)     | ✗ Error               |
+| `label_too_long`  | Any `<br/>`-split line > 30 raw chars          | ✗ Error               |
+| `complex_diagram` | Horizontal > 4 **and** vertical > MaxDepth (∞) | ⚠ Inactive by default |
 
-**Span** = maximum number of nodes at any single BFS depth level across all connected
-components. It is topology-driven, not direction-driven — changing `graph LR` to
-`graph TD` alone does **not** fix width if multiple nodes share a BFS level.
+**Horizontal dimension** = direction-aware:
+
+- `graph TD / TB / BT`: horizontal = **span** (nodes per rank row)
+- `graph LR / RL`: horizontal = **depth** (number of rank columns)
+
+**Vertical dimension** = the other axis (unconstrained by default; `MaxDepth=math.MaxInt`).
 
 **Raw chars** = character count of each `<br/>`-split line segment before HTML-entity
 decoding. `#40;` counts as 4 chars, not 1. A label `"Init<br/>PaymentGateway#40;id#41;"`
@@ -208,13 +235,43 @@ Rule 3  multiple_diagrams (Violation — exit 1):
 
 ### Key Implications for Fixers
 
-| Observation                              | Implication                                                                                                                                                                                                                              |
-| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `subgraph`/`end` lines skipped by parser | Visual `subgraph` blocks do **not** reduce BFS width. Standalone node declarations inside a subgraph with no incoming edges become rank-0 sources, potentially **increasing** width. Fix must be topological (real edges), not cosmetic. |
-| Direction does not affect rank           | Changing `graph LR` to `graph TD` never fixes `width_exceeded`.                                                                                                                                                                          |
-| `#40;` counts as 4 runes                 | Replace with literal `(` in quoted labels to save 3 chars per entity (Strategy 4a).                                                                                                                                                      |
-| Any in-degree-0 node → rank 0            | Adding a new node with no incoming edges adds to rank-0 width. Wire it into the graph with an incoming edge or it will make the span worse.                                                                                              |
-| Both-exceeded rule                       | If span > 3 but depth is already > 5 (both exceeded), the result is a warning, not an error. Reducing depth to ≤ 5 alone (without fixing span) removes even the warning.                                                                 |
+| Observation                                   | Implication                                                                                                                                                                                                                              |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subgraph`/`end` lines skipped by parser      | Visual `subgraph` blocks do **not** reduce BFS width. Standalone node declarations inside a subgraph with no incoming edges become rank-0 sources, potentially **increasing** width. Fix must be topological (real edges), not cosmetic. |
+| Direction changes the checked axis            | After Phase 0: changing `graph TD` to `graph LR` switches the checked axis from span to depth. This is **Strategy 0** — the cheapest fix when `min(span, depth) ≤ 4`.                                                                    |
+| `#40;` counts as 4 runes                      | Replace with literal `(` in quoted labels to save 3 chars per entity (Strategy 4a).                                                                                                                                                      |
+| Any in-degree-0 node → rank 0                 | Adding a new node with no incoming edges adds to rank-0 width. Wire it in with an edge or it worsens span.                                                                                                                               |
+| `complex_diagram` warning inactive by default | With `MaxDepth=math.MaxInt`, the both-exceeded branch never fires. Warning disappears with Phase 0. Strategy 5 is vestigial — skip it.                                                                                                   |
+
+## Fix Strategy 0 — Direction Flip (`width_exceeded`) — try first
+
+**Condition**: `min(span, depth) ≤ 4`
+
+Choose the direction that puts the smaller dimension on the horizontal axis. Since
+only horizontal is constrained (≤ 4), and vertical is unlimited, you always want:
+
+- Use `graph TD` when `span ≤ depth` (span is horizontal for TD)
+- Use `graph LR` when `depth < span` (depth is horizontal for LR)
+
+If `min(span, depth) ≤ 4`, this is a **one-word fix** — change `TD` to `LR` or vice
+versa. No structural changes, no semantic loss.
+
+**Example**: `graph TD`, span=6, depth=3
+
+```mermaid
+graph LR
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> F
+    A --> G
+```
+
+Before (TD): horizontal=span=6 > 4 → violation.
+After (LR): horizontal=depth=2 ≤ 4 → passes. One word changed.
+
+**Limit**: if `min(span, depth) > 4`, both directions violate — use Strategy 1 or 2.
 
 ## Fix Strategy 1 — Sequential Chaining in Groups (`width_exceeded`)
 
@@ -313,31 +370,25 @@ Shorten without losing meaning. Move detailed description to surrounding prose.
 Rule: the diagram shows **structure**; prose explains **detail**. Move the dropped
 detail into the paragraph immediately before or after the diagram.
 
-## Fix Strategy 5 — Topology Redesign (`complex_diagram`)
-
-`complex_diagram` fires when BOTH span > 3 AND depth > 5. Fixing one dimension is
-enough to downgrade from warning to nothing. Depth > 5 is common in pipeline diagrams;
-span > 3 is common in service-map diagrams.
-
-- Reduce depth: flatten intermediate nodes that are purely pass-through.
-- Reduce span: apply Strategy 1 or 2.
-- Acceptable to leave one dimension slightly over if the other is well within bounds,
-  as long as the warning disappears (both must exceed to trigger).
-
 ## Strategy Selection Guide
 
 ```
 Is the violation label_too_long?
-  → Strategy 4a first (entity replacement), then 4b if still over.
+  → Strategy 4a first (replace #40;/#41; with literal parens).
+  → Still over? Strategy 4b (rephrase/abbreviate; move detail to prose).
 
 Is the violation width_exceeded?
-  → Are the wide nodes logically groupable?
-      Yes → Strategy 1 (subgraph).
-      No, but they're sequential → Strategy 3 (chain).
-      No, genuinely parallel distinct concerns → Strategy 2 (split).
+  Step 1 — try direction flip (Strategy 0, cheapest):
+    Compute span and depth of the diagram.
+    Is min(span, depth) ≤ 4?
+      YES → flip to the direction that puts min(span,depth) on the horizontal axis.
+             TD if span ≤ depth; LR if depth < span. Done.
+      NO  → both dimensions > 4; structural fix needed. Continue:
 
-Is the violation complex_diagram?
-  → Fix span first (Strategies 1–3). If depth is the easier axis, flatten instead.
+  Step 2 — structural fix:
+    Are the wide nodes genuinely sequential? → Strategy 3 (chain).
+    Can they be staged through a real intermediate node? → Strategy 1.
+    Otherwise → Strategy 2 (split into focused diagrams).
 ```
 
 ## Batch File Inventory
