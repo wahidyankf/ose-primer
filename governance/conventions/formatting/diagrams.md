@@ -339,7 +339,7 @@ gitGraph
 
 Use `graph TD` by default for mobile-friendliness and reading consistency.
 **Exception**: use `graph LR` when it reduces horizontal width below the 4-node
-limit — this is a valid, preferred fix strategy (Strategy 0 in the Fix Strategy Guide above). Never use LR
+limit — this is a valid, preferred fix strategy (Strategy 0 in the Fix Strategy Guide below). Never use LR
 solely for visual preference without checking the width impact.
 
 **Rationale**:
@@ -353,8 +353,6 @@ solely for visual preference without checking the width impact.
 - **Preferred**: `graph TD` (top-down) or `graph BT` (bottom-top)
 - **Avoid when possible**: `graph LR` (left-right) or `graph RL` (right-left)
 - **Exception**: Use `graph LR` when it reduces horizontal width below the 4-node limit (see Flowchart Width Constraints below)
-
-**Rationale**: Mobile devices have vertical screens. Vertical diagrams are easier to view without horizontal scrolling.
 
 **Example**:
 
@@ -423,12 +421,12 @@ Or for a single directory:
 go run ./apps/rhino-cli/main.go docs validate-mermaid docs/explanation/
 ```
 
-## Width Violation Fix Strategy Guide
+### Width Violation Fix Strategy Guide
 
 When `rhino-cli docs validate-mermaid` reports a `width_exceeded` violation, follow
 this selection guide:
 
-### Selection Decision Tree
+#### Selection Decision Tree
 
 ```
 Is the violation label_too_long?
@@ -448,7 +446,7 @@ Is the violation width_exceeded?
     Otherwise → Strategy 2 (split into focused diagrams).
 ```
 
-### Strategy 0 — Direction Flip (one-word fix)
+#### Strategy 0 — Direction Flip (one-word fix)
 
 **Condition**: `min(span, depth) ≤ 4`.
 
@@ -459,25 +457,25 @@ the horizontal axis. Because only horizontal is constrained, this is always vali
 **When NOT applicable**: `min(span, depth) > 4` — both directions violate; use
 Strategy 1, 2, or 3.
 
-### Strategy 1 — Intermediate Grouping Node
+#### Strategy 1 — Intermediate Grouping Node
 
 When wide children have a natural semantic grouping, introduce an intermediate node
 connected by **real edges** — not `subgraph` wrappers, which the parser skips and
 which can increase width by creating additional rank-0 sources.
 
-### Strategy 2 — Diagram Splitting
+#### Strategy 2 — Diagram Splitting
 
 Split one overloaded diagram into 2–3 focused diagrams. Add a bold header above each
 diagram. Connect them with prose, not duplicate nodes. See the existing
 "Diagram Size and Splitting" section for splitting guidelines and real-world examples.
 
-### Strategy 3 — Sequential Chaining
+#### Strategy 3 — Sequential Chaining
 
 When the fan-out nodes represent pipeline stages or ordered steps, replace parallel
 children with a linear chain. Changes semantic meaning — confirm the sequence is
 correct by reading surrounding prose.
 
-### Strategy 4 — Label Shortening
+#### Strategy 4 — Label Shortening
 
 **4a** — Replace HTML entities with literal characters: `#40;` → `(`, `#41;` → `)`.
 Valid in quoted labels (`Node["text"]`). Saves 3 chars per entity.
@@ -1114,7 +1112,7 @@ With widespread Mermaid support, there's no reason to convert Mermaid diagrams t
 Before committing documentation with diagrams:
 
 - [ ] Primary format is Mermaid (unless specific reason for ASCII)
-- [ ] Mermaid diagrams use vertical orientation (TD or BT) for mobile-friendliness
+- [ ] Mermaid diagrams use vertical orientation (TD or BT) by default; LR is allowed for width-constraint compliance (see Width Violation Fix Strategy Guide)
 - [ ] Mermaid diagrams use color-blind friendly colors (only accessible palette)
 - [ ] Colors work in both light and dark mode
 - [ ] Shape differentiation used (not relying on color alone)
@@ -1137,7 +1135,7 @@ Before committing documentation with diagrams:
 - [ ] All labels and text are clear and readable
 - [ ] Complex diagrams simplified where possible
 - [ ] Diagram serves the documentation purpose
-- [ ] Vertical orientation preferred (horizontal only if clarity requires it)
+- [ ] Vertical orientation preferred; horizontal (LR/RL) used only for width-constraint compliance or when it genuinely aids clarity
 
 ## ⚠️ Common Mermaid Syntax Errors
 
@@ -1478,7 +1476,7 @@ Renders as: "HashMap<K, V> / O(1) lookup / Values: [1, 2, 3] / Dict: {a: 1}"
 - [ASCII Art Generator](https://www.asciiart.eu/)
 - [Box Drawing Unicode Characters](https://en.wikipedia.org/wiki/Box-drawing_characters)
 
-### Error 8: `\n` Escape Sequences Do Not Create Line Breaks in Hugo Mermaid Rendering
+### Error 7: `\n` Escape Sequences Do Not Create Line Breaks in Hugo Mermaid Rendering
 
 **CRITICAL**: The `\n` escape sequence does not create line breaks in Mermaid diagrams rendered via Hugo's code block render hook. It renders as the literal characters `\n` in both node labels and edge labels.
 
@@ -1513,7 +1511,7 @@ graph LR
 
 **Real-World Context**: Discovered when building a roadmap diagram on `apps/demo-fs-ts-nextjs/content/about.md`. Both node labels (`"Phase 3\nEnterprise Application\nLarge Organizations"`) and edge labels (`"Revenue\n& Learnings"`) rendered with literal `\n` characters visible.
 
-### Error 9: Label Constraints — Character Width Limit, No HTML in Edge Labels, No URL Paths
+### Error 8: Label Constraints — Character Width Limit, No HTML in Edge Labels, No URL Paths
 
 **CRITICAL**: Mermaid renderers silently clip label text beyond approximately 20–22 characters with no warning. Edge labels do not support HTML tags. URL paths and dot-prefixed tokens in edge labels break the parser.
 
