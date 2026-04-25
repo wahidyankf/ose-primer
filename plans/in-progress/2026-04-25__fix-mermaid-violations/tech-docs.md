@@ -20,41 +20,139 @@ decoding. `#40;` counts as 4 chars, not 1. A label `"Init<br/>PaymentGateway#40;
 has two lines: `"Init"` (4) and `"PaymentGateway#40;id#41;"` (24) — the second is
 the measured value.
 
-## Fix Strategy 1 — Subgraph Grouping (`width_exceeded`)
+## How the Validator Works
 
-Group sibling nodes that share a parent into a `subgraph`. This collapses them into
-one node at their parent's BFS level, reducing that level's width count.
+Source: `apps/rhino-cli/internal/mermaid/` + `apps/rhino-cli/cmd/docs_validate_mermaid.go`.
 
-**Before** (span = 5 at level 2):
+### Step 1 — File Collection
+
+Without arguments, `collectMDDefaultDirs` scans these locations:
+
+| Path          | Notes                          |
+| ------------- | ------------------------------ |
+| `docs/`       | All `.md` recursively          |
+| `governance/` | All `.md` recursively          |
+| `.claude/`    | All `.md` recursively          |
+| Root `*.md`   | `README.md`, `CLAUDE.md`, etc. |
+
+Excluded directories: `.next/`, `node_modules/`, `.git/`.
+
+With explicit args (`docs validate-mermaid docs/ governance/`), only those paths are
+walked. `--staged-only` and `--changed-only` flags scope to git-tracked changes.
+
+### Step 2 — Block Extraction (`extractor.go:ExtractBlocks`)
+
+Line-by-line scan. Opening fence: ` ```mermaid` or `~~~mermaid`. Closing fence:
+` ``` ` or `~~~`. Captures raw source text, 1-based `StartLine`, and 0-based
+`BlockIndex` within the file.
+
+Only `flowchart` and `graph` headers trigger rules 1 and 2. All other Mermaid diagram
+types (`sequenceDiagram`, `classDiagram`, `gantt`, `pie`, `gitGraph`, etc.) are
+silently skipped — they are extracted but produce zero violations.
+
+### Step 3 — Graph Parsing (`parser.go:ParseDiagram`)
+
+Builds a node-and-edge model from the block source:
+
+**What is skipped**:
+
+- Lines starting with `subgraph` or equal to `end` are skipped entirely — they add
+  nothing to the node or edge model.
+- `classDef`, `class`, `style`, `click` lines fail all node patterns and are ignored.
+
+**What is parsed**:
+
+- **Edge lines** (contain `-->`, `---`, `-.->`, `==>`, `--o`, `--x`, `<-->`): split
+  on the arrow token into segments. Each adjacent segment pair → a `(From, To)` edge.
+  Edge-label syntax `A -- text --> B` is normalized to `A --> B` before splitting.
+  **`&` parallel-edge syntax is not parsed** — only the first node of a multi-node
+  segment is recognized; the rest are silently dropped.
+- **Standalone node lines** (no arrow token): `A["Label"]`, `A(Label)`, `A{Label}`,
+  etc. — node ID and label extracted using shape-specific regexes.
+- **Direction** (`TD`, `LR`, `BT`, etc.) is captured but **has no effect on rank
+  calculation**. The algorithm is graph-topology-driven.
+
+Labels are normalized: surrounding quotes and backticks stripped.
+
+### Step 4 — Rank Assignment (`graph.go:rankAssign`)
+
+Kahn's BFS, longest-path variant:
+
+1. Every node with **in-degree 0** (no incoming edges) starts at **rank 0**. This
+   includes disconnected nodes, nodes declared only as standalone lines with no
+   in-edges, and cycle-fallback nodes.
+2. For each edge `From → To`: `rank[To] = max(rank[To], rank[From] + 1)`.
+3. Nodes in cycles (never dequeued) fall back to rank 0.
+
+**Width** = count of nodes sharing the same rank, maximized across all ranks.
+**Depth** = number of distinct rank values.
+
+### Step 5 — Rules Applied (`validator.go:ValidateBlocks`)
+
+````
+Rule 1  label_too_long   (Violation — exit 1):
+  Split label on <br/>, <BR/>, <br>, <BR>, literal \n.
+  Measure each segment by Unicode rune count.
+  HTML entities are NOT decoded: #40; = 4 runes, not 1.
+  If the longest segment > 30 runes → violation.
+
+Rule 2a width_exceeded   (Violation — exit 1):
+  If span > 3 AND depth ≤ 5 → violation.
+
+Rule 2b complex_diagram  (Warning — exit 0):
+  If span > 3 AND depth > 5 (BOTH exceeded) → warning, not error.
+
+Rule 3  multiple_diagrams (Violation — exit 1):
+  If one ```mermaid block contains > 1 flowchart/graph headers → violation.
+
+  depth > 5 alone (span ≤ 3) → no output at all.
+````
+
+### Key Implications for Fixers
+
+| Observation                              | Implication                                                                                                                                                                                                                              |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subgraph`/`end` lines skipped by parser | Visual `subgraph` blocks do **not** reduce BFS width. Standalone node declarations inside a subgraph with no incoming edges become rank-0 sources, potentially **increasing** width. Fix must be topological (real edges), not cosmetic. |
+| Direction does not affect rank           | Changing `graph LR` to `graph TD` never fixes `width_exceeded`.                                                                                                                                                                          |
+| `#40;` counts as 4 runes                 | Replace with literal `(` in quoted labels to save 3 chars per entity (Strategy 4a).                                                                                                                                                      |
+| Any in-degree-0 node → rank 0            | Adding a new node with no incoming edges adds to rank-0 width. Wire it into the graph with an incoming edge or it will make the span worse.                                                                                              |
+| Both-exceeded rule                       | If span > 3 but depth is already > 5 (both exceeded), the result is a warning, not an error. Reducing depth to ≤ 5 alone (without fixing span) removes even the warning.                                                                 |
+
+## Fix Strategy 1 — Sequential Chaining in Groups (`width_exceeded`)
+
+When a node fans out to > 3 children and those children have a natural sequential or
+hierarchical relationship, introduce intermediate grouping nodes connected by **real
+edges** — not `subgraph` wrappers, which the parser skips.
+
+> **Subgraph warning**: `subgraph` and `end` lines are skipped by the validator's
+> parser. Standalone node declarations inside a subgraph that have no edges connecting
+> them to the outer graph are rank-0 sources — they **increase** width, not reduce it.
+> Always pair subgraph visual grouping with actual edge topology changes.
+
+**Before** (span = 4 at rank 1 — four services all direct children of Router):
 
 ```mermaid
 graph TD
-    A --> B
-    A --> C
-    A --> D
-    A --> E
-    A --> F
+    Router --> Auth
+    Router --> Users
+    Router --> Orders
+    Router --> Reports
 ```
 
-**After** (span = 2 at level 1, then 3 at level 2 within subgraph):
+**After** — Auth is a prerequisite for downstream services; chain it:
 
 ```mermaid
 graph TD
-    A --> sg1
-    A --> sg2
-    subgraph sg1["Group 1"]
-        B
-        C
-        D
-    end
-    subgraph sg2["Group 2"]
-        E
-        F
-    end
+    Router --> Auth
+    Auth --> Users
+    Auth --> Orders
+    Auth --> Reports
 ```
 
-Use this strategy when nodes at the wide level have a natural grouping (e.g.,
-"infrastructure nodes", "domain services", "test phases").
+Ranks: Router=0 (1), Auth=1 (1), Users/Orders/Reports=2 (3). Max width = 3. ✓
+
+This only applies when the chain is semantically correct (Auth actually gates the others).
+When no natural sequence exists, use **Strategy 2 (diagram splitting)** instead.
 
 ## Fix Strategy 2 — Diagram Splitting (`width_exceeded`, `complex_diagram`)
 
