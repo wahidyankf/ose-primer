@@ -4,7 +4,7 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-_No active plans._
+- [Fix Mermaid Violations](./2026-04-25__fix-mermaid-violations/README.md) — Fix 247 mermaid violations (width_exceeded, label_too_long) across 101 files; warnings deferred
 
 ## Instructions
 
