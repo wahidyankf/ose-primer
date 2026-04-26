@@ -2,6 +2,8 @@ name: Test - Crud FE (Dart/Flutter Web)
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * 0"
 
 permissions:
   contents: read
