@@ -1,6 +1,6 @@
 ---
-title: How to Run Demo Integration and E2E Tests
-description: Step-by-step guide for running integration tests (Docker + PostgreSQL) and E2E tests (Playwright) for demo apps
+title: How to Run CRUD Integration and E2E Tests
+description: Step-by-step guide for running integration tests (Docker + PostgreSQL) and E2E tests (Playwright) for CRUD apps
 category: how-to
 tags:
   - testing
@@ -12,9 +12,9 @@ tags:
   - crud-fe
 ---
 
-# How to Run Demo Integration and E2E Tests
+# How to Run CRUD Integration and E2E Tests
 
-This guide explains how to run integration and E2E tests for demo backends and frontends
+This guide explains how to run integration and E2E tests for CRUD backends and frontends
 locally. Unit tests run without any external dependencies; integration and E2E tests require
 Docker and/or Playwright.
 
@@ -85,7 +85,7 @@ docker compose -f docker-compose.integration.yml down -v
 docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build
 ```
 
-**Database URL format**: All demo backends use:
+**Database URL format**: All CRUD backends use:
 
 ```
 postgresql://{user}:{password}@postgres:5432/{dbname}

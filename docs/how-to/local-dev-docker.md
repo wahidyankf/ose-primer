@@ -46,11 +46,11 @@ Docker Compose configurations are organized by deployment target:
 ```
 infra/
 ├── dev/                        # Local development environments
-│   ├── crud-be-java-springboot/         # Demo Backend (Spring Boot) stack
+│   ├── crud-be-java-springboot/         # CRUD Backend (Spring Boot) stack
 │   │   ├── docker-compose.yml
 │   │   ├── .env.example
 │   │   └── README.md
-│   ├── crud-be-elixir-phoenix/         # Demo Backend (Elixir/Phoenix) stack
+│   ├── crud-be-elixir-phoenix/         # CRUD Backend (Elixir/Phoenix) stack
 │   │   ├── docker-compose.yml
 │   │   └── README.md
 │   ├── crud-fe-ts-nextjs/     # crud-fe-ts-nextjs (Next.js) stack
@@ -58,7 +58,7 @@ infra/
 │   │   └── README.md
 │   └── [other-service]/       # Other service ecosystems
 └── k8s/                        # Kubernetes configs
-    └── demo/          # demo K8s deployments
+    └── crud/          # CRUD app K8s deployments
 ```
 
 ## 🚀 Quick Start
@@ -66,8 +66,8 @@ infra/
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/wahidyankf/ose-public.git
-cd open-sharia-enterprise
+git clone https://github.com/wahidyankf/ose-primer.git
+cd ose-primer
 ```
 
 ### 2. Choose Your Service Ecosystem
@@ -90,22 +90,6 @@ docker compose -f infra/dev/crud-fe-ts-nextjs/docker-compose.yml up
 
 ```bash
 docker compose -f infra/dev/crud-fs-ts-nextjs/docker-compose.yml up
-```
-
-**Content platform**:
-
-```bash
-# demo
-docker compose -f infra/dev/crud-fs-ts-nextjs/docker-compose.yml up
-
-# demo
-docker compose -f infra/dev/crud-fs-ts-nextjs/docker-compose.yml up
-```
-
-**demo** (frontend + backend + database):
-
-```bash
-docker compose -f infra/dev/demo/docker-compose.yml up
 ```
 
 > **Note**: All `crud-be-*` backends bind port 8201 and are mutually exclusive — do not run two backend stacks simultaneously.
@@ -188,7 +172,7 @@ docker compose down -v
 
 ## Available Service Ecosystems
 
-### Demo Backend — JASB (`infra/dev/crud-be-java-springboot/`)
+### CRUD Backend — JASB (`infra/dev/crud-be-java-springboot/`)
 
 **Services (Docker Compose)**:
 
@@ -205,7 +189,7 @@ docker compose down -v
 npm run crud-be:dev
 ```
 
-**Documentation**: [Demo Backend (JASB) Infrastructure README](../../infra/dev/crud-be-java-springboot/README.md)
+**Documentation**: [CRUD Backend (JASB) Infrastructure README](../../infra/dev/crud-be-java-springboot/README.md)
 
 ### crud-fe-ts-nextjs (`infra/dev/crud-fe-ts-nextjs/`)
 
@@ -362,7 +346,7 @@ APP_JWT_SECRET=dev-jwt-secret-at-least-32-chars-long!!
 ENABLE_TEST_API=true
 ```
 
-**demo** (requires OAuth setup):
+**`crud-fe-ts-nextjs`** (requires OAuth setup):
 
 ```bash
 # Required: Google OAuth credentials for login
@@ -373,9 +357,9 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 APP_JWT_SECRET=dev-jwt-secret-at-least-32-characters-long
 
 # PostgreSQL — no need to change for local dev
-POSTGRES_USER=demo
-POSTGRES_PASSWORD=demo
-POSTGRES_DB=demo
+POSTGRES_USER=crud_fe
+POSTGRES_PASSWORD=crud_fe
+POSTGRES_DB=crud_fe
 ```
 
 **Java Spring Boot**:
@@ -388,16 +372,16 @@ JAVA_OPTS=-Xms256m -Xmx512m -XX:+UseZGC
 
 ### What Each Variable Controls
 
-| Variable                    | Used By              | Purpose                                        |
-| --------------------------- | -------------------- | ---------------------------------------------- |
-| `DATABASE_URL`              | All backends with DB | Connection string for PostgreSQL               |
-| `ENABLE_TEST_API`           | crud-fs-ts-nextjs    | Enables test-only HTTP routes for E2E teardown |
-| `APP_JWT_SECRET`            | fs-nextjs, demo      | Signs JWT tokens (min 32 chars for HS256)      |
-| `GOOGLE_CLIENT_ID`          | crud-fe-ts-nextjs    | Google OAuth client identifier                 |
-| `GOOGLE_CLIENT_SECRET`      | demo                 | Google OAuth client secret (server-side only)  |
-| `SPRING_PROFILES_ACTIVE`    | Java Spring Boot     | Selects Spring Boot configuration profile      |
-| `JAVA_OPTS` / `MAVEN_OPTS`  | Java backends        | JVM and Maven memory settings                  |
-| `POSTGRES_USER/PASSWORD/DB` | demo, jasb           | PostgreSQL credentials (dev defaults provided) |
+| Variable                    | Used By                      | Purpose                                        |
+| --------------------------- | ---------------------------- | ---------------------------------------------- |
+| `DATABASE_URL`              | All backends with DB         | Connection string for PostgreSQL               |
+| `ENABLE_TEST_API`           | crud-fs-ts-nextjs            | Enables test-only HTTP routes for E2E teardown |
+| `APP_JWT_SECRET`            | fs-nextjs, crud-fe-ts-nextjs | Signs JWT tokens (min 32 chars for HS256)      |
+| `GOOGLE_CLIENT_ID`          | crud-fe-ts-nextjs            | Google OAuth client identifier                 |
+| `GOOGLE_CLIENT_SECRET`      | crud-fe-ts-nextjs            | Google OAuth client secret (server-side only)  |
+| `SPRING_PROFILES_ACTIVE`    | Java Spring Boot             | Selects Spring Boot configuration profile      |
+| `JAVA_OPTS` / `MAVEN_OPTS`  | Java backends                | JVM and Maven memory settings                  |
+| `POSTGRES_USER/PASSWORD/DB` | crud-fe-ts-nextjs, jasb      | PostgreSQL credentials (dev defaults provided) |
 
 ## Database Seeding and Migration
 
@@ -465,7 +449,7 @@ Services in the same Docker Compose network can communicate by service name:
 http://crud-be-java-springboot:8201/api/v1/hello
 
 # Example: Backend connecting to database
-jdbc:postgresql://demo-db:5432/demo
+jdbc:postgresql://crud-be-db:5432/crud_be
 ```
 
 ### Port Mapping
@@ -481,8 +465,8 @@ Services expose ports to the host:
 | crud-fs-ts-nextjs              | 3401      | Full-stack dev server |
 | crud-fs-ts-nextjs              | 3101      | Content platform      |
 | crud-fs-ts-nextjs              | 3100      | Content platform      |
-| crud-fe-ts-nextjs              | 3200      | demo frontend         |
-| crud-be-fsharp-giraffe         | 8202      | demo backend API      |
+| crud-fe-ts-nextjs              | 3200      | Frontend dev server   |
+| crud-be-fsharp-giraffe         | 8202      | Backend API           |
 | PostgreSQL (most backends)     | 5432      | Database              |
 | PostgreSQL (crud-fs-ts-nextjs) | 5438      | Database              |
 
@@ -655,9 +639,9 @@ healthcheck:
 
 ```yaml
 networks:
-  demo-network:
+  crud-network:
     driver: bridge
-    name: demo-network
+    name: crud-network
 ```
 
 ### 6. Document Port Assignments
@@ -752,7 +736,7 @@ Docker Compose can be used in CI/CD pipelines:
 
 ## 🔗 Related Documentation
 
-- [Demo Backend (JASB) Infrastructure README](../../infra/dev/crud-be-java-springboot/README.md)
+- [CRUD Backend (JASB) Infrastructure README](../../infra/dev/crud-be-java-springboot/README.md)
 - [Docker Documentation](https://docs.docker.com/)
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [Reproducible Environments Convention](../../governance/development/workflow/reproducible-environments.md)

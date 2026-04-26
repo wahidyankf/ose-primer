@@ -61,8 +61,8 @@ source ~/.zshrc
 brew install go
 
 # 5. Clone and bootstrap
-git clone https://github.com/wahidyankf/ose-public.git
-cd open-sharia-enterprise
+git clone https://github.com/wahidyankf/ose-primer.git
+cd ose-primer
 npm install          # Installs deps + git hooks
 npx playwright install  # Installs test browsers
 
@@ -134,7 +134,7 @@ source ~/.zshrc   # or source ~/.bashrc
 After installation, entering the repo directory auto-installs the correct versions:
 
 ```bash
-cd open-sharia-enterprise
+cd ose-primer
 node --version   # Expected: v24.13.1
 npm --version    # Expected: 11.10.1
 ```
@@ -315,8 +315,8 @@ hugo version
 ### Step 13: Clone and Bootstrap
 
 ```bash
-git clone https://github.com/wahidyankf/ose-public.git
-cd open-sharia-enterprise
+git clone https://github.com/wahidyankf/ose-primer.git
+cd ose-primer
 npm install
 ```
 
@@ -520,6 +520,6 @@ Never hardcode version numbers in scripts — always read from these source-of-t
   Docker Compose
 - [Reproducible Environments](../../governance/development/workflow/reproducible-environments.md) —
   Volta, npm, Docker reproducibility practices
-- [Running Demo Tests](./run-demo-tests.md) — Integration and E2E test execution
+- [Running CRUD Tests](./run-crud-tests.md) — Integration and E2E test execution
 - [Code Quality Convention](../../governance/development/quality/code.md) — Git hooks and
   automated formatting

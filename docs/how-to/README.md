@@ -23,11 +23,11 @@ Problem-solving guides for common tasks in the open-sharia-enterprise project. T
 - [How to Organize Your Work](./organize-work.md) - Choose the right folder (plans, docs) for different types of work
 - [How to Run Nx Commands](./run-nx-commands.md) - Common Nx workflows and commands for working with the monorepo
 
-### Demo Apps
+### CRUD Apps
 
-- [How to Add a New Demo Backend](./add-new-demo-backend.md) - Step-by-step guide for creating a new `crud-be-{lang}-{framework}` backend with codegen, three-level tests, Docker, and CI
+- [How to Add a New CRUD Backend](./add-new-crud-backend.md) - Step-by-step guide for creating a new `crud-be-{lang}-{framework}` backend with codegen, three-level tests, Docker, and CI
 - [How to Add a Gherkin Scenario](./add-gherkin-scenario.md) - How to add a new Gherkin scenario and implement step definitions across all test levels
-- [How to Run Demo Integration and E2E Tests](./run-demo-tests.md) - Running integration tests (Docker + PostgreSQL) and E2E tests (Playwright) for demo apps
-- [How to Update the API Contract](./update-api-contract.md) - Modifying the OpenAPI spec, regenerating types, and verifying all demo apps
+- [How to Run CRUD Integration and E2E Tests](./run-crud-tests.md) - Running integration tests (Docker + PostgreSQL) and E2E tests (Playwright) for CRUD apps
+- [How to Update the API Contract](./update-api-contract.md) - Modifying the OpenAPI spec, regenerating types, and verifying all CRUD apps
 
 ---

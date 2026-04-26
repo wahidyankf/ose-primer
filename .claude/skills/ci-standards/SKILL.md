@@ -32,7 +32,6 @@ Inline skill providing CI/CD standards knowledge from the governance documentati
 | Threshold | Projects                                                    |
 | --------- | ----------------------------------------------------------- |
 | 90%       | Demo-be backends, CLI apps, Go libs, TS backend (ts-effect) |
-| 80%       | Content platforms (crud-fs-ts-nextjs, crud-fs-ts-nextjs)    |
 | 75%       | Fullstack (crud-fs-ts-nextjs)                               |
 | 70%       | FE apps, crud-fe-ts-nextjs, Dart FE                         |
 

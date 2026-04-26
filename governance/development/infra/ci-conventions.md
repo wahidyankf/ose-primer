@@ -169,16 +169,16 @@ per-backend implementation patterns, see the
 Each app type implements the three levels according to its domain. The table below shows how each
 app type realises each level.
 
-| App Type                                                        | Unit (`test:unit`)                                              | Integration (`test:integration`)                                                                   | E2E (`test:e2e`)                                     |
-| --------------------------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| **BE API** (`crud-be-*`)                                        | Godog/BDD, mocked repos, calls service fns directly             | Godog/BDD, real PostgreSQL via docker-compose, calls service fns directly (no HTTP)                | Playwright, real HTTP + real PostgreSQL              |
-| **FE** (`crud-fe-*`, `crud-fe-ts-nextjs`)                       | Vitest/Flutter test, all API calls mocked (MSW / mock services) | MSW with real DOM; in-process mocking only                                                         | Playwright against running FE + default BE           |
-| **Fullstack** (`crud-fs-*`)                                     | Vitest, all DB calls mocked                                     | MSW / in-process mocking                                                                           | Playwright, self-contained (own API routes)          |
-| **CLI** (`*-cli`)                                               | Godog, all I/O mocked via function variables                    | Godog (`//go:build integration`), real filesystem via `/tmp` fixtures, in-process via `cmd.RunE()` | Not applicable                                       |
-| **Content platform** (`crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`) | Vitest, components and tRPC routes mocked                       | MSW, in-process mocking                                                                            | Playwright BE E2E (`*-be-e2e`) + FE E2E (`*-fe-e2e`) |
-| **Library** (`golang-commons`)                                  | Unit tests + Godog, mock closures                               | Godog, tmpdir mocks, cacheable                                                                     | Not applicable                                       |
-| **Hugo site** (historical -- no active Hugo sites remain)       | Not applicable                                                  | Not applicable                                                                                     | Not applicable                                       |
-| **E2E runner** (`*-e2e`)                                        | Not applicable                                                  | Not applicable                                                                                     | Playwright — this project IS the E2E suite           |
+| App Type                                                  | Unit (`test:unit`)                                              | Integration (`test:integration`)                                                                   | E2E (`test:e2e`)                                     |
+| --------------------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **BE API** (`crud-be-*`)                                  | Godog/BDD, mocked repos, calls service fns directly             | Godog/BDD, real PostgreSQL via docker-compose, calls service fns directly (no HTTP)                | Playwright, real HTTP + real PostgreSQL              |
+| **FE** (`crud-fe-*`, `crud-fe-ts-nextjs`)                 | Vitest/Flutter test, all API calls mocked (MSW / mock services) | MSW with real DOM; in-process mocking only                                                         | Playwright against running FE + default BE           |
+| **Fullstack** (`crud-fs-*`)                               | Vitest, all DB calls mocked                                     | MSW / in-process mocking                                                                           | Playwright, self-contained (own API routes)          |
+| **CLI** (`*-cli`)                                         | Godog, all I/O mocked via function variables                    | Godog (`//go:build integration`), real filesystem via `/tmp` fixtures, in-process via `cmd.RunE()` | Not applicable                                       |
+| **Content platform** (`crud-fs-ts-nextjs`)                | Vitest, components and tRPC routes mocked                       | MSW, in-process mocking                                                                            | Playwright BE E2E (`*-be-e2e`) + FE E2E (`*-fe-e2e`) |
+| **Library** (`golang-commons`)                            | Unit tests + Godog, mock closures                               | Godog, tmpdir mocks, cacheable                                                                     | Not applicable                                       |
+| **Hugo site** (historical -- no active Hugo sites remain) | Not applicable                                                  | Not applicable                                                                                     | Not applicable                                       |
+| **E2E runner** (`*-e2e`)                                  | Not applicable                                                  | Not applicable                                                                                     | Playwright — this project IS the E2E suite           |
 
 ## Gherkin Consumption Matrix
 
@@ -206,7 +206,6 @@ unit tests.
 | Threshold | App Types                                                                     | Rationale                                                                                                                                                                       |
 | --------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **90%**   | BE API backends, CLI apps, Go libs, TypeScript backends (`crud-be-ts-effect`) | Core business logic with high mock isolation. Service functions operate on pure data structures; 90% is achievable without heroic effort.                                       |
-| **80%**   | Content platforms (`crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`)                  | Significant UI rendering code and Next.js route handlers that are harder to unit-test. Some RSC rendering paths are excluded by design.                                         |
 | **75%**   | Fullstack apps (`crud-fs-ts-nextjs`)                                          | Mixed server and client code in the same project. API routes and React components pull the achievable threshold below 80%.                                                      |
 | **70%**   | FE apps (`crud-fe-*`, `crud-fe-ts-nextjs`), Dart FE                           | API, auth, and query layers are mocked by design; the mock boundaries limit what can be covered by unit tests. Lower threshold reflects this intentional architecture decision. |
 
@@ -353,15 +352,15 @@ variant-specific inputs.
 
 ### CRON Schedule
 
-Scheduled workflows (the production `test-and-deploy-*.yml` trio for crud-fs-ts-nextjs,
-crud-fs-ts-nextjs, and demo) run twice daily aligned to WIB (UTC+7) business hours:
+Scheduled workflows (the production `test-and-deploy-*.yml` trio for `crud-fs-ts-nextjs`
+and `crud-fe-ts-nextjs`) run twice daily aligned to WIB (UTC+7) business hours:
 
 | WIB Time | UTC Time             | Purpose                                     |
 | -------- | -------------------- | ------------------------------------------- |
 | 06:00    | 23:00 (previous day) | Morning run — catches overnight regressions |
 | 18:00    | 11:00                | Afternoon run — validates pre-EOD state     |
 
-Demo workflows (`test-demo-*.yml`) run only on manual `workflow_dispatch` — cron schedules
+CRUD app workflows (`test-crud-*.yml`) run only on manual `workflow_dispatch` — cron schedules
 were removed to conserve CI resources. Trigger from the GitHub Actions UI when needed.
 
 ### 5-Track Parallel CRON
@@ -391,7 +390,7 @@ services themselves run in parallel across matrix entries.
 | Test workflow       | `test-{app-name}.yml`                                                                     | `test-crud-be-golang-gin.yml`             |
 | Reusable workflow   | `_reusable-{purpose}.yml`                                                                 | `_reusable-backend-e2e.yml`               |
 | Composite action    | `.github/actions/{name}/action.yml`                                                       | `.github/actions/setup-golang/action.yml` |
-| Deploy workflow     | `test-and-deploy-{app}.yml`                                                               | `test-and-deploy-demo.yml`                |
+| Deploy workflow     | `test-and-deploy-{app}.yml`                                                               | `test-and-deploy-crud-fs-ts-nextjs.yml`   |
 | PR workflow         | `pr-{purpose}.yml`                                                                        | `pr-quality-gate.yml`                     |
 
 See [GitHub Actions Workflow Naming Convention](./github-actions-workflow-naming.md) for the full
@@ -424,7 +423,7 @@ Follow this checklist in order when adding a new app variant to the monorepo.
 
 ## E2E Test Pairing Rule
 
-Demo apps pair with a default counterpart for E2E testing. The pairing rule ensures every variant
+CRUD apps pair with a default counterpart for E2E testing. The pairing rule ensures every variant
 is exercised against a stable, known-good partner.
 
 | Variant Type            | E2E Pairs With                         | Example                                    |
@@ -433,8 +432,8 @@ is exercised against a stable, known-good partner.
 | Frontend (`crud-fe-*`)  | Default backend — `crud-be-golang-gin` | `crud-fe-ts-nextjs` + `crud-be-golang-gin` |
 | Fullstack (`crud-fs-*`) | Self-contained — own API routes        | `crud-fs-ts-nextjs` (no external backend)  |
 
-Non-demo apps (`demo-*`, `crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`) pair their own dedicated E2E
-runner projects (`*-be-e2e`, `*-fe-e2e`) rather than using the default demo pairing.
+Non-crud apps (`crud-fs-*`) pair their own dedicated E2E runner projects (`*-be-e2e`, `*-fe-e2e`)
+rather than using the default CRUD pairing.
 
 ## Environment Variable Standard
 

@@ -1,5 +1,5 @@
 ---
-title: How to Add a New Demo Backend
+title: How to Add a New CRUD Backend
 description: Step-by-step guide for creating a new crud-be backend implementation in a new language/framework
 category: how-to
 tags:
@@ -11,11 +11,11 @@ tags:
   - bdd
 ---
 
-# How to Add a New Demo Backend
+# How to Add a New CRUD Backend
 
 This guide walks you through creating a new `crud-be-{lang}-{framework}` backend that implements
-the shared demo API contract. The new backend will consume the same OpenAPI spec and Gherkin
-scenarios as all other demo backends.
+the shared CRUD API contract. The new backend will consume the same OpenAPI spec and Gherkin
+scenarios as all other CRUD backends.
 
 ## 📋 Prerequisites
 
@@ -169,12 +169,12 @@ Add `generated-contracts/` to `.gitignore` — generated code is not committed.
 ### 4. Implement the API
 
 Implement the REST API endpoints defined in the
-[OpenAPI contract](../../specs/apps/crud/contracts/README.md). All demo backends expose the
+[OpenAPI contract](../../specs/apps/crud/contracts/README.md). All CRUD backends expose the
 same endpoints with identical request/response shapes.
 
 ### 5. Set Up Gherkin Specs
 
-The Gherkin feature files in `specs/apps/crud/be/gherkin/` are **shared across all demo backends**.
+The Gherkin feature files in `specs/apps/crud/be/gherkin/` are **shared across all CRUD backends**.
 Do not create a new specs directory for the new backend — it must consume the existing specs.
 
 #### Verify the specs directory exists
@@ -361,7 +361,7 @@ volumes:
   crud-be-{lang}-{framework}-db-data:
 ```
 
-All demo backends expose port 8201 — run only one at a time locally.
+All CRUD backends expose port 8201 — run only one at a time locally.
 
 #### `apps/{app}/docker-compose.integration.yml`
 
@@ -527,7 +527,7 @@ follows the 5-track parallel structure (lint, typecheck, test:quick, spec-covera
 integration → E2E), though integration and E2E are sequenced within a single job:
 
 ```yaml
-name: Test - Demo BE ({Language}/{Framework})
+name: Test - CRUD BE ({Language}/{Framework})
 
 on:
   workflow_dispatch:
@@ -606,7 +606,7 @@ jobs:
         run: docker compose -f infra/dev/crud-be-{lang}-{framework}/docker-compose.yml -f infra/dev/crud-be-{lang}-{framework}/docker-compose.ci.yml down -v
 ```
 
-Demo workflows are manual-dispatch only — cron schedules were removed to conserve CI resources.
+CRUD workflows are manual-dispatch only — cron schedules were removed to conserve CI resources.
 Trigger a run from the GitHub Actions UI when validating a specific backend or before a language
 version bump. See
 [CI/CD Conventions](../../governance/development/infra/ci-conventions.md) for the rationale.
@@ -682,12 +682,12 @@ are imported at compile time), add the app to the existing `Generate contract ty
 - name: Generate contract types (required before typecheck/test:quick)
   run: |
     npx nx run crud-contracts:bundle
-    npx nx run-many -t codegen --projects=demo-*,demo-*
-    # The run-many above covers all demo-* projects including the new backend
+    npx nx run-many -t codegen --projects=crud-*
+    # The run-many above covers all crud-* projects including the new backend
     # if the project.json declares the codegen target correctly.
 ```
 
-If `run-many --projects=demo-*` does not pick up the new backend (e.g., due to a naming
+If `run-many --projects=crud-*` does not pick up the new backend (e.g., due to a naming
 mismatch), add an explicit call:
 
 ```yaml

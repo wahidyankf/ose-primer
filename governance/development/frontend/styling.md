@@ -13,7 +13,7 @@ tags:
 
 # Styling Convention
 
-CSS and Tailwind v4 conventions for all frontend applications in the open-sharia-enterprise monorepo. These rules govern how styles are written, organized, and maintained across `crud-fe-ts-nextjs`, `crud-fs-ts-nextjs`, `crud-fe-ts-nextjs`, and `crud-fs-ts-nextjs`.
+CSS and Tailwind v4 conventions for all frontend applications in the open-sharia-enterprise monorepo. These rules govern how styles are written, organized, and maintained across `crud-fe-ts-nextjs` and `crud-fs-ts-nextjs`.
 
 ## Tailwind v4 Directives
 
