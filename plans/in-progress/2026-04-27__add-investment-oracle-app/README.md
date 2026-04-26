@@ -64,6 +64,14 @@ integration tests.
    premium-quality small) or **Google Gemini 2.5 Flash-Lite** (cheap-tier
    alternative) — at any point. Embedding model is fixed at
    `gemini-embedding-001`.
+   8a. User can toggle **"Include latest web grounding"** per analysis or
+   per LLM edit. When on, the BE makes a single **Perplexity Sonar**
+   call before the chat call with a prompt like _"Material recent
+   developments, sentiment, and notable news for [company name],
+   last 30 days"_ (using `search_recency_filter: "month"`). The
+   returned text + citation URLs are pasted into the prompt as a
+   `<web_grounding>` block, so the resulting report cites both
+   `[PDF page N]` and `[Web: domain.com]` markers.
 9. Persistent **not-investment-advice** disclaimer banner remains visible at
    the top of the window; demo output is reference-grade only.
 10. Cost-cap and content-filter guardrails apply on every chat call;
@@ -71,6 +79,36 @@ integration tests.
     Per-IP rate limiting is **opt-in** for desktop (single user) but the code
     path is wired so a deployed-as-server variant inherits the same layer
     without changes.
+
+## Indonesian data residency and PII masking
+
+The demo treats Indonesia as a primary-target jurisdiction (UU PDP No.
+27/2022; OJK POJK 11/POJK.03/2022 for banks; BSSN/Komdigi PSE
+registration). This shapes two cross-cutting requirements that touch
+every chat and embedding call:
+
+- **Residency awareness** — every outbound LLM call carries an explicit
+  residency tag describing where inference physically runs:
+  `direct-us` (Anthropic / Gemini direct), `bedrock-jakarta-cris` (data
+  at rest in ID, inference may cross), `bedrock-jakarta-in-region`
+  (full on-shore — Opus 4.7 today), or `vertex-singapore` (Gemini
+  fallback). The default chat path is `direct-us`; deployments with
+  Indonesian-residency obligations swap in Bedrock Jakarta.
+- **PII masking** — all text leaving the BE for any LLM endpoint passes
+  through a `PIIMasker.mask()` step that replaces Indonesian PII (NIK,
+  NPWP, phone, email, bank account, credit card) with numbered
+  placeholders. The reverse map lives in memory only, scoped to the
+  call. Streamed responses are run through `unmask()` before display
+  and persistence so the user sees a coherent report. Masking is
+  always-on for `direct-us` and `vertex-singapore`; it can be disabled
+  per-call only when the chosen route is `bedrock-jakarta-in-region`
+  (full on-shore inference makes raw PII inference legally permissible
+  but operationally still discouraged).
+
+See [tech-docs.md `Indonesian residency and PII masking`](./tech-docs.md#indonesian-residency-and-pii-masking)
+for the Protocol definition, the default regex pattern set, the
+integration point in the chat-call sequence, and the per-vendor
+residency matrix.
 
 ## Non-goals
 
@@ -100,10 +138,14 @@ vendor primers:
 - [Google Gemini API Primer](../../../docs/explanation/software-engineering/ai-application-development/google-gemini-api.md)
   — Gemini model lineup, the `google-genai` SDK, streaming, embeddings via
   `gemini-embedding-001`, 1 M-token context window.
+- [OpenAI API Primer](../../../docs/explanation/software-engineering/ai-application-development/openai-api.md)
+  — read for boundary framing; not used in this demo, but documents the
+  fourth vendor lane (Responses API tool ecosystem, GPT-5.x and o3
+  reasoning, hosted connectors).
 - [Perplexity Sonar API Primer](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md)
-  — read for context on the third vendor; not used in this demo (private
-  corpus, no live web grounding required) but the boundary framing belongs
-  in the executor's mental model.
+  — read for boundary framing; not used in this demo (private corpus, no
+  live web grounding required) but the lane belongs in the executor's
+  mental model.
 
 ## Documents
 

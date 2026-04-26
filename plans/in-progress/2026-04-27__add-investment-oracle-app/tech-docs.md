@@ -3,10 +3,11 @@
 ## Reading this document
 
 This is the implementation reference for the `investment-oracle` desktop
-demo. It assumes the reader has read the four prerequisite primers
+demo. It assumes the reader has read the five prerequisite primers
 ([AI](../../../docs/explanation/software-engineering/ai-application-development/README.md),
 [Anthropic](../../../docs/explanation/software-engineering/ai-application-development/anthropic-api.md),
 [Gemini](../../../docs/explanation/software-engineering/ai-application-development/google-gemini-api.md),
+[OpenAI](../../../docs/explanation/software-engineering/ai-application-development/openai-api.md),
 [Perplexity](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md))
 and uses their vocabulary without redefining it. The mini-glossary below
 covers the few project-local terms.
@@ -335,6 +336,127 @@ class GeminiChatProvider:
 
 The `embedder` interface is similar but Gemini-only; no Protocol because
 there is no second implementation to hide behind.
+
+## Indonesian residency and PII masking
+
+### Residency posture matrix
+
+| Profile                     | What runs in Indonesia                                | What crosses the border                                                                  | Masking required? |
+| --------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- | ----------------- |
+| `direct-us` (default)       | Nothing                                               | All chat / embedding / Sonar payloads (api.{anthropic,googleapis,perplexity,openai}.com) | **Yes**           |
+| `bedrock-jakarta-cris`      | Data at rest in `ap-southeast-3`                      | Inference compute (may route to any AWS region)                                          | **Yes**           |
+| `bedrock-jakarta-in-region` | Both data at rest and inference (Opus 4.7 only today) | None                                                                                     | Bypass allowed    |
+| `vertex-singapore`          | Nothing (Singapore is offshore from Indonesia)        | All payloads (asia-southeast1)                                                           | **Yes**           |
+
+The selected profile drives one decision: whether `PIIMasker` runs.
+Everywhere except `bedrock-jakarta-in-region`, masking is mandatory.
+
+### `PIIMasker` Protocol
+
+```python
+from typing import Protocol
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class MaskedText:
+    text: str
+    reverse_map: dict[str, str]   # {"[NIK_001]": "1234567890123456", ...}
+
+class PIIMasker(Protocol):
+    def mask(self, raw: str) -> MaskedText: ...
+    def unmask(self, masked: str, reverse_map: dict[str, str]) -> str: ...
+
+class IndonesianRegexMasker:
+    """
+    Default impl. Detects NIK, NPWP, phone (Indonesia), email, bank
+    account, credit card. Returns masked text plus a numbered
+    placeholder reverse map. Streaming-safe: feed each chunk through
+    .mask() with a shared reverse_map dict so cross-chunk patterns
+    survive split boundaries (rare but real).
+    """
+```
+
+### Integration in the call sequence
+
+```mermaid
+%% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
+sequenceDiagram
+    participant Caller
+    participant Masker as PIIMasker
+    participant Provider as ChatProvider
+    participant API as Vendor API
+
+    Caller->>Masker: mask(prompt + retrieved_chunks)
+    Masker-->>Caller: masked_text, reverse_map
+    Caller->>Provider: stream(masked_text)
+    Provider->>API: POST (no PII on the wire)
+    API-->>Provider: SSE chunks
+    Provider->>Caller: chunk yields
+    Caller->>Masker: unmask(chunk, reverse_map)
+    Masker-->>Caller: original-shape chunk
+    Caller->>Caller: persist + emit to FE
+```
+
+The reverse map lives only in the BE process for the duration of the
+chat call. It is not persisted, not logged, and not returned to the FE.
+
+### `WebGrounder` Protocol (optional Perplexity layer)
+
+```python
+@dataclass(frozen=True)
+class WebGroundingResult:
+    text: str
+    citations: list[str]    # source URLs surfaced by the vendor
+    cost_estimate_usd: float
+
+class WebGrounder(Protocol):
+    async def ground(
+        self,
+        query: str,
+        *,
+        recency: str = "month",
+        domain_allowlist: list[str] | None = None,
+    ) -> WebGroundingResult: ...
+
+class PerplexityGrounder:
+    """
+    Default impl. Single sonar.chat.completions call with
+    search_recency_filter and search_domain_filter. PIIMasker is
+    NOT applied here because the input is built from issuer names
+    + section labels, never user-provided PII.
+    """
+```
+
+`ReportGenerator.generate(analysis, *, with_web_grounding: bool)`
+orchestrates: retrieve PDF chunks → optionally call `WebGrounder` →
+mask the combined prompt via `PIIMasker` → stream chat via
+`ChatProvider` → unmask chunks → persist with `web_citations` JSONB
+column populated when web grounding ran.
+
+### Schema additions
+
+The `report_revisions` table gains one column:
+
+```sql
+ALTER TABLE report_revisions
+  ADD COLUMN web_citations JSONB;
+```
+
+Stored shape: `[{"url": "...", "title": "...", "retrieved_at": "..."}]`,
+or `NULL` when the revision was generated/edited without web grounding.
+
+The `token_usage` table gains two columns:
+
+```sql
+ALTER TABLE token_usage
+  ADD COLUMN residency_profile TEXT NOT NULL DEFAULT 'direct-us',
+  ADD COLUMN search_fee_usd NUMERIC(10, 6) NOT NULL DEFAULT 0;
+```
+
+`residency_profile` records which lane a given call took (for audit
+and DPIA reporting). `search_fee_usd` separately records Perplexity's
+per-request search fee so the cost cap and billing UI can surface it
+distinctly from token cost.
 
 ## Code shapes
 

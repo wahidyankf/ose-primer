@@ -93,6 +93,9 @@ PDF for speed.
 | Agentic editing pattern              | Manual Markdown edit + section-scoped LLM rewrite + revision history is the shape of every modern LLM document UX             |
 | Test strategy under non-determinism  | Three-level BE testing with `MOCK_LLM_PROVIDERS=true` cassette injection is the playbook for every AI demo                    |
 | Naming clarity preserved             | `investment-oracle-*` follows the same family-prefix pattern locked in by the recent `crud-*` rename                          |
+| Indonesian residency awareness       | Every outbound LLM call carries an explicit residency tag; the demo documents the Bedrock Jakarta upgrade path                |
+| PII masking layer                    | A `PIIMasker` Protocol scrubs Indonesian PII (NIK, NPWP, phone, email, bank, credit card) before any cross-border LLM call    |
+| Web-grounding pattern                | Optional Perplexity Sonar call layers public-web context on top of private-PDF RAG; demonstrates the third vendor lane        |
 
 ## In scope (notable inclusions)
 
@@ -114,6 +117,19 @@ PDF for speed.
   filter on input + streamed output, both retained from the template's
   prior AI plan. Per-IP rate limit is opt-in (single-user desktop) but the
   Protocol is wired so a deployed-as-server variant inherits it.
+- **Indonesian residency tagging + PII masking**: every outbound LLM call
+  is tagged with a residency posture (`direct-us`, `bedrock-jakarta-cris`,
+  `bedrock-jakarta-in-region`, `vertex-singapore`); a `PIIMasker` Protocol
+  with a default Indonesian-regex implementation strips NIK / NPWP /
+  phone / email / bank / credit-card patterns from any text leaving the
+  BE for a non-on-shore endpoint, with a numbered-placeholder reverse
+  map so streamed responses unmask correctly before display.
+- **Optional web grounding via Perplexity Sonar**: a `WebGrounder`
+  Protocol (default impl: `PerplexityGrounder`) supplements PDF-RAG
+  context with live web-grounded context (recent news, sentiment,
+  material developments). Sonar is opt-in per analysis or per LLM edit;
+  citations are surfaced in the report as `[Web: domain.com]` markers
+  alongside `[PDF page N]` markers from RAG.
 - **Permanent disclaimer banner**: "Demo output, not investment advice"
   ribbon stays visible at the top of the window.
 - **Shipped fixture PDFs**: four real 10-K-class financial reports in
@@ -162,11 +178,13 @@ A maintainer cloning ose-primer in mid-2026 to start a new AI product can:
 ## Prerequisite reading
 
 Every executor and reviewer of this plan reads the repo-wide AI primer
-**and** the three vendor primers first:
+**and** the four vendor primers first:
 
 - [AI Application Development](../../../docs/explanation/software-engineering/ai-application-development/README.md)
 - [Anthropic API Primer](../../../docs/explanation/software-engineering/ai-application-development/anthropic-api.md)
 - [Google Gemini API Primer](../../../docs/explanation/software-engineering/ai-application-development/google-gemini-api.md)
+- [OpenAI API Primer](../../../docs/explanation/software-engineering/ai-application-development/openai-api.md)
+  (read for boundary framing — OpenAI is not used in this demo)
 - [Perplexity Sonar API Primer](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md)
   (read for boundary framing — Perplexity is not used in this demo)
 
@@ -191,15 +209,18 @@ the vendor-specific vocabulary covered there.
 
 ## Business risks
 
-| Risk                                                                                                          | Likelihood | Mitigation                                                                                                                                              |
-| ------------------------------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| AGPL contamination from PyMuPDF if a contributor swaps the PDF parser                                         | Medium     | tech-docs.md locks in `pypdf` (BSD-3-Clause) + optional `pdfplumber` (MIT) and bans PyMuPDF in a CONTRIBUTING note; doctor scope check flags new deps   |
-| Anthropic / Google model id changes break the demo (`claude-haiku-4-5` deprecated, Sonnet 4.5 already legacy) | Medium     | Model ids are config values, not hard-coded; tech-docs lists each vendor's current-models endpoint                                                      |
-| LLM tokens consumed in CI cause cost surprise                                                                 | Medium     | `test:quick` and `test:unit` use `httpx` mock cassettes for both vendors; only manually-triggered E2E hits real APIs                                    |
-| Tauri sidecar packaging breaks on a platform we don't CI (Linux, Windows)                                     | Medium     | CI ships macOS arm64 only; tech-docs.md documents per-platform binary suffix rules and known PyInstaller gotchas with heavy Python ML deps              |
-| AI SDK breaking changes confuse contributors familiar with older versions                                     | Medium     | tech-docs.md pins `anthropic@0.97`, `@anthropic-ai/sdk@0.90`, `google-genai@1.73`, `@google/genai`@npm-latest; vendor primers reference exact docs URLs |
-| OpenAPI 3.1 cannot fully describe SSE; codegen produces incomplete types for the streaming endpoint           | Low        | tech-docs.md acknowledges the limitation, hand-rolls the streaming type, and tracks 3.2 tooling readiness as a backlog item                             |
-| pgvector extension not enabled in default Postgres image                                                      | Low        | Use `pgvector/pgvector:pg16` image in `docker-compose.integration.yml`; covered in delivery checklist                                                   |
-| API key leakage from `.env.example` if real keys committed                                                    | Low        | `.env.example` ships placeholders only; pre-commit hook + repo `.gitignore` catch real `.env` files                                                     |
-| Investment-research output mistaken for advice                                                                | High       | Permanent disclaimer banner in FE; system prompt instructs the model to refuse direct buy/sell recommendations; PRD + tech-docs reinforce the framing   |
-| Future AI demo plan diverges from these conventions                                                           | Medium     | Document conventions in `governance/development/pattern/llm-demo-pattern.md` (created as part of this plan)                                             |
+| Risk                                                                                                          | Likelihood | Mitigation                                                                                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AGPL contamination from PyMuPDF if a contributor swaps the PDF parser                                         | Medium     | tech-docs.md locks in `pypdf` (BSD-3-Clause) + optional `pdfplumber` (MIT) and bans PyMuPDF in a CONTRIBUTING note; doctor scope check flags new deps                      |
+| Anthropic / Google model id changes break the demo (`claude-haiku-4-5` deprecated, Sonnet 4.5 already legacy) | Medium     | Model ids are config values, not hard-coded; tech-docs lists each vendor's current-models endpoint                                                                         |
+| LLM tokens consumed in CI cause cost surprise                                                                 | Medium     | `test:quick` and `test:unit` use `httpx` mock cassettes for both vendors; only manually-triggered E2E hits real APIs                                                       |
+| Tauri sidecar packaging breaks on a platform we don't CI (Linux, Windows)                                     | Medium     | CI ships macOS arm64 only; tech-docs.md documents per-platform binary suffix rules and known PyInstaller gotchas with heavy Python ML deps                                 |
+| AI SDK breaking changes confuse contributors familiar with older versions                                     | Medium     | tech-docs.md pins `anthropic@0.97`, `@anthropic-ai/sdk@0.90`, `google-genai@1.73`, `@google/genai`@npm-latest; vendor primers reference exact docs URLs                    |
+| OpenAPI 3.1 cannot fully describe SSE; codegen produces incomplete types for the streaming endpoint           | Low        | tech-docs.md acknowledges the limitation, hand-rolls the streaming type, and tracks 3.2 tooling readiness as a backlog item                                                |
+| pgvector extension not enabled in default Postgres image                                                      | Low        | Use `pgvector/pgvector:pg16` image in `docker-compose.integration.yml`; covered in delivery checklist                                                                      |
+| API key leakage from `.env.example` if real keys committed                                                    | Low        | `.env.example` ships placeholders only; pre-commit hook + repo `.gitignore` catch real `.env` files                                                                        |
+| Investment-research output mistaken for advice                                                                | High       | Permanent disclaimer banner in FE; system prompt instructs the model to refuse direct buy/sell recommendations; PRD + tech-docs reinforce the framing                      |
+| Personal data crosses border to US (Anthropic / Perplexity) or Singapore (Gemini fallback)                    | High       | `PIIMasker` always-on for `direct-us` and `vertex-singapore` routes; UU PDP Article 56 SCC-or-consent posture documented; pre-/post-transfer report template ships in repo |
+| Indonesian-residency upgrade path (Bedrock Jakarta) not exercised in CI                                       | Medium     | tech-docs.md documents the Bedrock route; manual smoke phase exercises it; CI lane added in a follow-up plan                                                               |
+| Perplexity Sonar adds non-trivial cost (per-token + per-search fee)                                           | Medium     | Web grounding is opt-in per analysis; cost cap accounts for Perplexity per-request fee; UI surfaces the "+web grounding" cost delta before generation                      |
+| Future AI demo plan diverges from these conventions                                                           | Medium     | Document conventions in `governance/development/pattern/llm-demo-pattern.md` (created as part of this plan)                                                                |
