@@ -1,10 +1,10 @@
-defmodule DemoBeExphWeb.Integration.AdminSteps do
+defmodule CrudBeExphWeb.Integration.AdminSteps do
   use Cabbage.Feature, async: false, file: "admin/admin.feature"
 
-  use DemoBeExph.DataCaseIntegration
+  use CrudBeExph.DataCaseIntegration
 
-  alias DemoBeExph.Integration.Helpers
-  alias DemoBeExph.Integration.ServiceLayer
+  alias CrudBeExph.Integration.Helpers
+  alias CrudBeExph.Integration.ServiceLayer
 
   @moduletag :integration
 

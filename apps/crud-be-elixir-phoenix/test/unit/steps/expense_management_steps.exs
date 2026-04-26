@@ -1,9 +1,9 @@
-defmodule DemoBeExphWeb.Unit.ExpenseManagementSteps do
+defmodule CrudBeExphWeb.Unit.ExpenseManagementSteps do
   use Cabbage.Feature, async: false, file: "expenses/expense-management.feature"
 
-  use DemoBeExphWeb.ConnCase
+  use CrudBeExphWeb.ConnCase
 
-  alias DemoBeExph.Integration.Helpers
+  alias CrudBeExph.Integration.Helpers
 
   @moduletag :unit
 

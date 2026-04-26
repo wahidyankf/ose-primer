@@ -1,2 +1,2 @@
-Ecto.Adapters.SQL.Sandbox.mode(DemoBeExph.Repo, :manual)
+Ecto.Adapters.SQL.Sandbox.mode(CrudBeExph.Repo, :manual)
 ExUnit.start()

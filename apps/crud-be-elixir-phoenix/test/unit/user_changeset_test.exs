@@ -1,7 +1,7 @@
-defmodule DemoBeExph.UserChangesetTest do
+defmodule CrudBeExph.UserChangesetTest do
   use ExUnit.Case, async: true
 
-  alias DemoBeExph.Accounts.User
+  alias CrudBeExph.Accounts.User
 
   @moduletag :unit
 

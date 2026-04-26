@@ -1,13 +1,13 @@
-defmodule DemoBeExph.Test.InMemoryAttachmentContext do
+defmodule CrudBeExph.Test.InMemoryAttachmentContext do
   @moduledoc """
-  In-memory implementation of DemoBeExph.Attachment.AttachmentBehaviour backed by InMemoryStore Agent.
+  In-memory implementation of CrudBeExph.Attachment.AttachmentBehaviour backed by InMemoryStore Agent.
   Used in test environment to avoid real PostgreSQL.
   """
 
-  @behaviour DemoBeExph.Attachment.AttachmentBehaviour
+  @behaviour CrudBeExph.Attachment.AttachmentBehaviour
 
-  alias DemoBeExph.Attachment.Attachment
-  alias DemoBeExph.Test.InMemoryStore
+  alias CrudBeExph.Attachment.Attachment
+  alias CrudBeExph.Test.InMemoryStore
 
   @impl true
   def create_attachment(expense_id, attrs) do

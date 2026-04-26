@@ -1,13 +1,13 @@
-defmodule DemoBeExph.Test.InMemoryExpenseContext do
+defmodule CrudBeExph.Test.InMemoryExpenseContext do
   @moduledoc """
-  In-memory implementation of DemoBeExph.Expense.ExpenseBehaviour backed by InMemoryStore Agent.
+  In-memory implementation of CrudBeExph.Expense.ExpenseBehaviour backed by InMemoryStore Agent.
   Used in test environment to avoid real PostgreSQL.
   """
 
-  @behaviour DemoBeExph.Expense.ExpenseBehaviour
+  @behaviour CrudBeExph.Expense.ExpenseBehaviour
 
-  alias DemoBeExph.Expense.Expense
-  alias DemoBeExph.Test.InMemoryStore
+  alias CrudBeExph.Expense.Expense
+  alias CrudBeExph.Test.InMemoryStore
 
   @impl true
   def create_expense(user_id, attrs) do

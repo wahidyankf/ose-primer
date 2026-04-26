@@ -8,23 +8,23 @@
 import Config
 
 config :crud_be_exph,
-  ecto_repos: [DemoBeExph.Repo],
+  ecto_repos: [CrudBeExph.Repo],
   generators: [timestamp_type: :utc_datetime]
 
-config :crud_be_exph, :accounts_module, DemoBeExph.Accounts
-config :crud_be_exph, :token_module, DemoBeExph.Token.TokenContext
-config :crud_be_exph, :expense_module, DemoBeExph.Expense.ExpenseContext
-config :crud_be_exph, :attachment_module, DemoBeExph.Attachment.AttachmentContext
+config :crud_be_exph, :accounts_module, CrudBeExph.Accounts
+config :crud_be_exph, :token_module, CrudBeExph.Token.TokenContext
+config :crud_be_exph, :expense_module, CrudBeExph.Expense.ExpenseContext
+config :crud_be_exph, :attachment_module, CrudBeExph.Attachment.AttachmentContext
 
 # Configure the endpoint
-config :crud_be_exph, DemoBeExphWeb.Endpoint,
+config :crud_be_exph, CrudBeExphWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [json: DemoBeExphWeb.ErrorJSON],
+    formats: [json: CrudBeExphWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: DemoBeExph.PubSub,
+  pubsub_server: CrudBeExph.PubSub,
   live_view: [signing_salt: "8pJ4Iu2a"]
 
 # Configure Elixir's Logger

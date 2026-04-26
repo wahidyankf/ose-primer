@@ -2,22 +2,22 @@ import Config
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :crud_be_exph, DemoBeExphWeb.Endpoint,
+config :crud_be_exph, CrudBeExphWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "9nYAOfW0t4BGQgRMTz9Wo7C9vwlrhrSLoIfWbZK8fxxz6E4ehacBRt29myR/Hi3o",
   server: false
 
 # Guardian test secret — overrides runtime.exs so APP_JWT_SECRET is not required during tests
 # config/test.exs is evaluated before runtime.exs, taking precedence in the test env.
-config :crud_be_exph, DemoBeExph.Auth.Guardian,
+config :crud_be_exph, CrudBeExph.Auth.Guardian,
   secret_key: "test_secret_do_not_use_in_production",
   ttl: {24, :hours}
 
 # In-memory module overrides — no PostgreSQL required for tests
-config :crud_be_exph, :accounts_module, DemoBeExph.Test.InMemoryAccounts
-config :crud_be_exph, :token_module, DemoBeExph.Test.InMemoryTokenContext
-config :crud_be_exph, :expense_module, DemoBeExph.Test.InMemoryExpenseContext
-config :crud_be_exph, :attachment_module, DemoBeExph.Test.InMemoryAttachmentContext
+config :crud_be_exph, :accounts_module, CrudBeExph.Test.InMemoryAccounts
+config :crud_be_exph, :token_module, CrudBeExph.Test.InMemoryTokenContext
+config :crud_be_exph, :expense_module, CrudBeExph.Test.InMemoryExpenseContext
+config :crud_be_exph, :attachment_module, CrudBeExph.Test.InMemoryAttachmentContext
 
 # Elixir Cabbage BDD — feature files relative to workspace root
 config :elixir_cabbage,

@@ -7,17 +7,17 @@ import Config
 # Repo must use the SQL Sandbox pool so that Ecto.Adapters.SQL.Sandbox.start_owner!/2
 # can wrap each test in a transaction and roll it back on completion.
 # DATABASE_URL is injected at runtime by docker-compose via runtime.exs.
-config :crud_be_exph, DemoBeExph.Repo,
+config :crud_be_exph, CrudBeExph.Repo,
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
 
-config :crud_be_exph, DemoBeExphWeb.Endpoint,
+config :crud_be_exph, CrudBeExphWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "9nYAOfW0t4BGQgRMTz9Wo7C9vwlrhrSLoIfWbZK8fxxz6E4ehacBRt29myR/Hi3o",
   server: false
 
 # Guardian — APP_JWT_SECRET is required (supplied by docker-compose).
-config :crud_be_exph, DemoBeExph.Auth.Guardian,
+config :crud_be_exph, CrudBeExph.Auth.Guardian,
   issuer: "crud_be_exph",
   ttl: {24, :hours}
 

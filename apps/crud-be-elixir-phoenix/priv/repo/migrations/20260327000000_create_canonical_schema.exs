@@ -1,4 +1,4 @@
-defmodule DemoBeExph.Repo.Migrations.CreateCanonicalSchema do
+defmodule CrudBeExph.Repo.Migrations.CreateCanonicalSchema do
   use Ecto.Migration
 
   def change do

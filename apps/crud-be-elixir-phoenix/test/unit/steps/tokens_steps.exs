@@ -1,9 +1,9 @@
-defmodule DemoBeExphWeb.Unit.TokensSteps do
+defmodule CrudBeExphWeb.Unit.TokensSteps do
   use Cabbage.Feature, async: false, file: "token-management/tokens.feature"
 
-  use DemoBeExphWeb.ConnCase
+  use CrudBeExphWeb.ConnCase
 
-  alias DemoBeExph.Integration.Helpers
+  alias CrudBeExph.Integration.Helpers
 
   @moduletag :unit
 

@@ -1,9 +1,9 @@
-defmodule DemoBeExphWeb.Integration.HealthSteps do
+defmodule CrudBeExphWeb.Integration.HealthSteps do
   use Cabbage.Feature, async: false, file: "health/health-check.feature"
 
-  use DemoBeExph.DataCaseIntegration
+  use CrudBeExph.DataCaseIntegration
 
-  alias DemoBeExph.Integration.ServiceLayer
+  alias CrudBeExph.Integration.ServiceLayer
 
   @moduletag :integration
 

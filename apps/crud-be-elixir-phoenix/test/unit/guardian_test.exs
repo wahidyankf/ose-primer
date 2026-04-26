@@ -1,7 +1,7 @@
-defmodule DemoBeExph.Auth.GuardianTest do
+defmodule CrudBeExph.Auth.GuardianTest do
   use ExUnit.Case, async: true
 
-  alias DemoBeExph.Auth.Guardian
+  alias CrudBeExph.Auth.Guardian
 
   @moduletag :unit
 

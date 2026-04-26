@@ -1,7 +1,7 @@
-defmodule DemoBeExph.AttachmentChangesetTest do
+defmodule CrudBeExph.AttachmentChangesetTest do
   use ExUnit.Case, async: true
 
-  alias DemoBeExph.Attachment.Attachment
+  alias CrudBeExph.Attachment.Attachment
 
   @moduletag :unit
 

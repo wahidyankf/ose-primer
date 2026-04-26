@@ -1,7 +1,7 @@
 import Config
 
 # Configure your database
-config :crud_be_exph, DemoBeExph.Repo,
+config :crud_be_exph, CrudBeExph.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
@@ -16,7 +16,7 @@ config :crud_be_exph, DemoBeExph.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
-config :crud_be_exph, DemoBeExphWeb.Endpoint,
+config :crud_be_exph, CrudBeExphWeb.Endpoint,
   # Bind to 0.0.0.0 to expose the server to the docker host machine.
   # This makes make the service accessible from any network interface.
   # Change to `ip: {127, 0, 0, 1}` to allow access only from the server machine.
