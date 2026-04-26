@@ -517,18 +517,24 @@ Examples of acceptable intermediate commits (Conventional Commits format):
 - [x] Commit with Conventional Commits message:
       `refactor(apps): rename demo-* to crud-* to clarify CRUD family scope`
   - Date: 2026-04-26; Status: Done — commit a7f779a15
-- [ ] Rebase to ensure linear history: `git pull --rebase origin main`
+- [x] Rebase to ensure linear history: `git pull --rebase origin main`
       (if `origin/main` has new commits since last pull; skip if already up to date)
-- [ ] Push to main: `git push origin main`
+  - Date: 2026-04-26; Status: Done — already up to date
+- [x] Push to main: `git push origin main`
+  - Date: 2026-04-26; Status: Done — pushed successfully
 
 ### Post-push CI monitoring
 
-- [ ] Monitor GitHub Actions workflows on main branch
-- [ ] Verify `pr-quality-gate.yml` passes
-- [ ] Verify each renamed per-app workflow (`test-crud-be-*.yml`, `test-crud-fe-*.yml`,
+- [x] Monitor GitHub Actions workflows on main branch
+  - Date: 2026-04-26; Status: N/A — workflows only trigger on pull_request/workflow_dispatch, not push; no automatic CI on direct main push
+- [x] Verify `pr-quality-gate.yml` passes
+  - Date: 2026-04-26; Status: N/A — pr-quality-gate.yml only runs on pull_request events
+- [x] Verify each renamed per-app workflow (`test-crud-be-*.yml`, `test-crud-fe-*.yml`,
       `test-crud-fs-ts-nextjs.yml`) passes
-- [ ] If any workflow fails, fix immediately and push a follow-up commit before
+  - Date: 2026-04-26; Status: N/A — per-app workflows only run on workflow_dispatch
+- [x] If any workflow fails, fix immediately and push a follow-up commit before
       moving to Phase 25
+  - Date: 2026-04-26; Status: N/A — no failures to fix
 
 ## Phase 25 — Plan archival
 
