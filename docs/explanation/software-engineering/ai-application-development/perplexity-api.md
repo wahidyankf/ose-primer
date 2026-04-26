@@ -202,6 +202,87 @@ vendor for the missing capability, or move the whole workload to OpenAI
 (`web_search` tool inside the Responses API gets you live grounding plus
 the rest of OpenAI's tool ecosystem in one call).
 
+## Additional features
+
+Sonar's tool surface is narrow but its **request-shape knobs** are rich.
+Beyond `search_domain_filter` and `search_recency_filter` already
+covered:
+
+| Feature                    | Request shape                                                                                                    | Notes                                                                                                                 |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Async deep-research        | `POST /v1/async/sonar` with `model: "sonar-deep-research"` + standard chat body; poll `GET /v1/async/sonar/{id}` | Eliminates HTTP-timeout risk on long-running deep-research queries. Pairs with `reasoning_effort`.                    |
+| Structured outputs         | `"response_format": {"type": "json_schema", "json_schema": {"name": "...", "schema": {...}}}`                    | First request with a new schema may take 10–30 s to prepare; subsequent calls are fast.                               |
+| `return_related_questions` | top-level boolean                                                                                                | Adds an array of suggested follow-up queries to the response.                                                         |
+| `return_images`            | top-level boolean                                                                                                | Includes image search-result URLs alongside text. **Tier-2+ only.**                                                   |
+| `web_search_options`       | `{"search_mode": "academic"}` (Agent API surface)                                                                | Prioritises scholarly / journal sources. Confirm exposure on the standard `/chat/completions` surface for your model. |
+| Date filters (absolute)    | `search_after_date_filter`, `search_before_date_filter` — `MM/DD/YYYY`                                           | Combine for a publication-date range; complements relative `search_recency_filter`.                                   |
+| Last-modified filters      | `last_updated_after_filter`, `last_updated_before_filter` — `MM/DD/YYYY`                                         | Targets last-modification timestamp rather than publication date.                                                     |
+| `reasoning_effort`         | `"reasoning_effort": "minimal"/"low"/"medium"/"high"` — applies to `sonar-deep-research`                         | Trades latency / cost for analytical depth. Available in sync and async modes.                                        |
+| Image input (vision)       | OpenAI-shape `{"type": "image_url", "image_url": {"url": "..."}}` content blocks                                 | Text + image multimodal queries on supported Sonar models.                                                            |
+
+### Single-hop search + generation flow
+
+```mermaid
+%% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
+sequenceDiagram
+    autonumber
+    participant App as Your app
+    participant API as api.perplexity.ai
+    participant Web as Public web
+    participant Model as Sonar model
+
+    App->>API: POST /chat/completions<br/>{model, messages, search_domain_filter, search_recency_filter}
+    API->>Web: search query (always-on)
+    Web-->>API: top-N results
+    API->>Model: prompt + retrieved context
+    Model-->>API: streamed response
+    API-->>App: SSE chunks + final citations[]
+```
+
+The whole point: **search and generation in one HTTP hop.** Sonar bills
+both legs (per-token + per-request search fee). For workloads where the
+search and generation steps benefit from independent control — your own
+re-ranker between them, or different vendors per leg — Sonar is the
+wrong shape; pair Anthropic / Gemini / OpenAI with your own retrieval
+layer instead.
+
+## Indonesia data residency
+
+For products subject to Indonesian regulation (UU PDP No. 27/2022; OJK
+POJK 11/POJK.03/2022; BSSN/Komdigi PSE registration), Perplexity is the
+**weakest of the four vendors** for residency:
+
+1. **Sonar API runs in US datacenters only.** Perplexity has confirmed
+   on its public communications that "Sonar Reasoning is uncensored and
+   hosted in US datacenters" — and the rest of the Sonar family is
+   hosted on US AWS. There are no APAC regional endpoints.
+   ([Perplexity statement](https://x.com/perplexity_ai/status/1884409454675759211))
+2. **No hyperscaler partnership for APAC.** A Perplexity–NVIDIA EU
+   sovereign AI partnership (June 2025) gave EU customers an in-EU
+   path; no analogous Indonesia or Southeast Asia arrangement has been
+   announced.
+3. **Cross-border transfer is unavoidable.** Every Sonar call is a
+   transfer from Indonesia to the US. UU PDP Article 56(2)(iv) requires
+   adequacy (no regulator yet), binding contractual safeguards, or
+   **explicit data-subject consent** — the last is usually the only
+   workable mechanism for a public-facing AI feature on Sonar.
+
+Practical guidance:
+
+- If Indonesia residency is a hard requirement, **do not use Perplexity
+  Sonar**. Use the Anthropic / Bedrock Jakarta path with your own RAG
+  pipeline, or Azure OpenAI in Singapore — both have stronger residency
+  posture.
+- If Sonar's web-grounded answer shape is the product, isolate the
+  feature so it never touches Indonesian personal data: use it for
+  market-research tasks, public-information lookups, or in
+  contexts where the user's identity and PII are not part of the
+  prompt.
+
+Foreign electronic system providers reaching Indonesian users must
+additionally register as **PSE Private Scope** (PP 71/2019) regardless
+of where the LLM runs.
+
 ## Pricing (2026-Q2)
 
 Sonar bills both **per-token** like a normal chat API **and** a

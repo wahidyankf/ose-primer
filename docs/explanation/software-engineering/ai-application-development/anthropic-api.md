@@ -296,6 +296,83 @@ alongside your retrieved chunks. Reach for it only when the demo's job
 is grounded-on-the-public-web answers, in which case Perplexity Sonar is
 also a candidate (see [Perplexity primer](./perplexity-api.md)).
 
+## Additional features (not "tools" but worth knowing)
+
+| Feature             | Mechanism                                                                                            | Notes                                                                                                                 |
+| ------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Message Batches API | `POST /v1/messages/batches` with a list of standard Messages requests                                | **50 % discount** on input + output. Most batches finish < 1 hour; max 24 h SLA. Up to 300 k output tokens with beta. |
+| Prompt caching      | `"cache_control": {"type": "ephemeral"}` on content blocks (default 5-min TTL; opt-in `"ttl": "1h"`) | Cache writes 1.25× (5-min) or 2× (1-hour) base input rate; reads 0.10×. Default TTL switched 1h → 5min on 2026-03-06. |
+| Citations           | `"citations": {"enabled": true}` on `document` content blocks                                        | Response includes `char_location` / `page_location` / `content_block_location` blocks. `cited_text` not billed.       |
+| Vision input        | `image` content blocks (base64 / URL / Files API `file_id`)                                          | All current Claude models. JPEG, PNG, GIF, WebP.                                                                      |
+| Extended thinking   | `"thinking": {"type": "enabled", "budget_tokens": N}`                                                | Supported on Claude 4.5/4.1/4. **Not supported** on Opus 4.7 (returns 400) — adaptive thinking replaces it.           |
+| Adaptive thinking   | `"thinking": {"type": "adaptive", "effort": "low"/"medium"/"high"}`                                  | Recommended for Opus 4.7, Sonnet 4.6, Opus 4.6. Interleaves reasoning between tool calls automatically.               |
+| Files API           | `anthropic-beta: files-api-2025-04-14` header; reference by `file_id` in document/image blocks       | Free for ops (upload / list / delete); content billed as input tokens when used. ≤ 500 MB / file, ≤ 500 GB / org.     |
+
+### Tool flow visualised
+
+```mermaid
+%% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
+flowchart LR
+    USER([User message]):::user --> CLAUDE{{Claude}}
+    CLAUDE -->|server-side<br/>web_search /<br/>web_fetch /<br/>code_execution} SERVER[Anthropic-hosted<br/>execution]:::server
+    SERVER -->|results inline| CLAUDE
+    CLAUDE -->|client-side<br/>computer / text_editor /<br/>bash / custom function| CLIENT[Your app<br/>executes]:::client
+    CLIENT -->|tool_result block| CLAUDE
+    CLAUDE -->|final text + citations| OUT([Response]):::out
+
+    classDef user fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef server fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef client fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef out fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
+The split matters operationally: server-side tools mean Anthropic's
+infrastructure makes outbound calls (and the egress shows Anthropic IPs,
+not yours); client-side tools route through **your** infrastructure, so
+you control the credentials, audit trail, and blast radius.
+
+## Indonesia data residency
+
+For products subject to Indonesian regulation (UU PDP No. 27/2022; OJK
+POJK 11/POJK.03/2022 for commercial banks; BSSN/Komdigi PSE
+registration), where the Claude API call physically runs matters. Two
+truths to anchor on:
+
+1. **Anthropic's direct API has no Indonesian region.**
+   `api.anthropic.com` exposes only `inference_geo: "us"` or `"global"`.
+   Workspace data at rest is US-only. There is no APAC option as of
+   2026-04-27.
+   ([data residency docs](https://platform.claude.com/docs/en/build-with-claude/data-residency))
+2. **Claude on Amazon Bedrock has an Indonesia region.** AWS
+   `ap-southeast-3` (Jakarta) is live. Claude Opus 4.7 supports
+   **in-region** processing in Jakarta. Claude Haiku 4.5, Sonnet 4.5/4.6,
+   Opus 4.5/4.6 are reachable from `ap-southeast-3` only via **Global
+   Cross-Region Inference (CRIS)** — data at rest stays in Indonesia, but
+   inference compute can route to any of 20+ AWS regions.
+   ([AWS announcement](https://aws.amazon.com/blogs/machine-learning/global-cross-region-inference-for-latest-anthropic-claude-opus-sonnet-and-haiku-models-on-amazon-bedrock-in-thailand-malaysia-singapore-indonesia-and-taiwan/),
+   [region compatibility](https://docs.aws.amazon.com/bedrock/latest/userguide/models-region-compatibility.html))
+
+Practical guidance:
+
+- For workloads handling Indonesian personal data and required to keep
+  inference on-shore: **Bedrock `ap-southeast-3` with the Opus 4.7
+  in-region profile**. Validate the model's deployment type in the
+  Bedrock console at deployment time — AWS is rolling out in-region
+  support to additional Claude models continuously.
+- For non-Opus-4.7 models on Bedrock Jakarta, the **CRIS path keeps data
+  at rest in Indonesia** but ships inference traffic across borders;
+  this often satisfies POJK 11 record-keeping and OJK PIT-SE requirements
+  for non-OJK-tier-1 workloads, but not full PDP-strict on-shore
+  processing.
+- For workloads that can use the direct API: the cross-border transfer
+  must satisfy UU PDP Article 56(2)(iv) — adequacy (no regulator yet),
+  binding contractual safeguards, or explicit data-subject consent. Pre-
+  and post-transfer reports to Komdigi may be required.
+- Foreign electronic system providers reaching Indonesian users must
+  register as **PSE Private Scope** (PP 71/2019) — unrelated to where
+  the LLM runs, but a parallel obligation that this primer flags so it
+  is not overlooked.
+
 ## Reference cost (2026-Q2)
 
 Indicative public list prices per million tokens; verify current values at

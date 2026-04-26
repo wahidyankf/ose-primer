@@ -345,6 +345,86 @@ pgvector pipeline** over `file_search` — file_search trades transparency
 and cost-control for convenience, and the demos in this repo deliberately
 expose the retrieval layer as part of the teaching material.
 
+## Additional features and APIs
+
+Beyond the Responses-API tool array, OpenAI ships several adjacent
+surfaces and request flags worth knowing:
+
+| Feature                   | Mechanism                                                                                                                     | Notes                                                                                                                         |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Realtime API              | `wss://api.openai.com/v1/realtime?model=gpt-realtime` (WebSocket) or WebRTC `POST /v1/realtime/calls` (browser) or SIP (VoIP) | Speech-to-speech voice agents. Typical 300–500 ms response latency. Max 60-minute session.                                    |
+| Structured Outputs        | `"response_format": {"type": "json_schema", "json_schema": {"name": ..., "strict": true, "schema": {...}}}`                   | Schema-level enforcement. Available per-tool via `"strict": true` in function definitions.                                    |
+| Batches API               | `POST /v1/batches` with `input_file_id` (JSONL via Files API), `endpoint`, `completion_window: "24h"`                         | **50 % discount** on input + output for all models. Up to 50 000 requests / 200 MB input file. Stacks with prompt caching.    |
+| Parallel function calling | `"parallel_tool_calls": true` (default) / `false`                                                                             | Multiple tool calls per turn. Supported on most GPT-4o / GPT-5 models; not on `o3`. Disable on `gpt-4.1-nano`.                |
+| Hosted Connectors         | Tools entry `{"type": "connector", "connector_id": "...", "access_token": "..."}`                                             | OpenAI-maintained MCP wrappers for GitHub, SharePoint, Drive, Dropbox, Box, Outlook, Gmail, Calendar, Linear, HubSpot, Teams. |
+| Reasoning summaries       | `"reasoning": {"summary": "auto"/"concise"/"detailed"}`                                                                       | Surfaces summarised CoT in `reasoning` output items. Raw tokens not exposed. Best in Responses API.                           |
+| Persistent CI containers  | `POST /v1/containers` with `memory_limit` (`1g`/`4g`/`16g`/`64g`); reference by `container` in tool config                    | Auto-created if not specified. Expires after 20 min idle. Treat as ephemeral; persist outputs to your store.                  |
+| Vision input              | `{"type": "input_image", "image_url": "..." \| "data:image/...;base64,...", "detail": "auto"/"original"}`                     | All GPT-4o+ and GPT-5 models. Multiple images per request.                                                                    |
+| Prompt caching            | Automatic on repeated prefixes (no opt-in flag)                                                                               | ~50 % discount on cached input. Stacks with Batches API.                                                                      |
+| Legacy Assistants API     | `POST /v1/assistants/...`                                                                                                     | Superseded by Responses API + File Search + MCP. Maintained but not the recommended surface for new code.                     |
+| Standalone TTS            | `POST /v1/audio/speech`                                                                                                       | Separate non-realtime TTS endpoint; outside the Responses-API tool surface.                                                   |
+
+### Responses API vs Chat Completions — surface map
+
+```mermaid
+%% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
+flowchart TD
+    NEW{New<br/>code?} -->|Yes| RESP[POST /v1/responses<br/>RECOMMENDED]:::yes
+    NEW -->|Compat<br/>with proxy| CHAT[POST /v1/chat/completions<br/>legacy, supported]:::legacy
+    RESP --> TOOLS[Built-in tools:<br/>web_search · file_search<br/>code_interpreter · computer<br/>image_generation · mcp · function]:::tools
+    RESP --> SEM[Typed semantic events<br/>response.output_text.delta<br/>response.completed]:::stream
+    CHAT --> DELTA[Flat delta.content chunks<br/>industry-standard SSE]:::stream
+    TOOLS --> OUT([Response]):::out
+    SEM --> OUT
+    DELTA --> OUT
+
+    classDef yes fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef legacy fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef tools fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef stream fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef out fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
+## Indonesia data residency
+
+For products subject to Indonesian regulation (UU PDP No. 27/2022; OJK
+POJK 11/POJK.03/2022; BSSN/Komdigi PSE registration), OpenAI is the
+**most constrained** of the four vendors:
+
+1. **Direct OpenAI API has no Indonesian region.** `api.openai.com` is
+   a US endpoint. OpenAI's Asia data-residency programme (May 2025)
+   covers Japan, India, Singapore, South Korea — **not** Indonesia.
+   ([OpenAI data residency announcement](https://openai.com/index/introducing-data-residency-in-asia/))
+2. **Azure OpenAI Service is not yet deployed in Azure Indonesia
+   Central.** Indonesia Central is a live Azure infrastructure region
+   (launched 2025) but the Azure AI Foundry / Azure OpenAI region list
+   does not include it as of 2026-04-27. Nearest confirmed Azure OpenAI
+   region: `Southeast Asia` (Singapore).
+   ([Azure Foundry region support](https://learn.microsoft.com/en-us/azure/foundry/reference/region-support))
+3. **All paths cross the border.** Indonesia → Singapore (Azure
+   Southeast Asia) or Indonesia → US (direct API). UU PDP Article
+   56(2)(iv) compliance is required: adequacy (no regulator yet),
+   binding contractual safeguards (Microsoft DPA / OpenAI DPA), or
+   explicit data-subject consent. Pre- and post-transfer reports to
+   Komdigi may apply.
+
+Practical guidance:
+
+- For Indonesia-personal-data workloads, **prefer Anthropic on Bedrock
+  Jakarta** unless an OpenAI-only feature (Realtime voice, Computer Use
+  GA, hosted Connectors, image generation in Responses API) is the
+  product.
+- If OpenAI is non-negotiable, use **Azure OpenAI on Southeast Asia
+  (Singapore)** for the shortest cross-border hop and the strongest
+  enterprise contractual posture (Microsoft DPA + region pinning at
+  rest in Singapore).
+- Watch the Azure Indonesia Central rollout — Microsoft is extending
+  Azure OpenAI region-by-region; check the Foundry region list before
+  every deployment.
+
+Foreign electronic system providers reaching Indonesian users must
+additionally register as **PSE Private Scope** (PP 71/2019).
+
 ## Reference cost (2026-Q2)
 
 Indicative pricing per million tokens; verify at
