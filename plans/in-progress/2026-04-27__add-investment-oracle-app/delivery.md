@@ -1,413 +1,405 @@
-# Delivery Checklist: Add `pdf-chat-*` Demo App Family
+# Delivery Checklist: `investment-oracle`
 
-> Conventions: tick each `- [ ]` to `- [x]` only after the action passes locally. Each
-> phase ends with a green workspace state — `git status` clean (intentional changes
-> staged), `nx affected -t typecheck lint` exits 0 for everything previously
-> implemented. Commits land directly on `main` (Trunk Based Development); intermediate
-> commits per phase are encouraged.
+Step-by-step phases. Each phase ends in a verifiable artifact. Tick items
+in order; push direct to `main` per Trunk Based Development
+([git-push-default](../../../governance/development/workflow/git-push-default.md)).
 
-## Phase 0 — Environment setup
+## Phase 0 — Prerequisite reading
 
-- [ ] **Required prerequisite reading** — read end-to-end before any other Phase 0
-      checkbox: [AI Application Development](../../../docs/explanation/software-engineering/ai-application-development/README.md).
-      The rest of this plan assumes its vocabulary (tokens, embeddings, RAG,
-      streaming SSE, multi-provider routing, persistent sessions, guardrails, eval,
-      cost). If you can't define each glossary term unprompted, do not proceed —
-      you will misimplement subtle behaviour later.
-- [ ] Read [tech-docs.md](./tech-docs.md) end-to-end (the AI primer is its
-      pre-requisite; this document is its application to this plan)
-- [ ] `git status` is clean before starting
-- [ ] `npm install` succeeds
-- [ ] `npm run doctor -- --fix` reports all tools OK
-- [ ] Establish baseline: `npx nx affected -t typecheck lint test:quick` passes (note
-      any pre-existing failures — must not be made worse by this plan)
-- [ ] Confirm ports 8501 and 3501 are free on the dev machine
-- [ ] Capture an `OPENROUTER_API_KEY` for local manual smoke testing (NOT committed
-      anywhere; only used to run real-API E2E once)
+- [ ] Read [AI Application Development primer](../../../docs/explanation/software-engineering/ai-application-development/README.md)
+- [ ] Read [Anthropic API Primer](../../../docs/explanation/software-engineering/ai-application-development/anthropic-api.md)
+- [ ] Read [Google Gemini API Primer](../../../docs/explanation/software-engineering/ai-application-development/google-gemini-api.md)
+- [ ] Read [Perplexity Sonar API Primer](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md)
+      (boundary framing only; not used in this demo)
+- [ ] Read this plan's [README](./README.md), [BRD](./brd.md), [PRD](./prd.md), [tech-docs](./tech-docs.md)
+- [ ] Inspect the four shipped fixture PDFs in [`fixture/`](./fixture/)
 
-## Phase 1 — Shared spec area scaffolding
+## Phase 0a — Environment setup
 
-- [ ] Create directory tree:
-      `mkdir -p specs/apps/pdf-chat/{c4,be/gherkin,fe/gherkin,contracts/{paths,schemas,examples}}`
-- [ ] Write `specs/apps/pdf-chat/README.md` (mirror `specs/apps/crud/README.md`,
-      adjusted for the family — domains: health, pdfs, chat, test-support)
-- [ ] Write `specs/apps/pdf-chat/be/README.md` (mirror `specs/apps/crud/be/README.md`)
-- [ ] Write `specs/apps/pdf-chat/fe/README.md` (mirror `specs/apps/crud/fe/README.md`)
-- [ ] Write `specs/apps/pdf-chat/be/gherkin/README.md` listing the BE domains
-- [ ] Write `specs/apps/pdf-chat/fe/gherkin/README.md` listing the FE domains
+- [ ] Install all dependencies in the repo root worktree: `npm install`
+- [ ] Converge the full polyglot toolchain: `npm run doctor -- --fix`
+      (required — the `postinstall` hook runs `doctor || true` and silently
+      tolerates drift; see
+      [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md))
+- [ ] Copy environment template: `cp apps/investment-oracle-be/.env.example apps/investment-oracle-be/.env`
+- [ ] Fill in `ANTHROPIC_API_KEY` and `GOOGLE_API_KEY` in the new `.env`
+      (obtain from the respective vendor consoles; keep out of version control)
+- [ ] Start the Postgres + pgvector service:
+      `docker compose -f docker-compose.integration.yml up -d`
+- [ ] Verify the service is healthy: `docker compose -f docker-compose.integration.yml ps`
+- [ ] Verify existing tests pass before making changes:
+      `nx affected -t test:quick`
 
-## Phase 2 — C4 diagrams
+## Phase 1 — Spec area scaffolding
 
-- [ ] `specs/apps/pdf-chat/c4/README.md` — index + palette
-- [ ] `specs/apps/pdf-chat/c4/context.md` — actors: End User, Operations Engineer; one
-      external system (OpenRouter)
-- [ ] `specs/apps/pdf-chat/c4/container.md` — Next.js, FastAPI, Postgres+pgvector,
-      OpenRouter
-- [ ] `specs/apps/pdf-chat/c4/component-be.md` — routers, services, infrastructure
-      layers
-- [ ] `specs/apps/pdf-chat/c4/component-fe.md` — pages, ts-ui-based composites,
-      Route Handler proxy
-- [ ] All diagrams pass `npm run lint:md` and use the accessible Mermaid palette
+- [ ] Create `specs/apps/investment-oracle/` mirroring `specs/apps/crud/`:
+  - [ ] `README.md`
+  - [ ] `c4/` (System Context, Container, Component diagrams as Mermaid)
+  - [ ] `be/gherkin/` (one `.feature` per FR group: sources, analyses,
+        report, edits, guardrails, determinism)
+  - [ ] `fe/gherkin/` (one `.feature` per UX flow: ingest, generate,
+        manual-edit, llm-edit, history)
+  - [ ] `contracts/openapi.yaml` (OpenAPI 3.1)
+  - [ ] `contracts/project.json` (Nx project; `lint` and `docs` targets)
+- [ ] Validate via `npx nx run investment-oracle-contracts:lint`
 
-## Phase 3 — OpenAPI contract (`pdf-chat-contracts`)
+## Phase 2 — Tauri 2 + React + Vite scaffolding
 
-- [ ] Write `specs/apps/pdf-chat/contracts/openapi.yaml` (root with `$ref`s into
-      `paths/` and `schemas/`)
-- [ ] Write `paths/health.yaml`, `paths/pdfs.yaml`, `paths/chat.yaml`
-- [ ] Write `schemas/pdf.yaml` (Pdf, PdfListResponse, PdfUploadResponse),
-      `schemas/chat.yaml` (ChatMessage, ChatRequest, ChatStreamFrame),
-      `schemas/error.yaml` (ErrorResponse), `schemas/health.yaml`
-- [ ] Annotate the streaming response with the prose limitation note from tech-docs.md
-- [ ] Write `.spectral.yaml` (camelCase rule, description-required rule)
-- [ ] Write `redocly.yaml`
-- [ ] Write `specs/apps/pdf-chat/contracts/project.json` with `lint`, `bundle`, `docs`
-      targets (mirror `crud-contracts`)
-- [ ] Write `specs/apps/pdf-chat/contracts/README.md`
-- [ ] `npx nx run pdf-chat-contracts:lint` exits 0
-- [ ] `npx nx run pdf-chat-contracts:bundle` produces `generated/openapi-bundled.{yaml,json}`
+- [ ] `npx nx generate @nx/vite:app investment-oracle-fe --framework=react`
+      (or run `npm create tauri-app@latest` and import into Nx — see Tauri docs)
+- [ ] Initialise Tauri 2 in `apps/investment-oracle-fe/src-tauri/`:
+  - [ ] `Cargo.toml` with `tauri = "2"`, `tauri-plugin-shell = "2"`
+  - [ ] `tauri.conf.json` with `bundle.externalBin = ["binaries/investment-oracle-be"]`
+  - [ ] `src/main.rs` per [tech-docs Tauri sidecar spawn snippet](./tech-docs.md#tauri-sidecar-spawn--rust)
+- [ ] Wire `@open-sharia-enterprise/ts-ui` as a workspace dependency
+      (mandatory; no app-local primitives)
+- [ ] Verify dev mode: `npx nx run investment-oracle-fe:dev` opens a Tauri
+      window pointing at the Vite dev server
+- [ ] Add Nx targets: `dev`, `build`, `tauri-build`, `typecheck`, `lint`,
+      `test:unit`, `test:e2e`, `codegen`, `spec-coverage`
 
-## Phase 4 — Gherkin scenarios (BE)
+## Phase 3 — Sidecar Python project scaffolding
 
-- [ ] `specs/apps/pdf-chat/be/gherkin/health/health-check.feature` (1 scenario)
-- [ ] `specs/apps/pdf-chat/be/gherkin/pdfs/upload.feature` (~5 — happy, oversize, wrong
-      type, empty, malformed)
-- [ ] `pdfs/list.feature` (~3)
-- [ ] `pdfs/delete.feature` (~3 — happy, 404, cascade chunks)
-- [ ] `sessions/lifecycle.feature` (~5 — create, list, get, patch model, delete)
-- [ ] `sessions/multi-pdf.feature` (~3 — attach two, attach three via patch, retrieval
-      union)
-- [ ] `sessions/persistence.feature` (~3 — restart preserves history; mid-stream crash;
-      cascade on delete)
-- [ ] `chat/streaming.feature` (~4 — SSE shape, [DONE] sentinel, mid-stream error)
-- [ ] `chat/rag-retrieval.feature` (~3 — top-k, empty index, similarity ordering)
-- [ ] `chat/model-selection.feature` (~3 — Haiku, Gemini, default-from-session)
-- [ ] `guardrails/rate-limit.feature` (~3 — chat over limit, upload over limit, headers)
-- [ ] `guardrails/content-filter.feature` (~3 — input block, output block, disabled
-      flag noop)
-- [ ] `guardrails/cost-cap.feature` (~3 — session cap, day cap, usage upsert)
-- [ ] `test-support/test-api.feature` (~2 — db reset gated by env flag)
-- [ ] All `.feature` files lint clean
+- [ ] Create `apps/investment-oracle-be/` with `pyproject.toml` pinning:
+  - [ ] runtime: `fastapi`, `uvicorn[standard]`, `sse-starlette`,
+        `sqlalchemy[asyncio]`, `asyncpg`, `pypdf`, `anthropic==0.97.*`,
+        `google-genai==1.73.*`, `httpx`, `slowapi`, `pydantic-settings`,
+        `python-multipart`
+  - [ ] test stack: `pytest`, `pytest-bdd`, `pytest-asyncio`,
+        `pytest-httpx`, `freezegun`, `coverage`
+  - [ ] lint: `ruff`
+  - [ ] typecheck: `pyright`
+  - [ ] packaging: `pyinstaller`
+- [ ] Add Nx targets: `dev`, `build`, `typecheck`, `lint`, `test:unit`,
+      `test:integration`, `test:quick`, `codegen`, `spec-coverage`,
+      `pyinstaller-build`
+- [ ] Confirm PyMuPDF is **not** in deps; document the ban in
+      `apps/investment-oracle-be/CONTRIBUTING.md`
+- [ ] Update `rhino-cli java validate-annotations` (or the equivalent
+      scope check) to flag PyMuPDF if introduced — extend the existing dep
+      scope check
 
-## Phase 5 — Gherkin scenarios (FE)
+## Phase 4 — Postgres + pgvector wiring
 
-- [ ] `specs/apps/pdf-chat/fe/gherkin/library/library-list.feature` (~3)
-- [ ] `library/delete-pdf.feature` (~2)
-- [ ] `sessions/sessions-list.feature` (~3 — list, last activity, delete)
-- [ ] `sessions/new-session-dialog.feature` (~3 — pick PDFs, pick model, validation)
-- [ ] `sessions/manage-attached-pdfs.feature` (~2 — add, remove)
-- [ ] `upload/drag-drop.feature` (~3)
-- [ ] `upload/validation.feature` (~3)
-- [ ] `chat/chat-flow.feature` (~4 — load history on mount; persists on send)
-- [ ] `chat/model-toggle.feature` (~2)
-- [ ] `chat/streaming-display.feature` (~2)
-- [ ] `guardrails/rate-limit-banner.feature` (~2)
-- [ ] `guardrails/content-filter-feedback.feature` (~2)
-- [ ] `guardrails/cost-cap-banner.feature` (~2)
-- [ ] All `.feature` files lint clean
+- [ ] Confirm `docker-compose.integration.yml` already uses
+      `pgvector/pgvector:pg16` (added by the crud-be plans)
+- [ ] Add `init/01-vector.sql` invoking `CREATE EXTENSION IF NOT EXISTS vector;`
+      to the compose volume
+- [ ] Write Alembic migration for the six tables in
+      [tech-docs.md schema](./tech-docs.md#database-schema)
+- [ ] Verify ivfflat index builds: `docker compose up`,
+      `\d+ source_chunks` shows the index
 
-## Phase 6 — Backend project scaffold (`pdf-chat-be`)
+## Phase 5 — Contract codegen
 
-- [ ] Create `apps/pdf-chat-be/` directory tree per tech-docs.md repository layout
-- [ ] Write `pyproject.toml` runtime deps: `fastapi[standard]`, `uvicorn[standard]`,
-      `sqlalchemy`, `alembic`, `psycopg2-binary`, `pgvector`, `pydantic[email]`,
-      `pydantic-settings`, `python-multipart`, `pypdf`, `pdfplumber`, `httpx`,
-      `sse-starlette`, `tiktoken`, `slowapi`
-  - [ ] Add test stack to `pyproject.toml`: `pytest`, `pytest-bdd`, `pytest-asyncio`,
-        `pytest-httpx`, `coverage[toml]`, `freezegun` (for daily-cap time-travel)
-  - [ ] Add lint (`ruff`) and typecheck (`pyright`) to `pyproject.toml`
-  - Note: this stack is identical to `crud-be-python-fastapi` plus the AI-specific
-    deps (`sse-starlette`, `tiktoken`, `slowapi`, `pypdf`, `pdfplumber`, `pgvector`)
-- [ ] Write `.python-version` (3.13)
-- [ ] Write `apps/pdf-chat-be/project.json` with all mandatory targets (mirror
-      `crud-be-python-fastapi`, with `cwd: apps/pdf-chat-be`, port 8501, coverage
-      threshold 90)
-- [ ] Write `Dockerfile.integration`
-- [ ] Write `docker-compose.integration.yml` using image
-      `pgvector/pgvector:pg16` (NOT vanilla `postgres:16`)
-- [ ] Write `apps/pdf-chat-be/README.md`
-- [ ] Add `.env.example` with all FR-11 vars
-- [ ] `uv sync` succeeds inside `apps/pdf-chat-be/`
+- [ ] Author `specs/apps/investment-oracle/contracts/openapi.yaml`
+- [ ] Wire `npx nx run investment-oracle-contracts:lint` (Spectral)
+- [ ] Wire `npx nx run investment-oracle-be:codegen` (e.g.,
+      `datamodel-code-generator` or `openapi-python-client`) generating Pydantic
+      request/response models into `generated-contracts/`
+- [ ] Wire `npx nx run investment-oracle-fe:codegen` generating TypeScript
+      types into `apps/investment-oracle-fe/src/api/generated/` via
+      `openapi-typescript`
+- [ ] `codegen` is a dependency of `typecheck` and `build` for both
+      projects (matches crud-\* convention)
 
-## Phase 7 — Backend codegen + Alembic migration
+## Phase 6 — BE: domain layer
 
-- [ ] Add `tags` and `implicitDependencies: ["pdf-chat-contracts", "rhino-cli"]` to
-      `apps/pdf-chat-be/project.json`
-- [ ] `npx nx run pdf-chat-be:codegen` produces
-      `apps/pdf-chat-be/generated_contracts/__init__.py` with Pydantic v2 models
-- [ ] Initialise Alembic: `alembic init alembic` from inside `apps/pdf-chat-be/`
-- [ ] Author migration `0001_initial_schema.py` per tech-docs.md schema, creating in
-      one revision: `pdfs`, `pdf_chunks` (with ivfflat index), `sessions`,
-      `session_pdfs`, `messages`, `token_usage`, plus
-      `CREATE EXTENSION IF NOT EXISTS vector;`
-- [ ] `alembic upgrade head` succeeds against the docker-compose pgvector image
+- [ ] Implement `domain/chat_provider.py` Protocol + Anthropic + Gemini
+      implementations per [tech-docs.md provider abstraction](./tech-docs.md#provider-abstraction)
+- [ ] Implement `domain/embedder.py` (Gemini-only) with
+      `output_dimensionality=768` and `task_type` parameterisation
+- [ ] Implement `domain/chunker.py` (recursive splitter on paragraph →
+      sentence → character; 800/100 default)
+- [ ] Implement `domain/retriever.py` (multi-source pgvector query per
+      [tech-docs.md SQL](./tech-docs.md#multi-source-retrieval-sql))
+- [ ] Implement `domain/content_filter.py` Protocol + regex impl; load
+      rules from `content_filter/default_rules.txt`
+- [ ] Implement `domain/cost_cap.py` reading `token_usage`, returning
+      `BudgetState` (`under_cap` / `at_cap` / `over_cap`) before each call
 
-## Phase 8 — Backend implementation
+## Phase 7 — BE: API layer
 
-- [ ] `src/pdf_chat_be/config.py` — pydantic-settings per tech-docs
-- [ ] `src/pdf_chat_be/main.py` — FastAPI app, mount routers, CORS middleware,
-      slowapi limiter, exception handlers for `RateLimitExceeded`,
-      `ContentFilterBlocked`, `TokenBudgetExceeded` — each rewritten to canonical
-      `ErrorResponse`
-- [ ] `routers/health.py`
-- [ ] `routers/pdfs.py` — POST upload, GET list, DELETE; rate-limited
-- [ ] `routers/sessions.py` — POST/GET/PATCH/DELETE sessions, POST messages (SSE);
-      rate-limited
-- [ ] `services/pdf_extraction.py` — pypdf wrapper
-- [ ] `services/chunking.py` — token-window chunker via `tiktoken`
-- [ ] `services/embedding.py` — calls OpenRouter or mock based on
-      `settings.mock_openrouter`
-- [ ] `services/vector_store.py` — pgvector cosine top-k via SQLAlchemy, scoped by
-      `session_pdfs`
-- [ ] `services/rag.py` — retrieve + prompt assembly, history-aware
-- [ ] `services/openrouter_chat.py` — streaming generator (mock-aware)
-- [ ] `services/sessions_service.py` — session lifecycle, message persistence
-- [ ] `services/rate_limiter.py` — slowapi `Limiter` + per-route decorators
-- [ ] `services/content_filter.py` — `ContentFilter` Protocol +
-      `RegexBlocklistFilter` + `NoopFilter`; reads blocklist file once on startup
-- [ ] `services/cost_cap.py` — session + day budget assertions + UPSERT recorder
-- [ ] `services/token_counter.py` — `tiktoken` for input, char-approx for output
-- [ ] `infrastructure/repositories.py` — async SQLAlchemy session
-- [ ] `infrastructure/openrouter_client.py` — httpx wrapper
-- [ ] All modules type-clean: `npx nx run pdf-chat-be:typecheck` exits 0
-- [ ] All modules lint-clean: `npx nx run pdf-chat-be:lint` exits 0
+- [ ] `api/health.py` — `GET /health`
+- [ ] `api/sources.py` — `POST`, `GET`, `DELETE`; pypdf extraction → chunk
+      → embed → store
+- [ ] `api/analyses.py` — CRUD on analyses + `analysis_sources`
+- [ ] `api/report.py` — `POST` (generate, SSE), `PATCH` (manual edit), `POST :edit`
+      (LLM section rewrite, SSE), `GET /revisions`, `POST /revisions/{rid}:restore`
+- [ ] Wire content filter and cost cap as FastAPI dependencies on every
+      chat-touching route
+- [ ] Wire `slowapi` rate-limit dependency, gated by `RATE_LIMIT_ENABLED`
 
-## Phase 9 — Backend tests (unit, integration)
+## Phase 7a — API smoke (curl assertions)
 
-- [ ] `tests/unit/steps/` step defs (pytest-bdd) consuming
-      `specs/apps/pdf-chat/be/gherkin/**/*.feature`, including
-      `sessions/`, `chat/`, and `guardrails/` domains
-- [ ] Unit fixtures mock OpenRouter via `pytest-httpx` and pypdf via patch
-- [ ] `tests/integration/steps/` consume the same features against real
-      Postgres+pgvector via docker-compose; OpenRouter still mocked
-- [ ] `tests/fixtures/sample.pdf` (small public-domain PDF, e.g., RFC 2119 text)
-- [ ] `tests/fixtures/sample-b.pdf` (second small PDF, used for multi-PDF tests)
-- [ ] `tests/fixtures/openrouter.json` cassette per tech-docs
-- [ ] `tests/fixtures/blocklist.txt` (test-only patterns; never seeds prod)
-- [ ] Daily-cap tests use `freezegun` to advance virtual `usage_date`
-- [ ] Rate-limit tests reset slowapi's in-memory store between scenarios
-- [ ] `npx nx run pdf-chat-be:test:unit` exits 0
-- [ ] `npx nx run pdf-chat-be:test:quick` reports ≥90% line coverage
-- [ ] `npx nx run pdf-chat-be:test:integration` exits 0
+Explicit curl invocations against every FastAPI endpoint. Run with the BE sidecar
+started via `nx run investment-oracle-be:dev` (port 8501 by default).
 
-## Phase 10 — Frontend project scaffold (`pdf-chat-fe`)
+- [ ] Health check:
+      `curl -s http://localhost:8501/health | jq .`
+      → expect `{"status": "ok"}` (HTTP 200)
+- [ ] Upload a source PDF:
+      `curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:8501/api/v1/sources -F "file=@plans/in-progress/2026-04-27__add-investment-oracle-app/fixture/aapl-fy2024-10k.pdf"`
+      → expect `201`
+- [ ] List sources:
+      `curl -s http://localhost:8501/api/v1/sources | jq '.[].id'`
+      → expect at least one source ID in the array
+- [ ] Reject oversized upload (create a 30 MB dummy file first):
+      `dd if=/dev/zero bs=1m count=30 | curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:8501/api/v1/sources -F "file=@/dev/stdin;filename=big.pdf"`
+      → expect `413`
+- [ ] Create an analysis:
+      `curl -s -X POST http://localhost:8501/api/v1/analyses -H 'Content-Type: application/json' -d '{"name":"smoke","source_ids":["<id-from-above>"]}' | jq .`
+      → expect `201` with an `id` field
+- [ ] Get an analysis:
+      `curl -s http://localhost:8501/api/v1/analyses/<id> | jq '{id,name}'`
+      → expect `200` with name `"smoke"`
+- [ ] Delete a source tied to an analysis:
+      `curl -s -o /dev/null -w "%{http_code}" -X DELETE http://localhost:8501/api/v1/sources/<source-id>`
+      → expect `409` (source in use)
+- [ ] Delete an analysis:
+      `curl -s -o /dev/null -w "%{http_code}" -X DELETE http://localhost:8501/api/v1/analyses/<id>`
+      → expect `200`
+- [ ] List revisions (requires a generated report — run after Phase 9 with a cassette):
+      `curl -s http://localhost:8501/api/v1/analyses/<id>/report/revisions | jq 'length'`
+      → expect `≥ 1`
+- [ ] Manual edit (PATCH report):
+      `curl -s -o /dev/null -w "%{http_code}" -X PATCH http://localhost:8501/api/v1/analyses/<id>/report -H 'Content-Type: application/json' -d '{"content_md":"# Edited"}'`
+      → expect `200`
+- [ ] Confirm all 11 endpoints documented in
+      [tech-docs.md](./tech-docs.md#openapi-endpoints) have been exercised above;
+      check for any 500 responses in the sidecar logs
 
-- [ ] Create `apps/pdf-chat-fe/` directory tree per tech-docs
-- [ ] `package.json` deps: `next@^16`, `react@^19`, `react-dom@^19`,
-      `ai@^5`, `@ai-sdk/react@^3` (v3.x ships aligned with `ai@^5`; verify
-      `npm info @ai-sdk/react versions` if install fails with peer-dep conflict),
-      `@open-sharia-enterprise/ts-ui: "*"`,
-      `@open-sharia-enterprise/ts-ui-tokens: "*"`, `@tailwindcss/postcss`,
-      `tailwindcss`. Dev deps mirror `crud-fe-ts-nextjs`
-- [ ] `next.config.ts`, `tsconfig.json`, `oxlint.json` mirror `crud-fe-ts-nextjs`
-- [ ] `vitest.config.ts` mirror `crud-fe-ts-nextjs`
-- [ ] `apps/pdf-chat-fe/project.json` with mandatory targets, port 3501, coverage 70
-- [ ] `apps/pdf-chat-fe/README.md`
-- [ ] `apps/pdf-chat-fe/.env.example`
-- [ ] `npm install` resolves the workspace links to ts-ui
+## Phase 8 — BE: prompts
 
-## Phase 11 — Frontend ts-ui wiring + globals
+- [ ] `prompts/report_generation.md` — six-section structured prompt
+      with explicit "do not invent figures" rule and the not-investment-advice
+      footer requirement on the Recommendation section
+- [ ] `prompts/report_edit.md` — section-rewrite prompt that preserves
+      heading and the disclaimer footer
+- [ ] Both prompt files are loaded at startup; tests assert that the
+      outbound request system text **starts with** the file content
+      (fingerprint, not prose)
 
-- [ ] `src/app/globals.css` imports `@open-sharia-enterprise/ts-ui-tokens/src/tokens.css`
-      on the first line
-- [ ] `src/app/layout.tsx` includes the global CSS and renders `<html lang="en">`
-- [ ] Verify Nx graph: `npx nx graph` shows `pdf-chat-fe → ts-ui` and
-      `pdf-chat-fe → ts-ui-tokens`
-- [ ] Spot-check: searching `apps/pdf-chat-fe/src` for `function Button|function Input|function Card|function Label|function Dialog|function Alert` returns zero matches (ban on local primitives)
+## Phase 9 — BE: tests (unit, level 1 of 3)
 
-## Phase 12 — Frontend implementation (composites + pages)
+- [ ] Author `tests/unit/` step implementations consuming the Gherkin
+      files from `specs/apps/investment-oracle/be/gherkin/`
+- [ ] Use `pytest-httpx` cassettes for both Anthropic and Gemini base URLs
+      per [tech-docs.md cassette structure](./tech-docs.md#mock-cassette-structure)
+- [ ] Assert outbound-request fingerprint, side effects, structural shape;
+      never on LLM prose
+- [ ] Confirm coverage ≥ 90 % via `nx run investment-oracle-be:test:quick`
 
-- [ ] `src/components/UploadZone.tsx` — composes `Card`, `Button`, `Alert` from ts-ui
-- [ ] `src/components/ChatTranscript.tsx` — composes `Card`; hydrates from session
-      detail; renders streaming-token deltas appended to the last message
-- [ ] `src/components/ChatComposer.tsx` — composes `Input`, `Button`
-- [ ] `src/components/ModelSelector.tsx` — composes `Button`, `Label`; PATCHes the
-      session on change
-- [ ] `src/components/SessionList.tsx` — composes `Card`, `Button`
-- [ ] `src/components/NewSessionDialog.tsx` — composes `Dialog`, `Button`, `Label`,
-      `Input`; multi-select PDFs + model
-- [ ] `src/components/AttachedPdfManager.tsx` — composes `Card`, `Button`; add/remove
-      PDFs from a session via PATCH
-- [ ] `src/components/GuardrailBanner.tsx` — composes `Alert`; renders 429 / 422 /
-      stream-embedded error frames with a `Retry-After` countdown
-- [ ] `src/app/page.tsx` — Home: PDFs section + Sessions section, "New session" button
-- [ ] `src/app/chat/[sessionId]/page.tsx` — session-scoped chat page; loads message
-      history on mount; wires `useChat` to `/api/chat` with `sessionId` in body
-- [ ] `src/app/api/chat/route.ts` — Route Handler SSE proxy per tech-docs (forwards to
-      `POST /api/v1/sessions/{id}/messages`, propagates `429`/`422` and `Retry-After`)
-- [ ] `src/lib/api.ts` — typed client wrapping fetch over generated-contracts
-      (sessions CRUD + post-message)
-- [ ] `src/lib/env.ts` — read `PDF_CHAT_BE_URL`, `NEXT_PUBLIC_DEFAULT_MODEL`
-- [ ] `npx nx run pdf-chat-fe:codegen` exits 0
-- [ ] `npx nx run pdf-chat-fe:typecheck` exits 0
-- [ ] `npx nx run pdf-chat-fe:lint` exits 0
+## Phase 10 — BE: tests (integration, level 2 of 3)
 
-## Phase 13 — Frontend tests (unit only — no integration level)
+- [ ] Author `tests/integration/` step implementations for the same
+      Gherkin files
+- [ ] Spin up `docker-compose.integration.yml` Postgres + pgvector; load
+      the AAPL fixture PDF; assert ingest pipeline writes correct chunks
+- [ ] Vendor HTTP still mocked via cassettes — only DB + parser are real
+- [ ] `nx run investment-oracle-be:test:integration` passes; `cache: false`
+      in `nx.json`
 
-> The frontend ships **two** test levels: `test:unit` (this phase) and `test:e2e`
-> (Phase 15). There is no `pdf-chat-fe:test:integration` target — integration
-> concerns are covered by `pdf-chat-be:test:integration` plus the two e2e suites.
+## Phase 11 — BE: tests (e2e, level 3 of 3)
 
-- [ ] Component unit tests for each composite (vitest + @testing-library/react)
-- [ ] Optional vitest-cucumber wiring of `specs/apps/pdf-chat/fe/gherkin` if FE
-      Gherkin coverage is required by `spec-coverage`
-- [ ] Mock the Route Handler / fetch boundary in component tests; do not hit FastAPI
-- [ ] All FE source files are `.ts` / `.tsx` (TypeScript end-to-end; no `.js` /
-      `.jsx` in `apps/pdf-chat-fe/src/`)
-- [ ] `npx nx run pdf-chat-fe:test:quick` exits 0 with ≥70% coverage
-- [ ] If a primitive is missing in ts-ui and you found yourself reaching for one: add
-      it to `libs/ts-ui` first via `swe-ui-maker`, land that change in a separate
-      commit, then proceed (do **not** inline the primitive here)
+- [ ] Create `apps/investment-oracle-be-e2e/` Playwright-bdd project
+- [ ] Use `playwright.config.ts` `webServer` to launch the FastAPI sidecar
+- [ ] Cassettes still in play; test the full HTTP path against a running
+      uvicorn + real DB
 
-## Phase 14 — BE E2E (`pdf-chat-be-e2e`)
+## Phase 12 — BE: PyInstaller packaging
 
-- [ ] Scaffold `apps/pdf-chat-be-e2e/` mirroring `crud-be-e2e/`
-- [ ] `playwright.config.ts` boots `pdf-chat-be` with `MOCK_OPENROUTER=true` via
-      `webServer`
-- [ ] BDD glue under `tests/steps/` consumes `specs/apps/pdf-chat/be/gherkin/`
-- [ ] Add `apps/pdf-chat-be-e2e/project.json` mandatory targets
-- [ ] `implicitDependencies: ["pdf-chat-be", "pdf-chat-contracts"]`
-- [ ] `npx nx run pdf-chat-be-e2e:test:e2e` exits 0
-- [ ] `npx nx run pdf-chat-be-e2e:spec-coverage` exits 0
+- [ ] Author `pyinstaller.spec` with `--onedir` build mode
+- [ ] Build target: `nx run investment-oracle-be:pyinstaller-build`
+      produces `dist/investment-oracle-be/` folder
+- [ ] Post-build script copies the folder into
+      `apps/investment-oracle-fe/src-tauri/binaries/investment-oracle-be-{target-triple}/`
+- [ ] Smoke: launch the produced binary, hit `/health`, expect 200
 
-## Phase 15 — FE E2E (`pdf-chat-fe-e2e`)
+## Phase 13 — FE: tests (unit, level 1 of 2)
 
-- [ ] Scaffold `apps/pdf-chat-fe-e2e/` mirroring `crud-fe-e2e/`
-- [ ] `playwright.config.ts` boots BOTH `pdf-chat-be` (with `MOCK_OPENROUTER=true`)
-      and `pdf-chat-fe` via `webServer`
-- [ ] BDD glue under `tests/steps/` consumes `specs/apps/pdf-chat/fe/gherkin/`
-- [ ] Add `apps/pdf-chat-fe-e2e/project.json` mandatory targets
-- [ ] `implicitDependencies: ["pdf-chat-fe", "pdf-chat-be", "pdf-chat-contracts"]`
-- [ ] Tests use a fixture PDF and assert that streamed tokens render in the DOM
-- [ ] `npx nx run pdf-chat-fe-e2e:test:e2e` exits 0
-- [ ] `npx nx run pdf-chat-fe-e2e:spec-coverage` exits 0
+- [ ] Vitest + @testing-library/react; no integration level
+- [ ] All BE HTTP mocked via MSW
+- [ ] All Tauri APIs mocked via `@tauri-apps/api/__mocks__`
+- [ ] TypeScript-strict (`tsc --noEmit` zero errors); `oxlint` zero
+- [ ] Coverage ≥ 70 % via `nx run investment-oracle-fe:test:quick`
 
-## Phase 16 — Root npm scripts + workspace metadata
+## Phase 14 — FE: components
 
-- [ ] Root `package.json` add `dev:pdf-chat-be` and `dev:pdf-chat-fe` scripts
-- [ ] Root `README.md` add the new family to the "Demos" section
-- [ ] `CLAUDE.md` Tech Stack section updated to list four new apps
-- [ ] `CLAUDE.md` coverage threshold table includes `pdf-chat-be` (≥90%) and
-      `pdf-chat-fe` (≥70%)
-- [ ] `AGENTS.md` updated if the doc enumerates demo apps
+- [ ] `DisclaimerBanner.tsx` (sticky top, persistent)
+- [ ] `SourcesPanel.tsx` (drop zone, list, multi-select, delete)
+- [ ] `ReportEditor.tsx` (CodeMirror 6 + markdown mode; controlled
+      component; SSE chunk append)
+- [ ] `PromptInput.tsx` (section selector + prompt text + send)
+- [ ] `ModelSelector.tsx` (dropdown with the two model ids)
+- [ ] `RevisionHistoryDrawer.tsx` (list, restore action)
+- [ ] All primitives sourced from `@open-sharia-enterprise/ts-ui`
 
-## Phase 17 — CI workflow files
+## Phase 15 — FE: SSE client wiring
 
-- [ ] Author `.github/workflows/test-pdf-chat-be.yml` mirroring
-      `test-crud-be-python-fastapi.yml`
-- [ ] Author `.github/workflows/test-pdf-chat-fe.yml` mirroring
-      `test-crud-fe-ts-nextjs.yml`
-- [ ] Author `.github/workflows/test-pdf-chat-be-e2e.yml` mirroring
-      backend-e2e reusable; pass `MOCK_OPENROUTER=true`
-- [ ] Author `.github/workflows/test-pdf-chat-fe-e2e.yml` mirroring
-      frontend-e2e reusable; pass `MOCK_OPENROUTER=true`
-- [ ] All four workflows reference the correct Nx project names
-- [ ] All four workflows include `workflow_dispatch` and the same scheduled cron used
-      by the crud workflows
+- [ ] `lib/sse-client.ts` using `@microsoft/fetch-event-source` per
+      [tech-docs.md FE SSE consumer](./tech-docs.md#fe-sse-consumer--typescript)
+- [ ] Component integration tests assert chunks render incrementally
+      (Vitest fake timers + scripted async generator)
 
-## Phase 18 — `.claude/` and `.opencode/` sync
+## Phase 16 — FE: tests (e2e, level 2 of 2)
 
-- [ ] No new agents required for this plan (existing `swe-python-dev`,
-      `swe-typescript-dev`, `swe-e2e-dev`, `swe-ui-maker` cover the scope)
-- [ ] `npm run sync:claude-to-opencode` exits 0
-- [ ] Verify no skill or agent references stale `crud-` paths after the sync
+- [ ] Create `apps/investment-oracle-fe-e2e/` Playwright-bdd project
+- [ ] `playwright.config.ts` runs `vite preview` (built FE in browser
+      mode) plus the FastAPI sidecar
+- [ ] Cassettes still in play
+- [ ] **No** Tauri-shell automated E2E — verified manually only
+      (Phase 22)
 
-## Phase 19 — Final stale-reference and naming audits
+## Phase 16a — Playwright MCP UI assertion
 
-- [ ] `grep -r "demo-be-\|demo-fe-\|demo-fs-" apps/pdf-chat-* specs/apps/pdf-chat`
-      returns zero matches
-- [ ] `grep -r "PyMuPDF\|fitz\|pymupdf" apps/pdf-chat-be` returns zero matches
-- [ ] `grep -rE "(function|const) (Button|Input|Card|Label|Dialog|Alert)" apps/pdf-chat-fe/src`
-      returns zero matches (ts-ui consumption guard)
-- [ ] `grep -rE "@radix-ui/[a-z]" apps/pdf-chat-fe/src` returns zero matches (must
-      go through ts-ui's `radix-ui` unified import)
-- [ ] `grep -r "anthropic/claude-haiku-4-5\|anthropic/claude-sonnet-4-6" apps/pdf-chat-*`
-      returns zero matches (model ids use dot, not hyphen)
-- [ ] No `.env` files with real keys are staged: `git status | grep "\.env"` shows
-      only `.env.example`
-- [ ] `grep -rE "rate_limit|content_filter|cost_cap" specs/apps/pdf-chat/be/gherkin/`
-      returns matches in the `guardrails/` domain (sanity)
-- [ ] `grep -rE "/api/v1/pdfs/[^/]+/chat" apps/pdf-chat-* specs/apps/pdf-chat`
-      returns zero matches (the per-PDF chat endpoint was superseded by sessions)
-- [ ] `grep -rE "@router.*pdfs/.*chat" apps/pdf-chat-be/src` returns zero matches
-- [ ] `npm run lint:md` exits 0
+Agent-executable manual UI verification using Playwright MCP browser tools.
+Run this phase against the `vite preview` build (browser mode, no Tauri shell)
+after Phase 16 FE e2e tests pass.
 
-## Phase 20 — Workspace validation
+- [ ] Start the FE preview server and BE sidecar:
+      `nx run investment-oracle-fe:build` then `nx run investment-oracle-fe:preview`
+      (also ensure `nx run investment-oracle-be:dev` is running)
+- [ ] `browser_navigate` to `http://localhost:1420`
+- [ ] `browser_snapshot` — verify the split view renders: Sources pane on the
+      left, Report editor on the right with a vertical divider
+- [ ] `browser_snapshot` — verify the disclaimer banner ("Demo output, not
+      investment advice") is visible at the top of the window
+- [ ] `browser_take_screenshot` — capture baseline layout screenshot
+- [ ] `browser_console_messages` — confirm zero JavaScript errors in the console
+- [ ] `browser_click` on the Sources drop zone — verify the drag-and-drop ingest
+      area is interactive (no JS error thrown on click)
+- [ ] `browser_snapshot` — verify the model selector dropdown is visible in the
+      top bar and shows `claude-haiku-4-5` as the default selection
+- [ ] `browser_network_requests` — confirm no unexpected failed network requests
+      on initial page load
+- [ ] Document results: note any rendering discrepancies found
 
-- [ ] `npm install` from clean state succeeds
-- [ ] `npx nx graph --file=/tmp/nx-graph-output.json` includes
-      `pdf-chat-be`, `pdf-chat-fe`, `pdf-chat-be-e2e`, `pdf-chat-fe-e2e`,
-      `pdf-chat-contracts`
-- [ ] `npx nx affected -t codegen` regenerates the new contracts and re-runs
-      dependents
+## Phase 17 — Spec coverage
 
-## Phase 21 — Quality gates
+- [ ] `nx run investment-oracle-be:spec-coverage` exits 0
+- [ ] `nx run investment-oracle-fe:spec-coverage` exits 0
+- [ ] Investigate any gaps; either add a step impl or remove the scenario
 
-> **Important**: Fix ALL failures found during quality gates, not just those caused by your
-> changes. This follows the root cause orientation principle — proactively fix preexisting
-> errors encountered during work. Do not defer or mention-and-skip existing issues.
+## Phase 18 — CI workflows
 
-- [ ] `npx nx affected -t typecheck` exits 0
-- [ ] `npx nx affected -t lint` exits 0
-- [ ] `npx nx affected -t test:quick` exits 0 with all coverage thresholds met
-- [ ] `npx nx run pdf-chat-be:test:integration` exits 0
-- [ ] `npx nx run pdf-chat-be-e2e:test:e2e` exits 0
-- [ ] `npx nx run pdf-chat-fe-e2e:test:e2e` exits 0
-- [ ] `npx nx affected -t spec-coverage` exits 0
-- [ ] `npx nx run rhino-cli:test:quick` exits 0 (template tooling regression)
+- [ ] Author `.github/workflows/test-investment-oracle-be.yml` mirroring
+      `test-crud-be.yml`
+- [ ] Author `.github/workflows/test-investment-oracle-fe.yml`
+- [ ] Author `.github/workflows/test-investment-oracle-be-e2e.yml`
+- [ ] Author `.github/workflows/test-investment-oracle-fe-e2e.yml`
+- [ ] Author `.github/workflows/build-investment-oracle-tauri.yml`
+      (macOS-arm64 only on CI; Windows + Linux as separate jobs gated by
+      `workflow_dispatch`)
+- [ ] Author `.github/workflows/smoke-investment-oracle-real-vendor.yml`
+      (workflow-dispatch + weekly schedule; sets `MOCK_LLM_PROVIDERS=false`;
+      asserts only HTTP 200 + clean SSE close + at least one chunk)
 
-## Phase 22 — Manual smoke
+## Phase 19 — Repo docs and convention pin
 
-- [ ] Terminal A: `npm run dev:pdf-chat-be` (port 8501)
-- [ ] Terminal B: `npm run dev:pdf-chat-fe` (port 3501)
-- [ ] Browser: open `http://localhost:3501/`
-- [ ] Upload `tests/fixtures/sample.pdf` and `tests/fixtures/sample-b.pdf`
-- [ ] Click "New session"; attach **both** PDFs; pick Claude Haiku 4.5; submit
-- [ ] Verify navigation to `/chat/<sessionId>` and chat composer renders ts-ui
-      Button + Input
-- [ ] Send a question that should retrieve from PDF B; verify streaming tokens appear
-      incrementally and cite content from PDF B
-- [ ] Hard-refresh the page; verify the prior turn re-renders from persisted history
-- [ ] Toggle model to Gemini 2.5 Flash Lite; resend a question; verify the recorded
-      OpenRouter request body contains `google/gemini-2.5-flash-lite`
-- [ ] Set `RATE_LIMIT_CHAT_PER_MINUTE=1` in BE env; spam-send two messages; confirm
-      the GuardrailBanner explains the 429 and shows a `Retry-After` countdown
-- [ ] Set `MAX_TOKENS_PER_SESSION=1`; send a message; confirm
-      `error.code = "token_budget_exceeded"` surfaces in the banner
-- [ ] Set `ENABLE_CONTENT_FILTER=true` and add a known phrase to the blocklist; send
-      it; confirm the inline content-filter feedback renders without persisting an
-      assistant message
-- [ ] Delete the session; home page reflects the change; PDFs remain
-- [ ] Delete a PDF; home page reflects the change; sessions referencing that PDF
-      handle the cascade gracefully (404 on the missing PDF, banner explains)
+- [ ] Author `governance/development/pattern/llm-demo-pattern.md` codifying:
+  - direct vendor SDKs over proxies
+  - cassette-driven CI
+  - three-level BE / two-level FE testing
+  - LLM determinism strategy
+  - cost-cap + content-filter guardrails
+- [ ] Add `apps/investment-oracle-be/README.md` and
+      `apps/investment-oracle-fe/README.md` with run / dev / test instructions
+- [ ] Update root `CLAUDE.md` "Current Apps" list to include the four new
+      projects
+- [ ] Update `package.json` scripts: `dev:investment-oracle`,
+      `build:investment-oracle`
 
-## Phase 23 — Markdown quality gate
+## Phase 20 — Quality gate
 
-- [ ] `npm run lint:md` exits 0
-- [ ] `npm run lint:md:fix` if needed; re-run until clean
+- [ ] Run all 11 quality-gate commands listed in [README](./README.md#quality-gates-must-all-pass-before-merge)
+- [ ] Re-run after every fix; no item ships green if any other goes red
+
+## Phase 21 — Fix-all sweep (root-cause orientation)
+
+- [ ] Run `npm run lint:md`, `nx affected -t lint typecheck test:quick spec-coverage`
+- [ ] Fix every finding at the root cause (per the
+      [Root Cause Orientation principle](../../../governance/principles/README.md));
+      do **not** suppress or stub
+- [ ] Re-run until clean
+
+## Phase 22 — Manual smoke (Tauri shell + real-vendor sanity)
+
+- [ ] Build the Tauri bundle:
+      `nx run investment-oracle-fe:tauri-build` (macOS arm64)
+- [ ] Launch the resulting `.app`
+- [ ] Drag `fixture/aapl-fy2024-10k.pdf` into Sources; confirm ingest
+      completes within ~10 s
+- [ ] Drag `fixture/msft-fy2024-annual-report.pdf` into Sources
+- [ ] Create an analysis attaching both; click Generate report; confirm
+      six sections stream in
+- [ ] Manual edit: change a sentence in Risks; confirm the saved revision
+      shows in the drawer
+- [ ] LLM edit: select Recommendation, prompt _"more cautious"_; confirm
+      the section is rewritten and a new `llm_edit` revision row exists
+- [ ] Switch model dropdown to `gemini-2.5-flash-lite`; trigger a fresh
+      LLM edit; confirm outbound traffic now hits Google (use macOS
+      `Console.app` or `lsof -i` while filtering by sidecar pid)
+- [ ] Confirm the disclaimer banner is visible at all times
+- [ ] Confirm the sidecar process exits when the Tauri window is closed
+
+## Phase 23 — Plan-quality-gate
+
+- [ ] Run `governance/workflows/plan/plan-quality-gate.md` over the
+      authored plan: `plan-checker` → `plan-fixer` until two consecutive
+      zero-strict-threshold validations
+- [ ] Audit reports archived under `generated-reports/plan__*`
 
 ## Phase 24 — Commit and push
 
-- [ ] Review `git status` — no unintended files staged
-- [ ] Suggested split (Conventional Commits):
-  - `feat(specs): add specs/apps/pdf-chat tree (c4, gherkin, contracts)`
-  - `feat(apps): add pdf-chat-be Python/FastAPI demo backend with sessions, multi-pdf RAG, guardrails`
-  - `feat(apps): add pdf-chat-fe Next.js 16 demo consuming ts-ui`
-  - `feat(apps): add pdf-chat-be-e2e and pdf-chat-fe-e2e Playwright suites`
-  - `ci(workflows): add test-pdf-chat-* GitHub Actions workflows`
-  - `docs(claude): document pdf-chat demo family in CLAUDE.md`
-- [ ] `git pull --rebase origin main` (skip if already up to date)
-- [ ] `git push origin main`
+### Commit guidelines
 
-### Post-push CI monitoring
+- [ ] Confirm linear history before pushing:
+      `git pull --rebase origin main`
+- [ ] Stage and commit thematically — one logical concern per commit; use
+      Conventional Commits format
+      ([commit-messages convention](../../../governance/development/workflow/commit-messages.md)):
+  - `feat(specs): ...` for spec area scaffolding
+  - `feat(be): ...` for BE domain / API / prompts / packaging
+  - `feat(fe): ...` for FE components / SSE wiring
+  - `test(be): ...` / `test(fe): ...` for test-level changes
+  - `test(e2e): ...` for e2e projects
+  - `docs(governance): ...` for LLM demo pattern convention
+  - `ci(investment-oracle): ...` for GitHub Actions workflows
+  - `chore(plans): ...` for plan archival
+- [ ] Do NOT bundle unrelated preexisting fixes with new feature commits;
+      each commit touches one logical concern (specs / be / fe / be-e2e /
+      fe-e2e / docs / ci) and never crosses domains
 
-- [ ] On GitHub Actions, manually dispatch each `test-pdf-chat-*.yml` workflow once;
-      verify all four pass
-- [ ] If any workflow fails: fix root cause, push follow-up commit, do not move to
-      Phase 25 until green
+### Push and CI verification
 
-## Phase 25 — Plan archival
+- [ ] Push direct to `main` per Trunk Based Development
+      ([git-push-default](../../../governance/development/workflow/git-push-default.md)):
+      `git push origin main`
+- [ ] Open the GitHub Actions tab for the `ose-primer` repository
+- [ ] Monitor the following workflows triggered by the push:
+  - `test-investment-oracle-be`
+  - `test-investment-oracle-fe`
+  - `test-investment-oracle-be-e2e`
+  - `test-investment-oracle-fe-e2e`
+  - `build-investment-oracle-tauri`
+- [ ] Verify all CI checks pass (green status)
+- [ ] If any CI check fails, fix the root cause immediately and push a
+      follow-up commit; do NOT proceed until CI is green
+- [ ] Move this plan to `plans/done/` once Phase 22 manual smoke passes,
+      CI is green, and the push is on `main`
 
-- [ ] `git mv plans/in-progress/2026-04-26__add-pdf-chat-apps plans/done/2026-04-26__add-pdf-chat-apps`
-- [ ] Update `plans/in-progress/README.md` — remove this plan's entry
-- [ ] Update `plans/done/README.md` — add this plan's entry with completion date
-- [ ] Commit: `chore(plans): move add-pdf-chat-apps to done`
+## Phase 25 — Post-merge
+
+- [ ] Update `plans/ideas.md` and `plans/backlog/` with follow-up notes
+      (export to PDF / DOCX, polyglot backend ports, real moderation
+      provider, Linux + Windows CI lanes)
+- [ ] Tag the release in the README's "What this template ships" table
+
+---
+
+**Reminder — root-cause orientation.** Encountering a preexisting bug,
+type error, or test flake during execution is **not** a deferral: fix it
+in the same sweep that touches the affected file, per the Root Cause
+Orientation principle. Document any unexpected fix as a separate commit
+on the same branch with its own conventional-commits scope.

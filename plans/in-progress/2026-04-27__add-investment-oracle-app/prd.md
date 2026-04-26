@@ -1,567 +1,459 @@
-# PRD: Add `pdf-chat-*` Demo App Family
+# PRD: Add `investment-oracle` Desktop Demo
 
 ## Product overview
 
-Four new Nx projects (`pdf-chat-be`, `pdf-chat-fe`, `pdf-chat-be-e2e`, `pdf-chat-fe-e2e`)
-plus a shared spec tree (`specs/apps/pdf-chat/`) and a shared OpenAPI contract project
-(`pdf-chat-contracts`). End-user product: upload a PDF, chat with it. The conversation
-runs against either Anthropic Claude Haiku 4.5 or Google Gemini 2.5 Flash Lite,
-selectable per request, both routed through OpenRouter.
+`investment-oracle` is a desktop application — Tauri 2 shell + React +
+Vite frontend + FastAPI Python sidecar — that turns a pile of financial
+report PDFs into a single, structured Markdown investment thesis the user
+can edit by hand or by asking an LLM to rewrite a section. It is the
+template's reference for AI-shaped workloads (RAG, streaming, agentic
+editing, desktop packaging) the same way `crud-*` is the reference for
+CRUD-shaped workloads.
 
-## Product scope
-
-In:
-
-- One Python/FastAPI backend implementing PDF upload, chunking, embedding, vector
-  storage, retrieval, and streaming chat completion.
-- One Next.js 16 frontend with file upload UI and a chat UI streaming via Vercel AI SDK 5.
-- One Playwright BE-E2E suite for backend HTTP behavior.
-- One Playwright FE-E2E suite for end-user flows.
-- One shared Gherkin spec tree consumed by all unit / integration / E2E levels.
-- One OpenAPI 3.1 contract describing every HTTP endpoint of `pdf-chat-be`.
-- One C4 diagram set for the family.
-- CI workflows: `test-pdf-chat-be.yml`, `test-pdf-chat-fe.yml`, `test-pdf-chat-be-e2e.yml`,
-  `test-pdf-chat-fe-e2e.yml`.
-- Root `package.json` script registrations: `dev:pdf-chat-be`, `dev:pdf-chat-fe`.
-- `infra/dev/pdf-chat-be/docker-compose.integration.yml` with pgvector image.
-
-Now in scope (additions to the original cut):
-
-- Persistent chat sessions backed by Postgres tables — survives reload, restart, tab
-  close.
-- Multi-document conversations — a session attaches N PDFs; RAG retrieves across all of
-  them.
-- Production guardrails — per-IP rate limit, content filter (input + streamed output),
-  per-session + per-day token cost cap.
-
-Out:
-
-- Polyglot backend ports (Java, Go, Rust, etc.).
-- Auth, multi-tenancy. (Sessions are anonymous, addressable by UUID.)
-- Distributed rate limiting / distributed cost accounting.
-- Real moderation-provider integration (regex blocklist + swap point only).
-
-## Prerequisite reading
-
-Every persona below who **executes** or **reviews** this plan is expected to have
-read the repo-wide AI primer first:
-
-- [AI Application Development](../../../docs/explanation/software-engineering/ai-application-development/README.md)
-
-The acceptance criteria, functional requirements, and Gherkin scenarios all assume
-the vocabulary defined there (tokens, embeddings, RAG, streaming SSE, multi-provider
-routing, persistent sessions, guardrails, eval, cost).
+This PRD assumes the reader has read the four prerequisite primers
+([AI](../../../docs/explanation/software-engineering/ai-application-development/README.md),
+[Anthropic](../../../docs/explanation/software-engineering/ai-application-development/anthropic-api.md),
+[Gemini](../../../docs/explanation/software-engineering/ai-application-development/google-gemini-api.md),
+[Perplexity](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md))
+and uses their vocabulary without redefining it.
 
 ## Personas
 
-- **Template consumer**: clones ose-primer to bootstrap a RAG/chat product; needs an
-  end-to-end working reference and a clean OpenAPI contract.
-- **End user (in the running demo)**: a curious developer who wants to ask questions of
-  a PDF they own.
-- **AI development agent (`plan-executor` / `swe-*-dev`)**: implements features by
-  reading the contract, the Gherkin specs, and the delivery checklist; required to
-  have read the AI primer.
-- **CI system**: runs scheduled and dispatched workflows on the four new apps.
+These are the product-perspective actors that use or consume this document.
+They are not the same as the brd.md Affected Roles (which describe the
+business perspective); personas describe the hats worn when operating the
+product or reading this PRD.
+
+- **Maintainer-as-user** — the template maintainer running the desktop
+  application: drags PDFs into the Sources pane, creates analyses, generates
+  and edits reports, switches LLM providers. Experiences the product as an
+  end-user and validates the UX against the acceptance criteria.
+- **Plan-executor agent** — an AI agent stepping through the delivery
+  checklist. Reads this PRD to understand what "done" looks like; uses the
+  Gherkin acceptance criteria to confirm correct implementation of each FR.
+- **Template consumer** — a developer cloning `ose-primer` to bootstrap their
+  own AI-shaped application. Reads the PRD to understand the reference design
+  patterns (RAG, SSE streaming, desktop packaging, guardrails) before adapting
+  them.
+- **CI system** — automated GitHub Actions workflows. Executes the test suites
+  whose behaviour is specified in FR-15 through FR-15d; the Gherkin scenarios
+  are the machine-readable contract the CI system validates on every push.
 
 ## User stories
 
-- As a template consumer, I want a `pdf-chat-be` and `pdf-chat-fe` to clone or copy as
-  a baseline, so I can ship a RAG product without re-deciding the stack.
-- As an end user, I want to drop a PDF into the upload zone and immediately chat with
-  it, so I can validate the demo in under 60 seconds from a clean clone.
-- As an end user, I want to switch between Claude Haiku and Gemini Flash Lite from the
-  UI, so I can compare answers across providers without restarting.
-- As an end user, I want responses to stream token-by-token, so I see progress
-  immediately rather than waiting for full completion.
-- As an AI development agent, I want a single OpenAPI 3.1 contract under
-  `specs/apps/pdf-chat/contracts/`, so my codegen targets are deterministic.
-- As a maintainer, I want `nx affected -t test:quick` to pass on a clean checkout
-  without any real OpenRouter call, so CI cost stays bounded.
+**US-1 (Ingest)**: As a maintainer-as-user, I want to drag one or more PDF
+financial reports into the Sources pane so that the backend extracts, chunks,
+and embeds them for later retrieval without my having to invoke any CLI tool.
+
+**US-2 (Generate)**: As a maintainer-as-user, I want to click "Generate report"
+after selecting a set of sources so that the backend retrieves relevant chunks
+and streams a six-section Markdown investment thesis into the editor pane in
+real time.
+
+**US-3 (Manual edit)**: As a maintainer-as-user, I want to edit the generated
+report directly in the Markdown editor and save my changes so that my manual
+annotations are preserved as a separate revision I can inspect later.
+
+**US-4 (LLM edit)**: As a maintainer-as-user, I want to select a report section
+and type a natural-language instruction (e.g., "make the Risks section more
+cautious") so that the model rewrites only that section and saves the result
+as a new `llm_edit` revision.
+
+**US-5 (Revision history)**: As a maintainer-as-user, I want to open the revision
+history drawer and restore any previous version of the report so that I can
+recover from a bad edit without data loss.
+
+**US-6 (Provider swap)**: As a maintainer-as-user, I want to switch the chat
+model between `claude-haiku-4-5` and `gemini-2.5-flash-lite` at any point so
+that I can compare cost and quality without restarting the application.
+
+**US-7 (Guardrails)**: As a template consumer, I want to see how cost-cap and
+content-filter guardrails are implemented so that I can adapt the same patterns
+in my own AI application with confidence that runaway spending and unsafe
+content are blocked.
+
+**US-8 (Smoke)**: As a CI system, I want all three test levels to consume the
+same Gherkin feature files so that the acceptance criteria serve as the
+single source of truth from unit mock to real-HTTP e2e without scenario
+duplication.
 
 ## Functional requirements
 
-> See [tech-docs.md](./tech-docs.md) for component-level design and request/response
-> shapes. Endpoint paths are normative; payload shapes are normative; transport details
-> live in the OpenAPI contract.
-
-### FR-1 — Upload endpoint
-
-`POST /api/v1/pdfs` accepts `multipart/form-data` with a single `file` field of
-content-type `application/pdf`, max 25 MB. On success, returns `201 Created` with
-`{ "pdfId": "<uuid>", "pages": <int>, "chunks": <int> }`. On invalid input, returns
-`400` with the canonical error envelope.
-
-### FR-2 — PDF processing pipeline
-
-After upload, the backend extracts text per page using `pypdf`, splits each page into
-overlapping chunks (default 800 tokens with 100-token overlap), embeds each chunk via
-OpenRouter `/api/v1/embeddings` using model `openai/text-embedding-3-small`, and
-inserts rows into `pdf_chunks(id, pdf_id, page, chunk_index, text, embedding vector(1536))`.
-Pipeline is synchronous within the upload request.
-
-### FR-3 — List uploaded PDFs
-
-`GET /api/v1/pdfs` returns `{ "pdfs": [{ "pdfId": "<uuid>", "filename": "...",
-"pages": <int>, "chunks": <int>, "uploadedAt": "<ISO-8601>" }] }`.
-
-### FR-4 — Delete PDF
-
-`DELETE /api/v1/pdfs/{pdfId}` removes the PDF and all its chunks. Returns `204`.
-Returns `404` if the PDF does not exist.
-
-### FR-5 — Sessions and persistent chat
-
-`POST /api/v1/sessions` creates a chat session with body
-`{ "title": "...", "pdfIds": ["<uuid>", ...], "model": "<openrouter-model-id>" }`.
-Returns `201` with `{ "sessionId": "<uuid>", "title": "...", "pdfIds": [...],
-"model": "...", "createdAt": "..." }`. At least one `pdfId` is required and every id
-must reference an uploaded PDF or the request returns `400`.
-
-`GET /api/v1/sessions` returns the list of sessions ordered by `createdAt desc`.
-`GET /api/v1/sessions/{sessionId}` returns the session metadata plus the full message
-history (oldest-first array of `{ "role", "content", "createdAt" }`).
-`DELETE /api/v1/sessions/{sessionId}` removes the session and its messages (PDFs
-remain).
-`PATCH /api/v1/sessions/{sessionId}` accepts `{ "title"?, "model"?, "pdfIds"? }` for
-in-place updates (e.g., adding/removing a PDF mid-conversation).
-
-`POST /api/v1/sessions/{sessionId}/messages` accepts `{ "content": "..." }` and streams
-a `text/event-stream` response. Each event is `data: {"delta": "<token-text>"}`,
-terminated by `data: [DONE]`. The backend persists the user message **before** calling
-OpenRouter and persists the assembled assistant message **after** the stream
-completes. The full prior message history of the session is loaded as context (subject
-to token budget).
-
-### FR-5a — Multi-document RAG retrieval
-
-For any chat call, the backend retrieves top-k=4 chunks via pgvector cosine-similarity
-search **scoped to the union of all PDFs attached to the session**, not a single PDF.
-Retrieval SQL joins `pdf_chunks` to a `session_pdfs(session_id, pdf_id)` link table.
-The model id used is the value stored on the session (last `PATCH` wins); the request
-body cannot override per-message.
-
-### FR-5b — Production guardrails
-
-Three guardrail layers run on every `POST /api/v1/sessions/{id}/messages`:
-
-1. **Rate limit**: per-IP token-bucket via `slowapi`. Default
-   `RATE_LIMIT_PER_MINUTE=20` over the chat endpoint, `60` over upload, `120` over
-   reads. Exceeding returns `429` with the canonical `ErrorResponse` and a
-   `Retry-After` header.
-2. **Content filter**: a single `services/content_filter.py` runs over (a) the
-   incoming user message and (b) the assembled assistant message before the SSE stream
-   completes. Default implementation is a regex blocklist seeded from
-   `tests/fixtures/blocklist.txt`. Disabled via `ENABLE_CONTENT_FILTER=false` for tests
-   and demos. Filter hits return `422` (input) or terminate the stream with
-   `data: {"error": "content_filter_blocked"}` followed by `data: [DONE]`. The
-   service is structured so a real moderation provider (OpenRouter or Anthropic) can
-   replace the regex implementation without touching callers.
-3. **Token cost cap**: the backend tracks input + output tokens per session and per
-   calendar day in a `token_usage(session_id, date, input_tokens, output_tokens)`
-   table. Defaults `MAX_TOKENS_PER_SESSION=200000`, `MAX_TOKENS_PER_DAY=2000000`.
-   Exceeding either returns `429` with `error.code = "token_budget_exceeded"`.
-   Counters are read-modify-write inside a single SQL `UPDATE` (no Redis).
-
-### FR-6 — Health endpoint
-
-`GET /health` returns `{ "status": "ok" }` with `200`.
-
-### FR-7 — Frontend upload UI
-
-`pdf-chat-fe` ships a single page with:
-
-- A drag-and-drop zone with click-to-browse fallback.
-- Visible file size limit (25 MB) and accepted type (PDF).
-- Upload progress state.
-- After upload, navigation to `/` (home), where the PDF appears in the library
-  and the user can create a session to start chatting.
-
-### FR-8 — Frontend chat UI (session-scoped)
-
-`pdf-chat-fe` `/chat/[sessionId]` renders:
-
-- The session title (editable) and the list of attached PDFs with add/remove controls.
-- A model selector toggling between **Claude Haiku 4.5** and **Gemini 2.5 Flash Lite**;
-  selecting persists via `PATCH /api/v1/sessions/{id}`.
-- A chat transcript hydrated from `GET /api/v1/sessions/{id}` on mount, with
-  role-labeled bubbles and streaming-token rendering for new messages.
-- A composer at the bottom with `Enter` to send, `Shift+Enter` for newline.
-- A "back to home" link.
-- A surfaced banner on `429` responses explaining whether the rate limit, daily token
-  budget, or session token budget was exceeded, with a `Retry-After` countdown when
-  applicable.
-- A surfaced inline message on content-filter blocks ("This message was blocked by the
-  content filter").
-
-### FR-9 — Home page (library + sessions)
-
-`pdf-chat-fe` `/` is split into two sections:
-
-- **PDFs**: list of uploaded PDFs with filename, page count, and delete.
-- **Sessions**: list of chat sessions with title, attached PDF count, last activity
-  timestamp, and delete; a "New session" button opens a dialog to pick PDFs and a
-  model, then creates the session and routes to `/chat/[sessionId]`.
-
-### FR-10 — Route Handler proxy
-
-The chat stream is consumed by the frontend through a Next.js Route Handler at
-`/api/chat`, which forwards the SSE response from `pdf-chat-be` unchanged. The Route
-Handler exists to keep the backend URL out of the browser and to let `useChat` consume
-a same-origin endpoint.
-
-### FR-11 — Backend env-var contract
-
-The backend reads:
-
-- `OPENROUTER_API_KEY` (required).
-- `OPENROUTER_BASE_URL` (default `https://openrouter.ai/api/v1`).
-- `DATABASE_URL` (required, Postgres with pgvector).
-- `OPENROUTER_DEFAULT_MODEL` (default `anthropic/claude-haiku-4.5`).
-- `OPENROUTER_EMBEDDING_MODEL` (default `openai/text-embedding-3-small`).
-- `MAX_UPLOAD_MB` (default `25`).
-- `RAG_TOP_K` (default `4`).
-- `RATE_LIMIT_CHAT_PER_MINUTE` (default `20`).
-- `RATE_LIMIT_UPLOAD_PER_MINUTE` (default `60`).
-- `RATE_LIMIT_READ_PER_MINUTE` (default `120`).
-- `ENABLE_CONTENT_FILTER` (default `true`; tests set `false`).
-- `CONTENT_FILTER_BLOCKLIST_PATH` (default
-  `tests/fixtures/blocklist.txt`).
-- `MAX_TOKENS_PER_SESSION` (default `200000`).
-- `MAX_TOKENS_PER_DAY` (default `2000000`).
-
-`.env.example` ships with placeholders, never real keys.
-
-### FR-12a — Shared UI library (ts-ui)
-
-`pdf-chat-fe` consumes `@open-sharia-enterprise/ts-ui` (source: `libs/ts-ui/`) for all
-UI primitives. `pdf-chat-fe/package.json` declares `@open-sharia-enterprise/ts-ui` and
-`@open-sharia-enterprise/ts-ui-tokens` as dependencies. `globals.css` imports the token
-sheet on its first line. No `Button`, `Input`, `Card`, `Label`, `Dialog`, or `Alert` is
-re-implemented inside `pdf-chat-fe`. Demo-specific composites (UploadZone,
-ChatTranscript, ChatComposer, ModelSelector) live in
-`apps/pdf-chat-fe/src/components/` and compose `ts-ui` primitives. If a needed
-primitive does not exist in `ts-ui`, it must be added to `libs/ts-ui` first via
-`swe-ui-maker` and landed in its own commit before the consumer code references it.
-
-### FR-12 — Mandatory Nx targets
-
-Both `pdf-chat-be` and `pdf-chat-fe` ship the seven mandatory targets defined in
-`governance/development/infra/nx-targets.md` plus `dev`/`start`. The two E2E projects
-ship the targets defined in the existing `crud-be-e2e` and `crud-fe-e2e` patterns.
-
-### FR-13 — Coverage thresholds
-
-`pdf-chat-be` enforces ≥90% line coverage in `test:quick`. `pdf-chat-fe` enforces ≥70%.
-Validation goes through `rhino-cli test-coverage validate`, identical to the CRUD apps.
-
-### FR-14 — Backend testing (three levels)
-
-`pdf-chat-be` tests at **three levels** with a single shared Gherkin set under
-`specs/apps/pdf-chat/be/gherkin/`. Test framework: **pytest + pytest-bdd** at all
-three levels. Lint: **ruff**. Typecheck: **pyright**. (Identical stack to
-`crud-be-python-fastapi`.)
-
-- `test:unit` — pytest + pytest-bdd; OpenRouter and pypdf both mocked; mocked
-  in-memory repositories. Coverage measured here (≥90%).
-- `test:integration` — pytest + pytest-bdd in docker-compose with real Postgres +
-  pgvector; OpenRouter mocked via `pytest-httpx` cassette; same Gherkin features as
-  `test:unit`, different step implementations.
-- `test:e2e` — Playwright HTTP against running backend (driven by
-  `pdf-chat-be-e2e`); OpenRouter routed through `MOCK_OPENROUTER=true` by default,
-  optionally real OpenRouter on `workflow_dispatch`.
-
-### FR-14a — Frontend testing (two levels)
-
-`pdf-chat-fe` tests at **two levels** — there is no `test:integration` for the
-frontend. Source language is **TypeScript** end-to-end (no JavaScript). Lint:
-**oxlint** with `--jsx-a11y-plugin`. Typecheck: **`tsc --noEmit`**. (Identical
-stack to `crud-fe-ts-nextjs`.)
-
-- `test:unit` — vitest + @testing-library/react + jsdom; Route Handler proxy and
-  generated-contracts client mocked at the fetch boundary. Coverage measured here
-  (≥70%).
-- `test:e2e` — Playwright + playwright-bdd against a running BE + FE pair (driven
-  by `pdf-chat-fe-e2e`); BE booted with `MOCK_OPENROUTER=true` to avoid real LLM
-  cost in CI.
-
-Frontend integration concerns (real backend contract, real DB) are validated by
-`pdf-chat-be:test:integration` plus the two e2e suites; replicating an
-integration tier on the FE adds no signal.
-
-### FR-14b — LLM test determinism
-
-Every test target that runs on PR / on push must be **fully deterministic and
-offline** despite calling LLM-shaped code paths. Concretely:
-
-- All unit and integration tests run with `MOCK_OPENROUTER=true`. No outbound
-  HTTPS request to `openrouter.ai` is made.
-- Tests assert on **what the backend sends** (request fingerprint: model id,
-  prompt content, retrieved chunks, message history) and on **side effects**
-  (DB state, persisted messages, token-usage upserts, response status, SSE
-  frame shape) — never on returned LLM prose.
-- Snapshot tests are used for assembled prompts; diffs require deliberate
-  human review.
-- Embedding fixtures are deterministic vectors; retrieval similarity ordering
-  is reproducible. Where pgvector ivfflat approximation could affect ordering,
-  tests assert on the result **set** not the order, or force a sequential scan.
-- `freezegun` pins `datetime.now()` for daily-cap tests. `tiktoken` is pinned
-  in `pyproject.toml`.
-- Real-LLM smoke runs only on `workflow_dispatch`; its assertions are
-  structural only (status, Content-Type, ≥1 frame, well-formed envelope).
-
-See [tech-docs.md § Test determinism strategy](./tech-docs.md#test-determinism-strategy-the-llm-problem)
-for the four allowed assertion patterns and the one anti-pattern (asserting on
-LLM output prose) that is forbidden in this plan's test set.
-
-### FR-15 — Spec consumption
-
-Every `pdf-chat-be` test target lists `specs/apps/pdf-chat/be/gherkin/**/*.feature` as
-an Nx cache input. Same on the frontend with `specs/apps/pdf-chat/fe/gherkin/`.
-
-### FR-16 — Contract codegen
-
-`pdf-chat-be:codegen` runs `datamodel-codegen` against the bundled OpenAPI; output goes
-to `apps/pdf-chat-be/generated_contracts/`. `pdf-chat-fe:codegen` runs
-`@hey-api/openapi-ts` against the same bundle into
-`apps/pdf-chat-fe/src/generated-contracts/`. The streaming endpoint is hand-typed
-because OpenAPI 3.1 cannot fully describe SSE; the contract documents this with a
-prose annotation.
-
-### FR-17 — CI workflow files
-
-Four workflows are added under `.github/workflows/`:
-
-- `test-pdf-chat-be.yml`
-- `test-pdf-chat-fe.yml`
-- `test-pdf-chat-be-e2e.yml`
-- `test-pdf-chat-fe-e2e.yml`
-
-Each follows the existing `test-crud-*.yml` pattern (workflow_dispatch + scheduled,
-runs `lint`, `typecheck`, `test:quick`, `spec-coverage`, plus E2E for the e2e
-workflows).
-
-### FR-18 — `MOCK_OPENROUTER` flag
-
-When `MOCK_OPENROUTER=true`, the backend serves canned chat responses and embeddings
-from a fixture file (`apps/pdf-chat-be/tests/fixtures/openrouter.json`). This keeps
-unit, integration, and CI E2E free of real LLM cost. Production runs leave the flag
-unset.
-
-## Product risks
-
-| Risk                                                                                                | Likelihood | Mitigation                                                                                            |
-| --------------------------------------------------------------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------- |
-| Streaming SSE breaks behind reverse proxies or in older browsers                                    | Medium     | Smoke-test in Chrome + Firefox; document the `X-Accel-Buffering: no` header in tech-docs              |
-| Vector dimension mismatch (`text-embedding-3-small` produces 1536, schema hard-codes another value) | Low        | Schema explicitly types `vector(1536)`; integration test asserts insert succeeds                      |
-| OpenRouter rate limiting in E2E test runs                                                           | Medium     | `MOCK_OPENROUTER=true` is the default in CI; real-API E2E is workflow_dispatch only                   |
-| UI choice of model not propagated end-to-end                                                        | Low        | Gherkin scenarios assert the selected model id is what the backend forwards to OpenRouter             |
-| Codegen for streaming endpoint generates wrong types                                                | Low        | tech-docs hand-typed shape; the OpenAPI streaming response has a `x-streaming: sse` extension comment |
-| Plan author's port choices collide with existing `crud-*` ports                                     | Low        | 8501 / 3501 are checked against `apps/*/project.json`; no collision                                   |
-
-## Acceptance criteria
+### Sources (PDF ingest)
+
+**FR-1**: Drag-and-drop ingestion of one or more PDF files into the
+**Sources** panel; multipart upload to `POST /api/v1/sources` with size
+limit 25 MB per file. Files exceeding the limit return `413` with a
+structured error envelope.
+
+**FR-2**: BE extracts text via `pypdf` (BSD-3-Clause). PyMuPDF is **banned**
+(AGPL). Each page becomes a `(source_id, page, text)` tuple.
+
+**FR-3**: BE chunks each page-text into 800-token windows with 100-token
+overlap (recursive splitter operating on paragraph boundaries first, then
+sentence boundaries, then character windows). Each chunk is embedded by
+calling `gemini-embedding-001` with `output_dimensionality=768` and
+`task_type="RETRIEVAL_DOCUMENT"`. The (chunk text, vector) row is stored in
+`source_chunks` with an ivfflat index.
+
+**FR-4**: GET `/api/v1/sources` returns the list of ingested sources. DELETE
+`/api/v1/sources/{id}` removes the source and cascades to its chunks.
+Sources tied to an analysis cannot be deleted; the API returns `409` until
+the analysis is deleted first.
+
+### Analyses (sessions)
+
+**FR-5**: `POST /api/v1/analyses` creates a named analysis and attaches a
+list of source ids. `GET /api/v1/analyses/{id}` returns the analysis plus
+its current report (if any) and revision count. `DELETE /api/v1/analyses/{id}`
+cascades to its report, revisions, and messages.
+
+**FR-5a**: An analysis attaches **N** sources (≥ 1). Retrieval queries
+pgvector across the union of chunks belonging to attached sources, ordered
+by cosine distance to the embedded query, limited to top-k (default `k=8`,
+configurable per call).
+
+### Report generation
+
+**FR-6**: `POST /api/v1/analyses/{id}/report` generates the initial report.
+Streamed via SSE. The system prompt instructs the model to produce six
+fixed Markdown sections:
+
+1. Executive Summary
+2. Financial Health
+3. Growth and Strategy
+4. Risks and Headwinds
+5. Valuation Considerations
+6. Recommendation (with explicit "this is not investment advice" footer)
+
+The retrieved chunks (top-k across attached sources) are embedded as system
+context with their `source_id` and `page` so the model can cite. The model
+streams Markdown into the FE; on completion the BE persists the report to
+`reports.content_md` and a `report_revisions` row with `kind='generation'`.
+
+**FR-6a**: The system prompt explicitly forbids fabricated numbers — the
+model is instructed to qualify any figure it cannot find in the retrieved
+chunks ("the filings do not specify …").
+
+### Manual editing
+
+**FR-7**: The right pane is a Markdown editor (CodeMirror 6 + Markdown
+mode). The user edits content directly. `PATCH /api/v1/analyses/{id}/report`
+saves the current text and writes a `report_revisions` row with
+`kind='manual_edit'`.
+
+### Prompt-driven editing
+
+**FR-8**: The user selects a section heading (one of the six) and enters a
+prompt (e.g., _"Make Recommendation more cautious."_). `POST
+/api/v1/analyses/{id}/report:edit` applies the edit. Streamed via SSE. The
+BE sends the **selected section's current text** + the user prompt + a
+system instruction ("rewrite the section per the user's request; preserve
+section heading; preserve the not-investment-advice footer in the
+Recommendation section") to the chosen chat model. The streamed output
+replaces the section in `reports.content_md` and writes a
+`report_revisions` row with `kind='llm_edit'`, `prompt_text` filled in.
+
+### Revision history
+
+**FR-9**: `GET /api/v1/analyses/{id}/report/revisions` returns every
+revision with `kind`, `prompt_text` (nullable), `created_at`, and a snapshot
+of `content_md`. The FE renders this as a side drawer with a "restore this
+revision" action. Restore is itself a new revision (`kind='restore'`) — old
+revisions are never overwritten.
+
+### Provider switching
+
+**FR-10**: The chat model is selected per analysis from a dropdown:
+
+- `claude-haiku-4-5` (Anthropic, default)
+- `gemini-2.5-flash-lite` (Google, alternative)
+
+Embedding model is fixed at `gemini-embedding-001` regardless of chat
+provider. Switching models mid-analysis is allowed; the change applies to
+the next chat call.
+
+### Configuration
+
+**FR-11**: Required environment variables:
+
+| Variable                    | Purpose                                                                             |
+| --------------------------- | ----------------------------------------------------------------------------------- |
+| `ANTHROPIC_API_KEY`         | Anthropic Messages API authentication                                               |
+| `GOOGLE_API_KEY`            | Google `google-genai` SDK authentication (chat + embeddings)                        |
+| `DATABASE_URL`              | Postgres connection string (`postgresql+asyncpg://...`)                             |
+| `MOCK_LLM_PROVIDERS`        | When `true`, intercepts all vendor HTTP via `httpx` cassette fixtures               |
+| `INVESTMENT_ORACLE_PORT`    | Sidecar HTTP port (default 8501; Tauri shell injects a random free port at runtime) |
+| `COST_CAP_PER_ANALYSIS_USD` | Per-analysis token budget; default 0.50                                             |
+| `COST_CAP_PER_DAY_USD`      | Per-day token budget across all analyses; default 5.00                              |
+
+`.env.example` ships placeholder values; real keys live in user's local
+`.env` (gitignored) or in OS keychain when the desktop app is run.
+
+### Guardrails
+
+**FR-12**: Cost cap. Each chat call records token usage in `token_usage`.
+On every chat call the BE checks (a) total tokens for the analysis ≤
+`COST_CAP_PER_ANALYSIS_USD` budget and (b) total tokens for the day ≤
+`COST_CAP_PER_DAY_USD` budget. Violation returns `429
+token_budget_exceeded` with structured error envelope; FE shows a banner.
+
+**FR-13**: Content filter. A `ContentFilter` Protocol scans (a) the user
+prompt before calling the LLM and (b) every streamed chunk before
+forwarding to the FE. The shipped implementation is a regex blocklist
+(`local-temp/` not committed; default rules under
+`apps/investment-oracle-be/content_filter/default_rules.txt`). A real
+provider can be plugged in by binding a different Protocol implementation
+in the dependency-injection container.
+
+**FR-13a**: Per-IP rate limiting via `slowapi` is wired but **opt-in**
+(disabled by default for desktop, single-user). A `RATE_LIMIT_ENABLED=true`
+env var turns it on, useful when the same sidecar is deployed as a server.
+
+### UI requirements
+
+**FR-14**: The window opens in a permanent **split view** with a vertical
+divider:
+
+- Left pane (30 % default width, drag-resizable): **Sources panel**.
+  - Drop zone for new PDFs.
+  - List of ingested sources with name, page count, ingested timestamp,
+    delete button.
+  - Multi-select for attaching to a new analysis.
+- Right pane (70 % default width): **Report editor + Prompt input**.
+  - Top: persistent disclaimer banner ("Demo output, not investment advice").
+  - Middle: Markdown editor (CodeMirror 6) showing the current report,
+    with a "Generate report" button visible when the report is empty.
+  - Bottom: prompt input + section selector + send button (used for FR-8
+    LLM edits).
+  - Right edge: revision history drawer trigger.
+- Top bar: analysis selector (switch between analyses), model selector
+  (FR-10), settings cog.
+
+**FR-14a**: All UI primitives come from `@open-sharia-enterprise/ts-ui`.
+The plan introduces no app-local Button, Input, Dialog, etc. Compositions
+specific to this app (SourcesPanel, ReportEditor, PromptInput,
+RevisionHistoryDrawer) live in `apps/investment-oracle-fe/src/components/`.
+
+**FR-14b**: Dark mode is supported via the existing ts-ui theme tokens.
+WCAG AA contrast on every state.
+
+### Test strategy
+
+**FR-15**: Backend follows the **three-level testing standard** (per
+`governance/development/quality/three-level-testing-standard.md`):
+
+| Level              | Mocks                    | Real                                                                  | Tooling                                                                             | Cacheable                                                        |
+| ------------------ | ------------------------ | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `test:unit`        | All vendor HTTP, all I/O | Service code                                                          | pytest + pytest-bdd (Gherkin from `specs/`); ruff; pyright; coverage.py LCOV ≥ 90 % | yes                                                              |
+| `test:integration` | Vendor HTTP only         | Postgres + pgvector via docker-compose; pypdf parsing of fixture PDFs | pytest + pytest-bdd; consumes same Gherkin feature files                            | no — `cache: false` per `nx.json` (real DB is non-deterministic) |
+| `test:e2e`         | Vendor HTTP only         | Postgres + pgvector + real FastAPI HTTP                               | Playwright + playwright-bdd                                                         | no                                                               |
+
+**FR-15a**: Frontend follows the **two-level testing standard** (no
+integration level — this is canonical per `crud-fe-*` precedent):
+
+| Level       | Mocks                               | Real                                         | Tooling                                                          | Cacheable |
+| ----------- | ----------------------------------- | -------------------------------------------- | ---------------------------------------------------------------- | --------- |
+| `test:unit` | All BE HTTP via MSW; all Tauri APIs | React component code                         | vitest + @testing-library/react; oxlint; tsc strict; LCOV ≥ 70 % | yes       |
+| `test:e2e`  | None                                | `vite preview` build of FE + real FastAPI BE | Playwright + playwright-bdd                                      | no        |
+
+**FR-15b**: TypeScript end-to-end. The FE is TypeScript-strict with no
+`any`, no `@ts-ignore`. `tsc --noEmit` runs as the `typecheck` Nx target.
+
+**FR-15c**: LLM determinism. CI must never assert on LLM-generated prose.
+The four allowed assertion patterns (per the AI primer §13):
+
+1. **Outbound request fingerprint** — assert what was sent (model id,
+   message shape, retrieved chunks, tool blocks).
+2. **Side effects** — assert what was written to the DB
+   (`reports.content_md` non-empty, `report_revisions` row created with
+   correct `kind`, `token_usage` row upserted).
+3. **Structural shape** — assert the response is well-formed SSE / JSON,
+   matches the contract schema.
+4. **Snapshot** of the cassette response prose (only because the cassette
+   itself is deterministic — never on real-vendor output).
+
+The forbidden pattern: asserting on what the model said. Real-vendor smoke
+tests live behind a workflow-dispatch flag and run weekly; they assert
+**only** structural shape and HTTP 200, never content.
+
+**FR-15d**: All three test levels consume the **same Gherkin feature
+files** under `specs/apps/investment-oracle/be/gherkin/` and
+`specs/apps/investment-oracle/fe/gherkin/`. Step implementations differ
+(mocks vs real DB vs real HTTP) but scenarios do not.
+
+## Acceptance criteria (Gherkin)
+
+### Sources
 
 ```gherkin
-Feature: pdf-chat demo family is added end-to-end
+Feature: Source ingest
 
-  Background:
-    Given all delivery items in delivery.md are completed
-    And `npm install` has been run on a clean checkout
+  Scenario: Upload a single PDF
+    Given the sidecar is running
+    When the user uploads "aapl-fy2024-10k.pdf" via POST /api/v1/sources
+    Then the response is 201
+    And the response body contains the new source id
+    And the database has one row in "sources" with the matching SHA-256
+    And the database has one row per page in "source_chunks" with embedding dim 768
 
-  Scenario: Nx workspace recognises all four pdf-chat projects and the contracts project
-    When I run "npx nx graph --file=/tmp/nx-graph-output.json"
-    Then the graph contains projects "pdf-chat-be", "pdf-chat-fe", "pdf-chat-be-e2e", "pdf-chat-fe-e2e", and "pdf-chat-contracts"
-    And no project named "pdf-chat-be" appears with empty targets
+  Scenario: Reject oversized PDF
+    When the user uploads a 30 MB PDF
+    Then the response is 413
+    And the response body has error code "file_too_large"
 
-  Scenario: OpenAPI contract lints clean
-    When I run "npx nx run pdf-chat-contracts:lint"
-    Then exit code is 0
-    And "specs/apps/pdf-chat/contracts/generated/openapi-bundled.yaml" exists
-
-  Scenario: Backend codegen succeeds and produces Pydantic models
-    When I run "npx nx run pdf-chat-be:codegen"
-    Then exit code is 0
-    And "apps/pdf-chat-be/generated_contracts/__init__.py" exists
-    And the file contains a class "PdfUploadResponse"
-
-  Scenario: Frontend codegen succeeds and produces TypeScript types
-    When I run "npx nx run pdf-chat-fe:codegen"
-    Then exit code is 0
-    And the directory "apps/pdf-chat-fe/src/generated-contracts" exists
-
-  Scenario: Backend test:quick passes with coverage gate
-    When I run "npx nx run pdf-chat-be:test:quick"
-    Then exit code is 0
-    And the rhino-cli coverage validator reports >=90.00% line coverage
-
-  Scenario: Frontend test:quick passes with coverage gate
-    When I run "npx nx run pdf-chat-fe:test:quick"
-    Then exit code is 0
-    And the rhino-cli coverage validator reports >=70.00% line coverage
-
-  Scenario: Backend integration tests bring up Postgres with pgvector
-    Given the docker-compose.integration.yml uses a pgvector-enabled image
-    When I run "npx nx run pdf-chat-be:test:integration"
-    Then exit code is 0
-    And every Gherkin scenario under specs/apps/pdf-chat/be/gherkin runs
-
-  Scenario: BE E2E suite runs against a live backend
-    Given the backend is started with MOCK_OPENROUTER=true
-    When I run "npx nx run pdf-chat-be-e2e:test:e2e"
-    Then exit code is 0
-
-  Scenario: FE E2E suite uploads a PDF and chats with it
-    Given the backend and frontend are both started with MOCK_OPENROUTER=true
-    When I run "npx nx run pdf-chat-fe-e2e:test:e2e"
-    Then exit code is 0
-    And the test transcript contains a streamed assistant message
-
-  Scenario: Spec coverage passes for both apps
-    When I run "npx nx run pdf-chat-be:spec-coverage"
-    And  I run "npx nx run pdf-chat-fe:spec-coverage"
-    Then both invocations exit 0
-
-  Scenario: Sessions persist chat history across server restarts
-    Given a session with two prior message turns
-    When the backend process is restarted
-    And the frontend GETs "/api/v1/sessions/{id}"
-    Then the response contains both prior turns in original order
-    And every message has a non-null "createdAt"
-
-  Scenario: Multi-document retrieval queries chunks across all attached PDFs
-    Given a session attaches PDFs "manual-a.pdf" and "manual-b.pdf"
-    And the recorded pgvector query is captured
-    When the user posts a message
-    Then the SQL retrieval filter is "WHERE pdf_id IN (:a, :b)"
-    And the top-k result set contains chunks from both PDFs
-
-  Scenario: PATCH a session adds a third PDF mid-conversation
-    Given a session attaches one PDF
-    When PATCH "/api/v1/sessions/{id}" sets pdfIds to three uuids
-    Then GET "/api/v1/sessions/{id}" returns three pdfIds
-    And the next chat call retrieves chunks across all three
-
-  Scenario: Rate limit blocks excessive chat requests
-    Given RATE_LIMIT_CHAT_PER_MINUTE=2
-    When the same IP posts three messages within one minute
-    Then the third response status is 429
-    And the response has a "Retry-After" header
-    And the response body's "error.code" is "rate_limit_exceeded"
-
-  Scenario: Content filter rejects a blocklisted input message
-    Given ENABLE_CONTENT_FILTER=true with the test blocklist loaded
-    When the user posts a message containing a blocklisted token
-    Then the response status is 422
-    And the response body's "error.code" is "content_filter_blocked"
-    And no OpenRouter request is made
-
-  Scenario: Content filter terminates a streamed assistant message that violates the blocklist
-    Given the OpenRouter mock cassette streams a blocklisted token
-    When the frontend reads the SSE stream
-    Then a frame "data: {\"error\":\"content_filter_blocked\"}" arrives before "data: [DONE]"
-    And the persisted assistant message is recorded as "blocked"
-
-  Scenario: Session token budget cap returns 429
-    Given a session with token_usage already at MAX_TOKENS_PER_SESSION
-    When the user posts a new message
-    Then the response status is 429
-    And the response body's "error.code" is "token_budget_exceeded"
-    And the assistant message is not persisted
-
-  Scenario: Daily token budget cap returns 429
-    Given today's daily token_usage is already at MAX_TOKENS_PER_DAY
-    When any session in the workspace posts a new message
-    Then the response status is 429
-    And the response body's "error.code" is "token_budget_exceeded"
-
-  Scenario: Streaming chat endpoint emits incremental tokens
-    Given the backend is running with MOCK_OPENROUTER=true and a known fixture
-    When the frontend posts a message to "/api/chat" for an uploaded PDF
-    Then the response Content-Type is "text/event-stream"
-    And at least two "data:" frames arrive before "data: [DONE]"
-
-  Scenario: Model selector switches the upstream OpenRouter model
-    Given an uploaded PDF "rfc-2119.pdf"
-    When the user selects "Gemini 2.5 Flash Lite" and submits a prompt
-    Then the recorded OpenRouter request body contains "google/gemini-2.5-flash-lite"
-    And does not contain "anthropic/claude-haiku-4.5"
-
-  Scenario: Upload rejects oversized files
-    When the user uploads a 30 MB file
-    Then the response status is 413
-    And the response body conforms to the canonical ErrorResponse schema
-
-  Scenario: PDF deletion removes all chunks
-    Given an uploaded PDF with 12 chunks
-    When the user deletes the PDF via "DELETE /api/v1/pdfs/{pdfId}"
-    Then the response status is 204
-    And a database query for "SELECT count(*) FROM pdf_chunks WHERE pdf_id=:id" returns 0
-
-  Scenario: Markdown quality gate passes
-    When I run "npm run lint:md" at the repo root
-    Then exit code is 0
-
-  Scenario: Tests assert on outbound request, not on LLM output prose
-    Given a unit test exercising the chat endpoint with MOCK_OPENROUTER=true
-    When the test inspects the recorded outbound request to OpenRouter
-    Then the assertion is on model id, prompt content, retrieved chunks, or message history
-    And no assertion is on the prose of the streamed assistant response
-
-  Scenario: Snapshot test catches prompt-assembly regressions
-    Given a known session and a known retrieval result set
-    When the chat handler assembles the prompt before calling OpenRouter
-    Then the assembled messages array matches the committed snapshot byte-for-byte
-    And changes require deliberate snapshot update with human review
-
-  Scenario: Daily-cap test uses freezegun
-    Given a test scenario advancing past midnight
-    When freezegun freezes time to "2026-04-26T23:59:00Z" then "2026-04-27T00:00:00Z"
-    Then the daily token_usage row for 2026-04-27 is fresh (zero)
-    And the prior day's row is preserved
-
-  Scenario: Retrieval test asserts on chunk-id set, not order, when ivfflat is in play
-    Given five seeded chunks across two PDFs
-    When integration retrieval runs through the ivfflat index
-    Then the test asserts the result set contains the expected chunk ids
-    And the test does not assert on a specific chunk order
-    And a separate test forces enable_indexscan=off to validate the deterministic ordering
-
-  Scenario: No real OpenRouter call happens during test:quick
-    Given MOCK_OPENROUTER is unset by the developer
-    When I run "npx nx run pdf-chat-be:test:quick"
-    Then no outbound HTTPS connection to "openrouter.ai" is made
-    And the test still exits 0
-
-  Scenario: Four CI workflow files exist
-    When I list ".github/workflows/"
-    Then files exist named "test-pdf-chat-be.yml", "test-pdf-chat-fe.yml", "test-pdf-chat-be-e2e.yml", "test-pdf-chat-fe-e2e.yml"
-    And each file references the correct Nx project name
-
-  Scenario: pdf-chat-be is reachable on its assigned port
-    Given the backend is started with "npx nx run pdf-chat-be:dev"
-    When I curl "http://localhost:8501/health"
-    Then the response status is 200
-    And the response body equals "{\"status\":\"ok\"}"
-
-  Scenario: pdf-chat-fe is reachable on its assigned port
-    Given the frontend is started with "npx nx run pdf-chat-fe:dev"
-    When I open "http://localhost:3501/" in a browser
-    Then the page renders the upload zone
-
-  Scenario: pdf-chat-fe consumes ts-ui as its UI base
-    Given pdf-chat-fe/package.json is staged
-    Then dependencies include "@open-sharia-enterprise/ts-ui"
-    And dependencies include "@open-sharia-enterprise/ts-ui-tokens"
-    And no source file under apps/pdf-chat-fe/src defines a local "Button", "Input", "Card", "Label", "Dialog", or "Alert" component
-    And at least one source file imports from "@open-sharia-enterprise/ts-ui"
-
-  Scenario: Nx graph shows the ts-ui edge
-    When I run "npx nx graph --file=/tmp/nx-graph-output.json"
-    Then "pdf-chat-fe" depends on "ts-ui"
-    And "pdf-chat-fe" depends on "ts-ui-tokens"
-
-  Scenario: Affected gate captures the new apps
-    Given a one-line edit in apps/pdf-chat-be/src/main.py
-    When I run "npx nx affected -t typecheck lint test:quick"
-    Then "pdf-chat-be" appears in the affected list
-    And exit code is 0
+  Scenario: Reject AGPL-licensed parser dependency at build
+    Given a build of investment-oracle-be is attempted with PyMuPDF added to pyproject.toml
+    When the doctor scope check runs
+    Then the build fails with message "PyMuPDF is AGPL — banned per BRD"
 ```
+
+### Analyses and report generation
+
+```gherkin
+Feature: Analysis and report
+
+  Scenario: Create analysis and generate report (mocked LLM)
+    Given two sources have been ingested
+    And MOCK_LLM_PROVIDERS is true
+    When the user creates an analysis attaching both sources
+    And the user requests POST /api/v1/analyses/{id}/report
+    Then the response is 200 with content-type text/event-stream
+    And the SSE body ends with a [DONE] sentinel
+    And the database has one row in "reports" with non-empty content_md
+    And the database has one row in "report_revisions" with kind="generation"
+    And the database has one row in "token_usage" with non-zero input_tokens
+
+  Scenario: Generated report contains all six structured sections
+    Given a generation cassette with section markers
+    When generation completes
+    Then the saved report content_md contains the six section H2 headings
+```
+
+### Manual editing
+
+```gherkin
+Feature: Manual report edit
+
+  Scenario: Save manual edit
+    Given an analysis has a generated report
+    When the user PATCHes /api/v1/analyses/{id}/report with new content
+    Then the response is 200
+    And the database has a new row in "report_revisions" with kind="manual_edit"
+    And the latest revision content_md matches the patched content
+```
+
+### LLM-driven editing
+
+```gherkin
+Feature: LLM section rewrite
+
+  Scenario: Rewrite Risks section more cautiously (mocked LLM)
+    Given an analysis has a generated report
+    And MOCK_LLM_PROVIDERS is true
+    When the user POSTs /api/v1/analyses/{id}/report:edit with section="Risks and Headwinds" and prompt="more cautious"
+    Then the response is 200 with content-type text/event-stream
+    And the outbound request to the chat provider includes the current Risks section text
+    And the outbound request to the chat provider includes the user prompt
+    And the database has a new row in "report_revisions" with kind="llm_edit"
+    And the latest revision's content_md replaces only the Risks section
+```
+
+### Provider swap
+
+```gherkin
+Feature: Provider swap
+
+  Scenario: Switch chat model from Anthropic to Gemini
+    Given an analysis exists with model="claude-haiku-4-5"
+    When the user updates the analysis with model="gemini-2.5-flash-lite"
+    Then subsequent chat calls go to https://generativelanguage.googleapis.com (mocked)
+    And no calls are made to https://api.anthropic.com
+    And embedding calls continue to use gemini-embedding-001
+```
+
+### Guardrails
+
+```gherkin
+Feature: Cost cap
+
+  Scenario: Per-analysis budget exceeded
+    Given an analysis has consumed tokens worth $0.49
+    And COST_CAP_PER_ANALYSIS_USD is 0.50
+    When the user requests another report:edit that would exceed the cap
+    Then the response is 429 with error code "token_budget_exceeded"
+    And no chat call is made
+```
+
+```gherkin
+Feature: Content filter
+
+  Scenario: Reject input matching blocklist regex
+    Given the user prompt contains a blocked phrase
+    When report:edit is requested
+    Then the response is 400 with error code "input_blocked"
+    And no chat call is made
+```
+
+### Determinism (tests assert structurally, never on prose)
+
+```gherkin
+Feature: LLM-test determinism
+
+  Scenario: Generation test asserts outbound-request fingerprint, not content
+    Given a generation cassette returns "FIXTURE_REPORT"
+    When generation completes
+    Then the test asserts the outbound request used model="claude-haiku-4-5"
+    And the test asserts the outbound request retrieved 8 chunks
+    And the test does NOT assert any text from the cassette response
+
+  Scenario: Snapshot test of cassette response (only because cassette is deterministic)
+    Given the same cassette runs in CI today and a year from now
+    When generation completes
+    Then the saved report content_md matches the snapshot byte-for-byte
+
+  Scenario: ivfflat retrieval test allows result-set membership, not order
+    Given chunks with similar embeddings are inserted
+    When retrieval runs with top-k=4
+    Then the test asserts the returned chunk ids are a subset of the expected set
+    And the test does NOT assert exact row order (ivfflat is approximate)
+```
+
+### Fixture-driven smoke
+
+```gherkin
+Feature: Manual smoke against shipped fixtures
+
+  Scenario: Ingest the four shipped 10-K PDFs
+    Given the four fixture PDFs in plans/.../fixture/
+    When each is uploaded via POST /api/v1/sources
+    Then each upload returns 201
+    And the total chunk count is between 100 and 2000
+    And no source has zero chunks
+```
+
+## Out (non-requirements)
+
+- No fine-tuning. No agentic tool-use beyond the structured prompt.
+- No comparison-mode UI ("compare these two companies"). Single-analysis
+  scope is enough for the demo.
+- No exports (PDF, DOCX). Markdown copy-out of the editor pane is the
+  manual workaround; export is a backlog item.
+- No collaboration. One desktop app, one user.
+- No live web search. The Perplexity primer documents that lane;
+  investment-oracle deliberately does not consume it.
+- No re-ranking, no hybrid search. Single-vector retrieval is enough for a
+  demo.
+
+## Affected files (summary)
+
+- New apps under `apps/`: `investment-oracle-be`, `investment-oracle-fe`,
+  `investment-oracle-be-e2e`, `investment-oracle-fe-e2e`
+- New spec area: `specs/apps/investment-oracle/`
+- New contracts project: `specs/apps/investment-oracle/contracts/`
+- New AI primers: under `docs/explanation/software-engineering/ai-application-development/`
+- Updated `docker-compose.integration.yml`: pgvector image already present
+  for crud-be, no change required at the compose layer; new init script
+  adds the `vector` extension if not present.
+- Updated `package.json` scripts: `dev:investment-oracle`,
+  `build:investment-oracle`.

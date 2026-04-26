@@ -1,1002 +1,640 @@
-# Tech Docs: Add `pdf-chat-*` Demo App Family
+# Technical Approach: `investment-oracle`
 
 ## Reading this document
 
-This document is the architecture, schemas, and code shapes for the `pdf-chat-*`
-demo family. It uses standard AI-application vocabulary (RAG, embeddings, vector
-DB, SSE streaming, tokens, guardrails) without re-defining each term inline.
+This is the implementation reference for the `investment-oracle` desktop
+demo. It assumes the reader has read the four prerequisite primers
+([AI](../../../docs/explanation/software-engineering/ai-application-development/README.md),
+[Anthropic](../../../docs/explanation/software-engineering/ai-application-development/anthropic-api.md),
+[Gemini](../../../docs/explanation/software-engineering/ai-application-development/google-gemini-api.md),
+[Perplexity](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md))
+and uses their vocabulary without redefining it. The mini-glossary below
+covers the few project-local terms.
 
-**Recommended path** for engineers without prior AI-app exposure:
+| Term                 | Plain definition                                                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Source               | One ingested PDF (a 10-K, an annual report). Not the same as a "session" — sources are reusable across analyses.                      |
+| Analysis             | A named investigation that attaches one or more sources, holds one report, and accumulates revision history. Persistent in DB.        |
+| Report               | The Markdown artifact a single analysis produces. Six fixed sections; mutable; revision-tracked.                                      |
+| Revision             | One historical snapshot of a report's content. Has a `kind` (`generation`, `manual_edit`, `llm_edit`, `restore`) and timestamp.       |
+| Section              | One of the six top-level Markdown blocks in a report. The unit the LLM rewrites in FR-8.                                              |
+| Tauri shell          | The Rust-backed desktop wrapper from `tauri` 2.x. Hosts a WebView; spawns the sidecar; handles file dialogs, clipboard, OS chrome.    |
+| Sidecar binary       | `investment-oracle-be` packaged via PyInstaller `--onedir`. The Tauri shell launches and kills it.                                    |
+| Owners' earnings     | A free-cash-flow proxy that nets out maintenance capex (Buffett 1986). The system prompt references it; the demo does not compute it. |
+| Permanent disclaimer | The "Demo output, not investment advice" banner that stays at the top of the FE for every analysis.                                   |
+| Provider abstraction | A small `ChatProvider` Protocol that hides the difference between Anthropic and Gemini chat APIs.                                     |
 
-1. Read the repo-wide primer first:
-   [AI Application Development](../../../docs/explanation/software-engineering/ai-application-development/README.md).
-   It is the canonical, generic explainer; the rest of this document assumes its
-   vocabulary.
-2. Then read this document top-to-bottom.
+## Architecture
 
-**Skipping the primer?** The mini-glossary below is enough to parse this file,
-but the primer is still required reading before executing the plan.
-
-### Mini-glossary (the absolute minimum)
-
-| Term            | Plain definition                                                                                                                           |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| LLM             | Large language model. Stateless text generator we call over HTTP. Same input → not necessarily same output.                                |
-| Token           | Sub-word unit. ~4 chars / ~0.75 English words. LLMs are billed and budgeted per token (input + output).                                    |
-| Context window  | Max tokens per LLM call (input + output combined). Claude Haiku 4.5 = 200k.                                                                |
-| Embedding       | Fixed-size numeric vector (1536 floats here) encoding meaning of a piece of text. Used for similarity search.                              |
-| Cosine distance | A number in [0, 2] measuring how different two vectors are. Smaller = more similar. pgvector operator: `<=>`.                              |
-| Vector DB       | Storage that supports fast top-k similarity search. We use Postgres + the pgvector extension.                                              |
-| Chunk           | A bounded slice of a document (~800 tokens here), embedded as one vector and stored as one row.                                            |
-| RAG             | Retrieval-Augmented Generation. Find relevant chunks, paste them into the prompt, ask the LLM to answer.                                   |
-| top-k           | The number of best-matching chunks to retrieve (we use k=4).                                                                               |
-| SSE             | Server-Sent Events. One-way HTTP streaming with `text/event-stream`; the LLM emits one frame per token.                                    |
-| Session         | Server-persisted chat thread (rows in `sessions` and `messages`). Lets the conversation survive reload.                                    |
-| OpenRouter      | Multi-provider LLM proxy. One API ([https://openrouter.ai/api/v1](https://openrouter.ai/api/v1)) routes to Anthropic, Google, OpenAI, etc. |
-| Guardrail       | Pre-/post-LLM defensive layer. Three here: rate limit, content filter, token cost cap.                                                     |
-| Mocked LLM      | Test mode (`MOCK_OPENROUTER=true`) that replaces the network call with a fixture so CI is offline + free.                                  |
-
-When this document writes "the LLM", it means whichever upstream model OpenRouter
-routes to (default `anthropic/claude-haiku-4.5`). When it writes "the model id",
-it means the OpenRouter-format string `provider/model-version`.
-
-## Architecture summary
-
-The diagram below shows two flows: PDF **ingestion** (top half) and chat
-**conversation** (bottom half).
-
-- **Ingest**: the user uploads a PDF; the backend extracts text, slices it into
-  chunks, asks OpenRouter to convert each chunk to an embedding (a numeric
-  fingerprint of its meaning), and stores text + embeddings in Postgres.
-- **Conversation**: the user creates a chat session and attaches one or more
-  PDFs to it; for each user message, the backend embeds the question, runs a
-  similarity query against the stored chunk embeddings to find the most
-  relevant excerpts, glues them together with prior chat history into a
-  prompt, and asks OpenRouter to stream an answer back token-by-token over SSE.
-  The frontend renders tokens as they arrive.
-
-This is the standard "chat with my documents" pattern (RAG). If any sentence
-above feels novel, read the
-[AI primer](../../../docs/explanation/software-engineering/ai-application-development/README.md)
-before continuing.
+The demo is one process tree on the user's machine. Tauri 2 is the entry
+point. On launch the shell starts the sidecar binary on a free localhost
+port; on quit it kills the sidecar. The sidecar talks to a Postgres
+container started separately by docker-compose (the same image the rest of
+the demo set already uses) and to two cloud APIs (Anthropic, Google).
 
 ```mermaid
-%% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080
+%% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
 sequenceDiagram
     autonumber
-    participant U as User
-    participant FE as pdf-chat-fe (Next.js 16)
-    participant RH as Next.js Route Handler /api/chat
-    participant BE as pdf-chat-be (FastAPI)
+    actor User
+    participant Shell as Tauri shell (Rust)
+    participant FE as React FE (WebView)
+    participant BE as FastAPI sidecar (Python)
     participant PG as Postgres + pgvector
-    participant OR as OpenRouter
+    participant ANT as api.anthropic.com
+    participant GEM as generativelanguage.googleapis.com
 
-    U->>FE: drag-drop PDF
-    FE->>BE: POST /api/v1/pdfs (multipart)
-    BE->>BE: pypdf extract → chunk
-    BE->>OR: POST /api/v1/embeddings
-    OR-->>BE: embeddings (1536-dim)
-    BE->>PG: INSERT chunks + vectors
-    BE-->>FE: 201 {pdfId, pages, chunks}
-    FE->>U: navigate / (home — PDF now in library)
-
-    U->>FE: create session(pdfIds, model)
-    FE->>BE: POST /api/v1/sessions
-    BE->>PG: INSERT session + session_pdfs
-    BE-->>FE: Session
-
-    U->>FE: type prompt
-    FE->>RH: POST /api/chat (sessionId, content)
-    RH->>BE: POST /api/v1/sessions/{id}/messages
-    BE->>BE: rate limit + content filter (in) + cost cap check
-    BE->>PG: INSERT user message
-    BE->>OR: POST /api/v1/embeddings (query)
-    OR-->>BE: query embedding
-    BE->>PG: SELECT top-k by cosine across session_pdfs
-    PG-->>BE: chunks (multi-PDF)
-    BE->>PG: SELECT prior messages (history)
-    PG-->>BE: prior messages
-    BE->>OR: POST /api/v1/chat/completions (stream=true)
-    OR-->>BE: SSE chunks
-    BE->>BE: content filter (out) on accumulated tokens
-    BE-->>RH: SSE stream
-    RH-->>FE: SSE stream (passthrough)
-    FE-->>U: incremental tokens
-    BE->>PG: INSERT assistant message + UPSERT token_usage
+    User->>Shell: Launch app
+    Shell->>BE: spawn sidecar on port P
+    Shell->>BE: GET /health (poll)
+    BE-->>Shell: 200 OK
+    Shell->>FE: load Vite-built index.html, inject port P
+    User->>FE: Drop PDF
+    FE->>BE: POST /api/v1/sources (multipart)
+    BE->>BE: pypdf extract pages
+    BE->>BE: chunk (800/100 overlap)
+    BE->>GEM: embed_content (gemini-embedding-001, dim=768)
+    GEM-->>BE: vectors
+    BE->>PG: INSERT sources, source_chunks
+    BE-->>FE: 201 {source_id, page_count}
+    User->>FE: Generate report (analysis with N sources)
+    FE->>BE: POST /api/v1/analyses/{id}/report (SSE)
+    BE->>GEM: embed_content (RETRIEVAL_QUERY)
+    BE->>PG: SELECT top-k chunks across attached sources
+    BE->>ANT: messages.stream (claude-haiku-4-5, system+chunks+prompt)
+    ANT-->>BE: stream chunks
+    BE-->>FE: SSE chunks
+    FE-->>User: render Markdown live
+    BE->>PG: INSERT reports, report_revisions(kind='generation')
+    BE->>PG: UPSERT token_usage
+    User->>FE: Edit Risks section via prompt
+    FE->>BE: POST /api/v1/analyses/{id}/report:edit (SSE)
+    BE->>ANT: messages.stream (current section + user prompt)
+    ANT-->>BE: stream chunks
+    BE-->>FE: SSE chunks (replaces section)
+    BE->>PG: INSERT report_revisions(kind='llm_edit', prompt_text=...)
 ```
 
-## Stack decisions and rationale
+In plain English:
 
-| Concern                 | Choice                                                   | Why                                                                                                                                                                                                                                     |
-| ----------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Backend language        | Python 3.13                                              | Matches existing `crud-be-python-fastapi` conventions; richest LLM/RAG ecosystem                                                                                                                                                        |
-| Backend framework       | FastAPI + uvicorn                                        | Established in repo; native async; `StreamingResponse`/`sse-starlette` ergonomic                                                                                                                                                        |
-| PDF text extraction     | `pypdf` (BSD-3-Clause) primary                           | BSD-3-Clause is permissive and compatible with the MIT-licensed template; PyMuPDF is AGPL and is **explicitly forbidden**                                                                                                               |
-| Optional table fallback | `pdfplumber` (MIT)                                       | Used only when a chunk is detected to be table-shaped; MIT license                                                                                                                                                                      |
-| Chunking                | Naive token-window with overlap (800/100)                | Sufficient for a demo; explicitly out-of-scope for production-grade chunking                                                                                                                                                            |
-| Embedding               | OpenRouter `/api/v1/embeddings`                          | Single egress; default `openai/text-embedding-3-small` (1536 dims)                                                                                                                                                                      |
-| Vector DB               | pgvector on the existing Postgres image                  | Zero new infra; reuses CRUD's docker-compose pattern with a different image: `pgvector/pgvector:pg16`                                                                                                                                   |
-| Chat completion         | OpenRouter `/api/v1/chat/completions` with `stream=true` | OpenAI-compatible, multi-provider routing in one place                                                                                                                                                                                  |
-| Default chat model      | `anthropic/claude-haiku-4.5`                             | Verified routable via OpenRouter on 2026-04-26                                                                                                                                                                                          |
-| Alternate chat model    | `google/gemini-2.5-flash-lite`                           | Closest Haiku-tier Gemini ($0.10/M in, $0.40/M out)                                                                                                                                                                                     |
-| Streaming transport     | `sse-starlette.EventSourceResponse`                      | Idiomatic 2026; correct `event:`/`id:`/`retry:` field handling                                                                                                                                                                          |
-| Frontend framework      | Next.js 16 App Router + TypeScript                       | Matches `crud-fe-ts-nextjs`; same toolchain, same lint, same vitest setup                                                                                                                                                               |
-| Frontend UI base        | `@open-sharia-enterprise/ts-ui` (libs/ts-ui)             | **Mandatory** shared component library. Use `Button`, `Input`, `Card`, `Label`, `Dialog`, `Alert`, `cn`. No bespoke components in `pdf-chat-fe` for primitives that exist in `ts-ui`. Missing primitives must be added to `ts-ui` first |
-| Frontend design tokens  | `@open-sharia-enterprise/ts-ui-tokens`                   | Imported once in `globals.css` (matches `crud-fe-ts-nextjs` pattern); semantic tokens only                                                                                                                                              |
-| Frontend chat hook      | `@ai-sdk/react` `useChat` (ai SDK ^5)                    | Idiomatic 2026; proxy through Next.js Route Handler avoids custom `ChatTransport`                                                                                                                                                       |
-| FE vector / state       | Plain React state, server-driven                         | No client-side persistence (matches non-goal)                                                                                                                                                                                           |
-| E2E runner              | Playwright + playwright-bdd                              | Mirrors `crud-be-e2e` and `crud-fe-e2e`                                                                                                                                                                                                 |
+- Tauri starts. Sidecar starts. FE loads. User drags PDFs. BE chunks +
+  embeds + stores. User triggers report. BE retrieves + prompts + streams.
+  FE renders. User tweaks. Each tweak is a revision in the DB.
 
-## Repository layout (post-plan)
+## Stack decisions
 
-```
+| Layer             | Choice                                                                                 | Why                                                                                                                       |
+| ----------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Desktop shell     | Tauri 2.10.x                                                                           | Rust-backed, smaller bundle than Electron; WebView2 / WebKit / WebKitGTK per platform; first-class sidecar pattern        |
+| FE framework      | React 19 + Vite 6                                                                      | Smallest defensible bundle; Tauri scaffolds it directly; aligns with `crud-fe-ts-nextjs` reuse of React patterns          |
+| FE design system  | `@open-sharia-enterprise/ts-ui` (mandatory)                                            | No bespoke primitives; one source of truth for Button, Input, Dialog, Tabs, etc. across the demo set                      |
+| Markdown editor   | CodeMirror 6 + `@codemirror/lang-markdown`                                             | Fast, accessible, themeable; lighter than Monaco for a Markdown-only use case                                             |
+| BE framework      | FastAPI                                                                                | OpenAPI-first, async-native, Pythonic; matches existing crud-be-python-fastapi precedent                                  |
+| BE Python version | 3.13                                                                                   | Pinned in `apps/investment-oracle-be/.python-version`                                                                     |
+| BE PDF parser     | `pypdf` (BSD-3-Clause)                                                                 | License-clean. PyMuPDF (AGPL) is **banned** — see BRD risk register                                                       |
+| BE chat SDKs      | `anthropic@0.97`, `google-genai@1.73`                                                  | Official, pinned                                                                                                          |
+| BE embedding      | `gemini-embedding-001` (768 dim)                                                       | Anthropic ships no embedding endpoint; Google's is the cheapest and supports Matryoshka truncation                        |
+| Vector store      | `pgvector` extension on Postgres 16                                                    | Reuses `docker-compose.integration.yml` from crud-be; no new infra                                                        |
+| ORM               | SQLAlchemy 2 async + `asyncpg`                                                         | Async-clean; matches existing crud-be-python-fastapi                                                                      |
+| Streaming         | `sse-starlette.EventSourceResponse`                                                    | Idiomatic FastAPI SSE; the FE consumes via `@microsoft/fetch-event-source` because the EventSource browser API can't POST |
+| Lint (BE)         | `ruff`                                                                                 | Single tool for lint + format; the standard in `crud-be-python-fastapi`                                                   |
+| Typecheck (BE)    | `pyright`                                                                              | Stricter than mypy on inferred types; CI-friendly                                                                         |
+| Test (BE)         | `pytest` + `pytest-bdd` + `pytest-asyncio` + `pytest-httpx` + `freezegun` + `coverage` | All four levels of test infrastructure                                                                                    |
+| Test (FE)         | `vitest` + `@testing-library/react` + `oxlint` + `tsc`                                 | Aligns with `crud-fe-*` precedent                                                                                         |
+| Sidecar packaging | PyInstaller `--onedir`                                                                 | `--onefile` breaks on heavy ML deps per Tauri community guidance; `--onedir` ships a folder under `src-tauri/binaries/`   |
+| Rate limit        | `slowapi` (opt-in)                                                                     | Same dep as `crud-be-python-fastapi`; off by default for desktop                                                          |
+
+Versions pinned at plan-author time (2026-04-27). Bump together via the
+delivery checklist; any version drift is a finding.
+
+## Repo layout
+
+```text
 apps/
-  pdf-chat-be/                      # Python/FastAPI backend
-    src/pdf_chat_be/
-      __init__.py
-      main.py                       # FastAPI app
-      config.py                     # pydantic-settings
-      routers/
-        pdfs.py                     # upload, list, delete
-        sessions.py                 # CRUD sessions + POST messages (streams SSE)
-        health.py
-      services/
-        pdf_extraction.py           # pypdf wrapper
-        chunking.py                 # naive token chunker
-        embedding.py                # OpenRouter embedding client
-        vector_store.py             # pgvector queries (multi-PDF, session-scoped)
-        rag.py                      # retrieve + prompt assemble (history-aware)
-        openrouter_chat.py          # OpenRouter chat client w/ streaming
-        sessions_service.py         # session lifecycle + message persistence
-        rate_limiter.py             # slowapi-backed token bucket
-        content_filter.py           # ContentFilter Protocol + RegexBlocklistFilter + Noop
-        cost_cap.py                 # session + day token-budget enforcement
-        token_counter.py            # tiktoken (in) + char-approx (out)
-      infrastructure/
-        repositories.py             # SQLAlchemy + asyncpg
-        openrouter_client.py        # httpx wrapper
-      auth/                         # (none — placeholder for future)
-    tests/
-      unit/
-        steps/                      # pytest-bdd step defs (mocked)
-        support/
-      integration/
-        steps/                      # pytest-bdd step defs (real DB, mocked OR)
-        support/
-      fixtures/
-        sample.pdf
-        openrouter.json             # cassette for MOCK_OPENROUTER
-    alembic/                        # vector schema migration
-    docker-compose.integration.yml  # pgvector image + test runner
-    Dockerfile.integration
-    pyproject.toml
-    project.json
-    .python-version
-    README.md
-
-  pdf-chat-fe/                      # Next.js 16 frontend (consumes libs/ts-ui)
-    src/
-      app/
-        page.tsx                    # library — uses ts-ui Card, Button
-        chat/[sessionId]/page.tsx   # chat — uses ts-ui Card, Input, Button
-        api/chat/route.ts           # Route Handler proxy
-        layout.tsx
-        globals.css                 # imports @open-sharia-enterprise/ts-ui-tokens
-      components/                   # PDF-chat-specific composites only
-        UploadZone.tsx              # composes ts-ui Card + Button + Alert
-        ChatTranscript.tsx          # composes ts-ui Card
-        ChatComposer.tsx            # composes ts-ui Input + Button
-        ModelSelector.tsx           # composes ts-ui Button + Label
-      lib/
-        api.ts                      # typed client over generated-contracts
-        env.ts
-      generated-contracts/          # codegen output (gitignored)
-    test/
-      unit/
-        components/*.test.tsx
-        steps/*                     # vitest-cucumber if used
-    next.config.ts
-    package.json
-    project.json
-    tsconfig.json
-    vitest.config.ts
-    README.md
-
-  pdf-chat-be-e2e/                  # Playwright HTTP suite
-    tests/
-      steps/
-      fixtures/
-    .features-gen/
-    package.json
-    playwright.config.ts
-    project.json
-    README.md
-
-  pdf-chat-fe-e2e/                  # Playwright UI suite
-    tests/
-      steps/
-      fixtures/
-    package.json
-    playwright.config.ts
-    project.json
-    README.md
-
-specs/apps/pdf-chat/
-  README.md
-  c4/
-    context.md
-    container.md
-    component-be.md
-    component-fe.md
-    README.md
-  be/
-    README.md
-    gherkin/
-      README.md
-      health/
-        health-check.feature
-      pdfs/
-        upload.feature
-        list.feature
-        delete.feature
-      chat/
-        streaming.feature
-        rag-retrieval.feature
-        model-selection.feature
-      test-support/
-        test-api.feature
-  fe/
-    README.md
-    gherkin/
-      README.md
-      library/
-        library-list.feature
-        delete-pdf.feature
-      upload/
-        drag-drop.feature
-        validation.feature
-      chat/
-        chat-flow.feature
-        model-toggle.feature
-        streaming-display.feature
-  contracts/
-    openapi.yaml
-    project.json
-    README.md
-    .spectral.yaml
-    redocly.yaml
-    paths/
-      health.yaml
-      pdfs.yaml
-      chat.yaml
-    schemas/
-      pdf.yaml
-      chat.yaml
-      error.yaml
-      health.yaml
-    examples/
-    generated/                      # gitignored
-
-infra/dev/pdf-chat-be/
-  docker-compose.dev.yml            # pgvector + dev backend, optional
-
-.github/workflows/
-  test-pdf-chat-be.yml
-  test-pdf-chat-fe.yml
-  test-pdf-chat-be-e2e.yml
-  test-pdf-chat-fe-e2e.yml
+├── investment-oracle-be/
+│   ├── pyproject.toml              # ruff + pyright + pytest + sse-starlette + anthropic + google-genai + pypdf + slowapi
+│   ├── investment_oracle_be/
+│   │   ├── main.py                 # FastAPI app
+│   │   ├── api/
+│   │   │   ├── sources.py
+│   │   │   ├── analyses.py
+│   │   │   ├── report.py            # SSE endpoint
+│   │   │   └── health.py
+│   │   ├── domain/
+│   │   │   ├── chat_provider.py    # Protocol + Anthropic + Gemini implementations
+│   │   │   ├── embedder.py         # Gemini-only
+│   │   │   ├── chunker.py
+│   │   │   ├── retriever.py
+│   │   │   ├── content_filter.py   # Protocol + regex impl
+│   │   │   └── cost_cap.py
+│   │   ├── prompts/
+│   │   │   ├── report_generation.md
+│   │   │   └── report_edit.md
+│   │   ├── persistence/
+│   │   │   ├── models.py            # SQLAlchemy models
+│   │   │   └── alembic/
+│   │   └── pyinstaller.spec         # --onedir spec
+│   └── tests/
+│       ├── unit/                    # ALL mocks, pytest-bdd; ≥ 90 % coverage measured here
+│       ├── integration/             # Real Postgres + pgvector via docker-compose
+│       └── fixtures/
+│           └── cassettes/           # httpx_mock cassette JSONs
+├── investment-oracle-fe/
+│   ├── package.json                 # @anthropic-ai/sdk (typecheck only), @google/genai (typecheck only), vite, react, codemirror
+│   ├── src-tauri/                   # Tauri 2 Rust crate
+│   │   ├── tauri.conf.json
+│   │   ├── Cargo.toml
+│   │   ├── src/main.rs              # Sidecar spawn + kill
+│   │   └── binaries/
+│   │       └── investment-oracle-be-{target-triple}  # Built by PyInstaller; gitignored
+│   └── src/                         # React + Vite FE
+│       ├── App.tsx
+│       ├── components/
+│       │   ├── SourcesPanel.tsx
+│       │   ├── ReportEditor.tsx     # CodeMirror 6 markdown
+│       │   ├── PromptInput.tsx
+│       │   ├── ModelSelector.tsx
+│       │   ├── DisclaimerBanner.tsx
+│       │   └── RevisionHistoryDrawer.tsx
+│       ├── api/                     # generated from OpenAPI
+│       └── lib/sse-client.ts        # @microsoft/fetch-event-source wrapper
+├── investment-oracle-be-e2e/
+│   ├── package.json
+│   ├── playwright.config.ts
+│   └── tests/                       # playwright-bdd consuming specs/.../be/gherkin/
+└── investment-oracle-fe-e2e/
+    ├── package.json
+    ├── playwright.config.ts          # baseURL = http://localhost:1420 (vite preview)
+    └── tests/                        # playwright-bdd consuming specs/.../fe/gherkin/
+specs/apps/investment-oracle/
+├── README.md
+├── c4/                                # System Context, Container, Component
+├── be/gherkin/
+├── fe/gherkin/
+└── contracts/
+    ├── openapi.yaml                   # OpenAPI 3.1
+    └── project.json                   # Nx codegen target
 ```
 
-## OpenAPI contract design
+## OpenAPI endpoints
 
-`specs/apps/pdf-chat/contracts/openapi.yaml` is OpenAPI 3.1 with the following
-endpoints:
+| Method | Path                                                   | Purpose                                           | Body / Stream                                          |
+| ------ | ------------------------------------------------------ | ------------------------------------------------- | ------------------------------------------------------ |
+| GET    | `/health`                                              | Sidecar liveness                                  | `{"status": "ok", "sidecar_version": "..."}`           |
+| POST   | `/api/v1/sources`                                      | Upload PDF                                        | multipart/form-data; returns `{source_id, page_count}` |
+| GET    | `/api/v1/sources`                                      | List ingested sources                             | array                                                  |
+| DELETE | `/api/v1/sources/{id}`                                 | Remove source + its chunks                        | `204` or `409` if attached to an analysis              |
+| POST   | `/api/v1/analyses`                                     | Create analysis with attached sources             | JSON                                                   |
+| GET    | `/api/v1/analyses/{id}`                                | Get analysis + current report                     | JSON                                                   |
+| POST   | `/api/v1/analyses/{id}/report`                         | Generate report                                   | **SSE** (`text/event-stream`)                          |
+| PATCH  | `/api/v1/analyses/{id}/report`                         | Save manual edit                                  | JSON; writes a `manual_edit` revision                  |
+| POST   | `/api/v1/analyses/{id}/report:edit`                    | LLM-rewrite a section                             | **SSE**; writes an `llm_edit` revision                 |
+| GET    | `/api/v1/analyses/{id}/report/revisions`               | List revisions                                    | array                                                  |
+| POST   | `/api/v1/analyses/{id}/report/revisions/{rid}:restore` | Restore a revision (creates a `restore` revision) | JSON                                                   |
 
-| Method | Path                                    | Tag      | Notes                                                   |
-| ------ | --------------------------------------- | -------- | ------------------------------------------------------- |
-| GET    | `/health`                               | Health   | Returns `HealthResponse`                                |
-| POST   | `/api/v1/pdfs`                          | Pdfs     | `multipart/form-data` with `file` (binary)              |
-| GET    | `/api/v1/pdfs`                          | Pdfs     | Returns `PdfListResponse`                               |
-| DELETE | `/api/v1/pdfs/{pdfId}`                  | Pdfs     | Returns `204`                                           |
-| POST   | `/api/v1/sessions`                      | Sessions | Body `CreateSessionRequest`; returns `Session`          |
-| GET    | `/api/v1/sessions`                      | Sessions | Returns `SessionListResponse`                           |
-| GET    | `/api/v1/sessions/{sessionId}`          | Sessions | Returns `SessionDetail` (session + messages)            |
-| PATCH  | `/api/v1/sessions/{sessionId}`          | Sessions | Body `UpdateSessionRequest`                             |
-| DELETE | `/api/v1/sessions/{sessionId}`          | Sessions | Returns `204` (cascades to messages, leaves PDFs alone) |
-| POST   | `/api/v1/sessions/{sessionId}/messages` | Chat     | Body `PostMessageRequest`; response `text/event-stream` |
+OpenAPI 3.1 cannot fully describe SSE; the streaming endpoints are typed as
+`text/event-stream` with a prose `description` block listing the event
+shape. Generated client types hand-roll the SSE consumer; the rest is
+codegen.
 
-Error responses for chat: `429` with `error.code ∈ { "rate_limit_exceeded",
-"token_budget_exceeded" }`, `422` with `error.code = "content_filter_blocked"`.
-Out-of-stream errors during streaming surface as
-`data: {"error": "<code>"}` followed by `data: [DONE]`.
+## Database schema
 
-### SSE shape in OpenAPI 3.1
-
-OpenAPI 3.1 cannot natively describe streaming (3.2 will). The plan documents the
-streaming endpoint with:
-
-```yaml
-responses:
-  "200":
-    description: |
-      Server-sent events stream of incremental chat tokens.
-      Each event has the shape `data: {"delta": "<text>"}` or `data: [DONE]`.
-      OpenAPI 3.1 cannot describe the per-frame envelope, so the schema below
-      describes a single frame; the response is a sequence of these frames.
-    content:
-      text/event-stream:
-        schema:
-          $ref: "./schemas/chat.yaml#/ChatStreamFrame"
-```
-
-A `ChatStreamFrame` schema models `{ "delta": string }` and a comment notes the
-`[DONE]` sentinel. Codegen produces the frame type; the streaming reader is
-hand-written in both the Python client (used by tests) and the TypeScript Route
-Handler.
-
-### Codegen targets
-
-| Project       | Tool                              | Output path                                        |
-| ------------- | --------------------------------- | -------------------------------------------------- |
-| `pdf-chat-be` | `datamodel-codegen` (Pydantic v2) | `apps/pdf-chat-be/generated_contracts/__init__.py` |
-| `pdf-chat-fe` | `@hey-api/openapi-ts`             | `apps/pdf-chat-fe/src/generated-contracts/`        |
-
-Both `codegen` targets `dependsOn: ["pdf-chat-contracts:bundle"]` and feed their output
-directories as Nx cache inputs for `typecheck` and `test:quick`.
-
-## Backend internals
-
-### Settings (`config.py`)
-
-```python
-from pydantic_settings import BaseSettings
-
-class Settings(BaseSettings):
-    openrouter_api_key: str
-    openrouter_base_url: str = "https://openrouter.ai/api/v1"
-    openrouter_default_model: str = "anthropic/claude-haiku-4.5"
-    openrouter_embedding_model: str = "openai/text-embedding-3-small"
-    database_url: str
-    max_upload_mb: int = 25
-    rag_top_k: int = 4
-    mock_openrouter: bool = False
-    enable_test_api: bool = False
-    rate_limit_chat_per_minute: int = 20
-    rate_limit_upload_per_minute: int = 60
-    rate_limit_read_per_minute: int = 120
-    enable_content_filter: bool = True
-    content_filter_blocklist_path: str = "tests/fixtures/blocklist.txt"
-    max_tokens_per_session: int = 200_000
-    max_tokens_per_day: int = 2_000_000
-
-    class Config:
-        env_file = ".env"
-```
-
-### Vector schema (Alembic migration)
-
-Six tables, all created in one Alembic revision. Read this list before reading
-the SQL — it explains why each table exists:
-
-- `pdfs` — one row per uploaded document. Stores filename, page count, upload
-  timestamp.
-- `pdf_chunks` — one row per ~800-token slice of a PDF. Each row has the chunk
-  text and a `vector(1536)` column holding the embedding (1536 floating-point
-  numbers — the meaning fingerprint produced by the embedding model). The
-  `ivfflat` index makes similarity search fast.
-- `sessions` — one row per chat thread. Stores title, the chosen LLM model id,
-  timestamps. Sessions are anonymous (no auth in this demo) and addressable
-  by their UUID.
-- `session_pdfs` — many-to-many link table. A session may attach one or many
-  PDFs; this is what makes multi-document conversations possible.
-- `messages` — persisted chat history (`user` / `assistant` / `system` rows).
-  Each row tracks token counts and a `status` flag for content-filter blocks.
-  This is what makes a conversation survive reload.
-- `token_usage` — running tally of input + output tokens consumed per session
-  per calendar day. Read by the cost-cap guardrail before each chat call;
-  upserted after each call.
+The schema is six tables in one Postgres database. The `vector` extension
+is enabled by an init script in `docker-compose.integration.yml`.
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS vector;
 
-CREATE TABLE pdfs (
-    id UUID PRIMARY KEY,
-    filename TEXT NOT NULL,
-    pages INT NOT NULL,
-    uploaded_at TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TABLE sources (
+  id            UUID PRIMARY KEY,
+  filename      TEXT NOT NULL,
+  sha256        BYTEA NOT NULL UNIQUE,
+  page_count    INTEGER NOT NULL,
+  byte_size     INTEGER NOT NULL,
+  ingested_at   TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE TABLE pdf_chunks (
-    id UUID PRIMARY KEY,
-    pdf_id UUID NOT NULL REFERENCES pdfs(id) ON DELETE CASCADE,
-    page INT NOT NULL,
-    chunk_index INT NOT NULL,
-    text TEXT NOT NULL,
-    embedding vector(1536) NOT NULL
+CREATE TABLE source_chunks (
+  id            UUID PRIMARY KEY,
+  source_id     UUID NOT NULL REFERENCES sources(id) ON DELETE CASCADE,
+  page          INTEGER NOT NULL,
+  text          TEXT NOT NULL,
+  embedding     VECTOR(768) NOT NULL
+);
+CREATE INDEX source_chunks_embedding_ivfflat
+  ON source_chunks USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
+CREATE INDEX source_chunks_source_id ON source_chunks(source_id);
+
+CREATE TABLE analyses (
+  id            UUID PRIMARY KEY,
+  name          TEXT NOT NULL,
+  model         TEXT NOT NULL,                -- "claude-haiku-4-5" | "gemini-2.5-flash-lite"
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE INDEX pdf_chunks_pdf_id_idx ON pdf_chunks(pdf_id);
-CREATE INDEX pdf_chunks_embedding_idx ON pdf_chunks
-    USING ivfflat (embedding vector_cosine_ops)
-    WITH (lists = 100);
-
--- Sessions (persistent threads)
-CREATE TABLE sessions (
-    id UUID PRIMARY KEY,
-    title TEXT NOT NULL,
-    model TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TABLE analysis_sources (
+  analysis_id   UUID NOT NULL REFERENCES analyses(id) ON DELETE CASCADE,
+  source_id     UUID NOT NULL REFERENCES sources(id) ON DELETE RESTRICT,
+  PRIMARY KEY (analysis_id, source_id)
 );
 
--- Many-to-many session ↔ pdfs (multi-document conversation)
-CREATE TABLE session_pdfs (
-    session_id UUID NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,
-    pdf_id     UUID NOT NULL REFERENCES pdfs(id)     ON DELETE CASCADE,
-    PRIMARY KEY (session_id, pdf_id)
+CREATE TABLE reports (
+  id            UUID PRIMARY KEY,
+  analysis_id   UUID NOT NULL UNIQUE REFERENCES analyses(id) ON DELETE CASCADE,
+  content_md    TEXT NOT NULL,
+  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-CREATE INDEX session_pdfs_pdf_id_idx ON session_pdfs(pdf_id);
 
--- Persisted chat history
-CREATE TABLE messages (
-    id UUID PRIMARY KEY,
-    session_id UUID NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,
-    role TEXT NOT NULL CHECK (role IN ('user','assistant','system')),
-    content TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'ok' CHECK (status IN ('ok','blocked','error')),
-    input_tokens  INT NOT NULL DEFAULT 0,
-    output_tokens INT NOT NULL DEFAULT 0,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TABLE report_revisions (
+  id            UUID PRIMARY KEY,
+  report_id     UUID NOT NULL REFERENCES reports(id) ON DELETE CASCADE,
+  kind          TEXT NOT NULL,                -- 'generation' | 'manual_edit' | 'llm_edit' | 'restore'
+  content_md    TEXT NOT NULL,
+  prompt_text   TEXT,                          -- non-null only for kind='llm_edit'
+  section       TEXT,                          -- non-null only for kind='llm_edit'
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-CREATE INDEX messages_session_id_created_at_idx
-    ON messages(session_id, created_at);
+CREATE INDEX report_revisions_report_id_created_at
+  ON report_revisions(report_id, created_at DESC);
 
--- Per-session per-day token usage (cost cap accounting)
 CREATE TABLE token_usage (
-    session_id UUID NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,
-    usage_date DATE NOT NULL,
-    input_tokens  INT NOT NULL DEFAULT 0,
-    output_tokens INT NOT NULL DEFAULT 0,
-    PRIMARY KEY (session_id, usage_date)
+  id            UUID PRIMARY KEY,
+  analysis_id   UUID REFERENCES analyses(id) ON DELETE CASCADE,
+  usage_date    DATE NOT NULL DEFAULT current_date,
+  provider      TEXT NOT NULL,                -- 'anthropic' | 'google'
+  input_tokens  INTEGER NOT NULL,
+  output_tokens INTEGER NOT NULL,
+  estimated_usd NUMERIC(10, 6) NOT NULL
 );
+CREATE INDEX token_usage_analysis_date ON token_usage(analysis_id, usage_date);
 ```
 
-### Multi-document retrieval SQL
+Why these tables: `sources` and `source_chunks` separate ingest data from
+the per-analysis state. `analyses` + `analysis_sources` are the M:N tie
+that makes multi-document RAG natural. `reports` is 1:1 with an analysis
+because every analysis owns exactly one current report; revision history
+lives in `report_revisions` so restoring is free. `token_usage` is the
+ledger the cost cap reads.
 
-Plain English: find the **k chunks whose embeddings are closest in meaning to
-the user's question**, restricted to PDFs attached to this session. The query
-embedding is the vector OpenRouter returned for the user's question text.
+## Multi-source retrieval SQL
 
 ```sql
-SELECT id, pdf_id, page, chunk_index, text,
-       1 - (embedding <=> :query_embedding) AS similarity
-FROM pdf_chunks
-WHERE pdf_id IN (SELECT pdf_id FROM session_pdfs WHERE session_id = :session_id)
-ORDER BY embedding <=> :query_embedding
+SELECT sc.id, sc.source_id, sc.page, sc.text,
+       1 - (sc.embedding <=> :q) AS similarity
+FROM source_chunks sc
+WHERE sc.source_id IN (
+  SELECT source_id FROM analysis_sources WHERE analysis_id = :a
+)
+ORDER BY sc.embedding <=> :q
 LIMIT :k;
 ```
 
-- `<=>` is pgvector's cosine-distance operator. Smaller distance = more similar.
-- `1 - distance` flips the number into a similarity score in roughly [0, 1].
-- `LIMIT :k` (k=4 by default) returns the top matches.
-- The `WHERE pdf_id IN (...)` clause is what makes retrieval session-scoped:
-  if the session attached three PDFs, all three are searched in one query and
-  the result set may interleave chunks from any of them.
+`<=>` is pgvector's cosine-distance operator (range [0, 2], smaller is
+better). The `1 - distance` column is the more readable cosine
+**similarity** (range [-1, 1], larger is better) the prompt builder uses
+to decide whether to include a chunk at all (drop chunks with similarity
+below 0.3).
 
-Retrieval is **always** session-scoped — per-PDF retrieval is not an endpoint.
+## Provider abstraction
 
-### Guardrails layer
-
-LLM endpoints are public-facing **and** charge real money per request. Without
-defensive layers, a single misbehaving client can run up the bill or surface
-problematic content. Three guardrails wrap every chat call here. Tokens (the
-sub-word units LLMs are billed in) are the unit of cost; that's why two of the
-three guardrails count tokens.
-
-| Layer          | What it protects against                                | Implementation                                                                              |
-| -------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Rate limit     | Spam, accidental loops, single-IP DoS                   | `slowapi` token bucket per IP per minute                                                    |
-| Content filter | Abusive input; problematic LLM output reaching the user | Regex blocklist (swap-able for a real provider) — runs on input AND on the assembled output |
-| Token cost cap | Runaway billing — a session or day exceeding budget     | Read-modify-write on `token_usage`                                                          |
-
-`slowapi`, `sse-starlette`, and `tiktoken` are off-the-shelf libraries —
-respectively: an in-process rate limiter for FastAPI, an SSE response helper,
-and OpenAI's tokenizer used here for input-side token counting.
-
-Three middlewares wrap every chat call. Order matters:
+The `ChatProvider` Protocol hides the gulf between Anthropic's `messages`
+API and Gemini's `generateContent`. Two implementations.
 
 ```python
-# routers/sessions.py (chat handler, simplified)
-@router.post("/api/v1/sessions/{session_id}/messages")
-async def post_message(...):
-    rate_limiter.check(request.client.host, "chat")            # 1. rate limit
-    content_filter.scan_input(body.content)                     # 2. content filter (in)
-    cost_cap.assert_session_under_cap(session_id)               # 3a. session cap
-    cost_cap.assert_day_under_cap(date.today())                 # 3b. daily cap
+from typing import Protocol, AsyncIterator
+from dataclasses import dataclass
 
-    user_msg = await messages.persist(session_id, "user", body.content)
+@dataclass(frozen=True)
+class ChatRequest:
+    model: str
+    system: str
+    messages: list[dict]   # [{"role": "user"|"assistant", "content": str}, ...]
+    max_tokens: int
 
-    async def event_gen():
-        buffer = []
-        async for token in openrouter_chat.stream(...):
-            buffer.append(token)
-            yield {"data": json.dumps({"delta": token})}
-        full = "".join(buffer)
-        try:
-            content_filter.scan_output(full)                    # 2b. content filter (out)
-        except ContentFilterBlocked:
-            await messages.persist(session_id, "assistant", full, status="blocked")
-            yield {"data": json.dumps({"error": "content_filter_blocked"})}
-            yield {"data": "[DONE]"}
-            return
-        await messages.persist(session_id, "assistant", full,
-                               input_tokens=count(prompt),
-                               output_tokens=count(full))
-        await cost_cap.record(session_id, date.today(), in_tok, out_tok)  # 3c. update
-        yield {"data": "[DONE]"}
+@dataclass(frozen=True)
+class ChatChunk:
+    delta_text: str
+    finish_reason: str | None = None
 
-    return EventSourceResponse(event_gen())
+@dataclass(frozen=True)
+class ChatUsage:
+    input_tokens: int
+    output_tokens: int
+
+class ChatProvider(Protocol):
+    async def stream(self, req: ChatRequest) -> AsyncIterator[ChatChunk]: ...
+    def usage_from_last(self) -> ChatUsage: ...
+
+class AnthropicChatProvider:
+    """Wraps anthropic.AsyncAnthropic.messages.stream()."""
+
+class GeminiChatProvider:
+    """Wraps google.genai.Client().aio.models.generate_content_stream()."""
 ```
 
-#### Rate limit
+The `embedder` interface is similar but Gemini-only; no Protocol because
+there is no second implementation to hide behind.
 
-`slowapi` with an in-memory storage backend (no Redis dependency for the demo). Limits
-are configured per route via FastAPI dependencies. On limit exceeded, slowapi returns
-`429` and FastAPI rewrites the body to the canonical `ErrorResponse` envelope via an
-exception handler.
+## Code shapes
 
-#### Content filter
-
-`services/content_filter.py` exposes:
+### Anthropic chat — Python (sidecar)
 
 ```python
-class ContentFilter(Protocol):
-    def scan_input(self, text: str) -> None: ...   # raises ContentFilterBlocked
-    def scan_output(self, text: str) -> None: ...  # raises ContentFilterBlocked
+from anthropic import AsyncAnthropic
 
-class RegexBlocklistFilter(ContentFilter):
-    def __init__(self, patterns: list[re.Pattern]): ...
+client = AsyncAnthropic()  # reads ANTHROPIC_API_KEY
 
-class NoopFilter(ContentFilter):
-    def scan_input(self, text): pass
-    def scan_output(self, text): pass
+async def stream_anthropic(model: str, system: str, messages: list[dict]):
+    async with client.messages.stream(
+        model=model,                               # "claude-haiku-4-5"
+        max_tokens=4096,
+        system=system,
+        messages=messages,
+    ) as stream:
+        async for event in stream:
+            if event.type == "content_block_delta" and event.delta.type == "text_delta":
+                yield event.delta.text
+        final = await stream.get_final_message()
+        yield_usage(final.usage.input_tokens, final.usage.output_tokens)
 ```
 
-`ENABLE_CONTENT_FILTER=false` swaps `RegexBlocklistFilter` for `NoopFilter`. Every test
-ships with the noop unless the test explicitly exercises filtering. Production
-deployments are expected to swap `RegexBlocklistFilter` for a real-provider
-implementation (Anthropic moderation, OpenAI moderation) — the `Protocol` is the
-extension seam.
-
-#### Cost cap
+### Gemini chat + embed — Python
 
 ```python
-class CostCap:
-    async def assert_session_under_cap(self, session_id):
-        used = await db.scalar("SELECT COALESCE(SUM(input_tokens+output_tokens),0) "
-                               "FROM token_usage WHERE session_id=:s",
-                               {"s": session_id})
-        if used >= settings.max_tokens_per_session:
-            raise TokenBudgetExceeded("session")
+from google import genai
+from google.genai import types
 
-    async def assert_day_under_cap(self, day):
-        used = await db.scalar("SELECT COALESCE(SUM(input_tokens+output_tokens),0) "
-                               "FROM token_usage WHERE usage_date=:d",
-                               {"d": day})
-        if used >= settings.max_tokens_per_day:
-            raise TokenBudgetExceeded("day")
+client = genai.Client()  # reads GOOGLE_API_KEY
 
-    async def record(self, session_id, day, in_tok, out_tok):
-        await db.execute(
-          """INSERT INTO token_usage(session_id, usage_date, input_tokens, output_tokens)
-             VALUES (:s, :d, :i, :o)
-             ON CONFLICT (session_id, usage_date)
-             DO UPDATE SET input_tokens  = token_usage.input_tokens  + EXCLUDED.input_tokens,
-                           output_tokens = token_usage.output_tokens + EXCLUDED.output_tokens""",
-          {"s": session_id, "d": day, "i": in_tok, "o": out_tok})
+async def stream_gemini(model: str, system: str, messages: list[dict]):
+    contents = format_messages(system, messages)  # vendor-specific format helper
+    stream = await client.aio.models.generate_content_stream(
+        model=model,                               # "gemini-2.5-flash-lite"
+        contents=contents,
+    )
+    async for chunk in stream:
+        yield chunk.text or ""
+    # gemini reports usage on the final chunk via usage_metadata
+
+async def embed_chunk(text: str, *, query: bool = False):
+    resp = await client.aio.models.embed_content(
+        model="gemini-embedding-001",
+        contents=[text],
+        config=types.EmbedContentConfig(
+            output_dimensionality=768,
+            task_type="RETRIEVAL_QUERY" if query else "RETRIEVAL_DOCUMENT",
+        ),
+    )
+    return resp.embeddings[0].values
 ```
 
-Token counting uses `tiktoken` for OpenAI-family inputs and falls back to a rough
-character-based approximation for Claude / Gemini outputs (the demo deliberately
-trades accuracy for simplicity).
-
-### SSE handler shape
-
-The minimal handler shape is shown in the **Guardrails layer** section above. It uses
-`sse_starlette.EventSourceResponse`, runs all three guardrail checks before streaming,
-buffers tokens for an output content-filter pass, persists the assembled assistant
-message, and updates `token_usage` in a single UPSERT. Any guardrail violation either
-returns `429`/`422` before streaming starts or terminates the in-flight stream with a
-`data: {"error": "<code>"}` frame followed by `data: [DONE]`.
-
-### Mock OpenRouter
-
-When `mock_openrouter=True`, both `openrouter_chat.stream()` and `embedding.embed()`
-read from `tests/fixtures/openrouter.json` instead of issuing HTTP. The fixture maps:
-
-```json
-{
-  "embeddings": { "default": [0.01, 0.02, ...] },
-  "chat": {
-    "default": ["Hello", " from", " the", " mock", " stream", "!"]
-  }
-}
-```
-
-Tests assert the _requests_ the backend would have made (model id, prompt content),
-without burning real tokens.
-
-## Frontend internals
-
-### ts-ui consumption (mandatory)
-
-`pdf-chat-fe` consumes `@open-sharia-enterprise/ts-ui` (source: `libs/ts-ui/`) as its
-**only** UI primitive layer. The same posture as `crud-fe-ts-nextjs`. Rules:
-
-- Add `"@open-sharia-enterprise/ts-ui": "*"` and `"@open-sharia-enterprise/ts-ui-tokens": "*"`
-  to `apps/pdf-chat-fe/package.json` `dependencies`.
-- `globals.css` first line: `@import "@open-sharia-enterprise/ts-ui-tokens/src/tokens.css";`
-- Import primitives only from the package:
-  `import { Button, Card, CardHeader, CardTitle, CardContent, Input, Label, Dialog, DialogContent, Alert, cn } from "@open-sharia-enterprise/ts-ui";`
-- Do **not** re-implement `Button`, `Input`, `Card`, `Label`, `Dialog`, `Alert` inside
-  `apps/pdf-chat-fe/src/components/`. Files in `components/` are demo-specific
-  composites only (UploadZone, ChatTranscript, ChatComposer, ModelSelector).
-- If a primitive is missing from `ts-ui` (e.g., `Textarea`, `Avatar`, `ScrollArea`),
-  add it to `libs/ts-ui` first via `swe-ui-maker` following the
-  [Component Patterns Convention](../../../governance/development/frontend/component-patterns.md),
-  land that in its own commit, then consume it here. Do **not** inline a one-off in
-  `pdf-chat-fe`.
-- Add `pdf-chat-fe` to `libs/ts-ui`'s reverse-dependency list (Nx auto-tracks via
-  imports; `nx graph` should show the edge after the first import).
-
-Example composite (composes ts-ui primitives, owns demo-specific behaviour):
-
-```tsx
-// apps/pdf-chat-fe/src/components/ChatComposer.tsx
-import { Button, Input, cn } from "@open-sharia-enterprise/ts-ui";
-
-type Props = {
-  disabled?: boolean;
-  onSubmit: (text: string) => void;
-};
-
-export function ChatComposer({ disabled, onSubmit }: Props) {
-  // … local state + Enter / Shift+Enter handling …
-  return (
-    <form
-      className={cn("flex gap-2 border-t p-3", disabled && "opacity-60")}
-      onSubmit={(e) => {
-        e.preventDefault();
-        // …
-      }}
-    >
-      <Input name="prompt" placeholder="Ask the PDF…" disabled={disabled} />
-      <Button type="submit" disabled={disabled}>
-        Send
-      </Button>
-    </form>
-  );
-}
-```
-
-### Route Handler proxy (`/api/chat/route.ts`)
-
-A Next.js Route Handler is a server-side endpoint that lives inside the
-frontend project. We use it as a thin proxy: the browser POSTs to
-`/api/chat` (same-origin), the Route Handler forwards to the FastAPI backend,
-and the upstream SSE body is piped back to the browser unchanged.
-
-Two reasons for the proxy:
-
-- **Hide the backend URL** from the browser. The browser only sees same-origin
-  `/api/chat`; the real `PDF_CHAT_BE_URL` stays server-side.
-- **Same-origin endpoint for `useChat`**. The Vercel AI SDK's `useChat` hook
-  (next section) is happiest pointed at a same-origin URL.
+### FE SSE consumer — TypeScript
 
 ```ts
-export const runtime = "nodejs";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 
-export async function POST(req: Request) {
-  const body = await req.json();
-  const upstream = await fetch(`${process.env.PDF_CHAT_BE_URL}/api/v1/sessions/${body.sessionId}/messages`, {
+export async function streamReport(analysisId: string, onChunk: (text: string) => void, onDone: () => void) {
+  const port = window.__INVESTMENT_ORACLE_PORT__; // injected by Tauri shell
+  await fetchEventSource(`http://127.0.0.1:${port}/api/v1/analyses/${analysisId}/report`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ content: body.content }),
-  });
-  return new Response(upstream.body, {
-    status: upstream.status,
-    headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      "X-Accel-Buffering": "no",
+    body: JSON.stringify({}),
+    onmessage(ev) {
+      if (ev.data === "[DONE]") {
+        onDone();
+        return;
+      }
+      onChunk(JSON.parse(ev.data).delta);
     },
   });
 }
 ```
 
-The `X-Accel-Buffering: no` header tells reverse proxies (e.g., nginx) not to
-buffer the SSE response — without it, tokens stack up in the proxy and arrive
-in bursts instead of streaming.
+The browser's native `EventSource` cannot POST; `fetch-event-source` is the
+standard workaround.
 
-### `useChat` integration
+### Tauri sidecar spawn — Rust
 
-`useChat` is a React hook from the **Vercel AI SDK** (`@ai-sdk/react`). It
-manages the chat-message list state, fires the POST to `api`, reads the SSE
-stream as it arrives, appends streamed token deltas to the latest assistant
-message, and re-renders on each frame. Engineers used to manually wiring SSE
-in React can think of it as "`useState` + `fetch` + SSE reader, packaged."
+```rust
+use tauri::Manager;
+use tauri_plugin_shell::ShellExt;
+use tauri_plugin_shell::process::CommandChild;
+use std::sync::Mutex;
 
-```tsx
-import { useChat } from "@ai-sdk/react";
+struct SidecarHandle(Mutex<Option<CommandChild>>);
 
-const { messages, append, status } = useChat({
-  api: "/api/chat",
-  body: { sessionId }, // sessionId binds useChat to the Route Handler and onward to the backend session
-  streamProtocol: "data", // raw SSE passthrough
-});
+fn main() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
+        .manage(SidecarHandle(Mutex::new(None)))
+        .setup(|app| {
+            let port = pick_free_port();
+            let sidecar_cmd = app
+                .shell()
+                .sidecar("investment-oracle-be")?
+                .args(["--port", &port.to_string()]);
+            let (mut rx, child) = sidecar_cmd.spawn()?;
+            app.state::<SidecarHandle>().0.lock().unwrap().replace(child);
+
+            // Pump stdout/stderr to Tauri logger; inject port into the WebView.
+            let app_handle = app.handle().clone();
+            tauri::async_runtime::spawn(async move {
+                while let Some(_event) = rx.recv().await { /* ... */ }
+            });
+            Ok(())
+        })
+        .on_window_event(|window, event| {
+            if let tauri::WindowEvent::CloseRequested { .. } = event {
+                if let Some(child) = window.app_handle().state::<SidecarHandle>().0.lock().unwrap().take() {
+                    let _ = child.kill();
+                }
+            }
+        })
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
 ```
 
-When AI SDK 5's transport layer requires more nuance, swap to a custom `ChatTransport`
-implementation. tech-docs records this as a known seam.
-
-### Env vars (`apps/pdf-chat-fe/.env.example`)
-
-```dotenv
-PDF_CHAT_BE_URL=http://localhost:8501
-NEXT_PUBLIC_DEFAULT_MODEL=anthropic/claude-haiku-4.5
-```
-
-## Test levels and tooling
-
-The two sides of `pdf-chat` use different test-level conventions, mirroring the
-`crud-*` family.
-
-### Backend (`pdf-chat-be`) — three levels
-
-| Level              | Runner                         | Tool stack                                                            | OpenRouter                                   | Postgres              | Coverage            |
-| ------------------ | ------------------------------ | --------------------------------------------------------------------- | -------------------------------------------- | --------------------- | ------------------- |
-| `test:unit`        | `pytest` + `pytest-bdd`        | pytest, pytest-bdd, pytest-asyncio, pytest-httpx, freezegun, coverage | Mocked (httpx fixture)                       | None (mocked repos)   | **Measured (≥90%)** |
-| `test:integration` | `pytest-bdd` in docker-compose | Same pytest stack, real Postgres + pgvector                           | Mocked (httpx fixture)                       | Real (pgvector image) | Not measured        |
-| `test:e2e`         | Playwright + playwright-bdd    | runs from `pdf-chat-be-e2e` against running BE                        | Mocked (default) or real (workflow_dispatch) | Real                  | Not measured        |
-
-Backend lint + typecheck stack: **`ruff`** (lint), **`pyright`** (typecheck), via
-`nx run pdf-chat-be:lint` and `nx run pdf-chat-be:typecheck`. Test framework is
-**`pytest` + `pytest-bdd`** at all three levels, identical to
-`crud-be-python-fastapi`.
-
-### Frontend (`pdf-chat-fe`) — two levels
-
-| Level       | Runner                      | Tool stack                                                 | Backend dep                                  | Coverage            |
-| ----------- | --------------------------- | ---------------------------------------------------------- | -------------------------------------------- | ------------------- |
-| `test:unit` | `vitest`                    | vitest, @testing-library/react, jsdom, @vitest/coverage-v8 | none (Route Handler mocked)                  | **Measured (≥70%)** |
-| `test:e2e`  | Playwright + playwright-bdd | runs from `pdf-chat-fe-e2e` against running BE + FE        | Real (BE booted with `MOCK_OPENROUTER=true`) | Not measured        |
-
-The frontend has **no `test:integration` level**. Integration concerns (backend
-contract, real DB) are covered by `pdf-chat-be:test:integration` and the
-end-to-end pair. This matches the `crud-fe-ts-nextjs` pattern.
-
-Frontend lint + typecheck stack: **`oxlint`** (lint, with `--jsx-a11y-plugin`),
-**`tsc --noEmit`** (typecheck). Source language is **TypeScript** end-to-end —
-no JavaScript files in the app source.
-
-### Coverage measurement
-
-- **BE**: `pdf-chat-be:test:quick` runs `pytest -m unit` with coverage, emits
-  `coverage/lcov.info`, then invokes `rhino-cli test-coverage validate ... 90`.
-- **FE**: `pdf-chat-fe:test:quick` runs `vitest --coverage`, emits
-  `coverage/lcov.info`, then invokes `rhino-cli test-coverage validate ... 70`.
-
-## Test determinism strategy (the LLM problem)
-
-LLMs are non-deterministic by default — same prompt produces different output
-across calls, model versions, and provider releases. A naïve test suite
-(`assert chat("What's 2+2?") == "4"`) breaks the moment the upstream model is
-patched, the temperature parameter changes, or a network timeout retries with a
-slightly different prefix. This plan's tests are deliberately structured so
-that **none of that affects test outcomes**.
-
-### Sources of non-determinism we control for
-
-| Source                                | Mitigation                                                                                   |
-| ------------------------------------- | -------------------------------------------------------------------------------------------- |
-| Sampling (temperature, top-p)         | All test calls go through the OpenRouter mock; real-API calls use `temperature=0`            |
-| Provider-side model updates           | Tests never assert on returned text content; only on what we **sent** + structural shape     |
-| Tokenizer drift (`tiktoken` versions) | `tiktoken` is pinned in `pyproject.toml`; cost-cap tests use synthetic counts, not live ones |
-| Network jitter, timeouts, retries     | `MOCK_OPENROUTER=true` removes the network entirely from unit + integration                  |
-| SSE chunk arrival timing              | Mock cassette emits a fixed sequence; tests assert the **set** of frames, not timing         |
-| Embedding similarity drift            | Embedding fixtures are deterministic vectors (zeros + one marker dim per chunk)              |
-| `datetime.now()` for daily token cap  | `freezegun.freeze_time(...)` pins the clock for daily-cap tests                              |
-| Random ids (`uuid4()`)                | Tests assert on shape (`UUID v4`), never on exact value; or fixtures pin via patch           |
-
-### The four assertion patterns we use (and the one we don't)
-
-1. **Structural assertions** (preferred everywhere). Assert response is
-   well-formed JSON / SSE / matches the OpenAPI contract; status code is correct;
-   `Content-Type` is right; required fields exist with right types. Never asserts
-   on prose content of an LLM-generated string.
-2. **Outbound-request assertions** (the strongest signal we have for LLM-shaped
-   code). Assert on what the backend **sent to OpenRouter**: model id, system
-   prompt content, retrieved chunks, message history shape. The cassette captures
-   the request side; tests inspect it. This catches bugs in chunking, retrieval,
-   prompt assembly, model selection, history persistence — without ever caring
-   what the LLM said back.
-3. **Side-effect assertions**. Assert on database state after a chat call:
-   user message persisted, assistant message persisted with the assembled output,
-   `token_usage` upserted with non-zero counts, `messages` ordered by
-   `created_at`. State assertions are deterministic in a way text assertions
-   never can be.
-4. **Snapshot assertions** (for assembled prompts only). The full
-   `[system, retrieved_chunks, history, user_message]` payload that gets sent to
-   OpenRouter is snapshot-tested via `pytest`'s built-in fixtures. Snapshot
-   diffs are reviewed deliberately when prompt logic changes; they never fail
-   because the LLM said something different.
-5. **Anti-pattern (forbidden)**: asserting that the assistant response contains
-   a specific phrase, has a specific length, "answers correctly", or matches a
-   regex on prose. **No test in this plan does this.** The cassette controls the
-   tokens; if we want to assert on the response, we control what the cassette
-   yields and assert on the persisted/structural shape, not on text quality.
-
-### Mock cassette structure
-
-`tests/fixtures/openrouter.json` is a deterministic stand-in for OpenRouter:
+`tauri.conf.json` declares the sidecar binary:
 
 ```json
 {
-  "embeddings": {
-    "<query-fingerprint>": [0.0, 0.0, ..., 1.0, ..., 0.0]
-  },
-  "chat": {
-    "<prompt-fingerprint>": [
-      "Hello", " from", " the", " mock", " stream", "!"
-    ],
-    "default": ["Mock", " response"]
-  },
-  "scenarios": {
-    "content_filter_block_output": ["This", " contains", " <BLOCKLISTED>"],
-    "long_response_for_token_cap":  ["..." ]
+  "bundle": {
+    "externalBin": ["binaries/investment-oracle-be"]
   }
 }
 ```
 
-- **Fingerprint**: deterministic hash of the request payload (chat: messages
-  array; embedding: input string). The mock client looks up the fingerprint
-  and falls back to `default` when no scenario is registered.
-- **Embeddings** are hand-crafted so similarity ordering is testable. For two
-  fixture PDFs we set distinct marker dimensions; the retrieval test asserts
-  that for query `Q_A` chunks from PDF A rank above chunks from PDF B.
-- **Streaming**: chat fixtures are arrays of token strings. The mock streamer
-  yields each in order, with no delay (or a fixed `asyncio.sleep(0)` if a test
-  needs to assert mid-stream behaviour).
-- **Scenarios** are named keys exercised by specific Gherkin steps (e.g.,
-  `Given the model returns a blocklisted token`). One cassette serves every
-  test; no per-test fixture file.
+The actual file under `src-tauri/binaries/` carries a target-triple
+suffix per Tauri's sidecar rules (e.g.,
+`investment-oracle-be-aarch64-apple-darwin`). PyInstaller produces a folder
+of binaries (`--onedir`) and the spec file copies them into place at build
+time.
 
-### Real-LLM smoke (workflow_dispatch only)
+## Guardrails
 
-A single workflow (`test-pdf-chat-be-e2e.yml` with `mock_openrouter=false`
-input parameter) runs against the **real** OpenRouter for manual smoke. Its
-assertions are **structural only**: response status, `Content-Type:
-text/event-stream`, ≥1 frame received, response well-formed. It never asserts
-on returned text. CI on PR / on push uses `MOCK_OPENROUTER=true`.
+| Layer                 | Status        | Why                                                                                                    |
+| --------------------- | ------------- | ------------------------------------------------------------------------------------------------------ |
+| Cost cap              | required      | Per-analysis and per-day USD budget; rejects with `429 token_budget_exceeded` when exceeded.           |
+| Content filter        | required      | Pre-call regex blocklist on user prompt; per-chunk regex blocklist on streamed output. Protocol-typed. |
+| Per-IP rate limit     | opt-in        | Off by default (single-user desktop); `RATE_LIMIT_ENABLED=true` switches on slowapi for server use.    |
+| Disclaimer banner     | required (FE) | "Demo output, not investment advice" stays at the top of the window for every analysis.                |
+| System-prompt refusal | required      | The system prompt instructs the model to refuse direct buy/sell recommendations.                       |
 
-This split keeps PR runs fast, free, deterministic; pre-release smokes
-exercise the real provider without polluting the deterministic test set.
+## Test strategy
 
-### Retrieval determinism
+### BE — three levels
 
-pgvector's `<=>` operator is exact for small corpora; the `ivfflat` index is
-**approximate**, which means top-k can vary if the index is rebuilt. Tests
-defend against this two ways:
+| Level              | Mocks                        | Real                                            | Tooling                                                     | Cacheable           |
+| ------------------ | ---------------------------- | ----------------------------------------------- | ----------------------------------------------------------- | ------------------- |
+| `test:unit`        | All vendor HTTP, all I/O     | Service code (in-process)                       | pytest + pytest-bdd; ruff; pyright; coverage.py LCOV ≥ 90 % | yes                 |
+| `test:integration` | Vendor HTTP only (cassettes) | Postgres + pgvector; pypdf on real fixture PDFs | pytest + pytest-bdd; freezegun; consumes same Gherkin       | no — `cache: false` |
+| `test:e2e`         | Vendor HTTP only             | Postgres + pgvector + real FastAPI HTTP         | Playwright + playwright-bdd                                 | no                  |
 
-- **Unit tests** mock the vector store entirely; retrieval results are a
-  hand-curated list returned by the mock.
-- **Integration tests** populate a fresh DB per run (`docker-compose down -v`),
-  build the ivfflat index in the same migration, and seed with deterministic
-  embedding vectors. The test then asserts the **set** of returned chunk ids,
-  not the order — because ivfflat is approximate even on the same index. When
-  ordering matters, the test uses `<=>` directly with `SET enable_indexscan =
-off` to force the deterministic sequential scan.
+`test:quick` = `test:unit` + coverage validation (`rhino-cli test-coverage validate`).
 
-### Eval suites (out of scope)
+### FE — two levels
 
-Production-grade RAG ships eval suites (Promptfoo, Langfuse, Inspect AI,
-custom rubrics) that score real LLM output against a held-out set. Those are
-explicitly out of scope here — see the
-[AI primer §13](../../../docs/explanation/software-engineering/ai-application-development/README.md#13-evaluation-and-the-lack-of-unit-tests-for-llm-output)
-for the broader picture. The deterministic test set above is what runs on
-every PR; eval is a separate, slower, costlier loop.
+| Level       | Mocks                               | Real                                         | Tooling                                                          | Cacheable |
+| ----------- | ----------------------------------- | -------------------------------------------- | ---------------------------------------------------------------- | --------- |
+| `test:unit` | All BE HTTP via MSW; all Tauri APIs | React component code                         | vitest + @testing-library/react; oxlint; tsc strict; LCOV ≥ 70 % | yes       |
+| `test:e2e`  | None                                | `vite preview` build of FE + real FastAPI BE | Playwright + playwright-bdd                                      | no        |
 
-## Mandatory Nx targets per project
+There is no `test:integration` on FE (canonical per `crud-fe-*`). The FE is
+TypeScript-strict end-to-end (no `any`, no `@ts-ignore`).
 
-```text
-pdf-chat-contracts:  lint, bundle, docs
-pdf-chat-be:         codegen, typecheck, lint, build, test:unit, test:quick, test:integration, dev, start, spec-coverage
-pdf-chat-fe:         codegen, typecheck, lint, build, test:unit, test:quick, dev, start, spec-coverage
-pdf-chat-be-e2e:     install, lint, typecheck, test:quick, test:e2e, test:e2e:report, spec-coverage
-pdf-chat-fe-e2e:     install, lint, typecheck, test:quick, test:e2e, test:e2e:report, spec-coverage
+### LLM-test determinism
+
+LLM output is non-deterministic. CI runs that touch real vendor APIs are
+non-deterministic and cost money. Both belong outside the green path. The
+strategy:
+
+**Sources of non-determinism the demo must absorb**:
+
+1. Wording (token-by-token sampling).
+2. Token count (output length varies even at `temperature=0`).
+3. Streaming chunk boundaries.
+4. Vendor-side model updates (a "haiku 4.5" today is not byte-identical to
+   "haiku 4.5" a month from now).
+5. Vendor-side latency.
+6. Embedding-vector floating-point drift across SDK versions (rare).
+7. ivfflat approximate retrieval — same query may return slightly
+   different top-k order across runs.
+
+**Allowed assertion patterns**:
+
+1. **Outbound-request fingerprint.** Assert the request the SDK _built_
+   (model id, system prompt content, message list, retrieved chunk text,
+   max_tokens). The fingerprint is fully deterministic given the inputs.
+2. **Side-effect assertions.** Assert what was written to Postgres
+   (`reports.content_md` non-empty, `report_revisions` row created with
+   correct `kind` and `prompt_text`, `token_usage` row upserted).
+3. **Structural shape.** Assert the response is well-formed SSE (frames
+   blank-line-separated, ends with `[DONE]`), JSON matches the contract
+   schema, status code is 200.
+4. **Snapshot of cassette responses.** Because the cassette itself is
+   deterministic, snapshotting against the cassette response is
+   deterministic too. Useful for regression on prompt-builder logic.
+
+**Forbidden assertion pattern**:
+
+- Asserting on **content** of a real LLM response. Even a "the response
+  contains the word 'risk'" assertion will eventually flake.
+
+**Mock cassette structure**:
+
+```json
+{
+  "url": "https://api.anthropic.com/v1/messages",
+  "method": "POST",
+  "match_request": {
+    "model": "claude-haiku-4-5",
+    "system_contains": "structured Markdown report"
+  },
+  "response": {
+    "status": 200,
+    "stream": [
+      "event: content_block_delta\ndata: {\"delta\": {\"type\": \"text_delta\", \"text\": \"## Executive Summary\\n\\n\"}}\n\n",
+      "event: content_block_delta\ndata: {\"delta\": {\"type\": \"text_delta\", \"text\": \"Apple shows...\"}}\n\n",
+      "event: message_stop\ndata: {}\n\n"
+    ]
+  }
+}
 ```
 
-`pdf-chat-be:test:quick` invokes `rhino-cli test-coverage validate apps/pdf-chat-be/coverage/lcov.info 90`
-identical to `crud-be-python-fastapi`.
+Cassettes live in `apps/investment-oracle-be/tests/fixtures/cassettes/`
+and are committed.
 
-`pdf-chat-fe:test:quick` invokes `rhino-cli test-coverage validate apps/pdf-chat-fe/coverage/lcov.info 70`.
+**Real-vendor smoke** runs as a separate workflow (workflow-dispatch +
+weekly schedule). It only asserts (a) HTTP 200, (b) at least one chunk
+arrived, (c) the SSE stream terminated cleanly. Never on prose. Both
+vendors are exercised; failures are reported but do not block merges.
 
-## Mermaid: Nx project graph (post-plan)
+**ivfflat handling**: tests against pgvector top-k results assert
+**membership** (returned ids ⊆ expected set) and never order. This is
+documented inline in the affected tests so future readers know the
+constraint is intentional.
+
+## Tauri build matrix
+
+| Platform            | Triple                     | CI? | Bundle             |
+| ------------------- | -------------------------- | --- | ------------------ |
+| macOS Apple silicon | `aarch64-apple-darwin`     | yes | .app + .dmg        |
+| macOS Intel         | `x86_64-apple-darwin`      | no  | .app + .dmg        |
+| Windows x64         | `x86_64-pc-windows-msvc`   | no  | .msi + .exe (NSIS) |
+| Linux x64           | `x86_64-unknown-linux-gnu` | no  | .AppImage + .deb   |
+
+CI ships only macOS-arm64 to keep the matrix small. Other platforms are
+manual builds documented in delivery; the codebase is platform-agnostic.
+
+## Citations (web research, 2026-04-27)
+
+| Topic                            | Source                                                                     | Excerpt                                                                                                                      |
+| -------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Anthropic model ids              | <https://platform.claude.com/docs/en/about-claude/models/overview>         | "Claude API alias: `claude-haiku-4-5`; Claude API ID: `claude-haiku-4-5-20251001`"                                           |
+| Anthropic SDK Python             | <https://pypi.org/project/anthropic/>                                      | "Released: Apr 23, 2026 — version 0.97.0"                                                                                    |
+| Anthropic SDK TypeScript         | <https://www.npmjs.com/package/@anthropic-ai/sdk>                          | "@anthropic-ai/sdk 0.90.0, last published April 26, 2026"                                                                    |
+| Anthropic streaming              | <https://platform.claude.com/docs/en/build-with-claude/streaming>          | "`with client.messages.stream(...) as stream:`"                                                                              |
+| Anthropic no embeddings          | <https://platform.claude.com/docs/en/build-with-claude/embeddings>         | "Anthropic does not offer its own embedding model."                                                                          |
+| Anthropic PDF support            | <https://platform.claude.com/docs/en/build-with-claude/pdf-support>        | "Maximum pages per request: 100 for models with a 200k-token context window"                                                 |
+| Gemini model ids                 | <https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-lite>       | "Model ID: `gemini-2.5-flash-lite`"                                                                                          |
+| Gemini SDK Python                | <https://pypi.org/project/google-genai/>                                   | "google-genai 1.73.1, released April 14, 2026"                                                                               |
+| Gemini SDK TypeScript            | <https://github.com/googleapis/js-genai>                                   | "Package name on npm is `@google/genai`"                                                                                     |
+| Gemini embedding                 | <https://developers.googleblog.com/gemini-embedding-available-gemini-api/> | "gemini-embedding-001 produces vectors with 3072 dimensions by default … recommended 768, 1536, or 3072"                     |
+| Gemini context window            | <https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash>            | "input capacity of 1,048,576 tokens"                                                                                         |
+| Tauri 2 GA                       | <https://v2.tauri.app/blog/tauri-20/>                                      | "Tauri v2 was released as a stable release on October 2, 2024."                                                              |
+| Tauri sidecar pattern            | <https://v2.tauri.app/develop/sidecar/>                                    | "`{\"bundle\": {\"externalBin\": [\"binaries/my-sidecar\"]}}` … `app.shell().sidecar(\"my-sidecar\").unwrap().spawn()`"      |
+| PyInstaller --onedir for FastAPI | <https://aiechoes.substack.com/p/building-production-ready-desktop>        | "single-binary (`--onefile`) mode causes DLL load failures for heavy ML deps"                                                |
+| SEC EDGAR public information     | <https://www.sec.gov/about/webmaster-frequently-asked-questions>           | "Information presented on sec.gov is considered public information and may be copied or further distributed."                |
+| Damodaran DCF framework          | <https://pages.stern.nyu.edu/~adamodar/pdfiles/DSV2/Ch2.pdf>               | "A DCF is a tool that allows you to assess how much you would pay for a business…"                                           |
+| Buffett owners' earnings         | <https://www.berkshirehathaway.com/letters/1986.html>                      | "Owner earnings represent (a) reported earnings plus (b) depreciation, depletion … less (c) maintenance capex" (1986 letter) |
+| Porter Five Forces               | <https://hbr.org/1979/03/how-competitive-forces-shape-strategy>            | Original 1979 HBR article by Michael Porter establishing the framework                                                       |
+
+Access date for all rows: **2026-04-27**.
+
+## Nx graph (target shape)
 
 ```mermaid
-%% Color Palette: Blue #0173B2 | Teal #029E73 | Orange #DE8F05 | Purple #CC78BC
 graph LR
-    PCC[pdf-chat-contracts]:::contract
-    PCB[pdf-chat-be]:::be
-    PCF[pdf-chat-fe]:::fe
-    PCBE2E[pdf-chat-be-e2e]:::e2e
-    PCFE2E[pdf-chat-fe-e2e]:::e2e
-    RHN[rhino-cli]:::tool
-    TSU[ts-ui]:::lib
-    TSUT[ts-ui-tokens]:::lib
+    contracts[investment-oracle-contracts]
+    be[investment-oracle-be]
+    fe[investment-oracle-fe]
+    be_e2e[investment-oracle-be-e2e]
+    fe_e2e[investment-oracle-fe-e2e]
+    tsui[ts-ui]
 
-    PCC --> PCB
-    PCC --> PCF
-    PCB --> PCBE2E
-    PCF --> PCFE2E
-    PCB --> PCFE2E
-    RHN --> PCB
-    RHN --> PCF
-    TSU --> PCF
-    TSUT --> PCF
-    TSUT --> TSU
+    contracts --> be
+    contracts --> fe
+    fe --> tsui
+    be --> be_e2e
+    fe --> fe_e2e
+    be --> fe_e2e
 
-    classDef contract fill:#CC78BC,stroke:#000,color:#000
-    classDef be fill:#029E73,stroke:#000,color:#FFF
-    classDef fe fill:#0173B2,stroke:#000,color:#FFF
-    classDef e2e fill:#DE8F05,stroke:#000,color:#000
-    classDef tool fill:#808080,stroke:#000,color:#FFF
-    classDef lib fill:#CA9161,stroke:#000,color:#000
+    classDef api fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef e2e fill:#DE8F05,stroke:#000000,color:#000000
+    classDef lib fill:#029E73,stroke:#000000,color:#FFFFFF
+    class contracts,be,fe api
+    class be_e2e,fe_e2e e2e
+    class tsui lib
 ```
-
-## Web research citations (2026-04-26)
-
-All rows accessed 2026-04-26.
-
-| Claim                                                    | Inline excerpt                                                                                                                                                                         | Source                                                                                         |
-| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| OpenRouter base URL + auth + model id format             | Base URL `https://openrouter.ai/api/v1/chat/completions`; auth header `Authorization: Bearer <OPENROUTER_API_KEY>`; model ids use org-prefix format e.g. `anthropic/claude-sonnet-4.6` | <https://openrouter.ai/docs/api/reference/overview>                                            |
-| `anthropic/claude-haiku-4.5` (dot, not hyphen)           | Model id confirmed as `anthropic/claude-haiku-4.5` (dot separator, not hyphen) on the model page                                                                                       | <https://openrouter.ai/anthropic/claude-haiku-4.5>                                             |
-| `google/gemini-2.5-flash-lite` pricing $0.10/$0.40 per M | Pricing listed as $0.10/M input tokens, $0.40/M output tokens on the model page                                                                                                        | <https://openrouter.ai/google/gemini-2.5-flash-lite>                                           |
-| PyMuPDF AGPL licensing trap                              | Artifex licensing page states PyMuPDF is "available under AGPL v3 open source license" requiring source disclosure for derived works                                                   | <https://artifex.com/licensing>                                                                |
-| pypdf BSD-3-Clause license (permissive, not MIT)         | PyPI page states `License Expression: BSD-3-Clause`; BSD-3-Clause is permissive and compatible with MIT-licensed template                                                              | <https://pypi.org/project/pypdf/>                                                              |
-| pgvector docker image `pgvector/pgvector:pg16`           | Docker Hub page lists `pgvector/pgvector` image with PostgreSQL version-specific tags including `pg16` variants                                                                        | <https://hub.docker.com/r/pgvector/pgvector>                                                   |
-| OpenRouter embeddings endpoint                           | Embeddings endpoint documented at `/api/v1/embeddings`; accepts `model` and `input` fields; returns embedding vectors                                                                  | <https://openrouter.ai/docs/api/api-reference/embeddings/create-embeddings>                    |
-| `sse-starlette.EventSourceResponse` idiomatic SSE        | PyPI page describes `EventSourceResponse` as a "production-ready Server-Sent Events implementation for Starlette and FastAPI" per W3C SSE spec                                         | <https://pypi.org/project/sse-starlette/>                                                      |
-| FastAPI `StreamingResponse` SSE pattern                  | FastAPI docs show `StreamingResponse` and `EventSourceResponse` patterns for server-sent events with `text/event-stream` content type                                                  | <https://fastapi.tiangolo.com/tutorial/server-sent-events/>                                    |
-| AI SDK 5 `useChat` + transport                           | `useChat` hook docs show `api`, `body`, and `streamProtocol` options; transport layer is extensible via custom `ChatTransport` implementations                                         | <https://ai-sdk.dev/docs/reference/ai-sdk-ui/use-chat>                                         |
-| AI SDK 5 announcement (breaking change from v4)          | Vercel blog announces AI SDK 5 with "breaking changes that remove deprecated APIs" and new transport architecture; recommends `npx @ai-sdk/codemod upgrade` for migration              | <https://vercel.com/blog/ai-sdk-5>                                                             |
-| OpenAPI 3.2 streaming improvements (`itemSchema`)        | Article describes `itemSchema` keyword added in OpenAPI 3.2 to describe individual items in a stream, addressing SSE documentation gap                                                 | <https://developerhub.io/blog/event-streaming-in-openapi-3-2-what-changed-and-why-it-matters/> |
-| OpenAPI 3.1 multipart file upload                        | Speakeasy guide shows `requestBody` with `multipart/form-data` content type and `format: binary` for file upload fields in OpenAPI 3.1                                                 | <https://www.speakeasy.com/openapi/content/file-uploads>                                       |
-
-## Dependencies
-
-Execution prerequisites:
-
-- `git`, `npm`, `npx nx`, Volta-pinned Node.
-- Python 3.13 via `uv` (already in doctor's required toolchain).
-- Docker for `test:integration`.
-- An `OPENROUTER_API_KEY` for any _real-API_ runs (E2E workflow_dispatch with
-  `MOCK_OPENROUTER=false`); not needed for unit / integration / `test:quick`.
-
-## Rollback
-
-All commits land directly on `main`. To roll back: identify the last good commit hash
-with `git log --oneline`, then `git revert` the unwanted commits in reverse order. The
-plan is structured so each phase yields a green workspace at the end, so partial
-rollback to any phase boundary is safe.
-
-## Open questions tracked in delivery
-
-- Whether to ship a doctor-managed `pgvector` Postgres image at the workspace level
-  (would benefit future plans) — deferred to a follow-up plan.
-- Whether the `pdf-chat-fe-e2e` suite should depend on `pdf-chat-be` running, or use a
-  full mock — current decision: launch backend with `MOCK_OPENROUTER=true` for true
-  end-to-end realism.
-- Whether `pdf-chat-contracts` should ship a streaming type via `x-streaming` extension
-  to nudge codegen — deferred until OpenAPI 3.2 tooling matures.
