@@ -15,7 +15,7 @@ COPY nginx/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 COPY --from=build /app/build/web /usr/share/nginx/html
 EXPOSE 3301
-ENV BACKEND_URL=http://demo-be:8201
+ENV BACKEND_URL=http://crud-be:8201
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:3301/ || exit 1
 

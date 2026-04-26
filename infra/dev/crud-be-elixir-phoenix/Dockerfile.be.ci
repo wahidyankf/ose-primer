@@ -10,11 +10,11 @@ RUN apk add --no-cache build-base curl git && \
 WORKDIR /workspace
 
 # Copy app source, config, and generated contracts
-COPY apps/demo-be-elixir-phoenix/mix.exs apps/demo-be-elixir-phoenix/mix.lock ./
-COPY apps/demo-be-elixir-phoenix/config/ config/
-COPY apps/demo-be-elixir-phoenix/lib/ lib/
-COPY apps/demo-be-elixir-phoenix/priv/ priv/
-COPY apps/demo-be-elixir-phoenix/generated-contracts/ generated-contracts/
+COPY apps/crud-be-elixir-phoenix/mix.exs apps/crud-be-elixir-phoenix/mix.lock ./
+COPY apps/crud-be-elixir-phoenix/config/ config/
+COPY apps/crud-be-elixir-phoenix/lib/ lib/
+COPY apps/crud-be-elixir-phoenix/priv/ priv/
+COPY apps/crud-be-elixir-phoenix/generated-contracts/ generated-contracts/
 
 # Install and compile deps + app in dev mode.
 # Set ENABLE_TEST_API at build time so the router compiles test routes.
