@@ -145,12 +145,12 @@ Tags are the standard mechanism for attaching structured metadata to projects in
 
 Every project declares tags along four dimensions. Each dimension uses a fixed prefix and a controlled vocabulary.
 
-| Dimension | Prefix      | Allowed Values                                                                                                | Required                       | Purpose                                                       |
-| --------- | ----------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
-| Type      | `type:`     | `app`, `lib`, `e2e`                                                                                           | Always                         | Distinguishes deployable apps, reusable libs, and test suites |
-| Platform  | `platform:` | `cli`, `nextjs`, `spring-boot`, `phoenix`, `giraffe`, `gin`, `fastapi`, `axum`, `ktor`, `vertx`, `playwright` | Apps and e2e projects          | Framework or runtime environment                              |
-| Language  | `lang:`     | `golang`, `ts`, `java`, `elixir`, `fsharp`, `python`, `rust`, `kotlin`, `dart`                                | Projects with application code | Primary language of source code                               |
-| Domain    | `domain:`   | `crud`, `crud-be`, `crud-fe`, `tooling`                                                                       | Always                         | Business or product domain                                    |
+| Dimension | Prefix      | Allowed Values                                                                                                                                                       | Required                       | Purpose                                                       |
+| --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
+| Type      | `type:`     | `app`, `lib`, `e2e`                                                                                                                                                  | Always                         | Distinguishes deployable apps, reusable libs, and test suites |
+| Platform  | `platform:` | `cli`, `nextjs`, `spring-boot`, `phoenix`, `giraffe`, `gin`, `fastapi`, `axum`, `ktor`, `vertx`, `playwright`, `vite`, `effect`, `flutter`, `pedestal`, `aspnetcore` | Apps and e2e projects          | Framework or runtime environment                              |
+| Language  | `lang:`     | `golang`, `ts`, `java`, `elixir`, `fsharp`, `python`, `rust`, `kotlin`, `dart`, `clojure`                                                                            | Projects with application code | Primary language of source code                               |
+| Domain    | `domain:`   | `crud-be`, `crud-fe`, `crud-fs`, `tooling`                                                                                                                           | Always                         | Business or product domain                                    |
 
 ### Special Rules
 
@@ -175,7 +175,7 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 | `crud-be-kotlin-ktor`       | `["type:app", "platform:ktor", "lang:kotlin", "domain:crud-be"]`       |
 | `crud-be-python-fastapi`    | `["type:app", "platform:fastapi", "lang:python", "domain:crud-be"]`    |
 | `crud-be-rust-axum`         | `["type:app", "platform:axum", "lang:rust", "domain:crud-be"]`         |
-| `crud-be-ts-effect`         | `["type:app", "platform:effect", "lang:typescript", "domain:crud-be"]` |
+| `crud-be-ts-effect`         | `["type:app", "platform:effect", "lang:ts", "domain:crud-be"]`         |
 | `crud-fe-dart-flutterweb`   | `["type:app", "platform:flutter", "lang:dart", "domain:crud-fe"]`      |
 | `crud-fe-e2e`               | `["type:e2e", "platform:playwright", "lang:ts", "domain:crud-fe"]`     |
 | `crud-fe-ts-nextjs`         | `["type:app", "platform:nextjs", "lang:ts", "domain:crud-fe"]`         |
@@ -422,18 +422,17 @@ the project's feature files has a matching step definition in the implementation
 
 **Project coverage status**:
 
-| Project group                                                | Status   | Notes                                                                                       |
-| ------------------------------------------------------------ | -------- | ------------------------------------------------------------------------------------------- |
-| Go CLI apps (`rhino-cli`, `rhino-cli`, `rhino-cli`)          | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                    |
-| Crud-be backends (all 11)                                    | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| Crud-fe frontends                                            | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| Fullstack (`crud-fs-ts-nextjs`)                              | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| E2E runners (`crud-be-e2e`, `crud-fe-e2e`)                   | Enforced | `--shared-steps` only; test-support steps are implemented here                              |
-| Content platforms (`crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`) | Enforced | `--shared-steps`                                                                            |
-| Web UI apps (`crud-fe-ts-nextjs`)                            | Enforced | `--shared-steps`                                                                            |
-| demo backend (`crud-be-fsharp-giraffe`)                      | Enforced | `--shared-steps`                                                                            |
-| Libraries (`golang-commons`, `golang-commons`)               | Enforced | `--shared-steps`                                                                            |
-| Projects with genuine step gaps                              | Deferred | `spec-coverage` target exists but validation deferred until step implementation is complete |
+| Project group                              | Status   | Notes                                                                                       |
+| ------------------------------------------ | -------- | ------------------------------------------------------------------------------------------- |
+| Go CLI apps (`rhino-cli`)                  | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                    |
+| Crud-be backends (all 11)                  | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
+| Crud-fe frontends                          | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
+| Fullstack (`crud-fs-ts-nextjs`)            | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
+| E2E runners (`crud-be-e2e`, `crud-fe-e2e`) | Enforced | `--shared-steps` only; test-support steps are implemented here                              |
+| Web UI apps (`crud-fe-ts-nextjs`)          | Enforced | `--shared-steps`                                                                            |
+| CRUD backend (`crud-be-fsharp-giraffe`)    | Enforced | `--shared-steps`                                                                            |
+| Libraries (`golang-commons`)               | Enforced | `--shared-steps`                                                                            |
+| Projects with genuine step gaps            | Deferred | `spec-coverage` target exists but validation deferred until step implementation is complete |
 
 All apps and E2E runners are required to have a `spec-coverage` target. Projects with genuine step
 gaps have the target deferred temporarily until step implementations are complete.
@@ -465,11 +464,10 @@ Accessibility testing is compulsory for all UI-related projects. It operates at 
 **Static a11y linting** (enforced via the `lint` target at all three gates: pre-push hook, PR
 quality gate, and scheduled Test CI workflows):
 
-| Project                                                                     | Static a11y tool           |
-| --------------------------------------------------------------------------- | -------------------------- |
-| `crud-fe-ts-nextjs`, `crud-fe-ts-tanstack-start`, `crud-fs-ts-nextjs`       | `oxlint --jsx-a11y-plugin` |
-| `crud-fe-ts-nextjs`, `crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`, `libs/ts-ui` | `oxlint --jsx-a11y-plugin` |
-| `crud-fe-dart-flutterweb`                                                   | `dart analyze`             |
+| Project                                                                             | Static a11y tool           |
+| ----------------------------------------------------------------------------------- | -------------------------- |
+| `crud-fe-ts-nextjs`, `crud-fe-ts-tanstack-start`, `crud-fs-ts-nextjs`, `libs/ts-ui` | `oxlint --jsx-a11y-plugin` |
+| `crud-fe-dart-flutterweb`                                                           | `dart analyze`             |
 
 Static a11y linting catches common accessibility violations at compile time: missing alt text,
 missing ARIA labels, invalid ARIA attributes, missing form labels, and incorrect role usage.
@@ -610,12 +608,11 @@ language:
 **Note**: Python and Clojure use underscore in `generated_contracts/` (matching their language
 conventions). All other languages use hyphen in `generated-contracts/`.
 
-**Go CLI apps** (`rhino-cli`, `rhino-cli`, `rhino-cli`) also consume Gherkin specs in `test:unit` (godog unit step definitions run without a build tag). Their `test:unit` and `test:quick` inputs must include the CLI's own spec files:
+**Go CLI apps** (`rhino-cli`) also consume Gherkin specs in `test:unit` (godog unit step definitions run without a build tag). Their `test:unit` and `test:quick` inputs must include the CLI's own spec files:
 
 | CLI App     | Gherkin specs input                             |
 | ----------- | ----------------------------------------------- |
 | `rhino-cli` | `{workspaceRoot}/specs/apps/rhino/**/*.feature` |
-| `rhino-cli` | `{workspaceRoot}/specs/apps/crud/**/*.feature`  |
 | `rhino-cli` | `{workspaceRoot}/specs/apps/crud/**/*.feature`  |
 
 Example for `rhino-cli` `test:unit` inputs:

@@ -1,3 +1,14 @@
+---
+title: CRUD Apps CI Coverage
+description: CI status badges and coverage enforcement for all CRUD app implementations across languages and frameworks
+category: reference
+tags:
+  - ci
+  - coverage
+  - crud
+  - github-actions
+---
+
 # CRUD Apps CI
 
 > **Template placeholder**: CI badge URLs below reference `wahidyankf/ose-primer`. After

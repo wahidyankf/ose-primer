@@ -52,7 +52,7 @@ ose-primer/
 ├── libs/                      # Reusable libraries (Nx, flat structure)
 │   └── golang-commons/        # Shared Go utilities
 ├── specs/                     # Gherkin specs, OpenAPI contracts, C4 diagrams
-│   ├── apps/demo/           # Demo app specs (be/, fe/, contracts/)
+│   ├── apps/crud/           # CRUD app specs (be/, fe/, contracts/)
 │   └── apps/rhino/            # rhino-cli specs
 ├── docs/                      # Documentation (Diátaxis framework)
 │   ├── tutorials/             # Learning-oriented
@@ -109,7 +109,7 @@ nx run [project-name]:test:e2e           # Real HTTP via Playwright. NOT cacheab
 nx run crud-contracts:lint       # Lint + bundle the OpenAPI spec
 nx run crud-contracts:docs       # Generate browsable API documentation
 nx run [project-name]:codegen      # Generate types for a specific app
-nx run-many -t codegen --projects=demo-*  # Generate for all demo apps
+nx run-many -t codegen --projects=crud-*  # Generate for all CRUD apps
 
 # Dependency graph
 nx graph
