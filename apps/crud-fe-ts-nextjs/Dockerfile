@@ -16,7 +16,7 @@ COPY libs/ts-ui-tokens/package.json ./node_modules/@open-sharia-enterprise/ts-ui
 COPY specs/apps/crud/contracts/generated/ ./specs/apps/crud/contracts/generated/
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npx @hey-api/openapi-ts -i specs/apps/crud/contracts/generated/openapi-bundled.yaml -o src/generated-contracts -s
-ARG BACKEND_URL=http://demo-be:8201
+ARG BACKEND_URL=http://crud-be:8201
 ENV BACKEND_URL=${BACKEND_URL}
 RUN npx next build
 
