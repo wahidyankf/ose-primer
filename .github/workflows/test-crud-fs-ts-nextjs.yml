@@ -3,7 +3,7 @@ name: Test - Crud FS (TypeScript/Next.js)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 2 * * 0"
+    - cron: "0 10 * * 5"
 
 permissions:
   contents: read
