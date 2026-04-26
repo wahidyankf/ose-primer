@@ -102,6 +102,7 @@ Development practices in this directory fall into several categories:
 - [Commit Message Convention](./workflow/commit-messages.md) - Understanding Conventional Commits, commit granularity, and why we use them
 - [Reproducible Environments Convention](./workflow/reproducible-environments.md) - Practices for creating consistent, reproducible development and build environments. Covers runtime version management (Volta), dependency locking, environment configuration, and containerization
 - [Worktree Toolchain Initialization](./workflow/worktree-setup.md) - Mandatory two-step init (`npm install` then `npm run doctor -- --fix`) in the root repository worktree after creating or entering a git worktree. The first step keeps `node_modules/` consistent with `package-lock.json`; the second actively converges the 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node) managed by `rhino-cli doctor` — required because `package.json`'s `postinstall` hook swallows doctor failures with `|| true`
+- [Git Push Default Convention](./workflow/git-push-default.md) - Default git push behavior: direct push to origin main unless user prompt or plan explicitly requests a PR. Governs plan-maker, plan-checker, plan-fixer, and plan-execution workflow
 - [Git Push Safety Convention](./workflow/git-push-safety.md) - Requires explicit per-instance user approval before any AI agent or automation executes `git push --force`, `--force-with-lease`, or `--no-verify`; prior approval does not carry forward
 - [Native-First Toolchain Management Convention](./workflow/native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` instead of Terraform, Ansible, or Docker Dev Containers for development environment setup
 - [PR Merge Protocol Convention](./workflow/pr-merge-protocol.md) - Practice requiring explicit user approval before merging pull requests and mandating all quality gates pass before merge
@@ -120,6 +121,7 @@ Development practices in this directory fall into several categories:
 - [Manual Behavioral Verification Convention](./quality/manual-behavioral-verification.md) - Practice requiring manual verification of UI features and API endpoints using Playwright MCP tools and curl after implementing changes
 - [Feature Change Completeness Convention](./quality/feature-change-completeness.md) - Practice requiring all related specs, contracts, tests, and documentation to be updated as part of any feature change
 - [CI Blocker Resolution Convention](./quality/ci-blocker-resolution.md) - Practice mandating that preexisting CI blockers are investigated at the root cause and fixed properly, never bypassed
+- [Post-Push CI Verification Convention](./quality/post-push-ci-verification.md) - Requirement to trigger and verify related GitHub Actions CI workflows after pushing to origin main, for both human contributors and AI agents
 
 ### Pattern Documentation
 
@@ -147,6 +149,7 @@ Development practices in this directory fall into several categories:
 - [GitHub Actions Workflow Naming Convention](./infra/github-actions-workflow-naming.md) - Workflow filenames must mirror their `name:` field using a consistent kebab-case derivation rule, enabling developers to navigate between the GitHub UI and the filesystem without ambiguity
 - [Docker Monorepo Build Patterns](./infra/docker-monorepo-builds.md) - Patterns and pitfalls for building Docker images in an npm workspace monorepo (workspace symlink resolution, direct node_modules injection, transitive dependency hoisting)
 - [CI/CD Conventions](./infra/ci-conventions.md) - Central reference for CI/CD conventions: git hooks, test level definitions, coverage thresholds, Docker patterns, GitHub Actions structure, and naming rules
+- [Quality Gate Workflow Defaults Convention](./infra/quality-gate-defaults.md) - Canonical default values (`mode: strict`, `max-iterations: 7`) that all quality gate workflows must use for consistency and auditability
 
 ### Frontend Development Documentation
 

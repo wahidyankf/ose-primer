@@ -46,6 +46,7 @@ This practice implements/respects the following conventions:
 - Agent behavior in all plan contexts: `plan-maker`, `plan-checker`, `plan-fixer`, and the plan-execution workflow.
 - Delivery checklist authoring — plan documents must not include unsolicited PR steps.
 - Retroactive compliance — preexisting violations fixed when encountered.
+- Worktree branch push behavior — pushes land on main, not on the worktree branch.
 
 ### What This Convention Does NOT Cover
 
@@ -120,6 +121,21 @@ When working on plans or performing any task that involves reading delivery chec
 This applies Standard 4 of [Proactive Preexisting Error Resolution](../practice/proactive-preexisting-error-resolution.md) to this convention specifically: an unsolicited PR step in a plan you touch is an error to fix now, not flag for later.
 
 **Scope of "fix now"**: remove the unsolicited PR step from the checklist and, if the plan is in `plans/in-progress/`, note the fix in the same commit message. If the plan is in `plans/done/` (archived), leave it — historical records are read-only.
+
+### Standard 6: Worktree Branches Push to main, Not to Worktree Branch
+
+When working inside a git worktree (e.g., on branch `worktree-<name>`), the default is still to land changes on `origin main`. The worktree branch is an isolation mechanism — not a feature branch. Push the worktree's HEAD directly to main:
+
+```bash
+# From inside a worktree on branch worktree-<name>
+git push origin HEAD:main
+```
+
+Equivalently, when working in the main worktree (not a named worktree), the standard `git push origin main` applies unchanged.
+
+A pull request from a worktree branch is created only when the user's prompt or the plan document explicitly requests one — the same opt-in rule as Standard 2.
+
+**What this standard does NOT cover**: the parent repository (`ose-projects`) has its own absolute invariant that `ose-primer` changes surface as draft PRs. That rule lives in the parent's governance, not here. This standard governs work done inside ose-primer itself.
 
 ## Examples
 
@@ -213,12 +229,13 @@ Correct behavior: remove `- [ ] Create PR` inline, include in the same commit as
 
 ## Agent Responsibilities
 
-| Agent                   | Responsibility                                                                                                         |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `plan-maker`            | Must not insert PR steps in delivery checklists unless explicitly instructed.                                          |
-| `plan-checker`          | Must flag unsolicited PR steps in delivery checklists as a HIGH finding.                                               |
-| `plan-fixer`            | Must remove unsolicited PR steps from delivery checklists.                                                             |
-| plan-execution workflow | Must push directly to `main`; must rebase to maintain linear history; must fix preexisting unsolicited PR steps found. |
+| Agent                                      | Responsibility                                                                                                                                                                      |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `plan-maker`                               | Must not insert PR steps in delivery checklists unless explicitly instructed.                                                                                                       |
+| `plan-checker`                             | Must flag unsolicited PR steps in delivery checklists as a HIGH finding.                                                                                                            |
+| `plan-fixer`                               | Must remove unsolicited PR steps from delivery checklists.                                                                                                                          |
+| plan-execution workflow                    | Must push directly to `main`; must rebase to maintain linear history; must fix preexisting unsolicited PR steps found.                                                              |
+| Any AI agent / plan-executor in a worktree | When operating inside a worktree on branch `worktree-<name>`, must push via `git push origin HEAD:main`. Must not push to the worktree branch unless a PR was explicitly requested. |
 
 ## Related Documentation
 
