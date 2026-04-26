@@ -1,13 +1,19 @@
 ---
 name: docs-software-engineering-separation-quality-gate
 goal: Validate software engineering documentation separation between demo style guides and demo educational content, apply fixes iteratively until zero findings achieved
-termination: "Zero findings on two consecutive validations (max-iterations defaults to 10, escalation warning at 7)"
+termination: "Zero findings on two consecutive validations (max-iterations defaults to 7, escalation warning at 5)"
 inputs:
   - name: scope
     type: string
     description: Documentation scope to validate (e.g., "all", "programming-languages/java", "platform-web/tools/jvm-spring")
     required: false
     default: all
+  - name: mode
+    type: enum
+    values: [lax, normal, strict, ocd]
+    description: "Quality threshold (lax: CRITICAL only, normal: CRITICAL/HIGH, strict: +MEDIUM, ocd: all levels)"
+    required: false
+    default: strict
   - name: min-iterations
     type: number
     description: Minimum check-fix cycles before allowing zero-finding termination (prevents premature success)
@@ -16,7 +22,7 @@ inputs:
     type: number
     description: Maximum check-fix cycles to prevent infinite loops
     required: false
-    default: 10
+    default: 7
   - name: max-concurrency
     type: number
     description: Maximum number of agents/tasks that can run concurrently during workflow execution
@@ -115,10 +121,19 @@ Run software engineering documentation separation check to identify violations.
 
 Analyze audit report to determine if fixes are needed.
 
-**Condition Check**: Count ALL findings (CRITICAL, HIGH, MEDIUM) in `{step1.outputs.audit-report-1}`
+**Condition Check**: Count findings based on mode level in `{step1.outputs.audit-report-1}`
 
-- If findings > 0: Proceed to step 3 (reset `consecutive_zero_count` to 0)
-- If findings = 0: Initialize `consecutive_zero_count` to 1 (this check is the first zero),
+- **lax**: Count CRITICAL only
+- **normal**: Count CRITICAL + HIGH
+- **strict**: Count CRITICAL + HIGH + MEDIUM (default)
+- **ocd**: Count all levels (CRITICAL, HIGH, MEDIUM, LOW)
+
+**Below-threshold findings**: Report but don't block success
+
+**Decision**:
+
+- If threshold-level findings > 0: Proceed to step 3 (reset `consecutive_zero_count` to 0)
+- If threshold-level findings = 0: Initialize `consecutive_zero_count` to 1 (this check is the first zero),
   proceed to step 4 for confirmation re-check (consecutive pass requirement)
 
 **Depends on**: Step 1 completion
@@ -135,9 +150,9 @@ Apply all validated fixes from the audit report.
 
 **Agent**: `docs-software-engineering-separation-fixer`
 
-- **Args**: `report: {step1.outputs.audit-report-1}, approved: all`
+- **Args**: `report: {step1.outputs.audit-report-1}, approved: all, mode: {input.mode}`
 - **Output**: `{fixes-applied}`
-- **Condition**: Findings exist from step 2
+- **Condition**: Threshold-level findings exist from step 2
 - **Depends on**: Step 2 completion
 
 **Success criteria**: Fixer successfully applies all fixes without errors.
@@ -171,8 +186,8 @@ Determine whether to continue fixing or terminate.
 
 **Logic**:
 
-- Count ALL findings in `{step4.outputs.audit-report-N}` (CRITICAL, HIGH, MEDIUM)
-- Track `consecutive_zero_count` across iterations (resets to 0 when findings > 0, increments when findings = 0)
+- Count findings based on mode level in `{step4.outputs.audit-report-N}` (same as Step 2)
+- Track `consecutive_zero_count` across iterations (resets to 0 when threshold-level findings > 0, increments when = 0)
 - If consecutive_zero_count >= 2 AND iterations >= min-iterations (or min not provided): Proceed to step 6 (Success — double-zero confirmed)
 - If consecutive_zero_count >= 2 AND iterations < min-iterations: Loop back to step 4 (re-validate)
 - If consecutive_zero_count < 2 AND findings = 0: Loop back to step 4 (confirmation check — no fix needed, just re-verify)
@@ -183,7 +198,7 @@ Determine whether to continue fixing or terminate.
 
 **Notes**:
 
-- **Default behavior**: Runs up to 15 iterations (default max-iterations). Override with higher value for more attempts
+- **Default behavior**: Runs up to 7 iterations (default max-iterations). Override with higher value for more attempts
 - **Consecutive pass requirement**: Zero findings must be confirmed by a second independent check before declaring success
 - **Optional min-iterations**: Prevents premature termination before sufficient iterations
 - Each iteration uses the latest audit report
@@ -205,9 +220,22 @@ Report final status and summary.
 
 ## Termination Criteria
 
-- **Success** (`pass`): Zero findings of ANY level (CRITICAL, HIGH, MEDIUM) on **two consecutive** validations (consecutive pass requirement)
-- **Partial** (`partial`): Any findings remain after max-iterations cycles
-- **Failure** (`fail`): Checker or fixer encountered technical errors
+**Success** (`pass`):
+
+- **lax**: Zero CRITICAL findings on 2 consecutive checks (HIGH/MEDIUM/LOW may exist)
+- **normal**: Zero CRITICAL/HIGH findings on 2 consecutive checks (MEDIUM/LOW may exist)
+- **strict**: Zero CRITICAL/HIGH/MEDIUM findings on 2 consecutive checks (LOW may exist) — default
+- **ocd**: Zero findings at all levels on 2 consecutive checks
+
+**Partial** (`partial`):
+
+- Threshold-level findings remain after max-iterations safety limit
+
+**Failure** (`fail`):
+
+- Technical errors during check or fix
+
+**Note**: Below-threshold findings are reported in final audit but don't prevent success status. Success requires two consecutive zero-finding validations (consecutive pass requirement).
 
 ## Example Usage
 
@@ -280,10 +308,10 @@ Result: SUCCESS (3 iterations)
 
 **Infinite Loop Prevention**:
 
-- max-iterations defaults to 10 (override with higher value for more attempts)
+- max-iterations defaults to 7 (override with higher value for more attempts)
 - When provided, workflow terminates with `partial` if limit reached
 - Tracks iteration count for monitoring
-- Escalation warning at iteration 7 if not converging
+- Escalation warning at iteration 5 if not converging
 
 **Convergence Safeguards**:
 

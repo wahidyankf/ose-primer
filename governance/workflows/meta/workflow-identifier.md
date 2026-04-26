@@ -475,7 +475,7 @@ inputs:
     values: [lax, normal, strict, ocd]
     description: "Quality threshold (lax: CRITICAL only, normal: CRITICAL/HIGH, strict: +MEDIUM, ocd: all levels)"
     required: false
-    default: normal
+    default: strict
   - name: max-concurrency
     type: number
     description: Maximum number of agents/tasks that can run concurrently during workflow execution
@@ -489,7 +489,7 @@ inputs:
     type: number
     description: Maximum check-fix cycles to prevent infinite loops
     required: false
-    default: 10
+    default: 7
 
 outputs:
   - name: final-status
@@ -635,7 +635,7 @@ the quality standard for the active mode.
 
 - The minimum iterations to achieve success is **2** (initial zero + confirmation zero), even
   when `min-iterations` is not explicitly set
-- Each confirmation re-check counts toward `max-iterations`, so the default `max-iterations: 15`
+- Each confirmation re-check counts toward `max-iterations`, so the default `max-iterations: 7`
   allows ample room for fix cycles and confirmation checks
 - Workflows with `max-iterations: 1` can never achieve `pass` — they will always terminate
   with `partial` at best
@@ -647,7 +647,7 @@ No mode is exempt.
 
 **Infinite Loop Prevention**:
 
-- MUST include `max-iterations` parameter (default: 10)
+- MUST include `max-iterations` parameter (default: 7)
 - MUST terminate with `partial` if limit reached
 - MUST track iteration count
 
@@ -669,7 +669,7 @@ User: "Run [workflow-name] in lax mode"
 
 Fixes CRITICAL only, reports HIGH/MEDIUM/LOW. Success when zero CRITICAL findings remain.
 
-**Normal Mode** (default - everyday validation):
+**Normal Mode** (everyday validation):
 
 ```
 User: "Run [workflow-name] in normal mode"
@@ -677,7 +677,7 @@ User: "Run [workflow-name] in normal mode"
 
 Fixes CRITICAL/HIGH, reports MEDIUM/LOW. Success when zero CRITICAL/HIGH findings remain.
 
-**Strict Mode** (pre-release validation):
+**Strict Mode** (default - pre-release validation):
 
 ```
 User: "Run [workflow-name] in strict mode"
@@ -739,7 +739,7 @@ inputs:
     values: [lax, normal, strict, ocd]
     description: "Quality threshold"
     required: false
-    default: normal
+    default: strict
 outputs:
   - name: validation-status
     type: enum

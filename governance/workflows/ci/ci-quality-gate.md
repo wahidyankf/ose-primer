@@ -1,7 +1,7 @@
 ---
 name: ci-quality-gate
 goal: Validate all projects conform to CI/CD standards and fix non-compliance iteratively
-termination: Zero findings remain after validation or max-iterations reached
+termination: "Zero findings remain after validation or max-iterations reached (max-iterations defaults to 7, escalation warning at 5)"
 inputs:
   - name: scope
     type: string
@@ -12,7 +12,7 @@ inputs:
     type: number
     description: Maximum number of check-fix cycles
     required: false
-    default: 5
+    default: 7
 outputs:
   - name: final-status
     type: enum

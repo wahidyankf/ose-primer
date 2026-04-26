@@ -1,7 +1,7 @@
 ---
 name: docs-quality-gate
 goal: Validate all docs/ content quality (factual accuracy, pedagogical structure, link validity), apply fixes iteratively until zero findings achieved
-termination: "Zero findings across all validators on two consecutive validations (max-iterations defaults to 10, escalation warning at 7)"
+termination: "Zero findings across all validators on two consecutive validations (max-iterations defaults to 7, escalation warning at 5)"
 inputs:
   - name: scope
     type: string
@@ -13,7 +13,7 @@ inputs:
     values: [lax, normal, strict, ocd]
     description: "Quality threshold (lax: CRITICAL only, normal: CRITICAL/HIGH, strict: +MEDIUM, ocd: all levels)"
     required: false
-    default: normal
+    default: strict
   - name: min-iterations
     type: number
     description: Minimum check-fix cycles before allowing zero-finding termination (prevents premature success)
@@ -22,7 +22,7 @@ inputs:
     type: number
     description: Maximum check-fix cycles to prevent infinite loops
     required: false
-    default: 10
+    default: 7
   - name: max-concurrency
     type: number
     description: Maximum number of validators that can run in parallel during workflow execution
@@ -289,7 +289,7 @@ Determine whether to continue fixing or finalize.
 
 **Notes**:
 
-- **Default behavior**: Runs up to 15 iterations (default max-iterations). Override with higher value for more attempts
+- **Default behavior**: Runs up to 7 iterations (default max-iterations). Override with higher value for more attempts
 - **Consecutive pass requirement**: Zero findings must be confirmed by a second independent check before declaring success
 - **Optional min-iterations**: Prevents premature termination before sufficient iterations
 - Each iteration uses the latest audit reports from all validators
@@ -342,18 +342,18 @@ Report final status and summary.
 
 ## Example Usage
 
-### Standard Invocation (Normal Strictness)
+### Standard Invocation (Strict Mode — Default)
 
 ```
-User: "Run documentation quality gate workflow in normal mode"
+User: "Run documentation quality gate workflow"
 ```
 
 The AI will invoke specialized agents via the Agent tool:
 
 - Validate all docs/ content in parallel (`docs-checker`, `docs-tutorial-checker`, `docs-link-checker` subagents)
-- Fix CRITICAL/HIGH findings (`docs-fixer`, `docs-tutorial-fixer` subagents)
-- Iterate until zero CRITICAL/HIGH findings achieved
-- Report MEDIUM/LOW findings without fixing them
+- Fix CRITICAL/HIGH/MEDIUM findings (`docs-fixer`, `docs-tutorial-fixer` subagents)
+- Iterate until zero CRITICAL/HIGH/MEDIUM findings achieved
+- Report LOW findings without fixing them
 
 ### Quick Critical-Only Check (Lax Mode)
 
@@ -414,13 +414,13 @@ The AI will invoke agents with single-file scope:
 ### With Iteration Bounds
 
 ```
-User: "Run documentation quality gate workflow in normal mode with min-iterations=2 and max-iterations=10"
+User: "Run documentation quality gate workflow in strict mode with min-iterations=2 and max-iterations=7"
 ```
 
 The AI will invoke agents with iteration controls:
 
 - Require at least 2 check-fix cycles
-- Cap at maximum 10 iterations
+- Cap at maximum 7 iterations
 - Report final status after completion
 
 ## Iteration Example
@@ -455,10 +455,10 @@ Result: SUCCESS (3 iterations)
 
 **Infinite Loop Prevention**:
 
-- max-iterations defaults to 10 (override with higher value for more attempts)
+- max-iterations defaults to 7 (override with higher value for more attempts)
 - When provided, workflow terminates with `partial` if limit reached
 - Tracks iteration count for monitoring
-- Escalation warning at iteration 7 if not converging
+- Escalation warning at iteration 5 if not converging
 
 **Convergence Safeguards**:
 
