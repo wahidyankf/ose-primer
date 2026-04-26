@@ -76,9 +76,12 @@ End-to-end testing frameworks and browser automation tools:
 
 ### 🤖 [AI Application Development](./ai-application-development/README.md)
 
-Conceptual primer for software engineers new to building LLM-backed applications:
+Conceptual primer for software engineers new to building LLM-backed applications, plus three vendor-specific extensions:
 
-- **[AI Application Development](./ai-application-development/README.md)** - Tokens, embeddings, RAG, streaming SSE, multi-provider routing (OpenRouter), persistent sessions, production guardrails, evaluation, and cost. Required prerequisite reading for any plan that adds AI features (e.g., the `pdf-chat-*` demo family).
+- **[AI Application Development](./ai-application-development/README.md)** - Tokens, embeddings, RAG, streaming SSE, vendor choice, persistent sessions, production guardrails, evaluation, and cost. Required prerequisite reading for any plan that adds AI features (e.g., the `investment-oracle` desktop demo).
+- **[Anthropic API Primer](./ai-application-development/anthropic-api.md)** - Claude model lineup, official SDKs, streaming, PDF input, the no-embeddings caveat, CI mocking.
+- **[Google Gemini API Primer](./ai-application-development/google-gemini-api.md)** - Gemini model lineup, the unified `google-genai` SDK, streaming, embeddings via `gemini-embedding-001`, the 1 M-token context window, CI mocking.
+- **[Perplexity Sonar API Primer](./ai-application-development/perplexity-api.md)** - Sonar model lineup, OpenAI-compatible endpoint, citations, search filters, when to reach for web-grounded answers.
 
 ### 📚 Cross-References
 
