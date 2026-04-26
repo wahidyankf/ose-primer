@@ -1,0 +1,488 @@
+---
+title: "AI Application Development"
+description: Conceptual primer for software engineers new to building LLM-backed applications — embeddings, RAG, streaming, multi-provider routing, persistent sessions, guardrails, evaluation, and cost
+category: explanation
+subcategory: development
+tags:
+  - ai
+  - llm
+  - rag
+  - embeddings
+  - streaming
+  - openrouter
+  - pgvector
+  - guardrails
+  - evaluation
+principles:
+  - explicit-over-implicit
+  - reproducibility
+  - documentation-first
+  - simplicity-over-complexity
+---
+
+# AI Application Development
+
+**Audience**: software engineers comfortable with HTTP APIs, SQL, and React, but with
+little or no prior exposure to building LLM-backed applications. Read this before
+working on any AI-shaped plan or app in this repository (e.g., the `pdf-chat-*`
+family) so the rest of the technical material parses without surprises. Nothing here
+is plan-internal — it is generic working knowledge.
+
+## Why this primer exists
+
+AI-app codebases lean on idioms — embeddings, RAG, streaming SSE, prompt assembly,
+guardrails, cost caps, multi-provider routing, eval — that have become standard but
+are not yet baseline for general-purpose engineers. If you skip this primer you will
+still be able to **type** AI-app code; you may not understand **why** each piece
+exists or which knobs are safe to turn. Plans that build AI features in this repo
+should explicitly require reading this document as a prerequisite for execution.
+
+## Section map
+
+1. [The LLM black box](#1-the-llm-black-box)
+2. [Tokens, context windows, and why size matters](#2-tokens-context-windows-and-why-size-matters)
+3. [Prompts, messages, and roles](#3-prompts-messages-and-roles)
+4. [Streaming responses](#4-streaming-responses)
+5. [Embeddings and semantic similarity](#5-embeddings-and-semantic-similarity)
+6. [Vector databases and pgvector](#6-vector-databases-and-pgvector)
+7. [Retrieval-Augmented Generation (RAG)](#7-retrieval-augmented-generation-rag)
+8. [Chunking strategies](#8-chunking-strategies)
+9. [Multi-document retrieval](#9-multi-document-retrieval)
+10. [Multi-provider routing and OpenRouter](#10-multi-provider-routing-and-openrouter)
+11. [Persistent chat sessions vs stateless completions](#11-persistent-chat-sessions-vs-stateless-completions)
+12. [Production guardrails](#12-production-guardrails)
+13. [Evaluation and the lack of unit tests for LLM output](#13-evaluation-and-the-lack-of-unit-tests-for-llm-output)
+14. [Cost: where it goes and how to bound it](#14-cost-where-it-goes-and-how-to-bound-it)
+15. [Determinism, caching, and CI](#15-determinism-caching-and-ci)
+16. [Glossary](#16-glossary)
+17. [Where this is referenced](#17-where-this-is-referenced)
+
+---
+
+## 1. The LLM black box
+
+A large language model exposes a single primitive: `completion(prompt) -> text`. The
+completion is non-deterministic by default — same input, different output. For chat
+models the primitive is `chat(messages) -> text` where `messages` is an ordered list
+of `{role, content}` objects (see §3).
+
+Two things follow:
+
+- **No state**: the model has no memory between calls. Anything it should "remember"
+  must be passed in on every request. This is the single biggest mental shift coming
+  from CRUD: there is no equivalent of a session-on-the-server. Every call is a pure
+  function from `messages` to text.
+- **No grounding**: the model only knows what was in its training data plus what you
+  put in the messages right now. It does not look anything up. If you want it to
+  answer questions about a specific document, you must paste relevant excerpts from
+  that document into the messages — see §7 RAG.
+
+In this repo's AI demos the LLM lives behind OpenRouter; we never call provider SDKs
+directly.
+
+## 2. Tokens, context windows, and why size matters
+
+Models do not see characters or words. They see **tokens** — sub-word units produced
+by a tokenizer. Roughly: 1 token ≈ 4 English characters ≈ 0.75 English words. A 2000-
+word document is around 2700 tokens.
+
+Each model has a **context window**: the maximum number of tokens that fit in a
+single call (counting both the messages you send and the response you receive). Claude
+Haiku 4.5 has a 200k-token window; Gemini 2.5 Flash Lite has 1M. Bigger is not free —
+see §14 cost.
+
+Practical consequences:
+
+- A 50-page PDF is ~25k tokens. It fits in the window directly. But sending the whole
+  PDF on every chat call costs N×25k tokens of input on every turn, which is
+  expensive and slow. RAG (§7) is the standard fix.
+- Conversation history grows linearly with turns. By turn 30 a chatty session is
+  already at thousands of tokens of just history. This is why `messages` (the list)
+  is the unit of cost, not just the latest user message.
+- Token counts are needed for two things: (a) cost cap accounting (cap session and
+  daily totals), (b) trimming the conversation if it approaches the window. The
+  `tiktoken` library is the typical input-counting tool; outputs from non-OpenAI
+  providers are usually approximated by character heuristics or read from the
+  provider's own usage block.
+
+## 3. Prompts, messages, and roles
+
+A chat call has a list of messages, each with a `role`:
+
+| Role        | Purpose                                                                                     |
+| ----------- | ------------------------------------------------------------------------------------------- |
+| `system`    | Configures the model's behaviour for the whole conversation. Tone, refusal policy, persona. |
+| `user`      | What the human said.                                                                        |
+| `assistant` | What the model said in a previous turn. Echoed back so the model has continuity.            |
+
+A typical request body for chat-completions:
+
+```json
+{
+  "model": "anthropic/claude-haiku-4.5",
+  "messages": [
+    { "role": "system", "content": "You answer questions about a PDF. Cite page numbers." },
+    { "role": "user", "content": "What does the document say about retries?" },
+    { "role": "assistant", "content": "Section 4 of the PDF specifies exponential backoff…" },
+    { "role": "user", "content": "And the maximum retry count?" }
+  ],
+  "stream": true
+}
+```
+
+Typical RAG-shaped assembly: `[system, ...retrieved_chunks_as_system,
+...prior_messages_from_db, latest_user_message]`. See §7.
+
+A **prompt** typically means the assembled messages list, not a single string. Sloppy
+use of the word — "the prompt" — usually refers to the system message plus whatever
+scaffolding wraps user text.
+
+## 4. Streaming responses
+
+LLMs generate one token at a time, left to right. A non-streaming call waits until
+generation finishes, then returns the full string. A streaming call sends each token
+as soon as it's produced.
+
+Three reasons to stream:
+
+- **Latency you can feel**: a Haiku-tier model produces ~80 tokens/sec. A 300-token
+  answer takes ~4 seconds total but the first token arrives in under 500 ms. Users
+  perceive the streaming version as 4× snappier even though the total time is
+  identical.
+- **Early abort**: if the model goes off the rails, you can close the connection and
+  stop being charged for the rest.
+- **Live UI affordances**: render token-by-token, run streaming content filters,
+  update token-usage counters as you go.
+
+The wire format is **Server-Sent Events (SSE)** — a one-way, text-oriented HTTP
+streaming protocol older than WebSockets. The body is `text/event-stream` and each
+"frame" looks like:
+
+```text
+data: {"delta": "Hello"}
+
+data: {"delta": " world"}
+
+data: [DONE]
+```
+
+Blank line between frames is required. The `[DONE]` sentinel is convention, not part
+of SSE; it lets the client know to stop reading without parsing the response close.
+
+Typical FastAPI implementation: `sse_starlette.EventSourceResponse` with an
+`async_generator` yielding `{"data": ...}`. Typical Next.js consumption: a Route
+Handler proxies the upstream SSE body unchanged; `@ai-sdk/react`'s `useChat` hook
+consumes it on the client and triggers re-renders per frame.
+
+## 5. Embeddings and semantic similarity
+
+An **embedding** is a fixed-size numeric vector (e.g., 1536 floats) that encodes the
+**meaning** of a piece of text. Two texts with similar meaning have embeddings whose
+**cosine similarity** is close to 1; unrelated texts approach 0; opposites approach
+-1.
+
+```text
+"The cat sat on the mat."   → [0.014, -0.221, 0.007, …, 0.063]   # 1536 dims
+"A feline rested on a rug." → [0.018, -0.215, 0.011, …, 0.060]   # very similar
+"The diesel engine seized." → [-0.331, 0.092, …, -0.118]         # different
+```
+
+You don't read the numbers. You compare them.
+
+Where the vector comes from:
+
+- A separate model — the **embedding model** — trained specifically to map text to a
+  meaning-preserving vector space.
+- Endpoint shape is identical to chat: `POST /v1/embeddings` with a string and a
+  model id; response is a vector.
+- This repo standardises on calling OpenRouter `/api/v1/embeddings` with
+  `openai/text-embedding-3-small` (1536 dims) for AI demos.
+
+Why it matters: keyword search ("retry") misses synonyms ("backoff", "re-attempt").
+Embedding-similarity search finds them. That is the entire trick behind RAG.
+
+## 6. Vector databases and pgvector
+
+Once you have embeddings, you need to find the top-k nearest vectors to a query
+vector quickly. A **vector database** is any storage with that primitive.
+
+Options:
+
+- Dedicated services: Pinecone, Weaviate, Qdrant, Milvus.
+- In-process libraries: `chromadb`, `lancedb`, `faiss`.
+- **Postgres with the `pgvector` extension** — adds a `vector(N)` column type plus
+  similarity operators (`<=>` for cosine distance). This is the default for AI demos
+  in this repo because every CRUD demo already runs Postgres in docker-compose;
+  reusing it adds zero infra.
+
+Operator quick reference:
+
+| Operator | Distance metric        | Range   |
+| -------- | ---------------------- | ------- |
+| `<->`    | Euclidean (L2)         | [0, ∞)  |
+| `<=>`    | Cosine distance        | [0, 2]  |
+| `<#>`    | Negative inner product | (-∞, ∞) |
+
+Cosine distance is `1 - cosine_similarity`, so smaller is better. Most RAG retrieval
+SQL in this repo uses `<=>`.
+
+Indexing: a sequential scan over a table of N vectors is O(N) per query — fine for
+demos, slow at scale. pgvector ships two approximate-nearest-neighbour indexes:
+**ivfflat** (faster builds, lower recall) and **hnsw** (slower builds, higher
+recall). Demos use `ivfflat` because the corpus is tiny.
+
+## 7. Retrieval-Augmented Generation (RAG)
+
+The standard pattern for "answer questions about my documents":
+
+```text
+1. Ingest:    docs → chunks → embeddings → vector DB
+2. Query:     user question → embedding → top-k similar chunks
+3. Assemble:  prompt = [system, chunks-as-context, history, user question]
+4. Generate:  send prompt to chat model, stream response
+```
+
+Why it works: §1 says LLMs only know what's in their training data plus what you
+hand them on each call. §6 lets you pick the **most relevant** slice of your private
+docs cheaply. RAG glues the two together so the model can answer about your data
+without fine-tuning anything.
+
+Why it's not magic:
+
+- Recall failures: if the right chunk has weak similarity to the query, it won't be
+  retrieved, and the model has nothing to cite. Hybrid search (BM25 + vectors) and
+  re-ranking are common upgrades; demos in this repo skip both.
+- Hallucination: even with the right chunks, the model can still invent. Mitigations
+  are prompt instructions ("only answer from the provided excerpts"), citations,
+  and downstream evaluation (§13). Don't ship a RAG product without thinking about
+  this; demos surface raw model output and let the reader judge.
+
+## 8. Chunking strategies
+
+You can't embed an entire 50-page PDF as one vector — the embedding would average
+across all topics and become uninformative. So you split into **chunks**, each
+embedded separately.
+
+Trade-offs:
+
+| Strategy            | Pro                            | Con                                      |
+| ------------------- | ------------------------------ | ---------------------------------------- |
+| Fixed-token windows | Simple, predictable            | Cuts mid-sentence; loses context         |
+| Sentence boundaries | Reads naturally                | Variable-length; harder to budget tokens |
+| Recursive splitting | Respects markdown / paragraphs | Implementation complexity                |
+| Semantic splitting  | Best context preservation      | Slow, requires extra model calls         |
+
+Demos in this repo use **fixed token windows with overlap** (typical defaults: 800
+tokens, 100-token overlap). Overlap means a sentence cut at the boundary still
+appears intact in the next chunk. This is good enough for a demo; production RAG
+systems typically use recursive splitting or library helpers
+(`langchain.text_splitter`, `llama-index` parsers).
+
+## 9. Multi-document retrieval
+
+When a session attaches multiple documents, the retrieval set is the union of chunks
+across all attached documents. SQL handles this naturally:
+
+```sql
+SELECT id, doc_id, page, text,
+       1 - (embedding <=> :q) AS similarity
+FROM doc_chunks
+WHERE doc_id IN (SELECT doc_id FROM session_docs WHERE session_id = :s)
+ORDER BY embedding <=> :q
+LIMIT :k;
+```
+
+The result set may interleave chunks from different documents. Pass them all to the
+prompt with their `doc_id` and `page` so the model can cite which document a fact
+came from. No per-document balancing — if document A is more relevant, all top-k may
+come from A; that's the desired behaviour.
+
+## 10. Multi-provider routing and OpenRouter
+
+Anthropic, OpenAI, Google, Mistral, Meta, and many smaller vendors each ship their
+own SDK and pricing. Switching providers means re-coding the client. **OpenRouter**
+is a thin proxy that exposes one OpenAI-compatible API (`/v1/chat/completions`,
+`/v1/embeddings`) and a registry of model ids like `anthropic/claude-haiku-4.5` and
+`google/gemini-2.5-flash-lite`. You call OpenRouter; OpenRouter calls the upstream
+provider; you get back a normalised response.
+
+Conventions in this repo:
+
+- Model ids use **dot notation** between version parts (`claude-haiku-4.5`, not
+  `claude-haiku-4-5`).
+- Anthropic and Google models are the default pairing for "premium vs Haiku-tier"
+  demos.
+
+Benefits:
+
+- Switching from Claude Haiku to Gemini Flash Lite is one env-var change.
+- One API key instead of three.
+- Per-model pricing visible at request time.
+
+Costs:
+
+- Slightly higher latency (one extra hop).
+- Some advanced provider features may not be exposed (e.g., Anthropic's prompt
+  caching or computer-use need provider-specific calls).
+
+## 11. Persistent chat sessions vs stateless completions
+
+§1 said the model has no memory. So how do real chat products feel like they
+remember? They store the message history in **their own database** and re-send it on
+every call.
+
+A persistent chat **session** is a server-owned thread:
+
+| Attribute        | Stateless completion  | Persistent session                |
+| ---------------- | --------------------- | --------------------------------- |
+| Server state     | None                  | `sessions` row + `messages` rows  |
+| History source   | Whatever client sends | Loaded from DB on each turn       |
+| Survives reload  | No                    | Yes (URL contains the session id) |
+| Allows analytics | No                    | Yes (you own the data)            |
+| Allows retention | No                    | Yes (delete the row to forget)    |
+
+Production AI products almost always use sessions; demos in this repo do too, so the
+durable-thread shape is reusable. The chat endpoint is typically scoped under
+`POST /api/v1/sessions/{id}/messages` rather than a free-floating `/chat`.
+
+## 12. Production guardrails
+
+Three layers, ordered before/around/after the model call:
+
+### Rate limiting
+
+Cap the number of requests per IP per unit time. Stops a single client from running
+the bill up or DoS-ing the backend. Implementations range from in-process token
+buckets (`slowapi` is the typical Python choice) to Redis-backed distributed
+limiters.
+
+### Content filtering
+
+Two kinds:
+
+- **Input moderation**: scan the user message before calling the LLM. Reject obvious
+  abuse, prompt injection, or out-of-scope requests.
+- **Output moderation**: scan the model's response (or each streaming chunk) before
+  delivering. Catches the cases where the input was clean but the model produced
+  problematic output.
+
+Real systems plug a moderation provider here (Anthropic moderation, OpenAI
+moderation, custom classifier). Demos in this repo ship a regex blocklist behind a
+`ContentFilter` Protocol so a real provider can be swapped in without touching
+callers.
+
+### Cost cap
+
+Track tokens consumed per session and per day; reject calls once a budget threshold
+is exceeded. Token counts come from the response usage block (Anthropic / OpenAI
+include this in their non-streaming responses; for streams you count yourself).
+Prevents a runaway loop or a viral demo from melting your bill.
+
+A typical schema: `token_usage(session_id, usage_date, input_tokens, output_tokens)`,
+upserted on each turn, with `429 token_budget_exceeded` returned when limits are
+hit.
+
+## 13. Evaluation and the lack of unit tests for LLM output
+
+You cannot write `assert chat("What is 2+2?") == "4"` and expect it to pass forever
+— even with `temperature=0` the response wording varies. So how do you test?
+
+Three layers, all of which the AI demos in this repo use:
+
+- **Structural assertions**: assert the response is well-formed JSON / SSE / has the
+  right schema. Stable across runs.
+- **Mocked-LLM tests**: replace the network call with a fixture (cassette). Asserts
+  **what we sent** (model id, prompt content, retrieval results) — not what came
+  back. Demos toggle this with a `MOCK_OPENROUTER=true` flag.
+- **Eval suites** (out of scope for most demos): hand-curated inputs scored against
+  rubric (factuality, format adherence, refusal correctness). Run periodically, not
+  on every CI build, because they cost real money. Tools: Promptfoo, Langfuse,
+  Inspect AI, Evidently, plus rolling-your-own pytest fixtures.
+
+The takeaway: **every CI test must be deterministic and offline**. Real-LLM smoke
+runs are workflow-dispatch only.
+
+## 14. Cost: where it goes and how to bound it
+
+Pricing is per-million tokens, charged separately for input and output. Indicative
+2026-Q2 pricing through OpenRouter:
+
+| Model                           | Input $/M | Output $/M |
+| ------------------------------- | --------: | ---------: |
+| `anthropic/claude-haiku-4.5`    |      1.00 |       5.00 |
+| `anthropic/claude-sonnet-4.5`   |      3.00 |      15.00 |
+| `google/gemini-2.5-flash-lite`  |      0.10 |       0.40 |
+| `google/gemini-2.5-flash`       |      0.30 |       2.50 |
+| `openai/text-embedding-3-small` |      0.02 |          — |
+
+A back-of-envelope chat turn for a typical RAG-shaped backend:
+
+- 4 retrieved chunks × 800 tokens = 3200 input tokens.
+- Conversation history: another ~2000 tokens by turn 5.
+- User question: 100 tokens.
+- Model writes 400 tokens.
+- Total Haiku cost: 5300 × $1/M + 400 × $5/M ≈ **$0.0073 per turn**.
+
+Multiply by users and turns for the production estimate. The §12 cost cap is the
+defensive layer; product-side, the levers are: cheaper model, smaller chunks, fewer
+chunks (lower top-k), shorter system prompt, history truncation past N turns, and
+embedding-call deduplication (don't re-embed the same query twice).
+
+## 15. Determinism, caching, and CI
+
+Three operational realities to know:
+
+- **`temperature=0`** reduces variance but does not eliminate it across providers,
+  versions, or even minor backend updates. Treat it as a hint, not a guarantee.
+- **Provider prompt caching** (Anthropic) or routing-side caching (OpenRouter) can
+  knock 50–90% off cost on repeated prefixes. Out of scope for most demos but worth
+  knowing it exists.
+- **CI must not call real models** unless you have explicit dispatch + budget
+  awareness. Demos in this repo default every test target to `MOCK_OPENROUTER=true`.
+  The only workflow that hits real OpenRouter is dispatch-only.
+
+## 16. Glossary
+
+| Term               | Plain definition                                                                                      |
+| ------------------ | ----------------------------------------------------------------------------------------------------- |
+| LLM                | Large language model. Statistical text generator behind every chat endpoint.                          |
+| Token              | Sub-word unit. Models bill per token, both for input and output.                                      |
+| Context window     | Maximum tokens per call (input + output). Claude Haiku 4.5 = 200k.                                    |
+| Embedding          | Fixed-size numeric vector encoding meaning. Demos use 1536-dim vectors from `text-embedding-3-small`. |
+| Cosine similarity  | Dot product of two unit vectors. Measures meaning closeness; range [-1, 1].                           |
+| Vector DB          | Storage that supports fast top-k similarity queries. Default in this repo: Postgres + pgvector.       |
+| Chunk              | A bounded slice of a document, embedded as one vector.                                                |
+| RAG                | Retrieval-Augmented Generation. Retrieve chunks, paste into prompt, generate answer.                  |
+| top-k              | The number of best-matching chunks to return from a similarity query (typically 4).                   |
+| Prompt             | The assembled list of messages sent to the chat endpoint.                                             |
+| System message     | Persona / behaviour configuration message at the start of `messages`.                                 |
+| Streaming          | Token-by-token response delivery via SSE.                                                             |
+| SSE                | Server-Sent Events. One-way HTTP streaming with `text/event-stream`.                                  |
+| Session            | Server-persisted chat thread. Survives reload because history lives in the DB.                        |
+| Multi-document RAG | Retrieval scoped to multiple source documents in one query.                                           |
+| OpenRouter         | Multi-provider LLM proxy. One API, many models. Used as single egress in this repo.                   |
+| Guardrail          | Pre-/post-model layer enforcing rate limit, content rules, or budget limits.                          |
+| Hallucination      | Model output that is fluent but factually wrong.                                                      |
+| Eval               | Measurement of LLM output quality against a rubric or held-out test set. Distinct from unit tests.    |
+| Token budget       | Per-session or per-day cap on tokens consumed; demos reject with `429 token_budget_exceeded`.         |
+| Mocked-LLM test    | Test that intercepts the LLM call and returns a fixture so CI is deterministic and free.              |
+| Tokenizer          | Converts strings to token ids. Different models use different tokenizers; `tiktoken` ships several.   |
+
+## 17. Where this is referenced
+
+Plans and apps that build AI features in this repo are expected to require this
+primer as prerequisite reading. Examples:
+
+- `plans/in-progress/2026-04-26__add-pdf-chat-apps/` — adds the `pdf-chat-*` demo
+  family (Python/FastAPI BE, Next.js FE, Playwright E2E pair); cites this document
+  in its delivery checklist as required reading.
+
+Future AI plans should cite this document the same way and may extend it with
+domain-specific addenda rather than redefining the same vocabulary inline.
+
+## Related
+
+- [Software Engineering](../README.md) — parent index
+- [Explanation](../../README.md) — Diátaxis explanation root
+- [Behavior-Driven Development](../development/behavior-driven-development-bdd/README.md) — Gherkin scenarios used for AI feature acceptance criteria
+- [Test-Driven Development](../development/test-driven-development-tdd/README.md) — relevant for the structural-assertion layer in §13

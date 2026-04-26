@@ -74,6 +74,12 @@ End-to-end testing frameworks and browser automation tools:
 - **[Automation Testing](./automation-testing/README.md)** - E2E testing frameworks and browser automation
   - **[Playwright](./automation-testing/tools/playwright/README.md)** - Cross-browser E2E testing for web applications
 
+### 🤖 [AI Application Development](./ai-application-development/README.md)
+
+Conceptual primer for software engineers new to building LLM-backed applications:
+
+- **[AI Application Development](./ai-application-development/README.md)** - Tokens, embeddings, RAG, streaming SSE, multi-provider routing (OpenRouter), persistent sessions, production guardrails, evaluation, and cost. Required prerequisite reading for any plan that adds AI features (e.g., the `pdf-chat-*` demo family).
+
 ### 📚 Cross-References
 
 - **[Software Design Reference](./software-design-reference.md)** - Cross-reference index to all software design documentation. Links architecture patterns, development practices, and language-specific standards
