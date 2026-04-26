@@ -512,9 +512,11 @@ Examples of acceptable intermediate commits (Conventional Commits format):
 
 - [x] Review `git status` — confirm no unintended files staged
   - Date: 2026-04-26; Status: Done — 1629 staged (git mv renames) + 632 modified (source sweeps + agent/skill syncs); all expected rename changes
-- [ ] Stage all changes: `git add -A`
-- [ ] Commit with Conventional Commits message:
+- [x] Stage all changes: `git add -A`
+  - Date: 2026-04-26; Status: Done — 1827 files staged (also fixed specs/apps-labs/README.md broken link)
+- [x] Commit with Conventional Commits message:
       `refactor(apps): rename demo-* to crud-* to clarify CRUD family scope`
+  - Date: 2026-04-26; Status: Done — commit a7f779a15
 - [ ] Rebase to ensure linear history: `git pull --rebase origin main`
       (if `origin/main` has new commits since last pull; skip if already up to date)
 - [ ] Push to main: `git push origin main`
