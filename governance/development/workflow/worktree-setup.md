@@ -158,5 +158,6 @@ The root worktree path is available from the environment context or can be confi
 - [Reproducible Environments](./reproducible-environments.md) - Practices for consistent development environments, including Volta pinning and lockfile management
 - [Native-First Toolchain Management](./native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` for toolchain management across 11 languages
 - [AI Agents Convention](../agents/ai-agents.md) - Git Worktree Awareness rules for agents operating across worktrees
-- [Trunk Based Development](./trunk-based-development.md) - Branch and worktree workflow for this repository, including the requirement that all worktree-mode work pushes to a feature branch and a [draft PR](./trunk-based-development.md#worktree-mode-branch--draft-pr) targeting `main`
+- [Trunk Based Development](./trunk-based-development.md) - Branch and worktree workflow for this repository. Worktree-mode work pushes directly to `main` by default (`git push origin HEAD:main`); a [draft PR](./trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) targeting `main` is opt-in only when the user's prompt or plan document explicitly requests one
+- [Git Push Default Convention](./git-push-default.md) - Standard 6 covers worktree push behavior: default direct-to-main, PR opt-in
 - [Nx Targets](../infra/nx-targets.md) - Canonical Nx target names and caching rules that depend on a consistent dependency state

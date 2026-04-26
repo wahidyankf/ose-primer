@@ -373,7 +373,7 @@ docs/explanation/software-engineering/programming-languages/[language]/README.md
 
 **Workflow Conventions**:
 
-- [Trunk Based Development](../../../governance/development/workflow/trunk-based-development.md) - Git workflow details (main = direct push; worktree = feature branch + draft PR targeting `main`, flipped to ready when complete)
+- [Trunk Based Development](../../../governance/development/workflow/trunk-based-development.md) - Git workflow details (default: direct push to `main` from main checkout AND from worktree via `git push origin HEAD:main`; draft PR opt-in only when explicitly requested)
 - [PR Merge Protocol](../../../governance/development/workflow/pr-merge-protocol.md) - Explicit user approval required, all quality gates must pass
 - [Commit Messages Convention](../../../governance/development/workflow/commit-messages.md) - Conventional Commits specification
 - [Implementation Workflow](../../../governance/development/workflow/implementation.md) - Make it work → right → fast

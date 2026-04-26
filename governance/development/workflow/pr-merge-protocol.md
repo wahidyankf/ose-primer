@@ -77,7 +77,7 @@ If the user explicitly says "merge despite the failing lint check" (or equivalen
 
 This protocol applies whenever a pull request exists as part of the development workflow:
 
-- **Worktree mode**: When agents use `isolation: "worktree"` in the Agent tool, when an agent is invoked inside an existing worktree session, or when a developer creates a worktree for isolated work, they create branches and PRs. Merging those PRs requires this protocol.
+- **Worktree mode (opt-in PR only)**: Worktree work pushes directly to `main` by default per the [Trunk Based Development Convention](./trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) and [Git Push Default Convention](./git-push-default.md) Standard 6. When the user's prompt or plan document explicitly requests a draft PR from worktree work, merging that PR requires this protocol.
 - **External contributions**: PRs from external contributors follow this protocol.
 - **Code review workflow**: Any short-lived branch created for review purposes follows this protocol.
 
@@ -86,9 +86,9 @@ This protocol does **not** apply to:
 - Direct commits to `main` (the default TBD workflow has no PR to merge).
 - Environment branch deployments managed by CI (e.g., `prod-crud-fs-ts-nextjs`), which are governed by their own documented CI workflows.
 
-### Draft PR Lifecycle (Worktree Mode)
+### Draft PR Lifecycle (Worktree Mode, Opt-In)
 
-Per the [Trunk Based Development Convention](./trunk-based-development.md#worktree-mode-branch--draft-pr), all worktree-mode PRs are **opened as GitHub drafts** (`gh pr create --draft`), not as ready-for-review PRs. This protocol fires at the moment the author flips the draft to ready for review (or at an explicit merge request), not at PR open time.
+Per the [Trunk Based Development Convention](./trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in), worktree work pushes directly to `main` by default. When the user's prompt or plan explicitly requests a PR from worktree work, the PR is **opened as a GitHub draft** (`gh pr create --draft`), not as ready-for-review. This protocol fires at the moment the author flips the draft to ready for review (or at an explicit merge request), not at PR open time.
 
 **Lifecycle**:
 

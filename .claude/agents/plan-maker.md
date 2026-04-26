@@ -129,11 +129,11 @@ Break work into executable steps:
 
 Specify branch strategy:
 
-**Default (main checkout)**: Work directly on `main` (Trunk Based Development) -- commit and push to `main` with no PR.
-**Worktree exception**: If the plan will be executed inside a git worktree (`isolation: "worktree"`, an agent invoked in an existing worktree session, or a developer running `git worktree add`), the plan must push to a feature branch and open a **draft** PR targeting `main` (`gh pr create --draft`). The draft is flipped to ready for review when the work is complete; that flip is when the PR Merge Protocol approval gate fires. The rule is triggered by execution mode, not by intent -- even small or docs-only worktree work goes through a draft PR.
+**Default (main checkout or worktree)**: Work directly on `main` (Trunk Based Development) -- commit and push to `main` with no PR. Inside a git worktree, the same default applies via `git push origin HEAD:main`; the worktree branch is an isolation mechanism, not a feature branch.
+**Opt-in PR (any execution mode)**: Open a draft PR targeting `main` (`gh pr create --draft`) only when the user's prompt or this plan explicitly requests one. The draft is flipped to ready for review when the work is complete; that flip is when the PR Merge Protocol approval gate fires.
 **Other exception**: Plain feature branch (non-worktree) requires justification.
 
-See [Trunk Based Development Convention](../../governance/development/workflow/trunk-based-development.md) and especially the [Worktree Mode (Branch + Draft PR)](../../governance/development/workflow/trunk-based-development.md#worktree-mode-branch--draft-pr) section for workflow details.
+See [Trunk Based Development Convention](../../governance/development/workflow/trunk-based-development.md) and especially the [Worktree Mode (Direct Push to main; Draft PR Opt-In)](../../governance/development/workflow/trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) section, plus Standard 6 of the [Git Push Default Convention](../../governance/development/workflow/git-push-default.md), for workflow details.
 
 ## Plan Quality Standards
 
