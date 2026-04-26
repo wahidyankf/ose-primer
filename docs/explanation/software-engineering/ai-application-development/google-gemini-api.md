@@ -215,6 +215,48 @@ Long context is **not** a free lunch:
 
 In short: long context is a tool, not a default. The default is RAG.
 
+## Tools and built-in capabilities
+
+Gemini bundles three execution surfaces under the `tools` request field:
+
+| Tool                    | Type / config                                                             | What it does                                                                                                                 | Status  |
+| ----------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------- |
+| Google Search grounding | `{"google_search": {}}`                                                   | Model decides when to query Google Search; results grounded with citations. Returns `groundingMetadata` (chunks + supports). | GA      |
+| Code execution          | `{"code_execution": {}}`                                                  | Sandboxed Python; the model writes and runs code, returns stdout / files. **Free** beyond standard tokens.                   | GA      |
+| URL context             | `{"url_context": {}}`                                                     | Browses up to 20 URLs per request (text, images, PDFs). Max 34 MB / URL. No paywalled / Workspace / video.                   | Preview |
+| Function calling        | `{"functionDeclarations": [{"name": ..., "parameters": OpenAPI-schema}]}` | Custom developer tools; model returns structured `functionCall` objects.                                                     | GA      |
+| Files API               | `client.files.upload(path=...)` then reference `file_uri` in `contents`   | Upload once (≤ 2 GB), reuse for 48 h. Free during TTL.                                                                       | GA      |
+| Live API                | WSS connection (`wss://...`) — not a `tools[]` entry                      | Bidirectional audio + video real-time streaming with barge-in.                                                               | Preview |
+
+```python
+from google import genai
+from google.genai import types
+
+resp = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents="What changed in the latest Python release?",
+    config=types.GenerateContentConfig(
+        tools=[
+            types.Tool(google_search=types.GoogleSearch()),
+            types.Tool(code_execution=types.ToolCodeExecution()),
+        ],
+    ),
+)
+
+# Citations
+for chunk in resp.candidates[0].grounding_metadata.grounding_chunks:
+    print(chunk.web.uri)
+```
+
+Tools combine cleanly: a Gemini 3-class request can do Google Search and
+function calling in one turn and circulate the resulting context through
+subsequent turns.
+
+For a private-corpus RAG demo (this repo's shape) prefer **Files API
+plus your own pgvector retrieval** — Google Search grounding crosses the
+trust boundary into public web data, which is rarely what a private-doc
+demo wants.
+
 ## Reference cost (2026-Q2)
 
 Indicative pricing per million tokens; verify at
@@ -269,6 +311,8 @@ run. See the main primer §13 for the full determinism strategy.
   embeddings, RAG, streaming, guardrails, evaluation, cost
 - [Anthropic API Primer](./anthropic-api.md) — paired vendor doc; chat lives
   there for premium-quality reasoning
+- [OpenAI API Primer](./openai-api.md) — paired vendor doc; reasoning models
+  and built-in tools
 - [Perplexity API Primer](./perplexity-api.md) — when web-grounded answers are
   the requirement
 - [Gemini API docs](https://ai.google.dev/gemini-api/docs) — authoritative

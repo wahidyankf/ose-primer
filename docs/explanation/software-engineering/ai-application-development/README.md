@@ -29,11 +29,12 @@ desktop app) so the rest of the technical material parses without surprises. Not
 here is plan-internal — it is generic working knowledge.
 
 This primer is generic. Vendor-specific details — model ids, SDK install,
-streaming idioms, embeddings, pricing — live in three companion docs that
+streaming idioms, embeddings, pricing — live in four companion docs that
 extend this one:
 
 - [Anthropic API Primer](./anthropic-api.md)
 - [Google Gemini API Primer](./google-gemini-api.md)
+- [OpenAI API Primer](./openai-api.md)
 - [Perplexity Sonar API Primer](./perplexity-api.md)
 
 ## Why this primer exists
@@ -352,8 +353,9 @@ Convention in this repo:
 - Live web grounding, when needed, comes from Perplexity Sonar.
 
 For vendor-specific install, auth, request shape, streaming, mocking: read
-the three companion docs ([Anthropic](./anthropic-api.md),
-[Gemini](./google-gemini-api.md), [Perplexity](./perplexity-api.md)).
+the four companion docs ([Anthropic](./anthropic-api.md),
+[Gemini](./google-gemini-api.md), [OpenAI](./openai-api.md),
+[Perplexity](./perplexity-api.md)).
 
 ## 11. Persistent chat sessions vs stateless completions
 
@@ -523,6 +525,8 @@ domain-specific addenda rather than redefining the same vocabulary inline.
   streaming, PDF input, the no-embeddings caveat
 - [Google Gemini API Primer](./google-gemini-api.md) — long context,
   embeddings via `gemini-embedding-001`, cheap chat
+- [OpenAI API Primer](./openai-api.md) — Responses API vs Chat Completions,
+  GPT-5.x and o3, reasoning-effort knob, built-in tools
 - [Perplexity Sonar API Primer](./perplexity-api.md) — web-grounded answers,
   citations, when not to use it
 - [Software Engineering](../README.md) — parent index
