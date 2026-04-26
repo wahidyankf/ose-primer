@@ -79,29 +79,25 @@ The result must exactly match the filename (without path).
 
 Every workflow currently in the repository follows this rule:
 
-| `name:` field                                | Filename                                |
-| -------------------------------------------- | --------------------------------------- |
-| `Main CI`                                    | `main-ci.yml`                           |
-| `PR - Quality Gate`                          | `pr-quality-gate.yml`                   |
-| `PR - Format`                                | `pr-format.yml`                         |
-| `PR - Validate Links`                        | `pr-validate-links.yml`                 |
-| `Test and Deploy - demo Web`                 | `test-and-deploy-crud-fs-ts-nextjs.yml` |
-| `Test and Deploy - demo Web`                 | `test-and-deploy-crud-fs-ts-nextjs.yml` |
-| `Test and Deploy - demo`                     | `test-and-deploy-demo.yml`              |
-| `Test - Demo BE (Java/Spring Boot)`          | `test-crud-be-java-springboot.yml`      |
-| `Test - Demo BE (Java/Vert.x)`               | `test-crud-be-java-vertx.yml`           |
-| `Test - Demo BE (Elixir/Phoenix)`            | `test-crud-be-elixir-phoenix.yml`       |
-| `Test - Demo BE (F#/Giraffe)`                | `test-crud-be-fsharp-giraffe.yml`       |
-| `Test - Demo BE (Go/Gin)`                    | `test-crud-be-golang-gin.yml`           |
-| `Test - Demo BE (Python/FastAPI)`            | `test-crud-be-python-fastapi.yml`       |
-| `Test - Demo BE (Rust/Axum)`                 | `test-crud-be-rust-axum.yml`            |
-| `Test - Demo BE (Kotlin/Ktor)`               | `test-crud-be-kotlin-ktor.yml`          |
-| `Test - Demo BE (TypeScript/Effect)`         | `test-crud-be-ts-effect.yml`            |
-| `Test - Demo BE (C#/ASP.NET Core)`           | `test-crud-be-csharp-aspnetcore.yml`    |
-| `Test - Demo BE (Clojure/Pedestal)`          | `test-crud-be-clojure-pedestal.yml`     |
-| `Test - Demo FE (TypeScript/Next.js)`        | `test-crud-fe-ts-nextjs.yml`            |
-| `Test - Demo FE (TypeScript/TanStack Start)` | `test-crud-fe-ts-tanstack-start.yml`    |
-| `Test - Demo FE (Dart/Flutter Web)`          | `test-crud-fe-dart-flutterweb.yml`      |
+| `name:` field                                | Filename                             |
+| -------------------------------------------- | ------------------------------------ |
+| `PR - Quality Gate`                          | `pr-quality-gate.yml`                |
+| `PR - Validate Links`                        | `pr-validate-links.yml`              |
+| `Test - Crud FS (TypeScript/Next.js)`        | `test-crud-fs-ts-nextjs.yml`         |
+| `Test - Crud BE (Java/Spring Boot)`          | `test-crud-be-java-springboot.yml`   |
+| `Test - Crud BE (Java/Vert.x)`               | `test-crud-be-java-vertx.yml`        |
+| `Test - Crud BE (Elixir/Phoenix)`            | `test-crud-be-elixir-phoenix.yml`    |
+| `Test - Crud BE (F#/Giraffe)`                | `test-crud-be-fsharp-giraffe.yml`    |
+| `Test - Crud BE (Go/Gin)`                    | `test-crud-be-golang-gin.yml`        |
+| `Test - Crud BE (Python/FastAPI)`            | `test-crud-be-python-fastapi.yml`    |
+| `Test - Crud BE (Rust/Axum)`                 | `test-crud-be-rust-axum.yml`         |
+| `Test - Crud BE (Kotlin/Ktor)`               | `test-crud-be-kotlin-ktor.yml`       |
+| `Test - Crud BE (TypeScript/Effect)`         | `test-crud-be-ts-effect.yml`         |
+| `Test - Crud BE (C#/ASP.NET Core)`           | `test-crud-be-csharp-aspnetcore.yml` |
+| `Test - Crud BE (Clojure/Pedestal)`          | `test-crud-be-clojure-pedestal.yml`  |
+| `Test - Crud FE (TypeScript/Next.js)`        | `test-crud-fe-ts-nextjs.yml`         |
+| `Test - Crud FE (TypeScript/TanStack Start)` | `test-crud-fe-ts-tanstack-start.yml` |
+| `Test - Crud FE (Dart/Flutter Web)`          | `test-crud-fe-dart-flutterweb.yml`   |
 
 ## Examples
 
@@ -118,10 +114,10 @@ Derivation: `PR - Quality Gate` → lowercase → `pr - quality gate` → spaces
 
 ```yaml
 # File: .github/workflows/test-crud-be-java-springboot.yml
-name: Test - Demo BE (Java/Spring Boot)
+name: Test - Crud BE (Java/Spring Boot)
 ```
 
-Derivation: `Test - Demo BE (Java/Spring Boot)` → lowercase → `test - demo be (java/spring boot)` → remove `(`, `)`, `/` → `test - demo be javaspring boot` → spaces to hyphens → `test---crud-be-javaspring-boot` → collapse hyphens → `test-crud-be-javaspring-boot` → append `.yml` → `test-crud-be-java-springboot.yml`.
+Derivation: `Test - Crud BE (Java/Spring Boot)` → lowercase → `test - crud be (java/spring boot)` → remove `(`, `)`, `/` → `test - crud be javaspring boot` → spaces to hyphens → `test---crud-be-javaspring-boot` → collapse hyphens → `test-crud-be-javaspring-boot` → append `.yml` → `test-crud-be-java-springboot.yml`.
 
 The actual filename is `test-crud-be-java-springboot.yml`. `Java/Spring Boot` maps to `java-springboot` (slash removed, space removed). See the Special Considerations section below.
 
@@ -154,10 +150,10 @@ The pattern `(Language/Framework)` in a name maps to `language-framework` in the
 
 ### Version Alignment Policy
 
-`main-ci.yml` is the **source of truth** for language version choices. All `test-demo-*`
+`main-ci.yml` is the **source of truth** for language version choices. All `test-crud-*`
 workflows must use the same language versions as `main-ci.yml`.
 
-**Rule**: When upgrading a language version in `main-ci.yml`, update all demo and deploy workflows
+**Rule**: When upgrading a language version in `main-ci.yml`, update all CRUD and deploy workflows
 that use that language in the same commit. Version drift between `main-ci.yml` and these workflows
 creates inconsistencies where CI passes on main but manually dispatched integration tests fail
 (or vice versa).
@@ -171,7 +167,7 @@ creates inconsistencies where CI passes on main but manually dispatched integrat
 | Python   | `python-version`   | `test-crud-be-python-fastapi.yml`                                                 |
 | Node.js  | `node-version`     | All workflows installing Node.js                                                  |
 
-**Frontend workflows install Go for codegen**: The three demo frontend workflows
+**Frontend workflows install Go for codegen**: The three CRUD frontend workflows
 (`test-crud-fe-ts-nextjs.yml`, `test-crud-fe-ts-tanstack-start.yml`,
 `test-crud-fe-dart-flutterweb.yml`) install Go and run `rhino-cli` for contract codegen before
 running tests. The Go version in these workflows must match the version used in `main-ci.yml` and

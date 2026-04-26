@@ -54,7 +54,7 @@ All tools checked by `rhino-cli doctor`:
 | 2   | volta          | Any                   | (no config file)                            | curl script    |
 | 3   | node           | 24.13.1               | package.json > volta.node                   | Volta          |
 | 4   | npm            | 11.10.1               | package.json > volta.npm                    | Volta          |
-| 5   | java           | 25+ (major)           | apps/crud-be-fsharp-giraffe-jasb/pom.xml    | SDKMAN         |
+| 5   | java           | 25+ (major)           | apps/crud-be-java-springboot/pom.xml        | SDKMAN         |
 | 6   | maven          | Any                   | (no config file)                            | SDKMAN         |
 | 7   | golang         | >= go.mod directive   | apps/rhino-cli/go.mod                       | Brew/asdf      |
 | 8   | python         | >= .python-version    | apps/crud-be-python-fastapi/.python-version | pyenv/System   |
@@ -75,8 +75,8 @@ All tools checked by `rhino-cli doctor`:
 If you already have Homebrew (macOS) or apt (Linux) and Node.js/npm installed:
 
 ```bash
-git clone https://github.com/wahidyankf/ose-public.git
-cd open-sharia-enterprise
+git clone https://github.com/wahidyankf/ose-primer.git
+cd ose-primer
 npm install
 npm run doctor -- --fix          # Auto-install all missing tools
 npm run doctor -- --fix --dry-run  # Preview what would be installed (no changes)
@@ -281,8 +281,7 @@ brew install clojure/tools/clojure
 
 ### Phase 5: Go Ecosystem (Sequential)
 
-Required for: `rhino-cli`, `rhino-cli`, `rhino-cli`, `crud-be-golang-gin`,
-`libs/golang-commons`
+Required for: `rhino-cli`, `crud-be-golang-gin`, `libs/golang-commons`
 
 #### 5.1 Install Go
 
@@ -469,8 +468,8 @@ flutter doctor
 #### 11.1 Clone the repository
 
 ```bash
-git clone https://github.com/wahidyankf/ose-public.git
-cd open-sharia-enterprise
+git clone https://github.com/wahidyankf/ose-primer.git
+cd ose-primer
 ```
 
 **Condition**: Skip if already cloned.

@@ -24,7 +24,7 @@ Technical reference documentation for the open-sharia-enterprise project. These 
 ### Quality Infrastructure
 
 - [Code Coverage](./code-coverage.md) - How coverage is measured locally via rhino-cli, per-project details, exclusion patterns, and troubleshooting
-- [Demo Apps CI Coverage](./demo-apps-ci-coverage.md) - CI status badges and coverage tracking for all demo app implementations
+- [Demo Apps CI Coverage](./demo-apps-ci-coverage.md) - CI status badges and coverage tracking for all CRUD app implementations
 
 ### AI Models
 
