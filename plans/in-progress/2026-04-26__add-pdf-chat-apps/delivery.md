@@ -108,12 +108,15 @@
 ## Phase 6 — Backend project scaffold (`pdf-chat-be`)
 
 - [ ] Create `apps/pdf-chat-be/` directory tree per tech-docs.md repository layout
-- [ ] Write `pyproject.toml` with deps: `fastapi[standard]`, `uvicorn[standard]`,
+- [ ] Write `pyproject.toml` runtime deps: `fastapi[standard]`, `uvicorn[standard]`,
       `sqlalchemy`, `alembic`, `psycopg2-binary`, `pgvector`, `pydantic[email]`,
       `pydantic-settings`, `python-multipart`, `pypdf`, `pdfplumber`, `httpx`,
-      `sse-starlette`, `tiktoken`, `slowapi`. Dev: `pytest`, `pytest-bdd`,
-      `coverage[toml]`, `pytest-asyncio`, `pytest-httpx`, `freezegun` (for daily-cap
-      time-travel), `ruff`, `pyright`
+      `sse-starlette`, `tiktoken`, `slowapi`
+  - [ ] Add test stack to `pyproject.toml`: `pytest`, `pytest-bdd`, `pytest-asyncio`,
+        `pytest-httpx`, `coverage[toml]`, `freezegun` (for daily-cap time-travel)
+  - [ ] Add lint (`ruff`) and typecheck (`pyright`) to `pyproject.toml`
+  - Note: this stack is identical to `crud-be-python-fastapi` plus the AI-specific
+    deps (`sse-starlette`, `tiktoken`, `slowapi`, `pypdf`, `pdfplumber`, `pgvector`)
 - [ ] Write `.python-version` (3.13)
 - [ ] Write `apps/pdf-chat-be/project.json` with all mandatory targets (mirror
       `crud-be-python-fastapi`, with `cwd: apps/pdf-chat-be`, port 8501, coverage
@@ -190,7 +193,9 @@
 
 - [ ] Create `apps/pdf-chat-fe/` directory tree per tech-docs
 - [ ] `package.json` deps: `next@^16`, `react@^19`, `react-dom@^19`,
-      `ai@^5`, `@ai-sdk/react@^2`, `@open-sharia-enterprise/ts-ui: "*"`,
+      `ai@^5`, `@ai-sdk/react@^3` (v3.x ships aligned with `ai@^5`; verify
+      `npm info @ai-sdk/react versions` if install fails with peer-dep conflict),
+      `@open-sharia-enterprise/ts-ui: "*"`,
       `@open-sharia-enterprise/ts-ui-tokens: "*"`, `@tailwindcss/postcss`,
       `tailwindcss`. Dev deps mirror `crud-fe-ts-nextjs`
 - [ ] `next.config.ts`, `tsconfig.json`, `oxlint.json` mirror `crud-fe-ts-nextjs`
@@ -236,12 +241,18 @@
 - [ ] `npx nx run pdf-chat-fe:typecheck` exits 0
 - [ ] `npx nx run pdf-chat-fe:lint` exits 0
 
-## Phase 13 — Frontend tests
+## Phase 13 — Frontend tests (unit only — no integration level)
+
+> The frontend ships **two** test levels: `test:unit` (this phase) and `test:e2e`
+> (Phase 15). There is no `pdf-chat-fe:test:integration` target — integration
+> concerns are covered by `pdf-chat-be:test:integration` plus the two e2e suites.
 
 - [ ] Component unit tests for each composite (vitest + @testing-library/react)
 - [ ] Optional vitest-cucumber wiring of `specs/apps/pdf-chat/fe/gherkin` if FE
       Gherkin coverage is required by `spec-coverage`
-- [ ] Mock the Route Handler in component tests; do not hit FastAPI
+- [ ] Mock the Route Handler / fetch boundary in component tests; do not hit FastAPI
+- [ ] All FE source files are `.ts` / `.tsx` (TypeScript end-to-end; no `.js` /
+      `.jsx` in `apps/pdf-chat-fe/src/`)
 - [ ] `npx nx run pdf-chat-fe:test:quick` exits 0 with ≥70% coverage
 - [ ] If a primitive is missing in ts-ui and you found yourself reaching for one: add
       it to `libs/ts-ui` first via `swe-ui-maker`, land that change in a separate
@@ -331,7 +342,9 @@
 
 ## Phase 21 — Quality gates
 
-> Fix all failures, including pre-existing ones encountered. Do not bypass.
+> **Important**: Fix ALL failures found during quality gates, not just those caused by your
+> changes. This follows the root cause orientation principle — proactively fix preexisting
+> errors encountered during work. Do not defer or mention-and-skip existing issues.
 
 - [ ] `npx nx affected -t typecheck` exits 0
 - [ ] `npx nx affected -t lint` exits 0
