@@ -116,10 +116,10 @@ produce the LCOV report, then validates coverage with `rhino-cli test-coverage v
 
 All context modules are replaced at test time via `config/test.exs`:
 
-- `DemoBeExph.Accounts` → `DemoBeExph.InMemoryAccounts`
-- `DemoBeExph.Token.TokenContext` → `DemoBeExph.InMemoryTokenContext`
-- `DemoBeExph.Expense.ExpenseContext` → `DemoBeExph.InMemoryExpenseContext`
-- `DemoBeExph.Attachment.AttachmentContext` → `DemoBeExph.InMemoryAttachmentContext`
+- `CrudBeExph.Accounts` → `CrudBeExph.InMemoryAccounts`
+- `CrudBeExph.Token.TokenContext` → `CrudBeExph.InMemoryTokenContext`
+- `CrudBeExph.Expense.ExpenseContext` → `CrudBeExph.InMemoryExpenseContext`
+- `CrudBeExph.Attachment.AttachmentContext` → `CrudBeExph.InMemoryAttachmentContext`
 
 The `Repo` GenServer is not started in the `:test` environment. Tests are fully
 deterministic with no external service dependencies, making them safe for Nx caching.

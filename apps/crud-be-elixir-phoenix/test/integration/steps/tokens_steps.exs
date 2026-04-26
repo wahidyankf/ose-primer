@@ -1,10 +1,10 @@
-defmodule DemoBeExphWeb.Integration.TokensSteps do
+defmodule CrudBeExphWeb.Integration.TokensSteps do
   use Cabbage.Feature, async: false, file: "token-management/tokens.feature"
 
-  use DemoBeExph.DataCaseIntegration
+  use CrudBeExph.DataCaseIntegration
 
-  alias DemoBeExph.Integration.Helpers
-  alias DemoBeExph.Integration.ServiceLayer
+  alias CrudBeExph.Integration.Helpers
+  alias CrudBeExph.Integration.ServiceLayer
 
   @moduletag :integration
 

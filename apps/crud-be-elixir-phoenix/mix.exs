@@ -1,4 +1,4 @@
-defmodule DemoBeExph.MixProject do
+defmodule CrudBeExph.MixProject do
   use Mix.Project
 
   def project do
@@ -25,7 +25,7 @@ defmodule DemoBeExph.MixProject do
   # Configuration for the OTP application.
   def application do
     [
-      mod: {DemoBeExph.Application, []},
+      mod: {CrudBeExph.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

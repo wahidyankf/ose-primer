@@ -1,2 +1,2 @@
-{:ok, _} = DemoBeExph.Test.InMemoryStore.start_link([])
+{:ok, _} = CrudBeExph.Test.InMemoryStore.start_link([])
 ExUnit.start()

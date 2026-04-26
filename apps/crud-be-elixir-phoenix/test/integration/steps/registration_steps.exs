@@ -1,10 +1,10 @@
-defmodule DemoBeExphWeb.Integration.RegistrationSteps do
+defmodule CrudBeExphWeb.Integration.RegistrationSteps do
   use Cabbage.Feature, async: false, file: "user-lifecycle/registration.feature"
 
-  use DemoBeExph.DataCaseIntegration
+  use CrudBeExph.DataCaseIntegration
 
-  alias DemoBeExph.Integration.Helpers
-  alias DemoBeExph.Integration.ServiceLayer
+  alias CrudBeExph.Integration.Helpers
+  alias CrudBeExph.Integration.ServiceLayer
 
   @moduletag :integration
 

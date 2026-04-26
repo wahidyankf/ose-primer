@@ -1,10 +1,10 @@
-defmodule DemoBeExphWeb.Unit.SecuritySteps do
+defmodule CrudBeExphWeb.Unit.SecuritySteps do
   use Cabbage.Feature, async: false, file: "security/security.feature"
 
-  use DemoBeExphWeb.ConnCase
+  use CrudBeExphWeb.ConnCase
 
-  alias DemoBeExph.Integration.Helpers
-  alias DemoBeExph.Test.InMemoryStore
+  alias CrudBeExph.Integration.Helpers
+  alias CrudBeExph.Test.InMemoryStore
 
   @moduletag :unit
 
