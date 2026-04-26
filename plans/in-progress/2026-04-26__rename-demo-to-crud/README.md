@@ -27,9 +27,3 @@ similar) is introduced alongside it.
 - [Product requirements](./prd.md) — what done looks like, Gherkin acceptance criteria
 - [Technical approach](./tech-docs.md) — rename strategy, file change map, validation
 - [Delivery checklist](./delivery.md) — granular step-by-step tasks
-
-## Implementation constraint
-
-All implementation work runs inside a worktree (`worktree-rename-demo-to-crud`) and
-surfaces as a **draft PR** against `main`. Direct commits to `main` are prohibited
-(PR-only-to-ose-primer invariant).
