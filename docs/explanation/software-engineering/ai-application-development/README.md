@@ -263,6 +263,33 @@ The standard pattern for "answer questions about my documents":
 4. Generate:  send prompt to chat model, stream response
 ```
 
+```mermaid
+%% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
+flowchart LR
+    subgraph Ingest [Ingest pipeline · runs once per document]
+        DOC([Source PDF / doc]):::doc --> CHUNK[Chunker<br/>800 / 100 overlap]:::step
+        CHUNK --> EMB1[Embedder<br/>RETRIEVAL_DOCUMENT]:::step
+        EMB1 --> DB[(pgvector<br/>vector·N)]:::store
+    end
+    subgraph Query [Query pipeline · runs every turn]
+        Q([User question]):::user --> EMB2[Embedder<br/>RETRIEVAL_QUERY]:::step
+        EMB2 --> SEARCH{{top-k cosine search}}:::step
+        SEARCH --> DB
+        DB --> CHUNKS[Top-k chunks<br/>+ source / page]:::data
+        CHUNKS --> PROMPT[Prompt builder<br/>system + chunks + history + Q]:::step
+        PROMPT --> LLM[Chat model<br/>SSE stream]:::llm
+        LLM --> ANS([Streamed answer<br/>+ citations]):::out
+    end
+
+    classDef doc fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef user fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef step fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef store fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef data fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef llm fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef out fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
 Why it works: §1 says LLMs only know what's in their training data plus what you
 hand them on each call. §6 lets you pick the **most relevant** slice of your private
 docs cheaply. RAG glues the two together so the model can answer about your data
@@ -356,6 +383,29 @@ For vendor-specific install, auth, request shape, streaming, mocking: read
 the four companion docs ([Anthropic](./anthropic-api.md),
 [Gemini](./google-gemini-api.md), [OpenAI](./openai-api.md),
 [Perplexity](./perplexity-api.md)).
+
+### Vendor choice — quick decision tree
+
+```mermaid
+%% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
+flowchart TD
+    START{Need live<br/>web grounding<br/>with citations?} -->|Yes| PPLX[Perplexity Sonar]:::pplx
+    START -->|No| RES{Reasoning model<br/>or richest tool<br/>ecosystem?}
+    RES -->|Yes| OAI[OpenAI GPT-5.5<br/>or o3]:::oai
+    RES -->|No| EMB{Need embeddings<br/>or 1 M context<br/>or cheapest chat?}
+    EMB -->|Yes| GEM[Google Gemini]:::gem
+    EMB -->|No| ANT[Anthropic Claude]:::ant
+
+    classDef pplx fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef oai fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef gem fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef ant fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+```
+
+Most production stacks reach for **two** of the four: Anthropic or
+OpenAI for chat, Gemini for embeddings (since Anthropic ships none).
+Perplexity is the third lane only when the live-web-citation shape is
+the product.
 
 ## 11. Persistent chat sessions vs stateless completions
 

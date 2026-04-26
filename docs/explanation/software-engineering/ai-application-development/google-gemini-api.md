@@ -257,6 +257,100 @@ plus your own pgvector retrieval** — Google Search grounding crosses the
 trust boundary into public web data, which is rarely what a private-doc
 demo wants.
 
+## Additional features and APIs
+
+| Feature                 | Mechanism                                                                                                                                                  | Notes                                                                                                                  |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Native image generation | `generateContent` with `responseModalities: ["IMAGE", "TEXT"]` on `gemini-2.5-flash-image`, `gemini-3.1-flash-image-preview`, `gemini-3-pro-image-preview` | "Nano Banana" family. Multi-turn edits; up to 14 reference images for style consistency. SynthID watermarked.          |
+| Native TTS              | `generateContent` with `response_modalities: ["AUDIO"]` and `SpeechConfig` (single or multi-speaker)                                                       | Models: `gemini-3.1-flash-tts-preview`, `gemini-2.5-flash-preview-tts`, `gemini-2.5-pro-preview-tts`. PCM 24 kHz mono. |
+| Gemini Batch API        | `POST /v1beta/models/{model}:batchGenerateContent` (inline ≤ 20 MB or JSONL ≤ 2 GB)                                                                        | **50 % discount**; 24 h SLA. Supports structured outputs, function calling, multimodal inputs.                         |
+| Context caching         | Implicit (auto) or explicit (`POST /v1beta/cachedContents`) — pass `cached_content` in request                                                             | **75–90 %** cache-read discount. Min 32 768 tokens. Storage $4.50/M-tok-h (Pro) / $1.00/M-tok-h (Flash).               |
+| Structured output       | `GenerationConfig` with `responseMimeType: "application/json"` + `responseSchema` (subset OpenAPI)                                                         | Property order matches schema. Pydantic / Zod interop. `responseMimeType: "text/x.enum"` for enum-only.                |
+| Thinking mode           | Gemini 2.5: `thinkingConfig.thinkingBudget` (`0`, `128–32768`, or `-1` = dynamic). Gemini 3: `thinkingLevel` (`minimal`/`low`/`medium`/`high`)             | Thinking tokens billed at output rate. Cannot disable on Gemini 3.1 Pro.                                               |
+
+### Tool / feature flow visualised
+
+```mermaid
+%% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
+flowchart LR
+    PROMPT([User contents]):::user --> GEM{{Gemini model}}
+    GEM -->|tools=[google_search]| GS[Google Search<br/>+ groundingMetadata]:::server
+    GEM -->|tools=[code_execution]| CE[Sandboxed<br/>Python]:::server
+    GEM -->|tools=[url_context]| URL[URL fetch ≤ 20 URLs]:::server
+    GEM -->|tools=[functionDeclarations]| FN[Custom tool<br/>your app runs]:::client
+    GEM -->|response_modalities=AUDIO| TTS[(PCM 24 kHz)]:::audio
+    GEM -->|response_modalities=IMAGE| IMG[(Image bytes)]:::image
+    GS --> OUT([Final<br/>response]):::out
+    CE --> OUT
+    URL --> OUT
+    FN --> OUT
+    TTS --> OUT
+    IMG --> OUT
+
+    classDef user fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef server fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef client fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef audio fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef image fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef out fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
+### Long-context vs RAG decision
+
+```mermaid
+%% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
+flowchart TD
+    Q{Total input<br/>token count?} -->|< 100 k| FULL[Pass whole<br/>document inline]:::yes
+    Q -->|100 k – 1 M, single-shot batch| LONG[Long-context call<br/>Flash / Pro]:::maybe
+    Q -->|> 1 M, or multi-turn chat| RAG[RAG with<br/>gemini-embedding-001]:::no
+    FULL --> COST{Cost OK?}:::ask
+    LONG --> COST
+    COST -->|Yes| KEEP[Stay with<br/>long-context]:::yes
+    COST -->|No| RAG
+
+    classDef yes fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef no fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef maybe fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef ask fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+```
+
+## Indonesia data residency
+
+For products subject to Indonesian regulation (UU PDP No. 27/2022; OJK
+POJK 11/POJK.03/2022; BSSN/Komdigi PSE registration), Gemini's residency
+story is more constrained than Anthropic's:
+
+1. **Direct Gemini API has no region pinning.**
+   `generativelanguage.googleapis.com` is a global endpoint. Indonesia is
+   on the access-availability list, but the API does not expose a
+   regional parameter.
+   ([available-regions](https://ai.google.dev/gemini-api/docs/available-regions))
+2. **Vertex AI `asia-southeast2` (Jakarta) is live, but Gemini foundation
+   models are NOT confirmed deployed there as of 2026-04-27.** Vertex
+   AI Agent Engine is GA in `asia-southeast2`; Gemini 2.5 Flash's
+   official regional list includes `asia-southeast1` (Singapore) but
+   **not** `asia-southeast2`. Gemini 3.x regional matrices are not
+   publicly published per-region as of this writing.
+   ([Gemini 2.5 Flash region list](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-5-flash))
+3. **Practical fallback for APAC: `asia-southeast1` (Singapore).** This
+   is a cross-border transfer from Indonesia to Singapore — UU PDP
+   Article 56(2)(iv) compliance is required: adequacy (no regulator
+   yet), binding contractual safeguards via Google Cloud's standard
+   data-processing terms, or explicit data-subject consent. Pre- and
+   post-transfer reports to Komdigi may be required for sensitive data.
+
+Google Cloud publishes an [OJK compliance page](https://cloud.google.com/security/compliance/ojk-indonesia)
+that acknowledges Indonesian financial-sector context but does not
+include a Gemini-specific UU PDP statement. Foreign electronic system
+providers reaching Indonesian users must additionally register as **PSE
+Private Scope** (PP 71/2019).
+
+If strict on-shore inference is mandatory, Gemini is currently the
+**weakest** of the four vendors for Indonesia residency. Pair an
+Indonesia-resident chat model (Anthropic Claude on Bedrock Jakarta) with
+Gemini's embedding endpoint accessed via Singapore — and account for the
+cross-border transfer of embedding payloads in your DPIA.
+
 ## Reference cost (2026-Q2)
 
 Indicative pricing per million tokens; verify at
