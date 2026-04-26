@@ -47,7 +47,7 @@ Spring Boot builds on Spring Framework and auto-configures Spring concepts. You 
 
 **What this documentation covers**: demo Spring Boot standards, naming conventions, auto-configuration patterns, how to apply Spring Boot knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Spring Boot tutorials, basic auto-configuration concepts, generic patterns (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: Spring Boot tutorials, basic auto-configuration concepts, generic patterns (those are in crud-fs-ts-nextjs).
 
 **This documentation is demo-specific explanation**, not Spring Boot tutorials.
 

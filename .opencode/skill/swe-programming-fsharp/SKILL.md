@@ -21,7 +21,7 @@ Progressive disclosure of F# coding standards for agents writing F# code.
 
 **What this skill covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply F# knowledge in THIS codebase.
 
-**What this skill does NOT cover**: F# syntax, language fundamentals, generic patterns (those are in demo-fs-ts-nextjs).
+**What this skill does NOT cover**: F# syntax, language fundamentals, generic patterns (those are in crud-fs-ts-nextjs).
 
 ## Quick Standards Reference
 

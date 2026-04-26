@@ -44,8 +44,8 @@ Partial lines count as NOT covered.
 | Go libraries           | >= 90%    | Shared utilities                              |
 | Elixir libraries       | >= 90%    | Shared libraries                              |
 | Clojure libraries      | >= 90%    | Codegen library                               |
-| demo-fe-ts-nextjs      | >= 70%    | Frontend app with MSW integration tests       |
-| demo-be-fsharp-giraffe | >= 90%    | F#/Giraffe backend API                        |
+| crud-fe-ts-nextjs      | >= 70%    | Frontend app with MSW integration tests       |
+| crud-be-fsharp-giraffe | >= 90%    | F#/Giraffe backend API                        |
 | Demo frontends         | >= 70%    | API/auth/query layers fully mocked by design  |
 
 ## 📊 Per-Project Coverage Details
@@ -59,10 +59,10 @@ Partial lines count as NOT covered.
 | ------------------ | --------------------------- | --------- | --------------------------------------------------- |
 | rhino-cli          | `cover.out`                 | 90%       | None                                                |
 | golang-commons     | `cover.out`                 | 90%       | None                                                |
-| demo-be-golang-gin | `cover_unit.out` (filtered) | 90%       | gorm_store, server, cmd/server, generated-contracts |
+| crud-be-golang-gin | `cover_unit.out` (filtered) | 90%       | gorm_store, server, cmd/server, generated-contracts |
 
 **Go exclusion caveat**: Go's `go test -coverprofile` has no built-in
-exclusion mechanism. `demo-be-golang-gin` uses `grep -v` to create a
+exclusion mechanism. `crud-be-golang-gin` uses `grep -v` to create a
 filtered `cover_unit.out` that excludes infrastructure files.
 
 ### Java Projects
@@ -72,8 +72,8 @@ filtered `cover_unit.out` that excludes infrastructure files.
 
 | Project                 | Threshold | Exclusions                                                                     |
 | ----------------------- | --------- | ------------------------------------------------------------------------------ |
-| demo-be-java-springboot | 90%       | JPA models (User, Expense), Application class, JpaAuditingConfig, package-info |
-| demo-be-java-vertx      | 90%       | Main class, package-info, META-INF                                             |
+| crud-be-java-springboot | 90%       | JPA models (User, Expense), Application class, JpaAuditingConfig, package-info |
+| crud-be-java-vertx      | 90%       | Main class, package-info, META-INF                                             |
 
 Exclusions are configured in `pom.xml` via JaCoCo's `<excludes>` element.
 
@@ -84,7 +84,7 @@ Exclusions are configured in `pom.xml` via JaCoCo's `<excludes>` element.
 
 | Project             | Threshold | Exclusions                       |
 | ------------------- | --------- | -------------------------------- |
-| demo-be-kotlin-ktor | 90%       | Configured in `build.gradle.kts` |
+| crud-be-kotlin-ktor | 90%       | Configured in `build.gradle.kts` |
 
 ### TypeScript Projects
 
@@ -93,9 +93,9 @@ Exclusions are configured in `pom.xml` via JaCoCo's `<excludes>` element.
 
 | Project                   | Threshold | Exclusions                                              |
 | ------------------------- | --------- | ------------------------------------------------------- |
-| demo-be-ts-effect         | 90%       | `main.ts`, `routes/test-api.ts` (in `vitest.config.ts`) |
-| demo-fe-ts-nextjs         | 70%       | None                                                    |
-| demo-fe-ts-tanstack-start | 70%       | None                                                    |
+| crud-be-ts-effect         | 90%       | `main.ts`, `routes/test-api.ts` (in `vitest.config.ts`) |
+| crud-fe-ts-nextjs         | 70%       | None                                                    |
+| crud-fe-ts-tanstack-start | 70%       | None                                                    |
 
 Exclusions are configured in `vitest.config.ts` via the `coverage.exclude` array.
 
@@ -106,7 +106,7 @@ Exclusions are configured in `vitest.config.ts` via the `coverage.exclude` array
 
 | Project                | Threshold | Exclusions                                              |
 | ---------------------- | --------- | ------------------------------------------------------- |
-| demo-be-python-fastapi | 90%       | `tests/*`, `routers/*`, `main.py` (in `pyproject.toml`) |
+| crud-be-python-fastapi | 90%       | `tests/*`, `routers/*`, `main.py` (in `pyproject.toml`) |
 
 Exclusions are configured in `[tool.coverage.run].omit` in `pyproject.toml`.
 
@@ -117,7 +117,7 @@ Exclusions are configured in `[tool.coverage.run].omit` in `pyproject.toml`.
 
 | Project           | Threshold | Exclusions                                  |
 | ----------------- | --------- | ------------------------------------------- |
-| demo-be-rust-axum | 90%       | None (cargo-llvm-cov covers the full crate) |
+| crud-be-rust-axum | 90%       | None (cargo-llvm-cov covers the full crate) |
 
 ### Elixir Projects
 
@@ -126,7 +126,7 @@ Exclusions are configured in `[tool.coverage.run].omit` in `pyproject.toml`.
 
 | Project                | Threshold | Exclusions                                                                                   |
 | ---------------------- | --------- | -------------------------------------------------------------------------------------------- |
-| demo-be-elixir-phoenix | 90%       | 19 files in `coveralls.json` (application, repo, behaviours, contexts, telemetry, CORS plug) |
+| crud-be-elixir-phoenix | 90%       | 19 files in `coveralls.json` (application, repo, behaviours, contexts, telemetry, CORS plug) |
 
 ### F# Projects
 
@@ -135,7 +135,7 @@ Exclusions are configured in `[tool.coverage.run].omit` in `pyproject.toml`.
 
 | Project                | Threshold | Exclusions                                                                                           |
 | ---------------------- | --------- | ---------------------------------------------------------------------------------------------------- |
-| demo-be-fsharp-giraffe | 90%       | Uses AltCover instead of XPlat Code Coverage to avoid F# `task{}` async state machine BRDA inflation |
+| crud-be-fsharp-giraffe | 90%       | Uses AltCover instead of XPlat Code Coverage to avoid F# `task{}` async state machine BRDA inflation |
 
 ### C# Projects
 
@@ -144,7 +144,7 @@ Exclusions are configured in `[tool.coverage.run].omit` in `pyproject.toml`.
 
 | Project                   | Threshold | Exclusions |
 | ------------------------- | --------- | ---------- |
-| demo-be-csharp-aspnetcore | 90%       | None       |
+| crud-be-csharp-aspnetcore | 90%       | None       |
 
 ### Clojure Projects
 
@@ -153,7 +153,7 @@ Exclusions are configured in `[tool.coverage.run].omit` in `pyproject.toml`.
 
 | Project                  | Threshold | Exclusions |
 | ------------------------ | --------- | ---------- |
-| demo-be-clojure-pedestal | 90%       | None       |
+| crud-be-clojure-pedestal | 90%       | None       |
 
 ### Dart Projects
 
@@ -162,7 +162,7 @@ Exclusions are configured in `[tool.coverage.run].omit` in `pyproject.toml`.
 
 | Project                 | Threshold | Exclusions |
 | ----------------------- | --------- | ---------- |
-| demo-fe-dart-flutterweb | 70%       | None       |
+| crud-fe-dart-flutterweb | 70%       | None       |
 
 ## CI Integration
 

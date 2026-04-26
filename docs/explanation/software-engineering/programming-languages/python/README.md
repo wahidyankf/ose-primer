@@ -62,7 +62,7 @@ The [Zen of Python (PEP 20)](https://peps.python.org/pep-0020/) guides Python de
 
 **What this documentation covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply Python knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Python syntax, language fundamentals, generic patterns (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: Python syntax, language fundamentals, generic patterns (those are in crud-fs-ts-nextjs).
 
 ## Coding Standards
 

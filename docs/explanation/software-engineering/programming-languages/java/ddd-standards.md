@@ -559,7 +559,7 @@ class DonationTest {
 
 For learning Java fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Java basics from demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Java basics from crud-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ### Software Engineering Principles
 

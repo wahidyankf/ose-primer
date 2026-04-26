@@ -21,7 +21,7 @@ Progressive disclosure of Kotlin coding standards for agents writing Kotlin code
 
 **What this skill covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply Kotlin knowledge in THIS codebase.
 
-**What this skill does NOT cover**: Kotlin syntax, language fundamentals, generic patterns (those are in demo-fs-ts-nextjs).
+**What this skill does NOT cover**: Kotlin syntax, language fundamentals, generic patterns (those are in crud-fs-ts-nextjs).
 
 ## Quick Standards Reference
 

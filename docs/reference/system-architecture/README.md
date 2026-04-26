@@ -71,7 +71,7 @@ graph LR
 **Key Relationships:**
 
 - **Developers & Authors**: Interact with GitHub (source of truth) to build applications and create content
-- **Learners**: Access educational content via Vercel-hosted sites (demo-fs-ts-nextjs, demo-fs-ts-nextjs)
+- **Learners**: Access educational content via Vercel-hosted sites (crud-fs-ts-nextjs, crud-fs-ts-nextjs)
 - **GitHub**: Central hub for CI/CD automation and quality gates
 - **Vercel**: Automated deployment platform for Hugo sites and web applications
 

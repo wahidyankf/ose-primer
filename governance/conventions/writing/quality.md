@@ -32,7 +32,7 @@ This convention establishes universal quality standards that apply to **all mark
 These principles apply to markdown content in:
 
 - **docs/** - Documentation (tutorials, how-to guides, reference, explanations)
-- **Hugo sites** - demo-fs-ts-nextjs and demo-fs-ts-nextjs content
+- **Hugo sites** - crud-fs-ts-nextjs and crud-fs-ts-nextjs content
 - **plans/** - Project planning documents
 - **Repository root files** - README.md, CONTRIBUTING.md, SECURITY.md, etc.
 
@@ -784,7 +784,7 @@ Coverage percentages are allowed because they indicate **depth/scope**, not **ti
 **Where This Applies**:
 
 - All tutorial content (`docs/tutorials/`)
-- Educational content in Hugo sites (demo-fs-ts-nextjs learning content)
+- Educational content in Hugo sites (crud-fs-ts-nextjs learning content)
 - How-to guides that teach concepts
 - Reference documentation with learning components
 

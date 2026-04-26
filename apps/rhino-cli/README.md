@@ -35,13 +35,13 @@ rhino-cli docs validate-links --staged-only
 # Validate BDD spec coverage (all specs have matching test files)
 
 # Validate Java packages have @NullMarked in package-info.java
-rhino-cli java validate-annotations apps/demo-be-java-springboot/src/main/java
+rhino-cli java validate-annotations apps/crud-be-java-springboot/src/main/java
 
 # Clean unused/same-package imports from generated Java contracts
-rhino-cli contracts java-clean-imports apps/demo-be-java-springboot/generated-contracts
+rhino-cli contracts java-clean-imports apps/crud-be-java-springboot/generated-contracts
 
 # Create Dart package scaffolding for generated contracts
-rhino-cli contracts dart-scaffold apps/demo-fe-dart-flutterweb/generated-contracts
+rhino-cli contracts dart-scaffold apps/crud-fe-dart-flutterweb/generated-contracts
 
 # Echo a message
 rhino-cli --say "hello world"
@@ -556,7 +556,7 @@ Validate that all BDD feature spec files have matching test implementations. Des
 the spec-to-test direction for test suites that use explicit file loading (e.g. vitest-cucumber).
 
 ```bash
-# Check demo-fe-ts-nextjs spec coverage
+# Check crud-fe-ts-nextjs spec coverage
 
 # Output as JSON
 
@@ -565,7 +565,7 @@ the spec-to-test direction for test suites that use explicit file loading (e.g. 
 # Quiet mode
 
 # Shared steps mode (for E2E projects with shared step files)
-rhino-cli spec-coverage validate specs/apps/demo/be/gherkin apps/demo-be-e2e --shared-steps
+rhino-cli spec-coverage validate specs/apps/crud/be/gherkin apps/crud-be-e2e --shared-steps
 ```
 
 **What it does:**
@@ -654,23 +654,23 @@ Missing steps (2):
 ### java validate-annotations
 
 Validate that all Java packages in a source tree have the required null-safety annotation in
-`package-info.java`. Used by `demo-be-java-springboot`'s `typecheck` target.
+`package-info.java`. Used by `crud-be-java-springboot`'s `typecheck` target.
 
 ```bash
 # Validate with default annotation (@NullMarked)
-rhino-cli java validate-annotations apps/demo-be-java-springboot/src/main/java
+rhino-cli java validate-annotations apps/crud-be-java-springboot/src/main/java
 
 # Use a custom annotation
-rhino-cli java validate-annotations apps/demo-be-java-springboot/src/main/java --annotation NonNull
+rhino-cli java validate-annotations apps/crud-be-java-springboot/src/main/java --annotation NonNull
 
 # Output as JSON
-rhino-cli java validate-annotations apps/demo-be-java-springboot/src/main/java -o json
+rhino-cli java validate-annotations apps/crud-be-java-springboot/src/main/java -o json
 
 # Output as markdown report
-rhino-cli java validate-annotations apps/demo-be-java-springboot/src/main/java -o markdown
+rhino-cli java validate-annotations apps/crud-be-java-springboot/src/main/java -o markdown
 
 # Quiet mode (suppress "0 violations found" on success)
-rhino-cli java validate-annotations apps/demo-be-java-springboot/src/main/java -q
+rhino-cli java validate-annotations apps/crud-be-java-springboot/src/main/java -q
 ```
 
 **What it does:**
@@ -682,7 +682,7 @@ rhino-cli java validate-annotations apps/demo-be-java-springboot/src/main/java -
 
 **Arguments:**
 
-- `<source-root>` - Path to the Java source root (e.g. `apps/demo-be-java-springboot/src/main/java`)
+- `<source-root>` - Path to the Java source root (e.g. `apps/crud-be-java-springboot/src/main/java`)
 
 **Flags:**
 
@@ -730,10 +730,10 @@ after OpenAPI code generation for Java backends.
 
 ```bash
 # Clean imports in generated contracts
-rhino-cli contracts java-clean-imports apps/demo-be-java-springboot/generated-contracts
+rhino-cli contracts java-clean-imports apps/crud-be-java-springboot/generated-contracts
 
 # Output as JSON
-rhino-cli contracts java-clean-imports apps/demo-be-java-vertx/generated-contracts -o json
+rhino-cli contracts java-clean-imports apps/crud-be-java-vertx/generated-contracts -o json
 ```
 
 **What it does:**
@@ -763,17 +763,17 @@ OpenAPI code generation for the Flutter Web frontend.
 
 ```bash
 # Create scaffold
-rhino-cli contracts dart-scaffold apps/demo-fe-dart-flutterweb/generated-contracts
+rhino-cli contracts dart-scaffold apps/crud-fe-dart-flutterweb/generated-contracts
 
 # Output as JSON
-rhino-cli contracts dart-scaffold apps/demo-fe-dart-flutterweb/generated-contracts -o json
+rhino-cli contracts dart-scaffold apps/crud-fe-dart-flutterweb/generated-contracts -o json
 ```
 
 **What it does:**
 
 - Writes `pubspec.yaml` with package metadata and dependencies
 - Creates `lib/` directory
-- Generates barrel library (`lib/demo_contracts.dart`) with:
+- Generates barrel library (`lib/crud_contracts.dart`) with:
   - Part directives for all model files in `lib/model/` (sorted alphabetically)
   - Utility functions required by generated model code
 
@@ -788,7 +788,7 @@ rhino-cli contracts dart-scaffold apps/demo-fe-dart-flutterweb/generated-contrac
 
 **Replaces:**
 
-This command replaces `apps/demo-fe-dart-flutterweb/scripts/post-codegen.sh`.
+This command replaces `apps/crud-fe-dart-flutterweb/scripts/post-codegen.sh`.
 
 ### doctor
 
@@ -834,7 +834,7 @@ rhino-cli doctor --quiet
 | volta  | `volta` | (no config file — any version OK)                         | any        |
 | node   | `node`  | `package.json` → `volta.node`                             | exact      |
 | npm    | `npm`   | `package.json` → `volta.npm`                              | exact      |
-| java   | `java`  | `apps/demo-be-java-springboot/pom.xml` → `<java.version>` | major only |
+| java   | `java`  | `apps/crud-be-java-springboot/pom.xml` → `<java.version>` | major only |
 | maven  | `mvn`   | (no config file — any version OK)                         | any        |
 | golang | `go`    | `apps/rhino-cli/go.mod` → `go` directive                  | ≥ (GTE)    |
 
@@ -1306,11 +1306,11 @@ rhino-cli say
 - Added `contracts java-clean-imports` command: removes unused, same-package, and duplicate imports
   from generated Java files (replaces `scripts/clean-generated-java-imports.sh`)
 - Added `contracts dart-scaffold` command: creates pubspec.yaml and barrel library for generated Dart
-  contracts (replaces `apps/demo-fe-dart-flutterweb/scripts/post-codegen.sh`)
-- Updated `demo-be-java-springboot`, `demo-be-java-vertx`, and `demo-fe-dart-flutterweb` codegen
+  contracts (replaces `apps/crud-fe-dart-flutterweb/scripts/post-codegen.sh`)
+- Updated `crud-be-java-springboot`, `crud-be-java-vertx`, and `crud-fe-dart-flutterweb` codegen
   targets to use rhino-cli instead of shell scripts
 - 8 new godog BDD scenarios (5 Java import cleaning + 3 Dart scaffolding)
-- Deleted `scripts/` directory and `apps/demo-fe-dart-flutterweb/scripts/` directory
+- Deleted `scripts/` directory and `apps/crud-fe-dart-flutterweb/scripts/` directory
 
 ### v0.11.0 (2026-03-05)
 
@@ -1331,14 +1331,14 @@ rhino-cli say
 - Go-specific line filtering: excludes blank, comment-only, and brace-only lines
 - Three output formats: text, JSON, markdown
 - Replaces `scripts/validate-test-coverage.py`, eliminating the Python dependency
-- Integrated into `test:quick` targets for all Go projects and `demo-fe-ts-nextjs`
+- Integrated into `test:quick` targets for all Go projects and `crud-fe-ts-nextjs`
 
 ### v0.9.0 (2026-03-05)
 
 - Absorbed `javaproject-cli` as `java validate-annotations` subcommand
 - Validates Java packages have required null-safety annotation in `package-info.java`
 - Supports text, JSON, and markdown output formats; `--annotation` flag for custom annotations
-- Integrates into `demo-be-java-springboot` `typecheck` target (replaces standalone `javaproject-cli`)
+- Integrates into `crud-be-java-springboot` `typecheck` target (replaces standalone `javaproject-cli`)
 - `javaproject-cli` standalone project removed from workspace
 
 ### v0.8.0 (2026-03-04)
@@ -1359,7 +1359,7 @@ rhino-cli say
 - Added `spec-coverage validate` command for BDD spec-to-test coverage validation
 - Walks any `<specs-dir>` for `.feature` files and checks for matching test files under `<app-dir>`
 - Closes the vitest-cucumber gap: new specs silently ignored unless matched by an integration test
-- Integrated into `demo-fe-ts-nextjs` `test:quick` target
+- Integrated into `crud-fe-ts-nextjs` `test:quick` target
 - Three output formats: text, JSON, markdown
 - ≥85% test coverage with temp dir fixtures
 

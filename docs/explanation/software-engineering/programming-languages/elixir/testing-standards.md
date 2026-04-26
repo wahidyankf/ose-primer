@@ -886,7 +886,7 @@ Testing standards are enforced through:
 
 For learning Elixir fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Elixir basics from demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Elixir basics from crud-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ---
 

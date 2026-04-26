@@ -49,7 +49,7 @@ outputs:
 > executed until those agent files exist in `.claude/agents/`. See `.claude/agents/README.md` for
 > the current agent catalog.
 
-**Purpose**: Automatically validate separation between demo style guides (docs/explanation/software-engineering/) and demo educational content (apps/demo-fs-ts-nextjs/), then apply fixes iteratively until all separation violations are resolved.
+**Purpose**: Automatically validate separation between demo style guides (docs/explanation/software-engineering/) and demo educational content (apps/crud-fs-ts-nextjs/), then apply fixes iteratively until all separation violations are resolved.
 
 **IMPORTANT - Validation Scope**:
 

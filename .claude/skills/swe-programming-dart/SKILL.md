@@ -21,7 +21,7 @@ Progressive disclosure of Dart coding standards for agents writing Dart code.
 
 **What this skill covers**: demo naming conventions, framework choices, repository-specific patterns.
 
-**What this skill does NOT cover**: Dart syntax, language fundamentals, generic patterns (those are in demo-fs-ts-nextjs).
+**What this skill does NOT cover**: Dart syntax, language fundamentals, generic patterns (those are in crud-fs-ts-nextjs).
 
 ## Quick Standards Reference
 

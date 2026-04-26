@@ -484,14 +484,14 @@ deploy-production:
 npm run build
 
 # Upload to S3
-aws s3 sync dist/ s3://demo-fs-ts-nextjs \
+aws s3 sync dist/ s3://crud-fs-ts-nextjs \
   --delete \
   --cache-control "public, max-age=31536000" \
   --exclude "index.html" \
   --exclude "*.map"
 
 # Upload index.html without cache
-aws s3 cp dist/index.html s3://demo-fs-ts-nextjs/index.html \
+aws s3 cp dist/index.html s3://crud-fs-ts-nextjs/index.html \
   --cache-control "no-cache, no-store, must-revalidate" \
   --metadata-directive REPLACE
 
@@ -509,7 +509,7 @@ aws cloudfront create-invalidation \
     "WebsiteBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": "demo-fs-ts-nextjs",
+        "BucketName": "crud-fs-ts-nextjs",
         "WebsiteConfiguration": {
           "IndexDocument": "index.html",
           "ErrorDocument": "index.html"
@@ -522,7 +522,7 @@ aws cloudfront create-invalidation \
         "DistributionConfig": {
           "Origins": [
             {
-              "DomainName": "demo-fs-ts-nextjs.s3-website-us-east-1.amazonaws.com",
+              "DomainName": "crud-fs-ts-nextjs.s3-website-us-east-1.amazonaws.com",
               "Id": "S3Origin",
               "CustomOriginConfig": {
                 "HTTPPort": 80,
@@ -603,21 +603,21 @@ volumes:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demo-fs-ts-nextjs
+  name: crud-fs-ts-nextjs
   namespace: production
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: demo-fs-ts-nextjs
+      app: crud-fs-ts-nextjs
   template:
     metadata:
       labels:
-        app: demo-fs-ts-nextjs
+        app: crud-fs-ts-nextjs
     spec:
       containers:
         - name: web
-          image: demo-fs-ts-nextjs:latest
+          image: crud-fs-ts-nextjs:latest
           ports:
             - containerPort: 80
           env:
@@ -650,12 +650,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: demo-fs-ts-nextjs
+  name: crud-fs-ts-nextjs
   namespace: production
 spec:
   type: LoadBalancer
   selector:
-    app: demo-fs-ts-nextjs
+    app: crud-fs-ts-nextjs
   ports:
     - protocol: TCP
       port: 80
@@ -678,7 +678,7 @@ data:
 replicaCount: 3
 
 image:
-  repository: demo-fs-ts-nextjs
+  repository: crud-fs-ts-nextjs
   tag: latest
   pullPolicy: Always
 

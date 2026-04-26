@@ -1,0 +1,106 @@
+{
+  "name": "crud-be-clojure-pedestal",
+  "sourceRoot": "apps/crud-be-clojure-pedestal",
+  "projectType": "application",
+  "tags": ["type:app", "platform:pedestal", "lang:clojure", "domain:demo-be"],
+  "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} cd libs/clojure-openapi-codegen && clojure -M -e '(require (quote openapi-codegen.core)) (openapi-codegen.core/generate \"../../specs/apps/crud/contracts/generated/openapi-bundled.yaml\" \"../../apps/crud-be-clojure-pedestal/generated_contracts\")'"
+      },
+      "dependsOn": ["crud-contracts:bundle", "clojure-openapi-codegen:build"],
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml"],
+      "outputs": ["{projectRoot}/generated_contracts"]
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -T:build uber",
+        "cwd": "apps/crud-be-clojure-pedestal"
+      },
+      "dependsOn": ["codegen"],
+      "outputs": ["{projectRoot}/target"]
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M -m crud-be-cjpd.main",
+        "cwd": "apps/crud-be-clojure-pedestal"
+      }
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "java -jar target/crud-be-clojure-pedestal-standalone.jar",
+        "cwd": "apps/crud-be-clojure-pedestal"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:coverage -m kaocha.runner unit bdd --plugin cloverage --lcov --cov-output coverage --cov-ns-exclude-regex 'crud-be-cjpd\\.(main|routes|server|contracts|interceptors\\..*|db\\.jdbc.*|db\\.(user|expense|attachment|token)-repo|handlers\\.test-api)'",
+          "(cd ../../ && CGO_ENABLED=0 go run apps/rhino-cli/main.go test-coverage validate apps/crud-be-clojure-pedestal/coverage/lcov.info 90)"
+        ],
+        "parallel": false,
+        "cwd": "apps/crud-be-clojure-pedestal"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*",
+        "{projectRoot}/test/**/*",
+        "{projectRoot}/tests.edn",
+        "{projectRoot}/generated_contracts/**/*",
+        "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"
+      ],
+      "outputs": ["{projectRoot}/coverage"]
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:test -m kaocha.runner unit bdd",
+        "cwd": "apps/crud-be-clojure-pedestal"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*",
+        "{projectRoot}/test/**/*",
+        "{projectRoot}/tests.edn",
+        "{projectRoot}/generated_contracts/**/*",
+        "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"
+      ]
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build",
+        "cwd": "apps/crud-be-clojure-pedestal"
+      },
+      "cache": false
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "clj-kondo --lint src test",
+        "cwd": "apps/crud-be-clojure-pedestal"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "clj-kondo --lint src",
+        "cwd": "apps/crud-be-clojure-pedestal"
+      },
+      "dependsOn": ["codegen"],
+      "cache": true
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/be/gherkin apps/crud-be-clojure-pedestal",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature", "{projectRoot}/**/*.clj"]
+    }
+  },
+  "implicitDependencies": ["clojure-openapi-codegen", "crud-contracts", "rhino-cli"]
+}

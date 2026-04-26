@@ -44,7 +44,7 @@ Playwright is written in TypeScript and provides first-class TypeScript support.
 
 **What this documentation covers**: demo Playwright standards, test organization, page object patterns, how to apply Playwright knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Playwright tutorials, basic selectors, generic patterns (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: Playwright tutorials, basic selectors, generic patterns (those are in crud-fs-ts-nextjs).
 
 **This documentation is demo-specific explanation**, not Playwright tutorials.
 

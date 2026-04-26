@@ -1,0 +1,49 @@
+name: Test - Crud BE (Rust/Axum)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  spec-coverage:
+    uses: ./.github/workflows/_reusable-backend-spec-coverage.yml
+    with:
+      backend-name: crud-be-rust-axum
+      language: rust
+  lint:
+    uses: ./.github/workflows/_reusable-backend-lint.yml
+    with:
+      backend-name: crud-be-rust-axum
+      language: rust
+
+  typecheck:
+    uses: ./.github/workflows/_reusable-backend-typecheck.yml
+    with:
+      backend-name: crud-be-rust-axum
+      language: rust
+
+  coverage:
+    uses: ./.github/workflows/_reusable-backend-coverage.yml
+    with:
+      backend-name: crud-be-rust-axum
+      language: rust
+
+  integration:
+    uses: ./.github/workflows/_reusable-backend-integration.yml
+    with:
+      backend-name: crud-be-rust-axum
+      language: rust
+      compose-file: apps/crud-be-rust-axum/docker-compose.integration.yml
+
+  e2e:
+    needs: integration
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-rust-axum
+      language: rust
+      compose-dir: infra/dev/crud-be-rust-axum
+      be-e2e-target: "test:e2e:no-test-api"
+      be-e2e-extra-env: "DATABASE_URL=postgresql://crud_be_rust_axum:crud_be_rust_axum@localhost:5432/crud_be_rust_axum"
+      health-timeout: 600

@@ -2,54 +2,100 @@
 
 ## Phase 0 — Environment setup
 
-- [ ] Install dependencies: `npm install`
-- [ ] Converge full polyglot toolchain: `npm run doctor -- --fix`
-- [ ] Verify `git status` is clean before proceeding
-- [ ] Run baseline quality check to establish pre-rename state and note any pre-existing failures:
+- [x] Install dependencies: `npm install`
+  - Date: 2026-04-26
+  - Status: Done
+  - Notes: Ran successfully; audit warnings exist but not blocking
+- [x] Converge full polyglot toolchain: `npm run doctor -- --fix`
+  - Date: 2026-04-26
+  - Status: Done
+  - Notes: 19/19 tools OK, 0 warnings, 0 missing
+- [x] Verify `git status` is clean before proceeding
+  - Date: 2026-04-26
+  - Status: Done
+  - Notes: Only delivery.md modified (checkbox ticks); all other files clean
+- [x] Run baseline quality check to establish pre-rename state and note any pre-existing failures:
       `npx nx affected -t typecheck lint test:quick`
+  - Date: 2026-04-26
+  - Status: Done
+  - Notes: No Nx projects affected pre-rename (no changes vs origin/main). Clean baseline — no pre-existing failures to note.
 
 ## Phase 1 — Rename app directories (`git mv`)
 
-- [ ] `git mv apps/demo-be-clojure-pedestal apps/crud-be-clojure-pedestal`
-- [ ] `git mv apps/demo-be-csharp-aspnetcore apps/crud-be-csharp-aspnetcore`
-- [ ] `git mv apps/demo-be-elixir-phoenix apps/crud-be-elixir-phoenix`
-- [ ] `git mv apps/demo-be-fsharp-giraffe apps/crud-be-fsharp-giraffe`
-- [ ] `git mv apps/demo-be-golang-gin apps/crud-be-golang-gin`
-- [ ] `git mv apps/demo-be-java-springboot apps/crud-be-java-springboot`
-- [ ] `git mv apps/demo-be-java-vertx apps/crud-be-java-vertx`
-- [ ] `git mv apps/demo-be-kotlin-ktor apps/crud-be-kotlin-ktor`
-- [ ] `git mv apps/demo-be-python-fastapi apps/crud-be-python-fastapi`
-- [ ] `git mv apps/demo-be-rust-axum apps/crud-be-rust-axum`
-- [ ] `git mv apps/demo-be-ts-effect apps/crud-be-ts-effect`
-- [ ] `git mv apps/demo-fe-dart-flutterweb apps/crud-fe-dart-flutterweb`
-- [ ] `git mv apps/demo-fe-ts-nextjs apps/crud-fe-ts-nextjs`
-- [ ] `git mv apps/demo-fe-ts-tanstack-start apps/crud-fe-ts-tanstack-start`
-- [ ] `git mv apps/demo-fs-ts-nextjs apps/crud-fs-ts-nextjs`
-- [ ] `git mv apps/demo-be-e2e apps/crud-be-e2e`
-- [ ] `git mv apps/demo-fe-e2e apps/crud-fe-e2e`
+- [x] `git mv apps/demo-be-clojure-pedestal apps/crud-be-clojure-pedestal`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-be-csharp-aspnetcore apps/crud-be-csharp-aspnetcore`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-be-elixir-phoenix apps/crud-be-elixir-phoenix`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-be-fsharp-giraffe apps/crud-be-fsharp-giraffe`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-be-golang-gin apps/crud-be-golang-gin`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-be-java-springboot apps/crud-be-java-springboot`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-be-java-vertx apps/crud-be-java-vertx`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-be-kotlin-ktor apps/crud-be-kotlin-ktor`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-be-python-fastapi apps/crud-be-python-fastapi`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-be-rust-axum apps/crud-be-rust-axum`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-be-ts-effect apps/crud-be-ts-effect`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-fe-dart-flutterweb apps/crud-fe-dart-flutterweb`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-fe-ts-nextjs apps/crud-fe-ts-nextjs`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-fe-ts-tanstack-start apps/crud-fe-ts-tanstack-start`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-fs-ts-nextjs apps/crud-fs-ts-nextjs`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-be-e2e apps/crud-be-e2e`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv apps/demo-fe-e2e apps/crud-fe-e2e`
+  - Date: 2026-04-26; Status: Done
 
 ## Phase 2 — Rename infra directories (`git mv`)
 
-- [ ] `git mv infra/dev/demo-be-clojure-pedestal infra/dev/crud-be-clojure-pedestal` (if exists)
-- [ ] `git mv infra/dev/demo-be-csharp-aspnetcore infra/dev/crud-be-csharp-aspnetcore` (if exists)
-- [ ] `git mv infra/dev/demo-be-elixir-phoenix infra/dev/crud-be-elixir-phoenix` (if exists)
-- [ ] `git mv infra/dev/demo-be-fsharp-giraffe infra/dev/crud-be-fsharp-giraffe` (if exists)
-- [ ] `git mv infra/dev/demo-be-golang-gin infra/dev/crud-be-golang-gin` (if exists)
-- [ ] `git mv infra/dev/demo-be-java-springboot infra/dev/crud-be-java-springboot` (if exists)
-- [ ] `git mv infra/dev/demo-be-java-vertx infra/dev/crud-be-java-vertx` (if exists)
-- [ ] `git mv infra/dev/demo-be-kotlin-ktor infra/dev/crud-be-kotlin-ktor` (if exists)
-- [ ] `git mv infra/dev/demo-be-python-fastapi infra/dev/crud-be-python-fastapi` (if exists)
-- [ ] `git mv infra/dev/demo-be-rust-axum infra/dev/crud-be-rust-axum` (if exists)
-- [ ] `git mv infra/dev/demo-be-ts-effect infra/dev/crud-be-ts-effect` (if exists)
-- [ ] `git mv infra/dev/demo-fe-ts-nextjs infra/dev/crud-fe-ts-nextjs` (if exists)
-- [ ] `git mv infra/dev/demo-fe-ts-tanstack-start infra/dev/crud-fe-ts-tanstack-start` (if exists)
-- [ ] `git mv infra/dev/demo-fe-dart-flutterweb infra/dev/crud-fe-dart-flutterweb` (if exists)
-- [ ] `git mv infra/dev/demo-fs-ts-nextjs infra/dev/crud-fs-ts-nextjs` (if exists)
+- [x] `git mv infra/dev/demo-be-clojure-pedestal infra/dev/crud-be-clojure-pedestal` (if exists)
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv infra/dev/demo-be-csharp-aspnetcore infra/dev/crud-be-csharp-aspnetcore` (if exists)
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv infra/dev/demo-be-elixir-phoenix infra/dev/crud-be-elixir-phoenix` (if exists)
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv infra/dev/demo-be-fsharp-giraffe infra/dev/crud-be-fsharp-giraffe` (if exists)
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv infra/dev/demo-be-golang-gin infra/dev/crud-be-golang-gin` (if exists)
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv infra/dev/demo-be-java-springboot infra/dev/crud-be-java-springboot` (if exists)
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv infra/dev/demo-be-java-vertx infra/dev/crud-be-java-vertx` (if exists)
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv infra/dev/demo-be-kotlin-ktor infra/dev/crud-be-kotlin-ktor` (if exists)
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv infra/dev/demo-be-python-fastapi infra/dev/crud-be-python-fastapi` (if exists)
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv infra/dev/demo-be-rust-axum infra/dev/crud-be-rust-axum` (if exists)
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv infra/dev/demo-be-ts-effect infra/dev/crud-be-ts-effect` (if exists)
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv infra/dev/demo-fe-ts-nextjs infra/dev/crud-fe-ts-nextjs` (if exists)
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv infra/dev/demo-fe-ts-tanstack-start infra/dev/crud-fe-ts-tanstack-start` (if exists)
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv infra/dev/demo-fe-dart-flutterweb infra/dev/crud-fe-dart-flutterweb` (if exists)
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv infra/dev/demo-fs-ts-nextjs infra/dev/crud-fs-ts-nextjs` (if exists)
+  - Date: 2026-04-26; Status: Done
 
 ## Phase 3 — Rename specs tree (`git mv`)
 
-- [ ] `git mv specs/apps/demo specs/apps/crud`
-- [ ] Verify `specs/apps/crud/contracts/project.json` now exists (was `specs/apps/demo/contracts/project.json`)
+- [x] `git mv specs/apps/demo specs/apps/crud`
+  - Date: 2026-04-26; Status: Done
+- [x] Verify `specs/apps/crud/contracts/project.json` now exists (was `specs/apps/demo/contracts/project.json`)
+  - Date: 2026-04-26; Status: Done — file confirmed at specs/apps/crud/contracts/project.json
 
 ## Phase 4 — Bulk string replacement (JSON / YAML / MD)
 
@@ -58,7 +104,7 @@ accidental over-replacement.
 
 ### 4a — App name prefixes in all JSON/YAML/MD (excludes plans/done, generated-reports)
 
-- [ ] Run:
+- [x] Run:
 
   ```bash
   find . \
@@ -72,9 +118,11 @@ accidental over-replacement.
       -e 's/demo-fs-/crud-fs-/g'
   ```
 
+  - Date: 2026-04-26; Status: Done
+
 ### 4b — Docker DB credential prefix (`demo_be_` → `crud_be_`)
 
-- [ ] Run:
+- [x] Run:
 
   ```bash
   find . \
@@ -85,9 +133,11 @@ accidental over-replacement.
     | xargs sed -i '' 's/demo_be_/crud_be_/g'
   ```
 
+  - Date: 2026-04-26; Status: Done
+
 ### 4c — Nx project name string `"demo-contracts"` in JSON
 
-- [ ] Run:
+- [x] Run:
 
   ```bash
   find . \
@@ -98,9 +148,11 @@ accidental over-replacement.
     | xargs sed -i '' 's/"demo-contracts"/"crud-contracts"/g'
   ```
 
+  - Date: 2026-04-26; Status: Done
+
 ### 4d — Spec path prefix `specs/apps/demo/` in all JSON/YAML/MD
 
-- [ ] Run:
+- [x] Run:
 
   ```bash
   find . \
@@ -111,6 +163,8 @@ accidental over-replacement.
     | xargs sed -i '' 's|specs/apps/demo/|specs/apps/crud/|g'
   ```
 
+  - Date: 2026-04-26; Status: Done
+
 ## Phase 5 — Source-language app config files
 
 > Prerequisite: Phase 1 (directory renames) must be complete. Apps are already at `apps/crud-be-*` and `apps/crud-fe-dart-flutterweb`.
@@ -118,7 +172,7 @@ accidental over-replacement.
 Each backend stores its DB connection config in a language-specific file. Sweep all
 source file types inside the renamed backend app directories:
 
-- [ ] Run:
+- [x] Run:
 
   ```bash
   find apps/crud-be-* -type f \
@@ -132,7 +186,7 @@ source file types inside the renamed backend app directories:
     | xargs sed -i '' 's/demo_be_/crud_be_/g'
   ```
 
-- [ ] Sweep Dart frontend for underscore-form package names:
+- [x] Sweep Dart frontend for underscore-form package names:
 
   ```bash
   # pubspec.yaml: demo_fe_dart_flutterweb → crud_fe_dart_flutterweb, demo_contracts → crud_contracts
@@ -140,14 +194,14 @@ source file types inside the renamed backend app directories:
     apps/crud-fe-dart-flutterweb/pubspec.yaml
   ```
 
-- [ ] Sweep `project.json` codegen command for `pubName=demo_contracts`:
+- [x] Sweep `project.json` codegen command for `pubName=demo_contracts`:
 
   ```bash
   sed -i '' 's/pubName=demo_contracts/pubName=crud_contracts/g' \
     apps/crud-fe-dart-flutterweb/project.json
   ```
 
-- [ ] Verify no `demo_be_` remains in backend source configs:
+- [x] Verify no `demo_be_` remains in backend source configs: — ZERO matches confirmed
 
   ```bash
   grep -r "demo_be_" apps/crud-be-* \
@@ -158,165 +212,249 @@ source file types inside the renamed backend app directories:
     --include="*.conf" --include="*.edn"
   ```
 
-- [ ] Verify no underscore-form `demo_` names remain in Dart frontend:
+- [x] Verify no underscore-form `demo_` names remain in Dart frontend:
       `grep -r "demo_fe_\|pubName=demo_contracts" apps/crud-fe-dart-flutterweb/ --include="pubspec.yaml" --include="*.json"`
 
 ## Phase 6 — Verify Nx project.json files (manual spot-check)
 
-- [ ] Open `apps/crud-be-golang-gin/project.json` — confirm `"name": "crud-be-golang-gin"`, `dependsOn: ["crud-contracts:bundle"]`, and all path strings use `crud-`
-- [ ] Open `apps/crud-contracts/project.json` (if moved) OR `specs/apps/crud/contracts/project.json` — confirm `"name": "crud-contracts"` and `"root": "specs/apps/crud/contracts"`
-- [ ] Open `apps/crud-be-e2e/project.json` — confirm all 11 `implicitDependencies` list `crud-*` names
-- [ ] Open `apps/crud-fe-e2e/project.json` — confirm all 3 `implicitDependencies` list `crud-*` names
-- [ ] Run stale-name check: `grep -r '"demo-' apps/ specs/ --include="*.json" | grep -v node_modules | grep -v ".git/"` → expect zero results
+- [x] Open `apps/crud-be-golang-gin/project.json` — confirm `"name": "crud-be-golang-gin"`, `dependsOn: ["crud-contracts:bundle"]`, and all path strings use `crud-`
+  - Date: 2026-04-26; Status: Done — fixed stale `demo-contracts:bundle` refs in all project.json files via additional targeted sed
+- [x] Open `apps/crud-contracts/project.json` (if moved) OR `specs/apps/crud/contracts/project.json` — confirm `"name": "crud-contracts"` and `"root": "specs/apps/crud/contracts"`
+  - Date: 2026-04-26; Status: Done — confirmed name=crud-contracts, root=specs/apps/crud/contracts
+- [x] Open `apps/crud-be-e2e/project.json` — confirm all 11 `implicitDependencies` list `crud-*` names
+  - Date: 2026-04-26; Status: Done — 11 crud-be-_+ crud-contracts, all crud-_
+- [x] Open `apps/crud-fe-e2e/project.json` — confirm all 3 `implicitDependencies` list `crud-*` names
+  - Date: 2026-04-26; Status: Done — 3 crud-fe-_+ crud-contracts, all crud-_
+- [x] Run stale-name check: `grep -r '"demo-' apps/ specs/ --include="*.json" | grep -v node_modules | grep -v ".git/"` → expect zero results
+  - Date: 2026-04-26; Status: Done — zero results confirmed
 
 ## Phase 7 — Root `package.json` npm scripts
 
-- [ ] Open root `package.json`, verify all `dev:demo-*` scripts renamed to `dev:crud-*`
-- [ ] Verify `demo-be:dev`, `demo-be:dev:restart`, `demo-be:clean` renamed to `crud-be:*`
-- [ ] If bulk sweep missed any (check): `grep "demo-" package.json` → expect zero results
+- [x] Open root `package.json`, verify all `dev:demo-*` scripts renamed to `dev:crud-*`
+  - Date: 2026-04-26; Status: Done — bulk sweep handled dev:demo-_→ dev:crud-_ correctly
+- [x] Verify `demo-be:dev`, `demo-be:dev:restart`, `demo-be:clean` renamed to `crud-be:*`
+  - Date: 2026-04-26; Status: Done — fixed with targeted sed (colon-form missed by bulk sweep)
+- [x] If bulk sweep missed any (check): `grep "demo-" package.json` → expect zero results
+  - Date: 2026-04-26; Status: Done — zero results confirmed
 
 ## Phase 8 — OpenAPI contract content
 
-- [ ] Open `specs/apps/crud/contracts/openapi.yaml`
-  - [ ] Update `info.title` if it reads "demo API" → "crud API"
-  - [ ] Update `info.description` if it references "demo application" → "crud application"
-- [ ] Open `specs/apps/crud/contracts/redocly.yaml` — audit for `demo` strings, update if present
-- [ ] Open bundled outputs `specs/apps/crud/contracts/generated/openapi-bundled.json` and `openapi-bundled.yaml` — these are generated; delete stale bundles so next `lint` target regenerates them:
-  - [ ] `rm -f specs/apps/crud/contracts/generated/openapi-bundled.json`
-  - [ ] `rm -f specs/apps/crud/contracts/generated/openapi-bundled.yaml`
+- [x] Open `specs/apps/crud/contracts/openapi.yaml`
+  - [x] Update `info.title` if it reads "demo API" → "crud API"
+    - Date: 2026-04-26; Status: Done — title: crud API
+  - [x] Update `info.description` if it references "demo application" → "crud application"
+    - Date: 2026-04-26; Status: Done — description updated to crud expense tracker crud application
+- [x] Open `specs/apps/crud/contracts/redocly.yaml` — audit for `demo` strings, update if present
+  - Date: 2026-04-26; Status: Done — renamed apis.demo: → apis.crud:
+- [x] Open bundled outputs `specs/apps/crud/contracts/generated/openapi-bundled.json` and `openapi-bundled.yaml` — these are generated; delete stale bundles so next `lint` target regenerates them:
+  - [x] `rm -f specs/apps/crud/contracts/generated/openapi-bundled.json`
+  - [x] `rm -f specs/apps/crud/contracts/generated/openapi-bundled.yaml`
+    - Date: 2026-04-26; Status: Done
 
 ## Phase 9 — Gherkin feature files
 
-- [ ] `grep -r "demo-" specs/apps/crud/be/gherkin/` — list any matches
-- [ ] For each match: open file, replace `demo-` with `crud-` in scenario text or step definitions
-- [ ] `grep -r "demo-" specs/apps/crud/fe/gherkin/` — list any matches
-- [ ] For each match: open file, replace `demo-` with `crud-` in scenario text or step definitions
-- [ ] Verify: `grep -r "demo" specs/apps/crud/` → expect zero results (or only legitimate English words like "demonstrate")
+- [x] `grep -r "demo-" specs/apps/crud/be/gherkin/` — list any matches
+  - Date: 2026-04-26; Status: Done — fixed README and .gitignore; .feature.cs files are gitignored (generated)
+- [x] For each match: open file, replace `demo-` with `crud-` in scenario text or step definitions
+  - Date: 2026-04-26; Status: Done
+- [x] `grep -r "demo-" specs/apps/crud/fe/gherkin/` — list any matches
+  - Date: 2026-04-26; Status: Done — fixed README files
+- [x] For each match: open file, replace `demo-` with `crud-` in scenario text or step definitions
+  - Date: 2026-04-26; Status: Done
+- [x] Verify: `grep -r "demo" specs/apps/crud/` → expect zero results (or only legitimate English words like "demonstrate")
+  - Date: 2026-04-26; Status: Done — zero non-generated, non-English-word demo refs
 
 ## Phase 10 — C4 diagram files
 
-- [ ] Open `specs/apps/crud/c4/context.md` — replace any `demo-` app references
-- [ ] Open `specs/apps/crud/c4/container.md` — replace any `demo-` app references
-- [ ] Open `specs/apps/crud/c4/component-be.md` — replace any `demo-` app references
-- [ ] Open `specs/apps/crud/c4/component-fe.md` — replace any `demo-` app references
+- [x] Open `specs/apps/crud/c4/context.md` — replace any `demo-` app references
+  - Date: 2026-04-26; Status: Done — clean (bulk sweep + Phase 9 sweep covered)
+- [x] Open `specs/apps/crud/c4/container.md` — replace any `demo-` app references
+  - Date: 2026-04-26; Status: Done — clean
+- [x] Open `specs/apps/crud/c4/component-be.md` — replace any `demo-` app references
+  - Date: 2026-04-26; Status: Done — clean
+- [x] Open `specs/apps/crud/c4/component-fe.md` — replace any `demo-` app references
+  - Date: 2026-04-26; Status: Done — clean
 
 ## Phase 11 — Specs README files
 
-- [ ] Open `specs/apps/crud/README.md` — replace `demo-` references
-- [ ] Open `specs/apps/crud/be/README.md` — replace `demo-` references
-- [ ] Open `specs/apps/crud/fe/README.md` — replace `demo-` references
-- [ ] Open `specs/apps/crud/be/gherkin/README.md` — replace `demo-` references
-- [ ] Open `specs/apps/crud/fe/gherkin/README.md` — replace `demo-` references
-- [ ] Open `specs/apps/crud/c4/README.md` — replace `demo-` references
-- [ ] Open `specs/apps/crud/contracts/README.md` — replace `demo-` references
+- [x] Open `specs/apps/crud/README.md` — replace `demo-` references
+  - Date: 2026-04-26; Status: Done — cleaned by Phase 9 comprehensive sweep
+- [x] Open `specs/apps/crud/be/README.md` — replace `demo-` references
+  - Date: 2026-04-26; Status: Done — cleaned by Phase 9 sweep
+- [x] Open `specs/apps/crud/fe/README.md` — replace `demo-` references
+  - Date: 2026-04-26; Status: Done — cleaned by Phase 9 sweep
+- [x] Open `specs/apps/crud/be/gherkin/README.md` — replace `demo-` references
+  - Date: 2026-04-26; Status: Done — cleaned by Phase 9 sweep
+- [x] Open `specs/apps/crud/fe/gherkin/README.md` — replace `demo-` references
+  - Date: 2026-04-26; Status: Done — cleaned by Phase 9 sweep
+- [x] Open `specs/apps/crud/c4/README.md` — replace `demo-` references
+  - Date: 2026-04-26; Status: Done — clean
+- [x] Open `specs/apps/crud/contracts/README.md` — replace `demo-` references
+  - Date: 2026-04-26; Status: Done — cleaned by Phase 9 sweep
 
 ## Phase 12 — Governance workflows
 
-- [ ] `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts\|specs/apps/demo" governance/workflows/` — list all matches
-- [ ] For each matched file: open, replace stale references with `crud-*` equivalents
-- [ ] Verify: `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" governance/workflows/` → expect zero results
+- [x] `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts\|specs/apps/demo" governance/workflows/` — list all matches
+  - Date: 2026-04-26; Status: Done — zero matches (bulk sweep already covered)
+- [x] For each matched file: open, replace stale references with `crud-*` equivalents
+  - Date: 2026-04-26; Status: Done — no files needed fixing
+- [x] Verify: `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" governance/workflows/` → expect zero results
+  - Date: 2026-04-26; Status: Done — zero results confirmed
 
 ## Phase 13 — Governance conventions
 
-- [ ] `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts\|specs/apps/demo" governance/conventions/` — list all matches
-- [ ] For each matched file: open, replace stale references
-- [ ] Verify: `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" governance/conventions/` → expect zero results
+- [x] `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts\|specs/apps/demo" governance/conventions/` — list all matches
+  - Date: 2026-04-26; Status: Done — zero matches (bulk sweep covered)
+- [x] For each matched file: open, replace stale references
+  - Date: 2026-04-26; Status: Done — no files needed fixing
+- [x] Verify: `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" governance/conventions/` → expect zero results
+  - Date: 2026-04-26; Status: Done — zero results confirmed
 
 ## Phase 14 — Governance development docs and principles
 
-- [ ] `grep -rl "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" governance/development/ governance/principles/ governance/vision/` — list matches
-- [ ] For each matched file: open, replace stale references
+- [x] `grep -rl "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" governance/development/ governance/principles/ governance/vision/` — list matches
+  - Date: 2026-04-26; Status: Done — found governance/development/quality/specs-application-sync.md
+- [x] For each matched file: open, replace stale references
+  - Date: 2026-04-26; Status: Done — fixed specs-application-sync.md (demo-contracts → crud-contracts)
 
 ## Phase 15 — `docs/` tree
 
-- [ ] `grep -rl "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts\|specs/apps/demo" docs/` — list all matches
-- [ ] For each matched file: open, replace stale `demo-*` app names with `crud-*`
-- [ ] Verify: `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" docs/` → expect zero results
+- [x] `grep -rl "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts\|specs/apps/demo" docs/` — list all matches
+  - Date: 2026-04-26; Status: Done — found 3 files
+- [x] For each matched file: open, replace stale `demo-*` app names with `crud-*`
+  - Date: 2026-04-26; Status: Done — fixed add-new-demo-backend.md, update-api-contract.md, project-dependency-graph.md
+- [x] Verify: `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" docs/` → expect zero results
+  - Date: 2026-04-26; Status: Done — zero results confirmed
 
 ## Phase 16 — Root workspace documentation files
 
-- [ ] Open `CLAUDE.md`:
-  - [ ] Replace all `demo-be-*` app names in the Tech Stack section
-  - [ ] Replace all `demo-fe-*` and `demo-fs-*` app names
-  - [ ] Replace `demo-contracts` references
-  - [ ] Replace `specs/apps/demo/` path references
-  - [ ] Replace npm script examples (`dev:demo-*` → `dev:crud-*`)
-  - [ ] Replace coverage table project names
-  - [ ] Replace `demo-be-e2e` and `demo-fe-e2e` references
-  - [ ] Replace `test:integration` caching table app names
-  - [ ] Verify: `grep "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" CLAUDE.md` → expect zero results
-- [ ] Open root `README.md`:
-  - [ ] Replace all `demo-*` app references
-  - [ ] Verify: `grep "demo-be-\|demo-fe-\|demo-fs-" README.md` → expect zero results
-- [ ] Open `AGENTS.md`:
-  - [ ] `grep "demo-" AGENTS.md` — if any matches, update them
-- [ ] Open `LICENSING-NOTICE.md`:
-  - [ ] `grep "demo-" LICENSING-NOTICE.md` — update if present
+- [x] Open `CLAUDE.md`:
+  - [x] Replace all `demo-be-*` app names in the Tech Stack section
+  - [x] Replace all `demo-fe-*` and `demo-fs-*` app names
+  - [x] Replace `demo-contracts` references
+  - [x] Replace `specs/apps/demo/` path references
+  - [x] Replace npm script examples (`dev:demo-*` → `dev:crud-*`)
+  - [x] Replace coverage table project names
+  - [x] Replace `demo-be-e2e` and `demo-fe-e2e` references
+  - [x] Replace `test:integration` caching table app names
+  - [x] Verify: `grep "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" CLAUDE.md` → expect zero results
+    - Date: 2026-04-26; Status: Done — zero results confirmed
+- [x] Open root `README.md`:
+  - [x] Replace all `demo-*` app references
+  - [x] Verify: `grep "demo-be-\|demo-fe-\|demo-fs-" README.md` → expect zero results
+    - Date: 2026-04-26; Status: Done — zero results confirmed
+- [x] Open `AGENTS.md`:
+  - [x] `grep "demo-" AGENTS.md` — if any matches, update them
+    - Date: 2026-04-26; Status: Done — zero matches; no changes needed
+- [x] Open `LICENSING-NOTICE.md`:
+  - [x] `grep "demo-" LICENSING-NOTICE.md` — update if present
+    - Date: 2026-04-26; Status: Done — zero matches; no changes needed
 
 ## Phase 17 — Active plans (backlog, ideas)
 
-- [ ] `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" plans/ideas.md plans/backlog/` — list matches
-- [ ] For each match in active plans: open, replace `demo-*` with `crud-*`
-- [ ] Do **not** modify `plans/done/` or `generated-reports/` (historical records)
+- [x] `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" plans/ideas.md plans/backlog/` — list matches
+  - Date: 2026-04-26; Status: Done — zero matches; no changes needed
+- [x] For each match in active plans: open, replace `demo-*` with `crud-*`
+  - Date: 2026-04-26; Status: Done — no files needed fixing
+- [x] Do **not** modify `plans/done/` or `generated-reports/` (historical records)
+  - Date: 2026-04-26; Status: Done — did not touch
 
 ## Phase 18 — `.claude/` agent and skill files
 
-- [ ] `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" .claude/` — list matches
-- [ ] For each match: open agent/skill file, replace stale references
-- [ ] `.opencode/` mirrors will be regenerated by sync; skip manual edits there
+- [x] `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" .claude/` — list matches
+  - Date: 2026-04-26; Status: Done — zero matches; no changes needed
+- [x] For each match: open agent/skill file, replace stale references
+  - Date: 2026-04-26; Status: Done — no files needed fixing
+- [x] `.opencode/` mirrors will be regenerated by sync; skip manual edits there
+  - Date: 2026-04-26; Status: Done — skipped as instructed
 
 ## Phase 18b — GitHub Actions workflow file renames
 
 Rename all 15 per-app test workflow files and update their internal references:
 
-- [ ] `git mv .github/workflows/test-demo-be-clojure-pedestal.yml .github/workflows/test-crud-be-clojure-pedestal.yml`
-- [ ] `git mv .github/workflows/test-demo-be-csharp-aspnetcore.yml .github/workflows/test-crud-be-csharp-aspnetcore.yml`
-- [ ] `git mv .github/workflows/test-demo-be-elixir-phoenix.yml .github/workflows/test-crud-be-elixir-phoenix.yml`
-- [ ] `git mv .github/workflows/test-demo-be-fsharp-giraffe.yml .github/workflows/test-crud-be-fsharp-giraffe.yml`
-- [ ] `git mv .github/workflows/test-demo-be-golang-gin.yml .github/workflows/test-crud-be-golang-gin.yml`
-- [ ] `git mv .github/workflows/test-demo-be-java-springboot.yml .github/workflows/test-crud-be-java-springboot.yml`
-- [ ] `git mv .github/workflows/test-demo-be-java-vertx.yml .github/workflows/test-crud-be-java-vertx.yml`
-- [ ] `git mv .github/workflows/test-demo-be-kotlin-ktor.yml .github/workflows/test-crud-be-kotlin-ktor.yml`
-- [ ] `git mv .github/workflows/test-demo-be-python-fastapi.yml .github/workflows/test-crud-be-python-fastapi.yml`
-- [ ] `git mv .github/workflows/test-demo-be-rust-axum.yml .github/workflows/test-crud-be-rust-axum.yml`
-- [ ] `git mv .github/workflows/test-demo-be-ts-effect.yml .github/workflows/test-crud-be-ts-effect.yml`
-- [ ] `git mv .github/workflows/test-demo-fe-ts-nextjs.yml .github/workflows/test-crud-fe-ts-nextjs.yml`
-- [ ] `git mv .github/workflows/test-demo-fe-ts-tanstack-start.yml .github/workflows/test-crud-fe-ts-tanstack-start.yml`
-- [ ] `git mv .github/workflows/test-demo-fe-dart-flutterweb.yml .github/workflows/test-crud-fe-dart-flutterweb.yml`
-- [ ] `git mv .github/workflows/test-demo-fs-ts-nextjs.yml .github/workflows/test-crud-fs-ts-nextjs.yml`
+- [x] `git mv .github/workflows/test-demo-be-clojure-pedestal.yml .github/workflows/test-crud-be-clojure-pedestal.yml`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv .github/workflows/test-demo-be-csharp-aspnetcore.yml .github/workflows/test-crud-be-csharp-aspnetcore.yml`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv .github/workflows/test-demo-be-elixir-phoenix.yml .github/workflows/test-crud-be-elixir-phoenix.yml`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv .github/workflows/test-demo-be-fsharp-giraffe.yml .github/workflows/test-crud-be-fsharp-giraffe.yml`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv .github/workflows/test-demo-be-golang-gin.yml .github/workflows/test-crud-be-golang-gin.yml`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv .github/workflows/test-demo-be-java-springboot.yml .github/workflows/test-crud-be-java-springboot.yml`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv .github/workflows/test-demo-be-java-vertx.yml .github/workflows/test-crud-be-java-vertx.yml`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv .github/workflows/test-demo-be-kotlin-ktor.yml .github/workflows/test-crud-be-kotlin-ktor.yml`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv .github/workflows/test-demo-be-python-fastapi.yml .github/workflows/test-crud-be-python-fastapi.yml`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv .github/workflows/test-demo-be-rust-axum.yml .github/workflows/test-crud-be-rust-axum.yml`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv .github/workflows/test-demo-be-ts-effect.yml .github/workflows/test-crud-be-ts-effect.yml`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv .github/workflows/test-demo-fe-ts-nextjs.yml .github/workflows/test-crud-fe-ts-nextjs.yml`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv .github/workflows/test-demo-fe-ts-tanstack-start.yml .github/workflows/test-crud-fe-ts-tanstack-start.yml`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv .github/workflows/test-demo-fe-dart-flutterweb.yml .github/workflows/test-crud-fe-dart-flutterweb.yml`
+  - Date: 2026-04-26; Status: Done
+- [x] `git mv .github/workflows/test-demo-fs-ts-nextjs.yml .github/workflows/test-crud-fs-ts-nextjs.yml`
+  - Date: 2026-04-26; Status: Done
 - [ ] Update `name:` fields and `backend-name:` / `frontend-name:` with-block strings in each renamed workflow (Phase 4a bulk sweep already updated internal `demo-be-` → `crud-be-` strings in `.yml` files; verify with spot-check):
-  - [ ] Open one renamed workflow (e.g., `test-crud-be-golang-gin.yml`) and confirm `backend-name: crud-be-golang-gin` and workflow `name:` reads `crud-`
-  - [ ] `grep -r "demo-be-\|demo-fe-\|demo-fs-" .github/workflows/` → expect zero results
-- [ ] Update reusable workflow files for any remaining hardcoded `demo-` references:
-  - [ ] `grep "demo-" .github/workflows/_reusable-backend-lint.yml` — fix any matches
-  - [ ] `grep "demo-" .github/workflows/_reusable-backend-typecheck.yml` — fix any matches
-  - [ ] `grep "demo-" .github/workflows/_reusable-frontend-e2e.yml` — fix any matches (e.g., `infra/dev/demo-be-golang-gin`, `demo-be-golang-gin:codegen` default values)
-- [ ] Verify: `ls .github/workflows/ | grep "test-demo-"` → expect zero results
+  - [x] Open one renamed workflow (e.g., `test-crud-be-golang-gin.yml`) and confirm `backend-name: crud-be-golang-gin` and workflow `name:` reads `crud-`
+    - Date: 2026-04-26; Status: Done — also fixed name: "Test - Demo BE/FE/FS" → "Test - Crud BE/FE/FS" across all 15 files
+  - [x] `grep -r "demo-be-\|demo-fe-\|demo-fs-" .github/workflows/` → expect zero results
+    - Date: 2026-04-26; Status: Done — zero results confirmed
+- [x] Update reusable workflow files for any remaining hardcoded `demo-` references:
+  - [x] `grep "demo-" .github/workflows/_reusable-backend-lint.yml` — fix any matches
+    - Date: 2026-04-26; Status: Done — zero matches
+  - [x] `grep "demo-" .github/workflows/_reusable-backend-typecheck.yml` — fix any matches
+    - Date: 2026-04-26; Status: Done — zero matches
+  - [x] `grep "demo-" .github/workflows/_reusable-frontend-e2e.yml` — fix any matches
+    - Date: 2026-04-26; Status: Done — zero matches
+- [x] Verify: `ls .github/workflows/ | grep "test-demo-"` → expect zero results
+  - Date: 2026-04-26; Status: Done — zero results confirmed
 
 ## Phase 19 — Final stale-reference audit
 
 Run all checks below; each must return zero results before proceeding to validation:
 
-- [ ] `grep -r "demo-be-" . --include="*.json" --include="*.yaml" --include="*.yml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "generated-reports/" | grep -v "plans/in-progress/"`
-- [ ] `grep -r "demo-fe-" . --include="*.json" --include="*.yaml" --include="*.yml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "generated-reports/" | grep -v "plans/in-progress/"`
-- [ ] `grep -r "demo-fs-" . --include="*.json" --include="*.yaml" --include="*.yml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "generated-reports/" | grep -v "plans/in-progress/"`
-- [ ] `grep -r '"demo-contracts"' . --include="*.json" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "plans/in-progress/"`
-- [ ] `grep -r 'specs/apps/demo/' . --include="*.json" --include="*.yaml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "plans/in-progress/"`
-- [ ] `grep -r 'apps/demo-' . --include="*.json" --include="*.yaml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "plans/in-progress/"`
-- [ ] `grep -r 'demo_be_' . --include="*.json" --include="*.yaml" --include="*.yml" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "plans/in-progress/"`
+- [x] `grep -r "demo-be-" . --include="*.json" --include="*.yaml" --include="*.yml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "generated-reports/" | grep -v "plans/in-progress/"`
+  - Date: 2026-04-26; Status: Done — ZERO results
+- [x] `grep -r "demo-fe-" . --include="*.json" --include="*.yaml" --include="*.yml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "generated-reports/" | grep -v "plans/in-progress/"`
+  - Date: 2026-04-26; Status: Done — ZERO results
+- [x] `grep -r "demo-fs-" . --include="*.json" --include="*.yaml" --include="*.yml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "generated-reports/" | grep -v "plans/in-progress/"`
+  - Date: 2026-04-26; Status: Done — ZERO results
+- [x] `grep -r '"demo-contracts"' . --include="*.json" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "plans/in-progress/"`
+  - Date: 2026-04-26; Status: Done — ZERO results
+- [x] `grep -r 'specs/apps/demo/' . --include="*.json" --include="*.yaml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "plans/in-progress/"`
+  - Date: 2026-04-26; Status: Done — ZERO results (generated-reports/ are historical, excluded)
+- [x] `grep -r 'apps/demo-' . --include="*.json" --include="*.yaml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "plans/in-progress/"`
+  - Date: 2026-04-26; Status: Done — .vscode/settings.json has `apps/demo-app` glob (different pattern, not a CRUD app ref); fixed agent/governance refs
+- [x] `grep -r 'demo_be_' . --include="*.json" --include="*.yaml" --include="*.yml" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "plans/in-progress/"`
+  - Date: 2026-04-26; Status: Done — ZERO results in YAML/YML; .clj-kondo cache JSON files are generated caches (not source)
 
 ## Phase 20 — Sync `.opencode/`
 
-- [ ] `npm run sync:claude-to-opencode`
-- [ ] Verify `npm run sync:claude-to-opencode` exits 0
+- [x] `npm run sync:claude-to-opencode`
+  - Date: 2026-04-26; Status: Done — also fixed go.work which still referenced ./apps/demo-be-golang-gin
+- [x] Verify `npm run sync:claude-to-opencode` exits 0
+  - Date: 2026-04-26; Status: Done — 45 agents converted, 32 skills copied, SUCCESS
 
 ## Phase 21 — Nx workspace validation
 
-- [ ] `npm run doctor -- --fix` — re-converge polyglot toolchain before quality gates (Phases 1-20 may span hours or days; toolchain state may have drifted)
-- [ ] `npm install` — ensure workspace loads with updated project names
-- [ ] `npx nx graph --file=/tmp/nx-graph-output.json` — verify no broken references; confirm 18 `crud-*` projects appear, zero `demo-*`
-- [ ] `npx nx run-many -t codegen --projects=crud-be-clojure-pedestal,crud-be-csharp-aspnetcore,crud-be-elixir-phoenix,crud-be-fsharp-giraffe,crud-be-golang-gin,crud-be-java-springboot,crud-be-java-vertx,crud-be-kotlin-ktor,crud-be-python-fastapi,crud-be-rust-axum,crud-be-ts-effect,crud-fe-ts-nextjs,crud-fe-ts-tanstack-start,crud-fe-dart-flutterweb,crud-fs-ts-nextjs` — regenerate all contracts
-- [ ] Verify `generated-contracts/` directories exist under each `apps/crud-*/`
+- [x] `npm run doctor -- --fix` — re-converge polyglot toolchain before quality gates (Phases 1-20 may span hours or days; toolchain state may have drifted)
+  - Date: 2026-04-26; Status: Done — 19/19 tools OK
+- [x] `npm install` — ensure workspace loads with updated project names
+  - Date: 2026-04-26; Status: Done — installed successfully
+- [x] `npx nx graph --file=/tmp/nx-graph-output.json` — verify no broken references; confirm 18 `crud-*` projects appear, zero `demo-*`
+  - Date: 2026-04-26; Status: Done — 18 crud-_projects, 0 demo-_ projects confirmed
+- [x] `npx nx run-many -t codegen --projects=crud-be-clojure-pedestal,...,crud-fs-ts-nextjs` — regenerate all contracts
+  - Date: 2026-04-26; Status: Done — SUCCESS for 15 projects; also fixed dart_scaffold.go (demo_contracts → crud_contracts in pubspec and barrel); fixed go.work reference
+- [x] Verify `generated-contracts/` directories exist under each `apps/crud-*/`
+  - Date: 2026-04-26; Status: Done — all 15 apps confirmed (Clojure/Python use generated_contracts; TS use src/generated-contracts; e2e apps have no codegen target)
 
 ## Phase 22 — Quality gates
 
@@ -330,16 +468,23 @@ Run all checks below; each must return zero results before proceeding to validat
 > rather than `run-many` — it avoids re-running unchanged projects while still catching
 > every project impacted by the rename.
 
-- [ ] `npx nx affected -t typecheck` — must pass (exit 0)
-- [ ] `npx nx affected -t lint` — must pass (exit 0)
-- [ ] `npx nx affected -t test:quick` — must pass with all coverage thresholds met
-- [ ] `npx nx affected -t spec-coverage` — must pass for all affected projects (exit 0)
-- [ ] `npx nx run rhino-cli:test:quick` — must pass (exit 0)
+- [x] `npx nx affected -t typecheck` — must pass (exit 0)
+  - Date: 2026-04-26; Status: Done — 23 projects pass; fixed: Rust Cargo.toml name + go.mod module path + Python/Clojure source dir renames + Dart test imports + Go broad source sweep
+- [x] `npx nx affected -t lint` — must pass (exit 0)
+  - Date: 2026-04-26; Status: Done — 26 projects pass
+- [x] `npx nx affected -t test:quick` — must pass with all coverage thresholds met
+  - Date: 2026-04-26; Status: Done — 24 projects pass; fixed: Python pyproject.toml name + venv rebuild, pom.xml/gradle gherkin paths, junit-platform.properties cucumber.features paths, Clojure test/features symlink, Python conftest gherkin path, Kotlin gradle clean
+- [x] `npx nx affected -t spec-coverage` — must pass for all affected projects (exit 0)
+  - Date: 2026-04-26; Status: Done — 18 projects pass
+- [x] `npx nx run rhino-cli:test:quick` — must pass (exit 0)
+  - Date: 2026-04-26; Status: Done — PASS 90.04% >= 90%
 
 ## Phase 23 — Markdown quality gate
 
-- [ ] `npm run lint:md` — must pass (exit 0)
-- [ ] `npm run lint:md:fix` — if violations found, auto-fix and re-run until clean
+- [x] `npm run lint:md` — must pass (exit 0)
+  - Date: 2026-04-26; Status: Done — 760 files linted, 0 errors
+- [x] `npm run lint:md:fix` — if violations found, auto-fix and re-run until clean
+  - Date: 2026-04-26; Status: Done — no violations; no fix needed
 
 ## Phase 24 — Commit and push
 
@@ -365,7 +510,8 @@ Examples of acceptable intermediate commits (Conventional Commits format):
 > must be in separate commits with their own descriptive messages (e.g.,
 > `fix(lint): resolve preexisting markdownlint violations`).
 
-- [ ] Review `git status` — confirm no unintended files staged
+- [x] Review `git status` — confirm no unintended files staged
+  - Date: 2026-04-26; Status: Done — 1629 staged (git mv renames) + 632 modified (source sweeps + agent/skill syncs); all expected rename changes
 - [ ] Stage all changes: `git add -A`
 - [ ] Commit with Conventional Commits message:
       `refactor(apps): rename demo-* to crud-* to clarify CRUD family scope`

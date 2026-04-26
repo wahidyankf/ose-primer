@@ -1,0 +1,47 @@
+name: Test - Crud BE (Elixir/Phoenix)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  spec-coverage:
+    uses: ./.github/workflows/_reusable-backend-spec-coverage.yml
+    with:
+      backend-name: crud-be-elixir-phoenix
+      language: elixir
+  lint:
+    uses: ./.github/workflows/_reusable-backend-lint.yml
+    with:
+      backend-name: crud-be-elixir-phoenix
+      language: elixir
+
+  typecheck:
+    uses: ./.github/workflows/_reusable-backend-typecheck.yml
+    with:
+      backend-name: crud-be-elixir-phoenix
+      language: elixir
+
+  coverage:
+    uses: ./.github/workflows/_reusable-backend-coverage.yml
+    with:
+      backend-name: crud-be-elixir-phoenix
+      language: elixir
+
+  integration:
+    uses: ./.github/workflows/_reusable-backend-integration.yml
+    with:
+      backend-name: crud-be-elixir-phoenix
+      language: elixir
+      compose-file: apps/crud-be-elixir-phoenix/docker-compose.integration.yml
+
+  e2e:
+    needs: integration
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-elixir-phoenix
+      language: elixir
+      compose-dir: infra/dev/crud-be-elixir-phoenix
+      health-timeout: 900

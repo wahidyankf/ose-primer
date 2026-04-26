@@ -1509,7 +1509,7 @@ graph LR
 
 **Rule**: Never use `\n` in any Mermaid label (node or edge). Use `<br/>` for multi-line node labels. For edge labels, keep them single-line (edge labels do not support `<br/>`).
 
-**Real-World Context**: Discovered when building a roadmap diagram on `apps/demo-fs-ts-nextjs/content/about.md`. Both node labels (`"Phase 3\nEnterprise Application\nLarge Organizations"`) and edge labels (`"Revenue\n& Learnings"`) rendered with literal `\n` characters visible.
+**Real-World Context**: Discovered when building a roadmap diagram on `apps/crud-fs-ts-nextjs/content/about.md`. Both node labels (`"Phase 3\nEnterprise Application\nLarge Organizations"`) and edge labels (`"Revenue\n& Learnings"`) rendered with literal `\n` characters visible.
 
 ### Error 8: Label Constraints — Character Width Limit, No HTML in Edge Labels, No URL Paths
 
@@ -1676,7 +1676,7 @@ mechanically instead of counting characters manually. Use `--max-label-len 20` t
 the 20-character Hugo/Hextra limit (the default is 30, matching Mermaid's `wrappingWidth`
 baseline). The tool also checks parallel rank width (Rule 2 above) and single-diagram-per-block.
 
-**Real-World Context**: All five rules were verified when fixing C4 architecture diagrams in `specs/apps/demo/c4/`. Failures observed:
+**Real-World Context**: All five rules were verified when fixing C4 architecture diagrams in `specs/apps/crud/c4/`. Failures observed:
 
 - `\n` in node labels rendered as literal `\n` (fixed by switching to `<br/>`)
 - `<br/>` in edge labels rendered as literal `<br/>` text (fixed by removing HTML, using plain text)

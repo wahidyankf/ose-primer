@@ -143,16 +143,16 @@ opencode agent list
 5. [Move to plans/done/ if validation passes]
    \`\`\`
 
-**Hugo Content (demo-fs-ts-nextjs)**:
+**Hugo Content (crud-fs-ts-nextjs)**:
 \`\`\`bash
 
-1. apps-demo-fs-ts-nextjs-general-maker → Create content
-2. apps-demo-fs-ts-nextjs-general-checker → Validate quality
-3. apps-demo-fs-ts-nextjs-facts-checker → Verify factual accuracy
-4. apps-demo-fs-ts-nextjs-link-checker → Validate links
+1. apps-crud-fs-ts-nextjs-general-maker → Create content
+2. apps-crud-fs-ts-nextjs-general-checker → Validate quality
+3. apps-crud-fs-ts-nextjs-facts-checker → Verify factual accuracy
+4. apps-crud-fs-ts-nextjs-link-checker → Validate links
 5. [User reviews all audit reports]
-6. apps-demo-fs-ts-nextjs-general-fixer → Apply validated fixes
-7. apps-demo-fs-ts-nextjs-deployer → Deploy to production
+6. apps-crud-fs-ts-nextjs-general-fixer → Apply validated fixes
+7. apps-crud-fs-ts-nextjs-deployer → Deploy to production
    \`\`\`
 
 ## Agent Patterns
@@ -186,7 +186,7 @@ opencode agent list
 
 **Purpose**: Combine validation + state management
 **Tools**: Standard + write (for cache only)
-**Examples**: docs-link-checker, apps-demo-fs-ts-nextjs-link-checker
+**Examples**: docs-link-checker, apps-crud-fs-ts-nextjs-link-checker
 
 ## Skills Integration
 

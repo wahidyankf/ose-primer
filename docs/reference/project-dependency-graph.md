@@ -24,18 +24,18 @@ Declared in `project.json`. When the dependency project changes, `nx affected`
 flags the dependent project for re-testing.
 
 ```json
-"implicitDependencies": ["demo-contracts", "rhino-cli"]
+"implicitDependencies": ["crud-contracts", "rhino-cli"]
 ```
 
 ### 2. `dependsOn` (Task-Level)
 
 Declared per target in `project.json`. Controls execution order — the dependency
 task runs before the dependent task. Cross-project `dependsOn` (e.g.,
-`demo-contracts:bundle`) also creates an implicit project edge.
+`crud-contracts:bundle`) also creates an implicit project edge.
 
 ```json
 "codegen": {
-  "dependsOn": ["demo-contracts:bundle"]
+  "dependsOn": ["crud-contracts:bundle"]
 }
 ```
 
@@ -47,7 +47,7 @@ invalidated and `nx affected` flags the project.
 ```json
 "inputs": [
   "default",
-  "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
+  "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"
 ]
 ```
 
@@ -81,14 +81,14 @@ graph LR
 
 ```mermaid
 graph LR
-  BEE2E[demo-be-e2e]:::e2e
-  BE[demo-be-*]:::backend
-  CLOJURE[demo-be-clojure-pedestal]:::backend
+  BEE2E[crud-be-e2e]:::e2e
+  BE[crud-be-*]:::backend
+  CLOJURE[crud-be-clojure-pedestal]:::backend
   COC[clojure-openapi-codegen]:::lib
-  ELIXIR[demo-be-elixir-phoenix]:::backend
+  ELIXIR[crud-be-elixir-phoenix]:::backend
   EOC[elixir-openapi-codegen]:::lib
   RC[rhino-cli]:::cli
-  DC[demo-contracts]:::spec
+  DC[crud-contracts]:::spec
 
   BEE2E --> BE
   BEE2E --> CLOJURE
@@ -117,14 +117,14 @@ graph LR
 
 ```mermaid
 graph LR
-  FEE2E[demo-fe-e2e]:::e2e
-  NEXTJS[demo-fe-ts-nextjs]:::frontend
-  TANSTACK[demo-fe-ts-tanstack-start]:::frontend
-  FLUTTER[demo-fe-dart-flutterweb]:::frontend
-  OLE[demo-fe-e2e]:::e2e
-  OLW[demo-fe-ts-nextjs]:::site
+  FEE2E[crud-fe-e2e]:::e2e
+  NEXTJS[crud-fe-ts-nextjs]:::frontend
+  TANSTACK[crud-fe-ts-tanstack-start]:::frontend
+  FLUTTER[crud-fe-dart-flutterweb]:::frontend
+  OLE[crud-fe-e2e]:::e2e
+  OLW[crud-fe-ts-nextjs]:::site
   RC[rhino-cli]:::cli
-  DC[demo-contracts]:::spec
+  DC[crud-contracts]:::spec
 
   FEE2E --> NEXTJS
   FEE2E --> TANSTACK
@@ -159,15 +159,15 @@ graph LR
 
 These projects are dependencies of many other projects.
 
-### demo-contracts
+### crud-contracts
 
-**Location**: `specs/apps/demo/contracts/`
+**Location**: `specs/apps/crud/contracts/`
 
 The OpenAPI 3.1 specification consumed by all demo apps for type generation.
 
-- **Dependents**: All 11 `demo-be-*` backends + all 3 `demo-fe-*` frontends + 2 E2E suites + 2 codegen libs (18 total)
-- **Mechanism**: `implicitDependencies` + `codegen.dependsOn: ["demo-contracts:bundle"]`
-- **Spec input**: `{workspaceRoot}/specs/apps/demo/contracts/generated/openapi-bundled.yaml`
+- **Dependents**: All 11 `crud-be-*` backends + all 3 `crud-fe-*` frontends + 2 E2E suites + 2 codegen libs (18 total)
+- **Mechanism**: `implicitDependencies` + `codegen.dependsOn: ["crud-contracts:bundle"]`
+- **Spec input**: `{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml`
 
 ### rhino-cli
 
@@ -178,7 +178,7 @@ Repository management CLI used by most projects for coverage validation
 contract post-processing (`contracts java-clean-imports`, `contracts dart-scaffold`),
 and annotation validation (`java validate-annotations`).
 
-- **Dependents**: 22 projects (all demo apps, CLI tools, libs, demo-fe-ts-nextjs)
+- **Dependents**: 22 projects (all demo apps, CLI tools, libs, crud-fe-ts-nextjs)
 - **Mechanism**: `implicitDependencies`
 - **Own dependency**: `golang-commons`
 - **Note**: `golang-commons` does NOT depend on `rhino-cli` to avoid a circular
@@ -202,43 +202,43 @@ All demo backends share the same dependency pattern.
 
 | Project                   | Dependencies                                                                      | Spec Inputs                 |
 | ------------------------- | --------------------------------------------------------------------------------- | --------------------------- |
-| demo-be-clojure-pedestal  | clojure-openapi-codegen, demo-contracts, rhino-cli                                | contracts/\*, be/gherkin/\* |
-| demo-be-csharp-aspnetcore | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| demo-be-elixir-phoenix    | demo-contracts, elixir-cabbage, elixir-gherkin, elixir-openapi-codegen, rhino-cli | contracts/\*, be/gherkin/\* |
-| demo-be-fsharp-giraffe    | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| demo-be-golang-gin        | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| demo-be-java-springboot   | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| demo-be-java-vertx        | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| demo-be-kotlin-ktor       | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| demo-be-python-fastapi    | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| demo-be-rust-axum         | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| demo-be-ts-effect         | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-clojure-pedestal  | clojure-openapi-codegen, crud-contracts, rhino-cli                                | contracts/\*, be/gherkin/\* |
+| crud-be-csharp-aspnetcore | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-elixir-phoenix    | crud-contracts, elixir-cabbage, elixir-gherkin, elixir-openapi-codegen, rhino-cli | contracts/\*, be/gherkin/\* |
+| crud-be-fsharp-giraffe    | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-golang-gin        | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-java-springboot   | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-java-vertx        | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-kotlin-ktor       | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-python-fastapi    | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-rust-axum         | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-ts-effect         | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
 
 **Spec input paths**:
 
-- `contracts/*` = `{workspaceRoot}/specs/apps/demo/contracts/generated/openapi-bundled.yaml` (codegen)
-- `be/gherkin/*` = `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` (test:unit, test:quick)
+- `contracts/*` = `{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml` (codegen)
+- `be/gherkin/*` = `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` (test:unit, test:quick)
 
 ### Demo Frontends
 
 | Project                   | Dependencies              | Spec Inputs                 |
 | ------------------------- | ------------------------- | --------------------------- |
-| demo-fe-dart-flutterweb   | demo-contracts, rhino-cli | contracts/\*, fe/gherkin/\* |
-| demo-fe-ts-nextjs         | demo-contracts, rhino-cli | contracts/\*, fe/gherkin/\* |
-| demo-fe-ts-tanstack-start | demo-contracts, rhino-cli | contracts/\*, fe/gherkin/\* |
+| crud-fe-dart-flutterweb   | crud-contracts, rhino-cli | contracts/\*, fe/gherkin/\* |
+| crud-fe-ts-nextjs         | crud-contracts, rhino-cli | contracts/\*, fe/gherkin/\* |
+| crud-fe-ts-tanstack-start | crud-contracts, rhino-cli | contracts/\*, fe/gherkin/\* |
 
 **Spec input paths**:
 
-- `contracts/*` = `{workspaceRoot}/specs/apps/demo/contracts/generated/openapi-bundled.yaml` (codegen)
-- `fe/gherkin/*` = `{workspaceRoot}/specs/apps/demo/fe/gherkin/**/*.feature` (test:unit, test:quick)
+- `contracts/*` = `{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml` (codegen)
+- `fe/gherkin/*` = `{workspaceRoot}/specs/apps/crud/fe/gherkin/**/*.feature` (test:unit, test:quick)
 
 ### E2E Test Projects
 
 | Project     | Dependencies                               | Spec Inputs                                  |
 | ----------- | ------------------------------------------ | -------------------------------------------- |
-| demo-be-e2e | all 11 demo-be-\* backends, demo-contracts | be/gherkin/\* (typecheck, test:quick)        |
-| demo-fe-e2e | all 3 demo-fe-\* frontends, demo-contracts | fe/gherkin/\* (typecheck, test:quick)        |
-| demo-fe-e2e | demo-fe-ts-nextjs                          | demo-fe-ts-nextjs/\* (typecheck, test:quick) |
+| crud-be-e2e | all 11 crud-be-\* backends, crud-contracts | be/gherkin/\* (typecheck, test:quick)        |
+| crud-fe-e2e | all 3 crud-fe-\* frontends, crud-contracts | fe/gherkin/\* (typecheck, test:quick)        |
+| crud-fe-e2e | crud-fe-ts-nextjs                          | crud-fe-ts-nextjs/\* (typecheck, test:quick) |
 
 E2E projects use `bddgen` to generate TypeScript from `.feature` files in
 `test:quick` and `typecheck`. Gherkin spec inputs ensure cache invalidation
@@ -248,7 +248,7 @@ when feature files change.
 
 | Project           | Dependencies | Spec Inputs |
 | ----------------- | ------------ | ----------- |
-| demo-fs-ts-nextjs | rhino-cli    | (none)      |
+| crud-fs-ts-nextjs | rhino-cli    | (none)      |
 
 Hugo sites depend on their CLI tools for content automation (link checking).
 The CLI tools are built via `dependsOn` in `links:check` and `test:quick` targets.
@@ -257,9 +257,9 @@ The CLI tools are built via `dependsOn` in `links:check` and `test:quick` target
 
 | Project           | Dependencies | Spec Inputs |
 | ----------------- | ------------ | ----------- |
-| demo-fs-ts-nextjs | rhino-cli    | (none)      |
+| crud-fs-ts-nextjs | rhino-cli    | (none)      |
 
-demo-fs-ts-nextjs depends on rhino-cli for link validation.
+crud-fs-ts-nextjs depends on rhino-cli for link validation.
 
 ### CLI Tools
 
@@ -273,7 +273,7 @@ demo-fs-ts-nextjs depends on rhino-cli for link validation.
 
 | Project           | Dependencies | Spec Inputs                             |
 | ----------------- | ------------ | --------------------------------------- |
-| demo-fe-ts-nextjs | rhino-cli    | demo-fe-ts-nextjs/\* (test:integration) |
+| crud-fe-ts-nextjs | rhino-cli    | crud-fe-ts-nextjs/\* (test:integration) |
 
 ### Libraries
 
@@ -283,14 +283,14 @@ demo-fs-ts-nextjs depends on rhino-cli for link validation.
 | golang-commons          | golang-commons, rhino-cli | golang-commons/\* (test:integration) |
 | elixir-gherkin          | rhino-cli                 | (none)                               |
 | elixir-cabbage          | elixir-gherkin, rhino-cli | (none)                               |
-| elixir-openapi-codegen  | demo-contracts, rhino-cli | (none)                               |
-| clojure-openapi-codegen | demo-contracts, rhino-cli | (none)                               |
+| elixir-openapi-codegen  | crud-contracts, rhino-cli | (none)                               |
+| clojure-openapi-codegen | crud-contracts, rhino-cli | (none)                               |
 
 ### Specs
 
 | Project        | Dependencies | Spec Inputs                                 |
 | -------------- | ------------ | ------------------------------------------- |
-| demo-contracts | (none)       | (self — project root is the spec directory) |
+| crud-contracts | (none)       | (self — project root is the spec directory) |
 
 ## Spec Directory Mapping
 
@@ -299,12 +299,12 @@ All Gherkin specs and API contracts live under `specs/` and are consumed via
 
 | Spec Directory                | Consumed By                    | Targets                          |
 | ----------------------------- | ------------------------------ | -------------------------------- |
-| `specs/apps/demo/contracts/`  | all 14 demo apps               | codegen                          |
-| `specs/apps/demo/be/gherkin/` | 11 demo backends + demo-be-e2e | test:unit, test:quick, typecheck |
-| `specs/apps/demo/fe/gherkin/` | 3 demo frontends + demo-fe-e2e | test:unit, test:quick, typecheck |
+| `specs/apps/crud/contracts/`  | all 14 demo apps               | codegen                          |
+| `specs/apps/crud/be/gherkin/` | 11 demo backends + crud-be-e2e | test:unit, test:quick, typecheck |
+| `specs/apps/crud/fe/gherkin/` | 3 demo frontends + crud-fe-e2e | test:unit, test:quick, typecheck |
 | `specs/apps/rhino/`           | rhino-cli                      | test:integration                 |
-| `specs/apps/demo/`            | rhino-cli, demo-fs-ts-nextjs   | test:integration                 |
-| `specs/apps/demo/`            | rhino-cli, demo-fs-ts-nextjs   | test:integration                 |
+| `specs/apps/crud/`            | rhino-cli, crud-fs-ts-nextjs   | test:integration                 |
+| `specs/apps/crud/`            | rhino-cli, crud-fs-ts-nextjs   | test:integration                 |
 | `specs/libs/golang-commons/`  | golang-commons                 | test:integration                 |
 | `specs/libs/golang-commons/`  | golang-commons                 | test:integration                 |
 
@@ -320,15 +320,15 @@ workflow which runs `--all` projects.
 
 ### Why contracts use `implicitDependencies` instead of just `dependsOn`
 
-Task-level `dependsOn: ["demo-contracts:bundle"]` controls execution order
+Task-level `dependsOn: ["crud-contracts:bundle"]` controls execution order
 (codegen runs after bundle), but does NOT make the project appear in
-`nx affected` when the OpenAPI spec changes. Adding `demo-contracts` to
+`nx affected` when the OpenAPI spec changes. Adding `crud-contracts` to
 `implicitDependencies` ensures that spec changes trigger re-testing of all
 consuming apps.
 
 ### Why E2E projects need spec inputs
 
-E2E projects (`demo-be-e2e`, `demo-fe-e2e`, `demo-fe-e2e`) use
+E2E projects (`crud-be-e2e`, `crud-fe-e2e`, `crud-fe-e2e`) use
 `bddgen` to generate TypeScript from `.feature` files in their `test:quick`
 and `typecheck` targets. Without spec inputs, feature file changes would not
 invalidate the cache, causing stale generated code.

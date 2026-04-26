@@ -898,16 +898,16 @@ export const useZakatCalculation = () => {
 
 ```bash
 # Generate React application with Nx
-nx generate @nx/react:application demo-fs-ts-nextjs-app
+nx generate @nx/react:application crud-fs-ts-nextjs-app
 
 # Or use Vite directly
-npm create vite@latest demo-fs-ts-nextjs-app -- --template react-ts
+npm create vite@latest crud-fs-ts-nextjs-app -- --template react-ts
 
 # Install dependencies
 npm install
 
 # Start development server (use 'dev' target, not 'serve')
-nx dev demo-fs-ts-nextjs-app
+nx dev crud-fs-ts-nextjs-app
 
 # Or with Vite
 npm run dev

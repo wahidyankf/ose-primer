@@ -53,7 +53,7 @@ See [Fixer Confidence Levels Convention](./fixer-confidence-levels.md) for compl
 
 ### 1. Missing Required Field Breaks Content Validation
 
-**File**: `apps/demo-fs-ts-nextjs/content/en/programming/python/_index.md:3`
+**File**: `apps/crud-fs-ts-nextjs/content/en/programming/python/_index.md:3`
 **Criticality**: CRITICAL - Breaks Next.js content validation
 **Confidence**: HIGH - Field objectively missing from frontmatter
 
@@ -92,7 +92,7 @@ See [Fixer Confidence Levels Convention](./fixer-confidence-levels.md) for compl
 - Agent `name` field doesn't match filename (breaks agent discovery)
 - Broken internal link to non-existent file in documentation
 
-**Next.js Content (demo-fs-ts-nextjs/demo-fs-ts-nextjs)**:
+**Next.js Content (crud-fs-ts-nextjs/crud-fs-ts-nextjs)**:
 
 - Missing required `title` field (content validation fails)
 - Invalid frontmatter syntax (YAML parsing error)
@@ -649,7 +649,7 @@ Update link to current documentation URL or find alternative resource
 - Consider alternative organization
 - Potential future sections
 
-### Next.js Content - demo-fs-ts-nextjs (general-checker, facts-checker, link-checker)
+### Next.js Content - crud-fs-ts-nextjs (general-checker, facts-checker, link-checker)
 
 **CRITICAL**:
 
@@ -679,7 +679,7 @@ Update link to current documentation URL or find alternative resource
 - Potential cross-linking opportunity
 - Suggest mentioning alternative approach
 
-### Next.js Content - demo-fs-ts-nextjs (content-checker)
+### Next.js Content - crud-fs-ts-nextjs (content-checker)
 
 **CRITICAL**:
 

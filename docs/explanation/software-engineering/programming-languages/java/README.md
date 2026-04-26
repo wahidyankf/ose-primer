@@ -64,7 +64,7 @@ demo Java applications MUST use the following framework stack:
 
 **What this documentation covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply Java knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Java syntax, language fundamentals, generic patterns (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: Java syntax, language fundamentals, generic patterns (those are in crud-fs-ts-nextjs).
 
 ## Software Engineering Principles
 

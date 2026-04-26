@@ -103,7 +103,7 @@ the validated scope.
 
 **Finding**: [CRITICAL] {original finding}
 **Action**: Updated scenario count in README from 76 to 78
-**File**: `specs/apps/demo/be/README.md`
+**File**: `specs/apps/crud/be/README.md`
 **Verified**: Yes — count now matches actual feature files
 ```
 

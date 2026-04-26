@@ -22,14 +22,14 @@ Both paths are resolved relative to the git repository root.
 The reverse direction (test referencing a non-existent spec) is already enforced
 at runtime by vitest-cucumber's loadFeature(), so only the spec-to-test direction
 is checked here.`,
-	Example: `  # Check demo-fe-ts-nextjs spec coverage
-  rhino-cli spec-coverage validate specs/apps/demo-fe-ts-nextjs apps/demo-fe-ts-nextjs
+	Example: `  # Check crud-fe-ts-nextjs spec coverage
+  rhino-cli spec-coverage validate specs/apps/crud-fe-ts-nextjs apps/crud-fe-ts-nextjs
 
   # Output as JSON
-  rhino-cli spec-coverage validate specs/apps/demo-fe-ts-nextjs apps/demo-fe-ts-nextjs -o json
+  rhino-cli spec-coverage validate specs/apps/crud-fe-ts-nextjs apps/crud-fe-ts-nextjs -o json
 
   # Quiet mode
-  rhino-cli spec-coverage validate specs/apps/demo-fe-ts-nextjs apps/demo-fe-ts-nextjs -q`,
+  rhino-cli spec-coverage validate specs/apps/crud-fe-ts-nextjs apps/crud-fe-ts-nextjs -q`,
 	Args:          cobra.ExactArgs(2),
 	SilenceErrors: true,
 	RunE:          runValidateSpecCoverage,

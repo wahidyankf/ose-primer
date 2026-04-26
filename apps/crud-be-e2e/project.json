@@ -1,0 +1,94 @@
+{
+  "name": "crud-be-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/crud-be-e2e/tests",
+  "targets": {
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm install",
+        "cwd": "apps/crud-be-e2e"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx oxlint@latest .",
+        "cwd": "apps/crud-be-e2e"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx bddgen && npx tsc --noEmit",
+        "cwd": "apps/crud-be-e2e"
+      },
+      "inputs": ["default", "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"]
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npx oxlint@latest .", "npx bddgen && npx tsc --noEmit"],
+        "parallel": true,
+        "cwd": "apps/crud-be-e2e"
+      },
+      "inputs": ["default", "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"]
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx bddgen && npx playwright test",
+        "cwd": "apps/crud-be-e2e"
+      }
+    },
+    "test:e2e:no-test-api": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx bddgen && npx playwright test --grep-invert 'Test Support API'",
+        "cwd": "apps/crud-be-e2e"
+      }
+    },
+    "test:e2e:shard": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx bddgen && npx playwright test --shard=${SHARD}",
+        "cwd": "apps/crud-be-e2e"
+      }
+    },
+    "test:e2e:ui": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx bddgen && npx playwright test --ui",
+        "cwd": "apps/crud-be-e2e"
+      }
+    },
+    "test:e2e:report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx playwright show-report",
+        "cwd": "apps/crud-be-e2e"
+      }
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps specs/apps/crud/be/gherkin apps/crud-be-e2e",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
+    }
+  },
+  "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:demo-be"],
+  "implicitDependencies": [
+    "crud-be-java-springboot",
+    "crud-be-elixir-phoenix",
+    "crud-be-fsharp-giraffe",
+    "crud-be-golang-gin",
+    "crud-be-python-fastapi",
+    "crud-be-rust-axum",
+    "crud-be-kotlin-ktor",
+    "crud-be-java-vertx",
+    "crud-be-ts-effect",
+    "crud-be-csharp-aspnetcore",
+    "crud-be-clojure-pedestal",
+    "crud-contracts"
+  ]
+}

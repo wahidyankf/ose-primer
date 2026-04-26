@@ -64,7 +64,7 @@ order:
 | 1    | Validate `.claude/` and `.opencode/` config (YAML, tools, model, skills, semantic equivalence) | Blocks commit               |
 | 2    | Validate `docker-compose` files found in staged changes                                        | Blocks commit               |
 | 3    | Run `nx affected run-pre-commit` (format checks, lightweight per-project hooks)                | Warn only — does not block  |
-| 4    | Stage `demo-fs-ts-nextjs` content files (auto-generated link data)                             | N/A (staging step)          |
+| 4    | Stage `crud-fs-ts-nextjs` content files (auto-generated link data)                             | N/A (staging step)          |
 | 5    | Run lint-staged (format all staged files by language)                                          | Blocks commit               |
 | 6    | Sync app `package-lock.json` files                                                             | Blocks commit if sync fails |
 | 7    | Validate docs file naming convention across staged files                                       | Blocks commit               |
@@ -171,11 +171,11 @@ app type realises each level.
 
 | App Type                                                        | Unit (`test:unit`)                                              | Integration (`test:integration`)                                                                   | E2E (`test:e2e`)                                     |
 | --------------------------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| **BE API** (`demo-be-*`)                                        | Godog/BDD, mocked repos, calls service fns directly             | Godog/BDD, real PostgreSQL via docker-compose, calls service fns directly (no HTTP)                | Playwright, real HTTP + real PostgreSQL              |
-| **FE** (`demo-fe-*`, `demo-fe-ts-nextjs`)                       | Vitest/Flutter test, all API calls mocked (MSW / mock services) | MSW with real DOM; in-process mocking only                                                         | Playwright against running FE + default BE           |
-| **Fullstack** (`demo-fs-*`)                                     | Vitest, all DB calls mocked                                     | MSW / in-process mocking                                                                           | Playwright, self-contained (own API routes)          |
+| **BE API** (`crud-be-*`)                                        | Godog/BDD, mocked repos, calls service fns directly             | Godog/BDD, real PostgreSQL via docker-compose, calls service fns directly (no HTTP)                | Playwright, real HTTP + real PostgreSQL              |
+| **FE** (`crud-fe-*`, `crud-fe-ts-nextjs`)                       | Vitest/Flutter test, all API calls mocked (MSW / mock services) | MSW with real DOM; in-process mocking only                                                         | Playwright against running FE + default BE           |
+| **Fullstack** (`crud-fs-*`)                                     | Vitest, all DB calls mocked                                     | MSW / in-process mocking                                                                           | Playwright, self-contained (own API routes)          |
 | **CLI** (`*-cli`)                                               | Godog, all I/O mocked via function variables                    | Godog (`//go:build integration`), real filesystem via `/tmp` fixtures, in-process via `cmd.RunE()` | Not applicable                                       |
-| **Content platform** (`demo-fs-ts-nextjs`, `demo-fs-ts-nextjs`) | Vitest, components and tRPC routes mocked                       | MSW, in-process mocking                                                                            | Playwright BE E2E (`*-be-e2e`) + FE E2E (`*-fe-e2e`) |
+| **Content platform** (`crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`) | Vitest, components and tRPC routes mocked                       | MSW, in-process mocking                                                                            | Playwright BE E2E (`*-be-e2e`) + FE E2E (`*-fe-e2e`) |
 | **Library** (`golang-commons`)                                  | Unit tests + Godog, mock closures                               | Godog, tmpdir mocks, cacheable                                                                     | Not applicable                                       |
 | **Hugo site** (historical -- no active Hugo sites remain)       | Not applicable                                                  | Not applicable                                                                                     | Not applicable                                       |
 | **E2E runner** (`*-e2e`)                                        | Not applicable                                                  | Not applicable                                                                                     | Playwright — this project IS the E2E suite           |
@@ -188,9 +188,9 @@ runner projects ARE the Gherkin consumers at the E2E level.
 
 | App Type                | Unit consumes Gherkin                               | Integration consumes Gherkin | E2E consumes Gherkin              |
 | ----------------------- | --------------------------------------------------- | ---------------------------- | --------------------------------- |
-| BE API (`demo-be-*`)    | Yes — `specs/apps/demo/be/gherkin/`                 | Yes — same specs             | Yes — same specs                  |
-| FE (`demo-fe-*`)        | Yes — `specs/apps/demo/fe/gherkin/`                 | Yes — same specs             | Yes — via `demo-fe-e2e`           |
-| Fullstack (`demo-fs-*`) | Yes — `specs/apps/demo/be/gherkin/` + `fe/gherkin/` | Yes — same specs             | Yes — self-contained              |
+| BE API (`crud-be-*`)    | Yes — `specs/apps/crud/be/gherkin/`                 | Yes — same specs             | Yes — same specs                  |
+| FE (`crud-fe-*`)        | Yes — `specs/apps/crud/fe/gherkin/`                 | Yes — same specs             | Yes — via `crud-fe-e2e`           |
+| Fullstack (`crud-fs-*`) | Yes — `specs/apps/crud/be/gherkin/` + `fe/gherkin/` | Yes — same specs             | Yes — self-contained              |
 | CLI (`*-cli`)           | Yes — `specs/apps/{domain}/cli/gherkin/`            | Yes — same specs             | Not applicable                    |
 | Content platform        | Yes — project-local specs                           | Yes — same specs             | Yes — via `*-be-e2e` / `*-fe-e2e` |
 | Library                 | Yes — library-specific specs                        | Yes — same specs             | Not applicable                    |
@@ -205,10 +205,10 @@ unit tests.
 
 | Threshold | App Types                                                                     | Rationale                                                                                                                                                                       |
 | --------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **90%**   | BE API backends, CLI apps, Go libs, TypeScript backends (`demo-be-ts-effect`) | Core business logic with high mock isolation. Service functions operate on pure data structures; 90% is achievable without heroic effort.                                       |
-| **80%**   | Content platforms (`demo-fs-ts-nextjs`, `demo-fs-ts-nextjs`)                  | Significant UI rendering code and Next.js route handlers that are harder to unit-test. Some RSC rendering paths are excluded by design.                                         |
-| **75%**   | Fullstack apps (`demo-fs-ts-nextjs`)                                          | Mixed server and client code in the same project. API routes and React components pull the achievable threshold below 80%.                                                      |
-| **70%**   | FE apps (`demo-fe-*`, `demo-fe-ts-nextjs`), Dart FE                           | API, auth, and query layers are mocked by design; the mock boundaries limit what can be covered by unit tests. Lower threshold reflects this intentional architecture decision. |
+| **90%**   | BE API backends, CLI apps, Go libs, TypeScript backends (`crud-be-ts-effect`) | Core business logic with high mock isolation. Service functions operate on pure data structures; 90% is achievable without heroic effort.                                       |
+| **80%**   | Content platforms (`crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`)                  | Significant UI rendering code and Next.js route handlers that are harder to unit-test. Some RSC rendering paths are excluded by design.                                         |
+| **75%**   | Fullstack apps (`crud-fs-ts-nextjs`)                                          | Mixed server and client code in the same project. API routes and React components pull the achievable threshold below 80%.                                                      |
+| **70%**   | FE apps (`crud-fe-*`, `crud-fe-ts-nextjs`), Dart FE                           | API, auth, and query layers are mocked by design; the mock boundaries limit what can be covered by unit tests. Lower threshold reflects this intentional architecture decision. |
 
 Coverage is measured via the appropriate reporter for each language and converted to LCOV or
 JaCoCo XML before being passed to `rhino-cli test-coverage validate`. See `CLAUDE.md` for the
@@ -353,8 +353,8 @@ variant-specific inputs.
 
 ### CRON Schedule
 
-Scheduled workflows (the production `test-and-deploy-*.yml` trio for demo-fs-ts-nextjs,
-demo-fs-ts-nextjs, and demo) run twice daily aligned to WIB (UTC+7) business hours:
+Scheduled workflows (the production `test-and-deploy-*.yml` trio for crud-fs-ts-nextjs,
+crud-fs-ts-nextjs, and demo) run twice daily aligned to WIB (UTC+7) business hours:
 
 | WIB Time | UTC Time             | Purpose                                     |
 | -------- | -------------------- | ------------------------------------------- |
@@ -383,12 +383,12 @@ services themselves run in parallel across matrix entries.
 
 | Entity              | Pattern                                                                                   | Example                                   |
 | ------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------- |
-| Backend app         | `demo-be-{lang}-{framework}`                                                              | `demo-be-golang-gin`                      |
-| Frontend app        | `demo-fe-{lang}-{framework}`                                                              | `demo-fe-ts-nextjs`                       |
-| Fullstack app       | `demo-fs-{lang}-{framework}`                                                              | `demo-fs-ts-nextjs`                       |
-| Infra dev directory | `infra/dev/{app-name}/`                                                                   | `infra/dev/demo-be-golang-gin/`           |
-| Specs directory     | See [Specs Directory Structure](../../conventions/structure/specs-directory-structure.md) | `specs/apps/demo/be/gherkin/`             |
-| Test workflow       | `test-{app-name}.yml`                                                                     | `test-demo-be-golang-gin.yml`             |
+| Backend app         | `crud-be-{lang}-{framework}`                                                              | `crud-be-golang-gin`                      |
+| Frontend app        | `crud-fe-{lang}-{framework}`                                                              | `crud-fe-ts-nextjs`                       |
+| Fullstack app       | `crud-fs-{lang}-{framework}`                                                              | `crud-fs-ts-nextjs`                       |
+| Infra dev directory | `infra/dev/{app-name}/`                                                                   | `infra/dev/crud-be-golang-gin/`           |
+| Specs directory     | See [Specs Directory Structure](../../conventions/structure/specs-directory-structure.md) | `specs/apps/crud/be/gherkin/`             |
+| Test workflow       | `test-{app-name}.yml`                                                                     | `test-crud-be-golang-gin.yml`             |
 | Reusable workflow   | `_reusable-{purpose}.yml`                                                                 | `_reusable-backend-e2e.yml`               |
 | Composite action    | `.github/actions/{name}/action.yml`                                                       | `.github/actions/setup-golang/action.yml` |
 | Deploy workflow     | `test-and-deploy-{app}.yml`                                                               | `test-and-deploy-demo.yml`                |
@@ -429,11 +429,11 @@ is exercised against a stable, known-good partner.
 
 | Variant Type            | E2E Pairs With                         | Example                                    |
 | ----------------------- | -------------------------------------- | ------------------------------------------ |
-| Backend (`demo-be-*`)   | Default frontend — `demo-fe-ts-nextjs` | `demo-be-golang-gin` + `demo-fe-ts-nextjs` |
-| Frontend (`demo-fe-*`)  | Default backend — `demo-be-golang-gin` | `demo-fe-ts-nextjs` + `demo-be-golang-gin` |
-| Fullstack (`demo-fs-*`) | Self-contained — own API routes        | `demo-fs-ts-nextjs` (no external backend)  |
+| Backend (`crud-be-*`)   | Default frontend — `crud-fe-ts-nextjs` | `crud-be-golang-gin` + `crud-fe-ts-nextjs` |
+| Frontend (`crud-fe-*`)  | Default backend — `crud-be-golang-gin` | `crud-fe-ts-nextjs` + `crud-be-golang-gin` |
+| Fullstack (`crud-fs-*`) | Self-contained — own API routes        | `crud-fs-ts-nextjs` (no external backend)  |
 
-Non-demo apps (`demo-*`, `demo-fs-ts-nextjs`, `demo-fs-ts-nextjs`) pair their own dedicated E2E
+Non-demo apps (`demo-*`, `crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`) pair their own dedicated E2E
 runner projects (`*-be-e2e`, `*-fe-e2e`) rather than using the default demo pairing.
 
 ## Environment Variable Standard

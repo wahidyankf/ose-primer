@@ -52,7 +52,7 @@ TypeScript is the primary language for demo development. It provides static typi
 
 **What this documentation covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply TypeScript knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: TypeScript syntax, language fundamentals, generic patterns (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: TypeScript syntax, language fundamentals, generic patterns (those are in crud-fs-ts-nextjs).
 
 ## Coding Standards
 
@@ -665,8 +665,8 @@ export class CampaignController {
 
 ```
 apps/
-├── demo-fs-ts-nextjs/         # Hugo static site (TypeScript for build scripts)
-├── demo-fs-ts-nextjs/            # Hugo static site (TypeScript for build scripts)
+├── crud-fs-ts-nextjs/         # Hugo static site (TypeScript for build scripts)
+├── crud-fs-ts-nextjs/            # Hugo static site (TypeScript for build scripts)
 ├── rhino-cli/            # Go CLI tool
 └── rhino-cli/               # Go CLI tool
 

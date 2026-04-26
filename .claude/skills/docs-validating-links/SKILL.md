@@ -124,7 +124,7 @@ From: governance/conventions/formatting/linking.md (3 levels deep)
 **Criticality**: MEDIUM - Poor accessibility and readability
 **Detection**: Check if link text matches filename pattern or contains file extension
 
-_(Note: Hugo-specific error examples (Error 5, Error 6) removed — both demo-fs-ts-nextjs and demo-fs-ts-nextjs have migrated to Next.js 16. See Historical section below.)_
+_(Note: Hugo-specific error examples (Error 5, Error 6) removed — both crud-fs-ts-nextjs and crud-fs-ts-nextjs have migrated to Next.js 16. See Historical section below.)_
 
 ## External Link Validation
 
@@ -192,12 +192,12 @@ _(Note: Hugo-specific error examples (Error 5, Error 6) removed — both demo-fs
 
 ## Historical: Hugo-Specific Link Validation (DEPRECATED)
 
-**Note**: Both `demo-fs-ts-nextjs` and `demo-fs-ts-nextjs` have migrated to Next.js 16. Hugo-specific link rules no longer apply to either site. This section is preserved for historical reference only.
+**Note**: Both `crud-fs-ts-nextjs` and `crud-fs-ts-nextjs` have migrated to Next.js 16. Hugo-specific link rules no longer apply to either site. This section is preserved for historical reference only.
 
 Both sites' content links are validated by their respective CLI tools, not by Hugo link rules:
 
-- `rhino-cli links check` — validates demo-fs-ts-nextjs content links
-- `rhino-cli links check` — validates demo-fs-ts-nextjs content links
+- `rhino-cli links check` — validates crud-fs-ts-nextjs content links
+- `rhino-cli links check` — validates crud-fs-ts-nextjs content links
 
 For active sites, apply standard docs/ linking rules: relative paths with `.md` extension.
 

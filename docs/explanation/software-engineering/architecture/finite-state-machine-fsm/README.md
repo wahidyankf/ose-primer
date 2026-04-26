@@ -55,7 +55,7 @@ demo FSM implementations MUST use the following frameworks:
 
 **What this documentation covers**: demo-specific FSM patterns, Islamic finance state machines (Zakat lifecycle, contract approval, donation campaigns), framework choices (Spring State Machine, XState), integration with DDD aggregates, repository-specific FSM conventions.
 
-**What this documentation does NOT cover**: FSM fundamentals, basic state/transition concepts, generic FSM theory (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: FSM fundamentals, basic state/transition concepts, generic FSM theory (those are in crud-fs-ts-nextjs).
 
 ## Software Engineering Principles
 

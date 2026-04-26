@@ -31,10 +31,10 @@ Unit tests use mocked dependencies and run fast. They are the default for local 
 
 ```bash
 # Run unit tests for a specific backend
-nx run demo-be-golang-gin:test:unit
+nx run crud-be-golang-gin:test:unit
 
 # Run unit + coverage validation (pre-push gate)
-nx run demo-be-golang-gin:test:quick
+nx run crud-be-golang-gin:test:quick
 
 # Run for all affected projects
 nx affected -t test:quick
@@ -63,10 +63,10 @@ The test runner:
 
 ```bash
 # Run integration tests for a specific backend
-nx run demo-be-golang-gin:test:integration
+nx run crud-be-golang-gin:test:integration
 
 # This is equivalent to:
-cd apps/demo-be-golang-gin
+cd apps/crud-be-golang-gin
 docker compose -f docker-compose.integration.yml down -v
 docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build
 ```
@@ -80,7 +80,7 @@ docker-compose stack is running with the same service names.
 **Stale containers**: If tests fail with connection errors, tear down and rebuild:
 
 ```bash
-cd apps/demo-be-{lang}-{framework}
+cd apps/crud-be-{lang}-{framework}
 docker compose -f docker-compose.integration.yml down -v
 docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build
 ```
@@ -97,38 +97,38 @@ The `postgres` hostname refers to the Docker Compose service, not `localhost`.
 
 E2E tests send real HTTP requests via Playwright to a running backend with a real database.
 
-### Backend E2E (`demo-be-e2e`)
+### Backend E2E (`crud-be-e2e`)
 
-Tests live in `apps/demo-be-e2e/` and test any of the 11 backends.
+Tests live in `apps/crud-be-e2e/` and test any of the 11 backends.
 
 **Start the backend first**, then run E2E:
 
 ```bash
 # Terminal 1: Start the backend
-nx run demo-be-golang-gin:dev
+nx run crud-be-golang-gin:dev
 
 # Terminal 2: Run E2E tests
-nx run demo-be-e2e:test:e2e
+nx run crud-be-e2e:test:e2e
 ```
 
 The `BASE_URL` defaults to `http://localhost:8080`. Override with an environment variable
 if your backend runs on a different port.
 
-### Frontend E2E (`demo-fe-e2e`)
+### Frontend E2E (`crud-fe-e2e`)
 
-Tests live in `apps/demo-fe-e2e/` and test any of the 3 frontends.
+Tests live in `apps/crud-fe-e2e/` and test any of the 3 frontends.
 
 **Start both the backend and frontend**, then run E2E:
 
 ```bash
 # Terminal 1: Start the backend
-nx run demo-be-golang-gin:dev
+nx run crud-be-golang-gin:dev
 
 # Terminal 2: Start the frontend
-nx run demo-fe-ts-nextjs:dev
+nx run crud-fe-ts-nextjs:dev
 
 # Terminal 3: Run E2E tests
-nx run demo-fe-e2e:test:e2e
+nx run crud-fe-e2e:test:e2e
 ```
 
 ### Running in UI Mode
@@ -136,8 +136,8 @@ nx run demo-fe-e2e:test:e2e
 Playwright UI mode provides a visual debugger:
 
 ```bash
-nx run demo-be-e2e:test:e2e:ui
-nx run demo-fe-e2e:test:e2e:ui
+nx run crud-be-e2e:test:e2e:ui
+nx run crud-fe-e2e:test:e2e:ui
 ```
 
 ### CI Integration
@@ -158,13 +158,13 @@ See [CI/CD Reference](../reference/system-architecture/ci-cd.md) for workflow de
 | Unit        | `nx run {project}:test:unit`        | Nothing         | Yes    |
 | Quick       | `nx run {project}:test:quick`       | Nothing         | Yes    |
 | Integration | `nx run {project}:test:integration` | Docker          | No     |
-| E2E (BE)    | `nx run demo-be-e2e:test:e2e`       | Running backend | No     |
-| E2E (FE)    | `nx run demo-fe-e2e:test:e2e`       | Running stack   | No     |
+| E2E (BE)    | `nx run crud-be-e2e:test:e2e`       | Running backend | No     |
+| E2E (FE)    | `nx run crud-fe-e2e:test:e2e`       | Running stack   | No     |
 
 ## 🔗 Related Documentation
 
 - [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md)
 - [Nx Target Standards](../../governance/development/infra/nx-targets.md)
-- [Backend Gherkin Specs](../../specs/apps/demo/be/gherkin/README.md)
-- [Frontend Gherkin Specs](../../specs/apps/demo/fe/gherkin/README.md)
+- [Backend Gherkin Specs](../../specs/apps/crud/be/gherkin/README.md)
+- [Frontend Gherkin Specs](../../specs/apps/crud/fe/gherkin/README.md)
 - [Playwright Standards](../explanation/software-engineering/automation-testing/tools/playwright/README.md)

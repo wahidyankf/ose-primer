@@ -150,23 +150,23 @@ Use this table when uncertain whether a change requires a spec update:
 
 ### demo/ specs
 
-`specs/apps/demo/` serves all 11 backend implementations and 3 frontend implementations from a single set of shared specs. This demonstrates the pattern at scale:
+`specs/apps/crud/` serves all 11 backend implementations and 3 frontend implementations from a single set of shared specs. This demonstrates the pattern at scale:
 
-- `specs/apps/demo/c4/` — C4 diagrams for the demo application architecture
-- `specs/apps/demo/be/gherkin/` — Shared Gherkin scenarios consumed by all backends at unit, integration, and E2E levels
-- `specs/apps/demo/fe/gherkin/` — Shared Gherkin scenarios consumed by frontend implementations
-- `specs/apps/demo/contracts/` — OpenAPI 3.1 contract spec that all backends and frontends implement
+- `specs/apps/crud/c4/` — C4 diagrams for the demo application architecture
+- `specs/apps/crud/be/gherkin/` — Shared Gherkin scenarios consumed by all backends at unit, integration, and E2E levels
+- `specs/apps/crud/fe/gherkin/` — Shared Gherkin scenarios consumed by frontend implementations
+- `specs/apps/crud/contracts/` — OpenAPI 3.1 contract spec that all backends and frontends implement
 
-When a new endpoint is added to the OpenAPI spec in `demo-contracts`, both the corresponding Gherkin scenarios and the C4 component diagram must be updated to reflect the new behavior and component.
+When a new endpoint is added to the OpenAPI spec in `crud-contracts`, both the corresponding Gherkin scenarios and the C4 component diagram must be updated to reflect the new behavior and component.
 
-### demo-fs-ts-nextjs specs
+### crud-fs-ts-nextjs specs
 
-`specs/apps/demo/` maintains C4 diagrams and Gherkin scenarios for the Next.js 16 fullstack platform:
+`specs/apps/crud/` maintains C4 diagrams and Gherkin scenarios for the Next.js 16 fullstack platform:
 
-- `specs/apps/demo/c4/` — Architecture diagrams kept current with the Next.js App Router structure and tRPC routers
-- `specs/apps/demo/be/gherkin/` — Scenarios for tRPC procedures consumed by `demo-be-e2e`
+- `specs/apps/crud/c4/` — Architecture diagrams kept current with the Next.js App Router structure and tRPC routers
+- `specs/apps/crud/be/gherkin/` — Scenarios for tRPC procedures consumed by `crud-be-e2e`
 
-When a new tRPC router is added to `apps/demo-fs-ts-nextjs/`, a new component entry appears in the C4 component diagram and new scenarios are added to the Gherkin directory.
+When a new tRPC router is added to `apps/crud-fs-ts-nextjs/`, a new component entry appears in the C4 component diagram and new scenarios are added to the Gherkin directory.
 
 ### CLI apps
 
@@ -182,21 +182,21 @@ See [BDD Spec-to-Test Mapping](../infra/bdd-spec-test-mapping.md) for the full C
 
 ### ✅ Adding an endpoint with synchronized specs
 
-A developer adds a `GET /api/products/:id` endpoint to `demo-be-golang-gin`.
+A developer adds a `GET /api/products/:id` endpoint to `crud-be-golang-gin`.
 
 They:
 
-1. Update `specs/apps/demo/contracts/` (OpenAPI spec) with the new endpoint definition
-2. Run `nx run demo-contracts:codegen` and related codegen targets
-3. Add a Gherkin scenario to `specs/apps/demo/be/gherkin/products/get-product.feature`
-4. Update the C4 component diagram in `specs/apps/demo/c4/` if the endpoint belongs to a new component
-5. Implement the endpoint in `apps/demo-be-golang-gin/`
+1. Update `specs/apps/crud/contracts/` (OpenAPI spec) with the new endpoint definition
+2. Run `nx run crud-contracts:codegen` and related codegen targets
+3. Add a Gherkin scenario to `specs/apps/crud/be/gherkin/products/get-product.feature`
+4. Update the C4 component diagram in `specs/apps/crud/c4/` if the endpoint belongs to a new component
+5. Implement the endpoint in `apps/crud-be-golang-gin/`
 
 All changes are in a single commit or PR.
 
 ### ❌ Adding an endpoint without updating specs
 
-A developer adds `GET /api/products/:id` to `apps/demo-be-golang-gin/` but does not update the OpenAPI contract, Gherkin feature files, or C4 diagrams.
+A developer adds `GET /api/products/:id` to `apps/crud-be-golang-gin/` but does not update the OpenAPI contract, Gherkin feature files, or C4 diagrams.
 
 The `codegen` target dependency fails at `typecheck` because the generated types are stale. Even if `codegen` is run, the missing Gherkin scenario means the behavior is unspecified, and the C4 diagram no longer reflects what the system does.
 
@@ -204,21 +204,21 @@ This is a violation of the sync convention.
 
 ### ✅ Removing an app with synchronized cleanup
 
-The `apps/demo-be-clojure-pedestal/` app is removed from the monorepo.
+The `apps/crud-be-clojure-pedestal/` app is removed from the monorepo.
 
 The developer also:
 
-1. Removes any Clojure-specific references from `specs/apps/demo/be/README.md`
+1. Removes any Clojure-specific references from `specs/apps/crud/be/README.md`
 2. Updates the root `specs/README.md` if it listed the backend explicitly
 3. Verifies no Gherkin scenarios reference Clojure-specific step definitions (shared scenarios remain intact)
 
-The C4 diagram in `specs/apps/demo/c4/` is updated to remove the Clojure container if it was represented separately.
+The C4 diagram in `specs/apps/crud/c4/` is updated to remove the Clojure container if it was represented separately.
 
 ### ❌ Renaming an app without updating specs
 
-The team renames `apps/demo-fe-ts-nextjs` to `apps/demo-landing`. The `specs/apps/demo-fe-ts-nextjs/` folder is not renamed.
+The team renames `apps/crud-fe-ts-nextjs` to `apps/new-fe-landing`. The `specs/apps/crud-fe-ts-nextjs/` folder is not renamed.
 
-CI now has a mismatch: the app path and the spec path use different names. Reviewers and new contributors cannot determine whether `specs/apps/demo-fe-ts-nextjs/` refers to the current `demo-landing` app or a removed app. This is a violation.
+CI now has a mismatch: the app path and the spec path use different names. Reviewers and new contributors cannot determine whether `specs/apps/crud-fe-ts-nextjs/` refers to the current `demo-landing` app or a removed app. This is a violation.
 
 ### ✅ Bug fix with no spec change
 
@@ -251,8 +251,8 @@ It does not apply to:
 ## Tools and Automation
 
 - **`rhino-cli spec-coverage validate`**: Enforces spec-to-test mapping for CLI apps. Integrated into `test:quick`. Violations cause CI to fail.
-- **Nx cache inputs**: `test:unit` and `test:quick` targets for demo-be backends declare `specs/apps/demo/be/gherkin/**/*.feature` as inputs, so Nx invalidates cached results when Gherkin specs change.
-- **`demo-contracts` codegen target**: Generates types from the OpenAPI spec. Declared as a dependency of `typecheck` and `build`, so stale contracts are caught in CI before merge.
+- **Nx cache inputs**: `test:unit` and `test:quick` targets for demo-be backends declare `specs/apps/crud/be/gherkin/**/*.feature` as inputs, so Nx invalidates cached results when Gherkin specs change.
+- **`crud-contracts` codegen target**: Generates types from the OpenAPI spec. Declared as a dependency of `typecheck` and `build`, so stale contracts are caught in CI before merge.
 - **`repo-rules-checker`**: Validates that specs folders exist for apps that require them. Flags missing or misnamed spec folders.
 
 ## 🔗 Related Documentation
@@ -261,4 +261,4 @@ It does not apply to:
 - [BDD Spec-to-Test Mapping](../infra/bdd-spec-test-mapping.md) - Mandatory 1:1 mapping for CLI apps; three-level consumption for demo-be backends
 - [Nx Target Standards](../infra/nx-targets.md) - Cache input declarations that include Gherkin specs
 - [specs/README.md](../../../specs/README.md) - Spec directory organization and per-app spec structure
-- [specs/apps/demo/be/README.md](../../../specs/apps/demo/be/README.md) - Demo-be shared spec structure and three-level consumption
+- [specs/apps/crud/be/README.md](../../../specs/apps/crud/be/README.md) - Demo-be shared spec structure and three-level consumption

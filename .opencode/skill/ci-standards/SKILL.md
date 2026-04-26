@@ -32,9 +32,9 @@ Inline skill providing CI/CD standards knowledge from the governance documentati
 | Threshold | Projects                                                    |
 | --------- | ----------------------------------------------------------- |
 | 90%       | Demo-be backends, CLI apps, Go libs, TS backend (ts-effect) |
-| 80%       | Content platforms (demo-fs-ts-nextjs, demo-fs-ts-nextjs)    |
-| 75%       | Fullstack (demo-fs-ts-nextjs)                               |
-| 70%       | FE apps, demo-fe-ts-nextjs, Dart FE                         |
+| 80%       | Content platforms (crud-fs-ts-nextjs, crud-fs-ts-nextjs)    |
+| 75%       | Fullstack (crud-fs-ts-nextjs)                               |
+| 70%       | FE apps, crud-fe-ts-nextjs, Dart FE                         |
 
 ## Docker Setup Requirements
 
@@ -49,9 +49,9 @@ Every app with a `dev` or `test:integration` target must have:
 
 | Variant Type           | Pairs With                           |
 | ---------------------- | ------------------------------------ |
-| Backend (demo-be-\*)   | Default frontend (demo-fe-ts-nextjs) |
-| Frontend (demo-fe-\*)  | Default backend (demo-be-golang-gin) |
-| Fullstack (demo-fs-\*) | Self-contained                       |
+| Backend (crud-be-\*)   | Default frontend (crud-fe-ts-nextjs) |
+| Frontend (crud-fe-\*)  | Default backend (crud-be-golang-gin) |
+| Fullstack (crud-fs-\*) | Self-contained                       |
 
 ## Gherkin Consumption Mandate
 

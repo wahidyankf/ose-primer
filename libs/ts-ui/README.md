@@ -6,12 +6,12 @@ Shared React component library for the open-sharia-enterprise monorepo. Built on
 
 | Component | Source                         | Pattern                                     |
 | --------- | ------------------------------ | ------------------------------------------- |
-| Button    | demo-fs-ts-nextjs (reconciled) | CVA variants, 6 variants, 8 sizes, asChild  |
-| Alert     | demo-fs-ts-nextjs              | CVA variants, role="alert"                  |
-| Dialog    | demo-fs-ts-nextjs              | Radix Dialog, portal, overlay, close button |
-| Input     | demo-fs-ts-nextjs              | focus-visible, aria-invalid                 |
-| Card      | demo-fe-ts-nextjs (modernized) | Subcomponents with data-slot                |
-| Label     | demo-fe-ts-nextjs (modernized) | Radix Label                                 |
+| Button    | crud-fs-ts-nextjs (reconciled) | CVA variants, 6 variants, 8 sizes, asChild  |
+| Alert     | crud-fs-ts-nextjs              | CVA variants, role="alert"                  |
+| Dialog    | crud-fs-ts-nextjs              | Radix Dialog, portal, overlay, close button |
+| Input     | crud-fs-ts-nextjs              | focus-visible, aria-invalid                 |
+| Card      | crud-fe-ts-nextjs (modernized) | Subcomponents with data-slot                |
+| Label     | crud-fe-ts-nextjs (modernized) | Radix Label                                 |
 
 ## Usage
 

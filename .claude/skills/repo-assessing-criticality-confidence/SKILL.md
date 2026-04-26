@@ -415,7 +415,7 @@ for finding in low_priority:
 - Suggest adding related links
 - Consider alternative organization
 
-### demo-fs-ts-nextjs Content (Next.js)
+### crud-fs-ts-nextjs Content (Next.js)
 
 **CRITICAL**:
 - Missing required `title` field (page fails to render)

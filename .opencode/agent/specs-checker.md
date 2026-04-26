@@ -37,21 +37,21 @@ folders and their subfolders — nothing else.
 
 ```
 # Single folder — validate demo-be and all its subfolders
-folders: [specs/apps/demo/be]
+folders: [specs/apps/crud/be]
 
 # Multiple folders — validate each AND check cross-folder consistency
-folders: [specs/apps/demo/be, specs/apps/demo/fe]
+folders: [specs/apps/crud/be, specs/apps/crud/fe]
 
 # Mixed tiers
-folders: [specs/apps/demo/be, specs/libs/golang-commons]
+folders: [specs/apps/crud/be, specs/libs/golang-commons]
 ```
 
 **Rules:**
 
 - Each folder in the list is validated independently (Categories 1-3, 5-8)
 - Cross-folder consistency (Category 4) runs **only** across the listed folders
-- Subfolders are always included automatically — listing `specs/apps/demo/be` includes
-  `specs/apps/demo/be/gherkin/`, `specs/apps/demo/c4/`, and all children
+- Subfolders are always included automatically — listing `specs/apps/crud/be` includes
+  `specs/apps/crud/be/gherkin/`, `specs/apps/crud/c4/`, and all children
 - Folders NOT in the list are completely ignored, even if referenced by listed folders
 
 ## Validation Categories
@@ -221,8 +221,8 @@ Use the standard audit report format:
 
 **Folders validated**:
 
-- `specs/apps/demo/be`
-- `specs/apps/demo/fe`
+- `specs/apps/crud/be`
+- `specs/apps/crud/fe`
 
 **Timestamp**: YYYY-MM-DD--HH-MM UTC+7
 **UUID Chain**: {uuid}
@@ -238,7 +238,7 @@ Use the standard audit report format:
 
 ## Findings by Folder
 
-### specs/apps/demo/be
+### specs/apps/crud/be
 
 #### [CRITICAL] {Category} — {Brief description}
 
@@ -248,7 +248,7 @@ Use the standard audit report format:
 **Expected**: What should be there
 **Confidence**: HIGH | MEDIUM
 
-### specs/apps/demo/fe
+### specs/apps/crud/fe
 
 [... findings for this folder ...]
 
@@ -256,7 +256,7 @@ Use the standard audit report format:
 
 #### [HIGH] Cross-Folder Consistency — {Brief description}
 
-**Folders**: `specs/apps/demo/be`, `specs/apps/demo/fe`
+**Folders**: `specs/apps/crud/be`, `specs/apps/crud/fe`
 **Evidence**: What contradicts or doesn't blend
 **Expected**: What consistency looks like
 **Confidence**: HIGH | MEDIUM

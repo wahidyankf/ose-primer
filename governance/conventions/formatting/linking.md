@@ -302,7 +302,7 @@ Final path: ../../../docs/tutorials/README.md
 
 ## Historical: Hugo Content Linking (DEPRECATED)
 
-**Note**: Both `apps/demo-fs-ts-nextjs/` and `apps/demo-fs-ts-nextjs/` have migrated to Next.js 16. The Hugo-specific linking rules below no longer apply to active sites. This section is preserved for historical reference only.
+**Note**: Both `apps/crud-fs-ts-nextjs/` and `apps/crud-fs-ts-nextjs/` have migrated to Next.js 16. The Hugo-specific linking rules below no longer apply to active sites. This section is preserved for historical reference only.
 
 **Previous Hugo rules** (no longer applicable):
 

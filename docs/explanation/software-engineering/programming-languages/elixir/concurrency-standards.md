@@ -606,7 +606,7 @@ end
 
 ---
 
-**Enforcement**: Automated validation via `apps__demo-fs-ts-nextjs__general-checker` agent
+**Enforcement**: Automated validation via `apps__crud-fs-ts-nextjs__general-checker` agent
 
 **Elixir Version**: 1.12+ (baseline), 1.17+ (recommended), 1.19.0 (latest)
 **Maintainers**: Platform Documentation Team

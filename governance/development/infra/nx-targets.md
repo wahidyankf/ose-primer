@@ -164,26 +164,26 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 
 | Project                   | Tags                                                                  |
 | ------------------------- | --------------------------------------------------------------------- |
-| `demo-fs-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:demo"]`           |
+| `crud-fs-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:demo"]`           |
 | `rhino-cli`               | `["type:app", "platform:cli", "lang:golang", "domain:demo"]`          |
 | `rhino-cli`               | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`       |
-| `demo-be-java-springboot` | `["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"]` |
-| `demo-be-elixir-phoenix`  | `["type:app", "platform:phoenix", "lang:elixir", "domain:demo-be"]`   |
-| `demo-be-fsharp-giraffe`  | `["type:app", "platform:giraffe", "lang:fsharp", "domain:demo-be"]`   |
-| `demo-be-golang-gin`      | `["type:app", "platform:gin", "lang:golang", "domain:demo-be"]`       |
-| `demo-be-python-fastapi`  | `["type:app", "platform:fastapi", "lang:python", "domain:demo-be"]`   |
-| `demo-be-rust-axum`       | `["type:app", "platform:axum", "lang:rust", "domain:demo-be"]`        |
-| `demo-be-kotlin-ktor`     | `["type:app", "platform:ktor", "lang:kotlin", "domain:demo-be"]`      |
-| `demo-be-java-vertx`      | `["type:app", "platform:vertx", "lang:java", "domain:demo-be"]`       |
-| `demo-be-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo-be"]`    |
-| `demo-fe-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:demo"]`           |
-| `demo-be-fsharp-giraffe`  | `["type:app", "platform:giraffe", "lang:fsharp", "domain:demo"]`      |
-| `demo-fe-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo"]`       |
-| `demo-be-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo"]`       |
-| `demo-fe-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:demo-fe"]`        |
-| `demo-fe-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo-fe"]`    |
+| `crud-be-java-springboot` | `["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"]` |
+| `crud-be-elixir-phoenix`  | `["type:app", "platform:phoenix", "lang:elixir", "domain:demo-be"]`   |
+| `crud-be-fsharp-giraffe`  | `["type:app", "platform:giraffe", "lang:fsharp", "domain:demo-be"]`   |
+| `crud-be-golang-gin`      | `["type:app", "platform:gin", "lang:golang", "domain:demo-be"]`       |
+| `crud-be-python-fastapi`  | `["type:app", "platform:fastapi", "lang:python", "domain:demo-be"]`   |
+| `crud-be-rust-axum`       | `["type:app", "platform:axum", "lang:rust", "domain:demo-be"]`        |
+| `crud-be-kotlin-ktor`     | `["type:app", "platform:ktor", "lang:kotlin", "domain:demo-be"]`      |
+| `crud-be-java-vertx`      | `["type:app", "platform:vertx", "lang:java", "domain:demo-be"]`       |
+| `crud-be-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo-be"]`    |
+| `crud-fe-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:demo"]`           |
+| `crud-be-fsharp-giraffe`  | `["type:app", "platform:giraffe", "lang:fsharp", "domain:demo"]`      |
+| `crud-fe-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo"]`       |
+| `crud-be-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo"]`       |
+| `crud-fe-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:demo-fe"]`        |
+| `crud-fe-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo-fe"]`    |
 | `rhino-cli`               | `["type:app", "platform:cli", "lang:golang", "domain:demo"]`          |
-| `demo-fs-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:demo"]`           |
+| `crud-fs-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:demo"]`           |
 | `golang-commons`          | `["type:lib", "lang:golang"]`                                         |
 | `golang-commons`          | `["type:lib", "lang:golang"]`                                         |
 | `clojure-openapi-codegen` | `["type:lib", "lang:clojure", "domain:tooling"]`                      |
@@ -197,7 +197,7 @@ A Spring Boot app for the demo-be domain declares all four dimensions:
 
 ```json
 {
-  "name": "demo-be-java-springboot",
+  "name": "crud-be-java-springboot",
   "tags": ["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"]
 }
 ```
@@ -240,17 +240,17 @@ Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → int
 
 | Backend                     | `typecheck` command                                               |
 | --------------------------- | ----------------------------------------------------------------- |
-| `demo-be-golang-gin`        | `CGO_ENABLED=0 go vet ./...`                                      |
-| `demo-be-java-springboot`   | `rhino-cli java validate-annotations` + `mvn compile -Pnullcheck` |
-| `demo-be-java-vertx`        | `rhino-cli java validate-annotations` + `mvn compile -Pnullcheck` |
-| `demo-be-elixir-phoenix`    | `mix compile --warnings-as-errors`                                |
-| `demo-be-python-fastapi`    | `uv run pyright`                                                  |
-| `demo-be-fsharp-giraffe`    | `dotnet build .fsproj /p:TreatWarningsAsErrors=true --no-restore` |
-| `demo-be-ts-effect`         | `npx tsc --noEmit`                                                |
-| `demo-be-kotlin-ktor`       | `./gradlew compileKotlin`                                         |
-| `demo-be-csharp-aspnetcore` | `dotnet build .csproj /p:TreatWarningsAsErrors=true --no-restore` |
-| `demo-be-clojure-pedestal`  | `clj-kondo --lint src`                                            |
-| `demo-be-rust-axum`         | `cargo check`                                                     |
+| `crud-be-golang-gin`        | `CGO_ENABLED=0 go vet ./...`                                      |
+| `crud-be-java-springboot`   | `rhino-cli java validate-annotations` + `mvn compile -Pnullcheck` |
+| `crud-be-java-vertx`        | `rhino-cli java validate-annotations` + `mvn compile -Pnullcheck` |
+| `crud-be-elixir-phoenix`    | `mix compile --warnings-as-errors`                                |
+| `crud-be-python-fastapi`    | `uv run pyright`                                                  |
+| `crud-be-fsharp-giraffe`    | `dotnet build .fsproj /p:TreatWarningsAsErrors=true --no-restore` |
+| `crud-be-ts-effect`         | `npx tsc --noEmit`                                                |
+| `crud-be-kotlin-ktor`       | `./gradlew compileKotlin`                                         |
+| `crud-be-csharp-aspnetcore` | `dotnet build .csproj /p:TreatWarningsAsErrors=true --no-restore` |
+| `crud-be-clojure-pedestal`  | `clj-kondo --lint src`                                            |
+| `crud-be-rust-axum`         | `cargo check`                                                     |
 
 \* E2E tests live in dedicated `*-e2e` runner projects, not in the backend/frontend project itself.
 
@@ -352,7 +352,7 @@ Two integration test patterns exist depending on project type:
 | Pattern             | Projects                                                    | Requirement                                                                                                                                                | Cacheable |
 | ------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
 | Docker + PostgreSQL | All 11 demo-be backends                                     | Real PostgreSQL via `docker-compose.integration.yml`; calls application code directly (no HTTP layer); runs all shared Gherkin scenarios; fresh DB per run | No        |
-| In-process mocking  | `demo-fe-ts-nextjs` (MSW), Go CLIs (Godog), Go libs (Godog) | In-process mocking only (MSW / godog `RunE` / mock fixtures); no real database or external services; fully deterministic                                   | Yes       |
+| In-process mocking  | `crud-fe-ts-nextjs` (MSW), Go CLIs (Godog), Go libs (Godog) | In-process mocking only (MSW / godog `RunE` / mock fixtures); no real database or external services; fully deterministic                                   | Yes       |
 
 **Demo-be backends** expose `test:integration` which runs `docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`. This starts a fresh PostgreSQL container, runs migrations, and executes all shared Gherkin scenarios by calling application service/repository functions directly — no HTTP layer. Each backend has a `docker-compose.integration.yml` (postgres + test runner services) and a `Dockerfile.integration` (language runtime + test execution). Coverage is NOT measured at the integration level — coverage comes from `test:unit` only.
 
@@ -398,13 +398,13 @@ Playwright suites (`*-e2e`):
 **BDD suites**: When the E2E project uses playwright-bdd, `test:e2e` runs
 `npx bddgen && npx playwright test`. The `bddgen` step regenerates `.features-gen/`
 spec files from the Gherkin feature files before Playwright executes them.
-See `apps/demo-be-e2e/project.json` for the canonical example.
+See `apps/crud-be-e2e/project.json` for the canonical example.
 
 **Demo-be `test:integration` with docker-compose**: All 11 demo-be backends expose `test:integration`
 which runs `docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`.
 Each backend's `docker-compose.integration.yml` defines a `postgres` service (postgres:17-alpine with healthcheck)
 and a `test-runner` service that depends on PostgreSQL being healthy. The test runner runs migrations,
-optionally loads seed data, then executes all shared Gherkin scenarios from `specs/apps/demo/be/gherkin/`
+optionally loads seed data, then executes all shared Gherkin scenarios from `specs/apps/crud/be/gherkin/`
 by calling application service/repository functions directly — no HTTP layer. The specs volume is
 mounted read-only at `../../specs:/specs:ro`. After tests complete, `docker-compose` tears down all
 containers and volumes.
@@ -430,11 +430,11 @@ the project's feature files has a matching step definition in the implementation
 | Go CLI apps (`rhino-cli`, `rhino-cli`, `rhino-cli`)          | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                    |
 | Demo-be backends (all 11)                                    | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
 | Demo-fe frontends                                            | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| Fullstack (`demo-fs-ts-nextjs`)                              | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| E2E runners (`demo-be-e2e`, `demo-fe-e2e`)                   | Enforced | `--shared-steps` only; test-support steps are implemented here                              |
-| Content platforms (`demo-fs-ts-nextjs`, `demo-fs-ts-nextjs`) | Enforced | `--shared-steps`                                                                            |
-| Web UI apps (`demo-fe-ts-nextjs`)                            | Enforced | `--shared-steps`                                                                            |
-| demo backend (`demo-be-fsharp-giraffe`)                      | Enforced | `--shared-steps`                                                                            |
+| Fullstack (`crud-fs-ts-nextjs`)                              | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
+| E2E runners (`crud-be-e2e`, `crud-fe-e2e`)                   | Enforced | `--shared-steps` only; test-support steps are implemented here                              |
+| Content platforms (`crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`) | Enforced | `--shared-steps`                                                                            |
+| Web UI apps (`crud-fe-ts-nextjs`)                            | Enforced | `--shared-steps`                                                                            |
+| demo backend (`crud-be-fsharp-giraffe`)                      | Enforced | `--shared-steps`                                                                            |
 | Libraries (`golang-commons`, `golang-commons`)               | Enforced | `--shared-steps`                                                                            |
 | Projects with genuine step gaps                              | Deferred | `spec-coverage` target exists but validation deferred until step implementation is complete |
 
@@ -449,11 +449,11 @@ files as inputs so the cache invalidates when specs or step definitions change:
   "executor": "nx:run-commands",
   "cache": true,
   "inputs": [
-    "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature",
+    "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature",
     "{projectRoot}/src/**/*.go"
   ],
   "options": {
-    "command": "rhino-cli spec-coverage validate specs/apps/demo/be/gherkin --shared-steps --exclude-dir test-support apps/demo-be-golang-gin/internal apps/demo-be-golang-gin/cmd"
+    "command": "rhino-cli spec-coverage validate specs/apps/crud/be/gherkin --shared-steps --exclude-dir test-support apps/crud-be-golang-gin/internal apps/crud-be-golang-gin/cmd"
   }
 }
 ```
@@ -470,9 +470,9 @@ quality gate, and scheduled Test CI workflows):
 
 | Project                                                                     | Static a11y tool           |
 | --------------------------------------------------------------------------- | -------------------------- |
-| `demo-fe-ts-nextjs`, `demo-fe-ts-tanstack-start`, `demo-fs-ts-nextjs`       | `oxlint --jsx-a11y-plugin` |
-| `demo-fe-ts-nextjs`, `demo-fs-ts-nextjs`, `demo-fs-ts-nextjs`, `libs/ts-ui` | `oxlint --jsx-a11y-plugin` |
-| `demo-fe-dart-flutterweb`                                                   | `dart analyze`             |
+| `crud-fe-ts-nextjs`, `crud-fe-ts-tanstack-start`, `crud-fs-ts-nextjs`       | `oxlint --jsx-a11y-plugin` |
+| `crud-fe-ts-nextjs`, `crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`, `libs/ts-ui` | `oxlint --jsx-a11y-plugin` |
+| `crud-fe-dart-flutterweb`                                                   | `dart analyze`             |
 
 Static a11y linting catches common accessibility violations at compile time: missing alt text,
 missing ARIA labels, invalid ARIA attributes, missing form labels, and incorrect role usage.
@@ -592,21 +592,21 @@ cross-project dependencies like shared Gherkin specs or generated contracts.
 
 All demo-be backends must include Gherkin specs and generated contracts in `test:unit` and
 `test:quick` inputs. The Gherkin specs path is always
-`{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature`. The generated-contracts path varies by
+`{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature`. The generated-contracts path varies by
 language:
 
 | Language        | Source files                                                                                                       | Generated contracts                                   | Gherkin specs                                             |
 | --------------- | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- | --------------------------------------------------------- |
-| Go              | `{projectRoot}/internal/**/*.go`, `{projectRoot}/cmd/**/*.go`, `{projectRoot}/go.mod`, `{projectRoot}/go.sum`      | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
-| Java (Maven)    | `{projectRoot}/src/**`, `{projectRoot}/pom.xml`                                                                    | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
-| Kotlin (Gradle) | `{projectRoot}/src/**`, `{projectRoot}/build.gradle.kts`                                                           | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
-| Rust            | `{projectRoot}/src/**/*.rs`, `{projectRoot}/tests/**/*.rs`, `{projectRoot}/Cargo.toml`, `{projectRoot}/Cargo.lock` | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
-| TypeScript      | `{projectRoot}/src/**/*.ts`, `{projectRoot}/tests/**/*.ts`, `{projectRoot}/vitest.config.ts`                       | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
-| Python          | `{projectRoot}/src/**/*.py`, `{projectRoot}/tests/**/*.py`                                                         | `{projectRoot}/generated_contracts/**/*` (underscore) | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
-| Elixir          | `{projectRoot}/lib/**/*.ex`, `{projectRoot}/test/**/*.exs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
-| F#              | `{projectRoot}/src/**/*.fs`, `{projectRoot}/tests/**/*.fs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
-| C#              | `{projectRoot}/src/**/*.cs`, `{projectRoot}/tests/**/*.cs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
-| Clojure         | `{projectRoot}/src/**/*`, `{projectRoot}/test/**/*`, `{projectRoot}/tests.edn`                                     | `{projectRoot}/generated_contracts/**/*` (underscore) | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
+| Go              | `{projectRoot}/internal/**/*.go`, `{projectRoot}/cmd/**/*.go`, `{projectRoot}/go.mod`, `{projectRoot}/go.sum`      | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` |
+| Java (Maven)    | `{projectRoot}/src/**`, `{projectRoot}/pom.xml`                                                                    | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` |
+| Kotlin (Gradle) | `{projectRoot}/src/**`, `{projectRoot}/build.gradle.kts`                                                           | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` |
+| Rust            | `{projectRoot}/src/**/*.rs`, `{projectRoot}/tests/**/*.rs`, `{projectRoot}/Cargo.toml`, `{projectRoot}/Cargo.lock` | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` |
+| TypeScript      | `{projectRoot}/src/**/*.ts`, `{projectRoot}/tests/**/*.ts`, `{projectRoot}/vitest.config.ts`                       | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` |
+| Python          | `{projectRoot}/src/**/*.py`, `{projectRoot}/tests/**/*.py`                                                         | `{projectRoot}/generated_contracts/**/*` (underscore) | `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` |
+| Elixir          | `{projectRoot}/lib/**/*.ex`, `{projectRoot}/test/**/*.exs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` |
+| F#              | `{projectRoot}/src/**/*.fs`, `{projectRoot}/tests/**/*.fs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` |
+| C#              | `{projectRoot}/src/**/*.cs`, `{projectRoot}/tests/**/*.cs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` |
+| Clojure         | `{projectRoot}/src/**/*`, `{projectRoot}/test/**/*`, `{projectRoot}/tests.edn`                                     | `{projectRoot}/generated_contracts/**/*` (underscore) | `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` |
 | Frontend TS     | `{projectRoot}/src/**/*.ts`, `{projectRoot}/src/**/*.tsx`, `{projectRoot}/vitest.config.ts`                        | `{projectRoot}/src/generated-contracts/**/*`          | N/A                                                       |
 | Frontend Dart   | `{projectRoot}/lib/**/*.dart`, `{projectRoot}/test/**/*.dart`                                                      | `{projectRoot}/generated-contracts/**/*`              | N/A                                                       |
 
@@ -618,8 +618,8 @@ conventions). All other languages use hyphen in `generated-contracts/`.
 | CLI App     | Gherkin specs input                             |
 | ----------- | ----------------------------------------------- |
 | `rhino-cli` | `{workspaceRoot}/specs/apps/rhino/**/*.feature` |
-| `rhino-cli` | `{workspaceRoot}/specs/apps/demo/**/*.feature`  |
-| `rhino-cli` | `{workspaceRoot}/specs/apps/demo/**/*.feature`  |
+| `rhino-cli` | `{workspaceRoot}/specs/apps/crud/**/*.feature`  |
+| `rhino-cli` | `{workspaceRoot}/specs/apps/crud/**/*.feature`  |
 
 Example for `rhino-cli` `test:unit` inputs:
 
@@ -646,7 +646,7 @@ complete. See the "Spec-Coverage Projects" section for flags and project-by-proj
 ## Codegen Dependency Chain
 
 All demo apps share a `codegen` target that generates types and encoders/decoders from the OpenAPI
-contract spec at `specs/apps/demo/contracts/` into `generated-contracts/`.
+contract spec at `specs/apps/crud/contracts/` into `generated-contracts/`.
 
 The dependency chain is:
 
@@ -660,7 +660,7 @@ ensures generated contract types are always present before type-checking or buil
 
 **`test:unit` and `test:quick` do NOT directly depend on `codegen`** — they depend on source
 files being correct, which is already enforced by `typecheck` and `build`. The exceptions are
-`demo-be-rust-axum` and `demo-fe-dart-flutterweb`, which keep `dependsOn: ["codegen"]` in
+`crud-be-rust-axum` and `crud-fe-dart-flutterweb`, which keep `dependsOn: ["codegen"]` in
 `test:unit` / `test:quick` because their build systems require generated code to be present before
 test compilation.
 

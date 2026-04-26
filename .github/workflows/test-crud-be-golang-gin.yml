@@ -1,0 +1,46 @@
+name: Test - Crud BE (Go/Gin)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  spec-coverage:
+    uses: ./.github/workflows/_reusable-backend-spec-coverage.yml
+    with:
+      backend-name: crud-be-golang-gin
+      language: golang
+  lint:
+    uses: ./.github/workflows/_reusable-backend-lint.yml
+    with:
+      backend-name: crud-be-golang-gin
+      language: golang
+
+  typecheck:
+    uses: ./.github/workflows/_reusable-backend-typecheck.yml
+    with:
+      backend-name: crud-be-golang-gin
+      language: golang
+
+  coverage:
+    uses: ./.github/workflows/_reusable-backend-coverage.yml
+    with:
+      backend-name: crud-be-golang-gin
+      language: golang
+
+  integration:
+    uses: ./.github/workflows/_reusable-backend-integration.yml
+    with:
+      backend-name: crud-be-golang-gin
+      language: golang
+      compose-file: apps/crud-be-golang-gin/docker-compose.integration.yml
+
+  e2e:
+    needs: integration
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-golang-gin
+      language: golang
+      compose-dir: infra/dev/crud-be-golang-gin

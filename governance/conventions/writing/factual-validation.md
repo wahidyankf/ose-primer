@@ -763,7 +763,7 @@ Recommendation: Clarify which context applies or use HTTPS everywhere
 
 **Agent:** `docs-checker`, `docs-fixer`
 
-### static-site Educational Content (demo-fs-ts-nextjs)
+### static-site Educational Content (crud-fs-ts-nextjs)
 
 **Validation Focus:**
 
@@ -775,7 +775,7 @@ Recommendation: Clarify which context applies or use HTTPS everywhere
 
 **Agent:** `docs-tutorial-checker`, `docs-tutorial-fixer`
 
-### static-site Platform Content (demo-fs-ts-nextjs)
+### static-site Platform Content (crud-fs-ts-nextjs)
 
 **Validation Focus:**
 

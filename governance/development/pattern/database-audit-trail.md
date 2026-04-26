@@ -80,18 +80,18 @@ Each demo backend uses the idiomatic migration tool for its language and framewo
 
 | App                       | Migration Tool       | License          |
 | ------------------------- | -------------------- | ---------------- |
-| demo-be-java-springboot   | Liquibase            | FSL-1.1-ALv2     |
-| demo-be-java-vertx        | Liquibase            | FSL-1.1-ALv2     |
-| demo-be-elixir-phoenix    | Ecto                 | Apache 2.0       |
-| demo-be-python-fastapi    | Alembic              | MIT              |
-| demo-be-golang-gin        | goose                | MIT              |
-| demo-be-kotlin-ktor       | Flyway Community     | Apache 2.0       |
-| demo-be-fsharp-giraffe    | DbUp                 | MIT              |
-| demo-be-csharp-aspnetcore | EF Core Migrations   | MIT              |
-| demo-be-clojure-pedestal  | Migratus             | Apache 2.0       |
-| demo-be-ts-effect         | @effect/sql Migrator | MIT              |
-| demo-be-rust-axum         | SQLx                 | MIT / Apache 2.0 |
-| demo-fs-ts-nextjs         | Drizzle              | Apache 2.0       |
+| crud-be-java-springboot   | Liquibase            | FSL-1.1-ALv2     |
+| crud-be-java-vertx        | Liquibase            | FSL-1.1-ALv2     |
+| crud-be-elixir-phoenix    | Ecto                 | Apache 2.0       |
+| crud-be-python-fastapi    | Alembic              | MIT              |
+| crud-be-golang-gin        | goose                | MIT              |
+| crud-be-kotlin-ktor       | Flyway Community     | Apache 2.0       |
+| crud-be-fsharp-giraffe    | DbUp                 | MIT              |
+| crud-be-csharp-aspnetcore | EF Core Migrations   | MIT              |
+| crud-be-clojure-pedestal  | Migratus             | Apache 2.0       |
+| crud-be-ts-effect         | @effect/sql Migrator | MIT              |
+| crud-be-rust-axum         | SQLx                 | MIT / Apache 2.0 |
+| crud-fs-ts-nextjs         | Drizzle              | Apache 2.0       |
 
 ## Schema Migration
 

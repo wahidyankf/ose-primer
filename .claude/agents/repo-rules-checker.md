@@ -681,12 +681,12 @@ Validate file naming, linking, emoji usage, convention compliance per existing l
 
    - Verify all product app directories have MIT LICENSE matching root LICENSE
    - Verify all `libs/*` directories have MIT LICENSE
-   - Verify all `apps/demo-*` implementation directories (excluding `*-e2e`) have MIT LICENSE
-   - Verify `apps/demo-be-e2e/` and `apps/demo-fe-e2e/` have MIT LICENSE
+   - Verify all `apps/crud-*` implementation directories (excluding `*-e2e`) have MIT LICENSE
+   - Verify `apps/crud-be-e2e/` and `apps/crud-fe-e2e/` have MIT LICENSE
    - Verify `specs/` root has MIT LICENSE
-   - Verify `specs/apps/demo/` has MIT LICENSE (demo specs are educational)
+   - Verify `specs/apps/crud/` has MIT LICENSE (demo specs are educational)
    - Verify LICENSING-NOTICE.md table matches actual LICENSE files on disk
-   - Verify CLAUDE.md, README.md, and demo-fs-ts-nextjs about.md license descriptions are consistent with LICENSING-NOTICE.md
+   - Verify CLAUDE.md, README.md, and crud-fs-ts-nextjs about.md license descriptions are consistent with LICENSING-NOTICE.md
    - Verify no stale "all specs are FSL" language without demo exception
    - **Criticality**: Missing LICENSE = CRITICAL; wrong license type = HIGH; cross-doc inconsistency = MEDIUM
 

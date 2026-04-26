@@ -313,7 +313,7 @@ Agents can reference multiple Skills that work together:
 ```yaml
 ---
 name: swe-typescript-dev
-description: Expert at creating general Next.js content for demo-fs-ts-nextjs. Use when creating or updating general content pages for the demo website.
+description: Expert at creating general Next.js content for crud-fs-ts-nextjs. Use when creating or updating general content pages for the demo website.
 tools: Read, Write, Edit, Glob, Grep
 model: sonnet
 color: blue
@@ -444,7 +444,7 @@ After frontmatter, agents should follow this structure:
 
 **Required Sections:**
 
-1. **Title (H1)**: Must follow pattern `# [Name] Agent`. Exception: App-scoped agents may use `# [Role] for [app-name]` (e.g., `# Content Checker for demo-fs-ts-nextjs`)
+1. **Title (H1)**: Must follow pattern `# [Name] Agent`. Exception: App-scoped agents may use `# [Role] for [app-name]` (e.g., `# Content Checker for crud-fs-ts-nextjs`)
 2. **Core Expertise/Responsibility (H2)**: Clear purpose statement
 3. **Reference Documentation (H2)**: Links to relevant conventions and guidance
 
@@ -494,7 +494,7 @@ FAIL: Bad:
 - doc_writer.md (snake_case)
 - documentation-writer-agent.md (redundant suffix)
 - demo-general-maker.md (missing scope delimiter)
-- apps_demo-fs-ts-nextjs_general-maker.md (wrong delimiter - use hyphens)
+- apps_crud-fs-ts-nextjs_general-maker.md (wrong delimiter - use hyphens)
 ```
 
 ### Scope Prefix Guidelines
@@ -502,7 +502,7 @@ FAIL: Bad:
 **When to use scope prefixes:**
 
 1. **`apps-[app-name]-`** - Agent works ONLY with a specific app
-   - Content creation for Next.js sites (demo-fs-ts-nextjs, demo-fs-ts-nextjs)
+   - Content creation for Next.js sites (crud-fs-ts-nextjs, crud-fs-ts-nextjs)
    - App-specific validation, deployment, structure management
    - Examples: `swe-typescript-dev`, `docs-file-manager`
 
@@ -524,7 +524,7 @@ FAIL: Bad:
 
 **Scope naming rules:**
 
-- App/lib names must match directory names exactly (e.g., `demo-fs-ts-nextjs` matches `apps/demo-fs-ts-nextjs/`)
+- App/lib names must match directory names exactly (e.g., `crud-fs-ts-nextjs` matches `apps/crud-fs-ts-nextjs/`)
 - Use kebab-case throughout (no camelCase, PascalCase, or snake_case)
 - Hyphens `-` separate all parts of the agent name (consistent kebab-case throughout)
 - Agent name after scope uses standard kebab-case patterns
@@ -554,7 +554,7 @@ Example - App-scoped agent:
 
 ```yaml
 name: swe-typescript-dev # Includes scope prefix
-description: Expert at creating general Next.js content for demo-fs-ts-nextjs. Use when creating or updating general content pages for the demo website. # Detailed usage guidance
+description: Expert at creating general Next.js content for crud-fs-ts-nextjs. Use when creating or updating general content pages for the demo website. # Detailed usage guidance
 ```
 
 ## 🔒 Tool Access Patterns
@@ -1232,7 +1232,7 @@ Agent files are organized into **three complexity tiers** with corresponding siz
 
 **Examples**:
 
-- apps-demo-fe-ts-nextjs-deployer (deployment automation)
+- apps-crud-fe-ts-nextjs-deployer (deployment automation)
 - social-linkedin-post-maker (single-purpose content generation)
 - repo-workflow-maker (workflow document creation)
 

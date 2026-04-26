@@ -1,0 +1,48 @@
+name: Test - Crud BE (Python/FastAPI)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  spec-coverage:
+    uses: ./.github/workflows/_reusable-backend-spec-coverage.yml
+    with:
+      backend-name: crud-be-python-fastapi
+      language: python
+  lint:
+    uses: ./.github/workflows/_reusable-backend-lint.yml
+    with:
+      backend-name: crud-be-python-fastapi
+      language: python
+
+  typecheck:
+    uses: ./.github/workflows/_reusable-backend-typecheck.yml
+    with:
+      backend-name: crud-be-python-fastapi
+      language: python
+
+  coverage:
+    uses: ./.github/workflows/_reusable-backend-coverage.yml
+    with:
+      backend-name: crud-be-python-fastapi
+      language: python
+
+  integration:
+    uses: ./.github/workflows/_reusable-backend-integration.yml
+    with:
+      backend-name: crud-be-python-fastapi
+      language: python
+      compose-file: apps/crud-be-python-fastapi/docker-compose.integration.yml
+
+  e2e:
+    needs: integration
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-python-fastapi
+      language: python
+      compose-dir: infra/dev/crud-be-python-fastapi
+      be-e2e-target: "test:e2e:no-test-api"
+      be-e2e-extra-env: "DATABASE_URL=postgresql://crud_be_python_fastapi:crud_be_python_fastapi@localhost:5432/crud_be_python_fastapi"

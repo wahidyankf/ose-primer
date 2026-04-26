@@ -1,0 +1,94 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "crud-fe-dart-flutterweb",
+  "sourceRoot": "apps/crud-fe-dart-flutterweb/lib",
+  "projectType": "application",
+  "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/contracts/generated/openapi-bundled.yaml -g dart -o $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts --additional-properties=pubName=crud_contracts --global-property=models,modelDocs=false,apiDocs=false && (WS_ROOT=$(pwd) && cd $(pwd)/apps/rhino-cli && CGO_ENABLED=0 go run main.go contracts dart-scaffold $WS_ROOT/apps/crud-fe-dart-flutterweb/generated-contracts) && cd $(pwd)/apps/crud-fe-dart-flutterweb && flutter pub get"
+      },
+      "dependsOn": ["crud-contracts:bundle"],
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml",
+        "{workspaceRoot}/apps/rhino-cli/cmd/**/*.go",
+        "{workspaceRoot}/apps/rhino-cli/internal/**/*.go"
+      ],
+      "outputs": ["{projectRoot}/generated-contracts"]
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "flutter run -d chrome --web-port 3301",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "flutter build web --release",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/build/web"],
+      "dependsOn": ["codegen"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["codegen"],
+      "options": {
+        "command": "dart analyze --fatal-infos",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["codegen"],
+      "options": {
+        "command": "dart analyze --fatal-infos",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "dependsOn": ["codegen"],
+      "inputs": [
+        "default",
+        "{projectRoot}/generated-contracts/**/*",
+        "{workspaceRoot}/specs/apps/crud/fe/gherkin/**/*.feature"
+      ],
+      "outputs": ["{projectRoot}/coverage/"],
+      "options": {
+        "commands": [
+          "flutter test test/unit --coverage",
+          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/crud-fe-dart-flutterweb/coverage/lcov.info 70)"
+        ],
+        "parallel": false,
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "dependsOn": ["codegen"],
+      "inputs": [
+        "default",
+        "{projectRoot}/generated-contracts/**/*",
+        "{workspaceRoot}/specs/apps/crud/fe/gherkin/**/*.feature"
+      ],
+      "options": {
+        "command": "flutter test test/unit",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps specs/apps/crud/fe/gherkin apps/crud-fe-dart-flutterweb",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/crud/fe/gherkin/**/*.feature", "{projectRoot}/**/*.dart"]
+    }
+  },
+  "tags": ["type:app", "platform:flutter", "lang:dart", "domain:demo-fe"],
+  "implicitDependencies": ["crud-contracts", "rhino-cli"]
+}

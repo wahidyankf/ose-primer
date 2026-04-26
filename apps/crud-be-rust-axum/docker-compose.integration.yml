@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: crud_be_rust
+      POSTGRES_USER: crud_be_rust
+      POSTGRES_PASSWORD: crud_be_rust
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crud_be_rust -d crud_be_rust"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.integration
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgres://crud_be_rust:crud_be_rust@postgres:5432/crud_be_rust"
+    volumes:
+      - ../../specs:/specs:ro

@@ -84,7 +84,7 @@ This protocol applies whenever a pull request exists as part of the development 
 This protocol does **not** apply to:
 
 - Direct commits to `main` (the default TBD workflow has no PR to merge).
-- Environment branch deployments managed by CI (e.g., `prod-demo-fs-ts-nextjs`), which are governed by their own documented CI workflows.
+- Environment branch deployments managed by CI (e.g., `prod-crud-fs-ts-nextjs`), which are governed by their own documented CI workflows.
 
 ### Draft PR Lifecycle (Worktree Mode)
 

@@ -13,7 +13,7 @@ tags:
 
 # Component Patterns Convention
 
-Standards for building UI components in the open-sharia-enterprise monorepo. These rules govern how components are structured, composed, and styled across `demo-fs-ts-nextjs`, `demo-fe-ts-nextjs`, `demo-fe-ts-nextjs`, and `demo-fs-ts-nextjs`.
+Standards for building UI components in the open-sharia-enterprise monorepo. These rules govern how components are structured, composed, and styled across `crud-fs-ts-nextjs`, `crud-fe-ts-nextjs`, `crud-fe-ts-nextjs`, and `crud-fs-ts-nextjs`.
 
 ## File Structure
 
@@ -213,7 +213,7 @@ return <Comp data-slot="button" className={cn(buttonVariants({ variant, size, cl
 
 ## Complete Button Example
 
-The following is the canonical `demo-fs-ts-nextjs` implementation, which all new apps should follow.
+The following is the canonical `crud-fs-ts-nextjs` implementation, which all new apps should follow.
 
 ```tsx
 // components/ui/button.tsx
@@ -281,7 +281,7 @@ function Button({
 export { Button, buttonVariants };
 ```
 
-Note: `demo-fe-ts-nextjs` currently uses `React.forwardRef` and `@radix-ui/react-slot`. Migrate it to the `React.ComponentProps` + `radix-ui` pattern described above when updating that component.
+Note: `crud-fe-ts-nextjs` currently uses `React.forwardRef` and `@radix-ui/react-slot`. Migrate it to the `React.ComponentProps` + `radix-ui` pattern described above when updating that component.
 
 ## Principles Implemented/Respected
 

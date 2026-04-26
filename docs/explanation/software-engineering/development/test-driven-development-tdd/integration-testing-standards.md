@@ -294,7 +294,7 @@ src/
       UserLoginIntegrationTest.java
 ```
 
-**TypeScript** (demo-fe-ts-nextjs pattern):
+**TypeScript** (crud-fe-ts-nextjs pattern):
 
 ```
 src/
