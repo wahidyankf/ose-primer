@@ -1,13 +1,19 @@
 ---
 name: plan-quality-gate
 goal: Validate plan completeness and technical accuracy, apply fixes iteratively until zero findings achieved
-termination: "Zero findings on two consecutive validations (max-iterations defaults to 10, escalation warning at 7)"
+termination: "Zero findings on two consecutive validations (max-iterations defaults to 7, escalation warning at 5)"
 inputs:
   - name: scope
     type: string
     description: Plan files to validate (e.g., "all", "plans/in-progress/", "specific-plan.md")
     required: false
     default: all
+  - name: mode
+    type: enum
+    values: [lax, normal, strict, ocd]
+    description: "Quality threshold (lax: CRITICAL only, normal: CRITICAL/HIGH, strict: +MEDIUM, ocd: all levels)"
+    required: false
+    default: strict
   - name: min-iterations
     type: number
     description: Minimum check-fix cycles before allowing zero-finding termination (prevents premature success)
@@ -16,7 +22,7 @@ inputs:
     type: number
     description: Maximum check-fix cycles to prevent infinite loops
     required: false
-    default: 10
+    default: 7
   - name: max-concurrency
     type: number
     description: Maximum number of agents/tasks that can run concurrently during workflow execution
@@ -111,19 +117,33 @@ Run plan validation to identify completeness and accuracy issues.
 
 Analyze audit report to determine if fixes are needed.
 
-**Condition Check**: Count ALL findings (HIGH, MEDIUM, and MINOR) in `{step1.outputs.audit-report-1}`
+**Condition Check**: Count findings based on mode level in `{step1.outputs.audit-report-1}`
 
-- If findings > 0: Proceed to step 3 (reset `consecutive_zero_count` to 0)
-- If findings = 0: Initialize `consecutive_zero_count` to 1 (this check is the first zero),
+- **lax**: Count CRITICAL only
+- **normal**: Count CRITICAL + HIGH
+- **strict**: Count CRITICAL + HIGH + MEDIUM (default)
+- **ocd**: Count all levels (CRITICAL, HIGH, MEDIUM, LOW)
+
+**Below-threshold findings**: Report but don't block success
+
+- **lax**: HIGH/MEDIUM/LOW reported, not counted
+- **normal**: MEDIUM/LOW reported, not counted
+- **strict**: LOW reported, not counted
+- **ocd**: All findings counted
+
+**Decision**:
+
+- If threshold-level findings > 0: Proceed to step 3 (reset `consecutive_zero_count` to 0)
+- If threshold-level findings = 0: Initialize `consecutive_zero_count` to 1 (this check is the first zero),
   proceed to step 4 for confirmation re-check (consecutive pass requirement)
 
 **Depends on**: Step 1 completion
 
 **Notes**:
 
-- Fixes ALL findings, not just critical ones
-- Includes minor issues like formatting, style improvements
-- Ensures plans achieve perfect quality state
+- Fix scope determined by mode level
+- Below-threshold findings remain visible in audit reports
+- Enables progressive quality improvement
 
 ### 3. Apply Fixes (Sequential, Conditional)
 
@@ -131,20 +151,24 @@ Apply all validated fixes from the audit report.
 
 **Agent**: `plan-fixer`
 
-- **Args**: `report: {step1.outputs.audit-report-1}, approved: all`
+- **Args**: `report: {step1.outputs.audit-report-1}, approved: all, mode: {input.mode}`
 - **Output**: `{fixes-applied}`
-- **Condition**: Findings exist from step 2
+- **Condition**: Threshold-level findings exist from step 2
 - **Depends on**: Step 2 completion
 
-**Success criteria**: Fixer successfully applies all fixes without errors.
+**Success criteria**: Fixer successfully applies all threshold-level fixes without errors.
 
 **On failure**: Log errors, proceed to step 4 for verification.
 
 **Notes**:
 
 - Fixer re-validates findings before applying (prevents false positives)
-- Fixes ALL confidence levels: HIGH (objective), MEDIUM (structural), MINOR (style/formatting)
-- Achieves perfect plan quality with zero findings
+- **Fix scope based on mode**:
+  - **lax**: Fix CRITICAL only (skip HIGH/MEDIUM/LOW)
+  - **normal**: Fix CRITICAL + HIGH (skip MEDIUM/LOW)
+  - **strict**: Fix CRITICAL + HIGH + MEDIUM (skip LOW) — default
+  - **ocd**: Fix all levels (CRITICAL, HIGH, MEDIUM, LOW)
+- Below-threshold findings remain untouched
 
 ### 4. Re-validate (Sequential)
 
@@ -180,10 +204,10 @@ Determine whether to continue fixing or terminate.
 
 **Notes**:
 
-- **Default behavior**: Runs up to 10 iterations (default max-iterations). Override with higher value for more attempts
+- **Default behavior**: Runs up to 7 iterations (default max-iterations). Override with higher value for more attempts
 - **Consecutive pass requirement**: Zero findings must be confirmed by a second independent check before declaring success
 - **Convergence target**: Workflow should stabilize in 3-5 iterations with convergence safeguards (scoped re-validation, cached verification, false positive tracking)
-- **Escalation threshold**: If findings count is not monotonically decreasing after iteration 7, log a warning: "Convergence not achieved — likely non-deterministic findings or scope expansion"
+- **Escalation threshold**: If findings count is not monotonically decreasing after iteration 5, log a warning: "Convergence not achieved — likely non-deterministic findings or scope expansion"
 - **Optional min-iterations**: Prevents premature termination before sufficient iterations
 - Each iteration uses the latest audit report
 - Tracks iteration count for observability
@@ -204,9 +228,22 @@ Report final status and summary.
 
 ## Termination Criteria
 
-- **Success** (`pass`): Zero findings of ANY confidence level (HIGH, MEDIUM, MINOR) on **two consecutive** validations (consecutive pass requirement)
-- **Partial** (`partial`): Any findings remain after max-iterations cycles
-- **Failure** (`fail`): Checker or fixer encountered technical errors
+**Success** (`pass`):
+
+- **lax**: Zero CRITICAL findings on 2 consecutive checks (HIGH/MEDIUM/LOW may exist)
+- **normal**: Zero CRITICAL/HIGH findings on 2 consecutive checks (MEDIUM/LOW may exist)
+- **strict**: Zero CRITICAL/HIGH/MEDIUM findings on 2 consecutive checks (LOW may exist) — default
+- **ocd**: Zero findings at all levels on 2 consecutive checks
+
+**Partial** (`partial`):
+
+- Threshold-level findings remain after max-iterations safety limit
+
+**Failure** (`fail`):
+
+- Technical errors during check or fix
+
+**Note**: Below-threshold findings are reported in final audit but don't prevent success status. Success requires two consecutive zero-finding validations (consecutive pass requirement).
 
 ## Example Usage
 
@@ -282,10 +319,10 @@ Result: SUCCESS (4 iterations)
 
 **Infinite Loop Prevention**:
 
-- max-iterations defaults to 10 (override with higher value for more attempts)
+- max-iterations defaults to 7 (override with higher value for more attempts)
 - When provided, workflow terminates with `partial` if limit reached
 - Tracks iteration count for monitoring
-- Escalation warning at iteration 7 if not converging
+- Escalation warning at iteration 5 if not converging
 
 **Convergence Safeguards**:
 

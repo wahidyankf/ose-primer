@@ -1,7 +1,7 @@
 ---
 name: specs-quality-gate
 goal: "Validate explicitly listed specs/ folders for structural completeness, content accuracy, internal consistency, and cross-folder coherence, then apply fixes iteratively until zero findings achieved"
-termination: "Zero findings at the configured mode threshold on two consecutive validations (max-iterations defaults to 10, escalation warning at 7)"
+termination: "Zero findings at the configured mode threshold on two consecutive validations (max-iterations defaults to 7, escalation warning at 5)"
 inputs:
   - name: folders
     type: file-list
@@ -12,7 +12,7 @@ inputs:
     values: [lax, normal, strict, ocd]
     description: "Quality threshold (lax: CRITICAL only, normal: CRITICAL/HIGH, strict: +MEDIUM, ocd: all levels)"
     required: false
-    default: normal
+    default: strict
   - name: min-iterations
     type: number
     description: "Minimum check-fix cycles before allowing zero-finding termination (prevents premature success)"
@@ -21,7 +21,7 @@ inputs:
     type: number
     description: "Maximum check-fix cycles to prevent infinite loops"
     required: false
-    default: 10
+    default: 7
   - name: max-concurrency
     type: number
     description: "Maximum number of agents/tasks that can run concurrently during workflow execution"
@@ -273,7 +273,7 @@ Report final status and summary.
 
 ## Example Usage
 
-### Single Folder (Normal Strictness)
+### Single Folder (Strict Mode — Default)
 
 ```
 User: "Run specs validation for specs/apps/demo/be"
@@ -315,14 +315,14 @@ The AI will:
 ### Comprehensive Audit (OCD Mode with Bounds)
 
 ```
-User: "Run specs validation for specs/apps/demo/be, specs/apps/demo/fe, specs/apps/demo-be-fsharp-giraffe in ocd mode with max-iterations=10"
+User: "Run specs validation for specs/apps/demo/be, specs/apps/demo/fe, specs/apps/demo-be-fsharp-giraffe in ocd mode"
 ```
 
 The AI will:
 
 - Validate all 3 listed folders and check consistency across all pairs
 - Fix ALL findings at all levels
-- Cap at 10 iterations to prevent infinite loops
+- Cap at 7 iterations (default max-iterations) to prevent infinite loops
 - Report final status (pass/partial)
 
 ## Iteration Example
@@ -352,10 +352,10 @@ Result: SUCCESS (3 iterations, 3 below-threshold findings reported)
 
 **Infinite Loop Prevention**:
 
-- max-iterations defaults to 10 (override with higher value for more attempts)
+- max-iterations defaults to 7 (override with higher value for more attempts)
 - When provided, workflow terminates with `partial` if limit reached
 - Tracks iteration count for monitoring
-- Escalation warning at iteration 7 if not converging
+- Escalation warning at iteration 5 if not converging
 
 **Convergence Safeguards**:
 

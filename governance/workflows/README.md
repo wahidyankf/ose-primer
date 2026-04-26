@@ -66,7 +66,7 @@ Workflows support two execution modes (see [Workflow Execution Mode Convention](
 
 All workflows support standard input parameters:
 
-- **mode**: Quality threshold (lax/normal/strict/ocd) - default: normal
+- **mode**: Quality threshold (lax/normal/strict/ocd) - default: strict
 - **max-concurrency**: Parallel execution limit - default: 2
 - **min-iterations**: Minimum check-fix cycles - optional
 - **max-iterations**: Maximum check-fix cycles - optional
@@ -83,7 +83,7 @@ All workflows support standard input parameters:
 | [Specs Validation](./specs/specs-quality-gate.md)                                                                         | Validate specs/ directory for structural completeness, content accuracy, cross-spec consistency, and C4 diagram correctness, apply fixes iteratively until ZERO findings                    | specs-checker, specs-fixer                                                               | Medium     |
 | [UI Quality Gate](./ui/ui-quality-gate.md)                                                                                | Validate UI component quality (tokens, accessibility, patterns, dark mode, responsive), apply fixes iteratively until ZERO findings                                                         | swe-ui-checker, swe-ui-fixer                                                             | Medium     |
 | [CI Quality Gate](./ci/ci-quality-gate.md)                                                                                | Validate all projects conform to CI/CD standards (Nx targets, coverage, Docker, Gherkin, workflows), apply fixes iteratively until ZERO findings                                            | ci-checker, ci-fixer                                                                     | Medium     |
-| [Development Environment Setup](./infra/development-environment-setup.md)                                                 | Install and verify all 18+ polyglot toolchains required for development, testing, and git hooks across all projects                                                                         | (manual orchestration — developer-guided)                                                | High       |
+| [Development Environment Setup](./infra/infra-development-environment-setup.md)                                           | Install and verify all 18+ polyglot toolchains required for development, testing, and git hooks across all projects                                                                         | (manual orchestration — developer-guided)                                                | High       |
 
 All _-quality-gate workflows follow the [_-check-fix Workflow Pattern](./meta/workflow-identifier.md#-check-fix-workflow-pattern) which fixes ALL findings (CRITICAL, HIGH, MEDIUM, LOW criticality levels) and iterates until ZERO findings remain.
 
@@ -105,7 +105,7 @@ Normative source: [Workflow Naming Convention](../conventions/structure/workflow
 | -------------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
 | `quality-gate` | Iterative maker → checker → fixer loop until zero findings | `ci-quality-gate`, `plan-quality-gate`, `specs-quality-gate` |
 | `execution`    | Executes a defined procedure or plan against inputs        | `plan-execution`                                             |
-| `setup`        | One-time environment or resource provisioning              | `development-environment-setup`                              |
+| `setup`        | One-time environment or resource provisioning              | `infra-development-environment-setup`                        |
 
 ## Meta reference exception
 
@@ -145,7 +145,7 @@ Workflows for CI/CD standards compliance:
 
 Workflows for development environment and infrastructure:
 
-- **development-environment-setup**: Install and verify all toolchains for local development
+- **infra-development-environment-setup**: Install and verify all toolchains for local development
 
 ### Repository Governance Workflows
 

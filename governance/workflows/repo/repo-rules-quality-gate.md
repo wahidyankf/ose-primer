@@ -1,14 +1,14 @@
 ---
 name: repo-rules-quality-gate
 goal: Validate repository consistency across all layers, apply fixes iteratively until zero findings achieved
-termination: "Zero findings on two consecutive validations (max-iterations defaults to 10, escalation warning at 7)"
+termination: "Zero findings on two consecutive validations (max-iterations defaults to 7, escalation warning at 5)"
 inputs:
   - name: mode
     type: enum
     values: [lax, normal, strict, ocd]
     description: "Quality threshold (lax: CRITICAL only, normal: CRITICAL/HIGH, strict: +MEDIUM, ocd: all levels)"
     required: false
-    default: normal
+    default: strict
   - name: min-iterations
     type: number
     description: Minimum check-fix cycles before allowing zero-finding termination (prevents premature success)
@@ -17,7 +17,7 @@ inputs:
     type: number
     description: Maximum check-fix cycles to prevent infinite loops
     required: false
-    default: 10
+    default: 7
   - name: max-concurrency
     type: number
     description: Maximum number of agents/tasks that can run concurrently during workflow execution
@@ -209,7 +209,7 @@ Determine whether to continue fixing or terminate.
 
 **Notes**:
 
-- **Default behavior**: Runs up to 10 iterations (default max-iterations). Override with higher value for more attempts
+- **Default behavior**: Runs up to 7 iterations (default max-iterations). Override with higher value for more attempts
 - **Consecutive pass requirement**: Zero findings must be confirmed by a second independent check before declaring success
 - **Optional min-iterations**: Prevents premature termination before sufficient iterations
 - Each iteration uses the latest audit report
@@ -250,18 +250,18 @@ Report final status and summary.
 
 ## Example Usage
 
-### Standard Invocation (Normal Strictness)
+### Standard Invocation (Strict Mode — Default)
 
 ```
-User: "Run repository rules quality gate workflow in normal mode"
+User: "Run repository rules quality gate workflow"
 ```
 
 The AI will invoke specialized agents via the Agent tool:
 
 - Validate repository consistency (`repo-rules-checker` subagent)
-- Apply fixes for CRITICAL/HIGH findings (`repo-rules-fixer` subagent)
-- Iterate until zero CRITICAL/HIGH findings achieved
-- Report MEDIUM/LOW findings without fixing them
+- Apply fixes for CRITICAL/HIGH/MEDIUM findings (`repo-rules-fixer` subagent)
+- Iterate until zero CRITICAL/HIGH/MEDIUM findings achieved
+- Report LOW findings without fixing them
 
 ### Pre-Release Validation (Strict Mode)
 
@@ -290,13 +290,13 @@ The AI will invoke agents with zero-tolerance criteria:
 ### With Iteration Bounds
 
 ```
-User: "Run repository rules quality gate workflow in normal mode with min-iterations=2 and max-iterations=10"
+User: "Run repository rules quality gate workflow in strict mode with min-iterations=2 and max-iterations=7"
 ```
 
 The AI will invoke agents with iteration controls:
 
 - Require at least 2 check-fix cycles
-- Cap at maximum 10 iterations to prevent infinite loops
+- Cap at maximum 7 iterations to prevent infinite loops
 - Report final status (pass/partial) after completion
 
 ## Iteration Example
@@ -323,10 +323,10 @@ Result: SUCCESS (4 iterations)
 
 **Infinite Loop Prevention**:
 
-- max-iterations defaults to 10 (override with higher value for more attempts)
+- max-iterations defaults to 7 (override with higher value for more attempts)
 - When provided, workflow terminates with `partial` if limit reached
 - Tracks iteration count for monitoring
-- Escalation warning at iteration 7 if not converging
+- Escalation warning at iteration 5 if not converging
 
 **Convergence Safeguards**:
 
