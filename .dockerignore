@@ -5,11 +5,9 @@ coverage
 *.log
 .DS_Store
 .idea
-apps/demo-be-fsharp-giraffe/target
+apps/crud-be-fsharp-giraffe/target
 apps/rhino-cli
 archived
-apps/rhino-cli
-apps/rhino-cli
 apps-labs
 docs
 plans
@@ -17,12 +15,9 @@ governance
 generated-reports
 local-temp
 specs
-!specs/apps/demo/be/gherkin
-!specs/apps/demo/fe/gherkin
-!specs/apps/demo/contracts/generated
-!specs/apps/demo/be/gherkin
-!specs/apps/demo/fe/gherkin
-!specs/apps/demo/contracts/generated
+!specs/apps/crud/be/gherkin
+!specs/apps/crud/fe/gherkin
+!specs/apps/crud/contracts/generated
 infra
 .claude
 .opencode
@@ -33,5 +28,5 @@ test-results
 **/vitest.config.ts
 **/test
 # Re-include test directories needed by integration Dockerfiles
-!apps/demo-be-elixir-phoenix/test
-!apps/demo-fs-ts-nextjs/test
+!apps/crud-be-elixir-phoenix/test
+!apps/crud-fs-ts-nextjs/test
