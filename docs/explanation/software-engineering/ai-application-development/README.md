@@ -24,9 +24,17 @@ principles:
 
 **Audience**: software engineers comfortable with HTTP APIs, SQL, and React, but with
 little or no prior exposure to building LLM-backed applications. Read this before
-working on any AI-shaped plan or app in this repository (e.g., the `pdf-chat-*`
-family) so the rest of the technical material parses without surprises. Nothing here
-is plan-internal — it is generic working knowledge.
+working on any AI-shaped plan or app in this repository (e.g., the `investment-oracle`
+desktop app) so the rest of the technical material parses without surprises. Nothing
+here is plan-internal — it is generic working knowledge.
+
+This primer is generic. Vendor-specific details — model ids, SDK install,
+streaming idioms, embeddings, pricing — live in three companion docs that
+extend this one:
+
+- [Anthropic API Primer](./anthropic-api.md)
+- [Google Gemini API Primer](./google-gemini-api.md)
+- [Perplexity Sonar API Primer](./perplexity-api.md)
 
 ## Why this primer exists
 
@@ -48,7 +56,7 @@ should explicitly require reading this document as a prerequisite for execution.
 7. [Retrieval-Augmented Generation (RAG)](#7-retrieval-augmented-generation-rag)
 8. [Chunking strategies](#8-chunking-strategies)
 9. [Multi-document retrieval](#9-multi-document-retrieval)
-10. [Multi-provider routing and OpenRouter](#10-multi-provider-routing-and-openrouter)
+10. [Vendor choice and direct APIs](#10-vendor-choice-and-direct-apis)
 11. [Persistent chat sessions vs stateless completions](#11-persistent-chat-sessions-vs-stateless-completions)
 12. [Production guardrails](#12-production-guardrails)
 13. [Evaluation and the lack of unit tests for LLM output](#13-evaluation-and-the-lack-of-unit-tests-for-llm-output)
@@ -77,8 +85,9 @@ Two things follow:
   answer questions about a specific document, you must paste relevant excerpts from
   that document into the messages — see §7 RAG.
 
-In this repo's AI demos the LLM lives behind OpenRouter; we never call provider SDKs
-directly.
+In this repo's AI demos the LLM is reached through each vendor's official SDK
+directly — Anthropic, Google, Perplexity. There is no shared proxy in the
+critical path. §10 covers the rationale.
 
 ## 2. Tokens, context windows, and why size matters
 
@@ -95,7 +104,9 @@ Practical consequences:
 
 - A 50-page PDF is ~25k tokens. It fits in the window directly. But sending the whole
   PDF on every chat call costs N×25k tokens of input on every turn, which is
-  expensive and slow. RAG (§7) is the standard fix.
+  expensive and slow. RAG (§7) is the standard fix. (Long-context Gemini variants
+  push the window to 1M and make whole-document Q&A viable for some workloads —
+  see the [Gemini primer](./google-gemini-api.md).)
 - Conversation history grows linearly with turns. By turn 30 a chatty session is
   already at thousands of tokens of just history. This is why `messages` (the list)
   is the unit of cost, not just the latest user message.
@@ -115,11 +126,13 @@ A chat call has a list of messages, each with a `role`:
 | `user`      | What the human said.                                                                        |
 | `assistant` | What the model said in a previous turn. Echoed back so the model has continuity.            |
 
-A typical request body for chat-completions:
+A typical request body for a chat call (shape varies by vendor; this is the
+generic OpenAI-style shape, with Anthropic and Gemini using equivalent fields
+under different names):
 
 ```json
 {
-  "model": "anthropic/claude-haiku-4.5",
+  "model": "claude-haiku-4-5",
   "messages": [
     { "role": "system", "content": "You answer questions about a PDF. Cite page numbers." },
     { "role": "user", "content": "What does the document say about retries?" },
@@ -129,6 +142,10 @@ A typical request body for chat-completions:
   "stream": true
 }
 ```
+
+Model ids use **hyphen-separated** version parts (`claude-haiku-4-5`,
+`gemini-2.5-flash-lite`) — not dots. Each vendor primer pins the exact ids
+their API accepts.
 
 Typical RAG-shaped assembly: `[system, ...retrieved_chunks_as_system,
 ...prior_messages_from_db, latest_user_message]`. See §7.
@@ -193,10 +210,13 @@ Where the vector comes from:
 
 - A separate model — the **embedding model** — trained specifically to map text to a
   meaning-preserving vector space.
-- Endpoint shape is identical to chat: `POST /v1/embeddings` with a string and a
-  model id; response is a vector.
-- This repo standardises on calling OpenRouter `/api/v1/embeddings` with
-  `openai/text-embedding-3-small` (1536 dims) for AI demos.
+- Endpoint shape is similar to chat: send text + model id, receive a vector.
+  Each vendor names the route slightly differently (Gemini exposes
+  `models.embed_content`).
+- This repo standardises on `gemini-embedding-001` configured to 768 output
+  dimensions for AI demos. Anthropic does not ship an embedding endpoint, so
+  even when chat is served by Anthropic the embedding step is served by
+  Google. See the [Gemini primer §Embeddings](./google-gemini-api.md#embeddings-the-headline-feature).
 
 Why it matters: keyword search ("retry") misses synonyms ("backoff", "re-attempt").
 Embedding-similarity search finds them. That is the entire trick behind RAG.
@@ -297,33 +317,43 @@ prompt with their `doc_id` and `page` so the model can cite which document a fac
 came from. No per-document balancing — if document A is more relevant, all top-k may
 come from A; that's the desired behaviour.
 
-## 10. Multi-provider routing and OpenRouter
+## 10. Vendor choice and direct APIs
 
-Anthropic, OpenAI, Google, Mistral, Meta, and many smaller vendors each ship their
-own SDK and pricing. Switching providers means re-coding the client. **OpenRouter**
-is a thin proxy that exposes one OpenAI-compatible API (`/v1/chat/completions`,
-`/v1/embeddings`) and a registry of model ids like `anthropic/claude-haiku-4.5` and
-`google/gemini-2.5-flash-lite`. You call OpenRouter; OpenRouter calls the upstream
-provider; you get back a normalised response.
+Anthropic, Google, Perplexity, OpenAI, Mistral, Meta, and many smaller vendors
+each ship their own SDK and pricing. Two ways to handle that:
 
-Conventions in this repo:
+1. **Direct vendor SDKs.** Wire each vendor's official SDK into the backend.
+   Pay full latency cost (no proxy hop). Use vendor-specific features
+   (Anthropic prompt caching, Gemini Files API, Perplexity citations) without
+   compromise. **This is the default in this repo.**
+2. **Proxy aggregators** (OpenRouter, LiteLLM, Portkey). One OpenAI-shaped
+   API, many models behind it. Cuts integration work for breadth-first
+   prototypes. Costs an extra network hop and obscures vendor-specific
+   features.
 
-- Model ids use **dot notation** between version parts (`claude-haiku-4.5`, not
-  `claude-haiku-4-5`).
-- Anthropic and Google models are the default pairing for "premium vs Haiku-tier"
-  demos.
+The repo standardises on direct SDKs because:
 
-Benefits:
+- Demos teach **what each vendor actually looks like**, not what a proxy
+  flattened it into. A reader cloning the template should be able to lift the
+  vendor wiring straight into a production codebase.
+- Vendor-specific features (PDF input shapes, prompt caching, citations,
+  embedding task types) matter once the demo grows beyond toy.
+- Ops cost: one extra dependency per vendor SDK, but no extra network hop.
 
-- Switching from Claude Haiku to Gemini Flash Lite is one env-var change.
-- One API key instead of three.
-- Per-model pricing visible at request time.
+Convention in this repo:
 
-Costs:
+- Model ids use **hyphen-separated** version parts (`claude-haiku-4-5`,
+  `gemini-2.5-flash-lite`). The earlier dot-separated convention was a proxy
+  artifact and is retired.
+- The default chat pairing is **Anthropic Claude Haiku 4.5** (premium-quality
+  small model) and **Google Gemini 2.5 Flash-Lite** (cheap-tier alternative).
+- Embeddings always come from Google: `gemini-embedding-001` at 768
+  dimensions.
+- Live web grounding, when needed, comes from Perplexity Sonar.
 
-- Slightly higher latency (one extra hop).
-- Some advanced provider features may not be exposed (e.g., Anthropic's prompt
-  caching or computer-use need provider-specific calls).
+For vendor-specific install, auth, request shape, streaming, mocking: read
+the three companion docs ([Anthropic](./anthropic-api.md),
+[Gemini](./google-gemini-api.md), [Perplexity](./perplexity-api.md)).
 
 ## 11. Persistent chat sessions vs stateless completions
 
@@ -393,7 +423,9 @@ Three layers, all of which the AI demos in this repo use:
   right schema. Stable across runs.
 - **Mocked-LLM tests**: replace the network call with a fixture (cassette). Asserts
   **what we sent** (model id, prompt content, retrieval results) — not what came
-  back. Demos toggle this with a `MOCK_OPENROUTER=true` flag.
+  back. Demos toggle this with a `MOCK_LLM_PROVIDERS=true` flag that intercepts
+  outbound `httpx` traffic to every vendor base URL (`api.anthropic.com`,
+  `generativelanguage.googleapis.com`, `api.perplexity.ai`).
 - **Eval suites** (out of scope for most demos): hand-curated inputs scored against
   rubric (factuality, format adherence, refusal correctness). Run periodically, not
   on every CI build, because they cost real money. Tools: Promptfoo, Langfuse,
@@ -405,15 +437,19 @@ runs are workflow-dispatch only.
 ## 14. Cost: where it goes and how to bound it
 
 Pricing is per-million tokens, charged separately for input and output. Indicative
-2026-Q2 pricing through OpenRouter:
+2026-Q2 list prices direct from each vendor:
 
-| Model                           | Input $/M | Output $/M |
-| ------------------------------- | --------: | ---------: |
-| `anthropic/claude-haiku-4.5`    |      1.00 |       5.00 |
-| `anthropic/claude-sonnet-4.5`   |      3.00 |      15.00 |
-| `google/gemini-2.5-flash-lite`  |      0.10 |       0.40 |
-| `google/gemini-2.5-flash`       |      0.30 |       2.50 |
-| `openai/text-embedding-3-small` |      0.02 |          — |
+| Model                   | Vendor     | Input $/M | Output $/M |
+| ----------------------- | ---------- | --------: | ---------: |
+| `claude-haiku-4-5`      | Anthropic  |      1.00 |       5.00 |
+| `claude-sonnet-4-6`     | Anthropic  |      3.00 |      15.00 |
+| `gemini-2.5-flash-lite` | Google     |      0.10 |       0.40 |
+| `gemini-2.5-flash`      | Google     |      0.30 |       2.50 |
+| `gemini-embedding-001`  | Google     |      0.15 |          — |
+| `sonar`                 | Perplexity |      1.00 |       1.00 |
+
+Perplexity also charges a per-request search fee on top of token cost
+(see the [Perplexity primer](./perplexity-api.md#pricing-2026-q2)).
 
 A back-of-envelope chat turn for a typical RAG-shaped backend:
 
@@ -421,7 +457,7 @@ A back-of-envelope chat turn for a typical RAG-shaped backend:
 - Conversation history: another ~2000 tokens by turn 5.
 - User question: 100 tokens.
 - Model writes 400 tokens.
-- Total Haiku cost: 5300 × $1/M + 400 × $5/M ≈ **$0.0073 per turn**.
+- Total Haiku 4.5 cost: 5300 × $1/M + 400 × $5/M ≈ **$0.0073 per turn**.
 
 Multiply by users and turns for the production estimate. The §12 cost cap is the
 defensive layer; product-side, the levers are: cheaper model, smaller chunks, fewer
@@ -434,54 +470,61 @@ Three operational realities to know:
 
 - **`temperature=0`** reduces variance but does not eliminate it across providers,
   versions, or even minor backend updates. Treat it as a hint, not a guarantee.
-- **Provider prompt caching** (Anthropic) or routing-side caching (OpenRouter) can
-  knock 50–90% off cost on repeated prefixes. Out of scope for most demos but worth
-  knowing it exists.
+- **Provider prompt caching** (Anthropic) and context caching (Gemini) can
+  knock 50–90% off cost on repeated prefixes. Out of scope for most demos but
+  worth knowing it exists; see the vendor primers for the per-vendor flag.
 - **CI must not call real models** unless you have explicit dispatch + budget
-  awareness. Demos in this repo default every test target to `MOCK_OPENROUTER=true`.
-  The only workflow that hits real OpenRouter is dispatch-only.
+  awareness. Demos in this repo default every test target to
+  `MOCK_LLM_PROVIDERS=true`. Real-vendor smoke runs are workflow-dispatch only.
 
 ## 16. Glossary
 
-| Term               | Plain definition                                                                                      |
-| ------------------ | ----------------------------------------------------------------------------------------------------- |
-| LLM                | Large language model. Statistical text generator behind every chat endpoint.                          |
-| Token              | Sub-word unit. Models bill per token, both for input and output.                                      |
-| Context window     | Maximum tokens per call (input + output). Claude Haiku 4.5 = 200k.                                    |
-| Embedding          | Fixed-size numeric vector encoding meaning. Demos use 1536-dim vectors from `text-embedding-3-small`. |
-| Cosine similarity  | Dot product of two unit vectors. Measures meaning closeness; range [-1, 1].                           |
-| Vector DB          | Storage that supports fast top-k similarity queries. Default in this repo: Postgres + pgvector.       |
-| Chunk              | A bounded slice of a document, embedded as one vector.                                                |
-| RAG                | Retrieval-Augmented Generation. Retrieve chunks, paste into prompt, generate answer.                  |
-| top-k              | The number of best-matching chunks to return from a similarity query (typically 4).                   |
-| Prompt             | The assembled list of messages sent to the chat endpoint.                                             |
-| System message     | Persona / behaviour configuration message at the start of `messages`.                                 |
-| Streaming          | Token-by-token response delivery via SSE.                                                             |
-| SSE                | Server-Sent Events. One-way HTTP streaming with `text/event-stream`.                                  |
-| Session            | Server-persisted chat thread. Survives reload because history lives in the DB.                        |
-| Multi-document RAG | Retrieval scoped to multiple source documents in one query.                                           |
-| OpenRouter         | Multi-provider LLM proxy. One API, many models. Used as single egress in this repo.                   |
-| Guardrail          | Pre-/post-model layer enforcing rate limit, content rules, or budget limits.                          |
-| Hallucination      | Model output that is fluent but factually wrong.                                                      |
-| Eval               | Measurement of LLM output quality against a rubric or held-out test set. Distinct from unit tests.    |
-| Token budget       | Per-session or per-day cap on tokens consumed; demos reject with `429 token_budget_exceeded`.         |
-| Mocked-LLM test    | Test that intercepts the LLM call and returns a fixture so CI is deterministic and free.              |
-| Tokenizer          | Converts strings to token ids. Different models use different tokenizers; `tiktoken` ships several.   |
+| Term               | Plain definition                                                                                                                  |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| LLM                | Large language model. Statistical text generator behind every chat endpoint.                                                      |
+| Token              | Sub-word unit. Models bill per token, both for input and output.                                                                  |
+| Context window     | Maximum tokens per call (input + output). Claude Haiku 4.5 = 200k.                                                                |
+| Embedding          | Fixed-size numeric vector encoding meaning. Demos use 768-dim vectors from `gemini-embedding-001`.                                |
+| Cosine similarity  | Dot product of two unit vectors. Measures meaning closeness; range [-1, 1].                                                       |
+| Vector DB          | Storage that supports fast top-k similarity queries. Default in this repo: Postgres + pgvector.                                   |
+| Chunk              | A bounded slice of a document, embedded as one vector.                                                                            |
+| RAG                | Retrieval-Augmented Generation. Retrieve chunks, paste into prompt, generate answer.                                              |
+| top-k              | The number of best-matching chunks to return from a similarity query (typically 4).                                               |
+| Prompt             | The assembled list of messages sent to the chat endpoint.                                                                         |
+| System message     | Persona / behaviour configuration message at the start of `messages`.                                                             |
+| Streaming          | Token-by-token response delivery via SSE.                                                                                         |
+| SSE                | Server-Sent Events. One-way HTTP streaming with `text/event-stream`.                                                              |
+| Session            | Server-persisted chat thread. Survives reload because history lives in the DB.                                                    |
+| Multi-document RAG | Retrieval scoped to multiple source documents in one query.                                                                       |
+| Vendor primer      | Per-vendor extension of this doc covering install, request shape, streaming, mocking. Three exist: Anthropic, Gemini, Perplexity. |
+| Guardrail          | Pre-/post-model layer enforcing rate limit, content rules, or budget limits.                                                      |
+| Hallucination      | Model output that is fluent but factually wrong.                                                                                  |
+| Eval               | Measurement of LLM output quality against a rubric or held-out test set. Distinct from unit tests.                                |
+| Token budget       | Per-session or per-day cap on tokens consumed; demos reject with `429 token_budget_exceeded`.                                     |
+| Mocked-LLM test    | Test that intercepts the LLM call and returns a fixture so CI is deterministic and free.                                          |
+| Tokenizer          | Converts strings to token ids. Different models use different tokenizers; `tiktoken` ships several.                               |
 
 ## 17. Where this is referenced
 
 Plans and apps that build AI features in this repo are expected to require this
 primer as prerequisite reading. Examples:
 
-- `plans/in-progress/2026-04-26__add-pdf-chat-apps/` — adds the `pdf-chat-*` demo
-  family (Python/FastAPI BE, Next.js FE, Playwright E2E pair); cites this document
-  in its delivery checklist as required reading.
+- `plans/in-progress/2026-04-27__add-investment-oracle-app/` — adds the
+  `investment-oracle` desktop demo (Tauri 2 shell, Python/FastAPI sidecar,
+  React+Vite FE, Playwright E2E pair); cites this document and all three
+  vendor primers in its delivery checklist as required reading.
 
 Future AI plans should cite this document the same way and may extend it with
 domain-specific addenda rather than redefining the same vocabulary inline.
 
 ## Related
 
+- [Anthropic API Primer](./anthropic-api.md) — model lineup, SDK install,
+  streaming, PDF input, the no-embeddings caveat
+- [Google Gemini API Primer](./google-gemini-api.md) — long context,
+  embeddings via `gemini-embedding-001`, cheap chat
+- [Perplexity Sonar API Primer](./perplexity-api.md) — web-grounded answers,
+  citations, when not to use it
 - [Software Engineering](../README.md) — parent index
 - [Explanation](../../README.md) — Diátaxis explanation root
 - [Behavior-Driven Development](../development/behavior-driven-development-bdd/README.md) — Gherkin scenarios used for AI feature acceptance criteria
