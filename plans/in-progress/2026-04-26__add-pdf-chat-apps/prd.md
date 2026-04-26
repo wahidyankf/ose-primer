@@ -173,7 +173,8 @@ Three guardrail layers run on every `POST /api/v1/sessions/{id}/messages`:
 - A drag-and-drop zone with click-to-browse fallback.
 - Visible file size limit (25 MB) and accepted type (PDF).
 - Upload progress state.
-- After upload, navigation to `/chat/[pdfId]`.
+- After upload, navigation to `/` (home), where the PDF appears in the library
+  and the user can create a session to start chatting.
 
 ### FR-8 — Frontend chat UI (session-scoped)
 
@@ -253,16 +254,64 @@ ship the targets defined in the existing `crud-be-e2e` and `crud-fe-e2e` pattern
 `pdf-chat-be` enforces ≥90% line coverage in `test:quick`. `pdf-chat-fe` enforces ≥70%.
 Validation goes through `rhino-cli test-coverage validate`, identical to the CRUD apps.
 
-### FR-14 — Three-level testing
+### FR-14 — Backend testing (three levels)
 
-`pdf-chat-be` tests at three levels with a single shared Gherkin set under
-`specs/apps/pdf-chat/be/gherkin/`:
+`pdf-chat-be` tests at **three levels** with a single shared Gherkin set under
+`specs/apps/pdf-chat/be/gherkin/`. Test framework: **pytest + pytest-bdd** at all
+three levels. Lint: **ruff**. Typecheck: **pyright**. (Identical stack to
+`crud-be-python-fastapi`.)
 
-- `test:unit` — pytest-bdd, OpenRouter and pypdf both mocked.
-- `test:integration` — pytest-bdd in docker-compose with real Postgres + pgvector;
-  OpenRouter mocked via httpx-mock cassette.
-- `test:e2e` — Playwright HTTP against running backend; OpenRouter routed through a
-  recorded fixture or a `MOCK_OPENROUTER=true` flag.
+- `test:unit` — pytest + pytest-bdd; OpenRouter and pypdf both mocked; mocked
+  in-memory repositories. Coverage measured here (≥90%).
+- `test:integration` — pytest + pytest-bdd in docker-compose with real Postgres +
+  pgvector; OpenRouter mocked via `pytest-httpx` cassette; same Gherkin features as
+  `test:unit`, different step implementations.
+- `test:e2e` — Playwright HTTP against running backend (driven by
+  `pdf-chat-be-e2e`); OpenRouter routed through `MOCK_OPENROUTER=true` by default,
+  optionally real OpenRouter on `workflow_dispatch`.
+
+### FR-14a — Frontend testing (two levels)
+
+`pdf-chat-fe` tests at **two levels** — there is no `test:integration` for the
+frontend. Source language is **TypeScript** end-to-end (no JavaScript). Lint:
+**oxlint** with `--jsx-a11y-plugin`. Typecheck: **`tsc --noEmit`**. (Identical
+stack to `crud-fe-ts-nextjs`.)
+
+- `test:unit` — vitest + @testing-library/react + jsdom; Route Handler proxy and
+  generated-contracts client mocked at the fetch boundary. Coverage measured here
+  (≥70%).
+- `test:e2e` — Playwright + playwright-bdd against a running BE + FE pair (driven
+  by `pdf-chat-fe-e2e`); BE booted with `MOCK_OPENROUTER=true` to avoid real LLM
+  cost in CI.
+
+Frontend integration concerns (real backend contract, real DB) are validated by
+`pdf-chat-be:test:integration` plus the two e2e suites; replicating an
+integration tier on the FE adds no signal.
+
+### FR-14b — LLM test determinism
+
+Every test target that runs on PR / on push must be **fully deterministic and
+offline** despite calling LLM-shaped code paths. Concretely:
+
+- All unit and integration tests run with `MOCK_OPENROUTER=true`. No outbound
+  HTTPS request to `openrouter.ai` is made.
+- Tests assert on **what the backend sends** (request fingerprint: model id,
+  prompt content, retrieved chunks, message history) and on **side effects**
+  (DB state, persisted messages, token-usage upserts, response status, SSE
+  frame shape) — never on returned LLM prose.
+- Snapshot tests are used for assembled prompts; diffs require deliberate
+  human review.
+- Embedding fixtures are deterministic vectors; retrieval similarity ordering
+  is reproducible. Where pgvector ivfflat approximation could affect ordering,
+  tests assert on the result **set** not the order, or force a sequential scan.
+- `freezegun` pins `datetime.now()` for daily-cap tests. `tiktoken` is pinned
+  in `pyproject.toml`.
+- Real-LLM smoke runs only on `workflow_dispatch`; its assertions are
+  structural only (status, Content-Type, ≥1 frame, well-formed envelope).
+
+See [tech-docs.md § Test determinism strategy](./tech-docs.md#test-determinism-strategy-the-llm-problem)
+for the four allowed assertion patterns and the one anti-pattern (asserting on
+LLM output prose) that is forbidden in this plan's test set.
 
 ### FR-15 — Spec consumption
 
@@ -308,14 +357,6 @@ unset.
 | UI choice of model not propagated end-to-end                                                        | Low        | Gherkin scenarios assert the selected model id is what the backend forwards to OpenRouter             |
 | Codegen for streaming endpoint generates wrong types                                                | Low        | tech-docs hand-typed shape; the OpenAPI streaming response has a `x-streaming: sse` extension comment |
 | Plan author's port choices collide with existing `crud-*` ports                                     | Low        | 8501 / 3501 are checked against `apps/*/project.json`; no collision                                   |
-
-## Non-requirements
-
-- No multi-PDF conversations.
-- No persistent chat history (stateless).
-- No content moderation, no PII redaction.
-- No billing or user accounts.
-- No alternative backend languages.
 
 ## Acceptance criteria
 
@@ -458,6 +499,31 @@ Feature: pdf-chat demo family is added end-to-end
   Scenario: Markdown quality gate passes
     When I run "npm run lint:md" at the repo root
     Then exit code is 0
+
+  Scenario: Tests assert on outbound request, not on LLM output prose
+    Given a unit test exercising the chat endpoint with MOCK_OPENROUTER=true
+    When the test inspects the recorded outbound request to OpenRouter
+    Then the assertion is on model id, prompt content, retrieved chunks, or message history
+    And no assertion is on the prose of the streamed assistant response
+
+  Scenario: Snapshot test catches prompt-assembly regressions
+    Given a known session and a known retrieval result set
+    When the chat handler assembles the prompt before calling OpenRouter
+    Then the assembled messages array matches the committed snapshot byte-for-byte
+    And changes require deliberate snapshot update with human review
+
+  Scenario: Daily-cap test uses freezegun
+    Given a test scenario advancing past midnight
+    When freezegun freezes time to "2026-04-26T23:59:00Z" then "2026-04-27T00:00:00Z"
+    Then the daily token_usage row for 2026-04-27 is fresh (zero)
+    And the prior day's row is preserved
+
+  Scenario: Retrieval test asserts on chunk-id set, not order, when ivfflat is in play
+    Given five seeded chunks across two PDFs
+    When integration retrieval runs through the ivfflat index
+    Then the test asserts the result set contains the expected chunk ids
+    And the test does not assert on a specific chunk order
+    And a separate test forces enable_indexscan=off to validate the deterministic ordering
 
   Scenario: No real OpenRouter call happens during test:quick
     Given MOCK_OPENROUTER is unset by the developer
