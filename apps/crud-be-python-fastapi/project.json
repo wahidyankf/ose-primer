@@ -101,6 +101,6 @@
       "inputs": ["{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature", "{projectRoot}/**/*.py"]
     }
   },
-  "tags": ["type:app", "platform:fastapi", "lang:python", "domain:demo-be"],
+  "tags": ["type:app", "platform:fastapi", "lang:python", "domain:crud-be"],
   "implicitDependencies": ["crud-contracts", "rhino-cli"]
 }

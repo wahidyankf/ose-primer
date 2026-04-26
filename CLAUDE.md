@@ -28,11 +28,11 @@ Guidance for Claude Code (claude.ai/code) working with code in this repository.
   - `crud-be-csharp-aspnetcore` — C#/ASP.NET Core REST API (alternative).
   - `crud-be-clojure-pedestal` — Clojure/Pedestal REST API (alternative).
   - `crud-contracts` — OpenAPI 3.1 API contract spec at `specs/apps/crud/contracts/`; generates types + encoders/decoders for all demo apps via `codegen` Nx target.
-  - `crud-be-e2e` — Playwright E2E tests for demo-be backends.
+  - `crud-be-e2e` — Playwright E2E tests for crud-be backends.
   - `crud-fe-ts-nextjs` — Next.js 16 frontend (TypeScript, App Router).
   - `crud-fe-ts-tanstack-start` — TanStack Start frontend (TypeScript, alternative).
   - `crud-fe-dart-flutterweb` — Flutter Web frontend (Dart, alternative).
-  - `crud-fe-e2e` — Playwright E2E tests for demo-fe frontends.
+  - `crud-fe-e2e` — Playwright E2E tests for crud-fe frontends.
   - `crud-fs-ts-nextjs` — Next.js 16 fullstack (TypeScript, App Router + Route Handlers).
 
 ## Project Structure
@@ -150,13 +150,13 @@ npm run doctor -- --scope minimal # Check only core tools (git, volta, node, npm
 
 **`test:integration` caching**: Default `cache: false` in `nx.json`. Demo-be backends use docker-compose with real PostgreSQL — non-deterministic, must never cache. Projects using in-process mocking only (MSW, Godog) override to `cache: true` in their `project.json`: Go CLI apps (Godog at both unit and integration levels), `golang-commons` (Godog + mock closures).
 
-**Three-level testing standard** (demo-be backends):
+**Three-level testing standard** (crud-be backends):
 
 1. **Unit (`test:unit`)**: All mocked deps; must consume Gherkin specs from `specs/apps/crud/be/gherkin/`; call service functions directly with mocked repos; coverage measured here (>=90%)
 2. **Integration (`test:integration`)**: Real PostgreSQL via docker-compose; **no HTTP calls** (no MockMvc, TestClient, httptest, ConnTest, WebApplicationFactory, fetch, clj-http, Router.oneshot); must consume Gherkin specs; call service functions directly with real DB
 3. **E2E (`test:e2e`)**: Full stack via Playwright; real HTTP + real DB; must consume Gherkin specs
 
-All three levels consume same Gherkin specs — only step implementations change. `test:quick` includes only `test:unit` + coverage validation. Does NOT include `lint`, `typecheck`, `test:integration`, or `test:e2e`. `spec-coverage` (`rhino-cli spec-coverage validate`) runs as separate Nx target enforced by pre-push hook; active for demo-be backends and most other projects.
+All three levels consume same Gherkin specs — only step implementations change. `test:quick` includes only `test:unit` + coverage validation. Does NOT include `lint`, `typecheck`, `test:integration`, or `test:e2e`. `spec-coverage` (`rhino-cli spec-coverage validate`) runs as separate Nx target enforced by pre-push hook; active for crud-be backends and most other projects.
 
 **Three-level testing standard** (Go CLI apps):
 

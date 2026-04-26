@@ -116,9 +116,9 @@ Use these canonical names. Aliases (`serve`, `start:dev`, `unit-test`) are anti-
 | `lint`             | Static analysis, code style checks, and static a11y checks (oxlint jsx-a11y for TS UI projects, `dart analyze` for Dart) | All projects                      |
 | `test:quick`       | Fast quality gate for pre-push and PR merge; composed of fast checks                                                     | All projects                      |
 | `spec-coverage`    | Validate that every Gherkin step has a matching step definition; uses `rhino-cli spec-coverage validate`                 | All apps and E2E runners          |
-| `test:unit`        | Isolated unit tests with mocked dependencies; must consume Gherkin specs (demo-be backends and Go CLI apps)              | Projects with unit tests          |
-| `test:integration` | Demo-be: real PostgreSQL via docker-compose, direct code calls (no HTTP). Others: existing patterns (MSW, Godog)         | Projects with integration tests   |
-| `test:e2e`         | Run E2E tests headlessly against a running app; must consume Gherkin specs (demo-be backends) via Playwright             | E2E test projects (`*-e2e`)       |
+| `test:unit`        | Isolated unit tests with mocked dependencies; must consume Gherkin specs (crud-be backends and Go CLI apps)              | Projects with unit tests          |
+| `test:integration` | Crud-be: real PostgreSQL via docker-compose, direct code calls (no HTTP). Others: existing patterns (MSW, Godog)         | Projects with integration tests   |
+| `test:e2e`         | Run E2E tests headlessly against a running app; must consume Gherkin specs (crud-be backends) via Playwright             | E2E test projects (`*-e2e`)       |
 | `test:e2e:ui`      | Run E2E tests with interactive Playwright UI                                                                             | E2E test projects                 |
 | `test:e2e:report`  | Open the last E2E HTML report                                                                                            | E2E test projects                 |
 | `dev`              | Start local development server with hot-reload                                                                           | Apps with dev servers             |
@@ -133,7 +133,7 @@ Use these canonical names. Aliases (`serve`, `start:dev`, `unit-test`) are anti-
 
 - Use `dev` for the development server — never `serve`, never `start:dev`
 - Use `start` for the production server — never `serve`
-- Use `test:quick` for the fast pre-push gate; `test:unit` for isolated unit tests with mocked dependencies (Go CLI apps consume Gherkin specs via godog at this level); `test:integration` for tests with real infrastructure (demo-be: PostgreSQL via docker-compose) or in-process mocking (MSW, Godog); `test:e2e` for end-to-end tests; `spec-coverage` for Gherkin step definition coverage validation — run targets individually rather than through an aggregate wrapper
+- Use `test:quick` for the fast pre-push gate; `test:unit` for isolated unit tests with mocked dependencies (Go CLI apps consume Gherkin specs via godog at this level); `test:integration` for tests with real infrastructure (crud-be: PostgreSQL via docker-compose) or in-process mocking (MSW, Godog); `test:e2e` for end-to-end tests; `spec-coverage` for Gherkin step definition coverage validation — run targets individually rather than through an aggregate wrapper
 - Separate target variants with a colon (`build:web`, `test:e2e:ui`), not a hyphen or underscore
 - All target names use lowercase with hyphens for multi-word names (`run-pre-commit`)
 
@@ -150,7 +150,7 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 | Type      | `type:`     | `app`, `lib`, `e2e`                                                                                           | Always                         | Distinguishes deployable apps, reusable libs, and test suites |
 | Platform  | `platform:` | `cli`, `nextjs`, `spring-boot`, `phoenix`, `giraffe`, `gin`, `fastapi`, `axum`, `ktor`, `vertx`, `playwright` | Apps and e2e projects          | Framework or runtime environment                              |
 | Language  | `lang:`     | `golang`, `ts`, `java`, `elixir`, `fsharp`, `python`, `rust`, `kotlin`, `dart`                                | Projects with application code | Primary language of source code                               |
-| Domain    | `domain:`   | `demo`, `demo`, `demo`, `demo-be`, `demo-fe`, `tooling`                                                       | Always                         | Business or product domain                                    |
+| Domain    | `domain:`   | `crud`, `crud-be`, `crud-fe`, `tooling`                                                                       | Always                         | Business or product domain                                    |
 
 ### Special Rules
 
@@ -162,43 +162,40 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 
 ### Current Project Tags
 
-| Project                   | Tags                                                                  |
-| ------------------------- | --------------------------------------------------------------------- |
-| `crud-fs-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:demo"]`           |
-| `rhino-cli`               | `["type:app", "platform:cli", "lang:golang", "domain:demo"]`          |
-| `rhino-cli`               | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`       |
-| `crud-be-java-springboot` | `["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"]` |
-| `crud-be-elixir-phoenix`  | `["type:app", "platform:phoenix", "lang:elixir", "domain:demo-be"]`   |
-| `crud-be-fsharp-giraffe`  | `["type:app", "platform:giraffe", "lang:fsharp", "domain:demo-be"]`   |
-| `crud-be-golang-gin`      | `["type:app", "platform:gin", "lang:golang", "domain:demo-be"]`       |
-| `crud-be-python-fastapi`  | `["type:app", "platform:fastapi", "lang:python", "domain:demo-be"]`   |
-| `crud-be-rust-axum`       | `["type:app", "platform:axum", "lang:rust", "domain:demo-be"]`        |
-| `crud-be-kotlin-ktor`     | `["type:app", "platform:ktor", "lang:kotlin", "domain:demo-be"]`      |
-| `crud-be-java-vertx`      | `["type:app", "platform:vertx", "lang:java", "domain:demo-be"]`       |
-| `crud-be-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo-be"]`    |
-| `crud-fe-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:demo"]`           |
-| `crud-be-fsharp-giraffe`  | `["type:app", "platform:giraffe", "lang:fsharp", "domain:demo"]`      |
-| `crud-fe-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo"]`       |
-| `crud-be-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo"]`       |
-| `crud-fe-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:demo-fe"]`        |
-| `crud-fe-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo-fe"]`    |
-| `rhino-cli`               | `["type:app", "platform:cli", "lang:golang", "domain:demo"]`          |
-| `crud-fs-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:demo"]`           |
-| `golang-commons`          | `["type:lib", "lang:golang"]`                                         |
-| `golang-commons`          | `["type:lib", "lang:golang"]`                                         |
-| `clojure-openapi-codegen` | `["type:lib", "lang:clojure", "domain:tooling"]`                      |
-| `elixir-cabbage`          | `["type:lib", "lang:elixir", "domain:tooling"]`                       |
-| `elixir-gherkin`          | `["type:lib", "lang:elixir", "domain:tooling"]`                       |
-| `elixir-openapi-codegen`  | `["type:lib", "lang:elixir", "domain:tooling"]`                       |
+| Project                     | Tags                                                                   |
+| --------------------------- | ---------------------------------------------------------------------- |
+| `crud-be-clojure-pedestal`  | `["type:app", "platform:pedestal", "lang:clojure", "domain:crud-be"]`  |
+| `crud-be-csharp-aspnetcore` | `["type:app", "platform:aspnetcore", "lang:csharp", "domain:crud-be"]` |
+| `crud-be-e2e`               | `["type:e2e", "platform:playwright", "lang:ts", "domain:crud-be"]`     |
+| `crud-be-elixir-phoenix`    | `["type:app", "platform:phoenix", "lang:elixir", "domain:crud-be"]`    |
+| `crud-be-fsharp-giraffe`    | `["type:app", "platform:giraffe", "lang:fsharp", "domain:crud-be"]`    |
+| `crud-be-golang-gin`        | `["type:app", "platform:gin", "lang:golang", "domain:crud-be"]`        |
+| `crud-be-java-springboot`   | `["type:app", "platform:spring-boot", "lang:java", "domain:crud-be"]`  |
+| `crud-be-java-vertx`        | `["type:app", "platform:vertx", "lang:java", "domain:crud-be"]`        |
+| `crud-be-kotlin-ktor`       | `["type:app", "platform:ktor", "lang:kotlin", "domain:crud-be"]`       |
+| `crud-be-python-fastapi`    | `["type:app", "platform:fastapi", "lang:python", "domain:crud-be"]`    |
+| `crud-be-rust-axum`         | `["type:app", "platform:axum", "lang:rust", "domain:crud-be"]`         |
+| `crud-be-ts-effect`         | `["type:app", "platform:effect", "lang:typescript", "domain:crud-be"]` |
+| `crud-fe-dart-flutterweb`   | `["type:app", "platform:flutter", "lang:dart", "domain:crud-fe"]`      |
+| `crud-fe-e2e`               | `["type:e2e", "platform:playwright", "lang:ts", "domain:crud-fe"]`     |
+| `crud-fe-ts-nextjs`         | `["type:app", "platform:nextjs", "lang:ts", "domain:crud-fe"]`         |
+| `crud-fe-ts-tanstack-start` | `["type:app", "platform:vite", "lang:ts", "domain:crud-fe"]`           |
+| `crud-fs-ts-nextjs`         | `["type:app", "platform:nextjs", "lang:ts", "domain:crud-fs"]`         |
+| `rhino-cli`                 | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`        |
+| `golang-commons`            | `["type:lib", "lang:golang"]`                                          |
+| `clojure-openapi-codegen`   | `["type:lib", "lang:clojure", "domain:tooling"]`                       |
+| `elixir-cabbage`            | `["type:lib", "lang:elixir", "domain:tooling"]`                        |
+| `elixir-gherkin`            | `["type:lib", "lang:elixir", "domain:tooling"]`                        |
+| `elixir-openapi-codegen`    | `["type:lib", "lang:elixir", "domain:tooling"]`                        |
 
 ### Example: Complete Tag Declaration
 
-A Spring Boot app for the demo-be domain declares all four dimensions:
+A Spring Boot app for the crud-be domain declares all four dimensions:
 
 ```json
 {
   "name": "crud-be-java-springboot",
-  "tags": ["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"]
+  "tags": ["type:app", "platform:spring-boot", "lang:java", "domain:crud-be"]
 }
 ```
 
@@ -229,14 +226,14 @@ Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → int
 | ----------------------------- | ----------- | ------------------ | ---------- | ------------ | --------------- | ------ | ------- | ------------ |
 | API Backend                   | Yes         | Yes (PG)           | Yes\*      | Yes          | Yes             | Yes    | Yes     | Yes (all 11) |
 | Web UI App                    | Yes         | Yes (MSW)          | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
-| Demo-fe FE                    | Yes         | —                  | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
+| Crud-fe FE                    | Yes         | —                  | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
 | Fullstack                     | Yes         | Yes                | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
 | CLI App                       | Yes         | Yes (Godog)        | —          | Yes          | Yes             | Yes    | Yes     | If typed     |
 | Library                       | Yes         | Optional           | —          | Yes          | Yes             | Yes    | —       | If typed     |
 | static-site Site (historical) | —           | —                  | —          | Yes          | —               | —      | Yes     | —            |
 | E2E Runner                    | —           | —                  | Yes        | Yes          | Yes             | Yes    | —       | If typed     |
 
-**Demo-be backend `typecheck` commands** (all 11 backends have `typecheck` with `dependsOn: ["codegen"]`):
+**Crud-be backend `typecheck` commands** (all 11 backends have `typecheck` with `dependsOn: ["codegen"]`):
 
 | Backend                     | `typecheck` command                                               |
 | --------------------------- | ----------------------------------------------------------------- |
@@ -265,7 +262,7 @@ Every project in `apps/` and `libs/` must expose:
 | `test:quick`    | Complete in a few minutes (not tens of minutes); enforced by the pre-push hook and as a required GitHub Actions status check before PR merge                                                          |
 | `spec-coverage` | Compulsory for all apps and E2E runners; validates every Gherkin step has a matching step definition via `rhino-cli spec-coverage validate`; enforced by the pre-push hook and scheduled CI workflows |
 | `lint`          | Exit non-zero on violations; enforced by the pre-push hook, the PR quality gate, and scheduled Test CI workflows. UI projects must include static a11y checks (see "Accessibility Testing" below)     |
-| `typecheck`     | Required for statically typed projects and all demo-be backends; enforced by the pre-push hook; skipped by Nx for projects that do not declare this target                                            |
+| `typecheck`     | Required for statically typed projects and all crud-be backends; enforced by the pre-push hook; skipped by Nx for projects that do not declare this target                                            |
 
 **`test:quick` composition** — each project decides which fast checks form its gate. The target runs its checks directly (calling the underlying tools, not other Nx targets) to avoid double execution when `lint` or `typecheck` are also run standalone by the pre-push hook. Common compositions:
 
@@ -279,29 +276,29 @@ Every project in `apps/` and `libs/` must expose:
 | Python/FastAPI                | unit tests with `pytest` (mocked dependencies) → LCOV → `rhino-cli test-coverage validate` ≥90%                                                                                                                |
 | Rust/Axum                     | unit tests with `cargo test --lib` + `cargo llvm-cov --lcov` → `rhino-cli test-coverage validate` ≥90%                                                                                                         |
 | static-site site (historical) | link check via the site's CLI tool (build runs separately via `nx build`)                                                                                                                                      |
-| Demo-fe TS app                | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥70%                                                               |
-| Demo-fe Dart/Flutter          | `flutter test test/unit --coverage`; LCOV coverage validated via `rhino-cli test-coverage validate` ≥70%                                                                                                       |
-| Demo-be Elixir/Phoenix        | unit tests (`mix coveralls.lcov --only unit`); LCOV coverage validated via `rhino-cli test-coverage validate` ≥90%                                                                                             |
+| Crud-fe TS app                | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥70%                                                               |
+| Crud-fe Dart/Flutter          | `flutter test test/unit --coverage`; LCOV coverage validated via `rhino-cli test-coverage validate` ≥70%                                                                                                       |
+| Crud-be Elixir/Phoenix        | unit tests (`mix coveralls.lcov --only unit`); LCOV coverage validated via `rhino-cli test-coverage validate` ≥90%                                                                                             |
 | Playwright `*-e2e`            | run the linter directly (no unit tests to add beyond linting)                                                                                                                                                  |
 
 The rule: include only checks that complete fast. If `test:unit` is slow for a project, exclude it from `test:quick` and run it separately. **The target must always exist** — even if it only runs the type checker — so the pre-push hook covers every project.
 
 ### Statically Typed Projects
 
-TypeScript, Python (with pyright), and all demo-be backends:
+TypeScript, Python (with pyright), and all crud-be backends:
 
 | Target      | Requirement                                                                |
 | ----------- | -------------------------------------------------------------------------- |
 | `typecheck` | Run the type checker without emitting artifacts (`tsc --noEmit`, `mypy .`) |
 
-**All 11 demo-be backends declare `typecheck`** with `dependsOn: ["codegen"]`. See the "Demo-be
+**All 11 crud-be backends declare `typecheck`** with `dependsOn: ["codegen"]`. See the "Crud-be
 backend `typecheck` commands" table in the Summary Matrix section for per-language commands.
 
 **Not required for dynamically typed languages** (plain JavaScript, Ruby) or languages where
 compilation already enforces types and `build` covers it — except when an additional static
 analysis pass is warranted. **Exceptions that do declare `typecheck`**:
 
-- **Go demo-be backends**: `go vet ./...` catches type errors not caught by `go build` alone, and
+- **Go crud-be backends**: `go vet ./...` catches type errors not caught by `go build` alone, and
   ensures generated contract types compile correctly.
 - **Java projects (JSpecify + NullAway)**: NullAway runs as a separate Error Prone plugin pass via
   a dedicated Maven profile not included in `build`. The `typecheck` target also runs
@@ -351,10 +348,10 @@ Two integration test patterns exist depending on project type:
 
 | Pattern             | Projects                                                    | Requirement                                                                                                                                                | Cacheable |
 | ------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| Docker + PostgreSQL | All 11 demo-be backends                                     | Real PostgreSQL via `docker-compose.integration.yml`; calls application code directly (no HTTP layer); runs all shared Gherkin scenarios; fresh DB per run | No        |
+| Docker + PostgreSQL | All 11 crud-be backends                                     | Real PostgreSQL via `docker-compose.integration.yml`; calls application code directly (no HTTP layer); runs all shared Gherkin scenarios; fresh DB per run | No        |
 | In-process mocking  | `crud-fe-ts-nextjs` (MSW), Go CLIs (Godog), Go libs (Godog) | In-process mocking only (MSW / godog `RunE` / mock fixtures); no real database or external services; fully deterministic                                   | Yes       |
 
-**Demo-be backends** expose `test:integration` which runs `docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`. This starts a fresh PostgreSQL container, runs migrations, and executes all shared Gherkin scenarios by calling application service/repository functions directly — no HTTP layer. Each backend has a `docker-compose.integration.yml` (postgres + test runner services) and a `Dockerfile.integration` (language runtime + test execution). Coverage is NOT measured at the integration level — coverage comes from `test:unit` only.
+**Crud-be backends** expose `test:integration` which runs `docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`. This starts a fresh PostgreSQL container, runs migrations, and executes all shared Gherkin scenarios by calling application service/repository functions directly — no HTTP layer. Each backend has a `docker-compose.integration.yml` (postgres + test runner services) and a `Dockerfile.integration` (language runtime + test execution). Coverage is NOT measured at the integration level — coverage comes from `test:unit` only.
 
 **Go CLIs** consume Gherkin specs at both test levels. Each command has two test files:
 
@@ -400,7 +397,7 @@ Playwright suites (`*-e2e`):
 spec files from the Gherkin feature files before Playwright executes them.
 See `apps/crud-be-e2e/project.json` for the canonical example.
 
-**Demo-be `test:integration` with docker-compose**: All 11 demo-be backends expose `test:integration`
+**Crud-be `test:integration` with docker-compose**: All 11 crud-be backends expose `test:integration`
 which runs `docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`.
 Each backend's `docker-compose.integration.yml` defines a `postgres` service (postgres:17-alpine with healthcheck)
 and a `test-runner` service that depends on PostgreSQL being healthy. The test runner runs migrations,
@@ -421,15 +418,15 @@ the project's feature files has a matching step definition in the implementation
 | Flag                         | Purpose                                                                                                               |
 | ---------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | `--shared-steps`             | Validates steps across ALL source files rather than requiring 1:1 file-to-feature matching; used by all projects      |
-| `--exclude-dir test-support` | Excludes E2E-only `test-support` API spec files from non-E2E projects; used by demo-be backends and demo-fe frontends |
+| `--exclude-dir test-support` | Excludes E2E-only `test-support` API spec files from non-E2E projects; used by crud-be backends and crud-fe frontends |
 
 **Project coverage status**:
 
 | Project group                                                | Status   | Notes                                                                                       |
 | ------------------------------------------------------------ | -------- | ------------------------------------------------------------------------------------------- |
 | Go CLI apps (`rhino-cli`, `rhino-cli`, `rhino-cli`)          | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                    |
-| Demo-be backends (all 11)                                    | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| Demo-fe frontends                                            | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
+| Crud-be backends (all 11)                                    | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
+| Crud-fe frontends                                            | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
 | Fullstack (`crud-fs-ts-nextjs`)                              | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
 | E2E runners (`crud-be-e2e`, `crud-fe-e2e`)                   | Enforced | `--shared-steps` only; test-support steps are implemented here                              |
 | Content platforms (`crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`) | Enforced | `--shared-steps`                                                                            |
@@ -547,7 +544,7 @@ each component.
 | `test:quick`       | Yes    | Cache hit skips redundant pre-push runs                                                                                                                                                                                                    |
 | `spec-coverage`    | Yes    | Pure analysis of Gherkin steps against step definitions; deterministic against source and spec changes                                                                                                                                     |
 | `test:unit`        | Yes    | Deterministic; safe to cache against source changes                                                                                                                                                                                        |
-| `test:integration` | No     | Demo-be backends use real PostgreSQL via docker-compose (non-deterministic external state). Default `cache: false` in `nx.json`. Projects using in-process mocking only (MSW, Godog) may override to `cache: true` in their `project.json` |
+| `test:integration` | No     | Crud-be backends use real PostgreSQL via docker-compose (non-deterministic external state). Default `cache: false` in `nx.json`. Projects using in-process mocking only (MSW, Godog) may override to `cache: true` in their `project.json` |
 | `dev`              | No     | Long-running process                                                                                                                                                                                                                       |
 | `start`            | No     | Long-running process                                                                                                                                                                                                                       |
 | `run`              | No     | Side-effectful execution                                                                                                                                                                                                                   |
@@ -590,7 +587,7 @@ cross-project dependencies like shared Gherkin specs or generated contracts.
 
 ### Canonical Inputs per Language
 
-All demo-be backends must include Gherkin specs and generated contracts in `test:unit` and
+All crud-be backends must include Gherkin specs and generated contracts in `test:unit` and
 `test:quick` inputs. The Gherkin specs path is always
 `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature`. The generated-contracts path varies by
 language:
@@ -675,9 +672,9 @@ runs when artifacts already exist from a prior `build` or `typecheck` execution.
 - **Missing `lint`**: Projects without `lint` cannot participate in workspace-wide lint runs or the pre-push hook lint gate
 - **Heavy `test:quick`**: Including slow integration tests or E2E in `test:quick` defeats its purpose — keep the total to a few minutes, not tens of minutes
 - **Mixing concerns in `test:unit`**: `test:unit` must not spin up databases, external APIs, or network services — those belong in `test:integration`
-- **Using a real database in unit tests**: Unit tests must use mocked repositories or in-memory implementations — never a real database (no Testcontainers, no H2, no Ecto SQL Sandbox). Real databases belong in integration tests (demo-be backends via docker-compose) or E2E tests
-- **Using HTTP dispatch in integration tests**: Integration tests for demo-be backends must call service/repository functions directly — not through MockMvc, TestClient, httptest, ConnTest, WebApplicationFactory, or any equivalent HTTP dispatch. HTTP contract verification belongs in E2E tests. See [Three-Level Testing Standard](../quality/three-level-testing-standard.md) for the full level boundaries
-- **Enabling cache on demo-be `test:integration`**: Demo-be integration tests use real PostgreSQL via docker-compose — setting `cache: true` would serve stale results when database state matters. Only in-process-mocking integration tests (MSW, Godog) may enable caching
+- **Using a real database in unit tests**: Unit tests must use mocked repositories or in-memory implementations — never a real database (no Testcontainers, no H2, no Ecto SQL Sandbox). Real databases belong in integration tests (crud-be backends via docker-compose) or E2E tests
+- **Using HTTP dispatch in integration tests**: Integration tests for crud-be backends must call service/repository functions directly — not through MockMvc, TestClient, httptest, ConnTest, WebApplicationFactory, or any equivalent HTTP dispatch. HTTP contract verification belongs in E2E tests. See [Three-Level Testing Standard](../quality/three-level-testing-standard.md) for the full level boundaries
+- **Enabling cache on crud-be `test:integration`**: Crud-be integration tests use real PostgreSQL via docker-compose — setting `cache: true` would serve stale results when database state matters. Only in-process-mocking integration tests (MSW, Godog) may enable caching
 - **`build` on interpreted-language projects**: Adding a no-op `build` to Python or Ruby just to appear consistent — if there is no compile step, there is no `build` target
 - **`typecheck` on compile-enforced languages without additional analysis**: Go and plain Java enforce types through `build`; a separate `typecheck` that only re-runs the compiler is redundant. **Exception**: Java with JSpecify + NullAway warrants `typecheck` because NullAway is a distinct null-safety pass not included in `build`
 - **Undeclared outputs**: Omitting `outputs` on `build` disables caching and forces full rebuilds on every run

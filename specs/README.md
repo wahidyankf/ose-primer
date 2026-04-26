@@ -1,6 +1,6 @@
 # Specs
 
-Gherkin acceptance specifications for demo applications.
+Gherkin acceptance specifications for applications in this monorepo.
 
 ## What This Is
 
@@ -26,14 +26,9 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 
 ## App Specs
 
-- **[demo/](./apps/demo/README.md)** — demo specifications (backend REST API +
-  frontend landing page)
-
-- **[demo/](./apps/demo/README.md)** — Demo application specifications
-  (platform-agnostic Gherkin — see [be/gherkin](./apps/demo/be/gherkin/README.md) and [fe/gherkin](./apps/demo/fe/gherkin/README.md) for details)
+- **[crud/](./apps/crud/README.md)** — CRUD application specifications
+  (platform-agnostic Gherkin — see [be/gherkin](./apps/crud/be/gherkin/README.md) and [fe/gherkin](./apps/crud/fe/gherkin/README.md) for details)
 - **[rhino/](./apps/rhino/README.md)** — Repository management CLI specifications (Go, godog)
-- **[demo/](./apps/demo/README.md)** — Content automation CLI specifications (Go, godog)
-- **[demo/](./apps/demo/README.md)** — demo site CLI specifications (Go, godog)
 
 ## Experimental App Specs
 
@@ -43,7 +38,6 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 ## Library Specs
 
 - **[golang-commons/](./libs/golang-commons/)** — Shared Go utility specifications (godog)
-- **[golang-commons/](./libs/golang-commons/)** — Hugo site utility specifications (godog)
 
 ## Standard Folder Pattern
 
@@ -75,7 +69,7 @@ context, container, and component levels.
 
 ## Standards
 
-All feature files follow the demo BDD standards:
+All feature files follow the BDD standards:
 
 - [BDD Standards](../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md) —
   framework requirements, Three Amigos process, coverage rules

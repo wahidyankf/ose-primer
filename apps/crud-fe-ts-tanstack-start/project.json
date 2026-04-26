@@ -87,6 +87,6 @@
       "inputs": ["{workspaceRoot}/specs/apps/crud/fe/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     }
   },
-  "tags": ["type:app", "platform:vite", "lang:ts", "domain:demo-fe"],
+  "tags": ["type:app", "platform:vite", "lang:ts", "domain:crud-fe"],
   "implicitDependencies": ["crud-contracts", "rhino-cli"]
 }

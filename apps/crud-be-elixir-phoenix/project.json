@@ -106,5 +106,5 @@
       "inputs": ["{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature", "{projectRoot}/**/*.{ex,exs}"]
     }
   },
-  "tags": ["type:app", "platform:phoenix", "lang:elixir", "domain:demo-be"]
+  "tags": ["type:app", "platform:phoenix", "lang:elixir", "domain:crud-be"]
 }

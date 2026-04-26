@@ -1,6 +1,6 @@
 ---
 title: "BDD Spec-to-Test Mapping Convention"
-description: Gherkin spec consumption rules for CLI apps (1:1 command mapping) and demo-be backends (three-level unit/integration/e2e)
+description: Gherkin spec consumption rules for CLI apps (1:1 command mapping) and crud-be backends (three-level unit/integration/e2e)
 category: explanation
 subcategory: development
 tags:
@@ -8,7 +8,7 @@ tags:
   - gherkin
   - integration-testing
   - spec-coverage
-  - demo-be
+  - crud-be
 ---
 
 # BDD Spec-to-Test Mapping Convention
@@ -156,8 +156,8 @@ rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli
 ```
 
 **Scope**: Spec-coverage enforcement is currently active for **CLI apps only** (Go + Godog naming
-conventions). Enforcement for demo-be backends is **planned but deferred** — the tool needs
-enhancement to support demo-be test file naming conventions (e.g., `health_steps_test.go` for Go,
+conventions). Enforcement for crud-be backends is **planned but deferred** — the tool needs
+enhancement to support crud-be test file naming conventions (e.g., `health_steps_test.go` for Go,
 `HealthSteps.java` for Java) which differ from the CLI app naming patterns the tool currently
 expects. This will be addressed in a follow-up plan.
 
@@ -210,7 +210,7 @@ specs/apps/rhino/cli/gherkin/agents-sync.feature  (contains @agents-sync + @agen
 
 ## Demo-be Backend: Three-Level Spec Consumption
 
-All 11 demo-be backends consume the **same shared Gherkin scenarios** from [`specs/apps/crud/be/gherkin/`](../../../specs/apps/crud/be/gherkin/README.md) at three test levels. The feature files are the shared contract — only the step implementations change per level.
+All 11 crud-be backends consume the **same shared Gherkin scenarios** from [`specs/apps/crud/be/gherkin/`](../../../specs/apps/crud/be/gherkin/README.md) at three test levels. The feature files are the shared contract — only the step implementations change per level.
 
 ### Shared Specs
 

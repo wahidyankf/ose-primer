@@ -4,8 +4,8 @@ import 'dart:js_interop';
 import 'package:dio/dio.dart' hide Headers;
 import 'package:web/web.dart';
 
-const _tokenKey = 'demo_fe_access_token';
-const _refreshKey = 'demo_fe_refresh_token';
+const _tokenKey = 'crud_fe_access_token';
+const _refreshKey = 'crud_fe_refresh_token';
 
 String? getAccessToken() => window.localStorage.getItem(_tokenKey);
 String? getRefreshToken() => window.localStorage.getItem(_refreshKey);

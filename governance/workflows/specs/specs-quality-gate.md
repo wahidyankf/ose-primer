@@ -68,10 +68,10 @@ This workflow validates **specification files only** in listed folders. It does 
 
 **When to use**:
 
-- After creating or restructuring spec areas (e.g., adding demo-fe, consolidating demo specs)
+- After creating or restructuring spec areas (e.g., adding crud-fe, consolidating demo specs)
 - Before major spec refactors or migrations
 - After bulk feature file additions or modifications
-- To verify consistency between related spec areas (e.g., demo-be and demo-fe)
+- To verify consistency between related spec areas (e.g., crud-be and crud-fe)
 - After adding a new app or library to the monorepo
 
 ## Execution Mode
@@ -121,7 +121,7 @@ The checker validates seven categories across all spec areas:
 | 1   | Structural Completeness          | Every directory has README.md                                  |
 | 2   | Feature File Inventory           | README counts match actual .feature files and scenarios        |
 | 3   | Gherkin Format Compliance        | Feature headers, user stories, Background steps, naming        |
-| 4   | Cross-Spec Consistency           | Shared domains align between related specs (demo-be ↔ demo-fe) |
+| 4   | Cross-Spec Consistency           | Shared domains align between related specs (crud-be ↔ crud-fe) |
 | 5   | C4 Diagram Consistency           | Accessible colors, actor consistency, file references          |
 | 6   | Cross-Reference Integrity        | All markdown links resolve to existing files                   |
 | 7   | Spec-to-Implementation Alignment | Spec READMEs reference implementations that exist              |
@@ -295,7 +295,7 @@ User: "Run specs validation for specs/apps/crud/be and specs/apps/crud/fe"
 The AI will:
 
 - Validate each folder independently (Categories 1-3, 5-7)
-- Check cross-folder consistency between demo-be and demo-fe (Category 4):
+- Check cross-folder consistency between crud-be and crud-fe (Category 4):
   contradictions, coverage gaps, terminology drift, C4 coherence
 - Fix CRITICAL and HIGH findings
 - Iterate until zero CRITICAL/HIGH findings
@@ -331,8 +331,8 @@ Typical execution flow (folders: `[specs/apps/crud/be, specs/apps/crud/fe]`):
 
 ```
 Iteration 1:
-  Check demo-be → 4 findings (1 CRITICAL, 2 HIGH, 1 MEDIUM)
-  Check demo-fe → 3 findings (0 CRITICAL, 2 HIGH, 1 LOW)
+  Check crud-be → 4 findings (1 CRITICAL, 2 HIGH, 1 MEDIUM)
+  Check crud-fe → 3 findings (0 CRITICAL, 2 HIGH, 1 LOW)
   Cross-folder check → 5 findings (0 CRITICAL, 3 HIGH, 1 MEDIUM, 1 LOW)
   Total: 12 findings (1 CRITICAL, 7 HIGH, 2 MEDIUM, 2 LOW)
   [normal mode] Fix 8 (1 CRITICAL + 7 HIGH)

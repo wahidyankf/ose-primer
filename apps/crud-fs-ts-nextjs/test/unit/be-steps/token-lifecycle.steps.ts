@@ -54,7 +54,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
         .setIssuedAt(Math.floor(Date.now() / 1000) - 7200)
         .setExpirationTime(Math.floor(Date.now() / 1000) - 3600)
         .setJti(crypto.randomUUID())
-        .setIssuer("demo-fs-ts-nextjs")
+        .setIssuer("crud-fs-ts-nextjs")
         .sign(secret);
       ctx.tokens.set("alice_refresh", expiredToken);
     });

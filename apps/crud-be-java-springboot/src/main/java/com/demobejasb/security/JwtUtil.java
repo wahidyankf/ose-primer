@@ -24,7 +24,7 @@ public class JwtUtil {
     public JwtUtil(
             @Value("${app.jwt.secret}") final String secret,
             @Value("${app.jwt.expiration-ms:86400000}") final long expirationMs,
-            @Value("${app.jwt.issuer:demo-be}") final String issuer) {
+            @Value("${app.jwt.issuer:crud-be}") final String issuer) {
         this.signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expirationMs = expirationMs;
         this.issuer = issuer;

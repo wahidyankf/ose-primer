@@ -63,7 +63,7 @@ vi.mock("@/components/layout/app-shell", () => ({
 
 const mockClaims = {
   sub: "user-1",
-  iss: "demo-fs-ts-nextjs",
+  iss: "crud-fs-ts-nextjs",
   iat: 1700000000,
   exp: 1700003600,
   role: "USER",
@@ -123,12 +123,12 @@ describeFeature(feature, ({ Scenario, Background }) => {
         </QueryClientProvider>,
       );
       await waitFor(() => {
-        expect(screen.getByText("demo-fs-ts-nextjs")).toBeInTheDocument();
+        expect(screen.getByText("crud-fs-ts-nextjs")).toBeInTheDocument();
       });
     });
 
     Then("the panel should display a non-empty issuer value", () => {
-      expect(screen.getByText("demo-fs-ts-nextjs")).toBeInTheDocument();
+      expect(screen.getByText("crud-fs-ts-nextjs")).toBeInTheDocument();
     });
   });
 

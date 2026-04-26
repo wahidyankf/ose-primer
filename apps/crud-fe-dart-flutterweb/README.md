@@ -94,4 +94,4 @@ nginx/
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
 - [Frontend Gherkin Specs](../../specs/apps/crud/fe/gherkin/README.md) — Shared feature files (source of truth)
 - [OpenAPI Contract](../../specs/apps/crud/contracts/README.md) — API contract and codegen
-- [crud-fe-e2e](../crud-fe-e2e/README.md) — Centralized E2E tests for all demo-fe frontends
+- [crud-fe-e2e](../crud-fe-e2e/README.md) — Centralized E2E tests for all crud-fe frontends

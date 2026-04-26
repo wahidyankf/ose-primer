@@ -14,4 +14,4 @@ app:
   jwt:
     secret: unit-test-jwt-secret-at-least-32-chars-long
     expiration-ms: 3600000
-    issuer: demo-be
+    issuer: crud-be

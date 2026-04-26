@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset demo-be:006-create-attachments dbms:postgresql
+-- changeset crud-be:006-create-attachments dbms:postgresql
 CREATE TABLE attachments (
     id           UUID           NOT NULL DEFAULT gen_random_uuid(),
     expense_id   UUID           NOT NULL,

@@ -9,7 +9,7 @@ services:
       - MANAGEMENT_ENDPOINT_HEALTH_SHOWDETAILS=when-authorized
       - ENABLE_TEST_API=true
 
-  demo-fe:
+  crud-fe:
     build:
       context: ../../..
       dockerfile: apps/crud-fe-ts-nextjs/Dockerfile

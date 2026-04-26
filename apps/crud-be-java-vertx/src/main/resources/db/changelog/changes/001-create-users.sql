@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset demo-be:001-create-users dbms:postgresql
+-- changeset crud-be:001-create-users dbms:postgresql
 CREATE TABLE users (
     id                    UUID         NOT NULL DEFAULT gen_random_uuid(),
     username              VARCHAR(50)  NOT NULL,

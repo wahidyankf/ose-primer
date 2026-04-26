@@ -108,6 +108,6 @@
       "inputs": ["{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature", "{projectRoot}/**/*.fs"]
     }
   },
-  "tags": ["type:app", "platform:giraffe", "lang:fsharp", "domain:demo-be"],
+  "tags": ["type:app", "platform:giraffe", "lang:fsharp", "domain:crud-be"],
   "implicitDependencies": ["crud-contracts", "rhino-cli"]
 }

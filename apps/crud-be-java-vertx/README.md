@@ -1,7 +1,7 @@
 # crud-be-java-vertx
 
 Java + Vert.x REST API backend — a functional twin of `crud-be-golang-gin` (Go/Gin),
-`crud-be-elixir-phoenix` (Elixir/Phoenix), and other demo-be backends using Java and Eclipse Vert.x.
+`crud-be-elixir-phoenix` (Elixir/Phoenix), and other crud-be backends using Java and Eclipse Vert.x.
 
 ## Tech Stack
 
@@ -155,7 +155,7 @@ Migrations run automatically on application startup via the `SchemaInitializer` 
    ```sql
    -- liquibase formatted sql
 
-   -- changeset demo-be:NNN-description dbms:postgresql
+   -- changeset crud-be:NNN-description dbms:postgresql
    -- your SQL here
    -- rollback DROP TABLE tablename;
    ```

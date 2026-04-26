@@ -2,7 +2,7 @@
   "name": "crud-be-golang-gin",
   "sourceRoot": "apps/crud-be-golang-gin",
   "projectType": "application",
-  "tags": ["type:app", "platform:gin", "lang:golang", "domain:demo-be"],
+  "tags": ["type:app", "platform:gin", "lang:golang", "domain:crud-be"],
   "targets": {
     "codegen": {
       "executor": "nx:run-commands",

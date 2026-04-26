@@ -93,7 +93,7 @@ When("the app attempts to refresh using the original refresh token", async ({ pa
   }
   // Remove access token to force the frontend to attempt a refresh
   await page.evaluate(() => {
-    localStorage.removeItem("demo_fe_access_token");
+    localStorage.removeItem("crud_fe_access_token");
   });
   await page.goto("/expenses");
 });

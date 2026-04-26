@@ -18,7 +18,7 @@ const getSecret = () => {
   return new TextEncoder().encode(secret);
 };
 
-const ISSUER = "demo-fs-ts-nextjs";
+const ISSUER = "crud-fs-ts-nextjs";
 
 export async function signAccessToken(userId: string, username: string, role: Role): Promise<string> {
   const jti = crypto.randomUUID();

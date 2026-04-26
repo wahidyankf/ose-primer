@@ -1,6 +1,6 @@
 # crud-fe-e2e
 
-End-to-end tests for all [demo-fe frontends](../../specs/apps/crud/fe/README.md),
+End-to-end tests for all [crud-fe frontends](../../specs/apps/crud/fe/README.md),
 using [playwright-bdd](https://github.com/vitalets/playwright-bdd) to drive tests from Gherkin
 feature files.
 
@@ -36,7 +36,7 @@ tests/steps/**/*.ts                   <- step implementations
 
 ## Tested Frontends
 
-This centralized E2E suite tests any demo-fe frontend by setting `BASE_URL`:
+This centralized E2E suite tests any crud-fe frontend by setting `BASE_URL`:
 
 | Frontend            | Framework               | Default Port |
 | ------------------- | ----------------------- | ------------ |

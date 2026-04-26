@@ -24,7 +24,7 @@ jobs:
       - uses: ./.github/actions/setup-flutter
       - name: Generate contract types
         run: |
-          npx nx run demo-contracts:bundle
+          npx nx run crud-contracts:bundle
           npx nx run crud-fe-dart-flutterweb:codegen
       - run: npx nx run crud-fe-dart-flutterweb:lint
   e2e-fe:

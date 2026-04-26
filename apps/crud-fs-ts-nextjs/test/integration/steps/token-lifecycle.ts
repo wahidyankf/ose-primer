@@ -12,7 +12,7 @@ Given("alice's refresh token has expired", async function (this: CustomWorld) {
     .setIssuedAt(Math.floor(Date.now() / 1000) - 7200)
     .setExpirationTime(Math.floor(Date.now() / 1000) - 3600)
     .setJti(crypto.randomUUID())
-    .setIssuer("demo-fs-ts-nextjs")
+    .setIssuer("crud-fs-ts-nextjs")
     .sign(secret);
   this.tokens.set("alice_refresh", expired);
 });

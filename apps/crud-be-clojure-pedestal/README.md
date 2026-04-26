@@ -1,7 +1,7 @@
 # crud-be-clojure-pedestal
 
 A Clojure/Pedestal REST API backend implementing the demo expense tracking API. This is a
-functional twin of the other demo-be implementations (Java/Spring Boot, Go/Gin, Elixir/Phoenix,
+functional twin of the other crud-be implementations (Java/Spring Boot, Go/Gin, Elixir/Phoenix,
 etc.) using the same Gherkin scenarios.
 
 ## Tech Stack
@@ -142,7 +142,7 @@ nx run crud-be-clojure-pedestal:typecheck
 
 ## API Endpoints
 
-All endpoints follow the shared demo-be API contract:
+All endpoints follow the shared crud-be API contract:
 
 | Method | Path                                           | Auth   | Description               |
 | ------ | ---------------------------------------------- | ------ | ------------------------- |

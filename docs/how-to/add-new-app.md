@@ -298,7 +298,7 @@ New `crud-be-*` and `crud-fe-*` apps must satisfy these additional requirements:
 - [ ] `test:quick` — unit tests + coverage validation (≥90% for backends, ≥70% for frontends); cacheable
 - [ ] `test:integration` — real PostgreSQL via docker-compose; must set `cache: false`
 
-**Note**: `rhino-cli spec-coverage validate` in `test:quick` is deferred pending tool enhancement for demo-be naming conventions.
+**Note**: `rhino-cli spec-coverage validate` in `test:quick` is deferred pending tool enhancement for crud-be naming conventions.
 
 **Docker Compose setup**: Apps with `test:integration` that use a real database must provide a
 `docker-compose.integration.yml` at the app root. The file defines the database service and a

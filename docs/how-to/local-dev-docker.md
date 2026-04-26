@@ -74,19 +74,19 @@ cd open-sharia-enterprise
 
 Each app category has its own Docker Compose setup under `infra/dev/`. Pick the one matching your development task:
 
-**Backend (demo-be)**:
+**Backend (crud-be)**:
 
 ```bash
 docker compose -f infra/dev/crud-be-golang-gin/docker-compose.yml up
 ```
 
-**Frontend (demo-fe)**:
+**Frontend (crud-fe)**:
 
 ```bash
 docker compose -f infra/dev/crud-fe-ts-nextjs/docker-compose.yml up
 ```
 
-**Full-stack (demo-fs)**:
+**Full-stack (crud-fs)**:
 
 ```bash
 docker compose -f infra/dev/crud-fs-ts-nextjs/docker-compose.yml up
@@ -202,7 +202,7 @@ docker compose down -v
 **Quick Start**:
 
 ```bash
-npm run demo-be:dev
+npm run crud-be:dev
 ```
 
 **Documentation**: [Demo Backend (JASB) Infrastructure README](../../infra/dev/crud-be-java-springboot/README.md)
@@ -356,7 +356,7 @@ DATABASE_URL=postgresql://user:password@localhost:5432/dbname
 **Full-stack (`crud-fs-ts-nextjs`)**:
 
 ```bash
-DATABASE_URL=postgresql://demo_fs_nextjs:demo_fs_nextjs@db:5432/demo_fs_nextjs
+DATABASE_URL=postgresql://crud_fs_ts_nextjs:crud_fs_ts_nextjs@db:5432/crud_fs_ts_nextjs
 APP_JWT_SECRET=dev-jwt-secret-at-least-32-chars-long!!
 # Enable test-only API routes used by E2E tests
 ENABLE_TEST_API=true

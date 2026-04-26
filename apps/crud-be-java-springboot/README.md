@@ -44,10 +44,10 @@ Use the convenient npm scripts from the repository root:
 
 ```bash
 # Start development environment
-npm run demo-be:dev
+npm run crud-be:dev
 
 # Restart (clean restart with fresh state)
-npm run demo-be:dev:restart
+npm run crud-be:dev:restart
 ```
 
 **Benefits**:
@@ -109,7 +109,7 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ### Step 1: Start application
 
 ```bash
-npm run demo-be:dev
+npm run crud-be:dev
 ```
 
 Wait for: `Started demoApplication in X seconds`

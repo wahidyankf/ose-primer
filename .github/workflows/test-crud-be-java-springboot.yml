@@ -45,4 +45,4 @@ jobs:
       language: jvm
       compose-dir: infra/dev/crud-be-java-springboot
       be-e2e-target: "test:e2e:no-test-api"
-      be-e2e-extra-env: "DATABASE_URL=postgresql://demo_be:demo_be@localhost:5432/demo_be"
+      be-e2e-extra-env: "DATABASE_URL=postgresql://demo:demo@localhost:5432/crud_be"

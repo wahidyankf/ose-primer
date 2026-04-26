@@ -1,9 +1,9 @@
 ---
 title: How to Add a New Demo Backend
-description: Step-by-step guide for creating a new demo-be backend implementation in a new language/framework
+description: Step-by-step guide for creating a new crud-be backend implementation in a new language/framework
 category: how-to
 tags:
-  - demo-be
+  - crud-be
   - backend
   - nx
   - codegen
@@ -47,10 +47,10 @@ Use the four-dimension tag scheme. Every dimension is required:
 | `type:`     | `app`                     | `type:app`       |
 | `platform:` | Framework name            | `platform:gin`   |
 | `lang:`     | Language name             | `lang:golang`    |
-| `domain:`   | Fixed for all BE variants | `domain:demo-be` |
+| `domain:`   | Fixed for all BE variants | `domain:crud-be` |
 
 ```json
-"tags": ["type:app", "platform:{framework}", "lang:{language}", "domain:demo-be"]
+"tags": ["type:app", "platform:{framework}", "lang:{language}", "domain:crud-be"]
 ```
 
 Tags enable `nx affected` filtering and enforce dependency rules via Nx module boundary lint rules.
@@ -304,7 +304,7 @@ persistence across restarts:
 
 ```yaml
 # Local development environment for crud-be-{lang}-{framework}
-# Mutually exclusive with other demo-be backends — all bind port 8201.
+# Mutually exclusive with other crud-be backends — all bind port 8201.
 # Do not run multiple backend stacks simultaneously.
 
 services:
@@ -312,15 +312,15 @@ services:
     image: postgres:17-alpine
     container_name: crud-be-{lang}-{framework}-db
     environment:
-      POSTGRES_DB: demo_be_{abbrev}
-      POSTGRES_USER: ${POSTGRES_USER:-demo_be_{abbrev}}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-demo_be_{abbrev}}
+      POSTGRES_DB: crud_be_{abbrev}
+      POSTGRES_USER: ${POSTGRES_USER:-crud_be_{abbrev}}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-crud_be_{abbrev}}
     ports:
       - "5432:5432"
     volumes:
       - crud-be-{lang}-{framework}-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-demo_be_{abbrev}} -d demo_be_{abbrev}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-crud_be_{abbrev}} -d crud_be_{abbrev}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -345,7 +345,7 @@ services:
         condition: service_healthy
     environment:
       - PORT=8201
-      - DATABASE_URL=postgresql://demo_be_{abbrev}:demo_be_{abbrev}@crud-be-{lang}-{framework}-db:5432/demo_be_{abbrev}
+      - DATABASE_URL=postgresql://crud_be_{abbrev}:crud_be_{abbrev}@crud-be-{lang}-{framework}-db:5432/crud_be_{abbrev}
       - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
     command: { hot-reload-command }
     restart: unless-stopped
@@ -374,11 +374,11 @@ services:
   postgres:
     image: postgres:17-alpine
     environment:
-      POSTGRES_DB: demo_be_{abbrev}_test
-      POSTGRES_USER: demo_be_{abbrev}
-      POSTGRES_PASSWORD: demo_be_{abbrev}
+      POSTGRES_DB: crud_be_{abbrev}_test
+      POSTGRES_USER: crud_be_{abbrev}
+      POSTGRES_PASSWORD: crud_be_{abbrev}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U demo_be_{abbrev} -d demo_be_{abbrev}_test"]
+      test: ["CMD-SHELL", "pg_isready -U crud_be_{abbrev} -d crud_be_{abbrev}_test"]
       interval: 2s
       timeout: 5s
       retries: 10
@@ -395,7 +395,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: "postgresql://demo_be_{abbrev}:demo_be_{abbrev}@postgres:5432/demo_be_{abbrev}_test"
+      DATABASE_URL: "postgresql://crud_be_{abbrev}:crud_be_{abbrev}@postgres:5432/crud_be_{abbrev}_test"
     volumes:
       - ../../specs:/specs:ro
 ```
@@ -421,7 +421,7 @@ services:
       - {FRAMEWORK_MODE_VAR}=production
       - ENABLE_TEST_API=true
 
-  demo-fe:
+  crud-fe:
     build:
       context: ../../..
       dockerfile: apps/crud-fe-ts-nextjs/Dockerfile
@@ -484,15 +484,15 @@ explaining its purpose. The file is committed to the repository; the actual `.en
 # Copy this file to .env and configure as needed.
 
 # Database credentials for local dev PostgreSQL container
-POSTGRES_USER=demo_be_{abbrev}
-POSTGRES_PASSWORD=demo_be_{abbrev}
+POSTGRES_USER=crud_be_{abbrev}
+POSTGRES_PASSWORD=crud_be_{abbrev}
 
 # JWT signing secret — minimum 32 characters for HS256 security.
 # Must be changed to a cryptographically random value in production.
 APP_JWT_SECRET=change-me-in-dev-only-not-for-production
 
 # Database URL for the app service (used at runtime)
-DATABASE_URL=postgresql://demo_be_{abbrev}:demo_be_{abbrev}@crud-be-{lang}-{framework}-db:5432/demo_be_{abbrev}
+DATABASE_URL=postgresql://crud_be_{abbrev}:crud_be_{abbrev}@crud-be-{lang}-{framework}-db:5432/crud_be_{abbrev}
 
 # {Language/framework-specific variables go here}
 # Example for a framework mode variable:

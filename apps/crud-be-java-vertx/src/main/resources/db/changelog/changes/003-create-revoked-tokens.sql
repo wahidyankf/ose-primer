@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset demo-be:003-create-revoked-tokens dbms:postgresql
+-- changeset crud-be:003-create-revoked-tokens dbms:postgresql
 CREATE TABLE revoked_tokens (
     id         UUID         NOT NULL DEFAULT gen_random_uuid(),
     jti        VARCHAR(512) NOT NULL,

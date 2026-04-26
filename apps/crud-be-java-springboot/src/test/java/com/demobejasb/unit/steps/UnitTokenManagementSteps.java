@@ -49,7 +49,7 @@ public class UnitTokenManagementSteps {
         assertThat(jwtUtil.isTokenValid(token)).isTrue();
         assertThat(jwtUtil.extractUsername(token)).isNotNull();
         assertThat(jwtUtil.extractClaims(token)).isNotNull();
-        assertThat(jwtUtil.getIssuer()).isEqualTo("demo-be");
+        assertThat(jwtUtil.getIssuer()).isEqualTo("crud-be");
         // generateToken (simple username-only token)
         String simpleToken = jwtUtil.generateToken("alice");
         assertThat(jwtUtil.isTokenValid(simpleToken)).isTrue();

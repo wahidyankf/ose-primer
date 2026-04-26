@@ -1,6 +1,6 @@
 spring:
   application:
-    name: demo-be
+    name: crud-be
   web:
     error:
       include-message: always

@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset demo-be:005-create-expenses dbms:postgresql
+-- changeset crud-be:005-create-expenses dbms:postgresql
 CREATE TABLE expenses (
     id          UUID           NOT NULL DEFAULT gen_random_uuid(),
     user_id     UUID           NOT NULL,

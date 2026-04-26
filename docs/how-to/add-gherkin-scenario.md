@@ -6,8 +6,8 @@ tags:
   - gherkin
   - bdd
   - testing
-  - demo-be
-  - demo-fe
+  - crud-be
+  - crud-fe
 ---
 
 # How to Add a Gherkin Scenario

@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset demo-be:002-alter-users-add-columns dbms:postgresql
+-- changeset crud-be:002-alter-users-add-columns dbms:postgresql
 ALTER TABLE users ADD COLUMN email VARCHAR(255);
 ALTER TABLE users ADD COLUMN display_name VARCHAR(255);
 ALTER TABLE users ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'USER';

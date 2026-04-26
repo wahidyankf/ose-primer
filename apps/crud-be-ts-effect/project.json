@@ -106,6 +106,6 @@
       "inputs": ["{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     }
   },
-  "tags": ["type:app", "platform:effect", "lang:typescript", "domain:demo-be"],
+  "tags": ["type:app", "platform:effect", "lang:typescript", "domain:crud-be"],
   "implicitDependencies": ["crud-contracts", "rhino-cli"]
 }
