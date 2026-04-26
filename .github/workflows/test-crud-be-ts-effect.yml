@@ -2,6 +2,8 @@ name: Test - Crud BE (TypeScript/Effect)
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * 0"
 
 permissions:
   contents: read
