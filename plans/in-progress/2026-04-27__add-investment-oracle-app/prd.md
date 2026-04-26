@@ -10,10 +10,11 @@ template's reference for AI-shaped workloads (RAG, streaming, agentic
 editing, desktop packaging) the same way `crud-*` is the reference for
 CRUD-shaped workloads.
 
-This PRD assumes the reader has read the four prerequisite primers
+This PRD assumes the reader has read the five prerequisite primers
 ([AI](../../../docs/explanation/software-engineering/ai-application-development/README.md),
 [Anthropic](../../../docs/explanation/software-engineering/ai-application-development/anthropic-api.md),
 [Gemini](../../../docs/explanation/software-engineering/ai-application-development/google-gemini-api.md),
+[OpenAI](../../../docs/explanation/software-engineering/ai-application-development/openai-api.md),
 [Perplexity](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md))
 and uses their vocabulary without redefining it.
 
@@ -177,15 +178,19 @@ the next chat call.
 
 **FR-11**: Required environment variables:
 
-| Variable                    | Purpose                                                                             |
-| --------------------------- | ----------------------------------------------------------------------------------- |
-| `ANTHROPIC_API_KEY`         | Anthropic Messages API authentication                                               |
-| `GOOGLE_API_KEY`            | Google `google-genai` SDK authentication (chat + embeddings)                        |
-| `DATABASE_URL`              | Postgres connection string (`postgresql+asyncpg://...`)                             |
-| `MOCK_LLM_PROVIDERS`        | When `true`, intercepts all vendor HTTP via `httpx` cassette fixtures               |
-| `INVESTMENT_ORACLE_PORT`    | Sidecar HTTP port (default 8501; Tauri shell injects a random free port at runtime) |
-| `COST_CAP_PER_ANALYSIS_USD` | Per-analysis token budget; default 0.50                                             |
-| `COST_CAP_PER_DAY_USD`      | Per-day token budget across all analyses; default 5.00                              |
+| Variable                    | Purpose                                                                                                                                                |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ANTHROPIC_API_KEY`         | Anthropic Messages API authentication                                                                                                                  |
+| `GOOGLE_API_KEY`            | Google `google-genai` SDK authentication (chat + embeddings)                                                                                           |
+| `PERPLEXITY_API_KEY`        | Perplexity Sonar API authentication (optional; required only when web grounding is enabled)                                                            |
+| `DATABASE_URL`              | Postgres connection string (`postgresql+asyncpg://...`)                                                                                                |
+| `MOCK_LLM_PROVIDERS`        | When `true`, intercepts all vendor HTTP via `httpx` cassette fixtures                                                                                  |
+| `INVESTMENT_ORACLE_PORT`    | Sidecar HTTP port (default 8501; Tauri shell injects a random free port at runtime)                                                                    |
+| `COST_CAP_PER_ANALYSIS_USD` | Per-analysis token budget (includes Perplexity search fees); default 0.75                                                                              |
+| `COST_CAP_PER_DAY_USD`      | Per-day token budget across all analyses; default 5.00                                                                                                 |
+| `RESIDENCY_PROFILE`         | One of `direct-us` (default), `bedrock-jakarta-cris`, `bedrock-jakarta-in-region`, `vertex-singapore`                                                  |
+| `PII_MASKING_ENABLED`       | When `true` (default), all outbound LLM text passes through `PIIMasker.mask()`. Can be `false` only when `RESIDENCY_PROFILE=bedrock-jakarta-in-region` |
+| `WEB_GROUNDING_ENABLED`     | When `true`, the analysis-create form exposes the "Include latest web grounding" toggle (default `false`)                                              |
 
 `.env.example` ships placeholder values; real keys live in user's local
 `.env` (gitignored) or in OS keychain when the desktop app is run.
@@ -209,6 +214,85 @@ in the dependency-injection container.
 **FR-13a**: Per-IP rate limiting via `slowapi` is wired but **opt-in**
 (disabled by default for desktop, single-user). A `RATE_LIMIT_ENABLED=true`
 env var turns it on, useful when the same sidecar is deployed as a server.
+
+### Indonesian residency and PII masking
+
+**FR-RES-1 (Residency tagging)**: Every outbound HTTP call to a chat,
+embedding, or web-grounding API carries an explicit residency tag
+recorded on the `token_usage` row: `direct-us` (Anthropic / Gemini /
+Perplexity direct, default), `bedrock-jakarta-cris` (Bedrock Jakarta
+with Global Cross-Region Inference), `bedrock-jakarta-in-region`
+(Bedrock Jakarta with in-region profile, currently only Claude Opus
+4.7), or `vertex-singapore` (Gemini via Vertex AI Singapore). The tag
+is logged at INFO level and included in the structured error envelope
+when a guardrail rejects a call.
+
+**FR-PII-1 (PII masker, default-on)**: A `PIIMasker` Protocol intercepts
+**every text payload** leaving the BE for any LLM endpoint (chat,
+embedding, web grounding). The default implementation
+(`IndonesianRegexMasker`) detects and replaces:
+
+| Pattern         | Detection                                    | Placeholder format |
+| --------------- | -------------------------------------------- | ------------------ |
+| NIK             | 16-digit numeric (NIK validator stub)        | `[NIK_001]`        |
+| NPWP            | 15-digit numeric with dashes / dots accepted | `[NPWP_001]`       |
+| Phone Indonesia | `+62` or `08` prefix, 9–14 digits            | `[PHONE_001]`      |
+| Email           | RFC 5322 simple shape                        | `[EMAIL_001]`      |
+| Bank account    | 10–16 digits, contextual                     | `[BANK_001]`       |
+| Credit card     | Luhn-checked 13–19 digits                    | `[CC_001]`         |
+
+The reverse map is held in memory only, scoped to the current call (or
+streaming session for SSE). Streamed response chunks pass through
+`PIIMasker.unmask()` before being persisted to `reports.content_md` and
+emitted to the FE.
+
+**FR-PII-2 (Bypass condition)**: Masking can be disabled per call only
+when `RESIDENCY_PROFILE=bedrock-jakarta-in-region`. Any other profile
+attempting to bypass returns `409 masking_required_for_residency`.
+
+**FR-PII-3 (Test surface)**: A unit-level test asserts that for every
+`ChatProvider.stream()` and `Embedder.embed()` invocation, the outbound
+HTTP request body contains **no** raw NIK / NPWP / phone / email /
+bank / credit-card pattern when `PII_MASKING_ENABLED=true`. This is a
+content-fingerprint assertion on the wire, not on the LLM response.
+
+### Web grounding (optional, Perplexity Sonar)
+
+**FR-WG-1 (Toggle)**: When `WEB_GROUNDING_ENABLED=true`, the
+`POST /api/v1/analyses` body accepts `web_grounding: true|false`
+(default `false`) and the same flag is accepted on
+`POST /api/v1/analyses/{id}/report` and
+`POST /api/v1/analyses/{id}/report:edit`.
+
+**FR-WG-2 (Sonar call shape)**: When the flag is on, the BE makes one
+Perplexity Sonar call **before** the chat call:
+
+- Model: `sonar` (default) or `sonar-pro` (configurable per analysis).
+- Prompt: a structured query built from the analysis sources' filer
+  names and the section being generated/edited.
+- Filters: `search_recency_filter: "month"` by default;
+  `search_domain_filter: ["sec.gov", "wsj.com", "reuters.com",
+"bloomberg.com"]` by default to bias toward authoritative sources.
+- Output passed through `PIIMasker.unmask()` only if the input was
+  masked (Sonar receives no PII because it operates on issuer-name
+  queries, not user-provided text).
+
+**FR-WG-3 (Citation surfacing)**: Sonar's `citations` array is stored
+on the `report_revisions` row in a new JSONB column `web_citations`.
+The generated/edited Markdown distinguishes citation provenance with
+inline markers: `[PDF p.45]` for PDF-RAG citations and
+`[Web: domain.com]` for web-grounded ones.
+
+**FR-WG-4 (Cost-cap accounting)**: The cost cap formula adds
+Perplexity's per-request search fee (estimated `$0.01` for `sonar` at
+`low` search context, scaling per the [Perplexity primer](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md#pricing-2026-q2))
+on top of token cost. The UI surfaces "+ web grounding ≈ $X" before
+the user clicks **Generate** so cost is informed-consent.
+
+**FR-WG-5 (Disabled-by-default-in-tests)**: All BE tests run with
+`WEB_GROUNDING_ENABLED=false` unless the test exists specifically to
+exercise the Perplexity path; cassettes for the Perplexity path live
+alongside Anthropic and Gemini cassettes.
 
 ### UI requirements
 
@@ -440,8 +524,10 @@ Feature: Manual smoke against shipped fixtures
 - No exports (PDF, DOCX). Markdown copy-out of the editor pane is the
   manual workaround; export is a backlog item.
 - No collaboration. One desktop app, one user.
-- No live web search. The Perplexity primer documents that lane;
-  investment-oracle deliberately does not consume it.
+- No live web search **as the only retrieval surface**. Web grounding
+  via Perplexity Sonar (FR-WG) is layered on top of PDF-RAG, never
+  replacing it. A Sonar-only analysis (no PDFs attached) returns `400
+no_sources_attached`.
 - No re-ranking, no hybrid search. Single-vector retrieval is enough for a
   demo.
 

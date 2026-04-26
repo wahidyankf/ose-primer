@@ -9,6 +9,8 @@ in order; push direct to `main` per Trunk Based Development
 - [ ] Read [AI Application Development primer](../../../docs/explanation/software-engineering/ai-application-development/README.md)
 - [ ] Read [Anthropic API Primer](../../../docs/explanation/software-engineering/ai-application-development/anthropic-api.md)
 - [ ] Read [Google Gemini API Primer](../../../docs/explanation/software-engineering/ai-application-development/google-gemini-api.md)
+- [ ] Read [OpenAI API Primer](../../../docs/explanation/software-engineering/ai-application-development/openai-api.md)
+      (boundary framing only; not used in this demo)
 - [ ] Read [Perplexity Sonar API Primer](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md)
       (boundary framing only; not used in this demo)
 - [ ] Read this plan's [README](./README.md), [BRD](./brd.md), [PRD](./prd.md), [tech-docs](./tech-docs.md)
@@ -117,6 +119,43 @@ in order; push direct to `main` per Trunk Based Development
       rules from `content_filter/default_rules.txt`
 - [ ] Implement `domain/cost_cap.py` reading `token_usage`, returning
       `BudgetState` (`under_cap` / `at_cap` / `over_cap`) before each call
+
+## Phase 6a — BE: residency, PII masking, web grounding
+
+- [ ] Implement `domain/pii_masker.py` Protocol + `IndonesianRegexMasker`
+      default impl per [tech-docs.md PIIMasker](./tech-docs.md#piimasker-protocol).
+      Detect NIK, NPWP, phone (Indonesia), email, bank account, credit
+      card. Numbered placeholders (`[NIK_001]`, `[NPWP_001]`, …) with an
+      in-memory reverse map scoped to the call.
+- [ ] Wire `PIIMasker.mask()` into `ChatProvider.stream()` and
+      `Embedder.embed()` so every outbound payload is masked when
+      `PII_MASKING_ENABLED=true`. Streaming responses pass through
+      `PIIMasker.unmask()` before persistence and FE emit.
+- [ ] Implement `domain/residency.py`: enum of the four profiles
+      (`direct-us`, `bedrock-jakarta-cris`, `bedrock-jakarta-in-region`,
+      `vertex-singapore`); record the active profile on every
+      `token_usage` row via the new `residency_profile` column.
+- [ ] Reject `PII_MASKING_ENABLED=false` for any profile other than
+      `bedrock-jakarta-in-region` with `409 masking_required_for_residency`.
+- [ ] Implement `domain/web_grounder.py` Protocol + `PerplexityGrounder`
+      default impl per [tech-docs.md WebGrounder](./tech-docs.md#webgrounder-protocol-optional-perplexity-layer).
+      Reads `PERPLEXITY_API_KEY`. Single Sonar call with
+      `search_recency_filter: "month"` and a default
+      `search_domain_filter: ["sec.gov", "wsj.com", "reuters.com",
+  "bloomberg.com"]`.
+- [ ] Wire `WebGrounder.ground()` into `ReportGenerator.generate()` and
+      the LLM-edit handler when `web_grounding=true` is requested.
+- [ ] Add migration for the `web_citations` JSONB column on
+      `report_revisions` and the `residency_profile` + `search_fee_usd`
+      columns on `token_usage` per
+      [tech-docs.md schema additions](./tech-docs.md#schema-additions).
+- [ ] Update `domain/cost_cap.py` to add `search_fee_usd` to the budget
+      check; default `COST_CAP_PER_ANALYSIS_USD` raised from `0.50` to
+      `0.75` to accommodate Perplexity.
+- [ ] Unit test: assert outbound HTTP body contains no raw NIK / NPWP /
+      phone / email / bank / CC pattern when `PII_MASKING_ENABLED=true`
+      across all three vendor SDKs (Anthropic, Gemini, Perplexity). Use
+      `pytest-httpx`'s captured request feature.
 
 ## Phase 7 — BE: API layer
 
