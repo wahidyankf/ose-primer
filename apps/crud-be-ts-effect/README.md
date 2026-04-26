@@ -3,7 +3,7 @@
 TypeScript/Effect REST API backend — a functional twin of `crud-be-golang-gin`, `crud-be-python-fastapi`,
 `crud-be-rust-axum`, and others, using Node.js, Vite, and Effect TS.
 
-**tsex** = **T**ype**S**cript + **E**ffect**X** — matching the suffix pattern of other demo-be
+**tsex** = **T**ype**S**cript + **E**ffect**X** — matching the suffix pattern of other crud-be
 variants.
 
 ## Tech Stack

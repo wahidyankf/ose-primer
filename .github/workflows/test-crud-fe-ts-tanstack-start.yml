@@ -23,7 +23,7 @@ jobs:
       - uses: ./.github/actions/setup-node
       - name: Generate contract types
         run: |
-          npx nx run demo-contracts:bundle
+          npx nx run crud-contracts:bundle
           npx nx run crud-fe-ts-tanstack-start:codegen
       - run: npx nx run crud-fe-ts-tanstack-start:lint
   e2e-fe:

@@ -76,7 +76,7 @@
       "inputs": ["{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
     }
   },
-  "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:demo-be"],
+  "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:crud-be"],
   "implicitDependencies": [
     "crud-be-java-springboot",
     "crud-be-elixir-phoenix",

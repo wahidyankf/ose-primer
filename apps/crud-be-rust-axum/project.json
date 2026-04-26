@@ -112,6 +112,6 @@
       "inputs": ["{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature", "{projectRoot}/**/*.rs"]
     }
   },
-  "tags": ["type:app", "platform:axum", "lang:rust", "domain:demo-be"],
+  "tags": ["type:app", "platform:axum", "lang:rust", "domain:crud-be"],
   "implicitDependencies": ["crud-contracts", "rhino-cli"]
 }

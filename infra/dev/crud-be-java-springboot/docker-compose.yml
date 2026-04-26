@@ -1,4 +1,4 @@
-# Local Development Environment for Demo Backend
+# Local Development Environment for CRUD Backend
 # Backend: Spring Boot with auto-reload via Spring Boot DevTools
 
 services:
@@ -6,7 +6,7 @@ services:
     image: postgres:17-alpine
     container_name: crud-be-db
     environment:
-      POSTGRES_DB: demo_be
+      POSTGRES_DB: crud_be
       POSTGRES_USER: ${POSTGRES_USER:-demo}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-demo}
     ports:
@@ -14,7 +14,7 @@ services:
     volumes:
       - crud-be-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-demo} -d demo_be"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-demo} -d crud_be"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -48,7 +48,7 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
       - SERVER_PORT=8201
       - MAVEN_OPTS=${MAVEN_OPTS:--Xmx512m}
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://crud-be-db:5432/demo_be
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://crud-be-db:5432/crud_be
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-demo}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-demo}
       - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}

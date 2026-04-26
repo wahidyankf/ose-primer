@@ -1,5 +1,5 @@
 # Local Development Environment for Demo Backend (RSAX — Rust/Axum)
-# Mutually exclusive with other demo-be backends — all bind port 8201.
+# Mutually exclusive with other crud-be backends — all bind port 8201.
 # Do not run multiple backend stacks simultaneously.
 
 services:

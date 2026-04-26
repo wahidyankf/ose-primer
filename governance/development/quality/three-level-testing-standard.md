@@ -10,7 +10,7 @@ tags:
   - e2e-tests
   - bdd
   - gherkin
-  - demo-be
+  - crud-be
 ---
 
 # Three-Level Testing Standard
@@ -148,7 +148,7 @@ For Nx to invalidate cached test results when relevant files change, all `test:u
 1. **Source files** — language-specific glob patterns (e.g., `{projectRoot}/src/**/*.go`)
 2. **Generated contracts** — `{projectRoot}/generated-contracts/**/*` (or `generated_contracts/`
    for Python and Clojure, which use underscore)
-3. **Gherkin specs** — `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` (demo-be
+3. **Gherkin specs** — `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` (crud-be
    backends only)
 
 Without these explicit inputs, Nx may serve a cached result after a Gherkin spec is updated or
@@ -284,7 +284,7 @@ supplied directories rather than requiring a 1:1 match between each feature file
 corresponding step file. This accommodates shared step libraries and the varying naming conventions
 across languages (e.g., `health_steps_test.go`, `UserSteps.java`, `user_steps.ex`).
 
-**`--exclude-dir test-support`**: Demo-be backends and demo-fe frontends use this flag. It excludes
+**`--exclude-dir test-support`**: Demo-be backends and crud-fe frontends use this flag. It excludes
 E2E-only `test-support` API spec files from validation. These specs exist only to support E2E
 testing infrastructure and are not implemented at the unit or integration level. E2E runners do
 **not** use this flag because they implement those steps.
@@ -358,7 +358,7 @@ The following gaps are known and tracked for future resolution:
 
 ## Per-Backend Implementation Pattern
 
-Each demo-be backend must have:
+Each crud-be backend must have:
 
 ```
 apps/crud-be-{lang}-{framework}/

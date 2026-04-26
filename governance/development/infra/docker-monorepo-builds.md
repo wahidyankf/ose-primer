@@ -78,7 +78,7 @@ from `infra/dev/<app>/`) so that `COPY libs/...` instructions in the Dockerfile 
 ```yaml
 # infra/dev/crud-fe-ts-nextjs/docker-compose.yml
 services:
-  demo-fe:
+  crud-fe:
     build:
       context: ../../.. # repo root — required for COPY libs/...
       dockerfile: apps/crud-fe-ts-nextjs/Dockerfile

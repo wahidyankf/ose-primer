@@ -1,7 +1,7 @@
 # crud-be-golang-gin
 
 Go + Gin REST API backend — the default demo backend. Alternative implementations exist:
-`crud-be-java-springboot` (Java/Spring Boot), `crud-be-elixir-phoenix` (Elixir/Phoenix), and other demo-be backends. Uses Go and the Gin framework.
+`crud-be-java-springboot` (Java/Spring Boot), `crud-be-elixir-phoenix` (Elixir/Phoenix), and other crud-be backends. Uses Go and the Gin framework.
 
 ## Tech Stack
 
@@ -153,7 +153,7 @@ runs `go test -tags=integration_pg`. The `docker-compose.integration.yml` mounts
 
 ### Level 3: E2E tests
 
-E2E tests for all demo-be backends live in the shared `crud-be-e2e` Playwright project.
+E2E tests for all crud-be backends live in the shared `crud-be-e2e` Playwright project.
 
 ### Legacy integration package
 

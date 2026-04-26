@@ -251,14 +251,14 @@ It does not apply to:
 ## Tools and Automation
 
 - **`rhino-cli spec-coverage validate`**: Enforces spec-to-test mapping for CLI apps. Integrated into `test:quick`. Violations cause CI to fail.
-- **Nx cache inputs**: `test:unit` and `test:quick` targets for demo-be backends declare `specs/apps/crud/be/gherkin/**/*.feature` as inputs, so Nx invalidates cached results when Gherkin specs change.
+- **Nx cache inputs**: `test:unit` and `test:quick` targets for crud-be backends declare `specs/apps/crud/be/gherkin/**/*.feature` as inputs, so Nx invalidates cached results when Gherkin specs change.
 - **`crud-contracts` codegen target**: Generates types from the OpenAPI spec. Declared as a dependency of `typecheck` and `build`, so stale contracts are caught in CI before merge.
 - **`repo-rules-checker`**: Validates that specs folders exist for apps that require them. Flags missing or misnamed spec folders.
 
 ## 🔗 Related Documentation
 
 - [Three-Level Testing Standard](./three-level-testing-standard.md) - How all three test levels consume shared Gherkin specs
-- [BDD Spec-to-Test Mapping](../infra/bdd-spec-test-mapping.md) - Mandatory 1:1 mapping for CLI apps; three-level consumption for demo-be backends
+- [BDD Spec-to-Test Mapping](../infra/bdd-spec-test-mapping.md) - Mandatory 1:1 mapping for CLI apps; three-level consumption for crud-be backends
 - [Nx Target Standards](../infra/nx-targets.md) - Cache input declarations that include Gherkin specs
 - [specs/README.md](../../../specs/README.md) - Spec directory organization and per-app spec structure
 - [specs/apps/crud/be/README.md](../../../specs/apps/crud/be/README.md) - Demo-be shared spec structure and three-level consumption

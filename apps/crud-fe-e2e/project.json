@@ -69,7 +69,7 @@
       "inputs": ["{workspaceRoot}/specs/apps/crud/fe/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
     }
   },
-  "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:demo-fe"],
+  "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:crud-fe"],
   "implicitDependencies": [
     "crud-fe-ts-nextjs",
     "crud-fe-dart-flutterweb",

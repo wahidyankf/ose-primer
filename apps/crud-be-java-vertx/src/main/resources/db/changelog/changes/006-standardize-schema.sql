@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset demo-be:006-standardize-schema dbms:postgresql
+-- changeset crud-be:006-standardize-schema dbms:postgresql
 ALTER TABLE expenses
     ALTER COLUMN amount TYPE DECIMAL(19,4),
     ALTER COLUMN quantity TYPE DECIMAL(19,4),

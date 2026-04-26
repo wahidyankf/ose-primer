@@ -89,6 +89,6 @@
       "inputs": ["{workspaceRoot}/specs/apps/crud/fe/gherkin/**/*.feature", "{projectRoot}/**/*.dart"]
     }
   },
-  "tags": ["type:app", "platform:flutter", "lang:dart", "domain:demo-fe"],
+  "tags": ["type:app", "platform:flutter", "lang:dart", "domain:crud-fe"],
   "implicitDependencies": ["crud-contracts", "rhino-cli"]
 }

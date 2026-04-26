@@ -5,6 +5,7 @@ export default defineConfig({
   out: "./src/db/migrations",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? "postgresql://demo_fs_nextjs:demo_fs_nextjs@localhost:5432/demo_fs_nextjs",
+    url:
+      process.env.DATABASE_URL ?? "postgresql://crud_fs_ts_nextjs:crud_fs_ts_nextjs@localhost:5432/crud_fs_ts_nextjs",
   },
 });

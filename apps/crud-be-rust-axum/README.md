@@ -1,7 +1,7 @@
 # crud-be-rust-axum
 
 Rust + Axum REST API backend — a functional twin of `crud-be-golang-gin` (Go/Gin),
-`crud-be-elixir-phoenix` (Elixir/Phoenix), and other demo-be backends using Rust and the Axum framework.
+`crud-be-elixir-phoenix` (Elixir/Phoenix), and other crud-be backends using Rust and the Axum framework.
 
 ## Tech Stack
 

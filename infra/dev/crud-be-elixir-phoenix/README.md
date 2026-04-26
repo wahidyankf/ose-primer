@@ -32,8 +32,8 @@ before starting Phoenix, so the schema is always up to date.
 
 | Variable            | Default                                    | Description                |
 | ------------------- | ------------------------------------------ | -------------------------- |
-| `POSTGRES_USER`     | `demo_be_elixir_phoenix`                   | PostgreSQL username        |
-| `POSTGRES_PASSWORD` | `demo_be_elixir_phoenix`                   | PostgreSQL password        |
+| `POSTGRES_USER`     | `crud_be_elixir_phoenix`                   | PostgreSQL username        |
+| `POSTGRES_PASSWORD` | `crud_be_elixir_phoenix`                   | PostgreSQL password        |
 | `APP_JWT_SECRET`    | `change-me-in-dev-only-not-for-production` | JWT signing secret (HS256) |
 
 Override defaults by setting variables in your shell or in a `.env` file alongside
@@ -66,9 +66,9 @@ curl http://localhost:8201/api/v1/users/me \
 
 ## Shared Database Note
 
-All demo-be backends use PostgreSQL on port 5432 but cannot run simultaneously since all
+All crud-be backends use PostgreSQL on port 5432 but cannot run simultaneously since all
 bind port 8201. The databases have different
-names (`demo_be_elixir_phoenix` for this backend, `demo_be` for golang-gin/java-springboot, etc.) so they could share a PostgreSQL
+names (`crud_be_elixir_phoenix` for this backend, `crud_be` for golang-gin/java-springboot, etc.) so they could share a PostgreSQL
 instance with custom setup, but the default stacks are mutually exclusive.
 
 ## E2E Tests

@@ -97,7 +97,7 @@ jobs:
       - name: Generate contract types
         run: |
           npm ci --ignore-scripts
-          npx nx run demo-contracts:bundle
+          npx nx run crud-contracts:bundle
           npx nx run ${{ inputs.backend-name }}:codegen
           npx nx run crud-fe-ts-nextjs:codegen
           npx nx run crud-fe-ts-tanstack-start:codegen

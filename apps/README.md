@@ -40,7 +40,7 @@ Where `{part}` describes the role and technology stack:
 - `crud-fe-e2e` - FE E2E tests for crud-fe-ts-nextjs - Playwright (browser testing)
 - `crud-be-e2e` - BE E2E tests for crud-be-fsharp-giraffe - Playwright (API testing)
 - `crud-be-golang-gin` - demo backend API (Go/Gin) - Go application (port 8201)
-- `crud-be-e2e` - E2E tests for demo-be REST API - Playwright (API testing)
+- `crud-be-e2e` - E2E tests for crud-be REST API - Playwright (API testing)
 
 ## Application Characteristics
 

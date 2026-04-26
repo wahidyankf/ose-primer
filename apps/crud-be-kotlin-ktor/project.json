@@ -100,6 +100,6 @@
       "inputs": ["{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature", "{projectRoot}/**/*.kt"]
     }
   },
-  "tags": ["type:app", "platform:ktor", "lang:kotlin", "domain:demo-be"],
+  "tags": ["type:app", "platform:ktor", "lang:kotlin", "domain:crud-be"],
   "implicitDependencies": ["crud-contracts", "rhino-cli"]
 }

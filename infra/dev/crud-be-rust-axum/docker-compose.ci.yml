@@ -10,7 +10,7 @@ services:
       - DATABASE_URL=postgresql://crud_be_rust_axum:crud_be_rust_axum@crud-be-rust-axum-db:5432/crud_be_rust_axum
       - ENABLE_TEST_API=true
 
-  demo-fe:
+  crud-fe:
     build:
       context: ../../..
       dockerfile: apps/crud-fe-ts-nextjs/Dockerfile

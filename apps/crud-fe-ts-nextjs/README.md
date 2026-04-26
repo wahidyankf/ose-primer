@@ -1,7 +1,7 @@
 # crud-fe-ts-nextjs
 
 Demo Frontend - Next.js 16 (App Router) implementation consuming the
-[demo-be API](../crud-be-golang-gin/README.md).
+[crud-be API](../crud-be-golang-gin/README.md).
 
 ## Overview
 
@@ -17,7 +17,7 @@ Demo Frontend - Next.js 16 (App Router) implementation consuming the
 
 - **Node.js 24** (managed by Volta)
 - **npm 11**
-- A running [demo-be backend](../crud-be-golang-gin/README.md) on port 8201 (for E2E tests)
+- A running [crud-be backend](../crud-be-golang-gin/README.md) on port 8201 (for E2E tests)
 
 ## Nx Commands
 
@@ -87,7 +87,7 @@ nx run crud-fe-ts-nextjs:test:unit
 ### E2E Tests
 
 The [`crud-fe-e2e`](../crud-fe-e2e/) project provides centralized Playwright-based E2E tests
-for all demo-fe frontends. Run them after starting this frontend and a backend:
+for all crud-fe frontends. Run them after starting this frontend and a backend:
 
 ```bash
 # Start backend
@@ -115,4 +115,4 @@ docker build -t crud-fe-ts-nextjs:latest apps/crud-fe-ts-nextjs/
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
 - [Frontend Gherkin Specs](../../specs/apps/crud/fe/gherkin/README.md) — Shared feature files (source of truth)
 - [OpenAPI Contract](../../specs/apps/crud/contracts/README.md) — API contract and codegen
-- [crud-fe-e2e](../crud-fe-e2e/README.md) — Centralized E2E tests for all demo-fe frontends
+- [crud-fe-e2e](../crud-fe-e2e/README.md) — Centralized E2E tests for all crud-fe frontends

@@ -97,6 +97,6 @@
       "inputs": ["{workspaceRoot}/specs/apps/crud/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     }
   },
-  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:demo-fs"],
+  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:crud-fs"],
   "implicitDependencies": ["crud-contracts", "rhino-cli"]
 }

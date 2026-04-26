@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset demo-be:007-standardize-schema dbms:postgresql
+-- changeset crud-be:007-standardize-schema dbms:postgresql
 -- Rename token column to jti and widen length in revoked_tokens
 ALTER TABLE revoked_tokens RENAME COLUMN token TO jti;
 ALTER TABLE revoked_tokens ALTER COLUMN jti TYPE VARCHAR(255);

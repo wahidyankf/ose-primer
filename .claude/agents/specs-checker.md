@@ -33,7 +33,7 @@ folders and their subfolders — nothing else.
 **Example invocations:**
 
 ```
-# Single folder — validate demo-be and all its subfolders
+# Single folder — validate crud-be and all its subfolders
 folders: [specs/apps/crud/be]
 
 # Multiple folders — validate each AND check cross-folder consistency
@@ -85,7 +85,7 @@ Each `.feature` file within listed folders must follow conventions.
 **CRITICAL**: Feature file missing `Feature:` header line
 **HIGH**: Feature file missing user story block (As a / I want / So that) after Feature line
 **HIGH**: Background step inconsistent within a single listed folder (e.g., all features
-in demo-be should use the same Background step)
+in crud-be should use the same Background step)
 **MEDIUM**: Feature filename doesn't follow kebab-case convention
 **LOW**: Scenario names don't follow sentence case
 
@@ -99,13 +99,13 @@ This category is skipped when only one folder is listed.
 **CRITICAL**: Two listed folders define the same actor/entity with conflicting attributes
 (e.g., different password rules, different field names for the same concept)
 **HIGH**: Shared domain exists in multiple listed folders but with contradictory scenarios
-(e.g., demo-be says max file size is 10MB but demo-fe says 5MB)
+(e.g., crud-be says max file size is 10MB but crud-fe says 5MB)
 **HIGH**: One listed folder references another listed folder but uses wrong path or
 outdated information
 
 **Coherence checks:**
 
-**HIGH**: Listed folders that are counterparts (e.g., demo-be and demo-fe) have mismatched
+**HIGH**: Listed folders that are counterparts (e.g., crud-be and crud-fe) have mismatched
 domain coverage — one has domain X but the other is missing it (excluding perspective-specific
 domains like `layout/` which only apply to frontend)
 **MEDIUM**: Shared domain has significantly different scenario counts (>50% variance)

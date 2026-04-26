@@ -8,8 +8,8 @@ tags:
   - playwright
   - integration
   - e2e
-  - demo-be
-  - demo-fe
+  - crud-be
+  - crud-fe
 ---
 
 # How to Run Demo Integration and E2E Tests

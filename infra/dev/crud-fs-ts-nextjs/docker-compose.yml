@@ -2,20 +2,20 @@ services:
   db:
     image: postgres:17-alpine
     environment:
-      POSTGRES_DB: demo_fs_nextjs
-      POSTGRES_USER: demo_fs_nextjs
-      POSTGRES_PASSWORD: demo_fs_nextjs
+      POSTGRES_DB: crud_fs_ts_nextjs
+      POSTGRES_USER: crud_fs_ts_nextjs
+      POSTGRES_PASSWORD: crud_fs_ts_nextjs
     ports:
       - "5438:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U demo_fs_nextjs"]
+      test: ["CMD-SHELL", "pg_isready -U crud_fs_ts_nextjs"]
       interval: 5s
       timeout: 5s
       retries: 5
     networks:
-      - demo-fs
+      - crud-fs
 
   app:
     build:
@@ -23,7 +23,7 @@ services:
       dockerfile: apps/crud-fs-ts-nextjs/Dockerfile
     container_name: crud-fs-ts-nextjs
     environment:
-      DATABASE_URL: postgresql://demo_fs_nextjs:demo_fs_nextjs@db:5432/demo_fs_nextjs
+      DATABASE_URL: postgresql://crud_fs_ts_nextjs:crud_fs_ts_nextjs@db:5432/crud_fs_ts_nextjs
       APP_JWT_SECRET: dev-jwt-secret-at-least-32-chars-long!!
       ENABLE_TEST_API: "true"
     ports:
@@ -32,10 +32,10 @@ services:
       db:
         condition: service_healthy
     networks:
-      - demo-fs
+      - crud-fs
 
 volumes:
   pgdata:
 
 networks:
-  demo-fs:
+  crud-fs:

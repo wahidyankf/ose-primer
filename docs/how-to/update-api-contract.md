@@ -6,8 +6,8 @@ tags:
   - openapi
   - codegen
   - contracts
-  - demo-be
-  - demo-fe
+  - crud-be
+  - crud-fe
 ---
 
 # How to Update the API Contract

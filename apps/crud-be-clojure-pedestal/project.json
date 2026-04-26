@@ -2,7 +2,7 @@
   "name": "crud-be-clojure-pedestal",
   "sourceRoot": "apps/crud-be-clojure-pedestal",
   "projectType": "application",
-  "tags": ["type:app", "platform:pedestal", "lang:clojure", "domain:demo-be"],
+  "tags": ["type:app", "platform:pedestal", "lang:clojure", "domain:crud-be"],
   "targets": {
     "codegen": {
       "executor": "nx:run-commands",

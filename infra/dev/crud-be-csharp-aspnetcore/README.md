@@ -32,8 +32,8 @@ is always up to date.
 
 | Variable            | Default                                    | Description                      |
 | ------------------- | ------------------------------------------ | -------------------------------- |
-| `POSTGRES_USER`     | `demo_be_csharp_aspnetcore`                | PostgreSQL username              |
-| `POSTGRES_PASSWORD` | `demo_be_csharp_aspnetcore`                | PostgreSQL password              |
+| `POSTGRES_USER`     | `crud_be_csharp_aspnetcore`                | PostgreSQL username              |
+| `POSTGRES_PASSWORD` | `crud_be_csharp_aspnetcore`                | PostgreSQL password              |
 | `APP_JWT_SECRET`    | `change-me-in-dev-only-not-for-production` | JWT signing secret (HMAC-SHA256) |
 
 Override defaults by setting variables in your shell or in a `.env` file alongside

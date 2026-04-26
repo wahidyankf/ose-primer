@@ -1,6 +1,6 @@
 # crud-be-e2e
 
-End-to-end tests for the demo-be REST API backends (default: [crud-be-golang-gin](../crud-be-golang-gin)),
+End-to-end tests for the crud-be REST API backends (default: [crud-be-golang-gin](../crud-be-golang-gin)),
 using [playwright-bdd](https://github.com/vitalets/playwright-bdd) to drive tests from Gherkin
 feature files.
 
@@ -91,7 +91,7 @@ nx run crud-be-e2e:test:quick
 | Variable       | Default                                         | Description                              |
 | -------------- | ----------------------------------------------- | ---------------------------------------- |
 | `BASE_URL`     | `http://localhost:8201`                         | Backend base URL                         |
-| `DATABASE_URL` | `postgresql://demo:demo@localhost:5432/demo_be` | PostgreSQL connection string for cleanup |
+| `DATABASE_URL` | `postgresql://demo:demo@localhost:5432/crud_be` | PostgreSQL connection string for cleanup |
 | `CI`           | unset                                           | Enables CI mode                          |
 
 The `DATABASE_URL` is used by `tests/fixtures/db-cleanup.ts` to delete all rows from `users`

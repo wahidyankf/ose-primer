@@ -9,7 +9,7 @@ services:
       - GIN_MODE=release
       - ENABLE_TEST_API=true
 
-  demo-fe:
+  crud-fe:
     build:
       context: ../../..
       dockerfile: apps/crud-fe-ts-nextjs/Dockerfile

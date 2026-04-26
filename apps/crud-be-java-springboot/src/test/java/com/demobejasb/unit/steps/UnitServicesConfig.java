@@ -56,7 +56,7 @@ public class UnitServicesConfig {
         return new JwtUtil(
                 "unit-test-jwt-secret-at-least-32-chars-long",
                 3600000L,
-                "demo-be");
+                "crud-be");
     }
 
     @Bean

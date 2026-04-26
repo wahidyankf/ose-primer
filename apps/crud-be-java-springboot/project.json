@@ -108,6 +108,6 @@
       "inputs": ["{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature", "{projectRoot}/**/*.java"]
     }
   },
-  "tags": ["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"],
+  "tags": ["type:app", "platform:spring-boot", "lang:java", "domain:crud-be"],
   "implicitDependencies": ["crud-contracts", "rhino-cli"]
 }

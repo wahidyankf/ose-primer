@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset demo-be:002-create-refresh-tokens dbms:postgresql
+-- changeset crud-be:002-create-refresh-tokens dbms:postgresql
 CREATE TABLE refresh_tokens (
     id           UUID         NOT NULL DEFAULT gen_random_uuid(),
     user_id      UUID         NOT NULL,

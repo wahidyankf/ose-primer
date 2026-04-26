@@ -1,4 +1,4 @@
-# Local Development Environment for Demo Frontend (TanStack Start)
+# Local Development Environment for CRUD Frontend (TanStack Start)
 # Stack: Frontend + Backend (Go/Gin) + Database (PostgreSQL)
 
 services:
@@ -6,7 +6,7 @@ services:
     image: postgres:17-alpine
     container_name: crud-fe-tsst-db
     environment:
-      POSTGRES_DB: demo_be
+      POSTGRES_DB: crud_be
       POSTGRES_USER: ${POSTGRES_USER:-demo}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-demo}
     ports:
@@ -14,7 +14,7 @@ services:
     volumes:
       - crud-fe-tsst-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-demo} -d demo_be"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-demo} -d crud_be"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -23,7 +23,7 @@ services:
     networks:
       - crud-fe-tsst-network
 
-  demo-be:
+  crud-be:
     build:
       context: ../../../apps/crud-be-golang-gin
       dockerfile: Dockerfile
@@ -35,7 +35,7 @@ services:
         condition: service_healthy
     environment:
       - PORT=8201
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-demo}:${POSTGRES_PASSWORD:-demo}@crud-be-db:5432/demo_be
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-demo}:${POSTGRES_PASSWORD:-demo}@crud-be-db:5432/crud_be
       - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
       - ENABLE_TEST_API=true
     healthcheck:
@@ -48,20 +48,20 @@ services:
     networks:
       - crud-fe-tsst-network
 
-  demo-fe:
+  crud-fe:
     build:
       context: ../../../apps/crud-fe-ts-tanstack-start
       dockerfile: Dockerfile
       args:
-        BACKEND_URL: http://demo-be:8201
+        BACKEND_URL: http://crud-be:8201
     container_name: crud-fe-tsst
     ports:
       - "3301:3301"
     depends_on:
-      demo-be:
+      crud-be:
         condition: service_healthy
     environment:
-      - BACKEND_URL=http://demo-be:8201
+      - BACKEND_URL=http://crud-be:8201
     restart: unless-stopped
     networks:
       - crud-fe-tsst-network
