@@ -133,5 +133,3 @@ All skills follow governance principles:
 **See**: [governance/principles/README.md](../../governance/principles/README.md)
 
 ---
-
-**Last Updated**: 2026-04-02

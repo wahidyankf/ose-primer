@@ -142,7 +142,7 @@ The following `docs/explanation/` content assumes readers have completed the cor
 
 ### Validation
 
-The `docs-software-engineering-separation-checker` agent validates:
+The `docs-software-engineering-separation-checker` agent _(draft — not yet created)_ validates:
 
 - Prerequisite statements exist in docs/explanation READMEs (referencing demo)
 - No duplication between docs/explanation and demo educational content

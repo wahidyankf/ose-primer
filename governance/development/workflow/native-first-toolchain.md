@@ -176,6 +176,6 @@ Revisit this architectural decision if any of the following conditions change:
 ## 🔗 Related Documentation
 
 - [Reproducible Environments](./reproducible-environments.md) - Broader reproducibility practices (Volta, lockfiles, Docker for services)
-- [Development Environment Setup](../../workflows/infra/development-environment-setup.md) - Workflow for setting up a development environment
+- [Development Environment Setup](../../workflows/infra/infra-development-environment-setup.md) - Workflow for setting up a development environment
 
 ---

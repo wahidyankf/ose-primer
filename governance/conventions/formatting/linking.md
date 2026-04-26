@@ -24,7 +24,7 @@ This convention implements the following core principles:
 
 ## Purpose
 
-This convention establishes the standard linking format for all markdown files in the repository. It ensures links are GitHub-compatible, use relative paths with `.md` extensions, and follow consistent patterns across documentation and Hugo sites. This prevents broken links and maintains portability.
+This convention establishes the standard linking format for all markdown files in the repository. It ensures links are GitHub-compatible, use relative paths with `.md` extensions, and follow consistent patterns across documentation. This prevents broken links and maintains portability.
 
 ## Scope
 
@@ -32,7 +32,7 @@ This convention establishes the standard linking format for all markdown files i
 
 - **Markdown link syntax** - `Display Text` format
 - **Relative vs. absolute paths** - When to use each
-- **Extension requirements** - `.md` extension for docs/, no extension for Hugo sites
+- **Extension requirements** - `.md` extension for all internal markdown links
 - **Cross-directory linking** - How to link between different documentation areas
 - **External link formatting** - How to format links to external resources
 
@@ -40,7 +40,6 @@ This convention establishes the standard linking format for all markdown files i
 
 - **Link validation** - Covered by the docs-link-checker agent
 - **Link text quality** - Descriptive link text is covered in [Content Quality Principles](../writing/quality.md)
-- **Hugo site URLs** - Hugo-specific linking covered in Hugo content conventions
 - **Anchor links** - Deep linking to specific sections (implementation detail)
 
 ## Why GitHub-Compatible Links?

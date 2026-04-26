@@ -514,7 +514,7 @@ Never hardcode version numbers in scripts — always read from these source-of-t
 
 ## 🔗 Related Documentation
 
-- [Development Environment Setup Workflow](../../governance/workflows/infra/development-environment-setup.md) —
+- [Development Environment Setup Workflow](../../governance/workflows/infra/infra-development-environment-setup.md) —
   Granular workflow with phases and success criteria
 - [Local Development with Docker](./local-dev-docker.md) — Running services via
   Docker Compose

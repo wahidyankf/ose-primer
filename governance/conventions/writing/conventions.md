@@ -398,7 +398,7 @@ Convention files follow the [File Naming Convention](../structure/file-naming.md
 
 ### Version Control
 
-- Update `updated` field in frontmatter when making changes
+- Use `git log --follow -- <file>` for authoritative change history (see [No-Date-Metadata Convention](./no-date-metadata.md))
 - Significant changes should update AGENTS.md if they affect agent behavior
 - Use `repo-rules-maker` to propagate changes across related files
 

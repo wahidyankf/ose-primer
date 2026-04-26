@@ -61,7 +61,7 @@ Exactly one of the following tokens MUST appear as the last token of every workf
 | -------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
 | `quality-gate` | Iterative maker → checker → fixer loop that terminates on a zero-finding condition (usually two consecutive clean audits)        | `ci-quality-gate`, `plan-quality-gate`, `specs-quality-gate` |
 | `execution`    | Executes a defined procedure or plan against inputs; no iterative fix loop; success is defined by the procedure completing       | `plan-execution`                                             |
-| `setup`        | One-time environment, tooling, or resource provisioning; idempotent on re-run but not iterative in the maker/checker/fixer sense | `development-environment-setup`                              |
+| `setup`        | One-time environment, tooling, or resource provisioning; idempotent on re-run but not iterative in the maker/checker/fixer sense | `infra-development-environment-setup`                        |
 
 No other type suffixes are permitted. Introducing a new type requires amending this table first.
 
@@ -99,7 +99,7 @@ Current workflows, grouped by type, all conforming to the rule:
 
 - **`quality-gate`** — `plan-quality-gate` (scope `plan`, type `quality-gate`), `repo-rules-quality-gate` (scope `repo`, qualifier `rules`, type `quality-gate`), `specs-quality-gate` (scope `specs`, type `quality-gate`), `docs-quality-gate` (scope `docs`, type `quality-gate`), `docs-software-engineering-separation-quality-gate` (scope `docs`, qualifier `software-engineering-separation`, type `quality-gate`), `ci-quality-gate` (scope `ci`, type `quality-gate`), `ui-quality-gate` (scope `ui`, type `quality-gate`)
 - **`execution`** — `plan-execution` (scope `plan`, type `execution`)
-- **`setup`** — `development-environment-setup` (scope `infra`, qualifiers `development-environment`, type `setup`)
+- **`setup`** — `infra-development-environment-setup` (scope `infra`, qualifiers `development-environment`, type `setup`)
 
 ## Related
 

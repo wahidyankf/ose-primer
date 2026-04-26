@@ -85,4 +85,3 @@ Skills are synced from `.claude/skills/` maintaining folder structure. For compl
 
 **Total Skills**: 34
 **Format**: Folder structure with SKILL.md inside each folder
-**Last Updated**: 2026-03-09

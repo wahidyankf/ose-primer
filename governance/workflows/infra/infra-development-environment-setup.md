@@ -1,5 +1,5 @@
 ---
-name: development-environment-setup
+name: infra-development-environment-setup
 goal: "Set up a complete local development environment with all toolchains required for pre-commit, pre-push, integration tests, and E2E tests across all projects"
 termination: "npm run doctor reports all tools OK and nx affected -t test:quick passes for all projects"
 inputs:
