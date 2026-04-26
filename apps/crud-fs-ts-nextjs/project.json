@@ -92,7 +92,7 @@
       "cache": false
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/demo apps/crud-fs-ts-nextjs",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud apps/crud-fs-ts-nextjs",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     }
