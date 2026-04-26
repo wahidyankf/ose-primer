@@ -288,7 +288,7 @@ All agents SHOULD include a "Reference Documentation" section near the end (befo
 **Conditionally Include**:
 
 - Domain-specific conventions (e.g., README Quality Convention for readme-agents)
-- Framework-specific guidance (e.g., Next.js guide for demo-fs-ts-nextjs-agents)
+- Framework-specific guidance (e.g., Next.js guide for crud-fs-ts-nextjs-agents)
 - Special standards relevant to agent's scope
 
 **Pattern**:

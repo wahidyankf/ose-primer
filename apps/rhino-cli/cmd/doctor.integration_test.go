@@ -128,12 +128,12 @@ func detectGoVersion() string {
 // writeDoctorConfigFiles writes all config files into tmpDir using the provided version strings.
 func writeDoctorConfigFiles(tmpDir, nodeVer, npmVer, javaMajor, goVer string) error {
 	dirs := []string{
-		"apps/demo-be-fsharp-giraffe-jasb",
+		"apps/crud-be-fsharp-giraffe-jasb",
 		"apps/rhino-cli",
-		"apps/demo-be-python-fastapi",
-		"apps/demo-be-fsharp-giraffe",
-		"apps/demo-fe-dart-flutterweb",
-		"apps/demo-be-rust-axum",
+		"apps/crud-be-python-fastapi",
+		"apps/crud-be-fsharp-giraffe",
+		"apps/crud-fe-dart-flutterweb",
+		"apps/crud-be-rust-axum",
 	}
 	for _, dir := range dirs {
 		if err := os.MkdirAll(filepath.Join(tmpDir, dir), 0755); err != nil {
@@ -143,14 +143,14 @@ func writeDoctorConfigFiles(tmpDir, nodeVer, npmVer, javaMajor, goVer string) er
 
 	files := map[string]string{
 		"package.json": fmt.Sprintf(`{"name":"test","volta":{"node":%q,"npm":%q}}`, nodeVer, npmVer),
-		"apps/demo-be-fsharp-giraffe-jasb/pom.xml": fmt.Sprintf(`<project><properties><java.version>%s</java.version></properties></project>`, javaMajor),
+		"apps/crud-be-fsharp-giraffe-jasb/pom.xml": fmt.Sprintf(`<project><properties><java.version>%s</java.version></properties></project>`, javaMajor),
 		"apps/rhino-cli/go.mod":                    fmt.Sprintf("module foo\n\ngo %s\n", goVer),
 		// Tool config files — use sensible defaults that match common installed versions
-		"apps/demo-be-python-fastapi/.python-version": "3.13\n",
+		"apps/crud-be-python-fastapi/.python-version": "3.13\n",
 		".tool-versions": "erlang 27.3\nelixir 1.19.5-otp-27\n",
-		"apps/demo-be-fsharp-giraffe/global.json":   `{"sdk":{"version":"10.0.103","rollForward":"latestMinor"}}`,
-		"apps/demo-fe-dart-flutterweb/pubspec.yaml": "name: demo\n\nenvironment:\n  sdk: ^3.11.1\n  flutter: \">=3.41.0\"\n",
-		"apps/demo-be-rust-axum/Cargo.toml":         "[package]\nname = \"test\"\nrust-version = \"1.80\"\n",
+		"apps/crud-be-fsharp-giraffe/global.json":   `{"sdk":{"version":"10.0.103","rollForward":"latestMinor"}}`,
+		"apps/crud-fe-dart-flutterweb/pubspec.yaml": "name: demo\n\nenvironment:\n  sdk: ^3.11.1\n  flutter: \">=3.41.0\"\n",
+		"apps/crud-be-rust-axum/Cargo.toml":         "[package]\nname = \"test\"\nrust-version = \"1.80\"\n",
 	}
 	for relPath, content := range files {
 		if err := os.WriteFile(filepath.Join(tmpDir, relPath), []byte(content), 0644); err != nil {

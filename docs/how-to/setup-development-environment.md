@@ -148,7 +148,7 @@ volta install npm@11.10.1
 
 ### Step 4: Go
 
-Required for `rhino-cli`, `rhino-cli`, `rhino-cli`, `demo-be-golang-gin`,
+Required for `rhino-cli`, `rhino-cli`, `rhino-cli`, `crud-be-golang-gin`,
 and `libs/golang-commons`.
 
 ```bash
@@ -166,7 +166,7 @@ go version
 
 ### Step 5: Java + Maven (via SDKMAN)
 
-Required for `demo-be-java-springboot`, `demo-be-java-vertx`, `demo-be-kotlin-ktor`.
+Required for `crud-be-java-springboot`, `crud-be-java-vertx`, `crud-be-kotlin-ktor`.
 
 [SDKMAN](https://sdkman.io/) manages JDK and Maven versions:
 
@@ -186,7 +186,7 @@ Kotlin installation is needed — just the JDK.
 
 ### Step 6: Clojure
 
-Required for `demo-be-clojure-pedestal`.
+Required for `crud-be-clojure-pedestal`.
 
 ```bash
 # macOS
@@ -199,9 +199,9 @@ clj --version
 
 ### Step 7: Python
 
-Required for `demo-be-python-fastapi`.
+Required for `crud-be-python-fastapi`.
 
-The minimum version is in `apps/demo-be-python-fastapi/.python-version`.
+The minimum version is in `apps/crud-be-python-fastapi/.python-version`.
 
 ```bash
 # Option A: pyenv (recommended — manages multiple Python versions)
@@ -220,7 +220,7 @@ python3 --version
 
 ### Step 8: Rust
 
-Required for `demo-be-rust-axum`.
+Required for `crud-be-rust-axum`.
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -235,7 +235,7 @@ cargo llvm-cov --version
 
 ### Step 9: Erlang + Elixir (via asdf)
 
-Required for `demo-be-elixir-phoenix`.
+Required for `crud-be-elixir-phoenix`.
 
 [asdf](https://asdf-vm.com/) manages Erlang and Elixir versions. The pinned versions are in
 `.tool-versions` at the repo root.
@@ -269,9 +269,9 @@ sudo apt-get install -y build-essential autoconf libncurses-dev libssl-dev
 
 ### Step 10: .NET SDK
 
-Required for `demo-be-fsharp-giraffe`, `demo-be-csharp-aspnetcore`, `demo-be-fsharp-giraffe`.
+Required for `crud-be-fsharp-giraffe`, `crud-be-csharp-aspnetcore`, `crud-be-fsharp-giraffe`.
 
-The required major version is in `apps/demo-be-fsharp-giraffe/global.json`.
+The required major version is in `apps/crud-be-fsharp-giraffe/global.json`.
 
 ```bash
 # macOS
@@ -284,10 +284,10 @@ dotnet --version
 
 ### Step 11: Flutter and Dart
 
-Required for `demo-fe-dart-flutterweb`.
+Required for `crud-fe-dart-flutterweb`.
 
 Flutter bundles the Dart SDK. The minimum Dart version is in
-`apps/demo-fe-dart-flutterweb/pubspec.yaml` under `environment.sdk`.
+`apps/crud-fe-dart-flutterweb/pubspec.yaml` under `environment.sdk`.
 
 ```bash
 # macOS
@@ -302,7 +302,7 @@ dart --version
 
 ### Step 12: Hugo
 
-Hugo is a legacy doctor entry (demo-fs-ts-nextjs migrated to Next.js). No active projects
+Hugo is a legacy doctor entry (crud-fs-ts-nextjs migrated to Next.js). No active projects
 use Hugo, but installing it prevents a doctor warning.
 
 ```bash
@@ -398,7 +398,7 @@ This also warms the Nx cache, making subsequent pushes fast.
 
 ```bash
 # Run one backend's integration suite (uses Docker + PostgreSQL)
-nx run demo-be-golang-gin:test:integration
+nx run crud-be-golang-gin:test:integration
 ```
 
 If this passes, Docker and database integration work correctly.
@@ -407,9 +407,9 @@ If this passes, Docker and database integration work correctly.
 
 ```bash
 # Start a backend, then run E2E tests
-nx run demo-be-golang-gin:dev &
+nx run crud-be-golang-gin:dev &
 sleep 5
-nx run demo-be-e2e:test:e2e
+nx run crud-be-e2e:test:e2e
 kill %1
 ```
 
@@ -499,14 +499,14 @@ All version requirements are auto-detected by `npm run doctor` from these config
 | ------------- | ------------------------------------------------------- |
 | Node.js       | `package.json` → `volta.node`                           |
 | npm           | `package.json` → `volta.npm`                            |
-| Java          | `apps/demo-be-java-springboot/pom.xml` → `java.version` |
+| Java          | `apps/crud-be-java-springboot/pom.xml` → `java.version` |
 | Go            | `apps/rhino-cli/go.mod` → `go` directive                |
-| Python        | `apps/demo-be-python-fastapi/.python-version`           |
+| Python        | `apps/crud-be-python-fastapi/.python-version`           |
 | Hugo          | (legacy — no active config file)                        |
 | Erlang        | `.tool-versions` → `erlang`                             |
 | Elixir        | `.tool-versions` → `elixir`                             |
-| .NET          | `apps/demo-be-fsharp-giraffe/global.json` → `sdk`       |
-| Dart          | `apps/demo-fe-dart-flutterweb/pubspec.yaml` → `sdk`     |
+| .NET          | `apps/crud-be-fsharp-giraffe/global.json` → `sdk`       |
+| Dart          | `apps/crud-fe-dart-flutterweb/pubspec.yaml` → `sdk`     |
 | Rust, Clojure | Any (no pinned version)                                 |
 | Docker, jq    | Any (no pinned version)                                 |
 

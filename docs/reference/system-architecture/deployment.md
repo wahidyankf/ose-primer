@@ -18,8 +18,8 @@ Deployment architecture, environment branches, and Vercel configuration for the 
 graph LR
     subgraph "Source Control"
         MAIN[main branch<br/>Trunk-Based Dev]
-        PROD_OSE[prod-demo-fs-ts-nextjs<br/>Deploy Only]
-        PROD_AYO[prod-demo-fs-ts-nextjs<br/>Deploy Only - Next.js]
+        PROD_OSE[prod-crud-fs-ts-nextjs<br/>Deploy Only]
+        PROD_AYO[prod-crud-fs-ts-nextjs<br/>Deploy Only - Next.js]
         PROD_OL[prod-demo-web<br/>Deploy Only]
     end
 
@@ -77,7 +77,7 @@ graph LR
 
 ### Vercel Deployment
 
-**Hugo Static Sites** (demo-fs-ts-nextjs):
+**Hugo Static Sites** (crud-fs-ts-nextjs):
 
 - **Build Framework**: `@vercel/static-build`
 - **Build Script**: `build.sh` in each app directory
@@ -99,8 +99,8 @@ graph LR
 ### Environment Branches
 
 - **Purpose**: Deployment triggers only
-- **Branches**: `prod-demo-fs-ts-nextjs`, `prod-demo-fs-ts-nextjs`, `prod-demo-web`
+- **Branches**: `prod-crud-fs-ts-nextjs`, `prod-crud-fs-ts-nextjs`, `prod-demo-web`
 - **Policy**: NEVER commit directly to these branches outside CI automation
-- **Workflow**: Automated by scheduled GitHub Actions workflows (`test-and-deploy-demo-fs-ts-nextjs.yml`,
-  `test-and-deploy-demo-fs-ts-nextjs.yml`, `test-and-deploy-demo.yml`) running at 6 AM and 6 PM WIB; or
+- **Workflow**: Automated by scheduled GitHub Actions workflows (`test-and-deploy-crud-fs-ts-nextjs.yml`,
+  `test-and-deploy-crud-fs-ts-nextjs.yml`, `test-and-deploy-demo.yml`) running at 6 AM and 6 PM WIB; or
   trigger manually from GitHub Actions UI

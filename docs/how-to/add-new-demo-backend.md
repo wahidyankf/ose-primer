@@ -13,7 +13,7 @@ tags:
 
 # How to Add a New Demo Backend
 
-This guide walks you through creating a new `demo-be-{lang}-{framework}` backend that implements
+This guide walks you through creating a new `crud-be-{lang}-{framework}` backend that implements
 the shared demo API contract. The new backend will consume the same OpenAPI spec and Gherkin
 scenarios as all other demo backends.
 
@@ -21,22 +21,22 @@ scenarios as all other demo backends.
 
 - The language runtime installed locally
 - Familiarity with the [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md)
-- Understanding of the [OpenAPI contract](../../specs/apps/demo/contracts/README.md)
+- Understanding of the [OpenAPI contract](../../specs/apps/crud/contracts/README.md)
 
 ## 🛠️ Steps
 
 ### 1. Create the App Directory
 
 ```bash
-mkdir -p apps/demo-be-{lang}-{framework}
+mkdir -p apps/crud-be-{lang}-{framework}
 ```
 
-Follow the naming convention: `demo-be-{language}-{framework}` (e.g., `demo-be-rust-axum`,
-`demo-be-python-fastapi`).
+Follow the naming convention: `crud-be-{language}-{framework}` (e.g., `crud-be-rust-axum`,
+`crud-be-python-fastapi`).
 
 ### 2. Create `project.json`
 
-Create `apps/demo-be-{lang}-{framework}/project.json` with these mandatory elements.
+Create `apps/crud-be-{lang}-{framework}/project.json` with these mandatory elements.
 
 #### Nx tags
 
@@ -58,12 +58,12 @@ Tags enable `nx affected` filtering and enforce dependency rules via Nx module b
 #### Implicit dependencies
 
 ```json
-"implicitDependencies": ["demo-contracts", "rhino-cli"]
+"implicitDependencies": ["crud-contracts", "rhino-cli"]
 ```
 
 #### 7 mandatory targets
 
-All `demo-be-*` backends must declare exactly these 7 targets (see [Nx Target Standards](../../governance/development/infra/nx-targets.md)):
+All `crud-be-*` backends must declare exactly these 7 targets (see [Nx Target Standards](../../governance/development/infra/nx-targets.md)):
 
 | Target             | Purpose                                  | Cacheable |
 | ------------------ | ---------------------------------------- | --------- |
@@ -80,7 +80,7 @@ All `demo-be-*` backends must declare exactly these 7 targets (see [Nx Target St
 The dependency chain ensures codegen runs before any target that consumes generated types:
 
 ```
-demo-contracts:bundle
+crud-contracts:bundle
         │
         ▼
     codegen
@@ -99,9 +99,9 @@ For languages like Rust and Dart where generated code is required at compile tim
 
 ```json
 "codegen": {
-  "dependsOn": ["demo-contracts:bundle"],
+  "dependsOn": ["crud-contracts:bundle"],
   "cache": true,
-  "inputs": ["{workspaceRoot}/specs/apps/demo/contracts/generated/openapi-bundled.yaml"],
+  "inputs": ["{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml"],
   "outputs": ["{projectRoot}/generated-contracts"]
 }
 ```
@@ -130,7 +130,7 @@ invalidates the Nx cache and forces a re-run:
 "inputs": [
   "{projectRoot}/src/**/*",
   "{projectRoot}/generated-contracts/**/*",
-  "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
+  "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"
 ]
 ```
 
@@ -144,7 +144,7 @@ which is non-deterministic and must never be cached:
   "executor": "nx:run-commands",
   "options": {
     "command": "docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build",
-    "cwd": "apps/demo-be-{lang}-{framework}"
+    "cwd": "apps/crud-be-{lang}-{framework}"
   },
   "cache": false
 }
@@ -153,7 +153,7 @@ which is non-deterministic and must never be cached:
 ### 3. Set Up Codegen
 
 Implement the `codegen` target command to generate types from the bundled OpenAPI spec at
-`specs/apps/demo/contracts/generated/openapi-bundled.yaml` into a `generated-contracts/`
+`specs/apps/crud/contracts/generated/openapi-bundled.yaml` into a `generated-contracts/`
 directory. The exact tool depends on your language:
 
 | Language   | Tool                       | Output                           |
@@ -169,18 +169,18 @@ Add `generated-contracts/` to `.gitignore` — generated code is not committed.
 ### 4. Implement the API
 
 Implement the REST API endpoints defined in the
-[OpenAPI contract](../../specs/apps/demo/contracts/README.md). All demo backends expose the
+[OpenAPI contract](../../specs/apps/crud/contracts/README.md). All demo backends expose the
 same endpoints with identical request/response shapes.
 
 ### 5. Set Up Gherkin Specs
 
-The Gherkin feature files in `specs/apps/demo/be/gherkin/` are **shared across all demo backends**.
+The Gherkin feature files in `specs/apps/crud/be/gherkin/` are **shared across all demo backends**.
 Do not create a new specs directory for the new backend — it must consume the existing specs.
 
 #### Verify the specs directory exists
 
 ```bash
-ls specs/apps/demo/be/gherkin/
+ls specs/apps/crud/be/gherkin/
 ```
 
 The directory is pre-populated with feature files covering all endpoints in the OpenAPI contract.
@@ -188,7 +188,7 @@ If the directory does not exist yet (e.g., first backend ever), create it and ad
 feature file per domain area:
 
 ```
-specs/apps/demo/be/gherkin/
+specs/apps/crud/be/gherkin/
 ├── authentication/
 │   ├── password-login.feature
 │   └── token-lifecycle.feature
@@ -199,7 +199,7 @@ specs/apps/demo/be/gherkin/
 └── README.md
 ```
 
-See the [Gherkin specs README](../../specs/apps/demo/be/gherkin/README.md) for the full list of
+See the [Gherkin specs README](../../specs/apps/crud/be/gherkin/README.md) for the full list of
 feature files and scenario coverage.
 
 #### Wire Gherkin consumption in tests
@@ -226,7 +226,7 @@ implementations use the same feature files but connect to real PostgreSQL via `D
 
 #### Unit Tests (`tests/unit/` or equivalent)
 
-- Consume shared Gherkin feature files from `specs/apps/demo/be/gherkin/`
+- Consume shared Gherkin feature files from `specs/apps/crud/be/gherkin/`
 - Call service/handler functions directly with **mocked repositories**
 - No HTTP framework, no database, no Docker
 - Coverage measured here (>=90% via `rhino-cli test-coverage validate`)
@@ -240,7 +240,7 @@ implementations use the same feature files but connect to real PostgreSQL via `D
 
 #### E2E Tests
 
-E2E tests are shared via `apps/demo-be-e2e/` — no per-backend E2E code needed.
+E2E tests are shared via `apps/crud-be-e2e/` — no per-backend E2E code needed.
 
 ### 7. Create Docker Infrastructure
 
@@ -248,7 +248,7 @@ Docker infrastructure consists of four files. All four are required before the f
 
 #### Production `Dockerfile`
 
-Create `apps/demo-be-{lang}-{framework}/Dockerfile` following the multi-stage template from the
+Create `apps/crud-be-{lang}-{framework}/Dockerfile` following the multi-stage template from the
 [CI/CD Conventions](../../governance/development/infra/ci-conventions.md). All production
 Dockerfiles must satisfy these requirements:
 
@@ -283,7 +283,7 @@ FROM {runtime-image} AS runner
 WORKDIR /app
 
 LABEL org.opencontainers.image.source="https://github.com/open-sharia-enterprise/open-sharia-enterprise"
-LABEL org.opencontainers.image.description="demo-be-{lang}-{framework} REST API"
+LABEL org.opencontainers.image.description="crud-be-{lang}-{framework} REST API"
 
 RUN addgroup --system --gid 1001 appgroup \
   && adduser --system --uid 1001 appuser
@@ -303,14 +303,14 @@ The dev compose file provides hot-reload development with source mounts and name
 persistence across restarts:
 
 ```yaml
-# Local development environment for demo-be-{lang}-{framework}
+# Local development environment for crud-be-{lang}-{framework}
 # Mutually exclusive with other demo-be backends — all bind port 8201.
 # Do not run multiple backend stacks simultaneously.
 
 services:
-  demo-be-{lang}-{framework}-db:
+  crud-be-{lang}-{framework}-db:
     image: postgres:17-alpine
-    container_name: demo-be-{lang}-{framework}-db
+    container_name: crud-be-{lang}-{framework}-db
     environment:
       POSTGRES_DB: demo_be_{abbrev}
       POSTGRES_USER: ${POSTGRES_USER:-demo_be_{abbrev}}
@@ -318,7 +318,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - demo-be-{lang}-{framework}-db-data:/var/lib/postgresql/data
+      - crud-be-{lang}-{framework}-db-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-demo_be_{abbrev}} -d demo_be_{abbrev}"]
       interval: 10s
@@ -327,38 +327,38 @@ services:
       start_period: 30s
     restart: unless-stopped
     networks:
-      - demo-be-{lang}-{framework}-network
+      - crud-be-{lang}-{framework}-network
 
-  demo-be-{lang}-{framework}:
+  crud-be-{lang}-{framework}:
     build:
       context: .
       dockerfile: Dockerfile.be.dev
-    container_name: demo-be-{lang}-{framework}
+    container_name: crud-be-{lang}-{framework}
     working_dir: /workspace
     volumes:
-      - ../../../apps/demo-be-{lang}-{framework}:/workspace:rw
-      - ../../../specs/apps/demo/be/gherkin:/specs/apps/demo/be/gherkin:ro
+      - ../../../apps/crud-be-{lang}-{framework}:/workspace:rw
+      - ../../../specs/apps/crud/be/gherkin:/specs/apps/crud/be/gherkin:ro
     ports:
       - "8201:8201"
     depends_on:
-      demo-be-{lang}-{framework}-db:
+      crud-be-{lang}-{framework}-db:
         condition: service_healthy
     environment:
       - PORT=8201
-      - DATABASE_URL=postgresql://demo_be_{abbrev}:demo_be_{abbrev}@demo-be-{lang}-{framework}-db:5432/demo_be_{abbrev}
+      - DATABASE_URL=postgresql://demo_be_{abbrev}:demo_be_{abbrev}@crud-be-{lang}-{framework}-db:5432/demo_be_{abbrev}
       - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
     command: { hot-reload-command }
     restart: unless-stopped
     networks:
-      - demo-be-{lang}-{framework}-network
+      - crud-be-{lang}-{framework}-network
 
 networks:
-  demo-be-{lang}-{framework}-network:
+  crud-be-{lang}-{framework}-network:
     driver: bridge
-    name: demo-be-{lang}-{framework}-network
+    name: crud-be-{lang}-{framework}-network
 
 volumes:
-  demo-be-{lang}-{framework}-db-data:
+  crud-be-{lang}-{framework}-db-data:
 ```
 
 All demo backends expose port 8201 — run only one at a time locally.
@@ -390,7 +390,7 @@ services:
   test-runner:
     build:
       context: ../..
-      dockerfile: apps/demo-be-{lang}-{framework}/Dockerfile.integration
+      dockerfile: apps/crud-be-{lang}-{framework}/Dockerfile.integration
     depends_on:
       postgres:
         condition: service_healthy
@@ -412,11 +412,11 @@ default frontend service:
 ```yaml
 # CI overlay — production-equivalent mode + test-only API + Next.js frontend
 # Usage:
-#   BE E2E: docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d demo-be-{lang}-{framework}
+#   BE E2E: docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d crud-be-{lang}-{framework}
 #   FE E2E: docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
 
 services:
-  demo-be-{lang}-{framework}:
+  crud-be-{lang}-{framework}:
     environment:
       - {FRAMEWORK_MODE_VAR}=production
       - ENABLE_TEST_API=true
@@ -424,22 +424,22 @@ services:
   demo-fe:
     build:
       context: ../../..
-      dockerfile: apps/demo-fe-ts-nextjs/Dockerfile
+      dockerfile: apps/crud-fe-ts-nextjs/Dockerfile
       args:
-        BACKEND_URL: http://demo-be-{lang}-{framework}:8201
-    container_name: demo-be-{abbrev}-ci-fe
+        BACKEND_URL: http://crud-be-{lang}-{framework}:8201
+    container_name: crud-be-{abbrev}-ci-fe
     ports:
       - "3301:3301"
     depends_on:
-      demo-be-{lang}-{framework}:
+      crud-be-{lang}-{framework}:
         condition: service_healthy
     restart: unless-stopped
     networks:
-      - demo-be-{lang}-{framework}-network
+      - crud-be-{lang}-{framework}-network
 ```
 
 The CI overlay follows the E2E pairing rule: every backend variant pairs with the default frontend
-`demo-fe-ts-nextjs` for E2E tests.
+`crud-fe-ts-nextjs` for E2E tests.
 
 #### `apps/{app}/Dockerfile.integration`
 
@@ -475,7 +475,7 @@ code rather than always 0.
 
 ### 8. Create `.env.example`
 
-Create `infra/dev/demo-be-{lang}-{framework}/.env.example`. This file documents all environment
+Create `infra/dev/crud-be-{lang}-{framework}/.env.example`. This file documents all environment
 variables that the app and its dev compose stack require. Every variable must have a comment
 explaining its purpose. The file is committed to the repository; the actual `.env` is gitignored.
 
@@ -492,7 +492,7 @@ POSTGRES_PASSWORD=demo_be_{abbrev}
 APP_JWT_SECRET=change-me-in-dev-only-not-for-production
 
 # Database URL for the app service (used at runtime)
-DATABASE_URL=postgresql://demo_be_{abbrev}:demo_be_{abbrev}@demo-be-{lang}-{framework}-db:5432/demo_be_{abbrev}
+DATABASE_URL=postgresql://demo_be_{abbrev}:demo_be_{abbrev}@crud-be-{lang}-{framework}-db:5432/demo_be_{abbrev}
 
 # {Language/framework-specific variables go here}
 # Example for a framework mode variable:
@@ -521,7 +521,7 @@ tools and file formats.
 
 ### 10. Create the per-variant CI workflow
 
-Create `.github/workflows/test-demo-be-{lang}-{framework}.yml`. Keep it to approximately 40
+Create `.github/workflows/test-crud-be-{lang}-{framework}.yml`. Keep it to approximately 40
 lines by inlining the job steps directly rather than duplicating setup logic across jobs. The file
 follows the 5-track parallel structure (lint, typecheck, test:quick, spec-coverage,
 integration → E2E), though integration and E2E are sequenced within a single job:
@@ -549,15 +549,15 @@ jobs:
       - name: Generate contract types for backend
         run: |
           npm ci --ignore-scripts
-          npx nx run demo-contracts:bundle
-          npx nx run demo-be-{lang}-{framework}:codegen
+          npx nx run crud-contracts:bundle
+          npx nx run crud-be-{lang}-{framework}:codegen
       - name: Run integration tests
         run: |
-          docker compose -f apps/demo-be-{lang}-{framework}/docker-compose.integration.yml down -v 2>/dev/null || true
-          docker compose -f apps/demo-be-{lang}-{framework}/docker-compose.integration.yml up --abort-on-container-exit --build
+          docker compose -f apps/crud-be-{lang}-{framework}/docker-compose.integration.yml down -v 2>/dev/null || true
+          docker compose -f apps/crud-be-{lang}-{framework}/docker-compose.integration.yml up --abort-on-container-exit --build
       - name: Teardown integration
         if: always()
-        run: docker compose -f apps/demo-be-{lang}-{framework}/docker-compose.integration.yml down -v
+        run: docker compose -f apps/crud-be-{lang}-{framework}/docker-compose.integration.yml down -v
 
   e2e:
     name: Run E2E tests
@@ -571,39 +571,39 @@ jobs:
       - name: Generate contract types
         run: |
           npm ci --ignore-scripts
-          npx nx run demo-contracts:bundle
-          npx nx run demo-be-{lang}-{framework}:codegen
-          npx nx run demo-fe-ts-nextjs:codegen
-          npx nx run demo-fe-ts-tanstack-start:codegen
+          npx nx run crud-contracts:bundle
+          npx nx run crud-be-{lang}-{framework}:codegen
+          npx nx run crud-fe-ts-nextjs:codegen
+          npx nx run crud-fe-ts-tanstack-start:codegen
       - name: Install dependencies
         run: npm ci
       - name: Start full stack (DB + backend + frontend)
-        run: docker compose -f infra/dev/demo-be-{lang}-{framework}/docker-compose.yml -f infra/dev/demo-be-{lang}-{framework}/docker-compose.ci.yml up --build -d
+        run: docker compose -f infra/dev/crud-be-{lang}-{framework}/docker-compose.yml -f infra/dev/crud-be-{lang}-{framework}/docker-compose.ci.yml up --build -d
       - name: Wait for backend to be healthy
         run: |
           for i in $(seq 1 24); do
-            STATUS=$(docker inspect --format='{{.State.Health.Status}}' 'demo-be-{lang}-{framework}' 2>/dev/null || echo "unknown")
+            STATUS=$(docker inspect --format='{{.State.Health.Status}}' 'crud-be-{lang}-{framework}' 2>/dev/null || echo "unknown")
             if [ "$STATUS" = "healthy" ]; then echo "Backend is healthy"; break; fi
             sleep 10
           done
-          [ "$STATUS" = "healthy" ] || { docker logs demo-be-{lang}-{framework}; exit 1; }
+          [ "$STATUS" = "healthy" ] || { docker logs crud-be-{lang}-{framework}; exit 1; }
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
-        working-directory: apps/demo-fe-e2e
+        working-directory: apps/crud-fe-e2e
       - name: Run BE E2E tests
-        run: npx nx run demo-be-e2e:test:e2e
+        run: npx nx run crud-be-e2e:test:e2e
         env:
           BASE_URL: http://localhost:8201
       - name: Upload BE E2E report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-demo-be-{lang}-{framework}
-          path: apps/demo-be-e2e/playwright-report/
+          name: playwright-report-crud-be-{lang}-{framework}
+          path: apps/crud-be-e2e/playwright-report/
           retention-days: 7
       - name: Stop full stack
         if: always()
-        run: docker compose -f infra/dev/demo-be-{lang}-{framework}/docker-compose.yml -f infra/dev/demo-be-{lang}-{framework}/docker-compose.ci.yml down -v
+        run: docker compose -f infra/dev/crud-be-{lang}-{framework}/docker-compose.yml -f infra/dev/crud-be-{lang}-{framework}/docker-compose.ci.yml down -v
 ```
 
 Demo workflows are manual-dispatch only — cron schedules were removed to conserve CI resources.
@@ -672,7 +672,7 @@ following the pattern of existing language entries:
   run: { tool-install-command }
 
 - name: Install {Language} dependencies
-  run: (cd apps/demo-be-{lang}-{framework} && {install-command})
+  run: (cd apps/crud-be-{lang}-{framework} && {install-command})
 ```
 
 If the new language requires a `codegen` step before `typecheck` can run (because generated types
@@ -681,7 +681,7 @@ are imported at compile time), add the app to the existing `Generate contract ty
 ```yaml
 - name: Generate contract types (required before typecheck/test:quick)
   run: |
-    npx nx run demo-contracts:bundle
+    npx nx run crud-contracts:bundle
     npx nx run-many -t codegen --projects=demo-*,demo-*
     # The run-many above covers all demo-* projects including the new backend
     # if the project.json declares the codegen target correctly.
@@ -691,12 +691,12 @@ If `run-many --projects=demo-*` does not pick up the new backend (e.g., due to a
 mismatch), add an explicit call:
 
 ```yaml
-npx nx run demo-be-{lang}-{framework}:codegen
+npx nx run crud-be-{lang}-{framework}:codegen
 ```
 
 ### 13. Create README.md
 
-Follow the pattern of existing backend READMEs (e.g., `apps/demo-be-golang-gin/README.md`).
+Follow the pattern of existing backend READMEs (e.g., `apps/crud-be-golang-gin/README.md`).
 Include:
 
 - Tech stack overview
@@ -706,16 +706,16 @@ Include:
 - Related Documentation section linking to shared docs
 
 Do **not** hardcode scenario or feature counts — reference the
-[gherkin README](../../specs/apps/demo/be/gherkin/README.md) instead.
+[gherkin README](../../specs/apps/crud/be/gherkin/README.md) instead.
 
 ### 14. Verify
 
 ```bash
 # Codegen works
-nx run demo-be-{lang}-{framework}:codegen
+nx run crud-be-{lang}-{framework}:codegen
 
 # All quality gates pass
-nx run demo-be-{lang}-{framework}:test:quick
+nx run crud-be-{lang}-{framework}:test:quick
 
 # Dependency graph is correct
 nx graph
@@ -729,5 +729,5 @@ nx graph
 - [Code Coverage Reference](../reference/code-coverage.md)
 - [Project Dependency Graph](../reference/project-dependency-graph.md)
 - [BDD Spec-Test Mapping](../../governance/development/infra/bdd-spec-test-mapping.md)
-- [Backend Gherkin Specs](../../specs/apps/demo/be/gherkin/README.md)
-- [OpenAPI Contract](../../specs/apps/demo/contracts/README.md)
+- [Backend Gherkin Specs](../../specs/apps/crud/be/gherkin/README.md)
+- [OpenAPI Contract](../../specs/apps/crud/contracts/README.md)

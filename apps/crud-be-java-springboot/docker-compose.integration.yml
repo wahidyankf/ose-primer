@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: crud_be_springboot_test
+      POSTGRES_USER: crud_be_springboot
+      POSTGRES_PASSWORD: crud_be_springboot
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crud_be_springboot -d crud_be_springboot_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.integration
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "jdbc:postgresql://postgres:5432/crud_be_springboot_test?user=crud_be_springboot&password=crud_be_springboot"
+      SPRING_PROFILES_ACTIVE: integration-test
+    volumes:
+      - ../../specs:/specs:ro

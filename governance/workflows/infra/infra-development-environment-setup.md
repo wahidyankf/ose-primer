@@ -54,18 +54,18 @@ All tools checked by `rhino-cli doctor`:
 | 2   | volta          | Any                   | (no config file)                            | curl script    |
 | 3   | node           | 24.13.1               | package.json > volta.node                   | Volta          |
 | 4   | npm            | 11.10.1               | package.json > volta.npm                    | Volta          |
-| 5   | java           | 25+ (major)           | apps/demo-be-fsharp-giraffe-jasb/pom.xml    | SDKMAN         |
+| 5   | java           | 25+ (major)           | apps/crud-be-fsharp-giraffe-jasb/pom.xml    | SDKMAN         |
 | 6   | maven          | Any                   | (no config file)                            | SDKMAN         |
 | 7   | golang         | >= go.mod directive   | apps/rhino-cli/go.mod                       | Brew/asdf      |
-| 8   | python         | >= .python-version    | apps/demo-be-python-fastapi/.python-version | pyenv/System   |
-| 9   | rust (rustc)   | >= 1.80 (MSRV)        | apps/demo-be-rust-axum/Cargo.toml           | rustup         |
+| 8   | python         | >= .python-version    | apps/crud-be-python-fastapi/.python-version | pyenv/System   |
+| 9   | rust (rustc)   | >= 1.80 (MSRV)        | apps/crud-be-rust-axum/Cargo.toml           | rustup         |
 | 10  | cargo-llvm-cov | Any                   | (no config file)                            | cargo          |
 | 11  | elixir         | >= 1.19.5             | .tool-versions                              | asdf           |
 | 12  | erlang         | >= 27 (major)         | .tool-versions                              | asdf           |
-| 13  | dotnet         | >= global.json major  | apps/demo-be-fsharp-giraffe/global.json     | Brew/Script    |
+| 13  | dotnet         | >= global.json major  | apps/crud-be-fsharp-giraffe/global.json     | Brew/Script    |
 | 14  | clojure (clj)  | Any                   | (no config file)                            | Brew           |
-| 15  | dart           | >= pubspec.yaml SDK   | apps/demo-fe-dart-flutterweb/pubspec.yaml   | Flutter        |
-| 16  | flutter        | >= 3.41.0             | apps/demo-fe-dart-flutterweb/pubspec.yaml   | Manual/Brew    |
+| 15  | dart           | >= pubspec.yaml SDK   | apps/crud-fe-dart-flutterweb/pubspec.yaml   | Flutter        |
+| 16  | flutter        | >= 3.41.0             | apps/crud-fe-dart-flutterweb/pubspec.yaml   | Manual/Brew    |
 | 17  | docker         | Any                   | (no config file)                            | Docker Desktop |
 | 18  | jq             | Any                   | (no config file)                            | Brew           |
 | 19  | playwright     | (matches npm version) | node_modules                                | npx            |
@@ -227,8 +227,8 @@ volta install npm@11.10.1
 
 **Condition**: `{input.scope} == full`
 
-Required for: `demo-be-java-springboot`, `demo-be-java-vertx`, `demo-be-kotlin-ktor`,
-`demo-be-clojure-pedestal`
+Required for: `crud-be-java-springboot`, `crud-be-java-vertx`, `crud-be-kotlin-ktor`,
+`crud-be-clojure-pedestal`
 
 #### 4.1 Install SDKMAN
 
@@ -247,7 +247,7 @@ java -version
 ```
 
 **Success criteria**: `java -version` shows major version 25 or higher. The required version
-is in `apps/demo-be-java-springboot/pom.xml` under `<java.version>`.
+is in `apps/crud-be-java-springboot/pom.xml` under `<java.version>`.
 
 #### 4.3 Install Maven
 
@@ -263,7 +263,7 @@ mvn --version
 Kotlin compilation is handled by Gradle (bundled wrapper in the project), so no separate
 Kotlin install is needed. The JDK from step 4.2 is sufficient.
 
-**Success criteria**: `./gradlew --version` works in `apps/demo-be-kotlin-ktor/`.
+**Success criteria**: `./gradlew --version` works in `apps/crud-be-kotlin-ktor/`.
 
 #### 4.5 Install Clojure CLI
 
@@ -281,7 +281,7 @@ brew install clojure/tools/clojure
 
 ### Phase 5: Go Ecosystem (Sequential)
 
-Required for: `rhino-cli`, `rhino-cli`, `rhino-cli`, `demo-be-golang-gin`,
+Required for: `rhino-cli`, `rhino-cli`, `rhino-cli`, `crud-be-golang-gin`,
 `libs/golang-commons`
 
 #### 5.1 Install Go
@@ -304,7 +304,7 @@ Go >= 1.26.
 
 **Condition**: `{input.scope} == full`
 
-Required for: `demo-be-python-fastapi`
+Required for: `crud-be-python-fastapi`
 
 #### 6.1 Install Python 3.13+
 
@@ -321,7 +321,7 @@ brew install python@3.13
 sudo apt-get install -y python3 python3-pip python3-venv
 ```
 
-The required minimum version is in `apps/demo-be-python-fastapi/.python-version`.
+The required minimum version is in `apps/crud-be-python-fastapi/.python-version`.
 
 **Success criteria**: `python3 --version` shows a version >= the `.python-version` file.
 
@@ -331,7 +331,7 @@ The required minimum version is in `apps/demo-be-python-fastapi/.python-version`
 
 **Condition**: `{input.scope} == full`
 
-Required for: `demo-be-rust-axum`
+Required for: `crud-be-rust-axum`
 
 #### 7.1 Install Rust via rustup
 
@@ -356,7 +356,7 @@ cargo install cargo-llvm-cov
 
 **Condition**: `{input.scope} == full`
 
-Required for: `demo-be-elixir-phoenix`
+Required for: `crud-be-elixir-phoenix`
 
 #### 8.1 Install asdf version manager
 
@@ -411,7 +411,7 @@ The required version is pinned in `.tool-versions` (currently `elixir 1.19.5-otp
 
 **Condition**: `{input.scope} == full`
 
-Required for: `demo-be-fsharp-giraffe`, `demo-be-csharp-aspnetcore`, `demo-be-fsharp-giraffe`
+Required for: `crud-be-fsharp-giraffe`, `crud-be-csharp-aspnetcore`, `crud-be-fsharp-giraffe`
 
 #### 9.1 Install .NET SDK
 
@@ -422,7 +422,7 @@ brew install dotnet
 # Linux — https://learn.microsoft.com/en-us/dotnet/core/install/linux
 ```
 
-The required major version is in `apps/demo-be-fsharp-giraffe/global.json` under
+The required major version is in `apps/crud-be-fsharp-giraffe/global.json` under
 `sdk.version`.
 
 **Success criteria**: `dotnet --version` shows a version with the same or higher major version
@@ -434,7 +434,7 @@ as `global.json`.
 
 **Condition**: `{input.scope} == full`
 
-Required for: `demo-fe-dart-flutterweb`
+Required for: `crud-fe-dart-flutterweb`
 
 #### 10.1 Install Flutter (includes Dart)
 
@@ -446,7 +446,7 @@ brew install --cask flutter
 ```
 
 Flutter bundles the Dart SDK. The minimum Dart SDK version is in
-`apps/demo-fe-dart-flutterweb/pubspec.yaml` under `environment.sdk`.
+`apps/crud-fe-dart-flutterweb/pubspec.yaml` under `environment.sdk`.
 
 **Success criteria**: `flutter --version` and `dart --version` both return version strings.
 Dart version >= the pubspec constraint.
@@ -510,7 +510,7 @@ This creates `.env` files from all `.env.example` templates in `infra/dev/`. Use
 to overwrite existing files.
 
 **Success criteria**: Restored files appear in their original app directories (e.g.,
-`apps/demo-fs-ts-nextjs/.env.local`, `apps/demo-be-fsharp-giraffe/.env`).
+`apps/crud-fs-ts-nextjs/.env.local`, `apps/crud-be-fsharp-giraffe/.env`).
 
 **On failure**: If no backup exists, copy `.env.example` to `.env` in each app you plan to
 work on and fill in the required values.
@@ -586,7 +586,7 @@ pushes are fast.
 
 ```bash
 # Pick any backend to validate Docker + PostgreSQL integration
-nx run demo-be-golang-gin:test:integration
+nx run crud-be-golang-gin:test:integration
 ```
 
 **Success criteria**: Integration tests pass. Docker starts PostgreSQL, runs migrations, and
@@ -598,11 +598,11 @@ executes Gherkin scenarios against a real database.
 
 ```bash
 # Start a backend
-nx run demo-be-golang-gin:dev &
+nx run crud-be-golang-gin:dev &
 
 # Wait for it to be ready, then run E2E
 sleep 5
-nx run demo-be-e2e:test:e2e
+nx run crud-be-e2e:test:e2e
 
 # Stop the backend
 kill %1

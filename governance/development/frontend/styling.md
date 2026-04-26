@@ -13,7 +13,7 @@ tags:
 
 # Styling Convention
 
-CSS and Tailwind v4 conventions for all frontend applications in the open-sharia-enterprise monorepo. These rules govern how styles are written, organized, and maintained across `demo-fe-ts-nextjs`, `demo-fs-ts-nextjs`, `demo-fe-ts-nextjs`, and `demo-fs-ts-nextjs`.
+CSS and Tailwind v4 conventions for all frontend applications in the open-sharia-enterprise monorepo. These rules govern how styles are written, organized, and maintained across `crud-fe-ts-nextjs`, `crud-fs-ts-nextjs`, `crud-fe-ts-nextjs`, and `crud-fs-ts-nextjs`.
 
 ## Tailwind v4 Directives
 
@@ -24,11 +24,11 @@ Each app's `globals.css` uses a specific set of Tailwind v4 directives. Use only
 @import "tailwindcss";
 
 /* Content scan path — required when files live outside the default scan root */
-/* demo-fs-ts-nextjs uses this because source lives in a non-default location */
+/* crud-fs-ts-nextjs uses this because source lives in a non-default location */
 @source "../../src/**/*.{ts,tsx}";
 
 /* Tailwind plugins */
-/* demo-fs-ts-nextjs uses @tailwindcss/typography for prose content */
+/* crud-fs-ts-nextjs uses @tailwindcss/typography for prose content */
 @plugin "@tailwindcss/typography";
 
 /* Dark mode variant — class-based (.dark), not media-query-based */
@@ -53,7 +53,7 @@ Each app's `globals.css` uses a specific set of Tailwind v4 directives. Use only
 }
 ```
 
-See `apps/demo-fe-ts-nextjs/src/app/globals.css` and `apps/demo-fs-ts-nextjs/src/app/globals.css` for the full reference implementations.
+See `apps/crud-fe-ts-nextjs/src/app/globals.css` and `apps/crud-fs-ts-nextjs/src/app/globals.css` for the full reference implementations.
 
 ## Utility-First Approach
 
@@ -96,7 +96,7 @@ Never use `!important`. Use `@layer` ordering or Tailwind modifiers for specific
 }
 ```
 
-**Known violation**: `demo-fs-ts-nextjs/src/app/globals.css` contains 10 `!important` declarations in code block styles to override `@tailwindcss/typography` defaults. These are scheduled for removal by replacing them with rules placed outside `@layer base`.
+**Known violation**: `crud-fs-ts-nextjs/src/app/globals.css` contains 10 `!important` declarations in code block styles to override `@tailwindcss/typography` defaults. These are scheduled for removal by replacing them with rules placed outside `@layer base`.
 
 ## No `@apply` Outside `@layer base`
 
@@ -128,7 +128,7 @@ Use Tailwind utilities instead of inline styles. Inline styles bypass the design
 <div className="bg-card p-4">
 ```
 
-**Exception**: `demo-fe-ts-nextjs` may use inline styles during Phase 2 migration from a non-Tailwind baseline. Remove them before the migration is complete.
+**Exception**: `crud-fe-ts-nextjs` may use inline styles during Phase 2 migration from a non-Tailwind baseline. Remove them before the migration is complete.
 
 ## Class Ordering
 
@@ -258,7 +258,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-**Known violation**: `demo-fe-ts-nextjs/src/app/globals.css` declares `font-family: Arial, Helvetica, sans-serif` inside `@layer utilities`. This is scheduled for removal in favour of a `next/font` declaration in the app's root layout.
+**Known violation**: `crud-fe-ts-nextjs/src/app/globals.css` declares `font-family: Arial, Helvetica, sans-serif` inside `@layer utilities`. This is scheduled for removal in favour of a `next/font` declaration in the app's root layout.
 
 ## Fluid Typography
 

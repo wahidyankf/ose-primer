@@ -1,0 +1,70 @@
+# Local Development Environment for Demo Backend (GOGN — Go/Gin)
+# Mutually exclusive with other demo-be backends — all bind port 8201.
+# Do not run multiple backend stacks simultaneously.
+
+services:
+  crud-be-golang-gin-db:
+    image: postgres:17-alpine
+    container_name: crud-be-golang-gin-db
+    environment:
+      POSTGRES_DB: crud_be_golang_gin
+      POSTGRES_USER: ${POSTGRES_USER:-crud_be_golang_gin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-crud_be_golang_gin}
+    ports:
+      - "5432:5432"
+    volumes:
+      - crud-be-golang-gin-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-crud_be_golang_gin} -d crud_be_golang_gin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - crud-be-golang-gin-network
+
+  crud-be-golang-gin:
+    build:
+      context: .
+      dockerfile: Dockerfile.be.dev
+    container_name: crud-be-golang-gin
+    working_dir: /workspace
+
+    # Mount app source and shared Gherkin specs.
+    volumes:
+      - ../../../apps/crud-be-golang-gin:/workspace:rw
+      - ../../../specs/apps/crud/be/gherkin:/specs/apps/crud/be/gherkin:ro
+
+    ports:
+      - "8201:8201"
+
+    depends_on:
+      crud-be-golang-gin-db:
+        condition: service_healthy
+
+    environment:
+      - PORT=8201
+      - DATABASE_URL=postgresql://crud_be_golang_gin:crud_be_golang_gin@crud-be-golang-gin-db:5432/crud_be_golang_gin
+      - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
+
+    command: go run ./cmd/server
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8201/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+    restart: unless-stopped
+    networks:
+      - crud-be-golang-gin-network
+
+networks:
+  crud-be-golang-gin-network:
+    driver: bridge
+    name: crud-be-golang-gin-network
+
+volumes:
+  crud-be-golang-gin-db-data:

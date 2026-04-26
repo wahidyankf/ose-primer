@@ -10,7 +10,7 @@
 
 ## Rationale
 
-See `plans/in-progress/2026-03-09__demo-be-fsharp-giraffe-exph/tech-docs.md` — "Why We Fork" section.
+See `plans/in-progress/2026-03-09__crud-be-fsharp-giraffe-exph/tech-docs.md` — "Why We Fork" section.
 
 ## Changes from Upstream
 

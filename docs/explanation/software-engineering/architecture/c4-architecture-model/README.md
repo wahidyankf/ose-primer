@@ -58,7 +58,7 @@ demo C4 diagrams MUST use the following tools and conventions:
 
 **What this documentation covers**: demo-specific C4 patterns, Mermaid syntax conventions, color-blind friendly palettes, integration with DDD bounded contexts, repository diagram standards.
 
-**What this documentation does NOT cover**: C4 fundamentals, basic diagram types, generic C4 notation (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: C4 fundamentals, basic diagram types, generic C4 notation (those are in crud-fs-ts-nextjs).
 
 ## Software Engineering Principles
 

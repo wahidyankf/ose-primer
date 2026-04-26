@@ -2,5 +2,5 @@
   "printWidth": 120,
   "proseWrap": "preserve",
   "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindStylesheet": "./apps/demo-fe-ts-nextjs/src/app/globals.css"
+  "tailwindStylesheet": "./apps/crud-fe-ts-nextjs/src/app/globals.css"
 }

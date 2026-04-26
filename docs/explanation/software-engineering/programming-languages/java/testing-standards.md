@@ -392,7 +392,7 @@ class PaymentServiceIntegrationTest {
 **PROHIBITED**: Testcontainers in unit or integration tests.
 
 ```java
-// ✅ Correct — Testcontainers in E2E test project (demo-be-e2e)
+// ✅ Correct — Testcontainers in E2E test project (crud-be-e2e)
 @Testcontainers
 class InvoiceApiE2ETest {
     @Container
@@ -521,7 +521,7 @@ Testing standards are enforced through:
 
 For learning Java fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Java basics from demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Java basics from crud-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ## Related Standards
 

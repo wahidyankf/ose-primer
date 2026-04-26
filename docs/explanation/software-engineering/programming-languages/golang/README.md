@@ -85,7 +85,7 @@ demo Go applications MUST use the following stack:
 
 **What this documentation covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply Go knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Go syntax, language fundamentals, generic patterns (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: Go syntax, language fundamentals, generic patterns (those are in crud-fs-ts-nextjs).
 
 ## Software Engineering Principles
 

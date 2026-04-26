@@ -6,16 +6,16 @@ on:
       frontend-name:
         required: true
         type: string
-        description: "Frontend project name (e.g., demo-fe-ts-nextjs)"
+        description: "Frontend project name (e.g., crud-fe-ts-nextjs)"
       compose-dir:
         required: true
         type: string
-        description: "Path to infra/dev compose directory (e.g., infra/dev/demo-fe-ts-nextjs)"
+        description: "Path to infra/dev compose directory (e.g., infra/dev/crud-fe-ts-nextjs)"
       backend-compose-dir:
         required: false
         type: string
-        default: "infra/dev/demo-be-golang-gin"
-        description: "Path to backend compose directory for codegen (default: infra/dev/demo-be-golang-gin)"
+        default: "infra/dev/crud-be-golang-gin"
+        description: "Path to backend compose directory for codegen (default: infra/dev/crud-be-golang-gin)"
       extra-language:
         required: false
         type: string
@@ -25,7 +25,7 @@ on:
         required: false
         type: string
         default: ""
-        description: "Space-separated extra codegen Nx targets to run (e.g., 'demo-fe-ts-nextjs:codegen demo-fe-ts-tanstack-start:codegen')"
+        description: "Space-separated extra codegen Nx targets to run (e.g., 'crud-fe-ts-nextjs:codegen crud-fe-ts-tanstack-start:codegen')"
       health-timeout:
         required: false
         type: number
@@ -53,8 +53,8 @@ jobs:
 
       - name: Generate contract types
         run: |
-          npx nx run demo-contracts:bundle
-          npx nx run demo-be-golang-gin:codegen
+          npx nx run crud-contracts:bundle
+          npx nx run crud-be-golang-gin:codegen
           npx nx run ${{ inputs.frontend-name }}:codegen
           for target in ${{ inputs.extra-codegen-targets }}; do
             npx nx run "$target"
@@ -62,7 +62,7 @@ jobs:
 
       - name: Flutter pub get (after codegen)
         if: inputs.extra-language == 'flutter'
-        run: cd apps/demo-fe-dart-flutterweb && flutter pub get
+        run: cd apps/crud-fe-dart-flutterweb && flutter pub get
 
       - name: Start full stack
         run: docker compose -f ${{ inputs.compose-dir }}/docker-compose.yml up --build -d
@@ -87,7 +87,7 @@ jobs:
       - uses: ./.github/actions/setup-playwright
 
       - name: Run FE E2E tests
-        run: npx nx run demo-fe-e2e:test:e2e
+        run: npx nx run crud-fe-e2e:test:e2e
         env:
           BASE_URL: http://localhost:3301
           BACKEND_URL: http://localhost:8201
@@ -97,7 +97,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: fe-e2e-${{ inputs.frontend-name }}
-          path: apps/demo-fe-e2e/playwright-report/
+          path: apps/crud-fe-e2e/playwright-report/
           retention-days: 7
 
       - name: Teardown

@@ -701,7 +701,7 @@ public class DonationControllerV2 {
 
 For learning Spring Framework fundamentals and concepts referenced in these standards, see:
 
-**Note**: These standards assume you've learned Spring basics from demo-fs-ts-nextjs. We don't re-explain fundamental concepts here.
+**Note**: These standards assume you've learned Spring basics from crud-fs-ts-nextjs. We don't re-explain fundamental concepts here.
 
 ### Software Engineering Principles
 

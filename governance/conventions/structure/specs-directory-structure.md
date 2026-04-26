@@ -21,7 +21,7 @@ The `specs/` directory contains all behavioral specifications (Gherkin feature f
 
 This convention implements the following core principles:
 
-- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: The directory structure communicates spec scope through path segments. Reading a path like `specs/apps/demo/be/gherkin/expenses/expense-management.feature` immediately reveals the project, layer, domain, and feature without any external metadata or configuration.
+- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: The directory structure communicates spec scope through path segments. Reading a path like `specs/apps/crud/be/gherkin/expenses/expense-management.feature` immediately reveals the project, layer, domain, and feature without any external metadata or configuration.
 
 - **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: CLI specs use a flat structure under `gherkin/` because CLI commands are independent operations that do not group into business domains. Adding domain subdirectories with one or two files each would create indirection without value.
 
@@ -83,11 +83,11 @@ The rules for domain subdirectories vary by layer type:
 **BE and FE specs** ALWAYS use domain subdirectories under `gherkin/`. Each domain folder groups related feature files:
 
 ```
-specs/apps/demo/be/gherkin/expenses/expense-management.feature
-specs/apps/demo/be/gherkin/expenses/attachments.feature
-specs/apps/demo/be/gherkin/authentication/password-login.feature
-specs/apps/demo/fe/gherkin/accessibility/accessibility.feature
-specs/apps/demo/fe/gherkin/authentication/google-login.feature
+specs/apps/crud/be/gherkin/expenses/expense-management.feature
+specs/apps/crud/be/gherkin/expenses/attachments.feature
+specs/apps/crud/be/gherkin/authentication/password-login.feature
+specs/apps/crud/fe/gherkin/accessibility/accessibility.feature
+specs/apps/crud/fe/gherkin/authentication/google-login.feature
 ```
 
 A domain folder may contain one or many feature files. Group features by business domain, not by technical concern.
@@ -98,8 +98,8 @@ A domain folder may contain one or many feature files. Group features by busines
 specs/apps/rhino/cli/gherkin/doctor.feature
 specs/apps/rhino/cli/gherkin/env-backup.feature
 specs/apps/rhino/cli/gherkin/spec-coverage-validate.feature
-specs/apps/demo/cli/gherkin/links-check.feature
-specs/apps/demo/cli/gherkin/links-check.feature
+specs/apps/crud/cli/gherkin/links-check.feature
+specs/apps/crud/cli/gherkin/links-check.feature
 ```
 
 **Rationale for CLI exception**: CLI commands are independent operations, not grouped into business domains. Domain folders containing one or two files each would add indirection without value. The flat structure communicates that each file is an independent command specification.
@@ -107,7 +107,7 @@ specs/apps/demo/cli/gherkin/links-check.feature
 **Build-tools specs** use domain subdirectories under `gherkin/`:
 
 ```
-specs/apps/demo/build-tools/gherkin/index-generation/index-generation.feature
+specs/apps/crud/build-tools/gherkin/index-generation/index-generation.feature
 ```
 
 **Lib specs** use package or module subdirectories under `gherkin/` (no layer segment because libs do not have BE/FE/CLI layers):

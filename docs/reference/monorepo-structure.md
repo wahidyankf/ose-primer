@@ -81,15 +81,15 @@ Flat structure - all apps at the same level, no subdirectories.
 
 **Current Apps**:
 
-- `demo-fs-ts-nextjs` - demo website (Hugo static site)
-- `demo-fs-ts-nextjs` - demo educational platform (Next.js 16 fullstack content platform)
+- `crud-fs-ts-nextjs` - demo website (Hugo static site)
+- `crud-fs-ts-nextjs` - demo educational platform (Next.js 16 fullstack content platform)
 - `rhino-cli` - demo CLI tool (Go application)
 - `rhino-cli` - Repository management CLI, includes `java validate-annotations` (Go application)
 - `rhino-cli` - demo site maintenance CLI (Go application)
-- `demo-fe-ts-nextjs` - demo landing website (Next.js application)
-- `demo-be-fsharp-giraffe` - demo REST API backend (F#/Giraffe application)
-- `demo-fe-e2e` - Playwright FE E2E tests for demo-fe-ts-nextjs
-- `demo-be-e2e` - Playwright BE E2E tests for demo-be-fsharp-giraffe
+- `crud-fe-ts-nextjs` - demo landing website (Next.js application)
+- `crud-be-fsharp-giraffe` - demo REST API backend (F#/Giraffe application)
+- `crud-fe-e2e` - Playwright FE E2E tests for crud-fe-ts-nextjs
+- `crud-be-e2e` - Playwright BE E2E tests for crud-be-fsharp-giraffe
 
 ### App Structure (Hugo Static Site)
 
@@ -137,7 +137,7 @@ Flat structure - all apps at the same level, no subdirectories.
 ### App Structure (Spring Boot Application)
 
 ```
-apps/demo-be-java-springboot/
+apps/crud-be-java-springboot/
 ├── src/                       # Source code (main + test)
 ├── target/                    # Build output (gitignored)
 ├── Dockerfile                 # Production multi-stage build
@@ -318,11 +318,11 @@ The repository contains two distinct project structures with different purposes 
 
 Location: `apps/[app-name]/project.json` or `libs/[lib-name]/project.json`
 
-**Hugo App Example** (`demo-fs-ts-nextjs`):
+**Hugo App Example** (`crud-fs-ts-nextjs`):
 
 ```json
 {
-  "name": "demo-fs-ts-nextjs",
+  "name": "crud-fs-ts-nextjs",
   "projectType": "application",
   "targets": {
     "dev": {
@@ -569,7 +569,7 @@ import { formatDate } from "@open-sharia-enterprise/ts-utils";
 nx graph
 
 # View specific project dependencies
-nx graph --focus=demo-fs-ts-nextjs
+nx graph --focus=crud-fs-ts-nextjs
 
 # View affected projects
 nx affected:graph

@@ -406,8 +406,8 @@ Then("the user is redirected to the dashboard", async () => {
 ### Nx targets for E2E
 
 ```bash
-nx run demo-fe-e2e:test:e2e        # Headless — real system, no mocking
-nx run demo-fe-e2e:test:e2e:ui     # Playwright UI mode
+nx run crud-fe-e2e:test:e2e        # Headless — real system, no mocking
+nx run crud-fe-e2e:test:e2e:ui     # Playwright UI mode
 ```
 
 ---

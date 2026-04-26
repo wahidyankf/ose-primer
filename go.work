@@ -1,7 +1,7 @@
 go 1.26
 
 use (
-	./apps/demo-be-golang-gin
+	./apps/crud-be-golang-gin
 	./apps/rhino-cli
 	./libs/golang-commons
 )

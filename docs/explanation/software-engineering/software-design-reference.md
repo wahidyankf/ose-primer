@@ -119,7 +119,7 @@ Software design documentation in `docs/explanation/software-engineering/` contai
 
 The following `docs/explanation/` content assumes readers have completed the corresponding demo learning paths:
 
-| Advanced Reference (docs/explanation/) | Prerequisite Learning (demo-fs-ts-nextjs) |
+| Advanced Reference (docs/explanation/) | Prerequisite Learning (crud-fs-ts-nextjs) |
 | -------------------------------------- | ----------------------------------------- |
 
 ### Content Types and Scope

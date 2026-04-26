@@ -263,7 +263,7 @@ Per-project:
 
 ```json
 {
-  "name": "demo-fs-ts-nextjs",
+  "name": "crud-fs-ts-nextjs",
   "projectType": "application",
   "targets": {
     "dev": {
@@ -369,7 +369,7 @@ Project name used by Nx CLI.
 
 **Examples**:
 
-- `"demo-fs-ts-nextjs"` (app)
+- `"crud-fs-ts-nextjs"` (app)
 - `"ts-utils"` (lib)
 
 #### `sourceRoot`
@@ -691,7 +691,7 @@ Skip Nx cache.
 **Usage**:
 
 ```bash
-NX_SKIP_NX_CACHE=true nx build demo-fs-ts-nextjs
+NX_SKIP_NX_CACHE=true nx build crud-fs-ts-nextjs
 ```
 
 #### `NX_DAEMON`
@@ -701,7 +701,7 @@ Enable/disable Nx daemon.
 **Usage**:
 
 ```bash
-NX_DAEMON=false nx build demo-fs-ts-nextjs
+NX_DAEMON=false nx build crud-fs-ts-nextjs
 ```
 
 ## 🔗 Related Documentation

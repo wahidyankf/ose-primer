@@ -227,8 +227,8 @@ function renderCheckout() {
 
 This repository has **environment-specific branches** for deployment:
 
-- `prod-demo-fs-ts-nextjs` - Production deployment for example.com
-- `prod-demo-fs-ts-nextjs` - Production deployment for example.com
+- `prod-crud-fs-ts-nextjs` - Production deployment for example.com
+- `prod-crud-fs-ts-nextjs` - Production deployment for example.com
 
 ### Critical Rules
 
@@ -256,8 +256,8 @@ Developer commits to main → CI/CD tests → CI/CD deploys to environment branc
 
 **Examples**:
 
-- `prod-demo-fs-ts-nextjs`
-- `prod-demo-fs-ts-nextjs`
+- `prod-crud-fs-ts-nextjs`
+- `prod-crud-fs-ts-nextjs`
 
 **Rationale**: Clear, explicit, unambiguous naming prevents accidental commits.
 
@@ -486,7 +486,7 @@ test(user): add integration tests for user service
 
 ### ❌ Mistake 3: Treating environment branches as development branches
 
-**Wrong**: `git commit` directly to `prod-demo-fs-ts-nextjs`
+**Wrong**: `git commit` directly to `prod-crud-fs-ts-nextjs`
 
 **Right**: Commit to `main`, let CI/CD deploy to environment branch
 

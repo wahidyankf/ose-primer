@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: crud_be_tseffect_test
+      POSTGRES_USER: crud_be_tseffect
+      POSTGRES_PASSWORD: crud_be_tseffect
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crud_be_tseffect -d crud_be_tseffect_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.integration
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://crud_be_tseffect:crud_be_tseffect@postgres:5432/crud_be_tseffect_test"
+      APP_JWT_SECRET: "integration-test-secret-key-at-least-32-characters"
+    volumes:
+      - ../../specs:/specs:ro

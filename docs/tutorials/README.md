@@ -1,6 +1,6 @@
 ---
 title: "Tutorials"
-description: Tutorials have been migrated to demo-fs-ts-nextjs
+description: Tutorials have been migrated to crud-fs-ts-nextjs
 category: tutorial
 tags:
   - index

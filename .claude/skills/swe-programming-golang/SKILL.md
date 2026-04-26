@@ -21,7 +21,7 @@ Progressive disclosure of Go coding standards for agents writing Go code.
 
 **What this skill covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply Go knowledge in THIS codebase.
 
-**What this skill does NOT cover**: Go syntax, language fundamentals, generic patterns (those are in demo-fs-ts-nextjs).
+**What this skill does NOT cover**: Go syntax, language fundamentals, generic patterns (those are in crud-fs-ts-nextjs).
 
 ## Quick Standards Reference
 

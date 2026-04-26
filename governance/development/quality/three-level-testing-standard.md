@@ -15,7 +15,7 @@ tags:
 
 # Three-Level Testing Standard
 
-Defines the mandatory three-level testing architecture for all projects in the monorepo. The standard applies universally with project-type-specific adaptations. Demo-be backends consume shared Gherkin specifications from `specs/apps/demo/be/gherkin/` at all three levels. Other projects follow the same isolation boundaries appropriate to their domain.
+Defines the mandatory three-level testing architecture for all projects in the monorepo. The standard applies universally with project-type-specific adaptations. Demo-be backends consume shared Gherkin specifications from `specs/apps/crud/be/gherkin/` at all three levels. Other projects follow the same isolation boundaries appropriate to their domain.
 
 ## Principles Implemented/Respected
 
@@ -40,7 +40,7 @@ Defines the mandatory three-level testing architecture for all projects in the m
 | Aspect            | Rule                                                                |
 | ----------------- | ------------------------------------------------------------------- |
 | Dependencies      | **All mocked** — no real database, no real HTTP, no real filesystem |
-| Gherkin specs     | **Must consume** shared specs from `specs/apps/demo/be/gherkin/`    |
+| Gherkin specs     | **Must consume** shared specs from `specs/apps/crud/be/gherkin/`    |
 | Database          | Mocked repositories / in-memory stores                              |
 | HTTP layer        | None — call service functions directly                              |
 | External services | None                                                                |
@@ -77,7 +77,7 @@ Then the product should be created successfully
 | Aspect            | Rule                                                                    |
 | ----------------- | ----------------------------------------------------------------------- |
 | Dependencies      | **Real database only** — no HTTP, no external services                  |
-| Gherkin specs     | **Must consume** shared specs from `specs/apps/demo/be/gherkin/`        |
+| Gherkin specs     | **Must consume** shared specs from `specs/apps/crud/be/gherkin/`        |
 | Database          | **Real PostgreSQL** via `docker-compose.integration.yml`                |
 | HTTP layer        | **None** — call service/repository functions directly, no HTTP dispatch |
 | External services | None                                                                    |
@@ -116,7 +116,7 @@ The test harness MUST:
 | Aspect            | Rule                                                             |
 | ----------------- | ---------------------------------------------------------------- |
 | Dependencies      | **All real** — real HTTP, real database, real server             |
-| Gherkin specs     | **Must consume** shared specs from `specs/apps/demo/be/gherkin/` |
+| Gherkin specs     | **Must consume** shared specs from `specs/apps/crud/be/gherkin/` |
 | Database          | Real PostgreSQL (via docker-compose in CI)                       |
 | HTTP layer        | Real HTTP requests via Playwright                                |
 | External services | As needed                                                        |
@@ -132,7 +132,7 @@ Playwright -> HTTP Request -> Running Server -> Real PostgreSQL
 
 ## Spec Consumption Summary
 
-All three levels consume the same shared Gherkin scenarios from [`specs/apps/demo/be/gherkin/`](../../../specs/apps/demo/be/gherkin/README.md). The difference is HOW the step definitions execute them:
+All three levels consume the same shared Gherkin scenarios from [`specs/apps/crud/be/gherkin/`](../../../specs/apps/crud/be/gherkin/README.md). The difference is HOW the step definitions execute them:
 
 | Level       | Step Implementation                          | What Varies                |
 | ----------- | -------------------------------------------- | -------------------------- |
@@ -148,14 +148,14 @@ For Nx to invalidate cached test results when relevant files change, all `test:u
 1. **Source files** — language-specific glob patterns (e.g., `{projectRoot}/src/**/*.go`)
 2. **Generated contracts** — `{projectRoot}/generated-contracts/**/*` (or `generated_contracts/`
    for Python and Clojure, which use underscore)
-3. **Gherkin specs** — `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` (demo-be
+3. **Gherkin specs** — `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` (demo-be
    backends only)
 
 Without these explicit inputs, Nx may serve a cached result after a Gherkin spec is updated or
 after the OpenAPI contract spec triggers a `codegen` run — causing stale test results.
 
-Frontend apps (`demo-fe-*`) include generated contracts in `inputs` but do not include Gherkin
-specs because they use a separate spec directory (`specs/apps/demo/fe/gherkin/`).
+Frontend apps (`crud-fe-*`) include generated contracts in `inputs` but do not include Gherkin
+specs because they use a separate spec directory (`specs/apps/crud/fe/gherkin/`).
 
 See [Nx Target Standards](../infra/nx-targets.md) for the full canonical inputs table per language.
 
@@ -182,10 +182,10 @@ Different project types carry different coverage thresholds, reflecting the prac
 
 | Threshold | Projects                                                                                                   | Rationale                                                                                           |
 | --------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| 90%       | Demo-be backends, CLI apps (Go), Go libs, TS backend (`demo-be-ts-effect`)                                 | Core business logic with high mock isolation; all execution paths reachable in unit tests           |
-| 80%       | Content platforms (`demo-fs-ts-nextjs`, `demo-fs-ts-nextjs`)                                               | Significant UI rendering code; some React rendering paths are hard to unit-test                     |
-| 75%       | Fullstack (`demo-fs-ts-nextjs`)                                                                            | Mixed server+client code; API route handlers and React components share the codebase                |
-| 70%       | FE apps (`demo-fe-ts-nextjs`, `demo-fe-ts-tanstack-start`, `demo-fe-dart-flutterweb`, `demo-fe-ts-nextjs`) | API/auth/query layers are fully mocked by design; threshold reflects intentional mocking boundaries |
+| 90%       | Demo-be backends, CLI apps (Go), Go libs, TS backend (`crud-be-ts-effect`)                                 | Core business logic with high mock isolation; all execution paths reachable in unit tests           |
+| 80%       | Content platforms (`crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`)                                               | Significant UI rendering code; some React rendering paths are hard to unit-test                     |
+| 75%       | Fullstack (`crud-fs-ts-nextjs`)                                                                            | Mixed server+client code; API route handlers and React components share the codebase                |
+| 70%       | FE apps (`crud-fe-ts-nextjs`, `crud-fe-ts-tanstack-start`, `crud-fe-dart-flutterweb`, `crud-fe-ts-nextjs`) | API/auth/query layers are fully mocked by design; threshold reflects intentional mocking boundaries |
 
 ## Mandatory Test Levels Matrix
 
@@ -250,8 +250,8 @@ Integration: Service -> RealRepository -> PostgreSQL
 
 Demo apps use OpenAPI 3.1 contracts to define the API surface:
 
-- **Demo apps**: OpenAPI 3.1 spec at `specs/apps/demo/contracts/`; the `codegen` Nx target generates types and encoders/decoders into `generated-contracts/` (gitignored)
-- **Content platforms and demo**: Use tRPC, which is typed at compile time without a separate contract file; demo also maintains an OpenAPI 3.1 spec at `specs/apps/demo/contracts/`
+- **Demo apps**: OpenAPI 3.1 spec at `specs/apps/crud/contracts/`; the `codegen` Nx target generates types and encoders/decoders into `generated-contracts/` (gitignored)
+- **Content platforms and demo**: Use tRPC, which is typed at compile time without a separate contract file; demo also maintains an OpenAPI 3.1 spec at `specs/apps/crud/contracts/`
 
 The `typecheck` and `build` Nx targets depend on `codegen`. This means contract violations surface during `nx affected -t typecheck` and the pre-push `test:quick` gate. Rust and Flutter additionally declare `codegen` as a dependency of `test:unit` because generated code is required at compile time.
 
@@ -263,8 +263,8 @@ The following table maps GitHub Actions workflows to the test levels they execut
 | ----------------------- | ---- | ---------------- | ------------- | ---------------- | -------- | ------------- |
 | Pre-push hook           | Yes  | Via `test:quick` | Yes           | No               | No       | Every push    |
 | PR quality gate         | Yes  | Via `test:quick` | No            | No               | No       | Every PR      |
-| `test-demo-be-*.yml`    | Yes  | No               | Yes           | Yes              | Yes      | Manual only   |
-| `test-demo-fe-*.yml`    | Yes  | No               | Yes           | No               | Yes      | Manual only   |
+| `test-crud-be-*.yml`    | Yes  | No               | Yes           | Yes              | Yes      | Manual only   |
+| `test-crud-fe-*.yml`    | Yes  | No               | Yes           | No               | Yes      | Manual only   |
 | `test-and-deploy-*.yml` | Yes  | Via `test:quick` | Yes           | Yes              | Yes      | CRON 2x daily |
 
 `lint` (including static a11y checks via oxlint jsx-a11y plugin for TypeScript UI projects and `dart analyze` for Dart projects) runs in all three enforcement gates: the pre-push hook, the PR quality gate, and Test CI workflows. `spec-coverage` runs in the pre-push hook and all Test CI workflows, ensuring every Gherkin step has a matching step definition. The pre-push hook intentionally omits integration and E2E tests. These tests require Docker infrastructure (PostgreSQL, running servers) and are too slow and environment-dependent to run on every push. The PR quality gate omits `spec-coverage` because it targets only the fast `test:quick` path used for merge checks. Demo workflows (`test-demo-*.yml`) run only on manual `workflow_dispatch` to conserve CI resources; the scheduled `test-and-deploy-*.yml` workflows cover integration, E2E, and spec-coverage on a regular cadence for production apps.
@@ -321,10 +321,10 @@ All UI projects must include static accessibility checks in their `lint` target.
 common accessibility violations at compile time and are enforced at all three gates: pre-push hook,
 PR quality gate, and scheduled Test CI workflows.
 
-- **TypeScript UI projects** (`demo-fe-ts-nextjs`, `demo-fe-ts-tanstack-start`,
-  `demo-fs-ts-nextjs`, `demo-fe-ts-nextjs`, `demo-fs-ts-nextjs`, `demo-fs-ts-nextjs`, `libs/ts-ui`):
+- **TypeScript UI projects** (`crud-fe-ts-nextjs`, `crud-fe-ts-tanstack-start`,
+  `crud-fs-ts-nextjs`, `crud-fe-ts-nextjs`, `crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`, `libs/ts-ui`):
   `oxlint --jsx-a11y-plugin`
-- **Dart UI projects** (`demo-fe-dart-flutterweb`): `dart analyze`
+- **Dart UI projects** (`crud-fe-dart-flutterweb`): `dart analyze`
 
 ### Runtime Accessibility E2E Tests (via `test:e2e`)
 
@@ -352,8 +352,8 @@ linting and the enforcement gates.
 
 The following gaps are known and tracked for future resolution:
 
-- **FE unit tests lack Gherkin**: `demo-fe-ts-nextjs`, `demo-fe-ts-tanstack-start`, `demo-fe-dart-flutterweb`, and `demo-fe-ts-nextjs` do not yet consume Gherkin specs at the unit level. A BDD runner compatible with Vitest-based unit tests needs to be selected (tracked in W11 of the CI standardization plan).
-- **Content platform Gherkin pending**: `demo-fs-ts-nextjs` and `demo-fs-ts-nextjs` do not yet consume Gherkin specs at any test level. Gherkin consumption for content platforms is planned as part of the same standardization effort.
+- **FE unit tests lack Gherkin**: `crud-fe-ts-nextjs`, `crud-fe-ts-tanstack-start`, `crud-fe-dart-flutterweb`, and `crud-fe-ts-nextjs` do not yet consume Gherkin specs at the unit level. A BDD runner compatible with Vitest-based unit tests needs to be selected (tracked in W11 of the CI standardization plan).
+- **Content platform Gherkin pending**: `crud-fs-ts-nextjs` and `crud-fs-ts-nextjs` do not yet consume Gherkin specs at any test level. Gherkin consumption for content platforms is planned as part of the same standardization effort.
 - **Spec-coverage deferred for some projects**: 11 projects have `spec-coverage` temporarily removed until step implementations are complete. See "Spec-Coverage Validation" above and [Nx Target Standards](../infra/nx-targets.md) for the deferred project list.
 
 ## Per-Backend Implementation Pattern
@@ -361,7 +361,7 @@ The following gaps are known and tracked for future resolution:
 Each demo-be backend must have:
 
 ```
-apps/demo-be-{lang}-{framework}/
+apps/crud-be-{lang}-{framework}/
   tests/
     unit/          # Unit test step definitions (mocked repos)
     integration/   # Integration test step definitions (real DB, no HTTP)
@@ -398,13 +398,13 @@ The three-level standard applies universally, with adaptations per project type:
 
 | Project Type                   | Unit                            | Integration                           | E2E                                  | test:quick | Gherkin Specs                          |
 | ------------------------------ | ------------------------------- | ------------------------------------- | ------------------------------------ | ---------- | -------------------------------------- |
-| Demo-be API backend            | All mocked + specs              | Real PostgreSQL, no HTTP + specs      | Playwright + specs                   | Yes        | `specs/apps/demo/be/gherkin/`          |
-| Web UI app (demo-fe-ts-nextjs) | Vitest mocks                    | MSW in-process (cacheable)            | Playwright                           | Yes        | Project-specific                       |
+| Demo-be API backend            | All mocked + specs              | Real PostgreSQL, no HTTP + specs      | Playwright + specs                   | Yes        | `specs/apps/crud/be/gherkin/`          |
+| Web UI app (crud-fe-ts-nextjs) | Vitest mocks                    | MSW in-process (cacheable)            | Playwright                           | Yes        | Project-specific                       |
 | Content platform               | Vitest mocks                    | MSW/tRPC in-process (cacheable)       | Playwright + specs                   | Yes        | `specs/apps/{domain}/{be,fe}/gherkin/` |
 | CLI app (Go)                   | Go test mocks + Gherkin (godog) | Godog BDD in-process (cacheable)      | N/A                                  | Yes        | `specs/{app}/`                         |
 | Library (Go)                   | Go test mocks                   | Godog BDD in-process (cacheable)      | N/A                                  | Yes        | `specs/{lib}/`                         |
-| Demo-fe frontend               | Vitest/Flutter mocks + specs    | N/A                                   | Playwright (via demo-fe-e2e) + specs | Yes        | `specs/apps/demo/fe/gherkin/`          |
-| Fullstack (FS)                 | Vitest mocks + specs            | Mandatory (MSW/real DB as applicable) | Playwright + specs                   | Yes        | `specs/apps/demo/` (BE + FE specs)     |
+| Demo-fe frontend               | Vitest/Flutter mocks + specs    | N/A                                   | Playwright (via crud-fe-e2e) + specs | Yes        | `specs/apps/crud/fe/gherkin/`          |
+| Fullstack (FS)                 | Vitest mocks + specs            | Mandatory (MSW/real DB as applicable) | Playwright + specs                   | Yes        | `specs/apps/crud/` (BE + FE specs)     |
 | Hugo site                      | Exempt                          | Exempt                                | Exempt                               | Yes\*      | N/A                                    |
 | E2E runner                     | N/A                             | N/A                                   | Playwright                           | N/A        | Shared specs                           |
 
@@ -415,10 +415,10 @@ _\* Hugo sites run `test:quick` for link checking only, not test execution._
 - **Demo-be backends**: All three levels mandatory; all consume Gherkin specs; integration uses real PostgreSQL with no HTTP
 - **Content platforms**: All three levels mandatory; integration uses MSW/tRPC in-process mocking (cacheable); Gherkin consumption planned (see "Known Gaps")
 - **Web UI apps**: All three levels mandatory; integration uses in-process mocking (MSW); cacheable
-- **Fullstack apps**: All three levels mandatory; consume Gherkin specs from both `specs/apps/demo/be/gherkin/` and `specs/apps/demo/fe/gherkin/` (the FS app spans both layers)
+- **Fullstack apps**: All three levels mandatory; consume Gherkin specs from both `specs/apps/crud/be/gherkin/` and `specs/apps/crud/fe/gherkin/` (the FS app spans both layers)
 - **CLI apps**: Unit + integration mandatory; both levels consume Gherkin specs via godog; unit mocks all I/O via package-level function variables; integration uses real filesystem with `/tmp` fixtures; cacheable
 - **Libraries**: Unit mandatory; integration optional (Godog BDD with public API calls); cacheable
-- **Demo-fe frontends**: Two-level testing (unit + E2E); no integration tier; all consume Gherkin specs from `specs/apps/demo/fe/gherkin/`; E2E via centralized `demo-fe-e2e` Playwright suite
+- **Demo-fe frontends**: Two-level testing (unit + E2E); no integration tier; all consume Gherkin specs from `specs/apps/crud/fe/gherkin/`; E2E via centralized `crud-fe-e2e` Playwright suite
 - **Hugo sites**: Exempt from all test levels (only `test:quick` for link checking)
 
 ## ❌ Anti-Patterns

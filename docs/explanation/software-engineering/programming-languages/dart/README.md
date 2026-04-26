@@ -63,7 +63,7 @@ Dart's design principles guide development:
 
 **What this documentation covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply Dart knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Dart syntax, language fundamentals, generic patterns (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: Dart syntax, language fundamentals, generic patterns (those are in crud-fs-ts-nextjs).
 
 ## demo Coding Standards (Authoritative)
 

@@ -49,7 +49,7 @@ All acceptance criteria and stakeholder-facing specifications MUST follow the BD
 
 **What this documentation covers**: demo-specific BDD patterns, Islamic finance scenarios, Three Amigos with Shariah scholars, repository-specific feature organization, integration with DDD bounded contexts.
 
-**What this documentation does NOT cover**: BDD fundamentals, basic Gherkin syntax, generic collaboration techniques (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: BDD fundamentals, basic Gherkin syntax, generic collaboration techniques (those are in crud-fs-ts-nextjs).
 
 ## Software Engineering Principles
 

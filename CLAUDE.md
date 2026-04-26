@@ -16,24 +16,24 @@ Guidance for Claude Code (claude.ai/code) working with code in this repository.
 - **Monorepo**: Nx workspace
 - **Current Apps**:
   - `rhino-cli` — Go CLI for repository management (Repository Hygiene & INtegration Orchestrator; includes `java validate-annotations`, `test-coverage`, `spec-coverage`, `agents validate-naming`, `workflows validate-naming`, `env backup|restore`, and `doctor`).
-  - `demo-be-golang-gin` — Go/Gin REST API backend (default backend).
-  - `demo-be-java-springboot` — Spring Boot REST API (alternative).
-  - `demo-be-elixir-phoenix` — Elixir/Phoenix REST API (alternative).
-  - `demo-be-fsharp-giraffe` — F#/Giraffe REST API (alternative).
-  - `demo-be-python-fastapi` — Python/FastAPI REST API (alternative).
-  - `demo-be-rust-axum` — Rust/Axum REST API (alternative).
-  - `demo-be-kotlin-ktor` — Kotlin/Ktor REST API (alternative).
-  - `demo-be-java-vertx` — Java/Vert.x REST API (alternative).
-  - `demo-be-ts-effect` — TypeScript/Effect REST API (alternative).
-  - `demo-be-csharp-aspnetcore` — C#/ASP.NET Core REST API (alternative).
-  - `demo-be-clojure-pedestal` — Clojure/Pedestal REST API (alternative).
-  - `demo-contracts` — OpenAPI 3.1 API contract spec at `specs/apps/demo/contracts/`; generates types + encoders/decoders for all demo apps via `codegen` Nx target.
-  - `demo-be-e2e` — Playwright E2E tests for demo-be backends.
-  - `demo-fe-ts-nextjs` — Next.js 16 frontend (TypeScript, App Router).
-  - `demo-fe-ts-tanstack-start` — TanStack Start frontend (TypeScript, alternative).
-  - `demo-fe-dart-flutterweb` — Flutter Web frontend (Dart, alternative).
-  - `demo-fe-e2e` — Playwright E2E tests for demo-fe frontends.
-  - `demo-fs-ts-nextjs` — Next.js 16 fullstack (TypeScript, App Router + Route Handlers).
+  - `crud-be-golang-gin` — Go/Gin REST API backend (default backend).
+  - `crud-be-java-springboot` — Spring Boot REST API (alternative).
+  - `crud-be-elixir-phoenix` — Elixir/Phoenix REST API (alternative).
+  - `crud-be-fsharp-giraffe` — F#/Giraffe REST API (alternative).
+  - `crud-be-python-fastapi` — Python/FastAPI REST API (alternative).
+  - `crud-be-rust-axum` — Rust/Axum REST API (alternative).
+  - `crud-be-kotlin-ktor` — Kotlin/Ktor REST API (alternative).
+  - `crud-be-java-vertx` — Java/Vert.x REST API (alternative).
+  - `crud-be-ts-effect` — TypeScript/Effect REST API (alternative).
+  - `crud-be-csharp-aspnetcore` — C#/ASP.NET Core REST API (alternative).
+  - `crud-be-clojure-pedestal` — Clojure/Pedestal REST API (alternative).
+  - `crud-contracts` — OpenAPI 3.1 API contract spec at `specs/apps/crud/contracts/`; generates types + encoders/decoders for all demo apps via `codegen` Nx target.
+  - `crud-be-e2e` — Playwright E2E tests for demo-be backends.
+  - `crud-fe-ts-nextjs` — Next.js 16 frontend (TypeScript, App Router).
+  - `crud-fe-ts-tanstack-start` — TanStack Start frontend (TypeScript, alternative).
+  - `crud-fe-dart-flutterweb` — Flutter Web frontend (Dart, alternative).
+  - `crud-fe-e2e` — Playwright E2E tests for demo-fe frontends.
+  - `crud-fs-ts-nextjs` — Next.js 16 fullstack (TypeScript, App Router + Route Handlers).
 
 ## Project Structure
 
@@ -41,13 +41,13 @@ Guidance for Claude Code (claude.ai/code) working with code in this repository.
 ose-primer/
 ├── apps/                      # Deployable applications (Nx)
 │   ├── rhino-cli/             # Repository management CLI
-│   ├── demo-be-*/           # 11 polyglot backend demos (Go, Java, Elixir, F#, Python, Rust, Kotlin, Java/Vertx, TS/Effect, C#, Clojure)
-│   ├── demo-be-e2e/         # Playwright E2E for backends
-│   ├── demo-fe-ts-nextjs/   # Next.js 16 frontend
-│   ├── demo-fe-ts-tanstack-start/  # TanStack Start frontend
-│   ├── demo-fe-dart-flutterweb/    # Flutter Web frontend
-│   ├── demo-fe-e2e/         # Playwright E2E for frontends
-│   └── demo-fs-ts-nextjs/   # Next.js 16 fullstack
+│   ├── crud-be-*/           # 11 polyglot backend demos (Go, Java, Elixir, F#, Python, Rust, Kotlin, Java/Vertx, TS/Effect, C#, Clojure)
+│   ├── crud-be-e2e/         # Playwright E2E for backends
+│   ├── crud-fe-ts-nextjs/   # Next.js 16 frontend
+│   ├── crud-fe-ts-tanstack-start/  # TanStack Start frontend
+│   ├── crud-fe-dart-flutterweb/    # Flutter Web frontend
+│   ├── crud-fe-e2e/         # Playwright E2E for frontends
+│   └── crud-fs-ts-nextjs/   # Next.js 16 fullstack
 ├── apps-labs/                 # Experimental apps (NOT in Nx)
 ├── libs/                      # Reusable libraries (Nx, flat structure)
 │   └── golang-commons/        # Shared Go utilities
@@ -106,8 +106,8 @@ nx run [project-name]:test:integration   # Demo-be: real PostgreSQL via docker-c
 nx run [project-name]:test:e2e           # Real HTTP via Playwright. NOT cacheable
 
 # Contract codegen (generates types from OpenAPI spec into generated-contracts/)
-nx run demo-contracts:lint       # Lint + bundle the OpenAPI spec
-nx run demo-contracts:docs       # Generate browsable API documentation
+nx run crud-contracts:lint       # Lint + bundle the OpenAPI spec
+nx run crud-contracts:docs       # Generate browsable API documentation
 nx run [project-name]:codegen      # Generate types for a specific app
 nx run-many -t codegen --projects=demo-*  # Generate for all demo apps
 
@@ -135,24 +135,24 @@ npm run doctor -- --scope minimal # Check only core tools (git, volta, node, npm
 
 | Project(s)                                                             | Threshold | Report format                         | Notes                                                  |
 | ---------------------------------------------------------------------- | --------- | ------------------------------------- | ------------------------------------------------------ |
-| Go projects (`rhino-cli`, `libs/golang-commons`, `demo-be-golang-gin`) | ≥90%      | `cover.out` (go test)                 |                                                        |
-| `demo-be-ts-effect`                                                    | ≥90%      | LCOV (Vitest)                         |                                                        |
-| `demo-be-java-springboot`, `demo-be-java-vertx`                        | ≥90%      | JaCoCo XML                            |                                                        |
-| `demo-be-kotlin-ktor`                                                  | ≥90%      | Kover JaCoCo XML                      |                                                        |
-| `demo-be-python-fastapi`                                               | ≥90%      | LCOV (coverage.py)                    |                                                        |
-| `demo-be-rust-axum`                                                    | ≥90%      | LCOV (cargo-llvm-cov)                 |                                                        |
-| `demo-be-fsharp-giraffe`                                               | ≥90%      | AltCover LCOV (`altcov.info`)         | Uses `--linecover` to avoid F# `task{}` BRDA inflation |
-| `demo-be-csharp-aspnetcore`                                            | ≥90%      | Coverlet LCOV (`coverage.info`)       |                                                        |
-| `demo-be-clojure-pedestal`                                             | ≥90%      | cloverage LCOV (`--lcov`)             |                                                        |
-| `demo-be-elixir-phoenix`                                               | ≥90%      | LCOV (ExCoveralls, `cover/lcov.info`) |                                                        |
-| `demo-fs-ts-nextjs`                                                    | ≥75%      | LCOV (Vitest)                         |                                                        |
-| `demo-fe-ts-nextjs`, `demo-fe-dart-flutterweb`                         | ≥70%      | LCOV                                  | fe threshold: API/auth layers fully mocked by design   |
+| Go projects (`rhino-cli`, `libs/golang-commons`, `crud-be-golang-gin`) | ≥90%      | `cover.out` (go test)                 |                                                        |
+| `crud-be-ts-effect`                                                    | ≥90%      | LCOV (Vitest)                         |                                                        |
+| `crud-be-java-springboot`, `crud-be-java-vertx`                        | ≥90%      | JaCoCo XML                            |                                                        |
+| `crud-be-kotlin-ktor`                                                  | ≥90%      | Kover JaCoCo XML                      |                                                        |
+| `crud-be-python-fastapi`                                               | ≥90%      | LCOV (coverage.py)                    |                                                        |
+| `crud-be-rust-axum`                                                    | ≥90%      | LCOV (cargo-llvm-cov)                 |                                                        |
+| `crud-be-fsharp-giraffe`                                               | ≥90%      | AltCover LCOV (`altcov.info`)         | Uses `--linecover` to avoid F# `task{}` BRDA inflation |
+| `crud-be-csharp-aspnetcore`                                            | ≥90%      | Coverlet LCOV (`coverage.info`)       |                                                        |
+| `crud-be-clojure-pedestal`                                             | ≥90%      | cloverage LCOV (`--lcov`)             |                                                        |
+| `crud-be-elixir-phoenix`                                               | ≥90%      | LCOV (ExCoveralls, `cover/lcov.info`) |                                                        |
+| `crud-fs-ts-nextjs`                                                    | ≥75%      | LCOV (Vitest)                         |                                                        |
+| `crud-fe-ts-nextjs`, `crud-fe-dart-flutterweb`                         | ≥70%      | LCOV                                  | fe threshold: API/auth layers fully mocked by design   |
 
 **`test:integration` caching**: Default `cache: false` in `nx.json`. Demo-be backends use docker-compose with real PostgreSQL — non-deterministic, must never cache. Projects using in-process mocking only (MSW, Godog) override to `cache: true` in their `project.json`: Go CLI apps (Godog at both unit and integration levels), `golang-commons` (Godog + mock closures).
 
 **Three-level testing standard** (demo-be backends):
 
-1. **Unit (`test:unit`)**: All mocked deps; must consume Gherkin specs from `specs/apps/demo/be/gherkin/`; call service functions directly with mocked repos; coverage measured here (>=90%)
+1. **Unit (`test:unit`)**: All mocked deps; must consume Gherkin specs from `specs/apps/crud/be/gherkin/`; call service functions directly with mocked repos; coverage measured here (>=90%)
 2. **Integration (`test:integration`)**: Real PostgreSQL via docker-compose; **no HTTP calls** (no MockMvc, TestClient, httptest, ConnTest, WebApplicationFactory, fetch, clj-http, Router.oneshot); must consume Gherkin specs; call service functions directly with real DB
 3. **E2E (`test:e2e`)**: Full stack via Playwright; real HTTP + real DB; must consume Gherkin specs
 
@@ -166,9 +166,9 @@ All three levels consume same Gherkin specs — only step implementations change
 
 Both unit and integration levels consume same Gherkin specs — step implementations differ (mocked I/O vs real filesystem). `test:quick` includes `test:unit` (with godog BDD scenarios) + coverage validation.
 
-**Mandatory Nx targets for demo apps**: All `demo-be-*` and `demo-fe-*` apps must have 7 targets: `codegen`, `typecheck`, `lint`, `build`, `test:unit`, `test:quick`, `test:integration`. Coverage thresholds: backends ≥90%, frontends ≥70%.
+**Mandatory Nx targets for demo apps**: All `crud-be-*` and `crud-fe-*` apps must have 7 targets: `codegen`, `typecheck`, `lint`, `build`, `test:unit`, `test:quick`, `test:integration`. Coverage thresholds: backends ≥90%, frontends ≥70%.
 
-**Contract enforcement**: All demo apps have `codegen` Nx target generating types + encoders/decoders from OpenAPI spec at `specs/apps/demo/contracts/`. Generated code lives in `generated-contracts/` (gitignored). `codegen` target is dependency of `typecheck` and `build` — contract violations caught by `nx affected -t typecheck` and `test:quick` in pre-push hook and PR quality gate. (Exception: Rust and Flutter also declare `codegen` as dependency of `test:unit` due to generated code required at compile time.)
+**Contract enforcement**: All demo apps have `codegen` Nx target generating types + encoders/decoders from OpenAPI spec at `specs/apps/crud/contracts/`. Generated code lives in `generated-contracts/` (gitignored). `codegen` target is dependency of `typecheck` and `build` — contract violations caught by `nx affected -t typecheck` and `test:quick` in pre-push hook and PR quality gate. (Exception: Rust and Flutter also declare `codegen` as dependency of `test:unit` due to generated code required at compile time.)
 
 **See**: [governance/development/quality/three-level-testing-standard.md](./governance/development/quality/three-level-testing-standard.md)
 

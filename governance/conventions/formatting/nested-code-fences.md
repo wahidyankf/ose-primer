@@ -47,7 +47,7 @@ This convention establishes the pattern for nesting code fences when documenting
 This convention applies to markdown content in:
 
 - **docs/** - Documentation showing markdown examples
-- **legacy sites** - Content demonstrating markdown structure (demo-fs-ts-nextjs, demo-fs-ts-nextjs)
+- **legacy sites** - Content demonstrating markdown structure (crud-fs-ts-nextjs, crud-fs-ts-nextjs)
 - **plans/** - Planning documents with markdown examples
 - **Repository root files** - README.md, CONTRIBUTING.md when documenting markdown
 

@@ -52,7 +52,7 @@ demo Islamic finance systems MUST use the following DDD patterns:
 
 **What this documentation covers**: demo-specific DDD patterns, Islamic finance domain modeling, aggregate boundaries, bounded context mapping in demo, integration with C4 and FSM, repository-specific tactical patterns.
 
-**What this documentation does NOT cover**: DDD fundamentals, basic aggregate/entity/value object concepts, generic strategic design (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: DDD fundamentals, basic aggregate/entity/value object concepts, generic strategic design (those are in crud-fs-ts-nextjs).
 
 ## Software Engineering Principles
 

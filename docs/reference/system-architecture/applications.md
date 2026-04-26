@@ -18,37 +18,37 @@ The platform consists of 9 applications across 4 technology stacks:
 
 ### Frontend Applications (Hugo Static Sites)
 
-#### demo-fs-ts-nextjs
+#### crud-fs-ts-nextjs
 
 - **Purpose**: Marketing and documentation website for demo
 - **URL**: <https://example.com>
 - **Technology**: Hugo 0.156.0 Extended + PaperMod theme
-- **Deployment**: Vercel (via `prod-demo-fs-ts-nextjs` branch)
-- **Build Command**: `nx build demo-fs-ts-nextjs`
-- **Dev Command**: `nx dev demo-fs-ts-nextjs`
+- **Deployment**: Vercel (via `prod-crud-fs-ts-nextjs` branch)
+- **Build Command**: `nx build crud-fs-ts-nextjs`
+- **Dev Command**: `nx dev crud-fs-ts-nextjs`
 
 ### Web Applications (Next.js)
 
-#### demo-fs-ts-nextjs
+#### crud-fs-ts-nextjs
 
 - **Purpose**: Educational platform for programming, AI, and security
 - **URL**: <https://example.com>
 - **Technology**: Next.js 16 (App Router) + TypeScript + tRPC
 - **Languages**: Bilingual (default English)
-- **Deployment**: Vercel (via `prod-demo-fs-ts-nextjs` branch)
-- **Build Command**: `nx build demo-fs-ts-nextjs`
-- **Dev Command**: `nx dev demo-fs-ts-nextjs`
+- **Deployment**: Vercel (via `prod-crud-fs-ts-nextjs` branch)
+- **Build Command**: `nx build crud-fs-ts-nextjs`
+- **Dev Command**: `nx dev crud-fs-ts-nextjs`
 
 ### CLI Tools (Go)
 
 #### rhino-cli
 
-- **Purpose**: Link validation for demo-fs-ts-nextjs content
+- **Purpose**: Link validation for crud-fs-ts-nextjs content
 - **Language**: Go 1.26
 - **Build Command**: `nx build rhino-cli`
 - **Features**:
-  - Link validation for demo-fs-ts-nextjs content
-- **Usage**: Runs as part of demo-fs-ts-nextjs quality checks
+  - Link validation for crud-fs-ts-nextjs content
+- **Usage**: Runs as part of crud-fs-ts-nextjs quality checks
 
 #### rhino-cli
 
@@ -64,20 +64,20 @@ The platform consists of 9 applications across 4 technology stacks:
 - **Language**: Go 1.26
 - **Build Command**: `nx build rhino-cli`
 - **Features**:
-  - Validates all internal links in demo-fs-ts-nextjs content
+  - Validates all internal links in crud-fs-ts-nextjs content
   - Text, JSON, and markdown output formats
-- **Usage**: Runs as first step of `demo-fs-ts-nextjs`'s `test:quick` target
+- **Usage**: Runs as first step of `crud-fs-ts-nextjs`'s `test:quick` target
 
 ### Web Applications (Next.js)
 
-#### demo-fe-ts-nextjs
+#### crud-fe-ts-nextjs
 
 - **Purpose**: Landing and promotional website for demo
 - **URL**: <https://www.example.com>
 - **Technology**: Next.js 16 (App Router) + React 19 + TailwindCSS
 - **Deployment**: Vercel (via `prod-demo-web` branch)
-- **Build Command**: `nx build demo-fe-ts-nextjs`
-- **Dev Command**: `nx dev demo-fe-ts-nextjs`
+- **Build Command**: `nx build crud-fe-ts-nextjs`
+- **Dev Command**: `nx dev crud-fe-ts-nextjs`
 - **Features**:
   - Radix UI / shadcn-ui component library
   - Cookie-based authentication
@@ -86,12 +86,12 @@ The platform consists of 9 applications across 4 technology stacks:
 
 ### Backend Services
 
-#### demo-be-fsharp-giraffe
+#### crud-be-fsharp-giraffe
 
 - **Purpose**: REST API backend for demo (F#/Giraffe implementation)
 - **Technology**: F# + Giraffe + .NET
-- **Build Command**: `nx build demo-be-fsharp-giraffe`
-- **Dev Command**: `nx dev demo-be-fsharp-giraffe`
+- **Build Command**: `nx build crud-be-fsharp-giraffe`
+- **Dev Command**: `nx dev crud-be-fsharp-giraffe`
 - **Features**:
   - AltCover code coverage enforcement (>=90%)
   - Production Dockerfile with multi-stage build
@@ -99,24 +99,24 @@ The platform consists of 9 applications across 4 technology stacks:
 
 ### E2E Test Suites (Playwright)
 
-#### demo-fe-e2e
+#### crud-fe-e2e
 
-- **Purpose**: End-to-end tests for demo-fe-ts-nextjs
+- **Purpose**: End-to-end tests for crud-fe-ts-nextjs
 - **Technology**: Playwright
-- **Run Command**: `nx run demo-fe-e2e:test:e2e`
+- **Run Command**: `nx run crud-fe-e2e:test:e2e`
 
-#### demo-be-e2e
+#### crud-be-e2e
 
-- **Purpose**: End-to-end tests for demo-be-fsharp-giraffe REST API
+- **Purpose**: End-to-end tests for crud-be-fsharp-giraffe REST API
 - **Technology**: Playwright
-- **Run Command**: `nx run demo-be-e2e:test:e2e`
+- **Run Command**: `nx run crud-be-e2e:test:e2e`
 
-#### demo-be-e2e
+#### crud-be-e2e
 
-- **Purpose**: End-to-end tests for demo-be-java-springboot REST API
+- **Purpose**: End-to-end tests for crud-be-java-springboot REST API
 - **Technology**: Playwright
-- **Run Command**: `nx run demo-be-e2e:test:e2e`
-- **Location**: `apps/demo-be-e2e/`
+- **Run Command**: `nx run crud-be-e2e:test:e2e`
+- **Location**: `apps/crud-be-e2e/`
 
 ## 🏗️ C4 Level 2: Container Diagram
 
@@ -125,15 +125,15 @@ Shows the high-level technical building blocks (containers) of the system. In C4
 ```mermaid
 graph LR
     subgraph "Marketing & Education Sites"
-        OSE[demo-fs-ts-nextjs<br/>Hugo Static Site]
-        AYO[demo-fs-ts-nextjs<br/>Next.js App]
+        OSE[crud-fs-ts-nextjs<br/>Hugo Static Site]
+        AYO[crud-fs-ts-nextjs<br/>Next.js App]
     end
 
     subgraph "demo Platform"
-        OL_FE[demo-fe-ts-nextjs<br/>Next.js App]
-        OL_BE[demo-be-fsharp-giraffe<br/>F#/Giraffe API]
-        OL_FE_E2E[demo-fe-e2e<br/>Playwright E2E]
-        OL_BE_E2E[demo-be-e2e<br/>Playwright E2E]
+        OL_FE[crud-fe-ts-nextjs<br/>Next.js App]
+        OL_BE[crud-be-fsharp-giraffe<br/>F#/Giraffe API]
+        OL_FE_E2E[crud-fe-e2e<br/>Playwright E2E]
+        OL_BE_E2E[crud-be-e2e<br/>Playwright E2E]
     end
 
     subgraph "CLI Tools"
@@ -182,12 +182,12 @@ graph LR
 
 Marketing & Education Sites:
 
-- demo-fs-ts-nextjs: Fully independent static site
-- demo-fs-ts-nextjs: Next.js fullstack content platform (with CLI link validation)
+- crud-fs-ts-nextjs: Fully independent static site
+- crud-fs-ts-nextjs: Next.js fullstack content platform (with CLI link validation)
 
 CLI Tools:
 
-- rhino-cli: Validates links in demo-fs-ts-nextjs content
+- rhino-cli: Validates links in crud-fs-ts-nextjs content
 - rhino-cli: Repository management automation
 
 **Build-Time Dependencies:**
@@ -196,6 +196,6 @@ CLI Tools:
 - CLI tools executed during build processes
 - Shared libraries may be imported at build time via `@open-sharia-enterprise/[lib-name]`
 
-**Link Validation Pipeline (demo-fs-ts-nextjs):**
+**Link Validation Pipeline (crud-fs-ts-nextjs):**
 
-rhino-cli validates internal links in demo-fs-ts-nextjs content as part of the quality gate.
+rhino-cli validates internal links in crud-fs-ts-nextjs content as part of the quality gate.

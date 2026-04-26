@@ -91,7 +91,7 @@ demo Rust applications MUST use the following stack:
 
 **What this documentation covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply Rust knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Rust syntax, ownership/borrowing fundamentals, language concepts (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: Rust syntax, ownership/borrowing fundamentals, language concepts (those are in crud-fs-ts-nextjs).
 
 ## Software Engineering Principles
 

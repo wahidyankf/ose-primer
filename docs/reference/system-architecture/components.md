@@ -16,7 +16,7 @@ C4 Level 3 component diagrams and Level 4 code architecture for the Open Sharia 
 
 Shows the internal components within each container. Components are groupings of related functionality behind a well-defined interface.
 
-### demo-fs-ts-nextjs Components (Hugo Static Site)
+### crud-fs-ts-nextjs Components (Hugo Static Site)
 
 ```mermaid
 graph LR
@@ -65,7 +65,7 @@ graph LR
 **Component Responsibilities:**
 
 - **Root Command**: CLI entry point, command routing, help text
-- **Links Check Command**: Validate internal links in demo-fs-ts-nextjs content
+- **Links Check Command**: Validate internal links in crud-fs-ts-nextjs content
 
 ### rhino-cli Components (Go CLI Tool)
 
@@ -100,7 +100,7 @@ graph TB
 - **Automation Module**: Extensible module system for automation workflows
 - **Config Loader**: Load butler-specific configuration
 
-### demo-fs-ts-nextjs Components (Next.js Fullstack Platform)
+### crud-fs-ts-nextjs Components (Next.js Fullstack Platform)
 
 **Component Responsibilities:**
 
@@ -114,4 +114,4 @@ Shows implementation details for critical components. Focus on Go CLI tool packa
 
 ### rhino-cli Package Structure (Go)
 
-rhino-cli now provides only `links check` for validating internal links in demo-fs-ts-nextjs content. The title update and navigation regeneration commands were removed as part of the migration from Hugo to Next.js.
+rhino-cli now provides only `links check` for validating internal links in crud-fs-ts-nextjs content. The title update and navigation regeneration commands were removed as part of the migration from Hugo to Next.js.

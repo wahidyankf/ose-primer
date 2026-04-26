@@ -35,8 +35,8 @@ This document defines **authoritative standards** for visualizing Nx monorepo st
 
 ```
 apps/
-├── demo-fs-ts-nextjs/        # Hugo static site
-├── demo-fs-ts-nextjs/          # Hugo static site
+├── crud-fs-ts-nextjs/        # Hugo static site
+├── crud-fs-ts-nextjs/          # Hugo static site
 ├── rhino-cli/          # Go CLI tool
 └── rhino-cli/              # Go CLI tool
 ```
@@ -79,7 +79,7 @@ graph TD
 
 **Example**:
 
-If `rhino-cli` has an Nx dependency on `demo-fs-ts-nextjs` (builds it), show this as a relationship in the container diagram.
+If `rhino-cli` has an Nx dependency on `crud-fs-ts-nextjs` (builds it), show this as a relationship in the container diagram.
 
 ## Container Naming for Nx Apps
 

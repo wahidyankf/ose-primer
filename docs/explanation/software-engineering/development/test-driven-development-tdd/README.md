@@ -47,7 +47,7 @@ All code developed for the demo MUST follow the TDD methodology and standards do
 
 **What this documentation covers**: demo-specific TDD patterns, Islamic finance domain testing, Nx monorepo testing strategy, repository-specific test organization, integration with DDD patterns.
 
-**What this documentation does NOT cover**: TDD fundamentals, Red-Green-Refactor basics, generic testing patterns (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: TDD fundamentals, Red-Green-Refactor basics, generic testing patterns (those are in crud-fs-ts-nextjs).
 
 ## Software Engineering Principles
 

@@ -40,7 +40,7 @@ This documentation covers Spring Framework 6.x (latest stable) with Java 17+ and
 
 **What this documentation covers**: demo Spring Framework standards, naming conventions, framework integration patterns, how to apply Spring knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: Spring Framework tutorials, basic IoC/DI concepts, generic patterns (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: Spring Framework tutorials, basic IoC/DI concepts, generic patterns (those are in crud-fs-ts-nextjs).
 
 ## Framework Standards
 

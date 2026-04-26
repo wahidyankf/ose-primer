@@ -80,7 +80,7 @@ demo F# applications MUST use the following stack:
 
 **What this documentation covers**: demo naming conventions, framework choices, repository-specific patterns, how to apply F# knowledge in THIS codebase.
 
-**What this documentation does NOT cover**: F# syntax, language fundamentals, discriminated union semantics, computation expression mechanics (those are in demo-fs-ts-nextjs).
+**What this documentation does NOT cover**: F# syntax, language fundamentals, discriminated union semantics, computation expression mechanics (those are in crud-fs-ts-nextjs).
 
 ## Software Engineering Principles
 
