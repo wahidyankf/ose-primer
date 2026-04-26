@@ -222,6 +222,80 @@ but ~90 % less on subsequent turns. Out of scope for most demos but worth
 knowing it exists when a system prompt grows large enough to dominate per-turn
 cost. See the [prompt-caching docs](https://platform.claude.com/docs/en/build-with-claude/prompt-caching).
 
+## Tools and built-in capabilities
+
+Anthropic exposes a richer tool surface than most vendors. Tools split into
+two flavours:
+
+- **Server-side tools** — Anthropic executes them; you receive results
+  inside the response (web search, web fetch, code execution).
+- **Client-side tools** — Anthropic emits a structured action; your
+  application executes it and feeds the result back (computer use, text
+  editor, bash). Versioned by date suffix (e.g., `_20251124`).
+
+| Tool                       | Type string (current)                  | Side          | Notes                                                                                                           |
+| -------------------------- | -------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------- |
+| Web search                 | `web_search_20260209`                  | server        | $10 per 1 000 searches plus input tokens for results. Citations always included.                                |
+| Web fetch                  | `web_fetch_20260209`                   | server        | Server-side URL retrieval; pairs with web search for "open this result" patterns.                               |
+| Code execution             | `code_execution_20260120`              | server        | Sandboxed Python + Bash. **Free** when combined with web search or web fetch.                                   |
+| Computer use               | `computer_20251124`                    | client        | Beta header `anthropic-beta: computer-use-2025-11-24`. Sub-actions: screenshot, click, type, scroll, drag, etc. |
+| Text editor                | `text_editor_20250728`                 | client        | Commands: `view`, `str_replace`, `create`, `insert`. Tool name `str_replace_based_edit_tool`.                   |
+| Bash                       | `bash_20250124`                        | client        | Persistent shell session. No interactive commands.                                                              |
+| MCP connector              | `mcp_toolset`                          | server        | Beta header `mcp-client-2025-11-20`. Connects Claude to any remote MCP server.                                  |
+| Tool search (regex / BM25) | `tool_search_tool_regex_20251119`      | server        | For deferred-load patterns over large tool catalogs.                                                            |
+| Memory                     | `memory_20250818`                      | client        | Persistent memory across sessions.                                                                              |
+| Custom function            | (no type — `tool_use` blocks)          | client        | Standard JSON-schema tool declarations.                                                                         |
+| Files API                  | `anthropic-beta: files-api-2025-04-14` | (input shape) | Upload-once, reference by `file_id` in `document` blocks. Free for ops; tokens billed when used.                |
+
+### Custom function calling
+
+```python
+weather_tool = {
+    "name": "get_weather",
+    "description": "Get the current weather for a city.",
+    "input_schema": {
+        "type": "object",
+        "properties": {"city": {"type": "string"}},
+        "required": ["city"],
+    },
+}
+
+resp = client.messages.create(
+    model="claude-haiku-4-5",
+    max_tokens=1024,
+    tools=[weather_tool],
+    messages=[{"role": "user", "content": "What's the weather in Madrid?"}],
+)
+
+if resp.stop_reason == "tool_use":
+    tool_block = next(b for b in resp.content if b.type == "tool_use")
+    # Execute tool_block.input["city"] yourself, send the result back as a
+    # new user message with a tool_result block.
+```
+
+### Server-side web search
+
+```python
+resp = client.messages.create(
+    model="claude-haiku-4-5",
+    max_tokens=2048,
+    tools=[{
+        "type": "web_search_20260209",
+        "name": "web_search",
+        "max_uses": 5,
+        "allowed_domains": ["docs.python.org", "peps.python.org"],
+    }],
+    messages=[{"role": "user", "content": "What changed in Python 3.13?"}],
+)
+# Citations live inside content blocks of type "web_search_tool_result".
+```
+
+In a private-corpus RAG pipeline (the shape this repo's demos use)
+**don't enable web search** — it pulls in unverified public content
+alongside your retrieved chunks. Reach for it only when the demo's job
+is grounded-on-the-public-web answers, in which case Perplexity Sonar is
+also a candidate (see [Perplexity primer](./perplexity-api.md)).
+
 ## Reference cost (2026-Q2)
 
 Indicative public list prices per million tokens; verify current values at
@@ -284,6 +358,8 @@ See the main primer §13 for the full determinism strategy.
   embeddings, RAG, streaming, guardrails, evaluation, cost
 - [Google Gemini API Primer](./google-gemini-api.md) — paired vendor doc;
   embeddings live there
+- [OpenAI API Primer](./openai-api.md) — paired vendor doc; reasoning models
+  and built-in tools
 - [Perplexity API Primer](./perplexity-api.md) — when web-grounded answers are
   the requirement
 - [Anthropic API docs](https://platform.claude.com/docs/) — authoritative

@@ -177,6 +177,31 @@ Use `search_domain_filter` to lock the demo to authoritative domains for any
 production-shaped use case. Without it, Sonar may cite low-quality
 aggregators.
 
+## Tool surface and what is missing
+
+Sonar's tool surface is deliberately narrow. The product is "search +
+generation in one hop"; everything that does not fit that frame is out of
+scope.
+
+| Capability                 | Available?                                 | Notes                                                                                    |
+| -------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| Always-on web search       | yes (built into every call; not togglable) | The whole reason to use Sonar. No `tools[]` entry needed.                                |
+| `search_domain_filter`     | yes                                        | Allow- and deny-list up to 20 domains.                                                   |
+| `search_recency_filter`    | yes                                        | `hour` / `day` / `week` / `month` / `year`.                                              |
+| Image input (vision)       | yes                                        | OpenAI-shaped `image_url` content blocks inside messages.                                |
+| `reasoning_effort` knob    | yes (on `sonar-reasoning-pro` and similar) | `minimal` / `low` / `medium` / `high`.                                                   |
+| Custom function calling    | **no**                                     | Sonar does not expose `tools[]` for developer-declared tools.                            |
+| File search / vector store | **no**                                     | Bring your own RAG (Anthropic + Gemini embeddings) if you need private-corpus retrieval. |
+| Code execution             | **no**                                     | Use OpenAI's `code_interpreter` or Anthropic's `code_execution` for that.                |
+| Computer use               | **no**                                     | Use OpenAI / Anthropic.                                                                  |
+
+Boundary framing: if a workload needs **both** live web grounding **and**
+something else from the table above (custom tools, computer use, code
+execution), Sonar alone is not enough. Either pair Sonar with a second
+vendor for the missing capability, or move the whole workload to OpenAI
+(`web_search` tool inside the Responses API gets you live grounding plus
+the rest of OpenAI's tool ecosystem in one call).
+
 ## Pricing (2026-Q2)
 
 Sonar bills both **per-token** like a normal chat API **and** a
@@ -275,5 +300,7 @@ emitted to the FE matches the contract — never on `FIXTURE` prose.
   reasoning over private context
 - [Google Gemini API Primer](./google-gemini-api.md) — paired vendor doc for
   embeddings, long context, cheap chat
+- [OpenAI API Primer](./openai-api.md) — paired vendor doc; reasoning models
+  and built-in tools
 - [Perplexity Sonar docs](https://docs.perplexity.ai/) — authoritative
   reference, supersedes anything here on conflict
