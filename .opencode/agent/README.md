@@ -35,11 +35,6 @@
 - **docs-link-checker** - Validates links (hybrid: validator + cache manager for external links)
 - **docs-file-manager** - Manages files/directories in docs/ while preserving conventions
 
-**Software Engineering Separation** (Checker-Fixer):
-
-- **docs-software-engineering-separation-checker** - Validates software engineering doc separation between language-agnostic and language-specific content
-- **docs-software-engineering-separation-fixer** - Applies validated fixes to software engineering doc separation issues
-
 ### README Family
 
 **Maker-Checker-Fixer Pattern**:

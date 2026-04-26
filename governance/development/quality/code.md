@@ -1,5 +1,6 @@
 ---
 title: Code Quality Convention
+description: Automated code quality standards using Husky, lint-staged, Prettier, and git hooks for the monorepo
 tags:
   - development
   - code-quality

@@ -45,13 +45,13 @@ This repository maintains **dual compatibility** with both Claude Code and OpenC
 - **Permissions**: Claude Code uses `settings.json`, OpenCode uses `opencode.json` permission block (equivalent access configured)
 - **MCP/Plugins**: Claude Code uses plugins, OpenCode uses MCP servers (Playwright, Nx, Z.ai, Perplexity)
 
-# AI Agents
+## AI Agents
 
 ## Agent Organization
 
 Specialized agents organized into families:
 
-1. **Documentation**: `docs-maker`, `docs-checker`, `docs-fixer`, `docs-tutorial-maker`, `docs-tutorial-checker`, `docs-tutorial-fixer`, `docs-link-checker`, `docs-file-manager`, `docs-software-engineering-separation-checker`, `docs-software-engineering-separation-fixer`
+1. **Documentation**: `docs-maker`, `docs-checker`, `docs-fixer`, `docs-tutorial-maker`, `docs-tutorial-checker`, `docs-tutorial-fixer`, `docs-link-checker`, `docs-file-manager`
 2. **README**: `readme-maker`, `readme-checker`, `readme-fixer`
 3. **Project Planning**: `plan-maker`, `plan-checker`, `plan-execution-checker`, `plan-fixer` (plan execution itself is orchestrated directly by the calling context via the [plan-execution workflow](./governance/workflows/plan/plan-execution.md); no dedicated executor subagent)
 4. **Software Engineering & Specialized**: `agent-maker`, `swe-code-checker`, `swe-ui-maker`, `swe-ui-checker`, `swe-ui-fixer`, `swe-clojure-dev`, `swe-csharp-dev`, `swe-dart-dev`, `swe-e2e-dev`, `swe-elixir-dev`, `swe-fsharp-dev`, `swe-golang-dev`, `swe-java-dev`, `swe-kotlin-dev`, `swe-python-dev`, `swe-rust-dev`, `swe-typescript-dev`, `social-linkedin-post-maker`
@@ -159,8 +159,6 @@ All agents follow foundational principles:
 - **governance/repository-governance-architecture.md** - Six-layer governance hierarchy
 
 ---
-
-**Last Updated**: 2026-04-11
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

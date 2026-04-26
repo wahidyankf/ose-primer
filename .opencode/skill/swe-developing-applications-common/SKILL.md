@@ -303,7 +303,7 @@ CGO_ENABLED=0 go run -C apps/rhino-cli main.go env restore --force --include-con
 ### Full Setup Guide
 
 For complete step-by-step environment setup (new machine, fresh OS, or broken toolchain), see:
-[Development Environment Setup Workflow](../../../governance/workflows/infra/development-environment-setup.md)
+[Development Environment Setup Workflow](../../../governance/workflows/infra/infra-development-environment-setup.md)
 
 ## Development Workflow Pattern
 
@@ -343,7 +343,7 @@ All language developers follow this pattern:
 - **[Commit Messages Convention](../../../governance/development/workflow/commit-messages.md)**: Conventional Commits detailed guide
 - **[Code Quality Convention](../../../governance/development/quality/code.md)**: Git hooks and automation
 - **[Trunk Based Development](../../../governance/development/workflow/trunk-based-development.md)**: Git workflow philosophy
-- **[Development Environment Setup](../../../governance/workflows/infra/development-environment-setup.md)**: Complete toolchain setup (doctor, rhino-cli env, all language runtimes)
+- **[Development Environment Setup](../../../governance/workflows/infra/infra-development-environment-setup.md)**: Complete toolchain setup (doctor, rhino-cli env, all language runtimes)
 
 ### Language-Specific Documentation
 
