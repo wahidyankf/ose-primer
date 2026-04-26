@@ -7,6 +7,12 @@ A pure rename: all `demo-*` apps, specs, infra, CI workflows, and documentation 
 consumers changes only in naming — `apps/` listings, Nx project names, CI workflow file
 names, and all documentation references.
 
+## Product scope
+
+This plan covers the complete rename of all `demo-*` artifacts to `crud-*` across the
+ose-primer repository. It does not create new apps, change app functionality, or modify
+git history.
+
 ## Personas
 
 - **Template consumer (maintainer hat)**: clones ose-primer to bootstrap a new repo;
@@ -20,14 +26,16 @@ names, and all documentation references.
 
 ## User stories
 
-- As a template consumer, I want `apps/` to list `crud-*` directories so I can
+- As a template consumer, I want `apps/` to list `crud-*` directories So that I can
   distinguish CRUD demos from future AI chat or realtime families at a glance.
-- As an AI development agent, I want all Nx project names to say `crud-*` so that `nx run`
+- As an AI development agent, I want all Nx project names to say `crud-*` So that `nx run`
   commands I generate are always correct.
-- As a CI system, I want `.github/workflows/` to have `test-crud-*.yml` filenames so that
+- As a CI system, I want `.github/workflows/` to have `test-crud-*.yml` filenames So that
   workflow names match the project names they test.
 
 ## Functional requirements
+
+> See [tech-docs.md](./tech-docs.md) for the complete file change map and affected-file-categories table.
 
 1. Every `apps/demo-*` directory is renamed to `apps/crud-*`.
 2. Every `infra/dev/demo-*` directory is renamed to `infra/dev/crud-*`.
@@ -61,7 +69,7 @@ names, and all documentation references.
 | Risk                                                                                 | Likelihood | Mitigation                                                                  |
 | ------------------------------------------------------------------------------------ | ---------- | --------------------------------------------------------------------------- |
 | A renamed Gherkin feature file breaks spec-coverage path resolution                  | Low        | Phase 9 Gherkin audit + Phase 22 spec-coverage validation                   |
-| A renamed workflow file breaks CI on the draft PR                                    | Medium     | Dedicated `.github/workflows/` rename phase + post-push CI monitoring step  |
+| A renamed workflow file breaks CI on main after push                                 | Medium     | Dedicated `.github/workflows/` rename phase + post-push CI monitoring step  |
 | Flutter codegen pipeline references stale `demo_contracts` package name post-rename  | Medium     | Phase 5 extended sweep covers `pubspec.yaml`; Phase 21 codegen re-runs      |
 | Missed reference in `.md` documentation not caught by Phase 19 stale-reference audit | Low        | Phase 19 grep extended to include `--include="*.md"` for all demo- patterns |
 
@@ -81,7 +89,7 @@ Feature: Rename demo-* to crud-* across the entire ose-primer repository
 
   Background:
     Given all rename tasks in delivery.md are completed
-    And the worktree branch is pushed to origin
+    And the changes are pushed to origin main
 
   Scenario: Nx workspace recognises all crud-* projects
     Given the workspace root contains the updated nx.json and all project.json files
@@ -108,14 +116,19 @@ Feature: Rename demo-* to crud-* across the entire ose-primer repository
     And no "specs/apps/demo/" path is found
     And no "apps/demo-" path is found
 
-  Scenario: Spec coverage validates for both e2e projects
+  Scenario: Spec coverage validates for be-e2e project
+    Given all rename tasks in delivery.md are completed
     When I run "npx nx run crud-be-e2e:spec-coverage"
     Then exit code is 0
+
+  Scenario: Spec coverage validates for fe-e2e project
+    Given all rename tasks in delivery.md are completed
     When I run "npx nx run crud-fe-e2e:spec-coverage"
     Then exit code is 0
 
   Scenario: Markdown quality gate passes
-    When I run "npm run lint:md"
+    Given all rename edits to markdown files are complete
+    When I run "npm run lint:md" locally
     Then exit code is 0
     And no markdownlint violation is reported
 

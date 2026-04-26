@@ -1,5 +1,11 @@
 # BRD: Rename `demo-*` → `crud-*`
 
+## Business goal
+
+Rename all `demo-*` apps and associated artifacts to `crud-*` so that the naming
+encodes what each app family demonstrates, enabling template consumers to immediately
+understand family purpose and unblocking future demo families (e.g. AI chat, realtime).
+
 ## Problem
 
 All current demo apps are CRUD expense-tracker apps. They are named `demo-*`, which
@@ -20,7 +26,7 @@ Rename the existing family to `crud-*`. The prefix now encodes **what the app
 demonstrates**, not just that it is a demo. Future families follow the same pattern:
 `ai-chat-*`, `realtime-*`, etc.
 
-## Business value
+## Business impact
 
 | Value                       | Detail                                                                              |
 | --------------------------- | ----------------------------------------------------------------------------------- |

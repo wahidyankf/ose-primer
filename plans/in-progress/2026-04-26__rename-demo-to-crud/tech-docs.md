@@ -1,6 +1,6 @@
 # Tech Docs: Rename `demo-*` → `crud-*`
 
-## Rename strategy
+## Architecture and rename strategy
 
 ### Directory moves — use `git mv`
 
@@ -74,11 +74,11 @@ flowchart TD
     G --> H[docs/ audit]
     H --> I[CLAUDE.md · README.md · AGENTS.md]
     I --> J[Validation]
-    J --> K[Draft PR]
+    J --> K[Push to main]
 
     style A fill:#4A90D9,color:#fff
     style J fill:#7DB87D,color:#fff
-    style K fill:#8B7EC8,color:#fff
+    style K fill:#5C9B5C,color:#fff
 ```
 
 ## Affected file categories
@@ -105,7 +105,7 @@ flowchart TD
 | `AGENTS.md`                   | audit                                    | grep + manual               |
 | `plans/ideas.md`, backlog     | audit                                    | grep + manual               |
 
-## Validation plan
+## Testing strategy
 
 Run in this order — each gate catches a different failure class:
 
@@ -122,21 +122,27 @@ Run in this order — each gate catches a different failure class:
 8. **`grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts\|specs/apps/demo" . --include="*.json" --include="*.yaml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "generated-reports/"`**
    — final stale-reference check
 
-## Worktree requirement
+## Dependencies
 
-This plan modifies ose-primer. Per the PR-only-to-ose-primer invariant:
+Execution prerequisites (all must be satisfied before Phase 1 begins):
 
-```bash
-cd /Users/wkf/ose-projects/ose-primer
-git worktree add .claude/worktrees/rename-demo-to-crud -b worktree-rename-demo-to-crud origin/HEAD
-# all work happens inside .claude/worktrees/rename-demo-to-crud/
-```
+- **`git`** — for `git mv` directory moves (Phases 1-3, 18b); must support `git mv`
+- **`sed`** — for bulk string replacement sweeps (Phase 4-5); macOS syntax is `sed -i ''`,
+  Linux syntax is `sed -i` (see inline note in Phase 4 commands)
+- **`npm`** / **`npx nx`** — for Nx workspace validation and quality gates (Phases 20-22)
+- **Node.js** managed by Volta (version pinned in `package.json`) — required for `npm install`
+  and all Nx targets
+- **Full polyglot toolchain** (Go, Java, Elixir, F#, Python, Rust, Kotlin, Clojure, C#,
+  Dart, TypeScript) — required for `test:quick` quality gate in Phase 22; converge via
+  `npm run doctor -- --fix` in Phase 0 and Phase 21
 
-All commits go to `worktree-rename-demo-to-crud`. A draft PR targets `main`.
+> **Phase ordering constraint**: All Phase 1-3 `git mv` operations must complete before
+> Phase 4 bulk sed sweeps run. The sweeps operate on the new paths (`apps/crud-*`,
+> `specs/apps/crud/`), which only exist after the directory moves.
 
 ## Rollback
 
-The worktree model provides implicit rollback. main is never touched — all work is on
-`worktree-rename-demo-to-crud` branch. To abort mid-execution: close the draft PR, run
-`git worktree remove .claude/worktrees/rename-demo-to-crud`, run
-`git branch -D worktree-rename-demo-to-crud`. The main branch is unchanged.
+All commits land directly on `main`. To roll back mid-execution: identify the last
+good commit hash with `git log --oneline`, then `git revert` the unwanted commits
+(prefer revert over reset to preserve history). Alternatively, `git reset --hard
+<last-good-sha>` and force-push — only safe before others have pulled.

@@ -1,13 +1,12 @@
 # Delivery Checklist: Rename `demo-*` → `crud-*`
 
-## Phase 0 — Worktree setup
+## Phase 0 — Environment setup
 
-- [ ] `cd /Users/wkf/ose-projects/ose-primer`
-- [ ] `git worktree add .claude/worktrees/rename-demo-to-crud -b worktree-rename-demo-to-crud origin/HEAD`
-- [ ] `cd .claude/worktrees/rename-demo-to-crud`
-- [ ] `npm install`
-- [ ] `npm run doctor -- --fix`
+- [ ] Install dependencies: `npm install`
+- [ ] Converge full polyglot toolchain: `npm run doctor -- --fix`
 - [ ] Verify `git status` is clean before proceeding
+- [ ] Run baseline quality check to establish pre-rename state and note any pre-existing failures:
+      `npx nx affected -t typecheck lint test:quick`
 
 ## Phase 1 — Rename app directories (`git mv`)
 
@@ -65,7 +64,6 @@ accidental over-replacement.
   find . \
     -not -path "./.git/*" -not -path "./node_modules/*" \
     -not -path "./plans/done/*" -not -path "./generated-reports/*" \
-    -not -path "./.claude/worktrees/*" \
     -not -path "./plans/in-progress/*" \
     -type f \( -name "*.json" -o -name "*.yaml" -o -name "*.yml" -o -name "*.md" \) \
     | xargs sed -i '' \
@@ -82,7 +80,6 @@ accidental over-replacement.
   find . \
     -not -path "./.git/*" -not -path "./node_modules/*" \
     -not -path "./plans/done/*" -not -path "./generated-reports/*" \
-    -not -path "./.claude/worktrees/*" \
     -not -path "./plans/in-progress/*" \
     -type f \( -name "*.yml" -o -name "*.yaml" \) \
     | xargs sed -i '' 's/demo_be_/crud_be_/g'
@@ -96,7 +93,6 @@ accidental over-replacement.
   find . \
     -not -path "./.git/*" -not -path "./node_modules/*" \
     -not -path "./plans/done/*" -not -path "./generated-reports/*" \
-    -not -path "./.claude/worktrees/*" \
     -not -path "./plans/in-progress/*" \
     -type f -name "*.json" \
     | xargs sed -i '' 's/"demo-contracts"/"crud-contracts"/g'
@@ -110,7 +106,6 @@ accidental over-replacement.
   find . \
     -not -path "./.git/*" -not -path "./node_modules/*" \
     -not -path "./plans/done/*" -not -path "./generated-reports/*" \
-    -not -path "./.claude/worktrees/*" \
     -not -path "./plans/in-progress/*" \
     -type f \( -name "*.json" -o -name "*.yaml" -o -name "*.yml" -o -name "*.md" \) \
     | xargs sed -i '' 's|specs/apps/demo/|specs/apps/crud/|g'
@@ -302,9 +297,9 @@ Rename all 15 per-app test workflow files and update their internal references:
 
 Run all checks below; each must return zero results before proceeding to validation:
 
-- [ ] `grep -r "demo-be-" . --include="*.json" --include="*.yaml" --include="*.yml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "generated-reports/" | grep -v ".claude/worktrees/" | grep -v "plans/in-progress/"`
-- [ ] `grep -r "demo-fe-" . --include="*.json" --include="*.yaml" --include="*.yml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "generated-reports/" | grep -v ".claude/worktrees/" | grep -v "plans/in-progress/"`
-- [ ] `grep -r "demo-fs-" . --include="*.json" --include="*.yaml" --include="*.yml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "generated-reports/" | grep -v ".claude/worktrees/" | grep -v "plans/in-progress/"`
+- [ ] `grep -r "demo-be-" . --include="*.json" --include="*.yaml" --include="*.yml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "generated-reports/" | grep -v "plans/in-progress/"`
+- [ ] `grep -r "demo-fe-" . --include="*.json" --include="*.yaml" --include="*.yml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "generated-reports/" | grep -v "plans/in-progress/"`
+- [ ] `grep -r "demo-fs-" . --include="*.json" --include="*.yaml" --include="*.yml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "generated-reports/" | grep -v "plans/in-progress/"`
 - [ ] `grep -r '"demo-contracts"' . --include="*.json" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "plans/in-progress/"`
 - [ ] `grep -r 'specs/apps/demo/' . --include="*.json" --include="*.yaml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "plans/in-progress/"`
 - [ ] `grep -r 'apps/demo-' . --include="*.json" --include="*.yaml" --include="*.md" | grep -v ".git/" | grep -v "node_modules/" | grep -v "plans/done/" | grep -v "plans/in-progress/"`
@@ -317,6 +312,7 @@ Run all checks below; each must return zero results before proceeding to validat
 
 ## Phase 21 — Nx workspace validation
 
+- [ ] `npm run doctor -- --fix` — re-converge polyglot toolchain before quality gates (Phases 1-20 may span hours or days; toolchain state may have drifted)
 - [ ] `npm install` — ensure workspace loads with updated project names
 - [ ] `npx nx graph --file=/tmp/nx-graph-output.json` — verify no broken references; confirm 18 `crud-*` projects appear, zero `demo-*`
 - [ ] `npx nx run-many -t codegen --projects=crud-be-clojure-pedestal,crud-be-csharp-aspnetcore,crud-be-elixir-phoenix,crud-be-fsharp-giraffe,crud-be-golang-gin,crud-be-java-springboot,crud-be-java-vertx,crud-be-kotlin-ktor,crud-be-python-fastapi,crud-be-rust-axum,crud-be-ts-effect,crud-fe-ts-nextjs,crud-fe-ts-tanstack-start,crud-fe-dart-flutterweb,crud-fs-ts-nextjs` — regenerate all contracts
@@ -327,6 +323,12 @@ Run all checks below; each must return zero results before proceeding to validat
 > **Important**: Fix ALL failures found during quality gates — including pre-existing
 > issues not caused by this rename. This follows the root cause orientation principle.
 > Do NOT skip or suppress any failure. Do NOT proceed to Phase 23 until all gates pass.
+>
+> **Blast radius**: The `nx affected` flag limits execution to projects whose files
+> were changed by this rename, not the entire repo. Expected scope: all 18 renamed
+> projects plus any docs or governance files touched. This is why `affected` is used
+> rather than `run-many` — it avoids re-running unchanged projects while still catching
+> every project impacted by the rename.
 
 - [ ] `npx nx affected -t typecheck` — must pass (exit 0)
 - [ ] `npx nx affected -t lint` — must pass (exit 0)
@@ -339,14 +341,14 @@ Run all checks below; each must return zero results before proceeding to validat
 - [ ] `npm run lint:md` — must pass (exit 0)
 - [ ] `npm run lint:md:fix` — if violations found, auto-fix and re-run until clean
 
-## Phase 24 — Commit and draft PR
+## Phase 24 — Commit and push
 
 ### Commit strategy
 
 This rename is a single logical refactor that may be committed as one thematic commit
 after all phases pass quality gates. Intermediate commits per phase are acceptable
 during execution to preserve progress and must also follow Conventional Commits format.
-A final squash or single commit is preferred before opening the draft PR.
+A final thematic commit is preferred before pushing to main.
 
 - Type: `refactor`
 - Scope: `apps` (or omit scope given repo-wide change)
@@ -358,27 +360,30 @@ Examples of acceptable intermediate commits (Conventional Commits format):
 - `refactor(ci): rename test-demo-*.yml workflow files to test-crud-*`
 - `refactor(docs): update demo- references in governance and documentation`
 
+> **Important**: Do NOT bundle unrelated fixes into the rename commits. Preexisting
+> fixes (e.g., lint violations or test failures fixed during Phase 22 quality gates)
+> must be in separate commits with their own descriptive messages (e.g.,
+> `fix(lint): resolve preexisting markdownlint violations`).
+
 - [ ] Review `git status` — confirm no unintended files staged
 - [ ] Stage all changes: `git add -A`
 - [ ] Commit with Conventional Commits message:
       `refactor(apps): rename demo-* to crud-* to clarify CRUD family scope`
-- [ ] Push branch: `git push -u origin worktree-rename-demo-to-crud`
-- [ ] Open draft PR against `main` via `gh pr create --draft --title "refactor(apps): rename demo-* to crud-*" --body "..."`
-- [ ] Link PR URL in this plan's README.md under a "PR" section
+- [ ] Rebase to ensure linear history: `git pull --rebase origin main`
+      (if `origin/main` has new commits since last pull; skip if already up to date)
+- [ ] Push to main: `git push origin main`
 
 ### Post-push CI monitoring
 
-- [ ] Monitor GitHub Actions workflows on the draft PR (visible at the PR URL)
+- [ ] Monitor GitHub Actions workflows on main branch
 - [ ] Verify `pr-quality-gate.yml` passes
 - [ ] Verify each renamed per-app workflow (`test-crud-be-*.yml`, `test-crud-fe-*.yml`,
       `test-crud-fs-ts-nextjs.yml`) passes
 - [ ] If any workflow fails, fix immediately and push a follow-up commit before
       moving to Phase 25
 
-## Phase 25 — Post-merge cleanup and plan archival
+## Phase 25 — Plan archival
 
-- [ ] After PR is merged to `main`: `git worktree remove .claude/worktrees/rename-demo-to-crud`
-- [ ] `git branch -d worktree-rename-demo-to-crud`
 - [ ] `git mv plans/in-progress/2026-04-26__rename-demo-to-crud plans/done/2026-04-26__rename-demo-to-crud`
 - [ ] Update `plans/in-progress/README.md` — remove this plan's entry
 - [ ] Update `plans/done/README.md` — add this plan's entry with completion date
