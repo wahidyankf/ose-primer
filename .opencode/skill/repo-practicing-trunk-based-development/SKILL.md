@@ -308,6 +308,25 @@ branch-justification: |
 - Flag unexpected branches in audit reports
 - Recommend merging long-lived branches
 
+### Worktree Mode (Direct Push to main; Draft PR Opt-In)
+
+When an agent operates inside a git worktree (created via `git worktree add`, the `EnterWorktree` tool, or `isolation: "worktree"`), the **same** TBD default applies: push the worktree's HEAD directly to `origin main` via `git push origin HEAD:main`. The worktree branch is an isolation mechanism for parallel working trees, not a feature branch.
+
+- **Default**: `git push origin HEAD:main` — no PR.
+- **Opt-in PR**: open a draft PR (`gh pr create --draft --base main`) only when the user's prompt or plan document explicitly requests one.
+- **Linear history**: rebase before push if `origin/main` has moved (`git pull --rebase origin main`).
+
+```bash
+# Worktree mode — default direct push to main
+git push origin HEAD:main
+
+# Worktree mode — opt-in draft PR (only when explicitly requested)
+git push origin HEAD:worktree-feature-name
+gh pr create --draft --base main --title "feat(scope): description"
+```
+
+See the [Trunk Based Development Convention](../../../governance/development/workflow/trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) and Standard 6 of the [Git Push Default Convention](../../../governance/development/workflow/git-push-default.md) for the full rule.
+
 ## Common Patterns
 
 ### Pattern 1: Multi-Day Feature Development
@@ -533,6 +552,7 @@ Before pushing to `main`:
 
 **Related Conventions**:
 
+- [Git Push Default Convention](../../../governance/development/workflow/git-push-default.md) - Default push behavior (direct to main; draft PR opt-in); Standard 6 covers worktree push
 - [Commit Message Convention](../../../governance/development/workflow/commit-messages.md) - Conventional Commits format
 - [Implementation Workflow](../../../governance/development/workflow/implementation.md) - Development workflow stages
 - [Plans Organization](../../../governance/conventions/structure/plans.md) - Git workflow in plans
