@@ -49,23 +49,31 @@ should explicitly require reading this document as a prerequisite for execution.
 
 ## Section map
 
-1. [The LLM black box](#1-the-llm-black-box)
-2. [Tokens, context windows, and why size matters](#2-tokens-context-windows-and-why-size-matters)
-3. [Prompts, messages, and roles](#3-prompts-messages-and-roles)
-4. [Streaming responses](#4-streaming-responses)
-5. [Embeddings and semantic similarity](#5-embeddings-and-semantic-similarity)
-6. [Vector databases and pgvector](#6-vector-databases-and-pgvector)
-7. [Retrieval-Augmented Generation (RAG)](#7-retrieval-augmented-generation-rag)
-8. [Chunking strategies](#8-chunking-strategies)
-9. [Multi-document retrieval](#9-multi-document-retrieval)
-10. [Vendor choice and direct APIs](#10-vendor-choice-and-direct-apis)
-11. [Persistent chat sessions vs stateless completions](#11-persistent-chat-sessions-vs-stateless-completions)
-12. [Production guardrails](#12-production-guardrails)
-13. [Evaluation and the lack of unit tests for LLM output](#13-evaluation-and-the-lack-of-unit-tests-for-llm-output)
-14. [Cost: where it goes and how to bound it](#14-cost-where-it-goes-and-how-to-bound-it)
-15. [Determinism, caching, and CI](#15-determinism-caching-and-ci)
-16. [Glossary](#16-glossary)
-17. [Where this is referenced](#17-where-this-is-referenced)
+- [AI Application Development](#ai-application-development)
+  - [Why this primer exists](#why-this-primer-exists)
+  - [Section map](#section-map)
+  - [1. The LLM black box](#1-the-llm-black-box)
+  - [2. Tokens, context windows, and why size matters](#2-tokens-context-windows-and-why-size-matters)
+  - [3. Prompts, messages, and roles](#3-prompts-messages-and-roles)
+  - [4. Streaming responses](#4-streaming-responses)
+  - [5. Embeddings and semantic similarity](#5-embeddings-and-semantic-similarity)
+  - [6. Vector databases and pgvector](#6-vector-databases-and-pgvector)
+  - [7. Retrieval-Augmented Generation (RAG)](#7-retrieval-augmented-generation-rag)
+  - [8. Chunking strategies](#8-chunking-strategies)
+  - [9. Multi-document retrieval](#9-multi-document-retrieval)
+  - [10. Vendor choice and direct APIs](#10-vendor-choice-and-direct-apis)
+    - [Vendor choice — quick decision tree](#vendor-choice--quick-decision-tree)
+  - [11. Persistent chat sessions vs stateless completions](#11-persistent-chat-sessions-vs-stateless-completions)
+  - [12. Production guardrails](#12-production-guardrails)
+    - [Rate limiting](#rate-limiting)
+    - [Content filtering](#content-filtering)
+    - [Cost cap](#cost-cap)
+  - [13. Evaluation and the lack of unit tests for LLM output](#13-evaluation-and-the-lack-of-unit-tests-for-llm-output)
+  - [14. Cost: where it goes and how to bound it](#14-cost-where-it-goes-and-how-to-bound-it)
+  - [15. Determinism, caching, and CI](#15-determinism-caching-and-ci)
+  - [16. Glossary](#16-glossary)
+  - [17. Where this is referenced](#17-where-this-is-referenced)
+  - [Related](#related)
 
 ---
 
@@ -266,7 +274,7 @@ The standard pattern for "answer questions about my documents":
 
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
-flowchart LR
+flowchart TB
     subgraph Ingest [Ingest pipeline · runs once per document]
         DOC([Source PDF / doc]):::doc --> CHUNK[Chunker<br/>800 / 100 overlap]:::step
         CHUNK --> EMB1[Embedder<br/>RETRIEVAL_DOCUMENT]:::step
