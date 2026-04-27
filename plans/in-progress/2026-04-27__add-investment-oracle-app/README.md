@@ -123,6 +123,103 @@ residency matrix.
   Playwright drives `vite preview` (FE in browser mode) and direct FastAPI
   calls (BE).
 
+## Manual prerequisites (before Phase 0)
+
+These steps live outside this repository and must complete before any
+plan phase can run. Each item below is verifiable; the corresponding
+delivery checklist phase ([Phase pre-0](./delivery.md#phase-pre-0--manual-prerequisites))
+turns each into a tick-box.
+
+### Vendor accounts and API keys
+
+| Vendor     | Where to register                                | Key env var          | Cost note                                                      |
+| ---------- | ------------------------------------------------ | -------------------- | -------------------------------------------------------------- |
+| Anthropic  | <https://console.anthropic.com>                  | `ANTHROPIC_API_KEY`  | Pay-as-you-go; small free credits on signup.                   |
+| Google     | <https://aistudio.google.com> (or GCP Vertex AI) | `GOOGLE_API_KEY`     | Free tier covers all demo use (chat + embeddings + Files API). |
+| Perplexity | <https://www.perplexity.ai/settings/api>         | `PERPLEXITY_API_KEY` | Tier 0 (50 RPM, $0 cumulative spend) covers demo use.          |
+
+Keys go into `apps/investment-oracle-be/.env` (gitignored). Never commit
+real keys; `.env.example` ships placeholders.
+
+### Platform tooling
+
+| Tool                                                | Required when                               | Verify command                        |
+| --------------------------------------------------- | ------------------------------------------- | ------------------------------------- |
+| Volta                                               | always                                      | `volta --version`                     |
+| Docker Desktop / OrbStack / Colima                  | Phase 4 onwards (Postgres + pgvector)       | `docker info`                         |
+| Rust toolchain (rustup, cargo)                      | Phase 2 onwards (Tauri shell)               | `rustc --version` ≥ 1.80              |
+| Python 3.13 (pyenv recommended)                     | Phase 3 onwards (BE sidecar)                | `python3.13 --version`                |
+| `ruff` and `pyright`                                | Phase 6 onwards (BE lint / typecheck)       | `ruff --version`, `pyright --version` |
+| Xcode Command Line Tools (macOS)                    | always (native deps for Rust + PyInstaller) | `xcode-select -p`                     |
+| Visual Studio Build Tools (Windows)                 | always                                      | `cl` resolves                         |
+| `build-essential` + `libwebkit2gtk-4.1-dev` (Linux) | always (Tauri WebView)                      | `dpkg -l libwebkit2gtk-4.1-dev`       |
+| AWS CLI v2                                          | only for `bedrock-jakarta-*` upgrade path   | `aws --version`                       |
+
+`npm run doctor -- --fix` (Phase 0a) installs most of these
+automatically once Volta, Docker, and Xcode CLT (or platform
+equivalents) are in place — those three are the only true manual
+preconditions.
+
+### Hardware
+
+- **RAM**: 16 GB minimum, 32 GB recommended. Tauri builds + Postgres
+  container + Python sidecar + IDE add up.
+- **Disk**: 20 GB free. PyInstaller `--onedir` output is 500 MB–2 GB;
+  Docker images add ~500 MB; `node_modules` + `cargo target` reach ~5 GB.
+- **Architecture**: Apple Silicon, x86_64 Linux, or x86_64 Windows. CI
+  ships only macOS arm64; other targets are manual builds.
+
+### Network egress
+
+Outbound HTTPS reachability required to:
+
+- `api.anthropic.com`, `generativelanguage.googleapis.com`,
+  `api.perplexity.ai` (vendor APIs)
+- `registry.npmjs.org`, `pypi.org`, `crates.io`, `docker.io`,
+  `gcr.io` (package registries)
+- `github.com` (release tarballs for Tauri tooling, PyInstaller, ts-ui)
+
+Corporate firewalls / air-gapped environments must allowlist these
+hosts before Phase 0a (`npm install`) can complete.
+
+### Optional: Indonesian residency upgrade path
+
+Required only when the deployment target asserts the
+`bedrock-jakarta-in-region` residency profile (FR-RES-1):
+
+- AWS account with Bedrock access enabled in `ap-southeast-3` (Jakarta).
+- Bedrock model access requested and approved for Claude Opus 4.7
+  (in-region) or CRIS-eligible Claude models.
+- IAM role or access key with `bedrock:InvokeModel` and
+  `bedrock:InvokeModelWithResponseStream` permissions.
+
+### Optional: production deployment to Indonesian users
+
+Required only when shipping the desktop app to Indonesian end users
+(not for local development or single-developer demo use):
+
+- Komdigi PSE Private Scope registration (PP 71/2019). Penalty for
+  non-registration: service block without prior notice.
+- UU PDP Article 56 cross-border transfer documentation — SCC template
+  in vendor agreements **or** explicit-consent UI flow embedded in the
+  desktop app.
+- DPIA covering Anthropic, Google, and (if `WEB_GROUNDING_ENABLED=true`)
+  Perplexity.
+
+### Estimated time and cost for first run
+
+- **Setup time** after vendor accounts are live: ~30–90 minutes
+  through Phase 0a, depending on which platform-tooling deps were
+  pre-installed.
+- **Per-session cost** (single analysis, 4 attached PDFs, 1 generation,
+  3 LLM edits, no web grounding):
+  - On `claude-haiku-4-5`: ~$0.10–$0.20.
+  - On `gemini-2.5-flash-lite`: ~$0.05–$0.10.
+  - Add ~$0.01 per LLM call when `WEB_GROUNDING_ENABLED=true` (Perplexity
+    Sonar per-request search fee).
+- **CI cost**: zero — `MOCK_LLM_PROVIDERS=true` is the default and
+  intercepts all vendor traffic.
+
 ## Required reading (prerequisite)
 
 Before starting any phase, read the repo-wide AI primer **and** the three
@@ -146,6 +243,11 @@ vendor primers:
   — read for boundary framing; not used in this demo (private corpus, no
   live web grounding required) but the lane belongs in the executor's
   mental model.
+- [Testing AI Applications](../../../docs/explanation/software-engineering/ai-application-development/testing-ai-apps.md)
+  — cross-cutting testing playbook (BE three-level / FE two-level,
+  cassette structures, real-vendor smoke, vector retrieval, PII
+  masking). The plan's test strategy (PRD FR-15 family) implements the
+  patterns documented here.
 
 ## Documents
 

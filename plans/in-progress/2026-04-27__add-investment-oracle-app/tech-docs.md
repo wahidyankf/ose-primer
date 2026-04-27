@@ -3,12 +3,13 @@
 ## Reading this document
 
 This is the implementation reference for the `investment-oracle` desktop
-demo. It assumes the reader has read the five prerequisite primers
+demo. It assumes the reader has read the six prerequisite primers
 ([AI](../../../docs/explanation/software-engineering/ai-application-development/README.md),
 [Anthropic](../../../docs/explanation/software-engineering/ai-application-development/anthropic-api.md),
 [Gemini](../../../docs/explanation/software-engineering/ai-application-development/google-gemini-api.md),
 [OpenAI](../../../docs/explanation/software-engineering/ai-application-development/openai-api.md),
-[Perplexity](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md))
+[Perplexity](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md),
+[Testing AI Applications](../../../docs/explanation/software-engineering/ai-application-development/testing-ai-apps.md))
 and uses their vocabulary without redefining it. The mini-glossary below
 covers the few project-local terms.
 
