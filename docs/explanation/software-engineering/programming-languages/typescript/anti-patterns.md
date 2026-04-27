@@ -103,7 +103,7 @@ With `any`, errors spread through the entire call chain and appear only at runti
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph LR
+graph TD
     Input["User Input<br/>(any)"]:::blue
     ProcessA["processDonation<br/>(data: any)"]:::orange
     ProcessB["calculateFee<br/>(amount: any)"]:::orange
@@ -121,7 +121,7 @@ graph LR
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph LR
+graph TD
     SafeInput["Validated Input<br/>(Donation)"]:::teal
     SafeA["processDonation<br/>(data: Donation)"]:::teal
     SafeB["calculateFee<br/>(amount: number)"]:::teal

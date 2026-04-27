@@ -287,8 +287,8 @@ flowchart TB
         DB --> CHUNKS[Top-k chunks<br/>+ source / page]:::data
         CHUNKS --> PROMPT[Prompt builder<br/>system + chunks + history + Q]:::step
         PROMPT --> LLM[Chat model<br/>SSE stream]:::llm
-        LLM --> ANS([Streamed answer<br/>+ citations]):::out
     end
+    LLM --> ANS([Streamed answer<br/>+ citations]):::out
 
     classDef doc fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef user fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px

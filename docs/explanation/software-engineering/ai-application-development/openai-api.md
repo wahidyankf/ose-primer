@@ -371,7 +371,7 @@ surfaces and request flags worth knowing:
 flowchart TD
     NEW{New<br/>code?} -->|Yes| RESP[POST /v1/responses<br/>RECOMMENDED]:::yes
     NEW -->|Compat<br/>with proxy| CHAT[POST /v1/chat/completions<br/>legacy, supported]:::legacy
-    RESP --> TOOLS[Built-in tools:<br/>web_search · file_search<br/>code_interpreter · computer<br/>image_generation · mcp · function]:::tools
+    RESP --> TOOLS[Built-in tools:<br/>web_search · file_search<br/>code_interpreter · computer<br/>image_gen · mcp · function]:::tools
     RESP --> SEM[Typed semantic events<br/>response.output_text.delta<br/>response.completed]:::stream
     CHAT --> DELTA[Flat delta.content chunks<br/>industry-standard SSE]:::stream
     TOOLS --> OUT([Response]):::out

@@ -67,12 +67,12 @@ find apps/crud-be-* -type f \
 flowchart TD
     A[git mv directories] --> B[project.json name fields]
     A --> C[docker-compose credentials]
-    B --> D[Nx cross-references in project.json]
+    B --> D[Nx cross-project.json refs]
     D --> E[Root package.json scripts]
     E --> F[specs/apps/crud content]
     F --> G[governance/workflows audit]
     G --> H[docs/ audit]
-    H --> I[CLAUDE.md · README.md · AGENTS.md]
+    H --> I[CLAUDE · README · AGENTS.md]
     I --> J[Validation]
     J --> K[Push to main]
 
