@@ -63,17 +63,23 @@ contract.
 
 ## Phase 2 — Port `internal/mermaid/types.go`
 
-- [ ] Add `WarningSubgraphDense WarningKind = "subgraph_density"`
+- [x] Add `WarningSubgraphDense WarningKind = "subgraph_density"`
       to the `WarningKind` const block in
       `apps/rhino-cli/internal/mermaid/types.go`.
-- [ ] Add the `Subgraph` struct (`ID, Label, NodeIDs, StartLine`).
-- [ ] Add `Subgraphs []Subgraph` to `ParsedDiagram`.
-- [ ] Add `SubgraphLabel string`, `SubgraphNodeCount int`,
+      _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/internal/mermaid/types.go / Notes: added WarningSubgraphDense const_
+- [x] Add the `Subgraph` struct (`ID, Label, NodeIDs, StartLine`).
+      _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/internal/mermaid/types.go / Notes: Subgraph struct added_
+- [x] Add `Subgraphs []Subgraph` to `ParsedDiagram`.
+      _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/internal/mermaid/types.go / Notes: Subgraphs field added to ParsedDiagram_
+- [x] Add `SubgraphLabel string`, `SubgraphNodeCount int`,
       `MaxSubgraphNodes int` to `Warning`.
-- [ ] Update package doc comment from "It enforces three rules"
+      _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/internal/mermaid/types.go / Notes: subgraph_density fields added to Warning struct_
+- [x] Update package doc comment from "It enforces three rules"
       to "It enforces four rules — three blocking violations and
       one density warning".
-- [ ] Run `go build ./...` from `apps/rhino-cli/`. Must compile.
+      _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/internal/mermaid/types.go / Notes: doc comment updated_
+- [x] Run `go build ./...` from `apps/rhino-cli/`. Must compile.
+      _Date 2026-04-27 / Status: done / Files: none / Notes: go build exits 0_
 - [ ] Commit: `feat(rhino-cli): add Subgraph types and density warning kind to mermaid package`
 - [ ] `git push origin main` (or `git push origin HEAD:main` from
       worktree per Standard 6).
