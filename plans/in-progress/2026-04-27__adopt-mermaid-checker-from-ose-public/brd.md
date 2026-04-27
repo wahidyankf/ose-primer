@@ -82,6 +82,20 @@ Three concrete gaps exist today.
   markdown files change. Acceptable — the target is fast (Go binary
   plus regex scan over a few hundred files).
 
+## Non-Goals
+
+The following are explicitly out of scope for this plan.
+
+- **Reciprocal sync from ose-public into ose-infra.** ose-infra tracks
+  its own rhino-cli instance; that alignment is a separate plan if ever
+  needed.
+- **New rules beyond Rule 4.** No node-count limit, edge-count limit,
+  density metric, or diameter check is introduced here.
+- **Changing existing three rules' default thresholds.** The defaults
+  for `--max-label-len 30`, `--max-width 4`, and `--max-depth 4` are
+  unchanged; this plan ports behaviour from ose-public, not recalibrates
+  existing gates.
+
 ## Success definition
 
 - `nx run rhino-cli:validate:mermaid` exits 0 on the full repo

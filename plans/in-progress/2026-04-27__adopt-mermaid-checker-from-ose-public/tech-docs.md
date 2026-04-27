@@ -251,6 +251,48 @@ Parent gitlink bump (`ose-projects/ose-primer` pointer) is a
 parent-side concern outside this plan's scope per the user's
 "only in this repo" directive.
 
+## Rollback
+
+All changes push direct to `origin/main` in thematic commits, one per
+delivery phase. No database migrations, no external state, no deployed
+service — full revert is `git revert` in reverse phase order.
+
+**Rollback unit**: the gitlink bump in `ose-projects/ose-primer` is the
+parent-side rollback atom. Reverting the primer commits automatically
+moves the pointer back; no additional parent-side action is required
+beyond the revert commit.
+
+**Affected paths**:
+
+- `apps/rhino-cli/internal/mermaid/` — seven Go source files. Each
+  replaced wholesale from ose-public; revert restores the prior file
+  exactly. The changes are isolated to this package directory.
+- `apps/rhino-cli/cmd/docs_validate_mermaid*.go` — three cmd files.
+  Same wholesale-replace pattern; revert is clean.
+- `apps/rhino-cli/project.json` — single Nx target JSON block. Can be
+  reverted independently from the Go source changes if only the target
+  broadening needs to be rolled back.
+- `**/*.md` remediation commits — diagram reshaping. Reverting these
+  commits restores diagram files verbatim; no checker re-run is needed
+  because the reverted checker version does not flag those diagrams.
+
+**Revert procedure** (if full rollback needed):
+
+```bash
+# List the phase commits to revert, newest first
+git log --oneline origin/main | head -15
+
+# Revert in reverse delivery order (one git revert per phase commit)
+git revert <phase-12-sha>
+git revert <phase-11-sha>
+# ... continue in reverse order
+git push origin HEAD:main
+```
+
+Partial rollback (Nx target only, keeping Go changes) is safe because
+the broader inputs list is additive and the CLI default scan behaviour
+is controlled by the ported `cmd/` file independently.
+
 ## Development environment
 
 - Go 1.22+ on PATH (`volta` does not manage Go — use the system
