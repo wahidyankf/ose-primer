@@ -65,7 +65,7 @@ The test pyramid below is shaped by those realities, not by ideology.
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
 flowchart TD
-    SMOKE[Real-vendor smoke<br/>workflow_dispatch + weekly<br/>HTTP 200, ≥1 chunk, no content asserts]:::smoke
+    SMOKE[Real-vendor smoke<br/>workflow_dispatch + weekly<br/>HTTP 200, ≥1 chunk,<br/>no content asserts]:::smoke
     E2E[E2E · Playwright<br/>real BE HTTP + real DB +<br/>mocked vendors]:::e2e
     INT[Integration · pytest<br/>real Postgres + pgvector +<br/>mocked vendors]:::int
     UNIT_BE[BE Unit · pytest + pytest-bdd<br/>all mocks, ≥ 90 % coverage]:::unit
@@ -752,7 +752,7 @@ land in CI on push, not locally.
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
 flowchart LR
-    DEV([Developer push]):::dev --> HOOK[Husky pre-push<br/>nx affected:<br/>lint typecheck test:quick spec-coverage]:::cache
+    DEV([Developer push]):::dev --> HOOK[Husky pre-push<br/>nx affected:<br/>lint typecheck<br/>test:quick spec-coverage]:::cache
     HOOK -->|pass| PR[GitHub PR]:::ci
     PR --> NODE1[lint typecheck<br/>test:quick spec-coverage<br/>cached]:::cache
     PR --> NODE2[test:integration<br/>real Postgres + pgvector<br/>cache: false]:::nocache

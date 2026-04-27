@@ -79,7 +79,7 @@ The pipeline applies: map (donations → amounts), filter (amounts ≥ 1000), re
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph LR
+graph TD
     Input["Input Data<br/>Donations Array"]:::blue
     Map["map()<br/>Transform each"]:::orange
     Filter["filter()<br/>Select subset"]:::orange
