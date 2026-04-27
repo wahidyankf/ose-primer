@@ -488,7 +488,9 @@ def mock_openai_chat(httpx_mock):
 A handler test typically asserts (a) the outbound JSON included
 `reasoning.effort` if reasoning was requested, (b) the response was
 persisted to the DB, (c) the SSE stream terminated cleanly. Never on
-`FIXTURE` prose.
+`FIXTURE` prose. See the [Testing AI Applications](./testing-ai-apps.md)
+primer for the full playbook (unit / integration / e2e cassette
+patterns, vendor-mocking flow, real-vendor smoke wiring).
 
 ## Related
 
@@ -500,5 +502,7 @@ persisted to the DB, (c) the SSE stream terminated cleanly. Never on
   doc; long context, embeddings, cheap chat
 - [Perplexity Sonar API Primer](./perplexity-api.md) — paired vendor
   doc; web-grounded answers with citations
+- [Testing AI Applications](./testing-ai-apps.md) — cross-cutting
+  testing playbook (unit / integration / e2e cassette patterns)
 - [OpenAI API docs](https://developers.openai.com/api/docs) —
   authoritative reference, supersedes anything here on conflict

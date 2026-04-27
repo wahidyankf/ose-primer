@@ -371,7 +371,10 @@ def mock_perplexity(httpx_mock):
 A handler test typically asserts (a) that `search_domain_filter` was passed
 through correctly to the outbound JSON, (b) that the `citations` array was
 persisted to the DB alongside the response, and (c) that the response shape
-emitted to the FE matches the contract — never on `FIXTURE` prose.
+emitted to the FE matches the contract — never on `FIXTURE` prose. See
+the [Testing AI Applications](./testing-ai-apps.md) primer for the full
+playbook (unit / integration / e2e cassette patterns, vendor-mocking
+flow, real-vendor smoke wiring).
 
 ## Related
 
@@ -383,5 +386,7 @@ emitted to the FE matches the contract — never on `FIXTURE` prose.
   embeddings, long context, cheap chat
 - [OpenAI API Primer](./openai-api.md) — paired vendor doc; reasoning models
   and built-in tools
+- [Testing AI Applications](./testing-ai-apps.md) — cross-cutting
+  testing playbook (unit / integration / e2e cassette patterns)
 - [Perplexity Sonar docs](https://docs.perplexity.ai/) — authoritative
   reference, supersedes anything here on conflict

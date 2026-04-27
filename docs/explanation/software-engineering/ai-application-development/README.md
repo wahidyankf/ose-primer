@@ -30,12 +30,14 @@ here is plan-internal — it is generic working knowledge.
 
 This primer is generic. Vendor-specific details — model ids, SDK install,
 streaming idioms, embeddings, pricing — live in four companion docs that
-extend this one:
+extend this one, plus one cross-cutting testing companion:
 
 - [Anthropic API Primer](./anthropic-api.md)
 - [Google Gemini API Primer](./google-gemini-api.md)
 - [OpenAI API Primer](./openai-api.md)
 - [Perplexity Sonar API Primer](./perplexity-api.md)
+- [Testing AI Applications](./testing-ai-apps.md) — cross-cutting playbook
+  for unit / integration / e2e on both BE and FE
 
 ## Why this primer exists
 
@@ -484,7 +486,10 @@ Three layers, all of which the AI demos in this repo use:
   Inspect AI, Evidently, plus rolling-your-own pytest fixtures.
 
 The takeaway: **every CI test must be deterministic and offline**. Real-LLM smoke
-runs are workflow-dispatch only.
+runs are workflow-dispatch only. The full playbook — three levels on the
+BE, two levels on the FE, with cassette shapes per vendor, real-vendor
+smoke wiring, vector-retrieval testing, and PII-masking testing — lives
+in the companion [Testing AI Applications](./testing-ai-apps.md) doc.
 
 ## 14. Cost: where it goes and how to bound it
 
@@ -579,6 +584,8 @@ domain-specific addenda rather than redefining the same vocabulary inline.
   GPT-5.x and o3, reasoning-effort knob, built-in tools
 - [Perplexity Sonar API Primer](./perplexity-api.md) — web-grounded answers,
   citations, when not to use it
+- [Testing AI Applications](./testing-ai-apps.md) — cross-cutting testing
+  playbook for unit / integration / e2e on BE and FE
 - [Software Engineering](../README.md) — parent index
 - [Explanation](../../README.md) — Diátaxis explanation root
 - [Behavior-Driven Development](../development/behavior-driven-development-bdd/README.md) — Gherkin scenarios used for AI feature acceptance criteria

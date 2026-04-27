@@ -76,13 +76,14 @@ End-to-end testing frameworks and browser automation tools:
 
 ### 🤖 [AI Application Development](./ai-application-development/README.md)
 
-Conceptual primer for software engineers new to building LLM-backed applications, plus four vendor-specific extensions:
+Conceptual primer for software engineers new to building LLM-backed applications, plus four vendor-specific extensions and a cross-cutting testing playbook:
 
 - **[AI Application Development](./ai-application-development/README.md)** - Tokens, embeddings, RAG, streaming SSE, vendor choice, persistent sessions, production guardrails, evaluation, and cost. Required prerequisite reading for any plan that adds AI features (e.g., the `investment-oracle` desktop demo).
-- **[Anthropic API Primer](./ai-application-development/anthropic-api.md)** - Claude model lineup, official SDKs, streaming, PDF input, the no-embeddings caveat, CI mocking.
-- **[Google Gemini API Primer](./ai-application-development/google-gemini-api.md)** - Gemini model lineup, the unified `google-genai` SDK, streaming, embeddings via `gemini-embedding-001`, the 1 M-token context window, CI mocking.
-- **[OpenAI API Primer](./ai-application-development/openai-api.md)** - GPT-5.x and o3 lineup, Responses API vs legacy Chat Completions, streaming, PDF input, embeddings, reasoning effort knob, CI mocking.
-- **[Perplexity Sonar API Primer](./ai-application-development/perplexity-api.md)** - Sonar model lineup, OpenAI-compatible endpoint, citations, search filters, when to reach for web-grounded answers.
+- **[Anthropic API Primer](./ai-application-development/anthropic-api.md)** - Claude model lineup, official SDKs, streaming, PDF input, the no-embeddings caveat, tools, Indonesia data residency, CI mocking.
+- **[Google Gemini API Primer](./ai-application-development/google-gemini-api.md)** - Gemini model lineup, the unified `google-genai` SDK, streaming, embeddings via `gemini-embedding-001`, the 1 M-token context window, tools, Indonesia data residency, CI mocking.
+- **[OpenAI API Primer](./ai-application-development/openai-api.md)** - GPT-5.x and o3 lineup, Responses API vs legacy Chat Completions, streaming, PDF input, embeddings, reasoning effort knob, tools, Indonesia data residency, CI mocking.
+- **[Perplexity Sonar API Primer](./ai-application-development/perplexity-api.md)** - Sonar model lineup, OpenAI-compatible endpoint, citations, search filters, Indonesia data residency, when to reach for web-grounded answers.
+- **[Testing AI Applications](./ai-application-development/testing-ai-apps.md)** - Cross-cutting playbook covering BE three-level testing (unit / integration / e2e), FE two-level testing (unit / e2e), LLM determinism strategy, cassette structures per vendor, real-vendor smoke wiring, vector-retrieval testing, and PII-masking testing.
 
 ### 📚 Cross-References
 
