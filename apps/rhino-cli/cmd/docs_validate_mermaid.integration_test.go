@@ -118,8 +118,9 @@ func (s *validateMermaidIntSteps) aMarkdownFileContainingLRFlowchartNoRankMoreTh
 }
 
 func (s *validateMermaidIntSteps) aMarkdownFileContainingLRFlowchart4NodesAtSameDepth() error {
+	// Chain of 4 edges → depth=4 > MaxWidth(3) → ViolationWidthExceeded for LR.
 	return s.writeMD("docs/lr4.md",
-		"# LR4\n\n```mermaid\nflowchart LR\n  Root-->A\n  Root-->B\n  Root-->C\n  Root-->D\n```\n")
+		"# LR4\n\n```mermaid\nflowchart LR\n  A-->B\n  B-->C\n  C-->D\n```\n")
 }
 
 func (s *validateMermaidIntSteps) aMarkdownFileContainingFlowchart4NodesAtOneRank() error {
