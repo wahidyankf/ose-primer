@@ -4,30 +4,30 @@ import "math"
 
 // ValidateOptions configures the thresholds used during validation.
 type ValidateOptions struct {
-	MaxLabelLen int
-	MaxWidth    int
-	MaxDepth    int
+	MaxLabelLen      int
+	MaxWidth         int
+	MaxDepth         int
+	MaxSubgraphNodes int
 }
 
 // DefaultValidateOptions returns the standard validation thresholds.
 func DefaultValidateOptions() ValidateOptions {
-	return ValidateOptions{MaxLabelLen: 30, MaxWidth: 4, MaxDepth: math.MaxInt}
+	return ValidateOptions{
+		MaxLabelLen:      30,
+		MaxWidth:         4,
+		MaxDepth:         math.MaxInt,
+		MaxSubgraphNodes: 6,
+	}
 }
 
 // ValidateBlocks validates a slice of MermaidBlocks against the given options.
 // It applies three rules:
 //  1. Node labels must not exceed MaxLabelLen runes.
-//  2. The horizontal dimension (direction-aware) must not exceed MaxWidth unless
-//     the vertical dimension also exceeds MaxDepth.
+//  2. Diagram span (MaxWidth) must not exceed MaxWidth unless depth also exceeds MaxDepth.
 //  3. A block must not contain more than one flowchart/graph header.
 //
-// Horizontal dimension is direction-aware:
-//   - graph LR / RL → horizontal = depth (rank columns), vertical = span
-//   - graph TD / TB / BT → horizontal = span (nodes per rank), vertical = depth
-//
-// Rule 2 special case: when BOTH horizontal > MaxWidth AND vertical > MaxDepth,
-// a Warning is emitted instead of a Violation. With default MaxDepth=math.MaxInt
-// this branch is inactive unless --max-depth N is passed explicitly.
+// Rule 2 special case: when BOTH span > MaxWidth AND depth > MaxDepth, a Warning
+// is emitted instead of a Violation.
 func ValidateBlocks(blocks []MermaidBlock, opts ValidateOptions) ValidationResult {
 	filesSeen := make(map[string]bool)
 	var violations []Violation
@@ -71,17 +71,15 @@ func ValidateBlocks(blocks []MermaidBlock, opts ValidateOptions) ValidationResul
 			}
 		}
 
-		// Rule 2: direction-aware width/depth check.
+		// Rule 2: width/depth — direction-aware.
 		span := MaxWidth(diagram.Nodes, diagram.Edges)
 		depth := Depth(diagram.Nodes, diagram.Edges)
 
-		// LR/RL: rank columns flow horizontally → depth is the horizontal dimension.
-		// TD/TB/BT: nodes per rank flow horizontally → span is the horizontal dimension.
 		var horizontal, vertical int
 		switch diagram.Direction {
-		case DirectionLR, DirectionRL:
+		case DirectionLR, DirectionRL: // named constants from types.go
 			horizontal, vertical = depth, span
-		case DirectionTD, DirectionTB, DirectionBT:
+		case DirectionTB, DirectionTD, DirectionBT: // named constants from types.go
 			horizontal, vertical = span, depth
 		}
 
@@ -92,23 +90,40 @@ func ValidateBlocks(blocks []MermaidBlock, opts ValidateOptions) ValidationResul
 				FilePath:    block.FilePath,
 				BlockIndex:  block.BlockIndex,
 				StartLine:   block.StartLine,
-				ActualWidth: span,
-				ActualDepth: depth,
+				ActualWidth: horizontal,
+				ActualDepth: vertical,
 				MaxWidth:    opts.MaxWidth,
 				MaxDepth:    opts.MaxDepth,
 			})
 		} else if horizontal > opts.MaxWidth {
-			// Horizontal exceeded alone → violation.
+			// Width exceeded alone → violation.
 			violations = append(violations, Violation{
 				Kind:        ViolationWidthExceeded,
 				FilePath:    block.FilePath,
 				BlockIndex:  block.BlockIndex,
 				StartLine:   block.StartLine,
-				ActualWidth: span,
+				ActualWidth: horizontal,
 				MaxWidth:    opts.MaxWidth,
 			})
 		}
-		// Vertical exceeded alone → no output.
+		// Depth exceeded alone → no output.
+
+		// Rule 4: subgraph density (warning only).
+		if opts.MaxSubgraphNodes > 0 {
+			for _, sg := range diagram.Subgraphs {
+				if len(sg.NodeIDs) > opts.MaxSubgraphNodes {
+					warnings = append(warnings, Warning{
+						Kind:              WarningSubgraphDense,
+						FilePath:          block.FilePath,
+						BlockIndex:        block.BlockIndex,
+						StartLine:         block.StartLine + sg.StartLine,
+						SubgraphLabel:     sg.Label,
+						SubgraphNodeCount: len(sg.NodeIDs),
+						MaxSubgraphNodes:  opts.MaxSubgraphNodes,
+					})
+				}
+			}
+		}
 	}
 
 	return ValidationResult{

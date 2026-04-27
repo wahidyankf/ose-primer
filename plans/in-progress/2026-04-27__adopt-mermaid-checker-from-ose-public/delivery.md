@@ -101,18 +101,24 @@ contract.
 - [x] Confirm coverage on the package stays ≥ 90% via the test
       output's coverage line.
       _Date 2026-04-27 / Status: done / Files: none / Notes: mermaid package 95.9% total_
-- [ ] Commit: `feat(rhino-cli): port subgraph-aware mermaid parser from ose-public`
-- [ ] Push direct to main.
+- [x] Commit: `feat(rhino-cli): port subgraph-aware mermaid parser from ose-public`
+      _Date 2026-04-27 / Status: done / Files: parser.go, parser_test.go, delivery.md / Notes: commit ef63f17e0_
+- [x] Push direct to main.
+      _Date 2026-04-27 / Status: done / Files: none / Notes: ef63f17e0 on origin/main_
 
 ## Phase 4 — Port `internal/mermaid/validator.go`
 
-- [ ] Replace `validator.go` with ose-public version. Confirm:
+- [x] Replace `validator.go` with ose-public version. Confirm:
       direction-mapped `horizontal`/`vertical` are assigned to the
       `complex_diagram` warning's `ActualWidth`/`ActualDepth`.
-- [ ] Confirm Rule 4 loop appends `subgraph_density` warnings only
+      _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/internal/mermaid/validator.go / Notes: horizontal/vertical now populate ActualWidth/ActualDepth; MaxSubgraphNodes:6 default_
+- [x] Confirm Rule 4 loop appends `subgraph_density` warnings only
       when `MaxSubgraphNodes > 0`.
-- [ ] Replace `validator_test.go` with ose-public version.
-- [ ] Run `nx run rhino-cli:test:unit`. All validator tests pass.
+      _Date 2026-04-27 / Status: done / Files: none / Notes: Rule 4 guarded by opts.MaxSubgraphNodes > 0_
+- [x] Replace `validator_test.go` with ose-public version.
+      _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/internal/mermaid/validator_test.go / Notes: adds SubgraphDensity table tests and AmpFanout test_
+- [x] Run `nx run rhino-cli:test:unit`. All validator tests pass.
+      _Date 2026-04-27 / Status: done / Files: none / Notes: all 13 packages pass; SubgraphDensity 4/4 scenarios pass_
 - [ ] Commit: `feat(rhino-cli): add subgraph-density rule and direction-mapped warning fields`
 - [ ] Push direct to main.
 
