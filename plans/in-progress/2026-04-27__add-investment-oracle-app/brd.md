@@ -186,7 +186,7 @@ Every executor and reviewer of this plan reads the repo-wide AI primer
 - [OpenAI API Primer](../../../docs/explanation/software-engineering/ai-application-development/openai-api.md)
   (read for boundary framing — OpenAI is not used in this demo)
 - [Perplexity Sonar API Primer](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md)
-  (read for boundary framing — Perplexity is not used in this demo)
+  (Perplexity is used for optional web grounding (FR-WG); read for the Sonar API shape)
 - [Testing AI Applications](../../../docs/explanation/software-engineering/ai-application-development/testing-ai-apps.md)
   (cross-cutting testing playbook — implemented by PRD FR-15 family)
 
@@ -197,11 +197,11 @@ the vendor-specific vocabulary covered there.
 
 - **Maintainer (template author)**: implements the four projects, the spec
   tree, the Gherkin scenarios, the contract, and the CI workflows; signs
-  off the quality gates; has read the AI primer and all three vendor
-  primers.
+  off the quality gates; has read the AI primer and all four vendor
+  primers and the testing companion.
 - **AI agents (`plan-executor`, `swe-python-dev`, `swe-typescript-dev`,
   `swe-rust-dev`, `swe-e2e-dev`)**: read this plan, the PRD, the tech-docs,
-  and the five primers to orient themselves; consume the delivery checklist
+  and the six primers to orient themselves; consume the delivery checklist
   as their step-by-step driver.
 - **Template consumers (cloners)**: benefit from a copy-paste-ready
   AI-desktop reference the day this plan lands.

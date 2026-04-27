@@ -193,6 +193,7 @@ specs/apps/investment-oracle/
 | POST   | `/api/v1/analyses/{id}/report:edit`                    | LLM-rewrite a section                             | **SSE**; writes an `llm_edit` revision                 |
 | GET    | `/api/v1/analyses/{id}/report/revisions`               | List revisions                                    | array                                                  |
 | POST   | `/api/v1/analyses/{id}/report/revisions/{rid}:restore` | Restore a revision (creates a `restore` revision) | JSON                                                   |
+| DELETE | `/api/v1/analyses/{id}`                                | Delete analysis + report, revisions, token_usage  | `200` or `404`; cascades to all child rows             |
 
 OpenAPI 3.1 cannot fully describe SSE; the streaming endpoints are typed as
 `text/event-stream` with a prose `description` block listing the event

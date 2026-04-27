@@ -222,8 +222,8 @@ Required only when shipping the desktop app to Indonesian end users
 
 ## Required reading (prerequisite)
 
-Before starting any phase, read the repo-wide AI primer **and** the three
-vendor primers:
+Before starting any phase, read the repo-wide AI primer **and** the four
+vendor primers and the testing companion:
 
 - [AI Application Development](../../../docs/explanation/software-engineering/ai-application-development/README.md)
   — tokens, embeddings, RAG, streaming SSE, vendor choice, persistent
@@ -240,9 +240,8 @@ vendor primers:
   fourth vendor lane (Responses API tool ecosystem, GPT-5.x and o3
   reasoning, hosted connectors).
 - [Perplexity Sonar API Primer](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md)
-  — read for boundary framing; not used in this demo (private corpus, no
-  live web grounding required) but the lane belongs in the executor's
-  mental model.
+  — used for optional web grounding (FR-WG); read this primer to understand
+  the Sonar API shape before implementing Phase 6a.
 - [Testing AI Applications](../../../docs/explanation/software-engineering/ai-application-development/testing-ai-apps.md)
   — cross-cutting testing playbook (BE three-level / FE two-level,
   cassette structures, real-vendor smoke, vector retrieval, PII
@@ -336,7 +335,8 @@ verifying:
   fixture folder ships four issuer-canonical PDFs covering FY2024 (Apple
   10-K, Microsoft AR, Tesla AR, Berkshire Hathaway AR).
 - Perplexity Sonar is a separate vendor lane (web-grounded answers,
-  citations) covered by its own primer doc; not used in this demo.
+  citations) covered by its own primer doc; used for optional web
+  grounding when `WEB_GROUNDING_ENABLED=true`.
 
 See [tech-docs.md](./tech-docs.md) for the full citation table with access
 date 2026-04-27.
