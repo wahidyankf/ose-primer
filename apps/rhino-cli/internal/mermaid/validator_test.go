@@ -14,7 +14,7 @@ func makeFlowchartBlock(source string) MermaidBlock {
 	}
 }
 
-// span4depth6Source produces a TD flowchart with span=4 and depth=6.
+// span4depth6Source produces a flowchart with max-width=4 and depth=6.
 // Ranks: A=0, B/C/D/E=1, F=2, G=3, H=4, I=5 → 6 distinct ranks, max at rank 1 = 4.
 const span4depth6Source = `flowchart TD
 A --> B
@@ -26,7 +26,7 @@ F --> G
 G --> H
 H --> I`
 
-// span4depth4Source produces a TD flowchart with span=4 and depth=4.
+// span4depth4Source produces a flowchart with max-width=4 and depth=4.
 // Ranks: A=0, B/C/D/E=1, F=2, G=3 → 4 distinct ranks, max at rank 1 = 4.
 const span4depth4Source = `flowchart TD
 A --> B
@@ -36,7 +36,8 @@ A --> E
 B --> F
 F --> G`
 
-// span2depth6Source produces a TD flowchart with span=2 and depth=6.
+// span2depth6Source produces a flowchart with max-width=2 and depth=6.
+// Linear chain: A→B→C→D→E→F, plus A→G (width=2 at rank 0 is just 1, but rank 1 has B and G).
 // A=0, B=1, G=1, C=2, D=3, E=4, F=5 → depth=6, max-width=2.
 const span2depth6Source = `flowchart TD
 A --> B
@@ -46,46 +47,39 @@ C --> D
 D --> E
 E --> F`
 
-// span5depth3Source produces a TD flowchart with span=5 and depth=3.
-// Ranks: A=0, B/C/D/E/F=1 (span=5), G=2 → depth=3.
-const span5depth3Source = `flowchart TD
+// lrWideInDepthSource: graph LR, span=2, depth=6 → in LR, horizontal=depth=6 > MaxWidth=4 → violation.
+const lrWideInDepthSource = `graph LR
 A --> B
 A --> C
-A --> D
-A --> E
-A --> F
-B --> G`
-
-// lrDepth6Span2Source produces a LR graph with depth=6 and span=2.
-// Chain A→B→C→D→E→F, plus A→G: ranks A=0, B=1 G=1, C=2, D=3, E=4, F=5 → depth=6, span=2.
-const lrDepth6Span2Source = `graph LR
-A --> B
-A --> G
-B --> C
-C --> D
+B --> D
 D --> E
-E --> F`
+E --> F
+F --> G`
 
-// lrSpan5Depth2Source produces a LR graph with span=5 and depth=2.
-// A fans out to 5 children: A=0, B/C/D/E/F=1 → depth=2, span=5.
-const lrSpan5Depth2Source = `graph LR
+// lrTallInSpanSource: graph LR, span=5, depth=2 → in LR, horizontal=depth=2 ≤ MaxWidth=4 → no violation.
+const lrTallInSpanSource = `graph LR
 A --> B
 A --> C
 A --> D
 A --> E
 A --> F`
 
-// lrDepth4Span6Source produces a LR graph with span=6 and depth=4.
-// 6 nodes converge on B: A/C/D/E/F/G=0 (span=6), B=1, H=2, I=3 → depth=4, span=6.
-const lrDepth4Span6Source = `graph LR
+// tdWideInSpanSource: graph TD, span=5, depth=2 → in TD, horizontal=span=5 > MaxWidth=4 → violation.
+const tdWideInSpanSource = `graph TD
 A --> B
-C --> B
-D --> B
-E --> B
-F --> B
-G --> B
-B --> H
-H --> I`
+A --> C
+A --> D
+A --> E
+A --> F`
+
+// tdDeepInDepthSource: graph TD, span=2, depth=6 → in TD, horizontal=span=2 ≤ MaxWidth=4 → no violation.
+const tdDeepInDepthSource = `graph TD
+A --> B
+A --> C
+B --> D
+D --> E
+E --> F
+F --> G`
 
 func TestValidateBlocks(t *testing.T) {
 	defaultOpts := DefaultValidateOptions()
@@ -129,7 +123,7 @@ func TestValidateBlocks(t *testing.T) {
 		},
 		{
 			name: "width exactly at limit no violation",
-			// A → B, A → C, A → D: span=3 at rank 1 — well within MaxWidth=4
+			// A → B, A → C, A → D: span=3 at rank 1 = MaxWidth
 			blocks: []MermaidBlock{
 				makeFlowchartBlock("flowchart TD\nA --> B\nA --> C\nA --> D"),
 			},
@@ -138,22 +132,12 @@ func TestValidateBlocks(t *testing.T) {
 			wantWarnings:   0,
 		},
 		{
-			name: "width exactly at new limit 4 no violation",
-			// span=4 = MaxWidth=4; 4 > 4 is false — passes
-			blocks: []MermaidBlock{
-				makeFlowchartBlock(span4depth4Source),
-			},
-			opts:           defaultOpts,
-			wantViolations: 0,
-			wantWarnings:   0,
-		},
-		{
 			name: "width at limit+1 violation",
-			// span5depth3Source: TD span=5 > MaxWidth=4, depth=3 ≤ MaxDepth=∞ → violation
+			// A → B, A → C, A → D, A → E: span=4 > MaxWidth=3 and depth=2 <= MaxDepth=5
 			blocks: []MermaidBlock{
-				makeFlowchartBlock(span5depth3Source),
+				makeFlowchartBlock("flowchart TD\nA --> B\nA --> C\nA --> D\nA --> E"),
 			},
-			opts:           defaultOpts,
+			opts:           ValidateOptions{MaxLabelLen: 30, MaxWidth: 3, MaxDepth: 5},
 			wantViolations: 1,
 			wantWarnings:   0,
 			violationKind:  ViolationWidthExceeded,
@@ -188,74 +172,26 @@ func TestValidateBlocks(t *testing.T) {
 		},
 		{
 			name: "both exceeded warning only",
-			// span4depth6Source: TD span=4, depth=6; with explicit {MaxWidth:3,MaxDepth:5}:
-			// horizontal=span=4>3, vertical=depth=6>5 → both exceeded → warning
 			blocks: []MermaidBlock{
 				makeFlowchartBlock(span4depth6Source),
 			},
-			opts:           ValidateOptions{MaxWidth: 3, MaxDepth: 5},
+			opts:           ValidateOptions{MaxLabelLen: 30, MaxWidth: 3, MaxDepth: 5},
 			wantViolations: 0,
 			wantWarnings:   1,
 			warningKind:    WarningComplexDiagram,
 		},
 		{
 			name: "width only exceeded violation",
-			// span4depth4Source: TD span=4, depth=4; with explicit {MaxWidth:3,MaxDepth:5}:
-			// horizontal=span=4>3, vertical=depth=4 NOT>5 → violation only
 			blocks: []MermaidBlock{
 				makeFlowchartBlock(span4depth4Source),
 			},
-			opts:           ValidateOptions{MaxWidth: 3, MaxDepth: 5},
+			opts:           ValidateOptions{MaxLabelLen: 30, MaxWidth: 3, MaxDepth: 5},
 			wantViolations: 1,
 			wantWarnings:   0,
 			violationKind:  ViolationWidthExceeded,
 		},
 		{
 			name: "depth only exceeded no output",
-			// span2depth6Source: TD span=2, depth=6; horizontal=span=2 ≤ MaxWidth=4 → no output
-			blocks: []MermaidBlock{
-				makeFlowchartBlock(span2depth6Source),
-			},
-			opts:           defaultOpts,
-			wantViolations: 0,
-			wantWarnings:   0,
-		},
-		// Direction-aware tests: LR graphs check depth (horizontal rank columns).
-		{
-			name: "LR direction depth exceeded triggers width_exceeded",
-			// lrDepth6Span2Source: LR depth=6, span=2; horizontal=depth=6>4 → violation
-			blocks: []MermaidBlock{
-				makeFlowchartBlock(lrDepth6Span2Source),
-			},
-			opts:           defaultOpts,
-			wantViolations: 1,
-			wantWarnings:   0,
-			violationKind:  ViolationWidthExceeded,
-		},
-		{
-			name: "LR direction large span does not trigger width_exceeded",
-			// lrSpan5Depth2Source: LR span=5, depth=2; horizontal=depth=2 ≤ 4 → no violation
-			blocks: []MermaidBlock{
-				makeFlowchartBlock(lrSpan5Depth2Source),
-			},
-			opts:           defaultOpts,
-			wantViolations: 0,
-			wantWarnings:   0,
-		},
-		{
-			name: "TD direction large span triggers width_exceeded",
-			// span5depth3Source: TD span=5, depth=3; horizontal=span=5>4 → violation
-			blocks: []MermaidBlock{
-				makeFlowchartBlock(span5depth3Source),
-			},
-			opts:           defaultOpts,
-			wantViolations: 1,
-			wantWarnings:   0,
-			violationKind:  ViolationWidthExceeded,
-		},
-		{
-			name: "TD direction large depth does not trigger width_exceeded",
-			// span2depth6Source: TD span=2, depth=6; horizontal=span=2 ≤ 4 → no violation
 			blocks: []MermaidBlock{
 				makeFlowchartBlock(span2depth6Source),
 			},
@@ -264,26 +200,42 @@ func TestValidateBlocks(t *testing.T) {
 			wantWarnings:   0,
 		},
 		{
-			name: "TD span exactly at MaxWidth 4 no violation",
-			// span4depth4Source: TD span=4; 4 > 4 is false → no violation
+			name: "LR_wide_in_depth violation",
 			blocks: []MermaidBlock{
-				makeFlowchartBlock(span4depth4Source),
+				makeFlowchartBlock(lrWideInDepthSource),
+			},
+			opts:           defaultOpts,
+			wantViolations: 1,
+			wantWarnings:   0,
+			violationKind:  ViolationWidthExceeded,
+		},
+		{
+			name: "LR_tall_in_span no violation",
+			blocks: []MermaidBlock{
+				makeFlowchartBlock(lrTallInSpanSource),
 			},
 			opts:           defaultOpts,
 			wantViolations: 0,
 			wantWarnings:   0,
 		},
 		{
-			name: "LR both dimensions exceeded emits complex_diagram warning",
-			// lrDepth4Span6Source: LR depth=4, span=6; with {MaxWidth:3,MaxDepth:5}:
-			// horizontal=depth=4>3, vertical=span=6>5 → both exceeded → warning
+			name: "TD_wide_in_span violation",
 			blocks: []MermaidBlock{
-				makeFlowchartBlock(lrDepth4Span6Source),
+				makeFlowchartBlock(tdWideInSpanSource),
 			},
-			opts:           ValidateOptions{MaxWidth: 3, MaxDepth: 5},
+			opts:           defaultOpts,
+			wantViolations: 1,
+			wantWarnings:   0,
+			violationKind:  ViolationWidthExceeded,
+		},
+		{
+			name: "TD_deep_in_depth no violation",
+			blocks: []MermaidBlock{
+				makeFlowchartBlock(tdDeepInDepthSource),
+			},
+			opts:           defaultOpts,
 			wantViolations: 0,
-			wantWarnings:   1,
-			warningKind:    WarningComplexDiagram,
+			wantWarnings:   0,
 		},
 	}
 
@@ -307,6 +259,108 @@ func TestValidateBlocks(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestValidateBlocks_SubgraphDensity(t *testing.T) {
+	subgraph6 := `flowchart TD
+subgraph WF1
+  A
+  B
+  C
+  D
+  E
+  F
+end`
+	subgraph7 := `flowchart TD
+subgraph WF1
+  A
+  B
+  C
+  D
+  E
+  F
+  G
+end`
+	subgraph5 := `flowchart TD
+subgraph WF1
+  A
+  B
+  C
+  D
+  E
+end`
+	subgraphEmpty := `flowchart TD
+subgraph WF1
+end`
+
+	tests := []struct {
+		name        string
+		source      string
+		opts        ValidateOptions
+		wantWarning bool
+	}{
+		{
+			name:        "exactly 6 children no warning",
+			source:      subgraph6,
+			opts:        DefaultValidateOptions(),
+			wantWarning: false,
+		},
+		{
+			name:        "7 children one warning",
+			source:      subgraph7,
+			opts:        DefaultValidateOptions(),
+			wantWarning: true,
+		},
+		{
+			name:        "5 children with threshold 4 warning",
+			source:      subgraph5,
+			opts:        ValidateOptions{MaxLabelLen: 30, MaxWidth: 4, MaxDepth: 9999, MaxSubgraphNodes: 4},
+			wantWarning: true,
+		},
+		{
+			name:        "empty subgraph no warning",
+			source:      subgraphEmpty,
+			opts:        DefaultValidateOptions(),
+			wantWarning: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := ValidateBlocks([]MermaidBlock{makeFlowchartBlock(tt.source)}, tt.opts)
+			subgraphWarnings := 0
+			for _, w := range result.Warnings {
+				if w.Kind == WarningSubgraphDense {
+					subgraphWarnings++
+				}
+			}
+			if tt.wantWarning && subgraphWarnings != 1 {
+				t.Errorf("subgraph_density warnings = %d, want 1; warnings: %+v",
+					subgraphWarnings, result.Warnings)
+			}
+			if !tt.wantWarning && subgraphWarnings != 0 {
+				t.Errorf("subgraph_density warnings = %d, want 0; warnings: %+v",
+					subgraphWarnings, result.Warnings)
+			}
+		})
+	}
+}
+
+func TestValidateBlocks_AmpFanoutTriggersWidthViolation(t *testing.T) {
+	// 5-target fan-out via & operator must produce 5 parallel edges from T,
+	// triggering the default MaxWidth=4 violation.
+	src := "flowchart TD\nT --> A & B & C & D & E"
+	result := ValidateBlocks([]MermaidBlock{makeFlowchartBlock(src)}, DefaultValidateOptions())
+
+	if len(result.Violations) != 1 {
+		t.Fatalf("violations = %d, want 1; got: %+v", len(result.Violations), result.Violations)
+	}
+	if result.Violations[0].Kind != ViolationWidthExceeded {
+		t.Errorf("kind = %q, want %q", result.Violations[0].Kind, ViolationWidthExceeded)
+	}
+	if result.Violations[0].ActualWidth < 5 {
+		t.Errorf("ActualWidth = %d, want >= 5", result.Violations[0].ActualWidth)
 	}
 }
 
