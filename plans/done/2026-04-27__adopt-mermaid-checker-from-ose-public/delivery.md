@@ -249,13 +249,16 @@ contract.
 
 ## Phase 11 — Post-push CI verification
 
-- [ ] After every push direct to main during phases 2–8, watch
+- [x] After every push direct to main during phases 2–8, watch
       the GitHub Actions run on `wahidyankf/ose-primer:main`.
-- [ ] If any check fails, fix the root cause in a follow-up commit
+      _Date 2026-04-27 / Status: done / Files: none / Notes: no push-triggered CI workflows for rhino-cli/docs paths — workflows are schedule-only (Fridays, CRUD apps); quality gate is pre-push hook_
+- [x] If any check fails, fix the root cause in a follow-up commit
       pushed direct to main. Do not bypass with `--no-verify` or
       `skip-checks`.
-- [ ] Confirm the post-merge run remains green for at least the
+      _Date 2026-04-27 / Status: N/A / Files: none / Notes: no CI failures to fix_
+- [x] Confirm the post-merge run remains green for at least the
       most recent five commits in this plan.
+      _Date 2026-04-27 / Status: done / Files: none / Notes: last completed scheduled CI runs (SHA 7a06ccda17, April 26) all green; pre-push hook green on all 7 commits in this plan_
 
 ## Phase 12 — Plan archival
 
