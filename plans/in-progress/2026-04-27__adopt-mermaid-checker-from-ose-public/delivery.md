@@ -24,32 +24,42 @@ contract.
 
 ## Phase 0 — Worktree and environment (optional but recommended)
 
-- [ ] Decide worktree-or-not. For parallel-safety with other
+- [x] Decide worktree-or-not. For parallel-safety with other
       sessions: create the worktree via `claude --worktree adopt-mermaid-checker`.
       For single-session work: skip and operate on `main`. Both
       paths satisfy Git Push Default Convention Standards 1 + 6.
-- [ ] If worktree: confirm session lands inside
+      _Date 2026-04-27 / Status: done / Files: none / Notes: single-session, work directly on main_
+- [x] If worktree: confirm session lands inside
       `ose-primer/.claude/worktrees/adopt-mermaid-checker/` on
       branch `worktree-adopt-mermaid-checker`.
-- [ ] Run `npm install` from the working tree root.
-- [ ] Run `npm run doctor -- --fix` to converge polyglot toolchains
+      _Date 2026-04-27 / Status: N/A / Files: none / Notes: no worktree used (P0.1)_
+- [x] Run `npm install` from the working tree root.
+      _Date 2026-04-27 / Status: done / Files: none / Notes: 1586 pkgs audited, doctor verified 19/19 tools_
+- [x] Run `npm run doctor -- --fix` to converge polyglot toolchains
       (mandatory for worktree setup per
       `governance/development/workflow/worktree-setup.md`; harmless
       if already converged).
-- [ ] Confirm `go version` reports Go ≥ 1.22.
-- [ ] Confirm `node --version` reports 24.13.1 and `npm --version`
+      _Date 2026-04-27 / Status: done / Files: none / Notes: 19/19 tools OK, nothing to fix_
+- [x] Confirm `go version` reports Go ≥ 1.22.
+      _Date 2026-04-27 / Status: done / Files: none / Notes: go1.26.1 darwin/arm64_
+- [x] Confirm `node --version` reports 24.13.1 and `npm --version`
       reports 11.10.1.
+      _Date 2026-04-27 / Status: done / Files: none / Notes: node v24.13.1, npm 11.10.1_
 
 ## Phase 1 — Baseline snapshot
 
-- [ ] Run `nx affected -t typecheck lint test:quick spec-coverage`
+- [x] Run `nx affected -t typecheck lint test:quick spec-coverage`
       from the working tree root. Capture failures (if any) in
       `local-temp/baseline.txt`.
-- [ ] Run `nx run rhino-cli:test:unit`. Must pass at baseline.
-- [ ] Run `nx run rhino-cli:test:integration`. Must pass at baseline.
-- [ ] Run `nx run rhino-cli:validate:mermaid` on the current
+      _Date 2026-04-27 / Status: done / Files: local-temp/baseline.txt / Notes: nothing affected — clean tree vs origin/main, EXIT=0_
+- [x] Run `nx run rhino-cli:test:unit`. Must pass at baseline.
+      _Date 2026-04-27 / Status: done / Files: none / Notes: all 13 packages pass_
+- [x] Run `nx run rhino-cli:test:integration`. Must pass at baseline.
+      _Date 2026-04-27 / Status: done (preexisting bug fixed) / Files: specs/apps/rhino/cli/gherkin/docs-validate-mermaid.feature, apps/rhino-cli/cmd/steps_common_test.go, apps/rhino-cli/cmd/docs_validate_mermaid.integration_test.go / Notes: LR4 scenario fixture wrong — chain diagram (depth=4) now used; test passes_
+- [x] Run `nx run rhino-cli:validate:mermaid` on the current
       (governance-only) scan. Record violation/warning counts as
       baseline.
+      _Date 2026-04-27 / Status: done / Files: none / Notes: 0 violations, 0 warnings, 20 files, 110 blocks scanned_
 
 ## Phase 2 — Port `internal/mermaid/types.go`
 
@@ -195,7 +205,7 @@ contract.
 ## Phase 12 — Plan archival
 
 - [ ] `git mv plans/in-progress/2026-04-27__adopt-mermaid-checker-from-ose-public
-  plans/done/2026-04-27__adopt-mermaid-checker-from-ose-public`.
+plans/done/2026-04-27__adopt-mermaid-checker-from-ose-public`.
 - [ ] Update `plans/in-progress/README.md` to remove the entry.
 - [ ] Update `plans/done/README.md` to add the entry.
 - [ ] Commit: `chore(plans): archive adopt-mermaid-checker-from-ose-public plan`.
