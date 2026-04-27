@@ -178,7 +178,7 @@ A maintainer cloning ose-primer in mid-2026 to start a new AI product can:
 ## Prerequisite reading
 
 Every executor and reviewer of this plan reads the repo-wide AI primer
-**and** the four vendor primers first:
+**and** the four vendor primers and the testing companion first:
 
 - [AI Application Development](../../../docs/explanation/software-engineering/ai-application-development/README.md)
 - [Anthropic API Primer](../../../docs/explanation/software-engineering/ai-application-development/anthropic-api.md)
@@ -187,6 +187,8 @@ Every executor and reviewer of this plan reads the repo-wide AI primer
   (read for boundary framing — OpenAI is not used in this demo)
 - [Perplexity Sonar API Primer](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md)
   (read for boundary framing — Perplexity is not used in this demo)
+- [Testing AI Applications](../../../docs/explanation/software-engineering/ai-application-development/testing-ai-apps.md)
+  (cross-cutting testing playbook — implemented by PRD FR-15 family)
 
 This plan does not redefine RAG, embeddings, streaming, guardrails, or any of
 the vendor-specific vocabulary covered there.
@@ -199,7 +201,7 @@ the vendor-specific vocabulary covered there.
   primers.
 - **AI agents (`plan-executor`, `swe-python-dev`, `swe-typescript-dev`,
   `swe-rust-dev`, `swe-e2e-dev`)**: read this plan, the PRD, the tech-docs,
-  and the four primers to orient themselves; consume the delivery checklist
+  and the five primers to orient themselves; consume the delivery checklist
   as their step-by-step driver.
 - **Template consumers (cloners)**: benefit from a copy-paste-ready
   AI-desktop reference the day this plan lands.

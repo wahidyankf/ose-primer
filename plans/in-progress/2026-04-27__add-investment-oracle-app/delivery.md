@@ -4,6 +4,73 @@ Step-by-step phases. Each phase ends in a verifiable artifact. Tick items
 in order; push direct to `main` per Trunk Based Development
 ([git-push-default](../../../governance/development/workflow/git-push-default.md)).
 
+## Phase pre-0 — Manual prerequisites
+
+Steps that live outside this repository and must complete before Phase 0
+can begin. Each item is verifiable; see
+[plan README → Manual prerequisites](./README.md#manual-prerequisites-before-phase-0)
+for the rationale.
+
+### Vendor accounts and API keys
+
+- [ ] Create an Anthropic Console account at <https://console.anthropic.com>
+      and generate an API key
+- [ ] Create a Google AI Studio account at <https://aistudio.google.com>
+      and generate a Gemini API key
+- [ ] Create a Perplexity API key at <https://www.perplexity.ai/settings/api>
+- [ ] Add billing details / payment method per vendor (free tiers cover
+      demo use; production will hit pay-as-you-go)
+- [ ] Verify each key by hitting the corresponding `/health` or models
+      endpoint:
+      `curl -sH "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01" https://api.anthropic.com/v1/models | jq .data[0].id` ;
+      `curl -s "https://generativelanguage.googleapis.com/v1beta/models?key=$GOOGLE_API_KEY" | jq .models[0].name` ;
+      `curl -sH "Authorization: Bearer $PERPLEXITY_API_KEY" -d '{"model":"sonar","messages":[{"role":"user","content":"ping"}]}' -H "Content-Type: application/json" https://api.perplexity.ai/chat/completions | jq .choices[0].message.content`
+
+### Platform tooling (manual; cannot be auto-installed)
+
+- [ ] Install Volta: `curl https://get.volta.sh | bash`
+- [ ] Install Docker Desktop / OrbStack / Colima; verify `docker info`
+      exits 0
+- [ ] **macOS**: install Xcode Command Line Tools — `xcode-select --install`
+- [ ] **Windows**: install Visual Studio Build Tools (Desktop dev with C++)
+- [ ] **Linux**: `sudo apt install build-essential libwebkit2gtk-4.1-dev libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev`
+- [ ] Install Rust toolchain — `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh` (or use the team's rustup-init); verify `rustc --version` ≥ 1.80
+- [ ] Install Python 3.13 via pyenv (or distro package); verify
+      `python3.13 --version`
+- [ ] Install `ruff` and `pyright` (Phase 0a `doctor --fix` will also
+      handle these, but verify availability up front)
+
+### Hardware
+
+- [ ] Verify ≥ 16 GB RAM (`vm_stat` / `free -g` / Task Manager)
+- [ ] Verify ≥ 20 GB free disk on the partition holding the repo
+
+### Network egress
+
+- [ ] Verify outbound HTTPS to:
+      `api.anthropic.com`, `generativelanguage.googleapis.com`,
+      `api.perplexity.ai`, `registry.npmjs.org`, `pypi.org`,
+      `crates.io`, `docker.io`, `github.com`
+      via `curl -sI -o /dev/null -w "%{http_code}\n" https://<host>` for
+      each (any 200/301/302/403 is fine — 0 / DNS-fail / timeout fails)
+
+### Optional — Indonesian residency (`bedrock-jakarta-*`)
+
+- [ ] AWS account ready with Bedrock access enabled in
+      `ap-southeast-3` region
+- [ ] Bedrock model access requested + approved for Claude Opus 4.7
+      (in-region) and / or CRIS-eligible Claude models
+- [ ] AWS access key or IAM role with `bedrock:InvokeModel` and
+      `bedrock:InvokeModelWithResponseStream`
+
+### Optional — Production deployment to Indonesian users
+
+- [ ] Komdigi PSE Private Scope registration filed (PP 71/2019)
+- [ ] UU PDP Article 56 cross-border transfer template (SCC) signed
+      with each vendor, OR explicit-consent UI flow drafted
+- [ ] DPIA covering Anthropic + Google + Perplexity (when
+      `WEB_GROUNDING_ENABLED=true`) authored
+
 ## Phase 0 — Prerequisite reading
 
 - [ ] Read [AI Application Development primer](../../../docs/explanation/software-engineering/ai-application-development/README.md)
@@ -13,6 +80,8 @@ in order; push direct to `main` per Trunk Based Development
       (boundary framing only; not used in this demo)
 - [ ] Read [Perplexity Sonar API Primer](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md)
       (boundary framing only; not used in this demo)
+- [ ] Read [Testing AI Applications](../../../docs/explanation/software-engineering/ai-application-development/testing-ai-apps.md)
+      (cross-cutting testing playbook — directly implemented by PRD FR-15 family)
 - [ ] Read this plan's [README](./README.md), [BRD](./brd.md), [PRD](./prd.md), [tech-docs](./tech-docs.md)
 - [ ] Inspect the four shipped fixture PDFs in [`fixture/`](./fixture/)
 
@@ -142,7 +211,7 @@ in order; push direct to `main` per Trunk Based Development
       Reads `PERPLEXITY_API_KEY`. Single Sonar call with
       `search_recency_filter: "month"` and a default
       `search_domain_filter: ["sec.gov", "wsj.com", "reuters.com",
-  "bloomberg.com"]`.
+"bloomberg.com"]`.
 - [ ] Wire `WebGrounder.ground()` into `ReportGenerator.generate()` and
       the LLM-edit handler when `web_grounding=true` is requested.
 - [ ] Add migration for the `web_citations` JSONB column on
