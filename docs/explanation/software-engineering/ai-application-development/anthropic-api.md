@@ -314,7 +314,7 @@ also a candidate (see [Perplexity primer](./perplexity-api.md)).
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
 flowchart LR
     USER([User message]):::user --> CLAUDE{{Claude}}
-    CLAUDE -->|server-side<br/>web_search /<br/>web_fetch /<br/>code_execution} SERVER[Anthropic-hosted<br/>execution]:::server
+    CLAUDE -->|server-side<br/>web_search /<br/>web_fetch /<br/>code_execution| SERVER[Anthropic-hosted<br/>execution]:::server
     SERVER -->|results inline| CLAUDE
     CLAUDE -->|client-side<br/>computer / text_editor /<br/>bash / custom function| CLIENT[Your app<br/>executes]:::client
     CLIENT -->|tool_result block| CLAUDE

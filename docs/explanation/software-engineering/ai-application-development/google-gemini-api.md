@@ -345,11 +345,13 @@ include a Gemini-specific UU PDP statement. Foreign electronic system
 providers reaching Indonesian users must additionally register as **PSE
 Private Scope** (PP 71/2019).
 
-If strict on-shore inference is mandatory, Gemini is currently the
-**weakest** of the four vendors for Indonesia residency. Pair an
-Indonesia-resident chat model (Anthropic Claude on Bedrock Jakarta) with
-Gemini's embedding endpoint accessed via Singapore — and account for the
-cross-border transfer of embedding payloads in your DPIA.
+If strict on-shore inference is mandatory, Gemini is **second-weakest**
+for Indonesia residency among the four vendors covered here — Singapore
+(`asia-southeast1`) is the closest available region, only Perplexity is
+worse (US-only). Pair an Indonesia-resident chat model (Anthropic Claude
+on Bedrock Jakarta) with Gemini's embedding endpoint accessed via
+Singapore — and account for the cross-border transfer of embedding
+payloads in your DPIA.
 
 ## Reference cost (2026-Q2)
 

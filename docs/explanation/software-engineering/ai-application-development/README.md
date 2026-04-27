@@ -9,7 +9,6 @@ tags:
   - rag
   - embeddings
   - streaming
-  - openrouter
   - pgvector
   - guardrails
   - evaluation
@@ -89,8 +88,8 @@ Two things follow:
   that document into the messages — see §7 RAG.
 
 In this repo's AI demos the LLM is reached through each vendor's official SDK
-directly — Anthropic, Google, Perplexity. There is no shared proxy in the
-critical path. §10 covers the rationale.
+directly — Anthropic, Google, OpenAI, Perplexity. There is no shared proxy in
+the critical path. §10 covers the rationale.
 
 ## 2. Tokens, context windows, and why size matters
 
@@ -536,30 +535,30 @@ Three operational realities to know:
 
 ## 16. Glossary
 
-| Term               | Plain definition                                                                                                                  |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| LLM                | Large language model. Statistical text generator behind every chat endpoint.                                                      |
-| Token              | Sub-word unit. Models bill per token, both for input and output.                                                                  |
-| Context window     | Maximum tokens per call (input + output). Claude Haiku 4.5 = 200k.                                                                |
-| Embedding          | Fixed-size numeric vector encoding meaning. Demos use 768-dim vectors from `gemini-embedding-001`.                                |
-| Cosine similarity  | Dot product of two unit vectors. Measures meaning closeness; range [-1, 1].                                                       |
-| Vector DB          | Storage that supports fast top-k similarity queries. Default in this repo: Postgres + pgvector.                                   |
-| Chunk              | A bounded slice of a document, embedded as one vector.                                                                            |
-| RAG                | Retrieval-Augmented Generation. Retrieve chunks, paste into prompt, generate answer.                                              |
-| top-k              | The number of best-matching chunks to return from a similarity query (typically 4).                                               |
-| Prompt             | The assembled list of messages sent to the chat endpoint.                                                                         |
-| System message     | Persona / behaviour configuration message at the start of `messages`.                                                             |
-| Streaming          | Token-by-token response delivery via SSE.                                                                                         |
-| SSE                | Server-Sent Events. One-way HTTP streaming with `text/event-stream`.                                                              |
-| Session            | Server-persisted chat thread. Survives reload because history lives in the DB.                                                    |
-| Multi-document RAG | Retrieval scoped to multiple source documents in one query.                                                                       |
-| Vendor primer      | Per-vendor extension of this doc covering install, request shape, streaming, mocking. Three exist: Anthropic, Gemini, Perplexity. |
-| Guardrail          | Pre-/post-model layer enforcing rate limit, content rules, or budget limits.                                                      |
-| Hallucination      | Model output that is fluent but factually wrong.                                                                                  |
-| Eval               | Measurement of LLM output quality against a rubric or held-out test set. Distinct from unit tests.                                |
-| Token budget       | Per-session or per-day cap on tokens consumed; demos reject with `429 token_budget_exceeded`.                                     |
-| Mocked-LLM test    | Test that intercepts the LLM call and returns a fixture so CI is deterministic and free.                                          |
-| Tokenizer          | Converts strings to token ids. Different models use different tokenizers; `tiktoken` ships several.                               |
+| Term               | Plain definition                                                                                                                         |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| LLM                | Large language model. Statistical text generator behind every chat endpoint.                                                             |
+| Token              | Sub-word unit. Models bill per token, both for input and output.                                                                         |
+| Context window     | Maximum tokens per call (input + output). Claude Haiku 4.5 = 200k.                                                                       |
+| Embedding          | Fixed-size numeric vector encoding meaning. Demos use 768-dim vectors from `gemini-embedding-001`.                                       |
+| Cosine similarity  | Dot product of two unit vectors. Measures meaning closeness; range [-1, 1].                                                              |
+| Vector DB          | Storage that supports fast top-k similarity queries. Default in this repo: Postgres + pgvector.                                          |
+| Chunk              | A bounded slice of a document, embedded as one vector.                                                                                   |
+| RAG                | Retrieval-Augmented Generation. Retrieve chunks, paste into prompt, generate answer.                                                     |
+| top-k              | The number of best-matching chunks to return from a similarity query (typically 4).                                                      |
+| Prompt             | The assembled list of messages sent to the chat endpoint.                                                                                |
+| System message     | Persona / behaviour configuration message at the start of `messages`.                                                                    |
+| Streaming          | Token-by-token response delivery via SSE.                                                                                                |
+| SSE                | Server-Sent Events. One-way HTTP streaming with `text/event-stream`.                                                                     |
+| Session            | Server-persisted chat thread. Survives reload because history lives in the DB.                                                           |
+| Multi-document RAG | Retrieval scoped to multiple source documents in one query.                                                                              |
+| Vendor primer      | Per-vendor extension of this doc covering install, request shape, streaming, mocking. Four exist: Anthropic, Gemini, OpenAI, Perplexity. |
+| Guardrail          | Pre-/post-model layer enforcing rate limit, content rules, or budget limits.                                                             |
+| Hallucination      | Model output that is fluent but factually wrong.                                                                                         |
+| Eval               | Measurement of LLM output quality against a rubric or held-out test set. Distinct from unit tests.                                       |
+| Token budget       | Per-session or per-day cap on tokens consumed; demos reject with `429 token_budget_exceeded`.                                            |
+| Mocked-LLM test    | Test that intercepts the LLM call and returns a fixture so CI is deterministic and free.                                                 |
+| Tokenizer          | Converts strings to token ids. Different models use different tokenizers; `tiktoken` ships several.                                      |
 
 ## 17. Where this is referenced
 

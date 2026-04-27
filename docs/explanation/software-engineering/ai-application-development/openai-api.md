@@ -388,8 +388,11 @@ flowchart TD
 ## Indonesia data residency
 
 For products subject to Indonesian regulation (UU PDP No. 27/2022; OJK
-POJK 11/POJK.03/2022; BSSN/Komdigi PSE registration), OpenAI is the
-**most constrained** of the four vendors:
+POJK 11/POJK.03/2022; BSSN/Komdigi PSE registration), OpenAI sits in
+the **middle** of the four vendors — better than Perplexity (US-only)
+but weaker than Anthropic (Bedrock Jakarta in-region for Opus 4.7),
+with Singapore (Azure OpenAI Southeast Asia) as the closest available
+region:
 
 1. **Direct OpenAI API has no Indonesian region.** `api.openai.com` is
    a US endpoint. OpenAI's Asia data-residency programme (May 2025)
