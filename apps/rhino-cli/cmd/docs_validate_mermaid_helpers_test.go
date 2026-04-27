@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 	"path/filepath"
+	"slices"
 	"testing"
 )
 
@@ -183,6 +184,27 @@ func TestRunValidateMermaid_WithPositionalArgs(t *testing.T) {
 }
 
 // writableBuffer is a bytes.Buffer that implements io.Writer for use with cobra.
+func TestCollectMDDefaultDirs_IncludesPlans(t *testing.T) {
+	dir := t.TempDir()
+	plansSub := filepath.Join(dir, "plans", "in-progress", "sample")
+	if err := os.MkdirAll(plansSub, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	planMD := filepath.Join(plansSub, "diagram.md")
+	if err := os.WriteFile(planMD, []byte("# plan\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	files, err := collectMDDefaultDirs(dir)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if !slices.Contains(files, planMD) {
+		t.Errorf("plans/ not scanned by default; got files: %v", files)
+	}
+}
+
 type writableBuffer struct {
 	data []byte
 }

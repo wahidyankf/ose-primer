@@ -13,11 +13,12 @@ import (
 )
 
 var (
-	validateMermaidStagedOnly  bool
-	validateMermaidChangedOnly bool
-	validateMermaidMaxLabelLen int
-	validateMermaidMaxWidth    int
-	validateMermaidMaxDepth    int
+	validateMermaidStagedOnly       bool
+	validateMermaidChangedOnly      bool
+	validateMermaidMaxLabelLen      int
+	validateMermaidMaxWidth         int
+	validateMermaidMaxDepth         int
+	validateMermaidMaxSubgraphNodes int
 )
 
 // docsValidateMermaidFn and readFileFn are declared in testable.go for dependency injection.
@@ -29,11 +30,9 @@ var validateMermaidCmd = &cobra.Command{
 
 Three rules are enforced on flowchart and graph blocks:
   1. Node label length must not exceed --max-label-len (default 30)
-  2. Horizontal dimension must not exceed --max-width (default 4).
-     Horizontal is direction-aware: depth for graph LR/RL, span for graph TD/TB/BT.
-     Exception: when BOTH horizontal > max-width AND vertical > max-depth, emits a
-     warning instead of an error. With max-depth=0 (default, no limit) this path
-     is inactive.
+  2. Max parallel nodes at one rank must not exceed --max-width (default 4)
+     Exception: when BOTH span > max-width AND depth > max-depth, emits a
+     warning instead of an error (both-exceeded path).
   3. Each mermaid code block must contain exactly one diagram
 
 Non-flowchart Mermaid types (sequenceDiagram, classDiagram, gantt, etc.) are
@@ -68,9 +67,11 @@ func init() {
 	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxLabelLen, "max-label-len", 30,
 		"max characters in a node label (default 30 ~ Mermaid wrappingWidth:200px at 16px font)")
 	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxWidth, "max-width", 4,
-		"max nodes on the horizontal axis (direction-aware: depth for LR/RL, span for TD/TB/BT)")
+		"max nodes at the same rank")
 	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxDepth, "max-depth", 0,
-		"vertical axis limit for the complex_diagram warning (0 = no limit; set to enable)")
+		"depth threshold for the both-exceeded warning: when span>max-width AND depth>max-depth, emit warning not error")
+	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxSubgraphNodes, "max-subgraph-nodes", 6,
+		"max direct child nodes per subgraph; emits a subgraph_density warning when exceeded")
 }
 
 func runValidateMermaid(cmd *cobra.Command, args []string) error {
@@ -119,14 +120,14 @@ func runValidateMermaid(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	maxDepth := validateMermaidMaxDepth
-	if maxDepth <= 0 {
-		maxDepth = math.MaxInt
+	if validateMermaidMaxDepth == 0 {
+		validateMermaidMaxDepth = math.MaxInt
 	}
 	opts := mermaid.ValidateOptions{
-		MaxLabelLen: validateMermaidMaxLabelLen,
-		MaxWidth:    validateMermaidMaxWidth,
-		MaxDepth:    maxDepth,
+		MaxLabelLen:      validateMermaidMaxLabelLen,
+		MaxWidth:         validateMermaidMaxWidth,
+		MaxDepth:         validateMermaidMaxDepth,
+		MaxSubgraphNodes: validateMermaidMaxSubgraphNodes,
 	}
 	result := docsValidateMermaidFn(allBlocks, opts)
 	result.FilesScanned = len(fileSet)
@@ -201,12 +202,13 @@ func collectMDFiles(repoRoot string, paths []string) ([]string, error) {
 	return files, nil
 }
 
-// collectMDDefaultDirs scans docs/, governance/, .claude/, and root *.md files.
+// collectMDDefaultDirs scans docs/, governance/, .claude/, plans/, and root *.md files.
 func collectMDDefaultDirs(repoRoot string) ([]string, error) {
 	dirs := []string{
 		filepath.Join(repoRoot, "docs"),
 		filepath.Join(repoRoot, "governance"),
 		filepath.Join(repoRoot, ".claude"),
+		filepath.Join(repoRoot, "plans"),
 	}
 	var files []string
 	for _, dir := range dirs {
