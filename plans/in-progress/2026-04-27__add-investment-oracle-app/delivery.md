@@ -273,7 +273,7 @@ started via `nx run investment-oracle-be:dev` (port 8501 by default).
 - [ ] Manual edit (PATCH report):
       `curl -s -o /dev/null -w "%{http_code}" -X PATCH http://localhost:8501/api/v1/analyses/<id>/report -H 'Content-Type: application/json' -d '{"content_md":"# Edited"}'`
       → expect `200`
-- [ ] Confirm all 11 endpoints documented in
+- [ ] Confirm all 12 endpoints documented in
       [tech-docs.md](./tech-docs.md#openapi-endpoints) have been exercised above;
       check for any 500 responses in the sidecar logs
 
@@ -494,10 +494,17 @@ after Phase 16 FE e2e tests pass.
 - [ ] Verify all CI checks pass (green status)
 - [ ] If any CI check fails, fix the root cause immediately and push a
       follow-up commit; do NOT proceed until CI is green
-- [ ] Move this plan to `plans/done/` once Phase 22 manual smoke passes,
-      CI is green, and the push is on `main`
 
-## Phase 25 — Post-merge
+## Phase 25 — Plan archival
+
+- [ ] Verify ALL delivery checklist items above are ticked
+- [ ] Verify CI is green on `main`
+- [ ] `git mv plans/in-progress/2026-04-27__add-investment-oracle-app plans/done/2026-04-27__add-investment-oracle-app`
+- [ ] Update `plans/in-progress/README.md` — remove the plan entry
+- [ ] Update `plans/done/README.md` — add the plan entry with completion date
+- [ ] Commit: `chore(plans): move investment-oracle to done`
+
+## Phase 26 — Post-merge
 
 - [ ] Update `plans/ideas.md` and `plans/backlog/` with follow-up notes
       (export to PDF / DOCX, polyglot backend ports, real moderation

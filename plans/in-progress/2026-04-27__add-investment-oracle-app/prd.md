@@ -108,7 +108,7 @@ the analysis is deleted first.
 **FR-5**: `POST /api/v1/analyses` creates a named analysis and attaches a
 list of source ids. `GET /api/v1/analyses/{id}` returns the analysis plus
 its current report (if any) and revision count. `DELETE /api/v1/analyses/{id}`
-cascades to its report, revisions, and messages.
+cascades to its report, revisions, and token_usage rows.
 
 **FR-5a**: An analysis attaches **N** sources (≥ 1). Retrieval queries
 pgvector across the union of chunks belonging to attached sources, ordered
@@ -515,6 +515,20 @@ Feature: Manual smoke against shipped fixtures
     Then each upload returns 201
     And the total chunk count is between 100 and 2000
     And no source has zero chunks
+```
+
+### Revision history
+
+```gherkin
+Feature: Revision history
+
+  Scenario: Restore a previous report revision
+    Given an analysis has three revisions (generation, manual_edit, llm_edit)
+    When the user POSTs /api/v1/analyses/{id}/report/revisions/{rev1_id}:restore
+    Then the response is 200
+    And the database has a new row in "report_revisions" with kind="restore"
+    And the latest report content_md matches the restored revision's content_md
+    And the original revision rows are preserved (not deleted)
 ```
 
 ## Out (non-requirements)
