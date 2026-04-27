@@ -486,7 +486,7 @@ Three layers, all of which the AI demos in this repo use:
   **what we sent** (model id, prompt content, retrieval results) — not what came
   back. Demos toggle this with a `MOCK_LLM_PROVIDERS=true` flag that intercepts
   outbound `httpx` traffic to every vendor base URL (`api.anthropic.com`,
-  `generativelanguage.googleapis.com`, `api.perplexity.ai`).
+  `generativelanguage.googleapis.com`, `api.openai.com`, `api.perplexity.ai`).
 - **Eval suites** (out of scope for most demos): hand-curated inputs scored against
   rubric (factuality, format adherence, refusal correctness). Run periodically, not
   on every CI build, because they cost real money. Tools: Promptfoo, Langfuse,
@@ -510,6 +510,8 @@ Pricing is per-million tokens, charged separately for input and output. Indicati
 | `gemini-2.5-flash-lite` | Google     |      0.10 |       0.40 |
 | `gemini-2.5-flash`      | Google     |      0.30 |       2.50 |
 | `gemini-embedding-001`  | Google     |      0.15 |          — |
+| `gpt-5.5`               | OpenAI     |      5.00 |      30.00 |
+| `gpt-5.4-mini`          | OpenAI     |      0.75 |       4.50 |
 | `sonar`                 | Perplexity |      1.00 |       1.00 |
 
 Perplexity also charges a per-request search fee on top of token cost
@@ -534,9 +536,9 @@ Three operational realities to know:
 
 - **`temperature=0`** reduces variance but does not eliminate it across providers,
   versions, or even minor backend updates. Treat it as a hint, not a guarantee.
-- **Provider prompt caching** (Anthropic) and context caching (Gemini) can
-  knock 50–90% off cost on repeated prefixes. Out of scope for most demos but
-  worth knowing it exists; see the vendor primers for the per-vendor flag.
+- **Provider prompt caching** (Anthropic, OpenAI) and context caching (Gemini)
+  can knock 50–90% off cost on repeated prefixes. Out of scope for most demos
+  but worth knowing it exists; see the vendor primers for the per-vendor flag.
 - **CI must not call real models** unless you have explicit dispatch + budget
   awareness. Demos in this repo default every test target to
   `MOCK_LLM_PROVIDERS=true`. Real-vendor smoke runs are workflow-dispatch only.
@@ -575,8 +577,9 @@ primer as prerequisite reading. Examples:
 
 - `plans/in-progress/2026-04-27__add-investment-oracle-app/` — adds the
   `investment-oracle` desktop demo (Tauri 2 shell, Python/FastAPI sidecar,
-  React+Vite FE, Playwright E2E pair); cites this document and all three
-  vendor primers in its delivery checklist as required reading.
+  React+Vite FE, Playwright E2E pair); cites this document and all four
+  vendor primers plus the testing companion in its delivery checklist as
+  required reading.
 
 Future AI plans should cite this document the same way and may extend it with
 domain-specific addenda rather than redefining the same vocabulary inline.
