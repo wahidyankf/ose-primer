@@ -119,16 +119,21 @@ contract.
       _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/internal/mermaid/validator_test.go / Notes: adds SubgraphDensity table tests and AmpFanout test_
 - [x] Run `nx run rhino-cli:test:unit`. All validator tests pass.
       _Date 2026-04-27 / Status: done / Files: none / Notes: all 13 packages pass; SubgraphDensity 4/4 scenarios pass_
-- [ ] Commit: `feat(rhino-cli): add subgraph-density rule and direction-mapped warning fields`
-- [ ] Push direct to main.
+- [x] Commit: `feat(rhino-cli): add subgraph-density rule and direction-mapped warning fields`
+      _Date 2026-04-27 / Status: done / Files: validator.go, validator_test.go, delivery.md / Notes: commit ce0b08250_
+- [x] Push direct to main.
+      _Date 2026-04-27 / Status: done / Files: none / Notes: ce0b08250 on origin/main_
 
 ## Phase 5 — Port `internal/mermaid/reporter.go`
 
-- [ ] Replace `reporter.go` with ose-public version. Confirm
+- [x] Replace `reporter.go` with ose-public version. Confirm
       text/JSON/markdown formatters all render `subgraph_density`
       warnings.
-- [ ] Replace `reporter_test.go` with ose-public version.
-- [ ] Run `nx run rhino-cli:test:unit`. All reporter tests pass.
+      _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/internal/mermaid/reporter.go / Notes: warningDetail adds WarningSubgraphDense case; jsonWarning adds SubgraphLabel/NodeCount/MaxNodes fields_
+- [x] Replace `reporter_test.go` with ose-public version.
+      _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/internal/mermaid/reporter_test.go / Notes: adds SubgraphDenseWarning and SubgraphDenseUnnamedLabel tests_
+- [x] Run `nx run rhino-cli:test:unit`. All reporter tests pass.
+      _Date 2026-04-27 / Status: done / Files: none / Notes: all 13 packages pass_
 - [ ] Commit: `feat(rhino-cli): render subgraph_density in all three reporter formats`
 - [ ] Push direct to main.
 
