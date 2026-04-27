@@ -80,20 +80,27 @@ contract.
       _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/internal/mermaid/types.go / Notes: doc comment updated_
 - [x] Run `go build ./...` from `apps/rhino-cli/`. Must compile.
       _Date 2026-04-27 / Status: done / Files: none / Notes: go build exits 0_
-- [ ] Commit: `feat(rhino-cli): add Subgraph types and density warning kind to mermaid package`
-- [ ] `git push origin main` (or `git push origin HEAD:main` from
+- [x] Commit: `feat(rhino-cli): add Subgraph types and density warning kind to mermaid package`
+      _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/internal/mermaid/types.go / Notes: commit 679230f14 already in git history_
+- [x] `git push origin main` (or `git push origin HEAD:main` from
       worktree per Standard 6).
+      _Date 2026-04-27 / Status: done / Files: none / Notes: 679230f14 already on origin/main at plan start_
 
 ## Phase 3 — Port `internal/mermaid/parser.go`
 
-- [ ] Replace `apps/rhino-cli/internal/mermaid/parser.go` with the
+- [x] Replace `apps/rhino-cli/internal/mermaid/parser.go` with the
       ose-public version, preserving the package import path.
-- [ ] Verify `slices` import resolves (Go ≥ 1.21).
-- [ ] Replace `apps/rhino-cli/internal/mermaid/parser_test.go` with
+      _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/internal/mermaid/parser.go / Notes: full replacement with subgraph-aware version_
+- [x] Verify `slices` import resolves (Go ≥ 1.21).
+      _Date 2026-04-27 / Status: done / Files: none / Notes: go.mod uses go 1.26, slices resolves fine_
+- [x] Replace `apps/rhino-cli/internal/mermaid/parser_test.go` with
       the ose-public version.
-- [ ] Run `nx run rhino-cli:test:unit`. All parser tests pass.
-- [ ] Confirm coverage on the package stays ≥ 90% via the test
+      _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/internal/mermaid/parser_test.go / Notes: adds SubgraphCapture, NestedOuterDirectChildren, AmpExpansion tests_
+- [x] Run `nx run rhino-cli:test:unit`. All parser tests pass.
+      _Date 2026-04-27 / Status: done / Files: none / Notes: 80 tests pass, all 13 packages ok_
+- [x] Confirm coverage on the package stays ≥ 90% via the test
       output's coverage line.
+      _Date 2026-04-27 / Status: done / Files: none / Notes: mermaid package 95.9% total_
 - [ ] Commit: `feat(rhino-cli): port subgraph-aware mermaid parser from ose-public`
 - [ ] Push direct to main.
 
