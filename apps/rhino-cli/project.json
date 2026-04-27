@@ -89,9 +89,16 @@
       "outputs": []
     },
     "validate:mermaid": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go docs validate-mermaid governance/ .claude/",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go docs validate-mermaid",
       "cache": true,
-      "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/governance/**/*.md", "{workspaceRoot}/.claude/**/*.md"],
+      "inputs": [
+        "{projectRoot}/**/*.go",
+        "{workspaceRoot}/docs/**/*.md",
+        "{workspaceRoot}/governance/**/*.md",
+        "{workspaceRoot}/.claude/**/*.md",
+        "{workspaceRoot}/plans/**/*.md",
+        "{workspaceRoot}/*.md"
+      ],
       "outputs": []
     }
   }
