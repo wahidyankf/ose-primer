@@ -397,7 +397,10 @@ def mock_gemini_embed(httpx_mock):
 ```
 
 Real-LLM smoke tests live behind a workflow-dispatch flag, not on every CI
-run. See the main primer §13 for the full determinism strategy.
+run. See the main primer §13 for the determinism rationale and the
+[Testing AI Applications](./testing-ai-apps.md) primer for the full
+playbook (unit / integration / e2e cassette patterns, vendor-mocking
+flow, real-vendor smoke wiring).
 
 ## Related
 
@@ -409,5 +412,7 @@ run. See the main primer §13 for the full determinism strategy.
   and built-in tools
 - [Perplexity API Primer](./perplexity-api.md) — when web-grounded answers are
   the requirement
+- [Testing AI Applications](./testing-ai-apps.md) — cross-cutting
+  testing playbook (unit / integration / e2e cassette patterns)
 - [Gemini API docs](https://ai.google.dev/gemini-api/docs) — authoritative
   reference, supersedes anything here on conflict

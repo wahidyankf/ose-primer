@@ -427,7 +427,10 @@ Tests then assert on:
   SSE / JSON, schema correct);
 - never on the **prose** of the LLM output.
 
-See the main primer §13 for the full determinism strategy.
+See the main primer §13 for the determinism rationale and the
+[Testing AI Applications](./testing-ai-apps.md) primer for the full
+playbook (unit / integration / e2e cassette patterns, vendor-mocking
+flow, real-vendor smoke wiring).
 
 ## Related
 
@@ -439,5 +442,7 @@ See the main primer §13 for the full determinism strategy.
   and built-in tools
 - [Perplexity API Primer](./perplexity-api.md) — when web-grounded answers are
   the requirement
+- [Testing AI Applications](./testing-ai-apps.md) — cross-cutting
+  testing playbook (unit / integration / e2e cassette patterns)
 - [Anthropic API docs](https://platform.claude.com/docs/) — authoritative
   reference, supersedes anything here on conflict
