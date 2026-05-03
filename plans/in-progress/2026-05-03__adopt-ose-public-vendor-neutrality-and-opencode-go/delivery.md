@@ -40,12 +40,21 @@ the GitHub UI URLs in tech-docs.md.
 - [ ] Run `nx affected -t typecheck lint test:quick spec-coverage` from working tree root.
       Capture failures (if any) in `local-temp/baseline.txt`. Must be clean.
       _Date **/ Status:** / Files: **/ Notes:**_
+- [ ] Fix ALL failures surfaced by baseline gates including any preexisting failures
+      unrelated to this plan, per the [Root Cause Orientation principle](../../../governance/principles/general/root-cause-orientation.md).
+      Do not defer preexisting failures — fix-all-issues is non-negotiable.
+      _Date **/ Status:** / Files: **/ Notes:**_
 - [ ] Run `nx run rhino-cli:test:unit`. Must pass at baseline.
       _Date **/ Status:** / Files: **/ Notes:**_
 - [ ] Run `nx run rhino-cli:test:integration`. Must pass at baseline.
       _Date **/ Status:** / Files: **/ Notes:**_
 - [ ] Snapshot current state: `git rev-parse HEAD > local-temp/baseline-sha.txt`.
       _Date **/ Status:** / Files: **/ Notes:**_
+- [ ] Snapshot pre-existing dual-population state of the OpenCode binding directories:
+      `ls -la .opencode/agent .opencode/agents .opencode/skill .opencode/skills 2>&1 | tee local-temp/opencode-baseline.txt`.
+      W1 must reconcile this state to a single canonical plural directory; baseline lets
+      the executor see what's already plural-correct vs still-singular.
+      _Date **/ Status:** / Files: local-temp/opencode-baseline.txt / Notes:_
 
 ## Phase 1 — W1: Sync correctness (singular → plural)
 
@@ -207,13 +216,13 @@ the GitHub UI URLs in tech-docs.md.
 
 ### 3C — Nx target wiring + docs
 
-- [ ] Add `validate:vendor-audit` Nx target to `apps/rhino-cli/project.json`.
+- [ ] Add `validate:governance-vendor-audit` Nx target to `apps/rhino-cli/project.json`.
       Cacheable; inputs include `governance/**`. Command:
       `rhino-cli governance vendor-audit governance/`.
       \_Date **/ Status:** / Files: apps/rhino-cli/project.json / Notes: \_\_\_
 - [ ] Update `apps/rhino-cli/README.md` with a "Governance vendor-audit" subsection.
       \_Date **/ Status:** / Files: apps/rhino-cli/README.md / Notes: \_\_\_
-- [ ] Verify `nx run rhino-cli:validate:vendor-audit` runs (will return violations until W4).
+- [ ] Verify `nx run rhino-cli:validate:governance-vendor-audit` runs (will return violations until W4).
       _Date **/ Status:** / Files: **/ Notes:**_
 - [ ] Commit: `feat(rhino-cli): add governance vendor-audit scanner with \\bSkills\\b term`.
       _Date **/ Status:** / Files: **/ Notes:**_
@@ -246,7 +255,7 @@ the GitHub UI URLs in tech-docs.md.
 
 ### 4C — Governance prose remediation
 
-- [ ] Run `nx run rhino-cli:validate:vendor-audit`. Capture full violation list to
+- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit`. Capture full violation list to
       `local-temp/vendor-audit-baseline.txt`.
       \_Date **/ Status:** / Files: local-temp/vendor-audit-baseline.txt / Notes: \_\_\_
 - [ ] Group violations by directory. Plan remediation order: principles →
@@ -266,7 +275,7 @@ the GitHub UI URLs in tech-docs.md.
 - [ ] Update `governance/development/agents/model-selection.md` to use capability
       tiers as canonical vocabulary; vendor IDs only inside `binding-example` fences.
       \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Final sweep: `nx run rhino-cli:validate:vendor-audit` returns 0 violations.
+- [ ] Final sweep: `nx run rhino-cli:validate:governance-vendor-audit` returns 0 violations.
       _Date **/ Status:** / Files: **/ Notes:**_
 
 ## Phase 5 — W5: Cross-vendor parity gate
@@ -294,10 +303,20 @@ the GitHub UI URLs in tech-docs.md.
 
 ### 5C — Nx target + pre-push wiring
 
+- [ ] Create `apps/rhino-cli/scripts/validate-cross-vendor-parity.sh` by porting
+      verbatim from ose-public. The script (~135 lines) checks five invariants:
+      governance vendor-neutrality, AGENTS.md/CLAUDE.md vendor-neutrality, binding
+      sync no-op, agent count parity, color-translation map coverage, and
+      capability-tier map coverage. Mark executable: `chmod +x apps/rhino-cli/scripts/validate-cross-vendor-parity.sh`.
+      \_Date **/ Status:** / Files: apps/rhino-cli/scripts/validate-cross-vendor-parity.sh / Notes: \_\_\_
 - [ ] Add Nx target `validate:cross-vendor-parity` to `apps/rhino-cli/project.json`
-      (or top-level `package.json`). Invokes the five invariants.
+      with `"command": "bash apps/rhino-cli/scripts/validate-cross-vendor-parity.sh"`
+      and `"cache": false` (non-deterministic: reads `.opencode/agents/` count and runs sync).
       \_Date **/ Status:** / Files: apps/rhino-cli/project.json / Notes: \_\_\_
-- [ ] Add `nx affected -t validate:cross-vendor-parity` to `.husky/pre-push`.
+- [ ] Wire `validate:cross-vendor-parity` into `.husky/pre-push` using ose-public's
+      conditional file-pattern guard (fire only when `governance/**/*.md`, `AGENTS.md`,
+      `CLAUDE.md`, `.claude/agents/`, or `.opencode/agents/` changed). Port the
+      conditional `if [ -n "$RANGE" ]` block verbatim from ose-public's pre-push hook.
       \_Date **/ Status:** / Files: .husky/pre-push / Notes: \_\_\_
 - [ ] Run `nx run rhino-cli:validate:cross-vendor-parity`. Must return 0 findings.
       _Date **/ Status:** / Files: **/ Notes:**_
@@ -312,7 +331,7 @@ the GitHub UI URLs in tech-docs.md.
       `governance/conventions/structure/plans.md` with ose-public's stricter wording.
       Five-doc DEFAULT, four named single-file criteria.
       \_Date **/ Status:** / Files: governance/conventions/structure/plans.md / Notes: \_\_\_
-- [ ] Verify `nx run rhino-cli:validate:vendor-audit` still returns 0 violations.
+- [ ] Verify `nx run rhino-cli:validate:governance-vendor-audit` still returns 0 violations.
       _Date **/ Status:** / Files: **/ Notes:**_
 - [ ] Commit: `docs(plans): adopt ose-public's stricter five-doc default and four-criteria single-file rule`.
       _Date **/ Status:** / Files: **/ Notes:**_
@@ -323,8 +342,10 @@ the GitHub UI URLs in tech-docs.md.
       version for primer: rule says default `.claude/worktrees/<name>/`, no override.
       Document gitignore + parallel-safety rationale.
       \_Date **/ Status:** / Files: governance/conventions/structure/worktree-path.md / Notes: \_\_\_
-- [ ] Refresh `governance/development/workflow/worktree-setup.md` against ose-public.
-      Restore `created:` frontmatter where missing; update cross-references.
+- [ ] Refresh `governance/development/workflow/worktree-setup.md` body content against ose-public.
+      Do NOT import any `created:` or other date frontmatter fields per the
+      [No-Date-Metadata Convention](../../../governance/conventions/writing/no-date-metadata.md).
+      Update cross-references.
       \_Date **/ Status:** / Files: governance/development/workflow/worktree-setup.md / Notes: \_\_\_
 - [ ] Add a `## Worktrees` subsection to `AGENTS.md` linking to the new convention.
       \_Date **/ Status:** / Files: AGENTS.md / Notes: \_\_\_
@@ -332,7 +353,7 @@ the GitHub UI URLs in tech-docs.md.
       \_Date **/ Status:** / Files: CLAUDE.md / Notes: \_\_\_
 - [ ] Update `governance/conventions/structure/README.md` index to list `worktree-path.md`.
       \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Verify `nx run rhino-cli:validate:vendor-audit` still returns 0.
+- [ ] Verify `nx run rhino-cli:validate:governance-vendor-audit` still returns 0.
       _Date **/ Status:** / Files: **/ Notes:**_
 - [ ] Commit: `docs(governance): add worktree-path convention; refresh worktree-setup`.
       _Date **/ Status:** / Files: **/ Notes:**_
@@ -352,7 +373,7 @@ the GitHub UI URLs in tech-docs.md.
       \_Date **/ Status:** / Files: as above / Notes: \_\_\_
 - [ ] Update `governance/development/workflow/README.md` index.
       \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Verify `nx run rhino-cli:validate:vendor-audit` returns 0.
+- [ ] Verify `nx run rhino-cli:validate:governance-vendor-audit` returns 0.
       _Date **/ Status:** / Files: **/ Notes:**_
 - [ ] Commit: `docs(governance,workflows): refresh plan workflows; add ci-monitoring + ci-post-push-verification`.
       _Date **/ Status:** / Files: **/ Notes:**_
@@ -373,7 +394,7 @@ the GitHub UI URLs in tech-docs.md.
       \_Date **/ Status:** / Files: as above / Notes: \_\_\_
 - [ ] Update `governance/development/workflow/README.md` index to include TDD.
       \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Verify `nx run rhino-cli:validate:vendor-audit` returns 0.
+- [ ] Verify `nx run rhino-cli:validate:governance-vendor-audit` returns 0.
       _Date **/ Status:** / Files: **/ Notes:**_
 - [ ] Commit: `docs(governance): adopt test-driven-development convention from ose-public`.
       _Date **/ Status:** / Files: **/ Notes:**_
@@ -382,9 +403,13 @@ the GitHub UI URLs in tech-docs.md.
 
 - [ ] Run `nx affected -t typecheck lint test:quick spec-coverage`. All green.
       _Date **/ Status:** / Files: **/ Notes:**_
+- [ ] Fix ALL failures surfaced by final validation gates, including any flagged in
+      unaffected projects when running `nx run-many` if local changes are wide-reaching.
+      No deferral; root-cause-orient every failure.
+      _Date **/ Status:** / Files: **/ Notes:**_
 - [ ] Run `nx run rhino-cli:test:unit` and `nx run rhino-cli:test:integration`. Both green.
       _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Run `nx run rhino-cli:validate:vendor-audit`. 0 violations.
+- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit`. 0 violations.
       _Date **/ Status:** / Files: **/ Notes:**_
 - [ ] Run `nx run rhino-cli:validate:cross-vendor-parity` twice. 0 findings each run.
       _Date **/ Status:** / Files: **/ Notes:**_
@@ -405,6 +430,15 @@ the GitHub UI URLs in tech-docs.md.
 - [ ] Final commit: `chore(plans): archive 2026-05-03__adopt-ose-public-vendor-neutrality-and-opencode-go`.
       _Date **/ Status:** / Files: **/ Notes:**_
 - [ ] Push: `git push origin main` (or `git push origin HEAD:main` if from worktree branch).
+      _Date **/ Status:** / Files: **/ Notes:**_
+- [ ] Monitor GitHub Actions: open the workflow run for the pushed SHA via
+      `gh run list --branch main --limit 1` and `gh run watch <run-id>`.
+      _Date **/ Status:** / Files: **/ Notes:**_
+- [ ] If any CI workflow fails: investigate root cause, fix, commit, and push immediately.
+      Do not declare the plan done while `main` is red.
+      _Date **/ Status:** / Files: **/ Notes:**_
+- [ ] Verify final state: `gh run list --branch main --limit 5 --json status,conclusion,name | jq`
+      returns all `success`.
       _Date **/ Status:** / Files: **/ Notes:**_
 
 ## Iron Rules
