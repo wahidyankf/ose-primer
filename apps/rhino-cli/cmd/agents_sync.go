@@ -17,18 +17,20 @@ var syncAgentsCmd = &cobra.Command{
 	Use:   "sync",
 	Short: "Sync Claude Code agents to OpenCode format",
 	Long: `Convert .claude/ configuration to .opencode/ format with proper
-YAML frontmatter transformation and skills synchronization.
+YAML frontmatter transformation.
 
 This command performs the following operations:
-- Converts agents from .claude/agents/ to .opencode/agent/ with:
+- Converts agents from .claude/agents/ to .opencode/agents/ (plural,
+  per opencode.ai/docs/agents/) with:
   * Tools array → boolean map (Read → read: true)
   * Model mapping (sonnet/opus → zai-coding-plan/glm-5.1, haiku → zai-coding-plan/glm-5-turbo, empty → zai-coding-plan/glm-5.1)
   * Removal of Claude-specific fields (name, color)
   * Preservation of description, skills, and body content
 
-- Copies skills from .claude/skills/ to .opencode/skill/ with:
-  * Direct byte-for-byte copy (skills format is identical)
-  * SKILL.md → {skill-name}.md conversion`,
+Skills under .claude/skills/ are read natively by OpenCode per
+opencode.ai/docs/skills/, so no skill copy is performed by this
+command. The --skills-only flag is preserved as a no-op for CLI
+back-compat.`,
 	Example: `  # Sync all agents and skills
   rhino-cli agents sync
 

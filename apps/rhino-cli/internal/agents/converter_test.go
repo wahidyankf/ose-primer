@@ -8,6 +8,16 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// TestOpenCodeAgentDirIsPlural is the W1 regression guard: rhino-cli writes
+// converted OpenCode agents to .opencode/agents/ (plural) per
+// opencode.ai/docs/agents/. The legacy singular .opencode/agent/ is the
+// drift surface this constant exists to prevent.
+func TestOpenCodeAgentDirIsPlural(t *testing.T) {
+	if OpenCodeAgentDir != ".opencode/agents" {
+		t.Errorf("OpenCodeAgentDir = %q, want %q", OpenCodeAgentDir, ".opencode/agents")
+	}
+}
+
 func TestExtractFrontmatter(t *testing.T) {
 	tests := []struct {
 		name          string
