@@ -29,5 +29,6 @@ Technical reference documentation for the open-sharia-enterprise project. These 
 ### AI Models
 
 - [AI Model Benchmarks](./ai-model-benchmarks.md) - Cited benchmark scores for all Claude and GLM models used in this project, with confidence levels and source URLs
+- [Platform Bindings](./platform-bindings.md) - Catalog of platform-specific bindings (Claude Code, OpenCode, Cursor, Copilot, etc.) — the only place vendor names are allowed outside ` ```binding-example ` fences per the [Governance Vendor Independence convention](../../governance/conventions/structure/governance-vendor-independence.md)
 
 ---
