@@ -372,32 +372,203 @@ Revert the W8 commits; previous plan/CI workflow files restored.
 Revert the W9 commits; `test-driven-development.md` removed,
 cross-references reverted.
 
+## Workstream W10 — Convention completeness
+
+### Source
+
+- `ose-public/governance/conventions/structure/no-last-updated.md` (29 lines)
+- `ose-public/governance/conventions/structure/programming-language-docs-separation.md` (846 lines)
+
+### File-level porting map
+
+| File                                                                       | Action | Notes                                                                                                                                |
+| -------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `governance/conventions/structure/no-last-updated.md`                      | create | Port verbatim. Tiny (29 lines); pairs with existing `no-date-metadata.md`.                                                           |
+| `governance/conventions/structure/programming-language-docs-separation.md` | create | Port verbatim. Defines boundary between generic dev docs and language-specific docs (Go, TypeScript, Rust, etc.). Heavy (846 lines). |
+| `governance/conventions/structure/README.md`                               | edit   | Add both new files to the convention index.                                                                                          |
+| `governance/conventions/writing/no-date-metadata.md`                       | edit   | Add cross-reference to new `no-last-updated.md` companion.                                                                           |
+
+### Decisions
+
+- **D10.1 — Verbatim port for both.** Both conventions are template-grade
+  scaffolding by ose-primer-sync classification (`governance/conventions/**`
+  is `bidirectional identity`); no primer-specific adaptation needed.
+- **D10.2 — W10 lands before W13.** W13's checker enforces W10's
+  programming-language-docs-separation rule. Reverse ordering would ship
+  enforcement of a non-existent rule.
+
+### Rollback
+
+Revert the W10 commits; both convention files dropped, cross-references
+reverted. W13 (if landed) becomes a checker enforcing a missing rule —
+revert W13 first, then W10.
+
+## Workstream W11 — Plan anti-hallucination
+
+### Source
+
+- `ose-public/governance/development/quality/plan-anti-hallucination.md` (352 lines)
+
+### File-level porting map
+
+| File                                                        | Action | Notes                                                                                                                   |
+| ----------------------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `governance/development/quality/plan-anti-hallucination.md` | create | Port verbatim. Enumerates concrete hallucination failure modes and verification checks each finding category must pass. |
+| `governance/development/quality/README.md`                  | edit   | Add new file to quality index.                                                                                          |
+| `governance/workflows/plan/plan-quality-gate.md` (post-W8)  | edit   | Add cross-reference to plan-anti-hallucination.md from the "Plan-Specific Validation" section.                          |
+| `.claude/agents/plan-checker.md`                            | edit   | Add `plan-anti-hallucination` to the agent's reference set so audits can cite it.                                       |
+
+### Decisions
+
+- **D11.1 — Sequencing after W8.** plan-quality-gate.md is refreshed in
+  W8; W11's cross-reference goes into the refreshed file, not the stale
+  primer copy.
+- **D11.2 — Skill alternative deferred.** ose-public doesn't ship a
+  separate `plan-validating-anti-hallucination` skill; the convention
+  is the authority and `plan-checker` reads it directly. If the
+  convention proves long enough to slow `plan-checker` runs, a
+  follow-up plan can extract a skill.
+
+### Rollback
+
+Revert the W11 commits; convention file dropped; cross-references
+reverted. plan-checker still functions; only loses citation authority.
+
+## Workstream W12 — Dev environment setup workflow
+
+### Source
+
+- `ose-public/governance/workflows/infra/development-environment-setup.md` (619 lines)
+
+### File-level porting map
+
+| File                                                                | Action         | Notes                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `governance/workflows/infra/infra-development-environment-setup.md` | refresh        | File already exists (684 lines). Refresh body content against ose-public's `development-environment-setup.md` (619 lines). Adapt: drop ose-public-specific app-list references; keep generic Volta + Docker + per-language-toolchain + env-var bootstrap. Filename stays `infra-development-environment-setup.md` per primer's workflow-naming convention (scope=`infra`, qualifiers=`development-environment`, type=`setup`). |
+| `governance/workflows/infra/README.md`                              | edit-or-create | Add new file to infra workflow index. Create README if missing.                                                                                                                                                                                                                                                                                                                                                                |
+| `governance/workflows/README.md`                                    | edit           | Add `infra/` subsection if not already present.                                                                                                                                                                                                                                                                                                                                                                                |
+| `AGENTS.md` (post-W4)                                               | edit           | Add a one-line cross-reference from the dev-env-setup-related subsection.                                                                                                                                                                                                                                                                                                                                                      |
+| `CLAUDE.md` (post-W4)                                               | edit           | Same — link from the dev-env-setup-related subsection.                                                                                                                                                                                                                                                                                                                                                                         |
+
+### Decisions
+
+- **D12.1 — Adapt, do not copy verbatim.** ose-public's workflow lists
+  product-specific apps (organiclever, ayokoding, oseplatform); primer's
+  list is the polyglot CRUD demo apps. Generic body (Volta, Docker,
+  language toolchains, env vars, dependency install, doctor sweep) ports
+  unchanged.
+- **D12.2 — Sequencing after W2.** Document `OPENCODE_GO_API_KEY`
+  env-var setup as part of W12's env-var section; depends on W2 having
+  defined the env var.
+- **D12.3 — Sequencing after W8.** Cross-references point at refreshed
+  ci-monitoring.md and ci-post-push-verification.md.
+
+### Rollback
+
+Revert W12 commits; `infra-development-environment-setup.md` is restored to its pre-refresh state; cross-references reverted.
+
+## Workstream W13 — Docs/SWE separation enforcement
+
+### Source
+
+- `ose-public/.claude/agents/docs-software-engineering-separation-checker.md` (511 lines)
+- `ose-public/.claude/agents/docs-software-engineering-separation-fixer.md` (476 lines)
+- `ose-public/.claude/skills/docs-validating-software-engineering-separation/SKILL.md` (248 lines)
+
+### File-level porting map
+
+| File                                                                       | Action | Notes                                                                                                                                             |
+| -------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.claude/agents/docs-software-engineering-separation-checker.md`           | create | Port verbatim. Sonnet, green. Enforces W10 `programming-language-docs-separation.md` rule.                                                        |
+| `.claude/agents/docs-software-engineering-separation-fixer.md`             | create | Port verbatim. Sonnet, yellow. Auto-moves misplaced language docs to canonical destination.                                                       |
+| `.claude/skills/docs-validating-software-engineering-separation/SKILL.md`  | create | Port verbatim. Validating skill consumed by the checker.                                                                                          |
+| `.opencode/agents/docs-software-engineering-separation-{checker,fixer}.md` | regen  | Generated by `npm run sync:claude-to-opencode`. Verify after sync.                                                                                |
+| `.claude/agents/README.md`                                                 | edit   | Add the two new agents to the catalog under Checkers and Fixers sections.                                                                         |
+| `.claude/skills/README.md`                                                 | edit   | Add the new skill to the skill catalog.                                                                                                           |
+| `apps/rhino-cli/project.json` (or similar)                                 | edit   | Optional — wire a `validate:docs-swe-separation` Nx target if the agent supports CLI invocation. Defer to a future plan if pure-agent invocation. |
+
+### Decisions
+
+- **D13.1 — Hard dependency on W10.** Both agents and the skill cite
+  `governance/conventions/structure/programming-language-docs-separation.md`.
+  W10 must land before W13.
+- **D13.2 — No CLI Nx-target wiring in this plan.** The agents run via
+  the Agent tool; Nx target wiring is a future enhancement once the
+  rhino-cli supports invoking checker agents from a Cobra command.
+
+### Rollback
+
+Revert W13 commits; agents and skill dropped from `.claude/`. Run
+`npm run sync:claude-to-opencode` to regenerate `.opencode/agents/`
+without the dropped agents. W10 remains as aspirational rule.
+
+## Workstream W14 — Content drift sweep
+
+### Source
+
+- N/A — this workstream produces and consumes its own baseline diff. The
+  authoritative reference is whatever `wahidyankf/ose-public:main` ships
+  at the moment Phase 14A runs.
+
+### File-level porting map
+
+| Phase | Action                                                                                                                                                                                                                                                                                                                                                 |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 14A   | Run `diff -rq governance/ /Users/wkf/ose-projects/ose-public/governance/` (filter to `*.md`); write the categorized report to `local-temp/drift-baseline.txt`. Classify each diverging file: **refresh** (port ose-public version with primer-specific re-phrase), **skip** (primer-specific override or product-specific), **investigate** (unclear). |
+| 14B   | Refresh the three known-drifted files (`governance/development/quality/code.md`, `governance/development/infra/nx-targets.md`, `governance/development/quality/three-level-testing-standard.md`) against ose-public. Re-apply primer-specific paragraphs.                                                                                              |
+| 14C   | Iterate refresh batches by directory (quality/, infra/, conventions/, principles/, workflows/) until the 14A report's `refresh` list is exhausted.                                                                                                                                                                                                     |
+| 14D   | Verify post-refresh: re-run `diff -rq` against ose-public; only `skip`-classified files should diverge. Run `nx run rhino-cli:validate:governance-vendor-audit` against refreshed files; must return 0.                                                                                                                                                |
+
+### Decisions
+
+- **D14.1 — Phase 14A is mandatory baseline.** Skipping it and refreshing
+  ad-hoc loses the audit trail and risks reverting primer-specific overrides.
+- **D14.2 — Conservative `skip` classification.** When in doubt, classify
+  as `investigate` not `refresh`. False positives (refreshing a file that
+  should be primer-specific) are worse than false negatives.
+- **D14.3 — Drift sweep is hygienic, not feature work.** Phase 14C may
+  expand if the baseline reveals more drift than three files; cap at the
+  4-iteration plan-quality-gate's max if the sweep exceeds 50 files.
+
+### Rollback
+
+Revert W14 commits one batch at a time; each batch was committed
+thematically, so rollback is granular. Baseline diff in
+`local-temp/drift-baseline.txt` survives as audit trail.
+
 ## Cross-workstream invariants
 
-After all nine workstreams land:
+After all fourteen workstreams land:
 
 - `nx affected -t typecheck lint test:quick spec-coverage` is green for affected projects.
 - `nx run rhino-cli:validate:governance-vendor-audit` returns 0 violations.
 - `nx run rhino-cli:validate:cross-vendor-parity` returns 0 findings on two consecutive runs.
 - `npm run sync:claude-to-opencode` is a no-op on a clean tree.
 - `ls .opencode/agent .opencode/skill 2>/dev/null` returns nothing.
-- `ls .opencode/agents` returns the synced agent set.
+- `ls .opencode/agents` returns the synced agent set including the two new W13 agents.
 - `ls .opencode/skills` does not exist (W1 D1.1 decision).
 - Every file in `governance/development/workflow/` and `governance/workflows/plan/`
   matches the ose-public version modulo primer-specific phrasing.
+- The two new W10 conventions, the W11 quality doc, the W12 workflow (`infra-development-environment-setup.md` refreshed), the W13 triad
+  files, and all W14 `refresh`-classified files are in place.
 - Plan archived; gitlink-bump for parent is **out of scope** (parent tracks
   ose-primer separately; bumping is a parent-side decision after this plan ships).
 
 ## Reference: ose-public source plan SHAs (informational)
 
-| ose-public source plan                                        | Anchor              |
-| ------------------------------------------------------------- | ------------------- |
-| 2026-04-30\_\_adopt-opencode-go                               | W2                  |
-| 2026-05-02\_\_governance-vendor-independence                  | W3, W4              |
-| 2026-05-02\_\_validate-claude-opencode-sync-correctness       | W1, W2 prerequisite |
-| 2026-05-03\_\_cross-vendor-agent-parity                       | W4 amendment, W5    |
-| 2026-05-03\_\_rhino-cli-skills-vendor-term                    | W3 (`\bSkills\b`)   |
-| (plans-convention rewrite, 2026-04-18 lineage)                | W6                  |
-| (worktree-path convention introduction)                       | W7                  |
-| (plan-execution / plan-quality-gate iteration commits)        | W8                  |
-| (test-driven-development convention introduction, 2026-05-02) | W9                  |
+| ose-public source plan                                                                                  | Anchor              |
+| ------------------------------------------------------------------------------------------------------- | ------------------- |
+| 2026-04-30\_\_adopt-opencode-go                                                                         | W2                  |
+| 2026-05-02\_\_governance-vendor-independence                                                            | W3, W4              |
+| 2026-05-02\_\_validate-claude-opencode-sync-correctness                                                 | W1, W2 prerequisite |
+| 2026-05-03\_\_cross-vendor-agent-parity                                                                 | W4 amendment, W5    |
+| 2026-05-03\_\_rhino-cli-skills-vendor-term                                                              | W3 (`\bSkills\b`)   |
+| (plans-convention rewrite, 2026-04-18 lineage)                                                          | W6                  |
+| (worktree-path convention introduction)                                                                 | W7                  |
+| (plan-execution / plan-quality-gate iteration commits)                                                  | W8                  |
+| (test-driven-development convention introduction, 2026-05-02)                                           | W9                  |
+| (no-last-updated + programming-language-docs-separation lineage)                                        | W10                 |
+| (plan-anti-hallucination quality doc lineage)                                                           | W11                 |
+| (development-environment-setup workflow lineage; primer file: `infra-development-environment-setup.md`) | W12                 |
+| (docs-software-engineering-separation triad lineage)                                                    | W13                 |
+| (content drift sweep — no single source plan; ongoing hygiene)                                          | W14                 |
