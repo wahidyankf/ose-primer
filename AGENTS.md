@@ -40,7 +40,7 @@ This repository maintains **dual compatibility** with both Claude Code and OpenC
 **Format Differences**:
 
 - **Tools**: Claude Code uses arrays `[Read, Write]`, OpenCode uses `{ read: true, write: true }`
-- **Models**: Claude Code uses `sonnet`/`opus`/`haiku` (or omits for budget-adaptive inheritance); OpenCode uses `zai-coding-plan/glm-5.1` (opus/sonnet/omitted) or `zai-coding-plan/glm-5-turbo` (haiku)
+- **Models**: Claude Code uses `sonnet`/`opus`/`haiku` (or omits for budget-adaptive inheritance); OpenCode uses `opencode-go/minimax-m2.7` (opus/sonnet/omitted) or `opencode-go/glm-5` (haiku)
 - **Skills**: Same format for both systems (SKILL.md)
 - **Permissions**: Claude Code uses `settings.json`, OpenCode uses `opencode.json` permission block (equivalent access configured)
 - **MCP/Plugins**: Claude Code uses plugins, OpenCode uses MCP servers (Playwright, Nx, Z.ai, Perplexity)
@@ -60,7 +60,7 @@ Specialized agents organized into families:
 7. **CI/CD**: `ci-checker`, `ci-fixer`
 8. **Research**: `web-research-maker`
 
-**Full agent catalog**: See [`.opencode/agent/README.md`](./.opencode/agent/README.md)
+**Full agent catalog**: See [`.claude/agents/README.md`](./.claude/agents/README.md) (canonical source synced to `.opencode/agents/`)
 
 ## Agent Format (OpenCode)
 
@@ -69,7 +69,7 @@ OpenCode agents use YAML (YAML Ain't Markup Language) frontmatter with boolean t
 ```yaml
 ---
 description: Brief description of what the agent does
-model: zai-coding-plan/glm-5.1 | zai-coding-plan/glm-5-turbo
+model: opencode-go/minimax-m2.7 | opencode-go/glm-5
 tools:
   read: true | false
   grep: true | false
@@ -97,7 +97,7 @@ Three-stage quality workflow:
 **Criticality Levels**: CRITICAL, HIGH, MEDIUM, LOW
 **Confidence Levels**: HIGH, MEDIUM, FALSE_POSITIVE
 
-**See**: `.opencode/skill/repo-applying-maker-checker-fixer/SKILL.md`
+**See**: `.claude/skills/repo-applying-maker-checker-fixer/SKILL.md` (read natively by OpenCode)
 
 **Web Research Default**: `web-research-maker` is the default primitive for public-web information gathering across all agents. See [Web Research Delegation Convention](./governance/conventions/writing/web-research-delegation.md) for the normative rule, delegation threshold (2+ `WebSearch` or 3+ `WebFetch` per claim), and enumerated exceptions (single-shot known URL; fixer re-validation; link-reachability checkers).
 
@@ -129,7 +129,7 @@ Three-stage quality workflow:
 
 **Service Relationship**: Skills serve agents with knowledge and execution but don't govern them (service infrastructure, not governance layer).
 
-**Full skills catalog**: See [`.opencode/skill/README.md`](./.opencode/skill/README.md)
+**Full skills catalog**: See [`.claude/skills/README.md`](./.claude/skills/README.md) (read natively by OpenCode per opencode.ai/docs/skills/)
 
 ## Security Policy
 
@@ -154,8 +154,8 @@ All agents follow foundational principles:
 ## Related Documentation
 
 - **CLAUDE.md** (PRIMARY) - Claude Code configuration and guidance
-- **.opencode/agent/README.md** - Complete agent catalog
-- **.opencode/skill/README.md** - Complete skills catalog
+- **.claude/agents/README.md** - Complete agent catalog (canonical; synced to `.opencode/agents/`)
+- **.claude/skills/README.md** - Complete skills catalog (read natively by OpenCode per opencode.ai/docs/skills/)
 - **governance/repository-governance-architecture.md** - Six-layer governance hierarchy
 
 ---

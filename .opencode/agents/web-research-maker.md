@@ -1,6 +1,6 @@
 ---
 description: Researches current, verifiable information from the web in an isolated context. Use when you need facts beyond training data cutoff, latest API or library docs, current best practices, or verification of uncertain claims. Returns cited, structured findings without bloating main conversation context.
-model: zai-coding-plan/glm-5.1
+model: opencode-go/minimax-m2.7
 tools:
   glob: true
   grep: true
@@ -224,5 +224,5 @@ each with a confidence tag.
 
 - Skill: `docs-validating-factual-accuracy` (see `.claude/skills/docs-validating-factual-accuracy/SKILL.md`)
 - Skill: `docs-applying-content-quality` (see `.claude/skills/docs-applying-content-quality/SKILL.md`)
-- Agents Index: [`.claude/agents/README.md`](./README.md)
+- Agents Index: [`.claude/agents/README.md`](../../.claude/agents/README.md)
 - Dual-mode sync: `npm run sync:claude-to-opencode` (powered by `rhino-cli agents sync`)

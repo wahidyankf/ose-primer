@@ -23,7 +23,7 @@ This command performs the following operations:
 - Converts agents from .claude/agents/ to .opencode/agents/ (plural,
   per opencode.ai/docs/agents/) with:
   * Tools array → boolean map (Read → read: true)
-  * Model mapping (sonnet/opus → zai-coding-plan/glm-5.1, haiku → zai-coding-plan/glm-5-turbo, empty → zai-coding-plan/glm-5.1)
+  * Model mapping (sonnet/opus → opencode-go/minimax-m2.7, haiku → opencode-go/glm-5, empty → opencode-go/minimax-m2.7)
   * Removal of Claude-specific fields (name, color)
   * Preservation of description, skills, and body content
 

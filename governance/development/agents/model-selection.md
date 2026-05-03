@@ -264,12 +264,12 @@ This repo runs on both Claude Code (`.claude/agents/`) and OpenCode (`.opencode/
 The OpenCode runtime uses Z.ai Coding Plan models. The sync pipeline
 (`npm run sync:claude-to-opencode`) translates Claude model aliases automatically.
 
-| Claude Code alias | OpenCode model ID             | GLM tier                                      |
-| ----------------- | ----------------------------- | --------------------------------------------- |
-| `opus` (inherit)  | `zai-coding-plan/glm-5.1`     | 744B MoE; SWE-bench Pro 58.4 (self-reported)  |
-| `sonnet`          | `zai-coding-plan/glm-5.1`     | Same model as opus mapping                    |
-| `haiku`           | `zai-coding-plan/glm-5-turbo` | Purpose-built agentic; no standard benchmarks |
-| `""` (omit)       | `zai-coding-plan/glm-5.1`     | Default — same as opus/sonnet                 |
+| Claude Code alias | OpenCode model ID          | GLM tier                                      |
+| ----------------- | -------------------------- | --------------------------------------------- |
+| `opus` (inherit)  | `opencode-go/minimax-m2.7` | 744B MoE; SWE-bench Pro 58.4 (self-reported)  |
+| `sonnet`          | `opencode-go/minimax-m2.7` | Same model as opus mapping                    |
+| `haiku`           | `opencode-go/glm-5`        | Purpose-built agentic; no standard benchmarks |
+| `""` (omit)       | `opencode-go/minimax-m2.7` | Default — same as opus/sonnet                 |
 
 **3-to-2 tier collapse**: Claude has three distinct tiers; Z.ai Coding Plan has two.
 Both `opus` and `sonnet` map to `glm-5.1` because it is the single top-tier option
