@@ -55,7 +55,7 @@ flowchart TD
   Z.ai MCPs removed; `.opencode/agents/*.md` regenerated.
 - **W3 — rhino-cli vendor-audit scanner**: port `internal/governance/governance_vendor_audit{,_test}.go`,
   `cmd/governance.go`, `cmd/governance_vendor_audit{,_test}.go`; new Nx target
-  `validate:vendor-audit`; godog Gherkin scenarios under `specs/apps/rhino/cli/gherkin/`.
+  `validate:governance-vendor-audit`; godog Gherkin scenarios under `specs/apps/rhino/cli/gherkin/`.
 - **W4 — Vendor-neutral governance**: port the convention `governance/conventions/structure/governance-vendor-independence.md`
   (scoped for primer); neutralize `AGENTS.md` (canonical, with binding-example fences) and
   `CLAUDE.md` (Claude Code shim importing `@AGENTS.md`); remediate vendor terms across
@@ -104,7 +104,7 @@ plan-quality-gate,README}.md` from ose-public; port the missing companion develo
   bare-gitlink contract — read via the GitHub UI above, or open a parent-rooted
   Claude session for filesystem side-by-side diffing.
 - [governance/development/infra/nx-targets.md](../../../governance/development/infra/nx-targets.md)
-  for caching rules on the new `validate:vendor-audit` and `validate:cross-vendor-parity` targets.
+  for caching rules on the new `validate:governance-vendor-audit` and `validate:cross-vendor-parity` targets.
 - [governance/development/quality/code.md](../../../governance/development/quality/code.md)
   for the pre-push contract.
 - [governance/development/workflow/git-push-default.md](../../../governance/development/workflow/git-push-default.md)

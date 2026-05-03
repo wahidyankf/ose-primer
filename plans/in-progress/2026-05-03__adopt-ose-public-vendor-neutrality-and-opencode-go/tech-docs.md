@@ -146,25 +146,25 @@ it. Do not roll back W1 without rolling back W2 first.
 
 ### File-level porting map
 
-| File                                                                 | Action | Notes                                                                                                                                  |
-| -------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `apps/rhino-cli/internal/governance/governance_vendor_audit.go`      | create | New file. Copy from ose-public verbatim — module path matches.                                                                         |
-| `apps/rhino-cli/internal/governance/governance_vendor_audit_test.go` | create | New file. Copy from ose-public verbatim. Includes `\bSkills\b` test from `2026-05-03__rhino-cli-skills-vendor-term`.                   |
-| `apps/rhino-cli/cmd/governance.go`                                   | create | New file. Cobra group registration.                                                                                                    |
-| `apps/rhino-cli/cmd/governance_vendor_audit.go`                      | create | New file. Cobra subcommand binding scanner to CLI.                                                                                     |
-| `apps/rhino-cli/cmd/governance_vendor_audit_test.go`                 | create | Unit test for command wiring.                                                                                                          |
-| `apps/rhino-cli/cmd/governance_vendor_audit.integration_test.go`     | create | Integration test against /tmp fixture trees.                                                                                           |
-| `apps/rhino-cli/cmd/steps_common_test.go`                            | update | Add step constants for `governance vendor-audit` Gherkin steps.                                                                        |
-| `apps/rhino-cli/cmd/root_test.go`                                    | update | Register the new `governance` Cobra group in command-tree assertions.                                                                  |
-| `apps/rhino-cli/project.json`                                        | update | New target `validate:vendor-audit` invokes `rhino-cli governance vendor-audit governance/`. Cacheable: inputs include `governance/**`. |
-| `specs/apps/rhino/cli/gherkin/governance-vendor-audit.feature`       | create | Copy verbatim from ose-public; same scenarios.                                                                                         |
-| `.husky/pre-push`                                                    | update | Add `nx affected -t validate:vendor-audit` to the pre-push chain (or include via `validate:cross-vendor-parity` umbrella in W5).       |
-| `apps/rhino-cli/README.md`                                           | update | Add a "Governance vendor-audit" subsection documenting the new subcommand.                                                             |
+| File                                                                 | Action | Notes                                                                                                                                             |
+| -------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/rhino-cli/internal/governance/governance_vendor_audit.go`      | create | New file. Copy from ose-public verbatim — module path matches.                                                                                    |
+| `apps/rhino-cli/internal/governance/governance_vendor_audit_test.go` | create | New file. Copy from ose-public verbatim. Includes `\bSkills\b` test from `2026-05-03__rhino-cli-skills-vendor-term`.                              |
+| `apps/rhino-cli/cmd/governance.go`                                   | create | New file. Cobra group registration.                                                                                                               |
+| `apps/rhino-cli/cmd/governance_vendor_audit.go`                      | create | New file. Cobra subcommand binding scanner to CLI.                                                                                                |
+| `apps/rhino-cli/cmd/governance_vendor_audit_test.go`                 | create | Unit test for command wiring.                                                                                                                     |
+| `apps/rhino-cli/cmd/governance_vendor_audit.integration_test.go`     | create | Integration test against /tmp fixture trees.                                                                                                      |
+| `apps/rhino-cli/cmd/steps_common_test.go`                            | update | Add step constants for `governance vendor-audit` Gherkin steps.                                                                                   |
+| `apps/rhino-cli/cmd/root_test.go`                                    | update | Register the new `governance` Cobra group in command-tree assertions.                                                                             |
+| `apps/rhino-cli/project.json`                                        | update | New target `validate:governance-vendor-audit` invokes `rhino-cli governance vendor-audit governance/`. Cacheable: inputs include `governance/**`. |
+| `specs/apps/rhino/cli/gherkin/governance-vendor-audit.feature`       | create | Copy verbatim from ose-public; same scenarios.                                                                                                    |
+| `.husky/pre-push`                                                    | update | Add `nx affected -t validate:governance-vendor-audit` to the pre-push chain (or include via `validate:cross-vendor-parity` umbrella in W5).       |
+| `apps/rhino-cli/README.md`                                           | update | Add a "Governance vendor-audit" subsection documenting the new subcommand.                                                                        |
 
 ### Decisions
 
 - **D3.1 — Pre-push wiring deferred to W5 umbrella.** Wire
-  `validate:vendor-audit` into the pre-push hook only via the
+  `validate:governance-vendor-audit` into the pre-push hook only via the
   `validate:cross-vendor-parity` quality gate from W5 to avoid double-running
   the scanner.
 - **D3.2 — Allowlist mechanism preserved.** The
@@ -230,15 +230,16 @@ or accepting a non-zero scanner exit code.
 
 ### File-level porting map
 
-| File                                                                   | Action | Notes                                                                                                                               |
-| ---------------------------------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `.claude/agents/repo-parity-checker.md`                                | create | Port verbatim. Sonnet, green. Skills auto-load.                                                                                     |
-| `.claude/agents/repo-parity-fixer.md`                                  | create | Port verbatim. Sonnet, yellow.                                                                                                      |
-| `.opencode/agents/repo-parity-checker.md`                              | regen  | Generated by `npm run sync:claude-to-opencode`. Verify after sync.                                                                  |
-| `.opencode/agents/repo-parity-fixer.md`                                | regen  | Same.                                                                                                                               |
-| `governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md`   | create | Port verbatim. Iterative check-fix-verify. Terminates on two consecutive zero-finding runs. Default max-iterations=7, escalation=5. |
-| `apps/rhino-cli/project.json` (or new top-level `package.json` script) | update | Add Nx target `validate:cross-vendor-parity` invoking `rhino-cli governance vendor-audit governance/` plus other parity invariants. |
-| `.husky/pre-push`                                                      | update | Add `nx affected -t validate:cross-vendor-parity`. Cacheable target.                                                                |
+| File                                                                   | Action | Notes                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ---------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.claude/agents/repo-parity-checker.md`                                | create | Port verbatim. Sonnet, green. Skills auto-load.                                                                                                                                                                                                                                                                                                                                                          |
+| `.claude/agents/repo-parity-fixer.md`                                  | create | Port verbatim. Sonnet, yellow.                                                                                                                                                                                                                                                                                                                                                                           |
+| `.opencode/agents/repo-parity-checker.md`                              | regen  | Generated by `npm run sync:claude-to-opencode`. Verify after sync.                                                                                                                                                                                                                                                                                                                                       |
+| `.opencode/agents/repo-parity-fixer.md`                                | regen  | Same.                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md`   | create | Port verbatim. Iterative check-fix-verify. Terminates on two consecutive zero-finding runs. Default max-iterations=7, escalation=5.                                                                                                                                                                                                                                                                      |
+| `apps/rhino-cli/scripts/validate-cross-vendor-parity.sh`               | create | Port verbatim from ose-public (~135 lines). Thin shell wrapper checking five invariants: (1) governance prose vendor-neutrality, (2) AGENTS.md/CLAUDE.md vendor-neutrality, (3) binding sync no-op, (4) agent count parity, (5a) color-translation map coverage, (5b) capability-tier map coverage. `cache: false` — reads `.opencode/agents/` count and runs `npm run sync` which is non-deterministic. |
+| `apps/rhino-cli/project.json` (or new top-level `package.json` script) | update | Add Nx target `validate:cross-vendor-parity` with `"command": "bash apps/rhino-cli/scripts/validate-cross-vendor-parity.sh"` and `"cache": false`.                                                                                                                                                                                                                                                       |
+| `.husky/pre-push`                                                      | update | Add conditional fire (see D3.1 / F3): fire `validate:cross-vendor-parity` only when `governance/**/*.md`, `AGENTS.md`, `CLAUDE.md`, `.claude/agents/`, or `.opencode/agents/` changed — mirrors ose-public's conditional `if [ -n "$RANGE" ]` pattern.                                                                                                                                                   |
 
 ### Decisions
 
@@ -285,13 +286,13 @@ Revert the single edit commit.
 
 ### File-level porting map
 
-| File                                                | Action  | Notes                                                                                                                                                                                |
-| --------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `governance/conventions/structure/worktree-path.md` | create  | Port adapted for primer: rule says **default** path is `.claude/worktrees/<name>/` (no override). Document gitignore + parallel-safety rationale. Cross-link to `worktree-setup.md`. |
-| `governance/development/workflow/worktree-setup.md` | refresh | Resync against ose-public version. Restore `created:` frontmatter date. Update internal cross-references.                                                                            |
-| `AGENTS.md` (post-W4)                               | update  | Add a `## Worktrees` subsection linking to the new convention. One-paragraph summary.                                                                                                |
-| `CLAUDE.md` (post-W4)                               | update  | Same — link to new convention from existing worktree subsection.                                                                                                                     |
-| `governance/conventions/structure/README.md`        | update  | Add `worktree-path.md` to the convention index.                                                                                                                                      |
+| File                                                | Action  | Notes                                                                                                                                                                                                                                  |
+| --------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `governance/conventions/structure/worktree-path.md` | create  | Port adapted for primer: rule says **default** path is `.claude/worktrees/<name>/` (no override). Document gitignore + parallel-safety rationale. Cross-link to `worktree-setup.md`.                                                   |
+| `governance/development/workflow/worktree-setup.md` | refresh | Resync against ose-public version. Do NOT import any `created:` or other date frontmatter fields per the [No-Date-Metadata Convention](../../../governance/conventions/writing/no-date-metadata.md). Update internal cross-references. |
+| `AGENTS.md` (post-W4)                               | update  | Add a `## Worktrees` subsection linking to the new convention. One-paragraph summary.                                                                                                                                                  |
+| `CLAUDE.md` (post-W4)                               | update  | Same — link to new convention from existing worktree subsection.                                                                                                                                                                       |
+| `governance/conventions/structure/README.md`        | update  | Add `worktree-path.md` to the convention index.                                                                                                                                                                                        |
 
 ### Decisions
 
@@ -376,7 +377,7 @@ cross-references reverted.
 After all nine workstreams land:
 
 - `nx affected -t typecheck lint test:quick spec-coverage` is green for affected projects.
-- `nx run rhino-cli:validate:vendor-audit` returns 0 violations.
+- `nx run rhino-cli:validate:governance-vendor-audit` returns 0 violations.
 - `nx run rhino-cli:validate:cross-vendor-parity` returns 0 findings on two consecutive runs.
 - `npm run sync:claude-to-opencode` is a no-op on a clean tree.
 - `ls .opencode/agent .opencode/skill 2>/dev/null` returns nothing.

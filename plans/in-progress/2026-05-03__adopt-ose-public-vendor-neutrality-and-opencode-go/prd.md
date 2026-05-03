@@ -28,65 +28,65 @@ title: PRD — Adopt ose-public Vendor-Neutrality, OpenCode Go, and Companion To
 
 ### W1 — Sync correctness
 
-- _As a_ template consumer launching their first OpenCode session, _I want_
+- As a template consumer launching their first OpenCode session, I want
   agents and skills to live at the canonical plural directory paths
-  (`.opencode/agents/`, `.opencode/skills/`), _so that_ OpenCode actually
+  (`.opencode/agents/`, `.opencode/skills/`), so that OpenCode actually
   loads them per the published spec.
-- _As a_ ose-primer maintainer running `npm run sync:claude-to-opencode`,
-  _I want_ the sync to write to one canonical destination directory,
-  _so that_ I never have to debug "why does my OpenCode session not see
+- As a ose-primer maintainer running `npm run sync:claude-to-opencode`,
+  I want the sync to write to one canonical destination directory,
+  so that I never have to debug "why does my OpenCode session not see
   my synced agent" against undocumented behavior.
 
 ### W2 — OpenCode Go provider
 
-- _As a_ template consumer with no Z.ai subscription, _I want_ the template
-  to ship with OpenCode Go as the default provider, _so that_ I can pick
+- As a template consumer with no Z.ai subscription, I want the template
+  to ship with OpenCode Go as the default provider, so that I can pick
   any vendor's API key without having to swap defaults before my first
   session.
-- _As a_ ose-primer maintainer regenerating `.opencode/agents/`, _I want_
-  `rhino-cli ConvertModel()` to emit `opencode-go/*` IDs, _so that_ the
+- As a ose-primer maintainer regenerating `.opencode/agents/`, I want
+  `rhino-cli ConvertModel()` to emit `opencode-go/*` IDs, so that the
   sync is consistent with the project-level model fields and consumers
   inherit a coherent provider stack.
 
 ### W3 — Vendor-audit scanner
 
-- _As a_ governance steward, _I want_ `rhino-cli governance vendor-audit
-governance/` to flag every convention violation, _so that_ I do not
+- As a governance steward, I want `rhino-cli governance vendor-audit
+governance/` to flag every convention violation, so that I do not
   need to manually grep for each forbidden term.
-- _As a_ future contributor authoring governance prose, _I want_ the
+- As a future contributor authoring governance prose, I want the
   pre-push hook to fail when I introduce a forbidden vendor term,
-  _so that_ I learn about the violation before my commit lands on
+  so that I learn about the violation before my commit lands on
   `main`.
 
 ### W4 — Vendor-neutral governance
 
-- _As a_ cross-vendor contributor reading `governance/`, _I want_ load-bearing
+- As a cross-vendor contributor reading `governance/`, I want load-bearing
   prose to be vendor-neutral with vendor-specific examples in
-  `binding-example` fences, _so that_ the rules apply to my AI coding
+  `binding-example` fences, so that the rules apply to my AI coding
   agent of choice without translation.
-- _As a_ template consumer, _I want_ `AGENTS.md` to be the canonical root
+- As a template consumer, I want `AGENTS.md` to be the canonical root
   instruction file (per the AGENTS.md / Linux Foundation Agentic AI
   Foundation standard), and `CLAUDE.md` to be a thin Claude Code
-  binding shim that imports it via `@AGENTS.md`, _so that_ I can use
+  binding shim that imports it via `@AGENTS.md`, so that I can use
   any AGENTS.md-aware coding agent without losing instructions.
 
 ### W5 — Cross-vendor parity gate
 
-- _As a_ ose-primer maintainer, _I want_ `nx run rhino-cli:validate:cross-vendor-parity`
-  to verify the five behavioral-parity invariants in one command, _so that_
+- As a ose-primer maintainer, I want `nx run rhino-cli:validate:cross-vendor-parity`
+  to verify the five behavioral-parity invariants in one command, so that
   parity drift is caught before push.
-- _As a_ template consumer, _I want_ the parity gate to be a Nx target wired
-  into the pre-push hook, _so that_ regressions cannot land silently.
+- As a template consumer, I want the parity gate to be a Nx target wired
+  into the pre-push hook, so that regressions cannot land silently.
 
 ### W6 — Plans convention refresh
 
-- _As a_ plan author, _I want_ `governance/conventions/structure/plans.md`
+- As a plan author, I want `governance/conventions/structure/plans.md`
   to clearly state that five-doc multi-file is the DEFAULT and to
   enumerate exactly four criteria that must ALL hold for single-file
-  to be allowed, _so that_ I do not waste time arguing structure with
+  to be allowed, so that I do not waste time arguing structure with
   `plan-checker`.
-- _As a_ `plan-checker` agent, _I want_ the four single-file criteria to
-  be machine-checkable bullet items, _so that_ my structural validation
+- As a `plan-checker` agent, I want the four single-file criteria to
+  be machine-checkable bullet items, so that my structural validation
   is deterministic.
 
 ## Acceptance criteria (Gherkin)
@@ -248,14 +248,14 @@ Feature: plans.md states five-doc multi-file as the DEFAULT
 
 User stories:
 
-- _As a_ template consumer creating a parallel worktree, _I want_ a single
+- As a template consumer creating a parallel worktree, I want a single
   authoritative convention saying where the worktree must land on disk
   (`.claude/worktrees/<name>/` for primer; `worktrees/<name>/` for the
-  ose-public override), _so that_ I never invent a path that breaks tooling
+  ose-public override), so that I never invent a path that breaks tooling
   expectations.
-- _As a_ ose-primer maintainer entering an existing worktree session, _I want_
+- As a ose-primer maintainer entering an existing worktree session, I want
   the worktree-setup workflow to mandate `npm install` then `npm run doctor -- --fix`
-  in that order, _so that_ the polyglot toolchain converges before I run
+  in that order, so that the polyglot toolchain converges before I run
   any Nx target.
 
 ```gherkin
@@ -284,13 +284,13 @@ Feature: worktree-setup workflow matches ose-public's current version
 
 User stories:
 
-- _As a_ plan-execution agent invoked on this template, _I want_ the
+- As a plan-execution agent invoked on this template, I want the
   `plan-execution.md` workflow to match ose-public's current iteration loop,
-  _so that_ termination rules and Iron Rules behave the same way the
+  so that termination rules and Iron Rules behave the same way the
   upstream consumer's plans agents do.
-- _As a_ template consumer onboarding a CI workflow, _I want_ the
+- As a template consumer onboarding a CI workflow, I want the
   `ci-monitoring.md`, `ci-post-push-verification.md`, and
-  `test-driven-development.md` workflows to ship in the template, _so that_
+  `test-driven-development.md` workflows to ship in the template, so that
   I do not need to copy them from `ose-public` by hand.
 
 ```gherkin
@@ -320,17 +320,17 @@ Feature: companion CI workflows are present
 
 User stories:
 
-- _As a_ ose-primer maintainer driving any code change, _I want_
+- As a ose-primer maintainer driving any code change, I want
   `governance/development/workflow/test-driven-development.md` to be the
-  authoritative convention spelling out Red→Green→Refactor, _so that_ I
+  authoritative convention spelling out Red→Green→Refactor, so that I
   can cite a single source instead of relying on `implementation.md`'s
   passing reference.
-- _As a_ `plan-checker` agent reviewing a plan, _I want_ the TDD
+- As a `plan-checker` agent reviewing a plan, I want the TDD
   convention to be reachable from `plan-execution.md` and from
-  `implementation.md`, _so that_ I can mechanically check that a
+  `implementation.md`, so that I can mechanically check that a
   plan's delivery checklist follows Red→Green→Refactor.
-- _As a_ template consumer, _I want_ the test-driven-development
-  convention to ship in `governance/development/workflow/`, _so that_ my
+- As a template consumer, I want the test-driven-development
+  convention to ship in `governance/development/workflow/`, so that my
   fork inherits the same testing discipline ose-public uses today.
 
 ```gherkin
@@ -363,7 +363,7 @@ Feature: test-driven-development convention is present and authoritative
 - All nine Gherkin Feature groups above pass against `ose-primer`'s tip-of-`main`
   after this plan executes.
 - `nx affected -t typecheck lint test:quick spec-coverage` is green.
-- `nx run rhino-cli:validate:vendor-audit` is green.
+- `nx run rhino-cli:validate:governance-vendor-audit` is green.
 - `nx run rhino-cli:validate:cross-vendor-parity` is green for two consecutive runs.
 - `npm run sync:claude-to-opencode` is a no-op.
 - `governance/conventions/structure/worktree-path.md` exists and is referenced by `AGENTS.md` / `CLAUDE.md`.
