@@ -4,11 +4,19 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- [2026-04-26 — Add `pdf-chat-*` demo app family](./2026-04-26__add-pdf-chat-apps/README.md)
-  — four new apps (`pdf-chat-be`, `pdf-chat-fe`, `pdf-chat-be-e2e`, `pdf-chat-fe-e2e`)
-  plus `specs/apps/pdf-chat/` and `pdf-chat-contracts`. Persistent sessions,
-  multi-document RAG over pgvector, OpenRouter-routed Anthropic + Gemini, ts-ui-based
-  UI, production guardrails (rate limit / content filter / cost cap).
+- [2026-04-27 — Add `investment-oracle` desktop demo](./2026-04-27__add-investment-oracle-app/README.md)
+  — second demo family alongside `crud-*`: a four-project desktop suite that ingests
+  financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
+  exports research dossiers.
+- [2026-05-03 — Adopt ose-public vendor-neutrality, OpenCode Go, and companion tooling](./2026-05-03__adopt-ose-public-vendor-neutrality-and-opencode-go/README.md)
+  — nine-workstream batch from the upstream consumer:
+  W1 sync correctness (`.opencode/agent` → `.opencode/agents`), W2 OpenCode Go provider,
+  W3 rhino-cli vendor-audit scanner, W4 vendor-neutral governance (AGENTS.md canonical,
+  CLAUDE.md shim, `governance/` remediation), W5 cross-vendor parity gate (two new agents
+  - workflow + Nx target), W6 stricter five-doc-DEFAULT plans convention,
+    W7 worktree-path convention + worktree-setup refresh, W8 plan + workflow refresh
+    (plan-execution / plan-quality-gate / ci-monitoring / ci-post-push-verification),
+    W9 test-driven-development convention.
 
 ## Instructions
 
