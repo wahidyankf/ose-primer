@@ -21,7 +21,7 @@ Agents:
 - Count check: OpenCode plural directory contains every Claude agent (⊆)
 - Equivalence check: Validates each agent is semantically equivalent:
   * Description matches exactly
-  * Model is correctly converted (sonnet/opus/empty → zai-coding-plan/glm-5.1, haiku → zai-coding-plan/glm-5-turbo)
+  * Model is correctly converted (sonnet/opus/empty → opencode-go/minimax-m2.7, haiku → opencode-go/glm-5)
   * Tools are correctly mapped (array → boolean map, lowercase)
   * Skills array matches exactly
   * Body content is identical

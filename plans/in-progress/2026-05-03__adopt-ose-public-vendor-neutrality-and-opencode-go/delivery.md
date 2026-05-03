@@ -122,61 +122,61 @@ the GitHub UI URLs in tech-docs.md.
 - [x] Run `npm run sync:claude-to-opencode` a second time. Should be a no-op
       (no diff).
       _Date: 2026-05-04 / Status: done / Files: — / Notes: Re-stage + re-sync produced 0 unstaged-modified files in .opencode/agents/. No-op confirmed._
-- [ ] Commit: `feat(rhino-cli): migrate sync output to canonical .opencode/agents/ plural path`.
-      _Date **/ Status:** / Files: **/ Notes:**_
+- [x] Commit: `feat(rhino-cli): migrate sync output to canonical .opencode/agents/ plural path`.
+      _Date: 2026-05-04 / Status: done / Files: SHA fb8052d24 / Notes: 92 files changed; pre-commit hook (lint-staged + sync validation) passed cleanly._
 
 ## Phase 2 — W2: OpenCode Go provider
 
 ### 2A — Tests first (Red)
 
-- [ ] In `apps/rhino-cli/internal/agents/converter_test.go`, update
+- [x] In `apps/rhino-cli/internal/agents/converter_test.go`, update
       `TestConvertModel` expectations to `opencode-go/minimax-m2.7` (opus/sonnet/omitted)
       and `opencode-go/glm-5` (haiku). Run — fails.
-      _Date **/ Status:** / Files: apps/rhino-cli/internal/agents/converter_test.go / Notes: \_\_ _
-- [ ] In `apps/rhino-cli/internal/agents/types_test.go`, update
+      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/internal/agents/converter_test.go / Notes: All 6 sub-cases failed pre-impl: "ConvertModel(...) = zai-coding-plan/... want opencode-go/..." (Red confirmed)._
+- [x] In `apps/rhino-cli/internal/agents/types_test.go`, update
       `TestOpenCodeAgent` model expectation. Run — fails.
-      _Date **/ Status:** / Files: apps/rhino-cli/internal/agents/types_test.go / Notes: \_\_ _
+      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/internal/agents/types_test.go / Notes: Updated; failed pre-impl, passes post-Green._
 
 ### 2B — Implementation (Green)
 
-- [ ] Update `ConvertModel()` in `apps/rhino-cli/internal/agents/converter.go`
+- [x] Update `ConvertModel()` in `apps/rhino-cli/internal/agents/converter.go`
       to return `opencode-go/*` IDs.
-      \_Date **/ Status:** / Files: apps/rhino-cli/internal/agents/converter.go / Notes: \_\_\_
-- [ ] Update doc comments in `apps/rhino-cli/internal/agents/types.go`,
+      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/internal/agents/converter.go / Notes: haiku → opencode-go/glm-5; default → opencode-go/minimax-m2.7. Doc comment cites the env var apiKey resolution._
+- [x] Update doc comments in `apps/rhino-cli/internal/agents/types.go`,
       `cmd/agents_sync.go`, `cmd/agents_validate_sync.go` to reference
       OpenCode Go IDs.
-      \_Date **/ Status:** / Files: as listed / Notes: \_\_\_
-- [ ] Update `apps/rhino-cli/internal/agents/sync_validator_test.go` and
+      _Date: 2026-05-04 / Status: done / Files: as listed / Notes: Bulk sed replaced `zai-coding-plan/glm-5.1` → `opencode-go/minimax-m2.7` and `zai-coding-plan/glm-5-turbo` → `opencode-go/glm-5` across cmd + types.go + README + Gherkin._
+- [x] Update `apps/rhino-cli/internal/agents/sync_validator_test.go` and
       `cmd/agents_sync.integration_test.go`,
       `cmd/agents_validate_sync.integration_test.go`,
       `cmd/agents_validate_naming.integration_test.go` model assertions/fixtures.
-      \_Date **/ Status:** / Files: as listed / Notes: \_\_\_
-- [ ] Update `apps/rhino-cli/cmd/steps_common_test.go` step regex if any
+      _Date: 2026-05-04 / Status: done / Files: as listed / Notes: All four test files swept by bulk sed; integration suite still 857 passes._
+- [x] Update `apps/rhino-cli/cmd/steps_common_test.go` step regex if any
       reference Z.ai model IDs.
-      \_Date **/ Status:** / Files: apps/rhino-cli/cmd/steps_common_test.go / Notes: \_\_\_
-- [ ] Replace `.opencode/opencode.json`:
+      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/cmd/steps_common_test.go / Notes: Renamed `stepCorrespondingOpenCodeAgentUsesZaiGlmModel` → `stepCorrespondingOpenCodeAgentUsesOpenCodeGoModel` with `opencode-go/minimax-m2.7` regex; updated step registrar in agents_sync.integration_test.go and agents_sync_test.go._
+- [x] Replace `.opencode/opencode.json`:
   - `model: "opencode-go/minimax-m2.7"`
   - `small_model: "opencode-go/glm-5"`
   - Add `provider.opencode-go.options.apiKey: "{env:OPENCODE_GO_API_KEY}"`
   - Remove any Z.ai MCPs
-    \_Date **/ Status:** / Files: .opencode/opencode.json / Notes: \_\_\_
-- [ ] Update `governance/development/agents/model-selection.md` OpenCode
+    _Date: 2026-05-04 / Status: done / Files: .opencode/opencode.json / Notes: Provider block added; Z.ai MCPs (zai-mcp-server, web-search-prime, web-reader, zread) all removed; perplexity + nx-mcp + playwright kept; primer's granular permission scheme preserved._
+- [x] Update `governance/development/agents/model-selection.md` OpenCode
       Equivalents table to `opencode-go/*`.
-      \_Date **/ Status:** / Files: governance/development/agents/model-selection.md / Notes: \_\_\_
-- [ ] Update `.env.example` to document `OPENCODE_GO_API_KEY` env var.
-      \_Date **/ Status:** / Files: .env.example / Notes: \_\_\_
-- [ ] Run `npm run sync:claude-to-opencode`. Regenerates all
+      _Date: 2026-05-04 / Status: done / Files: governance/development/agents/model-selection.md / Notes: Already opencode-go/\* in primer (lines 269-272); no edit needed._
+- [x] Update `.env.example` to document `OPENCODE_GO_API_KEY` env var.
+      _Date: 2026-05-04 / Status: done / Files: .env.example / Notes: Created new file (didn't exist) with OPENCODE_GO_API_KEY placeholder + commentary._
+- [x] Run `npm run sync:claude-to-opencode`. Regenerates all
       `.opencode/agents/*.md` files with new model IDs.
-      \_Date **/ Status:** / Files: .opencode/agents/\* / Notes: \_\_\_
-- [ ] Run `nx run rhino-cli:test:unit`. Pass.
-      _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Run `nx run rhino-cli:test:integration`. Pass.
-      _Date **/ Status:** / Files: **/ Notes:**_
+      _Date: 2026-05-04 / Status: done / Files: .opencode/agents/\* / Notes: 45 converted; 0 zai-coding-plan refs remain in agents output; all 45 contain opencode-go._
+- [x] Run `nx run rhino-cli:test:unit`. Pass.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: 1428 tests pass across 14 packages._
+- [x] Run `nx run rhino-cli:test:integration`. Pass.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: 857 tests pass in cmd integration._
 
 ### 2C — Refactor + verify
 
-- [ ] Run `npm run sync:claude-to-opencode` a second time — must be no-op.
-      _Date **/ Status:** / Files: **/ Notes:**_
+- [x] Run `npm run sync:claude-to-opencode` a second time — must be no-op.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: 0 unstaged-modified or untracked files in .opencode/agents/ post-2nd-run. No-op verified._
 - [ ] Commit: `feat(rhino-cli,opencode): migrate OpenCode model provider to OpenCode Go`.
       _Date **/ Status:** / Files: **/ Notes:**_
 

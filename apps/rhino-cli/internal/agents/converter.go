@@ -113,20 +113,23 @@ func ConvertTools(claudeTools []string) map[string]bool {
 	return tools
 }
 
-// ConvertModel converts Claude model to OpenCode model
+// ConvertModel converts Claude model to OpenCode model. Returns
+// opencode-go/* IDs per the adopt-opencode-go plan: minimax-m2.7 is the
+// most capable tier (opus/sonnet/omitted/unknown), glm-5 is the small/
+// fast tier (haiku). The opencode-go provider is configured in
+// .opencode/opencode.json with an apiKey resolved from
+// {env:OPENCODE_GO_API_KEY}.
 func ConvertModel(claudeModel string) string {
 	model := strings.TrimSpace(claudeModel)
 
 	switch model {
-	case "sonnet", "opus":
-		return "zai-coding-plan/glm-5.1"
 	case "haiku":
-		return "zai-coding-plan/glm-5-turbo"
+		return "opencode-go/glm-5"
 	default:
 		// Default to the most capable model.
 		// "inherit" is not a valid OpenCode model value and causes
 		// ProviderModelNotFoundError, so we use an explicit model ID.
-		return "zai-coding-plan/glm-5.1"
+		return "opencode-go/minimax-m2.7"
 	}
 }
 

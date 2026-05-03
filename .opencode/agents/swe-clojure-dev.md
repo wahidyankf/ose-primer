@@ -1,6 +1,6 @@
 ---
 description: Develops Clojure applications following functional programming principles, REPL-driven development, and platform coding standards. Use when implementing Clojure code for demo.
-model: zai-coding-plan/glm-5.1
+model: opencode-go/minimax-m2.7
 tools:
   bash: true
   edit: true
