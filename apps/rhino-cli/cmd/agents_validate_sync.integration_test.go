@@ -50,7 +50,7 @@ func (s *validateSyncSteps) after(_ context.Context, _ *godog.Scenario, _ error)
 
 func (s *validateSyncSteps) createSyncedAgentPair() error {
 	agentsDir := filepath.Join(s.tmpDir, ".claude", "agents")
-	opencodeAgentDir := filepath.Join(s.tmpDir, ".opencode", "agent")
+	opencodeAgentDir := filepath.Join(s.tmpDir, ".opencode", "agents")
 	if err := os.MkdirAll(agentsDir, 0755); err != nil {
 		return fmt.Errorf("failed to create .claude/agents dir: %w", err)
 	}
@@ -72,21 +72,17 @@ func (s *validateSyncSteps) createSyncedAgentPair() error {
 }
 
 func (s *validateSyncSteps) createSyncedSkillPair() error {
+	// "Synced" state for skills means the .claude/skills/ source exists
+	// and NO mirror exists under .opencode/skill or .opencode/skills (per
+	// opencode.ai/docs/skills/, OpenCode reads .claude/skills/ natively).
 	claudeSkillDir := filepath.Join(s.tmpDir, ".claude", "skills", "test-skill")
-	opencodeSkillDir := filepath.Join(s.tmpDir, ".opencode", "skill", "test-skill")
 	if err := os.MkdirAll(claudeSkillDir, 0755); err != nil {
 		return fmt.Errorf("failed to create .claude/skills dir: %w", err)
-	}
-	if err := os.MkdirAll(opencodeSkillDir, 0755); err != nil {
-		return fmt.Errorf("failed to create .opencode/skill dir: %w", err)
 	}
 
 	skillContent := "---\nname: test-skill\ndescription: A test skill\n---\nSkill content.\n"
 	if err := os.WriteFile(filepath.Join(claudeSkillDir, "SKILL.md"), []byte(skillContent), 0644); err != nil {
 		return fmt.Errorf("failed to write .claude skill: %w", err)
-	}
-	if err := os.WriteFile(filepath.Join(opencodeSkillDir, "SKILL.md"), []byte(skillContent), 0644); err != nil {
-		return fmt.Errorf("failed to write .opencode skill: %w", err)
 	}
 
 	return nil
@@ -101,7 +97,7 @@ func (s *validateSyncSteps) claudeAndOpencodeConfigsThatAreFullySynchronised() e
 
 func (s *validateSyncSteps) anAgentInClaudeWhoseDescriptionDiffersFromItsOpenCodeCounterpart() error {
 	agentsDir := filepath.Join(s.tmpDir, ".claude", "agents")
-	opencodeAgentDir := filepath.Join(s.tmpDir, ".opencode", "agent")
+	opencodeAgentDir := filepath.Join(s.tmpDir, ".opencode", "agents")
 	if err := os.MkdirAll(agentsDir, 0755); err != nil {
 		return fmt.Errorf("failed to create .claude/agents dir: %w", err)
 	}
@@ -124,7 +120,7 @@ func (s *validateSyncSteps) anAgentInClaudeWhoseDescriptionDiffersFromItsOpenCod
 
 func (s *validateSyncSteps) claudeContainingMoreAgentsThanOpenCode() error {
 	agentsDir := filepath.Join(s.tmpDir, ".claude", "agents")
-	opencodeAgentDir := filepath.Join(s.tmpDir, ".opencode", "agent")
+	opencodeAgentDir := filepath.Join(s.tmpDir, ".opencode", "agents")
 	if err := os.MkdirAll(agentsDir, 0755); err != nil {
 		return fmt.Errorf("failed to create .claude/agents dir: %w", err)
 	}

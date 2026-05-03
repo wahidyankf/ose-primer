@@ -11,6 +11,12 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// OpenCodeAgentDir is the canonical relative path (from repo root) where
+// rhino-cli writes converted OpenCode agent files. Plural form per
+// opencode.ai/docs/agents/. The legacy singular `.opencode/agent/` is
+// the drift surface this constant exists to prevent.
+const OpenCodeAgentDir = ".opencode/agents"
+
 // normalizeYAML fixes common YAML formatting issues in Claude agent files
 // Specifically, adds spaces after colons where missing (e.g., "name:value" -> "name: value")
 func normalizeYAML(content []byte) []byte {
@@ -212,10 +218,11 @@ func ConvertAgent(inputPath, outputPath string, dryRun bool) error {
 	return nil
 }
 
-// ConvertAllAgents converts all agents from .claude/agents to .opencode/agent
+// ConvertAllAgents converts all agents from .claude/agents to the
+// canonical plural OpenCode directory (.opencode/agents/).
 func ConvertAllAgents(repoRoot string, dryRun bool) (converted int, failed int, failedFiles []string, err error) {
 	claudeAgentsDir := filepath.Join(repoRoot, ".claude", "agents")
-	opencodeAgentDir := filepath.Join(repoRoot, ".opencode", "agent")
+	opencodeAgentDir := filepath.Join(repoRoot, OpenCodeAgentDir)
 
 	// Read all agent files
 	entries, err := os.ReadDir(claudeAgentsDir)

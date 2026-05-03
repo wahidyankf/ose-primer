@@ -10,12 +10,15 @@ import (
 var validateSyncCmd = &cobra.Command{
 	Use:   "validate-sync",
 	Short: "Validate that .claude/ and .opencode/ are in sync",
-	Long: `Validate that .claude/ and .opencode/ configurations are semantically equivalent.
+	Long: `Validate that .claude/ and .opencode/agents/ configurations are
+semantically equivalent. The legacy singular .opencode/agent/ path is
+flagged as drift if it reappears.
 
 This command performs the following validations:
 
 Agents:
-- Count check: Ensures equal number of agents in both directories
+- Stale-dir check: Asserts legacy singular .opencode/agent/ does not exist
+- Count check: OpenCode plural directory contains every Claude agent (⊆)
 - Equivalence check: Validates each agent is semantically equivalent:
   * Description matches exactly
   * Model is correctly converted (sonnet/opus/empty → zai-coding-plan/glm-5.1, haiku → zai-coding-plan/glm-5-turbo)
@@ -24,8 +27,9 @@ Agents:
   * Body content is identical
 
 Skills:
-- Count check: Ensures equal number of skills in both directories
-- Identity check: Validates skills are byte-for-byte identical`,
+- No-mirror check: Asserts no rhino-cli-managed skill copies exist under
+  .opencode/skill/ or .opencode/skills/ (OpenCode reads .claude/skills/
+  natively per opencode.ai/docs/skills/).`,
 	Example: `  # Validate sync
   rhino-cli agents validate-sync
 

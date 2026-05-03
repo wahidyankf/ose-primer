@@ -146,13 +146,14 @@ func (s *syncAgentsSteps) theCommandExitsSuccessfully() error {
 }
 
 func (s *syncAgentsSteps) theOpenCodeDirectoryContainsTheConvertedConfiguration() error {
-	agentPath := filepath.Join(s.tmpDir, ".opencode", "agent", "sync-agent.md")
+	agentPath := filepath.Join(s.tmpDir, ".opencode", "agents", "sync-agent.md")
 	if _, err := os.Stat(agentPath); os.IsNotExist(err) {
-		return fmt.Errorf("expected .opencode/agent/sync-agent.md to exist but it does not")
+		return fmt.Errorf("expected .opencode/agents/sync-agent.md to exist but it does not")
 	}
+	// Skills are read natively by OpenCode from .claude/skills/; no mirror is written.
 	skillPath := filepath.Join(s.tmpDir, ".opencode", "skill", "test-skill", "SKILL.md")
-	if _, err := os.Stat(skillPath); os.IsNotExist(err) {
-		return fmt.Errorf("expected .opencode/skill/test-skill/SKILL.md to exist but it does not")
+	if _, err := os.Stat(skillPath); err == nil {
+		return fmt.Errorf("did not expect .opencode/skill/test-skill/SKILL.md (skills not synced)")
 	}
 	return nil
 }
@@ -165,7 +166,7 @@ func (s *syncAgentsSteps) theOutputDescribesThePlannedOperations() error {
 }
 
 func (s *syncAgentsSteps) noFilesAreWrittenToTheOpenCodeDirectory() error {
-	agentPath := filepath.Join(s.tmpDir, ".opencode", "agent", "sync-agent.md")
+	agentPath := filepath.Join(s.tmpDir, ".opencode", "agents", "sync-agent.md")
 	if _, err := os.Stat(agentPath); !os.IsNotExist(err) {
 		return fmt.Errorf("expected .opencode/agent/sync-agent.md to NOT exist in dry-run mode")
 	}
@@ -173,19 +174,19 @@ func (s *syncAgentsSteps) noFilesAreWrittenToTheOpenCodeDirectory() error {
 }
 
 func (s *syncAgentsSteps) onlyAgentFilesAreWrittenToTheOpenCodeDirectory() error {
-	agentPath := filepath.Join(s.tmpDir, ".opencode", "agent", "sync-agent.md")
+	agentPath := filepath.Join(s.tmpDir, ".opencode", "agents", "sync-agent.md")
 	if _, err := os.Stat(agentPath); os.IsNotExist(err) {
-		return fmt.Errorf("expected .opencode/agent/sync-agent.md to exist")
+		return fmt.Errorf("expected .opencode/agents/sync-agent.md to exist")
 	}
 	skillPath := filepath.Join(s.tmpDir, ".opencode", "skill", "test-skill", "SKILL.md")
 	if _, err := os.Stat(skillPath); !os.IsNotExist(err) {
-		return fmt.Errorf("expected .opencode/skill/test-skill/SKILL.md to NOT exist in agents-only mode")
+		return fmt.Errorf("expected .opencode/skill/test-skill/SKILL.md to NOT exist (skills not synced)")
 	}
 	return nil
 }
 
 func (s *syncAgentsSteps) theCorrespondingOpenCodeAgentUsesTheZaiGlmModel() error {
-	agentPath := filepath.Join(s.tmpDir, ".opencode", "agent", "sync-agent.md")
+	agentPath := filepath.Join(s.tmpDir, ".opencode", "agents", "sync-agent.md")
 	data, err := os.ReadFile(agentPath)
 	if err != nil {
 		return fmt.Errorf("failed to read .opencode/agent/sync-agent.md: %w", err)
