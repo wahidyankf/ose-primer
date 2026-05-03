@@ -224,8 +224,8 @@ the GitHub UI URLs in tech-docs.md.
       _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/README.md / Notes: New `### governance vendor-audit` section before contracts java-clean-imports; references the convention + binding-example rule._
 - [x] Verify `nx run rhino-cli:validate:governance-vendor-audit` runs (will return violations until W4).
       _Date: 2026-05-04 / Status: done / Files: — / Notes: Returns 229 violations in primer governance — W4 remediation will drive to zero._
-- [ ] Commit: `feat(rhino-cli): add governance vendor-audit scanner with \\bSkills\\b term`.
-      _Date **/ Status:** / Files: **/ Notes:**_
+- [x] Commit: `feat(rhino-cli): add governance vendor-audit scanner with \\bSkills\\b term`.
+      _Date: 2026-05-04 / Status: done / Files: SHA a993c8b17 / Notes: 9 files, +1419/-32. Pre-commit broke 1st on README link to not-yet-ported W4 convention; switched to plain text reference (link will be restored when W4 lands the file)._
 
 ## Phase 4 — W4: Vendor-neutral governance
 
