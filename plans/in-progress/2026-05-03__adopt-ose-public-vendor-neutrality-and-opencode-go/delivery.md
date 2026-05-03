@@ -261,17 +261,36 @@ the GitHub UI URLs in tech-docs.md.
 - [ ] Group violations by directory. Plan remediation order: principles →
       conventions → development → workflows → vision (if any).
       _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Remediate `governance/principles/` violations. Run scanner; commit.
-      \_Date **/ Status:** / Files: governance/principles/\*\* / Notes: \_\_\_
-- [ ] Remediate `governance/conventions/` violations. Run scanner; commit.
-      \_Date **/ Status:** / Files: governance/conventions/\*\* / Notes: \_\_\_
-- [ ] Remediate `governance/development/` violations including
-      `governance/development/agents/ai-agents.md` (heavy lift). Commit.
-      \_Date **/ Status:** / Files: governance/development/\*\* / Notes: \_\_\_
-- [ ] Remediate `governance/workflows/` violations. Commit.
-      \_Date **/ Status:** / Files: governance/workflows/\*\* / Notes: \_\_\_
-- [ ] Remediate `governance/vision/` and `governance/README.md` if flagged. Commit.
-      \_Date **/ Status:** / Files: as flagged / Notes: \_\_\_
+- [ ] Remediate `governance/principles/` violations.
+      _Date / Status: / Files: governance/principles/\*\* / Notes:_
+- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit governance/principles/`. 0 violations.
+      _Date / Status: / Files: / Notes:_
+- [ ] Commit: `docs(governance): remediate vendor terms in principles/`.
+      _Date / Status: / Files: / Notes:_
+- [ ] Remediate `governance/conventions/` violations.
+      _Date / Status: / Files: governance/conventions/\*\* / Notes:_
+- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit governance/conventions/`. 0 violations.
+      _Date / Status: / Files: / Notes:_
+- [ ] Commit: `docs(governance): remediate vendor terms in conventions/`.
+      _Date / Status: / Files: / Notes:_
+- [ ] Remediate `governance/development/` violations including `governance/development/agents/ai-agents.md` (heavy lift).
+      _Date / Status: / Files: governance/development/\*\* / Notes:_
+- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit governance/development/`. 0 violations.
+      _Date / Status: / Files: / Notes:_
+- [ ] Commit: `docs(governance): remediate vendor terms in development/`.
+      _Date / Status: / Files: / Notes:_
+- [ ] Remediate `governance/workflows/` violations.
+      _Date / Status: / Files: governance/workflows/\*\* / Notes:_
+- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit governance/workflows/`. 0 violations.
+      _Date / Status: / Files: / Notes:_
+- [ ] Commit: `docs(governance): remediate vendor terms in workflows/`.
+      _Date / Status: / Files: / Notes:_
+- [ ] Remediate `governance/vision/` and `governance/README.md` if flagged.
+      _Date / Status: / Files: as flagged / Notes:_
+- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit governance/vision/ governance/README.md`. 0 violations.
+      _Date / Status: / Files: / Notes:_
+- [ ] Commit: `docs(governance): remediate vendor terms in vision/ and root README`.
+      _Date / Status: / Files: / Notes:_
 - [ ] Update `governance/development/agents/model-selection.md` to use capability
       tiers as canonical vocabulary; vendor IDs only inside `binding-example` fences.
       \_Date **/ Status:** / Files: as above / Notes: \_\_\_
@@ -399,7 +418,144 @@ the GitHub UI URLs in tech-docs.md.
 - [ ] Commit: `docs(governance): adopt test-driven-development convention from ose-public`.
       _Date **/ Status:** / Files: **/ Notes:**_
 
-## Phase 10 — Final validation, archive
+## Phase 10 — W10: Convention completeness
+
+- [ ] Create `governance/conventions/structure/no-last-updated.md` verbatim from ose-public (29 lines).
+      _Date / Status: / Files: governance/conventions/structure/no-last-updated.md / Notes:_
+- [ ] Create `governance/conventions/structure/programming-language-docs-separation.md` verbatim from ose-public (846 lines). Adjust any cross-reference paths primer doesn't have.
+      _Date / Status: / Files: governance/conventions/structure/programming-language-docs-separation.md / Notes:_
+- [ ] Update `governance/conventions/structure/README.md` index to list both new conventions.
+      _Date / Status: / Files: governance/conventions/structure/README.md / Notes:_
+- [ ] Edit `governance/conventions/writing/no-date-metadata.md` to add a cross-reference to the new `no-last-updated.md` companion.
+      _Date / Status: / Files: governance/conventions/writing/no-date-metadata.md / Notes:_
+- [ ] Verify `nx run rhino-cli:validate:governance-vendor-audit` returns 0.
+      _Date / Status: / Files: / Notes:_
+- [ ] Commit: `docs(governance): adopt no-last-updated and programming-language-docs-separation conventions`.
+      _Date / Status: / Files: / Notes:_
+
+## Phase 11 — W11: Plan anti-hallucination
+
+- [ ] Create `governance/development/quality/plan-anti-hallucination.md` verbatim from ose-public (352 lines). Adjust cross-references if any reference paths primer doesn't have.
+      _Date / Status: / Files: governance/development/quality/plan-anti-hallucination.md / Notes:_
+- [ ] Update `governance/development/quality/README.md` index.
+      _Date / Status: / Files: governance/development/quality/README.md / Notes:_
+- [ ] Edit `governance/workflows/plan/plan-quality-gate.md` (refreshed in W8) to add cross-reference to `plan-anti-hallucination.md` from the "Plan-Specific Validation" section.
+      _Date / Status: / Files: governance/workflows/plan/plan-quality-gate.md / Notes:_
+- [ ] Edit `.claude/agents/plan-checker.md` to add `plan-anti-hallucination` to the agent's reference set.
+      _Date / Status: / Files: .claude/agents/plan-checker.md / Notes:_
+- [ ] Run `npm run sync:claude-to-opencode`. Verify `.opencode/agents/plan-checker.md` regenerates.
+      _Date / Status: / Files: .opencode/agents/plan-checker.md / Notes:_
+- [ ] Verify `nx run rhino-cli:validate:governance-vendor-audit` returns 0.
+      _Date / Status: / Files: / Notes:_
+- [ ] Commit: `docs(governance): adopt plan-anti-hallucination quality convention from ose-public`.
+      _Date / Status: / Files: / Notes:_
+
+## Phase 12 — W12: Dev environment setup workflow
+
+- [ ] Refresh `governance/workflows/infra/infra-development-environment-setup.md` (existing file, 684 lines) against ose-public's `development-environment-setup.md` (619 lines). Adapt: drop ose-public-specific app-list references; keep generic Volta + Docker + per-language-toolchain + env-var bootstrap; document `OPENCODE_GO_API_KEY` env var (W2). Do NOT rename the file — primer's workflow-naming convention mandates `infra-development-environment-setup.md`.
+      _Date / Status: / Files: governance/workflows/infra/infra-development-environment-setup.md / Notes:_
+- [ ] Create or update `governance/workflows/infra/README.md` to list the new workflow.
+      _Date / Status: / Files: governance/workflows/infra/README.md / Notes:_
+- [ ] Edit `governance/workflows/README.md` to add `infra/` subsection if not already present.
+      _Date / Status: / Files: governance/workflows/README.md / Notes:_
+- [ ] Edit `AGENTS.md` (post-W4) to add cross-reference from the dev-env-setup-related subsection.
+      _Date / Status: / Files: AGENTS.md / Notes:_
+- [ ] Edit `CLAUDE.md` (post-W4) similarly.
+      _Date / Status: / Files: CLAUDE.md / Notes:_
+- [ ] Verify `nx run rhino-cli:validate:governance-vendor-audit` returns 0.
+      _Date / Status: / Files: / Notes:_
+- [ ] Commit: `docs(governance,workflows): refresh infra-development-environment-setup against ose-public`.
+      _Date / Status: / Files: / Notes:_
+
+## Phase 13 — W13: Docs/SWE separation enforcement
+
+### 13A — Agent + skill ports
+
+- [ ] Create `.claude/agents/docs-software-engineering-separation-checker.md` verbatim (511 lines).
+      _Date / Status: / Files: .claude/agents/docs-software-engineering-separation-checker.md / Notes:_
+- [ ] Create `.claude/agents/docs-software-engineering-separation-fixer.md` verbatim (476 lines).
+      _Date / Status: / Files: .claude/agents/docs-software-engineering-separation-fixer.md / Notes:_
+- [ ] Create `.claude/skills/docs-validating-software-engineering-separation/SKILL.md` verbatim (248 lines).
+      _Date / Status: / Files: .claude/skills/docs-validating-software-engineering-separation/SKILL.md / Notes:_
+- [ ] Run `npm run sync:claude-to-opencode`. Verify `.opencode/agents/docs-software-engineering-separation-{checker,fixer}.md` regenerate.
+      _Date / Status: / Files: .opencode/agents/\* / Notes:_
+
+### 13B — Catalog + index updates
+
+- [ ] Update `.claude/agents/README.md` catalog: add new checker under Checkers section, fixer under Fixers section.
+      _Date / Status: / Files: .claude/agents/README.md / Notes:_
+- [ ] Update `.claude/skills/README.md` catalog: add new validating skill.
+      _Date / Status: / Files: .claude/skills/README.md / Notes:_
+
+### 13C — Verification
+
+- [ ] Run `nx run rhino-cli:test:unit` and `nx run rhino-cli:test:integration`. Both green.
+      _Date / Status: / Files: / Notes:_
+- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit`. 0 violations.
+      _Date / Status: / Files: / Notes:_
+- [ ] Smoke-test the checker on a known-misplaced fixture (or a clean run): invoke `docs-software-engineering-separation-checker` via Agent tool against `governance/`; confirm it produces a dual-labelled report.
+      _Date / Status: / Files: / Notes:_
+- [ ] Commit: `feat(.claude): adopt docs-software-engineering-separation checker, fixer, and validating skill`.
+      _Date / Status: / Files: / Notes:_
+
+## Phase 14 — W14: Content drift sweep
+
+### 14A — Baseline diff
+
+- [ ] Run `diff -rq governance/ /Users/wkf/ose-projects/ose-public/governance/ | grep '\.md$' | tee local-temp/drift-baseline.txt`. Capture every diverging file.
+      _Date / Status: / Files: local-temp/drift-baseline.txt / Notes:_
+- [ ] Review `local-temp/drift-baseline.txt` and classify each entry as **refresh**, **skip** (primer-specific or product-specific), or **investigate**. Save the classified list as `local-temp/drift-classified.md`.
+      _Date / Status: / Files: local-temp/drift-classified.md / Notes:_
+
+### 14B — Refresh known-drifted files
+
+- [ ] Refresh `governance/development/quality/code.md` against ose-public; re-apply primer-specific paragraphs (single-repo, no parent gitlinks). `diff -q` must show only primer-specific divergence post-refresh.
+      _Date / Status: / Files: governance/development/quality/code.md / Notes:_
+- [ ] Refresh `governance/development/infra/nx-targets.md` against ose-public; re-apply primer-specific paragraphs.
+      _Date / Status: / Files: governance/development/infra/nx-targets.md / Notes:_
+- [ ] Refresh `governance/development/quality/three-level-testing-standard.md` against ose-public; re-apply primer-specific paragraphs.
+      _Date / Status: / Files: governance/development/quality/three-level-testing-standard.md / Notes:_
+
+### 14C — Iterative refresh by category
+
+- [ ] Refresh remaining `refresh`-classified files in `governance/development/quality/`. Commit per file or per small batch.
+      _Date / Status: / Files: governance/development/quality/\* / Notes:_
+- [ ] Refresh remaining `refresh`-classified files in `governance/development/infra/`. Commit per batch.
+      _Date / Status: / Files: governance/development/infra/\* / Notes:_
+- [ ] Refresh remaining `refresh`-classified files in `governance/conventions/`. Commit per batch.
+      _Date / Status: / Files: governance/conventions/\* / Notes:_
+- [ ] Refresh remaining `refresh`-classified files in `governance/principles/` (if any). Commit per batch.
+      _Date / Status: / Files: governance/principles/\* / Notes:_
+- [ ] Refresh remaining `refresh`-classified files in `governance/workflows/` (excluding the W8/W12 workflows already handled). Commit per batch.
+      _Date / Status: / Files: governance/workflows/\* / Notes:_
+
+### 14D — Investigate + verify
+
+- [ ] Resolve every `investigate`-classified entry: either refresh, skip, or escalate to a follow-up plan with a one-line rationale per entry in `local-temp/drift-resolved.md`.
+      _Date / Status: / Files: local-temp/drift-resolved.md / Notes:_
+- [ ] Re-run `diff -rq governance/ /Users/wkf/ose-projects/ose-public/governance/ | grep '\.md$'`. Only `skip`-classified files should remain.
+      _Date / Status: / Files: / Notes:_
+- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit`. 0 violations across all refreshed files.
+      _Date / Status: / Files: / Notes:_
+- [ ] Run `nx affected -t typecheck lint test:quick spec-coverage`. All green.
+      _Date / Status: / Files: / Notes:_
+- [ ] Commit each batch thematically: `docs(governance): refresh <category>/* against ose-public`.
+      _Date / Status: / Files: / Notes:_
+
+## Phase 15 — Cross-W10–W14 verification
+
+- [ ] Verify W10: `governance/conventions/structure/{no-last-updated,programming-language-docs-separation}.md` both exist; `no-date-metadata.md` cross-references the companion.
+      _Date / Status: / Files: / Notes:_
+- [ ] Verify W11: `governance/development/quality/plan-anti-hallucination.md` exists; cross-referenced from `plan-quality-gate.md` and `plan-checker.md`.
+      _Date / Status: / Files: / Notes:_
+- [ ] Verify W12: `governance/workflows/infra/infra-development-environment-setup.md` exists and has been refreshed against ose-public; cross-referenced from AGENTS.md and CLAUDE.md.
+      _Date / Status: / Files: / Notes:_
+- [ ] Verify W13: `.claude/agents/docs-software-engineering-separation-{checker,fixer}.md` and skill present; sync produces `.opencode/agents/` equivalents; smoke-test passes.
+      _Date / Status: / Files: / Notes:_
+- [ ] Verify W14: `local-temp/drift-baseline.txt` and `drift-resolved.md` archived; `diff -rq` post-sweep returns only `skip`-classified divergence.
+      _Date / Status: / Files: / Notes:_
+
+## Phase 16 — Final validation, archive
 
 - [ ] Run `nx affected -t typecheck lint test:quick spec-coverage`. All green.
       _Date **/ Status:** / Files: **/ Notes:**_
@@ -419,7 +575,7 @@ the GitHub UI URLs in tech-docs.md.
       _Date **/ Status:** / Files: **/ Notes:**_
 - [ ] Verify `cat .opencode/opencode.json | jq -r .model` returns `opencode-go/minimax-m2.7`.
       _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Verify the nine Gherkin Feature groups in [prd.md](./prd.md) all pass.
+- [ ] Verify the fourteen Gherkin Feature groups in [prd.md](./prd.md) all pass (W1–W14).
       _Date **/ Status:** / Files: **/ Notes:**_
 - [ ] Update `plans/in-progress/README.md` to remove this plan from active list.
       \_Date **/ Status:** / Files: plans/in-progress/README.md / Notes: \_\_\_

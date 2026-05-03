@@ -73,6 +73,11 @@ shape) shipped a coherent batch of changes that:
 | Missing worktree-path convention (W7)                      | Template ships no rule for where worktrees land; consumers reinvent it per repo; existing `worktree-setup.md` is stale relative to ose-public's current toolchain-init and parallel-safety language.                                                                                                                                                    |
 | Stale plan workflows + missing companions (W8)             | `plan-execution.md` is ~76 lines behind ose-public's current iteration loop; consumers inheriting the stale workflow miss recent termination-rule and Iron-Rules clarifications. `ci-monitoring.md`, `ci-post-push-verification.md` are missing entirely.                                                                                               |
 | TDD convention missing (W9)                                | `governance/development/workflow/test-driven-development.md` exists in ose-public (316 lines, mandates Red→Green→Refactor) but never reached primer; consumers inherit a template that pays lip-service to TDD via `implementation.md` without an authoritative convention codifying the practice.                                                      |
+| Convention surface incomplete (W10)                        | `no-last-updated.md` (companion to no-date-metadata) and `programming-language-docs-separation.md` (846 lines, language-docs separation rule) both missing; primer ships partial convention surface that lets `**Last Updated**` rows and misplaced language docs accumulate silently.                                                                  |
+| No plan-anti-hallucination guardrails (W11)                | `plan-checker` validates against the codebase but has no codified anti-hallucination playbook; consumers writing AI-generated plans inherit no rule mechanically catching invented APIs, fabricated SHAs, or made-up file paths.                                                                                                                        |
+| Stale dev-environment-setup workflow (W12)                 | Primer's `infra-development-environment-setup.md` (684 lines) has drifted from ose-public's `development-environment-setup.md` (619 lines) source — consumers inherit stale Volta/Docker/language-toolchain/env-var bootstrap guidance, and the OpenCode Go env var (W2) is undocumented in the workflow.                                               |
+| No docs/SWE separation enforcement (W13)                   | The W10 `programming-language-docs-separation.md` rule is only mechanically enforceable with the corresponding checker + fixer agents and validating skill. Without W13, the rule joins the long list of "convention-as-aspiration" entries.                                                                                                            |
+| Content drift on already-adopted files (W14)               | At least three known files (`code.md`, `nx-targets.md`, `three-level-testing-standard.md`) have diverged from ose-public's current versions since primer's last sync; consumers inherit stale guidance on the most-cited files. Drift accumulates on every ose-public iteration.                                                                        |
 
 ## Why this plan adds W7 (worktree), W8 (plan + workflow), and W9 (TDD)
 
@@ -112,6 +117,67 @@ template scaffolding were found behind the upstream:
    so consumers inherit a template that practices TDD informally
    (delivery checklists are TDD-shaped) but never codifies it as a
    rule that the `plan-checker` agent or the maintainer can cite.
+
+## Why this plan adds W10–W14 (convention completeness, anti-hallucination, dev env, separation enforcement, drift sweep)
+
+A second re-scan of the ose-public ↔ ose-primer delta after the W7–W9
+extension surfaced five more categories of generic template scaffolding
+that ose-public ships but ose-primer does not yet have:
+
+1. **Convention completeness (W10).** Two structure conventions
+   missing from primer's convention surface:
+   - `no-last-updated.md` (29 lines) — companion to the
+     `no-date-metadata` convention. Forbids `**Last Updated**` rows in
+     all non-website markdown. Tiny but load-bearing: without it, drive-by
+     edits re-introduce date-metadata rot the no-date-metadata
+     convention exists to prevent.
+   - `programming-language-docs-separation.md` (846 lines) — separates
+     programming-language docs from generic dev docs. Pins the boundary
+     between "rules every contributor follows" (generic) and "Go-specific"
+     / "TypeScript-specific" / etc. polyglot guidance. Without it, the
+     two namespaces fuse over time and language-specific drift bleeds
+     into generic conventions.
+2. **Plan anti-hallucination (W11).** The `plan-checker` agent runs a
+   dual-labelled findings audit but has no separate codified
+   anti-hallucination playbook. ose-public's
+   `governance/development/quality/plan-anti-hallucination.md` (352
+   lines) defines the specific failure modes (invented APIs, fabricated
+   SHAs, made-up file paths, hallucinated commit messages) and the
+   verification checks each finding must pass. Adopting it gives
+   `plan-checker` an authoritative reference document; consumers writing
+   AI-generated plans inherit the same guardrails the upstream consumer
+   uses.
+3. **Dev environment setup workflow refresh (W12).** Primer already
+   ships `governance/workflows/infra/infra-development-environment-setup.md`
+   (684 lines, primer-canonical filename per the workflow-naming
+   convention's `<scope>(-<qualifier>)*-<type>` rule). It has drifted
+   from ose-public's source `governance/workflows/infra/development-environment-setup.md`
+   (619 lines) since primer's last sync. W12 refreshes the body
+   content — Volta install, Docker daemon, language toolchains, env
+   vars, dependency install, doctor sweep — while preserving primer's
+   filename and adding documentation for the OpenCode Go env var
+   defined in W2. Companion to the W8 ci-monitoring + ci-post-push-verification
+   workflows.
+4. **Docs/SWE separation enforcement (W13).** The W10
+   `programming-language-docs-separation.md` rule is mechanically
+   enforceable only when the matching checker + fixer agents and
+   validating skill ship alongside it. ose-public ships all three
+   (`docs-software-engineering-separation-checker.md` 511 lines,
+   `docs-software-engineering-separation-fixer.md` 476 lines,
+   `docs-validating-software-engineering-separation/SKILL.md` 248 lines).
+   Adopting only W10 without W13 reduces the convention to aspiration;
+   adopting both together makes it a long-lived enforced invariant.
+   Hard dependency on W10 (the rule must exist before its enforcer
+   does).
+5. **Content drift sweep (W14).** Files that primer adopted in earlier
+   syncs have iterated in ose-public since the fork. Known drift
+   surface (verified by `diff -q` at plan time): `code.md` (pre-push
+   contract), `nx-targets.md` (Nx target conventions),
+   `three-level-testing-standard.md` (testing standard). Likely 50+
+   more files diverge. Phase 14A runs a baseline diff to enumerate;
+   subsequent phases refresh by category (quality/, infra/,
+   conventions/). Drift compounds on every ose-public iteration, so
+   periodic sweeps are template-grade hygiene, not a one-time fix.
 
 ## Affected roles
 

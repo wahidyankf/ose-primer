@@ -358,15 +358,144 @@ Feature: test-driven-development convention is present and authoritative
     Then the report cites "governance/development/workflow/test-driven-development.md" as the violated convention
 ```
 
+### W10 — Convention completeness
+
+User stories:
+
+- As a maintainer cleaning up date-metadata violations, I want a `no-last-updated.md` convention paired with the existing `no-date-metadata.md`, so that I can cite a single explicit rule when removing `**Last Updated**` rows in pull requests.
+- As a contributor writing programming-language-specific docs, I want `programming-language-docs-separation.md` to define exactly where Go, TypeScript, Rust, etc. docs belong vs generic dev docs, so that I do not accidentally pollute generic conventions with language-specific guidance.
+
+```gherkin
+Feature: no-last-updated convention is present and authoritative
+  Scenario: File present
+    Given "governance/conventions/structure/no-last-updated.md" exists
+    When I read it
+    Then it forbids "**Last Updated**" rows in non-website markdown
+    And it cross-references "governance/conventions/structure/no-date-metadata.md" as a companion rule
+
+Feature: programming-language-docs-separation convention is present
+  Scenario: File present
+    Given "governance/conventions/structure/programming-language-docs-separation.md" exists
+    When I read it
+    Then it states the boundary between generic dev docs and programming-language-specific docs
+    And it lists the canonical locations for language docs (e.g., docs/explanation/software-engineering/programming-languages/<lang>/)
+    And it is referenced by the W13 docs-software-engineering-separation-checker agent
+```
+
+### W11 — Plan anti-hallucination
+
+User stories:
+
+- As a `plan-checker` agent author validating plans, I want an authoritative anti-hallucination playbook to cite, so that my findings are grounded in a documented standard rather than ad-hoc judgement.
+- As a plan author using AI assistance, I want the anti-hallucination convention to enumerate concrete failure modes (invented APIs, fabricated SHAs, made-up file paths, hallucinated commit messages), so that I can self-check before invoking `plan-checker`.
+
+```gherkin
+Feature: plan-anti-hallucination convention is present
+  Scenario: File present
+    Given "governance/development/quality/plan-anti-hallucination.md" exists
+    When I read it
+    Then it enumerates concrete hallucination failure modes
+    And it specifies the verification check each finding category must pass
+    And it is cross-referenced from "governance/workflows/plan/plan-quality-gate.md"
+
+  Scenario: plan-checker cites the convention when flagging hallucinated content
+    Given a plan that references a non-existent file path "/foo/bar.md"
+    When "plan-checker" runs
+    Then the report cites "governance/development/quality/plan-anti-hallucination.md" as the validated convention
+```
+
+### W12 — Dev environment setup workflow
+
+User stories:
+
+- As a new template consumer cloning ose-primer, I want a single end-to-end dev-environment-setup workflow covering Volta, Docker, language toolchains, and env vars, so that I can bootstrap from zero without piecing together fragments from CLAUDE.md, AGENTS.md, and README files.
+- As a contributor adding a new language toolchain to the template, I want the workflow to document the canonical install + verification + doctor sequence, so that I extend it consistently with existing toolchains.
+
+```gherkin
+Feature: infra-development-environment-setup workflow is refreshed against ose-public
+  Scenario: File present at primer-canonical path
+    Given "governance/workflows/infra/infra-development-environment-setup.md" exists
+    And the filename matches the workflow-naming convention "<scope>(-<qualifier>)*-<type>" with scope=infra, qualifiers=development-environment, type=setup
+    When I read it
+    Then it contains end-to-end bootstrap steps (Volta, Docker, language toolchains, env vars, dependency install, doctor sweep)
+    And it cross-references "governance/development/workflow/worktree-setup.md" for the worktree-specific bootstrap path
+    And it documents OPENCODE_GO_API_KEY env-var setup post-W2
+
+  Scenario: Body content matches ose-public source modulo primer adaptation
+    Given primer "governance/workflows/infra/infra-development-environment-setup.md"
+    And ose-public "governance/workflows/infra/development-environment-setup.md"
+    When I diff the body content (excluding filename, frontmatter date fields, primer-specific app-list paragraphs)
+    Then the structural sections (Bootstrap, Toolchains, Env vars, Verification) match
+    And no Z.ai env-var references remain (replaced by OPENCODE_GO_API_KEY per W2)
+```
+
+### W13 — Docs/SWE separation enforcement
+
+User stories:
+
+- As a maintainer enforcing the W10 `programming-language-docs-separation.md` rule, I want checker + fixer agents and a validating skill, so that the rule is mechanically enforceable in pre-push and CI rather than being aspirational prose.
+- As a contributor moving language-specific docs to their canonical location, I want the fixer to apply the move automatically when the checker flags a misplaced file, so that I do not need to manually compute the canonical destination.
+
+```gherkin
+Feature: docs-software-engineering-separation triad is present
+  Scenario: Agents and skill files exist
+    Given the W10 convention is in place
+    When I list ".claude/agents/" and ".claude/skills/"
+    Then ".claude/agents/docs-software-engineering-separation-checker.md" exists
+    And ".claude/agents/docs-software-engineering-separation-fixer.md" exists
+    And ".claude/skills/docs-validating-software-engineering-separation/SKILL.md" exists
+
+  Scenario: Sync produces canonical OpenCode equivalents
+    Given the three triad files are present in ".claude/"
+    When I run "npm run sync:claude-to-opencode"
+    Then ".opencode/agents/docs-software-engineering-separation-checker.md" exists
+    And ".opencode/agents/docs-software-engineering-separation-fixer.md" exists
+
+  Scenario: Checker flags misplaced language doc
+    Given a file at "governance/development/best-practices.md" containing Go-specific guidance
+    When "docs-software-engineering-separation-checker" runs
+    Then the report flags the file with the canonical destination "docs/explanation/software-engineering/programming-languages/golang/best-practices.md"
+    And the finding cites "governance/conventions/structure/programming-language-docs-separation.md"
+```
+
+### W14 — Content drift sweep
+
+User stories:
+
+- As a maintainer keeping primer in sync with ose-public's iterations, I want a baseline diff report enumerating every file that has drifted since fork, so that I can refresh by category instead of guessing.
+- As a template consumer, I want commonly-cited files (`code.md`, `nx-targets.md`, `three-level-testing-standard.md`) to match ose-public's current authoritative versions, so that my fork inherits the upstream's most recent guidance.
+
+```gherkin
+Feature: content drift sweep produces a baseline diff
+  Scenario: Phase 14A baseline
+    Given the current ose-primer working tree
+    When the executor runs "diff -rq governance/ /Users/wkf/ose-projects/ose-public/governance/" (or equivalent)
+    Then the report enumerates every file path that diverges from ose-public
+    And the report classifies each diverging file as "refresh", "skip (primer-specific)", or "investigate"
+
+Feature: known-drifted files refreshed against ose-public
+  Scenario: code.md, nx-targets.md, three-level-testing-standard.md refreshed
+    Given the W14 baseline diff identifies these three files as "refresh"
+    When the executor refreshes each file with ose-public's current version
+    And reapplies primer-specific phrasing (single-repo, no parent gitlinks)
+    Then "diff -q" against ose-public reports zero substantive differences modulo primer-specific paragraphs
+    And the W3 vendor-audit scanner returns zero violations against the refreshed files
+```
+
 ## Definition of Done
 
-- All nine Gherkin Feature groups above pass against `ose-primer`'s tip-of-`main`
+- All fourteen Gherkin Feature groups above pass against `ose-primer`'s tip-of-`main`
   after this plan executes.
 - `nx affected -t typecheck lint test:quick spec-coverage` is green.
 - `nx run rhino-cli:validate:governance-vendor-audit` is green.
 - `nx run rhino-cli:validate:cross-vendor-parity` is green for two consecutive runs.
 - `npm run sync:claude-to-opencode` is a no-op.
 - `governance/conventions/structure/worktree-path.md` exists and is referenced by `AGENTS.md` / `CLAUDE.md`.
+- `governance/conventions/structure/{no-last-updated,programming-language-docs-separation}.md` exist (W10).
+- `governance/development/quality/plan-anti-hallucination.md` exists (W11).
+- `governance/workflows/infra/infra-development-environment-setup.md` (primer-canonical filename per workflow-naming convention) refreshed against ose-public's `development-environment-setup.md` source (W12).
+- `.claude/agents/docs-software-engineering-separation-{checker,fixer}.md` and `.claude/skills/docs-validating-software-engineering-separation/SKILL.md` exist (W13).
+- W14 baseline diff produced; all `refresh`-classified files synced; `diff -q` reports zero substantive differences modulo primer-specific paragraphs.
 - `governance/workflows/plan/{plan-execution,plan-quality-gate,README}.md` match ose-public's current versions modulo primer-specific phrasing.
 - `governance/development/workflow/{ci-monitoring,ci-post-push-verification,test-driven-development}.md` are present.
 - Plan archived to `plans/done/2026-05-03__adopt-ose-public-vendor-neutrality-and-opencode-go/`

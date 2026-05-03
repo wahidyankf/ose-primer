@@ -19,7 +19,7 @@ two new agents, one new workflow, and one new rhino-cli scanner. As the
 upstream MIT template, ose-primer must not lag the downstream consumer:
 this plan adopts the full batch into ose-primer in one coordinated effort.
 
-The work decomposes into nine logically independent workstreams that
+The work decomposes into fourteen logically independent workstreams that
 share execution order because each later workstream consumes invariants
 the previous one establishes.
 
@@ -33,6 +33,11 @@ flowchart TD
     G["W7 — Worktree Standard\nworktree-path.md convention\nworktree-setup.md refresh"] -.parallel.-> D
     H["W8 — Plan + Workflow Refresh\nplan-execution.md\nplan-quality-gate.md\nci-monitoring + post-push workflows"] -.parallel.-> E
     I["W9 — TDD Convention\ntest-driven-development.md port\nRed-Green-Refactor enforced in delivery"] -.parallel.-> E
+    J["W10 — Convention Completeness\nno-last-updated.md\nprogramming-language-docs-separation.md"] -.parallel.-> D
+    K["W11 — Plan Anti-Hallucination\nplan-anti-hallucination.md quality doc"] -.parallel.-> H
+    L["W12 — Dev Environment Setup\nrefresh infra-development-environment-setup.md\nagainst ose-public source"] -.parallel.-> H
+    J --> M["W13 — Docs/SWE Separation Enforcement\nchecker + fixer agents\nvalidating skill"]
+    N["W14 — Content Drift Sweep\ncode.md, nx-targets.md,\nthree-level-testing-standard.md, others"] -.parallel.-> E
     style A fill:#0173B2,stroke:#000000,color:#FFFFFF
     style B fill:#029E73,stroke:#000000,color:#FFFFFF
     style C fill:#DE8F05,stroke:#000000,color:#000000
@@ -42,6 +47,11 @@ flowchart TD
     style G fill:#029E73,stroke:#000000,color:#FFFFFF
     style H fill:#DE8F05,stroke:#000000,color:#000000
     style I fill:#CC78BC,stroke:#000000,color:#000000
+    style J fill:#0173B2,stroke:#000000,color:#FFFFFF
+    style K fill:#029E73,stroke:#000000,color:#FFFFFF
+    style L fill:#DE8F05,stroke:#000000,color:#000000
+    style M fill:#CC78BC,stroke:#000000,color:#000000
+    style N fill:#56B4E9,stroke:#000000,color:#000000
 ```
 
 ## Scope
@@ -75,6 +85,30 @@ plan-quality-gate,README}.md` from ose-public; port the missing companion develo
   (316 lines, Red→Green→Refactor mandate); cross-link from `implementation.md` and
   `governance/workflows/plan/plan-execution.md`; require all future plan delivery checklists
   to follow Red→Green→Refactor for code-touching items.
+- **W10 — Convention completeness**: port two missing structure conventions —
+  `governance/conventions/structure/no-last-updated.md` (29 lines, companion to
+  no-date-metadata) and `governance/conventions/structure/programming-language-docs-separation.md`
+  (846 lines, separates language docs from generic dev docs).
+- **W11 — Plan anti-hallucination**: port
+  `governance/development/quality/plan-anti-hallucination.md` (352 lines) — anti-hallucination
+  guardrails that the `plan-checker` agent cites when validating plan claims.
+- **W12 — Dev environment setup workflow**: refresh primer's existing
+  `governance/workflows/infra/infra-development-environment-setup.md` (684 lines)
+  against ose-public's `governance/workflows/infra/development-environment-setup.md`
+  (619 lines) source. Filename remains primer-canonical per the workflow-naming
+  convention; only body content syncs. Document `OPENCODE_GO_API_KEY` env-var setup
+  (W2 dependency).
+- **W13 — Docs/SWE separation enforcement**: port the
+  `docs-software-engineering-separation` triad —
+  `.claude/agents/docs-software-engineering-separation-checker.md` (511 lines),
+  `.claude/agents/docs-software-engineering-separation-fixer.md` (476 lines), and
+  `.claude/skills/docs-validating-software-engineering-separation/SKILL.md` (248 lines).
+  Depends on W10 (the separation convention is the rule the checker enforces).
+- **W14 — Content drift sweep**: refresh existing primer files that have diverged from
+  ose-public's current versions — at minimum
+  `governance/development/quality/code.md`, `governance/development/infra/nx-targets.md`,
+  `governance/development/quality/three-level-testing-standard.md`. Full drift list
+  enumerated by a baseline diff at the start of W14 (Phase 14A).
 
 **Out of scope** (intentionally excluded):
 
