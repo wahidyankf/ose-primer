@@ -177,53 +177,53 @@ the GitHub UI URLs in tech-docs.md.
 
 - [x] Run `npm run sync:claude-to-opencode` a second time — must be no-op.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: 0 unstaged-modified or untracked files in .opencode/agents/ post-2nd-run. No-op verified._
-- [ ] Commit: `feat(rhino-cli,opencode): migrate OpenCode model provider to OpenCode Go`.
-      _Date **/ Status:** / Files: **/ Notes:**_
+- [x] Commit: `feat(rhino-cli,opencode): migrate OpenCode model provider to OpenCode Go`.
+      _Date: 2026-05-04 / Status: done / Files: SHA 7cb4a5c12 / Notes: 68 files; pre-commit broke 1st attempt on 4 broken links — root-cause fixed (3 in AGENTS.md singular .opencode/agent|skill refs from W1 deletion + 2 in .claude/agents/{docs-maker,web-research-maker}.md `./README.md` resolving wrong post-sync). Per Iron Rule 3, fixed preexisting issues and re-committed._
 
 ## Phase 3 — W3: rhino-cli vendor-audit scanner
 
 ### 3A — Port (Red via copy)
 
-- [ ] Create `apps/rhino-cli/internal/governance/governance_vendor_audit.go`
+- [x] Create `apps/rhino-cli/internal/governance/governance_vendor_audit.go`
       from ose-public verbatim.
-      \_Date **/ Status:** / Files: apps/rhino-cli/internal/governance/governance_vendor_audit.go / Notes: \_\_\_
-- [ ] Create `apps/rhino-cli/internal/governance/governance_vendor_audit_test.go`
+      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/internal/governance/governance_vendor_audit.go / Notes: cp from ose-public verbatim — module path matches._
+- [x] Create `apps/rhino-cli/internal/governance/governance_vendor_audit_test.go`
       from ose-public verbatim. Includes `\bSkills\b` test.
-      \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Run `go test ./apps/rhino-cli/internal/governance/...`. Tests pass.
-      _Date **/ Status:** / Files: **/ Notes:**_
+      _Date: 2026-05-04 / Status: done / Files: as above / Notes: cp verbatim; tests green via go test ./apps/rhino-cli/internal/governance/..._
+- [x] Run `go test ./apps/rhino-cli/internal/governance/...`. Tests pass.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: 452 tests pass across cmd + internal/governance combined run._
 
 ### 3B — CLI binding (Green)
 
-- [ ] Create `apps/rhino-cli/cmd/governance.go` (Cobra group).
-      \_Date **/ Status:** / Files: apps/rhino-cli/cmd/governance.go / Notes: \_\_\_
-- [ ] Create `apps/rhino-cli/cmd/governance_vendor_audit.go` (subcommand).
-      \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Create `apps/rhino-cli/cmd/governance_vendor_audit_test.go`.
-      \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Create `apps/rhino-cli/cmd/governance_vendor_audit.integration_test.go`.
-      \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Update `apps/rhino-cli/cmd/steps_common_test.go` with new step constants.
-      \_Date **/ Status:** / Files: apps/rhino-cli/cmd/steps_common_test.go / Notes: \_\_\_
-- [ ] Update `apps/rhino-cli/cmd/root_test.go` to register the new `governance` Cobra group.
-      _Date **/ Status:** / Files: apps/rhino-cli/cmd/root_test.go / Notes: \_\_ _
-- [ ] Create `specs/apps/rhino/cli/gherkin/governance-vendor-audit.feature`.
-      \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Run `nx run rhino-cli:test:unit`. Pass.
-      _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Run `nx run rhino-cli:test:integration`. Pass.
-      _Date **/ Status:** / Files: **/ Notes:**_
+- [x] Create `apps/rhino-cli/cmd/governance.go` (Cobra group).
+      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/cmd/governance.go / Notes: cp verbatim (265B)._
+- [x] Create `apps/rhino-cli/cmd/governance_vendor_audit.go` (subcommand).
+      _Date: 2026-05-04 / Status: done / Files: as above / Notes: cp verbatim (4.4K)._
+- [x] Create `apps/rhino-cli/cmd/governance_vendor_audit_test.go`.
+      _Date: 2026-05-04 / Status: done / Files: as above / Notes: cp verbatim (11.5K)._
+- [x] Create `apps/rhino-cli/cmd/governance_vendor_audit.integration_test.go`.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: ose-public has no separate integration test for governance vendor-audit; the unit test (in cmd package) covers Cobra wiring + behavior. No source to port._
+- [x] Update `apps/rhino-cli/cmd/steps_common_test.go` with new step constants.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: governance-vendor-audit Gherkin scenarios are self-contained in governance-vendor-audit.feature consumed by ose-public's cmd-package test directly; no shared step constants required._
+- [x] Update `apps/rhino-cli/cmd/root_test.go` to register the new `governance` Cobra group.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: Cobra registration happens in cmd/governance.go via init() — root_test.go is unchanged in ose-public; no edit needed._
+- [x] Create `specs/apps/rhino/cli/gherkin/governance-vendor-audit.feature`.
+      _Date: 2026-05-04 / Status: done / Files: as above / Notes: cp verbatim (2.3K)._
+- [x] Run `nx run rhino-cli:test:unit`. Pass.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: All packages green._
+- [x] Run `nx run rhino-cli:test:integration`. Pass.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: cmd integration suite green._
 
 ### 3C — Nx target wiring + docs
 
-- [ ] Add `validate:governance-vendor-audit` Nx target to `apps/rhino-cli/project.json`.
+- [x] Add `validate:governance-vendor-audit` Nx target to `apps/rhino-cli/project.json`.
       Cacheable; inputs include `governance/**`. Command:
       `rhino-cli governance vendor-audit governance/`.
-      \_Date **/ Status:** / Files: apps/rhino-cli/project.json / Notes: \_\_\_
-- [ ] Update `apps/rhino-cli/README.md` with a "Governance vendor-audit" subsection.
-      \_Date **/ Status:** / Files: apps/rhino-cli/README.md / Notes: \_\_\_
-- [ ] Verify `nx run rhino-cli:validate:governance-vendor-audit` runs (will return violations until W4).
-      _Date **/ Status:** / Files: **/ Notes:**_
+      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/project.json / Notes: Inserted after validate:naming-workflows; `cache: true`; inputs `{projectRoot}/**/*.go` + `{workspaceRoot}/governance/**/*.md`._
+- [x] Update `apps/rhino-cli/README.md` with a "Governance vendor-audit" subsection.
+      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/README.md / Notes: New `### governance vendor-audit` section before contracts java-clean-imports; references the convention + binding-example rule._
+- [x] Verify `nx run rhino-cli:validate:governance-vendor-audit` runs (will return violations until W4).
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: Returns 229 violations in primer governance — W4 remediation will drive to zero._
 - [ ] Commit: `feat(rhino-cli): add governance vendor-audit scanner with \\bSkills\\b term`.
       _Date **/ Status:** / Files: **/ Notes:**_
 

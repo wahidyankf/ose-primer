@@ -723,6 +723,28 @@ rhino-cli java validate-annotations apps/crud-be-java-springboot/src/main/java -
 }
 ```
 
+### governance vendor-audit
+
+Scan governance prose for vendor-specific terms (e.g., Claude, OpenCode,
+Cursor) outside permitted contexts. Enforces vendor-neutral governance per
+the Governance Vendor Independence convention (W4 of the
+adopt-ose-public-vendor-neutrality plan); vendor names are allowed only
+inside ` ```binding-example ` fences.
+
+```bash
+# Audit the default governance/ directory
+rhino-cli governance vendor-audit
+
+# Audit a specific path
+rhino-cli governance vendor-audit docs/
+
+# JSON output
+rhino-cli governance vendor-audit -o json
+```
+
+Wired as Nx target `validate:governance-vendor-audit` (cacheable; inputs
+include `governance/**/*.md`).
+
 ### contracts java-clean-imports
 
 Remove unused and same-package imports from generated Java files. Used as a post-processing step
