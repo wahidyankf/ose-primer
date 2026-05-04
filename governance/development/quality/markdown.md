@@ -47,7 +47,7 @@ Both tools work together to ensure markdown files are well-formatted and follow 
 **When it runs**:
 
 - Pre-commit hook (via lint-staged)
-- Claude Code hook (PostToolUse)
+- the primary coding agent hook (PostToolUse)
 - Manual: `npm run format:md`
 
 ### markdownlint-cli2 (v0.20.0)
@@ -61,7 +61,7 @@ Both tools work together to ensure markdown files are well-formatted and follow 
 **When it runs**:
 
 - Pre-push hook (blocks push if violations detected)
-- Claude Code hook (PostToolUse)
+- the primary coding agent hook (PostToolUse)
 - Manual: `npm run lint:md`
 
 ## Running Linting Locally
@@ -225,15 +225,15 @@ Runs markdownlint on all markdown files before pushing.
 npm run lint:md:fix
 ```
 
-## Claude Code Integration
+## the primary coding agent Integration
 
 ### PostToolUse Hook
 
 Automatically runs after Edit/Write/MultiEdit operations on markdown files.
 
-**Location**: `.claude/hooks/format-lint-markdown.sh`
+**Location**: `the primary binding directory hooks/format-lint-markdown.sh`
 
-**Configuration**: `.claude/settings.json`
+**Configuration**: `the primary binding directory settings.json`
 
 **Actions**:
 
@@ -261,8 +261,8 @@ brew install jq
 - `.prettierignore` - Files to ignore for formatting
 - `package.json` - Added npm scripts
 - `.husky/pre-push` - Added markdown linting step
-- `.claude/settings.json` - PostToolUse hook configuration
-- `.claude/hooks/format-lint-markdown.sh` - Hook execution script
+- `the primary binding directory settings.json` - PostToolUse hook configuration
+- `the primary binding directory hooks/format-lint-markdown.sh` - Hook execution script
 
 ### Ignored Directories
 
@@ -290,12 +290,12 @@ npm run lint:md:fix
 # Then try pushing again
 ```
 
-### Claude Code hook not working
+### the primary coding agent hook not working
 
 1. Verify `jq` is installed: `which jq`
-2. Check hook script permissions: `ls -l .claude/hooks/format-lint-markdown.sh`
+2. Check hook script permissions: `ls -l the primary binding directory hooks/format-lint-markdown.sh`
 3. Should show `-rwxr-xr-x` (executable)
-4. If not: `chmod +x .claude/hooks/format-lint-markdown.sh`
+4. If not: `chmod +x the primary binding directory hooks/format-lint-markdown.sh`
 
 ### Too many violations to fix
 
@@ -353,7 +353,7 @@ This practice implements and respects the following core principles:
 
 - Pre-commit hooks automatically format staged markdown files
 - Pre-push hooks prevent committing markdown violations
-- Claude Code PostToolUse hooks format/lint markdown after Edit/Write operations
+- the primary coding agent PostToolUse hooks format/lint markdown after Edit/Write operations
 - Single command (`npm run lint:md:fix`) auto-fixes 99.5% of violations
 
 See [Automation Over Manual Principle](../../principles/software-engineering/automation-over-manual.md) for foundational rationale.

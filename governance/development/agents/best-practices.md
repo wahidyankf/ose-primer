@@ -4,7 +4,7 @@
 
 ## Overview
 
-This document outlines best practices for developing AI agents in the `.claude/agents/` directory. Following these practices ensures agents are maintainable, secure, and effective at automating repository tasks.
+This document outlines best practices for developing AI agents in the `the primary binding directory agents/` directory. Following these practices ensures agents are maintainable, secure, and effective at automating repository tasks.
 
 ## Purpose
 
@@ -107,7 +107,7 @@ model:
 
 **Rationale:**
 
-- **Budget-adaptive inheritance**: Opus-tier agents omit `model` so the session's active model is inherited at runtime (Max/Team → Opus 4.7; Pro/Standard → Sonnet 4.6). Do NOT add `model: opus` — it bypasses this mechanism and forces Opus charges on all users.
+- **Budget-adaptive inheritance**: planning-grade-tier agents omit `model` so the session's active model is inherited at runtime (Max/Team → planning-grade 4.7; Pro/Standard → execution-grade 4.6). Do NOT add `model: opus` — it bypasses this mechanism and forces planning-grade charges on all users.
 - Cost optimization — haiku for mechanical, sonnet for rule-based, opus-inherit for open reasoning
 - Performance optimization
 - Clear expectations
