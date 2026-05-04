@@ -2584,3 +2584,28 @@ agent skills are **directly copied** from `the primary binding directory skills/
 
 **Appendix Added**: 2026-01-16
 **See Also**: [Repository Governance Architecture](../../repository-governance-architecture.md)
+
+## Platform Binding Examples
+
+The content below is platform-specific. It documents the concrete translation applied by `rhino-cli agents sync` and is intentionally vendor-specific. Per the [Governance Vendor Independence convention](../../conventions/structure/governance-vendor-independence.md), the vendor-audit scanner skips every line under this heading until the next same-level heading or end of file.
+
+### Color Translation Table
+
+The named color (`blue`, `green`, etc.) written by hand in `.claude/agents/*.md` is the **source of truth**. Authors never touch `.opencode/agents/*.md` directly — those are regenerated artefacts. When the sync tool writes secondary binding files, it translates the named color to a platform-compatible value.
+
+**Translation table** (mirrors `ClaudeToOpenCodeColor` in `apps/rhino-cli/internal/agents/types.go`):
+
+| Claude color | OpenCode value | Role hint                         |
+| ------------ | -------------- | --------------------------------- |
+| `blue`       | `primary`      | Maker                             |
+| `green`      | `success`      | Checker                           |
+| `yellow`     | `warning`      | Fixer                             |
+| `purple`     | `secondary`    | Implementor                       |
+| `red`        | `error`        | Reserved future role              |
+| `orange`     | `warning`      | Reserved — closest hue to warning |
+| `pink`       | `accent`       | Reserved future role              |
+| `cyan`       | `info`         | Reserved future role              |
+
+**Single source of truth**: `apps/rhino-cli/internal/agents/types.go` — `ClaudeToOpenCodeColor` map. Any change to the mapping MUST update both the map and this table in the same commit.
+
+**Escape hatch**: If you write a hex code (e.g., `#3B82F6`) or a valid OpenCode theme token (e.g., `primary`) directly in `.claude/agents/*.md`, the converter passes it through unchanged.
