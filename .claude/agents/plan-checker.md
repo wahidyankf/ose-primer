@@ -356,3 +356,11 @@ After validating operational readiness (Step 5b), verify the plan includes manua
 - Missing curl steps for API plan: **CRITICAL**
 - Missing end-to-end flow for full-stack plan: **HIGH**
 - Steps present but vague (no specific pages/endpoints): **MEDIUM**
+
+## Reference Conventions
+
+This agent enforces the following normative conventions when validating plans:
+
+- [Plan Anti-Hallucination Convention](../../governance/development/quality/plan-anti-hallucination.md) — confidence labels (`[Repo-grounded]`, `[Web-cited]`, `[Judgment call]`, `[Unverified]`), Anti-Pattern Catalog (AP-1 through AP-10), suggested-executor annotation validity, web-citation completeness, web-research delegation thresholds for plan content
+- [Plans Organization Convention](../../governance/conventions/structure/plans.md) — five-document layout, single-file exception criteria, content-placement rules
+- [Test-Driven Development Convention](../../governance/development/workflow/test-driven-development.md) — Red→Green→Refactor mandate for code-touching delivery items

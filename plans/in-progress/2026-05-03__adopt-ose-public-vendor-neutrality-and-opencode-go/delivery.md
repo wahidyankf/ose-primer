@@ -379,44 +379,44 @@ the GitHub UI URLs in tech-docs.md.
 
 ## Phase 8 — W8: Plan + workflow refresh
 
-- [ ] Refresh `governance/workflows/plan/plan-execution.md` against ose-public.
+- [x] Refresh `governance/workflows/plan/plan-execution.md` against ose-public.
       Manually re-apply primer-specific phrasing (single-repo, no Scope A/B).
-      \_Date **/ Status:** / Files: governance/workflows/plan/plan-execution.md / Notes: \_\_\_
-- [ ] Refresh `governance/workflows/plan/plan-quality-gate.md` against ose-public.
-      \_Date **/ Status:** / Files: governance/workflows/plan/plan-quality-gate.md / Notes: \_\_\_
-- [ ] Refresh `governance/workflows/plan/README.md` against ose-public.
-      \_Date **/ Status:** / Files: governance/workflows/plan/README.md / Notes: \_\_\_
-- [ ] Create `governance/development/workflow/ci-monitoring.md` verbatim from ose-public.
-      \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Create `governance/development/workflow/ci-post-push-verification.md` verbatim.
-      \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Update `governance/development/workflow/README.md` index.
-      \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Verify `nx run rhino-cli:validate:governance-vendor-audit` returns 0.
-      _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Commit: `docs(governance,workflows): refresh plan workflows; add ci-monitoring + ci-post-push-verification`.
-      _Date **/ Status:** / Files: **/ Notes:**_
+      _Date: 2026-05-04 / Status: done / Files: governance/workflows/plan/plan-execution.md / Notes: cp verbatim (770 lines vs primer's 694) — primer is single-repo so ose-public's version applies cleanly with no Scope A/B mention to remove._
+- [x] Refresh `governance/workflows/plan/plan-quality-gate.md` against ose-public.
+      _Date: 2026-05-04 / Status: done / Files: governance/workflows/plan/plan-quality-gate.md / Notes: cp verbatim (392 lines)._
+- [x] Refresh `governance/workflows/plan/README.md` against ose-public.
+      _Date: 2026-05-04 / Status: done / Files: governance/workflows/plan/README.md / Notes: cp verbatim (35 lines)._
+- [x] Create `governance/development/workflow/ci-monitoring.md` verbatim from ose-public.
+      _Date: 2026-05-04 / Status: done / Files: as above / Notes: cp verbatim (14.2K)._
+- [x] Create `governance/development/workflow/ci-post-push-verification.md` verbatim.
+      _Date: 2026-05-04 / Status: done / Files: as above / Notes: cp verbatim (11.1K)._
+- [x] Update `governance/development/workflow/README.md` index.
+      _Date: 2026-05-04 / Status: done / Files: as above / Notes: Added entries for ci-monitoring + ci-post-push-verification + test-driven-development (W9)._
+- [x] Verify `nx run rhino-cli:validate:governance-vendor-audit` returns 0.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED._
+- [x] Commit: `docs(governance,workflows): refresh plan workflows; add ci-monitoring + ci-post-push-verification`.
+      _Date: 2026-05-04 / Status: done / Files: SHA W8 follow-up commit / Notes: 6 files, +667/-103. plan-anti-hallucination.md (W11 forward-ref) and test-driven-development.md (W9 forward-ref) pre-ported to keep W8 link-valid._
 
 ## Phase 9 — W9: TDD convention
 
-- [ ] Create `governance/development/workflow/test-driven-development.md` verbatim from ose-public.
+- [x] Create `governance/development/workflow/test-driven-development.md` verbatim from ose-public.
       Adjust cross-reference paths if any reference paths primer doesn't have.
-      \_Date **/ Status:** / Files: governance/development/workflow/test-driven-development.md / Notes: \_\_\_
-- [ ] Add a one-line cross-reference to TDD convention from
+      _Date: 2026-05-04 / Status: done / Files: governance/development/workflow/test-driven-development.md / Notes: cp verbatim — pre-ported during W8 to satisfy plan-execution.md forward-refs._
+- [x] Add a one-line cross-reference to TDD convention from
       `governance/development/workflow/implementation.md` (Stage 1 description).
-      \_Date **/ Status:** / Files: governance/development/workflow/implementation.md / Notes: \_\_\_
-- [ ] Add a one-line cross-reference from
+      _Date: 2026-05-04 / Status: done / Files: governance/development/workflow/implementation.md / Notes: Added inline reference in Stage 1 paragraph._
+- [x] Add a one-line cross-reference from
       `governance/workflows/plan/plan-execution.md` (Iron Rules section).
-      \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Add a one-line cross-reference from
+      _Date: 2026-05-04 / Status: done / Files: as above / Notes: ose-public's plan-execution (W8 port) already cross-refs TDD at line 755 (Test-Driven Development section)._
+- [x] Add a one-line cross-reference from
       `governance/conventions/structure/plans.md` (delivery-checklist authoring).
-      \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Update `governance/development/workflow/README.md` index to include TDD.
-      \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Verify `nx run rhino-cli:validate:governance-vendor-audit` returns 0.
-      _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Commit: `docs(governance): adopt test-driven-development convention from ose-public`.
-      _Date **/ Status:** / Files: **/ Notes:**_
+      _Date: 2026-05-04 / Status: done / Files: as above / Notes: Added to delivery.md content-placement bullet._
+- [x] Update `governance/development/workflow/README.md` index to include TDD.
+      _Date: 2026-05-04 / Status: done / Files: as above / Notes: Added entry alongside ci-monitoring + ci-post-push-verification._
+- [x] Verify `nx run rhino-cli:validate:governance-vendor-audit` returns 0.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED; link validator clean._
+- [x] Commit: `docs(governance): adopt test-driven-development convention from ose-public`.
+      _Date: 2026-05-04 / Status: done / Files: W9 commit / Notes: 6 files, +685/-16 (also includes plan-anti-hallucination.md staging for W11)._
 
 ## Phase 10 — W10: Convention completeness
 

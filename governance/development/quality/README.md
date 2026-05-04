@@ -37,6 +37,7 @@ These standards define **HOW to maintain and validate quality**, covering automa
 - [Feature Change Completeness Convention](./feature-change-completeness.md) - Practice requiring all related specs, contracts, tests, and documentation to be updated as part of any feature change
 - [CI Blocker Resolution Convention](./ci-blocker-resolution.md) - Practice mandating that preexisting CI blockers are investigated at the root cause and fixed properly, never bypassed
 - [Post-Push CI Verification Convention](./post-push-ci-verification.md) - Requirement to trigger and verify related GitHub Actions CI workflows after pushing to origin main, for both human contributors and AI agents
+- [Plan Anti-Hallucination Convention](./plan-anti-hallucination.md) - Anti-hallucination guardrails the `plan-checker` agent cites when validating plan claims (confidence labels, AP-1 through AP-10 catalog, web-research delegation thresholds)
 
 ## Companion Documents
 
