@@ -86,7 +86,7 @@ func (s *validateAgentsNamingUnitSteps) treeMirrorDrift() error {
 		return []naming.Violation{{
 			Path:    "/mock-repo/.claude/agents/orphan-maker.md",
 			Kind:    "mirror-drift",
-			Message: "orphan-maker.md exists in .claude/agents/ but not in .opencode/agent/",
+			Message: "orphan-maker.md exists in .claude/agents/ but not in .opencode/agents/",
 		}}, nil
 	}
 	return nil
@@ -206,7 +206,7 @@ func TestValidateAgentsNaming_MissingGitRoot(t *testing.T) {
 func TestAgentsValidateNaming_RealTree(t *testing.T) {
 	tmp := t.TempDir()
 	claudeDir := filepath.Join(tmp, ".claude", "agents")
-	opencodeDir := filepath.Join(tmp, ".opencode", "agent")
+	opencodeDir := filepath.Join(tmp, ".opencode", "agents")
 	if err := os.MkdirAll(claudeDir, 0755); err != nil {
 		t.Fatal(err)
 	}
@@ -263,7 +263,7 @@ func TestAgentsValidateNaming_RealTree(t *testing.T) {
 }
 
 // TestAgentsValidateNaming_MissingDirs verifies that the validator treats
-// missing .claude/agents/ and .opencode/agent/ as empty (not as an error).
+// missing .claude/agents/ and .opencode/agents/ as empty (not as an error).
 func TestAgentsValidateNaming_MissingDirs(t *testing.T) {
 	tmp := t.TempDir()
 	got, err := agentsValidateNaming(tmp)
