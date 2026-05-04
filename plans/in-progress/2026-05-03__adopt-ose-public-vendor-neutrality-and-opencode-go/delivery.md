@@ -357,25 +357,25 @@ the GitHub UI URLs in tech-docs.md.
 
 ## Phase 7 — W7: Worktree standard
 
-- [ ] Create `governance/conventions/structure/worktree-path.md`. Adapt ose-public's
+- [x] Create `governance/conventions/structure/worktree-path.md`. Adapt ose-public's
       version for primer: rule says default `.claude/worktrees/<name>/`, no override.
       Document gitignore + parallel-safety rationale.
-      \_Date **/ Status:** / Files: governance/conventions/structure/worktree-path.md / Notes: \_\_\_
-- [ ] Refresh `governance/development/workflow/worktree-setup.md` body content against ose-public.
+      _Date: 2026-05-04 / Status: done / Files: governance/conventions/structure/worktree-path.md / Notes: cp verbatim (8.1K) — primer's single-repo nature already matches ose-public's convention text._
+- [x] Refresh `governance/development/workflow/worktree-setup.md` body content against ose-public.
       Do NOT import any `created:` or other date frontmatter fields per the
       [No-Date-Metadata Convention](../../../governance/conventions/writing/no-date-metadata.md).
       Update cross-references.
-      \_Date **/ Status:** / Files: governance/development/workflow/worktree-setup.md / Notes: \_\_\_
-- [ ] Add a `## Worktrees` subsection to `AGENTS.md` linking to the new convention.
-      \_Date **/ Status:** / Files: AGENTS.md / Notes: \_\_\_
-- [ ] Add the same link from `CLAUDE.md`'s worktree subsection.
-      \_Date **/ Status:** / Files: CLAUDE.md / Notes: \_\_\_
-- [ ] Update `governance/conventions/structure/README.md` index to list `worktree-path.md`.
-      \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Verify `nx run rhino-cli:validate:governance-vendor-audit` still returns 0.
-      _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Commit: `docs(governance): add worktree-path convention; refresh worktree-setup`.
-      _Date **/ Status:** / Files: **/ Notes:**_
+      _Date: 2026-05-04 / Status: done / Files: governance/development/workflow/worktree-setup.md / Notes: Body replaced (13.1K); no created: frontmatter ported._
+- [x] Add a `## Worktrees` subsection to `AGENTS.md` linking to the new convention.
+      _Date: 2026-05-04 / Status: done / Files: AGENTS.md / Notes: Added a Worktree path bullet under Project Overview cross-referencing worktree-path.md (subsection-level addition rather than top-level Worktrees heading — fits primer's existing AGENTS.md structure better)._
+- [x] Add the same link from `CLAUDE.md`'s worktree subsection.
+      _Date: 2026-05-04 / Status: done / Files: CLAUDE.md / Notes: Added `### Worktree Path` subsection under Platform Binding Examples linking to convention._
+- [x] Update `governance/conventions/structure/README.md` index to list `worktree-path.md`.
+      _Date: 2026-05-04 / Status: done / Files: as above / Notes: Added entry after workflow-naming._
+- [x] Verify `nx run rhino-cli:validate:governance-vendor-audit` still returns 0.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED (0 violations); link validator also clean._
+- [x] Commit: `docs(governance): add worktree-path convention; refresh worktree-setup`.
+      _Date: 2026-05-04 / Status: done / Files: SHA 993fedc96 / Notes: 6 files, +240/-14._
 
 ## Phase 8 — W8: Plan + workflow refresh
 

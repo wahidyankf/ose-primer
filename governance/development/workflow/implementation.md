@@ -76,7 +76,7 @@ This practice implements/respects the following conventions:
 
 ### Stage 1: Make It Work
 
-**Goal**: Get functionality working with the simplest possible solution.
+**Goal**: Get functionality working with the simplest possible solution. For code-touching work, follow the [Test-Driven Development convention](./test-driven-development.md) (Red→Green→Refactor) — write a failing test before writing the implementation.
 
 **What to do**:
 
