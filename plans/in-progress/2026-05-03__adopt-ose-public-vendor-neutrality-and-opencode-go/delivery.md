@@ -502,45 +502,45 @@ the GitHub UI URLs in tech-docs.md.
 
 ### 14A — Baseline diff
 
-- [ ] Run `diff -rq governance/ /Users/wkf/ose-projects/ose-public/governance/ | grep '\.md$' | tee local-temp/drift-baseline.txt`. Capture every diverging file.
-      _Date / Status: / Files: local-temp/drift-baseline.txt / Notes:_
-- [ ] Review `local-temp/drift-baseline.txt` and classify each entry as **refresh**, **skip** (primer-specific or product-specific), or **investigate**. Save the classified list as `local-temp/drift-classified.md`.
-      _Date / Status: / Files: local-temp/drift-classified.md / Notes:_
+- [x] Run `diff -rq governance/ /Users/wkf/ose-projects/ose-public/governance/ | grep '\.md$' | tee local-temp/drift-baseline.txt`. Capture every diverging file.
+      _Date: 2026-05-04 / Status: done / Files: local-temp/drift-baseline.txt / Notes: 14 entries; all are "Only in" (one side has the file, the other doesn't) — NO byte-divergent overlapping files._
+- [x] Review `local-temp/drift-baseline.txt` and classify each entry as **refresh**, **skip** (primer-specific or product-specific), or **investigate**. Save the classified list as `local-temp/drift-classified.md`.
+      _Date: 2026-05-04 / Status: done / Files: local-temp/drift-classified.md / Notes: All 14 classified `skip` (9 ose-public-only product/parent-specific files; 5 primer-only intentional files). 0 `refresh`, 0 `investigate`._
 
 ### 14B — Refresh known-drifted files
 
-- [ ] Refresh `governance/development/quality/code.md` against ose-public; re-apply primer-specific paragraphs (single-repo, no parent gitlinks). `diff -q` must show only primer-specific divergence post-refresh.
-      _Date / Status: / Files: governance/development/quality/code.md / Notes:_
-- [ ] Refresh `governance/development/infra/nx-targets.md` against ose-public; re-apply primer-specific paragraphs.
-      _Date / Status: / Files: governance/development/infra/nx-targets.md / Notes:_
-- [ ] Refresh `governance/development/quality/three-level-testing-standard.md` against ose-public; re-apply primer-specific paragraphs.
-      _Date / Status: / Files: governance/development/quality/three-level-testing-standard.md / Notes:_
+- [x] Refresh `governance/development/quality/code.md` against ose-public; re-apply primer-specific paragraphs (single-repo, no parent gitlinks). `diff -q` must show only primer-specific divergence post-refresh.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: code.md is byte-equivalent between primer and ose-public per `diff -rq` — no refresh needed._
+- [x] Refresh `governance/development/infra/nx-targets.md` against ose-public; re-apply primer-specific paragraphs.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: nx-targets.md byte-equivalent — no refresh needed._
+- [x] Refresh `governance/development/quality/three-level-testing-standard.md` against ose-public; re-apply primer-specific paragraphs.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: three-level-testing-standard.md byte-equivalent — no refresh needed._
 
 ### 14C — Iterative refresh by category
 
-- [ ] Refresh remaining `refresh`-classified files in `governance/development/quality/`. Commit per file or per small batch.
-      _Date / Status: / Files: governance/development/quality/\* / Notes:_
-- [ ] Refresh remaining `refresh`-classified files in `governance/development/infra/`. Commit per batch.
-      _Date / Status: / Files: governance/development/infra/\* / Notes:_
-- [ ] Refresh remaining `refresh`-classified files in `governance/conventions/`. Commit per batch.
-      _Date / Status: / Files: governance/conventions/\* / Notes:_
-- [ ] Refresh remaining `refresh`-classified files in `governance/principles/` (if any). Commit per batch.
-      _Date / Status: / Files: governance/principles/\* / Notes:_
-- [ ] Refresh remaining `refresh`-classified files in `governance/workflows/` (excluding the W8/W12 workflows already handled). Commit per batch.
-      _Date / Status: / Files: governance/workflows/\* / Notes:_
+- [x] Refresh remaining `refresh`-classified files in `governance/development/quality/`. Commit per file or per small batch.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: 0 refresh-classified files in this category._
+- [x] Refresh remaining `refresh`-classified files in `governance/development/infra/`. Commit per batch.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: 0 refresh-classified files._
+- [x] Refresh remaining `refresh`-classified files in `governance/conventions/`. Commit per batch.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: 0 refresh-classified files._
+- [x] Refresh remaining `refresh`-classified files in `governance/principles/` (if any). Commit per batch.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: 0 refresh-classified files._
+- [x] Refresh remaining `refresh`-classified files in `governance/workflows/` (excluding the W8/W12 workflows already handled). Commit per batch.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: 0 refresh-classified files._
 
 ### 14D — Investigate + verify
 
-- [ ] Resolve every `investigate`-classified entry: either refresh, skip, or escalate to a follow-up plan with a one-line rationale per entry in `local-temp/drift-resolved.md`.
-      _Date / Status: / Files: local-temp/drift-resolved.md / Notes:_
-- [ ] Re-run `diff -rq governance/ /Users/wkf/ose-projects/ose-public/governance/ | grep '\.md$'`. Only `skip`-classified files should remain.
-      _Date / Status: / Files: / Notes:_
-- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit`. 0 violations across all refreshed files.
-      _Date / Status: / Files: / Notes:_
-- [ ] Run `nx affected -t typecheck lint test:quick spec-coverage`. All green.
-      _Date / Status: / Files: / Notes:_
-- [ ] Commit each batch thematically: `docs(governance): refresh <category>/* against ose-public`.
-      _Date / Status: / Files: / Notes:_
+- [x] Resolve every `investigate`-classified entry: either refresh, skip, or escalate to a follow-up plan with a one-line rationale per entry in `local-temp/drift-resolved.md`.
+      _Date: 2026-05-04 / Status: done / Files: local-temp/drift-resolved.md / Notes: 0 investigate entries; all 14 baseline entries already `skip`-classified._
+- [x] Re-run `diff -rq governance/ /Users/wkf/ose-projects/ose-public/governance/ | grep '\.md$'`. Only `skip`-classified files should remain.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: Same 14 `skip` entries; condition holds trivially._
+- [x] Run `nx run rhino-cli:validate:governance-vendor-audit`. 0 violations across all refreshed files.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED (no violations)._
+- [x] Run `nx affected -t typecheck lint test:quick spec-coverage`. All green.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: nx affected ran successfully (Nx Cloud retry note for one flaky task is informational, not a failure)._
+- [x] Commit each batch thematically: `docs(governance): refresh <category>/* against ose-public`.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: No batch refresh commits to write since 0 refresh-classified files._
 
 ## Phase 15 — Cross-W10–W14 verification
 
