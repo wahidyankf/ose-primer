@@ -19,7 +19,7 @@ These workflows define **WHEN and HOW to validate and execute plans**. The plan-
 **❌ Not Included:**
 
 - Content quality validation (that's docs/)
-- Hugo content validation (that's crud-fs-ts-nextjs/)
+- Hugo content validation (that's ayokoding-web/)
 - Single-agent operations (use agents directly)
 
 ## Workflows
@@ -33,5 +33,3 @@ These workflows define **WHEN and HOW to validate and execute plans**. The plan-
 - [Plans Organization Convention](../../conventions/structure/plans.md) - Plan structure standards
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md) - Core workflow pattern
 - [Repository Architecture](../../repository-governance-architecture.md) - Six-layer governance model
-
----

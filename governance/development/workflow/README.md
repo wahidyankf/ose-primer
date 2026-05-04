@@ -33,6 +33,8 @@ These standards define **HOW to execute development workflows**, covering the th
 - [Git Push Default Convention](./git-push-default.md) - Default push behavior convention. Direct push to main; PR creation is opt-in. Governs plan-maker, plan-checker, plan-fixer, and plan-execution workflow.
 - [PR Merge Protocol](./pr-merge-protocol.md) - Requires explicit user approval before merging any pull request; all quality gates must pass before merge; no auto-merge by agents or automation
 - [Native-First Toolchain Management](./native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` instead of Terraform, Ansible, or Docker Dev Containers for development environment setup
+- [CI Monitoring](./ci-monitoring.md) - Monitor GitHub Actions after every push (post-push-verification companion)
+- [CI Post-Push Verification](./ci-post-push-verification.md) - Verify CI status after every push, fix preexisting failures per Iron Rule 3
 
 ## Companion Documents
 
