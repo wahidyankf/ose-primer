@@ -12,6 +12,10 @@ the vendor-audit scanner skips every line under this heading until the next same
 
 In addition to the standard Prettier + markdownlint pipeline, a Claude Code hook auto-formats and lints after Edit/Write operations (requires `jq`).
 
+### Worktree Path (Claude Code binding)
+
+Worktrees provisioned via `claude --worktree <name>` land at `.claude/worktrees/<name>/` per the [Worktree Path Convention](./governance/conventions/structure/worktree-path.md). The path is gitignored and parallel-safe.
+
 ### Working with `.claude/` and `.opencode/` directories
 
 Edit `.claude/` and `.opencode/` files with normal `Write` / `Edit` tools. Both paths pre-authorized in `.claude/settings.json` (`Write(.claude/**)`, `Edit(.claude/**)`, `Write(.opencode/**)`, `Edit(.opencode/**)`), no approval prompt fires. `Bash` heredoc and `sed` remain fine for bulk mechanical substitutions, but no rule against direct edits.

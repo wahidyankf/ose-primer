@@ -12,6 +12,7 @@ tags:
   - dependencies
   - toolchain
   - doctor
+created: 2026-03-28
 ---
 
 # Worktree Toolchain Initialization
@@ -39,7 +40,7 @@ This practice respects the following core principles:
 
 This practice does not directly implement Layer 2 documentation conventions. The operational context for this practice is governed by development practices referenced in the Related Documentation section.
 
-## 📋 The Rule
+## The Rule
 
 **After every `git worktree add`, `EnterWorktree` invocation, or any other entry into a worktree session (human or agent), run BOTH of the following in the root repository worktree, in order:**
 
@@ -86,7 +87,7 @@ When the Nx workspace resolves dependencies, it reads from `node_modules/` relat
 
 ### Worktrees Routinely Touch Many Languages
 
-AI agents working on worktrees routinely touch apps across many languages: `crud-be-*` backends in eleven languages, `crud-be-fsharp-giraffe` in F#, `rhino-cli` and other Go CLIs, TypeScript frontends, Flutter web, and more. The probability that a new worktree session will need a toolchain that has drifted is high, and the cost of discovering the drift mid-task — through an obscure Gradle, Cargo, `mix`, or `dotnet` error — is much higher than the cost of running `npm run doctor -- --fix` deliberately upfront.
+AI agents working on worktrees routinely touch apps across many languages: `organiclever-be` in F#, `rhino-cli` and other Go CLIs, TypeScript frontends, and more. The probability that a new worktree session will need a toolchain that has drifted is high, and the cost of discovering the drift mid-task — through an obscure Gradle, Cargo, `mix`, or `dotnet` error — is much higher than the cost of running `npm run doctor -- --fix` deliberately upfront.
 
 Even worktree sessions whose stated intent is "I'm just editing docs" should run the full two-step init, because the pre-push hook runs `nx affected -t typecheck lint test:quick spec-coverage` which can fan out to arbitrary language tasks depending on what the doc change touches.
 
@@ -113,7 +114,7 @@ Nx task caching, project graph resolution, and executor plugins all depend on a 
 Run both steps in the root worktree after any of the following:
 
 1. Running `git worktree add` to create a new worktree.
-2. Using the `EnterWorktree` tool in the primary coding agent, which creates a worktree automatically.
+2. Using the `EnterWorktree` tool in the coding agent, which creates a worktree automatically.
 3. An AI agent with `isolation: "worktree"` spawning a new worktree for isolated work.
 4. A human `cd`-ing into an existing worktree to continue or resume work in a new session.
 5. Any other mechanism that creates or re-enters a worktree in this repository.
@@ -125,10 +126,12 @@ The rule is **triggered by execution mode, not by intent**. Even "small" or "doc
 1. Create or enter the worktree using your preferred method:
 
    ```bash
-   git worktree add the primary binding directory worktrees/my-feature-branch my-feature-branch
+   git worktree add worktrees/my-feature-branch my-feature-branch
    ```
 
-2. Identify the root repository worktree path. This is the directory containing the canonical checkout — typically the parent of `the primary binding directory worktrees/`.
+   This repo overrides the upstream coding-agent default worktree path — worktrees land at repo-root `worktrees/<name>/`, not under the platform binding directory. See [worktree-path.md](../../conventions/structure/worktree-path.md) for the convention and the `WorktreeCreate` hook that enforces it.
+
+2. Identify the root repository worktree path. This is the directory containing the canonical checkout — typically the parent of `worktrees/`.
 
 3. Run `npm install` in the root worktree:
 
@@ -153,11 +156,11 @@ Agents that create or enter worktrees via `git worktree add`, the `EnterWorktree
 
 The root worktree path is available from the environment context or can be confirmed with `git worktree list`. See the [Git Worktree Awareness](../agents/ai-agents.md#git-worktree-awareness) section of the AI Agents Convention for the full set of rules governing agent behavior in worktrees.
 
-## 🔗 Related Documentation
+## Related Documentation
 
+- [Worktree Path Convention](../../conventions/structure/worktree-path.md) - Repo-root `worktrees/<name>/` override and the WorktreeCreate hook that enforces it
 - [Reproducible Environments](./reproducible-environments.md) - Practices for consistent development environments, including Volta pinning and lockfile management
 - [Native-First Toolchain Management](./native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` for toolchain management across 11 languages
 - [AI Agents Convention](../agents/ai-agents.md) - Git Worktree Awareness rules for agents operating across worktrees
-- [Trunk Based Development](./trunk-based-development.md) - Branch and worktree workflow for this repository. Worktree-mode work pushes directly to `main` by default (`git push origin HEAD:main`); a [draft PR](./trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) targeting `main` is opt-in only when the user's prompt or plan document explicitly requests one
-- [Git Push Default Convention](./git-push-default.md) - Standard 6 covers worktree push behavior: default direct-to-main, PR opt-in
+- [Trunk Based Development](./trunk-based-development.md) - Git workflow for this repository; the default is direct push to `main` regardless of execution context. See the [Default Push and Worktree Execution](./trunk-based-development.md#default-push-and-worktree-execution) section for the decision table on when a draft PR is used instead.
 - [Nx Targets](../infra/nx-targets.md) - Canonical Nx target names and caching rules that depend on a consistent dependency state

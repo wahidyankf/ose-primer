@@ -346,14 +346,14 @@ the GitHub UI URLs in tech-docs.md.
 
 ## Phase 6 — W6: Plans convention refresh
 
-- [ ] Replace the "Multi-File Structure" / "Single-File Structure" section in
+- [x] Replace the "Multi-File Structure" / "Single-File Structure" section in
       `governance/conventions/structure/plans.md` with ose-public's stricter wording.
       Five-doc DEFAULT, four named single-file criteria.
-      \_Date **/ Status:** / Files: governance/conventions/structure/plans.md / Notes: \_\_\_
-- [ ] Verify `nx run rhino-cli:validate:governance-vendor-audit` still returns 0 violations.
-      _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Commit: `docs(plans): adopt ose-public's stricter five-doc default and four-criteria single-file rule`.
-      _Date **/ Status:** / Files: **/ Notes:**_
+      _Date: 2026-05-04 / Status: done / Files: governance/conventions/structure/plans.md / Notes: Replaced bullet phrasing with normative MUST + 4-criteria list._
+- [x] Verify `nx run rhino-cli:validate:governance-vendor-audit` still returns 0 violations.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: vendor-audit on plans.md PASSED (0 violations)._
+- [x] Commit: `docs(plans): adopt ose-public's stricter five-doc default and four-criteria single-file rule`.
+      _Date: 2026-05-04 / Status: done / Files: SHA 1ed4c444d / Notes: 2 files, +37/-33._
 
 ## Phase 7 — W7: Worktree standard
 
