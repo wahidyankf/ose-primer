@@ -27,6 +27,8 @@ This directory contains standards for how documentation is organized, named, and
 - [Specs Directory Structure](./specs-directory-structure.md) - Canonical directory structure for Gherkin feature files, C4 architecture diagrams, and OpenAPI contracts in the specs/ directory. Defines path patterns, domain subdirectory rules (required for BE/FE, flat for CLI), and lib spec organization
 - [Workflow Naming Convention](./workflow-naming.md) - Single exception-free filename rule for workflow files under `governance/workflows/` (except `meta/` reference docs). Defines scope vocabulary, type vocabulary (quality-gate, execution, setup), and the audit command enforced by `repo-rules-checker` and `rhino-cli workflows validate-naming`
 - [Worktree Path Convention](./worktree-path.md) - Canonical default location for git worktrees (`.claude/worktrees/<name>/`); gitignored; parallel-safe; rationale explained
+- [No Last-Updated Metadata](./no-last-updated.md) - Companion to no-date-metadata: do not write `**Last Updated**` rows in markdown files
+- [Programming Language Docs Separation](./programming-language-docs-separation.md) - Boundary between generic dev docs and language-specific (Go, TypeScript, Rust, etc.) docs
 
 ## Key Concepts
 

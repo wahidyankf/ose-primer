@@ -275,3 +275,4 @@ body.
   files
 - [Proactive Preexisting Error Resolution](../../development/practice/proactive-preexisting-error-resolution.md) —
   practice governing proactive fixes of discovered violations
+- [No Last-Updated Metadata](../structure/no-last-updated.md) — companion convention covering the `**Last Updated**` footer-row variant of the same anti-pattern
