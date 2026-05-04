@@ -119,16 +119,16 @@ Layer 5: Workflows    WHEN - Orchestrate (multi-step processes)
 
 ### Quick Reference Table
 
-| Layer | Location                              | Purpose                       | Changes?        | Answers?                  |
-| ----- | ------------------------------------- | ----------------------------- | --------------- | ------------------------- |
-| **0** | governance/vision/                    | WHY we exist                  | Extremely rare  | Why does project exist?   |
-| **1** | governance/principles/                | WHY we value approaches       | Rarely          | Why value this approach?  |
-| **2** | governance/conventions/               | WHAT documentation rules      | Occasionally    | What documentation rules? |
-| **3** | governance/development/               | HOW we develop software       | More frequently | How develop software?     |
-| **4** | the primary binding directory agents/ | WHO enforces rules            | Often           | Who enforces rules?       |
-| **5** | governance/workflows/                 | WHEN run agents in what order | As needed       | When run which agents?    |
+| Layer | Location                | Purpose                       | Changes?        | Answers?                  |
+| ----- | ----------------------- | ----------------------------- | --------------- | ------------------------- |
+| **0** | governance/vision/      | WHY we exist                  | Extremely rare  | Why does project exist?   |
+| **1** | governance/principles/  | WHY we value approaches       | Rarely          | Why value this approach?  |
+| **2** | governance/conventions/ | WHAT documentation rules      | Occasionally    | What documentation rules? |
+| **3** | governance/development/ | HOW we develop software       | More frequently | How develop software?     |
+| **4** | `.claude/agents/`       | WHO enforces rules            | Often           | Who enforces rules?       |
+| **5** | governance/workflows/   | WHEN run agents in what order | As needed       | When run which agents?    |
 
-**agent skills**: `the primary binding directory skills/` - Delivery infrastructure serving agents (inline knowledge injection or fork-based delegation)
+**agent skills**: `.claude/skills/` - Delivery infrastructure serving agents (inline knowledge injection or fork-based delegation)
 
 ---
 
@@ -279,7 +279,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 - **Source code** (TypeScript, Go, Java, Kotlin, Python, Elixir, F#, Rust, C#, Clojure, Dart)
 - **static-site themes and layouts (historical)** (Go templates)
 - **Build systems** (Nx, npm, Volta)
-- **AI agents** (the primary binding directory agents/)
+- **AI agents** (`.claude/agents/`)
 - **Git workflows** (commits, branches, hooks)
 
 **Practice Categories**:
@@ -316,7 +316,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 
 **Purpose**: Automated implementers enforcing conventions and development practices. Answers WHO enforces rules and automates tasks.
 
-**Location**: `the primary binding directory agents/`
+**Location**: `.claude/agents/`
 
 **Key Document**: [Agents Index](../.claude/agents/README.md)
 
@@ -417,9 +417,9 @@ Maker-Checker-Fixer Workflow:
 
 **Purpose**: Package and deliver knowledge/capabilities to agents in two distinct modes.
 
-**Location**: `the primary binding directory skills/`
+**Location**: `.claude/skills/`
 
-**Documentation**: See [`the primary binding directory skills/README.md`](../.claude/skills/README.md) for skills catalog, or [AGENTS.md](../AGENTS.md) for the secondary coding agent configuration including skills integration overview
+**Documentation**: See [`.claude/skills/README.md`](../.claude/skills/README.md) for skills catalog, or [AGENTS.md](../AGENTS.md) for the secondary coding agent configuration including skills integration overview
 
 **Two Delivery Modes**:
 
@@ -689,7 +689,7 @@ agent skills ──does NOT govern──> Agents
 1. **Identify governing layers** - Which conventions/practices does this enforce?
 2. **Define atomic responsibility** - One clear purpose
 3. **Choose tools carefully** - Match to task (Read-only, Write, Edit, Bash, Web)
-4. **Document in Agents Index** - Add to `the primary binding directory agents/README.md`
+4. **Document in Agents Index** - Add to `.claude/agents/README.md`
 5. **Reference relevant agent skills** - Which agent skills will help this agent?
 
 ### When Creating Workflows

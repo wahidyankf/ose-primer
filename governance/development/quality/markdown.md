@@ -231,9 +231,9 @@ npm run lint:md:fix
 
 Automatically runs after Edit/Write/MultiEdit operations on markdown files.
 
-**Location**: `the primary binding directory hooks/format-lint-markdown.sh`
+**Location**: `.claude/hooks/format-lint-markdown.sh`
 
-**Configuration**: `the primary binding directory settings.json`
+**Configuration**: `.claude/settings.json`
 
 **Actions**:
 
@@ -261,8 +261,8 @@ brew install jq
 - `.prettierignore` - Files to ignore for formatting
 - `package.json` - Added npm scripts
 - `.husky/pre-push` - Added markdown linting step
-- `the primary binding directory settings.json` - PostToolUse hook configuration
-- `the primary binding directory hooks/format-lint-markdown.sh` - Hook execution script
+- `.claude/settings.json` - PostToolUse hook configuration
+- `.claude/hooks/format-lint-markdown.sh` - Hook execution script
 
 ### Ignored Directories
 
@@ -293,9 +293,9 @@ npm run lint:md:fix
 ### the primary coding agent hook not working
 
 1. Verify `jq` is installed: `which jq`
-2. Check hook script permissions: `ls -l the primary binding directory hooks/format-lint-markdown.sh`
+2. Check hook script permissions: `ls -l .claude/hooks/format-lint-markdown.sh`
 3. Should show `-rwxr-xr-x` (executable)
-4. If not: `chmod +x the primary binding directory hooks/format-lint-markdown.sh`
+4. If not: `chmod +x .claude/hooks/format-lint-markdown.sh`
 
 ### Too many violations to fix
 

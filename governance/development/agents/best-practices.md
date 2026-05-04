@@ -4,7 +4,7 @@
 
 ## Overview
 
-This document outlines best practices for developing AI agents in the `the primary binding directory agents/` directory. Following these practices ensures agents are maintainable, secure, and effective at automating repository tasks.
+This document outlines best practices for developing AI agents in the `.claude/agents/` directory. Following these practices ensures agents are maintainable, secure, and effective at automating repository tasks.
 
 ## Purpose
 

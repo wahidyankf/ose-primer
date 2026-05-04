@@ -68,7 +68,7 @@ The repository contains 57 specialized AI agents.
 The repository contains [specialized AI agents](./.claude/agents/README.md).
 ```
 
-> **Note**: The path `./the primary binding directory agents/README.md` in the example above is illustrative. Use the correct relative path based on your file's actual location. For example, from `governance/conventions/writing/`, the correct path would be `../../../the primary binding directory agents/README.md`.
+> **Note**: The path `./.claude/agents/README.md` in the example above is illustrative. Use the correct relative path based on your file's actual location. For example, from `governance/conventions/writing/`, the correct path would be `../../../.claude/agents/README.md`.
 
 **PASS: Omit the count entirely**:
 
@@ -142,7 +142,7 @@ Code blocks showing repository structure often include comments that describe wh
 
 Counts are acceptable in the following contexts:
 
-- **Index documents themselves** (e.g., the README in `the primary binding directory agents/` may state the count as a footer note, but this single location becomes the authoritative source)
+- **Index documents themselves** (e.g., the README in `.claude/agents/` may state the count as a footer note, but this single location becomes the authoritative source)
 - **Generated audit reports** in `generated-reports/` (these are point-in-time snapshots)
 - **Commit messages** describing a specific change ("add 3 new agents for demo")
 - **Technical specifications** where the count is a constraint, not a description (e.g., "each agent has exactly 1 name field")
@@ -154,16 +154,16 @@ If a count is needed anywhere, the index document for that collection is the sin
 
 **The authoritative sources for collection sizes**:
 
-| Collection       | Authoritative Index                              |
-| ---------------- | ------------------------------------------------ |
-| AI Agents        | `the primary binding directory agents/README.md` |
-| agent skills     | `the primary binding directory skills/README.md` |
-| Conventions      | `governance/conventions/README.md`               |
-| Principles       | `governance/principles/README.md`                |
-| Dev Practices    | `governance/development/README.md`               |
-| Workflows        | `governance/workflows/README.md`                 |
-| BE Gherkin Specs | `specs/apps/crud/be/gherkin/README.md`           |
-| FE Gherkin Specs | `specs/apps/crud/fe/gherkin/README.md`           |
+| Collection       | Authoritative Index                    |
+| ---------------- | -------------------------------------- |
+| AI Agents        | `.claude/agents/README.md`             |
+| agent skills     | `.claude/skills/README.md`             |
+| Conventions      | `governance/conventions/README.md`     |
+| Principles       | `governance/principles/README.md`      |
+| Dev Practices    | `governance/development/README.md`     |
+| Workflows        | `governance/workflows/README.md`       |
+| BE Gherkin Specs | `specs/apps/crud/be/gherkin/README.md` |
+| FE Gherkin Specs | `specs/apps/crud/fe/gherkin/README.md` |
 
 ## 📖 Examples
 
@@ -193,7 +193,7 @@ If a count is needed anywhere, the index document for that collection is the sin
 - **Conventions Index**: [governance/conventions/README.md](./governance/conventions/README.md) - 30 documentation standards
 - **Development Index**: [governance/development/README.md](./governance/development/README.md) - 17 software practices
 - **Principles Index**: [governance/principles/README.md](./governance/principles/README.md) - 11 foundational principles
-- **Agents Index**: [the primary binding directory agents/README.md](./.claude/agents/README.md) - 57 specialized agents
+- **Agents Index**: [`.claude/agents/`README.md](./.claude/agents/README.md) - 57 specialized agents
 ```
 
 **After (PASS)**:
@@ -202,7 +202,7 @@ If a count is needed anywhere, the index document for that collection is the sin
 - **Conventions Index**: [governance/conventions/README.md](./governance/conventions/README.md) - Documentation writing and organization standards
 - **Development Index**: [governance/development/README.md](./governance/development/README.md) - Software development practices and workflows
 - **Principles Index**: [governance/principles/README.md](./governance/principles/README.md) - Foundational values governing all layers
-- **Agents Index**: [the primary binding directory agents/README.md](./.claude/agents/README.md) - Specialized agents organized by role
+- **Agents Index**: [`.claude/agents/`README.md](./.claude/agents/README.md) - Specialized agents organized by role
 ```
 
 ---
