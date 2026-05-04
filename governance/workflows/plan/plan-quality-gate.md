@@ -54,8 +54,8 @@ tool with `subagent_type` (see [Workflow Execution Modes Convention](../meta/exe
 **Fallback Mode**: Manual Orchestration — execute workflow logic directly using
 Read/Write/Edit tools when Agent Delegation is unavailable.
 
-The Agent tool runs subagents that persist file changes to the actual filesystem, making it
-the preferred approach when these agents exist as defined subagent types.
+The Agent tool runs delegated agents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined delegated agent types.
 
 **How to Execute**:
 
@@ -90,7 +90,7 @@ context — use this when agent delegation is unavailable.
 ## Research Delegation
 
 The `plan-checker` agent delegates multi-page web research to the
-[`web-research-maker`](../../../.claude/agents/web-research-maker.md) subagent when verifying a single
+[`web-research-maker`](../../../.claude/agents/web-research-maker.md) delegated agent when verifying a single
 technical claim requires more than one or two searches, or more than two fetches. This keeps the
 plan audit context lean — `plan-checker` receives a cited, synthesised summary and translates it
 into dual-labelled findings, rather than burning its own context on multi-page research. Checkers
@@ -102,12 +102,26 @@ authoritative URLs. No workflow-level configuration is required; the delegation 
 
 ### 1. Initial Validation (Sequential)
 
-Run plan validation to identify completeness and accuracy issues.
+Run plan validation to identify completeness, accuracy, and hallucination issues.
 
 **Agent**: `plan-checker`
 
 - **Args**: `scope: {input.scope}`
 - **Output**: `{audit-report-1}` - Initial audit report in `generated-reports/`
+
+**Validation scope** (per `plan-checker` Steps 0-7 + 5b/5c/5d/5e/5f):
+
+- Structure (folder name, file layout, mandatory sections)
+- Requirements (BRD + PRD content placement, Gherkin)
+- Technical documentation (architecture, design decisions, diagrams)
+- Delivery checklist (granularity, TDD shape, execution-grade clarity)
+- Operational readiness (Step 5b — quality gates, CI verification, env setup)
+- Manual behavioral assertions (Step 5c — Playwright MCP / curl)
+- Worktree specification (Step 5d — declared `## Worktree` section + path format)
+- Execution-grade clarity (Step 5e — file paths, commands, acceptance criteria per checkbox)
+- **Anti-hallucination scan** (Step 5f — confidence labels, Anti-Pattern Catalog AP-1 through AP-10, suggested-executor annotation validity, web-citation completeness) per the [Plan Anti-Hallucination Convention](../../development/quality/plan-anti-hallucination.md)
+
+For external claims that are not already documented in the repo and require more than a single-shot URL fetch, `plan-checker` delegates research to [`web-research-maker`](../../../.claude/agents/web-research-maker.md) per the lower plan-content threshold (any non-grep'd external claim → delegate). See [Plan Anti-Hallucination Convention §Web-Research Delegation](../../development/quality/plan-anti-hallucination.md#web-research-delegation-lower-threshold-for-plans).
 
 **Success criteria**: Checker completes and generates audit report.
 
@@ -117,33 +131,19 @@ Run plan validation to identify completeness and accuracy issues.
 
 Analyze audit report to determine if fixes are needed.
 
-**Condition Check**: Count findings based on mode level in `{step1.outputs.audit-report-1}`
+**Condition Check**: Count ALL findings (CRITICAL, HIGH, MEDIUM, and LOW) in `{step1.outputs.audit-report-1}`
 
-- **lax**: Count CRITICAL only
-- **normal**: Count CRITICAL + HIGH
-- **strict**: Count CRITICAL + HIGH + MEDIUM (default)
-- **ocd**: Count all levels (CRITICAL, HIGH, MEDIUM, LOW)
-
-**Below-threshold findings**: Report but don't block success
-
-- **lax**: HIGH/MEDIUM/LOW reported, not counted
-- **normal**: MEDIUM/LOW reported, not counted
-- **strict**: LOW reported, not counted
-- **ocd**: All findings counted
-
-**Decision**:
-
-- If threshold-level findings > 0: Proceed to step 3 (reset `consecutive_zero_count` to 0)
-- If threshold-level findings = 0: Initialize `consecutive_zero_count` to 1 (this check is the first zero),
+- If findings > 0: Proceed to step 3 (reset `consecutive_zero_count` to 0)
+- If findings = 0: Initialize `consecutive_zero_count` to 1 (this check is the first zero),
   proceed to step 4 for confirmation re-check (consecutive pass requirement)
 
 **Depends on**: Step 1 completion
 
 **Notes**:
 
-- Fix scope determined by mode level
-- Below-threshold findings remain visible in audit reports
-- Enables progressive quality improvement
+- Fixes ALL findings, not just CRITICAL/HIGH ones
+- Includes LOW-level issues like formatting, style improvements
+- Ensures plans achieve perfect quality state
 
 ### 3. Apply Fixes (Sequential, Conditional)
 
@@ -151,24 +151,20 @@ Apply all validated fixes from the audit report.
 
 **Agent**: `plan-fixer`
 
-- **Args**: `report: {step1.outputs.audit-report-1}, approved: all, mode: {input.mode}`
+- **Args**: `report: {step1.outputs.audit-report-1}, approved: all`
 - **Output**: `{fixes-applied}`
-- **Condition**: Threshold-level findings exist from step 2
+- **Condition**: Findings exist from step 2
 - **Depends on**: Step 2 completion
 
-**Success criteria**: Fixer successfully applies all threshold-level fixes without errors.
+**Success criteria**: Fixer successfully applies all fixes without errors.
 
 **On failure**: Log errors, proceed to step 4 for verification.
 
 **Notes**:
 
 - Fixer re-validates findings before applying (prevents false positives)
-- **Fix scope based on mode**:
-  - **lax**: Fix CRITICAL only (skip HIGH/MEDIUM/LOW)
-  - **normal**: Fix CRITICAL + HIGH (skip MEDIUM/LOW)
-  - **strict**: Fix CRITICAL + HIGH + MEDIUM (skip LOW) — default
-  - **ocd**: Fix all levels (CRITICAL, HIGH, MEDIUM, LOW)
-- Below-threshold findings remain untouched
+- Fixes ALL criticality levels: CRITICAL (blocking), HIGH (objective), MEDIUM (structural), LOW (style/formatting)
+- Achieves perfect plan quality with zero findings
 
 ### 4. Re-validate (Sequential)
 
@@ -192,7 +188,7 @@ Determine whether to continue fixing or terminate.
 
 **Logic**:
 
-- Count ALL findings in `{step4.outputs.audit-report-N}` (HIGH, MEDIUM, MINOR)
+- Count ALL findings in `{step4.outputs.audit-report-N}` (CRITICAL, HIGH, MEDIUM, LOW)
 - Track `consecutive_zero_count` across iterations (resets to 0 when findings > 0, increments when findings = 0)
 - If consecutive_zero_count >= 2 AND iterations >= min-iterations (or min not provided): Proceed to step 6 (Success — double-zero confirmed)
 - If consecutive_zero_count >= 2 AND iterations < min-iterations: Loop back to step 4 (re-validate)
@@ -228,22 +224,9 @@ Report final status and summary.
 
 ## Termination Criteria
 
-**Success** (`pass`):
-
-- **lax**: Zero CRITICAL findings on 2 consecutive checks (HIGH/MEDIUM/LOW may exist)
-- **normal**: Zero CRITICAL/HIGH findings on 2 consecutive checks (MEDIUM/LOW may exist)
-- **strict**: Zero CRITICAL/HIGH/MEDIUM findings on 2 consecutive checks (LOW may exist) — default
-- **ocd**: Zero findings at all levels on 2 consecutive checks
-
-**Partial** (`partial`):
-
-- Threshold-level findings remain after max-iterations safety limit
-
-**Failure** (`fail`):
-
-- Technical errors during check or fix
-
-**Note**: Below-threshold findings are reported in final audit but don't prevent success status. Success requires two consecutive zero-finding validations (consecutive pass requirement).
+- PASS: **Success** (`pass`): Zero findings of ANY level (CRITICAL, HIGH, MEDIUM, LOW) on **two consecutive** validations (consecutive pass requirement)
+- **Partial** (`partial`): Any findings remain after max-iterations cycles
+- FAIL: **Failure** (`fail`): Checker or fixer encountered technical errors
 
 ## Example Usage
 
@@ -255,8 +238,8 @@ User: "Run plan quality gate workflow for all plans"
 
 The AI will invoke `plan-checker` and `plan-fixer` via the Agent tool:
 
-- Validate all plan files (`plan-checker` subagent)
-- Apply all fixes (`plan-fixer` subagent)
+- Validate all plan files (`plan-checker` delegated agent)
+- Apply all fixes (`plan-fixer` delegated agent)
 - Iterate until zero findings achieved
 
 ### Validate Specific Plan Folder
@@ -349,8 +332,11 @@ Result: SUCCESS (4 iterations)
 
 The plan-checker validates:
 
-- **Completeness**: All five canonical documents present in multi-file plans — `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`. Required sections populated in each file per the [Content-Placement Rules](../../conventions/structure/plans.md#content-placement-rules-brdmd-vs-prdmd). Single-file exception is allowed when the plan is trivially small (≤1000 lines) and a single `README.md` covers the eight mandatory sections: Context, Scope, Business Rationale (condensed BRD), Product Requirements (condensed PRD), Technical Approach, Delivery Checklist, Quality Gates, Verification.
-- **Technical Accuracy**: Commands, versions, tool names verified via web search
+- **Completeness**: All five canonical documents present in multi-file plans — `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`. Required sections populated in each file per the [Content-Placement Rules](../../conventions/structure/plans.md#content-placement-rules-brdmd-vs-prdmd). Single-file exception is allowed when the plan is trivially small (≤1000 lines) and a single `README.md` covers the nine mandatory sections: Context, Scope, Business Rationale (condensed BRD), Product Requirements (condensed PRD), Technical Approach, **Worktree**, Delivery Checklist, Quality Gates, Verification.
+- **Technical Accuracy**: Commands, versions, tool names, API signatures verified via repo `Grep` first (free, fast, accurate); external claims verified via `web-research-maker` per the lower plan-content delegation threshold
+- **Anti-Hallucination Scan**: Every non-trivial factual claim carries an inline confidence label (`[Repo-grounded]` / `[Web-cited]` / `[Judgment call]` / `[Unverified]`); zero violations of Anti-Pattern Catalog AP-1 through AP-10; every cited file path / Nx target / agent / skill resolves on the current commit. See [Plan Anti-Hallucination Convention](../../development/quality/plan-anti-hallucination.md).
+- **Worktree Specification**: Plan contains a `## Worktree` section declaring the worktree path (`worktrees/<plan-identifier>/`) and provisioning command. See [Plans Organization Convention §Worktree Specification](../../conventions/structure/plans.md#worktree-specification).
+- **Execution-Grade Clarity**: Every delivery checkbox names explicit file path(s), verbatim shell command(s), and a concrete acceptance criterion. See [Plans Organization Convention §Execution-Grade Clarity](../../conventions/structure/plans.md#execution-grade-clarity-hard-rule).
 - **Implementation Readiness**: Plans are actionable and executable
 - **Codebase Alignment**: References to existing files, patterns, and conventions
 - **Clarity**: Clear problem statements, well-defined scope, unambiguous requirements
@@ -392,12 +378,12 @@ This workflow ensures plan quality and implementation readiness through iterativ
 
 ## Principles Implemented/Respected
 
-- **Explicit Over Implicit**: All steps, conditions, and termination criteria are explicit
-- **Automation Over Manual**: Fully automated validation and fixing without human intervention
-- **Simplicity Over Complexity**: Clear linear flow with loop control
-- **Accessibility First**: Generates human-readable audit reports
-- **Progressive Disclosure**: Can run with different scopes and iteration limits
-- **No Time Estimates**: Focus on quality outcomes, not duration
+- PASS: **Explicit Over Implicit**: All steps, conditions, and termination criteria are explicit
+- PASS: **Automation Over Manual**: Fully automated validation and fixing without human intervention
+- PASS: **Simplicity Over Complexity**: Clear linear flow with loop control
+- PASS: **Accessibility First**: Generates human-readable audit reports
+- PASS: **Progressive Disclosure**: Can run with different scopes and iteration limits
+- PASS: **No Time Estimates**: Focus on quality outcomes, not duration
 
 ## Conventions Implemented/Respected
 

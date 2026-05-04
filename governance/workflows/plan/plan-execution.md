@@ -47,9 +47,9 @@ outputs:
 
 **Direct Orchestration** — the calling context (the top-level assistant session that received the "Execute plan …" request) is the orchestrator. It reads this workflow, parses the plan's delivery checklist, manages the live Task list via `TaskCreate` / `TaskUpdate`, performs the Atomic Sync Ritual against `delivery.md`, and delegates each checklist item to the appropriate specialized agent via the Agent tool (see Agent Selection below).
 
-The calling context invokes `plan-execution-checker` as an Agent-delegated subagent for independent validation (Step 3 and Step 6 below). Validation must run in an isolated context so the checker's judgment is not biased by the orchestrator's execution memory.
+The calling context invokes `plan-execution-checker` as a delegated agent for independent validation (Step 3 and Step 6 below). Validation must run in an isolated context so the checker's judgment is not biased by the orchestrator's execution memory.
 
-There is no dedicated `plan-executor` subagent. Executor logic lives in this workflow document; the calling context follows it directly. This keeps the live Task list visible to the user in real time (a subagent's tasks are isolated to its own context) and eliminates a redundant router hop.
+There is no dedicated `plan-executor` delegated agent. Executor logic lives in this workflow document; the calling context follows it directly. This keeps the live Task list visible to the user in real time (a delegated agent's tasks are isolated to its own context) and eliminates a redundant router hop.
 
 **How to Execute**:
 
@@ -59,15 +59,16 @@ User: "Execute plan plans/in-progress/2025-01-15__new-feature/plan.md"
 
 The calling context will:
 
-1. Read the delivery checklist from the plan's `delivery.md` to understand all items
-2. Create granular tasks using `TaskCreate` — one per remaining checkbox (including nested sub-bullets)
-3. For each item: mark `in_progress`, analyze it, delegate to the appropriate specialized agent (or execute directly for trivial edits), verify the result
-4. Perform the Atomic Sync Ritual after each item — tick `- [ ]` → `- [x]` in `delivery.md`, add implementation notes, `TaskUpdate completed`
-5. Invoke `plan-execution-checker` via the Agent tool to validate the implementation
-6. Iterate execution and validation until zero findings achieved
-7. Move plan folder to plans/done/ using git mv
-8. Show git status with modified files
-9. Wait for user commit approval
+1. **Verify worktree gate** (Step 0): refuse to start if the plan lacks a `## Worktree` section or if the working directory is not the declared worktree path
+2. Read the delivery checklist from the plan's `delivery.md` to understand all items
+3. Create granular tasks using `TaskCreate` — one per remaining checkbox (including nested sub-bullets)
+4. For each item: mark `in_progress`, **repo-ground its file paths and commands** (refuse-on-uncertainty if grounding fails), analyze it, **prefer the `_Suggested executor:_` annotation** if present (else fall back to Agent Selection heuristics), delegate to the chosen agent (or execute directly for trivial edits), verify the result
+5. Perform the Atomic Sync Ritual after each item — tick `- [ ]` → `- [x]` in `delivery.md`, add implementation notes, `TaskUpdate completed`
+6. Invoke `plan-execution-checker` via the Agent tool to validate the implementation
+7. Iterate execution and validation until zero findings achieved
+8. Move plan folder to plans/done/ using git mv
+9. Show git status with modified files
+10. Wait for user commit approval
 
 ## Orchestration Model
 
@@ -79,7 +80,9 @@ The orchestrator never implements code or documentation in bulk by itself — it
 
 The orchestrator selects the best agent for each delivery checklist item using these rules, applied in priority order:
 
-1. **Match by project/app name**: If the checklist item names a specific app (e.g., `crud-be-java-vertx`), use the agent for that app's language (e.g., `swe-java-dev`). Refer to [CLAUDE.md](../../../CLAUDE.md) for the full app list and their tech stacks.
+0. **Suggested-executor annotation (HIGHEST priority)**: If the checkbox carries a `_Suggested executor: <agent-name>_` annotation per [Plan Anti-Hallucination Convention §Specialized-Agent Delegation](../../development/quality/plan-anti-hallucination.md#specialized-agent-delegation-hallucination-reduction), verify the agent file exists at `.claude/agents/<name>.md` and use that agent. The annotation is the plan author's explicit choice — it overrides heuristics 1–4 below. If the annotated agent does not exist, terminate the item with status `fail` and surface the missing-agent error to the user (do not silently fall back).
+
+1. **Match by project/app name**: If the checklist item names a specific app (e.g., `organiclever-be`), use the agent for that app's language (e.g., `swe-fsharp-dev`). Refer to [CLAUDE.md](../../../CLAUDE.md) for the full app list and their tech stacks.
 
 2. **Match by file extension**: If the item references files with a recognizable extension (`.ts`, `.java`, `.py`, `.go`, `.kt`, `.fs`, `.cs`, `.clj`, `.ex`, `.rs`, `.dart`), use the corresponding `swe-{language}-dev` agent.
 
@@ -89,7 +92,9 @@ The orchestrator selects the best agent for each delivery checklist item using t
 
 5. **Fallback (direct execution)**: If no specialized agent cleanly matches — e.g., a one-line edit to a governance doc, a grep or file-move operation, an `npm` command — the orchestrator executes the item directly via `Edit` / `Bash` without delegating. Direct execution is only for trivial, context-bounded work; substantive changes always route through an agent.
 
-**The above are heuristics, not a closed list.** As new agents or apps are added to the repository, the orchestrator adapts automatically by reading the available agent list from `.claude/agents/` and matching based on the agent's description and the checklist item's content. The orchestrator should always check what agents are currently available rather than relying on a static table.
+**Rationale**: Domain-specialized agents hallucinate less than generic orchestration because they carry deeper language and framework context. The Suggested-executor annotation is the plan author's hallucination-reduction lever; respect it before falling back to heuristics.
+
+**The above are heuristics, not a closed list.** As new agents or apps are added to the repository, the orchestrator adapts automatically by reading the available agent list from the agent definition directory and matching based on the agent's description and the checklist item's content. The orchestrator should always check what agents are currently available rather than relying on a static table.
 
 **Multi-concern items**: When a delivery checklist item spans multiple task types (e.g., a
 TypeScript backend change that also requires a README update), delegate each concern separately
@@ -107,6 +112,27 @@ The live Task list (`TaskCreate` / `TaskUpdate`) and the on-disk delivery checkl
 Every checkbox on disk has exactly ONE matching task in the live list. Every task has exactly ONE matching checkbox on disk. This includes nested `- [ ]` sub-bullets — each sub-bullet is its own task, not rolled into its parent. Task titles short-form the checkbox text so reader sees consistent wording in both views.
 
 Forbidden: coarse tasks ("Execute Phase 2", "Update all agents"), bulk creation ("one task for every phase"), silent completion ("ticked three boxes in one Edit, one `TaskUpdate` at the end"). Each of these breaks the user's monitoring view.
+
+### Harness Task List as Primary Observability Surface
+
+The harness task list (`TaskCreate` to add, `TaskUpdate` to mutate) is the user's only real-time view of execution. It is the **primary observability surface**, not a side artifact. The on-disk `delivery.md` checklist is the persistent source of truth; the harness list is its live mirror.
+
+**Non-negotiable invariants**:
+
+- **One checkbox = one harness task**. Every `- [ ]` in `delivery.md` (including every nested sub-bullet) maps to exactly one harness task created via `TaskCreate`. Every harness task maps back to exactly one checkbox.
+- **Title short-form rule**. The task `subject` is a short-form of the checkbox prose: drop articles, keep verb + object, ≤80 characters. The reader watching the spinner MUST recognize the checkbox at a glance.
+- **At most one `in_progress` task at any time**. Multiple `in_progress` tasks indicate the orchestrator is interleaving items — forbidden.
+- **Sync lag ≤ one Edit call**. The on-disk checkbox state never lags more than a single `Edit` call behind the harness task state. If `TaskUpdate completed` fires before the matching `Edit` ticks the checkbox, the system is in an inconsistent state — roll back per the Atomic Sync Ritual below.
+
+**Forbidden patterns** (violations of the above):
+
+- Coarse tasks ("Execute Phase 2", "Update all agents", "Apply fixes")
+- Bulk creation ("one task per phase" instead of one task per checkbox)
+- Silent batch completion (multiple checkboxes ticked in one `Edit` while only one `TaskUpdate completed` fires)
+- Late notes (closing a task before its implementation-notes block lands on disk under the ticked checkbox)
+- Renaming a task to summarize multiple done items instead of leaving the original 1:1 mapping
+
+If any of the above occur, the orchestrator MUST stop, reconcile (disk wins per the Resume Reconciliation rule below), and resume one checkbox at a time.
 
 ### Atomic Sync Ritual
 
@@ -136,11 +162,11 @@ If a task is `completed` but the checkbox is `- [ ]`, OR a checkbox is `- [x]` b
 
 These rules govern ALL execution steps. No exception. No shortcut.
 
-1. **Granular Task Tracking (1:1 with delivery.md)**: One `TaskCreate` per delivery checklist item, including every nested `- [ ]` sub-bullet (never rolled into its parent). Task titles short-form the checkbox text. At most ONE task in `in_progress` at any time. Mark `in_progress` BEFORE any tool call advancing that item. Mark `completed` ONLY after the checkbox is ticked on disk AND implementation notes are persisted. NEVER create coarse tasks ("Execute Phase 2"). NEVER batch-complete. NEVER complete speculatively.
+1. **Granular Task Tracking (1:1 with delivery.md) — NON-NEGOTIABLE**: The harness task list IS the user's primary observability surface (see [Harness Task List as Primary Observability Surface](#harness-task-list-as-primary-observability-surface) above). Exactly ONE `TaskCreate` per delivery checklist item, including every nested `- [ ]` sub-bullet — sub-bullets are NEVER rolled into their parent. Task `subject` MUST short-form the checkbox text (drop articles, keep verb + object, ≤80 chars). At most ONE task in `in_progress` at any moment. Mark `in_progress` BEFORE any tool call advancing that item. Mark `completed` ONLY after the checkbox is ticked on disk AND the implementation-notes block is persisted under the ticked checkbox. FORBIDDEN: coarse tasks ("Execute Phase 2", "Apply fixes"), bulk creation ("one task per phase"), silent batch-completion (multiple checkboxes ticked in one `Edit` while one `TaskUpdate` closes), speculative completion (closing a task before disk reflects done state), title rewriting (renaming a task to summarize multiple items). Violations corrupt the user's view of execution and MUST trigger immediate rollback + reconciliation (disk wins).
 2. **Never Stop Before All Done**: Execute ALL items from first to last without stopping. No pauses between phases. No skipping items. The only acceptable stop is a hard technical blocker.
 3. **Fix ALL Issues — Including Preexisting**: When ANY test, lint, typecheck, or quality gate fails — fix it. Even if it existed before your changes. Do NOT defer. Do NOT skip. Commit preexisting fixes separately.
 4. **Delivery.md Is Sacred — Atomic Sync Ritual**: After each item's work is done, run the three-step ritual before touching the next item: (a) `Edit` checkbox `- [ ]` → `- [x]` for THIS one item (no `replace_all`), (b) `Edit` implementation-notes block under the ticked checkbox (Date, Status, Files Changed, brief notes), (c) `TaskUpdate completed`. All three MUST land before moving on. If any step fails, roll back the others and leave the task in `in_progress`. Ticking multiple checkboxes in one Edit or deferring notes to end-of-phase is forbidden.
-5. **Local Quality Gates Before Push**: Run `npx nx affected -t typecheck lint test:quick spec-coverage` before every push. Fix ALL failures. Do NOT push with any failing check. Rebase before pushing to maintain linear history: `git pull --rebase origin main`. Never create a merge commit. Do not open a PR unless the active delivery checklist contains an explicit `- [ ] Create PR` step that satisfies the [git-push-default convention](../../development/workflow/git-push-default.md).
+5. **Local Quality Gates Before Push**: Run `npx nx affected -t typecheck lint test:quick spec-coverage` before every push. Fix ALL failures. Do NOT push with any failing check.
 6. **Post-Push CI Verification**: After every push, monitor ALL GitHub Actions workflows. Fix ALL failures (including preexisting). Do NOT proceed until CI is fully green.
 7. **Thematic Commits**: Group related changes. Split different concerns. Follow Conventional Commits. Preexisting fixes get their own commits.
 8. **Manual Behavioral Assertions**: After quality gates pass, use Playwright MCP for web UI verification and curl for API verification. Fix any broken behavior before proceeding.
@@ -148,6 +174,29 @@ These rules govern ALL execution steps. No exception. No shortcut.
 10. **Resume Reconciliation (Disk Is Truth)**: When starting or re-entering execution, read delivery.md first. Rebuild the Task list from disk state. If in-memory tasks disagree with disk checkboxes, delete them and rebuild. Never trust in-memory state over disk.
 
 ## Steps
+
+### 0. Verify Worktree Specification (Sequential, Hard Gate)
+
+Before reading the delivery checklist, verify that the plan declares a worktree and that execution is happening inside it. This gate is non-recoverable — the executor does NOT auto-create worktrees.
+
+**Orchestrator action**:
+
+1. **Locate the `## Worktree` section** in the plan:
+   - **Multi-file plans**: in `delivery.md` (top-level `## Worktree` heading, before any phase).
+   - **Single-file plans**: in `README.md` (top-level `## Worktree` heading, before `## Delivery Checklist`).
+2. **If the section is missing**: terminate immediately with status `fail`. Emit a single user-visible line: `Worktree specification missing — add a "## Worktree" section to <delivery.md|README.md> per governance/conventions/structure/plans.md#worktree-specification before re-invoking plan execution.`
+3. **Parse the declared worktree path** (format: `worktrees/<plan-identifier>/`).
+4. **Verify the current working directory** matches the declared path:
+   - Run `pwd` (or read the orchestrator's `workingDirectory`).
+   - Resolve the expected absolute path: `<repo-root>/worktrees/<plan-identifier>`.
+   - **If mismatched**: terminate with status `fail`. Emit a single user-visible line: `Working directory mismatch — expected <expected-path>, got <actual-path>. Provision the worktree via "claude --worktree <plan-identifier>" from the repo root and re-invoke plan execution from inside the worktree.`
+5. **If matched**: log a one-line confirmation (`Worktree gate: passed (<expected-path>)`) and proceed to Step 1.
+
+**Output**: Worktree existence and identity confirmed.
+
+**On failure**: Terminate workflow with status `fail`. Do NOT attempt auto-provisioning — worktree creation is an explicit user action via `claude --worktree <plan-identifier>`.
+
+**Why this is a hard gate**: Plan execution that runs outside a worktree pollutes the main checkout with in-flight work, breaks the parallel-safety guarantee, and risks dirty-gitlink hazards in any subrepo context. The cost of failing fast (one user command to provision) is far smaller than the cost of recovering from a polluted main checkout mid-execution.
 
 ### 1. Load Delivery Checklist and Materialize Task List (Sequential)
 
@@ -202,14 +251,20 @@ Execute all delivery checklist items sequentially, delegating each to the approp
 For each checklist item in reading order (phase by phase, item by item, including nested sub-bullets):
 
 1. **`TaskUpdate in_progress`** on the matching task. At most ONE `in_progress` at a time.
-2. **Analyze the item** to determine whether to delegate to a specialized agent (see Agent Selection) or execute directly. If the checklist text is ambiguous, the orchestrator MAY consult the plan's `brd.md` / `prd.md` / `tech-docs.md` for additional context — business intent lives in `brd.md`, product scope and Gherkin acceptance criteria in `prd.md`, architecture decisions in `tech-docs.md`.
-3. **Execute the item** — delegate to that agent via the Agent tool, or perform the edit/command directly. Only for THIS one checkbox.
-4. **Verify the work succeeded** — read the produced file, run the command, check the agent's output.
-5. **Atomic Sync Ritual** — all three steps before any next-item work:
+2. **Pre-Item Repo-Grounding (HARD GATE — Anti-Hallucination)**: before delegating, repo-ground every claim in the checkbox per the [Plan Anti-Hallucination Convention §Repo-Grounding Rule](../../development/quality/plan-anti-hallucination.md#repo-grounding-rule-hard):
+   - For each cited file path: `Bash test -f <path>`. If missing AND not marked `_New file_`: HALT the item, escalate to user with the failing path (do not invent a substitute).
+   - For each cited Nx target: `jq -r '.targets | keys[]' apps/<project>/project.json | grep -qx '<target>'`. If missing AND not marked `_New target_`: HALT the item.
+   - For each cited agent: `test -f .claude/agents/<name>.md`. If missing: HALT (no fabricating).
+   - For each cited symbol: `Grep` for evidence. Missing AND not marked `_New symbol_`: HALT.
+   - **Refuse-on-uncertainty**: if a cited fact cannot be grounded and the checkbox does not mark it as new, the orchestrator MUST escalate rather than guess. Surface the failure to the user with the specific claim and the missing artifact.
+3. **Analyze the item** to determine whether to delegate to a specialized agent (see Agent Selection) or execute directly. If the checkbox carries a `_Suggested executor:_` annotation, use that agent (Priority 0). If the checklist text is otherwise ambiguous, the orchestrator MAY consult the plan's `brd.md` / `prd.md` / `tech-docs.md` for additional context — business intent lives in `brd.md`, product scope and Gherkin acceptance criteria in `prd.md`, architecture decisions in `tech-docs.md`.
+4. **Execute the item** — delegate to that agent via the Agent tool, or perform the edit/command directly. Only for THIS one checkbox.
+5. **Verify the work succeeded** — read the produced file, run the command, check the agent's output. The verification MUST match the acceptance criterion stated in the checkbox (Execution-Grade Clarity rule from the plans convention).
+6. **Atomic Sync Ritual** — all three steps before any next-item work:
    a. `Edit` delivery.md to change `- [ ]` → `- [x]` for THIS one item (context-unique `old_string`; never `replace_all`; never tick multiple items in one Edit call).
-   b. `Edit` delivery.md to add the implementation-notes block (Date, Status, Files Changed, brief notes) under the ticked checkbox.
+   b. `Edit` delivery.md to add the implementation-notes block (Date, Status, Files Changed, brief notes) under the ticked checkbox. Notes MUST themselves be repo-grounded — only state files actually modified, only quote commands actually run.
    c. `TaskUpdate completed` on the matching task.
-6. Proceed IMMEDIATELY to the next item — no pausing, no waiting for approval, no deferring notes.
+7. Proceed IMMEDIATELY to the next item — no pausing, no waiting for approval, no deferring notes.
 
 Nested sub-checkboxes iterate the same loop. A parent `- [ ]` can only be ticked after all its sub-`- [ ]` items have each completed steps 1–5 of the loop.
 
@@ -265,18 +320,25 @@ After completing all items in a delivery phase, run quality gates before proceed
 
 After every push to `main`, verify GitHub Actions.
 
+**Monitoring tool**: The required default for standard CI jobs (10–35 min) is `ScheduleWakeup` + a single `gh run view` call on wakeup (2 API calls total per run). Use `gh run watch <run-id>` only if the job is expected to complete in under 5 minutes — `gh run watch` polls every ~3 s and exhausts the GitHub API rate limit (5,000 req/hour) on any job longer than ~5 min. Manual tight-loop polling of `gh run view` without a sleep interval is also **forbidden**. See [CI Monitoring Convention](../../development/workflow/ci-monitoring.md) for required tooling, minimum poll intervals, trigger discipline, and rate-limit recovery procedures.
+
 **Orchestrator action**:
 
 1. Identify which GitHub Actions workflows were triggered by the push
-2. Monitor their status until ALL complete
-3. If ANY workflow fails:
-   - Pull failure logs and diagnose the root cause
+2. Find the run ID: `gh run list --workflow=<workflow-file> --limit=3`
+3. Monitor to completion using the correct approach for the job duration:
+   - **Standard jobs (10–35 min, required default)**: `ScheduleWakeup(delaySeconds=180)` (3 min), check with one `gh run view <run-id> --json conclusion,status,jobs`, repeat every 3-5 min until complete
+   - **Short jobs (<5 min only)**: `gh run watch <run-id>` — do NOT use for 20–35 min CI jobs
+   - Never use `gh run watch` on jobs expected to take 20–35 min — it polls every ~3s and exhausts API quota
+4. If ANY workflow fails:
+   - Pull failure logs and diagnose the root cause: `gh run view <run-id> --log-failed`
    - Fix locally (including preexisting CI failures — Iron Rule 3)
    - Run local quality gates again (Step 2b)
    - Push fix commit
-   - Monitor CI again
-4. Repeat until ALL GitHub Actions workflows pass with zero failures
-5. Do NOT proceed to the next delivery phase until CI is fully green
+   - Monitor CI again with `ScheduleWakeup` + single `gh run view` (or `gh run watch` if <5 min)
+5. Repeat until ALL GitHub Actions workflows pass with zero failures
+6. Do NOT proceed to the next delivery phase until CI is fully green
+7. If rate-limited (HTTP 403 from `gh`): stop all `gh` calls immediately, use `ScheduleWakeup(delaySeconds=2100)` (35 min) to resume after the rolling window clears — do NOT spin in a retry loop
 
 **Output**: All CI workflows passing
 
@@ -337,13 +399,13 @@ Validate the implementation against plan requirements.
 - Validates implementation against plan requirements
 - Checks all deliverables meet quality standards
 - Verifies delivery checklist completion
-- Generates progressive report with all findings (HIGH, MEDIUM, MINOR)
+- Generates progressive report with all findings (CRITICAL, HIGH, MEDIUM, LOW)
 
 ### 4. Check for Findings (Sequential)
 
 Analyze validation report to determine if further execution is needed.
 
-**Condition Check**: Count ALL findings (HIGH, MEDIUM, and MINOR) in `{step3.outputs.audit-report-1}`
+**Condition Check**: Count ALL findings (CRITICAL, HIGH, MEDIUM, and LOW) in `{step3.outputs.audit-report-1}`
 
 - If findings > 0: Proceed to step 5 (Continue Execution)
 - If findings = 0: Skip to step 8 (Finalization - Success)
@@ -415,7 +477,7 @@ Determine whether to continue execution or terminate.
 
 **Logic**:
 
-- Count ALL findings in `{step6.outputs.audit-report-N}` (HIGH, MEDIUM, MINOR)
+- Count ALL findings in `{step6.outputs.audit-report-N}` (CRITICAL, HIGH, MEDIUM, LOW)
 - If findings = 0: Proceed to step 8 (Finalization - Success)
 - If findings > 0 AND iterations < max-iterations: Loop back to step 5 with new report
 - If findings > 0 AND iterations >= max-iterations: Proceed to step 8 (Finalization - Partial)
@@ -425,7 +487,7 @@ Determine whether to continue execution or terminate.
 **Notes**:
 
 - Prevents infinite loops with max-iterations limit
-- Continues until ZERO findings of any confidence level
+- Continues until ZERO findings of any criticality level
 - Each iteration uses the latest validation report
 - Tracks iteration count for observability
 
@@ -463,8 +525,9 @@ Report final status, archive plan if successful, and update all related READMEs.
 
 **Status determination**:
 
+- PASS: **Success** (`pass`): Zero findings after validation, all requirements met, plan moved to `plans/done/`
 - **Partial** (`partial`): Findings remain after max-iterations, plan stays in current location
-- **Failure** (`fail`): Technical errors during execution or checking, plan stays in current location
+- FAIL: **Failure** (`fail`): Technical errors during execution or checking, plan stays in current location
 
 **Depends on**: Reaching this step from step 4, 6, or 7
 
@@ -498,8 +561,9 @@ with a note explaining why it was skipped rather than silently omitting it.
 
 ## Termination Criteria
 
+- PASS: **Success** (`pass`): Zero findings of ANY criticality level (CRITICAL, HIGH, MEDIUM, LOW) in final validation, all deliverables complete, plan archived to `plans/done/`
 - **Partial** (`partial`): Findings remain after max-iterations cycles, plan requires manual intervention
-- **Failure** (`fail`): Orchestrator or checker encountered technical errors preventing completion
+- FAIL: **Failure** (`fail`): Orchestrator or checker encountered technical errors preventing completion
 
 ## Example Usage
 
@@ -514,8 +578,9 @@ The calling context orchestrates directly and invokes specialized agents via the
 - Read delivery checklist and materialize 1:1 Task list in the calling context
 - Delegate each item to the appropriate specialized agent (e.g., `swe-typescript-dev`)
 - Tick checkboxes progressively as each item completes (Atomic Sync Ritual)
-- Validate implementation by invoking `plan-execution-checker` subagent
+- Validate implementation by invoking `plan-execution-checker` delegated agent
 - Iterate until zero findings and all deliverables complete
+- Move plan folder to plans/done/ on success
 
 ### Execute with Extended Iterations
 
@@ -538,6 +603,7 @@ The AI will invoke agents regardless of folder location:
 
 - Implement plan requirements via orchestrated specialized agents
 - Won't move to done until zero findings achieved
+- Plan archived to plans/done/ only on complete success
 
 ### Quick Validation Only
 
@@ -678,14 +744,24 @@ Track across executions:
 
 This workflow ensures complete plan execution with validated quality, making it ideal for systematically implementing project plans from start to archive.
 
+## Test-Driven Development
+
+When implementing delivery checklist items that ship code, the orchestrator and all delegated
+`swe-*-dev` agents follow TDD: write a failing test first, confirm it fails for the right reason,
+write the minimum code to pass, then refactor. Mini-TDD passes are encouraged — split a feature
+into multiple small Red→Green→Refactor cycles rather than one large test up front. Gherkin
+acceptance criteria in `prd.md` are the natural source of the first failing tests.
+
+**See**: [Test-Driven Development Convention](../../development/workflow/test-driven-development.md)
+
 ## Principles Implemented/Respected
 
-- **Explicit Over Implicit**: All steps, conditions, termination criteria, and agent selection rules clearly defined
-- **Automation Over Manual**: Fully automated execution, validation, and archival with specialized agent delegation
-- **Simplicity Over Complexity**: Clear linear flow with loop control, bounded iterations, and domain-specific agents
-- **Accessibility First**: Generates human-readable validation reports for transparency
-- **Progressive Disclosure**: Configurable iterations and plan paths for different use cases
-- **No Time Estimates**: Focus on quality outcomes and completion criteria, not duration
+- PASS: **Explicit Over Implicit**: All steps, conditions, termination criteria, and agent selection rules clearly defined
+- PASS: **Automation Over Manual**: Fully automated execution, validation, and archival with specialized agent delegation
+- PASS: **Simplicity Over Complexity**: Clear linear flow with loop control, bounded iterations, and domain-specific agents
+- PASS: **Accessibility First**: Generates human-readable validation reports for transparency
+- PASS: **Progressive Disclosure**: Configurable iterations and plan paths for different use cases
+- PASS: **No Time Estimates**: Focus on quality outcomes and completion criteria, not duration
 
 ## Conventions Implemented/Respected
 
