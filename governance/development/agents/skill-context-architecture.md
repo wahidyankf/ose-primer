@@ -228,7 +228,7 @@ For complex cases, spawn the analyzer agent... [delegation content]
 ```mermaid
 graph TD
     MC[Main Conversation]
-    IS[Inline agent skills<br/>the primary binding directory skills/]
+    IS[Inline agent skills<br/>primary binding skills/]
     FS[Fork agent skills<br/>project-specific]
     CONV[Conventions<br/>governance/]
     SA[Subagent Context]
