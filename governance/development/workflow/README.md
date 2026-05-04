@@ -35,6 +35,7 @@ These standards define **HOW to execute development workflows**, covering the th
 - [Native-First Toolchain Management](./native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` instead of Terraform, Ansible, or Docker Dev Containers for development environment setup
 - [CI Monitoring](./ci-monitoring.md) - Monitor GitHub Actions after every push (post-push-verification companion)
 - [CI Post-Push Verification](./ci-post-push-verification.md) - Verify CI status after every push, fix preexisting failures per Iron Rule 3
+- [Test-Driven Development](./test-driven-development.md) - Red→Green→Refactor mandate; author the failing test before the implementation; required for code-touching delivery checklist items
 
 ## Companion Documents
 
