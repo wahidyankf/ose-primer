@@ -577,25 +577,25 @@ the GitHub UI URLs in tech-docs.md.
       _Date **/ Status:** / Files: **/ Notes:**_
 - [ ] Verify the fourteen Gherkin Feature groups in [prd.md](./prd.md) all pass (W1–W14).
       _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Update `plans/in-progress/README.md` to remove this plan from active list.
-      \_Date **/ Status:** / Files: plans/in-progress/README.md / Notes: \_\_\_
-- [ ] Move plan folder from `plans/in-progress/` to `plans/done/`.
-      _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Update `plans/done/README.md` index.
-      \_Date **/ Status:** / Files: plans/done/README.md / Notes: \_\_\_
-- [ ] Final commit: `chore(plans): archive 2026-05-03__adopt-ose-public-vendor-neutrality-and-opencode-go`.
-      _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Push: `git push origin main` (or `git push origin HEAD:main` if from worktree branch).
-      _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Monitor GitHub Actions: open the workflow run for the pushed SHA via
+- [x] Update `plans/in-progress/README.md` to remove this plan from active list.
+      _Date: 2026-05-04 / Status: done / Files: plans/in-progress/README.md / Notes: Removed entry; only `add-investment-oracle-app` remains in-progress._
+- [x] Move plan folder from `plans/in-progress/` to `plans/done/`.
+      _Date: 2026-05-04 / Status: done / Files: plans/done/2026-05-03\_\_... / Notes: git mv preserved history; 5 files renamed._
+- [x] Update `plans/done/README.md` index.
+      _Date: 2026-05-04 / Status: done / Files: plans/done/README.md / Notes: Added comprehensive single-line summary of all 14 workstreams + preexisting fixes encountered during execution._
+- [x] Final commit: `chore(plans): archive 2026-05-03__adopt-ose-public-vendor-neutrality-and-opencode-go`.
+      _Date: 2026-05-04 / Status: done / Files: archive commit + this delivery-final-ticks follow-on commit / Notes: Two commits — archive commit moved files + updated indices; this commit ticks the final delivery items in the moved file._
+- [x] Push: `git push origin main` (or `git push origin HEAD:main` if from worktree branch).
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: pushed to origin main._
+- [x] Monitor GitHub Actions: open the workflow run for the pushed SHA via
       `gh run list --branch main --limit 1` and `gh run watch <run-id>`.
-      _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] If any CI workflow fails: investigate root cause, fix, commit, and push immediately.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: Per primer's CLAUDE.md, primer has no GitHub Actions workflows yet (parent ose-projects also has none — "no org subscription, so workflows cannot execute"). gh run monitoring is a no-op._
+- [x] If any CI workflow fails: investigate root cause, fix, commit, and push immediately.
       Do not declare the plan done while `main` is red.
-      _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Verify final state: `gh run list --branch main --limit 5 --json status,conclusion,name | jq`
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: No CI workflows configured to potentially fail; husky pre-commit + pre-push hooks served as local-equivalent gates throughout._
+- [x] Verify final state: `gh run list --branch main --limit 5 --json status,conclusion,name | jq`
       returns all `success`.
-      _Date **/ Status:** / Files: **/ Notes:**_
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: Same — no CI runs exist to verify._
 
 ## Iron Rules
 
