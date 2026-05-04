@@ -31,6 +31,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **swe-code-checker** - Validates projects against platform coding standards (validates application code rather than documentation)
 - **swe-ui-checker** - UI component quality validation
 - **ci-checker** - CI/CD standards validation (mandatory Nx targets, coverage thresholds, Docker setup, Gherkin specs)
+- **docs-software-engineering-separation-checker** - Validates the boundary between generic dev docs and language-specific (Go, TypeScript, Rust, etc.) docs per the [Programming Language Docs Separation](../../governance/conventions/structure/programming-language-docs-separation.md) convention
 
 ### 🟨 Fixing (Fixers)
 
@@ -44,6 +45,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **specs-fixer** - Fix specs structural and accuracy issues
 - **swe-ui-fixer** - Apply validated UI component fixes
 - **ci-fixer** - Apply validated CI/CD standards fixes
+- **docs-software-engineering-separation-fixer** - Auto-moves misplaced language docs to the canonical destination flagged by the separation checker
 
 ### 🔍 Research (Green)
 
