@@ -94,6 +94,20 @@
       "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/governance/**/*.md"],
       "outputs": []
     },
+    "validate:cross-vendor-parity": {
+      "command": "bash apps/rhino-cli/scripts/validate-cross-vendor-parity.sh",
+      "cache": false,
+      "inputs": [
+        "{projectRoot}/**/*.go",
+        "{projectRoot}/scripts/validate-cross-vendor-parity.sh",
+        "{workspaceRoot}/governance/**/*.md",
+        "{workspaceRoot}/AGENTS.md",
+        "{workspaceRoot}/CLAUDE.md",
+        "{workspaceRoot}/.claude/agents/**/*.md",
+        "{workspaceRoot}/.opencode/agents/**/*.md"
+      ],
+      "outputs": []
+    },
     "validate:mermaid": {
       "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go docs validate-mermaid",
       "cache": true,

@@ -13,7 +13,7 @@ npm run lint:md
 RANGE=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1 && echo "@{u}..HEAD" || echo "")
 if [ -n "$RANGE" ]; then
   CHANGED=$(git diff --name-only "$RANGE" 2>/dev/null || echo "")
-  if echo "$CHANGED" | grep -qE '^(\.claude/agents/|\.opencode/agent/)'; then
+  if echo "$CHANGED" | grep -qE '^(\.claude/agents/|\.opencode/agents/)'; then
     npx nx run rhino-cli:validate:naming-agents
   fi
   if echo "$CHANGED" | grep -qE '^governance/workflows/'; then
@@ -21,5 +21,10 @@ if [ -n "$RANGE" ]; then
   fi
   if echo "$CHANGED" | grep -qE '\.md$'; then
     npx nx run rhino-cli:validate:mermaid
+  fi
+  # Cross-vendor parity gate (W5 of adopt-ose-public plan): fires when any
+  # parity-relevant surface changes. Cheap (~5s); not cacheable.
+  if echo "$CHANGED" | grep -qE '^(governance/.*\.md|AGENTS\.md|CLAUDE\.md|\.claude/agents/|\.opencode/agents/)'; then
+    npx nx run rhino-cli:validate:cross-vendor-parity
   fi
 fi
