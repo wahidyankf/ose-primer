@@ -13,6 +13,7 @@ This directory contains skill packages that provide progressive knowledge delive
 - **docs-creating-in-the-field-tutorials** - In-the-field tutorial creation methodology
 - **docs-validating-factual-accuracy** - Factual verification methodology with web research
 - **docs-validating-links** - Link validity checking and fixing procedures
+- **docs-validating-software-engineering-separation** - Validates the boundary between generic dev docs and language-specific docs (Go, TypeScript, Rust, etc.) consumed by the docs-software-engineering-separation-checker agent
 
 ### 📋 README Skills
 
