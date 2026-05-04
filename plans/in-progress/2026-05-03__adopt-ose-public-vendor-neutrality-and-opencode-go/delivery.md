@@ -231,25 +231,25 @@ the GitHub UI URLs in tech-docs.md.
 
 ### 4A — Convention port
 
-- [ ] Create `governance/conventions/structure/governance-vendor-independence.md`
+- [x] Create `governance/conventions/structure/governance-vendor-independence.md`
       verbatim from ose-public, scoped for primer (single-repo).
-      \_Date **/ Status:** / Files: governance/conventions/structure/governance-vendor-independence.md / Notes: \_\_\_
-- [ ] Update `governance/conventions/structure/README.md` to link to the new convention.
-      \_Date **/ Status:** / Files: governance/conventions/structure/README.md / Notes: \_\_\_
-- [ ] Commit: `docs(governance): add governance-vendor-independence convention`.
-      _Date **/ Status:** / Files: **/ Notes:**_
+      _Date: 2026-05-04 / Status: done / Files: governance/conventions/structure/governance-vendor-independence.md / Notes: cp verbatim (268 lines); also ported docs/reference/platform-bindings.md (262 lines, the catalog the convention cross-references)._
+- [x] Update `governance/conventions/structure/README.md` to link to the new convention.
+      _Date: 2026-05-04 / Status: done / Files: governance/conventions/structure/README.md, docs/reference/README.md / Notes: Both indices updated._
+- [x] Commit: `docs(governance): add governance-vendor-independence convention`.
+      _Date: 2026-05-04 / Status: done / Files: SHA 0417a3b61 / Notes: 5 files, +382/-2._
 
 ### 4B — AGENTS.md / CLAUDE.md restructure
 
-- [ ] Rewrite `AGENTS.md` to be the canonical vendor-neutral root instruction file.
+- [x] Rewrite `AGENTS.md` to be the canonical vendor-neutral root instruction file.
       Vendor-specific content goes inside ` ```binding-example ` fences.
-      \_Date **/ Status:** / Files: AGENTS.md / Notes: \_\_\_
-- [ ] Rewrite `CLAUDE.md` to a thin Claude Code shim. First non-frontmatter
+      _Date: 2026-05-04 / Status: done / Files: AGENTS.md / Notes: Restructured to use vendor-neutral prose (primary/secondary binding terminology); vendor-specific content (Claude Code, OpenCode, sample YAML) moved into a `## Platform Binding Examples` section with `binding-example` fences. 27 violations → 0._
+- [x] Rewrite `CLAUDE.md` to a thin Claude Code shim. First non-frontmatter
       line: `@AGENTS.md`. Body retains only Claude-Code-specific notes inside
       `binding-example` fences.
-      \_Date **/ Status:** / Files: CLAUDE.md / Notes: \_\_\_
-- [ ] Run `rhino-cli governance vendor-audit AGENTS.md CLAUDE.md`. Must return 0 violations.
-      _Date **/ Status:** / Files: **/ Notes:**_
+      _Date: 2026-05-04 / Status: done / Files: CLAUDE.md / Notes: Reduced from 569 lines to 60-line shim; first content line is `@AGENTS.md`; rest under `## Platform Binding Examples` heading per convention's allowlist mechanism._
+- [x] Run `rhino-cli governance vendor-audit AGENTS.md CLAUDE.md`. Must return 0 violations.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED — 0 violations across both files._
 - [ ] Commit: `refactor(governance): make AGENTS.md canonical, CLAUDE.md a thin shim`.
       _Date **/ Status:** / Files: **/ Notes:**_
 
