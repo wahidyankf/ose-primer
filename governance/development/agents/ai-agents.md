@@ -1,6 +1,6 @@
 ---
 title: "AI Agents Convention"
-description: Standards for creating and managing AI agents in the primary binding directory agents/ (primary) and the secondary binding directory agent/ (secondary) directories
+description: Standards for creating and managing AI agents in `.claude/agents/` (primary) and `.opencode/agents/` (secondary) directories
 category: explanation
 subcategory: development
 tags:
@@ -13,13 +13,13 @@ tags:
 
 # AI Agents Convention
 
-This document defines the standards for creating, structuring, and managing AI agents in the `the primary binding directory agents/` directory (primary source of truth) and `the secondary binding directory agent/` directory (auto-generated). **Edit `the primary binding directory agents/` first, then sync to `.opencode/`.** All agents must follow these conventions to ensure consistency, maintainability, and proper integration with the project.
+This document defines the standards for creating, structuring, and managing AI agents in the `.claude/agents/` directory (primary source of truth) and `.opencode/agents/` directory (auto-generated). **Edit `.claude/agents/` first, then sync to `.opencode/`.** All agents must follow these conventions to ensure consistency, maintainability, and proper integration with the project.
 
 ## 📋 Overview
 
 ### What are AI Agents?
 
-AI agents in this project are specialized AI assistants defined in the `the primary binding directory agents/` directory (source of truth), with auto-generated the secondary coding agent configuration in `the secondary binding directory agent/`. Each agent has:
+AI agents in this project are specialized AI assistants defined in the `.claude/agents/` directory (source of truth), with auto-generated the secondary coding agent configuration in `.opencode/agents/`. Each agent has:
 
 - **Specific expertise** in a particular domain or task
 - **Defined tool permissions** limiting what operations it can perform
@@ -47,7 +47,7 @@ This convention ensures all agents are:
 
 This convention applies to:
 
-- All agent files in `the primary binding directory agents/` (primary) and `the secondary binding directory agent/` (secondary)
+- All agent files in `.claude/agents/` (primary) and `.opencode/agents/` (secondary)
 - References to agents in `AGENTS.md`
 - Agent validation rules in `repo-rules-checker`
 
@@ -55,17 +55,17 @@ This convention applies to:
 
 This repository maintains **dual compatibility** with both the primary coding agent and the secondary coding agent:
 
-- **`the primary binding directory agents/`** - PRIMARY (Source of Truth)
+- **`.claude/agents/`** - PRIMARY (Source of Truth)
   - Edit agents here first
   - Uses the primary coding agent format: tool arrays `[Read, Write]`
   - Model selection: `sonnet`, `haiku`, `opus`, or omit (inherits)
 
-- **`the secondary binding directory agent/`** - SECONDARY (Auto-Generated)
-  - Synced from `the primary binding directory agents/` using `npm run sync:claude-to-opencode`
+- **`.opencode/agents/`** - SECONDARY (Auto-Generated)
+  - Synced from `.claude/agents/` using `npm run sync:claude-to-opencode`
   - Uses the secondary coding agent format: boolean flags `{ read: true, write: true }`
   - Model selection: `opencode-go/minimax-m2.7` or `opencode-go/glm-5`
 
-**Workflow**: Always edit `the primary binding directory agents/` first, then run sync script to regenerate `the secondary binding directory agent/`.
+**Workflow**: Always edit `.claude/agents/` first, then run sync script to regenerate `.opencode/agents/`.
 
 **See**: [CLAUDE.md](../../../CLAUDE.md) for the primary coding agent documentation, [AGENTS.md](../../../AGENTS.md) for the secondary coding agent documentation.
 
@@ -90,7 +90,7 @@ This practice respects the following core principles:
 
 ## Token Budget Philosophy
 
-**CRITICAL GUIDELINE**: When invoking agents (`the primary binding directory agents/` or `the secondary binding directory agent/`) and workflows (`governance/workflows/`), **do NOT think about token budget constraints**.
+**CRITICAL GUIDELINE**: When invoking agents (`.claude/agents/` or `.opencode/agents/`) and workflows (`governance/workflows/`), **do NOT think about token budget constraints**.
 
 ### Why Unlimited Budget Mindset
 
@@ -129,7 +129,7 @@ This practice implements/respects the following conventions:
 
 - **[Linking Convention](../../conventions/formatting/linking.md)**: All references to conventions and other documents use relative paths with `.md` extension. Ensures GitHub-compatible markdown across all agent files.
 
-- **[Emoji Usage Convention](../../conventions/formatting/emoji.md)**: Agent prompt files CAN use emojis for enhanced scannability (allowed location per convention). Emojis are particularly useful for criticality level definitions (CRITICAL, HIGH, MEDIUM, LOW), section headers (Purpose, Key Concepts, Reference), and status indicators in examples (PASS: Correct, FAIL: Incorrect, Warning). `the primary binding directory agents/README.md` (primary) and `the secondary binding directory agent/README.md` (secondary) use colored square emojis for categorization.
+- **[Emoji Usage Convention](../../conventions/formatting/emoji.md)**: Agent prompt files CAN use emojis for enhanced scannability (allowed location per convention). Emojis are particularly useful for criticality level definitions (CRITICAL, HIGH, MEDIUM, LOW), section headers (Purpose, Key Concepts, Reference), and status indicators in examples (PASS: Correct, FAIL: Incorrect, Warning). `.claude/agents/README.md` (primary) and `.opencode/agents/README.md` (secondary) use colored square emojis for categorization.
 
 - **[Color Accessibility Convention](../../conventions/formatting/color-accessibility.md)**: Agent color categorization (blue/green/yellow/purple) uses verified accessible palette for visual identification while maintaining text-based accessibility.
 
@@ -152,7 +152,7 @@ skills: []
 ---
 ```
 
-**Format Note**: This example shows **the primary coding agent format** (`the primary binding directory agents/`). The equivalent **the secondary coding agent format** (`the secondary binding directory agent/`) uses boolean flags for tools: `tools: { read: true, glob: true, grep: true }` and model references like `model: opencode-go/minimax-m2.7` or `model: opencode-go/glm-5`.
+**Format Note**: This example shows **the primary coding agent format** (`.claude/agents/`). The equivalent **the secondary coding agent format** (`.opencode/agents/`) uses boolean flags for tools: `tools: { read: true, glob: true, grep: true }` and model references like `model: opencode-go/minimax-m2.7` or `model: opencode-go/glm-5`.
 
 **Field Order**: Fields MUST appear in this exact order (name, description, tools, model, color, skills) for consistency and grep-ability across all agents.
 
@@ -192,7 +192,7 @@ skills: []
    - See "Agent Color Categorization" below for assignment guidelines
 
 6. **`skills`** (required)
-   - List of Skill names the agent references (from `the primary binding directory skills/` (primary) or `the secondary binding directory skill/` (secondary))
+   - List of Skill names the agent references (from `.claude/skills/` (primary) or `.opencode/skills/` (secondary))
    - Can be empty array `[]` if agent doesn't use agent skills - agent skills auto-load when agent is invoked (if task matches Skill description)
    - Enables composability and explicit knowledge dependencies
    - Example: `skills: [docs-creating-accessible-diagrams, repo-applying-maker-checker-fixer]`
@@ -240,7 +240,7 @@ skills: []
 
 **REQUIRED FIELD**: All agents MUST include a `skills:` frontmatter field for composability and consistency.
 
-**Purpose:** The `skills:` field declares which agent skills (knowledge packages in `the primary binding directory skills/` (primary) or `the secondary binding directory skill/` (secondary)) the agent leverages. This enables:
+**Purpose:** The `skills:` field declares which agent skills (knowledge packages in `.claude/skills/` (primary) or `.opencode/skills/` (secondary)) the agent leverages. This enables:
 
 - **Composability**: Explicit declarations of knowledge dependencies
 - **Consistency**: All agents follow same structure (no special cases)
@@ -253,9 +253,9 @@ The `skills` field (already defined as field 6 in Required Frontmatter above) ha
 
 - **Format**: YAML array of strings
 - **Required**: Yes (can be empty `[]`)
-- **Values**: Skill names matching folder names in `the primary binding directory skills/`
+- **Values**: Skill names matching folder names in `.claude/skills/`
 - **Auto-loading**: agent skills load when agent invoked AND task matches Skill description
-- **Validation**: Referenced agent skills must exist in `the primary binding directory skills/` (primary) or `the secondary binding directory skill/` (secondary) directory
+- **Validation**: Referenced agent skills must exist in `.claude/skills/` (primary) or `.opencode/skills/` (secondary) directory
 - **Example**: `skills: [docs-creating-accessible-diagrams, repo-applying-maker-checker-fixer]`
 
 #### When to Reference agent skills vs. Inline Knowledge
@@ -332,7 +332,7 @@ When this agent is invoked, all three agent skills auto-load if the task descrip
 2. **Relevant agent skills**: agent skills should align with agent's domain
 3. **Order by importance**: List most critical agent skills first
 4. **Keep updated**: Add/remove agent skills as agent evolves
-5. **Validate references**: Ensure referenced agent skills exist in `the primary binding directory skills/` (primary source of truth)
+5. **Validate references**: Ensure referenced agent skills exist in `.claude/skills/` (primary source of truth)
 
 #### agent skills Documentation: Frontmatter Only (DRY Principle)
 
@@ -351,7 +351,7 @@ When this agent is invoked, all three agent skills auto-load if the task descrip
 ```markdown
 ## Knowledge Dependencies (agent skills)
 
-This agent leverages agent skills from `the primary binding directory skills/`:
+This agent leverages agent skills from `.claude/skills/`:
 
 1. **`skill-name`** - what it does
 2. **`other-skill`** - what it does
@@ -642,14 +642,14 @@ color: green
 
 See [Temporary Files Convention](../infra/temporary-files.md) for complete details on report naming patterns, mandatory checker requirements, and timestamp generation.
 
-### Writing to the primary binding directory and the secondary binding directory Folders
+### Writing to primary and secondary binding Folders
 
-Use the normal `Write` / `Edit` tools for files in `.claude/` and `.opencode/`. Both paths are pre-authorized in `the primary binding directory settings.json` (`Write(the primary binding directory **)`, `Edit(the primary binding directory **)`, `Write(the secondary binding directory **)`, `Edit(the secondary binding directory **)`), so no approval prompts fire. `Bash` heredoc and `sed` remain appropriate for bulk mechanical substitutions across many files, but there is no restriction on direct edits.
+Use the normal `Write` / `Edit` tools for files in `.claude/` and `.opencode/`. Both paths are pre-authorized in `.claude/settings.json` (`Write(.claude/**)`, `Edit(.claude/**)`, `Write(.opencode/**)`, `Edit(.opencode/**)`), so no approval prompts fire. `Bash` heredoc and `sed` remain appropriate for bulk mechanical substitutions across many files, but there is no restriction on direct edits.
 
 **Applies to**:
 
-- Creating or updating agent files in `the primary binding directory agents/` or `the secondary binding directory agent/`
-- Creating or updating skill files in `the primary binding directory skills/*/SKILL.md` or `the secondary binding directory skill/*/SKILL.md`
+- Creating or updating agent files in `.claude/agents/` or `.opencode/agents/`
+- Creating or updating skill files in `.claude/skills/*/SKILL.md` or `.opencode/skills/*/SKILL.md`
 - Updating the corresponding `README.md` index files
 
 **Sync requirement**: After editing `.claude/` sources, run `npm run sync:claude-to-opencode` to regenerate the `.opencode/` mirrors. The pre-commit hook validates both formats.
@@ -919,7 +919,7 @@ color: blue
 
 **Agent README Listings:**
 
-When listing agents in `the primary binding directory agents/README.md` (or `the secondary binding directory agent/README.md`), use the colored square emoji:
+When listing agents in `.claude/agents/README.md` (or `.opencode/agents/README.md`), use the colored square emoji:
 
 ```markdown
 ### 🟦 `docs-maker.md`
@@ -1008,7 +1008,7 @@ description: Writes documentation, generates code, runs tests, and deploys appli
 
 Before creating a new agent, check if existing agents already cover the domain:
 
-1. **Review** `the primary binding directory agents/` directory (primary source of truth)
+1. **Review** `.claude/agents/` directory (primary source of truth)
 2. **Check** each agent's `description` field
 3. **Consider** if you can extend an existing agent
 4. **Create new** only if there's no overlap
@@ -1416,7 +1416,7 @@ Is this content reusable across 3+ agents?
 ├─ YES → Move to Skill or Convention Document
 │   │
 │   ├─ Is it actionable "how-to" guidance?
-│   │   └─ YES → Create/update Skill in the primary binding directory skills/
+│   │   └─ YES → Create/update Skill in `.claude/skills/`
 │   │       Examples: applying-content-quality, creating-accessible-diagrams
 │   │
 │   └─ Is it technical specification or standard?
@@ -1586,9 +1586,9 @@ When creating new agents:
 
 Before committing agent changes:
 
-- [ ] No content duplicates agent skills (check `the primary binding directory skills/` (primary) or `the secondary binding directory skill/` (secondary) catalog)
+- [ ] No content duplicates agent skills (check `.claude/skills/` (primary) or `.opencode/skills/` (secondary) catalog)
 - [ ] No content duplicates Conventions (check `governance/conventions/`)
-- [ ] All agent skills referenced exist in `the primary binding directory skills/` (primary source of truth)
+- [ ] All agent skills referenced exist in `.claude/skills/` (primary source of truth)
 - [ ] All Convention links point to valid files
 - [ ] Task-specific instructions retained (agent is self-contained for its job)
 - [ ] Agent within tier limits (Simple <800, Standard <1,200, Complex <1,800)
@@ -1735,7 +1735,7 @@ Follow these guidelines when writing agent documentation:
    - FAIL: "Validates files"
 
 6. **Follow indentation convention**
-   - Agent files are in `the primary binding directory agents/` (primary) or `the secondary binding directory agent/` (secondary) (outside `docs/`), so use standard markdown (spaces for indentation)
+   - Agent files are in `.claude/agents/` (primary) or `.opencode/agents/` (secondary) (outside `docs/`), so use standard markdown (spaces for indentation)
    - When agents create/edit files in `docs/`, they must use TAB indentation for nested bullets
    - YAML frontmatter always uses spaces (2 spaces per level) regardless of file location
 
@@ -1780,7 +1780,7 @@ If information cannot be verified: (1) State the limitation explicitly, (2) Prov
 
 ### Git Worktree Awareness
 
-Agents spawned via the Agent tool (subagents) run with a working directory that may be a git worktree, not the main checkout. For example, the active worktree may be at `/Users/wkf/ose-projects/open-sharia-enterprise/the primary binding directory worktrees/repo/` while the main checkout is at `/Users/wkf/ose-projects/open-sharia-enterprise/`. Reading a file using an absolute path from the main checkout returns stale content from the wrong tree and causes false verification failures.
+Agents spawned via the Agent tool (subagents) run with a working directory that may be a git worktree, not the main checkout. For example, the active worktree may be at `/Users/wkf/ose-projects/open-sharia-enterprise/.claude/worktrees/repo/` while the main checkout is at `/Users/wkf/ose-projects/open-sharia-enterprise/`. Reading a file using an absolute path from the main checkout returns stale content from the wrong tree and causes false verification failures.
 
 **Rules for file access in agents**:
 
@@ -1789,7 +1789,7 @@ Agents spawned via the Agent tool (subagents) run with a working directory that 
 3. **Read files fresh before verifying** — When a checker or fixer agent verifies that a fix was applied, it must read the file again from the current working directory. It must not rely on a previously cached read from a different path.
 4. **Confirm the working directory when uncertain** — If an agent cannot determine which worktree it runs in, it should use `Bash` (`pwd`) to confirm the working directory before constructing any path.
 5. **Initialize the full toolchain in the root worktree after creating or entering a worktree — two steps, in order** — When an agent creates a worktree via `git worktree add`, the `EnterWorktree` tool, or an `isolation: "worktree"` configuration, or when an agent begins a session inside an existing worktree, it MUST immediately run BOTH of the following in the root repository worktree, in order: (a) `npm install` to keep `node_modules/` consistent with `package-lock.json` (ensures Nx task caching, builds, tests, and linting function correctly across all worktrees), and (b) `npm run doctor -- --fix` to actively converge the 18+ polyglot toolchains managed by `rhino-cli doctor` (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node). Doing only the first step is NOT sufficient: `package.json`'s `postinstall` hook runs `npm run doctor || true`, and the trailing `|| true` deliberately swallows toolchain drift so that `npm install` can complete while the native toolchain is broken. The explicit `npm run doctor -- --fix` invocation is the only action that guarantees convergence. The rule is triggered by execution mode (any worktree entry), not by intent (even "docs-only" worktree sessions go through both steps, because the pre-push hook can fan out to arbitrary language tasks via `nx affected -t typecheck lint test:quick spec-coverage`). See [Worktree Toolchain Initialization](../workflow/worktree-setup.md) for the full rationale, procedure, and relationship to [Native-First Toolchain Management](../workflow/native-first-toolchain.md).
-6. **Push worktree work directly to `main` by default; draft PR is opt-in** — Any commit authored from inside a `the primary binding directory worktrees/` path (or any other `git worktree add` target) MUST land on `origin main` directly via `git push origin HEAD:main`, the same TBD default as work performed on the main branch. The worktree branch is an isolation mechanism, not a feature branch. A draft pull request is created only when the user's prompt or the plan document explicitly requests one (`gh pr create --draft --base main ...`); when opened, the PR stays in draft status during iteration and is flipped to ready-for-review only when the author decides the work is complete, at which point the [PR Merge Protocol](../workflow/pr-merge-protocol.md) approval gate fires. This rule is triggered by execution mode, not by intent — even "large" or "review-warranting" worktree commits go directly to `main` unless a PR was explicitly requested. See the [Worktree Mode (Direct Push to main; Draft PR Opt-In)](../workflow/trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) section of the Trunk Based Development Convention and Standard 6 of the [Git Push Default Convention](../workflow/git-push-default.md#standard-6-worktree-branches-push-to-main-not-to-worktree-branch) for the full workflow.
+6. **Push worktree work directly to `main` by default; draft PR is opt-in** — Any commit authored from inside a `.claude/worktrees/` path (or any other `git worktree add` target) MUST land on `origin main` directly via `git push origin HEAD:main`, the same TBD default as work performed on the main branch. The worktree branch is an isolation mechanism, not a feature branch. A draft pull request is created only when the user's prompt or the plan document explicitly requests one (`gh pr create --draft --base main ...`); when opened, the PR stays in draft status during iteration and is flipped to ready-for-review only when the author decides the work is complete, at which point the [PR Merge Protocol](../workflow/pr-merge-protocol.md) approval gate fires. This rule is triggered by execution mode, not by intent — even "large" or "review-warranting" worktree commits go directly to `main` unless a PR was explicitly requested. See the [Worktree Mode (Direct Push to main; Draft PR Opt-In)](../workflow/trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) section of the Trunk Based Development Convention and Standard 6 of the [Git Push Default Convention](../workflow/git-push-default.md#standard-6-worktree-branches-push-to-main-not-to-worktree-branch) for the full workflow.
 
 **Example**:
 
@@ -2050,13 +2050,13 @@ Runtime: Orchestrator ──spawns──> Agents (isolated contexts)
 
 ### Agent Directory Structure
 
-The `the primary binding directory agents/` directory (primary) and `the secondary binding directory agent/` directory (secondary):
+The `.claude/agents/` directory (primary) and `.opencode/agents/` directory (secondary):
 
 - **Contains** a `README.md` file for agent index and workflow guidance
 - **Contains** agent definition files (`.md` files)
 - **Follows** flat structure (no subdirectories)
 
-The `the primary binding directory agents/README.md` (primary) and `the secondary binding directory agent/README.md` (secondary) files:
+The `.claude/agents/README.md` (primary) and `.opencode/agents/README.md` (secondary) files:
 
 - Lists all available agents with descriptions
 - Explains agent workflow and best practices
@@ -2445,14 +2445,14 @@ This repository maintains **dual compatibility** with both the primary coding ag
 
 ```
 .
-├── the primary binding directory                  # the primary coding agent configuration (PRIMARY - Source of Truth)
+├──.claude/                  # primary binding configuration (PRIMARY - Source of Truth)
 │   ├── agents/             # agents in the primary coding agent format
 │   ├── skills/             # skills
 │   └── settings.local.json # MCP servers configuration
-└── the secondary binding directory               # the secondary coding agent configuration (SECONDARY - Auto-generated)
-    ├── agent/              # agents in the secondary coding agent format (synced from the primary binding directory )
-    ├── skill/              # skills (direct copy from the primary binding directory )
-    └── opencode.json       # the secondary coding agent configuration
+└──.opencode/               # secondary binding configuration (SECONDARY - Auto-generated)
+    ├── agent/              # agents in secondary binding format (synced from primary binding)
+    ├── skill/              # skills (direct copy from primary binding)
+    └── opencode.json       # secondary binding configuration file
 ```
 
 ### Source of Truth Hierarchy
@@ -2461,8 +2461,8 @@ This repository maintains **dual compatibility** with both the primary coding ag
 
 **Making Changes**:
 
-1. Edit agents in `the primary binding directory agents/` directory (PRIMARY)
-2. Edit skills in `the primary binding directory skills/` directory (PRIMARY)
+1. Edit agents in `.claude/agents/` directory (PRIMARY)
+2. Edit skills in `.claude/skills/` directory (PRIMARY)
 3. Run sync: `npm run sync:claude-to-opencode`
 4. Changes automatically regenerate `.opencode/` (SECONDARY)
 
@@ -2474,7 +2474,7 @@ Both systems use markdown agents with YAML frontmatter, but with different conve
 
 #### Tools Format
 
-**the primary coding agent** (`the primary binding directory agents/`):
+**the primary coding agent** (`.claude/agents/`):
 
 ```yaml
 tools: [Read, Write, Edit, Glob, Grep, Bash]
@@ -2482,7 +2482,7 @@ tools: [Read, Write, Edit, Glob, Grep, Bash]
 
 Array format with capitalized tool names.
 
-**Primary: the primary coding agent** (`the primary binding directory agents/`), **Secondary: the secondary coding agent** (`the secondary binding directory agent/`):
+**Primary: the primary coding agent** (`.claude/agents/`), **Secondary: the secondary coding agent** (`.opencode/agents/`):
 
 ```yaml
 tools:
@@ -2528,7 +2528,7 @@ Content...
 **Required fields**: `name` (must match directory name), `description`
 **Optional fields**: `context` (inline or fork)
 
-agent skills are **directly copied** from `the primary binding directory skills/` to `the secondary binding directory skill/` (no conversion needed).
+agent skills are **directly copied** from `.claude/skills/` to `.opencode/skills/` (no conversion needed).
 
 ### Sync Automation
 
@@ -2551,10 +2551,10 @@ agent skills are **directly copied** from `the primary binding directory skills/
 
 - **[CLAUDE.md](../../../CLAUDE.md)** (PRIMARY) - the primary coding agent configuration
 - **[AGENTS.md](../../../AGENTS.md)** (SECONDARY) - the secondary coding agent configuration with auto-generated warning
-- **[the primary binding directory agents/README.md](../../../.claude/agents/README.md)** (PRIMARY) - Agent catalog
-- **[the secondary binding directory agent/README.md](../../../.opencode/agent/README.md)** (SECONDARY) - the secondary coding agent agent catalog with warning
-- **[the primary binding directory skills/README.md](../../../.claude/skills/README.md)** (PRIMARY) - agent skills catalog
-- **[the secondary binding directory skill/README.md](../../../.opencode/skill/README.md)** (SECONDARY) - the secondary coding agent skills catalog with warning
+- **[`.claude/agents/`README.md](../../../.claude/agents/README.md)** (PRIMARY) - Agent catalog
+- **[`.opencode/agents/`README.md](../../../.opencode/agent/README.md)** (SECONDARY) - the secondary coding agent agent catalog with warning
+- **[`.claude/skills/`README.md](../../../.claude/skills/README.md)** (PRIMARY) - agent skills catalog
+- **[`.opencode/skills/`README.md](../../../.opencode/skill/README.md)** (SECONDARY) - the secondary coding agent skills catalog with warning
 
 ### Migration History
 
@@ -2575,10 +2575,10 @@ agent skills are **directly copied** from `the primary binding directory skills/
 **Solution**: Run `npm run sync:claude-to-opencode` to regenerate
 
 **Problem**: Conversion errors during sync
-**Solution**: Check agent frontmatter format in `the primary binding directory agents/`, fix YAML syntax, re-sync
+**Solution**: Check agent frontmatter format in `.claude/agents/`, fix YAML syntax, re-sync
 
 **Problem**:agent skills missing in one directory
-**Solution**: Verify skills exist in `the primary binding directory skills/`, run `npm run sync:skills`
+**Solution**: Verify skills exist in `.claude/skills/`, run `npm run sync:skills`
 
 ---
 

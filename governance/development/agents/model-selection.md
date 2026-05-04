@@ -260,7 +260,7 @@ For a deployer agent:
 
 ## the secondary coding agent / GLM Equivalents
 
-This repo runs on both the primary coding agent (`the primary binding directory agents/`) and the secondary coding agent (`the secondary binding directory agent/`).
+This repo runs on both the primary coding agent (`.claude/agents/`) and the secondary coding agent (`.opencode/agents/`).
 The the secondary coding agent runtime uses Z.ai Coding Plan models. The sync pipeline
 (`npm run sync:claude-to-opencode`) translates Claude model aliases automatically.
 

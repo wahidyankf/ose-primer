@@ -38,8 +38,8 @@ This convention exists to:
 
 ### What This Convention Covers
 
-- Any AI agent in `the primary binding directory agents/` (primary) or `the secondary binding directory agent/` (auto-generated mirror) that has `WebSearch` or `WebFetch` in its tool list, or that consumes skills which invoke these tools.
-- Any skill in `the primary binding directory skills/` or `the secondary binding directory skill/` whose workflow calls `WebSearch` or `WebFetch`.
+- Any AI agent in `.claude/agents/` (primary) or `.opencode/agents/` (auto-generated mirror) that has `WebSearch` or `WebFetch` in its tool list, or that consumes skills which invoke these tools.
+- Any skill in `.claude/skills/` or `.opencode/skills/` whose workflow calls `WebSearch` or `WebFetch`.
 - Any workflow under `governance/workflows/` that orchestrates agents performing web research.
 - Any `CLAUDE.md` or `AGENTS.md` guidance that shapes agent behaviour around external information gathering.
 
