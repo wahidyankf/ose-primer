@@ -23,35 +23,42 @@ The work decomposes into fourteen logically independent workstreams that
 share execution order because each later workstream consumes invariants
 the previous one establishes.
 
+**Core sequence (W1–W5)**:
+
 ```mermaid
 flowchart TD
-    A["W1 — Sync Correctness Fix\n.opencode/agent → agents\n.opencode/skill → skills"] --> B["W2 — OpenCode Go Provider\nrhino-cli ConvertModel()\nopencode.json provider block"]
-    A --> C["W3 — Vendor-Audit Scanner\ninternal/governance/\ncmd/governance.go\nrhino-cli governance vendor-audit"]
-    C --> D["W4 — Vendor-Neutral Governance\nconvention port\nAGENTS.md / CLAUDE.md\ngovernance/ remediation"]
-    D --> E["W5 — Cross-Vendor Parity Gate\nrepo-parity-checker / fixer\nworkflow + Nx target\npre-push wire-up"]
-    F["W6 — Plans Convention Refresh\n5-doc DEFAULT, 4-criteria gate"] -.parallel.-> D
-    G["W7 — Worktree Standard\nworktree-path.md convention\nworktree-setup.md refresh"] -.parallel.-> D
-    H["W8 — Plan + Workflow Refresh\nplan-execution.md\nplan-quality-gate.md\nci-monitoring + post-push workflows"] -.parallel.-> E
-    I["W9 — TDD Convention\ntest-driven-development.md port\nRed-Green-Refactor enforced in delivery"] -.parallel.-> E
-    J["W10 — Convention Completeness\nno-last-updated.md\nprogramming-language-docs-separation.md"] -.parallel.-> D
-    K["W11 — Plan Anti-Hallucination\nplan-anti-hallucination.md quality doc"] -.parallel.-> H
-    L["W12 — Dev Environment Setup\nrefresh infra-development-environment-setup.md\nagainst ose-public source"] -.parallel.-> H
-    J --> M["W13 — Docs/SWE Separation Enforcement\nchecker + fixer agents\nvalidating skill"]
-    N["W14 — Content Drift Sweep\ncode.md, nx-targets.md,\nthree-level-testing-standard.md, others"] -.parallel.-> E
+    A["W1 Sync Correctness"] --> B["W2 OpenCode Go"]
+    A --> C["W3 Vendor-Audit Scanner"]
+    C --> D["W4 Vendor-Neutral Gov"]
+    D --> E["W5 Cross-Vendor Parity"]
     style A fill:#0173B2,stroke:#000000,color:#FFFFFF
     style B fill:#029E73,stroke:#000000,color:#FFFFFF
     style C fill:#DE8F05,stroke:#000000,color:#000000
     style D fill:#CC78BC,stroke:#000000,color:#000000
     style E fill:#0173B2,stroke:#000000,color:#FFFFFF
-    style F fill:#56B4E9,stroke:#000000,color:#000000
-    style G fill:#029E73,stroke:#000000,color:#FFFFFF
-    style H fill:#DE8F05,stroke:#000000,color:#000000
-    style I fill:#CC78BC,stroke:#000000,color:#000000
-    style J fill:#0173B2,stroke:#000000,color:#FFFFFF
-    style K fill:#029E73,stroke:#000000,color:#FFFFFF
-    style L fill:#DE8F05,stroke:#000000,color:#000000
-    style M fill:#CC78BC,stroke:#000000,color:#000000
-    style N fill:#56B4E9,stroke:#000000,color:#000000
+```
+
+**Convention companions feeding W4 (W6/W7/W10)**:
+
+```mermaid
+flowchart TD
+    F["W6 Plans Convention"] -.-> D["W4 Gov"]
+    G["W7 Worktree Standard"] -.-> D
+    J["W10 Convention Completeness"] -.-> D
+    J --> M["W13 Docs/SWE Separation"]
+    style D fill:#CC78BC,stroke:#000000,color:#000000
+```
+
+**Workflow + quality companions feeding W5 (W8/W9/W11/W12/W14)**:
+
+```mermaid
+flowchart TD
+    K["W11 Plan Anti-Hallucination"] -.-> H["W8 Plan+Workflow"]
+    L["W12 Dev Env Setup"] -.-> H
+    H -.-> E["W5 Parity"]
+    I["W9 TDD Convention"] -.-> E
+    N["W14 Content Drift Sweep"] -.-> E
+    style E fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Scope
