@@ -16,6 +16,10 @@ In addition to the standard Prettier + markdownlint pipeline, a Claude Code hook
 
 Worktrees provisioned via `claude --worktree <name>` land at `.claude/worktrees/<name>/` per the [Worktree Path Convention](./governance/conventions/structure/worktree-path.md). The path is gitignored and parallel-safe.
 
+### Development environment setup (Claude Code binding)
+
+For first-time setup or after entering a fresh worktree, follow [Infra: Development Environment Setup](./governance/workflows/infra/infra-development-environment-setup.md). Set `OPENCODE_GO_API_KEY` in `.env` before starting an OpenCode session that depends on the secondary binding (template in `.env.example`).
+
 ### Working with `.claude/` and `.opencode/` directories
 
 Edit `.claude/` and `.opencode/` files with normal `Write` / `Edit` tools. Both paths pre-authorized in `.claude/settings.json` (`Write(.claude/**)`, `Edit(.claude/**)`, `Write(.opencode/**)`, `Edit(.opencode/**)`), no approval prompt fires. `Bash` heredoc and `sed` remain fine for bulk mechanical substitutions, but no rule against direct edits.
