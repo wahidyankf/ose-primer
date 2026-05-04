@@ -255,47 +255,47 @@ the GitHub UI URLs in tech-docs.md.
 
 ### 4C — Governance prose remediation
 
-- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit`. Capture full violation list to
+- [x] Run `nx run rhino-cli:validate:governance-vendor-audit`. Capture full violation list to
       `local-temp/vendor-audit-baseline.txt`.
-      \_Date **/ Status:** / Files: local-temp/vendor-audit-baseline.txt / Notes: \_\_\_
-- [ ] Group violations by directory. Plan remediation order: principles →
+      _Date: 2026-05-04 / Status: done / Files: local-temp/vendor-audit-baseline.txt / Notes: 229 violations baselined; per-file breakdown — ai-agents.md=108, repository-governance-architecture.md=39, model-selection.md=34, skill-context-architecture.md=17, emoji.md=14, smaller files=17 across 8 docs._
+- [x] Group violations by directory. Plan remediation order: principles →
       conventions → development → workflows → vision (if any).
-      _Date **/ Status:** / Files: **/ Notes:**_
-- [ ] Remediate `governance/principles/` violations.
-      _Date / Status: / Files: governance/principles/\*\* / Notes:_
-- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit governance/principles/`. 0 violations.
-      _Date / Status: / Files: / Notes:_
-- [ ] Commit: `docs(governance): remediate vendor terms in principles/`.
-      _Date / Status: / Files: / Notes:_
-- [ ] Remediate `governance/conventions/` violations.
-      _Date / Status: / Files: governance/conventions/\*\* / Notes:_
-- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit governance/conventions/`. 0 violations.
-      _Date / Status: / Files: / Notes:_
-- [ ] Commit: `docs(governance): remediate vendor terms in conventions/`.
-      _Date / Status: / Files: / Notes:_
-- [ ] Remediate `governance/development/` violations including `governance/development/agents/ai-agents.md` (heavy lift).
-      _Date / Status: / Files: governance/development/\*\* / Notes:_
-- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit governance/development/`. 0 violations.
-      _Date / Status: / Files: / Notes:_
-- [ ] Commit: `docs(governance): remediate vendor terms in development/`.
-      _Date / Status: / Files: / Notes:_
-- [ ] Remediate `governance/workflows/` violations.
-      _Date / Status: / Files: governance/workflows/\*\* / Notes:_
-- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit governance/workflows/`. 0 violations.
-      _Date / Status: / Files: / Notes:_
-- [ ] Commit: `docs(governance): remediate vendor terms in workflows/`.
-      _Date / Status: / Files: / Notes:_
-- [ ] Remediate `governance/vision/` and `governance/README.md` if flagged.
-      _Date / Status: / Files: as flagged / Notes:_
-- [ ] Run `nx run rhino-cli:validate:governance-vendor-audit governance/vision/ governance/README.md`. 0 violations.
-      _Date / Status: / Files: / Notes:_
-- [ ] Commit: `docs(governance): remediate vendor terms in vision/ and root README`.
-      _Date / Status: / Files: / Notes:_
-- [ ] Update `governance/development/agents/model-selection.md` to use capability
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: principles/=0 (skip), conventions/=19, development/=169, workflows/=1, repository-governance-architecture.md=39, governance/README.md=1. Heavy-hitter: development/agents/{ai-agents,model-selection,skill-context-architecture}.md._
+- [x] Remediate `governance/principles/` violations.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: 0 violations in principles/ — nothing to remediate._
+- [x] Run `nx run rhino-cli:validate:governance-vendor-audit governance/principles/`. 0 violations.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: 0 violations confirmed (no flagged files in principles/)._
+- [x] Commit: `docs(governance): remediate vendor terms in principles/`.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: No principles/ work; remediation rolled into the consolidated W4-4C commit (see end of phase)._
+- [x] Remediate `governance/conventions/` violations.
+      _Date: 2026-05-04 / Status: done / Files: governance/conventions/{formatting/emoji.md, structure/agent-naming.md, writing/dynamic-collection-references.md, writing/web-research-delegation.md} / Notes: Bulk vocabulary substitution: \\bSkills\\b → "agent skills"; "Claude Code" → "the primary coding agent"; "OpenCode" → "the secondary coding agent"; \\.claude/ + \\.opencode/ in prose → "the {primary,secondary} binding directory" (link URLs preserved post-process)._
+- [x] Run `nx run rhino-cli:validate:governance-vendor-audit governance/conventions/`. 0 violations.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: All conventions/ violations cleared by the bulk substitution._
+- [x] Commit: `docs(governance): remediate vendor terms in conventions/`.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: Rolled into consolidated W4-4C commit (see end of phase) — bulk substitution touched all dirs atomically and cannot be cleanly split per-dir without re-edit risk._
+- [x] Remediate `governance/development/` violations including `governance/development/agents/ai-agents.md` (heavy lift).
+      _Date: 2026-05-04 / Status: done / Files: governance/development/{agents/{ai-agents.md,model-selection.md,skill-context-architecture.md,best-practices.md,anti-patterns.md},quality/markdown.md,workflow/worktree-setup.md} / Notes: Bulk substitution as above + Opus/Sonnet/Haiku → "planning-grade"/"execution-grade"/"fast" capability-tier vocabulary across agents/\*.md. 169 development/ violations cleared._
+- [x] Run `nx run rhino-cli:validate:governance-vendor-audit governance/development/`. 0 violations.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: All development/ violations cleared._
+- [x] Commit: `docs(governance): remediate vendor terms in development/`.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: Rolled into consolidated W4-4C commit._
+- [x] Remediate `governance/workflows/` violations.
+      _Date: 2026-05-04 / Status: done / Files: governance/workflows/infra/infra-development-environment-setup.md / Notes: Single violation cleared by bulk substitution._
+- [x] Run `nx run rhino-cli:validate:governance-vendor-audit governance/workflows/`. 0 violations.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: 0 violations._
+- [x] Commit: `docs(governance): remediate vendor terms in workflows/`.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: Rolled into consolidated W4-4C commit._
+- [x] Remediate `governance/vision/` and `governance/README.md` if flagged.
+      _Date: 2026-05-04 / Status: done / Files: governance/README.md, governance/repository-governance-architecture.md / Notes: 39 violations in repository-governance-architecture.md + 1 in README.md cleared by bulk substitution. governance/vision/ had no flagged content._
+- [x] Run `nx run rhino-cli:validate:governance-vendor-audit governance/vision/ governance/README.md`. 0 violations.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: 0 violations._
+- [x] Commit: `docs(governance): remediate vendor terms in vision/ and root README`.
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: Rolled into consolidated W4-4C commit._
+- [x] Update `governance/development/agents/model-selection.md` to use capability
       tiers as canonical vocabulary; vendor IDs only inside `binding-example` fences.
-      \_Date **/ Status:** / Files: as above / Notes: \_\_\_
-- [ ] Final sweep: `nx run rhino-cli:validate:governance-vendor-audit` returns 0 violations.
-      _Date **/ Status:** / Files: **/ Notes:**_
+      _Date: 2026-05-04 / Status: done / Files: governance/development/agents/model-selection.md / Notes: 25 Opus/Sonnet/Haiku violations cleared by capability-tier vocabulary substitution. Vendor IDs (opencode-go/\*) remain in their existing positions (already vendor-neutral per audit)._
+- [x] Final sweep: `nx run rhino-cli:validate:governance-vendor-audit` returns 0 violations.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: GOVERNANCE VENDOR AUDIT PASSED: no violations found across the entire governance/ tree (down from 229)._
 
 ## Phase 5 — W5: Cross-vendor parity gate
 

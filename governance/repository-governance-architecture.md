@@ -32,7 +32,7 @@ tags:
   - [Layer 3: Development (HOW - Software Practices)](#layer-3-development-how---software-practices)
   - [Layer 4: AI Agents (WHO - Executors)](#layer-4-ai-agents-who---executors)
   - [Layer 5: Workflows (WHEN - Multi-Step Processes)](#layer-5-workflows-when---multi-step-processes)
-  - [Skills: Delivery Infrastructure (Not a Governance Layer)](#skills-delivery-infrastructure-not-a-governance-layer)
+  - [agent skills: Delivery Infrastructure (Not a Governance Layer)](#skills-delivery-infrastructure-not-a-governance-layer)
   - [Complete Traceability Example](#complete-traceability-example)
   - [Governance Relationships](#governance-relationships)
   - [Best Practices](#best-practices)
@@ -56,7 +56,7 @@ The **open-sharia-enterprise** repository employs a six-layer governance archite
 - **Layer 4 (AI Agents)**: WHO enforces rules and automates tasks?
 - **Layer 5 (Workflows)**: WHEN do we run which agents in what order?
 
-**Delivery Infrastructure** (Skills): HOW do we package and deliver knowledge to agents? (Service infrastructure, not governance)
+**Delivery Infrastructure** (agent skills): HOW do we package and deliver knowledge to agents? (Service infrastructure, not governance)
 
 **Key Insight**: This architecture creates bidirectional traceability:
 
@@ -111,24 +111,24 @@ Layer 4: AI Agents    WHO - Executors    (atomic tasks)
 Layer 5: Workflows    WHEN - Orchestrate (multi-step processes)
 ```
 
-**Skills Infrastructure** (Delivery):
+**agent skills Infrastructure** (Delivery):
 
 - Inline skills (default): Progressive knowledge injection
 - Fork skills (context: fork): Task delegation to isolated agents
-- Service relationship: Skills serve agents, don't govern them
+- Service relationship: agent skills serve agents, don't govern them
 
 ### Quick Reference Table
 
-| Layer | Location                | Purpose                       | Changes?        | Answers?                  |
-| ----- | ----------------------- | ----------------------------- | --------------- | ------------------------- |
-| **0** | governance/vision/      | WHY we exist                  | Extremely rare  | Why does project exist?   |
-| **1** | governance/principles/  | WHY we value approaches       | Rarely          | Why value this approach?  |
-| **2** | governance/conventions/ | WHAT documentation rules      | Occasionally    | What documentation rules? |
-| **3** | governance/development/ | HOW we develop software       | More frequently | How develop software?     |
-| **4** | .claude/agents/         | WHO enforces rules            | Often           | Who enforces rules?       |
-| **5** | governance/workflows/   | WHEN run agents in what order | As needed       | When run which agents?    |
+| Layer | Location                              | Purpose                       | Changes?        | Answers?                  |
+| ----- | ------------------------------------- | ----------------------------- | --------------- | ------------------------- |
+| **0** | governance/vision/                    | WHY we exist                  | Extremely rare  | Why does project exist?   |
+| **1** | governance/principles/                | WHY we value approaches       | Rarely          | Why value this approach?  |
+| **2** | governance/conventions/               | WHAT documentation rules      | Occasionally    | What documentation rules? |
+| **3** | governance/development/               | HOW we develop software       | More frequently | How develop software?     |
+| **4** | the primary binding directory agents/ | WHO enforces rules            | Often           | Who enforces rules?       |
+| **5** | governance/workflows/                 | WHEN run agents in what order | As needed       | When run which agents?    |
 
-**Skills**: `.claude/skills/` - Delivery infrastructure serving agents (inline knowledge injection or fork-based delegation)
+**agent skills**: `the primary binding directory skills/` - Delivery infrastructure serving agents (inline knowledge injection or fork-based delegation)
 
 ---
 
@@ -279,7 +279,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 - **Source code** (TypeScript, Go, Java, Kotlin, Python, Elixir, F#, Rust, C#, Clojure, Dart)
 - **static-site themes and layouts (historical)** (Go templates)
 - **Build systems** (Nx, npm, Volta)
-- **AI agents** (.claude/agents/)
+- **AI agents** (the primary binding directory agents/)
 - **Git workflows** (commits, branches, hooks)
 
 **Practice Categories**:
@@ -316,7 +316,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 
 **Purpose**: Automated implementers enforcing conventions and development practices. Answers WHO enforces rules and automates tasks.
 
-**Location**: `.claude/agents/`
+**Location**: `the primary binding directory agents/`
 
 **Key Document**: [Agents Index](../.claude/agents/README.md)
 
@@ -352,7 +352,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 
 - **Governed by** Layer 2 (Conventions) and Layer 3 (Development)
 - **Orchestrated by** Layer 5 (Workflows)
-- **Served by** Skills (delivery infrastructure)
+- **Served by** agent skills (delivery infrastructure)
 
 **Example Traceability**:
 
@@ -411,30 +411,30 @@ Maker-Checker-Fixer Workflow:
 
 ---
 
-## Skills: Delivery Infrastructure (Not a Governance Layer)
+## agent skills: Delivery Infrastructure (Not a Governance Layer)
 
-**CRITICAL**: Skills are **delivery infrastructure**, NOT a governance layer.
+**CRITICAL**: agent skills are **delivery infrastructure**, NOT a governance layer.
 
 **Purpose**: Package and deliver knowledge/capabilities to agents in two distinct modes.
 
-**Location**: `.claude/skills/`
+**Location**: `the primary binding directory skills/`
 
-**Documentation**: See [`.claude/skills/README.md`](../.claude/skills/README.md) for skills catalog, or [AGENTS.md](../AGENTS.md) for OpenCode configuration including skills integration overview
+**Documentation**: See [`the primary binding directory skills/README.md`](../.claude/skills/README.md) for skills catalog, or [AGENTS.md](../AGENTS.md) for the secondary coding agent configuration including skills integration overview
 
 **Two Delivery Modes**:
 
-### Inline Skills (Knowledge Delivery)
+### Inline agent skills (Knowledge Delivery)
 
 **Default behavior** - Progressive knowledge injection:
 
 ```
 Knowledge Flow (Inline):
-L2: Conventions ──┬── CLAUDE.md/AGENTS.md (startup) ──> Claude/OpenCode
-                  ├── Skills inline (on-demand) ────> Current conversation
+L2: Conventions ──┬── CLAUDE.md/AGENTS.md (startup) ──> Claude/the secondary coding agent
+                  ├── agent skills inline (on-demand) ────> Current conversation
                   └── Direct refs (explicit) ───────> L4: Agents
 
-L3: Development ──┬── CLAUDE.md/AGENTS.md (startup) ──> Claude/OpenCode
-                  ├── Skills inline (on-demand) ────> Current conversation
+L3: Development ──┬── CLAUDE.md/AGENTS.md (startup) ──> Claude/the secondary coding agent
+                  ├── agent skills inline (on-demand) ────> Current conversation
                   └── Direct refs (explicit) ───────> L4: Agents
 ```
 
@@ -445,13 +445,13 @@ L3: Development ──┬── CLAUDE.md/AGENTS.md (startup) ──> Claude/Ope
 - Enable knowledge composition (multiple skills work together)
 - Serve agents but don't govern them
 
-### Fork Skills (Task Delegation)
+### Fork agent skills (Task Delegation)
 
 **Delegation behavior** with `context: fork`:
 
 ```
 Delegation Flow (Fork):
-Skills (context: fork) ──delegates to──> Isolated Agent Context
+agent skills (context: fork) ──delegates to──> Isolated Agent Context
                          ──returns──> Summarized Results
                          ──to──> Main Conversation
 ```
@@ -464,7 +464,7 @@ Skills (context: fork) ──delegates to──> Isolated Agent Context
 - Return results to main conversation
 - Still service relationship (not governance)
 
-**Skills Available**:
+**agent skills Available**:
 
 - **docs-\*** - Documentation creation and quality
 - **readme-\*** - README file patterns
@@ -475,9 +475,9 @@ Skills (context: fork) ──delegates to──> Isolated Agent Context
 - **agent-\*** - Agent development and selection
 - **plan-\*** - Project planning patterns
 
-**Why Skills Are NOT Layer 4.5**:
+**Why agent skills Are NOT Layer 4.5**:
 
-| Aspect                | Governance Layers (L1-L5) | Skills (Delivery)              |
+| Aspect                | Governance Layers (L1-L5) | agent skills (Delivery)        |
 | --------------------- | ------------------------- | ------------------------------ |
 | **Authority**         | Govern behavior (MUST)    | Serve agents (provide support) |
 | **Change Frequency**  | Stable, controlled        | Evolve with agent needs        |
@@ -490,7 +490,7 @@ Skills (context: fork) ──delegates to──> Isolated Agent Context
 | **Orchestration**     | N/A                       | Fork mode only                 |
 | **Context Isolation** | N/A                       | Fork creates isolated contexts |
 
-**Key insight**: Skills SERVE agents through two modes:
+**Key insight**: agent skills SERVE agents through two modes:
 
 - **Inline skills** - Deliver knowledge from L2/L3 to current conversation
 - **Fork skills** - Delegate tasks to agents in isolated contexts
@@ -500,8 +500,8 @@ Skills (context: fork) ──delegates to──> Isolated Agent Context
 
 - Conventions → Agents: Yes (agents MUST follow conventions)
 - Development → Agents: Yes (agents MUST follow practices)
-- Skills (inline) → Agents: **No** (inject knowledge, serve agents)
-- Skills (fork) → Agents: **No** (delegate tasks, serve agents)
+- agent skills (inline) → Agents: **No** (inject knowledge, serve agents)
+- agent skills (fork) → Agents: **No** (delegate tasks, serve agents)
 
 **Delivery Mechanisms Comparison**:
 
@@ -550,7 +550,7 @@ Skills (context: fork) ──delegates to──> Isolated Agent Context
 - Orchestrates: maker → checker → fixer
 - Ensures: All diagrams use accessible colors before publication
 
-**Skills (Delivery)**:
+**agent skills (Delivery)**:
 
 - `docs-creating-accessible-diagrams` (inline) - Delivers Mermaid diagram patterns with WCAG colors
 - Service relationship: Helps agents understand color conventions
@@ -570,7 +570,7 @@ Agents (docs-checker, docs-fixer, agent-maker)
     ↓ orchestrated by
 Workflow (Maker-Checker-Fixer)
     ↓ served by
-Skills (docs-creating-accessible-diagrams - inline knowledge delivery)
+agent skills (docs-creating-accessible-diagrams - inline knowledge delivery)
 ```
 
 ---
@@ -593,11 +593,11 @@ Layer 4 (AI Agents)
 Layer 5 (Workflows)
 ```
 
-**Skills (Infrastructure)**:
+**agent skills (Infrastructure)**:
 
 ```
-Skills ──serves──> Agents (inline knowledge or fork delegation)
-Skills ──does NOT govern──> Agents
+agent skills ──serves──> Agents (inline knowledge or fork delegation)
+agent skills ──does NOT govern──> Agents
 ```
 
 ### Cross-Layer Relationships
@@ -623,11 +623,11 @@ Skills ──does NOT govern──> Agents
 - Workflows orchestrate agents (composition, not governance)
 - Workflows don't create new rules for agents
 
-**Skills ↔ Agents**:
+**agent skills ↔ Agents**:
 
-- Skills serve agents (service relationship)
-- Skills deliver knowledge (inline mode) or delegate tasks (fork mode)
-- Skills don't govern agents
+- agent skills serve agents (service relationship)
+- agent skills deliver knowledge (inline mode) or delegate tasks (fork mode)
+- agent skills don't govern agents
 
 ### Traceability Requirements
 
@@ -658,7 +658,7 @@ Skills ──does NOT govern──> Agents
 - SHOULD document which agents are orchestrated
 - SHOULD reference development patterns implemented
 
-**Skills (Infrastructure)**:
+**agent skills (Infrastructure)**:
 
 - MAY reference conventions/development practices
 - MAY reference related skills
@@ -674,7 +674,7 @@ Skills ──does NOT govern──> Agents
 2. **Add traceability section** - "Principles Implemented/Respected"
 3. **Document in Conventions Index** - Add to `conventions/README.md`
 4. **Consider agent impact** - Which agents need to enforce this?
-5. **Consider Skills delivery** - Should this be packaged as a Skill for agents?
+5. **Consider agent skills delivery** - Should this be packaged as a Skill for agents?
 
 ### When Creating New Development Practices
 
@@ -682,15 +682,15 @@ Skills ──does NOT govern──> Agents
 2. **Add both traceability sections** - Principles AND Conventions
 3. **Document in Development Index** - Add to `development/README.md`
 4. **Consider automation** - Git hooks? AI agents?
-5. **Consider Skills delivery** - Should this be packaged as a Skill for agents?
+5. **Consider agent skills delivery** - Should this be packaged as a Skill for agents?
 
 ### When Creating New Agents
 
 1. **Identify governing layers** - Which conventions/practices does this enforce?
 2. **Define atomic responsibility** - One clear purpose
 3. **Choose tools carefully** - Match to task (Read-only, Write, Edit, Bash, Web)
-4. **Document in Agents Index** - Add to `.claude/agents/README.md`
-5. **Reference relevant Skills** - Which Skills will help this agent?
+4. **Document in Agents Index** - Add to `the primary binding directory agents/README.md`
+5. **Reference relevant agent skills** - Which agent skills will help this agent?
 
 ### When Creating Workflows
 
@@ -699,29 +699,29 @@ Skills ──does NOT govern──> Agents
 3. **Add approval checkpoints** - Where does user review?
 4. **Document state management** - How does state flow between steps?
 
-### When Creating Skills
+### When Creating agent skills
 
 1. **Identify service need** - What knowledge/task do agents need repeatedly?
 2. **Choose delivery mode** - Inline (knowledge) or fork (delegation)?
 3. **Package clearly** - SKILL.md with purpose, patterns, examples
 4. **Reference in agents** - Update agent frontmatter with new skill
-5. **Avoid governance claims** - Skills serve, don't govern
+5. **Avoid governance claims** - agent skills serve, don't govern
 
 ---
 
 ## ⚠️ Common Misconceptions
 
-### Misconception 1: "Skills are Layer 4.5"
+### Misconception 1: "agent skills are Layer 4.5"
 
-❌ **Wrong**: Skills are not a layer between Development and Agents.
+❌ **Wrong**: agent skills are not a layer between Development and Agents.
 
-✅ **Correct**: Skills are delivery infrastructure (like CLAUDE.md), not governance layer. They serve agents through inline knowledge delivery or fork-based task delegation.
+✅ **Correct**: agent skills are delivery infrastructure (like CLAUDE.md), not governance layer. They serve agents through inline knowledge delivery or fork-based task delegation.
 
 ### Misconception 2: "Agents can ignore conventions if skilled"
 
-❌ **Wrong**: Skills provide knowledge but don't override governance.
+❌ **Wrong**: agent skills provide knowledge but don't override governance.
 
-✅ **Correct**: Agents MUST follow conventions. Skills help agents understand conventions better and provide implementation patterns.
+✅ **Correct**: Agents MUST follow conventions. agent skills help agents understand conventions better and provide implementation patterns.
 
 ### Misconception 3: "Workflows replace agents"
 
@@ -773,8 +773,8 @@ As the repository grows, additional layers might be considered:
 **Principles guiding skill growth**:
 
 - **Simplicity Over Complexity**: Don't create skills for one-off patterns
-- **Progressive Disclosure**: Skills enable on-demand deep dives
-- **Automation Over Manual**: Skills reduce agent duplication
+- **Progressive Disclosure**: agent skills enable on-demand deep dives
+- **Automation Over Manual**: agent skills reduce agent duplication
 
 ### Convention/Development Growth
 
@@ -792,7 +792,7 @@ As the repository grows, additional layers might be considered:
 - Layer 3 (Development): More frequent additions as tech stack grows
 - Layer 4 (Agents): Regular additions for new validation/automation needs
 - Layer 5 (Workflows): New workflows as processes mature
-- Skills: Most frequent additions to serve growing agent needs
+- agent skills: Most frequent additions to serve growing agent needs
 
 ---
 

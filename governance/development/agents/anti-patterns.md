@@ -226,7 +226,7 @@ tools: [Read, Write, Bash, WebFetch]
 
 ### Anti-Pattern 7: Using Wrong Model for Task
 
-**Problem**: Using expensive Sonnet model for simple tasks or Haiku for complex reasoning.
+**Problem**: Using expensive execution-grade model for simple tasks or fast for complex reasoning.
 
 **Bad Example:**
 
