@@ -74,7 +74,7 @@ flowchart TD
 
 - **Lifecycle:** Temporary, moves between states, archived when done
 - **Structure:** Three states (backlog, in-progress, done) plus ideas.md for quick captures
-- **File Naming:** Folder names use `YYYY-MM-DD__[identifier]`
+- **File Naming:** `backlog/` and `done/` use `YYYY-MM-DD__[identifier]/`; `in-progress/` uses `[identifier]/` (no date)
 - **Diagram Format:** ASCII art
 - **Audience:** Project team, stakeholders tracking progress
 
@@ -169,13 +169,14 @@ See [CLAUDE.md Plans Organization](../../CLAUDE.md#plans-organization) for full 
 3. **Move to in-progress/** (Execution Phase)
 
    ```
-   mv plans/backlog/2025-11-25__notification-system/ plans/in-progress/
+   git mv plans/backlog/2025-11-25__notification-system/ plans/in-progress/notification-system/
    ```
 
 4. **Complete and archive**
 
    ```
-   mv plans/in-progress/2025-11-25__notification-system/ plans/done/
+   git mv plans/in-progress/notification-system/ plans/in-progress/2025-12-10__notification-system/
+   git mv plans/in-progress/2025-12-10__notification-system/ plans/done/2025-12-10__notification-system/
    ```
 
 ### Workflow 2: Brand Strategy Plan
@@ -201,7 +202,7 @@ See [CLAUDE.md Plans Organization](../../CLAUDE.md#plans-organization) for full 
 2. **Move to in-progress/** (Execution Phase)
 
    ```
-   mv plans/backlog/2025-11-24__brand-strategy/ plans/in-progress/
+   git mv plans/backlog/2025-11-24__brand-strategy/ plans/in-progress/brand-strategy/
    ```
 
    - Update README status to "In Progress"
@@ -210,7 +211,8 @@ See [CLAUDE.md Plans Organization](../../CLAUDE.md#plans-organization) for full 
 3. **Move to done/** (Completion Phase)
 
    ```
-   mv plans/in-progress/2025-11-24__brand-strategy/ plans/done/
+   git mv plans/in-progress/brand-strategy/ plans/in-progress/2025-12-05__brand-strategy/
+   git mv plans/in-progress/2025-12-05__brand-strategy/ plans/done/2025-12-05__brand-strategy/
    ```
 
    - Update README status to "Done"
@@ -244,7 +246,7 @@ See [CLAUDE.md Plans Organization](../../CLAUDE.md#plans-organization) for full 
 2. **Execute (move to in-progress/)**
 
    ```
-   plans/in-progress/2025-11-25__auth-system/
+   plans/in-progress/auth-system/
    ```
 
    - Implement the feature

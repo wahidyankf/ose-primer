@@ -1,6 +1,6 @@
 ---
 name: plan-creating-project-plans
-description: Comprehensive project planning standards for plans/ directory including folder structure (ideas.md, backlog/, in-progress/, done/), naming convention (YYYY-MM-DD__identifier/), five-document file organization (README.md, brd.md, prd.md, tech-docs.md, delivery.md for multi-file default; single README.md for trivially-small single-file exception), BRD/PRD content-placement rules, and Gherkin acceptance criteria. Essential for creating structured, executable project plans.
+description: Comprehensive project planning standards for plans/ directory including folder structure (ideas.md, backlog/, in-progress/, done/), per-stage naming rules (backlog=YYYY-MM-DD__identifier/, in-progress=identifier/ no date, done=YYYY-MM-DD__identifier/ completion date), five-document file organization (README.md, brd.md, prd.md, tech-docs.md, delivery.md for multi-file default; single README.md for trivially-small single-file exception), BRD/PRD content-placement rules, and Gherkin acceptance criteria. Essential for creating structured, executable project plans.
 ---
 
 # Creating Project Plans
@@ -24,29 +24,32 @@ This Skill provides comprehensive guidance for creating **structured project pla
 plans/
 ├── ideas.md                              # 1-3 line ideas (brainstorming)
 ├── backlog/                              # Future work
-│   └── YYYY-MM-DD__project-name/        # Planned but not started
+│   └── YYYY-MM-DD__project-name/        # Creation-date prefix
 ├── in-progress/                          # Active work
-│   └── YYYY-MM-DD__project-name/        # Currently executing
+│   └── project-name/                    # NO date prefix (identifier only)
 └── done/                                 # Completed work
-    └── YYYY-MM-DD__project-name/        # Archived completed plans
+    └── YYYY-MM-DD__project-name/        # Completion-date prefix
 ```
 
 ## Plan Naming Convention
 
-**Format**: `YYYY-MM-DD__project-identifier/`
+Naming rules differ by lifecycle stage:
 
-**Examples**:
-
-- `2025-11-25__user-auth/`
-- `2026-01-02__rules-consolidation/`
-- `2025-12-10__api-refactor/`
+| Stage          | Pattern                           | Date meaning                                      |
+| -------------- | --------------------------------- | ------------------------------------------------- |
+| `backlog/`     | `YYYY-MM-DD__project-identifier/` | Creation date                                     |
+| `in-progress/` | `project-identifier/`             | **No date prefix** — identifier only              |
+| `done/`        | `YYYY-MM-DD__project-identifier/` | Completion date (last file mtime before archival) |
 
 **Rules**:
 
-- Date: Plan creation date (YYYY-MM-DD)
-- Separator: Double underscore (`__`)
+- Date format: ISO 8601 (`YYYY-MM-DD`)
+- Separator: Double underscore `__` (backlog/ and done/ only)
 - Identifier: Lowercase, hyphen-separated, descriptive
 - Trailing slash indicates directory
+
+When moving backlog → in-progress: strip the date prefix.
+When moving in-progress → done: determine the completion date (last file modification) and add the date prefix.
 
 ## Plan Structure
 
@@ -55,7 +58,7 @@ plans/
 **For any plan with substantive business intent, product scope, and technical design:**
 
 ```
-plans/in-progress/2025-11-25__complex-feature/
+plans/in-progress/complex-feature/
 ├── README.md                 # Context, Scope, Approach Summary, navigation
 ├── brd.md                    # Business Requirements Document
 ├── prd.md                    # Product Requirements Document
@@ -77,7 +80,7 @@ plans/in-progress/2025-11-25__complex-feature/
 **Only for trivially small plans** where both condensed BRD and condensed PRD fit without crowding the technical sections:
 
 ```
-plans/in-progress/2025-11-25__simple-feature/
+plans/in-progress/simple-feature/
 └── README.md                 # All content in one file
 ```
 
@@ -333,7 +336,9 @@ Every delivery plan MUST end with a plan archival section:
 
 - [ ] Verify ALL delivery checklist items are ticked
 - [ ] Verify ALL quality gates pass (local + CI)
-- [ ] Move plan folder from `plans/in-progress/` to `plans/done/` via `git mv`
+- [ ] Determine the completion date (date of last file modification in the plan folder)
+- [ ] Rename folder to add prefix: `git mv plans/in-progress/[identifier] plans/in-progress/YYYY-MM-DD__[identifier]`
+- [ ] Move renamed folder to done: `git mv plans/in-progress/YYYY-MM-DD__[identifier] plans/done/YYYY-MM-DD__[identifier]`
 - [ ] Update `plans/in-progress/README.md` — remove the plan entry
 - [ ] Update `plans/done/README.md` — add the plan entry with completion date
 - [ ] Update any other READMEs that reference this plan

@@ -83,10 +83,21 @@ Clarify with user if needed:
 
 ### Step 2: Create Plan Folder
 
+New plans are created in `backlog/` first with a date prefix, then moved to `in-progress/` with the prefix stripped.
+
 ```bash
-# Create plan folder with date prefix
-mkdir -p plans/in-progress/YYYY-MM-DD-project-identifier
+# Create plan folder in backlog/ with creation-date prefix
+mkdir -p plans/backlog/YYYY-MM-DD__project-identifier
+
+# When starting work: move to in-progress/ and strip the date prefix
+# git mv plans/backlog/YYYY-MM-DD__project-identifier plans/in-progress/project-identifier
 ```
+
+See the [Plans Organization Convention](../../governance/conventions/structure/plans.md#-plan-folder-naming) for the per-stage naming rules:
+
+- `backlog/` — `YYYY-MM-DD__[project-identifier]/` (creation date)
+- `in-progress/` — `[project-identifier]/` (NO date prefix)
+- `done/` — `YYYY-MM-DD__[project-identifier]/` (completion date — last-modified date before archival)
 
 ### Step 3: Write Requirements (BRD + PRD)
 
@@ -349,7 +360,9 @@ ALWAYS include at the end of the delivery checklist:
 - [ ] Verify ALL delivery checklist items are ticked
 - [ ] Verify ALL quality gates pass (local + CI)
 - [ ] Verify ALL manual assertions pass (Playwright MCP / curl)
-- [ ] Move plan folder from `plans/in-progress/` to `plans/done/` via `git mv`
+- [ ] Determine the completion date (date of the last file modification in the plan folder)
+- [ ] Rename the folder to add the completion-date prefix: `git mv plans/in-progress/[identifier] plans/in-progress/YYYY-MM-DD__[identifier]`
+- [ ] Move renamed folder to done/: `git mv plans/in-progress/YYYY-MM-DD__[identifier] plans/done/YYYY-MM-DD__[identifier]`
 - [ ] Update `plans/in-progress/README.md` — remove the plan entry
 - [ ] Update `plans/done/README.md` — add the plan entry with completion date
 - [ ] Update any other READMEs that reference this plan (e.g., plans/README.md)
