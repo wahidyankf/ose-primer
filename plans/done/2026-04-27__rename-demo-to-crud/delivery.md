@@ -538,7 +538,7 @@ Examples of acceptable intermediate commits (Conventional Commits format):
 
 ## Phase 25 — Plan archival
 
-- [ ] `git mv plans/in-progress/2026-04-26__rename-demo-to-crud plans/done/2026-04-26__rename-demo-to-crud`
+- [ ] `git mv plans/in-progress/2026-04-26__rename-demo-to-crud plans/done/2026-04-27__rename-demo-to-crud`
 - [ ] Update `plans/in-progress/README.md` — remove this plan's entry
 - [ ] Update `plans/done/README.md` — add this plan's entry with completion date
 - [ ] Commit: `chore(plans): move rename-demo-to-crud to done`

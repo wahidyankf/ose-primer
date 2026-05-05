@@ -580,7 +580,7 @@ the GitHub UI URLs in tech-docs.md.
 - [x] Update `plans/in-progress/README.md` to remove this plan from active list.
       _Date: 2026-05-04 / Status: done / Files: plans/in-progress/README.md / Notes: Removed entry; only `add-investment-oracle-app` remains in-progress._
 - [x] Move plan folder from `plans/in-progress/` to `plans/done/`.
-      _Date: 2026-05-04 / Status: done / Files: plans/done/2026-05-03\_\_... / Notes: git mv preserved history; 5 files renamed._
+      _Date: 2026-05-04 / Status: done / Files: plans/done/2026-05-04\_\_... / Notes: git mv preserved history; 5 files renamed._
 - [x] Update `plans/done/README.md` index.
       _Date: 2026-05-04 / Status: done / Files: plans/done/README.md / Notes: Added comprehensive single-line summary of all 14 workstreams + preexisting fixes encountered during execution._
 - [x] Final commit: `chore(plans): archive 2026-05-03__adopt-ose-public-vendor-neutrality-and-opencode-go`.
