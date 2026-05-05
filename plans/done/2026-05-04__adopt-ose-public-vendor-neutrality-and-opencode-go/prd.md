@@ -498,5 +498,5 @@ Feature: known-drifted files refreshed against ose-public
 - W14 baseline diff produced; all `refresh`-classified files synced; `diff -q` reports zero substantive differences modulo primer-specific paragraphs.
 - `governance/workflows/plan/{plan-execution,plan-quality-gate,README}.md` match ose-public's current versions modulo primer-specific phrasing.
 - `governance/development/workflow/{ci-monitoring,ci-post-push-verification,test-driven-development}.md` are present.
-- Plan archived to `plans/done/2026-05-03__adopt-ose-public-vendor-neutrality-and-opencode-go/`
+- Plan archived to `plans/done/2026-05-04__adopt-ose-public-vendor-neutrality-and-opencode-go/`
   with delivery checklist 100% ticked.
