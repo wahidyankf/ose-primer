@@ -32,6 +32,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **swe-ui-checker** - UI component quality validation
 - **ci-checker** - CI/CD standards validation (mandatory Nx targets, coverage thresholds, Docker setup, Gherkin specs)
 - **docs-software-engineering-separation-checker** - Validates the boundary between generic dev docs and language-specific (Go, TypeScript, Rust, etc.) docs per the [Programming Language Docs Separation](../../governance/conventions/structure/programming-language-docs-separation.md) convention
+- **repo-parity-checker** - Validates cross-vendor behavioral-parity invariants between primary and secondary binding directories (governance vendor-neutrality, AGENTS+CLAUDE consistency, sync no-op, agent count parity, color + tier maps); writes dual-label findings to `generated-reports/`
 
 ### 🟨 Fixing (Fixers)
 
@@ -46,6 +47,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **swe-ui-fixer** - Apply validated UI component fixes
 - **ci-fixer** - Apply validated CI/CD standards fixes
 - **docs-software-engineering-separation-fixer** - Auto-moves misplaced language docs to the canonical destination flagged by the separation checker
+- **repo-parity-fixer** - Applies validated cross-vendor parity fixes; auto-remediates binding-sync drift via `npm run sync:claude-to-opencode`, flags higher-judgement gaps (color-map, tier-map, orphan agents, catalog drift) for human resolution
 
 ### 🔍 Research (Green)
 

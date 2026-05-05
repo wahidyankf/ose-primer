@@ -642,7 +642,7 @@ color: green
 
 See [Temporary Files Convention](../infra/temporary-files.md) for complete details on report naming patterns, mandatory checker requirements, and timestamp generation.
 
-### Writing to primary and secondary binding Folders
+### Writing to the Primary and Secondary Binding Directories
 
 Use the normal `Write` / `Edit` tools for files in `.claude/` and `.opencode/`. Both paths are pre-authorized in `.claude/settings.json` (`Write(.claude/**)`, `Edit(.claude/**)`, `Write(.opencode/**)`, `Edit(.opencode/**)`), so no approval prompts fire. `Bash` heredoc and `sed` remain appropriate for bulk mechanical substitutions across many files, but there is no restriction on direct edits.
 
