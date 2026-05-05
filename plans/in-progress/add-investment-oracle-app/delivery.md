@@ -247,7 +247,7 @@ started via `nx run investment-oracle-be:dev` (port 8501 by default).
       `curl -s http://localhost:8501/health | jq .`
       → expect `{"status": "ok"}` (HTTP 200)
 - [ ] Upload a source PDF:
-      `curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:8501/api/v1/sources -F "file=@plans/in-progress/2026-04-27__add-investment-oracle-app/fixture/aapl-fy2024-10k.pdf"`
+      `curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:8501/api/v1/sources -F "file=@plans/in-progress/add-investment-oracle-app/fixture/aapl-fy2024-10k.pdf"`
       → expect `201`
 - [ ] List sources:
       `curl -s http://localhost:8501/api/v1/sources | jq '.[].id'`
@@ -499,7 +499,7 @@ after Phase 16 FE e2e tests pass.
 
 - [ ] Verify ALL delivery checklist items above are ticked
 - [ ] Verify CI is green on `main`
-- [ ] `git mv plans/in-progress/2026-04-27__add-investment-oracle-app plans/done/2026-04-27__add-investment-oracle-app`
+- [ ] `git mv plans/in-progress/add-investment-oracle-app plans/done/<completion-date>__add-investment-oracle-app`
 - [ ] Update `plans/in-progress/README.md` — remove the plan entry
 - [ ] Update `plans/done/README.md` — add the plan entry with completion date
 - [ ] Commit: `chore(plans): move investment-oracle to done`
