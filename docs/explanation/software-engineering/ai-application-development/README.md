@@ -575,7 +575,7 @@ Three operational realities to know:
 Plans and apps that build AI features in this repo are expected to require this
 primer as prerequisite reading. Examples:
 
-- `plans/in-progress/2026-04-27__add-investment-oracle-app/` — adds the
+- `plans/in-progress/add-investment-oracle-app/` — adds the
   `investment-oracle` desktop demo (Tauri 2 shell, Python/FastAPI sidecar,
   React+Vite FE, Playwright E2E pair); cites this document and all four
   vendor primers plus the testing companion in its delivery checklist as

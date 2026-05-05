@@ -256,7 +256,7 @@ async def test_ingest_apple_10k_writes_chunks(
     mock_gemini_embed,     # vendor HTTP still mocked
 ):
     pdf_bytes = pathlib.Path(
-        "plans/in-progress/2026-04-27__add-investment-oracle-app/fixture/aapl-fy2024-10k.pdf"
+        "plans/in-progress/add-investment-oracle-app/fixture/aapl-fy2024-10k.pdf"
     ).read_bytes()
     source_id = await ingest_pdf(pdf_bytes, filename="aapl.pdf")
 
@@ -409,7 +409,7 @@ What FE unit tests **never** assert:
 Playwright drives a `vite preview` build of the FE in a real browser
 against a real running FastAPI sidecar. Vendor HTTP still mocked. Tauri
 shell **not** in the loop — verified manually instead, see Phase 22 of
-the [investment-oracle delivery checklist](../../../../plans/in-progress/2026-04-27__add-investment-oracle-app/delivery.md).
+the [investment-oracle delivery checklist](../../../../plans/in-progress/add-investment-oracle-app/delivery.md).
 
 Why no Tauri-shell automated E2E:
 
@@ -670,7 +670,7 @@ def make_test_vector(salt: int, dim: int = 768) -> list[float]:
 ## PII masking testing
 
 When the demo includes a `PIIMasker` layer (see e.g. the
-[investment-oracle plan](../../../../plans/in-progress/2026-04-27__add-investment-oracle-app/tech-docs.md#piimasker-protocol)),
+[investment-oracle plan](../../../../plans/in-progress/add-investment-oracle-app/tech-docs.md#piimasker-protocol)),
 the testing question is _"did raw PII actually leave the BE?"_. The
 test answers by reading the captured outbound request body.
 

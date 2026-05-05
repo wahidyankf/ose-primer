@@ -2,6 +2,16 @@
 
 Archived plans and completed project planning documents.
 
+## Folder Naming
+
+Folders in `done/` MUST carry a date prefix where the date is the **completion date** — the date of the last file modification in the folder before archival (the date of the final commit that touched the plan files). This is NOT the creation date.
+
+```
+YYYY-MM-DD__[project-identifier]/
+```
+
+Example: `2026-04-27__adopt-mermaid-checker-from-ose-public/` where `2026-04-27` is the day the last plan file was modified. See the [Plans Organization Convention](../../governance/conventions/structure/plans.md#-plan-folder-naming) for full naming rules.
+
 ## Completed Projects
 
 - [2026-05-04: Adopt ose-public Vendor-Neutrality, OpenCode Go, and Companion Tooling](./2026-05-04__adopt-ose-public-vendor-neutrality-and-opencode-go/README.md) — 14-workstream batch: W1 sync correctness (`.opencode/agent` → `.opencode/agents` plural), W2 OpenCode Go provider (`opencode-go/minimax-m2.7` + `opencode-go/glm-5`), W3 rhino-cli vendor-audit scanner with `\bSkills\b` term, W4 vendor-neutral governance (AGENTS.md canonical, CLAUDE.md thin shim, 229 violations remediated to 0), W5 cross-vendor parity gate (2 agents + workflow + Nx target + pre-push wire-up; 5 invariants), W6 stricter five-doc-DEFAULT plans convention, W7 worktree-path convention + worktree-setup refresh, W8 plan + workflow refresh (plan-execution / plan-quality-gate / ci-monitoring / ci-post-push-verification), W9 test-driven-development convention, W10 no-last-updated + programming-language-docs-separation conventions, W11 plan-anti-hallucination quality convention, W12 infra-development-environment-setup refresh + OPENCODE_GO_API_KEY documentation, W13 docs-software-engineering-separation triad (checker + fixer + validating skill), W14 content drift sweep (zero refresh needed; all overlapping files byte-equivalent). Also fixed preexisting issues encountered: agents validate-naming singular path bug from W1, mermaid label/width violations in plan README, broken AGENTS.md singular-dir links, broken `.claude/agents/{docs-maker,web-research-maker}.md` `./README.md` links. Tests green: 1527 unit + cmd integration; vendor-audit 0 violations; cross-vendor parity 5/5 invariants pass. (Completed: 2026-05-04)
