@@ -11,7 +11,8 @@ suite that ingests financial reports (10-K filings, annual reports), generates
 a structured investment thesis from them, and lets the reader edit the
 resulting report either by hand or by prompting the model to rewrite a
 specific section. Establishes the AI/RAG demo lane the template needs and
-locks in conventions (direct vendor SDKs for Anthropic + Google, RAG over
+locks in conventions (OpenRouter as zero-cost default chat gateway,
+direct Anthropic + Google SDKs for premium/mid-tier opt-in paths, RAG over
 pgvector, SSE streaming, Tauri 2 + Python sidecar packaging) that future AI
 demos will reuse.
 
@@ -60,10 +61,11 @@ integration tests.
    sending the current section + the prompt to the model, streams the new
    section back, replaces the old one. Each save records a row in
    `report_revisions`.
-8. User picks the chat model — **Anthropic Claude Haiku 4.5** (default,
-   premium-quality small) or **Google Gemini 2.5 Flash-Lite** (cheap-tier
-   alternative) — at any point. Embedding model is fixed at
-   `gemini-embedding-001`.
+8. User picks the chat model — **OpenRouter free tier**
+   (`meta-llama/llama-3.3-70b-instruct:free`, **default**, zero-cost demo),
+   or **Google Gemini 2.5 Flash-Lite** (mid-tier paid), or **Anthropic
+   Claude Haiku 4.5** (premium opt-in) — at any point. Embedding model is
+   fixed at `gemini-embedding-001` (768 dims, Google free tier).
    8a. User can toggle **"Include latest web grounding"** per analysis or
    per LLM edit. When on, the BE makes a single **Perplexity Sonar**
    call before the chat call with a prompt like _"Material recent
@@ -89,7 +91,7 @@ every chat and embedding call:
 
 - **Residency awareness** — every outbound LLM call carries an explicit
   residency tag describing where inference physically runs:
-  `direct-us` (Anthropic / Gemini direct), `bedrock-jakarta-cris` (data
+  `direct-us` (OpenRouter / Anthropic / Gemini direct), `bedrock-jakarta-cris` (data
   at rest in ID, inference may cross), `bedrock-jakarta-in-region`
   (full on-shore — Opus 4.7 today), or `vertex-singapore` (Gemini
   fallback). The default chat path is `direct-us`; deployments with
@@ -132,11 +134,12 @@ turns each into a tick-box.
 
 ### Vendor accounts and API keys
 
-| Vendor     | Where to register                                | Key env var          | Cost note                                                      |
-| ---------- | ------------------------------------------------ | -------------------- | -------------------------------------------------------------- |
-| Anthropic  | <https://console.anthropic.com>                  | `ANTHROPIC_API_KEY`  | Pay-as-you-go; small free credits on signup.                   |
-| Google     | <https://aistudio.google.com> (or GCP Vertex AI) | `GOOGLE_API_KEY`     | Free tier covers all demo use (chat + embeddings + Files API). |
-| Perplexity | <https://www.perplexity.ai/settings/api>         | `PERPLEXITY_API_KEY` | Tier 0 (50 RPM, $0 cumulative spend) covers demo use.          |
+| Vendor     | Where to register                                | Key env var          | Cost note                                                                         |
+| ---------- | ------------------------------------------------ | -------------------- | --------------------------------------------------------------------------------- |
+| OpenRouter | <https://openrouter.ai/keys>                     | `OPENROUTER_API_KEY` | Free registration; free-tier models at $0.00 (200 req/day, 20 req/min cap).       |
+| Anthropic  | <https://console.anthropic.com>                  | `ANTHROPIC_API_KEY`  | Optional — only needed for `claude-haiku-4-5` premium path; pay-as-you-go.        |
+| Google     | <https://aistudio.google.com> (or GCP Vertex AI) | `GOOGLE_API_KEY`     | Free tier covers all demo use (embeddings + optional Flash-Lite chat).            |
+| Perplexity | <https://www.perplexity.ai/settings/api>         | `PERPLEXITY_API_KEY` | Tier 0 (50 RPM, $0 cumulative spend) covers demo use.                             |
 
 Keys go into `apps/investment-oracle-be/.env` (gitignored). Never commit
 real keys; `.env.example` ships placeholders.
@@ -173,7 +176,7 @@ preconditions.
 
 Outbound HTTPS reachability required to:
 
-- `api.anthropic.com`, `generativelanguage.googleapis.com`,
+- `openrouter.ai`, `api.anthropic.com`, `generativelanguage.googleapis.com`,
   `api.perplexity.ai` (vendor APIs)
 - `registry.npmjs.org`, `pypi.org`, `crates.io`, `docker.io`,
   `gcr.io` (package registries)
@@ -203,7 +206,7 @@ Required only when shipping the desktop app to Indonesian end users
 - UU PDP Article 56 cross-border transfer documentation — SCC template
   in vendor agreements **or** explicit-consent UI flow embedded in the
   desktop app.
-- DPIA covering Anthropic, Google, and (if `WEB_GROUNDING_ENABLED=true`)
+- DPIA covering OpenRouter, Anthropic, Google, and (if `WEB_GROUNDING_ENABLED=true`)
   Perplexity.
 
 ### Estimated time and cost for first run
@@ -213,10 +216,12 @@ Required only when shipping the desktop app to Indonesian end users
   pre-installed.
 - **Per-session cost** (single analysis, 4 attached PDFs, 1 generation,
   3 LLM edits, no web grounding):
-  - On `claude-haiku-4-5`: ~$0.10–$0.20.
-  - On `gemini-2.5-flash-lite`: ~$0.05–$0.10.
-  - Add ~$0.01 per LLM call when `WEB_GROUNDING_ENABLED=true` (Perplexity
-    Sonar per-request search fee).
+  - On `meta-llama/llama-3.3-70b-instruct:free` (default): **$0.00**
+    (OpenRouter free-tier chat + Google free-tier embeddings; 200 req/day cap).
+  - On `gemini-2.5-flash-lite`: ~$0.002 chat + $0.00 embeddings (free tier) ≈ **$0.002**.
+  - On `claude-haiku-4-5`: ~$0.02 chat + $0.00 embeddings (free tier) ≈ **$0.02**.
+  - Add ~$0.017 per web-grounding call when `WEB_GROUNDING_ENABLED=true`
+    (Perplexity Sonar token + per-request search fee on `sonar` at low context).
 - **CI cost**: zero — `MOCK_LLM_PROVIDERS=true` is the default and
   intercepts all vendor traffic.
 
@@ -236,9 +241,9 @@ vendor primers and the testing companion:
   — Gemini model lineup, the `google-genai` SDK, streaming, embeddings via
   `gemini-embedding-001`, 1 M-token context window.
 - [OpenAI API Primer](../../../docs/explanation/software-engineering/ai-application-development/openai-api.md)
-  — read for boundary framing; not used in this demo, but documents the
-  fourth vendor lane (Responses API tool ecosystem, GPT-5.x and o3
-  reasoning, hosted connectors).
+  — the `openai` Python SDK **is** used in this demo (to call OpenRouter's
+  OpenAI-compatible API); openai.com models are not used. Read this primer
+  to understand the API shape that OpenRouter implements.
 - [Perplexity Sonar API Primer](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md)
   — used for optional web grounding (FR-WG); read this primer to understand
   the Sonar API shape before implementing Phase 6a.
@@ -273,23 +278,27 @@ graph LR
 
     DB[("Postgres + pgvector<br/>──────────────<br/>sources, chunks,<br/>analyses, reports,<br/>revisions")]:::db
 
-    ANT["Anthropic API<br/>──────────────<br/>Claude Haiku 4.5<br/>messages.stream()"]:::ant
+    OR["OpenRouter free tier<br/>──────────────<br/>Llama 3.3 70B :free<br/>(default chat)"]:::or
 
-    GEM["Google Gemini API<br/>──────────────<br/>gemini-2.5-flash-lite (chat)<br/>gemini-embedding-001"]:::gem
+    ANT["Anthropic API<br/>──────────────<br/>Claude Haiku 4.5<br/>(premium opt-in)"]:::ant
+
+    GEM["Google Gemini API<br/>──────────────<br/>gemini-2.5-flash-lite (mid-tier)<br/>gemini-embedding-001 (always)"]:::gem
 
     USER -->|launches| SHELL
     SHELL -->|loads| FE
     SHELL -->|spawns sidecar| BE
     FE -->|HTTP localhost| BE
     BE -->|store + query vectors| DB
-    BE -->|chat stream| ANT
-    BE -->|chat stream + embed| GEM
+    BE -->|chat stream (default)| OR
+    BE -->|chat stream (opt-in)| ANT
+    BE -->|chat stream (mid-tier) + embed| GEM
 
     classDef actor fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef shell fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef fe fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef be fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef db fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef or fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef ant fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef gem fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```

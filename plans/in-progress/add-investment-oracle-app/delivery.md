@@ -13,18 +13,18 @@ for the rationale.
 
 ### Vendor accounts and API keys
 
-- [ ] Create an Anthropic Console account at <https://console.anthropic.com>
-      and generate an API key
+- [ ] Register a free OpenRouter account at <https://openrouter.ai/keys>
+      and generate an API key (free; no billing required for free-tier models)
 - [ ] Create a Google AI Studio account at <https://aistudio.google.com>
-      and generate a Gemini API key
-- [ ] Create a Perplexity API key at <https://www.perplexity.ai/settings/api>
-- [ ] Add billing details / payment method per vendor (free tiers cover
-      demo use; production will hit pay-as-you-go)
-- [ ] Verify each key by hitting the corresponding `/health` or models
-      endpoint:
-      `curl -sH "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01" https://api.anthropic.com/v1/models | jq .data[0].id` ;
+      and generate a Gemini API key (free tier covers embeddings + Flash-Lite chat)
+- [ ] *(Optional — premium path only)* Create an Anthropic Console account
+      at <https://console.anthropic.com> and generate an API key
+- [ ] *(Optional — web grounding only)* Create a Perplexity API key at
+      <https://www.perplexity.ai/settings/api>
+- [ ] Verify each key:
+      `curl -sH "Authorization: Bearer $OPENROUTER_API_KEY" https://openrouter.ai/api/v1/models | jq '.data[0].id'` ;
       `curl -s "https://generativelanguage.googleapis.com/v1beta/models?key=$GOOGLE_API_KEY" | jq .models[0].name` ;
-      `curl -sH "Authorization: Bearer $PERPLEXITY_API_KEY" -d '{"model":"sonar","messages":[{"role":"user","content":"ping"}]}' -H "Content-Type: application/json" https://api.perplexity.ai/chat/completions | jq .choices[0].message.content`
+      `curl -sH "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01" https://api.anthropic.com/v1/models | jq .data[0].id` (skip if Anthropic key not obtained)
 
 ### Platform tooling (manual; cannot be auto-installed)
 
@@ -48,7 +48,7 @@ for the rationale.
 ### Network egress
 
 - [ ] Verify outbound HTTPS to:
-      `api.anthropic.com`, `generativelanguage.googleapis.com`,
+      `openrouter.ai`, `api.anthropic.com`, `generativelanguage.googleapis.com`,
       `api.perplexity.ai`, `registry.npmjs.org`, `pypi.org`,
       `crates.io`, `docker.io`, `github.com`
       via `curl -sI -o /dev/null -w "%{http_code}\n" https://<host>` for
@@ -68,7 +68,7 @@ for the rationale.
 - [ ] Komdigi PSE Private Scope registration filed (PP 71/2019)
 - [ ] UU PDP Article 56 cross-border transfer template (SCC) signed
       with each vendor, OR explicit-consent UI flow drafted
-- [ ] DPIA covering Anthropic + Google + Perplexity (when
+- [ ] DPIA covering OpenRouter + Anthropic + Google + Perplexity (when
       `WEB_GROUNDING_ENABLED=true`) authored
 
 ## Phase 0 — Prerequisite reading
@@ -77,9 +77,10 @@ for the rationale.
 - [ ] Read [Anthropic API Primer](../../../docs/explanation/software-engineering/ai-application-development/anthropic-api.md)
 - [ ] Read [Google Gemini API Primer](../../../docs/explanation/software-engineering/ai-application-development/google-gemini-api.md)
 - [ ] Read [OpenAI API Primer](../../../docs/explanation/software-engineering/ai-application-development/openai-api.md)
-      (boundary framing only; not used in this demo)
+      (the `openai` SDK IS used — to call OpenRouter's OpenAI-compatible API;
+      openai.com models are not called)
 - [ ] Read [Perplexity Sonar API Primer](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md)
-      (boundary framing only; not used in this demo)
+      (used for optional web grounding via FR-WG; required reading before Phase 6a)
 - [ ] Read [Testing AI Applications](../../../docs/explanation/software-engineering/ai-application-development/testing-ai-apps.md)
       (cross-cutting testing playbook — directly implemented by PRD FR-15 family)
 - [ ] Read this plan's [README](./README.md), [BRD](./brd.md), [PRD](./prd.md), [tech-docs](./tech-docs.md)
@@ -93,8 +94,14 @@ for the rationale.
       tolerates drift; see
       [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md))
 - [ ] Copy environment template: `cp apps/investment-oracle-be/.env.example apps/investment-oracle-be/.env`
-- [ ] Fill in `ANTHROPIC_API_KEY` and `GOOGLE_API_KEY` in the new `.env`
-      (obtain from the respective vendor consoles; keep out of version control)
+- [ ] Fill in `OPENROUTER_API_KEY` and `GOOGLE_API_KEY` in the new `.env`;
+      also fill in `ANTHROPIC_API_KEY` if using the premium Haiku path and
+      `PERPLEXITY_API_KEY` if using web grounding (keep all keys out of
+      version control). `DATABASE_URL` is pre-populated in `.env.example`
+      pointing at the docker-compose Postgres instance; leave it as-is unless
+      you are using a different DB. `MOCK_LLM_PROVIDERS=true` is the default
+      in `.env.example` — all vendor HTTP is intercepted by cassettes and no
+      real API keys are required for `test:quick` to pass.
 - [ ] Start the Postgres + pgvector service:
       `docker compose -f docker-compose.integration.yml up -d`
 - [ ] Verify the service is healthy: `docker compose -f docker-compose.integration.yml ps`
@@ -133,9 +140,9 @@ for the rationale.
 
 - [ ] Create `apps/investment-oracle-be/` with `pyproject.toml` pinning:
   - [ ] runtime: `fastapi`, `uvicorn[standard]`, `sse-starlette`,
-        `sqlalchemy[asyncio]`, `asyncpg`, `pypdf`, `anthropic==0.97.*`,
-        `google-genai==1.73.*`, `httpx`, `slowapi`, `pydantic-settings`,
-        `python-multipart`
+        `sqlalchemy[asyncio]`, `asyncpg`, `pypdf`, `openai>=1.0`,
+        `anthropic==0.97.*`, `google-genai==1.73.*`, `httpx`, `slowapi`,
+        `pydantic-settings`, `python-multipart`
   - [ ] test stack: `pytest`, `pytest-bdd`, `pytest-asyncio`,
         `pytest-httpx`, `freezegun`, `coverage`
   - [ ] lint: `ruff`
@@ -176,8 +183,9 @@ for the rationale.
 
 ## Phase 6 — BE: domain layer
 
-- [ ] Implement `domain/chat_provider.py` Protocol + Anthropic + Gemini
-      implementations per [tech-docs.md provider abstraction](./tech-docs.md#provider-abstraction)
+- [ ] Implement `domain/chat_provider.py` Protocol + OpenRouter (default)
+      + Anthropic + Gemini implementations per
+      [tech-docs.md provider abstraction](./tech-docs.md#provider-abstraction)
 - [ ] Implement `domain/embedder.py` (Gemini-only) with
       `output_dimensionality=768` and `task_type` parameterisation
 - [ ] Implement `domain/chunker.py` (recursive splitter on paragraph →
@@ -339,7 +347,9 @@ started via `nx run investment-oracle-be:dev` (port 8501 by default).
 - [ ] `ReportEditor.tsx` (CodeMirror 6 + markdown mode; controlled
       component; SSE chunk append)
 - [ ] `PromptInput.tsx` (section selector + prompt text + send)
-- [ ] `ModelSelector.tsx` (dropdown with the two model ids)
+- [ ] `ModelSelector.tsx` (dropdown with the three model ids per FR-10:
+      `meta-llama/llama-3.3-70b-instruct:free`, `gemini-2.5-flash-lite`,
+      `claude-haiku-4-5`)
 - [ ] `RevisionHistoryDrawer.tsx` (list, restore action)
 - [ ] All primitives sourced from `@open-sharia-enterprise/ts-ui`
 
@@ -378,7 +388,7 @@ after Phase 16 FE e2e tests pass.
 - [ ] `browser_click` on the Sources drop zone — verify the drag-and-drop ingest
       area is interactive (no JS error thrown on click)
 - [ ] `browser_snapshot` — verify the model selector dropdown is visible in the
-      top bar and shows `claude-haiku-4-5` as the default selection
+      top bar and shows `meta-llama/llama-3.3-70b-instruct:free` as the default selection
 - [ ] `browser_network_requests` — confirm no unexpected failed network requests
       on initial page load
 - [ ] Document results: note any rendering discrepancies found
