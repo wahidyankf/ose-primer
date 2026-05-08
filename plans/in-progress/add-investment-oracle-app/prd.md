@@ -556,6 +556,16 @@ no_sources_attached`.
 - No re-ranking, no hybrid search. Single-vector retrieval is enough for a
   demo.
 
+## Product risks
+
+| Risk                                               | Likelihood | Mitigation                                                                                        |
+| -------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------- |
+| SSE latency / streaming UX degradation on slow connections | Medium | Implement connection-timeout UX (spinner + retry banner); document expected latency in README |
+| CodeMirror 6 accessibility gaps (keyboard nav, screen reader) | Medium | Audit required in Phase 14 against WCAG AA; document any known gap before shipping |
+| OpenRouter free-tier rate cap (200 req/day, 20 req/min) degrading live demo quality | Medium | Ship a local cassette smoke path (`MOCK_LLM_PROVIDERS=true`) as the default demo mode so rate caps don't block demo walkthroughs |
+| LLM non-determinism test discipline eroding if cassette-only discipline is dropped | Low | Plan-execution-checker validates FR-15c assertion rules on every iteration; guard in governance docs |
+| Report quality degradation if free-tier model produces poor structured output | Low | Fixture cassettes lock known-good output; real-vendor smoke is a separate weekly workflow; downstream quality is out of scope for a demo |
+
 ## Affected files (summary)
 
 - New apps under `apps/`: `investment-oracle-be`, `investment-oracle-fe`,

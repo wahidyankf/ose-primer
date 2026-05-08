@@ -301,7 +301,7 @@ started via `nx run investment-oracle-be:dev` (port 8501 by default).
 - [ ] Author `tests/unit/` step implementations consuming the Gherkin
       files from `specs/apps/investment-oracle/be/gherkin/`
 - [ ] Use `pytest-httpx` cassettes for both Anthropic and Gemini base URLs
-      per [tech-docs.md cassette structure](./tech-docs.md#mock-cassette-structure)
+      per [tech-docs.md cassette structure](./tech-docs.md#llm-test-determinism)
 - [ ] Assert outbound-request fingerprint, side effects, structural shape;
       never on LLM prose
 - [ ] Confirm coverage ≥ 90 % via `nx run investment-oracle-be:test:quick`

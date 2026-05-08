@@ -88,15 +88,15 @@ In plain English:
 
 | Layer             | Choice                                                                                 | Why                                                                                                                       |
 | ----------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Desktop shell     | Tauri 2.10.x                                                                           | Rust-backed, smaller bundle than Electron; WebView2 / WebKit / WebKitGTK per platform; first-class sidecar pattern        |
+| Desktop shell     | Tauri 2.10.x [Web-cited]                                                               | Rust-backed, smaller bundle than Electron; WebView2 / WebKit / WebKitGTK per platform; first-class sidecar pattern        |
 | FE framework      | React 19 + Vite 6                                                                      | Smallest defensible bundle; Tauri scaffolds it directly; aligns with `crud-fe-ts-nextjs` reuse of React patterns          |
 | FE design system  | `@open-sharia-enterprise/ts-ui` (mandatory)                                            | No bespoke primitives; one source of truth for Button, Input, Dialog, Tabs, etc. across the demo set                      |
 | Markdown editor   | CodeMirror 6 + `@codemirror/lang-markdown`                                             | Fast, accessible, themeable; lighter than Monaco for a Markdown-only use case                                             |
 | BE framework      | FastAPI                                                                                | OpenAPI-first, async-native, Pythonic; matches existing crud-be-python-fastapi precedent                                  |
 | BE Python version | 3.13                                                                                   | Pinned in `apps/investment-oracle-be/.python-version`                                                                     |
 | BE PDF parser     | `pypdf` (BSD-3-Clause)                                                                 | License-clean. PyMuPDF (AGPL) is **banned** — see BRD risk register                                                       |
-| BE chat SDKs      | `openai>=1.0` (OpenRouter default), `anthropic@0.97`, `google-genai@1.73`              | `openai` pointed at `https://openrouter.ai/api/v1`; all three pinned                                                     |
-| BE embedding      | `gemini-embedding-001` (768 dim)                                                       | Anthropic ships no embedding endpoint; Google's is the cheapest and supports Matryoshka truncation                        |
+| BE chat SDKs      | `openai>=1.0` [Web-cited], `anthropic@0.97` [Web-cited], `google-genai@1.73` [Web-cited] (OpenRouter default) | `openai` pointed at `https://openrouter.ai/api/v1` [Web-cited]; all three pinned                         |
+| BE embedding      | `gemini-embedding-001` [Web-cited] (768 dim)                                           | Anthropic ships no embedding endpoint [Web-cited]; Google's is the cheapest and supports Matryoshka truncation            |
 | Vector store      | `pgvector` extension on Postgres 16                                                    | Reuses `docker-compose.integration.yml` from crud-be; no new infra                                                        |
 | ORM               | SQLAlchemy 2 async + `asyncpg`                                                         | Async-clean; matches existing crud-be-python-fastapi                                                                      |
 | Streaming         | `sse-starlette.EventSourceResponse`                                                    | Idiomatic FastAPI SSE; the FE consumes via `@microsoft/fetch-event-source` because the EventSource browser API can't POST |
@@ -104,7 +104,7 @@ In plain English:
 | Typecheck (BE)    | `pyright`                                                                              | Stricter than mypy on inferred types; CI-friendly                                                                         |
 | Test (BE)         | `pytest` + `pytest-bdd` + `pytest-asyncio` + `pytest-httpx` + `freezegun` + `coverage` | All four levels of test infrastructure                                                                                    |
 | Test (FE)         | `vitest` + `@testing-library/react` + `oxlint` + `tsc`                                 | Aligns with `crud-fe-*` precedent                                                                                         |
-| Sidecar packaging | PyInstaller `--onedir`                                                                 | `--onefile` breaks on heavy ML deps per Tauri community guidance; `--onedir` ships a folder under `src-tauri/binaries/`   |
+| Sidecar packaging | PyInstaller `--onedir` [Web-cited]                                                     | `--onefile` breaks on heavy ML deps per Tauri community guidance [Web-cited]; `--onedir` ships a folder under `src-tauri/binaries/` |
 | Rate limit        | `slowapi` (opt-in)                                                                     | Same dep as `crud-be-python-fastapi`; off by default for desktop                                                          |
 
 Versions pinned at plan-author time (2026-04-27). Bump together via the
