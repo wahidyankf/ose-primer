@@ -66,8 +66,9 @@ history drawer and restore any previous version of the report so that I can
 recover from a bad edit without data loss.
 
 **US-6 (Provider swap)**: As a maintainer-as-user, I want to switch the chat
-model between `claude-haiku-4-5` and `gemini-2.5-flash-lite` at any point so
-that I can compare cost and quality without restarting the application.
+model among `meta-llama/llama-3.3-70b-instruct:free`, `gemini-2.5-flash-lite`,
+and `claude-haiku-4-5` at any point so that I can compare cost and quality
+without restarting the application.
 
 **US-7 (Guardrails)**: As a template consumer, I want to see how cost-cap and
 content-filter guardrails are implemented so that I can adapt the same patterns
@@ -168,12 +169,13 @@ revisions are never overwritten.
 
 **FR-10**: The chat model is selected per analysis from a dropdown:
 
-- `claude-haiku-4-5` (Anthropic, default)
-- `gemini-2.5-flash-lite` (Google, alternative)
+- `meta-llama/llama-3.3-70b-instruct:free` (OpenRouter free tier, **default**, zero-cost demo)
+- `gemini-2.5-flash-lite` (Google, mid-tier paid)
+- `claude-haiku-4-5` (Anthropic, premium opt-in)
 
-Embedding model is fixed at `gemini-embedding-001` regardless of chat
-provider. Switching models mid-analysis is allowed; the change applies to
-the next chat call.
+Embedding model is fixed at `gemini-embedding-001` (768 dims, Google free
+tier) regardless of chat provider. Switching models mid-analysis is
+allowed; the change applies to the next chat call.
 
 ### Configuration
 
@@ -181,8 +183,9 @@ the next chat call.
 
 | Variable                    | Purpose                                                                                                                                                |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `ANTHROPIC_API_KEY`         | Anthropic Messages API authentication                                                                                                                  |
-| `GOOGLE_API_KEY`            | Google `google-genai` SDK authentication (chat + embeddings)                                                                                           |
+| `OPENROUTER_API_KEY`        | OpenRouter API authentication (required for the default free-tier path and any OpenRouter model)                                                       |
+| `ANTHROPIC_API_KEY`         | Anthropic Messages API authentication (required only when `claude-haiku-4-5` is selected)                                                             |
+| `GOOGLE_API_KEY`            | Google `google-genai` SDK authentication (embeddings always; chat when `gemini-2.5-flash-lite` selected)                                              |
 | `PERPLEXITY_API_KEY`        | Perplexity Sonar API authentication (optional; required only when web grounding is enabled)                                                            |
 | `DATABASE_URL`              | Postgres connection string (`postgresql+asyncpg://...`)                                                                                                |
 | `MOCK_LLM_PROVIDERS`        | When `true`, intercepts all vendor HTTP via `httpx` cassette fixtures                                                                                  |
@@ -449,11 +452,18 @@ Feature: LLM section rewrite
 ```gherkin
 Feature: Provider swap
 
-  Scenario: Switch chat model from Anthropic to Gemini
-    Given an analysis exists with model="claude-haiku-4-5"
+  Scenario: Switch chat model from OpenRouter free to Gemini mid-tier
+    Given an analysis exists with model="meta-llama/llama-3.3-70b-instruct:free"
     When the user updates the analysis with model="gemini-2.5-flash-lite"
     Then subsequent chat calls go to https://generativelanguage.googleapis.com (mocked)
-    And no calls are made to https://api.anthropic.com
+    And no calls are made to https://openrouter.ai
+    And embedding calls continue to use gemini-embedding-001
+
+  Scenario: Switch chat model from OpenRouter free to Anthropic premium
+    Given an analysis exists with model="meta-llama/llama-3.3-70b-instruct:free"
+    When the user updates the analysis with model="claude-haiku-4-5"
+    Then subsequent chat calls go to https://api.anthropic.com (mocked)
+    And no calls are made to https://openrouter.ai
     And embedding calls continue to use gemini-embedding-001
 ```
 
@@ -488,7 +498,7 @@ Feature: LLM-test determinism
   Scenario: Generation test asserts outbound-request fingerprint, not content
     Given a generation cassette returns "FIXTURE_REPORT"
     When generation completes
-    Then the test asserts the outbound request used model="claude-haiku-4-5"
+    Then the test asserts the outbound request used model="meta-llama/llama-3.3-70b-instruct:free"
     And the test asserts the outbound request retrieved 8 chunks
     And the test does NOT assert any text from the cassette response
 

@@ -24,7 +24,7 @@ covers the few project-local terms.
 | Sidecar binary       | `investment-oracle-be` packaged via PyInstaller `--onedir`. The Tauri shell launches and kills it.                                    |
 | Owners' earnings     | A free-cash-flow proxy that nets out maintenance capex (Buffett 1986). The system prompt references it; the demo does not compute it. |
 | Permanent disclaimer | The "Demo output, not investment advice" banner that stays at the top of the FE for every analysis.                                   |
-| Provider abstraction | A small `ChatProvider` Protocol that hides the difference between Anthropic and Gemini chat APIs.                                     |
+| Provider abstraction | A small `ChatProvider` Protocol that hides the difference between OpenRouter, Anthropic, and Gemini chat APIs.                        |
 
 ## Architecture
 
@@ -32,7 +32,7 @@ The demo is one process tree on the user's machine. Tauri 2 is the entry
 point. On launch the shell starts the sidecar binary on a free localhost
 port; on quit it kills the sidecar. The sidecar talks to a Postgres
 container started separately by docker-compose (the same image the rest of
-the demo set already uses) and to two cloud APIs (Anthropic, Google).
+the demo set already uses) and to three cloud APIs (OpenRouter by default, Anthropic and Google as opt-in paths; Google also handles all embeddings).
 
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
@@ -43,6 +43,7 @@ sequenceDiagram
     participant FE as React FE (WebView)
     participant BE as FastAPI sidecar (Python)
     participant PG as Postgres + pgvector
+    participant OR as openrouter.ai/api/v1
     participant ANT as api.anthropic.com
     participant GEM as generativelanguage.googleapis.com
 
@@ -63,16 +64,16 @@ sequenceDiagram
     FE->>BE: POST /api/v1/analyses/{id}/report (SSE)
     BE->>GEM: embed_content (RETRIEVAL_QUERY)
     BE->>PG: SELECT top-k chunks across attached sources
-    BE->>ANT: messages.stream (claude-haiku-4-5, system+chunks+prompt)
-    ANT-->>BE: stream chunks
+    BE->>OR: chat.completions.stream (meta-llama/llama-3.3-70b-instruct:free, system+chunks+prompt)
+    OR-->>BE: stream chunks
     BE-->>FE: SSE chunks
     FE-->>User: render Markdown live
     BE->>PG: INSERT reports, report_revisions(kind='generation')
     BE->>PG: UPSERT token_usage
     User->>FE: Edit Risks section via prompt
     FE->>BE: POST /api/v1/analyses/{id}/report:edit (SSE)
-    BE->>ANT: messages.stream (current section + user prompt)
-    ANT-->>BE: stream chunks
+    BE->>OR: chat.completions.stream (current section + user prompt)
+    OR-->>BE: stream chunks
     BE-->>FE: SSE chunks (replaces section)
     BE->>PG: INSERT report_revisions(kind='llm_edit', prompt_text=...)
 ```
@@ -94,7 +95,7 @@ In plain English:
 | BE framework      | FastAPI                                                                                | OpenAPI-first, async-native, Pythonic; matches existing crud-be-python-fastapi precedent                                  |
 | BE Python version | 3.13                                                                                   | Pinned in `apps/investment-oracle-be/.python-version`                                                                     |
 | BE PDF parser     | `pypdf` (BSD-3-Clause)                                                                 | License-clean. PyMuPDF (AGPL) is **banned** — see BRD risk register                                                       |
-| BE chat SDKs      | `anthropic@0.97`, `google-genai@1.73`                                                  | Official, pinned                                                                                                          |
+| BE chat SDKs      | `openai>=1.0` (OpenRouter default), `anthropic@0.97`, `google-genai@1.73`              | `openai` pointed at `https://openrouter.ai/api/v1`; all three pinned                                                     |
 | BE embedding      | `gemini-embedding-001` (768 dim)                                                       | Anthropic ships no embedding endpoint; Google's is the cheapest and supports Matryoshka truncation                        |
 | Vector store      | `pgvector` extension on Postgres 16                                                    | Reuses `docker-compose.integration.yml` from crud-be; no new infra                                                        |
 | ORM               | SQLAlchemy 2 async + `asyncpg`                                                         | Async-clean; matches existing crud-be-python-fastapi                                                                      |
@@ -123,7 +124,7 @@ apps/
 │   │   │   ├── report.py            # SSE endpoint
 │   │   │   └── health.py
 │   │   ├── domain/
-│   │   │   ├── chat_provider.py    # Protocol + Anthropic + Gemini implementations
+│   │   │   ├── chat_provider.py    # Protocol + OpenRouter + Anthropic + Gemini implementations
 │   │   │   ├── embedder.py         # Gemini-only
 │   │   │   ├── chunker.py
 │   │   │   ├── retriever.py
@@ -142,7 +143,7 @@ apps/
 │       └── fixtures/
 │           └── cassettes/           # httpx_mock cassette JSONs
 ├── investment-oracle-fe/
-│   ├── package.json                 # @anthropic-ai/sdk (typecheck only), @google/genai (typecheck only), vite, react, codemirror
+│   ├── package.json                 # @anthropic-ai/sdk (typecheck only), @google/genai (typecheck only), openai (typecheck only), vite, react, codemirror
 │   ├── src-tauri/                   # Tauri 2 Rust crate
 │   │   ├── tauri.conf.json
 │   │   ├── Cargo.toml
@@ -231,7 +232,7 @@ CREATE INDEX source_chunks_source_id ON source_chunks(source_id);
 CREATE TABLE analyses (
   id            UUID PRIMARY KEY,
   name          TEXT NOT NULL,
-  model         TEXT NOT NULL,                -- "claude-haiku-4-5" | "gemini-2.5-flash-lite"
+  model         TEXT NOT NULL,                -- "meta-llama/llama-3.3-70b-instruct:free" | "gemini-2.5-flash-lite" | "claude-haiku-4-5"
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -265,7 +266,7 @@ CREATE TABLE token_usage (
   id            UUID PRIMARY KEY,
   analysis_id   UUID REFERENCES analyses(id) ON DELETE CASCADE,
   usage_date    DATE NOT NULL DEFAULT current_date,
-  provider      TEXT NOT NULL,                -- 'anthropic' | 'google'
+  provider      TEXT NOT NULL,                -- 'openrouter' | 'anthropic' | 'google'
   input_tokens  INTEGER NOT NULL,
   output_tokens INTEGER NOT NULL,
   estimated_usd NUMERIC(10, 6) NOT NULL
@@ -329,11 +330,14 @@ class ChatProvider(Protocol):
     async def stream(self, req: ChatRequest) -> AsyncIterator[ChatChunk]: ...
     def usage_from_last(self) -> ChatUsage: ...
 
+class OpenRouterChatProvider:
+    """Wraps openai.AsyncOpenAI pointed at https://openrouter.ai/api/v1 (default path)."""
+
 class AnthropicChatProvider:
-    """Wraps anthropic.AsyncAnthropic.messages.stream()."""
+    """Wraps anthropic.AsyncAnthropic.messages.stream() (premium opt-in)."""
 
 class GeminiChatProvider:
-    """Wraps google.genai.Client().aio.models.generate_content_stream()."""
+    """Wraps google.genai.Client().aio.models.generate_content_stream() (mid-tier opt-in)."""
 ```
 
 The `embedder` interface is similar but Gemini-only; no Protocol because
@@ -345,7 +349,7 @@ there is no second implementation to hide behind.
 
 | Profile                     | What runs in Indonesia                                | What crosses the border                                                                  | Masking required? |
 | --------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- | ----------------- |
-| `direct-us` (default)       | Nothing                                               | All chat / embedding / Sonar payloads (api.{anthropic,googleapis,perplexity,openai}.com) | **Yes**           |
+| `direct-us` (default)       | Nothing                                               | All chat / embedding / Sonar payloads (openrouter.ai, api.{anthropic,googleapis,perplexity}.com) | **Yes**           |
 | `bedrock-jakarta-cris`      | Data at rest in `ap-southeast-3`                      | Inference compute (may route to any AWS region)                                          | **Yes**           |
 | `bedrock-jakarta-in-region` | Both data at rest and inference (Opus 4.7 only today) | None                                                                                     | Bypass allowed    |
 | `vertex-singapore`          | Nothing (Singapore is offshore from Indonesia)        | All payloads (asia-southeast1)                                                           | **Yes**           |
@@ -461,6 +465,35 @@ per-request search fee so the cost cap and billing UI can surface it
 distinctly from token cost.
 
 ## Code shapes
+
+### OpenRouter chat — Python (sidecar, default path)
+
+```python
+from openai import AsyncOpenAI
+import os
+
+client = AsyncOpenAI(
+    api_key=os.environ["OPENROUTER_API_KEY"],
+    base_url="https://openrouter.ai/api/v1",
+)
+
+async def stream_openrouter(model: str, system: str, messages: list[dict]):
+    # model = "meta-llama/llama-3.3-70b-instruct:free" (default)
+    stream = await client.chat.completions.create(
+        model=model,
+        messages=[{"role": "system", "content": system}, *messages],
+        stream=True,
+    )
+    input_tokens = output_tokens = 0
+    async for chunk in stream:
+        delta = chunk.choices[0].delta
+        if delta.content:
+            yield delta.content
+        if chunk.usage:
+            input_tokens = chunk.usage.prompt_tokens
+            output_tokens = chunk.usage.completion_tokens
+    yield_usage(input_tokens, output_tokens)
+```
 
 ### Anthropic chat — Python (sidecar)
 
@@ -670,18 +703,18 @@ strategy:
 
 ```json
 {
-  "url": "https://api.anthropic.com/v1/messages",
+  "url": "https://openrouter.ai/api/v1/chat/completions",
   "method": "POST",
   "match_request": {
-    "model": "claude-haiku-4-5",
+    "model": "meta-llama/llama-3.3-70b-instruct:free",
     "system_contains": "structured Markdown report"
   },
   "response": {
     "status": 200,
     "stream": [
-      "event: content_block_delta\ndata: {\"delta\": {\"type\": \"text_delta\", \"text\": \"## Executive Summary\\n\\n\"}}\n\n",
-      "event: content_block_delta\ndata: {\"delta\": {\"type\": \"text_delta\", \"text\": \"Apple shows...\"}}\n\n",
-      "event: message_stop\ndata: {}\n\n"
+      "data: {\"id\":\"gen-1\",\"choices\":[{\"delta\":{\"content\":\"## Executive Summary\\n\\n\"}}]}\n\n",
+      "data: {\"id\":\"gen-1\",\"choices\":[{\"delta\":{\"content\":\"Apple shows...\"}}]}\n\n",
+      "data: [DONE]\n\n"
     ]
   }
 }

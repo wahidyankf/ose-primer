@@ -6,9 +6,10 @@ Ship a second demo family in the ose-primer template — a **desktop**
 "investment oracle" suite — so that template consumers see a credible
 AI/RAG/agentic-editing reference next to the CRUD-over-Postgres reference.
 Future AI-shaped demos in this template inherit conventions established here:
-direct vendor SDKs (Anthropic + Google), RAG over pgvector, SSE streaming
-end-to-end, Tauri 2 + Python sidecar packaging, document-grounded report
-generation with prompt-driven editing.
+OpenRouter as the zero-cost default chat gateway with direct Anthropic + Google
+SDKs for opt-in paths, RAG over pgvector, SSE streaming end-to-end, Tauri 2 +
+Python sidecar packaging, document-grounded report generation with prompt-driven
+editing.
 
 ## Problem
 
@@ -19,8 +20,9 @@ editing of generated artifacts, desktop packaging — do not exist anywhere in
 the repo. A maintainer cloning ose-primer to bootstrap an AI product today
 has no reference for any of:
 
-- How to wire Anthropic Claude **and** Google Gemini side-by-side via their
-  official SDKs (no proxy in the critical path).
+- How to wire OpenRouter (free-tier default), Anthropic Claude, and Google
+  Gemini behind a single `ChatProvider` Protocol so swapping providers is
+  a config change, not a code change.
 - Where retrieval state belongs (separate vector DB? extension on the
   existing Postgres?).
 - How to stream tokens from a Python backend through a desktop shell into a
@@ -60,11 +62,11 @@ FastAPI backend (sidecar binary), one Tauri 2 desktop app (Rust shell + React
   `specs/apps/investment-oracle/` spec area mirroring the structure of
   `specs/apps/crud/`. The backend uses `pypdf` for extraction, pgvector
   (extension on the existing docker-compose Postgres image) for retrieval,
-  Anthropic Claude Haiku 4.5 (default) and Google Gemini 2.5 Flash-Lite
-  (alternate) for chat completions, and Google `gemini-embedding-001` (768
-  dimensions) for embeddings — Anthropic does not offer an embedding endpoint,
-  so even when chat is served by Anthropic the embedding step is served by
-  Google.
+  OpenRouter free tier (`meta-llama/llama-3.3-70b-instruct:free`, default),
+  Google Gemini 2.5 Flash-Lite (mid-tier opt-in), and Anthropic Claude Haiku
+  4.5 (premium opt-in) for chat completions, and Google `gemini-embedding-001`
+  (768 dimensions) for embeddings — embeddings always go directly to Google
+  regardless of which chat provider is active.
 
 The desktop shell (Tauri 2) bundles the FastAPI sidecar via PyInstaller
 `--onedir` and `bundle.externalBin`, spawns it on launch, kills it on close.
@@ -84,7 +86,7 @@ PDF for speed.
 | Value                                | Detail                                                                                                                        |
 | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
 | Reference for AI workloads           | Template consumers can copy `investment-oracle-be` as the starting point for any RAG / report-generation demo                 |
-| Direct multi-vendor pattern          | Anthropic SDK + Google `google-genai` SDK side-by-side; switching from Haiku to Flash-Lite is one config change, no proxy hop |
+| Multi-provider chat pattern          | OpenRouter (default free) + Anthropic SDK + Google `google-genai` SDK; switching between free-tier, mid-tier, and premium is one config dropdown, no code change |
 | Vector retrieval pattern             | pgvector demonstrated as a zero-new-infra path for RAG; reuses the integration docker-compose Postgres image                  |
 | Streaming end-to-end pattern         | SSE from FastAPI → Tauri sidecar HTTP → React (`@microsoft/fetch-event-source`) is documented, tested, and reproducible       |
 | OpenAPI for AI endpoints pattern     | The `investment-oracle-contracts` spec shows how to describe multipart upload + SSE in OpenAPI 3.1                            |
@@ -103,9 +105,12 @@ PDF for speed.
   Python sidecar via PyInstaller `--onedir`. macOS .app/.dmg, Windows .msi,
   Linux .AppImage targets configured; CI ships only macOS arm64 to keep the
   matrix small.
-- **Direct vendor SDKs**: Anthropic + Google in the critical path; no
-  OpenRouter or other proxy. Vendor abstraction lives in a small
-  `ChatProvider` Protocol so swapping or adding vendors is mechanical.
+- **Chat provider flexibility**: OpenRouter (free tier,
+  `meta-llama/llama-3.3-70b-instruct:free`, zero-cost default) in the
+  critical chat path for demo use; direct Anthropic SDK and Google
+  `google-genai` SDK retained for the premium/mid-tier opt-in paths.
+  Vendor abstraction lives in a small `ChatProvider` Protocol so the
+  active provider is a config dropdown, not a code change.
 - **Document-grounded report generation**: structured-section prompt,
   retrieved chunks across multiple PDFs, SSE-streamed Markdown response.
 - **Hybrid editing**: manual Markdown edit **and** prompt-driven section
@@ -169,8 +174,8 @@ A maintainer cloning ose-primer in mid-2026 to start a new AI product can:
    pgvector is already running per the standard CRUD-demo setup).
 4. Drag one of the shipped fixture PDFs onto the sources pane and watch a
    structured Markdown report stream into the right pane.
-5. Swap the chat model from Anthropic Haiku to Gemini Flash-Lite by
-   changing one config dropdown, with no code change.
+5. Swap the chat model from OpenRouter free to Gemini Flash-Lite or Haiku
+   by changing one config dropdown, with no code change.
 6. Read `specs/apps/investment-oracle/contracts/openapi.yaml` and understand
    exactly how a streaming chat endpoint and a multipart upload are
    described.
@@ -184,7 +189,8 @@ Every executor and reviewer of this plan reads the repo-wide AI primer
 - [Anthropic API Primer](../../../docs/explanation/software-engineering/ai-application-development/anthropic-api.md)
 - [Google Gemini API Primer](../../../docs/explanation/software-engineering/ai-application-development/google-gemini-api.md)
 - [OpenAI API Primer](../../../docs/explanation/software-engineering/ai-application-development/openai-api.md)
-  (read for boundary framing — OpenAI is not used in this demo)
+  (the `openai` SDK IS used in this demo to call OpenRouter's OpenAI-compatible
+  API; openai.com models are not used — read for the API shape)
 - [Perplexity Sonar API Primer](../../../docs/explanation/software-engineering/ai-application-development/perplexity-api.md)
   (Perplexity is used for optional web grounding (FR-WG); read for the Sonar API shape)
 - [Testing AI Applications](../../../docs/explanation/software-engineering/ai-application-development/testing-ai-apps.md)
@@ -217,7 +223,7 @@ the vendor-specific vocabulary covered there.
 | Anthropic / Google model id changes break the demo (`claude-haiku-4-5` deprecated, Sonnet 4.5 already legacy) | Medium     | Model ids are config values, not hard-coded; tech-docs lists each vendor's current-models endpoint                                                                         |
 | LLM tokens consumed in CI cause cost surprise                                                                 | Medium     | `test:quick` and `test:unit` use `httpx` mock cassettes for both vendors; only manually-triggered E2E hits real APIs                                                       |
 | Tauri sidecar packaging breaks on a platform we don't CI (Linux, Windows)                                     | Medium     | CI ships macOS arm64 only; tech-docs.md documents per-platform binary suffix rules and known PyInstaller gotchas with heavy Python ML deps                                 |
-| AI SDK breaking changes confuse contributors familiar with older versions                                     | Medium     | tech-docs.md pins `anthropic@0.97`, `@anthropic-ai/sdk@0.90`, `google-genai@1.73`, `@google/genai`@npm-latest; vendor primers reference exact docs URLs                    |
+| AI SDK breaking changes confuse contributors familiar with older versions                                     | Medium     | tech-docs.md pins `openai>=1.0`, `anthropic@0.97`, `@anthropic-ai/sdk@0.90`, `google-genai@1.73`, `@google/genai`@npm-latest; vendor primers reference exact docs URLs      |
 | OpenAPI 3.1 cannot fully describe SSE; codegen produces incomplete types for the streaming endpoint           | Low        | tech-docs.md acknowledges the limitation, hand-rolls the streaming type, and tracks 3.2 tooling readiness as a backlog item                                                |
 | pgvector extension not enabled in default Postgres image                                                      | Low        | Use `pgvector/pgvector:pg16` image in `docker-compose.integration.yml`; covered in delivery checklist                                                                      |
 | API key leakage from `.env.example` if real keys committed                                                    | Low        | `.env.example` ships placeholders only; pre-commit hook + repo `.gitignore` catch real `.env` files                                                                        |
@@ -225,4 +231,5 @@ the vendor-specific vocabulary covered there.
 | Personal data crosses border to US (Anthropic / Perplexity) or Singapore (Gemini fallback)                    | High       | `PIIMasker` always-on for `direct-us` and `vertex-singapore` routes; UU PDP Article 56 SCC-or-consent posture documented; pre-/post-transfer report template ships in repo |
 | Indonesian-residency upgrade path (Bedrock Jakarta) not exercised in CI                                       | Medium     | tech-docs.md documents the Bedrock route; manual smoke phase exercises it; CI lane added in a follow-up plan                                                               |
 | Perplexity Sonar adds non-trivial cost (per-token + per-search fee)                                           | Medium     | Web grounding is opt-in per analysis; cost cap accounts for Perplexity per-request fee; UI surfaces the "+web grounding" cost delta before generation                      |
+| OpenRouter free-tier availability or rate-limit change                                                        | Medium     | 200 req/day cap is fine for single-developer demo; paid OpenRouter or direct vendor (Gemini Flash-Lite, Haiku) as immediate fallback; `ChatProvider` Protocol makes the swap a config change |
 | Future AI demo plan diverges from these conventions                                                           | Medium     | Document conventions in `governance/development/pattern/llm-demo-pattern.md` (created as part of this plan)                                                                |
