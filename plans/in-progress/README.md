@@ -8,9 +8,6 @@ Active project plans currently being worked on.
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
   exports research dossiers.
-- [Rename `repo-governance/` → `repo-governance/`](./rename-governance-to-repo-governance/README.md)
-  — mechanical rename to disambiguate repository governance from the GRC discipline; mirrors
-  the same rename applied in `ose-public`.
 
 ## Folder Naming
 
