@@ -115,7 +115,7 @@ func (s *contractsJavaCleanImportsUnitSteps) theDeveloperRunsContractsJavaCleanI
 
 func (s *contractsJavaCleanImportsUnitSteps) theCommandExitsSuccessfully() error {
 	if s.cmdErr != nil {
-		return fmt.Errorf("expected success but got: %v\nOutput: %s", s.cmdErr, s.cmdOutput)
+		return fmt.Errorf("expected success but got: %w\nOutput: %s", s.cmdErr, s.cmdOutput)
 	}
 	return nil
 }
@@ -123,28 +123,28 @@ func (s *contractsJavaCleanImportsUnitSteps) theCommandExitsSuccessfully() error
 func (s *contractsJavaCleanImportsUnitSteps) unusedImportsRemovedFromJavaFiles() error {
 	// The mock returns 1 modified file — just verify command succeeded
 	if s.cmdErr != nil {
-		return fmt.Errorf("expected success but got: %v", s.cmdErr)
+		return fmt.Errorf("expected success but got: %w", s.cmdErr)
 	}
 	return nil
 }
 
 func (s *contractsJavaCleanImportsUnitSteps) samePackageImportsRemovedFromJavaFiles() error {
 	if s.cmdErr != nil {
-		return fmt.Errorf("expected success but got: %v", s.cmdErr)
+		return fmt.Errorf("expected success but got: %w", s.cmdErr)
 	}
 	return nil
 }
 
 func (s *contractsJavaCleanImportsUnitSteps) onlyOneCopyOfEachImportRemains() error {
 	if s.cmdErr != nil {
-		return fmt.Errorf("expected success but got: %v", s.cmdErr)
+		return fmt.Errorf("expected success but got: %w", s.cmdErr)
 	}
 	return nil
 }
 
 func (s *contractsJavaCleanImportsUnitSteps) javaFilesAreUnchanged() error {
 	if s.cmdErr != nil {
-		return fmt.Errorf("expected success but got: %v", s.cmdErr)
+		return fmt.Errorf("expected success but got: %w", s.cmdErr)
 	}
 	return nil
 }

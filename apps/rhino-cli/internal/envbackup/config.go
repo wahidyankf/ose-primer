@@ -9,8 +9,8 @@ import (
 
 // ConfigPattern defines a known uncommitted config file.
 type ConfigPattern struct {
-	RelPath     string // Exact relative path from repo root
-	Description string // Human-readable description
+	RelPath     string // Exact relative path from repo root.
+	Description string // Human-readable description.
 	Category    string // "ai-tools", "docker", "version-mgrs", "environment"
 }
 

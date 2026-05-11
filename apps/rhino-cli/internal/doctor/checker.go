@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -363,7 +364,7 @@ func parseCargoLlvmCov(output string) string {
 }
 
 // parseElixirVersion extracts the version from elixir --version multiline output.
-// Input: "Erlang/OTP 27 ...\n\nElixir 1.19.5 (compiled with Erlang/OTP 27)"
+// Input: "Erlang/OTP 27 ...\n\nElixir 1.19.5 (compiled with Erlang/OTP 27)".
 func parseElixirVersion(output string) string {
 	return parseLineWord(output, "Elixir ", 1, "")
 }
@@ -504,7 +505,8 @@ func realRunner(name string, args ...string) (stdout, stderr string, exitCode in
 	stdout = stdoutBuf.String()
 	stderr = stderrBuf.String()
 	if runErr != nil {
-		if exitErr, ok := runErr.(*exec.ExitError); ok {
+		var exitErr *exec.ExitError
+		if errors.As(runErr, &exitErr) {
 			// Non-zero exit is not an error — we still have the output
 			return stdout, stderr, exitErr.ExitCode(), nil
 		}

@@ -6,7 +6,7 @@ import (
 	"regexp"
 )
 
-// cljStepRe matches (Given "text" ...), (When "text" ...), (Then "text" ...)
+// cljStepRe matches (Given "text" ...), (When "text" ...), (Then "text" ...).
 var cljStepRe = regexp.MustCompile(`\((?:Given|When|Then|And|But)\s+"((?:[^"\\]|\\.)*)"`)
 
 // extractClojureStepTexts reads a Clojure file and adds step texts to the stepMatcher.

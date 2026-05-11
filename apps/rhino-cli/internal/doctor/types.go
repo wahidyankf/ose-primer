@@ -55,7 +55,7 @@ type DoctorResult struct {
 // CheckOptions configures how the doctor check should be performed.
 type CheckOptions struct {
 	RepoRoot string
-	Runner   CommandRunner // nil = use real subprocess runner
+	Runner   CommandRunner // nil = use real subprocess runner.
 	Scope    Scope         // "" or "full" = all tools; "minimal" = core tools only
 }
 

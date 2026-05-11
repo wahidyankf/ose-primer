@@ -10,8 +10,8 @@ import (
 
 // InstallStep describes a single installation command.
 type InstallStep struct {
-	Description string   // "Install Go via Homebrew"
-	Command     string   // "brew"
+	Description string   // "Install Go via Homebrew".
+	Command     string   // "brew".
 	Args        []string // ["install", "go"]
 }
 
