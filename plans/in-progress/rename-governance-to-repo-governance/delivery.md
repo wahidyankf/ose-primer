@@ -11,7 +11,7 @@ claude --worktree rename-governance-to-repo-governance
 ```
 
 See [Worktree Path Convention](../../../governance/conventions/structure/worktree-path.md) and
-[Plans Organization Convention §Worktree Specification](../../../governance/conventions/structure/plans.md#worktree-specification).
+[Plans Organization Convention](../../../governance/conventions/structure/plans.md).
 
 ---
 
@@ -255,6 +255,8 @@ No stray references remaining (excluding `plans/done/` and `generated-reports/` 
 
 - [ ] Commit changes atomically — the full rename is one logical unit; keep it in one commit
 - [ ] Follow Conventional Commits: `refactor(governance): rename governance/ to repo-governance/`
+- [ ] If quality gates surface preexisting issues requiring fixes, commit those separately from
+      the rename commit — do not bundle unrelated fixes with the rename
 - [ ] Do NOT bundle unrelated fixes into this commit
 
 - [ ] Stage all changes: `git add -A`

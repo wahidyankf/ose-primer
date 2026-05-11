@@ -11,6 +11,24 @@ This rename keeps `ose-primer` aligned with `ose-public`, which applies the same
 parallel in-progress plan. Template-repo and product-repo should use the same directory layout to
 minimize cognitive overhead when adopting or propagating changes.
 
+## Business Impact
+
+**Pain points (current state):**
+
+- The name `governance/` is ambiguous: contributors with GRC backgrounds encounter it and may
+  misidentify it as Governance, Risk & Compliance tooling rather than repo-scoped process docs.
+- AI agents reading instruction files that reference `governance/` paths may associate the token
+  with GRC context, producing incorrect path suggestions or prompts.
+- `ose-primer` uses `governance/` while `ose-public` is migrating to `repo-governance/`, creating
+  cognitive overhead when contributors move between the two repos.
+
+**Expected benefits (after rename):**
+
+- `repo-governance/` is self-describing: scope (repo) is explicit in the directory name.
+- AI agents receive unambiguous path tokens, reducing GRC misinterpretation in generated content.
+- Directory layout converges between `ose-primer` and `ose-public`, reducing mental context-switching
+  for contributors working across both repos.
+
 ## Affected Roles
 
 | Role               | Impact                                                 |

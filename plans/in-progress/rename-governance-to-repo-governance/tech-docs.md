@@ -242,6 +242,31 @@ Pass E (import path update) applies to 2 files only (`cmd/governance_vendor_audi
 
 ---
 
+## Dependencies
+
+This is an independent rename with no external dependencies:
+
+- Go toolchain (`go build ./...` for compile verification)
+- Nx CLI (`npx nx run rhino-cli:*` targets for build, lint, test, vendor-audit)
+- `npm run sync:claude-to-opencode` (OpenCode agent mirror regeneration after Pass A)
+- `.husky/pre-push` (updated explicitly — no file extension, not caught by `find`)
+
+No new libraries, packages, or infrastructure are introduced or required.
+
+## Testing Strategy
+
+All verification is grep-based (zero matches for old token) plus compile-pass (compile error
+surfaces any missed import path). This is a complete strategy for a pure rename because:
+
+- A missed `governance/` path token shows up as a broken reference at runtime or test time
+- A missed Go import or package declaration causes `go build ./...` to fail
+- The Phase 10 full-verification checklist enumerates every grep check needed
+- Phase 11 quality gates (rhino-cli build, lint, test:unit, test:integration, vendor-audit,
+  markdown lint, Nx affected typecheck/lint/test:quick/spec-coverage) provide exhaustive
+  automated coverage
+
+No new test logic is required. The existing test suite is the test strategy.
+
 ## Rollback
 
 ```bash
