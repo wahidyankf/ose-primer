@@ -21,7 +21,7 @@ The [Accessibility First](../../principles/content/accessibility-first.md) princ
 
 ## Scope Clarification
 
-The [Color Accessibility Convention](../../conventions/formatting/color-accessibility.md) defines a 5-color palette that applies exclusively to **documentation** (Mermaid diagrams, charts, visual aids in `docs/` and `governance/`). UI applications are **not** restricted to that palette. Frontend apps may use any colors, design tokens, or brand colors provided they meet the WCAG AA contrast requirements in this document and avoid encoding information through color alone.
+The [Color Accessibility Convention](../../conventions/formatting/color-accessibility.md) defines a 5-color palette that applies exclusively to **documentation** (Mermaid diagrams, charts, visual aids in `docs/` and `repo-governance/`). UI applications are **not** restricted to that palette. Frontend apps may use any colors, design tokens, or brand colors provided they meet the WCAG AA contrast requirements in this document and avoid encoding information through color alone.
 
 ## WCAG AA Minimum Requirements
 

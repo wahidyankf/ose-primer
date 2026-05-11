@@ -351,9 +351,9 @@ let processZakat (processor: ZakatProcessor) = { processor with Status = Process
 
 ## Related Documentation
 
-- [Functional Programming](../../../../../governance/development/pattern/functional-programming.md)
-- [Pure Functions](../../../../../governance/principles/software-engineering/pure-functions.md)
-- [Immutability](../../../../../governance/principles/software-engineering/immutability.md)
+- [Functional Programming](../../../../../repo-governance/development/pattern/functional-programming.md)
+- [Pure Functions](../../../../../repo-governance/principles/software-engineering/pure-functions.md)
+- [Immutability](../../../../../repo-governance/principles/software-engineering/immutability.md)
 
 ---
 

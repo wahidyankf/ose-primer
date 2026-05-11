@@ -1,10 +1,10 @@
-# BRD — Rename `governance/` to `repo-governance/`
+# BRD — Rename `repo-governance/` to `repo-governance/`
 
 ## Business Goal
 
 Eliminate naming ambiguity between the repository's internal governance directory and the GRC
 discipline "Governance, Risk & Compliance". As the platform evolves toward enterprise use cases,
-contributors with GRC backgrounds will encounter the `governance/` directory and may misidentify it
+contributors with GRC backgrounds will encounter the `repo-governance/` directory and may misidentify it
 as GRC-scoped. `repo-governance/` is unambiguous.
 
 This rename keeps `ose-primer` aligned with `ose-public`, which applies the same rename in a
@@ -15,11 +15,11 @@ minimize cognitive overhead when adopting or propagating changes.
 
 **Pain points (current state):**
 
-- The name `governance/` is ambiguous: contributors with GRC backgrounds encounter it and may
+- The name `repo-governance/` is ambiguous: contributors with GRC backgrounds encounter it and may
   misidentify it as Governance, Risk & Compliance tooling rather than repo-scoped process docs.
-- AI agents reading instruction files that reference `governance/` paths may associate the token
+- AI agents reading instruction files that reference `repo-governance/` paths may associate the token
   with GRC context, producing incorrect path suggestions or prompts.
-- `ose-primer` uses `governance/` while `ose-public` is migrating to `repo-governance/`, creating
+- `ose-primer` uses `repo-governance/` while `ose-public` is migrating to `repo-governance/`, creating
   cognitive overhead when contributors move between the two repos.
 
 **Expected benefits (after rename):**
@@ -51,8 +51,8 @@ minimize cognitive overhead when adopting or propagating changes.
 
 ## Business Risks
 
-| Risk                                                     | Mitigation                                                               |
-| -------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Broken links in external docs referencing old path       | Paths are internal-only; no external docs link to `governance/` paths    |
-| Stale references in agent/skill files breaking workflows | Covered by mass sed replace + rhino-cli vendor-audit post-rename         |
-| Pre-push hook failing on renamed paths                   | `.husky/pre-push` updated explicitly as part of execution (no extension) |
+| Risk                                                     | Mitigation                                                                 |
+| -------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Broken links in external docs referencing old path       | Paths are internal-only; no external docs link to `repo-governance/` paths |
+| Stale references in agent/skill files breaking workflows | Covered by mass sed replace + rhino-cli vendor-audit post-rename           |
+| Pre-push hook failing on renamed paths                   | `.husky/pre-push` updated explicitly as part of execution (no extension)   |

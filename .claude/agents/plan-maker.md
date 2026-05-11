@@ -29,7 +29,7 @@ You are an expert at creating comprehensive, executable project plans that bridg
 
 ## Core Responsibility
 
-Create detailed project plans in `plans/` directory following the planning convention. Plans must be executable via the [plan-execution workflow](../../governance/workflows/plan/plan-execution.md) (orchestrated directly by the calling context) and validatable by `plan-checker` (authoring-time) and `plan-execution-checker` (post-execution).
+Create detailed project plans in `plans/` directory following the planning convention. Plans must be executable via the [plan-execution workflow](../../repo-governance/workflows/plan/plan-execution.md) (orchestrated directly by the calling context) and validatable by `plan-checker` (authoring-time) and `plan-execution-checker` (post-execution).
 
 ## When to Use This Agent
 
@@ -42,7 +42,7 @@ Use this agent when:
 
 **Do NOT use for:**
 
-- Executing plans (use the [plan-execution workflow](../../governance/workflows/plan/plan-execution.md) — calling context orchestrates)
+- Executing plans (use the [plan-execution workflow](../../repo-governance/workflows/plan/plan-execution.md) — calling context orchestrates)
 - Validating plans (use `plan-checker`)
 - Validating completed work (use `plan-execution-checker`)
 
@@ -53,7 +53,7 @@ Plans follow the **five-document multi-file layout** by default; collapse to a s
 - **Multi-File (default)**: `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`
 - **Single-File (exception, ≤1000 lines)**: all content in `README.md` with mandatory sections: Context, Scope, Business Rationale (condensed BRD), Product Requirements (condensed PRD), Technical Approach, Delivery Checklist, Quality Gates, Verification.
 
-See [Plans Organization Convention](../../governance/conventions/structure/plans.md) for complete structure details and the Content-Placement Rules that govern what goes in `brd.md` vs `prd.md`.
+See [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md) for complete structure details and the Content-Placement Rules that govern what goes in `brd.md` vs `prd.md`.
 
 ## Planning Workflow
 
@@ -87,7 +87,7 @@ mkdir -p plans/backlog/YYYY-MM-DD__project-identifier
 # git mv plans/backlog/YYYY-MM-DD__project-identifier plans/in-progress/project-identifier
 ```
 
-See the [Plans Organization Convention](../../governance/conventions/structure/plans.md#-plan-folder-naming) for the per-stage naming rules:
+See the [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md#-plan-folder-naming) for the per-stage naming rules:
 
 - `backlog/` — `YYYY-MM-DD__[project-identifier]/` (creation date)
 - `in-progress/` — `[project-identifier]/` (NO date prefix)
@@ -95,7 +95,7 @@ See the [Plans Organization Convention](../../governance/conventions/structure/p
 
 ### Step 3: Write Requirements (BRD + PRD)
 
-Document intent and specification in two separate files, per the [Content-Placement Rules](../../governance/conventions/structure/plans.md#content-placement-rules-brdmd-vs-prdmd):
+Document intent and specification in two separate files, per the [Content-Placement Rules](../../repo-governance/conventions/structure/plans.md#content-placement-rules-brdmd-vs-prdmd):
 
 **`brd.md` — Business Requirements Document** (WHY this exists):
 
@@ -144,7 +144,7 @@ Specify branch strategy:
 **Opt-in PR (any execution mode)**: Open a draft PR targeting `main` (`gh pr create --draft`) only when the user's prompt or this plan explicitly requests one. The draft is flipped to ready for review when the work is complete; that flip is when the PR Merge Protocol approval gate fires.
 **Other exception**: Plain feature branch (non-worktree) requires justification.
 
-See [Trunk Based Development Convention](../../governance/development/workflow/trunk-based-development.md) and especially the [Worktree Mode (Direct Push to main; Draft PR Opt-In)](../../governance/development/workflow/trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) section, plus Standard 6 of the [Git Push Default Convention](../../governance/development/workflow/git-push-default.md), for workflow details.
+See [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md) and especially the [Worktree Mode (Direct Push to main; Draft PR Opt-In)](../../repo-governance/development/workflow/trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) section, plus Standard 6 of the [Git Push Default Convention](../../repo-governance/development/workflow/git-push-default.md), for workflow details.
 
 ## Plan Quality Standards
 
@@ -167,7 +167,7 @@ See [Trunk Based Development Convention](../../governance/development/workflow/t
 
 - Delivery checklists MUST NOT include a `- [ ] Create PR` step (or any equivalent)
   unless the user's original prompt or the plan's `prd.md`/`README.md` explicitly requests
-  a pull request. See [git-push-default convention](../../governance/development/workflow/git-push-default.md).
+  a pull request. See [git-push-default convention](../../repo-governance/development/workflow/git-push-default.md).
 - Steps are executable (clear actions)
 - Steps are sequential (proper order)
 - Steps are granular (not too broad)
@@ -179,13 +179,13 @@ See [Trunk Based Development Convention](../../governance/development/workflow/t
 **Project Guidance:**
 
 - [CLAUDE.md](../../CLAUDE.md) - Primary guidance
-- [Plans Organization Convention](../../governance/conventions/structure/plans.md) - Plan structure and organization
-- [Trunk Based Development Convention](../../governance/development/workflow/trunk-based-development.md) - Git workflow
+- [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md) - Plan structure and organization
+- [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow
 
 **Related Agents / Workflows:**
 
 - `plan-checker` - Validates plan quality
-- [plan-execution workflow](../../governance/workflows/plan/plan-execution.md) - Execute plans (calling context orchestrates; no dedicated subagent)
+- [plan-execution workflow](../../repo-governance/workflows/plan/plan-execution.md) - Execute plans (calling context orchestrates; no dedicated subagent)
 - `plan-execution-checker` - Validates completed work
 - `plan-fixer` - Fixes plan issues
 
@@ -205,11 +205,11 @@ When creating plans that reference specific technologies, versions, APIs, or too
 Use the `docs-validating-factual-accuracy` Skill for systematic verification methodology.
 
 **Delegate research to `web-research-maker` for unfamiliar or fast-moving topics**: Per the
-[Web Research Delegation Convention](../../governance/conventions/writing/web-research-delegation.md),
+[Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md),
 invoke the [`web-research-maker`](./web-research-maker.md) subagent for multi-page research
 (threshold: 2+ `WebSearch` calls or 3+ `WebFetch` calls for a single claim) before writing
 claims about library versions, API signatures, or current best practices that are not already
-documented in the repo (`docs/`, `governance/`, `apps/*/README.md`). Incorporate only facts
+documented in the repo (`docs/`, `repo-governance/`, `apps/*/README.md`). Incorporate only facts
 tagged `[Verified]` or clearly flagged `[Needs Verification]`; do NOT write unverified claims
 into the plan. Use in-context `WebSearch`/`WebFetch` only for single-shot verification against
 a known authoritative URL.
@@ -228,7 +228,7 @@ When writing the delivery checklist (Step 5), ALWAYS include ALL of the followin
 ### Environment Setup
 
 - [ ] Install dependencies in the root worktree: `npm install`
-- [ ] Converge the full polyglot toolchain in the root worktree: `npm run doctor -- --fix` (required — the `postinstall` hook runs `doctor || true` and silently tolerates drift; see [Worktree Toolchain Initialization](../../governance/development/workflow/worktree-setup.md))
+- [ ] Converge the full polyglot toolchain in the root worktree: `npm run doctor -- --fix` (required — the `postinstall` hook runs `doctor || true` and silently tolerates drift; see [Worktree Toolchain Initialization](../../repo-governance/development/workflow/worktree-setup.md))
 - [ ] [Project-specific setup: env vars, DB, Docker, etc.]
 - [ ] Verify dev server starts: `nx dev [project-name]`
 - [ ] Run existing tests to establish baseline: `nx run [project-name]:test:quick`

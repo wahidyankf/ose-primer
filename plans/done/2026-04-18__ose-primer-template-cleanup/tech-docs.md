@@ -101,8 +101,8 @@ Full reframing as template entry point. New section order with expected content 
 3. **How to use this template** — step-by-step: `git clone`, choose `a-demo-*` variants to keep, delete unwanted variants, rename via search-and-replace or `rhino-cli` helpers, point `origin` at the new remote, push to `main`.
 4. **Prerequisites** — Volta + Node pinned version; single-command setup `npm install && npm run doctor -- --fix`.
 5. **Common commands** — `nx build`, `nx affected -t …`, `npm run lint:md`, `npm run doctor`, `npm run sync:claude-to-opencode`.
-6. **Governance & conventions** — link to `governance/README.md` and list of top-level principle categories.
-7. **Repository layout** — brief ASCII or bullet tree showing `apps/`, `libs/`, `specs/`, `governance/`, `docs/`, `plans/`, `.claude/`, `.opencode/`.
+6. **Governance & conventions** — link to `repo-governance/README.md` and list of top-level principle categories.
+7. **Repository layout** — brief ASCII or bullet tree showing `apps/`, `libs/`, `specs/`, `repo-governance/`, `docs/`, `plans/`, `.claude/`, `.opencode/`.
 8. **License** — short statement: "MIT. See `LICENSE` and `LICENSING-NOTICE.md`."
 
 The rewritten README is the first-read onboarding doc for a new cloner; it must explain what the template ships, how to use it, and where to look next, without assuming familiarity with the `ose-public` history.
@@ -115,15 +115,15 @@ Mirror the Phase 7 edits one-for-one. `AGENTS.md` is a parallel doc for OpenCode
 
 - `.claude/agents/README.md` — drop removed agents from every table and role grouping.
 
-### Phase 11 — Governance audit (`governance/**`)
+### Phase 11 — Governance audit (`repo-governance/**`)
 
-Run `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" governance/`. Expected hit sites (not exhaustive):
+Run `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" repo-governance/`. Expected hit sites (not exhaustive):
 
-- `governance/conventions/structure/plans.md` — examples may reference removed apps; generalise.
-- `governance/development/workflow/*.md` — env-branch conventions may reference `prod-ayokoding-web` etc.; delete those bullets.
-- `governance/workflows/**` — may name removed agents; rewrite or delete per PR-4 risk.
-- `governance/vision/**` — `Phase 1: OrganicLever` framing needs generalising.
-- `governance/development/agents/**` — agent-workflow-orchestration examples.
+- `repo-governance/conventions/structure/plans.md` — examples may reference removed apps; generalise.
+- `repo-governance/development/workflow/*.md` — env-branch conventions may reference `prod-ayokoding-web` etc.; delete those bullets.
+- `repo-governance/workflows/**` — may name removed agents; rewrite or delete per PR-4 risk.
+- `repo-governance/vision/**` — `Phase 1: OrganicLever` framing needs generalising.
+- `repo-governance/development/agents/**` — agent-workflow-orchestration examples.
 
 **Decision rule**: if a file's sole subject is a removed product, `git rm` it. Otherwise, rewrite examples using generic placeholders (`<app-name>`, `your-app`). Commit per logical subgrouping (conventions, development, principles, workflows, vision) — at least one commit per subgrouping to keep diffs reviewable.
 
@@ -133,7 +133,7 @@ Same approach as Phase 11 but targeting `docs/tutorials/`, `docs/how-to/`, `docs
 
 ### Phase 12.5 — Audit every remaining markdown file under kept paths
 
-All remaining `.md` files under `apps/`, `libs/`, `specs/`, `infra/`, `apps-labs/`, `archived/`, `.claude/`, `.opencode/`, `governance/`, `docs/`, and `plans/` must be scrubbed of product-brand references. Earlier phases cover governance and docs trees; this phase extends the audit explicitly to per-app READMEs, per-lib READMEs, kept agent bodies, kept skill bodies and their reference modules, spec READMEs, infra-dev READMEs, archived README, and apps-labs README. Generic placeholder substitutions are preferred over deletion; a file is deleted only when its sole subject is a removed product. This phase is a **safety-net audit** — if earlier phases caught everything, this phase is a no-op; if anything slipped, this phase catches it.
+All remaining `.md` files under `apps/`, `libs/`, `specs/`, `infra/`, `apps-labs/`, `archived/`, `.claude/`, `.opencode/`, `repo-governance/`, `docs/`, and `plans/` must be scrubbed of product-brand references. Earlier phases cover governance and docs trees; this phase extends the audit explicitly to per-app READMEs, per-lib READMEs, kept agent bodies, kept skill bodies and their reference modules, spec READMEs, infra-dev READMEs, archived README, and apps-labs README. Generic placeholder substitutions are preferred over deletion; a file is deleted only when its sole subject is a removed product. This phase is a **safety-net audit** — if earlier phases caught everything, this phase is a no-op; if anything slipped, this phase catches it.
 
 ### Phase 13 — `LICENSE` + `LICENSING-NOTICE.md` + license metadata (MIT switch)
 
@@ -188,7 +188,7 @@ All `.claude/` edits land first (phases 4, 5, 10, 11, 12). Phase 15 runs the syn
 
 ### D5 — Direct trunk-based work on `main`, no PR
 
-Per the user's scope statement: this is parent-repo-only work; `ose-projects` parent-repo worktree rules do not apply because `ose-primer` is a standalone single-repo monorepo. Trunk-based default says: commit to `main`, push to `main`, no PR. See `governance/development/workflow/trunk-based-development.md`.
+Per the user's scope statement: this is parent-repo-only work; `ose-projects` parent-repo worktree rules do not apply because `ose-primer` is a standalone single-repo monorepo. Trunk-based default says: commit to `main`, push to `main`, no PR. See `repo-governance/development/workflow/trunk-based-development.md`.
 
 ### D6 — No `--no-verify`, no `--force`
 
@@ -196,7 +196,7 @@ Every commit passes the Husky pre-push gate (`nx affected -t typecheck lint test
 
 ### D7 — Fix all issues encountered, even preexisting
 
-Per the Root Cause Orientation principle and `governance/development/quality/ci-blocker-resolution.md`: any preexisting `typecheck` / `lint` / `test:quick` failure surfaced during cleanup gets fixed in its own thematic commit (e.g., `fix(a-demo-be-fsharp-giraffe): repair typecheck regression surfaced during template cleanup`), not deferred.
+Per the Root Cause Orientation principle and `repo-governance/development/quality/ci-blocker-resolution.md`: any preexisting `typecheck` / `lint` / `test:quick` failure surfaced during cleanup gets fixed in its own thematic commit (e.g., `fix(a-demo-be-fsharp-giraffe): repair typecheck regression surfaced during template cleanup`), not deferred.
 
 ### D8 — Template ships with empty plans history
 

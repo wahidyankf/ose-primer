@@ -26,7 +26,7 @@ with the Explicit Over Implicit and Simplicity Over Complexity principles.
 
 ### B — no-date-metadata convention
 
-**Gap**: ~466 markdown files across `.claude/agents/`, `.claude/skills/`, `governance/`,
+**Gap**: ~466 markdown files across `.claude/agents/`, `.claude/skills/`, `repo-governance/`,
 and `docs/` carry manual date metadata: `- **Last Updated**: DATE` rows, `- **Created**: DATE`
 rows in agent metadata sections, `created:` / `updated:` frontmatter fields, or standalone
 `**Last Updated**: DATE` footer annotations. Some agent and skill template examples also
@@ -44,7 +44,7 @@ Updates template examples so consumer repos do not inherit the anti-pattern.
 ### C — rhino-cli `docs validate-mermaid`
 
 **Gap**: `ose-primer` governs Mermaid diagram structure via
-`governance/conventions/formatting/diagrams.md` (label length, rank width, single
+`repo-governance/conventions/formatting/diagrams.md` (label length, rank width, single
 diagram per block) but has no automated enforcement. Rule compliance is manual and
 fragile.
 
@@ -70,7 +70,7 @@ the command's behavior.
 ## Success Metrics
 
 - Zero agent files carry `- **Last Updated**: DATE` rows after Phase B.
-- Zero governance/docs files carry `created:` or `updated:` frontmatter after Phase B.
+- Zero repo-governance/docs files carry `created:` or `updated:` frontmatter after Phase B.
 - `nx run rhino-cli:test:quick` passes with ≥90% coverage after Phase C.
 - `nx run rhino-cli:validate:mermaid` exits 0 on the repo's existing diagrams.
 - `plan-checker` flags any delivery checklist with an unsolicited `- [ ] Create PR` step.

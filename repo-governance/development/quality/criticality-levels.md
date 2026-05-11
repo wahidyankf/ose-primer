@@ -596,7 +596,7 @@ https://docs.npmjs.com/cli/v9/commands/npm-install
 ```markdown
 ### 1. [BROKEN] - Reference Link Returns 404
 
-**File**: `governance/conventions/formatting/linking.md:89`
+**File**: `repo-governance/conventions/formatting/linking.md:89`
 **Status**: [BROKEN] - HTTP 404 Not Found
 **Criticality**: CRITICAL - Breaks documentation reference chain
 **Category**: Broken External Link
@@ -1101,7 +1101,7 @@ def determine_priority(criticality, confidence):
 
 ### 1. Missing Required Subcategory Field
 
-**File**: `governance/development/agents/ai-agents.md`
+**File**: `repo-governance/development/agents/ai-agents.md`
 **Original Issue**: CRITICAL - Missing `subcategory: development` field
 **Validation**: Confirmed field missing in frontmatter (HIGH confidence)
 **Fix Applied**: Added `subcategory: development` at line 5
@@ -1140,14 +1140,14 @@ subcategory: development
 
 ### 1. Ambiguous Link Target
 
-**File**: `governance/conventions/formatting/linking.md:89`
+**File**: `repo-governance/conventions/formatting/linking.md:89`
 **Original Issue**: CRITICAL - Broken link to convention doc
 **Validation**: MEDIUM confidence - Multiple possible target files found
 **Reason for Flag**: Cannot determine correct link target automatically
 **Action Required**: Manually select correct target from:
 
-- `governance/conventions/structure/file-naming.md`
-- `governance/development/infra/file-organization.md`
+- `repo-governance/conventions/structure/file-naming.md`
+- `repo-governance/development/infra/file-organization.md`
 
 ---
 
@@ -1161,7 +1161,7 @@ subcategory: development
 
 **Total**: 15 findings
 
-1. **File**: `governance/conventions/formatting/diagrams.md`
+1. **File**: `repo-governance/conventions/formatting/diagrams.md`
    **Suggestion**: Consider adding example of complex multi-layer diagram
    **Priority**: P4 (LOW + MEDIUM)
 

@@ -24,7 +24,7 @@ A large number of real violations exist across `docs/`. A 2026-04-25 pre-Phase-0
 (direction-blind validator, MaxWidth=3) found 107 files failing. The authoritative count
 is always discovered by running `go run ./apps/rhino-cli/main.go docs validate-mermaid` —
 the direction-aware Phase 0 fix will reclassify some diagrams, so the Phase 1 file list
-must be re-discovered after Phase 0. The pre-push hook targets only `governance/` and
+must be re-discovered after Phase 0. The pre-push hook targets only `repo-governance/` and
 `.claude/`, so violations in `docs/` do not block pushes today. However, wide diagrams
 render poorly on GitHub and in VS Code preview, undermining documentation quality.
 
@@ -34,7 +34,7 @@ The fix strategies discovered and validated in this plan (direction flip, sequen
 chaining, diagram splitting, label shortening) exist only in `tech-docs.md` — a plan
 document that moves to `plans/done/` on completion. After archival, this institutional
 knowledge is effectively invisible to future contributors. The existing governance
-convention at `governance/conventions/formatting/diagrams.md` documents diagram syntax
+convention at `repo-governance/conventions/formatting/diagrams.md` documents diagram syntax
 and style but has no section on width constraints (span/depth, direction-aware rules) or
 how to fix violations when they occur. Contributors encountering a `width_exceeded` error
 have no canonical reference to consult.
@@ -46,7 +46,7 @@ have no canonical reference to consult.
 2. Achieve zero validator errors across all `docs/` files on `main`.
 3. Improve diagram readability across GitHub, IDE previews, and any generated doc site.
 4. Establish a clean baseline so future violations are caught at the push boundary.
-5. Propagate validated fix strategies into `governance/conventions/formatting/diagrams.md`
+5. Propagate validated fix strategies into `repo-governance/conventions/formatting/diagrams.md`
    so future contributors have a canonical, always-available reference.
 
 ## Affected Roles
@@ -66,8 +66,8 @@ have no canonical reference to consult.
   - `apps/rhino-cli/cmd/docs_validate_mermaid.go` — update CLI flag defaults
     (`--max-width` 3→4, `--max-depth` 5→0 where 0 means no limit)
   - All markdown files in `docs/` with `width_exceeded` or `label_too_long` violations
-    after the Phase 0 re-audit. (`governance/` audited clean — no violations.)
-  - `governance/conventions/formatting/diagrams.md` — add direction-aware width
+    after the Phase 0 re-audit. (`repo-governance/` audited clean — no violations.)
+  - `repo-governance/conventions/formatting/diagrams.md` — add direction-aware width
     constraints and fix strategy guide (Phase 2, via `repo-rules-maker`)
 - **Out of scope**: Other app source code, specs, test data files, generated files.
 - **No cross-repo dependency**: self-contained within ose-primer.
@@ -89,7 +89,7 @@ have no canonical reference to consult.
 3. The `validate:mermaid` Nx target (pre-push hook) passes without explicit flags,
    confirming CLI flag defaults in `docs_validate_mermaid.go` reflect new thresholds
    (MaxWidth=4, MaxDepth=0/unlimited).
-4. `governance/conventions/formatting/diagrams.md` contains a "Flowchart Width
+4. `repo-governance/conventions/formatting/diagrams.md` contains a "Flowchart Width
    Constraints" section and a "Width Violation Fix Strategy Guide" section, and the
    `repo-rules-quality-gate` passes in strict mode after Phase 2 changes.
 

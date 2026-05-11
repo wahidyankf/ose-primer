@@ -10,7 +10,7 @@ Conventional-Commits commit per thematic phase unless explicitly
 grouped below.
 
 **Publish path**: direct push to `origin main` per
-[Git Push Default Convention](../../../governance/development/workflow/git-push-default.md)
+[Git Push Default Convention](../../../repo-governance/development/workflow/git-push-default.md)
 Standards 1, 2, 6. No draft PR is opened — the user has not
 requested one for this plan. Worktree is optional; if used, push
 via `git push origin HEAD:main` per Standard 6.
@@ -37,7 +37,7 @@ contract.
       _Date 2026-04-27 / Status: done / Files: none / Notes: 1586 pkgs audited, doctor verified 19/19 tools_
 - [x] Run `npm run doctor -- --fix` to converge polyglot toolchains
       (mandatory for worktree setup per
-      `governance/development/workflow/worktree-setup.md`; harmless
+      `repo-governance/development/workflow/worktree-setup.md`; harmless
       if already converged).
       _Date 2026-04-27 / Status: done / Files: none / Notes: 19/19 tools OK, nothing to fix_
 - [x] Confirm `go version` reports Go ≥ 1.22.
@@ -148,7 +148,7 @@ contract.
 - [x] Confirm the command's `Long` description mentions four rules.
       _Date 2026-04-27 / Status: done / Files: none / Notes: Long desc updated to four rules_
 - [x] Confirm `collectMDDefaultDirs` includes
-      `docs/`, `governance/`, `.claude/`, `plans/` (the port should
+      `docs/`, `repo-governance/`, `.claude/`, `plans/` (the port should
       already widen the default scan).
       _Date 2026-04-27 / Status: done / Files: none / Notes: all 5 default dirs present including plans/_
 - [x] Replace `cmd/docs_validate_mermaid_test.go` with the
@@ -172,13 +172,13 @@ contract.
 ## Phase 7 — Update Nx target
 
 - [x] Edit `apps/rhino-cli/project.json` `validate:mermaid.command`:
-      drop the positional `governance/ .claire/` arguments so the
+      drop the positional `repo-governance/ .claire/` arguments so the
       CLI uses its (now-widened) default scan.
-      _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/project.json / Notes: command now uses no positional args (was governance/ .claude/)_
+      _Date 2026-04-27 / Status: done / Files: apps/rhino-cli/project.json / Notes: command now uses no positional args (was repo-governance/ .claude/)_
 - [x] Edit `apps/rhino-cli/project.json` `validate:mermaid.inputs`:
       replace the existing two-tree list with five entries
       (`{workspaceRoot}/docs/**/*.md`,
-      `{workspaceRoot}/governance/**/*.md`,
+      `{workspaceRoot}/repo-governance/**/*.md`,
       `{workspaceRoot}/.claude/**/*.md`,
       `{workspaceRoot}/plans/**/*.md`,
       `{workspaceRoot}/*.md`) plus the existing
@@ -238,7 +238,7 @@ contract.
 ## Phase 10 — Pre-push hook verification
 
 - [x] Stage a touch-only edit to one `*.md` under each of `docs/`,
-      `governance/`, `.claude/`, `plans/` (a whitespace-or-format
+      `repo-governance/`, `.claude/`, `plans/` (a whitespace-or-format
       tweak that survives `npm run format:md`).
       _Date 2026-04-27 / Status: done / Files: delivery.md / Notes: delivery.md (plans/) checkbox updates constitute the .md change; pre-push hook fires validate:mermaid on any .md change in @{u}..HEAD_
 - [x] Run `git push --dry-run`. Confirm the Husky pre-push hook

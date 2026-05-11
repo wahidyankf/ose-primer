@@ -22,7 +22,7 @@ Before starting, ensure you have:
 
 - [ ] **Deep expertise** in the target language (5+ years experience recommended)
 - [ ] **Familiarity with conventions**:
-  - [Content Quality Principles](../../governance/conventions/writing/quality.md)
+  - [Content Quality Principles](../../repo-governance/conventions/writing/quality.md)
 - [ ] **AI agents available**:
   - `crud-fs-ts-nextjs-general-maker` (general content creation)
   - `crud-fs-ts-nextjs-by-example-maker` (by-example tutorial creation)
@@ -884,6 +884,6 @@ Use this final checklist to verify completion:
 
 ## 🔗 Related Documentation
 
-- [Content Quality Principles](../../governance/conventions/writing/quality.md) - Quality requirements
-- [Factual Validation Convention](../../governance/conventions/writing/factual-validation.md) - Fact-checking methodology
-- [Color Accessibility Convention](../../governance/conventions/formatting/color-accessibility.md) - Approved color palette
+- [Content Quality Principles](../../repo-governance/conventions/writing/quality.md) - Quality requirements
+- [Factual Validation Convention](../../repo-governance/conventions/writing/factual-validation.md) - Fact-checking methodology
+- [Color Accessibility Convention](../../repo-governance/conventions/formatting/color-accessibility.md) - Approved color palette

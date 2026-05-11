@@ -56,7 +56,7 @@ chain from claim to primary source in one click.
 Feature: Budget-adaptive inheritance documented in model-selection.md
 
   Scenario: Opus tier section documents why model field is omitted
-    Given governance/development/agents/model-selection.md
+    Given repo-governance/development/agents/model-selection.md
     When I read the Opus tier section
     Then I find a "Budget-Adaptive Inheritance" block
     And it explains that omitting model inherits the session's active model
@@ -72,7 +72,7 @@ Feature: Budget-adaptive inheritance documented in model-selection.md
 Feature: Dual-platform model selection policy
 
   Scenario: OpenCode section exists in model-selection.md
-    Given governance/development/agents/model-selection.md
+    Given repo-governance/development/agents/model-selection.md
     When I search for "OpenCode"
     Then I find a section titled "OpenCode / GLM Equivalents"
     And the section contains a mapping table
@@ -85,13 +85,13 @@ Feature: Dual-platform model selection policy
     And I see an explanation of why the collapse happens
 
   Scenario: Current model versions table exists
-    Given governance/development/agents/model-selection.md
+    Given repo-governance/development/agents/model-selection.md
     When I search for "Current Model Versions"
     Then I find a table with rows for opus, sonnet, and haiku
     And the haiku row notes Haiku 3 retirement on 2026-04-19
 
   Scenario: Haiku 3 retirement is noted
-    Given governance/development/agents/model-selection.md
+    Given repo-governance/development/agents/model-selection.md
     When I search for "retired"
     Then I find a note that Haiku 3 (claude-3-haiku) was retired 2026-04-19
 
@@ -113,13 +113,13 @@ Feature: CLAUDE.md inline plan format
 Feature: Budget-adaptive note propagated to related docs
 
   Scenario: ai-agents.md documents budget-adaptive inheritance
-    Given governance/development/agents/ai-agents.md
+    Given repo-governance/development/agents/ai-agents.md
     When I search for "budget-adaptive" or "inherit"
     Then I find a note that opus-tier agents omit model field by design
     And it warns against adding model: opus
 
   Scenario: best-practices.md documents budget-adaptive inheritance
-    Given governance/development/agents/best-practices.md
+    Given repo-governance/development/agents/best-practices.md
     When I search for "budget-adaptive" or "inherit"
     Then I find guidance that opus-tier agents omit the model field intentionally
 
@@ -150,7 +150,7 @@ Feature: Benchmark reference document
     And it explains ZClawBench is proprietary and unverified
 
   Scenario: Policy docs link to benchmark reference
-    Given governance/development/agents/model-selection.md
+    Given repo-governance/development/agents/model-selection.md
     When I read the tier sections containing benchmark numbers
     Then each benchmark number links to docs/reference/ai-model-benchmarks.md
 
@@ -203,7 +203,7 @@ Feature: Validations pass after changes
 
 ### In Scope
 
-- Update `governance/development/agents/model-selection.md`:
+- Update `repo-governance/development/agents/model-selection.md`:
   - "Budget-Adaptive Inheritance" block, OpenCode section, version table, Common Mistakes row
 - Update `CLAUDE.md`: add inline 5-doc plan format description + `opus` alias in Format
   Differences models row

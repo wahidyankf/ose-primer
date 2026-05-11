@@ -83,7 +83,7 @@ See `repo-generating-validation-reports` Skill for UUID chain, timestamp, progre
 
 ### Step 2: Nx Target Infrastructure (All Languages)
 
-**Reference**: `governance/development/infra/nx-targets.md`
+**Reference**: `repo-governance/development/infra/nx-targets.md`
 
 For each project, validate:
 
@@ -295,7 +295,7 @@ Each finding follows the standard format:
 **Project Guidance**:
 
 - [CLAUDE.md](../../CLAUDE.md) - Primary guidance
-- [Nx Target Standards](../../governance/development/infra/nx-targets.md) - Mandatory targets and conventions
+- [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) - Mandatory targets and conventions
 
 **Coding Standards** (Authoritative):
 

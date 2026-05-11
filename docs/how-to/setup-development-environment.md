@@ -514,12 +514,12 @@ Never hardcode version numbers in scripts — always read from these source-of-t
 
 ## 🔗 Related Documentation
 
-- [Development Environment Setup Workflow](../../governance/workflows/infra/infra-development-environment-setup.md) —
+- [Development Environment Setup Workflow](../../repo-governance/workflows/infra/infra-development-environment-setup.md) —
   Granular workflow with phases and success criteria
 - [Local Development with Docker](./local-dev-docker.md) — Running services via
   Docker Compose
-- [Reproducible Environments](../../governance/development/workflow/reproducible-environments.md) —
+- [Reproducible Environments](../../repo-governance/development/workflow/reproducible-environments.md) —
   Volta, npm, Docker reproducibility practices
 - [Running CRUD Tests](./run-crud-tests.md) — Integration and E2E test execution
-- [Code Quality Convention](../../governance/development/quality/code.md) — Git hooks and
+- [Code Quality Convention](../../repo-governance/development/quality/code.md) — Git hooks and
   automated formatting

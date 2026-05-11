@@ -707,7 +707,7 @@ Fix reports should now group fixes by priority to show criticality context:
 
 ### 1. Missing Required Subcategory Field
 
-**File**: `governance/development/agents/ai-agents.md`
+**File**: `repo-governance/development/agents/ai-agents.md`
 **Criticality**: CRITICAL - Breaks organization and validation
 **Confidence**: HIGH - Confirmed field missing in frontmatter
 **Fix Applied**: Added `subcategory: development` at line 5
@@ -726,7 +726,7 @@ Fix reports should now group fixes by priority to show criticality context:
 
 ### 1. Ambiguous Link Target
 
-**File**: `governance/conventions/formatting/linking.md:89`
+**File**: `repo-governance/conventions/formatting/linking.md:89`
 **Criticality**: CRITICAL - Broken link to convention doc
 **Confidence**: MEDIUM - Multiple possible target files found
 **Reason for Flag**: Cannot determine correct link target automatically

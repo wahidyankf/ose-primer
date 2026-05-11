@@ -70,7 +70,7 @@ flowchart TD
     B --> D[Nx cross-project.json refs]
     D --> E[Root package.json scripts]
     E --> F[specs/apps/crud content]
-    F --> G[governance/workflows audit]
+    F --> G[repo-governance/workflows audit]
     G --> H[docs/ audit]
     H --> I[CLAUDE · README · AGENTS.md]
     I --> J[Validation]
@@ -83,27 +83,27 @@ flowchart TD
 
 ## Affected file categories
 
-| Category                      | Files                                    | Strategy                    |
-| ----------------------------- | ---------------------------------------- | --------------------------- |
-| App directories               | 17 dirs in `apps/`                       | `git mv`                    |
-| Infra directories             | 15 dirs in `infra/dev/`                  | `git mv`                    |
-| Specs tree                    | 1 root dir + all children                | `git mv` then content sweep |
-| GitHub Actions workflow files | `.github/workflows/test-demo-*.yml` (15) | `git mv` + sed sweep        |
-| Nx `project.json` `"name"`    | 18 files                                 | sed sweep                   |
-| Nx `implicitDependencies`     | 18 files                                 | sed sweep                   |
-| Nx `dependsOn` strings        | 18 files                                 | sed sweep                   |
-| Nx target command paths       | 18 files                                 | sed sweep                   |
-| `docker-compose*.yml` creds   | ~45 files                                | sed sweep                   |
-| App source config files       | variable per app                         | targeted sed                |
-| `package.json` scripts        | root + individual                        | sed sweep                   |
-| `specs/apps/crud/` content    | openapi, gherkin, c4, README             | sed + manual review         |
-| `governance/workflows/`       | audit first, then fix                    | grep + manual               |
-| `governance/conventions/`     | audit first, then fix                    | grep + manual               |
-| `docs/` tree                  | audit first, then fix                    | grep + manual               |
-| `CLAUDE.md`                   | bulk + manual review                     | sed + manual                |
-| Root `README.md`              | bulk + manual review                     | sed + manual                |
-| `AGENTS.md`                   | audit                                    | grep + manual               |
-| `plans/ideas.md`, backlog     | audit                                    | grep + manual               |
+| Category                       | Files                                    | Strategy                    |
+| ------------------------------ | ---------------------------------------- | --------------------------- |
+| App directories                | 17 dirs in `apps/`                       | `git mv`                    |
+| Infra directories              | 15 dirs in `infra/dev/`                  | `git mv`                    |
+| Specs tree                     | 1 root dir + all children                | `git mv` then content sweep |
+| GitHub Actions workflow files  | `.github/workflows/test-demo-*.yml` (15) | `git mv` + sed sweep        |
+| Nx `project.json` `"name"`     | 18 files                                 | sed sweep                   |
+| Nx `implicitDependencies`      | 18 files                                 | sed sweep                   |
+| Nx `dependsOn` strings         | 18 files                                 | sed sweep                   |
+| Nx target command paths        | 18 files                                 | sed sweep                   |
+| `docker-compose*.yml` creds    | ~45 files                                | sed sweep                   |
+| App source config files        | variable per app                         | targeted sed                |
+| `package.json` scripts         | root + individual                        | sed sweep                   |
+| `specs/apps/crud/` content     | openapi, gherkin, c4, README             | sed + manual review         |
+| `repo-governance/workflows/`   | audit first, then fix                    | grep + manual               |
+| `repo-governance/conventions/` | audit first, then fix                    | grep + manual               |
+| `docs/` tree                   | audit first, then fix                    | grep + manual               |
+| `CLAUDE.md`                    | bulk + manual review                     | sed + manual                |
+| Root `README.md`               | bulk + manual review                     | sed + manual                |
+| `AGENTS.md`                    | audit                                    | grep + manual               |
+| `plans/ideas.md`, backlog      | audit                                    | grep + manual               |
 
 ## Testing strategy
 

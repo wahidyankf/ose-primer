@@ -26,7 +26,7 @@ related:
   - ./coding-standards.md#part-1-core-idioms
   - ./type-safety-standards.md
   - ./concurrency-standards.md
-  - ../../../../../governance/development/pattern/functional-programming.md
+  - ../../../../../repo-governance/development/pattern/functional-programming.md
 ---
 
 # Go Design Patterns
@@ -58,7 +58,7 @@ This document defines **authoritative design pattern standards** for Go developm
 
 **Status**: Normative (MUST follow for demo Go code)
 
-**Governance**: This document implements [Functional Programming Principle](../../../../../governance/development/pattern/functional-programming.md), [Immutability Over Mutability](../../../../../governance/principles/software-engineering/immutability.md), and [Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md).
+**Governance**: This document implements [Functional Programming Principle](../../../../../repo-governance/development/pattern/functional-programming.md), [Immutability Over Mutability](../../../../../repo-governance/principles/software-engineering/immutability.md), and [Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md).
 
 ---
 
@@ -3961,9 +3961,9 @@ type ReadCloser interface {
 
 **Governance Principles:**
 
-- [Functional Programming Principle](../../../../../governance/development/pattern/functional-programming.md) - Project-wide FP standards
-- [Immutability Over Mutability](../../../../../governance/principles/software-engineering/immutability.md)
-- [Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)
+- [Functional Programming Principle](../../../../../repo-governance/development/pattern/functional-programming.md) - Project-wide FP standards
+- [Immutability Over Mutability](../../../../../repo-governance/principles/software-engineering/immutability.md)
+- [Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)
 
 ## Further Reading
 

@@ -149,7 +149,7 @@ export default defineConfig({
 
 - [Playwright Framework Index](README.md)
 - [BDD Integration](bdd.md)
-- [Reproducibility](../../../../../../governance/principles/software-engineering/reproducibility.md)
+- [Reproducibility](../../../../../../repo-governance/principles/software-engineering/reproducibility.md)
 
 ---
 

@@ -369,8 +369,8 @@ pub fn calculate_zakat(wealth: Decimal) -> Result<Decimal, ZakatError> {
 
 **Software Engineering Principles**:
 
-- [Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)
-- [Pure Functions](../../../../../governance/principles/software-engineering/pure-functions.md)
+- [Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)
+- [Pure Functions](../../../../../repo-governance/principles/software-engineering/pure-functions.md)
 
 ---
 

@@ -128,17 +128,17 @@ npx prettier --write [file-path]
 2. Pre-commit hook triggers (`.husky/pre-commit` — a single `go run` line)
 3. `rhino-cli git pre-commit` orchestrates all 9 steps in order, failing fast:
 
-| Step | Trigger                           | Action                                                                | On failure |
-| ---- | --------------------------------- | --------------------------------------------------------------------- | ---------- |
-| 1    | `.claude/` or `.opencode/` staged | Validate → Sync → Validate-sync                                       | exit 1     |
-| 2    | `docker-compose.ya?ml` staged     | `docker compose -f <file> config` per file                            | exit 1     |
-| 3    | always                            | `nx affected -t run-pre-commit --skip-nx-cache`                       | warn only  |
-| 4    | always                            | `git add apps/crud-fs-ts-nextjs/content/`                             | ignored    |
-| 5    | always                            | `npx lint-staged`                                                     | exit 1     |
-| 6    | `.ex`/`.exs` staged, `mix` found  | `mix format <files>` per project root, then `git add`                 | exit 1     |
-| 7    | `docs/` staged                    | Validate + auto-fix naming, then `git add docs/ governance/ .claude/` | exit 1     |
-| 8    | always                            | Validate markdown links (staged only)                                 | exit 1     |
-| 9    | always                            | `npm run lint:md`                                                     | exit 1     |
+| Step | Trigger                           | Action                                                                     | On failure |
+| ---- | --------------------------------- | -------------------------------------------------------------------------- | ---------- |
+| 1    | `.claude/` or `.opencode/` staged | Validate → Sync → Validate-sync                                            | exit 1     |
+| 2    | `docker-compose.ya?ml` staged     | `docker compose -f <file> config` per file                                 | exit 1     |
+| 3    | always                            | `nx affected -t run-pre-commit --skip-nx-cache`                            | warn only  |
+| 4    | always                            | `git add apps/crud-fs-ts-nextjs/content/`                                  | ignored    |
+| 5    | always                            | `npx lint-staged`                                                          | exit 1     |
+| 6    | `.ex`/`.exs` staged, `mix` found  | `mix format <files>` per project root, then `git add`                      | exit 1     |
+| 7    | `docs/` staged                    | Validate + auto-fix naming, then `git add docs/ repo-governance/ .claude/` | exit 1     |
+| 8    | always                            | Validate markdown links (staged only)                                      | exit 1     |
+| 9    | always                            | `npm run lint:md`                                                          | exit 1     |
 
 1. Commit proceeds if no errors
 

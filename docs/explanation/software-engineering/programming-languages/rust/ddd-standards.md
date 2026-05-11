@@ -421,9 +421,9 @@ enum MurabahaContractState {
 
 **Software Engineering Principles**:
 
-- [Immutability Over Mutability](../../../../../governance/principles/software-engineering/immutability.md)
-- [Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)
-- [Pure Functions](../../../../../governance/principles/software-engineering/pure-functions.md)
+- [Immutability Over Mutability](../../../../../repo-governance/principles/software-engineering/immutability.md)
+- [Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)
+- [Pure Functions](../../../../../repo-governance/principles/software-engineering/pure-functions.md)
 
 ---
 

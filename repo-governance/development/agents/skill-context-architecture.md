@@ -230,7 +230,7 @@ graph TD
     MC[Main Conversation]
     IS[Inline agent skills<br/>primary binding skills/]
     FS[Fork agent skills<br/>project-specific]
-    CONV[Conventions<br/>governance/]
+    CONV[Conventions<br/>repo-governance/]
     SA[Subagent Context]
 
     MC -- uses --> IS

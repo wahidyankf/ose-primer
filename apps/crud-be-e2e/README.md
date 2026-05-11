@@ -84,7 +84,7 @@ nx run crud-be-e2e:lint
 nx run crud-be-e2e:test:quick
 ```
 
-**See**: [Nx Target Standards](../../governance/development/infra/nx-targets.md) for canonical E2E target names. `test:e2e` runs only on manual `workflow_dispatch` from the GitHub Actions UI, not on pre-push (cron schedules removed to conserve CI resources).
+**See**: [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) for canonical E2E target names. `test:e2e` runs only on manual `workflow_dispatch` from the GitHub Actions UI, not on pre-push (cron schedules removed to conserve CI resources).
 
 ## Environment Variables
 
@@ -147,7 +147,7 @@ this scenario will fail — which is expected, as E2E tests validate production-
 
 ## Related Documentation
 
-- [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
+- [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
 - [Backend Gherkin Specs](../../specs/apps/crud/be/gherkin/README.md) — Shared feature files (source of truth)

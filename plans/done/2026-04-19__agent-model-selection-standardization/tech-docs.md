@@ -86,7 +86,7 @@ tools:
 
 ## Changes Required
 
-### Change 1: `governance/development/agents/model-selection.md`
+### Change 1: `repo-governance/development/agents/model-selection.md`
 
 **Section updates to apply**:
 
@@ -118,7 +118,7 @@ tools:
 criteria), `tech-docs.md` (how), `delivery.md` (step-by-step checklist with `- [ ]`
 items). Plan may collapse to single `README.md` only when trivially small (all content
 ≤ 1000 lines and condensed BRD + condensed PRD fit comfortably). See [Plans Organization
-Convention](./governance/conventions/structure/plans.md) for full rules.
+Convention](./repo-governance/conventions/structure/plans.md) for full rules.
 ```
 
 **Format Differences models row** — update:
@@ -130,7 +130,7 @@ Convention](./governance/conventions/structure/plans.md) for full rules.
 
 # AFTER
 
-- **Models**: Claude Code uses `sonnet`/`opus`/`haiku` (or omits for budget-adaptive inheritance); OpenCode uses `zai-coding-plan/glm-5.1` (opus/sonnet/omitted) and `zai-coding-plan/glm-5-turbo` (haiku). See [model-selection.md](./governance/development/agents/model-selection.md) for full tier mapping.
+- **Models**: Claude Code uses `sonnet`/`opus`/`haiku` (or omits for budget-adaptive inheritance); OpenCode uses `zai-coding-plan/glm-5.1` (opus/sonnet/omitted) and `zai-coding-plan/glm-5-turbo` (haiku). See [model-selection.md](./repo-governance/development/agents/model-selection.md) for full tier mapping.
 ```
 
 ### Change 3: OpenCode re-sync
@@ -378,7 +378,7 @@ Phase 4 of delivery. Structure:
 
 **Citation format — path is relative to the referencing file's location**:
 
-From `governance/development/agents/model-selection.md` (3 levels deep):
+From `repo-governance/development/agents/model-selection.md` (3 levels deep):
 
 ```markdown
 [Score: 87.6% SWE-bench Verified](../../../docs/reference/ai-model-benchmarks.md#claude-opus-47)

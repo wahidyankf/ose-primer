@@ -353,8 +353,8 @@ public ZakatResult CalculateZakat(Money wealth, Money nisab) =>
 
 ## Related Documentation
 
-- [Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)
-- [Immutability](../../../../../governance/principles/software-engineering/immutability.md)
+- [Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)
+- [Immutability](../../../../../repo-governance/principles/software-engineering/immutability.md)
 
 ---
 

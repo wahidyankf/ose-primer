@@ -110,7 +110,7 @@ Result: Knowledge lost, need to recreate later
 
 When offloading content, you must choose the appropriate destination folder. Both are valid offload targets with distinct purposes.
 
-### governance/conventions/ - Content and Format Standards
+### repo-governance/conventions/ - Content and Format Standards
 
 **Focus:** How to write and format documentation
 
@@ -123,7 +123,7 @@ When offloading content, you must choose the appropriate destination folder. Bot
 - Documentation organization (Diátaxis)
 - Timestamp format
 
-### governance/development/ - Development Processes and Workflows
+### repo-governance/development/ - Development Processes and Workflows
 
 **Focus:** How to work and process
 
@@ -153,10 +153,10 @@ Is this content unique and valuable?
  ├─ YES → Offload to convention OR development doc
  │   │
  │   ├─ Is this about HOW we write/format?
- │   │   └─> governance/conventions/
+ │   │   └─> repo-governance/conventions/
  │   │
  │   ├─ Is this about HOW we work/process?
- │   │   └─> governance/development/
+ │   │   └─> repo-governance/development/
  │   │
  │   ├─ Does convention/development doc exist?
  │   │   ├─ YES → Option B: Merge into existing doc
@@ -180,17 +180,17 @@ Is this content unique and valuable?
 **Process:**
 
 1. Identify the convention topic (e.g., "acceptance criteria format")
-2. Use `docs-maker` to create new convention doc in `governance/conventions/` or `governance/development/`
+2. Use `docs-maker` to create new convention doc in `repo-governance/conventions/` or `repo-governance/development/`
 3. Move ALL relevant content to new convention (comprehensive detail)
 4. Replace original content with 2-5 line summary + link
-5. Update appropriate index (`governance/conventions/README.md` or `governance/development/README.md`)
+5. Update appropriate index (`repo-governance/conventions/README.md` or `repo-governance/development/README.md`)
 6. Verify all cross-references work
 
 **Example:**
 
 - **Before:** Gherkin acceptance criteria details in `plan-maker.md` (500 lines)
 - **After:**
-  - New file: `governance/development/infra/acceptance-criteria.md` (comprehensive)
+  - New file: `repo-governance/development/infra/acceptance-criteria.md` (comprehensive)
   - `plan-maker.md`: "Use Gherkin format. See [Acceptance Criteria Convention](../infra/acceptance-criteria.md)" (3 lines)
   - Savings: 497 lines
 
@@ -211,7 +211,7 @@ Is this content unique and valuable?
 
 - **Before:** TBD workflow details duplicated in `plan-maker.md` and `plan-executor.md`
 - **After:**
-  - Updated: `governance/development/workflow/trunk-based-development.md` (comprehensive)
+  - Updated: `repo-governance/development/workflow/trunk-based-development.md` (comprehensive)
   - `plan-maker.md`: "Follow TBD workflow. See [TBD Convention](../workflow/trunk-based-development.md)" (2 lines)
   - `plan-executor.md`: "Default to main branch per TBD. See [TBD Convention](../workflow/trunk-based-development.md)" (2 lines)
   - Savings: Duplication eliminated
@@ -234,7 +234,7 @@ Is this content unique and valuable?
 
 - **Before:** Diagram standards duplicated in `docs-maker.md`, `plan-maker.md`
 - **After:**
-  - New file: `governance/conventions/formatting/diagrams.md` (comprehensive)
+  - New file: `repo-governance/conventions/formatting/diagrams.md` (comprehensive)
   - All agents: "Use Mermaid diagrams. See [Diagram Convention](../../conventions/formatting/diagrams.md)" (2 lines each)
   - Savings: Eliminated duplication
 - **Why Conventions Folder:** Diagrams are a content format standard, not development process
@@ -243,7 +243,7 @@ Is this content unique and valuable?
 
 - **Before:** Testing strategy duplicated across multiple agents
 - **After:**
-  - New file: `governance/development/quality/testing-strategy.md` (comprehensive)
+  - New file: `repo-governance/development/quality/testing-strategy.md` (comprehensive)
   - All agents: "See `testing-strategy.md` for comprehensive testing guidelines" (2 lines each)
   - Savings: Eliminated duplication
 - **Why Development Folder:** Testing is a development process, not content format
@@ -252,7 +252,7 @@ Is this content unique and valuable?
 
 **When to use:** Content relates to development processes, workflows, or team practices.
 
-**Destination:** `governance/development/`
+**Destination:** `repo-governance/development/`
 
 **Examples of development content:**
 
@@ -273,18 +273,18 @@ Is this content unique and valuable?
 **Process:**
 
 1. Determine if it's a development practice (git, commits, CI/CD, testing, code review, etc.)
-2. Create new doc OR expand existing in `governance/development/`
+2. Create new doc OR expand existing in `repo-governance/development/`
 3. Use lowercase kebab-case filenames; place in the appropriate subdirectory so the hierarchy encodes the category
 4. Move content to development convention (comprehensive detail)
 5. Replace original with 2-5 line summary + link
-6. Update development index (`governance/development/README.md`)
+6. Update development index (`repo-governance/development/README.md`)
 7. Verify all cross-references work
 
 **Example** (historical — `plan-executor.md` was later removed when plan execution moved into the plan-execution workflow orchestrated by the calling context):
 
 - **Before:** Commit granularity examples in `plan-executor.md`
 - **After:**
-  - Updated: `governance/development/workflow/commit-messages.md` (comprehensive)
+  - Updated: `repo-governance/development/workflow/commit-messages.md` (comprehensive)
   - `plan-executor.md`: "Split commits logically. See [Commit Messages Convention](../workflow/commit-messages.md)" (2 lines)
   - Savings: 100+ lines
 
@@ -323,8 +323,8 @@ Follow this systematic process when offloading content:
 
 ### Step 5: Update Index Files
 
-- Add new conventions to `governance/conventions/README.md`
-- Add new development docs to `governance/development/README.md`
+- Add new conventions to `repo-governance/conventions/README.md`
+- Add new development docs to `repo-governance/development/README.md`
 - Maintain alphabetical ordering
 
 ### Step 6: Verify All Cross-References
@@ -414,14 +414,14 @@ Before completing a content offload, verify:
 
 **Verify Correct Folder Choice:**
 
-**For governance/conventions/** (content/format):
+**For repo-governance/conventions/** (content/format):
 
 - File naming, linking, emoji, diagrams, colors
 - Content quality, mathematical notation
 - Hugo content, tutorials, acceptance criteria
 - Documentation organization
 
-**For governance/development/** (process/workflow):
+**For repo-governance/development/** (process/workflow):
 
 - AI agent standards
 - Commit messages, git workflow
@@ -463,7 +463,7 @@ When creating documentation files:
 
 ## Understanding the Governance Folder Structure
 
-**governance/** contains two main subfolders for offloading content:
+**repo-governance/** contains two main subfolders for offloading content:
 
 ### 1. conventions/
 
@@ -501,7 +501,7 @@ After: File naming knowledge lost
 Problem: Need to recreate later, knowledge erosion
 ```
 
-**PASS: Correct Approach:** Offload to `governance/conventions/structure/file-naming.md`, link from AGENTS.md
+**PASS: Correct Approach:** Offload to `repo-governance/conventions/structure/file-naming.md`, link from AGENTS.md
 
 ### ❌ Anti-Pattern 2: Incomplete Offload
 
@@ -525,7 +525,7 @@ After: Wrong location (testing is process, not content format)
 Problem: Violates convention/development separation
 ```
 
-**PASS: Correct Approach:** Create `governance/development/quality/testing-strategy.md`
+**PASS: Correct Approach:** Create `repo-governance/development/quality/testing-strategy.md`
 
 ### ❌ Anti-Pattern 4: Offloading Agent-Specific Logic
 

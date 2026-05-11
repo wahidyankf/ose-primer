@@ -106,7 +106,7 @@ This convention applies after any push to `origin main` that touches:
 This convention does not apply to pushes that exclusively touch:
 
 - `docs/` — documentation only, no app behavior impact
-- `governance/` — governance only, no app behavior impact
+- `repo-governance/` — governance only, no app behavior impact
 - `plans/` — planning documents only
 - `generated-reports/` — audit reports only
 - `generated-socials/` — social content only

@@ -16,7 +16,7 @@ producing false positives and missing true horizontal overflows in deeply chaine
 graphs.
 
 **P2 — Violations in docs/** (direction-blind baseline, 2026-04-25): a pre-Phase-0 audit
-found 107 files failing across `docs/`. The pre-push hook targets only `governance/` and
+found 107 files failing across `docs/`. The pre-push hook targets only `repo-governance/` and
 `.claude/`, so violations in `docs/` don't block pushes — but diagrams render poorly on
 GitHub and in VS Code preview. The exact file list changes after Phase 0 because the
 direction fix reclassifies some LR diagrams.
@@ -75,7 +75,7 @@ tests. Re-audit to get the accurate Phase 1 file list.
 The direction-aware validator gates each batch. Zero `✗` lines = batch complete.
 
 **Phase 2 — Propagate fix strategies to governance**: Use `repo-rules-maker` to update
-`governance/conventions/formatting/diagrams.md` with the direction-aware width rules and
+`repo-governance/conventions/formatting/diagrams.md` with the direction-aware width rules and
 fix strategy guide derived from this plan. Run `repo-rules-quality-gate` in strict mode
 to validate no contradictions or broken links are introduced.
 
@@ -90,20 +90,20 @@ to validate no contradictions or broken links are introduced.
 
 **Out of scope**: `complex_diagram` warnings — deferred to a future pass.
 
-| Phase | Batch | Area                                    | Files (provisional)       |
-| ----- | ----- | --------------------------------------- | ------------------------- |
-| 0     | —     | `apps/rhino-cli/` — direction-aware fix | 2 Go files + tests        |
-| 1     | 1     | `programming-languages/typescript/`     | ~18                       |
-| 1     | 2     | `programming-languages/python/`         | ~15                       |
-| 1     | 3     | `programming-languages/golang/`         | ~11                       |
-| 1     | 4     | `platform-web/tools/jvm-spring-boot/`   | ~10                       |
-| 1     | 5     | `platform-web/tools/elixir-phoenix/`    | ~8                        |
-| 1     | 6     | `platform-web/tools/fe-react/`          | ~8                        |
-| 1     | 7     | `platform-web/tools/fe-nextjs/`         | ~6                        |
-| 1     | 8     | `programming-languages/elixir/`         | ~6                        |
-| 1     | 9     | `architecture/c4-architecture-model/`   | ~5                        |
-| 1     | 10    | Remaining files                         | ~14                       |
-| 2     | —     | `governance/conventions/formatting/`    | 1 file (diagrams.md) + QG |
+| Phase | Batch | Area                                      | Files (provisional)       |
+| ----- | ----- | ----------------------------------------- | ------------------------- |
+| 0     | —     | `apps/rhino-cli/` — direction-aware fix   | 2 Go files + tests        |
+| 1     | 1     | `programming-languages/typescript/`       | ~18                       |
+| 1     | 2     | `programming-languages/python/`           | ~15                       |
+| 1     | 3     | `programming-languages/golang/`           | ~11                       |
+| 1     | 4     | `platform-web/tools/jvm-spring-boot/`     | ~10                       |
+| 1     | 5     | `platform-web/tools/elixir-phoenix/`      | ~8                        |
+| 1     | 6     | `platform-web/tools/fe-react/`            | ~8                        |
+| 1     | 7     | `platform-web/tools/fe-nextjs/`           | ~6                        |
+| 1     | 8     | `programming-languages/elixir/`           | ~6                        |
+| 1     | 9     | `architecture/c4-architecture-model/`     | ~5                        |
+| 1     | 10    | Remaining files                           | ~14                       |
+| 2     | —     | `repo-governance/conventions/formatting/` | 1 file (diagrams.md) + QG |
 
 Phase 1 file counts are provisional — update from Phase 0 re-audit before executing.
 
@@ -112,6 +112,6 @@ Phase 1 file counts are provisional — update from Phase 0 re-audit before exec
 - `nx run rhino-cli:test:quick` passes with direction-aware tests (Phase 0).
 - `go run ./apps/rhino-cli/main.go docs validate-mermaid` exits 0 with zero `✗` lines
   after all Phase 1 batches. `⚠` warnings tolerated.
-- `governance/conventions/formatting/diagrams.md` documents the direction-aware width
+- `repo-governance/conventions/formatting/diagrams.md` documents the direction-aware width
   constraints and fix strategy guide (Phase 2).
 - `repo-rules-quality-gate` passes in strict mode after Phase 2 changes (Phase 2).

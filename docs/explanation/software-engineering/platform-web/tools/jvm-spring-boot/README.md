@@ -77,13 +77,13 @@ All Spring Boot applications MUST follow the patterns and practices documented h
 
 ## Software Engineering Principles
 
-Spring Boot usage in this platform follows the the software engineering principles from [governance/principles/software-engineering/](../../../../../../governance/principles/software-engineering/README.md):
+Spring Boot usage in this platform follows the the software engineering principles from [repo-governance/principles/software-engineering/](../../../../../../repo-governance/principles/software-engineering/README.md):
 
-1. **[Automation Over Manual](../../../../../../governance/principles/software-engineering/automation-over-manual.md)** - Spring Boot automates through auto-configuration, starter dependencies, DevTools hot reload
-2. **[Explicit Over Implicit](../../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - Spring Boot enforces through explicit configuration properties, clear component scanning, visible bean definitions
-3. **[Immutability Over Mutability](../../../../../../governance/principles/software-engineering/immutability.md)** - Use immutable DTOs (Java records), stateless services, declarative transaction boundaries
-4. **[Pure Functions Over Side Effects](../../../../../../governance/principles/software-engineering/pure-functions.md)** - Apply functional core/imperative shell: pure domain logic, side effects at boundaries
-5. **[Reproducibility First](../../../../../../governance/principles/software-engineering/reproducibility.md)** - Spring Boot enables through version pinning (Maven/Gradle wrapper), dependency management, environment-specific profiles
+1. **[Automation Over Manual](../../../../../../repo-governance/principles/software-engineering/automation-over-manual.md)** - Spring Boot automates through auto-configuration, starter dependencies, DevTools hot reload
+2. **[Explicit Over Implicit](../../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)** - Spring Boot enforces through explicit configuration properties, clear component scanning, visible bean definitions
+3. **[Immutability Over Mutability](../../../../../../repo-governance/principles/software-engineering/immutability.md)** - Use immutable DTOs (Java records), stateless services, declarative transaction boundaries
+4. **[Pure Functions Over Side Effects](../../../../../../repo-governance/principles/software-engineering/pure-functions.md)** - Apply functional core/imperative shell: pure domain logic, side effects at boundaries
+5. **[Reproducibility First](../../../../../../repo-governance/principles/software-engineering/reproducibility.md)** - Spring Boot enables through version pinning (Maven/Gradle wrapper), dependency management, environment-specific profiles
 
 **See Also**: [Functional Programming](functional-programming.md) for FP patterns with Spring Boot.
 
@@ -1338,13 +1338,13 @@ public class GlobalExceptionHandler {
 
 - **[Test-Driven Development](../../../development/test-driven-development-tdd/README.md)** - TDD with Spring Boot
 - **[Behavior-Driven Development](../../../development/behavior-driven-development-bdd/README.md)** - BDD with Cucumber
-- **[Functional Programming](../../../../../../governance/development/pattern/functional-programming.md)** - FP principles
+- **[Functional Programming](../../../../../../repo-governance/development/pattern/functional-programming.md)** - FP principles
 
 ### Code Quality
 
-- **[Code Quality Standards](../../../../../../governance/development/quality/code.md)** - Quality requirements
-- **[Implementation Workflow](../../../../../../governance/development/workflow/implementation.md)** - Development process
-- **[Commit Messages](../../../../../../governance/development/workflow/commit-messages.md)** - Conventional Commits
+- **[Code Quality Standards](../../../../../../repo-governance/development/quality/code.md)** - Quality requirements
+- **[Implementation Workflow](../../../../../../repo-governance/development/workflow/implementation.md)** - Development process
+- **[Commit Messages](../../../../../../repo-governance/development/workflow/commit-messages.md)** - Conventional Commits
 
 ### Core Spring Projects
 

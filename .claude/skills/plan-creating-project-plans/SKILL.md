@@ -66,7 +66,7 @@ plans/in-progress/complex-feature/
 └── delivery.md               # Phased checklist (one checkbox = one action)
 ```
 
-**Content-placement split** (authoritative — see [Content-Placement Rules](../../../governance/conventions/structure/plans.md#content-placement-rules-brdmd-vs-prdmd)):
+**Content-placement split** (authoritative — see [Content-Placement Rules](../../../repo-governance/conventions/structure/plans.md#content-placement-rules-brdmd-vs-prdmd)):
 
 - **`brd.md`** — WHY: business goal, impact, affected roles, business-level success metrics, business-scope Non-Goals, business risks. Solo-maintainer repo — no sign-off / sponsor / stakeholder ceremony language.
 - **`prd.md`** — WHAT: product overview, personas, user stories, Gherkin acceptance criteria, product scope (in + out), product risks.
@@ -265,7 +265,7 @@ Every plan must start with environment setup steps:
 ### Environment Setup
 
 - [ ] Install dependencies in the root worktree: `npm install`
-- [ ] Converge the full polyglot toolchain in the root worktree: `npm run doctor -- --fix` (required — the `postinstall` hook runs `doctor || true` and silently tolerates drift; see [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md))
+- [ ] Converge the full polyglot toolchain in the root worktree: `npm run doctor -- --fix` (required — the `postinstall` hook runs `doctor || true` and silently tolerates drift; see [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md))
 - [ ] [Add project-specific setup: env vars, DB, Docker, etc.]
 - [ ] Verify dev server starts: `nx dev [project-name]`
 - [ ] Verify existing tests pass before making changes
@@ -369,17 +369,17 @@ Every delivery plan MUST end with a plan archival section:
 
 ## References
 
-**Primary Convention**: [Plans Organization Convention](../../../governance/conventions/structure/plans.md)
+**Primary Convention**: [Plans Organization Convention](../../../repo-governance/conventions/structure/plans.md)
 
 **Related Conventions**:
 
-- [Trunk Based Development](../../../governance/development/workflow/trunk-based-development.md) - Git workflow (default: direct push to `main` from main checkout AND from worktree via `git push origin HEAD:main`; draft PR opt-in only when explicitly requested)
-- [PR Merge Protocol](../../../governance/development/workflow/pr-merge-protocol.md) - Explicit approval required, all quality gates must pass
-- [Feature Change Completeness](../../../governance/development/quality/feature-change-completeness.md) - Specs, contracts, and tests must update with every feature change
-- [Manual Behavioral Verification](../../../governance/development/quality/manual-behavioral-verification.md) - Playwright MCP for UI, curl for API
-- [CI Blocker Resolution](../../../governance/development/quality/ci-blocker-resolution.md) - Preexisting CI failures must be fixed, never bypassed
-- [Acceptance Criteria Convention](../../../governance/development/infra/acceptance-criteria.md) - Gherkin format details
-- [File Naming Convention](../../../governance/conventions/structure/file-naming.md) - Naming standards
+- [Trunk Based Development](../../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow (default: direct push to `main` from main checkout AND from worktree via `git push origin HEAD:main`; draft PR opt-in only when explicitly requested)
+- [PR Merge Protocol](../../../repo-governance/development/workflow/pr-merge-protocol.md) - Explicit approval required, all quality gates must pass
+- [Feature Change Completeness](../../../repo-governance/development/quality/feature-change-completeness.md) - Specs, contracts, and tests must update with every feature change
+- [Manual Behavioral Verification](../../../repo-governance/development/quality/manual-behavioral-verification.md) - Playwright MCP for UI, curl for API
+- [CI Blocker Resolution](../../../repo-governance/development/quality/ci-blocker-resolution.md) - Preexisting CI failures must be fixed, never bypassed
+- [Acceptance Criteria Convention](../../../repo-governance/development/infra/acceptance-criteria.md) - Gherkin format details
+- [File Naming Convention](../../../repo-governance/conventions/structure/file-naming.md) - Naming standards
 
 **Related Skills**:
 

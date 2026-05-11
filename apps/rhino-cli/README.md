@@ -210,7 +210,7 @@ rhino-cli docs validate-links -q
 
 **What it does:**
 
-- Scans markdown files in core directories (docs/, governance/, .claude/, and root)
+- Scans markdown files in core directories (docs/, repo-governance/, .claude/, and root)
 - Validates that all internal links point to existing files
 - Automatically skips external URLs (http://, https://)
 - Automatically skips Hugo paths (starting with /)
@@ -235,8 +235,8 @@ rhino-cli docs validate-links -q
 
 1. **Missing files** - Common files like CODE_OF_CONDUCT.md, CHANGELOG.md
 2. **General/other paths** - All other broken links
-3. **workflows/ paths** - Links to workflows/ (not governance/workflows/)
-4. **vision/ paths** - Links to vision/ (not governance/vision/)
+3. **workflows/ paths** - Links to workflows/ (not repo-governance/workflows/)
+4. **vision/ paths** - Links to vision/ (not repo-governance/vision/)
 5. **conventions README** - Links to conventions/README.md
 
 **Example output (text):**
@@ -294,7 +294,7 @@ Validate Mermaid flowchart diagrams in markdown files for structural issues. Enf
 rhino-cli docs validate-mermaid
 
 # Validate specific directories
-rhino-cli docs validate-mermaid governance/ .claude/
+rhino-cli docs validate-mermaid repo-governance/ .claude/
 
 # Only validate files staged in git (pre-commit use)
 rhino-cli docs validate-mermaid --staged-only
@@ -311,7 +311,7 @@ rhino-cli docs validate-mermaid --max-label-len 20 --max-width 4
 
 **What it does:**
 
-- Scans markdown files in core directories (docs/, governance/, .claude/, and root) by default
+- Scans markdown files in core directories (docs/, repo-governance/, .claude/, and root) by default
 - Validates Mermaid flowchart and graph blocks for structural issues
 - Non-flowchart types (sequenceDiagram, classDiagram, gantt, etc.) are silently ignored
 - The `--changed-only` flag limits the scan to files changed since upstream (used in pre-push hook)
@@ -723,7 +723,7 @@ rhino-cli java validate-annotations apps/crud-be-java-springboot/src/main/java -
 }
 ```
 
-### governance vendor-audit
+### repo-governance vendor-audit
 
 Scan governance prose for vendor-specific terms (e.g., Claude, OpenCode,
 Cursor) outside permitted contexts. Enforces vendor-neutral governance per
@@ -732,18 +732,18 @@ adopt-ose-public-vendor-neutrality plan); vendor names are allowed only
 inside ` ```binding-example ` fences.
 
 ```bash
-# Audit the default governance/ directory
-rhino-cli governance vendor-audit
+# Audit the default repo-governance/ directory
+rhino-cli repo-governance vendor-audit
 
 # Audit a specific path
-rhino-cli governance vendor-audit docs/
+rhino-cli repo-governance vendor-audit docs/
 
 # JSON output
-rhino-cli governance vendor-audit -o json
+rhino-cli repo-governance vendor-audit -o json
 ```
 
-Wired as Nx target `validate:governance-vendor-audit` (cacheable; inputs
-include `governance/**/*.md`).
+Wired as Nx target `validate:repo-governance-vendor-audit` (cacheable; inputs
+include `repo-governance/**/*.md`).
 
 ### contracts java-clean-imports
 

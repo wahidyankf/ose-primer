@@ -12,7 +12,7 @@ tags:
 
 # Convention Writing Convention
 
-This meta-convention defines how to write convention documents in the `governance/conventions/` directory. It ensures consistency, clarity, and completeness across all convention documentation.
+This meta-convention defines how to write convention documents in the `repo-governance/conventions/` directory. It ensures consistency, clarity, and completeness across all convention documentation.
 
 ## Principles Implemented/Respected
 
@@ -41,7 +41,7 @@ Convention documents define **how to write and format documentation** in this re
 
 ### What Does NOT Belong in conventions/
 
-**FAIL: Software development practices** (use `governance/development/` instead):
+**FAIL: Software development practices** (use `repo-governance/development/` instead):
 
 - Development workflows (git, commits, testing, BDD)
 - Build processes and tooling
@@ -284,7 +284,7 @@ Before publishing a convention document, verify:
 
 ### Integration
 
-- [ ] Referenced in `governance/conventions/README.md`
+- [ ] Referenced in `repo-governance/conventions/README.md`
 - [ ] Mentioned in AGENTS.md if it affects agent behavior
 - [ ] Used by at least one agent OR enforced in a hook/process
 - [ ] Cross-referenced by related conventions
@@ -321,7 +321,7 @@ Before publishing a convention document, verify:
 
 ### Decision Process
 
-1. **Search existing conventions** - Check `governance/conventions/README.md` for related topics
+1. **Search existing conventions** - Check `repo-governance/conventions/README.md` for related topics
 2. **Assess overlap** - Read related conventions to understand current coverage
 3. **Define unique scope** - Articulate what the new convention would cover that existing ones don't
 4. **Estimate length** - Will this be >500 words? Multiple sections?
@@ -373,14 +373,14 @@ Convention documents vary in length based on complexity:
 
 Convention files follow the [File Naming Convention](../structure/file-naming.md):
 
-**Pattern:** Lowercase kebab-case basename under the appropriate `governance/conventions/` subdirectory. The directory hierarchy encodes the category — no filename prefix is needed.
+**Pattern:** Lowercase kebab-case basename under the appropriate `repo-governance/conventions/` subdirectory. The directory hierarchy encodes the category — no filename prefix is needed.
 
 **Examples:**
 
-- `governance/conventions/structure/file-naming.md`
-- `governance/conventions/formatting/diagrams.md`
-- `governance/conventions/writing/quality.md`
-- `governance/conventions/writing/conventions.md` (this file)
+- `repo-governance/conventions/structure/file-naming.md`
+- `repo-governance/conventions/formatting/diagrams.md`
+- `repo-governance/conventions/writing/quality.md`
+- `repo-governance/conventions/writing/conventions.md` (this file)
 
 **Title vs Filename:**
 

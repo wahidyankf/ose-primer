@@ -33,7 +33,7 @@ This document defines **authoritative coding standards** for Kotlin development 
 
 ## Software Engineering Principles
 
-These standards enforce the software engineering principles from `governance/principles/software-engineering/`:
+These standards enforce the software engineering principles from `repo-governance/principles/software-engineering/`:
 
 ### 1. Automation Over Manual
 
@@ -91,7 +91,7 @@ class ZakatCalculatorTest {
 }
 ```
 
-**See**: [Automation Over Manual Principle](../../../../../governance/principles/software-engineering/automation-over-manual.md)
+**See**: [Automation Over Manual Principle](../../../../../repo-governance/principles/software-engineering/automation-over-manual.md)
 
 ### 2. Explicit Over Implicit
 
@@ -149,7 +149,7 @@ fun createMurabahaContract(
 }
 ```
 
-**See**: [Explicit Over Implicit Principle](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)
+**See**: [Explicit Over Implicit Principle](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)
 
 ### 3. Immutability Over Mutability
 
@@ -209,7 +209,7 @@ fun correctZakatTransaction(
 )
 ```
 
-**See**: [Immutability Principle](../../../../../governance/principles/software-engineering/immutability.md)
+**See**: [Immutability Principle](../../../../../repo-governance/principles/software-engineering/immutability.md)
 
 ### 4. Pure Functions Over Side Effects
 
@@ -246,7 +246,7 @@ sealed class ZakatObligation {
 }
 ```
 
-**See**: [Pure Functions Principle](../../../../../governance/principles/software-engineering/pure-functions.md)
+**See**: [Pure Functions Principle](../../../../../repo-governance/principles/software-engineering/pure-functions.md)
 
 ### 5. Reproducibility First
 
@@ -286,7 +286,7 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 ```
 
-**See**: [Reproducibility Principle](../../../../../governance/principles/software-engineering/reproducibility.md)
+**See**: [Reproducibility Principle](../../../../../repo-governance/principles/software-engineering/reproducibility.md)
 
 ## Part 1: Naming Conventions
 
@@ -682,11 +682,11 @@ These standards are enforced through:
 
 ## Related Documentation
 
-- [Functional Programming](../../../../../governance/development/pattern/functional-programming.md)
-- [Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)
-- [Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)
-- [Immutability Over Mutability](../../../../../governance/principles/software-engineering/immutability.md)
-- [Pure Functions Over Side Effects](../../../../../governance/principles/software-engineering/pure-functions.md)
+- [Functional Programming](../../../../../repo-governance/development/pattern/functional-programming.md)
+- [Automation Over Manual](../../../../../repo-governance/principles/software-engineering/automation-over-manual.md)
+- [Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)
+- [Immutability Over Mutability](../../../../../repo-governance/principles/software-engineering/immutability.md)
+- [Pure Functions Over Side Effects](../../../../../repo-governance/principles/software-engineering/pure-functions.md)
 
 ---
 

@@ -270,8 +270,8 @@ fi
 **Example:**
 
 ```bash
-# Validate link from governance/conventions/formatting/linking.md
-file="governance/conventions/formatting/linking.md"
+# Validate link from repo-governance/conventions/formatting/linking.md
+file="repo-governance/conventions/formatting/linking.md"
 link="[Indentation](../../conventions/formatting/indentation.md)"
 
 # Extract target
@@ -280,7 +280,7 @@ link_target=$(echo "$link" | sed 's/.*(\(.*\))/\1/')
 
 # Resolve path
 resolved_path=$(dirname "$file")/"$link_target"
-# Result: governance/conventions/./indentation.md
+# Result: repo-governance/conventions/./indentation.md
 
 # Check existence
 if [ -f "$resolved_path" ]; then

@@ -90,7 +90,7 @@ This practice respects the following core principles:
 
 ## Token Budget Philosophy
 
-**CRITICAL GUIDELINE**: When invoking agents (`.claude/agents/` or `.opencode/agents/`) and workflows (`governance/workflows/`), **do NOT think about token budget constraints**.
+**CRITICAL GUIDELINE**: When invoking agents (`.claude/agents/` or `.opencode/agents/`) and workflows (`repo-governance/workflows/`), **do NOT think about token budget constraints**.
 
 ### Why Unlimited Budget Mindset
 
@@ -408,8 +408,8 @@ skills:
 
 **Conventions:**
 
-- `governance/conventions/writing/quality.md` - Content Quality Principles
-- `governance/conventions/formatting/linking.md` - Linking Convention
+- `repo-governance/conventions/writing/quality.md` - Content Quality Principles
+- `repo-governance/conventions/formatting/linking.md` - Linking Convention
 ```
 
 This pattern provides both auto-loaded knowledge (agent skills) and explicit references for specific requirements.
@@ -1197,13 +1197,13 @@ Use GitHub-compatible markdown with relative paths:
 ```markdown
 PASS: Good:
 
-- `governance/development/agents/ai-agents.md` - AI agents convention
+- `repo-governance/development/agents/ai-agents.md` - AI agents convention
 
 FAIL: Bad:
 
 - [[ai-agents]] - Wiki-link syntax (GitHub does not render these)
-- `/governance/development/agents/ai-agents.md` - Absolute path
-- `governance/development/agents/ai-agents` - Missing .md extension
+- `/repo-governance/development/agents/ai-agents.md` - Absolute path
+- `repo-governance/development/agents/ai-agents` - Missing .md extension
 ```
 
 See [Linking Convention](../../conventions/formatting/linking.md) for details.
@@ -1327,8 +1327,8 @@ Quick categorization for existing agents:
 1. **Move details to conventions OR development docs (PRIMARY STRATEGY)** - **CRITICAL:** MOVE content to appropriate docs, NOT DELETE.
 
    **Destinations**:
-   - `governance/conventions/` (content/format standards)
-   - `governance/development/` (process/workflow standards)
+   - `repo-governance/conventions/` (content/format standards)
+   - `repo-governance/development/` (process/workflow standards)
 
    Create or expand documents with comprehensive details, then replace with brief summary + link. Zero content loss required.
 
@@ -1420,7 +1420,7 @@ Is this content reusable across 3+ agents?
 │   │       Examples: applying-content-quality, creating-accessible-diagrams
 │   │
 │   └─ Is it technical specification or standard?
-│       └─ YES → Create/update Convention in governance/conventions/
+│       └─ YES → Create/update Convention in repo-governance/conventions/
 │           Examples: Color Accessibility Convention, Mathematical Notation Convention
 │
 └─ NO → Keep in Agent File
@@ -1587,7 +1587,7 @@ When creating new agents:
 Before committing agent changes:
 
 - [ ] No content duplicates agent skills (check `.claude/skills/` (primary) or `.opencode/skills/` (secondary) catalog)
-- [ ] No content duplicates Conventions (check `governance/conventions/`)
+- [ ] No content duplicates Conventions (check `repo-governance/conventions/`)
 - [ ] All agent skills referenced exist in `.claude/skills/` (primary source of truth)
 - [ ] All Convention links point to valid files
 - [ ] Task-specific instructions retained (agent is self-contained for its job)
@@ -1785,7 +1785,7 @@ Agents spawned via the Agent tool (subagents) run with a working directory that 
 **Rules for file access in agents**:
 
 1. **Prefer relative paths** — Use paths relative to the current working directory when reading or writing files. This resolves correctly regardless of which worktree the agent runs in.
-2. **Never hardcode main-checkout absolute paths** — Do not construct absolute paths by prepending the known main-checkout root (e.g., `/Users/wkf/ose-projects/open-sharia-enterprise/governance/...`). These paths bypass the active worktree and return main-tree content.
+2. **Never hardcode main-checkout absolute paths** — Do not construct absolute paths by prepending the known main-checkout root (e.g., `/Users/wkf/ose-projects/open-sharia-enterprise/repo-governance/...`). These paths bypass the active worktree and return main-tree content.
 3. **Read files fresh before verifying** — When a checker or fixer agent verifies that a fix was applied, it must read the file again from the current working directory. It must not rely on a previously cached read from a different path.
 4. **Confirm the working directory when uncertain** — If an agent cannot determine which worktree it runs in, it should use `Bash` (`pwd`) to confirm the working directory before constructing any path.
 5. **Initialize the full toolchain in the root worktree after creating or entering a worktree — two steps, in order** — When an agent creates a worktree via `git worktree add`, the `EnterWorktree` tool, or an `isolation: "worktree"` configuration, or when an agent begins a session inside an existing worktree, it MUST immediately run BOTH of the following in the root repository worktree, in order: (a) `npm install` to keep `node_modules/` consistent with `package-lock.json` (ensures Nx task caching, builds, tests, and linting function correctly across all worktrees), and (b) `npm run doctor -- --fix` to actively converge the 18+ polyglot toolchains managed by `rhino-cli doctor` (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node). Doing only the first step is NOT sufficient: `package.json`'s `postinstall` hook runs `npm run doctor || true`, and the trailing `|| true` deliberately swallows toolchain drift so that `npm install` can complete while the native toolchain is broken. The explicit `npm run doctor -- --fix` invocation is the only action that guarantees convergence. The rule is triggered by execution mode (any worktree entry), not by intent (even "docs-only" worktree sessions go through both steps, because the pre-push hook can fan out to arbitrary language tasks via `nx affected -t typecheck lint test:quick spec-coverage`). See [Worktree Toolchain Initialization](../workflow/worktree-setup.md) for the full rationale, procedure, and relationship to [Native-First Toolchain Management](../workflow/native-first-toolchain.md).
@@ -1796,11 +1796,11 @@ Agents spawned via the Agent tool (subagents) run with a working directory that 
 ```markdown
 <!-- PASS: Relative path — resolves correctly in any worktree -->
 
-Read: governance/development/agents/ai-agents.md
+Read: repo-governance/development/agents/ai-agents.md
 
 <!-- FAIL: Hardcoded main-checkout path — reads stale content when run in a worktree -->
 
-Read: /Users/wkf/ose-projects/open-sharia-enterprise/governance/development/agents/ai-agents.md
+Read: /Users/wkf/ose-projects/open-sharia-enterprise/repo-governance/development/agents/ai-agents.md
 ```
 
 **Consequence of violation**: A checker agent reads a file from the main checkout after a fixer has already corrected it in the active worktree. The checker reports the issue as "not fixed" because it compared against stale content, producing a false negative and blocking the workflow.
@@ -1944,7 +1944,7 @@ Your primary job is to [clear, specific purpose statement].
 
 **Agent Conventions:**
 
-- `governance/development/agents/ai-agents.md` - AI agents convention (all agents must follow)
+- `repo-governance/development/agents/ai-agents.md` - AI agents convention (all agents must follow)
 
 **[Domain-Specific Conventions]:**
 

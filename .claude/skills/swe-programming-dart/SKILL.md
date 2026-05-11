@@ -221,4 +221,4 @@ await storage.write(key: 'api_token', value: token);
 ## References
 
 - [Dart README](../../../docs/explanation/software-engineering/programming-languages/dart/README.md)
-- [Functional Programming](../../../governance/development/pattern/functional-programming.md)
+- [Functional Programming](../../../repo-governance/development/pattern/functional-programming.md)

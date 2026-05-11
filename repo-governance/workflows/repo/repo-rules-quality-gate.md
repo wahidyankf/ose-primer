@@ -47,9 +47,9 @@ outputs:
 
 **IMPORTANT - Scope Clarification**:
 
-This workflow validates **source definitions only** in `governance/`. It does NOT validate generated directories:
+This workflow validates **source definitions only** in `repo-governance/`. It does NOT validate generated directories:
 
-- **Validates**: `governance/` (principles, conventions, development practices)
+- **Validates**: `repo-governance/` (principles, conventions, development practices)
 - **Skips**: `.opencode/agent/` (auto-generated from `.claude/agents/` - validate via sync script)
 - **Skips**: `.opencode/skill/` (auto-synced from `.claude/skills/` - validate via sync script)
 
@@ -373,7 +373,7 @@ Track across executions:
 - **Observable**: Generates audit reports for every iteration
 - **Bounded**: Max-iterations prevents runaway execution
 
-**Concurrency**: Currently validates and fixes sequentially. The `max-concurrency` parameter is reserved for future enhancements where multiple validation dimensions (principles, conventions, development, agents source in governance/agents/) could run concurrently.
+**Concurrency**: Currently validates and fixes sequentially. The `max-concurrency` parameter is reserved for future enhancements where multiple validation dimensions (principles, conventions, development, agents source in repo-governance/agents/) could run concurrently.
 
 **Note**: "agents" in this context refers to agent SOURCE definitions in `.claude/agents/` (primary) - note: `.opencode/agent/` is auto-generated.
 

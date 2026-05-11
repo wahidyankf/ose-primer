@@ -384,8 +384,8 @@ struct ContractWithIdx {
 
 **Software Engineering Principles**:
 
-- [Immutability Over Mutability](../../../../../governance/principles/software-engineering/immutability.md)
-- [Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)
+- [Immutability Over Mutability](../../../../../repo-governance/principles/software-engineering/immutability.md)
+- [Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)
 
 ---
 

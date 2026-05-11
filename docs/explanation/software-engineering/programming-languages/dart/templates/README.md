@@ -28,6 +28,6 @@ Templates in this directory can be used as:
 ## Related Documentation
 
 - [Dart Programming Language Overview](../README.md) - Language documentation index
-- [File Naming Convention](../../../../../../governance/conventions/structure/file-naming.md) - Naming patterns
+- [File Naming Convention](../../../../../../repo-governance/conventions/structure/file-naming.md) - Naming patterns
 
 ---

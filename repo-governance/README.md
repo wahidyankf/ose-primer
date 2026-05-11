@@ -17,11 +17,11 @@ tags:
 
 This directory contains all governance layers that define WHY the project exists, WHAT we value, WHAT documentation standards we follow, HOW we develop software, and WHEN we orchestrate multi-step processes.
 
-All governance content is organized under this `governance/` directory for clear semantic grouping while maintaining the six-layer architecture terminology.
+All governance content is organized under this `repo-governance/` directory for clear semantic grouping while maintaining the six-layer architecture terminology.
 
 ## 🎯 Purpose
 
-The `governance/` directory groups all governance documentation together:
+The `repo-governance/` directory groups all governance documentation together:
 
 - **Layer 0: Vision** - WHY we exist, WHAT change we seek
 - **Layer 1: Principles** - WHY we value specific approaches
@@ -143,36 +143,36 @@ Use these questions to determine the correct subdirectory:
 
 **Question**: Does this document define WHY the project exists?
 
-- ✅ **YES** → Place in `governance/vision/`
+- ✅ **YES** → Place in `repo-governance/vision/`
 - ❌ **NO** → Continue to next test
 
 ### Principles Test
 
 **Question**: Can you ask "**WHY do we value this?**" about the content?
 
-- ✅ **YES** → Place in `governance/principles/` - It's a foundational value
+- ✅ **YES** → Place in `repo-governance/principles/` - It's a foundational value
 - ❌ **NO** → Continue to next test
 
 ### Conventions Test
 
 **Question**: Can you ask "**WHAT are the documentation rules?**" about the content?
 
-- ✅ **YES** → Place in `governance/conventions/` - It's a documentation standard
+- ✅ **YES** → Place in `repo-governance/conventions/` - It's a documentation standard
 - ❌ **NO** → Continue to next test
 
 ### Development Test
 
 **Question**: Can you ask "**HOW do we develop software?**" about the content?
 
-- ✅ **YES** → Place in `governance/development/` - It's a software practice
+- ✅ **YES** → Place in `repo-governance/development/` - It's a software practice
 - ❌ **NO** → Continue to next test
 
 ### Workflows Test
 
 **Question**: Can you ask "**WHEN do we orchestrate multiple agents?**" about the content?
 
-- ✅ **YES** → Place in `governance/workflows/` - It's a multi-step process
-- ❌ **NO** → It doesn't belong in governance/ - consider how-to/ or reference/
+- ✅ **YES** → Place in `repo-governance/workflows/` - It's a multi-step process
+- ❌ **NO** → It doesn't belong in repo-governance/ - consider how-to/ or reference/
 
 ## 📐 Quick Decision Tree
 

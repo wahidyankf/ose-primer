@@ -308,7 +308,7 @@ Files: `docs/explanation/software-engineering/architecture/c4-architecture-model
 
 > **Agent**: Use `repo-rules-maker` for all edits in this phase.
 
-### 2a — Update `governance/conventions/formatting/diagrams.md`
+### 2a — Update `repo-governance/conventions/formatting/diagrams.md`
 
 > See tech-docs.md Phase 2 section for the full content specification for each item above.
 
@@ -343,7 +343,7 @@ Enforcement)` subsection inside the "Mermaid Best Practices" area (after "Mermai
 ### 2b — Validate and commit
 
 - [x] Validate updated diagrams.md passes the mermaid validator:
-      `go run ./apps/rhino-cli/main.go docs validate-mermaid governance/conventions/formatting/`
+      `go run ./apps/rhino-cli/main.go docs validate-mermaid repo-governance/conventions/formatting/`
       → no `✗` output
 - [x] Run markdown lint: `npm run lint:md` → 0 errors
 - [x] Commit: `docs(governance): add mermaid width constraints and fix strategies to diagrams convention`
@@ -353,7 +353,7 @@ Enforcement)` subsection inside the "Mermaid Best Practices" area (after "Mermai
 ### 2c — Run repo-rules quality gate in strict mode
 
 - [x] Invoke `repo-rules-quality-gate` workflow with `mode=strict`
-      (see `governance/workflows/repo/repo-rules-quality-gate.md`)
+      (see `repo-governance/workflows/repo/repo-rules-quality-gate.md`)
 - [x] Fix ALL CRITICAL, HIGH, and MEDIUM findings from the quality gate
 - [x] If fixes needed: commit with `docs(governance): fix repo-rules quality gate findings`
 - [x] Confirm quality gate passes with zero CRITICAL/HIGH/MEDIUM findings on two

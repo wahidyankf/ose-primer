@@ -44,7 +44,7 @@ nx run crud-fe-ts-nextjs:test:quick
 nx run crud-fe-ts-nextjs:test:unit
 ```
 
-**See**: [Nx Target Standards](../../governance/development/infra/nx-targets.md) for canonical target names.
+**See**: [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) for canonical target names.
 
 ## Project Structure
 
@@ -110,7 +110,7 @@ docker build -t crud-fe-ts-nextjs:latest apps/crud-fe-ts-nextjs/
 
 ## Related Documentation
 
-- [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
+- [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
 - [Frontend Gherkin Specs](../../specs/apps/crud/fe/gherkin/README.md) — Shared feature files (source of truth)

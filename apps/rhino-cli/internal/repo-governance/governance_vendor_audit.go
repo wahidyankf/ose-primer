@@ -6,7 +6,7 @@
 // from scanning: code fences (all backtick-delimited blocks), binding-example
 // fences, YAML frontmatter, multi-line HTML comments, inline code spans,
 // link URL portions, and sections under "Platform Binding Examples" headings.
-package governance
+package repogovernance
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ import (
 // forbiddenConvention is the path suffix of the definition file, which is
 // exempt from scanning (it defines the convention and must be allowed to
 // name the terms).
-const forbiddenConvention = "governance/conventions/structure/governance-vendor-independence.md"
+const forbiddenConvention = "repo-governance/conventions/structure/governance-vendor-independence.md"
 
 // forbiddenTerms maps each forbidden regex pattern to its suggested
 // replacement. The order matters: longer/more-specific patterns must appear

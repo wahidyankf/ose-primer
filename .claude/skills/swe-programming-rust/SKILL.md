@@ -192,4 +192,4 @@ cargo test           # Run all tests
 ## References
 
 - [Rust README](../../../docs/explanation/software-engineering/programming-languages/rust/README.md)
-- [Functional Programming](../../../governance/development/pattern/functional-programming.md)
+- [Functional Programming](../../../repo-governance/development/pattern/functional-programming.md)

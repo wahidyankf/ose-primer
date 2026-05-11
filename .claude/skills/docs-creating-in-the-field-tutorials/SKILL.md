@@ -266,7 +266,7 @@ void transfer_shouldMoveMoneyBetweenAccounts() {
 
 **Related Conventions**:
 
-- [Content Quality Principles](../../../governance/conventions/writing/quality.md) - Code annotation standards
+- [Content Quality Principles](../../../repo-governance/conventions/writing/quality.md) - Code annotation standards
 
 **Related Skills**:
 

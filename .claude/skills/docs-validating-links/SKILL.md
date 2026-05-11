@@ -40,7 +40,7 @@ Use this Skill when:
 
 **What to validate**:
 
-- Internal markdown links (docs/, governance/, plans/)
+- Internal markdown links (docs/, repo-governance/, plans/)
 - External URLs (HTTP/HTTPS)
 - Image links (relative paths)
 - Anchor links (same-page headings)
@@ -55,7 +55,7 @@ Use this Skill when:
 
 ### Required Link Format
 
-**Documentation files** (docs/, governance/, plans/, root .md files):
+**Documentation files** (docs/, repo-governance/, plans/, root .md files):
 
 ✅ PASS: [File Naming Convention](../meta/file-naming.md)
 ✅ PASS: [AI Agents Convention](../../development/agents/ai-agents.md)
@@ -85,7 +85,7 @@ For each internal link:
 
 1. Resolve relative path from current file location
 2. Check target file exists using filesystem
-3. Validate format (has .md extension for docs/, governance/, plans/ files)
+3. Validate format (has .md extension for docs/, repo-governance/, plans/ files)
 4. Check link text quality (descriptive, not filename-based)
 
 ### Common Internal Link Errors
@@ -100,7 +100,7 @@ For each internal link:
 
 **Error 2: Wrong relative path depth**
 
-From: governance/conventions/formatting/linking.md (3 levels deep)
+From: repo-governance/conventions/formatting/linking.md (3 levels deep)
 ❌ FAIL: [Documentation Home](../README.md) ← Only 1 ../, need 3
 ✅ PASS: [Documentation Home](../../../README.md)
 
@@ -304,4 +304,4 @@ Finding: [BROKEN] - Internal Link to Non-Existent File
 
 **Link Validation Agents**:
 
-- docs-link-checker - Validates links in docs/, governance/, plans/
+- docs-link-checker - Validates links in docs/, repo-governance/, plans/

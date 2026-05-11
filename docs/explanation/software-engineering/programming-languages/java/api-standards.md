@@ -558,7 +558,7 @@ For learning Java fundamentals and concepts referenced in these standards, see:
 
 These standards enforce the the software engineering principles:
 
-1. **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**
+1. **[Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)**
    - URL versioning makes API version explicit (`/api/v1/accounts`)
    - Idempotency-Key header makes idempotency requirement explicit
    - OpenAPI specification explicitly documents all endpoints, parameters, and responses
@@ -567,7 +567,7 @@ These standards enforce the the software engineering principles:
    - Cursor-based pagination eliminates offset complexity
    - Standard error response format simplifies client error handling
 
-2. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)**
+2. **[Automation Over Manual](../../../../../repo-governance/principles/software-engineering/automation-over-manual.md)**
    - OpenAPI spec auto-generated from annotations (no manual documentation)
    - GraphQL DataLoader automatically batches queries (prevents N+1)
    - Rate limiting automatically rejects excessive requests

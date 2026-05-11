@@ -118,7 +118,7 @@ export class LoginPage {
 ## Related Documentation
 
 - [Playwright Framework Index](README.md)
-- [Explicit Over Implicit](../../../../../../governance/principles/software-engineering/explicit-over-implicit.md)
+- [Explicit Over Implicit](../../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)
 
 ---
 

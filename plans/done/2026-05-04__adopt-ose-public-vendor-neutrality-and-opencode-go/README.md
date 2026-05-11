@@ -11,7 +11,7 @@ scope:
 ## Overview
 
 `ose-public` shipped a coherent batch of governance, agent, workflow, and
-rhino-cli changes between 2026-04-30 and 2026-05-03 that turn `governance/`
+rhino-cli changes between 2026-04-30 and 2026-05-03 that turn `repo-governance/`
 into vendor-neutral prose, swap the OpenCode model provider from Z.ai to
 OpenCode Go, fix the Claude Code ↔ OpenCode sync to write canonical
 plural paths, and operationalize cross-vendor behavioral parity through
@@ -70,38 +70,38 @@ flowchart TD
 - **W2 — OpenCode Go provider**: `ConvertModel()` outputs `opencode-go/*` IDs;
   `.opencode/opencode.json` switches `model`/`small_model` and adds provider block;
   Z.ai MCPs removed; `.opencode/agents/*.md` regenerated.
-- **W3 — rhino-cli vendor-audit scanner**: port `internal/governance/governance_vendor_audit{,_test}.go`,
+- **W3 — rhino-cli vendor-audit scanner**: port `internal/repo-governance/governance_vendor_audit{,_test}.go`,
   `cmd/governance.go`, `cmd/governance_vendor_audit{,_test}.go`; new Nx target
-  `validate:governance-vendor-audit`; godog Gherkin scenarios under `specs/apps/rhino/cli/gherkin/`.
-- **W4 — Vendor-neutral governance**: port the convention `governance/conventions/structure/governance-vendor-independence.md`
+  `validate:repo-governance-vendor-audit`; godog Gherkin scenarios under `specs/apps/rhino/cli/gherkin/`.
+- **W4 — Vendor-neutral governance**: port the convention `repo-governance/conventions/structure/governance-vendor-independence.md`
   (scoped for primer); neutralize `AGENTS.md` (canonical, with binding-example fences) and
   `CLAUDE.md` (Claude Code shim importing `@AGENTS.md`); remediate vendor terms across
-  `governance/` until `rhino-cli governance vendor-audit governance/` returns zero violations.
+  `repo-governance/` until `rhino-cli repo-governance vendor-audit repo-governance/` returns zero violations.
 - **W5 — Cross-vendor parity gate**: port `.claude/agents/repo-parity-{checker,fixer}.md`;
-  port `governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md`; add Nx target
+  port `repo-governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md`; add Nx target
   `validate:cross-vendor-parity`; wire into pre-push.
 - **W6 — Plans convention refresh**: adopt the stricter 5-document-DEFAULT language with
-  four explicit single-file exception criteria from `ose-public/governance/conventions/structure/plans.md`.
-- **W7 — Worktree standard**: port the missing `governance/conventions/structure/worktree-path.md`
-  convention; refresh `governance/development/workflow/worktree-setup.md` to match ose-public's
+  four explicit single-file exception criteria from `ose-public/repo-governance/conventions/structure/plans.md`.
+- **W7 — Worktree standard**: port the missing `repo-governance/conventions/structure/worktree-path.md`
+  convention; refresh `repo-governance/development/workflow/worktree-setup.md` to match ose-public's
   current version.
-- **W8 — Plan + workflow refresh**: adopt the latest `governance/workflows/plan/{plan-execution,
+- **W8 — Plan + workflow refresh**: adopt the latest `repo-governance/workflows/plan/{plan-execution,
 plan-quality-gate,README}.md` from ose-public; port the missing companion development workflows
-  `governance/development/workflow/{ci-monitoring,ci-post-push-verification}.md`.
-- **W9 — TDD convention**: port `governance/development/workflow/test-driven-development.md`
+  `repo-governance/development/workflow/{ci-monitoring,ci-post-push-verification}.md`.
+- **W9 — TDD convention**: port `repo-governance/development/workflow/test-driven-development.md`
   (316 lines, Red→Green→Refactor mandate); cross-link from `implementation.md` and
-  `governance/workflows/plan/plan-execution.md`; require all future plan delivery checklists
+  `repo-governance/workflows/plan/plan-execution.md`; require all future plan delivery checklists
   to follow Red→Green→Refactor for code-touching items.
 - **W10 — Convention completeness**: port two missing structure conventions —
-  `governance/conventions/structure/no-last-updated.md` (29 lines, companion to
-  no-date-metadata) and `governance/conventions/structure/programming-language-docs-separation.md`
+  `repo-governance/conventions/structure/no-last-updated.md` (29 lines, companion to
+  no-date-metadata) and `repo-governance/conventions/structure/programming-language-docs-separation.md`
   (846 lines, separates language docs from generic dev docs).
 - **W11 — Plan anti-hallucination**: port
-  `governance/development/quality/plan-anti-hallucination.md` (352 lines) — anti-hallucination
+  `repo-governance/development/quality/plan-anti-hallucination.md` (352 lines) — anti-hallucination
   guardrails that the `plan-checker` agent cites when validating plan claims.
 - **W12 — Dev environment setup workflow**: refresh primer's existing
-  `governance/workflows/infra/infra-development-environment-setup.md` (684 lines)
-  against ose-public's `governance/workflows/infra/development-environment-setup.md`
+  `repo-governance/workflows/infra/infra-development-environment-setup.md` (684 lines)
+  against ose-public's `repo-governance/workflows/infra/development-environment-setup.md`
   (619 lines) source. Filename remains primer-canonical per the workflow-naming
   convention; only body content syncs. Document `OPENCODE_GO_API_KEY` env-var setup
   (W2 dependency).
@@ -113,8 +113,8 @@ plan-quality-gate,README}.md` from ose-public; port the missing companion develo
   Depends on W10 (the separation convention is the rule the checker enforces).
 - **W14 — Content drift sweep**: refresh existing primer files that have diverged from
   ose-public's current versions — at minimum
-  `governance/development/quality/code.md`, `governance/development/infra/nx-targets.md`,
-  `governance/development/quality/three-level-testing-standard.md`. Full drift list
+  `repo-governance/development/quality/code.md`, `repo-governance/development/infra/nx-targets.md`,
+  `repo-governance/development/quality/three-level-testing-standard.md`. Full drift list
   enumerated by a baseline diff at the start of W14 (Phase 14A).
 
 **Out of scope** (intentionally excluded):
@@ -144,16 +144,16 @@ plan-quality-gate,README}.md` from ose-public; port the missing companion develo
 - Inside an ose-primer-rooted Claude session, `../../ose-public/...` is empty per the
   bare-gitlink contract — read via the GitHub UI above, or open a parent-rooted
   Claude session for filesystem side-by-side diffing.
-- [governance/development/infra/nx-targets.md](../../../governance/development/infra/nx-targets.md)
-  for caching rules on the new `validate:governance-vendor-audit` and `validate:cross-vendor-parity` targets.
-- [governance/development/quality/code.md](../../../governance/development/quality/code.md)
+- [repo-governance/development/infra/nx-targets.md](../../../repo-governance/development/infra/nx-targets.md)
+  for caching rules on the new `validate:repo-governance-vendor-audit` and `validate:cross-vendor-parity` targets.
+- [repo-governance/development/quality/code.md](../../../repo-governance/development/quality/code.md)
   for the pre-push contract.
-- [governance/development/workflow/git-push-default.md](../../../governance/development/workflow/git-push-default.md)
+- [repo-governance/development/workflow/git-push-default.md](../../../repo-governance/development/workflow/git-push-default.md)
   for the direct-to-main publish path used by every commit in this plan.
 
 ## Publish path
 
-**Direct push to `origin main`** per [Git Push Default Convention](../../../governance/development/workflow/git-push-default.md)
+**Direct push to `origin main`** per [Git Push Default Convention](../../../repo-governance/development/workflow/git-push-default.md)
 Standards 1, 2, 6. No draft PR is opened — the user has not requested one for this plan.
 Worktree is optional; if used, push via `git push origin HEAD:main` per Standard 6.
 

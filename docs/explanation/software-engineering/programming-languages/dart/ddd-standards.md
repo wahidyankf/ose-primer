@@ -646,10 +646,10 @@ DDD standards are enforced through:
 
 ## Related Documentation
 
-- [Immutability](../../../../../governance/principles/software-engineering/immutability.md)
-- [Pure Functions](../../../../../governance/principles/software-engineering/pure-functions.md)
-- [Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)
-- [Functional Programming](../../../../../governance/development/pattern/functional-programming.md)
+- [Immutability](../../../../../repo-governance/principles/software-engineering/immutability.md)
+- [Pure Functions](../../../../../repo-governance/principles/software-engineering/pure-functions.md)
+- [Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)
+- [Functional Programming](../../../../../repo-governance/development/pattern/functional-programming.md)
 
 ---
 

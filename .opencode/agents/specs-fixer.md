@@ -50,7 +50,7 @@ the validated scope.
 6. **Feature file naming** — Rename files to kebab-case (via `git mv`)
 7. **C4 README file listings** — Update to match actual diagram files present
 8. **Cross-folder stale references** — Update paths between listed folders
-9. **Directory structure violations** — Move feature files to correct nesting per [Specs Directory Structure Convention](../../governance/conventions/structure/specs-directory-structure.md) (via `git mv`)
+9. **Directory structure violations** — Move feature files to correct nesting per [Specs Directory Structure Convention](../../repo-governance/conventions/structure/specs-directory-structure.md) (via `git mv`)
 
 ### Requires Review (MEDIUM confidence)
 
@@ -153,10 +153,10 @@ The following files were modified. The next checker run uses this list to enable
 
 ## Reference Documentation
 
-- [Specs Directory Structure Convention](../../governance/conventions/structure/specs-directory-structure.md) — Canonical path patterns and domain subdirectory rules
+- [Specs Directory Structure Convention](../../repo-governance/conventions/structure/specs-directory-structure.md) — Canonical path patterns and domain subdirectory rules
 
 - [AGENTS.md](../../AGENTS.md) — OpenCode agent documentation
-- [AI Agents Convention](../../governance/development/agents/agent-workflow-orchestration.md) — Agent workflow orchestration
-- [Maker-Checker-Fixer Pattern](../../governance/development/pattern/maker-checker-fixer.md) — Three-stage quality workflow
-- [Specs Validation Workflow](../../governance/workflows/specs/specs-quality-gate.md) — Orchestrated validation workflow
+- [AI Agents Convention](../../repo-governance/development/agents/agent-workflow-orchestration.md) — Agent workflow orchestration
+- [Maker-Checker-Fixer Pattern](../../repo-governance/development/pattern/maker-checker-fixer.md) — Three-stage quality workflow
+- [Specs Validation Workflow](../../repo-governance/workflows/specs/specs-quality-gate.md) — Orchestrated validation workflow
 - Related agents: [specs-checker](./specs-checker.md), [specs-maker](./specs-maker.md)

@@ -18,13 +18,13 @@ Instructions for AI agents working with this repository.
 - **Node.js**: 24.13.1 (LTS - Long-Term Support, managed by Volta)
 - **npm**: 11.10.1
 - **Monorepo**: Nx with `apps/` and `libs/` structure
-- **Git Workflow**: Trunk Based Development (default: commit and push directly to `main`). **Worktree work follows the same default**: any work performed inside a `git worktree add` path -- including agents using `isolation: "worktree"` and agents invoked inside an existing worktree session -- pushes directly to `main` via `git push origin HEAD:main`. The worktree branch is an isolation mechanism, not a feature branch. A draft PR (`gh pr create --draft --base main`) is created only when the user's prompt or the plan document explicitly requests one; when opened, it stays in draft status during iteration and is flipped to ready for review when the author decides the work is complete, which is when the [PR Merge Protocol](./governance/development/workflow/pr-merge-protocol.md) approval gate fires. See the [Trunk Based Development Convention](./governance/development/workflow/trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) and the [Git Push Default Convention](./governance/development/workflow/git-push-default.md#standard-6-worktree-branches-push-to-main-not-to-worktree-branch) for details.
-- **Worktree path**: Default worktree location is `.claude/worktrees/<name>/` per the [Worktree Path Convention](./governance/conventions/structure/worktree-path.md) — parallel-safe, gitignored, no override.
-- **Worktree toolchain init**: After creating or entering a worktree, agents must run BOTH `npm install` AND `npm run doctor -- --fix` in the root repository worktree, in that order. See [Infra: Development Environment Setup](./governance/workflows/infra/infra-development-environment-setup.md) for the full one-shot bootstrap (polyglot toolchain + `OPENCODE_GO_API_KEY` env var). The `package.json` `postinstall` hook runs `npm run doctor || true` which silently tolerates toolchain drift, so the explicit `doctor --fix` invocation is required to converge the 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node). See [Worktree Toolchain Initialization](./governance/development/workflow/worktree-setup.md) for the full rationale and procedure.
+- **Git Workflow**: Trunk Based Development (default: commit and push directly to `main`). **Worktree work follows the same default**: any work performed inside a `git worktree add` path -- including agents using `isolation: "worktree"` and agents invoked inside an existing worktree session -- pushes directly to `main` via `git push origin HEAD:main`. The worktree branch is an isolation mechanism, not a feature branch. A draft PR (`gh pr create --draft --base main`) is created only when the user's prompt or the plan document explicitly requests one; when opened, it stays in draft status during iteration and is flipped to ready for review when the author decides the work is complete, which is when the [PR Merge Protocol](./repo-governance/development/workflow/pr-merge-protocol.md) approval gate fires. See the [Trunk Based Development Convention](./repo-governance/development/workflow/trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) and the [Git Push Default Convention](./repo-governance/development/workflow/git-push-default.md#standard-6-worktree-branches-push-to-main-not-to-worktree-branch) for details.
+- **Worktree path**: Default worktree location is `.claude/worktrees/<name>/` per the [Worktree Path Convention](./repo-governance/conventions/structure/worktree-path.md) — parallel-safe, gitignored, no override.
+- **Worktree toolchain init**: After creating or entering a worktree, agents must run BOTH `npm install` AND `npm run doctor -- --fix` in the root repository worktree, in that order. See [Infra: Development Environment Setup](./repo-governance/workflows/infra/infra-development-environment-setup.md) for the full one-shot bootstrap (polyglot toolchain + `OPENCODE_GO_API_KEY` env var). The `package.json` `postinstall` hook runs `npm run doctor || true` which silently tolerates toolchain drift, so the explicit `doctor --fix` invocation is required to converge the 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node). See [Worktree Toolchain Initialization](./repo-governance/development/workflow/worktree-setup.md) for the full rationale and procedure.
 
 ## Dual-Binding Configuration
 
-This repository maintains **dual compatibility** with two coding-agent platforms via separate binding directories. Per the [Governance Vendor Independence convention](./governance/conventions/structure/governance-vendor-independence.md), platform-specific terminology lives under [Platform Binding Examples](#platform-binding-examples) at the bottom of this file.
+This repository maintains **dual compatibility** with two coding-agent platforms via separate binding directories. Per the [Governance Vendor Independence convention](./repo-governance/conventions/structure/governance-vendor-independence.md), platform-specific terminology lives under [Platform Binding Examples](#platform-binding-examples) at the bottom of this file.
 
 - **Primary binding directory**: source of truth — edit here first
 - **Secondary binding directory**: auto-generated — synced from primary
@@ -34,7 +34,7 @@ This repository maintains **dual compatibility** with two coding-agent platforms
 **Format differences** (canonical):
 
 - **Tools**: primary binding uses tool arrays; secondary binding uses boolean flag maps; the sync translates between them
-- **Models**: primary binding uses Claude tier names (sonnet/opus/haiku, or omits for inheritance); secondary binding uses opencode-go model IDs. See [model-selection.md](./governance/development/agents/model-selection.md) for full capability-tier mapping
+- **Models**: primary binding uses Claude tier names (sonnet/opus/haiku, or omits for inheritance); secondary binding uses opencode-go model IDs. See [model-selection.md](./repo-governance/development/agents/model-selection.md) for full capability-tier mapping
 - **Agent skills**: same SKILL.md format; skills are read natively by the secondary binding from the primary binding directory — no mirror is written
 - **Permissions**: each binding has its own permission file with equivalent access configured
 - **Plugins/MCP**: each binding has its own extension format (plugins for one, MCP servers for the other)
@@ -47,7 +47,7 @@ Specialized agents organized into families:
 
 1. **Documentation**: `docs-maker`, `docs-checker`, `docs-fixer`, `docs-tutorial-maker`, `docs-tutorial-checker`, `docs-tutorial-fixer`, `docs-link-checker`, `docs-file-manager`
 2. **README**: `readme-maker`, `readme-checker`, `readme-fixer`
-3. **Project Planning**: `plan-maker`, `plan-checker`, `plan-execution-checker`, `plan-fixer` (plan execution itself is orchestrated directly by the calling context via the [plan-execution workflow](./governance/workflows/plan/plan-execution.md); no dedicated executor subagent)
+3. **Project Planning**: `plan-maker`, `plan-checker`, `plan-execution-checker`, `plan-fixer` (plan execution itself is orchestrated directly by the calling context via the [plan-execution workflow](./repo-governance/workflows/plan/plan-execution.md); no dedicated executor subagent)
 4. **Software Engineering & Specialized**: `agent-maker`, `swe-code-checker`, `swe-ui-maker`, `swe-ui-checker`, `swe-ui-fixer`, `swe-clojure-dev`, `swe-csharp-dev`, `swe-dart-dev`, `swe-e2e-dev`, `swe-elixir-dev`, `swe-fsharp-dev`, `swe-golang-dev`, `swe-java-dev`, `swe-kotlin-dev`, `swe-python-dev`, `swe-rust-dev`, `swe-typescript-dev`, `social-linkedin-post-maker`
 5. **Repository Governance**: `repo-rules-maker`, `repo-rules-checker`, `repo-rules-fixer`, `repo-workflow-maker`, `repo-workflow-checker`, `repo-workflow-fixer`
 6. **Cross-Vendor Parity**: `repo-parity-checker`, `repo-parity-fixer`
@@ -76,7 +76,7 @@ Three-stage quality workflow:
 
 **See**: `.claude/skills/repo-applying-maker-checker-fixer/SKILL.md` (read natively by the secondary binding)
 
-**Web Research Default**: `web-research-maker` is the default primitive for public-web information gathering across all agents. See [Web Research Delegation Convention](./governance/conventions/writing/web-research-delegation.md) for the normative rule, delegation threshold (2+ `WebSearch` or 3+ `WebFetch` per claim), and enumerated exceptions (single-shot known URL; fixer re-validation; link-reachability checkers).
+**Web Research Default**: `web-research-maker` is the default primitive for public-web information gathering across all agents. See [Web Research Delegation Convention](./repo-governance/conventions/writing/web-research-delegation.md) for the normative rule, delegation threshold (2+ `WebSearch` or 3+ `WebFetch` per claim), and enumerated exceptions (single-shot known URL; fixer re-validation; link-reachability checkers).
 
 ## Agent-Skill Integration
 
@@ -126,14 +126,14 @@ All agents follow foundational principles:
 6. **Automation Over Manual** - Automate repetitive tasks
 7. **Root Cause Orientation** - Fix root causes, not symptoms; minimal impact; senior engineer standard
 
-**See**: [governance/principles/README.md](./governance/principles/README.md)
+**See**: [repo-governance/principles/README.md](./repo-governance/principles/README.md)
 
 ## Related Documentation
 
 - **CLAUDE.md** - thin shim importing this canonical file via `@AGENTS.md`; documents primary-binding-specific notes
 - **Primary-binding agent catalog** - `[primary binding]/agents/README.md` (canonical; synced to the secondary binding directory)
 - **Primary-binding agent-skill catalog** - `[primary binding]/skills/README.md` (read natively by the secondary binding)
-- **governance/repository-governance-architecture.md** - Six-layer governance hierarchy
+- **repo-governance/repository-governance-architecture.md** - Six-layer governance hierarchy
 - **docs/reference/platform-bindings.md** - Catalog of platform-specific bindings and their conventions
 
 ---
@@ -164,7 +164,7 @@ All agents follow foundational principles:
 
 ## Platform Binding Examples
 
-This section documents binding-specific details. Per the [Governance Vendor Independence convention](./governance/conventions/structure/governance-vendor-independence.md), the vendor-audit scanner skips every line under this heading until the next same-level heading or end of file.
+This section documents binding-specific details. Per the [Governance Vendor Independence convention](./repo-governance/conventions/structure/governance-vendor-independence.md), the vendor-audit scanner skips every line under this heading until the next same-level heading or end of file.
 
 ### Primary binding: Claude Code (`.claude/`)
 

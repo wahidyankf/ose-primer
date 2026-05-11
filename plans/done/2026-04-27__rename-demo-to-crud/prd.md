@@ -53,8 +53,8 @@ git history.
 10. All Gherkin `.feature` files audited; any `demo-` references updated.
 11. All C4 diagram files in `specs/apps/crud/c4/` audited; `demo-` references updated.
 12. All `README.md` files inside the moved spec tree updated.
-13. Governance workflows (`governance/workflows/`) audited and updated.
-14. Governance convention docs (`governance/conventions/`) audited and updated.
+13. Governance workflows (`repo-governance/workflows/`) audited and updated.
+14. Governance convention docs (`repo-governance/conventions/`) audited and updated.
 15. `docs/` tree (tutorials, how-to, reference, explanation) audited and updated.
 16. `CLAUDE.md`, root `README.md`, and `AGENTS.md` updated.
 17. Active plans (`plans/ideas.md`, `plans/backlog/`) audited and updated; `plans/done/`
@@ -133,8 +133,8 @@ Feature: Rename demo-* to crud-* across the entire ose-primer repository
     And no markdownlint violation is reported
 
   Scenario: Governance workflows contain no stale demo- references
-    Given all governance workflow files in "governance/workflows/" are updated
-    When I search "governance/workflows/" for "demo-"
+    Given all governance workflow files in "repo-governance/workflows/" are updated
+    When I search "repo-governance/workflows/" for "demo-"
     Then no matches are found
 
   Scenario: Documentation files contain no stale demo- references

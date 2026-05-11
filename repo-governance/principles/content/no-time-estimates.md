@@ -351,7 +351,7 @@ try examples, and solve simple problems on their own.
 
 ### Content Quality Principles
 
-**Location**: `governance/conventions/writing/quality.md`
+**Location**: `repo-governance/conventions/writing/quality.md`
 
 **Explicit "No Time Estimates" section**:
 

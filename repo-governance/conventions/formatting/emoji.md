@@ -29,7 +29,7 @@ This convention implements the following core principles:
 
 ### What This Convention Covers
 
-- **Where emojis are allowed** - docs/, READMEs, plans/, governance/, AGENTS.md, CLAUDE.md, `.claude/agents/`, `.opencode/agents/`, `.opencode/skills/`
+- **Where emojis are allowed** - docs/, READMEs, plans/, repo-governance/, AGENTS.md, CLAUDE.md, `.claude/agents/`, `.opencode/agents/`, `.opencode/skills/`
 - **Where emojis are forbidden** - config files (_.json,_.yaml, \*.toml), source code
 - **Semantic emoji usage** - Using emojis for meaning, not decoration
 - **Emoji consistency** - Standard emojis for common concepts
@@ -454,7 +454,7 @@ category: explanation
    - Explanations, tutorials, how-tos, reference
    - Conventions, development docs
 
-2. **Governance documentation** - `governance/**/*.md`
+2. **Governance documentation** - `repo-governance/**/*.md`
    - Principles, conventions, development practices
    - Workflows, architecture documentation
 
@@ -513,7 +513,7 @@ category: explanation
 PASS: **Clear rule:**
 
 ```
-Emojis for humans: docs/, governance/, plans/, README.md files, CLAUDE.md, `.opencode/skills/`*.md
+Emojis for humans: docs/, repo-governance/, plans/, README.md files, CLAUDE.md, `.opencode/skills/`*.md
 Emojis for agents: AGENTS.md, `.claude/agents/`*.md, `.opencode/agents/`*.md
 No emojis for machines: config files (*.json, *.yaml, *.toml)
 ```
@@ -757,7 +757,7 @@ When adding emojis to existing documentation:
 
 **Phase 1: Core Documentation** (Immediate)
 
-- Update convention documents in `governance/conventions/`
+- Update convention documents in `repo-governance/conventions/`
 - Update README.md files (root and `.opencode/agents/README.md`)
 - Update AGENTS.md and agent files (`.claude/agents/*.md`, `.opencode/agents/*.md`) per Rule 7 item 5 (emojis enhance scannability for criticality definitions and section headers)
 - Update CLAUDE.md and `.opencode/skills/`\*.md` per Rule 7 item 6 (emojis support scannability of guidance and knowledge content)
@@ -793,7 +793,7 @@ When reviewing emoji usage, verify:
 - [ ] Emojis ARE used in agent files `.claude/agents/*.md` and `.opencode/agents/*.md` (including README.md)
 - [ ] Emojis ARE used in CLAUDE.md and `.opencode/skills/`\*.md` (root config and skill files)
 - [ ] Emojis ARE used in README.md files (human-oriented indices)
-- [ ] Emojis ARE used in docs/, plans/, and governance/ (human documentation)
+- [ ] Emojis ARE used in docs/, plans/, and repo-governance/ (human documentation)
 - [ ] Headings still make sense without emoji (accessibility)
 - [ ] Emojis enhance scannability and engagement
 

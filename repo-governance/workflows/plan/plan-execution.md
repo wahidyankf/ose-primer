@@ -86,7 +86,7 @@ The orchestrator selects the best agent for each delivery checklist item using t
 
 2. **Match by file extension**: If the item references files with a recognizable extension (`.ts`, `.java`, `.py`, `.go`, `.kt`, `.fs`, `.cs`, `.clj`, `.ex`, `.rs`, `.dart`), use the corresponding `swe-{language}-dev` agent.
 
-3. **Match by content type**: If the item involves documentation (`docs/`, `README.md`), governance (`governance/`), specs (`specs/`), or E2E tests (`*-e2e`, Playwright), use the appropriate content agent (`docs-maker`, `repo-rules-maker`, `readme-maker`, `specs-maker`, `swe-e2e-dev`).
+3. **Match by content type**: If the item involves documentation (`docs/`, `README.md`), governance (`repo-governance/`), specs (`specs/`), or E2E tests (`*-e2e`, Playwright), use the appropriate content agent (`docs-maker`, `repo-rules-maker`, `readme-maker`, `specs-maker`, `swe-e2e-dev`).
 
 4. **Match by framework/tool keywords**: If the item mentions a framework (Spring Boot, Ktor, FastAPI, Gin, Phoenix, Giraffe, Axum, Pedestal, Hugo, Next.js, Flutter), use the agent for that framework's language.
 
@@ -184,7 +184,7 @@ Before reading the delivery checklist, verify that the plan declares a worktree 
 1. **Locate the `## Worktree` section** in the plan:
    - **Multi-file plans**: in `delivery.md` (top-level `## Worktree` heading, before any phase).
    - **Single-file plans**: in `README.md` (top-level `## Worktree` heading, before `## Delivery Checklist`).
-2. **If the section is missing**: terminate immediately with status `fail`. Emit a single user-visible line: `Worktree specification missing — add a "## Worktree" section to <delivery.md|README.md> per governance/conventions/structure/plans.md#worktree-specification before re-invoking plan execution.`
+2. **If the section is missing**: terminate immediately with status `fail`. Emit a single user-visible line: `Worktree specification missing — add a "## Worktree" section to <delivery.md|README.md> per repo-governance/conventions/structure/plans.md#worktree-specification before re-invoking plan execution.`
 3. **Parse the declared worktree path** (format: `worktrees/<plan-identifier>/`).
 4. **Verify the current working directory** matches the declared path:
    - Run `pwd` (or read the orchestrator's `workingDirectory`).

@@ -59,7 +59,7 @@ Your primary job is to:
 ## Web Research Delegation
 
 This agent has `WebSearch` and `WebFetch` tools but invokes **Exception 2 (fixer re-validation)**
-of the [Web Research Delegation Convention](../../governance/conventions/writing/web-research-delegation.md).
+of the [Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md).
 Fixer agents re-validate single audit findings in the same context as the fix they apply, so
 delegating to [`web-research-maker`](./web-research-maker.md) would break the re-validation-plus-fix
 coupling. The agent therefore uses in-context `WebSearch`/`WebFetch` for single-finding
@@ -91,7 +91,7 @@ Apply HIGH_CONFIDENCE fixes automatically, skip others, report summary.
 
 #### BRD/PRD Content-Placement Fixes
 
-When the audit reports misplaced content per the [Content-Placement Rules](../../governance/conventions/structure/plans.md#content-placement-rules-brdmd-vs-prdmd), apply the following moves (HIGH confidence — mechanical, unambiguous):
+When the audit reports misplaced content per the [Content-Placement Rules](../../repo-governance/conventions/structure/plans.md#content-placement-rules-brdmd-vs-prdmd), apply the following moves (HIGH confidence — mechanical, unambiguous):
 
 - **Business framing found in `prd.md`** (sign-off language, sponsors, stakeholders, KPIs, ceremony language) → **move to `brd.md`**, typically into the Business Impact or Affected Roles subsection. If sign-off / approval-gate language is present at all, **strip it** — this repo is single-maintainer with code-review as the only gate; sign-off ceremonies are forbidden by the convention.
 - **User stories or Gherkin scenarios found in `brd.md`** → **move to `prd.md`**, into User Stories or Acceptance Criteria section.
@@ -187,19 +187,19 @@ The `repo-assessing-criticality-confidence` Skill provides complete confidence l
 **Project Guidance:**
 
 - [CLAUDE.md](../../CLAUDE.md) - Primary guidance
-- [Plans Organization Convention](../../governance/conventions/structure/plans.md) - Plan standards
+- [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md) - Plan standards
 
 **Related Agents / Workflows:**
 
 - `plan-maker` - Creates plans
 - `plan-checker` - Validates plans (generates audit reports)
-- [plan-execution workflow](../../governance/workflows/plan/plan-execution.md) - Execute plans (calling context orchestrates; no dedicated subagent)
+- [plan-execution workflow](../../repo-governance/workflows/plan/plan-execution.md) - Execute plans (calling context orchestrates; no dedicated subagent)
 - `plan-execution-checker` - Validates completed work
 
 **Related Conventions:**
 
-- [Fixer Confidence Levels Convention](../../governance/development/quality/fixer-confidence-levels.md) - Confidence assessment
-- [Maker-Checker-Fixer Pattern Convention](../../governance/development/pattern/maker-checker-fixer.md) - Three-stage workflow
+- [Fixer Confidence Levels Convention](../../repo-governance/development/quality/fixer-confidence-levels.md) - Confidence assessment
+- [Maker-Checker-Fixer Pattern Convention](../../repo-governance/development/pattern/maker-checker-fixer.md) - Three-stage workflow
 
 You validate thoroughly, apply fixes confidently (for objective issues only), and report transparently. Your goal is to improve plan quality while avoiding false positives.
 

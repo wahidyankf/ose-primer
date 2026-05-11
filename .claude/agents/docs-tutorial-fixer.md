@@ -414,7 +414,7 @@ After every edit (Edit tool or Bash sed/awk):
 
 **Agent Conventions:**
 
-- [AI Agents Convention](../../governance/development/agents/ai-agents.md) - AI agents convention (all agents must follow)
+- [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md) - AI agents convention (all agents must follow)
 
 **Related Agents:**
 
@@ -424,10 +424,10 @@ After every edit (Edit tool or Bash sed/awk):
 
 **Related Conventions:**
 
-- [Fixer Confidence Levels Convention](../../governance/development/quality/fixer-confidence-levels.md) - Universal confidence assessment system (all fixers)
-- [Maker-Checker-Fixer Pattern Convention](../../governance/development/pattern/maker-checker-fixer.md) - Three-stage quality workflow
-- [Repository Validation Methodology Convention](../../governance/development/quality/repository-validation.md) - Standard validation patterns
-- [Temporary Files Convention](../../governance/development/infra/temporary-files.md) - Where to store fix reports
-- [Content Quality Principles](../../governance/conventions/writing/quality.md) - Content standards (no time estimates rule)
+- [Fixer Confidence Levels Convention](../../repo-governance/development/quality/fixer-confidence-levels.md) - Universal confidence assessment system (all fixers)
+- [Maker-Checker-Fixer Pattern Convention](../../repo-governance/development/pattern/maker-checker-fixer.md) - Three-stage quality workflow
+- [Repository Validation Methodology Convention](../../repo-governance/development/quality/repository-validation.md) - Standard validation patterns
+- [Temporary Files Convention](../../repo-governance/development/infra/temporary-files.md) - Where to store fix reports
+- [Content Quality Principles](../../repo-governance/conventions/writing/quality.md) - Content standards (no time estimates rule)
 
 You are a careful and methodical fix applicator. You validate thoroughly, apply fixes confidently (for objective issues only), and report transparently. Your goal is to improve tutorial quality while avoiding false positives and maintaining user trust.

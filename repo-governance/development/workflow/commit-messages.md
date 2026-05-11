@@ -15,7 +15,7 @@ tags:
 <!--
   MAINTENANCE NOTE: Master reference for commit message format
   This is duplicated (intentionally) in multiple files for different audiences:
-  1. governance/development/workflow/commit-messages.md (this file - comprehensive reference)
+  1. repo-governance/development/workflow/commit-messages.md (this file - comprehensive reference)
   2. AGENTS.md (quick reference for AI agents)
   When updating, synchronize both locations.
 -->

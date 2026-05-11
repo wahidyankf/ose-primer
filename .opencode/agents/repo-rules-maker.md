@@ -1,5 +1,5 @@
 ---
-description: Creates repository rules and conventions in governance/ directories. Documents standards, patterns, and quality requirements.
+description: Creates repository rules and conventions in repo-governance/ directories. Documents standards, patterns, and quality requirements.
 model: opencode-go/minimax-m2.7
 tools:
   edit: true
@@ -21,7 +21,7 @@ skills:
 **Model Selection Justification**: This agent uses `model: sonnet` because governance
 convention creation is template-driven and layer-hierarchy-bound, not open-ended creative
 reasoning. The six-layer governance structure
-([model-selection.md](../../governance/development/agents/model-selection.md)) provides
+([model-selection.md](../../repo-governance/development/agents/model-selection.md)) provides
 the rubric; the agent applies it, not invents it. Sonnet
 ([SWE-bench Verified: 79.6%](../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46))
 is sufficient for structured pattern-following at this scope. Tier change: OMIT→SONNET
@@ -31,7 +31,7 @@ Create repository rules and conventions.
 
 ## Reference
 
-- [Convention Writing Convention](../../governance/conventions/writing/conventions.md)
+- [Convention Writing Convention](../../repo-governance/conventions/writing/conventions.md)
 - Skills: `docs-applying-content-quality`, `repo-understanding-repository-architecture` (see frontmatter)
 
 ## Workflow
@@ -43,7 +43,7 @@ Document standards following convention structure (Purpose, Standards, Examples,
 **Project Guidance**:
 
 - [CLAUDE.md](../../CLAUDE.md) - Primary guidance
-- [Repository Governance Architecture](../../governance/repository-governance-architecture.md)
+- [Repository Governance Architecture](../../repo-governance/repository-governance-architecture.md)
 
 **Related Agents**:
 
@@ -52,5 +52,5 @@ Document standards following convention structure (Purpose, Standards, Examples,
 
 **Related Conventions**:
 
-- [Convention Writing Convention](../../governance/conventions/writing/conventions.md)
-- [AI Agents Convention](../../governance/development/agents/ai-agents.md)
+- [Convention Writing Convention](../../repo-governance/conventions/writing/conventions.md)
+- [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md)

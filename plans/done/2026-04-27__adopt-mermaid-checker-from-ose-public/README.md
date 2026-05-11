@@ -22,7 +22,7 @@ should not lag the downstream consumer.
   - `apps/rhino-cli/cmd/docs_validate_mermaid*.go`
   - `apps/rhino-cli/project.json` (Nx target inputs and command paths)
   - `.husky/pre-push` (no logic change expected; verify still fires)
-  - All `**/*.md` under `docs/`, `governance/`, `.claude/`, `plans/`,
+  - All `**/*.md` under `docs/`, `repo-governance/`, `.claude/`, `plans/`,
     repository-root that contain ` ```mermaid ` blocks (153 files
     surveyed at plan time)
 - **Out of scope**
@@ -52,11 +52,11 @@ should not lag the downstream consumer.
   `https://github.com/wahidyankf/ose-public/tree/main/apps/rhino-cli/cmd`.
   Alternatively open a parent-rooted Claude session for filesystem
   side-by-side view.
-- [governance/development/infra/nx-targets.md](../../../governance/development/infra/nx-targets.md)
+- [repo-governance/development/infra/nx-targets.md](../../../repo-governance/development/infra/nx-targets.md)
   for caching rules on the upgraded `validate:mermaid` target.
-- [governance/development/quality/code.md](../../../governance/development/quality/code.md)
+- [repo-governance/development/quality/code.md](../../../repo-governance/development/quality/code.md)
   for the pre-push contract.
-- [governance/development/workflow/git-push-default.md](../../../governance/development/workflow/git-push-default.md)
+- [repo-governance/development/workflow/git-push-default.md](../../../repo-governance/development/workflow/git-push-default.md)
   for the direct-to-main publish path used by every commit in this
   plan.
 - [plans/in-progress/README.md](../README.md) for status
@@ -80,7 +80,7 @@ should not lag the downstream consumer.
   (or a worktree-isolated session created via
   `claude --worktree adopt-mermaid-checker`).
 - Publish path: **direct push to `origin main`** per
-  [Git Push Default Convention](../../../governance/development/workflow/git-push-default.md)
+  [Git Push Default Convention](../../../repo-governance/development/workflow/git-push-default.md)
   Standards 1, 2, 6. Draft PR is opt-in only when the user
   explicitly requests one for review-warranting changes — no such
   request has been made for this plan.

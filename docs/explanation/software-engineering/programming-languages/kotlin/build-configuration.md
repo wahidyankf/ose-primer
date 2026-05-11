@@ -466,8 +466,8 @@ zipStorePath=wrapper/dists
 
 ## Related Documentation
 
-- [Reproducibility First](../../../../../governance/principles/software-engineering/reproducibility.md)
-- [Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)
+- [Reproducibility First](../../../../../repo-governance/principles/software-engineering/reproducibility.md)
+- [Automation Over Manual](../../../../../repo-governance/principles/software-engineering/automation-over-manual.md)
 
 ---
 

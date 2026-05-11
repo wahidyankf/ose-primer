@@ -201,15 +201,15 @@ All workflow files follow the plain-name pattern (no prefix), organized by subdi
 ```
 
 - **No prefix**: Workflow files use plain descriptive names
-- **Subdirectory**: Location in `governance/workflows/[category]/` encodes the context
+- **Subdirectory**: Location in `repo-governance/workflows/[category]/` encodes the context
 - **Identifier**: Lowercase, hyphen-separated
 - **Extension**: `.md`
 
 **Examples**:
 
-- `repo-rules-quality-gate.md` (in `governance/workflows/repo/`)
-- `plan-quality-gate.md` (in `governance/workflows/plan/`)
-- `quality-gate.md` (in `governance/workflows/docs/`)
+- `repo-rules-quality-gate.md` (in `repo-governance/workflows/repo/`)
+- `plan-quality-gate.md` (in `repo-governance/workflows/plan/`)
+- `quality-gate.md` (in `repo-governance/workflows/docs/`)
 
 **Note**: Workflow files use plain kebab-case names in their respective subdirectories. See [File Naming Convention](../../conventions/structure/file-naming.md) for the current naming rules.
 
@@ -368,7 +368,7 @@ Workflows must be validated before execution:
 - **Input/output types**: Valid type declarations
 - **Step dependencies**: No circular dependencies
 - **State references**: All references resolve
-- **File naming**: Plain name in correct subdirectory of `governance/workflows/`
+- **File naming**: Plain name in correct subdirectory of `repo-governance/workflows/`
 
 Validation performed by `workflow-validator` (future agent).
 
@@ -824,7 +824,7 @@ Potential workflow features (not yet implemented):
 
 ## Token Budget Philosophy
 
-**CRITICAL GUIDELINE**: When orchestrating workflows (`governance/workflows/`), **do NOT think about token budget constraints**.
+**CRITICAL GUIDELINE**: When orchestrating workflows (`repo-governance/workflows/`), **do NOT think about token budget constraints**.
 
 Workflows naturally consume more tokens than single agent invocations because they:
 
@@ -855,7 +855,7 @@ This convention respects:
 
 This convention implements/respects:
 
-- **[File Naming Convention](../../conventions/structure/file-naming.md)**: Workflow files follow plain name pattern (no prefix) in `governance/workflows/` subdirectories, as defined by the file naming convention
+- **[File Naming Convention](../../conventions/structure/file-naming.md)**: Workflow files follow plain name pattern (no prefix) in `repo-governance/workflows/` subdirectories, as defined by the file naming convention
 - **[AI Agents Convention](../../development/agents/ai-agents.md)**: Workflows orchestrate agents defined and governed by the AI Agents Convention; agent names referenced in workflow files must match agent names in `.claude/agents/`
 - **[Linking Convention](../../conventions/formatting/linking.md)**: All workflow cross-references use GitHub-compatible markdown links with `.md` extension and relative paths
 

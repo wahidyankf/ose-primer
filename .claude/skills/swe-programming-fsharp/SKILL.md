@@ -203,4 +203,4 @@ let zakatProperties =
 ## References
 
 - [F# README](../../../docs/explanation/software-engineering/programming-languages/f-sharp/README.md)
-- [Functional Programming](../../../governance/development/pattern/functional-programming.md)
+- [Functional Programming](../../../repo-governance/development/pattern/functional-programming.md)

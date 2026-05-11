@@ -102,7 +102,7 @@ tools: all
 explicit-over-implicit.md
 ```
 
-**Why this works**: The basename is a full, readable kebab-case description of the content. The directory hierarchy (`governance/principles/software-engineering/`) explicitly encodes the category.
+**Why this works**: The basename is a full, readable kebab-case description of the content. The directory hierarchy (`repo-governance/principles/software-engineering/`) explicitly encodes the category.
 
 ❌ **Implicit (Avoid)**:
 

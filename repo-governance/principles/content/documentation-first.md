@@ -223,7 +223,7 @@ function calculateMurabahahProfitRate(cost: number, markup_percentage: number, c
 
 ### Convention Documentation
 
-**Context**: All standards and conventions in `governance/conventions/`.
+**Context**: All standards and conventions in `repo-governance/conventions/`.
 
 **Requirements**:
 
@@ -571,7 +571,7 @@ Every piece of documentation should include examples:
 
 ### Comprehensive Convention Documentation
 
-**Location**: `governance/conventions/`
+**Location**: `repo-governance/conventions/`
 
 Every convention is fully documented:
 
@@ -608,7 +608,7 @@ Every convention is fully documented:
 
 ### Workflow Documentation
 
-**Location**: `governance/workflows/`
+**Location**: `repo-governance/workflows/`
 
 **Examples**:
 

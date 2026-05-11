@@ -16,10 +16,10 @@ tags:
 <!--
   MAINTENANCE NOTE: Master reference for TBD workflow
   This is duplicated (intentionally) in multiple files for different audiences:
-  1. governance/development/workflow/trunk-based-development.md (this file - comprehensive reference)
+  1. repo-governance/development/workflow/trunk-based-development.md (this file - comprehensive reference)
   2. AGENTS.md (summary for AI agents)
   3. .opencode/agent/plan-maker.md (context for plan creation)
-  4. governance/workflows/plan/plan-execution.md (context for plan execution — orchestrated by the calling context)
+  4. repo-governance/workflows/plan/plan-execution.md (context for plan execution — orchestrated by the calling context)
   When updating, synchronize all four locations.
 -->
 

@@ -31,7 +31,7 @@ This directory contains demo-specific standards for automation testing tools inc
 ## Related Documentation
 
 - **[Software Engineering Index](../README.md)** - Parent documentation
-- **[Testing Principles](../../../../governance/development/quality/code.md)** - Quality standards
+- **[Testing Principles](../../../../repo-governance/development/quality/code.md)** - Quality standards
 - **[TypeScript Standards](../programming-languages/typescript/README.md)** - Language standards
 
 ---

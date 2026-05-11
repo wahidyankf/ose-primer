@@ -220,4 +220,4 @@ defer cancel()
 ## References
 
 - [Go README](../../../docs/explanation/software-engineering/programming-languages/golang/README.md)
-- [Functional Programming](../../../governance/development/pattern/functional-programming.md)
+- [Functional Programming](../../../repo-governance/development/pattern/functional-programming.md)

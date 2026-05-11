@@ -144,4 +144,4 @@ For detailed guidance, refer to:
 ## References
 
 - [TypeScript README](../../../docs/explanation/software-engineering/programming-languages/typescript/README.md)
-- [Functional Programming](../../../governance/development/pattern/functional-programming.md)
+- [Functional Programming](../../../repo-governance/development/pattern/functional-programming.md)

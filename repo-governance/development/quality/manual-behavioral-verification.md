@@ -197,7 +197,7 @@ This convention applies to:
 It does not apply to:
 
 - Library-only changes (`libs/`) with no UI or API surface
-- Documentation changes (`docs/`, `governance/`, `plans/`)
+- Documentation changes (`docs/`, `repo-governance/`, `plans/`)
 - Configuration changes that do not affect runtime behavior
 - Internal refactors with no observable behavioral change
 

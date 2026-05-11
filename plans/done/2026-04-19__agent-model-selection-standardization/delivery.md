@@ -29,22 +29,22 @@
 
 ---
 
-## Phase 1: Update `governance/development/agents/model-selection.md`
+## Phase 1: Update `repo-governance/development/agents/model-selection.md`
 
 - [x] **1.1** Budget-Adaptive Inheritance block added to Opus tier section
     — explains omit = session inherit, account-tier table (Max/Team → Opus 4.7,
     Pro/Standard → Sonnet 4.6), warning not to add `model: opus`
-<!-- 2026-04-19 | Status: Done | File: governance/development/agents/model-selection.md | Added Budget-Adaptive Inheritance subsection with account-tier table and warning -->
+<!-- 2026-04-19 | Status: Done | File: repo-governance/development/agents/model-selection.md | Added Budget-Adaptive Inheritance subsection with account-tier table and warning -->
 - [x] **1.2** "Current Model Versions (April 2026)" table added with Opus 4.7, Sonnet
     4.6, Haiku 4.5-20251001; Haiku 3 retirement note (2026-04-19)
-<!-- 2026-04-19 | Status: Done | File: governance/development/agents/model-selection.md | Added "Current Model Versions (April 2026)" section with table and Haiku 3 retirement note -->
+<!-- 2026-04-19 | Status: Done | File: repo-governance/development/agents/model-selection.md | Added "Current Model Versions (April 2026)" section with table and Haiku 3 retirement note -->
 - [x] **1.3** "OpenCode / GLM Equivalents" section added with mapping table + 3-to-2
     collapse explanation
-<!-- 2026-04-19 | Status: Done | File: governance/development/agents/model-selection.md | Added "OpenCode / GLM Equivalents" section with mapping table, collapse explanation, GLM-5-turbo warning -->
+<!-- 2026-04-19 | Status: Done | File: repo-governance/development/agents/model-selection.md | Added "OpenCode / GLM Equivalents" section with mapping table, collapse explanation, GLM-5-turbo warning -->
 - [x] **1.4** "Adding `model: opus` to opus-tier agents" row added to Common Mistakes
-<!-- 2026-04-19 | Status: Done | File: governance/development/agents/model-selection.md | Added row to Common Mistakes table -->
+<!-- 2026-04-19 | Status: Done | File: repo-governance/development/agents/model-selection.md | Added row to Common Mistakes table -->
 - [x] **1.5** "Last Updated" set to 2026-04-19
-<!-- 2026-04-19 | Status: Done | File: governance/development/agents/model-selection.md | Updated Last Updated from 2026-04-12 to 2026-04-19 -->
+<!-- 2026-04-19 | Status: Done | File: repo-governance/development/agents/model-selection.md | Updated Last Updated from 2026-04-12 to 2026-04-19 -->
 - [x] **1.6** Run `npm run lint:md` — confirm zero errors
 <!-- 2026-04-19 | Status: Done | 742 files linted, 0 errors -->
 - [x] **1.7** Commit: `docs(model-selection): add budget-adaptive inheritance note + opencode glm mapping`
@@ -70,13 +70,13 @@
 
 ## Phase 3: Propagate to Related Governance Docs
 
-- [x] **3.1** `governance/development/agents/ai-agents.md` — add budget-adaptive note to
+- [x] **3.1** `repo-governance/development/agents/ai-agents.md` — add budget-adaptive note to
     model field spec and Model Selection Guidelines: opus-tier agents omit model by
     design; warn against adding `model: opus`
-<!-- 2026-04-19 | Status: Done | File: governance/development/agents/ai-agents.md | Added budget-adaptive note to model field spec and Opus tier in Model Selection Guidelines -->
-- [x] **3.2** `governance/development/agents/best-practices.md` — add budget-adaptive
+<!-- 2026-04-19 | Status: Done | File: repo-governance/development/agents/ai-agents.md | Added budget-adaptive note to model field spec and Opus tier in Model Selection Guidelines -->
+- [x] **3.2** `repo-governance/development/agents/best-practices.md` — add budget-adaptive
     rationale; ensure plan-maker example shows omit (not `model: opus`)
-<!-- 2026-04-19 | Status: Done | File: governance/development/agents/best-practices.md | Updated Practice 3 with omit example and budget-adaptive rationale; plan-maker now shows model: (omit) -->
+<!-- 2026-04-19 | Status: Done | File: repo-governance/development/agents/best-practices.md | Updated Practice 3 with omit example and budget-adaptive rationale; plan-maker now shows model: (omit) -->
 - [x] **3.3** `.claude/agents/README.md` — add "Opus-tier agents omit `model` by design"
     note to the model selection section
 <!-- 2026-04-19 | Status: Done | File: .claude/agents/README.md | Added budget-adaptive blockquote after Model field description -->
@@ -148,7 +148,7 @@ Apply the definitive tier mapping from `tech-docs.md § Complete Agent Tier Mapp
 Add benchmark citations (with links to `docs/reference/ai-model-benchmarks.md`) to all
 policy docs that make tier-based claims.
 
-- [x] **6.1** Invoke `repo-rules-maker` to update `governance/development/agents/model-selection.md`:
+- [x] **6.1** Invoke `repo-rules-maker` to update `repo-governance/development/agents/model-selection.md`:
   - In the Tier Comparison Summary table, add benchmark score column citing the reference
     doc
   - In "Current Model Versions", add inline links to the reference doc for each score

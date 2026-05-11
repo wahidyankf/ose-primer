@@ -20,7 +20,7 @@ scenarios as all other CRUD backends.
 ## 📋 Prerequisites
 
 - The language runtime installed locally
-- Familiarity with the [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md)
+- Familiarity with the [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md)
 - Understanding of the [OpenAPI contract](../../specs/apps/crud/contracts/README.md)
 
 ## 🛠️ Steps
@@ -63,7 +63,7 @@ Tags enable `nx affected` filtering and enforce dependency rules via Nx module b
 
 #### 7 mandatory targets
 
-All `crud-be-*` backends must declare exactly these 7 targets (see [Nx Target Standards](../../governance/development/infra/nx-targets.md)):
+All `crud-be-*` backends must declare exactly these 7 targets (see [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md)):
 
 | Target             | Purpose                                  | Cacheable |
 | ------------------ | ---------------------------------------- | --------- |
@@ -235,7 +235,7 @@ implementations use the same feature files but connect to real PostgreSQL via `D
 
 - Consume the same Gherkin feature files
 - Call service/handler functions directly with **real PostgreSQL**
-- **No HTTP calls** — see [anti-patterns](../../governance/development/quality/three-level-testing-standard.md#anti-patterns)
+- **No HTTP calls** — see [anti-patterns](../../repo-governance/development/quality/three-level-testing-standard.md#anti-patterns)
 - Run via Docker Compose
 
 #### E2E Tests
@@ -249,7 +249,7 @@ Docker infrastructure consists of four files. All four are required before the f
 #### Production `Dockerfile`
 
 Create `apps/crud-be-{lang}-{framework}/Dockerfile` following the multi-stage template from the
-[CI/CD Conventions](../../governance/development/infra/ci-conventions.md). All production
+[CI/CD Conventions](../../repo-governance/development/infra/ci-conventions.md). All production
 Dockerfiles must satisfy these requirements:
 
 - **Multi-stage build**: Separate dependency installation, build, and runtime stages.
@@ -499,7 +499,7 @@ DATABASE_URL=postgresql://crud_be_{abbrev}:crud_be_{abbrev}@crud-be-{lang}-{fram
 # GIN_MODE=debug
 ```
 
-Requirements from [CI/CD Conventions](../../governance/development/infra/ci-conventions.md):
+Requirements from [CI/CD Conventions](../../repo-governance/development/infra/ci-conventions.md):
 
 - The compose service must load variables via `env_file: .env`, not hardcoded `environment:` values
   (except for non-secret defaults that use `${VAR:-default}` syntax).
@@ -609,7 +609,7 @@ jobs:
 CRUD workflows are manual-dispatch only — cron schedules were removed to conserve CI resources.
 Trigger a run from the GitHub Actions UI when validating a specific backend or before a language
 version bump. See
-[CI/CD Conventions](../../governance/development/infra/ci-conventions.md) for the rationale.
+[CI/CD Conventions](../../repo-governance/development/infra/ci-conventions.md) for the rationale.
 
 ### 11. Add composite action if using a new language
 
@@ -723,11 +723,11 @@ nx graph
 
 ## 🔗 Related Documentation
 
-- [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md)
-- [CI/CD Conventions](../../governance/development/infra/ci-conventions.md)
-- [Nx Target Standards](../../governance/development/infra/nx-targets.md)
+- [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md)
+- [CI/CD Conventions](../../repo-governance/development/infra/ci-conventions.md)
+- [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md)
 - [Code Coverage Reference](../reference/code-coverage.md)
 - [Project Dependency Graph](../reference/project-dependency-graph.md)
-- [BDD Spec-Test Mapping](../../governance/development/infra/bdd-spec-test-mapping.md)
+- [BDD Spec-Test Mapping](../../repo-governance/development/infra/bdd-spec-test-mapping.md)
 - [Backend Gherkin Specs](../../specs/apps/crud/be/gherkin/README.md)
 - [OpenAPI Contract](../../specs/apps/crud/contracts/README.md)

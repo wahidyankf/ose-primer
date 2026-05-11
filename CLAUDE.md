@@ -5,7 +5,7 @@
 ## Platform Binding Examples
 
 This file is the Claude Code platform-binding shim. The single-line `@AGENTS.md` directive above imports the canonical, vendor-neutral instruction surface. The rest of this file documents Claude-Code-specific binding details and is intentionally vendor-specific. Per the
-[Governance Vendor Independence Convention](./governance/conventions/structure/governance-vendor-independence.md),
+[Governance Vendor Independence Convention](./repo-governance/conventions/structure/governance-vendor-independence.md),
 the vendor-audit scanner skips every line under this heading until the next same-level heading or end of file.
 
 ### Markdown Quality (Claude Code hook)
@@ -14,11 +14,11 @@ In addition to the standard Prettier + markdownlint pipeline, a Claude Code hook
 
 ### Worktree Path (Claude Code binding)
 
-Worktrees provisioned via `claude --worktree <name>` land at `.claude/worktrees/<name>/` per the [Worktree Path Convention](./governance/conventions/structure/worktree-path.md). The path is gitignored and parallel-safe.
+Worktrees provisioned via `claude --worktree <name>` land at `.claude/worktrees/<name>/` per the [Worktree Path Convention](./repo-governance/conventions/structure/worktree-path.md). The path is gitignored and parallel-safe.
 
 ### Development environment setup (Claude Code binding)
 
-For first-time setup or after entering a fresh worktree, follow [Infra: Development Environment Setup](./governance/workflows/infra/infra-development-environment-setup.md). Set `OPENCODE_GO_API_KEY` in `.env` before starting an OpenCode session that depends on the secondary binding (template in `.env.example`).
+For first-time setup or after entering a fresh worktree, follow [Infra: Development Environment Setup](./repo-governance/workflows/infra/infra-development-environment-setup.md). Set `OPENCODE_GO_API_KEY` in `.env` before starting an OpenCode session that depends on the secondary binding (template in `.env.example`).
 
 ### Working with `.claude/` and `.opencode/` directories
 
@@ -49,7 +49,7 @@ Repo maintains **dual compatibility** with Claude Code and OpenCode:
 **Format differences:**
 
 - **Tools**: Claude Code uses arrays `[Read, Write]`, OpenCode uses boolean flags `{ read: true, write: true }`
-- **Models**: Claude Code uses `sonnet`/`opus`/`haiku` (or omits for budget-adaptive opus-inherit — intentional, not legacy); OpenCode uses `opencode-go/minimax-m2.7` (opus/sonnet/omitted) and `opencode-go/glm-5` (haiku). See [model-selection.md](./governance/development/agents/model-selection.md) for full capability-tier mapping.
+- **Models**: Claude Code uses `sonnet`/`opus`/`haiku` (or omits for budget-adaptive opus-inherit — intentional, not legacy); OpenCode uses `opencode-go/minimax-m2.7` (opus/sonnet/omitted) and `opencode-go/glm-5` (haiku). See [model-selection.md](./repo-governance/development/agents/model-selection.md) for full capability-tier mapping.
 - **Skills**: NOT mirrored — OpenCode reads `.claude/skills/{name}/SKILL.md` natively per [opencode.ai/docs/skills](https://opencode.ai/docs/skills/). The validate:sync `No Synced Skill Mirror` check fails if a stale `.opencode/skill/` or `.opencode/skills/<claude-name>` mirror reappears.
 - **Permissions**: Claude Code uses `settings.json` permissions, OpenCode uses `opencode.json` permission block (both configured with equivalent access)
 - **MCP/Plugins**: Claude Code uses plugins, OpenCode uses MCP servers (Playwright, Nx, Perplexity)

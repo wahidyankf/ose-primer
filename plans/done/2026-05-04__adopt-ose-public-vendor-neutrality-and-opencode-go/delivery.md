@@ -12,7 +12,7 @@ code-touching tick follows Red→Green→Refactor per the W9 convention
 courtesy to the convention adopting itself).
 
 **Publish path**: direct push to `origin main` per
-[Git Push Default Convention](../../../governance/development/workflow/git-push-default.md)
+[Git Push Default Convention](../../../repo-governance/development/workflow/git-push-default.md)
 Standards 1, 2, 6. No draft PR is opened — the user has not requested one.
 Worktree is optional; if used, push via `git push origin HEAD:main` per Standard 6.
 
@@ -41,7 +41,7 @@ the GitHub UI URLs in tech-docs.md.
       Capture failures (if any) in `local-temp/baseline.txt`. Must be clean.
       _Date: 2026-05-04 / Status: done / Files: local-temp/baseline.txt / Notes: HEAD == origin/main → "No tasks were run" (zero affected). Tree clean by null-hypothesis._
 - [x] Fix ALL failures surfaced by baseline gates including any preexisting failures
-      unrelated to this plan, per the [Root Cause Orientation principle](../../../governance/principles/general/root-cause-orientation.md).
+      unrelated to this plan, per the [Root Cause Orientation principle](../../../repo-governance/principles/general/root-cause-orientation.md).
       Do not defer preexisting failures — fix-all-issues is non-negotiable.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: No baseline failures to fix._
 - [x] Run `nx run rhino-cli:test:unit`. Must pass at baseline.
@@ -160,9 +160,9 @@ the GitHub UI URLs in tech-docs.md.
   - Add `provider.opencode-go.options.apiKey: "{env:OPENCODE_GO_API_KEY}"`
   - Remove any Z.ai MCPs
     _Date: 2026-05-04 / Status: done / Files: .opencode/opencode.json / Notes: Provider block added; Z.ai MCPs (zai-mcp-server, web-search-prime, web-reader, zread) all removed; perplexity + nx-mcp + playwright kept; primer's granular permission scheme preserved._
-- [x] Update `governance/development/agents/model-selection.md` OpenCode
+- [x] Update `repo-governance/development/agents/model-selection.md` OpenCode
       Equivalents table to `opencode-go/*`.
-      _Date: 2026-05-04 / Status: done / Files: governance/development/agents/model-selection.md / Notes: Already opencode-go/\* in primer (lines 269-272); no edit needed._
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/development/agents/model-selection.md / Notes: Already opencode-go/\* in primer (lines 269-272); no edit needed._
 - [x] Update `.env.example` to document `OPENCODE_GO_API_KEY` env var.
       _Date: 2026-05-04 / Status: done / Files: .env.example / Notes: Created new file (didn't exist) with OPENCODE_GO_API_KEY placeholder + commentary._
 - [x] Run `npm run sync:claude-to-opencode`. Regenerates all
@@ -184,13 +184,13 @@ the GitHub UI URLs in tech-docs.md.
 
 ### 3A — Port (Red via copy)
 
-- [x] Create `apps/rhino-cli/internal/governance/governance_vendor_audit.go`
+- [x] Create `apps/rhino-cli/internal/repo-governance/governance_vendor_audit.go`
       from ose-public verbatim.
-      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/internal/governance/governance_vendor_audit.go / Notes: cp from ose-public verbatim — module path matches._
-- [x] Create `apps/rhino-cli/internal/governance/governance_vendor_audit_test.go`
+      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/internal/repo-governance/governance_vendor_audit.go / Notes: cp from ose-public verbatim — module path matches._
+- [x] Create `apps/rhino-cli/internal/repo-governance/governance_vendor_audit_test.go`
       from ose-public verbatim. Includes `\bSkills\b` test.
-      _Date: 2026-05-04 / Status: done / Files: as above / Notes: cp verbatim; tests green via go test ./apps/rhino-cli/internal/governance/..._
-- [x] Run `go test ./apps/rhino-cli/internal/governance/...`. Tests pass.
+      _Date: 2026-05-04 / Status: done / Files: as above / Notes: cp verbatim; tests green via go test ./apps/rhino-cli/internal/repo-governance/..._
+- [x] Run `go test ./apps/rhino-cli/internal/repo-governance/...`. Tests pass.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: 452 tests pass across cmd + internal/governance combined run._
 
 ### 3B — CLI binding (Green)
@@ -202,12 +202,12 @@ the GitHub UI URLs in tech-docs.md.
 - [x] Create `apps/rhino-cli/cmd/governance_vendor_audit_test.go`.
       _Date: 2026-05-04 / Status: done / Files: as above / Notes: cp verbatim (11.5K)._
 - [x] Create `apps/rhino-cli/cmd/governance_vendor_audit.integration_test.go`.
-      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: ose-public has no separate integration test for governance vendor-audit; the unit test (in cmd package) covers Cobra wiring + behavior. No source to port._
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: ose-public has no separate integration test for repo-governance vendor-audit; the unit test (in cmd package) covers Cobra wiring + behavior. No source to port._
 - [x] Update `apps/rhino-cli/cmd/steps_common_test.go` with new step constants.
-      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: governance-vendor-audit Gherkin scenarios are self-contained in governance-vendor-audit.feature consumed by ose-public's cmd-package test directly; no shared step constants required._
+      _Date: 2026-05-04 / Status: skipped / Files: — / Notes: repo-governance-vendor-audit Gherkin scenarios are self-contained in repo-governance-vendor-audit.feature consumed by ose-public's cmd-package test directly; no shared step constants required._
 - [x] Update `apps/rhino-cli/cmd/root_test.go` to register the new `governance` Cobra group.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: Cobra registration happens in cmd/governance.go via init() — root_test.go is unchanged in ose-public; no edit needed._
-- [x] Create `specs/apps/rhino/cli/gherkin/governance-vendor-audit.feature`.
+- [x] Create `specs/apps/rhino/cli/gherkin/repo-governance-vendor-audit.feature`.
       _Date: 2026-05-04 / Status: done / Files: as above / Notes: cp verbatim (2.3K)._
 - [x] Run `nx run rhino-cli:test:unit`. Pass.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: All packages green._
@@ -216,26 +216,26 @@ the GitHub UI URLs in tech-docs.md.
 
 ### 3C — Nx target wiring + docs
 
-- [x] Add `validate:governance-vendor-audit` Nx target to `apps/rhino-cli/project.json`.
-      Cacheable; inputs include `governance/**`. Command:
-      `rhino-cli governance vendor-audit governance/`.
-      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/project.json / Notes: Inserted after validate:naming-workflows; `cache: true`; inputs `{projectRoot}/**/*.go` + `{workspaceRoot}/governance/**/*.md`._
+- [x] Add `validate:repo-governance-vendor-audit` Nx target to `apps/rhino-cli/project.json`.
+      Cacheable; inputs include `repo-governance/**`. Command:
+      `rhino-cli repo-governance vendor-audit repo-governance/`.
+      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/project.json / Notes: Inserted after validate:naming-workflows; `cache: true`; inputs `{projectRoot}/**/*.go` + `{workspaceRoot}/repo-governance/**/*.md`._
 - [x] Update `apps/rhino-cli/README.md` with a "Governance vendor-audit" subsection.
-      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/README.md / Notes: New `### governance vendor-audit` section before contracts java-clean-imports; references the convention + binding-example rule._
-- [x] Verify `nx run rhino-cli:validate:governance-vendor-audit` runs (will return violations until W4).
+      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/README.md / Notes: New `### repo-governance vendor-audit` section before contracts java-clean-imports; references the convention + binding-example rule._
+- [x] Verify `nx run rhino-cli:validate:repo-governance-vendor-audit` runs (will return violations until W4).
       _Date: 2026-05-04 / Status: done / Files: — / Notes: Returns 229 violations in primer governance — W4 remediation will drive to zero._
-- [x] Commit: `feat(rhino-cli): add governance vendor-audit scanner with \\bSkills\\b term`.
+- [x] Commit: `feat(rhino-cli): add repo-governance vendor-audit scanner with \\bSkills\\b term`.
       _Date: 2026-05-04 / Status: done / Files: SHA a993c8b17 / Notes: 9 files, +1419/-32. Pre-commit broke 1st on README link to not-yet-ported W4 convention; switched to plain text reference (link will be restored when W4 lands the file)._
 
 ## Phase 4 — W4: Vendor-neutral governance
 
 ### 4A — Convention port
 
-- [x] Create `governance/conventions/structure/governance-vendor-independence.md`
+- [x] Create `repo-governance/conventions/structure/governance-vendor-independence.md`
       verbatim from ose-public, scoped for primer (single-repo).
-      _Date: 2026-05-04 / Status: done / Files: governance/conventions/structure/governance-vendor-independence.md / Notes: cp verbatim (268 lines); also ported docs/reference/platform-bindings.md (262 lines, the catalog the convention cross-references)._
-- [x] Update `governance/conventions/structure/README.md` to link to the new convention.
-      _Date: 2026-05-04 / Status: done / Files: governance/conventions/structure/README.md, docs/reference/README.md / Notes: Both indices updated._
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/conventions/structure/governance-vendor-independence.md / Notes: cp verbatim (268 lines); also ported docs/reference/platform-bindings.md (262 lines, the catalog the convention cross-references)._
+- [x] Update `repo-governance/conventions/structure/README.md` to link to the new convention.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/conventions/structure/README.md, docs/reference/README.md / Notes: Both indices updated._
 - [x] Commit: `docs(governance): add governance-vendor-independence convention`.
       _Date: 2026-05-04 / Status: done / Files: SHA 0417a3b61 / Notes: 5 files, +382/-2._
 
@@ -248,54 +248,54 @@ the GitHub UI URLs in tech-docs.md.
       line: `@AGENTS.md`. Body retains only Claude-Code-specific notes inside
       `binding-example` fences.
       _Date: 2026-05-04 / Status: done / Files: CLAUDE.md / Notes: Reduced from 569 lines to 60-line shim; first content line is `@AGENTS.md`; rest under `## Platform Binding Examples` heading per convention's allowlist mechanism._
-- [x] Run `rhino-cli governance vendor-audit AGENTS.md CLAUDE.md`. Must return 0 violations.
+- [x] Run `rhino-cli repo-governance vendor-audit AGENTS.md CLAUDE.md`. Must return 0 violations.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED — 0 violations across both files._
 - [x] Commit: `refactor(governance): make AGENTS.md canonical, CLAUDE.md a thin shim`.
       _Date: 2026-05-04 / Status: done / Files: SHA 42c246df9 / Notes: 3 files changed, +114/-607 (heavy slim of CLAUDE.md from 569 lines to 60-line shim)._
 
 ### 4C — Governance prose remediation
 
-- [x] Run `nx run rhino-cli:validate:governance-vendor-audit`. Capture full violation list to
+- [x] Run `nx run rhino-cli:validate:repo-governance-vendor-audit`. Capture full violation list to
       `local-temp/vendor-audit-baseline.txt`.
       _Date: 2026-05-04 / Status: done / Files: local-temp/vendor-audit-baseline.txt / Notes: 229 violations baselined; per-file breakdown — ai-agents.md=108, repository-governance-architecture.md=39, model-selection.md=34, skill-context-architecture.md=17, emoji.md=14, smaller files=17 across 8 docs._
 - [x] Group violations by directory. Plan remediation order: principles →
       conventions → development → workflows → vision (if any).
-      _Date: 2026-05-04 / Status: done / Files: — / Notes: principles/=0 (skip), conventions/=19, development/=169, workflows/=1, repository-governance-architecture.md=39, governance/README.md=1. Heavy-hitter: development/agents/{ai-agents,model-selection,skill-context-architecture}.md._
-- [x] Remediate `governance/principles/` violations.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: principles/=0 (skip), conventions/=19, development/=169, workflows/=1, repository-governance-architecture.md=39, repo-governance/README.md=1. Heavy-hitter: development/agents/{ai-agents,model-selection,skill-context-architecture}.md._
+- [x] Remediate `repo-governance/principles/` violations.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: 0 violations in principles/ — nothing to remediate._
-- [x] Run `nx run rhino-cli:validate:governance-vendor-audit governance/principles/`. 0 violations.
+- [x] Run `nx run rhino-cli:validate:repo-governance-vendor-audit repo-governance/principles/`. 0 violations.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: 0 violations confirmed (no flagged files in principles/)._
 - [x] Commit: `docs(governance): remediate vendor terms in principles/`.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: No principles/ work; remediation rolled into the consolidated W4-4C commit (see end of phase)._
-- [x] Remediate `governance/conventions/` violations.
-      _Date: 2026-05-04 / Status: done / Files: governance/conventions/{formatting/emoji.md, structure/agent-naming.md, writing/dynamic-collection-references.md, writing/web-research-delegation.md} / Notes: Bulk vocabulary substitution: \\bSkills\\b → "agent skills"; "Claude Code" → "the primary coding agent"; "OpenCode" → "the secondary coding agent"; \\.claude/ + \\.opencode/ in prose → "the {primary,secondary} binding directory" (link URLs preserved post-process)._
-- [x] Run `nx run rhino-cli:validate:governance-vendor-audit governance/conventions/`. 0 violations.
+- [x] Remediate `repo-governance/conventions/` violations.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/conventions/{formatting/emoji.md, structure/agent-naming.md, writing/dynamic-collection-references.md, writing/web-research-delegation.md} / Notes: Bulk vocabulary substitution: \\bSkills\\b → "agent skills"; "Claude Code" → "the primary coding agent"; "OpenCode" → "the secondary coding agent"; \\.claude/ + \\.opencode/ in prose → "the {primary,secondary} binding directory" (link URLs preserved post-process)._
+- [x] Run `nx run rhino-cli:validate:repo-governance-vendor-audit repo-governance/conventions/`. 0 violations.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: All conventions/ violations cleared by the bulk substitution._
 - [x] Commit: `docs(governance): remediate vendor terms in conventions/`.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: Rolled into consolidated W4-4C commit (see end of phase) — bulk substitution touched all dirs atomically and cannot be cleanly split per-dir without re-edit risk._
-- [x] Remediate `governance/development/` violations including `governance/development/agents/ai-agents.md` (heavy lift).
-      _Date: 2026-05-04 / Status: done / Files: governance/development/{agents/{ai-agents.md,model-selection.md,skill-context-architecture.md,best-practices.md,anti-patterns.md},quality/markdown.md,workflow/worktree-setup.md} / Notes: Bulk substitution as above + Opus/Sonnet/Haiku → "planning-grade"/"execution-grade"/"fast" capability-tier vocabulary across agents/\*.md. 169 development/ violations cleared._
-- [x] Run `nx run rhino-cli:validate:governance-vendor-audit governance/development/`. 0 violations.
+- [x] Remediate `repo-governance/development/` violations including `repo-governance/development/agents/ai-agents.md` (heavy lift).
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/development/{agents/{ai-agents.md,model-selection.md,skill-context-architecture.md,best-practices.md,anti-patterns.md},quality/markdown.md,workflow/worktree-setup.md} / Notes: Bulk substitution as above + Opus/Sonnet/Haiku → "planning-grade"/"execution-grade"/"fast" capability-tier vocabulary across agents/\*.md. 169 development/ violations cleared._
+- [x] Run `nx run rhino-cli:validate:repo-governance-vendor-audit repo-governance/development/`. 0 violations.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: All development/ violations cleared._
 - [x] Commit: `docs(governance): remediate vendor terms in development/`.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: Rolled into consolidated W4-4C commit._
-- [x] Remediate `governance/workflows/` violations.
-      _Date: 2026-05-04 / Status: done / Files: governance/workflows/infra/infra-development-environment-setup.md / Notes: Single violation cleared by bulk substitution._
-- [x] Run `nx run rhino-cli:validate:governance-vendor-audit governance/workflows/`. 0 violations.
+- [x] Remediate `repo-governance/workflows/` violations.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/workflows/infra/infra-development-environment-setup.md / Notes: Single violation cleared by bulk substitution._
+- [x] Run `nx run rhino-cli:validate:repo-governance-vendor-audit repo-governance/workflows/`. 0 violations.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: 0 violations._
 - [x] Commit: `docs(governance): remediate vendor terms in workflows/`.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: Rolled into consolidated W4-4C commit._
-- [x] Remediate `governance/vision/` and `governance/README.md` if flagged.
-      _Date: 2026-05-04 / Status: done / Files: governance/README.md, governance/repository-governance-architecture.md / Notes: 39 violations in repository-governance-architecture.md + 1 in README.md cleared by bulk substitution. governance/vision/ had no flagged content._
-- [x] Run `nx run rhino-cli:validate:governance-vendor-audit governance/vision/ governance/README.md`. 0 violations.
+- [x] Remediate `repo-governance/vision/` and `repo-governance/README.md` if flagged.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/README.md, repo-governance/repository-governance-architecture.md / Notes: 39 violations in repository-governance-architecture.md + 1 in README.md cleared by bulk substitution. repo-governance/vision/ had no flagged content._
+- [x] Run `nx run rhino-cli:validate:repo-governance-vendor-audit repo-governance/vision/ repo-governance/README.md`. 0 violations.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: 0 violations._
 - [x] Commit: `docs(governance): remediate vendor terms in vision/ and root README`.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: Rolled into consolidated W4-4C commit._
-- [x] Update `governance/development/agents/model-selection.md` to use capability
+- [x] Update `repo-governance/development/agents/model-selection.md` to use capability
       tiers as canonical vocabulary; vendor IDs only inside `binding-example` fences.
-      _Date: 2026-05-04 / Status: done / Files: governance/development/agents/model-selection.md / Notes: 25 Opus/Sonnet/Haiku violations cleared by capability-tier vocabulary substitution. Vendor IDs (opencode-go/\*) remain in their existing positions (already vendor-neutral per audit)._
-- [x] Final sweep: `nx run rhino-cli:validate:governance-vendor-audit` returns 0 violations.
-      _Date: 2026-05-04 / Status: done / Files: — / Notes: GOVERNANCE VENDOR AUDIT PASSED: no violations found across the entire governance/ tree (down from 229)._
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/development/agents/model-selection.md / Notes: 25 Opus/Sonnet/Haiku violations cleared by capability-tier vocabulary substitution. Vendor IDs (opencode-go/\*) remain in their existing positions (already vendor-neutral per audit)._
+- [x] Final sweep: `nx run rhino-cli:validate:repo-governance-vendor-audit` returns 0 violations.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: GOVERNANCE VENDOR AUDIT PASSED: no violations found across the entire repo-governance/ tree (down from 229)._
 
 ## Phase 5 — W5: Cross-vendor parity gate
 
@@ -314,11 +314,11 @@ the GitHub UI URLs in tech-docs.md.
 
 ### 5B — Workflow port
 
-- [x] Create `governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md`
+- [x] Create `repo-governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md`
       verbatim from ose-public.
       _Date: 2026-05-04 / Status: done / Files: as above / Notes: cp verbatim (11.2K)._
-- [x] Update `governance/workflows/repo/README.md` to link to the new workflow.
-      _Date: 2026-05-04 / Status: done / Files: governance/workflows/repo/README.md / Notes: Added entry under Workflows section. (Index update landed in follow-on commit, original W5 commit had a stale Edit.)_
+- [x] Update `repo-governance/workflows/repo/README.md` to link to the new workflow.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/workflows/repo/README.md / Notes: Added entry under Workflows section. (Index update landed in follow-on commit, original W5 commit had a stale Edit.)_
 
 ### 5C — Nx target + pre-push wiring
 
@@ -331,9 +331,9 @@ the GitHub UI URLs in tech-docs.md.
 - [x] Add Nx target `validate:cross-vendor-parity` to `apps/rhino-cli/project.json`
       with `"command": "bash apps/rhino-cli/scripts/validate-cross-vendor-parity.sh"`
       and `"cache": false` (non-deterministic: reads `.opencode/agents/` count and runs sync).
-      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/project.json / Notes: Inserted after validate:governance-vendor-audit; cache: false; inputs cover scripts + governance + AGENTS + CLAUDE + binding dirs._
+      _Date: 2026-05-04 / Status: done / Files: apps/rhino-cli/project.json / Notes: Inserted after validate:repo-governance-vendor-audit; cache: false; inputs cover scripts + governance + AGENTS + CLAUDE + binding dirs._
 - [x] Wire `validate:cross-vendor-parity` into `.husky/pre-push` using ose-public's
-      conditional file-pattern guard (fire only when `governance/**/*.md`, `AGENTS.md`,
+      conditional file-pattern guard (fire only when `repo-governance/**/*.md`, `AGENTS.md`,
       `CLAUDE.md`, `.claude/agents/`, or `.opencode/agents/` changed). Port the
       conditional `if [ -n "$RANGE" ]` block verbatim from ose-public's pre-push hook.
       _Date: 2026-05-04 / Status: done / Files: .husky/pre-push / Notes: Added inside existing $RANGE guard with regex covering 5 surfaces. Also fixed naming-agents pattern from `.opencode/agent/` (singular) to `.opencode/agents/` (plural) — preexisting W1 cleanup._
@@ -347,122 +347,122 @@ the GitHub UI URLs in tech-docs.md.
 ## Phase 6 — W6: Plans convention refresh
 
 - [x] Replace the "Multi-File Structure" / "Single-File Structure" section in
-      `governance/conventions/structure/plans.md` with ose-public's stricter wording.
+      `repo-governance/conventions/structure/plans.md` with ose-public's stricter wording.
       Five-doc DEFAULT, four named single-file criteria.
-      _Date: 2026-05-04 / Status: done / Files: governance/conventions/structure/plans.md / Notes: Replaced bullet phrasing with normative MUST + 4-criteria list._
-- [x] Verify `nx run rhino-cli:validate:governance-vendor-audit` still returns 0 violations.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/conventions/structure/plans.md / Notes: Replaced bullet phrasing with normative MUST + 4-criteria list._
+- [x] Verify `nx run rhino-cli:validate:repo-governance-vendor-audit` still returns 0 violations.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: vendor-audit on plans.md PASSED (0 violations)._
 - [x] Commit: `docs(plans): adopt ose-public's stricter five-doc default and four-criteria single-file rule`.
       _Date: 2026-05-04 / Status: done / Files: SHA 1ed4c444d / Notes: 2 files, +37/-33._
 
 ## Phase 7 — W7: Worktree standard
 
-- [x] Create `governance/conventions/structure/worktree-path.md`. Adapt ose-public's
+- [x] Create `repo-governance/conventions/structure/worktree-path.md`. Adapt ose-public's
       version for primer: rule says default `.claude/worktrees/<name>/`, no override.
       Document gitignore + parallel-safety rationale.
-      _Date: 2026-05-04 / Status: done / Files: governance/conventions/structure/worktree-path.md / Notes: cp verbatim (8.1K) — primer's single-repo nature already matches ose-public's convention text._
-- [x] Refresh `governance/development/workflow/worktree-setup.md` body content against ose-public.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/conventions/structure/worktree-path.md / Notes: cp verbatim (8.1K) — primer's single-repo nature already matches ose-public's convention text._
+- [x] Refresh `repo-governance/development/workflow/worktree-setup.md` body content against ose-public.
       Do NOT import any `created:` or other date frontmatter fields per the
-      [No-Date-Metadata Convention](../../../governance/conventions/writing/no-date-metadata.md).
+      [No-Date-Metadata Convention](../../../repo-governance/conventions/writing/no-date-metadata.md).
       Update cross-references.
-      _Date: 2026-05-04 / Status: done / Files: governance/development/workflow/worktree-setup.md / Notes: Body replaced (13.1K); no created: frontmatter ported._
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/development/workflow/worktree-setup.md / Notes: Body replaced (13.1K); no created: frontmatter ported._
 - [x] Add a `## Worktrees` subsection to `AGENTS.md` linking to the new convention.
       _Date: 2026-05-04 / Status: done / Files: AGENTS.md / Notes: Added a Worktree path bullet under Project Overview cross-referencing worktree-path.md (subsection-level addition rather than top-level Worktrees heading — fits primer's existing AGENTS.md structure better)._
 - [x] Add the same link from `CLAUDE.md`'s worktree subsection.
       _Date: 2026-05-04 / Status: done / Files: CLAUDE.md / Notes: Added `### Worktree Path` subsection under Platform Binding Examples linking to convention._
-- [x] Update `governance/conventions/structure/README.md` index to list `worktree-path.md`.
+- [x] Update `repo-governance/conventions/structure/README.md` index to list `worktree-path.md`.
       _Date: 2026-05-04 / Status: done / Files: as above / Notes: Added entry after workflow-naming._
-- [x] Verify `nx run rhino-cli:validate:governance-vendor-audit` still returns 0.
+- [x] Verify `nx run rhino-cli:validate:repo-governance-vendor-audit` still returns 0.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED (0 violations); link validator also clean._
 - [x] Commit: `docs(governance): add worktree-path convention; refresh worktree-setup`.
       _Date: 2026-05-04 / Status: done / Files: SHA 993fedc96 / Notes: 6 files, +240/-14._
 
 ## Phase 8 — W8: Plan + workflow refresh
 
-- [x] Refresh `governance/workflows/plan/plan-execution.md` against ose-public.
+- [x] Refresh `repo-governance/workflows/plan/plan-execution.md` against ose-public.
       Manually re-apply primer-specific phrasing (single-repo, no Scope A/B).
-      _Date: 2026-05-04 / Status: done / Files: governance/workflows/plan/plan-execution.md / Notes: cp verbatim (770 lines vs primer's 694) — primer is single-repo so ose-public's version applies cleanly with no Scope A/B mention to remove._
-- [x] Refresh `governance/workflows/plan/plan-quality-gate.md` against ose-public.
-      _Date: 2026-05-04 / Status: done / Files: governance/workflows/plan/plan-quality-gate.md / Notes: cp verbatim (392 lines)._
-- [x] Refresh `governance/workflows/plan/README.md` against ose-public.
-      _Date: 2026-05-04 / Status: done / Files: governance/workflows/plan/README.md / Notes: cp verbatim (35 lines)._
-- [x] Create `governance/development/workflow/ci-monitoring.md` verbatim from ose-public.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/workflows/plan/plan-execution.md / Notes: cp verbatim (770 lines vs primer's 694) — primer is single-repo so ose-public's version applies cleanly with no Scope A/B mention to remove._
+- [x] Refresh `repo-governance/workflows/plan/plan-quality-gate.md` against ose-public.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/workflows/plan/plan-quality-gate.md / Notes: cp verbatim (392 lines)._
+- [x] Refresh `repo-governance/workflows/plan/README.md` against ose-public.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/workflows/plan/README.md / Notes: cp verbatim (35 lines)._
+- [x] Create `repo-governance/development/workflow/ci-monitoring.md` verbatim from ose-public.
       _Date: 2026-05-04 / Status: done / Files: as above / Notes: cp verbatim (14.2K)._
-- [x] Create `governance/development/workflow/ci-post-push-verification.md` verbatim.
+- [x] Create `repo-governance/development/workflow/ci-post-push-verification.md` verbatim.
       _Date: 2026-05-04 / Status: done / Files: as above / Notes: cp verbatim (11.1K)._
-- [x] Update `governance/development/workflow/README.md` index.
+- [x] Update `repo-governance/development/workflow/README.md` index.
       _Date: 2026-05-04 / Status: done / Files: as above / Notes: Added entries for ci-monitoring + ci-post-push-verification + test-driven-development (W9)._
-- [x] Verify `nx run rhino-cli:validate:governance-vendor-audit` returns 0.
+- [x] Verify `nx run rhino-cli:validate:repo-governance-vendor-audit` returns 0.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED._
 - [x] Commit: `docs(governance,workflows): refresh plan workflows; add ci-monitoring + ci-post-push-verification`.
       _Date: 2026-05-04 / Status: done / Files: SHA W8 follow-up commit / Notes: 6 files, +667/-103. plan-anti-hallucination.md (W11 forward-ref) and test-driven-development.md (W9 forward-ref) pre-ported to keep W8 link-valid._
 
 ## Phase 9 — W9: TDD convention
 
-- [x] Create `governance/development/workflow/test-driven-development.md` verbatim from ose-public.
+- [x] Create `repo-governance/development/workflow/test-driven-development.md` verbatim from ose-public.
       Adjust cross-reference paths if any reference paths primer doesn't have.
-      _Date: 2026-05-04 / Status: done / Files: governance/development/workflow/test-driven-development.md / Notes: cp verbatim — pre-ported during W8 to satisfy plan-execution.md forward-refs._
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/development/workflow/test-driven-development.md / Notes: cp verbatim — pre-ported during W8 to satisfy plan-execution.md forward-refs._
 - [x] Add a one-line cross-reference to TDD convention from
-      `governance/development/workflow/implementation.md` (Stage 1 description).
-      _Date: 2026-05-04 / Status: done / Files: governance/development/workflow/implementation.md / Notes: Added inline reference in Stage 1 paragraph._
+      `repo-governance/development/workflow/implementation.md` (Stage 1 description).
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/development/workflow/implementation.md / Notes: Added inline reference in Stage 1 paragraph._
 - [x] Add a one-line cross-reference from
-      `governance/workflows/plan/plan-execution.md` (Iron Rules section).
+      `repo-governance/workflows/plan/plan-execution.md` (Iron Rules section).
       _Date: 2026-05-04 / Status: done / Files: as above / Notes: ose-public's plan-execution (W8 port) already cross-refs TDD at line 755 (Test-Driven Development section)._
 - [x] Add a one-line cross-reference from
-      `governance/conventions/structure/plans.md` (delivery-checklist authoring).
+      `repo-governance/conventions/structure/plans.md` (delivery-checklist authoring).
       _Date: 2026-05-04 / Status: done / Files: as above / Notes: Added to delivery.md content-placement bullet._
-- [x] Update `governance/development/workflow/README.md` index to include TDD.
+- [x] Update `repo-governance/development/workflow/README.md` index to include TDD.
       _Date: 2026-05-04 / Status: done / Files: as above / Notes: Added entry alongside ci-monitoring + ci-post-push-verification._
-- [x] Verify `nx run rhino-cli:validate:governance-vendor-audit` returns 0.
+- [x] Verify `nx run rhino-cli:validate:repo-governance-vendor-audit` returns 0.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED; link validator clean._
 - [x] Commit: `docs(governance): adopt test-driven-development convention from ose-public`.
       _Date: 2026-05-04 / Status: done / Files: W9 commit / Notes: 6 files, +685/-16 (also includes plan-anti-hallucination.md staging for W11)._
 
 ## Phase 10 — W10: Convention completeness
 
-- [x] Create `governance/conventions/structure/no-last-updated.md` verbatim from ose-public (29 lines).
-      _Date: 2026-05-04 / Status: done / Files: governance/conventions/structure/no-last-updated.md / Notes: cp verbatim (1.5K)._
-- [x] Create `governance/conventions/structure/programming-language-docs-separation.md` verbatim from ose-public (846 lines). Adjust any cross-reference paths primer doesn't have.
-      _Date: 2026-05-04 / Status: done / Files: governance/conventions/structure/programming-language-docs-separation.md / Notes: cp verbatim (29.8K). Stripped dead refs to ose-public-only paths (`tutorials/` folder per user's exclusion, `hugo/`, `apps/ayokoding-web/`)._
-- [x] Update `governance/conventions/structure/README.md` index to list both new conventions.
-      _Date: 2026-05-04 / Status: done / Files: governance/conventions/structure/README.md / Notes: Added entries after worktree-path._
-- [x] Edit `governance/conventions/writing/no-date-metadata.md` to add a cross-reference to the new `no-last-updated.md` companion.
-      _Date: 2026-05-04 / Status: done / Files: governance/conventions/writing/no-date-metadata.md / Notes: Appended companion reference under Related Documentation section._
-- [x] Verify `nx run rhino-cli:validate:governance-vendor-audit` returns 0.
+- [x] Create `repo-governance/conventions/structure/no-last-updated.md` verbatim from ose-public (29 lines).
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/conventions/structure/no-last-updated.md / Notes: cp verbatim (1.5K)._
+- [x] Create `repo-governance/conventions/structure/programming-language-docs-separation.md` verbatim from ose-public (846 lines). Adjust any cross-reference paths primer doesn't have.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/conventions/structure/programming-language-docs-separation.md / Notes: cp verbatim (29.8K). Stripped dead refs to ose-public-only paths (`tutorials/` folder per user's exclusion, `hugo/`, `apps/ayokoding-web/`)._
+- [x] Update `repo-governance/conventions/structure/README.md` index to list both new conventions.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/conventions/structure/README.md / Notes: Added entries after worktree-path._
+- [x] Edit `repo-governance/conventions/writing/no-date-metadata.md` to add a cross-reference to the new `no-last-updated.md` companion.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/conventions/writing/no-date-metadata.md / Notes: Appended companion reference under Related Documentation section._
+- [x] Verify `nx run rhino-cli:validate:repo-governance-vendor-audit` returns 0.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED (0 violations)._
 - [x] Commit: `docs(governance): adopt no-last-updated and programming-language-docs-separation conventions`.
       _Date: 2026-05-04 / Status: done / Files: SHA a550c7045 / Notes: 4 files, +878/0._
 
 ## Phase 11 — W11: Plan anti-hallucination
 
-- [x] Create `governance/development/quality/plan-anti-hallucination.md` verbatim from ose-public (352 lines). Adjust cross-references if any reference paths primer doesn't have.
-      _Date: 2026-05-04 / Status: done / Files: governance/development/quality/plan-anti-hallucination.md / Notes: cp verbatim (25K). Pre-ported during W9 commit to satisfy plan-quality-gate forward-refs from W8._
-- [x] Update `governance/development/quality/README.md` index.
-      _Date: 2026-05-04 / Status: done / Files: governance/development/quality/README.md / Notes: Added entry after post-push-ci-verification._
-- [x] Edit `governance/workflows/plan/plan-quality-gate.md` (refreshed in W8) to add cross-reference to `plan-anti-hallucination.md` from the "Plan-Specific Validation" section.
-      _Date: 2026-05-04 / Status: done / Files: governance/workflows/plan/plan-quality-gate.md / Notes: ose-public's W8-ported version already includes 3 cross-references (lines 122, 124, 337) — no manual edit needed._
+- [x] Create `repo-governance/development/quality/plan-anti-hallucination.md` verbatim from ose-public (352 lines). Adjust cross-references if any reference paths primer doesn't have.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/development/quality/plan-anti-hallucination.md / Notes: cp verbatim (25K). Pre-ported during W9 commit to satisfy plan-quality-gate forward-refs from W8._
+- [x] Update `repo-governance/development/quality/README.md` index.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/development/quality/README.md / Notes: Added entry after post-push-ci-verification._
+- [x] Edit `repo-governance/workflows/plan/plan-quality-gate.md` (refreshed in W8) to add cross-reference to `plan-anti-hallucination.md` from the "Plan-Specific Validation" section.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/workflows/plan/plan-quality-gate.md / Notes: ose-public's W8-ported version already includes 3 cross-references (lines 122, 124, 337) — no manual edit needed._
 - [x] Edit `.claude/agents/plan-checker.md` to add `plan-anti-hallucination` to the agent's reference set.
       _Date: 2026-05-04 / Status: done / Files: .claude/agents/plan-checker.md / Notes: Added `## Reference Conventions` section citing plan-anti-hallucination, plans organization, and TDD._
 - [x] Run `npm run sync:claude-to-opencode`. Verify `.opencode/agents/plan-checker.md` regenerates.
       _Date: 2026-05-04 / Status: done / Files: .opencode/agents/plan-checker.md / Notes: Sync regenerated; cross-ref count verified (1 in each of .claude and .opencode)._
-- [x] Verify `nx run rhino-cli:validate:governance-vendor-audit` returns 0.
+- [x] Verify `nx run rhino-cli:validate:repo-governance-vendor-audit` returns 0.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED._
 - [x] Commit: `docs(governance): adopt plan-anti-hallucination quality convention from ose-public`.
       _Date: 2026-05-04 / Status: done / Files: SHA a17147805 / Notes: 4 files, +47/-30._
 
 ## Phase 12 — W12: Dev environment setup workflow
 
-- [x] Refresh `governance/workflows/infra/infra-development-environment-setup.md` (existing file, 684 lines) against ose-public's `development-environment-setup.md` (619 lines). Adapt: drop ose-public-specific app-list references; keep generic Volta + Docker + per-language-toolchain + env-var bootstrap; document `OPENCODE_GO_API_KEY` env var (W2). Do NOT rename the file — primer's workflow-naming convention mandates `infra-development-environment-setup.md`.
-      _Date: 2026-05-04 / Status: done / Files: governance/workflows/infra/infra-development-environment-setup.md / Notes: Body content replaced verbatim from ose-public source (619 lines); frontmatter `name:` field rewritten to `infra-development-environment-setup` to match primer's filename per workflow-naming convention. Added `OPENCODE_GO_API_KEY` env-var documentation in the env-restoration section._
-- [x] Create or update `governance/workflows/infra/README.md` to list the new workflow.
-      _Date: 2026-05-04 / Status: done / Files: governance/workflows/infra/README.md / Notes: Created (didn't exist). Lists workflow + canonical cross-references to workflow-naming convention and worktree-setup._
-- [x] Edit `governance/workflows/README.md` to add `infra/` subsection if not already present.
-      _Date: 2026-05-04 / Status: done / Files: governance/workflows/README.md / Notes: infra/ subsection already present pre-W12 (line 86 entry); no additional edit needed._
+- [x] Refresh `repo-governance/workflows/infra/infra-development-environment-setup.md` (existing file, 684 lines) against ose-public's `development-environment-setup.md` (619 lines). Adapt: drop ose-public-specific app-list references; keep generic Volta + Docker + per-language-toolchain + env-var bootstrap; document `OPENCODE_GO_API_KEY` env var (W2). Do NOT rename the file — primer's workflow-naming convention mandates `infra-development-environment-setup.md`.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/workflows/infra/infra-development-environment-setup.md / Notes: Body content replaced verbatim from ose-public source (619 lines); frontmatter `name:` field rewritten to `infra-development-environment-setup` to match primer's filename per workflow-naming convention. Added `OPENCODE_GO_API_KEY` env-var documentation in the env-restoration section._
+- [x] Create or update `repo-governance/workflows/infra/README.md` to list the new workflow.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/workflows/infra/README.md / Notes: Created (didn't exist). Lists workflow + canonical cross-references to workflow-naming convention and worktree-setup._
+- [x] Edit `repo-governance/workflows/README.md` to add `infra/` subsection if not already present.
+      _Date: 2026-05-04 / Status: done / Files: repo-governance/workflows/README.md / Notes: infra/ subsection already present pre-W12 (line 86 entry); no additional edit needed._
 - [x] Edit `AGENTS.md` (post-W4) to add cross-reference from the dev-env-setup-related subsection.
       _Date: 2026-05-04 / Status: done / Files: AGENTS.md / Notes: Added inline ref to infra-development-environment-setup workflow in the worktree toolchain init bullet._
 - [x] Edit `CLAUDE.md` (post-W4) similarly.
       _Date: 2026-05-04 / Status: done / Files: CLAUDE.md / Notes: Added new `### Development environment setup` subsection under Platform Binding Examples linking to the workflow + OPENCODE_GO_API_KEY note._
-- [x] Verify `nx run rhino-cli:validate:governance-vendor-audit` returns 0.
+- [x] Verify `nx run rhino-cli:validate:repo-governance-vendor-audit` returns 0.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED._
 - [x] Commit: `docs(governance,workflows): refresh infra-development-environment-setup against ose-public`.
       _Date: 2026-05-04 / Status: done / Files: SHA 227c92897 / Notes: 4 files, +58/-101._
@@ -491,9 +491,9 @@ the GitHub UI URLs in tech-docs.md.
 
 - [x] Run `nx run rhino-cli:test:unit` and `nx run rhino-cli:test:integration`. Both green.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: All packages pass; W13 ports are markdown only._
-- [x] Run `nx run rhino-cli:validate:governance-vendor-audit`. 0 violations.
+- [x] Run `nx run rhino-cli:validate:repo-governance-vendor-audit`. 0 violations.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED._
-- [x] Smoke-test the checker on a known-misplaced fixture (or a clean run): invoke `docs-software-engineering-separation-checker` via Agent tool against `governance/`; confirm it produces a dual-labelled report.
+- [x] Smoke-test the checker on a known-misplaced fixture (or a clean run): invoke `docs-software-engineering-separation-checker` via Agent tool against `repo-governance/`; confirm it produces a dual-labelled report.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: Smoke-test deferred — ported as inert artifact; convention adoption is the W13 deliverable, not active checker invocation. The checker is available for future plan-quality-gate cycles to invoke on demand._
 - [x] Commit: `feat(.claude): adopt docs-software-engineering-separation checker, fixer, and validating skill`.
       _Date: 2026-05-04 / Status: done / Files: SHA 2e5d25dfe / Notes: 5 files created across .claude/, .opencode/, + catalog updates._
@@ -502,40 +502,40 @@ the GitHub UI URLs in tech-docs.md.
 
 ### 14A — Baseline diff
 
-- [x] Run `diff -rq governance/ /Users/wkf/ose-projects/ose-public/governance/ | grep '\.md$' | tee local-temp/drift-baseline.txt`. Capture every diverging file.
+- [x] Run `diff -rq repo-governance/ /Users/wkf/ose-projects/ose-public/repo-governance/ | grep '\.md$' | tee local-temp/drift-baseline.txt`. Capture every diverging file.
       _Date: 2026-05-04 / Status: done / Files: local-temp/drift-baseline.txt / Notes: 14 entries; all are "Only in" (one side has the file, the other doesn't) — NO byte-divergent overlapping files._
 - [x] Review `local-temp/drift-baseline.txt` and classify each entry as **refresh**, **skip** (primer-specific or product-specific), or **investigate**. Save the classified list as `local-temp/drift-classified.md`.
       _Date: 2026-05-04 / Status: done / Files: local-temp/drift-classified.md / Notes: All 14 classified `skip` (9 ose-public-only product/parent-specific files; 5 primer-only intentional files). 0 `refresh`, 0 `investigate`._
 
 ### 14B — Refresh known-drifted files
 
-- [x] Refresh `governance/development/quality/code.md` against ose-public; re-apply primer-specific paragraphs (single-repo, no parent gitlinks). `diff -q` must show only primer-specific divergence post-refresh.
+- [x] Refresh `repo-governance/development/quality/code.md` against ose-public; re-apply primer-specific paragraphs (single-repo, no parent gitlinks). `diff -q` must show only primer-specific divergence post-refresh.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: code.md is byte-equivalent between primer and ose-public per `diff -rq` — no refresh needed._
-- [x] Refresh `governance/development/infra/nx-targets.md` against ose-public; re-apply primer-specific paragraphs.
+- [x] Refresh `repo-governance/development/infra/nx-targets.md` against ose-public; re-apply primer-specific paragraphs.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: nx-targets.md byte-equivalent — no refresh needed._
-- [x] Refresh `governance/development/quality/three-level-testing-standard.md` against ose-public; re-apply primer-specific paragraphs.
+- [x] Refresh `repo-governance/development/quality/three-level-testing-standard.md` against ose-public; re-apply primer-specific paragraphs.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: three-level-testing-standard.md byte-equivalent — no refresh needed._
 
 ### 14C — Iterative refresh by category
 
-- [x] Refresh remaining `refresh`-classified files in `governance/development/quality/`. Commit per file or per small batch.
+- [x] Refresh remaining `refresh`-classified files in `repo-governance/development/quality/`. Commit per file or per small batch.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: 0 refresh-classified files in this category._
-- [x] Refresh remaining `refresh`-classified files in `governance/development/infra/`. Commit per batch.
+- [x] Refresh remaining `refresh`-classified files in `repo-governance/development/infra/`. Commit per batch.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: 0 refresh-classified files._
-- [x] Refresh remaining `refresh`-classified files in `governance/conventions/`. Commit per batch.
+- [x] Refresh remaining `refresh`-classified files in `repo-governance/conventions/`. Commit per batch.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: 0 refresh-classified files._
-- [x] Refresh remaining `refresh`-classified files in `governance/principles/` (if any). Commit per batch.
+- [x] Refresh remaining `refresh`-classified files in `repo-governance/principles/` (if any). Commit per batch.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: 0 refresh-classified files._
-- [x] Refresh remaining `refresh`-classified files in `governance/workflows/` (excluding the W8/W12 workflows already handled). Commit per batch.
+- [x] Refresh remaining `refresh`-classified files in `repo-governance/workflows/` (excluding the W8/W12 workflows already handled). Commit per batch.
       _Date: 2026-05-04 / Status: skipped / Files: — / Notes: 0 refresh-classified files._
 
 ### 14D — Investigate + verify
 
 - [x] Resolve every `investigate`-classified entry: either refresh, skip, or escalate to a follow-up plan with a one-line rationale per entry in `local-temp/drift-resolved.md`.
       _Date: 2026-05-04 / Status: done / Files: local-temp/drift-resolved.md / Notes: 0 investigate entries; all 14 baseline entries already `skip`-classified._
-- [x] Re-run `diff -rq governance/ /Users/wkf/ose-projects/ose-public/governance/ | grep '\.md$'`. Only `skip`-classified files should remain.
+- [x] Re-run `diff -rq repo-governance/ /Users/wkf/ose-projects/ose-public/repo-governance/ | grep '\.md$'`. Only `skip`-classified files should remain.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: Same 14 `skip` entries; condition holds trivially._
-- [x] Run `nx run rhino-cli:validate:governance-vendor-audit`. 0 violations across all refreshed files.
+- [x] Run `nx run rhino-cli:validate:repo-governance-vendor-audit`. 0 violations across all refreshed files.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED (no violations)._
 - [x] Run `nx affected -t typecheck lint test:quick spec-coverage`. All green.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: nx affected ran successfully (Nx Cloud retry note for one flaky task is informational, not a failure)._
@@ -544,11 +544,11 @@ the GitHub UI URLs in tech-docs.md.
 
 ## Phase 15 — Cross-W10–W14 verification
 
-- [x] Verify W10: `governance/conventions/structure/{no-last-updated,programming-language-docs-separation}.md` both exist; `no-date-metadata.md` cross-references the companion.
+- [x] Verify W10: `repo-governance/conventions/structure/{no-last-updated,programming-language-docs-separation}.md` both exist; `no-date-metadata.md` cross-references the companion.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: Both files present (1.5K + 29.8K); no-date-metadata.md contains 1 cross-reference to no-last-updated companion._
-- [x] Verify W11: `governance/development/quality/plan-anti-hallucination.md` exists; cross-referenced from `plan-quality-gate.md` and `plan-checker.md`.
+- [x] Verify W11: `repo-governance/development/quality/plan-anti-hallucination.md` exists; cross-referenced from `plan-quality-gate.md` and `plan-checker.md`.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: File present (25K); plan-quality-gate.md cites it at lines 122/124/337; plan-checker.md cites in Reference Conventions section._
-- [x] Verify W12: `governance/workflows/infra/infra-development-environment-setup.md` exists and has been refreshed against ose-public; cross-referenced from AGENTS.md and CLAUDE.md.
+- [x] Verify W12: `repo-governance/workflows/infra/infra-development-environment-setup.md` exists and has been refreshed against ose-public; cross-referenced from AGENTS.md and CLAUDE.md.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: File present (18.6K); AGENTS.md and CLAUDE.md both cite it (1 ref each)._
 - [x] Verify W13: `.claude/agents/docs-software-engineering-separation-{checker,fixer}.md` and skill present; sync produces `.opencode/agents/` equivalents; smoke-test passes.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: All 3 source files present (17.5K + 16.8K + 7.6K); .opencode/agents mirrors regenerated (17.5K + 16.8K). Smoke-test deferred per W13 note._
@@ -565,8 +565,8 @@ the GitHub UI URLs in tech-docs.md.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: All failures encountered during execution were root-cause-fixed (W1 naming-validator path bug fix in 41073a19a, mermaid violations in 0b274b00e, broken AGENTS.md singular-dir links + .claude/agents `./README.md` in W2 commit, MD038 inline-code spacing in W4-4C)._
 - [x] Run `nx run rhino-cli:test:unit` and `nx run rhino-cli:test:integration`. Both green.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: Both PASSED at recheck pass._
-- [x] Run `nx run rhino-cli:validate:governance-vendor-audit`. 0 violations.
-      _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED — 0 violations across governance/, AGENTS.md, CLAUDE.md._
+- [x] Run `nx run rhino-cli:validate:repo-governance-vendor-audit`. 0 violations.
+      _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED — 0 violations across repo-governance/, AGENTS.md, CLAUDE.md._
 - [x] Run `nx run rhino-cli:validate:cross-vendor-parity` twice. 0 findings each run.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: PASSED on both runs (cache: false re-executes script genuinely each time)._
 - [x] Run `npm run sync:claude-to-opencode`. No-op on clean tree.

@@ -68,7 +68,7 @@ The repository contains 57 specialized AI agents.
 The repository contains [specialized AI agents](./.claude/agents/README.md).
 ```
 
-> **Note**: The path `./.claude/agents/README.md` in the example above is illustrative. Use the correct relative path based on your file's actual location. For example, from `governance/conventions/writing/`, the correct path would be `../../../.claude/agents/README.md`.
+> **Note**: The path `./.claude/agents/README.md` in the example above is illustrative. Use the correct relative path based on your file's actual location. For example, from `repo-governance/conventions/writing/`, the correct path would be `../../../.claude/agents/README.md`.
 
 **PASS: Omit the count entirely**:
 
@@ -154,16 +154,16 @@ If a count is needed anywhere, the index document for that collection is the sin
 
 **The authoritative sources for collection sizes**:
 
-| Collection       | Authoritative Index                    |
-| ---------------- | -------------------------------------- |
-| AI Agents        | `.claude/agents/README.md`             |
-| agent skills     | `.claude/skills/README.md`             |
-| Conventions      | `governance/conventions/README.md`     |
-| Principles       | `governance/principles/README.md`      |
-| Dev Practices    | `governance/development/README.md`     |
-| Workflows        | `governance/workflows/README.md`       |
-| BE Gherkin Specs | `specs/apps/crud/be/gherkin/README.md` |
-| FE Gherkin Specs | `specs/apps/crud/fe/gherkin/README.md` |
+| Collection       | Authoritative Index                     |
+| ---------------- | --------------------------------------- |
+| AI Agents        | `.claude/agents/README.md`              |
+| agent skills     | `.claude/skills/README.md`              |
+| Conventions      | `repo-governance/conventions/README.md` |
+| Principles       | `repo-governance/principles/README.md`  |
+| Dev Practices    | `repo-governance/development/README.md` |
+| Workflows        | `repo-governance/workflows/README.md`   |
+| BE Gherkin Specs | `specs/apps/crud/be/gherkin/README.md`  |
+| FE Gherkin Specs | `specs/apps/crud/fe/gherkin/README.md`  |
 
 ## 📖 Examples
 
@@ -190,18 +190,18 @@ If a count is needed anywhere, the index document for that collection is the sin
 **Before (FAIL)**:
 
 ```markdown
-- **Conventions Index**: [governance/conventions/README.md](./governance/conventions/README.md) - 30 documentation standards
-- **Development Index**: [governance/development/README.md](./governance/development/README.md) - 17 software practices
-- **Principles Index**: [governance/principles/README.md](./governance/principles/README.md) - 11 foundational principles
+- **Conventions Index**: [repo-governance/conventions/README.md](./repo-governance/conventions/README.md) - 30 documentation standards
+- **Development Index**: [repo-governance/development/README.md](./repo-governance/development/README.md) - 17 software practices
+- **Principles Index**: [repo-governance/principles/README.md](./repo-governance/principles/README.md) - 11 foundational principles
 - **Agents Index**: [`.claude/agents/`README.md](./.claude/agents/README.md) - 57 specialized agents
 ```
 
 **After (PASS)**:
 
 ```markdown
-- **Conventions Index**: [governance/conventions/README.md](./governance/conventions/README.md) - Documentation writing and organization standards
-- **Development Index**: [governance/development/README.md](./governance/development/README.md) - Software development practices and workflows
-- **Principles Index**: [governance/principles/README.md](./governance/principles/README.md) - Foundational values governing all layers
+- **Conventions Index**: [repo-governance/conventions/README.md](./repo-governance/conventions/README.md) - Documentation writing and organization standards
+- **Development Index**: [repo-governance/development/README.md](./repo-governance/development/README.md) - Software development practices and workflows
+- **Principles Index**: [repo-governance/principles/README.md](./repo-governance/principles/README.md) - Foundational values governing all layers
 - **Agents Index**: [`.claude/agents/`README.md](./.claude/agents/README.md) - Specialized agents organized by role
 ```
 

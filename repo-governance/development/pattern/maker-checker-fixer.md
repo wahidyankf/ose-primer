@@ -475,7 +475,7 @@ See [AI Agents Convention - Agent Color Categorization](../agents/ai-agents.md#a
 
 ### 6. repo-workflow-\* (Workflow Documentation)
 
-**Domain**: Workflow documentation in `governance/workflows/` — completeness, agent references, trigger conditions
+**Domain**: Workflow documentation in `repo-governance/workflows/` — completeness, agent references, trigger conditions
 
 **Agents**:
 

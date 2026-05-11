@@ -8,7 +8,7 @@ Active project plans currently being worked on.
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
   exports research dossiers.
-- [Rename `governance/` → `repo-governance/`](./rename-governance-to-repo-governance/README.md)
+- [Rename `repo-governance/` → `repo-governance/`](./rename-governance-to-repo-governance/README.md)
   — mechanical rename to disambiguate repository governance from the GRC discipline; mirrors
   the same rename applied in `ose-public`.
 
@@ -22,7 +22,7 @@ Folders in `in-progress/` use the bare project identifier only — **no date pre
 
 Example: `add-investment-oracle-app/` (not `2026-04-27__add-investment-oracle-app/`)
 
-When a plan is moved from `backlog/` to `in-progress/`, the `YYYY-MM-DD__` prefix is stripped. See the [Plans Organization Convention](../../governance/conventions/structure/plans.md#-plan-folder-naming) for full naming rules.
+When a plan is moved from `backlog/` to `in-progress/`, the `YYYY-MM-DD__` prefix is stripped. See the [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md#-plan-folder-naming) for full naming rules.
 
 ## Instructions
 
