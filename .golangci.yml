@@ -17,6 +17,15 @@ linters:
     - nilnil # simultaneous return of nil error and invalid value
     # Exhaustiveness
     - exhaustive # exhaustive enum switch statements
+    # Error-handling discipline
+    - errorlint # forces errors.Is/errors.As; flags non-%w fmt.Errorf
+    # Const-block hygiene
+    - iotamixing # forbids mixing iota with non-iota constants in same block
+    # Documentation style
+    - godot # exported doc comments must end with a period
+    - revive # exported rule: every exported symbol must have a doc comment
+    # Exhaustiveness (sealed interfaces)
+    - gochecksumtype # exhaustive type switches over sealed interfaces with //sumtype:decl
     # Unused code
     - unparam # unused function parameters (and params always called with same value)
     - wastedassign # assignments whose written value is never subsequently read
@@ -87,3 +96,29 @@ linters:
       explicit-exhaustive-switch: false
       explicit-exhaustive-map: false
       default-case-required: false
+
+    errorlint:
+      errorf: true # require %w over %v when wrapping an error in fmt.Errorf
+      errorf-multi: true # multiple %w wraps OK
+      asserts: true # require errors.As over `err.(SomeErr)` type assertions
+      comparison: true # require errors.Is over `err == sentinel`
+
+    gochecksumtype:
+      default-signifies-exhaustive: false # default case does NOT waive exhaustiveness
+
+    godot:
+      scope: declarations # only check doc comments on declarations (not inline comments)
+      capital: false # don't require capital first letter
+      period: true # require period at end
+
+    revive:
+      enable-all-rules: false # only the rules listed below are active
+      rules:
+        - name: exported
+          severity: error
+          disabled: false
+          arguments:
+            - "disableStutteringCheck" # don't flag type-name stuttering (e.g. doctor.DoctorResult)
+        - name: package-comments
+          severity: error
+          disabled: false
