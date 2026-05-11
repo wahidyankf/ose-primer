@@ -14,12 +14,13 @@ structure are identical before and after.
 
 ## User Stories
 
-1. As a new contributor, I want the governance directory name to make its scope obvious so I don't
-   confuse it with a GRC program.
-2. As an AI agent, I want instruction files to contain the correct path tokens so I navigate the
-   repo without broken links.
+1. As a new contributor, I want the governance directory name to make its scope obvious
+   So that I don't confuse it with a GRC program.
+2. As an AI agent, I want instruction files to contain the correct path tokens
+   So that I can navigate the repo without broken links.
 3. As a CI system, I want all automation (pre-push hook, rhino-cli targets, validate scripts) to
-   reference the correct paths so pipelines don't break.
+   reference the correct paths
+   So that pipelines don't break.
 
 ## Acceptance Criteria
 
