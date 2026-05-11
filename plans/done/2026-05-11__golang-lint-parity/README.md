@@ -159,30 +159,37 @@ npm install && npm run doctor -- --fix
 
 ### Phase 1: Update lint config
 
-- [ ] Add `errorlint`, `iotamixing`, `godot`, `revive`, `gochecksumtype` to `linters.enable` in
+- [x] Add `errorlint`, `iotamixing`, `godot`, `revive`, `gochecksumtype` to `linters.enable` in
       `.golangci.yml` (after existing `exhaustive` entry, before `unparam`)
   - Acceptance: `linters.enable` list matches the ordering described in Technical Approach
-- [ ] Add `errorlint`, `gochecksumtype`, `godot`, `revive` settings blocks under `linters.settings`
+  - Date: 2026-05-11 | Status: done | Files Changed: .golangci.yml
+- [x] Add `errorlint`, `gochecksumtype`, `godot`, `revive` settings blocks under `linters.settings`
       in `.golangci.yml` (after existing `exhaustive` block)
   - Acceptance: diff of `.golangci.yml` settings matches the delta described in Technical Approach;
     the file still passes `golangci-lint config verify` if run
-- [ ] Verify no unintended changes outside the two modified sections
+  - Date: 2026-05-11 | Status: done | Files Changed: .golangci.yml
+- [x] Verify no unintended changes outside the two modified sections
+  - Date: 2026-05-11 | Status: done | Files Changed: none (verification only)
 
 ### Phase 2: Fix errorlint violation
 
-- [ ] Replace `err.(*exec.ExitError)` type assertion with `errors.As` pattern in
+- [x] Replace `err.(*exec.ExitError)` type assertion with `errors.As` pattern in
       `apps/rhino-cli/internal/testcoverage/diff.go` (see Technical Approach for Before/After)
   - Acceptance: file compiles — `cd apps/rhino-cli && CGO_ENABLED=0 go vet ./...` exits 0
-- [ ] Add `"errors"` to the import block in `diff.go` if not already present
+  - Date: 2026-05-11 | Status: done | Files Changed: apps/rhino-cli/internal/testcoverage/diff.go
+- [x] Add `"errors"` to the import block in `diff.go` if not already present
   - Acceptance: `cd apps/rhino-cli && CGO_ENABLED=0 go vet ./...` exits 0
+  - Date: 2026-05-11 | Status: done | Files Changed: apps/rhino-cli/internal/testcoverage/diff.go
 
 ### Phase 3: Local quality gate
 
-- [ ] Install golangci-lint if not present:
+- [x] Install golangci-lint if not present:
 
   ```bash
   go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.10.1
   ```
+
+  - Date: 2026-05-11 | Status: already present (v2.11.1) | Files Changed: none
 
 - [ ] Run lint for both Go projects:
 
@@ -193,36 +200,43 @@ npm install && npm run doctor -- --fix
 
   Acceptance: both commands exit 0; zero lint violations reported
 
-- [ ] If new violations found, fix them and re-run until clean
-- [ ] Run typecheck to confirm no regressions:
+- [x] If new violations found, fix them and re-run until clean
+  - Date: 2026-05-11 | Status: done | Files Changed: agents_sync_test.go, agents_validate_claude_test.go, agents_validate_naming_test.go, agents_validate_sync_test.go, agents_validate_sync_test.go, doctor_test.go, docs_validate_mermaid_test.go, agent_validator.go, root.go, envbackup/types.go, mermaid/types.go, doctor/checker.go, docs/links_scanner.go, speccoverage/checker.go, speccoverage/cucumber_expr.go, testcoverage/cobertura_coverage.go
+- [x] Run typecheck to confirm no regressions:
 
   ```bash
   npx nx run rhino-cli:typecheck
   ```
 
   Acceptance: exits 0
+  - Date: 2026-05-11 | Status: done | Files Changed: none
 
 ### Phase 4: Full quality gate
 
-- [ ] Run the full Go quality gate:
+- [x] Run the full Go quality gate:
 
   ```bash
   npx nx run-many -t typecheck lint test:quick spec-coverage --projects=tag:lang:golang
   ```
 
   Acceptance: all targets pass
+  - Date: 2026-05-11 | Status: done | Files Changed: none
 
-- [ ] Fix ALL failures found — including any pre-existing issues, not just ones introduced here
-- [ ] Commit changes thematically with Conventional Commits:
+- [x] Fix ALL failures found — including any pre-existing issues, not just ones introduced here
+  - Date: 2026-05-11 | Status: done | Files Changed: apps/crud-be-golang-gin/cmd/server/main.go (added package comment for revive)
+- [x] Commit changes thematically with Conventional Commits:
   - Commit 1 (config): `chore(lint): add five strict Go linters matching ose-public`
-  - Commit 2 (code): `fix(rhino-cli): use errors.As instead of type assertion in diff.go`
+  - Commit 2 (code): `fix(rhino-cli): resolve errorlint, godot, and revive violations`
+  - Commit 3 (preexisting): `fix(crud-be-golang-gin): add missing package comment to satisfy revive`
   - Push directly to `origin main` per Trunk Based Development convention
+  - Date: 2026-05-11 | Status: done | Files Changed: .golangci.yml, 55 rhino-cli files, crud-be-golang-gin/cmd/server/main.go
 
 ### Phase 5: CI verification
 
-- [ ] After push, monitor GitHub Actions workflow for the commit:
+- [x] After push, monitor GitHub Actions workflow for the commit:
   - Go quality gate job (`golang` job in `pr-quality-gate.yml`) must pass
   - If CI fails, fix immediately and push again before declaring done
+  - Date: 2026-05-11 | Status: N/A — pr-quality-gate.yml triggers on pull_request only; test workflows trigger on schedule/workflow_dispatch only. Direct push to main does not trigger CI. Local quality gate (typecheck lint test:quick spec-coverage) passed with zero failures — serves as verification.
 
 ### Phase 6: Plan archival
 
