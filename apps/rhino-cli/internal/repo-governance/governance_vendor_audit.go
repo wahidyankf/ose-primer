@@ -1,4 +1,4 @@
-// Package governance provides validators for governance layer conventions,
+// Package repogovernance provides validators for governance layer conventions,
 // including vendor-independence auditing of markdown files.
 //
 // The vendor audit scanner detects forbidden vendor-specific terms in prose
