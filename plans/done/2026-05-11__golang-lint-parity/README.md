@@ -191,7 +191,7 @@ npm install && npm run doctor -- --fix
 
   - Date: 2026-05-11 | Status: already present (v2.11.1) | Files Changed: none
 
-- [ ] Run lint for both Go projects:
+- [x] Run lint for both Go projects:
 
   ```bash
   npx nx run rhino-cli:lint
@@ -199,6 +199,7 @@ npm install && npm run doctor -- --fix
   ```
 
   Acceptance: both commands exit 0; zero lint violations reported
+  - Date: 2026-05-11 | Status: done — both passed 0 issues after all violations fixed
 
 - [x] If new violations found, fix them and re-run until clean
   - Date: 2026-05-11 | Status: done | Files Changed: agents_sync_test.go, agents_validate_claude_test.go, agents_validate_naming_test.go, agents_validate_sync_test.go, agents_validate_sync_test.go, doctor_test.go, docs_validate_mermaid_test.go, agent_validator.go, root.go, envbackup/types.go, mermaid/types.go, doctor/checker.go, docs/links_scanner.go, speccoverage/checker.go, speccoverage/cucumber_expr.go, testcoverage/cobertura_coverage.go
@@ -240,18 +241,20 @@ npm install && npm run doctor -- --fix
 
 ### Phase 6: Plan archival
 
-- [ ] After CI is green, archive this plan:
+- [x] After CI is green, archive this plan:
 
   ```bash
   git mv plans/in-progress/golang-lint-parity plans/done/2026-05-11__golang-lint-parity
   ```
 
   Replace `2026-05-11` with the actual completion date.
+  - Date: 2026-05-11 | Status: done | Files Changed: plans/done/2026-05-11\_\_golang-lint-parity/
 
-- [ ] Update `plans/done/README.md` — add an entry for `golang-lint-parity` with completion date
+- [x] Update `plans/done/README.md` — add an entry for `golang-lint-parity` with completion date
       and brief summary.
   - Acceptance: `plans/done/README.md` contains a row for `golang-lint-parity`
-- [ ] Commit archival:
+  - Date: 2026-05-11 | Status: done | Files Changed: plans/done/README.md
+- [x] Commit archival:
 
   ```bash
   git commit -m "chore(plans): move golang-lint-parity to done"
@@ -259,6 +262,7 @@ npm install && npm run doctor -- --fix
 
   Acceptance: `plans/in-progress/golang-lint-parity/` no longer exists; folder appears under
   `plans/done/` with completion-date prefix.
+  - Date: 2026-05-11 | Status: done — committed and pushed to origin/main
 
 ## Quality Gates
 
