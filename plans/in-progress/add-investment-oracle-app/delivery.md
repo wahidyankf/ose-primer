@@ -17,9 +17,9 @@ for the rationale.
       and generate an API key (free; no billing required for free-tier models)
 - [ ] Create a Google AI Studio account at <https://aistudio.google.com>
       and generate a Gemini API key (free tier covers embeddings + Flash-Lite chat)
-- [ ] *(Optional — premium path only)* Create an Anthropic Console account
+- [ ] _(Optional — premium path only)_ Create an Anthropic Console account
       at <https://console.anthropic.com> and generate an API key
-- [ ] *(Optional — web grounding only)* Create a Perplexity API key at
+- [ ] _(Optional — web grounding only)_ Create a Perplexity API key at
       <https://www.perplexity.ai/settings/api>
 - [ ] Verify each key:
       `curl -sH "Authorization: Bearer $OPENROUTER_API_KEY" https://openrouter.ai/api/v1/models | jq '.data[0].id'` ;
@@ -183,8 +183,7 @@ for the rationale.
 
 ## Phase 6 — BE: domain layer
 
-- [ ] Implement `domain/chat_provider.py` Protocol + OpenRouter (default)
-      + Anthropic + Gemini implementations per
+- [ ] Implement `domain/chat_provider.py` Protocol + OpenRouter (default) + Anthropic + Gemini implementations per
       [tech-docs.md provider abstraction](./tech-docs.md#provider-abstraction)
 - [ ] Implement `domain/embedder.py` (Gemini-only) with
       `output_dimensionality=768` and `task_type` parameterisation
