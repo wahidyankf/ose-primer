@@ -71,19 +71,19 @@ fi
 
 # Invariant 4: agent count parity.
 print_invariant 4 "Agent count parity"
-CLAUDE_COUNT=$(find .claude/agents -maxdepth 1 -name '*.md' | wc -l | tr -d ' ')
-OPENCODE_COUNT=$(find .opencode/agents -maxdepth 1 -name '*.md' | wc -l | tr -d ' ')
+CLAUDE_COUNT=$(find .claude/agents -maxdepth 1 -name '*.md' ! -name 'README.md' | wc -l | tr -d ' ')
+OPENCODE_COUNT=$(find .opencode/agents -maxdepth 1 -name '*.md' ! -name 'README.md' | wc -l | tr -d ' ')
 if [ "${CLAUDE_COUNT}" = "${OPENCODE_COUNT}" ]; then
   pass ".claude/agents/*.md == .opencode/agents/*.md (${CLAUDE_COUNT} == ${OPENCODE_COUNT})"
 else
   printf '  .claude only:%s' "${NL}"
   comm -23 \
-    <(find .claude/agents -maxdepth 1 -name '*.md' -printf '%f\n' | sort) \
-    <(find .opencode/agents -maxdepth 1 -name '*.md' -printf '%f\n' | sort) || true
+    <(find .claude/agents -maxdepth 1 -name '*.md' ! -name 'README.md' -exec basename {} \; | sort) \
+    <(find .opencode/agents -maxdepth 1 -name '*.md' ! -name 'README.md' -exec basename {} \; | sort) || true
   printf '  .opencode only:%s' "${NL}"
   comm -13 \
-    <(find .claude/agents -maxdepth 1 -name '*.md' -printf '%f\n' | sort) \
-    <(find .opencode/agents -maxdepth 1 -name '*.md' -printf '%f\n' | sort) || true
+    <(find .claude/agents -maxdepth 1 -name '*.md' ! -name 'README.md' -exec basename {} \; | sort) \
+    <(find .opencode/agents -maxdepth 1 -name '*.md' ! -name 'README.md' -exec basename {} \; | sort) || true
   fail "count mismatch (${CLAUDE_COUNT} vs ${OPENCODE_COUNT})"
 fi
 
