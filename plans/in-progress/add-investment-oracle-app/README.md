@@ -134,12 +134,12 @@ turns each into a tick-box.
 
 ### Vendor accounts and API keys
 
-| Vendor     | Where to register                                | Key env var          | Cost note                                                                         |
-| ---------- | ------------------------------------------------ | -------------------- | --------------------------------------------------------------------------------- |
-| OpenRouter | <https://openrouter.ai/keys>                     | `OPENROUTER_API_KEY` | Free registration; free-tier models at $0.00 (200 req/day, 20 req/min cap).       |
-| Anthropic  | <https://console.anthropic.com>                  | `ANTHROPIC_API_KEY`  | Optional — only needed for `claude-haiku-4-5` premium path; pay-as-you-go.        |
-| Google     | <https://aistudio.google.com> (or GCP Vertex AI) | `GOOGLE_API_KEY`     | Free tier covers all demo use (embeddings + optional Flash-Lite chat).            |
-| Perplexity | <https://www.perplexity.ai/settings/api>         | `PERPLEXITY_API_KEY` | Tier 0 (50 RPM, $0 cumulative spend) covers demo use.                             |
+| Vendor     | Where to register                                | Key env var          | Cost note                                                                   |
+| ---------- | ------------------------------------------------ | -------------------- | --------------------------------------------------------------------------- |
+| OpenRouter | <https://openrouter.ai/keys>                     | `OPENROUTER_API_KEY` | Free registration; free-tier models at $0.00 (200 req/day, 20 req/min cap). |
+| Anthropic  | <https://console.anthropic.com>                  | `ANTHROPIC_API_KEY`  | Optional — only needed for `claude-haiku-4-5` premium path; pay-as-you-go.  |
+| Google     | <https://aistudio.google.com> (or GCP Vertex AI) | `GOOGLE_API_KEY`     | Free tier covers all demo use (embeddings + optional Flash-Lite chat).      |
+| Perplexity | <https://www.perplexity.ai/settings/api>         | `PERPLEXITY_API_KEY` | Tier 0 (50 RPM, $0 cumulative spend) covers demo use.                       |
 
 Keys go into `apps/investment-oracle-be/.env` (gitignored). Never commit
 real keys; `.env.example` ships placeholders.
@@ -282,7 +282,7 @@ graph LR
 
     ANT["Anthropic API<br/>──────────────<br/>Claude Haiku 4.5<br/>(premium opt-in)"]:::ant
 
-    GEM["Google Gemini API<br/>──────────────<br/>gemini-2.5-flash-lite (mid-tier)<br/>gemini-embedding-001 (always)"]:::gem
+    GEM["Google Gemini API<br/>──────────────<br/>gemini-2.5-flash-lite (mid)<br/>gemini-embedding-001 (always)"]:::gem
 
     USER -->|launches| SHELL
     SHELL -->|loads| FE

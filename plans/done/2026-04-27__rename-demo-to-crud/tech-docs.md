@@ -70,7 +70,7 @@ flowchart TD
     B --> D[Nx cross-project.json refs]
     D --> E[Root package.json scripts]
     E --> F[specs/apps/crud content]
-    F --> G[repo-governance/workflows audit]
+    F --> G[governance/workflows audit]
     G --> H[docs/ audit]
     H --> I[CLAUDE · README · AGENTS.md]
     I --> J[Validation]
