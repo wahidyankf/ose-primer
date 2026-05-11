@@ -51,7 +51,7 @@ This workflow validates **source definitions only** in `repo-governance/`. It do
 
 - **Validates**: `repo-governance/` (principles, conventions, development practices)
 - **Skips**: `.opencode/agents/` (auto-generated from `.claude/agents/` - validate via sync script)
-- **Skips**: `.opencode/skills/` (Nx/OpenCode-native skills, not mirrored from `.claude/skills/`)
+- **Skips**: `.opencode/skills/` (Nx-native skills, not mirrored from `.claude/skills/`)
 
 **Generated Output Validation**: Use CLI validation commands for validating generated content. This workflow ensures SOURCE is correct, then sync commands validate output generation.
 

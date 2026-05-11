@@ -192,7 +192,7 @@ skills: []
    - See "Agent Color Categorization" below for assignment guidelines
 
 6. **`skills`** (required)
-   - List of Skill names the agent references (from `.claude/skills/` — OpenCode also reads this natively, no `.opencode/skills/` mirror needed)
+   - List of Skill names the agent references (from `.claude/skills/` — the coding agent also reads this natively, no `.opencode/skills/` mirror needed)
    - Can be empty array `[]` if agent doesn't use agent skills - agent skills auto-load when agent is invoked (if task matches Skill description)
    - Enables composability and explicit knowledge dependencies
    - Example: `skills: [docs-creating-accessible-diagrams, repo-applying-maker-checker-fixer]`
@@ -240,7 +240,7 @@ skills: []
 
 **REQUIRED FIELD**: All agents MUST include a `skills:` frontmatter field for composability and consistency.
 
-**Purpose:** The `skills:` field declares which agent skills (knowledge packages in `.claude/skills/` — OpenCode reads this natively) the agent leverages. This enables:
+**Purpose:** The `skills:` field declares which agent skills (knowledge packages in `.claude/skills/` — the coding agent reads this natively) the agent leverages. This enables:
 
 - **Composability**: Explicit declarations of knowledge dependencies
 - **Consistency**: All agents follow same structure (no special cases)
@@ -255,7 +255,7 @@ The `skills` field (already defined as field 6 in Required Frontmatter above) ha
 - **Required**: Yes (can be empty `[]`)
 - **Values**: Skill names matching folder names in `.claude/skills/`
 - **Auto-loading**: agent skills load when agent invoked AND task matches Skill description
-- **Validation**: Referenced agent skills must exist in `.claude/skills/` directory — OpenCode reads them natively from there (no `.opencode/skills/` mirror needed)
+- **Validation**: Referenced agent skills must exist in `.claude/skills/` directory — the coding agent reads them natively from there (no `.opencode/skills/` mirror needed)
 - **Example**: `skills: [docs-creating-accessible-diagrams, repo-applying-maker-checker-fixer]`
 
 #### When to Reference agent skills vs. Inline Knowledge
@@ -649,7 +649,7 @@ Use the normal `Write` / `Edit` tools for files in `.claude/` and `.opencode/`. 
 **Applies to**:
 
 - Creating or updating agent files in `.claude/agents/` or `.opencode/agents/`
-- Creating or updating skill files in `.claude/skills/*/SKILL.md` (OpenCode reads these natively — no `.opencode/skills/` authoring needed)
+- Creating or updating skill files in `.claude/skills/*/SKILL.md` (the coding agent reads these natively — no `.opencode/skills/` authoring needed)
 - Updating the corresponding `README.md` index files
 
 **Sync requirement**: After editing `.claude/` sources, run `npm run sync:claude-to-opencode` to regenerate the `.opencode/` mirrors. The pre-commit hook validates both formats.
@@ -1586,7 +1586,7 @@ When creating new agents:
 
 Before committing agent changes:
 
-- [ ] No content duplicates agent skills (check `.claude/skills/` catalog — OpenCode reads it natively)
+- [ ] No content duplicates agent skills (check `.claude/skills/` catalog — the coding agent reads it natively)
 - [ ] No content duplicates Conventions (check `repo-governance/conventions/`)
 - [ ] All agent skills referenced exist in `.claude/skills/` (primary source of truth)
 - [ ] All Convention links point to valid files
@@ -2531,7 +2531,7 @@ Content...
 **Required fields**: `name` (must match directory name), `description`
 **Optional fields**: `context` (inline or fork)
 
-Agent skills are **read natively by OpenCode** from `.claude/skills/` — no copy or sync to `.opencode/skills/` is performed.
+Agent skills are **read natively by the coding agent** from `.claude/skills/` — no copy or sync to `.opencode/skills/` is performed.
 
 ### Sync Automation
 
@@ -2539,7 +2539,7 @@ Agent skills are **read natively by OpenCode** from `.claude/skills/` — no cop
 
 **Commands**:
 
-- `npm run sync:claude-to-opencode` - Full sync (agents only; skills are read natively by OpenCode)
+- `npm run sync:claude-to-opencode` - Full sync (agents only; skills are read natively by the coding agent)
 - `npm run sync:agents` - Agents only
 - `npm run sync:skills` - No-op (preserved for CLI backward compatibility; skills are NOT copied)
 - `npm run validate:sync` - Verify semantic equivalence
@@ -2547,7 +2547,7 @@ Agent skills are **read natively by OpenCode** from `.claude/skills/` — no cop
 **Conversion Logic**:
 
 - **Agents**: the primary coding agent format → the secondary coding agent format (tool arrays → boolean flags, model mapping)
-- **Agent skills**: NOT copied — OpenCode reads `.claude/skills/{name}/SKILL.md` natively per opencode.ai/docs/skills/
+- **Agent skills**: NOT copied — the coding agent reads `.claude/skills/{name}/SKILL.md` natively per opencode.ai/docs/skills/
 - **Validation**: Confirms `.opencode/agents/` directory is semantically equivalent to `.claude/agents/`
 
 ### Documentation References
@@ -2555,9 +2555,9 @@ Agent skills are **read natively by OpenCode** from `.claude/skills/` — no cop
 - **[CLAUDE.md](../../../CLAUDE.md)** (PRIMARY) - the primary coding agent configuration
 - **[AGENTS.md](../../../AGENTS.md)** (SECONDARY) - the secondary coding agent configuration with auto-generated warning
 - **[`.claude/agents/`README.md](../../../.claude/agents/README.md)** (PRIMARY) - Agent catalog
-- **[`.opencode/agents/`](../../../.opencode/agents/)** (SECONDARY) - auto-generated OpenCode agent mirrors (no README; see `.claude/agents/README.md` for the canonical catalog)
+- **[`.opencode/agents/`](../../../.opencode/agents/)** (SECONDARY) - auto-generated coding agent mirrors (no README; see `.claude/agents/README.md` for the canonical catalog)
 - **[`.claude/skills/`README.md](../../../.claude/skills/README.md)** (PRIMARY) - agent skills catalog
-- **[`.opencode/skills/`](../../../.opencode/skills/)** (SECONDARY) - OpenCode reads skills natively from `.claude/skills/` (no mirror README)
+- **[`.opencode/skills/`](../../../.opencode/skills/)** (SECONDARY) - the coding agent reads skills natively from `.claude/skills/` (no mirror README)
 
 ### Migration History
 
@@ -2580,8 +2580,8 @@ Agent skills are **read natively by OpenCode** from `.claude/skills/` — no cop
 **Problem**: Conversion errors during sync
 **Solution**: Check agent frontmatter format in `.claude/agents/`, fix YAML syntax, re-sync
 
-**Problem**: Agent skills not found by OpenCode
-**Solution**: Verify skills exist in `.claude/skills/` — OpenCode reads them natively from there; no sync step is required for skills
+**Problem**: Agent skills not found by the coding agent
+**Solution**: Verify skills exist in `.claude/skills/` — the coding agent reads them natively from there; no sync step is required for skills
 
 ---
 

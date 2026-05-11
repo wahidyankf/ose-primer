@@ -478,7 +478,7 @@ category: explanation
 
 6. **Root configuration and skill files** - CLAUDE.md, `.opencode/skills/`\*.md
    - CLAUDE.md - Project guidance document for the primary coding agent sessions, human-readable
-   - `.opencode/skills/`\*.md - Nx/OpenCode-native skill files (not mirrored from `.claude/skills/`; OpenCode reads `.claude/skills/` natively)
+   - `.opencode/skills/`\*.md - Nx-native skill files (not mirrored from `.claude/skills/`; the coding agent reads `.claude/skills/` natively)
    - Emojis support scannability of guidance and knowledge content read by developers
 
 **FAIL: DO NOT use emojis in these files:**
