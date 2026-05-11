@@ -6,6 +6,9 @@ plans/
 # Claude Code worktrees (git worktrees contain duplicate project.json files)
 .claude/worktrees/
 
+# Root-level worktrees (same duplicate project.json issue)
+worktrees/
+
 # Git files
 .git/
 .github/
