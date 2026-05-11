@@ -154,3 +154,9 @@ specs/apps/demo/contracts/generated/
 .claude/settings.local.json.bkup
 .claude/worktrees/
 .claude/*.lock
+
+# Root-level worktrees (git worktree add targets)
+worktrees/
+
+# Claude memory search cache
+.memsearch/
