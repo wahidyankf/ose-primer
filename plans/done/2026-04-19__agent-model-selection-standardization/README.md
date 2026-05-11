@@ -47,11 +47,11 @@ worktree required.
 
 **Files touched**:
 
-- `governance/development/agents/model-selection.md` — primary policy + benchmark
+- `repo-governance/development/agents/model-selection.md` — primary policy + benchmark
   citations _(phases 1, 6)_
 - `CLAUDE.md` — inline plan format description + model aliases _(phase 2)_
-- `governance/development/agents/ai-agents.md` — budget-adaptive propagation _(phase 3)_
-- `governance/development/agents/best-practices.md` — budget-adaptive propagation _(phase 3)_
+- `repo-governance/development/agents/ai-agents.md` — budget-adaptive propagation _(phase 3)_
+- `repo-governance/development/agents/best-practices.md` — budget-adaptive propagation _(phase 3)_
 - `.claude/agents/README.md` — opus-tier omit note + benchmark pointer _(phases 3, 6)_
 - `docs/reference/ai-model-benchmarks.md` — new benchmark reference doc _(phase 4)_
 - `.claude/agents/repo-rules-maker.md` — tier correction OMIT→SONNET _(phase 5)_
@@ -88,7 +88,7 @@ No rhino-cli code changes needed. Fix is documentation + 1 targeted tier correct
 ## References
 
 - Upstream plan: `ose-public/plans/in-progress/2026-04-19__agent-model-selection-standardization/`
-- Policy: [governance/development/agents/model-selection.md](../../../governance/development/agents/model-selection.md)
-- Plans convention: [governance/conventions/structure/plans.md](../../../governance/conventions/structure/plans.md)
+- Policy: [repo-governance/development/agents/model-selection.md](../../../repo-governance/development/agents/model-selection.md)
+- Plans convention: [repo-governance/conventions/structure/plans.md](../../../repo-governance/conventions/structure/plans.md)
 - Sync converter: [apps/rhino-cli/internal/agents/converter.go](../../../apps/rhino-cli/internal/agents/converter.go)
 - Sync types: [apps/rhino-cli/internal/agents/types.go](../../../apps/rhino-cli/internal/agents/types.go)

@@ -166,4 +166,4 @@ fun `calculateZakat returns 2_5 percent when above nisab`() = runTest {
 ## References
 
 - [Kotlin README](../../../docs/explanation/software-engineering/programming-languages/kotlin/README.md)
-- [Functional Programming](../../../governance/development/pattern/functional-programming.md)
+- [Functional Programming](../../../repo-governance/development/pattern/functional-programming.md)

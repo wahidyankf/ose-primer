@@ -21,8 +21,8 @@ validator,reporter,extractor,graph}.go` plus `cmd/docs_validate_mermaid.go`)
   modulo import paths.
 - The Nx target `validate:mermaid` in `apps/rhino-cli/project.json`
   is **broadened beyond ose-public's scope**. ose-public's target
-  also restricts to `governance/` + `.claude/`; this plan widens
-  it to `docs/`, `governance/`, `.claude/`, `plans/`, root `*.md`
+  also restricts to `repo-governance/` + `.claude/`; this plan widens
+  it to `docs/`, `repo-governance/`, `.claude/`, `plans/`, root `*.md`
   to satisfy the primer-side pre-push goal (FR-4).
 
 ## File-level port map
@@ -55,10 +55,10 @@ validator,reporter,extractor,graph}.go` plus `cmd/docs_validate_mermaid.go`)
 
 - **`apps/rhino-cli/project.json`** — primer-specific extension
   beyond ose-public. ose-public's own `validate:mermaid` Nx target
-  also restricts to `governance/ .claude/`; this plan widens the
+  also restricts to `repo-governance/ .claude/`; this plan widens the
   primer's target only. Pick option A from
   `## Nx target — coverage extension` below: drop positional args
-  on the `command`, broaden `inputs` to list `docs/`, `governance/`,
+  on the `command`, broaden `inputs` to list `docs/`, `repo-governance/`,
   `.claude/`, `plans/`, root `*.md`. The CLI default scan already
   reaches the same five trees once the cmd port lands, so the new
   command (without args) and new `inputs` reach parity.
@@ -170,7 +170,7 @@ should never be scanned.
   "inputs": [
     "{projectRoot}/**/*.go",
     "{workspaceRoot}/docs/**/*.md",
-    "{workspaceRoot}/governance/**/*.md",
+    "{workspaceRoot}/repo-governance/**/*.md",
     "{workspaceRoot}/.claude/**/*.md",
     "{workspaceRoot}/plans/**/*.md",
     "{workspaceRoot}/*.md"
@@ -181,12 +181,12 @@ should never be scanned.
 
 Option A drops the explicit positional args and relies on the CLI
 default scan. ose-public's `collectMDDefaultDirs` already enumerates
-`docs/`, `governance/`, `.claude/`, `plans/`, and root `*.md` —
+`docs/`, `repo-governance/`, `.claude/`, `plans/`, and root `*.md` —
 verified in source. So porting the cmd file alone widens the default
 scan to all five trees automatically; no extra CLI edit needed.
 
 Option B (fallback): keep argv style and pass
-`governance/ .claude/ docs/ plans/` explicitly. Use only if option A
+`repo-governance/ .claude/ docs/ plans/` explicitly. Use only if option A
 surfaces unwanted markdown in `apps/` or `apps-labs/` trees.
 
 Pick option A. Update tests in `cmd/docs_validate_mermaid_test.go`
@@ -234,7 +234,7 @@ Expected hot spots based on diagram inventory:
 
 ## CI verification after push
 
-Per [Git Push Default Convention](../../../governance/development/workflow/git-push-default.md)
+Per [Git Push Default Convention](../../../repo-governance/development/workflow/git-push-default.md)
 Standards 1, 2, 6, every commit pushes direct to `origin main`. No
 draft PR opens. After each direct push:
 
@@ -296,7 +296,7 @@ is controlled by the ported `cmd/` file independently.
 ## Development environment
 
 - Go 1.22+ on PATH (`volta` does not manage Go — use the system
-  toolchain or `asdf` per `governance/development/workflow/reproducible-environments.md`).
+  toolchain or `asdf` per `repo-governance/development/workflow/reproducible-environments.md`).
 - `node` 24.13.1 and `npm` 11.10.1 (Volta-managed by repo).
 - Husky hooks installed via `npm install`.
 - No DB or service dependency — the validator is pure-Go and

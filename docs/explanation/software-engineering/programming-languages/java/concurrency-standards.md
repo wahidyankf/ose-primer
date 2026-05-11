@@ -461,12 +461,12 @@ For learning Java fundamentals and concepts referenced in these standards, see:
 
 These standards enforce the the software engineering principles:
 
-1. **[Immutability](../../../../../governance/principles/software-engineering/immutability.md)**
+1. **[Immutability](../../../../../repo-governance/principles/software-engineering/immutability.md)**
    - Record types for domain models guarantee thread safety by default
    - Updates create new instances (not mutate shared state)
    - Immutable collections prevent concurrent modification exceptions
 
-2. **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**
+2. **[Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)**
    - Virtual thread naming makes operations traceable in debugging (`zakat-calc-account-67890`)
    - StructuredTaskScope explicitly defines task relationships and cancellation policies
    - Atomic operations (`compareAndSet`) make concurrency guarantees explicit
@@ -474,7 +474,7 @@ These standards enforce the the software engineering principles:
    - Parallel streams provide high-level concurrency (no manual thread management)
    - ConcurrentHashMap replaces low-level synchronization with simple API
 
-3. **[Pure Functions](../../../../../governance/principles/software-engineering/pure-functions.md)**
+3. **[Pure Functions](../../../../../repo-governance/principles/software-engineering/pure-functions.md)**
    - Parallel stream operations must be stateless (no shared mutable state)
    - Zakat calculation functions are pure (same input always produces same output)
    - Thread-safe by construction (no side effects)

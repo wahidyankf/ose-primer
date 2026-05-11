@@ -69,13 +69,13 @@ All Spring Framework applications MUST follow the patterns and practices documen
 
 ## Software Engineering Principles
 
-Spring Framework usage in this platform follows the the software engineering principles from [governance/principles/software-engineering/](../../../../../../governance/principles/software-engineering/README.md):
+Spring Framework usage in this platform follows the the software engineering principles from [repo-governance/principles/software-engineering/](../../../../../../repo-governance/principles/software-engineering/README.md):
 
-1. **[Automation Over Manual](../../../../../../governance/principles/software-engineering/automation-over-manual.md)** - Spring automates through component scanning, auto-wiring, transaction management
-2. **[Explicit Over Implicit](../../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - Spring enforces through explicit bean definitions, clear dependency declarations, visible configuration
-3. **[Immutability Over Mutability](../../../../../../governance/principles/software-engineering/immutability.md)** - Use immutable value objects, stateless services, declarative transaction boundaries
-4. **[Pure Functions Over Side Effects](../../../../../../governance/principles/software-engineering/pure-functions.md)** - Apply functional core/imperative shell: pure domain logic, side effects at boundaries
-5. **[Reproducibility First](../../../../../../governance/principles/software-engineering/reproducibility.md)** - Spring enables through explicit configuration, version pinning, environment profiles
+1. **[Automation Over Manual](../../../../../../repo-governance/principles/software-engineering/automation-over-manual.md)** - Spring automates through component scanning, auto-wiring, transaction management
+2. **[Explicit Over Implicit](../../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)** - Spring enforces through explicit bean definitions, clear dependency declarations, visible configuration
+3. **[Immutability Over Mutability](../../../../../../repo-governance/principles/software-engineering/immutability.md)** - Use immutable value objects, stateless services, declarative transaction boundaries
+4. **[Pure Functions Over Side Effects](../../../../../../repo-governance/principles/software-engineering/pure-functions.md)** - Apply functional core/imperative shell: pure domain logic, side effects at boundaries
+5. **[Reproducibility First](../../../../../../repo-governance/principles/software-engineering/reproducibility.md)** - Spring enables through explicit configuration, version pinning, environment profiles
 
 ## Quick Reference
 
@@ -1500,7 +1500,7 @@ public class GlobalExceptionHandler {
 ### Development Practices
 
 - **[Test-Driven Development](../../../development/test-driven-development-tdd/README.md)** - TDD with Spring
-- **[Functional Programming](../../../../../../governance/development/pattern/functional-programming.md)** - FP principles
+- **[Functional Programming](../../../../../../repo-governance/development/pattern/functional-programming.md)** - FP principles
 
 ### Core Spring Modules
 

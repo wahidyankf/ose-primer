@@ -120,4 +120,4 @@ If the contract change breaks any app, the pre-push hook catches it.
 
 - [OpenAPI Contract](../../specs/apps/crud/contracts/README.md) — Spec structure and conventions
 - [Project Dependency Graph](../reference/project-dependency-graph.md) — How contract changes propagate
-- [Nx Target Standards](../../governance/development/infra/nx-targets.md) — Codegen target requirements
+- [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) — Codegen target requirements

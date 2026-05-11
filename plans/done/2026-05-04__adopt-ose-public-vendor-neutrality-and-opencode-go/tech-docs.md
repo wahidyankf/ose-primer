@@ -110,7 +110,7 @@ if the W1 commit also removed the copy logic.
 | `apps/rhino-cli/cmd/agents_validate_sync.integration_test.go`   | update  | Model assertions.                                                                                                                   |
 | `apps/rhino-cli/cmd/agents_validate_naming.integration_test.go` | update  | Model in fixture.                                                                                                                   |
 | `.opencode/opencode.json`                                       | replace | Switch `model`/`small_model`; add `provider.opencode-go.options.apiKey: {env:OPENCODE_GO_API_KEY}` block; remove any Z.ai MCPs.     |
-| `governance/development/agents/model-selection.md`              | update  | Refresh OpenCode equivalents table to reference `opencode-go/*` IDs.                                                                |
+| `repo-governance/development/agents/model-selection.md`         | update  | Refresh OpenCode equivalents table to reference `opencode-go/*` IDs.                                                                |
 | `.opencode/agents/*.md`                                         | regen   | `npm run sync:claude-to-opencode` regenerates all agent files at the canonical plural path with new model IDs in one atomic commit. |
 | `.env.example`                                                  | update  | Document `OPENCODE_GO_API_KEY` env var.                                                                                             |
 
@@ -137,34 +137,34 @@ it. Do not roll back W1 without rolling back W2 first.
 
 ### Source
 
-- `ose-public/apps/rhino-cli/internal/governance/governance_vendor_audit.go` (313 lines)
-- `ose-public/apps/rhino-cli/internal/governance/governance_vendor_audit_test.go` (502 lines)
+- `ose-public/apps/rhino-cli/internal/repo-governance/governance_vendor_audit.go` (313 lines)
+- `ose-public/apps/rhino-cli/internal/repo-governance/governance_vendor_audit_test.go` (502 lines)
 - `ose-public/apps/rhino-cli/cmd/governance.go` (13 lines — Cobra group)
 - `ose-public/apps/rhino-cli/cmd/governance_vendor_audit.go` (151 lines)
 - `ose-public/apps/rhino-cli/cmd/governance_vendor_audit_test.go` (332 lines)
-- `ose-public/specs/apps/rhino/cli/gherkin/governance-vendor-audit.feature`
+- `ose-public/specs/apps/rhino/cli/gherkin/repo-governance-vendor-audit.feature`
 
 ### File-level porting map
 
-| File                                                                 | Action | Notes                                                                                                                                             |
-| -------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `apps/rhino-cli/internal/governance/governance_vendor_audit.go`      | create | New file. Copy from ose-public verbatim — module path matches.                                                                                    |
-| `apps/rhino-cli/internal/governance/governance_vendor_audit_test.go` | create | New file. Copy from ose-public verbatim. Includes `\bSkills\b` test from `2026-05-03__rhino-cli-skills-vendor-term`.                              |
-| `apps/rhino-cli/cmd/governance.go`                                   | create | New file. Cobra group registration.                                                                                                               |
-| `apps/rhino-cli/cmd/governance_vendor_audit.go`                      | create | New file. Cobra subcommand binding scanner to CLI.                                                                                                |
-| `apps/rhino-cli/cmd/governance_vendor_audit_test.go`                 | create | Unit test for command wiring.                                                                                                                     |
-| `apps/rhino-cli/cmd/governance_vendor_audit.integration_test.go`     | create | Integration test against /tmp fixture trees.                                                                                                      |
-| `apps/rhino-cli/cmd/steps_common_test.go`                            | update | Add step constants for `governance vendor-audit` Gherkin steps.                                                                                   |
-| `apps/rhino-cli/cmd/root_test.go`                                    | update | Register the new `governance` Cobra group in command-tree assertions.                                                                             |
-| `apps/rhino-cli/project.json`                                        | update | New target `validate:governance-vendor-audit` invokes `rhino-cli governance vendor-audit governance/`. Cacheable: inputs include `governance/**`. |
-| `specs/apps/rhino/cli/gherkin/governance-vendor-audit.feature`       | create | Copy verbatim from ose-public; same scenarios.                                                                                                    |
-| `.husky/pre-push`                                                    | update | Add `nx affected -t validate:governance-vendor-audit` to the pre-push chain (or include via `validate:cross-vendor-parity` umbrella in W5).       |
-| `apps/rhino-cli/README.md`                                           | update | Add a "Governance vendor-audit" subsection documenting the new subcommand.                                                                        |
+| File                                                                      | Action | Notes                                                                                                                                                                 |
+| ------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/rhino-cli/internal/repo-governance/governance_vendor_audit.go`      | create | New file. Copy from ose-public verbatim — module path matches.                                                                                                        |
+| `apps/rhino-cli/internal/repo-governance/governance_vendor_audit_test.go` | create | New file. Copy from ose-public verbatim. Includes `\bSkills\b` test from `2026-05-03__rhino-cli-skills-vendor-term`.                                                  |
+| `apps/rhino-cli/cmd/governance.go`                                        | create | New file. Cobra group registration.                                                                                                                                   |
+| `apps/rhino-cli/cmd/governance_vendor_audit.go`                           | create | New file. Cobra subcommand binding scanner to CLI.                                                                                                                    |
+| `apps/rhino-cli/cmd/governance_vendor_audit_test.go`                      | create | Unit test for command wiring.                                                                                                                                         |
+| `apps/rhino-cli/cmd/governance_vendor_audit.integration_test.go`          | create | Integration test against /tmp fixture trees.                                                                                                                          |
+| `apps/rhino-cli/cmd/steps_common_test.go`                                 | update | Add step constants for `repo-governance vendor-audit` Gherkin steps.                                                                                                  |
+| `apps/rhino-cli/cmd/root_test.go`                                         | update | Register the new `governance` Cobra group in command-tree assertions.                                                                                                 |
+| `apps/rhino-cli/project.json`                                             | update | New target `validate:repo-governance-vendor-audit` invokes `rhino-cli repo-governance vendor-audit repo-governance/`. Cacheable: inputs include `repo-governance/**`. |
+| `specs/apps/rhino/cli/gherkin/repo-governance-vendor-audit.feature`       | create | Copy verbatim from ose-public; same scenarios.                                                                                                                        |
+| `.husky/pre-push`                                                         | update | Add `nx affected -t validate:repo-governance-vendor-audit` to the pre-push chain (or include via `validate:cross-vendor-parity` umbrella in W5).                      |
+| `apps/rhino-cli/README.md`                                                | update | Add a "Governance vendor-audit" subsection documenting the new subcommand.                                                                                            |
 
 ### Decisions
 
 - **D3.1 — Pre-push wiring deferred to W5 umbrella.** Wire
-  `validate:governance-vendor-audit` into the pre-push hook only via the
+  `validate:repo-governance-vendor-audit` into the pre-push hook only via the
   `validate:cross-vendor-parity` quality gate from W5 to avoid double-running
   the scanner.
 - **D3.2 — Allowlist mechanism preserved.** The
@@ -176,28 +176,28 @@ it. Do not roll back W1 without rolling back W2 first.
 
 ### Rollback
 
-Revert the W3 commit; the four new Cobra files and the `internal/governance/`
+Revert the W3 commit; the four new Cobra files and the `internal/repo-governance/`
 package are dropped. Pre-push hook returns to its prior state.
 
 ## Workstream W4 — Vendor-neutral governance
 
 ### Source
 
-- `ose-public/governance/conventions/structure/governance-vendor-independence.md` (268 lines)
+- `ose-public/repo-governance/conventions/structure/governance-vendor-independence.md` (268 lines)
 - `ose-public/AGENTS.md` (canonical, vendor-neutral with binding-example fences)
 - `ose-public/CLAUDE.md` (thin shim with `@AGENTS.md` import directive)
 
 ### File-level porting map
 
-| File                                                                 | Action  | Notes                                                                                                                                                |
-| -------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `governance/conventions/structure/governance-vendor-independence.md` | create  | Port verbatim with primer-specific re-scoping (single-repo, no parent reference).                                                                    |
-| `AGENTS.md`                                                          | rewrite | Replace current OpenCode-binding-only file with canonical vendor-neutral root instruction. Wrap vendor specifics in `binding-example` fences.        |
-| `CLAUDE.md`                                                          | rewrite | Thin Claude Code binding shim. Top of file: `@AGENTS.md`. Body retains only Claude-Code-specific notes (e.g., model tier aliases) inside fences.     |
-| `governance/**.md` (any file flagged by W3 scanner)                  | edit    | Remediate forbidden vendor terms: rewrite as capability tier (planning-grade / execution-grade / fast) or wrap in `binding-example` fence as needed. |
-| `governance/development/agents/ai-agents.md`                         | edit    | Heavy lift — explicitly listed in ose-public's plan. Keep vendor-specific bits inside `binding-example` fences only.                                 |
-| `governance/README.md`                                               | edit    | Update layer-test guidance to reference vendor-audit scanner.                                                                                        |
-| `governance/development/agents/model-selection.md`                   | edit    | Use capability-tier vocabulary as canonical; vendor model IDs as binding examples.                                                                   |
+| File                                                                      | Action  | Notes                                                                                                                                                |
+| ------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `repo-governance/conventions/structure/governance-vendor-independence.md` | create  | Port verbatim with primer-specific re-scoping (single-repo, no parent reference).                                                                    |
+| `AGENTS.md`                                                               | rewrite | Replace current OpenCode-binding-only file with canonical vendor-neutral root instruction. Wrap vendor specifics in `binding-example` fences.        |
+| `CLAUDE.md`                                                               | rewrite | Thin Claude Code binding shim. Top of file: `@AGENTS.md`. Body retains only Claude-Code-specific notes (e.g., model tier aliases) inside fences.     |
+| `repo-governance/**.md` (any file flagged by W3 scanner)                  | edit    | Remediate forbidden vendor terms: rewrite as capability tier (planning-grade / execution-grade / fast) or wrap in `binding-example` fence as needed. |
+| `repo-governance/development/agents/ai-agents.md`                         | edit    | Heavy lift — explicitly listed in ose-public's plan. Keep vendor-specific bits inside `binding-example` fences only.                                 |
+| `repo-governance/README.md`                                               | edit    | Update layer-test guidance to reference vendor-audit scanner.                                                                                        |
+| `repo-governance/development/agents/model-selection.md`                   | edit    | Use capability-tier vocabulary as canonical; vendor model IDs as binding examples.                                                                   |
 
 ### Decisions
 
@@ -215,7 +215,7 @@ package are dropped. Pre-push hook returns to its prior state.
 
 ### Rollback
 
-Revert the W4 commits; AGENTS.md / CLAUDE.md restored, governance/
+Revert the W4 commits; AGENTS.md / CLAUDE.md restored, repo-governance/
 prose restored. The W3 scanner remains green only on the pre-W4
 allowlist; rollback also requires reinstating the previous allowlist
 or accepting a non-zero scanner exit code.
@@ -226,20 +226,20 @@ or accepting a non-zero scanner exit code.
 
 - `ose-public/.claude/agents/repo-parity-checker.md`
 - `ose-public/.claude/agents/repo-parity-fixer.md`
-- `ose-public/governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md`
+- `ose-public/repo-governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md`
 
 ### File-level porting map
 
-| File                                                                   | Action | Notes                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ---------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `.claude/agents/repo-parity-checker.md`                                | create | Port verbatim. Sonnet, green. Skills auto-load.                                                                                                                                                                                                                                                                                                                                                          |
-| `.claude/agents/repo-parity-fixer.md`                                  | create | Port verbatim. Sonnet, yellow.                                                                                                                                                                                                                                                                                                                                                                           |
-| `.opencode/agents/repo-parity-checker.md`                              | regen  | Generated by `npm run sync:claude-to-opencode`. Verify after sync.                                                                                                                                                                                                                                                                                                                                       |
-| `.opencode/agents/repo-parity-fixer.md`                                | regen  | Same.                                                                                                                                                                                                                                                                                                                                                                                                    |
-| `governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md`   | create | Port verbatim. Iterative check-fix-verify. Terminates on two consecutive zero-finding runs. Default max-iterations=7, escalation=5.                                                                                                                                                                                                                                                                      |
-| `apps/rhino-cli/scripts/validate-cross-vendor-parity.sh`               | create | Port verbatim from ose-public (~135 lines). Thin shell wrapper checking five invariants: (1) governance prose vendor-neutrality, (2) AGENTS.md/CLAUDE.md vendor-neutrality, (3) binding sync no-op, (4) agent count parity, (5a) color-translation map coverage, (5b) capability-tier map coverage. `cache: false` — reads `.opencode/agents/` count and runs `npm run sync` which is non-deterministic. |
-| `apps/rhino-cli/project.json` (or new top-level `package.json` script) | update | Add Nx target `validate:cross-vendor-parity` with `"command": "bash apps/rhino-cli/scripts/validate-cross-vendor-parity.sh"` and `"cache": false`.                                                                                                                                                                                                                                                       |
-| `.husky/pre-push`                                                      | update | Add conditional fire (see D3.1 / F3): fire `validate:cross-vendor-parity` only when `governance/**/*.md`, `AGENTS.md`, `CLAUDE.md`, `.claude/agents/`, or `.opencode/agents/` changed — mirrors ose-public's conditional `if [ -n "$RANGE" ]` pattern.                                                                                                                                                   |
+| File                                                                      | Action | Notes                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.claude/agents/repo-parity-checker.md`                                   | create | Port verbatim. Sonnet, green. Skills auto-load.                                                                                                                                                                                                                                                                                                                                                          |
+| `.claude/agents/repo-parity-fixer.md`                                     | create | Port verbatim. Sonnet, yellow.                                                                                                                                                                                                                                                                                                                                                                           |
+| `.opencode/agents/repo-parity-checker.md`                                 | regen  | Generated by `npm run sync:claude-to-opencode`. Verify after sync.                                                                                                                                                                                                                                                                                                                                       |
+| `.opencode/agents/repo-parity-fixer.md`                                   | regen  | Same.                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `repo-governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md` | create | Port verbatim. Iterative check-fix-verify. Terminates on two consecutive zero-finding runs. Default max-iterations=7, escalation=5.                                                                                                                                                                                                                                                                      |
+| `apps/rhino-cli/scripts/validate-cross-vendor-parity.sh`                  | create | Port verbatim from ose-public (~135 lines). Thin shell wrapper checking five invariants: (1) governance prose vendor-neutrality, (2) AGENTS.md/CLAUDE.md vendor-neutrality, (3) binding sync no-op, (4) agent count parity, (5a) color-translation map coverage, (5b) capability-tier map coverage. `cache: false` — reads `.opencode/agents/` count and runs `npm run sync` which is non-deterministic. |
+| `apps/rhino-cli/project.json` (or new top-level `package.json` script)    | update | Add Nx target `validate:cross-vendor-parity` with `"command": "bash apps/rhino-cli/scripts/validate-cross-vendor-parity.sh"` and `"cache": false`.                                                                                                                                                                                                                                                       |
+| `.husky/pre-push`                                                         | update | Add conditional fire (see D3.1 / F3): fire `validate:cross-vendor-parity` only when `repo-governance/**/*.md`, `AGENTS.md`, `CLAUDE.md`, `.claude/agents/`, or `.opencode/agents/` changed — mirrors ose-public's conditional `if [ -n "$RANGE" ]` pattern.                                                                                                                                              |
 
 ### Decisions
 
@@ -259,14 +259,14 @@ returns to previous chain. W4 remediation remains in place.
 
 ### Source
 
-- `ose-public/governance/conventions/structure/plans.md` (lines ~180-220 cover the
+- `ose-public/repo-governance/conventions/structure/plans.md` (lines ~180-220 cover the
   five-doc-DEFAULT and four-criteria single-file rule)
 
 ### File-level porting map
 
-| File                                        | Action | Notes                                                                                                                                                       |
-| ------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `governance/conventions/structure/plans.md` | edit   | Replace the "Multi-File Structure" / "Single-File Structure" section with ose-public's stricter wording. Five-doc DEFAULT, four named single-file criteria. |
+| File                                             | Action | Notes                                                                                                                                                       |
+| ------------------------------------------------ | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `repo-governance/conventions/structure/plans.md` | edit   | Replace the "Multi-File Structure" / "Single-File Structure" section with ose-public's stricter wording. Five-doc DEFAULT, four named single-file criteria. |
 
 ### Decisions
 
@@ -281,18 +281,18 @@ Revert the single edit commit.
 
 ### Source
 
-- `ose-public/governance/conventions/structure/worktree-path.md` (217 lines)
-- `ose-public/governance/development/workflow/worktree-setup.md` (166 lines)
+- `ose-public/repo-governance/conventions/structure/worktree-path.md` (217 lines)
+- `ose-public/repo-governance/development/workflow/worktree-setup.md` (166 lines)
 
 ### File-level porting map
 
-| File                                                | Action  | Notes                                                                                                                                                                                                                                  |
-| --------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `governance/conventions/structure/worktree-path.md` | create  | Port adapted for primer: rule says **default** path is `.claude/worktrees/<name>/` (no override). Document gitignore + parallel-safety rationale. Cross-link to `worktree-setup.md`.                                                   |
-| `governance/development/workflow/worktree-setup.md` | refresh | Resync against ose-public version. Do NOT import any `created:` or other date frontmatter fields per the [No-Date-Metadata Convention](../../../governance/conventions/writing/no-date-metadata.md). Update internal cross-references. |
-| `AGENTS.md` (post-W4)                               | update  | Add a `## Worktrees` subsection linking to the new convention. One-paragraph summary.                                                                                                                                                  |
-| `CLAUDE.md` (post-W4)                               | update  | Same — link to new convention from existing worktree subsection.                                                                                                                                                                       |
-| `governance/conventions/structure/README.md`        | update  | Add `worktree-path.md` to the convention index.                                                                                                                                                                                        |
+| File                                                     | Action  | Notes                                                                                                                                                                                                                                       |
+| -------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `repo-governance/conventions/structure/worktree-path.md` | create  | Port adapted for primer: rule says **default** path is `.claude/worktrees/<name>/` (no override). Document gitignore + parallel-safety rationale. Cross-link to `worktree-setup.md`.                                                        |
+| `repo-governance/development/workflow/worktree-setup.md` | refresh | Resync against ose-public version. Do NOT import any `created:` or other date frontmatter fields per the [No-Date-Metadata Convention](../../../repo-governance/conventions/writing/no-date-metadata.md). Update internal cross-references. |
+| `AGENTS.md` (post-W4)                                    | update  | Add a `## Worktrees` subsection linking to the new convention. One-paragraph summary.                                                                                                                                                       |
+| `CLAUDE.md` (post-W4)                                    | update  | Same — link to new convention from existing worktree subsection.                                                                                                                                                                            |
+| `repo-governance/conventions/structure/README.md`        | update  | Add `worktree-path.md` to the convention index.                                                                                                                                                                                             |
 
 ### Decisions
 
@@ -313,22 +313,22 @@ Revert the two file additions and the worktree-setup.md refresh.
 
 ### Source
 
-- `ose-public/governance/workflows/plan/plan-execution.md` (770 lines)
-- `ose-public/governance/workflows/plan/plan-quality-gate.md` (392 lines)
-- `ose-public/governance/workflows/plan/README.md` (35 lines)
-- `ose-public/governance/development/workflow/ci-monitoring.md` (285 lines)
-- `ose-public/governance/development/workflow/ci-post-push-verification.md` (217 lines)
+- `ose-public/repo-governance/workflows/plan/plan-execution.md` (770 lines)
+- `ose-public/repo-governance/workflows/plan/plan-quality-gate.md` (392 lines)
+- `ose-public/repo-governance/workflows/plan/README.md` (35 lines)
+- `ose-public/repo-governance/development/workflow/ci-monitoring.md` (285 lines)
+- `ose-public/repo-governance/development/workflow/ci-post-push-verification.md` (217 lines)
 
 ### File-level porting map
 
-| File                                                           | Action  | Notes                                                                                                                                    |
-| -------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `governance/workflows/plan/plan-execution.md`                  | refresh | Replace with ose-public version; manually re-apply primer-specific phrasing (single-repo, no parent gitlinks, no Scope A/B distinction). |
-| `governance/workflows/plan/plan-quality-gate.md`               | refresh | Same — replace with ose-public version. Termination rule: two consecutive zero-finding runs. Default max-iterations=7, escalation=5.     |
-| `governance/workflows/plan/README.md`                          | refresh | Replace with ose-public version.                                                                                                         |
-| `governance/development/workflow/ci-monitoring.md`             | create  | Port verbatim.                                                                                                                           |
-| `governance/development/workflow/ci-post-push-verification.md` | create  | Port verbatim.                                                                                                                           |
-| `governance/development/workflow/README.md`                    | update  | Add new files to the workflow index.                                                                                                     |
+| File                                                                | Action  | Notes                                                                                                                                    |
+| ------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `repo-governance/workflows/plan/plan-execution.md`                  | refresh | Replace with ose-public version; manually re-apply primer-specific phrasing (single-repo, no parent gitlinks, no Scope A/B distinction). |
+| `repo-governance/workflows/plan/plan-quality-gate.md`               | refresh | Same — replace with ose-public version. Termination rule: two consecutive zero-finding runs. Default max-iterations=7, escalation=5.     |
+| `repo-governance/workflows/plan/README.md`                          | refresh | Replace with ose-public version.                                                                                                         |
+| `repo-governance/development/workflow/ci-monitoring.md`             | create  | Port verbatim.                                                                                                                           |
+| `repo-governance/development/workflow/ci-post-push-verification.md` | create  | Port verbatim.                                                                                                                           |
+| `repo-governance/development/workflow/README.md`                    | update  | Add new files to the workflow index.                                                                                                     |
 
 ### Decisions
 
@@ -346,17 +346,17 @@ Revert the W8 commits; previous plan/CI workflow files restored.
 
 ### Source
 
-- `ose-public/governance/development/workflow/test-driven-development.md` (316 lines)
+- `ose-public/repo-governance/development/workflow/test-driven-development.md` (316 lines)
 
 ### File-level porting map
 
-| File                                                            | Action | Notes                                                                                                                  |
-| --------------------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------- |
-| `governance/development/workflow/test-driven-development.md`    | create | Port verbatim. Adjust cross-reference paths if any reference paths primer doesn't have (e.g., acceptance-criteria.md). |
-| `governance/development/workflow/implementation.md`             | edit   | Add a one-line cross-reference to `test-driven-development.md` next to the existing Stage 1 description.               |
-| `governance/development/workflow/README.md`                     | update | Add `test-driven-development.md` to the workflow index.                                                                |
-| `governance/workflows/plan/plan-execution.md` (post-W8 refresh) | edit   | Add a one-line cross-reference to `test-driven-development.md` from the Iron Rules section.                            |
-| `governance/conventions/structure/plans.md` (post-W6)           | edit   | One-line cross-reference from the delivery-checklist authoring section.                                                |
+| File                                                                 | Action | Notes                                                                                                                  |
+| -------------------------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `repo-governance/development/workflow/test-driven-development.md`    | create | Port verbatim. Adjust cross-reference paths if any reference paths primer doesn't have (e.g., acceptance-criteria.md). |
+| `repo-governance/development/workflow/implementation.md`             | edit   | Add a one-line cross-reference to `test-driven-development.md` next to the existing Stage 1 description.               |
+| `repo-governance/development/workflow/README.md`                     | update | Add `test-driven-development.md` to the workflow index.                                                                |
+| `repo-governance/workflows/plan/plan-execution.md` (post-W8 refresh) | edit   | Add a one-line cross-reference to `test-driven-development.md` from the Iron Rules section.                            |
+| `repo-governance/conventions/structure/plans.md` (post-W6)           | edit   | One-line cross-reference from the delivery-checklist authoring section.                                                |
 
 ### Decisions
 
@@ -376,22 +376,22 @@ cross-references reverted.
 
 ### Source
 
-- `ose-public/governance/conventions/structure/no-last-updated.md` (29 lines)
-- `ose-public/governance/conventions/structure/programming-language-docs-separation.md` (846 lines)
+- `ose-public/repo-governance/conventions/structure/no-last-updated.md` (29 lines)
+- `ose-public/repo-governance/conventions/structure/programming-language-docs-separation.md` (846 lines)
 
 ### File-level porting map
 
-| File                                                                       | Action | Notes                                                                                                                                |
-| -------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `governance/conventions/structure/no-last-updated.md`                      | create | Port verbatim. Tiny (29 lines); pairs with existing `no-date-metadata.md`.                                                           |
-| `governance/conventions/structure/programming-language-docs-separation.md` | create | Port verbatim. Defines boundary between generic dev docs and language-specific docs (Go, TypeScript, Rust, etc.). Heavy (846 lines). |
-| `governance/conventions/structure/README.md`                               | edit   | Add both new files to the convention index.                                                                                          |
-| `governance/conventions/writing/no-date-metadata.md`                       | edit   | Add cross-reference to new `no-last-updated.md` companion.                                                                           |
+| File                                                                            | Action | Notes                                                                                                                                |
+| ------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `repo-governance/conventions/structure/no-last-updated.md`                      | create | Port verbatim. Tiny (29 lines); pairs with existing `no-date-metadata.md`.                                                           |
+| `repo-governance/conventions/structure/programming-language-docs-separation.md` | create | Port verbatim. Defines boundary between generic dev docs and language-specific docs (Go, TypeScript, Rust, etc.). Heavy (846 lines). |
+| `repo-governance/conventions/structure/README.md`                               | edit   | Add both new files to the convention index.                                                                                          |
+| `repo-governance/conventions/writing/no-date-metadata.md`                       | edit   | Add cross-reference to new `no-last-updated.md` companion.                                                                           |
 
 ### Decisions
 
 - **D10.1 — Verbatim port for both.** Both conventions are template-grade
-  scaffolding by ose-primer-sync classification (`governance/conventions/**`
+  scaffolding by ose-primer-sync classification (`repo-governance/conventions/**`
   is `bidirectional identity`); no primer-specific adaptation needed.
 - **D10.2 — W10 lands before W13.** W13's checker enforces W10's
   programming-language-docs-separation rule. Reverse ordering would ship
@@ -407,16 +407,16 @@ revert W13 first, then W10.
 
 ### Source
 
-- `ose-public/governance/development/quality/plan-anti-hallucination.md` (352 lines)
+- `ose-public/repo-governance/development/quality/plan-anti-hallucination.md` (352 lines)
 
 ### File-level porting map
 
-| File                                                        | Action | Notes                                                                                                                   |
-| ----------------------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------- |
-| `governance/development/quality/plan-anti-hallucination.md` | create | Port verbatim. Enumerates concrete hallucination failure modes and verification checks each finding category must pass. |
-| `governance/development/quality/README.md`                  | edit   | Add new file to quality index.                                                                                          |
-| `governance/workflows/plan/plan-quality-gate.md` (post-W8)  | edit   | Add cross-reference to plan-anti-hallucination.md from the "Plan-Specific Validation" section.                          |
-| `.claude/agents/plan-checker.md`                            | edit   | Add `plan-anti-hallucination` to the agent's reference set so audits can cite it.                                       |
+| File                                                             | Action | Notes                                                                                                                   |
+| ---------------------------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `repo-governance/development/quality/plan-anti-hallucination.md` | create | Port verbatim. Enumerates concrete hallucination failure modes and verification checks each finding category must pass. |
+| `repo-governance/development/quality/README.md`                  | edit   | Add new file to quality index.                                                                                          |
+| `repo-governance/workflows/plan/plan-quality-gate.md` (post-W8)  | edit   | Add cross-reference to plan-anti-hallucination.md from the "Plan-Specific Validation" section.                          |
+| `.claude/agents/plan-checker.md`                                 | edit   | Add `plan-anti-hallucination` to the agent's reference set so audits can cite it.                                       |
 
 ### Decisions
 
@@ -438,17 +438,17 @@ reverted. plan-checker still functions; only loses citation authority.
 
 ### Source
 
-- `ose-public/governance/workflows/infra/development-environment-setup.md` (619 lines)
+- `ose-public/repo-governance/workflows/infra/development-environment-setup.md` (619 lines)
 
 ### File-level porting map
 
-| File                                                                | Action         | Notes                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| ------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `governance/workflows/infra/infra-development-environment-setup.md` | refresh        | File already exists (684 lines). Refresh body content against ose-public's `development-environment-setup.md` (619 lines). Adapt: drop ose-public-specific app-list references; keep generic Volta + Docker + per-language-toolchain + env-var bootstrap. Filename stays `infra-development-environment-setup.md` per primer's workflow-naming convention (scope=`infra`, qualifiers=`development-environment`, type=`setup`). |
-| `governance/workflows/infra/README.md`                              | edit-or-create | Add new file to infra workflow index. Create README if missing.                                                                                                                                                                                                                                                                                                                                                                |
-| `governance/workflows/README.md`                                    | edit           | Add `infra/` subsection if not already present.                                                                                                                                                                                                                                                                                                                                                                                |
-| `AGENTS.md` (post-W4)                                               | edit           | Add a one-line cross-reference from the dev-env-setup-related subsection.                                                                                                                                                                                                                                                                                                                                                      |
-| `CLAUDE.md` (post-W4)                                               | edit           | Same — link from the dev-env-setup-related subsection.                                                                                                                                                                                                                                                                                                                                                                         |
+| File                                                                     | Action         | Notes                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------------------------------------------------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `repo-governance/workflows/infra/infra-development-environment-setup.md` | refresh        | File already exists (684 lines). Refresh body content against ose-public's `development-environment-setup.md` (619 lines). Adapt: drop ose-public-specific app-list references; keep generic Volta + Docker + per-language-toolchain + env-var bootstrap. Filename stays `infra-development-environment-setup.md` per primer's workflow-naming convention (scope=`infra`, qualifiers=`development-environment`, type=`setup`). |
+| `repo-governance/workflows/infra/README.md`                              | edit-or-create | Add new file to infra workflow index. Create README if missing.                                                                                                                                                                                                                                                                                                                                                                |
+| `repo-governance/workflows/README.md`                                    | edit           | Add `infra/` subsection if not already present.                                                                                                                                                                                                                                                                                                                                                                                |
+| `AGENTS.md` (post-W4)                                                    | edit           | Add a one-line cross-reference from the dev-env-setup-related subsection.                                                                                                                                                                                                                                                                                                                                                      |
+| `CLAUDE.md` (post-W4)                                                    | edit           | Same — link from the dev-env-setup-related subsection.                                                                                                                                                                                                                                                                                                                                                                         |
 
 ### Decisions
 
@@ -490,7 +490,7 @@ Revert W12 commits; `infra-development-environment-setup.md` is restored to its 
 ### Decisions
 
 - **D13.1 — Hard dependency on W10.** Both agents and the skill cite
-  `governance/conventions/structure/programming-language-docs-separation.md`.
+  `repo-governance/conventions/structure/programming-language-docs-separation.md`.
   W10 must land before W13.
 - **D13.2 — No CLI Nx-target wiring in this plan.** The agents run via
   the Agent tool; Nx target wiring is a future enhancement once the
@@ -512,12 +512,12 @@ without the dropped agents. W10 remains as aspirational rule.
 
 ### File-level porting map
 
-| Phase | Action                                                                                                                                                                                                                                                                                                                                                 |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 14A   | Run `diff -rq governance/ /Users/wkf/ose-projects/ose-public/governance/` (filter to `*.md`); write the categorized report to `local-temp/drift-baseline.txt`. Classify each diverging file: **refresh** (port ose-public version with primer-specific re-phrase), **skip** (primer-specific override or product-specific), **investigate** (unclear). |
-| 14B   | Refresh the three known-drifted files (`governance/development/quality/code.md`, `governance/development/infra/nx-targets.md`, `governance/development/quality/three-level-testing-standard.md`) against ose-public. Re-apply primer-specific paragraphs.                                                                                              |
-| 14C   | Iterate refresh batches by directory (quality/, infra/, conventions/, principles/, workflows/) until the 14A report's `refresh` list is exhausted.                                                                                                                                                                                                     |
-| 14D   | Verify post-refresh: re-run `diff -rq` against ose-public; only `skip`-classified files should diverge. Run `nx run rhino-cli:validate:governance-vendor-audit` against refreshed files; must return 0.                                                                                                                                                |
+| Phase | Action                                                                                                                                                                                                                                                                                                                                                           |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 14A   | Run `diff -rq repo-governance/ /Users/wkf/ose-projects/ose-public/repo-governance/` (filter to `*.md`); write the categorized report to `local-temp/drift-baseline.txt`. Classify each diverging file: **refresh** (port ose-public version with primer-specific re-phrase), **skip** (primer-specific override or product-specific), **investigate** (unclear). |
+| 14B   | Refresh the three known-drifted files (`repo-governance/development/quality/code.md`, `repo-governance/development/infra/nx-targets.md`, `repo-governance/development/quality/three-level-testing-standard.md`) against ose-public. Re-apply primer-specific paragraphs.                                                                                         |
+| 14C   | Iterate refresh batches by directory (quality/, infra/, conventions/, principles/, workflows/) until the 14A report's `refresh` list is exhausted.                                                                                                                                                                                                               |
+| 14D   | Verify post-refresh: re-run `diff -rq` against ose-public; only `skip`-classified files should diverge. Run `nx run rhino-cli:validate:repo-governance-vendor-audit` against refreshed files; must return 0.                                                                                                                                                     |
 
 ### Decisions
 
@@ -541,13 +541,13 @@ thematically, so rollback is granular. Baseline diff in
 After all fourteen workstreams land:
 
 - `nx affected -t typecheck lint test:quick spec-coverage` is green for affected projects.
-- `nx run rhino-cli:validate:governance-vendor-audit` returns 0 violations.
+- `nx run rhino-cli:validate:repo-governance-vendor-audit` returns 0 violations.
 - `nx run rhino-cli:validate:cross-vendor-parity` returns 0 findings on two consecutive runs.
 - `npm run sync:claude-to-opencode` is a no-op on a clean tree.
 - `ls .opencode/agent .opencode/skill 2>/dev/null` returns nothing.
 - `ls .opencode/agents` returns the synced agent set including the two new W13 agents.
 - `ls .opencode/skills` does not exist (W1 D1.1 decision).
-- Every file in `governance/development/workflow/` and `governance/workflows/plan/`
+- Every file in `repo-governance/development/workflow/` and `repo-governance/workflows/plan/`
   matches the ose-public version modulo primer-specific phrasing.
 - The two new W10 conventions, the W11 quality doc, the W12 workflow (`infra-development-environment-setup.md` refreshed), the W13 triad
   files, and all W14 `refresh`-classified files are in place.

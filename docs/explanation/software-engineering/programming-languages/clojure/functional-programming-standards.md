@@ -330,9 +330,9 @@ Pure functional pipelines are deterministic — same input always produces same 
 
 **Software Engineering Principles**:
 
-- [Pure Functions Over Side Effects](../../../../../governance/principles/software-engineering/pure-functions.md)
-- [Immutability Over Mutability](../../../../../governance/principles/software-engineering/immutability.md)
-- [Functional Programming](../../../../../governance/development/pattern/functional-programming.md)
+- [Pure Functions Over Side Effects](../../../../../repo-governance/principles/software-engineering/pure-functions.md)
+- [Immutability Over Mutability](../../../../../repo-governance/principles/software-engineering/immutability.md)
+- [Functional Programming](../../../../../repo-governance/development/pattern/functional-programming.md)
 
 ---
 

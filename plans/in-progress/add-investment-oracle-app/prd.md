@@ -184,8 +184,8 @@ allowed; the change applies to the next chat call.
 | Variable                    | Purpose                                                                                                                                                |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `OPENROUTER_API_KEY`        | OpenRouter API authentication (required for the default free-tier path and any OpenRouter model)                                                       |
-| `ANTHROPIC_API_KEY`         | Anthropic Messages API authentication (required only when `claude-haiku-4-5` is selected)                                                             |
-| `GOOGLE_API_KEY`            | Google `google-genai` SDK authentication (embeddings always; chat when `gemini-2.5-flash-lite` selected)                                              |
+| `ANTHROPIC_API_KEY`         | Anthropic Messages API authentication (required only when `claude-haiku-4-5` is selected)                                                              |
+| `GOOGLE_API_KEY`            | Google `google-genai` SDK authentication (embeddings always; chat when `gemini-2.5-flash-lite` selected)                                               |
 | `PERPLEXITY_API_KEY`        | Perplexity Sonar API authentication (optional; required only when web grounding is enabled)                                                            |
 | `DATABASE_URL`              | Postgres connection string (`postgresql+asyncpg://...`)                                                                                                |
 | `MOCK_LLM_PROVIDERS`        | When `true`, intercepts all vendor HTTP via `httpx` cassette fixtures                                                                                  |
@@ -329,7 +329,7 @@ WCAG AA contrast on every state.
 ### Test strategy
 
 **FR-15**: Backend follows the **three-level testing standard** (per
-`governance/development/quality/three-level-testing-standard.md`):
+`repo-governance/development/quality/three-level-testing-standard.md`):
 
 | Level              | Mocks                    | Real                                                                  | Tooling                                                                             | Cacheable                                                        |
 | ------------------ | ------------------------ | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
@@ -558,13 +558,13 @@ no_sources_attached`.
 
 ## Product risks
 
-| Risk                                               | Likelihood | Mitigation                                                                                        |
-| -------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------- |
-| SSE latency / streaming UX degradation on slow connections | Medium | Implement connection-timeout UX (spinner + retry banner); document expected latency in README |
-| CodeMirror 6 accessibility gaps (keyboard nav, screen reader) | Medium | Audit required in Phase 14 against WCAG AA; document any known gap before shipping |
-| OpenRouter free-tier rate cap (200 req/day, 20 req/min) degrading live demo quality | Medium | Ship a local cassette smoke path (`MOCK_LLM_PROVIDERS=true`) as the default demo mode so rate caps don't block demo walkthroughs |
-| LLM non-determinism test discipline eroding if cassette-only discipline is dropped | Low | Plan-execution-checker validates FR-15c assertion rules on every iteration; guard in governance docs |
-| Report quality degradation if free-tier model produces poor structured output | Low | Fixture cassettes lock known-good output; real-vendor smoke is a separate weekly workflow; downstream quality is out of scope for a demo |
+| Risk                                                                                | Likelihood | Mitigation                                                                                                                               |
+| ----------------------------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| SSE latency / streaming UX degradation on slow connections                          | Medium     | Implement connection-timeout UX (spinner + retry banner); document expected latency in README                                            |
+| CodeMirror 6 accessibility gaps (keyboard nav, screen reader)                       | Medium     | Audit required in Phase 14 against WCAG AA; document any known gap before shipping                                                       |
+| OpenRouter free-tier rate cap (200 req/day, 20 req/min) degrading live demo quality | Medium     | Ship a local cassette smoke path (`MOCK_LLM_PROVIDERS=true`) as the default demo mode so rate caps don't block demo walkthroughs         |
+| LLM non-determinism test discipline eroding if cassette-only discipline is dropped  | Low        | Plan-execution-checker validates FR-15c assertion rules on every iteration; guard in governance docs                                     |
+| Report quality degradation if free-tier model produces poor structured output       | Low        | Fixture cassettes lock known-good output; real-vendor smoke is a separate weekly workflow; downstream quality is out of scope for a demo |
 
 ## Affected files (summary)
 

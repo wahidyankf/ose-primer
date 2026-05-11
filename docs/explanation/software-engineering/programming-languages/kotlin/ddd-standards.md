@@ -447,9 +447,9 @@ class ApproveZakatApplicationUseCase(
 
 ## Related Documentation
 
-- [Functional Programming](../../../../../governance/development/pattern/functional-programming.md)
-- [Immutability Over Mutability](../../../../../governance/principles/software-engineering/immutability.md)
-- [Pure Functions Over Side Effects](../../../../../governance/principles/software-engineering/pure-functions.md)
+- [Functional Programming](../../../../../repo-governance/development/pattern/functional-programming.md)
+- [Immutability Over Mutability](../../../../../repo-governance/principles/software-engineering/immutability.md)
+- [Pure Functions Over Side Effects](../../../../../repo-governance/principles/software-engineering/pure-functions.md)
 
 ---
 

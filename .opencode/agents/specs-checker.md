@@ -159,7 +159,7 @@ Verify that listed spec folders reference correct paths and implementations exis
 
 ### Category 8: Directory Structure Convention Compliance
 
-Verify that Gherkin feature files follow the [Specs Directory Structure Convention](../../governance/conventions/structure/specs-directory-structure.md).
+Verify that Gherkin feature files follow the [Specs Directory Structure Convention](../../repo-governance/conventions/structure/specs-directory-structure.md).
 
 **HIGH**: BE or FE feature file placed directly under `gherkin/` without a domain subdirectory
 **HIGH**: CLI feature file placed in a domain subdirectory (should be flat under `gherkin/`)
@@ -279,10 +279,10 @@ Use the standard audit report format:
 
 ## Reference Documentation
 
-- [Specs Directory Structure Convention](../../governance/conventions/structure/specs-directory-structure.md) — Canonical path patterns and domain subdirectory rules
+- [Specs Directory Structure Convention](../../repo-governance/conventions/structure/specs-directory-structure.md) — Canonical path patterns and domain subdirectory rules
 
 - [AGENTS.md](../../AGENTS.md) — OpenCode agent documentation
-- [AI Agents Convention](../../governance/development/agents/agent-workflow-orchestration.md) — Agent workflow orchestration
-- [Maker-Checker-Fixer Pattern](../../governance/development/pattern/maker-checker-fixer.md) — Three-stage quality workflow
-- [Specs Validation Workflow](../../governance/workflows/specs/specs-quality-gate.md) — Orchestrated validation workflow
+- [AI Agents Convention](../../repo-governance/development/agents/agent-workflow-orchestration.md) — Agent workflow orchestration
+- [Maker-Checker-Fixer Pattern](../../repo-governance/development/pattern/maker-checker-fixer.md) — Three-stage quality workflow
+- [Specs Validation Workflow](../../repo-governance/workflows/specs/specs-quality-gate.md) — Orchestrated validation workflow
 - Related agents: [specs-fixer](./specs-fixer.md), [specs-maker](./specs-maker.md)

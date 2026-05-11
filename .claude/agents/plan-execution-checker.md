@@ -161,14 +161,14 @@ Update status to "Complete", add summary and recommendation (approve/revise).
 **Project Guidance:**
 
 - [CLAUDE.md](../../CLAUDE.md) - Primary guidance
-- [Plans Organization Convention](../../governance/conventions/structure/plans.md) - Plan standards
-- [Code Quality Convention](../../governance/development/quality/code.md) - Quality standards
+- [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md) - Plan standards
+- [Code Quality Convention](../../repo-governance/development/quality/code.md) - Quality standards
 
 **Related Agents:**
 
 - `plan-maker` - Creates plans
 - `plan-checker` - Validates plans
-- [plan-execution workflow](../../governance/workflows/plan/plan-execution.md) - Execute plans (calling context orchestrates; no dedicated subagent)
+- [plan-execution workflow](../../repo-governance/workflows/plan/plan-execution.md) - Execute plans (calling context orchestrates; no dedicated subagent)
 - `plan-fixer` - Fixes plan issues
 
 **Remember**: This is the final quality gate. Be thorough, independent, and uncompromising on quality.

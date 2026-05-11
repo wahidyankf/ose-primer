@@ -1106,7 +1106,7 @@ class MigrationConfiguration {
 
 ### Development Practices
 
-- **[Reproducible Environments](../../../../../../governance/development/workflow/reproducible-environments.md)** - Environment management
+- **[Reproducible Environments](../../../../../../repo-governance/development/workflow/reproducible-environments.md)** - Environment management
 
 ## See Also
 

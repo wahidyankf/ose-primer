@@ -66,7 +66,7 @@ Seven tutorial types with progressive coverage depth:
 
 ## Mathematical Notation
 
-Use LaTeX notation for mathematical expressions. See [Mathematical Notation Convention](../../governance/conventions/formatting/mathematical-notation.md) for syntax rules and examples.
+Use LaTeX notation for mathematical expressions. See [Mathematical Notation Convention](../../repo-governance/conventions/formatting/mathematical-notation.md) for syntax rules and examples.
 
 ## Diagram Creation
 
@@ -84,7 +84,7 @@ All diagrams must use Mermaid with accessible color palette and proper formattin
 - NO `style` commands in sequence diagrams (limitation - would be ignored)
 - Provide descriptive alt text
 
-See [Diagrams Convention](../../governance/conventions/formatting/diagrams.md) for complete requirements and examples.
+See [Diagrams Convention](../../repo-governance/conventions/formatting/diagrams.md) for complete requirements and examples.
 
 **Diagram orientation**:
 
@@ -217,9 +217,9 @@ Check that everything works as expected:
 
 Now that you've completed this tutorial, you can:
 
-- **Next tutorial**: [Tutorial Title](../../governance/conventions/formatting/linking.md) - Brief description
-- **Related how-to**: [Guide Title](../../governance/conventions/formatting/linking.md) - When to use this
-- **Deep dive**: [Explanation Title](../../governance/conventions/formatting/linking.md) - Understand the concepts
+- **Next tutorial**: [Tutorial Title](../../repo-governance/conventions/formatting/linking.md) - Brief description
+- **Related how-to**: [Guide Title](../../repo-governance/conventions/formatting/linking.md) - When to use this
+- **Deep dive**: [Explanation Title](../../repo-governance/conventions/formatting/linking.md) - Understand the concepts
 ```
 
 ### 7. Troubleshooting Section (Optional)
@@ -306,7 +306,7 @@ Tutorial files follow the pattern: `tu-[content-identifier].md`
 - `tu-quick-start-express-server.md`
 - `tu-by-example-react-hooks.md`
 
-See [File Naming Convention](../../governance/conventions/structure/file-naming.md) for complete details.
+See [File Naming Convention](../../repo-governance/conventions/structure/file-naming.md) for complete details.
 
 ## Linking Standards
 
@@ -322,11 +322,11 @@ All links must follow GitHub-compatible markdown format:
 - **First mention**: Markdown link `Convention Name`
 - **Subsequent mentions**: Inline code `` `Convention Name` ``
 
-See [Linking Convention](../../governance/conventions/formatting/linking.md) for complete details.
+See [Linking Convention](../../repo-governance/conventions/formatting/linking.md) for complete details.
 
 ## Content Quality Standards
 
-All tutorial content must meet quality standards defined in [Content Quality Principles](../../governance/conventions/writing/quality.md):
+All tutorial content must meet quality standards defined in [Content Quality Principles](../../repo-governance/conventions/writing/quality.md):
 
 - Active voice and clear language
 - Single H1 (title from frontmatter, don't repeat in body)
@@ -496,15 +496,15 @@ When updating tutorials:
 
 **Content Standards**:
 
-- [Content Quality Principles](../../governance/conventions/writing/quality.md) - Quality checklist
-- [Diátaxis Framework](../../governance/conventions/structure/diataxis-framework.md) - Documentation organization
+- [Content Quality Principles](../../repo-governance/conventions/writing/quality.md) - Quality checklist
+- [Diátaxis Framework](../../repo-governance/conventions/structure/diataxis-framework.md) - Documentation organization
 
 **Formatting Standards**:
 
-- [Diagrams Convention](../../governance/conventions/formatting/diagrams.md) - Mermaid and accessibility
-- [Mathematical Notation Convention](../../governance/conventions/formatting/mathematical-notation.md) - LaTeX syntax
-- [Linking Convention](../../governance/conventions/formatting/linking.md) - Link format rules
-- [File Naming Convention](../../governance/conventions/structure/file-naming.md) - Naming patterns
+- [Diagrams Convention](../../repo-governance/conventions/formatting/diagrams.md) - Mermaid and accessibility
+- [Mathematical Notation Convention](../../repo-governance/conventions/formatting/mathematical-notation.md) - LaTeX syntax
+- [Linking Convention](../../repo-governance/conventions/formatting/linking.md) - Link format rules
+- [File Naming Convention](../../repo-governance/conventions/structure/file-naming.md) - Naming patterns
 
 **Related Agents**:
 

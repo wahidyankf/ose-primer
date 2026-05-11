@@ -432,7 +432,7 @@ For learning Java fundamentals and concepts referenced in these standards, see:
 
 These standards enforce the the software engineering principles:
 
-1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)**
+1. **[Automation Over Manual](../../../../../repo-governance/principles/software-engineering/automation-over-manual.md)**
    - JMH benchmarks run automatically in CI/CD pipeline (detect performance regressions)
    - async-profiler provides automated profiling in production (low overhead)
    - APM automatically tracks latency, throughput, and error rates
@@ -441,7 +441,7 @@ These standards enforce the the software engineering principles:
    - Cursor-based pagination simplifies large result sets (no offset complexity)
    - Redis caching with explicit TTL prevents cache complexity
 
-2. **[Reproducibility](../../../../../governance/principles/software-engineering/reproducibility.md)**
+2. **[Reproducibility](../../../../../repo-governance/principles/software-engineering/reproducibility.md)**
    - JMH benchmarks provide reproducible performance measurements across environments
    - JVM configuration pinned in startup scripts (same heap, GC settings everywhere)
    - TestContainers ensure consistent database performance in tests

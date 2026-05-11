@@ -20,7 +20,7 @@ Solo-maintainer repo — each persona is a hat the maintainer wears, or an agent
 - **Template maintainer** — wears the hat while executing this plan and every subsequent change to the template.
 - **Future cloner** — bootstraps a new repo from `ose-primer` via `git clone` or cherry-pick.
 - **plan-executor agent** — reads `delivery.md` to drive execution.
-- **plan-checker / plan-execution-checker agent** — validates plan conformance against `governance/conventions/structure/plans.md`.
+- **plan-checker / plan-execution-checker agent** — validates plan conformance against `repo-governance/conventions/structure/plans.md`.
 - **repo-rules-checker agent** — audits cleaned repo for governance consistency at the end.
 
 ## User Stories
@@ -317,7 +317,7 @@ Scenario: Every kept skill body is product-clean
 ### In Scope
 
 - Rewrite of `CLAUDE.md`, `AGENTS.md`, top-level `README.md`, `.claude/agents/README.md`, `.claude/settings.json`, `LICENSING-NOTICE.md`.
-- Audit and prune of governance enumerations (`governance/**`) and Diátaxis docs (`docs/**`) that reference removed products.
+- Audit and prune of governance enumerations (`repo-governance/**`) and Diátaxis docs (`docs/**`) that reference removed products.
 - Removal of product-specific scripts from `package.json`.
 - Audit of `nx.json` and `tsconfig.base.json` for dangling references.
 - Sync of `.opencode/` from `.claude/` via `npm run sync:claude-to-opencode`.
@@ -325,7 +325,7 @@ Scenario: Every kept skill body is product-clean
 ### Out of Scope
 
 - Adding new demo languages or new variants to the `a-demo-*` suite.
-- Restructuring `governance/` or `docs/` topology.
+- Restructuring `repo-governance/` or `docs/` topology.
 - Creating new agents or skills.
 - Deploy-time env-branch management on the new `wahidyankf/ose-primer` remote (no env branches exist).
 - Any modification to `ose-public` or `ose-infra`.
@@ -336,7 +336,7 @@ Scenario: Every kept skill body is product-clean
 ### PR-1 — Broken internal links after doc pruning
 
 - **Risk**: deleting a product-scoped Diátaxis tutorial or governance doc orphans links elsewhere.
-- **Mitigation**: run `docs-link-checker` agent on `governance/` after Phase 12 and on `docs/` after Phase 13; fix broken links in the same phase commit.
+- **Mitigation**: run `docs-link-checker` agent on `repo-governance/` after Phase 12 and on `docs/` after Phase 13; fix broken links in the same phase commit.
 
 ### PR-2 — Markdown lint failures in rewritten files
 
@@ -350,5 +350,5 @@ Scenario: Every kept skill body is product-clean
 
 ### PR-4 — A removed agent is invoked by a workflow still present
 
-- **Risk**: `governance/workflows/**` still names a deleted agent in its orchestration, producing a broken workflow definition.
-- **Mitigation**: Phase 12 governance grep covers `governance/workflows/**`; any named-agent reference to a deleted agent is rewritten or the workflow file is deleted.
+- **Risk**: `repo-governance/workflows/**` still names a deleted agent in its orchestration, producing a broken workflow definition.
+- **Mitigation**: Phase 12 governance grep covers `repo-governance/workflows/**`; any named-agent reference to a deleted agent is rewritten or the workflow file is deleted.

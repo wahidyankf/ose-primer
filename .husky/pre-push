@@ -16,7 +16,7 @@ if [ -n "$RANGE" ]; then
   if echo "$CHANGED" | grep -qE '^(\.claude/agents/|\.opencode/agents/)'; then
     npx nx run rhino-cli:validate:naming-agents
   fi
-  if echo "$CHANGED" | grep -qE '^governance/workflows/'; then
+  if echo "$CHANGED" | grep -qE '^repo-governance/workflows/'; then
     npx nx run rhino-cli:validate:naming-workflows
   fi
   if echo "$CHANGED" | grep -qE '\.md$'; then
@@ -24,7 +24,7 @@ if [ -n "$RANGE" ]; then
   fi
   # Cross-vendor parity gate (W5 of adopt-ose-public plan): fires when any
   # parity-relevant surface changes. Cheap (~5s); not cacheable.
-  if echo "$CHANGED" | grep -qE '^(governance/.*\.md|AGENTS\.md|CLAUDE\.md|\.claude/agents/|\.opencode/agents/)'; then
+  if echo "$CHANGED" | grep -qE '^(repo-governance/.*\.md|AGENTS\.md|CLAUDE\.md|\.claude/agents/|\.opencode/agents/)'; then
     npx nx run rhino-cli:validate:cross-vendor-parity
   fi
 fi

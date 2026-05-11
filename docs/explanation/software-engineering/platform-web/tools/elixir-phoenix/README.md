@@ -445,7 +445,7 @@ end
 
 ### Platform-Specific Documentation
 
-- **[Functional Programming](../../../../../../governance/development/pattern/functional-programming.md)** - FP principles
+- **[Functional Programming](../../../../../../repo-governance/development/pattern/functional-programming.md)** - FP principles
 - **[Domain-Driven Design](../../../architecture/domain-driven-design-ddd/README.md)** - DDD with Phoenix
 - **[Software Design](../../README.md)** - Architecture patterns
 
@@ -465,7 +465,7 @@ end
 
 - **[Libraries and Frameworks Index](../README.md)** - Parent frameworks documentation
 - **[Software Design](../../README.md)** - Architecture and development practices
-- **[Functional Programming](../../../../../../governance/development/pattern/functional-programming.md)** - FP principles
+- **[Functional Programming](../../../../../../repo-governance/development/pattern/functional-programming.md)** - FP principles
 - **[Domain-Driven Design](../../../architecture/domain-driven-design-ddd/README.md)** - DDD patterns
 
 ---

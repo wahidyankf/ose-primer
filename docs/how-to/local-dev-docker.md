@@ -739,7 +739,7 @@ Docker Compose can be used in CI/CD pipelines:
 - [CRUD Backend (JASB) Infrastructure README](../../infra/dev/crud-be-java-springboot/README.md)
 - [Docker Documentation](https://docs.docker.com/)
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
-- [Reproducible Environments Convention](../../governance/development/workflow/reproducible-environments.md)
+- [Reproducible Environments Convention](../../repo-governance/development/workflow/reproducible-environments.md)
 
 ## Support
 

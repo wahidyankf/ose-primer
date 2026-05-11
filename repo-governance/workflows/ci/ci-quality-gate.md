@@ -30,7 +30,7 @@ outputs:
 # CI Quality Gate Workflow
 
 **Purpose**: Automatically validate all projects in the repository conform to CI/CD standards
-defined in `governance/development/infra/ci-conventions.md`, then iteratively fix non-compliance
+defined in `repo-governance/development/infra/ci-conventions.md`, then iteratively fix non-compliance
 until zero findings are achieved.
 
 **When to use**:

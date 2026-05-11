@@ -14,7 +14,7 @@ commit sequence.
   operates in consumer repos derived from this template; must exhibit correct push and PR
   behavior. (`plan-execution` workflow is also updated by Change A to enforce the
   rebase + opt-in-PR rules.)
-- **Documentation author** — writes Mermaid diagrams in `governance/` or `docs/`; relies
+- **Documentation author** — writes Mermaid diagrams in `repo-governance/` or `docs/`; relies
   on automated structural feedback.
 
 ## User Stories
@@ -71,7 +71,7 @@ Feature: git-push-default convention
 
   Scenario: Convention file exists
     Given the ose-primer repository
-    When I look at governance/development/workflow/
+    When I look at repo-governance/development/workflow/
     Then git-push-default.md exists
     And it documents that default push is direct to main with no PR
     And it documents a responsibility table for plan-maker, plan-checker, plan-fixer
@@ -100,7 +100,7 @@ Feature: no-date-metadata convention
 
   Scenario: Convention file exists
     Given the ose-primer repository
-    When I look at governance/conventions/writing/
+    When I look at repo-governance/conventions/writing/
     Then no-date-metadata.md exists
     And it states that created: and updated: frontmatter are forbidden
     And it states that manual Last Updated annotations are forbidden
@@ -112,7 +112,7 @@ Feature: no-date-metadata convention
     Then zero matches are found for both
 
   Scenario: No governance files carry date frontmatter
-    Given all files under governance/
+    Given all files under repo-governance/
     When I search for "^created:" or "^updated:" in frontmatter
     Then zero matches are found
 
@@ -161,7 +161,7 @@ Feature: docs validate-mermaid command
     When I inspect the targets
     Then validate:mermaid target exists
     And cache is true
-    And inputs include projectRoot Go files and workspace governance/ and .claude/ md files
+    And inputs include projectRoot Go files and workspace repo-governance/ and .claude/ md files
 
   Scenario: Pre-push hook runs validate:mermaid only when md files changed
     Given the pre-push hook
@@ -215,5 +215,5 @@ Feature: docs validate-mermaid command
   `- **Last Updated**: YYYY-MM-DD` as template copy. Stripping it is correct per the
   convention; verifying by grep after the run confirms no residual.
 - **Mermaid validator rejects existing diagrams**: `validate:mermaid` may flag diagrams
-  in `governance/` or `.claude/` that violate rules. These are pre-existing violations
+  in `repo-governance/` or `.claude/` that violate rules. These are pre-existing violations
   and must be fixed as part of this plan (not deferred).

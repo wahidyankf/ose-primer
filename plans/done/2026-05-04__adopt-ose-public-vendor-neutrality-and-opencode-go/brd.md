@@ -35,7 +35,7 @@ shape) shipped a coherent batch of changes that:
    MiniMax-M2.7 (SWE-Pro 56.22%) and GLM-5 across multiple labs.
    Consumers should inherit the choice the upstream consumer made
    after due diligence rather than the older default.
-3. **Operationalize vendor-neutrality.** Today, `ose-primer/governance/`
+3. **Operationalize vendor-neutrality.** Today, `ose-primer/repo-governance/`
    reads as if it belongs to one specific AI coding agent (Claude Code)
    with a thin OpenCode mirror — 54 of ~100 governance markdown files
    contain vendor terms (`Claude Code`, `OpenCode`, `Anthropic`,
@@ -47,7 +47,7 @@ shape) shipped a coherent batch of changes that:
    text, the consumer inherits a coupling they did not ask for.
 4. **Provide enforcement, not aspiration.** A vendor-neutrality rule
    without a scanner is governance theatre. ose-public landed
-   `rhino-cli governance vendor-audit` (the scanner), the
+   `rhino-cli repo-governance vendor-audit` (the scanner), the
    `governance-vendor-independence` convention (the rule), and the
    `repo-cross-vendor-parity-quality-gate` workflow with two new
    agents (the enforcement loop). Together these three artefacts
@@ -66,13 +66,13 @@ shape) shipped a coherent batch of changes that:
 | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `.opencode/agent/` singular + partial dual-population (W1) | Synced agents likely invisible to OpenCode in every clone of this template; bug propagates silently; opencode-go migration would hard-code wrong path deeper. A partial `.opencode/agents/` and `.opencode/skills/` already exist alongside the singular directories, creating an inconsistent state the executor must reconcile before W1 is complete. |
 | `zai-coding-plan/*` model defaults (W2)                    | Template forces a vendor billing decision on every consumer; consumers who don't have a Z.ai subscription must change defaults before their first OpenCode session.                                                                                                                                                                                     |
-| Vendor terms in `governance/` (W4)                         | Template excludes contributors using Cursor / Codex CLI / Gemini CLI / Aider / Copilot from day one; couples template correctness to one vendor's product lifecycle; creates rewrite debt every time a vendor renames.                                                                                                                                  |
-| No vendor-audit scanner (W3)                               | New violations land in `governance/` with no signal; pre-push gate is silent on the most expensive long-term coupling.                                                                                                                                                                                                                                  |
+| Vendor terms in `repo-governance/` (W4)                    | Template excludes contributors using Cursor / Codex CLI / Gemini CLI / Aider / Copilot from day one; couples template correctness to one vendor's product lifecycle; creates rewrite debt every time a vendor renames.                                                                                                                                  |
+| No vendor-audit scanner (W3)                               | New violations land in `repo-governance/` with no signal; pre-push gate is silent on the most expensive long-term coupling.                                                                                                                                                                                                                             |
 | No cross-vendor parity gate (W5)                           | The five behavioral-parity invariants (sync no-op, count parity, color-map coverage, tier-map coverage, Aider catalog accuracy) regress silently between releases; consumers inherit the regression.                                                                                                                                                    |
 | Permissive single-file plans default (W6)                  | Multi-concern plans collapse to single READMEs; BRD/PRD content is lost or buried; plan-checker downstream loses signal because the structure is non-standard.                                                                                                                                                                                          |
 | Missing worktree-path convention (W7)                      | Template ships no rule for where worktrees land; consumers reinvent it per repo; existing `worktree-setup.md` is stale relative to ose-public's current toolchain-init and parallel-safety language.                                                                                                                                                    |
 | Stale plan workflows + missing companions (W8)             | `plan-execution.md` is ~76 lines behind ose-public's current iteration loop; consumers inheriting the stale workflow miss recent termination-rule and Iron-Rules clarifications. `ci-monitoring.md`, `ci-post-push-verification.md` are missing entirely.                                                                                               |
-| TDD convention missing (W9)                                | `governance/development/workflow/test-driven-development.md` exists in ose-public (316 lines, mandates Red→Green→Refactor) but never reached primer; consumers inherit a template that pays lip-service to TDD via `implementation.md` without an authoritative convention codifying the practice.                                                      |
+| TDD convention missing (W9)                                | `repo-governance/development/workflow/test-driven-development.md` exists in ose-public (316 lines, mandates Red→Green→Refactor) but never reached primer; consumers inherit a template that pays lip-service to TDD via `implementation.md` without an authoritative convention codifying the practice.                                                 |
 | Convention surface incomplete (W10)                        | `no-last-updated.md` (companion to no-date-metadata) and `programming-language-docs-separation.md` (846 lines, language-docs separation rule) both missing; primer ships partial convention surface that lets `**Last Updated**` rows and misplaced language docs accumulate silently.                                                                  |
 | No plan-anti-hallucination guardrails (W11)                | `plan-checker` validates against the codebase but has no codified anti-hallucination playbook; consumers writing AI-generated plans inherit no rule mechanically catching invented APIs, fabricated SHAs, or made-up file paths.                                                                                                                        |
 | Stale dev-environment-setup workflow (W12)                 | Primer's `infra-development-environment-setup.md` (684 lines) has drifted from ose-public's `development-environment-setup.md` (619 lines) source — consumers inherit stale Volta/Docker/language-toolchain/env-var bootstrap guidance, and the OpenCode Go env var (W2) is undocumented in the workflow.                                               |
@@ -86,7 +86,7 @@ ose-public ↔ ose-primer delta. Three additional categories of generic
 template scaffolding were found behind the upstream:
 
 1. **Worktree standard (W7).** ose-public introduced
-   `governance/conventions/structure/worktree-path.md` — an explicit,
+   `repo-governance/conventions/structure/worktree-path.md` — an explicit,
    217-line convention pinning the on-disk location for worktree
    branches and the rationale for the override (root `worktrees/<name>/`
    for `ose-public`, `.claude/worktrees/<name>/` for primer/infra). The
@@ -95,20 +95,20 @@ template scaffolding were found behind the upstream:
    primer _follows_ the default `.claude/worktrees/<name>/`. Either way,
    the rule is documented authoritatively at the convention layer
    instead of buried in CLAUDE.md prose. ose-public also iterated
-   `governance/development/workflow/worktree-setup.md` after the primer
+   `repo-governance/development/workflow/worktree-setup.md` after the primer
    forked it; the primer's copy is stale on minor frontmatter and
    cross-reference targets.
 2. **Plan and workflow refresh (W8).** The primer's
-   `governance/workflows/plan/` tree (plan-execution.md,
+   `repo-governance/workflows/plan/` tree (plan-execution.md,
    plan-quality-gate.md, README.md) all diverge from ose-public's
    current versions. ose-public also added two companion development
    workflows the primer never saw — `ci-monitoring.md` and
    `ci-post-push-verification.md`. These are template-grade
    scaffolding, not product content, and `ose-primer-sync` classifies
-   `governance/workflows/**` and `governance/development/**` as
+   `repo-governance/workflows/**` and `repo-governance/development/**` as
    `bidirectional identity`.
 3. **TDD convention (W9).** ose-public ships
-   `governance/development/workflow/test-driven-development.md` (316
+   `repo-governance/development/workflow/test-driven-development.md` (316
    lines) which mandates Red→Green→Refactor as the required practice
    for all code changes, cross-references the three-level testing
    standard, and codifies the Gherkin-scenario → failing-step →
@@ -140,7 +140,7 @@ that ose-public ships but ose-primer does not yet have:
 2. **Plan anti-hallucination (W11).** The `plan-checker` agent runs a
    dual-labelled findings audit but has no separate codified
    anti-hallucination playbook. ose-public's
-   `governance/development/quality/plan-anti-hallucination.md` (352
+   `repo-governance/development/quality/plan-anti-hallucination.md` (352
    lines) defines the specific failure modes (invented APIs, fabricated
    SHAs, made-up file paths, hallucinated commit messages) and the
    verification checks each finding must pass. Adopting it gives
@@ -148,10 +148,10 @@ that ose-public ships but ose-primer does not yet have:
    AI-generated plans inherit the same guardrails the upstream consumer
    uses.
 3. **Dev environment setup workflow refresh (W12).** Primer already
-   ships `governance/workflows/infra/infra-development-environment-setup.md`
+   ships `repo-governance/workflows/infra/infra-development-environment-setup.md`
    (684 lines, primer-canonical filename per the workflow-naming
    convention's `<scope>(-<qualifier>)*-<type>` rule). It has drifted
-   from ose-public's source `governance/workflows/infra/development-environment-setup.md`
+   from ose-public's source `repo-governance/workflows/infra/development-environment-setup.md`
    (619 lines) since primer's last sync. W12 refreshes the body
    content — Volta install, Docker daemon, language toolchains, env
    vars, dependency install, doctor sweep — while preserving primer's
@@ -193,7 +193,7 @@ that ose-public ships but ose-primer does not yet have:
   state (tests green, scanner clean, sync no-op).
 - **Future contributor on a non-Claude AI agent (Cursor, Codex CLI,
   Gemini CLI, Aider, Copilot, Continue, Sourcegraph Cody)**: reads
-  `governance/` as vendor-neutral prose; inherits a behavioral-parity
+  `repo-governance/` as vendor-neutral prose; inherits a behavioral-parity
   guarantee at clone time.
 - **Plan agents** (`plan-maker`, `plan-checker`, `plan-execution-checker`):
   inherit the stricter five-doc DEFAULT, judge new plans against
@@ -208,12 +208,12 @@ that ose-public ships but ose-primer does not yet have:
   (or `.opencode/skills` empty if the post-W1 decision is "OpenCode reads `.claude/skills/` natively, no copy needed").
 - `cat .opencode/opencode.json | jq -r .model` returns `opencode-go/minimax-m2.7`; `.small_model`
   returns `opencode-go/glm-5`; `.provider["opencode-go"].options.apiKey` resolves via env var.
-- `rhino-cli governance vendor-audit governance/` returns 0 violations.
-- `rhino-cli governance vendor-audit AGENTS.md CLAUDE.md` returns 0 violations
+- `rhino-cli repo-governance vendor-audit repo-governance/` returns 0 violations.
+- `rhino-cli repo-governance vendor-audit AGENTS.md CLAUDE.md` returns 0 violations
   (with binding-example fences allowlisted).
 - `nx run rhino-cli:validate:cross-vendor-parity` returns 0 findings on two consecutive runs.
 - Pre-push hook runs both new Nx targets without exceeding existing time budget.
-- `governance/conventions/structure/plans.md` opens with five-doc DEFAULT prose and
+- `repo-governance/conventions/structure/plans.md` opens with five-doc DEFAULT prose and
   enumerates four explicit single-file exception criteria.
 
 ## Risks and mitigations

@@ -61,7 +61,7 @@ Plans drift from reality in predictable ways. Each category maps to a verificati
 | Category              | Example                                                   | Verification Ritual                                                                                            |
 | --------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | **File path**         | `apps/oseplatform-web/src/server/trpc.ts`                 | `Glob` or `Bash test -f`; if NEW, mark `_New file_`                                                            |
-| **Directory path**    | `governance/conventions/writing/`                         | `Bash test -d` or `Glob` for sibling                                                                           |
+| **Directory path**    | `repo-governance/conventions/writing/`                    | `Bash test -d` or `Glob` for sibling                                                                           |
 | **Symbol / function** | `unstable_cache`, `getServerSession`, `RouteConfig`       | `Grep` against the codebase or cite the import path                                                            |
 | **Nx target**         | `nx run oseplatform-web:test:quick`                       | Read `apps/oseplatform-web/project.json` or `nx show project`                                                  |
 | **Package version**   | `next@16.0.0`, `tRPC v11`                                 | Grep `package.json` (or `go.mod`, `Cargo.toml`, `*.csproj`, etc.)                                              |
@@ -99,7 +99,7 @@ Every internal reference in a plan MUST be verified to exist in the current comm
 test -f apps/oseplatform-web/src/server/trpc.ts && echo OK
 
 # Directory path
-test -d governance/conventions/writing/ && echo OK
+test -d repo-governance/conventions/writing/ && echo OK
 
 # Symbol exists in codebase
 rg -lE "(^|[^A-Za-z0-9_])unstable_cache([^A-Za-z0-9_]|$)" apps/ libs/
@@ -138,14 +138,14 @@ Forbidden: writing the claim without a label and hoping it is correct. This is t
 
 The universal threshold from [Web Research Delegation Convention](../../conventions/writing/web-research-delegation.md) is "2+ `WebSearch` calls OR 3+ `WebFetch` calls per claim → delegate to `web-research-maker`". For plan content, the threshold is LOWER:
 
-> **Any external claim that is not already documented in the repo (`docs/`, `governance/`, `apps/*/README.md`, `package.json`, `go.mod`, `Cargo.toml`, etc.) and that requires more than a single `WebFetch` against an already-known authoritative URL MUST be delegated to `web-research-maker`.**
+> **Any external claim that is not already documented in the repo (`docs/`, `repo-governance/`, `apps/*/README.md`, `package.json`, `go.mod`, `Cargo.toml`, etc.) and that requires more than a single `WebFetch` against an already-known authoritative URL MUST be delegated to `web-research-maker`.**
 
 Concretely:
 
 | Situation                                                                              | Action                               |
 | -------------------------------------------------------------------------------------- | ------------------------------------ |
 | Claim about a library version is already in `package.json` / lockfile                  | `Grep`, no web call needed           |
-| Claim about Nx behavior already in `governance/development/infra/nx-targets.md`        | `Read`, no web call needed           |
+| Claim about Nx behavior already in `repo-governance/development/infra/nx-targets.md`   | `Read`, no web call needed           |
 | Single `WebFetch` against a known URL (e.g., a specific Next.js docs page) confirms it | In-context `WebFetch` permitted      |
 | Two or more searches/fetches needed to find the right source                           | **Delegate to `web-research-maker`** |
 | Open-ended "current best practice" question                                            | **Delegate to `web-research-maker`** |
@@ -235,7 +235,7 @@ Domain-specialized agents hallucinate less than generic orchestration because th
 - The action touches a specific language (`.fs` → `swe-fsharp-dev`, `.go` → `swe-golang-dev`, `.kt` → `swe-kotlin-dev`, etc.).
 - The action touches a specific app context (`apps/oseplatform-web/...` → `apps-oseplatform-web-content-maker` for content edits).
 - The action is a content/documentation change (`docs-maker`, `readme-maker`).
-- The action is governance/repo-rules (`repo-rules-maker`).
+- The action is repo-governance/repo-rules (`repo-rules-maker`).
 - The action is a content-platform skill domain (`apps-ayokoding-web-by-example-maker`, `apps-ayokoding-web-in-the-field-maker`).
 
 **When to skip annotation** (default plan-execution Agent Selection suffices):

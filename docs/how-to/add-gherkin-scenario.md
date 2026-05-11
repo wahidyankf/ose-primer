@@ -102,7 +102,7 @@ E2E steps send real HTTP requests via Playwright.
 
 If you added a new feature file or changed the scenario count, update
 `specs/apps/crud/be/gherkin/README.md` — this is the
-[authoritative source](../../governance/conventions/writing/dynamic-collection-references.md)
+[authoritative source](../../repo-governance/conventions/writing/dynamic-collection-references.md)
 for scenario counts.
 
 ### 7. Verify
@@ -130,6 +130,6 @@ step definitions:
 
 - [Backend Gherkin Specs](../../specs/apps/crud/be/gherkin/README.md) — Feature file conventions
 - [Frontend Gherkin Specs](../../specs/apps/crud/fe/gherkin/README.md) — Frontend feature conventions
-- [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md) — What's real vs mocked at each level
-- [BDD Spec-Test Mapping](../../governance/development/infra/bdd-spec-test-mapping.md) — How specs map to tests
+- [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — What's real vs mocked at each level
+- [BDD Spec-Test Mapping](../../repo-governance/development/infra/bdd-spec-test-mapping.md) — How specs map to tests
 - [BDD Standards](../explanation/software-engineering/development/behavior-driven-development-bdd/README.md) — Gherkin writing standards

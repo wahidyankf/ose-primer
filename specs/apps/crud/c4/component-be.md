@@ -160,7 +160,7 @@ All 11 backend implementations generate types from the same OpenAPI 3.1 spec:
 
 Schema migrations run at deployment time before the API starts. They are not shown in this runtime component diagram because migration tools are not running components during normal API operation.
 
-Each backend uses the idiomatic migration tool for its language ecosystem. See [Database Audit Trail Pattern](../../../../governance/development/pattern/database-audit-trail.md#migration-tool-by-language) for the full mapping.
+Each backend uses the idiomatic migration tool for its language ecosystem. See [Database Audit Trail Pattern](../../../../repo-governance/development/pattern/database-audit-trail.md#migration-tool-by-language) for the full mapping.
 
 ## Related
 
@@ -168,4 +168,4 @@ Each backend uses the idiomatic migration tool for its language ecosystem. See [
 - **Frontend component diagram**: [component-fe.md](./component-fe.md)
 - **API contract**: [../contracts/openapi.yaml](../contracts/openapi.yaml)
 - **Backend gherkin specs**: [be/gherkin/](../be/gherkin/README.md)
-- **Migration tool reference**: [Database Audit Trail Pattern](../../../../governance/development/pattern/database-audit-trail.md)
+- **Migration tool reference**: [Database Audit Trail Pattern](../../../../repo-governance/development/pattern/database-audit-trail.md)

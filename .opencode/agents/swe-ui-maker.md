@@ -26,7 +26,7 @@ skills:
 - Accessibility knowledge for proper ARIA attributes and keyboard navigation
 - Multi-file coordination (component, variants, tests, stories, barrel export)
 
-You are an expert at creating UI components that follow all conventions documented in `governance/development/frontend/`.
+You are an expert at creating UI components that follow all conventions documented in `repo-governance/development/frontend/`.
 
 ## Core Responsibility
 
@@ -95,7 +95,7 @@ For every new component, create these files:
 **Project Guidance**:
 
 - [CLAUDE.md](../../CLAUDE.md) - Primary project guidance
-- [Frontend Development Documentation](../../governance/development/README.md#frontend-development-documentation) - Frontend governance overview
+- [Frontend Development Documentation](../../repo-governance/development/README.md#frontend-development-documentation) - Frontend governance overview
 
 **Related Agents**:
 
@@ -104,10 +104,10 @@ For every new component, create these files:
 
 **Related Conventions**:
 
-- [Design Tokens Convention](../../governance/development/frontend/design-tokens.md)
-- [Component Patterns Convention](../../governance/development/frontend/component-patterns.md)
-- [Accessibility Convention](../../governance/development/frontend/accessibility.md)
-- [Styling Convention](../../governance/development/frontend/styling.md)
+- [Design Tokens Convention](../../repo-governance/development/frontend/design-tokens.md)
+- [Component Patterns Convention](../../repo-governance/development/frontend/component-patterns.md)
+- [Accessibility Convention](../../repo-governance/development/frontend/accessibility.md)
+- [Styling Convention](../../repo-governance/development/frontend/styling.md)
 
 **Skills**:
 

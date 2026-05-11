@@ -40,7 +40,7 @@ This convention exists to:
 
 - Any AI agent in `.claude/agents/` (primary) or `.opencode/agents/` (auto-generated mirror) that has `WebSearch` or `WebFetch` in its tool list, or that consumes skills which invoke these tools.
 - Any skill in `.claude/skills/` or `.opencode/skills/` whose workflow calls `WebSearch` or `WebFetch`.
-- Any workflow under `governance/workflows/` that orchestrates agents performing web research.
+- Any workflow under `repo-governance/workflows/` that orchestrates agents performing web research.
 - Any `CLAUDE.md` or `AGENTS.md` guidance that shapes agent behaviour around external information gathering.
 
 ### What This Convention Does NOT Cover
@@ -93,7 +93,7 @@ agent skills that describe web verification (for example `docs-validating-factua
 
 ### In a workflow
 
-Workflows under `governance/workflows/` that include factual verification steps point to this convention at the relevant step rather than duplicating the threshold.
+Workflows under `repo-governance/workflows/` that include factual verification steps point to this convention at the relevant step rather than duplicating the threshold.
 
 ## 📖 Examples
 
@@ -105,7 +105,7 @@ Workflows under `governance/workflows/` that include factual verification steps 
 For single-shot verification against a known authoritative URL, use `WebFetch` in-context.
 For multi-page research (2+ searches or 3+ fetches per claim), delegate to the
 [`web-research-maker`](../agents/web-research-maker.md) subagent per the
-[Web Research Delegation Convention](../../governance/conventions/writing/web-research-delegation.md).
+[Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md).
 ```
 
 ### Good — a link-checker stating its exception explicitly
@@ -113,7 +113,7 @@ For multi-page research (2+ searches or 3+ fetches per claim), delegate to the
 ```markdown
 ### Web Research Delegation
 
-This agent is exempt from the [Web Research Delegation Convention](../../governance/conventions/writing/web-research-delegation.md)
+This agent is exempt from the [Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md)
 default. Its domain is URL reachability (HTTP status, redirect chains), not content research. It invokes
 `WebFetch` directly against the URL under test. If content-level research is required (for example, to rewrite
 a broken reference), escalate to the maker or checker family, which delegates to `web-research-maker`.

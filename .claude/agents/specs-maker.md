@@ -97,7 +97,7 @@ Generate Mermaid-based C4 diagrams following the accessible color palette:
 - BE/FE/build-tools: MUST be placed in domain subdirectories under `gherkin/`
 - CLI: MUST be placed flat under `gherkin/` (no domain subdirectories)
 - Libs: MUST be placed in package subdirectories under `gherkin/`
-- See [Specs Directory Structure Convention](../../governance/conventions/structure/specs-directory-structure.md) for full rules
+- See [Specs Directory Structure Convention](../../repo-governance/conventions/structure/specs-directory-structure.md) for full rules
 
 ### README Structure (Spec Area Root)
 
@@ -133,10 +133,10 @@ Generate Mermaid-based C4 diagrams following the accessible color palette:
 
 ## Reference Documentation
 
-- [Specs Directory Structure Convention](../../governance/conventions/structure/specs-directory-structure.md) — Canonical path patterns and domain subdirectory rules
+- [Specs Directory Structure Convention](../../repo-governance/conventions/structure/specs-directory-structure.md) — Canonical path patterns and domain subdirectory rules
 
 - [AGENTS.md](../../AGENTS.md) — OpenCode agent documentation
-- [AI Agents Convention](../../governance/development/agents/agent-workflow-orchestration.md) — Agent workflow orchestration
-- [Maker-Checker-Fixer Pattern](../../governance/development/pattern/maker-checker-fixer.md) — Three-stage quality workflow
-- [Specs Validation Workflow](../../governance/workflows/specs/specs-quality-gate.md) — Orchestrated validation workflow
+- [AI Agents Convention](../../repo-governance/development/agents/agent-workflow-orchestration.md) — Agent workflow orchestration
+- [Maker-Checker-Fixer Pattern](../../repo-governance/development/pattern/maker-checker-fixer.md) — Three-stage quality workflow
+- [Specs Validation Workflow](../../repo-governance/workflows/specs/specs-quality-gate.md) — Orchestrated validation workflow
 - Related agents: [specs-checker](./specs-checker.md), [specs-fixer](./specs-fixer.md)

@@ -516,9 +516,9 @@ Build configuration is enforced through:
 
 ## Related Documentation
 
-- [Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)
-- [Reproducibility First](../../../../../governance/principles/software-engineering/reproducibility.md)
-- [Reproducible Environments](../../../../../governance/development/workflow/reproducible-environments.md)
+- [Automation Over Manual](../../../../../repo-governance/principles/software-engineering/automation-over-manual.md)
+- [Reproducibility First](../../../../../repo-governance/principles/software-engineering/reproducibility.md)
+- [Reproducible Environments](../../../../../repo-governance/development/workflow/reproducible-environments.md)
 
 ---
 

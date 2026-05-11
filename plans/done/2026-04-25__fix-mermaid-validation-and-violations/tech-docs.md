@@ -153,16 +153,16 @@ Source: `apps/rhino-cli/internal/mermaid/` + `apps/rhino-cli/cmd/docs_validate_m
 
 Without arguments, `collectMDDefaultDirs` scans these locations:
 
-| Path          | Notes                          |
-| ------------- | ------------------------------ |
-| `docs/`       | All `.md` recursively          |
-| `governance/` | All `.md` recursively          |
-| `.claude/`    | All `.md` recursively          |
-| Root `*.md`   | `README.md`, `CLAUDE.md`, etc. |
+| Path               | Notes                          |
+| ------------------ | ------------------------------ |
+| `docs/`            | All `.md` recursively          |
+| `repo-governance/` | All `.md` recursively          |
+| `.claude/`         | All `.md` recursively          |
+| Root `*.md`        | `README.md`, `CLAUDE.md`, etc. |
 
 Excluded directories: `.next/`, `node_modules/`, `.git/`.
 
-With explicit args (`docs validate-mermaid docs/ governance/`), only those paths are
+With explicit args (`docs validate-mermaid docs/ repo-governance/`), only those paths are
 walked. `--staged-only` and `--changed-only` flags scope to git-tracked changes.
 
 ### Step 2 — Block Extraction (`extractor.go:ExtractBlocks`)
@@ -579,11 +579,11 @@ located at `apps/rhino-cli/`. It integrates into the quality pipeline as follows
 git push
   └─ .husky/pre-push
        └─ npx nx run rhino-cli:validate:mermaid
-            └─ go run apps/rhino-cli/main.go docs validate-mermaid governance/ .claude/
+            └─ go run apps/rhino-cli/main.go docs validate-mermaid repo-governance/ .claude/
 ```
 
 The `validate:mermaid` Nx target (defined in `apps/rhino-cli/project.json`) passes
-`governance/` and `.claude/` as explicit path arguments, scoping hook enforcement to
+`repo-governance/` and `.claude/` as explicit path arguments, scoping hook enforcement to
 those directories. Running the validator without arguments (as done in this plan's
 delivery steps) scans all default directories including `docs/`, providing the
 full-repo quality check used to gate each batch.
@@ -666,7 +666,7 @@ fix(docs): fix mermaid violations in remaining docs (batch 10/10)
 ### Goal
 
 Promote validated knowledge from this plan's `tech-docs.md` into the permanent
-convention at `governance/conventions/formatting/diagrams.md`. After Phase 2, a
+convention at `repo-governance/conventions/formatting/diagrams.md`. After Phase 2, a
 contributor can find the diagram authoring rules and fix strategies in one place
 without consulting `plans/done/`.
 
@@ -841,7 +841,7 @@ removal keeps the document from having confusing duplicate content.
 
 ```bash
 # Validate the updated diagrams.md passes the mermaid validator
-go run ./apps/rhino-cli/main.go docs validate-mermaid governance/conventions/formatting/
+go run ./apps/rhino-cli/main.go docs validate-mermaid repo-governance/conventions/formatting/
 
 # Run repo-rules quality gate in strict mode
 # (invoke repo-rules-quality-gate workflow with mode=strict)

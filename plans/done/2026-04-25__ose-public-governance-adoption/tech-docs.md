@@ -23,7 +23,7 @@ path changes are needed when porting Go files from ose-public.
 
 ### Files to Create
 
-**`governance/development/workflow/git-push-default.md`**
+**`repo-governance/development/workflow/git-push-default.md`**
 
 Adapt from `ose-public` commit `9abf43f4a`. Identical substance; remove any
 ose-public-specific wording (app names, subrepo worktree guidance). Keep:
@@ -40,7 +40,7 @@ ose-public-specific wording (app names, subrepo worktree guidance). Keep:
 
 ### Files to Update
 
-**`governance/development/workflow/README.md`**
+**`repo-governance/development/workflow/README.md`**
 
 Add entry in the Documents section:
 
@@ -57,7 +57,7 @@ Add to the delivery checklist authoring rules section a paragraph:
 ```text
 Delivery checklists MUST NOT include a `- [ ] Create PR` step (or any equivalent)
 unless the user's original prompt or the plan's prd.md/README.md explicitly requests
-a pull request. See [git-push-default convention](../../governance/development/workflow/
+a pull request. See [git-push-default convention](../../repo-governance/development/workflow/
 git-push-default.md).
 ```
 
@@ -79,7 +79,7 @@ Add to the fix rules:
   no explicit PR instruction exists in the prompt or plan.
 ```
 
-**`governance/workflows/plan/plan-execution.md`**
+**`repo-governance/workflows/plan/plan-execution.md`**
 
 Before the push step, add:
 
@@ -94,7 +94,7 @@ an explicit `- [ ] Create PR` step that satisfies the git-push-default conventio
 In the Git Workflow section, add reference after trunk-based-development:
 
 ```markdown
-**See**: [git-push-default convention](./governance/development/workflow/git-push-default.md) —
+**See**: [git-push-default convention](./repo-governance/development/workflow/git-push-default.md) —
 explicit opt-in-PR rule for plan agents.
 ```
 
@@ -104,7 +104,7 @@ explicit opt-in-PR rule for plan agents.
 
 ### Files to Create
 
-**`governance/conventions/writing/no-date-metadata.md`**
+**`repo-governance/conventions/writing/no-date-metadata.md`**
 
 New convention document covering:
 
@@ -118,7 +118,7 @@ New convention document covering:
 
 ### Files to Update
 
-**`governance/conventions/writing/README.md`**
+**`repo-governance/conventions/writing/README.md`**
 
 Add entry:
 
@@ -137,7 +137,7 @@ In the Key Conventions section, add:
 Manual `created:`/`updated:` frontmatter and `**Last Updated**` rows are forbidden in
 non-website markdown files. Use `git log --follow -1 --pretty=%ai <file>` for dates.
 
-**See**: [governance/conventions/writing/no-date-metadata.md](./governance/conventions/writing/no-date-metadata.md)
+**See**: [repo-governance/conventions/writing/no-date-metadata.md](./repo-governance/conventions/writing/no-date-metadata.md)
 ```
 
 ### Template Examples to Update
@@ -211,7 +211,7 @@ find docs -name "*.md" \
 
 > Absolute paths below assume the repo root is `/Users/wkf/ose-projects/ose-primer`.
 > Substitute your actual checkout path if different, or run from the repo root using
-> relative paths (`./.claude/agents/`, `./governance/`, `./docs/`).
+> relative paths (`./.claude/agents/`, `./repo-governance/`, `./docs/`).
 
 ```bash
 # Should return 0 — Last Updated and Created rows in agents/skills
@@ -219,7 +219,7 @@ grep -rn "^- \*\*Last Updated\*\*:\|^- \*\*Created\*\*:" \
   .claude/agents/ .claude/skills/ | wc -l
 
 # Should return 0 — frontmatter in governance and docs
-grep -rn "^created: \|^updated: " governance/ docs/ | wc -l
+grep -rn "^created: \|^updated: " repo-governance/ docs/ | wc -l
 ```
 
 > **Note on template examples**: After the mass passes, grep for residual
@@ -333,9 +333,9 @@ Add after the last existing target:
 
 ```json
 "validate:mermaid": {
-  "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go docs validate-mermaid governance/ .claude/",
+  "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go docs validate-mermaid repo-governance/ .claude/",
   "cache": true,
-  "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/governance/**/*.md", "{workspaceRoot}/.claude/**/*.md"],
+  "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/repo-governance/**/*.md", "{workspaceRoot}/.claude/**/*.md"],
   "outputs": []
 }
 ```
@@ -368,7 +368,7 @@ Add entry for `docs-validate-mermaid.feature` in the features table.
 Add `docs validate-mermaid` to the commands table and usage examples. Mirror the
 section added in ose-public commit `17b8a3a0d`.
 
-#### `governance/conventions/formatting/diagrams.md`
+#### `repo-governance/conventions/formatting/diagrams.md`
 
 After Rule 1 (label length) enforcement guidance, add the automated enforcement note
 from ose-public commit `17b8a3a0d`:
@@ -390,7 +390,7 @@ cd /Users/wkf/ose-projects/ose-primer
 npx nx run rhino-cli:validate:mermaid
 ```
 
-Any violations in `governance/` or `.claude/` are pre-existing diagram errors that
+Any violations in `repo-governance/` or `.claude/` are pre-existing diagram errors that
 must be fixed in this plan (not deferred). Record each violation and fix the offending
 diagram inline.
 

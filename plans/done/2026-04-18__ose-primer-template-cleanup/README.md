@@ -35,13 +35,13 @@ This plan scopes the cleanup that strips product content while preserving everyt
 
 **File rewrites** (audit + prune enumerations):
 
-- **ALL remaining markdown files** under `apps/`, `libs/`, `specs/`, `infra/`, `apps-labs/`, `archived/`, `.claude/`, `.opencode/`, `governance/`, `docs/`, and `plans/` (including per-app/lib READMEs, kept agent bodies, kept skill bodies + references) — audit every surviving `.md` for product-brand references (`ayokoding`, `oseplatform`, `organiclever`, `hugo-commons`, `FSL-1.1-MIT`); rewrite in place or delete product-sole-subject files. This is comprehensive, not selective.
+- **ALL remaining markdown files** under `apps/`, `libs/`, `specs/`, `infra/`, `apps-labs/`, `archived/`, `.claude/`, `.opencode/`, `repo-governance/`, `docs/`, and `plans/` (including per-app/lib READMEs, kept agent bodies, kept skill bodies + references) — audit every surviving `.md` for product-brand references (`ayokoding`, `oseplatform`, `organiclever`, `hugo-commons`, `FSL-1.1-MIT`); rewrite in place or delete product-sole-subject files. This is comprehensive, not selective.
 - `CLAUDE.md` — drop product app list, product website sections, env-branch table, removed agents; reframe as repository template
 - `AGENTS.md` — mirror CLAUDE.md changes
 - Top-level `README.md` — reframe as ose-primer template entry point — full rewrite, not a stub; first-read onboarding doc for new cloners
 - `.claude/agents/README.md` — prune removed agents from catalog tables
 - `.claude/settings.json` — audit permission entries for removed paths
-- `governance/**` — generalize product examples; delete product-sole-subject files
+- `repo-governance/**` — generalize product examples; delete product-sole-subject files
 - `docs/**` — generalize product examples; delete product-sole-subject Diátaxis files
 - `LICENSING-NOTICE.md` — rewrite as MIT-only policy (no FSL split)
 - `LICENSE` — replace FSL-1.1-MIT license text with MIT license text
@@ -54,7 +54,7 @@ This plan scopes the cleanup that strips product content while preserving everyt
 ### Out of Scope
 
 - Adding new template scaffolding beyond what already exists
-- Restructuring `governance/` or `docs/` architecture
+- Restructuring `repo-governance/` or `docs/` architecture
 - Broad license-term migration beyond the realignment noted in `LICENSING-NOTICE.md`
 - Remote env-branch deletion (new remote `wahidyankf/ose-primer` has only `main` — nothing to delete remotely)
 - Any work on `ose-public` or `ose-infra` (this plan is `ose-primer` only)
@@ -79,7 +79,7 @@ Phased execution across 19 sections (Phase 0 through Phase 17, plus Phase 12.5),
 9. **Rewrite top-level `README.md`** as template usage guide
 10. **Update `AGENTS.md`** (OpenCode mirror) to match `CLAUDE.md`
 11. **Update agent catalog + `.claude/settings.json`**
-12. **Audit and prune `governance/` enumerations**
+12. **Audit and prune `repo-governance/` enumerations**
 13. **Audit and prune `docs/` Diátaxis content**
 14. **Phase 12.5 — Audit every remaining markdown file under kept paths**
 15. **Switch to MIT license** — replace `LICENSE` body, rewrite `LICENSING-NOTICE.md`, update `package.json` and per-project license metadata

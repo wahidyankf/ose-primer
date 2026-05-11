@@ -2,7 +2,7 @@
 
 Step-by-step phases. Each phase ends in a verifiable artifact. Tick items
 in order; push direct to `main` per Trunk Based Development
-([git-push-default](../../../governance/development/workflow/git-push-default.md)).
+([git-push-default](../../../repo-governance/development/workflow/git-push-default.md)).
 
 ## Phase pre-0 — Manual prerequisites
 
@@ -92,7 +92,7 @@ for the rationale.
 - [ ] Converge the full polyglot toolchain: `npm run doctor -- --fix`
       (required — the `postinstall` hook runs `doctor || true` and silently
       tolerates drift; see
-      [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md))
+      [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md))
 - [ ] Copy environment template: `cp apps/investment-oracle-be/.env.example apps/investment-oracle-be/.env`
 - [ ] Fill in `OPENROUTER_API_KEY` and `GOOGLE_API_KEY` in the new `.env`;
       also fill in `ANTHROPIC_API_KEY` if using the premium Haiku path and
@@ -414,7 +414,7 @@ after Phase 16 FE e2e tests pass.
 
 ## Phase 19 — Repo docs and convention pin
 
-- [ ] Author `governance/development/pattern/llm-demo-pattern.md` codifying:
+- [ ] Author `repo-governance/development/pattern/llm-demo-pattern.md` codifying:
   - direct vendor SDKs over proxies
   - cassette-driven CI
   - three-level BE / two-level FE testing
@@ -436,7 +436,7 @@ after Phase 16 FE e2e tests pass.
 
 - [ ] Run `npm run lint:md`, `nx affected -t lint typecheck test:quick spec-coverage`
 - [ ] Fix every finding at the root cause (per the
-      [Root Cause Orientation principle](../../../governance/principles/README.md));
+      [Root Cause Orientation principle](../../../repo-governance/principles/README.md));
       do **not** suppress or stub
 - [ ] Re-run until clean
 
@@ -462,7 +462,7 @@ after Phase 16 FE e2e tests pass.
 
 ## Phase 23 — Plan-quality-gate
 
-- [ ] Run `governance/workflows/plan/plan-quality-gate.md` over the
+- [ ] Run `repo-governance/workflows/plan/plan-quality-gate.md` over the
       authored plan: `plan-checker` → `plan-fixer` until two consecutive
       zero-strict-threshold validations
 - [ ] Audit reports archived under `generated-reports/plan__*`
@@ -475,7 +475,7 @@ after Phase 16 FE e2e tests pass.
       `git pull --rebase origin main`
 - [ ] Stage and commit thematically — one logical concern per commit; use
       Conventional Commits format
-      ([commit-messages convention](../../../governance/development/workflow/commit-messages.md)):
+      ([commit-messages convention](../../../repo-governance/development/workflow/commit-messages.md)):
   - `feat(specs): ...` for spec area scaffolding
   - `feat(be): ...` for BE domain / API / prompts / packaging
   - `feat(fe): ...` for FE components / SSE wiring
@@ -491,7 +491,7 @@ after Phase 16 FE e2e tests pass.
 ### Push and CI verification
 
 - [ ] Push direct to `main` per Trunk Based Development
-      ([git-push-default](../../../governance/development/workflow/git-push-default.md)):
+      ([git-push-default](../../../repo-governance/development/workflow/git-push-default.md)):
       `git push origin main`
 - [ ] Open the GitHub Actions tab for the `ose-primer` repository
 - [ ] Monitor the following workflows triggered by the push:

@@ -54,9 +54,9 @@ Consult these reference docs for detailed guidance on specific topics:
 
 ## Governance References
 
-- [Design Tokens Convention](../../../governance/development/frontend/design-tokens.md)
-- [Component Patterns Convention](../../../governance/development/frontend/component-patterns.md)
-- [Accessibility Convention](../../../governance/development/frontend/accessibility.md)
-- [Styling Convention](../../../governance/development/frontend/styling.md)
-- [Color Accessibility Convention](../../../governance/conventions/formatting/color-accessibility.md) — 5-color palette for docs only; UI uses any WCAG AA compliant colors
-- [Accessibility First Principle](../../../governance/principles/content/accessibility-first.md)
+- [Design Tokens Convention](../../../repo-governance/development/frontend/design-tokens.md)
+- [Component Patterns Convention](../../../repo-governance/development/frontend/component-patterns.md)
+- [Accessibility Convention](../../../repo-governance/development/frontend/accessibility.md)
+- [Styling Convention](../../../repo-governance/development/frontend/styling.md)
+- [Color Accessibility Convention](../../../repo-governance/conventions/formatting/color-accessibility.md) — 5-color palette for docs only; UI uses any WCAG AA compliant colors
+- [Accessibility First Principle](../../../repo-governance/principles/content/accessibility-first.md)

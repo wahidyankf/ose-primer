@@ -92,7 +92,7 @@ Standards for markdown formatting, syntax, and visual elements.
 
 Standards for cross-referencing and internal linking between repository content.
 
-See the `governance/conventions/linking/` directory for linking conventions. No standalone convention files are currently defined here; linking standards are covered by [Linking Convention](./formatting/linking.md) in the Formatting section.
+See the `repo-governance/conventions/linking/` directory for linking conventions. No standalone convention files are currently defined here; linking standards are covered by [Linking Convention](./formatting/linking.md) in the Formatting section.
 
 ## ✍️ Writing
 
@@ -115,7 +115,7 @@ Documentation organization frameworks, file naming, and project planning structu
 - [File Naming Convention](./structure/file-naming.md) - Lowercase kebab-case file names anchored on standard markdown and GitHub compatibility
 - [Plans Organization](./structure/plans.md) - Standards for organizing project planning documents in plans/ folder including structure (ideas.md, backlog/, in-progress/, done/), naming patterns (YYYY-MM-DD\_\_identifier/), lifecycle stages, and project identifiers. Defines how plans move from ideas - backlog - in-progress - done
 - [Specs Directory Structure](./structure/specs-directory-structure.md) - Canonical directory structure for Gherkin feature files, C4 architecture diagrams, and OpenAPI contracts in the specs/ directory. Defines path patterns, domain subdirectory rules (required for BE/FE, flat for CLI), and lib spec organization
-- [Workflow Naming Convention](./structure/workflow-naming.md) - Single exception-free filename rule for workflow files under `governance/workflows/` (except `meta/` reference docs). Defines scope vocabulary, type vocabulary (quality-gate, execution, setup), and the audit command enforced by `repo-rules-checker` and `rhino-cli workflows validate-naming`
+- [Workflow Naming Convention](./structure/workflow-naming.md) - Single exception-free filename rule for workflow files under `repo-governance/workflows/` (except `meta/` reference docs). Defines scope vocabulary, type vocabulary (quality-gate, execution, setup), and the audit command enforced by `repo-rules-checker` and `rhino-cli workflows validate-naming`
 
 ## Tutorials
 

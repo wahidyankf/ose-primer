@@ -77,7 +77,7 @@ docs/explanation/software-engineering/programming-languages/golang/
 - Framework choices for the platform (Gin vs Echo, why we chose X)
 - Repository-specific patterns (how we structure services, how we handle errors)
 - Platform-specific anti-patterns (mistakes to avoid in OSE Platform context)
-- Alignment with governance/principles/software-engineering/ principles
+- Alignment with repo-governance/principles/software-engineering/ principles
 - References to ayokoding-web for language fundamentals
 
 **FAIL: Educational content** (move to ayokoding-web):
@@ -322,7 +322,7 @@ This convention applies to **ALL** programming languages in the repository:
 
 ## Alignment with Software Engineering Principles
 
-Programming language style guides in `docs/explanation/` MUST align with the software engineering principles from [governance/principles/software-engineering/](../../principles/software-engineering/README.md):
+Programming language style guides in `docs/explanation/` MUST align with the software engineering principles from [repo-governance/principles/software-engineering/](../../principles/software-engineering/README.md):
 
 ### 1. Automation Over Manual
 

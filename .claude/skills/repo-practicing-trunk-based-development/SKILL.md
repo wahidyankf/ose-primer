@@ -325,7 +325,7 @@ git push origin HEAD:worktree-feature-name
 gh pr create --draft --base main --title "feat(scope): description"
 ```
 
-See the [Trunk Based Development Convention](../../../governance/development/workflow/trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) and Standard 6 of the [Git Push Default Convention](../../../governance/development/workflow/git-push-default.md) for the full rule.
+See the [Trunk Based Development Convention](../../../repo-governance/development/workflow/trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) and Standard 6 of the [Git Push Default Convention](../../../repo-governance/development/workflow/git-push-default.md) for the full rule.
 
 ## Common Patterns
 
@@ -548,14 +548,14 @@ Before pushing to `main`:
 
 ## References
 
-**Primary Convention**: [Trunk Based Development Convention](../../../governance/development/workflow/trunk-based-development.md)
+**Primary Convention**: [Trunk Based Development Convention](../../../repo-governance/development/workflow/trunk-based-development.md)
 
 **Related Conventions**:
 
-- [Git Push Default Convention](../../../governance/development/workflow/git-push-default.md) - Default push behavior (direct to main; draft PR opt-in); Standard 6 covers worktree push
-- [Commit Message Convention](../../../governance/development/workflow/commit-messages.md) - Conventional Commits format
-- [Implementation Workflow](../../../governance/development/workflow/implementation.md) - Development workflow stages
-- [Plans Organization](../../../governance/conventions/structure/plans.md) - Git workflow in plans
+- [Git Push Default Convention](../../../repo-governance/development/workflow/git-push-default.md) - Default push behavior (direct to main; draft PR opt-in); Standard 6 covers worktree push
+- [Commit Message Convention](../../../repo-governance/development/workflow/commit-messages.md) - Conventional Commits format
+- [Implementation Workflow](../../../repo-governance/development/workflow/implementation.md) - Development workflow stages
+- [Plans Organization](../../../repo-governance/conventions/structure/plans.md) - Git workflow in plans
 
 **Related Skills**:
 

@@ -294,26 +294,26 @@ source file types inside the renamed backend app directories:
 
 ## Phase 12 — Governance workflows
 
-- [x] `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts\|specs/apps/demo" governance/workflows/` — list all matches
+- [x] `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts\|specs/apps/demo" repo-governance/workflows/` — list all matches
   - Date: 2026-04-26; Status: Done — zero matches (bulk sweep already covered)
 - [x] For each matched file: open, replace stale references with `crud-*` equivalents
   - Date: 2026-04-26; Status: Done — no files needed fixing
-- [x] Verify: `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" governance/workflows/` → expect zero results
+- [x] Verify: `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" repo-governance/workflows/` → expect zero results
   - Date: 2026-04-26; Status: Done — zero results confirmed
 
 ## Phase 13 — Governance conventions
 
-- [x] `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts\|specs/apps/demo" governance/conventions/` — list all matches
+- [x] `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts\|specs/apps/demo" repo-governance/conventions/` — list all matches
   - Date: 2026-04-26; Status: Done — zero matches (bulk sweep covered)
 - [x] For each matched file: open, replace stale references
   - Date: 2026-04-26; Status: Done — no files needed fixing
-- [x] Verify: `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" governance/conventions/` → expect zero results
+- [x] Verify: `grep -r "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" repo-governance/conventions/` → expect zero results
   - Date: 2026-04-26; Status: Done — zero results confirmed
 
 ## Phase 14 — Governance development docs and principles
 
-- [x] `grep -rl "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" governance/development/ governance/principles/ governance/vision/` — list matches
-  - Date: 2026-04-26; Status: Done — found governance/development/quality/specs-application-sync.md
+- [x] `grep -rl "demo-be-\|demo-fe-\|demo-fs-\|demo-contracts" repo-governance/development/ repo-governance/principles/ repo-governance/vision/` — list matches
+  - Date: 2026-04-26; Status: Done — found repo-governance/development/quality/specs-application-sync.md
 - [x] For each matched file: open, replace stale references
   - Date: 2026-04-26; Status: Done — fixed specs-application-sync.md (demo-contracts → crud-contracts)
 

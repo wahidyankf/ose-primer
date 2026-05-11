@@ -403,7 +403,7 @@ The AI will invoke agents with scoped validation:
 - Fix issues in that scope only
 
 ```
-User: "Run documentation quality gate workflow for governance/conventions/structure/file-naming.md"
+User: "Run documentation quality gate workflow for repo-governance/conventions/structure/file-naming.md"
 ```
 
 The AI will invoke agents with single-file scope:

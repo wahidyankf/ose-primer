@@ -220,7 +220,7 @@ nx lint crud-be-java-springboot
 nx typecheck crud-be-java-springboot
 ```
 
-**See**: [Nx Target Standards](../../governance/development/infra/nx-targets.md) for canonical target names. Use `dev` (not `serve`) for the development server.
+**See**: [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) for canonical target names. Use `dev` (not `serve`) for the development server.
 
 ## Available Endpoints
 
@@ -538,7 +538,7 @@ nx run crud-be-e2e:test:e2e
 
 ## Related Documentation
 
-- [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
+- [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
 - [Backend Gherkin Specs](../../specs/apps/crud/be/gherkin/README.md) — Shared feature files (source of truth)

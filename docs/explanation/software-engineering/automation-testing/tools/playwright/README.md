@@ -75,11 +75,11 @@ All Playwright tests MUST follow the patterns and practices documented here:
 
 ## Software Engineering Principles
 
-Playwright usage in this platform follows the the software engineering principles from [governance/principles/software-engineering/](../../../../../../governance/principles/software-engineering/README.md):
+Playwright usage in this platform follows the the software engineering principles from [repo-governance/principles/software-engineering/](../../../../../../repo-governance/principles/software-engineering/README.md):
 
-1. **[Automation Over Manual](../../../../../../governance/principles/software-engineering/automation-over-manual.md)** - Playwright automates through codegen, trace viewer, auto-waiting, visual regression testing
-2. **[Explicit Over Implicit](../../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - Playwright enforces through explicit locators, test.describe blocks, clear assertions, typed page objects
-3. **[Reproducibility First](../../../../../../governance/principles/software-engineering/reproducibility.md)** - Playwright enables through version pinning (package-lock.json), test retries, trace artifacts, CI/CD integration
+1. **[Automation Over Manual](../../../../../../repo-governance/principles/software-engineering/automation-over-manual.md)** - Playwright automates through codegen, trace viewer, auto-waiting, visual regression testing
+2. **[Explicit Over Implicit](../../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)** - Playwright enforces through explicit locators, test.describe blocks, clear assertions, typed page objects
+3. **[Reproducibility First](../../../../../../repo-governance/principles/software-engineering/reproducibility.md)** - Playwright enables through version pinning (package-lock.json), test retries, trace artifacts, CI/CD integration
 
 ## Quick Reference
 
@@ -486,8 +486,8 @@ Read [Playwright Anti-Patterns](anti-patterns.md) to prevent common mistakes:
 Read complementary documentation:
 
 - [TypeScript Standards](../../../programming-languages/typescript/README.md)
-- [Testing Principles](../../../../../../governance/development/quality/code.md)
-- [CI/CD Workflows](../../../../../../governance/development/workflow/implementation.md)
+- [Testing Principles](../../../../../../repo-governance/development/quality/code.md)
+- [CI/CD Workflows](../../../../../../repo-governance/development/workflow/implementation.md)
 
 ## Related Documentation
 

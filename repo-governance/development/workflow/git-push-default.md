@@ -144,7 +144,7 @@ A pull request from a worktree branch is created only when the user's prompt or 
 ```
 Plan executor: Committing governance convention.
 
-  git add governance/development/workflow/git-push-default.md
+  git add repo-governance/development/workflow/git-push-default.md
   git commit -m "feat(governance): add git push default convention"
   git push origin main
 
@@ -156,7 +156,7 @@ Done. Convention is now on main.
 ```
 Plan executor: Committing governance convention.
 
-  git add governance/development/workflow/git-push-default.md
+  git add repo-governance/development/workflow/git-push-default.md
   git push origin feature/git-push-default
 
 Creating pull request...
@@ -175,7 +175,7 @@ User prompt: "Create a convention for X and open a PR for review."
 Plan executor: Committing convention and opening PR as requested.
 
   git checkout -b feature/convention-x
-  git add governance/development/workflow/convention-x.md
+  git add repo-governance/development/workflow/convention-x.md
   git commit -m "feat(governance): add convention x"
   git push origin feature/convention-x
   gh pr create --draft --base main --title "feat(governance): add convention x"

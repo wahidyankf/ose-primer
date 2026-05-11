@@ -18,7 +18,7 @@ with source URL, publication date, and confidence level. Last updated: 2026-04-1
 
 This document provides cited benchmark data for the five models used across Claude Code
 (`.claude/agents/`) and OpenCode (`.opencode/agent/`) runtimes. Tier assignments in
-[model-selection.md](../../governance/development/agents/model-selection.md) reference
+[model-selection.md](../../repo-governance/development/agents/model-selection.md) reference
 this document. Every benchmark claim in policy docs links back here; this document links
 to primary sources.
 
@@ -155,7 +155,7 @@ corroboration only.
 ## Model Selection Mapping
 
 Cross-reference between Claude Code tiers and OpenCode models. For full tier rationale,
-see [model-selection.md](../../governance/development/agents/model-selection.md).
+see [model-selection.md](../../repo-governance/development/agents/model-selection.md).
 
 | Claude Code alias | Claude model (April 2026)   | OpenCode model                | SWE-bench Verified (best confidence)    |
 | ----------------- | --------------------------- | ----------------------------- | --------------------------------------- |

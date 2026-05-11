@@ -119,14 +119,14 @@ Layer 5: Workflows    WHEN - Orchestrate (multi-step processes)
 
 ### Quick Reference Table
 
-| Layer | Location                | Purpose                       | Changes?        | Answers?                  |
-| ----- | ----------------------- | ----------------------------- | --------------- | ------------------------- |
-| **0** | governance/vision/      | WHY we exist                  | Extremely rare  | Why does project exist?   |
-| **1** | governance/principles/  | WHY we value approaches       | Rarely          | Why value this approach?  |
-| **2** | governance/conventions/ | WHAT documentation rules      | Occasionally    | What documentation rules? |
-| **3** | governance/development/ | HOW we develop software       | More frequently | How develop software?     |
-| **4** | `.claude/agents/`       | WHO enforces rules            | Often           | Who enforces rules?       |
-| **5** | governance/workflows/   | WHEN run agents in what order | As needed       | When run which agents?    |
+| Layer | Location                     | Purpose                       | Changes?        | Answers?                  |
+| ----- | ---------------------------- | ----------------------------- | --------------- | ------------------------- |
+| **0** | repo-governance/vision/      | WHY we exist                  | Extremely rare  | Why does project exist?   |
+| **1** | repo-governance/principles/  | WHY we value approaches       | Rarely          | Why value this approach?  |
+| **2** | repo-governance/conventions/ | WHAT documentation rules      | Occasionally    | What documentation rules? |
+| **3** | repo-governance/development/ | HOW we develop software       | More frequently | How develop software?     |
+| **4** | `.claude/agents/`            | WHO enforces rules            | Often           | Who enforces rules?       |
+| **5** | repo-governance/workflows/   | WHEN run agents in what order | As needed       | When run which agents?    |
 
 **agent skills**: `.claude/skills/` - Delivery infrastructure serving agents (inline knowledge injection or fork-based delegation)
 
@@ -136,7 +136,7 @@ Layer 5: Workflows    WHEN - Orchestrate (multi-step processes)
 
 **Purpose**: Foundational purpose - WHY the project exists and WHAT change we seek in the world.
 
-**Location**: `governance/vision/`
+**Location**: `repo-governance/vision/`
 
 **Key Document**: [Vision - Open Sharia Enterprise](./vision/open-sharia-enterprise.md)
 
@@ -170,7 +170,7 @@ Layer 5: Workflows    WHEN - Orchestrate (multi-step processes)
 
 **Purpose**: Foundational values that govern all conventions and development practices. Explains WHY we value certain approaches.
 
-**Location**: `governance/principles/`
+**Location**: `repo-governance/principles/`
 
 **Key Document**: [Core Principles Index](./principles/README.md)
 
@@ -227,7 +227,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 
 **Purpose**: Documentation standards implementing core principles. Defines WHAT rules govern writing, organizing, and formatting documentation.
 
-**Location**: `governance/conventions/`
+**Location**: `repo-governance/conventions/`
 
 **Key Document**: [Conventions Index](./conventions/README.md)
 
@@ -270,7 +270,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 
 **Purpose**: Software practices implementing core principles. Defines HOW we develop, test, deploy software and automation.
 
-**Location**: `governance/development/`
+**Location**: `repo-governance/development/`
 
 **Key Document**: [Development Index](./development/README.md)
 
@@ -369,7 +369,7 @@ Agent: docs-fixer (applies color corrections)
 
 **Purpose**: Orchestrated multi-step processes composing AI agents. Answers WHEN to run which agents in what order.
 
-**Location**: `governance/workflows/`
+**Location**: `repo-governance/workflows/`
 
 **Key Document**: [Workflows Index](./workflows/README.md)
 

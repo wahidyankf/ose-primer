@@ -198,10 +198,10 @@ All BDD tests share the same Gherkin feature files from `specs/apps/crud/be/gher
 
 ## Related Documentation
 
-- [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
+- [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
 - [Backend Gherkin Specs](../../specs/apps/crud/be/gherkin/README.md) — Shared feature files (source of truth)
 - [OpenAPI Contract](../../specs/apps/crud/contracts/README.md) — API contract and codegen
-- [Nx Target Standards](../../governance/development/infra/nx-targets.md) — Canonical targets and caching rules
+- [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) — Canonical targets and caching rules
 - [crud-be-e2e](../crud-be-e2e/README.md) — Shared E2E tests

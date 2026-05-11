@@ -58,11 +58,11 @@ demo Islamic finance systems MUST use the following DDD patterns:
 
 DDD in demo enforces foundational software engineering principles:
 
-1. **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - MUST make domain concepts explicit through Ubiquitous Language, bounded context boundaries must be explicit in code structure, business rules must be explicit in domain logic not hidden in infrastructure
+1. **[Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)** - MUST make domain concepts explicit through Ubiquitous Language, bounded context boundaries must be explicit in code structure, business rules must be explicit in domain logic not hidden in infrastructure
 
-2. **[Immutability Over Mutability](../../../../../governance/principles/software-engineering/immutability.md)** - MUST use immutable value objects (Java records, TypeScript readonly), domain events must be immutable, aggregate state changes must create new instances in functional approaches
+2. **[Immutability Over Mutability](../../../../../repo-governance/principles/software-engineering/immutability.md)** - MUST use immutable value objects (Java records, TypeScript readonly), domain events must be immutable, aggregate state changes must create new instances in functional approaches
 
-3. **[Pure Functions Over Side Effects](../../../../../governance/principles/software-engineering/pure-functions.md)** - MUST implement domain logic as pure functions, validation rules must be pure and deterministic, business calculations must have no side effects
+3. **[Pure Functions Over Side Effects](../../../../../repo-governance/principles/software-engineering/pure-functions.md)** - MUST implement domain logic as pure functions, validation rules must be pure and deterministic, business calculations must have no side effects
 
 ## demo DDD Standards (Authoritative)
 
@@ -314,10 +314,10 @@ public record ZakatCalculated(
 
 This documentation implements/respects the following core principles:
 
-- **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**: By requiring Ubiquitous Language in code and explicit bounded context boundaries, domain concepts become visible rather than hidden in technical abstractions.
+- **[Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)**: By requiring Ubiquitous Language in code and explicit bounded context boundaries, domain concepts become visible rather than hidden in technical abstractions.
 
-- **[Immutability Over Mutability](../../../../../governance/principles/software-engineering/immutability.md)**: By mandating immutable value objects and domain events, entire categories of bugs related to shared mutable state are eliminated.
+- **[Immutability Over Mutability](../../../../../repo-governance/principles/software-engineering/immutability.md)**: By mandating immutable value objects and domain events, entire categories of bugs related to shared mutable state are eliminated.
 
-- **[Pure Functions Over Side Effects](../../../../../governance/principles/software-engineering/pure-functions.md)**: By requiring domain logic to be pure functions without side effects, business rules become testable, composable, and maintainable.
+- **[Pure Functions Over Side Effects](../../../../../repo-governance/principles/software-engineering/pure-functions.md)**: By requiring domain logic to be pure functions without side effects, business rules become testable, composable, and maintainable.
 
 ---

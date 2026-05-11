@@ -35,9 +35,9 @@ This document defines **authoritative build configuration standards** for Elixir
 
 **Principles Applied**:
 
-- **[Reproducibility First](../../../../../governance/principles/software-engineering/reproducibility.md)** - MUST ensure deterministic builds
-- **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - MUST declare all configuration explicitly
-- **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - MUST automate build processes
+- **[Reproducibility First](../../../../../repo-governance/principles/software-engineering/reproducibility.md)** - MUST ensure deterministic builds
+- **[Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)** - MUST declare all configuration explicitly
+- **[Automation Over Manual](../../../../../repo-governance/principles/software-engineering/automation-over-manual.md)** - MUST automate build processes
 
 ## 🔧 Mix Build Tool
 
@@ -1180,14 +1180,14 @@ jobs:
 
 **Software Engineering Principles**:
 
-- [Reproducibility First](../../../../../governance/principles/software-engineering/reproducibility.md)
-- [Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)
-- [Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)
+- [Reproducibility First](../../../../../repo-governance/principles/software-engineering/reproducibility.md)
+- [Automation Over Manual](../../../../../repo-governance/principles/software-engineering/automation-over-manual.md)
+- [Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)
 
 **Development Practices**:
 
-- [Code Quality Standards](../../../../../governance/development/quality/code.md)
-- [Implementation Workflow](../../../../../governance/development/workflow/implementation.md)
+- [Code Quality Standards](../../../../../repo-governance/development/quality/code.md)
+- [Implementation Workflow](../../../../../repo-governance/development/workflow/implementation.md)
 
 ## Sources
 

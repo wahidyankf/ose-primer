@@ -176,4 +176,4 @@ Complete the demo Clojure learning path first:
 ## References
 
 - [Clojure README](../../../docs/explanation/software-engineering/programming-languages/clojure/README.md)
-- [Functional Programming](../../../governance/development/pattern/functional-programming.md)
+- [Functional Programming](../../../repo-governance/development/pattern/functional-programming.md)

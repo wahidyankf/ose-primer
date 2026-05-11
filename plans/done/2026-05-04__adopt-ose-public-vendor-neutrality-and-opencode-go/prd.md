@@ -20,7 +20,7 @@ title: PRD — Adopt ose-public Vendor-Neutrality, OpenCode Go, and Companion To
   Gemini CLI / Aider / Copilot / Continue / Sourcegraph Cody. Needs
   governance prose that reads as vendor-neutral.
 - **Plan agents** (`plan-maker`, `plan-checker`, `plan-execution-checker`) —
-  read `governance/conventions/structure/plans.md` to validate plan
+  read `repo-governance/conventions/structure/plans.md` to validate plan
   structure. Need the new five-doc DEFAULT and the four-criteria
   single-file exception clearly stated.
 
@@ -50,8 +50,8 @@ title: PRD — Adopt ose-public Vendor-Neutrality, OpenCode Go, and Companion To
 
 ### W3 — Vendor-audit scanner
 
-- As a governance steward, I want `rhino-cli governance vendor-audit
-governance/` to flag every convention violation, so that I do not
+- As a governance steward, I want `rhino-cli repo-governance vendor-audit
+repo-governance/` to flag every convention violation, so that I do not
   need to manually grep for each forbidden term.
 - As a future contributor authoring governance prose, I want the
   pre-push hook to fail when I introduce a forbidden vendor term,
@@ -60,7 +60,7 @@ governance/` to flag every convention violation, so that I do not
 
 ### W4 — Vendor-neutral governance
 
-- As a cross-vendor contributor reading `governance/`, I want load-bearing
+- As a cross-vendor contributor reading `repo-governance/`, I want load-bearing
   prose to be vendor-neutral with vendor-specific examples in
   `binding-example` fences, so that the rules apply to my AI coding
   agent of choice without translation.
@@ -80,7 +80,7 @@ governance/` to flag every convention violation, so that I do not
 
 ### W6 — Plans convention refresh
 
-- As a plan author, I want `governance/conventions/structure/plans.md`
+- As a plan author, I want `repo-governance/conventions/structure/plans.md`
   to clearly state that five-doc multi-file is the DEFAULT and to
   enumerate exactly four criteria that must ALL hold for single-file
   to be allowed, so that I do not waste time arguing structure with
@@ -149,43 +149,43 @@ Feature: opencode.json declares the opencode-go provider block
 ### W3 — Vendor-audit scanner
 
 ````gherkin
-Feature: rhino-cli governance vendor-audit flags forbidden terms
+Feature: rhino-cli repo-governance vendor-audit flags forbidden terms
   Scenario: Forbidden vendor term in governance prose fails the audit
-    Given "governance/example.md" contains the load-bearing line "Use Claude Code to run the workflow"
-    When I run "rhino-cli governance vendor-audit governance/"
+    Given "repo-governance/example.md" contains the load-bearing line "Use Claude Code to run the workflow"
+    When I run "rhino-cli repo-governance vendor-audit repo-governance/"
     Then exit code is non-zero
-    And the report includes "governance/example.md" with term "Claude Code"
+    And the report includes "repo-governance/example.md" with term "Claude Code"
 
   Scenario: Same term inside a binding-example fence is allowed
-    Given "governance/example.md" contains a fenced "```binding-example" block that names "Claude Code"
-    When I run "rhino-cli governance vendor-audit governance/"
+    Given "repo-governance/example.md" contains a fenced "```binding-example" block that names "Claude Code"
+    When I run "rhino-cli repo-governance vendor-audit repo-governance/"
     Then exit code is zero
 
   Scenario: Capitalized "Skills" is forbidden in governance prose
-    Given "governance/example.md" contains "Skills auto-load from .claude/skills/"
-    When I run "rhino-cli governance vendor-audit governance/"
+    Given "repo-governance/example.md" contains "Skills auto-load from .claude/skills/"
+    When I run "rhino-cli repo-governance vendor-audit repo-governance/"
     Then exit code is non-zero
     And the report includes term "\bSkills\b" with replacement suggestion "agent skills"
 
   Scenario: Convention definition file is allowlisted
-    When I run "rhino-cli governance vendor-audit governance/"
-    Then "governance/conventions/structure/governance-vendor-independence.md" is not flagged
+    When I run "rhino-cli repo-governance vendor-audit repo-governance/"
+    Then "repo-governance/conventions/structure/governance-vendor-independence.md" is not flagged
     even though it contains every forbidden term in its definition table
 ````
 
 ### W4 — Vendor-neutral governance
 
 ```gherkin
-Feature: governance/ is vendor-neutral after remediation
+Feature: repo-governance/ is vendor-neutral after remediation
   Scenario: Full audit returns zero violations
     Given the W3 scanner is installed
-    When I run "rhino-cli governance vendor-audit governance/"
+    When I run "rhino-cli repo-governance vendor-audit repo-governance/"
     Then exit code is zero
     And the report contains 0 violations
 
 Feature: AGENTS.md is canonical, CLAUDE.md is a thin shim
   Scenario: AGENTS.md vendor-audit
-    When I run "rhino-cli governance vendor-audit AGENTS.md"
+    When I run "rhino-cli repo-governance vendor-audit AGENTS.md"
     Then exit code is zero
     And only binding-example-fenced regions reference vendors
 
@@ -208,7 +208,7 @@ Feature: validate:cross-vendor-parity Nx target verifies five invariants
       | invariant                                                |
       | npm run sync:claude-to-opencode is a no-op               |
       | .claude/agents count matches .opencode/agents count      |
-      | governance vendor-audit governance/ returns 0            |
+      | repo-governance vendor-audit repo-governance/ returns 0            |
       | color-translation map covers every named color in agents |
       | capability-tier map covers every model tier in agents    |
 
@@ -231,14 +231,14 @@ Feature: pre-push hook runs the parity gate for affected projects
 ```gherkin
 Feature: plans.md states five-doc multi-file as the DEFAULT
   Scenario: Convention prose
-    Given "governance/conventions/structure/plans.md"
+    Given "repo-governance/conventions/structure/plans.md"
     When I read its plan-folder-naming section
     Then it explicitly identifies five-doc multi-file as "DEFAULT"
     And it requires ALL FOUR criteria to hold before single-file is allowed
     And the four criteria match those in the ose-public source plan
 
   Scenario: Single-file collapse rule
-    Given "governance/conventions/structure/plans.md"
+    Given "repo-governance/conventions/structure/plans.md"
     When I grep for the single-file decision rule
     Then I find a single-paragraph statement requiring all four named criteria to be met
     And it states "If any criterion is unmet, use the five-document layout"
@@ -261,15 +261,15 @@ User stories:
 ```gherkin
 Feature: worktree-path convention exists and is authoritative
   Scenario: Convention file presence and content
-    Given "governance/conventions/structure/worktree-path.md" exists
+    Given "repo-governance/conventions/structure/worktree-path.md" exists
     When I read it
     Then it states the canonical worktree on-disk path for ose-primer (".claude/worktrees/<name>/")
     And it explains the rationale (gitignored, parallel-safety, isolation)
-    And it cross-references "governance/development/workflow/worktree-setup.md"
+    And it cross-references "repo-governance/development/workflow/worktree-setup.md"
 
 Feature: worktree-setup workflow matches ose-public's current version
   Scenario: Toolchain init order
-    Given "governance/development/workflow/worktree-setup.md"
+    Given "repo-governance/development/workflow/worktree-setup.md"
     When I read its initialization-order section
     Then it mandates "npm install" before "npm run doctor -- --fix"
     And it explains the postinstall trailing "|| true" rationale
@@ -296,21 +296,21 @@ User stories:
 ```gherkin
 Feature: plan-execution workflow matches ose-public's current shape
   Scenario: Termination rules
-    Given "governance/workflows/plan/plan-execution.md"
+    Given "repo-governance/workflows/plan/plan-execution.md"
     When I diff the file against the ose-public version
     Then differences are limited to primer-specific phrasing (single-repo, no parent gitlinks)
     And the iteration loop, Iron Rules, and termination conditions match
 
 Feature: plan-quality-gate workflow matches ose-public's current shape
   Scenario: Termination rule
-    Given "governance/workflows/plan/plan-quality-gate.md"
+    Given "repo-governance/workflows/plan/plan-quality-gate.md"
     When I diff the file against the ose-public version
     Then it terminates on "two consecutive zero-finding validations"
     And the max-iterations default is 7 with escalation warning at 5
 
 Feature: companion CI workflows are present
   Scenario: Files present
-    Given "governance/development/workflow/" tree
+    Given "repo-governance/development/workflow/" tree
     When I list it
     Then "ci-monitoring.md" and "ci-post-push-verification.md" both exist
     And each file's frontmatter title and purpose statement match ose-public's
@@ -321,7 +321,7 @@ Feature: companion CI workflows are present
 User stories:
 
 - As a ose-primer maintainer driving any code change, I want
-  `governance/development/workflow/test-driven-development.md` to be the
+  `repo-governance/development/workflow/test-driven-development.md` to be the
   authoritative convention spelling out Red→Green→Refactor, so that I
   can cite a single source instead of relying on `implementation.md`'s
   passing reference.
@@ -330,32 +330,32 @@ User stories:
   `implementation.md`, so that I can mechanically check that a
   plan's delivery checklist follows Red→Green→Refactor.
 - As a template consumer, I want the test-driven-development
-  convention to ship in `governance/development/workflow/`, so that my
+  convention to ship in `repo-governance/development/workflow/`, so that my
   fork inherits the same testing discipline ose-public uses today.
 
 ```gherkin
 Feature: test-driven-development convention is present and authoritative
   Scenario: File present
-    Given "governance/development/workflow/test-driven-development.md" exists
+    Given "repo-governance/development/workflow/test-driven-development.md" exists
     When I read its first heading
     Then it states "Test-Driven Development Convention"
     And the first paragraph mandates "Write the failing test first, then make it pass, then refactor"
 
   Scenario: Cross-references in place
-    Given "governance/development/workflow/implementation.md"
+    Given "repo-governance/development/workflow/implementation.md"
     When I grep for "test-driven-development.md"
     Then I find at least one link
-    And "governance/workflows/plan/plan-execution.md" also links to "test-driven-development.md"
+    And "repo-governance/workflows/plan/plan-execution.md" also links to "test-driven-development.md"
 
   Scenario: Three-level testing standard cross-link
-    Given "governance/development/workflow/test-driven-development.md"
+    Given "repo-governance/development/workflow/test-driven-development.md"
     When I grep for "three-level-testing-standard.md"
     Then I find at least one link in the "Conventions Implemented/Respected" section
 
   Scenario: Plan-checker can cite TDD when validating delivery checklists
     Given a plan's "delivery.md" with a code-touching item that lacks a preceding "write failing test" item
     When "plan-checker" runs
-    Then the report cites "governance/development/workflow/test-driven-development.md" as the violated convention
+    Then the report cites "repo-governance/development/workflow/test-driven-development.md" as the violated convention
 ```
 
 ### W10 — Convention completeness
@@ -368,14 +368,14 @@ User stories:
 ```gherkin
 Feature: no-last-updated convention is present and authoritative
   Scenario: File present
-    Given "governance/conventions/structure/no-last-updated.md" exists
+    Given "repo-governance/conventions/structure/no-last-updated.md" exists
     When I read it
     Then it forbids "**Last Updated**" rows in non-website markdown
-    And it cross-references "governance/conventions/structure/no-date-metadata.md" as a companion rule
+    And it cross-references "repo-governance/conventions/structure/no-date-metadata.md" as a companion rule
 
 Feature: programming-language-docs-separation convention is present
   Scenario: File present
-    Given "governance/conventions/structure/programming-language-docs-separation.md" exists
+    Given "repo-governance/conventions/structure/programming-language-docs-separation.md" exists
     When I read it
     Then it states the boundary between generic dev docs and programming-language-specific docs
     And it lists the canonical locations for language docs (e.g., docs/explanation/software-engineering/programming-languages/<lang>/)
@@ -392,16 +392,16 @@ User stories:
 ```gherkin
 Feature: plan-anti-hallucination convention is present
   Scenario: File present
-    Given "governance/development/quality/plan-anti-hallucination.md" exists
+    Given "repo-governance/development/quality/plan-anti-hallucination.md" exists
     When I read it
     Then it enumerates concrete hallucination failure modes
     And it specifies the verification check each finding category must pass
-    And it is cross-referenced from "governance/workflows/plan/plan-quality-gate.md"
+    And it is cross-referenced from "repo-governance/workflows/plan/plan-quality-gate.md"
 
   Scenario: plan-checker cites the convention when flagging hallucinated content
     Given a plan that references a non-existent file path "/foo/bar.md"
     When "plan-checker" runs
-    Then the report cites "governance/development/quality/plan-anti-hallucination.md" as the validated convention
+    Then the report cites "repo-governance/development/quality/plan-anti-hallucination.md" as the validated convention
 ```
 
 ### W12 — Dev environment setup workflow
@@ -414,16 +414,16 @@ User stories:
 ```gherkin
 Feature: infra-development-environment-setup workflow is refreshed against ose-public
   Scenario: File present at primer-canonical path
-    Given "governance/workflows/infra/infra-development-environment-setup.md" exists
+    Given "repo-governance/workflows/infra/infra-development-environment-setup.md" exists
     And the filename matches the workflow-naming convention "<scope>(-<qualifier>)*-<type>" with scope=infra, qualifiers=development-environment, type=setup
     When I read it
     Then it contains end-to-end bootstrap steps (Volta, Docker, language toolchains, env vars, dependency install, doctor sweep)
-    And it cross-references "governance/development/workflow/worktree-setup.md" for the worktree-specific bootstrap path
+    And it cross-references "repo-governance/development/workflow/worktree-setup.md" for the worktree-specific bootstrap path
     And it documents OPENCODE_GO_API_KEY env-var setup post-W2
 
   Scenario: Body content matches ose-public source modulo primer adaptation
-    Given primer "governance/workflows/infra/infra-development-environment-setup.md"
-    And ose-public "governance/workflows/infra/development-environment-setup.md"
+    Given primer "repo-governance/workflows/infra/infra-development-environment-setup.md"
+    And ose-public "repo-governance/workflows/infra/development-environment-setup.md"
     When I diff the body content (excluding filename, frontmatter date fields, primer-specific app-list paragraphs)
     Then the structural sections (Bootstrap, Toolchains, Env vars, Verification) match
     And no Z.ai env-var references remain (replaced by OPENCODE_GO_API_KEY per W2)
@@ -452,10 +452,10 @@ Feature: docs-software-engineering-separation triad is present
     And ".opencode/agents/docs-software-engineering-separation-fixer.md" exists
 
   Scenario: Checker flags misplaced language doc
-    Given a file at "governance/development/best-practices.md" containing Go-specific guidance
+    Given a file at "repo-governance/development/best-practices.md" containing Go-specific guidance
     When "docs-software-engineering-separation-checker" runs
     Then the report flags the file with the canonical destination "docs/explanation/software-engineering/programming-languages/golang/best-practices.md"
-    And the finding cites "governance/conventions/structure/programming-language-docs-separation.md"
+    And the finding cites "repo-governance/conventions/structure/programming-language-docs-separation.md"
 ```
 
 ### W14 — Content drift sweep
@@ -469,7 +469,7 @@ User stories:
 Feature: content drift sweep produces a baseline diff
   Scenario: Phase 14A baseline
     Given the current ose-primer working tree
-    When the executor runs "diff -rq governance/ /Users/wkf/ose-projects/ose-public/governance/" (or equivalent)
+    When the executor runs "diff -rq repo-governance/ /Users/wkf/ose-projects/ose-public/repo-governance/" (or equivalent)
     Then the report enumerates every file path that diverges from ose-public
     And the report classifies each diverging file as "refresh", "skip (primer-specific)", or "investigate"
 
@@ -487,16 +487,16 @@ Feature: known-drifted files refreshed against ose-public
 - All fourteen Gherkin Feature groups above pass against `ose-primer`'s tip-of-`main`
   after this plan executes.
 - `nx affected -t typecheck lint test:quick spec-coverage` is green.
-- `nx run rhino-cli:validate:governance-vendor-audit` is green.
+- `nx run rhino-cli:validate:repo-governance-vendor-audit` is green.
 - `nx run rhino-cli:validate:cross-vendor-parity` is green for two consecutive runs.
 - `npm run sync:claude-to-opencode` is a no-op.
-- `governance/conventions/structure/worktree-path.md` exists and is referenced by `AGENTS.md` / `CLAUDE.md`.
-- `governance/conventions/structure/{no-last-updated,programming-language-docs-separation}.md` exist (W10).
-- `governance/development/quality/plan-anti-hallucination.md` exists (W11).
-- `governance/workflows/infra/infra-development-environment-setup.md` (primer-canonical filename per workflow-naming convention) refreshed against ose-public's `development-environment-setup.md` source (W12).
+- `repo-governance/conventions/structure/worktree-path.md` exists and is referenced by `AGENTS.md` / `CLAUDE.md`.
+- `repo-governance/conventions/structure/{no-last-updated,programming-language-docs-separation}.md` exist (W10).
+- `repo-governance/development/quality/plan-anti-hallucination.md` exists (W11).
+- `repo-governance/workflows/infra/infra-development-environment-setup.md` (primer-canonical filename per workflow-naming convention) refreshed against ose-public's `development-environment-setup.md` source (W12).
 - `.claude/agents/docs-software-engineering-separation-{checker,fixer}.md` and `.claude/skills/docs-validating-software-engineering-separation/SKILL.md` exist (W13).
 - W14 baseline diff produced; all `refresh`-classified files synced; `diff -q` reports zero substantive differences modulo primer-specific paragraphs.
-- `governance/workflows/plan/{plan-execution,plan-quality-gate,README}.md` match ose-public's current versions modulo primer-specific phrasing.
-- `governance/development/workflow/{ci-monitoring,ci-post-push-verification,test-driven-development}.md` are present.
+- `repo-governance/workflows/plan/{plan-execution,plan-quality-gate,README}.md` match ose-public's current versions modulo primer-specific phrasing.
+- `repo-governance/development/workflow/{ci-monitoring,ci-post-push-verification,test-driven-development}.md` are present.
 - Plan archived to `plans/done/2026-05-04__adopt-ose-public-vendor-neutrality-and-opencode-go/`
   with delivery checklist 100% ticked.

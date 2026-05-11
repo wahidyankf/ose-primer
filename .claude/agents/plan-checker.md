@@ -40,7 +40,7 @@ The `repo-generating-validation-reports` Skill provides UUID generation, timesta
 
 ## Core Responsibility
 
-Validate project plans against standards defined in [Plans Organization Convention](../../governance/conventions/structure/plans.md).
+Validate project plans against standards defined in [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md).
 
 ## Validation Scope
 
@@ -55,7 +55,7 @@ Validate project plans against standards defined in [Plans Organization Conventi
 
 ### 2. Requirements Validation (BRD + PRD)
 
-Per the [Content-Placement Rules](../../governance/conventions/structure/plans.md#content-placement-rules-brdmd-vs-prdmd), business and product concerns live in separate files. Flag misplacement as distinct findings — content in the wrong file is a structural violation, not a stylistic issue.
+Per the [Content-Placement Rules](../../repo-governance/conventions/structure/plans.md#content-placement-rules-brdmd-vs-prdmd), business and product concerns live in separate files. Flag misplacement as distinct findings — content in the wrong file is a structural violation, not a stylistic issue.
 
 **In `brd.md` (business perspective)**:
 
@@ -209,13 +209,13 @@ Update status to "Complete", add summary statistics and prioritized recommendati
 **Project Guidance:**
 
 - [CLAUDE.md](../../CLAUDE.md) - Primary guidance
-- [Plans Organization Convention](../../governance/conventions/structure/plans.md) - Plan standards
-- [Trunk Based Development Convention](../../governance/development/workflow/trunk-based-development.md) - Git workflow standards
+- [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md) - Plan standards
+- [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow standards
 
 **Related Agents / Workflows:**
 
 - `plan-maker` - Creates plans
-- [plan-execution workflow](../../governance/workflows/plan/plan-execution.md) - Execute plans (calling context orchestrates; no dedicated subagent)
+- [plan-execution workflow](../../repo-governance/workflows/plan/plan-execution.md) - Execute plans (calling context orchestrates; no dedicated subagent)
 - `plan-execution-checker` - Validates completed work
 - `plan-fixer` - Fixes plan issues
 
@@ -255,7 +255,7 @@ Use `docs-validating-factual-accuracy` Skill methodology:
 - Report unverified claims as MEDIUM findings (may be correct but cannot confirm)
 
 **Delegate multi-page research to `web-research-maker`**: Per the
-[Web Research Delegation Convention](../../governance/conventions/writing/web-research-delegation.md),
+[Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md),
 invoke the [`web-research-maker`](./web-research-maker.md) subagent for multi-page research
 (threshold: 2+ `WebSearch` calls or 3+ `WebFetch` calls for a single claim). This keeps the
 plan audit context lean and returns a cited, synthesised summary. Use in-context
@@ -361,6 +361,6 @@ After validating operational readiness (Step 5b), verify the plan includes manua
 
 This agent enforces the following normative conventions when validating plans:
 
-- [Plan Anti-Hallucination Convention](../../governance/development/quality/plan-anti-hallucination.md) — confidence labels (`[Repo-grounded]`, `[Web-cited]`, `[Judgment call]`, `[Unverified]`), Anti-Pattern Catalog (AP-1 through AP-10), suggested-executor annotation validity, web-citation completeness, web-research delegation thresholds for plan content
-- [Plans Organization Convention](../../governance/conventions/structure/plans.md) — five-document layout, single-file exception criteria, content-placement rules
-- [Test-Driven Development Convention](../../governance/development/workflow/test-driven-development.md) — Red→Green→Refactor mandate for code-touching delivery items
+- [Plan Anti-Hallucination Convention](../../repo-governance/development/quality/plan-anti-hallucination.md) — confidence labels (`[Repo-grounded]`, `[Web-cited]`, `[Judgment call]`, `[Unverified]`), Anti-Pattern Catalog (AP-1 through AP-10), suggested-executor annotation validity, web-citation completeness, web-research delegation thresholds for plan content
+- [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md) — five-document layout, single-file exception criteria, content-placement rules
+- [Test-Driven Development Convention](../../repo-governance/development/workflow/test-driven-development.md) — Red→Green→Refactor mandate for code-touching delivery items

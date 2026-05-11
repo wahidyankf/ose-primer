@@ -3,7 +3,7 @@
 <!--
   MAINTENANCE NOTE: Brief landing page
   For comprehensive documentation, see:
-  governance/conventions/structure/plans.md
+  repo-governance/conventions/structure/plans.md
 -->
 
 This folder contains temporary, ephemeral project planning documents, distinct from permanent documentation in `docs/`.
@@ -19,7 +19,7 @@ This folder contains temporary, ephemeral project planning documents, distinct f
 
 For detailed information on plans organization, structure, naming conventions, and workflow, see:
 
-**[Plans Organization Convention](../governance/conventions/structure/plans.md)**
+**[Plans Organization Convention](../repo-governance/conventions/structure/plans.md)**
 
 ## Plan Folder Naming
 
@@ -37,7 +37,7 @@ Examples:
 - `in-progress/auth-system/` (no date)
 - `done/2025-12-15__auth-system/` (completion date)
 
-For the full rules and rationale, see the [Plans Organization Convention](../governance/conventions/structure/plans.md#-plan-folder-naming).
+For the full rules and rationale, see the [Plans Organization Convention](../repo-governance/conventions/structure/plans.md#-plan-folder-naming).
 
 ## Related Documentation
 

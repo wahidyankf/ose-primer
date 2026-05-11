@@ -49,7 +49,7 @@ erode trust in the policy document.
 
 ### Pain Point 4: CLAUDE.md Lacks Inline Plan Format Guidance
 
-The Plans Organization section in `CLAUDE.md` points to `governance/conventions/structure/plans.md`
+The Plans Organization section in `CLAUDE.md` points to `repo-governance/conventions/structure/plans.md`
 without describing the 5-doc format inline. The `plan-maker` agent and human developers
 must navigate to the convention file to learn how many documents to create and what to
 name them — creating unnecessary indirection and increasing the risk of format errors on

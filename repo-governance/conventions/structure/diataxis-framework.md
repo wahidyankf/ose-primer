@@ -350,7 +350,7 @@ Start here
 
 ### Explanation Example: This Document
 
-**Location**: `governance/conventions/structure/diataxis-framework.md`
+**Location**: `repo-governance/conventions/structure/diataxis-framework.md`
 
 **Structure**:
 

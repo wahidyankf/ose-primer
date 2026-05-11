@@ -61,7 +61,7 @@ practice they:
 
 All markdown files in this repository:
 
-- `governance/` — conventions, development practices, principles, workflows, vision
+- `repo-governance/` — conventions, development practices, principles, workflows, vision
 - `docs/` — tutorials, how-to guides, reference, explanation
 - `.claude/agents/` — agent definition files
 - `.claude/skills/` — skill package files

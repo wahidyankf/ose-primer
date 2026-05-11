@@ -120,7 +120,7 @@ See `repo-applying-maker-checker-fixer` skill for complete workflow patterns.
 - Follow conventions and practices (L2/L3 governance)
 - Action-oriented, task-focused
 
-**See**: [governance/repository-governance-architecture.md](../../governance/repository-governance-architecture.md) for complete architecture
+**See**: [repo-governance/repository-governance-architecture.md](../../repo-governance/repository-governance-architecture.md) for complete architecture
 
 ## Governance Standards
 
@@ -131,6 +131,6 @@ All skills follow governance principles:
 - **Simplicity Over Complexity** - Single-purpose skills, clear scope
 - **Explicit Over Implicit** - Clear when/how to use each skill
 
-**See**: [governance/principles/README.md](../../governance/principles/README.md)
+**See**: [repo-governance/principles/README.md](../../repo-governance/principles/README.md)
 
 ---

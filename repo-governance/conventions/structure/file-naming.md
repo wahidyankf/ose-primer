@@ -12,7 +12,7 @@ tags:
 
 # File Naming Convention
 
-Files in `docs/`, `governance/`, and similar repository locations follow a single rule designed for **standard markdown and GitHub compatibility**.
+Files in `docs/`, `repo-governance/`, and similar repository locations follow a single rule designed for **standard markdown and GitHub compatibility**.
 
 ## Why This Rule Exists
 

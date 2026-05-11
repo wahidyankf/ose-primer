@@ -1,4 +1,4 @@
-# PRD — Rename `governance/` to `repo-governance/`
+# PRD — Rename `repo-governance/` to `repo-governance/`
 
 ## Product Overview
 
@@ -29,11 +29,11 @@ Scenario: Directory renamed
   Given the ose-primer repo at HEAD
   When the rename is applied
   Then `repo-governance/` exists at repo root
-  And `governance/` does not exist at repo root
+  And `repo-governance/` does not exist at repo root
 
 Scenario: No stray path references remain in functional files
   Given the rename has been applied
-  When grep is run for "governance/" in *.go and *.sh files
+  When grep is run for "repo-governance/" in *.go and *.sh files
   Then zero matches are found outside the repo-governance/ directory itself
 
 Scenario: Pre-push hook still functions
@@ -61,10 +61,10 @@ Scenario: Markdown lint passes
 
 **In scope:**
 
-- `governance/` directory rename via `git mv`
-- `apps/rhino-cli/internal/governance/` directory rename via `git mv`
-- `specs/apps/rhino/cli/gherkin/governance-vendor-audit.feature` rename via `git mv`
-- All `governance/` path tokens in `.md`, `.sh`, `.go`, `.json`, `.yaml`, `.yml`, `.feature` files
+- `repo-governance/` directory rename via `git mv`
+- `apps/rhino-cli/internal/repo-governance/` directory rename via `git mv`
+- `specs/apps/rhino/cli/gherkin/repo-governance-vendor-audit.feature` rename via `git mv`
+- All `repo-governance/` path tokens in `.md`, `.sh`, `.go`, `.json`, `.yaml`, `.yml`, `.feature` files
 - `.husky/pre-push` (no file extension — updated explicitly)
 
 **Out of scope:**
@@ -72,7 +72,7 @@ Scenario: Markdown lint passes
 - Prose occurrences of the word "governance" without a trailing `/` (not a path token)
 - Content within governance files
 - `ose-public`, `ose-infra` governance directories
-- Parent repo `CLAUDE.md` (no `ose-primer/governance/` references exist there)
+- Parent repo `CLAUDE.md` (no `ose-primer/repo-governance/` references exist there)
 
 ## Product Risks
 

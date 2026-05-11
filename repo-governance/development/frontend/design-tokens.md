@@ -17,7 +17,7 @@ Design tokens are the named CSS custom properties that form the shared visual vo
 
 ## Scope Clarification: Docs Palette vs UI Colors
 
-The [Color Accessibility Convention](../../conventions/formatting/color-accessibility.md) defines a **5-color accessible palette** (`#0173B2`, `#DE8F05`, `#029E73`, `#CC78BC`, `#CA9161`) intended exclusively for documentation diagrams, Mermaid charts, and emoji categorization in `docs/` and `governance/`.
+The [Color Accessibility Convention](../../conventions/formatting/color-accessibility.md) defines a **5-color accessible palette** (`#0173B2`, `#DE8F05`, `#029E73`, `#CC78BC`, `#CA9161`) intended exclusively for documentation diagrams, Mermaid charts, and emoji categorization in `docs/` and `repo-governance/`.
 
 That palette does **not** govern UI application colors. Frontend apps may use any colors provided they meet WCAG AA contrast requirements:
 

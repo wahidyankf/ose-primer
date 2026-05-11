@@ -95,7 +95,7 @@ Every workflow filename follows: `<scope>(-<qualifier>)*-<type>`
 - `qualifier` — zero or more refinement tokens (e.g., `rules`, `by-example`, `software-engineering-separation`).
 - `type` — exactly one trailing token from the Type Vocabulary below.
 
-No other structure is permitted. No exceptions, except for reference material under `governance/workflows/meta/` (documented below).
+No other structure is permitted. No exceptions, except for reference material under `repo-governance/workflows/meta/` (documented below).
 
 Normative source: [Workflow Naming Convention](../conventions/structure/workflow-naming.md).
 
@@ -109,7 +109,7 @@ Normative source: [Workflow Naming Convention](../conventions/structure/workflow
 
 ## Meta reference exception
 
-Files under `governance/workflows/meta/` are **reference documentation about the workflow system** (e.g., `execution-modes.md`, `workflow-identifier.md`). They describe how workflows work, not workflows themselves. They are exempt from the type-suffix rule.
+Files under `repo-governance/workflows/meta/` are **reference documentation about the workflow system** (e.g., `execution-modes.md`, `workflow-identifier.md`). They describe how workflows work, not workflows themselves. They are exempt from the type-suffix rule.
 
 Enforcement: `rhino-cli workflows validate-naming` (wired into pre-push and CI).
 
@@ -225,7 +225,7 @@ Workflows pass data between steps using references:
 | Format    | Free-form Markdown                 | Structured Markdown with YAML                |
 | Execution | Manual, guided by human            | Automated, orchestrated by workflow executor |
 | Lifecycle | Created → Updated → Archived       | Created → Executed repeatedly → Deprecated   |
-| Location  | `plans/` directory                 | `governance/workflows/`                      |
+| Location  | `plans/` directory                 | `repo-governance/workflows/`                 |
 
 **Relationship**: Plans can reference workflows ("Use deployment-workflow for release"). Workflows can be generated from plan checklists.
 
@@ -235,7 +235,7 @@ To create a new workflow:
 
 1. **Identify need**: 2 or more agents in sequence, or repeated process, or complex orchestration
 2. **Design structure**: Define inputs, steps, outputs, goals, termination criteria
-3. **Write workflow file**: Use plain descriptive name in the appropriate subdirectory of `governance/workflows/[category]/`
+3. **Write workflow file**: Use plain descriptive name in the appropriate subdirectory of `repo-governance/workflows/[category]/`
 4. **Document thoroughly**: Purpose, when to use, example usage, related workflows
 5. **Validate**: Check frontmatter schema, agent references, dependencies
 6. **Test manually**: Run workflow steps to verify correctness
@@ -252,7 +252,7 @@ All workflows should be validated for:
 - **Type correctness** - Inputs/outputs use valid types
 - **Dependency acyclicity** - No circular step dependencies
 - **Reference resolution** - All `{stepN.outputs}` references resolve
-- **File naming** - Plain name in correct subdirectory of `governance/workflows/`
+- **File naming** - Plain name in correct subdirectory of `repo-governance/workflows/`
 - **Documentation quality** - Clear purpose, examples, termination criteria
 
 Future: `workflow-validator` agent will automate this validation.

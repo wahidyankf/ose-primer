@@ -2,12 +2,12 @@ package cmd
 
 import "github.com/spf13/cobra"
 
-var governanceCmd = &cobra.Command{
-	Use:   "governance",
-	Short: "Governance validation commands",
-	Long:  `Commands for validating governance layer conventions.`,
+var repoGovernanceCmd = &cobra.Command{
+	Use:   "repo-governance",
+	Short: "Repository governance validation commands",
+	Long:  `Commands for validating repository governance layer conventions.`,
 }
 
 func init() {
-	rootCmd.AddCommand(governanceCmd)
+	rootCmd.AddCommand(repoGovernanceCmd)
 }

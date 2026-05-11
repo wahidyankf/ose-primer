@@ -30,8 +30,8 @@ Three concrete gaps exist today.
    version reports the post-direction-mapping values, which match what
    the human actually sees on screen.
 3. **Pre-push coverage gap.** The `rhino-cli:validate:mermaid` Nx
-   target is restricted to `governance/` and `.claude/` paths, even
-   though the CLI's default scan covers `docs/`, `governance/`,
+   target is restricted to `repo-governance/` and `.claude/` paths, even
+   though the CLI's default scan covers `docs/`, `repo-governance/`,
    `.claude/`, and root `*.md`. Mermaid diagrams in `docs/` (153 of
    them across the AI primer, the BDD/TDD docs, programming-language
    docs) and in `plans/` are never validated before push.
@@ -106,6 +106,6 @@ The following are explicitly out of scope for this plan.
   byte-comparable in shape to `ose-public` modulo the
   package-import path.
 - Commits pushed direct to `origin main` per
-  [Git Push Default Convention](../../../governance/development/workflow/git-push-default.md)
+  [Git Push Default Convention](../../../repo-governance/development/workflow/git-push-default.md)
   Standard 1; no draft PR is opened unless the user explicitly
   requests one for this plan.

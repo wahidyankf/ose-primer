@@ -337,17 +337,17 @@ For learning Java fundamentals and concepts referenced in these standards, see:
 
 These standards enforce the the software engineering principles:
 
-1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)**
+1. **[Automation Over Manual](../../../../../repo-governance/principles/software-engineering/automation-over-manual.md)**
    - Spring Boot auto-configuration for common patterns (no boilerplate setup)
    - Framework-managed dependency injection (no manual object instantiation)
    - Automatic transaction management with `@Transactional`
 
-2. **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**
+2. **[Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)**
    - Explicit component scanning with declared base packages (not classpath-wide)
    - Constructor injection makes dependencies visible in code
    - YAML configuration explicitly declares all settings (no hidden defaults)
 
-3. **[Reproducibility](../../../../../governance/principles/software-engineering/reproducibility.md)**
+3. **[Reproducibility](../../../../../repo-governance/principles/software-engineering/reproducibility.md)**
    - Environment profiles (`dev`, `staging`, `prod`) ensure consistent configuration across environments
    - Explicit Spring Boot version in parent POM
    - Configuration externalized in `application.yml` (not hardcoded)

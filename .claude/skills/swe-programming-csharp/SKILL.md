@@ -176,4 +176,4 @@ public class ZakatCalculatorTests
 ## References
 
 - [C# README](../../../docs/explanation/software-engineering/programming-languages/c-sharp/README.md)
-- [Functional Programming](../../../governance/development/pattern/functional-programming.md)
+- [Functional Programming](../../../repo-governance/development/pattern/functional-programming.md)

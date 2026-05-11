@@ -47,7 +47,7 @@ outputs:
 **Purpose**: Automatically validate cross-vendor behavioral-parity invariants between
 the canonical primary platform binding (`.claude/`), the secondary platform binding
 (`.opencode/`), the canonical root instruction surfaces (`AGENTS.md`, `CLAUDE.md`),
-and `governance/` prose, then apply fixes iteratively until all findings resolve.
+and `repo-governance/` prose, then apply fixes iteratively until all findings resolve.
 
 This is the structural parallel to the
 [`plan-quality-gate` workflow](../plan/plan-quality-gate.md) but scoped to repository
@@ -281,7 +281,7 @@ Result: PARTIAL after 1 iteration; user must resolve before re-running.
 - [Workflow Naming Convention](../../conventions/structure/workflow-naming.md) — this
   workflow's filename `repo-cross-vendor-parity-quality-gate` follows the
   `<scope>(-<qualifier>)*-<type>` rule (scope `repo` matches parent dir
-  `governance/workflows/repo/`).
+  `repo-governance/workflows/repo/`).
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md)
 - [Plan Quality Gate Workflow](../plan/plan-quality-gate.md) — structural parallel for
   plan-completeness validation

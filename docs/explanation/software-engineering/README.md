@@ -206,9 +206,9 @@ The open-sharia-enterprise project applies both C4 and DDD principles:
 
 **Complementary Practices:**
 
-- [Functional Programming](../../../governance/development/pattern/functional-programming.md) - Immutability and pure functions
-- [Repository Governance Architecture](../../../governance/repository-governance-architecture.md) - Six-layer hierarchy
-- [Diátaxis Framework](../../../governance/conventions/structure/diataxis-framework.md) - Documentation organization
+- [Functional Programming](../../../repo-governance/development/pattern/functional-programming.md) - Immutability and pure functions
+- [Repository Governance Architecture](../../../repo-governance/repository-governance-architecture.md) - Six-layer hierarchy
+- [Diátaxis Framework](../../../repo-governance/conventions/structure/diataxis-framework.md) - Documentation organization
 
 ## Learning Paths
 
@@ -235,9 +235,9 @@ The open-sharia-enterprise project applies both C4 and DDD principles:
 ## 🔗 Related Documentation
 
 - **[Explanation Documentation Index](../README.md)** - All conceptual documentation
-- **[Repository Governance Architecture](../../../governance/repository-governance-architecture.md)** - Six-layer governance hierarchy
-- **[Functional Programming Principles](../../../governance/development/pattern/functional-programming.md)** - FP practices in this repository
-- **[Diagram Standards](../../../governance/conventions/formatting/diagrams.md)** - Mermaid and accessibility requirements
-- **[Content Quality Standards](../../../governance/conventions/writing/quality.md)** - Documentation writing guidelines
+- **[Repository Governance Architecture](../../../repo-governance/repository-governance-architecture.md)** - Six-layer governance hierarchy
+- **[Functional Programming Principles](../../../repo-governance/development/pattern/functional-programming.md)** - FP practices in this repository
+- **[Diagram Standards](../../../repo-governance/conventions/formatting/diagrams.md)** - Mermaid and accessibility requirements
+- **[Content Quality Standards](../../../repo-governance/conventions/writing/quality.md)** - Documentation writing guidelines
 
 ---

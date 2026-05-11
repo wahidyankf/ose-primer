@@ -69,9 +69,9 @@ This document defines **authoritative build and configuration standards** for Go
 
 **Principles Applied**:
 
-- **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - Automated builds and testing
-- **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - Explicit configuration, no magic
-- **[Reproducibility First](../../../../../governance/principles/software-engineering/reproducibility.md)** - Same input = same output
+- **[Automation Over Manual](../../../../../repo-governance/principles/software-engineering/automation-over-manual.md)** - Automated builds and testing
+- **[Explicit Over Implicit](../../../../../repo-governance/principles/software-engineering/explicit-over-implicit.md)** - Explicit configuration, no magic
+- **[Reproducibility First](../../../../../repo-governance/principles/software-engineering/reproducibility.md)** - Same input = same output
 
 ## 📦 go.mod File Standards
 
@@ -1143,9 +1143,9 @@ func main() {
 
 **Platform Documentation**:
 
-- **[Reproducibility First](../../../../../governance/principles/software-engineering/reproducibility.md)** - Reproducible builds principle
-- **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - Build automation principle
-- **[Code Quality Standards](../../../../../governance/development/quality/code.md)** - Quality enforcement
+- **[Reproducibility First](../../../../../repo-governance/principles/software-engineering/reproducibility.md)** - Reproducible builds principle
+- **[Automation Over Manual](../../../../../repo-governance/principles/software-engineering/automation-over-manual.md)** - Build automation principle
+- **[Code Quality Standards](../../../../../repo-governance/development/quality/code.md)** - Quality enforcement
 
 **External Resources**:
 

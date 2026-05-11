@@ -14,7 +14,7 @@
   - Status: done
   - Files Changed: none (installs only)
   - Notes: 19/19 tools OK; up to date, 1909 packages audited. 39 vulns reported by npm audit (13 moderate, 24 high, 2 critical) — preexisting, not in scope for cleanup plan.
-- [x] Converge the full polyglot toolchain: `rtk npm run doctor -- --fix` (required — `postinstall` runs `doctor || true` and tolerates drift silently; see [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md))
+- [x] Converge the full polyglot toolchain: `rtk npm run doctor -- --fix` (required — `postinstall` runs `doctor || true` and tolerates drift silently; see [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md))
   - Date: 2026-04-18
   - Status: done
   - Files Changed: none
@@ -300,8 +300,8 @@
 - [ ] Write "How to use this template" — step-by-step: `git clone`, choose `a-demo-*` variants to keep, delete unwanted variants, rename via search-and-replace or `rhino-cli` helpers, point `origin` at the new remote, push to `main`
 - [ ] Write "Prerequisites" — Volta + Node pinned version; single-command setup `npm install && npm run doctor -- --fix`
 - [ ] Write "Common commands" — `nx build`, `nx affected -t …`, `npm run lint:md`, `npm run doctor`, `npm run sync:claude-to-opencode`
-- [ ] Write "Governance & conventions" — link to `governance/README.md` and list top-level principle categories
-- [ ] Write "Repository layout" — brief ASCII or bullet tree showing `apps/`, `libs/`, `specs/`, `governance/`, `docs/`, `plans/`, `.claude/`, `.opencode/`
+- [ ] Write "Governance & conventions" — link to `repo-governance/README.md` and list top-level principle categories
+- [ ] Write "Repository layout" — brief ASCII or bullet tree showing `apps/`, `libs/`, `specs/`, `repo-governance/`, `docs/`, `plans/`, `.claude/`, `.opencode/`
 - [ ] Write "License" — short statement: "MIT. See `LICENSE` and `LICENSING-NOTICE.md`."
 - [ ] Remove any product-site links (`oseplatform.com`, `ayokoding.com`, `www.organiclever.com`)
 - [ ] Remove any "Phase 1 (OrganicLever)" or product-app framing left over from `ose-public`
@@ -329,14 +329,14 @@
 
 ## Phase 11 — Audit and prune governance docs
 
-- [ ] Enumerate hits: `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" governance/ > local-temp/governance-hits.txt`
+- [ ] Enumerate hits: `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" repo-governance/ > local-temp/governance-hits.txt`
 - [ ] For each listed file, decide: rewrite (generalise the example) or delete (product-sole subject)
-- [ ] Apply edits to conventions files (`governance/conventions/`)
-- [ ] Apply edits to development files (`governance/development/`)
-- [ ] Apply edits to workflow files (`governance/workflows/`)
-- [ ] Apply edits to principles + vision files if touched (`governance/principles/`, `governance/vision/`)
-- [ ] Run `docs-link-checker` agent on `governance/` subtree and address any broken-link findings
-- [ ] Verify: `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" governance/` returns empty
+- [ ] Apply edits to conventions files (`repo-governance/conventions/`)
+- [ ] Apply edits to development files (`repo-governance/development/`)
+- [ ] Apply edits to workflow files (`repo-governance/workflows/`)
+- [ ] Apply edits to principles + vision files if touched (`repo-governance/principles/`, `repo-governance/vision/`)
+- [ ] Run `docs-link-checker` agent on `repo-governance/` subtree and address any broken-link findings
+- [ ] Verify: `rtk grep -rn "ayokoding\|oseplatform\|organiclever\|hugo" repo-governance/` returns empty
 - [ ] Run `rtk npm run lint:md:fix`
 - [ ] Run `rtk npm run lint:md` and confirm pass
 - [ ] Commit conventions subgrouping: `rtk git commit -m "docs(governance): drop product-specific references from conventions"`

@@ -1,6 +1,6 @@
 ---
 title: "Workflow Naming Convention"
-description: Single rule for workflow filename structure under governance/workflows
+description: Single rule for workflow filename structure under repo-governance/workflows
 category: explanation
 subcategory: conventions
 tags:
@@ -11,7 +11,7 @@ tags:
 
 # Workflow Naming Convention
 
-Workflows under `governance/workflows/` follow a **single filename rule with no exceptions**, except for reference documentation under `governance/workflows/meta/` (which describes the workflow system rather than being a workflow).
+Workflows under `repo-governance/workflows/` follow a **single filename rule with no exceptions**, except for reference documentation under `repo-governance/workflows/meta/` (which describes the workflow system rather than being a workflow).
 
 ## Why This Rule Exists
 
@@ -31,7 +31,7 @@ Every workflow filename (basename without the `.md` extension) MUST match the st
 
 Token definitions:
 
-- **`<scope>`** — Exactly one token from the [Scope Vocabulary](#scope-vocabulary) below, matching the parent directory under `governance/workflows/`. Appears first.
+- **`<scope>`** — Exactly one token from the [Scope Vocabulary](#scope-vocabulary) below, matching the parent directory under `repo-governance/workflows/`. Appears first.
 - **`<qualifier>`** — Zero or more lowercase kebab tokens narrowing the scope. Each qualifier is a single hyphen-separated word or a compound kebab phrase (e.g., `rules`, `by-example`, `software-engineering-separation`). Qualifiers stack in order from broadest to narrowest.
 - **`<type>`** — Exactly one token from the [Type Vocabulary](#type-vocabulary) below. Names the execution model. Appears last.
 
@@ -41,7 +41,7 @@ Additional filename rules inherit from the [File Naming Convention](./file-namin
 
 ## Scope Vocabulary
 
-Workflow scope MUST match its parent directory under `governance/workflows/`. Current scopes:
+Workflow scope MUST match its parent directory under `repo-governance/workflows/`. Current scopes:
 
 - **`ci`** — Workflows that diagnose, validate, or repair continuous-integration pipelines.
 - **`docs`** — Workflows scoped to the `docs/` tree (Diátaxis content, link integrity, software-engineering separation).
@@ -67,24 +67,24 @@ No other type suffixes are permitted. Introducing a new type requires amending t
 
 ## Meta reference exception
 
-Files under `governance/workflows/meta/` are **reference documentation about the workflow system itself** (e.g., `execution-modes.md`, `workflow-identifier.md`). They describe how workflows are identified, how they are executed, and which patterns govern them. They are not workflows and therefore are exempt from the type-suffix rule.
+Files under `repo-governance/workflows/meta/` are **reference documentation about the workflow system itself** (e.g., `execution-modes.md`, `workflow-identifier.md`). They describe how workflows are identified, how they are executed, and which patterns govern them. They are not workflows and therefore are exempt from the type-suffix rule.
 
-This is the **only** exception. Every other file under `governance/workflows/` that is not a `README.md` index MUST conform to the rule.
+This is the **only** exception. Every other file under `repo-governance/workflows/` that is not a `README.md` index MUST conform to the rule.
 
 ## Applies To
 
 This convention applies to:
 
-- **All `.md` files under `governance/workflows/**/\*.md`\*\* except:
-  - `governance/workflows/README.md` and any per-scope `governance/workflows/<scope>/README.md` index files.
-  - Everything under `governance/workflows/meta/` (reference material).
+- **All `.md` files under `repo-governance/workflows/**/\*.md`\*\* except:
+  - `repo-governance/workflows/README.md` and any per-scope `repo-governance/workflows/<scope>/README.md` index files.
+  - Everything under `repo-governance/workflows/meta/` (reference material).
 
 ## ✅ Enforcement
 
 `repo-rules-checker` MUST run the following audit command as part of every governance pass:
 
 ```bash
-find governance/workflows -name '*.md' -not -name 'README.md' -not -path '*/meta/*' \
+find repo-governance/workflows -name '*.md' -not -name 'README.md' -not -path '*/meta/*' \
   | sed 's|.*/||; s|\.md$||' \
   | grep -vE -- '-(quality-gate|execution|setup)$'
 ```
@@ -103,7 +103,7 @@ Current workflows, grouped by type, all conforming to the rule:
 
 ## Related
 
-- [`governance/workflows/README.md`](../../workflows/README.md) — Operational catalog of workflows.
+- [`repo-governance/workflows/README.md`](../../workflows/README.md) — Operational catalog of workflows.
 - [Agent Naming Convention](./agent-naming.md) — Sibling rule governing `.claude/agents/*.md` and `.opencode/agent/*.md` filenames. Uses aligned scope vocabulary (`repo`, not `repository`).
 - [File Naming Convention](./file-naming.md) — Sibling filename rule for non-workflow files.
 

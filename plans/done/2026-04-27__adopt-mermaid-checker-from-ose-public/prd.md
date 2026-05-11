@@ -75,7 +75,7 @@ StartLine}` per block. The parser tolerates:
   subgraphs are popped at parse end so the warning still fires.
 - **FR-4 — Pre-push coverage extension.** The
   `rhino-cli:validate:mermaid` Nx target scans every `*.md` file
-  under the four canonical roots (`docs/`, `governance/`, `.claude/`,
+  under the four canonical roots (`docs/`, `repo-governance/`, `.claude/`,
   `plans/`) plus repo-root `*.md` files. The Husky pre-push hook
   continues to fire the target on any `*.md` change in the push
   range.

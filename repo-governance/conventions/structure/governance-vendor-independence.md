@@ -1,6 +1,6 @@
 ---
 title: "Governance Vendor-Independence Convention"
-description: Governance prose must be vendor-neutral. Vendor-specific bindings belong in platform-binding directories, not in governance/.
+description: Governance prose must be vendor-neutral. Vendor-specific bindings belong in platform-binding directories, not in repo-governance/.
 category: explanation
 subcategory: conventions
 tags:
@@ -14,7 +14,7 @@ created: 2026-05-02
 
 # Governance Vendor-Independence Convention
 
-All prose under `governance/` must be readable and actionable by any contributor — human or agent — regardless of which AI coding platform they use. Vendor-specific implementation details belong in dedicated platform-binding directories, not in the governance layer.
+All prose under `repo-governance/` must be readable and actionable by any contributor — human or agent — regardless of which AI coding platform they use. Vendor-specific implementation details belong in dedicated platform-binding directories, not in the governance layer.
 
 ## Principles Implemented/Respected
 
@@ -25,20 +25,20 @@ All prose under `governance/` must be readable and actionable by any contributor
 
 ## Purpose
 
-`governance/` contains the rules every contributor follows regardless of toolchain. When vendor-specific product names, model names, or path references appear in governance prose, they:
+`repo-governance/` contains the rules every contributor follows regardless of toolchain. When vendor-specific product names, model names, or path references appear in governance prose, they:
 
 - Exclude contributors using other AI coding agents (Cursor, Codex CLI, Gemini CLI, Copilot, Aider).
 - Couple governance correctness to a specific vendor's product lifecycle.
 - Create maintenance debt when vendor names or APIs change.
 
-This convention separates **vendor-neutral governance** (the rules) from **platform bindings** (the vendor-specific wiring that executes the rules) by pushing all binding details out of `governance/` and into the appropriate platform-binding directory.
+This convention separates **vendor-neutral governance** (the rules) from **platform bindings** (the vendor-specific wiring that executes the rules) by pushing all binding details out of `repo-governance/` and into the appropriate platform-binding directory.
 
 ## Scope
 
-**Applies to**: every `.md` file under `governance/`, **plus the canonical root instruction surfaces**:
+**Applies to**: every `.md` file under `repo-governance/`, **plus the canonical root instruction surfaces**:
 
 - `AGENTS.md` — canonical root instruction file (read natively by OpenCode, OpenAI Codex CLI, and other AGENTS.md-aware coding agents). Vendor-neutrality here is the load-bearing surface for cross-vendor behavioral parity.
-- `CLAUDE.md` — Claude Code shim. While CLAUDE.md is itself a Claude-Code platform binding artifact (its filename names the vendor by design), its **prose body** must be vendor-neutral by the same standard as `governance/`. Two specific allowances apply:
+- `CLAUDE.md` — Claude Code shim. While CLAUDE.md is itself a Claude-Code platform binding artifact (its filename names the vendor by design), its **prose body** must be vendor-neutral by the same standard as `repo-governance/`. Two specific allowances apply:
   - The single-line `@AGENTS.md` import directive is treated as an inline binding directive, not a forbidden vendor term.
   - Vendor-specific clarifications inside CLAUDE.md belong inside ` ```binding-example ` fenced blocks or under a "Platform Binding Examples" heading per the Allowlist Mechanism — never as load-bearing prose.
 
@@ -51,7 +51,7 @@ This convention separates **vendor-neutral governance** (the rules) from **platf
 
 ## Forbidden Vendor Terms
 
-The following patterns are forbidden in `governance/` prose except inside the allowlisted regions defined in the next section.
+The following patterns are forbidden in `repo-governance/` prose except inside the allowlisted regions defined in the next section.
 
 ### Coding-agent / harness product names
 
@@ -107,7 +107,7 @@ The following patterns are forbidden in `governance/` prose except inside the al
 | ---------------------------------------------- | --------------------------------------------------------- |
 | `\bSkills\b` (capitalized, as branded concept) | Vendor-branded term; use lowercase "agent skills" instead |
 
-Combined audit regex used by `rhino-cli governance vendor-audit`:
+Combined audit regex used by `rhino-cli repo-governance vendor-audit`:
 
 ```
 Claude Code|OpenCode|\bCursor\b|\bWindsurf\b|\bCodeium\b|\bCopilot\b|\bAider\b|\bCline\b|\bDevin\b|\.claude/|\.opencode/|\.cursor/|\.windsurf/|\.continue/|\.clinerules/|Anthropic|\bOpenAI\b|\bxAI\b|\bSonnet\b|\bOpus\b|\bHaiku\b|\bGPT\b|\bGemini\b|\bDeepSeek\b|\bQwen\b|\bLlama\b|\bMistral\b|\bGrok\b|\bSkills\b
@@ -197,7 +197,7 @@ See [`docs/reference/platform-bindings.md`](../../../docs/reference/platform-bin
 
 To refactor an existing governance file:
 
-1. **Scan**: prefer `rhino-cli governance vendor-audit <path>` (it respects all allowlist regions). For ad-hoc grep, use `grep -n -E "Claude Code|OpenCode|Cursor|Windsurf|Codeium|Copilot|Aider|Cline|Devin|Anthropic|OpenAI|xAI|Sonnet|Opus|Haiku|GPT|Gemini|DeepSeek|Qwen|Llama|Mistral|Grok|Skills|\.claude/|\.opencode/|\.cursor/|\.windsurf/|\.continue/|\.clinerules/" <file>` to find all matches.
+1. **Scan**: prefer `rhino-cli repo-governance vendor-audit <path>` (it respects all allowlist regions). For ad-hoc grep, use `grep -n -E "Claude Code|OpenCode|Cursor|Windsurf|Codeium|Copilot|Aider|Cline|Devin|Anthropic|OpenAI|xAI|Sonnet|Opus|Haiku|GPT|Gemini|DeepSeek|Qwen|Llama|Mistral|Grok|Skills|\.claude/|\.opencode/|\.cursor/|\.windsurf/|\.continue/|\.clinerules/" <file>` to find all matches.
 2. **Classify each match**:
    - Load-bearing prose → rewrite using the Vocabulary Map above.
    - Cross-reference link → rewrite anchor text and link target to neutral equivalent.
@@ -209,16 +209,16 @@ To refactor an existing governance file:
 
 ## Enforcement
 
-Enforcement is automated via `rhino-cli governance vendor-audit`.
+Enforcement is automated via `rhino-cli repo-governance vendor-audit`.
 
 ### Running the audit manually
 
 ```bash
-# Audit the governance/ directory (default)
-go run apps/rhino-cli/main.go governance vendor-audit governance/
+# Audit the repo-governance/ directory (default)
+go run apps/rhino-cli/main.go repo-governance vendor-audit repo-governance/
 
 # Or via Nx (cached)
-npx nx run rhino-cli:validate:governance-vendor-audit
+npx nx run rhino-cli:validate:repo-governance-vendor-audit
 ```
 
 Exit code 0 means clean; exit code 1 means violations found. Each finding prints:
@@ -229,7 +229,7 @@ Exit code 0 means clean; exit code 1 means violations found. Each finding prints
 
 ### Pre-push integration
 
-The pre-push hook automatically runs `validate:governance-vendor-audit` when any `governance/**/*.md`
+The pre-push hook automatically runs `validate:repo-governance-vendor-audit` when any `repo-governance/**/*.md`
 file changes. No manual invocation needed on pushes.
 
 ### Scope of the scanner

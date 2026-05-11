@@ -31,7 +31,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **swe-code-checker** - Validates projects against platform coding standards (validates application code rather than documentation)
 - **swe-ui-checker** - UI component quality validation
 - **ci-checker** - CI/CD standards validation (mandatory Nx targets, coverage thresholds, Docker setup, Gherkin specs)
-- **docs-software-engineering-separation-checker** - Validates the boundary between generic dev docs and language-specific (Go, TypeScript, Rust, etc.) docs per the [Programming Language Docs Separation](../../governance/conventions/structure/programming-language-docs-separation.md) convention
+- **docs-software-engineering-separation-checker** - Validates the boundary between generic dev docs and language-specific (Go, TypeScript, Rust, etc.) docs per the [Programming Language Docs Separation](../../repo-governance/conventions/structure/programming-language-docs-separation.md) convention
 - **repo-parity-checker** - Validates cross-vendor behavioral-parity invariants between primary and secondary binding directories (governance vendor-neutrality, AGENTS+CLAUDE consistency, sync no-op, agent count parity, color + tier maps); writes dual-label findings to `generated-reports/`
 
 ### 🟨 Fixing (Fixers)
@@ -78,7 +78,7 @@ Every agent filename follows: `<scope>(-<qualifier>)*-<role>`
 
 No other structure is permitted. No exceptions.
 
-Normative source: [Agent Naming Convention](../../governance/conventions/structure/agent-naming.md).
+Normative source: [Agent Naming Convention](../../repo-governance/conventions/structure/agent-naming.md).
 
 ## Role Vocabulary
 
@@ -117,7 +117,7 @@ skills: []
 > The session's active model is inherited at runtime: Max/Team accounts get Claude Opus 4.7;
 > Pro/Standard accounts get Claude Sonnet 4.6. Do NOT add `model: opus` to opus-tier agents
 > — it bypasses this mechanism and forces Opus charges on all users regardless of account tier.
-> See [model-selection.md](../../governance/development/agents/model-selection.md) for full tier mapping.
+> See [model-selection.md](../../repo-governance/development/agents/model-selection.md) for full tier mapping.
 
 **Color**: Required field - `blue` (makers), `green` (checkers), `yellow` (fixers), `purple` (implementors)
 **Skills**: Required field - list of Skill names (empty array `[]` if no Skills used)
@@ -173,6 +173,6 @@ All agents follow governance principles:
 - **Simplicity Over Complexity** - Single-purpose agents, minimal abstraction
 - **Accessibility First** - WCAG AA compliance in all outputs
 
-**See**: [governance/principles/README.md](../../governance/principles/README.md)
+**See**: [repo-governance/principles/README.md](../../repo-governance/principles/README.md)
 
 ---

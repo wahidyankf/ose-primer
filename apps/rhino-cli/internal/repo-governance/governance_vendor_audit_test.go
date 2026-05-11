@@ -1,4 +1,4 @@
-package governance
+package repogovernance
 
 import (
 	"os"
@@ -11,7 +11,7 @@ import (
 
 func TestScanLines_DetectsForbiddenTermInProse(t *testing.T) {
 	content := "# Section\n\nThis document describes Claude Code usage.\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) == 0 {
 		t.Fatal("expected at least one finding for 'Claude Code' in prose, got none")
 	}
@@ -29,7 +29,7 @@ func TestScanLines_DetectsForbiddenTermInProse(t *testing.T) {
 
 func TestScanLines_ExemptsCodeFenceContent(t *testing.T) {
 	content := "# Section\n\n```bash\necho Claude Code\n```\n\nclean prose\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) != 0 {
 		t.Errorf("expected zero findings when term is inside code fence, got: %+v", findings)
 	}
@@ -37,7 +37,7 @@ func TestScanLines_ExemptsCodeFenceContent(t *testing.T) {
 
 func TestScanLines_ExemptsBindingExampleFenceContent(t *testing.T) {
 	content := "# Section\n\n```binding-example\nClaude Code integration\n```\n\nclean prose\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) != 0 {
 		t.Errorf("expected zero findings for binding-example fence, got: %+v", findings)
 	}
@@ -45,7 +45,7 @@ func TestScanLines_ExemptsBindingExampleFenceContent(t *testing.T) {
 
 func TestScanLines_ExemptsPlatformBindingExamplesSection(t *testing.T) {
 	content := "# Doc\n\n## Platform Binding Examples\n\nClaude Code is used here.\n\n## Other Section\n\nclean\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) != 0 {
 		t.Errorf("expected zero findings under Platform Binding Examples heading, got: %+v", findings)
 	}
@@ -53,7 +53,7 @@ func TestScanLines_ExemptsPlatformBindingExamplesSection(t *testing.T) {
 
 func TestScanLines_ExemptsInlineBacktickCode(t *testing.T) {
 	content := "Run `Claude Code` to perform the action.\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) != 0 {
 		t.Errorf("expected zero findings for term in inline code, got: %+v", findings)
 	}
@@ -61,7 +61,7 @@ func TestScanLines_ExemptsInlineBacktickCode(t *testing.T) {
 
 func TestScanLines_ExemptsLinkURLPortion(t *testing.T) {
 	content := "See the [documentation](https://claude.ai/code/Claude Code/reference) for details.\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) != 0 {
 		t.Errorf("expected zero findings for term in link URL, got: %+v", findings)
 	}
@@ -69,7 +69,7 @@ func TestScanLines_ExemptsLinkURLPortion(t *testing.T) {
 
 func TestScanLines_ReturnsNoFindingsForCleanFile(t *testing.T) {
 	content := "# Governance\n\nThis section describes the execution-grade model tier.\n\nUse the primary binding directory for agent definitions.\n"
-	findings := scanLines("governance/clean.md", content)
+	findings := scanLines("repo-governance/clean.md", content)
 	if len(findings) != 0 {
 		t.Errorf("expected zero findings for clean file, got: %+v", findings)
 	}
@@ -77,7 +77,7 @@ func TestScanLines_ReturnsNoFindingsForCleanFile(t *testing.T) {
 
 func TestScanLines_ReturnsCorrectLineNumber(t *testing.T) {
 	content := "# Section\n\nLine two\n\nThis uses Claude Code in prose.\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) == 0 {
 		t.Fatal("expected finding, got none")
 	}
@@ -89,7 +89,7 @@ func TestScanLines_ReturnsCorrectLineNumber(t *testing.T) {
 func TestScanLines_MultipleForbiddenTermsSameLine(t *testing.T) {
 	// A line with two different forbidden terms should produce two findings.
 	content := "Use Claude Code with the Anthropic API.\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) < 2 {
 		t.Errorf("expected at least 2 findings for two terms, got: %+v", findings)
 	}
@@ -97,7 +97,7 @@ func TestScanLines_MultipleForbiddenTermsSameLine(t *testing.T) {
 
 func TestScanLines_ExemptsHTMLComment(t *testing.T) {
 	content := "<!-- Claude Code is mentioned here -->\n\nclean prose\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) != 0 {
 		t.Errorf("expected zero findings for term in HTML comment, got: %+v", findings)
 	}
@@ -105,7 +105,7 @@ func TestScanLines_ExemptsHTMLComment(t *testing.T) {
 
 func TestScanLines_DetectsDotClaudeSlash(t *testing.T) {
 	content := "Platform bindings live in .claude/ directory.\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	found := false
 	for _, f := range findings {
 		if f.Match == ".claude/" {
@@ -130,7 +130,7 @@ func TestScanLines_DetectsModelTierTerms(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			findings := scanLines("governance/foo.md", tt.input)
+			findings := scanLines("repo-governance/foo.md", tt.input)
 			found := false
 			for _, f := range findings {
 				if f.Match == tt.term {
@@ -177,7 +177,7 @@ func TestScanLines_DetectsExpandedHarnessAndVendorTerms(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			findings := scanLines("governance/foo.md", tt.input)
+			findings := scanLines("repo-governance/foo.md", tt.input)
 			found := false
 			for _, f := range findings {
 				if f.Match == tt.term {
@@ -195,7 +195,7 @@ func TestScanLines_DetectsExpandedHarnessAndVendorTerms(t *testing.T) {
 func TestScanLines_DetectsCapitalizedSkillsTerm(t *testing.T) {
 	t.Run("capitalized branded Skills is detected", func(t *testing.T) {
 		content := "Use Skills to delegate work to specialized agents.\n"
-		findings := scanLines("governance/foo.md", content)
+		findings := scanLines("repo-governance/foo.md", content)
 		found := false
 		for _, f := range findings {
 			if f.Match == "Skills" {
@@ -210,7 +210,7 @@ func TestScanLines_DetectsCapitalizedSkillsTerm(t *testing.T) {
 
 	t.Run("lowercase agent skills is allowed", func(t *testing.T) {
 		content := "Use agent skills to delegate work to specialized agents.\n"
-		findings := scanLines("governance/foo.md", content)
+		findings := scanLines("repo-governance/foo.md", content)
 		for _, f := range findings {
 			if f.Match == "Skills" {
 				t.Errorf("did not expect a Skills finding for lowercase prose, got: %+v", f)
@@ -220,7 +220,7 @@ func TestScanLines_DetectsCapitalizedSkillsTerm(t *testing.T) {
 
 	t.Run("Skills inside a code fence is exempt", func(t *testing.T) {
 		content := "# Section\n\n```bash\necho Skills\n```\n\nclean prose\n"
-		findings := scanLines("governance/foo.md", content)
+		findings := scanLines("repo-governance/foo.md", content)
 		if len(findings) != 0 {
 			t.Errorf("expected zero findings when Skills is inside a code fence, got: %+v", findings)
 		}
@@ -229,7 +229,7 @@ func TestScanLines_DetectsCapitalizedSkillsTerm(t *testing.T) {
 
 func TestScanLines_PlatformBindingExamplesHeadingCaseInsensitive(t *testing.T) {
 	content := "# Doc\n\n## PLATFORM BINDING EXAMPLES\n\nClaude Code used here.\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) != 0 {
 		t.Errorf("expected zero findings with uppercase heading, got: %+v", findings)
 	}
@@ -237,7 +237,7 @@ func TestScanLines_PlatformBindingExamplesHeadingCaseInsensitive(t *testing.T) {
 
 func TestScanLines_PlatformBindingExamplesSectionEndsAtSameLevelHeading(t *testing.T) {
 	content := "# Doc\n\n## Platform Binding Examples\n\nClaude Code here.\n\n## Next Section\n\nClaude Code here too.\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	// Should find exactly one violation in "Next Section", not in the platform binding section.
 	if len(findings) != 1 {
 		t.Errorf("expected 1 finding (in Next Section), got %d: %+v", len(findings), findings)
@@ -251,7 +251,7 @@ func TestScanLines_PlatformBindingExamplesSectionEndsAtHigherLevelHeading(t *tes
 	// H3 under H2 Platform Binding Examples should still be exempt.
 	// An H1 heading should close the section.
 	content := "## Platform Binding Examples\n\n### Sub\n\nClaude Code here.\n\n# New Top Level\n\nClaude Code here.\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) != 1 {
 		t.Errorf("expected 1 finding after H1, got %d: %+v", len(findings), findings)
 	}
@@ -301,7 +301,7 @@ func TestScanFile_CleanFileReturnsNoFindings(t *testing.T) {
 func TestWalk_SkipsGovernanceVendorIndependenceFile(t *testing.T) {
 	tmp := t.TempDir()
 	// Create the convention file with a forbidden term — it must be skipped.
-	convPath := filepath.Join(tmp, "governance", "conventions", "structure")
+	convPath := filepath.Join(tmp, "repo-governance", "conventions", "structure")
 	if err := os.MkdirAll(convPath, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -450,7 +450,7 @@ func TestScanLines_ExemptsNestedCodeFenceContent(t *testing.T) {
 	// A 4-backtick outer fence containing an inner 3-backtick mermaid block.
 	// OpenCode inside the mermaid block must NOT be reported.
 	content := "# Doc\n\n````markdown\n```mermaid\ngraph TD\n    A[OpenCode- Main Agent]\n```\n````\n\nclean prose\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) != 0 {
 		t.Errorf("expected zero findings inside nested code fence, got: %+v", findings)
 	}
@@ -458,7 +458,7 @@ func TestScanLines_ExemptsNestedCodeFenceContent(t *testing.T) {
 
 func TestScanLines_ExemptsMultiLineHTMLComment(t *testing.T) {
 	content := "# Doc\n\n<!--\nClaude Code is mentioned in this comment.\n.claude/ path here.\n-->\n\nclean prose\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) != 0 {
 		t.Errorf("expected zero findings inside multi-line HTML comment, got: %+v", findings)
 	}
@@ -466,7 +466,7 @@ func TestScanLines_ExemptsMultiLineHTMLComment(t *testing.T) {
 
 func TestScanLines_ExemptsYAMLFrontmatter(t *testing.T) {
 	content := "---\ntitle: something\ndescription: agent structure for .claude/agents and .opencode/agents\npattern: .claude/skills/some-skill/SKILL.md\n---\n\n# Doc\n\nclean prose\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) != 0 {
 		t.Errorf("expected zero findings inside YAML frontmatter, got: %+v", findings)
 	}
@@ -474,7 +474,7 @@ func TestScanLines_ExemptsYAMLFrontmatter(t *testing.T) {
 
 func TestScanLines_ScansProseBelowFrontmatter(t *testing.T) {
 	content := "---\ntitle: something\n---\n\nClaude Code is mentioned here.\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) == 0 {
 		t.Error("expected findings below frontmatter, got none")
 	}
@@ -483,7 +483,7 @@ func TestScanLines_ScansProseBelowFrontmatter(t *testing.T) {
 func TestScanLines_DetectsViolationBeforeMultiLineHTMLComment(t *testing.T) {
 	// Forbidden term appears before <!-- on same line that opens a multi-line comment.
 	content := "# Doc\n\nClaude Code mentioned here <!-- start of\nmulti-line comment\n-->\n\nclean prose\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) == 0 {
 		t.Error("expected finding for term before multi-line HTML comment, got none")
 	}
@@ -495,7 +495,7 @@ func TestScanLines_DetectsViolationBeforeMultiLineHTMLComment(t *testing.T) {
 func TestScanLines_NoViolationBeforeEmptyMultiLineHTMLComment(t *testing.T) {
 	// Line that opens a multi-line comment has nothing before <!--.
 	content := "# Doc\n\n<!--\nClaude Code in comment\n-->\n\nclean prose\n"
-	findings := scanLines("governance/foo.md", content)
+	findings := scanLines("repo-governance/foo.md", content)
 	if len(findings) != 0 {
 		t.Errorf("expected zero findings, got: %+v", findings)
 	}
