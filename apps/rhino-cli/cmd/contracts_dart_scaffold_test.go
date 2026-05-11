@@ -91,7 +91,7 @@ func (s *contractsDartScaffoldUnitSteps) theDeveloperRunsContractsDartScaffoldOn
 
 func (s *contractsDartScaffoldUnitSteps) theCommandExitsSuccessfully() error {
 	if s.cmdErr != nil {
-		return fmt.Errorf("expected success but got: %v\nOutput: %s", s.cmdErr, s.cmdOutput)
+		return fmt.Errorf("expected success but got: %w\nOutput: %s", s.cmdErr, s.cmdOutput)
 	}
 	return nil
 }
@@ -100,35 +100,35 @@ func (s *contractsDartScaffoldUnitSteps) pubspecYamlCreatedWithCorrectContent() 
 	// The mock reports PubspecCreated = true; command delegates entirely to the internal fn.
 	// Just verify the command succeeded.
 	if s.cmdErr != nil {
-		return fmt.Errorf("expected success but got: %v", s.cmdErr)
+		return fmt.Errorf("expected success but got: %w", s.cmdErr)
 	}
 	return nil
 }
 
 func (s *contractsDartScaffoldUnitSteps) barrelLibraryCreatedWithPartDirectives() error {
 	if s.cmdErr != nil {
-		return fmt.Errorf("expected success but got: %v", s.cmdErr)
+		return fmt.Errorf("expected success but got: %w", s.cmdErr)
 	}
 	return nil
 }
 
 func (s *contractsDartScaffoldUnitSteps) pubspecYamlCreated() error {
 	if s.cmdErr != nil {
-		return fmt.Errorf("expected success but got: %v", s.cmdErr)
+		return fmt.Errorf("expected success but got: %w", s.cmdErr)
 	}
 	return nil
 }
 
 func (s *contractsDartScaffoldUnitSteps) barrelLibraryCreatedWithoutPartDirectives() error {
 	if s.cmdErr != nil {
-		return fmt.Errorf("expected success but got: %v", s.cmdErr)
+		return fmt.Errorf("expected success but got: %w", s.cmdErr)
 	}
 	return nil
 }
 
 func (s *contractsDartScaffoldUnitSteps) existingFilesOverwrittenWithFreshScaffold() error {
 	if s.cmdErr != nil {
-		return fmt.Errorf("expected success but got: %v", s.cmdErr)
+		return fmt.Errorf("expected success but got: %w", s.cmdErr)
 	}
 	return nil
 }

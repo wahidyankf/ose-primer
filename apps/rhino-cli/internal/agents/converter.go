@@ -18,7 +18,7 @@ import (
 const OpenCodeAgentDir = ".opencode/agents"
 
 // normalizeYAML fixes common YAML formatting issues in Claude agent files
-// Specifically, adds spaces after colons where missing (e.g., "name:value" -> "name: value")
+// Specifically, adds spaces after colons where missing (e.g., "name:value" -> "name: value").
 func normalizeYAML(content []byte) []byte {
 	// Pattern: word character or hyphen followed by colon, then non-whitespace
 	// This matches "name:value" but not "name: value" or "  - item"
@@ -30,7 +30,7 @@ func normalizeYAML(content []byte) []byte {
 	return normalized
 }
 
-// ExtractFrontmatter extracts YAML frontmatter and body from markdown content
+// ExtractFrontmatter extracts YAML frontmatter and body from markdown content.
 func ExtractFrontmatter(content []byte) (frontmatter []byte, body []byte, err error) {
 	// Look for frontmatter between --- markers
 	lines := bytes.Split(content, []byte("\n"))
@@ -73,7 +73,7 @@ func ExtractFrontmatter(content []byte) (frontmatter []byte, body []byte, err er
 	return frontmatter, body, nil
 }
 
-// ParseClaudeTools parses tools from Claude format (comma-separated or array)
+// ParseClaudeTools parses tools from Claude format (comma-separated or array).
 func ParseClaudeTools(toolsRaw interface{}) []string {
 	var tools []string
 
@@ -99,7 +99,7 @@ func ParseClaudeTools(toolsRaw interface{}) []string {
 	return tools
 }
 
-// ConvertTools converts Claude tools array to OpenCode tools map
+// ConvertTools converts Claude tools array to OpenCode tools map.
 func ConvertTools(claudeTools []string) map[string]bool {
 	tools := make(map[string]bool)
 
@@ -133,7 +133,7 @@ func ConvertModel(claudeModel string) string {
 	}
 }
 
-// ConvertAgent converts a Claude agent to OpenCode format
+// ConvertAgent converts a Claude agent to OpenCode format.
 func ConvertAgent(inputPath, outputPath string, dryRun bool) error {
 	// 1. Read file
 	content, err := os.ReadFile(inputPath)

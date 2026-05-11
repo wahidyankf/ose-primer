@@ -40,6 +40,7 @@ var rootCmd = &cobra.Command{
 	},
 }
 
+// Execute runs the root command and exits with a non-zero status on error.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)

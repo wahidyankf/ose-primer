@@ -10,7 +10,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// validateAgent performs all 12 validation rules for a single agent
+// validateAgent performs all 12 validation rules for a single agent.
 func validateAgent(
 	agentPath string,
 	filename string,
@@ -115,7 +115,7 @@ func validateAgent(
 	return checks
 }
 
-// validateRequiredFields checks that all required fields are present
+// validateRequiredFields checks that all required fields are present.
 func validateRequiredFields(filename string, agent ClaudeAgentFull) ValidationCheck {
 	missing := []string{}
 
@@ -151,7 +151,7 @@ func validateRequiredFields(filename string, agent ClaudeAgentFull) ValidationCh
 	}
 }
 
-// validateFieldOrder checks that fields are in the correct order
+// validateFieldOrder checks that fields are in the correct order.
 func validateFieldOrder(filename string, frontmatter []byte) ValidationCheck {
 	// Parse as generic YAML to get field order
 	var data yaml.Node
@@ -207,7 +207,7 @@ func validateFieldOrder(filename string, frontmatter []byte) ValidationCheck {
 	}
 }
 
-// validateTools checks that all tools are valid
+// validateTools checks that all tools are valid.
 func validateTools(filename string, toolsStr string) ValidationCheck {
 	// Parse tools (comma-separated)
 	tools := strings.Split(toolsStr, ",")
@@ -244,7 +244,7 @@ func validateTools(filename string, toolsStr string) ValidationCheck {
 	}
 }
 
-// validateModel checks that the model is valid
+// validateModel checks that the model is valid.
 func validateModel(filename string, model string) ValidationCheck {
 	if !ValidModels[model] {
 		validModels := []string{"(empty)", "sonnet", "opus", "haiku"}
@@ -264,7 +264,7 @@ func validateModel(filename string, model string) ValidationCheck {
 	}
 }
 
-// validateColor checks that the color is valid
+// validateColor checks that the color is valid.
 func validateColor(filename string, color string) ValidationCheck {
 	if !ValidColors[color] {
 		validColors := []string{"blue", "green", "yellow", "purple"}
@@ -284,7 +284,7 @@ func validateColor(filename string, color string) ValidationCheck {
 	}
 }
 
-// validateFilename checks that filename matches name field
+// validateFilename checks that filename matches name field.
 func validateFilename(filename string, name string) ValidationCheck {
 	expectedFilename := name + ".md"
 	if filename != expectedFilename {
@@ -304,7 +304,7 @@ func validateFilename(filename string, name string) ValidationCheck {
 	}
 }
 
-// validateUniqueness checks that agent name is unique
+// validateUniqueness checks that agent name is unique.
 func validateUniqueness(filename string, name string, agentNames map[string]bool) ValidationCheck {
 	if agentNames[name] {
 		return ValidationCheck{
@@ -323,7 +323,7 @@ func validateUniqueness(filename string, name string, agentNames map[string]bool
 	}
 }
 
-// validateSkillsExist checks that all referenced skills exist
+// validateSkillsExist checks that all referenced skills exist.
 func validateSkillsExist(filename string, skills []string, skillNames map[string]bool) ValidationCheck {
 	missing := []string{}
 
@@ -350,7 +350,7 @@ func validateSkillsExist(filename string, skills []string, skillNames map[string
 	}
 }
 
-// validateNoComments checks that frontmatter has no YAML comments
+// validateNoComments checks that frontmatter has no YAML comments.
 func validateNoComments(filename string, frontmatter []byte) ValidationCheck {
 	lines := bytes.Split(frontmatter, []byte("\n"))
 	for _, line := range lines {
@@ -373,13 +373,13 @@ func validateNoComments(filename string, frontmatter []byte) ValidationCheck {
 	}
 }
 
-// validateYAMLFormatting checks that YAML has proper formatting (space after colons)
-// This check runs BEFORE normalization to catch formatting issues
+// validateYAMLFormatting checks that YAML has proper formatting (space after colons).
+// This check runs BEFORE normalization to catch formatting issues.
 func validateYAMLFormatting(filename string, content []byte) ValidationCheck {
 	return validateYAMLFormattingRaw(fmt.Sprintf("Agent: %s - YAML Formatting", filename), content)
 }
 
-// validateGeneratedReportsTools checks that generated-reports agents have Write AND Bash
+// validateGeneratedReportsTools checks that generated-reports agents have Write AND Bash.
 func validateGeneratedReportsTools(filename string, toolsStr string) ValidationCheck {
 	tools := strings.Split(toolsStr, ",")
 	hasWrite := false
@@ -412,7 +412,7 @@ func validateGeneratedReportsTools(filename string, toolsStr string) ValidationC
 	}
 }
 
-// validateAllAgents validates all agents in parallel
+// validateAllAgents validates all agents in parallel.
 func validateAllAgents(repoRoot string, skillNames map[string]bool) []ValidationCheck {
 	agentsDir := filepath.Join(repoRoot, ".claude", "agents")
 

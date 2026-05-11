@@ -25,7 +25,7 @@ import (
 // Violation describes a single naming-rule failure.
 type Violation struct {
 	Path    string
-	Kind    string // "role-suffix" | "type-suffix" | "frontmatter-mismatch" | "mirror-drift"
+	Kind    string // "role-suffix" | "type-suffix" | "frontmatter-mismatch" | "mirror-drift".
 	Message string
 }
 

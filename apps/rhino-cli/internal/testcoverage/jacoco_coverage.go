@@ -27,9 +27,9 @@ type jacocoSourceFile struct {
 // jacocoLine represents a <line> element with instruction and branch counters.
 type jacocoLine struct {
 	Nr int `xml:"nr,attr"`
-	Mi int `xml:"mi,attr"` // missed instructions
-	Ci int `xml:"ci,attr"` // covered instructions
-	Mb int `xml:"mb,attr"` // missed branches
+	Mi int `xml:"mi,attr"` // missed instructions.
+	Ci int `xml:"ci,attr"` // covered instructions.
+	Mb int `xml:"mb,attr"` // missed branches.
 	Cb int `xml:"cb,attr"` // covered branches
 }
 
@@ -54,7 +54,7 @@ func parseJaCoCo(filename string) (jacocoReport, error) {
 //   - ci > 0 AND mb > 0  → Partial
 //   - ci == 0             → Missed
 //
-// Coverage % = covered / (covered + partial + missed)
+// Coverage % = covered / (covered + partial + missed).
 func ComputeJaCoCoResult(filename string, threshold float64) (Result, error) {
 	report, err := parseJaCoCo(filename)
 	if err != nil {

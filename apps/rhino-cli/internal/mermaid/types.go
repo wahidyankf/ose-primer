@@ -6,6 +6,7 @@ package mermaid
 // Direction represents the layout direction of a Mermaid flowchart.
 type Direction string
 
+// Direction constants enumerate valid Mermaid flowchart layout directions.
 const (
 	DirectionTB Direction = "TB"
 	DirectionTD Direction = "TD"
@@ -17,6 +18,7 @@ const (
 // ViolationKind identifies the category of a rule violation.
 type ViolationKind string
 
+// ViolationKind constants enumerate the categories of blocking rule violations.
 const (
 	ViolationLabelTooLong     ViolationKind = "label_too_long"
 	ViolationWidthExceeded    ViolationKind = "width_exceeded"
@@ -26,6 +28,7 @@ const (
 // WarningKind identifies the category of a warning.
 type WarningKind string
 
+// WarningKind constants enumerate the categories of non-blocking warnings.
 const (
 	WarningComplexDiagram WarningKind = "complex_diagram"
 	WarningSubgraphDense  WarningKind = "subgraph_density"
@@ -77,13 +80,13 @@ type Warning struct {
 	BlockIndex int
 	StartLine  int
 
-	// complex_diagram fields
+	// complex_diagram fields.
 	ActualWidth int
 	ActualDepth int
 	MaxWidth    int
 	MaxDepth    int
 
-	// subgraph_density fields
+	// subgraph_density fields.
 	SubgraphLabel     string
 	SubgraphNodeCount int
 	MaxSubgraphNodes  int

@@ -8,8 +8,8 @@ type JavaCleanImportsOptions struct {
 
 // JavaCleanImportsResult contains the results of cleaning Java imports.
 type JavaCleanImportsResult struct {
-	TotalFiles    int      // Number of .java files found
-	ModifiedFiles int      // Number of files that were modified
+	TotalFiles    int      // Number of .java files found.
+	ModifiedFiles int      // Number of files that were modified.
 	Modified      []string // Relative paths of modified files
 }
 
@@ -20,7 +20,7 @@ type DartScaffoldOptions struct {
 
 // DartScaffoldResult contains the results of Dart scaffolding.
 type DartScaffoldResult struct {
-	PubspecCreated bool     // Whether pubspec.yaml was written
-	BarrelCreated  bool     // Whether barrel library was written
+	PubspecCreated bool     // Whether pubspec.yaml was written.
+	BarrelCreated  bool     // Whether barrel library was written.
 	ModelFiles     []string // Basenames of model files found
 }

@@ -16,7 +16,7 @@ var flowchartHeaderRe = regexp.MustCompile(`(?m)^\s*(flowchart|graph)(\s+(TB|TD|
 //	subgraph WF1         — id only
 //	subgraph WF1 [Label] — id + bracketed label
 //	subgraph "Label"     — quoted label only (treated as label, no id)
-//	subgraph WF1["Label"]— id + bracketed quoted label
+//	subgraph WF1["Label"]— id + bracketed quoted label.
 var subgraphHeaderRe = regexp.MustCompile(`^subgraph(?:\s+([^\s\["]+))?(?:\s*\[\s*"?([^"\]]*)"?\s*\])?\s*$`)
 
 // arrowTokens is the set of substrings that identify edge lines.

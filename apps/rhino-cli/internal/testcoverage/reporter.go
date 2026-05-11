@@ -13,7 +13,7 @@ import (
 // Text output format:
 //
 //	"Line coverage: 86.08% (2411 covered, 141 partial, 249 missed, 2801 total)"
-//	"PASS: 86.08% >= 85% threshold"  (or FAIL)
+//	"PASS: 86.08% >= 85% threshold"  (or FAIL).
 func FormatText(r *Result, _, _ bool) string {
 	var out strings.Builder
 	_, _ = fmt.Fprintf(&out, "Line coverage: %.2f%% (%d covered, %d partial, %d missed, %d total)\n",

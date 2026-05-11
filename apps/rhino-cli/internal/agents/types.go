@@ -7,25 +7,25 @@ import (
 
 // ---- Sync types (from former internal/sync) ----
 
-// ClaudeAgent represents Claude Code format agent configuration
+// ClaudeAgent represents Claude Code format agent configuration.
 type ClaudeAgent struct {
 	Name        string   `yaml:"name"`
 	Description string   `yaml:"description"`
-	Tools       []string `yaml:"tools"` // Can be array or comma-separated
+	Tools       []string `yaml:"tools"` // Can be array or comma-separated.
 	Model       string   `yaml:"model,omitempty"`
 	Color       string   `yaml:"color,omitempty"`
 	Skills      []string `yaml:"skills,omitempty"`
 }
 
-// OpenCodeAgent represents OpenCode format agent configuration
+// OpenCodeAgent represents OpenCode format agent configuration.
 type OpenCodeAgent struct {
 	Description string          `yaml:"description"`
-	Model       string          `yaml:"model"` // "opencode-go/minimax-m2.7" | "opencode-go/glm-5"
+	Model       string          `yaml:"model"` // "opencode-go/minimax-m2.7" | "opencode-go/glm-5".
 	Tools       map[string]bool `yaml:"tools"` // read: true, write: true, etc.
 	Skills      []string        `yaml:"skills,omitempty"`
 }
 
-// SyncOptions configures sync behavior
+// SyncOptions configures sync behavior.
 type SyncOptions struct {
 	RepoRoot   string
 	DryRun     bool
@@ -35,7 +35,7 @@ type SyncOptions struct {
 	Quiet      bool
 }
 
-// SyncResult contains operation results
+// SyncResult contains operation results.
 type SyncResult struct {
 	AgentsConverted int
 	AgentsFailed    int
@@ -45,7 +45,7 @@ type SyncResult struct {
 	Duration        time.Duration
 }
 
-// ValidationResult contains validation results
+// ValidationResult contains validation results.
 type ValidationResult struct {
 	TotalChecks  int
 	PassedChecks int
@@ -54,10 +54,10 @@ type ValidationResult struct {
 	Duration     time.Duration
 }
 
-// ValidationCheck represents a single validation check
+// ValidationCheck represents a single validation check.
 type ValidationCheck struct {
 	Name     string
-	Status   string // "passed" | "failed"
+	Status   string // "passed" | "failed".
 	Expected string
 	Actual   string
 	Message  string
@@ -65,23 +65,23 @@ type ValidationCheck struct {
 
 // ---- Claude validation types (from former internal/claude) ----
 
-// ClaudeAgentFull represents a complete Claude Code agent with all required fields
+// ClaudeAgentFull represents a complete Claude Code agent with all required fields.
 type ClaudeAgentFull struct {
 	Name        string   `yaml:"name"`
 	Description string   `yaml:"description"`
-	Tools       string   `yaml:"tools"` // Comma-separated string in Claude format
-	Model       string   `yaml:"model"` // Can be empty, "sonnet", "opus", or "haiku"
-	Color       string   `yaml:"color"` // blue, green, yellow, or purple
+	Tools       string   `yaml:"tools"` // Comma-separated string in Claude format.
+	Model       string   `yaml:"model"` // Can be empty, "sonnet", "opus", or "haiku".
+	Color       string   `yaml:"color"` // blue, green, yellow, or purple.
 	Skills      []string `yaml:"skills,omitempty"`
 }
 
-// ClaudeSkill represents a Claude Code skill configuration
+// ClaudeSkill represents a Claude Code skill configuration.
 type ClaudeSkill struct {
 	Name        string `yaml:"name"`
 	Description string `yaml:"description"`
 }
 
-// ValidationError represents a validation error with detailed information
+// ValidationError represents a validation error with detailed information.
 type ValidationError struct {
 	AgentName string
 	SkillName string
@@ -91,7 +91,7 @@ type ValidationError struct {
 	Actual    string
 }
 
-// ValidateClaudeOptions configures validation behavior
+// ValidateClaudeOptions configures validation behavior.
 type ValidateClaudeOptions struct {
 	RepoRoot   string
 	AgentsOnly bool
@@ -128,7 +128,7 @@ var ValidColors = map[string]bool{
 }
 
 // ValidSkillNamePattern validates skill name format
-// Lowercase letters, numbers, hyphens only, max 64 characters
+// Lowercase letters, numbers, hyphens only, max 64 characters.
 var ValidSkillNamePattern = regexp.MustCompile(`^[a-z0-9-]{1,64}$`)
 
 // RequiredFieldOrder defines the mandatory ordering of fields in agent frontmatter.

@@ -11,7 +11,7 @@ import (
 // Detection priority:
 //  1. Filename-based: .info/lcov → LCOV, .xml+jacoco → JaCoCo, .xml+cobertura → Cobertura
 //  2. Content-based: mode: → Go, SF:/TN: → LCOV, <report> → JaCoCo, <coverage> → Cobertura
-//  3. Fallback: Go
+//  3. Fallback: Go.
 func DetectFormat(filename string) Format {
 	lower := strings.ToLower(filename)
 	if strings.HasSuffix(lower, ".info") || strings.Contains(lower, "lcov") {

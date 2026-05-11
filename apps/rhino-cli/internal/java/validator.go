@@ -9,7 +9,7 @@ import (
 // ValidateAll validates all Java packages in the source root for the required annotation.
 // For each package directory it checks:
 //  1. package-info.java exists → ViolationMissingPackageInfo if absent
-//  2. package-info.java contains @<annotation> → ViolationMissingAnnotation if missing
+//  2. package-info.java contains @<annotation> → ViolationMissingAnnotation if missing.
 func ValidateAll(opts ValidationOptions) (*ValidationResult, error) {
 	packages, err := ScanPackages(opts.SourceRoot)
 	if err != nil {

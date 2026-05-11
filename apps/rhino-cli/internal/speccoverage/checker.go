@@ -20,10 +20,11 @@ var (
 	// goStepRe matches: sc.Step(`^step text here$`, fn)
 	// Raw string cannot be used here because the pattern itself contains backtick characters.
 	goStepRe = regexp.MustCompile("\\.Step\\(\\x60([^\\x60]+)\\x60") //nolint:staticcheck
-	// goScenarioCommentRe matches: // Scenario: Title Here
+	// goScenarioCommentRe matches: // Scenario: Title Here.
 	goScenarioCommentRe = regexp.MustCompile(`//\s*Scenario:\s*(.+?)\s*$`)
 	// tsRegexStepRe matches Given(/^pattern$/, fn) or When(/^pattern$/, fn) in TS/JS.
-	// Uses (?s) dotall for multi-line: When(\n  /^pattern$/,\n  fn)
+	// Uses (?s) dotall for multi-line: When(\n  /^pattern$/,\n  fn).
+
 	tsRegexStepRe = regexp.MustCompile(`(?s)(?:Given|When|Then|And|But)\s*\(\s*/\^?(.*?)\$?\s*/\s*,`)
 )
 
@@ -265,7 +266,7 @@ func walkFeatureFiles(dir string, excludeDirs ...string) ([]string, error) {
 }
 
 // toPascalCase converts a kebab-case stem to PascalCase.
-// e.g., "health-check" → "HealthCheck"
+// e.g., "health-check" → "HealthCheck".
 func toPascalCase(stem string) string {
 	parts := strings.Split(stem, "-")
 	var b strings.Builder
@@ -470,7 +471,7 @@ func extractGoScenarioTitles(testFilePath string) (map[string]bool, error) {
 // extractAllStepTexts walks ALL .ts/.tsx/.js/.jsx/.go files under appDir
 // (skipping build artifact directories) and returns a stepMatcher holding:
 //   - exact step texts from TS/JS Given/When/Then/And/But("...", ...) calls
-//   - compiled regex patterns from Go godog sc.Step(`...`, fn) calls
+//   - compiled regex patterns from Go godog sc.Step(`...`, fn) calls.
 func extractAllStepTexts(appDir string) (*stepMatcher, error) {
 	sm := &stepMatcher{exact: map[string]bool{}}
 
@@ -586,7 +587,7 @@ func firstNonEmpty(a, b string) string {
 
 // unescapeString processes common JavaScript/TypeScript string escape sequences
 // so that extracted step texts match the runtime string values in feature files.
-// Handles: \' \" \\ \/ \n \t \r
+// Handles: \' \" \\ \/ \n \t \r.
 func unescapeString(s string) string {
 	var buf strings.Builder
 	buf.Grow(len(s))

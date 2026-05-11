@@ -8,7 +8,7 @@ import (
 
 // ParsedStep is a single step line from a Gherkin scenario.
 type ParsedStep struct {
-	Keyword string // Given/When/Then/And/But (Title case)
+	Keyword string // Given/When/Then/And/But (Title case).
 	Text    string // trimmed step text
 }
 
