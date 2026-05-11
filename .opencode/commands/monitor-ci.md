@@ -51,10 +51,9 @@ Before starting the monitoring loop, verify the workspace is connected to Nx Clo
 
 ## Architecture Overview
 
-1. **This skill (orchestrator)**: spawns subagents, runs scripts, prints status, does local coding work
-2. **ci-monitor-subagent (haiku)**: calls one MCP tool (ci_information or update_self_healing_fix), returns structured result, exits
-3. **ci-poll-decide.mjs (deterministic script)**: takes ci_information result + state, returns action + status message
-4. **ci-state-update.mjs (deterministic script)**: manages budget gates, post-action state transitions, and cycle classification
+1. **This skill (orchestrator)**: calls MCP tools directly, runs scripts, prints status, does local coding work
+2. **ci-poll-decide.mjs (deterministic script)**: takes ci_information result + state, returns action + status message
+3. **ci-state-update.mjs (deterministic script)**: manages budget gates, post-action state transitions, and cycle classification
 
 ## Status Reporting
 
@@ -87,7 +86,7 @@ If the user previously ran `/monitor-ci` in this session, you may have prior sta
 
 ## MCP Tool Reference
 
-The `ci_information` and `update_self_healing_fix` tools are called via the **ci-monitor-subagent**, not directly from the orchestrator. Calling MCP tools directly wastes main agent context with large response payloads. The field sets below are for composing subagent prompts (see Step 2a).
+The `ci_information` and `update_self_healing_fix` tools are called directly by the orchestrator. Use the field sets below to limit response payload size (see Step 2a).
 
 Three field sets control polling efficiency — use the lightest set that gives you what you need:
 
@@ -165,23 +164,16 @@ prev_failure_classification = null
 
 Repeat until done:
 
-#### 2a. Spawn subagent (FETCH_STATUS)
+#### 2a. Fetch CI status (FETCH_STATUS)
 
 Determine select fields based on mode:
 
 - **Wait mode**: use WAIT_FIELDS (`cipeUrl,commitSha,cipeStatus`)
 - **Normal mode (first poll or after newCipeDetected)**: use LIGHT_FIELDS
 
-```
-Task(
-  agent: "ci-monitor-subagent",
-  model: haiku,
-  prompt: "FETCH_STATUS for branch '<branch>'.
-           select: '<fields>'"
-)
-```
+Call the `ci_information` MCP tool directly with `branch` and `select` parameters.
 
-The subagent calls `ci_information` and returns a JSON object with the requested fields. This is a **foreground** call — wait for the result.
+Store the returned JSON object as the poll result. This is a **foreground** call — wait for the result.
 
 #### 2b. Run decision script
 

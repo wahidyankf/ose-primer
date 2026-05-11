@@ -107,8 +107,7 @@ Current agents, grouped by role, all conforming to the rule:
 
 ## Related
 
-- [`.claude/agents/README.md`](../../../.claude/agents/README.md) — Operational catalog of agents (source of truth).
-- [`.opencode/agents/README.md`](../../../.opencode/agent/README.md) — Operational catalog of agents (generated mirror).
+- [`.claude/agents/README.md`](../../../.claude/agents/README.md) — Operational catalog of agents (canonical source; `.opencode/agents/` is the generated mirror with no separate README).
 - [File Naming Convention](./file-naming.md) — Sibling filename rule for non-agent files in `docs/`, `repo-governance/`, and plans.
 
 ## Principles Implemented/Respected

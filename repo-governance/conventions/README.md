@@ -102,6 +102,7 @@ Content quality standards, validation methodology, and writing guidelines.
 - [Conventions](./writing/conventions.md) - **Meta-convention** defining how to write and organize convention documents. Covers document structure, scope boundaries, quality checklist, when to create new vs update existing, length guidelines, and integration with agents. Essential reading for creating or updating conventions
 - [Dynamic Collection References](./writing/dynamic-collection-references.md) - Standards for referencing dynamic collections (agents, principles, conventions, practices, skills) without hardcoding counts. Prevents documentation drift by requiring count-free references with links to authoritative index documents. **Agents**: repo-rules-checker, repo-rules-fixer
 - [Factual Validation](./writing/factual-validation.md) - Universal methodology for validating factual correctness across all repository content using web verification (WebSearch + WebFetch). Defines core validation methodology (command syntax, features, versions, code examples, external refs, mathematical notation, diagram colors), web verification workflow, confidence classification (Verified, Unverified, Error, Outdated)
+- [No Date Metadata](./writing/no-date-metadata.md) - Forbids manual date fields in markdown. Git history is the single source of truth for file age.
 - [OSS Documentation](./writing/oss-documentation.md) - Standards for repository documentation files (README, CONTRIBUTING, ADRs, security) following open source best practices
 - [README Quality](./writing/readme-quality.md) - Quality standards for README.md files ensuring engagement, accessibility, and scannability. Defines problem-solution hooks, jargon elimination (plain language over corporate speak), acronym context requirements, benefits-focused language, navigation structure, and paragraph length limits. **Agents**: readme-maker, readme-checker
 - [Web Research Delegation](./writing/web-research-delegation.md) - Normative rule requiring AI agents to delegate public-web information gathering to the `web-research-maker` subagent when research exceeds the delegation threshold (2+ `WebSearch` calls or 3+ `WebFetch` calls for a single claim). Enumerates three exceptions (single-shot known URL; fixer re-validation; link-reachability checkers). **Agents**: web-research-maker, repo-rules-checker
@@ -110,12 +111,16 @@ Content quality standards, validation methodology, and writing guidelines.
 
 Documentation organization frameworks, file naming, and project planning structure.
 
-- [Agent Naming Convention](./structure/agent-naming.md) - Single exception-free filename rule for agent files in `.claude/agents/` and `.opencode/agent/`. Defines scope vocabulary, role vocabulary (maker, checker, fixer, dev, deployer, manager), and the audit command enforced by `repo-rules-checker`
+- [Agent Naming Convention](./structure/agent-naming.md) - Single exception-free filename rule for agent files in `.claude/agents/` and `.opencode/agents/`. Defines scope vocabulary, role vocabulary (maker, checker, fixer, dev, deployer, manager), and the audit command enforced by `repo-rules-checker`
 - [Diataxis Framework](./structure/diataxis-framework.md) - Understanding the four-category documentation organization framework we use (Tutorials, How-To, Reference, Explanation)
 - [File Naming Convention](./structure/file-naming.md) - Lowercase kebab-case file names anchored on standard markdown and GitHub compatibility
+- [Governance Vendor Independence](./structure/governance-vendor-independence.md) - Vendor-neutral governance prose: vendor names allowed only inside binding-example fences
+- [No Last-Updated Metadata](./structure/no-last-updated.md) - Companion to no-date-metadata: do not write **Last Updated** rows in markdown files
 - [Plans Organization](./structure/plans.md) - Standards for organizing project planning documents in plans/ folder including structure (ideas.md, backlog/, in-progress/, done/), naming patterns (YYYY-MM-DD\_\_identifier/), lifecycle stages, and project identifiers. Defines how plans move from ideas - backlog - in-progress - done
+- [Programming Language Docs Separation](./structure/programming-language-docs-separation.md) - Boundary between generic dev docs and language-specific docs
 - [Specs Directory Structure](./structure/specs-directory-structure.md) - Canonical directory structure for Gherkin feature files, C4 architecture diagrams, and OpenAPI contracts in the specs/ directory. Defines path patterns, domain subdirectory rules (required for BE/FE, flat for CLI), and lib spec organization
 - [Workflow Naming Convention](./structure/workflow-naming.md) - Single exception-free filename rule for workflow files under `repo-governance/workflows/` (except `meta/` reference docs). Defines scope vocabulary, type vocabulary (quality-gate, execution, setup), and the audit command enforced by `repo-rules-checker` and `rhino-cli workflows validate-naming`
+- [Worktree Path Convention](./structure/worktree-path.md) - Canonical default location for git worktrees (`.claude/worktrees/<name>/`)
 
 ## Tutorials
 

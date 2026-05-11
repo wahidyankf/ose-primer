@@ -121,7 +121,7 @@ Then push again — the cached results make the second run fast.
 After the baseline gate, the hook conditionally runs the naming validators when the push range
 touches the relevant trees:
 
-- `nx run rhino-cli:validate:naming-agents` — fires when `.claude/agents/**` or `.opencode/agent/**` changed
+- `nx run rhino-cli:validate:naming-agents` — fires when `.claude/agents/**` or `.opencode/agents/**` changed
 - `nx run rhino-cli:validate:naming-workflows` — fires when `repo-governance/workflows/**` changed
 
 Both are cacheable, so no-op pushes pay near-zero cost. The CI quality-gate workflow also runs

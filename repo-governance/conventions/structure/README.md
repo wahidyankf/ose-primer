@@ -19,7 +19,7 @@ This directory contains standards for how documentation is organized, named, and
 
 ## Documents
 
-- [Agent Naming Convention](./agent-naming.md) - Single exception-free filename rule for agent files in `.claude/agents/` and `.opencode/agent/`. Defines scope vocabulary, role vocabulary (maker, checker, fixer, dev, deployer, executor, manager), and the audit command enforced by `repo-rules-checker`
+- [Agent Naming Convention](./agent-naming.md) - Single exception-free filename rule for agent files in `.claude/agents/` and `.opencode/agents/`. Defines scope vocabulary, role vocabulary (maker, checker, fixer, dev, deployer, manager), and the audit command enforced by `repo-rules-checker`
 - [Diataxis Framework](./diataxis-framework.md) - Understanding the four-category documentation organization framework we use (Tutorials, How-To, Reference, Explanation). Foundational framework for all documentation structure
 - [File Naming Convention](./file-naming.md) - Kebab-case filename rules for docs/, repo-governance/, and plans/ directories
 - [Governance Vendor Independence](./governance-vendor-independence.md) - Vendor-neutral governance prose: vendor names allowed only inside ` ```binding-example ` fences. Enforced by `rhino-cli repo-governance vendor-audit`

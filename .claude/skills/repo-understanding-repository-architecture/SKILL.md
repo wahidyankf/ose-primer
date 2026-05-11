@@ -150,7 +150,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 - Source code (JS, TS, future: Java, Kotlin, Python)
 - Next.js 16 web applications (crud-fs-ts-nextjs, crud-fs-ts-nextjs)
 - Build systems and tooling
-- AI agents (.claude/agents/ primary, .opencode/agent/ auto-generated secondary)
+- AI agents (.claude/agents/ primary, .opencode/agents/ auto-generated secondary)
 - Git workflows
 
 **Example Practices**:
@@ -171,7 +171,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 
 **Purpose**: Automated implementers enforcing conventions and development practices.
 
-**Location**: `.claude/agents/` (primary; `.opencode/agent/` is auto-generated secondary)
+**Location**: `.claude/agents/` (primary; `.opencode/agents/` is auto-generated secondary)
 
 **Key Document**: [Agents Index](../../agents/README.md)
 
@@ -398,5 +398,3 @@ Skills (context: fork) ──delegates to──> Isolated Agent Context
 ---
 
 **Note**: This Skill provides architectural overview. The authoritative Repository Architecture document contains complete traceability examples, detailed layer characteristics, and usage guidance.
-
-See `reference.md` in this Skill directory for detailed layer characteristics and governance relationships.

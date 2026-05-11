@@ -343,7 +343,7 @@ rhino-cli agents sync -v
 
 **What it does:**
 
-**Agents (`.claude/agents/` → `.opencode/agent/`):**
+**Agents (`.claude/agents/` → `.opencode/agents/`):**
 
 - Converts tools array to boolean map (`Read, Write` → `read: true, write: true`)
 - Maps models (`sonnet`/`opus` → `opencode-go/minimax-m2.7`, `haiku` → `opencode-go/glm-5`, empty → `opencode-go/minimax-m2.7`)
@@ -351,10 +351,7 @@ rhino-cli agents sync -v
 - Preserves description, skills, and body content
 - Normalizes YAML formatting (adds spaces after colons)
 
-**Skills (`.claude/skills/` → `.opencode/skill/`):**
-
-- Direct byte-for-byte copy (formats are identical)
-- Converts `SKILL.md` → `{skill-name}.md`
+**Skills**: Skills are NOT copied by this command. OpenCode reads `.claude/skills/{name}/SKILL.md` natively per opencode.ai/docs/skills/. The `--skills-only` flag is preserved as a no-op for CLI backward compatibility.
 
 **Performance:** ~25-60x faster than bash scripts (121ms vs 3-5 seconds)
 

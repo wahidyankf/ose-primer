@@ -106,6 +106,9 @@ Development practices in this directory fall into several categories:
 - [Git Push Safety Convention](./workflow/git-push-safety.md) - Requires explicit per-instance user approval before any AI agent or automation executes `git push --force`, `--force-with-lease`, or `--no-verify`; prior approval does not carry forward
 - [Native-First Toolchain Management Convention](./workflow/native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` instead of Terraform, Ansible, or Docker Dev Containers for development environment setup
 - [PR Merge Protocol Convention](./workflow/pr-merge-protocol.md) - Practice requiring explicit user approval before merging pull requests and mandating all quality gates pass before merge
+- [CI Monitoring Convention](./workflow/ci-monitoring.md) - Standards for monitoring GitHub Actions CI runs without exhausting the GitHub API rate limit — required tooling, poll intervals, trigger discipline, and recovery procedures
+- [CI Post-Push Verification Convention](./workflow/ci-post-push-verification.md) - After pushing to origin main, manually trigger all related GitHub CI workflows and verify they pass before considering the work complete
+- [Test-Driven Development Convention](./workflow/test-driven-development.md) - Mandates TDD (Red→Green→Refactor) as the required practice for all code changes across the repository
 
 ### Quality Standards Documentation
 
@@ -122,6 +125,7 @@ Development practices in this directory fall into several categories:
 - [Feature Change Completeness Convention](./quality/feature-change-completeness.md) - Practice requiring all related specs, contracts, tests, and documentation to be updated as part of any feature change
 - [CI Blocker Resolution Convention](./quality/ci-blocker-resolution.md) - Practice mandating that preexisting CI blockers are investigated at the root cause and fixed properly, never bypassed
 - [Post-Push CI Verification Convention](./quality/post-push-ci-verification.md) - Requirement to trigger and verify related GitHub Actions CI workflows after pushing to origin main, for both human contributors and AI agents
+- [Plan Anti-Hallucination Convention](./quality/plan-anti-hallucination.md) - Anti-hallucination guardrails for plan-maker and plan-checker agents: repo-grounding rules, web-research delegation thresholds, and claim verification requirements
 
 ### Pattern Documentation
 
@@ -135,7 +139,7 @@ Development practices in this directory fall into several categories:
 
 ### Agent Standards Documentation
 
-- [AI Agents Convention](./agents/ai-agents.md) - Standards for creating and managing AI agents in the `.claude/agents/` directory (primary source of truth), synced to `.opencode/agent/`. Covers agent naming, file structure, frontmatter requirements, tool access patterns, model selection, and size limits
+- [AI Agents Convention](./agents/ai-agents.md) - Standards for creating and managing AI agents in the `.claude/agents/` directory (primary source of truth), synced to `.opencode/agents/`. Covers agent naming, file structure, frontmatter requirements, tool access patterns, model selection, and size limits
 - [Skill Context Architecture](./agents/skill-context-architecture.md) - Architectural constraint requiring all repository skills to use inline context for universal subagent compatibility. Documents subagent spawning limitation and fork skill alternatives
 - [Agent Workflow Orchestration Convention](./agents/agent-workflow-orchestration.md) - Standards for how AI agents plan, execute, verify, and self-improve during multi-step tasks. Covers plan mode triggers, subagent strategy, verification before done, autonomous bug fixing, the self-improvement loop, and task management
 - [Model Selection Convention](./agents/model-selection.md) - Standards for selecting the appropriate model tier (opus, sonnet, haiku) for AI agents based on task complexity, with justification requirements and tier comparison
