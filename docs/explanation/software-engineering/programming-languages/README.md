@@ -29,7 +29,7 @@ This directory contains comprehensive documentation on programming languages use
 2. **Best Practices** - Proven approaches for writing clean, maintainable code
 3. **Antipatterns** - Common mistakes and pitfalls to avoid
 
-**Domain-Specific Standards Pattern** (Java, Go, Elixir, Dart):
+**Domain-Specific Standards Pattern** (Java, Go, Elixir, Dart, Kotlin, Rust, Clojure, C#, F#):
 
 Multiple domain-focused standards files covering specific areas (testing, security, concurrency, etc.) as separate documents rather than three consolidated files. See each language's README for their specific document structure.
 
@@ -107,7 +107,7 @@ Each language directory contains a README.md (language overview and version info
 └── antipatterns.md        # Common antipatterns
 ```
 
-**Domain-Specific Standards Pattern** (Java, Go, Elixir, Dart):
+**Domain-Specific Standards Pattern** (Java, Go, Elixir, Dart, Kotlin, Rust, Clojure, C#, F#):
 
 ```
 [language-name]/

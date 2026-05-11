@@ -66,7 +66,7 @@ The `repo-governance/` tree is the rulebook:
 - **[vision/](./repo-governance/vision/README.md)** — High-level purpose.
 - **[repository-governance-architecture.md](./repo-governance/repository-governance-architecture.md)** — How the six layers compose.
 
-Agents live under `.claude/agents/` (source of truth) and `.opencode/agent/` (mirror). Skills live under `.claude/skills/` and `.opencode/skill/`. See [.claude/agents/README.md](./.claude/agents/README.md).
+Agents live under `.claude/agents/` (source of truth) and `.opencode/agents/` (mirror). Skills live under `.claude/skills/` and `.opencode/skills/`. See [.claude/agents/README.md](./.claude/agents/README.md).
 
 ## 📂 Repository layout
 

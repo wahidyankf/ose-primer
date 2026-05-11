@@ -94,13 +94,12 @@ See `repo-applying-maker-checker-fixer` skill for complete workflow patterns.
 ## Dual-Mode Operation
 
 **Source of Truth**: This directory (`.claude/skills/`) is the PRIMARY source.
-**Sync Target**: Changes are synced to `.opencode/skill/` (SECONDARY) via automation.
+**OpenCode Access**: Skills are read natively by OpenCode from `.claude/skills/` — no `.opencode/skills/` mirror is created. The `.opencode/skills/` directory contains only Nx/OpenCode-specific skills, not mirrors of `.claude/skills/` entries.
 
 **Making Changes**:
 
 1. Edit skills in `.claude/skills/` directory
-2. Run: `npm run sync:claude-to-opencode` (calls `rhino-cli sync-skills` internally, ~15ms for all skills)
-3. Both systems stay synchronized
+2. Run: `npm run sync:claude-to-opencode` to regenerate `.opencode/agents/` (agents only; skills are not copied)
 
 **See**: [CLAUDE.md](../../CLAUDE.md) for complete guidance, [apps/rhino-cli/README.md](../../apps/rhino-cli/README.md) for rhino-cli details
 

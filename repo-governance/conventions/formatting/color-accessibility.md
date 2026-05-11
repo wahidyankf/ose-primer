@@ -303,7 +303,7 @@ graph TD
 
 ### AI Agent Color Categorization
 
-**Context**: Agents in `.opencode/agent/` are visually categorized by role using colored square emojis in the `.opencode/agent/README.md` file.
+**Context**: Agents are visually categorized by role using colored square emojis in `.claude/agents/README.md` (the canonical catalog). The `.opencode/agents/` directory does not have a separate README.
 
 #### Agent Color Assignment
 
@@ -314,7 +314,7 @@ graph TD
 | 🟨    | Yellow | #F1C40F  | **Fixers** - Agents that apply validated fixes to existing content  | docs-file-manager, repo-rules-fixer                                                      |
 | 🟪    | Purple | #CC78BC  | **Implementors/Executors** - Agents that execute or implement plans | plan-execution-checker, deployers                                                        |
 
-#### Implementation in `.opencode/agent/README.md`
+#### Implementation in `.claude/agents/README.md`
 
 **Best Practice Example**:
 
