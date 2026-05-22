@@ -1,6 +1,6 @@
 # rhino-cli Gherkin Specs
 
-Gherkin feature files for [rhino-cli](../../../../../apps/rhino-cli/README.md) — the Repository
+Gherkin feature files for [rhino-cli](../../../../../../apps/rhino-cli/README.md) — the Repository
 Hygiene & INtegration Orchestrator CLI.
 
 ## Feature Files
@@ -34,5 +34,5 @@ Hygiene & INtegration Orchestrator CLI.
 
 ## Related
 
-- **Parent**: [rhino-cli specs](../../README.md)
-- **BDD Standards**: [behavior-driven-development-bdd/](../../../../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md)
+- **Parent**: [rhino-cli specs](../../../README.md)
+- **BDD Standards**: [behavior-driven-development-bdd/](../../../../../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md)
