@@ -32,6 +32,17 @@ established two new rules:
 `contracts/` at root) for `crud`, and flat `behavior/cli/gherkin/*.feature`
 for `rhino`. Both must be migrated.
 
+## Approach Summary
+
+Execute two atomic structural commits (crud migration, rhino migration), then propagate path
+changes to all governance docs and project.json files via `repo-rules-maker`, then run
+quality gates. All `git mv` operations and their corresponding reference updates land in
+the same commit — no intermediate broken state is ever pushed.
+
+## Git Execution Context
+
+This plan executes directly on `main` — no worktree. Commits are pushed to `origin main`.
+
 ## Scope
 
 | Area                                                                 | Change                                                                          |

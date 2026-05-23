@@ -6,6 +6,22 @@ category: plan
 
 # Delivery — Adopt ose-public Specs Structure
 
+## Environment Setup
+
+- [ ] `npm install` — exits 0
+  - _Executor: default_
+- [ ] `npm run doctor -- --fix` — exits 0 (converges 18+ polyglot toolchains)
+  - _Executor: default_
+- [ ] `npx nx affected -t lint typecheck` — exits 0 (baseline; distinguish pre-existing failures
+      from migration-caused regressions)
+  - _Executor: default_
+
+## Commit Guidelines
+
+Follow Conventional Commits format. Commit thematically — each phase is its own commit; do
+not bundle changes from different phases or unrelated domains. Per-phase commit messages are
+specified inline at the end of each phase.
+
 ## Phase 0 — Pre-flight Verification
 
 - [ ] Confirm exact rhino flat feature-file list:
@@ -63,6 +79,7 @@ Do NOT push between the moves and the updates.
 
 ### 2.1 — Create destination directories
 
+- [ ] `mkdir -p specs/apps/crud/product` — skeleton placeholder; no README required in this migration
 - [ ] `mkdir -p specs/apps/crud/behavior`
 - [ ] `mkdir -p specs/apps/crud/system-context`
 - [ ] `mkdir -p specs/apps/crud/containers`
@@ -166,6 +183,10 @@ Each file has `specs/apps/crud/be/gherkin` or `specs/apps/crud/fe/gherkin` refer
 - [ ] Verify no old project.json references remain:
       `grep -r 'specs/apps/crud/be/gherkin\|specs/apps/crud/fe/gherkin' --include='*.json' apps/ | wc -l`
       Must return 0.
+- [ ] Verify no stale `contracts` path references remain in any `.json` file
+      (the moved `contracts/project.json` may contain self-referential paths):
+      `grep -r 'specs/apps/crud/contracts' --include='*.json' . | grep -v node_modules`
+      Must return empty.
 - [ ] Run `npm run lint:md` on changed spec files — exits 0.
 - [ ] Commit atomically:
       `refactor(specs/crud): migrate to C4-aware five-folder tree; fe surface renamed to web`
@@ -397,9 +418,17 @@ Delegate the full sweep to `repo-rules-maker`.
 
 ## Phase 6 — Commit and Push
 
-- [ ] Stage and commit all remaining changes not yet committed.
+- [ ] Verify `git status` shows only expected unstaged files (no accidental uncommitted
+      changes from prior phases, no unrelated modifications).
+  - _Executor: default_
+- [ ] Commit any remaining changes with message:
+      `chore(specs): finalize adopt-ose-public-specs-structure migration`
   - _Executor: default_
 - [ ] `git push origin main` — exits 0.
+  - _Executor: default_
+- [ ] Monitor GitHub Actions: open `https://github.com/wahidyankf/ose-primer/actions` and
+      confirm all workflow runs triggered by the push succeed. If any fail, fix the root
+      cause before advancing to Phase 7.
   - _Executor: default_
 
 ## Phase 7 — Plan Quality Gate

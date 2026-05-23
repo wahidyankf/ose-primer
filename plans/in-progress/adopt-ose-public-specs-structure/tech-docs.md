@@ -8,18 +8,20 @@ category: plan
 
 ## Gap Inventory
 
-| ID    | Location                                                             | Current state                                                                                               | Target state                                                                           | Severity |
-| ----- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------- |
-| GAP-1 | `specs/README.md` "Standard Folder Pattern" section                  | Documents flat `be/fe/c4/contracts/` as canonical                                                           | Five-folder tree + `behavior/<surface>/gherkin/<domain>/`                              | HIGH     |
-| GAP-2 | `specs/apps/crud/`                                                   | Flat-root: `be/`, `fe/`, `c4/`, `contracts/` at app root                                                    | Five-folder C4-aware tree; `fe/` renamed to `behavior/web/`                            | HIGH     |
-| GAP-3 | `specs/apps/rhino/`                                                  | Only `behavior/cli/gherkin/` populated; missing `product/`, `system-context/`, `containers/`, `components/` | Full CLI-only five-folder profile                                                      | MEDIUM   |
-| GAP-4 | `specs/apps/rhino/behavior/cli/gherkin/`                             | 19 flat `.feature` files directly under `gherkin/`                                                          | All features inside domain subdirs per D5 grouping table                               | HIGH     |
-| GAP-5 | `repo-governance/conventions/structure/specs-directory-structure.md` | Old convention: flat-root layout, CLI flat exception, no migration map                                      | New C4-aware five-folder convention matching ose-public (updated via repo-rules-maker) | HIGH     |
-| GAP-6 | 17 `apps/crud-*/project.json`                                        | `specs/apps/crud/be/gherkin` and `fe/gherkin` in Nx inputs + spec-coverage commands                         | `behavior/be/gherkin` and `behavior/web/gherkin`                                       | HIGH     |
-| GAP-7 | 9 governance docs + `specs/README.md` + `README.md` (root)           | Path examples reference `crud/be/`, `crud/fe/`, `crud/c4/`, flat rhino CLI features                         | All examples updated to canonical paths                                                | HIGH     |
-| GAP-8 | `plans/in-progress/add-investment-oracle-app/` (3 files)             | References `crud/c4/`, `crud/be/gherkin/`, `crud/fe/gherkin/`, old `contracts/` location                    | Updated to new five-folder paths                                                       | MEDIUM   |
+| ID    | Location                                                                             | Current state                                                                                               | Target state                                                                           | Severity |
+| ----- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------- |
+| GAP-1 | `specs/README.md` "Standard Folder Pattern" section [Repo-grounded]                  | Documents flat `be/fe/c4/contracts/` as canonical                                                           | Five-folder tree + `behavior/<surface>/gherkin/<domain>/`                              | HIGH     |
+| GAP-2 | `specs/apps/crud/` [Repo-grounded]                                                   | Flat-root: `be/`, `fe/`, `c4/`, `contracts/` at app root                                                    | Five-folder C4-aware tree; `fe/` renamed to `behavior/web/`                            | HIGH     |
+| GAP-3 | `specs/apps/rhino/` [Repo-grounded]                                                  | Only `behavior/cli/gherkin/` populated; missing `product/`, `system-context/`, `containers/`, `components/` | Full CLI-only five-folder profile                                                      | MEDIUM   |
+| GAP-4 | `specs/apps/rhino/behavior/cli/gherkin/` [Repo-grounded]                             | 19 flat `.feature` files directly under `gherkin/` [Repo-grounded]                                          | All features inside domain subdirs per D1 grouping table                               | HIGH     |
+| GAP-5 | `repo-governance/conventions/structure/specs-directory-structure.md` [Repo-grounded] | Old convention: flat-root layout, CLI flat exception, no migration map                                      | New C4-aware five-folder convention matching ose-public (updated via repo-rules-maker) | HIGH     |
+| GAP-6 | 17 `apps/crud-*/project.json` [Repo-grounded]                                        | `specs/apps/crud/be/gherkin` and `fe/gherkin` in Nx inputs + spec-coverage commands                         | `behavior/be/gherkin` and `behavior/web/gherkin`                                       | HIGH     |
+| GAP-7 | 9 governance docs + `specs/README.md` + `README.md` (root) [Repo-grounded]           | Path examples reference `crud/be/`, `crud/fe/`, `crud/c4/`, flat rhino CLI features                         | All examples updated to canonical paths                                                | HIGH     |
+| GAP-8 | `plans/in-progress/add-investment-oracle-app/` (3 files) [Repo-grounded]             | References `crud/c4/`, `crud/be/gherkin/`, `crud/fe/gherkin/`, old `contracts/` location                    | Updated to new five-folder paths                                                       | MEDIUM   |
 
 ## Decision — D1: Domain Groupings for Rhino CLI Gherkin
+
+_[Judgment call]_ Domain names chosen to match existing feature-file prefixes for one-to-one mapping clarity.
 
 **Default groupings** (apply at execution time; adjust if filenames have drifted):
 
@@ -272,3 +274,15 @@ npm run lint:md
 # Spec coverage (crud backends):
 npx nx run-many -t spec-coverage --projects=crud-be-golang-gin,crud-be-rust-axum
 ```
+
+## Rollback
+
+Each phase lands in one atomic commit. To undo any phase, revert that commit:
+
+```bash
+git revert <commit-hash>
+git push origin main
+```
+
+No partial-state rollback is needed because each commit is atomic (moves + reference updates bundled).
+[Judgment call]
