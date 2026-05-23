@@ -4,6 +4,10 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
+- [Adopt ose-public specs structure](./adopt-ose-public-specs-structure/README.md)
+  — migrate `specs/apps/crud/` to the C4-aware five-folder tree and
+  `specs/apps/rhino/` CLI gherkin to domain subdirs, matching the
+  `specs-tree-uniform` convention adopted in ose-public on 2026-05-24.
 - [Add `investment-oracle` desktop demo](./add-investment-oracle-app/README.md)
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
