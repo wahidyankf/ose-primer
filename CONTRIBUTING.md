@@ -1,6 +1,8 @@
-# Contributing to Open Sharia Enterprise
+# Contributing to ose-primer
 
-Thank you for your interest in contributing to Open Sharia Enterprise! We welcome contributions from the community and appreciate your time and effort.
+Thank you for your interest in contributing to `ose-primer`! We welcome contributions from the community and appreciate your time and effort.
+
+`ose-primer` is the MIT-licensed repository template in the OSE (Open Sharia Enterprise) family. Its sibling repositories are [`ose-public`](https://github.com/wahidyankf/ose-public) (main OSE platform) and [`ose-infra`](https://github.com/wahidyankf/ose-infra) (private infrastructure). See [README.md](./README.md#related-repositories) for the full ecosystem map.
 
 ## Table of Contents
 
@@ -23,7 +25,7 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 
 ## Getting Started
 
-Open Sharia Enterprise is an enterprise platform built with Node.js and organized as an Nx monorepo. Before contributing, please:
+`ose-primer` is a repository template built with Node.js and organized as an Nx monorepo. Before contributing, please:
 
 1. Read this contributing guide completely
 2. Review our [documentation](./docs/README.md)
@@ -61,8 +63,8 @@ After installation, restart your terminal and Volta will automatically manage No
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/wahidyankf/ose-public.git
-   cd ose-public
+   git clone https://github.com/wahidyankf/ose-primer.git
+   cd ose-primer
    ```
 
 2. **Install dependencies**:
@@ -97,7 +99,7 @@ After installation, restart your terminal and Volta will automatically manage No
 This is an **Nx monorepo** with the following structure:
 
 ```
-ose-public/
+ose-primer/
 ├── apps/           # Deployable applications
 │   └── [app-name]/ # Individual apps
 ├── libs/           # Reusable libraries
@@ -419,4 +421,4 @@ nx dev [app-name]
 
 ---
 
-Thank you for contributing to Open Sharia Enterprise! Your contributions help build better, more secure enterprise solutions. 🚀
+Thank you for contributing to `ose-primer`! Your improvements flow downstream to every repository forked from this template.

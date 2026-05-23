@@ -1,6 +1,6 @@
 ---
 title: "Platform Bindings Catalog"
-description: Catalog of all AI coding agent platform bindings in ose-public, their directories, root instruction files, and mechanical translation artifacts.
+description: Catalog of all AI coding agent platform bindings in this repository, their directories, root instruction files, and mechanical translation artifacts.
 category: reference
 created: 2026-05-02
 ---

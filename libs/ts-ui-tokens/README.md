@@ -1,6 +1,8 @@
 # ts-ui-tokens
 
-Shared structural design tokens for the open-sharia-enterprise monorepo.
+Shared structural design tokens for the `ose-primer` repository template.
+
+> **Package name note**: the npm package is still published as `@open-sharia-enterprise/ts-ui-tokens` (matching the upstream [`ose-public`](https://github.com/wahidyankf/ose-public) repo this lib was extracted from). The name is intentionally retained for binary compatibility across the OSE family; do not rename without coordinated updates in every consumer (`libs/ts-ui`, storybook, vitest config, app globals).
 
 ## What's Shared
 

@@ -29,6 +29,7 @@ This directory contains standards for how documentation is organized, named, and
 - [Worktree Path Convention](./worktree-path.md) - Canonical default location for git worktrees (`.claude/worktrees/<name>/`); gitignored; parallel-safe; rationale explained
 - [No Last-Updated Metadata](./no-last-updated.md) - Companion to no-date-metadata: do not write `**Last Updated**` rows in markdown files
 - [Programming Language Docs Separation](./programming-language-docs-separation.md) - Boundary between generic dev docs and language-specific (Go, TypeScript, Rust, etc.) docs
+- [Repository Ecosystem Convention](./repository-ecosystem.md) - The three sibling OSE repositories (`ose-public`, `ose-primer`, `ose-infra`), their roles, propagation rules, and verification steps. Replaces the deleted `ose-projects` umbrella as the canonical description of the family relationship
 
 ## Key Concepts
 

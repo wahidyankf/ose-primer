@@ -1,10 +1,12 @@
 # golang-commons
 
-Shared Go utilities for Open Sharia Enterprise CLI tools.
+Shared Go utilities for `ose-primer` Go CLI tools.
+
+> **Module path note**: this library's Go module path remains `github.com/wahidyankf/ose-public/libs/golang-commons` because the package was originally published from the [`ose-public`](https://github.com/wahidyankf/ose-public) sibling repository and downstream consumers may already import it under that path. The module path is intentionally not renamed to `ose-primer` to preserve import compatibility.
 
 ## Purpose
 
-Provides common packages used across multiple Go CLI applications (`rhino-cli`, `rhino-cli`, `rhino-cli`) and libraries (`golang-commons`).
+Provides common Go packages used across this repository's Go CLI applications (currently `rhino-cli`) and is portable to other OSE-family repos via its stable module path.
 
 ## Packages
 

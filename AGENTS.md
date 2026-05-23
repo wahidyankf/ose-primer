@@ -15,6 +15,18 @@ Instructions for AI agents working with this repository.
 
 **ose-primer** — repository template for OSE-style polyglot Nx monorepos. Node.js-based, Nx workspace, MIT-licensed.
 
+### Sibling repositories (no parent monorepo)
+
+`ose-primer` is one of three independently cloned repositories in the OSE (Open Sharia Enterprise) family. Agents should treat each as a standalone git repository — there is no umbrella workspace, and the previously-used `ose-projects` parent has been deleted.
+
+| Repository                                                           | Role                                                                                              | Visibility |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------- |
+| [`ose-public`](https://github.com/wahidyankf/ose-public)             | Main OSE platform monorepo. Upstream source of governance, conventions, and AI agent patterns.    | Public     |
+| [`ose-primer`](https://github.com/wahidyankf/ose-primer) (this repo) | MIT-licensed template extracted from `ose-public`. Clean starting point for new OSE-style repos.  | Public     |
+| [`ose-infra`](https://github.com/wahidyankf/ose-infra)               | Private infrastructure (Terraform, deploy pipelines, cloud config) for the `ose-public` platform. | Private    |
+
+Cross-repo propagation flows `ose-public → ose-primer → downstream forks` for governance, agents, and skills; infrastructure-only concerns flow `ose-public ↔ ose-infra`. See the [Repository Ecosystem Convention](./repo-governance/conventions/structure/repository-ecosystem.md) for the canonical rules.
+
 - **Node.js**: 24.13.1 (LTS - Long-Term Support, managed by Volta)
 - **npm**: 11.10.1
 - **Monorepo**: Nx with `apps/` and `libs/` structure

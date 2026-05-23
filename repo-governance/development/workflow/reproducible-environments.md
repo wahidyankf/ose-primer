@@ -91,8 +91,8 @@ npm --version   # 11.10.1 (same for everyone)
 curl https://get.volta.sh | bash
 
 # Clone repository
-git clone https://github.com/wahidyankf/ose-public.git
-cd open-sharia-enterprise
+git clone https://github.com/wahidyankf/ose-primer.git
+cd ose-primer
 
 # Volta auto-installs pinned Node.js/npm versions
 # No manual version management needed
@@ -462,8 +462,8 @@ CMD ["npm", "run", "dev"]
 1. **Clone Repository**:
 
    ```bash
-   git clone https://github.com/wahidyankf/ose-public.git
-   cd open-sharia-enterprise
+   git clone https://github.com/wahidyankf/ose-primer.git
+   cd ose-primer
    ```
 
 2. **Install Dependencies**:

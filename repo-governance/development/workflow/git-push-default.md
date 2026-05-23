@@ -135,7 +135,7 @@ Equivalently, when working in the main worktree (not a named worktree), the stan
 
 A pull request from a worktree branch is created only when the user's prompt or the plan document explicitly requests one — the same opt-in rule as Standard 2.
 
-**What this standard does NOT cover**: the parent repository (`ose-projects`) has its own absolute invariant that `ose-primer` changes surface as draft PRs. That rule lives in the parent's governance, not here. This standard governs work done inside ose-primer itself.
+**What this standard does NOT cover**: this convention governs work done inside `ose-primer` itself. The previously-referenced `ose-projects` umbrella repository has been deleted; `ose-primer` is now an independent top-level repository alongside its siblings [`ose-public`](https://github.com/wahidyankf/ose-public) and [`ose-infra`](https://github.com/wahidyankf/ose-infra) (see the [Repository Ecosystem Convention](../../conventions/structure/repository-ecosystem.md)). Each sibling defines its own push policy independently.
 
 ## Examples
 

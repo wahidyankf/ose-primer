@@ -95,6 +95,20 @@ ose-primer/
 └── AGENTS.md                  # OpenCode equivalent of CLAUDE.md
 ```
 
+## Related repositories
+
+`ose-primer` is one of three sibling repositories in the OSE (Open Sharia Enterprise) family. Each repo stands alone — there is no parent monorepo — but governance, conventions, and tooling are kept aligned across them via explicit cross-repo propagation.
+
+| Repository                                                           | Role                                                                                               | Visibility | License          |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------- | ---------------- |
+| [`ose-public`](https://github.com/wahidyankf/ose-public)             | Main OSE platform monorepo. Source of governance, conventions, and AI agent patterns adopted here. | Public     | Source-available |
+| [`ose-primer`](https://github.com/wahidyankf/ose-primer) (this repo) | Repository template — clean MIT-licensed starting point for new OSE-style polyglot Nx monorepos.   | Public     | MIT              |
+| [`ose-infra`](https://github.com/wahidyankf/ose-infra)               | Private infrastructure (Terraform, deploy pipelines, cloud config) backing `ose-public`.           | Private    | Proprietary      |
+
+**Propagation direction**: governance, conventions, agents, and skills generally flow `ose-public → ose-primer → downstream forks`. Infrastructure-only concerns flow `ose-public ↔ ose-infra`. Each repo is independently clonable; no submodules, no workspace links.
+
+See the [Repository Ecosystem Convention](./repo-governance/conventions/structure/repository-ecosystem.md) for the canonical description of the sibling relationship and propagation rules.
+
 ## License
 
 **MIT** across the entire repo. See [LICENSE](./LICENSE) and [LICENSING-NOTICE.md](./LICENSING-NOTICE.md).

@@ -31,10 +31,11 @@ outputs:
 configuring every tool required to work on any project in this monorepo — from git hooks to
 integration tests to E2E tests.
 
-> **Note**: The polyglot demo apps (`a-demo-be-*`, `a-demo-fe-*`) were extracted to
-> [ose-primer](https://github.com/wahidyankf/ose-primer) on 2026-04-18. If you need to set
-> up Elixir, Clojure, Python, Rust, Dart/Flutter toolchains for those apps, see the
-> ose-primer setup guide.
+> **Scope**: This setup workflow lives in [`ose-primer`](https://github.com/wahidyankf/ose-primer)
+> — the repository template that owns the polyglot `crud-*` demo apps. Sibling repositories
+> ([`ose-public`](https://github.com/wahidyankf/ose-public),
+> [`ose-infra`](https://github.com/wahidyankf/ose-infra)) maintain their own equivalent
+> workflows; this file does not govern them.
 
 **When to use**:
 
@@ -53,25 +54,25 @@ confirmation and shell access.
 
 All tools checked by `rhino-cli doctor`:
 
-| #   | Tool       | Required Version      | Version Source                   | Manager        |
-| --- | ---------- | --------------------- | -------------------------------- | -------------- |
-| 1   | git        | Any                   | (no config file)                 | System/Brew    |
-| 2   | volta      | Any                   | (no config file)                 | curl script    |
-| 3   | node       | 24.13.1               | package.json > volta.node        | Volta          |
-| 4   | npm        | 11.10.1               | package.json > volta.npm         | Volta          |
-| 5   | golang     | >= go.mod directive   | apps/rhino-cli/go.mod            | Brew/asdf      |
-| 6   | dotnet     | >= global.json major  | apps/organiclever-be/global.json | Brew/Script    |
-| 7   | docker     | Any                   | (no config file)                 | Docker Desktop |
-| 8   | jq         | Any                   | (no config file)                 | Brew           |
-| 9   | playwright | (matches npm version) | node_modules                     | npx            |
+| #   | Tool       | Required Version      | Version Source                         | Manager        |
+| --- | ---------- | --------------------- | -------------------------------------- | -------------- |
+| 1   | git        | Any                   | (no config file)                       | System/Brew    |
+| 2   | volta      | Any                   | (no config file)                       | curl script    |
+| 3   | node       | 24.13.1               | package.json > volta.node              | Volta          |
+| 4   | npm        | 11.10.1               | package.json > volta.npm               | Volta          |
+| 5   | golang     | >= go.mod directive   | apps/rhino-cli/go.mod                  | Brew/asdf      |
+| 6   | dotnet     | >= global.json major  | apps/crud-be-csharp-aspnet/global.json | Brew/Script    |
+| 7   | docker     | Any                   | (no config file)                       | Docker Desktop |
+| 8   | jq         | Any                   | (no config file)                       | Brew           |
+| 9   | playwright | (matches npm version) | node_modules                           | npx            |
 
 ## Quick Start: `doctor --fix`
 
 If you already have Homebrew (macOS) or apt (Linux) and Node.js/npm installed:
 
 ```bash
-git clone https://github.com/wahidyankf/ose-public.git
-cd open-sharia-enterprise
+git clone https://github.com/wahidyankf/ose-primer.git
+cd ose-primer
 npm install
 npm run doctor -- --fix          # Auto-install all missing tools
 npm run doctor -- --fix --dry-run  # Preview what would be installed (no changes)
@@ -202,7 +203,7 @@ Volta auto-installs the correct versions when you enter the repo directory, beca
 `package.json` pins them via `volta.node` and `volta.npm`. Just run:
 
 ```bash
-cd /path/to/open-sharia-enterprise
+cd /path/to/ose-primer
 node --version   # Should show v24.13.1
 npm --version    # Should show 11.10.1
 ```
@@ -242,7 +243,7 @@ Go >= 1.26.
 
 **Condition**: `{input.scope} == full`
 
-Required for: polyglot demo apps in ose-primer (extracted 2026-04-18)
+Required for: polyglot `crud-*` demo apps in this repository
 
 #### 6.1 Install Python 3.13+
 
@@ -269,7 +270,7 @@ The required minimum version is in the `ose-primer` repository's `.python-versio
 
 **Condition**: `{input.scope} == full`
 
-Required for: polyglot demo apps in ose-primer (extracted 2026-04-18)
+Required for: polyglot `crud-*` demo apps in this repository
 
 #### 7.1 Install Rust via rustup
 
@@ -294,7 +295,7 @@ cargo install cargo-llvm-cov
 
 **Condition**: `{input.scope} == full`
 
-Required for: polyglot demo apps in ose-primer (extracted 2026-04-18)
+Required for: polyglot `crud-*` demo apps in this repository
 
 #### 8.1 Install asdf version manager
 
@@ -349,7 +350,7 @@ The required version is pinned in `.tool-versions` (currently `elixir 1.19.5-otp
 
 **Condition**: `{input.scope} == full`
 
-Required for: `organiclever-be`; also polyglot demo apps in ose-primer (extracted 2026-04-18)
+Required for: polyglot `crud-*` demo apps in this repository (notably `crud-be-csharp-aspnetcore`)
 
 #### 9.1 Install .NET SDK
 
@@ -360,7 +361,7 @@ brew install dotnet
 # Linux — https://learn.microsoft.com/en-us/dotnet/core/install/linux
 ```
 
-The required major version is in `apps/organiclever-be/global.json` under `sdk.version`.
+The required major version is in `apps/crud-be-csharp-aspnetcore/global.json` under `sdk.version`.
 
 **Success criteria**: `dotnet --version` shows a version with the same or higher major version
 as `global.json`.
@@ -371,7 +372,7 @@ as `global.json`.
 
 **Condition**: `{input.scope} == full`
 
-Required for: polyglot demo apps in ose-primer (extracted 2026-04-18)
+Required for: polyglot `crud-*` demo apps in this repository
 
 #### 10.1 Install Flutter (includes Dart)
 
@@ -405,8 +406,8 @@ flutter doctor
 #### 11.1 Clone the repository
 
 ```bash
-git clone https://github.com/wahidyankf/ose-public.git
-cd open-sharia-enterprise
+git clone https://github.com/wahidyankf/ose-primer.git
+cd ose-primer
 ```
 
 **Condition**: Skip if already cloned.
@@ -451,7 +452,7 @@ provided in `.env.example`). Without this set, the secondary binding's
 with `ProviderModelNotFoundError`.
 
 **Success criteria**: Restored files appear in their original app directories (e.g.,
-`apps/ayokoding-web/.env.local`, `apps/organiclever-be/.env`).
+`apps/crud-be-csharp-aspnetcore/.env`, `apps/crud-fe-ts-nextjs/.env.local`).
 
 **On failure**: If no backup exists, copy `.env.example` to `.env` in each app you plan to
 work on and fill in the required values.
