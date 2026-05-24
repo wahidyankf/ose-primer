@@ -1,4 +1,4 @@
-# Demo Frontend Gherkin Specs
+# Demo Web Frontend Gherkin Specs
 
 Gherkin feature files for the crud-scale frontend application. 15 files, 92 scenarios across 8
 domains.
@@ -37,14 +37,14 @@ These specs are the **frontend counterpart** to
 as an 8th domain), but:
 
 - **be**: HTTP-semantic (GET, POST, status codes, response bodies)
-- **fe**: UI-semantic (clicks, types, sees, navigates, form submissions)
+- **web**: UI-semantic (clicks, types, sees, navigates, form submissions)
 
 Each `apps/crud-fe-{lang}-{framework}/` (e.g., `crud-fe-ts-nextjs`) consumes these specs, just as
-`apps/crud-be-{lang}-{framework}/` consumes `specs/apps/crud/be/gherkin/`. Step definitions
+`apps/crud-be-{lang}-{framework}/` consumes `specs/apps/crud/behavior/be/gherkin/`. Step definitions
 translate UI actions into component renders and API call verifications.
 
 ## Related
 
 - **Backend counterpart**: [be gherkin specs](../../be/gherkin/README.md)
-- **Parent**: [fe specs](../README.md)
-- **BDD Standards**: [behavior-driven-development-bdd/](../../../../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md)
+- **Parent**: [web specs](../README.md)
+- **BDD Standards**: [behavior-driven-development-bdd/](../../../../../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md)

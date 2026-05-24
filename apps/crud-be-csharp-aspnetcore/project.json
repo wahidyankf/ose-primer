@@ -52,7 +52,7 @@
         "{projectRoot}/src/**/*.cs",
         "{projectRoot}/tests/**/*.cs",
         "{projectRoot}/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"
       ],
       "outputs": ["{projectRoot}/coverage"]
     },
@@ -67,7 +67,7 @@
         "{projectRoot}/src/**/*.cs",
         "{projectRoot}/tests/**/*.cs",
         "{projectRoot}/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"
       ]
     },
     "test:integration": {
@@ -95,9 +95,9 @@
       "cache": true
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/be/gherkin apps/crud-be-csharp-aspnetcore",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-csharp-aspnetcore",
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature", "{projectRoot}/**/*.cs"]
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature", "{projectRoot}/**/*.cs"]
     }
   },
   "tags": ["type:app", "platform:aspnetcore", "lang:csharp", "domain:crud-be"],

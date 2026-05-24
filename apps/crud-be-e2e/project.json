@@ -24,7 +24,7 @@
         "command": "npx bddgen && npx tsc --noEmit",
         "cwd": "apps/crud-be-e2e"
       },
-      "inputs": ["default", "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"]
+      "inputs": ["default", "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"]
     },
     "test:quick": {
       "executor": "nx:run-commands",
@@ -33,7 +33,7 @@
         "parallel": true,
         "cwd": "apps/crud-be-e2e"
       },
-      "inputs": ["default", "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"]
+      "inputs": ["default", "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"]
     },
     "test:e2e": {
       "executor": "nx:run-commands",
@@ -71,9 +71,9 @@
       }
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps specs/apps/crud/be/gherkin apps/crud-be-e2e",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps specs/apps/crud/behavior/be/gherkin apps/crud-be-e2e",
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
     }
   },
   "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:crud-be"],

@@ -57,7 +57,7 @@
       "inputs": [
         "default",
         "{projectRoot}/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/fe/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature"
       ],
       "outputs": ["{projectRoot}/coverage/"],
       "options": {
@@ -76,7 +76,7 @@
       "inputs": [
         "default",
         "{projectRoot}/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/fe/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature"
       ],
       "options": {
         "command": "flutter test test/unit",
@@ -84,9 +84,9 @@
       }
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps specs/apps/crud/fe/gherkin apps/crud-fe-dart-flutterweb",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps specs/apps/crud/behavior/web/gherkin apps/crud-fe-dart-flutterweb",
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/fe/gherkin/**/*.feature", "{projectRoot}/**/*.dart"]
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature", "{projectRoot}/**/*.dart"]
     }
   },
   "tags": ["type:app", "platform:flutter", "lang:dart", "domain:crud-fe"],

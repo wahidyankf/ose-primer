@@ -1,6 +1,6 @@
-# Demo Frontend App Specs
+# Demo Web Frontend App Specs
 
-Platform-agnostic Gherkin acceptance specifications for a crud-scale frontend application that
+Platform-agnostic Gherkin acceptance specifications for a crud-scale web frontend application that
 consumes the [crud-be API](../be/README.md). The spec covers 8 domains (see [gherkin/README](./gherkin/README.md) for counts)
 including: authentication forms, session management, user profile, admin panel, expense CRUD,
 financial reporting, file attachment handling, and responsive layout with accessibility.
@@ -20,12 +20,12 @@ financial reporting, file attachment handling, and responsive layout with access
 
 ## Relationship to crud-be
 
-| Aspect      | crud-be                                          | crud-fe                                 |
+| Aspect      | crud-be                                          | crud web frontend                       |
 | ----------- | ------------------------------------------------ | --------------------------------------- |
 | Perspective | Backend API — HTTP-semantic                      | Frontend UI — user interaction-semantic |
 | Steps       | `sends GET/POST`, `status code`, `response body` | `clicks`, `types`, `sees`, `navigates`  |
 | Background  | `Given the API is running`                       | `Given the app is running`              |
-| Scenarios   | See [be/gherkin/](../be/gherkin/README.md)       | See [fe/gherkin/](gherkin/README.md)    |
+| Scenarios   | See [be/gherkin/](../be/gherkin/README.md)       | See [web/gherkin/](gherkin/README.md)   |
 | Domains     | 7 domains                                        | 8 domains (7 shared + layout)           |
 
 Both spec sets cover the same functional surface. The frontend app consumes the backend API — step
@@ -65,7 +65,7 @@ frontend via `BASE_URL` env var against `crud-be-java-springboot` on port 8201.
 ## Feature File Organization
 
 ```
-specs/apps/crud/fe/
+specs/apps/crud/behavior/web/
 ├── README.md
 └── gherkin/
     ├── README.md
@@ -99,7 +99,7 @@ specs/apps/crud/fe/
 ## Adding a Feature File
 
 1. Identify the domain (e.g., `authentication`, `expenses`)
-2. Create the folder if it does not exist: `specs/apps/crud/fe/gherkin/[domain]/`
+2. Create the folder if it does not exist: `specs/apps/crud/behavior/web/gherkin/[domain]/`
 3. Create the `.feature` file: `[domain-capability].feature`
 4. Open with `Feature:` then a user story block (`As a … / I want … / So that …`)
 5. Use `Given the app is running` as the first Background step
@@ -107,7 +107,7 @@ specs/apps/crud/fe/
 
 ## Related
 
-- **Parent**: [crud specs](../README.md)
-- **C4 Architecture**: [c4/](../c4/README.md) — Context, Container, and Component diagrams
+- **Parent**: [crud specs](../../README.md)
+- **System context**: [system-context/](../../system-context/README.md) — C4 Level 1
 - **Backend counterpart**: [be/](../be/README.md) — HTTP-semantic API specs
 - **BDD Standards**: [behavior-driven-development-bdd/](../../../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md)

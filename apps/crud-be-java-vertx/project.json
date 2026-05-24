@@ -56,7 +56,7 @@
         "{projectRoot}/src/**",
         "{projectRoot}/pom.xml",
         "{projectRoot}/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"
       ],
       "outputs": ["{projectRoot}/target/site/jacoco/jacoco.xml"]
     },
@@ -71,7 +71,7 @@
         "{projectRoot}/src/**",
         "{projectRoot}/pom.xml",
         "{projectRoot}/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"
       ]
     },
     "test:integration": {
@@ -103,9 +103,9 @@
       "cache": true
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/be/gherkin apps/crud-be-java-vertx",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-java-vertx",
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature", "{projectRoot}/**/*.java"]
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature", "{projectRoot}/**/*.java"]
     }
   },
   "tags": ["type:app", "platform:vertx", "lang:java", "domain:crud-be"],

@@ -43,7 +43,7 @@
         "commands": [
           "npx vitest run --coverage",
           "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/crud-be-ts-effect/coverage/lcov.info 90)",
-          "npx cucumber-js '../../specs/apps/crud/be/gherkin/**/*.feature' --require-module tsx/cjs --require 'tests/unit/bdd/hooks.ts' --require 'tests/unit/bdd/world.ts' --require 'tests/unit/bdd/steps/**/*.ts' --format progress --format 'json:coverage/cucumber-unit-report.json'"
+          "npx cucumber-js '../../specs/apps/crud/behavior/be/gherkin/**/*.feature' --require-module tsx/cjs --require 'tests/unit/bdd/hooks.ts' --require 'tests/unit/bdd/world.ts' --require 'tests/unit/bdd/steps/**/*.ts' --format progress --format 'json:coverage/cucumber-unit-report.json'"
         ],
         "parallel": false,
         "cwd": "apps/crud-be-ts-effect"
@@ -54,7 +54,7 @@
         "{projectRoot}/tests/unit/**/*.ts",
         "{projectRoot}/vitest.config.ts",
         "{projectRoot}/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"
       ],
       "outputs": ["{projectRoot}/coverage"]
     },
@@ -63,7 +63,7 @@
       "options": {
         "commands": [
           "npx vitest run tests/unit",
-          "npx cucumber-js '../../specs/apps/crud/be/gherkin/**/*.feature' --require-module tsx/cjs --require 'tests/unit/bdd/hooks.ts' --require 'tests/unit/bdd/world.ts' --require 'tests/unit/bdd/steps/**/*.ts' --format progress --format 'json:coverage/cucumber-unit-report.json'"
+          "npx cucumber-js '../../specs/apps/crud/behavior/be/gherkin/**/*.feature' --require-module tsx/cjs --require 'tests/unit/bdd/hooks.ts' --require 'tests/unit/bdd/world.ts' --require 'tests/unit/bdd/steps/**/*.ts' --format progress --format 'json:coverage/cucumber-unit-report.json'"
         ],
         "parallel": false,
         "cwd": "apps/crud-be-ts-effect"
@@ -73,7 +73,7 @@
         "{projectRoot}/src/**/*.ts",
         "{projectRoot}/tests/unit/**/*.ts",
         "{projectRoot}/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"
       ]
     },
     "test:integration": {
@@ -101,9 +101,9 @@
       "cache": true
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/be/gherkin apps/crud-be-ts-effect",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-ts-effect",
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     }
   },
   "tags": ["type:app", "platform:effect", "lang:typescript", "domain:crud-be"],

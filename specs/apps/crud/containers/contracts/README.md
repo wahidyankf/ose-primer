@@ -19,7 +19,7 @@ nx run crud-contracts:bundle
 
 # Generate browsable API documentation
 nx run crud-contracts:docs
-# Open specs/apps/crud/contracts/generated/docs/index.html
+# Open specs/apps/crud/containers/contracts/generated/docs/index.html
 ```
 
 ## File Structure

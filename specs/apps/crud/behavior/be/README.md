@@ -98,12 +98,14 @@ files here are the single source of truth and must not contain language-specific
 This spec is organized into two subdirectories:
 
 - **[gherkin/](./gherkin/README.md)** — Gherkin feature files covering all domains
-- **[c4/](../c4/README.md)** — C4 architecture diagrams for the crud application
+- **[system-context/](../../system-context/README.md)** — C4 Level 1 system context diagram
+- **[containers/](../../containers/README.md)** — C4 Level 2 container diagram + contracts
+- **[components/](../../components/README.md)** — C4 Level 3 component diagrams
 
 ## Feature File Organization
 
 ```
-specs/apps/crud/be/
+specs/apps/crud/behavior/be/
 ├── README.md
 └── gherkin/
     ├── README.md
@@ -158,7 +160,7 @@ affected test targets automatically.
 The canonical input pattern used in every backend's `project.json`:
 
 ```
-"{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"
+"{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"
 ```
 
 `test:integration` has `cache: false` and does not need explicit spec inputs.
@@ -174,7 +176,7 @@ follow-up plan.
 ## Adding a Feature File
 
 1. Identify the bounded context (e.g., `authentication`, `user-lifecycle`)
-2. Create the folder if it does not exist: `specs/apps/crud/be/gherkin/[context]/`
+2. Create the folder if it does not exist: `specs/apps/crud/behavior/be/gherkin/[context]/`
 3. Create the `.feature` file: `[domain-capability].feature`
 4. Open with `Feature:` then a user story block (`As a … / I want … / So that …`)
 5. Use `Given the API is running` as the first Background step
@@ -182,6 +184,6 @@ follow-up plan.
 
 ## Related
 
-- **Parent**: [crud specs](../README.md)
-- **Frontend counterpart**: [fe/](../fe/README.md) — UI-semantic frontend specs
+- **Parent**: [crud specs](../../README.md)
+- **Web frontend counterpart**: [web/](../web/README.md) — UI-semantic web frontend specs
 - **BDD Standards**: [behavior-driven-development-bdd/](../../../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md)

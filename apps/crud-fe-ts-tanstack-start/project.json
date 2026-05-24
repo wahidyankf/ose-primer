@@ -59,7 +59,7 @@
       "inputs": [
         "default",
         "{projectRoot}/src/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/fe/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature"
       ],
       "outputs": ["{projectRoot}/coverage"],
       "options": {
@@ -73,7 +73,7 @@
       "inputs": [
         "default",
         "{projectRoot}/src/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/fe/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature"
       ],
       "options": {
         "command": "npx vitest run --project unit",
@@ -82,9 +82,9 @@
       "dependsOn": ["codegen"]
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/fe/gherkin apps/crud-fe-ts-tanstack-start",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/web/gherkin apps/crud-fe-ts-tanstack-start",
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/fe/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     }
   },
   "tags": ["type:app", "platform:vite", "lang:ts", "domain:crud-fe"],
