@@ -296,16 +296,22 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
   - _Suggested executor: `swe-rust-dev`_ ✅ delegated + orchestrator re-verified
   - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/scripts/shadow-diff.sh`
   - **Notes**: Orchestrator re-ran full-surface shadow-diff across all 11 namespaces → **"Shadow diff PASS — 190 cases byte-identical"** exit 0. Both binaries' root `--help` list all 11 namespaces + identical global flags (`verbose/quiet/output/no-color/say/help/version`). **Documented known limitation**: root `--help` *chrome* is NOT byte-identical — clap renders "Commands:"/"Options:" in declaration order vs cobra's "Available Commands:"/"Flags:" alphabetical, and the about string + `-V` short flag differ. This is an inherent clap-vs-cobra divergence (same in ose-public's port) with zero functional impact; the parity gate excludes root `--help` by design. Every functional command output is byte-identical.
-- [ ] Commit: `feat(rhino-cli-rust): port env + doctor; reach full Go-surface parity`.
+- [x] Commit: `feat(rhino-cli-rust): port env + doctor; reach full Go-surface parity`.
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: commit `0a00e5db3`
+  - **Notes**: Committed `0a00e5db3`, pushed to `main` (`455eddb7b..0a00e5db3`); pre-commit + pre-push passed. **Full Go command surface now ported to byte-identical Rust parity (190 shadow-diff cases, all 11 namespaces).**
 
 ---
 
 ## Phase 9 — Permanent parity gate
 
-- [ ] Add a `parity` job to `.github/workflows/pr-quality-gate.yml` that `uses: ./.github/actions/setup-golang` + `./.github/actions/setup-rust`, builds both CLIs, and runs `bash apps/rhino-cli-rust/scripts/shadow-diff.sh --all`. Add it to the `quality-gate` job's `needs:` list and the failure loop. Verify: `grep -n 'parity' .github/workflows/pr-quality-gate.yml` shows the job wired into `needs`.
-  - _Suggested executor: `ci-fixer`_
-- [ ] Add `specs/apps/rhino/behavior/cli/gherkin/**` and both CLI source trees as triggers so the gate fires on relevant changes. Verify: review the `on`/`detect` filter includes the specs path.
-  - _Suggested executor: `ci-fixer`_
+- [x] Add a `parity` job to `.github/workflows/pr-quality-gate.yml` that `uses: ./.github/actions/setup-golang` + `./.github/actions/setup-rust`, builds both CLIs, and runs `bash apps/rhino-cli-rust/scripts/shadow-diff.sh --all`. Add it to the `quality-gate` job's `needs:` list and the failure loop. Verify: `grep -n 'parity' .github/workflows/pr-quality-gate.yml` shows the job wired into `needs`.
+  - _Suggested executor: `ci-fixer`_ (executed directly — CI config)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `.github/workflows/pr-quality-gate.yml`
+  - **Notes**: Added `parity` job (`needs: detect`, setup-node/golang/rust, runs `shadow-diff.sh` across all 11 namespace groups — the script `--all` flag isn't defined, so explicit group list is used). Wired into `quality-gate` `needs:` list + the failure-check `for job in … parity` loop. YAML validated via `yaml.safe_load`; `quality-gate needs parity: True`.
+- [x] Add `specs/apps/rhino/behavior/cli/gherkin/**` and both CLI source trees as triggers so the gate fires on relevant changes. Verify: review the `on`/`detect` filter includes the specs path.
+  - _Suggested executor: `ci-fixer`_ (executed directly — CI config)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `.github/workflows/pr-quality-gate.yml` (parity job `if:`)
+  - **Notes**: Gate fires via `if: has-golang || has-rust || has-markdown`. `.feature` spec changes mark rhino-cli-go/rust affected (they're in those projects' test:quick/spec-coverage inputs) → `has-golang`/`has-rust` true; docs `.md` → `has-markdown`. So both CLI source trees AND the spec/markdown corpus trigger the gate. (Workflow is `pull_request`-triggered; consistent with all other gates in this repo.)
 - [ ] Commit: `ci(rhino-cli): add permanent go-vs-rust shadow-diff parity gate`.
 
 ---
