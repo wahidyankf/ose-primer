@@ -14,7 +14,7 @@
 
 use std::path::Path;
 
-use anyhow::{anyhow, Error};
+use anyhow::{Error, anyhow};
 
 /// Canonical `.amazonq/cli-agents/ose-default.json` contents (2-space indent,
 /// trailing newline).
@@ -287,9 +287,11 @@ mod tests {
             "output: {}",
             result.output
         );
-        assert!(result
-            .output
-            .contains("binding-parity: 2 file(s) checked, 1 drift\n"));
+        assert!(
+            result
+                .output
+                .contains("binding-parity: 2 file(s) checked, 1 drift\n")
+        );
         assert!(result.output.contains(&format!(
             "VALIDATION FAILED: {} problem(s)\n",
             result.problems
@@ -302,15 +304,21 @@ mod tests {
         // No expected files written at all → both drift.
         write_full_catalog(dir.path());
         let result = validate_bindings(dir.path());
-        assert!(result
-            .output
-            .contains("DRIFT .amazonq/cli-agents/ose-default.json\n"));
-        assert!(result
-            .output
-            .contains("DRIFT .amazonq/rules/00-agents-md.md\n"));
-        assert!(result
-            .output
-            .contains("binding-parity: 2 file(s) checked, 2 drift\n"));
+        assert!(
+            result
+                .output
+                .contains("DRIFT .amazonq/cli-agents/ose-default.json\n")
+        );
+        assert!(
+            result
+                .output
+                .contains("DRIFT .amazonq/rules/00-agents-md.md\n")
+        );
+        assert!(
+            result
+                .output
+                .contains("binding-parity: 2 file(s) checked, 2 drift\n")
+        );
     }
 
     #[test]
@@ -332,9 +340,11 @@ mod tests {
             result.output
         );
         // .claude exists and is present; .amazonq exists and is missing.
-        assert!(result
-            .output
-            .contains("catalog-coverage: 2 dir(s) checked, 1 missing\n"));
+        assert!(
+            result
+                .output
+                .contains("catalog-coverage: 2 dir(s) checked, 1 missing\n")
+        );
         assert!(result.problems >= 1);
     }
 
@@ -354,8 +364,10 @@ mod tests {
         );
         // Without the expected files this is pure catalog-coverage; the binding
         // files are absent so binding-parity reports 2 drift.
-        assert!(result
-            .output
-            .contains("binding-parity: 2 file(s) checked, 2 drift\n"));
+        assert!(
+            result
+                .output
+                .contains("binding-parity: 2 file(s) checked, 2 drift\n")
+        );
     }
 }

@@ -370,11 +370,7 @@ fn fence_line_len(line: &str) -> usize {
             break;
         }
     }
-    if n >= 3 {
-        n
-    } else {
-        0
-    }
+    if n >= 3 { n } else { 0 }
 }
 
 /// Removes regions of a line exempt from scanning: HTML comments, inline code

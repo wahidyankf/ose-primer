@@ -7,7 +7,7 @@
 //! reproduce the Go binary's help text, including cobra's alphabetical flag
 //! ordering.
 
-use anyhow::{anyhow, Error};
+use anyhow::{Error, anyhow};
 use clap::Args;
 
 use crate::internal::agents::{
