@@ -33,8 +33,17 @@ COMMANDS:
   test-coverage    Diff the `test-coverage validate|diff|merge` corpus
   spec-coverage    Diff the `spec-coverage validate` corpus
   docs             Diff the `docs validate-links|validate-mermaid` corpus
+  agents           Diff the `agents sync|validate-claude|validate-sync|validate-naming` corpus
 
   With no COMMAND, every command's corpus runs.
+
+NOTE on agents sync:
+  The `agents sync` corpus always passes `--dry-run` so the real `.opencode/`
+  tree is never mutated by the harness. Byte-parity of the ACTUAL generated
+  tree is verified separately (run the Rust binary's `agents sync` without
+  --dry-run from the repo root and confirm `git status --short .opencode/` is
+  empty). The text/markdown `Duration:` line and JSON `duration_ms`/`timestamp`
+  fields are wall-clock dependent, so all are normalised before comparison.
 
 NOTE on docs text/markdown output:
   The Go `docs validate-mermaid` (and validate-links) text/markdown formatters
@@ -70,7 +79,7 @@ for arg in "$@"; do
       print_help
       exit 0
       ;;
-    test-coverage | spec-coverage | docs)
+    test-coverage | spec-coverage | docs | agents)
       COMMANDS+=("${arg}")
       ;;
     *)
@@ -81,7 +90,7 @@ for arg in "$@"; do
   esac
 done
 if [[ ${#COMMANDS[@]} -eq 0 ]]; then
-  COMMANDS=(test-coverage spec-coverage docs)
+  COMMANDS=(test-coverage spec-coverage docs agents)
 fi
 
 # --- Build both binaries ---
@@ -98,9 +107,15 @@ echo "shadow-diff: building Rust binary…" >&2
 TMP="$(mktemp -d)"
 trap 'rm -rf "${TMP}"' EXIT
 
-# Mask wall-clock-dependent JSON timestamps so the two runs can be compared.
+# Mask wall-clock-dependent fields (JSON timestamp/duration_ms plus the text and
+# markdown Duration lines emitted by the agents reporters) so the two runs can
+# be compared. The Go `time.Duration` `%v` text rendering varies per run.
 normalise() {
-  sed -E 's/"timestamp": "[^"]*"/"timestamp": "<TS>"/; s/"duration_ms": [0-9]+/"duration_ms": <D>/'
+  sed -E \
+    -e 's/"timestamp": "[^"]*"/"timestamp": "<TS>"/' \
+    -e 's/"duration_ms": [0-9]+/"duration_ms": <D>/' \
+    -e 's/^Duration: .*/Duration: <D>/' \
+    -e 's/^- \*\*Duration\*\*: .*/- **Duration**: <D>/'
 }
 
 FAIL=0
@@ -283,6 +298,53 @@ corpus_docs() {
   fi
 }
 
+corpus_agents() {
+  echo "── agents corpus ──" >&2
+
+  # --- agents sync: ALWAYS --dry-run so the real .opencode/ tree is untouched.
+  # --- Every format + the flag matrix. (Skills are never copied, so
+  # --- --skills-only yields an empty result; --agents-only mirrors the default
+  # --- on this repo since there are no skill copies.) -------------------------
+  for fmt in text json markdown; do
+    run_case "agents sync dry-run ${fmt}"  agents sync --dry-run -o "${fmt}" --no-color
+  done
+  run_case "agents sync dry-run quiet"        agents sync --dry-run -q --no-color
+  run_case "agents sync dry-run verbose"      agents sync --dry-run -v --no-color
+  run_case "agents sync dry-run agents-only"  agents sync --dry-run --agents-only --no-color
+  run_case "agents sync dry-run skills-only"  agents sync --dry-run --skills-only --no-color
+  run_case "agents sync dry-run skills-only json"  agents sync --dry-run --skills-only -o json --no-color
+  # Flag conflict (error path: both --agents-only and --skills-only).
+  run_case "agents sync dry-run conflict"  agents sync --dry-run --agents-only --skills-only --no-color
+
+  # --- agents validate-claude: every format + the flag matrix (real tree). ----
+  for fmt in text json markdown; do
+    run_case "agents validate-claude ${fmt}"  agents validate-claude -o "${fmt}" --no-color
+  done
+  run_case "agents validate-claude quiet"        agents validate-claude -q --no-color
+  run_case "agents validate-claude verbose"      agents validate-claude -v --no-color
+  run_case "agents validate-claude verbose json" agents validate-claude -v -o json --no-color
+  run_case "agents validate-claude agents-only"  agents validate-claude --agents-only --no-color
+  run_case "agents validate-claude skills-only"  agents validate-claude --skills-only --no-color
+  run_case "agents validate-claude agents-only json" agents validate-claude --agents-only -o json --no-color
+  # Flag conflict (error path).
+  run_case "agents validate-claude conflict"  agents validate-claude --agents-only --skills-only --no-color
+
+  # --- agents validate-sync: every format + verbosity (real tree). ------------
+  for fmt in text json markdown; do
+    run_case "agents validate-sync ${fmt}"  agents validate-sync -o "${fmt}" --no-color
+  done
+  run_case "agents validate-sync quiet"        agents validate-sync -q --no-color
+  run_case "agents validate-sync verbose"      agents validate-sync -v --no-color
+  run_case "agents validate-sync verbose md"   agents validate-sync -v -o markdown --no-color
+
+  # --- agents validate-naming: every format + verbosity (real tree). ----------
+  for fmt in text json markdown; do
+    run_case "agents validate-naming ${fmt}"  agents validate-naming -o "${fmt}" --no-color
+  done
+  run_case "agents validate-naming quiet"    agents validate-naming -q --no-color
+  run_case "agents validate-naming verbose"  agents validate-naming -v --no-color
+}
+
 # A repo-relative temp output path for `merge --out-file` (lives under TMP).
 TMP_OUT_REL="$(python3 -c "import os,sys; print(os.path.relpath('${TMP}/merged.info', '${REPO_ROOT}'))" 2>/dev/null || echo "${TMP}/merged.info")"
 
@@ -291,6 +353,7 @@ for cmd in "${COMMANDS[@]}"; do
     test-coverage) corpus_test_coverage ;;
     spec-coverage) corpus_spec_coverage ;;
     docs) corpus_docs ;;
+    agents) corpus_agents ;;
   esac
 done
 

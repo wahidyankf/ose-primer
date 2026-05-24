@@ -1,0 +1,508 @@
+//! Cucumber-rs integration tests for the `agents sync`, `agents validate-claude`,
+//! `agents validate-sync`, and `agents validate-naming` commands.
+//!
+//! Wires the behavior-contract feature files at
+//! `specs/apps/rhino/behavior/cli/gherkin/agents/` to step definitions that
+//! synthesize `.claude/` and `.opencode/` fixtures inside a fresh git-rooted
+//! temp workspace and drive the compiled `rhino-cli` binary, asserting on
+//! output and exit code.
+
+use std::path::PathBuf;
+use std::process::Output;
+
+use assert_cmd::cargo::cargo_bin;
+use cucumber::{World as _, given, then, when};
+use tempfile::TempDir;
+
+/// Shared scenario state. Each scenario gets a fresh git-rooted temp workspace
+/// so the binary's `findGitRoot` resolves inside the fixture.
+#[derive(cucumber::World)]
+#[world(init = Self::new)]
+struct AgentsWorld {
+    work: TempDir,
+    /// Extra CLI args (flags) for the next exec.
+    extra_args: Vec<String>,
+    output: Option<Output>,
+}
+
+impl std::fmt::Debug for AgentsWorld {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("AgentsWorld")
+            .field("extra_args", &self.extra_args)
+            .finish_non_exhaustive()
+    }
+}
+
+impl AgentsWorld {
+    fn new() -> Self {
+        let work = TempDir::new().expect("temp workspace");
+        init_git_repo(work.path());
+        Self {
+            work,
+            extra_args: Vec::new(),
+            output: None,
+        }
+    }
+
+    fn write(&self, rel: &str, content: &str) {
+        let p = self.work.path().join(rel);
+        if let Some(parent) = p.parent() {
+            std::fs::create_dir_all(parent).expect("mk fixture dir");
+        }
+        std::fs::write(p, content).expect("write fixture");
+    }
+
+    /// Writes a valid Claude agent file under `.claude/agents/`.
+    fn write_claude_agent(&self, name: &str, model: &str, skills: &[&str]) {
+        let mut content = format!(
+            "---\nname: {name}\ndescription: Agent {name}.\ntools: Read, Write\nmodel: {model}\ncolor: blue\n"
+        );
+        if !skills.is_empty() {
+            content.push_str("skills:\n");
+            for s in skills {
+                content.push_str(&format!("  - {s}\n"));
+            }
+        }
+        content.push_str("---\n# Body\n");
+        self.write(&format!(".claude/agents/{name}.md"), &content);
+    }
+
+    /// Writes a valid Claude skill directory.
+    fn write_claude_skill(&self, name: &str) {
+        self.write(
+            &format!(".claude/skills/{name}/SKILL.md"),
+            &format!("---\nname: {name}\ndescription: Skill {name}.\n---\n# Skill body\n"),
+        );
+    }
+
+    fn bin() -> PathBuf {
+        cargo_bin("rhino-cli")
+    }
+
+    fn exec(&mut self, base: &[&str]) {
+        let mut args: Vec<String> = base.iter().map(|s| (*s).to_string()).collect();
+        args.extend(self.extra_args.iter().cloned());
+        args.push("--no-color".to_string());
+        let out = std::process::Command::new(Self::bin())
+            .args(&args)
+            .current_dir(self.work.path())
+            .output()
+            .expect("run rhino-cli");
+        self.output = Some(out);
+    }
+
+    fn stdout(&self) -> String {
+        String::from_utf8_lossy(&self.output.as_ref().expect("ran").stdout).into_owned()
+    }
+
+    fn exit_code(&self) -> i32 {
+        self.output
+            .as_ref()
+            .expect("ran")
+            .status
+            .code()
+            .unwrap_or(-1)
+    }
+}
+
+fn run_git(dir: &std::path::Path, args: &[&str]) {
+    std::process::Command::new("git")
+        .args(args)
+        .current_dir(dir)
+        .env("GIT_AUTHOR_NAME", "t")
+        .env("GIT_AUTHOR_EMAIL", "t@t")
+        .env("GIT_COMMITTER_NAME", "t")
+        .env("GIT_COMMITTER_EMAIL", "t@t")
+        .output()
+        .expect("git command");
+}
+
+/// Initialises a minimal real git repo so `findGitRoot` resolves here.
+fn init_git_repo(dir: &std::path::Path) {
+    run_git(dir, &["init", "-q"]);
+}
+
+// ===========================================================================
+// agents sync — Given steps
+// ===========================================================================
+
+#[given("a .claude/ directory with valid agents and skills")]
+#[given("a .claude/ directory with agents and skills to convert")]
+#[given("a .claude/ directory with both agents and skills")]
+fn given_claude_agents_and_skills(w: &mut AgentsWorld) {
+    w.write_claude_skill("my-skill");
+    w.write_claude_agent("foo-maker", "sonnet", &["my-skill"]);
+    w.write_claude_agent("bar-checker", "haiku", &[]);
+}
+
+#[given(r#"a .claude/ agent configured with the "sonnet" model"#)]
+fn given_claude_sonnet_agent(w: &mut AgentsWorld) {
+    w.write_claude_agent("foo-maker", "sonnet", &[]);
+}
+
+// ===========================================================================
+// agents sync — When steps
+// ===========================================================================
+
+#[when("the developer runs agents sync")]
+fn when_sync(w: &mut AgentsWorld) {
+    w.exec(&["agents", "sync"]);
+}
+
+#[when("the developer runs agents sync with the --dry-run flag")]
+fn when_sync_dry_run(w: &mut AgentsWorld) {
+    w.exec(&["agents", "sync", "--dry-run"]);
+}
+
+#[when("the developer runs agents sync with the --agents-only flag")]
+fn when_sync_agents_only(w: &mut AgentsWorld) {
+    w.exec(&["agents", "sync", "--agents-only"]);
+}
+
+// ===========================================================================
+// agents sync — Then steps
+// ===========================================================================
+
+#[then("the .opencode/ directory contains the converted configuration")]
+fn then_opencode_has_config(w: &mut AgentsWorld) {
+    let p = w.work.path().join(".opencode/agents/foo-maker.md");
+    assert!(p.exists(), "expected {p:?} to exist");
+    let content = std::fs::read_to_string(&p).expect("read converted agent");
+    assert!(
+        content.contains("model: opencode-go/minimax-m2.7"),
+        "got: {content}"
+    );
+    assert!(
+        content.contains("tools:\n  read: true\n  write: true"),
+        "got: {content}"
+    );
+}
+
+#[then("the output describes the planned operations")]
+fn then_output_describes_plan(w: &mut AgentsWorld) {
+    let out = w.stdout();
+    assert!(out.contains("Agents: 2 converted"), "got: {out}");
+}
+
+#[then("no files are written to the .opencode/ directory")]
+fn then_no_opencode_files(w: &mut AgentsWorld) {
+    let p = w.work.path().join(".opencode/agents/foo-maker.md");
+    assert!(!p.exists(), "expected {p:?} NOT to exist after dry-run");
+}
+
+#[then("only agent files are written to the .opencode/ directory")]
+fn then_only_agents_written(w: &mut AgentsWorld) {
+    // Agents are written; skills are never copied (read natively).
+    assert!(w.work.path().join(".opencode/agents/foo-maker.md").exists());
+    assert!(!w.work.path().join(".opencode/skills").exists());
+    assert!(!w.work.path().join(".opencode/skill").exists());
+}
+
+#[then(
+    r#"the corresponding .opencode/ agent uses the "opencode-go/minimax-m2.7" model identifier"#
+)]
+fn then_opencode_model_minimax(w: &mut AgentsWorld) {
+    let content =
+        std::fs::read_to_string(w.work.path().join(".opencode/agents/foo-maker.md")).expect("read");
+    assert!(
+        content.contains("model: opencode-go/minimax-m2.7"),
+        "got: {content}"
+    );
+}
+
+// ===========================================================================
+// agents validate-sync — Given steps
+// ===========================================================================
+
+/// Writes a synced pair: a Claude agent and its byte-correct OpenCode form.
+fn write_synced_pair(w: &AgentsWorld, name: &str) {
+    w.write_claude_agent(name, "", &[]);
+    w.write(
+        &format!(".opencode/agents/{name}.md"),
+        &format!(
+            "---\ndescription: Agent {name}.\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n  write: true\n---\n# Body\n"
+        ),
+    );
+}
+
+#[given(".claude/ and .opencode/ configurations that are fully synchronised")]
+fn given_fully_synced(w: &mut AgentsWorld) {
+    write_synced_pair(w, "foo-maker");
+    write_synced_pair(w, "bar-checker");
+}
+
+#[given("an agent in .claude/ whose description differs from its .opencode/ counterpart")]
+fn given_description_mismatch(w: &mut AgentsWorld) {
+    write_synced_pair(w, "foo-maker");
+    // Overwrite the opencode side with a different description.
+    w.write(
+        ".opencode/agents/foo-maker.md",
+        "---\ndescription: A totally different description.\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n  write: true\n---\n# Body\n",
+    );
+}
+
+#[given(".claude/ containing more agents than .opencode/")]
+fn given_count_mismatch(w: &mut AgentsWorld) {
+    write_synced_pair(w, "foo-maker");
+    // Extra Claude agent with no OpenCode counterpart.
+    w.write_claude_agent("bar-checker", "", &[]);
+}
+
+// ===========================================================================
+// agents validate-sync — When/Then steps
+// ===========================================================================
+
+#[when("the developer runs agents validate-sync")]
+fn when_validate_sync(w: &mut AgentsWorld) {
+    w.exec(&["agents", "validate-sync"]);
+}
+
+#[then("the output reports all sync checks as passing")]
+fn then_sync_all_passing(w: &mut AgentsWorld) {
+    let out = w.stdout();
+    assert!(out.contains("Failed: 0"), "got: {out}");
+    assert!(out.contains("VALIDATION PASSED"), "got: {out}");
+}
+
+#[then("the output identifies the agent with the mismatched description")]
+fn then_identifies_desc_mismatch(w: &mut AgentsWorld) {
+    let out = w.stdout();
+    assert!(out.contains("Agent: foo-maker.md"), "got: {out}");
+    assert!(out.contains("Description mismatch"), "got: {out}");
+}
+
+#[then("the output reports the agent count mismatch")]
+fn then_reports_count_mismatch(w: &mut AgentsWorld) {
+    let out = w.stdout();
+    assert!(out.contains("Agent Count"), "got: {out}");
+    assert!(
+        out.contains("missing one or more Claude agents"),
+        "got: {out}"
+    );
+}
+
+// ===========================================================================
+// agents validate-claude — Given steps
+// ===========================================================================
+
+#[given("a .claude/ directory where all agents and skills are valid")]
+fn given_all_valid(w: &mut AgentsWorld) {
+    w.write_claude_skill("my-skill");
+    w.write_claude_agent("foo-maker", "", &["my-skill"]);
+}
+
+#[given(r#"a .claude/ directory where one agent is missing the required "tools" field"#)]
+fn given_missing_tools(w: &mut AgentsWorld) {
+    w.write_claude_skill("my-skill");
+    w.write(
+        ".claude/agents/foo-maker.md",
+        "---\nname: foo-maker\ndescription: d\nmodel:\ncolor: blue\n---\n# Body\n",
+    );
+}
+
+#[given("a .claude/ directory containing two agent files declaring the same name")]
+fn given_duplicate_name(w: &mut AgentsWorld) {
+    // Two files; both declare name `dup-maker`. The filename-match rule will
+    // also flag one, but the uniqueness rule fires on the second by name.
+    w.write(
+        ".claude/agents/dup-maker.md",
+        "---\nname: dup-maker\ndescription: d\ntools: Read\nmodel:\ncolor: blue\n---\n# Body\n",
+    );
+    w.write(
+        ".claude/agents/other-maker.md",
+        "---\nname: dup-maker\ndescription: d\ntools: Read\nmodel:\ncolor: blue\n---\n# Body\n",
+    );
+}
+
+#[given("a .claude/ directory where agents are valid but skills have issues")]
+fn given_valid_agents_bad_skills(w: &mut AgentsWorld) {
+    // Skill missing description (invalid), but agent does not reference it.
+    w.write(
+        ".claude/skills/broken/SKILL.md",
+        "---\nname: broken\n---\n# body\n",
+    );
+    w.write_claude_agent("foo-maker", "", &[]);
+}
+
+#[given("a .claude/ directory where skills are valid but agents have issues")]
+fn given_valid_skills_bad_agents(w: &mut AgentsWorld) {
+    w.write_claude_skill("my-skill");
+    // Agent with an invalid color (issue), but we will only validate skills.
+    w.write(
+        ".claude/agents/foo-maker.md",
+        "---\nname: foo-maker\ndescription: d\ntools: Read\nmodel:\ncolor: chartreuse\n---\n# Body\n",
+    );
+}
+
+// ===========================================================================
+// agents validate-claude — When/Then steps
+// ===========================================================================
+
+#[when("the developer runs agents validate-claude")]
+fn when_validate_claude(w: &mut AgentsWorld) {
+    w.exec(&["agents", "validate-claude"]);
+}
+
+#[when("the developer runs agents validate-claude with the --agents-only flag")]
+fn when_validate_claude_agents_only(w: &mut AgentsWorld) {
+    w.exec(&["agents", "validate-claude", "--agents-only"]);
+}
+
+#[when("the developer runs agents validate-claude with the --skills-only flag")]
+fn when_validate_claude_skills_only(w: &mut AgentsWorld) {
+    w.exec(&["agents", "validate-claude", "--skills-only"]);
+}
+
+#[then("the output reports all checks as passing")]
+fn then_claude_all_passing(w: &mut AgentsWorld) {
+    let out = w.stdout();
+    assert!(out.contains("Failed: 0"), "got: {out}");
+    assert!(out.contains("VALIDATION PASSED"), "got: {out}");
+}
+
+#[then("the output identifies the agent and the missing field")]
+fn then_identifies_missing_field(w: &mut AgentsWorld) {
+    let out = w.stdout();
+    assert!(out.contains("foo-maker.md"), "got: {out}");
+    assert!(out.contains("Required Fields"), "got: {out}");
+    assert!(out.contains("tools"), "got: {out}");
+}
+
+#[then("the output reports the duplicate agent name")]
+fn then_reports_duplicate(w: &mut AgentsWorld) {
+    let out = w.stdout();
+    assert!(out.contains("Name Uniqueness"), "got: {out}");
+    assert!(out.contains("dup-maker"), "got: {out}");
+}
+
+// ===========================================================================
+// agents validate-naming — Given steps
+// ===========================================================================
+
+/// Writes a synced agent pair (Claude + OpenCode) with a valid role suffix.
+fn write_named_pair(w: &AgentsWorld, name: &str) {
+    w.write(
+        &format!(".claude/agents/{name}.md"),
+        &format!(
+            "---\nname: {name}\ndescription: d\ntools: Read\nmodel:\ncolor: blue\n---\n# Body\n"
+        ),
+    );
+    w.write(
+        &format!(".opencode/agents/{name}.md"),
+        "---\ndescription: d\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n---\n# Body\n",
+    );
+}
+
+#[given(
+    "a repository where every agent filename ends with an allowed role suffix and mirrors across harnesses"
+)]
+fn given_naming_clean(w: &mut AgentsWorld) {
+    write_named_pair(w, "foo-maker");
+    write_named_pair(w, "bar-checker");
+}
+
+#[given("a repository with one agent whose filename ends in an unknown suffix")]
+fn given_naming_bad_suffix(w: &mut AgentsWorld) {
+    write_named_pair(w, "foo-maker");
+    // `foo-widget` has no allowed role suffix.
+    w.write(
+        ".claude/agents/foo-widget.md",
+        "---\nname: foo-widget\ndescription: d\ntools: Read\nmodel:\ncolor: blue\n---\n# Body\n",
+    );
+    w.write(
+        ".opencode/agents/foo-widget.md",
+        "---\ndescription: d\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n---\n# Body\n",
+    );
+}
+
+#[given(
+    "a repository with a .claude/agents/ file whose frontmatter name differs from its filename"
+)]
+fn given_naming_frontmatter_mismatch(w: &mut AgentsWorld) {
+    write_named_pair(w, "foo-maker");
+    // Filename foo-checker.md but frontmatter name says something-else-maker.
+    w.write(
+        ".claude/agents/baz-checker.md",
+        "---\nname: wrong-checker\ndescription: d\ntools: Read\nmodel:\ncolor: blue\n---\n# Body\n",
+    );
+    w.write(
+        ".opencode/agents/baz-checker.md",
+        "---\ndescription: d\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n---\n# Body\n",
+    );
+}
+
+#[given("a repository where one .claude/agents/ file has no corresponding .opencode/agent/ file")]
+fn given_naming_mirror_drift(w: &mut AgentsWorld) {
+    write_named_pair(w, "foo-maker");
+    // Claude-only file (no opencode mirror).
+    w.write(
+        ".claude/agents/lonely-maker.md",
+        "---\nname: lonely-maker\ndescription: d\ntools: Read\nmodel:\ncolor: blue\n---\n# Body\n",
+    );
+}
+
+// ===========================================================================
+// agents validate-naming — When/Then steps
+// ===========================================================================
+
+#[when("the developer runs agents validate-naming")]
+fn when_validate_naming(w: &mut AgentsWorld) {
+    w.exec(&["agents", "validate-naming"]);
+}
+
+#[then("the output reports zero naming violations")]
+fn then_naming_zero(w: &mut AgentsWorld) {
+    let out = w.stdout();
+    assert!(
+        out.contains("VALIDATION PASSED (0 violations)"),
+        "got: {out}"
+    );
+}
+
+#[then("the output identifies the offending agent file and its unknown suffix")]
+fn then_naming_bad_suffix(w: &mut AgentsWorld) {
+    let out = w.stdout();
+    assert!(out.contains("foo-widget"), "got: {out}");
+    assert!(out.contains("role-suffix"), "got: {out}");
+}
+
+#[then("the output identifies the frontmatter mismatch")]
+fn then_naming_frontmatter_mismatch(w: &mut AgentsWorld) {
+    let out = w.stdout();
+    assert!(out.contains("frontmatter-mismatch"), "got: {out}");
+    assert!(out.contains("wrong-checker"), "got: {out}");
+}
+
+#[then("the output identifies the mirror-drift violation")]
+fn then_naming_mirror_drift(w: &mut AgentsWorld) {
+    let out = w.stdout();
+    assert!(out.contains("mirror-drift"), "got: {out}");
+    assert!(out.contains("lonely-maker"), "got: {out}");
+}
+
+// ===========================================================================
+// Shared Then steps (exit codes)
+// ===========================================================================
+
+#[then("the command exits successfully")]
+fn then_exit_ok(w: &mut AgentsWorld) {
+    assert_eq!(w.exit_code(), 0, "stdout: {}", w.stdout());
+}
+
+#[then("the command exits with a failure code")]
+fn then_exit_fail(w: &mut AgentsWorld) {
+    assert_eq!(w.exit_code(), 1, "stdout: {}", w.stdout());
+}
+
+#[tokio::main]
+async fn main() {
+    AgentsWorld::run(feature_dir()).await;
+}
+
+fn feature_dir() -> PathBuf {
+    let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    manifest
+        .join("../../specs/apps/rhino/behavior/cli/gherkin/agents")
+        .canonicalize()
+        .expect("feature dir resolvable")
+}

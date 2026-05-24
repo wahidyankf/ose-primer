@@ -4,6 +4,7 @@
 // git-root helper they depend on. Later phases add the remaining per-domain
 // helpers (agents, docs, doctor, …) that back each command namespace.
 
+pub mod agents;
 pub mod cliout;
 pub mod docs;
 pub mod git;

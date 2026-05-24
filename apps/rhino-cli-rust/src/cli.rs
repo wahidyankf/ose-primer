@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 
-use crate::commands::{docs, speccoverage, testcoverage};
+use crate::commands::{agents, docs, speccoverage, testcoverage};
 use crate::internal::cliout::OutputFormat;
 
 #[derive(Parser, Debug)]
@@ -66,6 +66,24 @@ pub enum Commands {
     /// Documentation validation commands.
     #[command(name = "docs", subcommand)]
     Docs(DocsCommands),
+    /// Agent configuration commands.
+    #[command(name = "agents", subcommand)]
+    Agents(AgentsCommands),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum AgentsCommands {
+    /// Sync Claude Code agents to OpenCode format.
+    Sync(agents::SyncArgs),
+    /// Validate Claude Code agent and skill format in .claude/ directory.
+    #[command(name = "validate-claude")]
+    ValidateClaude(agents::ValidateClaudeArgs),
+    /// Validate that .claude/ and .opencode/ are in sync.
+    #[command(name = "validate-sync")]
+    ValidateSync,
+    /// Validate agent filename suffixes and frontmatter name consistency.
+    #[command(name = "validate-naming")]
+    ValidateNaming,
 }
 
 #[derive(Subcommand, Debug)]
@@ -160,6 +178,24 @@ fn dispatch(cmd: &Commands, output_format: OutputFormat, verbose: bool, quiet: b
             DocsCommands::ValidateMermaid(args) => (
                 docs::run_validate_mermaid(args, output_format, verbose, quiet),
                 docs::VALIDATE_MERMAID_USAGE,
+            ),
+        },
+        Commands::Agents(ac) => match ac {
+            AgentsCommands::Sync(args) => (
+                agents::run_sync(args, output_format, verbose, quiet),
+                agents::SYNC_USAGE,
+            ),
+            AgentsCommands::ValidateClaude(args) => (
+                agents::run_validate_claude(args, output_format, verbose, quiet),
+                agents::VALIDATE_CLAUDE_USAGE,
+            ),
+            AgentsCommands::ValidateSync => (
+                agents::run_validate_sync(output_format, verbose, quiet),
+                agents::VALIDATE_SYNC_USAGE,
+            ),
+            AgentsCommands::ValidateNaming => (
+                agents::run_validate_naming(output_format, verbose, quiet),
+                agents::VALIDATE_NAMING_USAGE,
             ),
         },
     };

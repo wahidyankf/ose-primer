@@ -50,6 +50,10 @@ harness = false
 name = "docs"
 harness = false
 
+[[test]]
+name = "agents"
+harness = false
+
 [lints.rust]
 unsafe_code = "forbid"
 
@@ -77,6 +81,16 @@ unnecessary_wraps = "allow"
 # Extension comparisons use lowercase literals (.md, .feature) on a Linux-only CI filesystem;
 # using Path::extension() would add allocation with no correctness benefit on case-sensitive fs
 case_sensitive_file_extension_comparisons = "allow"
+
+# --- Structural allows for Go-parity ports: validators/converters mirror the Go reference's
+#     control flow line-for-line; rewriting to satisfy these style lints would diverge from the
+#     parity target (Go) without behavioral benefit. ---
+too_many_lines = "allow"
+manual_let_else = "allow"
+assigning_clones = "allow"
+format_push_string = "allow"
+cast_sign_loss = "allow"
+unnecessary_debug_formatting = "allow"
 
 # --- Deferred doc lints: requires per-function documentation pass ---
 # TODO: remove these allows as # Errors / # Panics / backtick sections are written
