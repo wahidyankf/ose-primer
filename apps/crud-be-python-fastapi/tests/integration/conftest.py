@@ -47,7 +47,7 @@ def test_client() -> Generator[ServiceClient]:  # type: ignore[override]
 
 # Path to the shared Gherkin feature files.
 # GHERKIN_ROOT_ENV allows Docker containers to override the path directly
-# (e.g. GHERKIN_ROOT=/specs/apps/crud/be/gherkin) since the relative parent
+# (e.g. GHERKIN_ROOT=/specs/apps/crud/behavior/be/gherkin) since the relative parent
 # traversal may exceed path depth in non-monorepo contexts.
 _gherkin_root_env = os.environ.get("GHERKIN_ROOT")
 if _gherkin_root_env:

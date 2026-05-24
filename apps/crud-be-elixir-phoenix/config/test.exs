@@ -21,7 +21,7 @@ config :crud_be_exph, :attachment_module, CrudBeExph.Test.InMemoryAttachmentCont
 
 # Elixir Cabbage BDD — feature files relative to workspace root
 config :elixir_cabbage,
-  features: Path.expand("../../../specs/apps/crud/be/gherkin/", __DIR__) <> "/"
+  features: Path.expand("../../../specs/apps/crud/behavior/be/gherkin/", __DIR__) <> "/"
 
 # Print only warnings and errors during test
 config :logger, level: :warning

@@ -10,7 +10,7 @@ void main() {
   });
 
   describeFeature(
-    '../../specs/apps/crud/fe/gherkin/health/health-status.feature',
+    '../../specs/apps/crud/behavior/web/gherkin/health/health-status.feature',
     (feature) {
       feature.scenario('Health indicator shows the service is UP', (s) {
         s.given('the app is running', () async {

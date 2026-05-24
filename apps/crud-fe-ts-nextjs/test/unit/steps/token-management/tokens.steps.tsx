@@ -7,7 +7,7 @@ import * as tokensApi from "@/lib/api/tokens";
 import * as clientModule from "@/lib/api/client";
 
 const feature = await loadFeature(
-  path.resolve(__dirname, "../../../../../../specs/apps/crud/fe/gherkin/token-management/tokens.feature"),
+  path.resolve(__dirname, "../../../../../../specs/apps/crud/behavior/web/gherkin/token-management/tokens.feature"),
 );
 
 const mockPush = vi.fn();

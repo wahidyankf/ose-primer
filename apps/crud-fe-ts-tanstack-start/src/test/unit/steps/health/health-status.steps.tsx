@@ -8,7 +8,7 @@ import * as authApi from "@/lib/api/auth";
 import { Route as HomeRoute } from "@/routes/index";
 
 const feature = await loadFeature(
-  path.resolve(__dirname, "../../../../../../../specs/apps/crud/fe/gherkin/health/health-status.feature"),
+  path.resolve(__dirname, "../../../../../../../specs/apps/crud/behavior/web/gherkin/health/health-status.feature"),
 );
 
 vi.mock("@/lib/api/auth", () => ({

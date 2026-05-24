@@ -6,7 +6,7 @@
 /// Usage:
 /// ```dart
 /// describeFeature(
-///   '../../../../specs/apps/crud/fe/gherkin/health/health-status.feature',
+///   '../../../../specs/apps/crud/behavior/web/gherkin/health/health-status.feature',
 ///   (feature) {
 ///     feature.scenario('Health indicator shows the service is UP', (scenario) {
 ///       scenario.when('the user opens the app', () async { /* action */ });

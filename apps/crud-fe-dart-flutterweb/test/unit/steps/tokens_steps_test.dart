@@ -13,7 +13,7 @@ void main() {
   });
 
   describeFeature(
-    '../../specs/apps/crud/fe/gherkin/token-management/tokens.feature',
+    '../../specs/apps/crud/behavior/web/gherkin/token-management/tokens.feature',
     (feature) {
       // -----------------------------------------------------------------------
       // Scenario: Session info displays the authenticated user's identity

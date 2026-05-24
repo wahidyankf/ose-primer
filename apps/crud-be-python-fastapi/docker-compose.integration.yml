@@ -24,6 +24,6 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: "postgresql://crud_be_fastapi:crud_be_fastapi@postgres:5432/crud_be_fastapi_test"
-      GHERKIN_ROOT: "/specs/apps/crud/be/gherkin"
+      GHERKIN_ROOT: "/specs/apps/crud/behavior/be/gherkin"
     volumes:
       - ../../specs:/specs:ro

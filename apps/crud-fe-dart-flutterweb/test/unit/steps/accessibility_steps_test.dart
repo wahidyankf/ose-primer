@@ -16,7 +16,7 @@ void main() {
     loginAttempted = false;
   });
 
-  describeFeature('../../specs/apps/crud/fe/gherkin/layout/accessibility.feature', (
+  describeFeature('../../specs/apps/crud/behavior/web/gherkin/layout/accessibility.feature', (
     feature,
   ) {
     // ---------------------------------------------------------------------------

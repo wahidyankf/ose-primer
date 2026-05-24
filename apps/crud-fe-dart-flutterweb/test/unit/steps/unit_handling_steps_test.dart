@@ -11,7 +11,7 @@ void main() {
     svc = ServiceClient();
   });
 
-  describeFeature('../../specs/apps/crud/fe/gherkin/expenses/unit-handling.feature', (
+  describeFeature('../../specs/apps/crud/behavior/web/gherkin/expenses/unit-handling.feature', (
     feature,
   ) {
     feature.scenario(

@@ -8,7 +8,10 @@ import { vi, expect } from "vitest";
 import * as usersApi from "@/lib/api/users";
 
 const feature = await loadFeature(
-  path.resolve(__dirname, "../../../../../../../specs/apps/crud/fe/gherkin/user-lifecycle/user-profile.feature"),
+  path.resolve(
+    __dirname,
+    "../../../../../../../specs/apps/crud/behavior/web/gherkin/user-lifecycle/user-profile.feature",
+  ),
 );
 
 const mockNavigate = vi.fn();

@@ -8,7 +8,7 @@ import { vi, expect } from "vitest";
 import * as reportsApi from "@/lib/api/reports";
 
 const feature = await loadFeature(
-  path.resolve(__dirname, "../../../../../../../specs/apps/crud/fe/gherkin/expenses/reporting.feature"),
+  path.resolve(__dirname, "../../../../../../../specs/apps/crud/behavior/web/gherkin/expenses/reporting.feature"),
 );
 
 const mockNavigate = vi.fn();

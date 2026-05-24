@@ -10,7 +10,7 @@ void main() {
     svc = ServiceClient();
   });
 
-  describeFeature('../../specs/apps/crud/fe/gherkin/security/security.feature', (
+  describeFeature('../../specs/apps/crud/behavior/web/gherkin/security/security.feature', (
     feature,
   ) {
     // -----------------------------------------------------------------------

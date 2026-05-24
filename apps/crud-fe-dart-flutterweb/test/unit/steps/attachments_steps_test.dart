@@ -11,7 +11,7 @@ void main() {
     svc = ServiceClient();
   });
 
-  describeFeature('../../specs/apps/crud/fe/gherkin/expenses/attachments.feature', (
+  describeFeature('../../specs/apps/crud/behavior/web/gherkin/expenses/attachments.feature', (
     feature,
   ) {
     feature.scenario('Uploading a JPEG image adds it to the attachment list', (

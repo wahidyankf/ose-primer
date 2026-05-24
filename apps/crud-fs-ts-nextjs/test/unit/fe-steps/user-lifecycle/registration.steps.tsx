@@ -8,7 +8,7 @@ import * as authApi from "@/lib/api/auth";
 import RegisterPage from "@/app/(auth)/register/page";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/crud/fe/gherkin/user-lifecycle/registration.feature"),
+  path.resolve(process.cwd(), "../../specs/apps/crud/behavior/web/gherkin/user-lifecycle/registration.feature"),
 );
 
 const mockPush = vi.fn();

@@ -9,7 +9,7 @@ import * as authApi from "@/lib/api/auth";
 import * as adminApi from "@/lib/api/admin";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/crud/fe/gherkin/security/security.feature"),
+  path.resolve(process.cwd(), "../../specs/apps/crud/behavior/web/gherkin/security/security.feature"),
 );
 
 const mockPush = vi.fn();
