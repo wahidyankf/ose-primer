@@ -645,22 +645,36 @@ This plan touches a CLI and governance docs, not web UI or HTTP APIs — Playwri
 
 ## Post-Push Verification
 
-- [ ] Push changes to `main`.
-- [ ] Monitor GitHub Actions workflows for the push (poll every 3 minutes via `ScheduleWakeup` + single
+- [x] Push changes to `main`.
+- [x] Monitor GitHub Actions workflows for the push (poll every 3 minutes via `ScheduleWakeup` + single
       `gh run view`; do not use `gh run watch` for long jobs). Pay attention to the `parity` job in
       `pr-quality-gate.yml`.
-- [ ] Verify all CI checks pass.
-- [ ] If any CI check fails, fix immediately and push a follow-up commit.
-- [ ] Do NOT proceed to archival until CI is green (or, if no remote workflow is triggered for a direct
+- [x] Verify all CI checks pass.
+- [x] If any CI check fails, fix immediately and push a follow-up commit.
+- [x] Do NOT proceed to archival until CI is green (or, if no remote workflow is triggered for a direct
       `main` push of this change set, confirm the pre-push gate served as the quality gate and record that).
+  - **Date**: 2026-05-25 | **Status**: Done | **Files Changed**: none
+  - **Notes**: Pushed 10 commits (`93f5afb75..a723b031c`). No GitHub Actions workflow triggered for the SHA
+    (`gh run list --commit a723b031c` → empty): every workflow in `.github/workflows/` is `pull_request`- or
+    `schedule`-triggered (the `parity` job lives in the `pull_request`-only `pr-quality-gate.yml`); none fire
+    on a direct `main` push. The pre-push hook ran the full quality gate locally before the push succeeded —
+    `nx affected typecheck/lint/test:quick/spec-coverage` (23 projects), `lint:md`, naming validators,
+    `validate:cross-vendor-parity`, `validate:mermaid`, and `validate:harness-bindings` (VALIDATION PASSED) —
+    all green. CI verification is therefore satisfied by absence (no remote run pending); the pre-push gate
+    served as the quality gate.
 
 ## Plan Archival
 
-- [ ] Verify ALL delivery checklist items are ticked.
-- [ ] Verify ALL quality gates pass (local + CI).
-- [ ] Move plan folder from `plans/in-progress/` to `plans/done/` via `git mv` with completion-date prefix:
+- [x] Verify ALL delivery checklist items are ticked.
+- [x] Verify ALL quality gates pass (local + CI).
+- [x] Move plan folder from `plans/in-progress/` to `plans/done/` via `git mv` with completion-date prefix:
       `git mv plans/in-progress/multi-harness-compatibility plans/done/2026-05-25__multi-harness-compatibility`.
-- [ ] Update `plans/in-progress/README.md` — remove the plan entry.
-- [ ] Update `plans/done/README.md` — add the plan entry with completion date.
-- [ ] Update any other READMEs that reference this plan.
-- [ ] Commit: `chore(plans): move multi-harness-compatibility to done`.
+- [x] Update `plans/in-progress/README.md` — remove the plan entry.
+- [x] Update `plans/done/README.md` — add the plan entry with completion date.
+- [x] Update any other READMEs that reference this plan.
+- [x] Commit: `chore(plans): move multi-harness-compatibility to done`.
+  - **Date**: 2026-05-25 | **Status**: Done | **Files Changed**: plan folder → `plans/done/2026-05-25__multi-harness-compatibility/`, `plans/in-progress/README.md`, `plans/done/README.md`
+  - **Notes**: All 72 non-archival checkboxes ticked; local quality gates green; CI satisfied by absence
+    (no remote workflow triggered for a direct `main` push — pre-push gate served as the quality gate). Folder
+    archived via `git mv` with the completion-date prefix; in-progress index entry removed; done index entry
+    added.
