@@ -82,6 +82,11 @@ The shadow-diff harness runs as the permanent `parity` job in `.github/workflows
 **Rule 1 — Both implementations must land together.**
 Any behavior change — new command, changed flag, modified output format, updated exit code — must be implemented in both `apps/rhino-cli-rust/` and `apps/rhino-cli-go/` within the same pull request. A PR that changes one implementation without the other will fail the `parity` CI job and must not be merged.
 
+This rule applies when a harness convention change requires updating generator logic. When the `repo-harness-compatibility-quality-gate` workflow runs, two categories of CLI updates can arise:
+
+- **Regenerated data** (catalog content, runtime-read tables): the harness-compatibility fixer handles this automatically — no code change required, no dual-implementation obligation.
+- **Generator-logic change** (a translation rule in `apps/rhino-cli-go/internal/agents/` or `apps/rhino-cli-rust/src/`): this is a code change and falls under Rule 1. The fixer surfaces it as a coupled both-CLI finding rather than applying it automatically. The identical change must land in both implementations in the same delivery.
+
 **Rule 2 — The spec is the source of truth.**
 Behavior is defined in `specs/apps/rhino/behavior/cli/gherkin/`. When the desired behavior changes, update the spec first, then update both implementations to match. Do not add behavior to an implementation that is not expressed in the spec.
 
@@ -112,6 +117,7 @@ No other divergences are accepted at this time. Any new proposed divergence requ
 - [Repository Ecosystem Convention](./repository-ecosystem.md) — Sibling repo relationships and the ose-primer template role.
 - [File Naming Convention](./file-naming.md) — Kebab-case naming applies to all files in both implementation directories.
 - [Repository Governance Architecture](../../repository-governance-architecture.md) — Six-layer governance hierarchy that this convention sits within (Layer 2: Conventions).
+- [Harness Compatibility Quality Gate](../../workflows/repo/repo-harness-compatibility-quality-gate.md) — Workflow that triggers generator-logic changes (Rule 1 extension: coupled both-CLI findings surface here).
 
 ## Conventions Implemented/Respected
 

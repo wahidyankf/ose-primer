@@ -112,6 +112,11 @@ Consequences:
 
 This requirement exists because both CLIs are published from `ose-primer` as reference implementations. A behavioral divergence between them would undermine their use as a trustworthy pair.
 
+**Generator-logic vs regenerated data**: When a harness convention change requires updating the CLI, the type of change determines who handles it. Two categories exist:
+
+- **Regenerated data** — the translation tables or catalog content that the CLI reads at runtime change, but the code that reads and applies them does not. The harness-compatibility fixer handles this automatically by updating the catalog and re-running `npm run sync:claude-to-opencode`.
+- **Generator-logic change** — a translation rule itself changes (a new field mapping, a new output format rule, a new validation predicate). This is a code change and must land identically in both `apps/rhino-cli-go/internal/agents/` and `apps/rhino-cli-rust/src/` within the same delivery. The harness-compatibility fixer does not make code changes; it surfaces the requirement as a coupled both-CLI finding for human or language-dev-agent authorship. The shadow-diff gate must pass before push.
+
 ## Validation
 
 The following commands verify compliance with this convention:
@@ -180,10 +185,23 @@ The three known filename forms that rank above `AGENTS.md` for their respective 
 @AGENTS.md
 ```
 
+## Quality Gates: Distinct Scopes
+
+Two automated quality gates enforce different invariants for the binding surfaces. They are complementary and non-overlapping — running one does not substitute for running the other.
+
+| Gate                             | Workflow                                  | Scope                                                                                                                                                          | Mechanism                                                 | When to run                                                                         |
+| -------------------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| **Deterministic pre-push guard** | `npm run validate:harness-bindings`       | **Internal byte-drift** — re-derives expected binding file content from `AGENTS.md` and asserts byte-equality with committed files                             | Offline, agent-free, `rhino-cli agents validate-bindings` | Pre-push hook; CI                                                                   |
+| **Harness compatibility gate**   | `repo-harness-compatibility-quality-gate` | **External convention drift** — checks whether each harness's current upstream documentation matches the platform-bindings catalog and committed binding files | Web-research-backed, agent-driven                         | Monthly cadence; after a harness ships a major release; before adding a new harness |
+
+The pre-push guard is fast and deterministic: it catches cases where `AGENTS.md` changed but the generated binding files were not regenerated. The compatibility gate is comprehensive and current: it catches cases where an upstream harness changed its conventions without any corresponding local change. Neither gate can substitute for the other.
+
+A third gate — **cross-vendor parity** (`repo-cross-vendor-parity-quality-gate`) — validates that the primary and secondary binding directories agree with each other and with governance prose. It operates entirely offline on locally committed files (no web research) and detects internal agreement rather than external convention drift. All three gates chain but do not overlap.
+
 ## Tools and Automation
 
 - **`repo-harness-compatibility-checker`** — Checker agent; delegates to web research, diffs current upstream harness conventions against the platform-bindings catalog and committed binding files. Run via the `repo-harness-compatibility-quality-gate` workflow.
-- **`repo-harness-compatibility-fixer`** — Fixer agent; applies validated updates to the catalog and binding files after a checker audit.
+- **`repo-harness-compatibility-fixer`** — Fixer agent; applies validated updates to the catalog and binding files after a checker audit. Also updates `specs/apps/rhino/` when a harness convention change alters rhino-cli behavior that those specs document.
 - **`rhino-cli agents emit-bindings`** — Generates all Tier 2 bridge files and any thin pointers from `AGENTS.md`. Implemented in both the Rust and Go CLI implementations.
 - **`rhino-cli agents validate-bindings`** — Asserts byte-equality between committed binding files and what `emit-bindings` would produce; also asserts that every binding directory on disk has a row in `docs/reference/platform-bindings.md`.
 - **`npm run validate:harness-bindings`** — npm script wrapping `rhino-cli agents validate-bindings`; wired into `.husky/pre-push`.
