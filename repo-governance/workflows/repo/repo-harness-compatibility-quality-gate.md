@@ -180,7 +180,11 @@ Apply validated drift fixes from the audit report based on mode level.
 - Tier reclassification (Tier 2 → Tier 1) backed by a dated, cited web source
 - Stale verification dates in the catalog (bumps to current date when content unchanged)
 - Generated binding file updates where the content change is derivable from updated catalog
-  facts and `rhino-cli agents emit-bindings` output matches
+  facts (regenerated via `npm run sync:claude-to-opencode`)
+- Spec updates in `specs/apps/rhino/` where a harness convention change alters rhino-cli
+  behavior the specs document (Gherkin scenarios under `behavior/`, container/component
+  descriptions, README claims) — the fixer edits the affected spec files to stay consistent
+  with the catalog and binding changes
 
 **Out-of-scope for automated fixing** (fixer flags and surfaces for human resolution):
 
@@ -190,6 +194,10 @@ Apply validated drift fixes from the audit report based on mode level.
   [Multi-Harness Binding Convention](../../conventions/structure/multi-harness-binding.md))
 - New harness additions (full onboarding involves catalog row, binding directory decision,
   and dual-CLI implementation per AD8)
+- rhino-cli **generator-logic** changes (a translation rule, not just regenerated data):
+  `apps/rhino-cli-go/` and `apps/rhino-cli-rust/` are a parity pair, so the identical change
+  must land in both `apps/rhino-cli-go/internal/agents/` and `apps/rhino-cli-rust/src/` in
+  lock-step — surfaced as one coupled finding for human or language-dev-agent authorship
 - Evidence that conflicts across sources (checker must escalate to human with both sources)
 
 **On out-of-scope findings**: Surface with full context in the orchestrator's user-visible
@@ -297,6 +305,21 @@ Scenario: Fixer updates catalog entries for unambiguous in-scope drift
   Then it updates the harness row in docs/reference/platform-bindings.md to Tier 1
   And it records the web citation and verification date in the catalog entry
   And it writes a fix report using the same UUID chain as the audit
+
+Scenario: Fixer updates rhino specs when a harness change alters documented CLI behavior
+  Given the audit contains a HIGH-confidence finding that a harness changed a convention rhino-cli emits
+  And specs/apps/rhino/ documents the old behavior in a Gherkin scenario
+  When repo-harness-compatibility-fixer applies the catalog and binding updates
+  Then it edits the affected specs/apps/rhino/ files to match the new behavior
+  And it preserves the Given-When-Then scenario structure
+  And it records each touched spec file in the fix report
+
+Scenario: rhino-cli generator-logic change is surfaced as a coupled both-CLI finding
+  Given the audit contains a finding that requires changing a binding translation rule
+  When repo-harness-compatibility-fixer encounters it
+  Then it flags the change as out-of-scope code authorship
+  And it states the identical change must land in both apps/rhino-cli-go and apps/rhino-cli-rust
+  And the workflow surfaces it for human or language-dev-agent resolution
 
 Scenario: Out-of-scope findings escalate to human without looping
   Given the audit contains a finding that a harness introduced a new higher-precedence filename

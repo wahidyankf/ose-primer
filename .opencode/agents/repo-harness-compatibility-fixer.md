@@ -50,15 +50,21 @@ Before editing any file, re-validate by comparing the checker's "Current catalog
 
 Use `Edit` to update the specific harness section. Replace the outdated claim with the upstream-sourced correct value. Preserve surrounding prose structure and heading hierarchy.
 
-#### Binding file regeneration
+#### Binding file regeneration (both rhino-cli implementations are a parity pair)
 
-When a harness frontmatter schema has changed (new required key, renamed field, changed value format), regenerate the affected binding files using:
+The repository ships two rhino-cli implementations — `apps/rhino-cli-go/` and `apps/rhino-cli-rust/` — that MUST stay in lock-step. `rhino-cli-rust` is the active generator wired into the npm scripts. When a harness frontmatter schema has changed (new required key, renamed field, changed value format), regenerate the affected binding files using:
 
 ```bash
-rhino-cli agents emit-bindings
+npm run sync:claude-to-opencode   # rhino-cli-rust agents sync — regenerates secondary binding files
 ```
 
-This command reads `.claude/agents/*.md` as the canonical source and regenerates all secondary binding files (`.opencode/agents/*.md`, `.amazonq/` files, etc.) according to their current translation rules. Do not hand-edit secondary binding files directly.
+This reads `.claude/agents/*.md` as the canonical source and regenerates all secondary binding files (`.opencode/agents/*.md`, etc.) according to their current translation rules. Do not hand-edit secondary binding files directly.
+
+Data-level regeneration (above) is in-scope and automatic. If the schema change instead requires editing the **generator logic** (a translation rule, not just data), that is out-of-scope code authorship — see the Out-of-Scope section; both `apps/rhino-cli-go/internal/agents/` and `apps/rhino-cli-rust/src/` must receive the identical change so the parity pair does not diverge.
+
+#### Spec updates (`specs/apps/rhino/`)
+
+When a harness convention change alters rhino-cli behavior that `specs/apps/rhino/` documents (Gherkin features under `behavior/`, container/component descriptions, README claims about supported harnesses or binding outputs), use `Edit` to update the affected spec files so the specs stay consistent with the catalog and binding changes applied above. Update the Gherkin scenario(s) whose expected behavior changed; keep scenario structure and Given-When-Then phrasing intact. Record each spec file touched in the fix summary (Step 6).
 
 #### Frontmatter schema fixes in `.claude/agents/*.md`
 
@@ -75,13 +81,21 @@ rhino-cli agents validate-bindings
 - **Pass**: command exits 0 → log as VALIDATED
 - **Fail**: command exits non-zero → capture output, surface failing files, exit non-zero
 
-### Step 5 — Re-run vendor audit
+### Step 5 — Re-run vendor audit (both rhino-cli implementations)
+
+`apps/rhino-cli-go/` and `apps/rhino-cli-rust/` are a parity pair — both must pass. Run the Go vendor audit (note the path is `apps/rhino-cli-go`, not `apps/rhino-cli`):
 
 ```bash
-cd apps/rhino-cli && go run main.go repo-governance vendor-audit repo-governance/
+(cd apps/rhino-cli-go && go run main.go repo-governance vendor-audit repo-governance/)
 ```
 
-- **Pass**: exits 0 → log as VALIDATED
+Then confirm the two implementations have not diverged via the cross-vendor parity guard:
+
+```bash
+nx run rhino-cli-go:validate:cross-vendor-parity
+```
+
+- **Pass**: both exit 0 → log as VALIDATED
 - **Fail**: exits non-zero → surface violations, exit non-zero
 
 ### Step 6 — Write fix summary report
@@ -97,7 +111,7 @@ Write a fix summary to `generated-reports/harness-compat__<uuid-chain>__<YYYY-MM
 The fixer DOES NOT auto-remediate the following — it surfaces them in the fix summary and exits non-zero so the orchestrator escalates:
 
 - **Harness model IDs retired without replacement**: choosing an alternative model requires a product decision about capability-tier mapping
-- **Harness tool-permission schema incompatible change** (e.g., array → boolean map with different semantics): the sync translation logic in `npm run sync:claude-to-opencode` may need updating, which requires human authorship
+- **Harness tool-permission schema incompatible change** (e.g., array → boolean map with different semantics): the sync translation logic needs updating, which requires human authorship. Because `apps/rhino-cli-go/` and `apps/rhino-cli-rust/` are a parity pair, the identical logic change must land in BOTH `apps/rhino-cli-go/internal/agents/` and `apps/rhino-cli-rust/src/`; surface this as a single coupled finding so the human (or a language dev agent) updates both in lock-step
 - **New harness added to the catalog**: scaffolding a new binding directory and translation rules is a make-level task for `agent-maker` and human review
 - **Harness discontinued**: removing a binding directory has broad impact and requires explicit human confirmation
 - **AMBIGUOUS findings**: where neither the catalog claim nor the upstream fact matches the current file state
