@@ -1,6 +1,8 @@
 // Sealed OutputFormat enum. Mirrors `apps/rhino-cli-go/internal/cliout/format.go`
 // — same canonical codes, same "" → Text default, same error string on unknown.
 
+pub mod gojson;
+
 use std::fmt;
 
 use anyhow::{Error, anyhow};

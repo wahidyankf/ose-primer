@@ -5,6 +5,8 @@
 // helpers (agents, docs, doctor, …) that back each command namespace.
 
 pub mod cliout;
+pub mod docs;
 pub mod git;
+pub mod mermaid;
 pub mod speccoverage;
 pub mod testcoverage;

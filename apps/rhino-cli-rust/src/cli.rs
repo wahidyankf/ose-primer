@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 
-use crate::commands::{speccoverage, testcoverage};
+use crate::commands::{docs, speccoverage, testcoverage};
 use crate::internal::cliout::OutputFormat;
 
 #[derive(Parser, Debug)]
@@ -63,6 +63,19 @@ pub enum Commands {
     /// BDD spec coverage commands.
     #[command(name = "spec-coverage", subcommand)]
     SpecCoverage(SpecCoverageCommands),
+    /// Documentation validation commands.
+    #[command(name = "docs", subcommand)]
+    Docs(DocsCommands),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum DocsCommands {
+    /// Validate markdown links in the repository.
+    #[command(name = "validate-links")]
+    ValidateLinks(docs::ValidateLinksArgs),
+    /// Validate Mermaid flowchart diagrams in markdown files.
+    #[command(name = "validate-mermaid")]
+    ValidateMermaid(docs::ValidateMermaidArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -137,6 +150,16 @@ fn dispatch(cmd: &Commands, output_format: OutputFormat, verbose: bool, quiet: b
             SpecCoverageCommands::Validate(args) => (
                 speccoverage::run_validate(args, output_format, verbose, quiet),
                 speccoverage::VALIDATE_USAGE,
+            ),
+        },
+        Commands::Docs(dc) => match dc {
+            DocsCommands::ValidateLinks(args) => (
+                docs::run_validate_links(args, output_format, verbose, quiet),
+                docs::VALIDATE_LINKS_USAGE,
+            ),
+            DocsCommands::ValidateMermaid(args) => (
+                docs::run_validate_mermaid(args, output_format, verbose, quiet),
+                docs::VALIDATE_MERMAID_USAGE,
             ),
         },
     };

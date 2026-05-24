@@ -160,22 +160,34 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
   - _Suggested executor: `swe-rust-dev`_ ✅ delegated + orchestrator re-verified
   - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: none (verification)
   - **Notes**: Orchestrator re-ran `bash apps/rhino-cli-rust/scripts/shadow-diff.sh test-coverage spec-coverage` → **"Shadow diff PASS — 41 cases byte-identical."** exit 0. Corpus: `apps/rhino-cli-go/cover.out`, crud `lcov.info`, `crud-be-java-springboot` jacoco.xml, live gherkin tree; text/json/markdown × pass/fail/error/per-file/exclude/diff/merge/shared-steps/gaps. Only `timestamp`/`duration_ms` JSON fields masked (non-deterministic in both binaries).
-- [ ] Commit: `feat(rhino-cli-rust): port test-coverage + spec-coverage with shadow-diff parity`.
+- [x] Commit: `feat(rhino-cli-rust): port test-coverage + spec-coverage with shadow-diff parity`.
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: commit `53578c584`
+  - **Notes**: Committed `53578c584`, pushed to `main` (`8c7a41322..53578c584`); pre-commit + pre-push hooks passed (affected = rhino-cli-rust only).
 
 ---
 
 ## Phase 4 — Port `docs` (validate-links, validate-mermaid)
 
-- [ ] Write failing cucumber-rs scenario for `docs validate-links`: wire `specs/apps/rhino/behavior/cli/gherkin/docs/` scenarios into the integration test world in `apps/rhino-cli-rust/tests/`. Verify: `npx nx run rhino-cli-rust:test:integration` reports the docs scenarios as failing (no implementation yet). _New test_
-  - _Suggested executor: `swe-rust-dev`_
-- [ ] Port `apps/rhino-cli/internal/docs/` link validator into `apps/rhino-cli-rust/src/internal/docs/` using the same structural parsing approach as the Go implementation (custom line-by-line extractor and validator). Implement `docs validate-links` command in `apps/rhino-cli-rust/src/commands/docs.rs`. Verify: `cargo test --manifest-path apps/rhino-cli-rust/Cargo.toml --lib` passes new unit tests; `npx nx run rhino-cli-rust:test:integration` passes the docs validate-links scenarios.
-  - _Suggested executor: `swe-rust-dev`_
-- [ ] Write failing cucumber-rs scenario for `docs validate-mermaid`: add remaining docs scenarios from `specs/apps/rhino/behavior/cli/gherkin/docs/` not yet covered. Verify: `npx nx run rhino-cli-rust:test:integration` reports the mermaid scenarios as failing. _New test_
-  - _Suggested executor: `swe-rust-dev`_
-- [ ] Port `apps/rhino-cli/internal/mermaid/` mermaid validator into `apps/rhino-cli-rust/src/internal/mermaid/` using the same structural parsing approach as the Go implementation (custom line-by-line extractor and validator — no additional parsing crate required). Implement `docs validate-mermaid` command. Verify: `cargo test --manifest-path apps/rhino-cli-rust/Cargo.toml --lib` passes; `npx nx run rhino-cli-rust:test:integration` passes all docs scenarios.
-  - _Suggested executor: `swe-rust-dev`_
-- [ ] **Parity check**: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs` exits 0 across the repo's markdown corpus.
-  - _Suggested executor: `swe-rust-dev`_
+- [x] Write failing cucumber-rs scenario for `docs validate-links`: wire `specs/apps/rhino/behavior/cli/gherkin/docs/` scenarios into the integration test world in `apps/rhino-cli-rust/tests/`. Verify: `npx nx run rhino-cli-rust:test:integration` reports the docs scenarios as failing (no implementation yet). _New test_
+  - _Suggested executor: `swe-rust-dev`_ ✅ delegated (TDD)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/tests/docs.rs`
+  - **Notes**: Both `docs/*.feature` wired (links + mermaid). Now 27 scenarios / 102 steps pass (red before impl).
+- [x] Port `apps/rhino-cli/internal/docs/` link validator into `apps/rhino-cli-rust/src/internal/docs/` using the same structural parsing approach as the Go implementation (custom line-by-line extractor and validator). Implement `docs validate-links` command in `apps/rhino-cli-rust/src/commands/docs.rs`. Verify: `cargo test --manifest-path apps/rhino-cli-rust/Cargo.toml --lib` passes new unit tests; `npx nx run rhino-cli-rust:test:integration` passes the docs validate-links scenarios.
+  - _Suggested executor: `swe-rust-dev`_ ✅ delegated
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/src/internal/docs/` (mod, types, categorizer, scanner, validator, reporter), `src/commands/docs.rs`
+  - **Notes**: `--staged-only` + global flags matched; broken-link stderr ordering matches Go (handler `❌ Found N` then dispatch usage + `Error:`). Added `src/internal/cliout/gojson.rs` (`html_escape` for `<>&` → `\uXXXX`) to match Go `encoding/json` HTML-escaping in JSON output. test:unit + integration pass.
+- [x] Write failing cucumber-rs scenario for `docs validate-mermaid`: add remaining docs scenarios from `specs/apps/rhino/behavior/cli/gherkin/docs/` not yet covered. Verify: `npx nx run rhino-cli-rust:test:integration` reports the mermaid scenarios as failing. _New test_
+  - _Suggested executor: `swe-rust-dev`_ ✅ delegated (TDD)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/tests/docs.rs`
+  - **Notes**: 23 mermaid scenarios added (part of the 27 total). Two warning scenarios that depend on leaky Go package-global flag state are driven with explicit `--max-width/--max-depth` (commented) to reproduce the contract intent against a fresh binary.
+- [x] Port `apps/rhino-cli/internal/mermaid/` mermaid validator into `apps/rhino-cli-rust/src/internal/mermaid/` using the same structural parsing approach as the Go implementation (custom line-by-line extractor and validator — no additional parsing crate required). Implement `docs validate-mermaid` command. Verify: `cargo test --manifest-path apps/rhino-cli-rust/Cargo.toml --lib` passes; `npx nx run rhino-cli-rust:test:integration` passes all docs scenarios.
+  - _Suggested executor: `swe-rust-dev`_ ✅ delegated
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/src/internal/mermaid/` (mod, types, extractor, graph, parser, validator, reporter), `src/commands/docs.rs`
+  - **Notes**: **Confirmed local Go uses pure regex/string parsing — NO tree-sitter** (`apps/rhino-cli-go/internal/mermaid/parser.go`); matched that, no tree-sitter crate added (the tech-docs note about tree-sitter was ose-public's approach, not this repo's). All flags (`--max-label-len`, `--max-width`, `--max-depth` with 0→MaxInt default, `--max-subgraph-nodes`, `--staged-only`, `--changed-only`) + 4 rules + warnings + Kahn BFS rank assignment ported. test:unit (207) + integration (27) pass.
+- [x] **Parity check**: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs` exits 0 across the repo's markdown corpus.
+  - _Suggested executor: `swe-rust-dev`_ ✅ delegated + orchestrator re-verified
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/scripts/shadow-diff.sh` (docs corpus group)
+  - **Notes**: Orchestrator re-ran → **"Shadow diff PASS — 31 cases byte-identical"** exit 0. _Documented Go non-determinism_: Go text/markdown group multi-file findings via map iteration → order varies run-to-run (the Go binary can't match itself); Rust emits deterministic sorted output (strictly better). Shadow-diff therefore compares multi-file cases via JSON (slice/scan order, deterministic) and restricts text/markdown finding cases to single-file. NOTE block documents this in the script.
 - [ ] Commit: `feat(rhino-cli-rust): port docs validate-links + validate-mermaid`.
 
 ---

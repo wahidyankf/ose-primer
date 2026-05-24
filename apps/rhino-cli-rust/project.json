@@ -52,12 +52,12 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo llvm-cov --lib --ignore-filename-regex '(cli\\.rs|main\\.rs|commands/testcoverage\\.rs|commands/speccoverage\\.rs|internal/git/root\\.rs|internal/testcoverage/diff\\.rs|internal/testcoverage/merge\\.rs)' --lcov --output-path cover.out --fail-under-lines 90",
+        "command": "cargo llvm-cov --lib --ignore-filename-regex '(cli\\.rs|main\\.rs|commands/testcoverage\\.rs|commands/speccoverage\\.rs|commands/docs\\.rs|internal/git/root\\.rs|internal/testcoverage/diff\\.rs|internal/testcoverage/merge\\.rs)' --lcov --output-path cover.out --fail-under-lines 90",
         "cwd": "apps/rhino-cli-rust"
       },
       "inputs": ["{projectRoot}/src/**/*.rs", "{projectRoot}/Cargo.toml"],
       "outputs": ["{projectRoot}/cover.out"],
-      "comment": "Library coverage gate at 90% lines. Ignored files are exercised only via integration tests / git-dependent paths: cli.rs + main.rs (entrypoint/dispatch), commands/*.rs (thin clap adapters covered by cucumber tests), internal/git/root.rs (filesystem walk-up), and testcoverage/{diff,merge}.rs (git-diff and on-disk-merge paths). Actual measured lines coverage is ~96%."
+      "comment": "Library coverage gate at 90% lines. Ignored files are exercised only via integration tests / git-dependent paths: cli.rs + main.rs (entrypoint/dispatch), commands/*.rs (thin clap adapters covered by cucumber tests — testcoverage, speccoverage, docs), internal/git/root.rs (filesystem walk-up), and testcoverage/{diff,merge}.rs (git-diff and on-disk-merge paths). Actual measured lines coverage is ~96%."
     },
     "test:integration": {
       "executor": "nx:run-commands",

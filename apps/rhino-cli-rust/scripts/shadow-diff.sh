@@ -32,8 +32,19 @@ USAGE:
 COMMANDS:
   test-coverage    Diff the `test-coverage validate|diff|merge` corpus
   spec-coverage    Diff the `spec-coverage validate` corpus
+  docs             Diff the `docs validate-links|validate-mermaid` corpus
 
   With no COMMAND, every command's corpus runs.
+
+NOTE on docs text/markdown output:
+  The Go `docs validate-mermaid` (and validate-links) text/markdown formatters
+  group findings into a Go map and range it, so the file ordering is
+  NON-DETERMINISTIC across runs whenever 2+ files have findings — the Go binary
+  cannot even match itself. The Rust port emits sorted (deterministic) output.
+  The docs corpus therefore restricts text/markdown finding-cases to a SINGLE
+  file (where ordering is trivially identical) and exercises all multi-file
+  finding cases via JSON, whose slice ordering IS deterministic and matches
+  byte-for-byte. Full-corpus default runs (zero findings) are deterministic.
 
 BEHAVIOUR:
   Builds the Go binary (Nx dist) and the Rust binary (cargo --release), then
@@ -59,7 +70,7 @@ for arg in "$@"; do
       print_help
       exit 0
       ;;
-    test-coverage | spec-coverage)
+    test-coverage | spec-coverage | docs)
       COMMANDS+=("${arg}")
       ;;
     *)
@@ -70,7 +81,7 @@ for arg in "$@"; do
   esac
 done
 if [[ ${#COMMANDS[@]} -eq 0 ]]; then
-  COMMANDS=(test-coverage spec-coverage)
+  COMMANDS=(test-coverage spec-coverage docs)
 fi
 
 # --- Build both binaries ---
@@ -209,6 +220,69 @@ corpus_spec_coverage() {
   run_case "sc shared exclude-dir"  spec-coverage validate "${GHERKIN}" apps/rhino-cli-go --shared-steps --exclude-dir system --no-color
 }
 
+corpus_docs() {
+  echo "── docs corpus ──" >&2
+
+  # --- validate-links: full default corpus, every format (zero findings → ---
+  # --- deterministic; counts/timestamps normalised). -------------------------
+  for fmt in text json markdown; do
+    run_case "links default ${fmt}"  docs validate-links -o "${fmt}" --no-color
+  done
+  run_case "links quiet"    docs validate-links -q --no-color
+  run_case "links verbose"  docs validate-links -v --no-color
+  # staged-only on a clean tree → no staged files → success, identical output.
+  run_case "links staged-only"  docs validate-links --staged-only --no-color
+
+  # --- validate-mermaid: full default corpus, every format (zero findings). ---
+  for fmt in text json markdown; do
+    run_case "mermaid default ${fmt}"  docs validate-mermaid -o "${fmt}" --no-color
+  done
+  run_case "mermaid quiet"    docs validate-mermaid -q --no-color
+  run_case "mermaid verbose"  docs validate-mermaid -v --no-color
+  # Scoped to individual real directories (still zero findings on this corpus).
+  run_case "mermaid docs dir"        docs validate-mermaid docs --no-color
+  run_case "mermaid docs dir json"   docs validate-mermaid docs -o json --no-color
+  run_case "mermaid repo-gov dir"    docs validate-mermaid repo-governance --no-color
+  run_case "mermaid .claude dir"     docs validate-mermaid .claude --no-color
+  run_case "mermaid multi dir json"  docs validate-mermaid docs repo-governance .claude -o json --no-color
+  # staged-only / changed-only on a clean tree.
+  run_case "mermaid staged-only"   docs validate-mermaid --staged-only --no-color
+  run_case "mermaid changed-only"  docs validate-mermaid --changed-only --no-color
+
+  # --- Finding cases: JSON only across the whole corpus (deterministic slice ---
+  # --- order). These exercise every violation/warning kind on real files. -----
+  for thr in 1 2 3; do
+    run_case "mermaid max-width ${thr} json"        docs validate-mermaid docs --max-width "${thr}" -o json --no-color
+  done
+  run_case "mermaid max-label-len 10 json"     docs validate-mermaid docs --max-label-len 10 -o json --no-color
+  run_case "mermaid max-label-len 20 json"     docs validate-mermaid docs --max-label-len 20 -o json --no-color
+  run_case "mermaid max-subgraph-nodes 1 json" docs validate-mermaid docs --max-subgraph-nodes 1 -o json --no-color
+  run_case "mermaid max-subgraph-nodes 3 json" docs validate-mermaid docs --max-subgraph-nodes 3 -o json --no-color
+  run_case "mermaid both-exceeded json"        docs validate-mermaid docs --max-width 1 --max-depth 1 -o json --no-color
+
+  # --- Single-file text/markdown finding cases (deterministic: one file). -----
+  # Resolve a single real markdown file that contains a width violation at
+  # --max-width 1 by asking the Go binary (the parity oracle) for the first
+  # filePath in its JSON output, then converting to a repo-relative path.
+  # Disable errexit/pipefail around this resolution: `grep | head` legitimately
+  # closes the pipe early, which would otherwise surface as SIGPIPE (exit 141).
+  local one_file go_json
+  set +e +o pipefail
+  go_json="$( cd "${REPO_ROOT}" && "${GO_BIN}" docs validate-mermaid docs --max-width 1 -o json --no-color 2>/dev/null )"
+  one_file="$( printf '%s' "${go_json}" | grep -o '"filePath": "[^"]*"' | head -1 | sed 's/"filePath": "//; s/"$//' )"
+  set -e -o pipefail
+  if [[ -n "${one_file}" ]]; then
+    local rel_file="${one_file#"${REPO_ROOT}"/}"
+    run_case "mermaid one-file width text"  docs validate-mermaid "${rel_file}" --max-width 1 --no-color
+    run_case "mermaid one-file width md"    docs validate-mermaid "${rel_file}" --max-width 1 -o markdown --no-color
+    run_case "mermaid one-file width json"  docs validate-mermaid "${rel_file}" --max-width 1 -o json --no-color
+    run_case "mermaid one-file label text"  docs validate-mermaid "${rel_file}" --max-label-len 5 --no-color
+    run_case "mermaid one-file subgraph text"  docs validate-mermaid "${rel_file}" --max-subgraph-nodes 1 --no-color
+  else
+    echo "shadow-diff: no single-file mermaid finding found in corpus; skipping single-file text cases" >&2
+  fi
+}
+
 # A repo-relative temp output path for `merge --out-file` (lives under TMP).
 TMP_OUT_REL="$(python3 -c "import os,sys; print(os.path.relpath('${TMP}/merged.info', '${REPO_ROOT}'))" 2>/dev/null || echo "${TMP}/merged.info")"
 
@@ -216,6 +290,7 @@ for cmd in "${COMMANDS[@]}"; do
   case "${cmd}" in
     test-coverage) corpus_test_coverage ;;
     spec-coverage) corpus_spec_coverage ;;
+    docs) corpus_docs ;;
   esac
 done
 
