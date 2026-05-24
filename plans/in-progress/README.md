@@ -8,6 +8,11 @@ Active project plans currently being worked on.
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
   exports research dossiers.
+- [Multi-Harness Compatibility](./multi-harness-compatibility/README.md)
+  — make the repo harness-agnostic in governance and explicitly compatible with nine named
+  coding-agent harnesses (Copilot, Cursor, Windsurf, Junie, Amazon Q, Claude Code, Codex CLI,
+  Antigravity, Pi), threading the dual `rhino-cli-rust` + `rhino-cli-go` byte-parity model
+  through every CLI change. Adopted from `ose-public`.
 
 ## Folder Naming
 
