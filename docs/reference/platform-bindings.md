@@ -1,8 +1,11 @@
 ---
 title: "Platform Bindings Catalog"
-description: Catalog of all AI coding agent platform bindings in this repository, their directories, root instruction files, and mechanical translation artifacts.
+description: "Catalog of all AI coding agent platform bindings in this repository, their directories, root instruction files, and mechanical translation artifacts."
 category: reference
-created: 2026-05-02
+tags:
+  - platform-bindings
+  - ai-agents
+  - multi-harness
 ---
 
 # Platform Bindings Catalog
@@ -18,21 +21,108 @@ bindings live in their own directories and are explicitly excluded from the
 
 ## Platform Binding Directories
 
-| Platform         | Binding location                                | Root instruction file                                                                                                                          | Status                                       |
-| ---------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| Claude Code      | `.claude/`                                      | `CLAUDE.md` (shim → `AGENTS.md`)                                                                                                               | Active                                       |
-| OpenCode         | `.opencode/agents/`, `.claude/skills/` (native) | `AGENTS.md` (read natively)                                                                                                                    | Active                                       |
-| OpenAI Codex CLI | (no dotdir)                                     | `AGENTS.md` (read natively)                                                                                                                    | Provided automatically via `AGENTS.md`       |
-| Aider            | n/a                                             | `CONVENTIONS.md` (read natively per Aider's own docs); AGENTS.md support claimed by agents.md standard site but not documented by Aider itself | Reserved (`CONVENTIONS.md` not yet provided) |
-| Cursor           | `.cursor/rules/*.mdc`                           | `AGENTS.md` (also reads `.cursor/rules/`)                                                                                                      | Reserved (not yet provided)                  |
-| GitHub Copilot   | `.github/copilot-instructions.md`               | `AGENTS.md` (coding agent mode)                                                                                                                | Reserved (not yet provided)                  |
-| Gemini CLI       | (no dotdir)                                     | `GEMINI.md` or `AGENTS.md`                                                                                                                     | Reserved                                     |
-| Continue         | TBD                                             | TBD                                                                                                                                            | Not researched conclusively; see plan brd.md |
-| Sourcegraph Cody | search-based context                            | none                                                                                                                                           | Not applicable (no instruction file)         |
+The table below lists every supported or reserved harness, its binding location, and overall status.
+Two harnesses are **Active** (fully wired), two are **Partial** (binding directories already exist
+in the repo but are tool/Nx-provided rather than plan-generated), several are **Absent** (native
+`AGENTS.md` read suffices — no extra file needed unless a pointer improves discovery), and one is
+**Reserved** (planned for future addition).
+
+| Platform               | Binding location                                 | Root instruction file                                              | Reads `AGENTS.md` natively? | Binding status                               |
+| ---------------------- | ------------------------------------------------ | ------------------------------------------------------------------ | --------------------------- | -------------------------------------------- |
+| Claude Code            | `.claude/`                                       | `CLAUDE.md` (shim → `@AGENTS.md`)                                  | No — bridged via shim       | Active                                       |
+| OpenCode               | `.opencode/agents/`, `.claude/skills/` (native)  | `AGENTS.md` (read natively)                                        | Yes                         | Active                                       |
+| OpenAI Codex CLI       | `.codex/` (partial — see provenance note below)  | `AGENTS.md` (read natively since Apr 2025)                         | Yes                         | Partial                                      |
+| GitHub Copilot         | `.github/` (partial — see provenance note below) | `AGENTS.md` (nearest file wins)                                    | Yes                         | Partial                                      |
+| Cursor                 | `.cursor/rules/*.mdc`                            | `AGENTS.md` (also reads `.cursor/rules/`)                          | Yes                         | Absent                                       |
+| Windsurf               | `.windsurf/rules/*.md`                           | `AGENTS.md` (also reads `.windsurf/rules/*.md`)                    | Yes                         | Absent                                       |
+| JetBrains Junie        | `.junie/`                                        | `.junie/AGENTS.md` (overrides) or root `AGENTS.md`                 | Yes — with override risk    | Absent                                       |
+| Amazon Q Developer     | `.amazonq/` (Tier-2 bridge — generated)          | `.amazonq/rules/*.md` via agent JSON `resources`                   | No (feature request #2712)  | Absent (bridge to be generated)              |
+| Google Antigravity CLI | `.agent/rules/*.md`                              | `AGENTS.md` (since v1.20.3); `GEMINI.md` overrides if present      | Yes — with override risk    | Absent                                       |
+| Pi (pi.dev)            | `.pi/`                                           | `AGENTS.md` (also reads `CLAUDE.md`, `.pi/AGENTS.md`)              | Yes                         | Absent                                       |
+| Aider                  | n/a                                              | `CONVENTIONS.md` (per Aider docs); `AGENTS.md` support unconfirmed | Unknown                     | Reserved (`CONVENTIONS.md` not yet provided) |
 
 **Root instruction file hierarchy**: Any platform that reads `AGENTS.md` natively requires no
 additional binding directory. Platforms that predate `AGENTS.md` (e.g., the Claude Code binding,
-which uses `CLAUDE.md`) receive a shim that imports `AGENTS.md`.
+which uses `CLAUDE.md`) receive a shim that imports `AGENTS.md`. Amazon Q Developer does not yet
+read `AGENTS.md` natively (open feature request #2712) and receives an explicit Tier-2 bridge
+generated by `rhino-cli agents emit-bindings`.
+
+## Harness Compatibility Matrix
+
+The matrix below reproduces per-harness data from `plans/in-progress/multi-harness-compatibility/tech-docs.md`
+§Harness Compatibility Matrix. Facts were established by `web-research-maker` on 2026-05-24 and are
+re-verified by the `repo-harness-compatibility-quality-gate` workflow over time.
+
+| Harness                    | Reads root `AGENTS.md`?                                | Tool-specific instruction surface                                                                        | Project MCP config                          | Custom-agent surface                                                   | Skills surface                           |
+| -------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------- |
+| **Claude Code**            | No — reads `CLAUDE.md` (bridged)                       | `CLAUDE.md` (shim `@AGENTS.md`), `.claude/`                                                              | `.mcp.json`                                 | `.claude/agents/*.md`                                                  | `.claude/skills/*/SKILL.md`              |
+| **OpenCode**               | Yes                                                    | `.opencode/agents/` (auto-synced); reads `.claude/skills/` natively                                      | `opencode.json`                             | `.opencode/agents/*.md`                                                | reads `.claude/skills/`                  |
+| **OpenAI Codex CLI**       | Yes (since Apr 2025)                                   | `AGENTS.override.md` (overrides), `.codex/config.toml`                                                   | `.codex/config.toml` `[mcp_servers]` (TOML) | `[agents.<name>]` in `config.toml`                                     | `.agents/skills/`                        |
+| **GitHub Copilot**         | Yes (nearest file wins)                                | `.github/copilot-instructions.md`, `.github/instructions/*.instructions.md`                              | `.vscode/mcp.json` (VS Code)                | `.github/agents/*.agent.md` (also reads `.claude/agents/`)             | n/a                                      |
+| **Cursor**                 | Yes                                                    | `.cursor/rules/*.mdc` (+ legacy `.cursorrules`)                                                          | `.cursor/mcp.json`                          | `.cursor/agents/*.md` (also reads `.claude/agents/`, `.codex/agents/`) | `.cursor/skills/`                        |
+| **Windsurf**               | Yes                                                    | `.windsurf/rules/*.md` (+ legacy `.windsurfrules`), `.windsurf/workflows/`                               | global only (no documented project file)    | not officially documented                                              | `.windsurf/skills/` (needs verification) |
+| **JetBrains Junie**        | Yes — `.junie/AGENTS.md` > root `AGENTS.md`            | `.junie/AGENTS.md`, `.junie/rules/*.md` (imports `.claude/agents/`, `.codex/agents/`, `.claude/skills/`) | `.junie/mcp/mcp.json`                       | `.junie/agents/`, `.agents/`                                           | `.junie/skills/<name>/SKILL.md`          |
+| **Amazon Q Developer**     | No (open feature request #2712)                        | `.amazonq/rules/*.md` (consumed via agent JSON `resources`)                                              | `.amazonq/mcp.json`                         | JSON in `.amazonq/` (local) or `~/.aws/amazonq/cli-agents/`            | none                                     |
+| **Google Antigravity CLI** | Yes (since v1.20.3) — `GEMINI.md` overrides if present | `GEMINI.md` (overrides), `.agent/rules/*.md`                                                             | `mcp_config.json` (root or `.agents/`)      | runtime-orchestrated (no declarative file)                             | `.agents/skills/<name>/SKILL.md`         |
+| **Pi (pi.dev)**            | Yes (also reads `CLAUDE.md`)                           | `.pi/settings.json`, `.pi/AGENTS.md`, `.pi/SYSTEM.md`                                                    | none (intentionally no native MCP)          | none built-in (extension-based)                                        | `.agents/skills/` or `.pi/skills/`       |
+
+**Note on Google Antigravity CLI**: Gemini CLI was superseded by Antigravity CLI in 2026. The
+`GEMINI.md` filename is a legacy artifact from Gemini CLI that Antigravity continues to support
+for backward compatibility; its override behavior relative to `AGENTS.md` is unchanged. File-path
+details for Antigravity are marked `[Needs Verification]` — official `antigravity.google/docs` was
+unreachable during research (2026-05-24).
+
+## Pre-existing Partial Bindings — Provenance
+
+Two sets of binding directories already exist in the repository but were **not** produced by
+`rhino-cli agents sync` or by the multi-harness plan:
+
+- **`.github/{agents,prompts,skills}`** — created by Nx tooling and the Nx GitHub Skills integration.
+  `.github/agents/ci-monitor-subagent.agent.md` is a GitHub Copilot agent definition; the
+  `.github/skills/` subtree contains Nx-provided skill files. These are managed by Nx/tooling, not
+  by `rhino-cli agents sync`.
+
+- **`.codex/{config.toml,agents/}`** — created by Nx tooling and the OpenAI Codex CLI integration.
+  `.codex/config.toml` is the Codex CLI project config; `.codex/agents/ci-monitor-subagent.toml`
+  is a Codex agent definition. These are managed by Nx/tooling, not by `rhino-cli agents sync`.
+
+The multi-harness compatibility work documents these directories rather than clobbering them. The
+`rhino-cli agents validate-bindings` command (see below) treats them as known-partial bindings and
+does not fail if it encounters them without a generated counterpart.
+
+## No-Shadowing Note
+
+Three harnesses rank a tool-specific file **above** root `AGENTS.md`:
+
+- **OpenAI Codex CLI**: `AGENTS.override.md` > `AGENTS.md`
+- **JetBrains Junie**: `.junie/AGENTS.md` > root `AGENTS.md`
+- **Google Antigravity CLI**: `GEMINI.md` > `AGENTS.md`
+
+The repository **must not** commit any of these higher-precedence files with content that diverges
+from `AGENTS.md`. Doing so silently shadows the canonical surface for that tool only, creating a
+split-brain state where different harnesses receive different instructions.
+
+The default position is to **not create them at all** — the native `AGENTS.md` read already applies.
+If a future need forces one to exist, it must be a pure pointer that imports `AGENTS.md`, not a
+content copy. This rule is codified in the
+[Multi-Harness Binding Convention](../../repo-governance/conventions/structure/multi-harness-binding.md).
+
+## Amazon Q Developer Binding Generation
+
+The Amazon Q Developer binding is a **Tier-2 bridge** (Amazon Q does not read `AGENTS.md` natively).
+The bridge consists of:
+
+- `.amazonq/rules/00-agents-md.md` — a pointer file whose body references `AGENTS.md` as the
+  canonical instruction source
+- A default agent JSON in `.amazonq/` whose `resources` field globs `file://AGENTS.md` and
+  `file://.amazonq/rules/**/*.md`
+
+These files are generated by `rhino-cli agents emit-bindings` and validated by
+`rhino-cli agents validate-bindings`. Both commands will be added to the repository during the
+multi-harness compatibility plan delivery. The `validate-bindings` command is also wired into
+`.husky/pre-push` via the `validate:harness-bindings` npm script, ensuring generated binding files
+stay in sync with `AGENTS.md` at commit time (analogous to the existing `validate:sync` guard for
+the OpenCode binding).
 
 ## Translation Artifacts
 
@@ -102,6 +192,8 @@ To add a new binding (e.g., `.cursor/rules/`):
 
 - [Governance Vendor-Independence Convention](../../repo-governance/conventions/structure/governance-vendor-independence.md) —
   policy separating vendor-neutral governance from platform bindings
+- [Multi-Harness Binding Convention](../../repo-governance/conventions/structure/multi-harness-binding.md) —
+  two-tier binding strategy, `AGENTS.md`-canonical rule, and no-shadowing rule
 - [AI Agents Development Guide](../../repo-governance/development/agents/ai-agents.md) — agent authoring
   guide with binding-specific Platform Binding Examples
 - [Model Selection Convention](../../repo-governance/development/agents/model-selection.md) — capability
