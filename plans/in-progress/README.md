@@ -8,9 +8,6 @@ Active project plans currently being worked on.
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
   exports research dossiers.
-- [Guard `.env*` file access & commits by AI agents](./guard-env-file-access/README.md)
-  — six-layer defense preventing AI agents from reading, writing, or committing real
-  environment files; pre-commit guard blocks accidental secret commits.
 
 ## Folder Naming
 
