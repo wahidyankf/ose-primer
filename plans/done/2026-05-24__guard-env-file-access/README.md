@@ -1,6 +1,6 @@
 ---
 title: "Guard `.env*` File Access & Commits by AI Agents"
-status: "In Progress"
+status: "Completed"
 created: 2026-05-24
 ---
 
@@ -270,7 +270,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 ### Commit Guidelines
 
 - [x] Commit thematically — one commit per layer/concern, Conventional Commits format:
-  1. `feat(hooks): add block-env-file-access PreToolUse hook and test suite` — pending
+  1. `feat(hooks): add block-env-file-access PreToolUse hook and test suite` — done
   2. `feat(settings): add env-file deny permissions to .claude/settings.json` — done
   3. `feat(opencode): add env-file permission deny to .opencode/opencode.json` — done
   4. `chore(gitignore): add missing .env.development/production/staging/test entries` — done
@@ -280,20 +280,20 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 ### Post-Push Verification
 
-- [ ] Push changes directly to `main` (trunk-based default — no PR required)
+- [x] Push changes directly to `main` (trunk-based default — no PR required)
       [Repo-grounded: AGENTS.md §Git Workflow — direct push to main]
-- [ ] Monitor GitHub Actions workflows at `https://github.com/wahidyankf/ose-primer/actions`
-- [ ] Verify all CI checks pass — fix immediately if any fail before proceeding
-- [ ] Do NOT mark plan done until CI is green
+- [x] Monitor GitHub Actions workflows at `https://github.com/wahidyankf/ose-primer/actions`
+- [x] Verify all CI checks pass — fix immediately if any fail before proceeding
+- [x] Do NOT mark plan done until CI is green
 
 ### Plan Archival
 
-- [ ] Verify ALL delivery checklist items above are ticked `[x]`
-- [ ] Verify ALL quality gates pass (local + CI)
-- [ ] Move plan folder: `git mv plans/in-progress/guard-env-file-access "plans/done/$(date +%Y-%m-%d)__guard-env-file-access"`
-- [ ] Remove plan entry from `plans/in-progress/README.md`
-- [ ] Add plan entry to `plans/done/README.md` with completion date
-- [ ] Commit: `chore(plans): move guard-env-file-access to done`
+- [x] Verify ALL delivery checklist items above are ticked `[x]`
+- [x] Verify ALL quality gates pass (local + CI)
+- [x] Move plan folder: `git mv plans/in-progress/guard-env-file-access "plans/done/$(date +%Y-%m-%d)__guard-env-file-access"`
+- [x] Remove plan entry from `plans/in-progress/README.md`
+- [x] Add plan entry to `plans/done/README.md` with completion date
+- [x] Commit: `chore(plans): move guard-env-file-access to done`
 
 ## Quality Gates
 
