@@ -1,6 +1,6 @@
 {
   "name": "crud-contracts",
-  "root": "specs/apps/crud/contracts",
+  "root": "specs/apps/crud/containers/contracts",
   "targets": {
     "lint": {
       "command": "mkdir -p specs/apps/crud/containers/contracts/generated && npx @redocly/cli bundle specs/apps/crud/containers/contracts/openapi.yaml -o specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml && npx @redocly/cli bundle specs/apps/crud/containers/contracts/openapi.yaml -o specs/apps/crud/containers/contracts/generated/openapi-bundled.json && npx @stoplight/spectral-cli lint specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml --ruleset specs/apps/crud/containers/contracts/.spectral.yaml",
