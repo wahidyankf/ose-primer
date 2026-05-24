@@ -383,7 +383,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 - [x] Verify all checks pass before pushing.
 
 > **Satisfied across all phases**: each phase ran the affected gates before its push (pre-push hook). The final cutover run was **nx exit 0 — typecheck+lint+test:quick+spec-coverage green across all 25 affected projects**; `lint:md` 0 errors. Preexisting issues fixed during work: fsharp `.fsproj` stale-specs-path bug (`98877ee72`); elixir worktree deps+codegen + clojure `classes/` dir bootstrapped (P10.7); 30 rust clippy lints (Phase 5).
-
+>
 > **Important**: Fix ALL failures found during quality gates, not just those
 > caused by your changes (root cause orientation principle).
 
