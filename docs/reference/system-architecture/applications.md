@@ -55,7 +55,7 @@ The platform consists of 9 applications across 4 technology stacks:
 - **Purpose**: Repository management and automation
 - **Language**: Go 1.26
 - **Build Command**: `nx build rhino-cli`
-- **Location**: `apps/rhino-cli/`
+- **Location**: `apps/rhino-cli-go/`
 - **Status**: Active development
 
 #### rhino-cli
@@ -187,8 +187,8 @@ Marketing & Education Sites:
 
 CLI Tools:
 
-- rhino-cli: Validates links in crud-fs-ts-nextjs content
-- rhino-cli: Repository management automation
+- rhino-cli-go: Validates links in crud-fs-ts-nextjs content
+- rhino-cli-go: Repository management automation
 
 **Build-Time Dependencies:**
 

@@ -277,21 +277,21 @@ The commands recursively find every `.env*` file in the repository (skipping aut
 
 ```bash
 # Back up all .env* files to ~/ose-open-env-backup (default)
-npx nx run rhino-cli:run -- env backup
+npx nx run rhino-cli-go:run -- env backup
 
 # Restore from the default backup directory
-npx nx run rhino-cli:run -- env restore
+npx nx run rhino-cli-go:run -- env restore
 
 # Use a custom backup directory
-npx nx run rhino-cli:run -- env backup --dir /tmp/my-backup
-npx nx run rhino-cli:run -- env restore --dir /tmp/my-backup
+npx nx run rhino-cli-go:run -- env backup --dir /tmp/my-backup
+npx nx run rhino-cli-go:run -- env restore --dir /tmp/my-backup
 ```
 
 **Worktree-aware backup** (namespaces by repo/worktree name, recommended when using git worktrees):
 
 ```bash
-npx nx run rhino-cli:run -- env backup --worktree-aware
-npx nx run rhino-cli:run -- env restore --worktree-aware
+npx nx run rhino-cli-go:run -- env backup --worktree-aware
+npx nx run rhino-cli-go:run -- env restore --worktree-aware
 ```
 
 **Safety constraints**:
@@ -302,9 +302,9 @@ npx nx run rhino-cli:run -- env restore --worktree-aware
 
 **Typical workflow** for setting up a new machine or worktree:
 
-1. On the source machine, run `npx nx run rhino-cli:run -- env backup` to capture current `.env*` files.
+1. On the source machine, run `npx nx run rhino-cli-go:run -- env backup` to capture current `.env*` files.
 2. Transfer the backup directory to the target machine (e.g., via a secure channel or shared network path).
-3. On the target machine, run `npx nx run rhino-cli:run -- env restore` to place `.env*` files back at their original repository paths.
+3. On the target machine, run `npx nx run rhino-cli-go:run -- env restore` to place `.env*` files back at their original repository paths.
 
 ### Loading Environment Variables
 

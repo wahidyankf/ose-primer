@@ -45,7 +45,7 @@
           "dotnet build tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj",
           "dotnet altcover --inputDirectory tests/DemoBeFsgi.Tests/bin/Debug/net10.0 --outputDirectory tests/DemoBeFsgi.Tests/bin/Debug/net10.0/__Instrumented --assemblyExcludeFilter=DemoBeFsgi.Tests '--assemblyFilter=xunit|TickSpec|Microsoft|FSharp|testhost|AltCover|coverlet|dbup|Npgsql|EFCore' --fileFilter=TestHandler --linecover --reportFormat=lcov --report=coverage/altcov.info --save",
           "dotnet altcover Runner --recorderDirectory tests/DemoBeFsgi.Tests/bin/Debug/net10.0/__Instrumented --lcovReport coverage/altcov.info --executable dotnet -- test tests/DemoBeFsgi.Tests/bin/Debug/net10.0/__Instrumented/DemoBeFsgi.Tests.dll",
-          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/crud-be-fsharp-giraffe/coverage/altcov.info 90)"
+          "(cd ../../apps/rhino-cli-go && CGO_ENABLED=0 go run main.go test-coverage validate apps/crud-be-fsharp-giraffe/coverage/altcov.info 90)"
         ],
         "parallel": false,
         "cwd": "apps/crud-be-fsharp-giraffe"
@@ -103,11 +103,11 @@
       "cache": true
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-fsharp-giraffe",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-fsharp-giraffe",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature", "{projectRoot}/**/*.fs"]
     }
   },
   "tags": ["type:app", "platform:giraffe", "lang:fsharp", "domain:crud-be"],
-  "implicitDependencies": ["crud-contracts", "rhino-cli"]
+  "implicitDependencies": ["crud-contracts", "rhino-cli-go"]
 }

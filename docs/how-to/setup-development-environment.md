@@ -158,7 +158,7 @@ brew install go
 # Linux — download from https://go.dev/dl/
 ```
 
-Verify the installed version meets or exceeds the `go` directive in `apps/rhino-cli/go.mod`:
+Verify the installed version meets or exceeds the `go` directive in `apps/rhino-cli-go/go.mod`:
 
 ```bash
 go version
@@ -333,10 +333,10 @@ restore them:
 
 ```bash
 # Restore .env files from default backup location (~/ose-open-env-backup)
-CGO_ENABLED=0 go run -C apps/rhino-cli main.go env restore --force
+CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go env restore --force
 
 # Also restore uncommitted config files (AI tool settings, Docker overrides, etc.)
-CGO_ENABLED=0 go run -C apps/rhino-cli main.go env restore --force --include-config
+CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go env restore --force --include-config
 ```
 
 If this is a fresh setup with no backup, copy `.env.example` to `.env` in each app you
@@ -345,7 +345,7 @@ plan to work on and fill in the required values.
 To create a backup for future use:
 
 ```bash
-CGO_ENABLED=0 go run -C apps/rhino-cli main.go env backup --include-config
+CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go env backup --include-config
 ```
 
 ### Step 15: Install Playwright Browsers
@@ -500,7 +500,7 @@ All version requirements are auto-detected by `npm run doctor` from these config
 | Node.js       | `package.json` → `volta.node`                           |
 | npm           | `package.json` → `volta.npm`                            |
 | Java          | `apps/crud-be-java-springboot/pom.xml` → `java.version` |
-| Go            | `apps/rhino-cli/go.mod` → `go` directive                |
+| Go            | `apps/rhino-cli-go/go.mod` → `go` directive                |
 | Python        | `apps/crud-be-python-fastapi/.python-version`           |
 | Hugo          | (legacy — no active config file)                        |
 | Erlang        | `.tool-versions` → `erlang`                             |

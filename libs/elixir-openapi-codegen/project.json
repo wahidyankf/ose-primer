@@ -8,7 +8,7 @@
       "options": {
         "commands": [
           "mix cover.lcov",
-          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate libs/elixir-openapi-codegen/cover/lcov.info 90)",
+          "(cd ../../apps/rhino-cli-go && CGO_ENABLED=0 go run main.go test-coverage validate libs/elixir-openapi-codegen/cover/lcov.info 90)",
           "mix credo --strict",
           "mix format --check-formatted"
         ],
@@ -46,5 +46,5 @@
     }
   },
   "tags": ["type:lib", "lang:elixir", "domain:tooling"],
-  "implicitDependencies": ["crud-contracts", "rhino-cli"]
+  "implicitDependencies": ["crud-contracts", "rhino-cli-go"]
 }

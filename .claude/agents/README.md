@@ -156,7 +156,7 @@ Three-stage quality workflow:
 
 **Implementation**: Sync powered by `rhino-cli agents sync` (~121ms, 25-60x faster than bash)
 
-**See**: [CLAUDE.md](../../CLAUDE.md) for complete guidance, [AGENTS.md](../../AGENTS.md) for OpenCode documentation, [apps/rhino-cli/README.md](../../apps/rhino-cli/README.md) for rhino-cli details
+**See**: [CLAUDE.md](../../CLAUDE.md) for complete guidance, [AGENTS.md](../../AGENTS.md) for OpenCode documentation, [apps/rhino-cli-go/README.md](../../apps/rhino-cli-go/README.md) for rhino-cli details
 
 ## Skills Integration
 

@@ -171,7 +171,7 @@ The OpenAPI 3.1 specification consumed by all demo apps for type generation.
 
 ### rhino-cli
 
-**Location**: `apps/rhino-cli/`
+**Location**: `apps/rhino-cli-go/`
 
 Repository management CLI used by most projects for coverage validation
 (`test-coverage validate`), spec coverage (`spec-coverage validate`),

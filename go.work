@@ -2,6 +2,6 @@ go 1.26
 
 use (
 	./apps/crud-be-golang-gin
-	./apps/rhino-cli
+	./apps/rhino-cli-go
 	./libs/golang-commons
 )

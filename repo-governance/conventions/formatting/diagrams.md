@@ -412,13 +412,13 @@ Hugo-rendered sites.
 Run the validator manually:
 
 ```bash
-go run ./apps/rhino-cli/main.go docs validate-mermaid
+go run ./apps/rhino-cli-go/main.go docs validate-mermaid
 ```
 
 Or for a single directory:
 
 ```bash
-go run ./apps/rhino-cli/main.go docs validate-mermaid docs/explanation/
+go run ./apps/rhino-cli-go/main.go docs validate-mermaid docs/explanation/
 ```
 
 ### Width Violation Fix Strategy Guide

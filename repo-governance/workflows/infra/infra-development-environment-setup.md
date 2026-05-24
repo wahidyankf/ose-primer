@@ -60,7 +60,7 @@ All tools checked by `rhino-cli doctor`:
 | 2   | volta      | Any                   | (no config file)                       | curl script    |
 | 3   | node       | 24.13.1               | package.json > volta.node              | Volta          |
 | 4   | npm        | 11.10.1               | package.json > volta.npm               | Volta          |
-| 5   | golang     | >= go.mod directive   | apps/rhino-cli/go.mod                  | Brew/asdf      |
+| 5   | golang     | >= go.mod directive   | apps/rhino-cli-go/go.mod                  | Brew/asdf      |
 | 6   | dotnet     | >= global.json major  | apps/crud-be-csharp-aspnet/global.json | Brew/Script    |
 | 7   | docker     | Any                   | (no config file)                       | Docker Desktop |
 | 8   | jq         | Any                   | (no config file)                       | Brew           |
@@ -232,7 +232,7 @@ brew install go
 # Linux — download from https://go.dev/dl/
 ```
 
-The required minimum version is specified in `apps/rhino-cli/go.mod`. As of this writing,
+The required minimum version is specified in `apps/rhino-cli-go/go.mod`. As of this writing,
 Go >= 1.26.
 
 **Success criteria**: `go version` shows a version >= the go.mod directive.
@@ -430,17 +430,17 @@ This also triggers Husky to install git hooks (pre-commit, commit-msg, pre-push)
 
 ```bash
 # Restore .env files from default backup location (~/ose-open-env-backup)
-CGO_ENABLED=0 go run -C apps/rhino-cli main.go env restore --force
+CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go env restore --force
 
 # Include uncommitted config files (AI tool settings, Docker overrides, direnv, etc.)
-CGO_ENABLED=0 go run -C apps/rhino-cli main.go env restore --force --include-config
+CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go env restore --force --include-config
 ```
 
 **Condition**: Skip if this is a brand-new setup with no previous backup. Instead, use
 `env init` to bootstrap `.env` files from `.env.example` templates:
 
 ```bash
-CGO_ENABLED=0 go run -C apps/rhino-cli main.go env init
+CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go env init
 ```
 
 This creates `.env` files from all `.env.example` templates in `infra/dev/`. Use `--force`

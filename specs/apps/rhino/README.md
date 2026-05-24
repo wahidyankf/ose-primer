@@ -1,7 +1,7 @@
 # rhino-cli Specs
 
 Gherkin behavioral specifications for
-[rhino-cli](../../../apps/rhino-cli/README.md) — the Repository Hygiene &
+[rhino-cli](../../../apps/rhino-cli-go/README.md) — the Repository Hygiene &
 INtegration Orchestrator CLI.
 
 ## Purpose
@@ -46,17 +46,17 @@ dependencies; integration tests use godog with real filesystem fixtures.
 
 ```bash
 # Run all unit tests (includes godog BDD scenarios with mocked I/O)
-nx run rhino-cli:test:quick
+nx run rhino-cli-go:test:quick
 
 # Run unit tests directly
-cd apps/rhino-cli
+cd apps/rhino-cli-go
 go test -v -run TestUnit ./cmd/...
 
 # Run all BDD integration tests (real filesystem fixtures)
-nx run rhino-cli:test:integration
+nx run rhino-cli-go:test:integration
 
 # Run a specific integration suite during development
-cd apps/rhino-cli
+cd apps/rhino-cli-go
 go test -v -tags=integration -run TestIntegrationDoctor ./cmd/...
 ```
 
@@ -67,12 +67,12 @@ The `test:integration` target is cached — it only re-runs when source files in
 ## Adding New Specs
 
 1. Create `specs/apps/rhino/behavior/cli/gherkin/<domain>/<domain>-<action>.feature` (create the domain subdir if it does not exist)
-2. Create `apps/rhino-cli/cmd/<domain>_<action>_test.go` (no build tag — unit test with godog):
+2. Create `apps/rhino-cli-go/cmd/<domain>_<action>_test.go` (no build tag — unit test with godog):
    - Add `package cmd` at the top
    - Include `// Scenario: <title>` comments for every scenario
    - Register step definitions using package-level mock function variables for all I/O
    - Name the test function `TestUnit<Command>(t *testing.T)`
-3. Create `apps/rhino-cli/cmd/<domain>_<action>.integration_test.go` (integration test with godog):
+3. Create `apps/rhino-cli-go/cmd/<domain>_<action>.integration_test.go` (integration test with godog):
    - Add `//go:build integration` and `package cmd` at the top
    - Include `// Scenario: <title>` comments for every scenario
    - Register step definitions that drive `cmd.RunE()` against real `/tmp` fixtures
@@ -80,8 +80,8 @@ The `test:integration` target is cached — it only re-runs when source files in
 4. Verify with:
 
    ```bash
-   cd apps/rhino-cli
-   go run main.go spec-coverage validate specs/apps/rhino/behavior/cli/gherkin apps/rhino-cli
+   cd apps/rhino-cli-go
+   go run main.go spec-coverage validate specs/apps/rhino/behavior/cli/gherkin apps/rhino-cli-go
    ```
 
 ## Dual Consumption

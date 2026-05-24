@@ -236,8 +236,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-golang
-      - run: npx nx run rhino-cli:validate:naming-agents
-      - run: npx nx run rhino-cli:validate:naming-workflows
+      - run: npx nx run rhino-cli-go:validate:naming-agents
+      - run: npx nx run rhino-cli-go:validate:naming-workflows
 
   quality-gate:
     name: Quality gate

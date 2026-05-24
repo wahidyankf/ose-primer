@@ -1,6 +1,6 @@
 {
-  "name": "rhino-cli",
-  "sourceRoot": "apps/rhino-cli",
+  "name": "rhino-cli-go",
+  "sourceRoot": "apps/rhino-cli-go",
   "projectType": "application",
   "tags": ["type:app", "platform:cli", "lang:golang", "domain:tooling"],
   "implicitDependencies": ["golang-commons"],
@@ -9,15 +9,15 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "CGO_ENABLED=0 go build -o dist/rhino-cli",
-        "cwd": "apps/rhino-cli"
+        "cwd": "apps/rhino-cli-go"
       },
       "outputs": ["{projectRoot}/dist"]
     },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "CGO_ENABLED=0 go test -coverprofile=cover.out ./... && CGO_ENABLED=0 go run main.go test-coverage validate apps/rhino-cli/cover.out 90",
-        "cwd": "apps/rhino-cli"
+        "command": "CGO_ENABLED=0 go test -coverprofile=cover.out ./... && CGO_ENABLED=0 go run main.go test-coverage validate apps/rhino-cli-go/cover.out 90",
+        "cwd": "apps/rhino-cli-go"
       },
       "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/specs/apps/rhino/**/*.feature"]
     },
@@ -25,7 +25,7 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "CGO_ENABLED=0 go test ./... -count=1",
-        "cwd": "apps/rhino-cli"
+        "cwd": "apps/rhino-cli-go"
       },
       "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/specs/apps/rhino/**/*.feature"]
     },
@@ -33,21 +33,21 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "go run main.go",
-        "cwd": "apps/rhino-cli"
+        "cwd": "apps/rhino-cli-go"
       }
     },
     "install": {
       "executor": "nx:run-commands",
       "options": {
         "command": "go mod tidy",
-        "cwd": "apps/rhino-cli"
+        "cwd": "apps/rhino-cli-go"
       }
     },
     "test:integration": {
       "executor": "nx:run-commands",
       "options": {
         "command": "CGO_ENABLED=0 go test -v -tags=integration -run TestIntegration -coverprofile=cover_spec.out ./cmd/...",
-        "cwd": "apps/rhino-cli"
+        "cwd": "apps/rhino-cli-go"
       },
       "cache": true,
       "inputs": ["{projectRoot}/cmd/**/*.go", "{workspaceRoot}/specs/apps/rhino/**/*.feature"],
@@ -57,23 +57,23 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "CGO_ENABLED=0 go vet ./...",
-        "cwd": "apps/rhino-cli"
+        "cwd": "apps/rhino-cli-go"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
         "command": "CGO_ENABLED=0 golangci-lint run --allow-parallel-runners ./...",
-        "cwd": "apps/rhino-cli"
+        "cwd": "apps/rhino-cli-go"
       }
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/rhino/behavior/cli/gherkin apps/rhino-cli --shared-steps",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go spec-coverage validate specs/apps/rhino/behavior/cli/gherkin apps/rhino-cli-go --shared-steps",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/rhino/behavior/cli/gherkin/**/*.feature", "{projectRoot}/**/*.go"]
     },
     "validate:naming-agents": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go agents validate-naming",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go agents validate-naming",
       "cache": true,
       "inputs": [
         "{projectRoot}/**/*.go",
@@ -83,19 +83,19 @@
       "outputs": []
     },
     "validate:naming-workflows": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go workflows validate-naming",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go workflows validate-naming",
       "cache": true,
       "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/repo-governance/workflows/**/*.md"],
       "outputs": []
     },
     "validate:repo-governance-vendor-audit": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go repo-governance vendor-audit repo-governance/",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go repo-governance vendor-audit repo-governance/",
       "cache": true,
       "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/repo-governance/**/*.md"],
       "outputs": []
     },
     "validate:cross-vendor-parity": {
-      "command": "bash apps/rhino-cli/scripts/validate-cross-vendor-parity.sh",
+      "command": "bash apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh",
       "cache": false,
       "inputs": [
         "{projectRoot}/**/*.go",
@@ -109,7 +109,7 @@
       "outputs": []
     },
     "validate:mermaid": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go docs validate-mermaid",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go docs validate-mermaid",
       "cache": true,
       "inputs": [
         "{projectRoot}/**/*.go",

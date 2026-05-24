@@ -85,14 +85,14 @@ User: "Run repo cross-vendor parity quality gate workflow in manual mode"
 ```
 
 The orchestrator executes the validation script directly via
-`bash apps/rhino-cli/scripts/validate-cross-vendor-parity.sh` (or equivalently
-`nx run rhino-cli:validate:cross-vendor-parity`) and addresses any findings inline.
+`bash apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh` (or equivalently
+`nx run rhino-cli-go:validate:cross-vendor-parity`) and addresses any findings inline.
 
 **When to use**:
 
 - After creating or modifying agents in `.claude/agents/`
 - After modifying governance prose, `AGENTS.md`, or `CLAUDE.md`
-- After modifying the binding-sync logic in `apps/rhino-cli/internal/agents/`
+- After modifying the binding-sync logic in `apps/rhino-cli-go/internal/agents/`
 - Periodically as a parity audit (the same target runs in `.husky/pre-push` for any
   push that touches one of these surfaces)
 

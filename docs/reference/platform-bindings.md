@@ -45,7 +45,7 @@ The Claude Code binding uses named color strings (`blue`, `green`, `yellow`, `pu
 agent frontmatter. OpenCode uses theme tokens (`primary`, `success`, `warning`, `secondary`, etc.).
 
 - **Source**: `.claude/agents/<name>.md` frontmatter `color:` field
-- **Transform**: `ClaudeToOpenCodeColor` in `apps/rhino-cli/internal/agents/types.go`
+- **Transform**: `ClaudeToOpenCodeColor` in `apps/rhino-cli-go/internal/agents/types.go`
 - **Sink**: `.opencode/agents/<name>.md` frontmatter `color:` field
 - **Policy**: [Dual-Mode Color Translation](../../repo-governance/development/agents/ai-agents.md)
   ("Dual-Mode Color Translation — Claude Code to OpenCode" subsection)
@@ -68,7 +68,7 @@ Claude Code agent frontmatter uses short aliases (`sonnet`, `haiku`) or omits `m
 planning-grade inheritance. OpenCode uses Zhipu AI GLM model IDs.
 
 - **Source**: `.claude/agents/<name>.md` frontmatter `model:` field
-- **Transform**: `ClaudeToOpenCodeModel` in `apps/rhino-cli/internal/agents/types.go`
+- **Transform**: `ClaudeToOpenCodeModel` in `apps/rhino-cli-go/internal/agents/types.go`
 - **Sink**: `.opencode/agents/<name>.md` frontmatter `model:` field
 - **Policy**: [Model Selection Convention](../../repo-governance/development/agents/model-selection.md)
   ("Platform Binding Equivalents" section)
@@ -85,7 +85,7 @@ Claude Code agent frontmatter lists tools as an array of string names. OpenCode 
 objects.
 
 - **Source**: `.claude/agents/<name>.md` frontmatter `tools:` array
-- **Transform**: `ClaudeToOpenCodeTools` in `apps/rhino-cli/internal/agents/types.go`
+- **Transform**: `ClaudeToOpenCodeTools` in `apps/rhino-cli-go/internal/agents/types.go`
 - **Sink**: `.opencode/agents/<name>.md` frontmatter tool flags (`read`, `write`, `edit`, etc.)
 
 ## Adding a New Platform Binding
@@ -95,7 +95,7 @@ To add a new binding (e.g., `.cursor/rules/`):
 1. Create the binding directory and its root instruction file (or confirm `AGENTS.md` suffices).
 2. Add a row to the Platform Binding Directories table above.
 3. Identify any per-field translations needed (`rhino-cli agents sync` applies them).
-4. Implement translations in `apps/rhino-cli/internal/agents/types.go` and add godog scenarios.
+4. Implement translations in `apps/rhino-cli-go/internal/agents/types.go` and add godog scenarios.
 5. Update this document's Translation Artifacts section.
 
 ## Related

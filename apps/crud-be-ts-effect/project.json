@@ -42,7 +42,7 @@
       "options": {
         "commands": [
           "npx vitest run --coverage",
-          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/crud-be-ts-effect/coverage/lcov.info 90)",
+          "(cd ../../apps/rhino-cli-go && CGO_ENABLED=0 go run main.go test-coverage validate apps/crud-be-ts-effect/coverage/lcov.info 90)",
           "npx cucumber-js '../../specs/apps/crud/behavior/be/gherkin/**/*.feature' --require-module tsx/cjs --require 'tests/unit/bdd/hooks.ts' --require 'tests/unit/bdd/world.ts' --require 'tests/unit/bdd/steps/**/*.ts' --format progress --format 'json:coverage/cucumber-unit-report.json'"
         ],
         "parallel": false,
@@ -101,11 +101,11 @@
       "cache": true
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-ts-effect",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-ts-effect",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     }
   },
   "tags": ["type:app", "platform:effect", "lang:typescript", "domain:crud-be"],
-  "implicitDependencies": ["crud-contracts", "rhino-cli"]
+  "implicitDependencies": ["crud-contracts", "rhino-cli-go"]
 }

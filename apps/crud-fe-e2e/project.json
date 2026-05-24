@@ -64,7 +64,7 @@
       }
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps specs/apps/crud/behavior/web/gherkin apps/crud-fe-e2e",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go spec-coverage validate --shared-steps specs/apps/crud/behavior/web/gherkin apps/crud-fe-e2e",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
     }

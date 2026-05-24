@@ -7,14 +7,14 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g java -o $(pwd)/apps/crud-be-java-springboot/generated-contracts --model-package com.demobejasb.contracts --additional-properties=library=resttemplate,dateLibrary=java8,openApiNullable=false,useBeanValidation=false,serializationLibrary=jackson --global-property=models,modelDocs=false,apiDocs=false && (WS_ROOT=$(pwd) && cd $(pwd)/apps/rhino-cli && CGO_ENABLED=0 go run main.go contracts java-clean-imports $WS_ROOT/apps/crud-be-java-springboot/generated-contracts)"
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g java -o $(pwd)/apps/crud-be-java-springboot/generated-contracts --model-package com.demobejasb.contracts --additional-properties=library=resttemplate,dateLibrary=java8,openApiNullable=false,useBeanValidation=false,serializationLibrary=jackson --global-property=models,modelDocs=false,apiDocs=false && (WS_ROOT=$(pwd) && cd $(pwd)/apps/rhino-cli-go && CGO_ENABLED=0 go run main.go contracts java-clean-imports $WS_ROOT/apps/crud-be-java-springboot/generated-contracts)"
       },
       "dependsOn": ["crud-contracts:bundle"],
       "cache": true,
       "inputs": [
         "{workspaceRoot}/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml",
-        "{workspaceRoot}/apps/rhino-cli/cmd/**/*.go",
-        "{workspaceRoot}/apps/rhino-cli/internal/**/*.go"
+        "{workspaceRoot}/apps/rhino-cli-go/cmd/**/*.go",
+        "{workspaceRoot}/apps/rhino-cli-go/internal/**/*.go"
       ],
       "outputs": ["{projectRoot}/generated-contracts"]
     },
@@ -46,7 +46,7 @@
       "options": {
         "commands": [
           "mvn test",
-          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/crud-be-java-springboot/target/site/jacoco/jacoco.xml 90)"
+          "(cd ../../apps/rhino-cli-go && CGO_ENABLED=0 go run main.go test-coverage validate apps/crud-be-java-springboot/target/site/jacoco/jacoco.xml 90)"
         ],
         "parallel": false,
         "cwd": "apps/crud-be-java-springboot"
@@ -94,7 +94,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "nx run rhino-cli:build --skip-nx-cache && ./apps/rhino-cli/dist/rhino-cli java validate-annotations apps/crud-be-java-springboot/src/main/java",
+          "nx run rhino-cli-go:build --skip-nx-cache && ./apps/rhino-cli-go/dist/rhino-cli java validate-annotations apps/crud-be-java-springboot/src/main/java",
           "cd apps/crud-be-java-springboot && mvn compile -Pnullcheck"
         ],
         "parallel": false
@@ -103,11 +103,11 @@
       "cache": true
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-java-springboot",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-java-springboot",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature", "{projectRoot}/**/*.java"]
     }
   },
   "tags": ["type:app", "platform:spring-boot", "lang:java", "domain:crud-be"],
-  "implicitDependencies": ["crud-contracts", "rhino-cli"]
+  "implicitDependencies": ["crud-contracts", "rhino-cli-go"]
 }

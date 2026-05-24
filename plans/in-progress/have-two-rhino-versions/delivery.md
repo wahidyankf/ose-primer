@@ -20,11 +20,21 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 ## Phase 0 — Environment Setup
 
-- [ ] Provision worktree: `claude --worktree have-two-rhino-versions` (creates `worktrees/have-two-rhino-versions/`).
-- [ ] Initialize toolchain in the **root** worktree (not the new one): `npm install && npm run doctor -- --fix`. Verify it exits 0 (see [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md)).
-- [ ] Confirm Rust toolchain present: `rustc --version && cargo --version && cargo llvm-cov --version` all succeed.
-- [ ] Capture baseline: `npx nx run rhino-cli:build` _(pre-rename name — correct at this phase; rename happens in Phase 1)_ exits 0 and `./apps/rhino-cli/dist/rhino-cli --help` prints the command tree. Record the help output to `worktrees/have-two-rhino-versions/baseline-help.txt` for later parity reference.
-- [ ] Confirm clean baseline gates: `npx nx affected -t typecheck lint test:quick spec-coverage --base=origin/main` exits 0.
+- [x] Provision worktree: `claude --worktree have-two-rhino-versions` (creates `worktrees/have-two-rhino-versions/`).
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: none (git worktree)
+  - **Notes**: Provisioned via `git worktree add worktrees/have-two-rhino-versions -b have-two-rhino-versions HEAD` (git-level equivalent of `claude --worktree`, which the assistant cannot launch as it spawns a new interactive session). Worktree confirmed at `/Users/wkf/ose-projects/ose-primer/worktrees/have-two-rhino-versions` on branch `have-two-rhino-versions`.
+- [x] Initialize toolchain in the **root** worktree (not the new one): `npm install && npm run doctor -- --fix`. Verify it exits 0 (see [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md)).
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: none
+  - **Notes**: `npm install` clean; `npm run doctor -- --fix` → **19/19 tools OK, 0 warning, 0 missing, nothing to fix**. Relevant toolchains: golang v1.26.1, rust v1.94.0, cargo-llvm-cov v0.8.5, node v24.13.1.
+- [x] Confirm Rust toolchain present: `rustc --version && cargo --version && cargo llvm-cov --version` all succeed.
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: none
+  - **Notes**: `rustc 1.94.0`, `cargo 1.94.0`, `cargo-llvm-cov 0.8.5` — all succeed.
+- [x] Capture baseline: `npx nx run rhino-cli:build` _(pre-rename name — correct at this phase; rename happens in Phase 1)_ exits 0 and `./apps/rhino-cli/dist/rhino-cli --help` prints the command tree. Record the help output to `worktrees/have-two-rhino-versions/baseline-help.txt` for later parity reference.
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `baseline-help.txt` (worktree-local, gitignored)
+  - **Notes**: Build succeeded. Help recorded (30 lines). Surface = 11 namespaces: agents, contracts, docs, doctor, env, git, java, repo-governance, spec-coverage, test-coverage, workflows. Global flags: `--no-color`, `-o/--output {text,json,markdown}`, `-q/--quiet`, `--say`, `-v/--verbose`, `--version`. Recorded at worktree-root `baseline-help.txt` (the `worktrees/...` prefix in the plan resolves to this path from repo root).
+- [x] Confirm clean baseline gates: `npx nx affected -t typecheck lint test:quick spec-coverage --base=origin/main` exits 0.
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: none
+  - **Notes**: Worktree HEAD == `origin/main` (683888ef3), so affected graph is empty → `NX No tasks were run` (exit 0). Clean baseline confirmed.
 
 ---
 
@@ -33,27 +43,53 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 > Goal: pure mechanical rename + repoint. No behavior change. End state: all
 > gates green, CI still runs Go (just renamed). Rust does not exist yet.
 
-- [ ] `git mv apps/rhino-cli apps/rhino-cli-go`.
-  - _Suggested executor: `swe-golang-dev`_
-- [ ] Edit `apps/rhino-cli-go/project.json`: set `"name": "rhino-cli-go"`, `"sourceRoot": "apps/rhino-cli-go"`, and rewrite every self-referencing path (`apps/rhino-cli` → `apps/rhino-cli-go`, `cwd`, `dist/rhino-cli` stays as basename, `go run -C apps/rhino-cli-go`, `spec-coverage validate … apps/rhino-cli-go`, `validate-cross-vendor-parity.sh` path). Verify: `npx nx show project rhino-cli-go --json` lists all targets and no path contains the old `apps/rhino-cli/`.
-  - _Suggested executor: `swe-golang-dev`_
-- [ ] Check `apps/rhino-cli-go/go.mod` module path; if it encodes `rhino-cli`, decide whether to rename the module (Go imports are module-path based, not dir based — only rename if internal imports reference it). Verify: `cd apps/rhino-cli-go && CGO_ENABLED=0 go build ./... && CGO_ENABLED=0 go vet ./...` both exit 0.
-  - _Suggested executor: `swe-golang-dev`_
-- [ ] `git mv infra/dev/rhino-cli infra/dev/rhino-cli-go` and update any path inside its `docker-compose.yml`. Verify: `test -f infra/dev/rhino-cli-go/docker-compose.yml`.
-- [ ] Enumerate all `project.json` callers: `grep -rln 'rhino-cli' apps libs --include=project.json`. For EACH hit, replace `implicitDependencies: ["rhino-cli"]` → `["rhino-cli-go"]` and command strings `go run -C apps/rhino-cli` → `go run -C apps/rhino-cli-go` (and any `apps/rhino-cli/` substring). Verify: `grep -rn 'rhino-cli\b' apps libs --include=project.json | grep -v 'rhino-cli-go'` returns nothing.
-  - _Suggested executor: `swe-golang-dev`_
-- [ ] Edit root `package.json` scripts (`dev:rhino-cli`, `sync:claude-to-opencode`, `sync:agents`, `sync:skills`, `sync:dry-run`, `validate:sync`, `validate:claude`, `doctor`): `nx run rhino-cli:build` → `nx run rhino-cli-go:build`; `./apps/rhino-cli/dist/rhino-cli` → `./apps/rhino-cli-go/dist/rhino-cli`; `infra/dev/rhino-cli/` → `infra/dev/rhino-cli-go/`. Verify: `npm run doctor` builds and runs; `npm run sync:claude-to-opencode` succeeds.
-  - _Suggested executor: `swe-typescript-dev`_
-- [ ] Edit `.husky/pre-commit`: `go run -C apps/rhino-cli` → `go run -C apps/rhino-cli-go`. Verify: `sh .husky/pre-commit` runs the git pre-commit gate without a path error.
-- [ ] Edit `.husky/pre-push`: `rhino-cli:validate:naming-agents` → `rhino-cli-go:validate:naming-agents` (and `:naming-workflows`, `:mermaid`, `:cross-vendor-parity`). Verify: `npx nx run rhino-cli-go:validate:naming-agents` exits 0.
-- [ ] Edit `.github/workflows/pr-quality-gate.yml` naming job (≈ lines 232–240): `rhino-cli:validate:naming-agents` → `rhino-cli-go:validate:naming-agents` and `:validate:naming-workflows`. Verify: `grep -n 'rhino-cli-go:validate' .github/workflows/pr-quality-gate.yml` shows both.
-  - _Suggested executor: `ci-fixer`_
-- [ ] Edit `.github/workflows/pr-validate-links.yml` (≈ line 26): `go run -C apps/rhino-cli` → `go run -C apps/rhino-cli-go`. Verify: `grep -n 'apps/rhino-cli-go' .github/workflows/pr-validate-links.yml`.
-  - _Suggested executor: `ci-fixer`_
-- [ ] Update `apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh`: any `apps/rhino-cli` path → `apps/rhino-cli-go`. Verify: `bash apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh` exits 0.
-- [ ] Update textual references in docs: `grep -rln 'apps/rhino-cli\b\|rhino-cli:' repo-governance docs README.md AGENTS.md specs/apps/rhino` and repoint to `rhino-cli-go` where they name the project/target/path (leave generic prose "rhino-cli" only where it means the conceptual CLI — but for now Go is the only impl, so repoint paths/targets). Verify: no broken relative links — `npx nx run rhino-cli-go:validate:mermaid` passes and `go run -C apps/rhino-cli-go main.go docs validate-links` exits 0.
-  - _Suggested executor: `docs-fixer`_
-- [ ] Update `specs/apps/rhino/README.md` backlinks `../../../apps/rhino-cli/README.md` → `../../../apps/rhino-cli-go/README.md`. Verify: `go run -C apps/rhino-cli-go main.go docs validate-links` exits 0.
+- [x] `git mv apps/rhino-cli apps/rhino-cli-go`.
+  - _Suggested executor: `swe-golang-dev`_ (executed directly — mechanical `git mv`, per workflow Agent-Selection rule 5)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli/` → `apps/rhino-cli-go/` (history preserved)
+  - **Notes**: `git mv` exit 0; `apps/rhino-cli-go/` present (cmd/ internal/ main.go go.mod project.json scripts/), old path gone.
+- [x] Edit `apps/rhino-cli-go/project.json`: set `"name": "rhino-cli-go"`, `"sourceRoot": "apps/rhino-cli-go"`, and rewrite every self-referencing path (`apps/rhino-cli` → `apps/rhino-cli-go`, `cwd`, `dist/rhino-cli` stays as basename, `go run -C apps/rhino-cli-go`, `spec-coverage validate … apps/rhino-cli-go`, `validate-cross-vendor-parity.sh` path). Verify: `npx nx show project rhino-cli-go --json` lists all targets and no path contains the old `apps/rhino-cli/`.
+  - _Suggested executor: `swe-golang-dev`_ (executed directly — mechanical sed substitution)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-go/project.json`
+  - **Notes**: `name`→`rhino-cli-go`, `sourceRoot`→`apps/rhino-cli-go`; all `cwd`/`go run -C`/`spec-coverage` arg/`cover.out`/script paths → `apps/rhino-cli-go`; binary basename `dist/rhino-cli` preserved. `grep -c 'apps/rhino-cli[^-]'` = 0. The `nx show project` graph check is transiently blocked by stale `implicitDependencies: ["rhino-cli"]` in ~23 callers — resolved and re-verified in P1.5 (graph-wide dependency, expected during rename).
+- [x] Check `apps/rhino-cli-go/go.mod` module path; if it encodes `rhino-cli`, decide whether to rename the module (Go imports are module-path based, not dir based — only rename if internal imports reference it). Verify: `cd apps/rhino-cli-go && CGO_ENABLED=0 go build ./... && CGO_ENABLED=0 go vet ./...` both exit 0.
+  - _Suggested executor: `swe-golang-dev`_ (executed directly — mechanical)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `go.work`
+  - **Notes**: Module path is `github.com/wahidyankf/ose-public/apps/rhino-cli` — a **logical** path, unaffected by the dir rename; internal imports reference the module path (unchanged), not the dir, so **no module rename needed** (left as-is per the plan's guidance; the stale `ose-public` segment is preexisting and out of scope). Real blocker found + fixed: root **`go.work`** `use` directive listed `./apps/rhino-cli` → updated to `./apps/rhino-cli-go`. After fix, `go build ./...` and `go vet ./...` both exit 0. `go.work.sum` has no stale path refs.
+- [x] `git mv infra/dev/rhino-cli infra/dev/rhino-cli-go` and update any path inside its `docker-compose.yml`. Verify: `test -f infra/dev/rhino-cli-go/docker-compose.yml`.
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `infra/dev/rhino-cli/` → `infra/dev/rhino-cli-go/`
+  - **Notes**: `git mv` exit 0; `infra/dev/rhino-cli-go/docker-compose.yml` present; no stale bare `rhino-cli` path references inside the dir.
+- [x] Enumerate all `project.json` callers: `grep -rln 'rhino-cli' apps libs --include=project.json`. For EACH hit, replace `implicitDependencies: ["rhino-cli"]` → `["rhino-cli-go"]` and command strings `go run -C apps/rhino-cli` → `go run -C apps/rhino-cli-go` (and any `apps/rhino-cli/` substring). Verify: `grep -rn 'rhino-cli\b' apps libs --include=project.json | grep -v 'rhino-cli-go'` returns nothing.
+  - _Suggested executor: `swe-golang-dev`_ (executed directly — mechanical perl substitution)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: 23 `project.json` files (11 crud-be, 5 crud-fe/fs, crud-be-e2e, crud-fe-e2e, + 6 libs: golang-commons, ts-ui, elixir-{gherkin,cabbage,openapi-codegen}, clojure-openapi-codegen)
+  - **Notes**: Lookahead-safe perl across all callers (excluding the already-done `rhino-cli-go/project.json`): `apps/rhino-cli(?!-go)`→`apps/rhino-cli-go` (paths), `"rhino-cli"`→`"rhino-cli-go"` (implicitDependencies), `rhino-cli:`→`rhino-cli-go:` (nx target refs in java-springboot/vertx). Binary basename `dist/rhino-cli` preserved. Verify: `grep -rn 'rhino-cli' apps libs --include=project.json | grep -v 'rhino-cli-go'` → **CLEAN**. nx graph now resolves: `nx show project rhino-cli-go` OK; `crud-be-golang-gin` depends on `rhino-cli-go`. (This also satisfies P1.2's deferred `nx show project` graph check.)
+- [x] Edit root `package.json` scripts (`dev:rhino-cli`, `sync:claude-to-opencode`, `sync:agents`, `sync:skills`, `sync:dry-run`, `validate:sync`, `validate:claude`, `doctor`): `nx run rhino-cli:build` → `nx run rhino-cli-go:build`; `./apps/rhino-cli/dist/rhino-cli` → `./apps/rhino-cli-go/dist/rhino-cli`; `infra/dev/rhino-cli/` → `infra/dev/rhino-cli-go/`. Verify: `npm run doctor` builds and runs; `npm run sync:claude-to-opencode` succeeds.
+  - _Suggested executor: `swe-typescript-dev`_ (executed directly — mechanical)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `package.json`
+  - **Notes**: All 8 script commands repointed (`nx run rhino-cli-go:build`, `./apps/rhino-cli-go/dist/rhino-cli`, `infra/dev/rhino-cli-go/`). npm script _keys_ left unchanged (aliases, not project refs). `npm run doctor` → 19/19 OK; `npm run sync:claude-to-opencode` → SUCCESS (49 agents) with **0** `.opencode/` changes (no-op diff confirmed).
+- [x] Edit `.husky/pre-commit`: `go run -C apps/rhino-cli` → `go run -C apps/rhino-cli-go`. Verify: `sh .husky/pre-commit` runs the git pre-commit gate without a path error.
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `.husky/pre-commit`
+  - **Notes**: Now `CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go git pre-commit`. Path resolves (dir exists, Go builds). Full hook fires at the actual commit in P1.14.
+- [x] Edit `.husky/pre-push`: `rhino-cli:validate:naming-agents` → `rhino-cli-go:validate:naming-agents` (and `:naming-workflows`, `:mermaid`, `:cross-vendor-parity`). Verify: `npx nx run rhino-cli-go:validate:naming-agents` exits 0.
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `.husky/pre-push`
+  - **Notes**: All 4 validate targets repointed to `rhino-cli-go:` (lines 17/20/23/28). `npx nx run rhino-cli-go:validate:naming-agents` → VALIDATION PASSED (0 violations), exit 0. One descriptive comment ("rhino-cli checks") left as generic prose.
+- [x] Edit `.github/workflows/pr-quality-gate.yml` naming job (≈ lines 232–240): `rhino-cli:validate:naming-agents` → `rhino-cli-go:validate:naming-agents` and `:validate:naming-workflows`. Verify: `grep -n 'rhino-cli-go:validate' .github/workflows/pr-quality-gate.yml` shows both.
+  - _Suggested executor: `ci-fixer`_ (executed directly — mechanical)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `.github/workflows/pr-quality-gate.yml`
+  - **Notes**: Lines 239–240 now `rhino-cli-go:validate:naming-agents` / `:validate:naming-workflows`. (setup-golang still correct — Go is the active impl until Phase 10 cutover.)
+- [x] Edit `.github/workflows/pr-validate-links.yml` (≈ line 26): `go run -C apps/rhino-cli` → `go run -C apps/rhino-cli-go`. Verify: `grep -n 'apps/rhino-cli-go' .github/workflows/pr-validate-links.yml`.
+  - _Suggested executor: `ci-fixer`_ (executed directly — mechanical)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `.github/workflows/pr-validate-links.yml`
+  - **Notes**: Line 26 now `CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go docs validate-links`. No bare `rhino-cli` left in `.github/workflows/`.
+- [x] Update `apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh`: any `apps/rhino-cli` path → `apps/rhino-cli-go`. Verify: `bash apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh` exits 0.
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh`
+  - **Notes**: Invocation paths (`cd apps/rhino-cli-go`, comment header path) repointed. Script run → "CROSS-VENDOR PARITY VALIDATION PASSED: all invariants hold." (exit 0). Remaining `rhino-cli` tokens are human-readable pass/fail log labels (prose, conceptual CLI) — left as-is.
+- [x] Update textual references in docs: `grep -rln 'apps/rhino-cli\b\|rhino-cli:' repo-governance docs README.md AGENTS.md specs/apps/rhino` and repoint to `rhino-cli-go` where they name the project/target/path (leave generic prose "rhino-cli" only where it means the conceptual CLI — but for now Go is the only impl, so repoint paths/targets). Verify: no broken relative links — `npx nx run rhino-cli-go:validate:mermaid` passes and `go run -C apps/rhino-cli-go main.go docs validate-links` exits 0.
+  - _Suggested executor: `docs-fixer`_ (executed directly — surgical path/target substitution, prose preserved)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: 14 docs (repo-governance: ci-conventions, bdd-spec-test-mapping, post-push-ci-verification, code, ai-agents, reproducible-environments, infra-development-environment-setup, repo-cross-vendor-parity-quality-gate, diagrams, governance-vendor-independence; docs/: setup-development-environment, platform-bindings, project-dependency-graph, system-architecture/applications) + `.claude/agents/README.md` + `.claude/skills/README.md`
+  - **Notes**: Repointed only concrete `apps/rhino-cli/` paths + `rhino-cli:`/`nx run rhino-cli` target refs; conceptual prose ("the rhino-cli tool", code spans) left intact. `specs/apps/rhino/` deferred to P1.13. Initial run flagged 1 broken link → traced to `.claude/agents/README.md:159` + `.claude/skills/README.md:104` (`../../apps/rhino-cli/README.md`); fixed both. Re-run: **✓ All links valid**; `validate:mermaid` **Successfully ran**. Historical `plans/done/**` archives left untouched (not in validator scan scope; records of past state).
+- [x] Update `specs/apps/rhino/README.md` backlinks `../../../apps/rhino-cli/README.md` → `../../../apps/rhino-cli-go/README.md`. Verify: `go run -C apps/rhino-cli-go main.go docs validate-links` exits 0.
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `specs/apps/rhino/README.md`, `specs/apps/rhino/behavior/README.md`, `specs/apps/rhino/behavior/cli/gherkin/README.md`
+  - **Notes**: All backlinks + `nx run rhino-cli-go:` targets + `cd apps/rhino-cli-go` + code-block paths repointed across the three specs READMEs; link label text `[rhino-cli]` kept (conceptual). `docs validate-links` → **✓ All links valid** (exit 0).
 - [ ] **Phase 1 gate**: `npx nx affected -t typecheck lint test:quick spec-coverage --base=origin/main` exits 0; `npm run lint:md` exits 0; `npm run sync:claude-to-opencode` is a no-op diff. Commit: `refactor(rhino-cli): rename rhino-cli to rhino-cli-go and repoint all callers`.
 
 ---

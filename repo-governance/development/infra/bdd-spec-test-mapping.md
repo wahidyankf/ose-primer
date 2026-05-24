@@ -152,7 +152,7 @@ The `spec-coverage validate` command enforces this mapping at three levels:
 Run the check:
 
 ```bash
-rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli
+rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli-go
 ```
 
 **Scope**: Spec-coverage enforcement is currently active for **CLI apps only** (Go + Godog naming
@@ -204,8 +204,8 @@ The `@agents-validate-sync` tag lives inside `agents-sync.feature` (shared featu
 
 ```
 specs/apps/rhino/behavior/cli/gherkin/agents/agents-sync.feature  (contains @agents-sync + @agents-validate-sync)
-  -> Unit steps in:       apps/rhino-cli/cmd/agents_validate_sync_test.go
-  -> Integration steps in: apps/rhino-cli/cmd/agents_validate_sync.integration_test.go
+  -> Unit steps in:       apps/rhino-cli-go/cmd/agents_validate_sync_test.go
+  -> Integration steps in: apps/rhino-cli-go/cmd/agents_validate_sync.integration_test.go
 ```
 
 ## Demo-be Backend: Three-Level Spec Consumption

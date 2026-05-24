@@ -142,7 +142,7 @@ npx prettier --write [file-path]
 
 1. Commit proceeds if no errors
 
-**Implementation**: `apps/rhino-cli/internal/git/runner.go` — all steps call internal Go functions directly (no subprocess round-trips for rhino-cli-owned logic); external tools are shelled out via `os/exec`.
+**Implementation**: `apps/rhino-cli-go/internal/git/runner.go` — all steps call internal Go functions directly (no subprocess round-trips for rhino-cli-owned logic); external tools are shelled out via `os/exec`.
 
 **What It Validates**:
 
@@ -513,11 +513,11 @@ nx run crud-fs-ts-nextjs:links:check
 3. Fix by correcting the target path in the source file
 4. Re-run `nx run crud-fs-ts-nextjs:links:check` to confirm
 
-**Dependency chain:** `rhino-cli:build` → `crud-fs-ts-nextjs:links:check` → `crud-fs-ts-nextjs:test:quick`
+**Dependency chain:** `rhino-cli-go:build` → `crud-fs-ts-nextjs:links:check` → `crud-fs-ts-nextjs:test:quick`
 
 ## Go CLI Linting
 
-Go CLI projects (`apps/rhino-cli`, `apps/rhino-cli`) use [golangci-lint](https://golangci-lint.run/) for static analysis.
+Go CLI projects (`apps/rhino-cli-go`, `apps/rhino-cli-go`) use [golangci-lint](https://golangci-lint.run/) for static analysis.
 
 **Shared configuration**: A single `.golangci.yml` at the repository root serves all Go CLIs. golangci-lint discovers it automatically by walking up the directory tree from each app's working directory — no `--config` flag or per-project files are needed.
 
@@ -532,7 +532,7 @@ Go CLI projects (`apps/rhino-cli`, `apps/rhino-cli`) use [golangci-lint](https:/
 
 ```bash
 # Run from app directory
-cd apps/rhino-cli && golangci-lint run ./...
+cd apps/rhino-cli-go && golangci-lint run ./...
 
 # Run via Nx
 nx lint rhino-cli
@@ -563,7 +563,7 @@ lint-staged changes the working directory per file glob, which breaks the projec
 A dedicated hook step groups staged files by their nearest Mix project root and runs `mix format`
 from each one.
 
-**Implementation**: `apps/rhino-cli/internal/git/runner.go` (`step6ElixirFormat`). The logic runs as part of `rhino-cli git pre-commit` (step 6).
+**Implementation**: `apps/rhino-cli-go/internal/git/runner.go` (`step6ElixirFormat`). The logic runs as part of `rhino-cli git pre-commit` (step 6).
 
 **How It Works**:
 
