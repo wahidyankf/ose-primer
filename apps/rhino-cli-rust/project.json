@@ -1,0 +1,105 @@
+{
+  "name": "rhino-cli-rust",
+  "sourceRoot": "apps/rhino-cli-rust/src",
+  "projectType": "application",
+  "tags": ["type:app", "platform:cli", "lang:rust", "domain:tooling"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo build --release && mkdir -p dist && cp target/release/rhino-cli dist/rhino-cli",
+        "cwd": "apps/rhino-cli-rust"
+      },
+      "outputs": ["{projectRoot}/dist", "{projectRoot}/target/release"]
+    },
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo fetch",
+        "cwd": "apps/rhino-cli-rust"
+      }
+    },
+    "run": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo run --",
+        "cwd": "apps/rhino-cli-rust"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo check --all-targets",
+        "cwd": "apps/rhino-cli-rust"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo fmt -- --check && cargo clippy --all-targets -- -D warnings",
+        "cwd": "apps/rhino-cli-rust"
+      },
+      "inputs": ["{projectRoot}/src/**/*.rs", "{projectRoot}/Cargo.toml"]
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo test --lib",
+        "cwd": "apps/rhino-cli-rust"
+      },
+      "inputs": ["{projectRoot}/src/**/*.rs", "{projectRoot}/Cargo.toml"]
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo test --lib",
+        "cwd": "apps/rhino-cli-rust"
+      },
+      "inputs": ["{projectRoot}/src/**/*.rs", "{projectRoot}/Cargo.toml"],
+      "comment": "PHASE 2 PLACEHOLDER — Phase 3 swaps this to `cargo llvm-cov --lib --lcov --output-path cover.out --fail-under-lines 90`."
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo test --tests",
+        "cwd": "apps/rhino-cli-rust"
+      },
+      "inputs": [
+        "{projectRoot}/src/**/*.rs",
+        "{projectRoot}/tests/**/*.rs",
+        "{projectRoot}/Cargo.toml",
+        "{workspaceRoot}/specs/apps/rhino/**/*.feature"
+      ]
+    },
+    "spec-coverage": {
+      "command": "echo 'PHASE 2 STUB — spec-coverage validator lands in Phase 3 (spec-coverage port)'",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/rhino/behavior/cli/gherkin/**/*.feature", "{projectRoot}/src/**/*.rs"]
+    },
+    "validate:naming-agents": {
+      "command": "echo 'PHASE 2 STUB — agents validate-naming lands in Phase 5'",
+      "cache": true,
+      "outputs": []
+    },
+    "validate:naming-workflows": {
+      "command": "echo 'PHASE 2 STUB — workflows validate-naming lands in Phase 6'",
+      "cache": true,
+      "outputs": []
+    },
+    "validate:repo-governance-vendor-audit": {
+      "command": "echo 'PHASE 2 STUB — repo-governance vendor-audit lands in Phase 6'",
+      "cache": true,
+      "outputs": []
+    },
+    "validate:cross-vendor-parity": {
+      "command": "echo 'PHASE 2 STUB — cross-vendor-parity script lands in Phase 6'",
+      "cache": false,
+      "outputs": []
+    },
+    "validate:mermaid": {
+      "command": "echo 'PHASE 2 STUB — docs validate-mermaid lands in Phase 4'",
+      "cache": true,
+      "outputs": []
+    }
+  }
+}
