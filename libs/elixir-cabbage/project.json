@@ -2,14 +2,14 @@
   "name": "elixir-cabbage",
   "sourceRoot": "libs/elixir-cabbage/lib",
   "projectType": "library",
-  "implicitDependencies": ["elixir-gherkin", "rhino-cli-go"],
+  "implicitDependencies": ["elixir-gherkin", "rhino-cli-rust"],
   "targets": {
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
           "mix cover.lcov",
-          "(cd ../../apps/rhino-cli-go && CGO_ENABLED=0 go run main.go test-coverage validate libs/elixir-cabbage/cover/lcov.info 90)",
+          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- test-coverage validate libs/elixir-cabbage/cover/lcov.info 90)",
           "mix credo --strict",
           "mix format --check-formatted"
         ],

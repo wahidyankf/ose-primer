@@ -2,7 +2,7 @@
   "name": "crud-be-elixir-phoenix",
   "sourceRoot": "apps/crud-be-elixir-phoenix/lib",
   "projectType": "application",
-  "implicitDependencies": ["crud-contracts", "elixir-gherkin", "elixir-cabbage", "elixir-openapi-codegen", "rhino-cli-go"],
+  "implicitDependencies": ["crud-contracts", "elixir-gherkin", "elixir-cabbage", "elixir-openapi-codegen", "rhino-cli-rust"],
   "targets": {
     "codegen": {
       "executor": "nx:run-commands",
@@ -41,7 +41,7 @@
       "options": {
         "commands": [
           "MIX_ENV=test mix coveralls.lcov --only unit",
-          "(cd ../../apps/rhino-cli-go && CGO_ENABLED=0 go run main.go test-coverage validate apps/crud-be-elixir-phoenix/cover/lcov.info 90)"
+          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- test-coverage validate apps/crud-be-elixir-phoenix/cover/lcov.info 90)"
         ],
         "parallel": false,
         "cwd": "apps/crud-be-elixir-phoenix"
@@ -101,7 +101,7 @@
       }
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-elixir-phoenix",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-elixir-phoenix",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature", "{projectRoot}/**/*.{ex,exs}"]
     }

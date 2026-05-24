@@ -43,7 +43,7 @@
         "commands": [
           "cargo test --lib --test unit",
           "mkdir -p coverage && cargo llvm-cov --lcov --output-path coverage/lcov.info --lib --test unit --ignore-filename-regex '(test_api|handlers/|app\\.rs|main\\.rs|config\\.rs|state\\.rs|auth/middleware|repositories/sqlx_|db/)'",
-          "(cd ../../apps/rhino-cli-go && CGO_ENABLED=0 go run main.go test-coverage validate apps/crud-be-rust-axum/coverage/lcov.info 90)"
+          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- test-coverage validate apps/crud-be-rust-axum/coverage/lcov.info 90)"
         ],
         "parallel": false,
         "cwd": "apps/crud-be-rust-axum"
@@ -107,11 +107,11 @@
       "cache": true
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-rust-axum",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-rust-axum",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature", "{projectRoot}/**/*.rs"]
     }
   },
   "tags": ["type:app", "platform:axum", "lang:rust", "domain:crud-be"],
-  "implicitDependencies": ["crud-contracts", "rhino-cli-go"]
+  "implicitDependencies": ["crud-contracts", "rhino-cli-rust"]
 }

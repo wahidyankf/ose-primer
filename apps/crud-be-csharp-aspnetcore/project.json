@@ -42,7 +42,7 @@
       "options": {
         "commands": [
           "dotnet test tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj --collect:'XPlat Code Coverage' --results-directory coverage --settings tests/DemoBeCsas.Tests/coverage.runsettings",
-          "COVERAGE=$(find coverage -name 'coverage.info' | head -1) && (cd ../../apps/rhino-cli-go && CGO_ENABLED=0 go run main.go test-coverage validate \"apps/crud-be-csharp-aspnetcore/$COVERAGE\" 90)"
+          "COVERAGE=$(find coverage -name 'coverage.info' | head -1) && (cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- test-coverage validate \"apps/crud-be-csharp-aspnetcore/$COVERAGE\" 90)"
         ],
         "parallel": false,
         "cwd": "apps/crud-be-csharp-aspnetcore"
@@ -95,11 +95,11 @@
       "cache": true
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-csharp-aspnetcore",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-csharp-aspnetcore",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature", "{projectRoot}/**/*.cs"]
     }
   },
   "tags": ["type:app", "platform:aspnetcore", "lang:csharp", "domain:crud-be"],
-  "implicitDependencies": ["crud-contracts", "rhino-cli-go"]
+  "implicitDependencies": ["crud-contracts", "rhino-cli-rust"]
 }

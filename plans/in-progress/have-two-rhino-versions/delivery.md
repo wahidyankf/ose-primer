@@ -312,7 +312,9 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
   - _Suggested executor: `ci-fixer`_ (executed directly — CI config)
   - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `.github/workflows/pr-quality-gate.yml` (parity job `if:`)
   - **Notes**: Gate fires via `if: has-golang || has-rust || has-markdown`. `.feature` spec changes mark rhino-cli-go/rust affected (they're in those projects' test:quick/spec-coverage inputs) → `has-golang`/`has-rust` true; docs `.md` → `has-markdown`. So both CLI source trees AND the spec/markdown corpus trigger the gate. (Workflow is `pull_request`-triggered; consistent with all other gates in this repo.)
-- [ ] Commit: `ci(rhino-cli): add permanent go-vs-rust shadow-diff parity gate`.
+- [x] Commit: `ci(rhino-cli): add permanent go-vs-rust shadow-diff parity gate`.
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: commit `3e0383657`
+  - **Notes**: Committed `3e0383657`, pushed to `main` (`0a00e5db3..3e0383657`); pre-commit + pre-push passed.
 
 ---
 
@@ -321,15 +323,25 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 > ONE thematic commit. Rust becomes the CLI every gate invokes; Go remains as the
 > parity twin.
 
-- [ ] Flip `project.json` callers: re-enumerate with `grep -rln 'rhino-cli-go' apps libs --include=project.json`. For each hit, replace `implicitDependencies: ["rhino-cli-go"]` → `["rhino-cli-rust"]` and command strings `go run -C apps/rhino-cli-go main.go <ns> <cmd>` → `cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- <ns> <cmd>` (or `./apps/rhino-cli-rust/dist/rhino-cli <ns> <cmd>`). Verify: `grep -rn 'rhino-cli-go' apps libs --include=project.json | grep -v 'rhino-cli-rust'` returns nothing.
-  - _Suggested executor: `swe-rust-dev`_
-- [ ] Flip `package.json` 8 scripts: `nx run rhino-cli-go:build` → `nx run rhino-cli-rust:build`; `./apps/rhino-cli-go/dist/rhino-cli` → `./apps/rhino-cli-rust/dist/rhino-cli`. Verify: `grep -n 'rhino-cli-go' package.json` returns nothing.
-  - _Suggested executor: `swe-typescript-dev`_
-- [ ] Flip `.husky/pre-commit` and `.husky/pre-push`: replace all Go invocations (`go run -C apps/rhino-cli-go`, `nx run rhino-cli-go:validate:*`) with Rust equivalents (`cargo run … --manifest-path apps/rhino-cli-rust/Cargo.toml`, `nx run rhino-cli-rust:validate:*`). Verify: `grep -n 'rhino-cli-go' .husky/pre-commit .husky/pre-push` returns nothing.
-- [ ] Flip `.github/workflows/pr-quality-gate.yml` naming job: `setup-golang` → `setup-rust`, `rhino-cli-go:validate:naming-agents` → `rhino-cli-rust:validate:naming-agents`, `rhino-cli-go:validate:naming-workflows` → `rhino-cli-rust:validate:naming-workflows`. Verify: `grep -n 'rhino-cli-rust:validate' .github/workflows/pr-quality-gate.yml` shows both targets.
-  - _Suggested executor: `ci-fixer`_
-- [ ] Flip `.github/workflows/pr-validate-links.yml`: `go run -C apps/rhino-cli-go …` → `cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-links`; swap `setup-golang` → `setup-rust`. Verify: `grep -n 'rhino-cli-go' .github/workflows/pr-validate-links.yml` returns nothing.
-  - _Suggested executor: `ci-fixer`_
+- [x] Flip `project.json` callers: re-enumerate with `grep -rln 'rhino-cli-go' apps libs --include=project.json`. For each hit, replace `implicitDependencies: ["rhino-cli-go"]` → `["rhino-cli-rust"]` and command strings `go run -C apps/rhino-cli-go main.go <ns> <cmd>` → `cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- <ns> <cmd>` (or `./apps/rhino-cli-rust/dist/rhino-cli <ns> <cmd>`). Verify: `grep -rn 'rhino-cli-go' apps libs --include=project.json | grep -v 'rhino-cli-rust'` returns nothing.
+  - _Suggested executor: `swe-rust-dev`_ (executed directly — Python literal replacement across 23 callers)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: 23 caller `project.json` files
+  - **Notes**: Pre-validated the cargo invocation against a real caller (golang-gin spec-coverage → byte-identical to Go). 5 distinct go-invocation patterns mapped to `cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml --` (adjusting `cd` targets to land at workspace root so `--manifest-path` resolves; rust tool finds git-root for path args). implicitDependencies → `rhino-cli-rust`; inputs globs `cmd/**.go`+`internal/**.go` → `src/**/*.rs`+`Cargo.toml`. Verified: zero `rhino-cli-go` in callers; `crud-be-golang-gin` depends on rhino-cli-rust; its `spec-coverage` runs green via nx→cargo.
+- [x] Flip `package.json` 8 scripts: `nx run rhino-cli-go:build` → `nx run rhino-cli-rust:build`; `./apps/rhino-cli-go/dist/rhino-cli` → `./apps/rhino-cli-rust/dist/rhino-cli`. Verify: `grep -n 'rhino-cli-go' package.json` returns nothing.
+  - _Suggested executor: `swe-typescript-dev`_ (executed directly — mechanical)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `package.json`
+  - **Notes**: 7 sync/validate/doctor scripts flipped to rhino-cli-rust build+binary. `dev:rhino-cli` docker-compose left on `infra/dev/rhino-cli-go/` (the Go twin's dev env — no rust dev compose; deferred per tech-docs). Verified `npm run doctor` → 19/19 via rust; `npm run sync:claude-to-opencode` → SUCCESS, **0 `.opencode/` drift**.
+- [x] Flip `.husky/pre-commit` and `.husky/pre-push`: replace all Go invocations (`go run -C apps/rhino-cli-go`, `nx run rhino-cli-go:validate:*`) with Rust equivalents (`cargo run … --manifest-path apps/rhino-cli-rust/Cargo.toml`, `nx run rhino-cli-rust:validate:*`). Verify: `grep -n 'rhino-cli-go' .husky/pre-commit .husky/pre-push` returns nothing.
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `.husky/pre-commit`, `.husky/pre-push`
+  - **Notes**: pre-commit → `cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- git pre-commit`; pre-push validate targets → `rhino-cli-rust:validate:*`. No `rhino-cli-go` left in `.husky/`.
+- [x] Flip `.github/workflows/pr-quality-gate.yml` naming job: `setup-golang` → `setup-rust`, `rhino-cli-go:validate:naming-agents` → `rhino-cli-rust:validate:naming-agents`, `rhino-cli-go:validate:naming-workflows` → `rhino-cli-rust:validate:naming-workflows`. Verify: `grep -n 'rhino-cli-rust:validate' .github/workflows/pr-quality-gate.yml` shows both targets.
+  - _Suggested executor: `ci-fixer`_ (executed directly — CI config)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `.github/workflows/pr-quality-gate.yml`
+  - **Notes**: naming job targets → `rhino-cli-rust:validate:naming-{agents,workflows}` + its `setup-golang` → `setup-rust` (targeted: the `golang` and `parity` jobs keep `setup-golang`). YAML re-validated.
+- [x] Flip `.github/workflows/pr-validate-links.yml`: `go run -C apps/rhino-cli-go …` → `cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-links`; swap `setup-golang` → `setup-rust`. Verify: `grep -n 'rhino-cli-go' .github/workflows/pr-validate-links.yml` returns nothing.
+  - _Suggested executor: `ci-fixer`_ (executed directly — CI config)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `.github/workflows/pr-validate-links.yml`
+  - **Notes**: link-validation command → cargo (rust); `actions/setup-go@v5` block → `./.github/actions/setup-node` + `./.github/actions/setup-rust`. No `rhino-cli-go` left. YAML valid.
 - [ ] **Cutover gate**: verify all callers are flipped — `grep -rn 'rhino-cli-go' apps libs package.json .husky .github --include='*'` returns ONLY the parity-gate job lines (which intentionally reference both). Then run: `npx nx affected -t typecheck lint test:quick spec-coverage --base=origin/main` exits 0 (now via Rust); `npm run sync:claude-to-opencode` no-op diff; `npm run doctor` runs via Rust; `sh .husky/pre-commit` + dry-run `.husky/pre-push` pass; `npx nx run rhino-cli-go:test:quick` + `:spec-coverage` STILL pass (twin retained). Commit: `feat(rhino-cli): cut over CI and toolchain from rhino-cli-go to rhino-cli-rust`.
 
 ---

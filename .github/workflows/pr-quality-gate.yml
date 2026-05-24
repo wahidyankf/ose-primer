@@ -235,9 +235,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node
-      - uses: ./.github/actions/setup-golang
-      - run: npx nx run rhino-cli-go:validate:naming-agents
-      - run: npx nx run rhino-cli-go:validate:naming-workflows
+      - uses: ./.github/actions/setup-rust
+      - run: npx nx run rhino-cli-rust:validate:naming-agents
+      - run: npx nx run rhino-cli-rust:validate:naming-workflows
 
   parity:
     name: rhino-cli go-vs-rust parity (shadow-diff)
