@@ -8,6 +8,10 @@ Active project plans currently being worked on.
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
   exports research dossiers.
+- [Two rhino versions: `rhino-cli-go` + `rhino-cli-rust`](./have-two-rhino-versions/README.md)
+  — split the single Go `rhino-cli` into two co-equal implementations (Go + Rust) that
+  both consume `specs/apps/rhino/`, like the `crud-be-*` parity family. Rust becomes the
+  CI/toolchain CLI; Go is kept as a shadow-diff-validated parity twin.
 
 ## Folder Naming
 
