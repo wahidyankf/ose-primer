@@ -17,9 +17,9 @@ created: 2026-05-24
 
 ## Purpose
 
-Prevent AI agents (Claude Code and OpenCode) from reading, writing, editing, or committing real
-environment files (`.env`, `.env.local`, `.env.production`, etc.). Secrets in those files must
-never be exfiltrated, corrupted, or accidentally committed to repository history.
+Prevent AI agents from reading, writing, editing, or committing real environment files
+(`.env`, `.env.local`, `.env.production`, etc.). Secrets in those files must never be
+exfiltrated, corrupted, or accidentally committed to repository history.
 
 The template file `.env.example` is explicitly permitted at every layer — it contains only
 placeholder keys and is the authoritative reference for required env vars.
@@ -37,19 +37,22 @@ placeholder keys and is the authoritative reference for required env vars.
 
 ## Six Defence Layers
 
-| Layer | Mechanism                                    | File                                                                | Scope           |
-| ----- | -------------------------------------------- | ------------------------------------------------------------------- | --------------- |
-| 1     | Claude PreToolUse hook (file tools)          | `.claude/hooks/block-env-file-access.sh`                            | Claude Code     |
-| 2     | Declarative deny rules                       | `.claude/settings.json` `permissions.deny`                          | Claude Code     |
-| 3     | Bash command guard (in same hook)            | `.claude/hooks/block-env-file-access.sh`                            | Claude Code     |
-| 4     | OpenCode permission block                    | `.opencode/opencode.json` `permission`                              | OpenCode        |
-| 5     | gitignore + pre-commit guard                 | `.gitignore`, `scripts/check-no-env-staged.sh`, `.husky/pre-commit` | All git clients |
-| 6     | This governance rule + `AGENTS.md` reference | This file                                                           | All agents      |
+| Layer | Mechanism                                    | File                                                                | Scope             |
+| ----- | -------------------------------------------- | ------------------------------------------------------------------- | ----------------- |
+| 1     | Coding-agent PreToolUse hook (file tools)    | primary-binding hook script                                         | Primary binding   |
+| 2     | Declarative deny rules                       | primary-binding permission config                                   | Primary binding   |
+| 3     | Bash command guard (in same hook)            | primary-binding hook script                                         | Primary binding   |
+| 4     | Secondary-binding permission block           | secondary-binding permission config                                 | Secondary binding |
+| 5     | gitignore + pre-commit guard                 | `.gitignore`, `scripts/check-no-env-staged.sh`, `.husky/pre-commit` | All git clients   |
+| 6     | This governance rule + `AGENTS.md` reference | This file                                                           | All agents        |
 
-Layers 1–3 protect Claude Code file and Bash tool operations.
-Layer 4 protects OpenCode file operations.
+Layers 1–3 protect primary-binding file and Bash tool operations.
+Layer 4 protects secondary-binding file operations.
 Layer 5 is platform-agnostic: protects every git client (human or agent).
 Layer 6 is documentation: establishes the policy, carve-out scope, and known gaps.
+
+See [Platform Binding Examples](#platform-binding-examples) for the concrete file paths for
+each active platform binding.
 
 ## Script Carve-Out
 
@@ -74,22 +77,21 @@ deliberate design tradeoff: the risk is documented here (not engineered away) be
 
 ## Known Gaps & Compensating Controls
 
-| Gap                                                   | Impact                                                       | Compensating Control                                              |
-| ----------------------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------- |
-| OpenCode Bash cannot express command-level env denies | OpenCode agents can run Bash commands touching env files     | Claude hook (Layers 1–3) + pre-commit guard (Layer 5)             |
-| Claude Bash guard is regex-based (best-effort)        | Sufficiently obfuscated commands may bypass detection        | Declarative deny rules (Layer 2) + pre-commit guard (Layer 5)     |
-| Script carve-out is bypassable                        | Agent could write then execute a script that reads env files | Reviewer vigilance; all scripts are committed to git history      |
-| Robust sandbox-level enforcement not delivered        | No filesystem-level denyRead/denyWrite rules                 | All six layers together; future hardening via Claude Code sandbox |
+| Gap                                                            | Impact                                                       | Compensating Control                                                |
+| -------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------- |
+| Secondary-binding Bash cannot express command-level env denies | Secondary-binding agents can run Bash commands touching env  | Primary-binding hook (Layers 1–3) + pre-commit guard (Layer 5)      |
+| Primary-binding Bash guard is regex-based (best-effort)        | Sufficiently obfuscated commands may bypass detection        | Declarative deny rules (Layer 2) + pre-commit guard (Layer 5)       |
+| Script carve-out is bypassable                                 | Agent could write then execute a script that reads env files | Reviewer vigilance; all scripts are committed to git history        |
+| Robust sandbox-level enforcement not delivered                 | No filesystem-level denyRead/denyWrite rules                 | All six layers together; future hardening via agent sandbox support |
 
 ## Cross-Platform Scope
 
-This policy applies to both AI agent platforms configured in this repository:
+This policy applies to all AI agent bindings configured in this repository:
 
-- **Claude Code** (primary binding): Layers 1–3 via PreToolUse hook; Layer 2 via
-  `permissions.deny` in `.claude/settings.json`
-- **OpenCode** (secondary binding): Layer 4 via `permission.read` and `permission.edit`
-  glob deny rules in `.opencode/opencode.json`; bash operations permitted to support
-  package runners and project scripts
+- **Primary binding** (Layers 1–3): PreToolUse hook intercepting file-tool and Bash-tool
+  operations; declarative deny rules in the binding's permission config
+- **Secondary binding** (Layer 4): File-read and file-edit deny rules in the binding's
+  permission config; bash operations permitted to support package runners and project scripts
 
 Layer 5 (git) and Layer 6 (governance) are platform-agnostic.
 
@@ -117,3 +119,28 @@ Layer 5 (git) and Layer 6 (governance) are platform-agnostic.
 
 - **[Linking Convention](../../conventions/formatting/linking.md)**: All cross-references use
   relative paths with `.md` extensions.
+
+- **[Governance Vendor-Independence Convention](../../conventions/structure/governance-vendor-independence.md)**:
+  Body prose uses vendor-neutral terms; all vendor-specific binding details are confined to the
+  Platform Binding Examples section below.
+
+## Platform Binding Examples
+
+All vendor-specific implementation details for this convention are listed here.
+The vendor-audit scanner skips this section.
+
+### Primary Binding (Claude Code)
+
+- **Hook script** (Layers 1 & 3): `.claude/hooks/block-env-file-access.sh`
+  — PreToolUse hook; reads stdin JSON; denies `Read|Write|Edit|MultiEdit` on real `.env*`;
+  denies Bash commands that directly manipulate real `.env*`; exits 2 to block.
+- **Permission config** (Layer 2): `.claude/settings.json` — `permissions.deny` array with
+  explicit `Read(...)`, `Write(...)`, `Edit(...)` entries for each real env file variant;
+  `Read(.env.example)` in `permissions.allow`.
+- **Hook registration**: `hooks.PreToolUse` matcher `Read|Write|Edit|MultiEdit|Bash`.
+
+### Secondary Binding (OpenCode)
+
+- **Permission config** (Layer 4): `.opencode/opencode.json` — `permission.read` and
+  `permission.edit` glob-map deny rules for each real env variant; `.env.example` allow entry
+  placed last (last-match-wins semantics).
