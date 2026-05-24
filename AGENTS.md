@@ -126,6 +126,8 @@ Three-stage quality workflow:
 
 **Rationale**: Agent skills execute with agent permissions and can access repository content. Only load agent skills from verified sources.
 
+**Environment File Guard**: AI agents MUST NOT read, write, edit, or commit real `.env*` files (`.env`, `.env.local`, `.env.production`, etc.). Only `.env.example` is permitted. See [env-file-access convention](./repo-governance/development/quality/env-file-access.md) for the full six-layer policy, script carve-out, and known gaps.
+
 ## Governance Alignment
 
 All agents follow foundational principles:
