@@ -218,7 +218,7 @@ func (s *bindingsUnitSteps) noBindingFilesAreCreatedOnDisk() error {
 	for _, bf := range agents.ExpectedBindings() {
 		target := filepath.Join(s.tmpDir, filepath.FromSlash(bf.Path))
 		if _, err := os.Stat(target); !os.IsNotExist(err) {
-			return fmt.Errorf("dry-run unexpectedly wrote %s (err=%v)", bf.Path, err)
+			return fmt.Errorf("dry-run unexpectedly wrote %s (err=%w)", bf.Path, err)
 		}
 	}
 	return nil
