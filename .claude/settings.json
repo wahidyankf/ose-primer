@@ -11,11 +11,41 @@
       "Read(/tmp/**)",
       "Bash",
       "Bash(npm run sync\\:claude-to-opencode:*)",
-      "Skill(update-config)"
+      "Skill(update-config)",
+      "Read(.env.example)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(.env.local)",
+      "Read(.env.development)",
+      "Read(.env.production)",
+      "Read(.env.staging)",
+      "Read(.env.test)",
+      "Write(.env)",
+      "Write(.env.local)",
+      "Write(.env.development)",
+      "Write(.env.production)",
+      "Write(.env.staging)",
+      "Write(.env.test)",
+      "Edit(.env)",
+      "Edit(.env.local)",
+      "Edit(.env.development)",
+      "Edit(.env.production)",
+      "Edit(.env.staging)",
+      "Edit(.env.test)"
     ]
   },
   "hooks": {
     "PreToolUse": [
+      {
+        "matcher": "Read|Write|Edit|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block-env-file-access.sh"
+          }
+        ]
+      },
       {
         "matcher": "Bash",
         "hooks": [
