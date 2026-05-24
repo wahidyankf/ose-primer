@@ -246,7 +246,7 @@ The repository contains two distinct project structures with different purposes 
 **Characteristics**:
 
 - NOT managed by Nx workspace
-- Independent build systems (Hugo, Go, Python, Rust, etc.)
+- Independent build systems (Go, Python, Rust, etc.)
 - Self-contained configuration
 - Separate deployment pipelines
 - No access to workspace path mappings
@@ -265,7 +265,7 @@ The repository contains two distinct project structures with different purposes 
 
 | Aspect                     | Nx Monorepo (`apps/`, `libs/`)    | Experimental (`apps-labs/`)          |
 | -------------------------- | --------------------------------- | ------------------------------------ |
-| Build System               | Nx workspace                      | Independent (Hugo, Go, Python, etc.) |
+| Build System               | Nx workspace                      | Independent (Go, Python, Rust, etc.) |
 | Configuration              | Shared `tsconfig.base.json`       | Self-contained                       |
 | Path Mappings              | Yes (`@open-sharia-enterprise/*`) | No                                   |
 | Task Caching               | Yes (Nx cache)                    | No                                   |

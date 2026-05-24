@@ -74,4 +74,4 @@ Shows implementation details for critical components. Focus on Go CLI tool packa
 
 ### rhino-cli Package Structure (Go)
 
-rhino-cli now provides only `links check` for validating internal links in crud-fs-ts-nextjs content. The title update and navigation regeneration commands were removed as part of the migration from Hugo to Next.js.
+rhino-cli now provides only `links check` for validating internal links in crud-fs-ts-nextjs content. Title update and navigation regeneration commands are not applicable to Next.js apps.
