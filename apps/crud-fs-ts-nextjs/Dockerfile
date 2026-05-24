@@ -15,10 +15,10 @@ COPY apps/crud-fs-ts-nextjs/package.json apps/crud-fs-ts-nextjs/tsconfig.json ap
 # Provide shared tokens as a resolvable node_modules package
 COPY libs/ts-ui-tokens/src/ ./node_modules/@open-sharia-enterprise/ts-ui-tokens/src/
 COPY libs/ts-ui-tokens/package.json ./node_modules/@open-sharia-enterprise/ts-ui-tokens/
-COPY specs/apps/crud/contracts/generated/ ./specs/apps/crud/contracts/generated/
+COPY specs/apps/crud/containers/contracts/generated/ ./specs/apps/crud/containers/contracts/generated/
 ENV NEXT_TELEMETRY_DISABLED=1
 WORKDIR /app/apps/crud-fs-ts-nextjs
-RUN npx @hey-api/openapi-ts -i ../../specs/apps/crud/contracts/generated/openapi-bundled.yaml -o src/generated-contracts -s
+RUN npx @hey-api/openapi-ts -i ../../specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -o src/generated-contracts -s
 RUN npx next build
 
 FROM node:24-alpine AS runner

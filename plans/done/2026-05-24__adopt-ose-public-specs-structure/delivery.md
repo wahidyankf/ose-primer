@@ -477,21 +477,24 @@ Delegate the full sweep to `repo-rules-maker`.
 - [x] Run [plan quality gate workflow](../../../repo-governance/workflows/plan/plan-quality-gate.md)
       against `plans/in-progress/adopt-ose-public-specs-structure/`.
   - _Suggested executor: `plan-execution-checker`_
-- [ ] Address all CRITICAL and HIGH findings from the quality gate.
+- [x] Address all CRITICAL and HIGH findings from the quality gate.
   - _Executor: default_
-- [ ] Commit any fixes: `docs(plans): address plan-quality-gate findings for adopt-ose-public-specs-structure`
+  - Date: 2026-05-24 | Status: done | Files Changed: .dockerignore, 6 Dockerfile.integration, 9 infra/dev docker-compose.yml, 4 cucumber.js configs, specs/README.md, add-investment-oracle-app/README.md, delivery.md
+- [x] Commit any fixes: `docs(plans): address plan-quality-gate findings for adopt-ose-public-specs-structure`
   - _Executor: default_
-- [ ] `git push origin main` — exits 0.
+  - Date: 2026-05-24 | Status: done | Files Changed: 23 files | Notes: commit e755fc618
+- [x] `git push origin main` — exits 0.
   - _Executor: default_
+  - Date: 2026-05-24 | Status: done | Notes: pushed successfully
 
 ## Plan Archival
 
 _(Execute only when all delivery tasks above are ticked and CI is green.)_
 
-- [ ] Verify ALL delivery checklist items above are ticked.
-- [ ] `git mv plans/in-progress/adopt-ose-public-specs-structure plans/done/2026-05-24__adopt-ose-public-specs-structure`
+- [x] Verify ALL delivery checklist items above are ticked.
+- [x] `git mv plans/in-progress/adopt-ose-public-specs-structure plans/done/2026-05-24__adopt-ose-public-specs-structure`
       (use actual completion date)
-- [ ] Update `plans/in-progress/README.md` — remove this plan's entry.
-- [ ] Update `plans/done/README.md` — add this plan's entry with completion date and one-line summary.
-- [ ] Commit: `chore(plans): move adopt-ose-public-specs-structure to done`
-- [ ] `git push origin main`
+- [x] Update `plans/in-progress/README.md` — remove this plan's entry.
+- [x] Update `plans/done/README.md` — add this plan's entry with completion date and one-line summary.
+- [x] Commit: `chore(plans): move adopt-ose-public-specs-structure to done`
+- [x] `git push origin main`

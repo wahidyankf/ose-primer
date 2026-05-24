@@ -13,9 +13,9 @@ COPY apps/crud-fe-ts-nextjs/package.json apps/crud-fe-ts-nextjs/tsconfig.json ap
 # Copy shared tokens as a resolvable node_modules package
 COPY libs/ts-ui-tokens/src/ ./node_modules/@open-sharia-enterprise/ts-ui-tokens/src/
 COPY libs/ts-ui-tokens/package.json ./node_modules/@open-sharia-enterprise/ts-ui-tokens/
-COPY specs/apps/crud/contracts/generated/ ./specs/apps/crud/contracts/generated/
+COPY specs/apps/crud/containers/contracts/generated/ ./specs/apps/crud/containers/contracts/generated/
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npx @hey-api/openapi-ts -i specs/apps/crud/contracts/generated/openapi-bundled.yaml -o src/generated-contracts -s
+RUN npx @hey-api/openapi-ts -i specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -o src/generated-contracts -s
 ARG BACKEND_URL=http://crud-be:8201
 ENV BACKEND_URL=${BACKEND_URL}
 RUN npx next build

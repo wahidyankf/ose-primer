@@ -36,21 +36,21 @@ folders and their subfolders — nothing else.
 **Example invocations:**
 
 ```
-# Single folder — validate crud-be and all its subfolders
-folders: [specs/apps/crud/be]
+# Single folder — validate crud backend behavior and all its subfolders
+folders: [specs/apps/crud/behavior/be]
 
 # Multiple folders — validate each AND check cross-folder consistency
-folders: [specs/apps/crud/be, specs/apps/crud/fe]
+folders: [specs/apps/crud/behavior/be, specs/apps/crud/behavior/web]
 
 # Mixed tiers
-folders: [specs/apps/crud/be, specs/libs/golang-commons]
+folders: [specs/apps/crud, specs/libs/golang-commons]
 ```
 
 **Rules:**
 
 - Each folder in the list is validated independently (Categories 1-3, 5-8)
 - Cross-folder consistency (Category 4) runs **only** across the listed folders
-- Subfolders are always included automatically — listing `specs/apps/crud/be` includes
+- Subfolders are always included automatically — listing `specs/apps/crud` includes
   `specs/apps/crud/behavior/be/gherkin/`, `specs/apps/crud/components/`, and all children
 - Folders NOT in the list are completely ignored, even if referenced by listed folders
 
@@ -221,8 +221,8 @@ Use the standard audit report format:
 
 **Folders validated**:
 
-- `specs/apps/crud/be`
-- `specs/apps/crud/fe`
+- `specs/apps/crud/behavior/be`
+- `specs/apps/crud/behavior/web`
 
 **Timestamp**: YYYY-MM-DD--HH-MM UTC+7
 **UUID Chain**: {uuid}
@@ -238,7 +238,7 @@ Use the standard audit report format:
 
 ## Findings by Folder
 
-### specs/apps/crud/be
+### specs/apps/crud/behavior/be
 
 #### [CRITICAL] {Category} — {Brief description}
 
@@ -248,7 +248,7 @@ Use the standard audit report format:
 **Expected**: What should be there
 **Confidence**: HIGH | MEDIUM
 
-### specs/apps/crud/fe
+### specs/apps/crud/behavior/web
 
 [... findings for this folder ...]
 
@@ -256,7 +256,7 @@ Use the standard audit report format:
 
 #### [HIGH] Cross-Folder Consistency — {Brief description}
 
-**Folders**: `specs/apps/crud/be`, `specs/apps/crud/fe`
+**Folders**: `specs/apps/crud/behavior/be`, `specs/apps/crud/behavior/web`
 **Evidence**: What contradicts or doesn't blend
 **Expected**: What consistency looks like
 **Confidence**: HIGH | MEDIUM

@@ -5,7 +5,7 @@ termination: "Zero findings at the configured mode threshold on two consecutive 
 inputs:
   - name: folders
     type: file-list
-    description: "Explicit list of spec folders to validate (e.g., [specs/apps/crud/be, specs/apps/crud/fe]). Each folder and its subfolders are validated. Cross-folder consistency is checked between listed folders."
+    description: "Explicit list of spec folders to validate (e.g., [specs/apps/crud/behavior/be, specs/apps/crud/behavior/web]). Each folder and its subfolders are validated. Cross-folder consistency is checked between listed folders."
     required: true
   - name: mode
     type: enum
@@ -53,7 +53,7 @@ fixes iteratively until all issues are resolved.
 
 **Key Design Principle**: This workflow only validates folders you explicitly list. It does not
 discover or scan the entire specs/ tree. Subfolders are included automatically — listing
-`specs/apps/crud/be` includes `specs/apps/crud/behavior/be/gherkin/`, `specs/apps/crud/components/`, etc.
+`specs/apps/crud` includes `specs/apps/crud/behavior/be/gherkin/`, `specs/apps/crud/components/`, etc.
 When multiple folders are listed, cross-folder consistency is checked between them (contradictions,
 coverage gaps, terminology drift).
 
@@ -89,9 +89,9 @@ the preferred approach when these agents exist as defined subagent types.
 **How to Execute**:
 
 ```
-User: "Run specs validation for specs/apps/crud/be"
-User: "Run specs validation for specs/apps/crud/be and specs/apps/crud/fe in strict mode"
-User: "Run specs validation for specs/apps/crud/be, specs/apps/crud/fe, specs/apps/crud-be-fsharp-giraffe with max-iterations=5"
+User: "Run specs validation for specs/apps/crud/behavior/be"
+User: "Run specs validation for specs/apps/crud/behavior/be and specs/apps/crud/behavior/web in strict mode"
+User: "Run specs validation for specs/apps/crud/behavior/be, specs/apps/crud/behavior/web, specs/apps/rhino with max-iterations=5"
 ```
 
 The AI will:
@@ -106,7 +106,7 @@ The AI will:
 **Fallback (Manual Mode)**:
 
 ```
-User: "Run specs validation for specs/apps/crud/be in manual mode"
+User: "Run specs validation for specs/apps/crud/behavior/be in manual mode"
 ```
 
 The AI executes checker and fixer logic directly using Read/Write/Edit tools in the main
@@ -276,7 +276,7 @@ Report final status and summary.
 ### Single Folder (Strict Mode — Default)
 
 ```
-User: "Run specs validation for specs/apps/crud/be"
+User: "Run specs validation for specs/apps/crud/behavior/be"
 ```
 
 The AI will:
@@ -289,13 +289,13 @@ The AI will:
 ### Multiple Folders — Cross-Folder Consistency
 
 ```
-User: "Run specs validation for specs/apps/crud/be and specs/apps/crud/fe"
+User: "Run specs validation for specs/apps/crud/behavior/be and specs/apps/crud/behavior/web"
 ```
 
 The AI will:
 
 - Validate each folder independently (Categories 1-3, 5-7)
-- Check cross-folder consistency between crud-be and crud-fe (Category 4):
+- Check cross-folder consistency between crud behavior/be and behavior/web (Category 4):
   contradictions, coverage gaps, terminology drift, C4 coherence
 - Fix CRITICAL and HIGH findings
 - Iterate until zero CRITICAL/HIGH findings
@@ -303,7 +303,7 @@ The AI will:
 ### Strict Mode After Refactor
 
 ```
-User: "Run specs validation for specs/apps/crud/be, specs/apps/crud/fe in strict mode"
+User: "Run specs validation for specs/apps/crud/behavior/be, specs/apps/crud/behavior/web in strict mode"
 ```
 
 The AI will:
@@ -315,7 +315,7 @@ The AI will:
 ### Comprehensive Audit (OCD Mode with Bounds)
 
 ```
-User: "Run specs validation for specs/apps/crud/be, specs/apps/crud/fe, specs/apps/crud-be-fsharp-giraffe in ocd mode"
+User: "Run specs validation for specs/apps/crud/behavior/be, specs/apps/crud/behavior/web, specs/apps/rhino in ocd mode"
 ```
 
 The AI will:
@@ -327,12 +327,12 @@ The AI will:
 
 ## Iteration Example
 
-Typical execution flow (folders: `[specs/apps/crud/be, specs/apps/crud/fe]`):
+Typical execution flow (folders: `[specs/apps/crud/behavior/be, specs/apps/crud/behavior/web]`):
 
 ```
 Iteration 1:
-  Check crud-be → 4 findings (1 CRITICAL, 2 HIGH, 1 MEDIUM)
-  Check crud-fe → 3 findings (0 CRITICAL, 2 HIGH, 1 LOW)
+  Check behavior/be → 4 findings (1 CRITICAL, 2 HIGH, 1 MEDIUM)
+  Check behavior/web → 3 findings (0 CRITICAL, 2 HIGH, 1 LOW)
   Cross-folder check → 5 findings (0 CRITICAL, 3 HIGH, 1 MEDIUM, 1 LOW)
   Total: 12 findings (1 CRITICAL, 7 HIGH, 2 MEDIUM, 2 LOW)
   [normal mode] Fix 8 (1 CRITICAL + 7 HIGH)

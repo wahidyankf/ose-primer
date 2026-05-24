@@ -36,7 +36,7 @@ This agent receives an explicit target path (or list of paths) where content sho
 
 ```
 # Create a new spec area
-target: specs/apps/crud/fe-react-nextjs
+target: specs/apps/investment-oracle
 
 # Create missing README in an existing directory
 target: specs/apps/crud/behavior/be/gherkin/health
