@@ -54,6 +54,14 @@ harness = false
 name = "agents"
 harness = false
 
+[[test]]
+name = "repo_governance"
+harness = false
+
+[[test]]
+name = "workflows"
+harness = false
+
 [lints.rust]
 unsafe_code = "forbid"
 

@@ -359,72 +359,32 @@ pub fn format_validation_markdown(result: &ValidationResult, verbose: bool) -> S
 // ---------------------------------------------------------------------------
 // Naming formatting
 // ---------------------------------------------------------------------------
+//
+// The naming formatters are shared verbatim with `workflows validate-naming`,
+// so they live in `crate::internal::naming::reporter`. These thin wrappers
+// preserve the existing `agents::reporter::format_naming_*` call sites.
 
-/// Renders a human-readable summary of naming violations. Mirrors Go
-/// `formatNamingText`.
+/// Renders a human-readable summary of naming violations. Delegates to the
+/// shared reporter. Mirrors Go `formatNamingText`.
 pub fn format_naming_text(
     label: &str,
     violations: &[Violation],
     verbose: bool,
     quiet: bool,
 ) -> String {
-    let mut b = String::new();
-    if violations.is_empty() {
-        if !quiet {
-            let _ = writeln!(
-                b,
-                "{label} naming validation: VALIDATION PASSED (0 violations)"
-            );
-        }
-        return b;
-    }
-    let _ = writeln!(
-        b,
-        "{label} naming validation: {} violation(s)",
-        violations.len()
-    );
-    for v in violations {
-        let _ = writeln!(b, "  [{}] {} — {}", v.kind, v.path, v.message);
-    }
-    if verbose {
-        b.push_str("\nSee repo-governance/conventions/structure/agent-naming.md (or workflow-naming.md) for the normative rule.\n");
-    }
-    b
+    crate::internal::naming::reporter::format_naming_text(label, violations, verbose, quiet)
 }
 
-/// JSON report for naming violations. Mirrors Go `formatNamingJSON`. Emits a
-/// trailing newline (Go appends `"\n"`).
+/// JSON report for naming violations. Delegates to the shared reporter. Mirrors
+/// Go `formatNamingJSON`.
 pub fn format_naming_json(kind: &str, violations: &[Violation]) -> Result<String, Error> {
-    #[derive(Serialize)]
-    struct Out<'a> {
-        kind: &'a str,
-        violations: &'a [Violation],
-        count: usize,
-    }
-    let out = Out {
-        kind,
-        violations,
-        count: violations.len(),
-    };
-    let json = crate::internal::cliout::gojson::html_escape(&serde_json::to_string_pretty(&out)?);
-    Ok(format!("{json}\n"))
+    crate::internal::naming::reporter::format_naming_json(kind, violations)
 }
 
-/// PR-friendly markdown table for naming violations. Mirrors Go
-/// `formatNamingMarkdown`.
+/// PR-friendly markdown table for naming violations. Delegates to the shared
+/// reporter. Mirrors Go `formatNamingMarkdown`.
 pub fn format_naming_markdown(label: &str, violations: &[Violation]) -> String {
-    let mut b = String::new();
-    let _ = write!(b, "## {label} naming validation\n\n");
-    if violations.is_empty() {
-        b.push_str("All files conform to the naming convention.\n");
-        return b;
-    }
-    b.push_str("| Kind | Path | Message |\n");
-    b.push_str("| --- | --- | --- |\n");
-    for v in violations {
-        let _ = writeln!(b, "| {} | `{}` | {} |", v.kind, v.path, v.message);
-    }
-    b
+    crate::internal::naming::reporter::format_naming_markdown(label, violations)
 }
 
 #[cfg(test)]

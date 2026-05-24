@@ -216,20 +216,30 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
   - _Suggested executor: `swe-rust-dev`_ ✅ delegated + orchestrator re-verified
   - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/scripts/shadow-diff.sh`, `apps/rhino-cli-rust/Cargo.toml` (clippy allow-list)
   - **Notes**: shadow-diff agents → **30 cases byte-identical**; full re-run (all groups) **102 cases byte-identical** exit 0; `.opencode/` tree 0-diff confirmed. **Lint fix (Iron Rule 3)**: orchestrator's independent `lint` run surfaced 30 pedantic-clippy errors the delegated agent's check missed; resolved via clippy-allow-list additions (too_many_lines, manual_let_else, assigning_clones, format_push_string, cast_sign_loss, unnecessary_debug_formatting — Go-parity structural choices, consistent with the crate's existing allow philosophy) + `cargo clippy --fix` machine-applicable fixes + `cargo fmt`. Parity re-confirmed post-fix (102 cases). `lint` now exits 0.
-- [ ] Commit: `feat(rhino-cli-rust): port agents sync + validators`.
+- [x] Commit: `feat(rhino-cli-rust): port agents sync + validators`.
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: commit `5b9f8c7a2`
+  - **Notes**: Committed `5b9f8c7a2`, pushed to `main` (`e70a14c1e..5b9f8c7a2`); pre-commit + pre-push passed.
 
 ---
 
 ## Phase 6 — Port `repo-governance vendor-audit`, `workflows validate-naming`, cross-vendor-parity
 
-- [ ] Write failing cucumber-rs scenarios for `repo-governance vendor-audit` and `workflows validate-naming`: wire `specs/apps/rhino/behavior/cli/gherkin/repo-governance/` and `specs/apps/rhino/behavior/cli/gherkin/workflows/` feature files into the integration test world. Verify: `npx nx run rhino-cli-rust:test:integration` reports those scenarios as failing. _New test_
-  - _Suggested executor: `swe-rust-dev`_
-- [ ] Port `apps/rhino-cli/internal/repo_governance/` vendor-audit logic into `apps/rhino-cli-rust/src/internal/repo_governance/` (mirroring Go's `internal/` layout) and implement `repo-governance vendor-audit` command in `apps/rhino-cli-rust/src/commands/repo_governance.rs`. Port `apps/rhino-cli/internal/naming/` workflow validator into `apps/rhino-cli-rust/src/internal/naming/` and implement `workflows validate-naming` command in `apps/rhino-cli-rust/src/commands/workflows.rs`. Verify: `cargo test --manifest-path apps/rhino-cli-rust/Cargo.toml --lib` passes; `npx nx run rhino-cli-rust:test:integration` passes the repo-governance and workflows scenarios.
-  - _Suggested executor: `swe-rust-dev`_
-- [ ] Port `apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh` semantics: create `apps/rhino-cli-rust/scripts/validate-cross-vendor-parity.sh` calling the Rust binary. Verify: `bash apps/rhino-cli-rust/scripts/validate-cross-vendor-parity.sh` exits 0.
-  - _Suggested executor: `swe-rust-dev`_
-- [ ] **Parity check**: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh repo-governance workflows` exits 0.
-  - _Suggested executor: `swe-rust-dev`_
+- [x] Write failing cucumber-rs scenarios for `repo-governance vendor-audit` and `workflows validate-naming`: wire `specs/apps/rhino/behavior/cli/gherkin/repo-governance/` and `specs/apps/rhino/behavior/cli/gherkin/workflows/` feature files into the integration test world. Verify: `npx nx run rhino-cli-rust:test:integration` reports those scenarios as failing. _New test_
+  - _Suggested executor: `swe-rust-dev`_ ✅ delegated (TDD)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/tests/repo_governance.rs`, `tests/workflows.rs`
+  - **Notes**: vendor-audit 7 scenarios + workflows validate-naming 4 scenarios wired (red before impl, now pass).
+- [x] Port `apps/rhino-cli/internal/repo_governance/` vendor-audit logic into `apps/rhino-cli-rust/src/internal/repo_governance/` (mirroring Go's `internal/` layout) and implement `repo-governance vendor-audit` command in `apps/rhino-cli-rust/src/commands/repo_governance.rs`. Port `apps/rhino-cli/internal/naming/` workflow validator into `apps/rhino-cli-rust/src/internal/naming/` and implement `workflows validate-naming` command in `apps/rhino-cli-rust/src/commands/workflows.rs`. Verify: `cargo test --manifest-path apps/rhino-cli-rust/Cargo.toml --lib` passes; `npx nx run rhino-cli-rust:test:integration` passes the repo-governance and workflows scenarios.
+  - _Suggested executor: `swe-rust-dev`_ ✅ delegated
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/src/internal/repo_governance/{mod,vendor_audit}.rs`, `src/internal/naming/{mod,reporter}.rs`, `src/commands/{repo_governance,workflows}.rs`, `src/internal/agents/{naming,reporter}.rs` (refactored to share `internal::naming`)
+  - **Notes**: vendor-audit ports the same 28 forbidden-term patterns + exemption logic (code fences, frontmatter, HTML comments, inline spans, link URLs, "Platform Binding Examples" scope, convention-file skip); `go_join` replicates Go `filepath.Join` absolute-path semantics. Only `vendor-audit` ported (local Go has no other auditors, unlike ose-public). Shared `internal/naming` extracted (workflows + agents reuse it, no duplication). 380 lib unit tests pass.
+- [x] Port `apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh` semantics: create `apps/rhino-cli-rust/scripts/validate-cross-vendor-parity.sh` calling the Rust binary. Verify: `bash apps/rhino-cli-rust/scripts/validate-cross-vendor-parity.sh` exits 0.
+  - _Suggested executor: `swe-rust-dev`_ ✅ delegated + orchestrator re-verified
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/scripts/validate-cross-vendor-parity.sh`
+  - **Notes**: Mirrors the Go script's 5 invariants, invoking the rust binary for vendor-audit. Orchestrator re-ran → "CROSS-VENDOR PARITY VALIDATION PASSED: all invariants hold" exit 0.
+- [x] **Parity check**: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh repo-governance workflows` exits 0.
+  - _Suggested executor: `swe-rust-dev`_ ✅ delegated + orchestrator re-verified
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/scripts/shadow-diff.sh`
+  - **Notes**: Orchestrator re-ran → **"Shadow diff PASS — 22 cases byte-identical"** exit 0. Lint verified clean by orchestrator (`nx run rhino-cli-rust:lint` Successfully ran — this phase's agent ran the gate correctly; only 1 test-only single_char_pattern fixed, no allow-list changes).
 - [ ] Commit: `feat(rhino-cli-rust): port repo-governance + workflows validators`.
 
 ---

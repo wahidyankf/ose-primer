@@ -6,5 +6,7 @@
 
 pub mod agents;
 pub mod docs;
+pub mod repo_governance;
 pub mod speccoverage;
 pub mod testcoverage;
+pub mod workflows;

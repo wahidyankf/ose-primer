@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 
-use crate::commands::{agents, docs, speccoverage, testcoverage};
+use crate::commands::{agents, docs, repo_governance, speccoverage, testcoverage, workflows};
 use crate::internal::cliout::OutputFormat;
 
 #[derive(Parser, Debug)]
@@ -69,6 +69,26 @@ pub enum Commands {
     /// Agent configuration commands.
     #[command(name = "agents", subcommand)]
     Agents(AgentsCommands),
+    /// Repository governance validation commands.
+    #[command(name = "repo-governance", subcommand)]
+    RepoGovernance(RepoGovernanceCommands),
+    /// Workflow definition commands.
+    #[command(name = "workflows", subcommand)]
+    Workflows(WorkflowsCommands),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum RepoGovernanceCommands {
+    /// Scan governance markdown files for forbidden vendor-specific terms.
+    #[command(name = "vendor-audit")]
+    VendorAudit(repo_governance::VendorAuditArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum WorkflowsCommands {
+    /// Validate workflow filename suffixes and frontmatter name consistency.
+    #[command(name = "validate-naming")]
+    ValidateNaming,
 }
 
 #[derive(Subcommand, Debug)]
@@ -196,6 +216,18 @@ fn dispatch(cmd: &Commands, output_format: OutputFormat, verbose: bool, quiet: b
             AgentsCommands::ValidateNaming => (
                 agents::run_validate_naming(output_format, verbose, quiet),
                 agents::VALIDATE_NAMING_USAGE,
+            ),
+        },
+        Commands::RepoGovernance(rg) => match rg {
+            RepoGovernanceCommands::VendorAudit(args) => (
+                repo_governance::run_vendor_audit(args, output_format),
+                repo_governance::VENDOR_AUDIT_USAGE,
+            ),
+        },
+        Commands::Workflows(wf) => match wf {
+            WorkflowsCommands::ValidateNaming => (
+                workflows::run_validate_naming(output_format, verbose, quiet),
+                workflows::VALIDATE_NAMING_USAGE,
             ),
         },
     };

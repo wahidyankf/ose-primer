@@ -1,153 +1,21 @@
-//! Agent naming-convention validators.
+//! Agent naming-convention orchestration.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/naming/naming.go` (the
-//! agent-relevant subset) plus the orchestration in
-//! `cmd/agents_validate_naming.go`. The validators are filesystem-agnostic:
-//! callers collect the file lists (and content bytes for frontmatter checks)
-//! and pass them in.
+//! Byte-for-byte port of the agent-relevant orchestration in
+//! `cmd/agents_validate_naming.go`. The pure validators (`Violation`,
+//! `validate_suffix`, `validate_frontmatter_name`, `validate_mirror`) live in
+//! the shared [`crate::internal::naming`] module — this module re-exports them
+//! and adds the filesystem walk over `.claude/agents` and `.opencode/agents`.
 
-use std::path::Path;
-
-use serde::Serialize;
+// Re-export the shared pure validators so existing callers
+// (`agents::run_validate_naming`, `agents::reporter`) keep their
+// `super::naming::*` paths working without duplicating logic.
+pub use crate::internal::naming::{
+    Violation, basename_sans_ext, validate_frontmatter_name, validate_mirror, validate_suffix,
+};
 
 /// Trailing role tokens permitted by the agent naming convention. Mirrors Go
 /// `agentRoles`.
 pub const AGENT_ROLES: &[&str] = &["maker", "checker", "fixer", "dev", "deployer", "manager"];
-
-/// A single naming-rule failure. Mirrors Go `naming.Violation`. Serialized to
-/// JSON with `path`, `kind`, `message` keys (Go uses exported field names with
-/// default json tags → PascalCase keys).
-#[derive(Debug, Clone, PartialEq, Serialize)]
-pub struct Violation {
-    #[serde(rename = "Path")]
-    pub path: String,
-    #[serde(rename = "Kind")]
-    pub kind: String,
-    #[serde(rename = "Message")]
-    pub message: String,
-}
-
-/// Returns the filename of `path` with the `.md` extension stripped.
-/// Mirrors Go `basenameSansExt`.
-fn basename_sans_ext(path: &str) -> String {
-    let base = Path::new(path)
-        .file_name()
-        .map(|s| s.to_string_lossy().into_owned())
-        .unwrap_or_default();
-    // Strip the final extension (Go filepath.Ext returns the last dot segment).
-    if let Some(idx) = base.rfind('.') {
-        base[..idx].to_string()
-    } else {
-        base
-    }
-}
-
-/// Returns a [`Violation`] when `basename(path)` (without `.md`) does not end
-/// with any of `allowed_suffixes`. A bare suffix (e.g. `maker.md`) is invalid.
-/// Mirrors Go `ValidateSuffix`.
-pub fn validate_suffix(path: &str, allowed_suffixes: &[&str], kind: &str) -> Option<Violation> {
-    let name = basename_sans_ext(path);
-    for suffix in allowed_suffixes {
-        if name == *suffix {
-            // Bare suffix has no scope and is invalid.
-            continue;
-        }
-        if name.ends_with(&format!("-{suffix}")) {
-            return None;
-        }
-    }
-    Some(Violation {
-        path: path.to_string(),
-        kind: kind.to_string(),
-        message: format!(
-            "filename {:?} does not end with any allowed suffix ({})",
-            name,
-            allowed_suffixes.join(", ")
-        ),
-    })
-}
-
-/// Returns the value of the top-level `name:` field from the YAML frontmatter
-/// of `content`, or empty if absent. Mirrors Go `extractFrontmatterName`: a
-/// minimal parser reading the first `name:` line in the delimited block.
-fn extract_frontmatter_name(content: &[u8]) -> String {
-    let text = String::from_utf8_lossy(content);
-    if !text.starts_with("---\n") && !text.starts_with("---\r\n") {
-        return String::new();
-    }
-    let rest = &text[4..];
-    let end = match rest.find("\n---") {
-        Some(e) => e,
-        None => return String::new(),
-    };
-    let frontmatter = &rest[..end];
-    for line in frontmatter.split('\n') {
-        let trimmed = line.trim();
-        if let Some(value) = trimmed.strip_prefix("name:") {
-            let value = value.trim();
-            // Strip optional surrounding quotes.
-            return value.trim_matches(|c| c == '"' || c == '\'').to_string();
-        }
-    }
-    String::new()
-}
-
-/// Returns a [`Violation`] when the frontmatter `name:` field does not equal
-/// `basename(path)`. No frontmatter / no `name:` → no violation. Mirrors Go
-/// `ValidateFrontmatterName`.
-pub fn validate_frontmatter_name(path: &str, content: &[u8]) -> Option<Violation> {
-    let name = extract_frontmatter_name(content);
-    if name.is_empty() {
-        return None;
-    }
-    let expected = basename_sans_ext(path);
-    if name == expected {
-        return None;
-    }
-    Some(Violation {
-        path: path.to_string(),
-        kind: "frontmatter-mismatch".to_string(),
-        message: format!("frontmatter name {name:?} does not match filename {expected:?}"),
-    })
-}
-
-/// Returns violations for every file present in exactly one of `claude_files`
-/// and `opencode_files` (compared by basename). Mirrors Go `ValidateMirror`,
-/// including its `.opencode/agent/` (singular) wording in the messages.
-pub fn validate_mirror(claude_files: &[String], opencode_files: &[String]) -> Vec<Violation> {
-    use std::collections::BTreeMap;
-
-    let mut claude_set: BTreeMap<String, String> = BTreeMap::new();
-    for p in claude_files {
-        claude_set.insert(basename_sans_ext(p), p.clone());
-    }
-    let mut opencode_set: BTreeMap<String, String> = BTreeMap::new();
-    for p in opencode_files {
-        opencode_set.insert(basename_sans_ext(p), p.clone());
-    }
-
-    let mut violations: Vec<Violation> = Vec::new();
-    for (name, path) in &claude_set {
-        if !opencode_set.contains_key(name) {
-            violations.push(Violation {
-                path: path.clone(),
-                kind: "mirror-drift".to_string(),
-                message: format!("{name}.md exists in .claude/agents/ but not in .opencode/agent/"),
-            });
-        }
-    }
-    for (name, path) in &opencode_set {
-        if !claude_set.contains_key(name) {
-            violations.push(Violation {
-                path: path.clone(),
-                kind: "mirror-drift".to_string(),
-                message: format!("{name}.md exists in .opencode/agent/ but not in .claude/agents/"),
-            });
-        }
-    }
-    violations.sort_by(|a, b| a.path.cmp(&b.path));
-    violations
-}
 
 /// Walks the agent tree under `repo_root` and returns every naming violation,
 /// sorted by path then kind. Mirrors Go `agentsValidateNaming`.
@@ -361,8 +229,8 @@ mod tests {
 
     #[test]
     fn basename_without_extension() {
-        assert_eq!(super::basename_sans_ext("/x/foo-maker.md"), "foo-maker");
-        assert_eq!(super::basename_sans_ext("plain"), "plain");
+        assert_eq!(basename_sans_ext("/x/foo-maker.md"), "foo-maker");
+        assert_eq!(basename_sans_ext("plain"), "plain");
     }
 
     #[test]

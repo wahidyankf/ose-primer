@@ -34,6 +34,8 @@ COMMANDS:
   spec-coverage    Diff the `spec-coverage validate` corpus
   docs             Diff the `docs validate-links|validate-mermaid` corpus
   agents           Diff the `agents sync|validate-claude|validate-sync|validate-naming` corpus
+  repo-governance  Diff the `repo-governance vendor-audit` corpus
+  workflows        Diff the `workflows validate-naming` corpus
 
   With no COMMAND, every command's corpus runs.
 
@@ -79,7 +81,7 @@ for arg in "$@"; do
       print_help
       exit 0
       ;;
-    test-coverage | spec-coverage | docs | agents)
+    test-coverage | spec-coverage | docs | agents | repo-governance | workflows)
       COMMANDS+=("${arg}")
       ;;
     *)
@@ -90,7 +92,7 @@ for arg in "$@"; do
   esac
 done
 if [[ ${#COMMANDS[@]} -eq 0 ]]; then
-  COMMANDS=(test-coverage spec-coverage docs agents)
+  COMMANDS=(test-coverage spec-coverage docs agents repo-governance workflows)
 fi
 
 # --- Build both binaries ---
@@ -345,6 +347,60 @@ corpus_agents() {
   run_case "agents validate-naming verbose"  agents validate-naming -v --no-color
 }
 
+corpus_repo_governance() {
+  echo "── repo-governance corpus ──" >&2
+
+  # --- Clean real-repo targets: the live governance tree and the root
+  # --- instruction surfaces are vendor-neutral, so every format yields the
+  # --- PASSED output. These exercise the directory-walk and single-file paths
+  # --- against real artefacts. -----------------------------------------------
+  for fmt in text json markdown; do
+    run_case "vendor-audit repo-governance ${fmt}"  repo-governance vendor-audit repo-governance/ -o "${fmt}" --no-color
+  done
+  run_case "vendor-audit default"        repo-governance vendor-audit --no-color
+  run_case "vendor-audit AGENTS.md"      repo-governance vendor-audit AGENTS.md --no-color
+  run_case "vendor-audit CLAUDE.md"      repo-governance vendor-audit CLAUDE.md --no-color
+  run_case "vendor-audit AGENTS.md json" repo-governance vendor-audit AGENTS.md -o json --no-color
+  run_case "vendor-audit docs dir"       repo-governance vendor-audit docs/ --no-color
+  run_case "vendor-audit nonexistent"    repo-governance vendor-audit does/not/exist --no-color
+
+  # --- Synthetic finding cases: write fixtures UNDER the repo root (the path
+  # --- argument is joined under the git root by the binary, so out-of-repo
+  # --- temp files never resolve). The fixtures exercise every exemption region
+  # --- and the failure/error path in all three formats. The directory walks
+  # --- multiple files to confirm lexical ordering parity. ---------------------
+  local fix_dir=".shadow-vendor-fixtures"
+  local fix_abs="${REPO_ROOT}/${fix_dir}"
+  rm -rf "${fix_abs}"
+  mkdir -p "${fix_abs}/nested"
+  printf '# Doc\n\nWe use Claude Code daily.\nThe .opencode/ path matters.\n' > "${fix_abs}/aaa.md"
+  printf '# Other\n\nWe rely on Skills and OpenAI here.\n' > "${fix_abs}/bbb.md"
+  printf '# Nested\n\nGemini and Sonnet and Opus appear.\n' > "${fix_abs}/nested/ccc.md"
+  # Exemption coverage: fence, frontmatter, inline code, link, PB heading — clean.
+  printf -- '---\ntitle: Claude Code\n---\n\n```\nClaude Code\n```\n\nUse `Claude Code` inline.\n\n[x](https://e.com/Claude-Code)\n\n## Platform Binding Examples\n\nClaude Code is fine.\n' > "${fix_abs}/clean.md"
+
+  for fmt in text json markdown; do
+    run_case "vendor-audit fixture file ${fmt}"  repo-governance vendor-audit "${fix_dir}/aaa.md" -o "${fmt}" --no-color
+    run_case "vendor-audit fixture dir ${fmt}"   repo-governance vendor-audit "${fix_dir}" -o "${fmt}" --no-color
+  done
+  run_case "vendor-audit fixture clean"  repo-governance vendor-audit "${fix_dir}/clean.md" --no-color
+
+  rm -rf "${fix_abs}"
+}
+
+corpus_workflows() {
+  echo "── workflows corpus ──" >&2
+
+  # --- Live governance tree: every workflow obeys the naming rule, so all
+  # --- formats + verbosity yield the PASSED output deterministically. ---------
+  for fmt in text json markdown; do
+    run_case "validate-naming ${fmt}"  workflows validate-naming -o "${fmt}" --no-color
+  done
+  run_case "validate-naming quiet"    workflows validate-naming -q --no-color
+  run_case "validate-naming verbose"  workflows validate-naming -v --no-color
+  run_case "validate-naming verbose json"  workflows validate-naming -v -o json --no-color
+}
+
 # A repo-relative temp output path for `merge --out-file` (lives under TMP).
 TMP_OUT_REL="$(python3 -c "import os,sys; print(os.path.relpath('${TMP}/merged.info', '${REPO_ROOT}'))" 2>/dev/null || echo "${TMP}/merged.info")"
 
@@ -354,6 +410,8 @@ for cmd in "${COMMANDS[@]}"; do
     spec-coverage) corpus_spec_coverage ;;
     docs) corpus_docs ;;
     agents) corpus_agents ;;
+    repo-governance) corpus_repo_governance ;;
+    workflows) corpus_workflows ;;
   esac
 done
 

@@ -9,5 +9,7 @@ pub mod cliout;
 pub mod docs;
 pub mod git;
 pub mod mermaid;
+pub mod naming;
+pub mod repo_governance;
 pub mod speccoverage;
 pub mod testcoverage;
