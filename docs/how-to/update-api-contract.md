@@ -17,7 +17,7 @@ to all demo apps via codegen.
 
 ## 📋 Overview
 
-The contract lives at `specs/apps/crud/contracts/` and is consumed by all demo apps:
+The contract lives at `specs/apps/crud/containers/contracts/` and is consumed by all demo apps:
 
 ```
 OpenAPI spec  -->  bundle  -->  codegen  -->  generated-contracts/
@@ -28,7 +28,7 @@ OpenAPI spec  -->  bundle  -->  codegen  -->  generated-contracts/
 
 ### 1. Modify the OpenAPI Spec
 
-Edit files under `specs/apps/crud/contracts/`:
+Edit files under `specs/apps/crud/containers/contracts/`:
 
 - **`paths/`** — Endpoint definitions (one file per domain)
 - **`schemas/`** — Data type definitions (request/response shapes)
@@ -50,7 +50,7 @@ nx run crud-contracts:lint
 nx run crud-contracts:bundle
 ```
 
-This produces `specs/apps/crud/contracts/generated/openapi-bundled.yaml` — the single file
+This produces `specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml` — the single file
 consumed by all codegen targets.
 
 ### 3. Regenerate Types for All Apps
@@ -81,7 +81,7 @@ nx affected -t typecheck
 ### 5. Update Gherkin Scenarios (If Needed)
 
 If the contract change adds new endpoints or modifies behavior, add or update Gherkin
-scenarios in `specs/apps/crud/be/gherkin/` (and `fe/gherkin/` for frontend changes).
+scenarios in `specs/apps/crud/behavior/be/gherkin/` (and `fe/gherkin/` for frontend changes).
 
 See [How to Add a Gherkin Scenario](./add-gherkin-scenario.md) for the step-by-step
 process.
@@ -103,7 +103,7 @@ nx run crud-contracts:docs
 ```
 
 This generates browsable HTML documentation at
-`specs/apps/crud/contracts/generated/docs/index.html`.
+`specs/apps/crud/containers/contracts/generated/docs/index.html`.
 
 ## What Happens on Push
 
@@ -118,6 +118,6 @@ If the contract change breaks any app, the pre-push hook catches it.
 
 ## 🔗 Related Documentation
 
-- [OpenAPI Contract](../../specs/apps/crud/contracts/README.md) — Spec structure and conventions
+- [OpenAPI Contract](../../specs/apps/crud/containers/contracts/README.md) — Spec structure and conventions
 - [Project Dependency Graph](../reference/project-dependency-graph.md) — How contract changes propagate
 - [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) — Codegen target requirements

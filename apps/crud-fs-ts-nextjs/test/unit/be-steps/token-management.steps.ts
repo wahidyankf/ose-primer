@@ -4,7 +4,7 @@ import { expect } from "vitest";
 import { createTestContext, registerUser, loginUser, getAuth, type TestContext } from "./helpers/test-context";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/crud/be/gherkin/token-management/tokens.feature"),
+  path.resolve(process.cwd(), "../../specs/apps/crud/behavior/be/gherkin/token-management/tokens.feature"),
 );
 
 async function setupAdmin(ctx: TestContext): Promise<void> {

@@ -5,7 +5,7 @@ import { createTestContext, registerUser, loginUser, getAuth, type TestContext }
 import { MAX_FAILED_ATTEMPTS } from "@/lib/types";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/crud/be/gherkin/security/security.feature"),
+  path.resolve(process.cwd(), "../../specs/apps/crud/behavior/be/gherkin/security/security.feature"),
 );
 
 async function failLoginAttempts(ctx: TestContext, username: string, count: number): Promise<void> {

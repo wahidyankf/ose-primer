@@ -25,7 +25,7 @@ interface OpenAPISpec {
   >;
 }
 
-const specPath = resolve(__dirname, "../../../../specs/apps/crud/contracts/generated/openapi-bundled.json");
+const specPath = resolve(__dirname, "../../../../specs/apps/crud/containers/contracts/generated/openapi-bundled.json");
 
 let spec: OpenAPISpec | null = null;
 let ajv: Ajv | null = null;

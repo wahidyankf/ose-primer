@@ -21,7 +21,7 @@ scenarios as all other CRUD backends.
 
 - The language runtime installed locally
 - Familiarity with the [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md)
-- Understanding of the [OpenAPI contract](../../specs/apps/crud/contracts/README.md)
+- Understanding of the [OpenAPI contract](../../specs/apps/crud/containers/contracts/README.md)
 
 ## 🛠️ Steps
 
@@ -101,7 +101,7 @@ For languages like Rust and Dart where generated code is required at compile tim
 "codegen": {
   "dependsOn": ["crud-contracts:bundle"],
   "cache": true,
-  "inputs": ["{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml"],
+  "inputs": ["{workspaceRoot}/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml"],
   "outputs": ["{projectRoot}/generated-contracts"]
 }
 ```
@@ -130,7 +130,7 @@ invalidates the Nx cache and forces a re-run:
 "inputs": [
   "{projectRoot}/src/**/*",
   "{projectRoot}/generated-contracts/**/*",
-  "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"
+  "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"
 ]
 ```
 
@@ -153,7 +153,7 @@ which is non-deterministic and must never be cached:
 ### 3. Set Up Codegen
 
 Implement the `codegen` target command to generate types from the bundled OpenAPI spec at
-`specs/apps/crud/contracts/generated/openapi-bundled.yaml` into a `generated-contracts/`
+`specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml` into a `generated-contracts/`
 directory. The exact tool depends on your language:
 
 | Language   | Tool                       | Output                           |
@@ -169,18 +169,18 @@ Add `generated-contracts/` to `.gitignore` — generated code is not committed.
 ### 4. Implement the API
 
 Implement the REST API endpoints defined in the
-[OpenAPI contract](../../specs/apps/crud/contracts/README.md). All CRUD backends expose the
+[OpenAPI contract](../../specs/apps/crud/containers/contracts/README.md). All CRUD backends expose the
 same endpoints with identical request/response shapes.
 
 ### 5. Set Up Gherkin Specs
 
-The Gherkin feature files in `specs/apps/crud/be/gherkin/` are **shared across all CRUD backends**.
+The Gherkin feature files in `specs/apps/crud/behavior/be/gherkin/` are **shared across all CRUD backends**.
 Do not create a new specs directory for the new backend — it must consume the existing specs.
 
 #### Verify the specs directory exists
 
 ```bash
-ls specs/apps/crud/be/gherkin/
+ls specs/apps/crud/behavior/be/gherkin/
 ```
 
 The directory is pre-populated with feature files covering all endpoints in the OpenAPI contract.
@@ -188,7 +188,7 @@ If the directory does not exist yet (e.g., first backend ever), create it and ad
 feature file per domain area:
 
 ```
-specs/apps/crud/be/gherkin/
+specs/apps/crud/behavior/be/gherkin/
 ├── authentication/
 │   ├── password-login.feature
 │   └── token-lifecycle.feature
@@ -199,7 +199,7 @@ specs/apps/crud/be/gherkin/
 └── README.md
 ```
 
-See the [Gherkin specs README](../../specs/apps/crud/be/gherkin/README.md) for the full list of
+See the [Gherkin specs README](../../specs/apps/crud/behavior/be/gherkin/README.md) for the full list of
 feature files and scenario coverage.
 
 #### Wire Gherkin consumption in tests
@@ -226,7 +226,7 @@ implementations use the same feature files but connect to real PostgreSQL via `D
 
 #### Unit Tests (`tests/unit/` or equivalent)
 
-- Consume shared Gherkin feature files from `specs/apps/crud/be/gherkin/`
+- Consume shared Gherkin feature files from `specs/apps/crud/behavior/be/gherkin/`
 - Call service/handler functions directly with **mocked repositories**
 - No HTTP framework, no database, no Docker
 - Coverage measured here (>=90% via `rhino-cli test-coverage validate`)
@@ -337,7 +337,7 @@ services:
     working_dir: /workspace
     volumes:
       - ../../../apps/crud-be-{lang}-{framework}:/workspace:rw
-      - ../../../specs/apps/crud/be/gherkin:/specs/apps/crud/be/gherkin:ro
+      - ../../../specs/apps/crud/behavior/be/gherkin:/specs/apps/crud/behavior/be/gherkin:ro
     ports:
       - "8201:8201"
     depends_on:
@@ -706,7 +706,7 @@ Include:
 - Related Documentation section linking to shared docs
 
 Do **not** hardcode scenario or feature counts — reference the
-[gherkin README](../../specs/apps/crud/be/gherkin/README.md) instead.
+[gherkin README](../../specs/apps/crud/behavior/be/gherkin/README.md) instead.
 
 ### 14. Verify
 
@@ -729,5 +729,5 @@ nx graph
 - [Code Coverage Reference](../reference/code-coverage.md)
 - [Project Dependency Graph](../reference/project-dependency-graph.md)
 - [BDD Spec-Test Mapping](../../repo-governance/development/infra/bdd-spec-test-mapping.md)
-- [Backend Gherkin Specs](../../specs/apps/crud/be/gherkin/README.md)
-- [OpenAPI Contract](../../specs/apps/crud/contracts/README.md)
+- [Backend Gherkin Specs](../../specs/apps/crud/behavior/be/gherkin/README.md)
+- [OpenAPI Contract](../../specs/apps/crud/containers/contracts/README.md)

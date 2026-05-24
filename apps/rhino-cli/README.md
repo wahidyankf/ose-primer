@@ -562,7 +562,7 @@ the spec-to-test direction for test suites that use explicit file loading (e.g. 
 # Quiet mode
 
 # Shared steps mode (for E2E projects with shared step files)
-rhino-cli spec-coverage validate specs/apps/crud/be/gherkin apps/crud-be-e2e --shared-steps
+rhino-cli spec-coverage validate specs/apps/crud/behavior/be/gherkin apps/crud-be-e2e --shared-steps
 ```
 
 **What it does:**

@@ -47,7 +47,7 @@ invalidated and `nx affected` flags the project.
 ```json
 "inputs": [
   "default",
-  "{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature"
+  "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"
 ]
 ```
 
@@ -161,13 +161,13 @@ These projects are dependencies of many other projects.
 
 ### crud-contracts
 
-**Location**: `specs/apps/crud/contracts/`
+**Location**: `specs/apps/crud/containers/contracts/`
 
 The OpenAPI 3.1 specification consumed by all demo apps for type generation.
 
 - **Dependents**: All 11 `crud-be-*` backends + all 3 `crud-fe-*` frontends + 2 E2E suites + 2 codegen libs (18 total)
 - **Mechanism**: `implicitDependencies` + `codegen.dependsOn: ["crud-contracts:bundle"]`
-- **Spec input**: `{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml`
+- **Spec input**: `{workspaceRoot}/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml`
 
 ### rhino-cli
 
@@ -216,8 +216,8 @@ All demo backends share the same dependency pattern.
 
 **Spec input paths**:
 
-- `contracts/*` = `{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml` (codegen)
-- `be/gherkin/*` = `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` (test:unit, test:quick)
+- `contracts/*` = `{workspaceRoot}/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml` (codegen)
+- `be/gherkin/*` = `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` (test:unit, test:quick)
 
 ### Demo Frontends
 
@@ -229,8 +229,8 @@ All demo backends share the same dependency pattern.
 
 **Spec input paths**:
 
-- `contracts/*` = `{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml` (codegen)
-- `fe/gherkin/*` = `{workspaceRoot}/specs/apps/crud/fe/gherkin/**/*.feature` (test:unit, test:quick)
+- `contracts/*` = `{workspaceRoot}/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml` (codegen)
+- `fe/gherkin/*` = `{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature` (test:unit, test:quick)
 
 ### E2E Test Projects
 
@@ -297,16 +297,16 @@ crud-fs-ts-nextjs depends on rhino-cli for link validation.
 All Gherkin specs and API contracts live under `specs/` and are consumed via
 `{workspaceRoot}` inputs.
 
-| Spec Directory                | Consumed By                    | Targets                          |
-| ----------------------------- | ------------------------------ | -------------------------------- |
-| `specs/apps/crud/contracts/`  | all 14 demo apps               | codegen                          |
-| `specs/apps/crud/be/gherkin/` | 11 demo backends + crud-be-e2e | test:unit, test:quick, typecheck |
-| `specs/apps/crud/fe/gherkin/` | 3 demo frontends + crud-fe-e2e | test:unit, test:quick, typecheck |
-| `specs/apps/rhino/`           | rhino-cli                      | test:integration                 |
-| `specs/apps/crud/`            | rhino-cli, crud-fs-ts-nextjs   | test:integration                 |
-| `specs/apps/crud/`            | rhino-cli, crud-fs-ts-nextjs   | test:integration                 |
-| `specs/libs/golang-commons/`  | golang-commons                 | test:integration                 |
-| `specs/libs/golang-commons/`  | golang-commons                 | test:integration                 |
+| Spec Directory                          | Consumed By                    | Targets                          |
+| --------------------------------------- | ------------------------------ | -------------------------------- |
+| `specs/apps/crud/containers/contracts/` | all 14 demo apps               | codegen                          |
+| `specs/apps/crud/behavior/be/gherkin/`  | 11 demo backends + crud-be-e2e | test:unit, test:quick, typecheck |
+| `specs/apps/crud/behavior/web/gherkin/` | 3 demo frontends + crud-fe-e2e | test:unit, test:quick, typecheck |
+| `specs/apps/rhino/`                     | rhino-cli                      | test:integration                 |
+| `specs/apps/crud/`                      | rhino-cli, crud-fs-ts-nextjs   | test:integration                 |
+| `specs/apps/crud/`                      | rhino-cli, crud-fs-ts-nextjs   | test:integration                 |
+| `specs/libs/golang-commons/`            | golang-commons                 | test:integration                 |
+| `specs/libs/golang-commons/`            | golang-commons                 | test:integration                 |
 
 ## Design Decisions
 

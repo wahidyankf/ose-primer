@@ -7,11 +7,11 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx @hey-api/openapi-ts -i specs/apps/crud/contracts/generated/openapi-bundled.yaml -o apps/crud-fs-ts-nextjs/src/generated-contracts -s"
+        "command": "npx @hey-api/openapi-ts -i specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -o apps/crud-fs-ts-nextjs/src/generated-contracts -s"
       },
       "dependsOn": ["crud-contracts:bundle"],
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml"],
+      "inputs": ["{workspaceRoot}/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml"],
       "outputs": ["{projectRoot}/src/generated-contracts"]
     },
     "dev": {

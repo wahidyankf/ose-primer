@@ -53,7 +53,7 @@ fixes iteratively until all issues are resolved.
 
 **Key Design Principle**: This workflow only validates folders you explicitly list. It does not
 discover or scan the entire specs/ tree. Subfolders are included automatically — listing
-`specs/apps/crud/be` includes `specs/apps/crud/be/gherkin/`, `specs/apps/crud/c4/`, etc.
+`specs/apps/crud/be` includes `specs/apps/crud/behavior/be/gherkin/`, `specs/apps/crud/components/`, etc.
 When multiple folders are listed, cross-folder consistency is checked between them (contradictions,
 coverage gaps, terminology drift).
 
@@ -281,7 +281,7 @@ User: "Run specs validation for specs/apps/crud/be"
 
 The AI will:
 
-- Validate `specs/apps/crud/be/` and all its subfolders
+- Validate `specs/apps/crud/behavior/be/` and all its subfolders
 - Fix CRITICAL and HIGH findings (missing READMEs, wrong counts, broken links)
 - Report MEDIUM/LOW findings without fixing them
 - Skip cross-folder consistency (only one folder listed)

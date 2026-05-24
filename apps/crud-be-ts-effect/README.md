@@ -84,7 +84,7 @@ fast with no external dependencies.
 
 ### Level 2: Unit BDD (`tests/unit/bdd/`)
 
-Cucumber.js BDD scenarios from `specs/apps/crud/be/gherkin/` run against an in-process server
+Cucumber.js BDD scenarios from `specs/apps/crud/behavior/be/gherkin/` run against an in-process server
 backed by SQLite in-memory. All shared Gherkin scenarios execute with no real database required.
 Deterministic, fast, and safe to cache.
 
@@ -190,6 +190,6 @@ The application uses Effect TS throughout:
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
-- [Backend Gherkin Specs](../../specs/apps/crud/be/gherkin/README.md) — Shared feature files (source of truth)
-- [OpenAPI Contract](../../specs/apps/crud/contracts/README.md) — API contract and codegen
+- [Backend Gherkin Specs](../../specs/apps/crud/behavior/be/gherkin/README.md) — Shared feature files (source of truth)
+- [OpenAPI Contract](../../specs/apps/crud/containers/contracts/README.md) — API contract and codegen
 - [crud-be-e2e](../crud-be-e2e/README.md) — Shared E2E test suite

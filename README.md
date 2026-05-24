@@ -21,7 +21,7 @@ Use it by forking, cloning, or copying the directories that fit your project —
 
 1. **Clone or fork**: `git clone git@github.com:wahidyankf/ose-primer.git my-new-repo && cd my-new-repo`.
 2. **Bootstrap the toolchain**: `npm install && npm run doctor -- --fix`. This pins Node via Volta, installs npm workspaces, and converges 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node).
-3. **Keep what you need, delete what you don't** — every `crud-*` variant is independently deletable with a single `git rm -r apps/<name>` (plus its `specs/apps/crud/be/gherkin/<name>/` entries, if present). The `rhino-cli`, `repo-governance/`, `docs/`, `.claude/`, `.opencode/`, and `plans/` trees are expected to survive; the rest is opt-in.
+3. **Keep what you need, delete what you don't** — every `crud-*` variant is independently deletable with a single `git rm -r apps/<name>` (plus its `specs/apps/crud/behavior/be/gherkin/<name>/` entries, if present). The `rhino-cli`, `repo-governance/`, `docs/`, `.claude/`, `.opencode/`, and `plans/` trees are expected to survive; the rest is opt-in.
 4. **Rename to your project** — search-and-replace `ose-primer` across the repo, point `origin` at your new remote, and push to `main`.
 5. **Start your own plans** — drop quick ideas into `plans/ideas.md` and promote mature ones to a `plans/backlog/YYYY-MM-DD__[identifier]/` folder following the five-document convention.
 

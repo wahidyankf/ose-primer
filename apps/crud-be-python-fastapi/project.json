@@ -7,11 +7,11 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "mkdir -p apps/crud-be-python-fastapi/generated_contracts && datamodel-codegen --input $(pwd)/specs/apps/crud/contracts/generated/openapi-bundled.yaml --input-file-type openapi --output $(pwd)/apps/crud-be-python-fastapi/generated_contracts/__init__.py --output-model-type pydantic_v2.BaseModel --target-python-version 3.12"
+        "command": "mkdir -p apps/crud-be-python-fastapi/generated_contracts && datamodel-codegen --input $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml --input-file-type openapi --output $(pwd)/apps/crud-be-python-fastapi/generated_contracts/__init__.py --output-model-type pydantic_v2.BaseModel --target-python-version 3.12"
       },
       "dependsOn": ["crud-contracts:bundle"],
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml"],
+      "inputs": ["{workspaceRoot}/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml"],
       "outputs": ["{projectRoot}/generated_contracts"]
     },
     "build": {

@@ -1676,7 +1676,7 @@ mechanically instead of counting characters manually. Use `--max-label-len 20` t
 the 20-character Hugo/Hextra limit (the default is 30, matching Mermaid's `wrappingWidth`
 baseline). The tool also checks parallel rank width (Rule 2 above) and single-diagram-per-block.
 
-**Real-World Context**: All five rules were verified when fixing C4 architecture diagrams in `specs/apps/crud/c4/`. Failures observed:
+**Real-World Context**: All five rules were verified when fixing C4 architecture diagrams in `specs/apps/crud/components/`. Failures observed:
 
 - `\n` in node labels rendered as literal `\n` (fixed by switching to `<br/>`)
 - `<br/>` in edge labels rendered as literal `<br/>` text (fixed by removing HTML, using plain text)

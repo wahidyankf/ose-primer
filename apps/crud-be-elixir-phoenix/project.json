@@ -7,11 +7,11 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cd libs/elixir-openapi-codegen && mix run -e 'OpenApiCodegen.generate(\"../../specs/apps/crud/contracts/generated/openapi-bundled.yaml\", \"../../apps/crud-be-elixir-phoenix/generated-contracts\")'"
+        "command": "cd libs/elixir-openapi-codegen && mix run -e 'OpenApiCodegen.generate(\"../../specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml\", \"../../apps/crud-be-elixir-phoenix/generated-contracts\")'"
       },
       "dependsOn": ["crud-contracts:bundle", "elixir-openapi-codegen:build"],
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml"],
+      "inputs": ["{workspaceRoot}/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml"],
       "outputs": ["{projectRoot}/generated-contracts"]
     },
     "build": {

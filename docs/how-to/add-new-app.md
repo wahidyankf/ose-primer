@@ -290,7 +290,7 @@ New `crud-be-*` and `crud-fe-*` apps must satisfy these additional requirements:
 
 **Mandatory Nx targets** (all 7 required):
 
-- [ ] `codegen` — generates types + encoders/decoders from the OpenAPI spec at `specs/apps/crud/contracts/`
+- [ ] `codegen` — generates types + encoders/decoders from the OpenAPI spec at `specs/apps/crud/containers/contracts/`
 - [ ] `typecheck` — verifies types compile; must include `dependsOn: ["codegen"]`
 - [ ] `lint` — static analysis / format check
 - [ ] `build` — production build; must include `dependsOn: ["codegen"]`
@@ -325,7 +325,7 @@ specs/apps/[domain]/
 **Canonical inputs for cache invalidation** (add to `test:unit` and `test:quick`):
 
 - Include `{projectRoot}/generated-contracts/**/*` (or `generated_contracts` for Python/Clojure)
-- Include `{workspaceRoot}/specs/apps/crud/be/gherkin/**/*.feature` for backends
+- Include `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` for backends
 - Include language-specific source file globs (see `repo-governance/development/infra/nx-targets.md` for per-language patterns)
 
 **See**: [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) for canonical target names, caching rules, and per-language input patterns.

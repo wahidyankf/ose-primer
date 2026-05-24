@@ -182,5 +182,5 @@ apps/crud-be-csharp-aspnetcore/
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
-- [Backend Gherkin Specs](../../specs/apps/crud/be/gherkin/README.md) — Shared feature files (source of truth)
-- [OpenAPI Contract](../../specs/apps/crud/contracts/README.md) — API contract and codegen
+- [Backend Gherkin Specs](../../specs/apps/crud/behavior/be/gherkin/README.md) — Shared feature files (source of truth)
+- [OpenAPI Contract](../../specs/apps/crud/containers/contracts/README.md) — API contract and codegen

@@ -31,11 +31,11 @@ graph TD
     end
 
     subgraph SPECS["Specifications"]
-        CONTRACT["OpenAPI 3.1 Contract<br/>──────────────────<br/>specs/apps/crud/contracts/<br/><br/>Types, endpoints, schemas<br/>Generates code via codegen"]:::spec
+        CONTRACT["OpenAPI 3.1 Contract<br/>──────────────────<br/>specs/apps/crud/containers/contracts/<br/><br/>Types, endpoints, schemas<br/>Generates code via codegen"]:::spec
 
-        BE_GHERKIN["Backend Gherkin<br/>──────────────────<br/>specs/apps/crud/be/gherkin/<br/><br/>See be/gherkin/README"]:::spec
+        BE_GHERKIN["Backend Gherkin<br/>──────────────────<br/>specs/apps/crud/behavior/be/gherkin/<br/><br/>See be/gherkin/README"]:::spec
 
-        FE_GHERKIN["Frontend Gherkin<br/>──────────────────<br/>specs/apps/crud/fe/gherkin/<br/><br/>See fe/gherkin/README"]:::spec
+        FE_GHERKIN["Frontend Gherkin<br/>──────────────────<br/>specs/apps/crud/behavior/web/gherkin/<br/><br/>See fe/gherkin/README"]:::spec
     end
 
     subgraph CICD["CI Pipelines"]
@@ -115,8 +115,8 @@ graph TD
 
 ## Related
 
-- **Context diagram**: [context.md](./context.md)
-- **Backend component diagram**: [component-be.md](./component-be.md)
-- **Frontend component diagram**: [component-fe.md](./component-fe.md)
-- **API contract**: [../contracts/openapi.yaml](../contracts/openapi.yaml)
+- **Context diagram**: [context.md](../system-context/context.md)
+- **Backend component diagram**: [component-be.md](../components/be/component-be.md)
+- **Frontend component diagram**: [component-web.md](../components/web/component-web.md)
+- **API contract**: [contracts/openapi.yaml](./contracts/openapi.yaml)
 - **Parent**: [crud specs](../README.md)

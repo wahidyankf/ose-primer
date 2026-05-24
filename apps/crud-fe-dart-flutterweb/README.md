@@ -59,7 +59,7 @@ docker compose -f infra/dev/crud-fe-dart-flutterweb/docker-compose.yml up --buil
 
 Generated Dart types live in `generated-contracts/` (gitignored). The `codegen` target:
 
-1. Runs `openapi-generator-cli` to produce Dart models from `specs/apps/crud/contracts/generated/openapi-bundled.yaml`
+1. Runs `openapi-generator-cli` to produce Dart models from `specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml`
 2. Runs `rhino-cli contracts dart-scaffold` to add Dart library scaffolding
 3. Runs `flutter pub get` to install the generated package
 
@@ -92,6 +92,6 @@ nginx/
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
-- [Frontend Gherkin Specs](../../specs/apps/crud/fe/gherkin/README.md) — Shared feature files (source of truth)
-- [OpenAPI Contract](../../specs/apps/crud/contracts/README.md) — API contract and codegen
+- [Frontend Gherkin Specs](../../specs/apps/crud/behavior/web/gherkin/README.md) — Shared feature files (source of truth)
+- [OpenAPI Contract](../../specs/apps/crud/containers/contracts/README.md) — API contract and codegen
 - [crud-fe-e2e](../crud-fe-e2e/README.md) — Centralized E2E tests for all crud-fe frontends

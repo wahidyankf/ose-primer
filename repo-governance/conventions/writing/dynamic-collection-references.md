@@ -154,16 +154,16 @@ If a count is needed anywhere, the index document for that collection is the sin
 
 **The authoritative sources for collection sizes**:
 
-| Collection       | Authoritative Index                     |
-| ---------------- | --------------------------------------- |
-| AI Agents        | `.claude/agents/README.md`              |
-| agent skills     | `.claude/skills/README.md`              |
-| Conventions      | `repo-governance/conventions/README.md` |
-| Principles       | `repo-governance/principles/README.md`  |
-| Dev Practices    | `repo-governance/development/README.md` |
-| Workflows        | `repo-governance/workflows/README.md`   |
-| BE Gherkin Specs | `specs/apps/crud/be/gherkin/README.md`  |
-| FE Gherkin Specs | `specs/apps/crud/fe/gherkin/README.md`  |
+| Collection       | Authoritative Index                              |
+| ---------------- | ------------------------------------------------ |
+| AI Agents        | `.claude/agents/README.md`                       |
+| agent skills     | `.claude/skills/README.md`                       |
+| Conventions      | `repo-governance/conventions/README.md`          |
+| Principles       | `repo-governance/principles/README.md`           |
+| Dev Practices    | `repo-governance/development/README.md`          |
+| Workflows        | `repo-governance/workflows/README.md`            |
+| BE Gherkin Specs | `specs/apps/crud/behavior/be/gherkin/README.md`  |
+| FE Gherkin Specs | `specs/apps/crud/behavior/web/gherkin/README.md` |
 
 ## 📖 Examples
 

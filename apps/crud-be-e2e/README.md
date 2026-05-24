@@ -8,7 +8,7 @@ Tests use Playwright's `APIRequestContext` to validate HTTP endpoints — no bro
 
 ## What This Tests
 
-Feature files in `specs/apps/crud/be/gherkin/` are the source of truth:
+Feature files in `specs/apps/crud/behavior/be/gherkin/` are the source of truth:
 
 - `health/health-check.feature, authentication/_, user-lifecycle/_, security/_, token-management/_, admin/_, expenses/_, expenses/\*
 - `
@@ -19,7 +19,7 @@ Feature files in `specs/apps/crud/be/gherkin/` are the source of truth:
 ## Architecture
 
 ```
-specs/apps/crud/be/gherkin/**/*.feature    ← source of truth (read-only)
+specs/apps/crud/behavior/be/gherkin/**/*.feature    ← source of truth (read-only)
         │
         ▼  (defineBddConfig reads features)
 playwright.config.ts
@@ -150,6 +150,6 @@ this scenario will fail — which is expected, as E2E tests validate production-
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
-- [Backend Gherkin Specs](../../specs/apps/crud/be/gherkin/README.md) — Shared feature files (source of truth)
-- [OpenAPI Contract](../../specs/apps/crud/contracts/README.md) — API contract and codegen
+- [Backend Gherkin Specs](../../specs/apps/crud/behavior/be/gherkin/README.md) — Shared feature files (source of truth)
+- [OpenAPI Contract](../../specs/apps/crud/containers/contracts/README.md) — API contract and codegen
 - [Playwright docs](../../docs/explanation/software-engineering/automation-testing/tools/playwright/README.md) — Playwright standards

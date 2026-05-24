@@ -43,7 +43,7 @@ This agent receives an explicit target path (or list of paths) where content sho
 target: specs/apps/crud/fe-react-nextjs
 
 # Create missing README in an existing directory
-target: specs/apps/crud/be/gherkin/health
+target: specs/apps/crud/behavior/be/gherkin/health
 
 # Scaffold C4 diagrams for an existing spec area
 ```

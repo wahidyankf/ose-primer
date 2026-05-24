@@ -66,7 +66,7 @@ and is a dependency of both `typecheck` and `build`.
 
 ## API Endpoints
 
-See the [OpenAPI contract](../../specs/apps/crud/contracts/README.md) for the full API surface.
+See the [OpenAPI contract](../../specs/apps/crud/containers/contracts/README.md) for the full API surface.
 
 ## Test Architecture
 
@@ -77,7 +77,7 @@ Three-level testing strategy with clear separation of concerns.
 Runs with `mvn test` (default Maven profile, no `-P` flag needed).
 
 - **Cucumber BDD scenarios**: All Gherkin feature files from
-  `specs/apps/crud/be/gherkin/` run against an in-process Vert.x HTTP server
+  `specs/apps/crud/behavior/be/gherkin/` run against an in-process Vert.x HTTP server
   backed by in-memory repositories (ConcurrentHashMap). Step definitions live in
   `src/test/java/.../unit/steps/`. Runner: `UnitCucumberTest.java`.
 - **Plain JUnit tests**: `ExpenseValidatorTest`, `JwtServiceTest`, `PasswordServiceTest`,
@@ -168,5 +168,5 @@ Migrations run automatically on application startup via the `SchemaInitializer` 
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
-- [Backend Gherkin Specs](../../specs/apps/crud/be/gherkin/README.md) — Shared feature files (source of truth)
-- [OpenAPI Contract](../../specs/apps/crud/contracts/README.md) — API contract and codegen
+- [Backend Gherkin Specs](../../specs/apps/crud/behavior/be/gherkin/README.md) — Shared feature files (source of truth)
+- [OpenAPI Contract](../../specs/apps/crud/containers/contracts/README.md) — API contract and codegen

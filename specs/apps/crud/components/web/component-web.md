@@ -131,7 +131,7 @@ graph LR
 ## Gherkin Coverage by Component
 
 Each component above is exercised by Gherkin features from
-[`specs/apps/crud/fe/gherkin/`](../fe/gherkin/README.md):
+[`specs/apps/crud/behavior/web/gherkin/`](../../behavior/web/gherkin/README.md):
 
 | Component                             | Gherkin Domain(s) | Features                                                         |
 | ------------------------------------- | ----------------- | ---------------------------------------------------------------- |
@@ -152,7 +152,7 @@ Each component above is exercised by Gherkin features from
 
 All 3 frontend implementations generate types from the same OpenAPI 3.1 spec:
 
-- **Source**: [`specs/apps/crud/contracts/openapi.yaml`](../contracts/openapi.yaml)
+- **Source**: [`specs/apps/crud/containers/contracts/openapi.yaml`](../../containers/contracts/openapi.yaml)
 - **Codegen target**: `nx run <frontend>:codegen` (depends on `crud-contracts:bundle`)
 - **Output**: `<frontend>/generated-contracts/` or `<frontend>/src/generated-contracts/`
 
@@ -169,7 +169,7 @@ API modules (Next.js, TanStack Start).
 
 ## Related
 
-- **Container diagram**: [container.md](./container.md)
-- **Backend component diagram**: [component-be.md](./component-be.md)
-- **API contract**: [../contracts/openapi.yaml](../contracts/openapi.yaml)
-- **Frontend gherkin specs**: [fe/gherkin/](../fe/gherkin/README.md)
+- **Container diagram**: [container.md](../../containers/container.md)
+- **Backend component diagram**: [component-be.md](../be/component-be.md)
+- **API contract**: [../../containers/contracts/openapi.yaml](../../containers/contracts/openapi.yaml)
+- **Frontend gherkin specs**: [web/gherkin/](../../behavior/web/gherkin/README.md)

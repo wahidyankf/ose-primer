@@ -13,7 +13,7 @@ func TestUnit(t *testing.T) {
 		ScenarioInitializer: initializeScenario,
 		Options: &godog.Options{
 			Format:   "pretty",
-			Paths:    []string{"../../../../specs/apps/crud/be/gherkin"},
+			Paths:    []string{"../../../../specs/apps/crud/behavior/be/gherkin"},
 			TestingT: t,
 			Strict:   true,
 			Tags:     "~@test-support",

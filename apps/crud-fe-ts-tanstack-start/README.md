@@ -11,7 +11,7 @@ Demo Frontend - TanStack Start (TypeScript) implementation consuming the
 - **State Management**: TanStack Query v5
 - **BDD Tool**: @amiceli/vitest-cucumber
 - **Port**: 3301
-- **Specs**: [`specs/apps/crud/fe/gherkin/`](../../specs/apps/crud/fe/gherkin/README.md)
+- **Specs**: [`specs/apps/crud/behavior/web/gherkin/`](../../specs/apps/crud/behavior/web/gherkin/README.md)
 
 ## Prerequisites
 
@@ -65,7 +65,7 @@ apps/crud-fe-ts-tanstack-start/
 
 ## Testing
 
-Two levels of testing consume the shared Gherkin scenarios from [`specs/apps/crud/fe/gherkin/`](../../specs/apps/crud/fe/gherkin/README.md):
+Two levels of testing consume the shared Gherkin scenarios from [`specs/apps/crud/behavior/web/gherkin/`](../../specs/apps/crud/behavior/web/gherkin/README.md):
 
 | Level | Tool                        | Dependencies | Command                                      | Cached? |
 | ----- | --------------------------- | ------------ | -------------------------------------------- | ------- |
@@ -104,6 +104,6 @@ BASE_URL=http://localhost:3301 nx run crud-fe-e2e:test:e2e
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
-- [Frontend Gherkin Specs](../../specs/apps/crud/fe/gherkin/README.md) — Shared feature files (source of truth)
-- [OpenAPI Contract](../../specs/apps/crud/contracts/README.md) — API contract and codegen
+- [Frontend Gherkin Specs](../../specs/apps/crud/behavior/web/gherkin/README.md) — Shared feature files (source of truth)
+- [OpenAPI Contract](../../specs/apps/crud/containers/contracts/README.md) — API contract and codegen
 - [crud-fe-e2e](../crud-fe-e2e/README.md) — Centralized E2E tests for all crud-fe frontends

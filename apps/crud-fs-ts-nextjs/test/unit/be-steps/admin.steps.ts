@@ -3,7 +3,9 @@ import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
 import { createTestContext, registerUser, loginUser, getAuth, type TestContext } from "./helpers/test-context";
 
-const feature = await loadFeature(path.resolve(process.cwd(), "../../specs/apps/crud/be/gherkin/admin/admin.feature"));
+const feature = await loadFeature(
+  path.resolve(process.cwd(), "../../specs/apps/crud/behavior/be/gherkin/admin/admin.feature"),
+);
 
 async function setupAdmin(ctx: TestContext): Promise<void> {
   await registerUser(ctx, "superadmin", "superadmin@example.com", "Str0ng#Pass1");

@@ -7,11 +7,11 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/contracts/generated/openapi-bundled.yaml -g fsharp-giraffe-server -o $(pwd)/apps/crud-be-fsharp-giraffe/generated-contracts --model-package DemoBeFsgi.Contracts --global-property=models,modelDocs=false,apiDocs=false"
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g fsharp-giraffe-server -o $(pwd)/apps/crud-be-fsharp-giraffe/generated-contracts --model-package DemoBeFsgi.Contracts --global-property=models,modelDocs=false,apiDocs=false"
       },
       "dependsOn": ["crud-contracts:bundle"],
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml"],
+      "inputs": ["{workspaceRoot}/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml"],
       "outputs": ["{projectRoot}/generated-contracts"]
     },
     "build": {

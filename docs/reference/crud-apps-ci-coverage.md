@@ -15,7 +15,7 @@ tags:
 > cloning and setting up your own repository, replace `wahidyankf/ose-primer` with your
 > GitHub organization and repository name.
 
-CI status for CRUD app implementations. These apps implement the same API contract (`specs/apps/crud/contracts/`) across multiple languages and frameworks. Coverage is enforced locally during `test:quick` by `rhino-cli test-coverage validate`; see [Code Coverage Reference](./code-coverage.md).
+CI status for CRUD app implementations. These apps implement the same API contract (`specs/apps/crud/containers/contracts/`) across multiple languages and frameworks. Coverage is enforced locally during `test:quick` by `rhino-cli test-coverage validate`; see [Code Coverage Reference](./code-coverage.md).
 
 ## 🔄 CRUD Fullstack Apps
 

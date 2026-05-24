@@ -7,11 +7,11 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "mkdir -p apps/crud-be-golang-gin/generated-contracts && oapi-codegen -generate types -package contracts -o apps/crud-be-golang-gin/generated-contracts/types.gen.go specs/apps/crud/contracts/generated/openapi-bundled.yaml"
+        "command": "mkdir -p apps/crud-be-golang-gin/generated-contracts && oapi-codegen -generate types -package contracts -o apps/crud-be-golang-gin/generated-contracts/types.gen.go specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml"
       },
       "dependsOn": ["crud-contracts:bundle"],
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/contracts/generated/openapi-bundled.yaml"],
+      "inputs": ["{workspaceRoot}/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml"],
       "outputs": ["{projectRoot}/generated-contracts"]
     },
     "build": {

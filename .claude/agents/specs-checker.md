@@ -48,7 +48,7 @@ folders: [specs/apps/crud/be, specs/libs/golang-commons]
 - Each folder in the list is validated independently (Categories 1-3, 5-8)
 - Cross-folder consistency (Category 4) runs **only** across the listed folders
 - Subfolders are always included automatically — listing `specs/apps/crud/be` includes
-  `specs/apps/crud/be/gherkin/`, `specs/apps/crud/c4/`, and all children
+  `specs/apps/crud/behavior/be/gherkin/`, `specs/apps/crud/components/`, and all children
 - Folders NOT in the list are completely ignored, even if referenced by listed folders
 
 ## Validation Categories

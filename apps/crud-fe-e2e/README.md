@@ -1,6 +1,6 @@
 # crud-fe-e2e
 
-End-to-end tests for all [crud-fe frontends](../../specs/apps/crud/fe/README.md),
+End-to-end tests for all [crud-fe frontends](../../specs/apps/crud/behavior/web/README.md),
 using [playwright-bdd](https://github.com/vitalets/playwright-bdd) to drive tests from Gherkin
 feature files.
 
@@ -8,7 +8,7 @@ Tests use Playwright to drive a real browser against a running frontend + backen
 
 ## What This Tests
 
-Feature files in [`specs/apps/crud/fe/gherkin/`](../../specs/apps/crud/fe/gherkin/README.md) are the source of truth:
+Feature files in [`specs/apps/crud/behavior/web/gherkin/`](../../specs/apps/crud/behavior/web/gherkin/README.md) are the source of truth:
 
 - `health/` - Service health status indicator
 - `authentication/` - Login form, session lifecycle, logout
@@ -22,7 +22,7 @@ Feature files in [`specs/apps/crud/fe/gherkin/`](../../specs/apps/crud/fe/gherki
 ## Architecture
 
 ```
-specs/apps/crud/fe/gherkin/**/*.feature    <- source of truth (read-only)
+specs/apps/crud/behavior/web/gherkin/**/*.feature    <- source of truth (read-only)
         |
         v  (defineBddConfig reads features)
 playwright.config.ts
@@ -133,6 +133,6 @@ apps/crud-fe-e2e/
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
-- [Frontend Gherkin Specs](../../specs/apps/crud/fe/gherkin/README.md) — Shared feature files (source of truth)
-- [OpenAPI Contract](../../specs/apps/crud/contracts/README.md) — API contract and codegen
+- [Frontend Gherkin Specs](../../specs/apps/crud/behavior/web/gherkin/README.md) — Shared feature files (source of truth)
+- [OpenAPI Contract](../../specs/apps/crud/containers/contracts/README.md) — API contract and codegen
 - [Playwright docs](../../docs/explanation/software-engineering/automation-testing/tools/playwright/README.md) — Playwright standards

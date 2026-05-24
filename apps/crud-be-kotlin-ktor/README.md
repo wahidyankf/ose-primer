@@ -66,7 +66,7 @@ nx run crud-be-kotlin-ktor:typecheck     # Compile Kotlin sources (./gradlew com
 
 ## API Endpoints
 
-See the [OpenAPI contract](../../specs/apps/crud/contracts/README.md) for the full API surface.
+See the [OpenAPI contract](../../specs/apps/crud/containers/contracts/README.md) for the full API surface.
 
 ## Test Architecture
 
@@ -102,7 +102,7 @@ and runs `testIntegration` against the PostgreSQL service.
 ### Cucumber Glue Isolation
 
 Both unit and integration test suites share the same Gherkin feature files
-(`specs/apps/crud/be/gherkin/`). The `cucumber.glue` system property in each Gradle task controls
+(`specs/apps/crud/behavior/be/gherkin/`). The `cucumber.glue` system property in each Gradle task controls
 which step definitions are used:
 
 - `testUnit`: `cucumber.glue=com.demobektkt.unit.steps`
@@ -155,5 +155,5 @@ This differs from the 5-table standard used by other demo backends (which split 
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
-- [Backend Gherkin Specs](../../specs/apps/crud/be/gherkin/README.md) — Shared feature files (source of truth)
-- [OpenAPI Contract](../../specs/apps/crud/contracts/README.md) — API contract and codegen
+- [Backend Gherkin Specs](../../specs/apps/crud/behavior/be/gherkin/README.md) — Shared feature files (source of truth)
+- [OpenAPI Contract](../../specs/apps/crud/containers/contracts/README.md) — API contract and codegen

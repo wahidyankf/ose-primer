@@ -106,12 +106,12 @@ ALTER TABLE users DROP COLUMN phone;
 
 ## API Endpoints
 
-See the [OpenAPI contract](../../specs/apps/crud/contracts/README.md) for the full API surface.
+See the [OpenAPI contract](../../specs/apps/crud/containers/contracts/README.md) for the full API surface.
 
 ## Test Architecture
 
 This project follows the three-level testing standard where the same Gherkin feature files
-(`specs/apps/crud/be/gherkin/`) drive all three levels. Only the step implementations differ.
+(`specs/apps/crud/behavior/be/gherkin/`) drive all three levels. Only the step implementations differ.
 
 ### Level 1: Unit tests (`test:quick`, `test:unit`)
 
@@ -149,7 +149,7 @@ hook before each scenario runs. PostgreSQL is started as a `postgres:17-alpine` 
 
 The `Dockerfile.integration` builds the Go project inside a `golang:1.24-alpine` container and
 runs `go test -tags=integration_pg`. The `docker-compose.integration.yml` mounts
-`../../specs` at `/specs` so the Godog path `/specs/apps/crud/be/gherkin` resolves correctly.
+`../../specs` at `/specs` so the Godog path `/specs/apps/crud/behavior/be/gherkin` resolves correctly.
 
 ### Level 3: E2E tests
 
@@ -167,5 +167,5 @@ for coverage purposes.
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
-- [Backend Gherkin Specs](../../specs/apps/crud/be/gherkin/README.md) — Shared feature files (source of truth)
-- [OpenAPI Contract](../../specs/apps/crud/contracts/README.md) — API contract and codegen
+- [Backend Gherkin Specs](../../specs/apps/crud/behavior/be/gherkin/README.md) — Shared feature files (source of truth)
+- [OpenAPI Contract](../../specs/apps/crud/containers/contracts/README.md) — API contract and codegen
