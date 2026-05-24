@@ -44,6 +44,8 @@ This convention resolves all three problems with four architecture decisions app
 - The dual-implementation parity requirement for the CLI commands that generate and validate bindings (AD8).
 - The pre-push deterministic guard that checks binding files before each push.
 
+> **On the decision numbering**: this convention documents the binding-strategy decisions AD1, AD2, AD3, AD4, and AD8. The intermediate decisions from the source design live in their natural homes rather than here: AD5 (reconciling pre-existing tool-provided bindings) is recorded in the [platform-bindings catalog](../../../docs/reference/platform-bindings.md); AD6 (the compatibility-audit workflow) is the [`repo-harness-compatibility-quality-gate`](../../workflows/repo/repo-harness-compatibility-quality-gate.md) workflow itself; and AD7 (the deterministic pre-push guard) is implemented as the `validate:harness-bindings` npm script wired into `.husky/pre-push`. The numbering is preserved for traceability to the originating plan.
+
 ### What This Convention Does NOT Cover
 
 - The full catalog of individual harness details and their binding paths — see [`docs/reference/platform-bindings.md`](../../../docs/reference/platform-bindings.md).

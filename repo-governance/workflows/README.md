@@ -155,6 +155,7 @@ Workflows for repository rules:
 
 - **repo-rules**: Validate consistency across principles, conventions, development, agents, AGENTS.md
 - **repo-cross-vendor-parity**: Validate cross-vendor behavioral-parity invariants between primary (`.claude/`) and secondary (`.opencode/`) binding directories
+- **repo-harness-compatibility**: Detect external drift between supported coding-agent harnesses' upstream config conventions and the platform-bindings catalog/binding files
 
 ## Step Execution Patterns
 
