@@ -59,6 +59,8 @@ When a convention is updated in `ose-public`, the maintainer of `ose-primer` app
 
 `ose-primer` never propagates governance changes back to `ose-public`. Changes that the `ose-primer` maintainer discovers as improvements should be raised as contributions to `ose-public` first, then pulled forward.
 
+The multi-harness binding scaffolding propagates along this same path: the [Multi-Harness Binding](./multi-harness-binding.md) convention, the generated bridge files for non-`AGENTS.md`-reading harnesses, the deterministic binding-parity guard (`rhino-cli agents validate-bindings`), and the harness-compatibility audit workflow plus its checker/fixer agents all flow `ose-public → ose-primer → downstream forks`. A downstream fork that adopts `ose-primer` therefore inherits compatibility with the supported coding-agent harnesses out of the box. Product-specific binding content (which harnesses a given fork actually wires up) is a per-fork decision and does not propagate.
+
 ### Infrastructure concerns
 
 Infrastructure configuration — Terraform modules, deploy pipelines, cloud resource definitions, secrets management — is managed between `ose-public` and `ose-infra` only:

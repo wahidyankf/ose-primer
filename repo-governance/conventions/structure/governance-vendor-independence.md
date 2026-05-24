@@ -27,7 +27,7 @@ All prose under `repo-governance/` must be readable and actionable by any contri
 
 `repo-governance/` contains the rules every contributor follows regardless of toolchain. When vendor-specific product names, model names, or path references appear in governance prose, they:
 
-- Exclude contributors using other AI coding agents (Cursor, Codex CLI, Gemini CLI, Copilot, Aider).
+- Exclude contributors using other AI coding agents (Cursor, Codex CLI, Antigravity CLI, Copilot, Aider).
 - Couple governance correctness to a specific vendor's product lifecycle.
 - Create maintenance debt when vendor names or APIs change.
 

@@ -115,6 +115,7 @@ Documentation organization frameworks, file naming, and project planning structu
 - [Diataxis Framework](./structure/diataxis-framework.md) - Understanding the four-category documentation organization framework we use (Tutorials, How-To, Reference, Explanation)
 - [File Naming Convention](./structure/file-naming.md) - Lowercase kebab-case file names anchored on standard markdown and GitHub compatibility
 - [Governance Vendor Independence](./structure/governance-vendor-independence.md) - Vendor-neutral governance prose: vendor names allowed only inside binding-example fences
+- [Multi-Harness Binding](./structure/multi-harness-binding.md) - Two-tier strategy for keeping the repo compatible with many coding-agent harnesses (AGENTS.md-canonical, no-shadowing, mechanical generation, dual-implementation byte-parity)
 - [No Last-Updated Metadata](./structure/no-last-updated.md) - Companion to no-date-metadata: do not write **Last Updated** rows in markdown files
 - [Plans Organization](./structure/plans.md) - Standards for organizing project planning documents in plans/ folder including structure (ideas.md, backlog/, in-progress/, done/), naming patterns (YYYY-MM-DD\_\_identifier/), lifecycle stages, and project identifiers. Defines how plans move from ideas - backlog - in-progress - done
 - [Programming Language Docs Separation](./structure/programming-language-docs-separation.md) - Boundary between generic dev docs and language-specific docs
