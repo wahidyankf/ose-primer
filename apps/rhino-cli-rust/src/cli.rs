@@ -1,7 +1,8 @@
 use clap::{Parser, Subcommand};
 
 use crate::commands::{
-    agents, contracts, docs, git, java, repo_governance, speccoverage, testcoverage, workflows,
+    agents, contracts, docs, doctor, env, git, java, repo_governance, speccoverage, testcoverage,
+    workflows,
 };
 use crate::internal::cliout::OutputFormat;
 
@@ -86,6 +87,22 @@ pub enum Commands {
     /// Java validation commands.
     #[command(name = "java", subcommand)]
     Java(JavaCommands),
+    /// Environment file backup and restore commands.
+    #[command(name = "env", subcommand)]
+    Env(EnvCommands),
+    /// Check required tool versions are installed and correct.
+    #[command(name = "doctor")]
+    Doctor(doctor::DoctorArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum EnvCommands {
+    /// Create .env files from .env.example templates.
+    Init(env::EnvInitArgs),
+    /// Back up .env files from the repository.
+    Backup(env::EnvBackupArgs),
+    /// Restore .env files from a backup.
+    Restore(env::EnvRestoreArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -284,6 +301,21 @@ fn dispatch(cmd: &Commands, output_format: OutputFormat, verbose: bool, quiet: b
                 java::VALIDATE_ANNOTATIONS_USAGE,
             ),
         },
+        Commands::Env(ec) => match ec {
+            EnvCommands::Init(args) => (env::run_env_init(args), env::ENV_INIT_USAGE),
+            EnvCommands::Backup(args) => (
+                env::run_env_backup(args, output_format, verbose, quiet),
+                env::ENV_BACKUP_USAGE,
+            ),
+            EnvCommands::Restore(args) => (
+                env::run_env_restore(args, output_format, verbose, quiet),
+                env::ENV_RESTORE_USAGE,
+            ),
+        },
+        Commands::Doctor(args) => (
+            doctor::run_doctor(args, output_format, verbose, quiet),
+            doctor::DOCTOR_USAGE,
+        ),
     };
     match result {
         Ok(()) => 0,

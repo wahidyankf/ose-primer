@@ -74,6 +74,14 @@ harness = false
 name = "java"
 harness = false
 
+[[test]]
+name = "env"
+harness = false
+
+[[test]]
+name = "doctor"
+harness = false
+
 [lints.rust]
 unsafe_code = "forbid"
 
@@ -111,6 +119,12 @@ assigning_clones = "allow"
 format_push_string = "allow"
 cast_sign_loss = "allow"
 unnecessary_debug_formatting = "allow"
+# Nested `if`s deliberately mirror Go's compound `&&` conditions (e.g. the env
+# backup/restore confirm gate `if !force { if let Some(confirm) = ... }` ports
+# `if !opts.Force && opts.ConfirmFn != nil`, and the doctor version readers
+# mirror Go's guarded blocks). Collapsing into let-chains would diverge from the
+# parity target's control-flow shape without behavioral benefit.
+collapsible_if = "allow"
 
 # --- Deferred doc lints: requires per-function documentation pass ---
 # TODO: remove these allows as # Errors / # Panics / backtick sections are written

@@ -39,6 +39,8 @@ COMMANDS:
   git              Diff the `git pre-commit` corpus (error path only — see NOTE)
   contracts        Diff the `contracts java-clean-imports|dart-scaffold` corpus
   java             Diff the `java validate-annotations` corpus
+  env              Diff the `env init|backup|restore` corpus (synthetic repos)
+  doctor           Diff the `doctor` corpus (same-machine tool probes)
 
   With no COMMAND, every command's corpus runs.
 
@@ -64,6 +66,23 @@ NOTE on agents sync:
   --dry-run from the repo root and confirm `git status --short .opencode/` is
   empty). The text/markdown `Duration:` line and JSON `duration_ms`/`timestamp`
   fields are wall-clock dependent, so all are normalised before comparison.
+
+NOTE on env corpus:
+  The env commands MUTATE the filesystem (copy .env files into/out of a backup
+  dir). To diff the two binaries on identical inputs, each env case seeds TWO
+  byte-identical synthetic fixtures (a fake git repo + an external backup dir)
+  inside the OS temp dir — one per binary — runs each binary against its own
+  fixture, then diffs BOTH the streams AND the resulting on-disk trees. The real
+  repo's .env files are NEVER touched. Because both fixtures use the same
+  relative layout, the JSON `dir` field is normalised to mask the per-binary
+  temp path before comparison.
+
+NOTE on doctor corpus:
+  doctor probes the host's installed tool versions, which are environment-
+  specific BUT identical across the two binaries on the same machine — so a
+  direct same-machine diff IS valid. The JSON `timestamp`/`duration_ms` fields
+  and the text/markdown `Duration:`/`**Generated**:` lines are wall-clock
+  dependent and are normalised before comparison.
 
 NOTE on docs text/markdown output:
   The Go `docs validate-mermaid` (and validate-links) text/markdown formatters
@@ -99,7 +118,7 @@ for arg in "$@"; do
       print_help
       exit 0
       ;;
-    test-coverage | spec-coverage | docs | agents | repo-governance | workflows | git | contracts | java)
+    test-coverage | spec-coverage | docs | agents | repo-governance | workflows | git | contracts | java | env | doctor)
       COMMANDS+=("${arg}")
       ;;
     *)
@@ -110,7 +129,7 @@ for arg in "$@"; do
   esac
 done
 if [[ ${#COMMANDS[@]} -eq 0 ]]; then
-  COMMANDS=(test-coverage spec-coverage docs agents repo-governance workflows git contracts java)
+  COMMANDS=(test-coverage spec-coverage docs agents repo-governance workflows git contracts java env doctor)
 fi
 
 # --- Build both binaries ---
@@ -135,7 +154,8 @@ normalise() {
     -e 's/"timestamp": "[^"]*"/"timestamp": "<TS>"/' \
     -e 's/"duration_ms": [0-9]+/"duration_ms": <D>/' \
     -e 's/^Duration: .*/Duration: <D>/' \
-    -e 's/^- \*\*Duration\*\*: .*/- **Duration**: <D>/'
+    -e 's/^- \*\*Duration\*\*: .*/- **Duration**: <D>/' \
+    -e 's/^\*\*Generated\*\*: .*/**Generated**: <TS>/'
 }
 
 FAIL=0
@@ -646,6 +666,197 @@ corpus_java() {
   run_case "java validate-annotations empty" java validate-annotations "${empty}" --no-color
 }
 
+# run_env_pair_case <label> <go_repo> <rs_repo> <go_dir> <rs_dir> <args...>
+# Runs the Go binary from <go_repo> and the Rust binary from <rs_repo> with the
+# trailing args, then diffs the streams AND the resulting on-disk trees of BOTH
+# the repo and the backup dir. If a trailing arg equals the literal token
+# @GO_DIR@ / @RS_DIR@, it is substituted with the per-binary backup-dir path so
+# each binary writes to (or reads from) its own fixture. JSON `dir` fields and
+# the temp paths in error text are masked before comparison. `PWD` is set so the
+# Go-parity `getwd()` in the Rust binary uses the same logical path the Go
+# binary's `os.Getwd()` sees (matters for the inside-repo rejection).
+run_env_pair_case() {
+  local label="$1"; shift
+  local go_repo="$1"; shift
+  local rs_repo="$1"; shift
+  local go_dir="$1"; shift
+  local rs_dir="$1"; shift
+  CASE_NO=$((CASE_NO + 1))
+
+  # Build per-binary arg arrays, substituting the @GO_DIR@/@RS_DIR@ placeholders.
+  local go_args=() rs_args=() a
+  for a in "$@"; do
+    case "${a}" in
+      @DIR@) go_args+=("${go_dir}"); rs_args+=("${rs_dir}") ;;
+      *)     go_args+=("${a}");      rs_args+=("${a}") ;;
+    esac
+  done
+
+  set +e
+  ( cd "${go_repo}" && PWD="${go_repo}" "${GO_BIN}" "${go_args[@]}" ) > "${TMP}/go.out" 2> "${TMP}/go.err"
+  local go_exit=$?
+  ( cd "${rs_repo}" && PWD="${rs_repo}" "${RS_BIN}" "${rs_args[@]}" ) > "${TMP}/rs.out" 2> "${TMP}/rs.err"
+  local rs_exit=$?
+  set -e
+
+  # Mask per-binary temp paths (repo + backup dir) so the JSON `dir`/error text
+  # compares equal, then apply the standard timestamp/duration normaliser.
+  env_mask() {
+    sed -E -e "s#${go_repo}#<REPO>#g" -e "s#${rs_repo}#<REPO>#g" \
+           -e "s#${go_dir}#<DIR>#g" -e "s#${rs_dir}#<DIR>#g"
+  }
+  env_mask < "${TMP}/go.out" | normalise > "${TMP}/go.out.n"
+  env_mask < "${TMP}/rs.out" | normalise > "${TMP}/rs.out.n"
+  env_mask < "${TMP}/go.err" | normalise > "${TMP}/go.err.n"
+  env_mask < "${TMP}/rs.err" | normalise > "${TMP}/rs.err.n"
+
+  local diverged=0
+  if ! diff -q "${TMP}/go.out.n" "${TMP}/rs.out.n" > /dev/null; then
+    diverged=1
+    echo "✗ [${label}] stdout DIVERGED (args: $*)" >&2
+    diff -u "${TMP}/go.out.n" "${TMP}/rs.out.n" | sed 's/^/    /' >&2 || true
+  fi
+  if ! diff -q "${TMP}/go.err.n" "${TMP}/rs.err.n" > /dev/null; then
+    diverged=1
+    echo "✗ [${label}] stderr DIVERGED (args: $*)" >&2
+    diff -u "${TMP}/go.err.n" "${TMP}/rs.err.n" | sed 's/^/    /' >&2 || true
+  fi
+  if [[ "${go_exit}" != "${rs_exit}" ]]; then
+    diverged=1
+    echo "✗ [${label}] exit code DIVERGED (go=${go_exit} rs=${rs_exit}, args: $*)" >&2
+  fi
+  # Compare the resulting repo + backup trees (relative listings).
+  if ! diff -q <(cd "${go_repo}" && find . -type f | sort) <(cd "${rs_repo}" && find . -type f | sort) > /dev/null; then
+    diverged=1
+    echo "✗ [${label}] REPO TREE DIVERGED" >&2
+  fi
+  # The backup dir may not exist (rejection / missing-dir cases); the cd error
+  # is suppressed and an absent dir yields an empty (matching) listing.
+  local go_bk_list rs_bk_list
+  go_bk_list="$( (cd "${go_dir}" 2>/dev/null && find . -type f 2>/dev/null | sort) || true )"
+  rs_bk_list="$( (cd "${rs_dir}" 2>/dev/null && find . -type f 2>/dev/null | sort) || true )"
+  if [[ "${go_bk_list}" != "${rs_bk_list}" ]]; then
+    diverged=1
+    echo "✗ [${label}] BACKUP TREE DIVERGED" >&2
+  fi
+
+  if [[ "${diverged}" -eq 0 ]]; then
+    echo "✓ [${label}] (exit ${go_exit}, trees identical)"
+  else
+    FAIL=1
+  fi
+}
+
+# Seed a synthetic git repo with assorted .env files at $1 (fresh tree).
+seed_env_repo() {
+  local d="$1"
+  mkdir -p "${d}/.git" "${d}/apps/web/node_modules" "${d}/node_modules" "${d}/.claude"
+  printf 'ROOT=1\n'   > "${d}/.env"
+  printf 'WEB=1\n'    > "${d}/apps/web/.env.local"
+  printf 'IGNORED=1\n'> "${d}/node_modules/.env"
+  printf 'IGNORED=1\n'> "${d}/apps/web/node_modules/.env"
+  printf '{}\n'       > "${d}/.claude/settings.local.json"
+}
+
+# Seed a backup dir at $1 holding previously backed-up .env files (for restore).
+seed_env_backup() {
+  local d="$1"
+  mkdir -p "${d}/apps/web"
+  printf 'ROOT=1\n' > "${d}/.env"
+  printf 'WEB=1\n'  > "${d}/apps/web/.env.local"
+  printf '# doc\n'  > "${d}/README.md"
+}
+
+corpus_env() {
+  echo "── env corpus ──" >&2
+
+  # --- env init: walk infra/dev/ for .env.example. Fresh / skip / force / zero.
+  for state in fresh skip force; do
+    for fmt in text; do
+      local gr rr; gr="$(mktemp -d)"; rr="$(mktemp -d)"
+      for d in "${gr}" "${rr}"; do
+        mkdir -p "${d}/.git" "${d}/infra/dev/svc-a" "${d}/infra/dev/svc-b"
+        printf 'A=1\n' > "${d}/infra/dev/svc-a/.env.example"
+        printf 'B=1\n' > "${d}/infra/dev/svc-b/.env.example"
+        if [[ "${state}" != "fresh" ]]; then
+          printf 'OLD=1\n' > "${d}/infra/dev/svc-a/.env"
+        fi
+      done
+      local flag=""
+      [[ "${state}" == "force" ]] && flag="--force"
+      # shellcheck disable=SC2086
+      run_env_pair_case "env init ${state} ${fmt}" "${gr}" "${rr}" "${gr}" "${rr}" \
+        env init ${flag} -o "${fmt}" --no-color
+      rm -rf "${gr}" "${rr}"
+    done
+  done
+  # init with zero examples.
+  local gz rz; gz="$(mktemp -d)"; rz="$(mktemp -d)"
+  for d in "${gz}" "${rz}"; do mkdir -p "${d}/.git" "${d}/infra/dev"; done
+  run_env_pair_case "env init zero" "${gz}" "${rz}" "${gz}" "${rz}" env init --no-color
+  rm -rf "${gz}" "${rz}"
+
+  # --- env backup: every format, force (deterministic — non-TTY stdin forces).
+  for fmt in text json markdown; do
+    local gr rr gb rb; gr="$(mktemp -d)"; rr="$(mktemp -d)"; gb="$(mktemp -d)"; rb="$(mktemp -d)"
+    seed_env_repo "${gr}"; seed_env_repo "${rr}"
+    run_env_pair_case "env backup ${fmt}" "${gr}" "${rr}" "${gb}" "${rb}" \
+      env backup --dir @DIR@ --force -o "${fmt}" --no-color
+    rm -rf "${gr}" "${rr}" "${gb}" "${rb}"
+  done
+  # backup --worktree-aware (repo basename namespacing).
+  for fmt in text json; do
+    local gp rp gb rb; gp="$(mktemp -d)"; rp="$(mktemp -d)"; gb="$(mktemp -d)"; rb="$(mktemp -d)"
+    seed_env_repo "${gp}/proj"; seed_env_repo "${rp}/proj"
+    run_env_pair_case "env backup worktree-aware ${fmt}" "${gp}/proj" "${rp}/proj" "${gb}" "${rb}" \
+      env backup --dir @DIR@ --worktree-aware --force -o "${fmt}" --no-color
+    rm -rf "${gp}" "${rp}" "${gb}" "${rb}"
+  done
+  # backup --include-config (picks up .claude/settings.local.json).
+  for fmt in text json; do
+    local gr rr gb rb; gr="$(mktemp -d)"; rr="$(mktemp -d)"; gb="$(mktemp -d)"; rb="$(mktemp -d)"
+    seed_env_repo "${gr}"; seed_env_repo "${rr}"
+    run_env_pair_case "env backup include-config ${fmt}" "${gr}" "${rr}" "${gb}" "${rb}" \
+      env backup --dir @DIR@ --include-config --force -o "${fmt}" --no-color
+    rm -rf "${gr}" "${rr}" "${gb}" "${rb}"
+  done
+  # backup --dir inside the repo → deterministic rejection error.
+  local gri rri; gri="$(mktemp -d)"; rri="$(mktemp -d)"
+  seed_env_repo "${gri}"; seed_env_repo "${rri}"
+  run_env_pair_case "env backup inside-repo reject" "${gri}" "${rri}" "${gri}/inside" "${rri}/inside" \
+    env backup --dir @DIR@ --no-color
+  rm -rf "${gri}" "${rri}"
+
+  # --- env restore: every format, force, + missing-dir error path.
+  for fmt in text json markdown; do
+    local gr rr gb rb; gr="$(mktemp -d)"; rr="$(mktemp -d)"; gb="$(mktemp -d)"; rb="$(mktemp -d)"
+    mkdir -p "${gr}/.git" "${rr}/.git"
+    seed_env_backup "${gb}"; seed_env_backup "${rb}"
+    run_env_pair_case "env restore ${fmt}" "${gr}" "${rr}" "${gb}" "${rb}" \
+      env restore --dir @DIR@ --force -o "${fmt}" --no-color
+    rm -rf "${gr}" "${rr}" "${gb}" "${rb}"
+  done
+  # restore missing dir → error.
+  local grm rrm; grm="$(mktemp -d)"; rrm="$(mktemp -d)"
+  mkdir -p "${grm}/.git" "${rrm}/.git"
+  run_env_pair_case "env restore missing-dir" "${grm}" "${rrm}" "/nonexistent-sd-xyz" "/nonexistent-sd-xyz" \
+    env restore --dir @DIR@ --no-color
+  rm -rf "${grm}" "${rrm}"
+}
+
+corpus_doctor() {
+  echo "── doctor corpus ──" >&2
+  # doctor probes the host's tools; both binaries see the same versions on this
+  # machine, so a direct same-machine diff (with TS/duration masked) is valid.
+  for fmt in text json markdown; do
+    run_case "doctor ${fmt}"           doctor -o "${fmt}" --no-color
+    run_case "doctor minimal ${fmt}"   doctor --scope minimal -o "${fmt}" --no-color
+  done
+  run_case "doctor quiet"   doctor -q --no-color
+  run_case "doctor verbose" doctor -v --no-color
+  run_case "doctor fix dry-run" doctor --fix --dry-run --no-color
+}
+
 # A repo-relative temp output path for `merge --out-file` (lives under TMP).
 TMP_OUT_REL="$(python3 -c "import os,sys; print(os.path.relpath('${TMP}/merged.info', '${REPO_ROOT}'))" 2>/dev/null || echo "${TMP}/merged.info")"
 
@@ -660,6 +871,8 @@ for cmd in "${COMMANDS[@]}"; do
     git) corpus_git ;;
     contracts) corpus_contracts ;;
     java) corpus_java ;;
+    env) corpus_env ;;
+    doctor) corpus_doctor ;;
   esac
 done
 

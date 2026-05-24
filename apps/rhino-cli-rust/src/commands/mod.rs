@@ -7,6 +7,8 @@
 pub mod agents;
 pub mod contracts;
 pub mod docs;
+pub mod doctor;
+pub mod env;
 pub mod git;
 pub mod java;
 pub mod repo_governance;
