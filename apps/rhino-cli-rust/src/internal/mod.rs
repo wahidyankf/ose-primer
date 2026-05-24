@@ -1,7 +1,10 @@
 // Internal support modules for rhino-cli.
 //
-// Phase 2 skeleton: only `cliout` (the sealed OutputFormat enum) is present.
-// Later phases add the per-domain helpers (agents, docs, git, doctor, …) that
-// back each command namespace ported from the Go CLI.
+// Phase 3 adds the test-coverage and spec-coverage subsystems plus the minimal
+// git-root helper they depend on. Later phases add the remaining per-domain
+// helpers (agents, docs, doctor, …) that back each command namespace.
 
 pub mod cliout;
+pub mod git;
+pub mod speccoverage;
+pub mod testcoverage;
