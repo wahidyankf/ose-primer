@@ -186,16 +186,16 @@ All testable projects must consume Gherkin specifications at every applicable te
 (historical -- no active Hugo sites remain) were exempt because they had no application logic. E2E
 runner projects ARE the Gherkin consumers at the E2E level.
 
-| App Type                | Unit consumes Gherkin                               | Integration consumes Gherkin | E2E consumes Gherkin              |
-| ----------------------- | --------------------------------------------------- | ---------------------------- | --------------------------------- |
-| BE API (`crud-be-*`)    | Yes — `specs/apps/crud/be/gherkin/`                 | Yes — same specs             | Yes — same specs                  |
-| FE (`crud-fe-*`)        | Yes — `specs/apps/crud/fe/gherkin/`                 | Yes — same specs             | Yes — via `crud-fe-e2e`           |
-| Fullstack (`crud-fs-*`) | Yes — `specs/apps/crud/be/gherkin/` + `fe/gherkin/` | Yes — same specs             | Yes — self-contained              |
-| CLI (`*-cli`)           | Yes — `specs/apps/{domain}/cli/gherkin/`            | Yes — same specs             | Not applicable                    |
-| Content platform        | Yes — project-local specs                           | Yes — same specs             | Yes — via `*-be-e2e` / `*-fe-e2e` |
-| Library                 | Yes — library-specific specs                        | Yes — same specs             | Not applicable                    |
-| Hugo site (historical)  | Exempt                                              | Exempt                       | Exempt                            |
-| E2E runner              | Not applicable                                      | Not applicable               | Yes — consumes shared specs       |
+| App Type                | Unit consumes Gherkin                                                  | Integration consumes Gherkin | E2E consumes Gherkin              |
+| ----------------------- | ---------------------------------------------------------------------- | ---------------------------- | --------------------------------- |
+| BE API (`crud-be-*`)    | Yes — `specs/apps/crud/behavior/be/gherkin/`                           | Yes — same specs             | Yes — same specs                  |
+| FE (`crud-fe-*`)        | Yes — `specs/apps/crud/behavior/web/gherkin/`                          | Yes — same specs             | Yes — via `crud-fe-e2e`           |
+| Fullstack (`crud-fs-*`) | Yes — `specs/apps/crud/behavior/be/gherkin/` + `behavior/web/gherkin/` | Yes — same specs             | Yes — self-contained              |
+| CLI (`*-cli`)           | Yes — `specs/apps/{domain}/cli/gherkin/`                               | Yes — same specs             | Not applicable                    |
+| Content platform        | Yes — project-local specs                                              | Yes — same specs             | Yes — via `*-be-e2e` / `*-fe-e2e` |
+| Library                 | Yes — library-specific specs                                           | Yes — same specs             | Not applicable                    |
+| Hugo site (historical)  | Exempt                                                                 | Exempt                       | Exempt                            |
+| E2E runner              | Not applicable                                                         | Not applicable               | Yes — consumes shared specs       |
 
 ## Coverage Threshold Rationale
 
@@ -386,7 +386,7 @@ services themselves run in parallel across matrix entries.
 | Frontend app        | `crud-fe-{lang}-{framework}`                                                              | `crud-fe-ts-nextjs`                       |
 | Fullstack app       | `crud-fs-{lang}-{framework}`                                                              | `crud-fs-ts-nextjs`                       |
 | Infra dev directory | `infra/dev/{app-name}/`                                                                   | `infra/dev/crud-be-golang-gin/`           |
-| Specs directory     | See [Specs Directory Structure](../../conventions/structure/specs-directory-structure.md) | `specs/apps/crud/be/gherkin/`             |
+| Specs directory     | See [Specs Directory Structure](../../conventions/structure/specs-directory-structure.md) | `specs/apps/crud/behavior/be/gherkin/`    |
 | Test workflow       | `test-{app-name}.yml`                                                                     | `test-crud-be-golang-gin.yml`             |
 | Reusable workflow   | `_reusable-{purpose}.yml`                                                                 | `_reusable-backend-e2e.yml`               |
 | Composite action    | `.github/actions/{name}/action.yml`                                                       | `.github/actions/setup-golang/action.yml` |

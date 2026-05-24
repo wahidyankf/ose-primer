@@ -88,9 +88,9 @@ Feature: Agent Configuration Synchronisation
 Alternatively, a command with its own distinct domain gets its own feature file:
 
 ```
-specs/apps/rhino/behavior/cli/gherkin/doctor.feature                       <- single @doctor tag
-specs/apps/rhino/behavior/cli/gherkin/agents-sync.feature                  <- @agents-sync + @agents-validate-sync
-specs/apps/rhino/behavior/cli/gherkin/agents-validate-claude.feature       <- single @agents-validate-claude tag
+specs/apps/rhino/behavior/cli/gherkin/system/doctor.feature                       <- single @doctor tag
+specs/apps/rhino/behavior/cli/gherkin/agents/agents-sync.feature                  <- @agents-sync + @agents-validate-sync
+specs/apps/rhino/behavior/cli/gherkin/agents/agents-validate-claude.feature       <- single @agents-validate-claude tag
 ```
 
 ### 3. Unit & Integration Test to Tag (mandatory)
@@ -129,13 +129,13 @@ func TestIntegrationValidateSync(t *testing.T) {
 
 ## File Naming Convention
 
-| Artifact         | Pattern                                     | Example                                                |
-| ---------------- | ------------------------------------------- | ------------------------------------------------------ |
-| Parent cmd       | `{domain}.go`                               | `agents.go`                                            |
-| Command file     | `{domain}_{action}.go`                      | `agents_validate_sync.go`                              |
-| Unit test        | `{domain}_{action}_test.go`                 | `agents_validate_sync_test.go`                         |
-| Integration test | `{domain}_{action}.integration_test.go`     | `agents_validate_sync.integration_test.go`             |
-| Feature file     | `specs/{app}/cli/gherkin/{command}.feature` | `specs/apps/rhino/behavior/cli/gherkin/doctor.feature` |
+| Artifact         | Pattern                                     | Example                                                       |
+| ---------------- | ------------------------------------------- | ------------------------------------------------------------- |
+| Parent cmd       | `{domain}.go`                               | `agents.go`                                                   |
+| Command file     | `{domain}_{action}.go`                      | `agents_validate_sync.go`                                     |
+| Unit test        | `{domain}_{action}_test.go`                 | `agents_validate_sync_test.go`                                |
+| Integration test | `{domain}_{action}.integration_test.go`     | `agents_validate_sync.integration_test.go`                    |
+| Feature file     | `specs/{app}/cli/gherkin/{command}.feature` | `specs/apps/rhino/behavior/cli/gherkin/system/doctor.feature` |
 
 **Unit test files** (`{domain}_{action}_test.go`) serve dual purpose: they contain both godog BDD step definitions (consuming Gherkin specs via `TestUnit*` functions) and any non-BDD pure function tests for edge cases not covered by the Gherkin scenarios. The godog step definitions in unit test files use mocked I/O function variables instead of real filesystem access.
 
@@ -203,19 +203,19 @@ Integration steps drive commands in-process via `cmd.RunE()` against controlled 
 The `@agents-validate-sync` tag lives inside `agents-sync.feature` (shared feature file) and is consumed at both levels:
 
 ```
-specs/apps/rhino/behavior/cli/gherkin/agents-sync.feature  (contains @agents-sync + @agents-validate-sync)
+specs/apps/rhino/behavior/cli/gherkin/agents/agents-sync.feature  (contains @agents-sync + @agents-validate-sync)
   -> Unit steps in:       apps/rhino-cli/cmd/agents_validate_sync_test.go
   -> Integration steps in: apps/rhino-cli/cmd/agents_validate_sync.integration_test.go
 ```
 
 ## Demo-be Backend: Three-Level Spec Consumption
 
-All 11 crud-be backends consume the **same shared Gherkin scenarios** from [`specs/apps/crud/be/gherkin/`](../../../specs/apps/crud/be/gherkin/README.md) at three test levels. The feature files are the shared contract — only the step implementations change per level.
+All 11 crud-be backends consume the **same shared Gherkin scenarios** from [`specs/apps/crud/behavior/be/gherkin/`](../../../specs/apps/crud/behavior/be/gherkin/README.md) at three test levels. The feature files are the shared contract — only the step implementations change per level.
 
 ### Shared Specs
 
 ```
-specs/apps/crud/be/gherkin/
+specs/apps/crud/behavior/be/gherkin/
 ├── auth/
 │   ├── login.feature
 │   ├── register.feature
@@ -287,4 +287,4 @@ All three commands must report all scenarios passing. The Gherkin feature files 
 - [Nx Target Standards](./nx-targets.md) - `test:integration` target definitions and caching rules
 - [specs/README.md](../../../specs/README.md) - Spec directory organization
 - [specs/apps/rhino/README.md](../../../specs/apps/rhino/README.md) - rhino-cli spec structure
-- [specs/apps/crud/be/README.md](../../../specs/apps/crud/be/README.md) - Demo-be spec structure and three-level consumption
+- [specs/apps/crud/behavior/be/README.md](../../../specs/apps/crud/behavior/be/README.md) - Demo-be spec structure and three-level consumption
