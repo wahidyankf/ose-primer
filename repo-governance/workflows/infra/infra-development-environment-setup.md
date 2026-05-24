@@ -60,7 +60,7 @@ All tools checked by `rhino-cli doctor`:
 | 2   | volta      | Any                   | (no config file)                       | curl script    |
 | 3   | node       | 24.13.1               | package.json > volta.node              | Volta          |
 | 4   | npm        | 11.10.1               | package.json > volta.npm               | Volta          |
-| 5   | golang     | >= go.mod directive   | apps/rhino-cli-go/go.mod                  | Brew/asdf      |
+| 5   | golang     | >= go.mod directive   | apps/rhino-cli-go/go.mod               | Brew/asdf      |
 | 6   | dotnet     | >= global.json major  | apps/crud-be-csharp-aspnet/global.json | Brew/Script    |
 | 7   | docker     | Any                   | (no config file)                       | Docker Desktop |
 | 8   | jq         | Any                   | (no config file)                       | Brew           |

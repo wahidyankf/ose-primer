@@ -10,15 +10,15 @@ Apps follow the naming pattern: **`{domain}-{part}`**
 
 Where `{part}` describes the role and technology stack:
 
-| Part pattern            | Examples                                              | Description                              |
-| ----------------------- | ----------------------------------------------------- | ---------------------------------------- |
-| `be-{lang}-{framework}` | `be-golang-gin`, `be-java-springboot`, `be-ts-effect` | Backend service                          |
-| `fe-{lang}-{framework}` | `fe-ts-nextjs`, `fe-dart-flutterweb`                  | Frontend application                     |
-| `fs-{lang}-{framework}` | `fs-ts-nextjs`                                        | Fullstack application (FE + BE combined) |
-| `cli` / `<name>-cli-{lang}` | `rhino-cli-rust`, `rhino-cli-go`                  | CLI tool (polyglot CLIs use the `-cli-{lang}` parity suffix) |
-| `web`                   | `crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`              | Web platform (content site)              |
-| `{role}-e2e`            | `be-e2e`, `fe-e2e`, `crud-fe-e2e`                     | E2E test project for the named role      |
-| `be` / `fe`             | `crud-be-fsharp-giraffe`, `crud-fe-ts-nextjs`         | Simple single-technology projects        |
+| Part pattern                | Examples                                              | Description                                                  |
+| --------------------------- | ----------------------------------------------------- | ------------------------------------------------------------ |
+| `be-{lang}-{framework}`     | `be-golang-gin`, `be-java-springboot`, `be-ts-effect` | Backend service                                              |
+| `fe-{lang}-{framework}`     | `fe-ts-nextjs`, `fe-dart-flutterweb`                  | Frontend application                                         |
+| `fs-{lang}-{framework}`     | `fs-ts-nextjs`                                        | Fullstack application (FE + BE combined)                     |
+| `cli` / `<name>-cli-{lang}` | `rhino-cli-rust`, `rhino-cli-go`                      | CLI tool (polyglot CLIs use the `-cli-{lang}` parity suffix) |
+| `web`                       | `crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`              | Web platform (content site)                                  |
+| `{role}-e2e`                | `be-e2e`, `fe-e2e`, `crud-fe-e2e`                     | E2E test project for the named role                          |
+| `be` / `fe`                 | `crud-be-fsharp-giraffe`, `crud-fe-ts-nextjs`         | Simple single-technology projects                            |
 
 **Language abbreviations** (`{lang}`): `ts` (TypeScript), `golang` (Go), `java` (Java), `kt` (Kotlin),
 `py` (Python), `rs` (Rust), `cs` (C#), `fs` (F#), `clj` (Clojure), `dart` (Dart), `ex` (Elixir).

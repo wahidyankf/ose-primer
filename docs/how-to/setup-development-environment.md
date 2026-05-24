@@ -500,7 +500,7 @@ All version requirements are auto-detected by `npm run doctor` from these config
 | Node.js       | `package.json` → `volta.node`                           |
 | npm           | `package.json` → `volta.npm`                            |
 | Java          | `apps/crud-be-java-springboot/pom.xml` → `java.version` |
-| Go            | `apps/rhino-cli-go/go.mod` → `go` directive                |
+| Go            | `apps/rhino-cli-go/go.mod` → `go` directive             |
 | Python        | `apps/crud-be-python-fastapi/.python-version`           |
 | Hugo          | (legacy — no active config file)                        |
 | Erlang        | `.tool-versions` → `erlang`                             |
