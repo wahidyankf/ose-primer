@@ -14,7 +14,7 @@
 # Usage:
 #   shadow-diff.sh [--help] [COMMAND ...]
 #
-#   COMMAND  One or more of: test-coverage spec-coverage
+#   COMMAND  One or more of: test-coverage spec-coverage crud-spec-coverage …
 #            (default: all commands)
 #
 # Exit status: 0 when every case is byte-identical, 1 on any divergence,
@@ -32,6 +32,12 @@ USAGE:
 COMMANDS:
   test-coverage    Diff the `test-coverage validate|diff|merge` corpus
   spec-coverage    Diff the `spec-coverage validate` corpus
+  crud-spec-coverage
+                   Diff `spec-coverage validate` for EVERY crud backend and
+                   frontend app, using the exact args each app's project.json
+                   `spec-coverage` target uses. Guards against per-language
+                   step-extraction divergence (the class of bug that the
+                   shared-steps corpus above does not exercise — see NOTE).
   docs             Diff the `docs validate-links|validate-mermaid` corpus
   agents           Diff the `agents sync|validate-claude|validate-sync|validate-naming` corpus
   repo-governance  Diff the `repo-governance vendor-audit` corpus
@@ -84,6 +90,18 @@ NOTE on doctor corpus:
   and the text/markdown `Duration:`/`**Generated**:` lines are wall-clock
   dependent and are normalised before comparison.
 
+NOTE on crud-spec-coverage corpus:
+  The original `spec-coverage` corpus only validates the rhino CLI's own gherkin
+  tree against the Go app, which exercises a narrow slice of the per-language
+  step extractors. The polyglot crud backends/frontends (Kotlin, Java, Python,
+  Elixir, F#, C#, Clojure, Dart, TS, Rust, Go) each carry step definitions whose
+  regex/Cucumber-expression shapes stress different extractor code paths. This
+  corpus runs `spec-coverage validate` for EVERY crud app — with the precise
+  args its project.json target uses — and diffs Go vs Rust. It is the permanent
+  regression guard for per-language extraction divergence (e.g. RE2-vs-Rust
+  literal-brace handling in Kotlin marker patterns). Apps absent from the
+  checkout are skipped with a logged notice rather than failing the run.
+
 NOTE on docs text/markdown output:
   The Go `docs validate-mermaid` (and validate-links) text/markdown formatters
   group findings into a Go map and range it, so the file ordering is
@@ -118,7 +136,7 @@ for arg in "$@"; do
       print_help
       exit 0
       ;;
-    test-coverage | spec-coverage | docs | agents | repo-governance | workflows | git | contracts | java | env | doctor)
+    test-coverage | spec-coverage | crud-spec-coverage | docs | agents | repo-governance | workflows | git | contracts | java | env | doctor)
       COMMANDS+=("${arg}")
       ;;
     *)
@@ -129,7 +147,7 @@ for arg in "$@"; do
   esac
 done
 if [[ ${#COMMANDS[@]} -eq 0 ]]; then
-  COMMANDS=(test-coverage spec-coverage docs agents repo-governance workflows git contracts java env doctor)
+  COMMANDS=(test-coverage spec-coverage crud-spec-coverage docs agents repo-governance workflows git contracts java env doctor)
 fi
 
 # --- Build both binaries ---
@@ -273,6 +291,63 @@ corpus_spec_coverage() {
   run_case "sc gaps quiet"  spec-coverage validate "${GHERKIN_TC}" apps/rhino-cli-go/scripts -q --no-color
   # exclude-dir
   run_case "sc shared exclude-dir"  spec-coverage validate "${GHERKIN}" apps/rhino-cli-go --shared-steps --exclude-dir system --no-color
+}
+
+# Per-language crud spec-coverage parity. Each entry mirrors the exact args the
+# app's project.json `spec-coverage` target invokes. Only the trailing
+# positional gherkin-dir / app-dir and the per-app flag set vary, so the corpus
+# is data-driven: "<app-dir>|<gherkin-dir>|<extra-flags>". Apps missing from the
+# checkout are skipped (logged) rather than failing the run.
+corpus_crud_spec_coverage() {
+  echo "── crud-spec-coverage corpus ──" >&2
+  local be="specs/apps/crud/behavior/be/gherkin"
+  local web="specs/apps/crud/behavior/web/gherkin"
+
+  # All backends: --shared-steps --exclude-dir test-support against the BE tree.
+  local backends=(
+    crud-be-golang-gin
+    crud-be-rust-axum
+    crud-be-java-springboot
+    crud-be-java-vertx
+    crud-be-python-fastapi
+    crud-be-clojure-pedestal
+    crud-be-csharp-aspnetcore
+    crud-be-ts-effect
+    crud-be-kotlin-ktor
+    crud-be-elixir-phoenix
+    crud-be-fsharp-giraffe
+  )
+  local app
+  for app in "${backends[@]}"; do
+    if [[ ! -d "${REPO_ROOT}/apps/${app}" ]]; then
+      echo "shadow-diff: apps/${app} absent — skipping" >&2
+      continue
+    fi
+    run_case "crud-sc ${app}" \
+      spec-coverage validate --shared-steps --exclude-dir test-support \
+      "${be}" "apps/${app}" --no-color
+  done
+
+  # TS frontends: --shared-steps --exclude-dir test-support against the WEB tree.
+  local ts_frontends=(crud-fe-ts-nextjs crud-fe-ts-tanstack-start)
+  for app in "${ts_frontends[@]}"; do
+    if [[ ! -d "${REPO_ROOT}/apps/${app}" ]]; then
+      echo "shadow-diff: apps/${app} absent — skipping" >&2
+      continue
+    fi
+    run_case "crud-sc ${app}" \
+      spec-coverage validate --shared-steps --exclude-dir test-support \
+      "${web}" "apps/${app}" --no-color
+  done
+
+  # Dart frontend: --shared-steps (NO --exclude-dir) against the WEB tree.
+  if [[ -d "${REPO_ROOT}/apps/crud-fe-dart-flutterweb" ]]; then
+    run_case "crud-sc crud-fe-dart-flutterweb" \
+      spec-coverage validate --shared-steps \
+      "${web}" apps/crud-fe-dart-flutterweb --no-color
+  else
+    echo "shadow-diff: apps/crud-fe-dart-flutterweb absent — skipping" >&2
+  fi
 }
 
 corpus_docs() {
@@ -864,6 +939,7 @@ for cmd in "${COMMANDS[@]}"; do
   case "${cmd}" in
     test-coverage) corpus_test_coverage ;;
     spec-coverage) corpus_spec_coverage ;;
+    crud-spec-coverage) corpus_crud_spec_coverage ;;
     docs) corpus_docs ;;
     agents) corpus_agents ;;
     repo-governance) corpus_repo_governance ;;

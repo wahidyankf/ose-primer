@@ -11,7 +11,7 @@ use walkdir::WalkDir;
 use super::extractors::{self, StepMatcher, add_step_to_matcher};
 use super::parser::parse_feature_file;
 use super::types::{CheckResult, CoverageGap, ScanOptions, ScenarioGap, StepGap};
-use super::util::{first_non_empty, normalize_ws, unescape_string};
+use super::util::{escape_re2_literal_braces, first_non_empty, normalize_ws, unescape_string};
 
 // --- TS/Go scenario + step regexes (mirroring the Go `checker.go` vars) ---
 
@@ -439,7 +439,7 @@ fn extract_ts_step_texts(path: &Path, sm: &mut StepMatcher) -> std::result::Resu
     }
     for caps in ts_regex_step_re().captures_iter(&src) {
         let pattern = caps.get(1).map_or("", |m| m.as_str());
-        if let Ok(re) = Regex::new(pattern) {
+        if let Ok(re) = Regex::new(&escape_re2_literal_braces(pattern)) {
             sm.add_pattern_public(re);
         }
     }
@@ -451,7 +451,7 @@ fn extract_go_step_texts(path: &Path, sm: &mut StepMatcher) -> std::result::Resu
     for line in content.lines() {
         for caps in go_step_re().captures_iter(line) {
             let pattern = caps.get(1).map_or("", |m| m.as_str());
-            if let Ok(re) = Regex::new(pattern) {
+            if let Ok(re) = Regex::new(&escape_re2_literal_braces(pattern)) {
                 sm.add_pattern_public(re);
             }
         }

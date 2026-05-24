@@ -10,7 +10,7 @@ use super::cucumber_expr::{
     convert_python_parsers_expr, cucumber_expr_to_regex, has_cucumber_expressions,
     is_python_parsers_expr, unescape_cucumber_expr,
 };
-use super::util::{first_non_empty, normalize_ws, unescape_string};
+use super::util::{escape_re2_literal_braces, first_non_empty, normalize_ws, unescape_string};
 
 /// Holds exact step texts (literal matches) and compiled regex patterns.
 /// Mirrors Go `stepMatcher`. Step texts are whitespace-normalized on insert.
@@ -65,7 +65,7 @@ pub fn add_step_to_matcher(sm: &mut StepMatcher, text: &str) {
         return;
     }
     if text.starts_with('^') {
-        if let Ok(re) = Regex::new(&text) {
+        if let Ok(re) = Regex::new(&escape_re2_literal_braces(&text)) {
             sm.add_pattern(re);
         }
         return;
@@ -88,7 +88,7 @@ pub fn add_python_step_to_matcher(sm: &mut StepMatcher, text: &str) {
         return;
     }
     if text.starts_with('^') {
-        if let Ok(re) = Regex::new(&text) {
+        if let Ok(re) = Regex::new(&escape_re2_literal_braces(&text)) {
             sm.add_pattern(re);
         }
         return;
@@ -260,7 +260,7 @@ pub fn extract_rust_step_texts(
     for line in content.lines() {
         for caps in rs_step_regex_re().captures_iter(line) {
             let pattern = caps.get(1).map_or("", |m| m.as_str());
-            if let Ok(re) = Regex::new(pattern) {
+            if let Ok(re) = Regex::new(&escape_re2_literal_braces(pattern)) {
                 sm.add_pattern(re);
             }
         }
@@ -297,7 +297,7 @@ pub fn extract_fsharp_step_texts(
     for line in content.lines() {
         for caps in fs_step_re().captures_iter(line) {
             let text = normalize_ws(caps.get(1).map_or("", |m| m.as_str()));
-            let pattern = format!("^{text}$");
+            let pattern = format!("^{}$", escape_re2_literal_braces(&text));
             if let Ok(re) = Regex::new(&pattern) {
                 sm.add_pattern(re);
             }
@@ -341,7 +341,7 @@ pub fn extract_elixir_step_texts(
     for line in content.lines() {
         for caps in ex_step_re().captures_iter(line) {
             let pattern = caps.get(1).map_or("", |m| m.as_str());
-            if let Ok(re) = Regex::new(pattern) {
+            if let Ok(re) = Regex::new(&escape_re2_literal_braces(pattern)) {
                 sm.add_pattern(re);
             }
         }
@@ -407,6 +407,50 @@ mod tests {
         extract_jvm_step_texts(&p, &mut sm).unwrap();
         assert!(sm.matches("user logs in"));
         assert!(sm.matches(r#"submits "alice""#));
+    }
+
+    #[test]
+    fn jvm_regex_anchored_pattern_with_literal_braces() {
+        // Regression for the Kotlin spec-coverage divergence: a `^…$`-anchored
+        // JVM annotation whose body holds literal `{…}` braces (the shape used
+        // by `SpecCoverageMarkers.kt`). Go's RE2 accepts these as literal
+        // braces; Rust's regex crate rejects them unless they are escaped first.
+        // Before the fix the pattern was silently dropped → phantom step gap.
+        let tmp = TempDir::new().unwrap();
+        let p = write(
+            tmp.path(),
+            "SpecCoverageMarkers.kt",
+            concat!(
+                "object Markers {\n",
+                "  // @When(\"^the admin sends POST /api/v1/admin/users/{alice_id}/enable$\")\n",
+                "  // @When(\"^the admin sends POST /api/v1/admin/users/{alice_id}/disable with body { \\\"reason\\\": \\\"([^\\\"]+)\\\" }$\")\n",
+                "}\n",
+            ),
+        );
+        let mut sm = StepMatcher::new();
+        extract_jvm_step_texts(&p, &mut sm).unwrap();
+        assert!(sm.matches("the admin sends POST /api/v1/admin/users/{alice_id}/enable"));
+        assert!(sm.matches(
+            r#"the admin sends POST /api/v1/admin/users/{alice_id}/disable with body { "reason": "Policy violation" }"#
+        ));
+    }
+
+    #[test]
+    fn jvm_cucumber_expression_with_literal_braces_in_body() {
+        // A non-anchored JVM Cucumber-expression step whose literal body holds a
+        // JSON brace alongside a `{string}` parameter. The literal `{`/`}` must
+        // not break compilation of the generated regex.
+        let tmp = TempDir::new().unwrap();
+        let p = write(
+            tmp.path(),
+            "Steps.kt",
+            "@When(\"alice sends PATCH /api/v1/users/me with body { \\\"displayName\\\": {string} }\")\nfun s() {}\n",
+        );
+        let mut sm = StepMatcher::new();
+        extract_jvm_step_texts(&p, &mut sm).unwrap();
+        assert!(sm.matches(
+            r#"alice sends PATCH /api/v1/users/me with body { "displayName": "Alice Smith" }"#
+        ));
     }
 
     #[test]
