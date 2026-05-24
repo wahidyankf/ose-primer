@@ -15,9 +15,9 @@ governance
 generated-reports
 local-temp
 specs
-!specs/apps/crud/be/gherkin
-!specs/apps/crud/fe/gherkin
-!specs/apps/crud/contracts/generated
+!specs/apps/crud/behavior/be/gherkin
+!specs/apps/crud/behavior/web/gherkin
+!specs/apps/crud/containers/contracts/generated
 infra
 .claude
 .opencode

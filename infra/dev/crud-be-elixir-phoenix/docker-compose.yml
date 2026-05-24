@@ -39,7 +39,7 @@ services:
       - ../../../apps/crud-be-elixir-phoenix:/workspace:rw
       - ../../../libs/elixir-gherkin:/libs/elixir-gherkin:ro
       - ../../../libs/elixir-cabbage:/libs/elixir-cabbage:ro
-      - ../../../specs/apps/crud/be/gherkin:/specs/apps/crud/be/gherkin:ro
+      - ../../../specs/apps/crud/behavior/be/gherkin:/specs/apps/crud/behavior/be/gherkin:ro
 
     ports:
       - "8201:8201"

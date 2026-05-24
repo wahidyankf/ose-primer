@@ -14,14 +14,14 @@ COPY apps/crud-fs-ts-nextjs/tsconfig.json ./apps/crud-fs-ts-nextjs/
 COPY apps/crud-fs-ts-nextjs/cucumber.integration.js ./apps/crud-fs-ts-nextjs/
 
 # Copy contract spec for codegen
-COPY specs/apps/crud/contracts/generated/ ./specs/apps/crud/contracts/generated/
+COPY specs/apps/crud/containers/contracts/generated/ ./specs/apps/crud/containers/contracts/generated/
 
 # Generate contract types
-RUN npx @hey-api/openapi-ts -i specs/apps/crud/contracts/generated/openapi-bundled.yaml -o apps/crud-fs-ts-nextjs/src/generated-contracts -s
+RUN npx @hey-api/openapi-ts -i specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -o apps/crud-fs-ts-nextjs/src/generated-contracts -s
 
 WORKDIR /app/apps/crud-fs-ts-nextjs
 
 # Copy gherkin specs into container
-COPY specs/apps/crud/be/gherkin/ /specs/apps/crud/be/gherkin/
+COPY specs/apps/crud/behavior/be/gherkin/ /specs/apps/crud/behavior/be/gherkin/
 
 CMD sh -c "npx cucumber-js --config cucumber.integration.js 2>&1; EXIT=$?; echo \"EXIT CODE: $EXIT\"; exit $EXIT"

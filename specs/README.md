@@ -27,7 +27,7 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 ## App Specs
 
 - **[crud/](./apps/crud/README.md)** — CRUD application specifications
-  (platform-agnostic Gherkin — see [be/gherkin](./apps/crud/be/gherkin/README.md) and [fe/gherkin](./apps/crud/fe/gherkin/README.md) for details)
+  (platform-agnostic Gherkin — see [be/gherkin](./apps/crud/behavior/be/gherkin/README.md) and [web/gherkin](./apps/crud/behavior/web/gherkin/README.md) for details)
 - **[rhino/](./apps/rhino/README.md)** — Repository management CLI specifications (Go, godog)
 
 ## Experimental App Specs
@@ -41,31 +41,37 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 
 ## Standard Folder Pattern
 
-Each application domain follows this layout under `specs/apps/{domain}/`:
+Each application domain follows the C4-aware five-folder layout under `specs/apps/{domain}/`:
 
 ```
 specs/apps/{domain}/
 ├── README.md               # Describes app, BDD framework, and feature organization
-├── contracts/              # OpenAPI 3.1 contract spec (bundled + source files)
-├── be/gherkin/             # Backend acceptance specs (.feature files)
-├── fe/gherkin/             # Frontend acceptance specs (.feature files)
-├── fs/gherkin/             # Fullstack acceptance specs (.feature files, if applicable)
-└── c4/                     # C4 architecture diagrams (if applicable)
+├── product/                # Product-level docs (vision, stakeholders, personas)
+├── system-context/         # C4 Level 1: context diagrams
+├── containers/             # C4 Level 2: container diagrams + API contracts
+│   └── contracts/          # OpenAPI 3.1 contract spec (bundled + source files)
+├── components/             # C4 Level 3: component diagrams per surface
+│   ├── be/                 # Backend component diagram
+│   └── web/                # Frontend component diagram (or cli/, etc.)
+└── behavior/               # Gherkin acceptance specs, by surface
+    ├── be/gherkin/         # Backend acceptance specs (.feature files)
+    ├── web/gherkin/        # Frontend acceptance specs (.feature files)
+    └── cli/gherkin/        # CLI acceptance specs (.feature files, if applicable)
 ```
 
-Where `{role}` in `{domain}/{role}/gherkin/` is one of:
+Where `{surface}` in `behavior/{surface}/gherkin/` is one of:
 
 - `be` — backend service (REST API, GraphQL, etc.)
-- `fe` — frontend application (Next.js, Flutter, etc.)
-- `fs` — fullstack application (combined frontend + backend in one app)
+- `web` — frontend application (Next.js, Flutter, etc.)
 - `cli` — CLI tool (Go, etc.)
 
-**Contracts** live at `specs/apps/{domain}/contracts/` and are the source of truth for API
-contracts shared between frontend and backend. The `{domain}-contracts` Nx project lints and
+**Contracts** live at `specs/apps/{domain}/containers/contracts/` and are the source of truth for
+API contracts shared between frontend and backend. The `{domain}-contracts` Nx project lints and
 bundles the spec; downstream apps consume it via their `codegen` target.
 
-**C4 diagrams** live at `specs/apps/{domain}/c4/` and describe the system architecture at the
-context, container, and component levels.
+**C4 diagrams** are distributed across `system-context/`, `containers/`, and `components/` per C4
+model level. See the [Specs Directory Structure Convention](../repo-governance/conventions/structure/specs-directory-structure.md)
+for the normative rules.
 
 ## Standards
 

@@ -26,8 +26,8 @@ demos will reuse.
 | `investment-oracle-fe-e2e` | Frontend E2E      | Playwright + playwright-bdd         | n/a         |
 
 **Shared spec area**: `specs/apps/investment-oracle/` (mirrors
-`specs/apps/crud/` structure — `c4/`, `be/gherkin/`, `fe/gherkin/`,
-`contracts/`).
+`specs/apps/crud/` structure — `product/`, `system-context/`, `containers/`,
+`components/`, `behavior/`).
 **Shared contract project**: `investment-oracle-contracts` (Nx project at
 `specs/apps/investment-oracle/contracts/`).
 **Shared UI library**: `investment-oracle-fe` consumes

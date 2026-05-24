@@ -34,7 +34,7 @@ services:
     # Mount app source and shared Gherkin specs.
     volumes:
       - ../../../apps/crud-be-golang-gin:/workspace:rw
-      - ../../../specs/apps/crud/be/gherkin:/specs/apps/crud/be/gherkin:ro
+      - ../../../specs/apps/crud/behavior/be/gherkin:/specs/apps/crud/behavior/be/gherkin:ro
 
     ports:
       - "8201:8201"
