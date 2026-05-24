@@ -134,8 +134,8 @@ Plans are executed by **execution-grade (sonnet-tier)** agents, not planning-gra
 **Every checkbox MUST contain all of the following that apply**:
 
 - **Explicit file path(s)** when the action touches a known file. When the path cannot be determined at authoring time, give the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/crud-be-ts-effect/src/` following the pattern of sibling `auth.ts`").
-- **Explicit shell command(s)** verbatim when applicable (e.g., `npx nx run ose-web:test:quick`), not "run the lint".
-- **Concrete acceptance criterion** stating the observable change that proves done (e.g., "all assertions in `trpc.test.ts` pass", "`nx run ose-web:typecheck` exits 0"). No bare "implement X", "set up Y", "configure Z".
+- **Explicit shell command(s)** verbatim when applicable (e.g., `npx nx run crud-be-ts-effect:test:quick`), not "run the lint".
+- **Concrete acceptance criterion** stating the observable change that proves done (e.g., "all assertions in `trpc.test.ts` pass", "`nx run crud-be-ts-effect:typecheck` exits 0"). No bare "implement X", "set up Y", "configure Z".
 
 **`plan-checker` flags violations as HIGH severity. `plan-fixer` rewrites offending items with maximum detail.**
 
@@ -150,9 +150,9 @@ Plans are executed by **execution-grade (sonnet-tier)** agents, not planning-gra
 **Good** (explicit path, explicit command, explicit criterion):
 
 ```markdown
-- [ ] Edit `apps/ose-web/src/server/trpc.ts`: wrap the public router with
+- [ ] Edit `apps/crud-be-ts-effect/src/middleware/auth.ts`: wrap the public router with
       `unstable_cache(..., { revalidate: 300 })`. Verify by running
-      `npx nx run ose-web:test:quick` — all tests pass.
+      `npx nx run crud-be-ts-effect:test:quick` — all tests pass.
 ```
 
 **Bad**:
@@ -166,7 +166,7 @@ Plans are executed by **execution-grade (sonnet-tier)** agents, not planning-gra
 ```markdown
 - [ ] Create `apps/crud-be-ts-effect/src/Middleware/RateLimit.fs` (siblings: `Auth.fs`, `Cors.fs`)
       implementing token-bucket rate limiting per `tech-docs.md §Rate Limiting`. Verify by running
-      `npx nx run crud-be-ts-effect:test:unit` — new test `RateLimit_RejectsExceedingRequests` passes.
+      `npx nx run crud-be-ts-effect:test:quick` — new test `RateLimit_RejectsExceedingRequests` passes.
 ```
 
 **Bad**:
@@ -260,7 +260,7 @@ Domain-specialized agents hallucinate less than generic orchestration. When a de
 
 ```markdown
 - [ ] Edit `apps/crud-be-ts-effect/src/Domain/User.fs` [Repo-grounded]: add `email: string option` field
-      with case-insensitive uniqueness. Verify by running `nx run crud-be-ts-effect:test:unit` — new test
+      with case-insensitive uniqueness. Verify by running `nx run crud-be-ts-effect:test:quick` — new test
       `User_RejectsDuplicateEmailIgnoringCase` passes.
   - _Suggested executor: `swe-fsharp-dev`_
 ```
@@ -268,7 +268,7 @@ Domain-specialized agents hallucinate less than generic orchestration. When a de
 **When to annotate**:
 
 - Action touches a specific language file (`.fs`, `.go`, `.kt`, `.cs`, `.fsproj`, `.csproj`, etc.)
-- Action touches a specific app context (`apps/ose-web/...` → `apps-ose-web-content-maker` for content)
+- Action touches a specific app context (e.g., TypeScript app files → `swe-typescript-dev`)
 - Action is content/documentation (`docs-maker`, `readme-maker`, `specs-maker`)
 - Action is governance / repo rules (`repo-rules-maker`)
 - Action is specialized-agent skill domain (specialized agent names vary by use case)
