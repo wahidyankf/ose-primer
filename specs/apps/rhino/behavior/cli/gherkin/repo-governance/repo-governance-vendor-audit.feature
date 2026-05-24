@@ -46,3 +46,41 @@ Feature: Governance Vendor Audit
     When the developer runs repo-governance vendor-audit on the file
     Then the command exits successfully
     And the output reports zero findings
+
+  Scenario Outline: A new harness vendor name in plain prose fails the audit
+    Given a governance markdown file containing "<term>" in plain prose
+    When the developer runs repo-governance vendor-audit on the file
+    Then the command exits with a failure code
+    And the output identifies the forbidden term and its location
+
+    Examples:
+      | term        |
+      | Junie       |
+      | JetBrains   |
+      | Amazon Q    |
+      | Antigravity |
+      | pi.dev      |
+      | Earendil    |
+
+  Scenario Outline: A new harness binding path in plain prose fails the audit
+    Given a governance markdown file containing "<path>" in plain prose
+    When the developer runs repo-governance vendor-audit on the file
+    Then the command exits with a failure code
+    And the output identifies the forbidden term and its location
+
+    Examples:
+      | path      |
+      | .junie/   |
+      | .amazonq/ |
+      | .pi/      |
+      | .agents/  |
+
+  # FP-safety for ambiguous tokens (math constant "pi", bare capital "Q") is verified
+  # against the real scanner in the rhino-cli-rust and rhino-cli-go unit suites
+  # (detects/FP-safe tests), since this CLI-wiring feature mocks the scanner per step.
+
+  Scenario: A new harness vendor name under a Platform Binding Examples heading passes the audit
+    Given a governance markdown file containing "Junie" under a "Platform Binding Examples" heading
+    When the developer runs repo-governance vendor-audit on the file
+    Then the command exits successfully
+    And the output reports zero findings

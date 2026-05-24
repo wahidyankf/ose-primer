@@ -192,6 +192,82 @@ func TestScanLines_DetectsExpandedHarnessAndVendorTerms(t *testing.T) {
 	}
 }
 
+func TestScanLines_DetectsMultiHarnessTerms(t *testing.T) {
+	// New coding-agent / harness vendor names and binding paths added for the
+	// multi-harness compatibility work. Mirrors the Rust
+	// `detects_new_harness_brands_in_prose` / `detects_new_binding_dir_paths` tests.
+	tests := []struct {
+		name  string
+		input string
+		term  string
+	}{
+		{"Junie harness", "We use Junie daily.\n", "Junie"},
+		{"JetBrains vendor", "JetBrains ships it.\n", "JetBrains"},
+		{"Amazon Q harness", "Amazon Q is here.\n", "Amazon Q"},
+		{"Amazon Q Developer", "Amazon Q Developer ships.\n", "Amazon Q"},
+		{"Antigravity harness", "Antigravity flies.\n", "Antigravity"},
+		{"Pi Coding Agent", "The Pi Coding Agent helps.\n", "Pi Coding Agent"},
+		{"pi.dev domain", "See pi.dev for docs.\n", "pi.dev"},
+		{"Earendil vendor", "Earendil builds it.\n", "Earendil"},
+		{".junie/ path", "Edit .junie/ here.\n", ".junie/"},
+		{".amazonq/ path", "Edit .amazonq/ here.\n", ".amazonq/"},
+		{".pi/ path", "Edit .pi/ here.\n", ".pi/"},
+		{".gemini/ path", "Edit .gemini/ here.\n", ".gemini/"},
+		{".agent/ path", "Edit .agent/ here.\n", ".agent/"},
+		{".agents/ path", "Edit .agents/ here.\n", ".agents/"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			findings := scanLines("repo-governance/foo.md", tt.input)
+			found := false
+			for _, f := range findings {
+				if f.Match == tt.term {
+					found = true
+					break
+				}
+			}
+			if !found {
+				t.Errorf("expected finding for %q, got: %+v", tt.term, findings)
+			}
+		})
+	}
+}
+
+func TestScanLines_FPSafeIgnoresMathPiAndBareQ(t *testing.T) {
+	content := "The value of pi is 3.14 and Q is a letter.\n"
+	findings := scanLines("repo-governance/foo.md", content)
+	if len(findings) != 0 {
+		t.Errorf("expected zero findings for math pi / bare Q, got: %+v", findings)
+	}
+}
+
+func TestScanLines_FPSafeSkipsNewBrandsInPlatformBindingSection(t *testing.T) {
+	content := "## Platform Binding Examples\n\nJunie and Amazon Q and Antigravity.\n"
+	findings := scanLines("repo-governance/foo.md", content)
+	if len(findings) != 0 {
+		t.Errorf("expected zero findings in platform binding section, got: %+v", findings)
+	}
+}
+
+func TestScanLines_AgentPathDoesNotMatchAgentsPath(t *testing.T) {
+	findings := scanLines("repo-governance/foo.md", "Edit .agents/ dir.\n")
+	hasAgents, hasAgent := false, false
+	for _, f := range findings {
+		if f.Match == ".agents/" {
+			hasAgents = true
+		}
+		if f.Match == ".agent/" {
+			hasAgent = true
+		}
+	}
+	if !hasAgents {
+		t.Errorf("expected .agents/ finding, got: %+v", findings)
+	}
+	if hasAgent {
+		t.Errorf("did not expect .agent/ finding for .agents/ text, got: %+v", findings)
+	}
+}
+
 func TestScanLines_DetectsCapitalizedSkillsTerm(t *testing.T) {
 	t.Run("capitalized branded Skills is detected", func(t *testing.T) {
 		content := "Use Skills to delegate work to specialized agents.\n"

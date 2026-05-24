@@ -99,6 +99,29 @@ fn forbidden_terms() -> &'static Vec<ForbiddenTerm> {
                 "Devin",
                 "\"the coding agent\" (false-positive risk: personal name; review context)",
             ),
+            mk(
+                r"\bJunie\b",
+                "Junie",
+                "\"the coding agent\" or \"AI coding assistant\"",
+            ),
+            mk(
+                r"\bJetBrains\b",
+                "JetBrains",
+                "\"the coding-agent vendor\" or drop",
+            ),
+            mk(r"Amazon Q\b", "Amazon Q", "\"the coding agent\""),
+            mk(r"\bAntigravity\b", "Antigravity", "\"the coding agent\""),
+            mk(
+                r"Pi Coding Agent",
+                "Pi Coding Agent",
+                "\"the coding agent\"",
+            ),
+            mk(r"pi\.dev", "pi.dev", "\"the coding agent\""),
+            mk(
+                r"\bEarendil\b",
+                "Earendil",
+                "\"the coding-agent vendor\" or drop",
+            ),
             // Vendor-specific binding directory paths.
             mk(r"\.claude/", ".claude/", "\"primary binding directory\""),
             mk(
@@ -124,6 +147,24 @@ fn forbidden_terms() -> &'static Vec<ForbiddenTerm> {
             mk(
                 r"\.clinerules/",
                 ".clinerules/",
+                "\"the platform binding directory\"",
+            ),
+            mk(r"\.junie/", ".junie/", "\"the platform binding directory\""),
+            mk(
+                r"\.amazonq/",
+                ".amazonq/",
+                "\"the platform binding directory\"",
+            ),
+            mk(r"\.pi/", ".pi/", "\"the platform binding directory\""),
+            mk(
+                r"\.gemini/",
+                ".gemini/",
+                "\"the platform binding directory\"",
+            ),
+            mk(r"\.agent/", ".agent/", "\"the platform binding directory\""),
+            mk(
+                r"\.agents/",
+                ".agents/",
                 "\"the platform binding directory\"",
             ),
             // Model-vendor company names.
@@ -329,7 +370,11 @@ fn fence_line_len(line: &str) -> usize {
             break;
         }
     }
-    if n >= 3 { n } else { 0 }
+    if n >= 3 {
+        n
+    } else {
+        0
+    }
 }
 
 /// Removes regions of a line exempt from scanning: HTML comments, inline code
@@ -472,6 +517,73 @@ mod tests {
     fn prose_before_inline_comment_scanned() {
         let findings = scan_lines("x.md", "Claude Code is bad <!-- multi\n");
         assert!(findings.iter().any(|f| f.r#match == "Claude Code"));
+    }
+
+    #[test]
+    fn detects_new_harness_brands_in_prose() {
+        for (text, term) in [
+            ("We use Junie daily.\n", "Junie"),
+            ("JetBrains ships it.\n", "JetBrains"),
+            ("Amazon Q is here.\n", "Amazon Q"),
+            ("Amazon Q Developer ships.\n", "Amazon Q"),
+            ("Antigravity flies.\n", "Antigravity"),
+            ("The Pi Coding Agent helps.\n", "Pi Coding Agent"),
+            ("See pi.dev for docs.\n", "pi.dev"),
+            ("Earendil builds it.\n", "Earendil"),
+        ] {
+            let findings = scan_lines("x.md", text);
+            assert!(
+                findings.iter().any(|f| f.r#match == term),
+                "expected {term} flagged in {text:?}, got {findings:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn detects_new_binding_dir_paths() {
+        for (text, term) in [
+            ("Edit .junie/ here.\n", ".junie/"),
+            ("Edit .amazonq/ here.\n", ".amazonq/"),
+            ("Edit .pi/ here.\n", ".pi/"),
+            ("Edit .gemini/ here.\n", ".gemini/"),
+            ("Edit .agent/ here.\n", ".agent/"),
+            ("Edit .agents/ here.\n", ".agents/"),
+        ] {
+            let findings = scan_lines("x.md", text);
+            assert!(
+                findings.iter().any(|f| f.r#match == term),
+                "expected {term} flagged, got {findings:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn fp_safe_ignores_math_pi_and_bare_q() {
+        // The math constant "pi" and a lone capital "Q" must not be flagged.
+        let findings = scan_lines("x.md", "The value of pi is 3.14 and Q is a letter.\n");
+        assert!(
+            findings.is_empty(),
+            "expected no findings, got {findings:?}"
+        );
+    }
+
+    #[test]
+    fn fp_safe_skips_new_brands_in_platform_binding_section() {
+        let content = "## Platform Binding Examples\n\nJunie and Amazon Q and Antigravity.\n";
+        let findings = scan_lines("x.md", content);
+        assert!(
+            findings.is_empty(),
+            "expected no findings, got {findings:?}"
+        );
+    }
+
+    #[test]
+    fn agent_path_pattern_does_not_match_agents_path() {
+        // ".agents/" is reported as `.agents/` only, never also as `.agent/`.
+        let findings = scan_lines("x.md", "Edit .agents/ dir.\n");
+        let matches: Vec<&str> = findings.iter().map(|f| f.r#match.as_str()).collect();
+        assert!(matches.contains(&".agents/"), "got {matches:?}");
+        assert!(!matches.contains(&".agent/"), "got {matches:?}");
     }
 
     #[test]
