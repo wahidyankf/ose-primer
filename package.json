@@ -46,6 +46,7 @@
     "sync:skills": "nx run rhino-cli-rust:build --skip-nx-cache && ./apps/rhino-cli-rust/dist/rhino-cli agents sync --skills-only",
     "sync:dry-run": "nx run rhino-cli-rust:build --skip-nx-cache && ./apps/rhino-cli-rust/dist/rhino-cli agents sync --dry-run",
     "validate:sync": "nx run rhino-cli-rust:build --skip-nx-cache && ./apps/rhino-cli-rust/dist/rhino-cli agents validate-sync",
+    "validate:harness-bindings": "nx run rhino-cli-rust:build --skip-nx-cache && ./apps/rhino-cli-rust/dist/rhino-cli agents validate-bindings",
     "validate:claude": "nx run rhino-cli-rust:build --skip-nx-cache && ./apps/rhino-cli-rust/dist/rhino-cli agents validate-claude",
     "validate:opencode": "npm run validate:sync",
     "validate:config": "npm run validate:claude && npm run sync:claude-to-opencode && npm run validate:opencode",

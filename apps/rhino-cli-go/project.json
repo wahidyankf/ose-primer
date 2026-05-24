@@ -94,6 +94,11 @@
       "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/repo-governance/**/*.md"],
       "outputs": []
     },
+    "validate:harness-bindings": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go agents validate-bindings",
+      "cache": false,
+      "outputs": []
+    },
     "validate:cross-vendor-parity": {
       "command": "bash apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh",
       "cache": false,

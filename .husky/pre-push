@@ -27,4 +27,10 @@ if [ -n "$RANGE" ]; then
   if echo "$CHANGED" | grep -qE '^(repo-governance/.*\.md|AGENTS\.md|CLAUDE\.md|\.claude/agents/|\.opencode/agents/)'; then
     npx nx run rhino-cli-rust:validate:cross-vendor-parity
   fi
+  # Deterministic harness-binding parity guard (multi-harness-compatibility plan):
+  # fires when any binding surface changes. Re-derives the generated bindings from
+  # AGENTS.md and asserts byte-equality + catalog coverage. No network, no agent.
+  if echo "$CHANGED" | grep -qE '^(\.amazonq/|AGENTS\.md|docs/reference/platform-bindings\.md|\.claude/|\.opencode/|\.codex/|\.github/)'; then
+    npm run validate:harness-bindings
+  fi
 fi

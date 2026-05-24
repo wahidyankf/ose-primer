@@ -1,0 +1,8 @@
+{
+  "name": "ose-default",
+  "description": "Default agent for this repository. Loads the canonical AGENTS.md instructions and all .amazonq/rules files.",
+  "resources": [
+    "file://AGENTS.md",
+    "file://.amazonq/rules/**/*.md"
+  ]
+}

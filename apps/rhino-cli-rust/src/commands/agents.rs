@@ -7,11 +7,11 @@
 //! reproduce the Go binary's help text, including cobra's alphabetical flag
 //! ordering.
 
-use anyhow::{Error, anyhow};
+use anyhow::{anyhow, Error};
 use clap::Args;
 
 use crate::internal::agents::{
-    claude_validator, naming, reporter, sync, sync_validator,
+    bindings, claude_validator, naming, reporter, sync, sync_validator,
     types::{SyncOptions, ValidateClaudeOptions},
 };
 use crate::internal::cliout::OutputFormat;
@@ -269,6 +269,79 @@ pub fn run_validate_naming(output: OutputFormat, verbose: bool, quiet: bool) -> 
 
     if !violations.is_empty() {
         return Err(anyhow!("{} naming violation(s) found", violations.len()));
+    }
+    Ok(())
+}
+
+// ---------------------------------------------------------------------------
+// emit-bindings
+// ---------------------------------------------------------------------------
+
+/// Cobra-style usage block printed to stderr when `emit-bindings` errors.
+pub const EMIT_BINDINGS_USAGE: &str = "Usage:\n  \
+rhino-cli agents emit-bindings [flags]\n\n\
+Examples:\n  \
+# Write the binding files\n  \
+rhino-cli agents emit-bindings\n\n  \
+# Preview without writing\n  \
+rhino-cli agents emit-bindings --dry-run\n\n\
+Flags:\n      \
+--dry-run   Preview the files that would be written without writing them\n  \
+-h, --help      help for emit-bindings\n\n\
+Global Flags:\n      \
+--no-color        disable colored output\n  \
+-o, --output string   output format: text, json, markdown (default \"text\")\n  \
+-q, --quiet           quiet mode (errors only)\n      \
+--say string      echo a message to stdout\n  \
+-v, --verbose         verbose output with timestamps\n\n";
+
+#[derive(Args, Debug)]
+pub struct EmitBindingsArgs {
+    /// Preview changes without writing files.
+    #[arg(long)]
+    pub dry_run: bool,
+}
+
+pub fn run_emit_bindings(args: &EmitBindingsArgs) -> Result<(), Error> {
+    let repo_root =
+        git::root::find_root().map_err(|e| anyhow!("failed to find git repository root: {e}"))?;
+
+    let result = bindings::emit_bindings(&repo_root, args.dry_run)?;
+    print!("{}", result.output);
+    Ok(())
+}
+
+// ---------------------------------------------------------------------------
+// validate-bindings
+// ---------------------------------------------------------------------------
+
+/// Cobra-style usage block printed to stderr when `validate-bindings` errors.
+pub const VALIDATE_BINDINGS_USAGE: &str = "Usage:\n  \
+rhino-cli agents validate-bindings [flags]\n\n\
+Examples:\n  \
+# Validate bindings\n  \
+rhino-cli agents validate-bindings\n\n\
+Flags:\n  \
+-h, --help   help for validate-bindings\n\n\
+Global Flags:\n      \
+--no-color        disable colored output\n  \
+-o, --output string   output format: text, json, markdown (default \"text\")\n  \
+-q, --quiet           quiet mode (errors only)\n      \
+--say string      echo a message to stdout\n  \
+-v, --verbose         verbose output with timestamps\n\n";
+
+pub fn run_validate_bindings() -> Result<(), Error> {
+    let repo_root =
+        git::root::find_root().map_err(|e| anyhow!("failed to find git repository root: {e}"))?;
+
+    let result = bindings::validate_bindings(&repo_root);
+    print!("{}", result.output);
+
+    if result.problems > 0 {
+        return Err(anyhow!(
+            "binding validation failed: {} problem(s)",
+            result.problems
+        ));
     }
     Ok(())
 }

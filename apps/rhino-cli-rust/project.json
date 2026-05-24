@@ -75,7 +75,11 @@
     "spec-coverage": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- spec-coverage validate specs/apps/rhino/behavior/cli/gherkin apps/rhino-cli-go --shared-steps",
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/rhino/behavior/cli/gherkin/**/*.feature", "{projectRoot}/src/**/*.rs", "{workspaceRoot}/apps/rhino-cli-go/**/*.go"],
+      "inputs": [
+        "{workspaceRoot}/specs/apps/rhino/behavior/cli/gherkin/**/*.feature",
+        "{projectRoot}/src/**/*.rs",
+        "{workspaceRoot}/apps/rhino-cli-go/**/*.go"
+      ],
       "comment": "Mirrors rhino-cli-go:spec-coverage exactly (same gherkin dir + scanned impl dir + --shared-steps), swapping only the binary to the Rust port. The shared-steps validator confirms every gherkin step has a matching step definition in the canonical Go test suite; the Rust binary produces byte-identical results (verified via shadow-diff `sc shared`). Scanning apps/rhino-cli-go (not apps/rhino-cli-rust) is intentional: the Go test suite is the canonical fully-covered implementation, and the parity-locked literal-step extractor (shared by both binaries) does not recognise the `regex = r\"...\"` cucumber-rs attribute form the Rust tests use, so scanning the Rust tree would report false-positive gaps identical under either binary."
     },
     "validate:naming-agents": {
@@ -98,6 +102,11 @@
       "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- repo-governance vendor-audit repo-governance/",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/repo-governance/**/*.md"],
+      "outputs": []
+    },
+    "validate:harness-bindings": {
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- agents validate-bindings",
+      "cache": false,
       "outputs": []
     },
     "validate:cross-vendor-parity": {

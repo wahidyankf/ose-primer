@@ -156,6 +156,12 @@ pub enum AgentsCommands {
     /// Validate agent filename suffixes and frontmatter name consistency.
     #[command(name = "validate-naming")]
     ValidateNaming,
+    /// Emit the generated vendor binding files.
+    #[command(name = "emit-bindings")]
+    EmitBindings(agents::EmitBindingsArgs),
+    /// Validate the generated vendor binding files against their source of truth.
+    #[command(name = "validate-bindings")]
+    ValidateBindings,
 }
 
 #[derive(Subcommand, Debug)]
@@ -268,6 +274,13 @@ fn dispatch(cmd: &Commands, output_format: OutputFormat, verbose: bool, quiet: b
             AgentsCommands::ValidateNaming => (
                 agents::run_validate_naming(output_format, verbose, quiet),
                 agents::VALIDATE_NAMING_USAGE,
+            ),
+            AgentsCommands::EmitBindings(args) => {
+                (agents::run_emit_bindings(args), agents::EMIT_BINDINGS_USAGE)
+            }
+            AgentsCommands::ValidateBindings => (
+                agents::run_validate_bindings(),
+                agents::VALIDATE_BINDINGS_USAGE,
             ),
         },
         Commands::RepoGovernance(rg) => match rg {

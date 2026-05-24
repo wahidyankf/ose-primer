@@ -52,3 +52,7 @@ apps-labs/
 
 # Claude Code worktrees
 .claude/worktrees/
+
+# Generated harness binding files (emitted byte-exact by `rhino-cli agents emit-bindings`;
+# Prettier must not reformat them or the deterministic binding-parity guard would report drift)
+.amazonq/

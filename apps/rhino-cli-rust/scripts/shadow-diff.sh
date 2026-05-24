@@ -458,6 +458,16 @@ corpus_agents() {
   done
   run_case "agents validate-naming quiet"    agents validate-naming -q --no-color
   run_case "agents validate-naming verbose"  agents validate-naming -v --no-color
+
+  # --- agents emit-bindings: ALWAYS --dry-run so the real .amazonq/ tree is
+  # --- untouched. The emitter is deterministic from AGENTS.md, so dry-run output
+  # --- is byte-identical across both implementations. ------------------------
+  run_case "agents emit-bindings dry-run"  agents emit-bindings --dry-run --no-color
+
+  # --- agents validate-bindings: read-only deterministic guard over the real
+  # --- tree (no network, no agent). Passes when the committed bridge matches a
+  # --- regenerate from AGENTS.md and the catalog covers every binding dir. ----
+  run_case "agents validate-bindings"  agents validate-bindings --no-color
 }
 
 corpus_repo_governance() {

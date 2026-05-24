@@ -6,6 +6,7 @@
 //! `internal/naming` helpers the `validate-naming` command depends on).
 
 pub mod agent_validator;
+pub mod bindings;
 pub mod claude_validator;
 pub mod converter;
 pub mod frontmatter;
