@@ -9,7 +9,7 @@
             [malli.core :as m]))
 
 (def bundled-spec-path
-  "../../specs/apps/crud/contracts/generated/openapi-bundled.yaml")
+  "../../specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml")
 
 (defn- make-temp-dir
   "Create a temporary directory and return its path string."

@@ -21,7 +21,15 @@ _gherkin_root_env = os.environ.get("GHERKIN_ROOT")
 if _gherkin_root_env:
     GHERKIN_ROOT = pathlib.Path(_gherkin_root_env)
 else:
-    GHERKIN_ROOT = pathlib.Path(__file__).parents[4] / "specs" / "apps" / "crud" / "be" / "gherkin"
+    GHERKIN_ROOT = (
+        pathlib.Path(__file__).parents[4]
+        / "specs"
+        / "apps"
+        / "crud"
+        / "behavior"
+        / "be"
+        / "gherkin"
+    )
 
 _STRONG_PASSWORD = "Str0ng#Pass1"
 

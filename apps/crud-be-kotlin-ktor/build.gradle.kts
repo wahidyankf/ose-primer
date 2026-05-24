@@ -162,10 +162,10 @@ tasks.register<Test>("testIntegration") {
 // Copy Gherkin specs into test resources classpath.
 // In Docker, specs are pre-copied to src/test/resources/specs/ so this task is skipped
 // via the SKIP_SPEC_COPY env var to avoid Gradle scanning /sys filesystem.
-val specsDir = file("${rootProject.projectDir}/../../specs/apps/crud/be/gherkin")
+val specsDir = file("${rootProject.projectDir}/../../specs/apps/crud/behavior/be/gherkin")
 
 if (System.getenv("SKIP_SPEC_COPY") == null && specsDir.exists()) {
-  tasks.processTestResources { from(specsDir) { into("specs/apps/crud/be/gherkin") } }
+  tasks.processTestResources { from(specsDir) { into("specs/apps/crud/behavior/be/gherkin") } }
 }
 
 // Kover configuration

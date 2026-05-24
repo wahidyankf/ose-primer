@@ -4,7 +4,7 @@ defmodule OpenApiCodegenTest do
   alias OpenApiCodegen
 
   @bundled_spec Path.expand(
-                  "../../../specs/apps/crud/contracts/generated/openapi-bundled.yaml",
+                  "../../../specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml",
                   __DIR__
                 )
 
