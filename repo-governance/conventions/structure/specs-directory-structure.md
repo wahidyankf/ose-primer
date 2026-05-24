@@ -112,7 +112,7 @@ specs/apps/crud/behavior/web/gherkin/authentication/google-login.feature
 **CLI specs** also use domain subdirectories:
 
 ```
-specs/apps/rhino/behavior/cli/gherkin/doctor/doctor.feature
+specs/apps/rhino/behavior/cli/gherkin/system/doctor.feature
 specs/apps/rhino/behavior/cli/gherkin/env/env-backup.feature
 specs/apps/rhino/behavior/cli/gherkin/spec-coverage/spec-coverage-validate.feature
 ```

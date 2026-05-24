@@ -6,15 +6,23 @@ category: plan
 
 # Delivery — Adopt ose-public Specs Structure
 
+## Worktree
+
+main — this plan executes directly on `main` with no worktree isolation. The working directory
+is the repository root (`ose-primer/`). See README.md `## Git Execution Context`.
+
 ## Environment Setup
 
-- [ ] `npm install` — exits 0
+- [x] `npm install` — exits 0
   - _Executor: default_
-- [ ] `npm run doctor -- --fix` — exits 0 (converges 18+ polyglot toolchains)
+  - Date: 2026-05-24 | Status: done | Files Changed: none | Notes: npm install succeeded; audit warnings present (pre-existing)
+- [x] `npm run doctor -- --fix` — exits 0 (converges 18+ polyglot toolchains)
   - _Executor: default_
-- [ ] `npx nx affected -t lint typecheck` — exits 0 (baseline; distinguish pre-existing failures
+  - Date: 2026-05-24 | Status: done | Files Changed: none | Notes: 19/19 tools OK; all toolchains converged
+- [x] `npx nx affected -t lint typecheck` — exits 0 (baseline; distinguish pre-existing failures
       from migration-caused regressions)
   - _Executor: default_
+  - Date: 2026-05-24 | Status: done | Files Changed: none | Notes: lint passed (26 projects, warnings only); typecheck passed (23 projects); all cached
 
 ## Commit Guidelines
 
@@ -24,29 +32,33 @@ specified inline at the end of each phase.
 
 ## Phase 0 — Pre-flight Verification
 
-- [ ] Confirm exact rhino flat feature-file list:
+- [x] Confirm exact rhino flat feature-file list:
       `ls specs/apps/rhino/behavior/cli/gherkin/*.feature | sort`
       Compare against [tech-docs.md §D1](./tech-docs.md#decision--d1-domain-groupings-for-rhino-cli-gherkin)
       domain grouping table. If filenames have drifted since 2026-05-24, assign new files
       to the closest domain before Phase 3.
   - _Executor: default_
+  - Date: 2026-05-24 | Status: done | Files Changed: none | Notes: 19 flat features confirmed; match D1 table exactly (agents:3, contracts:2, docs:2, env:3, git:1, java:1, repo-governance:1, spec-coverage:1, system:1, test-coverage:3, workflows:1)
 
-- [ ] Confirm exact crud flat-root layout:
+- [x] Confirm exact crud flat-root layout:
       `find specs/apps/crud -maxdepth 1 -type d | sort`
       Must still show `be/`, `fe/`, `c4/`, `contracts/` at root. If already migrated, skip
       Phase 2 entirely.
   - _Executor: default_
+  - Date: 2026-05-24 | Status: done | Files Changed: none | Notes: flat-root confirmed — be/, c4/, contracts/, fe/ all present
 
-- [ ] Confirm the 17 project.json files still reference old paths:
+- [x] Confirm the 17 project.json files still reference old paths:
       `grep -r 'specs/apps/crud/be/gherkin\|specs/apps/crud/fe/gherkin' --include='*.json' apps/ | wc -l`
       Expected: 20+ matches. If already updated, skip the project.json sub-tasks in Phase 2.
   - _Executor: default_
+  - Date: 2026-05-24 | Status: done | Files Changed: none | Notes: 84 matches confirmed; migration not yet done
 
-- [ ] Re-read the current `repo-governance/conventions/structure/specs-directory-structure.md`
+- [x] Re-read the current `repo-governance/conventions/structure/specs-directory-structure.md`
       (ose-primer version) and [tech-docs.md §Gap Inventory](./tech-docs.md#gap-inventory).
       Confirm the inventory is still accurate — if the file has been updated since 2026-05-24,
       revise the plan before executing.
   - _Executor: default_
+  - Date: 2026-05-24 | Status: done | Files Changed: none | Notes: convention doc still pre-migration; all 8 gaps accurate; D1 domain table matches actual feature file list
 
 ## Phase 1 — Convention Doc Replacement (repo-rules-maker)
 
@@ -54,7 +66,7 @@ Update `specs-directory-structure.md` to the C4-aware five-folder convention
 matching ose-public's 2026-05-24 state. This step is decoupled from the file moves
 so the convention is accurate before the structural commits land.
 
-- [ ] Invoke `repo-rules-maker` to rewrite
+- [x] Invoke `repo-rules-maker` to rewrite
       `repo-governance/conventions/structure/specs-directory-structure.md`:
   - Replace "Canonical Path Pattern" section with five-folder C4-aware tree
   - Drop CLI-flat exception; add "domain subdirs for every surface" rule
@@ -65,12 +77,15 @@ so the convention is accurate before the structural commits land.
   - Update all path examples to new canonical paths
   - Update frontmatter `description` to match new scope
   - _Suggested executor: `repo-rules-maker`_
+  - Date: 2026-05-24 | Status: done | Files Changed: repo-governance/conventions/structure/specs-directory-structure.md | Notes: full C4-aware rewrite via repo-rules-maker; all 12 changes applied
 
-- [ ] Verify `npm run lint:md` on the updated file — exits 0.
+- [x] Verify `npm run lint:md` on the updated file — exits 0.
   - _Executor: default_
+  - Date: 2026-05-24 | Status: done | Files Changed: none | Notes: lint:md passed 0 errors
 
-- [ ] Commit: `docs(governance): replace specs-directory-structure with C4-aware convention`
+- [x] Commit: `docs(governance): replace specs-directory-structure with C4-aware convention`
   - _Executor: default_
+  - Date: 2026-05-24 | Status: done | Files Changed: specs-directory-structure.md | Notes: commit 5241d80d7; 126 insertions 89 deletions
 
 ## Phase 2 — crud Flat-Root → C4-Aware Migration (one atomic commit)
 
@@ -79,72 +94,96 @@ Do NOT push between the moves and the updates.
 
 ### 2.1 — Create destination directories
 
-- [ ] `mkdir -p specs/apps/crud/product` — skeleton placeholder; no README required in this migration
-- [ ] `mkdir -p specs/apps/crud/behavior`
-- [ ] `mkdir -p specs/apps/crud/system-context`
-- [ ] `mkdir -p specs/apps/crud/containers`
-- [ ] `mkdir -p specs/apps/crud/components/be`
-- [ ] `mkdir -p specs/apps/crud/components/web`
+- [x] `mkdir -p specs/apps/crud/product` — skeleton placeholder; no README required in this migration
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/product/ created
+- [x] `mkdir -p specs/apps/crud/behavior`
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/behavior/ created
+- [x] `mkdir -p specs/apps/crud/system-context`
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/system-context/ created
+- [x] `mkdir -p specs/apps/crud/containers`
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/containers/ created
+- [x] `mkdir -p specs/apps/crud/components/be`
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/components/be/ created
+- [x] `mkdir -p specs/apps/crud/components/web`
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/components/web/ created
 
 ### 2.2 — git mv: layer directories into behavior/
 
-- [ ] `git mv specs/apps/crud/be specs/apps/crud/behavior/be`
+- [x] `git mv specs/apps/crud/be specs/apps/crud/behavior/be`
       — moves `be/README.md` and `be/gherkin/` intact
-- [ ] `git mv specs/apps/crud/fe specs/apps/crud/behavior/web`
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/be/ → specs/apps/crud/behavior/be/
+- [x] `git mv specs/apps/crud/fe specs/apps/crud/behavior/web`
       — moves `fe/` and RENAMES it to `web/` in one step
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/fe/ → specs/apps/crud/behavior/web/
 
 ### 2.3 — git mv: c4/ → split into canonical C4 folders
 
-- [ ] `git mv specs/apps/crud/c4/context.md specs/apps/crud/system-context/context.md`
-- [ ] `git mv specs/apps/crud/c4/container.md specs/apps/crud/containers/container.md`
-- [ ] `git mv specs/apps/crud/c4/component-be.md specs/apps/crud/components/be/component-be.md`
-- [ ] `git mv specs/apps/crud/c4/component-fe.md specs/apps/crud/components/web/component-web.md`
+- [x] `git mv specs/apps/crud/c4/context.md specs/apps/crud/system-context/context.md`
+  - Date: 2026-05-24 | Status: done | Files Changed: c4/context.md → system-context/context.md
+- [x] `git mv specs/apps/crud/c4/container.md specs/apps/crud/containers/container.md`
+  - Date: 2026-05-24 | Status: done | Files Changed: c4/container.md → containers/container.md
+- [x] `git mv specs/apps/crud/c4/component-be.md specs/apps/crud/components/be/component-be.md`
+  - Date: 2026-05-24 | Status: done | Files Changed: c4/component-be.md → components/be/component-be.md
+- [x] `git mv specs/apps/crud/c4/component-fe.md specs/apps/crud/components/web/component-web.md`
       — RENAMED from `component-fe.md` to `component-web.md`
-- [ ] `git rm specs/apps/crud/c4/README.md`
+  - Date: 2026-05-24 | Status: done | Files Changed: c4/component-fe.md → components/web/component-web.md
+- [x] `git rm specs/apps/crud/c4/README.md`
       — c4/ is now empty; git rm the last file; directory is automatically removed
+  - Date: 2026-05-24 | Status: done | Files Changed: c4/README.md removed
 
 ### 2.4 — git mv: contracts/ into containers/
 
-- [ ] `git mv specs/apps/crud/contracts specs/apps/crud/containers/contracts`
+- [x] `git mv specs/apps/crud/contracts specs/apps/crud/containers/contracts`
       — moves the entire contracts directory (project.json, openapi.yaml, etc.)
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/contracts/ → specs/apps/crud/containers/contracts/
 
 ### 2.5 — Create new README files
 
-- [ ] Create `specs/apps/crud/behavior/README.md`
+- [x] Create `specs/apps/crud/behavior/README.md`
       — cross-cutting behavior index; list `be/` and `web/` sub-sections
   - _Suggested executor: `docs-maker`_
-- [ ] Create `specs/apps/crud/system-context/README.md`
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/behavior/README.md
+- [x] Create `specs/apps/crud/system-context/README.md`
       — skeleton per R3 template in tech-docs.md
   - _Suggested executor: `docs-maker`_
-- [ ] Create `specs/apps/crud/containers/README.md`
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/system-context/README.md
+- [x] Create `specs/apps/crud/containers/README.md`
       — skeleton noting `container.md` + `contracts/` subdirectory
   - _Suggested executor: `docs-maker`_
-- [ ] Create `specs/apps/crud/components/README.md`
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/containers/README.md
+- [x] Create `specs/apps/crud/components/README.md`
       — skeleton listing `be/` and `web/` sub-components
   - _Suggested executor: `docs-maker`_
-- [ ] Create `specs/apps/crud/components/be/README.md`
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/components/README.md
+- [x] Create `specs/apps/crud/components/be/README.md`
       — skeleton for backend component spec
   - _Suggested executor: `docs-maker`_
-- [ ] Create `specs/apps/crud/components/web/README.md`
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/components/be/README.md
+- [x] Create `specs/apps/crud/components/web/README.md`
       — skeleton for web/frontend component spec
   - _Suggested executor: `docs-maker`_
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/components/web/README.md
 
 ### 2.6 — Update moved README files
 
-- [ ] Update `specs/apps/crud/README.md`:
+- [x] Update `specs/apps/crud/README.md`:
   - Replace old `c4/`, `be/`, `fe/`, `contracts/` tree block with five-folder tree
   - Update "Spec Artifacts" links to new paths
   - Rename `fe/` references to `behavior/web/`
   - _Suggested executor: `docs-maker`_
-- [ ] Update `specs/apps/crud/behavior/be/README.md` (was `be/README.md`):
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/README.md
+- [x] Update `specs/apps/crud/behavior/be/README.md` (was `be/README.md`):
   - Update any self-referential path examples
   - _Suggested executor: `docs-maker`_
-- [ ] Update `specs/apps/crud/behavior/web/README.md` (was `fe/README.md`):
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/behavior/be/README.md | Notes: updated path examples, Nx input pattern, parent/counterpart links
+- [x] Update `specs/apps/crud/behavior/web/README.md` (was `fe/README.md`):
   - Update `fe` → `web` in heading and path examples
   - _Suggested executor: `docs-maker`_
-- [ ] Update `specs/apps/crud/behavior/be/gherkin/README.md`:
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/behavior/web/README.md | Notes: fe→web throughout; path examples updated
+- [x] Update `specs/apps/crud/behavior/be/gherkin/README.md`:
   - Update relative path to parent README (now 4 levels up instead of 3)
   - _Suggested executor: `docs-maker`_
+  - Date: 2026-05-24 | Status: done | Files Changed: specs/apps/crud/behavior/be/gherkin/README.md | Notes: fixed docs link depth (5→6 levels)
 - [ ] Update `specs/apps/crud/behavior/web/gherkin/README.md` (was `fe/gherkin/README.md`):
   - Update `fe` → `web` throughout
   - Update relative path depth

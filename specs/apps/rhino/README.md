@@ -13,14 +13,28 @@ the contract between the CLI implementation and its consumers.
 
 ## Structure
 
-All feature files live under `behavior/cli/gherkin/`:
-
 ```
 specs/apps/rhino/
 ├── README.md
+├── product/               # PM-first product docs (placeholder)
+├── system-context/        # C4 Level 1 system context (placeholder)
+├── containers/            # C4 Level 2 containers (placeholder)
+├── components/
+│   └── cli/               # C4 Level 3 CLI component (placeholder)
 └── behavior/
     └── cli/
-        └── gherkin/    # All rhino-cli Gherkin feature files
+        └── gherkin/       # Gherkin feature files (11 domain subdirs)
+            ├── agents/
+            ├── contracts/
+            ├── docs/
+            ├── env/
+            ├── git/
+            ├── java/
+            ├── repo-governance/
+            ├── spec-coverage/
+            ├── system/
+            ├── test-coverage/
+            └── workflows/
 ```
 
 See [behavior/cli/gherkin/README.md](./behavior/cli/gherkin/README.md) for the full file inventory.
@@ -52,7 +66,7 @@ The `test:integration` target is cached — it only re-runs when source files in
 
 ## Adding New Specs
 
-1. Create `specs/apps/rhino/behavior/cli/gherkin/<domain>-<action>.feature`
+1. Create `specs/apps/rhino/behavior/cli/gherkin/<domain>/<domain>-<action>.feature` (create the domain subdir if it does not exist)
 2. Create `apps/rhino-cli/cmd/<domain>_<action>_test.go` (no build tag — unit test with godog):
    - Add `package cmd` at the top
    - Include `// Scenario: <title>` comments for every scenario

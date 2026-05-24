@@ -1,34 +1,36 @@
 # rhino-cli Gherkin Specs
 
 Gherkin feature files for [rhino-cli](../../../../../../apps/rhino-cli/README.md) — the Repository
-Hygiene & INtegration Orchestrator CLI.
+Hygiene & INtegration Orchestrator CLI. 19 files, 136 scenarios across 11 domains.
 
 ## Feature Files
 
-| File                                   | Command(s)                     | Scenarios |
-| -------------------------------------- | ------------------------------ | --------- |
-| `agents-sync.feature`                  | `agents sync`                  | 7         |
-| `agents-validate-claude.feature`       | `agents validate-claude`       | 5         |
-| `agents-validate-naming.feature`       | `agents validate-naming`       | 4         |
-| `contracts-dart-scaffold.feature`      | `contracts dart-scaffold`      | 3         |
-| `contracts-java-clean-imports.feature` | `contracts java-clean-imports` | 5         |
-| `docs-validate-links.feature`          | `docs validate-links`          | 4         |
-| `doctor.feature`                       | `doctor`                       | 9         |
-| `env-backup.feature`                   | `env backup`                   | 18        |
-| `env-init.feature`                     | `env init`                     | 4         |
-| `env-restore.feature`                  | `env restore`                  | 13        |
-| `git-pre-commit.feature`               | `git pre-commit`               | 1         |
-| `java-validate-annotations.feature`    | `java validate-annotations`    | 4         |
-| `spec-coverage-validate.feature`       | `spec-coverage validate`       | 6         |
-| `test-coverage-diff.feature`           | `test-coverage diff`           | 4         |
-| `test-coverage-merge.feature`          | `test-coverage merge`          | 3         |
-| `test-coverage-validate.feature`       | `test-coverage validate`       | 10        |
-| `workflows-validate-naming.feature`    | `workflows validate-naming`    | 4         |
-| `docs-validate-mermaid.feature`        | `docs validate-mermaid`        | 22        |
+| Domain          | File                                                   | Command                        | Scenarios |
+| --------------- | ------------------------------------------------------ | ------------------------------ | --------- |
+| agents          | `agents/agents-sync.feature`                           | `agents sync`                  | 7         |
+| agents          | `agents/agents-validate-claude.feature`                | `agents validate-claude`       | 5         |
+| agents          | `agents/agents-validate-naming.feature`                | `agents validate-naming`       | 4         |
+| contracts       | `contracts/contracts-dart-scaffold.feature`            | `contracts dart-scaffold`      | 3         |
+| contracts       | `contracts/contracts-java-clean-imports.feature`       | `contracts java-clean-imports` | 5         |
+| docs            | `docs/docs-validate-links.feature`                     | `docs validate-links`          | 4         |
+| docs            | `docs/docs-validate-mermaid.feature`                   | `docs validate-mermaid`        | 22        |
+| env             | `env/env-backup.feature`                               | `env backup`                   | 18        |
+| env             | `env/env-init.feature`                                 | `env init`                     | 4         |
+| env             | `env/env-restore.feature`                              | `env restore`                  | 13        |
+| git             | `git/git-pre-commit.feature`                           | `git pre-commit`               | 1         |
+| java            | `java/java-validate-annotations.feature`               | `java validate-annotations`    | 4         |
+| repo-governance | `repo-governance/repo-governance-vendor-audit.feature` | `repo-governance vendor-audit` | 7         |
+| spec-coverage   | `spec-coverage/spec-coverage-validate.feature`         | `spec-coverage validate`       | 6         |
+| system          | `system/doctor.feature`                                | `doctor`                       | 9         |
+| test-coverage   | `test-coverage/test-coverage-diff.feature`             | `test-coverage diff`           | 4         |
+| test-coverage   | `test-coverage/test-coverage-merge.feature`            | `test-coverage merge`          | 3         |
+| test-coverage   | `test-coverage/test-coverage-validate.feature`         | `test-coverage validate`       | 10        |
+| workflows       | `workflows/workflows-validate-naming.feature`          | `workflows validate-naming`    | 4         |
 
 ## Conventions
 
 - **File naming**: `[domain]-[action].feature` (kebab-case, domain-prefixed)
+- **Directory**: Each domain has its own subdirectory; file placed in `<domain>/`
 - **Step language**: CLI-semantic only — no framework or library names
 - **User story block**: Every `Feature:` block opens with `As a … / I want … / So that …`
 
