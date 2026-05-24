@@ -10,11 +10,27 @@
     }
   },
   "permission": {
-    "read": "allow",
+    "read": {
+      "*": "allow",
+      "**/.env": "deny",
+      "**/.env.local": "deny",
+      "**/.env.development": "deny",
+      "**/.env.production": "deny",
+      "**/.env.staging": "deny",
+      "**/.env.test": "deny",
+      "**/.env.example": "allow"
+    },
     "edit": {
       "*": "ask",
       ".claude/**": "allow",
-      ".opencode/**": "allow"
+      ".opencode/**": "allow",
+      "**/.env": "deny",
+      "**/.env.local": "deny",
+      "**/.env.development": "deny",
+      "**/.env.production": "deny",
+      "**/.env.staging": "deny",
+      "**/.env.test": "deny",
+      "**/.env.example": "allow"
     },
     "bash": {
       "*": "ask",
