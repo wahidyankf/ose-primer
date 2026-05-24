@@ -52,12 +52,12 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo llvm-cov --lib --ignore-filename-regex '(cli\\.rs|main\\.rs|commands/testcoverage\\.rs|commands/speccoverage\\.rs|commands/docs\\.rs|commands/agents\\.rs|internal/git/root\\.rs|internal/testcoverage/diff\\.rs|internal/testcoverage/merge\\.rs)' --lcov --output-path cover.out --fail-under-lines 90",
+        "command": "cargo llvm-cov --lib --ignore-filename-regex '(cli\\.rs|main\\.rs|commands/testcoverage\\.rs|commands/speccoverage\\.rs|commands/docs\\.rs|commands/agents\\.rs|commands/git\\.rs|commands/contracts\\.rs|commands/java\\.rs|internal/git/root\\.rs|internal/git/runner\\.rs|internal/testcoverage/diff\\.rs|internal/testcoverage/merge\\.rs)' --lcov --output-path cover.out --fail-under-lines 90",
         "cwd": "apps/rhino-cli-rust"
       },
       "inputs": ["{projectRoot}/src/**/*.rs", "{projectRoot}/Cargo.toml"],
       "outputs": ["{projectRoot}/cover.out"],
-      "comment": "Library coverage gate at 90% lines. Ignored files are exercised only via integration tests / git-dependent paths: cli.rs + main.rs (entrypoint/dispatch), commands/*.rs (thin clap adapters covered by cucumber tests — testcoverage, speccoverage, docs, agents), internal/git/root.rs (filesystem walk-up), and testcoverage/{diff,merge}.rs (git-diff and on-disk-merge paths). Actual measured lines coverage is ~96%."
+      "comment": "Library coverage gate at 90% lines. Ignored files are exercised only via integration tests / git- and external-tool-dependent paths: cli.rs + main.rs (entrypoint/dispatch), commands/*.rs (thin clap adapters covered by cucumber tests — testcoverage, speccoverage, docs, agents, git, contracts, java), internal/git/root.rs (filesystem walk-up), internal/git/runner.rs (pre-commit orchestrator whose steps shell out to docker/nx/npx/npm/git — only the error path is byte-checkable; its branch logic is covered by injected-Deps unit tests), and testcoverage/{diff,merge}.rs (git-diff and on-disk-merge paths). Actual measured lines coverage is ~96%."
     },
     "test:integration": {
       "executor": "nx:run-commands",

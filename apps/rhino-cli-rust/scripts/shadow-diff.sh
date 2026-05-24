@@ -36,8 +36,26 @@ COMMANDS:
   agents           Diff the `agents sync|validate-claude|validate-sync|validate-naming` corpus
   repo-governance  Diff the `repo-governance vendor-audit` corpus
   workflows        Diff the `workflows validate-naming` corpus
+  git              Diff the `git pre-commit` corpus (error path only — see NOTE)
+  contracts        Diff the `contracts java-clean-imports|dart-scaffold` corpus
+  java             Diff the `java validate-annotations` corpus
 
   With no COMMAND, every command's corpus runs.
+
+NOTE on git pre-commit:
+  The pre-commit orchestrator shells out to docker/nx/npx/npm/git on its
+  success path, mutating the working tree and producing environment-dependent
+  output — it cannot be diffed deterministically. The corpus therefore runs
+  ONLY the "outside a git repository" failure path (from a fresh temp dir with
+  no .git), whose output and exit code are deterministic and byte-identical.
+
+NOTE on contracts / java fixtures:
+  Both `contracts` subcommands WRITE files (cleaned Java sources / generated
+  Dart scaffold) and `java validate-annotations` is read-only. To compare the
+  two binaries on identical inputs, each contracts case builds TWO sibling
+  fixture trees (one per binary) and diffs both the streams AND the resulting
+  on-disk files. All fixtures live under the OS temp dir and never touch the
+  real repo. JSON `timestamp` fields are normalised before comparison.
 
 NOTE on agents sync:
   The `agents sync` corpus always passes `--dry-run` so the real `.opencode/`
@@ -81,7 +99,7 @@ for arg in "$@"; do
       print_help
       exit 0
       ;;
-    test-coverage | spec-coverage | docs | agents | repo-governance | workflows)
+    test-coverage | spec-coverage | docs | agents | repo-governance | workflows | git | contracts | java)
       COMMANDS+=("${arg}")
       ;;
     *)
@@ -92,7 +110,7 @@ for arg in "$@"; do
   esac
 done
 if [[ ${#COMMANDS[@]} -eq 0 ]]; then
-  COMMANDS=(test-coverage spec-coverage docs agents repo-governance workflows)
+  COMMANDS=(test-coverage spec-coverage docs agents repo-governance workflows git contracts java)
 fi
 
 # --- Build both binaries ---
@@ -401,6 +419,233 @@ corpus_workflows() {
   run_case "validate-naming verbose json"  workflows validate-naming -v -o json --no-color
 }
 
+# run_case_in_dir <label> <workdir> <args...>
+# Like run_case, but runs both binaries from <workdir> instead of REPO_ROOT.
+# Used by the git pre-commit error path (no .git in <workdir>).
+run_case_in_dir() {
+  local label="$1"; shift
+  local workdir="$1"; shift
+  CASE_NO=$((CASE_NO + 1))
+
+  set +e
+  ( cd "${workdir}" && "${GO_BIN}" "$@" ) > "${TMP}/go.out" 2> "${TMP}/go.err"
+  local go_exit=$?
+  ( cd "${workdir}" && "${RS_BIN}" "$@" ) > "${TMP}/rs.out" 2> "${TMP}/rs.err"
+  local rs_exit=$?
+  set -e
+
+  normalise < "${TMP}/go.out" > "${TMP}/go.out.n"
+  normalise < "${TMP}/rs.out" > "${TMP}/rs.out.n"
+  normalise < "${TMP}/go.err" > "${TMP}/go.err.n"
+  normalise < "${TMP}/rs.err" > "${TMP}/rs.err.n"
+
+  local diverged=0
+  if ! diff -q "${TMP}/go.out.n" "${TMP}/rs.out.n" > /dev/null; then
+    diverged=1
+    echo "✗ [${label}] stdout DIVERGED (args: $*)" >&2
+    diff -u "${TMP}/go.out.n" "${TMP}/rs.out.n" | sed 's/^/    /' >&2 || true
+  fi
+  if ! diff -q "${TMP}/go.err.n" "${TMP}/rs.err.n" > /dev/null; then
+    diverged=1
+    echo "✗ [${label}] stderr DIVERGED (args: $*)" >&2
+    diff -u "${TMP}/go.err.n" "${TMP}/rs.err.n" | sed 's/^/    /' >&2 || true
+  fi
+  if [[ "${go_exit}" != "${rs_exit}" ]]; then
+    diverged=1
+    echo "✗ [${label}] exit code DIVERGED (go=${go_exit} rs=${rs_exit}, args: $*)" >&2
+  fi
+
+  if [[ "${diverged}" -eq 0 ]]; then
+    echo "✓ [${label}] (exit ${go_exit})"
+  else
+    FAIL=1
+  fi
+}
+
+# run_pair_case <label> <go_dir> <rs_dir> <subcmd...>
+# Runs the Go binary against <go_dir> and the Rust binary against <rs_dir> (their
+# LAST positional arg respectively), diffing both the streams AND the on-disk
+# trees the commands produce. The two fixture dirs must start byte-identical.
+run_pair_case() {
+  local label="$1"; shift
+  local go_dir="$1"; shift
+  local rs_dir="$1"; shift
+  CASE_NO=$((CASE_NO + 1))
+
+  set +e
+  ( cd "${REPO_ROOT}" && "${GO_BIN}" "$@" "${go_dir}" ) > "${TMP}/go.out" 2> "${TMP}/go.err"
+  local go_exit=$?
+  ( cd "${REPO_ROOT}" && "${RS_BIN}" "$@" "${rs_dir}" ) > "${TMP}/rs.out" 2> "${TMP}/rs.err"
+  local rs_exit=$?
+  set -e
+
+  normalise < "${TMP}/go.out" > "${TMP}/go.out.n"
+  normalise < "${TMP}/rs.out" > "${TMP}/rs.out.n"
+
+  local diverged=0
+  if ! diff -q "${TMP}/go.out.n" "${TMP}/rs.out.n" > /dev/null; then
+    diverged=1
+    echo "✗ [${label}] stdout DIVERGED (args: $* <dir>)" >&2
+    diff -u "${TMP}/go.out.n" "${TMP}/rs.out.n" | sed 's/^/    /' >&2 || true
+  fi
+  if ! diff -q "${TMP}/go.err" "${TMP}/rs.err" > /dev/null; then
+    diverged=1
+    echo "✗ [${label}] stderr DIVERGED (args: $* <dir>)" >&2
+    diff -u "${TMP}/go.err" "${TMP}/rs.err" | sed 's/^/    /' >&2 || true
+  fi
+  if [[ "${go_exit}" != "${rs_exit}" ]]; then
+    diverged=1
+    echo "✗ [${label}] exit code DIVERGED (go=${go_exit} rs=${rs_exit})" >&2
+  fi
+  # Compare the resulting on-disk trees (the whole point of these commands).
+  if ! diff -rq "${go_dir}" "${rs_dir}" > /dev/null; then
+    diverged=1
+    echo "✗ [${label}] GENERATED FILES DIVERGED" >&2
+    diff -ru "${go_dir}" "${rs_dir}" | sed 's/^/    /' >&2 || true
+  fi
+
+  if [[ "${diverged}" -eq 0 ]]; then
+    echo "✓ [${label}] (exit ${go_exit}, files identical)"
+  else
+    FAIL=1
+  fi
+}
+
+corpus_git() {
+  echo "── git corpus ──" >&2
+  # Pre-commit: ONLY the deterministic error path. A fresh temp dir with no .git
+  # makes findGitRoot fail before any external-tool step runs. Both binaries
+  # print the same cobra usage block + error to stderr and exit 1.
+  local nogit
+  nogit="$(mktemp -d)"
+  for fmt in text json markdown; do
+    run_case_in_dir "git pre-commit no-repo ${fmt}" "${nogit}" git pre-commit -o "${fmt}" --no-color
+  done
+  run_case_in_dir "git pre-commit no-repo quiet"   "${nogit}" git pre-commit -q --no-color
+  run_case_in_dir "git pre-commit no-repo verbose" "${nogit}" git pre-commit -v --no-color
+  rm -rf "${nogit}"
+}
+
+# Populate a generated-contracts Java fixture at $1 (idempotent fresh tree).
+seed_java_fixture() {
+  local d="$1"
+  mkdir -p "${d}"
+  printf 'package com.foo;\nimport java.util.List;\nimport java.util.Map;\nimport com.foo.Helper;\nimport java.util.List;\n\nclass Foo { List x; Helper h; }\n' > "${d}/Foo.java"
+  printf 'package com.bar;\nimport java.util.Set;\n\nclass Bar { Set s; }\n' > "${d}/Bar.java"
+  mkdir -p "${d}/sub"
+  printf 'package com.sub;\nimport java.time.Instant;\n\nclass Sub { Instant i; }\n' > "${d}/sub/Sub.java"
+}
+
+# Populate a generated-contracts Dart fixture at $1 with model files.
+seed_dart_fixture() {
+  local d="$1"
+  mkdir -p "${d}/lib/model"
+  printf '// user model\n'    > "${d}/lib/model/user.dart"
+  printf '// account model\n' > "${d}/lib/model/account.dart"
+  printf '// order model\n'   > "${d}/lib/model/order.dart"
+}
+
+corpus_contracts() {
+  echo "── contracts corpus ──" >&2
+
+  # --- java-clean-imports: every format × the flag matrix. Each case rebuilds
+  # --- BOTH fixture trees so the in-place rewrite is compared file-for-file. ---
+  for fmt in text json markdown; do
+    for flags in "" "-v" "-q"; do
+      local gd rd
+      gd="$(mktemp -d)"; rd="$(mktemp -d)"
+      seed_java_fixture "${gd}"; seed_java_fixture "${rd}"
+      # shellcheck disable=SC2086
+      run_pair_case "java-clean ${fmt} '${flags}'" "${gd}" "${rd}" contracts java-clean-imports -o "${fmt}" ${flags} --no-color
+      rm -rf "${gd}" "${rd}"
+    done
+  done
+  # Empty directory (no .java files → no modifications).
+  local egd erd
+  egd="$(mktemp -d)"; erd="$(mktemp -d)"
+  run_pair_case "java-clean empty" "${egd}" "${erd}" contracts java-clean-imports --no-color
+  rm -rf "${egd}" "${erd}"
+
+  # --- dart-scaffold: with models and without models, every format × verbosity.
+  for fmt in text json markdown; do
+    for flags in "" "-v" "-q"; do
+      local gd rd
+      gd="$(mktemp -d)"; rd="$(mktemp -d)"
+      seed_dart_fixture "${gd}"; seed_dart_fixture "${rd}"
+      # shellcheck disable=SC2086
+      run_pair_case "dart-scaffold models ${fmt} '${flags}'" "${gd}" "${rd}" contracts dart-scaffold -o "${fmt}" ${flags} --no-color
+      rm -rf "${gd}" "${rd}"
+    done
+  done
+  # No model files (barrel built with no part directives).
+  for fmt in text json markdown; do
+    local gd rd
+    gd="$(mktemp -d)"; rd="$(mktemp -d)"
+    run_pair_case "dart-scaffold no-models ${fmt}" "${gd}" "${rd}" contracts dart-scaffold -o "${fmt}" --no-color
+    rm -rf "${gd}" "${rd}"
+  done
+  # Overwrite existing scaffold.
+  local ogd ord
+  ogd="$(mktemp -d)"; ord="$(mktemp -d)"
+  for d in "${ogd}" "${ord}"; do
+    mkdir -p "${d}/lib/model"
+    printf 'name: old\n' > "${d}/pubspec.yaml"
+    printf '// stale barrel\n' > "${d}/lib/crud_contracts.dart"
+    printf '// user\n' > "${d}/lib/model/user.dart"
+  done
+  run_pair_case "dart-scaffold overwrite" "${ogd}" "${ord}" contracts dart-scaffold --no-color
+  rm -rf "${ogd}" "${ord}"
+}
+
+corpus_java() {
+  echo "── java corpus ──" >&2
+
+  # validate-annotations is read-only, so a single shared fixture under TMP is
+  # diffed across formats. The tree mixes all three states: valid, missing
+  # package-info, and present-but-missing-annotation.
+  local src="${TMP}/java-src"
+  mkdir -p "${src}/com/a" "${src}/com/b" "${src}/com/c" "${src}/com/d"
+  printf 'package com.a;\n' > "${src}/com/a/A.java"
+  printf '@NullMarked\npackage com.a;\n' > "${src}/com/a/package-info.java"
+  printf 'package com.b;\n' > "${src}/com/b/B.java"            # missing package-info
+  printf 'package com.c;\n' > "${src}/com/c/C.java"
+  printf 'package com.c;\n' > "${src}/com/c/package-info.java" # missing annotation
+  printf 'package com.d;\n' > "${src}/com/d/D.java"
+  printf '@NullMarked\npackage com.d;\n' > "${src}/com/d/package-info.java"
+
+  for fmt in text json markdown; do
+    run_case "java validate-annotations mixed ${fmt}" java validate-annotations "${src}" -o "${fmt}" --no-color
+  done
+  run_case "java validate-annotations mixed quiet"   java validate-annotations "${src}" -q --no-color
+  run_case "java validate-annotations mixed verbose" java validate-annotations "${src}" -v --no-color
+
+  # All-valid tree → success, zero violations.
+  local ok="${TMP}/java-ok"
+  mkdir -p "${ok}/com/a" "${ok}/com/b"
+  printf 'package com.a;\n' > "${ok}/com/a/A.java"
+  printf '@NullMarked\npackage com.a;\n' > "${ok}/com/a/package-info.java"
+  printf 'package com.b;\n' > "${ok}/com/b/B.java"
+  printf '@NullMarked\npackage com.b;\n' > "${ok}/com/b/package-info.java"
+  for fmt in text json markdown; do
+    run_case "java validate-annotations all-valid ${fmt}" java validate-annotations "${ok}" -o "${fmt}" --no-color
+  done
+  run_case "java validate-annotations all-valid quiet" java validate-annotations "${ok}" -q --no-color
+
+  # Custom annotation via --annotation flag (NonNull).
+  local nn="${TMP}/java-nn"
+  mkdir -p "${nn}/com/a"
+  printf 'package com.a;\n' > "${nn}/com/a/A.java"
+  printf '@NonNull\npackage com.a;\n' > "${nn}/com/a/package-info.java"
+  for fmt in text json markdown; do
+    run_case "java validate-annotations custom ${fmt}" java validate-annotations "${nn}" --annotation NonNull -o "${fmt}" --no-color
+  done
+
+  # Empty tree → zero packages, zero violations, success.
+  local empty="${TMP}/java-empty"
+  mkdir -p "${empty}"
+  run_case "java validate-annotations empty" java validate-annotations "${empty}" --no-color
+}
+
 # A repo-relative temp output path for `merge --out-file` (lives under TMP).
 TMP_OUT_REL="$(python3 -c "import os,sys; print(os.path.relpath('${TMP}/merged.info', '${REPO_ROOT}'))" 2>/dev/null || echo "${TMP}/merged.info")"
 
@@ -412,6 +657,9 @@ for cmd in "${COMMANDS[@]}"; do
     agents) corpus_agents ;;
     repo-governance) corpus_repo_governance ;;
     workflows) corpus_workflows ;;
+    git) corpus_git ;;
+    contracts) corpus_contracts ;;
+    java) corpus_java ;;
   esac
 done
 

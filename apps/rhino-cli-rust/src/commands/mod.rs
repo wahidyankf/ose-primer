@@ -5,7 +5,10 @@
 // workflows_*, …) ported from the Go CLI are declared here in later phases.
 
 pub mod agents;
+pub mod contracts;
 pub mod docs;
+pub mod git;
+pub mod java;
 pub mod repo_governance;
 pub mod speccoverage;
 pub mod testcoverage;

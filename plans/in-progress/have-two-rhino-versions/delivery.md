@@ -240,20 +240,30 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
   - _Suggested executor: `swe-rust-dev`_ ✅ delegated + orchestrator re-verified
   - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/scripts/shadow-diff.sh`
   - **Notes**: Orchestrator re-ran → **"Shadow diff PASS — 22 cases byte-identical"** exit 0. Lint verified clean by orchestrator (`nx run rhino-cli-rust:lint` Successfully ran — this phase's agent ran the gate correctly; only 1 test-only single_char_pattern fixed, no allow-list changes).
-- [ ] Commit: `feat(rhino-cli-rust): port repo-governance + workflows validators`.
+- [x] Commit: `feat(rhino-cli-rust): port repo-governance + workflows validators`.
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: commit `e2b7d9ef9`
+  - **Notes**: Committed `e2b7d9ef9`, pushed to `main` (`5b9f8c7a2..e2b7d9ef9`); pre-commit + pre-push passed.
 
 ---
 
 ## Phase 7 — Port `git pre-commit`, `contracts` (java-clean-imports, dart-scaffold), `java validate-annotations`
 
-- [ ] Write failing cucumber-rs scenarios for `git pre-commit`: wire `specs/apps/rhino/behavior/cli/gherkin/git/` feature files into the integration test world. Verify: `npx nx run rhino-cli-rust:test:integration` reports the git scenarios as failing. _New test_
-  - _Suggested executor: `swe-rust-dev`_
-- [ ] Port `apps/rhino-cli/internal/git/` + `git pre-commit` orchestrator into `apps/rhino-cli-rust/src/internal/git/` (mirroring Go's `internal/` layout). Implement `git pre-commit` command in `apps/rhino-cli-rust/src/commands/git.rs`. Verify: `npx nx run rhino-cli-rust:test:integration` passes the git scenarios; `bash apps/rhino-cli-rust/scripts/shadow-diff.sh git` exits 0.
-  - _Suggested executor: `swe-rust-dev`_
-- [ ] Write failing cucumber-rs scenarios for `contracts` and `java` subcommands: wire `specs/apps/rhino/behavior/cli/gherkin/contracts/` and `specs/apps/rhino/behavior/cli/gherkin/java/` feature files into the integration test world. Verify: `npx nx run rhino-cli-rust:test:integration` reports those scenarios as failing. _New test_
-  - _Suggested executor: `swe-rust-dev`_
-- [ ] Port `contracts java-clean-imports` and `contracts dart-scaffold` into `apps/rhino-cli-rust/src/internal/contracts/` and implement in `apps/rhino-cli-rust/src/commands/contracts.rs`. Port `java validate-annotations` into `apps/rhino-cli-rust/src/internal/java/` and implement in `apps/rhino-cli-rust/src/commands/java.rs`. Verify: `cargo test --manifest-path apps/rhino-cli-rust/Cargo.toml --lib` passes; `npx nx run rhino-cli-rust:test:integration` passes contracts and java scenarios; `bash apps/rhino-cli-rust/scripts/shadow-diff.sh contracts java` exits 0.
-  - _Suggested executor: `swe-rust-dev`_
+- [x] Write failing cucumber-rs scenarios for `git pre-commit`: wire `specs/apps/rhino/behavior/cli/gherkin/git/` feature files into the integration test world. Verify: `npx nx run rhino-cli-rust:test:integration` reports the git scenarios as failing. _New test_
+  - _Suggested executor: `swe-rust-dev`_ ✅ delegated (TDD)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/tests/git.rs`
+  - **Notes**: git feature wired (1 scenario, the deterministic error path); passes after impl.
+- [x] Port `apps/rhino-cli/internal/git/` + `git pre-commit` orchestrator into `apps/rhino-cli-rust/src/internal/git/` (mirroring Go's `internal/` layout). Implement `git pre-commit` command in `apps/rhino-cli-rust/src/commands/git.rs`. Verify: `npx nx run rhino-cli-rust:test:integration` passes the git scenarios; `bash apps/rhino-cli-rust/scripts/shadow-diff.sh git` exits 0.
+  - _Suggested executor: `swe-rust-dev`_ ✅ delegated
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/src/internal/git/runner.rs`, `src/internal/git/mod.rs`, `src/commands/git.rs`
+  - **Notes**: 8-step orchestrator with injectable `Deps` (mirrors Go); reuses Phase-4/5 agents/docs APIs. **Parity limitation (documented)**: the success path shells out to docker/nx/npx/git (env-dependent, mutates tree) → not byte-diffable; shadow-diff covers only the deterministic "outside a git repo" error path; orchestration logic covered by injected-Deps unit tests. Go's 30s per-step timeout (goroutine+context) approximated by the 120s total-budget check before each step (unobservable on byte surface).
+- [x] Write failing cucumber-rs scenarios for `contracts` and `java` subcommands: wire `specs/apps/rhino/behavior/cli/gherkin/contracts/` and `specs/apps/rhino/behavior/cli/gherkin/java/` feature files into the integration test world. Verify: `npx nx run rhino-cli-rust:test:integration` reports those scenarios as failing. _New test_
+  - _Suggested executor: `swe-rust-dev`_ ✅ delegated (TDD)
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/tests/contracts.rs`, `tests/java.rs`
+  - **Notes**: contracts 8 scenarios + java 4 scenarios wired; pass after impl.
+- [x] Port `contracts java-clean-imports` and `contracts dart-scaffold` into `apps/rhino-cli-rust/src/internal/contracts/` and implement in `apps/rhino-cli-rust/src/commands/contracts.rs`. Port `java validate-annotations` into `apps/rhino-cli-rust/src/internal/java/` and implement in `apps/rhino-cli-rust/src/commands/java.rs`. Verify: `cargo test --manifest-path apps/rhino-cli-rust/Cargo.toml --lib` passes; `npx nx run rhino-cli-rust:test:integration` passes contracts and java scenarios; `bash apps/rhino-cli-rust/scripts/shadow-diff.sh contracts java` exits 0.
+  - _Suggested executor: `swe-rust-dev`_ ✅ delegated + orchestrator re-verified
+  - **Date**: 2026-05-24 · **Status**: Completed · **Files Changed**: `apps/rhino-cli-rust/src/internal/contracts/` (types, java_clean_imports, dart_scaffold, reporter, mod), `src/internal/java/` (types, scanner, validator, reporter, mod), `src/commands/{contracts,java}.rs`, `src/cli.rs`, `src/commands/mod.rs`, `src/internal/mod.rs`
+  - **Notes**: Dart pubspec/barrel constants reproduced byte-for-byte; `go_abs` replicates Go `filepath.Abs` (lexical, no symlink resolve); java validator emits trailing `❌ Found N violation(s)` stderr. Orchestrator re-ran `shadow-diff.sh git contracts java` → **"41 cases byte-identical"** exit 0 (shadow-diff compares generated files on disk for the file-writing contracts commands). 425 lib unit tests; lint clean (fixed `is_ok_and`/redundant-closure/collapsible-if, no allow-list change).
 - [ ] Commit: `feat(rhino-cli-rust): port git pre-commit + contracts + java validators`.
 
 ---

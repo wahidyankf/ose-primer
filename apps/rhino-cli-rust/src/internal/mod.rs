@@ -6,8 +6,10 @@
 
 pub mod agents;
 pub mod cliout;
+pub mod contracts;
 pub mod docs;
 pub mod git;
+pub mod java;
 pub mod mermaid;
 pub mod naming;
 pub mod repo_governance;

@@ -1,6 +1,8 @@
 use clap::{Parser, Subcommand};
 
-use crate::commands::{agents, docs, repo_governance, speccoverage, testcoverage, workflows};
+use crate::commands::{
+    agents, contracts, docs, git, java, repo_governance, speccoverage, testcoverage, workflows,
+};
 use crate::internal::cliout::OutputFormat;
 
 #[derive(Parser, Debug)]
@@ -75,6 +77,39 @@ pub enum Commands {
     /// Workflow definition commands.
     #[command(name = "workflows", subcommand)]
     Workflows(WorkflowsCommands),
+    /// Git workflow commands.
+    #[command(name = "git", subcommand)]
+    Git(GitCommands),
+    /// Contract codegen post-processing commands.
+    #[command(name = "contracts", subcommand)]
+    Contracts(ContractsCommands),
+    /// Java validation commands.
+    #[command(name = "java", subcommand)]
+    Java(JavaCommands),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum GitCommands {
+    /// Run all pre-commit checks (config, lint, format, docs).
+    #[command(name = "pre-commit")]
+    PreCommit,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ContractsCommands {
+    /// Remove unused and same-package imports from generated Java files.
+    #[command(name = "java-clean-imports")]
+    JavaCleanImports(contracts::JavaCleanImportsArgs),
+    /// Create Dart package scaffolding for generated contracts.
+    #[command(name = "dart-scaffold")]
+    DartScaffold(contracts::DartScaffoldArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum JavaCommands {
+    /// Validate Java packages have required null-safety annotations.
+    #[command(name = "validate-annotations")]
+    ValidateAnnotations(java::ValidateAnnotationsArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -228,6 +263,25 @@ fn dispatch(cmd: &Commands, output_format: OutputFormat, verbose: bool, quiet: b
             WorkflowsCommands::ValidateNaming => (
                 workflows::run_validate_naming(output_format, verbose, quiet),
                 workflows::VALIDATE_NAMING_USAGE,
+            ),
+        },
+        Commands::Git(gc) => match gc {
+            GitCommands::PreCommit => (git::run_pre_commit(), git::PRE_COMMIT_USAGE),
+        },
+        Commands::Contracts(cc) => match cc {
+            ContractsCommands::JavaCleanImports(args) => (
+                contracts::run_java_clean_imports(args, output_format, verbose, quiet),
+                contracts::JAVA_CLEAN_IMPORTS_USAGE,
+            ),
+            ContractsCommands::DartScaffold(args) => (
+                contracts::run_dart_scaffold(args, output_format, verbose, quiet),
+                contracts::DART_SCAFFOLD_USAGE,
+            ),
+        },
+        Commands::Java(jc) => match jc {
+            JavaCommands::ValidateAnnotations(args) => (
+                java::run_validate_annotations(args, output_format, verbose, quiet),
+                java::VALIDATE_ANNOTATIONS_USAGE,
             ),
         },
     };
