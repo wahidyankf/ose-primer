@@ -11,7 +11,7 @@ Use it by forking, cloning, or copying the directories that fit your project —
 ## What it ships
 
 - **Polyglot `crud-*` scaffolding** — 11 backend demos (Go, Java/Spring, Elixir/Phoenix, F#/Giraffe, Python/FastAPI, Rust/Axum, Kotlin/Ktor, Java/Vert.x, TypeScript/Effect, C#/ASP.NET, Clojure/Pedestal), 3 frontends (Next.js, TanStack Start, Flutter Web), one fullstack (Next.js), 2 E2E harnesses, and a shared OpenAPI contract (`crud-contracts`) that drives codegen across all of them.
-- **`rhino-cli`** — Go CLI for repository hygiene: `doctor`, `test-coverage`, `spec-coverage`, `agents validate-naming`, `workflows validate-naming`, `env backup|restore`, and more.
+- **`rhino-cli`** — Dual-implementation CLI for repository hygiene: `doctor`, `test-coverage`, `spec-coverage`, `agents validate-naming`, `workflows validate-naming`, `env backup|restore`, and more. `apps/rhino-cli-rust/` (Rust) is the canonical implementation invoked by CI and all toolchain scripts; `apps/rhino-cli-go/` (Go) is a byte-identical parity twin validated by a shadow-diff job. Both consume `specs/apps/rhino/`. See [rhino-cli Dual Implementation Parity](./repo-governance/conventions/structure/rhino-cli-dual-implementation-parity.md).
 - **Shared libs** — `golang-commons` and small TypeScript utilities.
 - **Governance** — six-layer hierarchy (Vision → Principles → Conventions → Development → Agents → Workflows) under `repo-governance/`.
 - **Generic AI agents + skills** — Maker/Checker/Fixer pattern for plans, repo rules, workflows, UI, code, docs, CI; plus language-specific development agents (`swe-*-dev`). No product-specific agents.
@@ -73,7 +73,8 @@ Agents live under `.claude/agents/` (source of truth) and `.opencode/agents/` (m
 ```
 ose-primer/
 ├── apps/                      # Deployable applications (Nx)
-│   ├── rhino-cli/
+│   ├── rhino-cli-rust/        # Rust — canonical/CI implementation
+│   ├── rhino-cli-go/          # Go — parity twin (shadow-diff validated)
 │   ├── crud-be-*/           # 11 polyglot backend demos
 │   ├── crud-be-e2e/
 │   ├── crud-fe-*/           # 3 frontend variants

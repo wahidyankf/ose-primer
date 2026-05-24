@@ -30,6 +30,7 @@ This directory contains standards for how documentation is organized, named, and
 - [No Last-Updated Metadata](./no-last-updated.md) - Companion to no-date-metadata: do not write `**Last Updated**` rows in markdown files
 - [Programming Language Docs Separation](./programming-language-docs-separation.md) - Boundary between generic dev docs and language-specific (Go, TypeScript, Rust, etc.) docs
 - [Repository Ecosystem Convention](./repository-ecosystem.md) - The three sibling OSE repositories (`ose-public`, `ose-primer`, `ose-infra`), their roles, propagation rules, and verification steps. Replaces the deleted `ose-projects` umbrella as the canonical description of the family relationship
+- [Rhino CLI Dual-Implementation Parity](./rhino-cli-dual-implementation-parity.md) - Model, roles, and parity enforcement rules for shipping `rhino-cli` as two byte-identical implementations (Rust = canonical toolchain CLI; Go = parity twin), both driven by the single Gherkin behavior contract at `specs/apps/rhino/`
 
 ## Key Concepts
 

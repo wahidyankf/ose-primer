@@ -1,15 +1,21 @@
 # rhino-cli Specs
 
-Gherkin behavioral specifications for
-[rhino-cli](../../../apps/rhino-cli-go/README.md) — the Repository Hygiene &
-INtegration Orchestrator CLI.
+Gherkin behavioral specifications for the Repository Hygiene & INtegration
+Orchestrator CLI, which ships as **two byte-identical implementations** that
+both consume these specs:
+
+- [`rhino-cli-rust`](../../../apps/rhino-cli-rust/README.md) — Rust; the implementation CI and the developer toolchain invoke.
+- [`rhino-cli-go`](../../../apps/rhino-cli-go/README.md) — Go; the parity twin.
+
+The two are kept behaviorally identical by the shadow-diff parity gate — see the
+[rhino-cli dual-implementation parity convention](../../../repo-governance/conventions/structure/rhino-cli-dual-implementation-parity.md).
 
 ## Purpose
 
 These specs define the **observable behavior** of every rhino-cli command:
 what inputs the command accepts, what it writes to stdout, and what exit code
 it returns. They are the single source of truth for correctness and serve as
-the contract between the CLI implementation and its consumers.
+the contract between **both** CLI implementations and their consumers.
 
 ## Structure
 

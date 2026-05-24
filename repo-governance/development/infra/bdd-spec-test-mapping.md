@@ -152,27 +152,44 @@ The `spec-coverage validate` command enforces this mapping at three levels:
 Run the check:
 
 ```bash
+# Using the Rust implementation (canonical):
+rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli-rust
+
+# Using the Go twin (parity reference):
 rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli-go
 ```
 
 **Scope**: Spec-coverage enforcement is currently active for **CLI apps only** (Go + Godog naming
-conventions). Enforcement for crud-be backends is **planned but deferred** — the tool needs
-enhancement to support crud-be test file naming conventions (e.g., `health_steps_test.go` for Go,
-`HealthSteps.java` for Java) which differ from the CLI app naming patterns the tool currently
-expects. This will be addressed in a follow-up plan.
+conventions for `rhino-cli-go`; Rust equivalent for `rhino-cli-rust`). Enforcement for crud-be
+backends is **planned but deferred** — the tool needs enhancement to support crud-be test file
+naming conventions (e.g., `health_steps_test.go` for Go, `HealthSteps.java` for Java) which differ
+from the CLI app naming patterns the tool currently expects. This will be addressed in a follow-up plan.
 
 ## Adding a New Command
 
-1. Create the parent command file `apps/{app}/cmd/{domain}.go` if the domain is new
-2. Create the feature file `specs/{app}/{domain}/{domain}-{action}.feature`
-3. Create `apps/{app}/cmd/{domain}_{action}.go` with the Cobra command (register with parent)
-4. Create `apps/{app}/cmd/{domain}_{action}_test.go` with godog unit step definitions — use package-level function variables to mock all I/O, no build tag (runs in `test:quick`)
-5. Create `apps/{app}/cmd/{domain}_{action}.integration_test.go` with godog integration steps — add `//go:build integration`, drive via `cmd.RunE()` against real `/tmp` fixtures
-6. Verify: `rhino-cli spec-coverage validate specs/{app} apps/{app}`
+New commands must be implemented in both `rhino-cli-rust` (canonical) and `rhino-cli-go` (parity twin). Both share the same Gherkin spec in `specs/apps/rhino/`.
+
+**For `rhino-cli-rust` (Rust, canonical)**:
+
+1. Create the feature file `specs/apps/rhino/{domain}/{domain}-{action}.feature`
+2. Create the Rust command module in `apps/rhino-cli-rust/src/cmd/{domain}_{action}.rs`
+3. Add unit tests in the same file or `apps/rhino-cli-rust/src/cmd/{domain}_{action}_test.rs`
+4. Add integration tests in `apps/rhino-cli-rust/tests/{domain}_{action}_integration_test.rs`
+5. Verify: `rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli-rust`
+
+**For `rhino-cli-go` (Go, parity twin)**:
+
+1. Create the parent command file `apps/rhino-cli-go/cmd/{domain}.go` if the domain is new
+2. Create `apps/rhino-cli-go/cmd/{domain}_{action}.go` with the Cobra command (register with parent)
+3. Create `apps/rhino-cli-go/cmd/{domain}_{action}_test.go` with godog unit step definitions — use package-level function variables to mock all I/O, no build tag (runs in `test:quick`)
+4. Create `apps/rhino-cli-go/cmd/{domain}_{action}.integration_test.go` with godog integration steps — add `//go:build integration`, drive via `cmd.RunE()` against real `/tmp` fixtures
+5. Verify: `rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli-go`
+
+The parity CI job then runs a shadow-diff to confirm both implementations produce byte-identical output for all spec scenarios.
 
 ## CLI Apps: Dual-Level Spec Consumption
 
-Go CLI apps (`rhino-cli`, `rhino-cli`, `rhino-cli`) consume Gherkin specs at both the unit and integration test levels. The same feature files serve as the contract for both levels — only the step implementations differ.
+CLI apps (`rhino-cli-rust`, `rhino-cli-go`) consume Gherkin specs at both the unit and integration test levels. The same feature files in `specs/apps/rhino/` serve as the contract for both levels and both implementations — only the step implementations differ. `rhino-cli-rust` uses Rust test conventions; `rhino-cli-go` uses Go + Godog conventions. See [rhino-cli Dual Implementation Parity](../../conventions/structure/rhino-cli-dual-implementation-parity.md).
 
 ### Architecture
 
@@ -204,8 +221,10 @@ The `@agents-validate-sync` tag lives inside `agents-sync.feature` (shared featu
 
 ```
 specs/apps/rhino/behavior/cli/gherkin/agents/agents-sync.feature  (contains @agents-sync + @agents-validate-sync)
-  -> Unit steps in:       apps/rhino-cli-go/cmd/agents_validate_sync_test.go
-  -> Integration steps in: apps/rhino-cli-go/cmd/agents_validate_sync.integration_test.go
+  -> Go unit steps in:             apps/rhino-cli-go/cmd/agents_validate_sync_test.go
+  -> Go integration steps in:      apps/rhino-cli-go/cmd/agents_validate_sync.integration_test.go
+  -> Rust unit steps in:           apps/rhino-cli-rust/src/cmd/agents_validate_sync_test.rs (or equivalent)
+  -> Rust integration steps in:    apps/rhino-cli-rust/tests/agents_validate_sync_integration_test.rs
 ```
 
 ## Demo-be Backend: Three-Level Spec Consumption
@@ -285,6 +304,7 @@ All three commands must report all scenarios passing. The Gherkin feature files 
 - [Specs Directory Structure Convention](../../conventions/structure/specs-directory-structure.md) - Canonical path patterns and domain subdirectory rules
 - [Three-Level Testing Standard](../quality/three-level-testing-standard.md) - Mandatory isolation boundaries for unit, integration, and E2E levels where Gherkin specs are consumed
 - [Nx Target Standards](./nx-targets.md) - `test:integration` target definitions and caching rules
+- [rhino-cli Dual Implementation Parity](../../conventions/structure/rhino-cli-dual-implementation-parity.md) - Rust (canonical) and Go (twin) implementation model and parity enforcement
 - [specs/README.md](../../../specs/README.md) - Spec directory organization
-- [specs/apps/rhino/README.md](../../../specs/apps/rhino/README.md) - rhino-cli spec structure
+- [specs/apps/rhino/README.md](../../../specs/apps/rhino/README.md) - rhino-cli spec structure (shared by both implementations)
 - [specs/apps/crud/behavior/be/README.md](../../../specs/apps/crud/behavior/be/README.md) - Demo-be spec structure and three-level consumption

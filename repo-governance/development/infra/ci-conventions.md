@@ -52,7 +52,10 @@ level definitions, coverage thresholds, Docker patterns, GitHub Actions structur
 ## 🪝 Git Hooks Standard
 
 All developer machines run three Husky hooks. Hook logic is implemented via `rhino-cli` subcommands
-to keep the raw hook files thin and testable.
+to keep the raw hook files thin and testable. The `rhino-cli` binary invoked by all hooks and
+package.json scripts is the Rust implementation (`apps/rhino-cli-rust/`); the Go twin
+(`apps/rhino-cli-go/`) is the parity reference. See
+[rhino-cli Dual Implementation Parity](../../conventions/structure/rhino-cli-dual-implementation-parity.md).
 
 ### pre-commit
 

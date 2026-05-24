@@ -181,7 +181,8 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 | `crud-fe-ts-nextjs`         | `["type:app", "platform:nextjs", "lang:ts", "domain:crud-fe"]`         |
 | `crud-fe-ts-tanstack-start` | `["type:app", "platform:vite", "lang:ts", "domain:crud-fe"]`           |
 | `crud-fs-ts-nextjs`         | `["type:app", "platform:nextjs", "lang:ts", "domain:crud-fs"]`         |
-| `rhino-cli`                 | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`        |
+| `rhino-cli-rust`            | `["type:app", "platform:cli", "lang:rust", "domain:tooling"]`          |
+| `rhino-cli-go`              | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`        |
 | `golang-commons`            | `["type:lib", "lang:golang"]`                                          |
 | `clojure-openapi-codegen`   | `["type:lib", "lang:clojure", "domain:tooling"]`                       |
 | `elixir-cabbage`            | `["type:lib", "lang:elixir", "domain:tooling"]`                        |
@@ -424,7 +425,8 @@ the project's feature files has a matching step definition in the implementation
 
 | Project group                              | Status   | Notes                                                                                       |
 | ------------------------------------------ | -------- | ------------------------------------------------------------------------------------------- |
-| Go CLI apps (`rhino-cli`)                  | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                    |
+| Go CLI app (`rhino-cli-go`)                | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                    |
+| Rust CLI app (`rhino-cli-rust`)            | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                    |
 | Crud-be backends (all 11)                  | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
 | Crud-fe frontends                          | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
 | Fullstack (`crud-fs-ts-nextjs`)            | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
@@ -608,14 +610,27 @@ language:
 **Note**: Python and Clojure use underscore in `generated_contracts/` (matching their language
 conventions). All other languages use hyphen in `generated-contracts/`.
 
-**Go CLI apps** (`rhino-cli`) also consume Gherkin specs in `test:unit` (godog unit step definitions run without a build tag). Their `test:unit` and `test:quick` inputs must include the CLI's own spec files:
+**Go CLI apps** (`rhino-cli-go`) also consume Gherkin specs in `test:unit` (godog unit step definitions run without a build tag). Their `test:unit` and `test:quick` inputs must include the CLI's own spec files. `rhino-cli-rust` consumes the same shared specs via its own Rust test harness. Both implementations share `specs/apps/rhino/`.
 
-| CLI App     | Gherkin specs input                             |
-| ----------- | ----------------------------------------------- |
-| `rhino-cli` | `{workspaceRoot}/specs/apps/rhino/**/*.feature` |
-| `rhino-cli` | `{workspaceRoot}/specs/apps/crud/**/*.feature`  |
+| CLI App          | Gherkin specs input                             |
+| ---------------- | ----------------------------------------------- |
+| `rhino-cli-rust` | `{workspaceRoot}/specs/apps/rhino/**/*.feature` |
+| `rhino-cli-go`   | `{workspaceRoot}/specs/apps/rhino/**/*.feature` |
+| `rhino-cli-rust` | `{workspaceRoot}/specs/apps/crud/**/*.feature`  |
+| `rhino-cli-go`   | `{workspaceRoot}/specs/apps/crud/**/*.feature`  |
 
-Example for `rhino-cli` `test:unit` inputs:
+Example for `rhino-cli-rust` `test:unit` inputs:
+
+```json
+"inputs": [
+  "{projectRoot}/src/**/*.rs",
+  "{projectRoot}/Cargo.toml",
+  "{projectRoot}/Cargo.lock",
+  "{workspaceRoot}/specs/apps/rhino/**/*.feature"
+]
+```
+
+Example for `rhino-cli-go` `test:unit` inputs:
 
 ```json
 "inputs": [

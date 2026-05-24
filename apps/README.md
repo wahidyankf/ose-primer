@@ -15,7 +15,7 @@ Where `{part}` describes the role and technology stack:
 | `be-{lang}-{framework}` | `be-golang-gin`, `be-java-springboot`, `be-ts-effect` | Backend service                          |
 | `fe-{lang}-{framework}` | `fe-ts-nextjs`, `fe-dart-flutterweb`                  | Frontend application                     |
 | `fs-{lang}-{framework}` | `fs-ts-nextjs`                                        | Fullstack application (FE + BE combined) |
-| `cli`                   | `rhino-cli`, `rhino-cli`, `rhino-cli`                 | CLI tool                                 |
+| `cli` / `<name>-cli-{lang}` | `rhino-cli-rust`, `rhino-cli-go`                  | CLI tool (polyglot CLIs use the `-cli-{lang}` parity suffix) |
 | `web`                   | `crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`              | Web platform (content site)              |
 | `{role}-e2e`            | `be-e2e`, `fe-e2e`, `crud-fe-e2e`                     | E2E test project for the named role      |
 | `be` / `fe`             | `crud-be-fsharp-giraffe`, `crud-fe-ts-nextjs`         | Simple single-technology projects        |
@@ -32,9 +32,8 @@ Where `{part}` describes the role and technology stack:
 - `crud-fs-ts-nextjs` - demo educational platform ([example.com](https://example.com)) - Next.js 16 fullstack content platform (TypeScript, tRPC)
 - `crud-be-e2e` - Playwright BE E2E tests for crud-fs-ts-nextjs tRPC API
 - `crud-fe-e2e` - Playwright FE E2E tests for crud-fs-ts-nextjs UI
-- `rhino-cli` - demo CLI tool for link validation - Go application
-- `rhino-cli` - Repository management CLI tools (includes `java validate-annotations`) - Go application
-- `rhino-cli` - demo CLI tool for link validation - Go application
+- `rhino-cli-rust` - Repository Hygiene & INtegration Orchestrator CLI (Rust) - **the implementation CI and the developer toolchain invoke**; consumes `specs/apps/rhino/`
+- `rhino-cli-go` - the same CLI in Go - retained as a behaviorally-identical **parity twin** (validated against `rhino-cli-rust` by the shadow-diff parity gate); consumes the same `specs/apps/rhino/`. See [rhino-cli dual-implementation parity convention](../repo-governance/conventions/structure/rhino-cli-dual-implementation-parity.md).
 - `crud-fe-ts-nextjs` - demo landing website (www.example.com) - Next.js app (port 3200)
 - `crud-be-fsharp-giraffe` - demo backend API (F#/Giraffe) - F# application (port 8202)
 - `crud-fe-e2e` - FE E2E tests for crud-fe-ts-nextjs - Playwright (browser testing)
