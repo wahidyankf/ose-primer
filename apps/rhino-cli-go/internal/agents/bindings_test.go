@@ -88,6 +88,28 @@ func TestEmitBindings_WritesFiles(t *testing.T) {
 	}
 }
 
+func TestEmitBindings_MkdirError(t *testing.T) {
+	root := t.TempDir()
+
+	// Place a regular file where EmitBindings must create the .amazonq
+	// directory. os.MkdirAll then fails because a path component is not a
+	// directory, exercising the MkdirAll error branch.
+	if err := os.WriteFile(filepath.Join(root, ".amazonq"), []byte("not a dir\n"), 0o644); err != nil {
+		t.Fatalf("failed to seed blocking file: %v", err)
+	}
+
+	out, err := EmitBindings(root, false)
+	if err == nil {
+		t.Fatalf("expected error when target directory cannot be created, got nil; output:\n%s", out)
+	}
+	if out != "" {
+		t.Errorf("expected empty output on error, got:\n%q", out)
+	}
+	if !strings.Contains(err.Error(), "failed to create directory") {
+		t.Errorf("expected MkdirAll error, got: %v", err)
+	}
+}
+
 func TestValidateBindings_ReportsDrift(t *testing.T) {
 	root := t.TempDir()
 	writeExpectedBindings(t, root)
