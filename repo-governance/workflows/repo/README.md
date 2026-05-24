@@ -24,6 +24,7 @@ These workflows define **WHEN and HOW to validate repository rules**, orchestrat
 
 - [Repository Rules Validation](./repo-rules-quality-gate.md) - Validate repository consistency across all layers (principles, conventions, development, agents) and apply fixes iteratively until ZERO findings. Supports four strictness modes (lax, normal, strict, ocd)
 - [Cross-Vendor Parity Gate](./repo-cross-vendor-parity-quality-gate.md) - Validate that primary and secondary binding directories stay byte-for-byte equivalent (5 invariants: governance vendor-neutrality, AGENTS+CLAUDE, sync no-op, agent count parity, color + tier maps). Iterative checker→fixer until two consecutive zero-finding runs.
+- [Harness Compatibility Quality Gate](./repo-harness-compatibility-quality-gate.md) - Detect external drift between each supported coding-agent harness's current upstream conventions and the platform-bindings catalog plus committed binding files. Agent-backed, web-research-backed counterpart to the deterministic `rhino-cli agents validate-bindings` pre-push guard. Iterative checker→fixer until two consecutive zero-finding runs.
 
 ## Related Documentation
 

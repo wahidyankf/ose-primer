@@ -62,7 +62,7 @@ Specialized agents organized into families:
 3. **Project Planning**: `plan-maker`, `plan-checker`, `plan-execution-checker`, `plan-fixer` (plan execution itself is orchestrated directly by the calling context via the [plan-execution workflow](./repo-governance/workflows/plan/plan-execution.md); no dedicated executor subagent)
 4. **Software Engineering & Specialized**: `agent-maker`, `swe-code-checker`, `swe-ui-maker`, `swe-ui-checker`, `swe-ui-fixer`, `swe-clojure-dev`, `swe-csharp-dev`, `swe-dart-dev`, `swe-e2e-dev`, `swe-elixir-dev`, `swe-fsharp-dev`, `swe-golang-dev`, `swe-java-dev`, `swe-kotlin-dev`, `swe-python-dev`, `swe-rust-dev`, `swe-typescript-dev`, `social-linkedin-post-maker`
 5. **Repository Governance**: `repo-rules-maker`, `repo-rules-checker`, `repo-rules-fixer`, `repo-workflow-maker`, `repo-workflow-checker`, `repo-workflow-fixer`
-6. **Cross-Vendor Parity**: `repo-parity-checker`, `repo-parity-fixer`
+6. **Cross-Vendor Parity**: `repo-parity-checker`, `repo-parity-fixer`, `repo-harness-compatibility-checker`, `repo-harness-compatibility-fixer`
 7. **Specs Validation**: `specs-maker`, `specs-checker`, `specs-fixer`
 8. **CI/CD**: `ci-checker`, `ci-fixer`
 9. **Research**: `web-research-maker`
