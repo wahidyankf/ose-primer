@@ -12,6 +12,7 @@ tools:
   write: true
 skills:
   - docs-applying-content-quality
+  - docs-creating-accessible-diagrams
   - plan-writing-gherkin-criteria
   - plan-creating-project-plans
   - docs-validating-factual-accuracy
@@ -90,11 +91,6 @@ For EACH finding: Read → Re-validate → Assess confidence → Apply (HIGH) or
 
 Apply HIGH_CONFIDENCE fixes automatically, skip others, report summary.
 
-#### Delivery Checklist Fixes
-
-- Remove unsolicited `- [ ] Create PR` / `- [ ] Open PR` steps from `delivery.md` when
-  no explicit PR instruction exists in the prompt or plan (`prd.md`/`README.md`).
-
 #### BRD/PRD Content-Placement Fixes
 
 When the audit reports misplaced content per the [Content-Placement Rules](../../repo-governance/conventions/structure/plans.md#content-placement-rules-brdmd-vs-prdmd), apply the following moves (HIGH confidence — mechanical, unambiguous):
@@ -107,6 +103,15 @@ When the audit reports misplaced content per the [Content-Placement Rules](../..
 - **URL-only citation** (internet data cited without inline excerpt) → **fetch and quote** the specific figure/table/excerpt, then include it in the plan alongside the URL and the access date. If unable to fetch, classify the finding MEDIUM and flag for manual authoring rather than applying a half-fix.
 
 After moving content, update any cross-references that pointed at the old location and verify both files still satisfy the per-file required-sections list.
+
+#### Unsolicited PR Step Removal (per [Git Push Default Convention](../../repo-governance/development/workflow/git-push-default.md))
+
+When plan-checker flags a HIGH finding for an unsolicited PR step in a delivery checklist, remove such steps (HIGH confidence — mechanical, unambiguous):
+
+- **`- [ ] Create PR`**, **`- [ ] Open PR`**, **`- [ ] Submit PR`**, or equivalent PR creation steps in `delivery.md` → **remove the line** unless EITHER:
+  1. The plan's `README.md` or `prd.md` explicitly states that a PR is required (e.g., "This plan requires review via PR", external contribution, regulatory requirement)
+  2. The plan's Git Workflow section contains an explicit PR instruction (not merely worktree execution)
+- After removal, verify the delivery checklist remains logically sequential without the removed step.
 
 ### 4. Fix Report Generation
 
@@ -358,3 +363,215 @@ Add to the delivery checklist:
 - **HIGH Confidence**: Section completely missing — add the template
 - **MEDIUM Confidence**: Section exists but is vague — flag for manual review
 - **HIGH Confidence**: Section references wrong project/port — fix with correct values from plan context
+
+## Diagram Format Fixes
+
+When plan-checker reports a MEDIUM finding for ASCII art in plan files where Mermaid would be more appropriate, apply these fixes:
+
+### Confidence Assessment
+
+- **HIGH Confidence**: ASCII art clearly depicts a flow, sequence, state machine, or component interaction — the Mermaid equivalent is unambiguous. Auto-convert.
+- **MEDIUM Confidence**: ASCII art is ambiguous (e.g., a hybrid table/diagram). Flag for manual review.
+- **FALSE_POSITIVE**: ASCII art is a simple directory tree or file listing. These are explicitly exempted — do not convert.
+
+### How to Convert ASCII Art to Mermaid
+
+Follow [repo-governance/conventions/formatting/diagrams.md](../../repo-governance/conventions/formatting/diagrams.md) for full syntax rules. Key standards:
+
+1. **Choose the right diagram type**:
+   - Component interactions, decision branches → `flowchart LR`
+   - Order-of-operations across systems → `sequenceDiagram`
+   - Entity lifecycle states → `stateDiagram-v2`
+   - Database schema → `erDiagram`
+
+2. **Orientation**: Default to `flowchart LR` unless top-down is semantically required; add a `%%` comment explaining why.
+
+3–5. Follow the color-blind-friendly palette, `%%` comment syntax, and common syntax pitfalls documented in the `docs-creating-accessible-diagrams` Skill and [repo-governance/conventions/formatting/diagrams.md](../../repo-governance/conventions/formatting/diagrams.md).
+
+### Exception: Do Not Convert
+
+- Simple directory trees (`├── src/`, file listings) — acceptable ASCII, leave unchanged.
+- Tables or matrices where Mermaid would reduce readability — classify as FALSE_POSITIVE.
+
+## Worktree Specification Fixes
+
+When plan-checker reports a missing or malformed `## Worktree` section (Step 5d findings), apply these fixes.
+
+### Confidence Assessment
+
+- **HIGH Confidence**: section is completely missing, OR path format is wrong, OR provisioning command is missing. Fix is mechanical — derive `<plan-identifier>` from the plan-folder name (strip the `YYYY-MM-DD__` date prefix) and insert the canonical template.
+- **FALSE_POSITIVE**: a `## Worktree` section already exists but uses a non-standard heading text (e.g., `## Git Worktree`) — rename rather than duplicate.
+
+### How to Fix Missing `## Worktree` Section
+
+**Multi-file plans** — insert into `delivery.md` before the first phase heading:
+
+````markdown
+## Worktree
+
+Worktree path: `worktrees/<plan-identifier>/`
+
+Provision before execution (run from repo root):
+
+```bash
+claude --worktree <plan-identifier>
+```
+
+See [Worktree Path Convention](../../repo-governance/conventions/structure/worktree-path.md) and [Plans Organization Convention §Worktree Specification](../../repo-governance/conventions/structure/plans.md#worktree-specification).
+````
+
+**Single-file plans** — insert into `README.md` before the `## Delivery Checklist` heading using the same template as above.
+
+**Deriving `<plan-identifier>`**: strip the date prefix from the plan-folder name. Examples:
+
+- Folder `2026-05-15__auth-rewrite/` → identifier `auth-rewrite`
+- Folder `2026-03-01__add-user-search/` → identifier `add-user-search`
+
+### How to Fix Wrong Path Format
+
+- Path uses `.claude/worktrees/<name>/` → rewrite as `worktrees/<name>/`.
+- Path missing the `worktrees/` prefix → prepend it.
+- Identifier in the path mismatches the plan-folder identifier → rewrite to match the folder.
+
+### How to Fix Missing Provisioning Command
+
+Insert the canonical fenced bash block immediately under the path declaration:
+
+```bash
+claude --worktree <plan-identifier>
+```
+
+## Execution-Grade Clarity Fixes (HARD RULE)
+
+When plan-checker reports a HIGH finding for a delivery checkbox lacking explicit file paths, verbatim commands, or a concrete acceptance criterion (Step 5e findings), rewrite the checkbox with maximum detail.
+
+### Confidence Assessment
+
+- **HIGH Confidence**: the missing element can be derived from plan context (`tech-docs.md` names the affected file, the plan's project list implies the Nx command, the Gherkin acceptance criterion implies the test command). Apply rewrite automatically.
+- **MEDIUM Confidence**: the checkbox is genuinely ambiguous and even a careful read of the plan does not disambiguate the file path or command. Skip and flag for manual review — invent nothing.
+- **FALSE_POSITIVE**: the checkbox describes a non-mechanical decision (e.g., "Decide whether to keep dual-write enabled") that legitimately has no path/command/criterion — these are rare and the plan should label them as decisions, not action items. Convert to a `> Decision:` blockquote rather than a checkbox if appropriate; otherwise classify FALSE_POSITIVE and report.
+
+### Rewrite Recipe
+
+For each offending checkbox, derive the missing elements:
+
+1. **File path** — search `tech-docs.md` for the named subsystem; check the plan's "Files to modify" / "Files to create" sections; for new files give parent directory + naming pattern + sibling reference.
+2. **Shell command** — match the project's Nx target conventions (`nx run <project>:<target>`), git command, or specific tooling invocation. Quote it verbatim in backticks.
+3. **Acceptance criterion** — express as the observable change: a passing test, a typecheck exit 0, a grep returning a specific count, a file containing a specific string.
+
+### Rewrite Examples
+
+**Bad** (HIGH finding):
+
+```markdown
+- [ ] Add caching
+```
+
+**Good** (rewrite):
+
+```markdown
+- [ ] Edit `apps/ose-web/src/server/trpc.ts`: wrap the public router with
+      `unstable_cache(..., { revalidate: 300 })`. Verify by running
+      `npx nx run ose-web:test:quick` — all tests pass.
+```
+
+**Bad**:
+
+```markdown
+- [ ] Implement the rate-limit middleware
+```
+
+**Good**:
+
+```markdown
+- [ ] Create `apps/crud-be-ts-effect/src/Middleware/RateLimit.fs` (siblings: `Auth.fs`, `Cors.fs`)
+      implementing token-bucket rate limiting per the spec in `tech-docs.md §Rate Limiting`.
+      Verify by running `npx nx run crud-be-ts-effect:test:quick` — new test
+      `RateLimit_RejectsExceedingRequests` passes.
+```
+
+**Bad**:
+
+```markdown
+- [ ] Run the lint
+```
+
+**Good**:
+
+```markdown
+- [ ] Run `npx nx affected -t lint` — exits 0 with no errors reported.
+```
+
+After rewriting, re-read the checkbox and confirm a sonnet-tier agent could execute it without consulting any other section of the plan. If the rewrite still requires lookups, repeat until the checkbox is self-contained.
+
+## Anti-Hallucination Fixes (Step 5f Findings)
+
+When `plan-checker` reports Anti-Pattern Catalog violations (AP-1 through AP-10) per the
+[Plan Anti-Hallucination Convention](../../repo-governance/development/quality/plan-anti-hallucination.md),
+apply the fix only AFTER running the verification recipe for that claim category. If the
+recipe cannot establish the correct value, classify MEDIUM (manual review) — never invent
+a replacement. The single most damaging fixer behaviour is replacing one hallucination with
+another that happens to look more plausible.
+
+### Mandatory Repo-Grounding Before Apply
+
+Before applying ANY fix that introduces or replaces a factual claim (file path, Nx target,
+package version, function name, agent name, test name, command, cross-link), re-verify per
+the recipe in
+[Plan Anti-Hallucination Convention §Repo-Grounding Rule](../../repo-governance/development/quality/plan-anti-hallucination.md#repo-grounding-rule-hard):
+
+```bash
+# File path replacement — confirm the target exists OR mark _New file_
+test -f <new-path> && echo "HIGH apply" || echo "MEDIUM manual"
+
+# Nx target replacement — confirm target appears in project.json
+jq -r '.targets | keys[]' apps/<project>/project.json | grep -qx '<target>' && echo "HIGH apply" || echo "MEDIUM manual"
+
+# Package version replacement — confirm value matches the manifest
+jq -r '.dependencies.<pkg> // .devDependencies.<pkg>' package.json
+
+# Symbol replacement — confirm grep evidence
+rg -l "<symbol>" apps/ libs/
+
+# Agent / skill name replacement — confirm definition exists
+test -f .claude/agents/<name>.md && echo "HIGH apply" || echo "MEDIUM manual"
+```
+
+If the recipe fails:
+
+1. **Search for a correct value** (different path, different target name, different agent).
+2. **Re-run the recipe** with the corrected value.
+3. **If still no correct value found**: classify MEDIUM, write the audit finding into the
+   fix report under `## Manual Review Required`, and DO NOT apply the fix.
+
+### Per-Anti-Pattern Fix Recipes
+
+| Anti-Pattern | Detection                                | Fix Strategy                                                                                                                            |
+| ------------ | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **AP-1**     | Version cited without manifest evidence  | `jq` the manifest, replace with the resolved version + `[Repo-grounded]` label                                                          |
+| **AP-2**     | File path does not exist, not marked NEW | `Glob` for the intended file; if found, replace path; if NEW, append `_New file_` and add a creation step to delivery.md                |
+| **AP-3**     | Nx target invalid                        | Read `apps/<project>/project.json`, list real targets, replace cited target with the closest match; if no match, MEDIUM (manual review) |
+| **AP-4**     | Function/method name fabricated          | Delegate to `web-research-maker` (in-context fixer Exception 2 only when single-shot URL fetches it; else escalate MEDIUM)              |
+| **AP-5**     | Fabricated numeric KPI                   | Rewrite as observable check / cited measurement / qualitative reasoning / `_Judgment call:_` (NEVER invent a plausible number)          |
+| **AP-6**     | Test name fabricated                     | If pre-existing, `Grep` for the real name; if NEW, append `_New test_` and ensure delivery checklist creates it                         |
+| **AP-7**     | Agent/skill name does not resolve        | List `.claude/agents/` or `.claude/skills/`, find closest match, replace; if no match, MEDIUM                                           |
+| **AP-8**     | CLI flag without evidence                | Run `<cmd> --help` (in-context bash); if flag exists, append `[Repo-grounded]`; if not, replace with verified usage                     |
+| **AP-9**     | Behavior claim without source            | Delegate to `web-research-maker`; embed inline excerpt + URL + access date; classify HIGH only after citation appended                  |
+| **AP-10**    | Cross-link target does not exist         | Resolve relative path; if file moved, update path; if file removed, find replacement reference; if no replacement, classify MEDIUM      |
+
+### Confidence Assessment for Anti-Hallucination Fixes
+
+- **HIGH Confidence**: verification recipe passes after replacement; replacement value is mechanically derived from repo state or single-shot authoritative URL fetch. Auto-apply.
+- **MEDIUM Confidence**: replacement value cannot be mechanically derived; would require interpretation, judgment, or multi-page research. Skip auto-apply, write to `## Manual Review Required`.
+- **FALSE_POSITIVE**: claim WAS verifiable but checker missed the confidence label or recipe context (e.g., the claim sits inside a code-fence quoting a repo file). Document the FALSE_POSITIVE per the standard Skip-List protocol.
+
+### Refuse-on-Uncertainty Applies to Fixes Too
+
+The fixer's refusal options when verification fails:
+
+1. **Skip the line** — remove the fabricated claim entirely if the surrounding plan content remains coherent.
+2. **Add `[Unverified]` label** — keep the line, classify MEDIUM, escalate to manual review.
+3. **Convert to `_Judgment call:_`** — when the underlying assertion is genuinely subjective.
+4. **Convert to placeholder** — `_Unknown — verify before authoring_` with a delivery item under Open Questions.
+
+Forbidden: replacing one hallucination with a more plausible-sounding hallucination. The fixer's job is to ground claims in repo or web evidence, not to make broken plans look polished.

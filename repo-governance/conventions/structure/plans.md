@@ -8,6 +8,7 @@ tags:
   - plans
   - project-planning
   - organization
+created: 2025-12-05
 ---
 
 # Plans Organization Convention
@@ -29,7 +30,7 @@ This convention implements the following core principles:
 
 - **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: Flat structure with three clear states (backlog, in-progress, done). No complex nested hierarchies or status tracking systems.
 
-- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: Date-prefix naming makes chronological order explicit. `backlog/` uses the creation date; `done/` uses the completion date (last-modified date of plan files before archival); `in-progress/` uses no date prefix because the project identifier alone is sufficient for navigation and avoids churn when a plan's start date shifts. File location (backlog/, in-progress/, done/) indicates status — no hidden metadata or databases required.
+- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: The stage-aware naming convention makes chronological order and lifecycle state explicit. `backlog/` uses a creation-date prefix; `in-progress/` uses no date (the plan is live, not yet stamped); `done/` uses a completion-date prefix. File location (backlog/, in-progress/, done/) indicates status — no hidden metadata or databases required.
 
 ## Purpose
 
@@ -40,7 +41,7 @@ This convention establishes the organizational structure for project planning do
 ### What This Convention Covers
 
 - **Plans directory structure** - ideas.md, backlog/, in-progress/, done/ organization
-- **Folder naming pattern** - per-stage rules: `YYYY-MM-DD__[project-identifier]/` for backlog/ and done/, `[project-identifier]/` (no date) for in-progress/
+- **Folder naming pattern** - stage-aware: date prefix in `backlog/` (creation date) and `done/` (completion date); no date prefix in `in-progress/`
 - **File organization** - What files belong in each folder
 - **Lifecycle stages** - How plans move from ideas → backlog → in-progress → done
 - **Project identifiers** - How to name projects consistently
@@ -52,7 +53,7 @@ This convention establishes the organizational structure for project planning do
 - **Task tracking** - Covered by the [plan-execution workflow](../../workflows/plan/plan-execution.md) (orchestrated directly by the calling context)
 - **Deployment scheduling** - Covered in deployment conventions
 
-## 📋 Overview
+## Overview
 
 The `plans/` folder serves as the workspace for project planning activities:
 
@@ -63,7 +64,7 @@ The `plans/` folder serves as the workspace for project planning activities:
 
 **Key Distinction**: Plans are temporary working documents that eventually move to `done/` and may be archived, while `docs/` contains permanent documentation that evolves over time.
 
-## 🗂️ Folder Structure
+## ️ Folder Structure
 
 The `plans/` folder is organized into four main components:
 
@@ -137,61 +138,69 @@ When an idea is ready for formal planning:
 3. Remove or check off the idea from `ideas.md`
 4. The idea now has a structured plan with requirements, technical docs, and delivery timeline
 
-## 🎯 Plan Folder Naming
+## Plan Folder Naming
 
-**CRITICAL**: Folder naming rules differ by stage. The patterns are NOT uniform across all three stages.
+Naming differs by lifecycle stage. Each stage has its own rule.
 
-### Pattern by Stage
+### backlog/ — creation date prefix
 
-| Stage          | Pattern                             | Date Meaning                                                                                                                               |
-| -------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `backlog/`     | `YYYY-MM-DD__[project-identifier]/` | Creation date — the date the plan was formalized                                                                                           |
-| `in-progress/` | `[project-identifier]/`             | **No date prefix** — identifier only                                                                                                       |
-| `done/`        | `YYYY-MM-DD__[project-identifier]/` | Completion date — the date of the last file modification in the folder before archival (NOT the creation date, NOT the backlog-entry date) |
+```
+YYYY-MM-DD__[project-identifier]/
+```
 
-### Naming Rules
+The date is the day the plan folder was created.
 
-- **Date Format**: ISO 8601 format (`YYYY-MM-DD`) where applicable
-- **Separator**: Double underscore `__` separates date from identifier (backlog/ and done/ only)
+### in-progress/ — NO date prefix
+
+```
+[project-identifier]/
+```
+
+Active plans carry no date prefix at all. The date is added only when the plan is archived to
+`done/`. When moving a plan from `backlog/` to `in-progress/`, strip the date prefix.
+
+### done/ — completion date prefix
+
+```
+YYYY-MM-DD__[project-identifier]/
+```
+
+The date is the day the plan was completed (last git-committed), NOT the creation date. When
+archiving from `in-progress/`, add the completion date prefix.
+
+### Naming Rules (all stages)
+
+- **Date Format**: ISO 8601 (`YYYY-MM-DD`)
+- **Separator**: Double underscore `__` separates date from identifier
 - **Identifier**: Kebab-case (lowercase with hyphens)
 - **No Spaces**: Use hyphens instead of spaces
 - **No Special Characters**: Only alphanumeric and hyphens in identifier
-
-### Why in-progress/ Has No Date Prefix
-
-In-progress work has no stable "start date" worth encoding in the folder name. A plan may sit in backlog for weeks before work begins, and renaming the folder on every rescheduling causes unnecessary churn. The project identifier alone is sufficient for navigation inside `in-progress/`.
-
-### Why done/ Uses the Completion Date
-
-The completion date is defined as the date of the last file modification inside the folder — the date of the final commit that touched the plan files before archival. This is the most meaningful date for a finished plan: it records when the work concluded, not when it was conceived. If the last-modified date of any file in the folder is later than the current prefix date, the prefix MUST be updated before or during the archival commit.
 
 ### Examples
 
 **Good (backlog/)**:
 
-- `2025-11-24__init-monorepo/`
-- `2025-12-01__auth-system/`
-- `2026-01-15__mobile-app-redesign/`
+- `backlog/2025-11-24__init-monorepo/`
+- `backlog/2025-12-01__auth-system/`
+- `backlog/2025-12-05__payment-integration/`
 
 **Good (in-progress/)**:
 
-- `add-investment-oracle-app/`
-- `auth-system/`
-- `mobile-app-redesign/`
+- `in-progress/mobile-app-redesign/`
+- `in-progress/auth-system/`
+- `in-progress/payment-integration/`
 
 **Good (done/)**:
 
-- `2026-04-27__adopt-mermaid-checker-from-ose-public/` (completion date)
-- `2025-12-05__payment-integration/` (completion date)
+- `done/2025-11-24__init-monorepo/` (completion date)
+- `done/2026-01-15__mobile-app-redesign/` (completion date)
 
 **Bad**:
 
+- `in-progress/2026-01-15__mobile-app-redesign/` (date prefix in in-progress — WRONG)
 - `2025-11-24_init-monorepo/` (single underscore)
 - `2025-11-24__Init Monorepo/` (capital letters, spaces)
 - `2025-11-24__init_monorepo/` (underscores in identifier)
-- `2026-04-27__add-investment-oracle-app/` in `in-progress/` (date prefix not allowed in in-progress/)
-- `add-investment-oracle-app/` in `done/` (missing required date prefix in done/)
-- `done/` folder with a creation date rather than completion date (wrong date meaning)
 
 ## Plan Contents
 
@@ -233,9 +242,10 @@ If any criterion is unmet, use the five-document layout. If the plan grows past 
 3. **Business rationale (condensed BRD)** — why this matters, business goals, affected roles, success metrics (gut-based reasoning OK; judgment calls labeled; fabricated KPIs forbidden; internet citations inline with excerpt + URL + access date)
 4. **Product requirements (condensed PRD)** — user stories (`As a … I want … So that …`), Gherkin acceptance criteria, product scope
 5. **Technical approach** — architecture, design decisions, implementation approach
-6. **Delivery checklist** — phased `- [ ]` items with one concrete action per checkbox
-7. **Quality gates** — local gates + CI gates that must pass
-8. **Verification** — how to confirm the plan is done
+6. **Worktree** — declared worktree path (`worktrees/<plan-identifier>/`) and provisioning command (see [Worktree Specification](#worktree-specification))
+7. **Delivery checklist** — phased `- [ ]` items with one concrete action per checkbox
+8. **Quality gates** — local gates + CI gates that must pass
+9. **Verification** — how to confirm the plan is done
 
 If the author cannot comfortably fit both the condensed BRD and condensed PRD sections into the README without crowding out the technical sections, promote the plan to the five-document multi-file layout before execution begins.
 
@@ -256,7 +266,7 @@ If the author cannot comfortably fit both the condensed BRD and condensed PRD se
 - **brd.md** — **Business Requirements Document**: business goal and rationale ("why are we doing this"), business impact, affected roles, business-level success metrics, business-scope Non-Goals, business risks and mitigations. Content-placement container, not a sign-off artifact — code review is the only approval gate in this repo.
 - **prd.md** — **Product Requirements Document**: product overview, personas, user stories (`As a … I want … So that …`), acceptance criteria in Gherkin, product scope (in-scope + out-of-scope features), product-level risks.
 - **tech-docs.md**: architecture, design decisions with rationale, file-impact analysis, mechanics, dependencies, risks, rollback. No step-by-step checklist.
-- **delivery.md**: sequential, ticked checklist of executable steps (`- [ ]`), organized by phase if needed. Plan-execution workflow reads this file to drive execution; `plan-execution-checker` reads it to verify completion. Code-touching items MUST follow the [Test-Driven Development convention](../../development/workflow/test-driven-development.md) (Red→Green→Refactor) — author the failing test tick before the implementation tick.
+- **delivery.md**: sequential, ticked checklist of executable steps (`- [ ]`), organized by phase if needed. Plan-execution workflow reads this file to drive execution; `plan-execution-checker` reads it to verify completion.
 
 ### Content-Placement Rules (brd.md vs prd.md)
 
@@ -311,7 +321,72 @@ Every checkbox in `delivery.md` must represent exactly one concrete, independent
 
 **Test for granularity**: Each checkbox must pass this test — can you verify it is done without completing anything else on the list? If the answer is no, the item is too coarse.
 
+### Execution-Grade Clarity (HARD RULE)
+
+Plans are executed by execution-grade (sonnet-tier) agents, not planning-grade agents. Authoring-grade clarity is not sufficient — every checkbox MUST be unambiguous at execution time without consulting additional context.
+
+**Each checkbox MUST contain all of the following that apply:**
+
+- **Explicit file path(s)**: Name the exact file path(s) when known (e.g., `apps/ose-web/src/server/trpc.ts`). When the path cannot be determined at authoring time (e.g., a new file whose location is implementation-dependent), provide the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/crud-be-ts-effect/src/` following the pattern of sibling `auth.ts`").
+- **Explicit shell command(s)**: State the verbatim invocation when a command is involved (e.g., `npx nx run ose-web:test:quick`), not a vague instruction like "run the lint".
+- **Concrete acceptance criterion**: State the observable change that proves done (e.g., "all assertions in `trpc.test.ts` pass" or "`nx run ose-web:typecheck` exits 0"). No bare "implement X", "set up Y", or "configure Z" without a concrete verifiable outcome.
+
+**HARD RULE**: `plan-checker` flags violations of this rule as HIGH severity. `plan-fixer` rewrites offending items with maximum detail.
+
+**Bad** (missing path, missing command, missing criterion):
+
+```markdown
+- [ ] Add caching
+```
+
+**Good** (explicit path, explicit command, explicit criterion):
+
+```markdown
+- [ ] Edit `apps/ose-web/src/server/trpc.ts`: wrap the public router with
+      `unstable_cache(..., { revalidate: 300 })`. Verify by running
+      `npx nx run ose-web:test:quick` — all tests pass.
+```
+
 **Acceptance Criteria**: All user stories in `prd.md` (or the condensed PRD section of a single-file plan's `README.md`) must include testable acceptance criteria using Gherkin format. See [Acceptance Criteria Convention](../../development/infra/acceptance-criteria.md) for complete details.
+
+### Worktree Specification
+
+Every plan MUST declare the worktree path in its content so the executor can verify the execution environment before reading the delivery checklist.
+
+**Where to declare**:
+
+- **Multi-file plans**: Add a top-level `## Worktree` section in `delivery.md`, placed before any phase heading.
+- **Single-file plans**: Add a `## Worktree` section in `README.md`, placed before the `## Delivery Checklist` section.
+
+**Worktree path format**: `worktrees/<plan-identifier>/` where `<plan-identifier>` is the slug portion of the folder name (strip the `YYYY-MM-DD__` prefix when present).
+
+- `backlog/2026-05-15__auth-rewrite/` → worktree path `worktrees/auth-rewrite/`
+- `in-progress/auth-rewrite/` → worktree path `worktrees/auth-rewrite/` (no prefix to strip)
+- `backlog/2026-03-01__add-user-search/` → worktree path `worktrees/add-user-search/`
+
+**Provisioning command** (run from repo root before invoking plan execution):
+
+```bash
+claude --worktree <plan-identifier>
+```
+
+**This requirement applies to ALL plans regardless of size** — pure-docs, single-file, and trivial plans included. No exceptions.
+
+See [Worktree Path Convention](./worktree-path.md) for the full routing and directory structure specification.
+
+**Example `## Worktree` block** (delivery.md or README.md):
+
+````markdown
+## Worktree
+
+Worktree path: `worktrees/auth-rewrite/`
+
+Provision before execution:
+
+\```bash
+claude --worktree auth-rewrite
+\```
+````
 
 ### Important Note on File Naming
 
@@ -331,34 +406,34 @@ Plans differ from `docs/` in several important ways:
 | **Longevity**    | Temporary (archived in done/)         | Permanent (evolves over time)        |
 | **Organization** | By project and status                 | By Diátaxis category                 |
 
-## 🔧 Working with Plans
+## Working with Plans
 
 ### Creating Plans
 
 1. **Start with an idea**: Capture quick idea in `ideas.md` (1-3 lines)
 2. **Formalize when ready**: Create plan folder in `backlog/` when idea is mature
-3. **Follow naming convention**: Use `YYYY-MM-DD__[project-identifier]/` format (creation date)
-4. **Choose structure**: Single-file (≤1000 lines) or multi-file (>1000 lines)
+3. **Follow naming convention**: Use `YYYY-MM-DD__[project-identifier]/` format with the creation date
+4. **Choose structure**: Default to the five-document multi-file layout (`README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`). Collapse to single-file only when all four exception criteria in the Structure Decision section are met simultaneously.
 5. **Create content**: Write overview, requirements, tech docs, and delivery sections
 6. **Update index**: Add plan to `backlog/README.md`
 
 ### Starting Work
 
-1. **Move folder**: Move plan folder from `backlog/` to `in-progress/` using `git mv`
-2. **Strip the date prefix**: Rename the folder to the bare project identifier — `YYYY-MM-DD__[project-identifier]/` becomes `[project-identifier]/`. In-progress folders MUST NOT carry a date prefix.
-3. **Update index**: Update both `backlog/README.md` and `in-progress/README.md`
-4. **Git commit**: Commit the move and rename with appropriate message
-5. **Begin execution**: Start implementing according to delivery checklist
+1. **Provision worktree**: Run `claude --worktree <plan-identifier>` from the repo root — this creates `worktrees/<plan-identifier>/` in the repo root (not `.claude/worktrees/`). See [Worktree Path Convention](./worktree-path.md).
+2. **Initialize toolchain**: In the root worktree, run `npm install && npm run doctor -- --fix`. See [Worktree Toolchain Initialization](../../development/workflow/worktree-setup.md).
+3. **Move and rename folder**: Move plan folder from `backlog/YYYY-MM-DD__[identifier]/` to `in-progress/[identifier]/` — strip the date prefix when moving to `in-progress/`.
+4. **Update index**: Update both `backlog/README.md` and `in-progress/README.md`
+5. **Git commit**: Commit the move with appropriate message
+6. **Begin execution**: Start implementing according to delivery checklist
 
 ### Completing Work
 
 1. **Verify completion**: Ensure all deliverables and acceptance criteria met
-2. **Determine completion date**: Identify the date of the last file modification in the plan folder (the date of the final commit that touched the plan files). This is the completion date.
-3. **Add date prefix**: Rename the folder from `[project-identifier]/` to `YYYY-MM-DD__[project-identifier]/` using the completion date. This prefix is MANDATORY — do not skip it.
-4. **Move folder**: Move the renamed folder from `in-progress/` to `done/` using `git mv`
-5. **Update index**: Update both `in-progress/README.md` and `done/README.md`
-6. **Git commit**: Commit the rename and move with completion message
-7. **Archive**: Plan is now archived for historical reference
+2. **Add completion date prefix**: Rename folder from `in-progress/[identifier]/` to `done/YYYY-MM-DD__[identifier]/` using today's date (the completion date, not the original creation date)
+3. **Move folder**: Move renamed folder to `done/`
+4. **Update index**: Update both `in-progress/README.md` and `done/README.md`
+5. **Git commit**: Commit the move with completion message
+6. **Archive**: Plan is now archived for historical reference
 
 ### Plan Index Files
 
@@ -369,35 +444,56 @@ Each subfolder (`backlog/`, `in-progress/`, `done/`) has a `README.md` that:
 - Links to each plan folder
 - Updated whenever plans are added, moved, or removed
 
-## Mermaid Diagrams in Plans
+## Diagrams in Plans
 
-Files in `plans/` folder **SHOULD** include Mermaid diagrams when visual structure clarifies intent better than prose. Diagrams belong primarily in `tech-docs.md` (multi-file layout) or the Technical Approach section (single-file layout); other files may reference them. Text-only plans remain acceptable for trivial scopes — the rule is "diagram when it helps," not "diagram always."
+Files in `plans/` folder MUST use **Mermaid diagrams** as the primary format (same as all markdown files in the repository).
 
-### When a Plan SHOULD Include a Diagram
+**Diagram Standards**:
 
-Add a Mermaid diagram whenever the plan covers one of these concerns and a reader would otherwise have to reconstruct the picture mentally from prose:
+- **Primary Format**: Mermaid diagrams for all flowcharts, architecture diagrams, sequences
+- **ASCII Art**: Optional, only for simple directory trees or rare edge cases
+- **Orientation**: Default to left-to-right (`flowchart LR` / `graph LR`) per the [Diagram and Schema Convention](../formatting/diagrams.md); use top-down only when semantically required
+- **Colors**: Use color-blind friendly palette from [Color Accessibility Convention](../formatting/color-accessibility.md)
+
+**Why Mermaid**:
+
+- Renders properly in GitHub and most markdown viewers
+- Version-controllable (text-based)
+- Easy to update and maintain
+- Supports multiple diagram types (flowchart, sequence, class, ER, etc.)
+
+### When a Plan MUST Include a Diagram
+
+A plan MUST include at least one Mermaid diagram when the plan covers any of the following concerns and a reader would otherwise have to reconstruct the picture mentally from prose:
 
 - **Component interactions** — which services, agents, apps, or libraries call which, and through what contract (flowchart or C4-style diagram)
 - **Sequence or flow between agents or systems** — order-of-operations across processes, including async hand-offs and timeouts (sequenceDiagram)
 - **State transitions** — lifecycle of an entity (plan folder, request, deployment, entitlement) with named states and triggered transitions (stateDiagram-v2)
 - **Decision branches** — non-trivial conditional logic with more than two outcomes or nested decisions (flowchart with labelled edges)
 
+If unsure whether a diagram is warranted, add it. A redundant diagram costs less than a missed architectural ambiguity.
+
 ### When a Plan MAY Skip Diagrams
 
-Text-only is fine when the plan is genuinely linear and small:
+Text-only is acceptable only when the plan is genuinely linear and trivially small:
 
 - Single-file README-only plans touching one file or one config value
 - Renames, copy edits, documentation fixes
 - Dependency bumps with no behavioural change
 
-If unsure, add the diagram. A redundant diagram costs less than a missed architectural ambiguity.
-
 ### Accessibility and Palette Requirements
 
-All plan diagrams MUST follow repository diagram standards — color-blind friendly palette, mobile-friendly orientation, correct Mermaid comment syntax. This convention does **not** redefine those rules.
+All plan diagrams MUST follow repository diagram standards: use the color-blind friendly palette, mobile-friendly orientation, and correct Mermaid comment syntax. Key invariants:
 
-- **Primary reference** — [Diagram and Schema Convention](../formatting/diagrams.md) for full syntax, ASCII fallback rules, and orientation guidance
-- **Palette and accessibility Skill** — [`docs-creating-accessible-diagrams`](../../../.claude/skills/docs-creating-accessible-diagrams/SKILL.md) for the verified WCAG-compliant hex codes, dos and don'ts, and color-blindness coverage
+- Never use red, green, or yellow fills in diagram nodes — these are invisible or ambiguous for the most common color-blindness types.
+- Always use black borders (`stroke:#000000`) and white text (`color:#FFFFFF`) on dark fills.
+- Use only the eight verified accessible hex codes: `#0173B2` (blue), `#DE8F05` (orange), `#029E73` (teal), `#CC78BC` (purple), `#CA9161` (brown), `#808080` (gray), `#000000` (black), `#FFFFFF` (white).
+
+This convention does **not** redefine those rules in full — consult the authoritative sources:
+
+- **Palette and WCAG AA rules** — [Color Accessibility Convention](../formatting/color-accessibility.md) — authoritative source for the verified palette, hex codes, contrast ratios, and color-blindness coverage
+- **Diagram syntax and orientation** — [Diagram and Schema Convention](../formatting/diagrams.md) for full Mermaid syntax, ASCII fallback rules, LR orientation default, and width constraints
+- **Palette and accessibility Skill** — [`docs-creating-accessible-diagrams`](../../../.claude/skills/docs-creating-accessible-diagrams/SKILL.md) for the verified WCAG-compliant hex codes, dos and don'ts, and agent-usable reference
 
 ### Example: Plan-Appropriate Flowchart
 
@@ -426,7 +522,7 @@ For complete diagram standards, see [Diagram and Schema Convention](../formattin
 
 ## Relative Link Paths in Plan Files
 
-Plan files sit three directory levels deep from the repository root: `plans/` → `in-progress/` (or `backlog/` or `done/`) → `[identifier]/` (in-progress) or `YYYY-MM-DD__[identifier]/` (backlog/done). Any markdown file inside a plan folder must use `../../../` to reach root-level directories such as `repo-governance/`, `docs/`, `apps/`, or `libs/`.
+Plan files sit three directory levels deep from the repository root: `plans/` → `in-progress/` (or `backlog/` or `done/`) → `[identifier]/` (in-progress) or `YYYY-MM-DD__identifier/` (backlog and done). Any markdown file inside a plan folder must use `../../../` to reach root-level directories such as `repo-governance/`, `docs/`, `apps/`, or `libs/`.
 
 ### Correct Path Depth
 
@@ -434,7 +530,7 @@ Plan files sit three directory levels deep from the repository root: `plans/` �
 | ------------------------------------------------ | -------------- |
 | `repo-governance/conventions/structure/plans.md` | `../../../`    |
 | `docs/how-to/organize-work.md`                   | `../../../`    |
-| `apps/crud-be-golang-gin/README.md`              | `../../../`    |
+| `apps/crud-be-ts-effect/README.md`               | `../../../`    |
 | Sibling file in the same plan folder             | `./`           |
 
 ### Example
@@ -471,6 +567,9 @@ Use the verification tip from the [Linking Convention](../formatting/linking.md#
 - [Diátaxis Framework](./diataxis-framework.md) - Organization of `docs/` directory
 - [File Naming Convention](./file-naming.md) - Naming files within `docs/` (not applicable to plans/)
 - [Diagram and Schema Convention](../formatting/diagrams.md) - Standards for Mermaid diagrams
+- [Color Accessibility Convention](../formatting/color-accessibility.md) - Verified accessible palette, WCAG AA requirements, and color-blindness coverage for all diagram fills
+- [Worktree Path Convention](./worktree-path.md) - Worktree routing to `worktrees/<name>/` (referenced by the Worktree Specification rule above)
+- [Plan Anti-Hallucination Convention](../../development/quality/plan-anti-hallucination.md) - Pre-write verification recipes, repo-grounding rule, refuse-on-uncertainty, anti-pattern catalog (AP-1 through AP-10), specialized-executor annotation; consumed by the Execution-Grade Clarity rule above and by the four plan agents
 
 **Development Guides**:
 
@@ -511,7 +610,7 @@ Use the verification tip from the [Linking Convention](../formatting/linking.md#
 - Review past plans to learn from successes and challenges
 - Use completed plans as templates for similar future work
 
-## 📖 Examples
+## Examples
 
 ### Example: Small Plan (Single-File)
 
@@ -594,5 +693,3 @@ Quick ideas and todos that haven't been formalized into plans yet.
 - Implement keyboard shortcuts
 - Add progressive web app support
 ```
-
----

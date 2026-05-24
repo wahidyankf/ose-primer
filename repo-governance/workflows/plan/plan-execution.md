@@ -1,5 +1,6 @@
 ---
 name: plan-execution
+title: "plan-execution"
 goal: Execute a project plan, validate its completion and quality, then iteratively continue until all requirements are met and archive to plans/done/
 termination: Zero findings remain after validation and plan moved to done/
 inputs:
@@ -82,7 +83,7 @@ The orchestrator selects the best agent for each delivery checklist item using t
 
 0. **Suggested-executor annotation (HIGHEST priority)**: If the checkbox carries a `_Suggested executor: <agent-name>_` annotation per [Plan Anti-Hallucination Convention §Specialized-Agent Delegation](../../development/quality/plan-anti-hallucination.md#specialized-agent-delegation-hallucination-reduction), verify the agent file exists at `.claude/agents/<name>.md` and use that agent. The annotation is the plan author's explicit choice — it overrides heuristics 1–4 below. If the annotated agent does not exist, terminate the item with status `fail` and surface the missing-agent error to the user (do not silently fall back).
 
-1. **Match by project/app name**: If the checklist item names a specific app (e.g., `organiclever-be`), use the agent for that app's language (e.g., `swe-fsharp-dev`). Refer to [CLAUDE.md](../../../CLAUDE.md) for the full app list and their tech stacks.
+1. **Match by project/app name**: If the checklist item names a specific app (e.g., `crud-be-ts-effect`), use the agent for that app's language (e.g., `swe-typescript-dev`). Refer to [CLAUDE.md](../../../CLAUDE.md) for the full app list and their tech stacks.
 
 2. **Match by file extension**: If the item references files with a recognizable extension (`.ts`, `.java`, `.py`, `.go`, `.kt`, `.fs`, `.cs`, `.clj`, `.ex`, `.rs`, `.dart`), use the corresponding `swe-{language}-dev` agent.
 
@@ -501,7 +502,7 @@ Report final status, archive plan if successful, and update all related READMEs.
   1. Move entire plan folder from current location to `plans/done/`:
 
      ```bash
-     git mv plans/in-progress/YYYY-MM-DD__plan-name/ plans/done/YYYY-MM-DD__plan-name/
+     git mv plans/in-progress/plan-name/ plans/done/YYYY-MM-DD__plan-name/
      ```
 
   2. **Update `plans/in-progress/README.md`** — remove the plan entry from the list
@@ -768,3 +769,7 @@ acceptance criteria in `prd.md` are the natural source of the first failing test
 - **[File Naming Convention](../../conventions/structure/file-naming.md)**: Workflow file follows plain name convention for workflows
 - **[Linking Convention](../../conventions/formatting/linking.md)**: All cross-references use GitHub-compatible markdown with `.md` extensions
 - **[Content Quality Principles](../../conventions/writing/quality.md)**: Active voice, proper heading hierarchy, single H1
+
+## Agents
+
+- [plan-execution-checker](../../../.claude/agents/plan-execution-checker.md) — validates plan execution completeness and quality

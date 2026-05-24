@@ -1,6 +1,6 @@
 ---
 name: plan-creating-project-plans
-description: Comprehensive project planning standards for plans/ directory including folder structure (ideas.md, backlog/, in-progress/, done/), per-stage naming rules (backlog=YYYY-MM-DD__identifier/, in-progress=identifier/ no date, done=YYYY-MM-DD__identifier/ completion date), five-document file organization (README.md, brd.md, prd.md, tech-docs.md, delivery.md for multi-file default; single README.md for trivially-small single-file exception), BRD/PRD content-placement rules, and Gherkin acceptance criteria. Essential for creating structured, executable project plans.
+description: Comprehensive project planning standards for plans/ directory including folder structure (ideas.md, backlog/, in-progress/, done/), stage-aware naming convention (backlog/done use YYYY-MM-DD__identifier/, in-progress uses identifier/ with no date prefix), five-document file organization (README.md, brd.md, prd.md, tech-docs.md, delivery.md for multi-file default; single README.md for trivially-small single-file exception), BRD/PRD content-placement rules, and Gherkin acceptance criteria. Essential for creating structured, executable project plans.
 ---
 
 # Creating Project Plans
@@ -24,32 +24,30 @@ This Skill provides comprehensive guidance for creating **structured project pla
 plans/
 ├── ideas.md                              # 1-3 line ideas (brainstorming)
 ├── backlog/                              # Future work
-│   └── YYYY-MM-DD__project-name/        # Creation-date prefix
+│   └── YYYY-MM-DD__project-name/        # Planned but not started
 ├── in-progress/                          # Active work
-│   └── project-name/                    # NO date prefix (identifier only)
+│   └── project-name/                    # Currently executing (no date prefix)
 └── done/                                 # Completed work
-    └── YYYY-MM-DD__project-name/        # Completion-date prefix
+    └── YYYY-MM-DD__project-name/        # Archived (completion date prefix)
 ```
 
 ## Plan Naming Convention
 
-Naming rules differ by lifecycle stage:
+Naming is **stage-aware** — each lifecycle stage has its own rule:
 
-| Stage          | Pattern                           | Date meaning                                      |
-| -------------- | --------------------------------- | ------------------------------------------------- |
-| `backlog/`     | `YYYY-MM-DD__project-identifier/` | Creation date                                     |
-| `in-progress/` | `project-identifier/`             | **No date prefix** — identifier only              |
-| `done/`        | `YYYY-MM-DD__project-identifier/` | Completion date (last file mtime before archival) |
+| Stage          | Format                            | Date meaning    |
+| -------------- | --------------------------------- | --------------- |
+| `backlog/`     | `YYYY-MM-DD__project-identifier/` | Creation date   |
+| `in-progress/` | `project-identifier/`             | No date prefix  |
+| `done/`        | `YYYY-MM-DD__project-identifier/` | Completion date |
 
-**Rules**:
+**Rules** (identifier part, all stages):
 
-- Date format: ISO 8601 (`YYYY-MM-DD`)
-- Separator: Double underscore `__` (backlog/ and done/ only)
+- Separator between date and identifier: Double underscore (`__`)
 - Identifier: Lowercase, hyphen-separated, descriptive
 - Trailing slash indicates directory
-
-When moving backlog → in-progress: strip the date prefix.
-When moving in-progress → done: determine the completion date (last file modification) and add the date prefix.
+- Strip the date prefix when moving from `backlog/` → `in-progress/`
+- Add the completion date prefix when moving from `in-progress/` → `done/`
 
 ## Plan Structure
 
@@ -96,6 +94,192 @@ plans/in-progress/simple-feature/
 8. **Verification** — how to confirm done
 
 If the plan grows past 1000 lines or authoring feels crowded, promote to the five-document multi-file layout before execution begins.
+
+## Worktree Specification (Mandatory — Applies to ALL Plans)
+
+Every plan MUST declare its worktree path before the delivery checklist begins. This is enforced by `plan-checker` (HIGH finding when missing) and the [plan-execution workflow Step 0 hard gate](../../../repo-governance/workflows/plan/plan-execution.md) — execution refuses to start if the section is absent.
+
+**Where to declare**:
+
+- **Multi-file plans**: top-level `## Worktree` section in `delivery.md`, placed before any phase heading.
+- **Single-file plans**: top-level `## Worktree` section in `README.md`, placed before `## Delivery Checklist`.
+
+**Path format**: `worktrees/<plan-identifier>/` where `<plan-identifier>` matches the plan-folder identifier (strip the `YYYY-MM-DD__` date prefix). Examples:
+
+- Folder `2026-05-15__auth-rewrite/` → worktree path `worktrees/auth-rewrite/`
+- Folder `2026-03-01__add-user-search/` → worktree path `worktrees/add-user-search/`
+
+**Required template** (insert verbatim, replacing `<plan-identifier>`):
+
+````markdown
+## Worktree
+
+Worktree path: `worktrees/<plan-identifier>/`
+
+Provision before execution (run from repo root):
+
+```bash
+claude --worktree <plan-identifier>
+```
+
+See [Worktree Path Convention](../../../repo-governance/conventions/structure/worktree-path.md) and [Plans Organization Convention §Worktree Specification](../../../repo-governance/conventions/structure/plans.md#worktree-specification).
+````
+
+**This applies to ALL plans regardless of size** — pure-docs, single-file, and trivial plans included. No exceptions.
+
+## Execution-Grade Clarity (HARD RULE)
+
+Plans are executed by **execution-grade (sonnet-tier)** agents, not planning-grade (opus-tier) agents. Authoring-grade hand-waving is forbidden.
+
+**Every checkbox MUST contain all of the following that apply**:
+
+- **Explicit file path(s)** when the action touches a known file. When the path cannot be determined at authoring time, give the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/crud-be-ts-effect/src/` following the pattern of sibling `auth.ts`").
+- **Explicit shell command(s)** verbatim when applicable (e.g., `npx nx run ose-web:test:quick`), not "run the lint".
+- **Concrete acceptance criterion** stating the observable change that proves done (e.g., "all assertions in `trpc.test.ts` pass", "`nx run ose-web:typecheck` exits 0"). No bare "implement X", "set up Y", "configure Z".
+
+**`plan-checker` flags violations as HIGH severity. `plan-fixer` rewrites offending items with maximum detail.**
+
+### Bad / Good Examples
+
+**Bad** (missing path, missing command, missing criterion):
+
+```markdown
+- [ ] Add caching
+```
+
+**Good** (explicit path, explicit command, explicit criterion):
+
+```markdown
+- [ ] Edit `apps/ose-web/src/server/trpc.ts`: wrap the public router with
+      `unstable_cache(..., { revalidate: 300 })`. Verify by running
+      `npx nx run ose-web:test:quick` — all tests pass.
+```
+
+**Bad**:
+
+```markdown
+- [ ] Implement the rate-limit middleware
+```
+
+**Good**:
+
+```markdown
+- [ ] Create `apps/crud-be-ts-effect/src/Middleware/RateLimit.fs` (siblings: `Auth.fs`, `Cors.fs`)
+      implementing token-bucket rate limiting per `tech-docs.md §Rate Limiting`. Verify by running
+      `npx nx run crud-be-ts-effect:test:unit` — new test `RateLimit_RejectsExceedingRequests` passes.
+```
+
+**Bad**:
+
+```markdown
+- [ ] Run the lint
+```
+
+**Good**:
+
+```markdown
+- [ ] Run `npx nx affected -t lint` — exits 0 with no errors reported.
+```
+
+See [Plans Organization Convention §Execution-Grade Clarity](../../../repo-governance/conventions/structure/plans.md#execution-grade-clarity-hard-rule) for the authoritative rule.
+
+## Pre-Write Verification (Anti-Hallucination — HARD)
+
+Before writing any non-trivial factual claim into a plan, run the verification recipe for the claim's category. Hallucinated content (fabricated file paths, invented Nx targets, made-up versions, fictitious APIs, fabricated KPIs) turns a plan into broken work the moment execution begins. Verify at authoring time — it is the cheapest place to catch fabrication.
+
+See [Plan Anti-Hallucination Convention](../../../repo-governance/development/quality/plan-anti-hallucination.md) for the authoritative rules.
+
+### Verification Recipes
+
+| Claim Category    | Verification Command                                                                   |
+| ----------------- | -------------------------------------------------------------------------------------- |
+| File path         | `Bash test -f <path>` or `Glob`; if NEW, mark inline as `_New file_`                   |
+| Directory path    | `Bash test -d <path>`                                                                  |
+| Symbol / function | `Grep` against the codebase                                                            |
+| Nx target         | Read `apps/<project>/project.json` and confirm under `targets`                         |
+| Package version   | `jq` the relevant manifest (`package.json`, `go.mod`, `Cargo.toml`, etc.)              |
+| API signature     | Delegate to `web-research-maker` with authoritative-doc URL                            |
+| Command flag      | `<cmd> --help` OR repo-doc reference                                                   |
+| Test name         | `Grep` test files; if NEW, mark `_New test_`                                           |
+| Agent / skill     | `Bash test -f .claude/agents/<name>.md` or `.claude/skills/<name>/SKILL.md`            |
+| External standard | Delegate to `web-research-maker`; cite URL + access date + excerpt                     |
+| Behavior claim    | `web-research-maker` with cited official-doc excerpt                                   |
+| Cross-link target | `Bash test -f` on the resolved relative path                                           |
+| Numeric KPI       | Forbidden as bare fact; observable check / cited measurement / `_Judgment call:_` only |
+
+### Confidence Labels (Inline)
+
+Write one of the following next to each non-trivial claim:
+
+- **`[Repo-grounded]`** — verified in current commit via `Glob` / `Grep` / `Bash` / `Read`
+- **`[Web-cited]`** — verified externally; URL + access date + excerpt inline
+- **`[Judgment call]`** — explicit subjective claim; numeric gut targets MUST use this label
+- **`[Unverified]`** — flagged for follow-up; `plan-checker` reports as MEDIUM
+
+Bare unlabeled claims default to `[Unverified]`. Label proactively.
+
+### Refuse-on-Uncertainty
+
+When verification fails or is impossible: REFUSE to write the claim as a fact. Acceptable refusals:
+
+1. **Skip the claim** (preferred when omission keeps the plan coherent)
+2. **Use `[Unverified]` label** (flagged for verification before execution)
+3. **Use `[Judgment call]` label** (explicitly subjective)
+4. **Use placeholder** — `_Unknown — verify before authoring_` under Open Questions
+
+Forbidden: writing the claim without a label and hoping it is correct.
+
+### Web-Research Delegation (Lower Threshold for Plan Content)
+
+For plan content the threshold is LOWER than the universal convention:
+
+> **Any external claim that is not already documented in the repo (`docs/`, `repo-governance/`, `apps/*/README.md`, `package.json`, `go.mod`, etc.) and that requires more than a single `WebFetch` against an already-known authoritative URL MUST be delegated to `web-research-maker`.**
+
+Concretely: most external claims require delegation. Single-shot fetches against a known URL are the only in-context exception. See [Plan Anti-Hallucination Convention §Web-Research Delegation](../../../repo-governance/development/quality/plan-anti-hallucination.md#web-research-delegation-lower-threshold-for-plans).
+
+### Anti-Pattern Catalog (MUST NOT)
+
+Reject these patterns at authoring time. `plan-checker` flags occurrences as HIGH:
+
+- **AP-1** — citing a version without `Grep`'ing the manifest
+- **AP-2** — inventing a file path that "should exist"
+- **AP-3** — citing an Nx target that may not exist (read `project.json` first)
+- **AP-4** — inventing a function or method name (delegate to `web-research-maker`)
+- **AP-5** — fabricating a numeric KPI presented as already-measured
+- **AP-6** — inventing a test name (mark `_New test_` when applicable)
+- **AP-7** — citing an agent or skill that does not exist
+- **AP-8** — citing a CLI flag without `--help` or repo-doc reference
+- **AP-9** — citing a behavior claim without a source
+- **AP-10** — cross-linking to a file that does not exist
+
+## Specialized-Executor Annotation
+
+Domain-specialized agents hallucinate less than generic orchestration. When a delivery checkbox names a domain that maps cleanly to a specialized agent, annotate the checkbox with the suggested executor.
+
+**Annotation format** (sub-bullet under the checkbox prose, before any implementation notes):
+
+```markdown
+- [ ] Edit `apps/crud-be-ts-effect/src/Domain/User.fs` [Repo-grounded]: add `email: string option` field
+      with case-insensitive uniqueness. Verify by running `nx run crud-be-ts-effect:test:unit` — new test
+      `User_RejectsDuplicateEmailIgnoringCase` passes.
+  - _Suggested executor: `swe-fsharp-dev`_
+```
+
+**When to annotate**:
+
+- Action touches a specific language file (`.fs`, `.go`, `.kt`, `.cs`, `.fsproj`, `.csproj`, etc.)
+- Action touches a specific app context (`apps/ose-web/...` → `apps-ose-web-content-maker` for content)
+- Action is content/documentation (`docs-maker`, `readme-maker`, `specs-maker`)
+- Action is governance / repo rules (`repo-rules-maker`)
+- Action is specialized-agent skill domain (specialized agent names vary by use case)
+
+**When to skip annotation** (default plan-execution Agent Selection suffices):
+
+- Single-line edit to a governance doc
+- Mechanical operation (`mv`, `git mv`, `npm install`)
+- Shell command without code edits
+
+The plan-execution workflow respects the annotation as Priority 0 — the suggested executor wins over heuristic matches by file extension or content keyword. Citing a non-existent agent is treated as Anti-Pattern AP-7 (HIGH finding by `plan-checker`).
 
 ## Gherkin Acceptance Criteria
 
@@ -264,12 +448,14 @@ Every plan must start with environment setup steps:
 ```markdown
 ### Environment Setup
 
-- [ ] Install dependencies in the root worktree: `npm install`
-- [ ] Converge the full polyglot toolchain in the root worktree: `npm run doctor -- --fix` (required — the `postinstall` hook runs `doctor || true` and silently tolerates drift; see [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md))
+- [ ] Provision worktree: `claude --worktree <plan-identifier>` (creates `worktrees/<plan-identifier>/` in repo root; see [Worktree Path Convention](../../../repo-governance/conventions/structure/worktree-path.md))
+- [ ] Initialize toolchain in the root worktree (not the new worktree): `npm install && npm run doctor -- --fix` (see [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md))
 - [ ] [Add project-specific setup: env vars, DB, Docker, etc.]
 - [ ] Verify dev server starts: `nx dev [project-name]`
 - [ ] Verify existing tests pass before making changes
 ```
+
+> **Note**: Worktrees are created at `worktrees/<name>/` in the repo root (not `.claude/worktrees/<name>/`). This is enforced by the `WorktreeCreate` hook. See [Worktree Path Convention](../../../repo-governance/conventions/structure/worktree-path.md) for rationale.
 
 ### Fix-All-Issues Instruction
 
@@ -336,9 +522,7 @@ Every delivery plan MUST end with a plan archival section:
 
 - [ ] Verify ALL delivery checklist items are ticked
 - [ ] Verify ALL quality gates pass (local + CI)
-- [ ] Determine the completion date (date of last file modification in the plan folder)
-- [ ] Rename folder to add prefix: `git mv plans/in-progress/[identifier] plans/in-progress/YYYY-MM-DD__[identifier]`
-- [ ] Move renamed folder to done: `git mv plans/in-progress/YYYY-MM-DD__[identifier] plans/done/YYYY-MM-DD__[identifier]`
+- [ ] Move plan folder from `plans/in-progress/` to `plans/done/` via `git mv`
 - [ ] Update `plans/in-progress/README.md` — remove the plan entry
 - [ ] Update `plans/done/README.md` — add the plan entry with completion date
 - [ ] Update any other READMEs that reference this plan
@@ -373,7 +557,8 @@ Every delivery plan MUST end with a plan archival section:
 
 **Related Conventions**:
 
-- [Trunk Based Development](../../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow (default: direct push to `main` from main checkout AND from worktree via `git push origin HEAD:main`; draft PR opt-in only when explicitly requested)
+- [Plan Anti-Hallucination Convention](../../../repo-governance/development/quality/plan-anti-hallucination.md) - Pre-write verification recipes, repo-grounding rule, refuse-on-uncertainty, anti-pattern catalog (AP-1 through AP-10), specialized-executor annotation
+- [Trunk Based Development](../../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow (default = direct push to main regardless of execution context; branch + draft PR is opt-in only when explicitly requested)
 - [PR Merge Protocol](../../../repo-governance/development/workflow/pr-merge-protocol.md) - Explicit approval required, all quality gates must pass
 - [Feature Change Completeness](../../../repo-governance/development/quality/feature-change-completeness.md) - Specs, contracts, and tests must update with every feature change
 - [Manual Behavioral Verification](../../../repo-governance/development/quality/manual-behavioral-verification.md) - Playwright MCP for UI, curl for API

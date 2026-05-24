@@ -77,21 +77,16 @@ Clarify with user if needed:
 
 ### Step 2: Create Plan Folder
 
-New plans are created in `backlog/` first with a date prefix, then moved to `in-progress/` with the prefix stripped.
+New plans start in `backlog/` with a creation-date prefix, then move to `in-progress/` WITHOUT
+the date prefix when work begins.
 
 ```bash
-# Create plan folder in backlog/ with creation-date prefix
+# Create plan folder in backlog (creation date prefix)
 mkdir -p plans/backlog/YYYY-MM-DD__project-identifier
 
-# When starting work: move to in-progress/ and strip the date prefix
-# git mv plans/backlog/YYYY-MM-DD__project-identifier plans/in-progress/project-identifier
+# When starting work: move to in-progress and strip the date prefix
+git mv plans/backlog/YYYY-MM-DD__project-identifier plans/in-progress/project-identifier
 ```
-
-See the [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md#-plan-folder-naming) for the per-stage naming rules:
-
-- `backlog/` — `YYYY-MM-DD__[project-identifier]/` (creation date)
-- `in-progress/` — `[project-identifier]/` (NO date prefix)
-- `done/` — `YYYY-MM-DD__[project-identifier]/` (completion date — last-modified date before archival)
 
 ### Step 3: Write Requirements (BRD + PRD)
 
@@ -125,7 +120,11 @@ Document how to build it:
 **Design Decisions**: Why specific approaches chosen
 **Implementation Approach**: Technologies, patterns, structure
 **Dependencies**: External libraries, services, tools
-**Testing Strategy**: Unit, integration, e2e testing
+**Testing Strategy**: Unit, integration, e2e testing — per
+[Test-Driven Development Convention](../../repo-governance/development/workflow/test-driven-development.md),
+tests are written BEFORE implementation. Gherkin acceptance criteria in `prd.md` are the natural
+source of first failing tests. Document which test level (unit/integration/E2E) covers each
+acceptance criterion.
 
 ### Step 5: Create Delivery Checklist
 
@@ -140,11 +139,11 @@ Break work into executable steps:
 
 Specify branch strategy:
 
-**Default (main checkout or worktree)**: Work directly on `main` (Trunk Based Development) -- commit and push to `main` with no PR. Inside a git worktree, the same default applies via `git push origin HEAD:main`; the worktree branch is an isolation mechanism, not a feature branch.
-**Opt-in PR (any execution mode)**: Open a draft PR targeting `main` (`gh pr create --draft`) only when the user's prompt or this plan explicitly requests one. The draft is flipped to ready for review when the work is complete; that flip is when the PR Merge Protocol approval gate fires.
+**Default (all contexts including worktrees)**: Work directly on `main` (Trunk Based Development) -- commit and push to `main` with no PR. Running inside a git worktree does NOT change this default. The same direct-push-to-main rule applies whether the plan executes in a worktree session or in the main checkout.
+**PR (opt-in only)**: A draft PR is used only when the user's prompt explicitly requests a PR, or when the plan's delivery.md contains an explicit `- [ ] Create PR` step that the user has confirmed. The trigger is an explicit instruction, not the execution context.
 **Other exception**: Plain feature branch (non-worktree) requires justification.
 
-See [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md) and especially the [Worktree Mode (Direct Push to main; Draft PR Opt-In)](../../repo-governance/development/workflow/trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) section, plus Standard 6 of the [Git Push Default Convention](../../repo-governance/development/workflow/git-push-default.md), for workflow details.
+See [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md) and especially the [Default Push and Worktree Execution](../../repo-governance/development/workflow/trunk-based-development.md#default-push-and-worktree-execution) section for workflow details.
 
 ## Plan Quality Standards
 
@@ -163,16 +162,52 @@ See [Trunk Based Development Convention](../../repo-governance/development/workf
 - Dependencies are listed
 - Testing strategy is defined
 
+### Diagram Format Standard
+
+When plan content (any of `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`) requires a visualisation, ALWAYS prefer Mermaid over ASCII art:
+
+- **Use Mermaid** (`flowchart LR`, `sequenceDiagram`, `stateDiagram-v2`, `erDiagram`, `classDiagram`, etc.) for all non-trivial visualisations — component interactions, data flows, sequences, state machines, decision branches.
+- **Use ASCII art only** for simple directory trees or rare edge cases where Mermaid is genuinely not the right fit (e.g., table-like comparisons that render poorly in Mermaid).
+- Follow full Mermaid syntax rules in [repo-governance/conventions/formatting/diagrams.md](../../repo-governance/conventions/formatting/diagrams.md): `LR` orientation default, colour-blind-friendly palette, `%%` comment syntax.
+
 ### Delivery Checklist Quality
 
-- Delivery checklists MUST NOT include a `- [ ] Create PR` step (or any equivalent)
-  unless the user's original prompt or the plan's `prd.md`/`README.md` explicitly requests
-  a pull request. See [git-push-default convention](../../repo-governance/development/workflow/git-push-default.md).
 - Steps are executable (clear actions)
 - Steps are sequential (proper order)
 - Steps are granular (not too broad)
 - Validation criteria are specific
 - Acceptance criteria are testable
+- **Code items are TDD-shaped**: items that ship code express Red→Green→Refactor steps, not
+  "implement X, then write tests." See
+  [Test-Driven Development Convention](../../repo-governance/development/workflow/test-driven-development.md)
+  for required step shapes. `plan-checker` flags code items without TDD structure as HIGH findings.
+- **Execution-grade clarity (HARD RULE)**: every checkbox MUST contain explicit file path(s)
+  when known (or maximum-possible-detail target — parent dir + naming pattern + sibling reference
+  — when path is unknowable at authoring time), explicit verbatim shell command(s) where
+  applicable, and a concrete acceptance criterion (the observable change that proves done). Bare
+  "implement X" / "set up Y" / "configure Z" wording is FORBIDDEN. Plans are executed by
+  execution-grade (sonnet-tier) agents — authoring-grade hand-waving makes execution ambiguous.
+  See
+  [Plans Organization Convention §Execution-Grade Clarity](../../repo-governance/conventions/structure/plans.md#execution-grade-clarity-hard-rule)
+  for the rule, examples, and the bad/good pair. `plan-checker` flags violations as HIGH findings;
+  `plan-fixer` rewrites offending items with maximum detail.
+- **Suggested executor annotation**: when a delivery checkbox names a domain that maps cleanly
+  to a specialized agent (a specific language file extension, a specific app context, a content
+  domain, a governance concern), add a `_Suggested executor: <agent-name>_` annotation under the
+  checkbox. Domain-specialized agents hallucinate less than generic orchestration. The annotation
+  takes priority over plan-execution Agent Selection heuristics. Skip annotation for trivial
+  one-line edits or shell commands. See
+  [Plan Anti-Hallucination Convention §Specialized-Agent Delegation](../../repo-governance/development/quality/plan-anti-hallucination.md#specialized-agent-delegation-hallucination-reduction)
+  for the annotation format and when to skip.
+
+#### PR Step Authoring Rule (per [Git Push Default Convention](../../repo-governance/development/workflow/git-push-default.md))
+
+Do NOT include `- [ ] Create PR`, `- [ ] Open PR`, `- [ ] Submit PR`, or equivalent PR creation steps in delivery.md unless EITHER:
+
+1. The user's prompt explicitly requests a PR.
+2. The plan's Git Workflow section contains an explicit PR instruction (not merely worktree execution).
+
+Unsolicited PR steps conflict with Trunk Based Development. `plan-checker` will flag them as HIGH findings.
 
 ## Reference Documentation
 
@@ -205,14 +240,101 @@ When creating plans that reference specific technologies, versions, APIs, or too
 Use the `docs-validating-factual-accuracy` Skill for systematic verification methodology.
 
 **Delegate research to `web-research-maker` for unfamiliar or fast-moving topics**: Per the
-[Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md),
-invoke the [`web-research-maker`](./web-research-maker.md) subagent for multi-page research
-(threshold: 2+ `WebSearch` calls or 3+ `WebFetch` calls for a single claim) before writing
-claims about library versions, API signatures, or current best practices that are not already
-documented in the repo (`docs/`, `repo-governance/`, `apps/*/README.md`). Incorporate only facts
-tagged `[Verified]` or clearly flagged `[Needs Verification]`; do NOT write unverified claims
-into the plan. Use in-context `WebSearch`/`WebFetch` only for single-shot verification against
-a known authoritative URL.
+[Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md)
+and the LOWER plan-content threshold defined in
+[Plan Anti-Hallucination Convention §Web-Research Delegation](../../repo-governance/development/quality/plan-anti-hallucination.md#web-research-delegation-lower-threshold-for-plans),
+invoke the [`web-research-maker`](./web-research-maker.md) subagent for ANY external claim
+that is not already documented in the repo (`docs/`, `repo-governance/`, `apps/*/README.md`,
+`package.json`, `go.mod`, `Cargo.toml`, etc.) and that requires more than a single `WebFetch`
+against a known authoritative URL. Incorporate only facts tagged `[Verified]` (web-cited with
+inline excerpt + URL + access date) or clearly flagged `[Needs Verification]`; do NOT write
+unverified claims into the plan. Use in-context `WebSearch`/`WebFetch` only for single-shot
+verification against a known authoritative URL.
+
+## Pre-Write Verification Rituals (Anti-Hallucination — HARD)
+
+Before writing any non-trivial factual claim into a plan, run the verification recipe for
+the claim's category. This is non-negotiable per the
+[Plan Anti-Hallucination Convention](../../repo-governance/development/quality/plan-anti-hallucination.md).
+Hallucinated content turns the plan into broken work; verification at authoring time is
+the cheapest place to catch it.
+
+### Verification Recipes by Claim Category
+
+| Claim Category        | Verification Command                                                                          |
+| --------------------- | --------------------------------------------------------------------------------------------- |
+| **File path**         | `Bash test -f <path>` or `Glob` — if NEW, mark inline as `_New file_` and add a creation step |
+| **Directory path**    | `Bash test -d <path>` or `Glob` for sibling                                                   |
+| **Symbol / function** | `Grep` against the codebase or quote the import path that defines it                          |
+| **Nx target**         | Read the project's `project.json` and confirm the target name in `targets`                    |
+| **Package version**   | `Grep` the relevant manifest (`package.json`, `go.mod`, `Cargo.toml`, `*.csproj`, etc.)       |
+| **API signature**     | Delegate to `web-research-maker` with the authoritative-doc URL                               |
+| **Command flag**      | `<cmd> --help` OR repo-documented usage in `package.json` scripts / governance docs           |
+| **Test name**         | If pre-existing, `Grep` test files; if NEW, mark `_New test_`                                 |
+| **Agent / skill**     | `Bash test -f .claude/agents/<name>.md` or `Bash test -f .claude/skills/<name>/SKILL.md`      |
+| **External standard** | Delegate to `web-research-maker` with cited excerpt + URL + access date inline                |
+| **Behavior claim**    | `web-research-maker` with cited official-doc excerpt OR repo-doc reference                    |
+| **Cross-link target** | `Bash test -f` on the resolved relative path                                                  |
+| **Numeric KPI**       | Forbidden as bare fact unless observable check / cited measurement / `_Judgment call:_` label |
+
+### Confidence Labels (write inline next to the claim)
+
+- **`[Repo-grounded]`** — verified in current commit via `Glob` / `Grep` / `Bash` / `Read`. Omit
+  when the claim is contained inside a code-fence quoting a repo file.
+- **`[Web-cited]`** — verified externally; URL + access date + excerpt inline.
+- **`[Judgment call]`** — explicitly subjective claim; numeric gut targets MUST use this label.
+- **`[Unverified]`** — flagged for follow-up; `plan-checker` reports as MEDIUM.
+
+### Refuse-on-Uncertainty
+
+When verification fails or is impossible: refuse to write the claim as a fact. Acceptable
+refusals (in order of preference):
+
+1. **Skip the claim** — plan is shorter and accurate.
+2. **Use `[Unverified]` label** — flagged for verification before execution.
+3. **Use `[Judgment call]` label** — claim explicitly subjective.
+4. **Use placeholder** — `_Unknown — verify before authoring_` and treat as a delivery item
+   under Open Questions rather than a stated fact.
+
+Forbidden: writing the claim without a label and hoping it is correct.
+
+### Anti-Pattern Catalog (MUST NOT)
+
+Reject AP-1 through AP-10 at authoring time — `plan-checker` flags occurrences as HIGH. Full
+catalog in the `plan-creating-project-plans` skill and
+[Plan Anti-Hallucination Convention §Anti-Pattern Catalog](../../repo-governance/development/quality/plan-anti-hallucination.md#anti-pattern-catalog).
+
+## Mandatory Worktree Specification (Top-Level Section)
+
+Every plan MUST declare its worktree path before the delivery checklist begins. This is a structural requirement enforced by both `plan-checker` (HIGH finding when missing) and the
+[plan-execution workflow Step 0 hard gate](../../repo-governance/workflows/plan/plan-execution.md#0-verify-worktree-specification-sequential-hard-gate)
+(execution refuses to start if the section is absent).
+
+**Where to write it**:
+
+- **Multi-file plans**: top-level `## Worktree` section in `delivery.md`, placed before any phase heading.
+- **Single-file plans**: top-level `## Worktree` section in `README.md`, placed before `## Delivery Checklist`.
+
+**Path format**: `worktrees/<plan-identifier>/` where `<plan-identifier>` is the slug portion of the folder name (strip the `YYYY-MM-DD__` prefix when present). Example: `backlog/2026-05-15__auth-rewrite/` or `in-progress/auth-rewrite/` → worktree path `worktrees/auth-rewrite/`.
+
+**Required content** (template):
+
+````markdown
+## Worktree
+
+Worktree path: `worktrees/<plan-identifier>/`
+
+Provision before execution (run from repo root):
+
+```bash
+claude --worktree <plan-identifier>
+```
+````
+
+**This applies to ALL plans regardless of size** — pure-docs, single-file, and trivial plans included. No exceptions. See
+[Plans Organization Convention §Worktree Specification](../../repo-governance/conventions/structure/plans.md#worktree-specification)
+and
+[Worktree Path Convention](../../repo-governance/conventions/structure/worktree-path.md).
 
 ## Mandatory Operational Readiness Sections
 
@@ -354,9 +476,7 @@ ALWAYS include at the end of the delivery checklist:
 - [ ] Verify ALL delivery checklist items are ticked
 - [ ] Verify ALL quality gates pass (local + CI)
 - [ ] Verify ALL manual assertions pass (Playwright MCP / curl)
-- [ ] Determine the completion date (date of the last file modification in the plan folder)
-- [ ] Rename the folder to add the completion-date prefix: `git mv plans/in-progress/[identifier] plans/in-progress/YYYY-MM-DD__[identifier]`
-- [ ] Move renamed folder to done/: `git mv plans/in-progress/YYYY-MM-DD__[identifier] plans/done/YYYY-MM-DD__[identifier]`
+- [ ] Rename and move: `git mv plans/in-progress/[identifier]/ plans/done/YYYY-MM-DD__[identifier]/` using today's date as the completion date (NOT the creation date)
 - [ ] Update `plans/in-progress/README.md` — remove the plan entry
 - [ ] Update `plans/done/README.md` — add the plan entry with completion date
 - [ ] Update any other READMEs that reference this plan (e.g., plans/README.md)
