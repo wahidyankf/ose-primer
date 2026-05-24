@@ -215,7 +215,7 @@ timeline
 
 **CLI Tools**:
 
-- rhino-cli for content automation and Hugo integration
+- rhino-cli for content automation (link validation, content checks)
 - rhino-cli for repository management and hygiene
 - Build tools and code generators
 - Database migration scripts
@@ -665,8 +665,7 @@ export class CampaignController {
 
 ```
 apps/
-├── crud-fs-ts-nextjs/         # Hugo static site (TypeScript for build scripts)
-├── crud-fs-ts-nextjs/            # Hugo static site (TypeScript for build scripts)
+├── crud-fs-ts-nextjs/         # Next.js fullstack app
 ├── rhino-cli/            # Go CLI tool
 └── rhino-cli/               # Go CLI tool
 

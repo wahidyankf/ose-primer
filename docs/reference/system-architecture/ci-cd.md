@@ -137,7 +137,7 @@ graph TB
 
 **Steps:**
 
-1. If changes exist (or `force_deploy=true`): setup Volta, Go 1.26.0, Hugo 0.156.0 extended
+1. If changes exist (or `force_deploy=true`): setup Volta, Go 1.26.0
 2. Install dependencies and run `nx build crud-fs-ts-nextjs`
 3. Force-push `main` to `prod-crud-fs-ts-nextjs`; Vercel auto-builds
 
@@ -297,7 +297,7 @@ Each backend workflow runs its own backend stack — never a different backend.
      - Link validation
    - Review and merge
 
-6. **Deploy** (for Hugo sites):
+6. **Deploy** (for Vercel-hosted apps):
 
    ```bash
    git checkout prod-[app-name]

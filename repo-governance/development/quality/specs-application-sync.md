@@ -45,7 +45,7 @@ C4 diagrams under `specs/apps/*/c4/` document architecture at the container and 
 **Update C4 diagrams when:**
 
 - Adding or removing an application (`apps/`, `apps-labs/`) or library (`libs/`)
-- Changing the runtime technology of an existing app (e.g., Hugo → Next.js, Go/Gin → Go/Fiber)
+- Changing the runtime technology of an existing app (e.g., Go/Gin → Go/Fiber, Next.js 15 → Next.js 16)
 - Introducing a new data store (PostgreSQL database, Redis cache, S3 bucket)
 - Adding or removing a new external integration (third-party API, authentication provider, CDN)
 - Changing how containers communicate (new HTTP boundary, new message queue, new tRPC procedure that crosses a container boundary)
@@ -141,7 +141,7 @@ Use this table when uncertain whether a change requires a spec update:
 | Change an internal validation rule that clients cannot observe | No                                                   | Internal implementation detail                      |
 | Rename an app in `apps/`                                       | Yes — rename `specs/apps/` folder and update READMEs | Structural change                                   |
 | Remove an app from `apps/`                                     | Yes — remove `specs/apps/` folder                    | Structural change                                   |
-| Change Hugo to Next.js for an existing site                    | Yes — C4 container diagram technology label          | Architectural change                                |
+| Change Next.js v15 to Next.js v16 for an existing site         | No                                                   | Internal dependency, interface unchanged            |
 | Upgrade Next.js from v15 to v16                                | No                                                   | Internal dependency, interface unchanged            |
 | Add a new Nx library in `libs/` that is a public API           | Yes — add `specs/libs/` folder with feature files    | New public surface                                  |
 | Add an internal utility used only within one app               | No                                                   | Not a public surface                                |

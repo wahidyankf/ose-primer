@@ -300,19 +300,7 @@ flutter doctor
 dart --version
 ```
 
-### Step 12: Hugo
-
-Hugo is a legacy doctor entry (crud-fs-ts-nextjs migrated to Next.js). No active projects
-use Hugo, but installing it prevents a doctor warning.
-
-```bash
-# macOS
-brew install hugo
-
-hugo version
-```
-
-### Step 13: Clone and Bootstrap
+### Step 12: Clone and Bootstrap
 
 ```bash
 git clone https://github.com/wahidyankf/ose-primer.git
@@ -502,7 +490,6 @@ All version requirements are auto-detected by `npm run doctor` from these config
 | Java          | `apps/crud-be-java-springboot/pom.xml` → `java.version` |
 | Go            | `apps/rhino-cli-go/go.mod` → `go` directive             |
 | Python        | `apps/crud-be-python-fastapi/.python-version`           |
-| Hugo          | (legacy — no active config file)                        |
 | Erlang        | `.tool-versions` → `erlang`                             |
 | Elixir        | `.tool-versions` → `elixir`                             |
 | .NET          | `apps/crud-be-fsharp-giraffe/global.json` → `sdk`       |

@@ -259,7 +259,7 @@ Per-project:
 - `apps/[app-name]/project.json`
 - `libs/[lib-name]/project.json`
 
-### Complete Example (Hugo App)
+### Complete Example (Next.js App)
 
 ```json
 {
@@ -269,21 +269,15 @@ Per-project:
     "dev": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "hugo server --buildDrafts --buildFuture"
+        "command": "next dev"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "bash build.sh"
+        "command": "next build"
       },
-      "outputs": ["{projectRoot}/public"]
-    },
-    "clean": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "rm -rf public resources"
-      }
+      "outputs": ["{projectRoot}/.next"]
     }
   },
   "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:demo"]
@@ -344,16 +338,15 @@ Per-project:
 
 All projects use a standard four-dimension tag scheme:
 
-| Dimension   | Values                                                          | Required                 | Purpose                 |
-| ----------- | --------------------------------------------------------------- | ------------------------ | ----------------------- |
-| `type:`     | `app`, `lib`, `e2e`                                             | Yes                      | Project kind            |
-| `platform:` | `hugo`, `cli`, `nextjs`, `flutter`, `spring-boot`, `playwright` | For apps/e2e             | Framework/runtime       |
-| `lang:`     | `golang`, `ts`, `java`, `dart`                                  | Where source code exists | Primary language        |
-| `domain:`   | `demo`, `demo`, `demo`, `tooling`                               | Yes                      | Business/product domain |
+| Dimension   | Values                                                  | Required                 | Purpose                 |
+| ----------- | ------------------------------------------------------- | ------------------------ | ----------------------- |
+| `type:`     | `app`, `lib`, `e2e`                                     | Yes                      | Project kind            |
+| `platform:` | `cli`, `nextjs`, `flutter`, `spring-boot`, `playwright` | For apps/e2e             | Framework/runtime       |
+| `lang:`     | `golang`, `ts`, `java`, `dart`                          | Where source code exists | Primary language        |
+| `domain:`   | `demo`, `demo`, `demo`, `tooling`                       | Yes                      | Business/product domain |
 
 **Notes**:
 
-- Hugo sites omit `lang:` — no application source code, only templates and markdown
 - Go libs omit `platform:` — no framework, only `lang:golang`
 - Use `domain:tooling` for generic dev utilities not tied to a product domain
 

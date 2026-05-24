@@ -244,15 +244,6 @@ E2E projects use `bddgen` to generate TypeScript from `.feature` files in
 `test:quick` and `typecheck`. Gherkin spec inputs ensure cache invalidation
 when feature files change.
 
-### Hugo Sites
-
-| Project           | Dependencies | Spec Inputs |
-| ----------------- | ------------ | ----------- |
-| crud-fs-ts-nextjs | rhino-cli    | (none)      |
-
-Hugo sites depend on their CLI tools for content automation (link checking).
-The CLI tools are built via `dependsOn` in `links:check` and `test:quick` targets.
-
 ### Next.js Content Platforms
 
 | Project           | Dependencies | Spec Inputs |

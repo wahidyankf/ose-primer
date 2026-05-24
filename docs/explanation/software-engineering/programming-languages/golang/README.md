@@ -232,7 +232,7 @@ graph LR
 
 **CLI Tools**:
 
-- rhino-cli MUST use Go for content automation (Hugo navigation generation, title updates)
+- rhino-cli MUST use Go for content automation (link validation, content checks)
 - rhino-cli MUST use Go for repository management (RHINO = Repository Hygiene & INtegration Orchestrator; includes `java validate-annotations` for Java null-safety annotation validation)
 - rhino-cli MUST use Go for demo site validation (link checking)
 - Administrative tools SHOULD use Go for fast startup and easy distribution (single binary)

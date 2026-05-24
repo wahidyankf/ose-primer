@@ -42,7 +42,6 @@ This convention establishes Mermaid diagrams as the primary visualization format
 
 ### What This Convention Does NOT Cover
 
-- **Hugo theme diagram rendering** - Previously covered in Hugo Development Convention (now deprecated; no active Hugo sites remain)
 - **Diagram content strategy** - What diagrams to create (covered in specific domain conventions)
 - **Vector graphics or images** - This convention is only for text-based diagrams (Mermaid and ASCII)
 - **Interactive diagram features** - Platform-specific interactivity (zoom, pan) is implementation detail
@@ -405,9 +404,8 @@ Same edges as `graph LR`: horizontal = depth = 2. `2 > 4` is false — passes, a
 **Label length**: the validator counts raw characters per `<br/>`-split segment.
 HTML entities are NOT decoded: `#40;` = 4 chars. Quoted labels accept literal `()`
 without escaping — replace `#40;` with `(` to recover 3 chars per entity. Note that
-Hugo/Hextra renders clip label text beyond ~20 chars without error — the 30-char limit
-is the validator rule; the 20-char limit is a content-quality recommendation for
-Hugo-rendered sites.
+The 30-char limit is the validator rule; the 20-char limit is a content-quality
+recommendation for displayed sites.
 
 Run the validator manually:
 
@@ -1316,7 +1314,7 @@ flowchart LR
 
 ### Error 5: Sequence Diagram Participant Syntax with "as" Keyword
 
-**CRITICAL**: Using `participant X as "Display Name"` syntax with quotes in sequence diagrams causes rendering failures in Hugo/Hextra environments.
+**CRITICAL**: Using `participant X as "Display Name"` syntax with quotes in sequence diagrams causes rendering failures in some Mermaid environments.
 
 **Problem Example (FAIL: BROKEN)**:
 
@@ -1331,7 +1329,7 @@ sequenceDiagram
     F1-->>Loop: Return result
 ```
 
-**Why it fails**: The Hextra theme's Mermaid renderer struggles with complex display names containing spaces, parentheses, or special characters when combined with the `as` keyword and quotes. This syntax pattern causes parsing errors in Hugo/Hextra contexts.
+**Why it fails**: Some Mermaid renderers struggle with complex display names containing spaces, parentheses, or special characters when combined with the `as` keyword and quotes. This syntax pattern causes parsing errors.
 
 **Solution (PASS: WORKING)**:
 
@@ -1367,10 +1365,9 @@ sequenceDiagram
 
 **Rationale**:
 
-- The Hextra theme documentation shows working examples using simple participant syntax
-- Complex display names with `as` keyword and quotes cause parsing errors
-- Simple identifiers are more reliable across different Mermaid versions and rendering contexts
-- Hugo/Hextra environments have different parser constraints than standalone Mermaid
+- Simple participant syntax is more reliable across different Mermaid versions and rendering contexts
+- Complex display names with `as` keyword and quotes cause parsing errors in some renderers
+- Simple identifiers avoid compatibility issues
 
 **Affected diagram types**: `sequenceDiagram` only (not `graph`/`flowchart`)
 
@@ -1476,11 +1473,11 @@ Renders as: "HashMap<K, V> / O(1) lookup / Values: [1, 2, 3] / Dict: {a: 1}"
 - [ASCII Art Generator](https://www.asciiart.eu/)
 - [Box Drawing Unicode Characters](https://en.wikipedia.org/wiki/Box-drawing_characters)
 
-### Error 7: `\n` Escape Sequences Do Not Create Line Breaks in Hugo Mermaid Rendering
+### Error 7: `\n` Escape Sequences Do Not Create Line Breaks in Mermaid Rendering
 
-**CRITICAL**: The `\n` escape sequence does not create line breaks in Mermaid diagrams rendered via Hugo's code block render hook. It renders as the literal characters `\n` in both node labels and edge labels.
+**CRITICAL**: The `\n` escape sequence does not create line breaks in Mermaid diagrams in many rendering contexts. It renders as the literal characters `\n` in both node labels and edge labels.
 
-**Root Cause**: Hugo's `render-codeblock-mermaid.html` render hook pipes the diagram source through `htmlEscape`, which passes `\n` through unchanged (backslash is not an HTML special character). Mermaid ESM loaded from CDN then receives the literal string `\n` and does not interpret it as a line break in this rendering context.
+**Root Cause**: Many Mermaid render hooks pass `\n` through unchanged (backslash is not an HTML special character). Mermaid loaded from CDN then receives the literal string `\n` and does not interpret it as a line break.
 
 **Context**:
 
@@ -1564,9 +1561,8 @@ Keep edge labels single-line plain text. If you need multi-line detail, move it 
 Both node label lines (each segment between `<br/>` tags) and edge label strings must not exceed **20 characters**. Most Mermaid renderers clip text beyond approximately 20–22 characters with no error or warning.
 
 > **Note**: The validator enforces 30 raw characters per `<br/>`-split label line.
-> Hugo/Hextra rendering clips displayed text beyond ~20 chars — the 30-char limit is
-> the automated enforcement rule; 20 chars is the content-quality recommendation for
-> Hugo-rendered sites.
+> Most Mermaid renderers clip displayed text beyond ~20 chars — the 30-char limit is
+> the automated enforcement rule; 20 chars is the content-quality recommendation.
 
 Count every character including spaces, colons, slashes, and Unicode.
 
@@ -1673,7 +1669,7 @@ graph TD
 
 **Automated enforcement**: Run `rhino-cli docs validate-mermaid` to check these rules
 mechanically instead of counting characters manually. Use `--max-label-len 20` to enforce
-the 20-character Hugo/Hextra limit (the default is 30, matching Mermaid's `wrappingWidth`
+the 20-character content-quality limit (the default is 30, matching Mermaid's `wrappingWidth`
 baseline). The tool also checks parallel rank width (Rule 2 above) and single-diagram-per-block.
 
 **Real-World Context**: All five rules were verified when fixing C4 architecture diagrams in `specs/apps/crud/components/`. Failures observed:

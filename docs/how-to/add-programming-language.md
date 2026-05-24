@@ -164,7 +164,7 @@ Before starting, ensure you have:
 
 ### Step 2.2: Set Up Navigation Files
 
-**Why:** Enable Hugo navigation and establish content hierarchy.
+**Why:** Establish content hierarchy and navigation structure.
 
 **Actions:**
 
@@ -612,7 +612,7 @@ Before starting, ensure you have:
 
 ### Step 4.1: Run Content Quality Checks
 
-**Why:** Ensure content meets Hugo and quality standards.
+**Why:** Ensure content meets quality standards.
 
 **Actions:**
 
@@ -621,7 +621,7 @@ Before starting, ensure you have:
    ```
    Spawn crud-fs-ts-nextjs-general-checker agent:
 
-   Check: Hugo conventions, content quality principles, structure compliance"
+   Check: content quality principles, structure compliance"
    ```
 
 2. **Review audit report** in `generated-reports/`
@@ -777,11 +777,11 @@ Before starting, ensure you have:
 
 ### Common Issues
 
-**Issue:** crud-fs-ts-nextjs-general-checker reports Hugo convention violations
+**Issue:** crud-fs-ts-nextjs-general-checker reports convention violations
 
 - Missing frontmatter fields
 - Incorrect weight values (use level-based system with correct levels)
-- Wrong link format (use absolute paths with language prefix)
+- Wrong link format (use relative paths with `.md` extension)
 
 **Weight System Quick Reference:**
 

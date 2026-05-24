@@ -16,13 +16,6 @@ Technology stack summary, quality tools, and future architecture considerations 
 
 ### Frontend
 
-**Static Sites** (Hugo):
-
-- **Hugo**: 0.156.0 Extended
-- **Themes**: PaperMod (crud-fs-ts-nextjs)
-- **Deployment**: Vercel
-- **Applications**: crud-fs-ts-nextjs
-
 **Web Applications** (Next.js):
 
 - **Next.js**: 16 (App Router)
@@ -55,7 +48,7 @@ Technology stack summary, quality tools, and future architecture considerations 
 - **Package Manager**: npm 11.10.1
 - **Git Workflow**: Trunk-Based Development
 - **CI**: GitHub Actions
-- **CD**: Vercel (Hugo sites, Next.js apps)
+- **CD**: Vercel (Next.js apps)
 
 ### Quality Tools
 
@@ -82,8 +75,7 @@ Technology stack summary, quality tools, and future architecture considerations 
 ### Scalability Considerations
 
 - **Nx Cloud**: Distributed task execution and caching
-- **CDN**: Static asset delivery optimization (currently Vercel for Hugo sites)
-- **Additional Hugo Sites**: More specialized content platforms
+- **CDN**: Static asset delivery optimization (currently Vercel for Next.js apps)
 - **CLI Tool Suite Expansion**: More specialized automation tools
 - **Shared Go Modules**: Common functionality across CLI tools
 

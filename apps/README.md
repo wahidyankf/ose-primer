@@ -28,8 +28,7 @@ Where `{part}` describes the role and technology stack:
 
 ### Current Apps
 
-- `crud-fs-ts-nextjs` - demo website ([example.com](https://example.com)) - Hugo static site
-- `crud-fs-ts-nextjs` - demo educational platform ([example.com](https://example.com)) - Next.js 16 fullstack content platform (TypeScript, tRPC)
+- `crud-fs-ts-nextjs` - demo website ([example.com](https://example.com)) - Next.js 16 fullstack content platform (TypeScript, tRPC)
 - `crud-be-e2e` - Playwright BE E2E tests for crud-fs-ts-nextjs tRPC API
 - `crud-fe-e2e` - Playwright FE E2E tests for crud-fs-ts-nextjs UI
 - `rhino-cli-rust` - Repository Hygiene & INtegration Orchestrator CLI (Rust) - **the implementation CI and the developer toolchain invoke**; consumes `specs/apps/rhino/`
@@ -50,21 +49,6 @@ Where `{part}` describes the role and technology stack:
 - **Entry Points** - Has clear entry points (index.ts, main.ts, etc.)
 
 ## App Structure Examples
-
-### Hugo Static Site (crud-fs-ts-nextjs)
-
-```
-├── content/                 # Markdown content files
-├── layouts/                 # Hugo templates
-├── static/                  # Static assets (images, CSS, JS)
-├── themes/                  # Hugo themes
-├── public/                  # Build output (gitignored)
-├── hugo.yaml                # Hugo configuration
-├── project.json             # Nx project configuration
-├── build.sh                 # Build script
-├── vercel.json              # Deployment configuration
-└── README.md                # App documentation
-```
 
 ### Go CLI Application (Current)
 
@@ -170,7 +154,7 @@ Kotlin, Python apps will have language-specific structures and tooling.
 
 Each app must have a `project.json` file with Nx configuration.
 
-**Hugo App Example** (`crud-fs-ts-nextjs`):
+**Next.js App Example (crud-fs-ts-nextjs)**:
 
 ```json
 {
@@ -180,28 +164,22 @@ Each app must have a `project.json` file with Nx configuration.
     "dev": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "hugo server --buildDrafts --buildFuture"
+        "command": "next dev"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "bash build.sh"
+        "command": "next build"
       },
-      "outputs": ["{projectRoot}/public"]
-    },
-    "clean": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "rm -rf public resources"
-      }
+      "outputs": ["{projectRoot}/.next"]
     }
   },
   "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:demo"]
 }
 ```
 
-**Note**: This repository uses vanilla Nx (no plugins), so all executors use `nx:run-commands` to run standard build tools directly (Hugo, Go, etc.).
+**Note**: This repository uses vanilla Nx (no plugins), so all executors use `nx:run-commands` to run standard build tools directly (Go, Next.js, etc.).
 
 ## How to Add a New App
 
@@ -226,12 +204,9 @@ Path mappings are configured in the workspace `tsconfig.base.json` file.
 Use Nx commands to run apps:
 
 ```bash
-# Development mode (Hugo site)
-nx dev crud-fs-ts-nextjs
-
 # Development mode (Next.js)
-nx dev crud-fe-ts-nextjs
 nx dev crud-fs-ts-nextjs
+nx dev crud-fe-ts-nextjs
 
 # Build for production
 nx build crud-fs-ts-nextjs
@@ -286,7 +261,6 @@ Use the corresponding deployer agent (e.g. `apps-crud-fe-ts-nextjs-deployer`) fo
 
 Currently:
 
-- **Hugo** (static sites) - crud-fs-ts-nextjs
 - **Go** (CLI tools) - rhino-cli, rhino-cli
 - **TypeScript/Next.js** (web applications) - crud-fe-ts-nextjs, crud-fs-ts-nextjs
 - **F#/Giraffe** (backend API) - crud-be-fsharp-giraffe

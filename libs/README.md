@@ -51,10 +51,7 @@ This flat structure with language prefixes supports a **polyglot monorepo** wher
 
 ## Current Implementation
 
-**`golang-commons`** - Shared Go utilities used by `rhino-cli` and `rhino-cli` (links
-checker, output formatting).
-
-**`golang-commons`** - Shared Hugo utilities used by Hugo-based sites.
+**`golang-commons`** - Shared Go utilities (link checking, timeutil, testutil) used by Go CLI tools.
 
 **`elixir-openapi-codegen`** - Elixir library that reads an OpenAPI 3.1 bundled YAML spec and
 generates Elixir struct modules with `defstruct`, `@enforce_keys`, and `@type` typespecs. Used by

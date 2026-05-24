@@ -36,7 +36,7 @@ Convention documents define **how to write and format documentation** in this re
 - Content organization frameworks (Diátaxis, tutorials, plans)
 - Visual elements in documentation (diagrams, colors, emojis, mathematical notation)
 - Content quality and accessibility standards
-- Specific documentation types (tutorials, plans, READMEs, Hugo content)
+- Specific documentation types (tutorials, plans, READMEs)
 - Documentation file formats and structures
 
 ### What Does NOT Belong in conventions/
@@ -45,7 +45,6 @@ Convention documents define **how to write and format documentation** in this re
 
 - Development workflows (git, commits, testing, BDD)
 - Build processes and tooling
-- Hugo theme/layout development (HTML templates, asset pipeline)
 - Development infrastructure (temporary files, build artifacts)
 - AI agent development standards
 - Code quality and testing practices
@@ -354,7 +353,7 @@ Convention documents vary in length based on complexity:
 
 ### Long Conventions (1500+ lines)
 
-**Examples:** Hugo Content, Diátaxis Framework, Tutorials, Content Quality
+**Examples:** Diátaxis Framework, Tutorials, Content Quality, Diagrams
 
 **When appropriate:**
 

@@ -125,7 +125,7 @@ func ExtractLinks(filePath string) ([]LinkInfo, error) {
 				continue
 			}
 
-			// Skip placeholder/example/Hugo paths
+			// Skip placeholder/example/absolute paths
 			if ShouldSkipLink(url) {
 				continue
 			}
@@ -147,12 +147,12 @@ func ExtractLinks(filePath string) ([]LinkInfo, error) {
 
 // ShouldSkipLink determines if a link should be skipped during validation.
 func ShouldSkipLink(link string) bool {
-	// Skip Hugo absolute paths (these are valid in Hugo sites)
+	// Skip absolute paths
 	if strings.HasPrefix(link, "/") {
 		return true
 	}
 
-	// Skip Hugo shortcodes
+	// Skip shortcodes
 	if strings.Contains(link, "{{<") || strings.Contains(link, "{{%") {
 		return true
 	}

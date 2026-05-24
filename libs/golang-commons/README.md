@@ -33,7 +33,7 @@ Testing utilities for Go CLI tools.
 
 ### `links`
 
-Link-checking utilities for Hugo site CLIs.
+Link-checking utilities for Go CLI tools.
 
 **Import path**: `github.com/wahidyankf/ose-public/libs/golang-commons/links`
 

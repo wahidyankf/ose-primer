@@ -35,8 +35,7 @@ This document defines **authoritative standards** for visualizing Nx monorepo st
 
 ```
 apps/
-├── crud-fs-ts-nextjs/        # Hugo static site
-├── crud-fs-ts-nextjs/          # Hugo static site
+├── crud-fs-ts-nextjs/        # Next.js fullstack app
 ├── rhino-cli/          # Go CLI tool
 └── rhino-cli/              # Go CLI tool
 ```
@@ -45,14 +44,12 @@ apps/
 
 ```mermaid
 graph TD
-    OseWeb["demo Web<br/>[Container: Hugo/PaperMod]<br/>Landing page"]:::blue
-    AyoWeb["demo Web<br/>[Container: Hugo/Hextra]<br/>Educational content"]:::blue
+    OseWeb["demo Web<br/>[Container: Next.js]<br/>Fullstack app"]:::blue
     AyoCLI["demo CLI<br/>[Container: Go]<br/>Content automation"]:::blue
     RhinoCLI["Rhino CLI<br/>[Container: Go]<br/>Repository management"]:::blue
 
-    AyoCLI -->|"Generates content<br/>[File system]"| AyoWeb
+    AyoCLI -->|"Validates links<br/>[File system]"| OseWeb
     RhinoCLI -->|"Manages repository<br/>[File system]"| OseWeb
-    RhinoCLI -->|"Manages repository<br/>[File system]"| AyoWeb
 
     classDef blue fill:#0173B2,stroke:#000,color:#FFF
 ```
@@ -91,9 +88,8 @@ If `rhino-cli` has an Nx dependency on `crud-fs-ts-nextjs` (builds it), show thi
 
 **Examples**:
 
-- `"demo Web<br/>[Container: Hugo/PaperMod]<br/>Landing page and platform documentation"`
-- `"demo Web<br/>[Container: Hugo/Hextra]<br/>Bilingual educational content"`
-- `"demo CLI<br/>[Container: Go]<br/>Content automation for Hugo site"`
+- `"demo Web<br/>[Container: Next.js]<br/>Fullstack educational platform"`
+- `"demo CLI<br/>[Container: Go]<br/>Content automation and link validation"`
 - `"Zakat API<br/>[Container: Spring Boot]<br/>Zakat calculation business logic"`
 
 ## Example: demo Container Diagram
@@ -102,9 +98,8 @@ If `rhino-cli` has an Nx dependency on `crud-fs-ts-nextjs` (builds it), show thi
 
 ```mermaid
 graph LR
-    %% Hugo Sites
-    OseWeb["demo Web<br/>[Container: Hugo/PaperMod]<br/>Landing page"]:::blue
-    AyoWeb["demo Web<br/>[Container: Hugo/Hextra]<br/>Educational content"]:::blue
+    %% Next.js Apps
+    OseWeb["demo Web<br/>[Container: Next.js]<br/>Fullstack app"]:::blue
 
     %% CLI Tools
     AyoCLI["demo CLI<br/>[Container: Go]<br/>Content automation"]:::blue
@@ -115,14 +110,12 @@ graph LR
     ZakatWeb["Zakat Web UI<br/>[Container: Next.js]<br/>User interface"]:::purple
 
     %% Deployment
-    Vercel["Vercel<br/>[Platform]<br/>Static site hosting"]:::teal
+    Vercel["Vercel<br/>[Platform]<br/>App hosting"]:::teal
 
     %% Relationships
-    AyoCLI -->|"Generates content<br/>[File system]"| AyoWeb
+    AyoCLI -->|"Validates links<br/>[File system]"| OseWeb
     RhinoCLI -->|"Validates structure<br/>[File system]"| OseWeb
-    RhinoCLI -->|"Validates structure<br/>[File system]"| AyoWeb
     OseWeb -->|"Deployed to<br/>[Git push]"| Vercel
-    AyoWeb -->|"Deployed to<br/>[Git push]"| Vercel
     ZakatWeb -.->|"Future: Calls API<br/>[HTTPS/REST]"| ZakatAPI
 
     classDef blue fill:#0173B2,stroke:#000,color:#FFF

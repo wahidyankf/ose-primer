@@ -300,16 +300,6 @@ Start:  repo-governance/conventions/structure/file-naming.md
 Final path: ../../../docs/tutorials/README.md
 ```
 
-## Historical: Hugo Content Linking (DEPRECATED)
-
-**Note**: Both `apps/crud-fs-ts-nextjs/` and `apps/crud-fs-ts-nextjs/` have migrated to Next.js 16. The Hugo-specific linking rules below no longer apply to active sites. This section is preserved for historical reference only.
-
-**Previous Hugo rules** (no longer applicable):
-
-- **Hugo internal links** used absolute paths starting with `/` (e.g., `/learn/ai/chat-with-pdf`)
-- **Hugo links omitted** the `.md` extension
-- **Why different**: Hugo rendered the same navigation content in different page contexts (sidebar, mobile menu, homepage), so relative paths would resolve incorrectly
-
 ## Anchor Links (Same Page)
 
 For linking to headings within the same document:

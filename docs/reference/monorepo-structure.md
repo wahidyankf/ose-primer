@@ -81,7 +81,6 @@ Flat structure - all apps at the same level, no subdirectories.
 
 **Current Apps**:
 
-- `crud-fs-ts-nextjs` - demo website (Hugo static site)
 - `crud-fs-ts-nextjs` - demo educational platform (Next.js 16 fullstack content platform)
 - `rhino-cli` - demo CLI tool (Go application)
 - `rhino-cli` - Repository management CLI, includes `java validate-annotations` (Go application)
@@ -90,25 +89,6 @@ Flat structure - all apps at the same level, no subdirectories.
 - `crud-be-fsharp-giraffe` - demo REST API backend (F#/Giraffe application)
 - `crud-fe-e2e` - Playwright FE E2E tests for crud-fe-ts-nextjs
 - `crud-be-e2e` - Playwright BE E2E tests for crud-be-fsharp-giraffe
-
-### App Structure (Hugo Static Site)
-
-```
-├── content/                   # Markdown content files
-├── layouts/                   # Hugo templates
-├── static/                    # Static assets (images, CSS, JS)
-├── themes/                    # Hugo themes
-├── data/                      # Data files
-├── i18n/                      # Internationalization
-├── assets/                    # Asset pipeline files
-├── archetypes/                # Content templates
-├── public/                    # Build output (gitignored)
-├── hugo.yaml                  # Hugo configuration
-├── project.json               # Nx project configuration
-├── build.sh                   # Build script
-├── vercel.json                # Deployment configuration
-└── README.md                  # App documentation
-```
 
 ### App Structure (Go CLI Application)
 
@@ -183,8 +163,7 @@ Contains reusable library packages.
 
 **Current Libraries**:
 
-- `golang-commons` - Shared Go utilities (links checker + output functions)
-- `golang-commons` - Shared Hugo utilities (Godog BDD testing)
+- `golang-commons` - Shared Go utilities (link checking, timeutil, testutil)
 
 **Examples** (planned):
 
@@ -225,7 +204,7 @@ libs/ts-utils/
 
 ### Current Scope
 
-Go (`golang-commons`, `golang-commons`) and future TypeScript, Java, Kotlin, Python libraries.
+Go (`golang-commons`) and future TypeScript, Java, Kotlin, Python libraries.
 
 ## Experimental Projects vs Monorepo Projects
 
@@ -258,7 +237,6 @@ The repository contains two distinct project structures with different purposes 
 - Next.js frontend applications
 - Spring Boot backend services
 - Go CLI tools
-- Hugo static sites
 - Reusable TypeScript and Go libraries
 
 ### Experimental Projects (`apps-labs/`)
@@ -318,7 +296,7 @@ The repository contains two distinct project structures with different purposes 
 
 Location: `apps/[app-name]/project.json` or `libs/[lib-name]/project.json`
 
-**Hugo App Example** (`crud-fs-ts-nextjs`):
+**Next.js App Example** (`crud-fs-ts-nextjs`):
 
 ```json
 {
@@ -328,21 +306,15 @@ Location: `apps/[app-name]/project.json` or `libs/[lib-name]/project.json`
     "dev": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "hugo server --buildDrafts --buildFuture"
+        "command": "next dev"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "bash build.sh"
+        "command": "next build"
       },
-      "outputs": ["{projectRoot}/public"]
-    },
-    "clean": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "rm -rf public resources"
-      }
+      "outputs": ["{projectRoot}/.next"]
     }
   },
   "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:demo"]
@@ -416,16 +388,15 @@ Location: `apps/[app-name]/project.json` or `libs/[lib-name]/project.json`
 
 All projects use a standard four-dimension tag scheme:
 
-| Dimension   | Values                                               | Required                 | Purpose                 |
-| ----------- | ---------------------------------------------------- | ------------------------ | ----------------------- |
-| `type:`     | `app`, `lib`, `e2e`                                  | Yes                      | Project kind            |
-| `platform:` | `hugo`, `cli`, `nextjs`, `spring-boot`, `playwright` | For apps/e2e             | Framework/runtime       |
-| `lang:`     | `golang`, `ts`, `java`                               | Where source code exists | Primary language        |
-| `domain:`   | `demo`, `demo`, `demo`, `tooling`                    | Yes                      | Business/product domain |
+| Dimension   | Values                                       | Required                 | Purpose                 |
+| ----------- | -------------------------------------------- | ------------------------ | ----------------------- |
+| `type:`     | `app`, `lib`, `e2e`                          | Yes                      | Project kind            |
+| `platform:` | `cli`, `nextjs`, `spring-boot`, `playwright` | For apps/e2e             | Framework/runtime       |
+| `lang:`     | `golang`, `ts`, `java`                       | Where source code exists | Primary language        |
+| `domain:`   | `demo`, `demo`, `demo`, `tooling`            | Yes                      | Business/product domain |
 
 **Notes**:
 
-- Hugo sites omit `lang:` — there is no application source code, only templates and markdown
 - Go libs omit `platform:` — they have no framework, only `lang:golang`
 - Use `domain:tooling` for generic dev utilities not tied to a product domain
 
@@ -483,15 +454,6 @@ All projects use a standard four-dimension tag scheme:
 
 ### App Configuration Files
 
-**Hugo Apps** do not require `package.json` as they use Hugo's native configuration:
-
-```yaml
-baseURL: https://example.com/
-languageCode: en-us
-title: Open Sharia Enterprise Platform
-theme: PaperMod
-```
-
 **Go Apps** use `go.mod` for dependency management:
 
 ```go
@@ -539,7 +501,7 @@ go 1.26
 
 ### Import Patterns
 
-**Note**: Hugo and Go apps do not use TypeScript path mappings. These patterns apply to TypeScript/Next.js apps.
+**Note**: Go apps do not use TypeScript path mappings. These patterns apply to TypeScript/Next.js apps.
 
 **Apps importing libs** (TypeScript apps):
 
@@ -602,7 +564,6 @@ Configured in `tsconfig.base.json`:
 
 ### Apps
 
-- **Hugo**: `apps/[app-name]/public/` (static site files)
 - **Go**: `apps/[app-name]/dist/` (compiled binaries)
 - **Next.js**: `apps/[app-name]/.next/`
 - **Spring Boot**: `apps/[app-name]/target/`

@@ -16,17 +16,6 @@ Application inventory and C4 Level 2 container diagram for the Open Sharia Enter
 
 The platform consists of 9 applications across 4 technology stacks:
 
-### Frontend Applications (Hugo Static Sites)
-
-#### crud-fs-ts-nextjs
-
-- **Purpose**: Marketing and documentation website for demo
-- **URL**: <https://example.com>
-- **Technology**: Hugo 0.156.0 Extended + PaperMod theme
-- **Deployment**: Vercel (via `prod-crud-fs-ts-nextjs` branch)
-- **Build Command**: `nx build crud-fs-ts-nextjs`
-- **Dev Command**: `nx dev crud-fs-ts-nextjs`
-
 ### Web Applications (Next.js)
 
 #### crud-fs-ts-nextjs
@@ -125,7 +114,7 @@ Shows the high-level technical building blocks (containers) of the system. In C4
 ```mermaid
 graph LR
     subgraph "Marketing & Education Sites"
-        OSE[crud-fs-ts-nextjs<br/>Hugo Static Site]
+        OSE[crud-fs-ts-nextjs<br/>Next.js App]
         AYO[crud-fs-ts-nextjs<br/>Next.js App]
     end
 

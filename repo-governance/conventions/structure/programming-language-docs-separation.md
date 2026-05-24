@@ -51,7 +51,6 @@ This separation follows the **DRY principle** (Don't Repeat Yourself) - educatio
 - **How to write educational content** - Covered in tutorial conventions ([Programming Language Content Standard], [By Example Tutorial])
 - **How to write style guides** - Covered in [Content Quality Principles](../writing/quality.md)
 - **Diátaxis framework application** - Covered in [Diátaxis Framework Convention](./diataxis-framework.md)
-- **Hugo content conventions** - Covered in Hugo conventions ([ayokoding], [shared])
 
 ## Content Separation Rules
 
@@ -297,7 +296,7 @@ For OSE Platform-specific {LANGUAGE} conventions, see:
 
 - docs/explanation/ README.md MUST link to ayokoding-web (prerequisite)
 - ayokoding-web MAY link to docs/explanation/ (optional, for contributors)
-- Use absolute URLs for ayokoding-web (Hugo site)
+- Use absolute URLs for ayokoding-web (external site)
 - Use relative paths for docs/explanation/ (GitHub markdown)
 
 ## Scope for All Programming Languages
@@ -792,11 +791,6 @@ Before publishing programming language documentation:
 - [Content Quality Principles](../writing/quality.md) - Universal quality standards for markdown content
 - [README Quality](../writing/readme-quality.md) - README-specific quality standards
 
-**Hugo Content**:
-
-- [Hugo Content - ayokoding] - Hextra theme conventions (ayokoding-web specific)
-- [Hugo Content - Shared] - Common Hugo conventions (applies to ayokoding-web)
-
 **Principles**:
 
 - [Documentation First](../../principles/content/documentation-first.md) - Documentation is mandatory, not optional
@@ -809,7 +803,6 @@ Before publishing programming language documentation:
 **Platform Documentation**:
 
 - [Software Design Index](../../../docs/explanation/software-engineering/README.md) - Parent documentation for programming language style guides
-- [ayokoding-web Hugo Site] - Educational programming content platform
 
 **Repository Architecture**:
 

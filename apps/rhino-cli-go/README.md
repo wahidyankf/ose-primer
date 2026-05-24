@@ -213,7 +213,7 @@ rhino-cli docs validate-links -q
 - Scans markdown files in core directories (docs/, repo-governance/, .claude/, and root)
 - Validates that all internal links point to existing files
 - Automatically skips external URLs (http://, https://)
-- Automatically skips Hugo paths (starting with /)
+- Automatically skips absolute paths (starting with /)
 - Automatically skips placeholder links (path.md, target, etc.)
 - Automatically skips example patterns (tu**\*, ex**\*, etc.)
 - Categorizes broken links for easier fixing

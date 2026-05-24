@@ -37,7 +37,6 @@ This convention establishes consistent indentation standards for all markdown fi
 ### What This Convention Does NOT Cover
 
 - **Source code indentation** - This convention is for markdown files, not application code
-- **Hugo template indentation** - Covered in Hugo development practices
 - **Diagram indentation** - Mermaid diagrams have their own syntax rules
 
 ## 🎯 Core Principle

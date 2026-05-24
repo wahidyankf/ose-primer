@@ -32,7 +32,6 @@ Content migrated: **December 8, 2025**
 All tutorials are now part of the demo educational platform and benefit from:
 
 - Better navigation and discoverability
-- Consistent Hugo/Hextra theme
 - Integration with other learning content
 - Public web access
 

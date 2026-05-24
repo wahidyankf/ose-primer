@@ -56,11 +56,9 @@ These tools work together to ensure code consistency and quality without manual 
 
 - JavaScript/TypeScript: `*.{js,jsx,ts,tsx,mjs,cjs}`
 - JSON: `*.json`
-- Markdown: `*.md` (excluding Hugo archetypes)
+- Markdown: `*.md`
 - YAML: `*.{yml,yaml}`
 - CSS/SCSS: `*.{css,scss}`
-
-**Note**: Hugo archetype template files (`apps/crud-fs-ts-nextjs/archetypes/**/*.md`) are excluded from Prettier formatting as they contain Go template syntax.
 
 **When It Runs**: Automatically on staged files before each commit via the pre-commit hook.
 
@@ -95,7 +93,6 @@ npx prettier --write [file-path]
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": "prettier --write",
     "*.json": "prettier --write",
-    "apps/crud-fs-ts-nextjs/archetypes/**/*.md": "echo 'Skipping Hugo archetype'",
     "*.md": "prettier --write",
     "*.{yml,yaml}": "prettier --write",
     "*.{css,scss}": "prettier --write"
@@ -479,21 +476,21 @@ automatically on every `test:quick` run via `rhino-cli links check`.
 **Examples:**
 
 ```markdown
-<!-- Correct internal link -->
+<!-- Correct internal link (relative path with .md extension) -->
+
+[Overview](./overview.md)
+
+<!-- Correct relative link going up directories -->
+
+[Conventions](../../conventions/README.md)
+
+<!-- Wrong — absolute paths are skipped by the link checker -->
 
 [Overview](/en/learn/swe/overview)
 
-<!-- Correct — resolves to _index.md for section pages -->
-
-[Learn](/en/learn)
-
-<!-- Wrong — relative paths break in Hugo sidebar/menu contexts -->
+<!-- Wrong — missing .md extension -->
 
 [Overview](../overview)
-
-<!-- Wrong — .md extension is not used in Hugo internal links -->
-
-[Overview](/en/learn/swe/overview.md)
 ```
 
 **Validation runs automatically** as part of `test:quick` (pre-push hook and CI):

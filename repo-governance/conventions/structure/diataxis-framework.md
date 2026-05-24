@@ -39,7 +39,6 @@ This convention establishes the Diátaxis framework as the organizational struct
 ### What This Convention Does NOT Cover
 
 - **File naming within categories** - Covered in [File Naming Convention](./file-naming.md)
-- **Hugo site structure** - Covered in Hugo content conventions
 - **Content quality standards** - Covered in [Content Quality Principles](../writing/quality.md)
 
 ## What is Diátaxis?

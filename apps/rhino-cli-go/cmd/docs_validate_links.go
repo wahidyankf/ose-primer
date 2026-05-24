@@ -17,7 +17,7 @@ var validateDocsLinksCmd = &cobra.Command{
 	Long: `Scan markdown files for broken internal links.
 
 This command scans markdown files in the repository and validates that all
-internal links point to existing files. External URLs, Hugo paths, and
+internal links point to existing files. External URLs, absolute paths, and
 placeholder links are automatically skipped.
 
 By default, scans all markdown files in core directories (docs/, repo-governance/,

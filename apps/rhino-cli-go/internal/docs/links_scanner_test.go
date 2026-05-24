@@ -14,9 +14,9 @@ func TestShouldSkipLink(t *testing.T) {
 		want bool
 	}{
 		// Should skip
-		{"Hugo absolute path", "/docs/path", true},
-		{"Hugo shortcode angle", "{{< ref >}}", true},
-		{"Hugo shortcode percent", "{{% ref %}}", true},
+		{"absolute path", "/docs/path", true},
+		{"shortcode angle", "{{< ref >}}", true},
+		{"shortcode percent", "{{% ref %}}", true},
 		{"Placeholder path.md", "path.md", true},
 		{"Placeholder target", "target", true},
 		{"Placeholder link", "link", true},
@@ -72,7 +72,7 @@ Email [contact](mailto:test@example.com) should be skipped.
 This [placeholder](path.md) should be skipped.
 This [real link](../../repo-governance/README.md) should not be skipped.
 
-Hugo [path](/docs/page) should be skipped.
+[path](/docs/page) should be skipped.
 `
 
 	if err := os.WriteFile(testFile, []byte(content), 0644); err != nil {

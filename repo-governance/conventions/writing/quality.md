@@ -25,14 +25,13 @@ This convention implements the following core principles:
 
 ## Purpose
 
-This convention establishes universal quality standards that apply to **all markdown content** in the repository. It ensures consistent writing quality, accessibility compliance, and professional presentation across documentation, Hugo sites, planning documents, and repository root files. These standards make content readable, maintainable, and accessible to all users including those using assistive technologies.
+This convention establishes universal quality standards that apply to **all markdown content** in the repository. It ensures consistent writing quality, accessibility compliance, and professional presentation across documentation, planning documents, and repository root files. These standards make content readable, maintainable, and accessible to all users including those using assistive technologies.
 
 ## Scope
 
 These principles apply to markdown content in:
 
 - **docs/** - Documentation (tutorials, how-to guides, reference, explanations)
-- **Hugo sites** - crud-fs-ts-nextjs and crud-fs-ts-nextjs content
 - **plans/** - Project planning documents
 - **Repository root files** - README.md, CONTRIBUTING.md, SECURITY.md, etc.
 
@@ -784,7 +783,7 @@ Coverage percentages are allowed because they indicate **depth/scope**, not **ti
 **Where This Applies**:
 
 - All tutorial content (`docs/tutorials/`)
-- Educational content in Hugo sites (crud-fs-ts-nextjs learning content)
+- Educational content in documentation (`docs/tutorials/`)
 - How-to guides that teach concepts
 - Reference documentation with learning components
 
