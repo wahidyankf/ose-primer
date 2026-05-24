@@ -130,7 +130,7 @@ This agent is the yellow fixer stage of the `repo-harness-compatibility-quality-
 **Related Agents**:
 
 - `repo-harness-compatibility-checker` - Generates the audit reports this fixer processes
-- `repo-parity-fixer` - Fixes cross-vendor behavioral-parity findings (overlapping but distinct scope)
+- `repo-parity-fixer` - Fixes cross-vendor behavioral-parity findings (complementary, non-overlapping scope: internal `.claude/` ↔ `.opencode/` agreement, not external upstream-convention drift)
 
 **Related Conventions**:
 

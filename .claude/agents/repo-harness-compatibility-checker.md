@@ -134,7 +134,7 @@ This agent is the green checker stage of the `repo-harness-compatibility-quality
 **Related Agents**:
 
 - `repo-harness-compatibility-fixer` - Applies fixes from this agent's audit reports
-- `repo-parity-checker` - Validates cross-vendor behavioral-parity invariants (overlapping but distinct scope)
+- `repo-parity-checker` - Validates cross-vendor behavioral-parity invariants (complementary, non-overlapping scope: internal `.claude/` ↔ `.opencode/` agreement, not external upstream-convention drift)
 - `web-research-maker` - Delegated for multi-page harness documentation research
 
 **Related Conventions**:
