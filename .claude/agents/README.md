@@ -32,8 +32,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **swe-ui-checker** - UI component quality validation
 - **ci-checker** - CI/CD standards validation (mandatory Nx targets, coverage thresholds, Docker setup, Gherkin specs)
 - **docs-software-engineering-separation-checker** - Validates the boundary between generic dev docs and language-specific (Go, TypeScript, Rust, etc.) docs per the [Programming Language Docs Separation](../../repo-governance/conventions/structure/programming-language-docs-separation.md) convention
-- **repo-parity-checker** - Validates cross-vendor behavioral-parity invariants between primary and secondary binding directories (governance vendor-neutrality, AGENTS+CLAUDE consistency, sync no-op, agent count parity, color + tier maps); writes dual-label findings to `generated-reports/`
-- **repo-harness-compatibility-checker** - Detects external drift between each supported coding-agent harness's current upstream config conventions and the platform-bindings catalog + committed binding files; delegates multi-page research to `web-research-maker` and writes a dual-label drift audit to `generated-reports/`
+- **repo-harness-compatibility-checker** - The single harness-compat checker. **Phase 0** runs 5 deterministic cross-vendor parity invariants (governance/root-surface vendor-neutrality, binding sync no-op over `.opencode/` + `.amazonq/`, agent count parity, color + tier maps); **Phase 1** detects external drift between each supported harness's current upstream config conventions and the platform-bindings catalog + committed binding files (delegates multi-page research to `web-research-maker`). Writes a dual-label audit to `generated-reports/`
 
 ### 🟨 Fixing (Fixers)
 
@@ -48,8 +47,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **swe-ui-fixer** - Apply validated UI component fixes
 - **ci-fixer** - Apply validated CI/CD standards fixes
 - **docs-software-engineering-separation-fixer** - Auto-moves misplaced language docs to the canonical destination flagged by the separation checker
-- **repo-parity-fixer** - Applies validated cross-vendor parity fixes; auto-remediates binding-sync drift via `npm run sync:claude-to-opencode`, flags higher-judgement gaps (color-map, tier-map, orphan agents, catalog drift) for human resolution
-- **repo-harness-compatibility-fixer** - Applies validated catalog/binding updates from a harness-compatibility drift audit; regenerates binding files via `rhino-cli agents emit-bindings` and re-validates, re-checking each finding before applying
+- **repo-harness-compatibility-fixer** - Applies validated fixes from a harness-compatibility audit; auto-remediates Phase 0 binding-sync drift (Invariant 3) via `npm run generate:bindings`, applies Phase 1 catalog/binding updates, flags higher-judgement gaps (vendor-audit prose, color/tier maps, orphan agents, generator-logic changes) for human resolution, and re-validates each finding before applying
 
 ### 🔍 Research (Green)
 
@@ -153,7 +151,7 @@ Three-stage quality workflow:
 **Making Changes**:
 
 1. Edit agents in `.claude/agents/` directory
-2. Run: `npm run sync:claude-to-opencode` (powered by `rhino-cli` for fast syncing)
+2. Run: `npm run generate:bindings` (powered by `rhino-cli` for fast regeneration of all secondary bindings)
 3. Both systems stay synchronized
 
 **Implementation**: Sync powered by `rhino-cli agents sync` (~121ms, 25-60x faster than bash)

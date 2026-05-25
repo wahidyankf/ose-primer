@@ -51,7 +51,67 @@ Invoke web-research-maker with topic:
 
 Collect the agent's summarized findings before proceeding to the diff step.
 
-## Validation Scope
+## Phase 0: Cross-Vendor Parity Invariants (Deterministic)
+
+Phase 0 runs FIRST, before the Phase 1 external-drift research below, and is fully deterministic
+(offline Bash — no web access). It enforces the internal cross-vendor behavioral-parity contract
+defined by the
+[Governance Vendor-Independence Convention](../../repo-governance/conventions/structure/governance-vendor-independence.md):
+the primary binding (`.claude/`) and the secondary bindings (`.opencode/`, `.amazonq/`) must agree,
+and shared governance prose must stay vendor-neutral. Each invariant invokes the listed tool and
+classifies any finding with the dual-label criticality/confidence schema from the
+[`repo-assessing-criticality-confidence`](../../.claude/skills/repo-assessing-criticality-confidence/SKILL.md)
+skill. **Phase 0 always runs regardless of the `scope` input.**
+
+### Invariant 1 — Governance prose vendor-neutrality
+
+- **Tool**: `nx run rhino-cli-rust:build --skip-nx-cache && ./apps/rhino-cli-rust/dist/rhino-cli repo-governance vendor-audit repo-governance/`
+- **Pass**: command exits 0 with `GOVERNANCE VENDOR AUDIT PASSED: no violations found`
+- **Fail**: any non-zero exit; report each violation with file path, line number, forbidden term,
+  and suggested replacement (already in tool output)
+- **Default criticality**: HIGH · **Confidence**: HIGH (deterministic regex match)
+
+### Invariant 2 — Root instruction surface vendor-neutrality
+
+- **Tool**: the same `rhino-cli repo-governance vendor-audit` binary run against `AGENTS.md` and `CLAUDE.md`
+- **Pass**: both files exit 0 with no violations outside `binding-example` fences and "Platform Binding Examples" headings
+- **Fail**: any violation in load-bearing prose
+- **Default criticality**: HIGH · **Confidence**: HIGH (deterministic regex match)
+
+### Invariant 3 — Binding sync no-op (covers OpenCode AND Amazon Q)
+
+- **Tool**: `npm run generate:bindings && git diff --quiet .opencode/ .amazonq/`
+- **Pass**: `generate:bindings` exits 0 AND `git diff --quiet` exits 0 (no changes produced in
+  either secondary binding directory)
+- **Fail**: regeneration produced drift in `.opencode/` or `.amazonq/` — report the changed files
+- **Default criticality**: MEDIUM (drift means upstream `.claude/` edits were not regenerated)
+- **Confidence**: HIGH (mechanical comparison). Note: `generate:bindings` runs BOTH `agents sync`
+  (OpenCode) and `agents emit-bindings` (Amazon Q), so this invariant now closes the former
+  `.amazonq/`-not-checked gap.
+
+### Invariant 4 — Agent count parity
+
+- **Tool**: `ls .claude/agents/*.md | wc -l` and same for `.opencode/agents/*.md`
+- **Pass**: counts equal
+- **Fail**: counts differ — diff agent file lists via `comm -3 <(ls .claude/agents | sort) <(ls .opencode/agents | sort)` and report only-`.claude` and only-`.opencode` entries
+- **Note**: `README.md` is present in both directories and is intentionally excluded from agent
+  semantics — it is a catalog, not an agent definition; do not flag it as an orphan.
+- **Default criticality**: HIGH · **Confidence**: HIGH (mechanical comparison)
+
+### Invariant 5 — Translation-map coverage
+
+- **Tools**:
+  - Color map: `grep -h "^color:" .claude/agents/*.md | sort -u` vs the Color Translation Table in `repo-governance/development/agents/ai-agents.md`
+  - Tier map: `grep -h "^model:" .claude/agents/*.md .opencode/agents/*.md | sort -u` vs the capability-tier map in `repo-governance/development/agents/model-selection.md`
+- **Pass**: every distinct frontmatter value appears in the corresponding map
+- **Fail**: any value not in the map — report the missing entry
+- **Default criticality**: MEDIUM · **Confidence**: HIGH (mechanical comparison)
+
+Catalog-accuracy concerns for individual harnesses (e.g., whether a harness's documented
+instruction file changed) are handled by the Phase 1 per-harness drift checks below — there is no
+separate advisory invariant.
+
+## Phase 1: External Harness Drift Validation
 
 ### Harness 1 — Claude Code (`.claude/`)
 
@@ -126,7 +186,12 @@ Each finding carries exactly one criticality label (CRITICAL / HIGH / MEDIUM / L
 
 ## Workflow Integration
 
-This agent is the green checker stage of the `repo-harness-compatibility-quality-gate` workflow. The workflow alternates this agent with `repo-harness-compatibility-fixer` until two consecutive zero-finding validations land (double-zero termination), bounded by `max-iterations`.
+This agent is the green checker stage of the `repo-harness-compatibility-quality-gate` workflow. It
+runs **Phase 0 (deterministic cross-vendor parity invariants) first, then Phase 1 (external harness
+drift)** on every invocation. The workflow alternates this agent with `repo-harness-compatibility-fixer`
+until two consecutive zero-finding validations land (double-zero termination), bounded by
+`max-iterations`. The merged gate is the single harness-compat workflow — the former standalone
+cross-vendor-parity gate has been absorbed here as Phase 0.
 
 ## Reference Documentation
 
@@ -138,8 +203,7 @@ This agent is the green checker stage of the `repo-harness-compatibility-quality
 
 **Related Agents**:
 
-- `repo-harness-compatibility-fixer` - Applies fixes from this agent's audit reports
-- `repo-parity-checker` - Validates cross-vendor behavioral-parity invariants (complementary, non-overlapping scope: internal `.claude/` ↔ `.opencode/` agreement, not external upstream-convention drift)
+- `repo-harness-compatibility-fixer` - Applies fixes from this agent's audit reports (auto-fixes Phase 0 Invariant 3; flags the rest)
 - `web-research-maker` - Delegated for multi-page harness documentation research
 
 **Related Conventions**:

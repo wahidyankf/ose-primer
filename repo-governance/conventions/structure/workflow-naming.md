@@ -97,7 +97,7 @@ The `rhino-cli workflows validate-naming` subcommand wraps this check plus a fro
 
 Current workflows, grouped by type, all conforming to the rule:
 
-- **`quality-gate`** — `plan-quality-gate` (scope `plan`, type `quality-gate`), `repo-rules-quality-gate` (scope `repo`, qualifier `rules`, type `quality-gate`), `specs-quality-gate` (scope `specs`, type `quality-gate`), `docs-quality-gate` (scope `docs`, type `quality-gate`), `docs-software-engineering-separation-quality-gate` (scope `docs`, qualifier `software-engineering-separation`, type `quality-gate`), `ci-quality-gate` (scope `ci`, type `quality-gate`), `ui-quality-gate` (scope `ui`, type `quality-gate`), `repo-cross-vendor-parity-quality-gate` (scope `repo`, qualifier `cross-vendor-parity`, type `quality-gate`), `repo-harness-compatibility-quality-gate` (scope `repo`, qualifier `harness-compatibility`, type `quality-gate`)
+- **`quality-gate`** — `plan-quality-gate` (scope `plan`, type `quality-gate`), `repo-rules-quality-gate` (scope `repo`, qualifier `rules`, type `quality-gate`), `specs-quality-gate` (scope `specs`, type `quality-gate`), `docs-quality-gate` (scope `docs`, type `quality-gate`), `docs-software-engineering-separation-quality-gate` (scope `docs`, qualifier `software-engineering-separation`, type `quality-gate`), `ci-quality-gate` (scope `ci`, type `quality-gate`), `ui-quality-gate` (scope `ui`, type `quality-gate`), `repo-harness-compatibility-quality-gate` (scope `repo`, qualifier `harness-compatibility`, type `quality-gate`)
 - **`execution`** — `plan-execution` (scope `plan`, type `execution`)
 - **`setup`** — `infra-development-environment-setup` (scope `infra`, qualifiers `development-environment`, type `setup`)
 

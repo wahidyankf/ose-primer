@@ -44,20 +44,29 @@ outputs:
 
 # Harness Compatibility Quality Gate Workflow
 
-**Purpose**: Detect external drift between each supported coding-agent harness's current
-upstream configuration conventions and the repository's platform-bindings catalog
-(`docs/reference/platform-bindings.md`) and committed binding files, then apply validated
-fixes iteratively until zero findings remain.
+**Purpose**: The single harness-compatibility quality gate. It validates two dimensions and applies
+validated fixes iteratively until zero findings remain:
 
-**Distinction from the deterministic pre-push guard**: The `rhino-cli agents validate-bindings`
-command (run via `npm run validate:harness-bindings` in the pre-push hook) is a
-**deterministic, agent-free** guard that detects **internal byte-drift** — it re-derives
-expected binding file content from `AGENTS.md` and asserts byte-equality with the committed
-files. This workflow is the **agent-backed, web-research-backed counterpart** that detects
-**external convention drift** — changes in each harness's upstream documentation that have
-not yet been reflected in the catalog or committed binding files. The two guards complement
-each other: the pre-push guard is fast and offline; this workflow is comprehensive and
-current.
+1. **Phase 0 — Internal cross-vendor parity** (deterministic, offline): five invariants that assert
+   the primary binding (`.claude/`) and secondary bindings (`.opencode/`, `.amazonq/`) agree and that
+   shared governance prose stays vendor-neutral. Runs first, on every invocation.
+2. **Phase 1 — External harness conformance** (web-research-backed): detects drift between each
+   supported harness's current upstream configuration conventions and the repository's
+   platform-bindings catalog (`docs/reference/platform-bindings.md`) plus committed binding files.
+
+This gate absorbs the former standalone cross-vendor-parity gate — the parity invariants are now
+Phase 0 here, so there is exactly ONE harness-compat workflow and ONE checker/fixer pair.
+
+**Three complementary guards (no overlap)**:
+
+- **Pre-push byte guard** — `rhino-cli agents validate-bindings` (via `npm run validate:harness-bindings`
+  in the pre-push hook) plus the `validate:cross-vendor-parity` Nx target: deterministic, agent-free,
+  detects **internal byte-drift** by re-deriving expected binding content and asserting byte-equality.
+  Fast and offline; runs on every push.
+- **Phase 0 semantic parity** (this workflow): deterministic invariants that catch sync drift,
+  count divergence, translation-map gaps, and vendor-name leakage that the byte guard does not model.
+- **Phase 1 external drift** (this workflow): agent-backed, web-research-backed; catches upstream
+  harness convention changes not yet reflected in the catalog or binding files.
 
 **When to use**:
 
@@ -105,8 +114,19 @@ in the main context — use this when agent delegation is unavailable.
 
 ### 1. Initial Validation (Sequential)
 
-Run a harness-by-harness drift check to identify all external convention changes that have
-not yet been reflected in the repository.
+Run the checker's **Phase 0 (deterministic cross-vendor parity invariants) first, then Phase 1
+(harness-by-harness external drift check)**. Phase 0 always runs regardless of `scope`.
+
+**Phase 0 — Cross-vendor parity invariants** (offline, Bash, run before any web research):
+
+1. **Governance prose vendor-neutrality** — `… rhino-cli repo-governance vendor-audit repo-governance/` (HIGH)
+2. **Root instruction surface vendor-neutrality** — same vendor-audit on `AGENTS.md` and `CLAUDE.md` (HIGH)
+3. **Binding sync no-op** — `npm run generate:bindings && git diff --quiet .opencode/ .amazonq/` (MEDIUM) — covers BOTH OpenCode and Amazon Q
+4. **Agent count parity** — `ls .claude/agents/*.md | wc -l` vs `.opencode/agents/*.md` (README.md intentionally excluded) (HIGH)
+5. **Translation-map coverage** — `color:`/`model:` frontmatter values vs the maps in `ai-agents.md` / `model-selection.md` (MEDIUM)
+
+See [`repo-harness-compatibility-checker`](../../../.claude/agents/repo-harness-compatibility-checker.md)
+for the full invariant definitions.
 
 **Agent**: `repo-harness-compatibility-checker`
 
@@ -175,12 +195,14 @@ Apply validated drift fixes from the audit report based on mode level.
 
 **Auto-fixable scope** (fixer applies these automatically at HIGH confidence):
 
+- **Phase 0 Invariant 3 — binding sync drift**: re-runs `npm run generate:bindings` and stages the
+  resulting `.opencode/` and `.amazonq/` changes (the only auto-fixable Phase 0 invariant)
 - Catalog field updates where web-research evidence is unambiguous (e.g., a harness ships
   native `AGENTS.md` support and the catalog still marks it Tier 2)
 - Tier reclassification (Tier 2 → Tier 1) backed by a dated, cited web source
 - Stale verification dates in the catalog (bumps to current date when content unchanged)
 - Generated binding file updates where the content change is derivable from updated catalog
-  facts (regenerated via `npm run sync:claude-to-opencode`)
+  facts (regenerated via `npm run generate:bindings`)
 - Spec updates in `specs/apps/rhino/` where a harness convention change alters rhino-cli
   behavior the specs document (Gherkin scenarios under `behavior/`, container/component
   descriptions, README claims) — the fixer edits the affected spec files to stay consistent
@@ -188,6 +210,9 @@ Apply validated drift fixes from the audit report based on mode level.
 
 **Out-of-scope for automated fixing** (fixer flags and surfaces for human resolution):
 
+- Phase 0 Invariants 1, 2, 4, 5 (governance/root-surface vendor-audit violations, agent-count
+  divergence, color/tier-map gaps) — each requires human judgment (prose rewrite, orphan
+  resolution, or role/tier mapping decision); only Invariant 3 is auto-fixable
 - Tier 1 → Tier 2 reclassification (requires authoring a new generated bridge and updating
   the pre-push guard corpus)
 - Higher-precedence filename discoveries (AD3 implications require human judgment per the
@@ -289,6 +314,20 @@ consecutive pass requirement).
 The following scenarios define what a correct workflow execution looks like:
 
 ```gherkin
+Scenario: Phase 0 parity invariants run before external drift check
+  Given the workflow runs with any scope
+  When repo-harness-compatibility-checker is invoked
+  Then it first runs the 5 deterministic cross-vendor parity invariants offline
+  And only then delegates Phase 1 external-drift research to web-research-maker
+  And Phase 0 runs regardless of the scope input
+
+Scenario: Phase 0 binding sync drift is auto-fixed
+  Given Phase 0 Invariant 3 reports drift after npm run generate:bindings
+  When repo-harness-compatibility-fixer is invoked
+  Then it re-runs npm run generate:bindings
+  And it stages the regenerated .opencode/ and .amazonq/ changes
+  And a second run produces no further changes (idempotent)
+
 Scenario: Checker delegates web research and produces a cited drift audit
   Given the workflow runs with scope "all"
   When repo-harness-compatibility-checker is invoked
@@ -443,14 +482,17 @@ This workflow composes with:
 
 - [Repository Rules Validation Workflow](./repo-rules-quality-gate.md) — Run after this
   workflow when catalog or binding-file updates require governance prose updates
-- [Cross-Vendor Parity Quality Gate](./repo-cross-vendor-parity-quality-gate.md) — Run to
-  verify that internal binding-file parity is maintained after catalog updates
+
+The former standalone cross-vendor-parity gate has been absorbed into this workflow as Phase 0 —
+there is no separate parity workflow to compose with.
 
 ## Notes
 
-- **External focus**: This workflow detects drift in upstream harness documentation; it does
-  not validate internal byte-level binding file consistency — use the deterministic
-  `rhino-cli agents validate-bindings` pre-push guard for that
+- **Phase 0 always runs**: the deterministic cross-vendor parity invariants run on every invocation
+  regardless of `scope`; Phase 1 external-drift research follows
+- **Byte-level guard is separate**: internal byte-level binding consistency is enforced by the
+  deterministic `rhino-cli agents validate-bindings` pre-push guard and the
+  `validate:cross-vendor-parity` Nx target — those survive independently of this workflow
 - **Fully automated** (in-scope fixes): No human checkpoints for catalog field updates and
   tier reclassifications backed by clear evidence; out-of-scope findings pause for human
   resolution
