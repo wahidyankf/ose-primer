@@ -59,7 +59,7 @@ flowchart LR
     end
 
     subgraph tier1["Tier-1 harnesses (read AGENTS.md natively — no conversion needed)"]
-        T1["Codex CLI · GitHub Copilot · Cursor\nWindsurf · JetBrains Junie"]
+        T1["Codex · Copilot · Cursor\nWindsurf · JetBrains Junie"]
     end
 
     P -->|"npm run generate:bindings\n(agents sync)"| OC
