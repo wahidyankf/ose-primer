@@ -25,7 +25,7 @@ This applies to:
 - `.opencode/agents/*.md` — OpenCode agent mirrors
 - `.opencode/skills/*/SKILL.md` — Nx/OpenCode-native skill files (not mirrored from `.claude/skills/`; OpenCode reads `.claude/skills/` natively)
 
-After editing `.claude/` sources, run `npm run sync:claude-to-opencode` so the `.opencode/` mirrors stay aligned. The pre-commit hook validates both formats.
+After editing `.claude/` sources, run `npm run generate:bindings` so the `.opencode/` mirrors stay aligned. The pre-commit hook validates both formats.
 
 ## References
 
