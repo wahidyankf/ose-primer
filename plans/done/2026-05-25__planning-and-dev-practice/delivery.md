@@ -409,22 +409,30 @@ must be resolved proactively, not deferred.
 
 Once every item above is complete and CI is green, archive the plan:
 
-- [ ] Move the plan folder to `done/` with completion date prefix:
+- [x] Move the plan folder to `done/` with completion date prefix:
       `git mv plans/in-progress/planning-and-dev-practice plans/done/2026-05-25__planning-and-dev-practice`
-- [ ] Verify `plans/in-progress/README.md` — confirm no `planning-and-dev-practice` entry exists
+- [x] Verify `plans/in-progress/README.md` — confirm no `planning-and-dev-practice` entry exists
       (none was added to the active-plans list, so no edit is expected)
-- [ ] Update `plans/done/README.md` — add an entry of this exact form (a link to the archived
+- [x] Update `plans/done/README.md` — add an entry of this exact form (a link to the archived
       folder, description, and completion date):
 
   ```text
   - [Planning and Dev Practice Improvement](./2026-05-25__planning-and-dev-practice/) — grill-me skill, TDD delivery-checklist shape, harness-neutrality plan-checker Step 5g. Completed 2026-05-25.
   ```
 
-- [ ] Search for orphaned references to `plans/in-progress/planning-and-dev-practice`
+- [x] Search for orphaned references to `plans/in-progress/planning-and-dev-practice`
       (`rg -n "in-progress/planning-and-dev-practice"`) and fix any found
-- [ ] Commit the archival: `rtk git commit -m "chore(plans): move planning-and-dev-practice to done"`
-- [ ] Push: `rtk git push origin HEAD:main`
+- [x] Commit the archival: `rtk git commit -m "chore(plans): move planning-and-dev-practice to done"`
+- [x] Push: `rtk git push origin HEAD:main`
 
 Acceptance criterion: plan folder lives at `plans/done/2026-05-25__planning-and-dev-practice/`, both
 plan READMEs are updated, no orphaned `in-progress/planning-and-dev-practice` references remain, and
 the archival commit is pushed to `origin main`.
+
+> **Implementation notes** (2026-05-25): `git mv` moved the folder to
+> `plans/done/2026-05-25__planning-and-dev-practice/` (completion-date prefix). Verified
+> `plans/in-progress/README.md` had no entry to remove (`grep` empty). Added the completion entry
+> to the top of `plans/done/README.md` Completed Projects. Orphan-reference search
+> (`rg -n "in-progress/planning-and-dev-practice"` excluding the moved folder) returned none.
+> Archival committed and pushed to `origin main` in the final step. Files Changed: plan folder
+> moved (5 files), `plans/done/README.md`.
