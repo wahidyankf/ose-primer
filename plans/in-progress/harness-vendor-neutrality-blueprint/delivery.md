@@ -108,7 +108,7 @@ ose-primer `nx run rhino-cli-rust:build … && ./apps/rhino-cli-rust/dist/rhino-
 absorbed into Phase 1 per-harness drift). _Suggested executor: repo-workflow-maker (workflow) +
 agent-maker (agents), or direct authoring by porting ose-public's merged files._
 
-- [ ] **2.1 Rewrite `repo-governance/workflows/repo/repo-harness-compatibility-quality-gate.md`** to
+- [x] **2.1 Rewrite `repo-governance/workflows/repo/repo-harness-compatibility-quality-gate.md`** to
       absorb cross-vendor parity as a deterministic "Phase 0" run-before-Phase-1 block: enumerate the
       5 invariants (Invariant 3 stated as `npm run generate:bindings && git diff --quiet .opencode/ .amazonq/`);
       add Phase-0 auto-fixable (Invariant 3) and out-of-scope (Invariants 1,2,4,5) notes; add the two
@@ -120,7 +120,9 @@ agent-maker (agents), or direct authoring by porting ose-public's merged files._
       `grep "generate:bindings && git diff --quiet .opencode/ .amazonq/" …` → ≥1;
       `grep -c "repo-cross-vendor-parity" …repo-harness-compatibility-quality-gate.md` → 0.
 
-- [ ] **2.2 Rewrite `.claude/agents/repo-harness-compatibility-checker.md`** to add a
+<!-- Date: 2026-05-25 | Status: done | Files Changed: repo-governance/workflows/repo/repo-harness-compatibility-quality-gate.md | Notes: Purpose→two-phase model; Phase 0 (5 invariants) added to Step 1; auto-fixable Invariant 3 + out-of-scope 1/2/4/5; 2 Phase-0 Gherkin scenarios; sync→generate; parity cross-ref deleted; dual-CLI bullet + Platform Binding Examples preserved. Verified: sync=0, Invariant3 string=1, repo-cross-vendor-parity=0 -->
+
+- [x] **2.2 Rewrite `.claude/agents/repo-harness-compatibility-checker.md`** to add a
       `## Phase 0: Cross-Vendor Parity Invariants (Deterministic)` section (5 invariants, ported from
       `repo-parity-checker.md` and adapted to the rhino-cli-rust nx-build invocation; Invariant 3 =
       `npm run generate:bindings && git diff --quiet .opencode/ .amazonq/`; drop Aider Invariant 6);
@@ -130,7 +132,9 @@ agent-maker (agents), or direct authoring by porting ose-public's merged files._
       Verify: `grep "generate:bindings && git diff --quiet .opencode/ .amazonq/" …checker.md` → ≥1;
       `grep -c "repo-parity-checker" …checker.md` → 0.
 
-- [ ] **2.3 Rewrite `.claude/agents/repo-harness-compatibility-fixer.md`** to add a Phase-0
+<!-- Date: 2026-05-25 | Status: done | Files Changed: .claude/agents/repo-harness-compatibility-checker.md | Notes: Phase 0 (5 invariants, Invariant 1 corrected to rhino-cli-rust nx-build, Invariant 3 string, README skip note) added; scope renamed to Phase 1; parity Related-Agent removed; Workflow Integration notes Phase 0-first. DEVIATION: did NOT add `Agent` tool — existing tools (Bash/Read/Glob/Grep/Write/WebFetch/WebSearch) already cover Phase 0 Bash invariants and the pre-existing prose web-research-maker delegation; adding Agent was out of merge scope. Verified: Invariant3 string=1, repo-parity-checker=0 -->
+
+- [x] **2.3 Rewrite `.claude/agents/repo-harness-compatibility-fixer.md`** to add a Phase-0
       Invariant-3 auto-fix block (re-run `npm run generate:bindings`, stage `.opencode/agents/`) and
       Phase-0 out-of-scope items (Invariants 1,2,4,5); update the `description` frontmatter; swap the
       1 `sync:claude-to-opencode` body reference → `generate:bindings`; **preserve the dual-CLI
@@ -138,13 +142,17 @@ agent-maker (agents), or direct authoring by porting ose-public's merged files._
       Agents.
       Verify: `grep -c "sync:claude-to-opencode" …fixer.md` → 0; `grep -c "repo-parity-fixer" …fixer.md` → 0.
 
-- [ ] **2.4 Delete the parity files** (`git rm`):
+<!-- Date: 2026-05-25 | Status: done | Files Changed: .claude/agents/repo-harness-compatibility-fixer.md | Notes: description updated; Phase 0 Invariant-3 auto-fix block added; Phase 0 out-of-scope 1/2/4/5 added; 2 sync→generate swaps (binding regen + frontmatter-schema); dual-CLI framing preserved; parity Related-Agent removed. Verified: sync=0, repo-parity-fixer=0 -->
+
+- [x] **2.4 Delete the parity files** (`git rm`):
       `repo-governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md`,
       `.claude/agents/repo-parity-checker.md`, `.claude/agents/repo-parity-fixer.md`,
       `.opencode/agents/repo-parity-checker.md`, `.opencode/agents/repo-parity-fixer.md`.
       Verify: none of the 5 paths exist.
 
-- [ ] **2.5 Update workflow indexes + conventions for the removed parity workflow/agents**:
+<!-- Date: 2026-05-25 | Status: done | Files Changed: deleted 5 files (parity workflow + 2 agents + 2 opencode mirrors) | Notes: git rm exit 0; all 5 paths confirmed gone; single harness-compat workflow remains -->
+
+- [x] **2.5 Update workflow indexes + conventions for the removed parity workflow/agents**:
   - `repo-governance/workflows/README.md`: remove the cross-vendor-parity table row and list item.
   - `repo-governance/workflows/repo/README.md`: remove the cross-vendor-parity bullet.
   - `repo-governance/conventions/structure/workflow-naming.md`: remove the
@@ -156,6 +164,8 @@ agent-maker (agents), or direct authoring by porting ose-public's merged files._
     Verify: `grep -c "sync:claude-to-opencode" repo-governance/conventions/structure/multi-harness-binding.md` → 0;
     and `grep -rln "repo-cross-vendor-parity\|repo-parity-checker\|repo-parity-fixer" repo-governance/ .claude/ --include="*.md" | grep -v plans/` → zero files (after Phase 3 too).
 
+<!-- Date: 2026-05-25 | Status: done | Files Changed: repo-governance/workflows/README.md, repo-governance/workflows/repo/README.md, repo-governance/conventions/structure/workflow-naming.md, repo-governance/conventions/structure/multi-harness-binding.md | Notes: parity table row+list-item folded into harness-compat (Phase 0/1 wording); workflow-naming parity example removed; multi-harness "third gate" rewritten to two-gates + AD8 sync→generate. Verified: multi-harness sync=0; repo-governance/ + .claude/agents/*.md clean of deleted-agent refs (remaining 2 refs are .claude/agents/README.md catalog bullets → Phase 3) -->
+
 ## Phase 3: Combined reference sweep — generate:bindings rename + parity→harness-compat refs
 
 Each remaining file is edited ONCE, applying both the `sync:claude-to-opencode` → `generate:bindings`
@@ -163,60 +173,62 @@ rename and any `repo-parity-*` → `repo-harness-compatibility-*` reference upda
 
 ### Governance + docs
 
-- [ ] Edit `repo-governance/development/agents/ai-agents.md`: replace all 5 `sync:claude-to-opencode`
+- [x] Edit `repo-governance/development/agents/ai-agents.md`: replace all 5 `sync:claude-to-opencode`
       → `generate:bindings`. Verify: zero matches.
 
-- [ ] Edit `repo-governance/development/agents/model-selection.md`: replace the 1 occurrence. Verify: zero.
+- [x] Edit `repo-governance/development/agents/model-selection.md`: replace the 1 occurrence. Verify: zero.
 
-- [ ] Edit `repo-governance/development/quality/code.md`: replace all 2 occurrences. Verify: zero.
+- [x] Edit `repo-governance/development/quality/code.md`: replace all 2 occurrences. Verify: zero.
 
-- [ ] Edit `docs/reference/platform-bindings.md`: replace the 1 occurrence. Verify: zero.
+- [x] Edit `docs/reference/platform-bindings.md`: replace the 1 occurrence. Verify: zero.
 
-- [ ] Edit `CLAUDE.md`: replace the 1 occurrence. Verify: zero.
+- [x] Edit `CLAUDE.md`: replace the 1 occurrence. Verify: zero.
 
-- [ ] Edit `AGENTS.md`: replace the 1 `sync:claude-to-opencode` → `generate:bindings` AND reword the
+- [x] Edit `AGENTS.md`: replace the 1 `sync:claude-to-opencode` → `generate:bindings` AND reword the
       Family #6 agent list to drop `repo-parity-checker`/`repo-parity-fixer` (the merged
       harness-compat pair now covers internal parity + external drift). Verify:
       `grep -c "sync:claude-to-opencode" AGENTS.md` → 0; `grep -c "repo-parity-" AGENTS.md` → 0.
 
-- [ ] Edit `README.md` (root): replace the 1 occurrence. Verify: zero.
+- [x] Edit `README.md` (root): replace the 1 occurrence. Verify: zero.
 
 ### Shell scripts (dual-CLI parity pair — survive the merge)
 
-- [ ] Edit `apps/rhino-cli-rust/scripts/validate-cross-vendor-parity.sh`: replace both
+- [x] Edit `apps/rhino-cli-rust/scripts/validate-cross-vendor-parity.sh`: replace both
       `sync:claude-to-opencode` → `generate:bindings`; broaden the Invariant-3 diff to
       `git diff --quiet -- .opencode/agents/ .amazonq/`; repoint header-comment refs from
       `repo-parity-checker.md` → `repo-harness-compatibility-checker.md`.
       Verify: `grep -c "sync:claude-to-opencode" …rust/scripts/validate-cross-vendor-parity.sh` → 0;
       `grep -c "repo-parity-checker" …` → 0.
 
-- [ ] Edit `apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh`: identical changes to the Rust
+- [x] Edit `apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh`: identical changes to the Rust
       script (lock-step parity pair). Verify: zero `sync:claude-to-opencode`, zero `repo-parity-checker`.
 
 ### Agent + skill files
 
-- [ ] Edit `.claude/agents/agent-maker.md`: replace the 1 occurrence in description frontmatter. Verify: zero.
+- [x] Edit `.claude/agents/agent-maker.md`: replace the 1 occurrence in description frontmatter. Verify: zero.
 
-- [ ] Edit `.claude/agents/README.md`: replace both `sync:claude-to-opencode` → `generate:bindings`
+- [x] Edit `.claude/agents/README.md`: replace both `sync:claude-to-opencode` → `generate:bindings`
       AND delete the `repo-parity-checker` and `repo-parity-fixer` catalog bullets. Verify:
       `grep -c "sync:claude-to-opencode" .claude/agents/README.md` → 0; `grep -c "repo-parity-" .claude/agents/README.md` → 0.
 
-- [ ] Edit `.claude/agents/repo-rules-fixer.md`: replace the 1 occurrence. Verify: zero.
+- [x] Edit `.claude/agents/repo-rules-fixer.md`: replace the 1 occurrence. Verify: zero.
 
-- [ ] Edit `.claude/agents/web-research-maker.md`: replace the 1 occurrence. Verify: zero.
+- [x] Edit `.claude/agents/web-research-maker.md`: replace the 1 occurrence. Verify: zero.
 
-- [ ] Edit `.claude/skills/agent-developing-agents/SKILL.md`: replace the 1 occurrence. Verify: zero.
+- [x] Edit `.claude/skills/agent-developing-agents/SKILL.md`: replace the 1 occurrence. Verify: zero.
 
-- [ ] Edit `.claude/skills/README.md`: replace the 1 occurrence. Verify: zero.
+- [x] Edit `.claude/skills/README.md`: replace the 1 occurrence. Verify: zero.
 
 ### Regenerate + verify mirrors
 
-- [ ] Run `npm run generate:bindings` to regenerate `.opencode/agents/` from the edited `.claude/`
+- [x] Run `npm run generate:bindings` to regenerate `.opencode/agents/` from the edited `.claude/`
       sources (and re-emit `.amazonq/`). Verify exits 0; `git diff --quiet .opencode/ .amazonq/` exits 0.
 
-- [ ] Verify mirrors updated: `grep -rl "sync:claude-to-opencode" .opencode/` → zero files; and
+- [x] Verify mirrors updated: `grep -rl "sync:claude-to-opencode" .opencode/` → zero files; and
       `grep -rl "repo-parity-checker\|repo-parity-fixer" .opencode/` → zero files. If a non-synced
       mirror still contains an old reference, fix manually and re-verify.
+
+<!-- Date: 2026-05-25 | Status: done | Files Changed: 11 rename-only files (sed sync→generate); AGENTS.md (sync + Family#6 reword); .claude/agents/README.md (2 sync→generate + 2 parity bullets removed + emit-bindings→generate); both validate-cross-vendor-parity.sh (sync→generate + .amazonq diff + comment repoint to harness-compat-checker); regenerated .opencode/ (49 agents) + .amazonq/ | Notes: generate:bindings exit 0; ZERO sync residuals; ZERO parity-agent/workflow residuals; .opencode parity mirrors gone; count parity 49==49 (README excluded); validate:harness-bindings 0 drift; validate:config 52/52; lint:md 0 errors -->
 
 ## Phase 4: Coordinated Commit and Push
 
