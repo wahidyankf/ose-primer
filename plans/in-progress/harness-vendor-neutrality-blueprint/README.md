@@ -254,7 +254,11 @@ ose-primer invokes rhino-cli via `nx run rhino-cli-rust:build --skip-nx-cache &&
 - Update all agent definition files under `.claude/agents/` (and skills under `.claude/skills/`)
 - Update `CLAUDE.md`, `AGENTS.md`, root `README.md`, and `docs/reference/platform-bindings.md`
 - Update both dual-CLI parity scripts (`apps/rhino-cli-rust/scripts/`, `apps/rhino-cli-go/scripts/`)
-- Update cross-vendor parity Invariant 3 tool string (workflow + `repo-parity-checker`/`repo-parity-fixer`)
+- **Merge `repo-cross-vendor-parity-*` into `repo-harness-compatibility-*`** so ose-primer has
+  exactly ONE harness-compat workflow and ONE checker/fixer pair (identical structure to
+  `ose-public`): the 5 cross-vendor parity invariants become Phase 0 of the harness-compat checker,
+  and Invariant 3 is the corrected `npm run generate:bindings && git diff --quiet .opencode/ .amazonq/`.
+  Delete the parity workflow + parity agents (+ their `.opencode/` mirrors).
 - Run `repo-rules-maker` + `repo-rules-quality-gate` to confirm governance propagation
 - Run vendor-audit to confirm zero vendor names outside exempt sections
 
@@ -265,8 +269,9 @@ ose-primer invokes rhino-cli via `nx run rhino-cli-rust:build --skip-nx-cache &&
 - Removing `sync:agents`, `sync:skills`, `sync:dry-run` targeted scripts
 - Any new harness support
 - Changing Rust (`apps/rhino-cli-rust/src/`) or Go (`apps/rhino-cli-go/`) CLI logic
-- Merging `repo-parity-*` into `repo-harness-compatibility-*` (ose-primer keeps them separate;
-  upstream merged them — out of scope here)
+- Deleting the `validate-cross-vendor-parity.sh` scripts, their `validate:cross-vendor-parity` Nx
+  targets, or the pre-push guard line — these SURVIVE the merge (they are the deterministic
+  pre-push byte guard, decoupled from the agent/workflow layer, exactly as in `ose-public`)
 
 ---
 
@@ -290,6 +295,25 @@ vendor-neutral**. Hard requirement from the
 
 ---
 
+## Single Harness-Compat Workflow (parity merge)
+
+ose-primer currently carries TWO overlapping gates — `repo-cross-vendor-parity-quality-gate` (5
+deterministic invariants) and `repo-harness-compatibility-quality-gate` (external drift) — plus four
+agents (`repo-parity-checker`/`repo-parity-fixer` + the harness-compat pair). `ose-public` already
+collapsed these into ONE workflow and ONE checker/fixer pair, where the parity invariants run as the
+checker's deterministic **Phase 0** before the Phase 1 web-research drift pass.
+
+This plan brings ose-primer to the same end-state: merge the parity workflow and agents into the
+harness-compat trio, then delete the parity files. The corrected Invariant 3
+(`npm run generate:bindings && git diff --quiet .opencode/ .amazonq/`) lands in the merged
+harness-compat **checker's Phase 0** — the natural home for the correctness-gap fix. The
+deterministic `validate-cross-vendor-parity.sh` scripts, their `validate:cross-vendor-parity` Nx
+targets, and the pre-push guard line SURVIVE unchanged in role (they are the pre-push byte guard,
+decoupled from the agent/workflow layer — exactly as in `ose-public`). [Repo-grounded: `ose-public`
+merged trio]
+
+---
+
 ## Adoption Across the ose-\* Ecosystem
 
 `ose-primer` is the downstream public template. It receives propagated governance/agent changes
@@ -304,12 +328,13 @@ name, not a variant. [Judgment call: propagation is copy-identical, no drift exp
 
 ## Ongoing Blueprint Enforcement
 
-| Enforcement mechanism                    | Frequency               | Blocks what                            |
-| ---------------------------------------- | ----------------------- | -------------------------------------- |
-| `rhino-cli repo-governance vendor-audit` | Every governance edit   | Vendor names in neutral zone           |
-| `repo-rules-quality-gate` (strict mode)  | After governance sweeps | Inconsistent/contradictory rules       |
-| `repo-cross-vendor-parity-quality-gate`  | Periodic / on demand    | Stale secondary bindings, parity drift |
-| Invariant 3 (generate:bindings + diff)   | Every parity check      | Stale `.opencode/` or `.amazonq/`      |
+| Enforcement mechanism                               | Frequency                 | Blocks what                              |
+| --------------------------------------------------- | ------------------------- | ---------------------------------------- |
+| `rhino-cli repo-governance vendor-audit`            | Every governance edit     | Vendor names in neutral zone             |
+| `repo-rules-quality-gate` (strict mode)             | After governance sweeps   | Inconsistent/contradictory rules         |
+| `repo-harness-compatibility-quality-gate` (Phase 0) | Periodic / on demand      | Parity-invariant drift (the single gate) |
+| `validate:cross-vendor-parity` (pre-push guard)     | Every push                | Stale secondary bindings byte-drift      |
+| Invariant 3 (generate:bindings + diff)              | Phase 0 of harness-compat | Stale `.opencode/` or `.amazonq/`        |
 
 ---
 
@@ -326,5 +351,5 @@ name, not a variant. [Judgment call: propagation is copy-identical, no drift exp
 - [Multi-Harness Binding Convention](../../../repo-governance/conventions/structure/multi-harness-binding.md)
 - [Governance Vendor-Independence Convention](../../../repo-governance/conventions/structure/governance-vendor-independence.md)
 - [rhino-cli Dual-Implementation Parity Convention](../../../repo-governance/conventions/structure/rhino-cli-dual-implementation-parity.md)
-- [Cross-Vendor Parity Quality Gate](../../../repo-governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md)
 - [Harness Compatibility Quality Gate](../../../repo-governance/workflows/repo/repo-harness-compatibility-quality-gate.md)
+  — the single harness-compat gate (cross-vendor parity is its Phase 0 after this plan)

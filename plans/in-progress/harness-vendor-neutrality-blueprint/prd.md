@@ -74,10 +74,21 @@ Feature: Harness/vendor neutrality blueprint — Phase 1 (ose-primer)
     And the string sync:claude-to-opencode does not appear in validate:config's invocation chain
 
   Scenario: Invariant 3 covers both OpenCode and Amazon Q
-    Given the cross-vendor parity checker runs Invariant 3
+    Given the merged harness-compatibility checker runs its Phase 0 Invariant 3
     When Invariant 3 is evaluated
     Then the checker tool runs: npm run generate:bindings
     And verifies both .opencode/ and .amazonq/ are clean with git diff --quiet
+
+  Scenario: Exactly one harness-compat workflow and agent pair remain (like ose-public)
+    Given the plan has been executed
+    When repo-governance/workflows/repo/ is listed
+    Then exactly one file matches "parity" or "harness" (repo-harness-compatibility-quality-gate.md)
+    And repo-cross-vendor-parity-quality-gate.md does not exist
+    And .claude/agents/repo-parity-checker.md and repo-parity-fixer.md do not exist
+    And their .opencode/agents/ mirrors do not exist
+    And the 5 cross-vendor parity invariants are Phase 0 of repo-harness-compatibility-checker
+    And no .md/.json/.sh file outside plans/ references repo-parity-checker, repo-parity-fixer,
+      or repo-cross-vendor-parity-quality-gate
 
   Scenario: No reference to old script name remains anywhere in the repo
     Given all files in the repo are scanned (excluding generated-reports/, dist/, and plans/)
@@ -111,7 +122,7 @@ Feature: Harness/vendor neutrality blueprint — Phase 1 (ose-primer)
     And no new convention duplicates content already in multi-harness-binding.md
 
   Scenario: repo-rules-quality-gate passes in strict mode after all changes
-    Given all phases (1–3) have been applied
+    Given all implementation phases (1–4) have been applied
     When the repo-rules-quality-gate workflow is run in strict mode
     Then it reaches double-zero CRITICAL/HIGH/MEDIUM findings
     And the vendor-audit command exits 0 against repo-governance/
@@ -127,9 +138,12 @@ Feature: Harness/vendor neutrality blueprint — Phase 1 (ose-primer)
 - `validate:config` updated to use `generate:bindings`
 - All governance `.md` files updated (grep-verified)
 - All `.claude/agents/*.md` and `.claude/skills/` references updated
-- Invariant 3 tooling string updated in the cross-vendor parity gate workflow and the
-  `repo-parity-checker` / `repo-parity-fixer` agents (now covers `.amazonq/`)
-- Both dual-CLI parity scripts updated (Rust + Go)
+- **Merge `repo-cross-vendor-parity-*` into `repo-harness-compatibility-*`** — single workflow +
+  single checker/fixer pair (like `ose-public`); the 5 parity invariants become the harness-compat
+  checker's Phase 0; Invariant 3 tooling string (`generate:bindings` + `.opencode/`/`.amazonq/` diff)
+  lands in the merged checker; parity workflow + parity agents (+ `.opencode/` mirrors) deleted
+- Both dual-CLI parity scripts updated (Rust + Go): `generate:bindings`, `.amazonq/` diff, header
+  comment repointed to the merged checker (scripts themselves survive)
 - `repo-rules-maker` invoked to confirm convention coverage or create new convention entry
 - `repo-rules-quality-gate` run in strict mode until double-zero findings
 - `vendor-audit` confirmed passing against `repo-governance/`
@@ -138,10 +152,11 @@ Feature: Harness/vendor neutrality blueprint — Phase 1 (ose-primer)
 
 - `generate:bindings:dry-run` or `generate:bindings:agents-only` variants
 - Removing `sync:agents`, `sync:skills`, `sync:dry-run` targeted scripts
+- Removing the `validate-cross-vendor-parity.sh` scripts / `validate:cross-vendor-parity` Nx targets
+  / pre-push guard (these survive as the deterministic byte guard, as in `ose-public`)
 - Changing rhino-cli CLI subcommand names (`agents sync`, `agents emit-bindings`)
 - Changing Rust or Go rhino-cli source logic
 - Any new harness support
-- Merging `repo-parity-*` into `repo-harness-compatibility-*`
 
 ## Product-Level Risks
 

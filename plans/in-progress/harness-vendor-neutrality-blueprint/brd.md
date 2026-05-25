@@ -15,6 +15,13 @@ with a unified, vendor-neutral `generate:bindings` script that regenerates **all
 binding artifacts (OpenCode + Amazon Q) in a single command. Remove the old script completely
 (hard delete — no alias, no passthrough).
 
+Coupled with this, **consolidate the harness-compat tooling to a single workflow and a single
+checker/fixer pair**, matching `ose-public`: ose-primer currently carries two overlapping gates
+(`repo-cross-vendor-parity-quality-gate` + `repo-harness-compatibility-quality-gate`) and four agents.
+The five cross-vendor parity invariants become the harness-compat checker's deterministic Phase 0,
+and the corrected binding-sync Invariant 3 (`generate:bindings` + `.opencode/`/`.amazonq/` diff) lands
+there. This removes duplicated surface area and a contributor's confusion over which gate to run.
+
 ## Business Impact
 
 ### Current Pain Points
@@ -63,8 +70,9 @@ decision, not an ecosystem standard. [Judgment call — not a web-confirmed idio
   after editing `.claude/` files; these will use `generate:bindings` after this plan
 - **Pre-commit / pre-push hooks** — call rhino-cli directly, not via the npm script; no change
   needed [Repo-grounded: `.husky/`]
-- **Cross-vendor parity checker** (`repo-parity-checker`) — Invariant 3 uses the npm script and
-  the `.opencode/` diff; must be updated to use `generate:bindings` and add `.amazonq/`
+- **Cross-vendor parity checker** (`repo-parity-checker`) — its Invariant 3 (npm script +
+  `.opencode/` diff) is **merged into `repo-harness-compatibility-checker` Phase 0** and the standalone
+  agent is deleted; the merged Invariant 3 uses `generate:bindings` and adds `.amazonq/`
 - **Human contributors** reading docs — will find `generate:bindings` in instructions
 - **Downstream forks** — inherit `generate:bindings` via propagation; never re-create the old name
 
@@ -83,8 +91,14 @@ decision, not an ecosystem standard. [Judgment call — not a web-confirmed idio
    `./apps/rhino-cli-rust/dist/rhino-cli repo-governance vendor-audit repo-governance/`
    exits 0 — governance prose is clean of vendor names outside exempt sections.
 
-4. **Judgment call**: Future agent instructions will be unambiguous — `generate:bindings` is
-   sufficient for all harnesses; contributors no longer wonder whether their harness is covered.
+4. **Observable fact**: exactly ONE harness-compat workflow remains:
+   `ls repo-governance/workflows/repo/ | grep -ciE "parity|harness"` returns `1`, and
+   `grep -rn "repo-parity-checker\|repo-parity-fixer\|repo-cross-vendor-parity-quality-gate" --include="*.md" --include="*.json" --include="*.sh" . | grep -v "plans/\|generated-reports/\|worktrees/\|node_modules"`
+   returns zero matches — matching `ose-public`'s single-gate end-state.
+
+5. **Judgment call**: Future agent instructions will be unambiguous — `generate:bindings` is
+   sufficient for all harnesses; contributors no longer wonder whether their harness is covered, and
+   there is a single harness-compat checker/fixer pair to reason about.
 
 ## Business-Scope Non-Goals
 
@@ -92,10 +106,10 @@ decision, not an ecosystem standard. [Judgment call — not a web-confirmed idio
   details not visible in npm scripts
 - Removing `sync:agents` / `sync:skills` / `sync:dry-run` targeted scripts — valid for focused
   operations
+- Removing the `validate-cross-vendor-parity.sh` scripts / `validate:cross-vendor-parity` Nx targets
+  / pre-push guard — these survive the merge as the deterministic byte guard (as in `ose-public`)
 - Adding new harnesses — this plan does not change which harnesses are supported
-- Changing Rust or Go rhino-cli source logic — only the npm wrapper and docs change
-- Merging `repo-parity-*` agents into `repo-harness-compatibility-*` — ose-primer keeps them
-  separate; that merge is a different concern
+- Changing Rust or Go rhino-cli source logic — only the npm wrapper, docs, and agent/workflow prose change
 
 ## Business Risks and Mitigations
 

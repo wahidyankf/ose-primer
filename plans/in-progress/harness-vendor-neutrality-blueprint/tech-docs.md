@@ -27,19 +27,19 @@ This plan is adapted from `ose-public/plans/done/2026-05-25__harness-vendor-neut
 The following divergences were re-grounded against ose-primer's actual state — **do not assume
 upstream paths or file lists apply here**.
 
-| Concern                                 | ose-public (upstream)                                                      | ose-primer (this repo)                                                                                       |
-| --------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| rhino-cli location                      | `apps/rhino-cli/` (single Rust impl)                                       | `apps/rhino-cli-rust/` **and** `apps/rhino-cli-go/` (dual-impl byte-parity pair)                             |
-| CLI invocation                          | `cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml --` | `nx run rhino-cli-rust:build --skip-nx-cache && ./apps/rhino-cli-rust/dist/rhino-cli`                        |
-| Parity invariant location               | Merged into `repo-harness-compatibility-*`                                 | Kept separate: `repo-cross-vendor-parity-quality-gate.md` + `repo-parity-checker`/`repo-parity-fixer` agents |
-| Invariant 3 host                        | `repo-harness-compatibility-checker.md`                                    | `repo-parity-checker.md` (tool string `npm run sync:claude-to-opencode && git diff --quiet .opencode/`)      |
-| `AGENTS.md` occurrences                 | 0 (no edit)                                                                | 1 (must edit)                                                                                                |
-| Root `README.md`                        | not listed                                                                 | 1 occurrence (must edit)                                                                                     |
-| `.claude/skills/README.md`              | not listed                                                                 | 1 occurrence (must edit)                                                                                     |
-| `docs/reference/ai-model-benchmarks.md` | 1 occurrence                                                               | 0 occurrences (no such reference) — skip                                                                     |
-| `repo-rules-quality-gate.md`            | 1 occurrence                                                               | 0 occurrences (file exists, no sync reference) — skip the edit, still run the gate in Phase 5                |
-| AD8 slot in multi-harness-binding       | upstream added "Harness-Neutral npm Script Naming" as AD8                  | ose-primer's AD8 is already **Dual-Implementation Byte-Parity** — a new naming rule must NOT reuse AD8       |
-| Parity scripts                          | one (`apps/rhino-cli/scripts/`)                                            | two (`apps/rhino-cli-rust/scripts/` + `apps/rhino-cli-go/scripts/`), each with 2 occurrences                 |
+| Concern                                 | ose-public (upstream)                                                      | ose-primer (this repo)                                                                                                                                  |
+| --------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| rhino-cli location                      | `apps/rhino-cli/` (single Rust impl)                                       | `apps/rhino-cli-rust/` **and** `apps/rhino-cli-go/` (dual-impl byte-parity pair)                                                                        |
+| CLI invocation                          | `cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml --` | `nx run rhino-cli-rust:build --skip-nx-cache && ./apps/rhino-cli-rust/dist/rhino-cli`                                                                   |
+| Parity invariant location (start state) | Merged into `repo-harness-compatibility-*`                                 | Separate: `repo-cross-vendor-parity-quality-gate.md` + `repo-parity-checker`/`repo-parity-fixer` agents — **this plan merges them to match ose-public** |
+| Invariant 3 host (end state)            | `repo-harness-compatibility-checker.md` Phase 0                            | `repo-harness-compatibility-checker.md` Phase 0 after the merge (was `repo-parity-checker.md`)                                                          |
+| `AGENTS.md` occurrences                 | 0 (no edit)                                                                | 1 (must edit)                                                                                                                                           |
+| Root `README.md`                        | not listed                                                                 | 1 occurrence (must edit)                                                                                                                                |
+| `.claude/skills/README.md`              | not listed                                                                 | 1 occurrence (must edit)                                                                                                                                |
+| `docs/reference/ai-model-benchmarks.md` | 1 occurrence                                                               | 0 occurrences (no such reference) — skip                                                                                                                |
+| `repo-rules-quality-gate.md`            | 1 occurrence                                                               | 0 occurrences (file exists, no sync reference) — skip the edit, still run the gate in Phase 5                                                           |
+| AD8 slot in multi-harness-binding       | upstream added "Harness-Neutral npm Script Naming" as AD8                  | ose-primer's AD8 is already **Dual-Implementation Byte-Parity** — a new naming rule must NOT reuse AD8                                                  |
+| Parity scripts                          | one (`apps/rhino-cli/scripts/`)                                            | two (`apps/rhino-cli-rust/scripts/` + `apps/rhino-cli-go/scripts/`), each with 2 occurrences                                                            |
 
 ## Current State (Before)
 
@@ -160,20 +160,27 @@ The CLI subcommands are implementation details. Only the npm wrapper, docs, and 
 strings change. No Rust/Go logic change, no Cargo.toml/go.mod change. This keeps scope tight.
 [Judgment call]
 
-### Decision 4: Extend Invariant 3 to `.amazonq/`, in the parity gate (not harness-compat)
+### Decision 4: Merge parity into harness-compat; Invariant 3 fix lands in the merged checker's Phase 0
 
-ose-primer keeps cross-vendor parity in `repo-cross-vendor-parity-quality-gate.md` and
-`repo-parity-checker`/`repo-parity-fixer` (upstream merged these into harness-compat). The
-correctness-gap fix — `npm run generate:bindings && git diff --quiet .opencode/ .amazonq/` — lands
-in `repo-parity-checker.md` Invariant 3 plus the parity gate workflow. The harness-compat workflow
-gets only the incidental name swap. [Repo-grounded]
+Per the user directive ("only 1 workflow regarding harness compat in the end, just like
+`ose-public`"), ose-primer merges `repo-cross-vendor-parity-*` into `repo-harness-compatibility-*`.
+`ose-public` already did this merge — the 5 parity invariants are the harness-compat checker's
+deterministic **Phase 0** (offline) before the Phase 1 web-research drift pass. The correctness-gap
+fix — `npm run generate:bindings && git diff --quiet .opencode/ .amazonq/` — therefore lands in the
+**merged harness-compat checker's Phase 0 Invariant 3**, not a standalone parity file (those are
+deleted). The merged Phase 0 carries 5 invariants; the old parity-checker's 6th invariant (Aider)
+dissolves into Phase 1 per-harness drift, matching ose-public. [Repo-grounded: ose-public merged
+trio]
 
-### Decision 5: Parity shell scripts get name-only replacement
+### Decision 5: Parity shell scripts survive; get name + reference + Invariant-3 updates
 
-`validate-cross-vendor-parity.sh` (Rust + Go) check `git diff --quiet -- .opencode/agents/`, which
-is their narrower opencode-parity scope. Replacing the script-name reference (`generate:bindings`)
-is sufficient; the `.opencode/agents/` diff scope is intentionally narrow and unchanged. [Judgment
-call: minimal, mirrors upstream's script handling]
+`validate-cross-vendor-parity.sh` (Rust + Go) and their `validate:cross-vendor-parity` Nx targets
+SURVIVE the merge — they are the deterministic pre-push byte guard, decoupled from the agent/workflow
+layer, exactly as in `ose-public`. Each script gets three updates: (1) `sync:claude-to-opencode` →
+`generate:bindings`; (2) broaden the Invariant-3 diff to `.opencode/agents/ .amazonq/`; (3) repoint
+the header-comment reference from the deleted `repo-parity-checker.md` to
+`repo-harness-compatibility-checker.md`. Both scripts change in lock-step (parity pair). [Judgment
+call]
 
 ## File-Impact Analysis
 
@@ -189,36 +196,46 @@ call: minimal, mirrors upstream's script handling]
 
 ### `repo-governance/development/quality/code.md` [MODIFY] — 2 locations
 
-### `repo-governance/conventions/structure/multi-harness-binding.md` [MODIFY] — 1 location (AD8 regenerated-data note)
+### `repo-governance/conventions/structure/multi-harness-binding.md` [MODIFY] — AD8 regen note (`sync`→`generate`) + rewrite the "third gate" paragraph to TWO gates (parity now Phase 0 of harness-compat)
 
-### `repo-governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md` [MODIFY]
+### Parity → harness-compat merge (Phase 2)
 
-Three locations. Invariant 3 description gains `agents emit-bindings` semantics and `.amazonq/`
-coverage; the regen tool string changes to `npm run generate:bindings`.
+**`repo-governance/workflows/repo/repo-harness-compatibility-quality-gate.md` [REWRITE]** — absorb
+the 5 parity invariants as Phase 0; Invariant 3 = `npm run generate:bindings && git diff --quiet
+.opencode/ .amazonq/`; swap the existing `sync:claude-to-opencode` note; delete the Related-Workflows
+cross-ref to the parity gate; preserve the dual-CLI generator-logic out-of-scope bullet + Platform
+Binding Examples.
 
-### `repo-governance/workflows/repo/repo-harness-compatibility-quality-gate.md` [MODIFY] — 1 location (name swap only)
+**`.claude/agents/repo-harness-compatibility-checker.md` [REWRITE]** — add `## Phase 0: Cross-Vendor
+Parity Invariants` (5 invariants, rhino-cli-rust nx-build invocation; Invariant 3 string); rename
+existing scope to "Phase 1: External Harness Drift"; add `Agent` to tools; drop `repo-parity-checker`
+from Related Agents.
 
-### `docs/reference/platform-bindings.md` [MODIFY] — 1 location
+**`.claude/agents/repo-harness-compatibility-fixer.md` [REWRITE]** — add Phase-0 Invariant-3 auto-fix
+(`generate:bindings`) + Phase-0 out-of-scope (Invariants 1,2,4,5); swap the 1 `sync` ref; preserve
+dual-CLI parity-pair framing; drop `repo-parity-fixer` from Related Agents.
 
-### `CLAUDE.md`, `AGENTS.md`, `README.md` (root) [MODIFY] — 1 location each
+**[DELETE]** (`git rm`): `repo-governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md`,
+`.claude/agents/repo-parity-checker.md`, `.claude/agents/repo-parity-fixer.md`,
+`.opencode/agents/repo-parity-checker.md`, `.opencode/agents/repo-parity-fixer.md`.
 
-### `apps/rhino-cli-rust/scripts/validate-cross-vendor-parity.sh` [MODIFY] — 2 locations (invocation + error message)
+**Index/convention reference updates** [MODIFY]: `repo-governance/workflows/README.md` (drop parity
+row + list item), `repo-governance/workflows/repo/README.md` (drop parity bullet),
+`repo-governance/conventions/structure/workflow-naming.md` (drop parity quality-gate example).
 
-### `apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh` [MODIFY] — 2 locations (invocation + error message)
+### `docs/reference/platform-bindings.md` [MODIFY] — 1 location (`sync`→`generate`)
 
-### `.claude/agents/repo-parity-checker.md` [MODIFY]
+### `CLAUDE.md`, `README.md` (root) [MODIFY] — 1 `sync`→`generate` each
 
-Two locations: description frontmatter + Invariant 3 tool string. Invariant 3 changes from
-`npm run sync:claude-to-opencode && git diff --quiet .opencode/` to
-`npm run generate:bindings && git diff --quiet .opencode/ .amazonq/`.
+### `AGENTS.md` [MODIFY] — 1 `sync`→`generate` + reword Family #6 to drop the two parity agents
 
-### `.claude/agents/repo-parity-fixer.md` [MODIFY] — 3 locations (description + body)
+### `apps/rhino-cli-rust/scripts/validate-cross-vendor-parity.sh` [MODIFY] — 2 `sync`→`generate` + broaden Invariant-3 diff to `.amazonq/` + repoint header comment to `repo-harness-compatibility-checker.md`
+
+### `apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh` [MODIFY] — same as the Rust script (lock-step)
 
 ### `.claude/agents/agent-maker.md` [MODIFY] — 1 location (description frontmatter)
 
-### `.claude/agents/README.md` [MODIFY] — 2 locations
-
-### `.claude/agents/repo-harness-compatibility-fixer.md` [MODIFY] — 1 location
+### `.claude/agents/README.md` [MODIFY] — 2 `sync`→`generate` + delete the two parity catalog bullets
 
 ### `.claude/agents/repo-rules-fixer.md` [MODIFY] — 1 location
 
