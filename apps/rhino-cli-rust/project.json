@@ -7,70 +7,97 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo build --release && mkdir -p dist && cp target/release/rhino-cli dist/rhino-cli",
-        "cwd": "apps/rhino-cli-rust"
+        "command": "cargo build --release --manifest-path apps/rhino-cli-rust/Cargo.toml && mkdir -p apps/rhino-cli-rust/dist && cp apps/rhino-cli-rust/target/release/rhino-cli apps/rhino-cli-rust/dist/rhino-cli"
       },
-      "outputs": ["{projectRoot}/dist", "{projectRoot}/target/release"]
+      "outputs": ["{projectRoot}/dist", "{projectRoot}/target"]
     },
     "install": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo fetch",
-        "cwd": "apps/rhino-cli-rust"
+        "command": "cargo fetch --manifest-path apps/rhino-cli-rust/Cargo.toml"
       }
     },
     "run": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo run --",
-        "cwd": "apps/rhino-cli-rust"
+        "command": "cargo run --manifest-path apps/rhino-cli-rust/Cargo.toml --"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo check --all-targets",
-        "cwd": "apps/rhino-cli-rust"
+        "command": "cargo check --manifest-path apps/rhino-cli-rust/Cargo.toml --all-targets"
+      }
+    },
+    "fmt": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo fmt --manifest-path apps/rhino-cli-rust/Cargo.toml"
+      }
+    },
+    "fmt:check": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["{projectRoot}/src/**/*.rs", "{projectRoot}/.rustfmt.toml", "{workspaceRoot}/.rustfmt.toml"],
+      "options": {
+        "command": "cargo fmt --manifest-path apps/rhino-cli-rust/Cargo.toml -- --check"
+      }
+    },
+    "deny:check": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["{projectRoot}/Cargo.toml", "{projectRoot}/Cargo.lock", "{projectRoot}/deny.toml"],
+      "options": {
+        "command": "cargo deny --manifest-path apps/rhino-cli-rust/Cargo.toml check"
+      }
+    },
+    "check:msrv": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["{projectRoot}/Cargo.toml", "{projectRoot}/src/**/*.rs"],
+      "options": {
+        "command": "cargo hack --manifest-path apps/rhino-cli-rust/Cargo.toml check --rust-version"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo fmt -- --check && cargo clippy --all-targets -- -D warnings",
-        "cwd": "apps/rhino-cli-rust"
-      },
-      "inputs": ["{projectRoot}/src/**/*.rs", "{projectRoot}/Cargo.toml"]
+        "commands": [
+          "cargo fmt --manifest-path apps/rhino-cli-rust/Cargo.toml -- --check",
+          "cargo clippy --manifest-path apps/rhino-cli-rust/Cargo.toml --all-targets -- -D warnings"
+        ],
+        "parallel": false
+      }
     },
     "test:unit": {
       "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["{projectRoot}/Cargo.toml", "{projectRoot}/src/**/*.rs"],
       "options": {
-        "command": "cargo test --lib",
-        "cwd": "apps/rhino-cli-rust"
-      },
-      "inputs": ["{projectRoot}/src/**/*.rs", "{projectRoot}/Cargo.toml"]
+        "command": "cargo test --manifest-path apps/rhino-cli-rust/Cargo.toml --lib"
+      }
     },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo llvm-cov --lib --ignore-filename-regex '(cli\\.rs|main\\.rs|commands/testcoverage\\.rs|commands/speccoverage\\.rs|commands/docs\\.rs|commands/agents\\.rs|commands/git\\.rs|commands/contracts\\.rs|commands/java\\.rs|commands/env\\.rs|commands/doctor\\.rs|internal/git/root\\.rs|internal/git/runner\\.rs|internal/testcoverage/diff\\.rs|internal/testcoverage/merge\\.rs)' --lcov --output-path cover.out --fail-under-lines 90",
-        "cwd": "apps/rhino-cli-rust"
+        "command": "cargo llvm-cov --manifest-path apps/rhino-cli-rust/Cargo.toml --lib --ignore-filename-regex '(cli\\.rs|main\\.rs|commands/testcoverage\\.rs|commands/speccoverage\\.rs|commands/docs\\.rs|commands/agents\\.rs|commands/git\\.rs|commands/contracts\\.rs|commands/java\\.rs|commands/env\\.rs|commands/doctor\\.rs|internal/git/root\\.rs|internal/git/runner\\.rs|internal/testcoverage/diff\\.rs|internal/testcoverage/merge\\.rs)' --lcov --output-path apps/rhino-cli-rust/lcov.info --fail-under-lines 90"
       },
       "inputs": ["{projectRoot}/src/**/*.rs", "{projectRoot}/Cargo.toml"],
-      "outputs": ["{projectRoot}/cover.out"],
+      "outputs": ["{projectRoot}/lcov.info"],
       "comment": "Library coverage gate at 90% lines. Ignored files are exercised only via integration tests / git- and external-tool-dependent paths: cli.rs + main.rs (entrypoint/dispatch), commands/*.rs (thin clap adapters covered by cucumber tests — testcoverage, speccoverage, docs, agents, git, contracts, java, env, doctor), internal/git/root.rs (filesystem walk-up + os.Getwd-parity logical-path resolution), internal/git/runner.rs (pre-commit orchestrator whose steps shell out to docker/nx/npx/npm/git — only the error path is byte-checkable; its branch logic is covered by injected-Deps unit tests), and testcoverage/{diff,merge}.rs (git-diff and on-disk-merge paths). The env/doctor engines (internal/envbackup/*, internal/doctor/*) carry the logic and are unit-tested directly. Actual measured lines coverage is ~92%."
     },
     "test:integration": {
       "executor": "nx:run-commands",
-      "options": {
-        "command": "cargo test --tests",
-        "cwd": "apps/rhino-cli-rust"
-      },
+      "cache": true,
       "inputs": [
+        "{projectRoot}/Cargo.toml",
         "{projectRoot}/src/**/*.rs",
         "{projectRoot}/tests/**/*.rs",
-        "{projectRoot}/Cargo.toml",
         "{workspaceRoot}/specs/apps/rhino/**/*.feature"
-      ]
+      ],
+      "options": {
+        "command": "cargo test --manifest-path apps/rhino-cli-rust/Cargo.toml --tests"
+      }
     },
     "spec-coverage": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- spec-coverage validate specs/apps/rhino/behavior/cli/gherkin apps/rhino-cli-go --shared-steps",
