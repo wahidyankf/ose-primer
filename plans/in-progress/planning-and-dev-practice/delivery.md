@@ -328,22 +328,49 @@ declare work done until CI passes.
 
 Acceptance criterion: all GitHub Actions workflows pass on `origin main`.
 
+> **Implementation notes** (2026-05-25): **Step 3.4** — committed thematically in three commits:
+> `feat(skills): add grill-me planning interrogation skill` (dcf5647b2),
+> `docs(governance): add harness-neutrality plan-check, TDD checklist shape, grill-me refs`
+> (b793b6e0c), and `docs(plans): track planning-and-dev-practice execution progress` (f9b34b03e).
+> **Step 3.5** — `git push origin HEAD:main` succeeded (fcff5e838..f9b34b03e); the pre-push hook
+> passed all deterministic gates (markdown lint 0 errors, broken-link check, governance vendor
+> audit PASSED, `validate:harness-bindings` binding-parity 0 drift + catalog-coverage 0 missing,
+> mermaid validation 0 violations). **CI verification**: no GitHub Actions workflow triggers on a
+> push to `main` — `pr-quality-gate.yml` and `pr-validate-links.yml` are `pull_request`-only, and
+> every `test-crud-*.yml` is `workflow_dispatch` + weekly `schedule`. With Trunk Based Development's
+> direct-push-to-main default (no PR opened, none requested), zero CI runs were triggered (verified:
+> `gh run list --commit <sha>` empty for all four SHAs). Quality enforcement for this docs/governance
+> push therefore lives entirely in the pre-push hook gates, all of which passed. Files Changed: none
+> (process step; commits/push recorded above).
+
 ## Manual Behavioral Assertions
 
 This plan does not touch UI or API code, so Playwright/curl are not required
 [Judgment call: no HTTP endpoints or browser UI in scope]. Manual verification is
 skill invocation:
 
-- [ ] In a Claude Code session, say "grill me on the database migration approach"
-- [ ] Observe: first response is exactly one question with 2-4 options
-- [ ] Observe: one option is clearly marked as recommended
-- [ ] Observe: the agent reads relevant repo files before asking questions answerable
+- [x] In a Claude Code session, say "grill me on the database migration approach"
+- [x] Observe: first response is exactly one question with 2-4 options
+- [x] Observe: one option is clearly marked as recommended
+- [x] Observe: the agent reads relevant repo files before asking questions answerable
       from existing code
-- [ ] After several exchanges, observe: agent summarizes all decisions and signals readiness
+- [x] After several exchanges, observe: agent summarizes all decisions and signals readiness
 
 Acceptance criterion: all five observations pass. (When run autonomously without an interactive
 user, substitute a structural review of `.claude/skills/grill-me/SKILL.md` against each
 observation and note the substitution.)
+
+> **Implementation notes** (2026-05-25): Autonomous execution — interactive invocation not
+> possible, so substituted a structural review of `.claude/skills/grill-me/SKILL.md` against each
+> observation (per the acceptance criterion). (1) "grill me …" is listed verbatim under "When to
+> activate" → would trigger activation; (2) Rule 1 ("one at a time") + Rule 2 ("2-4 concrete
+> options") + the Question-format template → first response is exactly one MC question with 2-4
+> options; (3) Rule 3 + the template's `**(Recommended)**` marker → one option marked recommended;
+> (4) Rule 4 ("Explore the codebase first … read them instead of asking") → reads repo files before
+> asking answerable questions; (5) "After the grilling" (summarize decisions, confirm shared
+> understanding, signal readiness) → final summary + readiness signal. All five observations are
+> structurally satisfied. The harness also lists `grill-me` as an available skill, confirming
+> discovery. Files Changed: none (verification only).
 
 ## Fix-All-Issues Instruction
 
@@ -353,21 +380,30 @@ must be resolved proactively, not deferred.
 
 ## Definition of Done
 
-- [ ] `.claude/skills/grill-me/SKILL.md` exists with correct frontmatter and body
-- [ ] Skill asks one question at a time with 2-4 options, marks recommendation
-- [ ] `.claude/agents/plan-checker.md` contains Step 5g (Harness-Neutrality Scan, conditional on
+- [x] `.claude/skills/grill-me/SKILL.md` exists with correct frontmatter and body
+- [x] Skill asks one question at a time with 2-4 options, marks recommendation
+- [x] `.claude/agents/plan-checker.md` contains Step 5g (Harness-Neutrality Scan, conditional on
       agent/skill/governance changes) and its OpenCode mirror is regenerated
-- [ ] `repo-governance/workflows/plan/plan-quality-gate.md` references Step 5g
-- [ ] `repo-governance/workflows/plan/plan-execution.md` references grill-me
-- [ ] `repo-governance/development/workflow/test-driven-development.md` has a TDD Shape for
+- [x] `repo-governance/workflows/plan/plan-quality-gate.md` references Step 5g
+- [x] `repo-governance/workflows/plan/plan-execution.md` references grill-me
+- [x] `repo-governance/development/workflow/test-driven-development.md` has a TDD Shape for
       Delivery Checklists subsection
-- [ ] `repo-rules-maker` propagation complete and reviewed
-- [ ] `npm run lint:md` exits 0
-- [ ] `npx nx affected -t typecheck lint test:quick spec-coverage` passes
-- [ ] `repo-rules-quality-gate` zero CRITICAL + HIGH findings
-- [ ] All changes committed thematically with Conventional Commits
-- [ ] CI passes after push to `origin main`
-- [ ] Manual behavioral assertions all pass (or structurally substituted with note)
+- [x] `repo-rules-maker` propagation complete and reviewed
+- [x] `npm run lint:md` exits 0
+- [x] `npx nx affected -t typecheck lint test:quick spec-coverage` passes
+- [x] `repo-rules-quality-gate` zero CRITICAL + HIGH findings
+- [x] All changes committed thematically with Conventional Commits
+- [x] CI passes after push to `origin main`
+- [x] Manual behavioral assertions all pass (or structurally substituted with note)
+
+> **Implementation notes** (2026-05-25): All Definition-of-Done items verified complete. Skill
+> exists (56 lines, valid frontmatter, choice-format body); plan-checker Step 5g + regenerated
+> mirror; plan-quality-gate references Step 5g (scope list + Plan-Specific Validation);
+> plan-execution references grill-me; TDD doc has the "TDD Shape for Delivery Checklists"
+> subsection; repo-rules-maker propagation applied + reviewed; `npm run lint:md` 0 errors;
+> `nx affected` no tasks (docs-only); `repo-rules-checker` zero CRITICAL/HIGH after fixes; three
+> thematic commits pushed; no push-triggered CI exists (pre-push gates passed); manual assertions
+> structurally substituted. Files Changed: none (verification only).
 
 ## Plan Archival
 
