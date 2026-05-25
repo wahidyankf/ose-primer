@@ -89,9 +89,10 @@ plans/in-progress/simple-feature/
 3. **Business Rationale (condensed BRD)** — why + affected roles + success metrics (gut-based reasoning OK when logic supports it; fabricated KPIs forbidden)
 4. **Product Requirements (condensed PRD)** — user stories + Gherkin acceptance criteria + product scope
 5. **Technical Approach** — architecture, design decisions
-6. **Delivery Checklist** — phased `- [ ]` items
-7. **Quality Gates** — local + CI gates
-8. **Verification** — how to confirm done
+6. **Worktree** — declared worktree path (`worktrees/<plan-identifier>/`) and provisioning command
+7. **Delivery Checklist** — phased `- [ ]` items
+8. **Quality Gates** — local + CI gates
+9. **Verification** — how to confirm done
 
 If the plan grows past 1000 lines or authoring feels crowded, promote to the five-document multi-file layout before execution begins.
 
@@ -558,6 +559,7 @@ Every delivery plan MUST end with a plan archival section:
 **Related Conventions**:
 
 - [Plan Anti-Hallucination Convention](../../../repo-governance/development/quality/plan-anti-hallucination.md) - Pre-write verification recipes, repo-grounding rule, refuse-on-uncertainty, anti-pattern catalog (AP-1 through AP-10), specialized-executor annotation
+- [Test-Driven Development Convention](../../../repo-governance/development/workflow/test-driven-development.md) — required RED→GREEN→REFACTOR structure for code-bearing delivery checklist items; see [§TDD Shape for Delivery Checklists](../../../repo-governance/development/workflow/test-driven-development.md#tdd-shape-for-delivery-checklists) for the per-substep command + acceptance-criterion template
 - [Trunk Based Development](../../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow (default = direct push to main regardless of execution context; branch + draft PR is opt-in only when explicitly requested)
 - [PR Merge Protocol](../../../repo-governance/development/workflow/pr-merge-protocol.md) - Explicit approval required, all quality gates must pass
 - [Feature Change Completeness](../../../repo-governance/development/quality/feature-change-completeness.md) - Specs, contracts, and tests must update with every feature change
@@ -568,6 +570,7 @@ Every delivery plan MUST end with a plan archival section:
 
 **Related Skills**:
 
+- `grill-me` - Stress-test a plan or design before authoring begins; invoke when a new plan has unresolved design decisions
 - `plan-writing-gherkin-criteria` - Detailed Gherkin guidance
 - `repo-practicing-trunk-based-development` - Git workflow
 - `docs-applying-content-quality` - Universal content standards

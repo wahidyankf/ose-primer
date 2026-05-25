@@ -43,6 +43,7 @@ outputs:
 - For plans that require iterative refinement to meet all requirements
 - When you need automated archival of completed plans to done/ folder
 - For systematic plan completion with zero-findings quality standard
+- Before executing, invoke the `grill-me` skill (`.claude/skills/grill-me/SKILL.md`) to stress-test any unresolved design decisions in the plan
 
 ## Execution Mode
 

@@ -21,6 +21,7 @@ This directory contains skill packages that provide progressive knowledge delive
 
 ### 📝 Planning Skills
 
+- **grill-me** - Structured one-question-at-a-time interrogation skill for stress-testing plans and designs before implementation begins
 - **plan-creating-project-plans** - Project planning methodology and structure
 - **plan-writing-gherkin-criteria** - Gherkin-style acceptance criteria writing
 

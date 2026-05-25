@@ -49,7 +49,7 @@ Validate project plans against standards defined in [Plans Organization Conventi
 - Plan folder naming: `YYYY-MM-DD-project-identifier`
 - File structure:
   - **Multi-file (default)** — five files: `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`. Flag missing files as HIGH finding.
-  - **Single-file (exception)** — one `README.md` with eight mandatory sections: Context, Scope, Business Rationale (condensed BRD), Product Requirements (condensed PRD), Technical Approach, Delivery Checklist, Quality Gates, Verification. Flag missing sections as HIGH.
+  - **Single-file (exception)** — one `README.md` with nine mandatory sections: Context, Scope, Business Rationale (condensed BRD), Product Requirements (condensed PRD), Technical Approach, Worktree, Delivery Checklist, Quality Gates, Verification. Flag missing sections as HIGH.
 - Required sections present per file (BRD: business goal / impact / affected roles / success metrics / non-goals / risks; PRD: product overview / personas / user stories / Gherkin acceptance criteria / product scope / product risks; tech-docs: architecture / decisions / file-impact / rollback; delivery: phased checkboxes with implementation-notes blocks)
 - Proper file organization; folder sits under `plans/backlog/`, `plans/in-progress/`, or `plans/done/`
 
@@ -108,7 +108,7 @@ Audit all plan files (`README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery
 - Validation criteria are specific
 - Acceptance criteria are testable
 - Git workflow is specified
-- **TDD-shaped steps**: Any checklist item that ships code MUST have a corresponding test-first step (Red→Green→Refactor structure). Flag as **HIGH** any code delivery item that does not include a failing-test step before the implementation step. See [Test-Driven Development Convention](../../repo-governance/development/workflow/test-driven-development.md) for required TDD step shapes.
+- **TDD-shaped steps**: Any checklist item that ships code MUST have a corresponding test-first step (Red→Green→Refactor structure). Flag as **HIGH** any code delivery item that does not include a failing-test step before the implementation step. See [Test-Driven Development Convention §TDD Shape for Delivery Checklists](../../repo-governance/development/workflow/test-driven-development.md#tdd-shape-for-delivery-checklists) for the required per-substep command + acceptance-criterion template.
 - **Execution-grade clarity (HARD RULE)**: every checkbox MUST name explicit file path(s) (or maximum-possible-detail target when path is unknowable), verbatim shell command(s) when applicable, and a concrete acceptance criterion. Flag as **HIGH** any checkbox whose action is not unambiguously executable by a sonnet-tier agent without consulting additional context — bare "implement X", "set up Y", "configure Z", "add caching" are violations. See [Plans Organization Convention §Execution-Grade Clarity](../../repo-governance/conventions/structure/plans.md#execution-grade-clarity-hard-rule).
 
 #### PR Step Authorization Check (per [Git Push Default Convention](../../repo-governance/development/workflow/git-push-default.md))
@@ -228,7 +228,7 @@ Update status to "Complete", add summary statistics and prioritized recommendati
 - [CLAUDE.md](../../CLAUDE.md) - Primary guidance
 - [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md) - Plan standards
 - [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow standards
-- [Test-Driven Development Convention](../../repo-governance/development/workflow/test-driven-development.md) - TDD-shaped delivery checklist requirement (RED→GREEN→REFACTOR)
+- [Test-Driven Development Convention](../../repo-governance/development/workflow/test-driven-development.md) - TDD-shaped delivery checklist requirement (RED→GREEN→REFACTOR); see [§TDD Shape for Delivery Checklists](../../repo-governance/development/workflow/test-driven-development.md#tdd-shape-for-delivery-checklists) for the per-substep command + acceptance-criterion template
 
 **Related Agents / Workflows:**
 
@@ -502,3 +502,35 @@ This prevents re-verification thrash and keeps the audit deterministic.
 - AP-8, AP-9, missing inline excerpt on `[Web-cited]`, executor-mismatch: **MEDIUM** per occurrence
 - Bare unlabeled non-trivial claim (defaults to `[Unverified]`): **MEDIUM** per claim
 - Missing `web-research-maker` delegation when threshold (any external claim not single-shot URL) was crossed: **MEDIUM** finding
+
+### 13. Harness-Neutrality Scan (Step 5g — CONDITIONAL)
+
+After the anti-hallucination scan (Step 5f), run this step **only when the plan touches agents, skills, rules, or governance docs** — i.e., when any delivery step creates or modifies a file under `.claude/agents/`, `.claude/skills/`, `.opencode/`, `.amazonq/`, `AGENTS.md`, `CLAUDE.md`, or `repo-governance/`. If the plan touches none of these (e.g., it only changes application code and tests under `apps/` or `libs/`), **skip this step entirely and generate no findings**.
+
+This step closes the harness-neutrality blind spot at plan-review time, complementing the post-execution [`repo-harness-compatibility-quality-gate`](../../repo-governance/workflows/repo/repo-harness-compatibility-quality-gate.md). It enforces the [Multi-Harness Binding Convention](../../repo-governance/conventions/structure/multi-harness-binding.md) and the [Governance Vendor-Independence Convention](../../repo-governance/conventions/structure/governance-vendor-independence.md).
+
+#### What to Validate
+
+**A. Agent definitions follow multi-harness-binding conventions** — When a plan creates or edits an agent under `.claude/agents/`, verify the plan keeps the primary binding as the source of truth and does not hand-author the secondary `.opencode/` (or other Tier 2) binding. Hand-edited binding files: **CRITICAL** finding (violates AD4 — Mechanical Generation Over Hand-Maintenance).
+
+**B. Agent mirrors are regenerated, not hand-written** — Verify the plan regenerates secondary bindings via `npm run generate:bindings` rather than editing them by hand. A delivery step that edits `.opencode/agents/<name>.md` directly without a `generate:bindings` run: **CRITICAL** finding.
+
+**C. Skill body is plain markdown** — When a plan creates or edits a skill under `.claude/skills/`, verify the skill body contains no harness-specific syntax or vendor product names outside fenced examples. Vendor-specific syntax in a skill body: **HIGH** finding.
+
+**D. No manual OpenCode skill mirror** — Verify the plan does NOT create an `.opencode/skill/` or `.opencode/skills/<name>` mirror (OpenCode reads `.claude/skills/{name}/SKILL.md` natively). A delivery step creating such a mirror: **HIGH** finding (the `validate:sync` "No Synced Skill Mirror" check would fail).
+
+**E. Governance changes stay vendor-neutral** — When a plan modifies files under `repo-governance/`, verify vendor product names, harness-specific filenames, and binding paths appear only inside an allowlisted "Platform Binding Examples" section (or equivalent), never in general governance prose. Vendor terms in governance prose outside an allowlisted region: **CRITICAL** finding.
+
+#### How to Audit
+
+1. Determine scope: scan the delivery checklist for any step touching `.claude/agents/`, `.claude/skills/`, `.opencode/`, `.amazonq/`, `AGENTS.md`, `CLAUDE.md`, or `repo-governance/`. If none, skip this step and report no findings.
+2. For agent-touching steps: confirm the plan names `npm run generate:bindings` for mirror regeneration and does not direct hand-edits to secondary bindings.
+3. For skill-touching steps: confirm no `.opencode/` skill mirror is created and the skill body is plain markdown.
+4. For governance-touching steps: confirm the plan does not introduce vendor terms into general governance prose; cross-check against the [Governance Vendor-Independence Convention](../../repo-governance/conventions/structure/governance-vendor-independence.md).
+
+#### Finding Severity
+
+- Hand-authored secondary binding / missing `generate:bindings` regeneration: **CRITICAL** per occurrence
+- Vendor terms in governance prose outside an allowlisted region: **CRITICAL** per occurrence
+- Vendor-specific syntax in a skill body / manual OpenCode skill mirror: **HIGH** per occurrence
+- Conditional not met (plan touches no agents/skills/governance): step skipped, **no findings**

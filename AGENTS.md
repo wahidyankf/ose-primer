@@ -110,7 +110,7 @@ Three-stage quality workflow:
 **Categories** (representative examples — see full catalog below):
 
 - **Documentation**: `docs-applying-content-quality`, `docs-applying-diataxis-framework`, `docs-creating-accessible-diagrams`, `docs-creating-by-example-tutorials`, `docs-creating-in-the-field-tutorials`
-- **Planning**: `plan-creating-project-plans`, `plan-writing-gherkin-criteria`
+- **Planning**: `grill-me`, `plan-creating-project-plans`, `plan-writing-gherkin-criteria`
 - **Agent Development**: `agent-developing-agents`
 - **Repository Patterns**: `repo-applying-maker-checker-fixer`, `repo-assessing-criticality-confidence`, `repo-generating-validation-reports`, `repo-understanding-repository-architecture`
 - **Development Workflow**: `repo-practicing-trunk-based-development`, `swe-developing-applications-common`

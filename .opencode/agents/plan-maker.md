@@ -15,6 +15,7 @@ skills:
   - plan-writing-gherkin-criteria
   - plan-creating-project-plans
   - docs-validating-factual-accuracy
+  - grill-me
 ---
 
 # Plan Maker Agent
@@ -57,11 +58,22 @@ Use this agent when:
 Plans follow the **five-document multi-file layout** by default; collapse to a single-file `README.md` only when the plan is trivially small (≤1000 lines combined AND both condensed BRD and condensed PRD fit without crowding out the technical sections).
 
 - **Multi-File (default)**: `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`
-- **Single-File (exception, ≤1000 lines)**: all content in `README.md` with mandatory sections: Context, Scope, Business Rationale (condensed BRD), Product Requirements (condensed PRD), Technical Approach, Delivery Checklist, Quality Gates, Verification.
+- **Single-File (exception, ≤1000 lines)**: all content in `README.md` with mandatory sections: Context, Scope, Business Rationale (condensed BRD), Product Requirements (condensed PRD), Technical Approach, Worktree, Delivery Checklist, Quality Gates, Verification.
 
 See [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md) for complete structure details and the Content-Placement Rules that govern what goes in `brd.md` vs `prd.md`.
 
 ## Planning Workflow
+
+### Step 0: Stress-Test Design Decisions (Optional — invoke when open decisions exist)
+
+Before gathering requirements or authoring the plan, invoke the `grill-me` skill
+(`.claude/skills/grill-me/SKILL.md`) when any design decision is unresolved or the user
+asks to be challenged on their approach. This resolves every branch of the decision tree
+one question at a time before writing begins, preventing the plan from encoding half-formed
+choices that the checker will later flag.
+
+Skip this step only when requirements are already fully resolved and no design interrogation
+is requested.
 
 ### Step 1: Gather Requirements
 
@@ -185,8 +197,9 @@ When plan content (any of `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `deli
 - Acceptance criteria are testable
 - **Code items are TDD-shaped**: items that ship code express Red→Green→Refactor steps, not
   "implement X, then write tests." See
-  [Test-Driven Development Convention](../../repo-governance/development/workflow/test-driven-development.md)
-  for required step shapes. `plan-checker` flags code items without TDD structure as HIGH findings.
+  [Test-Driven Development Convention §TDD Shape for Delivery Checklists](../../repo-governance/development/workflow/test-driven-development.md#tdd-shape-for-delivery-checklists)
+  for the required per-substep command + acceptance-criterion template. `plan-checker` flags code
+  items without TDD structure as HIGH findings.
 - **Execution-grade clarity (HARD RULE)**: every checkbox MUST contain explicit file path(s)
   when known (or maximum-possible-detail target — parent dir + naming pattern + sibling reference
   — when path is unknowable at authoring time), explicit verbatim shell command(s) where

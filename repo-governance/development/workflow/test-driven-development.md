@@ -186,6 +186,29 @@ prd.md Gherkin scenario → first failing test → minimum implementation → re
 `plan-checker` will flag delivery checklist items that reference code changes without a
 corresponding test-first step as a HIGH finding.
 
+### TDD Shape for Delivery Checklists
+
+When a delivery checklist item ships code, express it as a three-substep RED → GREEN → REFACTOR
+cycle that names the verification command and a concrete acceptance criterion for each substep:
+
+```text
+- [ ] **RED**: Write failing test for [specific behavior]
+      — command: `nx run [project]:test:unit`
+      — acceptance: test fails with `[expected error message]`
+- [ ] **GREEN**: Implement `[function/component]` in `[file path]`
+      — command: `nx run [project]:test:unit`
+      — acceptance: test passes, no other tests broken
+- [ ] **REFACTOR**: Clean up [specific concern] in `[file path]`
+      — command: `nx run [project]:test:unit`
+      — acceptance: all tests still pass, code is cleaner
+```
+
+Naming the command and acceptance criterion per substep makes the cycle unambiguous for
+execution-grade agents and satisfies the [Execution-Grade Clarity rule](../../conventions/structure/plans.md#execution-grade-clarity-hard-rule).
+
+Non-code steps (doc edits, config changes, file creation) do not require RED-GREEN-REFACTOR.
+They use a direct action plus an acceptance criterion instead.
+
 ### Plan Execution
 
 `plan-executor` (the calling context orchestrating the plan-execution workflow) and all
