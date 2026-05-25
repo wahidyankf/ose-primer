@@ -138,7 +138,7 @@ genuine non-reader) is generated. If a future need forces a thin pointer to exis
 ## Translation Artifacts
 
 Mechanical translations that platform bindings apply when generating output from upstream sources.
-All translations are performed by `rhino-cli agents sync` (`npm run sync:claude-to-opencode`).
+All translations are performed by `rhino-cli agents sync` (`npm run generate:bindings`).
 
 ### Color Translation (Claude Code → OpenCode)
 

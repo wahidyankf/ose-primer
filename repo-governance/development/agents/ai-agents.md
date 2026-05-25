@@ -61,7 +61,7 @@ This repository maintains **dual compatibility** with both the primary coding ag
   - Model selection: `sonnet`, `haiku`, `opus`, or omit (inherits)
 
 - **`.opencode/agents/`** - SECONDARY (Auto-Generated)
-  - Synced from `.claude/agents/` using `npm run sync:claude-to-opencode`
+  - Synced from `.claude/agents/` using `npm run generate:bindings`
   - Uses the secondary coding agent format: boolean flags `{ read: true, write: true }`
   - Model selection: `opencode-go/minimax-m2.7` or `opencode-go/glm-5`
 
@@ -652,7 +652,7 @@ Use the normal `Write` / `Edit` tools for files in `.claude/` and `.opencode/`. 
 - Creating or updating skill files in `.claude/skills/*/SKILL.md` (the coding agent reads these natively â€” no `.opencode/skills/` authoring needed)
 - Updating the corresponding `README.md` index files
 
-**Sync requirement**: After editing `.claude/` sources, run `npm run sync:claude-to-opencode` to regenerate the `.opencode/` mirrors. The pre-commit hook validates both formats.
+**Sync requirement**: After editing `.claude/` sources, run `npm run generate:bindings` to regenerate the `.opencode/` mirrors. The pre-commit hook validates both formats.
 
 ## Model Selection Guidelines
 
@@ -2466,7 +2466,7 @@ This repository maintains **dual compatibility** with both the primary coding ag
 
 1. Edit agents in `.claude/agents/` directory (PRIMARY)
 2. Edit skills in `.claude/skills/` directory (PRIMARY)
-3. Run sync: `npm run sync:claude-to-opencode`
+3. Run sync: `npm run generate:bindings`
 4. Changes automatically regenerate `.opencode/` (SECONDARY)
 
 **Rationale**: Single source of truth prevents conflicts, ensures consistency, simplifies maintenance.
@@ -2539,7 +2539,7 @@ Agent skills are **read natively by the coding agent** from `.claude/skills/` â€
 
 **Commands**:
 
-- `npm run sync:claude-to-opencode` - Full sync (agents only; skills are read natively by the coding agent)
+- `npm run generate:bindings` - Full sync (agents only; skills are read natively by the coding agent)
 - `npm run sync:agents` - Agents only
 - `npm run sync:skills` - No-op (preserved for CLI backward compatibility; skills are NOT copied)
 - `npm run validate:sync` - Verify semantic equivalence
@@ -2575,7 +2575,7 @@ Agent skills are **read natively by the coding agent** from `.claude/skills/` â€
 ### Troubleshooting
 
 **Problem**: `.opencode/` agents out of sync with `.claude/`
-**Solution**: Run `npm run sync:claude-to-opencode` to regenerate
+**Solution**: Run `npm run generate:bindings` to regenerate
 
 **Problem**: Conversion errors during sync
 **Solution**: Check agent frontmatter format in `.claude/agents/`, fix YAML syntax, re-sync

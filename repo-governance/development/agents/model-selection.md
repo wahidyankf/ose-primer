@@ -262,7 +262,7 @@ For a deployer agent:
 
 This repo runs on both the primary coding agent (`.claude/agents/`) and the secondary coding agent (`.opencode/agents/`).
 The the secondary coding agent runtime uses Z.ai Coding Plan models. The sync pipeline
-(`npm run sync:claude-to-opencode`) translates Claude model aliases automatically.
+(`npm run generate:bindings`) translates Claude model aliases automatically.
 
 | the primary coding agent alias | the secondary coding agent model ID | GLM tier                                      |
 | ------------------------------ | ----------------------------------- | --------------------------------------------- |

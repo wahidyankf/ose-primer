@@ -3,15 +3,15 @@
 #
 # This script is the implementation behind the
 # rhino-cli-rust:validate:cross-vendor-parity Nx target. It mirrors the five
-# invariants validated by the repo-parity-checker agent and the Go script
-# apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh, but drives the
-# Rust rhino-cli binary for the governance vendor-audit invariants. Exits 0 if
-# all invariants hold, non-zero otherwise.
+# invariants validated by the repo-harness-compatibility-checker agent (Phase 0)
+# and the Go script apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh,
+# but drives the Rust rhino-cli binary for the governance vendor-audit
+# invariants. Exits 0 if all invariants hold, non-zero otherwise.
 #
 # The script is intentionally implemented as a thin shell wrapper that invokes
-# existing tools (rhino-cli vendor-audit, npm sync, ls/grep/diff) rather than
-# re-implementing their logic. See:
-#   .claude/agents/repo-parity-checker.md
+# existing tools (rhino-cli vendor-audit, npm generate:bindings, ls/grep/diff)
+# rather than re-implementing their logic. See:
+#   .claude/agents/repo-harness-compatibility-checker.md
 #   repo-governance/conventions/structure/governance-vendor-independence.md
 
 set -euo pipefail
@@ -67,17 +67,17 @@ for target in AGENTS.md CLAUDE.md; do
 done
 
 # Invariant 3: binding sync no-op.
-print_invariant 3 "Binding sync no-op (.claude/ -> .opencode/)"
-SYNC_OUT=$(npm run sync:claude-to-opencode --silent 2>&1) || {
+print_invariant 3 "Binding sync no-op (.claude/ -> .opencode/ + .amazonq/)"
+SYNC_OUT=$(npm run generate:bindings --silent 2>&1) || {
   echo "${SYNC_OUT}"
-  fail "sync:claude-to-opencode exited non-zero"
+  fail "generate:bindings exited non-zero"
 }
-if git diff --quiet -- .opencode/agents/ 2>/dev/null; then
-  pass "sync produced no changes in .opencode/agents/"
+if git diff --quiet -- .opencode/agents/ .amazonq/ 2>/dev/null; then
+  pass "generate:bindings produced no changes in .opencode/agents/ or .amazonq/"
 else
   printf '  diff:%s' "${NL}"
-  git --no-pager diff --stat -- .opencode/agents/
-  fail "sync produced drift in .opencode/agents/ — commit and re-run"
+  git --no-pager diff --stat -- .opencode/agents/ .amazonq/
+  fail "generate:bindings produced drift in .opencode/agents/ or .amazonq/ — commit and re-run"
 fi
 
 # Invariant 4: agent count parity.

@@ -48,7 +48,7 @@ nx affected -t typecheck lint test:quick spec-coverage  # Pre-push gate
 nx run-many -t typecheck lint test:quick spec-coverage  # Full workspace gate
 nx graph                         # Visualise dependencies
 
-npm run sync:claude-to-opencode  # Regenerate .opencode/ from .claude/
+npm run generate:bindings  # Regenerate .opencode/ from .claude/
 npm run validate:claude          # Lint .claude/ source format
 npm run validate:opencode        # Lint .opencode/ output format
 ```
