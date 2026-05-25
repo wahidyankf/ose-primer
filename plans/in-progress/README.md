@@ -4,10 +4,6 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- [rhino-cli-rust Strictness Alignment](./rhino-cli-rust-strictness/README.md)
-  — align `apps/rhino-cli-rust/` project.json structure, Clippy lint rules, and supporting
-  files to match `ose-public/apps/rhino-cli/`.
-
 - [Add `investment-oracle` desktop demo](./add-investment-oracle-app/README.md)
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
