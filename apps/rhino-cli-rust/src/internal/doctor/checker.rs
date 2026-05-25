@@ -175,11 +175,11 @@ pub fn read_rust_version(cargo_toml_path: &Path) -> Option<String> {
     let data = std::fs::read_to_string(cargo_toml_path).ok()?;
     for line in data.split('\n') {
         let trimmed = line.trim();
-        if trimmed.starts_with("rust-version") {
-            if let Some((_, rhs)) = trimmed.split_once('=') {
-                let ver = rhs.trim().trim_matches('"');
-                return Some(ver.to_string());
-            }
+        if trimmed.starts_with("rust-version")
+            && let Some((_, rhs)) = trimmed.split_once('=')
+        {
+            let ver = rhs.trim().trim_matches('"');
+            return Some(ver.to_string());
         }
     }
     Some(String::new())
@@ -231,16 +231,16 @@ pub fn parse_java_version(stderr: &str) -> String {
         if line.contains("version") {
             let start = line.find('"');
             let end = line.rfind('"');
-            if let (Some(s), Some(e)) = (start, end) {
-                if s != e {
-                    let version = &line[s + 1..e];
-                    let parts: Vec<&str> = version.split('.').collect();
-                    if !parts.is_empty() && !parts[0].is_empty() {
-                        if parts[0] == "1" && parts.len() > 1 {
-                            return parts[1].to_string();
-                        }
-                        return parts[0].to_string();
+            if let (Some(s), Some(e)) = (start, end)
+                && s != e
+            {
+                let version = &line[s + 1..e];
+                let parts: Vec<&str> = version.split('.').collect();
+                if !parts.is_empty() && !parts[0].is_empty() {
+                    if parts[0] == "1" && parts.len() > 1 {
+                        return parts[1].to_string();
                     }
+                    return parts[0].to_string();
                 }
             }
         }

@@ -30,9 +30,8 @@ struct ClaudeAgentFull {
 /// `cannot unmarshal` failure). Only string scalars are accepted for the
 /// scalar fields; `skills` accepts a string sequence.
 fn extract_claude_agent(value: &YamlValue) -> Result<ClaudeAgentFull, String> {
-    let pairs = match value {
-        YamlValue::Mapping(p) => p,
-        _ => return Ok(empty_agent()),
+    let YamlValue::Mapping(pairs) = value else {
+        return Ok(empty_agent());
     };
 
     let mut agent = empty_agent();

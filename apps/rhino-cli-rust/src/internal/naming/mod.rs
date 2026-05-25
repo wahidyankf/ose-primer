@@ -75,9 +75,8 @@ fn extract_frontmatter_name(content: &[u8]) -> String {
         return String::new();
     }
     let rest = &text[4..];
-    let end = match rest.find("\n---") {
-        Some(e) => e,
-        None => return String::new(),
+    let Some(end) = rest.find("\n---") else {
+        return String::new();
     };
     let frontmatter = &rest[..end];
     for line in frontmatter.split('\n') {

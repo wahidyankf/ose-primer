@@ -162,17 +162,17 @@ pub fn backup(mut opts: Options) -> Result<EnvResult, Error> {
     let dest_root_str = dest_root.to_string_lossy().into_owned();
 
     // Confirmation check.
-    if !opts.force {
-        if let Some(confirm) = opts.confirm.as_mut() {
-            let existing = find_existing(&entries, &dest_root_str);
-            if !existing.is_empty() && !confirm(&existing) {
-                return Ok(EnvResult {
-                    direction: "backup".to_string(),
-                    dir: opts.backup_dir.clone(),
-                    cancelled: true,
-                    ..Default::default()
-                });
-            }
+    if !opts.force
+        && let Some(confirm) = opts.confirm.as_mut()
+    {
+        let existing = find_existing(&entries, &dest_root_str);
+        if !existing.is_empty() && !confirm(&existing) {
+            return Ok(EnvResult {
+                direction: "backup".to_string(),
+                dir: opts.backup_dir.clone(),
+                cancelled: true,
+                ..Default::default()
+            });
         }
     }
 
@@ -193,14 +193,14 @@ pub fn backup(mut opts: Options) -> Result<EnvResult, Error> {
         }
 
         let dst = dest_root.join(&e.rel_path);
-        if let Some(parent) = dst.parent() {
-            if let Err(err) = std::fs::create_dir_all(parent) {
-                result
-                    .errors
-                    .push(format!("mkdir for {}: {}", e.rel_path, go_io_err(&err)));
-                result.skipped += 1;
-                continue;
-            }
+        if let Some(parent) = dst.parent()
+            && let Err(err) = std::fs::create_dir_all(parent)
+        {
+            result
+                .errors
+                .push(format!("mkdir for {}: {}", e.rel_path, go_io_err(&err)));
+            result.skipped += 1;
+            continue;
         }
 
         if let Err(err) = copy_file(&e.abs_path, &dst.to_string_lossy()) {
@@ -263,22 +263,22 @@ pub fn restore(mut opts: Options) -> Result<EnvResult, Error> {
     }
 
     // Confirmation check.
-    if !opts.force {
-        if let Some(confirm) = opts.confirm.as_mut() {
-            let restore_entries: Vec<FileEntry> = entries
-                .iter()
-                .filter(|e| e.source == "config" || base_starts_with_env(&e.rel_path))
-                .cloned()
-                .collect();
-            let existing = find_existing(&restore_entries, &opts.repo_root);
-            if !existing.is_empty() && !confirm(&existing) {
-                return Ok(EnvResult {
-                    direction: "restore".to_string(),
-                    dir: opts.backup_dir.clone(),
-                    cancelled: true,
-                    ..Default::default()
-                });
-            }
+    if !opts.force
+        && let Some(confirm) = opts.confirm.as_mut()
+    {
+        let restore_entries: Vec<FileEntry> = entries
+            .iter()
+            .filter(|e| e.source == "config" || base_starts_with_env(&e.rel_path))
+            .cloned()
+            .collect();
+        let existing = find_existing(&restore_entries, &opts.repo_root);
+        if !existing.is_empty() && !confirm(&existing) {
+            return Ok(EnvResult {
+                direction: "restore".to_string(),
+                dir: opts.backup_dir.clone(),
+                cancelled: true,
+                ..Default::default()
+            });
         }
     }
 
@@ -303,14 +303,14 @@ pub fn restore(mut opts: Options) -> Result<EnvResult, Error> {
         }
 
         let dst = Path::new(&opts.repo_root).join(&e.rel_path);
-        if let Some(parent) = dst.parent() {
-            if let Err(err) = std::fs::create_dir_all(parent) {
-                result
-                    .errors
-                    .push(format!("mkdir for {}: {}", e.rel_path, go_io_err(&err)));
-                result.skipped += 1;
-                continue;
-            }
+        if let Some(parent) = dst.parent()
+            && let Err(err) = std::fs::create_dir_all(parent)
+        {
+            result
+                .errors
+                .push(format!("mkdir for {}: {}", e.rel_path, go_io_err(&err)));
+            result.skipped += 1;
+            continue;
         }
 
         if let Err(err) = copy_file(&e.abs_path, &dst.to_string_lossy()) {

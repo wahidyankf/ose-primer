@@ -12,6 +12,7 @@
 //! git root and delegate here, which keeps the byte-exact output contract
 //! unit-testable without a real git checkout.
 
+use std::fmt::Write as _;
 use std::path::Path;
 
 use anyhow::{Error, anyhow};
@@ -81,7 +82,7 @@ pub fn emit_bindings(root: &Path, dry_run: bool) -> Result<EmitResult, Error> {
 
     for (path, content) in &bindings {
         if dry_run {
-            output.push_str(&format!("would write {path}\n"));
+            let _ = writeln!(output, "would write {path}");
         } else {
             let target = root.join(path);
             if let Some(parent) = target.parent() {
@@ -90,16 +91,17 @@ pub fn emit_bindings(root: &Path, dry_run: bool) -> Result<EmitResult, Error> {
             }
             std::fs::write(&target, content.as_bytes())
                 .map_err(|e| anyhow!("failed to write {}: {e}", target.display()))?;
-            output.push_str(&format!("wrote {path}\n"));
+            let _ = writeln!(output, "wrote {path}");
         }
     }
 
     if dry_run {
-        output.push_str(&format!(
-            "emit-bindings: would write {count} binding file(s) (dry-run)\n"
-        ));
+        let _ = writeln!(
+            output,
+            "emit-bindings: would write {count} binding file(s) (dry-run)"
+        );
     } else {
-        output.push_str(&format!("emit-bindings: wrote {count} binding file(s)\n"));
+        let _ = writeln!(output, "emit-bindings: wrote {count} binding file(s)");
     }
 
     Ok(EmitResult { output, count })
@@ -167,21 +169,23 @@ pub fn validate_bindings(root: &Path) -> ValidateResult {
 
     let mut output = String::new();
     for path in &drift {
-        output.push_str(&format!("DRIFT {path}\n"));
+        let _ = writeln!(output, "DRIFT {path}");
     }
     for dir in &missing {
-        output.push_str(&format!("MISSING-CATALOG {dir}\n"));
+        let _ = writeln!(output, "MISSING-CATALOG {dir}");
     }
-    output.push_str(&format!(
-        "binding-parity: {n_files} file(s) checked, {drift_count} drift\n"
-    ));
-    output.push_str(&format!(
-        "catalog-coverage: {dirs_checked} dir(s) checked, {missing_count} missing\n"
-    ));
+    let _ = writeln!(
+        output,
+        "binding-parity: {n_files} file(s) checked, {drift_count} drift"
+    );
+    let _ = writeln!(
+        output,
+        "catalog-coverage: {dirs_checked} dir(s) checked, {missing_count} missing"
+    );
     if problems == 0 {
         output.push_str("VALIDATION PASSED\n");
     } else {
-        output.push_str(&format!("VALIDATION FAILED: {problems} problem(s)\n"));
+        let _ = writeln!(output, "VALIDATION FAILED: {problems} problem(s)");
     }
 
     ValidateResult { output, problems }

@@ -190,54 +190,49 @@ fn validate_agent_file(
         }
     };
 
-    let (claude_front, claude_body) = match extract_frontmatter(&claude_content) {
-        Ok(fb) => fb,
-        Err(e) => {
-            return fail(
-                &check_name,
-                "",
-                "",
-                &format!("Failed to parse Claude frontmatter: {e}"),
-            );
-        }
-    };
-    let (opencode_front, opencode_body) = match extract_frontmatter(&opencode_content) {
-        Ok(fb) => fb,
-        Err(e) => {
-            return fail(
-                &check_name,
-                "",
-                "",
-                &format!("Failed to parse OpenCode frontmatter: {e}"),
-            );
-        }
-    };
+    let (claude_data, claude_body, opencode_agent, opencode_body) =
+        match parse_agent_pair(&claude_content, &opencode_content) {
+            Ok(t) => t,
+            Err(msg) => return fail(&check_name, "", "", &msg),
+        };
 
-    let claude_data = match parse_yaml_value(&claude_front) {
-        Ok(v) => v,
-        Err(e) => {
-            return fail(
-                &check_name,
-                "",
-                "",
-                &format!("Failed to parse Claude YAML: {e}"),
-            );
-        }
-    };
-    let opencode_agent = match parse_opencode_agent(&opencode_front) {
-        Ok(a) => a,
-        Err(e) => {
-            return fail(
-                &check_name,
-                "",
-                "",
-                &format!("Failed to parse OpenCode YAML: {e}"),
-            );
-        }
-    };
+    compare_agent_fields(
+        check_name,
+        &claude_data,
+        &claude_body,
+        &opencode_agent,
+        &opencode_body,
+    )
+}
 
+/// Parses both sides of an agent pair and returns the four values needed for
+/// comparison, or an error message string on the first parse failure.
+fn parse_agent_pair(
+    claude_content: &[u8],
+    opencode_content: &[u8],
+) -> Result<(YamlValue, Vec<u8>, ParsedOpenCode, Vec<u8>), String> {
+    let (claude_front, claude_body) = extract_frontmatter(claude_content)
+        .map_err(|e| format!("Failed to parse Claude frontmatter: {e}"))?;
+    let (opencode_front, opencode_body) = extract_frontmatter(opencode_content)
+        .map_err(|e| format!("Failed to parse OpenCode frontmatter: {e}"))?;
+    let claude_data =
+        parse_yaml_value(&claude_front).map_err(|e| format!("Failed to parse Claude YAML: {e}"))?;
+    let opencode_agent = parse_opencode_agent(&opencode_front)
+        .map_err(|e| format!("Failed to parse OpenCode YAML: {e}"))?;
+    Ok((claude_data, claude_body, opencode_agent, opencode_body))
+}
+
+/// Compares the parsed fields of a Claude/OpenCode agent pair and returns the
+/// result check.
+fn compare_agent_fields(
+    check_name: String,
+    claude_data: &YamlValue,
+    claude_body: &[u8],
+    opencode_agent: &ParsedOpenCode,
+    opencode_body: &[u8],
+) -> ValidationCheck {
     // Description.
-    let claude_desc = map_string(&claude_data, "description");
+    let claude_desc = map_string(claude_data, "description");
     if claude_desc != opencode_agent.description {
         return ValidationCheck {
             name: check_name,
@@ -249,7 +244,7 @@ fn validate_agent_file(
     }
 
     // Model.
-    let claude_model = map_string(&claude_data, "model");
+    let claude_model = map_string(claude_data, "model");
     let expected_model = convert_model(&claude_model);
     if expected_model != opencode_agent.model {
         return ValidationCheck {
@@ -262,7 +257,7 @@ fn validate_agent_file(
     }
 
     // Tools.
-    let claude_tools = match map_value(&claude_data, "tools") {
+    let claude_tools = match map_value(claude_data, "tools") {
         Some(v) => parse_claude_tools(v),
         None => Vec::new(),
     };
@@ -278,7 +273,7 @@ fn validate_agent_file(
     }
 
     // Skills.
-    let claude_skills = map_skills(&claude_data);
+    let claude_skills = map_skills(claude_data);
     if !skills_match(&claude_skills, &opencode_agent.skills) {
         return ValidationCheck {
             name: check_name,
@@ -326,12 +321,12 @@ fn parse_opencode_agent(frontmatter: &[u8]) -> Result<ParsedOpenCode, Error> {
             match k.as_str() {
                 "description" => {
                     if let YamlValue::String(s) = v {
-                        out.description = s.clone();
+                        out.description.clone_from(s);
                     }
                 }
                 "model" => {
                     if let YamlValue::String(s) = v {
-                        out.model = s.clone();
+                        out.model.clone_from(s);
                     }
                 }
                 "tools" => {
@@ -382,9 +377,8 @@ fn validate_no_synced_skills(repo_root: &std::path::Path) -> ValidationCheck {
 
     let mut offenders: Vec<String> = Vec::new();
     for dir in &mirror_dirs {
-        let entries = match std::fs::read_dir(dir) {
-            Ok(e) => e,
-            Err(_) => continue,
+        let Ok(entries) = std::fs::read_dir(dir) else {
+            continue;
         };
         for entry in entries.flatten() {
             let name = entry.file_name().to_string_lossy().into_owned();
@@ -421,9 +415,8 @@ fn validate_no_synced_skills(repo_root: &std::path::Path) -> ValidationCheck {
 // --- helpers ---
 
 fn count_markdown_files(dir: &std::path::Path) -> i64 {
-    let entries = match std::fs::read_dir(dir) {
-        Ok(e) => e,
-        Err(_) => return 0,
+    let Ok(entries) = std::fs::read_dir(dir) else {
+        return 0;
     };
     let mut count = 0i64;
     for entry in entries.flatten() {

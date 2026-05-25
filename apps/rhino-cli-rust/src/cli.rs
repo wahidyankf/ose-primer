@@ -228,20 +228,7 @@ fn dispatch(cmd: &Commands, output_format: OutputFormat, verbose: bool, quiet: b
     // block, which is printed to stderr on error to mirror cobra's default
     // (SilenceUsage is unset on the Go commands; only SilenceErrors is set).
     let (result, usage) = match cmd {
-        Commands::TestCoverage(tc) => match tc {
-            TestCoverageCommands::Validate(args) => (
-                testcoverage::run_validate(args, output_format, verbose, quiet),
-                testcoverage::VALIDATE_USAGE,
-            ),
-            TestCoverageCommands::Diff(args) => (
-                testcoverage::run_diff(args, output_format, verbose, quiet),
-                testcoverage::DIFF_USAGE,
-            ),
-            TestCoverageCommands::Merge(args) => (
-                testcoverage::run_merge(args, output_format, verbose, quiet),
-                testcoverage::MERGE_USAGE,
-            ),
-        },
+        Commands::TestCoverage(tc) => dispatch_test_coverage(tc, output_format, verbose, quiet),
         Commands::SpecCoverage(sc) => match sc {
             SpecCoverageCommands::Validate(args) => (
                 speccoverage::run_validate(args, output_format, verbose, quiet),
@@ -258,31 +245,7 @@ fn dispatch(cmd: &Commands, output_format: OutputFormat, verbose: bool, quiet: b
                 docs::VALIDATE_MERMAID_USAGE,
             ),
         },
-        Commands::Agents(ac) => match ac {
-            AgentsCommands::Sync(args) => (
-                agents::run_sync(args, output_format, verbose, quiet),
-                agents::SYNC_USAGE,
-            ),
-            AgentsCommands::ValidateClaude(args) => (
-                agents::run_validate_claude(args, output_format, verbose, quiet),
-                agents::VALIDATE_CLAUDE_USAGE,
-            ),
-            AgentsCommands::ValidateSync => (
-                agents::run_validate_sync(output_format, verbose, quiet),
-                agents::VALIDATE_SYNC_USAGE,
-            ),
-            AgentsCommands::ValidateNaming => (
-                agents::run_validate_naming(output_format, verbose, quiet),
-                agents::VALIDATE_NAMING_USAGE,
-            ),
-            AgentsCommands::EmitBindings(args) => {
-                (agents::run_emit_bindings(args), agents::EMIT_BINDINGS_USAGE)
-            }
-            AgentsCommands::ValidateBindings => (
-                agents::run_validate_bindings(),
-                agents::VALIDATE_BINDINGS_USAGE,
-            ),
-        },
+        Commands::Agents(ac) => dispatch_agents(ac, output_format, verbose, quiet),
         Commands::RepoGovernance(rg) => match rg {
             RepoGovernanceCommands::VendorAudit(args) => (
                 repo_governance::run_vendor_audit(args, output_format),
@@ -314,17 +277,7 @@ fn dispatch(cmd: &Commands, output_format: OutputFormat, verbose: bool, quiet: b
                 java::VALIDATE_ANNOTATIONS_USAGE,
             ),
         },
-        Commands::Env(ec) => match ec {
-            EnvCommands::Init(args) => (env::run_env_init(args), env::ENV_INIT_USAGE),
-            EnvCommands::Backup(args) => (
-                env::run_env_backup(args, output_format, verbose, quiet),
-                env::ENV_BACKUP_USAGE,
-            ),
-            EnvCommands::Restore(args) => (
-                env::run_env_restore(args, output_format, verbose, quiet),
-                env::ENV_RESTORE_USAGE,
-            ),
-        },
+        Commands::Env(ec) => dispatch_env(ec, output_format, verbose, quiet),
         Commands::Doctor(args) => (
             doctor::run_doctor(args, output_format, verbose, quiet),
             doctor::DOCTOR_USAGE,
@@ -339,6 +292,80 @@ fn dispatch(cmd: &Commands, output_format: OutputFormat, verbose: bool, quiet: b
             eprintln!("Error: {e:#}");
             1
         }
+    }
+}
+
+fn dispatch_test_coverage(
+    tc: &TestCoverageCommands,
+    output_format: OutputFormat,
+    verbose: bool,
+    quiet: bool,
+) -> (anyhow::Result<()>, &'static str) {
+    match tc {
+        TestCoverageCommands::Validate(args) => (
+            testcoverage::run_validate(args, output_format, verbose, quiet),
+            testcoverage::VALIDATE_USAGE,
+        ),
+        TestCoverageCommands::Diff(args) => (
+            testcoverage::run_diff(args, output_format, verbose, quiet),
+            testcoverage::DIFF_USAGE,
+        ),
+        TestCoverageCommands::Merge(args) => (
+            testcoverage::run_merge(args, output_format, verbose, quiet),
+            testcoverage::MERGE_USAGE,
+        ),
+    }
+}
+
+fn dispatch_agents(
+    ac: &AgentsCommands,
+    output_format: OutputFormat,
+    verbose: bool,
+    quiet: bool,
+) -> (anyhow::Result<()>, &'static str) {
+    match ac {
+        AgentsCommands::Sync(args) => (
+            agents::run_sync(args, output_format, verbose, quiet),
+            agents::SYNC_USAGE,
+        ),
+        AgentsCommands::ValidateClaude(args) => (
+            agents::run_validate_claude(args, output_format, verbose, quiet),
+            agents::VALIDATE_CLAUDE_USAGE,
+        ),
+        AgentsCommands::ValidateSync => (
+            agents::run_validate_sync(output_format, verbose, quiet),
+            agents::VALIDATE_SYNC_USAGE,
+        ),
+        AgentsCommands::ValidateNaming => (
+            agents::run_validate_naming(output_format, verbose, quiet),
+            agents::VALIDATE_NAMING_USAGE,
+        ),
+        AgentsCommands::EmitBindings(args) => {
+            (agents::run_emit_bindings(args), agents::EMIT_BINDINGS_USAGE)
+        }
+        AgentsCommands::ValidateBindings => (
+            agents::run_validate_bindings(),
+            agents::VALIDATE_BINDINGS_USAGE,
+        ),
+    }
+}
+
+fn dispatch_env(
+    ec: &EnvCommands,
+    output_format: OutputFormat,
+    verbose: bool,
+    quiet: bool,
+) -> (anyhow::Result<()>, &'static str) {
+    match ec {
+        EnvCommands::Init(args) => (env::run_env_init(args), env::ENV_INIT_USAGE),
+        EnvCommands::Backup(args) => (
+            env::run_env_backup(args, output_format, verbose, quiet),
+            env::ENV_BACKUP_USAGE,
+        ),
+        EnvCommands::Restore(args) => (
+            env::run_env_restore(args, output_format, verbose, quiet),
+            env::ENV_RESTORE_USAGE,
+        ),
     }
 }
 

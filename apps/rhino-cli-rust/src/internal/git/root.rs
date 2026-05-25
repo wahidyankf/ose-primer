@@ -17,12 +17,11 @@ fn getwd() -> std::io::Result<PathBuf> {
     let resolved = std::env::current_dir()?;
     if let Some(pwd) = std::env::var_os("PWD") {
         let pwd_path = PathBuf::from(&pwd);
-        if pwd_path.is_absolute() {
-            if let (Ok(a), Ok(b)) = (std::fs::metadata(&pwd_path), std::fs::metadata(&resolved)) {
-                if same_dir(&a, &b) {
-                    return Ok(pwd_path);
-                }
-            }
+        if pwd_path.is_absolute()
+            && let (Ok(a), Ok(b)) = (std::fs::metadata(&pwd_path), std::fs::metadata(&resolved))
+            && same_dir(&a, &b)
+        {
+            return Ok(pwd_path);
         }
     }
     Ok(resolved)

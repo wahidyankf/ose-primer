@@ -85,11 +85,29 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
         .join("crud-be-rust-axum")
         .join("Cargo.toml");
 
+    let mut defs = build_core_tools(&package_json, &pom_xml);
+    defs.extend(build_system_lang_tools(
+        &go_mod,
+        &python_version,
+        &cargo_toml,
+    ));
+    defs.extend(build_beam_tools(&tool_versions));
+    defs.extend(build_platform_tools(&global_json, &pubspec));
+    defs.extend(build_infra_tools());
+    defs
+}
+
+/// git, volta, node, npm, java, maven.
+fn build_core_tools(package_json: &std::path::Path, pom_xml: &std::path::Path) -> Vec<ToolDef> {
+    let mut defs = build_vcs_node_tools(package_json);
+    defs.extend(build_jvm_tools(pom_xml));
+    defs
+}
+
+/// git, volta, node, npm.
+fn build_vcs_node_tools(package_json: &std::path::Path) -> Vec<ToolDef> {
     let no_req = || Box::new(String::new) as Box<dyn Fn() -> String>;
-
     let mut defs: Vec<ToolDef> = Vec::new();
-
-    // --- Core tools ---
     defs.push(ToolDef {
         name: "git",
         binary: "git",
@@ -141,7 +159,7 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
         })),
     });
     {
-        let package_json = package_json.clone();
+        let pj = package_json.to_path_buf();
         defs.push(ToolDef {
             name: "node",
             binary: "node",
@@ -150,7 +168,7 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             use_stderr: false,
             parse_ver: Box::new(parse_trim_version),
             compare: plain(compare_exact),
-            read_req: Box::new(move || read_node_version(&package_json).unwrap_or_default()),
+            read_req: Box::new(move || read_node_version(&pj).unwrap_or_default()),
             install_cmd: Some(Box::new(|req, _platform| {
                 vec![InstallStep {
                     description: format!("Install Node.js {req} via Volta"),
@@ -161,7 +179,7 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
         });
     }
     {
-        let package_json = package_json.clone();
+        let pj = package_json.to_path_buf();
         defs.push(ToolDef {
             name: "npm",
             binary: "npm",
@@ -170,7 +188,7 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             use_stderr: false,
             parse_ver: Box::new(parse_trim_version),
             compare: plain(compare_exact),
-            read_req: Box::new(move || read_npm_version(&package_json).unwrap_or_default()),
+            read_req: Box::new(move || read_npm_version(&pj).unwrap_or_default()),
             install_cmd: Some(Box::new(|req, _platform| {
                 vec![InstallStep {
                     description: format!("Install npm {req} via Volta"),
@@ -180,8 +198,15 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             })),
         });
     }
+    defs
+}
+
+/// java, maven.
+fn build_jvm_tools(pom_xml: &std::path::Path) -> Vec<ToolDef> {
+    let no_req = || Box::new(String::new) as Box<dyn Fn() -> String>;
+    let mut defs: Vec<ToolDef> = Vec::new();
     {
-        let pom_xml = pom_xml.clone();
+        let pom = pom_xml.to_path_buf();
         defs.push(ToolDef {
             name: "java",
             binary: "java",
@@ -190,7 +215,7 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             use_stderr: true,
             parse_ver: Box::new(parse_java_version),
             compare: plain(compare_major),
-            read_req: Box::new(move || read_java_version(&pom_xml).unwrap_or_default()),
+            read_req: Box::new(move || read_java_version(&pom).unwrap_or_default()),
             install_cmd: Some(Box::new(|req, _platform| {
                 vec![InstallStep {
                     description: format!("Install Java {req} via SDKMAN"),
@@ -225,8 +250,29 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             }]
         })),
     });
+    defs
+}
+
+/// golang, python, rust, cargo-llvm-cov.
+fn build_system_lang_tools(
+    go_mod: &std::path::Path,
+    python_version: &std::path::Path,
+    cargo_toml: &std::path::Path,
+) -> Vec<ToolDef> {
+    let mut defs = build_go_python_tools(go_mod, python_version);
+    defs.extend(build_rust_tools(cargo_toml));
+    defs
+}
+
+/// golang, python.
+fn build_go_python_tools(
+    go_mod: &std::path::Path,
+    python_version: &std::path::Path,
+) -> Vec<ToolDef> {
+    let mut defs: Vec<ToolDef> = Vec::new();
+
     {
-        let go_mod = go_mod.clone();
+        let gm = go_mod.to_path_buf();
         defs.push(ToolDef {
             name: "golang",
             binary: "go",
@@ -235,7 +281,7 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             use_stderr: false,
             parse_ver: Box::new(|s| parse_line_word(s, "go version ", 2, "go")),
             compare: plain(compare_gte),
-            read_req: Box::new(move || read_go_version(&go_mod).unwrap_or_default()),
+            read_req: Box::new(move || read_go_version(&gm).unwrap_or_default()),
             install_cmd: Some(Box::new(|req, platform| {
                 if platform == "darwin" {
                     vec![InstallStep {
@@ -258,9 +304,8 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             })),
         });
     }
-    // --- Python ---
     {
-        let python_version = python_version.clone();
+        let pv = python_version.to_path_buf();
         defs.push(ToolDef {
             name: "python",
             binary: "python3",
@@ -269,7 +314,7 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             use_stderr: false,
             parse_ver: Box::new(parse_python_version),
             compare: plain(compare_gte),
-            read_req: Box::new(move || read_python_version(&python_version).unwrap_or_default()),
+            read_req: Box::new(move || read_python_version(&pv).unwrap_or_default()),
             install_cmd: Some(Box::new(|req, platform| {
                 if platform == "darwin" {
                     vec![
@@ -310,9 +355,15 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             })),
         });
     }
-    // --- Rust ---
+    defs
+}
+
+/// rust, cargo-llvm-cov.
+fn build_rust_tools(cargo_toml: &std::path::Path) -> Vec<ToolDef> {
+    let no_req = || Box::new(String::new) as Box<dyn Fn() -> String>;
+    let mut defs: Vec<ToolDef> = Vec::new();
     {
-        let cargo_toml = cargo_toml.clone();
+        let ct = cargo_toml.to_path_buf();
         defs.push(ToolDef {
             name: "rust",
             binary: "rustc",
@@ -321,7 +372,7 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             use_stderr: false,
             parse_ver: Box::new(parse_rust_version),
             compare: plain(compare_gte),
-            read_req: Box::new(move || read_rust_version(&cargo_toml).unwrap_or_default()),
+            read_req: Box::new(move || read_rust_version(&ct).unwrap_or_default()),
             install_cmd: Some(Box::new(|_req, _platform| {
                 vec![InstallStep {
                     description: "Install Rust via rustup".to_string(),
@@ -355,9 +406,14 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             }]
         })),
     });
-    // --- Elixir/Erlang ---
+    defs
+}
+
+/// elixir, erlang.
+fn build_beam_tools(tool_versions: &std::path::Path) -> Vec<ToolDef> {
+    let mut defs: Vec<ToolDef> = Vec::new();
     {
-        let tool_versions = tool_versions.clone();
+        let tv = tool_versions.to_path_buf();
         defs.push(ToolDef {
             name: "elixir",
             binary: "elixir",
@@ -367,13 +423,9 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             parse_ver: Box::new(parse_elixir_version),
             compare: plain(compare_gte),
             read_req: Box::new(move || {
-                let v = read_tool_versions_entry(&tool_versions, "elixir").unwrap_or_default();
+                let v = read_tool_versions_entry(&tv, "elixir").unwrap_or_default();
                 // Strip -otp-XX suffix: "1.19.5-otp-27" → "1.19.5".
-                if let Some(idx) = v.find("-otp-") {
-                    v[..idx].to_string()
-                } else {
-                    v
-                }
+                if let Some(idx) = v.find("-otp-") { v[..idx].to_string() } else { v }
             }),
             install_cmd: Some(Box::new(|req, _platform| {
                 vec![InstallStep {
@@ -390,7 +442,7 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
         });
     }
     {
-        let tool_versions = tool_versions.clone();
+        let tv = tool_versions.to_path_buf();
         defs.push(ToolDef {
             name: "erlang",
             binary: "erl",
@@ -404,7 +456,7 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             parse_ver: Box::new(parse_erlang_version),
             compare: plain(compare_major_gte),
             read_req: Box::new(move || {
-                read_tool_versions_entry(&tool_versions, "erlang").unwrap_or_default()
+                read_tool_versions_entry(&tv, "erlang").unwrap_or_default()
             }),
             install_cmd: Some(Box::new(|req, _platform| {
                 vec![InstallStep {
@@ -420,9 +472,21 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             })),
         });
     }
-    // --- .NET ---
+    defs
+}
+
+/// dotnet, clojure, dart, flutter.
+fn build_platform_tools(global_json: &std::path::Path, pubspec: &std::path::Path) -> Vec<ToolDef> {
+    let mut defs = build_dotnet_tool(global_json);
+    defs.extend(build_clojure_dart_tools(pubspec));
+    defs
+}
+
+/// dotnet.
+fn build_dotnet_tool(global_json: &std::path::Path) -> Vec<ToolDef> {
+    let mut defs: Vec<ToolDef> = Vec::new();
     {
-        let global_json = global_json.clone();
+        let gj = global_json.to_path_buf();
         defs.push(ToolDef {
             name: "dotnet",
             binary: "dotnet",
@@ -431,7 +495,7 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             use_stderr: false,
             parse_ver: Box::new(parse_dotnet_version),
             compare: plain(compare_major_gte),
-            read_req: Box::new(move || read_dotnet_version(&global_json).unwrap_or_default()),
+            read_req: Box::new(move || read_dotnet_version(&gj).unwrap_or_default()),
             install_cmd: Some(Box::new(|_req, platform| {
                 if platform == "darwin" {
                     vec![InstallStep {
@@ -455,7 +519,13 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             })),
         });
     }
-    // --- Clojure ---
+    defs
+}
+
+/// clojure, dart, flutter.
+fn build_clojure_dart_tools(pubspec: &std::path::Path) -> Vec<ToolDef> {
+    let no_req = || Box::new(String::new) as Box<dyn Fn() -> String>;
+    let mut defs: Vec<ToolDef> = Vec::new();
     defs.push(ToolDef {
         name: "clojure",
         binary: "clj",
@@ -484,9 +554,8 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             }
         })),
     });
-    // --- Dart/Flutter ---
     {
-        let pubspec = pubspec.clone();
+        let ps = pubspec.to_path_buf();
         defs.push(ToolDef {
             name: "dart",
             binary: "dart",
@@ -495,12 +564,12 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             use_stderr: false,
             parse_ver: Box::new(parse_dart_version),
             compare: plain(compare_gte),
-            read_req: Box::new(move || read_dart_sdk_version(&pubspec).unwrap_or_default()),
+            read_req: Box::new(move || read_dart_sdk_version(&ps).unwrap_or_default()),
             install_cmd: None, // Installed as part of Flutter.
         });
     }
     {
-        let pubspec = pubspec.clone();
+        let ps = pubspec.to_path_buf();
         defs.push(ToolDef {
             name: "flutter",
             binary: "flutter",
@@ -509,7 +578,7 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             use_stderr: false,
             parse_ver: Box::new(parse_flutter_version),
             compare: plain(compare_gte),
-            read_req: Box::new(move || read_flutter_version(&pubspec).unwrap_or_default()),
+            read_req: Box::new(move || read_flutter_version(&ps).unwrap_or_default()),
             install_cmd: Some(Box::new(|_req, platform| {
                 if platform == "darwin" {
                     vec![InstallStep {
@@ -536,7 +605,13 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             })),
         });
     }
-    // --- Infrastructure ---
+    defs
+}
+
+/// docker, jq, playwright.
+fn build_infra_tools() -> Vec<ToolDef> {
+    let no_req = || Box::new(String::new) as Box<dyn Fn() -> String>;
+    let mut defs: Vec<ToolDef> = Vec::new();
     defs.push(ToolDef {
         name: "docker",
         binary: "docker",
@@ -594,7 +669,6 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             }
         })),
     });
-    // --- Playwright ---
     defs.push(ToolDef {
         name: "playwright",
         binary: "npx",
@@ -627,7 +701,6 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
             }
         })),
     });
-
     defs
 }
 

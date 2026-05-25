@@ -43,7 +43,7 @@ pub fn validate_yaml_formatting_raw(check_name: &str, content: &[u8]) -> Validat
             message: "Frontmatter closing --- not found".to_string(),
         };
     }
-    let end = end_index as usize;
+    let end = end_index.cast_unsigned();
 
     let mut issues: Vec<String> = Vec::new();
     for (i, line) in lines.iter().enumerate().take(end).skip(1) {

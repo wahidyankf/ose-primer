@@ -11,6 +11,7 @@
 //! yaml.v3's deterministic map-key sorting.
 
 use std::collections::BTreeMap;
+use std::fmt::Write as _;
 use std::path::Path;
 
 use anyhow::{Error, anyhow};
@@ -67,12 +68,12 @@ pub fn build_opencode_agent(frontmatter: &[u8]) -> Result<OpenCodeAgent, Error> 
         match k.as_str() {
             "description" => {
                 if let YamlValue::String(s) = v {
-                    description = s.clone();
+                    description.clone_from(s);
                 }
             }
             "model" => {
                 if let YamlValue::String(s) = v {
-                    model = s.clone();
+                    model.clone_from(s);
                 }
             }
             "tools" => tools_raw = Some(v),
@@ -311,7 +312,7 @@ fn emit_double_quoted(s: &str) -> String {
             '\r' => out.push_str("\\r"),
             '\0' => out.push_str("\\0"),
             c if (c as u32) < 0x20 => {
-                out.push_str(&format!("\\x{:02X}", c as u32));
+                let _ = write!(out, "\\x{:02X}", c as u32);
             }
             c => out.push(c),
         }

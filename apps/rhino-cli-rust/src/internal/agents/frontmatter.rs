@@ -84,7 +84,7 @@ pub fn extract_frontmatter(content: &[u8]) -> Result<(Vec<u8>, Vec<u8>), Error> 
     if end_index == -1 {
         return Err(anyhow!("frontmatter closing --- not found"));
     }
-    let end = end_index as usize;
+    let end = end_index.cast_unsigned();
 
     // Frontmatter = lines[1..end] joined with "\n", then normalized.
     let frontmatter_raw = join_lines(&lines[1..end]);

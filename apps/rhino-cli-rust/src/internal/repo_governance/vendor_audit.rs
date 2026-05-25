@@ -56,144 +56,159 @@ fn mk(pattern: &str, term: &'static str, replacement: &'static str) -> Forbidden
 fn forbidden_terms() -> &'static Vec<ForbiddenTerm> {
     static TERMS: OnceLock<Vec<ForbiddenTerm>> = OnceLock::new();
     TERMS.get_or_init(|| {
-        vec![
-            // Harness / coding-agent product names.
-            mk(r"Claude Code", "Claude Code", "\"the coding agent\""),
-            mk(
-                r"OpenCode",
-                "OpenCode",
-                "\"the coding agent\" or drop where redundant",
-            ),
-            mk(
-                r"\bCursor\b",
-                "Cursor",
-                "\"the coding agent\" or \"AI coding editor\"",
-            ),
-            mk(
-                r"\bWindsurf\b",
-                "Windsurf",
-                "\"the coding agent\" or \"AI coding editor\"",
-            ),
-            mk(
-                r"\bCodeium\b",
-                "Codeium",
-                "\"the coding agent\" (legacy Windsurf brand)",
-            ),
-            mk(
-                r"\bCopilot\b",
-                "Copilot",
-                "\"the coding agent\" or \"AI coding assistant\"",
-            ),
-            mk(
-                r"\bAider\b",
-                "Aider",
-                "\"the coding agent\" or \"AI coding assistant\"",
-            ),
-            mk(
-                r"\bCline\b",
-                "Cline",
-                "\"the coding agent\" or \"AI coding assistant\"",
-            ),
-            mk(
-                r"\bDevin\b",
-                "Devin",
-                "\"the coding agent\" (false-positive risk: personal name; review context)",
-            ),
-            mk(
-                r"\bJunie\b",
-                "Junie",
-                "\"the coding agent\" or \"AI coding assistant\"",
-            ),
-            mk(
-                r"\bJetBrains\b",
-                "JetBrains",
-                "\"the coding-agent vendor\" or drop",
-            ),
-            mk(r"Amazon Q\b", "Amazon Q", "\"the coding agent\""),
-            mk(r"\bAntigravity\b", "Antigravity", "\"the coding agent\""),
-            mk(
-                r"Pi Coding Agent",
-                "Pi Coding Agent",
-                "\"the coding agent\"",
-            ),
-            mk(r"pi\.dev", "pi.dev", "\"the coding agent\""),
-            mk(
-                r"\bEarendil\b",
-                "Earendil",
-                "\"the coding-agent vendor\" or drop",
-            ),
-            // Vendor-specific binding directory paths.
-            mk(r"\.claude/", ".claude/", "\"primary binding directory\""),
-            mk(
-                r"\.opencode/",
-                ".opencode/",
-                "\"secondary binding directory\"",
-            ),
-            mk(
-                r"\.cursor/",
-                ".cursor/",
-                "\"the platform binding directory\"",
-            ),
-            mk(
-                r"\.windsurf/",
-                ".windsurf/",
-                "\"the platform binding directory\"",
-            ),
-            mk(
-                r"\.continue/",
-                ".continue/",
-                "\"the platform binding directory\"",
-            ),
-            mk(
-                r"\.clinerules/",
-                ".clinerules/",
-                "\"the platform binding directory\"",
-            ),
-            mk(r"\.junie/", ".junie/", "\"the platform binding directory\""),
-            mk(
-                r"\.amazonq/",
-                ".amazonq/",
-                "\"the platform binding directory\"",
-            ),
-            mk(r"\.pi/", ".pi/", "\"the platform binding directory\""),
-            mk(
-                r"\.gemini/",
-                ".gemini/",
-                "\"the platform binding directory\"",
-            ),
-            mk(r"\.agent/", ".agent/", "\"the platform binding directory\""),
-            mk(
-                r"\.agents/",
-                ".agents/",
-                "\"the platform binding directory\"",
-            ),
-            // Model-vendor company names.
-            mk(r"Anthropic", "Anthropic", "\"the model vendor\" or drop"),
-            mk(r"\bOpenAI\b", "OpenAI", "\"the model vendor\" or drop"),
-            mk(r"\bxAI\b", "xAI", "\"the model vendor\" or drop"),
-            // Model family / model names.
-            mk(r"\bSonnet\b", "Sonnet", "\"execution-grade\""),
-            mk(r"\bOpus\b", "Opus", "\"planning-grade\""),
-            mk(r"\bHaiku\b", "Haiku", "\"fast\""),
-            mk(r"\bGPT\b", "GPT", "\"AI model\" or capability tier"),
-            mk(r"\bGemini\b", "Gemini", "\"AI model\" or capability tier"),
-            mk(
-                r"\bDeepSeek\b",
-                "DeepSeek",
-                "\"AI model\" or capability tier",
-            ),
-            mk(r"\bQwen\b", "Qwen", "\"AI model\" or capability tier"),
-            mk(r"\bLlama\b", "Llama", "\"AI model\" or capability tier"),
-            mk(r"\bMistral\b", "Mistral", "\"AI model\" or capability tier"),
-            mk(
-                r"\bGrok\b",
-                "Grok",
-                "\"AI model\" (false-positive risk: verb \"to grok\"; review context)",
-            ),
-            // Vendor-branded concepts (capitalized branded forms only).
-            mk(r"\bSkills\b", "Skills", "\"agent skills\" (lowercase)"),
-        ]
+        let mut v = forbidden_agent_names();
+        v.extend(forbidden_binding_dirs());
+        v.extend(forbidden_model_names());
+        v
     })
+}
+
+/// Harness / coding-agent product and vendor names.
+fn forbidden_agent_names() -> Vec<ForbiddenTerm> {
+    vec![
+        mk(r"Claude Code", "Claude Code", "\"the coding agent\""),
+        mk(
+            r"OpenCode",
+            "OpenCode",
+            "\"the coding agent\" or drop where redundant",
+        ),
+        mk(
+            r"\bCursor\b",
+            "Cursor",
+            "\"the coding agent\" or \"AI coding editor\"",
+        ),
+        mk(
+            r"\bWindsurf\b",
+            "Windsurf",
+            "\"the coding agent\" or \"AI coding editor\"",
+        ),
+        mk(
+            r"\bCodeium\b",
+            "Codeium",
+            "\"the coding agent\" (legacy Windsurf brand)",
+        ),
+        mk(
+            r"\bCopilot\b",
+            "Copilot",
+            "\"the coding agent\" or \"AI coding assistant\"",
+        ),
+        mk(
+            r"\bAider\b",
+            "Aider",
+            "\"the coding agent\" or \"AI coding assistant\"",
+        ),
+        mk(
+            r"\bCline\b",
+            "Cline",
+            "\"the coding agent\" or \"AI coding assistant\"",
+        ),
+        mk(
+            r"\bDevin\b",
+            "Devin",
+            "\"the coding agent\" (false-positive risk: personal name; review context)",
+        ),
+        mk(
+            r"\bJunie\b",
+            "Junie",
+            "\"the coding agent\" or \"AI coding assistant\"",
+        ),
+        mk(
+            r"\bJetBrains\b",
+            "JetBrains",
+            "\"the coding-agent vendor\" or drop",
+        ),
+        mk(r"Amazon Q\b", "Amazon Q", "\"the coding agent\""),
+        mk(r"\bAntigravity\b", "Antigravity", "\"the coding agent\""),
+        mk(
+            r"Pi Coding Agent",
+            "Pi Coding Agent",
+            "\"the coding agent\"",
+        ),
+        mk(r"pi\.dev", "pi.dev", "\"the coding agent\""),
+        mk(
+            r"\bEarendil\b",
+            "Earendil",
+            "\"the coding-agent vendor\" or drop",
+        ),
+    ]
+}
+
+/// Vendor-specific binding directory paths.
+fn forbidden_binding_dirs() -> Vec<ForbiddenTerm> {
+    vec![
+        mk(r"\.claude/", ".claude/", "\"primary binding directory\""),
+        mk(
+            r"\.opencode/",
+            ".opencode/",
+            "\"secondary binding directory\"",
+        ),
+        mk(
+            r"\.cursor/",
+            ".cursor/",
+            "\"the platform binding directory\"",
+        ),
+        mk(
+            r"\.windsurf/",
+            ".windsurf/",
+            "\"the platform binding directory\"",
+        ),
+        mk(
+            r"\.continue/",
+            ".continue/",
+            "\"the platform binding directory\"",
+        ),
+        mk(
+            r"\.clinerules/",
+            ".clinerules/",
+            "\"the platform binding directory\"",
+        ),
+        mk(r"\.junie/", ".junie/", "\"the platform binding directory\""),
+        mk(
+            r"\.amazonq/",
+            ".amazonq/",
+            "\"the platform binding directory\"",
+        ),
+        mk(r"\.pi/", ".pi/", "\"the platform binding directory\""),
+        mk(
+            r"\.gemini/",
+            ".gemini/",
+            "\"the platform binding directory\"",
+        ),
+        mk(r"\.agent/", ".agent/", "\"the platform binding directory\""),
+        mk(
+            r"\.agents/",
+            ".agents/",
+            "\"the platform binding directory\"",
+        ),
+    ]
+}
+
+/// Model-vendor company names, model families, and vendor-branded concepts.
+fn forbidden_model_names() -> Vec<ForbiddenTerm> {
+    vec![
+        mk(r"Anthropic", "Anthropic", "\"the model vendor\" or drop"),
+        mk(r"\bOpenAI\b", "OpenAI", "\"the model vendor\" or drop"),
+        mk(r"\bxAI\b", "xAI", "\"the model vendor\" or drop"),
+        mk(r"\bSonnet\b", "Sonnet", "\"execution-grade\""),
+        mk(r"\bOpus\b", "Opus", "\"planning-grade\""),
+        mk(r"\bHaiku\b", "Haiku", "\"fast\""),
+        mk(r"\bGPT\b", "GPT", "\"AI model\" or capability tier"),
+        mk(r"\bGemini\b", "Gemini", "\"AI model\" or capability tier"),
+        mk(
+            r"\bDeepSeek\b",
+            "DeepSeek",
+            "\"AI model\" or capability tier",
+        ),
+        mk(r"\bQwen\b", "Qwen", "\"AI model\" or capability tier"),
+        mk(r"\bLlama\b", "Llama", "\"AI model\" or capability tier"),
+        mk(r"\bMistral\b", "Mistral", "\"AI model\" or capability tier"),
+        mk(
+            r"\bGrok\b",
+            "Grok",
+            "\"AI model\" (false-positive risk: verb \"to grok\"; review context)",
+        ),
+        mk(r"\bSkills\b", "Skills", "\"agent skills\" (lowercase)"),
+    ]
 }
 
 fn html_comment_re() -> &'static Regex {

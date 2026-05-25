@@ -7,6 +7,7 @@
 //! temp workspace and drive the compiled `rhino-cli` binary, asserting on
 //! output and exit code.
 
+use std::fmt::Write as _;
 use std::path::PathBuf;
 use std::process::Output;
 
@@ -60,7 +61,7 @@ impl AgentsWorld {
         if !skills.is_empty() {
             content.push_str("skills:\n");
             for s in skills {
-                content.push_str(&format!("  - {s}\n"));
+                let _ = writeln!(content, "  - {s}");
             }
         }
         content.push_str("---\n# Body\n");
@@ -166,7 +167,7 @@ fn when_sync_agents_only(w: &mut AgentsWorld) {
 #[then("the .opencode/ directory contains the converted configuration")]
 fn then_opencode_has_config(w: &mut AgentsWorld) {
     let p = w.work.path().join(".opencode/agents/foo-maker.md");
-    assert!(p.exists(), "expected {p:?} to exist");
+    assert!(p.exists(), "expected {} to exist", p.display());
     let content = std::fs::read_to_string(&p).expect("read converted agent");
     assert!(
         content.contains("model: opencode-go/minimax-m2.7"),
@@ -187,7 +188,11 @@ fn then_output_describes_plan(w: &mut AgentsWorld) {
 #[then("no files are written to the .opencode/ directory")]
 fn then_no_opencode_files(w: &mut AgentsWorld) {
     let p = w.work.path().join(".opencode/agents/foo-maker.md");
-    assert!(!p.exists(), "expected {p:?} NOT to exist after dry-run");
+    assert!(
+        !p.exists(),
+        "expected {} NOT to exist after dry-run",
+        p.display()
+    );
 }
 
 #[then("only agent files are written to the .opencode/ directory")]

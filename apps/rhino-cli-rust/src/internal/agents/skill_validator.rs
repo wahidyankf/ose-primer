@@ -52,17 +52,24 @@ pub fn validate_skill(skill_path: &std::path::Path, skill_name: &str) -> Vec<Val
         }
     };
 
+    validate_skill_content(&mut checks, skill_name, &content);
+    checks
+}
+
+/// Validates the content of a SKILL.md file (rules 0–6 that require content).
+/// Appended to `checks` in place; returns early on the first failure.
+fn validate_skill_content(checks: &mut Vec<ValidationCheck>, skill_name: &str, content: &[u8]) {
     // Rule 0: YAML formatting (BEFORE normalization).
     let formatting =
-        validate_yaml_formatting_raw(&format!("Skill: {skill_name} - YAML Formatting"), &content);
+        validate_yaml_formatting_raw(&format!("Skill: {skill_name} - YAML Formatting"), content);
     let formatting_failed = formatting.status == "failed";
     checks.push(formatting);
     if formatting_failed {
-        return checks;
+        return;
     }
 
     // Rule 3: YAML syntax validity.
-    let (frontmatter, _body) = match extract_frontmatter(&content) {
+    let (frontmatter, _body) = match extract_frontmatter(content) {
         Ok(fb) => fb,
         Err(e) => {
             checks.push(fail(
@@ -71,7 +78,7 @@ pub fn validate_skill(skill_path: &std::path::Path, skill_name: &str) -> Vec<Val
                 "",
                 &format!("Invalid frontmatter: {e}"),
             ));
-            return checks;
+            return;
         }
     };
     checks.push(ValidationCheck::passed(
@@ -89,10 +96,20 @@ pub fn validate_skill(skill_path: &std::path::Path, skill_name: &str) -> Vec<Val
                 "",
                 &format!("Failed to parse YAML: {e}"),
             ));
-            return checks;
+            return;
         }
     };
 
+    validate_skill_fields(checks, skill_name, &name, &description);
+}
+
+/// Validates the extracted name and description fields (rules 2, 4, 5, 6).
+fn validate_skill_fields(
+    checks: &mut Vec<ValidationCheck>,
+    skill_name: &str,
+    name: &str,
+    description: &str,
+) {
     // Rule 2: description present.
     if description.is_empty() {
         checks.push(fail(
@@ -101,7 +118,7 @@ pub fn validate_skill(skill_path: &std::path::Path, skill_name: &str) -> Vec<Val
             "description field missing or empty",
             "Required description field missing",
         ));
-        return checks;
+        return;
     }
     checks.push(ValidationCheck::passed(
         format!("Skill: {skill_name} - Description Field Required"),
@@ -116,7 +133,7 @@ pub fn validate_skill(skill_path: &std::path::Path, skill_name: &str) -> Vec<Val
             "name field missing or empty",
             "Required name field missing",
         ));
-        return checks;
+        return;
     }
     checks.push(ValidationCheck::passed(
         format!("Skill: {skill_name} - Name Field Required"),
@@ -124,14 +141,14 @@ pub fn validate_skill(skill_path: &std::path::Path, skill_name: &str) -> Vec<Val
     ));
 
     // Rule 5: name format.
-    if !skill_name_re().is_match(&name) {
+    if !skill_name_re().is_match(name) {
         checks.push(fail(
             &format!("Skill: {skill_name} - Name Format"),
             "Lowercase letters/numbers/hyphens only, max 64 chars",
             &format!("Name: {name}"),
             "Invalid skill name format",
         ));
-        return checks;
+        return;
     }
     checks.push(ValidationCheck::passed(
         format!("Skill: {skill_name} - Name Format"),
@@ -146,14 +163,12 @@ pub fn validate_skill(skill_path: &std::path::Path, skill_name: &str) -> Vec<Val
             &format!("name field: {name}"),
             "Skill name must match directory name",
         ));
-        return checks;
+        return;
     }
     checks.push(ValidationCheck::passed(
         format!("Skill: {skill_name} - Name Match"),
         "Name matches directory name",
     ));
-
-    checks
 }
 
 /// Extracts `(name, description)` from a parsed skill mapping. Only string
@@ -166,12 +181,12 @@ fn extract_skill(value: &YamlValue) -> (String, String) {
             match k.as_str() {
                 "name" => {
                     if let YamlValue::String(s) = v {
-                        name = s.clone();
+                        name.clone_from(s);
                     }
                 }
                 "description" => {
                     if let YamlValue::String(s) = v {
-                        description = s.clone();
+                        description.clone_from(s);
                     }
                 }
                 _ => {}
