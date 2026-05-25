@@ -99,6 +99,14 @@ Hand-writing or hand-editing generated binding files is prohibited. Changes to t
 
 **Pre-push guard**: `npm run validate:harness-bindings` wraps `rhino-cli agents validate-bindings` and fires in the pre-push hook when any binding surface changes. It exits non-zero if any generated binding file diverges from what `emit-bindings` would produce, or if any binding directory present on disk lacks a row in the platform-bindings catalog.
 
+**Generation script naming**: npm scripts that regenerate binding artifacts MUST follow three rules:
+
+1. **`generate:` namespace** — Regeneration scripts use the `generate:` prefix (e.g., `generate:bindings`), not a vendor-derived prefix. This separates generation from validation (`validate:`) and from linting (`lint:`).
+2. **Name the operation, not the vendor** — The suffix describes the logical operation (`bindings`, `catalog`) rather than naming a specific harness or vendor product.
+3. **One script per logical operation** — A single `generate:bindings` script regenerates all secondary binding artifacts regardless of how many harnesses or output directories are involved. Splitting by harness would require callers to enumerate harnesses — a maintenance burden that violates AD4's mechanical-generation intent.
+
+**Rationale**: a script whose name encodes specific harness or vendor product names couples the invocation surface to those products. When a harness is added, renamed, or removed, every caller must be updated. A vendor-neutral operation name (`generate:bindings`) remains stable across harness lifecycle changes.
+
 ### AD8 — Dual-Implementation Byte-Parity (ose-primer-Specific)
 
 This repository maintains two co-equal CLI implementations: one in Rust and one in Go. A shadow-diff parity harness asserts byte-identical stdout, stderr, and exit codes for every command in the corpus. Any binding-emitter or binding-validation behavior implemented in one CLI must be implemented identically in the other.
