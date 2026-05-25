@@ -232,7 +232,7 @@ rename and any `repo-parity-*` → `repo-harness-compatibility-*` reference upda
 
 ## Phase 4: Coordinated Commit and Push
 
-- [ ] Run comprehensive grep to confirm ZERO remaining occurrences of BOTH the old script name and
+- [x] Run comprehensive grep to confirm ZERO remaining occurrences of BOTH the old script name and
       the removed parity agents/workflow:
 
 ```bash
@@ -257,19 +257,19 @@ intentionally SURVIVE — they are the pre-push deterministic guard and do not m
 Commit changes thematically using [Conventional Commits](https://www.conventionalcommits.org/)
 format. The commits below are pre-split by domain — do not bundle into one commit.
 
-- [ ] Commit 1 (package.json first):
+- [x] Commit 1 (package.json first):
       `chore(package.json): add generate:bindings, remove sync:claude-to-opencode`
 
-- [ ] Commit 2 (merge parity into harness-compat — workflow + agents + deletions + indexes):
+- [x] Commit 2 (merge parity into harness-compat — workflow + agents + deletions + indexes):
       `refactor(governance): merge cross-vendor-parity into harness-compatibility gate`
 
-- [ ] Commit 3 (governance + docs + scripts rename sweep):
+- [x] Commit 3 (governance + docs + scripts rename sweep):
       `docs(governance): replace sync:claude-to-opencode with generate:bindings`
 
-- [ ] Commit 4 (agent definitions + skills + regenerated mirrors):
+- [x] Commit 4 (agent definitions + skills + regenerated mirrors):
       `chore(agents): replace sync:claude-to-opencode with generate:bindings`
 
-- [ ] Run final quality gate. Fix ALL failures found — not only those caused by this plan's changes
+- [x] Run final quality gate. Fix ALL failures found — not only those caused by this plan's changes
       (root cause orientation principle).
 
 ```bash
@@ -282,16 +282,18 @@ npm run lint:md                              # zero violations
 npx nx affected -t typecheck lint test:quick # all affected projects pass
 ```
 
-- [ ] Push all commits: `git push origin HEAD:main`
+- [x] Push all commits: `git push origin HEAD:main`
 
-- [ ] Verify GitHub Actions CI passes. Monitor with `gh run list --branch main --limit 5` at
+- [x] Verify GitHub Actions CI passes. Monitor with `gh run list --branch main --limit 5` at
       ~3-minute intervals; confirm checks green before proceeding to Phase 5. Pre-existing
       infrastructure flakes that are demonstrably unrelated to these doc-only changes may be noted
       and proceeded past.
 
+<!-- Date: 2026-05-25 | Status: done | Notes: Commits 103252fd7 (package.json + parity deletions), 5a4f2a3e2 (merge), 2496856c1 (docs/scripts), d79d85f91 (agents/skills/mirrors), 5efdef2d6 (plan), 9abf25674 (vendor-neutral fix) pushed to origin/main. Pre-push guard (validate:harness-bindings + validate:cross-vendor-parity) PASSED. CI note: repo has NO push-triggered workflows on main — pr-quality-gate/pr-validate-links are pull_request-only; test-crud-* are workflow_dispatch+schedule only. Direct-to-main (trunk-based, worktree-waived) has no push CI to monitor; the pre-push hooks are the push-time gate. Verified 0 runs created for the pushed shas. Final local gate: validate:config 52/52, validate:harness-bindings 0 drift, validate:cross-vendor-parity PASSED, vendor-audit PASSED, lint:md 0, nx affected typecheck/lint/test:quick 23 projects green. -->
+
 ## Phase 5: Governance Propagation — repo-rules-maker + repo-rules-quality-gate
 
-- [ ] Invoke `repo-rules-maker` via the Agent tool (`subagent_type: repo-rules-maker`) with the
+- [x] Invoke `repo-rules-maker` via the Agent tool (`subagent_type: repo-rules-maker`) with the
       verbatim prompt below. Verify: `npm run lint:md` exits 0 on any new/modified governance files.
 
 ```text
@@ -306,13 +308,13 @@ rule to the most appropriate existing convention. HARD CONSTRAINT: ose-primer's 
 already "Dual-Implementation Byte-Parity" — do NOT reuse the AD8 number for any new rule.
 ```
 
-- [ ] Run the Repository Rules Quality Gate workflow in **strict mode** by following
+- [x] Run the Repository Rules Quality Gate workflow in **strict mode** by following
       [`repo-governance/workflows/repo/repo-rules-quality-gate.md`](../../../repo-governance/workflows/repo/repo-rules-quality-gate.md):
       invoke `repo-rules-checker` (Agent tool, `subagent_type: repo-rules-checker`, scope
       `repo-governance/`, mode `strict`), then `repo-rules-fixer` on threshold findings, iterating
       until zero CRITICAL/HIGH/MEDIUM findings on two consecutive checks (double-zero).
 
-- [ ] Confirm `repo-governance/` vendor-audit passes:
+- [x] Confirm `repo-governance/` vendor-audit passes:
 
 ```bash
 ./apps/rhino-cli-rust/dist/rhino-cli repo-governance vendor-audit repo-governance/
@@ -320,31 +322,43 @@ already "Dual-Implementation Byte-Parity" — do NOT reuse the AD8 number for an
 
 Must exit 0. Any vendor-audit finding is blocking — fix prose to vendor-neutral terms first.
 
-- [ ] Commit any governance files created or modified:
+- [x] Commit any governance files created or modified:
       `docs(governance): document harness-neutral npm script convention`
       (or `docs(governance): no new convention needed — coverage confirmed in multi-harness-binding.md`
       if the maker determined no new file was required).
 
-- [ ] Push: `git push origin HEAD:main`.
+- [x] Push: `git push origin HEAD:main`.
 
 ## Phase 6: Plan Archival
 
-- [ ] Verify all checklist items in Phases 0–5 are ticked.
+- [x] Verify all checklist items in Phases 0–5 are ticked.
 
-- [ ] Rename and move the plan folder (replace `YYYY-MM-DD` with completion date):
+<!-- Date: 2026-05-25 | Status: done | Notes: 0 unchecked boxes before Phase 6 -->
+
+- [x] Rename and move the plan folder (replace `YYYY-MM-DD` with completion date):
 
 ```bash
 git mv plans/in-progress/harness-vendor-neutrality-blueprint \
        plans/done/YYYY-MM-DD__harness-vendor-neutrality-blueprint
 ```
 
-- [ ] Update `plans/in-progress/README.md`: remove this plan's entry.
+<!-- Date: 2026-05-25 | Status: done | Notes: git mv to plans/done/2026-05-25__harness-vendor-neutrality-blueprint -->
 
-- [ ] Update `plans/done/README.md`: add this plan's entry.
+- [x] Update `plans/in-progress/README.md`: remove this plan's entry.
 
-- [ ] Update the plan's `README.md` front matter status to `Done`.
+<!-- Date: 2026-05-25 | Status: done -->
 
-- [ ] Commit: `chore(plans): move harness-vendor-neutrality-blueprint to done` and push to `main`.
+- [x] Update `plans/done/README.md`: add this plan's entry.
+
+<!-- Date: 2026-05-25 | Status: done -->
+
+- [x] Update the plan's `README.md` front matter status to `Done`.
+
+<!-- Date: 2026-05-25 | Status: done | Notes: status: Done in frontmatter + body -->
+
+- [x] Commit: `chore(plans): move harness-vendor-neutrality-blueprint to done` and push to `main`.
+
+<!-- Date: 2026-05-25 | Status: done -->
 
 ## Quality Gates Summary
 

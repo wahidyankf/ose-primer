@@ -1,13 +1,13 @@
 ---
 title: "Blueprint: Harness/Vendor Neutrality for ose-primer"
-status: In Progress
+status: Done
 project: package.json, repo-governance/, .claude/, apps/rhino-cli-rust/, apps/rhino-cli-go/
 confidence-labels: Repo-grounded, Web-cited, Unverified, Judgment call
 ---
 
 # Blueprint: Harness/Vendor Neutrality for ose-primer
 
-**Status**: In Progress
+**Status**: Done
 **Project**: `package.json`, `repo-governance/`, `.claude/`, `apps/rhino-cli-rust/`, `apps/rhino-cli-go/`
 
 > **Adoption note**: This plan is adapted from the upstream `ose-public` plan
