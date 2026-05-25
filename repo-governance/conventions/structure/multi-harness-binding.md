@@ -9,7 +9,6 @@ tags:
   - platform-bindings
   - vendor-independence
   - multi-harness
-created: 2026-05-25
 ---
 
 # Multi-Harness Binding Convention

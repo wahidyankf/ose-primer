@@ -11,7 +11,6 @@ tags:
   - rust
   - go
   - bdd
-created: 2026-05-24
 ---
 
 # Rhino CLI Dual-Implementation Parity Convention

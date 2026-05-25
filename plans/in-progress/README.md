@@ -8,6 +8,10 @@ Active project plans currently being worked on.
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
   exports research dossiers.
+- [Harness/Vendor Neutrality Blueprint](./harness-vendor-neutrality-blueprint/README.md)
+  — replace the vendor-locked `sync:claude-to-opencode` npm script with a vendor-neutral
+  `generate:bindings` that regenerates both OpenCode and Amazon Q bindings; closes the silent
+  `.amazonq/` correctness gap and establishes the harness-neutrality framework for ose-primer.
 
 ## Folder Naming
 
