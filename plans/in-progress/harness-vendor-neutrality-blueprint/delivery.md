@@ -212,20 +212,20 @@ npx nx affected -t typecheck lint test:quick # all affected projects pass
 
 ## Phase 5: Governance Propagation — repo-rules-maker + repo-rules-quality-gate
 
-- [ ] Invoke `repo-rules-maker` via the Agent tool (`subagent_type: repo-rules-maker`) with this
-      verbatim prompt:
+- [ ] Invoke `repo-rules-maker` via the Agent tool (`subagent_type: repo-rules-maker`) with the
+      verbatim prompt below. Verify: `npm run lint:md` exits 0 on any new/modified governance files.
 
-      > Check whether `repo-governance/` needs a new or updated convention entry documenting the
-      > harness-neutral npm script naming pattern: the `generate:` namespace, vendor-neutral script
-      > names (name the operation not the vendor), and one script per logical operation
-      > (`generate:bindings` regenerates all secondary bindings). First read
-      > `repo-governance/conventions/structure/multi-harness-binding.md` and
-      > `repo-governance/conventions/structure/governance-vendor-independence.md`. If they already
-      > cover this pattern, record that determination — no new file needed. If a gap exists, add the
-      > rule to the most appropriate existing convention. HARD CONSTRAINT: ose-primer's AD8 slot is
-      > already "Dual-Implementation Byte-Parity" — do NOT reuse the AD8 number for any new rule.
-
-      Verify: `npm run lint:md` exits 0 on any new/modified governance files.
+```text
+Check whether repo-governance/ needs a new or updated convention entry documenting the
+harness-neutral npm script naming pattern: the generate: namespace, vendor-neutral script
+names (name the operation not the vendor), and one script per logical operation
+(generate:bindings regenerates all secondary bindings). First read
+repo-governance/conventions/structure/multi-harness-binding.md and
+repo-governance/conventions/structure/governance-vendor-independence.md. If they already
+cover this pattern, record that determination — no new file needed. If a gap exists, add the
+rule to the most appropriate existing convention. HARD CONSTRAINT: ose-primer's AD8 slot is
+already "Dual-Implementation Byte-Parity" — do NOT reuse the AD8 number for any new rule.
+```
 
 - [ ] Run the Repository Rules Quality Gate workflow in **strict mode** by following
       [`repo-governance/workflows/repo/repo-rules-quality-gate.md`](../../../repo-governance/workflows/repo/repo-rules-quality-gate.md):
