@@ -121,7 +121,7 @@ Run the checker's **Phase 0 (deterministic cross-vendor parity invariants) first
 
 1. **Governance prose vendor-neutrality** — `… rhino-cli repo-governance vendor-audit repo-governance/` (HIGH)
 2. **Root instruction surface vendor-neutrality** — same vendor-audit on `AGENTS.md` and `CLAUDE.md` (HIGH)
-3. **Binding sync no-op** — `npm run generate:bindings && git diff --quiet .opencode/ .amazonq/` (MEDIUM) — covers BOTH OpenCode and Amazon Q
+3. **Binding sync no-op** — `npm run generate:bindings && git diff --quiet .opencode/ .amazonq/` (MEDIUM) — covers both secondary binding directories
 4. **Agent count parity** — `ls .claude/agents/*.md | wc -l` vs `.opencode/agents/*.md` (README.md intentionally excluded) (HIGH)
 5. **Translation-map coverage** — `color:`/`model:` frontmatter values vs the maps in `ai-agents.md` / `model-selection.md` (MEDIUM)
 
