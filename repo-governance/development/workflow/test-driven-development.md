@@ -175,6 +175,11 @@ Or, when one delivery item spans multiple mini-cycles, group them explicitly:
   - [ ] Refactor: clean up, remove duplication
 ```
 
+Note: each nested sub-bullet (`- [ ] Red:`, `- [ ] Green:`, `- [ ] Refactor:`) is its own
+independent checkbox tracked by the plan-execution workflow. The parent label
+(`- [ ] TDD cycle:`) is a grouping label only — if included, it must not substitute for
+the three phase items.
+
 Acceptance criteria in `prd.md` are written as Gherkin scenarios (per the
 [plan-writing-gherkin-criteria skill](../../../.claude/skills/plan-writing-gherkin-criteria/SKILL.md)).
 Those Gherkin scenarios are the natural source of the first failing tests. The chain:
@@ -208,6 +213,13 @@ execution-grade agents and satisfies the [Execution-Grade Clarity rule](../../co
 
 Non-code steps (doc edits, config changes, file creation) do not require RED-GREEN-REFACTOR.
 They use a direct action plus an acceptance criterion instead.
+
+**HARD RULE: Never combine RED, GREEN, and REFACTOR into a single checkbox.** Each of the
+three phases must be its own `- [ ]` item in the delivery checklist. Collapsing multiple
+phases (e.g., `- [ ] Implement X with TDD`, `- [ ] Red-Green-Refactor feature Y`) is
+forbidden. Each sub-bullet in a mini-TDD nested group counts as its own independent
+checkbox — the parent label bullet must not be the only tracked item. `plan-checker` flags
+combined items as HIGH findings.
 
 ### Plan Execution
 
