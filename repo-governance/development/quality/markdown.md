@@ -414,3 +414,21 @@ See [Indentation Convention](../../conventions/formatting/indentation.md) for in
 - Disabled MD041: Allows frontmatter before H1
 
 See [Linking Convention](../../conventions/formatting/linking.md) for linking standards.
+
+## Archive Exclusion
+
+The following directories are excluded from markdown linting because they contain frozen
+historical content whose internal links may legitimately rot over time:
+
+- `plans/done/` — completed plan archives; links to in-progress worktrees and old paths
+  are expected to be stale after archival
+- `archived/` — any other archived directories added in the future
+
+**Rationale**: Lint failures from frozen content are noise. They block the quality gate
+on files that are not being actively maintained and cannot be fixed without distorting the
+historical record. Validated separately when content is first archived.
+
+**Config**: Both `.markdownlintignore` and `.markdownlint-cli2.jsonc` carry matching
+exclusion entries. Both files must be updated because they serve different invocation
+paths of the same tool (see `plans/in-progress/planning-system-overhaul/tech-docs.md §DD-3`
+for full rationale).

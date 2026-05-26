@@ -22,6 +22,9 @@
     "apps/*/test-results/**",
     "apps/*/.venv/**",
     ".claude/worktrees/**",
+    // Archived content — internal links may be stale; do not validate
+    "plans/done/**",
+    "archived/**",
   ],
 
   // Repository-specific markdown linting rules

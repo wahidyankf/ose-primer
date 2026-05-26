@@ -39,3 +39,7 @@ apps/*/test-results/
 # IDE
 .vscode/
 .idea/
+
+# Archived content — internal links may be stale; do not validate
+plans/done/
+archived/
