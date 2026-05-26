@@ -38,16 +38,16 @@ per commit, never bundled across domains or phases.
 
 > _Executor: repo-setup-manager_
 
-- [ ] Install dependencies in the root worktree: run `npm install` from
+- [x] Install dependencies in the root worktree: run `npm install` from
       `/Users/wkf/ose-projects/ose-primer/` (or the worktree root).
       — acceptance: command exits 0, `node_modules/` is present and synchronized.
-- [ ] Converge the full polyglot toolchain: run `npm run doctor -- --fix` from the repo root.
+- [x] Converge the full polyglot toolchain: run `npm run doctor -- --fix` from the repo root.
       — acceptance: command exits 0 with no unresolved drift reported.
-- [ ] Record a baseline test run across all non-E2E apps:
+- [x] Record a baseline test run across all non-E2E apps:
       `npx nx run-many -t test:quick --projects=rhino-cli-rust,rhino-cli-go,crud-fe-ts-nextjs,crud-fe-ts-tanstack-start,crud-fe-dart-flutterweb,crud-fs-ts-nextjs,crud-be-rust-axum,crud-be-golang-gin,crud-be-fsharp-giraffe,crud-be-ts-effect,crud-be-python-fastapi,crud-be-clojure-pedestal,crud-be-java-vertx,crud-be-java-springboot,crud-be-kotlin-ktor,crud-be-elixir-phoenix,crud-be-csharp-aspnetcore`
       — acceptance: baseline pass/fail count recorded; all preexisting failures documented
       before Phase 1 begins.
-- [ ] Resolve all preexisting test failures before proceeding to Phase 1.
+- [x] Resolve all preexisting test failures before proceeding to Phase 1.
       — acceptance: no preexisting failures remain unresolved; re-run the command above and
       confirm zero new failures.
 
