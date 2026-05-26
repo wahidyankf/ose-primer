@@ -43,7 +43,8 @@ outputs:
 - For plans that require iterative refinement to meet all requirements
 - When you need automated archival of completed plans to done/ folder
 - For systematic plan completion with zero-findings quality standard
-- Before executing, invoke the `grill-me` skill (`.claude/skills/grill-me/SKILL.md`) to stress-test any unresolved design decisions in the plan
+- Before executing, invoke the `grill-me` skill (`.claude/skills/grill-me/SKILL.md`) to
+  stress-test any unresolved design decisions in the plan
 
 ## Execution Mode
 
@@ -84,7 +85,7 @@ The orchestrator selects the best agent for each delivery checklist item using t
 
 0. **Suggested-executor annotation (HIGHEST priority)**: If the checkbox carries a `_Suggested executor: <agent-name>_` annotation per [Plan Anti-Hallucination Convention §Specialized-Agent Delegation](../../development/quality/plan-anti-hallucination.md#specialized-agent-delegation-hallucination-reduction), verify the agent file exists at `.claude/agents/<name>.md` and use that agent. The annotation is the plan author's explicit choice — it overrides heuristics 1–4 below. If the annotated agent does not exist, terminate the item with status `fail` and surface the missing-agent error to the user (do not silently fall back).
 
-1. **Match by project/app name**: If the checklist item names a specific app (e.g., `crud-be-ts-effect`), use the agent for that app's language (e.g., `swe-typescript-dev`). Refer to [CLAUDE.md](../../../CLAUDE.md) for the full app list and their tech stacks.
+1. **Match by project/app name**: If the checklist item names a specific app (e.g., `crud-be-fsharp-giraffe`), use the agent for that app's language (e.g., `swe-fsharp-dev`). Refer to [CLAUDE.md](../../../CLAUDE.md) for the full app list and their tech stacks.
 
 2. **Match by file extension**: If the item references files with a recognizable extension (`.ts`, `.java`, `.py`, `.go`, `.kt`, `.fs`, `.cs`, `.clj`, `.ex`, `.rs`, `.dart`), use the corresponding `swe-{language}-dev` agent.
 
@@ -179,7 +180,7 @@ These rules govern ALL execution steps. No exception. No shortcut.
 
 ### 0. Verify Worktree Specification (Sequential, Hard Gate)
 
-Before reading the delivery checklist, verify that the plan declares a worktree and that execution is happening inside it. This gate is non-recoverable — the executor does NOT auto-create worktrees.
+Before reading the delivery checklist, verify that the plan declares a worktree and that execution is happening inside it. If the declared worktree path does not exist or the working directory does not match, the executor auto-provisions the worktree before continuing.
 
 **Orchestrator action**:
 
@@ -191,14 +192,19 @@ Before reading the delivery checklist, verify that the plan declares a worktree 
 4. **Verify the current working directory** matches the declared path:
    - Run `pwd` (or read the orchestrator's `workingDirectory`).
    - Resolve the expected absolute path: `<repo-root>/worktrees/<plan-identifier>`.
-   - **If mismatched**: terminate with status `fail`. Emit a single user-visible line: `Working directory mismatch — expected <expected-path>, got <actual-path>. Provision the worktree via "claude --worktree <plan-identifier>" from the repo root and re-invoke plan execution from inside the worktree.`
-5. **If matched**: log a one-line confirmation (`Worktree gate: passed (<expected-path>)`) and proceed to Step 1.
+   - **If matched**: log a one-line confirmation (`Worktree gate: passed (<expected-path>)`) and proceed to Step 5.
+   - **If mismatched**: auto-provision the worktree:
+     1. Emit a user-visible line: `Auto-provisioning worktree at worktrees/<plan-identifier>/…`
+     2. Run `git worktree add worktrees/<plan-identifier> HEAD` from the repo root.
+     3. If `git worktree add` fails (e.g., path already exists as a stale entry), terminate with status `fail` and emit the error output verbatim.
+     4. Run `npm install && npm run doctor -- --fix` in the root worktree to initialize the new worktree's toolchain.
+     5. Emit a user-visible line: `Worktree provisioned at <expected-path> — continuing execution.`
+     6. Continue execution from the worktree path.
+5. **Confirm gate passed** and proceed to Step 1.
 
-**Output**: Worktree existence and identity confirmed.
+**Output**: Worktree existence and identity confirmed (provisioned if needed).
 
-**On failure**: Terminate workflow with status `fail`. Do NOT attempt auto-provisioning — worktree creation is an explicit user action via `claude --worktree <plan-identifier>`.
-
-**Why this is a hard gate**: Plan execution that runs outside a worktree pollutes the main checkout with in-flight work, breaks the parallel-safety guarantee, and risks dirty-gitlink hazards in any subrepo context. The cost of failing fast (one user command to provision) is far smaller than the cost of recovering from a polluted main checkout mid-execution.
+**Why this is a hard gate**: The missing `## Worktree` section is a hard-fail because there is no declared path to provision — the plan is incomplete and must be fixed by the author before execution can proceed. A CWD mismatch, by contrast, is recoverable: the executor knows the target path and can provision the worktree automatically. Running outside a worktree without a declared path would pollute the main checkout with in-flight work, break the parallel-safety guarantee, and risk dirty-gitlink hazards in any subrepo context.
 
 ### 1. Load Delivery Checklist and Materialize Task List (Sequential)
 
@@ -228,6 +234,8 @@ Read the plan in full, reconcile against any prior run's state, and build the li
 ### 1b. Environment Setup (Sequential)
 
 Before implementing anything, ensure the development environment is ready.
+
+**Note**: The first phase of every delivery checklist must be **Phase 0: Environment Setup and Baseline**, executed by the `repo-setup-manager` agent. Phase 0 covers `npm install`, `npm run doctor -- --fix`, a baseline test run, and preexisting failure resolution. If the delivery checklist contains a Phase 0, delegate it to `repo-setup-manager` before proceeding to Step 2. The steps below are the orchestrator-level mirror of Phase 0 — they describe what must be true before any plan work begins.
 
 **Orchestrator action**:
 
@@ -754,7 +762,9 @@ write the minimum code to pass, then refactor. Mini-TDD passes are encouraged �
 into multiple small Red→Green→Refactor cycles rather than one large test up front. Gherkin
 acceptance criteria in `prd.md` are the natural source of the first failing tests.
 
-**See**: [Test-Driven Development Convention](../../development/workflow/test-driven-development.md)
+**See**: [Test-Driven Development Convention](../../development/workflow/test-driven-development.md) — in particular, the
+[TDD Shape for Delivery Checklists](../../development/workflow/test-driven-development.md#tdd-shape-for-delivery-checklists)
+section for the required RED/GREEN/REFACTOR three-substep template (explicit file path, verbatim command, acceptance criterion per substep).
 
 ## Principles Implemented/Respected
 

@@ -205,6 +205,8 @@ The `repo-assessing-criticality-confidence` Skill provides complete confidence l
 
 - [Fixer Confidence Levels Convention](../../repo-governance/development/quality/fixer-confidence-levels.md) - Confidence assessment
 - [Maker-Checker-Fixer Pattern Convention](../../repo-governance/development/pattern/maker-checker-fixer.md) - Three-stage workflow
+- [Test-Driven Development Convention §TDD Shape for Delivery Checklists](../../repo-governance/development/workflow/test-driven-development.md#tdd-shape-for-delivery-checklists) - Required three-substep template (RED/GREEN/REFACTOR) for rewriting TDD-shape violations flagged by plan-checker
+- [Multi-Harness Binding Convention](../../repo-governance/conventions/structure/multi-harness-binding.md) - Rules applied during harness-neutrality scan fixes (Step 5g findings)
 
 You validate thoroughly, apply fixes confidently (for objective issues only), and report transparently. Your goal is to improve plan quality while avoiding false positives.
 
@@ -464,7 +466,7 @@ For each offending checkbox, derive the missing elements:
 **Good** (rewrite):
 
 ```markdown
-- [ ] Edit `apps/crud-be-ts-effect/src/middleware/auth.ts`: wrap the public router with
+- [ ] Edit `apps/crud-be-ts-effect/src/server/trpc.ts`: wrap the public router with
       `unstable_cache(..., { revalidate: 300 })`. Verify by running
       `npx nx run crud-be-ts-effect:test:quick` — all tests pass.
 ```
@@ -478,9 +480,9 @@ For each offending checkbox, derive the missing elements:
 **Good**:
 
 ```markdown
-- [ ] Create `apps/crud-be-ts-effect/src/Middleware/RateLimit.fs` (siblings: `Auth.fs`, `Cors.fs`)
+- [ ] Create `apps/crud-be-fsharp-giraffe/src/Middleware/RateLimit.fs` (siblings: `Auth.fs`, `Cors.fs`)
       implementing token-bucket rate limiting per the spec in `tech-docs.md §Rate Limiting`.
-      Verify by running `npx nx run crud-be-ts-effect:test:quick` — new test
+      Verify by running `npx nx run crud-be-fsharp-giraffe:test:unit` — new test
       `RateLimit_RejectsExceedingRequests` passes.
 ```
 

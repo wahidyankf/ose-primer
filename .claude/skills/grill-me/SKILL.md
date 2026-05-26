@@ -1,16 +1,16 @@
 ---
 name: grill-me
 description: >
-  Interview the user relentlessly about a plan or design, presenting choices one at a
-  time until shared understanding is reached. Resolves every branch of the decision
-  tree. Use when the user wants to stress-test a plan, get grilled on their design,
-  or mentions "grill me".
+  Interview the user relentlessly about a plan or design, presenting choices one at a time
+  until shared understanding is reached. Resolves every branch of the decision tree. Use
+  when the user wants to stress-test a plan, get grilled on their design, or mentions
+  "grill me".
 ---
 
 # Grill Me
 
-Stress-test plans and designs through relentless, structured questioning before
-implementation begins.
+Stress-test plans and designs through relentless, structured questioning before implementation
+begins.
 
 ## When to activate
 
@@ -23,16 +23,16 @@ Activate when:
 
 ## Process
 
-Interview the user about every aspect of the plan until shared understanding is reached.
-Walk down each branch of the decision tree, resolving dependencies one-by-one.
+Interview the user about every aspect of the plan until shared understanding is reached. Walk
+down each branch of the decision tree, resolving dependencies one-by-one.
 
 **Rules:**
 
 1. Ask questions **one at a time** — never bundle multiple questions in one message
 2. Present **2-4 concrete options** with trade-off descriptions per question
 3. **Mark the recommended option** clearly, e.g. `**(Recommended)**`
-4. **Explore the codebase first** — if a question can be answered by reading existing
-   files, read them instead of asking
+4. **Explore the codebase first** — if a question can be answered by reading existing files,
+   read them instead of asking
 5. Continue until all branches are resolved
 
 ## Question format

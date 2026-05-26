@@ -54,7 +54,7 @@ Validate project plans against standards defined in [Plans Organization Conventi
 - Plan folder naming: `YYYY-MM-DD-project-identifier`
 - File structure:
   - **Multi-file (default)** — five files: `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`. Flag missing files as HIGH finding.
-  - **Single-file (exception)** — one `README.md` with nine mandatory sections: Context, Scope, Business Rationale (condensed BRD), Product Requirements (condensed PRD), Technical Approach, Worktree, Delivery Checklist, Quality Gates, Verification. Flag missing sections as HIGH.
+  - **Single-file (exception)** — one `README.md` with eight mandatory sections: Context, Scope, Business Rationale (condensed BRD), Product Requirements (condensed PRD), Technical Approach, Delivery Checklist, Quality Gates, Verification. Flag missing sections as HIGH.
 - Required sections present per file (BRD: business goal / impact / affected roles / success metrics / non-goals / risks; PRD: product overview / personas / user stories / Gherkin acceptance criteria / product scope / product risks; tech-docs: architecture / decisions / file-impact / rollback; delivery: phased checkboxes with implementation-notes blocks)
 - Proper file organization; folder sits under `plans/backlog/`, `plans/in-progress/`, or `plans/done/`
 
@@ -113,7 +113,7 @@ Audit all plan files (`README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery
 - Validation criteria are specific
 - Acceptance criteria are testable
 - Git workflow is specified
-- **TDD-shaped steps**: Any checklist item that ships code MUST have a corresponding test-first step (Red→Green→Refactor structure). Flag as **HIGH** any code delivery item that does not include a failing-test step before the implementation step. See [Test-Driven Development Convention §TDD Shape for Delivery Checklists](../../repo-governance/development/workflow/test-driven-development.md#tdd-shape-for-delivery-checklists) for the required per-substep command + acceptance-criterion template.
+- **TDD-shaped steps**: Any checklist item that ships code MUST have a corresponding test-first step (Red→Green→Refactor structure). Flag as **HIGH** any code delivery item that does not include a failing-test step before the implementation step. See [Test-Driven Development Convention](../../repo-governance/development/workflow/test-driven-development.md) for required TDD step shapes.
 - **Execution-grade clarity (HARD RULE)**: every checkbox MUST name explicit file path(s) (or maximum-possible-detail target when path is unknowable), verbatim shell command(s) when applicable, and a concrete acceptance criterion. Flag as **HIGH** any checkbox whose action is not unambiguously executable by a sonnet-tier agent without consulting additional context — bare "implement X", "set up Y", "configure Z", "add caching" are violations. See [Plans Organization Convention §Execution-Grade Clarity](../../repo-governance/conventions/structure/plans.md#execution-grade-clarity-hard-rule).
 
 #### PR Step Authorization Check (per [Git Push Default Convention](../../repo-governance/development/workflow/git-push-default.md))
@@ -233,7 +233,7 @@ Update status to "Complete", add summary statistics and prioritized recommendati
 - [CLAUDE.md](../../CLAUDE.md) - Primary guidance
 - [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md) - Plan standards
 - [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow standards
-- [Test-Driven Development Convention](../../repo-governance/development/workflow/test-driven-development.md) - TDD-shaped delivery checklist requirement (RED→GREEN→REFACTOR); see [§TDD Shape for Delivery Checklists](../../repo-governance/development/workflow/test-driven-development.md#tdd-shape-for-delivery-checklists) for the per-substep command + acceptance-criterion template
+- [Test-Driven Development Convention](../../repo-governance/development/workflow/test-driven-development.md) - TDD-shaped delivery checklist requirement (RED→GREEN→REFACTOR)
 
 **Related Agents / Workflows:**
 
@@ -241,6 +241,11 @@ Update status to "Complete", add summary statistics and prioritized recommendati
 - [plan-execution workflow](../../repo-governance/workflows/plan/plan-execution.md) - Execute plans (calling context orchestrates; no dedicated subagent)
 - `plan-execution-checker` - Validates completed work
 - `plan-fixer` - Fixes plan issues
+
+**Harness Conventions (Step 5g):**
+
+- [Multi-Harness Binding Convention](../../repo-governance/conventions/structure/multi-harness-binding.md) - Two-tier binding model and no-shadowing rule
+- [Governance Vendor-Independence Convention](../../repo-governance/conventions/structure/governance-vendor-independence.md) - Platform Binding Examples heading rule
 
 ### Escalation After Repeated Disagreements
 
@@ -419,8 +424,8 @@ After validating the worktree specification (Step 5d), audit every delivery chec
 Every checkbox in `delivery.md` (or the Delivery Checklist section of a single-file plan's `README.md`) MUST satisfy ALL of the following that apply to the action:
 
 1. **Explicit file path(s)** when the action touches a known file
-   - Acceptable: `apps/crud-be-ts-effect/src/middleware/auth.ts`, `repo-governance/conventions/structure/plans.md`, etc.
-   - When the path cannot be determined at authoring time, the checkbox MUST give the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/crud-be-ts-effect/src/` following the pattern of sibling `auth.ts`").
+   - Acceptable: `apps/crud-be-ts-effect/src/server/trpc.ts`, `repo-governance/conventions/structure/plans.md`, etc.
+   - When the path cannot be determined at authoring time, the checkbox MUST give the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/crud-be-ts-effect/src/lib/` following the pattern of sibling `auth.ts`").
    - Bare "the auth file", "the relevant config", "wherever needed": **HIGH** finding.
 
 2. **Explicit shell command(s)** when the action involves a command
@@ -510,32 +515,43 @@ This prevents re-verification thrash and keeps the audit deterministic.
 
 ### 13. Harness-Neutrality Scan (Step 5g — CONDITIONAL)
 
-After the anti-hallucination scan (Step 5f), run this step **only when the plan touches agents, skills, rules, or governance docs** — i.e., when any delivery step creates or modifies a file under `.claude/agents/`, `.claude/skills/`, `.opencode/`, `.amazonq/`, `AGENTS.md`, `CLAUDE.md`, or `repo-governance/`. If the plan touches none of these (e.g., it only changes application code and tests under `apps/` or `libs/`), **skip this step entirely and generate no findings**.
+Run this step ONLY when the plan touches agents, skills, rules, or `repo-governance/` paths. Skip entirely when the plan touches only application code and tests.
 
-This step closes the harness-neutrality blind spot at plan-review time, complementing the post-execution [`repo-harness-compatibility-quality-gate`](../../repo-governance/workflows/repo/repo-harness-compatibility-quality-gate.md). It enforces the [Multi-Harness Binding Convention](../../repo-governance/conventions/structure/multi-harness-binding.md) and the [Governance Vendor-Independence Convention](../../repo-governance/conventions/structure/governance-vendor-independence.md).
+Reports CRITICAL if a plan skips this check when in scope.
 
 #### What to Validate
 
-**A. Agent definitions follow multi-harness-binding conventions** — When a plan creates or edits an agent under `.claude/agents/`, verify the plan keeps the primary binding as the source of truth and does not hand-author the secondary `.opencode/` (or other Tier 2) binding. Hand-edited binding files: **CRITICAL** finding (violates AD4 — Mechanical Generation Over Hand-Maintenance).
+1. **Agent definitions follow multi-harness-binding conventions**
+   - Agent frontmatter fields (`name`, `description`, `tools`, `model`, `color`, `skills`) are present and correctly formatted per the [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md).
+   - `color` field uses a named color value (`blue`, `green`, `yellow`, `purple`, etc.) — not an OpenCode theme token or hex code.
+   - `tools` field uses the Claude Code array format (`Read, Write, Edit`) — not boolean flags.
+   - Non-conforming agent: **HIGH** finding per violation.
 
-**B. Agent mirrors are regenerated, not hand-written** — Verify the plan regenerates secondary bindings via `npm run generate:bindings` rather than editing them by hand. A delivery step that edits `.opencode/agents/<name>.md` directly without a `generate:bindings` run: **CRITICAL** finding.
+2. **Agent mirrors are generated via `npm run generate:bindings`, not hand-written**
+   - No delivery checklist step instructs manual editing of `.opencode/agents/` files.
+   - No delivery checklist step creates `.opencode/agents/` files directly.
+   - Hand-written secondary binding: **HIGH** finding.
 
-**C. Skill body is plain markdown** — When a plan creates or edits a skill under `.claude/skills/`, verify the skill body contains no harness-specific syntax or vendor product names outside fenced examples. Vendor-specific syntax in a skill body: **HIGH** finding.
+3. **Skill body is plain markdown with no harness-specific syntax**
+   - `SKILL.md` files must contain only plain markdown — no Claude Code tool invocations, no OpenCode-specific YAML frontmatter beyond the skill metadata.
+   - Harness-specific syntax in skill body: **HIGH** finding.
 
-**D. No manual OpenCode skill mirror** — Verify the plan does NOT create an `.opencode/skill/` or `.opencode/skills/<name>` mirror (OpenCode reads `.claude/skills/{name}/SKILL.md` natively). A delivery step creating such a mirror: **HIGH** finding (the `validate:sync` "No Synced Skill Mirror" check would fail).
+4. **No OpenCode skill mirror manually created**
+   - OpenCode reads `.claude/skills/<name>/SKILL.md` natively per `AGENTS.md`. No `.opencode/skill/` or `.opencode/skills/<name>/` mirror should be created.
+   - Manual skill mirror: **HIGH** finding.
 
-**E. Governance changes stay vendor-neutral** — When a plan modifies files under `repo-governance/`, verify vendor product names, harness-specific filenames, and binding paths appear only inside an allowlisted "Platform Binding Examples" section (or equivalent), never in general governance prose. Vendor terms in governance prose outside an allowlisted region: **CRITICAL** finding.
+5. **Governance doc changes outside "Platform Binding Examples" heading**
+   - Any proposed changes to `repo-governance/` content MUST live outside any `## Platform Binding Examples` heading unless the change is intentionally vendor-specific.
+   - Governance change under vendor-specific heading: **MEDIUM** finding.
 
-#### How to Audit
-
-1. Determine scope: scan the delivery checklist for any step touching `.claude/agents/`, `.claude/skills/`, `.opencode/`, `.amazonq/`, `AGENTS.md`, `CLAUDE.md`, or `repo-governance/`. If none, skip this step and report no findings.
-2. For agent-touching steps: confirm the plan names `npm run generate:bindings` for mirror regeneration and does not direct hand-edits to secondary bindings.
-3. For skill-touching steps: confirm no `.opencode/` skill mirror is created and the skill body is plain markdown.
-4. For governance-touching steps: confirm the plan does not introduce vendor terms into general governance prose; cross-check against the [Governance Vendor-Independence Convention](../../repo-governance/conventions/structure/governance-vendor-independence.md).
+**Reference**: [Multi-Harness Binding Convention](../../repo-governance/conventions/structure/multi-harness-binding.md) and
+[Governance Vendor-Independence Convention](../../repo-governance/conventions/structure/governance-vendor-independence.md).
 
 #### Finding Severity
 
-- Hand-authored secondary binding / missing `generate:bindings` regeneration: **CRITICAL** per occurrence
-- Vendor terms in governance prose outside an allowlisted region: **CRITICAL** per occurrence
-- Vendor-specific syntax in a skill body / manual OpenCode skill mirror: **HIGH** per occurrence
-- Conditional not met (plan touches no agents/skills/governance): step skipped, **no findings**
+- Missing harness-neutrality check when plan is in scope: **CRITICAL**
+- Hand-written secondary binding file: **HIGH**
+- Agent frontmatter violates multi-harness format: **HIGH** per violation
+- Skill body contains harness-specific syntax: **HIGH**
+- Manual OpenCode skill mirror: **HIGH**
+- Governance change placed under vendor-specific heading: **MEDIUM**

@@ -58,24 +58,29 @@ Use this agent when:
 Plans follow the **five-document multi-file layout** by default; collapse to a single-file `README.md` only when the plan is trivially small (≤1000 lines combined AND both condensed BRD and condensed PRD fit without crowding out the technical sections).
 
 - **Multi-File (default)**: `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`
-- **Single-File (exception, ≤1000 lines)**: all content in `README.md` with mandatory sections: Context, Scope, Business Rationale (condensed BRD), Product Requirements (condensed PRD), Technical Approach, Worktree, Delivery Checklist, Quality Gates, Verification.
+- **Single-File (exception, ≤1000 lines)**: all content in `README.md` with mandatory sections: Context, Scope, Business Rationale (condensed BRD), Product Requirements (condensed PRD), Technical Approach, Delivery Checklist, Quality Gates, Verification.
 
 See [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md) for complete structure details and the Content-Placement Rules that govern what goes in `brd.md` vs `prd.md`.
 
 ## Planning Workflow
 
-### Step 0: Stress-Test Design Decisions (Optional — invoke when open decisions exist)
+### Step 1: Grill the User (Mandatory — Pre-Write)
 
-Before gathering requirements or authoring the plan, invoke the `grill-me` skill
-(`.claude/skills/grill-me/SKILL.md`) when any design decision is unresolved or the user
-asks to be challenged on their approach. This resolves every branch of the decision tree
-one question at a time before writing begins, preventing the plan from encoding half-formed
-choices that the checker will later flag.
+Before reading the codebase or creating any files, invoke the `grill-me` skill
+(`.claude/skills/grill-me/SKILL.md`) to resolve all open design decisions with the user.
 
-Skip this step only when requirements are already fully resolved and no design interrogation
-is requested.
+Ask about:
 
-### Step 1: Gather Requirements
+- What problem is this solving? What specific pain is it addressing?
+- What are the acceptance criteria? How will we know it is done?
+- What is the scope? What is explicitly out of scope?
+- What are the constraints (performance, compatibility, harness-neutrality, etc.)?
+- Are there design decision forks where the user has a preference?
+
+Do NOT proceed to Step 2 until all open branches are resolved. Unresolved design decisions
+discovered during writing force expensive rewrites — resolve them now.
+
+### Step 2: Gather Requirements
 
 Read and understand user requirements:
 
@@ -93,7 +98,7 @@ Clarify with user if needed:
 - What's the scope?
 - What are the constraints?
 
-### Step 2: Create Plan Folder
+### Step 3: Create Plan Folder
 
 New plans start in `backlog/` with a creation-date prefix, then move to `in-progress/` WITHOUT
 the date prefix when work begins.
@@ -106,7 +111,7 @@ mkdir -p plans/backlog/YYYY-MM-DD__project-identifier
 git mv plans/backlog/YYYY-MM-DD__project-identifier plans/in-progress/project-identifier
 ```
 
-### Step 3: Write Requirements (BRD + PRD)
+### Step 4: Write Requirements (BRD + PRD)
 
 Document intent and specification in two separate files, per the [Content-Placement Rules](../../repo-governance/conventions/structure/plans.md#content-placement-rules-brdmd-vs-prdmd):
 
@@ -130,7 +135,7 @@ Document intent and specification in two separate files, per the [Content-Placem
 
 **Cross-cutting concerns**: For content that spans both, place the **factual claim or judgment** in `brd.md` and the **testable scenario** in `prd.md`, cross-linking between them. Do not duplicate the full content.
 
-### Step 4: Write Technical Documentation
+### Step 5: Write Technical Documentation
 
 Document how to build it:
 
@@ -144,7 +149,7 @@ tests are written BEFORE implementation. Gherkin acceptance criteria in `prd.md`
 source of first failing tests. Document which test level (unit/integration/E2E) covers each
 acceptance criterion.
 
-### Step 5: Create Delivery Checklist
+### Step 6: Create Delivery Checklist
 
 Break work into executable steps:
 
@@ -153,7 +158,7 @@ Break work into executable steps:
 **Validation Checklists**: How to verify each phase
 **Acceptance Criteria**: Final verification steps
 
-### Step 6: Add Git Workflow
+### Step 7: Add Git Workflow
 
 Specify branch strategy:
 
@@ -162,6 +167,30 @@ Specify branch strategy:
 **Other exception**: Plain feature branch (non-worktree) requires justification.
 
 See [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md) and especially the [Default Push and Worktree Execution](../../repo-governance/development/workflow/trunk-based-development.md#default-push-and-worktree-execution) section for workflow details.
+
+### Step 8: Grill the User (Mandatory — Post-Write)
+
+After all plan files are written, invoke the `grill-me` skill again to validate the plan with
+the user before signaling done.
+
+Cover:
+
+- Does the plan structure match the user's intent? Are all acceptance criteria captured?
+- Are there open questions that surfaced during writing?
+- Is Gherkin completeness sufficient (every acceptance criterion has a scenario)?
+- Is checklist granularity correct (each item is one concrete action; RED/GREEN/REFACTOR are
+  separate checkboxes per the HARD RULE in
+  [test-driven-development.md](../../repo-governance/development/workflow/test-driven-development.md))?
+- Is the `## Worktree` section present in `delivery.md`?
+- Is Phase 0 (Environment Setup and Baseline) the first phase in `delivery.md`, with
+  `repo-setup-manager` as the designated executor?
+- **Harness-neutrality**: If the plan scope includes `.claude/agents/`, `.opencode/agents/`,
+  or `repo-governance/` paths, confirm that no vendor-specific content was introduced into
+  governance files. Reference the
+  [Governance Vendor-Independence Convention](../../repo-governance/conventions/structure/governance-vendor-independence.md).
+
+Revise files as needed based on user feedback. Signal done only after the user confirms the
+plan is complete and correct.
 
 ## Plan Quality Standards
 
@@ -197,9 +226,8 @@ When plan content (any of `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `deli
 - Acceptance criteria are testable
 - **Code items are TDD-shaped**: items that ship code express Red→Green→Refactor steps, not
   "implement X, then write tests." See
-  [Test-Driven Development Convention §TDD Shape for Delivery Checklists](../../repo-governance/development/workflow/test-driven-development.md#tdd-shape-for-delivery-checklists)
-  for the required per-substep command + acceptance-criterion template. `plan-checker` flags code
-  items without TDD structure as HIGH findings.
+  [Test-Driven Development Convention](../../repo-governance/development/workflow/test-driven-development.md)
+  for required step shapes. `plan-checker` flags code items without TDD structure as HIGH findings.
 - **Execution-grade clarity (HARD RULE)**: every checkbox MUST contain explicit file path(s)
   when known (or maximum-possible-detail target — parent dir + naming pattern + sibling reference
   — when path is unknowable at authoring time), explicit verbatim shell command(s) where
@@ -238,10 +266,11 @@ Unsolicited PR steps conflict with Trunk Based Development. `plan-checker` will 
 
 **Related Agents / Workflows:**
 
-- `plan-checker` - Validates plan quality
-- [plan-execution workflow](../../repo-governance/workflows/plan/plan-execution.md) - Execute plans (calling context orchestrates; no dedicated subagent)
+- `plan-checker` - Validates plan quality (includes Step 5g harness-neutrality scan when the plan touches agents, skills, rules, or `repo-governance/` paths)
+- [plan-execution workflow](../../repo-governance/workflows/plan/plan-execution.md) - Execute plans (calling context orchestrates; no dedicated subagent); invokes the `grill-me` skill to stress-test unresolved design decisions before execution begins
 - `plan-execution-checker` - Validates completed work
 - `plan-fixer` - Fixes plan issues
+- `grill-me` skill - Stress-test open design decisions before committing to implementation; invoke via the `grill-me` Skill when requirements have unresolved branches
 
 **Remember**: Good plans are executable blueprints, not vague intentions. Make them specific, structured, and actionable.
 
@@ -361,19 +390,26 @@ Every delivery plan MUST include these sections. Plans without them will be flag
 
 ### Required Delivery Sections
 
-When writing the delivery checklist (Step 5), ALWAYS include ALL of the following sections. These are non-negotiable.
+When writing the delivery checklist (Step 6), ALWAYS include ALL of the following sections.
+These are non-negotiable.
 
-**1. Environment Setup** (at the beginning of the delivery checklist):
+**1. Phase 0: Environment Setup and Baseline** (the FIRST phase of every delivery checklist,
+delegated to `repo-setup-manager`):
 
 ```markdown
-### Environment Setup
+## Phase 0: Environment Setup and Baseline
+
+> _Executor: repo-setup-manager_
 
 - [ ] Install dependencies in the root worktree: `npm install`
-- [ ] Converge the full polyglot toolchain in the root worktree: `npm run doctor -- --fix` (required — the `postinstall` hook runs `doctor || true` and silently tolerates drift; see [Worktree Toolchain Initialization](../../repo-governance/development/workflow/worktree-setup.md))
+      — acceptance: exits 0, `node_modules/` synchronized
+- [ ] Converge the full polyglot toolchain in the root worktree: `npm run doctor -- --fix`
+      — acceptance: exits 0 with no unresolved drift
 - [ ] [Project-specific setup: env vars, DB, Docker, etc.]
-- [ ] Verify dev server starts: `nx dev [project-name]`
 - [ ] Run existing tests to establish baseline: `nx run [project-name]:test:quick`
-- [ ] Note any preexisting failures for fixing during execution
+      — acceptance: baseline pass/fail count recorded; all preexisting failures documented
+- [ ] Resolve all preexisting failures before proceeding
+      — acceptance: no preexisting failures remain unresolved
 ```
 
 **2. Local Quality Gates** (before any push step in each phase):

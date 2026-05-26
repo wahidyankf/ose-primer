@@ -117,15 +117,23 @@ Run plan validation to identify completeness, accuracy, and hallucination issues
 - Structure (folder name, file layout, mandatory sections)
 - Requirements (BRD + PRD content placement, Gherkin)
 - Technical documentation (architecture, design decisions, diagrams)
-- Delivery checklist (granularity, [TDD shape](../../development/workflow/test-driven-development.md#tdd-shape-for-delivery-checklists), execution-grade clarity)
+- Delivery checklist (granularity, TDD shape, execution-grade clarity)
 - Operational readiness (Step 5b — quality gates, CI verification, env setup)
 - Manual behavioral assertions (Step 5c — Playwright MCP / curl)
 - Worktree specification (Step 5d — declared `## Worktree` section + path format)
 - Execution-grade clarity (Step 5e — file paths, commands, acceptance criteria per checkbox)
-- **Anti-hallucination scan** (Step 5f — confidence labels, Anti-Pattern Catalog AP-1 through AP-10, suggested-executor annotation validity, web-citation completeness) per the [Plan Anti-Hallucination Convention](../../development/quality/plan-anti-hallucination.md)
-- **Harness-neutrality scan** (Step 5g — CONDITIONAL) — fires only when a plan touches agents, skills, rules, or governance docs. Verifies agent definitions follow multi-harness-binding conventions, mirrors are regenerated via `npm run generate:bindings` (not hand-written), skill bodies are plain markdown with no manually-authored secondary-binding skill mirror, and governance prose stays vendor-neutral per the [Multi-Harness Binding Convention](../../conventions/structure/multi-harness-binding.md) and [Governance Vendor-Independence Convention](../../conventions/structure/governance-vendor-independence.md). Skipped with no findings when the plan touches none of those paths.
+- **Anti-hallucination scan** (Step 5f — confidence labels, Anti-Pattern Catalog AP-1 through
+  AP-10, suggested-executor annotation validity, web-citation completeness) per the
+  [Plan Anti-Hallucination Convention](../../development/quality/plan-anti-hallucination.md)
+- **Harness-neutrality scan** (Step 5g — conditional: fires only when the plan touches agents,
+  skills, rules, or `repo-governance/` paths) per the
+  [Multi-Harness Binding Convention](../../conventions/structure/multi-harness-binding.md)
 
-For external claims that are not already documented in the repo and require more than a single-shot URL fetch, `plan-checker` delegates research to [`web-research-maker`](../../../.claude/agents/web-research-maker.md) per the lower plan-content threshold (any non-grep'd external claim → delegate). See [Plan Anti-Hallucination Convention §Web-Research Delegation](../../development/quality/plan-anti-hallucination.md#web-research-delegation-lower-threshold-for-plans).
+For external claims that are not already documented in the repo and require more than a
+single-shot URL fetch, `plan-checker` delegates research to
+[`web-research-maker`](../../../.claude/agents/web-research-maker.md) per the lower plan-content
+threshold (any non-grep'd external claim → delegate). See
+[Plan Anti-Hallucination Convention §Web-Research Delegation](../../development/quality/plan-anti-hallucination.md#web-research-delegation-lower-threshold-for-plans).
 
 **Success criteria**: Checker completes and generates audit report.
 
@@ -362,10 +370,23 @@ The plan-checker validates:
 
 - **Completeness**: All five canonical documents present in multi-file plans — `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`. Required sections populated in each file per the [Content-Placement Rules](../../conventions/structure/plans.md#content-placement-rules-brdmd-vs-prdmd). Single-file exception is allowed when the plan is trivially small (≤1000 lines) and a single `README.md` covers the nine mandatory sections: Context, Scope, Business Rationale (condensed BRD), Product Requirements (condensed PRD), Technical Approach, **Worktree**, Delivery Checklist, Quality Gates, Verification.
 - **Technical Accuracy**: Commands, versions, tool names, API signatures verified via repo `Grep` first (free, fast, accurate); external claims verified via `web-research-maker` per the lower plan-content delegation threshold
-- **Anti-Hallucination Scan**: Every non-trivial factual claim carries an inline confidence label (`[Repo-grounded]` / `[Web-cited]` / `[Judgment call]` / `[Unverified]`); zero violations of Anti-Pattern Catalog AP-1 through AP-10; every cited file path / Nx target / agent / skill resolves on the current commit. See [Plan Anti-Hallucination Convention](../../development/quality/plan-anti-hallucination.md).
+- **Anti-Hallucination Scan**: Every non-trivial factual claim carries an inline confidence label
+  (`[Repo-grounded]` / `[Web-cited]` / `[Judgment call]` / `[Unverified]`); zero violations of
+  Anti-Pattern Catalog AP-1 through AP-10; every cited file path / Nx target / agent / skill
+  resolves on the current commit. See
+  [Plan Anti-Hallucination Convention](../../development/quality/plan-anti-hallucination.md).
+- **Harness-Neutrality Scan** (conditional — applies when plan touches agents, skills, rules, or
+  `repo-governance/` paths): Verifies (1) agent definitions follow
+  [multi-harness-binding conventions](../../conventions/structure/multi-harness-binding.md);
+  (2) agent mirrors are generated via `npm run generate:bindings`, not hand-written; (3) skill body
+  is plain markdown with no harness-specific syntax; (4) no secondary skill mirror is manually
+  created (the coding agent reads `.claude/skills/` natively per `AGENTS.md`); (5) governance doc changes
+  live outside any "Platform Binding Examples" heading unless intentionally vendor-specific per
+  [governance-vendor-independence.md](../../conventions/structure/governance-vendor-independence.md).
+  Reports CRITICAL if a plan skips this check when in scope. Skip entirely when plan touches only
+  application code and tests.
 - **Worktree Specification**: Plan contains a `## Worktree` section declaring the worktree path (`worktrees/<plan-identifier>/`) and provisioning command. See [Plans Organization Convention §Worktree Specification](../../conventions/structure/plans.md#worktree-specification).
 - **Execution-Grade Clarity**: Every delivery checkbox names explicit file path(s), verbatim shell command(s), and a concrete acceptance criterion. See [Plans Organization Convention §Execution-Grade Clarity](../../conventions/structure/plans.md#execution-grade-clarity-hard-rule).
-- **Harness-Neutrality** (CONDITIONAL — Step 5g): For plans that touch agents, skills, rules, or `repo-governance/`, every agent/skill/governance change follows harness-neutral conventions — secondary bindings regenerated via `npm run generate:bindings` rather than hand-written, skill bodies plain markdown with no manually-authored secondary-binding skill mirror, and no vendor-specific content in governance prose outside an allowlisted Platform Binding Examples section. See the [Multi-Harness Binding Convention](../../conventions/structure/multi-harness-binding.md) and [Governance Vendor-Independence Convention](../../conventions/structure/governance-vendor-independence.md). Skipped with no findings for plans touching only application code/tests.
 - **Implementation Readiness**: Plans are actionable and executable
 - **Codebase Alignment**: References to existing files, patterns, and conventions
 - **Clarity**: Clear problem statements, well-defined scope, unambiguous requirements
@@ -444,3 +465,4 @@ This workflow ensures plan quality and implementation readiness through iterativ
 - **[Content Quality Principles](../../conventions/writing/quality.md)**: Active voice, proper heading hierarchy, single H1
 - **[Plans Organization Convention](../../conventions/structure/plans.md)**: Workflow validates the five-document structure and worktree section per the convention
 - **[Plan Anti-Hallucination Convention](../../development/quality/plan-anti-hallucination.md)**: plan-checker's Step 5f enforces this convention's recipes, confidence labels, and Anti-Pattern Catalog
+- **[Multi-Harness Binding Convention](../../conventions/structure/multi-harness-binding.md)**: plan-checker's Step 5g (harness-neutrality scan) enforces this convention when the plan touches agents, skills, rules, or `repo-governance/` paths

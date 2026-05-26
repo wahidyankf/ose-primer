@@ -89,10 +89,9 @@ plans/in-progress/simple-feature/
 3. **Business Rationale (condensed BRD)** — why + affected roles + success metrics (gut-based reasoning OK when logic supports it; fabricated KPIs forbidden)
 4. **Product Requirements (condensed PRD)** — user stories + Gherkin acceptance criteria + product scope
 5. **Technical Approach** — architecture, design decisions
-6. **Worktree** — declared worktree path (`worktrees/<plan-identifier>/`) and provisioning command
-7. **Delivery Checklist** — phased `- [ ]` items
-8. **Quality Gates** — local + CI gates
-9. **Verification** — how to confirm done
+6. **Delivery Checklist** — phased `- [ ]` items
+7. **Quality Gates** — local + CI gates
+8. **Verification** — how to confirm done
 
 If the plan grows past 1000 lines or authoring feels crowded, promote to the five-document multi-file layout before execution begins.
 
@@ -134,9 +133,9 @@ Plans are executed by **execution-grade (sonnet-tier)** agents, not planning-gra
 
 **Every checkbox MUST contain all of the following that apply**:
 
-- **Explicit file path(s)** when the action touches a known file. When the path cannot be determined at authoring time, give the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/crud-be-ts-effect/src/` following the pattern of sibling `auth.ts`").
-- **Explicit shell command(s)** verbatim when applicable (e.g., `npx nx run crud-be-ts-effect:test:quick`), not "run the lint".
-- **Concrete acceptance criterion** stating the observable change that proves done (e.g., "all assertions in `trpc.test.ts` pass", "`nx run crud-be-ts-effect:typecheck` exits 0"). No bare "implement X", "set up Y", "configure Z".
+- **Explicit file path(s)** when the action touches a known file. When the path cannot be determined at authoring time, give the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/organiclever-web/src/lib/` following the pattern of sibling `auth.ts`").
+- **Explicit shell command(s)** verbatim when applicable (e.g., `npx nx run ose-web:test:quick`), not "run the lint".
+- **Concrete acceptance criterion** stating the observable change that proves done (e.g., "all assertions in `trpc.test.ts` pass", "`nx run ose-web:typecheck` exits 0"). No bare "implement X", "set up Y", "configure Z".
 
 **`plan-checker` flags violations as HIGH severity. `plan-fixer` rewrites offending items with maximum detail.**
 
@@ -151,9 +150,9 @@ Plans are executed by **execution-grade (sonnet-tier)** agents, not planning-gra
 **Good** (explicit path, explicit command, explicit criterion):
 
 ```markdown
-- [ ] Edit `apps/crud-be-ts-effect/src/middleware/auth.ts`: wrap the public router with
+- [ ] Edit `apps/ose-web/src/server/trpc.ts`: wrap the public router with
       `unstable_cache(..., { revalidate: 300 })`. Verify by running
-      `npx nx run crud-be-ts-effect:test:quick` — all tests pass.
+      `npx nx run ose-web:test:quick` — all tests pass.
 ```
 
 **Bad**:
@@ -165,9 +164,9 @@ Plans are executed by **execution-grade (sonnet-tier)** agents, not planning-gra
 **Good**:
 
 ```markdown
-- [ ] Create `apps/crud-be-ts-effect/src/Middleware/RateLimit.fs` (siblings: `Auth.fs`, `Cors.fs`)
+- [ ] Create `apps/organiclever-be/src/Middleware/RateLimit.fs` (siblings: `Auth.fs`, `Cors.fs`)
       implementing token-bucket rate limiting per `tech-docs.md §Rate Limiting`. Verify by running
-      `npx nx run crud-be-ts-effect:test:quick` — new test `RateLimit_RejectsExceedingRequests` passes.
+      `npx nx run organiclever-be:test:unit` — new test `RateLimit_RejectsExceedingRequests` passes.
 ```
 
 **Bad**:
@@ -260,8 +259,8 @@ Domain-specialized agents hallucinate less than generic orchestration. When a de
 **Annotation format** (sub-bullet under the checkbox prose, before any implementation notes):
 
 ```markdown
-- [ ] Edit `apps/crud-be-ts-effect/src/Domain/User.fs` [Repo-grounded]: add `email: string option` field
-      with case-insensitive uniqueness. Verify by running `nx run crud-be-ts-effect:test:quick` — new test
+- [ ] Edit `apps/organiclever-be/src/Domain/User.fs` [Repo-grounded]: add `email: string option` field
+      with case-insensitive uniqueness. Verify by running `nx run organiclever-be:test:unit` — new test
       `User_RejectsDuplicateEmailIgnoringCase` passes.
   - _Suggested executor: `swe-fsharp-dev`_
 ```
@@ -269,10 +268,10 @@ Domain-specialized agents hallucinate less than generic orchestration. When a de
 **When to annotate**:
 
 - Action touches a specific language file (`.fs`, `.go`, `.kt`, `.cs`, `.fsproj`, `.csproj`, etc.)
-- Action touches a specific app context (e.g., TypeScript app files → `swe-typescript-dev`)
+- Action touches a specific app context (`apps/ose-web/...` → `apps-ose-web-content-maker` for content)
 - Action is content/documentation (`docs-maker`, `readme-maker`, `specs-maker`)
 - Action is governance / repo rules (`repo-rules-maker`)
-- Action is specialized-agent skill domain (specialized agent names vary by use case)
+- Action is content-platform skill domain (`apps-ayokoding-web-by-example-maker`, `apps-ayokoding-web-in-the-field-maker`, etc.)
 
 **When to skip annotation** (default plan-execution Agent Selection suffices):
 
@@ -559,7 +558,6 @@ Every delivery plan MUST end with a plan archival section:
 **Related Conventions**:
 
 - [Plan Anti-Hallucination Convention](../../../repo-governance/development/quality/plan-anti-hallucination.md) - Pre-write verification recipes, repo-grounding rule, refuse-on-uncertainty, anti-pattern catalog (AP-1 through AP-10), specialized-executor annotation
-- [Test-Driven Development Convention](../../../repo-governance/development/workflow/test-driven-development.md) — required RED→GREEN→REFACTOR structure for code-bearing delivery checklist items; see [§TDD Shape for Delivery Checklists](../../../repo-governance/development/workflow/test-driven-development.md#tdd-shape-for-delivery-checklists) for the per-substep command + acceptance-criterion template
 - [Trunk Based Development](../../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow (default = direct push to main regardless of execution context; branch + draft PR is opt-in only when explicitly requested)
 - [PR Merge Protocol](../../../repo-governance/development/workflow/pr-merge-protocol.md) - Explicit approval required, all quality gates must pass
 - [Feature Change Completeness](../../../repo-governance/development/quality/feature-change-completeness.md) - Specs, contracts, and tests must update with every feature change
@@ -570,7 +568,6 @@ Every delivery plan MUST end with a plan archival section:
 
 **Related Skills**:
 
-- `grill-me` - Stress-test a plan or design before authoring begins; invoke when a new plan has unresolved design decisions
 - `plan-writing-gherkin-criteria` - Detailed Gherkin guidance
 - `repo-practicing-trunk-based-development` - Git workflow
 - `docs-applying-content-quality` - Universal content standards
