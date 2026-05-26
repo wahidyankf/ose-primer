@@ -93,3 +93,22 @@ namespace conventions with lowercase underscored paths.
 
 - [Hexagonal Architecture](./hexagonal-architecture.md) — shared principles and dependency rule
 - [OpenAPI Contract-First Development](./openapi-contract-first.md) — API contract and codegen
+
+## Principles Implemented/Respected
+
+- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)** —
+  A single bounded-context pattern (`contexts/<name>/`) is applied identically across all 11
+  backend apps, making cross-language navigation predictable without per-app conventions.
+- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)** —
+  DDD bounded-context directories make the domain boundary visible on disk; no implicit coupling
+  between bounded contexts is permitted.
+- **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)** —
+  Contract types and server stubs are generated from the OpenAPI spec by Nx codegen targets,
+  eliminating hand-written drift between spec and implementation.
+
+## Conventions Implemented/Respected
+
+- **[Hexagonal Architecture](./hexagonal-architecture.md)** — This document specializes the
+  shared dependency rule and terminology for backend DDD bounded-context structure.
+- **[OpenAPI Contract-First Development](./openapi-contract-first.md)** — Generated contract
+  types land in `generated-contracts/` inside each BE app's adapter zone, not the domain.

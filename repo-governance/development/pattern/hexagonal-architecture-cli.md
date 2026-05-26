@@ -55,3 +55,17 @@ apps where outbound adapters are named `infrastructure/`.
 ## References
 
 - [Hexagonal Architecture](./hexagonal-architecture.md) — shared principles and dependency rule
+
+## Principles Implemented/Respected
+
+- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)** —
+  Consistent layer names across both CLI apps (Rust and Go) minimize cognitive overhead when
+  navigating between languages.
+- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)** —
+  The `adapter/command/` name makes the inbound adapter role explicit for CLI tools, distinguishing
+  it clearly from backend outbound adapters named `infrastructure/`.
+
+## Conventions Implemented/Respected
+
+- **[Hexagonal Architecture](./hexagonal-architecture.md)** — This document specializes the
+  shared dependency rule and terminology for CLI application structure (Rust and Go).

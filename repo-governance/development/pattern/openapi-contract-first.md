@@ -100,3 +100,21 @@ Commit the updated artifacts or fix the spec before merging.
 
 - [Hexagonal Architecture — Backend Apps](./hexagonal-architecture-be.md) — bounded-context
   structure for generated contract types
+
+## Principles Implemented/Respected
+
+- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)** —
+  The OpenAPI spec is the single explicit source of truth; generated types prevent implicit drift
+  between frontend and backend teams.
+- **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)** —
+  Codegen targets in each app automatically produce typed clients and server stubs from the spec,
+  replacing manual type maintenance.
+- **[Root Cause Orientation](../../principles/general/root-cause-orientation.md)** — Drift
+  detection via `git diff` on generated artifacts surfaces contract mismatches at their root (the
+  spec) rather than through runtime failures.
+
+## Conventions Implemented/Respected
+
+- **[Hexagonal Architecture — Backend Apps](./hexagonal-architecture-be.md)** — Generated
+  contract types land in the adapter zone (`generated-contracts/`) inside each BE app, conforming
+  to the bounded-context structure.

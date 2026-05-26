@@ -60,3 +60,26 @@ both depend on `application`; `application` depends on `domain`; `domain` depend
 - [Hexagonal Architecture — Web/FE Apps](./hexagonal-architecture-web.md)
 - [Hexagonal Architecture — Backend Apps](./hexagonal-architecture-be.md)
 - [OpenAPI Contract-First Development](./openapi-contract-first.md)
+
+## Principles Implemented/Respected
+
+- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)** —
+  Three concentric zones with a single dependency rule keep the structure understandable and
+  learnable without project-specific tribal knowledge.
+- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)** —
+  Port interfaces and the inward-only dependency rule are stated explicitly; no hidden coupling
+  between layers is permitted.
+- **[Immutability Over Mutability](../../principles/software-engineering/immutability.md)** —
+  The domain zone is kept pure and free from infrastructure side effects, encouraging immutable
+  value objects and predictable domain logic.
+- **[Pure Functions Over Side Effects](../../principles/software-engineering/pure-functions.md)** —
+  Domain and application layers are designed to be side-effect-free, pushing I/O and external
+  calls to adapter implementations.
+
+## Conventions Implemented/Respected
+
+- **[File Naming Convention](../../conventions/structure/file-naming.md)** — Layer directory
+  names follow kebab-case (or language-canonical casing) as documented in the specialization
+  files.
+- **[OpenAPI Contract-First Development](./openapi-contract-first.md)** — Backend adapters
+  consume a spec-first API contract; generated types live in the adapter zone, not the domain.

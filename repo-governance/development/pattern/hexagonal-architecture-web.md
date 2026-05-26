@@ -52,3 +52,18 @@ regardless of language. This makes cross-language navigation predictable.
 ## References
 
 - [Hexagonal Architecture](./hexagonal-architecture.md) — shared principles and dependency rule
+
+## Principles Implemented/Respected
+
+- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)** —
+  All four frontend apps use the same four layer names (`domain/`, `application/`,
+  `infrastructure/`, `presentation/`), making cross-framework navigation uniform.
+- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)** —
+  The `presentation/` layer is named explicitly rather than conflated with the application layer,
+  keeping UI concerns visibly separated from use-case logic.
+
+## Conventions Implemented/Respected
+
+- **[Hexagonal Architecture](./hexagonal-architecture.md)** — This document specializes the
+  shared dependency rule and terminology for web/frontend application structure (Next.js,
+  TanStack Start, Flutter Web).
