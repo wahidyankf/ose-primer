@@ -1,6 +1,6 @@
 # Planning System Overhaul
 
-**Status**: In Progress
+**Status**: Completed (2026-05-26)
 **Created**: 2026-05-26
 **Priority**: HIGH
 **Scope**: Fix three remaining planning-system gaps in ose-primer, adopted from
