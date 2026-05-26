@@ -172,8 +172,8 @@ Present research findings and grill again to validate direction and close new br
 **Orchestrator action**:
 
 1. Summarize research findings from Step 2 (or confirm skipped)
-2. Invoke the `grill-me` Skill using the same **mandatory format** as Step 1 (2–4 options per
-   question, recommended marked). Cover:
+2. Invoke the `grill-me` Skill using the same **mandatory format** as Step 1 (one question at a
+   time, 2–4 options per question, recommended marked). Cover:
    - Do the research findings change any decision from Step 1?
    - Are there new constraints or trade-offs surfaced by the research?
    - Does the proposed approach still hold after authoritative sources?

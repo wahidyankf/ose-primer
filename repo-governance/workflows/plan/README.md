@@ -1,9 +1,12 @@
 ---
 title: "Plan Workflows"
-description: ""
+description: Orchestrated workflows for establishing, validating, and executing project plans
 category: explanation
 subcategory: workflows
-tags: []
+tags:
+  - plan
+  - workflows
+  - orchestration
 created: 2026-05-12
 ---
 
@@ -20,6 +23,20 @@ workflow orchestrates `plan-checker` and `plan-fixer` for authoring-time validat
 plan-execution workflow is orchestrated directly by the calling context (which delegates
 per-item work to specialized agents) and invokes `plan-execution-checker` for independent
 validation at the end.
+
+## Grilling Format (All Plan-Creation Workflows)
+
+Every plan-creation workflow that invokes grilling (pre-write and post-write) MUST follow
+the multi-options grilling format defined in the
+[`grill-me` skill](../../../.claude/skills/grill-me/SKILL.md):
+
+- Ask **one question at a time**
+- Present **2–4 concrete options** with trade-off descriptions for each question (no
+  open-ended questions)
+- Mark the recommended option with **(Recommended)**
+
+This format applies to both the First Grill (before writing) and the Second Grill
+(post-research, in plan-establishment-execution) steps in the plan-establishment workflow.
 
 ## Scope
 
