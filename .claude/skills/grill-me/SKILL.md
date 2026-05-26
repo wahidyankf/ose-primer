@@ -26,18 +26,23 @@ Activate when:
 Interview the user about every aspect of the plan until shared understanding is reached. Walk
 down each branch of the decision tree, resolving dependencies one-by-one.
 
-**Rules:**
+**Rules (HARD — every question must follow all five):**
 
 1. Ask questions **one at a time** — never bundle multiple questions in one message
-2. Present **2-4 concrete options** with trade-off descriptions per question
-3. **Mark the recommended option** clearly, e.g. `**(Recommended)**`
+2. Present **2–4 concrete options** with trade-off descriptions per question — **no open-ended
+   questions allowed**; every question must offer discrete, actionable choices
+3. **Mark the recommended option** clearly with `**(Recommended)**`
 4. **Explore the codebase first** — if a question can be answered by reading existing files,
    read them instead of asking
-5. Continue until all branches are resolved
+5. Continue until all branches are resolved — do not stop early
+
+**Violation of Rule 2 (asking without options) is the most common failure mode.** If you catch
+yourself writing a question without listing concrete options, rewrite it with options before
+sending.
 
 ## Question format
 
-Structure each question like this:
+Structure **every** question exactly like this:
 
 > **[Question]**
 >
@@ -46,6 +51,9 @@ Structure each question like this:
 > - **Option C**: [description] — [trade-off]
 >
 > **Recommendation**: Option B because [specific reason grounded in this context].
+
+No bare "What do you think about X?" questions. No yes/no questions without an options list.
+Present the choices; let the user pick or override.
 
 ## After the grilling
 

@@ -91,6 +91,22 @@ Invoke the `grill-me` Skill to resolve all open design decisions before research
 **Orchestrator action**:
 
 Invoke the `grill-me` Skill (`.claude/skills/grill-me/SKILL.md`). Present Step 0 findings.
+
+**Grilling format (MANDATORY — from `grill-me` Skill)**:
+
+- One question at a time — never bundle multiple questions in a single message
+- Every question **must** present **2–4 concrete options** with trade-off descriptions — no
+  open-ended questions allowed
+- Mark the recommended option **(Recommended)**
+- Example:
+
+  > **[Question]?**
+  >
+  > - **Option A**: [description] — [trade-off]
+  > - **Option B**: [description] — [trade-off] **(Recommended)**
+  >
+  > **Recommendation**: Option B because [reason].
+
 Resolve ALL of the following:
 
 1. **Scope**: What is the exact behavior to adopt? What is explicitly out-of-scope?
@@ -156,7 +172,8 @@ Present research findings and grill again to validate direction and close new br
 **Orchestrator action**:
 
 1. Summarize research findings from Step 2 (or confirm skipped)
-2. Invoke the `grill-me` Skill. Cover:
+2. Invoke the `grill-me` Skill using the same **mandatory format** as Step 1 (2–4 options per
+   question, recommended marked). Cover:
    - Do the research findings change any decision from Step 1?
    - Are there new constraints or trade-offs surfaced by the research?
    - Does the proposed approach still hold after authoritative sources?

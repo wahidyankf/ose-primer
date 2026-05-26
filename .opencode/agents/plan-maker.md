@@ -69,7 +69,22 @@ See [Plans Organization Convention](../../repo-governance/conventions/structure/
 Before reading the codebase or creating any files, invoke the `grill-me` skill
 (`.claude/skills/grill-me/SKILL.md`) to resolve all open design decisions with the user.
 
-Ask about:
+**Grilling format (MANDATORY — from `grill-me` Skill)**:
+
+- One question at a time — never bundle multiple questions in a single message
+- Every question **must** present **2–4 concrete options** with trade-off descriptions — no
+  open-ended "what do you think?" questions
+- Mark the recommended option **(Recommended)**
+- Example format:
+
+  > **[Question]?**
+  >
+  > - **Option A**: [description] — [trade-off]
+  > - **Option B**: [description] — [trade-off] **(Recommended)**
+  >
+  > **Recommendation**: Option B because [specific reason grounded in this context].
+
+Topics to cover (one question with options per topic):
 
 - What problem is this solving? What specific pain is it addressing?
 - What are the acceptance criteria? How will we know it is done?
@@ -91,12 +106,7 @@ Glob docs/**/*.md
 Grep "relevant topics"
 ```
 
-Clarify with user if needed:
-
-- What problem are we solving?
-- What are the acceptance criteria?
-- What's the scope?
-- What are the constraints?
+All open questions should already be resolved by the Step 1 grill — do not re-ask them here.
 
 ### Step 3: Create Plan Folder
 
@@ -172,6 +182,12 @@ See [Trunk Based Development Convention](../../repo-governance/development/workf
 
 After all plan files are written, invoke the `grill-me` skill again to validate the plan with
 the user before signaling done.
+
+**Grilling format (MANDATORY — same rules as Step 1)**:
+
+- One question at a time — never bundle
+- Every question **must** present **2–4 concrete options** with trade-off descriptions
+- Mark the recommended option **(Recommended)**
 
 Cover:
 

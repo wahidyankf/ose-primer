@@ -59,7 +59,8 @@ Specialized agents organized into families:
 
 1. **Documentation**: `docs-maker`, `docs-checker`, `docs-fixer`, `docs-tutorial-maker`, `docs-tutorial-checker`, `docs-tutorial-fixer`, `docs-link-checker`, `docs-file-manager`, `docs-software-engineering-separation-checker`, `docs-software-engineering-separation-fixer`
 2. **README**: `readme-maker`, `readme-checker`, `readme-fixer`
-3. **Project Planning**: `plan-maker` (mandates grilling before and after plan creation;
+3. **Project Planning**: `plan-maker` (mandates grilling before and after plan creation
+   using 2–4 concrete options per question with a recommended option marked;
    delivery checklists must begin with Phase 0), `plan-checker`, `plan-execution-checker`,
    `plan-fixer`, `repo-setup-manager` (executes Phase 0 environment setup and baseline in
    every plan) — plan execution is orchestrated directly by the calling context via the
