@@ -4,10 +4,18 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
+- [Adopt Hexagonal Architecture + DDD](./adopt-hexagonal-ddd-architecture/README.md)
+  — Establish hexagonal architecture and DDD as the canonical pattern across all 17 non-E2E
+  apps: 5 governance convention documents, canonical layer directories for 2 CLI apps + 4 FE
+  apps + 11 BE apps with bounded-context structure, and verified OpenAPI codegen targets for
+  all 11 BE apps.
 - [Add `investment-oracle` desktop demo](./add-investment-oracle-app/README.md)
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
   exports research dossiers.
+- [Planning System Overhaul](./planning-system-overhaul/README.md)
+  — TDD HARD RULE, AGENTS.md catalog completeness, markdown archive exclusions.
+  Adopted from ose-public `2026-05-26__planning-system-overhaul`.
 
 ## Folder Naming
 
