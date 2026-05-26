@@ -430,5 +430,5 @@ historical record. Validated separately when content is first archived.
 
 **Config**: Both `.markdownlintignore` and `.markdownlint-cli2.jsonc` carry matching
 exclusion entries. Both files must be updated because they serve different invocation
-paths of the same tool (see `plans/in-progress/planning-system-overhaul/tech-docs.md §DD-3`
+paths of the same tool (see `plans/done/2026-05-26__planning-system-overhaul/tech-docs.md §DD-3`
 for full rationale).
