@@ -27,12 +27,22 @@ so that a developer with a vulnerable or too-old Go installation is warned immed
 
 **Acceptance Criteria**:
 
-- AC-1: `apps/rhino-cli-go/internal/doctor/tools.go` references `apps/rhino-cli-go/go.mod`
-  (not `apps/rhino-cli/go.mod`)
-- AC-2: `apps/rhino-cli-rust/src/internal/doctor/tools.rs` references `apps/rhino-cli-go/go.mod`
-  (not `apps/rhino-cli/go.mod`)
-- AC-3: `rhino doctor` (both implementations) reports a Go version finding when Go is absent
-  or below the declared minimum
+```gherkin
+Scenario: Go implementation references correct go.mod path
+  Given `apps/rhino-cli-go/internal/doctor/tools.go` has been patched
+  When `grep "rhino-cli/go.mod" apps/rhino-cli-go/internal/doctor/tools.go` runs
+  Then the command returns zero matches
+
+Scenario: Rust implementation references correct go.mod path
+  Given `apps/rhino-cli-rust/src/internal/doctor/tools.rs` has been patched
+  When `grep "rhino-cli/go.mod" apps/rhino-cli-rust/src/internal/doctor/tools.rs` runs
+  Then the command returns zero matches
+
+Scenario: rhino doctor reports Go version finding for absent or outdated Go
+  Given both doctor implementations reference `apps/rhino-cli-go/go.mod`
+  When `rhino doctor` runs on a machine with Go absent or below the declared minimum
+  Then doctor reports a Go version finding with the correct source path
+```
 
 ### US-2 — CVE-free toolchain minimums
 
@@ -42,16 +52,37 @@ so that developers following the doctor's guidance are not directed toward vulne
 
 **Acceptance Criteria**:
 
-- AC-4: `.python-version` declares `3.13.12` (released 2026-02-03, no high/critical CVEs)
-- AC-5: `global.json` declares SDK `10.0.201` (released 2026-03-12, fixes CVE-2026-26127,
-  CVE-2026-26130, CVE-2026-26131)
-- AC-6: `go.mod` `go` directive is `1.26.1` (released 2026-03-05, fixes five Go CVEs including
-  CVE-2026-27137, CVE-2026-27138, CVE-2026-27142, CVE-2026-25679, CVE-2026-27139)
-- AC-7: `Cargo.toml` `rust-version` is `1.94.1` (released 2026-03-26, fixes CVE-2026-33056)
-- AC-8: `pubspec.yaml` Dart SDK constraint is `^3.11.0` (Dart 3.11.0 released 2026-02-11;
-  3.11.1 was never released — this fixes the unsatisfiable constraint)
-- AC-9: `pubspec.yaml` Flutter constraint is `>=3.41.4` (3.41.4 released ~early March 2026,
-  confirmed pre-cutoff; tightens the floor from the vulnerable 3.41.0)
+```gherkin
+Scenario: Python version pin declares safe target
+  Given `apps/crud-be-python-fastapi/.python-version` has been updated
+  When `grep "3.13.12" apps/crud-be-python-fastapi/.python-version` runs
+  Then the command returns one match
+
+Scenario: .NET SDK version pin declares safe target
+  Given `apps/crud-be-fsharp-giraffe/global.json` has been updated
+  When `grep '"version": "10.0.201"' apps/crud-be-fsharp-giraffe/global.json` runs
+  Then the command returns one match
+
+Scenario: Go minimum version directive declares safe target
+  Given `apps/rhino-cli-go/go.mod` has been updated
+  When `grep "^go 1.26.1$" apps/rhino-cli-go/go.mod` runs
+  Then the command returns one match
+
+Scenario: Rust MSRV declares safe target
+  Given `apps/crud-be-rust-axum/Cargo.toml` has been updated
+  When `grep 'rust-version = "1.94.1"' apps/crud-be-rust-axum/Cargo.toml` runs
+  Then the command returns one match
+
+Scenario: Dart SDK constraint is satisfiable and targets safe release
+  Given `apps/crud-fe-dart-flutterweb/pubspec.yaml` has been updated
+  When `grep 'sdk: \^3.11.0' apps/crud-fe-dart-flutterweb/pubspec.yaml` runs
+  Then the command returns one match
+
+Scenario: Flutter floor tightened to confirmed pre-cutoff patch
+  Given `apps/crud-fe-dart-flutterweb/pubspec.yaml` has been updated
+  When `grep '>=3.41.4' apps/crud-fe-dart-flutterweb/pubspec.yaml` runs
+  Then the command returns one match
+```
 
 ### US-3 — No regressions in existing quality gates
 
@@ -61,28 +92,65 @@ so that I can be confident the changes introduce no regressions.
 
 **Acceptance Criteria**:
 
-- AC-10: `npx nx affected -t typecheck` exits 0 (all projects pass type checking)
-- AC-11: `npx nx affected -t lint` exits 0 (all projects pass linting)
-- AC-12: `npx nx affected -t test:quick` exits 0 (all projects pass unit tests)
-- AC-13: `npm run validate:mermaid` exits 0 (no diagram violations)
-- AC-14: `npm run validate:harness-bindings` exits 0 (no binding drift)
-- AC-15: `npm run vendor-audit` exits 0 (no vendor audit failures)
+```gherkin
+Scenario: TypeScript type checking passes after toolchain updates
+  Given all config and source file edits have been applied
+  When `npx nx affected -t typecheck --skip-nx-cache` runs
+  Then the command exits 0 and all projects pass type checking
+
+Scenario: Linting passes after toolchain updates
+  Given all config and source file edits have been applied
+  When `npx nx affected -t lint --skip-nx-cache` runs
+  Then the command exits 0 and all projects pass linting
+
+Scenario: Unit tests pass after toolchain updates
+  Given all config and source file edits have been applied
+  When `npx nx affected -t test:quick --skip-nx-cache` runs
+  Then the command exits 0 and all projects pass unit tests
+
+Scenario: Markdown lint passes after toolchain updates
+  Given all config and source file edits have been applied
+  When `npm run lint:md` runs
+  Then the command exits 0 with zero markdown lint errors
+
+Scenario: Harness binding validation passes after toolchain updates
+  Given all config and source file edits have been applied
+  When `npm run validate:harness-bindings` runs
+  Then the command exits 0 with zero binding drift detected
+
+Scenario: Config validation passes after toolchain updates
+  Given all config and source file edits have been applied
+  When `npm run validate:config` runs
+  Then the command exits 0 and validate:claude + generate:bindings + validate:opencode all pass
+```
 
 ## Safe Target Version Table
 
 [Web-cited — verified 2026-05-27 via official release pages and security advisories. Release
 dates can be independently confirmed via the sources listed in `tech-docs.md`.]
 
-| Config File                                   | Tool               | Current    | Safe Target | Release Date      | CVE Notes                                                                                 |
-| --------------------------------------------- | ------------------ | ---------- | ----------- | ----------------- | ----------------------------------------------------------------------------------------- |
-| `apps/crud-be-python-fastapi/.python-version` | Python             | `3.13`     | `3.13.12`   | 2026-02-03        | 3.14.3 carries CVE-2026-4519 (unfixed at cutoff); stay on 3.13.x                          |
-| `apps/crud-be-fsharp-giraffe/global.json`     | .NET SDK           | `10.0.103` | `10.0.201`  | 2026-03-12        | Fixes three CVEs; 10.0.200 had macOS debugger regression; 10.0.201 is the correct release |
-| `apps/rhino-cli-go/go.mod`                    | Go (min directive) | `go 1.26`  | `go 1.26.1` | 2026-03-05        | Go 1.26.0 has five unpatched CVEs; 1.26.1 is required                                     |
-| `apps/crud-be-rust-axum/Cargo.toml`           | Rust MSRV          | `1.80`     | `1.94.1`    | 2026-03-26        | MSRV update; 1.94.1 fixes CVE-2026-33056 in Cargo's tar handling                          |
-| `apps/crud-fe-dart-flutterweb/pubspec.yaml`   | Dart SDK           | `^3.11.1`  | `^3.11.0`   | 2026-02-11        | 3.11.1 was never released; constraint is unsatisfiable as written                         |
-| `apps/crud-fe-dart-flutterweb/pubspec.yaml`   | Flutter            | `>=3.41.0` | `>=3.41.4`  | ~early March 2026 | Tightens floor to confirmed pre-cutoff hotfix patch                                       |
+| Config File                                   | Tool               | Current    | Safe Target | Release Date | CVE Notes                                                                                 |
+| --------------------------------------------- | ------------------ | ---------- | ----------- | ------------ | ----------------------------------------------------------------------------------------- |
+| `apps/crud-be-python-fastapi/.python-version` | Python             | `3.13`     | `3.13.12`   | 2026-02-03   | 3.14.3 carries CVE-2026-4519 (unfixed at cutoff); stay on 3.13.x                          |
+| `apps/crud-be-fsharp-giraffe/global.json`     | .NET SDK           | `10.0.103` | `10.0.201`  | 2026-03-12   | Fixes three CVEs; 10.0.200 had macOS debugger regression; 10.0.201 is the correct release |
+| `apps/rhino-cli-go/go.mod`                    | Go (min directive) | `go 1.26`  | `go 1.26.1` | 2026-03-05   | Go 1.26.0 has five unpatched CVEs; 1.26.1 is required                                     |
+| `apps/crud-be-rust-axum/Cargo.toml`           | Rust MSRV          | `1.80`     | `1.94.1`    | 2026-03-26   | MSRV update; 1.94.1 fixes CVE-2026-33056 in Cargo's tar handling                          |
+| `apps/crud-fe-dart-flutterweb/pubspec.yaml`   | Dart SDK           | `^3.11.1`  | `^3.11.0`   | 2026-02-11   | 3.11.1 was never released; constraint is unsatisfiable as written                         |
+| `apps/crud-fe-dart-flutterweb/pubspec.yaml`   | Flutter            | `>=3.41.0` | `>=3.41.4`  | 2026-03-04   | Tightens floor to confirmed pre-cutoff hotfix patch                                       |
 
-## Out-of-Scope
+## Product Scope
+
+### In-Scope
+
+- `apps/crud-be-python-fastapi/.python-version` — update Python version pin to `3.13.12`
+- `apps/crud-be-fsharp-giraffe/global.json` — update .NET SDK version pin to `10.0.201`
+- `apps/rhino-cli-go/go.mod` — update `go` directive to `1.26.1`
+- `apps/crud-be-rust-axum/Cargo.toml` — update `rust-version` MSRV to `1.94.1`
+- `apps/crud-fe-dart-flutterweb/pubspec.yaml` — fix Dart SDK constraint to `^3.11.0` and tighten Flutter floor to `>=3.41.4`
+- `apps/rhino-cli-go/internal/doctor/tools.go` — fix `goModPath` and `source` label: `apps/rhino-cli/go.mod` → `apps/rhino-cli-go/go.mod`
+- `apps/rhino-cli-rust/src/internal/doctor/tools.rs` — fix `go_mod` path and `source` label: `apps/rhino-cli/go.mod` → `apps/rhino-cli-go/go.mod`
+
+### Out-of-Scope
 
 - Go module dependencies in `go.mod` / `go.sum` (separate dependency audit plan)
 - Dart `pubspec.yaml` package dependencies (`dio`, `web`, `flutter_lints`, etc.)
@@ -90,6 +158,29 @@ dates can be independently confirmed via the sources listed in `tech-docs.md`.]
 - Rebuilding and releasing rhino-cli binaries (separate release workflow)
 - Kotlin, Java, Clojure, C#, Elixir — versions managed by `compareGTE` or `noReq` in doctor;
   no config-file pins exist for these in the repo
+
+## Product Risks
+
+- **Rust MSRV jump causes compilation failure**: Raising the MSRV from 1.80 to 1.94.1 means
+  code using features introduced in 1.81–1.94 will now be allowed, but any developer or CI
+  environment running rustc < 1.94.1 will fail to compile. _Mitigation_: the quality gate
+  (`npx nx affected -t typecheck`) will surface this immediately; `rhino doctor` will also
+  flag the mismatch for developers.
+- **Dart constraint change allows pub to select 3.11.0**: Lowering the Dart SDK floor from
+  `^3.11.1` to `^3.11.0` is intentional (3.11.1 was never released), but pub could now
+  resolve to exactly 3.11.0 on machines without newer 3.11.x installed. No behavior
+  regression is expected between 3.11.0 and 3.11.3. _Mitigation_: quality gates catch
+  any Dart analysis failures.
+- **Flutter floor tightening blocks developers on older patches**: Any developer with
+  Flutter 3.41.0–3.41.3 installed will fail the doctor check after this change.
+  _Mitigation_: `rhino doctor` will surface a clear error pointing to the `pubspec.yaml`
+  Flutter constraint; the fix is `flutter upgrade`.
+- **CI regression on config-version-only platforms**: Some CI environments pin toolchain
+  versions from config files (e.g., Volta for Node, pyenv for Python). A version bump
+  in a config file triggers the CI toolchain installer to download and install the new
+  version on first run, which can fail if the CI runner lacks network access or if the
+  specified version is not yet available in the installer's mirror. _Mitigation_: monitor
+  CI after push (delivery.md Phase 6).
 
 ## Non-Functional Requirements
 

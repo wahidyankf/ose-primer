@@ -59,8 +59,8 @@ Versions released after this date are excluded from target selection.
 
 - All six toolchain config files declare the safe target version
 - Both doctor implementations reference `apps/rhino-cli-go/go.mod` (correct path)
-- All quality gates pass: typecheck, lint, test:quick, validate:mermaid,
-  validate:harness-bindings, vendor-audit
+- All quality gates pass: typecheck, lint, test:quick, lint:md,
+  validate:harness-bindings, validate:config
 - `git status` clean, all commits pushed to `origin/main`
 
 ## Documents

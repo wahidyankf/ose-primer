@@ -180,14 +180,14 @@ since 3.11.0 does not satisfy `^3.11.1`. Changing to `^3.11.0` satisfies the 3.1
 
 **Flutter floor tightening**: `>=3.41.0` is relaxed to the point that a developer could install
 any 3.41.x and pass. Flutter 3.41.0 is the first release with the pub path-traversal fix; however
-3.41.4 (~early March 2026) is a confirmed pre-cutoff hotfix. Setting `>=3.41.4` tightens
+3.41.4 (2026-03-04) is a confirmed pre-cutoff hotfix. Setting `>=3.41.4` tightens
 the floor to the latest confirmed pre-cutoff patch.
 
 **Release date verification**:
 
 - Dart 3.11.0: `https://dart.dev/changelog` — entry 2026-02-11
-- Flutter 3.41.4: GitHub issue flet-dev/flet#6245 opened 2026-03-03 requests upgrade to 3.41.4,
-  confirming availability before that date
+- Flutter 3.41.4: `https://github.com/flutter/flutter/releases/tag/3.41.4` — release tagged
+  2026-03-04 by @eyebrowsoffire [access date: 2026-05-27]
 
 ## Doctor `source` Label Strings
 

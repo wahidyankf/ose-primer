@@ -41,6 +41,10 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
   — acceptance: all exit 0 before any plan changes are applied; document any
   pre-existing failures and resolve them before proceeding
 
+> **Important**: Fix ALL failures found during quality gates, not just those caused by your
+> changes. Follow the root cause orientation principle — proactively fix preexisting errors
+> encountered during work.
+
 ---
 
 ## Phase 1: Fix Doctor Go Path Bug
@@ -64,7 +68,10 @@ Both doctor implementations reference `apps/rhino-cli/go.mod` which does not exi
   goModPath := filepath.Join(repoRoot, "apps", "rhino-cli-go", "go.mod")
   ```
 
-- [ ] Change the `source` label string in the Go tool definition:
+  — acceptance: `grep '"rhino-cli"' apps/rhino-cli-go/internal/doctor/tools.go`
+  returns zero matches on the `goModPath` line
+
+- [ ] Change the `source` label string in the Go tool definition (line ~124):
 
   ```go
   // Before
@@ -73,6 +80,9 @@ Both doctor implementations reference `apps/rhino-cli/go.mod` which does not exi
   // After
   source: "apps/rhino-cli-go/go.mod → go directive",
   ```
+
+  — acceptance: `grep 'rhino-cli/go.mod' apps/rhino-cli-go/internal/doctor/tools.go`
+  returns zero matches
 
 ### 1.2 — Fix Rust implementation
 
@@ -88,7 +98,10 @@ Both doctor implementations reference `apps/rhino-cli/go.mod` which does not exi
   let go_mod = repo_root.join("apps").join("rhino-cli-go").join("go.mod");
   ```
 
-- [ ] Change the `source` label string in the Go tool definition:
+  — acceptance: `grep 'join("rhino-cli").join("go.mod")' apps/rhino-cli-rust/src/internal/doctor/tools.rs`
+  returns zero matches
+
+- [ ] Change the `source` label string in the Go tool definition (line ~279):
 
   ```rust
   // Before
@@ -97,6 +110,21 @@ Both doctor implementations reference `apps/rhino-cli/go.mod` which does not exi
   // After
   "apps/rhino-cli-go/go.mod \u{2192} go directive"
   ```
+
+  — acceptance: covered jointly by the acceptance criterion on the step below
+
+- [ ] Update the test assertion in the same file (line ~755):
+
+  ```rust
+  // Before
+  assert_eq!(by("golang").source, "apps/rhino-cli/go.mod \u{2192} go directive")
+
+  // After
+  assert_eq!(by("golang").source, "apps/rhino-cli-go/go.mod \u{2192} go directive")
+  ```
+
+  — acceptance: `grep 'rhino-cli/go.mod' apps/rhino-cli-rust/src/internal/doctor/tools.rs`
+  returns zero matches (both line ~279 and line ~755 replaced)
 
 ### 1.3 — Verify fix in tests
 
@@ -124,7 +152,7 @@ Both doctor implementations reference `apps/rhino-cli/go.mod` which does not exi
   3.13.12
   ```
 
-  — was: `3.13`
+  — acceptance: `grep "3.13.12" apps/crud-be-python-fastapi/.python-version` returns one match
 
 ### 2.2 — .NET SDK version
 
@@ -141,24 +169,30 @@ Both doctor implementations reference `apps/rhino-cli/go.mod` which does not exi
   }
   ```
 
+  — acceptance: `grep '"version": "10.0.201"' apps/crud-be-fsharp-giraffe/global.json` returns one match
+
 ### 2.3 — Go minimum version directive
 
 **File**: `apps/rhino-cli-go/go.mod`
 
 - [ ] Change `go 1.26` to `go 1.26.1` in the module directive line
+      — acceptance: `grep "^go 1.26.1$" apps/rhino-cli-go/go.mod` returns one match
 
 ### 2.4 — Rust MSRV
 
 **File**: `apps/crud-be-rust-axum/Cargo.toml`
 
 - [ ] Change `rust-version = "1.80"` to `rust-version = "1.94.1"`
+      — acceptance: `grep 'rust-version = "1.94.1"' apps/crud-be-rust-axum/Cargo.toml` returns one match
 
 ### 2.5 — Dart SDK and Flutter versions
 
 **File**: `apps/crud-fe-dart-flutterweb/pubspec.yaml`
 
 - [ ] Change `sdk: ^3.11.1` to `sdk: ^3.11.0`
+      — acceptance: `grep 'sdk: \^3.11.0' apps/crud-fe-dart-flutterweb/pubspec.yaml` returns one match
 - [ ] Change `flutter: ">=3.41.0"` to `flutter: ">=3.41.4"`
+      — acceptance: `grep '>=3.41.4' apps/crud-fe-dart-flutterweb/pubspec.yaml` returns one match
 
 ---
 
@@ -214,6 +248,10 @@ Run all quality gates with `--skip-nx-cache` to ensure no stale cache hits.
 
 > _Executor: calling context_
 
+Commit thematically — group related changes into logically cohesive commits. Follow Conventional
+Commits format: `<type>(<scope>): <description>`. Split different domains/concerns into separate
+commits (e.g., doctor path fixes and config version updates must be separate commits).
+
 - [ ] Commit the doctor path fixes:
 
   ```bash
@@ -249,6 +287,7 @@ Run all quality gates with `--skip-nx-cache` to ensure no stale cache hits.
   ```
 
 - [ ] Update `plans/in-progress/README.md` — remove the entry for this plan
+      — acceptance: `grep -c "update-toolchain-versions" plans/in-progress/README.md` returns 0
 
 - [ ] Update `plans/done/README.md` — add an entry at the top of Completed Projects:
 
@@ -257,6 +296,8 @@ Run all quality gates with `--skip-nx-cache` to ensure no stale cache hits.
     — Updated Python, .NET, Go, Rust, Dart, Flutter toolchain version declarations; fixed
     rhino-cli doctor Go path bug (`apps/rhino-cli` → `apps/rhino-cli-go`).
   ```
+
+  — acceptance: `grep -c "Update Polyglot Toolchain Versions" plans/done/README.md` returns 1
 
 - [ ] Update the plan's own `README.md` status from `In Progress` to `Completed`
 
@@ -280,6 +321,10 @@ Run all quality gates with `--skip-nx-cache` to ensure no stale cache hits.
   ```
 
   — acceptance: push succeeds; `git log --oneline origin/main..HEAD` returns nothing
+
+- [ ] Monitor GitHub Actions at `https://github.com/wahidyankf/ose-primer/actions` for the push
+      — acceptance: all workflow runs triggered by this push complete green; if any workflow fails,
+      fix the root cause and push a follow-up commit before proceeding to Phase 5 archive
 
 - [ ] Final verification:
 
