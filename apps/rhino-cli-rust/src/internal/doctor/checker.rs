@@ -779,9 +779,9 @@ mod tests {
             "<project><properties><java.version>21</java.version></properties></project>",
         )
         .unwrap();
-        std::fs::create_dir_all(root.join("apps/rhino-cli")).unwrap();
+        std::fs::create_dir_all(root.join("apps/rhino-cli-go")).unwrap();
         std::fs::write(
-            root.join("apps/rhino-cli/go.mod"),
+            root.join("apps/rhino-cli-go/go.mod"),
             "module x\n\ngo 1.24.0\n",
         )
         .unwrap();

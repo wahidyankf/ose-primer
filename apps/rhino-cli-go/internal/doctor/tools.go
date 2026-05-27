@@ -31,7 +31,7 @@ func parseTrimVersion(s string) string {
 func buildToolDefs(repoRoot string) []toolDef {
 	packageJSONPath := filepath.Join(repoRoot, "package.json")
 	pomXMLPath := filepath.Join(repoRoot, "apps", "crud-be-fsharp-giraffe-jasb", "pom.xml")
-	goModPath := filepath.Join(repoRoot, "apps", "rhino-cli", "go.mod")
+	goModPath := filepath.Join(repoRoot, "apps", "rhino-cli-go", "go.mod")
 	pythonVersionPath := filepath.Join(repoRoot, "apps", "crud-be-python-fastapi", ".python-version")
 	toolVersionsPath := filepath.Join(repoRoot, ".tool-versions")
 	globalJSONPath := filepath.Join(repoRoot, "apps", "crud-be-fsharp-giraffe", "global.json")
@@ -121,7 +121,7 @@ func buildToolDefs(repoRoot string) []toolDef {
 		{
 			name:     "golang",
 			binary:   "go",
-			source:   "apps/rhino-cli/go.mod → go directive",
+			source:   "apps/rhino-cli-go/go.mod → go directive",
 			args:     []string{"version"},
 			parseVer: func(s string) string { return parseLineWord(s, "go version ", 2, "go") },
 			compare:  compareGTE,

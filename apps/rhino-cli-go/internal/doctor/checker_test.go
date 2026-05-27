@@ -630,7 +630,7 @@ func setupCheckAllRepo(t *testing.T) string {
 
 	for _, dir := range []string{
 		"apps/crud-be-fsharp-giraffe-jasb",
-		"apps/rhino-cli",
+		"apps/rhino-cli-go",
 		"apps/crud-be-python-fastapi",
 		"apps/crud-be-fsharp-giraffe",
 		"apps/crud-fe-dart-flutterweb",
@@ -644,7 +644,7 @@ func setupCheckAllRepo(t *testing.T) string {
 	files := map[string]string{
 		"package.json": `{"volta":{"node":"24.11.1","npm":"11.6.3"}}`,
 		"apps/crud-be-fsharp-giraffe-jasb/pom.xml":    `<project><properties><java.version>25</java.version></properties></project>`,
-		"apps/rhino-cli/go.mod":                       "module foo\n\ngo 1.24.2\n",
+		"apps/rhino-cli-go/go.mod":                    "module foo\n\ngo 1.24.2\n",
 		"apps/crud-be-python-fastapi/.python-version": "3.13\n",
 		".tool-versions":                              "erlang 27.3\nelixir 1.19.5-otp-27\n",
 		"apps/crud-be-fsharp-giraffe/global.json":     `{"sdk":{"version":"10.0.103","rollForward":"latestMinor"}}`,

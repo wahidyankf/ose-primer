@@ -66,7 +66,7 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
         .join("apps")
         .join("crud-be-fsharp-giraffe-jasb")
         .join("pom.xml");
-    let go_mod = repo_root.join("apps").join("rhino-cli").join("go.mod");
+    let go_mod = repo_root.join("apps").join("rhino-cli-go").join("go.mod");
     let python_version = repo_root
         .join("apps")
         .join("crud-be-python-fastapi")
@@ -276,7 +276,7 @@ fn build_go_python_tools(
         defs.push(ToolDef {
             name: "golang",
             binary: "go",
-            source: "apps/rhino-cli/go.mod \u{2192} go directive",
+            source: "apps/rhino-cli-go/go.mod \u{2192} go directive",
             args: vec!["version"],
             use_stderr: false,
             parse_ver: Box::new(|s| parse_line_word(s, "go version ", 2, "go")),
@@ -752,7 +752,7 @@ mod tests {
         );
         assert_eq!(
             by("golang").source,
-            "apps/rhino-cli/go.mod \u{2192} go directive"
+            "apps/rhino-cli-go/go.mod \u{2192} go directive"
         );
         assert!(by("git").source == "(no config file)");
         assert_eq!(by("playwright").source, "node_modules (npx playwright)");
