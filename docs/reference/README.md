@@ -23,7 +23,7 @@ Technical reference documentation for the open-sharia-enterprise project. These 
 
 ### Quality Infrastructure
 
-- [Code Coverage](./code-coverage.md) - How coverage is measured locally via rhino-cli-go, per-project details, exclusion patterns, and troubleshooting
+- [Code Coverage](./code-coverage.md) - How coverage is measured locally via rhino-cli, per-project details, exclusion patterns, and troubleshooting
 - [CRUD Apps CI Coverage](./crud-apps-ci-coverage.md) - CI status badges and coverage tracking for all CRUD app implementations
 
 ### AI Models

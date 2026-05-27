@@ -15,7 +15,7 @@ How code coverage is measured locally via `rhino-cli-go` across all projects in 
 
 ## 📋 Coverage Algorithm
 
-All projects use `rhino-cli-go test-coverage validate` which implements a 3-state line-based algorithm:
+All projects use `rhino-cli test-coverage validate` which implements a 3-state line-based algorithm:
 
 - **COVERED**: hit count > 0 AND all branches taken (or no branches)
 - **PARTIAL**: hit count > 0 but some branches not taken
@@ -171,18 +171,18 @@ Coverage is measured during `test:quick` (part of the pre-push hook and main CI)
 ### Pipeline Flow
 
 1. `test:unit` runs tests and generates the coverage file
-2. `rhino-cli-go test-coverage validate <file> <threshold>` checks locally
+2. `rhino-cli test-coverage validate <file> <threshold>` checks locally
 3. Both steps are combined in `test:quick`
 
 ## 🔬 Troubleshooting
 
 ### Coverage drops after adding a new file
 
-New source files with no test coverage appear as 0% in rhino-cli-go output. Either write tests or add the file to the appropriate exclusion config (language tool config).
+New source files with no test coverage appear as 0% in rhino-cli output. Either write tests or add the file to the appropriate exclusion config (language tool config).
 
 ### `rhino-cli-go --exclude` flag
 
-`rhino-cli-go test-coverage validate` supports `--exclude` glob patterns for runtime exclusion without modifying the coverage file. Note: glob matching may not work with Go's full module paths in `cover.out` — use `grep -v` for Go projects instead.
+`rhino-cli test-coverage validate` supports `--exclude` glob patterns for runtime exclusion without modifying the coverage file. Note: glob matching may not work with Go's full module paths in `cover.out` — use `grep -v` for Go projects instead.
 
 ## 🔗 Related Documentation
 

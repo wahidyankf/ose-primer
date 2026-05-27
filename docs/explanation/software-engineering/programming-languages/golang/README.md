@@ -276,7 +276,7 @@ graph LR
 - SHOULD use `staticcheck` for advanced static analysis (included in golangci-lint)
 - MUST use `go vet` for correctness checking (detects common mistakes)
 - SHOULD use `gosec` for security scanning (OWASP vulnerabilities)
-- MUST achieve >=95% test coverage for domain logic (measured with `go test -coverprofile=cover.out ./...` and enforced by `rhino-cli-go test-coverage validate`)
+- MUST achieve >=95% test coverage for domain logic (measured with `go test -coverprofile=cover.out ./...` and enforced by `rhino-cli test-coverage validate`)
 
 **Testing Automation (REQUIRED)**:
 
@@ -308,7 +308,7 @@ graph LR
 
 **Code Review Requirements**:
 
-- All Go code MUST pass automated checks (`golangci-lint`, `go test`, coverage >=95% for domain logic enforced by `rhino-cli-go test-coverage validate`)
+- All Go code MUST pass automated checks (`golangci-lint`, `go test`, coverage >=95% for domain logic enforced by `rhino-cli test-coverage validate`)
 - Code reviewers MUST verify compliance with standards in this index
 - Non-compliance with mandatory standards (Coding, Testing, Code Quality) blocks merge
 - Goroutine leaks and race conditions MUST be detected with `go test -race`
