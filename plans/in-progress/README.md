@@ -11,9 +11,6 @@ Active project plans currently being worked on.
 - [Planning System Overhaul](./planning-system-overhaul/README.md)
   — TDD HARD RULE, AGENTS.md catalog completeness, markdown archive exclusions.
   Adopted from ose-public `2026-05-26__planning-system-overhaul`.
-- [Update and Pin All npm Dependencies](./update-dependencies-pinned/README.md)
-  — pin all npm `package.json` declarations to exact versions, upgrade where a safe newer
-  version exists (released >2 months ago, CVE-free), and verify `.tool-versions`.
 
 ## Folder Naming
 
