@@ -11,6 +11,9 @@ Active project plans currently being worked on.
 - [Planning System Overhaul](./planning-system-overhaul/README.md)
   — TDD HARD RULE, AGENTS.md catalog completeness, markdown archive exclusions.
   Adopted from ose-public `2026-05-26__planning-system-overhaul`.
+- [Update Polyglot Toolchain Versions](./update-toolchain-versions/README.md)
+  — Update Python, .NET, Go, Rust, Dart, Flutter toolchain version declarations in config
+  files; fix rhino-cli doctor Go path bug (`apps/rhino-cli` → `apps/rhino-cli-go`).
 
 ## Folder Naming
 
