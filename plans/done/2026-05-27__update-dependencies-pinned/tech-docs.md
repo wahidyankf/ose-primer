@@ -7,21 +7,13 @@ new abstractions, no architectural changes. The work touches eight `package.json
 the root `package-lock.json`, and `.tool-versions`.
 
 ```mermaid
-flowchart LR
-    A[Root package.json] -->|npm install| L[package-lock.json]
-    B[apps/crud-fe-ts-nextjs/package.json] -->|workspace| L
-    C[apps/crud-fe-ts-tanstack-start/package.json] -->|workspace| L
-    D[apps/crud-fs-ts-nextjs/package.json] -->|workspace| L
-    E[apps/crud-be-ts-effect/package.json] -->|workspace| L
-    F[apps/crud-fe-e2e/package.json] -->|workspace| L
-    G[apps/crud-be-e2e/package.json] -->|workspace| L
-    H[libs/ts-ui/package.json] -->|workspace| L
-    I[libs/ts-ui-tokens/package.json] -->|workspace| L
-    L -->|npm audit| S{CVE check}
-    S -->|0 findings| OK[Push to main]
-    S -->|findings| FIX[Fix versions]
-    FIX --> L
-    J[.tool-versions] -->|manual verify| OK
+flowchart TD
+    A[8x package.json files] -->|npm install| B[package-lock.json]
+    B -->|npm audit| C{CVE check}
+    C -->|0 high/critical| D[Push to main]
+    C -->|findings| E[Fix versions]
+    E --> B
+    F[.tool-versions] -->|verify| D
 ```
 
 ## Eligibility Criteria (Decision Algorithm)
@@ -29,15 +21,12 @@ flowchart LR
 For every package in every `package.json`, the executor applies this decision tree:
 
 ```mermaid
-flowchart TD
-    A[Package X, current declared version] --> B{Latest stable version\nreleased on or before\n2026-03-27?}
-    B -->|Yes, and newer than current| C{CVE-free at\nhigh/critical?}
-    B -->|No newer eligible| D[Pin current resolved\nversion as exact string]
-    C -->|Yes| E[Upgrade to latest eligible\nversion, pin exact]
-    C -->|No| F[Use previous eligible\nversion, pin exact]
-    D --> G[Write to package.json]
-    E --> G
-    F --> G
+flowchart LR
+    A[Package] --> B{Newer before\ncutoff?}
+    B -->|No| D[Pin current]
+    B -->|Yes| C{CVE-free?}
+    C -->|Yes| E[Upgrade + pin]
+    C -->|No| F[Prior + pin]
 ```
 
 **Cutoff date**: 2026-03-27 (two months before 2026-05-27).
