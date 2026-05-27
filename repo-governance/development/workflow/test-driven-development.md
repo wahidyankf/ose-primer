@@ -99,7 +99,7 @@ for the script structure and tooling defaults (Playwright MCP for UI, `curl` for
 When in doubt, prefer the cheapest test that meaningfully exercises the behavior:
 
 - A pure function bug → unit test (fastest feedback, deterministic).
-- A database query bug → integration test (real DB via docker-compose for `organiclever-be`,
+- A database query bug → integration test (real DB via docker-compose for `crud-be-fsharp-giraffe`,
   in-process mocks otherwise).
 - A user-visible flow bug → E2E (Playwright) plus manual verification before merge.
 - A contract change → contract test on the OpenAPI spec round-trip; both producer and

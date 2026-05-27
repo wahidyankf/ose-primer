@@ -219,7 +219,7 @@ Apply validated drift fixes from the audit report based on mode level.
   [Multi-Harness Binding Convention](../../conventions/structure/multi-harness-binding.md))
 - New harness additions (full onboarding involves catalog row, binding directory decision,
   and dual-CLI implementation per AD8)
-- rhino-cli **generator-logic** changes (a translation rule, not just regenerated data):
+- rhino-cli-go **generator-logic** changes (a translation rule, not just regenerated data):
   `apps/rhino-cli-go/` and `apps/rhino-cli-rust/` are a parity pair, so the identical change
   must land in both `apps/rhino-cli-go/internal/agents/` and `apps/rhino-cli-rust/src/` in
   lock-step — surfaced as one coupled finding for human or language-dev-agent authorship
@@ -346,7 +346,7 @@ Scenario: Fixer updates catalog entries for unambiguous in-scope drift
   And it writes a fix report using the same UUID chain as the audit
 
 Scenario: Fixer updates rhino specs when a harness change alters documented CLI behavior
-  Given the audit contains a HIGH-confidence finding that a harness changed a convention rhino-cli emits
+  Given the audit contains a HIGH-confidence finding that a harness changed a convention rhino-cli-go emits
   And specs/apps/rhino/ documents the old behavior in a Gherkin scenario
   When repo-harness-compatibility-fixer applies the catalog and binding updates
   Then it edits the affected specs/apps/rhino/ files to match the new behavior

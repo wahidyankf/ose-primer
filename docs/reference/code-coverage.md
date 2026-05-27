@@ -5,17 +5,17 @@ category: reference
 tags:
   - coverage
   - testing
-  - rhino-cli
+  - rhino-cli-go
   - quality
 ---
 
 # Code Coverage Reference
 
-How code coverage is measured locally via `rhino-cli` across all projects in the monorepo.
+How code coverage is measured locally via `rhino-cli-go` across all projects in the monorepo.
 
 ## 📋 Coverage Algorithm
 
-All projects use `rhino-cli test-coverage validate` which implements a 3-state line-based algorithm:
+All projects use `rhino-cli-go test-coverage validate` which implements a 3-state line-based algorithm:
 
 - **COVERED**: hit count > 0 AND all branches taken (or no branches)
 - **PARTIAL**: hit count > 0 but some branches not taken
@@ -26,7 +26,7 @@ Partial lines count as NOT covered.
 
 ## Supported Formats
 
-`rhino-cli` auto-detects the coverage format from the file:
+`rhino-cli-go` auto-detects the coverage format from the file:
 
 | Format       | Detection                                                                | Used By                                                 |
 | ------------ | ------------------------------------------------------------------------ | ------------------------------------------------------- |
@@ -57,7 +57,7 @@ Partial lines count as NOT covered.
 
 | Project            | Coverage File               | Threshold | Exclusions                                          |
 | ------------------ | --------------------------- | --------- | --------------------------------------------------- |
-| rhino-cli          | `cover.out`                 | 90%       | None                                                |
+| rhino-cli-go       | `cover.out`                 | 90%       | None                                                |
 | golang-commons     | `cover.out`                 | 90%       | None                                                |
 | crud-be-golang-gin | `cover_unit.out` (filtered) | 90%       | gorm_store, server, cmd/server, generated-contracts |
 
@@ -171,21 +171,21 @@ Coverage is measured during `test:quick` (part of the pre-push hook and main CI)
 ### Pipeline Flow
 
 1. `test:unit` runs tests and generates the coverage file
-2. `rhino-cli test-coverage validate <file> <threshold>` checks locally
+2. `rhino-cli-go test-coverage validate <file> <threshold>` checks locally
 3. Both steps are combined in `test:quick`
 
 ## 🔬 Troubleshooting
 
 ### Coverage drops after adding a new file
 
-New source files with no test coverage appear as 0% in rhino-cli output. Either write tests or add the file to the appropriate exclusion config (language tool config).
+New source files with no test coverage appear as 0% in rhino-cli-go output. Either write tests or add the file to the appropriate exclusion config (language tool config).
 
-### `rhino-cli --exclude` flag
+### `rhino-cli-go --exclude` flag
 
-`rhino-cli test-coverage validate` supports `--exclude` glob patterns for runtime exclusion without modifying the coverage file. Note: glob matching may not work with Go's full module paths in `cover.out` — use `grep -v` for Go projects instead.
+`rhino-cli-go test-coverage validate` supports `--exclude` glob patterns for runtime exclusion without modifying the coverage file. Note: glob matching may not work with Go's full module paths in `cover.out` — use `grep -v` for Go projects instead.
 
 ## 🔗 Related Documentation
 
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) - Coverage thresholds and testing levels
-- [Project Dependency Graph](./project-dependency-graph.md) - Which projects depend on rhino-cli
+- [Project Dependency Graph](./project-dependency-graph.md) - Which projects depend on rhino-cli-go
 - [Nx Configuration](./nx-configuration.md) - How test:quick targets are configured

@@ -229,7 +229,7 @@ implementations use the same feature files but connect to real PostgreSQL via `D
 - Consume shared Gherkin feature files from `specs/apps/crud/behavior/be/gherkin/`
 - Call service/handler functions directly with **mocked repositories**
 - No HTTP framework, no database, no Docker
-- Coverage measured here (>=90% via `rhino-cli test-coverage validate`)
+- Coverage measured here (>=90% via `rhino-cli-go test-coverage validate`)
 
 #### Integration Tests (`tests/integration/` or equivalent)
 
@@ -513,7 +513,7 @@ Add coverage validation to `test:quick`:
 ```bash
 # Pattern: run tests → generate coverage file → validate with rhino-cli
 {test-command-with-coverage} && \
-  rhino-cli test-coverage validate {coverage-file} 90
+  rhino-cli-go test-coverage validate {coverage-file} 90
 ```
 
 See [Code Coverage Reference](../reference/code-coverage.md) for per-language coverage

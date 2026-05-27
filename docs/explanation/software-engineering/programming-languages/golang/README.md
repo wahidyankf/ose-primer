@@ -232,9 +232,9 @@ graph LR
 
 **CLI Tools**:
 
-- rhino-cli MUST use Go for content automation (link validation, content checks)
-- rhino-cli MUST use Go for repository management (RHINO = Repository Hygiene & INtegration Orchestrator; includes `java validate-annotations` for Java null-safety annotation validation)
-- rhino-cli MUST use Go for demo site validation (link checking)
+- rhino-cli-go MUST use Go for content automation (link validation, content checks)
+- rhino-cli-go MUST use Go for repository management (RHINO = Repository Hygiene & INtegration Orchestrator; includes `java validate-annotations` for Java null-safety annotation validation)
+- rhino-cli-go MUST use Go for demo site validation (link checking)
 - Administrative tools SHOULD use Go for fast startup and easy distribution (single binary)
 - Code generation and scaffolding MAY use Go with `text/template` or `html/template`
 - All demo CLI apps MUST use domain-prefixed Cobra subcommands (`{cli-name} {domain} {action}`) — see [BDD Spec-to-Test Mapping Convention](../../../../../repo-governance/development/infra/bdd-spec-test-mapping.md) for source file and Gherkin tag naming rules
@@ -276,7 +276,7 @@ graph LR
 - SHOULD use `staticcheck` for advanced static analysis (included in golangci-lint)
 - MUST use `go vet` for correctness checking (detects common mistakes)
 - SHOULD use `gosec` for security scanning (OWASP vulnerabilities)
-- MUST achieve >=95% test coverage for domain logic (measured with `go test -coverprofile=cover.out ./...` and enforced by `rhino-cli test-coverage validate`)
+- MUST achieve >=95% test coverage for domain logic (measured with `go test -coverprofile=cover.out ./...` and enforced by `rhino-cli-go test-coverage validate`)
 
 **Testing Automation (REQUIRED)**:
 
@@ -308,7 +308,7 @@ graph LR
 
 **Code Review Requirements**:
 
-- All Go code MUST pass automated checks (`golangci-lint`, `go test`, coverage >=95% for domain logic enforced by `rhino-cli test-coverage validate`)
+- All Go code MUST pass automated checks (`golangci-lint`, `go test`, coverage >=95% for domain logic enforced by `rhino-cli-go test-coverage validate`)
 - Code reviewers MUST verify compliance with standards in this index
 - Non-compliance with mandatory standards (Coding, Testing, Code Quality) blocks merge
 - Goroutine leaks and race conditions MUST be detected with `go test -race`

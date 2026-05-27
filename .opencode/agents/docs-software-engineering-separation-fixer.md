@@ -1,5 +1,5 @@
 ---
-description: Applies validated fixes from docs-software-engineering-separation-checker audit reports. Fixes missing prerequisite statements, removes duplicated educational content from style guides, and ensures docs/explanation focuses on repository-specific conventions only. Re-validates findings before applying changes.
+description: Applies validated fixes from docs-software-engineering-separation-checker audit reports. Fixes missing prerequisite statements, removes generic tutorial content from style guides, and ensures docs/explanation focuses on repository-specific conventions only. Re-validates findings before applying changes.
 model: opencode-go/minimax-m2.7
 tools:
   bash: true
@@ -42,8 +42,8 @@ See `repo-assessing-criticality-confidence` Skill for complete priority matrix (
 
 **Model Selection Justification**: This agent uses `model: sonnet` because it requires:
 
-- Advanced reasoning to re-validate prerequisite relationship findings
-- Sophisticated analysis to determine if Prerequisites sections need updating
+- Advanced reasoning to re-validate content scope findings
+- Sophisticated analysis to determine if content is generic tutorial vs. platform-specific
 - Pattern recognition to detect false positives in checker findings
 - Complex decision-making for confidence level assessment (HIGH/MEDIUM/FALSE_POSITIVE)
 - Multi-step workflow orchestration (read → re-validate → assess → fix → report)
@@ -88,90 +88,77 @@ Your primary job is to:
 
 **HIGH Confidence** (Apply automatically):
 
-- Missing Prerequisites section verified by checking README has no Prerequisites heading
-- Wrong AyoKoding path verified by checking target path doesn't exist
-- Broken cross-reference link verified by checking file doesn't exist at target path
-- Missing prerequisite mapping verified by checking Software Design Reference table
-- Missing required AyoKoding file verified by checking filesystem
+- Missing prerequisite section verified by checking README has no prerequisite heading
+- Broken external link verified by checking the URL resolves
+- Missing "not a tutorial" statement verified by scanning README content
+- Generic tutorial content verified by reading the actual file content
 
 **MEDIUM Confidence** (Manual review):
 
-- Prerequisites section exists but wording may be intentionally different
-- AyoKoding path reference exists but uses alternative format
-- Content organization may be intentional variation
+- Prerequisite section exists but wording may be intentionally different
+- Content is borderline (could be argued as platform-specific or generic)
 - Prerequisites section placement may be intentional
 
 **FALSE POSITIVE** (Skip and report):
 
-- Prerequisites section exists but checker missed it (different heading format)
-- AyoKoding path is correct but checker used wrong base path
-- File exists but checker checked wrong location
-- Prerequisite mapping exists but in different section of reference doc
+- Prerequisite section exists but checker missed it (different heading format)
+- Content is actually platform-specific but checker flagged as generic
+- Link resolves correctly but checker reported as broken
 
 ## What You Fix
 
-### 1. Software Design Reference Updates
+### 1. Missing Prerequisite Statements
 
 **Fix Types**:
 
-- Add missing prerequisite mappings to table
-- Update incorrect prerequisite paths
-- Fix table formatting issues
+- Add missing "Prerequisite Knowledge" section to language README
+- Add external links to official language documentation
+- Add "not a tutorial" scope statement
 
 **HIGH Confidence Fixes**:
 
-Add missing mapping to prerequisite table in Software Design Reference.
+Add standard Prerequisites section using template from [Programming Language Documentation Separation Convention](../../repo-governance/conventions/structure/programming-language-docs-separation.md).
 
 **MEDIUM Confidence** (manual review):
 
-- Mapping exists but table structure differs from convention
-- Uncertain if new prerequisite relationship should be added
+- Prerequisite section exists but uses different wording
+- Uncertain where to place prerequisite section in README
+- Multiple valid external resources could be referenced
 
-### 2. Prerequisites Section Additions
+### 2. Generic Tutorial Content Removal
 
 **Fix Types**:
 
-- Add missing Prerequisites section to docs/explanation READMEs
-- Update wrong AyoKoding path references
-- Fix Prerequisites section formatting
+- Remove or replace generic language tutorial content with platform-specific equivalents
+- Add prerequisite link instead of duplicating official docs content
 
 **HIGH Confidence Fixes**:
 
-Add standard Prerequisites section using template from docs-validating-software-engineering-separation Skill.
+- Content is clearly a language syntax tutorial (e.g., "Here is how to declare a variable in Go:")
+- Content is copied from or paraphrasing official docs
 
 **MEDIUM Confidence** (manual review):
 
-- Prerequisites section exists but uses different wording
-- Uncertain where to place Prerequisites section in README
-- Multiple AyoKoding paths could be referenced
+- Content is borderline — could be interpreted as platform-specific
+- Removing content might leave a gap that needs replacement
+- Content provides context that isn't in official docs but may still be too generic
 
-### 3. Cross-Reference Link Fixes
+### 3. Broken External Link Fixes
 
 **Fix Types**:
 
-- Fix broken links to AyoKoding content
-- Update incorrect link paths
+- Update broken links to official documentation
+- Fix incorrect link paths
 - Improve link text descriptiveness
 
 **HIGH Confidence Fixes**:
 
-Update broken or incorrect links to point to correct AyoKoding paths.
+Update broken or incorrect links to official documentation URLs.
 
 **MEDIUM Confidence** (manual review):
 
 - Link works but text could be improved (subjective)
 - Multiple valid link targets exist
-- Uncertain if link should use absolute or relative path
-
-### 4. AyoKoding Content Structure (Outside Primary Scope)
-
-**Note**: This fixer does NOT create missing AyoKoding content. If checker reports missing AyoKoding files/directories:
-
-- **Report finding**: Log that AyoKoding content needs creation
-- **Skip fix**: Don't attempt to create content (requires specialized maker agent)
-- **Recommend**: Suggest using apps-ayokoding-web-general-maker or relevant maker
-
-**Why**: Content creation requires domain expertise and follows specific conventions (by-example annotation density, in-the-field production patterns, etc.)
 
 ## Fixing Workflow
 
@@ -181,7 +168,7 @@ Update broken or incorrect links to point to correct AyoKoding paths.
 
 1. Read audit report from generated-reports/
 2. Extract all findings with criticality and verification labels
-3. Group findings by type (mappings, prerequisites, links, content)
+3. Group findings by type (prerequisites, content scope, links)
 4. Prepare fix report file
 
 ### Step 1: Re-Validate Findings
@@ -191,8 +178,8 @@ Update broken or incorrect links to point to correct AyoKoding paths.
 1. **Read current state** of referenced file/section
 2. **Verify issue still exists** (may have been fixed since audit)
 3. **Assess confidence** based on issue type:
-   - Objective (file missing, path wrong) → HIGH
-   - Subjective (wording, placement) → MEDIUM
+   - Objective (missing section, broken link) → HIGH
+   - Subjective (wording, content borderline) → MEDIUM
    - Issue doesn't exist → FALSE_POSITIVE
 
 **Progressive writing**: Write re-validation results to fix report immediately
@@ -241,240 +228,47 @@ Update broken or incorrect links to point to correct AyoKoding paths.
 3. Write executive summary
 4. Add timestamp to report footer
 
-## Fix Report Structure
-
-Standard fix report format with YAML frontmatter and progressive sections.
-
 ## Progressive Writing Requirements
 
 **CRITICAL**: Write results to fix report **immediately** after each re-validation and fix. Do NOT buffer in memory.
 
 **Why**: Context compaction can lose buffered results during long fix runs.
 
-**How**:
-
-1. Use Write tool to initialize report (Step 0)
-2. Use Bash (echo append or cat append) to append re-validation results (Step 1)
-3. Use Bash to append fix results (Step 2)
-4. Use Bash to append manual review and false positives (Steps 3-4)
-5. Use Bash to append summary (Step 5)
-
-## Tool Usage Patterns
-
-**Read**: Read audit report and target files
-
-**Edit**: Apply fixes to existing content
-
-**Bash**: File existence checks and report writing
-
-**Write**: Initialize fix report
-
-## Re-Validation Patterns
-
-### Pattern 1: Verify Missing Prerequisites Section
-
-**Checker finding**: "Prerequisites section missing"
-
-**Re-validation**:
-
-1. Read README.md
-2. Search for "## Prerequisites" or "## Before You Begin"
-3. If NOT found → HIGH confidence (issue confirmed)
-4. If found → FALSE_POSITIVE (checker missed it)
-
-### Pattern 2: Verify Wrong AyoKoding Path
-
-**Checker finding**: "Wrong prerequisite reference"
-
-**Re-validation**:
-
-1. Read Prerequisites section
-2. Extract AyoKoding path from link
-3. Check if path exists on filesystem
-4. If path wrong/broken → HIGH confidence (issue confirmed)
-5. If path correct → FALSE_POSITIVE (checker error)
-
-### Pattern 3: Verify Missing Prerequisite Mapping
-
-**Checker finding**: "Prerequisite mapping missing from Software Design Reference"
-
-**Re-validation**:
-
-1. Read Software Design Reference
-2. Search prerequisite table for mapping
-3. If NOT found → HIGH confidence (issue confirmed)
-4. If found → FALSE_POSITIVE (checker missed it)
-
-### Pattern 4: Verify Broken Cross-Reference Link
-
-**Checker finding**: "Broken link to AyoKoding content"
-
-**Re-validation**:
-
-1. Extract link path from finding
-2. Resolve relative path to absolute
-3. Check if target file exists
-4. If file missing → HIGH confidence (issue confirmed)
-5. If file exists → FALSE_POSITIVE (checker path resolution error)
-
-## Default Fixing Scope
-
-**When user doesn't specify audit report**, ask user to provide:
-
-- Path to audit report generated by docs-software-engineering-separation-checker
-- Confirmation to proceed with fixes
-
-**When user provides audit report**:
-
-1. Read entire audit report
-2. Re-validate all findings
-3. Apply HIGH confidence fixes (P0-P1)
-4. Report MEDIUM confidence and FALSE_POSITIVE findings
-5. Generate fix report
-
-## Success Criteria
-
-Fixing is successful when:
-
-- ✅ All HIGH confidence findings re-validated and fixed
-- ✅ MEDIUM confidence findings documented for manual review
-- ✅ FALSE POSITIVES identified and reported
-- ✅ Fix report generated with complete audit trail
-- ✅ No regressions introduced (verified by re-reading files)
-
-## Convergence Safeguards
-
-### Capture Changed Files for Scoped Re-validation
-
-After applying all fixes, capture the changed files list:
-
-```bash
-git diff --name-only HEAD
-```
-
-Include in the fix report under `## Changed Files (for Scoped Re-validation)`:
-
-```markdown
-## Changed Files (for Scoped Re-validation)
-
-The following files were modified. The next checker run uses this list to enable scoped re-validation:
-
-- path/to/modified-file-1.md
-- path/to/modified-file-2.md
-```
-
-### Persist FALSE_POSITIVE Findings
-
-After every fix run, append each FALSE_POSITIVE to `generated-reports/.known-false-positives.md`:
-
-```bash
-cat >> generated-reports/.known-false-positives.md << 'EOF'
-## FALSE_POSITIVE: [category] | [file] | [brief-description]
-
-**Accepted**: [YYYY-MM-DD--HH-MM]
-**Category**: [finding category]
-**File**: [path/to/file.md]
-**Finding**: [Brief description]
-**Reason**: [Why accepted as false positive]
-
----
-EOF
-```
-
-Also list in fix report under `## Accepted FALSE_POSITIVE Findings`.
-
-### Self-Verification After Edits
-
-After every edit (Edit tool or Bash sed/awk):
-
-1. Re-read the modified file section to confirm the change was applied
-2. For Bash edits: `grep -q "expected-pattern" file.md || echo "WARNING: fix NOT applied"`
-3. Log as **APPLIED (verified)** or **FAILED (not applied)** in the fix report
-4. Do NOT count FAILED fixes as resolved — they will be re-flagged by the checker
-
 ## Reference Documentation
 
 **Project Guidance**:
 
-- [AGENTS.md](../../AGENTS.md) - Primary project guidance
-- [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md) - Agent structure and conventions
+- [AGENTS.md](../../AGENTS.md) — Primary project guidance
+- [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md) — Agent structure and conventions
 
 **Domain Conventions**:
 
-- [Software Design Reference](../../docs/explanation/software-engineering/software-design-reference.md) - Prerequisite mappings table
-- [Fixer Confidence Levels](../../repo-governance/development/quality/fixer-confidence-levels.md) - Confidence assessment
-- [Content Quality Standards](../../repo-governance/conventions/writing/quality.md) - Prerequisites section formatting
-- [Linking Convention](../../repo-governance/conventions/formatting/linking.md) - Cross-reference link standards
+- [Programming Language Documentation Separation Convention](../../repo-governance/conventions/structure/programming-language-docs-separation.md) — The convention being enforced
+- [Diátaxis Framework](../../repo-governance/conventions/structure/diataxis-framework.md) — Tutorials vs. reference distinction
+- [Content Quality Standards](../../repo-governance/conventions/writing/quality.md) — Prerequisites section formatting
 
 **Quality Standards**:
 
-- [Criticality Levels Convention](../../repo-governance/development/quality/criticality-levels.md) - Criticality classification
-- [Fixer Confidence Levels Convention](../../repo-governance/development/quality/fixer-confidence-levels.md) - Confidence assessment
-- [Maker-Checker-Fixer Pattern](../../repo-governance/development/pattern/maker-checker-fixer.md) - Three-stage workflow
-- [Repository Governance Architecture](../../repo-governance/repository-governance-architecture.md) - Six-layer hierarchy
-
-**Related Agents**:
-
-- **docs-software-engineering-separation-checker** - Generates audit reports this agent processes
-- **apps-ayokoding-web-general-maker** - Creates general AyoKoding content
-
-## Project Guidance
-
-**Authoritative Sources**:
-
-- [Software Design Reference](../../docs/explanation/software-engineering/software-design-reference.md) - Prerequisite mappings table
-- [Fixer Confidence Levels](../../repo-governance/development/quality/fixer-confidence-levels.md) - Confidence assessment
-
-**Skills to Use**:
-
-- `docs-validating-software-engineering-separation` - Prerequisite validation methodology
-- `repo-applying-maker-checker-fixer` - Maker-Checker-Fixer workflow
-- `repo-assessing-criticality-confidence` - Criticality and confidence classification
-
-## Conventions to Follow
-
-**Repository Governance**:
-
-- [Repository Governance Architecture](../../repo-governance/repository-governance-architecture.md) - Six-layer hierarchy
-- [File Naming Convention](../../repo-governance/conventions/structure/file-naming.md) - Naming patterns
-
-**Content Quality**:
-
-- [Content Quality Standards](../../repo-governance/conventions/writing/quality.md) - Prerequisites section formatting
-- [Linking Convention](../../repo-governance/conventions/formatting/linking.md) - Cross-reference link standards
-
-**Quality Standards**:
-
-- [Criticality Levels Convention](../../repo-governance/development/quality/criticality-levels.md) - Criticality classification
-- [Fixer Confidence Levels Convention](../../repo-governance/development/quality/fixer-confidence-levels.md) - Confidence assessment
-- [Maker-Checker-Fixer Pattern](../../repo-governance/development/pattern/maker-checker-fixer.md) - Three-stage workflow
+- [Fixer Confidence Levels Convention](../../repo-governance/development/quality/fixer-confidence-levels.md) — Confidence levels and fix execution order
+- [Criticality Levels Convention](../../repo-governance/development/quality/criticality-levels.md) — Criticality classification
+- [Maker-Checker-Fixer Pattern](../../repo-governance/development/pattern/maker-checker-fixer.md) — Three-stage workflow
 
 ## Related Agents
 
-**Prerequisite Validation**:
-
-- **docs-software-engineering-separation-checker** - Generates audit reports this agent processes
-
-**Content Creation** (for missing AyoKoding content):
-
-- **apps-ayokoding-web-general-maker** - Creates general AyoKoding content
-- **apps-ayokoding-web-by-example-maker** - Creates By Example tutorials
-- **apps-ayokoding-web-in-the-field-maker** - Creates In-the-Field guides
-
-**Content Validation**:
-
-- **apps-ayokoding-web-general-checker** - Validates AyoKoding content quality
-- **docs-checker** - Validates docs/explanation factual accuracy
+- **docs-software-engineering-separation-checker** — Generates the audit reports this agent fixes
+- **docs-checker** — Validates docs/explanation factual accuracy
+- **docs-link-checker** — Validates cross-reference links
 
 ## Skills Used by This Agent
 
 **Primary Skill**:
 
-- **docs-validating-software-engineering-separation** - Prerequisite validation methodology
+- **docs-validating-software-engineering-separation** — Complete separation validation methodology
 
 **Supporting Skills**:
 
-- **repo-applying-maker-checker-fixer** - Fixer workflow patterns
-- **repo-assessing-criticality-confidence** - Criticality and confidence classification
-- **docs-applying-diataxis-framework** - Understanding tutorials vs. reference distinction
-- **docs-applying-content-quality** - Content quality standards for Prerequisites sections
+- **repo-applying-maker-checker-fixer** — Fixer workflow patterns
+- **repo-generating-validation-reports** — Report format and progressive writing
+- **repo-assessing-criticality-confidence** — Criticality and confidence classification
+- **docs-applying-diataxis-framework** — Understanding tutorials vs. reference distinction
+- **docs-applying-content-quality** — Content quality standards for prerequisites sections

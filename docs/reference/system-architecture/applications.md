@@ -10,181 +10,176 @@ tags:
 
 # Applications & Containers
 
-Application inventory and C4 Level 2 container diagram for the Open Sharia Enterprise platform.
+Application inventory and C4 Level 2 container diagram for the platform.
 
 ## 📋 Applications Inventory
 
-The platform consists of 9 applications across 4 technology stacks:
+The platform consists of 19 applications across multiple technology stacks.
 
-### Web Applications (Next.js)
+### Backend Services (`apps/crud-be-*`)
 
-#### crud-fs-ts-nextjs
+| App                         | Language / Framework | Build Command                        |
+| --------------------------- | -------------------- | ------------------------------------ |
+| `crud-be-clojure-pedestal`  | Clojure + Pedestal   | `nx build crud-be-clojure-pedestal`  |
+| `crud-be-csharp-aspnetcore` | C# + ASP.NET Core    | `nx build crud-be-csharp-aspnetcore` |
+| `crud-be-elixir-phoenix`    | Elixir + Phoenix     | `nx build crud-be-elixir-phoenix`    |
+| `crud-be-fsharp-giraffe`    | F# + Giraffe         | `nx build crud-be-fsharp-giraffe`    |
+| `crud-be-golang-gin`        | Go + Gin             | `nx build crud-be-golang-gin`        |
+| `crud-be-java-springboot`   | Java + Spring Boot   | `nx build crud-be-java-springboot`   |
+| `crud-be-java-vertx`        | Java + Vert.x        | `nx build crud-be-java-vertx`        |
+| `crud-be-kotlin-ktor`       | Kotlin + Ktor        | `nx build crud-be-kotlin-ktor`       |
+| `crud-be-python-fastapi`    | Python + FastAPI     | `nx build crud-be-python-fastapi`    |
+| `crud-be-rust-axum`         | Rust + Axum          | `nx build crud-be-rust-axum`         |
+| `crud-be-ts-effect`         | TypeScript + Effect  | `nx build crud-be-ts-effect`         |
 
-- **Purpose**: Educational platform for programming, AI, and security
-- **URL**: <https://example.com>
-- **Technology**: Next.js 16 (App Router) + TypeScript + tRPC
-- **Languages**: Bilingual (default English)
-- **Deployment**: Vercel (via `prod-crud-fs-ts-nextjs` branch)
-- **Build Command**: `nx build crud-fs-ts-nextjs`
-- **Dev Command**: `nx dev crud-fs-ts-nextjs`
+All backend services implement the same OpenAPI contract (`specs/apps/crud/containers/contracts/`). Each is an independent deployable REST API.
 
-### CLI Tools (Go)
+### Frontend Applications (`apps/crud-fe-*`)
 
-#### rhino-cli
+| App                         | Language / Framework        | Build Command                        |
+| --------------------------- | --------------------------- | ------------------------------------ |
+| `crud-fe-dart-flutterweb`   | Dart + Flutter Web          | `nx build crud-fe-dart-flutterweb`   |
+| `crud-fe-ts-nextjs`         | TypeScript + Next.js        | `nx build crud-fe-ts-nextjs`         |
+| `crud-fe-ts-tanstack-start` | TypeScript + TanStack Start | `nx build crud-fe-ts-tanstack-start` |
 
-- **Purpose**: Link validation for crud-fs-ts-nextjs content
-- **Language**: Go 1.26
-- **Build Command**: `nx build rhino-cli`
-- **Features**:
-  - Link validation for crud-fs-ts-nextjs content
-- **Usage**: Runs as part of crud-fs-ts-nextjs quality checks
+### Fullstack Application
 
-#### rhino-cli
+| App                 | Language / Framework | Build Command                |
+| ------------------- | -------------------- | ---------------------------- |
+| `crud-fs-ts-nextjs` | TypeScript + Next.js | `nx build crud-fs-ts-nextjs` |
 
-- **Purpose**: Repository management and automation
-- **Language**: Go 1.26
-- **Build Command**: `nx build rhino-cli`
-- **Location**: `apps/rhino-cli-go/`
-- **Status**: Active development
+### E2E Test Suites
 
-#### rhino-cli
+| App           | Purpose                                   | Run Command                   |
+| ------------- | ----------------------------------------- | ----------------------------- |
+| `crud-be-e2e` | End-to-end tests for all `crud-be-*` APIs | `nx run crud-be-e2e:test:e2e` |
+| `crud-fe-e2e` | End-to-end tests for `crud-fe-*` apps     | `nx run crud-fe-e2e:test:e2e` |
 
-- **Purpose**: demo site link validation
-- **Language**: Go 1.26
-- **Build Command**: `nx build rhino-cli`
-- **Features**:
-  - Validates all internal links in crud-fs-ts-nextjs content
-  - Text, JSON, and markdown output formats
-- **Usage**: Runs as first step of `crud-fs-ts-nextjs`'s `test:quick` target
+### CLI Tools
 
-### Web Applications (Next.js)
-
-#### crud-fe-ts-nextjs
-
-- **Purpose**: Landing and promotional website for demo
-- **URL**: <https://www.example.com>
-- **Technology**: Next.js 16 (App Router) + React 19 + TailwindCSS
-- **Deployment**: Vercel (via `prod-demo-web` branch)
-- **Build Command**: `nx build crud-fe-ts-nextjs`
-- **Dev Command**: `nx dev crud-fe-ts-nextjs`
-- **Features**:
-  - Radix UI / shadcn-ui component library
-  - Cookie-based authentication
-  - JSON data files for content
-  - Production Dockerfile with standalone output
-
-### Backend Services
-
-#### crud-be-fsharp-giraffe
-
-- **Purpose**: REST API backend for demo (F#/Giraffe implementation)
-- **Technology**: F# + Giraffe + .NET
-- **Build Command**: `nx build crud-be-fsharp-giraffe`
-- **Dev Command**: `nx dev crud-be-fsharp-giraffe`
-- **Features**:
-  - AltCover code coverage enforcement (>=90%)
-  - Production Dockerfile with multi-stage build
-  - OpenAPI 3.1 contract-first development
-
-### E2E Test Suites (Playwright)
-
-#### crud-fe-e2e
-
-- **Purpose**: End-to-end tests for crud-fe-ts-nextjs
-- **Technology**: Playwright
-- **Run Command**: `nx run crud-fe-e2e:test:e2e`
-
-#### crud-be-e2e
-
-- **Purpose**: End-to-end tests for crud-be-fsharp-giraffe REST API
-- **Technology**: Playwright
-- **Run Command**: `nx run crud-be-e2e:test:e2e`
-
-#### crud-be-e2e
-
-- **Purpose**: End-to-end tests for crud-be-java-springboot REST API
-- **Technology**: Playwright
-- **Run Command**: `nx run crud-be-e2e:test:e2e`
-- **Location**: `apps/crud-be-e2e/`
+| App              | Language | Purpose                          | Build Command             |
+| ---------------- | -------- | -------------------------------- | ------------------------- |
+| `rhino-cli-go`   | Go       | Repository management automation | `nx build rhino-cli-go`   |
+| `rhino-cli-rust` | Rust     | Repository management automation | `nx build rhino-cli-rust` |
 
 ## 🏗️ C4 Level 2: Container Diagram
 
-Shows the high-level technical building blocks (containers) of the system. In C4 terminology, a "container" is a deployable/executable unit (web app, database, file system, etc.), not a Docker container.
+Shows the high-level technical building blocks (containers) of the system. In C4 terminology, a "container" is a deployable/executable unit (web app, API, CLI, etc.), not a Docker container.
 
 ```mermaid
 graph LR
-    subgraph "Marketing & Education Sites"
-        OSE[crud-fs-ts-nextjs<br/>Next.js App]
-        AYO[crud-fs-ts-nextjs<br/>Next.js App]
+    subgraph "Frontend Applications"
+        FE_NEXTJS[crud-fe-ts-nextjs<br/>Next.js App]
+        FE_TANSTACK[crud-fe-ts-tanstack-start<br/>TanStack Start App]
+        FE_DART[crud-fe-dart-flutterweb<br/>Flutter Web App]
+        FS_NEXTJS[crud-fs-ts-nextjs<br/>Next.js Fullstack]
     end
 
-    subgraph "demo Platform"
-        OL_FE[crud-fe-ts-nextjs<br/>Next.js App]
-        OL_BE[crud-be-fsharp-giraffe<br/>F#/Giraffe API]
-        OL_FE_E2E[crud-fe-e2e<br/>Playwright E2E]
-        OL_BE_E2E[crud-be-e2e<br/>Playwright E2E]
+    subgraph "Backend APIs - polyglot"
+        BE_CLOJURE[crud-be-clojure-pedestal<br/>Clojure API]
+        BE_CSHARP[crud-be-csharp-aspnetcore<br/>C# API]
+        BE_ELIXIR[crud-be-elixir-phoenix<br/>Elixir API]
+        BE_FSHARP[crud-be-fsharp-giraffe<br/>F# API]
+        BE_GO[crud-be-golang-gin<br/>Go API]
+        BE_JASB[crud-be-java-springboot<br/>Java Spring Boot API]
+        BE_JAVX[crud-be-java-vertx<br/>Java Vert.x API]
+        BE_KOTLIN[crud-be-kotlin-ktor<br/>Kotlin API]
+        BE_PYTHON[crud-be-python-fastapi<br/>Python API]
+        BE_RUST[crud-be-rust-axum<br/>Rust API]
+        BE_TS[crud-be-ts-effect<br/>TypeScript API]
+    end
+
+    subgraph "E2E Test Suites"
+        FE_E2E[crud-fe-e2e<br/>Playwright FE E2E]
+        BE_E2E[crud-be-e2e<br/>Playwright BE E2E]
     end
 
     subgraph "CLI Tools"
-        AYOCLI[rhino-cli<br/>Go CLI]
-        RHINO[rhino-cli<br/>Go CLI]
-        OSECLI[rhino-cli<br/>Go CLI]
+        RHINO_GO[rhino-cli-go<br/>Go CLI]
+        RHINO_RUST[rhino-cli-rust<br/>Rust CLI]
     end
 
     subgraph "Shared Infrastructure"
         NX[Nx Workspace<br/>Build Orchestration]
-        LIBS[Shared Libraries<br/>golang-commons, golang-commons]
+        CONTRACT[OpenAPI Contract<br/>specs/apps/crud/]
     end
 
-    AYOCLI -->|Validates links| AYO
-    RHINO -->|Repository automation| NX
-    OSECLI -->|Validates links| OSE
-    OL_WEB_E2E -->|Tests| OL_WEB
-    OL_BE_E2E -->|Tests| OL_BE
+    FE_NEXTJS -->|calls| BE_FSHARP
+    FE_TANSTACK -->|calls| BE_FSHARP
+    FE_DART -->|calls| BE_FSHARP
+    FE_E2E -->|tests| FE_NEXTJS
+    BE_E2E -->|tests| BE_FSHARP
 
-    NX -.->|Manages| OSE
-    NX -.->|Manages| AYO
-    NX -.->|Manages| AYOCLI
-    NX -.->|Manages| RHINO
-    NX -.->|Manages| OL_WEB
-    NX -.->|Manages| OL_BE
+    CONTRACT -.->|defines API for| BE_CLOJURE
+    CONTRACT -.->|defines API for| BE_CSHARP
+    CONTRACT -.->|defines API for| BE_ELIXIR
+    CONTRACT -.->|defines API for| BE_FSHARP
+    CONTRACT -.->|defines API for| BE_GO
+    CONTRACT -.->|defines API for| BE_JASB
+    CONTRACT -.->|defines API for| BE_JAVX
+    CONTRACT -.->|defines API for| BE_KOTLIN
+    CONTRACT -.->|defines API for| BE_PYTHON
+    CONTRACT -.->|defines API for| BE_RUST
+    CONTRACT -.->|defines API for| BE_TS
 
-    OSE -.->|May import| LIBS
-    AYO -.->|May import| LIBS
+    NX -.->|manages| FE_NEXTJS
+    NX -.->|manages| BE_FSHARP
+    NX -.->|manages| RHINO_GO
 
-    style OSE fill:#0077b6,stroke:#03045e,color:#ffffff
-    style AYO fill:#0077b6,stroke:#03045e,color:#ffffff
-    style OL_WEB fill:#0077b6,stroke:#03045e,color:#ffffff
-    style OL_BE fill:#e76f51,stroke:#9d0208,color:#ffffff
-    style OL_WEB_E2E fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style OL_BE_E2E fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style AYOCLI fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style RHINO fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style OSECLI fill:#2a9d8f,stroke:#264653,color:#ffffff
+    style FE_NEXTJS fill:#0077b6,stroke:#03045e,color:#ffffff
+    style FE_TANSTACK fill:#0077b6,stroke:#03045e,color:#ffffff
+    style FE_DART fill:#0077b6,stroke:#03045e,color:#ffffff
+    style FS_NEXTJS fill:#0077b6,stroke:#03045e,color:#ffffff
+    style BE_CLOJURE fill:#e76f51,stroke:#9d0208,color:#ffffff
+    style BE_CSHARP fill:#e76f51,stroke:#9d0208,color:#ffffff
+    style BE_ELIXIR fill:#e76f51,stroke:#9d0208,color:#ffffff
+    style BE_FSHARP fill:#e76f51,stroke:#9d0208,color:#ffffff
+    style BE_GO fill:#e76f51,stroke:#9d0208,color:#ffffff
+    style BE_JASB fill:#e76f51,stroke:#9d0208,color:#ffffff
+    style BE_JAVX fill:#e76f51,stroke:#9d0208,color:#ffffff
+    style BE_KOTLIN fill:#e76f51,stroke:#9d0208,color:#ffffff
+    style BE_PYTHON fill:#e76f51,stroke:#9d0208,color:#ffffff
+    style BE_RUST fill:#e76f51,stroke:#9d0208,color:#ffffff
+    style BE_TS fill:#e76f51,stroke:#9d0208,color:#ffffff
+    style FE_E2E fill:#457b9d,stroke:#1d3557,color:#ffffff
+    style BE_E2E fill:#457b9d,stroke:#1d3557,color:#ffffff
+    style RHINO_GO fill:#2a9d8f,stroke:#264653,color:#ffffff
+    style RHINO_RUST fill:#2a9d8f,stroke:#264653,color:#ffffff
     style NX fill:#6a4c93,stroke:#22223b,color:#ffffff
-    style LIBS fill:#457b9d,stroke:#1d3557,color:#ffffff
+    style CONTRACT fill:#6a4c93,stroke:#22223b,color:#ffffff
 ```
 
 ## 🔄 Application Interactions
 
-**Independent Application Suites:**
+**Contract-First Design:**
 
-Marketing & Education Sites:
+All backend services (`crud-be-*`) implement the same OpenAPI 3.1 contract defined in
+`specs/apps/crud/containers/contracts/`. They are independently deployable and
+interchangeable — frontends can point to any backend.
 
-- crud-fs-ts-nextjs: Fully independent static site
-- crud-fs-ts-nextjs: Next.js fullstack content platform (with CLI link validation)
+**Frontend ↔ Backend:**
 
-CLI Tools:
+- Frontend apps (`crud-fe-*`, `crud-fs-ts-nextjs`) call backend REST APIs
+- All backends expose the same endpoints per the OpenAPI contract
 
-- rhino-cli-go: Validates links in crud-fs-ts-nextjs content
-- rhino-cli-go: Repository management automation
+**E2E Test Suites:**
+
+- `crud-be-e2e` — tests backend APIs against the OpenAPI contract
+- `crud-fe-e2e` — tests frontend user flows via Playwright
+
+**CLI Tools:**
+
+- `rhino-cli-go` — repository management automation (Go implementation)
+- `rhino-cli-rust` — repository management automation (Rust implementation)
 
 **Build-Time Dependencies:**
 
 - All applications managed by Nx workspace
-- CLI tools executed during build processes
-- Shared libraries may be imported at build time via `@open-sharia-enterprise/[lib-name]`
+- Backend apps consume code from `libs/` (codegen, commons)
+- Shared OpenAPI contract consumed by backend apps and E2E suites
 
-**Link Validation Pipeline (crud-fs-ts-nextjs):**
+## 🔗 Related Documentation
 
-rhino-cli validates internal links in crud-fs-ts-nextjs content as part of the quality gate.
+- [Monorepo Structure Reference](../monorepo-structure.md) — Folder layout and naming conventions
+- [Project Dependency Graph](../project-dependency-graph.md) — Nx dependency relationships
+- [C4 Architecture Model](../../explanation/software-engineering/architecture/c4-architecture-model/README.md) — C4 diagram standards

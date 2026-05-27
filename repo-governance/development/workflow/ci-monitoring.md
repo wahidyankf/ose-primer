@@ -87,7 +87,7 @@ Trigger the run, record the run ID, schedule a wakeup for 3-5 minutes, check sta
 
 ```bash
 # Step 1: trigger and capture run ID
-gh workflow run test-and-deploy-organiclever-web-development.yml
+gh workflow run <your-workflow>.yml
 # URL output contains run ID, e.g. https://github.com/.../runs/12345678
 
 # Step 2: ScheduleWakeup(delaySeconds=180)  ← check in 3 min
@@ -227,8 +227,8 @@ If the rate limit is hit mid-plan, use `ScheduleWakeup delaySeconds=2100` and re
 ### PASS: Correct — Watch single run to completion
 
 ```bash
-gh workflow run test-and-deploy-organiclever-web-development.yml
-gh run list --workflow=test-and-deploy-organiclever-web-development.yml --limit=3
+gh workflow run <your-workflow>.yml
+gh run list --workflow=<your-workflow>.yml --limit=3
 gh run watch 98765432
 # Blocks until run completes; exits 0 on success, non-zero on failure
 ```
@@ -236,15 +236,15 @@ gh run watch 98765432
 ### PASS: Correct — Check before triggering
 
 ```bash
-active=$(gh run list --workflow=test-and-deploy-organiclever-web-development.yml \
+active=$(gh run list --workflow=<your-workflow>.yml \
   --limit=1 --json status --jq '.[0].status')
 if [ "$active" = "in_progress" ] || [ "$active" = "queued" ]; then
   echo "Run already active — watching existing run instead of triggering new one"
-  run_id=$(gh run list --workflow=test-and-deploy-organiclever-web-development.yml \
+  run_id=$(gh run list --workflow=<your-workflow>.yml \
     --limit=1 --json databaseId --jq '.[0].databaseId')
   gh run watch "$run_id"
 else
-  gh workflow run test-and-deploy-organiclever-web-development.yml
+  gh workflow run <your-workflow>.yml
 fi
 ```
 
@@ -261,9 +261,9 @@ done
 
 ```bash
 # BAD: triggers three runs within two minutes, risking concurrency cancellation
-gh workflow run test-and-deploy-organiclever-web-development.yml
-gh workflow run test-and-deploy-organiclever-web-development.yml
-gh workflow run test-and-deploy-organiclever-web-development.yml
+gh workflow run <your-workflow>.yml
+gh workflow run <your-workflow>.yml
+gh workflow run <your-workflow>.yml
 ```
 
 ### PASS: Correct — Rate limit recovery

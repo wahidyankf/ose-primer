@@ -46,13 +46,13 @@ After pushing app or library code to `origin main`, you MUST:
 
 ## Workflow Mapping
 
-| App(s) Changed                                              | Workflow to Trigger                                |
-| ----------------------------------------------------------- | -------------------------------------------------- |
-| `apps/ayokoding-web/`                                       | `test-and-deploy-ayokoding-web.yml`                |
-| `apps/oseplatform-web/`                                     | `test-and-deploy-oseplatform-web.yml`              |
-| `apps/organiclever-web/`, `apps/organiclever-be/`           | `test-and-deploy-organiclever-web-development.yml` |
-| `apps/wahidyankf-web/`                                      | `test-and-deploy-wahidyankf-web.yml`               |
-| `libs/`, shared infrastructure, or cross-cutting governance | All workflows for apps in blast radius             |
+| App(s) Changed                                              | Workflow to Trigger                         |
+| ----------------------------------------------------------- | ------------------------------------------- |
+| `apps/crud-fe-ts-nextjs/`, `apps/crud-fs-ts-nextjs/`        | Frontend/fullstack CI workflow for that app |
+| `apps/crud-be-*/`                                           | Backend CI workflow for that app            |
+| `apps/crud-fe-e2e/`, `apps/crud-be-e2e/`                    | E2E CI workflow                             |
+| `apps/rhino-cli-go/`, `apps/rhino-cli-rust/`                | CLI CI workflow                             |
+| `libs/`, shared infrastructure, or cross-cutting governance | All workflows for apps in blast radius      |
 
 When a change touches shared code (a lib, a shared type, a contract), trigger every workflow for every app that imports that code — not just the app most obviously related to the change.
 
@@ -75,11 +75,11 @@ See [CI Monitoring Convention](./ci-monitoring.md) for:
 # Identify blast radius
 git diff HEAD~1 --name-only
 
-# Trigger a specific workflow on main
-gh workflow run test-and-deploy-ayokoding-web.yml
+# Trigger a specific workflow on main (replace with actual workflow name)
+gh workflow run <workflow-name>.yml
 
 # List recent runs for a workflow to find the run ID
-gh run list --workflow=test-and-deploy-ayokoding-web.yml --limit=5
+gh run list --workflow=<workflow-name>.yml --limit=5
 
 # Check run status (call every 3-5 min via ScheduleWakeup — do NOT use gh run watch for long jobs)
 gh run view <run-id> --json conclusion,status,jobs
@@ -150,15 +150,15 @@ The following actions are explicitly forbidden under this convention:
 ### PASS: Correct post-push verification
 
 ```
-Agent: Pushed feat(organiclever-web): update hero section to origin main.
+Agent: Pushed feat(crud-fe-ts-nextjs): update hero section to origin main.
 
-Identifying blast radius: apps/organiclever-web/ changed.
+Identifying blast radius: apps/crud-fe-ts-nextjs/ changed.
 
 Triggering CI:
-  gh workflow run test-and-deploy-organiclever-web-development.yml
+  gh workflow run test-and-deploy-crud-fe-ts-nextjs-development.yml
 
 Monitoring:
-  gh run list --workflow=test-and-deploy-organiclever-web-development.yml --limit=3
+  gh run list --workflow=test-and-deploy-crud-fe-ts-nextjs-development.yml --limit=3
   gh run watch 12345678
 
 Result: All steps passed. Work is complete.
@@ -167,7 +167,7 @@ Result: All steps passed. Work is complete.
 ### FAIL: Declaring done before CI verification
 
 ```
-Agent: Pushed feat(organiclever-web): update hero section to origin main.
+Agent: Pushed feat(crud-fe-ts-nextjs): update hero section to origin main.
 
 Work is complete.
 ```
@@ -188,22 +188,22 @@ The pre-push hook does not run integration tests, E2E tests, or deployment workf
 ### PASS: Fixing a CI failure discovered during verification
 
 ```
-Agent: Pushed feat(organiclever-be): update auth endpoint to origin main.
+Agent: Pushed feat(crud-be-fsharp-giraffe): update auth endpoint to origin main.
 
 Triggering CI:
-  gh workflow run test-and-deploy-organiclever-web-development.yml
+  gh workflow run test-and-deploy-crud-fe-ts-nextjs-development.yml
 
-Monitoring: run 12345679 failed — integration test failure in organiclever-be.
+Monitoring: run 12345679 failed — integration test failure in crud-be-fsharp-giraffe.
 
 Root cause: Database migration step missing from integration test fixture.
 
 Fix:
-  git add apps/organiclever-be/tests/fixtures/migration.sql
-  git commit -m "fix(organiclever-be): add missing migration fixture for auth integration test"
+  git add apps/crud-be-fsharp-giraffe/tests/fixtures/migration.sql
+  git commit -m "fix(crud-be-fsharp-giraffe): add missing migration fixture for auth integration test"
   git push origin main
 
 Re-triggering CI:
-  gh workflow run test-and-deploy-organiclever-web-development.yml
+  gh workflow run test-and-deploy-crud-fe-ts-nextjs-development.yml
 
 Result: All steps passed. Work is complete.
 ```

@@ -221,7 +221,7 @@ volta install npm@11.10.1
 
 ### Phase 4: Go Ecosystem (Sequential)
 
-Required for: `rhino-cli`, `ayokoding-cli`, `oseplatform-cli`, `libs/golang-commons`
+Required for: `rhino-cli-go`, `crud-be-golang-gin`, `libs/golang-commons`
 
 #### 5.1 Install Go
 
@@ -528,7 +528,7 @@ pushes are fast.
 
 ```bash
 # Pick any backend to validate Docker + PostgreSQL integration
-nx run organiclever-be:test:integration
+nx run crud-be-fsharp-giraffe:test:integration
 ```
 
 **Success criteria**: Integration tests pass. Docker starts PostgreSQL, runs migrations, and
@@ -540,11 +540,11 @@ executes Gherkin scenarios against a real database.
 
 ```bash
 # Start a backend
-nx run organiclever-be:dev &
+nx run crud-be-fsharp-giraffe:dev &
 
 # Wait for it to be ready, then run E2E
 sleep 5
-nx run organiclever-be-e2e:test:e2e
+nx run crud-be-fsharp-giraffe-e2e:test:e2e
 
 # Stop the backend
 kill %1

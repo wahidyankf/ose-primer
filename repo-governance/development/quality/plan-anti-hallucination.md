@@ -60,10 +60,10 @@ Plans drift from reality in predictable ways. Each category maps to a verificati
 
 | Category              | Example                                                   | Verification Ritual                                                                                            |
 | --------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| **File path**         | `apps/oseplatform-web/src/server/trpc.ts`                 | `Glob` or `Bash test -f`; if NEW, mark `_New file_`                                                            |
+| **File path**         | `apps/crud-fe-ts-nextjs/src/server/trpc.ts`               | `Glob` or `Bash test -f`; if NEW, mark `_New file_`                                                            |
 | **Directory path**    | `repo-governance/conventions/writing/`                    | `Bash test -d` or `Glob` for sibling                                                                           |
 | **Symbol / function** | `unstable_cache`, `getServerSession`, `RouteConfig`       | `Grep` against the codebase or cite the import path                                                            |
-| **Nx target**         | `nx run oseplatform-web:test:quick`                       | Read `apps/oseplatform-web/project.json` or `nx show project`                                                  |
+| **Nx target**         | `nx run crud-fe-ts-nextjs:test:quick`                     | Read `apps/crud-fe-ts-nextjs/project.json` or `nx show project`                                                |
 | **Package version**   | `next@16.0.0`, `tRPC v11`                                 | Grep `package.json` (or `go.mod`, `Cargo.toml`, `*.csproj`, etc.)                                              |
 | **API signature**     | `unstable_cache(fn, keyParts, { revalidate })`            | `web-research-maker` against authoritative docs                                                                |
 | **Command flag**      | `npx nx affected -t typecheck --parallel=cores-1`         | `<cmd> --help` or repo's documented usage in `package.json` scripts                                            |
@@ -96,7 +96,7 @@ Every internal reference in a plan MUST be verified to exist in the current comm
 
 ```bash
 # File path
-test -f apps/oseplatform-web/src/server/trpc.ts && echo OK
+test -f apps/crud-fe-ts-nextjs/src/server/trpc.ts && echo OK
 
 # Directory path
 test -d repo-governance/conventions/writing/ && echo OK
@@ -105,7 +105,7 @@ test -d repo-governance/conventions/writing/ && echo OK
 rg -lE "(^|[^A-Za-z0-9_])unstable_cache([^A-Za-z0-9_]|$)" apps/ libs/
 
 # Nx target defined
-jq -r '.targets | keys[]' apps/oseplatform-web/project.json | grep -q '^test:quick$' && echo OK
+jq -r '.targets | keys[]' apps/crud-fe-ts-nextjs/project.json | grep -q '^test:quick$' && echo OK
 
 # Package version present in package.json
 jq -r '.dependencies.next // .devDependencies.next' package.json
@@ -165,15 +165,15 @@ If `package.json` was not grep'd before writing, the version is hearsay. Verify 
 
 ### AP-2: Inventing a file path that "should exist"
 
-> "Edit `apps/oseplatform-web/src/lib/cache.ts`..."
+> "Edit `apps/crud-fe-ts-nextjs/src/lib/cache.ts`..."
 
 Cache file may or may not exist at that path. `Glob` or `test -f` first. If NEW, write `_New file_` and add a creation step to the delivery checklist.
 
 ### AP-3: Citing an Nx target that may not exist
 
-> "Run `nx run oseplatform-web:integration-test`..."
+> "Run `nx run crud-be-fsharp-giraffe:integration-test`..."
 
-Nx targets vary per project. Read `project.json` or run `nx show project oseplatform-web` to enumerate real targets. The actual target is `test:integration`, not `integration-test`.
+Nx targets vary per project. Read `project.json` or run `nx show project crud-fe-ts-nextjs` to enumerate real targets. The actual target is `test:integration`, not `integration-test`.
 
 ### AP-4: Inventing a function or method name
 
@@ -224,8 +224,8 @@ Domain-specialized agents hallucinate less than generic orchestration because th
 **Annotation format** (added under the checkbox prose, before implementation notes):
 
 ```markdown
-- [ ] Edit `apps/organiclever-be/src/Domain/User.fs`: add `email: string option` field with case-insensitive
-      uniqueness constraint. Verify by running `nx run organiclever-be:test:unit` — new test
+- [ ] Edit `apps/crud-be-fsharp-giraffe/src/DemoBeFsgi/Domain/User.fs`: add `email: string option` field with case-insensitive
+      uniqueness constraint. Verify by running `nx run crud-be-fsharp-giraffe:test:unit` — new test
       `User_RejectsDuplicateEmailIgnoringCase` passes.
   - _Suggested executor: `swe-fsharp-dev`_
 ```
@@ -233,10 +233,10 @@ Domain-specialized agents hallucinate less than generic orchestration because th
 **When to annotate**:
 
 - The action touches a specific language (`.fs` → `swe-fsharp-dev`, `.go` → `swe-golang-dev`, `.kt` → `swe-kotlin-dev`, etc.).
-- The action touches a specific app context (`apps/oseplatform-web/...` → `apps-oseplatform-web-content-maker` for content edits).
+- The action touches a specific app context (`apps/crud-fe-ts-nextjs/...` → `swe-typescript-dev` for frontend code).
 - The action is a content/documentation change (`docs-maker`, `readme-maker`).
 - The action is repo-governance/repo-rules (`repo-rules-maker`).
-- The action is a content-platform skill domain (`apps-ayokoding-web-by-example-maker`, `apps-ayokoding-web-in-the-field-maker`).
+- The action is a content-platform skill domain (`docs-maker`, `docs-tutorial-maker`).
 
 **When to skip annotation** (default plan-execution Agent Selection suffices):
 
@@ -267,17 +267,17 @@ Each plan agent applies this convention at a specific point in its workflow:
 ### Good — repo-grounded file path
 
 ```markdown
-- [ ] Edit `apps/oseplatform-web/src/server/trpc.ts` [Repo-grounded] — wrap public router with
+- [ ] Edit `apps/crud-fe-ts-nextjs/src/server/trpc.ts` [Repo-grounded] — wrap public router with
       `unstable_cache(fn, keyParts, { revalidate: 300 })` per Next.js 16 docs (verified
       2026-05-03 at https://nextjs.org/docs/app/api-reference/functions/unstable_cache,
       excerpt: "unstable_cache allows caching results of expensive operations") [Web-cited].
-      Verify by running `npx nx run oseplatform-web:test:quick` — all tests pass.
+      Verify by running `npx nx run crud-fe-ts-nextjs:test:quick` — all tests pass.
 ```
 
 ### Bad — invented file path + fabricated API
 
 ```markdown
-- [ ] Edit `apps/oseplatform-web/src/lib/cache-config.ts` to enable Next.js automatic edge caching
+- [ ] Edit `apps/crud-fe-ts-nextjs/src/lib/cache-config.ts` to enable Next.js automatic edge caching
       with `enableEdgeCache(true)`. Performance improves by 40%.
 ```
 
@@ -286,7 +286,7 @@ Problems: file path was not verified (probably does not exist); `enableEdgeCache
 ### Good — refuse-on-uncertainty
 
 ```markdown
-- [ ] Add Sharia-compliant interest-free billing model to `apps/organiclever-web/src/components/Pricing.tsx`.
+- [ ] Add Sharia-compliant interest-free billing model to `apps/crud-fe-ts-nextjs/src/components/Pricing.tsx`.
       _Unknown — verify Vercel + Stripe Sharia-compliance posture before authoring_ — see follow-up
       research item under Open Questions.
 ```

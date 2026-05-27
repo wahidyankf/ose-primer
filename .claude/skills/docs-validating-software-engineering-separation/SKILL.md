@@ -1,154 +1,116 @@
 ---
 name: docs-validating-software-engineering-separation
-description: Validates software engineering documentation separation between OSE Platform style guides (docs/explanation/) and AyoKoding educational content (apps/ayokoding-web/). Ensures no duplication, proper prerequisite statements, and style guide focus on repository-specific conventions only.
+description: Validates software engineering documentation separation — ensures docs/explanation/ style guides focus on repository-specific conventions only (not generic language tutorials), and that every programming language README has proper prerequisite statements linking to external learning resources.
 created: 2026-02-07
 ---
 
 # Validating Software Engineering Documentation Separation
 
-This Skill provides comprehensive guidance for validating the separation between repository-specific style guides (docs/explanation/software-engineering/) and educational content (apps/ayokoding-web/), as defined in the [Programming Language Documentation Separation Convention](../../../repo-governance/conventions/structure/programming-language-docs-separation.md).
+This Skill provides comprehensive guidance for validating the separation between repository-specific style guides (`docs/explanation/software-engineering/`) and generic educational content (which belongs in external resources, not this repository), as defined in the [Programming Language Documentation Separation Convention](../../../repo-governance/conventions/structure/programming-language-docs-separation.md).
 
 ## Purpose
 
 Use this Skill when:
 
 - Implementing style guide separation validation in checker agents
-- Validating docs/explanation content doesn't duplicate AyoKoding educational content
-- Ensuring prerequisite knowledge statements exist and are correct
+- Validating `docs/explanation/` content doesn't duplicate generic language tutorials
+- Ensuring prerequisite knowledge statements exist and link to external resources
 - Checking style guides focus on repository-specific conventions only
 - Understanding content separation patterns
 
 ## Validation Scope
 
-**CRITICAL**: Only validate relationships **explicitly listed** in the Software Design Reference prerequisite table.
+**Default scope**: All language directories under `docs/explanation/software-engineering/programming-languages/`.
 
-**Authoritative Source**: [Software Design Reference - Specific Prerequisites](../../../docs/explanation/software-engineering/software-design-reference.md#specific-prerequisites)
-
-**Current explicit relationships to validate**:
-
-1. docs/explanation/programming-languages/java/ ↔ ayokoding-web/.../java/
-2. docs/explanation/programming-languages/golang/ ↔ ayokoding-web/.../golang/
-3. docs/explanation/programming-languages/elixir/ ↔ ayokoding-web/.../elixir/
-4. docs/explanation/platform-web/tools/jvm-spring/ ↔ ayokoding-web/.../jvm-spring/
-5. docs/explanation/platform-web/tools/jvm-spring-boot/ ↔ ayokoding-web/.../jvm-spring-boot/
-
-**DO NOT validate** languages/frameworks not in this table (TypeScript, Python, etc.) until they are explicitly added to the Software Design Reference.
+**When user specifies scope** (e.g., "check Go docs"): Validate only that language directory.
 
 ## Core Validation Principle
 
-**CRITICAL**: docs/explanation/ content MUST NOT duplicate AyoKoding educational content.
+**CRITICAL**: `docs/explanation/` content MUST NOT contain generic language tutorials or duplicate official language documentation.
 
 **Separation Pattern**:
 
-- **AyoKoding** = Educational (language syntax, by-example tutorials, generic patterns)
-- **docs/explanation/** = Style guides (OSE Platform naming, framework choices, repository patterns)
+- **External resources** (official docs, standard guides) = Language education (syntax, fundamentals, generic patterns)
+- **`docs/explanation/`** = Style guides (platform naming conventions, framework choices, repository-specific patterns)
 
 See [Programming Language Documentation Separation Convention](../../../repo-governance/conventions/structure/programming-language-docs-separation.md) for complete rules.
 
 ## What to Validate
 
-### 1. Prerequisite Mapping Table Validation
+### 1. Language Directory Discovery
 
-**Validate Software Design Reference table**:
-
-1. Read [Software Design Reference](../../../docs/explanation/software-engineering/software-design-reference.md)
-2. Extract "Specific Prerequisites" table
-3. For EACH row in table:
-   - Verify docs/explanation path exists
-   - Verify AyoKoding path exists
-   - Both paths must be valid directories
-
-**Only validate entries explicitly in this table** - do not check other languages/frameworks.
+1. Glob `docs/explanation/software-engineering/programming-languages/*/`
+2. For each directory, collect README.md and all `.md` files
+3. Validate each language directory independently
 
 ### 2. Prerequisite Knowledge Statements
 
-**For each docs/explanation path in the table**:
+**For each language README**:
 
-- Check README.md has "Prerequisite Knowledge" section
-- Section references correct AyoKoding path from table
-- Section explains "style guides, not tutorials" distinction
-- Cross-reference links work
+- Check README.md has "Prerequisite Knowledge" or "Before You Begin" section
+- Section links to official/external language learning resources (absolute URLs)
+- Section states this is NOT a language tutorial
+- Cross-reference links resolve correctly
 
 ### 3. No Content Duplication
 
-**For each docs/explanation path in the table**:
+**For each `.md` file in docs/explanation/**:
 
-- Read all .md files in directory
-- Check for language syntax tutorials (VIOLATION)
-- Check for by-example annotated code (VIOLATION)
-- Check for generic patterns without OSE Platform context (VIOLATION)
+- Check for generic language syntax tutorials (VIOLATION)
+- Check for basic examples explaining how the language works without platform context (VIOLATION)
+- Check for content duplicating official language documentation (VIOLATION)
 - Verify content focuses on repository-specific conventions
 
 **FAIL patterns**:
 
-- Teaching language syntax
-- By-example learning content
-- Generic error handling (not OSE Platform-specific)
+- Teaching language syntax (variables, loops, functions)
+- By-example learning content without platform-specific context
+- Generic error handling patterns (not platform-specific)
+- Content paraphrasing or copying from official docs
 
 **PASS patterns**:
 
-- OSE Platform naming conventions
-- Framework choice rationale ("We use X because...")
+- Platform-specific naming conventions
+- Framework choice rationale ("We use Gin because...")
 - Repository-specific architecture patterns
+- Platform-specific anti-patterns
 
-### 4. AyoKoding Learning Path Completeness
+### 4. Cross-Reference Link Validation
 
-**For each AyoKoding path in the table**:
+**For each language README**:
 
-- Check required files exist:
-  - \_index.md
-  - initial-setup.md
-  - quick-start.md
-- Check required directories exist:
-  - by-example/
-  - in-the-field/
-- Optional content:
-  - overview.md
-  - release-highlights/
-
-### 5. Cross-Reference Link Validation
-
-**For each relationship in the table**:
-
-- docs/explanation README links to AyoKoding (REQUIRED)
-- Links use correct paths from table
-- Links resolve to existing files
-- Link text is descriptive
+- External prerequisite links resolve correctly (use WebFetch to verify)
+- Link text is descriptive and accurate
+- Absolute URLs used for external resources
 
 ## Validation Workflow
 
-### Step 1: Extract Validation Scope from Software Design Reference
+### Step 1: Discover Language Directories
 
 ```bash
-# Read Software Design Reference
-# Extract "Specific Prerequisites" table
-# Parse table rows to get:
-#   - docs/explanation paths
-#   - ayokoding-web paths
-# Store as validation scope (ONLY validate these)
+# Glob all language directories
+docs/explanation/software-engineering/programming-languages/*/
 ```
 
-### Step 2: Validate Each Explicit Relationship
+### Step 2: Validate Each Language Directory
 
-For each row in the prerequisite table:
+For each language directory:
 
-1. Verify paths exist
-2. Check prerequisite statement in docs/explanation README
-3. Detect content duplication
-4. Validate AyoKoding completeness
-5. Check cross-reference links
+1. Check README.md exists
+2. Verify prerequisite statement exists and has external links
+3. Read all .md files and check for tutorial content
+4. Check external links resolve
 
 ### Step 3: Report Findings
 
-- Report on ONLY the explicit relationships in table
-- Do NOT report on other languages/frameworks
 - Group findings by criticality
+- Write findings progressively (don't buffer)
 
 ## Common Separation Violations
 
-### Violation 1: Duplicating Educational Content
+### Violation 1: Duplicating Generic Language Content
 
-**FAIL** (docs/explanation/.../golang/):
+**FAIL** (`docs/explanation/.../golang/`):
 
 ```markdown
 ## Variables in Go
@@ -158,20 +120,20 @@ var x int = 10
 y := 20
 ```
 
-**Why**: Teaching Go syntax (belongs in AyoKoding)
+**Why**: Teaching Go syntax (belongs in official Go docs/external resources)
 
-**PASS** (docs/explanation/.../golang/):
+**PASS** (`docs/explanation/.../golang/`):
 
 ```markdown
-**Prerequisite**: Complete [AyoKoding Golang](...)
+**Prerequisite**: Know Go basics — see [A Tour of Go](https://go.dev/tour/).
 
-## Variable Naming in OSE Platform
+## Variable Naming in This Platform
 
-- Domain entities: ZakatPayment, WaqfDonation
-- Repository variables: zakatRepo, waqfRepo
+- Domain entities: `CrudPayment`, `RhinoCommand`
+- Repository variables: `crudRepo`, `rhinoRepo`
 ```
 
-**Why**: OSE Platform naming conventions (not syntax tutorial)
+**Why**: Platform-specific naming conventions (not syntax tutorial)
 
 ### Violation 2: Missing Prerequisite Statement
 
@@ -185,7 +147,7 @@ Java is used for...
 ## Best Practices
 ```
 
-**Why**: No prerequisite statement
+**Why**: No prerequisite statement linking to external resources
 
 **PASS**:
 
@@ -194,34 +156,36 @@ Java is used for...
 
 ## Prerequisite Knowledge
 
-**REQUIRED**: Complete [AyoKoding Java learning path](...)
+**This documentation assumes you already know Java.** If you are new:
 
-These are OSE Platform-specific style guides, not educational tutorials.
+- [Java documentation](https://docs.oracle.com/en/java/)
+- [Java tutorials](https://docs.oracle.com/javase/tutorial/)
+
+These are platform-specific style guides, not Java tutorials.
 ```
 
 ## Criticality Levels
 
 **CRITICAL**:
 
-- Prerequisite mapping missing from Software Design Reference table
-- Prerequisite statement missing in docs/explanation README
-- Content duplication detected (educational content in style guides)
+- Prerequisite statement completely missing in docs/explanation README
+- Clear generic language tutorial content in docs/explanation/
 
 **HIGH**:
 
-- Wrong AyoKoding path in prerequisite statement
-- Style guide content lacks OSE Platform context
-- Required AyoKoding content missing
+- Prerequisite statement exists but has no external links
+- Content duplicates official docs without platform-specific context
+- Broken external link in prerequisite statement
 
 **MEDIUM**:
 
 - Prerequisite statement poorly formatted
-- Cross-reference links suboptimal
+- External link text not descriptive
 
 **LOW**:
 
-- Enhanced prerequisite explanations
-- Additional cross-references
+- Enhanced prerequisite explanations possible
+- Additional external cross-references could be added
 
 ## Related Conventions
 
@@ -229,7 +193,6 @@ These are OSE Platform-specific style guides, not educational tutorials.
 
 **Supporting**:
 
-- [Software Design Reference](../../../docs/explanation/software-engineering/software-design-reference.md)
 - [Diátaxis Framework](../../../repo-governance/conventions/structure/diataxis-framework.md)
 - [Content Quality Standards](../../../repo-governance/conventions/writing/quality.md)
 
@@ -238,11 +201,9 @@ These are OSE Platform-specific style guides, not educational tutorials.
 - repo-assessing-criticality-confidence
 - repo-applying-maker-checker-fixer
 - repo-generating-validation-reports
-- apps-ayokoding-web-developing-content
 
 ## Related Agents
 
-- docs-software-engineering-separation-checker - Validates explicit relationships
-- docs-software-engineering-separation-fixer - Fixes violations
-- docs-maker - Creates style guide content
-- apps-ayokoding-web-general-maker - Creates educational content
+- docs-software-engineering-separation-checker — Validates separation using this skill
+- docs-software-engineering-separation-fixer — Fixes violations
+- docs-maker — Creates style guide content

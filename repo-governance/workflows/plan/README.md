@@ -51,7 +51,7 @@ This format applies to both the First Grill (before writing) and the Second Gril
 **❌ Not Included:**
 
 - Content quality validation (that's docs/)
-- ayokoding-web content validation (that's ayokoding-web/)
+- App-specific content validation (use per-app agents directly)
 - Single-agent operations (use agents directly)
 
 ## Workflows

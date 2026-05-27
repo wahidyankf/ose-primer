@@ -39,7 +39,7 @@ Technology stack summary, quality tools, and future architecture considerations 
 - **Language**: Go 1.26
 - **Build**: Native Go toolchain via Nx
 - **Distribution**: Local binaries
-- **Applications**: rhino-cli, rhino-cli, rhino-cli
+- **Applications**: rhino-cli-go, rhino-cli-rust
 
 ### Infrastructure
 
@@ -54,7 +54,7 @@ Technology stack summary, quality tools, and future architecture considerations 
 
 - **Formatting**: Prettier 3.6.2
 - **Markdown Linting**: markdownlint-cli2 0.21.0
-- **Link Validation**: rhino-cli docs validate-links (Go)
+- **Link Validation**: rhino-cli-go docs validate-links (Go)
 - **Commit Linting**: Commitlint + Conventional Commits
 - **Git Hooks**: Husky + lint-staged
 - **Testing**: Nx test orchestration

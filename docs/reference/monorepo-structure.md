@@ -81,14 +81,39 @@ Flat structure - all apps at the same level, no subdirectories.
 
 **Current Apps**:
 
-- `crud-fs-ts-nextjs` - demo educational platform (Next.js 16 fullstack content platform)
-- `rhino-cli` - demo CLI tool (Go application)
-- `rhino-cli` - Repository management CLI, includes `java validate-annotations` (Go application)
-- `rhino-cli` - demo site maintenance CLI (Go application)
-- `crud-fe-ts-nextjs` - demo landing website (Next.js application)
-- `crud-be-fsharp-giraffe` - demo REST API backend (F#/Giraffe application)
-- `crud-fe-e2e` - Playwright FE E2E tests for crud-fe-ts-nextjs
-- `crud-be-e2e` - Playwright BE E2E tests for crud-be-fsharp-giraffe
+Backend services (all implement the same OpenAPI contract):
+
+- `crud-be-clojure-pedestal` - CRUD REST API (Clojure + Pedestal)
+- `crud-be-csharp-aspnetcore` - CRUD REST API (C# + ASP.NET Core)
+- `crud-be-elixir-phoenix` - CRUD REST API (Elixir + Phoenix)
+- `crud-be-fsharp-giraffe` - CRUD REST API (F# + Giraffe)
+- `crud-be-golang-gin` - CRUD REST API (Go + Gin)
+- `crud-be-java-springboot` - CRUD REST API (Java + Spring Boot)
+- `crud-be-java-vertx` - CRUD REST API (Java + Vert.x)
+- `crud-be-kotlin-ktor` - CRUD REST API (Kotlin + Ktor)
+- `crud-be-python-fastapi` - CRUD REST API (Python + FastAPI)
+- `crud-be-rust-axum` - CRUD REST API (Rust + Axum)
+- `crud-be-ts-effect` - CRUD REST API (TypeScript + Effect)
+
+Frontend applications:
+
+- `crud-fe-dart-flutterweb` - CRUD frontend (Dart + Flutter Web)
+- `crud-fe-ts-nextjs` - CRUD frontend (TypeScript + Next.js)
+- `crud-fe-ts-tanstack-start` - CRUD frontend (TypeScript + TanStack Start)
+
+Fullstack:
+
+- `crud-fs-ts-nextjs` - CRUD fullstack (TypeScript + Next.js)
+
+E2E test suites:
+
+- `crud-be-e2e` - Playwright E2E tests for backend APIs
+- `crud-fe-e2e` - Playwright E2E tests for frontend apps
+
+CLI tools:
+
+- `rhino-cli-go` - Repository management automation (Go)
+- `rhino-cli-rust` - Repository management automation (Rust)
 
 ### App Structure (Go CLI Application)
 

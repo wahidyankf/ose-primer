@@ -215,8 +215,8 @@ timeline
 
 **CLI Tools**:
 
-- rhino-cli for content automation (link validation, content checks)
-- rhino-cli for repository management and hygiene
+- rhino-cli-go for content automation (link validation, content checks)
+- rhino-cli-go for repository management and hygiene
 - Build tools and code generators
 - Database migration scripts
 
@@ -666,8 +666,8 @@ export class CampaignController {
 ```
 apps/
 ├── crud-fs-ts-nextjs/         # Next.js fullstack app
-├── rhino-cli/            # Go CLI tool
-└── rhino-cli/               # Go CLI tool
+├── rhino-cli-go/            # Go CLI tool
+└── rhino-cli-rust/               # Go CLI tool
 
 libs/
 ├── ts-logger/               # Shared logging library

@@ -50,7 +50,7 @@ dotnet restore --locked-mode
 dotnet build /p:TreatWarningsAsErrors=true
 dotnet format --verify-no-changes
 dotnet test --collect:"XPlat Code Coverage"
-rhino-cli test-coverage validate ./coverage/*/coverage.cobertura.xml 95
+rhino-cli-go test-coverage validate ./coverage/*/coverage.cobertura.xml 95
 ```
 
 ### 2. Explicit Over Implicit
@@ -264,7 +264,7 @@ public sealed class ZakatService
 
 ## Code Coverage Enforcement
 
-**MUST** achieve >=95% line coverage using Coverlet with enforcement via `rhino-cli test-coverage validate`.
+**MUST** achieve >=95% line coverage using Coverlet with enforcement via `rhino-cli-go test-coverage validate`.
 
 ```xml
 <!-- Directory.Build.props - add for test projects -->
@@ -282,7 +282,7 @@ dotnet test --collect:"XPlat Code Coverage" \
     --configuration Release
 
 # Enforce threshold
-rhino-cli test-coverage validate ./coverage/*/coverage.cobertura.xml 95
+rhino-cli-go test-coverage validate ./coverage/*/coverage.cobertura.xml 95
 ```
 
 ## SonarAnalyzer Rules
@@ -301,7 +301,7 @@ SonarAnalyzer.CSharp provides additional rules beyond the built-in Roslyn analyz
 - **dotnet format** - Auto-formats code (pre-commit hook)
 - **Roslyn analyzers** - Compile-time static analysis
 - **TreatWarningsAsErrors** - CI build fails on any analyzer warning
-- **Coverlet + rhino-cli** - Coverage threshold enforcement
+- **Coverlet + rhino-cli-go** - Coverage threshold enforcement
 
 **Pre-commit checklist**:
 
