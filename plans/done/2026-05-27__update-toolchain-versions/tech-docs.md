@@ -12,8 +12,7 @@ flowchart TD
     B --> E{Quality gates}
     D --> E
     E -->|all pass| F[Push to main]
-    E -->|failure| G[Fix regression]
-    G --> E
+    E -->|failure| G[Fix regression and retry]
 ```
 
 ## Doctor Path Bug
