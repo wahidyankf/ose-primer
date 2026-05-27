@@ -6,4 +6,6 @@ When an idea is ready for implementation, create a proper plan folder in `backlo
 
 ## Ideas List
 
-_No ideas yet. Capture 1-3 liner ideas here and promote mature ones to `backlog/` plans._
+- **Upgrade Rust MSRV to 1.94.1** (fixes CVE-2026-33056 in Cargo tar handling): deferred from
+  `update-toolchain-versions` plan because local rustc was 1.94.0. Upgrade when Rust 1.94.1+ is
+  available in the developer toolchain (`rustup update stable`).

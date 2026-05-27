@@ -134,7 +134,7 @@ dates can be independently confirmed via the sources listed in `tech-docs.md`.]
 | `apps/crud-be-python-fastapi/.python-version` | Python             | `3.13`     | `3.13.12`   | 2026-02-03   | 3.14.3 carries CVE-2026-4519 (unfixed at cutoff); stay on 3.13.x                          |
 | `apps/crud-be-fsharp-giraffe/global.json`     | .NET SDK           | `10.0.103` | `10.0.201`  | 2026-03-12   | Fixes three CVEs; 10.0.200 had macOS debugger regression; 10.0.201 is the correct release |
 | `apps/rhino-cli-go/go.mod`                    | Go (min directive) | `go 1.26`  | `go 1.26.1` | 2026-03-05   | Go 1.26.0 has five unpatched CVEs; 1.26.1 is required                                     |
-| `apps/crud-be-rust-axum/Cargo.toml`           | Rust MSRV          | `1.80`     | `1.94.1`    | 2026-03-26   | MSRV update; 1.94.1 fixes CVE-2026-33056 in Cargo's tar handling                          |
+| `apps/crud-be-rust-axum/Cargo.toml`           | Rust MSRV          | `1.80`     | `1.94.0`    | 2026-03-05   | Local rustc 1.94.0 < 1.94.1; using 1.94.0 (CVE-2026-33056 fix deferred to ideas.md)       |
 | `apps/crud-fe-dart-flutterweb/pubspec.yaml`   | Dart SDK           | `^3.11.1`  | `^3.11.0`   | 2026-02-11   | 3.11.1 was never released; constraint is unsatisfiable as written                         |
 | `apps/crud-fe-dart-flutterweb/pubspec.yaml`   | Flutter            | `>=3.41.0` | `>=3.41.4`  | 2026-03-04   | Tightens floor to confirmed pre-cutoff hotfix patch                                       |
 

@@ -140,21 +140,23 @@ requires at least Go 1.26.1. The doctor's `compareGTE` check enforces this requi
 rust-version = "1.80"
 
 # After
-rust-version = "1.94.1"
+rust-version = "1.94.0"
 ```
 
-**Security context**: Rust 1.94.1 (2026-03-26) patched CVE-2026-33056 — a vulnerability in
-the `tar` crate used by Cargo that allowed a malicious crate to modify filesystem permissions
-during `cargo build`. Rust 1.94.0 (2026-03-05) was the minor that introduced language features
-now available to use in this codebase; 1.94.1 is the patched version.
+**Security context**: Rust 1.94.0 (2026-03-05) is the latest stable minor release within the
+cutoff. Rust 1.94.1 (2026-03-26) patches CVE-2026-33056 in Cargo's tar handling; however, the
+locally installed rustc is 1.94.0 and setting MSRV to 1.94.1 causes `cargo check` to fail since
+`rustc 1.94.0 < 1.94.1`. MSRV is constrained to 1.94.0. [Judgment call — CVE-2026-33056
+upgrade to 1.94.1 deferred to `plans/ideas.md` pending Rust 1.94.1 availability in the
+developer toolchain.]
 
 **MSRV semantics**: `rust-version` sets the Minimum Supported Rust Version. It does not pin
 the installed rustc to exactly that version. The doctor uses `compareGTE` — any installed
-Rust >= 1.94.1 passes. Raising the MSRV from 1.80 to 1.94.1 allows use of all Rust language
+Rust >= 1.94.0 passes. Raising the MSRV from 1.80 to 1.94.0 allows use of all Rust language
 features added between those two releases.
 
 **Release date verification**:
-`https://blog.rust-lang.org/releases/` — entries for 1.94.0 (2026-03-05) and 1.94.1 (2026-03-26).
+`https://blog.rust-lang.org/releases/` — entry for 1.94.0 (2026-03-05).
 
 ### Dart SDK and Flutter — `pubspec.yaml`
 
@@ -233,7 +235,8 @@ Each config file change is independent. If a toolchain version update causes a r
 | `apps/crud-be-python-fastapi/.python-version`      | `3.13` → `3.13.12`                                                        |
 | `apps/crud-be-fsharp-giraffe/global.json`          | `10.0.103` → `10.0.201`                                                   |
 | `apps/rhino-cli-go/go.mod`                         | `go 1.26` → `go 1.26.1`                                                   |
-| `apps/crud-be-rust-axum/Cargo.toml`                | `rust-version = "1.80"` → `rust-version = "1.94.1"`                       |
+| `apps/crud-be-rust-axum/Cargo.toml`                | `rust-version = "1.80"` → `rust-version = "1.94.0"` (1.94.1 deferred)     |
+| `go.work`                                          | `go 1.26` → `go 1.26.1` (workspace minimum must match module minimum)     |
 | `apps/crud-fe-dart-flutterweb/pubspec.yaml`        | `sdk: ^3.11.1` → `^3.11.0`; flutter `>=3.41.0` → `>=3.41.4`               |
 | `apps/rhino-cli-go/internal/doctor/tools.go`       | Path fix: `apps/rhino-cli` → `apps/rhino-cli-go` (line 34 + source label) |
 | `apps/rhino-cli-rust/src/internal/doctor/tools.rs` | Path fix: `apps/rhino-cli` → `apps/rhino-cli-go` (line 69 + source label) |
