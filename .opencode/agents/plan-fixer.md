@@ -10,6 +10,7 @@ tools:
   webfetch: true
   websearch: true
   write: true
+color: warning
 skills:
   - docs-applying-content-quality
   - docs-creating-accessible-diagrams

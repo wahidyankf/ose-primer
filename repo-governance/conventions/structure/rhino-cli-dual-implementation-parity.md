@@ -76,6 +76,16 @@ Any stdout, stderr, or exit-code divergence fails the script with a non-zero exi
 
 The shadow-diff harness runs as the permanent `parity` job in `.github/workflows/pr-quality-gate.yml`. It is not optional, not skippable, and not conditional on file paths changed. Every pull request that touches any file in `apps/rhino-cli-rust/`, `apps/rhino-cli-go/`, or `specs/apps/rhino/` must pass the `parity` job before merge.
 
+## Parity-Locked Maps
+
+The following translation maps must stay byte-identical across both implementations. A change to either map without a matching change in the other fails the `parity` CI job and must not be merged.
+
+| Map                                                                      | Rust location                                          | Go location                                      | Canonical reference                                                                      |
+| ------------------------------------------------------------------------ | ------------------------------------------------------ | ------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| Color translation (`claude_to_opencode_color` / `claudeToOpenCodeColor`) | `apps/rhino-cli-rust/src/internal/agents/converter.rs` | `apps/rhino-cli-go/internal/agents/converter.go` | [Color Translation Table](../../development/agents/ai-agents.md#color-translation-table) |
+
+**Color map summary** (blue→primary, green→success, yellow→warning, purple→secondary, red→error, orange→warning, pink→accent, cyan→info): unknown keys and hex/token pass-throughs are handled identically. Any new entry must be added to both implementations and to the Color Translation Table in the same commit.
+
 ## Contributor Rules
 
 **Rule 1 — Both implementations must land together.**

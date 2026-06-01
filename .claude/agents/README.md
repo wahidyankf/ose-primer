@@ -49,9 +49,9 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **docs-software-engineering-separation-fixer** - Auto-moves misplaced language docs to the canonical destination flagged by the separation checker
 - **repo-harness-compatibility-fixer** - Applies validated fixes from a harness-compatibility audit; auto-remediates Phase 0 binding-sync drift (Invariant 3) via `npm run generate:bindings`, applies Phase 1 catalog/binding updates, flags higher-judgement gaps (vendor-audit prose, color/tier maps, orphan agents, generator-logic changes) for human resolution, and re-validates each finding before applying
 
-### 🔍 Research (Green)
+### 🟩 Research (validation-adjacent)
 
-- **web-research-maker** - Read-only web research specialist; returns cited, structured findings with confidence tags in an isolated context (no file writes, no shell). Invoke for current API/library docs, fact verification, best-practice surveys.
+- **web-research-maker** - Read-only web research specialist; returns cited, structured findings with confidence tags in an isolated context (no file writes, no shell). Invoke for current API/library docs, fact verification, best-practice surveys. Uses `color: green` despite the `-maker` suffix because web research is validation-adjacent (fact-checking, citation validation) and read-only by design. See [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md#color-to-role-mapping) for this documented exception.
 
 ### 💻 Development
 

@@ -8,6 +8,7 @@ tools:
   grep: true
   read: true
   write: true
+color: secondary
 skills:
   - swe-programming-clojure
   - swe-developing-applications-common

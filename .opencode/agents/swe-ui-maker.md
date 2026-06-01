@@ -8,6 +8,7 @@ tools:
   grep: true
   read: true
   write: true
+color: primary
 skills:
   - swe-developing-frontend-ui
   - docs-applying-content-quality

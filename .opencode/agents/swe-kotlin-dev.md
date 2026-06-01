@@ -8,6 +8,7 @@ tools:
   grep: true
   read: true
   write: true
+color: secondary
 skills:
   - swe-programming-kotlin
   - swe-developing-applications-common

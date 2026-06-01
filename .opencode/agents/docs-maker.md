@@ -7,6 +7,7 @@ tools:
   grep: true
   read: true
   write: true
+color: primary
 skills:
   - docs-creating-accessible-diagrams
   - docs-applying-content-quality

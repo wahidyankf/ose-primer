@@ -8,6 +8,7 @@ tools:
   grep: true
   read: true
   write: true
+color: warning
 skills:
   - docs-applying-content-quality
   - repo-defining-workflows

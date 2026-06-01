@@ -7,6 +7,7 @@ tools:
   grep: true
   read: true
   write: true
+color: primary
 skills:
   - docs-applying-content-quality
   - plan-writing-gherkin-criteria

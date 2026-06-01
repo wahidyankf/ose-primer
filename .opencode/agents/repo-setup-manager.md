@@ -6,6 +6,7 @@ tools:
   glob: true
   grep: true
   read: true
+color: success
 ---
 
 # repo-setup-manager

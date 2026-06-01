@@ -126,13 +126,13 @@ Use these colors for all color-dependent visualizations:
 
 ### Usage Recommendations by Context
 
-| Context                | Primary           | Secondary        | Tertiary | Quaternary               | Neutral         |
-| ---------------------- | ----------------- | ---------------- | -------- | ------------------------ | --------------- |
-| **Mermaid Diagrams**   | Blue              | Orange           | Teal     | Purple                   | Gray            |
-| **AI Agents**          | Blue (🟦 writers) | —                | —        | Purple (🟪 implementors) | —               |
-| **Status Indicators**  | Teal (success)    | Orange (warning) | —        | —                        | Gray (disabled) |
-| **Data Visualization** | Blue              | Orange           | Teal     | Purple                   | Brown           |
-| **UI Components**      | Blue              | Orange           | Teal     | Purple                   | Gray            |
+| Context                | Primary          | Secondary           | Tertiary           | Quaternary               | Neutral         |
+| ---------------------- | ---------------- | ------------------- | ------------------ | ------------------------ | --------------- |
+| **Mermaid Diagrams**   | Blue             | Orange              | Teal               | Purple                   | Gray            |
+| **AI Agents**          | Blue (🟦 makers) | Green (🟩 checkers) | Yellow (🟨 fixers) | Purple (🟪 implementors) | —               |
+| **Status Indicators**  | Teal (success)   | Orange (warning)    | —                  | —                        | Gray (disabled) |
+| **Data Visualization** | Blue             | Orange              | Teal               | Purple                   | Brown           |
+| **UI Components**      | Blue             | Orange              | Teal               | Purple                   | Gray            |
 
 ### Hex Code Reference
 
@@ -305,14 +305,16 @@ graph TD
 
 **Context**: Agents are visually categorized by role using colored square emojis in `.claude/agents/README.md` (the canonical catalog). The `.opencode/agents/` directory does not have a separate README.
 
+**Canonical reference**: The full color-to-role mapping, assignment decision tree, edge cases, and accessibility rationale are defined in the [AI Agents Convention](../../development/agents/ai-agents.md#agent-color-categorization). This section documents the palette-level accessibility properties that underpin that convention. Platform color translation (how `blue` becomes `primary` in the secondary binding) is in the [Color Translation Table](../../development/agents/ai-agents.md#color-translation-table) under the Platform Binding Examples heading of that same document.
+
 #### Agent Color Assignment
 
-| Emoji | Color  | Hex Code | Role                                                                | Examples                                                                                 |
-| ----- | ------ | -------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| 🟦    | Blue   | #0173B2  | **Writers/Creators** - Agents that create or write new content      | docs-maker, docs-tutorial-maker, agent-maker, plan-maker                                 |
-| 🟩    | Green  | #029E73  | **Checkers/Validators** - Agents that validate or check consistency | docs-checker, docs-link-checker, docs-tutorial-checker, plan-checker, repo-rules-checker |
-| 🟨    | Yellow | #F1C40F  | **Fixers** - Agents that apply validated fixes to existing content  | docs-file-manager, repo-rules-fixer                                                      |
-| 🟪    | Purple | #CC78BC  | **Implementors/Executors** - Agents that execute or implement plans | plan-execution-checker, deployers                                                        |
+| Emoji | Color  | Hex Code | Role                                                               | Examples                                                                                 |
+| ----- | ------ | -------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| 🟦    | Blue   | #0173B2  | **Makers** - Agents that create or write new content               | docs-maker, docs-tutorial-maker, agent-maker, plan-maker                                 |
+| 🟩    | Green  | #029E73  | **Checkers** - Agents that validate or check consistency           | docs-checker, docs-link-checker, docs-tutorial-checker, plan-checker, repo-rules-checker |
+| 🟨    | Yellow | #F1C40F  | **Fixers** - Agents that apply validated fixes to existing content | docs-file-manager, repo-rules-fixer                                                      |
+| 🟪    | Purple | #CC78BC  | **Implementors** - Agents that execute or implement plans          | swe-\*-dev agents, deployers                                                             |
 
 #### Implementation in `.claude/agents/README.md`
 

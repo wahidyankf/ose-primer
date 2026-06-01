@@ -113,6 +113,36 @@ func ConvertTools(claudeTools []string) map[string]bool {
 	return tools
 }
 
+// claudeToOpenCodeColor maps Claude named colors to OpenCode theme tokens.
+// Single source of truth for the color translation; mirrored in the Rust
+// converter and documented in
+// repo-governance/development/agents/ai-agents.md.
+var claudeToOpenCodeColor = map[string]string{
+	"blue":   "primary",
+	"green":  "success",
+	"yellow": "warning",
+	"purple": "secondary",
+	"red":    "error",
+	"orange": "warning",
+	"pink":   "accent",
+	"cyan":   "info",
+}
+
+// ConvertColor translates a Claude named color (e.g. "blue") to its OpenCode
+// theme token (e.g. "primary"). An empty string stays empty; a value that is
+// already an OpenCode token or an unknown/hex value passes through unchanged
+// (escape hatch).
+func ConvertColor(c string) string {
+	color := strings.TrimSpace(c)
+	if color == "" {
+		return ""
+	}
+	if mapped, ok := claudeToOpenCodeColor[color]; ok {
+		return mapped
+	}
+	return color
+}
+
 // ConvertModel converts Claude model to OpenCode model. Returns
 // opencode-go/* IDs per the adopt-opencode-go plan: minimax-m2.7 is the
 // most capable tier (opus/sonnet/omitted/unknown), glm-5 is the small/
@@ -170,6 +200,11 @@ func ConvertAgent(inputPath, outputPath string, dryRun bool) error {
 		model = m
 	}
 
+	color := ""
+	if c, ok := claudeData["color"].(string); ok {
+		color = c
+	}
+
 	var skills []string
 	if skillsRaw, ok := claudeData["skills"].([]interface{}); ok {
 		for _, skill := range skillsRaw {
@@ -184,6 +219,7 @@ func ConvertAgent(inputPath, outputPath string, dryRun bool) error {
 		Description: description,
 		Model:       ConvertModel(model),
 		Tools:       ConvertTools(tools),
+		Color:       ConvertColor(color),
 		Skills:      skills,
 	}
 

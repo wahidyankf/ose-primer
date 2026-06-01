@@ -20,8 +20,9 @@ type ClaudeAgent struct {
 // OpenCodeAgent represents OpenCode format agent configuration.
 type OpenCodeAgent struct {
 	Description string          `yaml:"description"`
-	Model       string          `yaml:"model"` // "opencode-go/minimax-m2.7" | "opencode-go/glm-5".
-	Tools       map[string]bool `yaml:"tools"` // read: true, write: true, etc.
+	Model       string          `yaml:"model"`           // "opencode-go/minimax-m2.7" | "opencode-go/glm-5".
+	Tools       map[string]bool `yaml:"tools"`           // read: true, write: true, etc.
+	Color       string          `yaml:"color,omitempty"` // OpenCode theme token (primary/success/warning/secondary/...).
 	Skills      []string        `yaml:"skills,omitempty"`
 }
 

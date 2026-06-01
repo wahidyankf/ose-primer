@@ -4,6 +4,7 @@ model: opencode-go/minimax-m2.7
 tools:
   grep: true
   read: true
+color: primary
 skills:
   - docs-applying-content-quality
 ---

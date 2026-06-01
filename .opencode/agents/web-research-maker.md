@@ -7,6 +7,7 @@ tools:
   read: true
   webfetch: true
   websearch: true
+color: success
 skills:
   - docs-validating-factual-accuracy
   - docs-applying-content-quality

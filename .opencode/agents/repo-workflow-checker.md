@@ -7,6 +7,7 @@ tools:
   grep: true
   read: true
   write: true
+color: success
 skills:
   - docs-applying-content-quality
   - repo-defining-workflows

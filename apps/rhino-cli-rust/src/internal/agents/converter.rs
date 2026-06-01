@@ -10,9 +10,10 @@
 //! those rules. Map keys (the tool flags) are emitted in sorted order, matching
 //! yaml.v3's deterministic map-key sorting.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap};
 use std::fmt::Write as _;
 use std::path::Path;
+use std::sync::OnceLock;
 
 use anyhow::{Error, anyhow};
 
@@ -48,6 +49,41 @@ pub fn convert_model(claude_model: &str) -> String {
     }
 }
 
+/// Return the lazily-initialized Claude-to-OpenCode color token translation
+/// map. Single source of truth for the color translation; mirrored in the Go
+/// converter's `claudeToOpenCodeColor` and documented in
+/// `repo-governance/development/agents/ai-agents.md`.
+fn claude_to_opencode_color() -> &'static HashMap<&'static str, &'static str> {
+    static M: OnceLock<HashMap<&'static str, &'static str>> = OnceLock::new();
+    M.get_or_init(|| {
+        let mut m = HashMap::new();
+        m.insert("blue", "primary");
+        m.insert("green", "success");
+        m.insert("yellow", "warning");
+        m.insert("purple", "secondary");
+        m.insert("red", "error");
+        m.insert("orange", "warning");
+        m.insert("pink", "accent");
+        m.insert("cyan", "info");
+        m
+    })
+}
+
+/// Translate a Claude named color to the corresponding `OpenCode` theme token.
+/// An empty string stays empty; a value that is already an `OpenCode` token or
+/// an unknown/hex value passes through unchanged (escape hatch). Mirrors Go
+/// `ConvertColor`.
+pub fn convert_color(c: &str) -> String {
+    let color = c.trim();
+    if color.is_empty() {
+        return String::new();
+    }
+    if let Some(mapped) = claude_to_opencode_color().get(color) {
+        return (*mapped).to_string();
+    }
+    color.to_string()
+}
+
 /// Builds an [`OpenCodeAgent`] from raw Claude frontmatter bytes (already
 /// extracted + normalized). Shared by [`convert_agent`] and the sync validator.
 pub fn build_opencode_agent(frontmatter: &[u8]) -> Result<OpenCodeAgent, Error> {
@@ -61,6 +97,7 @@ pub fn build_opencode_agent(frontmatter: &[u8]) -> Result<OpenCodeAgent, Error> 
 
     let mut description = String::new();
     let mut model = String::new();
+    let mut color = String::new();
     let mut tools_raw: Option<&YamlValue> = None;
     let mut skills: Vec<String> = Vec::new();
 
@@ -74,6 +111,11 @@ pub fn build_opencode_agent(frontmatter: &[u8]) -> Result<OpenCodeAgent, Error> 
             "model" => {
                 if let YamlValue::String(s) = v {
                     model.clone_from(s);
+                }
+            }
+            "color" => {
+                if let YamlValue::String(s) = v {
+                    color.clone_from(s);
                 }
             }
             "tools" => tools_raw = Some(v),
@@ -99,6 +141,7 @@ pub fn build_opencode_agent(frontmatter: &[u8]) -> Result<OpenCodeAgent, Error> 
         description,
         model: convert_model(&model),
         tools,
+        color: convert_color(&color),
         skills,
     })
 }
@@ -137,10 +180,10 @@ pub fn convert_agent(input_path: &Path, output_path: &Path, dry_run: bool) -> Re
 /// Serializes an [`OpenCodeAgent`] to YAML frontmatter (without the `---`
 /// fences), byte-identical to Go's `yaml.v3` encoder with `SetIndent(2)`.
 ///
-/// Emission order is `description`, `model`, `tools`, `skills`. `skills` is
-/// omitted entirely when empty (Go `omitempty`). The `tools` map keys are
-/// already sorted (BTreeMap). A trailing newline terminates the document, as
-/// yaml.v3 produces.
+/// Emission order is `description`, `model`, `tools`, `color`, `skills`.
+/// `color` and `skills` are omitted entirely when empty (Go `omitempty`). The
+/// `tools` map keys are already sorted (BTreeMap). A trailing newline
+/// terminates the document, as yaml.v3 produces.
 pub fn emit_opencode_yaml(agent: &OpenCodeAgent) -> String {
     let mut out = String::new();
 
@@ -164,6 +207,12 @@ pub fn emit_opencode_yaml(agent: &OpenCodeAgent) -> String {
             out.push_str(if *v { "true" } else { "false" });
             out.push('\n');
         }
+    }
+
+    if !agent.color.is_empty() {
+        out.push_str("color: ");
+        out.push_str(&emit_scalar(&agent.color));
+        out.push('\n');
     }
 
     if !agent.skills.is_empty() {
@@ -405,11 +454,48 @@ mod tests {
     }
 
     #[test]
+    fn convert_color_translates_known() {
+        assert_eq!(convert_color("blue"), "primary");
+        assert_eq!(convert_color("green"), "success");
+        assert_eq!(convert_color("yellow"), "warning");
+        assert_eq!(convert_color("purple"), "secondary");
+        assert_eq!(convert_color("red"), "error");
+        assert_eq!(convert_color("orange"), "warning");
+        assert_eq!(convert_color("pink"), "accent");
+        assert_eq!(convert_color("cyan"), "info");
+    }
+
+    #[test]
+    fn convert_color_passes_through_unknown_and_empty() {
+        assert_eq!(convert_color("primary"), "primary");
+        assert_eq!(convert_color("#ff00aa"), "#ff00aa");
+        assert_eq!(convert_color(""), "");
+        assert_eq!(convert_color("  "), "");
+    }
+
+    #[test]
+    fn emit_yaml_with_color() {
+        let agent = OpenCodeAgent {
+            description: "X".to_string(),
+            model: "opencode-go/minimax-m2.7".to_string(),
+            tools: convert_tools(&["Read".to_string()]),
+            color: "primary".to_string(),
+            skills: vec!["a-skill".to_string()],
+        };
+        let yaml = emit_opencode_yaml(&agent);
+        assert_eq!(
+            yaml,
+            "description: X\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\ncolor: primary\nskills:\n  - a-skill\n"
+        );
+    }
+
+    #[test]
     fn emit_yaml_plain_scalars_no_skills() {
         let agent = OpenCodeAgent {
             description: "Does a thing. Use when needed.".to_string(),
             model: "opencode-go/minimax-m2.7".to_string(),
             tools: convert_tools(&["Read".to_string(), "Write".to_string()]),
+            color: String::new(),
             skills: vec![],
         };
         let yaml = emit_opencode_yaml(&agent);
@@ -427,6 +513,7 @@ mod tests {
             description: "X".to_string(),
             model: "opencode-go/glm-5".to_string(),
             tools: convert_tools(&["Grep".to_string()]),
+            color: String::new(),
             skills: vec!["a-skill".to_string(), "b-skill".to_string()],
         };
         let yaml = emit_opencode_yaml(&agent);
@@ -442,6 +529,7 @@ mod tests {
             description: "X".to_string(),
             model: "opencode-go/minimax-m2.7".to_string(),
             tools: BTreeMap::new(),
+            color: String::new(),
             skills: vec![],
         };
         let yaml = emit_opencode_yaml(&agent);
@@ -459,6 +547,7 @@ mod tests {
             description: long.to_string(),
             model: "opencode-go/minimax-m2.7".to_string(),
             tools: convert_tools(&["Read".to_string()]),
+            color: String::new(),
             skills: vec![],
         };
         let yaml = emit_opencode_yaml(&agent);
@@ -497,6 +586,7 @@ mod tests {
             description: "has \"quotes\" and: colon".to_string(),
             model: "opencode-go/minimax-m2.7".to_string(),
             tools: convert_tools(&["Read".to_string()]),
+            color: String::new(),
             skills: vec![],
         };
         let yaml = emit_opencode_yaml(&agent);
@@ -509,6 +599,7 @@ mod tests {
         let agent = build_opencode_agent(fm).unwrap();
         assert_eq!(agent.description, "A maker.");
         assert_eq!(agent.model, "opencode-go/minimax-m2.7");
+        assert_eq!(agent.color, "primary");
         let keys: Vec<&String> = agent.tools.keys().collect();
         assert_eq!(keys, vec!["read", "write"]);
         assert_eq!(agent.skills, vec!["s1", "s2"]);
@@ -538,7 +629,7 @@ mod tests {
         let written = std::fs::read_to_string(&output).unwrap();
         assert_eq!(
             written,
-            "---\ndescription: A maker.\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n---\n# Body\ntext\n"
+            "---\ndescription: A maker.\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\ncolor: primary\n---\n# Body\ntext\n"
         );
     }
 

@@ -7,6 +7,7 @@ tools:
   grep: true
   read: true
   write: true
+color: success
 skills:
   - swe-developing-frontend-ui
   - repo-generating-validation-reports

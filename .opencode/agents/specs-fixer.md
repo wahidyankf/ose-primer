@@ -8,6 +8,7 @@ tools:
   grep: true
   read: true
   write: true
+color: warning
 skills:
   - repo-generating-validation-reports
   - repo-assessing-criticality-confidence

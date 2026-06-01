@@ -256,6 +256,11 @@ This is the agent body content.
 		t.Errorf("Model = %q, want %q", agent.Model, "opencode-go/minimax-m2.7")
 	}
 
+	// color: blue (Claude) must translate to the OpenCode token "primary".
+	if agent.Color != "primary" {
+		t.Errorf("Color = %q, want %q", agent.Color, "primary")
+	}
+
 	expectedTools := map[string]bool{"read": true, "write": true, "edit": true}
 	if len(agent.Tools) != len(expectedTools) {
 		t.Errorf("Tools length = %d, want %d", len(agent.Tools), len(expectedTools))
@@ -275,6 +280,28 @@ This is the agent body content.
 	expectedBody := "\n# Test Agent\n\nThis is the agent body content.\n"
 	if string(body) != expectedBody {
 		t.Errorf("Body = %q, want %q", string(body), expectedBody)
+	}
+}
+
+func TestConvertColor(t *testing.T) {
+	cases := map[string]string{
+		"blue":    "primary",
+		"green":   "success",
+		"yellow":  "warning",
+		"purple":  "secondary",
+		"red":     "error",
+		"orange":  "warning",
+		"pink":    "accent",
+		"cyan":    "info",
+		"primary": "primary", // already an OpenCode token → passthrough.
+		"#ff00aa": "#ff00aa", // hex escape hatch → passthrough.
+		"":        "",        // empty stays empty.
+		"  ":      "",        // whitespace trims to empty.
+	}
+	for in, want := range cases {
+		if got := ConvertColor(in); got != want {
+			t.Errorf("ConvertColor(%q) = %q, want %q", in, got, want)
+		}
 	}
 }
 

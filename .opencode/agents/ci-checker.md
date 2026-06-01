@@ -7,6 +7,7 @@ tools:
   grep: true
   read: true
   write: true
+color: success
 skills:
   - ci-standards
   - repo-generating-validation-reports

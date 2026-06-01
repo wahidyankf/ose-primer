@@ -7,6 +7,7 @@ tools:
   grep: true
   read: true
   write: true
+color: success
 skills:
   - docs-validating-software-engineering-separation
   - docs-applying-content-quality

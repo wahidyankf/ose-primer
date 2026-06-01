@@ -9,6 +9,7 @@ tools:
   webfetch: true
   websearch: true
   write: true
+color: success
 skills:
   - repo-assessing-criticality-confidence
   - repo-generating-validation-reports
