@@ -815,6 +815,7 @@ verify();
 - [Native-First Toolchain Management](./native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` instead of IaC tools for dev environment setup
 - [Code Quality Convention](../quality/code.md) - Automated quality in reproducible environments
 - [No Machine-Specific Information in Commits](../quality/no-machine-specific-commits.md) - Preventing machine-specific paths and credentials from entering the repository
+- [No Secrets in Committed Files Convention](../quality/no-secrets-in-committed-files.md) - Iron rule prohibiting system secrets (API keys, passwords, tokens) in any committed file; `.env.example` placeholders are the correct alternative to real values
 - [Trunk Based Development](./trunk-based-development.md) - Reproducible CI/CD for main branch
 
 ## References

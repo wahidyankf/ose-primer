@@ -252,6 +252,19 @@ Reject these patterns at authoring time. `plan-checker` flags occurrences as HIG
 - **AP-9** — citing a behavior claim without a source
 - **AP-10** — cross-linking to a file that does not exist
 
+## No Secrets in Plans (HARD RULE)
+
+NEVER write system secrets into plan documents — they are committed to git and permanent.
+Prohibited values include SSH keys, passwords, sensitive/privileged usernames, API keys,
+tokens, OAuth client secrets, and database connection strings with real credentials.
+
+- Reference a secret by its variable name and location only: "set `DEPLOY_TOKEN` in `.env`".
+- Real values live in uncommitted files (`.env*` except `.env.example`, or another gitignored
+  location) — never in `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`, or `README.md`.
+- A pushed secret is a leaked secret; rotate immediately if one is committed.
+
+See [No Secrets in Committed Files Convention](../../../repo-governance/development/quality/no-secrets-in-committed-files.md).
+
 ## Specialized-Executor Annotation
 
 Domain-specialized agents hallucinate less than generic orchestration. When a delivery checkbox names a domain that maps cleanly to a specialized agent, annotate the checkbox with the suggested executor.

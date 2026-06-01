@@ -896,6 +896,9 @@ docker-compose up -d
 **Security**:
 
 - [Security](security.md) - Production security
+- [No Secrets in Committed Files Convention](../../../../../../repo-governance/development/quality/no-secrets-in-committed-files.md) —
+  Iron rule prohibiting secrets in any committed file; use environment variables and gitignored
+  `.env*` files for real credentials
 
 ---
 

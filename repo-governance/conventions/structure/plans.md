@@ -204,6 +204,12 @@ archiving from `in-progress/`, add the completion date prefix.
 
 ## Plan Contents
 
+> **No secrets (HARD RULE)**: Plan documents are committed to git. NEVER place system secrets
+> — SSH keys, passwords, sensitive usernames, API keys, tokens, or connection strings with real
+> credentials — in any plan file. Reference secrets by variable name and location only (e.g.
+> "set `DEPLOY_TOKEN` in `.env`"); real values belong in uncommitted files. See the
+> [No Secrets in Committed Files Convention](../../development/quality/no-secrets-in-committed-files.md).
+
 Plans can use either **single-file** or **multi-file** structure depending on size and complexity.
 
 ### Structure Decision
@@ -570,6 +576,7 @@ Use the verification tip from the [Linking Convention](../formatting/linking.md#
 - [Color Accessibility Convention](../formatting/color-accessibility.md) - Verified accessible palette, WCAG AA requirements, and color-blindness coverage for all diagram fills
 - [Worktree Path Convention](./worktree-path.md) - Worktree routing to `worktrees/<name>/` (referenced by the Worktree Specification rule above)
 - [Plan Anti-Hallucination Convention](../../development/quality/plan-anti-hallucination.md) - Pre-write verification recipes, repo-grounding rule, refuse-on-uncertainty, anti-pattern catalog (AP-1 through AP-10), specialized-executor annotation; consumed by the Execution-Grade Clarity rule above and by the four plan agents
+- [No Secrets in Committed Files Convention](../../development/quality/no-secrets-in-committed-files.md) - Iron rule prohibiting system secrets in any committed file; plans are explicitly in-scope (consumed by the No Secrets HARD RULE in Plan Contents above)
 
 **Development Guides**:
 

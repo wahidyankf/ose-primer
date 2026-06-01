@@ -510,3 +510,6 @@ Never hardcode version numbers in scripts — always read from these source-of-t
 - [Running CRUD Tests](./run-crud-tests.md) — Integration and E2E test execution
 - [Code Quality Convention](../../repo-governance/development/quality/code.md) — Git hooks and
   automated formatting
+- [No Secrets in Committed Files Convention](../../repo-governance/development/quality/no-secrets-in-committed-files.md) —
+  Iron rule: real credential values belong only in gitignored `.env*` files, never in committed
+  files including plans, docs, and config

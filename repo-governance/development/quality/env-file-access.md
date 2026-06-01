@@ -124,6 +124,14 @@ Layer 5 (git) and Layer 6 (governance) are platform-agnostic.
   Body prose uses vendor-neutral terms; all vendor-specific binding details are confined to the
   Platform Binding Examples section below.
 
+## Related Documentation
+
+- [No Secrets in Committed Files Convention](./no-secrets-in-committed-files.md) — the broad
+  iron rule this convention enforces for `.env*` files specifically: no system secret may
+  enter any committed file (plans, docs, code, config).
+- [No Machine-Specific Information in Commits](./no-machine-specific-commits.md) — companion
+  rule covering paths, usernames, and local IPs in committed files.
+
 ## Platform Binding Examples
 
 All vendor-specific implementation details for this convention are listed here.
