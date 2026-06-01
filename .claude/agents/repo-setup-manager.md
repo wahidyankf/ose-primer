@@ -4,6 +4,7 @@ description: "Executes Phase 0 of any plan delivery checklist: installs dependen
 tools: Read, Bash, Glob, Grep
 model: haiku
 color: green
+skills: []
 ---
 
 # repo-setup-manager

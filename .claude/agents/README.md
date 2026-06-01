@@ -33,6 +33,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **ci-checker** - CI/CD standards validation (mandatory Nx targets, coverage thresholds, Docker setup, Gherkin specs)
 - **docs-software-engineering-separation-checker** - Validates the boundary between generic dev docs and language-specific (Go, TypeScript, Rust, etc.) docs per the [Programming Language Docs Separation](../../repo-governance/conventions/structure/programming-language-docs-separation.md) convention
 - **repo-harness-compatibility-checker** - The single harness-compat checker. **Phase 0** runs 5 deterministic cross-vendor parity invariants (governance/root-surface vendor-neutrality, binding sync no-op over `.opencode/` + `.amazonq/`, agent count parity, color + tier maps); **Phase 1** detects external drift between each supported harness's current upstream config conventions and the platform-bindings catalog + committed binding files (delegates multi-page research to `web-research-maker`). Writes a dual-label audit to `generated-reports/`
+- **repo-setup-manager** - Executes Phase 0 environment setup (npm install, doctor --fix, baseline tests) before plan execution; resolves all preexisting failures to establish a clean, known-good baseline
 
 ### 🟨 Fixing (Fixers)
 

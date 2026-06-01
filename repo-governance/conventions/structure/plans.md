@@ -407,6 +407,12 @@ Every phase in `delivery.md` MUST be a **natural pause** — a cohesive unit of 
 > indefinitely. To resume: re-run the `grep` proof above.
 ```
 
+### Applicability (Execution Markers + Phase Gates)
+
+Both HARD RULES above — Execution Markers and Phase Gates — apply to **net-new plans at authoring time**: a plan created after this convention landed MUST comply from creation, and `plan-checker` flags missing markers or gates as HIGH on those plans.
+
+**In-progress plans authored before this convention are grandfathered and retrofitted lazily**: a plan already under `plans/in-progress/` when the convention landed is not retroactively invalid. Each phase gains its `[AI]`/`[HUMAN]` markers and its `### Phase N Gate` + **Pause Safety** note the next time that phase is touched during execution (the executor adds them as it works the phase). Do NOT bulk-fabricate gate checks for unstarted phases of a pre-existing plan — fabricated, ungroundable acceptance checks violate the anti-hallucination rule. `plan-checker` does not raise HIGH findings against grandfathered in-progress plans solely for missing markers/gates; it flags them only on the phases being newly added or edited. New plans get no such grace.
+
 ### Worktree Specification
 
 Every plan MUST declare the worktree path in its content so the executor can verify the execution environment before reading the delivery checklist.

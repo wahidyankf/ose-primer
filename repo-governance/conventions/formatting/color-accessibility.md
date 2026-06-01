@@ -333,9 +333,9 @@ Expert documentation validator focusing on factual correctness and consistency. 
 
 Expert at managing files and directories in docs/ (rename, move, delete). Use when reorganizing documentation structure while maintaining conventions.
 
-### 🟪 plan-execution-checker.md
+### 🟪 swe-golang-dev.md
 
-Expert at validating completed plan implementations against requirements and quality standards. Use for independent post-execution validation.
+Develops Go applications following simplicity principles, concurrency patterns, and platform coding standards. Use when implementing Go code.
 ```
 
 #### Color Accessibility for Agent Categorization

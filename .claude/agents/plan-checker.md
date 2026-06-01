@@ -553,6 +553,10 @@ After completing the anti-hallucination scan (Step 5f), validate execution marke
 | Gate item not independently verifiable              | HIGH     |
 | Phase is not a natural pause (incoherent scope)     | HIGH     |
 
+#### Grandfathering — In-Progress Plans Predating the Convention
+
+Per [Plans Organization Convention §Applicability](../../repo-governance/conventions/structure/plans.md#applicability-execution-markers--phase-gates), the Execution-Marker and Phase-Gate HARD RULES apply to **net-new plans at authoring time**. Plans already under `plans/in-progress/` when the convention landed are **grandfathered**: do NOT raise HIGH findings against them solely for missing `[AI]`/`[HUMAN]` markers or missing `### Phase N Gate` / Pause Safety notes. Flag those omissions only on phases being **newly added or edited** in the plan under review. A net-new plan (one being authored now) receives no grace and is held to the full rules above. When skipping a grandfathered plan for these two rules, note it as a below-threshold informational item, not a HIGH finding.
+
 ### 14. Harness-Neutrality Scan (Step 5g — CONDITIONAL)
 
 Run this step ONLY when the plan touches agents, skills, rules, or `repo-governance/` paths. Skip entirely when the plan touches only application code and tests.
