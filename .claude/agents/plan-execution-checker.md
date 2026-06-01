@@ -172,6 +172,11 @@ Update status to "Complete", add summary and recommendation (approve/revise).
 - [plan-execution workflow](../../repo-governance/workflows/plan/plan-execution.md) - Execute plans (calling context orchestrates; no dedicated subagent)
 - `plan-fixer` - Fixes plan issues
 
+**Related Conventions:**
+
+- [Plans Organization Convention §Execution Markers](../../repo-governance/conventions/structure/plans.md#execution-markers-ai-vs-human) - `[AI]`/`[HUMAN]` marker rules, legend, handoff/resume signal requirement (validated in Step 5f-gates)
+- [Plans Organization Convention §Phase Gates and Natural Pauses](../../repo-governance/conventions/structure/plans.md#phase-gates-and-natural-pauses-hard-rule) - Phase gate barrier rule, Pause Safety requirement (validated in Step 5f-gates)
+
 **Remember**: This is the final quality gate. Be thorough, independent, and uncompromising on quality.
 
 ### 6. Verify Operational Readiness Execution (Step 5b — MANDATORY)
@@ -332,7 +337,40 @@ After verifying archival (Step 5d), verify that execution actually happened insi
 - Wrong worktree-path format in plan: **HIGH**
 - No worktree evidence in git history: **MEDIUM**
 
-### 10. Anti-Hallucination Post-Execution Validation (Step 5f — MANDATORY HARD RULE)
+### 10. Phase Gate and Execution Marker Post-Execution Validation (Step 5f-gates — MANDATORY)
+
+After verifying worktree usage (Step 5e), validate that execution respected the phase gate barrier rule and surfaced every `[HUMAN]` step. These conventions are defined at
+[Plans Organization Convention §Execution Markers](../../repo-governance/conventions/structure/plans.md#execution-markers-ai-vs-human)
+and [§Phase Gates and Natural Pauses](../../repo-governance/conventions/structure/plans.md#phase-gates-and-natural-pauses-hard-rule).
+
+#### What to Validate
+
+1. **Every `### Phase N Gate` was satisfied before phase N+1 started**
+   - Read `delivery.md`. For each phase, confirm its gate checklist items are ticked (or documented as verified) before the first step of the next phase is ticked.
+   - Check git history for the order in which delivery.md was updated; gate checks should appear in commits before the next phase's steps.
+   - Evidence missing: **HIGH** finding per phase boundary where ordering cannot be confirmed.
+   - Gate items explicitly skipped or commented out without resolution: **CRITICAL** per item.
+
+2. **`[HUMAN]` steps were surfaced — not silently auto-executed or skipped**
+   - Identify every `[HUMAN]` marker in `delivery.md`.
+   - Confirm in git history or implementation notes that execution paused at each `[HUMAN]` step and resumed only after operator confirmation.
+   - A `[HUMAN]` step ticked with no implementation note (Date, Status, confirmation evidence): **HIGH** finding per step.
+   - Evidence that an agent attempted to perform a `[HUMAN]` step autonomously: **CRITICAL** finding.
+
+3. **Each phase reached its Pause-Safety state**
+   - For each phase, locate its `> **Pause Safety**:` blockquote. Confirm the described safe-to-stop state is verifiable against the post-execution repo (e.g., files exist, commands exit 0).
+   - Run the resume command stated in the Pause Safety note and confirm it exits cleanly.
+   - Pause Safety state not reached (files missing, commands failing): **HIGH** finding per phase.
+
+#### Finding Severity
+
+- Gate items skipped/bypassed without resolution: **CRITICAL**
+- Agent auto-executed a `[HUMAN]` step: **CRITICAL**
+- Phase gate ordering not confirmed (next phase started before gate was green): **HIGH**
+- `[HUMAN]` step ticked without operator confirmation evidence: **HIGH**
+- Pause Safety state not verifiable: **HIGH**
+
+### 11. Anti-Hallucination Post-Execution Validation (Step 5f — MANDATORY HARD RULE)
 
 After verifying worktree usage (Step 5e), verify that every factual claim in `delivery.md` (file paths, Nx targets, package versions, function names, agent names, test names, behavior claims) still holds against the post-execution repo state. Hallucinated claims that survived authoring may have been silently fabricated by the executor — this step catches them.
 

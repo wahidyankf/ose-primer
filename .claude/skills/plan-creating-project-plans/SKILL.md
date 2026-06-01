@@ -294,6 +294,49 @@ Domain-specialized agents hallucinate less than generic orchestration. When a de
 
 The plan-execution workflow respects the annotation as Priority 0 — the suggested executor wins over heuristic matches by file extension or content keyword. Citing a non-existent agent is treated as Anti-Pattern AP-7 (HIGH finding by `plan-checker`).
 
+## Execution Markers: `[AI]` vs `[HUMAN]`
+
+Every delivery checkbox carries an executor marker immediately after `- [ ]`. Two values exist:
+
+- **`[AI]`** — an agent performs the step. This is the **default**; an unmarked checkbox is `[AI]`.
+- **`[HUMAN]`** — only a human can perform the step (physical/hardware actions, out-of-band approvals such as signing a contract or paying an invoice, or interactive credential/SSO gates an agent cannot script).
+
+**Rules when authoring**:
+
+- **AI-first**: Before using `[HUMAN]`, ask whether the step can be scripted (e.g., a sanctioned action under `scripts/`). Only use `[HUMAN]` for what genuinely cannot be automated.
+- **Legend required**: If any `[HUMAN]` marker appears in `delivery.md` (or the single-file delivery section), add a legend near the top defining both markers.
+- **Explicit handoff**: Every `[HUMAN]` step MUST state (a) exactly what the human does and (b) the observable signal the agent checks to confirm it is done before continuing.
+- **Execution stops at `[HUMAN]`**: Execution pauses, surfaces the step to the operator, and resumes only after the human confirms completion.
+
+See [Plans Organization Convention §Execution Markers: `[AI]` vs `[HUMAN]`](../../../repo-governance/conventions/structure/plans.md#execution-markers-ai-vs-human) for the authoritative rule.
+
+## Phase Gates and Natural Pauses (HARD RULE)
+
+Every phase in `delivery.md` — including Phase 0 — MUST be a **natural pause** (cohesive work ending in an independently verifiable, safe-to-stop state) and MUST close with an explicit phase gate.
+
+**Each phase MUST end with**:
+
+1. A `### Phase N Gate` heading containing a must-pass verification checklist. Each gate item carries its executor marker (`[AI]`/`[HUMAN]`) and states a runnable check with an observable acceptance outcome (same Execution-Grade Clarity standard as ordinary steps).
+2. A `> **Pause Safety**:` blockquote stating the safe-to-stop state reached after the phase and the single command or short sequence to resume.
+
+**Barrier rule**: A phase is **not complete until its gate is green**. Never start phase N+1 while any check in phase N's gate is failing.
+
+**Scaffold template** (adapt for each phase):
+
+```markdown
+### Phase N Gate
+
+> All checks below must pass before starting Phase N+1.
+
+- [ ] [AI] `<runnable command>` — <acceptance outcome>.
+- [ ] [AI] `<runnable command>` — <acceptance outcome>.
+
+> **Pause Safety**: <What now exists; what does not yet.> Safe to stop indefinitely.
+> To resume: `<single command to re-establish confidence the gate is still green>`.
+```
+
+See [Plans Organization Convention §Phase Gates and Natural Pauses](../../../repo-governance/conventions/structure/plans.md#phase-gates-and-natural-pauses-hard-rule) for the authoritative rule and a complete worked example.
+
 ## Gherkin Acceptance Criteria
 
 **All plans must have Gherkin-format acceptance criteria:**

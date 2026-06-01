@@ -355,6 +355,58 @@ Plans are executed by execution-grade (sonnet-tier) agents, not planning-grade a
 
 **Acceptance Criteria**: All user stories in `prd.md` (or the condensed PRD section of a single-file plan's `README.md`) must include testable acceptance criteria using Gherkin format. See [Acceptance Criteria Convention](../../development/infra/acceptance-criteria.md) for complete details.
 
+### Execution Markers: `[AI]` vs `[HUMAN]`
+
+Most plan steps are executed by an AI agent, but some steps only a human can perform — physical actions (e.g., unplug a power cable, swap a drive, press a hardware button), out-of-band approvals (sign a contract, pay an invoice), or an interactive credential/SSO gate an agent cannot drive. Marking each step's executor makes the human handoff explicit so execution never silently stalls on — or worse, fakes — a step an agent cannot do.
+
+**Markers** (prefix the checkbox text, immediately after the `- [ ]`):
+
+- **`[AI]`** — an agent performs the step. This is the **default**: an unmarked checkbox is `[AI]`.
+- **`[HUMAN]`** — only a human can perform the step (physical/hardware action, external account/legal/payment step, or an interactive credential gate an agent cannot script).
+
+**Rules**:
+
+- **AI-first**: Prefer engineering an `[AI]` path before resorting to `[HUMAN]`. If a step looks human-only but can be turned into a scripted, sanctioned action (e.g., a copy script under `scripts/` rather than a manual file move), write the `[AI]` step instead. Reserve `[HUMAN]` for what genuinely cannot be automated.
+- **Legend required**: A plan that uses any `[HUMAN]` marker MUST include a short legend defining `[AI]` and `[HUMAN]` near the top of `delivery.md` (or the single-file plan's delivery section).
+- **Explicit handoff**: Every `[HUMAN]` step MUST state (a) exactly what the human does and (b) the observable signal the agent checks to confirm it is done before continuing (e.g., "operator confirms the drive LED is green; verify with `lsblk | grep sdb`").
+- **Execution stops at `[HUMAN]`**: During execution, an agent MUST NOT attempt a `[HUMAN]` step. It pauses, surfaces the step to the operator, and resumes only after the human confirms completion.
+
+`plan-checker` flags (HIGH): a `[HUMAN]` step that is actually AI-executable (should be `[AI]`, or re-engineered into a sanctioned `[AI]` path); an `[AI]`/unmarked step that requires a genuinely human-only action (mis-marked); and a `[HUMAN]` step missing its handoff signal.
+
+### Phase Gates and Natural Pauses (HARD RULE)
+
+Every phase in `delivery.md` MUST be a **natural pause** — a cohesive unit of work that ends in an independently verifiable, safe-to-stop state — and MUST close with an explicit **Phase Gate**.
+
+**Each phase MUST end with**:
+
+1. A `### Phase N Gate` heading containing a must-pass verification checklist. Each gate item is an explicit, runnable check with an acceptance outcome (the same Execution-Grade Clarity rule as ordinary steps) and carries its executor marker (`[AI]`/`[HUMAN]`).
+2. A **Pause Safety** note (a blockquote) stating both the safe-to-stop state reached after the phase (what now exists, what does not yet) and the single command or short sequence to **resume** (re-establish confidence the phase is still green).
+
+**Barrier rule**: A phase is **not complete until its gate is green**. Execution MUST NOT start phase N+1 while any check in phase N's gate is failing — fix it within phase N first. This makes every phase boundary a deliberate checkpoint, not a silent hand-off.
+
+**"Natural pause" means**: the phase's work is cohesive (one concern, layer, or capability), it ends with a concrete artifact, and the next phase can start cleanly from the paused state without carrying hidden in-flight work. Phase 0 (Environment Setup and Baseline) follows the same rule — it ends with a `### Phase 0 Gate` and a Pause Safety note.
+
+`plan-checker` flags (HIGH): a phase with no `### Phase N Gate`; a gate with no **Pause Safety** note; gate items that are not independently verifiable; or a phase whose work is not a natural pause (spread across unrelated concerns with no safe stop point).
+
+**Example** (abridged):
+
+```markdown
+## Phase 1: gitignore Hardening
+
+- [ ] Edit `.gitignore`: append `*.tfstate`, `*.tfvars`, `!*.tfvars.example`
+      — acceptance: `grep -E '^\*\.tfstate$' .gitignore` matches.
+
+### Phase 1 Gate
+
+> All checks must pass before starting Phase 2.
+
+- [ ] `[AI]` `grep -E '^\*\.tfstate$' .gitignore` matches.
+- [ ] `[AI]` The `chore(gitignore): …` commit is on `main` (`git log --oneline -1`).
+
+> **Pause Safety**: Only `.gitignore` changed — no secret imported yet. Safe to stop
+> indefinitely. To resume: re-run the `grep` proof above.
+```
+
 ### Worktree Specification
 
 Every plan MUST declare the worktree path in its content so the executor can verify the execution environment before reading the delivery checklist.

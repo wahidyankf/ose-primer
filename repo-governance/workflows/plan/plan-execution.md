@@ -166,7 +166,7 @@ If a task is `completed` but the checkbox is `- [ ]`, OR a checkbox is `- [x]` b
 These rules govern ALL execution steps. No exception. No shortcut.
 
 1. **Granular Task Tracking (1:1 with delivery.md) — NON-NEGOTIABLE**: The harness task list IS the user's primary observability surface (see [Harness Task List as Primary Observability Surface](#harness-task-list-as-primary-observability-surface) above). Exactly ONE `TaskCreate` per delivery checklist item, including every nested `- [ ]` sub-bullet — sub-bullets are NEVER rolled into their parent. Task `subject` MUST short-form the checkbox text (drop articles, keep verb + object, ≤80 chars). At most ONE task in `in_progress` at any moment. Mark `in_progress` BEFORE any tool call advancing that item. Mark `completed` ONLY after the checkbox is ticked on disk AND the implementation-notes block is persisted under the ticked checkbox. FORBIDDEN: coarse tasks ("Execute Phase 2", "Apply fixes"), bulk creation ("one task per phase"), silent batch-completion (multiple checkboxes ticked in one `Edit` while one `TaskUpdate` closes), speculative completion (closing a task before disk reflects done state), title rewriting (renaming a task to summarize multiple items). Violations corrupt the user's view of execution and MUST trigger immediate rollback + reconciliation (disk wins).
-2. **Never Stop Before All Done**: Execute ALL items from first to last without stopping. No pauses between phases. No skipping items. The only acceptable stop is a hard technical blocker.
+2. **Never Stop Before All Done**: Execute ALL items from first to last without stopping. No pauses between phases for approval. No skipping items. The acceptable stops are: a hard technical blocker, and a `[HUMAN]`-marked step (a step only a human can do — physical action, out-of-band approval, interactive credential gate — which the orchestrator surfaces to the operator and resumes on confirmation). At each phase boundary the orchestrator MUST verify the phase's `### Phase N Gate` is green before starting the next phase — this is a self-run verification checkpoint, not a wait-for-user pause; any failing gate check is fixed within the current phase first.
 3. **Fix ALL Issues — Including Preexisting**: When ANY test, lint, typecheck, or quality gate fails — fix it. Even if it existed before your changes. Do NOT defer. Do NOT skip. Commit preexisting fixes separately.
 4. **Delivery.md Is Sacred — Atomic Sync Ritual**: After each item's work is done, run the three-step ritual before touching the next item: (a) `Edit` checkbox `- [ ]` → `- [x]` for THIS one item (no `replace_all`), (b) `Edit` implementation-notes block under the ticked checkbox (Date, Status, Files Changed, brief notes), (c) `TaskUpdate completed`. All three MUST land before moving on. If any step fails, roll back the others and leave the task in `in_progress`. Ticking multiple checkboxes in one Edit or deferring notes to end-of-phase is forbidden.
 5. **Local Quality Gates Before Push**: Run `npx nx affected -t typecheck lint test:quick spec-coverage` before every push. Fix ALL failures. Do NOT push with any failing check.
@@ -268,15 +268,16 @@ For each checklist item in reading order (phase by phase, item by item, includin
    - For each cited symbol: `Grep` for evidence. Missing AND not marked `_New symbol_`: HALT.
    - **Refuse-on-uncertainty**: if a cited fact cannot be grounded and the checkbox does not mark it as new, the orchestrator MUST escalate rather than guess. Surface the failure to the user with the specific claim and the missing artifact.
 3. **Analyze the item** to determine whether to delegate to a specialized agent (see Agent Selection) or execute directly. If the checkbox carries a `_Suggested executor:_` annotation, use that agent (Priority 0). If the checklist text is otherwise ambiguous, the orchestrator MAY consult the plan's `brd.md` / `prd.md` / `tech-docs.md` for additional context — business intent lives in `brd.md`, product scope and Gherkin acceptance criteria in `prd.md`, architecture decisions in `tech-docs.md`.
-4. **Execute the item** — delegate to that agent via the Agent tool, or perform the edit/command directly. Only for THIS one checkbox.
-5. **Verify the work succeeded** — read the produced file, run the command, check the agent's output. The verification MUST match the acceptance criterion stated in the checkbox (Execution-Grade Clarity rule from the plans convention).
-6. **Atomic Sync Ritual** — all three steps before any next-item work:
+4. **Execution-marker check (`[AI]`/`[HUMAN]`)** — read the checkbox's execution marker (per [Plans Organization Convention §Execution Markers](../../conventions/structure/plans.md#execution-markers-ai-vs-human)). `[AI]` or unmarked → execute normally (next bullet). `[HUMAN]` (or a step that is inherently human-only — physical/hardware action, out-of-band approval, interactive credential gate) → the orchestrator MUST NOT attempt it: emit a user-visible line stating exactly what the human must do, then STOP and wait for the operator to confirm completion. On confirmation, verify the step's stated observable resume signal, then go straight to the Atomic Sync Ritual (skip the delegate/execute bullet). This is a sanctioned stop (see Stopping rules) — not a violation of "never stop between phases."
+5. **Execute the item** — delegate to that agent via the Agent tool, or perform the edit/command directly. Only for THIS one checkbox.
+6. **Verify the work succeeded** — read the produced file, run the command, check the agent's output. The verification MUST match the acceptance criterion stated in the checkbox (Execution-Grade Clarity rule from the plans convention).
+7. **Atomic Sync Ritual** — all three steps before any next-item work:
    a. `Edit` delivery.md to change `- [ ]` → `- [x]` for THIS one item (context-unique `old_string`; never `replace_all`; never tick multiple items in one Edit call).
    b. `Edit` delivery.md to add the implementation-notes block (Date, Status, Files Changed, brief notes) under the ticked checkbox. Notes MUST themselves be repo-grounded — only state files actually modified, only quote commands actually run.
    c. `TaskUpdate completed` on the matching task.
-7. Proceed IMMEDIATELY to the next item — no pausing, no waiting for approval, no deferring notes.
+8. Proceed IMMEDIATELY to the next item — no pausing, no waiting for approval, no deferring notes.
 
-Nested sub-checkboxes iterate the same loop. A parent `- [ ]` can only be ticked after all its sub-`- [ ]` items have each completed steps 1–5 of the loop.
+Nested sub-checkboxes iterate the same loop. A parent `- [ ]` can only be ticked after all its sub-`- [ ]` items have each completed steps 1–6 of the loop.
 
 **Progress streaming**: keep the live Task list fresh by executing the ritual after every item. Never queue up two or three item's worth of `completed` updates. After each phase boundary, emit a one-line user-visible status (phase, items ticked / total, files changed, preexisting fixes).
 
@@ -290,17 +291,19 @@ Nested sub-checkboxes iterate the same loop. A parent `- [ ]` can only be ticked
 
 - Stop ONLY if a task fails and CANNOT be resolved after retry.
 - Stop ONLY if a critical decision requires user input that cannot be inferred.
+- Stop at a `[HUMAN]` step (sanctioned) — surface the action to the operator and resume on confirmation per the Execution-marker check above. This is the one routine non-technical stop and does NOT violate "never stop between phases."
 - Stop ONLY when ALL items are complete.
-- NEVER stop between phases.
+- NEVER stop between phases for approval — but DO verify the phase's `### Phase N Gate` is green before starting the next phase (a self-run verification checkpoint, not a wait-for-user pause); fix any failing gate check within the current phase first.
 - NEVER batch-tick checkboxes, batch-complete tasks, or defer implementation notes.
 - NEVER skip an item — if genuinely not applicable, add a note explaining why and tick it.
 
 ### 2b. Per-Phase Quality Gate (Sequential, After Each Phase)
 
-After completing all items in a delivery phase, run quality gates before proceeding.
+After completing all items in a delivery phase, verify the phase's authored gate and run quality gates before proceeding.
 
 **Orchestrator action**:
 
+0. **Verify the phase's `### Phase N Gate` (barrier)**: run every check listed under the phase's `### Phase N Gate` heading and confirm each passes its stated acceptance. A phase is **not complete until its gate is green** — do NOT start phase N+1 while any gate check is failing; fix it within the current phase first. If the gate carries a **Pause Safety** note, the post-gate state is a sanctioned safe-to-stop point. (Gate checks assert on patterns/placeholders, never a real secret literal.) See [Plans Organization Convention §Phase Gates and Natural Pauses](../../conventions/structure/plans.md#phase-gates-and-natural-pauses-hard-rule).
 1. Run local quality gates:
 
    ```bash

@@ -207,6 +207,8 @@ The `repo-assessing-criticality-confidence` Skill provides complete confidence l
 - [Maker-Checker-Fixer Pattern Convention](../../repo-governance/development/pattern/maker-checker-fixer.md) - Three-stage workflow
 - [Test-Driven Development Convention §TDD Shape for Delivery Checklists](../../repo-governance/development/workflow/test-driven-development.md#tdd-shape-for-delivery-checklists) - Required three-substep template (RED/GREEN/REFACTOR) for rewriting TDD-shape violations flagged by plan-checker
 - [Multi-Harness Binding Convention](../../repo-governance/conventions/structure/multi-harness-binding.md) - Rules applied during harness-neutrality scan fixes (Step 5g findings)
+- [Plans Organization Convention §Execution Markers](../../repo-governance/conventions/structure/plans.md#execution-markers-ai-vs-human) - `[AI]`/`[HUMAN]` marker rules, legend, handoff/resume signal requirement (Step 5h fixes)
+- [Plans Organization Convention §Phase Gates and Natural Pauses](../../repo-governance/conventions/structure/plans.md#phase-gates-and-natural-pauses-hard-rule) - Phase gate scaffold, Pause Safety note, barrier rule (Step 5h fixes)
 
 You validate thoroughly, apply fixes confidently (for objective issues only), and report transparently. Your goal is to improve plan quality while avoiding false positives.
 
@@ -499,6 +501,115 @@ For each offending checkbox, derive the missing elements:
 ```
 
 After rewriting, re-read the checkbox and confirm a sonnet-tier agent could execute it without consulting any other section of the plan. If the rewrite still requires lookups, repeat until the checkbox is self-contained.
+
+## Execution Marker and Phase Gate Fixes (Step 5h Findings)
+
+When `plan-checker` reports HIGH findings for execution marker or phase gate violations (per the
+[Plans Organization Convention §Execution Markers](../../repo-governance/conventions/structure/plans.md#execution-markers-ai-vs-human)
+and [§Phase Gates and Natural Pauses](../../repo-governance/conventions/structure/plans.md#phase-gates-and-natural-pauses-hard-rule)),
+apply the following mechanical fixes.
+
+### Confidence Assessment
+
+- **HIGH Confidence**: Missing gate scaffold, missing legend, missing `[AI]` default — structural absence with unambiguous canonical template. Auto-apply.
+- **MEDIUM Confidence**: A step's executor classification is genuinely ambiguous (e.g., borderline scripting possibility). Flag for manual review.
+- **FALSE_POSITIVE**: A `[HUMAN]` step whose handoff/resume signal is present but expressed in a non-standard format. Report to checker.
+
+### Fix 1: Add Missing `[AI]` Markers (Default)
+
+Unmarked checkboxes in `delivery.md` default to `[AI]`. If `plan-checker` flags that a step requiring a genuinely human-only action is unmarked, add `[HUMAN]`. For all other unmarked steps, leave them unmarked (the default is `[AI]`; adding `[AI]` everywhere is not required but is acceptable).
+
+When explicitly adding the default marker for clarity, prefix immediately after `- [ ]`:
+
+```markdown
+- [ ] [AI] Edit `repo-governance/conventions/structure/plans.md`: …
+```
+
+### Fix 2: Correct a Mis-marked `[HUMAN]` Step
+
+When a `[HUMAN]` step is actually AI-executable (can be scripted or run via CLI):
+
+1. Remove the `[HUMAN]` marker.
+2. If an `[AI]` script path exists under `scripts/`, reference it. Otherwise, add the verbatim CLI invocation.
+3. Verify the fix with a HIGH-confidence re-read.
+
+### Fix 3: Correct a Mis-marked `[AI]` / Unmarked Step Requiring Human Action
+
+When a step is genuinely human-only but carries `[AI]` or no marker:
+
+1. Replace `[AI]` with `[HUMAN]` (or add `[HUMAN]` to an unmarked step).
+2. Ensure the step states (a) what the human does and (b) the observable resume signal. If the signal is missing, add it per Fix 4.
+3. Check whether the legend is present; if not, apply Fix 6.
+
+### Fix 4: Add Missing Handoff / Resume Signal to a `[HUMAN]` Step
+
+Every `[HUMAN]` step MUST contain:
+
+- **(a) What the human does** — described unambiguously.
+- **(b) The observable signal the agent checks to resume** — a concrete, runnable verification (e.g., a shell command).
+
+Template to append when the signal is missing:
+
+```markdown
+- [ ] [HUMAN] <existing step description>. Observable resume signal: <describe signal>;
+      verify with `<runnable command>`.
+```
+
+Example:
+
+```markdown
+- [ ] [HUMAN] Pay the cloud-provider invoice at https://billing.example.com/pay.
+      Observable resume signal: invoice status changes to "Paid"; verify with
+      `curl -s https://billing.example.com/api/status | jq .status` returning `"paid"`.
+```
+
+### Fix 5: Insert Missing `### Phase N Gate`
+
+When a phase lacks a `### Phase N Gate` block, insert one after the last step of that phase and before the next `##` heading (or end of file). Use this canonical scaffold:
+
+```markdown
+### Phase N Gate
+
+> All checks below must pass before starting Phase N+1. If any check fails, fix it in Phase N
+> before proceeding.
+
+- [ ] [AI] <first runnable verification from the phase steps — explicit command + acceptance outcome>.
+- [ ] [AI] <second runnable verification — explicit command + acceptance outcome>.
+
+> **Pause Safety**: <Describe the safe-to-stop state: what now exists, what does not yet exist.>
+> Safe to stop indefinitely. To resume: <single command or short sequence to re-establish
+> confidence the gate is still green>.
+```
+
+Replace `<…>` placeholders by deriving verifications from the phase's actual steps and acceptance criteria. Do not invent verifications — derive them from what the phase's checkboxes already establish.
+
+### Fix 6: Add Missing Legend When `[HUMAN]` Markers Are Present
+
+When any `[HUMAN]` marker exists in `delivery.md` (or the single-file delivery section) and no legend is present near the top, insert the following blockquote immediately after the `# Delivery…` heading (or after the `## Worktree` section if present):
+
+```markdown
+> **Legend** — `[AI]`: an agent performs the step (the default; unmarked steps are `[AI]`).
+> `[HUMAN]`: reserved for steps only a human can perform — physical/hardware actions,
+> out-of-band approvals (sign a contract, pay an invoice), or interactive credential/SSO gates
+> an agent cannot script. Every `[HUMAN]` step states what the human does and the observable
+> signal the agent checks to resume.
+>
+> **Phase Gate** — every phase ends with a `### Phase N Gate`: a must-pass verification
+> checklist plus a **Pause Safety** note (the safe-to-stop state after the phase and the
+> single command to resume). A phase is **not complete until its gate is green**; do not start
+> phase N+1 while any check in phase N's gate is failing.
+```
+
+### Fix 7: Add Missing Pause Safety Note
+
+When a `### Phase N Gate` block exists but has no `> **Pause Safety**:` blockquote, append it immediately after the last gate checklist item:
+
+```markdown
+> **Pause Safety**: <Safe-to-stop state description>. Safe to stop indefinitely. To resume:
+> <single command or short sequence to re-establish confidence the gate is still green>.
+```
+
+Derive the safe-to-stop state from what the phase's steps actually established.
 
 ## Anti-Hallucination Fixes (Step 5f Findings)
 

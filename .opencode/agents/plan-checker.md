@@ -514,7 +514,52 @@ This prevents re-verification thrash and keeps the audit deterministic.
 - Bare unlabeled non-trivial claim (defaults to `[Unverified]`): **MEDIUM** per claim
 - Missing `web-research-maker` delegation when threshold (any external claim not single-shot URL) was crossed: **MEDIUM** finding
 
-### 13. Harness-Neutrality Scan (Step 5g — CONDITIONAL)
+### 13. Execution Marker and Phase Gate Validation (Step 5h — MANDATORY HARD RULE)
+
+After completing the anti-hallucination scan (Step 5f), validate execution markers and phase gates in `delivery.md` (or the delivery section of a single-file plan). Both rules are defined in the [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md#execution-markers-ai-vs-human) and [Phase Gates and Natural Pauses](../../repo-governance/conventions/structure/plans.md#phase-gates-and-natural-pauses-hard-rule).
+
+#### What to Validate — Execution Markers
+
+1. **Mis-marked `[HUMAN]` step** — the action is actually AI-executable (can be scripted via a sanctioned `scripts/` action or standard CLI). The `[HUMAN]` marker must be reserved for genuinely human-only actions (physical/hardware, out-of-band approvals, interactive credential/SSO gates an agent cannot script).
+   - Finding: **HIGH** per offending step.
+
+2. **Mis-marked `[AI]` / unmarked step that requires a human** — the action is genuinely human-only (physical hardware swap, paying an invoice, signing a contract, SSO consent page) but carries `[AI]` or no marker.
+   - Finding: **HIGH** per offending step.
+
+3. **`[HUMAN]` step missing its handoff/resume signal** — every `[HUMAN]` step MUST state (a) exactly what the human does and (b) the observable signal the agent checks to confirm it is done before continuing (e.g., "operator confirms LED is green; verify with `lsblk | grep sdb`").
+   - Finding: **HIGH** per offending step.
+
+4. **Legend missing when `[HUMAN]` markers are present** — a plan that uses any `[HUMAN]` marker MUST include a short legend near the top of `delivery.md` (or the single-file delivery section) defining `[AI]` and `[HUMAN]`.
+   - Finding: **HIGH** (one finding, not per occurrence).
+
+#### What to Validate — Phase Gates
+
+1. **Phase with no `### Phase N Gate`** — every phase (including Phase 0) MUST close with a `### Phase N Gate` block containing a must-pass verification checklist. A phase without a gate cannot be independently verified.
+   - Finding: **HIGH** per phase missing a gate.
+
+2. **Phase gate with no Pause Safety note** — every `### Phase N Gate` MUST be followed by a `> **Pause Safety**:` blockquote stating the safe-to-stop state and the single command or short sequence to resume.
+   - Finding: **HIGH** per gate missing the note.
+
+3. **Non-independently-verifiable gate items** — each item inside a `### Phase N Gate` must be an explicit, runnable check with an observable acceptance outcome (same Execution-Grade Clarity standard as ordinary steps). Vague items like "verify the phase is done" or references to subjective judgment fail this test.
+   - Finding: **HIGH** per offending gate item.
+
+4. **Phase whose work is not a natural pause** — a phase that spreads across unrelated concerns with no clean safe-stop point (e.g., one phase combining both environment setup AND business logic AND archival) is a structural violation. The phase's work must be cohesive: one concern or layer ending in a concrete artifact.
+   - Finding: **HIGH** per offending phase.
+
+#### Finding Severity Summary
+
+| Condition                                           | Severity |
+| --------------------------------------------------- | -------- |
+| `[HUMAN]` step actually AI-doable                   | HIGH     |
+| `[AI]`/unmarked step requiring genuine human action | HIGH     |
+| `[HUMAN]` step missing handoff/resume signal        | HIGH     |
+| Legend missing when `[HUMAN]` markers exist         | HIGH     |
+| Phase with no `### Phase N Gate`                    | HIGH     |
+| Gate with no `> **Pause Safety**:` note             | HIGH     |
+| Gate item not independently verifiable              | HIGH     |
+| Phase is not a natural pause (incoherent scope)     | HIGH     |
+
+### 14. Harness-Neutrality Scan (Step 5g — CONDITIONAL)
 
 Run this step ONLY when the plan touches agents, skills, rules, or `repo-governance/` paths. Skip entirely when the plan touches only application code and tests.
 

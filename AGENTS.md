@@ -61,7 +61,10 @@ Specialized agents organized into families:
 2. **README**: `readme-maker`, `readme-checker`, `readme-fixer`
 3. **Project Planning**: `plan-maker` (mandates grilling before and after plan creation
    using 2–4 concrete options per question with a recommended option marked;
-   delivery checklists must begin with Phase 0), `plan-checker`, `plan-execution-checker`,
+   delivery checklists must begin with Phase 0; every checkbox carries an `[AI]`/`[HUMAN]`
+   execution marker with a legend and handoff/resume signal for any `[HUMAN]` step; every phase
+   closes with a `### Phase N Gate` and a `> **Pause Safety**:` note making it a natural pause),
+   `plan-checker`, `plan-execution-checker`,
    `plan-fixer`, `repo-setup-manager` (executes Phase 0 environment setup and baseline in
    every plan) — plan execution is orchestrated directly by the calling context via the
    [plan-execution workflow](./repo-governance/workflows/plan/plan-execution.md) and the
