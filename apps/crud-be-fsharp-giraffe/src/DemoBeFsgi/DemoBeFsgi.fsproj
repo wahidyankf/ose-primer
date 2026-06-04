@@ -55,16 +55,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Giraffe" Version="7.*" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.*" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.*" />
-    <PackageReference Include="EFCore.NamingConventions" Version="10.*" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.*" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.*" />
+    <PackageReference Include="Giraffe" Version="7.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.8" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
+    <PackageReference Include="EFCore.NamingConventions" Version="10.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.8" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.*" />
-    <PackageReference Include="FSharp.SystemTextJson" Version="1.*" />
-    <PackageReference Include="dbup-core" Version="5.*" />
-    <PackageReference Include="dbup-postgresql" Version="5.*" />
+    <PackageReference Include="FSharp.SystemTextJson" Version="1.4.36" />
+    <PackageReference Include="dbup-core" Version="5.0.87" />
+    <PackageReference Include="dbup-postgresql" Version="5.0.40" />
     <!-- F# static analyzers (G-Research) — runs via dotnet msbuild /t:AnalyzeFSharpProject -->
     <PackageReference Include="FSharp.Analyzers.Build" Version="0.*">
       <PrivateAssets>all</PrivateAssets>
