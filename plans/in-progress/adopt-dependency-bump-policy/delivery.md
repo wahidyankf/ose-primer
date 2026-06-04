@@ -212,7 +212,7 @@ setup, planning)`, and added a `*-planning` accept case. `test:unit` passes; gol
 
 ## Phase 4: Repository Dependency Bump Planning Workflow
 
-- [ ] [AI] Create `repo-governance/workflows/repo/repo-dependency-bump-planning.md` _New file_,
+- [x] [AI] Create `repo-governance/workflows/repo/repo-dependency-bump-planning.md` _New file_,
       adopting the upstream
       [Repository Dependency Bump Planning Workflow](https://github.com/wahidyankf/ose-public/blob/main/repo-governance/workflows/repo/repo-dependency-bump-planning.md)
       with frontmatter (`name: repo-dependency-bump-planning`, goal, termination, inputs, outputs)
@@ -225,7 +225,18 @@ setup, planning)`, and added a `*-planning` accept case. `test:unit` passes; gol
       `security-waivers.md`. Acceptance: file exists; frontmatter `name:` equals the basename;
       every relative link resolves.
   - _Suggested executor: `repo-workflow-maker`_
-- [ ] [AI] **Invocability adaptation (explicit user requirement)**: in the workflow body, adapt
+  - **Implementation Notes**: Authored directly from the verbatim upstream workflow with ose-primer
+    adaptations: frontmatter (`name: repo-dependency-bump-planning`, goal, termination, inputs,
+    outputs), phases 0–6, Gherkin criteria, Related/Principles/Conventions. Phase 1 Inventory lists
+    ose-primer's real manifests (Cargo: crud-be-rust-axum, rhino-cli-rust; .NET:
+    crud-be-csharp-aspnetcore, crud-be-fsharp-giraffe + global.json; Go: crud-be-golang-gin,
+    rhino-cli-go, golang-commons; Docker apps/\_ + infra/dev/\_\_; .opencode/package.json kept). All 16
+    relative links verified with `test -f` (security-waivers.md resolves after Phase 5). Frontmatter
+    `name:` = basename. Prettier + markdownlint clean.
+  - **Date**: 2026-06-04
+  - **Status**: Completed
+  - **Files Changed**: `repo-governance/workflows/repo/repo-dependency-bump-planning.md` (new)
+- [x] [AI] **Invocability adaptation (explicit user requirement)**: in the workflow body, adapt
       Phase 5 to `ose-primer`'s `plan-establishment-execution`, which has **no `target-stage`
       input** and places plans in `plans/in-progress/`. The adopted Phase 5 MUST: (a) invoke
       `plan-establishment-execution` as-is, (b) `git mv` the resulting plan to
@@ -237,26 +248,41 @@ setup, planning)`, and added a `*-planning` accept case. `test:unit` passes; gol
       file does NOT pass an unsupported `target-stage: backlog` param; instead it documents the
       in-progress→backlog relocation.
   - _Suggested executor: `repo-workflow-maker`_
-- [ ] [AI] Add an index entry to `repo-governance/workflows/repo/README.md` linking
+  - **Implementation Notes**: Phase 5 of the workflow body documents the repository adaptation —
+    no `target-stage` arg is passed; instead it invokes `plan-establishment-execution` (lands in
+    `in-progress/`), then `git mv`s to `plans/backlog/<YYYY-MM-DD>__<identifier>/` and updates both
+    plan index READMEs. `grep -c target-stage` finds only the two "no target-stage" explanatory
+    mentions, never a passed param. web-research-maker agent + plan-establishment-execution both
+    verified present. **Date**: 2026-06-04. **Status**: Completed.
+    **Files Changed**: `repo-governance/workflows/repo/repo-dependency-bump-planning.md`.
+- [x] [AI] Add an index entry to `repo-governance/workflows/repo/README.md` linking
       `./repo-dependency-bump-planning.md` with a one-line description. Acceptance:
       `grep -c "repo-dependency-bump-planning" repo-governance/workflows/repo/README.md` ≥ 1.
-- [ ] [AI] If `repo-governance/workflows/README.md` contains a workflow catalog/table, add the new
+  - **Implementation Notes**: Added to the Workflows list. `grep -c` = 1; prettier clean.
+    **Date**: 2026-06-04. **Status**: Completed.
+    **Files Changed**: `repo-governance/workflows/repo/README.md`.
+- [x] [AI] If `repo-governance/workflows/README.md` contains a workflow catalog/table, add the new
       workflow there too. Acceptance: either the catalog lists it, or a note confirms the top-level
       README has no per-workflow catalog (verify by reading the file).
+  - **Implementation Notes**: Top-level catalog DOES have an Available Workflows table, a Type
+    Vocabulary table, and a Workflow Families list — added the workflow to all three, and added the
+    `planning` row to the Type Vocabulary table (mirrors workflow-naming.md). `grep -c` in
+    workflows/README.md = 3; prettier + markdownlint clean. **Date**: 2026-06-04.
+    **Status**: Completed. **Files Changed**: `repo-governance/workflows/README.md`.
 
 ### Phase 4 Gate
 
 > All checks below must pass before starting Phase 5.
 
-- [ ] [AI] `find repo-governance/workflows -name '*.md' -not -name 'README.md' -not -path '*/meta/*' | sed 's|.*/||; s|\.md$||' | grep -vE -- '-(quality-gate|execution|setup|planning)$'` — prints nothing (naming gate green, including the new file).
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:naming-workflows` and `npx nx run rhino-cli-go:validate:naming-workflows` — both exit 0 (the validators accept the new `-planning` file).
-- [ ] [AI] **Invocability check**: every primitive the workflow references resolves in-repo —
+- [x] [AI] `find repo-governance/workflows -name '*.md' -not -name 'README.md' -not -path '*/meta/*' | sed 's|.*/||; s|\.md$||' | grep -vE -- '-(quality-gate|execution|setup|planning)$'` — prints nothing (naming gate green, including the new file). _Done: no output._
+- [x] [AI] `npx nx run rhino-cli-rust:validate:naming-workflows` and `npx nx run rhino-cli-go:validate:naming-workflows` — both exit 0 (the validators accept the new `-planning` file). _Done: "VALIDATION PASSED (0 violations)" on both._
+- [x] [AI] **Invocability check**: every primitive the workflow references resolves in-repo —
       `test -f .claude/agents/web-research-maker.md`,
       `test -f repo-governance/workflows/plan/plan-establishment-execution.md`,
       `test -f repo-governance/development/workflow/dependency-bump-policy.md`,
       `test -f repo-governance/development/agents/subagent-orchestration.md` — all exit 0; and the
-      workflow is indexed in `repo-governance/workflows/repo/README.md`.
-- [ ] [AI] `npx prettier --check repo-governance/workflows/repo/repo-dependency-bump-planning.md repo-governance/workflows/repo/README.md` and `npx markdownlint-cli2 repo-governance/workflows/repo/repo-dependency-bump-planning.md` — pass.
+      workflow is indexed in `repo-governance/workflows/repo/README.md`. _Done: all 4 exist; indexed._
+- [x] [AI] `npx prettier --check repo-governance/workflows/repo/repo-dependency-bump-planning.md repo-governance/workflows/repo/README.md` and `npx markdownlint-cli2 repo-governance/workflows/repo/repo-dependency-bump-planning.md` — pass. _Done: prettier clean; 0 markdownlint errors._
 
 > **Pause Safety**: The planning workflow exists and passes naming validation; it references the
 > policy, the concurrency convention, and the waiver register (created next). Safe to stop. To
@@ -266,21 +292,30 @@ setup, planning)`, and added a `*-planning` accept case. `test:unit` passes; gol
 
 ## Phase 5: Security Waivers Register
 
-- [ ] [AI] Create `docs/reference/security-waivers.md` _New file_: a long-lived waiver register with
+- [x] [AI] Create `docs/reference/security-waivers.md` _New file_: a long-lived waiver register with
       an intro paragraph, a schema/columns description (Package, Pinned Version, CVE(s) + URL,
       Severity, Release Date, Justification, Sign-off, KEV dateAdded, EPSS), and an explicit
       "No waivers recorded yet." line. Link back to `dependency-bump-policy.md`. Acceptance: file
       exists; `grep -ci "waiver" <file>` ≥ 1; links resolve.
   - _Suggested executor: `docs-maker`_
-- [ ] [AI] Add an index entry to `docs/reference/README.md` linking `./security-waivers.md`.
+  - **Implementation Notes**: Created the register with "When to add an entry" (WAIVER /
+    FUNCTIONAL-HOLD / KEV-listed), a full-width table header (Date, Package, Pinned Version, Status,
+    CVE+URL, Severity, Release Date, EPSS, KEV dateAdded, KEV ransomware use, Justification,
+    Sign-off), "No waivers recorded yet.", a field reference, and References. Links back to the
+    policy and the planning workflow (both resolve). `grep -ci waiver` = 9; prettier + markdownlint
+    clean. **Date**: 2026-06-04. **Status**: Completed.
+    **Files Changed**: `docs/reference/security-waivers.md` (new).
+- [x] [AI] Add an index entry to `docs/reference/README.md` linking `./security-waivers.md`.
       Acceptance: `grep -c "security-waivers.md" docs/reference/README.md` ≥ 1.
+  - **Implementation Notes**: Added under "Quality Infrastructure". `grep -c` = 1; prettier clean.
+    **Date**: 2026-06-04. **Status**: Completed. **Files Changed**: `docs/reference/README.md`.
 
 ### Phase 5 Gate
 
 > All checks below must pass before starting Phase 6.
 
-- [ ] [AI] `test -f docs/reference/security-waivers.md` — exits 0.
-- [ ] [AI] `npx prettier --check docs/reference/security-waivers.md docs/reference/README.md` and `npx markdownlint-cli2 docs/reference/security-waivers.md` — pass.
+- [x] [AI] `test -f docs/reference/security-waivers.md` — exits 0. _Done._
+- [x] [AI] `npx prettier --check docs/reference/security-waivers.md docs/reference/README.md` and `npx markdownlint-cli2 docs/reference/security-waivers.md` — pass. _Done: prettier clean; 0 markdownlint errors._
 
 > **Pause Safety**: All five governance/reference artifacts now exist and are indexed. Safe to stop.
 > To resume: re-run the Phase 5 gate checks.

@@ -25,6 +25,7 @@ Technical reference documentation for the open-sharia-enterprise project. These 
 
 - [Code Coverage](./code-coverage.md) - How coverage is measured locally via rhino-cli, per-project details, exclusion patterns, and troubleshooting
 - [CRUD Apps CI Coverage](./crud-apps-ci-coverage.md) - CI status badges and coverage tracking for all CRUD app implementations
+- [Security Waivers Register](./security-waivers.md) - Long-lived register of dependency-bump security waivers (Path C) and functional holds (Rule 5b), with CVE / CISA KEV / EPSS columns, per the [Dependency Bump Stability & Safety Policy](../../repo-governance/development/workflow/dependency-bump-policy.md)
 
 ### AI Models
 
