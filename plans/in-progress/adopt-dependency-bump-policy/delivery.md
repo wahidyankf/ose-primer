@@ -361,20 +361,31 @@ setup, planning)`, and added a `*-planning` accept case. `test:unit` passes; gol
 
 ### Post-Push Verification
 
-- [ ] [AI] Push to `origin main`. Monitor GitHub Actions for the push using `ScheduleWakeup` +
+- [x] [AI] Push to `origin main`. Monitor GitHub Actions for the push using `ScheduleWakeup` +
       single `gh run view` per the [CI Monitoring Convention](../../../repo-governance/development/workflow/ci-monitoring.md).
-- [ ] [AI] Verify ALL CI workflows conclude `success`. If any fails, fix immediately (including
+  - **Implementation Notes**: Pushed `25d489c34..c970a869f` to `origin main`. The pre-push hook ran
+    the full gate suite (`nx affected -t typecheck lint test:quick spec-coverage`, `lint:md`,
+    `validate:naming-workflows`, `validate:mermaid`, `validate:cross-vendor-parity`) and passed.
+    `gh run list --commit c970a869f` returns 0 runs. **Date**: 2026-06-04. **Status**: Completed.
+- [x] [AI] Verify ALL CI workflows conclude `success`. If any fails, fix immediately (including
       preexisting failures), push a follow-up, and re-monitor. Do NOT proceed until CI is green.
+  - **Implementation Notes**: This repo has **no push-to-`main` CI workflows** — every
+    `.github/workflows/*.yml` is `pull_request`- or `workflow_dispatch`-triggered (verified by
+    inspecting each `on:` block). Direct trunk-based pushes are gated by the local pre-push hook,
+    which passed. Post-push CI verification is therefore vacuously green (0 runs triggered). No PR
+    was requested for this plan. **Date**: 2026-06-04. **Status**: Completed.
 
 ### Phase 6 Gate
 
 > All checks below must pass before archival.
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick` — exits 0.
-- [ ] [AI] `git diff --name-only origin/main...HEAD` contains no dependency-manifest version change
+- [x] [AI] `npx nx affected -t typecheck lint test:quick` — exits 0. _Done: 23 projects, success._
+- [x] [AI] `git diff --name-only origin/main...HEAD` contains no dependency-manifest version change
       (no `package.json`/`Cargo.toml`/`rust-toolchain.toml`/`go.mod`/`*.csproj`/`*.fsproj`/
-      `global.json`/`Dockerfile`/lockfile pin edits) — confirming Out-of-Scope held.
-- [ ] [AI] GitHub Actions for the latest push all conclude `success`.
+      `global.json`/`Dockerfile`/lockfile pin edits) — confirming Out-of-Scope held. _Done: only
+      rust/go validators + governance docs + register + plan files changed; no manifest edits._
+- [x] [AI] GitHub Actions for the latest push all conclude `success`. _Done (vacuous): no
+      push-to-main CI workflows exist; local pre-push gate is the enforced gate and passed._
 
 > **Pause Safety**: Adoption is complete, validated, pushed, and CI-green. Safe to stop. To resume:
 > proceed to Plan Archival.
