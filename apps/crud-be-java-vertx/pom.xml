@@ -16,15 +16,15 @@
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <vertx.version>4.5.12</vertx.version>
+        <vertx.version>4.5.26</vertx.version>
         <cucumber.version>7.34.2</cucumber.version>
         <junit.version>6.0.3</junit.version>
         <auth0.jwt.version>4.4.0</auth0.jwt.version>
         <jbcrypt.version>0.4</jbcrypt.version>
         <jspecify.version>1.0.0</jspecify.version>
-        <jackson.version>2.18.3</jackson.version>
+        <jackson.version>2.18.6</jackson.version>
         <liquibase.version>4.31.0</liquibase.version>
-        <postgresql.jdbc.version>42.7.5</postgresql.jdbc.version>
+        <postgresql.jdbc.version>42.7.11</postgresql.jdbc.version>
     </properties>
 
     <dependencyManagement>

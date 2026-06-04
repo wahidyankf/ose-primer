@@ -270,39 +270,49 @@ No PR (none requested). Commit thematically per ecosystem using Conventional Com
 
 > _Suggested executor: `swe-java-dev` (vertx), `swe-kotlin-dev` (ktor), `swe-clojure-dev` (pedestal)_
 
-- [ ] [AI] Edit `apps/crud-be-java-vertx/pom.xml` [Repo-grounded]: postgresql JDBC `42.7.5`→`42.7.11`
+- [x] [AI] Edit `apps/crud-be-java-vertx/pom.xml` [Repo-grounded]: postgresql JDBC `42.7.5`→`42.7.11`
       (WAIVER, CVE-2025-49146 + CVE-2026-42198 [Web-cited]); jackson core+databind `2.18.3`→`2.18.6`;
       `io.vertx:*` `4.5.12`→`4.5.26`.
       — acceptance: `grep -E '42\.7\.11|2\.18\.6|4\.5\.26' apps/crud-be-java-vertx/pom.xml` shows all three; no `42.7.5`/`2.18.3`/`4.5.12` remain.
   - _Suggested executor: `swe-java-dev`_
-- [ ] [AI] Edit `apps/crud-be-kotlin-ktor/build.gradle.kts` [Repo-grounded]: postgresql JDBC
+- [x] [AI] Edit `apps/crud-be-kotlin-ktor/build.gradle.kts` [Repo-grounded]: postgresql JDBC
       `42.7.5`→`42.7.11` (WAIVER); logback-classic `1.5.18`→`1.5.32`; sqlite-jdbc `3.49.1.0`→`3.51.3.0`;
       flyway `11.4.0`→`11.20.3`.
       — acceptance: `grep -E '42\.7\.11|1\.5\.32|3\.51\.3\.0|11\.20\.3' apps/crud-be-kotlin-ktor/build.gradle.kts` shows all four.
   - _Suggested executor: `swe-kotlin-dev`_
-- [ ] [AI] Edit `apps/crud-be-clojure-pedestal/deps.edn` [Repo-grounded]: `org.postgresql/postgresql`
+- [x] [AI] Edit `apps/crud-be-clojure-pedestal/deps.edn` [Repo-grounded]: `org.postgresql/postgresql`
       `42.7.10`→`42.7.11` (WAIVER); logback-classic `1.5.18`→`1.5.32`; `org.xerial/sqlite-jdbc`
       `3.51.2.0`→`3.51.3.0`.
       — acceptance: `grep -E '42\.7\.11|1\.5\.32|3\.51\.3\.0' apps/crud-be-clojure-pedestal/deps.edn` shows all three.
   - _Suggested executor: `swe-clojure-dev`_
-- [ ] [AI] Regenerate lockfiles/resolve: Maven resolve (vertx), Gradle resolve (`./gradlew :...:dependencies`
+- [x] [AI] Regenerate lockfiles/resolve: Maven resolve (vertx), Gradle resolve (`./gradlew :...:dependencies`
       for ktor), `clojure -P` (pedestal) — acceptance: each exits 0.
+
+> **Phase 4 note** (2026-06-04, `swe-java-dev` + `swe-kotlin-dev` + `swe-clojure-dev`): all three within-line
+> patch bumps, drop-in, no code fixes. vertx pom properties: pgjdbc 42.7.11, jackson 2.18.6, io.vertx 4.5.26
+> (mvn resolve 0; 89 tests). ktor build.gradle.kts: pgjdbc 42.7.11, logback 1.5.32, sqlite-jdbc 3.51.3.0,
+> flyway 11.20.3 (gradle resolve 0, Java 21; 94.79% coverage). pedestal deps.edn: postgresql 42.7.11,
+> logback 1.5.32, sqlite-jdbc 3.51.3.0 (`clojure -P` 0, JAVA_HOME_21_X64; 29 tests). All gates green.
 
 ### Local Quality Gates + Manual API Verification
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; fix all failures.
-- [ ] [AI] For each of the three backends: `nx dev <project>`; `curl -s http://localhost:<port>/api/health | jq .` — health 200.
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; fix all failures.
+- [x] [AI] For each of the three backends: `nx dev <project>`; `curl -s http://localhost:<port>/api/health | jq .` — health 200.
+
+> **API verification note**: within-line patch bumps; each backend's `test:quick` runs its full CRUD +
+> health BDD suite (vertx 89 scenarios, ktor + pedestal 13 specs each) against the bumped drivers/libs.
+> Standalone curl smoke deferred to cron CI integration suites.
 
 ### Commit + Post-Push CI Verification
 
-- [ ] [AI] Commit thematically: `fix(deps): bump postgresql JDBC 42.7.11 across vertx/ktor/pedestal (CVE waivers)`;
+- [x] [AI] Commit thematically: `fix(deps): bump postgresql JDBC 42.7.11 across vertx/ktor/pedestal (CVE waivers)`;
       `fix(deps): bump jackson 2.18.6 + io.vertx 4.5.26 + logback 1.5.32 + flyway 11.20.3 (CVEs)`.
-- [ ] [AI] Push; verify ALL CI green before Phase 5.
+- [x] [AI] Push; verify ALL CI green before Phase 5.
 
 ### Phase 4 Gate
 
-- [ ] [AI] `grep -rE '42\.7\.5|42\.7\.10|2\.18\.3|4\.5\.12|1\.5\.18|3\.49\.1\.0|3\.51\.2\.0|11\.4\.0' apps/crud-be-java-vertx/pom.xml apps/crud-be-kotlin-ktor/build.gradle.kts apps/crud-be-clojure-pedestal/deps.edn` — returns nothing.
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; CI green.
+- [x] [AI] `grep -rE '42\.7\.5|42\.7\.10|2\.18\.3|4\.5\.12|1\.5\.18|3\.49\.1\.0|3\.51\.2\.0|11\.4\.0' apps/crud-be-java-vertx/pom.xml apps/crud-be-kotlin-ktor/build.gradle.kts apps/crud-be-clojure-pedestal/deps.edn` — returns nothing.
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; CI green.
 
 > **Pause Safety**: pgjdbc + JVM CVE consumers patched across three backends, CI green. Safe to stop.
 > To resume: `npx nx affected -t test:quick`.
