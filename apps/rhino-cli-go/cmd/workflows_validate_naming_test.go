@@ -59,7 +59,7 @@ func (s *validateWorkflowsNamingUnitSteps) treeUnknownSuffix() error {
 		return []naming.Violation{{
 			Path:    "/mock-repo/repo-governance/workflows/specs/specs-validation.md",
 			Kind:    "type-suffix",
-			Message: `filename "specs-validation" does not end with any allowed suffix (quality-gate, execution, setup)`,
+			Message: `filename "specs-validation" does not end with any allowed suffix (quality-gate, execution, setup, planning)`,
 		}}, nil
 	}
 	return nil
@@ -201,6 +201,9 @@ func TestWorkflowsValidateNaming_RealTree(t *testing.T) {
 	writeFile(filepath.Join(planDir, "README.md"), "# idx\n")
 	writeFile(filepath.Join(planDir, "plan-execution.md"),
 		"---\nname: plan-execution\n---\nbody\n")
+	// A *-planning filename is an allowed suffix and must NOT be flagged.
+	writeFile(filepath.Join(planDir, "repo-dependency-bump-planning.md"),
+		"---\nname: repo-dependency-bump-planning\n---\nbody\n")
 	writeFile(filepath.Join(planDir, "specs-validation.md"),
 		"---\nname: specs-validation\n---\nbody\n") // bad suffix
 	writeFile(filepath.Join(planDir, "plan-quality-gate.md"),
@@ -221,7 +224,12 @@ func TestWorkflowsValidateNaming_RealTree(t *testing.T) {
 		if strings.Contains(v.Path, "/meta/") {
 			t.Errorf("meta/ file should be exempt but was flagged: %+v", v)
 		}
+		// The allowed *-planning suffix must never appear as a violation.
+		if strings.Contains(v.Path, "repo-dependency-bump-planning") {
+			t.Errorf("*-planning suffix should be accepted but was flagged: %+v", v)
+		}
 	}
+	// Only the bogus specs-validation suffix is rejected; *-planning is accepted.
 	if kinds["type-suffix"] != 1 {
 		t.Errorf("expected 1 type-suffix, got kinds=%v", kinds)
 	}

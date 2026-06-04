@@ -14,7 +14,7 @@ import (
 
 // workflowTypes enumerates the trailing type tokens permitted by the
 // workflow naming convention.
-var workflowTypes = []string{"quality-gate", "execution", "setup"}
+var workflowTypes = []string{"quality-gate", "execution", "setup", "planning"}
 
 // workflowsValidateNamingFn is the test-mockable entrypoint for workflow
 // naming validation.
@@ -27,7 +27,7 @@ var workflowsValidateNamingCmd = &cobra.Command{
 naming convention documented in repo-governance/conventions/structure/workflow-naming.md.
 
 The command enforces two rules:
-- Filename (sans .md) ends with one of: quality-gate, execution, setup.
+- Filename (sans .md) ends with one of: quality-gate, execution, setup, planning.
 - Frontmatter 'name:' field equals the filename (without .md).
 
 Exempt from validation:

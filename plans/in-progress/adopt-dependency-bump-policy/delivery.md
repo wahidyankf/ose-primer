@@ -107,7 +107,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 ## Phase 2: `planning` Workflow Type Support
 
-- [ ] [AI] Edit `repo-governance/conventions/structure/workflow-naming.md`: add a `planning` row to
+- [x] [AI] Edit `repo-governance/conventions/structure/workflow-naming.md`: add a `planning` row to
       the **Type Vocabulary** table (semantics: "single forward planning procedure whose terminal
       deliverable is a plan document; not an iterative maker/checker/fixer loop"; example:
       `repo-dependency-bump-planning`), and update the enforcement regex from
@@ -116,28 +116,52 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
       `grep -c "planning" repo-governance/conventions/structure/workflow-naming.md` ≥ 2 and the
       regex includes `planning`.
   - _Suggested executor: `repo-rules-maker`_
-- [ ] [AI] Edit `apps/rhino-cli-rust/src/commands/workflows.rs`: add `"planning"` to
+  - **Implementation Notes**: Added `planning` row to the Type Vocabulary table, updated the
+    enforcement regex at the Enforcement section AND the "Enforceable by checker" design-rationale
+    bullet (line ~20) to `-(quality-gate|execution|setup|planning)$`. `grep -c planning` = 3;
+    two regex occurrences now include `planning`. Prettier clean; markdownlint 0 errors.
+  - **Date**: 2026-06-04
+  - **Status**: Completed
+  - **Files Changed**: `repo-governance/conventions/structure/workflow-naming.md`
+- [x] [AI] Edit `apps/rhino-cli-rust/src/commands/workflows.rs`: add `"planning"` to
       `const WORKFLOW_TYPES`. Update/extend the adjacent unit tests so a `*-planning.md` filename is
       accepted. Acceptance: `npx nx run rhino-cli-rust:test` exits 0 and a test exercises a
       `-planning` suffix.
   - _Suggested executor: `swe-rust-dev`_
-- [ ] [AI] Edit `apps/rhino-cli-go/cmd/workflows_validate_naming.go`: add `"planning"` to
+  - **Implementation Notes**: `swe-rust-dev` added `"planning"` to `WORKFLOW_TYPES` (workflows.rs:41)
+    and two unit tests (`validate_naming_accepts_planning_suffix`, `..._rejects_bogus_suffix...`).
+    `test:unit` → 527 passed; fmt + clippy `-D warnings` clean. Actual target is `test:unit`.
+    No usage string enumerates suffixes, so none needed updating.
+  - **Date**: 2026-06-04
+  - **Status**: Completed
+  - **Files Changed**: `apps/rhino-cli-rust/src/commands/workflows.rs`
+- [x] [AI] Edit `apps/rhino-cli-go/cmd/workflows_validate_naming.go`: add `"planning"` to
       `var workflowTypes` and update the help/long-description string that enumerates allowed
       suffixes. Update `apps/rhino-cli-go/cmd/workflows_validate_naming_test.go` expectations
       (the message listing allowed suffixes) to include `planning`. Acceptance:
       `npx nx run rhino-cli-go:test` exits 0.
   - _Suggested executor: `swe-golang-dev`_
-- [ ] [AI] Run `rhino-cli workflows validate-naming` (via `npx nx run rhino-cli-rust:...` built
+  - **Implementation Notes**: `swe-golang-dev` added `"planning"` to `workflowTypes` (line 17),
+    updated the Long help string and the test's expected message to `(quality-gate, execution,
+setup, planning)`, and added a `*-planning` accept case. `test:unit` passes; golangci-lint 0
+    issues; gofmt clean. Actual target is `test:unit`.
+  - **Date**: 2026-06-04
+  - **Status**: Completed
+  - **Files Changed**: `apps/rhino-cli-go/cmd/workflows_validate_naming.go`, `apps/rhino-cli-go/cmd/workflows_validate_naming_test.go`
+- [x] [AI] Run `rhino-cli workflows validate-naming` (via `npx nx run rhino-cli-rust:...` built
       binary or the repo's wired command) against the workflows tree. Acceptance: command reports no
       violations for existing files (the new workflow lands in Phase 4).
+  - **Implementation Notes**: Wired target is `validate:naming-workflows`. Ran for both projects:
+    "Workflows naming validation: VALIDATION PASSED (0 violations)" on each. **Date**: 2026-06-04.
+    **Status**: Completed. **Files Changed**: none (validation run).
 
 ### Phase 2 Gate
 
 > All checks below must pass before starting Phase 3.
 
-- [ ] [AI] `npx nx run rhino-cli-rust:test:unit` — exits 0.
-- [ ] [AI] `npx nx run rhino-cli-go:test:unit` — exits 0.
-- [ ] [AI] `printf 'repo-dependency-bump-planning\n' | grep -E -- '-(quality-gate|execution|setup|planning)$'` — prints the line (regex now accepts the suffix).
+- [x] [AI] `npx nx run rhino-cli-rust:test:unit` — exits 0. _Done: 527 passed._
+- [x] [AI] `npx nx run rhino-cli-go:test:unit` — exits 0. _Done: all packages ok._
+- [x] [AI] `printf 'repo-dependency-bump-planning\n' | grep -E -- '-(quality-gate|execution|setup|planning)$'` — prints the line (regex now accepts the suffix). _Done: REGEX_OK._
 
 > **Pause Safety**: The `planning` type is accepted by the convention and both validators, but no
 > workflow file uses it yet — naming validation is green. Safe to stop indefinitely. To resume:

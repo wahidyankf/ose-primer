@@ -38,7 +38,7 @@ Global Flags:\n      \
 
 /// Trailing type tokens permitted by the workflow naming convention. Mirrors Go
 /// `workflowTypes`.
-const WORKFLOW_TYPES: &[&str] = &["quality-gate", "execution", "setup"];
+const WORKFLOW_TYPES: &[&str] = &["quality-gate", "execution", "setup", "planning"];
 
 pub fn run_validate_naming(output: OutputFormat, verbose: bool, quiet: bool) -> Result<(), Error> {
     let repo_root =
@@ -179,6 +179,40 @@ mod tests {
         std::fs::write(root.join("foo-bar.md"), "---\nname: foo-bar\n---\n").unwrap();
         let result = workflows_validate_naming(tmp.path()).unwrap();
         assert!(result.iter().any(|v| v.kind == "type-suffix"));
+    }
+
+    #[test]
+    fn validate_naming_accepts_planning_suffix() {
+        let tmp = TempDir::new().unwrap();
+        let root = tmp.path().join("repo-governance/workflows");
+        std::fs::create_dir_all(&root).unwrap();
+        std::fs::write(
+            root.join("repo-dependency-bump-planning.md"),
+            "---\nname: repo-dependency-bump-planning\n---\n",
+        )
+        .unwrap();
+        let result = workflows_validate_naming(tmp.path()).unwrap();
+        assert!(
+            result.is_empty(),
+            "a `-planning` suffix must be accepted, got: {result:?}"
+        );
+    }
+
+    #[test]
+    fn validate_naming_rejects_bogus_suffix_alongside_planning() {
+        let tmp = TempDir::new().unwrap();
+        let root = tmp.path().join("repo-governance/workflows");
+        std::fs::create_dir_all(&root).unwrap();
+        std::fs::write(
+            root.join("repo-dependency-bump-bogus.md"),
+            "---\nname: repo-dependency-bump-bogus\n---\n",
+        )
+        .unwrap();
+        let result = workflows_validate_naming(tmp.path()).unwrap();
+        assert!(
+            result.iter().any(|v| v.kind == "type-suffix"),
+            "a bogus suffix must still be rejected, got: {result:?}"
+        );
     }
 
     #[test]
