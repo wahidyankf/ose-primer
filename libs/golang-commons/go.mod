@@ -1,6 +1,6 @@
 module github.com/wahidyankf/ose-public/libs/golang-commons
 
-go 1.26
+go 1.26.4
 
 tool github.com/vladopajic/go-test-coverage/v2
 
@@ -14,9 +14,8 @@ require (
 	github.com/cucumber/messages/go/v21 v21.0.1 // indirect
 	github.com/gofrs/uuid v4.3.1+incompatible // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
-	github.com/google/go-cmp v0.7.0 // indirect
-	github.com/google/go-github/v56 v56.0.0 // indirect
-	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/google/go-github/v82 v82.0.0 // indirect
+	github.com/google/go-querystring v1.2.0 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-memdb v1.3.4 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
@@ -28,7 +27,7 @@ require (
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	github.com/rs/zerolog v1.34.0 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
-	github.com/vladopajic/go-test-coverage/v2 v2.18.3 // indirect
+	github.com/vladopajic/go-test-coverage/v2 v2.18.4 // indirect
 	golang.org/x/image v0.18.0 // indirect
 	golang.org/x/net v0.50.0 // indirect
 	golang.org/x/sys v0.41.0 // indirect
