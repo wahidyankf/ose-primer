@@ -10,7 +10,6 @@ defmodule CrudBeExph.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      listeners: [Phoenix.CodeReloader],
       test_coverage: [tool: ExCoveralls],
       test_paths: test_paths(Mix.env()),
       test_pattern: "**/*_{test,steps}.exs",
@@ -55,26 +54,28 @@ defmodule CrudBeExph.MixProject do
   defp deps do
     [
       # Phoenix framework + Ecto
-      {:phoenix, "~> 1.7"},
-      {:phoenix_ecto, "~> 4.5"},
-      {:ecto_sql, "~> 3.12"},
-      {:postgrex, ">= 0.0.0"},
-      {:telemetry_metrics, "~> 1.0"},
-      {:telemetry_poller, "~> 1.0"},
-      {:gettext, "~> 1.0"},
-      {:jason, "~> 1.2"},
-      {:dns_cluster, "~> 0.2.0"},
+      {:phoenix, "== 1.7.23"},
+      {:phoenix_ecto, "== 4.7.0"},
+      {:ecto_sql, "== 3.13.4"},
+      {:postgrex, "== 0.22.2"},
+      {:telemetry_metrics, "== 1.1.0"},
+      {:telemetry_poller, "== 1.3.0"},
+      {:gettext, "== 1.0.2"},
+      {:jason, "== 1.4.4"},
+      {:dns_cluster, "== 0.2.0"},
+      # Plug pinned explicitly (CVE-2026-8468); previously transitive via Phoenix/Bandit
+      {:plug, "== 1.19.2"},
       # Phoenix 1.7+ defaults to Bandit (not Cowboy)
-      {:bandit, "~> 1.5"},
+      {:bandit, "== 1.11.1"},
       # Auth: JWT + password hashing
-      {:guardian, "~> 2.3"},
-      {:bcrypt_elixir, "~> 3.0"},
+      {:guardian, "== 2.4.0"},
+      {:bcrypt_elixir, "== 3.3.2"},
       # Test / BDD — vendored forks (local path deps, not Hex)
       {:elixir_gherkin, path: "../../libs/elixir-gherkin", only: [:test, :integration]},
       {:elixir_cabbage, path: "../../libs/elixir-cabbage", only: [:test, :integration]},
-      {:excoveralls, "~> 0.18", only: :test},
+      {:excoveralls, "== 0.18.5", only: :test},
       # Dev / quality
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "== 1.7.17", only: [:dev, :test], runtime: false}
     ]
   end
 

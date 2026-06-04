@@ -34,8 +34,8 @@ defmodule ElixirGherkin.Mixfile do
       # ExCoveralls module is not in the VM's code path at coverage-setup time.
       # Use the custom cover.lcov alias (below) which pre-starts :tools so
       # :cover.stop() does not fail on first use.
-      {:excoveralls, "0.18.3", only: :test},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:excoveralls, "== 0.18.5", only: :test},
+      {:credo, "== 1.7.17", only: [:dev, :test], runtime: false}
     ]
   end
 
