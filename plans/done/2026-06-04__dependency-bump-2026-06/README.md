@@ -4,6 +4,32 @@ Security-first, policy-driven dependency-bump plan for the `ose-primer` polyglot
 covering all dependency-bearing manifests across 11 language ecosystems plus Docker base images
 and GitHub Actions.
 
+## Completion status (2026-06-04)
+
+**Executed and pushed to `origin main`** — all AI-executable work across Phases 0–15 is complete;
+each ecosystem phase was committed thematically and pushed (npm → .NET → Spring Boot → JVM CVE
+consumers → Python → Elixir → Clojure → Go → Rust → Kotlin/Java breaking migrations → Dart → Docker
+→ GitHub Actions → re-audit/KEV/waiver-register → archival). Local pre-push gate (typecheck + lint +
+test:quick + spec-coverage across the affected polyglot graph + markdownlint) was green on every
+push. Per-app CI runs on the weekly `schedule` + `workflow_dispatch` (this repo's workflows are not
+push-triggered), so the local affected gate is the effective per-push gate.
+
+### Deferred `[HUMAN]` operator follow-ups (2 items)
+
+These were intentionally NOT performed by the agent (toolchain mutation / supply-chain decision) and
+are tracked for the operator:
+
+1. **Flutter SDK floor raise** (Phase 11) — the proposed `>=3.44.0` floor was kept at `>=3.41.4`
+   because raising it requires a host `flutter upgrade` (local Flutter is 3.41.5). A `# TODO [HUMAN]`
+   comment in `apps/crud-fe-dart-flutterweb/pubspec.yaml` records it. The dependency pins (dio 5.9.2,
+   web 1.1.1, flutter_lints 6.0.0) shipped. CI's `subosito/flutter-action` stable channel already
+   satisfies `>=3.44.0`. **Moot for this bump** — no dependency required the raise.
+2. **Flutter build-image migration** (Phase 12) — `ghcr.io/cirruslabs/flutter:stable` is discontinued
+   upstream (EOL 2026-05-01). The agent must not pick a replacement image; the build-stage line is
+   left untouched (its runtime `nginx:alpine` stage was pinned). **Operator action**: replace it with
+   a maintained, exactly-pinned image (e.g. `instrumentisto/flutter` or a custom `dart:stable`-based
+   image) and confirm `docker build` succeeds. Recorded in `delivery.md` Phase 12.
+
 ## Context
 
 This plan operationalizes the clearance decisions in the
