@@ -4,7 +4,7 @@
 
 services:
   crud-be-kotlin-ktor-db:
-    image: postgres:17-alpine
+    image: postgres:17.10-alpine3.22
     container_name: crud-be-kotlin-ktor-db
     environment:
       POSTGRES_DB: crud_be_kotlin_ktor

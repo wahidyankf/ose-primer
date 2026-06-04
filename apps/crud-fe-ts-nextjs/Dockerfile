@@ -1,11 +1,11 @@
 # Build context: workspace root (../../.. from infra/dev/crud-fe-ts-nextjs/)
-FROM node:24-alpine AS deps
+FROM node:24.16.0-alpine3.22 AS deps
 WORKDIR /app
 # Install only the app's own dependencies (not workspace mode)
 COPY apps/crud-fe-ts-nextjs/package.json ./
 RUN npm install
 
-FROM node:24-alpine AS build
+FROM node:24.16.0-alpine3.22 AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY apps/crud-fe-ts-nextjs/src/ ./src/
@@ -20,7 +20,7 @@ ARG BACKEND_URL=http://crud-be:8201
 ENV BACKEND_URL=${BACKEND_URL}
 RUN npx next build
 
-FROM node:24-alpine
+FROM node:24.16.0-alpine3.22
 
 LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="Demo frontend built with TypeScript and Next.js"

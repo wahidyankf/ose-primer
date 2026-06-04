@@ -1,11 +1,11 @@
-FROM node:24-alpine AS build
+FROM node:24.16.0-alpine3.22 AS build
 WORKDIR /app
 COPY package.json ./
 RUN npm install
 COPY . .
 RUN npx vite build
 
-FROM node:24-alpine
+FROM node:24.16.0-alpine3.22
 
 LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="Demo frontend built with TypeScript and TanStack Start"

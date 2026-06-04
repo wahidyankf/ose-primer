@@ -1,10 +1,10 @@
-FROM node:24-alpine AS deps
+FROM node:24.16.0-alpine3.22 AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY apps/crud-fs-ts-nextjs/package.json ./apps/crud-fs-ts-nextjs/
 RUN npm ci --ignore-scripts
 
-FROM node:24-alpine AS builder
+FROM node:24.16.0-alpine3.22 AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/crud-fs-ts-nextjs/node_modules ./apps/crud-fs-ts-nextjs/node_modules
@@ -21,7 +21,7 @@ WORKDIR /app/apps/crud-fs-ts-nextjs
 RUN npx @hey-api/openapi-ts -i ../../specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -o src/generated-contracts -s
 RUN npx next build
 
-FROM node:24-alpine AS runner
+FROM node:24.16.0-alpine3.22 AS runner
 
 LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="Demo fullstack application built with TypeScript and Next.js"

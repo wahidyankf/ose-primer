@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM eclipse-temurin:25-jdk-alpine AS build
+FROM eclipse-temurin:25.0.3_9-jdk-alpine3.22 AS build
 RUN apk add --no-cache maven
 WORKDIR /build
 COPY pom.xml .
@@ -8,7 +8,7 @@ COPY src/ src/
 RUN mvn clean package -DskipTests -Dmaven.antrun.skip=true -B
 
 # Stage 2: Runtime
-FROM eclipse-temurin:25-jre-alpine
+FROM eclipse-temurin:25.0.3_9-jre-alpine3.22
 
 LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="Demo backend REST API built with Java and Spring Boot"

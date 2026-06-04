@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17-alpine
+    image: postgres:17.10-alpine3.22
     environment:
       POSTGRES_DB: crud_be_csas_test
       POSTGRES_USER: crud_be_csas

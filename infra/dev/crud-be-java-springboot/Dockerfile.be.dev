@@ -2,7 +2,7 @@
 # This image extends the base JDK image with Maven pre-installed
 # to avoid reinstalling Maven on every container restart.
 
-FROM eclipse-temurin:25-jdk-alpine
+FROM eclipse-temurin:25.0.3_9-jdk-alpine3.22
 
 # Install Maven and curl once during image build (not at runtime)
 # This saves ~10-20 seconds on every 'docker compose up'

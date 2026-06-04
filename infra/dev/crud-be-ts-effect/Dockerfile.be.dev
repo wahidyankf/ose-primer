@@ -1,7 +1,7 @@
 # Development Docker Image for Demo Backend (TSEX — TypeScript/Effect)
 # Uses Node.js 24 Alpine with npm for dependency management.
 
-FROM node:24-alpine
+FROM node:24.16.0-alpine3.22
 
 # Install curl for healthcheck
 RUN apk add --no-cache curl

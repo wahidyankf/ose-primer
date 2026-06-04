@@ -1,4 +1,4 @@
-FROM golang:1.25-alpine AS build
+FROM golang:1.25.11-alpine3.22 AS build
 RUN apk add --no-cache build-base git
 WORKDIR /build
 COPY go.mod go.sum ./
@@ -6,7 +6,7 @@ RUN go mod download
 COPY . .
 RUN go build -o server ./cmd/server/
 
-FROM alpine:3.22
+FROM alpine:3.22.4
 
 LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="Demo backend REST API built with Go and Gin"

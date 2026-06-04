@@ -4,7 +4,7 @@
 
 services:
   crud-be-ts-effect-db:
-    image: postgres:17-alpine
+    image: postgres:17.10-alpine3.22
     container_name: crud-be-ts-effect-db
     environment:
       POSTGRES_DB: crud_be_ts_effect

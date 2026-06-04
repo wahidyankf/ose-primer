@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:17-alpine
+    image: postgres:17.10-alpine3.22
     environment:
       POSTGRES_DB: crud_fs_ts_nextjs_test
       POSTGRES_USER: crud_fs_ts_nextjs_test
