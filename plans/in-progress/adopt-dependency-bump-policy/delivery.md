@@ -171,7 +171,7 @@ setup, planning)`, and added a `*-planning` accept case. `test:unit` passes; gol
 
 ## Phase 3: Subagent Orchestration Convention
 
-- [ ] [AI] Create `repo-governance/development/agents/subagent-orchestration.md` _New file_,
+- [x] [AI] Create `repo-governance/development/agents/subagent-orchestration.md` _New file_,
       adopting the upstream subagent-orchestration convention referenced by the planning workflow:
       document the rule that delegated research/analysis subagents are capped at **3 concurrent**,
       grouped by batch rather than one-agent-per-item, with rationale and the principles it
@@ -179,17 +179,31 @@ setup, planning)`, and added a `*-planning` accept case. `test:unit` passes; gol
       `automation-over-manual.md`). Acceptance: file exists;
       `grep -ci "concurren" <file>` ≥ 1; all relative links resolve.
   - _Suggested executor: `repo-rules-maker`_
-- [ ] [AI] Add an index entry to `repo-governance/development/agents/README.md` linking
+  - **Implementation Notes**: Adopted the upstream ose-public convention verbatim in substance
+    (Standard 1 cap=3, Standard 2 3-minute mtime stuck-detection, Standard 3 chunk sizing,
+    Standard 4 agentId/task-notification handling, anti-patterns, tooling table). All 9 relative
+    links verified with `test -f` (deliberate-problem-solving, root-cause-orientation,
+    simplicity-over-complexity, explicit-over-implicit, quality, file-naming,
+    agent-workflow-orchestration, ai-agents, ci-monitoring). `grep -ci concurren` = 8; prettier +
+    markdownlint clean. (The upstream cites `ci-monitoring`/`agent-workflow-orchestration` rather
+    than `web-research-delegation`; kept the faithful upstream link set, all of which exist here.)
+  - **Date**: 2026-06-04
+  - **Status**: Completed
+  - **Files Changed**: `repo-governance/development/agents/subagent-orchestration.md` (new)
+- [x] [AI] Add an index entry to `repo-governance/development/agents/README.md` linking
       `./subagent-orchestration.md`. Acceptance:
       `grep -c "subagent-orchestration.md" repo-governance/development/agents/README.md` ≥ 1.
+  - **Implementation Notes**: Added Documents entry after Agent Workflow Orchestration. `grep -c` = 1;
+    prettier clean. **Date**: 2026-06-04. **Status**: Completed.
+    **Files Changed**: `repo-governance/development/agents/README.md`.
 
 ### Phase 3 Gate
 
 > All checks below must pass before starting Phase 4.
 
-- [ ] [AI] `test -f repo-governance/development/agents/subagent-orchestration.md` — exits 0.
-- [ ] [AI] `npx prettier --check repo-governance/development/agents/subagent-orchestration.md repo-governance/development/agents/README.md` — passes.
-- [ ] [AI] `npx markdownlint-cli2 repo-governance/development/agents/subagent-orchestration.md` — no errors.
+- [x] [AI] `test -f repo-governance/development/agents/subagent-orchestration.md` — exits 0. _Done._
+- [x] [AI] `npx prettier --check repo-governance/development/agents/subagent-orchestration.md repo-governance/development/agents/README.md` — passes. _Done._
+- [x] [AI] `npx markdownlint-cli2 repo-governance/development/agents/subagent-orchestration.md` — no errors. _Done: 0 error(s)._
 
 > **Pause Safety**: The concurrency-cap convention the planning workflow depends on now exists and
 > is indexed. Safe to stop indefinitely. To resume: re-run the Phase 3 gate checks.
