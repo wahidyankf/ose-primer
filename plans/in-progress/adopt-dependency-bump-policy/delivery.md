@@ -326,22 +326,38 @@ setup, planning)`, and added a `*-planning` accept case. `test:unit` passes; gol
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] Run affected typecheck/lint/test: `npx nx affected -t typecheck lint test:quick` —
+- [x] [AI] Run affected typecheck/lint/test: `npx nx affected -t typecheck lint test:quick` —
       exits 0. Fix ALL failures found, including any preexisting (root cause orientation).
-- [ ] [AI] Validate internal links in all created/edited markdown files (resolve every relative
+  - **Implementation Notes**: "Successfully ran targets typecheck, lint, test:quick for 23 projects"
+    (+18 dependency tasks). rhino-cli-go coverage 90.09% ≥ 90% threshold. No failures. (One
+    cosmetic Nx "flaky task" note for `crud-be-elixir-phoenix:codegen`; the run still succeeded.)
+    **Date**: 2026-06-04. **Status**: Completed. **Files Changed**: none (gate run).
+- [x] [AI] Validate internal links in all created/edited markdown files (resolve every relative
       link via `Bash test -f`/`test -d`). Acceptance: zero broken internal links.
   - _Suggested executor: `docs-link-checker`_
-- [ ] [AI] Run the workflow-naming validators one final time:
+  - **Implementation Notes**: Resolved every `./`/`../` `.md` link across all 10 new/edited files
+    via `test -f` → `broken_count=0`. The repo-wide `rhino-cli git pre-commit` link checker also
+    passed on every commit (it blocked the Phase 4 commit until `security-waivers.md` existed,
+    confirming it is active). **Date**: 2026-06-04. **Status**: Completed.
+    **Files Changed**: none (validation).
+- [x] [AI] Run the workflow-naming validators one final time:
       `npx nx run rhino-cli-rust:validate:naming-workflows && npx nx run rhino-cli-go:validate:naming-workflows`
       — both exit 0; also `npx nx run rhino-cli-rust:test:unit && npx nx run rhino-cli-go:test:unit` — both exit 0.
+  - **Implementation Notes**: Both validators "VALIDATION PASSED (0 violations)"; both `test:unit`
+    pass (covered by the affected run). **Date**: 2026-06-04. **Status**: Completed.
+    **Files Changed**: none.
 
 ### Commit Guidelines
 
-- [ ] [AI] Commit thematically with Conventional Commits: e.g.
+- [x] [AI] Commit thematically with Conventional Commits: e.g.
       `docs(governance): adopt dependency-bump policy from ose-public`,
       `feat(rhino-cli): add planning workflow type token`,
       `docs(workflows): adopt repo-dependency-bump-planning workflow`. Split concerns; do not bundle
       the validator change with unrelated docs.
+  - **Implementation Notes**: Five thematic commits — establish plan; `docs(governance)` policy;
+    `feat(rhino-cli)` planning type token (rust+go validators, isolated from docs);
+    `docs(governance)` subagent-orchestration; `docs(workflows)` planning workflow + waivers
+    register. **Date**: 2026-06-04. **Status**: Completed.
 
 ### Post-Push Verification
 
