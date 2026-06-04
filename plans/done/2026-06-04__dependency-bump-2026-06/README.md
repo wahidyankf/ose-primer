@@ -30,6 +30,19 @@ are tracked for the operator:
    a maintained, exactly-pinned image (e.g. `instrumentisto/flutter` or a custom `dart:stable`-based
    image) and confirm `docker build` succeeds. Recorded in `delivery.md` Phase 12.
 
+One Phase 12 `[AI]` step is also deferred: **per-Dockerfile `docker build` verification** was not run
+locally (impractical for 30+ images without a running daemon); the exact base-image tags were validated
+against Docker Hub in the clearance report and are built by the cron CI Docker workflows.
+
+## Post-execution recheck (2026-06-04)
+
+A full recheck confirmed: HEAD == `origin/main`; full `nx run-many -t test:quick --all` green (all 25
+projects, exit 0); every security-critical pin matches its claim; `docs/reference/security-waivers.md`
+holds 13 WAIVER + 1 FUNCTIONAL-HOLD; no in-scope floating Docker base image or old GitHub Action major
+remains. The recheck also caught and fixed two residuals: three `crud-be-fsharp-giraffe` packages still
+floated (`BCrypt.Net-Next 4.*` resolved to a post-cutoff 4.2.1 — repinned exact to `4.0.3` matching the
+C# app; analyzers pinned to `0.5.0` / `0.22.0`), and `go.work.sum` had an uncommitted checksum update.
+
 ## Context
 
 This plan operationalizes the clearance decisions in the

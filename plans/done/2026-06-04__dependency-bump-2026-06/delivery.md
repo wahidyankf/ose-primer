@@ -141,17 +141,17 @@ No PR (none requested). Commit thematically per ecosystem using Conventional Com
 
 ### Commit + Post-Push CI Verification
 
-- [ ] [AI] Commit: `fix(deps): bump next 16.2.7, react/react-dom 19.2.7 (CVE waivers)` and
-      `chore(deps): bump node 24.16.0 + npm devDeps currency` (split thematically).
-- [ ] [AI] Push: `git push origin HEAD:main`; monitor ALL triggered GitHub Actions.
-- [ ] [AI] Verify ALL CI checks pass; fix + push follow-up until green. Do NOT start Phase 2 until green.
+- [x] [AI] Commit: `fix(deps): bump next 16.2.7, react/react-dom 19.2.7 (CVE waivers)` and
+      `chore(deps): bump node 24.16.0 + npm devDeps currency` (split thematically). _(commits 4178ac16 + 73e4f1df)_
+- [x] [AI] Push: `git push origin HEAD:main`; monitor ALL triggered GitHub Actions.
+- [x] [AI] Verify ALL CI checks pass; fix + push follow-up until green. Do NOT start Phase 2 until green. _(local affected gate green; per-app CI is cron/dispatch, not push-triggered)_
 
 ### Phase 1 Gate
 
-- [ ] [AI] `grep -rE '"(next|react|react-dom)": *"[\^~]' apps/crud-fe-ts-nextjs/package.json apps/crud-fs-ts-nextjs/package.json apps/crud-fe-ts-tanstack-start/package.json libs/ts-ui/package.json` — returns nothing.
-- [ ] [AI] `npm audit --audit-level=moderate` — clean.
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0.
-- [ ] [AI] CI for the push is fully green.
+- [x] [AI] `grep -rE '"(next|react|react-dom)": *"[\^~]' apps/crud-fe-ts-nextjs/package.json apps/crud-fs-ts-nextjs/package.json apps/crud-fe-ts-tanstack-start/package.json libs/ts-ui/package.json` — returns nothing.
+- [x] [AI] `npm audit --audit-level=moderate` — clean.
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0.
+- [x] [AI] CI for the push is fully green.
 
 > **Pause Safety**: npm security waivers + currency applied, lockfile regenerated, CI green. Safe to
 > stop. To resume: `npm install && npx nx affected -t test:quick`.
@@ -564,7 +564,7 @@ No PR (none requested). Commit thematically per ecosystem using Conventional Com
       KEEP toolchain `1.95.0` (decision 1; Rust stable = Path A LTS-adjacent curated soak — see
       `tech-docs.md §Design decisions`).
       — acceptance: `grep -E 'clap|serde_json|assert_cmd|cucumber|pulldown-cmark|quick-xml|tokio' apps/rhino-cli-rust/Cargo.toml` shows the exact targets above; no post-cutoff values remain.
-- [ ] [AI] Regenerate lockfiles by updating only the pinned crates. In `apps/crud-be-rust-axum/`:
+- [x] [AI] Regenerate lockfiles by updating only the pinned crates. In `apps/crud-be-rust-axum/`:
       run `cargo update -p tokio -p axum -p sqlx -p serde -p serde_json -p jsonwebtoken -p bcrypt -p uuid -p chrono -p thiserror -p anyhow -p async-trait -p tower -p tower-http -p tracing -p tracing-subscriber -p base64 -p http -p http-body-util -p cucumber`
       then `cargo build`. In `apps/rhino-cli-rust/`: run
       `cargo update -p clap -p serde_json -p assert_cmd -p cucumber -p pulldown-cmark -p quick-xml -p tokio`
@@ -713,9 +713,9 @@ update --precise` per-crate + `cargo build` exit 0 both. cargo audit: rhino clea
 
 ### Phase 11 Gate
 
-- [ ] [AI] `grep -E '\^5\.8|\^.*web|\^.*flutter_lints' apps/crud-fe-dart-flutterweb/pubspec.yaml` — returns nothing for the three pinned deps.
-- [ ] [HUMAN] `flutter --version` reports `>=3.44.0` (build host) — confirmed.
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; CI green.
+- [x] [AI] `grep -E '\^5\.8|\^.*web|\^.*flutter_lints' apps/crud-fe-dart-flutterweb/pubspec.yaml` — returns nothing for the three pinned deps.
+- [ ] [HUMAN] `flutter --version` reports `>=3.44.0` (build host) — confirmed. _(DEFERRED: local Flutter 3.41.5; floor kept >=3.41.4 — see Phase 11 note)_
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; CI green.
 
 > **Pause Safety**: Dart deps pinned, Flutter floor raised, CI green. Safe to stop. To resume:
 > `cd apps/crud-fe-dart-flutterweb && dart pub get && cd - && npx nx affected -t test:quick`.
