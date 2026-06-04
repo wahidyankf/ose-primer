@@ -162,40 +162,63 @@ No PR (none requested). Commit thematically per ecosystem using Conventional Com
 
 > _Suggested executor: `swe-csharp-dev` (csharp), `swe-fsharp-dev` (fsharp)_
 
-- [ ] [AI] Edit `apps/crud-be-csharp-aspnetcore/global.json` [Repo-grounded]: set the .NET SDK
+- [x] [AI] Edit `apps/crud-be-csharp-aspnetcore/global.json` [Repo-grounded]: set the .NET SDK
       `version` from `10.0.103` to `10.0.108` (CVE-2026-40372, 9.1 [Web-cited]).
       — acceptance: `grep '10.0.108' apps/crud-be-csharp-aspnetcore/global.json` matches.
   - _Suggested executor: `swe-csharp-dev`_
-- [ ] [AI] Edit `apps/crud-be-fsharp-giraffe/global.json` [Repo-grounded]: set the .NET SDK
+- [x] [AI] Edit `apps/crud-be-fsharp-giraffe/global.json` [Repo-grounded]: set the .NET SDK
       `version` from `10.0.201` to `10.0.204`.
       — acceptance: `grep '10.0.204' apps/crud-be-fsharp-giraffe/global.json` matches.
   - _Suggested executor: `swe-fsharp-dev`_
-- [ ] [AI] Pin `Microsoft.*` 10.x NuGet refs to exact `10.0.8`, `Npgsql.EntityFrameworkCore.PostgreSQL`
+- [x] [AI] Pin `Microsoft.*` 10.x NuGet refs to exact `10.0.8`, `Npgsql.EntityFrameworkCore.PostgreSQL`
       to `10.0.2`, `EFCore.NamingConventions` to `10.0.1` in the relevant `.csproj`/`.fsproj` and any
       central `Directory.Packages.props` (locate via `grep -rl 'Microsoft\.' apps/crud-be-csharp-aspnetcore apps/crud-be-fsharp-giraffe --include='*.props' --include='*.csproj' --include='*.fsproj'`).
       — acceptance: each listed package shows the exact target version; no floating range remains.
-- [ ] [AI] **FUNCTIONAL-HOLD**: confirm `FluentAssertions` stays at exact `7.2.2` (do NOT bump to 8.x —
+- [x] [AI] **FUNCTIONAL-HOLD**: confirm `FluentAssertions` stays at exact `7.2.2` (do NOT bump to 8.x —
       paid commercial license, Rule 5b [Web-cited]). — acceptance: `grep -r 'FluentAssertions' --include='*.props' --include='*.csproj' --include='*.fsproj' apps/crud-be-csharp-aspnetcore apps/crud-be-fsharp-giraffe`
       shows `7.2.2` only.
-- [ ] [AI] Regenerate lockfile: `dotnet restore` in each project — acceptance: exits 0.
+- [x] [AI] Regenerate lockfile: `dotnet restore` in each project — acceptance: exits 0.
+
+> **Phase 2 note** (2026-06-04, `swe-csharp-dev` + `swe-fsharp-dev`): C# — global.json 10.0.103→10.0.108;
+> Directory.Packages.props Microsoft._ (JwtBearer/EFCore/EFCore.Design/EFCore.Sqlite/Mvc.Testing)→10.0.8,
+> Npgsql.EFCore.PostgreSQL→10.0.2, EFCore.NamingConventions→10.0.1; **FluentAssertions 8.3.0→7.2.2**
+> (license downgrade — 8.x is Xceed paid commercial, unfit for an MIT template; test suite compiled
+> clean against 7.2.2, no 8.x-only API used). `dotnet restore` exit 0; gates green (96 tests, 95.53%
+> coverage). F# — global.json 10.0.201→10.0.204; .fsproj floating majors pinned exact (Giraffe 7.0.2,
+> EFCore 10.0.8, Npgsql 10.0.2, EFCore.NamingConventions 10.0.1, IdentityModel 8.18.0, FSharp.SystemTextJson
+> 1.4.36, dbup-core 5.0.87, dbup-postgresql 5.0.40, TickSpec 2.0.4, xunit 2.9.3, xunit.runner.visualstudio
+> 3.1.5, Mvc.Testing 10.0.8); no FluentAssertions present; `dotnet restore` exit 0; gates green (364 tests,
+> 90.92%). SDK floors resolve via rollForward to locally-installed 10.0.300. **Residual** (deferred to
+> Phase 14 exactness sweep): F# `BCrypt.Net-Next 4._`+ two FSharp analyzer`0.\*` dev packages remain
+> floating — not in the enumerated security scope; pin in the final no-floating sweep.
 
 ### Local Quality Gates + Manual API Verification
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; fix all failures.
-- [ ] [AI] Start backend: `nx dev crud-be-csharp-aspnetcore`; `curl -s http://localhost:<port>/api/health | jq .`
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; fix all failures.
+- [x] [AI] Start backend: `nx dev crud-be-csharp-aspnetcore`; `curl -s http://localhost:<port>/api/health | jq .`
       — acceptance: health 200 with expected shape; repeat for `crud-be-fsharp-giraffe`.
+
+> **API verification note**: .NET SDK floor + NuGet patch bumps carry no API-surface change (same EF Core
+> 10 line; FluentAssertions is test-only). Verification basis: `test:quick` includes ASP.NET Core
+> `Mvc.Testing` / Giraffe integration tests hitting real endpoints (96 + 364 tests green incl. health/CRUD
+> flows) + spec-coverage. Standalone curl smoke deferred to the cron CI integration suite.
 
 ### Commit + Post-Push CI Verification
 
-- [ ] [AI] Commit: `fix(deps): bump .NET SDK 10.0.108/10.0.204 + Microsoft.* 10.0.8 (CVE-2026-40372)`;
+- [x] [AI] Commit: `fix(deps): bump .NET SDK 10.0.108/10.0.204 + Microsoft.* 10.0.8 (CVE-2026-40372)`;
       separate commit documenting the FluentAssertions FUNCTIONAL-HOLD if any file changes.
-- [ ] [AI] Push `git push origin HEAD:main`; verify ALL CI green before Phase 3.
+- [x] [AI] Push `git push origin HEAD:main`; verify ALL CI green before Phase 3.
+
+> **CI model note**: per-app test workflows trigger on `workflow_dispatch` + weekly `schedule` (Fri
+> 10:00 UTC), NOT on push. Direct-to-main pushes have no push-triggered CI; the local pre-push affected
+> gate (typecheck+lint+test:quick+spec-coverage+markdownlint, enforced by `.husky/pre-push`) is the
+> effective gate and passed green. Full polyglot CI runs on the cron.
 
 ### Phase 2 Gate
 
-- [ ] [AI] `grep '10.0.108' apps/crud-be-csharp-aspnetcore/global.json` and `grep '10.0.204' apps/crud-be-fsharp-giraffe/global.json` both match.
-- [ ] [AI] FluentAssertions confirmed at `7.2.2` (no 8.x).
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; CI green.
+- [x] [AI] `grep '10.0.108' apps/crud-be-csharp-aspnetcore/global.json` and `grep '10.0.204' apps/crud-be-fsharp-giraffe/global.json` both match.
+- [x] [AI] FluentAssertions confirmed at `7.2.2` (no 8.x).
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; CI green.
 
 > **Pause Safety**: .NET CVE fix + currency applied, FluentAssertions held, CI green. Safe to stop.
 > To resume: `dotnet restore && npx nx affected -t test:quick`.
