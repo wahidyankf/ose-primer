@@ -64,7 +64,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 ## Phase 1: Dependency Bump Policy Document
 
-- [ ] [AI] Create `repo-governance/development/workflow/dependency-bump-policy.md` _New file_,
+- [x] [AI] Create `repo-governance/development/workflow/dependency-bump-policy.md` _New file_,
       adopting the upstream
       [Dependency Bump Stability & Safety Policy](https://github.com/wahidyankf/ose-public/blob/main/repo-governance/development/workflow/dependency-bump-policy.md)
       verbatim in substance (three-path tree A/B/C, KEV Fast-Track, EPSS Escalation, Rule 5a
@@ -84,7 +84,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
   - **Date**: 2026-06-04
   - **Status**: Completed
   - **Files Changed**: `repo-governance/development/workflow/dependency-bump-policy.md` (new)
-- [ ] [AI] Add an index entry for the new policy to
+- [x] [AI] Add an index entry for the new policy to
       `repo-governance/development/workflow/README.md` under "Documents", linking
       `./dependency-bump-policy.md` with a one-line description. Acceptance:
       `grep -c "dependency-bump-policy.md" repo-governance/development/workflow/README.md` ≥ 1.
@@ -394,13 +394,21 @@ setup, planning)`, and added a `*-planning` accept case. `test:unit` passes; gol
 
 ## Plan Archival
 
-- [ ] [AI] Verify ALL delivery checklist items are ticked.
-- [ ] [AI] Verify ALL quality gates pass (local + CI).
-- [ ] [AI] Move plan folder to done via
+- [x] [AI] Verify ALL delivery checklist items are ticked. _Done: only this Archival section
+      remained; Phases 0–6 all ticked with notes (verified via grep)._
+- [x] [AI] Verify ALL quality gates pass (local + CI). _Done: `nx affected -t typecheck lint
+  test:quick spec-coverage` green; pre-push gate (incl. lint:md, validate-naming, mermaid,
+      cross-vendor-parity) passed; no push-to-main CI exists (vacuously green)._
+- [x] [AI] Move plan folder to done via
       `git mv plans/in-progress/adopt-dependency-bump-policy plans/done/2026-06-04__adopt-dependency-bump-policy`.
-- [ ] [AI] Update `plans/in-progress/README.md` — remove this plan's entry.
-- [ ] [AI] Update `plans/done/README.md` — add the entry with completion date and summary.
-- [ ] [AI] Search for orphaned references to the old in-progress path and fix them
+      _Done._
+- [x] [AI] Update `plans/in-progress/README.md` — remove this plan's entry. _Done: this plan was
+      never listed under Active Plans (established straight into in-progress without an index entry),
+      so there was nothing to remove — confirmed by grep._
+- [x] [AI] Update `plans/done/README.md` — add the entry with completion date and summary. _Done._
+- [x] [AI] Search for orphaned references to the old in-progress path and fix them
       (`grep -rn "in-progress/adopt-dependency-bump-policy" .` returns nothing outside history).
-- [ ] [AI] Commit: `chore(plans): move adopt-dependency-bump-policy to done` and push to
-      `origin main`; verify CI green.
+      _Done: no source references to the old path remain (only this plan's own internal relative
+      links, which move with the folder)._
+- [x] [AI] Commit: `chore(plans): move adopt-dependency-bump-policy to done` and push to
+      `origin main`; verify CI green. _Done._
