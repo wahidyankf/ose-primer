@@ -3,6 +3,7 @@ package com.demobektkt.routes
 import com.demobektkt.domain.DomainError
 import com.demobektkt.domain.DomainException
 import com.demobektkt.domain.Role
+import com.demobektkt.infrastructure.ioTransaction
 import com.demobektkt.infrastructure.repositories.UpdateUserPatch
 import com.demobektkt.infrastructure.repositories.UserRepository
 import com.demobektkt.infrastructure.tables.AttachmentsTable
@@ -14,10 +15,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.RoutingCall
-import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.deleteAll
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.v1.jdbc.deleteAll
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -27,7 +26,7 @@ object TestRoutes : KoinComponent {
   private val userRepository: UserRepository by inject()
 
   suspend fun resetDb(call: RoutingCall) {
-    newSuspendedTransaction(Dispatchers.IO) {
+    ioTransaction {
       AttachmentsTable.deleteAll()
       ExpensesTable.deleteAll()
       RevokedTokensTable.deleteAll()

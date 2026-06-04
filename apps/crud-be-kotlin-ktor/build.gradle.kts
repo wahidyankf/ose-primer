@@ -2,25 +2,25 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   application
-  kotlin("jvm") version "2.1.21"
-  kotlin("plugin.serialization") version "2.1.21"
-  id("io.ktor.plugin") version "3.1.2"
+  kotlin("jvm") version "2.3.20"
+  kotlin("plugin.serialization") version "2.3.20"
+  id("io.ktor.plugin") version "3.4.1"
   id("org.jetbrains.kotlinx.kover") version "0.9.1"
   id("io.gitlab.arturbosch.detekt") version "1.23.8"
   id("com.ncorti.ktfmt.gradle") version "0.22.0"
 }
 
-val ktorVersion = "3.1.2"
-val exposedVersion = "0.59.0"
-val koinVersion = "4.0.2"
-val cucumberVersion = "7.22.0"
+val ktorVersion = "3.4.1"
+val exposedVersion = "1.0.0"
+val koinVersion = "4.2.0"
+val cucumberVersion = "7.34.3"
 val junitVersion = "5.11.4"
 val logbackVersion = "1.5.32"
 val postgresDriverVersion = "42.7.11"
 val sqliteVersion = "3.51.3.0"
 val jbcryptVersion = "0.4"
-val javaJwtVersion = "4.4.0"
-val kotlinxDatetimeVersion = "0.6.1"
+val javaJwtVersion = "4.5.1"
+val kotlinxDatetimeVersion = "0.8.0"
 val flywayVersion = "11.20.3"
 
 group = "com.demobektkt"
@@ -100,7 +100,7 @@ dependencies {
 
   // Test dependencies
   testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
-  testImplementation("org.jetbrains.kotlin:kotlin-test:2.1.21")
+  testImplementation("org.jetbrains.kotlin:kotlin-test:2.3.20")
   testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
   testImplementation("org.junit.platform:junit-platform-suite:1.11.4")
   testImplementation("io.cucumber:cucumber-java:$cucumberVersion")

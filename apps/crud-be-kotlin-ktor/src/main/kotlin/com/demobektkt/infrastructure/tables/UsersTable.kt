@@ -2,11 +2,12 @@ package com.demobektkt.infrastructure.tables
 
 import com.demobektkt.domain.Role
 import com.demobektkt.domain.UserStatus
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.javatime.timestamp
+import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.core.java.javaUUID
+import org.jetbrains.exposed.v1.javatime.timestamp
 
 object UsersTable : Table("users") {
-  val id = uuid("id").autoGenerate()
+  val id = javaUUID("id").autoGenerate()
   val username = varchar("username", 50).uniqueIndex()
   val email = varchar("email", 255).uniqueIndex()
   val displayName = varchar("display_name", 100)

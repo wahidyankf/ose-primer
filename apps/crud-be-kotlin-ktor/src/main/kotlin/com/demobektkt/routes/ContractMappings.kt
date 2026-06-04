@@ -1,6 +1,5 @@
 package com.demobektkt.routes
 
-import com.demobektkt.contracts.Attachment as ContractAttachment
 import com.demobektkt.contracts.AuthTokens
 import com.demobektkt.contracts.CategoryBreakdown
 import com.demobektkt.contracts.Expense as ContractExpense

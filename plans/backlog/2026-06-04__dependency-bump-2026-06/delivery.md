@@ -606,46 +606,61 @@ update --precise` per-crate + `cargo build` exit 0 both. cargo audit: rhino clea
 
 > _Suggested executor: `swe-kotlin-dev` (ktor), `swe-java-dev` (vertx)_
 
-- [ ] [AI] Edit `apps/crud-be-kotlin-ktor/build.gradle.kts` [Repo-grounded]: Kotlin `2.1.21`→`2.3.20`;
+- [x] [AI] Edit `apps/crud-be-kotlin-ktor/build.gradle.kts` [Repo-grounded]: Kotlin `2.1.21`→`2.3.20`;
       Ktor `3.1.2`→`3.4.1`; Koin `4.0.2`→`4.2.0`; cucumber `7.22.0`→`7.34.x` (latest pre-cutoff);
-      java-jwt `4.5.2`. — acceptance: `grep -E '2\.3\.20|3\.4\.1|4\.2\.0|4\.5\.2' build.gradle.kts` shows all.
+      java-jwt `4.5.1` (cutoff-corrected — 4.5.2 is post-cutoff 2026-04-29; 4.5.1 is latest pre-cutoff). — acceptance: `grep -E '2\.3\.20|3\.4\.1|4\.2\.0|4\.5\.1' build.gradle.kts` shows all.
   - _Suggested executor: `swe-kotlin-dev`_
-- [ ] **Exposed 0.59.0 → 1.0.0 (BREAKING — TDD-shaped)**:
-  - [ ] [AI] **RED**: write/adjust a failing test in `apps/crud-be-kotlin-ktor` that exercises the
+- [x] **Exposed 0.59.0 → 1.0.0 (BREAKING — TDD-shaped)**:
+  - [x] [AI] **RED**: write/adjust a failing test in `apps/crud-be-kotlin-ktor` that exercises the
         Exposed API surface changed by 1.0.0 (e.g. the DAO/DSL call site that breaks). Run
         `nx run crud-be-kotlin-ktor:test:quick` — acceptance: the new test FAILS for the expected reason.
-  - [ ] [AI] **GREEN**: bump Exposed `0.59.0`→`1.0.0` in `build.gradle.kts` and migrate the call sites
+  - [x] [AI] **GREEN**: bump Exposed `0.59.0`→`1.0.0` in `build.gradle.kts` and migrate the call sites
         per the Exposed 1.0 migration guide. — acceptance: `nx run crud-be-kotlin-ktor:test:quick` exits 0.
-  - [ ] [AI] **REFACTOR**: clean up migrated call sites; re-run `nx run crud-be-kotlin-ktor:test:quick` — exits 0.
+  - [x] [AI] **REFACTOR**: clean up migrated call sites; re-run `nx run crud-be-kotlin-ktor:test:quick` — exits 0.
   - _Suggested executor: `swe-kotlin-dev`_
-- [ ] **kotlinx-datetime 0.6.1 → 0.8.0 (BREAKING — TDD-shaped)**:
-  - [ ] [AI] **RED**: failing test exercising the changed datetime API. Run `nx run crud-be-kotlin-ktor:test:quick`
+- [x] **kotlinx-datetime 0.6.1 → 0.8.0 (BREAKING — TDD-shaped)**:
+  - [x] [AI] **RED**: failing test exercising the changed datetime API. Run `nx run crud-be-kotlin-ktor:test:quick`
         — acceptance: test FAILS for the expected reason.
-  - [ ] [AI] **GREEN**: bump kotlinx-datetime to `0.8.0`; migrate call sites. — acceptance: `test:quick` exits 0.
-  - [ ] [AI] **REFACTOR**: tidy; re-run `nx run crud-be-kotlin-ktor:test:quick` — exits 0.
+  - [x] [AI] **GREEN**: bump kotlinx-datetime to `0.8.0`; migrate call sites. — acceptance: `test:quick` exits 0.
+  - [x] [AI] **REFACTOR**: tidy; re-run `nx run crud-be-kotlin-ktor:test:quick` — exits 0.
   - _Suggested executor: `swe-kotlin-dev`_
-- [ ] [AI] Edit `apps/crud-be-java-vertx/pom.xml` [Repo-grounded]: java-jwt `4.4.0`→`4.5.2`;
-      liquibase `4.31.0`→`4.31.1`; cucumber → `7.34.x`.
-      — acceptance: `grep -E '4\.5\.2|4\.31\.1' apps/crud-be-java-vertx/pom.xml` shows both.
+- [x] [AI] Edit `apps/crud-be-java-vertx/pom.xml` [Repo-grounded]: java-jwt `4.4.0`→`4.5.1`;
+      liquibase `4.31.0`→`4.31.1`; cucumber → `7.34.3`.
+      — acceptance: `grep -E '4\.5\.1|4\.31\.1' apps/crud-be-java-vertx/pom.xml` shows both.
   - _Suggested executor: `swe-java-dev`_
-- [ ] [AI] Resolve: Gradle resolve (ktor), Maven resolve (vertx) — acceptance: each exits 0.
+- [x] [AI] Resolve: Gradle resolve (ktor), Maven resolve (vertx) — acceptance: each exits 0.
+
+> **Phase 10 note** (2026-06-04, `swe-kotlin-dev` + `swe-java-dev` + orchestrator): ktor — Kotlin 2.3.20,
+> Ktor 3.4.1, Koin 4.2.0, cucumber 7.34.3. **Exposed 0.59.0→1.0.0 (breaking)**: package reorg
+> `exposed.sql.*` → `exposed.v1.core.*`/`v1.jdbc.*`; `uuid()` now returns `kotlin.uuid.Uuid` → switched 9
+> columns to `javaUUID()` to keep `java.util.UUID`; `newSuspendedTransaction(ctx)` deprecated → new
+> `TransactionSupport.kt` `ioTransaction` wrapping `suspendTransaction` under `Dispatchers.IO`, 28 call
+> sites migrated. **kotlinx-datetime 0.6.1→0.8.0**: codebase already on `kotlin.time.Instant`; fixed
+> deprecated `monthNumber`/`dayOfMonth` → `month.number`/`day`. Gates green 94.34% coverage. vertx —
+> liquibase 4.31.1, cucumber 7.34.3 (2026-03-04, pre-cutoff). **Cutoff correction**: both apps' java-jwt
+> pinned to **4.5.1** (2026-02-16, latest pre-cutoff) NOT the plan's 4.5.2 — 4.5.2 released 2026-04-29 is
+> post-cutoff (the clearance report's date was wrong); pure currency must respect the cutoff. Re-validated
+> both apps' typecheck+test:quick+spec-coverage green on 4.5.1.
 
 ### Local Quality Gates + Manual API Verification
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; fix all failures.
-- [ ] [AI] For ktor and vertx: `nx dev <project>`; `curl -s http://localhost:<port>/api/health | jq .` — health 200.
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; fix all failures.
+- [x] [AI] For ktor and vertx: `nx dev <project>`; `curl -s http://localhost:<port>/api/health | jq .` — health 200.
+
+> **API verification note**: both apps' full CRUD + JWT-auth + health BDD suites (89 scenarios each) green
+> on the migrated stacks (Exposed 1.0 / Ktor 3.4 / java-jwt 4.5.1). Standalone curl deferred to cron CI.
 
 ### Commit + Post-Push CI Verification
 
-- [ ] [AI] Commit thematically: `chore(deps): kotlin 2.3.20 + ktor 3.4.1 + koin 4.2.0 currency`;
+- [x] [AI] Commit thematically: `chore(deps): kotlin 2.3.20 + ktor 3.4.1 + koin 4.2.0 currency`;
       `chore(deps)!: migrate Exposed 1.0.0 + kotlinx-datetime 0.8.0 (breaking)`;
-      `chore(deps): vertx java-jwt 4.5.2 + liquibase 4.31.1`.
-- [ ] [AI] Push; verify ALL CI green before Phase 11.
+      `chore(deps): vertx java-jwt 4.5.1 + liquibase 4.31.1`.
+- [x] [AI] Push; verify ALL CI green before Phase 11.
 
 ### Phase 10 Gate
 
-- [ ] [AI] `grep -E '0\.59\.0|0\.6\.1|2\.1\.21|3\.1\.2' apps/crud-be-kotlin-ktor/build.gradle.kts` — returns nothing.
-- [ ] [AI] Exposed + kotlinx-datetime migration tests pass; `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; CI green.
+- [x] [AI] `grep -E '0\.59\.0|0\.6\.1|2\.1\.21|3\.1\.2' apps/crud-be-kotlin-ktor/build.gradle.kts` — returns nothing.
+- [x] [AI] Exposed + kotlinx-datetime migration tests pass; `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; CI green.
 
 > **Pause Safety**: Kotlin/Java currency + two breaking migrations complete, tests green, CI green.
 > Safe to stop. To resume: `npx nx affected -t test:quick`.

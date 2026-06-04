@@ -1,11 +1,12 @@
 package com.demobektkt.infrastructure.tables
 
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.javatime.timestamp
+import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.core.java.javaUUID
+import org.jetbrains.exposed.v1.javatime.timestamp
 
 object RefreshTokensTable : Table("refresh_tokens") {
-  val id = uuid("id").autoGenerate()
-  val userId = uuid("user_id")
+  val id = javaUUID("id").autoGenerate()
+  val userId = javaUUID("user_id")
   val tokenHash = varchar("token_hash", 255).uniqueIndex()
   val expiresAt = timestamp("expires_at")
   val revoked = bool("revoked").default(false)

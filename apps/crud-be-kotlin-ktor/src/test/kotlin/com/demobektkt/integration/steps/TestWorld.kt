@@ -20,8 +20,8 @@ import com.demobektkt.infrastructure.tables.RevokedTokensTable
 import com.demobektkt.infrastructure.tables.UsersTable
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import org.jetbrains.exposed.sql.deleteAll
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.deleteAll
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
 /** JWT secret read from environment or a fixed fallback for local runs. */
 val WORLD_JWT_SECRET: String =

@@ -6,13 +6,11 @@ import com.demobektkt.infrastructure.repositories.CreateAttachmentRequest
 import com.demobektkt.infrastructure.tables.AttachmentsTable
 import java.time.Instant
 import java.util.UUID
-import kotlinx.coroutines.Dispatchers
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.selectAll
 
 class ExposedAttachmentRepository : AttachmentRepository {
   private fun rowToAttachment(row: ResultRow): Attachment =
@@ -26,41 +24,37 @@ class ExposedAttachmentRepository : AttachmentRepository {
       createdAt = row[AttachmentsTable.createdAt],
     )
 
-  override suspend fun create(request: CreateAttachmentRequest): Attachment =
-    newSuspendedTransaction(Dispatchers.IO) {
-      val id =
-        AttachmentsTable.insert {
-            it[expenseId] = request.expenseId
-            it[filename] = request.filename
-            it[contentType] = request.contentType
-            it[size] = request.size
-            it[data] = request.data
-            it[createdAt] = Instant.now()
-          }[AttachmentsTable.id]
-      AttachmentsTable.selectAll()
-        .where { AttachmentsTable.id eq id }
-        .map { rowToAttachment(it) }
-        .single()
-    }
+  override suspend fun create(request: CreateAttachmentRequest): Attachment = ioTransaction {
+    val id =
+      AttachmentsTable.insert {
+          it[expenseId] = request.expenseId
+          it[filename] = request.filename
+          it[contentType] = request.contentType
+          it[size] = request.size
+          it[data] = request.data
+          it[createdAt] = Instant.now()
+        }[AttachmentsTable.id]
+    AttachmentsTable.selectAll()
+      .where { AttachmentsTable.id eq id }
+      .map { rowToAttachment(it) }
+      .single()
+  }
 
-  override suspend fun findById(id: UUID): Attachment? =
-    newSuspendedTransaction(Dispatchers.IO) {
-      AttachmentsTable.selectAll()
-        .where { AttachmentsTable.id eq id }
-        .map { rowToAttachment(it) }
-        .singleOrNull()
-    }
+  override suspend fun findById(id: UUID): Attachment? = ioTransaction {
+    AttachmentsTable.selectAll()
+      .where { AttachmentsTable.id eq id }
+      .map { rowToAttachment(it) }
+      .singleOrNull()
+  }
 
-  override suspend fun findAllByExpense(expenseId: UUID): List<Attachment> =
-    newSuspendedTransaction(Dispatchers.IO) {
-      AttachmentsTable.selectAll()
-        .where { AttachmentsTable.expenseId eq expenseId }
-        .map { rowToAttachment(it) }
-    }
+  override suspend fun findAllByExpense(expenseId: UUID): List<Attachment> = ioTransaction {
+    AttachmentsTable.selectAll()
+      .where { AttachmentsTable.expenseId eq expenseId }
+      .map { rowToAttachment(it) }
+  }
 
-  override suspend fun delete(id: UUID): Boolean =
-    newSuspendedTransaction(Dispatchers.IO) {
-      val deleted = AttachmentsTable.deleteWhere { AttachmentsTable.id eq id }
-      deleted > 0
-    }
+  override suspend fun delete(id: UUID): Boolean = ioTransaction {
+    val deleted = AttachmentsTable.deleteWhere { AttachmentsTable.id eq id }
+    deleted > 0
+  }
 }

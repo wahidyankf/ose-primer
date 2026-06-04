@@ -19,6 +19,7 @@ import io.ktor.server.routing.RoutingCall
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.UUID
+import kotlinx.datetime.number
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -34,7 +35,7 @@ object ExpenseRoutes : KoinComponent {
 
   /** Convert [kotlinx.datetime.LocalDate] to [java.time.LocalDate]. */
   private fun kotlinx.datetime.LocalDate.toJavaLocalDate(): LocalDate =
-    LocalDate.of(year, monthNumber, dayOfMonth)
+    LocalDate.of(year, month.number, day)
 
   /** Map a [ContractCreateExpenseRequest] to validated domain values. */
   private fun ContractCreateExpenseRequest.toDomainRequest(userId: UUID): CreateExpenseRequest {

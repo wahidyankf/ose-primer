@@ -1,13 +1,14 @@
 package com.demobektkt.infrastructure.tables
 
 import com.demobektkt.domain.EntryType
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.javatime.date
-import org.jetbrains.exposed.sql.javatime.timestamp
+import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.core.java.javaUUID
+import org.jetbrains.exposed.v1.javatime.date
+import org.jetbrains.exposed.v1.javatime.timestamp
 
 object ExpensesTable : Table("expenses") {
-  val id = uuid("id").autoGenerate()
-  val userId = uuid("user_id")
+  val id = javaUUID("id").autoGenerate()
+  val userId = javaUUID("user_id")
   val type = enumerationByName("type", 20, EntryType::class)
   val amount = decimal("amount", precision = 19, scale = 4)
   val currency = varchar("currency", 10)

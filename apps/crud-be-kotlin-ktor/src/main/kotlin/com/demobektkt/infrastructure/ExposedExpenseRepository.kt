@@ -12,18 +12,18 @@ import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
 import java.util.UUID
-import kotlinx.coroutines.Dispatchers
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.andWhere
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.sum
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.greaterEq
+import org.jetbrains.exposed.v1.core.lessEq
+import org.jetbrains.exposed.v1.core.sum
+import org.jetbrains.exposed.v1.jdbc.andWhere
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.select
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.update
 
 class ExposedExpenseRepository : ExpenseRepository {
   private fun rowToExpense(row: ResultRow): Expense =
@@ -42,36 +42,34 @@ class ExposedExpenseRepository : ExpenseRepository {
       updatedAt = row[ExpensesTable.updatedAt],
     )
 
-  override suspend fun create(request: CreateExpenseRequest): Expense =
-    newSuspendedTransaction(Dispatchers.IO) {
-      val now = Instant.now()
-      val id =
-        ExpensesTable.insert {
-            it[userId] = request.userId
-            it[type] = request.type
-            it[amount] = request.amount
-            it[currency] = request.currency
-            it[category] = request.category
-            it[description] = request.description
-            it[date] = request.date
-            it[quantity] = request.quantity
-            it[unit] = request.unit
-            it[createdAt] = now
-            it[updatedAt] = now
-          }[ExpensesTable.id]
-      ExpensesTable.selectAll().where { ExpensesTable.id eq id }.map { rowToExpense(it) }.single()
-    }
+  override suspend fun create(request: CreateExpenseRequest): Expense = ioTransaction {
+    val now = Instant.now()
+    val id =
+      ExpensesTable.insert {
+          it[userId] = request.userId
+          it[type] = request.type
+          it[amount] = request.amount
+          it[currency] = request.currency
+          it[category] = request.category
+          it[description] = request.description
+          it[date] = request.date
+          it[quantity] = request.quantity
+          it[unit] = request.unit
+          it[createdAt] = now
+          it[updatedAt] = now
+        }[ExpensesTable.id]
+    ExpensesTable.selectAll().where { ExpensesTable.id eq id }.map { rowToExpense(it) }.single()
+  }
 
-  override suspend fun findById(id: UUID): Expense? =
-    newSuspendedTransaction(Dispatchers.IO) {
-      ExpensesTable.selectAll()
-        .where { ExpensesTable.id eq id }
-        .map { rowToExpense(it) }
-        .singleOrNull()
-    }
+  override suspend fun findById(id: UUID): Expense? = ioTransaction {
+    ExpensesTable.selectAll()
+      .where { ExpensesTable.id eq id }
+      .map { rowToExpense(it) }
+      .singleOrNull()
+  }
 
   override suspend fun findAllByUser(userId: UUID, page: Int, pageSize: Int): Page<Expense> =
-    newSuspendedTransaction(Dispatchers.IO) {
+    ioTransaction {
       val query = ExpensesTable.selectAll().where { ExpensesTable.userId eq userId }
       val total = query.count()
       val items =
@@ -83,58 +81,54 @@ class ExposedExpenseRepository : ExpenseRepository {
       Page(data = items, total = total, page = page, pageSize = pageSize)
     }
 
-  override suspend fun update(id: UUID, request: UpdateExpenseRequest): Expense? =
-    newSuspendedTransaction(Dispatchers.IO) {
-      ExpensesTable.update({ ExpensesTable.id eq id }) {
-        it[type] = request.type
-        it[amount] = request.amount
-        it[currency] = request.currency
-        it[category] = request.category
-        it[description] = request.description
-        it[date] = request.date
-        it[quantity] = request.quantity
-        it[unit] = request.unit
-        it[updatedAt] = Instant.now()
+  override suspend fun update(id: UUID, request: UpdateExpenseRequest): Expense? = ioTransaction {
+    ExpensesTable.update({ ExpensesTable.id eq id }) {
+      it[type] = request.type
+      it[amount] = request.amount
+      it[currency] = request.currency
+      it[category] = request.category
+      it[description] = request.description
+      it[date] = request.date
+      it[quantity] = request.quantity
+      it[unit] = request.unit
+      it[updatedAt] = Instant.now()
+    }
+    ExpensesTable.selectAll()
+      .where { ExpensesTable.id eq id }
+      .map { rowToExpense(it) }
+      .singleOrNull()
+  }
+
+  override suspend fun delete(id: UUID): Boolean = ioTransaction {
+    val deleted = ExpensesTable.deleteWhere { ExpensesTable.id eq id }
+    deleted > 0
+  }
+
+  override suspend fun summaryByUser(userId: UUID): List<CurrencySummary> = ioTransaction {
+    val sumColumn = ExpensesTable.amount.sum()
+    ExpensesTable.select(ExpensesTable.currency, sumColumn)
+      .where { ExpensesTable.userId eq userId }
+      .andWhere { ExpensesTable.type eq EntryType.EXPENSE }
+      .groupBy(ExpensesTable.currency)
+      .map { row ->
+        CurrencySummary(
+          currency = row[ExpensesTable.currency],
+          total = row[sumColumn] ?: BigDecimal.ZERO,
+        )
       }
-      ExpensesTable.selectAll()
-        .where { ExpensesTable.id eq id }
-        .map { rowToExpense(it) }
-        .singleOrNull()
-    }
-
-  override suspend fun delete(id: UUID): Boolean =
-    newSuspendedTransaction(Dispatchers.IO) {
-      val deleted = ExpensesTable.deleteWhere { ExpensesTable.id eq id }
-      deleted > 0
-    }
-
-  override suspend fun summaryByUser(userId: UUID): List<CurrencySummary> =
-    newSuspendedTransaction(Dispatchers.IO) {
-      val sumColumn = ExpensesTable.amount.sum()
-      ExpensesTable.select(ExpensesTable.currency, sumColumn)
-        .where { ExpensesTable.userId eq userId }
-        .andWhere { ExpensesTable.type eq EntryType.EXPENSE }
-        .groupBy(ExpensesTable.currency)
-        .map { row ->
-          CurrencySummary(
-            currency = row[ExpensesTable.currency],
-            total = row[sumColumn] ?: BigDecimal.ZERO,
-          )
-        }
-    }
+  }
 
   override suspend fun findByUserAndPeriod(
     userId: UUID,
     from: LocalDate,
     to: LocalDate,
     currency: String,
-  ): List<Expense> =
-    newSuspendedTransaction(Dispatchers.IO) {
-      ExpensesTable.selectAll()
-        .where { ExpensesTable.userId eq userId }
-        .andWhere { ExpensesTable.currency eq currency }
-        .andWhere { ExpensesTable.date greaterEq from }
-        .andWhere { ExpensesTable.date lessEq to }
-        .map { rowToExpense(it) }
-    }
+  ): List<Expense> = ioTransaction {
+    ExpensesTable.selectAll()
+      .where { ExpensesTable.userId eq userId }
+      .andWhere { ExpensesTable.currency eq currency }
+      .andWhere { ExpensesTable.date greaterEq from }
+      .andWhere { ExpensesTable.date lessEq to }
+      .map { rowToExpense(it) }
+  }
 }
