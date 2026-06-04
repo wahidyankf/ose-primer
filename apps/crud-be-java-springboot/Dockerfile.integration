@@ -1,7 +1,7 @@
 # Integration test runner
 # Builds the project inside the container and runs integration tests against
 # the postgres service defined in docker-compose.integration.yml.
-FROM eclipse-temurin:25.0.3_9-jdk-alpine3.22
+FROM eclipse-temurin:25.0.3_9-jdk-alpine
 RUN apk add --no-cache maven
 
 WORKDIR /build

@@ -1,10 +1,10 @@
-FROM ghcr.io/cirruslabs/flutter:stable AS build
+FROM instrumentisto/flutter:3.41.5 AS build
 WORKDIR /app
 COPY . .
 RUN flutter pub get
 RUN flutter build web --release
 
-FROM nginx:1.30.2-alpine3.22
+FROM nginx:1.30.2-alpine
 
 LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="Demo frontend built with Dart and Flutter Web"

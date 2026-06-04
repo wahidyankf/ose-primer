@@ -2,7 +2,7 @@
 # Builds a fat JAR during image build so E2E mode starts instantly with `java -jar`.
 # Dev mode still uses `mvn compile exec:java` with volume-mounted source.
 
-FROM eclipse-temurin:25.0.3_9-jdk-alpine3.22
+FROM eclipse-temurin:25.0.3_9-jdk-alpine
 
 # Install Maven and curl (for healthcheck)
 RUN apk add --no-cache maven curl
