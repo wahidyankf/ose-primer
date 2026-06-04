@@ -5,20 +5,21 @@ version: 1.0.0+1
 
 environment:
   sdk: ^3.11.0
+  # TODO [HUMAN]: opportunistic — raise floor to >=3.44.0 after `flutter upgrade` (and Dart 3.12.1) on the build host; CI stable channel already satisfies it.
   flutter: ">=3.41.4"
 
 dependencies:
   flutter:
     sdk: flutter
-  dio: ^5.8.0+1
-  web: ^1.1.1
+  dio: 5.9.2
+  web: 1.1.1
   crud_contracts:
     path: ./generated-contracts
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  flutter_lints: 6.0.0
 
 flutter:
   uses-material-design: false
