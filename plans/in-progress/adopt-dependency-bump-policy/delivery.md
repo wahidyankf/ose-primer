@@ -24,21 +24,38 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 ## Phase 0: Environment Setup and Baseline
 
-- [ ] [AI] Provision/confirm worktree and toolchain: from repo root run `npm install` then
+- [x] [AI] Provision/confirm worktree and toolchain: from repo root run `npm install` then
       `npm run doctor -- --fix`. Acceptance: both commands exit 0 (doctor may report drift it then
       fixes).
   - _Suggested executor: `repo-setup-manager`_
-- [ ] [AI] Establish baseline for the only code-bearing projects in scope: run
+  - **Implementation Notes**: Ran `npm install` (OK) and `npm run doctor -- --fix`
+    (18/19 tools OK; "Nothing to fix"). Rust v1.94.0 ✓, Go v1.26.1 ✓ — both in-scope toolchains
+    present. One preexisting warning: python v3.13.1 (< 3.13.12) — outside this plan's affected
+    set (no Python touched), doctor reports nothing auto-fixable.
+  - **Date**: 2026-06-04
+  - **Status**: Completed
+  - **Files Changed**: none (toolchain check only)
+- [x] [AI] Establish baseline for the only code-bearing projects in scope: run
       `npx nx run rhino-cli-rust:test` and `npx nx run rhino-cli-go:test`. Acceptance: record
       pass/fail; any preexisting failure is noted for Iron-Rule-3 fixing.
   - _Suggested executor: `repo-setup-manager`_
+  - **Implementation Notes**: Actual Nx target is `test:unit` (there is no `:test` target — the
+    plan reference was an authoring approximation; real targets confirmed via
+    `jq '.targets|keys[]' apps/rhino-cli-*/project.json`). Ran `npx nx run rhino-cli-rust:test:unit`
+    and `npx nx run rhino-cli-go:test:unit` — both "Successfully ran target test:unit". Baseline
+    green. Subsequent gate items use `test:unit`. Note: the workflow-naming validator is the
+    `validate:naming-workflows` target on both projects.
+  - **Date**: 2026-06-04
+  - **Status**: Completed
+  - **Files Changed**: none (baseline only)
 
 ### Phase 0 Gate
 
 > All checks below must pass before starting Phase 1.
 
-- [ ] [AI] `npm run doctor -- --fix` — exits 0.
-- [ ] [AI] `git status --porcelain` — shows only the plan folder (clean working tree otherwise).
+- [x] [AI] `npm run doctor -- --fix` — exits 0. _Done 2026-06-04: 18/19 OK, exit 0._
+- [x] [AI] `git status --porcelain` — shows only the plan folder (clean working tree otherwise).
+      _Done 2026-06-04: only `plans/in-progress/adopt-dependency-bump-policy/delivery.md` modified._
 
 > **Pause Safety**: Toolchain converged and baseline recorded; no governance files changed yet.
 > Safe to stop indefinitely. To resume: `npm run doctor -- --fix`.
@@ -60,18 +77,28 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
       `tech-docs.md`. Acceptance: file exists; `grep -c "Three-Path Decision Tree" <file>` ≥ 1;
       every relative link resolves (`Bash test -f` on each).
   - _Suggested executor: `repo-rules-maker`_
+  - **Implementation Notes**: Created via `repo-rules-maker` adopting the upstream policy verbatim
+    in substance (three-path tree, KEV Fast-Track, EPSS Escalation, Rule 5a/5b, exact-pin table,
+    five-source CVE clearance, clearance statuses). All 10 relative links verified with `test -f`.
+    `grep -c "Three-Path Decision Tree"` = 1. Prettier clean; markdownlint 0 errors.
+  - **Date**: 2026-06-04
+  - **Status**: Completed
+  - **Files Changed**: `repo-governance/development/workflow/dependency-bump-policy.md` (new)
 - [ ] [AI] Add an index entry for the new policy to
       `repo-governance/development/workflow/README.md` under "Documents", linking
       `./dependency-bump-policy.md` with a one-line description. Acceptance:
       `grep -c "dependency-bump-policy.md" repo-governance/development/workflow/README.md` ≥ 1.
+  - **Implementation Notes**: Added a Documents entry after the Reproducible Environments line.
+    `grep -c` = 1; prettier clean. **Date**: 2026-06-04. **Status**: Completed.
+    **Files Changed**: `repo-governance/development/workflow/README.md`.
 
 ### Phase 1 Gate
 
 > All checks below must pass before starting Phase 2.
 
-- [ ] [AI] `test -f repo-governance/development/workflow/dependency-bump-policy.md` — exits 0.
-- [ ] [AI] `npx prettier --check repo-governance/development/workflow/dependency-bump-policy.md repo-governance/development/workflow/README.md` — passes (or `--write` then re-check).
-- [ ] [AI] `npx markdownlint-cli2 repo-governance/development/workflow/dependency-bump-policy.md` — no errors.
+- [x] [AI] `test -f repo-governance/development/workflow/dependency-bump-policy.md` — exits 0. _Done 2026-06-04._
+- [x] [AI] `npx prettier --check repo-governance/development/workflow/dependency-bump-policy.md repo-governance/development/workflow/README.md` — passes (or `--write` then re-check). _Done: "All matched files use Prettier code style"._
+- [x] [AI] `npx markdownlint-cli2 repo-governance/development/workflow/dependency-bump-policy.md` — no errors. _Done: 0 error(s)._
 
 > **Pause Safety**: Policy document exists and is indexed; no workflow file yet (naming gate not
 > yet exercised). Safe to stop indefinitely. To resume: re-run the Phase 1 gate checks.
@@ -108,8 +135,8 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 > All checks below must pass before starting Phase 3.
 
-- [ ] [AI] `npx nx run rhino-cli-rust:test` — exits 0.
-- [ ] [AI] `npx nx run rhino-cli-go:test` — exits 0.
+- [ ] [AI] `npx nx run rhino-cli-rust:test:unit` — exits 0.
+- [ ] [AI] `npx nx run rhino-cli-go:test:unit` — exits 0.
 - [ ] [AI] `printf 'repo-dependency-bump-planning\n' | grep -E -- '-(quality-gate|execution|setup|planning)$'` — prints the line (regex now accepts the suffix).
 
 > **Pause Safety**: The `planning` type is accepted by the convention and both validators, but no
@@ -160,6 +187,18 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
       `security-waivers.md`. Acceptance: file exists; frontmatter `name:` equals the basename;
       every relative link resolves.
   - _Suggested executor: `repo-workflow-maker`_
+- [ ] [AI] **Invocability adaptation (explicit user requirement)**: in the workflow body, adapt
+      Phase 5 to `ose-primer`'s `plan-establishment-execution`, which has **no `target-stage`
+      input** and places plans in `plans/in-progress/`. The adopted Phase 5 MUST: (a) invoke
+      `plan-establishment-execution` as-is, (b) `git mv` the resulting plan to
+      `plans/backlog/<YYYY-MM-DD>__<identifier>/` (backlog date-prefix per the Plans convention),
+      (c) update `plans/in-progress/README.md` and `plans/backlog/README.md`. Verify every
+      referenced primitive resolves in-repo: `test -f .claude/agents/web-research-maker.md`,
+      `test -f repo-governance/workflows/plan/plan-establishment-execution.md`. Acceptance:
+      `grep -c "target-stage" repo-governance/workflows/repo/repo-dependency-bump-planning.md` — the
+      file does NOT pass an unsupported `target-stage: backlog` param; instead it documents the
+      in-progress→backlog relocation.
+  - _Suggested executor: `repo-workflow-maker`_
 - [ ] [AI] Add an index entry to `repo-governance/workflows/repo/README.md` linking
       `./repo-dependency-bump-planning.md` with a one-line description. Acceptance:
       `grep -c "repo-dependency-bump-planning" repo-governance/workflows/repo/README.md` ≥ 1.
@@ -172,7 +211,13 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 > All checks below must pass before starting Phase 5.
 
 - [ ] [AI] `find repo-governance/workflows -name '*.md' -not -name 'README.md' -not -path '*/meta/*' | sed 's|.*/||; s|\.md$||' | grep -vE -- '-(quality-gate|execution|setup|planning)$'` — prints nothing (naming gate green, including the new file).
-- [ ] [AI] `npx nx run rhino-cli-rust:test` and `npx nx run rhino-cli-go:test` — both exit 0 (validators still green).
+- [ ] [AI] `npx nx run rhino-cli-rust:validate:naming-workflows` and `npx nx run rhino-cli-go:validate:naming-workflows` — both exit 0 (the validators accept the new `-planning` file).
+- [ ] [AI] **Invocability check**: every primitive the workflow references resolves in-repo —
+      `test -f .claude/agents/web-research-maker.md`,
+      `test -f repo-governance/workflows/plan/plan-establishment-execution.md`,
+      `test -f repo-governance/development/workflow/dependency-bump-policy.md`,
+      `test -f repo-governance/development/agents/subagent-orchestration.md` — all exit 0; and the
+      workflow is indexed in `repo-governance/workflows/repo/README.md`.
 - [ ] [AI] `npx prettier --check repo-governance/workflows/repo/repo-dependency-bump-planning.md repo-governance/workflows/repo/README.md` and `npx markdownlint-cli2 repo-governance/workflows/repo/repo-dependency-bump-planning.md` — pass.
 
 > **Pause Safety**: The planning workflow exists and passes naming validation; it references the
@@ -214,7 +259,8 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
       link via `Bash test -f`/`test -d`). Acceptance: zero broken internal links.
   - _Suggested executor: `docs-link-checker`_
 - [ ] [AI] Run the workflow-naming validators one final time:
-      `npx nx run rhino-cli-rust:test && npx nx run rhino-cli-go:test` — both exit 0.
+      `npx nx run rhino-cli-rust:validate:naming-workflows && npx nx run rhino-cli-go:validate:naming-workflows`
+      — both exit 0; also `npx nx run rhino-cli-rust:test:unit && npx nx run rhino-cli-go:test:unit` — both exit 0.
 
 ### Commit Guidelines
 

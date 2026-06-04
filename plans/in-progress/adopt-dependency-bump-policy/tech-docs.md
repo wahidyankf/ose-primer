@@ -93,6 +93,26 @@ inventory them.
 4. **Policy/workflow stay vendor-neutral** per the
    [Governance Vendor-Independence Convention](../../../repo-governance/conventions/structure/governance-vendor-independence.md):
    no `.claude/`- or `.opencode/`-specific terminology in the governance bodies.
+5. **The adopted workflow MUST be invocable in `ose-primer`** (explicit user requirement). Two
+   adaptations are required for invocability, because every agent/workflow the workflow body
+   references must resolve in this repo:
+   - **Phase 5 interface gap**: ose-primer's
+     [`plan-establishment-execution`](../../../repo-governance/workflows/plan/plan-establishment-execution.md)
+     has **no `target-stage` input** — it explicitly places plans in `plans/in-progress/` and says
+     "Do NOT create in backlog/". The upstream Phase 5 passes `target-stage: backlog`. Adaptation:
+     the adopted workflow's Phase 5 invokes `plan-establishment-execution` as-is (lands the plan in
+     `plans/in-progress/<identifier>/`), then **relocates** it to
+     `plans/backlog/<YYYY-MM-DD>__<identifier>/` via `git mv` (backlog uses the date prefix per the
+     [Plans Organization Convention](../../../repo-governance/conventions/structure/plans.md)), and
+     updates the two plans index READMEs. The workflow body documents this verbatim so an invoking
+     agent follows it deterministically.
+   - **Referenced agents exist** [Repo-grounded]: `web-research-maker` agent exists at
+     `.claude/agents/web-research-maker.md`; `plan-establishment-execution` and `plan-execution`
+     workflows exist. No referenced primitive is missing.
+   - **Discoverability**: the workflow is indexed in `repo-governance/workflows/repo/README.md`
+     and the top-level workflows catalog so the user can invoke it by path
+     (`repo-governance/workflows/repo/repo-dependency-bump-planning.md`), exactly as
+     `plan-execution.md` is invoked.
 
 ## File-Impact Map
 
