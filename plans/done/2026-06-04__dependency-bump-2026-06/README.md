@@ -14,25 +14,30 @@ test:quick + spec-coverage across the affected polyglot graph + markdownlint) wa
 push. Per-app CI runs on the weekly `schedule` + `workflow_dispatch` (this repo's workflows are not
 push-triggered), so the local affected gate is the effective per-push gate.
 
-### Deferred `[HUMAN]` operator follow-ups (2 items)
+### `[HUMAN]` operator follow-ups
 
-These were intentionally NOT performed by the agent (toolchain mutation / supply-chain decision) and
-are tracked for the operator:
+1. **Flutter build-image migration** (Phase 12) — ✅ **DONE (2026-06-04, operator-approved)**.
+   `ghcr.io/cirruslabs/flutter:stable` (discontinued upstream, EOL 2026-05-01) was replaced with the
+   maintained community image **`instrumentisto/flutter:3.41.5`** (exact pin). The full
+   `docker build -f apps/crud-fe-dart-flutterweb/Dockerfile …` **succeeded** locally (Flutter web
+   compiles in the build stage; nginx runtime stage assembles). The build-verify also triggered a
+   `docker manifest inspect` audit of every Phase 12 pin, which caught and fixed two invalid tags from
+   the clearance report — see the recheck note below.
+2. **Flutter SDK floor raise** (Phase 11) — still deferred (low value). The proposed `>=3.44.0` floor
+   was kept at `>=3.41.4` because raising it requires a host `flutter upgrade` (local Flutter is
+   3.41.5). A `# TODO [HUMAN]` comment in `apps/crud-fe-dart-flutterweb/pubspec.yaml` records it. The
+   dependency pins (dio 5.9.2, web 1.1.1, flutter_lints 6.0.0) shipped. CI's `subosito/flutter-action`
+   stable channel already satisfies `>=3.44.0`. **Moot for this bump** — no dependency required it.
 
-1. **Flutter SDK floor raise** (Phase 11) — the proposed `>=3.44.0` floor was kept at `>=3.41.4`
-   because raising it requires a host `flutter upgrade` (local Flutter is 3.41.5). A `# TODO [HUMAN]`
-   comment in `apps/crud-fe-dart-flutterweb/pubspec.yaml` records it. The dependency pins (dio 5.9.2,
-   web 1.1.1, flutter_lints 6.0.0) shipped. CI's `subosito/flutter-action` stable channel already
-   satisfies `>=3.44.0`. **Moot for this bump** — no dependency required the raise.
-2. **Flutter build-image migration** (Phase 12) — `ghcr.io/cirruslabs/flutter:stable` is discontinued
-   upstream (EOL 2026-05-01). The agent must not pick a replacement image; the build-stage line is
-   left untouched (its runtime `nginx:alpine` stage was pinned). **Operator action**: replace it with
-   a maintained, exactly-pinned image (e.g. `instrumentisto/flutter` or a custom `dart:stable`-based
-   image) and confirm `docker build` succeeds. Recorded in `delivery.md` Phase 12.
+### Docker tag-format correction (2026-06-04, from the build-verify audit)
 
-One Phase 12 `[AI]` step is also deferred: **per-Dockerfile `docker build` verification** was not run
-locally (impractical for 30+ images without a running daemon); the exact base-image tags were validated
-against Docker Hub in the clearance report and are built by the cron CI Docker workflows.
+Building the Flutter image revealed that the clearance report's `-alpine3.22` suffix is **invalid** for
+two image families — they publish version-pinned tags with a bare `-alpine` suffix. Fixed:
+`nginx:1.30.2-alpine3.22` → `nginx:1.30.2-alpine`; `eclipse-temurin:25.0.3_9-{jdk,jre}-alpine3.22` →
+`…-{jdk,jre}-alpine` (5 Java Dockerfiles). The other pins (`golang:1.25.11-alpine3.22`,
+`node:24.16.0-alpine3.22`, `postgres:17.10-alpine3.22`, `alpine:3.22.4`) were confirmed to exist via
+`docker manifest inspect`. Without this fix the Java and Flutter Docker images would have failed to
+build in CI.
 
 ## Post-execution recheck (2026-06-04)
 
