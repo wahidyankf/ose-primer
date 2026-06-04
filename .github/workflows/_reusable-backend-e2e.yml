@@ -69,16 +69,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-docker-cache
 
       - name: Set up Node.js (for codegen)
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "24"
 
       - name: Set up Go (for oapi-codegen used by FE codegen)
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: "1.26.0"
           cache-dependency-path: "**/go.sum"
@@ -156,7 +156,7 @@ jobs:
           exit 1
 
       - name: Setup Volta
-        uses: volta-cli/action@v4
+        uses: volta-cli/action@v5
 
       - name: Clean Docker-created directories
         if: inputs.docker-owned-dirs != ''
@@ -187,7 +187,7 @@ jobs:
 
       - name: Upload BE E2E report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report-${{ inputs.backend-name }}
           path: apps/crud-be-e2e/playwright-report/
@@ -202,7 +202,7 @@ jobs:
 
       - name: Upload FE E2E report
         if: ${{ always() && !inputs.skip-fe-e2e }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report-fe-e2e-${{ inputs.backend-name }}
           path: apps/crud-fe-e2e/playwright-report/

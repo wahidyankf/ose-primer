@@ -4,16 +4,16 @@ inputs:
   go-version:
     description: "Go version"
     required: false
-    default: "1.26.0"
+    default: "1.26.4"
   golangci-lint-version:
     description: "golangci-lint version"
     required: false
-    default: "v2.10.1"
+    default: "v2.12.2"
 runs:
   using: "composite"
   steps:
     - name: Setup Go
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         go-version: ${{ inputs.go-version }}
         cache-dependency-path: "**/go.sum"

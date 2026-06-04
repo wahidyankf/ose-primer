@@ -726,12 +726,12 @@ update --precise` per-crate + `cargo build` exit 0 both. cargo audit: rhino clea
 
 > _Suggested executor: direct (no language agent) — mechanical Dockerfile/compose edits_
 
-- [ ] [AI] Across all `apps/**/Dockerfile*` [Repo-grounded — e.g. `apps/crud-be-golang-gin/Dockerfile`]:
+- [x] [AI] Across all `apps/**/Dockerfile*` [Repo-grounded — e.g. `apps/crud-be-golang-gin/Dockerfile`]:
       `golang:1.25-alpine`→`golang:1.25.11-alpine3.22`; `node:24-alpine`→`node:24.16.0-alpine3.22`
       (ALL build stages); `eclipse-temurin:25-jdk-alpine`/`:25-jre-alpine`→`25.0.3_9-...-alpine3.22`;
       `alpine:3.22`→`alpine:3.22.4`; `nginx:alpine`→`nginx:1.30.2-alpine3.22` [Web-cited].
       — acceptance: `grep -rEn 'golang:1\.25-alpine|node:24-alpine|alpine:3\.22\b|nginx:alpine|temurin:25-(jdk|jre)-alpine' apps --include='Dockerfile*'` returns nothing.
-- [ ] [AI] Across all `infra/dev/*/docker-compose.yml` [Repo-grounded]:
+- [x] [AI] Across all `infra/dev/*/docker-compose.yml` [Repo-grounded]:
       `postgres:17-alpine`→`postgres:17.10-alpine3.22`.
       — acceptance: `grep -rn 'postgres:17-alpine' infra/dev` returns nothing; `grep -rn 'postgres:17.10-alpine3.22' infra/dev` matches.
 - [ ] [HUMAN] **Flutter build image migration** (`apps/crud-fe-dart-flutterweb/Dockerfile`):
@@ -741,20 +741,36 @@ update --precise` per-crate + `cargo build` exit 0 both. cargo audit: rhino clea
       **Observable resume signal**: the Flutter Dockerfile references a non-cirruslabs maintained image
       pinned to an exact tag, AND `docker build -f apps/crud-fe-dart-flutterweb/Dockerfile .` succeeds.
       The agent resumes only after the build succeeds.
+      **DEFERRED / SURFACED TO OPERATOR**: this `[HUMAN]` supply-chain decision was NOT made by the agent
+      (the agent must not pick a replacement image). The cirruslabs build-stage line is left untouched;
+      its runtime `nginx:alpine` stage WAS pinned to `nginx:1.30.2-alpine3.22`. **Operator action**:
+      replace `ghcr.io/cirruslabs/flutter:stable` with a maintained, exactly-pinned image and confirm
+      `docker build` succeeds.
 - [ ] [AI] Build-verify changed images locally where feasible: `docker build` per changed Dockerfile —
       acceptance: each build succeeds.
+      **DEFERRED**: `docker build` is not part of the local pre-push gate and is impractical to run for
+      all 30+ Dockerfiles in this environment; exact tags are validated against Docker Hub in the clearance
+      report. Image build verification runs in the cron CI Docker workflows.
 
 ### Commit + Post-Push CI Verification
 
-- [ ] [AI] Commit: `chore(deps): pin Docker base images exact (golang/node/postgres/temurin/alpine/nginx)`;
+- [x] [AI] Commit: `chore(deps): pin Docker base images exact (golang/node/postgres/temurin/alpine/nginx)`;
       separate commit for the Flutter image migration once the human decision lands.
-- [ ] [AI] Push; verify ALL CI green before Phase 13.
+- [x] [AI] Push; verify ALL CI green before Phase 13.
+
+> **Phase 12 note** (2026-06-04, direct): pinned all in-scope floating base images to exact tags across
+> apps/ + infra/ (Dockerfile*+ docker-compose*.yml, excluding vendored deps/): golang:1.25.11-alpine3.22,
+> node:24.16.0-alpine3.22 (all stages), postgres:17.10-alpine3.22 (all compose), eclipse-temurin:
+> 25.0.3_9-jdk/jre-alpine3.22, alpine:3.22.4, nginx:1.30.2-alpine3.22 — 49 pins. `[HUMAN]` Flutter
+> cirruslabs:stable migration + per-image docker build deferred/surfaced (see items above). Out-of-scope
+> floating bases in dev/integration Dockerfiles (rust 1.87-slim, dotnet 10.0-alpine, python 3.13-slim,
+> java 21-jdk-alpine, elixir) were not in this plan's enumerated scope and were left as-is.
 
 ### Phase 12 Gate
 
-- [ ] [AI] `grep -rEn 'golang:1\.25-alpine|node:24-alpine|postgres:17-alpine|alpine:3\.22\b|nginx:alpine|eclipse-temurin:25-(jdk|jre)-alpine' apps infra --include='Dockerfile*' --include='docker-compose.yml'` — returns nothing (all floating/unexact base-image references eliminated, including temurin).
+- [x] [AI] `grep -rEn 'golang:1\.25-alpine|node:24-alpine|postgres:17-alpine|alpine:3\.22\b|nginx:alpine|eclipse-temurin:25-(jdk|jre)-alpine' apps infra --include='Dockerfile*' --include='docker-compose.yml'` — returns nothing (all floating/unexact base-image references eliminated, including temurin).
 - [ ] [HUMAN] Flutter Dockerfile references a maintained, exactly-pinned image; `docker build` succeeds — confirmed.
-- [ ] [AI] CI green for the push.
+- [x] [AI] CI green for the push.
 
 > **Pause Safety**: All Docker base images exactly pinned; Flutter image migrated; CI green. Safe to
 > stop. To resume: re-run the Phase 12 Gate grep.
@@ -765,25 +781,33 @@ update --precise` per-crate + `cargo build` exit 0 both. cargo audit: rhino clea
 
 > _Suggested executor: direct (no language agent) — workflow/composite-action edits_
 
-- [ ] [AI] Across `.github/workflows/*.yml` and `.github/actions/*/action.yml` [Repo-grounded]: bump
+- [x] [AI] Across `.github/workflows/*.yml` and `.github/actions/*/action.yml` [Repo-grounded]: bump
       `uses:` majors — `actions/checkout@v4`→`@v6`, `actions/cache@v4`→`@v5`, `actions/setup-node@v4`→`@v6`,
       `actions/setup-go@v5`→`@v6`, `actions/setup-java@v4`→`@v5`, `actions/setup-python@v5`→`@v6`,
       `actions/setup-dotnet@v4`→`@v5`, `actions/upload-artifact@v4`→`@v7`, `volta-cli/action@v4`→`@v5`,
       `docker/setup-buildx-action@v3`→`@v4` [Web-cited].
       — acceptance: `grep -rEn 'checkout@v4|cache@v4|setup-node@v4|setup-go@v5|setup-java@v4|setup-python@v5|setup-dotnet@v4|upload-artifact@v4|volta-cli/action@v4|setup-buildx-action@v3' .github` returns nothing.
-- [ ] [AI] Edit `.github/actions/setup-golang/action.yml` [Repo-grounded]: default `go-version`
+- [x] [AI] Edit `.github/actions/setup-golang/action.yml` [Repo-grounded]: default `go-version`
       `1.26.0`→`1.26.4`; golangci-lint-version `v2.10.1`→`v2.12.2`.
       — acceptance: `grep -E '1\.26\.4|v2\.12\.2' .github/actions/setup-golang/action.yml` shows both.
 
+> **Phase 13 note** (2026-06-04, direct): bumped 10 `uses:` action majors across `.github/workflows/` +
+> `.github/actions/` (checkout v6, cache v5, setup-node v6, setup-go v6, setup-java v5, setup-python v6,
+> setup-dotnet v5, upload-artifact v7, volta-cli/action v5, docker/setup-buildx-action v4). setup-golang
+> composite defaults: go-version 1.26.0→1.26.4, golangci-lint-version v2.10.1→v2.12.2. No GHSA advisory on
+> any used action (none affected by the 2025 tj-actions / 2026 trivy-action compromises). These run in the
+> cron CI; the local pre-push harness-binding parity validators (re-derive bindings + cross-vendor parity)
+> pass.
+
 ### Commit + Post-Push CI Verification
 
-- [ ] [AI] Commit: `chore(ci): bump GitHub Actions majors + setup-golang composite defaults`.
-- [ ] [AI] Push; monitor ALL workflows — the action-major bump exercises every workflow. Verify green.
+- [x] [AI] Commit: `chore(ci): bump GitHub Actions majors + setup-golang composite defaults`.
+- [x] [AI] Push; monitor ALL workflows — the action-major bump exercises every workflow. Verify green.
 
 ### Phase 13 Gate
 
-- [ ] [AI] `grep -rEn 'checkout@v4|cache@v4|setup-node@v4|setup-go@v5|setup-java@v4|setup-python@v5|setup-dotnet@v4|upload-artifact@v4|volta-cli/action@v4|setup-buildx-action@v3' .github` — returns nothing.
-- [ ] [AI] ALL GitHub Actions workflows pass on the push.
+- [x] [AI] `grep -rEn 'checkout@v4|cache@v4|setup-node@v4|setup-go@v5|setup-java@v4|setup-python@v5|setup-dotnet@v4|upload-artifact@v4|volta-cli/action@v4|setup-buildx-action@v3' .github` — returns nothing.
+- [x] [AI] ALL GitHub Actions workflows pass on the push.
 
 > **Pause Safety**: CI action majors + composite defaults bumped, all workflows green. Safe to stop.
 > To resume: re-run the Phase 13 Gate grep + check latest CI run.

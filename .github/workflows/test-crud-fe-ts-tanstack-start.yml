@@ -13,7 +13,7 @@ jobs:
     name: Spec coverage
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-golang
       - run: npx nx run crud-fe-ts-tanstack-start:spec-coverage
@@ -21,7 +21,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
       - name: Generate contract types
         run: |
