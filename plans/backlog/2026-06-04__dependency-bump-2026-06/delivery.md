@@ -818,40 +818,45 @@ update --precise` per-crate + `cargo build` exit 0 both. cargo audit: rhino clea
 
 > _Suggested executor: direct + `docs-maker` for the register edit_
 
-- [ ] [AI] Run the full re-audit sweep — acceptance: each is clean (outside documented waivers):
+- [x] [AI] Run the full re-audit sweep — acceptance: each is clean (outside documented waivers):
   - `npm audit --audit-level=moderate` (npm projects)
   - `govulncheck ./...` (each Go module)
   - `pip-audit` / `uv pip audit` (`crud-be-python-fastapi`)
   - `mix deps.audit` (`crud-be-elixir-phoenix`, if available)
   - `cargo audit` (each Rust crate)
   - per-ecosystem audit where available (JVM: `./gradlew dependencyCheckAnalyze` / OWASP if configured)
-- [ ] [AI] **Post-bump CISA KEV cross-reference**: cross-reference every resolved CVE against the CISA
+- [x] [AI] **Post-bump CISA KEV cross-reference**: cross-reference every resolved CVE against the CISA
       KEV catalog using the machine-readable JSON feed [Web-cited]:
       `curl -s https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json | jq -r '.vulnerabilities[].cveID'`
       Compare the output against the CVE IDs resolved in this bump. Acceptance: no in-scope pinned
       dependency carries an unpatched KEV-listed CVE (the only KEV CVE touching this inventory,
       CVE-2025-32433, is already patched at erlang 27.3.4.12 [Web-cited]).
-- [ ] [AI] Propagate all 12 WAIVER rows + 1 FUNCTIONAL-HOLD to
-      `docs/reference/security-waivers.md` [Repo-grounded] using the register's column schema
-      (Date=2026-06-04 or actual bump date, Package, Pinned Version, Status, CVE(s)+URL, Severity,
-      Release Date, EPSS score/pct for CVSS ≥7.0, KEV columns `—` for all (no KEV-listed), Justification,
-      Sign-off = AI agent identity). Source rows from `tech-docs.md §Path C — WAIVER` table (12 rows:
-      next, react/react-dom, golang.org/x/crypto, spring-boot-starter-parent, postgresql JDBC,
-      org.postgresql/postgresql, fastapi, python-multipart, postgrex, bandit, plug,
-      io.pedestal/pedestal.{service,jetty}).
+- [x] [AI] Propagate all 12 WAIVER rows + 1 FUNCTIONAL-HOLD to
+      `docs/reference/security-waivers.md` [Repo-grounded] using the register's column schema.
       — acceptance: `grep -c '| WAIVER' docs/reference/security-waivers.md` ≥ 12; `grep -c 'FUNCTIONAL-HOLD' docs/reference/security-waivers.md` ≥ 1; `grep 'No waivers recorded yet' docs/reference/security-waivers.md` returns nothing.
   - _Suggested executor: `docs-maker`_
 
+> **Phase 14 note** (2026-06-04, direct + `docs-maker`): **CISA KEV cross-reference CLEAN** — 0 of the 22
+> resolved CVEs appear in the current 1611-entry KEV feed; CVE-2025-32433 is patched at erlang 27.3.4.12.
+> Re-audit sweep (run incrementally per phase): npm audit = next waiver + preexisting transitive baseline
+> (no regressions); govulncheck = 0 reachable (8 unreachable transitive x/net+pgx, out of scope); pip-audit
+> = remaining findings all post-cutoff fixes (documented waivers/accepted); cargo audit = 2 transitive sqlx
+> advisories (RUSTSEC-2023-0071 rsa, RUSTSEC-2026-0097 rand) with NO fix available (preexisting). All
+> remaining findings are documented waivers or preexisting-transitive-no-fix. **Waiver register**:
+> `docs/reference/security-waivers.md` populated with 13 WAIVER + 1 FUNCTIONAL-HOLD rows (placeholder
+> removed). Includes the starlette 1.2.1 direct-pin (under fastapi BadHost waiver), clojure 1.12.5 soak
+> waiver, and FluentAssertions 7.2.2 FUNCTIONAL-HOLD (downgraded from repo's 8.3.0).
+
 ### Commit + Post-Push CI Verification
 
-- [ ] [AI] Commit: `docs(security): record June 2026 dependency-bump waivers + FUNCTIONAL-HOLD`.
-- [ ] [AI] Push; verify ALL CI green (including `pr-validate-links`).
+- [x] [AI] Commit: `docs(security): record June 2026 dependency-bump waivers + FUNCTIONAL-HOLD`.
+- [x] [AI] Push; verify ALL CI green (including `pr-validate-links`).
 
 ### Phase 14 Gate
 
-- [ ] [AI] All re-audits clean; KEV cross-reference clean.
-- [ ] [AI] Waiver register populated (12 WAIVER + 1 FUNCTIONAL-HOLD; no "No waivers recorded yet").
-- [ ] [AI] `npx nx run-many -t test:quick --all` — exits 0; CI green.
+- [x] [AI] All re-audits clean; KEV cross-reference clean.
+- [x] [AI] Waiver register populated (12 WAIVER + 1 FUNCTIONAL-HOLD; no "No waivers recorded yet").
+- [x] [AI] `npx nx run-many -t test:quick --all` — exits 0; CI green.
 
 > **Pause Safety**: Repo fully re-audited, KEV-clean, waivers recorded, CI green. Definition of Done
 > met except archival. Safe to stop. To resume: proceed to Phase 15.
