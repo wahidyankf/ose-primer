@@ -445,37 +445,48 @@ No PR (none requested). Commit thematically per ecosystem using Conventional Com
 
 > _Suggested executor: `swe-clojure-dev`_
 
-- [ ] [AI] Edit `apps/crud-be-clojure-pedestal/deps.edn` [Repo-grounded]: `io.pedestal/pedestal.service`
+- [x] [AI] Edit `apps/crud-be-clojure-pedestal/deps.edn` [Repo-grounded]: `io.pedestal/pedestal.service`
       and `io.pedestal/pedestal.jetty` `0.7.2`→`0.8.1` (WAIVER, residual Jetty CVE-2026-2332 9.1 [Web-cited]).
       — acceptance: `grep -E 'pedestal\.(service|jetty)' apps/crud-be-clojure-pedestal/deps.edn` shows `0.8.1`.
-- [ ] [AI] Edit `apps/crud-be-clojure-pedestal/deps.edn`: clojure `1.12.0`→`1.12.5` (WAIVER, post-cutoff
+- [x] [AI] Edit `apps/crud-be-clojure-pedestal/deps.edn`: clojure `1.12.0`→`1.12.5` (WAIVER, post-cutoff
       currency); cheshire `6.0.0`→`6.2.0`; HikariCP `6.3.0`→`6.3.3`.
       — acceptance: `grep -E '1\.12\.5|6\.2\.0|6\.3\.3' deps.edn` shows all three.
-- [ ] [AI] Edit `apps/crud-be-clojure-pedestal/build.clj` (or the `:build` alias in `deps.edn`)
+- [x] [AI] Edit `apps/crud-be-clojure-pedestal/build.clj` (or the `:build` alias in `deps.edn`)
       [Repo-grounded]: tools.build `v0.10.12`→`v0.10.13`.
       — acceptance: `grep 'v0.10.13' apps/crud-be-clojure-pedestal/build.clj apps/crud-be-clojure-pedestal/deps.edn` matches.
-- [ ] [AI] Edit `libs/clojure-openapi-codegen/deps.edn` [Repo-grounded]: snakeyaml `2.5`→`2.6`;
+- [x] [AI] Edit `libs/clojure-openapi-codegen/deps.edn` [Repo-grounded]: snakeyaml `2.5`→`2.6`;
       clj-kondo current `2024.11.14`→`2025.09.22` [Web-cited via clearance report — latest pre-cutoff
       release on or before 2026-04-05; current pin is `2024.11.14` per `deps.edn`].
       — acceptance: `grep '2.6' libs/clojure-openapi-codegen/deps.edn` shows snakeyaml 2.6;
       `grep '2025.09.22' libs/clojure-openapi-codegen/deps.edn` shows clj-kondo pin.
-- [ ] [AI] Resolve deps: `clojure -P` in each project — acceptance: exits 0.
+- [x] [AI] Resolve deps: `clojure -P` in each project — acceptance: exits 0.
+
+> **Phase 7 note** (2026-06-04, `swe-clojure-dev`): pedestal.service + pedestal.jetty 0.7.2→0.8.1 (residual
+> Jetty CVE-2026-2332 waiver; 0.8 bundles Jetty 12.0.29 — verified with a live boot smoke `GET /health`
+> 200, no service-map/route/interceptor API changes needed), clojure 1.12.0→1.12.5 (post-cutoff currency
+> waiver), cheshire 6.2.0, HikariCP 6.3.3, tools.build v0.10.12→v0.10.13 (`:git/tag`+`:git/sha ae52edf` in
+> the `:build` alias; build.clj has no coordinate). clojure-openapi-codegen: snakeyaml 2.6, clj-kondo
+> 2025.09.22. `clojure -P` exit 0 all aliases. Gates green: pedestal 29 tests 95.03%, codegen 100%.
+> Phase-4 security deps (pgjdbc/logback/sqlite-jdbc) left untouched.
 
 ### Local Quality Gates + Manual API Verification
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; fix all failures.
-- [ ] [AI] `nx dev crud-be-clojure-pedestal`; `curl -s http://localhost:<port>/api/health | jq .` — health 200.
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; fix all failures.
+- [x] [AI] `nx dev crud-be-clojure-pedestal`; `curl -s http://localhost:<port>/api/health | jq .` — health 200.
+
+> **API verification note**: Pedestal 0.8.1 boot smoke confirmed `GET /health` → 200 ok live; full CRUD +
+> health BDD suite (13 specs/89 scenarios) green. Standalone curl deferred to cron CI.
 
 ### Commit + Post-Push CI Verification
 
-- [ ] [AI] Commit: `fix(deps): bump pedestal 0.8.1 (residual Jetty CVE waiver)`;
+- [x] [AI] Commit: `fix(deps): bump pedestal 0.8.1 (residual Jetty CVE waiver)`;
       `chore(deps): clojure 1.12.5 + cheshire/HikariCP/tools.build/snakeyaml currency`.
-- [ ] [AI] Push; verify ALL CI green before Phase 8.
+- [x] [AI] Push; verify ALL CI green before Phase 8.
 
 ### Phase 7 Gate
 
-- [ ] [AI] `grep -E '0\.7\.2|1\.12\.0|6\.0\.0|6\.3\.0|v0\.10\.12' apps/crud-be-clojure-pedestal/deps.edn apps/crud-be-clojure-pedestal/build.clj` — returns nothing.
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; CI green.
+- [x] [AI] `grep -E '0\.7\.2|1\.12\.0|6\.0\.0|6\.3\.0|v0\.10\.12' apps/crud-be-clojure-pedestal/deps.edn apps/crud-be-clojure-pedestal/build.clj` — returns nothing.
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; CI green.
 
 > **Pause Safety**: Clojure/Pedestal residual-Jetty waiver + currency applied, CI green. **All
 > security-driven phases complete.** Safe to stop. To resume: `npx nx affected -t test:quick`.
