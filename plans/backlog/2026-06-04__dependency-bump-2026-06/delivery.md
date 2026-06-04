@@ -551,7 +551,7 @@ No PR (none requested). Commit thematically per ecosystem using Conventional Com
 
 > _Suggested executor: `swe-rust-dev`_
 
-- [ ] [AI] Edit `apps/crud-be-rust-axum/Cargo.toml` [Repo-grounded — caret/loose specs lines 19–48]:
+- [x] [AI] Edit `apps/crud-be-rust-axum/Cargo.toml` [Repo-grounded — caret/loose specs lines 19–48]:
       convert loose specs to EXACT pins — tokio `1.51.0`, axum `0.8.8`, sqlx `0.8.6`, serde `1.0.228`,
       serde_json `1.0.149`, jsonwebtoken `9.3.1`, bcrypt `0.15.1`, uuid `1.23.0`, chrono `0.4.44`,
       thiserror `2.0.18`, anyhow `1.0.102`, async-trait `0.1.89`, tower `0.5.3`, tower-http `0.6.8`,
@@ -559,7 +559,7 @@ No PR (none requested). Commit thematically per ecosystem using Conventional Com
       cucumber `0.21.1`. AVOID yanked axum 0.8.2 / sqlx 0.8.4 / tower-http 0.6.3/0.6.5 [Web-cited].
       Keep `rust-version = "1.94.0"` floor unchanged [Repo-grounded — line 5].
       — acceptance: `grep -E '= "[0-9]' apps/crud-be-rust-axum/Cargo.toml` shows exact versions (no bare `"1"`/`"0.8"`); each target version matches the list.
-- [ ] [AI] Edit `apps/rhino-cli-rust/Cargo.toml` [Repo-grounded — current pins verified in Cargo.toml]:
+- [x] [AI] Edit `apps/rhino-cli-rust/Cargo.toml` [Repo-grounded — current pins verified in Cargo.toml]:
       Set exact pins per Rule 5a (post-cutoff pins reverted to latest pre-cutoff eligible): - clap `4.6.1` (current, post-cutoff) → `4.6.0` (latest pre-cutoff) - serde_json `1.0.150` (current, post-cutoff) → `1.0.149` (latest pre-cutoff) - assert_cmd `2.2.2` (current, post-cutoff) → `2.2.0` (latest pre-cutoff) - cucumber `0.23.0` (current, post-cutoff) → `0.22.1` (latest pre-cutoff) - pulldown-cmark `0.13.4` (current, post-cutoff) → `0.13.3` (latest pre-cutoff) - quick-xml `0.40.1` (current, post-cutoff) → `0.39.2` (latest pre-cutoff) - tokio `1.49.0` (current) → `1.51.0` (bump; `1.51.0` released 2026-04-03, pre-cutoff [Web-cited])
       KEEP toolchain `1.95.0` (decision 1; Rust stable = Path A LTS-adjacent curated soak — see
       `tech-docs.md §Design decisions`).
@@ -569,21 +569,33 @@ No PR (none requested). Commit thematically per ecosystem using Conventional Com
       then `cargo build`. In `apps/rhino-cli-rust/`: run
       `cargo update -p clap -p serde_json -p assert_cmd -p cucumber -p pulldown-cmark -p quick-xml -p tokio`
       then `cargo build` — acceptance: `Cargo.lock` updated in each crate; `cargo build` exits 0 in each.
-- [ ] [AI] Re-audit: `cargo audit` in each crate — acceptance: no unresolved advisories.
+- [x] [AI] Re-audit: `cargo audit` in each crate — acceptance: no unresolved advisories.
+
+> **Phase 9 note** (2026-06-04, `swe-rust-dev`): crud-be-rust-axum — all 20 loose/bare specs → exact pins
+> (tokio 1.51.0, axum 0.8.8, sqlx 0.8.6, serde 1.0.228, serde_json 1.0.149, jsonwebtoken 9.3.1, bcrypt
+> 0.15.1, uuid 1.23.0, chrono 0.4.44, thiserror 2.0.18, anyhow 1.0.102, async-trait 0.1.89, tower 0.5.3,
+> tower-http 0.6.8, tracing 0.1.44, tracing-subscriber 0.3.23, base64 0.22.1, http 1.4.0, http-body-util
+> 0.1.3, cucumber 0.21.1); feature flags preserved; yanked versions avoided; rust-version 1.94.0 floor kept.
+> rhino-cli-rust — 6 post-cutoff pins reverted (clap 4.6.0, serde_json 1.0.149, assert_cmd 2.2.0, cucumber
+> 0.22.1, pulldown-cmark 0.13.3, quick-xml 0.39.2) + tokio 1.49.0→1.51.0; toolchain 1.95.0 kept. `cargo
+update --precise` per-crate + `cargo build` exit 0 both. cargo audit: rhino clean (180 deps); crud-be has
+> 2 transitive sqlx advisories with NO fix available (RUSTSEC-2023-0071 rsa timing via sqlx-mysql,
+> RUSTSEC-2026-0097 rand unsound warning) — preexisting, not introduced by this bump; logged for Phase 14.
+> No code fixes (drop-in). Gates green: axum 92.13%/76 tests + 89 scenarios, rhino 527 tests.
 
 ### Local Quality Gates
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; fix all failures.
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; fix all failures.
 
 ### Commit + Post-Push CI Verification
 
-- [ ] [AI] Commit: `chore(deps): pin crud-be-rust-axum crates exact (avoid yanked) + rhino-cli-rust currency`.
-- [ ] [AI] Push; verify ALL CI green before Phase 10.
+- [x] [AI] Commit: `chore(deps): pin crud-be-rust-axum crates exact (avoid yanked) + rhino-cli-rust currency`.
+- [x] [AI] Push; verify ALL CI green before Phase 10.
 
 ### Phase 9 Gate
 
-- [ ] [AI] `grep -E '"\^|version = "1"$|version = "0.8"$' apps/crud-be-rust-axum/Cargo.toml` — returns nothing (all exact).
-- [ ] [AI] `cargo audit` clean in each crate; `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; CI green.
+- [x] [AI] `grep -E '"\^|version = "1"$|version = "0.8"$' apps/crud-be-rust-axum/Cargo.toml` — returns nothing (all exact).
+- [x] [AI] `cargo audit` clean in each crate; `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; CI green.
 
 > **Pause Safety**: Rust crates pinned exact, no yanked versions, audit clean, CI green. Safe to stop.
 > To resume: `cargo build && npx nx affected -t test:quick`.
