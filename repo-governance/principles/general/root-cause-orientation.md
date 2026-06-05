@@ -210,5 +210,6 @@ See [Agent Workflow Orchestration](../../development/agents/agent-workflow-orche
 - [Implementation Workflow](../../development/workflow/implementation.md) - Three-stage workflow with surgical changes practice
 - [Agent Workflow Orchestration](../../development/agents/agent-workflow-orchestration.md) - How this principle applies to AI agent task execution
 - [Proactive Preexisting Error Resolution](../../development/practice/proactive-preexisting-error-resolution.md) - Practice extending this principle: fix preexisting errors on encounter rather than noting and deferring
+- [Post-Mortem Convention](../../conventions/structure/post-mortems.md) - Blameless retrospectives that convert this principle into systemic action items, ensuring each fix addresses a root cause rather than the proximate trigger
 
 ---

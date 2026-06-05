@@ -196,5 +196,6 @@ The distinction is task origin. The behavior is identical.
 - [Implementation Workflow](../workflow/implementation.md) - Development workflow that includes surgical changes and goal-driven execution
 - [Agent Workflow Orchestration](../agents/agent-workflow-orchestration.md) - How agents plan, execute, verify, and fix bugs autonomously
 - [Deliberate Problem-Solving](../../principles/general/deliberate-problem-solving.md) - Think before acting; surface assumptions; do not proceed on broken foundations
+- [Post-Mortem Convention](../../conventions/structure/post-mortems.md) - Blameless retrospectives whose action items formalize fixing root causes (including preexisting conditions) so the same failure does not recur
 
 ---
