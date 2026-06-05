@@ -11,9 +11,6 @@ Active project plans currently being worked on.
 - [Planning System Overhaul](./planning-system-overhaul/README.md)
   — TDD HARD RULE, AGENTS.md catalog completeness, markdown archive exclusions.
   Adopted from ose-public `2026-05-26__planning-system-overhaul`.
-- [Adopt Post-Mortem Convention](./adopt-post-mortem-convention/README.md)
-  — blameless post-mortem practice document, a copy-ready how-to template, and one
-  illustrative sample post-mortem, wired into the governance and docs indexes.
 
 ## Folder Naming
 

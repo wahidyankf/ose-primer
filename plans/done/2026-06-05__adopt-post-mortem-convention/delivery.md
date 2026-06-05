@@ -331,13 +331,13 @@ governance consistency by running the governance quality-gate workflow at `stric
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] Run affected quality gates: `npx nx affected -t typecheck lint test:quick spec-coverage` — exits 0 with no failures.
-- [ ] [AI] Run repo markdown check on touched trees:
+- [x] [AI] Run affected quality gates: `npx nx affected -t typecheck lint test:quick spec-coverage` — exits 0 with no failures.
+- [x] [AI] Run repo markdown check on touched trees:
       `npx prettier --check "repo-governance/**/*.md" "docs/**/*.md"` — reports no changes.
-- [ ] [AI] Run `npm run lint:md` — exits 0, zero errors reported across all markdown files including the three new ones.
-- [ ] [AI] Verify every relative cross-link across all new/edited files resolves: run a `Bash` loop
+- [x] [AI] Run `npm run lint:md` — exits 0, zero errors reported across all markdown files including the three new ones.
+- [x] [AI] Verify every relative cross-link across all new/edited files resolves: run a `Bash` loop
       executing `test -f` on each resolved link target. Acceptance: zero `MISSING` results.
-- [ ] [AI] Fix ALL failures found — including preexisting issues not caused by these changes — then
+- [x] [AI] Fix ALL failures found — including preexisting issues not caused by these changes — then
       re-run the failing checks to confirm resolution.
 
 > **Important**: Fix ALL failures found during quality gates, not just those caused by your changes.
@@ -346,35 +346,43 @@ governance consistency by running the governance quality-gate workflow at `stric
 
 ### Commit Guidelines
 
-- [ ] [AI] Commit changes thematically — group related changes into logically cohesive commits.
-- [ ] [AI] Follow Conventional Commits format: `<type>(<scope>): <description>` (e.g.,
+- [x] [AI] Commit changes thematically — group related changes into logically cohesive commits.
+- [x] [AI] Follow Conventional Commits format: `<type>(<scope>): <description>` (e.g.,
       `docs(governance): adopt blameless post-mortem convention`).
-- [ ] [AI] Split distinct concerns into separate commits (convention doc vs template/sample vs
+- [x] [AI] Split distinct concerns into separate commits (convention doc vs template/sample vs
       cross-link wiring) where it improves history clarity.
-- [ ] [AI] Preexisting fixes get their own commits, separate from plan work.
-- [ ] [AI] Do NOT bundle unrelated changes into a single commit.
+- [x] [AI] Preexisting fixes get their own commits, separate from plan work.
+- [x] [AI] Do NOT bundle unrelated changes into a single commit.
 
 ### Post-Push CI Verification
 
-- [ ] [AI] Push changes to `main`: `git push origin HEAD:main`.
-- [ ] [AI] Check which runs the push triggered: `gh run list --limit 5` — note the workflow names and
+- [x] [AI] Push changes to `main`: `git push origin HEAD:main`.
+- [x] [AI] Check which runs the push triggered: `gh run list --limit 5` — note the workflow names and
       statuses. For a docs-only push to `main`, no push-triggered workflows are defined in this repo
       (all `test-crud-*.yml` workflows are `schedule`/`workflow_dispatch` only; `pr-quality-gate.yml`
       and `pr-validate-links.yml` are PR-only and will NOT trigger on a direct push). Expect zero
       new runs triggered; if any unexpected run appears, monitor it to green.
-- [ ] [AI] Verify ALL triggered CI checks pass — no exceptions.
-- [ ] [AI] If any CI check fails, fix immediately and push a follow-up commit.
-- [ ] [AI] Repeat until ALL triggered GitHub Actions pass with zero failures.
-- [ ] [AI] Do NOT proceed to archival until CI is fully green (or confirmed no workflows triggered).
+- [x] [AI] Verify ALL triggered CI checks pass — no exceptions.
+- [x] [AI] If any CI check fails, fix immediately and push a follow-up commit.
+- [x] [AI] Repeat until ALL triggered GitHub Actions pass with zero failures.
+- [x] [AI] Do NOT proceed to archival until CI is fully green (or confirmed no workflows triggered).
+
+> **Implementation note** (2026-06-05): Local gates green — `nx affected` ran no tasks (docs/governance
+> change, no code projects affected), prettier + `npm run lint:md` + `docs validate-mermaid` (0
+> violations) + `docs validate-links` (all valid) clean. Committed thematically: `3e0da8349`
+> docs(governance) adoption + `0aa7587b8` chore(plans) progress, plus the earlier preexisting mermaid
+> fix `5c91f04f1` in its own commit. Pushed to `main` (`5c91f04f1..0aa7587b8`); pre-push hook ran the
+> full nx + markdown + cross-vendor-parity gates and passed. `gh run list --commit 0aa7587b8` shows
+> zero triggered workflows — confirmed no push-triggered CI on a docs-only change. CI green by absence.
 
 ### Phase 6 Gate
 
 > All checks below must pass before archival.
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — exits 0.
-- [ ] [AI] `npx prettier --check "repo-governance/**/*.md" "docs/**/*.md"` — reports no changes.
-- [ ] [AI] `npm run lint:md` — exits 0 with zero errors reported.
-- [ ] [AI] All GitHub Actions workflows for the push are green.
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — exits 0.
+- [x] [AI] `npx prettier --check "repo-governance/**/*.md" "docs/**/*.md"` — reports no changes.
+- [x] [AI] `npm run lint:md` — exits 0 with zero errors reported.
+- [x] [AI] All GitHub Actions workflows for the push are green.
 
 > **Pause Safety**: Work is committed and pushed; CI is green. Safe to stop. To resume: proceed to
 > Plan Archival.
@@ -383,14 +391,22 @@ governance consistency by running the governance quality-gate workflow at `stric
 
 ## Plan Archival
 
-- [ ] [AI] Verify ALL delivery checklist items above are ticked.
-- [ ] [AI] Verify ALL quality gates pass (local + CI).
-- [ ] [AI] Rename and move:
+- [x] [AI] Verify ALL delivery checklist items above are ticked.
+- [x] [AI] Verify ALL quality gates pass (local + CI).
+- [x] [AI] Rename and move:
       `git mv plans/in-progress/adopt-post-mortem-convention/ plans/done/2026-06-05__adopt-post-mortem-convention/`
       (use today's date as the completion date).
-- [ ] [AI] Update `plans/in-progress/README.md` — remove the plan entry.
-- [ ] [AI] Update `plans/done/README.md` — add the plan entry with completion date 2026-06-05.
-- [ ] [AI] Confirm no other READMEs reference this plan by name (`plans/README.md` is a landing-page
+- [x] [AI] Update `plans/in-progress/README.md` — remove the plan entry.
+- [x] [AI] Update `plans/done/README.md` — add the plan entry with completion date 2026-06-05.
+- [x] [AI] Confirm no other READMEs reference this plan by name (`plans/README.md` is a landing-page
       overview that does not list individual plans — no update needed there).
-- [ ] [AI] Commit the archival: `chore(plans): move adopt-post-mortem-convention to done`.
-- [ ] [AI] Push the archival commit and confirm CI is green.
+- [x] [AI] Commit the archival: `chore(plans): move adopt-post-mortem-convention to done`.
+- [x] [AI] Push the archival commit and confirm CI is green.
+
+> **Implementation note** (2026-06-05): Execution complete. plan-execution-checker (validation
+> `plan-execution__d7bbd6`) confirmed all content deliverables and quality gates sound; its only
+> blocking findings were the pending archival itself (this section) plus sanctioned/informational
+> notes (in-place execution, timestamp confirmability). Archived via `git mv` to
+> `plans/done/2026-06-05__adopt-post-mortem-convention/`; in-progress README entry removed, done README
+> entry added. Files Changed: this plan folder (moved), `plans/in-progress/README.md`,
+> `plans/done/README.md`.
