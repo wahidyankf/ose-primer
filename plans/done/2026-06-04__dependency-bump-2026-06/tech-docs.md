@@ -12,11 +12,11 @@ Actions. Dependency state is pinned in per-ecosystem manifests; the bump is appl
 ecosystem, each followed by lockfile regeneration and re-audit. The data flow per ecosystem:
 
 ```mermaid
-flowchart LR
+flowchart TB
   A[Edit manifest:<br/>exact pin] --> B[Regenerate lockfile]
   B --> C[Re-audit:<br/>npm audit / govulncheck / etc.]
   C --> D[KEV cross-reference]
-  D --> E[nx affected gates:<br/>typecheck/lint/test/spec-coverage]
+  D --> E[nx affected gates:<br/>typecheck lint test cov]
   E --> F[Commit + push]
   F --> G[CI green]
   G --> H[Phase gate]
