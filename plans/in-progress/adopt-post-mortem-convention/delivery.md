@@ -26,25 +26,33 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 > _Executor: repo-setup-manager_
 
-- [ ] [AI] Install dependencies in the root worktree: `npm install` — acceptance: exits 0,
+- [x] [AI] Install dependencies in the root worktree: `npm install` — acceptance: exits 0,
       `node_modules/` synchronized.
-- [ ] [AI] Converge the toolchain in the root worktree: `npm run doctor -- --fix` — acceptance:
+- [x] [AI] Converge the toolchain in the root worktree: `npm run doctor -- --fix` — acceptance:
       exits 0 (doctor may report drift it then fixes); record any preexisting drift.
-- [ ] [AI] Confirm the docs/governance baseline is clean: run `git status --porcelain` — acceptance:
+- [x] [AI] Confirm the docs/governance baseline is clean: run `git status --porcelain` — acceptance:
       output shows only the plan folder `plans/in-progress/adopt-post-mortem-convention/`.
-- [ ] [AI] Record the markdown-tooling baseline: run
+- [x] [AI] Record the markdown-tooling baseline: run
       `npx prettier --check "repo-governance/**/*.md" "docs/**/*.md"` and note the result —
       acceptance: result recorded; any preexisting formatting failures documented (this plan does
       not introduce new ones).
-- [ ] [AI] Resolve any preexisting failures encountered above before proceeding — acceptance: no
+- [x] [AI] Resolve any preexisting failures encountered above before proceeding — acceptance: no
       preexisting failure tied to files this plan will touch remains unresolved.
+
+> **Implementation note** (2026-06-05): Baseline confirmed green. The plan-establishment push to
+> `main` passed the pre-push hook's full `npx nx affected -t typecheck lint test:quick spec-coverage`
+>
+> - `npm run lint:md` + `docs validate-mermaid` gates, demonstrating a clean toolchain and test
+>   baseline. `git status --porcelain` clean; Node v24.16.0, npm 11.10.1. Executed in main checkout
+>   (not a separate worktree) — docs/governance-only change, direct-to-`main` per trunk-based default,
+>   no parallel-work hazard. No preexisting failures tied to files this plan touches. Files Changed: none.
 
 ### Phase 0 Gate
 
 > All checks below must pass before starting Phase 1.
 
-- [ ] [AI] `npm run doctor -- --fix` — exits 0.
-- [ ] [AI] `git status --porcelain` — shows only the plan folder.
+- [x] [AI] `npm run doctor -- --fix` — exits 0.
+- [x] [AI] `git status --porcelain` — shows only the plan folder.
 
 > **Pause Safety**: Toolchain converged and markdown baseline recorded; no convention or docs files
 > created yet. Safe to stop indefinitely. To resume: `npm run doctor -- --fix`.
@@ -53,7 +61,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 ## Phase 1: Post-Mortem Convention Document
 
-- [ ] [AI] Create `repo-governance/conventions/structure/post-mortems.md` _New file_, faithfully
+- [x] [AI] Create `repo-governance/conventions/structure/post-mortems.md` _New file_, faithfully
       adopting the `ose-infra` convention with H1 title **"Post-Mortem Convention"**. YAML
       frontmatter: `title: "Post-Mortem Convention"`, `category: explanation`,
       `subcategory: conventions`, tags including `post-mortem`, `incidents`, `blameless`,
@@ -83,34 +91,42 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 <file>` ≥ 1, `grep -c "Trigger" <file>` ≥ 1, `grep -c "Contributing Factors" <file>` ≥ 1 as
       spot checks).
   - _Suggested executor: `repo-rules-maker`_
-- [ ] [AI] Add an alphabetical index entry for the new convention to
+- [x] [AI] Add an alphabetical index entry for the new convention to
       `repo-governance/conventions/structure/README.md` under the "Documents" list, linking
       `./post-mortems.md` with a one-line description (place it alphabetically — between
       `plans.md` and `programming-language-docs-separation.md` style ordering by title
       "Post-Mortem Convention"). Acceptance:
       `grep -c "post-mortems.md" repo-governance/conventions/structure/README.md` ≥ 1.
   - _Suggested executor: `repo-rules-maker`_
-- [ ] [AI] Add an alphabetical entry to `repo-governance/conventions/README.md` under the
+- [x] [AI] Add an alphabetical entry to `repo-governance/conventions/README.md` under the
       "🗂️ Structure" section, linking `./structure/post-mortems.md` with a one-line description
       (alphabetical by title "Post-Mortem Convention"). Acceptance:
       `grep -c "structure/post-mortems.md" repo-governance/conventions/README.md` ≥ 1.
   - _Suggested executor: `repo-rules-maker`_
-- [ ] [AI] Verify every relative link inside `post-mortems.md` resolves: for each `](../...)` or
+- [x] [AI] Verify every relative link inside `post-mortems.md` resolves: for each `](../...)` or
       `](./...)` target, run `Bash test -f` on the resolved path. Acceptance: every link target
       exists (zero `MISSING` results). Confirm specifically that the no-secrets link resolves to
       `repo-governance/development/quality/no-secrets-in-committed-files.md`.
+
+> **Implementation note** (2026-06-05): Convention authored via `repo-rules-maker`. 14 `#### N.`
+> mandatory-section headings present; severity scale, blameless principle, doc_status lifecycle,
+> app/service-generalized examples + placeholder table. All 10 in-repo cross-links verified via
+> `test -f` (no-secrets correctly resolves to `development/quality/no-secrets-in-committed-files.md`).
+> Indexed in both `conventions/structure/README.md` and `conventions/README.md` (alphabetical).
+> prettier + `npm run lint:md` clean. Files Changed: `repo-governance/conventions/structure/post-mortems.md` (new),
+> `repo-governance/conventions/structure/README.md`, `repo-governance/conventions/README.md`.
 
 ### Phase 1 Gate
 
 > All checks below must pass before starting Phase 2.
 
-- [ ] [AI] `test -f repo-governance/conventions/structure/post-mortems.md` — exits 0.
-- [ ] [AI] `npx prettier --check repo-governance/conventions/structure/post-mortems.md repo-governance/conventions/structure/README.md repo-governance/conventions/README.md`
+- [x] [AI] `test -f repo-governance/conventions/structure/post-mortems.md` — exits 0.
+- [x] [AI] `npx prettier --check repo-governance/conventions/structure/post-mortems.md repo-governance/conventions/structure/README.md repo-governance/conventions/README.md`
       — reports no changes.
-- [ ] [AI] `npx markdownlint-cli2 repo-governance/conventions/structure/post-mortems.md`
+- [x] [AI] `npx markdownlint-cli2 repo-governance/conventions/structure/post-mortems.md`
       — zero errors (if `markdownlint-cli2` is unavailable, use the repo's configured markdownlint
       invocation; acceptance is zero errors either way).
-- [ ] [AI] All 14 mandatory section names present in the convention's Mandatory Sections list (the
+- [x] [AI] All 14 mandatory section names present in the convention's Mandatory Sections list (the
       grep spot checks above return ≥ 1 for each).
 
 > **Pause Safety**: The authoritative convention document exists, is indexed in both convention
@@ -121,7 +137,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 ## Phase 2: Explanation-Tier Template and Index
 
-- [ ] [AI] Create `docs/explanation/post-mortems/README.md` _New file + new dir_ with explanation
+- [x] [AI] Create `docs/explanation/post-mortems/README.md` _New file + new dir_ with explanation
       frontmatter (`title: Post-Mortems`, `category: explanation`, `subcategory: post-mortem`, tags
       `index`, `explanation`, `post-mortems`, `incidents`, `reliability`). Body MUST: (a) explain
       what a post-mortem is (Diátaxis explanation tier); (b) point to the authoritative
@@ -137,29 +153,36 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
       (`grep -c "## Summary" <file>` ≥ 1, `grep -c "## Action Items" <file>` ≥ 1,
       `grep -c "## Trigger" <file>` ≥ 1, `grep -c "## References" <file>` ≥ 1 as spot checks).
   - _Suggested executor: `docs-maker`_
-- [ ] [AI] Cross-check template ⇄ convention parity: confirm every one of the 14 mandatory section
+- [x] [AI] Cross-check template ⇄ convention parity: confirm every one of the 14 mandatory section
       names listed under "Mandatory Sections" in
       `repo-governance/conventions/structure/post-mortems.md` also appears as a heading inside the
       template block of `docs/explanation/post-mortems/README.md`. Acceptance: for each of the 14
       section names, `grep` finds it in both files; zero mismatches.
-- [ ] [AI] Add a Post-Mortems subdir entry to `docs/explanation/README.md` under the
+- [x] [AI] Add a Post-Mortems subdir entry to `docs/explanation/README.md` under the
       "📋 Documentation Index" (new subsection or under an appropriate heading), linking
       `./post-mortems/README.md` with a one-line description. Acceptance:
       `grep -c "post-mortems/README.md" docs/explanation/README.md` ≥ 1.
   - _Suggested executor: `docs-maker`_
-- [ ] [AI] Verify every relative link inside `docs/explanation/post-mortems/README.md` resolves via
+- [x] [AI] Verify every relative link inside `docs/explanation/post-mortems/README.md` resolves via
       `Bash test -f` on each resolved target. Acceptance: zero `MISSING` results. (Note: the sample
       link target is created in Phase 3; if running this check before Phase 3, exempt that one
       target and re-verify it at the Phase 3 gate.)
+
+> **Implementation note** (2026-06-05): Template+index README created via `docs-maker` with the full
+> 14-section (+2 optional) copy-paste block; all 14 section headings present in the template block,
+> parity with the convention confirmed (zero mismatches). Indexed in `docs/explanation/README.md`
+> under a new "Post-Mortems" subsection. Non-forward links resolve; the sample link is an intentional
+> forward reference (created in Phase 3). prettier + `npm run lint:md` clean. Files Changed:
+> `docs/explanation/post-mortems/README.md` (new), `docs/explanation/README.md`.
 
 ### Phase 2 Gate
 
 > All checks below must pass before starting Phase 3.
 
-- [ ] [AI] `test -f docs/explanation/post-mortems/README.md` — exits 0.
-- [ ] [AI] `npx prettier --check docs/explanation/post-mortems/README.md docs/explanation/README.md`
+- [x] [AI] `test -f docs/explanation/post-mortems/README.md` — exits 0.
+- [x] [AI] `npx prettier --check docs/explanation/post-mortems/README.md docs/explanation/README.md`
       — reports no changes.
-- [ ] [AI] Template/convention section parity holds — all 14 mandatory section names present in the
+- [x] [AI] Template/convention section parity holds — all 14 mandatory section names present in the
       template block (the parity grep above returns zero mismatches).
 
 > **Pause Safety**: The explanation-tier template and index exist and are wired into
@@ -171,7 +194,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 ## Phase 3: Illustrative Sample Post-Mortem
 
-- [ ] [AI] Create
+- [x] [AI] Create
       `docs/explanation/post-mortems/2025-01-15-sample-be-service-db-pool-exhaustion.md` _New file_
       with explanation frontmatter (`title: "Post-Mortem: sample-be-service — DB Connection Pool
 Exhaustion"`, `category: explanation`, `subcategory: post-mortem`, `doc_status: closed`, tags
@@ -188,25 +211,33 @@ Exhaustion"`, `category: explanation`, `subcategory: post-mortem`, `doc_status: 
       (`grep -c "## Root Cause" <file>` ≥ 1, `grep -c "## Trigger" <file>` ≥ 1,
       `grep -c "## Lessons Learned" <file>` ≥ 1 as spot checks).
   - _Suggested executor: `docs-maker`_
-- [ ] [AI] Confirm the sample is linked from the index in
+- [x] [AI] Confirm the sample is linked from the index in
       `docs/explanation/post-mortems/README.md` (added in Phase 2). Acceptance:
       `grep -c "2025-01-15-sample-be-service-db-pool-exhaustion.md" docs/explanation/post-mortems/README.md`
       ≥ 1 and the linked path resolves (`Bash test -f` on the target).
-- [ ] [AI] Re-verify the sample link in `docs/explanation/post-mortems/README.md` now resolves:
+- [x] [AI] Re-verify the sample link in `docs/explanation/post-mortems/README.md` now resolves:
       `test -f docs/explanation/post-mortems/2025-01-15-sample-be-service-db-pool-exhaustion.md` —
       exits 0.
+
+> **Implementation note** (2026-06-05): Sample post-mortem created via `docs-maker`. Bold
+> "not a real incident" banner present (grep ≥ 1), Sev-3 — Moderate, all 14 mandatory sections in
+> convention order (+ optional Background, Supporting Data with an accessible `flowchart TB` Mermaid
+> causal chain). Action Items table has P0/P1/P2 rows with `# | Action | Owner | Priority | Ticket |
+Status` columns. No secrets (placeholders only). Indexed link resolves. prettier, `npm run lint:md`,
+> and `docs validate-mermaid` (0 violations) all clean. Files Changed:
+> `docs/explanation/post-mortems/2025-01-15-sample-be-service-db-pool-exhaustion.md` (new).
 
 ### Phase 3 Gate
 
 > All checks below must pass before starting Phase 4.
 
-- [ ] [AI] `test -f docs/explanation/post-mortems/2025-01-15-sample-be-service-db-pool-exhaustion.md`
+- [x] [AI] `test -f docs/explanation/post-mortems/2025-01-15-sample-be-service-db-pool-exhaustion.md`
       — exits 0.
-- [ ] [AI] `npx prettier --check docs/explanation/post-mortems/2025-01-15-sample-be-service-db-pool-exhaustion.md`
+- [x] [AI] `npx prettier --check docs/explanation/post-mortems/2025-01-15-sample-be-service-db-pool-exhaustion.md`
       — reports no changes.
-- [ ] [AI] `grep -ci "not a real incident" docs/explanation/post-mortems/2025-01-15-sample-be-service-db-pool-exhaustion.md`
+- [x] [AI] `grep -ci "not a real incident" docs/explanation/post-mortems/2025-01-15-sample-be-service-db-pool-exhaustion.md`
       ≥ 1 — the illustrative banner is present.
-- [ ] [AI] All 14 mandatory section headings present in the sample (the section grep spot checks
+- [x] [AI] All 14 mandatory section headings present in the sample (the section grep spot checks
       above return ≥ 1 for each).
 
 > **Pause Safety**: All three documents exist, are indexed, and pass markdown gates; only reciprocal
@@ -217,23 +248,31 @@ Exhaustion"`, `category: explanation`, `subcategory: post-mortem`, `doc_status: 
 
 ## Phase 4: Reciprocal Cross-Links
 
-- [ ] [AI] Edit `repo-governance/principles/general/root-cause-orientation.md`: add a reference to
+- [x] [AI] Edit `repo-governance/principles/general/root-cause-orientation.md`: add a reference to
       the new convention in a "Related" / "See also" location (preserve existing structure; do not
       remove content). Acceptance:
       `grep -c "post-mortems" repo-governance/principles/general/root-cause-orientation.md` ≥ 1.
   - _Suggested executor: `repo-rules-maker`_
-- [ ] [AI] Edit `repo-governance/development/practice/proactive-preexisting-error-resolution.md`: add
+- [x] [AI] Edit `repo-governance/development/practice/proactive-preexisting-error-resolution.md`: add
       a reference to the new post-mortem convention (preserve existing content). Acceptance:
       `grep -c "post-mortems" repo-governance/development/practice/proactive-preexisting-error-resolution.md`
       ≥ 1.
   - _Suggested executor: `repo-rules-maker`_
 
+> **Implementation note** (2026-06-05): Added a Post-Mortem Convention back-link to the "Related
+> Documentation" section of both `root-cause-orientation.md` (principle) and
+> `proactive-preexisting-error-resolution.md` (practice). Existing content preserved. Direct edits
+> (trivial one-line additions, Agent Selection fallback). Both `grep -c "post-mortems" ≥ 1`; prettier
+>
+> - `npm run lint:md` clean. Files Changed: `repo-governance/principles/general/root-cause-orientation.md`,
+>   `repo-governance/development/practice/proactive-preexisting-error-resolution.md`.
+
 ### Phase 4 Gate
 
 > All checks below must pass before starting Phase 5.
 
-- [ ] [AI] Both back-links present (the two `grep -c ... ≥ 1` checks above pass).
-- [ ] [AI] `npx prettier --check repo-governance/principles/general/root-cause-orientation.md repo-governance/development/practice/proactive-preexisting-error-resolution.md`
+- [x] [AI] Both back-links present (the two `grep -c ... ≥ 1` checks above pass).
+- [x] [AI] `npx prettier --check repo-governance/principles/general/root-cause-orientation.md repo-governance/development/practice/proactive-preexisting-error-resolution.md`
       — reports no changes.
 
 > **Pause Safety**: All documents and bidirectional links are in place. Safe to stop. To resume:
@@ -252,25 +291,34 @@ All three new documents and the reciprocal cross-links now exist (Phases 1–4).
 and pushing, validate the new convention plus every index and back-link edit for repo-wide
 governance consistency by running the governance quality-gate workflow at `strict` mode.
 
-- [ ] [AI] Run the
+- [x] [AI] Run the
       [repo-rules-quality-gate](../../../repo-governance/workflows/repo/repo-rules-quality-gate.md)
       workflow at `strict` mode over the changed governance + docs surface (the new
       `repo-governance/conventions/structure/post-mortems.md`, both convention READMEs,
       `docs/explanation/**`, and the two edited principle/practice files). Acceptance:
       repo-rules-quality-gate returns `pass` — zero CRITICAL/HIGH/MEDIUM findings on two
       consecutive validations (LOW findings may exist and are not blocking).
-- [ ] [AI] Fix ALL CRITICAL/HIGH/MEDIUM findings the gate surfaces — delegate the fixes to
+- [x] [AI] Fix ALL CRITICAL/HIGH/MEDIUM findings the gate surfaces — delegate the fixes to
       `repo-rules-fixer` (as the gate workflow does), then re-run the gate until it returns `pass`.
       Acceptance: no CRITICAL/HIGH/MEDIUM finding remains; the gate's two-consecutive-clean check
       is satisfied.
+
+> **Implementation note** (2026-06-05): Ran repo-rules-quality-gate strict via `repo-rules-checker` →
+> `repo-rules-fixer` → re-check. Iteration 1 (audit a8d7c6): 1 MEDIUM + 2 LOW. Fixes applied: sample
+> action items all set `Resolved` (resolving the `doc_status: closed` contradiction), Background-
+> before-Summary note added to the template README, "(Sev-1..Sev-4)" added to the conventions README
+> entry. Iteration 2 (a8d7c6_b49174): zero CRITICAL/HIGH/MEDIUM. Iteration 3 confirmation
+> (a8d7c6_b49174_9d172a): zero — **two consecutive clean checks, gate returns `pass`**. Files Changed:
+> `docs/explanation/post-mortems/2025-01-15-sample-be-service-db-pool-exhaustion.md`,
+> `docs/explanation/post-mortems/README.md`, `repo-governance/conventions/README.md`.
 
 ### Phase 5 Gate
 
 > All checks below must pass before starting Phase 6.
 
-- [ ] [AI] `repo-governance/workflows/repo/repo-rules-quality-gate.md` (strict) returns `pass` —
+- [x] [AI] `repo-governance/workflows/repo/repo-rules-quality-gate.md` (strict) returns `pass` —
       zero CRITICAL/HIGH/MEDIUM findings on two consecutive validations.
-- [ ] [AI] All CRITICAL/HIGH/MEDIUM findings surfaced by the gate are fixed (via `repo-rules-fixer`)
+- [x] [AI] All CRITICAL/HIGH/MEDIUM findings surfaced by the gate are fixed (via `repo-rules-fixer`)
       and confirmed resolved on re-run.
 
 > **Pause Safety**: The new convention and all index/back-link edits are validated repo-wide and the
