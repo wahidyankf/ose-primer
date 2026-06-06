@@ -285,7 +285,7 @@ inside file selection (`docs/`, `repo-governance/`, `specs/`, `plans/`−`done/`
 everything else), optional positional PATH args (allowlist still applied), and a repeatable
 `--exclude` flag.
 
-- [ ] [AI] **SPEC (RED)** — Create
+- [x] [AI] **SPEC (RED)** — Create
       `specs/apps/rhino/behavior/cli/gherkin/docs/docs-validate-heading-hierarchy.feature`
       (_New file_) with scenarios for: duplicate-H1 in `docs/` flagged; missing-H1 flagged;
       skipped-level flagged; `.claude/agents/` file exempt (default-deny); `SKILL.md` exempt;
@@ -294,7 +294,8 @@ everything else), optional positional PATH args (allowlist still applied), and a
       `specs/apps/rhino/components/cli/component-cli.md` with the new command + flags. Run
       `npx nx run rhino-cli-go:spec-coverage`
       — acceptance: spec-coverage FAILS listing the new unmatched steps.
-- [ ] [AI] **RED (Rust)** — Add failing unit tests in the new
+  - _Done 2026-06-06. Status: complete. Files: `docs-validate-heading-hierarchy.feature` (new, 9 scenarios, cardinality-compliant), `component-cli.md` (+validate-heading-hierarchy inventory). spec-coverage FAILS with 29 unmatched steps, all in the new feature — RED confirmed._
+- [x] [AI] **RED (Rust)** — Add failing unit tests in the new
       `apps/rhino-cli-rust/src/internal/docs/heading_hierarchy.rs` (_New file_, tests-first with
       temp-dir fixtures) covering:
       (a) a `docs/` file with two H1s yields `duplicate-h1`;
@@ -311,7 +312,8 @@ everything else), optional positional PATH args (allowlist still applied), and a
       (k) `--exclude docs` suppresses `docs/` findings while other allowlist trees still report.
       Run `npx nx run rhino-cli-rust:test:quick`
       — acceptance: new tests FAIL (module compiles, assertions fail); preexisting tests pass.
-- [ ] [AI] **GREEN (Rust)** — Implement:
+  - _Done 2026-06-06. Status: complete. Files: `heading_hierarchy.rs` (new — stub API `is_prose_allowlisted` + `validate_heading_hierarchy` + finding kinds, 20 failing tests covering a–k + allowlist predicate), `mod.rs` (registration). 540 passed / 20 failed — failures exactly the new tests (unimplemented! stubs)._
+- [x] [AI] **GREEN (Rust)** — Implement:
       (1) the Gate C engine in `heading_hierarchy.rs` reusing `collect_atx_headings` from
       `headings.rs` (Phase 1) — finding kinds `missing-h1`/`duplicate-h1`/`skipped-level`;
       (2) `is_prose_allowlisted(repo_rel: &str) -> bool` applied to every candidate file in the
@@ -325,15 +327,18 @@ everything else), optional positional PATH args (allowlist still applied), and a
       Run `npx nx run rhino-cli-rust:test:quick && npx nx run rhino-cli-rust:test:integration`
       — acceptance: all tests pass; the 90% coverage gate stays green (logic lives in
       `internal/docs/`, coverage-gated).
-- [ ] [AI] **REFACTOR (Rust)** — Keep the allowlist + exclude logic in one cohesive place; align
+  - _Done 2026-06-06. Status: complete. Files: `heading_hierarchy.rs` (engine reusing `collect_atx_headings`; allowlist + exclude in `collect_candidate_rels`; text/json/markdown reporters), `scanner.rs` (walker shared via pub(crate)), `cli.rs` (+variant/dispatch), `commands/docs.rs` (args/handler/USAGE byte-matching cobra), `tests/docs.rs` (9 scenarios wired). test:quick PASS (570 tests, 90% gate green); test:integration PASS (docs 41 scenarios/159 steps). fmt+clippy clean._
+- [x] [AI] **REFACTOR (Rust)** — Keep the allowlist + exclude logic in one cohesive place; align
       doc comments with module style. Run
       `npx nx run rhino-cli-rust:lint && npx nx run rhino-cli-rust:test:quick`
       — acceptance: both exit 0; no clippy warnings introduced.
-- [ ] [AI] **RED (Go)** — Add the same failing unit tests (fixtures identical to Rust, a–k) in
+  - _Done 2026-06-06. Status: complete. Already cohesive (single retain point; pure allowlist predicate; reporters mirror link pattern). One doc-comment alignment on `is_excluded`. lint exit 0; test:quick 570 passed/0 failed (fresh run after nx reset)._
+- [x] [AI] **RED (Go)** — Add the same failing unit tests (fixtures identical to Rust, a–k) in
       the new `apps/rhino-cli-go/internal/docs/heading_hierarchy_test.go` (_New test_). Run
       `npx nx run rhino-cli-go:test:quick`
       — acceptance: new tests FAIL; preexisting tests pass.
-- [ ] [AI] **GREEN (Go)** — Mirror the Rust implementation:
+  - _Done 2026-06-06. Status: complete. Files: `heading_hierarchy.go` (new, panic stubs `IsProseAllowlisted`/`ValidateHeadingHierarchy` + kind constants), `heading_hierarchy_test.go` (new, a–k mirroring Rust byte-for-byte + 21 allowlist subtests). 12 new tests FAIL via panic→fail helper; all preexisting pass; gofmt/vet clean._
+- [x] [AI] **GREEN (Go)** — Mirror the Rust implementation:
       (1) engine + `IsProseAllowlisted` in
       `apps/rhino-cli-go/internal/docs/heading_hierarchy.go` (_New file_) reusing
       `CollectATXHeadings`;
@@ -343,24 +348,30 @@ everything else), optional positional PATH args (allowlist still applied), and a
       `apps/rhino-cli-go/cmd/docs_validate_heading_hierarchy.integration_test.go` (_New test_).
       Run `npx nx run rhino-cli-go:test:quick && npx nx run rhino-cli-go:spec-coverage`
       — acceptance: all tests pass; spec-coverage exits 0.
-- [ ] [AI] **REFACTOR (Go)** — Same consolidation pass. Run
+  - _Done 2026-06-06. Status: complete. Files: `heading_hierarchy.go` (engine + IsProseAllowlisted + reporter trio), `cmd/docs_validate_heading_hierarchy.go` (new cobra cmd), `.integration_test.go` (9 godog scenarios), `_test.go` (unit suite for coverage gate), `testable.go` (+injection var), `steps_common_test.go` (+20 step constants). test:quick PASS (cov 90.20%); spec-coverage exit 0 (21 specs, 154 scenarios, 645 steps). Byte-parity sanity vs Rust on shared fixtures: json/text/markdown stdout, exit codes, stderr all IDENTICAL._
+- [x] [AI] **REFACTOR (Go)** — Same consolidation pass. Run
       `npx nx run rhino-cli-go:lint && npx nx run rhino-cli-go:test:quick`
       — acceptance: both exit 0; no new golangci-lint findings.
-- [ ] [AI] **PARITY** — Extend the shadow-diff `docs` corpus with
+  - _Done 2026-06-06. Status: complete. Already cohesive — zero code changes (GREEN had incorporated the Rust REFACTOR's comment alignment). lint exit 0 (0 issues); test:quick exit 0 (internal/docs 92.4%, overall 90.20%)._
+- [x] [AI] **PARITY** — Extend the shadow-diff `docs` corpus with
       `validate-heading-hierarchy` invocations (full scan + `--exclude` + positional-path
       variants), then run `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs`
       — acceptance: exits 0.
+  - _Done 2026-06-06. Status: complete. +26 corpus cases (full-scan, fixtures under `docs/.shadow-heading-fixtures/` since dot-dirs at root are default-denied, positional paths, denied-tree, --exclude variants). PASS — 67 cases byte-identical (was 41). Zero divergences on first run._
 
 ### Phase 2 Gate
 
 > All checks below must pass before starting Phase 3.
 
-- [ ] [AI] Both `test:quick` targets green; both `lint` targets exit 0; both `spec-coverage`
+- [x] [AI] Both `test:quick` targets green; both `lint` targets exit 0; both `spec-coverage`
       targets exit 0.
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs` exits 0.
-- [ ] [AI] Spot-check:
+  - _Done 2026-06-06. Rust 570/0, Go 14/14 pkgs; both lints 0 issues; both spec-coverage 645 steps covered (all cache-skipped)._
+- [x] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs` exits 0.
+  - _Done 2026-06-06. PASS — 67 cases byte-identical._
+- [x] [AI] Spot-check:
       `cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-heading-hierarchy .claude/ .opencode/`
       reports ZERO findings (allowlist protects agent/skill files) — acceptance: exits 0.
+  - _Done 2026-06-06. Exit 0 — "All heading hierarchies valid! No findings found." Allowlist default-deny protects agent/skill files._
 
 > **Pause Safety**: the heading validator now exists in both CLIs, self-scopes to prose, and
 > protects agent/skill files, but it is NOT yet wired into any hook/CI (Phase 5). Safe to stop.
