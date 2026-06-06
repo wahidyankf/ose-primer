@@ -20,6 +20,14 @@ var (
 	// goStepRe matches: sc.Step(`^step text here$`, fn)
 	// Raw string cannot be used here because the pattern itself contains backtick characters.
 	goStepRe = regexp.MustCompile("\\.Step\\(\\x60([^\\x60]+)\\x60") //nolint:staticcheck
+	// goStepIdentRe matches identifier-indirected registrations: sc.Step(stepFoo, fn)
+	// where stepFoo is a named constant/variable defined elsewhere in the package.
+	goStepIdentRe = regexp.MustCompile(`\.Step\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*,`)
+	// goAssignRe matches identifier assignments of backtick raw strings in all
+	// common forms: `const stepFoo = `+"`...`"+`, const-block entries, var
+	// declarations, and := short assignments.
+	// Raw string cannot be used here because the pattern itself contains backtick characters.
+	goAssignRe = regexp.MustCompile("([A-Za-z_][A-Za-z0-9_]*)\\s*:?=\\s*\\x60([^\\x60]*)\\x60") //nolint:staticcheck
 	// goScenarioCommentRe matches: // Scenario: Title Here.
 	goScenarioCommentRe = regexp.MustCompile(`//\s*Scenario:\s*(.+?)\s*$`)
 	// tsRegexStepRe matches Given(/^pattern$/, fn) or When(/^pattern$/, fn) in TS/JS.
@@ -29,9 +37,37 @@ var (
 )
 
 // stepMatcher holds both exact step texts (from TS/JS) and regex patterns (from Go godog files).
+//
+// goAssignments and goIdentRefs collect identifier-indirected godog
+// registrations (sc.Step(stepFoo, fn) where stepFoo = `^pattern$` is defined
+// elsewhere in the package, possibly in a different file). They are filled
+// during the walk and resolved into patterns by resolveGoIndirectSteps after
+// the walk completes, so definition/reference file order does not matter.
 type stepMatcher struct {
 	exact    map[string]bool
 	patterns []*regexp.Regexp
+	// goAssignments maps identifier name → backtick raw-string pattern (global across appDir).
+	goAssignments map[string]string
+	// goIdentRefs lists identifiers referenced in .Step(identifier, ...) calls, in walk order.
+	goIdentRefs []string
+}
+
+// resolveGoIndirectSteps resolves identifier-indirected godog registrations
+// against the global assignment map collected during the walk and compiles the
+// referenced patterns. Unresolved identifiers and invalid regexes are skipped
+// silently.
+func (sm *stepMatcher) resolveGoIndirectSteps() {
+	for _, name := range sm.goIdentRefs {
+		pattern, ok := sm.goAssignments[name]
+		if !ok {
+			continue
+		}
+		re, err := regexp.Compile(pattern)
+		if err != nil {
+			continue
+		}
+		sm.patterns = append(sm.patterns, re)
+	}
 }
 
 // matches returns true if the given step text matches either an exact entry or a compiled Go pattern.
@@ -471,7 +507,9 @@ func extractGoScenarioTitles(testFilePath string) (map[string]bool, error) {
 // extractAllStepTexts walks ALL .ts/.tsx/.js/.jsx/.go files under appDir
 // (skipping build artifact directories) and returns a stepMatcher holding:
 //   - exact step texts from TS/JS Given/When/Then/And/But("...", ...) calls
-//   - compiled regex patterns from Go godog sc.Step(`...`, fn) calls.
+//   - compiled regex patterns from Go godog sc.Step(`...`, fn) calls, including
+//     identifier-indirected registrations sc.Step(stepFoo, fn) resolved against
+//     name = `pattern` assignments collected globally across appDir.
 func extractAllStepTexts(appDir string) (*stepMatcher, error) {
 	sm := &stepMatcher{exact: map[string]bool{}}
 
@@ -515,8 +553,15 @@ func extractAllStepTexts(appDir string) (*stepMatcher, error) {
 		}
 		return nil
 	})
+	if err != nil {
+		return sm, err
+	}
 
-	return sm, err
+	// Phase 2: resolve identifier-indirected godog registrations collected
+	// during the walk against the global assignment map.
+	sm.resolveGoIndirectSteps()
+
+	return sm, nil
 }
 
 // extractTSStepTexts reads a TS/JS file and adds all step texts found in
@@ -553,7 +598,19 @@ func extractTSStepTexts(path string, sm *stepMatcher) error {
 
 // extractGoStepTexts reads a Go file and adds compiled regex patterns found in
 // sc.Step(`...`, fn) calls into sm.patterns. Invalid regex patterns are skipped.
+//
+// It also collects (phase 1 of the two-phase resolution for
+// identifier-indirected registrations):
+//   - identifier assignments of backtick raw strings (name = `pattern`) into
+//     sm.goAssignments
+//   - identifiers referenced in .Step(identifier, ...) calls into sm.goIdentRefs
+//
+// These are resolved globally by resolveGoIndirectSteps after the walk completes.
 func extractGoStepTexts(path string, sm *stepMatcher) error {
+	if sm.goAssignments == nil {
+		sm.goAssignments = map[string]string{}
+	}
+
 	f, err := os.Open(path)
 	if err != nil {
 		return err
@@ -563,6 +620,11 @@ func extractGoStepTexts(path string, sm *stepMatcher) error {
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
 		line := scanner.Text()
+		// Skip comment lines: a commented-out sc.Step(`...`, fn) example would
+		// otherwise register catch-all patterns that mask uncovered steps.
+		if strings.HasPrefix(strings.TrimSpace(line), "//") {
+			continue
+		}
 		matches := goStepRe.FindAllStringSubmatch(line, -1)
 		for _, m := range matches {
 			pattern := m[1]
@@ -572,6 +634,14 @@ func extractGoStepTexts(path string, sm *stepMatcher) error {
 				continue
 			}
 			sm.patterns = append(sm.patterns, re)
+		}
+		// Collect identifier assignments of backtick raw strings.
+		for _, m := range goAssignRe.FindAllStringSubmatch(line, -1) {
+			sm.goAssignments[m[1]] = m[2]
+		}
+		// Collect identifier references in .Step(identifier, ...) calls.
+		for _, m := range goStepIdentRe.FindAllStringSubmatch(line, -1) {
+			sm.goIdentRefs = append(sm.goIdentRefs, m[1])
 		}
 	}
 	return scanner.Err()

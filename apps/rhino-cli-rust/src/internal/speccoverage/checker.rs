@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
@@ -44,6 +44,20 @@ fn ts_regex_step_re() -> &'static Regex {
 fn go_step_re() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
     RE.get_or_init(|| Regex::new(r"\.Step\(`([^`]+)`").expect("valid regex"))
+}
+
+/// Matches `identifier = `pattern`` assignments of backtick raw strings —
+/// covers const blocks, single consts, and vars.
+fn go_const_assign_re() -> &'static Regex {
+    static RE: OnceLock<Regex> = OnceLock::new();
+    RE.get_or_init(|| Regex::new(r"([A-Za-z_][A-Za-z0-9_]*)\s*=\s*`([^`]+)`").expect("valid regex"))
+}
+
+/// Matches `.Step(identifier,` registrations referencing a named constant
+/// instead of an inline backtick literal.
+fn go_step_ident_re() -> &'static Regex {
+    static RE: OnceLock<Regex> = OnceLock::new();
+    RE.get_or_init(|| Regex::new(r"\.Step\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*,").expect("valid regex"))
 }
 
 fn go_scenario_comment_re() -> &'static Regex {
@@ -390,6 +404,11 @@ pub fn extract_all_step_texts(app_dir: &Path) -> std::result::Result<StepMatcher
         return Ok(sm);
     }
 
+    // Cross-file Go named-constant registrations: assignments and `.Step(ident,`
+    // references collected across the whole walk, resolved afterwards.
+    let mut go_assigns: HashMap<String, String> = HashMap::new();
+    let mut go_ident_refs: Vec<String> = Vec::new();
+
     let walker = WalkDir::new(app_dir)
         .sort_by_file_name()
         .into_iter()
@@ -411,7 +430,7 @@ pub fn extract_all_step_texts(app_dir: &Path) -> std::result::Result<StepMatcher
         let ext = path.extension().and_then(|s| s.to_str()).unwrap_or("");
         let _ = match ext {
             "ts" | "tsx" | "js" | "jsx" => extract_ts_step_texts(path, &mut sm),
-            "go" => extract_go_step_texts(path, &mut sm),
+            "go" => extract_go_step_texts(path, &mut sm, &mut go_assigns, &mut go_ident_refs),
             "java" | "kt" => extractors::extract_jvm_step_texts(path, &mut sm),
             "py" => extractors::extract_python_step_texts(path, &mut sm),
             "ex" | "exs" => extractors::extract_elixir_step_texts(path, &mut sm),
@@ -422,6 +441,16 @@ pub fn extract_all_step_texts(app_dir: &Path) -> std::result::Result<StepMatcher
             "dart" => extractors::extract_dart_step_texts(path, &mut sm),
             _ => Ok(()),
         };
+    }
+
+    // Resolve `.Step(identifier,` references against the global assignment map.
+    // Invalid regexes are skipped silently, matching the direct-literal path.
+    for ident in &go_ident_refs {
+        if let Some(pattern) = go_assigns.get(ident)
+            && let Ok(re) = Regex::new(&escape_re2_literal_braces(pattern))
+        {
+            sm.add_pattern_public(re);
+        }
     }
     Ok(sm)
 }
@@ -446,14 +475,37 @@ fn extract_ts_step_texts(path: &Path, sm: &mut StepMatcher) -> std::result::Resu
     Ok(())
 }
 
-fn extract_go_step_texts(path: &Path, sm: &mut StepMatcher) -> std::result::Result<(), Error> {
+fn extract_go_step_texts(
+    path: &Path,
+    sm: &mut StepMatcher,
+    assigns: &mut HashMap<String, String>,
+    ident_refs: &mut Vec<String>,
+) -> std::result::Result<(), Error> {
     let content = fs::read_to_string(path)?;
     for line in content.lines() {
+        // Skip `//` comment lines: `.Step(...)` mentions in comments would
+        // otherwise register catch-all patterns (e.g. `...`) that match every
+        // step and defeat --shared-steps validation. Mirrors the Go fix in
+        // `extractGoStepTexts`.
+        if line.trim_start().starts_with("//") {
+            continue;
+        }
         for caps in go_step_re().captures_iter(line) {
             let pattern = caps.get(1).map_or("", |m| m.as_str());
             if let Ok(re) = Regex::new(&escape_re2_literal_braces(pattern)) {
                 sm.add_pattern_public(re);
             }
+        }
+        // Collect identifier assignments of backtick raw strings (const blocks,
+        // single consts, vars) for cross-file `.Step(ident, fn)` resolution.
+        for caps in go_const_assign_re().captures_iter(line) {
+            let name = caps.get(1).map_or("", |m| m.as_str());
+            let pattern = caps.get(2).map_or("", |m| m.as_str());
+            assigns.insert(name.to_string(), pattern.to_string());
+        }
+        // Collect `.Step(identifier,` references (resolved after the walk).
+        for caps in go_step_ident_re().captures_iter(line) {
+            ident_refs.push(caps.get(1).map_or("", |m| m.as_str()).to_string());
         }
     }
     Ok(())
@@ -784,6 +836,64 @@ mod tests {
         ] {
             assert!(sm.matches(step), "missing: {step}");
         }
+    }
+
+    #[test]
+    fn extract_go_step_texts_ignores_comment_lines() {
+        let tmp = TempDir::new().unwrap();
+        // A .go file whose ONLY `.Step(...)` occurrences live on `//` comment
+        // lines must contribute NO patterns. Without comment skipping, the
+        // `...` placeholder registers as a catch-all regex matching any step.
+        std::fs::write(
+            tmp.path().join("doc.go"),
+            "// This file registers sc.Step(`...`, fn) calls.\n\
+             \t// sc.Step(`^commented out$`, fn)\n\
+             func x() {}\n",
+        )
+        .unwrap();
+        let sm = extract_all_step_texts(tmp.path()).unwrap();
+        assert!(
+            !sm.matches("a novel step never defined anywhere"),
+            "comment-line .Step patterns must not register as step definitions"
+        );
+        assert!(!sm.matches("commented out"));
+    }
+
+    #[test]
+    fn extract_go_step_texts_resolves_named_constant_registrations() {
+        let tmp = TempDir::new().unwrap();
+        // File A defines step patterns as named constants: a single const and
+        // a const-block form. File B registers them via `sc.Step(ident, fn)`.
+        std::fs::write(
+            tmp.path().join("steps_const.go"),
+            "package steps\n\
+             \n\
+             const stepFoo = `^the user does foo$`\n\
+             \n\
+             const (\n\
+             \tstepBar = `^the user does bar$`\n\
+             )\n",
+        )
+        .unwrap();
+        std::fs::write(
+            tmp.path().join("steps_register.go"),
+            "package steps\n\
+             \n\
+             func register(sc *godog.ScenarioContext) {\n\
+             \tsc.Step(stepFoo, handleFoo)\n\
+             \tsc.Step(stepBar, handleBar)\n\
+             }\n",
+        )
+        .unwrap();
+        let sm = extract_all_step_texts(tmp.path()).unwrap();
+        assert!(
+            sm.matches("the user does foo"),
+            "named single-const registration must resolve across files"
+        );
+        assert!(
+            sm.matches("the user does bar"),
+            "named const-block registration must resolve across files"
+        );
     }
 
     #[test]

@@ -488,6 +488,33 @@ func TestExtractGoStepTexts_FindsPatterns(t *testing.T) {
 	}
 }
 
+func TestExtractGoStepTexts_IgnoresCommentLines(t *testing.T) {
+	root := t.TempDir()
+
+	// Write a Go file whose ONLY .Step(...) occurrences live on // comment lines.
+	// Comment lines must NOT contribute regex patterns to the matcher; otherwise
+	// catch-all patterns like "..." poison the matcher and mask uncovered steps.
+	// Backticks are written as \x60 so this test file itself contains no
+	// .Step(`...`) text that the extractor could pick up when scanning the repo.
+	goContent := "package steps\n\n" +
+		"// sc.Step(\x60...\x60, fn) registers a step handler.\n" +
+		"\t// sc.Step(\x60 \x60, fn) is another commented example.\n" +
+		"func init() {}\n"
+	writeContent(t, filepath.Join(root, "src", "steps_test.go"), goContent)
+
+	sm, err := extractAllStepTexts(root)
+	if err != nil {
+		t.Fatalf("extractAllStepTexts() error = %v", err)
+	}
+
+	if len(sm.patterns) != 0 {
+		t.Errorf("expected no patterns from comment lines, got %d", len(sm.patterns))
+	}
+	if sm.matches("totally novel step text") {
+		t.Error("expected 'totally novel step text' to be reported uncovered")
+	}
+}
+
 func TestExtractGoScenarioTitles_FindsComments(t *testing.T) {
 	root := t.TempDir()
 
@@ -799,6 +826,76 @@ func TestExtractGoStepTexts_InvalidRegex(t *testing.T) {
 	// Only the valid regex should be in patterns
 	if len(sm.patterns) != 1 {
 		t.Errorf("patterns = %d, want 1 (invalid regex skipped)", len(sm.patterns))
+	}
+}
+
+func TestExtractAllStepTexts_GoIdentifierIndirectedSteps(t *testing.T) {
+	// Step patterns registered via named constants/variables defined in a
+	// DIFFERENT file of the same package must be resolved by the two-phase
+	// extractor: collect assignments + identifier references during the walk,
+	// then resolve references against the global assignment map afterwards.
+	root := t.TempDir()
+
+	// File B (walked FIRST lexically): registrations referencing identifiers,
+	// plus a short-assignment form defined in the same file.
+	regs := "package cmd\n\n" +
+		"func InitializeScenario(sc *godog.ScenarioContext) {\n" +
+		"\tstepQux := `^the user does qux$`\n" +
+		"\tsc.Step(stepFoo, handleFoo)\n" +
+		"\tsc.Step(stepBar, handleBar)\n" +
+		"\tsc.Step(stepBaz, handleBaz)\n" +
+		"\tsc.Step(stepQux, handleQux)\n" +
+		"\tsc.Step(stepUndefined, handleUndefined)\n" +
+		"}\n"
+	writeContent(t, filepath.Join(root, "feature.integration_test.go"), regs)
+
+	// File A (walked SECOND lexically): pattern definitions in three forms —
+	// single const, const block entry, and plain var.
+	defs := "package cmd\n\n" +
+		"const stepFoo = `^the user does foo$`\n\n" +
+		"const (\n" +
+		"\tstepBar = `^the user does bar$`\n" +
+		")\n\n" +
+		"var stepBaz = `^the user does baz$`\n"
+	writeContent(t, filepath.Join(root, "steps_common_test.go"), defs)
+
+	sm, err := extractAllStepTexts(root)
+	if err != nil {
+		t.Fatalf("extractAllStepTexts() error = %v", err)
+	}
+
+	for _, step := range []string{
+		"the user does foo",
+		"the user does bar",
+		"the user does baz",
+		"the user does qux",
+	} {
+		if !sm.matches(step) {
+			t.Errorf("expected identifier-indirected step %q to match", step)
+		}
+	}
+	if sm.matches("the user does something unregistered") {
+		t.Error("expected unregistered step NOT to match")
+	}
+}
+
+func TestExtractAllStepTexts_GoIdentifierIndirected_InvalidRegexSkipped(t *testing.T) {
+	// Identifier-indirected patterns that fail to compile are skipped silently.
+	root := t.TempDir()
+
+	content := "package cmd\n\n" +
+		"const stepBad = `[invalid regex(`\n\n" +
+		"func InitializeScenario(sc *godog.ScenarioContext) {\n" +
+		"\tsc.Step(stepBad, handleBad)\n" +
+		"}\n"
+	writeContent(t, filepath.Join(root, "bad_steps_test.go"), content)
+
+	sm, err := extractAllStepTexts(root)
+	if err != nil {
+		t.Fatalf("extractAllStepTexts() error = %v", err)
+	}
+	if len(sm.patterns) != 0 {
+		t.Errorf("patterns = %d, want 0 (invalid indirected regex skipped)", len(sm.patterns))
 	}
 }
 
