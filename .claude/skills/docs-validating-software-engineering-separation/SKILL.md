@@ -1,7 +1,6 @@
 ---
 name: docs-validating-software-engineering-separation
 description: Validates software engineering documentation separation — ensures docs/explanation/ style guides focus on repository-specific conventions only (not generic language tutorials), and that every programming language README has proper prerequisite statements linking to external learning resources.
-created: 2026-02-07
 ---
 
 # Validating Software Engineering Documentation Separation

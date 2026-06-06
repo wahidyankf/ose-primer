@@ -10,7 +10,6 @@ tags:
   - anti-hallucination
   - web-research
   - verification
-created: 2026-05-03
 ---
 
 # Plan Anti-Hallucination Convention

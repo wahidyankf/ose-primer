@@ -930,6 +930,7 @@ function processVideoFrame(frame: Frame): ProcessedFrame {
 
 ## 🔗 Related Documentation
 
+- [Test-Driven Development Convention](./test-driven-development.md) - Red→Green→Refactor methodology; TDD is the mechanism that makes Stage 1 (Make it work) verifiable and Stage 2 (Make it right) safe
 - [Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md) - Start simple principle
 - [Root Cause Orientation](../../principles/general/root-cause-orientation.md) - Surgical changes implement the minimal impact practice from this principle
 - [Code Quality Convention](../quality/code.md) - Automated quality checks

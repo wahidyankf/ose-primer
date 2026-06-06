@@ -9,7 +9,6 @@ tags:
   - subagents
   - concurrency
   - rate-limits
-created: 2026-06-04
 ---
 
 # Subagent Orchestration Convention

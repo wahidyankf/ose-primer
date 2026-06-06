@@ -9,7 +9,6 @@ tags:
   - versioning
   - reproducibility
   - workflow
-created: 2026-06-04
 ---
 
 # Dependency Bump Stability & Safety Policy

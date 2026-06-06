@@ -9,7 +9,6 @@ tags:
   - repository-structure
   - claude
   - hooks
-created: 2026-05-03
 ---
 
 # Worktree Path Convention

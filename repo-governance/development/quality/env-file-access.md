@@ -10,7 +10,6 @@ tags:
   - ai-agents
   - env-files
   - conventions
-created: 2026-05-24
 ---
 
 # Environment File Access Convention

@@ -9,7 +9,6 @@ tags:
   - ecosystem
   - propagation
   - sibling-repos
-created: 2026-05-23
 ---
 
 # Repository Ecosystem Convention

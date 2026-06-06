@@ -56,21 +56,23 @@ git commit -m "fix typo"
 - No merge conflicts from long-lived branches
 - Continuous integration by default
 
-### Practice 2: Make Small, Frequent Commits
+### Practice 2: Make Small, Frequent Commits (TDD Order)
 
-**Principle**: Break work into small, atomic commits multiple times per day.
+**Principle**: Break work into small, atomic commits multiple times per day — in TDD order: test commit precedes implementation commit.
 
 **Good Example:**
 
 ```bash
-# Day 1
-git commit -m "feat(auth): add User model"
+# Day 1 — TDD order: test first, then implementation
+git commit -m "test(auth): add failing User model tests"
+git commit -m "feat(auth): add User model to make tests pass"
+git commit -m "refactor(auth): clean up User model"
+git commit -m "test(auth): add failing password hashing tests"
 git commit -m "feat(auth): add password hashing utility"
-git commit -m "test(auth): add User model tests"
 
 # Day 2
+git commit -m "test(auth): add failing login endpoint tests"
 git commit -m "feat(auth): add login endpoint"
-git commit -m "test(auth): add login endpoint tests"
 ```
 
 **Bad Example:**
@@ -160,22 +162,22 @@ git checkout -b feature/new-dashboard
 **Good Example:**
 
 ```markdown
-## Stage 1: Make it work
+## Stage 1: Make it work (Red→Green)
 
-- Implement basic functionality
-- Get tests passing
-- Commit working code
+- Write failing test first (RED)
+- Implement minimum code to pass (GREEN)
+- Commit: test commit, then implementation commit
 
-## Stage 2: Make it right
+## Stage 2: Make it right (Refactor)
 
-- Refactor for clarity
+- Refactor with tests green; keep tests passing
 - Improve code organization
 - Add documentation
 
 ## Stage 3: Make it fast
 
 - Profile for bottlenecks
-- Optimize hot paths
+- Optimize hot paths with tests still green
 - Measure improvements
 ```
 
@@ -328,40 +330,48 @@ git commit -m "feat: add user functionality"
 - Clear history by domain
 - Better git log navigation
 
-### Practice 10: Test Before Committing
+### Practice 10: Write Failing Test First (TDD — Red→Green→Refactor)
 
-**Principle**: Run tests locally before every commit.
+**Principle**: Before writing any production code, write a failing test that captures the desired behavior. Confirm it fails for the right reason. Then implement the minimum code to pass. Then refactor.
 
 **Good Example:**
 
 ```bash
-# Make changes
-# ... edit files ...
+# Step 1: Write failing test (RED)
+# ... write test for validateEmail ...
+nx run my-lib:test:unit  # FAIL — validateEmail is not defined
 
-# Test before committing
-npm test
-npm run lint
+# Step 2: Implement to pass (GREEN)
+# ... add validateEmail function ...
+nx run my-lib:test:unit  # PASS
 
-# All green - commit
-git commit -m "feat(api): add validation"
+# Step 3: Clean up (REFACTOR)
+# ... improve names, remove duplication ...
+nx run my-lib:test:unit  # PASS (still green)
+
+# Commit each phase separately
+git commit -m "test(validation): add failing email validation tests"
+git commit -m "feat(validation): implement email validation"
+git commit -m "refactor(validation): extract regex constant"
 ```
 
 **Bad Example:**
 
 ```bash
-# Make changes
-git commit -m "feat: add stuff"
-git push
-
-# Wait for CI to tell you tests failed (SLOW FEEDBACK!)
+# Writing implementation before tests (DO NOT DO THIS)
+# ... write validateEmail function ...
+# ... then write tests to match what was built ...
+git commit -m "feat: add email validation with tests"
+# Tests prove the code exists, not that it's correct
 ```
 
 **Rationale:**
 
-- Fast feedback loop
-- Catch issues early
-- Respect team's time
-- Green CI
+- Tests written before implementation prove the requirement, not the implementation
+- Failing test confirms you understand what "done" means before coding
+- Prevents tests that always pass because they were written to match the code
+
+**See**: [Test-Driven Development Convention](./test-driven-development.md) for the full Red→Green→Refactor mandate.
 
 ### Practice 11: Pull with Rebase Before Pushing
 
@@ -734,6 +744,7 @@ git pull origin main  # Use merge instead
 
 ## 🔗 Related Documentation
 
+- [Test-Driven Development Convention](./test-driven-development.md) - Red→Green→Refactor mandate for all code changes
 - [Trunk Based Development Convention](./trunk-based-development.md) - Complete TBD workflow
 - [Commit Message Convention](./commit-messages.md) - Conventional Commits guide
 - [Implementation Workflow Convention](./implementation.md) - Three-stage methodology
@@ -745,7 +756,7 @@ git pull origin main  # Use merge instead
 Following these best practices ensures:
 
 1. Commit directly to main
-2. Make small, frequent commits
+2. Make small, frequent commits (in TDD order: test → implementation → refactor)
 3. Use Conventional Commits
 4. Use feature flags instead of branches
 5. Implement in three stages (work → right → fast)
@@ -753,7 +764,7 @@ Following these best practices ensures:
 7. Keep CI green at all times
 8. Use environment-specific configuration
 9. Split commits by domain
-10. Test before committing
+10. Write failing test first (TDD — Red→Green→Refactor)
 11. Pull with rebase before pushing (linear history for TBD)
 
 Workflows built following these practices are efficient, predictable, and high-quality.

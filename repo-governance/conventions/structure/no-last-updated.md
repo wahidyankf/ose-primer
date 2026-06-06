@@ -8,7 +8,6 @@ tags:
   - frontmatter
   - maintenance
   - git
-created: 2026-04-25
 ---
 
 # No Last Updated Convention

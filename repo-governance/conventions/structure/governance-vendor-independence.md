@@ -9,7 +9,6 @@ tags:
   - vendor-independence
   - agents
   - platform-bindings
-created: 2026-05-02
 ---
 
 # Governance Vendor-Independence Convention

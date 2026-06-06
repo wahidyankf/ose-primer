@@ -447,4 +447,5 @@ See [Nx Target Standards](../infra/nx-targets.md) for CI schedule details.
 
 ## 🔗 See Also
 
+- [Test-Driven Development Convention](../workflow/test-driven-development.md) - Red→Green→Refactor methodology for writing tests at all three levels; TDD is the mechanism for authoring tests before implementation
 - [Code Coverage Reference](../../../docs/reference/code-coverage.md) - How coverage is measured (rhino-cli algorithm, per-project tools, exclusion patterns)

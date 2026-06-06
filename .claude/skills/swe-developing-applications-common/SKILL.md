@@ -313,24 +313,53 @@ All language developers follow this pattern:
 
 1. **Requirements Analysis**: Understand functional and technical requirements
 2. **Design**: Apply appropriate patterns and platform architecture
-3. **Implementation**: Write clean, tested, documented code
-4. **Testing**: Comprehensive unit, integration, and e2e tests
+3. **Implementation (TDD)**: Write failing test first, then minimum code to pass, then refactor
+4. **Test Coverage**: Comprehensive unit, integration, and E2E tests — all written test-first
 5. **Code Review**: Self-review against coding standards
 6. **Documentation**: Update relevant docs and code comments
 
+### TDD Mandate: Red→Green→Refactor
+
+**Every code change follows this cycle — no exceptions:**
+
+1. **Red** — Write a failing test that captures the desired behavior. Run it and confirm it fails for the right reason (not a syntax error).
+2. **Green** — Write the minimum code to make the test pass. Do not add behavior beyond what the test requires.
+3. **Refactor** — With all tests green, improve the implementation. Tests must stay green throughout.
+
+```bash
+# RED: write failing test
+nx run my-project:test:unit   # FAIL — function not defined
+
+# GREEN: implement minimum to pass
+nx run my-project:test:unit   # PASS
+
+# REFACTOR: clean up; verify still green
+nx run my-project:test:unit   # PASS
+```
+
+**Commit each phase separately** (TDD order):
+
+```bash
+git commit -m "test(auth): add failing email validation test"
+git commit -m "feat(auth): implement email validation"
+git commit -m "refactor(auth): extract regex constant"
+```
+
+**See**: [Test-Driven Development Convention](../../../repo-governance/development/workflow/test-driven-development.md) for the full mandate, mini-TDD cycles, and how TDD applies to plan delivery checklists.
+
 ### Implementation Philosophy
 
-**Make it work → Make it right → Make it fast**
+**Make it work → Make it right → Make it fast** — with TDD driving each stage:
 
-1. **Make it work**: Get basic functionality working (passing tests)
-2. **Make it right**: Refactor for clarity, follow standards, eliminate duplication
-3. **Make it fast**: Optimize performance where needed (measure first)
+1. **Make it work (Red→Green)**: Write failing test, then minimum implementation to pass
+2. **Make it right (Refactor)**: With tests green, refactor for clarity; follow standards; eliminate duplication
+3. **Make it fast**: Optimize only when measurements prove it necessary; keep tests green
 
 **Avoid**:
 
 - Premature optimization (fast before right)
 - Over-engineering (complex before simple)
-- Skipping tests (work without validation)
+- Implementation before tests (tests-after-the-fact prove code exists, not correctness)
 
 ## Reference Documentation Patterns
 
@@ -373,10 +402,11 @@ docs/explanation/software-engineering/programming-languages/[language]/README.md
 
 **Workflow Conventions**:
 
+- [Test-Driven Development Convention](../../../repo-governance/development/workflow/test-driven-development.md) - **Red→Green→Refactor mandate** — write failing test before any production code
 - [Trunk Based Development](../../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow details (default: direct push to `main` from main checkout AND from worktree via `git push origin HEAD:main`; draft PR opt-in only when explicitly requested)
 - [PR Merge Protocol](../../../repo-governance/development/workflow/pr-merge-protocol.md) - Explicit user approval required, all quality gates must pass
 - [Commit Messages Convention](../../../repo-governance/development/workflow/commit-messages.md) - Conventional Commits specification
-- [Implementation Workflow](../../../repo-governance/development/workflow/implementation.md) - Make it work → right → fast
+- [Implementation Workflow](../../../repo-governance/development/workflow/implementation.md) - Make it work → right → fast (TDD drives each stage)
 
 **Quality Conventions**:
 

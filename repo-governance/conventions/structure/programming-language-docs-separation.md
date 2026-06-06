@@ -9,7 +9,6 @@ tags:
   - style-guides
   - content-separation
   - dry-principle
-created: 2026-02-04
 ---
 
 # Programming Language Documentation Separation Convention

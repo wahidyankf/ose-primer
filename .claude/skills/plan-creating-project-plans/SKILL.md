@@ -426,27 +426,63 @@ And their session is created with correct permissions
 
 ## Delivery Plan Structure
 
-### Implementation Steps
+### Implementation Steps (TDD Shape — MANDATORY for code-touching items)
 
-Use checkbox format:
+Every delivery checklist item that touches production code MUST be expressed as a
+Red→Green→Refactor cycle. Do not write "implement X, then write tests."
+
+**TDD-shaped format** (each phase is its own checkbox):
 
 ```markdown
-- [ ] Step 1: Description
-  - [ ] Substep 1.1
-  - [ ] Substep 1.2
-- [ ] Step 2: Description
+- [ ] [AI] **RED**: Write failing test for `[specific behavior]` in `[test file path]`
+      — command: `nx run [project]:test:unit`
+      — acceptance: test fails with `[expected error message]`
+  - _Suggested executor: `swe-[lang]-dev`_
+- [ ] [AI] **GREEN**: Implement `[function/component]` in `[file path]`
+      — command: `nx run [project]:test:unit`
+      — acceptance: test passes, no other tests broken
+- [ ] [AI] **REFACTOR**: Clean up `[specific concern]` in `[file path]`
+      — command: `nx run [project]:test:unit`
+      — acceptance: all tests still pass, code is cleaner
 ```
+
+**Multi-cycle format** (when a feature spans multiple mini-cycles):
+
+```markdown
+- [ ] [AI] TDD cycle: [feature name]
+  - [ ] [AI] **RED**: write failing test for happy path
+        — command: `nx run [project]:test:unit`
+        — acceptance: test fails with `[expected error]`
+  - [ ] [AI] **GREEN**: implement minimum code to pass
+        — command: `nx run [project]:test:unit`
+        — acceptance: test passes
+  - [ ] [AI] **RED**: write failing test for error path
+        — command: `nx run [project]:test:unit`
+        — acceptance: test fails with `[expected error]`
+  - [ ] [AI] **GREEN**: implement error handling
+        — command: `nx run [project]:test:unit`
+        — acceptance: both tests pass
+  - [ ] [AI] **REFACTOR**: clean up, remove duplication
+        — command: `nx run [project]:test:unit`
+        — acceptance: all tests still pass
+```
+
+**HARD RULE**: Never combine RED, GREEN, and REFACTOR into a single checkbox. Each phase is its
+own `- [ ]` item. `plan-checker` flags combined items (e.g., `- [ ] Implement X with TDD`) as
+HIGH findings.
+
+Non-code steps (doc edits, config, file creation) do NOT require Red→Green→Refactor. Use a
+direct action + acceptance criterion instead.
+
+**See**: [Test-Driven Development Convention](../../../repo-governance/development/workflow/test-driven-development.md) for the authoritative mandate, including how Gherkin scenarios map to first failing tests.
 
 **Update after completion**:
 
 ```markdown
-- [x] Step 1: Description
-  - [x] Substep 1.1
-  - [x] Substep 1.2
-  - **Implementation Notes**: What was done, decisions made
+- [x] **RED**: Write failing test for `validateEmail` in `libs/ts-utils/src/validation.test.ts`
+  - **Implementation Notes**: Test confirmed failing with "validateEmail is not defined"
   - **Date**: 2026-01-02
   - **Status**: Completed
-  - **Files Changed**: List of modified files
 ```
 
 ### Validation Checklist
@@ -456,7 +492,8 @@ After implementation steps, add validation:
 ```markdown
 ### Validation Checklist
 
-- [ ] All tests pass
+- [ ] All TDD cycles complete (RED→GREEN→REFACTOR for every code change)
+- [ ] All tests pass (`nx affected -t test:quick`)
 - [ ] Code meets quality standards
 - [ ] Documentation updated
 - [ ] Acceptance criteria verified
@@ -606,6 +643,30 @@ Every delivery plan MUST end with a plan archival section:
 
 **Wrong**: Active work in backlog/
 **Right**: Move to in-progress/ when starting work
+
+### ❌ Mistake 5: Code delivery items without TDD shape
+
+**Wrong**: Combining implementation and test into one checkbox
+
+```markdown
+- [ ] Implement email validation with tests
+```
+
+**Right**: Separate RED, GREEN, REFACTOR phases as independent checkboxes
+
+```markdown
+- [ ] **RED**: Write failing test for email validation in `libs/ts-utils/src/validation.test.ts`
+      — command: `nx run ts-utils:test:unit`
+      — acceptance: test fails with "validateEmail is not defined"
+- [ ] **GREEN**: Implement `validateEmail` in `libs/ts-utils/src/validation.ts`
+      — command: `nx run ts-utils:test:unit`
+      — acceptance: test passes, no other tests broken
+- [ ] **REFACTOR**: Extract regex constant, improve naming
+      — command: `nx run ts-utils:test:unit`
+      — acceptance: all tests still pass
+```
+
+`plan-checker` flags combined TDD items as HIGH severity findings.
 
 ## References
 

@@ -1,7 +1,6 @@
 ---
 title: "Guard `.env*` File Access & Commits by AI Agents"
 status: "Completed"
-created: 2026-05-24
 ---
 
 # Guard `.env*` File Access & Commits by AI Agents

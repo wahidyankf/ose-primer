@@ -9,7 +9,6 @@ tags:
   - tdd
   - testing
   - red-green-refactor
-created: 2026-05-02
 ---
 
 # Test-Driven Development Convention

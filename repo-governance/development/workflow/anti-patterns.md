@@ -177,9 +177,9 @@ if (FEATURES.NEW_PAYMENT_FLOW) {
 ```markdown
 ## Implementation Plan (CORRECT)
 
-1. Make it work (basic implementation)
-2. Make it right (refactor, organize)
-3. Make it fast (profile, optimize)
+1. Make it work (write failing test → implement minimum to pass)
+2. Make it right (refactor with tests green)
+3. Make it fast (profile, optimize with tests still green)
 ```
 
 **Rationale:**
@@ -470,24 +470,71 @@ git pull origin main  # Always rebases for main branch
 - Reduces merge friction
 - **Professional appearance with linear commit history**
 
+### Anti-Pattern 12: Implementing Before Writing a Failing Test
+
+**Problem**: Writing production code first, then adding tests after the fact. Tests written after implementation validate that the code exists, not that it meets the requirement.
+
+**Bad Example:**
+
+```bash
+# Write the implementation first (DO NOT DO THIS)
+# ... implement validateEmail() ...
+# ... then write tests to match what was built ...
+git commit -m "feat: add email validation with tests"
+
+# Tests will always pass because they were written
+# to match the existing code, not to verify the requirement
+```
+
+**Solution:**
+
+```bash
+# Step 1: Write failing test FIRST (RED)
+# ... write test for validateEmail behavior ...
+nx run my-lib:test:unit
+# FAIL: validateEmail is not defined  ← confirms test is real
+
+# Step 2: Implement minimum code to pass (GREEN)
+# ... add validateEmail ...
+nx run my-lib:test:unit  # PASS
+
+# Step 3: Refactor with tests green (REFACTOR)
+# ... clean up implementation ...
+nx run my-lib:test:unit  # PASS (still green)
+
+git commit -m "test(validation): add failing email validation test"
+git commit -m "feat(validation): implement email validation"
+git commit -m "refactor(validation): extract regex constant"
+```
+
+**Rationale:**
+
+- Tests-after-the-fact conform to the implementation, not the requirement
+- A test that was never red cannot prove the implementation is correct
+- Red→Green→Refactor is the required cycle for all code changes
+
+**See**: [Test-Driven Development Convention](./test-driven-development.md) for the full mandate.
+
 ## 📋 Summary of Anti-Patterns
 
-| Anti-Pattern                | Problem                      | Solution                        |
-| --------------------------- | ---------------------------- | ------------------------------- |
-| **Long-Lived Branches**     | Merge conflicts, delays      | Work on main with feature flags |
-| **Large Commits**           | Hard to review, unclear      | Small, frequent commits         |
-| **Vague Messages**          | Unclear history              | Conventional Commits            |
-| **No Feature Flags**        | Branch complexity            | Hide incomplete with flags      |
-| **Premature Optimization**  | Wasted effort                | Work → right → fast             |
-| **Unpinned Dependencies**   | Inconsistent builds          | Lock versions, commit lock file |
-| **Ignoring Broken CI**      | Blocks team                  | Fix or revert immediately       |
-| **Mixed Concerns**          | Confusing commits            | Split by domain                 |
-| **Hardcoded Config**        | Security issues, inflexible  | Environment variables           |
-| **Skipping Local Tests**    | Slow feedback                | Test before pushing             |
-| **Pushing Without Pulling** | Push failures, merge commits | Pull with rebase before pushing |
+| Anti-Pattern                    | Problem                              | Solution                                      |
+| ------------------------------- | ------------------------------------ | --------------------------------------------- |
+| **Long-Lived Branches**         | Merge conflicts, delays              | Work on main with feature flags               |
+| **Large Commits**               | Hard to review, unclear              | Small, frequent commits                       |
+| **Vague Messages**              | Unclear history                      | Conventional Commits                          |
+| **No Feature Flags**            | Branch complexity                    | Hide incomplete with flags                    |
+| **Premature Optimization**      | Wasted effort                        | Work → right → fast                           |
+| **Unpinned Dependencies**       | Inconsistent builds                  | Lock versions, commit lock file               |
+| **Ignoring Broken CI**          | Blocks team                          | Fix or revert immediately                     |
+| **Mixed Concerns**              | Confusing commits                    | Split by domain                               |
+| **Hardcoded Config**            | Security issues, inflexible          | Environment variables                         |
+| **Skipping Local Tests**        | Slow feedback                        | Test before pushing                           |
+| **Pushing Without Pulling**     | Push failures, merge commits         | Pull with rebase before pushing               |
+| **Implementation Before Tests** | Tests prove code exists, not correct | Write failing test first (Red→Green→Refactor) |
 
 ## 🔗 Related Documentation
 
+- [Test-Driven Development Convention](./test-driven-development.md) - Red→Green→Refactor mandate for all code changes
 - [Trunk Based Development Convention](./trunk-based-development.md) - Complete TBD workflow
 - [Commit Message Convention](./commit-messages.md) - Conventional Commits guide
 - [Implementation Workflow Convention](./implementation.md) - Three-stage methodology

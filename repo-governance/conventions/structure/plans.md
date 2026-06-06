@@ -8,7 +8,6 @@ tags:
   - plans
   - project-planning
   - organization
-created: 2025-12-05
 ---
 
 # Plans Organization Convention

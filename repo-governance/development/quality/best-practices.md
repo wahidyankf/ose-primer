@@ -381,6 +381,7 @@ Check alt text.
 
 ## 🔗 Related Documentation
 
+- [Test-Driven Development Convention](../workflow/test-driven-development.md) - Red→Green→Refactor mandate for all code changes; write the failing test before the implementation
 - [Code Quality Convention](./code.md) - Automated quality tools and git hooks
 - [Three-Level Testing Standard](./three-level-testing-standard.md) - Mandatory unit/integration/E2E testing architecture and level boundaries for all projects
 - [Criticality Levels Convention](./criticality-levels.md) - Issue categorization
