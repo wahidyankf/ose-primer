@@ -38,21 +38,21 @@ These principles apply to markdown content in:
 **Universal Application**: Every markdown file in this repository should follow these quality principles, regardless of location or purpose.
 
 ```mermaid
-%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161 %%
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Content Quality Principles]
-    B[Writing Style & Tone]
-    C[Headings & Accessibility]
-    D[Formatting Conventions]
+    A[Content Quality Principles]:::blue
+    B[Writing Style & Tone]:::orange
+    C[Headings & Accessibility]:::teal
+    D[Formatting Conventions]:::brown
 
     A --> B
     A --> C
     A --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000,color:#fff
+    classDef orange fill:#DE8F05,stroke:#000,color:#000
+    classDef teal fill:#029E73,stroke:#000,color:#fff
+    classDef brown fill:#CA9161,stroke:#000,color:#000
 ```
 
 ## ✍️ Writing Style and Tone

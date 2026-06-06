@@ -122,26 +122,25 @@ npx prettier --write [file-path]
 **Execution Order**:
 
 1. You run `git commit`
-2. Pre-commit hook triggers (`.husky/pre-commit` — a single `go run` line)
+2. Pre-commit hook triggers (`.husky/pre-commit` — a single `cargo run` line)
 3. `rhino-cli git pre-commit` orchestrates all 11 steps in order, failing fast:
 
-| Step | Trigger                           | Action                                                                     | On failure |
-| ---- | --------------------------------- | -------------------------------------------------------------------------- | ---------- |
-| 1    | `.claude/` or `.opencode/` staged | Validate → Sync → Validate-sync                                            | exit 1     |
-| 2    | `docker-compose.ya?ml` staged     | `docker compose -f <file> config` per file                                 | exit 1     |
-| 3    | always                            | `nx affected -t run-pre-commit --skip-nx-cache`                            | warn only  |
-| 4    | always                            | `git add apps/crud-fs-ts-nextjs/content/`                                  | ignored    |
-| 5    | always                            | `npx lint-staged`                                                          | exit 1     |
-| 6    | `.ex`/`.exs` staged, `mix` found  | `mix format <files>` per project root, then `git add`                      | exit 1     |
-| 6m   | always                            | `rhino-cli docs validate-mermaid --staged-only` (Mermaid gate)             | exit 1     |
-| 6h   | always                            | `rhino-cli docs validate-heading-hierarchy --staged-only` (heading gate)   | exit 1     |
-| 7    | `docs/` staged                    | Validate + auto-fix naming, then `git add docs/ repo-governance/ .claude/` | exit 1     |
-| 8    | always                            | Validate markdown links and anchors (staged only)                          | exit 1     |
-| 9    | always                            | `npm run lint:md`                                                          | exit 1     |
+| Step | Trigger                           | Action                                                                   | On failure |
+| ---- | --------------------------------- | ------------------------------------------------------------------------ | ---------- |
+| 1    | `.claude/` or `.opencode/` staged | Validate → Sync → Validate-sync                                          | exit 1     |
+| 2    | `docker-compose.ya?ml` staged     | `docker compose -f <file> config` per file                               | exit 1     |
+| 3    | always                            | `nx affected -t run-pre-commit --skip-nx-cache`                          | warn only  |
+| 4    | always                            | `git add apps/crud-fs-ts-nextjs/content/`                                | ignored    |
+| 5    | always                            | `npx lint-staged`                                                        | exit 1     |
+| 5b   | `package.json` staged             | Regenerate app-level `package-lock.json` files (sync lockfiles)          | exit 1     |
+| 6m   | always                            | `rhino-cli docs validate-mermaid --staged-only` (Mermaid gate)           | exit 1     |
+| 6h   | always                            | `rhino-cli docs validate-heading-hierarchy --staged-only` (heading gate) | exit 1     |
+| 7    | always                            | Validate markdown links and anchors (staged only)                        | exit 1     |
+| 8    | always                            | `npm run lint:md` (all files)                                            | exit 1     |
 
 1. Commit proceeds if no errors
 
-**Implementation**: `apps/rhino-cli-go/internal/git/runner.go` — all steps call internal Go functions directly (no subprocess round-trips for rhino-cli-owned logic); external tools are shelled out via `os/exec`.
+**Implementation**: `apps/rhino-cli-rust/src/internal/git/runner.rs` — all steps call internal Rust functions directly (no subprocess round-trips for rhino-cli-owned logic); external tools are shelled out via `std::process::Command`.
 
 **What It Validates**:
 
@@ -168,8 +167,8 @@ Validates `.claude/` and `.opencode/` consistency before commit:
 
 - Validates Mermaid diagram structure in staged files only (step 6m, fast)
 - Validates heading hierarchy in staged prose files only (step 6h, fast)
-- Validates markdown links and anchors in staged files only (step 8, fast)
-- Validates all markdown files meet linting standards (step 9, comprehensive)
+- Validates markdown links and anchors in staged files only (step 7, fast)
+- Validates all markdown files meet linting standards (step 8, comprehensive)
 
 **What Happens on Failure**:
 
@@ -552,7 +551,7 @@ projects: `apps/crud-be-fsharp-giraffe-exph`, `libs/elixir-gherkin`, and `libs/e
 
 **Tool**: `mix format`
 
-**Why a Separate Hook Step (Not lint-staged)**:
+**Why a Wrapper Script (Not bare `mix format`)**:
 
 `crud-be-fsharp-giraffe-exph`'s `.formatter.exs` uses `import_deps: [:ecto, :ecto_sql, :phoenix]`, which
 loads `locals_without_parens` rules from those dependencies (e.g. Phoenix route macros, Ecto schema
@@ -560,20 +559,21 @@ macros). `mix format` must run from the project root where `mix.exs` and `_build
 Running from the repository root (no `mix.exs`) would silently apply incorrect formatting —
 removing parentheses that Phoenix/Ecto expect to be omitted.
 
-lint-staged changes the working directory per file glob, which breaks the project-root requirement.
-A dedicated hook step groups staged files by their nearest Mix project root and runs `mix format`
-from each one.
+lint-staged invokes its commands from the repository root, which breaks the project-root
+requirement. A wrapper script resolves each staged file's nearest Mix project root and runs
+`mix format` from there.
 
-**Implementation**: `apps/rhino-cli-go/internal/git/runner.go` (`step6ElixirFormat`). The logic runs as part of `rhino-cli git pre-commit` (step 6).
+**Implementation**: `scripts/format-elixir.sh`, registered in the root `package.json`
+`lint-staged` block for `*.{ex,exs}` — so it runs inside the lint-staged hook step
+(`rhino-cli git pre-commit` step 5).
 
 **How It Works**:
 
-1. Collect staged `.ex`/`.exs` files (excluding `deps/` and `_build/`)
-2. If none staged: skip with message
-3. If `mix` not installed: skip with warning (graceful degradation)
-4. Walk up from each file's directory to find the nearest `mix.exs` (the project root)
-5. For each unique project root, run `mix format <relative-file-paths>`
-6. Re-stage all formatted files
+1. lint-staged passes the staged `.ex`/`.exs` files to the script
+2. For each file, walk up from its directory to find the nearest `mix.exs` (the project root)
+3. Run `mix format <file>` from that project root
+4. If no `mix.exs` is found, warn and skip the file (graceful degradation)
+5. lint-staged re-stages the formatted files
 
 **Configuration**: Each project's `.formatter.exs` governs formatting rules — no global config.
 

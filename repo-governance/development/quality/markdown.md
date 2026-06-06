@@ -215,7 +215,7 @@ gates on staged files:
 - Automatically formats staged markdown files (Prettier via lint-staged, step 5)
 - Validates Mermaid diagram structure in staged files (step 6m, blocks commit on exit 1)
 - Validates heading hierarchy in staged prose files (step 6h, blocks commit on exit 1)
-- Validates markdown links and anchors in staged files (step 8, blocks commit on exit 1)
+- Validates markdown links and anchors in staged files (step 7, blocks commit on exit 1)
 
 ### Pre-Push Hook
 

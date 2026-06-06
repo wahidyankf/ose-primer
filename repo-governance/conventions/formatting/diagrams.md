@@ -428,13 +428,13 @@ recommendation for displayed sites.
 Run the validator manually:
 
 ```bash
-go run ./apps/rhino-cli-go/main.go docs validate-mermaid
+npx nx run rhino-cli-rust:validate:mermaid
 ```
 
 Or for a single directory:
 
 ```bash
-go run ./apps/rhino-cli-go/main.go docs validate-mermaid docs/explanation/
+cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-mermaid docs/explanation/
 ```
 
 ### Width Violation Fix Strategy Guide

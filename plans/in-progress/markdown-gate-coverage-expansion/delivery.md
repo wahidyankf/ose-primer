@@ -860,13 +860,14 @@ mirroring the existing link step; extend the link step's skip paths.
 
 ### Repo-Rules Quality Gate (strict, double-zero)
 
-- [ ] [AI] Run the strict
+- [x] [AI] Run the strict
       [repo-rules-quality-gate](../../../repo-governance/workflows/repo/repo-rules-quality-gate.md)
       over the changed governance surface (`diagrams.md`, `quality.md`, `linking.md`,
       `repository-validation.md`, and any `.claude/` bindings), requiring a **double-zero** pass
       — acceptance: the checker reports zero findings AND a follow-up fixer pass produces zero
       changes on a clean re-run.
   - _Suggested executor: `repo-rules-checker` then `repo-rules-fixer` (double-zero)._
+  - _Done 2026-06-07. Status: complete. Iter 1: 8 findings (5 HIGH factual drift in code.md/markdown.md/diagrams.md/workflow-naming, 2 MEDIUM diagram-style, 1 LOW) → all fixed. Iter 2: 8 resolved + 1 new MEDIUM (stale `step6_elixir_format` reference) → fixed (Elixir formatting truthfully documented as scripts/format-elixir.sh via lint-staged step 5). Iter 3: ZERO findings; follow-up fixer clean pass made zero changes — double-zero met. Reports: repo-rules\_\_a9b55f… chain in generated-reports/._
 
 ### Local Quality Gates (Before Push)
 

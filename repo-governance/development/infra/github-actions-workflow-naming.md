@@ -82,7 +82,7 @@ Every workflow currently in the repository follows this rule:
 | `name:` field                                | Filename                             |
 | -------------------------------------------- | ------------------------------------ |
 | `PR - Quality Gate`                          | `pr-quality-gate.yml`                |
-| `Markdown Validation`                        | `validate-markdown.yml`              |
+| `Validate Markdown`                          | `validate-markdown.yml`              |
 | `Test - Crud FS (TypeScript/Next.js)`        | `test-crud-fs-ts-nextjs.yml`         |
 | `Test - Crud BE (Java/Spring Boot)`          | `test-crud-be-java-springboot.yml`   |
 | `Test - Crud BE (Java/Vert.x)`               | `test-crud-be-java-vertx.yml`        |
