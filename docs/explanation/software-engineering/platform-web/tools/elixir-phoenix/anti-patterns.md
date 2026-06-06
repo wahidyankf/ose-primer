@@ -25,36 +25,36 @@ principles:
 
 ## Context Anti-Patterns
 
-- [Fat Contexts](#1-fat-contexts) - Contexts doing too much
-- [Anemic Contexts](#2-anemic-contexts) - Contexts with no business logic
-- [Cross-Context Database Access](#3-cross-context-database-access) - Bypassing context APIs
-- [God Schemas](#4-god-schemas) - Schemas with too many responsibilities
+- [Fat Contexts](#-fail---fat-context) - Contexts doing too much
+- [Anemic Contexts](#-fail---anemic-context-crud-only) - Contexts with no business logic
+- [Cross-Context Database Access](#-fail---bypassing-context-apis) - Bypassing context APIs
+- [God Schemas](#-fail---god-schema) - Schemas with too many responsibilities
 
 ## LiveView Anti-Patterns
 
-- [Large LiveView Modules](#5-large-liveview-modules) - Monolithic LiveView files
-- [Overusing Assigns](#6-overusing-assigns) - Too much state in assigns
-- [Missing Loading States](#7-missing-loading-states) - Poor UX during async operations
-- [Direct Database Access in LiveView](#8-direct-database-access-in-liveview) - Bypassing contexts
+- [Large LiveView Modules](#-fail---monolithic-liveview) - Monolithic LiveView files
+- [Overusing Assigns](#-fail---too-many-assigns) - Too much state in assigns
+- [Missing Loading States](#-fail---no-loading-indicators) - Poor UX during async operations
+- [Direct Database Access in LiveView](#-fail---ecto-queries-in-liveview) - Bypassing contexts
 
 ## Data Access Anti-Patterns
 
-- [N+1 Query Problem](#9-n1-query-problem) - Missing preloads
-- [Ecto in Controllers](#10-ecto-in-controllers) - Data access outside contexts
-- [Missing Changesets](#11-missing-changesets) - No data validation
-- [Overusing Bang Functions](#12-overusing-bang-functions) - Improper error handling
+- [N+1 Query Problem](#-fail---missing-preloads) - Missing preloads
+- [Ecto in Controllers](#-fail---direct-ecto-in-controller) - Data access outside contexts
+- [Missing Changesets](#-fail---no-changeset-validation) - No data validation
+- [Overusing Bang Functions](#-fail---bang-functions-everywhere) - Improper error handling
 
 ## Channel Anti-Patterns
 
-- [Missing Authentication](#13-missing-channel-authentication) - Unauthenticated channels
-- [Heavy Processing in Handlers](#14-heavy-processing-in-channel-handlers) - Blocking operations
-- [Not Leveraging PubSub](#15-not-leveraging-pubsub) - Direct process messaging
+- [Missing Authentication](#-fail---unauthenticated-channel) - Unauthenticated channels
+- [Heavy Processing in Handlers](#-fail---blocking-channel-handler) - Blocking operations
+- [Not Leveraging PubSub](#-fail---direct-process-messaging) - Direct process messaging
 
 ## Testing Anti-Patterns
 
-- [Testing Implementation Details](#16-testing-implementation-details) - Brittle tests
-- [Missing Async Tests](#17-missing-async-tests) - Slow test suites
-- [Ignoring SQL Sandbox](#18-ignoring-sql-sandbox) - Database test pollution
+- [Testing Implementation Details](#-fail---brittle-tests) - Brittle tests
+- [Missing Async Tests](#-fail---synchronous-tests) - Slow test suites
+- [Ignoring SQL Sandbox](#-fail---shared-database-state) - Database test pollution
 
 ## Overview
 

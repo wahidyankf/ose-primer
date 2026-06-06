@@ -35,19 +35,21 @@ The system architecture is documented using the C4 model (Context, Container, Co
 Shows how the Open Sharia Enterprise platform fits into the world, including users and external systems.
 
 ```mermaid
-graph LR
-    subgraph "External Users"
-        DEVS[Developers<br/>Building enterprise apps]
-        AUTHORS[Content Authors<br/>Writing educational content]
-        LEARNERS[Learners<br/>Studying prog/AI/security]
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph TD
+    subgraph Users["External Users"]
+        DEVS[Developers<br/>Building enterprise apps]:::teal
+        AUTHORS[Content Authors<br/>Writing educational content]:::teal
+        LEARNERS[Learners<br/>Studying prog/AI/security]:::teal
     end
 
-    OSE_PLATFORM[Open Sharia Enterprise<br/>Monorepo with 9 apps<br/>Nx workspace]
+    OSE_PLATFORM[Open Sharia Enterprise<br/>Monorepo with 9 apps<br/>Nx workspace]:::blue
 
-    subgraph "External Systems"
-        GITHUB[GitHub<br/>Source control & CI/CD]
-        VERCEL[Vercel<br/>Static site hosting]
-        DNS[DNS/CDN<br/>Domain management]
+    subgraph Systems["External Systems"]
+        GITHUB[GitHub<br/>Source control & CI/CD]:::purple
+        VERCEL[Vercel<br/>Static site hosting]:::purple
+        DNS[DNS/CDN<br/>Domain management]:::purple
     end
 
     DEVS -->|Clone, commit, push| GITHUB
@@ -59,13 +61,9 @@ graph LR
     VERCEL -->|Serve websites| LEARNERS
     DNS -->|Route traffic| VERCEL
 
-    style OSE_PLATFORM fill:#0077b6,stroke:#03045e,color:#ffffff,stroke-width:3px
-    style DEVS fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style AUTHORS fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style LEARNERS fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style GITHUB fill:#6a4c93,stroke:#22223b,color:#ffffff
-    style VERCEL fill:#6a4c93,stroke:#22223b,color:#ffffff
-    style DNS fill:#6a4c93,stroke:#22223b,color:#ffffff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 
 **Key Relationships:**

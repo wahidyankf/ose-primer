@@ -29,15 +29,15 @@ related:
 
 ## 📋 Quick Reference
 
-- [JVM Performance Tuning](#jvm-performance-tuning) - Heap sizing, GC selection, JVM flags
-- [Application Profiling](#application-profiling) - JFR, VisualVM, metrics
-- [Caching Strategies](#caching-strategies) - Caffeine, Redis, eviction policies
-- [Async Processing](#async-processing) - @Async, CompletableFuture, virtual threads
-- [Database Performance](#database-performance) - Connection pooling, query optimization, N+1 prevention
-- [HTTP Performance](#http-performance) - Response compression, HTTP/2, connection tuning
-- [demo Examples](#ose-platform-examples) - Real-world performance patterns
-- [Performance Checklist](#performance-checklist) - Production optimization checklist
-- [Related Documentation](#related-documentation)
+- [JVM Performance Tuning](#heap-sizing) - Heap sizing, GC selection, JVM flags
+- [Application Profiling](#java-flight-recorder-jfr) - JFR, VisualVM, metrics
+- [Caching Strategies](#caffeine-local-cache) - Caffeine, Redis, eviction policies
+- [Async Processing](#async-configuration) - @Async, CompletableFuture, virtual threads
+- [Database Performance](#hikaricp-connection-pooling) - Connection pooling, query optimization, N+1 prevention
+- [HTTP Performance](#response-compression) - Response compression, HTTP/2, connection tuning
+- [demo Examples](#zakat-calculation-with-caching) - Real-world performance patterns
+- [Performance Checklist](#jvm-configuration) - Production optimization checklist
+- [Related Documentation](#-related-documentation)
 
 ## Overview
 
@@ -93,13 +93,13 @@ graph TD
     B -->|Slow Response| E{Latency Source?}
     B -->|Low Throughput| F{Throughput Limit?}
 
-    E -->|Database| K[Add Caching<br/>Optimize Queries<br/>Tune Connection Pool]
-    E -->|External API| L[Use Circuit Breaker<br/>Add Timeout<br/>Cache Responses]
-    E -->|Application| M[Add Profiling<br/>Identify Hotspots<br/>Refactor Code]
+    E -->|Database| K[Add Caching<br/>Optimize Queries]
+    E -->|External API| L[Circuit Breaker<br/>Cache Responses]
+    L --> M[Add Timeout<br/>Profiling]
 
-    F -->|Thread Starvation| N[Increase Threads<br/>Use Virtual Threads<br/>Async Processing]
-    F -->|I/O Bound| O[Use Non-Blocking I/O<br/>Parallel Processing<br/>Connection Pooling]
-    F -->|Database Locks| P[Optimize Transactions<br/>Add Indexes<br/>Reduce Lock Time]
+    F -->|Thread Starvation| N[Increase Threads<br/>Virtual Threads]
+    F -->|I/O Bound| O[Non-Blocking I/O<br/>Connection Pooling]
+    O --> P[Optimize Transactions<br/>Add Indexes]
 
     style A fill:#0173B2,stroke:#000,color:#fff
     style B fill:#0173B2,stroke:#000,color:#fff

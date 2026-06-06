@@ -28,15 +28,15 @@ related:
 
 ## 📋 Quick Reference
 
-- [Immutable Data Structures](#immutable-data-structures) - Records, immutable collections, value objects
-- [Pure Functions](#pure-functions) - No side effects, referential transparency
+- [Immutable Data Structures](#java-records-dtos) - Records, immutable collections, value objects
+- [Pure Functions](#characteristics-of-pure-functions) - No side effects, referential transparency
 - [Functional Core / Imperative Shell](#functional-core--imperative-shell) - Architecture pattern
-- [Stream API](#stream-api) - Collection processing with streams
-- [Optional Usage](#optional-usage) - Null safety patterns
-- [Error Handling](#error-handling) - Either/Result pattern, Try monad
-- [demo Examples](#ose-platform-examples) - Real-world functional patterns
-- [Functional Programming Checklist](#functional-programming-checklist) - Best practices
-- [Related Documentation](#related-documentation)
+- [Stream API](#filter-map-reduce-pattern) - Collection processing with streams
+- [Optional Usage](#optional-anti-patterns) - Null safety patterns
+- [Error Handling](#either--result-pattern) - Either/Result pattern, Try monad
+- [demo Examples](#zakat-calculation-pure-functions) - Real-world functional patterns
+- [Functional Programming Checklist](#immutability) - Best practices
+- [Related Documentation](#-related-documentation)
 
 ## Overview
 

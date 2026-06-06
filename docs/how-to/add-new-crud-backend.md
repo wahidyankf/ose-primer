@@ -235,7 +235,7 @@ implementations use the same feature files but connect to real PostgreSQL via `D
 
 - Consume the same Gherkin feature files
 - Call service/handler functions directly with **real PostgreSQL**
-- **No HTTP calls** — see [anti-patterns](../../repo-governance/development/quality/three-level-testing-standard.md#anti-patterns)
+- **No HTTP calls** — see [anti-patterns](../../repo-governance/development/quality/three-level-testing-standard.md#-anti-patterns)
 - Run via Docker Compose
 
 #### E2E Tests

@@ -378,29 +378,26 @@ flowchart LR
 ## Dependency Management
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart LR
-    A[package.json] --> B[npm install]
-    B --> C[Resolve Dependencies]
-    C --> D{Conflicts?}
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph TD
+    A[package.json]:::blue --> B[npm install]:::blue
+    B --> C[Resolve Dependencies]:::orange
+    C --> D{Conflicts?}:::orange
 
-    D -->|Yes| E[Version Resolution]
-    D -->|No| F[Download Packages]
+    D -->|Yes| E[Version Resolution]:::orange
+    D -->|No| F[Download Packages]:::orange
 
     E --> F
-    F --> G[node_modules]
-    G --> H[Type Definitions]
+    F --> G[node_modules]:::teal
+    G --> H[Type Definitions]:::teal
 
-    H -->|@types| I[DefinitelyTyped]
-    H -->|Built-in| J[Package Types]
+    H --> I[Type Sources<br/>@types + Built-in]:::purple
+    I --> K[Type Checking]:::purple
+    K --> L[Compilation]:::blue
 
-    I --> K[Type Checking]
-    J --> K
-
-    K --> L[Compilation]
-
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
-    style K fill:#CC78BC,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```

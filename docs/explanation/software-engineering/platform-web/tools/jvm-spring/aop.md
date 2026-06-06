@@ -29,14 +29,14 @@ Aspect-Oriented Programming (AOP) modularizes cross-cutting concerns such as log
 
 **Jump to:**
 
-- [AOP Concepts](#aop-concepts)
-- [@Aspect Annotation](#aspect-annotation)
-- [Pointcut Expressions](#pointcut-expressions)
-- [Advice Types](#advice-types)
+- [AOP Concepts](#core-terminology)
+- [@Aspect Annotation](#basic-aspect)
+- [Pointcut Expressions](#execution-pointcuts)
+- [Advice Types](#before-advice)
 - [Transaction Management](#transaction-management-with-aop)
 - [Logging and Auditing](#logging-and-auditing-aspects)
 - [Performance Monitoring](#performance-monitoring)
-- [AOP Limitations](#aop-limitations)
+- [AOP Limitations](#self-invocation-problem)
 
 ### Core Terminology
 

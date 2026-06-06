@@ -524,33 +524,21 @@ This diagram shows the layered security architecture for financial applications:
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph LR
-  A[Client Layer]:::blue
-  B[API Gateway]:::orange
-  C[Authentication]:::teal
-  D[Input Validation]:::teal
-  E[Business Logic]:::purple
-  F[Data Access]:::brown
-  G[Database]:::brown
+graph TD
+  A["Layer 1: TLS/SSL<br/>Client Layer"]:::blue
+  B["Layer 2: Authentication<br/>API Gateway"]:::orange
+  C["Layer 3: Validation<br/>Authentication"]:::teal
+  D["Layer 4: Input Validation<br/>Pydantic Models"]:::teal
+  E["Layer 5: Authorization<br/>Business Logic"]:::purple
+  F["Data Access<br/>Parameterized Queries"]:::brown
+  G["Database<br/>Encrypted at Rest"]:::brown
 
   A -->|HTTPS| B
   B -->|JWT Token| C
-  C -->|Pydantic Models| D
+  C -->|Validated| D
   D -->|Sanitized Input| E
   E -->|Parameterized Queries| F
   F -->|Encrypted Connection| G
-
-  H[Layer 1: TLS/SSL]:::blue
-  I[Layer 2: Authentication]:::orange
-  J[Layer 3: Validation]:::teal
-  K[Layer 4: Authorization]:::purple
-  L[Layer 5: Encryption at Rest]:::brown
-
-  A -.-> H
-  C -.-> I
-  D -.-> J
-  E -.-> K
-  G -.-> L
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px

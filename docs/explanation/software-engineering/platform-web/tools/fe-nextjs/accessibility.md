@@ -35,7 +35,7 @@ Building accessible applications ensures everyone can use your software regardle
 - [Skip Links](#-skip-links) - Navigation shortcuts
 - [Responsive Accessibility](#-responsive-accessibility) - Mobile considerations
 - [Testing Accessibility](#-testing-accessibility) - Tools and techniques
-- [demo Examples](#-ose-platform-examples) - Islamic finance a11y patterns
+- [demo Examples](#-demo-examples) - Islamic finance a11y patterns
 - [Accessibility Checklist](#-accessibility-checklist) - Production compliance
 - [Related Documentation](#-related-documentation) - Cross-references
 

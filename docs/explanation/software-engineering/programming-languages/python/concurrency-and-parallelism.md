@@ -23,7 +23,7 @@ principles:
 
 # Python Concurrency and Parallelism
 
-**Quick Reference**: [Overview](#overview) | [asyncio](#asyncio-async-await) | [threading](#threading-module) | [multiprocessing](#multiprocessing-module) | [GIL](#gil-global-interpreter-lock) | [concurrent.futures](#concurrentfutures) | [Async Context Managers](#async-context-managers) | [Error Handling](#error-handling-in-async) | [References](#references)
+**Quick Reference**: [Overview](#overview) | [asyncio](#asyncio-asyncawait) | [threading](#threading-module) | [multiprocessing](#multiprocessing-module) | [GIL](#gil-global-interpreter-lock) | [concurrent.futures](#concurrentfutures) | [Async Context Managers](#async-context-managers) | [Error Handling](#error-handling-in-async) | [References](#references)
 
 ## Overview
 

@@ -752,17 +752,16 @@ land in CI on push, not locally.
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
 flowchart LR
-    DEV([Developer push]):::dev --> HOOK[Husky pre-push<br/>nx affected:<br/>lint typecheck<br/>test:quick spec-coverage]:::cache
-    HOOK -->|pass| PR[GitHub PR]:::ci
-    PR --> NODE1[lint typecheck<br/>test:quick spec-coverage<br/>cached]:::cache
-    PR --> NODE2[test:integration<br/>real Postgres + pgvector<br/>cache: false]:::nocache
-    PR --> NODE3[test:e2e<br/>Playwright + real BE<br/>cache: false]:::nocache
-    PR --> NODE4[tauri-build<br/>macOS arm64<br/>cached]:::cache
-    NODE1 --> MERGE[Merge to main]:::ci
-    NODE2 --> MERGE
-    NODE3 --> MERGE
-    NODE4 --> MERGE
-    MERGE -. weekly cron .-> SMOKE[Real-vendor smoke<br/>workflow_dispatch<br/>asserts HTTP 200 only]:::smoke
+    DEV([Developer push<br/>Husky pre-push hook]):::dev
+    PR[GitHub PR<br/>CI pipeline]:::ci
+    CHECKS[Fast + Live + Build<br/>lint typecheck test cached<br/>integration e2e tauri-build]:::cache
+    MERGE[Merge to main]:::ci
+    SMOKE[Real-vendor smoke<br/>workflow_dispatch weekly]:::smoke
+
+    DEV -->|pass hook| PR
+    PR --> CHECKS
+    CHECKS --> MERGE
+    MERGE -.weekly cron.-> SMOKE
 
     classDef dev fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef cache fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px

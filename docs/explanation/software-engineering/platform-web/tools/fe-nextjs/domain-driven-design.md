@@ -35,7 +35,7 @@ Domain-Driven Design (DDD) is an approach to software development that focuses o
 - [Application Services](#-application-services) - Use case orchestration
 - [Layered Architecture](#-layered-architecture) - Separation of concerns
 - [Next.js Integration](#-nextjs-integration) - DDD with App Router
-- [demo Example](#-ose-platform-example) - Islamic finance DDD implementation
+- [demo Example](#-demo-example) - Islamic finance DDD implementation
 - [Best Practices](#-best-practices) - Production DDD guidelines
 - [Related Documentation](#-related-documentation) - Cross-references
 

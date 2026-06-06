@@ -108,23 +108,22 @@ if (result.ok) {
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph LR
+graph TD
     Operation["Operation<br/>Executes"]:::blue
     Check{"Success?"}:::orange
     OkResult["ok: true<br/>value: T"]:::teal
     ErrResult["ok: false<br/>error: E"]:::purple
     Consumer["Consumer<br/>Checks ok field"]:::brown
+    Success["Access value<br/>#40;ok === true#41;"]:::teal
+    Failure["Handle error<br/>#40;ok === false#41;"]:::purple
 
     Operation --> Check
     Check -->|Success| OkResult
     Check -->|Failure| ErrResult
     OkResult --> Consumer
     ErrResult --> Consumer
-
-    Consumer -->|ok === true| Success["Access value"]:::teal
-    Consumer -->|ok === false| Failure["Handle error"]:::purple
-
-    Note1["No exceptions thrown<br/>Errors are values<br/>Compiler enforces<br/>error handling"]
+    Consumer --> Success
+    Consumer --> Failure
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px

@@ -37,9 +37,9 @@ related:
 - [Bounded Contexts](#bounded-contexts)
 - [Application Services](#application-services)
 - [Domain Services](#domain-services)
-- [DDD Best Practices](#ddd-best-practices)
-- [demo DDD Examples](#ose-platform-ddd-examples)
-- [Related Documentation](#related-documentation)
+- [DDD Best Practices](#production-ddd-checklist)
+- [demo DDD Examples](#complete-zakat-context)
+- [Related Documentation](#-related-documentation)
 
 ## Overview
 

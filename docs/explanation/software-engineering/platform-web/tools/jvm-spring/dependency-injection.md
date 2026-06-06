@@ -30,17 +30,17 @@ Dependency Injection (DI) is Spring Framework's core capability, implementing In
 
 **Jump to:**
 
-- [ApplicationContext Types](#applicationcontext-types)
+- [ApplicationContext Types](#annotationconfigapplicationcontext)
 - [Constructor Injection](#constructor-injection-recommended)
 - [Setter Injection](#setter-injection)
 - [Field Injection](#field-injection-discouraged)
-- [@Autowired Annotation](#autowired-annotation)
-- [@Qualifier and @Primary](#qualifier-and-primary)
-- [Bean Scopes](#bean-scopes)
-- [Lazy Initialization](#lazy-initialization)
-- [Bean Lifecycle](#bean-lifecycle)
-- [BeanPostProcessor](#beanpostprocessor)
-- [Circular Dependency Resolution](#circular-dependency-resolution)
+- [@Autowired Annotation](#autowired-on-constructor)
+- [@Qualifier and @Primary](#qualifier-for-disambiguating-beans)
+- [Bean Scopes](#singleton-default)
+- [Lazy Initialization](#lazy-annotation)
+- [Bean Lifecycle](#initialization-callbacks)
+- [BeanPostProcessor](#custom-beanpostprocessor)
+- [Circular Dependency Resolution](#problem-circular-dependencies)
 
 ### AnnotationConfigApplicationContext
 

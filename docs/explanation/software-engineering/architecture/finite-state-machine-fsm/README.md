@@ -152,7 +152,7 @@ FSM in demo enforces foundational software engineering principles:
 - Cannot skip approval stages
 - Must log reviewer identity and timestamps
 
-**See**: [State Machine Standards](./state-machine-standards.md#ose-platform-state-machines)
+**See**: [State Machine Standards](./state-machine-standards.md#demo-state-machines)
 
 ## Framework Selection
 
@@ -192,7 +192,7 @@ public class ZakatStateMachineConfig extends StateMachineConfigurerAdapter<
 }
 ```
 
-**See**: [Framework Standards](./framework-standards.md#spring-state-machine)
+**See**: [Framework Standards](./framework-standards.md#spring-state-machine-java)
 
 ### XState (TypeScript/JavaScript)
 
@@ -228,7 +228,7 @@ const campaignMachine = createMachine({
 });
 ```
 
-**See**: [Framework Standards](./framework-standards.md#xstate)
+**See**: [Framework Standards](./framework-standards.md#xstate-typescript)
 
 ## Integration with DDD Aggregates
 

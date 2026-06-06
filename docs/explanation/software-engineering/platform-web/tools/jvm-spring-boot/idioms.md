@@ -24,27 +24,27 @@ principles:
 
 **Auto-Configuration**:
 
-- [Auto-Configuration](#auto-configuration-embrace-convention-over-configuration) - Embrace convention over configuration
-- [Starter Dependencies](#starter-dependencies) - Curated dependency bundles
-- [Conditional Beans](#conditional-bean-registration) - Environment-specific beans
+- [Auto-Configuration](#1-auto-configuration-embrace-convention-over-configuration) - Embrace convention over configuration
+- [Starter Dependencies](#2-starter-dependencies) - Curated dependency bundles
+- [Conditional Beans](#11-conditional-bean-registration) - Environment-specific beans
 
 **Dependency Injection**:
 
-- [Constructor Injection](#constructor-injection-over-field-injection) - Recommended DI pattern
-- [Component Scanning](#component-scanning-and-stereotypes) - @Component, @Service, @Repository
-- [Bean Scopes](#bean-scopes-and-lifecycle) - Singleton, prototype, request scopes
+- [Constructor Injection](#3-constructor-injection-over-field-injection) - Recommended DI pattern
+- [Component Scanning](#4-component-scanning-and-stereotypes) - @Component, @Service, @Repository
+- [Bean Scopes](#15-spring-boot-lifecycle-hooks) - Singleton, prototype, request scopes
 
 **Configuration**:
 
-- [Configuration Properties](#configuration-properties) - Type-safe config with @ConfigurationProperties
-- [Profiles](#profile-based-configuration) - Environment-specific settings
-- [Externalized Config](#externalized-configuration) - Environment variables, application.yml
+- [Configuration Properties](#5-configuration-properties) - Type-safe config with @ConfigurationProperties
+- [Profiles](#6-profile-based-configuration) - Environment-specific settings
+- [Externalized Config](#7-externalized-configuration) - Environment variables, application.yml
 
 **Application Patterns**:
 
-- [REST Controllers](#rest-controllers) - @RestController for RESTful APIs
-- [Domain Events](#domain-events-with-applicationevent) - Event-driven architecture
-- [Transaction Management](#declarative-transaction-management) - @Transactional boundaries
+- [REST Controllers](#8-rest-controllers) - @RestController for RESTful APIs
+- [Domain Events](#10-domain-events-with-applicationevent) - Event-driven architecture
+- [Transaction Management](#9-declarative-transaction-management) - @Transactional boundaries
 
 ## Related Documentation
 

@@ -29,13 +29,13 @@ Spring Web MVC provides Model-View-Controller architecture for building web appl
 
 **Jump to:**
 
-- [DispatcherServlet and Request Lifecycle](#dispatcherservlet-and-request-lifecycle)
-- [@Controller and @RestController](#controller-and-restcontroller)
-- [Request Mapping](#request-mapping)
-- [Handler Methods](#handler-methods)
-- [Data Binding and Validation](#data-binding-and-validation)
-- [Exception Handling](#exception-handling)
-- [Interceptors](#interceptors)
+- [DispatcherServlet and Request Lifecycle](#request-processing-flow)
+- [@Controller and @RestController](#controller-for-html-views)
+- [Request Mapping](#http-method-mapping)
+- [Handler Methods](#method-arguments)
+- [Data Binding and Validation](#bean-validation)
+- [Exception Handling](#controlleradvice)
+- [Interceptors](#handlerinterceptor)
 - [CORS Configuration](#cors-configuration)
 
 ### Request Processing Flow
@@ -44,7 +44,7 @@ Spring Web MVC provides Model-View-Controller architecture for building web appl
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph LR
+graph TD
     A["HTTP Request"]:::blue
     B["DispatcherServlet"]:::blue
     C["HandlerMapping"]:::orange
@@ -56,7 +56,7 @@ graph LR
     A --> B
     B -->|Find Handler| C
     C -->|Route to| D
-    D -->|Return ModelAndView| B
+    D -->|ModelAndView| B
     B -->|Resolve View| E
     E -->|Return View| F
     F -->|Render| G

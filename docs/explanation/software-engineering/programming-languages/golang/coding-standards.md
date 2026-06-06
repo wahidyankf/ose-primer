@@ -1394,7 +1394,7 @@ These standards are enforced through:
 
 - [Error Handling](./error-handling-standards.md) - Comprehensive error handling patterns
 - [Concurrency and Parallelism](./concurrency-standards.md) - Goroutines, channels, sync
-- [Interfaces and Composition](./design-patterns.md#part-3-interfaces-and-composition-patterns) - Interface design patterns
+- [Interfaces and Composition](./design-patterns.md#overview-2) - Interface design patterns
 - [Linting and Formatting](./code-quality-standards.md) - Tool configuration
 
 **Software Engineering Principles**:

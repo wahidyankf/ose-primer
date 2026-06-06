@@ -28,9 +28,9 @@ Spring Framework provides comprehensive testing support through the Spring TestC
 
 **Jump to:**
 
-- [Spring TestContext Framework](#spring-testcontext-framework)
-- [Unit Testing](#unit-testing-without-spring)
-- [Integration Testing](#integration-testing-with-spring)
+- [Spring TestContext Framework](#basic-integration-test)
+- [Unit Testing](#pure-unit-tests)
+- [Integration Testing](#basic-integration-test)
 - [@MockBean and @SpyBean](#mockbean-and-spybean)
 - [Testing Transactions](#testing-transactions)
 - [Testing Web Layer](#testing-web-layer-with-mockmvc)

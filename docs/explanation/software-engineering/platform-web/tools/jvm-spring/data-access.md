@@ -29,13 +29,13 @@ Spring Framework provides comprehensive data access abstraction through JdbcTemp
 
 **Jump to:**
 
-- [JdbcTemplate](#jdbctemplate)
+- [JdbcTemplate](#basic-crud-operations)
 - [NamedParameterJdbcTemplate](#namedparameterjdbctemplate)
-- [Transaction Management](#transaction-management)
+- [Transaction Management](#transactional-annotation)
 - [Transaction Propagation](#transaction-propagation)
 - [Transaction Isolation](#transaction-isolation)
 - [Exception Translation](#exception-translation)
-- [Connection Pooling](#connection-pooling)
+- [Connection Pooling](#hikaricp-configuration)
 - [Multiple DataSources](#multiple-datasources)
 
 ### Basic CRUD Operations

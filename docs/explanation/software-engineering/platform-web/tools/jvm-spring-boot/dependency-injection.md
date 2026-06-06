@@ -36,8 +36,8 @@ related:
 - [Configuration Classes](#configuration-classes)
 - [Circular Dependencies](#circular-dependencies)
 - [Testing with DI](#testing-with-dependency-injection)
-- [demo DI Examples](#ose-platform-di-examples)
-- [Related Documentation](#related-documentation)
+- [demo DI Examples](#constructor-injection-recommended)
+- [Related Documentation](#-related-documentation)
 
 ## Overview
 

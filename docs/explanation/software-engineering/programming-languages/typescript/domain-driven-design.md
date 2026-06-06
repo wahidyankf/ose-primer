@@ -778,22 +778,14 @@ type DomainEventUnion = DonationReceivedEvent | ZakatCalculatedEvent | CampaignG
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph LR
-    subgraph Aggregate["Aggregate"]
-        Agg["Donation<br/>Campaign"]:::blue
-        Events["Event List<br/>(private)"]:::blue
-    end
-
-    subgraph Service["Application Service"]
-        Svc["Campaign<br/>Service"]:::orange
-    end
-
-    subgraph EventBus["Event Bus"]
-        Bus["Event<br/>Publisher"]:::teal
-        H1["Handler 1<br/>(Send Email)"]:::purple
-        H2["Handler 2<br/>(Update Stats)"]:::purple
-        H3["Handler 3<br/>(Notify Admin)"]:::purple
-    end
+graph TD
+    Agg["Donation Campaign<br/>#40;Aggregate#41;"]:::blue
+    Events["Event List<br/>#40;private#41;"]:::blue
+    Svc["Campaign Service<br/>#40;Application Service#41;"]:::orange
+    Bus["Event Publisher<br/>#40;Event Bus#41;"]:::teal
+    H1["Handler 1<br/>#40;Send Email#41;"]:::purple
+    H2["Handler 2<br/>#40;Update Stats#41;"]:::purple
+    H3["Handler 3<br/>#40;Notify Admin#41;"]:::purple
 
     Agg -->|"1. State Change"| Events
     Events -->|"2. Collect Events"| Svc

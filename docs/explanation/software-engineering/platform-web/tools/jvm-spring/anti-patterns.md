@@ -29,16 +29,16 @@ This document identifies problematic patterns in Spring Framework development an
 
 **Jump to:**
 
-- [Field Injection Anti-Pattern](#field-injection-anti-pattern)
-- [Circular Dependencies](#circular-dependencies)
-- [God Beans](#god-beans-overly-complex-services)
-- [Inappropriate Bean Scopes](#inappropriate-bean-scopes)
-- [Transaction Management Mistakes](#transaction-management-mistakes)
-- [Configuration Anti-Patterns](#configuration-anti-patterns)
-- [Resource Leak Patterns](#resource-leak-patterns)
-- [Threading Issues in Singleton Beans](#threading-issues-in-singleton-beans)
-- [Overusing XML Configuration](#overusing-xml-configuration)
-- [Missing Exception Handling](#missing-exception-handling)
+- [Field Injection Anti-Pattern](#-problem-field-injection)
+- [Circular Dependencies](#-problem-circular-bean-dependencies)
+- [God Beans](#-problem-service-with-too-many-responsibilities)
+- [Inappropriate Bean Scopes](#-problem-singleton-beans-with-mutable-state)
+- [Transaction Management Mistakes](#-problem-missing-transactional-on-write-operations)
+- [Configuration Anti-Patterns](#-problem-hardcoded-configuration-values)
+- [Resource Leak Patterns](#-problem-not-closing-resources)
+- [Threading Issues in Singleton Beans](#-problem-sharing-mutable-state)
+- [Overusing XML Configuration](#-problem-xml-configuration-over-java-config)
+- [Missing Exception Handling](#-problem-catching-generic-exception)
 
 ### ❌ Problem: Field Injection
 

@@ -163,7 +163,7 @@ graph LR
 **Layer 2 — Schema Validation** (purple): Zod runtime validation, type coercion, business rules.
 
 ```mermaid
-graph LR
+graph TD
     SANITIZE[Sanitized Input]
     ZOD[Zod Schema<br/>Validation]
     VALIDATE_BIZ[Business Rules<br/>amount > 0]

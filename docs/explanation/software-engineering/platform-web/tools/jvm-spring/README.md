@@ -60,7 +60,7 @@ All Spring Framework applications MUST follow the patterns and practices documen
 
 ### Quick Standards Reference
 
-- **Project Structure**: See [Architecture Integration](#architecture-integration)
+- **Project Structure**: See [Architecture Integration](#layered-architecture)
 - **IoC Container**: See [Dependency Injection](dependency-injection.md)
 - **AOP**: See [Aspect-Oriented Programming](aop.md)
 - **Data Access**: See [Data Access](data-access.md)
@@ -84,18 +84,18 @@ Spring Framework usage in this platform follows the the software engineering pri
 - [Overview](#overview) - Spring Framework in the platform
 - [Software Engineering Principles](#software-engineering-principles) - the core principles
 - [Spring Framework Version Strategy](#spring-framework-version-strategy) - Version management
-- [Documentation Structure](#documentation-structure) - Guide to documentation files
-- [Key Capabilities](#key-capabilities) - Framework features
+- [Documentation Structure](#documentation-organization) - Guide to documentation files
+- [Key Capabilities](#dependency-injection-ioc-container) - Framework features
 - [Use Cases](#use-cases) - When to use Spring Framework
-- [Architecture Integration](#architecture-integration) - DDD, layered architecture
-- [Development Workflow](#development-workflow) - Setup, configuration, testing
-- [Learning Path](#learning-path) - Recommended reading order
-- [Code Examples from Platform](#code-examples-from-platform) - Real implementations
-- [Integration with Other Documentation](#integration-with-other-documentation) - Cross-references
-- [Spring Framework Ecosystem](#spring-framework-ecosystem) - Spring modules
-- [Tools and Development Environment](#tools-and-development-environment) - Build tools, IDEs
-- [Resources and References](#resources-and-references) - External resources
-- [Related Documentation](#related-documentation) - Cross-references
+- [Architecture Integration](#layered-architecture) - DDD, layered architecture
+- [Development Workflow](#project-setup) - Setup, configuration, testing
+- [Learning Path](#1-start-with-ioc-and-dependency-injection) - Recommended reading order
+- [Code Examples from Platform](#complete-spring-mvc-controller) - Real implementations
+- [Integration with Other Documentation](#framework-documentation) - Cross-references
+- [Spring Framework Ecosystem](#core-spring-modules) - Spring modules
+- [Tools and Development Environment](#development-environment) - Build tools, IDEs
+- [Resources and References](#official-documentation) - External resources
+- [Related Documentation](#core-spring-framework-documentation) - Cross-references
 
 **Core Documentation:**
 

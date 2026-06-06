@@ -1366,26 +1366,24 @@ for portfolio in generate_zakat_portfolio_scenarios(assets, portfolio_size=3):
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
-graph LR
+graph TD
   A[Attribute Access<br/>obj.attr] --> B[Descriptor Protocol]
 
   B --> C{Has __get__?}
-  C -->|Yes| D[Call __get__#40;obj, type#41;]
-  C -->|No| E[Return Value Directly]
+  C -->|Yes| D[Call __get__<br/>#40;obj, type#41;]
+  C -->|No| E1[Return Value Directly]
 
-  B --> F{Attribute Assignment<br/>obj.attr = value?}
-  F -->|Yes| G{Has __set__?}
-  F -->|No| E
+  D --> F{Has __set__?}
+  E1 --> F
 
-  G -->|Yes| H[Call __set__#40;obj, value#41;]
-  G -->|No| I[Set Value Directly]
+  F -->|Yes| H[Call __set__<br/>#40;obj, value#41;]
+  F -->|No| G[Check __delete__]
 
-  B --> J{Attribute Deletion<br/>del obj.attr?}
-  J -->|Yes| K{Has __delete__?}
-  J -->|No| E
+  H --> K{Has __delete__?}
+  G --> K
 
-  K -->|Yes| L[Call __delete__#40;obj#41;]
-  K -->|No| M[Delete Attribute]
+  K -->|Yes| L[Call __delete__<br/>#40;obj#41;]
+  K -->|No| M[Default Behavior]
 
   style A fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
   style B fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px

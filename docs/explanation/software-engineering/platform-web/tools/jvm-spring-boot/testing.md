@@ -34,11 +34,11 @@ related:
 - [Controller Testing (@WebMvcTest)](#controller-testing-webmvctest)
 - [Repository Testing (@DataJpaTest)](#repository-testing-datajpatest)
 - [Integration Testing (@SpringBootTest)](#integration-testing-springboottest)
-- [Test Configuration](#test-configuration)
-- [Advanced Testing Techniques](#advanced-testing-techniques)
-- [Testing Best Practices](#testing-best-practices)
-- [demo Testing Examples](#ose-platform-testing-examples)
-- [Related Documentation](#related-documentation)
+- [Test Configuration](#test-properties)
+- [Advanced Testing Techniques](#parameterized-tests)
+- [Testing Best Practices](#test-naming-convention)
+- [demo Testing Examples](#complete-zakat-calculation-test-suite)
+- [Related Documentation](#-related-documentation)
 
 ## Overview
 

@@ -39,7 +39,7 @@ Security is critical for production Spring Boot applications. This guide covers 
 - [Rate Limiting](#-rate-limiting) - API abuse prevention
 - [Secrets Management](#-secrets-management) - Configuration security
 - [OWASP Top 10](#-owasp-top-10) - Common vulnerability defenses
-- [demo Examples](#-ose-platform-examples) - Islamic finance security patterns
+- [demo Examples](#-demo-examples) - Islamic finance security patterns
 - [Security Checklist](#-security-checklist) - Production deployment checklist
 - [Related Documentation](#-related-documentation) - Cross-references
 

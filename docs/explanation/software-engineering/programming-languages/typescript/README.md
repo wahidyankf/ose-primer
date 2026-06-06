@@ -1501,69 +1501,46 @@ async function processDonation(data: DonationInput): Promise<Result<Donation, Er
 ## TypeScript Type System
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart LR
-    A[TypeScript Types] --> B[Primitive Types]
-    A --> C[Object Types]
-    A --> D[Advanced Types]
-    A --> E[Utility Types]
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph TD
+    A[TypeScript Types]:::blue
 
-    B --> B1[string number<br/>boolean]
-    B --> B2[null undefined]
-    B --> B3[symbol bigint]
+    A --> B[Primitive Types<br/>string, number, boolean<br/>null, undefined, symbol]:::orange
+    A --> C[Object Types<br/>interface, type alias<br/>class, array, tuple]:::teal
 
-    C --> C1[interface<br/>type alias]
-    C --> C2[class<br/>constructor]
-    C --> C3[array tuple]
+    B --> D[Advanced Types<br/>Union, Intersection<br/>Conditional, Mapped]:::purple
+    C --> D
 
-    D --> D1[Union<br/>Type | Type]
-    D --> D2[Intersection<br/>Type & Type]
-    D --> D3[Conditional<br/>T extends U]
-    D --> D4[Mapped Types<br/>Keyof In]
+    D --> E[Utility Types<br/>Partial, Required<br/>Pick, Omit, Record]:::blue
 
-    E --> E1[Partial Required]
-    E --> E2[Pick Omit]
-    E --> E3[Record Exclude]
-
-    C1 --> F[Zakat Interface]
-    D1 --> G[Amount Union]
-    E1 --> H[Optional Fields]
-
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 
 ## Compilation Process
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart LR
-    A[.ts Files] --> B[TypeScript Compiler<br/>tsc]
-    B --> C[Type Checking]
-    C --> D{Types Valid?}
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph TD
+    A[".ts Files"]:::blue --> B["TypeScript Compiler tsc"]:::orange
+    B --> C[Type Checking]:::teal
+    C --> D{Types Valid?}:::orange
 
-    D -->|No| E[Compilation Error]
-    D -->|Yes| F[Type Erasure]
+    D -->|No| E[Compilation Error]:::orange
+    D -->|Yes| F[Type Erasure]:::teal
 
-    F --> G[JavaScript Generation]
-    G --> H{Target}
+    F --> G[JavaScript Generation]:::purple
+    G --> H{Target ES5 / ES2020 / ESNext}:::orange
 
-    H -->|ES5| I[ES5 JavaScript]
-    H -->|ES2020| J[ES2020 JavaScript]
-    H -->|ESNext| K[ESNext JavaScript]
+    H --> I[Target JS Files]:::teal
+    I --> J[Runtime Execution]:::blue
 
-    I --> L[.js Files]
-    J --> L
-    K --> L
-
-    L --> M[Runtime Execution]
-
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style G fill:#CC78BC,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```

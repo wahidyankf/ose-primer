@@ -32,7 +32,7 @@ Next.js provides first-class TypeScript support with automatic type checking, ty
 - [Context and Provider Types](#-context-and-provider-types) - Context API typing
 - [Environment Variables](#-environment-variables) - Type-safe env vars
 - [Utility Types](#-utility-types) - Helper types for Next.js
-- [demo Examples](#-ose-platform-examples) - Islamic finance type patterns
+- [demo Examples](#-demo-examples) - Islamic finance type patterns
 - [Best Practices](#-best-practices) - Production typing guidelines
 - [Related Documentation](#-related-documentation) - Cross-references
 

@@ -939,5 +939,5 @@ import Phoenix.HTML
 
 - **[Best Practices](best-practices.md)** - Modern Phoenix patterns
 - **[LiveView](liveview.md)** - Latest LiveView features
-- **[Components](best-practices.md#components)** - Component patterns
+- **[Components](best-practices.md#real-time-features)** - Component patterns
 - **[Testing](testing.md)** - Testing migrated code

@@ -43,16 +43,16 @@ This document defines **deployment standards** for Spring Boot applications in t
 
 ## Quick Reference
 
-- [JAR vs WAR Packaging](#jar-vs-war-packaging)
-- [Embedded Servers](#embedded-servers-tomcat-jetty-undertow)
+- [JAR vs WAR Packaging](#executable-jar-recommended)
+- [Embedded Servers](#tomcat-default)
 - [Executable JAR Structure](#executable-jar-structure)
-- [Docker Deployment](#docker-deployment)
+- [Docker Deployment](#basic-dockerfile)
 - [Layered JARs for Docker](#layered-jars-for-docker)
 - [GraalVM Native Images](#graalvm-native-images-with-spring-boot-3)
-- [Kubernetes Deployment](#kubernetes-deployment-strategies)
+- [Kubernetes Deployment](#deployment-manifest)
 - [Health Probes](#health-probes-liveness-readiness-startup)
-- [Environment-Specific Configuration](#environment-specific-configuration)
-- [Spring Boot vs Spring Framework Deployment](#spring-boot-vs-spring-framework-deployment)
+- [Environment-Specific Configuration](#profile-based-configuration)
+- [Spring Boot vs Spring Framework Deployment](#key-differences)
 
 ### Executable JAR (Recommended)
 

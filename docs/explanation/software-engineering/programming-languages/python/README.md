@@ -78,7 +78,7 @@ All Python code MUST follow the standards documented here:
 
 ### Quick Standards Reference
 
-- **Naming Conventions**: See [Best Practices - Code Organization](./best-practices.md#code-organization)
+- **Naming Conventions**: See [Best Practices - Code Organization](./best-practices.md#python-code-organization)
 - **Error Handling**: See [Error Handling](./error-handling.md)
 - **Type Safety**: See [Type Safety](./type-safety.md)
 - **Testing Standards**: See [Test-Driven Development](./test-driven-development.md)

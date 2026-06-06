@@ -41,12 +41,12 @@ Applications are the fundamental unit of code organization in Elixir/OTP. An app
 
 **Jump to**:
 
-- [Application Structure](#application-structure)
-- [Starting Applications](#starting-applications)
-- [Umbrella Projects](#umbrella-projects)
-- [GenStage and Flow](#genstage-and-flow)
-- [Broadway](#broadway)
-- [Financial Domain Examples](#financial-domain-examples)
+- [Application Structure](#basic-application)
+- [Starting Applications](#application-startup-sequence)
+- [Umbrella Projects](#structure)
+- [GenStage and Flow](#genstage-producer-consumer)
+- [Broadway](#basic-broadway-pipeline)
+- [Financial Domain Examples](#complete-financial-platform-application)
 
 ### Basic Application
 

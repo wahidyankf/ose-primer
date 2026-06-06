@@ -41,7 +41,7 @@ Domain-Driven Design is a software design approach that focuses on modeling soft
 **Related Documentation**:
 
 - [Best Practices](./coding-standards.md#part-2-naming--organization-best-practices)
-- [Interfaces and Composition](./design-patterns.md#part-3-interfaces-and-composition-patterns)
+- [Interfaces and Composition](./design-patterns.md#overview-2)
 
 ## DDD Fundamentals
 
@@ -795,38 +795,22 @@ func (s *PricingService) CalculatePrice(order *Order) (Money, error) {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph LR
-    subgraph Presentation["Presentation Layer"]
-        Handler["HTTP Handler<br/>(Gin/Echo/net/http)"]:::orange
-    end
-
-    subgraph Application["Application Layer"]
-        Service["Application Service<br/>(OrderService)"]:::blue
-    end
-
-    subgraph Domain["Domain Layer"]
-        Agg1["Aggregate 1<br/>(Order)"]:::teal
-        Agg2["Aggregate 2<br/>(Customer)"]:::teal
-        DomSvc["Domain Service<br/>(PricingService)"]:::teal
-    end
-
-    subgraph Infrastructure["Infrastructure"]
-        Repo1["Repository<br/>(OrderRepository)"]:::purple
-        Repo2["Repository<br/>(CustomerRepository)"]:::purple
-        DB[("Database")]:::purple
-    end
+graph TD
+    Handler["HTTP Handler<br/>(Gin/Echo/net/http)"]:::orange
+    Service["Application Service<br/>(OrderService)"]:::blue
+    Repos["Repositories<br/>(Order + Customer)"]:::purple
+    DB[("Database")]:::purple
+    Domain["Domain Layer<br/>(Aggregate + DomainService)"]:::teal
+    Response["HTTP Response"]:::orange
 
     Handler -->|"1. HTTP Request"| Service
-    Service -->|"2. Load"| Repo1
-    Service -->|"3. Load"| Repo2
-    Repo1 & Repo2 -->|"4. Query"| DB
-    DB -->|"5. Return"| Repo1 & Repo2
-    Repo1 & Repo2 -->|"6. Domain Models"| Service
-    Service -->|"7. Execute Logic"| Agg1
-    Service -->|"8. Apply Rules"| DomSvc
-    Service -->|"9. Save"| Repo1
-    Repo1 -->|"10. Persist"| DB
-    Service -->|"11. Response"| Handler
+    Service -->|"2-3. Load"| Repos
+    Repos -->|"4. Query"| DB
+    DB -->|"5. Return"| Repos
+    Repos -->|"6. Domain Models"| Service
+    Service -->|"7-8. Execute Logic"| Domain
+    Service -->|"9-10. Save"| Repos
+    Service -->|"11. Response"| Response
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
@@ -1310,7 +1294,7 @@ Domain-Driven Design in Go emphasizes:
 **Related Documentation**:
 
 - Read [Best Practices](./coding-standards.md#part-2-naming--organization-best-practices)
-- Explore [Interfaces and Composition](./design-patterns.md#part-3-interfaces-and-composition-patterns)
+- Explore [Interfaces and Composition](./design-patterns.md#overview-2)
 
 ---
 

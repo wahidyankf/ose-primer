@@ -32,12 +32,12 @@ Observability enables understanding system behavior through metrics, logging, an
 
 **Jump to:**
 
-- [Micrometer Integration](#micrometer-integration)
-- [Custom Metrics](#custom-metrics)
-- [Distributed Tracing](#distributed-tracing-with-spring-cloud-sleuth)
-- [Logging Best Practices](#logging-best-practices)
+- [Micrometer Integration](#registry-configuration)
+- [Custom Metrics](#timer-metrics)
+- [Distributed Tracing](#enable-distributed-tracing)
+- [Logging Best Practices](#structured-logging-with-logback)
 - [Application Events](#application-events)
-- [APM Integration](#apm-integration)
+- [APM Integration](#datadog-apm)
 - [Health Indicators](#health-indicators)
 
 ### Registry Configuration

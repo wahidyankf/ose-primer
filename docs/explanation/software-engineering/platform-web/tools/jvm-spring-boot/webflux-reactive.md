@@ -44,13 +44,13 @@ This document defines **reactive programming standards** for Spring Boot applica
 
 ## Quick Reference
 
-- [When to Use Spring WebFlux vs Spring Web MVC](#when-to-use-spring-webflux-vs-spring-web-mvc)
-- [Reactive Programming Patterns](#reactive-programming-patterns-mono-flux-project-reactor)
+- [When to Use Spring WebFlux vs Spring Web MVC](#decision-matrix)
+- [Reactive Programming Patterns](#mono-0-or-1-element)
 - [Backpressure Handling](#backpressure-handling)
-- [Non-Blocking I/O for High-Concurrency](#non-blocking-io-for-high-concurrency-scenarios)
-- [Testing Reactive Applications](#testing-reactive-applications)
-- [Performance Trade-offs](#performance-trade-offs-thread-efficiency-vs-complexity)
-- [Reactive Database Access (R2DBC)](#reactive-database-access-r2dbc)
+- [Non-Blocking I/O for High-Concurrency](#thread-model-comparison)
+- [Testing Reactive Applications](#unit-testing-with-stepverifier)
+- [Performance Trade-offs](#benchmarks-demo)
+- [Reactive Database Access (R2DBC)](#r2dbc-configuration)
 
 ### Decision Matrix
 

@@ -40,12 +40,12 @@ Supervisors are processes that monitor other processes (called child processes) 
 
 **Jump to**:
 
-- [Supervision Strategies](#supervision-strategies)
-- [Supervision Tree Design](#supervision-tree-design)
-- [Dynamic Supervisors](#dynamic-supervisors)
-- [Restart Strategies](#restart-strategies)
-- [Monitoring and Debugging](#monitoring-and-debugging)
-- [Financial Domain Examples](#financial-domain-examples)
+- [Supervision Strategies](#one_for_one)
+- [Supervision Tree Design](#basic-tree)
+- [Dynamic Supervisors](#starting-children-dynamically)
+- [Restart Strategies](#restart-options)
+- [Monitoring and Debugging](#introspection)
+- [Financial Domain Examples](#payment-processing-supervision-tree)
 
 ### one_for_one
 

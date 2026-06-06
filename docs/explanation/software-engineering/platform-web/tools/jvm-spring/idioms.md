@@ -34,16 +34,16 @@ This documentation covers idiomatic Spring Framework usage for enterprise applic
 
 **Jump to:**
 
-- [IoC Container and ApplicationContext](#ioc-container-and-applicationcontext)
-- [Bean Definitions](#bean-definitions)
-- [Component Scanning](#component-scanning)
-- [Dependency Injection Patterns](#dependency-injection-patterns)
-- [Bean Lifecycle](#bean-lifecycle)
-- [Bean Scopes](#bean-scopes)
-- [Property Resolution](#property-resolution)
-- [Resource Loading](#resource-loading)
-- [Conditional Configuration](#conditional-configuration)
-- [Profile-Based Configuration](#profile-based-configuration)
+- [IoC Container and ApplicationContext](#applicationcontext-types)
+- [Bean Definitions](#configuration-and-bean)
+- [Component Scanning](#component-service-repository)
+- [Dependency Injection Patterns](#constructor-injection-preferred)
+- [Bean Lifecycle](#postconstruct-and-predestroy)
+- [Bean Scopes](#singleton-default)
+- [Property Resolution](#value-annotation)
+- [Resource Loading](#resourceloader-interface)
+- [Conditional Configuration](#conditional-annotation)
+- [Profile-Based Configuration](#profile-annotation)
 
 ### ApplicationContext Types
 

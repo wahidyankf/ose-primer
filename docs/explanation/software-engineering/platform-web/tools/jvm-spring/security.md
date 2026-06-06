@@ -31,16 +31,16 @@ Spring Security provides comprehensive security services for Java applications, 
 
 **Jump to:**
 
-- [Spring Security Architecture](#spring-security-architecture)
-- [Authentication](#authentication)
-- [Authorization](#authorization)
-- [Security Filter Chain](#security-filter-chain)
-- [Method Security](#method-security)
-- [OAuth2 and JWT](#oauth2-and-jwt)
-- [Password Encoding](#password-encoding)
-- [CSRF Protection](#csrf-protection)
-- [CORS Configuration](#cors-configuration)
-- [Session Management](#session-management)
+- [Spring Security Architecture](#enable-security)
+- [Authentication](#userdetailsservice)
+- [Authorization](#url-based-authorization)
+- [Security Filter Chain](#custom-security-filter)
+- [Method Security](#enable-method-security)
+- [OAuth2 and JWT](#oauth2-resource-server-configuration)
+- [Password Encoding](#encoder-selection-and-configuration)
+- [CSRF Protection](#token-based-csrf)
+- [CORS Configuration](#global-cors-configuration)
+- [Session Management](#stateful-session-configuration)
 
 ### Enable Security
 

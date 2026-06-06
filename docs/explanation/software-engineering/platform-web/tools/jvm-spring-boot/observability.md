@@ -32,10 +32,10 @@ related:
 - [Metrics with Micrometer](#metrics-with-micrometer)
 - [Distributed Tracing](#distributed-tracing)
 - [Structured Logging](#structured-logging)
-- [Alerting and Dashboards](#alerting-and-dashboards)
-- [Production Monitoring](#production-monitoring)
-- [demo Observability Examples](#ose-platform-observability-examples)
-- [Related Documentation](#related-documentation)
+- [Alerting and Dashboards](#prometheus-alert-rules)
+- [Production Monitoring](#observability-best-practices)
+- [demo Observability Examples](#complete-zakat-service-with-observability)
+- [Related Documentation](#-related-documentation)
 
 ## Overview
 

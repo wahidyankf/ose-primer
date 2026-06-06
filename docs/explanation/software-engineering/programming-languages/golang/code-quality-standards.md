@@ -27,7 +27,7 @@ principles:
 
 # Linting and Formatting in Go
 
-**Quick Reference**: [Overview](#overview) | [Code Formatting](#code-formatting) | [Linting Tools](#linting-tools) | [golangci-lint Configuration](#golangci-lint-configuration) | [Common Linters](#common-linters) | [IDE Integration](#ide-integration) | [CI/CD Integration](#cicd-integration) | [Custom Linters](#custom-linters) | [Best Practices](#best-practices) | [Required Linters](#required-linters) | [Disabled Linters](#disabled-linters) | [Exceptions](#exceptions) | [Common Issues and Fixes](#common-issues-and-fixes) | [Related Documentation](#related-documentation) | [Further Reading](#further-reading)
+**Quick Reference**: [Overview](#overview) | [Code Formatting](#code-formatting) | [Linting Tools](#linting-tools) | [golangci-lint Configuration](#golangci-lint-configuration) | [Common Linters](#common-linters) | [IDE Integration](#ide-integration) | [CI/CD Integration](#cicd-integration) | [Custom Linters](#custom-linters) | [Best Practices](#best-practices) | [Required Linters](#team-standards) | [Disabled Linters](#team-standards) | [Exceptions](#team-standards) | [Common Issues and Fixes](#common-issues-and-fixes) | [Related Documentation](#related-documentation) | [Further Reading](#further-reading)
 
 ## Overview
 

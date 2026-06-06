@@ -49,7 +49,7 @@ This document defines **authoritative testing standards** for Go development in 
 
 **Scope**: Test-Driven Development (TDD) practices, Behaviour-Driven Development (BDD) practices, table-driven tests, integration testing, test organization, and quality standards
 
-**Quick Reference**: [Part 1: TDD Standards](#part-1-test-driven-development-tdd-standards) | [Part 2: BDD Standards](#part-2-behaviour-driven-development-bdd-standards) | [Alignment with Principles](#alignment-with-software-engineering-principles)
+**Quick Reference**: [Part 1: TDD Standards](#part-1-test-driven-development-tdd-standards) | [Part 2: BDD Standards](#part-2-behaviour-driven-development-bdd-standards) | [Alignment with Principles](#-alignment-with-software-engineering-principles)
 
 ## ⚙️ Alignment with Software Engineering Principles
 

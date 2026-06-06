@@ -24,45 +24,45 @@ principles:
 
 ## Project Organization
 
-- [Project Structure](#project-structure) - Package organization and layering
-- [Dependency Management](#dependency-management) - Managing dependencies
-- [Configuration Management](#configuration-management) - Externalized config
+- [Project Structure](#package-organization) - Package organization and layering
+- [Dependency Management](#use-spring-boot-starters) - Managing dependencies
+- [Configuration Management](#externalize-configuration) - Externalized config
 
 ## Code Quality
 
-- [Dependency Injection](#dependency-injection) - Constructor injection patterns
-- [Naming Conventions](#naming-conventions) - Clear, descriptive names
-- [Error Handling](#error-handling) - Exception handling strategies
-- [Logging](#logging) - Effective logging practices
+- [Dependency Injection](#always-use-constructor-injection) - Constructor injection patterns
+- [Naming Conventions](#class-names) - Clear, descriptive names
+- [Error Handling](#use-controlleradvice-for-global-exception-handling) - Exception handling strategies
+- [Logging](#use-slf4j-with-logback) - Effective logging practices
 
 ## Data and Persistence
 
-- [Data Access](#data-access-patterns) - Repository and query patterns
-- [Transaction Management](#transaction-management) - @Transactional usage
-- [Database Migrations](#database-migrations) - Flyway/Liquibase
+- [Data Access](#repository-best-practices) - Repository and query patterns
+- [Transaction Management](#use-transactional-appropriately) - @Transactional usage
+- [Database Migrations](#use-flyway-for-schema-management) - Flyway/Liquibase
 
 ## API Design
 
-- [REST API Design](#rest-api-design) - RESTful conventions
-- [Request Validation](#request-validation) - Input validation
-- [Response DTOs](#response-dtos) - Proper API responses
+- [REST API Design](#follow-restful-conventions) - RESTful conventions
+- [Request Validation](#use-bean-validation) - Input validation
+- [Response DTOs](#use-dtos-never-expose-entities) - Proper API responses
 - [Null Safety](#null-safety) - JSpecify + NullAway compile-time null checking
 
 ## Security
 
-- [Security Configuration](#security-configuration) - Spring Security setup
-- [Authentication](#authentication) - OAuth2, JWT patterns
-- [Input Validation](#input-validation-and-sanitization) - Security boundaries
+- [Security Configuration](#use-spring-security-with-oauth2jwt) - Spring Security setup
+- [Authentication](#use-spring-security-with-oauth2jwt) - OAuth2, JWT patterns
+- [Input Validation](#custom-validators) - Security boundaries
 
 ## Testing
 
-- [Testing Strategy](#testing-strategy) - Unit, integration, E2E tests
-- [Test Organization](#test-organization) - Test structure
+- [Testing Strategy](#unit-tests---no-spring-context) - Unit, integration, E2E tests
+- [Test Organization](#controller-tests---use-webmvctest) - Test structure
 
 ## Production Readiness
 
-- [Observability](#observability) - Monitoring and metrics
-- [Performance](#performance-optimization) - Optimization techniques
+- [Observability](#enable-spring-boot-actuator) - Monitoring and metrics
+- [Performance](#connection-pooling) - Optimization techniques
 
 ## Overview
 

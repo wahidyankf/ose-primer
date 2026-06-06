@@ -31,7 +31,7 @@ Functional Programming (FP) emphasizes immutability, pure functions, and composi
 - [Async FP](#-async-fp) - Functional async patterns
 - [React Server Components](#-react-server-components) - FP with RSC
 - [State Management](#-state-management) - Functional state patterns
-- [demo Examples](#-ose-platform-examples) - Islamic finance FP patterns
+- [demo Examples](#-demo-examples) - Islamic finance FP patterns
 - [Best Practices](#-best-practices) - Production FP guidelines
 - [Related Documentation](#-related-documentation) - Cross-references
 

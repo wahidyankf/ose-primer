@@ -24,52 +24,52 @@ principles:
 
 ## Project Organization
 
-- [Project Structure](#project-structure) - Directory and module organization
-- [Context Design](#context-design) - Bounded context patterns
-- [Dependency Management](#dependency-management) - Mix dependencies
+- [Project Structure](#recommended-directory-organization) - Directory and module organization
+- [Context Design](#keep-contexts-cohesive) - Bounded context patterns
+- [Dependency Management](#use-specific-versions) - Mix dependencies
 
 ## Code Quality
 
-- [Naming Conventions](#naming-conventions) - Clear, descriptive names
-- [Documentation](#documentation) - Module and function docs
-- [Type Specifications](#type-specifications) - Typespecs and Dialyzer
+- [Naming Conventions](#module-names) - Clear, descriptive names
+- [Documentation](#module-documentation) - Module and function docs
+- [Type Specifications](#add-typespecs-to-public-functions) - Typespecs and Dialyzer
 
 ## Data and Persistence
 
-- [Schema Design](#schema-design) - Ecto schema patterns
-- [Changeset Validation](#changeset-validation) - Data validation
-- [Query Optimization](#query-optimization) - Efficient queries
-- [Migrations](#migrations) - Database migrations
+- [Schema Design](#use-binary-ids) - Ecto schema patterns
+- [Changeset Validation](#comprehensive-validation) - Data validation
+- [Query Optimization](#avoid-n1-queries) - Efficient queries
+- [Migrations](#always-reversible) - Database migrations
 
 ## API Design
 
-- [REST API Design](#rest-api-design) - RESTful conventions
-- [JSON API Standards](#json-api-standards) - Response formats
-- [Error Handling](#error-handling) - Error responses
+- [REST API Design](#follow-restful-conventions) - RESTful conventions
+- [JSON API Standards](#json-view) - Response formats
+- [Error Handling](#fallback-controller) - Error responses
 
 ## Real-Time Features
 
-- [Channel Design](#channel-design) - WebSocket patterns
-- [LiveView Optimization](#liveview-optimization) - LiveView best practices
-- [PubSub Usage](#pubsub-usage) - Event broadcasting
+- [Channel Design](#authentication-on-join) - WebSocket patterns
+- [LiveView Optimization](#reduce-assigns) - LiveView best practices
+- [PubSub Usage](#real-time-features) - Event broadcasting
 
 ## Security
 
-- [Authentication](#authentication) - User authentication patterns
-- [Authorization](#authorization) - Access control
-- [Input Validation](#input-validation) - Security boundaries
+- [Authentication](#security) - User authentication patterns
+- [Authorization](#security) - Access control
+- [Input Validation](#security) - Security boundaries
 
 ## Testing
 
-- [Testing Strategy](#testing-strategy) - Test organization
-- [Test Data](#test-data) - Fixtures and factories
+- [Testing Strategy](#test-organization) - Test organization
+- [Test Data](#context-tests) - Fixtures and factories
 
 ## Production Readiness
 
-- [Configuration](#configuration) - Runtime configuration
-- [Logging](#logging) - Structured logging
-- [Monitoring](#monitoring) - Telemetry and metrics
-- [Performance](#performance) - Optimization techniques
+- [Configuration](#runtime-configuration) - Runtime configuration
+- [Logging](#structured-logging) - Structured logging
+- [Monitoring](#telemetry-events) - Telemetry and metrics
+- [Performance](#connection-pooling) - Optimization techniques
 
 ## Overview
 

@@ -18,31 +18,31 @@ related:
 
 ## Dependency Injection Anti-Patterns
 
-- [Field Injection](#1-field-injection) - Using @Autowired on fields
-- [Circular Dependencies](#2-circular-dependencies) - Services depending on each other
-- [God Services](#3-god-services) - Services doing too much
+- [Field Injection](#-fail---field-injection) - Using @Autowired on fields
+- [Circular Dependencies](#-fail---circular-dependency) - Services depending on each other
+- [God Services](#-fail---god-service) - Services doing too much
 
 ## Data Access Anti-Patterns
 
-- [Exposing JPA Entities](#4-exposing-jpa-entities-in-rest-apis) - Returning entities from controllers
-- [N+1 Queries](#5-n1-query-problem) - Missing JOIN FETCH
-- [Overusing @Transactional](#6-overusing-transactional) - Transactions everywhere
+- [Exposing JPA Entities](#-fail---returning-entities) - Returning entities from controllers
+- [N+1 Queries](#-fail---missing-join-fetch) - Missing JOIN FETCH
+- [Overusing @Transactional](#-fail---transactional-everywhere) - Transactions everywhere
 
 ## Configuration Anti-Patterns
 
-- [Hardcoded Configuration](#7-hardcoded-configuration-values) - Secrets in code
-- [Missing Validation](#8-missing-configuration-validation) - Unvalidated properties
-- [Profile Misuse](#9-profile-misuse) - Wrong profile usage
+- [Hardcoded Configuration](#-fail---hardcoded-values) - Secrets in code
+- [Missing Validation](#-fail---no-validation) - Unvalidated properties
+- [Profile Misuse](#-fail---profiles-for-features) - Wrong profile usage
 
 ## API Anti-Patterns
 
-- [Missing Exception Handling](#10-missing-global-exception-handling) - No @ControllerAdvice
-- [Ignoring HTTP Semantics](#11-ignoring-http-semantics) - Wrong status codes
-- [Missing Validation](#12-missing-request-validation) - No @Valid
+- [Missing Exception Handling](#-fail---no-exception-handler) - No @ControllerAdvice
+- [Ignoring HTTP Semantics](#-fail---wrong-http-methods-and-status-codes) - Wrong status codes
+- [Missing Validation](#-fail---no-validation-1) - No @Valid
 
 ## Testing Anti-Patterns
 
-- [Overusing @SpringBootTest](#13-overusing-springboottest) - Too many integration tests
+- [Overusing @SpringBootTest](#-fail---everything-is-springboottest) - Too many integration tests
 - [Not Using Test Slices](#14-not-using-test-slices) - Loading full context unnecessarily
 
 ## Overview

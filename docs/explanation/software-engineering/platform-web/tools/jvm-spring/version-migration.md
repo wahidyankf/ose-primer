@@ -29,13 +29,13 @@ This document provides guidance for migrating Spring Framework applications from
 
 **Jump to:**
 
-- [Spring 5.x to 6.x Migration](#spring-5x-to-6x-migration)
-- [Jakarta EE Migration](#jakarta-ee-migration)
-- [Java Version Requirements](#java-version-requirements)
-- [Breaking Changes](#breaking-changes)
-- [Configuration Updates](#configuration-updates)
-- [API Changes](#api-changes)
-- [Third-Party Compatibility](#third-party-compatibility)
+- [Spring 5.x to 6.x Migration](#major-changes-overview)
+- [Jakarta EE Migration](#package-namespace-changes)
+- [Java Version Requirements](#minimum-java-17)
+- [Breaking Changes](#1-httpmethod-enum-changes)
+- [Configuration Updates](#application-context-configuration)
+- [API Changes](#1-resttemplate-vs-webclient)
+- [Third-Party Compatibility](#library-version-updates)
 
 ### Major Changes Overview
 

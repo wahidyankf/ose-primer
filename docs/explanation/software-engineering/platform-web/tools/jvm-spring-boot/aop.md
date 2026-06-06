@@ -42,13 +42,13 @@ This document defines **AOP standards** for Spring Boot applications in the demo
 
 ## Quick Reference
 
-- [AOP Auto-Configuration in Spring Boot](#aop-auto-configuration-in-spring-boot)
-- [Cross-Cutting Concerns](#cross-cutting-concerns-logging-auditing-performance)
-- [Pointcut Expressions for Spring Boot](#pointcut-expressions-for-spring-boot-controllersservices)
-- [Boot-Specific AOP Patterns](#boot-specific-aop-patterns)
+- [AOP Auto-Configuration in Spring Boot](#enable-aop-auto-configuration)
+- [Cross-Cutting Concerns](#logging-aspect-for-controllers-and-services)
+- [Pointcut Expressions for Spring Boot](#controller-specific-pointcuts)
+- [Boot-Specific AOP Patterns](#actuator-metrics-integration)
 - [Transaction Management](#transaction-management-with-transactional)
 - [Custom Aspects for Domain Events](#custom-aspects-for-domain-events)
-- [Performance Overhead Considerations](#performance-overhead-considerations)
+- [Performance Overhead Considerations](#aop-performance-impact)
 
 ### Enable AOP Auto-Configuration
 

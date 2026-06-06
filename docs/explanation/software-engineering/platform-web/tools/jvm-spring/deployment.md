@@ -29,12 +29,12 @@ This document covers deployment strategies for Spring applications, including WA
 
 **Jump to:**
 
-- [WAR vs JAR Deployment](#war-vs-jar-deployment)
-- [Servlet Containers](#servlet-containers)
-- [Standalone Applications](#standalone-applications)
-- [Docker Deployment](#docker-deployment)
-- [Environment-Specific Configuration](#environment-specific-configuration)
-- [Production Best Practices](#production-best-practices)
+- [WAR vs JAR Deployment](#war-deployment-traditional)
+- [Servlet Containers](#apache-tomcat)
+- [Standalone Applications](#jar-deployment-standalone)
+- [Docker Deployment](#dockerfile)
+- [Environment-Specific Configuration](#profile-based-configuration)
+- [Production Best Practices](#security-hardening)
 
 ### WAR Deployment (Traditional)
 

@@ -31,7 +31,7 @@ related:
 
 # Go Design Patterns
 
-**Quick Reference**: [Prerequisite Knowledge](#prerequisite-knowledge) | [Purpose](#purpose) | [Part 1: Functional Programming Patterns](#part-1-functional-programming-patterns) | [Part 2: Finite State Machine Patterns](#part-2-finite-state-machine-patterns) | [Part 3: Interfaces and Composition Patterns](#part-3-interfaces-and-composition-patterns) | [Related Documentation](#related-documentation)
+**Quick Reference**: [Prerequisite Knowledge](#prerequisite-knowledge) | [Purpose](#purpose) | [Part 1: Functional Programming Patterns](#overview) | [Part 2: Finite State Machine Patterns](#overview-1) | [Part 3: Interfaces and Composition Patterns](#overview-2) | [Related Documentation](#related-documentation)
 
 ## Prerequisite Knowledge
 

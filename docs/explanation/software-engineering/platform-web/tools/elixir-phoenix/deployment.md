@@ -350,80 +350,35 @@ docker-compose down
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph LR
-    subgraph "External Traffic"
-        U[Users]
-        LB[Load Balancer]
-    end
+graph TD
+    U[Users]:::blue
+    LB[Load Balancer]:::blue
+    ING[Ingress Controller<br/>nginx/Traefik]:::teal
+    SVC[Service ClusterIP<br/>Round Robin]:::teal
 
-    subgraph "Kubernetes Cluster"
-        subgraph "Ingress Layer"
-            ING[Ingress Controller<br/>nginx/Traefik]
-        end
+    POD1[Phoenix Pod 1<br/>4000:4000]:::orange
+    POD2[Phoenix Pod 2<br/>4000:4000]:::orange
+    POD3[Phoenix Pod 3<br/>4000:4000]:::orange
 
-        subgraph "Application Layer"
-            SVC[Service<br/>ClusterIP]
-            POD1[Phoenix Pod 1<br/>4000:4000]
-            POD2[Phoenix Pod 2<br/>4000:4000]
-            POD3[Phoenix Pod 3<br/>4000:4000]
-        end
+    PGSVC[PostgreSQL Service]:::purple
+    PG[(PostgreSQL<br/>StatefulSet)]:::purple
+    REDISSVC[Redis Service]:::purple
+    RD[(Redis<br/>StatefulSet)]:::purple
 
-        subgraph "Data Layer"
-            PGSVC[PostgreSQL Service]
-            PG[(PostgreSQL<br/>StatefulSet)]
-            REDISSVC[Redis Service]
-            RD[(Redis<br/>StatefulSet)]
-        end
+    U -->|HTTPS| LB --> ING --> SVC
+    SVC --> POD1 & POD2 & POD3
 
-        subgraph "Configuration"
-            CM[ConfigMaps<br/>Runtime Config]
-            SEC[Secrets<br/>Credentials]
-        end
+    POD1 --> PGSVC & REDISSVC
+    POD2 --> PGSVC & REDISSVC
+    POD3 --> PGSVC & REDISSVC
 
-        subgraph "Storage"
-            PV[Persistent Volumes]
-        end
-    end
-
-    U -->|HTTPS| LB
-    LB -->|HTTP/WS| ING
-    ING -->|Route| SVC
-    SVC -->|Round Robin| POD1
-    SVC -->|Round Robin| POD2
-    SVC -->|Round Robin| POD3
-
-    POD1 -.->|Env Vars| CM
-    POD1 -.->|Secrets| SEC
-    POD2 -.->|Env Vars| CM
-    POD2 -.->|Secrets| SEC
-    POD3 -.->|Env Vars| CM
-    POD3 -.->|Secrets| SEC
-
-    POD1 -->|SQL| PGSVC
-    POD2 -->|SQL| PGSVC
-    POD3 -->|SQL| PGSVC
     PGSVC --> PG
-
-    POD1 -->|Cache| REDISSVC
-    POD2 -->|Cache| REDISSVC
-    POD3 -->|Cache| REDISSVC
     REDISSVC --> RD
 
-    PG -.->|Mount| PV
-    RD -.->|Mount| PV
-
-    POD1 -.Clustering.-> POD2
-    POD2 -.Clustering.-> POD3
-    POD3 -.Clustering.-> POD1
-
-    style U fill:#0173B2,color:#fff
-    style LB fill:#0173B2,color:#fff
-    style ING fill:#029E73,color:#fff
-    style POD1 fill:#DE8F05,color:#fff
-    style POD2 fill:#DE8F05,color:#fff
-    style POD3 fill:#DE8F05,color:#fff
-    style PG fill:#CC78BC,color:#fff
-    style RD fill:#CC78BC,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 
 **Architecture Components**:

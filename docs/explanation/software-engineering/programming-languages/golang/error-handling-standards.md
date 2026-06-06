@@ -2242,7 +2242,7 @@ principles:
 **Related Documentation**:
 
 - [Concurrency and Parallelism](./concurrency-standards.md)
-- [Interfaces and Composition](./design-patterns.md#part-3-interfaces-and-composition-patterns)
+- [Interfaces and Composition](./design-patterns.md#overview-2)
 
 **Navigation**: [← Back to Golang Overview](./README.md)
 

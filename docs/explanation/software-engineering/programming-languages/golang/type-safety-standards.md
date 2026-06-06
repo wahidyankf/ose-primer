@@ -26,7 +26,7 @@ principles:
 
 # Type Safety in Go
 
-**Quick Reference**: [Overview](#overview) | [Type System Fundamentals](#type-system-fundamentals) | [Basic Types](#basic-types) | [Composite Types](#composite-types) | [Type Declarations](#type-declarations) | [Interface Types](#interface-types) | [Type Assertions](#type-assertions) | [Type Switches](#type-switches) | [Type Conversions](#type-conversions) | [Generics (Go 1.18+)](#generics-go-118) | [Type Constraints](#type-constraints) | [Type Parameters](#type-parameters) | [Type Inference](#type-inference) | [Zero Values](#zero-values) | [Type Safety Patterns](#type-safety-patterns) | [Type Safety Best Practices](#type-safety-best-practices) | [Common Type Safety Pitfalls](#common-type-safety-pitfalls) | [Conclusion](#conclusion)
+**Quick Reference**: [Overview](#overview) | [Type System Fundamentals](#type-hierarchy-in-go) | [Basic Types](#numeric-types) | [Composite Types](#array-types) | [Type Declarations](#named-types) | [Interface Types](#interface-basics) | [Type Assertions](#type-assertion-flow) | [Type Switches](#type-switch-pattern-matching) | [Type Conversions](#explicit-conversions) | [Generics (Go 1.18+)](#generic-functions) | [Type Constraints](#built-in-constraints) | [Type Parameters](#type-parameter-lists) | [Type Inference](#type-parameter-inference) | [Zero Values](#zero-value-behavior) | [Type Safety Patterns](#option-type-pattern) | [Type Safety Best Practices](#use-named-types-for-domain-concepts) | [Common Type Safety Pitfalls](#pitfall-nil-interface-values) | [Conclusion](#conclusion)
 
 ## Overview
 
@@ -38,7 +38,7 @@ Go is a statically typed language with a strong emphasis on type safety. The typ
 
 **Related Documentation**:
 
-- [Interfaces and Composition](./design-patterns.md#part-3-interfaces-and-composition-patterns)
+- [Interfaces and Composition](./design-patterns.md#overview-2)
 - [Error Handling](./error-handling-standards.md)
 - [Best Practices](./coding-standards.md#part-2-naming--organization-best-practices)
 

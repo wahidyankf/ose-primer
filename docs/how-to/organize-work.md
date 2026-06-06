@@ -98,7 +98,7 @@ flowchart TD
 
 Single-file layout (`README.md` only) is an exception for trivially-small plans.
 
-See [CLAUDE.md Plans Organization](../../CLAUDE.md#plans-organization) for full details.
+See [Plans Folder Guide](../../plans/README.md) for full details.
 
 ## When to Use Each Folder
 
@@ -411,8 +411,8 @@ This project is complete. See the following documentation:
 - [Diátaxis Framework](../../repo-governance/conventions/structure/diataxis-framework.md) - Understanding the four documentation types
 - [File Naming Convention](../../repo-governance/conventions/structure/file-naming.md) - How to name files in `docs/`
 - [Diagram and Schema Convention](../../repo-governance/conventions/formatting/diagrams.md) - When to use Mermaid vs ASCII art
-- [CLAUDE.md - Plans Organization](../../CLAUDE.md#plans-organization) - Detailed guide to the plans/ folder
-- [CLAUDE.md - Documentation Organization](../../CLAUDE.md#documentation-organization) - Overview of docs/ structure
+- [Plans Folder Guide](../../plans/README.md) - Detailed guide to the plans/ folder
+- [Documentation Structure](../README.md#-organization-structure) - Overview of docs/ structure
 
 ---
 

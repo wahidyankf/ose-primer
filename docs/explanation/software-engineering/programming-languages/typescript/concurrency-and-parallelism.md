@@ -547,7 +547,7 @@ Rate limiting prevents API throttling, controls resource usage, and maintains sy
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph LR
+graph TD
     A["Queue of Tasks<br/>(1000 items)"]:::blue --> B["Rate Limiter"]:::orange
 
     B --> C["Concurrent Batch<br/>(max N at once)"]:::teal

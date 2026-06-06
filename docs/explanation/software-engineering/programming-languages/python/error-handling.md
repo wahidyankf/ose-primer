@@ -238,7 +238,7 @@ def record_donation_payment(donor_id, amount, campaigns):
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
-graph LR
+graph TD
   A[try block] --> B{Exception<br/>raised?}
   B -->|No| C[else block]
   B -->|Yes| D[except block]
@@ -253,6 +253,7 @@ graph LR
   style C fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
   style D fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
   style E fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
+  style F fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
 ```
 
 **Flow explanation**:

@@ -34,7 +34,7 @@ This document covers RESTful API development with Spring Framework, including re
 - [Exception Handling for REST](#exception-handling-for-rest)
 - [ResponseEntity](#responseentity)
 - [Content Negotiation](#content-negotiation)
-- [API Versioning](#api-versioning)
+- [API Versioning](#uri-versioning)
 
 ## @RestController
 

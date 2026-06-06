@@ -37,7 +37,7 @@ Data persistence is fundamental to Spring Boot applications. This guide covers c
 - [Connection Pooling](#-connection-pooling) - HikariCP configuration
 - [Database Migrations](#-database-migrations) - Flyway integration
 - [Batch Operations](#-batch-operations) - Bulk insert/update patterns
-- [demo Examples](#-ose-platform-examples) - Islamic finance data patterns
+- [demo Examples](#-demo-examples) - Islamic finance data patterns
 - [Best Practices](#-best-practices) - Production guidelines
 - [Related Documentation](#-related-documentation) - Cross-references
 

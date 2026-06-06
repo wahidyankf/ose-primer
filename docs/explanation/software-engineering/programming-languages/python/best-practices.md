@@ -38,12 +38,12 @@ principles:
 - [PEP 8 Style Guide](#pep-8-style-guide)
 - [PEP 20 Zen of Python](#pep-20-zen-of-python)
 - [Type Hints and Annotations](#type-hints-and-annotations)
-- [Code Organization](#code-organization)
-- [Error Handling Patterns](#error-handling-patterns)
-- [Testing Practices](#testing-practices)
-- [Documentation Standards](#documentation-standards)
-- [Security Practices](#security-practices)
-- [Anti-Patterns](#anti-patterns)
+- [Code Organization](#python-code-organization)
+- [Error Handling Patterns](#error-handling)
+- [Testing Practices](#testing)
+- [Documentation Standards](#documentation)
+- [Security Practices](#security)
+- [Anti-Patterns](#best-practices-checklist)
 - [Async/Await Best Practices](#asyncawait-best-practices)
 - [Type Hints Advanced Patterns](#type-hints-advanced-patterns)
 - [Performance Optimization](#performance-optimization)
@@ -51,7 +51,7 @@ principles:
 
 **Additional Resources**:
 
-- [References](#references)
+- [References](#related-documentation)
 
 ## Overview
 

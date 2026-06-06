@@ -33,7 +33,7 @@ Next.js provides multiple styling solutions optimized for performance, developer
 - [Responsive Design](#-responsive-design) - Mobile-first patterns
 - [RTL Support](#-rtl-support) - Right-to-left languages for Arabic
 - [Performance](#-performance) - CSS optimization strategies
-- [demo Examples](#-ose-platform-examples) - Islamic design patterns
+- [demo Examples](#-demo-examples) - Islamic design patterns
 - [Best Practices](#-best-practices) - Production styling guidelines
 - [Related Documentation](#-related-documentation) - Cross-references
 

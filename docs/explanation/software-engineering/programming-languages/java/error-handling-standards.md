@@ -59,7 +59,7 @@ public sealed class OseFinancialException extends Exception
 - Include structured error codes (format: `DOMAIN_ERROR_TYPE`, e.g., `ZAK_CALC_ERROR`, `TXN_ROLLBACK_FAILED`)
 - Capture timestamp at creation for audit trails
 - Use sealed types to enable exhaustive pattern matching
-- Provide secure error messages (see [Security Standards](#security-standards))
+- Provide secure error messages (see [Security Standards](#error-message-sanitization))
 
 **RECOMMENDED**: Group exceptions by domain (Zakat, Transactions, Compliance) not by technical category.
 
@@ -125,7 +125,7 @@ private Result<ZakatTransaction, ZakatError> executeAtomicTransfer(
 
 **REQUIRED**: All financial operations MUST:
 
-- Use Result/Either types for explicit error representation (see [Functional Error Handling](#functional-error-handling))
+- Use Result/Either types for explicit error representation (see [Functional Error Handling](#result-type-requirements))
 - Execute within atomic transaction boundaries
 - Log complete audit trails on failure (account ID, amount, timestamp, error details)
 - Rollback partial state changes on any error
@@ -175,7 +175,7 @@ public void logFinancialError(FinancialOperation operation, Throwable error) {
 - Retained for minimum 7 years (regulatory compliance)
 - Accessible for audit queries with sub-second response time
 
-**PROHIBITED**: Logging sensitive data in error messages (see [Security Standards](#security-standards)).
+**PROHIBITED**: Logging sensitive data in error messages (see [Security Standards](#error-message-sanitization)).
 
 ### Retry Policies for External Services
 

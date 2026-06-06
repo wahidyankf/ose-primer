@@ -30,16 +30,16 @@ Spring Framework provides multiple configuration approaches for defining beans a
 
 **Jump to:**
 
-- [Java-Based Configuration](#java-based-configuration)
-- [Component Scanning](#component-scanning)
-- [Bean Definition with @Bean](#bean-definition-with-bean)
-- [Profile-Based Configuration](#profile-based-configuration)
-- [Property Sources](#property-sources)
-- [Environment Abstraction](#environment-abstraction)
-- [Conditional Configuration](#conditional-configuration)
-- [Configuration Import](#configuration-import)
-- [XML Configuration (Legacy)](#xml-configuration-legacy)
-- [Mixed Configuration Strategies](#mixed-configuration-strategies)
+- [Java-Based Configuration](#configuration-classes)
+- [Component Scanning](#componentscan-configuration)
+- [Bean Definition with @Bean](#simple-bean-definition)
+- [Profile-Based Configuration](#profile-annotation)
+- [Property Sources](#propertysource-annotation)
+- [Environment Abstraction](#using-environment-interface)
+- [Conditional Configuration](#conditional-annotation)
+- [Configuration Import](#import-annotation)
+- [XML Configuration (Legacy)](#basic-xml-configuration)
+- [Mixed Configuration Strategies](#combining-java-config-and-component-scanning)
 
 ### @Configuration Classes
 

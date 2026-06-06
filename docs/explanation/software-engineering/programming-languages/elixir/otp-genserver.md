@@ -39,12 +39,12 @@ GenServer is a behavior module for implementing the server side of a client-serv
 
 **Jump to**:
 
-- [GenServer Fundamentals](#genserver-fundamentals)
+- [GenServer Fundamentals](#basic-structure)
 - [State Management](#state-management)
-- [Synchronous vs Asynchronous](#synchronous-vs-asynchronous)
-- [Lifecycle Hooks](#lifecycle-hooks)
-- [Testing GenServers](#testing-genservers)
-- [Financial Domain Examples](#financial-domain-examples)
+- [Synchronous vs Asynchronous](#call-vs-cast)
+- [Lifecycle Hooks](#init1---initialization)
+- [Testing GenServers](#basic-testing)
+- [Financial Domain Examples](#zakat-calculator-genserver)
 
 ### Basic Structure
 

@@ -67,7 +67,7 @@ External data ALWAYS requires validation. Type assertions bypass runtime checks.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph LR
+graph TD
     Start["Data Source"]:::blue
     Internal{"Internal<br/>source?"}:::orange
     TrustSource{"Can trust<br/>structure?"}:::orange

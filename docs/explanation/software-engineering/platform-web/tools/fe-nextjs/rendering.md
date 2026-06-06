@@ -59,7 +59,7 @@ This guide covers Next.js 16+ rendering strategies for enterprise applications.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph LR
+graph TD
     A["Need to render page?"]:::blue
     B{"Content changes<br/>per request?"}:::orange
     C{"Content changes<br/>frequently?"}:::orange
@@ -869,7 +869,7 @@ export async function GET(request: Request) {
 - [Server Components](server-components.md) - Component rendering
 - [Data Fetching](data-fetching.md) - Data strategies
 - [Performance](performance.md) - Optimization
-- [Caching](performance.md#caching) - Cache strategies
+- [Caching](performance.md#caching-strategies) - Cache strategies
 
 **Configuration**:
 

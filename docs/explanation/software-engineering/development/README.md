@@ -141,7 +141,7 @@ TDD and BDD complement each other throughout the development process:
 ```mermaid
 graph TD
     A[Discovery: Three Amigos] --> B[Formulation: Write Gherkin]
-    B --> C[Automate: Step Definitions RED]
+    B --> C[Automate: Step Defs RED]
     C --> D{For Each Step}
 
     D --> E[TDD: Write Unit Test RED]
@@ -150,7 +150,7 @@ graph TD
     G --> H{More Steps?}
 
     H -->|Yes| D
-    H -->|No| I[Integration: BDD Scenario GREEN]
+    H -->|No| I[Integration: BDD GREEN]
     I --> J[Refactor: All Layers]
     J --> K[Living Documentation]
 

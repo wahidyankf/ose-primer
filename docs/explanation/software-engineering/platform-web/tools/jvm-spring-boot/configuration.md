@@ -28,15 +28,15 @@ related:
 ## 📋 Quick Reference
 
 - [Application Properties Structure](#application-properties-structure) - Main configuration files
-- [Profile-Based Configuration](#profile-based-configuration) - Environment-specific settings
+- [Profile-Based Configuration](#development-profile) - Environment-specific settings
 - [@ConfigurationProperties](#configurationproperties) - Type-safe configuration classes
-- [Environment Variables](#environment-variables) - Externalized secrets and settings
-- [Secrets Management](#secrets-management) - Vault integration, encryption
-- [Feature Flags](#feature-flags) - Feature toggles for gradual rollout
-- [Configuration Testing](#configuration-testing) - Testing different configurations
-- [demo Examples](#ose-platform-examples) - Real-world configuration patterns
-- [Configuration Checklist](#configuration-checklist) - Best practices
-- [Related Documentation](#related-documentation)
+- [Environment Variables](#local-development-env) - Externalized secrets and settings
+- [Secrets Management](#hashicorp-vault-integration) - Vault integration, encryption
+- [Feature Flags](#using-spring-profiles-for-feature-flags) - Feature toggles for gradual rollout
+- [Configuration Testing](#testing-with-different-profiles) - Testing different configurations
+- [demo Examples](#zakat-calculation-configuration) - Real-world configuration patterns
+- [Configuration Checklist](#externalization) - Best practices
+- [Related Documentation](#-related-documentation)
 
 ## Overview
 

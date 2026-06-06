@@ -28,13 +28,13 @@ This document covers performance optimization techniques for Spring applications
 
 **Jump to:**
 
-- [Bean Initialization Optimization](#bean-initialization-optimization)
-- [Connection Pooling](#connection-pooling-configuration)
-- [Caching](#caching-with-spring-cache)
-- [Async Execution](#async-execution)
+- [Bean Initialization Optimization](#lazy-initialization)
+- [Connection Pooling](#hikaricp-optimization)
+- [Caching](#enable-caching)
+- [Async Execution](#enable-async)
 - [Virtual Threads (Java 21+)](#virtual-threads-java-21)
-- [Transaction Optimization](#transaction-optimization)
-- [Query Optimization](#query-optimization)
+- [Transaction Optimization](#read-only-transactions)
+- [Query Optimization](#efficient-queries)
 
 ### Lazy Initialization
 

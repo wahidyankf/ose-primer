@@ -508,27 +508,20 @@ Context values propagate down the component tree to all descendants:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A[AuthProvider] --> B[App Component]
-    A -.->|Provides Auth Context| B
-    B --> C[Dashboard]
-    B --> D[Profile]
-    B --> E[Settings]
-    C -.->|useAuth#40;#41;| F[User Display]
-    C -.->|useAuth#40;#41;| G[Logout Button]
-    D -.->|useAuth#40;#41;| H[User Info]
-    D -.->|useAuth#40;#41;| I[Edit Profile]
-    E -.->|useAuth#40;#41;| J[Preferences]
+    A[AuthProvider]:::blue --> B[App Component]:::teal
+    B --> C[Dashboard]:::orange
+    B --> D[Profile]:::orange
+    B --> E[Settings]:::orange
+    C -->|useAuth#40;#41;| F[User Display]:::purple
+    F -->|useAuth#40;#41;| G[Logout Button]:::purple
+    D -->|useAuth#40;#41;| H[User Info]:::purple
+    H -->|useAuth#40;#41;| I[Edit Profile]:::purple
+    E -->|useAuth#40;#41;| J[Preferences]:::purple
 
-    style A fill:#0173B2
-    style B fill:#029E73
-    style C fill:#DE8F05
-    style D fill:#DE8F05
-    style E fill:#DE8F05
-    style F fill:#CC78BC
-    style G fill:#CC78BC
-    style H fill:#CC78BC
-    style I fill:#CC78BC
-    style J fill:#CC78BC
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 
 **Key Points**:

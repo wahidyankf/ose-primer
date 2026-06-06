@@ -711,14 +711,17 @@ mirroring the existing link step; extend the link step's skip paths.
 
 ### Phase 7: Fix-all `docs/`
 
-- [ ] [AI] Re-measure all three gates for `docs/` — acceptance: per-finding lists recorded.
-- [ ] [AI] For each finding: apply the resolution per the preamble; re-run per file. Acceptance:
+- [x] [AI] Re-measure all three gates for `docs/` — acceptance: per-finding lists recorded.
+  - _Done 2026-06-06 (corrected). Status: complete. mermaid = 24 width_exceeded violations (widths 5-11; full list in run log); headings = 0; links = 346 broken-anchor findings across 66 docs files (CORRECTION: an initial JSON-parse error read the wrong schema key and reported 0 — authoritative count from `broken_count`/`categories`: heaviest files `elixir-phoenix/best-practices.md` 25, `jvm-spring-boot/best-practices.md` 20, `elixir-phoenix/anti-patterns.md` 18; mostly stale TOC anchors referencing renamed/nonexistent sections)._
+- [x] [AI] For each finding: apply the resolution per the preamble; re-run per file. Acceptance:
       re-running all three measurement commands shows zero findings for `docs/`.
   - _Suggested executor: `docs-maker`._
+  - _Done 2026-06-07. Status: complete. Mermaid: 24 diagrams restructured across 24 files (docs-maker; LR→TD, fan-out staging, node merges, 1 label shortened). Links: 346 broken anchors fixed across 66 files via 3 parallel docs-maker passes (stale TOC entries repointed to real GFM slugs; emoji headings need leading-hyphen slugs; closest-covering-section used where target sections no longer exist) + 12 orchestrator-direct fixes (10 `#-problem-*` emoji slugs in jvm-spring/anti-patterns.md, 1 in jvm-spring-boot/configuration.md, and 1 REAL doc bug: unbalanced ````typescript fence in typescript/test-driven-development.md swallowing the rest of the file — opener normalized + missing closer added). Verified: mermaid 0 violations / 3 advisory warnings, headings 0, links 0 for docs/._
 
 ### Phase 7 Gate
 
-- [ ] [AI] All three measurement commands report zero findings for `docs/`.
+- [x] [AI] All three measurement commands report zero findings for `docs/`.
+  - _Done 2026-06-07. Gate green: mermaid exit 0 (0 violations), links full-scan 0 docs/ findings, headings exit 0._
 
 > **Pause Safety**: `docs/` clean; remaining trees pending. Safe to stop. To resume: re-run the
 > three measurement commands.

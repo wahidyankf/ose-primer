@@ -256,14 +256,14 @@ zakat = calculate_zakat(Decimal("100000.00"))
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
-graph LR
+graph TD
   A[Python Code<br/>with Type Hints] --> B[mypy Static Check]
   B --> C{Type Errors?}
 
-  C -->|Yes| D[Report Type Errors<br/>Fix in editor]
-  C -->|No| E[Type Check Passed]
-
+  C -->|Yes| D[Fix Type Errors<br/>in editor]
   D --> A
+
+  C -->|No| E[Type Check Passed]
   E --> F[Runtime Validation<br/>Pydantic]
 
   F --> G{Validation Errors?}

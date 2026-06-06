@@ -39,7 +39,7 @@ Building production-ready RESTful APIs requires proper controller design, reques
 - [Filtering and Searching](#-filtering-and-searching) - Query parameters
 - [CORS Configuration](#-cors-configuration) - Cross-origin requests
 - [Content Negotiation](#-content-negotiation) - JSON, XML responses
-- [demo Examples](#-ose-platform-examples) - Islamic finance APIs
+- [demo Examples](#-demo-examples) - Islamic finance APIs
 - [Best Practices](#-best-practices) - Production guidelines
 - [Related Documentation](#-related-documentation) - Cross-references
 

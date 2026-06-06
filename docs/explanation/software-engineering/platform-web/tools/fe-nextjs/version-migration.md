@@ -24,14 +24,14 @@ Migrating Next.js applications requires careful planning whether upgrading versi
 
 - [Pages Router to App Router](#-pages-router-to-app-router) - Complete migration guide
 - [Next.js 13 to 14](#-nextjs-13-to-14) - Version upgrade guide
-- [Next.js 16 to 15](#-nextjs-14-to-15) - Latest version migration
+- [Next.js 16 to 15](#-nextjs-16-to-15) - Latest version migration
 - [React 18 to 19](#-react-18-to-19) - React version upgrade
-- [Breaking Changes](#-breaking-changes) - Version-specific breaking changes
+- [Breaking Changes](#-nextjs-16-to-15) - Version-specific breaking changes
 - [Codemods](#-codemods) - Automated migration tools
 - [Migration Strategies](#-migration-strategies) - Incremental vs full migration
 - [Testing Migration](#-testing-migration) - Validation strategies
 - [Common Issues](#-common-issues) - Troubleshooting guide
-- [demo Migration](#-ose-platform-migration) - Real-world example
+- [demo Migration](#-demo-migration) - Real-world example
 - [Migration Checklist](#-migration-checklist) - Pre/post-migration verification
 - [Related Documentation](#-related-documentation) - Cross-references
 

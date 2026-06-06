@@ -46,7 +46,7 @@ This document defines **authoritative testing standards** for Elixir development
 
 **Scope**: Test-Driven Development (TDD) practices, Behaviour-Driven Development (BDD) practices, property-based testing, mocking patterns, integration testing, test organization, and quality standards
 
-**Quick Reference**: [Part 1: Unit Testing](#part-1-unit-testing-with-exunit) | [Part 2: Doctests](#part-2-doctests) | [Part 3: Property-Based Testing](#part-3-property-based-testing) | [Part 4: TDD](#part-4-test-driven-development-tdd) | [Part 5: BDD](#part-5-behaviour-driven-development-bdd)
+**Quick Reference**: [Part 1: Unit Testing](#-overview) | [Part 2: Doctests](#purpose) | [Part 3: Property-Based Testing](#when-to-use) | [Part 4: TDD](#-tdd-cycle) | [Part 5: BDD](#purpose-1)
 
 ## ⚙️ Alignment with Software Engineering Principles
 

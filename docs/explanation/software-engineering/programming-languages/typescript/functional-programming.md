@@ -123,7 +123,7 @@ const processDonation = pipe(validateAmount, applyFee, calculateNet);
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph LR
+graph TD
     Shell1["Imperative Shell<br/>(HTTP Handler)"]:::orange
     Validation["Validate &<br/>Parse"]:::blue
     Core["Functional Core<br/>(Pure Logic)"]:::teal

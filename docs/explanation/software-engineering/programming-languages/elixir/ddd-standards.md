@@ -1461,23 +1461,24 @@ end
 ### 📊 CQRS Architecture
 
 ```mermaid
-%%{init: {'theme':'base'}}%%
-graph LR
-    subgraph CommandSide["Command Side Write Model"]
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph TD
+    subgraph CommandSide["Command Side — Write Model"]
         UI1[User Interface]
         Cmd[Commands<br/>CreateDonation<br/>UpdateCampaign]
         Domain[Domain Model<br/>Business Logic]
-        WriteDB[#40;Write DB<br/>PostgreSQL#41;]
+        WriteDB[Write DB<br/>PostgreSQL]
 
         UI1 -->|create/update| Cmd
         Cmd -->|validate & execute| Domain
         Domain -->|persist| WriteDB
     end
 
-    subgraph QuerySide["Query Side Read Model"]
+    subgraph QuerySide["Query Side — Read Model"]
         UI2[User Interface]
         Query[Queries<br/>List Donations<br/>Statistics]
-        ReadDB[#40;Read DB<br/>Optimized Views#41;]
+        ReadDB[Read DB<br/>Optimized Views]
 
         UI2 -->|fetch data| Query
         Query -->|fast reads| ReadDB
@@ -1485,23 +1486,17 @@ graph LR
 
     Events[Domain Events<br/>DonationCreated<br/>CampaignUpdated]
 
-    Domain -.->|publishes| Events
-    Events -.->|updates| ReadDB
-
-    Note1[Write Model:<br/>• Enforces business rules<br/>• Validates invariants<br/>• Normalized data]
-    Note2[Read Model:<br/>• Denormalized for speed<br/>• Pre-computed aggregates<br/>• Multiple projections]
-
-    CommandSide -.-> Note1
-    QuerySide -.-> Note2
+    Domain -->|publishes| Events
+    Events -->|updates| ReadDB
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
 
-    class Cmd,WriteDB,Note1 blue
+    class Cmd,WriteDB blue
     class Domain teal
-    class Query,ReadDB,Note2 orange
+    class Query,ReadDB orange
     class Events purple
 ```
 

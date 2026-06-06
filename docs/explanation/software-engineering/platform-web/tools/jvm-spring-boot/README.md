@@ -69,7 +69,7 @@ All Spring Boot applications MUST follow the patterns and practices documented h
 
 ### Quick Standards Reference
 
-- **Project Structure**: See [Architecture Integration](#architecture-integration)
+- **Project Structure**: See [Architecture Integration](#layered-architecture)
 - **REST APIs**: See [REST APIs](rest-apis.md)
 - **Data Access**: See [Data Access](data-access.md)
 - **Security**: See [Security](security.md)
@@ -94,18 +94,18 @@ Spring Boot usage in this platform follows the the software engineering principl
 - [Overview](#overview) - Spring Boot in the platform
 - [Software Engineering Principles](#software-engineering-principles) - the core principles
 - [Spring Boot Version Strategy](#spring-boot-version-strategy) - Version management
-- [Documentation Structure](#documentation-structure) - Guide to documentation files
-- [Key Capabilities](#key-capabilities) - Framework features
+- [Documentation Structure](#documentation-organization) - Guide to documentation files
+- [Key Capabilities](#rest-api-development) - Framework features
 - [Use Cases](#use-cases) - When to use Spring Boot
-- [Architecture Integration](#architecture-integration) - DDD, layered architecture
-- [Development Workflow](#development-workflow) - Setup, configuration, testing
-- [Learning Path](#learning-path) - Recommended reading order
-- [Code Examples from Platform](#code-examples-from-platform) - Real implementations
-- [Integration with Other Documentation](#integration-with-other-documentation) - Cross-references
-- [Spring Boot Ecosystem](#spring-boot-ecosystem) - Spring projects
-- [Tools and Development Environment](#tools-and-development-environment) - Build tools, IDEs
-- [Resources and References](#resources-and-references) - External resources
-- [Related Documentation](#related-documentation) - Cross-references
+- [Architecture Integration](#layered-architecture) - DDD, layered architecture
+- [Development Workflow](#project-setup) - Setup, configuration, testing
+- [Learning Path](#1-start-with-idioms) - Recommended reading order
+- [Code Examples from Platform](#complete-rest-controller) - Real implementations
+- [Integration with Other Documentation](#architecture-patterns) - Cross-references
+- [Spring Boot Ecosystem](#core-spring-projects) - Spring projects
+- [Tools and Development Environment](#development-environment) - Build tools, IDEs
+- [Resources and References](#official-documentation) - External resources
+- [Related Documentation](#core-spring-boot-documentation) - Cross-references
 
 **Core Documentation:**
 

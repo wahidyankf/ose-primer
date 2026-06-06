@@ -31,16 +31,16 @@ This document establishes Spring Framework best practices for building maintaina
 
 **Jump to:**
 
-- [Project Structure](#project-structure)
-- [Configuration Management](#configuration-management)
-- [Constructor Injection (Preferred)](#constructor-injection-preferred)
-- [Bean Naming Conventions](#bean-naming-conventions)
-- [Transaction Management](#transaction-management)
-- [Exception Handling](#exception-handling)
-- [Testing Strategies](#testing-strategies)
+- [Project Structure](#layered-architecture)
+- [Configuration Management](#configuration-organization)
+- [Constructor Injection (Preferred)](#why-constructor-injection)
+- [Bean Naming Conventions](#consistent-naming)
+- [Transaction Management](#declarative-transactions)
+- [Exception Handling](#controller-advice-for-global-exception-handling)
+- [Testing Strategies](#unit-testing-without-spring-context)
 - [Logging Best Practices](#logging-best-practices)
-- [Performance Optimization](#performance-optimization)
-- [Resource Management](#resource-management)
+- [Performance Optimization](#connection-pooling)
+- [Resource Management](#proper-resource-cleanup)
 
 ### Layered Architecture
 
