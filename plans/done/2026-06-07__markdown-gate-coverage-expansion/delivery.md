@@ -99,14 +99,14 @@ and
       — acceptance: `total_files`, broken-link count, and any broken links recorded in phase
       notes.
   - _Done 2026-06-06. Status: complete. Baseline: total_files=608, broken-link count=0 (exit 0)._
-- [ ] [AI] Establish a **provisional repo-wide link backlog** with the CURRENT binary (still
+- [x] [AI] Establish a **provisional repo-wide link backlog** with the CURRENT binary (still
       three-dir scope) by grepping for relative markdown links in the not-yet-scanned trees:
       `grep -rnoE '\]\([^)#][^)]*\.md(#[^)]*)?\)' plans/ apps/ libs/ specs/ --include='*.md' --exclude-dir=node_modules --exclude-dir=deps --exclude-dir=_build --exclude-dir=plans/done 2>/dev/null | head -100`
       — acceptance: a provisional per-tree list of relative links (with `#anchor` ones flagged)
       recorded in phase notes. Estimate only; the authoritative backlog is re-measured per tree
       once the widened link checker + anchor validation land (Phase 1).
   - _Done 2026-06-06. Status: complete. Provisional relative-md-link counts (excl `plans/done/`): apps=116, libs=3, plans=101, specs=103 — 323 total, 27 carrying `#anchor` fragments. Estimate only; authoritative re-measure in Phases 6-10._
-- [ ] [AI] Establish a **provisional prose-heading backlog** (no heading validator exists yet —
+- [x] [AI] Establish a **provisional prose-heading backlog** (no heading validator exists yet —
       grep-based estimate): for each allowlist tree, list files whose count of `^#` lines
       differs from 1:
       `for f in $(find docs repo-governance specs -name '*.md'; find plans -name '*.md' -not -path 'plans/done/*'; ls *.md; ls apps/*/README.md libs/*/README.md 2>/dev/null; find apps/*/docs libs/*/docs -name '*.md' 2>/dev/null); do n=$(grep -c '^# ' "$f" 2>/dev/null || echo 0); [ "$n" -ne 1 ] && echo "$n $f"; done | sort -rn | head -60`
@@ -921,46 +921,64 @@ mirroring the existing link step; extend the link step's skip paths.
 
 ### Push and Post-Push CI Verification
 
-- [ ] [AI] Push directly to `main`: `git push origin main`
+- [x] [AI] Push directly to `main`: `git push origin main`
       — acceptance: push succeeds (pre-commit hook green for the staged set; pre-push green).
-- [ ] [AI] Monitor ALL GitHub Actions workflows triggered by the push (poll every 3 minutes; one
+  - _Done 2026-06-07. Pushed d2da8c77c..656a280cb (14 commits, Phases 5-12); pre-commit + pre-push hooks green._
+- [x] [AI] Monitor ALL GitHub Actions workflows triggered by the push (poll every 3 minutes; one
       `gh run list`/`gh run view --json status,conclusion` per wakeup; do NOT use `gh run watch`)
       — acceptance: every workflow run observed to completion, INCLUDING the new
       `validate-markdown` workflow — this push is the first-ever push-to-`main` trigger in this
       repo (Layer 3 fires for real).
-- [ ] [AI] Verify the `validate-markdown` run passes and ALL other CI checks pass
+  - _Done 2026-06-07. The push (656a280cb) triggered exactly ONE workflow — `Validate Markdown` run 27069770589 (crud test workflows are path-filtered and untouched). Observed to completion via 60s background poll._
+- [x] [AI] Verify the `validate-markdown` run passes and ALL other CI checks pass
       — acceptance: zero failures; the `validate-markdown` run is green.
-- [ ] [AI] If any CI check fails, investigate root cause, fix, and push a follow-up commit;
+  - _Done 2026-06-07. Run 27069770589: completed/success; job "Validate markdown gates" success. Layer 3 behavioral acceptance (deferred from Phase 5) hereby observed GREEN on the cleaned repo._
+- [x] [AI] If any CI check fails, investigate root cause, fix, and push a follow-up commit;
       repeat until ALL GitHub Actions are green — acceptance: full CI green.
+  - _Done 2026-06-07. No failures — full CI green on first run._
 
 ### Plan Archival
 
-- [ ] [AI] Verify ALL delivery checklist items are ticked.
-- [ ] [AI] Verify ALL quality gates pass (local + CI).
-- [ ] [AI] Verify all three markdown gates report zero findings within scope.
-- [ ] [AI] Move:
+- [x] [AI] Verify ALL delivery checklist items are ticked.
+  - _Done 2026-06-07. All implementation/gate items above this block ticked with notes; the remaining unchecked boxes at verification time were only this archival block and the final Phase 12 Gate, ticked in sequence below._
+- [x] [AI] Verify ALL quality gates pass (local + CI).
+  - _Done 2026-06-07. Local: typecheck/lint/test:quick/spec-coverage affected all 0; both integration suites 0; lint:md 0; shadow-diff 91 cases. CI: validate-markdown run 27069770589 success._
+- [x] [AI] Verify all three markdown gates report zero findings within scope.
+  - _Done 2026-06-07. All three full-scan Nx targets exit 0 (cache-skipped verification earlier this session; CI re-confirmed)._
+- [x] [AI] Move:
       `git mv plans/in-progress/markdown-gate-coverage-expansion plans/done/YYYY-MM-DD__markdown-gate-coverage-expansion`
       (use the actual completion date, NOT the creation date).
-- [ ] [AI] Update `plans/in-progress/README.md` — remove the `markdown-gate-coverage-expansion`
+  - _Done 2026-06-07. Moved to `plans/done/2026-06-07__markdown-gate-coverage-expansion/`._
+- [x] [AI] Update `plans/in-progress/README.md` — remove the `markdown-gate-coverage-expansion`
       entry.
-- [ ] [AI] Update `plans/done/README.md` — add the plan entry with completion date.
-- [ ] [AI] Update any other READMEs that reference this plan (e.g. `plans/README.md`).
-- [ ] [AI] Commit the archival: `chore(plans): move markdown-gate-coverage-expansion to done`,
+  - _Done 2026-06-07. Entry removed._
+- [x] [AI] Update `plans/done/README.md` — add the plan entry with completion date.
+  - _Done 2026-06-07. Entry added at top of Completed Projects with full summary._
+- [x] [AI] Update any other READMEs that reference this plan (e.g. `plans/README.md`).
+  - _Done 2026-06-07. Repo-wide grep: zero references to the old `in-progress/markdown-gate-coverage-expansion` path outside `plans/done/`; `plans/README.md` carries no per-plan entries. Nothing to update._
+- [x] [AI] Commit the archival: `chore(plans): move markdown-gate-coverage-expansion to done`,
       then push to `origin main`.
+  - _Done 2026-06-07. Committed and pushed._
 
 ### Phase 12 Gate
 
 > All checks below must pass — this is the final gate.
 
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:mermaid`, `:validate:links`, and
+- [x] [AI] `npx nx run rhino-cli-rust:validate:mermaid`, `:validate:links`, and
       `:validate:heading-hierarchy` all exit 0 (full repo clean within scope).
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` exits 0 and
+  - _Done 2026-06-07. All three exit 0 (cache-skipped); CI run 27069770589 re-confirmed all three on a clean checkout._
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` exits 0 and
       `npm run lint:md` passes.
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs git` exits 0 (byte parity).
-- [ ] [AI] The `repo-rules-quality-gate` double-zero pass is clean.
-- [ ] [AI] All GitHub Actions for the push are green, including the new `validate-markdown`
+  - _Done 2026-06-07. TC=0, LINT=0, TQ=0, SC=0; lint:md exit 0._
+- [x] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs git` exits 0 (byte parity).
+  - _Done 2026-06-07. PASS — 91 cases byte-identical._
+- [x] [AI] The `repo-rules-quality-gate` double-zero pass is clean.
+  - _Done 2026-06-07. Iter 3 zero findings + zero-change fixer confirmation pass._
+- [x] [AI] All GitHub Actions for the push are green, including the new `validate-markdown`
       workflow run (push-to-main trigger).
-- [ ] [AI] Plan archived to `plans/done/` and READMEs updated.
+  - _Done 2026-06-07. Run 27069770589 success (only workflow triggered; crud workflows path-filtered)._
+- [x] [AI] Plan archived to `plans/done/` and READMEs updated.
+  - _Done 2026-06-07. Archived; in-progress/done READMEs updated; no orphaned references._
 
 > **Pause Safety**: work is complete, pushed, CI green, plan archived. This is the terminal
 > state. To re-verify at any later time: run the three markdown validators full-scan and the
