@@ -9,7 +9,7 @@ conforming to a single OpenAPI 3.1 contract and shared Gherkin specifications.
 
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
-graph TD
+graph LR
     EU("End User<br/>──────────────────<br/>Auth and profile<br/>Entries and P&L<br/>Attachments<br/><br/>Desktop, Tablet, Mobile"):::actor
 
     ADM("Administrator<br/>──────────────────<br/>User management<br/>Disable and unlock<br/>Password reset"):::actor_admin
@@ -53,8 +53,8 @@ Any backend can pair with any frontend — the OpenAPI contract guarantees compa
 
 ## Related
 
-- **Container diagram**: [container.md](./container.md)
-- **Backend component diagram**: [component-be.md](./component-be.md)
-- **Frontend component diagram**: [component-fe.md](./component-fe.md)
-- **API contract**: [../contracts/openapi.yaml](../contracts/openapi.yaml)
+- **Container diagram**: [container.md](../containers/container.md)
+- **Backend component diagram**: [component-be.md](../components/be/component-be.md)
+- **Frontend component diagram**: [component-web.md](../components/web/component-web.md)
+- **API contract**: [openapi.yaml](../containers/contracts/openapi.yaml)
 - **Parent**: [crud specs](../README.md)

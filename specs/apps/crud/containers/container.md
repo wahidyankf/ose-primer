@@ -12,7 +12,7 @@ Each container has multiple interchangeable implementations (shown below the dia
 
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
-graph TD
+graph LR
     EU("End User<br/>Desktop / Tablet / Mobile"):::actor
     ADM("Administrator"):::actor_admin
     OPS("Operations Engineer"):::actor_ops
@@ -31,11 +31,11 @@ graph TD
     end
 
     subgraph SPECS["Specifications"]
-        CONTRACT["OpenAPI 3.1 Contract<br/>──────────────────<br/>specs/apps/crud/containers/contracts/<br/><br/>Types, endpoints, schemas<br/>Generates code via codegen"]:::spec
+        CONTRACT["OpenAPI 3.1 Contract<br/>──────────────────<br/>containers/contracts/<br/><br/>Types, endpoints, schemas<br/>Generates code via codegen"]:::spec
 
-        BE_GHERKIN["Backend Gherkin<br/>──────────────────<br/>specs/apps/crud/behavior/be/gherkin/<br/><br/>See be/gherkin/README"]:::spec
+        BE_GHERKIN["Backend Gherkin<br/>──────────────────<br/>behavior/be/gherkin/<br/><br/>See be/gherkin/README"]:::spec
 
-        FE_GHERKIN["Frontend Gherkin<br/>──────────────────<br/>specs/apps/crud/behavior/web/gherkin/<br/><br/>See fe/gherkin/README"]:::spec
+        FE_GHERKIN["Frontend Gherkin<br/>──────────────────<br/>behavior/web/gherkin/<br/><br/>See fe/gherkin/README"]:::spec
     end
 
     subgraph CICD["CI Pipelines"]

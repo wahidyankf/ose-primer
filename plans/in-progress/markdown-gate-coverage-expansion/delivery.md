@@ -752,19 +752,22 @@ mirroring the existing link step; extend the link step's skip paths.
 > Heading-hierarchy applies to `specs/**`, `apps/*/README.md`, `libs/*/README.md`, and
 > `apps|libs/*/docs/**` ONLY; deeper app/lib paths get mermaid + links only.
 
-- [ ] [AI] Re-measure mermaid + links for `specs/`, `apps/`, `libs/` and heading-hierarchy for
+- [x] [AI] Re-measure mermaid + links for `specs/`, `apps/`, `libs/` and heading-hierarchy for
       `specs/` + the README/docs allowlist subset — acceptance: per-finding lists recorded.
   - _Suggested executors: `specs-maker` (`specs/`), `swe-rust-dev` (`apps/`/`libs/`)._
-- [ ] [AI] For each finding: apply the resolution per the preamble. Gitignored vendored trees
+  - _Done 2026-06-07. Status: complete. specs: 6 mermaid violations (container.md 3 labels + span 10; context.md span 6; component-cli.md VH label 34) + 7 broken links (2 behavior READMEs short one `../`; 4 stale relative paths in context.md; rhino README → missing rhino-cli-rust README); headings 0. apps: 14 links, libs: 21 links — ALL under gitignored vendored/build trees (`*/deps/`, `crud-be-kotlin-ktor/build/`); 0 mermaid. Also surfaced: 1 broken anchor in `.claude/agents/plan-maker.md` (+generated mirror)._
+- [x] [AI] For each finding: apply the resolution per the preamble. Gitignored vendored trees
       (e.g. Elixir `deps/`) are NOT in the standardized cross-repo noise-skip set and never
       reach CI checkouts; if a local re-measure surfaces findings under such a tree, exclude it
       at the call site via `--exclude` — never edit vendored files. Acceptance: re-running the
       measurement commands shows zero findings for these trees.
+  - _Done 2026-06-07. Status: complete. specs (via specs-maker): 3 path labels shortened in container.md + TD→LR reorientation; context.md TD→LR; component-cli.md VH label shortened; 7 links repointed to real paths (behavior READMEs gained the missing `../`; context.md → ../containers/ + ../components/; rhino README → rhino-cli-go README). plan-maker.md anchor fixed + `npm run generate:bindings` synced the mirror. Vendored trees (all verified gitignored via git check-ignore): 5 `--exclude` prefixes added at the call site to BOTH CLIs' `validate:links` Nx targets per the sanctioned rule. Verified: specs mermaid 0/4-warnings, links full-scan 0 findings repo-wide (`✓ All links valid!`), headings 0._
 
 ### Phase 9 Gate
 
-- [ ] [AI] All applicable measurement commands report zero findings for `specs/`, `apps/`, and
+- [x] [AI] All applicable measurement commands report zero findings for `specs/`, `apps/`, and
       `libs/`.
+  - _Done 2026-06-07. Gate green: specs/apps/libs mermaid 0 violations; links full-scan 0 findings (vendored trees call-site-excluded); headings 0._
 
 > **Pause Safety**: only root files pending. Safe to stop. To resume: re-run the measurement
 > commands.

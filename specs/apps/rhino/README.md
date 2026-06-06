@@ -4,7 +4,7 @@ Gherkin behavioral specifications for the Repository Hygiene & INtegration
 Orchestrator CLI, which ships as **two byte-identical implementations** that
 both consume these specs:
 
-- [`rhino-cli-rust`](../../../apps/rhino-cli-rust/README.md) — Rust; the implementation CI and the developer toolchain invoke.
+- [`rhino-cli-rust`](../../../apps/rhino-cli-go/README.md) — Rust; the implementation CI and the developer toolchain invoke.
 - [`rhino-cli-go`](../../../apps/rhino-cli-go/README.md) — Go; the parity twin.
 
 The two are kept behaviorally identical by the shadow-diff parity gate — see the

@@ -181,7 +181,7 @@ Specify branch strategy:
 **PR (opt-in only)**: A draft PR is used only when the user's prompt explicitly requests a PR, or when the plan's delivery.md contains an explicit `- [ ] Create PR` step that the user has confirmed. The trigger is an explicit instruction, not the execution context.
 **Other exception**: Plain feature branch (non-worktree) requires justification.
 
-See [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md) and especially the [Default Push and Worktree Execution](../../repo-governance/development/workflow/trunk-based-development.md#default-push-and-worktree-execution) section for workflow details.
+See [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md) and especially the [Worktree Mode](../../repo-governance/development/workflow/trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) section for workflow details.
 
 ### Step 8: Grill the User (Mandatory — Post-Write)
 

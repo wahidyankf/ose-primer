@@ -157,7 +157,7 @@
       "outputs": []
     },
     "validate:links": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-links --exclude plans/done",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-links --exclude plans/done --exclude apps/crud-be-elixir-phoenix/deps --exclude apps/crud-be-kotlin-ktor/build --exclude libs/elixir-cabbage/deps --exclude libs/elixir-gherkin/deps --exclude libs/elixir-openapi-codegen/deps",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
       "outputs": []

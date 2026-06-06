@@ -110,4 +110,4 @@ specs/apps/crud/behavior/web/
 - **Parent**: [crud specs](../../README.md)
 - **System context**: [system-context/](../../system-context/README.md) — C4 Level 1
 - **Backend counterpart**: [be/](../be/README.md) — HTTP-semantic API specs
-- **BDD Standards**: [behavior-driven-development-bdd/](../../../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md)
+- **BDD Standards**: [behavior-driven-development-bdd/](../../../../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md)

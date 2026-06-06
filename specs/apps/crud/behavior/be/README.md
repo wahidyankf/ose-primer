@@ -186,4 +186,4 @@ follow-up plan.
 
 - **Parent**: [crud specs](../../README.md)
 - **Web frontend counterpart**: [web/](../web/README.md) — UI-semantic web frontend specs
-- **BDD Standards**: [behavior-driven-development-bdd/](../../../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md)
+- **BDD Standards**: [behavior-driven-development-bdd/](../../../../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md)

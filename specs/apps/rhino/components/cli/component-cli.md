@@ -14,7 +14,7 @@ graph LR
         subgraph CMDS["Command Handlers"]
             VL["validate-links handler<br/>────────────────<br/>Parse flags<br/>Resolve file list<br/>Delegate to engine"]:::handler
             VM["validate-mermaid handler<br/>────────────────<br/>Parse flags<br/>Resolve file list<br/>Delegate to engine"]:::handler
-            VH["validate-heading-hierarchy handler<br/>────────────────<br/>Parse flags<br/>Apply allowlist<br/>Delegate to engine"]:::handler
+            VH["validate-heading handler<br/>────────────────<br/>Parse flags<br/>Apply allowlist<br/>Delegate to engine"]:::handler
         end
 
         subgraph ENGINES["Validation Engines"]
