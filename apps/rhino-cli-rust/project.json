@@ -151,16 +151,21 @@
       "outputs": []
     },
     "validate:mermaid": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-mermaid",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-mermaid --max-depth=4 --exclude plans/done",
       "cache": true,
-      "inputs": [
-        "{projectRoot}/src/**/*.rs",
-        "{workspaceRoot}/docs/**/*.md",
-        "{workspaceRoot}/repo-governance/**/*.md",
-        "{workspaceRoot}/.claude/**/*.md",
-        "{workspaceRoot}/plans/**/*.md",
-        "{workspaceRoot}/*.md"
-      ],
+      "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
+      "outputs": []
+    },
+    "validate:links": {
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-links --exclude plans/done",
+      "cache": true,
+      "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
+      "outputs": []
+    },
+    "validate:heading-hierarchy": {
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-heading-hierarchy",
+      "cache": true,
+      "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
       "outputs": []
     }
   }

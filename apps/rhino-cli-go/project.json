@@ -114,16 +114,21 @@
       "outputs": []
     },
     "validate:mermaid": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go docs validate-mermaid",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go docs validate-mermaid --max-depth=4 --exclude plans/done",
       "cache": true,
-      "inputs": [
-        "{projectRoot}/**/*.go",
-        "{workspaceRoot}/docs/**/*.md",
-        "{workspaceRoot}/repo-governance/**/*.md",
-        "{workspaceRoot}/.claude/**/*.md",
-        "{workspaceRoot}/plans/**/*.md",
-        "{workspaceRoot}/*.md"
-      ],
+      "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/**/*.md"],
+      "outputs": []
+    },
+    "validate:links": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go docs validate-links --exclude plans/done",
+      "cache": true,
+      "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/**/*.md"],
+      "outputs": []
+    },
+    "validate:heading-hierarchy": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go docs validate-heading-hierarchy",
+      "cache": true,
+      "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/**/*.md"],
       "outputs": []
     }
   }
