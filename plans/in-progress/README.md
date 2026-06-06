@@ -8,10 +8,6 @@ Active project plans currently being worked on.
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
   exports research dossiers.
-- [Plan Domain Parity](./plan-domain-parity/README.md)
-  — adopt merged 3-way planning canon into primer, modernize rhino CLI binding emitters
-  (OpenCode permission object, Codex config.toml layout), run full binding audit, supersede
-  `planning-system-overhaul`, and document all decisions in a rationale doc.
 
 ## Folder Naming
 

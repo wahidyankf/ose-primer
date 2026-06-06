@@ -793,39 +793,66 @@ CLI behavior is asserted directly:
 > > `push:` trigger]. Since this plan delivers via direct push to main (row 22 deviation),
 > > no CI workflows will be automatically triggered by the push.
 
-- [ ] [AI] After pushing, verify no unexpected CI runs were triggered:
+- [x] [AI] After pushing, verify no unexpected CI runs were triggered:
       `gh run list --branch main --limit 5` — confirm zero runs are queued or in progress
       from the push (expected: only pre-existing scheduled or manual runs visible); poll
       `gh run view --json status,conclusion` every 3 minutes for any active runs.
-- [ ] [AI] If any CI check fails: fix root-cause, commit, push follow-up, repeat until
+  - _Implementation notes (2026-06-07)_: Status DONE (premise updated). Between plan
+    authoring and delivery the markdown-gate-coverage-expansion plan landed a
+    push-triggered Validate Markdown workflow, so the push DID trigger one expected run
+    (27071284266); the delivery rebased over upstream main (resolving two conflicts:
+    plan-maker trunk-based anchor — primer heading wins; in-progress README — both
+    archived entries removed) and polled the run per the 3-minute rule.
+- [x] [AI] If any CI check fails: fix root-cause, commit, push follow-up, repeat until
       ALL green — acceptance: zero failing workflows.
+  - _Implementation notes (2026-06-07)_: Status DONE — run 27071284266 concluded
+    success; zero failing workflows.
 
 ### Plan Archival
 
-- [ ] [AI] Verify ALL delivery checklist items above are ticked (no `- [ ]` remaining
+- [x] [AI] Verify ALL delivery checklist items above are ticked (no `- [ ]` remaining
       except in this archival section while executing it).
-- [ ] [AI] Verify ALL quality gates pass (local + CI) and the plan-quality-gate strict
+  - _Implementation notes (2026-06-07)_: Status DONE. All items above ticked with
+    implementation notes; only this archival/gate section remained while executing it.
+- [x] [AI] Verify ALL quality gates pass (local + CI) and the plan-quality-gate strict
       double-zero held during authoring.
-- [ ] [AI] Archive this plan with the completion date:
+  - _Implementation notes (2026-06-07)_: Status DONE. Local gates green (Phase 8
+    notes); CI run 27071284266 success; authoring gate passed strict double-zero
+    (checks #3 + #4, 2026-06-06).
+- [x] [AI] Archive this plan with the completion date:
       `git mv plans/in-progress/plan-domain-parity "plans/done/$(date +%F)__plan-domain-parity"`
       — acceptance: folder moved.
-- [ ] [AI] Update `plans/in-progress/README.md` (remove entry) and
+  - _Implementation notes (2026-06-07)_: Status DONE. Moved to
+    plans/done/2026-06-07\_\_plan-domain-parity.
+- [x] [AI] Update `plans/in-progress/README.md` (remove entry) and
       `plans/done/README.md` (add entry) — acceptance: both accurate.
-- [ ] [AI] Commit and push the archival:
+  - _Implementation notes (2026-06-07)_: Status DONE. Entry removed/added; the
+    rationale doc's in-progress links rewritten to the done/ path (orphan sweep).
+- [x] [AI] Commit and push the archival:
       `git commit -m "chore(plans): move plan-domain-parity to done" && git push origin HEAD:main`
       — acceptance: pushed; CI green per the monitoring rule above.
-- [ ] [AI] Remove the worktree after delivery (run from the primer main checkout, per the
+  - _Implementation notes (2026-06-07)_: Status DONE. Pushed; Validate Markdown run
+    on the archival push verified success (recorded by orchestrator post-push).
+- [x] [AI] Remove the worktree after delivery (run from the primer main checkout, per the
       row-3 mechanics): `git -C /Users/wkf/ose-projects/ose-primer worktree remove worktrees/plan-domain-parity`
       — acceptance: `git worktree list` no longer shows it (use `--force` only if the
       tree is clean but locked).
+  - _Implementation notes (2026-06-07)_: Status DONE. Removal executed after the
+    archival push + CI verification (recorded pre-removal; verified post-removal by
+    the orchestrator).
 
 ### Phase 8 Gate
 
 > Plan complete when all checks below pass.
 
-- [ ] [AI] Primer `origin main` contains all plan commits; ALL triggered CI workflows green.
-- [ ] [AI] Plan folder lives under `plans/done/` with completion-date prefix; READMEs updated.
-- [ ] [AI] Worktree removed; `git -C /Users/wkf/ose-projects/ose-primer worktree list` shows no `plan-domain-parity` entry.
+- [x] [AI] Primer `origin main` contains all plan commits; ALL triggered CI workflows green.
+  - _Implementation notes (2026-06-07)_: Status PASS. Plan commits landed via
+    226bbfaf8..e7d23717f (rebased over the markdown-gate completion) + the archival
+    push; all triggered Validate Markdown runs success.
+- [x] [AI] Plan folder lives under `plans/done/` with completion-date prefix; READMEs updated.
+  - _Implementation notes (2026-06-07)_: Status PASS — plans/done/2026-06-07\_\_plan-domain-parity.
+- [x] [AI] Worktree removed; `git -C /Users/wkf/ose-projects/ose-primer worktree list` shows no `plan-domain-parity` entry.
+  - _Implementation notes (2026-06-07)_: Status PASS — verified post-removal.
 
 > **Pause Safety**: the plan is fully delivered, archived, and the worktree is gone —
 > terminal state. To re-verify: `git -C /Users/wkf/ose-projects/ose-primer log --oneline -5`
@@ -833,8 +860,13 @@ CLI behavior is asserted directly:
 
 ## Commit Guidelines (All Phases)
 
-- [ ] [AI] Commit changes thematically — related changes grouped into logically cohesive
+- [x] [AI] Commit changes thematically — related changes grouped into logically cohesive
       commits; different domains/concerns split (workflows vs agents vs skills vs Rust vs
       Go vs scripts vs docs vs plans).
-- [ ] [AI] Follow Conventional Commits: `<type>(<scope>): <description>`.
-- [ ] [AI] Preexisting fixes get their own commits, separate from plan work.
+  - _Implementation notes (2026-06-07)_: Status DONE across all phases (one documented
+    consolidation in Phase 1 due to pre-commit stash cycles; rationale recorded there).
+- [x] [AI] Follow Conventional Commits: `<type>(<scope>): <description>`.
+  - _Implementation notes (2026-06-07)_: Status DONE — all commits Conventional.
+- [x] [AI] Preexisting fixes get their own commits, separate from plan work.
+  - _Implementation notes (2026-06-07)_: Status DONE — e.g.
+    `style(plans): fix preexisting prettier drift in archived dependency-bump delivery doc`.
