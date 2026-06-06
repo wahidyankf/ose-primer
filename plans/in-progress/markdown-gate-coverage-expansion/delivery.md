@@ -483,13 +483,14 @@ ranking bugs, not checks.
 Implement DD-8: add staged-only mermaid + heading steps to BOTH `git pre-commit` runners,
 mirroring the existing link step; extend the link step's skip paths.
 
-- [ ] [AI] **SPEC (RED)** — Extend
+- [x] [AI] **SPEC (RED)** — Extend
       `specs/apps/rhino/behavior/cli/gherkin/git/git-pre-commit.feature` with four scenarios
       (staged-mermaid-blocks, staged-prose-heading-blocks, staged-skill-file-exempt,
       link-step-honors-exclusions), each obeying the keyword-cardinality norm. Run
       `npx nx run rhino-cli-go:spec-coverage`
       — acceptance: spec-coverage FAILS listing the new unmatched steps.
-- [ ] [AI] **RED (Rust)** — Add failing injected-Deps unit tests in
+  - _Done 2026-06-06. Status: complete. File: `git-pre-commit.feature` (+4 scenarios). spec-coverage FAILS with 8 unmatched steps (Given + final And per scenario) — RED confirmed._
+- [x] [AI] **RED (Rust)** — Add failing injected-Deps unit tests in
       `apps/rhino-cli-rust/src/internal/git/runner.rs` covering:
       (a) a staged `*.md` with a malformed flowchart makes the new mermaid step return an error;
       (b) a staged `docs/` file with a duplicate H1 makes the new heading step return an error;
@@ -497,7 +498,8 @@ mirroring the existing link step; extend the link step's skip paths.
       (d) the link step's skip paths now include `plans/done` (alongside the existing entries).
       Run `npx nx run rhino-cli-rust:test:quick`
       — acceptance: new tests FAIL; preexisting pre-commit tests pass.
-- [ ] [AI] **GREEN (Rust)** — Implement in `runner.rs`:
+  - _Done 2026-06-06. Status: complete. File: `internal/git/runner.rs` (+4 injected-Deps tests + sanctioned step6m/step6h unimplemented stubs). 576 passed / 4 failed — failures exactly the new tests; (d) fails on skip-paths content diff (captured via injected closure), (a–c) via stub panic._
+- [x] [AI] **GREEN (Rust)** — Implement in `runner.rs`:
       (1) `step6m_validate_mermaid` (staged `*.md`, minus `plans/done` + noise dirs, block on
       findings) and `step6h_validate_heading_hierarchy` (staged `*.md`, filtered by
       `is_prose_allowlisted`, block on findings), registered in `run()` (lines 118-150) between
@@ -509,34 +511,42 @@ mirroring the existing link step; extend the link step's skip paths.
       mirroring the existing git corpus style).
       Run `npx nx run rhino-cli-rust:test:quick`
       — acceptance: all tests pass.
-- [ ] [AI] **REFACTOR (Rust)** — Factor the staged-`*.md` collection shared by the three steps;
+  - _Done 2026-06-06. Status: complete. Files: `runner.rs` (step6m staged mermaid w/ max_depth 4 + noise/plans-done skip; step6h staged headings via is_prose_allowlisted; both registered between 5b and 7; step7 skip paths = [.opencode/skill/, .claude/worktrees/, plans/done]), `tests/git.rs` (4 scenarios, stub-bin PATH device). test:quick 580/0; integration git suite 5 scenarios/20 steps; lint clean. spec-coverage stays RED (8 gaps) until GREEN (Go) — expected intermediate state._
+- [x] [AI] **REFACTOR (Rust)** — Factor the staged-`*.md` collection shared by the three steps;
       align step naming/comments. Run
       `npx nx run rhino-cli-rust:lint && npx nx run rhino-cli-rust:test:quick`
       — acceptance: both exit 0.
-- [ ] [AI] **RED (Go)** — Same failing tests (a–d) in
+  - _Done 2026-06-06. Status: complete. Extracted `staged_markdown_files(root, staged, pred)` helper used by 6m/6h (step 7 delegates to the validator's staged_only — no third duplicate, documented). Comments aligned to `Mirrors Go` phrasing. lint exit 0; test:quick 580/0._
+- [x] [AI] **RED (Go)** — Same failing tests (a–d) in
       `apps/rhino-cli-go/internal/git/runner_test.go`. Run `npx nx run rhino-cli-go:test:quick`
       — acceptance: new tests FAIL; preexisting tests pass.
-- [ ] [AI] **GREEN (Go)** — Mirror in `apps/rhino-cli-go/internal/git/runner.go`:
+  - _Done 2026-06-06. Status: complete. Files: `runner.go` (sanctioned panic stubs step6m/step6h), `runner_test.go` (+4 tests, injected-Deps style; (d) captures SkipPaths via closure). 4 new tests FAIL (3 panic, 1 content diff); all preexisting pass; vet/gofmt clean._
+- [x] [AI] **GREEN (Go)** — Mirror in `apps/rhino-cli-go/internal/git/runner.go`:
       `step6mValidateMermaid` + `step6hValidateHeadingHierarchy` registered in `Run`; extend
       `step7ValidateLinks` `SkipPaths` (line 333) with `"plans/done"`; update the step list in
       the `git pre-commit` long help (`cmd/git_pre_commit.go`); godog steps in
       `cmd/git_pre_commit.integration_test.go`. Run
       `npx nx run rhino-cli-go:test:quick && npx nx run rhino-cli-go:spec-coverage`
       — acceptance: all tests pass; spec-coverage exits 0.
-- [ ] [AI] **REFACTOR (Go)** — Same consolidation pass. Run
+  - _Done 2026-06-06. Status: complete. Files: `runner.go` (step6m/step6h impl + stagedMarkdownFiles + isStagedMermaidSkipped; step7 SkipPaths + plans/done; registration strings byte-parity), `links_scanner.go` (+IsNoiseDir export), `git_pre_commit.go` (long help: +6m/6h, stale step-6 line replaced, step 7 annotated), integration test rewritten (stub-bin PATH, in-process Deps capture), `steps_common_test.go` (+constants). test:quick PASS (git 54/54, cov 90.06%); spec-coverage exit 0 (162 scenarios, 676 steps). Rust help-gap check: no gap (Rust help is single-line, doesn't enumerate steps)._
+- [x] [AI] **REFACTOR (Go)** — Same consolidation pass. Run
       `npx nx run rhino-cli-go:lint && npx nx run rhino-cli-go:test:quick`
       — acceptance: both exit 0.
-- [ ] [AI] **PARITY** — Run the git + docs shadow-diff corpora:
+  - _Done 2026-06-06. Status: complete. Already cohesive — GREEN landed pre-factored to the Rust REFACTOR shape (shared stagedMarkdownFiles; step7 StagedOnly delegation documented; comments word-for-word parity). Zero edits. lint 0 issues; test:quick exit 0 (git 92.7%)._
+- [x] [AI] **PARITY** — Run the git + docs shadow-diff corpora:
       `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs git`
       — acceptance: exits 0.
+  - _Done 2026-06-06. Status: complete. PASS — 91 cases byte-identical (docs + git corpora)._
 
 ### Phase 4 Gate
 
 > All checks below must pass before starting Phase 5.
 
-- [ ] [AI] Both `test:quick` targets green; both `lint` targets exit 0; both `spec-coverage`
+- [x] [AI] Both `test:quick` targets green; both `lint` targets exit 0; both `spec-coverage`
       targets exit 0.
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs git` exits 0.
+  - _Done 2026-06-06. Rust 580/0, Go 14/14 pkgs; lints clean; spec-coverage 676 steps covered both CLIs (cache-skipped)._
+- [x] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs git` exits 0.
+  - _Done 2026-06-06. PASS — 91 cases byte-identical._
 
 > **Pause Safety**: both pre-commit suite binaries now contain all three staged-only steps, but
 > the installed hook still runs the previously-built binary and `.husky/`/CI are not rewired
