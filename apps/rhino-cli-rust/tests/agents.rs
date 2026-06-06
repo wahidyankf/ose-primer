@@ -174,7 +174,7 @@ fn then_opencode_has_config(w: &mut AgentsWorld) {
         "got: {content}"
     );
     assert!(
-        content.contains("tools:\n  read: true\n  write: true"),
+        content.contains("permission:\n  read: allow\n  write: allow"),
         "got: {content}"
     );
 }
@@ -225,7 +225,7 @@ fn write_synced_pair(w: &AgentsWorld, name: &str) {
     w.write(
         &format!(".opencode/agents/{name}.md"),
         &format!(
-            "---\ndescription: Agent {name}.\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n  write: true\n---\n# Body\n"
+            "---\ndescription: Agent {name}.\nmodel: opencode-go/minimax-m2.7\npermission:\n  read: allow\n  write: allow\n---\n# Body\n"
         ),
     );
 }
@@ -242,7 +242,7 @@ fn given_description_mismatch(w: &mut AgentsWorld) {
     // Overwrite the opencode side with a different description.
     w.write(
         ".opencode/agents/foo-maker.md",
-        "---\ndescription: A totally different description.\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n  write: true\n---\n# Body\n",
+        "---\ndescription: A totally different description.\nmodel: opencode-go/minimax-m2.7\npermission:\n  read: allow\n  write: allow\n---\n# Body\n",
     );
 }
 
@@ -394,7 +394,7 @@ fn write_named_pair(w: &AgentsWorld, name: &str) {
     );
     w.write(
         &format!(".opencode/agents/{name}.md"),
-        "---\ndescription: d\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n---\n# Body\n",
+        "---\ndescription: d\nmodel: opencode-go/minimax-m2.7\npermission:\n  read: allow\n---\n# Body\n",
     );
 }
 
@@ -416,7 +416,7 @@ fn given_naming_bad_suffix(w: &mut AgentsWorld) {
     );
     w.write(
         ".opencode/agents/foo-widget.md",
-        "---\ndescription: d\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n---\n# Body\n",
+        "---\ndescription: d\nmodel: opencode-go/minimax-m2.7\npermission:\n  read: allow\n---\n# Body\n",
     );
 }
 
@@ -432,7 +432,7 @@ fn given_naming_frontmatter_mismatch(w: &mut AgentsWorld) {
     );
     w.write(
         ".opencode/agents/baz-checker.md",
-        "---\ndescription: d\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n---\n# Body\n",
+        "---\ndescription: d\nmodel: opencode-go/minimax-m2.7\npermission:\n  read: allow\n---\n# Body\n",
     );
 }
 

@@ -84,7 +84,7 @@ mod tests {
         assert_eq!(result.agents_converted, 1);
         let written =
             std::fs::read_to_string(dir.path().join(".opencode/agents/foo-maker.md")).unwrap();
-        assert!(written.starts_with("---\ndescription: Makes foo.\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n  write: true\ncolor: primary\n---\n"));
+        assert!(written.starts_with("---\ndescription: Makes foo.\nmodel: opencode-go/minimax-m2.7\npermission:\n  read: allow\n  write: allow\ncolor: primary\n---\n"));
         assert!(written.ends_with("# Body\n"));
     }
 

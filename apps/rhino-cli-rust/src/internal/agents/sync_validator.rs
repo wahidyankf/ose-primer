@@ -1,9 +1,10 @@
 //! `validate-sync` orchestration.
 //!
-//! Byte-for-byte port of
-//! `apps/rhino-cli-go/internal/agents/sync_validator.go`. Confirms `.claude/`
-//! and `.opencode/agents/` are semantically equivalent and that no stale
-//! singular agent dir or mirrored skill copies exist.
+//! Ported from `apps/rhino-cli-go/internal/agents/sync_validator.go`; now
+//! validates the OpenCode `permission`-object frontmatter shape (Go gains the
+//! same in the parity port). Confirms `.claude/` and `.opencode/agents/` are
+//! semantically equivalent and that no stale singular agent dir or mirrored
+//! skill copies exist.
 
 use std::collections::BTreeMap;
 use std::collections::BTreeSet;
@@ -11,7 +12,7 @@ use std::time::Instant;
 
 use anyhow::Error;
 
-use super::converter::{OPENCODE_AGENT_DIR, convert_model, convert_tools};
+use super::converter::{OPENCODE_AGENT_DIR, convert_model, convert_permission};
 use super::frontmatter::{YamlValue, extract_frontmatter, parse_claude_tools, parse_yaml_value};
 use super::types::ValidationCheck;
 use super::types::ValidationResult;
@@ -256,18 +257,18 @@ fn compare_agent_fields(
         };
     }
 
-    // Tools.
+    // Permission (derived from Claude tools).
     let claude_tools = match map_value(claude_data, "tools") {
         Some(v) => parse_claude_tools(v),
         None => Vec::new(),
     };
-    let expected_tools = convert_tools(&claude_tools);
-    if !tools_match(&expected_tools, &opencode_agent.tools) {
+    let expected_permission = convert_permission(&claude_tools);
+    if !permission_match(&expected_permission, &opencode_agent.permission) {
         return ValidationCheck {
             name: check_name,
             status: "failed".to_string(),
-            expected: format!("Tools: {}", sorted_keys(&expected_tools)),
-            actual: format!("Tools: {}", sorted_keys(&opencode_agent.tools)),
+            expected: format!("Tools: {}", sorted_keys(&expected_permission)),
+            actual: format!("Tools: {}", sorted_keys(&opencode_agent.permission)),
             message: "Tools mismatch".to_string(),
         };
     }
@@ -302,7 +303,7 @@ fn compare_agent_fields(
 struct ParsedOpenCode {
     description: String,
     model: String,
-    tools: BTreeMap<String, bool>,
+    permission: BTreeMap<String, String>,
     skills: Vec<String>,
 }
 
@@ -313,7 +314,7 @@ fn parse_opencode_agent(frontmatter: &[u8]) -> Result<ParsedOpenCode, Error> {
     let mut out = ParsedOpenCode {
         description: String::new(),
         model: String::new(),
-        tools: BTreeMap::new(),
+        permission: BTreeMap::new(),
         skills: Vec::new(),
     };
     if let YamlValue::Mapping(pairs) = &value {
@@ -329,11 +330,11 @@ fn parse_opencode_agent(frontmatter: &[u8]) -> Result<ParsedOpenCode, Error> {
                         out.model.clone_from(s);
                     }
                 }
-                "tools" => {
-                    if let YamlValue::Mapping(tm) = v {
-                        for (tk, tv) in tm {
-                            if let YamlValue::Bool(b) = tv {
-                                out.tools.insert(tk.clone(), *b);
+                "permission" => {
+                    if let YamlValue::Mapping(pm) = v {
+                        for (pk, pv) in pm {
+                            if let YamlValue::String(s) = pv {
+                                out.permission.insert(pk.clone(), s.clone());
                             }
                         }
                     }
@@ -429,7 +430,7 @@ fn count_markdown_files(dir: &std::path::Path) -> i64 {
     count
 }
 
-fn tools_match(a: &BTreeMap<String, bool>, b: &BTreeMap<String, bool>) -> bool {
+fn permission_match(a: &BTreeMap<String, String>, b: &BTreeMap<String, String>) -> bool {
     if a.len() != b.len() {
         return false;
     }
@@ -445,7 +446,7 @@ fn skills_match(a: &[String], b: &[String]) -> bool {
     a == b
 }
 
-fn sorted_keys(m: &BTreeMap<String, bool>) -> String {
+fn sorted_keys(m: &BTreeMap<String, String>) -> String {
     // BTreeMap keys are already sorted; format as Go's `%v` on []string.
     let keys: Vec<&String> = m.keys().collect();
     format!(
@@ -518,7 +519,7 @@ mod tests {
         .unwrap();
         std::fs::write(
             opencode.join("foo-maker.md"),
-            "---\ndescription: Makes foo.\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n  write: true\n---\n# Body\n",
+            "---\ndescription: Makes foo.\nmodel: opencode-go/minimax-m2.7\npermission:\n  read: allow\n  write: allow\n---\n# Body\n",
         )
         .unwrap();
     }
@@ -537,7 +538,7 @@ mod tests {
         synced_fixture(dir.path());
         std::fs::write(
             dir.path().join(".opencode/agents/foo-maker.md"),
-            "---\ndescription: DIFFERENT.\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n  write: true\n---\n# Body\n",
+            "---\ndescription: DIFFERENT.\nmodel: opencode-go/minimax-m2.7\npermission:\n  read: allow\n  write: allow\n---\n# Body\n",
         )
         .unwrap();
         let result = validate_sync(dir.path()).unwrap();
@@ -592,7 +593,7 @@ mod tests {
         synced_fixture(dir.path());
         std::fs::write(
             dir.path().join(".opencode/agents/foo-maker.md"),
-            "---\ndescription: Makes foo.\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n  write: true\n---\n# Different Body\n",
+            "---\ndescription: Makes foo.\nmodel: opencode-go/minimax-m2.7\npermission:\n  read: allow\n  write: allow\n---\n# Different Body\n",
         )
         .unwrap();
         let result = validate_sync(dir.path()).unwrap();
@@ -610,7 +611,7 @@ mod tests {
         synced_fixture(dir.path());
         std::fs::write(
             dir.path().join(".opencode/agents/foo-maker.md"),
-            "---\ndescription: Makes foo.\nmodel: opencode-go/glm-5\ntools:\n  read: true\n  write: true\n---\n# Body\n",
+            "---\ndescription: Makes foo.\nmodel: opencode-go/glm-5\npermission:\n  read: allow\n  write: allow\n---\n# Body\n",
         )
         .unwrap();
         let result = validate_sync(dir.path()).unwrap();
@@ -630,7 +631,7 @@ mod tests {
         synced_fixture(dir.path());
         std::fs::write(
             dir.path().join(".opencode/agents/foo-maker.md"),
-            "---\ndescription: Makes foo.\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n---\n# Body\n",
+            "---\ndescription: Makes foo.\nmodel: opencode-go/minimax-m2.7\npermission:\n  read: allow\n---\n# Body\n",
         )
         .unwrap();
         let result = validate_sync(dir.path()).unwrap();

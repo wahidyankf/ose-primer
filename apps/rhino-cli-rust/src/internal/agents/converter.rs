@@ -1,14 +1,15 @@
 //! Claude → OpenCode agent conversion.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/agents/converter.go`.
+//! Ported from `apps/rhino-cli-go/internal/agents/converter.go`; now extended with
+//! OpenCode `permission`-object emission (Go gains the same in the parity port).
 //!
 //! The Go encoder uses `gopkg.in/yaml.v3` with `SetIndent(2)`. To reach
 //! byte-identical output we replicate that emitter's behavior for the specific
 //! `OpenCodeAgent` shape with a hand-rolled serializer ([`emit_opencode_yaml`]).
 //! yaml.v3 emits plain (unquoted) scalars whenever the value is "plain-safe"
 //! and never folds long scalars by default, so the emitter mirrors exactly
-//! those rules. Map keys (the tool flags) are emitted in sorted order, matching
-//! yaml.v3's deterministic map-key sorting.
+//! those rules. Map keys (the permission entries) are emitted in sorted order,
+//! matching yaml.v3's deterministic map-key sorting.
 
 use std::collections::{BTreeMap, HashMap};
 use std::fmt::Write as _;
@@ -25,18 +26,18 @@ use super::types::OpenCodeAgent;
 /// `OpenCodeAgentDir`.
 pub const OPENCODE_AGENT_DIR: &str = ".opencode/agents";
 
-/// Converts a Claude tools array to an OpenCode tools map (lowercased keys,
-/// all `true`). Mirrors Go `ConvertTools`. Returns a `BTreeMap` so iteration is
-/// alphabetically sorted (matching yaml.v3 map emission).
-pub fn convert_tools(claude_tools: &[String]) -> BTreeMap<String, bool> {
-    let mut tools = BTreeMap::new();
+/// Converts a Claude tools array to an OpenCode permission map (lowercased
+/// keys, all `allow`). Returns a `BTreeMap` so iteration is alphabetically
+/// sorted (matching yaml.v3 map emission).
+pub fn convert_permission(claude_tools: &[String]) -> BTreeMap<String, String> {
+    let mut permission = BTreeMap::new();
     for tool in claude_tools {
         let lower = tool.trim().to_lowercase();
         if !lower.is_empty() {
-            tools.insert(lower, true);
+            permission.insert(lower, "allow".to_string());
         }
     }
-    tools
+    permission
 }
 
 /// Converts a Claude model name to an OpenCode model ID. Mirrors Go
@@ -132,15 +133,15 @@ pub fn build_opencode_agent(frontmatter: &[u8]) -> Result<OpenCodeAgent, Error> 
         }
     }
 
-    let tools = match tools_raw {
-        Some(v) => convert_tools(&parse_claude_tools(v)),
+    let permission = match tools_raw {
+        Some(v) => convert_permission(&parse_claude_tools(v)),
         None => BTreeMap::new(),
     };
 
     Ok(OpenCodeAgent {
         description,
         model: convert_model(&model),
-        tools,
+        permission,
         color: convert_color(&color),
         skills,
     })
@@ -180,9 +181,9 @@ pub fn convert_agent(input_path: &Path, output_path: &Path, dry_run: bool) -> Re
 /// Serializes an [`OpenCodeAgent`] to YAML frontmatter (without the `---`
 /// fences), byte-identical to Go's `yaml.v3` encoder with `SetIndent(2)`.
 ///
-/// Emission order is `description`, `model`, `tools`, `color`, `skills`.
+/// Emission order is `description`, `model`, `permission`, `color`, `skills`.
 /// `color` and `skills` are omitted entirely when empty (Go `omitempty`). The
-/// `tools` map keys are already sorted (BTreeMap). A trailing newline
+/// `permission` map keys are already sorted (BTreeMap). A trailing newline
 /// terminates the document, as yaml.v3 produces.
 pub fn emit_opencode_yaml(agent: &OpenCodeAgent) -> String {
     let mut out = String::new();
@@ -195,16 +196,16 @@ pub fn emit_opencode_yaml(agent: &OpenCodeAgent) -> String {
     out.push_str(&emit_scalar(&agent.model));
     out.push('\n');
 
-    if agent.tools.is_empty() {
-        // yaml.v3 emits an empty map as `tools: {}`.
-        out.push_str("tools: {}\n");
+    if agent.permission.is_empty() {
+        // yaml.v3 emits an empty map as `permission: {}`.
+        out.push_str("permission: {}\n");
     } else {
-        out.push_str("tools:\n");
-        for (k, v) in &agent.tools {
+        out.push_str("permission:\n");
+        for (k, v) in &agent.permission {
             out.push_str("  ");
             out.push_str(&emit_scalar(k));
             out.push_str(": ");
-            out.push_str(if *v { "true" } else { "false" });
+            out.push_str(&emit_scalar(v));
             out.push('\n');
         }
     }
@@ -439,18 +440,19 @@ mod tests {
     }
 
     #[test]
-    fn convert_tools_lowercases_and_sorts() {
-        let tools = convert_tools(&["Read".to_string(), "Write".to_string(), "Bash".to_string()]);
-        let keys: Vec<&String> = tools.keys().collect();
+    fn convert_permission_lowercases_and_sorts() {
+        let permission =
+            convert_permission(&["Read".to_string(), "Write".to_string(), "Bash".to_string()]);
+        let keys: Vec<&String> = permission.keys().collect();
         assert_eq!(keys, vec!["bash", "read", "write"]);
-        assert!(tools.values().all(|v| *v));
+        assert!(permission.values().all(|v| v == "allow"));
     }
 
     #[test]
-    fn convert_tools_skips_empty() {
-        let tools = convert_tools(&[String::new(), "  ".to_string(), "Read".to_string()]);
-        assert_eq!(tools.len(), 1);
-        assert!(tools.contains_key("read"));
+    fn convert_permission_skips_empty() {
+        let permission = convert_permission(&[String::new(), "  ".to_string(), "Read".to_string()]);
+        assert_eq!(permission.len(), 1);
+        assert_eq!(permission.get("read").map(String::as_str), Some("allow"));
     }
 
     #[test]
@@ -478,14 +480,14 @@ mod tests {
         let agent = OpenCodeAgent {
             description: "X".to_string(),
             model: "opencode-go/minimax-m2.7".to_string(),
-            tools: convert_tools(&["Read".to_string()]),
+            permission: convert_permission(&["Read".to_string()]),
             color: "primary".to_string(),
             skills: vec!["a-skill".to_string()],
         };
         let yaml = emit_opencode_yaml(&agent);
         assert_eq!(
             yaml,
-            "description: X\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\ncolor: primary\nskills:\n  - a-skill\n"
+            "description: X\nmodel: opencode-go/minimax-m2.7\npermission:\n  read: allow\ncolor: primary\nskills:\n  - a-skill\n"
         );
     }
 
@@ -494,7 +496,7 @@ mod tests {
         let agent = OpenCodeAgent {
             description: "Does a thing. Use when needed.".to_string(),
             model: "opencode-go/minimax-m2.7".to_string(),
-            tools: convert_tools(&["Read".to_string(), "Write".to_string()]),
+            permission: convert_permission(&["Read".to_string(), "Write".to_string()]),
             color: String::new(),
             skills: vec![],
         };
@@ -503,7 +505,7 @@ mod tests {
             yaml,
             "description: Does a thing. Use when needed.\n\
              model: opencode-go/minimax-m2.7\n\
-             tools:\n  read: true\n  write: true\n"
+             permission:\n  read: allow\n  write: allow\n"
         );
     }
 
@@ -512,30 +514,30 @@ mod tests {
         let agent = OpenCodeAgent {
             description: "X".to_string(),
             model: "opencode-go/glm-5".to_string(),
-            tools: convert_tools(&["Grep".to_string()]),
+            permission: convert_permission(&["Grep".to_string()]),
             color: String::new(),
             skills: vec!["a-skill".to_string(), "b-skill".to_string()],
         };
         let yaml = emit_opencode_yaml(&agent);
         assert_eq!(
             yaml,
-            "description: X\nmodel: opencode-go/glm-5\ntools:\n  grep: true\nskills:\n  - a-skill\n  - b-skill\n"
+            "description: X\nmodel: opencode-go/glm-5\npermission:\n  grep: allow\nskills:\n  - a-skill\n  - b-skill\n"
         );
     }
 
     #[test]
-    fn emit_yaml_empty_tools() {
+    fn emit_yaml_empty_permission() {
         let agent = OpenCodeAgent {
             description: "X".to_string(),
             model: "opencode-go/minimax-m2.7".to_string(),
-            tools: BTreeMap::new(),
+            permission: BTreeMap::new(),
             color: String::new(),
             skills: vec![],
         };
         let yaml = emit_opencode_yaml(&agent);
         assert_eq!(
             yaml,
-            "description: X\nmodel: opencode-go/minimax-m2.7\ntools: {}\n"
+            "description: X\nmodel: opencode-go/minimax-m2.7\npermission: {}\n"
         );
     }
 
@@ -546,7 +548,7 @@ mod tests {
         let agent = OpenCodeAgent {
             description: long.to_string(),
             model: "opencode-go/minimax-m2.7".to_string(),
-            tools: convert_tools(&["Read".to_string()]),
+            permission: convert_permission(&["Read".to_string()]),
             color: String::new(),
             skills: vec![],
         };
@@ -585,7 +587,7 @@ mod tests {
         let agent = OpenCodeAgent {
             description: "has \"quotes\" and: colon".to_string(),
             model: "opencode-go/minimax-m2.7".to_string(),
-            tools: convert_tools(&["Read".to_string()]),
+            permission: convert_permission(&["Read".to_string()]),
             color: String::new(),
             skills: vec![],
         };
@@ -600,8 +602,9 @@ mod tests {
         assert_eq!(agent.description, "A maker.");
         assert_eq!(agent.model, "opencode-go/minimax-m2.7");
         assert_eq!(agent.color, "primary");
-        let keys: Vec<&String> = agent.tools.keys().collect();
+        let keys: Vec<&String> = agent.permission.keys().collect();
         assert_eq!(keys, vec!["read", "write"]);
+        assert!(agent.permission.values().all(|v| v == "allow"));
         assert_eq!(agent.skills, vec!["s1", "s2"]);
     }
 
@@ -610,7 +613,7 @@ mod tests {
         let fm = b"name: foo\ndescription: d\ntools:\n  - Glob\n  - Grep\nmodel: haiku\n";
         let agent = build_opencode_agent(fm).unwrap();
         assert_eq!(agent.model, "opencode-go/glm-5");
-        let keys: Vec<&String> = agent.tools.keys().collect();
+        let keys: Vec<&String> = agent.permission.keys().collect();
         assert_eq!(keys, vec!["glob", "grep"]);
         assert!(agent.skills.is_empty());
     }
@@ -629,7 +632,7 @@ mod tests {
         let written = std::fs::read_to_string(&output).unwrap();
         assert_eq!(
             written,
-            "---\ndescription: A maker.\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\ncolor: primary\n---\n# Body\ntext\n"
+            "---\ndescription: A maker.\nmodel: opencode-go/minimax-m2.7\npermission:\n  read: allow\ncolor: primary\n---\n# Body\ntext\n"
         );
     }
 
@@ -686,6 +689,40 @@ mod tests {
         assert_eq!(converted, 0);
         assert_eq!(failed, 1);
         assert_eq!(files, vec!["broken-maker.md"]);
+    }
+
+    #[test]
+    fn convert_permission_maps_granted_tools_to_allow() {
+        let dir = tempfile::tempdir().unwrap();
+        let input = dir.path().join("in.md");
+        let output = dir.path().join("out/in.md");
+        std::fs::write(
+            &input,
+            "---\nname: foo-maker\ndescription: d\ntools: Read, Write\nmodel:\n---\nbody\n",
+        )
+        .unwrap();
+        convert_agent(&input, &output, false).unwrap();
+        let written = std::fs::read_to_string(&output).unwrap();
+        assert!(
+            written.contains("permission:\n"),
+            "expected a permission: block in frontmatter, got:\n{written}"
+        );
+        assert!(
+            written.contains("  read: allow\n"),
+            "expected granted tool read mapped to allow, got:\n{written}"
+        );
+        assert!(
+            written.contains("  write: allow\n"),
+            "expected granted tool write mapped to allow, got:\n{written}"
+        );
+        assert!(
+            !written.contains("tools:"),
+            "boolean tools: map must not be emitted, got:\n{written}"
+        );
+        assert!(
+            !written.contains("read: true"),
+            "boolean tool flags must not be emitted, got:\n{written}"
+        );
     }
 
     #[test]

@@ -8,16 +8,16 @@ use std::time::Duration;
 
 /// OpenCode-format agent configuration (serialization target).
 ///
-/// Field order is `description`, `model`, `tools`, `color`, `skills` — matching
-/// the Go struct so the serialized frontmatter is byte-identical. `color` and
-/// `skills` are omitted when empty (Go `omitempty`).
+/// Field order is `description`, `model`, `permission`, `color`, `skills`.
+/// `color` and `skills` are omitted when empty (Go `omitempty`).
 #[derive(Debug, Clone)]
 pub struct OpenCodeAgent {
     pub description: String,
     pub model: String,
-    /// Tool flag map. Keys are lowercased tool names; serialized in sorted
-    /// (alphabetical) order to match Go's `yaml.v3` map-key sorting.
-    pub tools: std::collections::BTreeMap<String, bool>,
+    /// Permission map. Keys are lowercased tool names mapped to a permission
+    /// level (`allow`); serialized in sorted (alphabetical) order to match
+    /// Go's `yaml.v3` map-key sorting.
+    pub permission: std::collections::BTreeMap<String, String>,
     /// OpenCode theme token (translated from the Claude named color). Omitted
     /// when empty (Go `omitempty`).
     pub color: String,
