@@ -1,6 +1,6 @@
 ---
 name: plan-creating-project-plans
-description: Comprehensive project planning standards for plans/ directory including folder structure (ideas.md, backlog/, in-progress/, done/), stage-aware naming convention (backlog/done use YYYY-MM-DD__identifier/, in-progress uses identifier/ with no date prefix), five-document file organization (README.md, brd.md, prd.md, tech-docs.md, delivery.md for multi-file default; single README.md for trivially-small single-file exception), BRD/PRD content-placement rules, and Gherkin acceptance criteria. Essential for creating structured, executable project plans.
+description: Comprehensive project planning standards for plans/ directory including folder structure (ideas.md, backlog/, in-progress/, done/), stage-aware naming convention (backlog/done use YYYY-MM-DD__identifier/, in-progress uses identifier/ with no date prefix), five-document file organization (README.md, brd.md, prd.md, tech-docs.md, delivery.md for multi-file default; single README.md for trivially-small single-file exception), BRD/PRD content-placement rules, Gherkin acceptance criteria, and the mandatory structured multiple-choice grilling gates (pre-write and post-write) for resolving design decisions with the user. Essential for creating structured, executable project plans.
 ---
 
 # Creating Project Plans
@@ -17,6 +17,49 @@ This Skill provides comprehensive guidance for creating **structured project pla
 - Writing Gherkin acceptance criteria
 - Structuring multi-phase projects
 - Moving plans through workflow stages
+
+## Mandatory Pre-Write and Post-Write Grilling
+
+Before writing any plan content, resolve all open design decisions with the user via structured
+multiple-choice grilling (pre-write grill). After writing the plan, validate and stress-test it
+with the user the same way (post-write grill). Neither gate is optional.
+
+**HARD RULE — 2-4 options required**: Every grilling question MUST present **2-4 concrete,
+mutually exclusive options**. Each option MUST state its trade-off in one sentence. Exactly one
+option MUST be marked `(Recommended)` with a one-sentence rationale. Open-ended questions without
+options are FORBIDDEN. Resolve one decision per question; tightly coupled decisions may be batched
+in a single multi-question prompt.
+
+**Mechanism**: use the `AskUserQuestion` tool (or the harness's native interactive multiple-choice
+tool) first when available; fall back to inline markdown options when it is not.
+
+**Explore before asking**: read the relevant repo artifacts before composing any question. Never
+ask the user something a file read can answer — the repo is the ground truth; the user is the
+tiebreaker for genuinely ambiguous decisions.
+
+**Pre-write grill covers** (each as a structured multiple-choice question):
+
+- What problem is this solving? What specific pain point?
+- What are the acceptance criteria? How will we know it is done?
+- What is the scope? What is explicitly out of scope?
+- What are the constraints (performance, harness-neutrality, backwards compatibility)?
+- Are there design decision forks where the user has a preference?
+
+**Post-write grill covers** (each as a structured multiple-choice question):
+
+- Does the plan structure match the user's intent? Are all acceptance criteria captured?
+- Is Gherkin completeness sufficient (every acceptance criterion has a scenario)?
+- Is checklist granularity correct (each item is one concrete action; TDD substeps separate)?
+- Is the `## Worktree` section present?
+- Is Phase 0 (Environment Setup and Baseline) the first phase in `delivery.md`?
+- Does `delivery.md` open with the `[AI]`/`[HUMAN]` executor legend, and is every step that only a human can do tagged `[HUMAN]`?
+- Does every phase end with a `### Phase N Gate` (must-pass verification) followed by a Pause Safety note?
+
+**Do NOT proceed to writing until all pre-write branches are resolved.** Unresolved design
+decisions force expensive rewrites.
+
+See [Grilling-With-Options Convention](../../../repo-governance/development/workflow/grilling-with-options.md)
+for the authoritative rule, validation checklist, and examples. Invoke via the `grill-me` skill.
 
 ## Plans Folder Structure
 
@@ -69,7 +112,7 @@ plans/in-progress/complex-feature/
 - **`brd.md`** — WHY: business goal, impact, affected roles, business-level success metrics, business-scope Non-Goals, business risks. Solo-maintainer repo — no sign-off / sponsor / stakeholder ceremony language.
 - **`prd.md`** — WHAT: product overview, personas, user stories, Gherkin acceptance criteria, product scope (in + out), product risks.
 - **`tech-docs.md`** — HOW: architecture, design decisions with rationale, file-impact, dependencies, rollback.
-- **`delivery.md`** — DO: sequential `- [ ]` checklist organized by phase; one concrete action per checkbox.
+- **`delivery.md`** — DO: sequential `- [ ]` checklist organized by phase; one concrete action per checkbox. Opens with the `[AI]`/`[HUMAN]` executor legend; each phase ends with a `### Phase N Gate` (must-pass verification) followed by a Pause Safety note.
 
 **Benefits**: narrow PR diff per concern (business PRs touch brd.md only; product PRs touch prd.md only), sharper agent validation (plan-checker asserts placement per file), industry-norm alignment (BRD + PRD are recognized doc types).
 
@@ -89,7 +132,7 @@ plans/in-progress/simple-feature/
 3. **Business Rationale (condensed BRD)** — why + affected roles + success metrics (gut-based reasoning OK when logic supports it; fabricated KPIs forbidden)
 4. **Product Requirements (condensed PRD)** — user stories + Gherkin acceptance criteria + product scope
 5. **Technical Approach** — architecture, design decisions
-6. **Delivery Checklist** — phased `- [ ]` items
+6. **Delivery Checklist** — phased `- [ ]` items; opens with the `[AI]`/`[HUMAN]` executor legend; every phase ends with a `### Phase N Gate` and a Pause Safety note
 7. **Quality Gates** — local + CI gates
 8. **Verification** — how to confirm done
 
@@ -134,8 +177,8 @@ Plans are executed by **execution-grade (sonnet-tier)** agents, not planning-gra
 **Every checkbox MUST contain all of the following that apply**:
 
 - **Explicit file path(s)** when the action touches a known file. When the path cannot be determined at authoring time, give the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/crud-fe-ts-nextjs/src/lib/` following the pattern of sibling `auth.ts`").
-- **Explicit shell command(s)** verbatim when applicable (e.g., `npx nx run ose-web:test:quick`), not "run the lint".
-- **Concrete acceptance criterion** stating the observable change that proves done (e.g., "all assertions in `trpc.test.ts` pass", "`nx run ose-web:typecheck` exits 0"). No bare "implement X", "set up Y", "configure Z".
+- **Explicit shell command(s)** verbatim when applicable (e.g., `npx nx run crud-be-go-gin:test:quick`), not "run the lint".
+- **Concrete acceptance criterion** stating the observable change that proves done (e.g., "all assertions in `trpc.test.ts` pass", "`nx run crud-fe-ts-nextjs:typecheck` exits 0"). No bare "implement X", "set up Y", "configure Z".
 
 **`plan-checker` flags violations as HIGH severity. `plan-fixer` rewrites offending items with maximum detail.**
 
@@ -150,9 +193,9 @@ Plans are executed by **execution-grade (sonnet-tier)** agents, not planning-gra
 **Good** (explicit path, explicit command, explicit criterion):
 
 ```markdown
-- [ ] Edit `apps/ose-web/src/server/trpc.ts`: wrap the public router with
+- [ ] Edit `apps/crud-fe-ts-nextjs/src/server/trpc.ts`: wrap the public router with
       `unstable_cache(..., { revalidate: 300 })`. Verify by running
-      `npx nx run ose-web:test:quick` — all tests pass.
+      `npx nx run crud-fe-ts-nextjs:test:quick` — all tests pass.
 ```
 
 **Bad**:
@@ -182,6 +225,55 @@ Plans are executed by **execution-grade (sonnet-tier)** agents, not planning-gra
 ```
 
 See [Plans Organization Convention §Execution-Grade Clarity](../../../repo-governance/conventions/structure/plans.md#execution-grade-clarity-hard-rule) for the authoritative rule.
+
+## Executor Tagging — [AI] vs [HUMAN] (HARD RULE)
+
+Every delivery checklist item MUST make clear **who can execute it**. Some work cannot be done by an AI agent at all — physical actions (unplug a power cable, swap a drive), out-of-band approvals (approve a production deploy, accept a contract), or actions needing real credentials or authority the agent must not hold. Tagging up front lets the executor hand off to the human cleanly instead of fabricating a completion.
+
+**Tags** (placed at the START of the checkbox, right after `- [ ]`):
+
+- **`[AI]`** — an agent can fully perform the step. **Default**: an unmarked checkbox is treated as `[AI]`.
+- **`[HUMAN]`** — only a human can do it (physical action, out-of-band approval/sign-off, real-secret or privileged-credential handling, real-world authority).
+- **`[AI+HUMAN]`** (optional) — agent prepares/drafts; human reviews, approves, or performs the irreversible final action.
+
+**Required legend** — open `delivery.md` (or a single-file plan's Delivery Checklist section) with:
+
+```markdown
+> **Legend** — `[AI]`: an agent performs the step (the default; unmarked steps are `[AI]`).
+> `[HUMAN]`: only a human can do it (physical action, out-of-band approval, real-secret or
+> privileged-credential handling). `[AI+HUMAN]`: agent prepares, human approves or finishes.
+```
+
+**Default bias**: prefer `[AI]` for anything an agent can mechanically do; reserve `[HUMAN]` for what is genuinely impossible or unsafe for AI. A sanctioned channel that lets an agent do something seemingly human-only (e.g. copying a real secret via an `[AI]`-authored script through the `guard-env-file-access` path) stays `[AI]` — document the channel inline.
+
+**Execution semantics**: the [plan-execution workflow](../../../repo-governance/workflows/plan/plan-execution.md) STOPS at a `[HUMAN]` item, surfaces it with the acceptance criterion, and waits for the human to confirm before continuing. This is a legitimate stop that overrides "never stop between phases".
+
+## Phases as Natural Pauses With Clear Gates (HARD RULE)
+
+Every phase MUST be a **natural pause point** that ends with a **clear gate**. A reader (human or AI) must be able to stop after any phase and find the repository coherent — code compiles, tests pass, nothing half-applied, no known-red build carried forward.
+
+- **Clear gate**: every phase ends with a `### Phase N Gate` subsection — a must-pass verification checklist naming exact commands and observable acceptance criteria. Phase N+1 MUST NOT begin while any gate check is failing.
+- **Pause Safety note**: immediately after the gate, add a `> **Pause Safety**:` blockquote stating the safe-to-stop state and the single command to resume/re-verify.
+
+**Template**:
+
+```markdown
+## Phase N: <name>
+
+- [ ] [AI] <work item> — acceptance: <observable outcome>
+
+### Phase N Gate
+
+> All checks below must pass before starting Phase N+1.
+
+- [ ] [AI] `<verification command>` — <acceptance>
+
+> **Pause Safety**: <coherent state after this phase>. Safe to stop. To resume: `<re-verify command>`.
+```
+
+Phase 0 (Environment Setup and Baseline) already follows this shape — its gate is the recorded clean baseline. A gate MAY be a `[HUMAN]` approval, making the boundary an explicit hand-off point.
+
+See [Plans Organization Convention §Executor Tagging](../../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule) and [§Phases as Natural Pauses With Clear Gates](../../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule) for the authoritative rules.
 
 ## Pre-Write Verification (Anti-Hallucination — HARD)
 
@@ -281,7 +373,7 @@ Domain-specialized agents hallucinate less than generic orchestration. When a de
 **When to annotate**:
 
 - Action touches a specific language file (`.fs`, `.go`, `.kt`, `.cs`, `.fsproj`, `.csproj`, etc.)
-- Action touches a specific app context (`apps/ose-web/...` → `apps-ose-web-content-maker` for content)
+- Action touches a specific app context (`apps/crud-fe-ts-nextjs/...` → content-maker for content)
 - Action is content/documentation (`docs-maker`, `readme-maker`, `specs-maker`)
 - Action is governance / repo rules (`repo-rules-maker`)
 - Action is content-platform skill domain (`docs-maker`, `docs-tutorial-maker`)
@@ -293,49 +385,6 @@ Domain-specialized agents hallucinate less than generic orchestration. When a de
 - Shell command without code edits
 
 The plan-execution workflow respects the annotation as Priority 0 — the suggested executor wins over heuristic matches by file extension or content keyword. Citing a non-existent agent is treated as Anti-Pattern AP-7 (HIGH finding by `plan-checker`).
-
-## Execution Markers: `[AI]` vs `[HUMAN]`
-
-Every delivery checkbox carries an executor marker immediately after `- [ ]`. Two values exist:
-
-- **`[AI]`** — an agent performs the step. This is the **default**; an unmarked checkbox is `[AI]`.
-- **`[HUMAN]`** — only a human can perform the step (physical/hardware actions, out-of-band approvals such as signing a contract or paying an invoice, or interactive credential/SSO gates an agent cannot script).
-
-**Rules when authoring**:
-
-- **AI-first**: Before using `[HUMAN]`, ask whether the step can be scripted (e.g., a sanctioned action under `scripts/`). Only use `[HUMAN]` for what genuinely cannot be automated.
-- **Legend required**: If any `[HUMAN]` marker appears in `delivery.md` (or the single-file delivery section), add a legend near the top defining both markers.
-- **Explicit handoff**: Every `[HUMAN]` step MUST state (a) exactly what the human does and (b) the observable signal the agent checks to confirm it is done before continuing.
-- **Execution stops at `[HUMAN]`**: Execution pauses, surfaces the step to the operator, and resumes only after the human confirms completion.
-
-See [Plans Organization Convention §Execution Markers: `[AI]` vs `[HUMAN]`](../../../repo-governance/conventions/structure/plans.md#execution-markers-ai-vs-human) for the authoritative rule.
-
-## Phase Gates and Natural Pauses (HARD RULE)
-
-Every phase in `delivery.md` — including Phase 0 — MUST be a **natural pause** (cohesive work ending in an independently verifiable, safe-to-stop state) and MUST close with an explicit phase gate.
-
-**Each phase MUST end with**:
-
-1. A `### Phase N Gate` heading containing a must-pass verification checklist. Each gate item carries its executor marker (`[AI]`/`[HUMAN]`) and states a runnable check with an observable acceptance outcome (same Execution-Grade Clarity standard as ordinary steps).
-2. A `> **Pause Safety**:` blockquote stating the safe-to-stop state reached after the phase and the single command or short sequence to resume.
-
-**Barrier rule**: A phase is **not complete until its gate is green**. Never start phase N+1 while any check in phase N's gate is failing.
-
-**Scaffold template** (adapt for each phase):
-
-```markdown
-### Phase N Gate
-
-> All checks below must pass before starting Phase N+1.
-
-- [ ] [AI] `<runnable command>` — <acceptance outcome>.
-- [ ] [AI] `<runnable command>` — <acceptance outcome>.
-
-> **Pause Safety**: <What now exists; what does not yet.> Safe to stop indefinitely.
-> To resume: `<single command to re-establish confidence the gate is still green>`.
-```
-
-See [Plans Organization Convention §Phase Gates and Natural Pauses](../../../repo-governance/conventions/structure/plans.md#phase-gates-and-natural-pauses-hard-rule) for the authoritative rule and a complete worked example.
 
 ## Gherkin Acceptance Criteria
 
@@ -393,6 +442,9 @@ And their session is created with correct permissions
 
 ### 2. Planning (backlog/)
 
+**Gate**: Resolve all open design decisions with the user via pre-write grilling before writing
+any plan content. See [Mandatory Pre-Write and Post-Write Grilling](#mandatory-pre-write-and-post-write-grilling).
+
 **Actions**:
 
 - Create folder with date\_\_identifier
@@ -414,6 +466,9 @@ And their session is created with correct permissions
 **Status**: In Progress
 
 ### 4. Completion (done/)
+
+**Gate**: Validate the finished plan with the user via post-write grilling before archiving. See
+[Mandatory Pre-Write and Post-Write Grilling](#mandatory-pre-write-and-post-write-grilling).
 
 **Actions**:
 
@@ -674,6 +729,9 @@ Every delivery plan MUST end with a plan archival section:
 
 **Related Conventions**:
 
+- [No Secrets in Committed Files Convention](../../../repo-governance/development/quality/no-secrets-in-committed-files.md) - Hard iron rule: no system secret (keys, passwords, tokens, connection strings, etc.) may appear in any committed plan file. Use placeholders or env-var references instead.
+- [Grilling-With-Options Convention](../../../repo-governance/development/workflow/grilling-with-options.md) - Every grill question MUST present 2-4 concrete options; open-ended questions are FORBIDDEN; one option marked recommended; interactive multiple-choice tool preferred
+- [Test-Driven Development Convention](../../../repo-governance/development/workflow/test-driven-development.md) - Mandates TDD (Red→Green→Refactor) for all code changes; defines the required RED/GREEN/REFACTOR three-substep shape for delivery checklists; includes HARD RULE against combining phases into one checkbox
 - [Plan Anti-Hallucination Convention](../../../repo-governance/development/quality/plan-anti-hallucination.md) - Pre-write verification recipes, repo-grounding rule, refuse-on-uncertainty, anti-pattern catalog (AP-1 through AP-10), specialized-executor annotation
 - [Trunk Based Development](../../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow (default = direct push to main regardless of execution context; branch + draft PR is opt-in only when explicitly requested)
 - [PR Merge Protocol](../../../repo-governance/development/workflow/pr-merge-protocol.md) - Explicit approval required, all quality gates must pass
@@ -685,6 +743,7 @@ Every delivery plan MUST end with a plan archival section:
 
 **Related Skills**:
 
+- `grill-me` - Mandatory pre-write and post-write grilling; every question presents 2-4 concrete options
 - `plan-writing-gherkin-criteria` - Detailed Gherkin guidance
 - `repo-practicing-trunk-based-development` - Git workflow
 - `docs-applying-content-quality` - Universal content standards

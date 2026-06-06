@@ -1,5 +1,5 @@
 ---
-description: Creates comprehensive project plans with requirements, technical documentation, and delivery checklists. Structures plans for systematic execution via the plan-execution workflow (orchestrated by the calling context).
+description: Creates comprehensive project plans with requirements, technical documentation, and delivery checklists. Grills the user before and after plan creation using multiple-choice options (2-4 options per question via AskUserQuestion tool or markdown format). Structures plans for systematic execution via the plan-execution workflow (orchestrated by the calling context).
 model: opencode-go/minimax-m2.7
 tools:
   bash: true
@@ -70,22 +70,13 @@ See [Plans Organization Convention](../../repo-governance/conventions/structure/
 Before reading the codebase or creating any files, invoke the `grill-me` skill
 (`.claude/skills/grill-me/SKILL.md`) to resolve all open design decisions with the user.
 
-**Grilling format (MANDATORY — from `grill-me` Skill)**:
+**Multiple-options requirement (HARD RULE)**: Every grill question MUST present 2-4 concrete
+options with trade-off descriptions — open-ended questions without options are FORBIDDEN. Use the
+`AskUserQuestion` tool (preferred in Claude Code context) or the markdown question format from
+the `grill-me` skill. Read the codebase before asking so options are grounded in repo reality.
+See [Grilling-With-Options Convention](../../repo-governance/development/workflow/grilling-with-options.md).
 
-- One question at a time — never bundle multiple questions in a single message
-- Every question **must** present **2–4 concrete options** with trade-off descriptions — no
-  open-ended "what do you think?" questions
-- Mark the recommended option **(Recommended)**
-- Example format:
-
-  > **[Question]?**
-  >
-  > - **Option A**: [description] — [trade-off]
-  > - **Option B**: [description] — [trade-off] **(Recommended)**
-  >
-  > **Recommendation**: Option B because [specific reason grounded in this context].
-
-Topics to cover (one question with options per topic):
+Ask about (each as a structured multiple-choice question):
 
 - What problem is this solving? What specific pain is it addressing?
 - What are the acceptance criteria? How will we know it is done?
@@ -164,14 +155,30 @@ acceptance criterion.
 
 Break work into executable steps:
 
-**Implementation Phases**: Logical groupings of work — each phase is a **natural pause** (a cohesive unit ending in an independently verifiable, safe-to-stop state)
-**Implementation Steps**: Checkboxes for each task, each carrying an execution marker (`[AI]` default / `[HUMAN]` for steps only a human can do)
-**Phase Gates**: Every phase closes with a `### Phase N Gate` (must-pass checks) + a **Pause Safety** note (safe-to-stop state + resume command)
+**Implementation Phases**: Logical groupings of work — each phase is a **natural pause** (a cohesive
+unit ending in an independently verifiable, safe-to-stop state)
+**Implementation Steps**: Checkboxes for each task, each carrying an execution marker (`[AI]` default /
+`[HUMAN]` for steps only a human can do)
+**Phase Gates**: Every phase closes with a `### Phase N Gate` (must-pass checks) + a **Pause Safety**
+note (safe-to-stop state + resume command)
 **Acceptance Criteria**: Final verification steps
 
-**Execution markers** — prefix each checkbox (after `- [ ]`) with `[AI]` or `[HUMAN]`. `[AI]` is the default (unmarked = `[AI]`). Use `[HUMAN]` ONLY for steps an agent genuinely cannot do — physical/hardware actions (unplug a cable, swap a drive), out-of-band approvals (sign a contract, pay an invoice), or interactive credential/SSO gates. Prefer engineering an `[AI]` path (e.g., a sanctioned `scripts/` action) before resorting to `[HUMAN]`. Any plan using `[HUMAN]` MUST carry a legend defining both markers near the top of `delivery.md`, and every `[HUMAN]` step MUST state what the human does plus the observable signal the agent checks to resume.
+**Execution markers** — prefix each checkbox (after `- [ ]`) with `[AI]` or `[HUMAN]`. `[AI]` is the
+default (unmarked = `[AI]`). Use `[HUMAN]` ONLY for steps an agent genuinely cannot do — physical/hardware
+actions (unplug a cable, swap a drive), out-of-band approvals (sign a contract, pay an invoice), or
+interactive credential/SSO gates. Prefer engineering an `[AI]` path (e.g., a sanctioned `scripts/` action)
+before resorting to `[HUMAN]`. Any plan using `[HUMAN]` MUST carry a legend defining both markers near the
+top of `delivery.md`, and every `[HUMAN]` step MUST state what the human does plus the observable signal
+the agent checks to resume.
 
-**Phase gates and natural pauses (HARD RULE)** — every phase (including Phase 0) MUST end with a `### Phase N Gate` containing must-pass, independently verifiable checks (each with its `[AI]`/`[HUMAN]` marker), followed by a **Pause Safety** blockquote stating the safe-to-stop state and the single command/sequence to resume. A phase is not complete until its gate is green; do not author phases that bleed unrelated work across a boundary with no safe stop point. See [Plans Organization Convention §Execution Markers](../../repo-governance/conventions/structure/plans.md#execution-markers-ai-vs-human) and [§Phase Gates and Natural Pauses](../../repo-governance/conventions/structure/plans.md#phase-gates-and-natural-pauses-hard-rule).
+**Phase gates and natural pauses (HARD RULE)** — every phase (including Phase 0) MUST end with a
+`### Phase N Gate` containing must-pass, independently verifiable checks (each with its `[AI]`/`[HUMAN]`
+marker), followed by a **Pause Safety** blockquote stating the safe-to-stop state and the single
+command/sequence to resume. A phase is not complete until its gate is green; do not author phases that
+bleed unrelated work across a boundary with no safe stop point. See
+[Plans Organization Convention §Executor Tagging](../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule)
+and
+[§Phases as Natural Pauses With Clear Gates](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule).
 
 ### Step 7: Add Git Workflow
 
@@ -181,20 +188,19 @@ Specify branch strategy:
 **PR (opt-in only)**: A draft PR is used only when the user's prompt explicitly requests a PR, or when the plan's delivery.md contains an explicit `- [ ] Create PR` step that the user has confirmed. The trigger is an explicit instruction, not the execution context.
 **Other exception**: Plain feature branch (non-worktree) requires justification.
 
-See [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md) and especially the [Worktree Mode](../../repo-governance/development/workflow/trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) section for workflow details.
+See [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md) and especially the [Main Branch vs Worktree Mode](../../repo-governance/development/workflow/trunk-based-development.md#main-branch-vs-worktree-mode) section for workflow details.
 
 ### Step 8: Grill the User (Mandatory — Post-Write)
 
 After all plan files are written, invoke the `grill-me` skill again to validate the plan with
 the user before signaling done.
 
-**Grilling format (MANDATORY — same rules as Step 1)**:
+**Multiple-options requirement (HARD RULE)**: Same as Step 1 — every validation question MUST
+present 2-4 concrete options. Use `AskUserQuestion` tool (preferred) or markdown question format.
+Never present a binary yes/no without offering design alternatives. See
+[Grilling-With-Options Convention](../../repo-governance/development/workflow/grilling-with-options.md).
 
-- One question at a time — never bundle
-- Every question **must** present **2–4 concrete options** with trade-off descriptions
-- Mark the recommended option **(Recommended)**
-
-Cover:
+Cover (each as a structured multiple-choice question):
 
 - Does the plan structure match the user's intent? Are all acceptance criteria captured?
 - Are there open questions that surfaced during writing?
@@ -209,6 +215,8 @@ Cover:
   and is each phase a natural pause (cohesive, safe-to-stop, clean resume)?
 - Are execution markers correct — `[AI]` default, `[HUMAN]` only for genuinely human-only steps,
   each `[HUMAN]` step with its handoff/resume signal and a legend present if any `[HUMAN]` is used?
+- Does `delivery.md` open with the `[AI]`/`[HUMAN]` executor legend, and is every step that
+  only a human can perform tagged `[HUMAN]` rather than `[AI]`?
 - **Harness-neutrality**: If the plan scope includes `.claude/agents/`, `.opencode/agents/`,
   or `repo-governance/` paths, confirm that no vendor-specific content was introduced into
   governance files. Reference the
@@ -269,14 +277,14 @@ When plan content (any of `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `deli
   `[AI]` path before resorting to `[HUMAN]`. Plans using `[HUMAN]` carry a legend; every `[HUMAN]`
   step states the action and the observable resume signal. `plan-checker` flags mis-marked steps
   and missing handoff signals as HIGH. See
-  [Plans Organization Convention §Execution Markers](../../repo-governance/conventions/structure/plans.md#execution-markers-ai-vs-human).
+  [Plans Organization Convention §Executor Tagging](../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule).
 - **Phase gates and natural pauses (HARD RULE)**: every phase ends in a natural pause and closes
   with a `### Phase N Gate` (must-pass, independently verifiable checks, each marked `[AI]`/
   `[HUMAN]`) plus a **Pause Safety** note (safe-to-stop state + resume command). A phase is not
   complete until its gate is green; execution never starts phase N+1 while phase N's gate is
   failing. `plan-checker` flags a missing gate, missing Pause Safety note, non-verifiable gate
   items, or a non-cohesive phase as HIGH. See
-  [Plans Organization Convention §Phase Gates and Natural Pauses](../../repo-governance/conventions/structure/plans.md#phase-gates-and-natural-pauses-hard-rule).
+  [Plans Organization Convention §Phases as Natural Pauses With Clear Gates](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule).
 - **Suggested executor annotation**: when a delivery checkbox names a domain that maps cleanly
   to a specialized agent (a specific language file extension, a specific app context, a content
   domain, a governance concern), add a `_Suggested executor: <agent-name>_` annotation under the
@@ -309,7 +317,7 @@ Unsolicited PR steps conflict with Trunk Based Development. `plan-checker` will 
 - [plan-execution workflow](../../repo-governance/workflows/plan/plan-execution.md) - Execute plans (calling context orchestrates; no dedicated subagent); invokes the `grill-me` skill to stress-test unresolved design decisions before execution begins
 - `plan-execution-checker` - Validates completed work
 - `plan-fixer` - Fixes plan issues
-- `grill-me` skill - Stress-test open design decisions before committing to implementation; invoke via the `grill-me` Skill when requirements have unresolved branches
+- `grill-me` skill - Stress-test open design decisions before committing to implementation; every question presents 2-4 concrete options (use `AskUserQuestion` tool in Claude Code or markdown format); invoke via the `grill-me` Skill when requirements have unresolved branches
 
 **Remember**: Good plans are executable blueprints, not vague intentions. Make them specific, structured, and actionable.
 
@@ -432,23 +440,48 @@ Every delivery plan MUST include these sections. Plans without them will be flag
 When writing the delivery checklist (Step 6), ALWAYS include ALL of the following sections.
 These are non-negotiable.
 
+**0. Executor Legend** (the FIRST lines of `delivery.md`, before `## Worktree`):
+
+```markdown
+> **Legend** — `[AI]`: an agent performs the step (the default; unmarked steps are `[AI]`).
+> `[HUMAN]`: only a human can do it (physical action, out-of-band approval, real-secret or
+> privileged-credential handling). `[AI+HUMAN]`: agent prepares, human approves or finishes.
+>
+> **Phase Gate** — every phase ends with a `### Phase N Gate` (must-pass verification) plus a
+> `> **Pause Safety**:` note (the safe-to-stop state and the single command to resume). A phase
+> is not complete until its gate is green; do not start phase N+1 while any gate check fails.
+```
+
 **1. Phase 0: Environment Setup and Baseline** (the FIRST phase of every delivery checklist,
-delegated to `repo-setup-manager`):
+delegated to `repo-setup-manager`; note the per-checkbox `[AI]` tags and the closing gate +
+Pause Safety note — the same shape every phase must follow):
 
 ```markdown
 ## Phase 0: Environment Setup and Baseline
 
 > _Executor: repo-setup-manager_
 
-- [ ] Install dependencies in the root worktree: `npm install`
+- [ ] [AI] Install dependencies in the root worktree: `npm install`
       — acceptance: exits 0, `node_modules/` synchronized
-- [ ] Converge the full polyglot toolchain in the root worktree: `npm run doctor -- --fix`
+- [ ] [AI] Converge the full polyglot toolchain in the root worktree: `npm run doctor -- --fix`
       — acceptance: exits 0 with no unresolved drift
-- [ ] [Project-specific setup: env vars, DB, Docker, etc.]
-- [ ] Run existing tests to establish baseline: `nx run [project-name]:test:quick`
+- [ ] [AI] [Project-specific setup: env vars, DB, Docker, etc.]
+- [ ] [AI] Run existing tests to establish baseline: `nx run [project-name]:test:quick`
       — acceptance: baseline pass/fail count recorded; all preexisting failures documented
-- [ ] Resolve all preexisting failures before proceeding
+- [ ] [AI] Resolve all preexisting failures before proceeding
       — acceptance: no preexisting failures remain unresolved
+
+### Phase 0 Gate
+
+> All checks below must pass before starting Phase 1.
+
+- [ ] [AI] `npm install` exited 0 and `npm run doctor -- --fix` reports no unresolved drift
+- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` baseline recorded and
+      every preexisting failure resolved (zero unresolved)
+
+> **Pause Safety**: only the local toolchain was verified and the baseline recorded — no feature
+> work exists yet. Safe to stop indefinitely. To resume: re-run the baseline command and confirm
+> it is still clean.
 ```
 
 **2. Local Quality Gates** (before any push step in each phase):
@@ -500,6 +533,28 @@ Add `test:integration` and `test:e2e` if relevant to the plan scope.
 - [ ] Preexisting fixes get their own commits, separate from plan work
 - [ ] Do NOT bundle unrelated changes into a single commit
 ```
+
+**6. Phase Gate Template** (every phase MUST end with one — see
+[Plans Convention §Phases as Natural Pauses With Clear Gates](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule)).
+A phase MUST end at a **natural pause** (clean, safe-to-stop-indefinitely git state) and close with an
+explicit gate. If two adjacent phases cannot each stand alone as a safe stop, MERGE them — never invent
+a pause that is not real:
+
+```markdown
+### Phase N Gate
+
+> All checks below must pass before starting Phase N+1. If any check fails, fix it in Phase N
+> before proceeding.
+
+- [ ] [AI] `<verbatim command>` — expected: `<observable result>`
+- [ ] [HUMAN] `<physical/external check only a human can confirm>` — expected: `<result>`
+
+> **Pause Safety**: `<self-consistent state reached by this phase>`. Safe to stop. To resume:
+> `<single re-verify command>`.
+```
+
+Phase 0 and the final verification phase are legitimate gate-bearing phases even though they produce
+no commit.
 
 ### Adapting to Plan Context
 

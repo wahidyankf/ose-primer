@@ -63,6 +63,8 @@ The `plans/` folder serves as the workspace for project planning activities:
 
 **Key Distinction**: Plans are temporary working documents that eventually move to `done/` and may be archived, while `docs/` contains permanent documentation that evolves over time.
 
+**No secrets in plans**: Plan documents are committed to git — including `done/` history, which is permanent. Never put a secret value (credentials, SSH keys, tokens, API keys, sensitive usernames, or connection strings with real credentials) in any plan. Name the variable and state where the value lives, never the value itself. This is a hard iron rule — see [No Secrets in Committed Files Convention](../../development/quality/no-secrets-in-committed-files.md).
+
 ## ️ Folder Structure
 
 The `plans/` folder is organized into four main components:
@@ -248,7 +250,7 @@ If any criterion is unmet, use the five-document layout. If the plan grows past 
 4. **Product requirements (condensed PRD)** — user stories (`As a … I want … So that …`), Gherkin acceptance criteria, product scope
 5. **Technical approach** — architecture, design decisions, implementation approach
 6. **Worktree** — declared worktree path (`worktrees/<plan-identifier>/`) and provisioning command (see [Worktree Specification](#worktree-specification))
-7. **Delivery checklist** — phased `- [ ]` items with one concrete action per checkbox
+7. **Delivery checklist** — phased `- [ ]` items with one concrete action per checkbox; opens with the `[AI]`/`[HUMAN]` executor legend; every phase ends with a `### Phase N Gate` and a Pause Safety note (see Executor Tagging and Phases as Natural Pauses With Clear Gates above)
 8. **Quality gates** — local gates + CI gates that must pass
 9. **Verification** — how to confirm the plan is done
 
@@ -271,7 +273,7 @@ If the author cannot comfortably fit both the condensed BRD and condensed PRD se
 - **brd.md** — **Business Requirements Document**: business goal and rationale ("why are we doing this"), business impact, affected roles, business-level success metrics, business-scope Non-Goals, business risks and mitigations. Content-placement container, not a sign-off artifact — code review is the only approval gate in this repo.
 - **prd.md** — **Product Requirements Document**: product overview, personas, user stories (`As a … I want … So that …`), acceptance criteria in Gherkin, product scope (in-scope + out-of-scope features), product-level risks.
 - **tech-docs.md**: architecture, design decisions with rationale, file-impact analysis, mechanics, dependencies, risks, rollback. No step-by-step checklist.
-- **delivery.md**: sequential, ticked checklist of executable steps (`- [ ]`), organized by phase if needed. Plan-execution workflow reads this file to drive execution; `plan-execution-checker` reads it to verify completion.
+- **delivery.md**: sequential, ticked checklist of executable steps (`- [ ]`), organized by phase if needed. Plan-execution workflow reads this file to drive execution; `plan-execution-checker` reads it to verify completion. Opens with the `[AI]`/`[HUMAN]` executor legend; each phase ends with a `### Phase N Gate` (must-pass verification) followed by a Pause Safety note.
 
 ### Content-Placement Rules (brd.md vs prd.md)
 
@@ -354,61 +356,74 @@ Plans are executed by execution-grade (sonnet-tier) agents, not planning-grade a
 
 **Acceptance Criteria**: All user stories in `prd.md` (or the condensed PRD section of a single-file plan's `README.md`) must include testable acceptance criteria using Gherkin format. See [Acceptance Criteria Convention](../../development/infra/acceptance-criteria.md) for complete details.
 
-### Execution Markers: `[AI]` vs `[HUMAN]`
+### Executor Tagging — [AI] vs [HUMAN] (HARD RULE)
 
-Most plan steps are executed by an AI agent, but some steps only a human can perform — physical actions (e.g., unplug a power cable, swap a drive, press a hardware button), out-of-band approvals (sign a contract, pay an invoice), or an interactive credential/SSO gate an agent cannot drive. Marking each step's executor makes the human handoff explicit so execution never silently stalls on — or worse, fakes — a step an agent cannot do.
+Every delivery checklist item MUST make clear **who can execute it**. Some work cannot be done by an AI agent at all — physical actions (unplug a power cable, swap a drive, press a hardware button), out-of-band approvals (approve a production deploy, accept a contract), or actions requiring real credentials or authority the agent must not hold. Marking executor capability up front lets the executor hand off cleanly to the human at the right moment instead of fabricating a completion, and tells the human exactly what they must do personally.
 
-**Markers** (prefix the checkbox text, immediately after the `- [ ]`):
+**Tags**:
 
-- **`[AI]`** — an agent performs the step. This is the **default**: an unmarked checkbox is `[AI]`.
-- **`[HUMAN]`** — only a human can perform the step (physical/hardware action, external account/legal/payment step, or an interactive credential gate an agent cannot script).
+- **`[AI]`** — an AI agent can fully perform the step (edit files, run commands, call tools). This is the **default**: an unmarked checkbox is treated as `[AI]`.
+- **`[HUMAN]`** — only a human can perform the step. Reserve for physical-world actions, out-of-band approvals or sign-offs, actions requiring real secrets or privileged credentials the agent must not access, and decisions requiring real-world authority (legal, financial, safety).
+- **`[AI+HUMAN]`** (optional) — AI prepares or drafts; a human reviews, approves, or performs the irreversible final action.
 
-**Rules**:
-
-- **AI-first**: Prefer engineering an `[AI]` path before resorting to `[HUMAN]`. If a step looks human-only but can be turned into a scripted, sanctioned action (e.g., a copy script under `scripts/` rather than a manual file move), write the `[AI]` step instead. Reserve `[HUMAN]` for what genuinely cannot be automated.
-- **Legend required**: A plan that uses any `[HUMAN]` marker MUST include a short legend defining `[AI]` and `[HUMAN]` near the top of `delivery.md` (or the single-file plan's delivery section).
-- **Explicit handoff**: Every `[HUMAN]` step MUST state (a) exactly what the human does and (b) the observable signal the agent checks to confirm it is done before continuing (e.g., "operator confirms the drive LED is green; verify with `lsblk | grep sdb`").
-- **Execution stops at `[HUMAN]`**: During execution, an agent MUST NOT attempt a `[HUMAN]` step. It pauses, surfaces the step to the operator, and resumes only after the human confirms completion.
-
-`plan-checker` flags (HIGH): a `[HUMAN]` step that is actually AI-executable (should be `[AI]`, or re-engineered into a sanctioned `[AI]` path); an `[AI]`/unmarked step that requires a genuinely human-only action (mis-marked); and a `[HUMAN]` step missing its handoff signal.
-
-### Phase Gates and Natural Pauses (HARD RULE)
-
-Every phase in `delivery.md` MUST be a **natural pause** — a cohesive unit of work that ends in an independently verifiable, safe-to-stop state — and MUST close with an explicit **Phase Gate**.
-
-**Each phase MUST end with**:
-
-1. A `### Phase N Gate` heading containing a must-pass verification checklist. Each gate item is an explicit, runnable check with an acceptance outcome (the same Execution-Grade Clarity rule as ordinary steps) and carries its executor marker (`[AI]`/`[HUMAN]`).
-2. A **Pause Safety** note (a blockquote) stating both the safe-to-stop state reached after the phase (what now exists, what does not yet) and the single command or short sequence to **resume** (re-establish confidence the phase is still green).
-
-**Barrier rule**: A phase is **not complete until its gate is green**. Execution MUST NOT start phase N+1 while any check in phase N's gate is failing — fix it within phase N first. This makes every phase boundary a deliberate checkpoint, not a silent hand-off.
-
-**"Natural pause" means**: the phase's work is cohesive (one concern, layer, or capability), it ends with a concrete artifact, and the next phase can start cleanly from the paused state without carrying hidden in-flight work. Phase 0 (Environment Setup and Baseline) follows the same rule — it ends with a `### Phase 0 Gate` and a Pause Safety note.
-
-`plan-checker` flags (HIGH): a phase with no `### Phase N Gate`; a gate with no **Pause Safety** note; gate items that are not independently verifiable; or a phase whose work is not a natural pause (spread across unrelated concerns with no safe stop point).
-
-**Example** (abridged):
+**Placement**: the tag goes at the START of the checkbox text, immediately after `- [ ]`:
 
 ```markdown
-## Phase 1: gitignore Hardening
-
-- [ ] Edit `.gitignore`: append `*.tfstate`, `*.tfvars`, `!*.tfvars.example`
-      — acceptance: `grep -E '^\*\.tfstate$' .gitignore` matches.
-
-### Phase 1 Gate
-
-> All checks must pass before starting Phase 2.
-
-- [ ] `[AI]` `grep -E '^\*\.tfstate$' .gitignore` matches.
-- [ ] `[AI]` The `chore(gitignore): …` commit is on `main` (`git log --oneline -1`).
-
-> **Pause Safety**: Only `.gitignore` changed — no secret imported yet. Safe to stop
-> indefinitely. To resume: re-run the `grep` proof above.
+- [ ] [AI] Edit `apps/crud-be-ts-effect/src/middleware/auth.ts`: … — acceptance: …
+- [ ] [HUMAN] Unplug the power cable to the test rig and confirm the LED is off — acceptance: operator confirms power removed
 ```
+
+**Legend (required)**: every `delivery.md` (or a single-file plan's Delivery Checklist section) MUST open with a short legend defining the tags it uses and stating that unmarked steps are `[AI]`:
+
+```markdown
+> **Legend** — `[AI]`: an agent performs the step (the default; unmarked steps are `[AI]`).
+> `[HUMAN]`: only a human can do it (physical action, out-of-band approval, real-secret or
+> privileged-credential handling). `[AI+HUMAN]`: agent prepares, human approves or finishes.
+```
+
+**Default bias**: prefer `[AI]` for anything an agent can mechanically do; reserve `[HUMAN]` for what is genuinely impossible or unsafe for AI. When a sanctioned channel lets an agent do something that looks human-only (for example, copying a real secret via an `[AI]`-authored script through the [`guard-env-file-access`](../../development/quality/env-file-access.md) sanctioned path), it stays `[AI]` — document the channel inline.
+
+**Execution semantics**: when the [plan-execution workflow](../../workflows/plan/plan-execution.md) reaches a `[HUMAN]` item, it STOPS, surfaces the item to the user with the instruction and the acceptance criterion, and waits for the human to confirm completion before continuing. A `[HUMAN]` step is a legitimate, expected stop — it overrides the "never stop between phases" execution default.
+
+**Enforcement**: `plan-checker` flags as **HIGH** any delivery checkbox describing an action no agent can perform (physical or out-of-band) that is tagged `[AI]` or left unmarked, and flags a missing top-of-file legend as **MEDIUM**. `plan-fixer` adds the legend and corrects mis-tags.
+
+### Phases as Natural Pauses With Clear Gates (HARD RULE)
+
+Every phase in a delivery checklist MUST be designed as a **natural pause point** that ends with a **clear gate**. A reader — human or AI — must be able to stop after any phase and find the repository in a coherent, non-broken state.
+
+**Natural pause point**: at every phase boundary the working tree is internally consistent — code compiles, tests pass, nothing is half-applied, no build is knowingly broken. No phase ends mid-refactor or carries a known-red state into the next phase.
+
+**Clear gate**: every phase ends with a `### Phase N Gate` subsection — a must-pass verification checklist whose items state the exact commands and the observable acceptance criterion. Phase N+1 MUST NOT begin while any check in phase N's gate is failing. Gate items carry executor tags like any other checkbox (usually `[AI]` verification commands; a gate MAY be a `[HUMAN]` approval, which makes the boundary a hand-off point — see [Executor Tagging](#executor-tagging--ai-vs-human-hard-rule) above).
+
+**Pause Safety note**: immediately after each `### Phase N Gate`, add a short **Pause Safety** blockquote stating (a) the safe-to-stop state reached after the phase and (b) the single command to resume or re-verify. This makes the natural-pause property explicit and auditable.
+
+**Template**:
+
+```markdown
+## Phase N: <name>
+
+- [ ] [AI] <work item> — acceptance: <observable outcome>
+- [ ] [AI] <work item> — acceptance: <observable outcome>
+
+### Phase N Gate
+
+> All checks below must pass before starting Phase N+1. If any check fails, fix it in Phase N
+> before proceeding.
+
+- [ ] [AI] `<verification command>` — <acceptance>
+- [ ] [AI] `<verification command>` — <acceptance>
+
+> **Pause Safety**: <what coherent state exists after this phase; what has and has not changed>.
+> Safe to stop. To resume: `<single command to re-verify>`.
+```
+
+Order phases so each builds on a green predecessor. Phase 0 (Environment Setup and Baseline) already follows this shape — its gate is the recorded clean baseline.
+
+**Enforcement**: `plan-checker` flags any phase lacking a `### Phase N Gate` as **HIGH**, and flags a gate lacking concrete verification commands or criteria, or a missing Pause Safety note, as **MEDIUM**. `plan-execution-checker` verifies each phase gate was satisfied before the next phase's work began (via git history). `plan-fixer` adds missing gates and Pause Safety notes.
 
 ### Applicability (Execution Markers + Phase Gates)
 
-Both HARD RULES above — Execution Markers and Phase Gates — apply to **net-new plans at authoring time**: a plan created after this convention landed MUST comply from creation, and `plan-checker` flags missing markers or gates as HIGH on those plans.
+Both HARD RULES above — Executor Tagging and Phases as Natural Pauses With Clear Gates — apply to **net-new plans at authoring time**: a plan created after this convention landed MUST comply from creation, and `plan-checker` flags missing markers or gates as HIGH on those plans.
 
 **In-progress plans authored before this convention are grandfathered and retrofitted lazily**: a plan already under `plans/in-progress/` when the convention landed is not retroactively invalid. Each phase gains its `[AI]`/`[HUMAN]` markers and its `### Phase N Gate` + **Pause Safety** note the next time that phase is touched during execution (the executor adds them as it works the phase). Do NOT bulk-fabricate gate checks for unstarted phases of a pre-existing plan — fabricated, ungroundable acceptance checks violate the anti-hallucination rule. `plan-checker` does not raise HIGH findings against grandfathered in-progress plans solely for missing markers/gates; it flags them only on the phases being newly added or edited. New plans get no such grace.
 
@@ -477,8 +492,13 @@ Plans differ from `docs/` in several important ways:
 2. **Formalize when ready**: Create plan folder in `backlog/` when idea is mature
 3. **Follow naming convention**: Use `YYYY-MM-DD__[project-identifier]/` format with the creation date
 4. **Choose structure**: Default to the five-document multi-file layout (`README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`). Collapse to single-file only when all four exception criteria in the Structure Decision section are met simultaneously.
-5. **Create content**: Write overview, requirements, tech docs, and delivery sections
-6. **Update index**: Add plan to `backlog/README.md`
+5. **Resolve design decisions via structured grilling**: Before writing plan content, resolve all
+   open design decisions using the
+   [Grilling-With-Options Convention](../../development/workflow/grilling-with-options.md) — structured
+   multiple-choice questions with 2-4 concrete options, explicit trade-offs, and exactly one Recommended
+   option. Never ask open-ended "what approach?" questions without offering structured options.
+6. **Create content**: Write overview, requirements, tech docs, and delivery sections
+7. **Update index**: Add plan to `backlog/README.md`
 
 ### Starting Work
 
@@ -633,7 +653,8 @@ Use the verification tip from the [Linking Convention](../formatting/linking.md#
 - [Color Accessibility Convention](../formatting/color-accessibility.md) - Verified accessible palette, WCAG AA requirements, and color-blindness coverage for all diagram fills
 - [Worktree Path Convention](./worktree-path.md) - Worktree routing to `worktrees/<name>/` (referenced by the Worktree Specification rule above)
 - [Plan Anti-Hallucination Convention](../../development/quality/plan-anti-hallucination.md) - Pre-write verification recipes, repo-grounding rule, refuse-on-uncertainty, anti-pattern catalog (AP-1 through AP-10), specialized-executor annotation; consumed by the Execution-Grade Clarity rule above and by the four plan agents
-- [No Secrets in Committed Files Convention](../../development/quality/no-secrets-in-committed-files.md) - Iron rule prohibiting system secrets in any committed file; plans are explicitly in-scope (consumed by the No Secrets HARD RULE in Plan Contents above)
+- [No Secrets in Committed Files Convention](../../development/quality/no-secrets-in-committed-files.md) - Hard iron rule prohibiting secret values in any committed file, including plans and their permanent `done/` history
+- [Grilling-With-Options Convention](../../development/workflow/grilling-with-options.md) - Every grill question during plan creation (pre-write, post-write) MUST present 2-4 concrete options with trade-off descriptions; open-ended questions without options are FORBIDDEN; consumed by plan-maker Steps 1 and 8
 
 **Development Guides**:
 
@@ -666,6 +687,15 @@ Use the verification tip from the [Linking Convention](../formatting/linking.md#
 - Always update subfolder README.md when moving plans
 - Keep descriptions current and accurate
 - Remove completed plans from in-progress index promptly
+
+### Never Put Secrets in Plans
+
+Plans are committed to git, so the [No Secrets in Committed Files](../../development/quality/no-secrets-in-committed-files.md) hard iron
+rule applies in full. Never paste system secrets (SSH/private keys, passwords, API tokens, privileged
+usernames, certificates, connection strings, and similar) into any plan document. When a plan must
+reference a secret, name the environment variable (e.g. `DATABASE_URL`) or use a placeholder
+(`<API_TOKEN>`); the real value lives in an uncommitted `.env*` file (except `.env.example`) or
+another gitignored file.
 
 ### Archive Completed Plans
 

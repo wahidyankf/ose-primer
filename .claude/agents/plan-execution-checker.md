@@ -87,6 +87,7 @@ Validate that completed plan implementation:
 - All implementation steps checked and documented
 - All per-phase validation completed
 - All phase acceptance criteria verified
+- Each `### Phase N Gate` passed before the next phase's work began; `[HUMAN]` steps show genuine human-confirmation evidence (see Step 5g)
 - Progress tracking is comprehensive
 
 ### 4. Code Quality
@@ -174,8 +175,8 @@ Update status to "Complete", add summary and recommendation (approve/revise).
 
 **Related Conventions:**
 
-- [Plans Organization Convention §Execution Markers](../../repo-governance/conventions/structure/plans.md#execution-markers-ai-vs-human) - `[AI]`/`[HUMAN]` marker rules, legend, handoff/resume signal requirement (validated in Step 5f-gates)
-- [Plans Organization Convention §Phase Gates and Natural Pauses](../../repo-governance/conventions/structure/plans.md#phase-gates-and-natural-pauses-hard-rule) - Phase gate barrier rule, Pause Safety requirement (validated in Step 5f-gates)
+- [Plans Organization Convention §Executor Tagging](../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule) - `[AI]`/`[HUMAN]` marker rules, legend, handoff/resume signal requirement (validated in Step 5f-gates)
+- [Plans Organization Convention §Phases as Natural Pauses With Clear Gates](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule) - Phase gate barrier rule, Pause Safety requirement (validated in Step 5f-gates)
 
 **Remember**: This is the final quality gate. Be thorough, independent, and uncompromising on quality.
 
@@ -340,8 +341,8 @@ After verifying archival (Step 5d), verify that execution actually happened insi
 ### 10. Phase Gate and Execution Marker Post-Execution Validation (Step 5f-gates — MANDATORY)
 
 After verifying worktree usage (Step 5e), validate that execution respected the phase gate barrier rule and surfaced every `[HUMAN]` step. These conventions are defined at
-[Plans Organization Convention §Execution Markers](../../repo-governance/conventions/structure/plans.md#execution-markers-ai-vs-human)
-and [§Phase Gates and Natural Pauses](../../repo-governance/conventions/structure/plans.md#phase-gates-and-natural-pauses-hard-rule).
+[Plans Organization Convention §Executor Tagging](../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule)
+and [§Phases as Natural Pauses With Clear Gates](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule).
 
 #### What to Validate
 
@@ -372,7 +373,7 @@ and [§Phase Gates and Natural Pauses](../../repo-governance/conventions/structu
 
 ### 11. Anti-Hallucination Post-Execution Validation (Step 5f — MANDATORY HARD RULE)
 
-After verifying worktree usage (Step 5e), verify that every factual claim in `delivery.md` (file paths, Nx targets, package versions, function names, agent names, test names, behavior claims) still holds against the post-execution repo state. Hallucinated claims that survived authoring may have been silently fabricated by the executor — this step catches them.
+After verifying phase gates and execution markers (Step 5f-gates), verify that every factual claim in `delivery.md` (file paths, Nx targets, package versions, function names, agent names, test names, behavior claims) still holds against the post-execution repo state. Hallucinated claims that survived authoring may have been silently fabricated by the executor — this step catches them.
 
 #### What to Validate
 

@@ -115,7 +115,11 @@ Audit all plan files (`README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery
 - Acceptance criteria are testable
 - Git workflow is specified
 - **TDD-shaped steps**: Any checklist item that ships code MUST have a corresponding test-first step (Red→Green→Refactor structure). Flag as **HIGH** any code delivery item that does not include a failing-test step before the implementation step. See [Test-Driven Development Convention](../../repo-governance/development/workflow/test-driven-development.md) for required TDD step shapes.
+- **TDD phase separation (HARD RULE)**: RED, GREEN, and REFACTOR must each be their own `- [ ]` checkbox. A single checkbox that combines multiple phases (e.g., `- [ ] Write test, implement, and refactor feature X`) is a HARD RULE violation. Flag as **HIGH**. See [TDD Shape for Delivery Checklists](../../repo-governance/development/workflow/test-driven-development.md#tdd-shape-for-delivery-checklists).
+- **Non-code step format**: Steps that do NOT ship code (doc edits, config changes, file creation, governance updates) must use the direct action + acceptance criterion format (`[Action verb] [file] — acceptance: [outcome]`) instead of RED/GREEN/REFACTOR. Flag misapplied TDD shape on non-code steps as **MEDIUM**.
 - **Execution-grade clarity (HARD RULE)**: every checkbox MUST name explicit file path(s) (or maximum-possible-detail target when path is unknowable), verbatim shell command(s) when applicable, and a concrete acceptance criterion. Flag as **HIGH** any checkbox whose action is not unambiguously executable by a sonnet-tier agent without consulting additional context — bare "implement X", "set up Y", "configure Z", "add caching" are violations. See [Plans Organization Convention §Execution-Grade Clarity](../../repo-governance/conventions/structure/plans.md#execution-grade-clarity-hard-rule).
+- **Executor tagging (HARD RULE)**: every checkbox declares `[AI]` / `[HUMAN]` / `[HUMAN → AI]` (unmarked = `[AI]`), with a legend at the top of the checklist. Flag any untagged or `[AI]`-tagged human-only step (physical acts, hardware/BIOS, external auth) as **HIGH**. Validated in detail by Step 5h (rule 14).
+- **Phase gate & natural pause (HARD RULE)**: every phase ends with a `### Phase N Gate` (must-pass checklist + Pause Safety note) and reaches a safe-to-stop state. Flag a phase missing its gate as **HIGH**; a non-pause phase that should be merged as **MEDIUM**. Validated in detail by Step 5i (rule 15).
 
 #### PR Step Authorization Check (per [Git Push Default Convention](../../repo-governance/development/workflow/git-push-default.md))
 
@@ -234,7 +238,7 @@ Update status to "Complete", add summary statistics and prioritized recommendati
 - [CLAUDE.md](../../CLAUDE.md) - Primary guidance
 - [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md) - Plan standards
 - [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow standards
-- [Test-Driven Development Convention](../../repo-governance/development/workflow/test-driven-development.md) - TDD-shaped delivery checklist requirement (RED→GREEN→REFACTOR)
+- [Test-Driven Development Convention](../../repo-governance/development/workflow/test-driven-development.md) - TDD-shaped delivery checklist requirement (RED→GREEN→REFACTOR); HARD RULE: never combine phases into one checkbox; non-code steps use direct action + acceptance criterion format; `plan-executor` and `swe-*-dev` agents follow TDD inside worktrees
 
 **Related Agents / Workflows:**
 
@@ -514,56 +518,7 @@ This prevents re-verification thrash and keeps the audit deterministic.
 - Bare unlabeled non-trivial claim (defaults to `[Unverified]`): **MEDIUM** per claim
 - Missing `web-research-maker` delegation when threshold (any external claim not single-shot URL) was crossed: **MEDIUM** finding
 
-### 13. Execution Marker and Phase Gate Validation (Step 5h — MANDATORY HARD RULE)
-
-After completing the anti-hallucination scan (Step 5f), validate execution markers and phase gates in `delivery.md` (or the delivery section of a single-file plan). Both rules are defined in the [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md#execution-markers-ai-vs-human) and [Phase Gates and Natural Pauses](../../repo-governance/conventions/structure/plans.md#phase-gates-and-natural-pauses-hard-rule).
-
-#### What to Validate — Execution Markers
-
-1. **Mis-marked `[HUMAN]` step** — the action is actually AI-executable (can be scripted via a sanctioned `scripts/` action or standard CLI). The `[HUMAN]` marker must be reserved for genuinely human-only actions (physical/hardware, out-of-band approvals, interactive credential/SSO gates an agent cannot script).
-   - Finding: **HIGH** per offending step.
-
-2. **Mis-marked `[AI]` / unmarked step that requires a human** — the action is genuinely human-only (physical hardware swap, paying an invoice, signing a contract, SSO consent page) but carries `[AI]` or no marker.
-   - Finding: **HIGH** per offending step.
-
-3. **`[HUMAN]` step missing its handoff/resume signal** — every `[HUMAN]` step MUST state (a) exactly what the human does and (b) the observable signal the agent checks to confirm it is done before continuing (e.g., "operator confirms LED is green; verify with `lsblk | grep sdb`").
-   - Finding: **HIGH** per offending step.
-
-4. **Legend missing when `[HUMAN]` markers are present** — a plan that uses any `[HUMAN]` marker MUST include a short legend near the top of `delivery.md` (or the single-file delivery section) defining `[AI]` and `[HUMAN]`.
-   - Finding: **HIGH** (one finding, not per occurrence).
-
-#### What to Validate — Phase Gates
-
-1. **Phase with no `### Phase N Gate`** — every phase (including Phase 0) MUST close with a `### Phase N Gate` block containing a must-pass verification checklist. A phase without a gate cannot be independently verified.
-   - Finding: **HIGH** per phase missing a gate.
-
-2. **Phase gate with no Pause Safety note** — every `### Phase N Gate` MUST be followed by a `> **Pause Safety**:` blockquote stating the safe-to-stop state and the single command or short sequence to resume.
-   - Finding: **HIGH** per gate missing the note.
-
-3. **Non-independently-verifiable gate items** — each item inside a `### Phase N Gate` must be an explicit, runnable check with an observable acceptance outcome (same Execution-Grade Clarity standard as ordinary steps). Vague items like "verify the phase is done" or references to subjective judgment fail this test.
-   - Finding: **HIGH** per offending gate item.
-
-4. **Phase whose work is not a natural pause** — a phase that spreads across unrelated concerns with no clean safe-stop point (e.g., one phase combining both environment setup AND business logic AND archival) is a structural violation. The phase's work must be cohesive: one concern or layer ending in a concrete artifact.
-   - Finding: **HIGH** per offending phase.
-
-#### Finding Severity Summary
-
-| Condition                                           | Severity |
-| --------------------------------------------------- | -------- |
-| `[HUMAN]` step actually AI-doable                   | HIGH     |
-| `[AI]`/unmarked step requiring genuine human action | HIGH     |
-| `[HUMAN]` step missing handoff/resume signal        | HIGH     |
-| Legend missing when `[HUMAN]` markers exist         | HIGH     |
-| Phase with no `### Phase N Gate`                    | HIGH     |
-| Gate with no `> **Pause Safety**:` note             | HIGH     |
-| Gate item not independently verifiable              | HIGH     |
-| Phase is not a natural pause (incoherent scope)     | HIGH     |
-
-#### Grandfathering — In-Progress Plans Predating the Convention
-
-Per [Plans Organization Convention §Applicability](../../repo-governance/conventions/structure/plans.md#applicability-execution-markers--phase-gates), the Execution-Marker and Phase-Gate HARD RULES apply to **net-new plans at authoring time**. Plans already under `plans/in-progress/` when the convention landed are **grandfathered**: do NOT raise HIGH findings against them solely for missing `[AI]`/`[HUMAN]` markers or missing `### Phase N Gate` / Pause Safety notes. Flag those omissions only on phases being **newly added or edited** in the plan under review. A net-new plan (one being authored now) receives no grace and is held to the full rules above. When skipping a grandfathered plan for these two rules, note it as a below-threshold informational item, not a HIGH finding.
-
-### 14. Harness-Neutrality Scan (Step 5g — CONDITIONAL)
+### 13. Harness-Neutrality Scan (Step 5g — CONDITIONAL)
 
 Run this step ONLY when the plan touches agents, skills, rules, or `repo-governance/` paths. Skip entirely when the plan touches only application code and tests.
 
@@ -605,3 +560,60 @@ Reports CRITICAL if a plan skips this check when in scope.
 - Skill body contains harness-specific syntax: **HIGH**
 - Manual OpenCode skill mirror: **HIGH**
 - Governance change placed under vendor-specific heading: **MEDIUM**
+
+### 14. Executor-Tag Validation (Step 5h — MANDATORY HARD RULE)
+
+Enforces [Plans Convention §Executor Tagging](../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule).
+Every plan's delivery checklist marks who executes each step so an execution agent never attempts a
+physically impossible action.
+
+#### What to Validate
+
+1. **Legend present** — `delivery.md` (or a single-file plan's `## Delivery Checklist` section) defines an
+   executor-tag legend (`[AI]` / `[HUMAN]` / `[HUMAN → AI]`) at the top. Missing legend: **HIGH**.
+2. **Human-only steps are tagged `[HUMAN]`** — scan every checkbox for actions an agent cannot perform with
+   its tools: physical acts (unplug/replug, insert USB, press power, move hardware), BIOS/firmware/hardware
+   changes, external vendor-portal/console actions needing human auth/2FA/biometrics, account creation, or
+   any real-world-presence step. An untagged human-only step is **HIGH** (an execution agent would stall or
+   hallucinate success).
+3. **`[AI]` steps are genuinely AI-executable** — a step tagged `[AI]` (or unmarked, which defaults to
+   `[AI]`) that actually requires a human is **HIGH**. `[HUMAN → AI]` is the correct tag when a human
+   supplies a value an agent then consumes.
+4. **Tagging is orthogonal to suggested-executor** — do NOT conflate `[AI]`/`[HUMAN]` with
+   `_Suggested executor: <agent>_`; both may appear on one step. Confusing the two is **MEDIUM**.
+
+#### Finding Severity
+
+- Missing executor-tag legend: **HIGH**
+- Untagged (or `[AI]`-tagged) human-only step: **HIGH** per occurrence
+- Executor-tag / suggested-executor conflation: **MEDIUM**
+
+### 15. Phase-Gate & Natural-Pause Validation (Step 5i — MANDATORY HARD RULE)
+
+Enforces [Plans Convention §Phased Delivery: Natural Pauses and Phase Gates](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule).
+Every phase must end at a natural pause and close with an explicit gate.
+
+#### What to Validate
+
+1. **Every phase has a `### Phase N Gate`** — each phase (including Phase 0 and the final verification phase)
+   ends with a gate subsection. Missing gate: **HIGH** per phase.
+2. **Gate has both required parts** — (a) a must-pass verification checklist opening with an "all checks
+   must pass before starting Phase N+1" line, executor-tagged with explicit commands + expected results,
+   and (b) a `**Pause Safety**` blockquote stating the safe-to-stop state and the single resume command.
+   Missing either part: **MEDIUM**.
+3. **Each phase is a natural pause** — after the phase, the repo reaches a self-consistent, safe-to-stop
+   state (clean tree or intentional no-op; no half-applied migration, broken build, staged secret, or
+   resource left mid-mutation). A phase whose stop-state is not safe is **MEDIUM**, with the remedy noted:
+   **merge** it with an adjacent phase rather than weakening the gate.
+4. **No invented pauses** — if two adjacent phases each claim a pause that is not actually safe to stop at,
+   flag the split as **MEDIUM** and recommend merging.
+
+#### Grandfathering — In-Progress Plans Predating the Convention
+
+Per [Plans Organization Convention §Applicability](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule), the Execution-Marker and Phase-Gate HARD RULES apply to **net-new plans at authoring time**. Plans already under `plans/in-progress/` when the convention landed are **grandfathered**: do NOT raise HIGH findings against them solely for missing `[AI]`/`[HUMAN]` markers or missing `### Phase N Gate` / Pause Safety notes. Flag those omissions only on phases being **newly added or edited** in the plan under review. A net-new plan (one being authored now) receives no grace and is held to the full rules above. When skipping a grandfathered plan for these two rules, note it as a below-threshold informational item, not a HIGH finding.
+
+#### Finding Severity
+
+- Phase missing its `### Phase N Gate`: **HIGH** per phase
+- Gate missing the verification checklist or the Pause Safety note: **MEDIUM** per phase
+- Phase that is not a genuine natural pause (should be merged): **MEDIUM** per phase
