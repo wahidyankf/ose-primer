@@ -299,7 +299,7 @@ rhino-cli docs validate-mermaid repo-governance/ .claude/
 # Only validate files staged in git (pre-commit use)
 rhino-cli docs validate-mermaid --staged-only
 
-# Only validate files changed since upstream (pre-push use)
+# Only validate files changed since upstream (batch use)
 rhino-cli docs validate-mermaid --changed-only
 
 # Output as JSON
@@ -314,7 +314,7 @@ rhino-cli docs validate-mermaid --max-label-len 20 --max-width 4
 - Scans markdown files in core directories (docs/, repo-governance/, .claude/, and root) by default
 - Validates Mermaid flowchart and graph blocks for structural issues
 - Non-flowchart types (sequenceDiagram, classDiagram, gantt, etc.) are silently ignored
-- The `--changed-only` flag limits the scan to files changed since upstream (used in pre-push hook)
+- The `--changed-only` flag limits the scan to files changed since upstream (available for batch use; not used in pre-push hook)
 - Exception: when BOTH width and depth exceed their thresholds, emits a warning instead of a failure
 
 ### agents sync

@@ -803,37 +803,45 @@ mirroring the existing link step; extend the link step's skip paths.
 > `repo-rules-maker`** so the sweep reaches every governance surface (conventions,
 > check-inventory, indexes, and any agent/skill text) — not only the obvious files.
 
-- [ ] [AI] Edit `repo-governance/conventions/formatting/diagrams.md`: state that the mermaid gate
+- [x] [AI] Edit `repo-governance/conventions/formatting/diagrams.md`: state that the mermaid gate
       runs **repo-wide minus `plans/done/` + noise dirs**, at **pre-commit staged-only** + the
       consolidated CI workflow (NOT pre-push) — acceptance: the doc matches the Phase 5 wiring;
       no stale pre-push claim remains.
-- [ ] [AI] Edit `repo-governance/conventions/writing/quality.md`: note that single-H1 and
+  - _Done 2026-06-07 (via repo-rules-maker). New "Gate scope and enforcement layers" subsection; only pre-push mention is the corrective "does **not** run at pre-push" statement._
+- [x] [AI] Edit `repo-governance/conventions/writing/quality.md`: note that single-H1 and
       non-skipping heading nesting are now **machine-enforced for prose** via
       `docs validate-heading-hierarchy` (both CLIs), scoped to the prose allowlist (`docs/`,
       `repo-governance/`, `plans/`−`done/`, root `*.md`, `specs/`, app/lib READMEs + `docs/`
       subtrees), and explicitly exempt for `.claude/**`/`.opencode/**`/`.amazonq/**` prompt/skill
       artifacts — acceptance: the scope + exemption are stated.
-- [ ] [AI] Edit `repo-governance/conventions/formatting/linking.md`: note that `#fragment`
+  - _Done 2026-06-07 (via repo-rules-maker). "Machine Enforcement" subsection added with allowlist scope + .claude/.opencode/.amazonq exemption (greps verified)._
+- [x] [AI] Edit `repo-governance/conventions/formatting/linking.md`: note that `#fragment`
       anchors are now validated against the target file's headings (`broken-anchor` finding,
       GFM-correct slug algorithm) — acceptance: anchor enforcement is documented.
-- [ ] [AI] Edit `repo-governance/development/quality/repository-validation.md`: list the three
+  - _Done 2026-06-07 (via repo-rules-maker). "Fragment Validation (Automated)" subsection + Link Validation extended (broken-anchor ×3 grep hits)._
+- [x] [AI] Edit `repo-governance/development/quality/repository-validation.md`: list the three
       markdown gates, the three enforcement layers, and the consolidated `validate-markdown.yml`
       workflow — acceptance: gates + workflow are listed.
-- [ ] [AI] **Propagate via `repo-rules-maker`** — run the governance propagation sweep so the new
+  - _Done 2026-06-07 (via repo-rules-maker). New "Markdown Quality Gates" section with three-layer table; gate greps validate-heading-hierarchy/pre-commit/anchor all ≥1._
+- [x] [AI] **Propagate via `repo-rules-maker`** — run the governance propagation sweep so the new
       enforcement is reflected across every related surface (conventions, check-inventory,
       governance indexes, and any agent/skill prompt text that references the old enforcement) —
       acceptance: the sweep is complete; no related surface still describes the stale
       pre-push-only / no-anchor / no-heading-enforcement state.
-- [ ] [AI] If any `.claude/` agent/skill text changed during propagation, run
+  - _Done 2026-06-07 (via repo-rules-maker). 10 surfaces updated: docs/reference/system-architecture/ci-cd.md (pr-validate-links → validate-markdown + pre-commit gates), github-actions-workflow-naming.md (workflow table), development/quality/code.md (+6m/6h, 11 steps), markdown.md (pre-commit section), post-push-ci-verification.md (+validate-markdown row), rhino-cli-go README + component-cli.md (--changed-only no longer pre-push), 3 specs READMEs (scenario counts + new feature row). No .claude/ files changed._
+- [x] [AI] If any `.claude/` agent/skill text changed during propagation, run
       `npm run generate:bindings` — acceptance: `git status` shows the generated `.opencode/`
       mirrors updated in lockstep (or no `.claude/` change occurred and this is a no-op).
-- [ ] [AI] Verify the edited governance docs pass all three gates (run the three measurement
+  - _Done 2026-06-07. No-op for the sweep (no .claude/ change). The earlier Phase-9 plan-maker.md anchor fix already ran generate:bindings and synced its mirror._
+- [x] [AI] Verify the edited governance docs pass all three gates (run the three measurement
       commands over `repo-governance/`) — acceptance: all exit 0.
+  - _Done 2026-06-07. mermaid 0/0 (17 files, 103 blocks); headings 0; links full-scan "All links valid"._
 
 ### Phase 11 Gate
 
-- [ ] [AI] `npm run lint:md` exits 0.
-- [ ] [AI] All documented facts are present in
+- [x] [AI] `npm run lint:md` exits 0.
+  - _Done 2026-06-07. Exit 0._
+- [x] [AI] All documented facts are present in
       `repo-governance/development/quality/repository-validation.md` — run
       `grep -c "validate-heading-hierarchy" repo-governance/development/quality/repository-validation.md`
       returns ≥ 1, AND
@@ -841,6 +849,7 @@ mirroring the existing link step; extend the link step's skip paths.
       returns ≥ 1, AND
       `grep -c "anchor" repo-governance/development/quality/repository-validation.md`
       returns ≥ 1 — acceptance: all three grep commands exit 0 with count ≥ 1.
+  - _Done 2026-06-07. Counts: validate-heading-hierarchy=1, pre-commit=2, anchor=3 — all ≥1._
 
 > **Pause Safety**: governance docs now match the tooling. Safe to stop. To resume: re-run the
 > three Nx validate targets full-scan.

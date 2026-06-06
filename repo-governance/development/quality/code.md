@@ -123,7 +123,7 @@ npx prettier --write [file-path]
 
 1. You run `git commit`
 2. Pre-commit hook triggers (`.husky/pre-commit` — a single `go run` line)
-3. `rhino-cli git pre-commit` orchestrates all 9 steps in order, failing fast:
+3. `rhino-cli git pre-commit` orchestrates all 11 steps in order, failing fast:
 
 | Step | Trigger                           | Action                                                                     | On failure |
 | ---- | --------------------------------- | -------------------------------------------------------------------------- | ---------- |
@@ -133,8 +133,10 @@ npx prettier --write [file-path]
 | 4    | always                            | `git add apps/crud-fs-ts-nextjs/content/`                                  | ignored    |
 | 5    | always                            | `npx lint-staged`                                                          | exit 1     |
 | 6    | `.ex`/`.exs` staged, `mix` found  | `mix format <files>` per project root, then `git add`                      | exit 1     |
+| 6m   | always                            | `rhino-cli docs validate-mermaid --staged-only` (Mermaid gate)             | exit 1     |
+| 6h   | always                            | `rhino-cli docs validate-heading-hierarchy --staged-only` (heading gate)   | exit 1     |
 | 7    | `docs/` staged                    | Validate + auto-fix naming, then `git add docs/ repo-governance/ .claude/` | exit 1     |
-| 8    | always                            | Validate markdown links (staged only)                                      | exit 1     |
+| 8    | always                            | Validate markdown links and anchors (staged only)                          | exit 1     |
 | 9    | always                            | `npm run lint:md`                                                          | exit 1     |
 
 1. Commit proceeds if no errors
@@ -164,8 +166,10 @@ Validates `.claude/` and `.opencode/` consistency before commit:
 
 **Markdown:**
 
-- Validates markdown links in staged files only (fast, targeted)
-- Validates all markdown files meet linting standards (comprehensive)
+- Validates Mermaid diagram structure in staged files only (step 6m, fast)
+- Validates heading hierarchy in staged prose files only (step 6h, fast)
+- Validates markdown links and anchors in staged files only (step 8, fast)
+- Validates all markdown files meet linting standards (step 9, comprehensive)
 
 **What Happens on Failure**:
 

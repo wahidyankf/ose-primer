@@ -65,6 +65,61 @@ This convention applies to:
 - **Content agents** - Any agent that validates file structure or conventions
 - **Custom scripts** - Bash scripts performing repository consistency checks
 
+## Markdown Quality Gates
+
+Three automated markdown gates enforce content correctness at pre-commit and in CI.
+
+### Gate 1: Mermaid diagram validation
+
+**Tool**: `rhino-cli docs validate-mermaid` (Nx target: `validate:mermaid`)
+
+**Scope**: repo-wide minus `plans/done/` and standard noise directories, with
+`--max-depth=4`.
+
+Enforces flowchart/graph width constraints, label length limits, and comment syntax.
+Violations exit with code 1.
+
+### Gate 2: Link validation (including anchor validation)
+
+**Tool**: `validate:links` Nx target
+
+**Scope**: repo-wide minus exclusions.
+
+Validates that internal links resolve to existing files and that `#fragment` anchors
+match actual headings in the target file (`broken-anchor` finding). The slug algorithm
+is GFM-correct: lowercase, spaces to `-`, non-alphanumeric stripped, emoji stripped,
+duplicate heading slugs suffixed with `-N` in document order.
+
+### Gate 3: Heading hierarchy validation
+
+**Tool**: `docs validate-heading-hierarchy` (both CLIs)
+
+**Scope (allowlist — prose only)**:
+
+- `docs/`, `repo-governance/`, `specs/`
+- `plans/` excluding `plans/done/`
+- Root `*.md` files
+- `apps/*/README.md`, `libs/*/README.md`, `apps|libs/*/docs/**`
+
+**Explicitly exempt** (default-deny): `.claude/**`, `.opencode/**`, `.amazonq/**`
+prompt/skill artifacts.
+
+Machine-enforces single-H1 and non-skipping heading nesting for all in-scope files.
+
+### Three enforcement layers
+
+All three gates share the same three-layer enforcement model:
+
+| Layer                         | Trigger                                                           | Scope                                               |
+| ----------------------------- | ----------------------------------------------------------------- | --------------------------------------------------- |
+| **Layer 1** — pre-commit      | `git pre-commit` hook (staged files only)                         | Mermaid: step 6m · Heading: step 6h · Links: step 7 |
+| **Layer 2** — CI pull request | `.github/workflows/validate-markdown.yml` on pull_request to main | Full repo scan                                      |
+| **Layer 3** — CI push to main | Same `validate-markdown.yml` workflow on push to main             | Full repo scan                                      |
+
+The consolidated `validate-markdown.yml` workflow is the single CI file that runs all
+three gates. The Mermaid gate does **not** run at pre-push; that trigger was removed
+when the CI workflow replaced it as the repo-wide gate.
+
 ## The Frontmatter Extraction Pattern (CRITICAL)
 
 ### The Standard AWK Command

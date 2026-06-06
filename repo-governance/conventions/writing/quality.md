@@ -196,6 +196,35 @@ Refresh tokens supported with sliding expiration.
 
 ## 🗂️ Heading Hierarchy
 
+### Machine Enforcement
+
+The single-H1 rule and non-skipping nesting rule below are **machine-enforced** for
+prose files by `docs validate-heading-hierarchy` (both `rhino-cli` and the equivalent
+CLI).
+
+**Allowlist scope** — the gate applies to:
+
+- `docs/`
+- `repo-governance/`
+- `specs/`
+- `plans/` (excluding `plans/done/`)
+- Root `*.md` files
+- `apps/*/README.md`, `libs/*/README.md`
+- `apps|libs/*/docs/**`
+
+**Explicitly exempt** (default-deny — the gate never runs on these paths):
+
+- `.claude/**`
+- `.opencode/**`
+- `.amazonq/**`
+
+Prompt/skill artifacts in those directories are exempt because their heading structure
+follows agent-framework conventions, not prose documentation conventions.
+
+**Enforcement layers**: pre-commit staged-only (step 6h) and the consolidated
+`.github/workflows/validate-markdown.yml` CI workflow (pull request to main and push
+to main).
+
 ### Single H1 Rule
 
 **Every markdown file MUST have exactly ONE H1 heading** - the document title.

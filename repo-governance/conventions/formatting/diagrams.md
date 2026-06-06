@@ -375,8 +375,26 @@ graph TD
 
 ### Flowchart Width Constraints (Automated Enforcement)
 
-`rhino-cli docs validate-mermaid` enforces three rules on every `flowchart`/`graph`
-block. Violations cause exit code 1 and block the pre-push hook.
+`rhino-cli docs validate-mermaid` (and the equivalent `docs validate-mermaid` CLI)
+enforces three rules on every `flowchart`/`graph` block. Violations cause exit code 1.
+
+#### Gate scope and enforcement layers
+
+The Mermaid gate runs **repo-wide** (all markdown files), excluding `plans/done/` and
+standard noise directories, with `--max-depth=4`.
+
+Three enforcement layers apply:
+
+- **Layer 1 — pre-commit (staged files only)**: `git pre-commit` hook step 6m runs
+  `rhino-cli docs validate-mermaid` on staged files before each commit.
+- **Layer 2 — CI on pull request**: the consolidated
+  `.github/workflows/validate-markdown.yml` workflow runs on every pull request to
+  `main`.
+- **Layer 3 — CI on push to main**: the same `validate-markdown.yml` workflow runs on
+  every push to `main`.
+
+The Mermaid gate does **not** run at pre-push. The pre-push hook was removed when the
+CI workflow replaced it as the repo-wide gate.
 
 | Rule              | Threshold                         | Severity                      |
 | ----------------- | --------------------------------- | ----------------------------- |

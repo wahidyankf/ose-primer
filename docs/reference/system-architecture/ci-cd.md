@@ -56,8 +56,14 @@ graph TB
 2. **Prettier Formatting** (via lint-staged):
    - Format all staged files
    - Auto-stage formatted changes
-3. **Link Validation**:
-   - Validate markdown links in staged files only
+3. **Mermaid Diagram Validation** (staged files only, step 6m):
+   - Run `rhino-cli docs validate-mermaid --staged-only`
+   - Exit with error if violations detected
+4. **Heading Hierarchy Validation** (staged files only, step 6h):
+   - Run `rhino-cli docs validate-heading-hierarchy --staged-only`
+   - Exit with error if violations detected
+5. **Link Validation** (staged files only, step 7):
+   - Validate markdown links and anchors in staged files only
    - Exit with error if validation fails
 
 **Impact**: Ensures all committed code is formatted and content is processed
@@ -89,6 +95,12 @@ graph TB
 
 **Impact**: Prevents pushing code that fails tests or has markdown violations
 
+> **Note**: The three markdown content gates (Mermaid diagram validation, link/anchor
+> validation, heading-hierarchy validation) run at **pre-commit** (staged files only),
+> not at pre-push. They also run in CI via the consolidated
+> `.github/workflows/validate-markdown.yml` workflow on every pull request and every
+> push to `main`.
+
 ## GitHub Actions Workflows
 
 ### PR Format Workflow
@@ -108,20 +120,25 @@ graph TB
 
 **Purpose**: Ensure all PR code is properly formatted even if local hooks were bypassed
 
-### PR Link Validation Workflow
+### Markdown Validation Workflow
 
-**File**: `.github/workflows/pr-validate-links.yml`
+**File**: `.github/workflows/validate-markdown.yml`
 
-**Trigger**: Pull request opened, synchronized, or reopened
+**Trigger**: Pull request to `main` (opened, synchronized, or reopened) and push to `main`
 
 **Steps:**
 
-1. Checkout PR branch
-2. Setup Go 1.26.0
-3. Run link validation (`rhino-cli docs validate-links`)
-4. Fail PR if broken links detected
+1. Checkout branch
+2. Setup Node.js (Volta) and Rust toolchain
+3. Run Mermaid diagram validation (`npx nx run rhino-cli-rust:validate:mermaid`)
+4. Run link and anchor validation (`npx nx run rhino-cli-rust:validate:links`)
+5. Run heading-hierarchy validation (`npx nx run rhino-cli-rust:validate:heading-hierarchy`)
+6. Fail if any gate exits non-zero
 
-**Purpose**: Prevent merging PRs with broken markdown links
+**Purpose**: Enforce all three markdown content gates on every pull request and every
+push to `main`. This is the repository's consolidated markdown CI workflow; it replaces
+the former `pr-validate-links.yml` (deleted) and adds the previously missing push-to-main
+coverage.
 
 ### Deploy demo Web
 
@@ -294,7 +311,7 @@ Each backend workflow runs its own backend stack — never a different backend.
 5. **Create Pull Request** (if using PR workflow):
    - GitHub Actions run:
      - Format check
-     - Link validation
+     - Markdown validation (mermaid, links, headings)
    - Review and merge
 
 6. **Deploy** (for Vercel-hosted apps):
@@ -324,7 +341,7 @@ graph TB
 
     subgraph "Layer 2: GitHub Actions"
         L2_FORMAT[PR Format<br/>Auto-fix]
-        L2_LINKS[PR Links<br/>Block]
+        L2_LINKS[Markdown Validation<br/>PR + Push Block]
     end
 
     subgraph "Layer 3: Nx Caching"
@@ -372,7 +389,9 @@ graph TB
 
 **Blocking Gates** (Must pass to proceed):
 
-- Link validation (pre-commit, PR)
+- Mermaid diagram validation (pre-commit staged, CI)
+- Heading hierarchy validation (pre-commit staged, CI)
+- Link and anchor validation (pre-commit staged, CI)
 - Commitlint format check
 - Affected tests (pre-push)
 - Markdown linting (pre-push)

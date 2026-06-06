@@ -80,13 +80,13 @@ If a triggered workflow fails, investigate the root cause and fix it before movi
 
 Scope the required CI verification to the files actually changed in the push. Not every push requires triggering every workflow.
 
-| Changed Path Pattern                                 | Required CI Workflows                           |
-| ---------------------------------------------------- | ----------------------------------------------- |
-| `repo-governance/**`, `docs/**`, `.claude/agents/**` | `pr-quality-gate.yml` (naming validators, lint) |
-| `apps/rhino-cli-go/**`                               | `test-rhino-cli.yml`                            |
-| `apps/crud-be-golang-gin/**`                         | `test-crud-be-golang-gin.yml`                   |
-| `apps/crud-fe-ts-nextjs/**`                          | `test-crud-fe-ts-nextjs.yml`                    |
-| Any app                                              | The per-app test workflow for that app          |
+| Changed Path Pattern                                 | Required CI Workflows                                                                    |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `repo-governance/**`, `docs/**`, `.claude/agents/**` | `pr-quality-gate.yml` (naming validators, lint); `validate-markdown.yml` (auto-triggers) |
+| `apps/rhino-cli-go/**`                               | `test-rhino-cli.yml`                                                                     |
+| `apps/crud-be-golang-gin/**`                         | `test-crud-be-golang-gin.yml`                                                            |
+| `apps/crud-fe-ts-nextjs/**`                          | `test-crud-fe-ts-nextjs.yml`                                                             |
+| Any app                                              | The per-app test workflow for that app                                                   |
 
 When a push touches multiple path patterns, trigger all relevant workflows.
 

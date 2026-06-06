@@ -205,11 +205,17 @@ Next paragraph.
 
 ### Pre-Commit Hook
 
-Runs Prettier on staged markdown files via lint-staged.
+Runs Prettier on staged markdown files via lint-staged, and also runs three content
+gates on staged files:
 
-**Location**: `.husky/pre-commit` (configured in `package.json` lint-staged)
+**Location**: `.husky/pre-commit` (orchestrated by `rhino-cli git pre-commit`)
 
-**Action**: Automatically formats staged markdown files
+**Actions**:
+
+- Automatically formats staged markdown files (Prettier via lint-staged, step 5)
+- Validates Mermaid diagram structure in staged files (step 6m, blocks commit on exit 1)
+- Validates heading hierarchy in staged prose files (step 6h, blocks commit on exit 1)
+- Validates markdown links and anchors in staged files (step 8, blocks commit on exit 1)
 
 ### Pre-Push Hook
 

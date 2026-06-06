@@ -309,6 +309,32 @@ For linking to headings within the same document:
 [Jump to Key Rules](#key-rules)
 ```
 
+### Fragment Validation (Automated)
+
+`#fragment` anchors — both same-file and cross-file — are validated against the actual
+headings in the target file. The link gate reports a `broken-anchor` finding when the
+fragment does not match any heading slug in the target.
+
+**Slug algorithm**: GFM (GitHub Flavored Markdown) rules apply — lowercase, spaces
+replaced by `-`, non-alphanumeric characters stripped, emoji stripped, and duplicate
+heading slugs suffixed with `-N` (e.g., `-1`, `-2`) in document order.
+
+**Example** — given these headings:
+
+```markdown
+## Setup
+
+## Setup
+
+## Setup
+```
+
+The slugs are `#setup`, `#setup-1`, `#setup-2`. A link to `#setup-3` would be reported
+as a `broken-anchor` finding.
+
+The fragment validator runs as part of the link gate: pre-commit staged-only (step 7)
+and the consolidated `.github/workflows/validate-markdown.yml` CI workflow.
+
 ## Image Links
 
 For embedding images:
@@ -343,6 +369,15 @@ When creating documentation, verify links by:
 2. **File Existence**: Use `ls` or `find` to verify target files exist
 3. **Path Correctness**: Count `../` levels to ensure correct relative path
 4. **Extension Check**: Confirm `.md` is present in all internal links
+5. **Anchor Correctness**: Confirm `#fragment` slugs match actual headings in the
+   target file (use the GFM slug algorithm described in [Fragment Validation
+   (Automated)](#fragment-validation-automated))
+
+The automated link gate (`validate:links` Nx target) runs repo-wide minus exclusions at
+pre-commit staged-only (step 7) and via the consolidated
+`.github/workflows/validate-markdown.yml` CI workflow on pull requests to main and
+pushes to main. It checks both broken file paths and broken anchors (`broken-anchor`
+finding).
 
 ## Related Documentation
 

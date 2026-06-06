@@ -4,8 +4,9 @@ C4 Level 3 component diagrams for the rhino-cli internals.
 
 ## Diagrams
 
-- **[component-cli.md](./component-cli.md)** — `docs` command handler: `validate-links` and
-  `validate-mermaid` command + flag inventory, validation engines, and output layer.
+- **[component-cli.md](./component-cli.md)** — `docs` command handler: `validate-links`,
+  `validate-mermaid`, and `validate-heading-hierarchy` command + flag inventory, validation
+  engines, and output layer.
 
 ## Related
 

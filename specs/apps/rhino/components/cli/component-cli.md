@@ -164,7 +164,7 @@ rhino-cli docs validate-mermaid docs/ repo-governance/
 # Only validate staged files (pre-commit)
 rhino-cli docs validate-mermaid --staged-only
 
-# Only validate files changed since upstream (pre-push)
+# Only validate files changed since upstream (batch use)
 rhino-cli docs validate-mermaid --changed-only
 
 # Output as JSON
@@ -296,7 +296,7 @@ Behavior scenarios for all commands live in
 | Feature file                              | Command                           | Scenarios |
 | ----------------------------------------- | --------------------------------- | --------- |
 | `docs-validate-links.feature`             | `docs validate-links`             | 9         |
-| `docs-validate-mermaid.feature`           | `docs validate-mermaid`           | 26        |
+| `docs-validate-mermaid.feature`           | `docs validate-mermaid`           | 27        |
 | `docs-validate-heading-hierarchy.feature` | `docs validate-heading-hierarchy` | 9         |
 
 ---
