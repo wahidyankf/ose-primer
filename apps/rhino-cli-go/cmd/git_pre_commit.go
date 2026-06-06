@@ -17,8 +17,9 @@ var gitPreCommitCmd = &cobra.Command{
   4. Stage crud-fs-ts-nextjs content changes
   5. Run lint-staged
   5b. Sync app-level package-lock.json files (if apps/*/package.json staged)
-  6. Validate and fix docs file naming (if docs/ staged)
-  7. Validate markdown links in staged files
+  6m. Validate mermaid diagrams in staged markdown files
+  6h. Validate heading hierarchy in staged prose markdown files
+  7. Validate markdown links in staged files (skips plans/done)
   8. Lint all markdown files
 
 Each step runs with a 30-second timeout; the entire hook has a 120-second

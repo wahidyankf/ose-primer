@@ -248,6 +248,14 @@ const (
 	stepDeveloperIsOutsideGitRepository     = `^the developer is outside a git repository$`
 	stepDeveloperRunsGitPreCommit           = `^the developer runs rhino-cli git pre-commit$`
 	stepOutputMentionsGitRepositoryNotFound = `^the output mentions that a git repository was not found$`
+	stepStagedMalformedFlowchartFile        = `^a staged markdown file containing a flowchart with a malformed mermaid block$`
+	stepStagedDocsFileWithDuplicateH1       = `^a staged markdown file under docs/ containing a duplicate H1 heading$`
+	stepStagedSkillFileWithMultipleH1s      = `^a staged SKILL\.md file under \.claude/skills/ containing multiple H1 headings$`
+	stepStagedPlansDoneFileWithBrokenLink   = `^a staged markdown file under plans/done/ containing a broken internal link$`
+	stepOutputReportsMermaidViolationStaged = `^the output reports a mermaid violation for the staged file$`
+	stepOutputReportsHeadingViolationStaged = `^the output reports a heading hierarchy violation for the staged file$`
+	stepNoHeadingViolationForSkillFile      = `^no heading violation is reported for the skill file$`
+	stepNoBrokenLinkViolationForPlansDone   = `^no broken-link violation is reported for the plans/done file$`
 )
 
 // Env backup step patterns.

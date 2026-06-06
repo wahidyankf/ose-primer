@@ -23,8 +23,13 @@ use crate::internal::agents::claude_validator::validate_claude;
 use crate::internal::agents::sync::sync_all;
 use crate::internal::agents::sync_validator::validate_sync;
 use crate::internal::agents::types::{SyncOptions, ValidateClaudeOptions, ValidationResult};
+use crate::internal::docs::heading_hierarchy;
+use crate::internal::docs::scanner::NOISE_DIRS;
 use crate::internal::docs::types::{LinkValidationResult, ScanOptions};
 use crate::internal::docs::validator::validate_all_links;
+use crate::internal::mermaid::{
+    extractor, reporter as mermaid_reporter, validator as mermaid_validator,
+};
 
 /// Maximum duration allowed for the entire pre-commit run. Mirrors Go
 /// `totalTimeout` (120s).
@@ -140,6 +145,12 @@ pub fn run(git_root: &Path, mut deps: Deps) -> Result<(), Error> {
     })?;
     run_with_step_timeout(start, "step5bSyncLockfiles", &mut deps, |d| {
         step5b_sync_lockfiles(git_root, &staged, d)
+    })?;
+    run_with_step_timeout(start, "step6mValidateMermaid", &mut deps, |d| {
+        step6m_validate_mermaid(git_root, &staged, d)
+    })?;
+    run_with_step_timeout(start, "step6hValidateHeadingHierarchy", &mut deps, |d| {
+        step6h_validate_heading_hierarchy(git_root, &staged, d)
     })?;
     run_with_step_timeout(start, "step7ValidateLinks", &mut deps, |d| {
         step7_validate_links(git_root, d)
@@ -402,7 +413,120 @@ fn step5b_sync_lockfiles(git_root: &Path, staged: &[String], deps: &mut Deps) ->
     Ok(())
 }
 
+/// True when a staged repo-relative markdown path is outside the staged
+/// mermaid gate: the frozen `plans/done` archive, plus any path containing a
+/// standardized noise-dir component (the same skip set the repo-wide walk
+/// uses, applied per path segment because staged paths arrive as strings).
+fn is_staged_mermaid_skipped(rel: &str) -> bool {
+    rel.starts_with("plans/done") || rel.split('/').any(|seg| NOISE_DIRS.contains(&seg))
+}
+
+/// Returns the staged repo-relative markdown paths satisfying `pred`,
+/// excluding entries no longer present in the working tree (deleted staged
+/// files have nothing to validate). Shared selection logic for the staged
+/// markdown gates (steps 6m and 6h); step 7 instead delegates staged
+/// selection to the link validator via `staged_only`.
+fn staged_markdown_files(
+    git_root: &Path,
+    staged: &[String],
+    pred: impl Fn(&str) -> bool,
+) -> Vec<String> {
+    staged
+        .iter()
+        .filter(|f| f.ends_with(".md") && pred(f))
+        .filter(|f| git_root.join(f.as_str()).is_file())
+        .cloned()
+        .collect()
+}
+
+/// Validates mermaid diagrams in staged markdown files, blocking the commit on
+/// any violation. Staged-only counterpart of `docs validate-mermaid` (DD-8).
+/// Mirrors Go `step6mValidateMermaid` (lands in the Go GREEN step; output is
+/// byte-parity-designed — repo-relative paths into the shared reporter, one
+/// `❌` summary line on stderr mirroring step 7's shape).
+fn step6m_validate_mermaid(
+    git_root: &Path,
+    staged: &[String],
+    deps: &mut Deps,
+) -> Result<(), Error> {
+    let mut all_blocks = Vec::new();
+    for f in staged_markdown_files(git_root, staged, |f| !is_staged_mermaid_skipped(f)) {
+        // Unreadable staged entries have nothing to validate.
+        let Ok(content) = std::fs::read_to_string(git_root.join(&f)) else {
+            continue;
+        };
+        all_blocks.extend(extractor::extract_blocks(&f, &content));
+    }
+    if all_blocks.is_empty() {
+        return Ok(());
+    }
+
+    // Same thresholds as the standardized cross-repo gate invocation
+    // (`docs validate-mermaid --max-depth=4`): max-depth=4 demotes wide+deep
+    // diagrams from error to warning, keeping pre-commit consistent with CI.
+    let opts = mermaid_validator::ValidateOptions {
+        max_depth: 4,
+        ..mermaid_validator::ValidateOptions::default()
+    };
+    let result = mermaid_validator::validate_blocks(&all_blocks, opts);
+    if result.violations.is_empty() {
+        return Ok(());
+    }
+
+    let report = mermaid_reporter::format_text(&result, false, false);
+    let _ = write!(deps.stdout, "{report}");
+    let _ = writeln!(
+        deps.stderr,
+        "❌ Found {} mermaid violation(s)",
+        result.violations.len()
+    );
+    Err(anyhow!(
+        "found {} mermaid violation(s)",
+        result.violations.len()
+    ))
+}
+
+/// Validates heading hierarchy in staged prose-allowlisted markdown files,
+/// blocking the commit on any finding. Staged-only counterpart of
+/// `docs validate-heading-hierarchy` (DD-8); non-allowlisted files (e.g.
+/// `.claude/skills/**`) are exempt. Mirrors Go
+/// `step6hValidateHeadingHierarchy` (lands in the Go GREEN step).
+fn step6h_validate_heading_hierarchy(
+    git_root: &Path,
+    staged: &[String],
+    deps: &mut Deps,
+) -> Result<(), Error> {
+    let paths = staged_markdown_files(git_root, staged, heading_hierarchy::is_prose_allowlisted);
+    if paths.is_empty() {
+        return Ok(());
+    }
+
+    let findings =
+        heading_hierarchy::validate_heading_hierarchy(&heading_hierarchy::HeadingScanOptions {
+            root: git_root.to_path_buf(),
+            paths,
+            exclude: Vec::new(),
+        })?;
+    if findings.is_empty() {
+        return Ok(());
+    }
+
+    let report = heading_hierarchy::format_heading_text(&findings, false);
+    let _ = write!(deps.stdout, "{report}");
+    let _ = writeln!(
+        deps.stderr,
+        "❌ Found {} heading hierarchy finding(s)",
+        findings.len()
+    );
+    Err(anyhow!(
+        "found {} heading hierarchy finding(s)",
+        findings.len()
+    ))
+}
+
 /// Validates markdown links in staged files. Mirrors Go `step7ValidateLinks`.
+/// Skip paths cover generated skill mirrors, worktree copies, and the frozen
+/// `plans/done` archive (DD-8) — existing entries are preserved.
 fn step7_validate_links(git_root: &Path, deps: &mut Deps) -> Result<(), Error> {
     let result = (deps.validate_links)(&ScanOptions {
         repo_root: git_root.to_path_buf(),
@@ -410,6 +534,7 @@ fn step7_validate_links(git_root: &Path, deps: &mut Deps) -> Result<(), Error> {
         skip_paths: vec![
             ".opencode/skill/".to_string(),
             ".claude/worktrees/".to_string(),
+            "plans/done".to_string(),
         ],
         verbose: false,
         quiet: false,
@@ -587,6 +712,96 @@ mod tests {
             ..deps_all_skip(SharedBuf::default(), SharedBuf::default())
         };
         assert!(step5_lint_staged(Path::new("/tmp"), &mut deps).is_err());
+    }
+
+    /// Writes `content` to `root/rel`, creating parent directories.
+    fn write_file(root: &Path, rel: &str, content: &str) {
+        let path = root.join(rel);
+        std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+        std::fs::write(path, content).unwrap();
+    }
+
+    // --- Phase 4 (DD-8): staged-only mermaid + heading steps ---
+
+    #[test]
+    fn step6m_validate_mermaid_errors_on_staged_malformed_flowchart() {
+        let dir = tempfile::tempdir().unwrap();
+        // Node label far exceeds the 30-character limit — a blocking violation.
+        write_file(
+            dir.path(),
+            "docs/diagram.md",
+            "# Doc\n\n```mermaid\nflowchart TD\n  \
+             A[This label is far longer than the thirty character limit] --> B[Ok]\n```\n",
+        );
+        let mut deps = deps_all_skip(SharedBuf::default(), SharedBuf::default());
+        let staged = vec!["docs/diagram.md".to_string()];
+        let res = step6m_validate_mermaid(dir.path(), &staged, &mut deps);
+        assert!(
+            res.is_err(),
+            "staged markdown with a malformed flowchart must block the commit"
+        );
+    }
+
+    #[test]
+    fn step6h_validate_heading_hierarchy_errors_on_staged_docs_duplicate_h1() {
+        let dir = tempfile::tempdir().unwrap();
+        write_file(
+            dir.path(),
+            "docs/guide.md",
+            "# First Title\n\ntext\n\n# Second Title\n",
+        );
+        let mut deps = deps_all_skip(SharedBuf::default(), SharedBuf::default());
+        let staged = vec!["docs/guide.md".to_string()];
+        let res = step6h_validate_heading_hierarchy(dir.path(), &staged, &mut deps);
+        assert!(
+            res.is_err(),
+            "staged docs/ file with a duplicate H1 must block the commit"
+        );
+    }
+
+    #[test]
+    fn step6h_validate_heading_hierarchy_allows_staged_skill_file_with_many_h1s() {
+        let dir = tempfile::tempdir().unwrap();
+        // SKILL.md files under .claude/skills/ are NOT prose-allowlisted, so
+        // multiple H1s must not block the commit.
+        write_file(
+            dir.path(),
+            ".claude/skills/example-skill/SKILL.md",
+            "# First H1\n\ntext\n\n# Second H1\n\ntext\n\n# Third H1\n",
+        );
+        let mut deps = deps_all_skip(SharedBuf::default(), SharedBuf::default());
+        let staged = vec![".claude/skills/example-skill/SKILL.md".to_string()];
+        let res = step6h_validate_heading_hierarchy(dir.path(), &staged, &mut deps);
+        assert!(
+            res.is_ok(),
+            "staged SKILL.md is exempt from the prose heading gate: {res:?}"
+        );
+    }
+
+    #[test]
+    fn step7_validate_links_skip_paths_include_plans_done() {
+        let captured: Rc<RefCell<Vec<String>>> = Rc::default();
+        let cap = Rc::clone(&captured);
+        let mut deps = Deps {
+            validate_links: Box::new(move |opts| {
+                *cap.borrow_mut() = opts.skip_paths.clone();
+                Ok(LinkValidationResult::default())
+            }),
+            ..deps_all_skip(SharedBuf::default(), SharedBuf::default())
+        };
+        step7_validate_links(Path::new("/tmp"), &mut deps).unwrap();
+        // plans/done joins the existing skip entries (a staged broken link
+        // under plans/done must NOT block the commit) — existing entries are
+        // preserved, not replaced.
+        assert_eq!(
+            *captured.borrow(),
+            vec![
+                ".opencode/skill/".to_string(),
+                ".claude/worktrees/".to_string(),
+                "plans/done".to_string(),
+            ],
+            "link-step skip paths must include plans/done alongside the existing entries"
+        );
     }
 
     #[test]

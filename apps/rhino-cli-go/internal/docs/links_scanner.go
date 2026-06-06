@@ -102,6 +102,14 @@ var noiseDirs = map[string]bool{
 	".git":                true,
 }
 
+// IsNoiseDir reports whether name is in the standardized noise-skip set.
+// Exposed for the staged markdown gates (git pre-commit step 6m), which
+// filter staged path strings per segment instead of walking the tree.
+// Mirrors the Rust `NOISE_DIRS.contains` usage in the git runner.
+func IsNoiseDir(name string) bool {
+	return noiseDirs[name]
+}
+
 // GetAllMarkdownFiles returns all markdown files via a repo-wide walk that
 // skips the standardized noise-skip set by directory name. The walk root
 // itself is never skipped, only descendants — a `.md` file passed as the root

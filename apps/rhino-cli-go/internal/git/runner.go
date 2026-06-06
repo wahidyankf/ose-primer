@@ -14,6 +14,7 @@ import (
 
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/agents"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/docs"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/mermaid"
 )
 
 const (
@@ -122,6 +123,16 @@ func Run(gitRoot string, deps Deps) error {
 	}
 	if err := runWithStepTimeout(totalCtx, "step5bSyncLockfiles", deps, func() error {
 		return step5bSyncLockfiles(gitRoot, staged, deps)
+	}); err != nil {
+		return err
+	}
+	if err := runWithStepTimeout(totalCtx, "step6mValidateMermaid", deps, func() error {
+		return step6mValidateMermaid(gitRoot, staged, deps)
+	}); err != nil {
+		return err
+	}
+	if err := runWithStepTimeout(totalCtx, "step6hValidateHeadingHierarchy", deps, func() error {
+		return step6hValidateHeadingHierarchy(gitRoot, staged, deps)
 	}); err != nil {
 		return err
 	}
@@ -325,12 +336,109 @@ func step5bSyncLockfiles(gitRoot string, staged []string, deps Deps) error {
 	return nil
 }
 
-// step7ValidateLinks validates markdown links in staged files.
+// isStagedMermaidSkipped returns true when a staged repo-relative markdown
+// path is outside the staged mermaid gate: the frozen `plans/done` archive,
+// plus any path containing a standardized noise-dir component (the same skip
+// set the repo-wide walk uses, applied per path segment because staged paths
+// arrive as strings). Mirrors Rust `is_staged_mermaid_skipped`.
+func isStagedMermaidSkipped(rel string) bool {
+	if strings.HasPrefix(rel, "plans/done") {
+		return true
+	}
+	return slices.ContainsFunc(strings.Split(rel, "/"), docs.IsNoiseDir)
+}
+
+// stagedMarkdownFiles returns the staged repo-relative markdown paths
+// satisfying pred, excluding entries no longer present in the working tree
+// (deleted staged files have nothing to validate). Shared selection logic for
+// the staged markdown gates (steps 6m and 6h); step 7 instead delegates
+// staged selection to the link validator via StagedOnly. Mirrors Rust
+// `staged_markdown_files`.
+func stagedMarkdownFiles(gitRoot string, staged []string, pred func(string) bool) []string {
+	var files []string
+	for _, f := range staged {
+		if !strings.HasSuffix(f, ".md") || !pred(f) {
+			continue
+		}
+		if info, err := os.Stat(filepath.Join(gitRoot, f)); err != nil || !info.Mode().IsRegular() {
+			continue
+		}
+		files = append(files, f)
+	}
+	return files
+}
+
+// step6mValidateMermaid validates mermaid diagrams in staged markdown files,
+// blocking the commit on any violation. Staged-only counterpart of
+// `docs validate-mermaid` (DD-8). Mirrors Rust `step6m_validate_mermaid`
+// (output is byte-parity-designed — repo-relative paths into the shared
+// reporter, one `❌` summary line on stderr mirroring step 7's shape).
+func step6mValidateMermaid(gitRoot string, staged []string, deps Deps) error {
+	var allBlocks []mermaid.MermaidBlock
+	for _, f := range stagedMarkdownFiles(gitRoot, staged, func(f string) bool {
+		return !isStagedMermaidSkipped(f)
+	}) {
+		// Unreadable staged entries have nothing to validate.
+		content, err := os.ReadFile(filepath.Join(gitRoot, f))
+		if err != nil {
+			continue
+		}
+		allBlocks = append(allBlocks, mermaid.ExtractBlocks(f, string(content))...)
+	}
+	if len(allBlocks) == 0 {
+		return nil
+	}
+
+	// Same thresholds as the standardized cross-repo gate invocation
+	// (`docs validate-mermaid --max-depth=4`): max-depth=4 demotes wide+deep
+	// diagrams from error to warning, keeping pre-commit consistent with CI.
+	opts := mermaid.DefaultValidateOptions()
+	opts.MaxDepth = 4
+	result := mermaid.ValidateBlocks(allBlocks, opts)
+	if len(result.Violations) == 0 {
+		return nil
+	}
+
+	_, _ = fmt.Fprint(deps.Stdout, mermaid.FormatText(result, false, false))
+	_, _ = fmt.Fprintf(deps.Stderr, "❌ Found %d mermaid violation(s)\n", len(result.Violations))
+	return fmt.Errorf("found %d mermaid violation(s)", len(result.Violations))
+}
+
+// step6hValidateHeadingHierarchy validates heading hierarchy in staged
+// prose-allowlisted markdown files, blocking the commit on any finding.
+// Staged-only counterpart of `docs validate-heading-hierarchy` (DD-8);
+// non-allowlisted files (e.g. `.claude/skills/**`) are exempt. Mirrors Rust
+// `step6h_validate_heading_hierarchy`.
+func step6hValidateHeadingHierarchy(gitRoot string, staged []string, deps Deps) error {
+	paths := stagedMarkdownFiles(gitRoot, staged, docs.IsProseAllowlisted)
+	if len(paths) == 0 {
+		return nil
+	}
+
+	findings, err := docs.ValidateHeadingHierarchy(docs.HeadingScanOptions{
+		Root:  gitRoot,
+		Paths: paths,
+	})
+	if err != nil {
+		return err
+	}
+	if len(findings) == 0 {
+		return nil
+	}
+
+	_, _ = fmt.Fprint(deps.Stdout, docs.FormatHeadingText(findings, false))
+	_, _ = fmt.Fprintf(deps.Stderr, "❌ Found %d heading hierarchy finding(s)\n", len(findings))
+	return fmt.Errorf("found %d heading hierarchy finding(s)", len(findings))
+}
+
+// step7ValidateLinks validates markdown links in staged files. Skip paths
+// cover generated skill mirrors, worktree copies, and the frozen `plans/done`
+// archive (DD-8) — existing entries are preserved.
 func step7ValidateLinks(gitRoot string, deps Deps) error {
 	result, err := deps.ValidateLinks(docs.ScanOptions{
 		RepoRoot:   gitRoot,
 		StagedOnly: true,
-		SkipPaths:  []string{".opencode/skill/", ".claude/worktrees/"},
+		SkipPaths:  []string{".opencode/skill/", ".claude/worktrees/", "plans/done"},
 	})
 	if err != nil {
 		return err

@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 
@@ -324,6 +325,91 @@ func TestStep5LintStaged_Failure_ReturnsError(t *testing.T) {
 	err := step5LintStaged(t.TempDir(), d)
 	if err == nil || !strings.Contains(err.Error(), "lint-staged failed") {
 		t.Fatalf("expected lint-staged error, got: %v", err)
+	}
+}
+
+// --------------------------------------------------------------------------
+// Phase 4 (DD-8): staged-only mermaid + heading steps
+// --------------------------------------------------------------------------
+
+// failOnPanic converts a panic from an unimplemented stub into a test
+// failure, so the TDD RED state reports FAIL instead of aborting the whole
+// test binary (Go does not isolate panics per test like Rust's harness).
+func failOnPanic(t *testing.T) {
+	t.Helper()
+	if r := recover(); r != nil {
+		t.Errorf("panicked: %v", r)
+	}
+}
+
+// writeRepoFile writes content to root/rel, creating parent directories.
+func writeRepoFile(t *testing.T, root, rel, content string) {
+	t.Helper()
+	path := filepath.Join(root, filepath.FromSlash(rel))
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestStep6mValidateMermaid_StagedMalformedFlowchart_ReturnsError(t *testing.T) {
+	defer failOnPanic(t)
+	tmp := t.TempDir()
+	// Node label far exceeds the 30-character limit — a blocking violation.
+	writeRepoFile(t, tmp, "docs/diagram.md",
+		"# Doc\n\n```mermaid\nflowchart TD\n  A[This label is far longer than the thirty character limit] --> B[Ok]\n```\n")
+	d := fakeDeps()
+	err := step6mValidateMermaid(tmp, []string{"docs/diagram.md"}, d)
+	if err == nil {
+		t.Error("staged markdown with a malformed flowchart must block the commit")
+	}
+}
+
+func TestStep6hValidateHeadingHierarchy_StagedDocsDuplicateH1_ReturnsError(t *testing.T) {
+	defer failOnPanic(t)
+	tmp := t.TempDir()
+	writeRepoFile(t, tmp, "docs/guide.md",
+		"# First Title\n\ntext\n\n# Second Title\n")
+	d := fakeDeps()
+	err := step6hValidateHeadingHierarchy(tmp, []string{"docs/guide.md"}, d)
+	if err == nil {
+		t.Error("staged docs/ file with a duplicate H1 must block the commit")
+	}
+}
+
+func TestStep6hValidateHeadingHierarchy_StagedSkillFileManyH1s_Allowed(t *testing.T) {
+	defer failOnPanic(t)
+	tmp := t.TempDir()
+	// SKILL.md files under .claude/skills/ are NOT prose-allowlisted, so
+	// multiple H1s must not block the commit.
+	writeRepoFile(t, tmp, ".claude/skills/example-skill/SKILL.md",
+		"# First H1\n\ntext\n\n# Second H1\n\ntext\n\n# Third H1\n")
+	d := fakeDeps()
+	err := step6hValidateHeadingHierarchy(tmp, []string{".claude/skills/example-skill/SKILL.md"}, d)
+	if err != nil {
+		t.Errorf("staged SKILL.md is exempt from the prose heading gate: %v", err)
+	}
+}
+
+func TestStep7ValidateLinks_SkipPathsIncludePlansDone(t *testing.T) {
+	defer failOnPanic(t)
+	d := fakeDeps()
+	var captured []string
+	d.ValidateLinks = func(opts docs.ScanOptions) (*docs.LinkValidationResult, error) {
+		captured = opts.SkipPaths
+		return &docs.LinkValidationResult{}, nil
+	}
+	if err := step7ValidateLinks(t.TempDir(), d); err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+	// plans/done joins the existing skip entries (a staged broken link under
+	// plans/done must NOT block the commit) — existing entries are preserved,
+	// not replaced.
+	want := []string{".opencode/skill/", ".claude/worktrees/", "plans/done"}
+	if !slices.Equal(captured, want) {
+		t.Errorf("link-step skip paths must include plans/done alongside the existing entries: got %v, want %v", captured, want)
 	}
 }
 
