@@ -389,7 +389,7 @@ minus the standardized noise-skip set) plus DD-14 (the two upstream parser fixes
 SET is unchanged — no upstream extras are ported; the parser fixes correct edge extraction and
 ranking bugs, not checks.
 
-- [ ] [AI] **SPEC (RED)** — Extend
+- [x] [AI] **SPEC (RED)** — Extend
       `specs/apps/rhino/behavior/cli/gherkin/docs/docs-validate-mermaid.feature` with four
       scenarios (one repo-wide-scan: a violation outside the old four-dir set is reported; one
       `--exclude`: a violation under an excluded tree is not reported; one pipe-labeled-edge:
@@ -398,7 +398,8 @@ ranking bugs, not checks.
       keyword-cardinality norm; extend `component-cli.md`. Run
       `npx nx run rhino-cli-go:spec-coverage`
       — acceptance: spec-coverage FAILS listing the new unmatched steps.
-- [ ] [AI] **RED (Rust)** — Add failing unit tests in
+  - _Done 2026-06-06. Status: complete. Files: `docs-validate-mermaid.feature` (+4 scenarios), `component-cli.md` (--exclude row + repo-wide scan note). spec-coverage FAILS with 8 unmatched steps, all in the 4 new scenarios — RED confirmed._
+- [x] [AI] **RED (Rust)** — Add failing unit tests in
       `apps/rhino-cli-rust/src/commands/docs.rs` test module (temp-dir fixtures, a–c) and in the
       `apps/rhino-cli-rust/src/internal/mermaid/` parser/graph test modules (d–e) covering:
       (a) the default scan now collects a `*.md` under a tree outside the old four-dir set;
@@ -412,7 +413,8 @@ ranking bugs, not checks.
       depth 3 (DD-14).
       Run `npx nx run rhino-cli-rust:test:quick`
       — acceptance: new tests FAIL; preexisting tests pass.
-- [ ] [AI] **GREEN (Rust)** — Implement in `apps/rhino-cli-rust/src/commands/docs.rs` and
+  - _Done 2026-06-06. Status: complete. Files: `commands/docs.rs` (+3 tests + sanctioned `filter_mermaid_excluded` stub), `internal/mermaid/parser.rs` (+2 tests), `internal/mermaid/graph.rs` (+1 test). 570 passed / 6 failed — failures exactly the new tests pinning DD-2/DD-3/DD-14 desired behavior. GREEN note: preexisting `cycle_nodes_rank_zero` pins OLD fallback and must be updated to chain semantics._
+- [x] [AI] **GREEN (Rust)** — Implement in `apps/rhino-cli-rust/src/commands/docs.rs` and
       `apps/rhino-cli-rust/src/internal/mermaid/`:
       (1) change `collect_md_default_dirs` (lines 291-308) to a repo-wide walk; expand
       `walk_md_files` (lines 312-333) to the full standardized noise-skip set (share the
@@ -426,16 +428,19 @@ ranking bugs, not checks.
       (5) cucumber step definitions in `apps/rhino-cli-rust/tests/docs.rs`.
       Run `npx nx run rhino-cli-rust:test:quick && npx nx run rhino-cli-rust:test:integration`
       — acceptance: all tests pass.
-- [ ] [AI] **REFACTOR (Rust)** — Single shared noise-skip constant; no duplicated walkers. Run
+  - _Done 2026-06-06. Status: complete. Files: `commands/docs.rs` (repo-wide `collect_md_default_dirs` via shared walk; `--exclude` wired through `filter_skip_paths`; USAGE updated cobra-style), `internal/docs/scanner.rs` (NOISE_DIRS + filter_skip_paths pub(crate)), `internal/mermaid/parser.rs` (PIPE_LABEL_RE strip before edge split), `internal/mermaid/graph.rs` (iterative-DFS back-edge removal + Kahn), `tests/docs.rs` (4 scenarios wired; --changed-only fixture made upstream-faithful). Preexisting `cycle_nodes_rank_zero` renamed/updated to chain semantics (mandated DD-14 change). test:quick PASS (576 tests, 90% gate); test:integration PASS (45 scenarios/174 steps); lint clean. Live-repo note: repo-wide scan surfaces 33 violations/7 warnings with standardized flags — cleanup in Phases 6-10._
+- [x] [AI] **REFACTOR (Rust)** — Single shared noise-skip constant; no duplicated walkers. Run
       `npx nx run rhino-cli-rust:lint && npx nx run rhino-cli-rust:test:quick`
       — acceptance: both exit 0.
-- [ ] [AI] **RED (Go)** — Same failing tests (a–c) in
+  - _Done 2026-06-06. Status: complete. Duplicate `walk_md_files` deleted — mermaid path now delegates to `scanner::get_all_markdown_files` (byte-identical walk proven). NOISE_DIRS + filter_skip_paths single-definition confirmed. lint exit 0; test:quick 576 passed/0 failed._
+- [x] [AI] **RED (Go)** — Same failing tests (a–c) in
       `apps/rhino-cli-go/cmd/docs_validate_mermaid_test.go` and (d–e) in the
       `apps/rhino-cli-go/internal/mermaid/` parser/graph test files (fixtures identical to the
       Rust set). Run
       `npx nx run rhino-cli-go:test:quick`
       — acceptance: new tests FAIL; preexisting tests pass.
-- [ ] [AI] **GREEN (Go)** — Mirror: `collectMDDefaultDirs`
+  - _Done 2026-06-06. Status: complete. Files: `cmd/docs_validate_mermaid_test.go` (+3 tests + sanctioned panicking `filterMermaidExcluded` stub), `internal/mermaid/parser_test.go` (+2), `internal/mermaid/graph_test.go` (+1, GREEN-conflict comments on two old cycle pins). 6 new tests FAIL for right reasons; all 14 packages otherwise pass; vet/gofmt clean._
+- [x] [AI] **GREEN (Go)** — Mirror: `collectMDDefaultDirs`
       (`docs_validate_mermaid.go:205-227`) → repo-wide walk; `skipDirs` (lines 229-234) → full
       standardized noise-skip set (share with the links walker via `internal/fileutil`);
       `--exclude` flag; the same pipe-label stripping and DFS back-edge removal + Kahn ranking
@@ -443,22 +448,27 @@ ranking bugs, not checks.
       godog steps in `docs_validate_mermaid.integration_test.go`. Run
       `npx nx run rhino-cli-go:test:quick && npx nx run rhino-cli-go:spec-coverage`
       — acceptance: all tests pass; spec-coverage exits 0.
-- [ ] [AI] **REFACTOR (Go)** — Same consolidation pass. Run
+  - _Done 2026-06-06. Status: complete. Files: `internal/docs/links_scanner.go` (walker exported `GetAllMarkdownFiles`/`FilterSkipPaths`), `cmd/docs_validate_mermaid.go` (repo-wide default scan via shared walker; --exclude StringArrayVar + filterMermaidExcluded; cmd-level skipDirs/walkMDFiles deleted), `internal/mermaid/parser.go` (pipeLabelRe), `internal/mermaid/graph.go` (findBackEdges DFS + Kahn), graph_test GREEN-conflict pins updated, integration steps + 8 step constants. test:quick PASS (cov 90.22%); spec-coverage exit 0 (158 scenarios, 660 steps). Byte-parity sanity: json/text/usage byte-identical; multi-file text group order = preexisting documented Go map-order divergence._
+- [x] [AI] **REFACTOR (Go)** — Same consolidation pass. Run
       `npx nx run rhino-cli-go:lint && npx nx run rhino-cli-go:test:quick`
       — acceptance: both exit 0.
-- [ ] [AI] **PARITY** — Extend the shadow-diff `docs` corpus with
+  - _Done 2026-06-06. Status: complete. Already cohesive (no cmd-level walker; single noiseDirs). Three comment-only edits (exported-symbol docs naming consumers; arrowTokenRe doc style). lint 0 issues; test:quick exit 0 (cov 90.22%)._
+- [x] [AI] **PARITY** — Extend the shadow-diff `docs` corpus with
       `validate-mermaid --exclude` + repo-wide variants plus pipe-labeled-edge and
       cyclic-diagram fixtures, then run
       `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs`
       — acceptance: exits 0 (byte-identical output, including the parser-fix fixtures).
+  - _Done 2026-06-06. Status: complete. +20 cases under `docs/.shadow-mermaid-fixtures/` (pipe-label span1/depth2, cycle span1/depth3 via threshold device, default repo-wide, --exclude variants). PASS — 86 cases byte-identical (was ~67 incl. interim). 5 preexisting corpus cases fixed: live tree now has 36 finding files repo-wide, breaking old zero-finding TEXT assumptions vs the documented Go map-order nondeterminism — moved to json/markdown (markdown verified deterministic in both CLIs)._
 
 ### Phase 3 Gate
 
 > All checks below must pass before starting Phase 4.
 
-- [ ] [AI] Both `test:quick` targets green; both `lint` targets exit 0; both `spec-coverage`
+- [x] [AI] Both `test:quick` targets green; both `lint` targets exit 0; both `spec-coverage`
       targets exit 0.
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs` exits 0.
+  - _Done 2026-06-06. Rust 576/0, Go 14/14 pkgs; lints clean; spec-coverage 660 steps covered both CLIs (cache-skipped)._
+- [x] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs` exits 0.
+  - _Done 2026-06-06. PASS — 86 cases byte-identical._
 
 > **Pause Safety**: all three validators now have their final CLI behavior in both CLIs, but
 > hooks/CI still run the old wiring (Phase 5). Safe to stop. To resume: re-run both `test:quick`
