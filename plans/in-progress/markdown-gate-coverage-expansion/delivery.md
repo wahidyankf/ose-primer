@@ -689,19 +689,22 @@ mirroring the existing link step; extend the link step's skip paths.
 
 ### Phase 6: Fix-all `repo-governance/`
 
-- [ ] [AI] Re-measure all three gates for `repo-governance/` using the measurement commands above
+- [x] [AI] Re-measure all three gates for `repo-governance/` using the measurement commands above
       — acceptance: per-finding lists (mermaid / broken-link / broken-anchor / heading) recorded
       in phase notes.
-- [ ] [AI] For each finding: apply the resolution per the preamble; after each fix, re-run the
+  - _Done 2026-06-06. Status: complete. Initial measure showed 35 heading findings — root-caused to a fence-tracking bug (naive toggle desyncs on nested ``/`fences) and FIXED in both CLIs (`fix(rhino-cli): track code fences with CommonMark open/close semantics`, shadow-diff 86/86 green) rather than mangling docs. Post-fix authoritative measure: mermaid = 1 violation (`conventions/formatting/diagrams.md`block 61 line 1806, width_exceeded 6>4); links = 9 broken-anchor findings (`conventions/README.md` L71/73/74 — emoji-heading slugs; `repository-governance-architecture.md` L25/27/35/36/39; `development/workflow/worktree-setup.md` L164 — renamed anchor in trunk-based-development.md); headings = 0._
+- [x] [AI] For each finding: apply the resolution per the preamble; after each fix, re-run the
       applicable validator for that file. Acceptance: re-running all three measurement commands
       shows zero findings for `repo-governance/`.
   - _Suggested executor: `repo-rules-maker`._
+  - _Done 2026-06-06. Status: complete (via repo-rules-maker). Files: `conventions/formatting/diagrams.md` (block 61 restructured 6-wide → max 3 per rank, pedagogy intact), `conventions/README.md` (3 emoji-slug anchors → `#-formatting` etc.), `repository-governance-architecture.md` (5 TOC anchors corrected incl. `#agent-skills-…`), `development/workflow/worktree-setup.md` (renamed anchor → `#worktree-mode-direct-push-to-main-draft-pr-opt-in`). Verified: mermaid 0/0 (17 files, 103 blocks), links 0 repo-governance findings, headings 0._
 
 ### Phase 6 Gate
 
-- [ ] [AI] All three measurement commands report zero findings for `repo-governance/`
+- [x] [AI] All three measurement commands report zero findings for `repo-governance/`
       (mermaid exits 0 for the tree; the link full-scan lists no finding with a
       `repo-governance/` source file; heading exits 0 for the tree).
+  - _Done 2026-06-06. Gate green: mermaid exit 0 (0 violations/0 warnings), links full-scan 0 repo-governance findings, heading exit 0._
 
 > **Pause Safety**: `repo-governance/` is clean under the new rules; other trees may still have
 > findings (don't push yet). Safe to stop. To resume: re-run the three measurement commands.

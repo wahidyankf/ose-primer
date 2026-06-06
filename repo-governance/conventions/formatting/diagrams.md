@@ -1808,10 +1808,10 @@ graph TD
     Shape --> Circle
     Shape --> Rectangle
     Shape --> Triangle
-
-    Switch[Pattern Match] --> |Circle| C[Handle Circle]
-    Switch --> |Rectangle| R[Handle Rectangle]
-    Switch --> |Triangle| T[Handle Triangle]
+    Circle --> C[Handle Circle]
+    Rectangle --> R[Handle Rectangle]
+    Triangle --> T[Handle Triangle]
+    Switch[Pattern Match] --> Shape
 ```
 
 **Example 1: Sealed Classes (After)**
