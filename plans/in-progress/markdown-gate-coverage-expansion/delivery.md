@@ -563,12 +563,13 @@ mirroring the existing link step; extend the link step's skip paths.
 > Phase 4) + remove mermaid from pre-push; Layer 2 = `validate-markdown.yml` on `pull_request`
 > to `main`; Layer 3 = the same workflow on `push` to `main`.
 
-- [ ] [AI] **Layer 1 (pre-push removal)** — Edit `.husky/pre-push`: remove the mermaid trigger
+- [x] [AI] **Layer 1 (pre-push removal)** — Edit `.husky/pre-push`: remove the mermaid trigger
       block (lines 22-24: the `if echo "$CHANGED" | grep -qE '\.md$'` block running
       `npx nx run rhino-cli-rust:validate:mermaid`). Leave every other block intact. Verify:
       `grep -c "validate:mermaid" .husky/pre-push`
       — acceptance: 0 matches.
-- [ ] [AI] Add `validate:links` and `validate:heading-hierarchy` Nx targets to
+  - _Done 2026-06-06. Status: complete. Mermaid trigger block removed; all other blocks intact; grep returns 0 matches._
+- [x] [AI] Add `validate:links` and `validate:heading-hierarchy` Nx targets to
       `apps/rhino-cli-rust/project.json` (after the `validate:mermaid` entry at lines 153-165,
       mirroring its shape: bare `command`, `cache: true`, `inputs`, `outputs: []`): - `validate:links` command:
       `cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-links --exclude plans/done` - `validate:heading-hierarchy` command:
@@ -580,7 +581,8 @@ mirroring the existing link step; extend the link step's skip paths.
       Verify: `npx nx run rhino-cli-rust:validate:links` and
       `npx nx run rhino-cli-rust:validate:heading-hierarchy` execute (pass/fail acceptable
       here) — acceptance: both targets resolve and run; findings reported.
-- [ ] [AI] Mirror the same three target changes in `apps/rhino-cli-go/project.json` (after
+  - _Done 2026-06-06. Status: complete. `validate:links` + `validate:heading-hierarchy` added after `validate:mermaid` (bare command, cache true, src+workspace-md inputs, outputs []); `validate:mermaid` command now `--max-depth=4 --exclude plans/done` with `{workspaceRoot}/**/*.md` inputs. Both targets resolve and run: links reports 404 broken (backlog), heading-hierarchy 37 findings (backlog)._
+- [x] [AI] Mirror the same three target changes in `apps/rhino-cli-go/project.json` (after
       `validate:mermaid` at lines 116-128), using the Go command form
       (`CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go docs validate-links --exclude plans/done`,
       etc.; the Go `validate:mermaid` command becomes
@@ -589,7 +591,8 @@ mirroring the existing link step; extend the link step's skip paths.
       `npx nx run rhino-cli-go:validate:links` executes
       — acceptance: target resolves and runs.
   - _Suggested executor: `swe-golang-dev`._
-- [ ] [AI] **Layers 2 & 3 (consolidated CI)** — Create
+  - _Done 2026-06-06. Status: complete. Three Go targets mirrored (validate:mermaid → --max-depth=4 --exclude plans/done + workspace-md inputs; validate:links, validate:heading-hierarchy new). `rhino-cli-go:validate:links` runs and reports 404 broken — byte-matching the Rust count._
+- [x] [AI] **Layers 2 & 3 (consolidated CI)** — Create
       `.github/workflows/validate-markdown.yml` (_New file_), mirroring the structure of the
       existing `pr-validate-links.yml` (read it first: `actions/checkout@v6` →
       `./.github/actions/setup-node` → `./.github/actions/setup-rust`,
@@ -612,16 +615,19 @@ mirroring the existing link step; extend the link step's skip paths.
     `actionlint` if available (skip gracefully if not)
     — acceptance: the file exists; prettier passes; the `on:` block has BOTH triggers; all
     three validators are invoked.
+  - _Done 2026-06-06. Status: complete. `.github/workflows/validate-markdown.yml` created (checkout@v6 → setup-node → setup-rust, contents: read, ubuntu-latest; `on:` has BOTH pull_request+push to main; three named steps run mermaid/links/heading-hierarchy Nx targets). Prettier passes; actionlint not installed — skipped gracefully._
 
-- [ ] [AI] **Migrate the legacy link workflow** — Delete
+- [x] [AI] **Migrate the legacy link workflow** — Delete
       `.github/workflows/pr-validate-links.yml` (its link check now runs inside
       `validate-markdown.yml`). Verify: `test ! -f .github/workflows/pr-validate-links.yml`
       — acceptance: the file no longer exists.
-- [ ] [AI] Rebuild the release binary so the installed pre-commit hook picks up the Phase 4
+  - _Done 2026-06-06. Status: complete. `git rm` applied; file no longer exists._
+- [x] [AI] Rebuild the release binary so the installed pre-commit hook picks up the Phase 4
       steps: `cargo build --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml`
       — acceptance: exits 0; a scratch staged malformed-flowchart commit is blocked by the local
       pre-commit hook (then unstage the scratch change).
-- [ ] [AI+HUMAN] **Behavioral acceptance (observed at execution)** — Confirm a
+  - _Done 2026-06-06. Status: complete. Rebuild exit 0 (already current). Scratch `docs/scratch-mermaid-test.md` with >30-char node label staged + commit attempted → BLOCKED: "Error: found 1 mermaid violation(s); husky - pre-commit script failed (code 1)"; HEAD unchanged. Scratch unstaged and deleted._
+- [x] [AI+HUMAN] **Behavioral acceptance (observed at execution)** — Confirm a
       deliberately-broken markdown change makes the `validate-markdown` CI check FAIL. This
       requires a real GitHub Actions event: on a throwaway branch, introduce one broken relative
       link (or a broken `#anchor`, or a duplicate H1 in a `docs/` file), open a PR to `main`, and
@@ -632,6 +638,7 @@ mirroring the existing link step; extend the link step's skip paths.
       reports failure on the broken markdown and success once reverted. (If the operator prefers
       not to open a scratch PR, this may be deferred to the Phase 12 push-to-`main` run, where
       Layer 3 fires for real — record the decision in phase notes.)
+  - _Done 2026-06-06. Status: complete via the sanctioned deferral clause. Decision recorded: no scratch PR opened (operator directive is continuous unattended execution); behavioral acceptance defers to the Phase 12 push-to-`main` run where the `validate-markdown` workflow fires for real (Layer 3 first trigger). The RED half of the arc was demonstrated locally: the rebuilt pre-commit hook blocked a staged malformed flowchart (item above), and all three validators currently report the live backlog (404 links / 37 headings / 33 mermaid violations) — proving the gates detect violations. The GREEN half lands when Phase 12 CI passes on the cleaned repo._
 
 ### Phase 5 Gate
 
@@ -639,13 +646,16 @@ mirroring the existing link step; extend the link step's skip paths.
 > findings here (the fix-all has not run) — that is acceptable; what must hold is that the wiring
 > is correct across all three layers.
 
-- [ ] [AI] `grep -c "validate:mermaid" .husky/pre-push` returns 0 (Layer 1 removal).
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:links` and
+- [x] [AI] `grep -c "validate:mermaid" .husky/pre-push` returns 0 (Layer 1 removal).
+  - _Done 2026-06-06. 0 matches._
+- [x] [AI] `npx nx run rhino-cli-rust:validate:links` and
       `npx nx run rhino-cli-rust:validate:heading-hierarchy` execute against full scope
       (pass/fail acceptable).
-- [ ] [AI] `.github/workflows/validate-markdown.yml` exists with BOTH triggers and all three
+  - _Done 2026-06-06. Both execute full-scope (exit 1 with backlog findings — acceptable here)._
+- [x] [AI] `.github/workflows/validate-markdown.yml` exists with BOTH triggers and all three
       validators; `pr-validate-links.yml` is deleted;
       `npx prettier --check .github/workflows/validate-markdown.yml` exits 0.
+  - _Done 2026-06-06. Both triggers present (pull_request + push to main); three validator steps; legacy file deleted; prettier passes._
 
 > **Pause Safety**: wiring is in place but the repo has known markdown findings — do NOT push
 > from here, because pre-commit/CI would now block on the unfixed backlog. This is a coherent
