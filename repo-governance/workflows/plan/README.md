@@ -65,7 +65,7 @@ This format applies to both the First Grill (before writing) and the Second Gril
 
 - [Workflows Index](../README.md) - All orchestrated workflows
 - [Plans Organization Convention](../../conventions/structure/plans.md) - Plan structure standards, including:
-  - [§Execution Markers: `[AI]` vs `[HUMAN]`](../../conventions/structure/plans.md#execution-markers-ai-vs-human) — executor tagging, legend requirement, handoff/resume signal rule
-  - [§Phase Gates and Natural Pauses](../../conventions/structure/plans.md#phase-gates-and-natural-pauses-hard-rule) — per-phase gate + Pause Safety requirement, barrier rule
+  - [§Executor Tagging — [AI] vs [HUMAN]](../../conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule) — executor tagging, legend requirement, handoff/resume signal rule
+  - [§Phases as Natural Pauses With Clear Gates](../../conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule) — per-phase gate + Pause Safety requirement, barrier rule
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md) - Core workflow pattern
 - [Repository Architecture](../../repository-governance-architecture.md) - Six-layer governance model

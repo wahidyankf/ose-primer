@@ -1,6 +1,6 @@
 ---
 title: "Workflow Execution Mode Convention"
-description: Defines execution modes for workflows — Agent Delegation (preferred) and Manual Orchestration (fallback) — explaining how to use the Agent tool for subagent invocation and when to fall back to direct execution
+description: Defines execution modes for workflows — Agent Delegation (preferred) and Manual Orchestration (fallback) — explaining how to use the Agent tool for delegated agent invocation and when to fall back to direct execution
 category: explanation
 subcategory: workflows
 tags:
@@ -8,6 +8,7 @@ tags:
   - execution-mode
   - orchestration
   - conventions
+created: 2026-01-05
 ---
 
 # Workflow Execution Mode Convention
@@ -22,8 +23,8 @@ Workflows orchestrate multiple agents (checker → fixer → checker loops, etc.
 
 **Two solutions exist**:
 
-- **Agent Delegation** (preferred): Use the Agent tool with `subagent_type` to invoke specialized agents. Agent tool subagents persist file changes to the actual filesystem.
-- **Manual Orchestration** (fallback): Execute workflow logic directly in the main context using Read/Write/Edit tools when agents are not available as defined subagent types.
+- **Agent Delegation** (preferred): Use the Agent tool with `subagent_type` to invoke specialized agents. Agent tool delegated agents persist file changes to the actual filesystem.
+- **Manual Orchestration** (fallback): Execute workflow logic directly in the main context using Read/Write/Edit tools when agents are not available as defined delegated agent types.
 
 ## Execution Modes
 
@@ -31,20 +32,20 @@ Workflows orchestrate multiple agents (checker → fixer → checker loops, etc.
 
 #### Description
 
-Invoke specialized agents via the Agent tool with `subagent_type` when the workflow references agents that exist as defined subagent types.
+Invoke specialized agents via the Agent tool with `subagent_type` when the workflow references agents that exist as defined delegated agent types.
 
 **Characteristics**:
 
-- Specialized agents execute in dedicated subagent contexts
+- Specialized agents execute in dedicated delegated agent contexts
 - File changes persist to the actual filesystem
 - Agents bring their full specialized knowledge and validation rules
-- Agent tool subagents are distinct from the Task tool: file changes DO persist
-- SHOULD be used when the workflow's checker/fixer agents exist as defined subagent types
+- Agent tool delegated agents are distinct from the Task tool: file changes DO persist
+- SHOULD be used when the workflow's checker/fixer agents exist as defined delegated agent types
 
 #### When to Use Agent Delegation
 
 - Workflow step references a named agent (e.g., `plan-checker`, `repo-rules-fixer`)
-- That agent exists as a defined subagent_type in `.claude/agents/`
+- That agent exists as a defined delegated agent type in the primary binding directory (e.g., `.claude/agents/`)
 - The step requires persistent file changes (audit reports, fixes)
 - You want the agent's full specialized validation/fixing logic applied
 
@@ -90,7 +91,7 @@ Agent tool invocation:
 
 #### Description
 
-User or AI assistant follows workflow steps directly using tools in main context when agents are not available as defined subagent types.
+User or AI assistant follows workflow steps directly using tools in main context when agents are not available as defined delegated agent types.
 
 **Characteristics**:
 
@@ -102,7 +103,7 @@ User or AI assistant follows workflow steps directly using tools in main context
 
 #### When to Use Manual Orchestration
 
-- Workflow agents are not available as defined subagent types
+- Workflow agents are not available as defined delegated agent types
 - You want step-by-step visibility and granular control
 - You want to review changes between each step
 - Agent delegation is unavailable or fails
@@ -138,11 +139,12 @@ AI: [Executes workflow steps directly]
 ## Execution Mode Decision Flow
 
 ```
-Workflow step references a named agent?
-├── YES → Agent exists as defined subagent_type in .claude/agents/?
+What does the workflow step reference?
+├── Named agent → Agent exists as defined subagent_type in .claude/agents/?
 │   ├── YES → Use Agent Delegation (preferred)
 │   └── NO  → Use Manual Orchestration (fallback)
-└── NO  → Use Manual Orchestration
+├── Nested workflow → Execute that workflow (recursively apply this decision flow)
+└── Procedure → Use Manual Orchestration (follow procedure steps directly)
 ```
 
 ## Manual Mode Execution Pattern
@@ -225,7 +227,7 @@ Every workflow should include an "Execution Mode" section:
 ## Execution Mode
 
 **Preferred Mode**: Agent Delegation — invoke `{checker-agent}` and `{fixer-agent}` via the
-Agent tool with `subagent_type` when these agents exist as defined subagent types.
+Agent tool with `subagent_type` when these agents exist as defined delegated agent types.
 
 **Fallback Mode**: Manual Orchestration — execute workflow logic directly using
 Read/Write/Edit tools when Agent Delegation is unavailable.
@@ -237,7 +239,7 @@ User: "Run my-workflow for [scope]"
 ```
 
 The AI will invoke specialized agents via the Agent tool. If agents are unavailable as
-subagent types, it will fall back to executing the workflow steps directly.
+delegated agent types, it will fall back to executing the workflow steps directly.
 
 ## Steps
 
@@ -272,8 +274,8 @@ In the future, a workflow runner could be developed to automate workflow executi
 
 - Use the Agent tool with `subagent_type` matching the workflow's named agent
 - Pass the relevant scope, report paths, and mode parameters in the prompt
-- File operations performed by the subagent persist to the actual filesystem
-- Collect subagent outputs (report paths) to pass to subsequent steps
+- File operations performed by the delegated agent persist to the actual filesystem
+- Collect delegated agent outputs (report paths) to pass to subsequent steps
 
 ### For AI Assistant in Manual Mode
 
@@ -290,7 +292,7 @@ In the future, a workflow runner could be developed to automate workflow executi
 
 **Important distinction**:
 
-- **Agent tool** (`subagent_type`): Subagent runs with file system access — Write/Edit changes **DO persist**
+- **Agent tool** (`subagent_type`): Delegated agent runs with file system access — Write/Edit changes **DO persist**
 - **Task tool**: Agent runs in isolated context — Write/Edit changes **do NOT persist**
 
 ```
@@ -310,7 +312,7 @@ Execute checker logic directly in main context
 Execute fixer logic directly in main context
 ```
 
-**Right** (when agents exist as subagent types):
+**Right** (when agents exist as delegated agent types):
 
 ```
 Agent tool invokes plan-checker subagent → audit report persists
