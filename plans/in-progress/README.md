@@ -8,9 +8,6 @@ Active project plans currently being worked on.
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
   exports research dossiers.
-- [Planning System Overhaul](./planning-system-overhaul/README.md)
-  — TDD HARD RULE, AGENTS.md catalog completeness, markdown archive exclusions.
-  Adopted from ose-public `2026-05-26__planning-system-overhaul`.
 - [Plan Domain Parity](./plan-domain-parity/README.md)
   — adopt merged 3-way planning canon into primer, modernize rhino CLI binding emitters
   (OpenCode permission object, Codex config.toml layout), run full binding audit, supersede
