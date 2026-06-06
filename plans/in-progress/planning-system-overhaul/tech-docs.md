@@ -10,7 +10,7 @@ flowchart LR
     A[test-driven-development.md\nTDD Shape section] -->|HARD RULE added| B[RED / GREEN / REFACTOR\nalways 3 separate items]
     A -->|grouping-label note| C[parent label is grouping\nnot a phase substitute]
     D[AGENTS.md\nProject Planning list] -->|repo-setup-manager added| E[agent catalog complete]
-    D -->|plan-establishment ref| F[plan-establishment-execution.md\nreferenced]
+    D -->|plan-establishment ref| F[plan-establishment\nreferenced]
     D -->|grill mandate note| G[plan-maker grill\ndocumented]
     H[.markdownlintignore\n.markdownlint-cli2.jsonc] -->|exclude| I[plans/done/\narchived/]
     J[markdown.md] -->|Archive Exclusion section| K[policy documented]

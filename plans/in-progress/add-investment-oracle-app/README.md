@@ -267,7 +267,7 @@ vendor primers and the testing companion:
 
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080 | Brown #CA9161
-graph LR
+graph TD
     USER("User<br/>──────────────<br/>Drops PDFs<br/>Edits report"):::actor
 
     SHELL["Tauri 2 shell<br/>──────────────<br/>Rust<br/>Spawns sidecar<br/>Hosts WebView"]:::shell
@@ -287,11 +287,14 @@ graph LR
     USER -->|launches| SHELL
     SHELL -->|loads| FE
     SHELL -->|spawns sidecar| BE
+    LLM["Model providers<br/>──────────────<br/>routed per tier"]:::or
+
     FE -->|HTTP localhost| BE
     BE -->|store + query vectors| DB
-    BE -->|chat stream (default)| OR
-    BE -->|chat stream (opt-in)| ANT
-    BE -->|chat stream (mid-tier) + embed| GEM
+    BE -->|chat stream + embed| LLM
+    LLM -->|default :free| OR
+    LLM -->|premium opt-in| ANT
+    LLM -->|mid-tier + embeddings| GEM
 
     classDef actor fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef shell fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px

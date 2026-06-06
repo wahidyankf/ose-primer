@@ -30,7 +30,7 @@ Folders in `in-progress/` use the bare project identifier only — **no date pre
 
 Example: `add-investment-oracle-app/` (not `2026-04-27__add-investment-oracle-app/`)
 
-When a plan is moved from `backlog/` to `in-progress/`, the `YYYY-MM-DD__` prefix is stripped. See the [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md#-plan-folder-naming) for full naming rules.
+When a plan is moved from `backlog/` to `in-progress/`, the `YYYY-MM-DD__` prefix is stripped. See the [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md#plan-folder-naming) for full naming rules.
 
 ## Instructions
 

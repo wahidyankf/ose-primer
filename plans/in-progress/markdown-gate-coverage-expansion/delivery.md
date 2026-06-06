@@ -728,18 +728,21 @@ mirroring the existing link step; extend the link step's skip paths.
 
 ### Phase 8: Fix-all `plans/` (excludes `plans/done/`; includes this plan — dogfooding)
 
-- [ ] [AI] Re-measure all three gates for `plans/` (pass `--exclude plans/done` to mermaid and
+- [x] [AI] Re-measure all three gates for `plans/` (pass `--exclude plans/done` to mermaid and
       links — mermaid also pins `--max-depth=4`; heading-hierarchy already excludes
       `plans/done/` via the allowlist)
       — acceptance: per-finding lists recorded.
-- [ ] [AI] For each finding: apply the resolution per the preamble; re-run per file. Acceptance:
+  - _Done 2026-06-07. Status: complete. mermaid = 3 violations (add-investment-oracle-app/README.md L268 span 5; plan-domain-parity/tech-docs.md L9 span 5; planning-system-overhaul/tech-docs.md L8 label 31 chars); links = 2 broken anchors (plans/README.md L40, plans/in-progress/README.md L33 — both `#-plan-folder-naming` vs real slug `plan-folder-naming`); headings = 0._
+- [x] [AI] For each finding: apply the resolution per the preamble; re-run per file. Acceptance:
       zero findings for `plans/` (excluding `plans/done/`), including this plan's own five docs
       (dogfooding).
+  - _Done 2026-06-07. Status: complete. Two over-wide LR flowcharts converted to TD (investment-oracle README also staged its provider fan-out behind a `Model providers` node; plan-domain-parity canon-flow chain), one 31-char label shortened, two `#-plan-folder-naming` anchors corrected to `#plan-folder-naming`. Verified: mermaid 0/0 (6 files, 9 blocks), links 0 plans findings, headings 0 — including this plan's five docs (dogfooding)._
 
 ### Phase 8 Gate
 
-- [ ] [AI] All three measurement commands report zero findings for `plans/` outside
+- [x] [AI] All three measurement commands report zero findings for `plans/` outside
       `plans/done/`, including `plans/in-progress/markdown-gate-coverage-expansion/`.
+  - _Done 2026-06-07. Gate green: mermaid exit 0, links 0 plans findings, headings exit 0._
 
 > **Pause Safety**: `plans/` clean; `specs/`, `apps/`, `libs/`, root pending. Safe to stop. To
 > resume: re-run the three measurement commands.

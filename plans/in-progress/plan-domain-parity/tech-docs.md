@@ -7,7 +7,7 @@ The merged canon is produced upstream (ose-public) and adopted here by manual se
 rhino CLIs under TDD, with the existing dual-CLI parity guard as the equivalence oracle.
 
 ```mermaid
-flowchart LR
+flowchart TD
   accTitle: Canon flow into ose-primer
   accDescr: ose-public lands merged canon first; primer adopts via semantic merge; emitters regenerate bindings; parity guard validates both CLIs.
   A[ose-public canon] --> B[Semantic merge into primer]

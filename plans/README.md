@@ -37,7 +37,7 @@ Examples:
 - `in-progress/auth-system/` (no date)
 - `done/2025-12-15__auth-system/` (completion date)
 
-For the full rules and rationale, see the [Plans Organization Convention](../repo-governance/conventions/structure/plans.md#-plan-folder-naming).
+For the full rules and rationale, see the [Plans Organization Convention](../repo-governance/conventions/structure/plans.md#plan-folder-naming).
 
 ## Related Documentation
 
