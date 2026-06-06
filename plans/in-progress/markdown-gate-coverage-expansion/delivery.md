@@ -162,7 +162,7 @@ Implement DD-2 (`--exclude` on links), DD-3 (repo-wide walk minus noise dirs), D
 helper), DD-6 (shared fence-aware heading parser), and DD-4 (`broken-anchor` validation) — in
 BOTH CLIs. The `.claude/skills/` and `.opencode/skill/` skips stay.
 
-- [ ] [AI] **SPEC (RED)** — Extend
+- [x] [AI] **SPEC (RED)** — Extend
       `specs/apps/rhino/behavior/cli/gherkin/docs/docs-validate-links.feature` with five
       scenarios (one `--exclude`, one repo-wide-scan, one `broken-anchor`, one valid-anchor, one
       same-file-anchor), each obeying the one-`Given`/one-`When`/one-`Then` cardinality norm; and
@@ -173,7 +173,8 @@ BOTH CLIs. The `.claude/skills/` and `.opencode/skill/` skips stay.
       — acceptance: spec-coverage FAILS listing the new unmatched steps (the spec-level RED).
   - _Suggested executor: `specs-maker` for `component-cli.md`; `swe-rust-dev` for the feature
     file._
-- [ ] [AI] **RED (Rust)** — Add failing unit tests in
+  - _Done 2026-06-06. Status: complete. Files: `specs/apps/rhino/behavior/cli/gherkin/docs/docs-validate-links.feature` (+5 scenarios, 1-Given/1-When/1-Then each), `specs/apps/rhino/components/cli/component-cli.md` (new), `specs/apps/rhino/components/cli/README.md` (stub link). Acceptance met: `rhino-cli-go:spec-coverage` FAILS with 8 step gaps, all in the 5 new scenarios. NOTE: achieving the RED required fixing two preexisting spec-coverage extractor bugs in BOTH CLIs (comment-line catch-all patterns; const-indirected registrations invisible) — committed separately as `fix(rhino-cli): harden spec-coverage go-step extraction (rust+go)`; shadow-diff spec-coverage corpus 9 cases byte-identical._
+- [x] [AI] **RED (Rust)** — Add failing unit tests in
       `apps/rhino-cli-rust/src/internal/docs/scanner.rs`, `validator.rs`, and the new
       `headings.rs` (_New test_, temp-dir fixtures) covering:
       (a) `--exclude plans/done` removes a broken link under `plans/done` from results while a
@@ -192,7 +193,8 @@ BOTH CLIs. The `.claude/skills/` and `.opencode/skill/` skips stay.
       (g) the fence-aware parser ignores `#` lines inside code fences.
       Run `npx nx run rhino-cli-rust:test:quick`
       — acceptance: all new tests FAIL; all preexisting tests still pass.
-- [ ] [AI] **GREEN (Rust)** — Implement per
+  - _Done 2026-06-06. Status: complete. Files: `scanner.rs` (+1 test), `validator.rs` (+4 tests), `headings.rs` (new, stub fns + 6 tests), `mod.rs` (registration). 530 passed / 10 failed — failures are exactly the new tests ((d) is a passing non-regression guard); all preexisting green._
+- [x] [AI] **GREEN (Rust)** — Implement per
       [tech-docs.md](./tech-docs.md) DD-2/3/4/5/6:
       (1) add `--exclude` to `ValidateLinksArgs` in
       `apps/rhino-cli-rust/src/commands/docs.rs` and APPEND the values to
@@ -213,15 +215,18 @@ worktrees, .terraform, generated-contracts, .nx`, plus `.git`);
       `apps/rhino-cli-rust/tests/docs.rs`.
       Run `npx nx run rhino-cli-rust:test:quick && npx nx run rhino-cli-rust:test:integration`
       — acceptance: all tests (new + preexisting) pass.
-- [ ] [AI] **REFACTOR (Rust)** — Consolidate the slug + anchor + walk helpers; keep the heading
+  - _Done 2026-06-06. Status: complete. Files: `commands/docs.rs` (--exclude appended after `.opencode/skill/`), `scanner.rs` (walkdir repo-wide walk + NOISE_DIRS const; `#` extraction skip removed), `headings.rs` (fence-aware `collect_atx_headings`, GFM `gfm_slug`, `collect_heading_anchors` with -N suffixes), `validator.rs` (fragment captured pre-resolve; `broken-anchor` category incl. same-file anchors), `reporter.rs` (broken-anchor in CATEGORY_ORDER), `tests/docs.rs` (5 new cucumber scenarios wired). test:quick 540 passed/0 failed (90% cov gate ok); test:integration docs suite 32 scenarios/122 steps all pass. Deviations: one preexisting test asserting old anchor-drop behavior updated to the mandated new behavior; `links_args_default` extended for the new field._
+- [x] [AI] **REFACTOR (Rust)** — Consolidate the slug + anchor + walk helpers; keep the heading
       parser in one place. Run
       `npx nx run rhino-cli-rust:lint && npx nx run rhino-cli-rust:test:quick`
       — acceptance: both exit 0; no clippy warnings introduced.
-- [ ] [AI] **RED (Go)** — Add the same failing unit tests (fixtures identical to the Rust set, a–g)
+  - _Done 2026-06-06. Status: complete. GREEN code already cohesive: anchor-set logic only in `headings.rs`; single NOISE_DIRS walk in `scanner.rs`; fence-toggle divergence (scanner `only vs headings`+~~~) is deliberate Go-parity, now documented. Comment-only fixes in `headings.rs` + `mod.rs`. lint exit 0 (clippy -D warnings clean); test:quick 540 passed/0 failed (cache-skipped)._
+- [x] [AI] **RED (Go)** — Add the same failing unit tests (fixtures identical to the Rust set, a–g)
       in `apps/rhino-cli-go/internal/docs/links_scanner_test.go`, `links_validator_test.go`, and
       the new `headings_test.go` (_New test_). Run `npx nx run rhino-cli-go:test:quick`
       — acceptance: all new tests FAIL; all preexisting tests still pass.
-- [ ] [AI] **GREEN (Go)** — Mirror the Rust implementation:
+  - _Done 2026-06-06. Status: complete. Files: `headings.go` (new, panic stubs `CollectATXHeadings`/`GFMSlug`/`CollectHeadingAnchors`), `headings_test.go` (new), `links_scanner_test.go` (+2 tests), `links_validator_test.go` (+4 tests). internal/docs: 63 passed / 12 failed — failures exactly the new RED tests; (d) is the intentional passing guard mirroring Rust. All other packages ok; gofmt/vet clean._
+- [x] [AI] **GREEN (Go)** — Mirror the Rust implementation:
       (1) `--exclude` (`StringArrayVar`) in `apps/rhino-cli-go/cmd/docs_validate_links.go`,
       appended to `ScanOptions.SkipPaths`;
       (2) repo-wide walk replacing `getAllMarkdownFiles` (`links_scanner.go:78`) with the same
@@ -236,25 +241,32 @@ worktrees, .terraform, generated-contracts, .nx`, plus `.git`);
       Run `npx nx run rhino-cli-go:test:quick && npx nx run rhino-cli-go:spec-coverage`
       — acceptance: all tests pass; spec-coverage exits 0 (the Phase 1 SPEC scenarios are now
       covered).
-- [ ] [AI] **REFACTOR (Go)** — Same consolidation pass as Rust. Run
+  - _Done 2026-06-06. Status: complete. Files: `cmd/docs_validate_links.go` (--exclude StringArrayVar appended after `.opencode/skill/`), `links_scanner.go` (WalkDir repo-wide + noiseDirs set, root-guard, # skip removed), `headings.go` (full impl mirroring Rust), `links_validator.go` (fragment pre-capture + broken-anchor, anchorExists), `links_reporter.go` (broken-anchor appended to categoryOrder), `cmd/docs_validate_links.integration_test.go` (5 scenarios wired). test:quick PASS (cov 90.06%); spec-coverage PASS (608 steps all covered). Deviation: legacy `TestExtractLinks` updated to mandated new pure-anchor behavior._
+- [x] [AI] **REFACTOR (Go)** — Same consolidation pass as Rust. Run
       `npx nx run rhino-cli-go:lint && npx nx run rhino-cli-go:test:quick`
       — acceptance: both exit 0; no new golangci-lint findings.
-- [ ] [AI] **PARITY** — Extend the `docs` corpus in
+  - _Done 2026-06-06. Status: complete. Already cohesive (anchor logic only in headings.go; single noiseDirs walk; one parser). Comment-only fix in `links_scanner.go` documenting deliberate fence-toggle divergence. lint exit 0 (0 issues); test:quick exit 0 (cov 90.06%)._
+- [x] [AI] **PARITY** — Extend the `docs` corpus in
       `apps/rhino-cli-rust/scripts/shadow-diff.sh` with invocations exercising
       `validate-links --exclude` and anchor fixtures, then run
       `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs`
       — acceptance: exits 0 (byte-identical output across both CLIs).
+  - _Done 2026-06-06. Status: complete. +9 corpus cases (anchor fixtures text/json/markdown/quiet/verbose; --exclude single/repeat/other) under `.shadow-links-fixtures/`. PASS — 40 cases byte-identical (was 31). Parity bug found+fixed: Rust `VALIDATE_LINKS_USAGE` const lacked the `--exclude` flag line cobra auto-generates — mirrored Go bytes. Note: live repo currently shows 374 broken links repo-wide (expected backlog; cleaned in Phases 6-10)._
 
 ### Phase 1 Gate
 
 > All checks below must pass before starting Phase 2.
 
-- [ ] [AI] `npx nx run rhino-cli-rust:test:quick` and `npx nx run rhino-cli-go:test:quick` are
+- [x] [AI] `npx nx run rhino-cli-rust:test:quick` and `npx nx run rhino-cli-go:test:quick` are
       both green (new link/anchor/exclude tests + all preexisting).
-- [ ] [AI] `npx nx run rhino-cli-rust:lint` and `npx nx run rhino-cli-go:lint` both exit 0.
-- [ ] [AI] `npx nx run rhino-cli-rust:spec-coverage` and `npx nx run rhino-cli-go:spec-coverage`
+  - _Done 2026-06-06. Rust 540 passed/0 failed; Go 14/14 packages ok (cache-skipped runs)._
+- [x] [AI] `npx nx run rhino-cli-rust:lint` and `npx nx run rhino-cli-go:lint` both exit 0.
+  - _Done 2026-06-06. Both exit 0 (cache-skipped)._
+- [x] [AI] `npx nx run rhino-cli-rust:spec-coverage` and `npx nx run rhino-cli-go:spec-coverage`
       both exit 0.
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs` exits 0.
+  - _Done 2026-06-06. Both: 20 specs, 145 scenarios, 608 steps all covered (cache-skipped)._
+- [x] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs` exits 0.
+  - _Done 2026-06-06. PASS — 40 cases byte-identical._
 
 > **Pause Safety**: both link checkers now support `--exclude`, repo-wide scan, and anchor
 > validation, but nothing new is wired into hooks/CI (Phase 5) — repo enforcement is unchanged.
