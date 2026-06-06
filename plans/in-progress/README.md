@@ -15,6 +15,10 @@ Active project plans currently being worked on.
   — unify three structural markdown validators (mermaid, links + anchors, heading hierarchy)
   into one coherent gate with three enforcement layers, in BOTH rhino CLIs.
   Adopted from ose-public `2026-06-06__markdown-gate-coverage-expansion`.
+- [Plan Domain Parity](./plan-domain-parity/README.md)
+  — adopt merged 3-way planning canon into primer, modernize rhino CLI binding emitters
+  (OpenCode permission object, Codex config.toml layout), run full binding audit, supersede
+  `planning-system-overhaul`, and document all decisions in a rationale doc.
 
 ## Folder Naming
 
