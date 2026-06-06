@@ -230,9 +230,10 @@ which skipped it and shipped a simplified algorithm). Key findings, all carried 
   implementation): lowercase → strip every character NOT matching `[\p{L}\p{N}_\- ]` (Unicode
   letters, Unicode digits, underscore, hyphen, and space are KEPT) → spaces→hyphens with **no
   collapsing** (`a  b` → `a--b`) → duplicate slugs get `-1`, `-2`, … suffixes in document order.
-  [Web-cited — `github.com/Flet/github-slugger` (issue #56 confirms the regex is `[^\w -]`
-  Unicode-aware); `gist.github.com/asabaylus/3071099`; GitHub Community Discussion #21546 (no
-  formal spec exists; GitHub staff point to html-pipeline)]
+  [Web-cited — <https://github.com/Flet/github-slugger/issues/56> (accessed 2026-06-06; issue
+  #56 confirms the regex is `[^\w -]` Unicode-aware); <https://gist.github.com/asabaylus/3071099>
+  (accessed 2026-06-06); <https://github.com/orgs/community/discussions/21546> (accessed
+  2026-06-06; no formal spec exists; GitHub staff point to html-pipeline)]
 - The upstream plan's original simplified "strip non-alphanumeric except hyphen" was **wrong**
   for underscores (kept by GitHub) and Unicode (kept by GitHub); ose-public's implementation
   was corrected to the algorithm above during the 2026-06-06 cross-repo alignment (it

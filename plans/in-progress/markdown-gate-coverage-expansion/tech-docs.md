@@ -255,7 +255,8 @@ Implements GitHub's real algorithm per the web research in
   with the class `[^\p{L}\p{N}_\- ]`. Go: `regexp.MustCompile` with the same class (Go `regexp`
   supports `\p{L}`/`\p{N}` natively).
 - No third-party slugger: no maintained Go library reproduces `github-slugger`, and the closest
-  Rust crate is pre-1.0. [Web-cited — see Research Note]
+  Rust crate is pre-1.0. [Web-cited — <https://github.com/Flet/github-slugger/issues/56>
+  (accessed 2026-06-06; no maintained Go equivalent; closest Rust crate pre-1.0)]
 - **Verified behavior**: `github-slugger` v2 was executed directly on 2026-06-06 —
   `slug('foo_bar baz')` → `foo_bar-baz` (underscores KEPT); `slug('a  b')` → `a--b` (no space
   collapsing); Unicode letters/digits kept. [Verified 2026-06-06 — executed github-slugger v2
