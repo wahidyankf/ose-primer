@@ -1,8 +1,10 @@
-//! `docs validate-links` and `docs validate-mermaid` commands.
+//! `docs validate-links`, `docs validate-mermaid`, and
+//! `docs validate-heading-hierarchy` commands.
 //!
 //! Byte-for-byte ports of the Go `cmd/docs_validate_links.go` and
-//! `cmd/docs_validate_mermaid.go` handlers. Output is written with `print!`
-//! (no implicit trailing newline) to mirror Go's `Fprint`.
+//! `cmd/docs_validate_mermaid.go` handlers (the heading-hierarchy command is
+//! Rust-canonical; its Go cobra twin mirrors these bytes). Output is written
+//! with `print!` (no implicit trailing newline) to mirror Go's `Fprint`.
 
 use std::path::PathBuf;
 
@@ -10,7 +12,9 @@ use anyhow::{Error, anyhow};
 use clap::Args;
 
 use crate::internal::cliout::OutputFormat;
-use crate::internal::docs::{reporter as link_reporter, types::ScanOptions, validator};
+use crate::internal::docs::{
+    heading_hierarchy, reporter as link_reporter, types::ScanOptions, validator,
+};
 use crate::internal::git;
 use crate::internal::mermaid::{
     extractor, reporter as mermaid_reporter, validator as mermaid_validator,
@@ -340,6 +344,118 @@ fn walk_md_files(dir: &std::path::Path) -> Vec<PathBuf> {
     files
 }
 
+// ---------------------------------------------------------------------------
+// validate-heading-hierarchy
+// ---------------------------------------------------------------------------
+
+/// Cobra-style usage block printed to stderr when `validate-heading-hierarchy`
+/// errors. Shaped exactly the way cobra generates it so the planned Go twin
+/// matches byte-for-byte (same flag set and alignment as `validate-links`).
+pub const VALIDATE_HEADING_HIERARCHY_USAGE: &str = "Usage:\n  \
+rhino-cli docs validate-heading-hierarchy [flags]\n\n\
+Examples:\n  \
+# Validate heading hierarchy in all prose markdown files\n  \
+rhino-cli docs validate-heading-hierarchy\n\n  \
+# Validate specific files or directories (prose allowlist still applies)\n  \
+rhino-cli docs validate-heading-hierarchy docs/ repo-governance/\n\n  \
+# Validate only staged files (useful in pre-commit hooks)\n  \
+rhino-cli docs validate-heading-hierarchy --staged-only\n\n  \
+# Exclude a tree on top of the prose allowlist\n  \
+rhino-cli docs validate-heading-hierarchy --exclude docs\n\n  \
+# Output as JSON\n  \
+rhino-cli docs validate-heading-hierarchy -o json\n\n\
+Flags:\n      \
+--exclude stringArray   path prefixes to exclude from validation (repeatable)\n  \
+-h, --help                  help for validate-heading-hierarchy\n      \
+--staged-only           only validate staged files\n\n\
+Global Flags:\n      \
+--no-color        disable colored output\n  \
+-o, --output string   output format: text, json, markdown (default \"text\")\n  \
+-q, --quiet           quiet mode (errors only)\n      \
+--say string      echo a message to stdout\n  \
+-v, --verbose         verbose output with timestamps\n\n";
+
+#[derive(Args, Debug)]
+pub struct ValidateHeadingHierarchyArgs {
+    /// Optional path arguments (files or directories); the prose allowlist
+    /// still applies to every candidate.
+    #[arg(value_name = "PATH")]
+    pub paths: Vec<String>,
+    /// Only validate staged files.
+    #[arg(long = "staged-only")]
+    pub staged_only: bool,
+    /// Path prefixes to exclude from validation (repeatable).
+    #[arg(long = "exclude", value_name = "PATH")]
+    pub exclude: Vec<String>,
+}
+
+pub fn run_validate_heading_hierarchy(
+    args: &ValidateHeadingHierarchyArgs,
+    output: OutputFormat,
+    _verbose: bool,
+    quiet: bool,
+) -> Result<(), Error> {
+    let repo_root =
+        git::root::find_root().map_err(|e| anyhow!("failed to find git repository root: {e}"))?;
+
+    // Resolve the candidate paths. The prose allowlist is applied inside the
+    // validator's file selection (plan DD-7), so staged and positional inputs
+    // can never trip a finding on default-denied trees.
+    let paths: Vec<String> = if args.staged_only {
+        let staged = get_mermaid_staged_files(&repo_root)
+            .map_err(|e| anyhow!("failed to get staged files: {e}"))?;
+        let rels: Vec<String> = staged
+            .iter()
+            .filter_map(|p| p.strip_prefix(&repo_root).ok())
+            .map(|rel| rel.to_string_lossy().into_owned())
+            .collect();
+        if rels.is_empty() {
+            // Nothing staged: report success without falling back to a full scan.
+            print_heading_report(&[], output, quiet)?;
+            return Ok(());
+        }
+        rels
+    } else {
+        args.paths.clone()
+    };
+
+    let opts = heading_hierarchy::HeadingScanOptions {
+        root: repo_root,
+        paths,
+        exclude: args.exclude.clone(),
+    };
+    let findings = heading_hierarchy::validate_heading_hierarchy(&opts)
+        .map_err(|e| anyhow!("validation failed: {e}"))?;
+
+    print_heading_report(&findings, output, quiet)?;
+
+    if !findings.is_empty() {
+        if !quiet && matches!(output, OutputFormat::Text) {
+            eprintln!("\n❌ Found {} heading hierarchy finding(s)", findings.len());
+        }
+        return Err(anyhow!(
+            "found {} heading hierarchy finding(s)",
+            findings.len()
+        ));
+    }
+    Ok(())
+}
+
+/// Formats and prints the heading-hierarchy report in the requested format.
+fn print_heading_report(
+    findings: &[heading_hierarchy::HeadingFinding],
+    output: OutputFormat,
+    quiet: bool,
+) -> Result<(), Error> {
+    let out = match output {
+        OutputFormat::Text => heading_hierarchy::format_heading_text(findings, quiet),
+        OutputFormat::Json => heading_hierarchy::format_heading_json(findings)?,
+        OutputFormat::Markdown => heading_hierarchy::format_heading_markdown(findings),
+    };
+    print!("{out}");
+    Ok(())
+}
+
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::panic)]
 mod tests {
@@ -351,6 +467,18 @@ mod tests {
             staged_only: false,
             exclude: vec![],
         };
+        assert!(!args.staged_only);
+        assert!(args.exclude.is_empty());
+    }
+
+    #[test]
+    fn heading_hierarchy_args_default() {
+        let args = ValidateHeadingHierarchyArgs {
+            paths: vec![],
+            staged_only: false,
+            exclude: vec![],
+        };
+        assert!(args.paths.is_empty());
         assert!(!args.staged_only);
         assert!(args.exclude.is_empty());
     }

@@ -119,8 +119,10 @@ const NOISE_DIRS: &[&str] = &[
 
 /// Returns all markdown files via a repo-wide walk that skips the
 /// standardized noise-skip set by directory name. Mirrors the planned Go
-/// `getAllMarkdownFiles` repo-wide walker.
-fn get_all_markdown_files(repo_root: &Path) -> Vec<PathBuf> {
+/// `getAllMarkdownFiles` repo-wide walker. Shared with the heading-hierarchy
+/// validator (`super::heading_hierarchy`) — the walker has exactly one
+/// definition per CLI.
+pub(crate) fn get_all_markdown_files(repo_root: &Path) -> Vec<PathBuf> {
     let mut files = Vec::new();
 
     // filepath.Walk yields lexical order; WalkDir.sort_by_file_name matches it.

@@ -1,5 +1,5 @@
-//! Cucumber-rs integration tests for the `docs validate-links` and
-//! `docs validate-mermaid` commands.
+//! Cucumber-rs integration tests for the `docs validate-links`,
+//! `docs validate-mermaid`, and `docs validate-heading-hierarchy` commands.
 //!
 //! Wires the behavior-contract feature files at
 //! `specs/apps/rhino/behavior/cli/gherkin/docs/` to step definitions that
@@ -33,6 +33,9 @@ struct DocsWorld {
     /// Link text of the fixture's broken-anchor link, asserted by the
     /// broken-anchor Then step.
     broken_anchor_link: Option<String>,
+    /// Repo-relative path of the heading-hierarchy fixture file, asserted by
+    /// the heading-finding Then steps.
+    heading_file: Option<String>,
     output: Option<Output>,
 }
 
@@ -55,6 +58,7 @@ impl DocsWorld {
             mermaid_thresholds: None,
             broken_source: None,
             broken_anchor_link: None,
+            heading_file: None,
             output: None,
         }
     }
@@ -631,6 +635,159 @@ fn then_m_plans(w: &mut DocsWorld) {
     let out = w.stdout();
     assert!(out.contains("plans/p.md"), "got: {out}");
     assert!(out.contains("label_too_long"), "got: {out}");
+}
+
+// ===========================================================================
+// validate-heading-hierarchy steps
+// ===========================================================================
+
+// --- heading Given steps ---
+
+#[given("a markdown file under docs with two H1 headings")]
+fn given_h_docs_two_h1s(w: &mut DocsWorld) {
+    w.write("docs/guide.md", "# First Title\n\ntext\n\n# Second Title\n");
+    w.heading_file = Some("docs/guide.md".to_string());
+}
+
+#[given("a markdown file under docs with no H1 heading")]
+fn given_h_docs_no_h1(w: &mut DocsWorld) {
+    w.write("docs/notes.md", "## Only A Section\n\ntext\n");
+    w.heading_file = Some("docs/notes.md".to_string());
+}
+
+#[given("a markdown file under docs that jumps from H1 directly to H3")]
+fn given_h_docs_skipped_level(w: &mut DocsWorld) {
+    w.write("docs/jump.md", "# Title\n\n### Jumped Here\n");
+    w.heading_file = Some("docs/jump.md".to_string());
+}
+
+#[given("a markdown file under .claude/agents with zero H1 headings")]
+fn given_h_claude_agent_no_h1(w: &mut DocsWorld) {
+    w.write(
+        ".claude/agents/swe-rust-dev.md",
+        "## No H1 In Agent Files\n\nbody\n",
+    );
+    w.heading_file = Some(".claude/agents/swe-rust-dev.md".to_string());
+}
+
+#[given("a SKILL.md file under .claude/skills with multiple H1 headings")]
+fn given_h_skill_many_h1s(w: &mut DocsWorld) {
+    w.write(
+        ".claude/skills/example/SKILL.md",
+        "# One\n\n# Two\n\n# Three\n",
+    );
+    w.heading_file = Some(".claude/skills/example/SKILL.md".to_string());
+}
+
+#[given("a markdown file under plans/done with a skipped heading level")]
+fn given_h_plans_done_skipped(w: &mut DocsWorld) {
+    w.write(
+        "plans/done/2026-01-01__archived/delivery.md",
+        "# Title\n\n### Skipped In Archive\n",
+    );
+    w.heading_file = Some("plans/done/2026-01-01__archived/delivery.md".to_string());
+}
+
+#[given("an apps/example/README.md file with a skipped heading level")]
+fn given_h_apps_readme_skipped(w: &mut DocsWorld) {
+    w.write(
+        "apps/example/README.md",
+        "# Example\n\n### Skipped In Readme\n",
+    );
+    w.heading_file = Some("apps/example/README.md".to_string());
+}
+
+#[given("a markdown file at apps/example/src/notes.md with zero H1 headings")]
+fn given_h_apps_internal_no_h1(w: &mut DocsWorld) {
+    w.write(
+        "apps/example/src/notes.md",
+        "## Zero H1s Here But Default-Denied\n",
+    );
+    w.heading_file = Some("apps/example/src/notes.md".to_string());
+}
+
+#[given("a markdown file under docs with a duplicate H1")]
+fn given_h_docs_duplicate_h1(w: &mut DocsWorld) {
+    w.write("docs/excluded.md", "# Doc\n\n# Doc Again\n");
+}
+
+#[given("a markdown file under repo-governance with a duplicate H1")]
+fn given_h_governance_duplicate_h1(w: &mut DocsWorld) {
+    w.write("repo-governance/rule.md", "# Rule\n\n# Rule Again\n");
+}
+
+// --- heading When steps ---
+
+#[when("the developer runs docs validate-heading-hierarchy")]
+fn when_h_run(w: &mut DocsWorld) {
+    w.exec(&["docs", "validate-heading-hierarchy"]);
+}
+
+#[when("the developer runs docs validate-heading-hierarchy with --exclude docs")]
+fn when_h_run_exclude_docs(w: &mut DocsWorld) {
+    w.exec(&["docs", "validate-heading-hierarchy", "--exclude", "docs"]);
+}
+
+// --- heading Then steps ---
+
+/// Asserts the report contains a finding of `kind` for the fixture file.
+fn assert_heading_finding(w: &DocsWorld, kind: &str) {
+    let out = w.stdout();
+    let file = w.heading_file.clone().expect("fixture set heading_file");
+    assert!(out.contains("Heading Hierarchy Report"), "got: {out}");
+    assert!(out.contains(kind), "got: {out}");
+    assert!(out.contains(&file), "got: {out}");
+}
+
+/// Asserts the report contains NO finding of `kind` for the fixture file.
+fn assert_no_heading_finding(w: &DocsWorld, kind: &str) {
+    let out = w.stdout();
+    let file = w.heading_file.clone().expect("fixture set heading_file");
+    assert!(!out.contains(kind), "got: {out}");
+    assert!(!out.contains(&file), "got: {out}");
+}
+
+#[then("the output reports a duplicate-h1 finding for that file")]
+fn then_h_duplicate_h1(w: &mut DocsWorld) {
+    assert_heading_finding(w, "duplicate-h1");
+}
+
+#[then("the output reports a missing-h1 finding for that file")]
+fn then_h_missing_h1(w: &mut DocsWorld) {
+    assert_heading_finding(w, "missing-h1");
+}
+
+#[then("the output reports a skipped-level finding for that file")]
+fn then_h_skipped_level(w: &mut DocsWorld) {
+    assert_heading_finding(w, "skipped-level");
+}
+
+#[then("no missing-h1 finding is reported for that file")]
+fn then_h_no_missing_h1(w: &mut DocsWorld) {
+    assert_no_heading_finding(w, "missing-h1");
+}
+
+#[then("no duplicate-h1 finding is reported for that file")]
+fn then_h_no_duplicate_h1(w: &mut DocsWorld) {
+    assert_no_heading_finding(w, "duplicate-h1");
+}
+
+#[then("no skipped-level finding is reported for that file")]
+fn then_h_no_skipped_level(w: &mut DocsWorld) {
+    assert_no_heading_finding(w, "skipped-level");
+}
+
+#[then("no finding is reported for the docs file")]
+fn then_h_no_docs_finding(w: &mut DocsWorld) {
+    let out = w.stdout();
+    assert!(!out.contains("docs/excluded.md"), "got: {out}");
+}
+
+#[then("the output reports a duplicate-h1 finding for the repo-governance file")]
+fn then_h_governance_duplicate_h1(w: &mut DocsWorld) {
+    let out = w.stdout();
+    assert!(out.contains("duplicate-h1"), "got: {out}");
+    assert!(out.contains("repo-governance/rule.md"), "got: {out}");
 }
 
 // ===========================================================================

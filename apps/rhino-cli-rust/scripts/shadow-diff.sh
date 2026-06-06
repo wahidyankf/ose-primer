@@ -38,7 +38,7 @@ COMMANDS:
                    `spec-coverage` target uses. Guards against per-language
                    step-extraction divergence (the class of bug that the
                    shared-steps corpus above does not exercise — see NOTE).
-  docs             Diff the `docs validate-links|validate-mermaid` corpus
+  docs             Diff the `docs validate-links|validate-mermaid|validate-heading-hierarchy` corpus
   agents           Diff the `agents sync|validate-claude|validate-sync|validate-naming` corpus
   repo-governance  Diff the `repo-governance vendor-audit` corpus
   workflows        Diff the `workflows validate-naming` corpus
@@ -111,6 +111,21 @@ NOTE on docs text/markdown output:
   file (where ordering is trivially identical) and exercises all multi-file
   finding cases via JSON, whose slice ordering IS deterministic and matches
   byte-for-byte. Full-corpus default runs (zero findings) are deterministic.
+  validate-heading-hierarchy is exempt from this restriction: BOTH binaries
+  emit findings in discovery order from a lexically sorted walk (Go
+  filepath.WalkDir / Rust WalkDir.sort_by_file_name), so multi-file
+  text/markdown finding cases are deterministic and diffable.
+
+NOTE on heading-hierarchy fixtures:
+  validate-heading-hierarchy file selection is allowlist default-deny — only
+  prose trees (docs/, repo-governance/, specs/, plans/ minus plans/done/,
+  root-level *.md, apps|libs/<name>/README.md, apps|libs/<name>/docs/**) are
+  ever scanned. A repo-root dot-dir like the links corpus' fixture tree would
+  be default-denied and could never produce findings, so the heading fixtures
+  live under docs/.shadow-heading-fixtures/ (the docs/ prefix is allowlisted;
+  the repo-wide walk only skips the named noise dirs, not hidden dirs). The
+  tree is created after the links fixtures are removed and deleted before the
+  corpus returns, so no other docs case ever sees it.
 
 BEHAVIOUR:
   Builds the Go binary (Nx dist) and the Rust binary (cargo --release), then
@@ -445,6 +460,66 @@ corpus_docs() {
   run_case "links exclude other json"    docs validate-links --exclude docs/ -o json --no-color
 
   rm -rf "${lf_abs}"
+
+  # --- validate-heading-hierarchy: full default corpus (real prose trees), ----
+  # --- every format + verbosity. Findings come out in discovery order from a --
+  # --- lexically sorted walk in BOTH binaries, so output is deterministic ----
+  # --- even with findings (see NOTE on heading-hierarchy fixtures). -----------
+  for fmt in text json markdown; do
+    run_case "headings default ${fmt}"  docs validate-heading-hierarchy -o "${fmt}" --no-color
+  done
+  run_case "headings quiet"    docs validate-heading-hierarchy -q --no-color
+  run_case "headings verbose"  docs validate-heading-hierarchy -v --no-color
+  # staged-only on a clean tree → no staged files → success, identical output.
+  run_case "headings staged-only"  docs validate-heading-hierarchy --staged-only --no-color
+
+  # --- Heading fixtures: synthetic tree UNDER docs/ (a repo-root dot-dir is ---
+  # --- default-denied by the prose allowlist and would yield zero findings). --
+  # --- One deterministic finding per kind plus a fence-clean control file. ----
+  local hf_dir="docs/.shadow-heading-fixtures"
+  local hf_abs="${REPO_ROOT}/${hf_dir}"
+  rm -rf "${hf_abs}"
+  mkdir -p "${hf_abs}/nested"
+  printf '# Clean Doc\n\n```bash\n# fenced pseudo h1\n### fenced pseudo h3\n```\n\n## Real Section\n' > "${hf_abs}/aaa-clean.md"
+  printf '# First Title\n\nbody\n\n# Second Title\n' > "${hf_abs}/dup-h1.md"
+  printf '## Only A Section\n\nbody\n' > "${hf_abs}/missing-h1.md"
+  printf '# Nested Doc\n\n#### Deep Jump\n' > "${hf_abs}/nested/deep.md"
+  printf '# Title\n\n### Jumped Here\n' > "${hf_abs}/skip-level.md"
+
+  # Full scan with fixture findings present: duplicate-h1, missing-h1, and
+  # skipped-level all fire; the fenced control file stays clean. Multi-file
+  # text/markdown IS deterministic for this validator (see NOTE).
+  for fmt in text json markdown; do
+    run_case "headings fixtures ${fmt}"  docs validate-heading-hierarchy -o "${fmt}" --no-color
+  done
+  run_case "headings fixtures quiet"    docs validate-heading-hierarchy -q --no-color
+  run_case "headings fixtures verbose"  docs validate-heading-hierarchy -v --no-color
+
+  # Positional-path variants: directory walk, single file, multi-arg mix, and
+  # a default-denied tree (allowlist filters every candidate → success).
+  for fmt in text json markdown; do
+    run_case "headings dir ${fmt}"  docs validate-heading-hierarchy "${hf_dir}" -o "${fmt}" --no-color
+  done
+  run_case "headings one-file dup text"   docs validate-heading-hierarchy "${hf_dir}/dup-h1.md" --no-color
+  run_case "headings one-file dup md"     docs validate-heading-hierarchy "${hf_dir}/dup-h1.md" -o markdown --no-color
+  run_case "headings one-file dup json"   docs validate-heading-hierarchy "${hf_dir}/dup-h1.md" -o json --no-color
+  run_case "headings one-file clean"      docs validate-heading-hierarchy "${hf_dir}/aaa-clean.md" --no-color
+  run_case "headings multi-path json"     docs validate-heading-hierarchy "${hf_dir}/missing-h1.md" "${hf_dir}/nested" -o json --no-color
+  run_case "headings denied tree"         docs validate-heading-hierarchy .claude --no-color
+  run_case "headings denied tree json"    docs validate-heading-hierarchy .claude -o json --no-color
+
+  # --exclude that CHANGES the result: excluding the fixture tree must restore
+  # the pre-fixture default output (total_findings drops by the 4 fixture
+  # findings); JSON total_findings proves the filter took effect identically
+  # in both binaries. Repeated and slash-less forms too.
+  run_case "headings exclude fixture"       docs validate-heading-hierarchy --exclude "${hf_dir}/" --no-color
+  run_case "headings exclude fixture json"  docs validate-heading-hierarchy --exclude "${hf_dir}/" -o json --no-color
+  run_case "headings exclude noslash json"  docs validate-heading-hierarchy --exclude "${hf_dir}" -o json --no-color
+  run_case "headings exclude repeat json"   docs validate-heading-hierarchy --exclude "${hf_dir}/" --exclude repo-governance/ -o json --no-color
+  run_case "headings exclude docs json"     docs validate-heading-hierarchy --exclude docs/ -o json --no-color
+  run_case "headings dir+exclude json"      docs validate-heading-hierarchy "${hf_dir}" --exclude "${hf_dir}/nested/" -o json --no-color
+
+  rm -rf "${hf_abs}"
 }
 
 corpus_agents() {

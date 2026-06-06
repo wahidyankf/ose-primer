@@ -14,11 +14,13 @@ graph LR
         subgraph CMDS["Command Handlers"]
             VL["validate-links handler<br/>────────────────<br/>Parse flags<br/>Resolve file list<br/>Delegate to engine"]:::handler
             VM["validate-mermaid handler<br/>────────────────<br/>Parse flags<br/>Resolve file list<br/>Delegate to engine"]:::handler
+            VH["validate-heading-hierarchy handler<br/>────────────────<br/>Parse flags<br/>Apply allowlist<br/>Delegate to engine"]:::handler
         end
 
         subgraph ENGINES["Validation Engines"]
             LE["Link Validation Engine<br/>────────────────<br/>Scan markdown<br/>Resolve links<br/>Detect broken refs"]:::service
             ME["Mermaid Validation Engine<br/>────────────────<br/>Extract blocks<br/>Parse flowcharts<br/>Check thresholds"]:::service
+            HE["Heading Validation Engine<br/>────────────────<br/>Scan headings<br/>Enforce allowlist<br/>Detect violations"]:::service
         end
 
         subgraph OUTPUT["Output Layer"]
@@ -32,15 +34,20 @@ graph LR
 
     DEV -->|"rhino-cli docs validate-links [flags]"| VL
     DEV -->|"rhino-cli docs validate-mermaid [flags]"| VM
+    DEV -->|"rhino-cli docs validate-heading-hierarchy [flags]"| VH
 
     VL --> LE
     VM --> ME
+    VH --> HE
     LE --> FMT
     ME --> FMT
+    HE --> FMT
     LE --> FS
     LE --> GIT
     ME --> FS
     ME --> GIT
+    HE --> FS
+    HE --> GIT
 
     classDef actor fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef handler fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -175,6 +182,83 @@ rhino-cli docs validate-mermaid --max-label-len 20 --max-width 4
 
 ---
 
+## `docs validate-heading-hierarchy` (incoming)
+
+Scans markdown files for heading hierarchy violations. Three finding kinds are enforced:
+
+- `missing-h1` — the file contains no H1 heading
+- `duplicate-h1` — the file contains more than one H1 heading
+- `skipped-level` — a heading jumps more than one level (e.g. `#` directly to `###`)
+
+The command applies a **prose allowlist** (default-deny): only files under the listed trees are
+scanned. Everything else is silently skipped.
+
+**Allowlist scope:**
+
+| Path pattern              | Included          |
+| ------------------------- | ----------------- |
+| `docs/`                   | Yes               |
+| `repo-governance/`        | Yes               |
+| `specs/`                  | Yes               |
+| `plans/` (except `done/`) | Yes               |
+| Root `*.md` files         | Yes               |
+| `apps/*/README.md`        | Yes               |
+| `libs/*/README.md`        | Yes               |
+| `apps/*/docs/**`          | Yes               |
+| `libs/*/docs/**`          | Yes               |
+| `.claude/agents/`         | No — default-deny |
+| `.claude/skills/`         | No — default-deny |
+| `apps/*/src/`             | No — default-deny |
+| `plans/done/`             | No — excluded     |
+| Everything else           | No — default-deny |
+
+### Flags
+
+| Flag            | Type                | Default | Description                                                                                                                                                                    |
+| --------------- | ------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `[PATH...]`     | positional          | —       | Zero or more paths to scan. When supplied, only those paths are scanned; the prose allowlist is still applied to filter non-allowlisted files within the given paths.          |
+| `--staged-only` | bool                | `false` | Only validate files currently staged in git. Useful in pre-commit hooks.                                                                                                       |
+| `--exclude`     | string (repeatable) | —       | **Incoming.** Exclude a path prefix from validation. Can be supplied multiple times. Values are appended to the internal skip list after the built-in default-deny exclusions. |
+
+### Global flags (inherited)
+
+| Flag         | Short | Type   | Default | Description                                |
+| ------------ | ----- | ------ | ------- | ------------------------------------------ |
+| `--output`   | `-o`  | string | `text`  | Output format: `text`, `json`, `markdown`. |
+| `--verbose`  | `-v`  | bool   | `false` | Verbose output with timestamps.            |
+| `--quiet`    | `-q`  | bool   | `false` | Quiet mode — errors only.                  |
+| `--no-color` | —     | bool   | `false` | Disable colored output.                    |
+| `--say`      | —     | string | `""`    | Echo a message to stdout (utility flag).   |
+| `--help`     | `-h`  | bool   | `false` | Print help.                                |
+
+### Examples
+
+```bash
+# Validate all allowlisted markdown files
+rhino-cli docs validate-heading-hierarchy
+
+# Validate only staged files (pre-commit hook)
+rhino-cli docs validate-heading-hierarchy --staged-only
+
+# Output as JSON
+rhino-cli docs validate-heading-hierarchy -o json
+
+# Exclude a directory tree from validation
+rhino-cli docs validate-heading-hierarchy --exclude docs
+
+# Combine exclusions
+rhino-cli docs validate-heading-hierarchy --exclude docs --exclude plans/in-progress
+```
+
+### Implementation references
+
+| Implementation | Flag struct                      | Handler                          | Source                                                     |
+| -------------- | -------------------------------- | -------------------------------- | ---------------------------------------------------------- |
+| Rust (clap)    | `ValidateHeadingHierarchyArgs`   | `run_validate_heading_hierarchy` | `apps/rhino-cli-rust/src/commands/docs.rs`                 |
+| Go (cobra)     | `validateHeadingHierarchy*` vars | `runValidateHeadingHierarchy`    | `apps/rhino-cli-go/cmd/docs_validate_heading_hierarchy.go` |
+
+---
+
 ## Default scan scope
 
 Both commands share the same default directory scan logic when no targeting flags or positional
@@ -196,13 +280,14 @@ paths are supplied:
 
 ## Gherkin Coverage
 
-Behavior scenarios for both commands live in
+Behavior scenarios for all commands live in
 [`specs/apps/rhino/behavior/cli/gherkin/docs/`](../../behavior/cli/gherkin/docs/README.md):
 
-| Feature file                    | Command                 | Scenarios |
-| ------------------------------- | ----------------------- | --------- |
-| `docs-validate-links.feature`   | `docs validate-links`   | 9         |
-| `docs-validate-mermaid.feature` | `docs validate-mermaid` | 22        |
+| Feature file                              | Command                           | Scenarios |
+| ----------------------------------------- | --------------------------------- | --------- |
+| `docs-validate-links.feature`             | `docs validate-links`             | 9         |
+| `docs-validate-mermaid.feature`           | `docs validate-mermaid`           | 22        |
+| `docs-validate-heading-hierarchy.feature` | `docs validate-heading-hierarchy` | 9         |
 
 ---
 
@@ -211,4 +296,4 @@ Behavior scenarios for both commands live in
 - **Parent**: [cli component](./README.md)
 - **Behavior specs**: [behavior/cli/gherkin/docs/](../../behavior/cli/gherkin/docs/README.md)
 - **Rust implementation**: `apps/rhino-cli-rust/src/commands/docs.rs`
-- **Go implementation**: `apps/rhino-cli-go/cmd/docs_validate_links.go`, `apps/rhino-cli-go/cmd/docs_validate_mermaid.go`
+- **Go implementation**: `apps/rhino-cli-go/cmd/docs_validate_links.go`, `apps/rhino-cli-go/cmd/docs_validate_mermaid.go`, `apps/rhino-cli-go/cmd/docs_validate_heading_hierarchy.go`

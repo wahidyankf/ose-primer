@@ -146,6 +146,30 @@ const (
 	stepOutputIdentifiesFileContainingBrokenLink = `^the output identifies the file containing the broken link$`
 )
 
+// Docs validate-heading-hierarchy step patterns.
+const (
+	stepHeadingDocsFileWithTwoH1s            = `^a markdown file under docs with two H1 headings$`
+	stepHeadingDocsFileWithNoH1              = `^a markdown file under docs with no H1 heading$`
+	stepHeadingDocsFileJumpsH1ToH3           = `^a markdown file under docs that jumps from H1 directly to H3$`
+	stepHeadingClaudeAgentsFileWithZeroH1s   = `^a markdown file under \.claude/agents with zero H1 headings$`
+	stepHeadingSkillFileWithMultipleH1s      = `^a SKILL\.md file under \.claude/skills with multiple H1 headings$`
+	stepHeadingPlansDoneFileWithSkippedLevel = `^a markdown file under plans/done with a skipped heading level$`
+	stepHeadingAppsReadmeWithSkippedLevel    = `^an apps/example/README\.md file with a skipped heading level$`
+	stepHeadingAppsInternalFileWithZeroH1s   = `^a markdown file at apps/example/src/notes\.md with zero H1 headings$`
+	stepHeadingDocsFileWithDuplicateH1       = `^a markdown file under docs with a duplicate H1$`
+	stepHeadingGovernanceFileWithDuplicateH1 = `^a markdown file under repo-governance with a duplicate H1$`
+	stepDeveloperRunsValidateHeading         = `^the developer runs docs validate-heading-hierarchy$`
+	stepDeveloperRunsValidateHeadingExclude  = `^the developer runs docs validate-heading-hierarchy with --exclude docs$`
+	stepOutputReportsDuplicateH1Finding      = `^the output reports a duplicate-h1 finding for that file$`
+	stepOutputReportsMissingH1Finding        = `^the output reports a missing-h1 finding for that file$`
+	stepOutputReportsSkippedLevelFinding     = `^the output reports a skipped-level finding for that file$`
+	stepNoMissingH1FindingReported           = `^no missing-h1 finding is reported for that file$`
+	stepNoDuplicateH1FindingReported         = `^no duplicate-h1 finding is reported for that file$`
+	stepNoSkippedLevelFindingReported        = `^no skipped-level finding is reported for that file$`
+	stepNoFindingReportedForDocsFile         = `^no finding is reported for the docs file$`
+	stepOutputReportsGovernanceDuplicateH1   = `^the output reports a duplicate-h1 finding for the repo-governance file$`
+)
+
 // Contracts java-clean-imports step patterns.
 const (
 	stepGeneratedContractsDirWithUnusedImports       = `^a generated-contracts directory with Java files containing unused imports$`

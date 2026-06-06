@@ -172,6 +172,9 @@ pub enum DocsCommands {
     /// Validate Mermaid flowchart diagrams in markdown files.
     #[command(name = "validate-mermaid")]
     ValidateMermaid(docs::ValidateMermaidArgs),
+    /// Validate markdown heading hierarchy in prose files.
+    #[command(name = "validate-heading-hierarchy")]
+    ValidateHeadingHierarchy(docs::ValidateHeadingHierarchyArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -243,6 +246,10 @@ fn dispatch(cmd: &Commands, output_format: OutputFormat, verbose: bool, quiet: b
             DocsCommands::ValidateMermaid(args) => (
                 docs::run_validate_mermaid(args, output_format, verbose, quiet),
                 docs::VALIDATE_MERMAID_USAGE,
+            ),
+            DocsCommands::ValidateHeadingHierarchy(args) => (
+                docs::run_validate_heading_hierarchy(args, output_format, verbose, quiet),
+                docs::VALIDATE_HEADING_HIERARCHY_USAGE,
             ),
         },
         Commands::Agents(ac) => dispatch_agents(ac, output_format, verbose, quiet),

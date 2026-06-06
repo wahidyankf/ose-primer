@@ -39,6 +39,9 @@ var agentsValidateSyncFn = agents.ValidateSync
 // docs validate-links command delegation.
 var docsValidateAllLinksFn = docs.ValidateAllLinks
 
+// docs validate-heading-hierarchy command delegation.
+var docsValidateHeadingHierarchyFn = docs.ValidateHeadingHierarchy
+
 // contracts dart-scaffold command delegation.
 var contractsScaffoldDartFn = contracts.ScaffoldDart
 
