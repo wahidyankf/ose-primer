@@ -11,6 +11,10 @@ Active project plans currently being worked on.
 - [Planning System Overhaul](./planning-system-overhaul/README.md)
   — TDD HARD RULE, AGENTS.md catalog completeness, markdown archive exclusions.
   Adopted from ose-public `2026-05-26__planning-system-overhaul`.
+- [Markdown Gate Coverage Expansion](./markdown-gate-coverage-expansion/README.md)
+  — unify three structural markdown validators (mermaid, links + anchors, heading hierarchy)
+  into one coherent gate with three enforcement layers, in BOTH rhino CLIs.
+  Adopted from ose-public `2026-06-06__markdown-gate-coverage-expansion`.
 
 ## Folder Naming
 
