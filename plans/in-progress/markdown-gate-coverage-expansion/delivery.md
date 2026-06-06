@@ -39,7 +39,8 @@ and
   the same workflow on `push` to `main` (Layer 3); the mermaid trigger is removed from
   `.husky/pre-push`; `pr-validate-links.yml` is deleted and migrated; BOTH CLIs implement every
   behavior change with `shadow-diff.sh docs` byte-parity green; all preexisting tests in both
-  CLIs stay green; new behavior (links/mermaid `--exclude`, repo-wide scans, `broken-anchor`
+  CLIs stay green; new behavior (links/mermaid `--exclude`, repo-wide scans, the mermaid
+  pipe-label + cycle parser fixes, `broken-anchor`
   anchor validation, shared heading parser + GFM slug helper, the greenfield heading-hierarchy
   validator with prose allowlist, staged-only pre-commit steps) is fully tested in both CLIs; the
   rhino BDD specs under `specs/apps/rhino/` are updated in lockstep (links / heading / mermaid /
@@ -98,7 +99,7 @@ and
 - [ ] [AI] Establish a **provisional prose-heading backlog** (no heading validator exists yet —
       grep-based estimate): for each allowlist tree, list files whose count of `^#` lines
       differs from 1:
-      `for f in $(find docs repo-governance specs -name '*.md'; find plans -name '*.md' -not -path 'plans/done/*'; ls *.md; ls apps/*/README.md libs/*/README.md 2>/dev/null); do n=$(grep -c '^# ' "$f" 2>/dev/null || echo 0); [ "$n" -ne 1 ] && echo "$n $f"; done | sort -rn | head -60`
+      `for f in $(find docs repo-governance specs -name '*.md'; find plans -name '*.md' -not -path 'plans/done/*'; ls *.md; ls apps/*/README.md libs/*/README.md 2>/dev/null; find apps/*/docs libs/*/docs -name '*.md' 2>/dev/null); do n=$(grep -c '^# ' "$f" 2>/dev/null || echo 0); [ "$n" -ne 1 ] && echo "$n $f"; done | sort -rn | head -60`
       — acceptance: provisional duplicate-H1 / missing-H1 candidate list recorded in phase notes
       (skipped-level estimation is deferred to the real validator in Phase 2; expect
       false positives from `#` inside code fences — this is an estimate only).
@@ -154,7 +155,7 @@ BOTH CLIs. The `.claude/skills/` and `.opencode/skill/` skips stay.
       (a) `--exclude plans/done` removes a broken link under `plans/done` from results while a
       broken link elsewhere is still reported;
       (b) a repo-wide scan finds a broken link under `libs/` (not in today's 3-dir set) and skips
-      files under `node_modules/`, `deps/`, and `worktrees/`;
+      files under `node_modules/`, `generated-reports/`, and `worktrees/`;
       (c) `[X](./target.md#missing-section)` where `target.md` exists but has no heading slugging
       to `missing-section` yields a `broken-anchor` finding;
       (d) `[X](./target.md#real-section)` where `target.md` has `## Real Section` yields NO
@@ -173,9 +174,9 @@ BOTH CLIs. The `.claude/skills/` and `.opencode/skill/` skips stay.
       `apps/rhino-cli-rust/src/commands/docs.rs` and APPEND the values to
       `skip_paths` after the existing `.opencode/skill/` entry (line 67 — do not replace it);
       (2) replace the three-dir loop in `scanner.rs:102-135` with a repo-wide `walkdir` walk
-      whose `filter_entry` drops the noise-skip set (`node_modules, .git, dist, build, target,
-.next, .nx, coverage, generated-reports, local-temp, archived, apps-labs, deps, _build,
-.venv, .dart_tool, worktrees`);
+      whose `filter_entry` drops the standardized cross-repo noise-skip set (`node_modules,
+dist, target, .next, coverage, generated-reports, local-temp, archived, apps-labs,
+worktrees, .terraform, generated-contracts, .nx`, plus `.git`);
       (3) remove `#` from the extraction skip at `scanner.rs:167-174` so pure-anchor links are
       extracted;
       (4) create `apps/rhino-cli-rust/src/internal/docs/headings.rs` (_New file_) with
@@ -335,42 +336,63 @@ everything else), optional positional PATH args (allowlist still applied), and a
 
 > _Suggested executors: `swe-rust-dev` (Rust), `swe-golang-dev` (Go)._
 
-Implement DD-2/DD-3 for the mermaid gate: repeatable `--exclude` and a repo-wide default scan
-minus the noise-skip set. The mermaid CHECKS are unchanged — no upstream extras are ported.
+Implement DD-2/DD-3 for the mermaid gate (repeatable `--exclude` and a repo-wide default scan
+minus the standardized noise-skip set) plus DD-14 (the two upstream parser fixes from the
+2026-06-06 cross-repo alignment: pipe-labeled edges, cyclic-diagram ranking). The mermaid CHECK
+SET is unchanged — no upstream extras are ported; the parser fixes correct edge extraction and
+ranking bugs, not checks.
 
 - [ ] [AI] **SPEC (RED)** — Extend
-      `specs/apps/rhino/behavior/cli/gherkin/docs/docs-validate-mermaid.feature` with two
+      `specs/apps/rhino/behavior/cli/gherkin/docs/docs-validate-mermaid.feature` with four
       scenarios (one repo-wide-scan: a violation outside the old four-dir set is reported; one
-      `--exclude`: a violation under an excluded tree is not reported), each obeying the
+      `--exclude`: a violation under an excluded tree is not reported; one pipe-labeled-edge:
+      `A -->|text| B` parses as an edge with `B` ranked below `A`; one cyclic-diagram:
+      `A-->B-->C-->A` ranks as a chain with span 1 and depth 3), each obeying the
       keyword-cardinality norm; extend `component-cli.md`. Run
       `npx nx run rhino-cli-go:spec-coverage`
       — acceptance: spec-coverage FAILS listing the new unmatched steps.
 - [ ] [AI] **RED (Rust)** — Add failing unit tests in
-      `apps/rhino-cli-rust/src/commands/docs.rs` test module (temp-dir fixtures) covering:
+      `apps/rhino-cli-rust/src/commands/docs.rs` test module (temp-dir fixtures, a–c) and in the
+      `apps/rhino-cli-rust/src/internal/mermaid/` parser/graph test modules (d–e) covering:
       (a) the default scan now collects a `*.md` under a tree outside the old four-dir set;
-      (b) the walk skips `worktrees/`, `deps/`, and the rest of the noise-skip set;
-      (c) `--exclude plans/done` drops files under `plans/done` from the collected set.
+      (b) the walk skips `worktrees/`, `archived/`, and the rest of the standardized
+      noise-skip set;
+      (c) `--exclude plans/done` drops files under `plans/done` from the collected set;
+      (d) a pipe-labeled edge `A -->|text| B` parses as an edge — target node `B` is extracted
+      and ranked one level below `A` (DD-14);
+      (e) the cyclic diagram `A-->B-->C-->A` ranks as a chain — the back edge is removed via
+      iterative DFS in node-declaration order and Kahn ranks the remaining DAG with span 1 and
+      depth 3 (DD-14).
       Run `npx nx run rhino-cli-rust:test:quick`
       — acceptance: new tests FAIL; preexisting tests pass.
-- [ ] [AI] **GREEN (Rust)** — Implement in `apps/rhino-cli-rust/src/commands/docs.rs`:
+- [ ] [AI] **GREEN (Rust)** — Implement in `apps/rhino-cli-rust/src/commands/docs.rs` and
+      `apps/rhino-cli-rust/src/internal/mermaid/`:
       (1) change `collect_md_default_dirs` (lines 291-308) to a repo-wide walk; expand
-      `walk_md_files` (lines 312-333) to the full noise-skip set (share the skip-set constant
-      with the Phase 1 links walker — one definition per CLI);
+      `walk_md_files` (lines 312-333) to the full standardized noise-skip set (share the
+      skip-set constant with the Phase 1 links walker — one definition per CLI);
       (2) add repeatable `--exclude` to `ValidateMermaidArgs` and filter the collected file list
       by prefix (reuse the `filter_skip_paths` semantics);
-      (3) cucumber step definitions in `apps/rhino-cli-rust/tests/docs.rs`.
+      (3) in the mermaid parser, strip `|label|` segments following arrows before edge splitting
+      so pipe-labeled edges extract their target nodes (DD-14);
+      (4) in the mermaid graph ranking, detect back edges via iterative DFS in node-declaration
+      order, remove them, then run Kahn longest-path ranking on the remaining DAG (DD-14);
+      (5) cucumber step definitions in `apps/rhino-cli-rust/tests/docs.rs`.
       Run `npx nx run rhino-cli-rust:test:quick && npx nx run rhino-cli-rust:test:integration`
       — acceptance: all tests pass.
 - [ ] [AI] **REFACTOR (Rust)** — Single shared noise-skip constant; no duplicated walkers. Run
       `npx nx run rhino-cli-rust:lint && npx nx run rhino-cli-rust:test:quick`
       — acceptance: both exit 0.
 - [ ] [AI] **RED (Go)** — Same failing tests (a–c) in
-      `apps/rhino-cli-go/cmd/docs_validate_mermaid_test.go`. Run
+      `apps/rhino-cli-go/cmd/docs_validate_mermaid_test.go` and (d–e) in the
+      `apps/rhino-cli-go/internal/mermaid/` parser/graph test files (fixtures identical to the
+      Rust set). Run
       `npx nx run rhino-cli-go:test:quick`
       — acceptance: new tests FAIL; preexisting tests pass.
 - [ ] [AI] **GREEN (Go)** — Mirror: `collectMDDefaultDirs`
       (`docs_validate_mermaid.go:205-227`) → repo-wide walk; `skipDirs` (lines 229-234) → full
-      noise-skip set (share with the links walker via `internal/fileutil`); `--exclude` flag;
+      standardized noise-skip set (share with the links walker via `internal/fileutil`);
+      `--exclude` flag; the same pipe-label stripping and DFS back-edge removal + Kahn ranking
+      in `apps/rhino-cli-go/internal/mermaid/` (DD-14, byte-parity with Rust);
       godog steps in `docs_validate_mermaid.integration_test.go`. Run
       `npx nx run rhino-cli-go:test:quick && npx nx run rhino-cli-go:spec-coverage`
       — acceptance: all tests pass; spec-coverage exits 0.
@@ -378,9 +400,10 @@ minus the noise-skip set. The mermaid CHECKS are unchanged — no upstream extra
       `npx nx run rhino-cli-go:lint && npx nx run rhino-cli-go:test:quick`
       — acceptance: both exit 0.
 - [ ] [AI] **PARITY** — Extend the shadow-diff `docs` corpus with
-      `validate-mermaid --exclude` + repo-wide variants, then run
+      `validate-mermaid --exclude` + repo-wide variants plus pipe-labeled-edge and
+      cyclic-diagram fixtures, then run
       `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs`
-      — acceptance: exits 0.
+      — acceptance: exits 0 (byte-identical output, including the parser-fix fixtures).
 
 ### Phase 3 Gate
 
@@ -482,7 +505,10 @@ mirroring the existing link step; extend the link step's skip paths.
       `apps/rhino-cli-rust/project.json` (after the `validate:mermaid` entry at lines 153-165,
       mirroring its shape: bare `command`, `cache: true`, `inputs`, `outputs: []`): - `validate:links` command:
       `cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-links --exclude plans/done` - `validate:heading-hierarchy` command:
-      `cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-heading-hierarchy` - inputs for both: `["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"]` - also update `validate:mermaid`: append `--exclude plans/done` to its command and replace
+      `cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-heading-hierarchy` - inputs for both: `["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"]` - also update `validate:mermaid`: set its command to run
+      `docs validate-mermaid --max-depth=4 --exclude plans/done` (the standardized cross-repo
+      gate invocation — `--max-depth=4` demotes wide+deep diagrams from error to warning
+      identically across all three aligned repos) and replace
       its enumerated dir inputs with `{workspaceRoot}/**/*.md`.
       Verify: `npx nx run rhino-cli-rust:validate:links` and
       `npx nx run rhino-cli-rust:validate:heading-hierarchy` execute (pass/fail acceptable
@@ -490,7 +516,9 @@ mirroring the existing link step; extend the link step's skip paths.
 - [ ] [AI] Mirror the same three target changes in `apps/rhino-cli-go/project.json` (after
       `validate:mermaid` at lines 116-128), using the Go command form
       (`CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go docs validate-links --exclude plans/done`,
-      etc.; inputs `["{projectRoot}/**/*.go", "{workspaceRoot}/**/*.md"]`). Verify:
+      etc.; the Go `validate:mermaid` command becomes
+      `CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go docs validate-mermaid --max-depth=4 --exclude plans/done`;
+      inputs `["{projectRoot}/**/*.go", "{workspaceRoot}/**/*.md"]`). Verify:
       `npx nx run rhino-cli-go:validate:links` executes
       — acceptance: target resolves and runs.
   - _Suggested executor: `swe-golang-dev`._
@@ -573,7 +601,7 @@ mirroring the existing link step; extend the link step's skip paths.
 >
 > ```bash
 > RHINO="cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml --"
-> $RHINO docs validate-mermaid --exclude plans/done -o json <tree>/
+> $RHINO docs validate-mermaid --max-depth=4 --exclude plans/done -o json <tree>/
 > $RHINO docs validate-links --exclude plans/done -o json   # filter findings by source_file prefix <tree>/
 > $RHINO docs validate-heading-hierarchy -o json <tree>/
 > ```
@@ -618,7 +646,8 @@ mirroring the existing link step; extend the link step's skip paths.
 ### Phase 8: Fix-all `plans/` (excludes `plans/done/`; includes this plan — dogfooding)
 
 - [ ] [AI] Re-measure all three gates for `plans/` (pass `--exclude plans/done` to mermaid and
-      links; heading-hierarchy already excludes `plans/done/` via the allowlist)
+      links — mermaid also pins `--max-depth=4`; heading-hierarchy already excludes
+      `plans/done/` via the allowlist)
       — acceptance: per-finding lists recorded.
 - [ ] [AI] For each finding: apply the resolution per the preamble; re-run per file. Acceptance:
       zero findings for `plans/` (excluding `plans/done/`), including this plan's own five docs
@@ -640,9 +669,11 @@ mirroring the existing link step; extend the link step's skip paths.
 - [ ] [AI] Re-measure mermaid + links for `specs/`, `apps/`, `libs/` and heading-hierarchy for
       `specs/` + the README/docs allowlist subset — acceptance: per-finding lists recorded.
   - _Suggested executors: `specs-maker` (`specs/`), `swe-rust-dev` (`apps/`/`libs/`)._
-- [ ] [AI] For each finding: apply the resolution per the preamble (vendored `deps/`, `_build/`
-      etc. are noise-skipped and must NOT appear; if they do, fix the walker, not the vendored
-      file). Acceptance: re-running the measurement commands shows zero findings for these trees.
+- [ ] [AI] For each finding: apply the resolution per the preamble. Gitignored vendored trees
+      (e.g. Elixir `deps/`) are NOT in the standardized cross-repo noise-skip set and never
+      reach CI checkouts; if a local re-measure surfaces findings under such a tree, exclude it
+      at the call site via `--exclude` — never edit vendored files. Acceptance: re-running the
+      measurement commands shows zero findings for these trees.
 
 ### Phase 9 Gate
 
@@ -710,9 +741,14 @@ mirroring the existing link step; extend the link step's skip paths.
 ### Phase 11 Gate
 
 - [ ] [AI] `npm run lint:md` exits 0.
-- [ ] [AI] All documented facts (mermaid repo-wide at pre-commit+CI, prose heading enforcement +
-      exemption, anchor validation, the three gates + consolidated workflow in
-      `repository-validation.md`) are present (review).
+- [ ] [AI] All documented facts are present in
+      `repo-governance/development/quality/repository-validation.md` — run
+      `grep -c "validate-heading-hierarchy" repo-governance/development/quality/repository-validation.md`
+      returns ≥ 1, AND
+      `grep -c "pre-commit" repo-governance/development/quality/repository-validation.md`
+      returns ≥ 1, AND
+      `grep -c "anchor" repo-governance/development/quality/repository-validation.md`
+      returns ≥ 1 — acceptance: all three grep commands exit 0 with count ≥ 1.
 
 > **Pause Safety**: governance docs now match the tooling. Safe to stop. To resume: re-run the
 > three Nx validate targets full-scan.
@@ -758,6 +794,7 @@ mirroring the existing link step; extend the link step's skip paths.
   - `feat(rhino-cli): validate markdown anchors against target headings (rust+go)`
   - `feat(rhino-cli): add validate-heading-hierarchy with prose allowlist (rust+go)`
   - `feat(rhino-cli): widen validate-mermaid repo-wide with --exclude (rust+go)`
+  - `fix(rhino-cli): parse pipe-labeled edges and rank cyclic diagrams (rust+go)`
   - `feat(rhino-cli): add staged-only mermaid and heading pre-commit steps (rust+go)`
   - `chore(husky): remove mermaid trigger from pre-push`
   - `feat(rhino-cli): add validate:links and validate:heading-hierarchy Nx targets`

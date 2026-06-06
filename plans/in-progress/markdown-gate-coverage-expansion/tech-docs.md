@@ -145,13 +145,17 @@ flowchart TB
 - **Named exclusion** (link + mermaid; heading default-deny already excludes it): `plans/done/`
   (frozen archive). Passed explicitly via `--exclude plans/done` at every call site (Nx targets,
   CI, pre-commit) so the exclusion stays visible and testable.
-- **Noise-skip set** (baked into the repo-wide walkers, name-based directory match):
-  `node_modules`, `.git`, `dist`, `build`, `target`, `.next`, `.nx`, `coverage`,
-  `generated-reports`, `local-temp`, `archived`, `apps-labs`, `deps`, `_build`, `.venv`,
-  `.dart_tool`, `worktrees`. Aligned with `.markdownlintignore` plus the Elixir (`deps/`,
-  `_build/` — 102 vendored `.md` files exist under `apps/*/deps/` today [Repo-grounded]), Python
-  (`.venv/`), Dart (`.dart_tool/`), and worktree (`worktrees`, covering both `worktrees/` and
-  `.claude/worktrees/` by directory name) cases.
+- **Noise-skip set** (baked into the repo-wide walkers, name-based directory match) — the
+  **standardized cross-repo noise-skip set**, identical across the three aligned repos
+  (ose-public / ose-infra / ose-primer) per the 2026-06-06 alignment: `node_modules`, `dist`,
+  `target`, `.next`, `coverage`, `generated-reports`, `local-temp`, `archived`, `apps-labs`,
+  `worktrees`, `.terraform`, `generated-contracts`, `.nx`, plus `.git`. The `worktrees` entry
+  covers both `worktrees/` and `.claude/worktrees/` by directory name. Gitignored vendored
+  trees (e.g. Elixir `apps/*/deps/`, which holds vendored `.md` files in local checkouts
+  [Repo-grounded]) are deliberately NOT in the standardized set: they never reach CI checkouts
+  (gitignored), and if a local full scan surfaces findings under such a tree, exclude it at the
+  call site via `--exclude` rather than widening the baked-in set. [Judgment call — the
+  standardized set stays byte-identical across the three repos]
 - **Skill-dir hard-skips** (link gate, unchanged): `.claude/skills/` inside `validate_file`
   (`validator.rs:79` / `links_validator.go:47`) and the `.opencode/skill/` baked-in
   `skip_paths` entry (`commands/docs.rs:67`).
@@ -186,7 +190,9 @@ Vec<String>`; Go: cobra `StringArrayVar`) to `validate-links`, `validate-mermaid
   currently has no skip-path filter at all — add one sharing the prefix semantics).
 - **Heading**: subtract excluded prefixes AFTER the allowlist (allowlist first, then excludes).
 - Call sites pass the named exclusion explicitly:
-  `--exclude plans/done` (Nx targets, CI workflow, pre-commit steps).
+  `--exclude plans/done` (Nx targets, CI workflow, pre-commit steps). Mermaid call sites
+  additionally pin `--max-depth=4` — the standardized gate invocation across all three aligned
+  repos (see DD-10).
 
 ### DD-3 — Repo-wide scan minus noise dirs (links + mermaid, both CLIs)
 
@@ -198,10 +204,10 @@ noise-skip set by directory name:
   already uses in `commands/docs.rs:312-333`, with the expanded dir set).
 - Rust mermaid: change `collect_md_default_dirs` (`commands/docs.rs:291-308`) from the four-dir
   set to the same repo-wide walk; expand `walk_md_files`'s skip set from
-  `.next/node_modules/.git` to the full noise-skip set.
+  `.next/node_modules/.git` to the full standardized cross-repo noise-skip set.
 - Go links: replace `getAllMarkdownFiles` (`links_scanner.go:77`) and Go mermaid
   `collectMDDefaultDirs` (`docs_validate_mermaid.go:206-227`) the same way; expand `skipDirs`
-  (`docs_validate_mermaid.go:229-234`) to the full set. Factor a shared walker in
+  (`docs_validate_mermaid.go:229-234`) to the full standardized set. Factor a shared walker in
   `internal/fileutil` where natural.
 - The named exclusion is NOT baked into the walkers — it arrives via `--exclude` (DD-2) so it
   stays visible at call sites. The `worktrees` name-based skip is non-negotiable: without it a
@@ -250,11 +256,13 @@ Implements GitHub's real algorithm per the web research in
   supports `\p{L}`/`\p{N}` natively).
 - No third-party slugger: no maintained Go library reproduces `github-slugger`, and the closest
   Rust crate is pre-1.0. [Web-cited — see Research Note]
-- **Known ambiguity**: one source (`vscode-markdown` issue #537) claims underscores are stripped,
-  conflicting with the `github-slugger` reference. [Needs Verification] Mitigation: unit-test
-  underscore, Unicode, backtick, and multi-space fixtures in BOTH CLIs and document the
-  live-render caveat in the test comments; if a real GitHub render ever disagrees, the helper is
-  one function per CLI to fix.
+- **Verified behavior**: `github-slugger` v2 was executed directly on 2026-06-06 —
+  `slug('foo_bar baz')` → `foo_bar-baz` (underscores KEPT); `slug('a  b')` → `a--b` (no space
+  collapsing); Unicode letters/digits kept. [Verified 2026-06-06 — executed github-slugger v2
+  directly] The conflicting `vscode-markdown` issue #537 claim (underscores stripped) is wrong.
+  ose-public's implementation was corrected to this algorithm during the cross-repo alignment
+  (it previously stripped underscores). Underscore, Unicode, backtick, and multi-space fixtures
+  remain REQUIRED unit tests in BOTH CLIs.
 - Fragment comparison is case-sensitive (slugs are lowercase; a mixed-case fragment is a
   finding) — matching markdownlint MD051's default.
 
@@ -358,8 +366,13 @@ Add `validate:links` and `validate:heading-hierarchy` to both projects, mirrorin
   - `validate:heading-hierarchy` →
     `CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go docs validate-heading-hierarchy`
   - inputs: `{projectRoot}/**/*.go` + `{workspaceRoot}/**/*.md`; `outputs: []`.
-- Update BOTH `validate:mermaid` commands to append `--exclude plans/done` and widen their
-  `inputs` to `{workspaceRoot}/**/*.md` (the current input list enumerates the old four dirs).
+- Update BOTH `validate:mermaid` commands to run
+  `docs validate-mermaid --max-depth=4 --exclude plans/done` and widen their `inputs` to
+  `{workspaceRoot}/**/*.md` (the current input list enumerates the old four dirs).
+  `--max-depth=4` is standardized across all three aligned repos' gate invocations — it demotes
+  wide+deep diagrams from error to warning identically everywhere. [Repo-grounded — both CLIs
+  already expose `--max-depth` (`commands/docs.rs:145`, `docs_validate_mermaid.go:71`); the
+  current Nx commands pass no flags]
 - CI and hooks invoke the Rust targets only (canonical); the Go targets exist for symmetry and
   local parity checks.
 
@@ -395,7 +408,8 @@ every behavior change lands in both implementations in the same thematic commit.
 
 - Extend the `docs` corpus of `apps/rhino-cli-rust/scripts/shadow-diff.sh` with invocations
   covering the new command and flags (`validate-links --exclude`, anchor fixtures,
-  `validate-heading-hierarchy`, `validate-mermaid --exclude`) as each lands.
+  `validate-heading-hierarchy`, `validate-mermaid --exclude`, pipe-label and cyclic diagram
+  fixtures) as each lands.
 - Every implementation phase gate runs `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs`
   and requires byte-identical output.
 - The permanent `parity` CI job (`pr-quality-gate.yml:242-257`) needs no edit — it already runs
@@ -411,13 +425,33 @@ check-inventory, indexes, agent/skill text) is swept consistently, then
 changes on a clean re-run) before push. [Repo-grounded —
 `repo-governance/workflows/repo/repo-rules-quality-gate.md`]
 
+### DD-14 — Gate A parser fixes: pipe-labeled edges + cycle ranking (both CLIs)
+
+Two upstream parser bugs were found and fixed in ose-public's mermaid validator during the
+2026-06-06 cross-repo alignment. This repo's two validators (Rust + Go, byte-parity) share the
+same lineage and MUST adopt identical fixes, in the same commits, with shadow-diff byte parity:
+
+1. **Pipe-labeled edges**: `A -->|text| B` (standard Mermaid) previously failed target-node
+   extraction — the `|text|` segment broke edge splitting, so the edge was dropped and nodes
+   were mis-ranked. Fix: strip `|label|` segments following arrows before edge splitting, in
+   the parsers of BOTH CLIs (`apps/rhino-cli-rust/src/internal/mermaid/` and
+   `apps/rhino-cli-go/internal/mermaid/`).
+2. **Cyclic diagrams**: a cycle previously produced an empty Kahn queue, so every node got
+   rank 0 and the bogus span equaled the node count. Fix: detect back edges via iterative DFS
+   in node-declaration order, remove them, then run Kahn longest-path ranking on the remaining
+   DAG.
+
+Each fix needs unit tests in BOTH CLIs (a pipe-labeled edge parses as an edge with its target
+node extracted; `A-->B-->C-->A` ranks as a chain — span 1, depth 3) plus gherkin scenarios
+(DD-11), and byte-identical output via the shadow-diff `docs` corpus (DD-12).
+
 ## Validator Behavior Matrix (after this plan)
 
-| Validator                    | Scope                                         | New behavior                                                                         |
-| ---------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `validate-mermaid`           | repo-wide − `plans/done` − noise dirs         | `--exclude` flag; repo-wide walk; enforcement moved to pre-commit + CI (no pre-push) |
-| `validate-links`             | repo-wide − `plans/done` − noise − skill dirs | `--exclude` flag; repo-wide walk; `broken-anchor` anchor validation                  |
-| `validate-heading-hierarchy` | prose allowlist (default-deny)                | NEW command in both CLIs; allowlist in file selection; `--exclude` flag              |
+| Validator                    | Scope                                         | New behavior                                                                                                                                                        |
+| ---------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `validate-mermaid`           | repo-wide − `plans/done` − noise dirs         | `--exclude` flag; pinned `--max-depth=4` at call sites; pipe-label + cycle parser fixes (DD-14); repo-wide walk; enforcement moved to pre-commit + CI (no pre-push) |
+| `validate-links`             | repo-wide − `plans/done` − noise − skill dirs | `--exclude` flag; repo-wide walk; `broken-anchor` anchor validation                                                                                                 |
+| `validate-heading-hierarchy` | prose allowlist (default-deny)                | NEW command in both CLIs; allowlist in file selection; `--exclude` flag                                                                                             |
 
 ## File Impact
 
@@ -431,6 +465,7 @@ changes on a clean re-run) before push. [Repo-grounded —
 | `apps/rhino-cli-rust/src/internal/docs/headings.rs`                                  | _New file_ — shared fence-aware parser + GFM slug helper (DD-5/6)                                       | `swe-rust-dev`          |
 | `apps/rhino-cli-rust/src/internal/docs/heading_hierarchy.rs`                         | _New file_ — Gate C engine + allowlist predicate (DD-7)                                                 | `swe-rust-dev`          |
 | `apps/rhino-cli-rust/src/internal/docs/mod.rs`                                       | Register the new modules                                                                                | `swe-rust-dev`          |
+| `apps/rhino-cli-rust/src/internal/mermaid/` (parser/graph)                           | Strip `\|label\|` after arrows before edge splitting; DFS back-edge removal + Kahn ranking (DD-14)      | `swe-rust-dev`          |
 | `apps/rhino-cli-rust/src/internal/git/runner.rs`                                     | Staged mermaid + heading steps; extend link `skip_paths` with `plans/done` (DD-8)                       | `swe-rust-dev`          |
 | `apps/rhino-cli-go/cmd/docs_validate_links.go`                                       | `--exclude` flag (DD-2)                                                                                 | `swe-golang-dev`        |
 | `apps/rhino-cli-go/cmd/docs_validate_mermaid.go`                                     | `--exclude` flag; repo-wide walk; expanded `skipDirs` (DD-2/3)                                          | `swe-golang-dev`        |
@@ -440,13 +475,14 @@ changes on a clean re-run) before push. [Repo-grounded —
 | `apps/rhino-cli-go/internal/docs/headings.go`                                        | _New file_ — shared fence-aware parser + GFM slug helper (DD-5/6)                                       | `swe-golang-dev`        |
 | `apps/rhino-cli-go/internal/docs/heading_hierarchy.go`                               | _New file_ — Gate C engine + allowlist predicate (DD-7)                                                 | `swe-golang-dev`        |
 | `apps/rhino-cli-go/internal/git/runner.go`                                           | Staged mermaid + heading steps; extend link `SkipPaths` with `plans/done` (DD-8)                        | `swe-golang-dev`        |
+| `apps/rhino-cli-go/internal/mermaid/` (parser/graph)                                 | Same pipe-label + cycle parser fixes, byte-parity with Rust (DD-14)                                     | `swe-golang-dev`        |
 | `apps/rhino-cli-rust/project.json` + `apps/rhino-cli-go/project.json`                | Add `validate:links` + `validate:heading-hierarchy`; update `validate:mermaid` command + inputs (DD-10) | `swe-rust-dev`          |
 | `apps/rhino-cli-rust/scripts/shadow-diff.sh`                                         | Extend the `docs` corpus for the new command and flags (DD-12)                                          | `swe-rust-dev`          |
 | `.github/workflows/validate-markdown.yml`                                            | _New file_ — dual `pull_request`/`push` to `main`; runs all three Rust gates (DD-9)                     | `swe-rust-dev`          |
 | `.github/workflows/pr-validate-links.yml`                                            | **DELETE** — migrated into `validate-markdown.yml` (DD-9)                                               | `swe-rust-dev`          |
 | `specs/apps/rhino/behavior/cli/gherkin/docs/docs-validate-links.feature`             | Add scenarios: `--exclude`, repo-wide scan, anchors (DD-11)                                             | `swe-rust-dev`          |
 | `specs/apps/rhino/behavior/cli/gherkin/docs/docs-validate-heading-hierarchy.feature` | _New file_ — prose allowlist, exemptions, `--exclude` (DD-11)                                           | `swe-rust-dev`          |
-| `specs/apps/rhino/behavior/cli/gherkin/docs/docs-validate-mermaid.feature`           | Add scenarios: `--exclude`, repo-wide scan (DD-11)                                                      | `swe-rust-dev`          |
+| `specs/apps/rhino/behavior/cli/gherkin/docs/docs-validate-mermaid.feature`           | Add scenarios: `--exclude`, repo-wide scan, pipe-label + cycle parser fixes (DD-11/14)                  | `swe-rust-dev`          |
 | `specs/apps/rhino/behavior/cli/gherkin/git/git-pre-commit.feature`                   | Add scenarios: staged mermaid + heading steps; link-step exclusion (DD-11)                              | `swe-rust-dev`          |
 | `specs/apps/rhino/components/cli/component-cli.md`                                   | _New file_ — command/flag inventory incl. the `--exclude` flags + heading command (DD-11)               | `specs-maker`           |
 | `repo-governance/conventions/formatting/diagrams.md`                                 | Mermaid enforcement: pre-commit + CI, repo-wide, no pre-push                                            | `repo-rules-maker`      |
@@ -474,7 +510,7 @@ TDD throughout (Red → Green → Refactor), specs-first per parity Rule 2. Each
 | Acceptance criterion                                          | Test level                                                   |
 | ------------------------------------------------------------- | ------------------------------------------------------------ |
 | `--exclude` skips named trees / prefix semantics              | Unit (both CLIs' scanner/command tests)                      |
-| Repo-wide scan minus noise dirs (incl. `worktrees`, `deps`)   | Unit (temp-dir fixtures; both CLIs)                          |
+| Repo-wide scan minus the standardized noise-skip set          | Unit (temp-dir fixtures; both CLIs)                          |
 | `broken-anchor` flagged / valid anchor passes                 | Unit (both CLIs)                                             |
 | GFM slug: collisions, underscore, Unicode, multi-space        | Unit (slug helper fixtures; both CLIs)                       |
 | Same-file anchor validation                                   | Unit (both CLIs)                                             |
@@ -487,6 +523,8 @@ TDD throughout (Red → Green → Refactor), specs-first per parity Rule 2. Each
 | Pre-commit runs all three gates staged-only                   | Unit (runner steps) + manual scratch commit                  |
 | Consolidated workflow triggers + runs all three gates         | CI observation (RED→GREEN behavioral step) + YAML inspection |
 | Legacy link workflow migrated                                 | Inspection (`pr-validate-links.yml` deleted)                 |
+| Pipe-labeled edge (`A -->\|text\| B`) parses as an edge       | Unit (both CLIs' mermaid parser tests)                       |
+| Cyclic `A-->B-->C-->A` ranks as a chain (span 1, depth 3)     | Unit (both CLIs' mermaid graph tests)                        |
 | Spec scenarios map to step definitions                        | `spec-coverage` Nx target (both projects)                    |
 | Per-tree zero findings                                        | Integration (run gates per tree)                             |
 | This plan passes its own gates                                | Integration (run gates on `plans/`)                          |
@@ -503,7 +541,7 @@ All preexisting unit tests in both CLIs MUST remain green at every phase gate.
 
 Each phase is independently revertable via `git revert` of its thematic commit(s). The link
 `--exclude` + scope + anchor changes are one self-contained dual-CLI commit; the heading
-validator is another; the mermaid scope change is another; the pre-commit/pre-push enforcement
+validator is another; the mermaid scope change + parser fixes are another; the pre-commit/pre-push enforcement
 move is another; the CI consolidation is another. Reverting the CI consolidation restores
 `pr-validate-links.yml`; reverting the enforcement move restores the pre-push mermaid trigger.
 Because every commit changes both CLIs together, any revert also reverts both together — parity

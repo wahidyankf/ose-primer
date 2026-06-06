@@ -7,8 +7,10 @@ The product is the **markdown gate**: three validators (`docs validate-mermaid`,
 `apps/rhino-cli-rust/` and `apps/rhino-cli-go/`, their Nx targets, and **three consistent
 enforcement layers** — pre-commit staged-only via the `git pre-commit` suite (Layer 1), PR CI
 (Layer 2), and push-to-`main` CI (Layer 3), with Layers 2 and 3 consolidated into a single
-`.github/workflows/validate-markdown.yml`. This plan moves mermaid to pre-commit and widens it
-repo-wide with `--exclude`, widens the link checker (scope + `--exclude` + anchors), builds the
+`.github/workflows/validate-markdown.yml`. This plan moves mermaid to pre-commit, widens it
+repo-wide with `--exclude` and a pinned `--max-depth=4`, fixes the two upstream mermaid parser
+bugs (pipe-labeled edges, cyclic diagrams), widens the link checker (scope + `--exclude` +
+anchors), builds the
 heading-hierarchy checker from scratch in both CLIs under a prose-allowlist default-deny scope,
 and cleans the resulting baseline.
 
@@ -68,6 +70,9 @@ surfaces.
 - **US-14** — As a governance maintainer, I want the convention updates propagated via
   `repo-rules-maker` and validated by `repo-rules-quality-gate` (strict, double-zero), so the
   rule change reaches every governance surface, not just the obvious files.
+- **US-15** — As a diagram author, I want pipe-labeled edges (`A -->|text| B`) and cyclic
+  diagrams parsed correctly (back edges removed via DFS, Kahn ranking on the remaining DAG), so
+  standard Mermaid syntax is never dropped and cycles never inflate the measured span.
 
 ## Acceptance Criteria (Gherkin)
 
@@ -103,9 +108,25 @@ Scenario: Pre-commit mermaid gate ignores unstaged markdown
 ```gherkin
 Scenario: Mermaid full scan covers the whole repo minus exclusions
   Given a malformed flowchart in a markdown file under specs
-  When docs validate-mermaid runs a full scan with --exclude plans/done
+  When docs validate-mermaid runs a full scan with --max-depth=4 and --exclude plans/done
   Then the violation under specs is reported
   And files under plans/done and the noise-skip set are not scanned
+```
+
+```gherkin
+Scenario: A pipe-labeled edge is parsed as an edge
+  Given a flowchart containing the edge A -->|go| B
+  When docs validate-mermaid parses the diagram
+  Then the edge from A to B is extracted
+  And node B is ranked one level below node A
+```
+
+```gherkin
+Scenario: A cyclic diagram is ranked as a chain
+  Given a flowchart containing the cycle A-->B-->C-->A
+  When docs validate-mermaid ranks the nodes
+  Then the back edge is removed before Kahn ranking
+  And the diagram measures span 1 and depth 3
 ```
 
 ### Gate B — Link checker scope, exclude flag, anchors
@@ -304,7 +325,7 @@ Scenario: The rhino BDD specs cover the new validator behavior
   When both spec-coverage gates map scenarios to step definitions
   Then docs-validate-links.feature has scenarios for --exclude, repo-wide scan, and broken-anchor
   And docs-validate-heading-hierarchy.feature exists with scenarios for the prose allowlist and --exclude
-  And docs-validate-mermaid.feature has scenarios for --exclude and the repo-wide scan
+  And docs-validate-mermaid.feature has scenarios for --exclude, the repo-wide scan, and the pipe-label and cycle parser fixes
   And git-pre-commit.feature has scenarios for the staged mermaid and heading steps
 ```
 
@@ -330,7 +351,11 @@ Scenario: The convention change is propagated and gate-validated
 
 - Move the mermaid gate from pre-push to pre-commit staged-only (remove the `.husky/pre-push`
   mermaid trigger); expand its full scan repo-wide minus exclusions; add a repeatable
-  `--exclude <path>` flag — in BOTH CLIs.
+  `--exclude <path>` flag; pin gate invocations to
+  `docs validate-mermaid --max-depth=4 --exclude plans/done` (standardized across all three
+  aligned repos); fix the two upstream parser bugs — strip `|label|` segments after arrows
+  before edge splitting, and rank cyclic diagrams via iterative-DFS back-edge removal + Kahn
+  longest-path on the remaining DAG — in BOTH CLIs.
 - `docs validate-links` (both CLIs): repeatable `--exclude <path>` flag appended to
   `ScanOptions.skip_paths`; repo-wide full scan minus the named exclusion (`plans/done`) + the
   noise-skip set; keep the `.claude/skills/` hard-skip and the `.opencode/skill/` baked-in skip;
@@ -364,14 +389,14 @@ Scenario: The convention change is propagated and gate-validated
 
 ## Product Risks
 
-| Risk                                                       | Mitigation                                                                                                                                                                         |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Anchor slug algorithm diverges from GitHub rendering       | Implement the researched GFM slug (Unicode-aware keep-set, underscores kept, no space collapse, `-N` collisions); unit-test fixtures incl. underscore/Unicode/backtick/multi-space |
-| Gate C behavior drifts between Rust and Go                 | Shared gherkin specs first; identical unit fixtures; shadow-diff byte parity in every phase gate                                                                                   |
-| Heading allowlist leaks an agent/skill file                | Allowlist filter inside file selection; unit-test `.claude/**` and `SKILL.md` are excluded in both CLIs                                                                            |
-| Wider scans produce a large backlog                        | Per-tree gated fix-all; re-measure each tree at execution                                                                                                                          |
-| Migrating the link workflow drops PR link coverage         | Verify the link job runs in `validate-markdown.yml` on PRs before deleting the old file                                                                                            |
-| Pre-commit mermaid staged-only misses a cross-file issue   | Mermaid checks are per-file with no cross-file dependency — staged-only loses nothing                                                                                              |
-| `--exclude` prefix matching is too broad/narrow            | Reuse existing `filter_skip_paths`/`filterSkipPaths` prefix semantics; unit-test included/excluded paths                                                                           |
-| Repo-wide walk explodes runtime or descends into worktrees | Name-based noise-dir skip (incl. `worktrees`, `deps`, `_build`, `.venv`) inside the walkers; unit-test the skip set                                                                |
-| Rust 90% / Go 90% coverage gates fail on new code          | Keep validator logic in coverage-gated internal modules with thin CLI adapters (matches existing layout); test logic directly                                                      |
+| Risk                                                       | Mitigation                                                                                                                                                                                                                                   |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Anchor slug algorithm diverges from GitHub rendering       | Implement the verified GFM slug (Unicode-aware keep-set, underscores kept, no space collapse, `-N` collisions) [Verified 2026-06-06 — executed github-slugger v2 directly]; unit-test fixtures incl. underscore/Unicode/backtick/multi-space |
+| Gate C behavior drifts between Rust and Go                 | Shared gherkin specs first; identical unit fixtures; shadow-diff byte parity in every phase gate                                                                                                                                             |
+| Heading allowlist leaks an agent/skill file                | Allowlist filter inside file selection; unit-test `.claude/**` and `SKILL.md` are excluded in both CLIs                                                                                                                                      |
+| Wider scans produce a large backlog                        | Per-tree gated fix-all; re-measure each tree at execution                                                                                                                                                                                    |
+| Migrating the link workflow drops PR link coverage         | Verify the link job runs in `validate-markdown.yml` on PRs before deleting the old file                                                                                                                                                      |
+| Pre-commit mermaid staged-only misses a cross-file issue   | Mermaid checks are per-file with no cross-file dependency — staged-only loses nothing                                                                                                                                                        |
+| `--exclude` prefix matching is too broad/narrow            | Reuse existing `filter_skip_paths`/`filterSkipPaths` prefix semantics; unit-test included/excluded paths                                                                                                                                     |
+| Repo-wide walk explodes runtime or descends into worktrees | Name-based standardized cross-repo noise-skip set (incl. `worktrees`) inside the walkers; unit-test the skip set; gitignored vendored trees are absent from CI checkouts and excludable via `--exclude` locally                              |
+| Rust 90% / Go 90% coverage gates fail on new code          | Keep validator logic in coverage-gated internal modules with thin CLI adapters (matches existing layout); test logic directly                                                                                                                |

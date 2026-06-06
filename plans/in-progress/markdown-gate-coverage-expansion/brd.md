@@ -47,8 +47,9 @@ would break all of them.
 
 This plan re-enables heading rules **scoped to generic prose** via the rhino CLIs (which can
 path-scope a rule, unlike markdownlint). The narrative the maintainer values: prose docs
-(`docs/`, `repo-governance/`, `plans/`, root `*.md`, `specs/`, app/lib READMEs and `docs/`
-subtrees) regain single-H1 and non-skipping enforcement, while prompt/skill artifacts stay exempt
+(`docs/`, `repo-governance/`, `plans/`(−`done/`), root `*.md`, `specs/`, app/lib READMEs and
+`docs/` subtrees) regain single-H1 and non-skipping enforcement, while prompt/skill artifacts
+stay exempt
 by a hard default-deny allowlist. This is the central business constraint of the plan — breaking
 an agent or skill file is unacceptable. [Judgment call]
 
@@ -148,16 +149,16 @@ surfaces. No sign-off ceremonies apply.
 
 ## Business Risks and Mitigations
 
-| Risk                                                           | Likelihood | Mitigation                                                                                                                                                |
-| -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Wider link scan surfaces a large broken-link/anchor backlog    | High       | Phase the cleanup one gate per tree; re-measure per tree at execution; fix or correct each before its gate                                                |
-| Greenfield Gate C diverges between the two implementations     | Medium     | Specs first (shared gherkin), identical unit fixtures in both, shadow-diff byte parity in every phase gate                                                |
-| Heading-hierarchy accidentally fires on an agent/skill file    | Medium     | Allowlist filter lives INSIDE the validator file selection + unit tests assert `.claude/**`/`SKILL.md` are excluded                                       |
-| Prose heading backlog larger than expected                     | Medium     | Per-tree gates isolate scope; grep-based provisional estimate at Phase 0; re-measure at execution                                                         |
-| Anchor slug algorithm diverges from GitHub rendering           | Medium     | Implement the researched GFM algorithm (Unicode-aware, underscores kept, no space collapse, `-N` collisions); unit-test fixtures incl. underscore/Unicode |
-| Repo-wide walk descends into worktrees or vendored deps        | Medium     | Bake `worktrees`, `deps`, `_build`, `.venv` and the other noise dirs into the walkers; unit-test the skip set                                             |
-| Moving mermaid to pre-commit slows commits                     | Low        | Staged-only scope keeps it light; per-file checks have no cross-file dependency                                                                           |
-| Consolidating the existing link workflow breaks PR link checks | Low        | Migrate `pr-validate-links.yml` into `validate-markdown.yml`; verify the link job still runs on PRs before deleting                                       |
-| First push-to-main workflow misfires on the delivery push      | Low        | Behavioral acceptance step observes a deliberate RED then GREEN run before the plan is archived                                                           |
+| Risk                                                           | Likelihood | Mitigation                                                                                                                                                                                        |
+| -------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Wider link scan surfaces a large broken-link/anchor backlog    | High       | Phase the cleanup one gate per tree; re-measure per tree at execution; fix or correct each before its gate                                                                                        |
+| Greenfield Gate C diverges between the two implementations     | Medium     | Specs first (shared gherkin), identical unit fixtures in both, shadow-diff byte parity in every phase gate                                                                                        |
+| Heading-hierarchy accidentally fires on an agent/skill file    | Medium     | Allowlist filter lives INSIDE the validator file selection + unit tests assert `.claude/**`/`SKILL.md` are excluded                                                                               |
+| Prose heading backlog larger than expected                     | Medium     | Per-tree gates isolate scope; grep-based provisional estimate at Phase 0; re-measure at execution                                                                                                 |
+| Anchor slug algorithm diverges from GitHub rendering           | Medium     | Implement the researched GFM algorithm (Unicode-aware, underscores kept, no space collapse, `-N` collisions); unit-test fixtures incl. underscore/Unicode                                         |
+| Repo-wide walk descends into worktrees or vendored deps        | Medium     | Bake the standardized cross-repo noise-skip set (incl. `worktrees`) into the walkers; unit-test the skip set; gitignored vendored trees never reach CI and are excludable via `--exclude` locally |
+| Moving mermaid to pre-commit slows commits                     | Low        | Staged-only scope keeps it light; per-file checks have no cross-file dependency                                                                                                                   |
+| Consolidating the existing link workflow breaks PR link checks | Low        | Migrate `pr-validate-links.yml` into `validate-markdown.yml`; verify the link job still runs on PRs before deleting                                                                               |
+| First push-to-main workflow misfires on the delivery push      | Low        | Behavioral acceptance step observes a deliberate RED then GREEN run before the plan is archived                                                                                                   |
 
 See [prd.md](./prd.md) for the testable scenarios that verify each mitigation.

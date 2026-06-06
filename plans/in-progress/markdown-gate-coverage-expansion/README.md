@@ -4,7 +4,11 @@
 > **Status**: In progress (authoring complete; execution pending — do NOT execute from this doc).
 > **Provenance**: Adapted from the completed ose-public plan
 > `plans/done/2026-06-06__markdown-gate-coverage-expansion/` via the plan-establishment workflow,
-> re-grounded against this codebase. The end state matches the upstream plan's end state as it
+> re-grounded against this codebase. The upstream plan is COMPLETE and was amended 2026-06-06 by
+> the three-repo cross-alignment (ose-public / ose-infra / ose-primer): the slug algorithm was
+> corrected to keep underscores, the mermaid `--exclude` + repo-wide scan were implemented, the
+> pipe-label and cycle parser fixes landed, the heading allowlist was expanded, and the
+> noise-skip set was standardized cross-repo. This plan tracks that amended end state as it
 > applies here.
 
 ## Context
@@ -25,15 +29,17 @@ scratch in BOTH CLIs. [Repo-grounded]
   `apps/rhino-cli-rust/src/commands/docs.rs:291-308`,
   `apps/rhino-cli-go/cmd/docs_validate_mermaid.go:205-227`] This plan expands the scan repo-wide
   minus exclusions, adds a repeatable `--exclude`, and **moves local enforcement from pre-push to
-  pre-commit staged-only**. Blocking semantics are kept; the validator's checks themselves are
-  unchanged (no inline-exemption or color-palette features are ported — see Out of scope).
+  pre-commit staged-only**. Blocking semantics are kept; the validator's check set is unchanged
+  (no inline-exemption or color-palette features are ported — see Out of scope), but two
+  upstream parser bugs found during the 2026-06-06 cross-repo alignment — pipe-labeled edges
+  and cyclic diagrams — are fixed in BOTH CLIs (see In scope).
 - **Gate B — Relative-link checker** (`docs validate-links`, exists in both CLIs): verifies every
   `[text](target)` link resolves to an existing file. Today it scans only three trees
   (`repo-governance/`, `docs/`, `.claude/`) plus root `*.md`, hard-skips `.claude/skills/`, has no
   `--exclude` CLI flag despite `ScanOptions.skip_paths` plumbing existing, and **never validates
   `#fragment` anchors** — both implementations strip the fragment before resolving and discard
   pure-anchor links before validation. [Repo-grounded —
-  `apps/rhino-cli-rust/src/internal/docs/scanner.rs:105,167-174`,
+  `apps/rhino-cli-rust/src/internal/docs/scanner.rs:102-135,167-174`,
   `apps/rhino-cli-rust/src/internal/docs/validator.rs:16,79`,
   `apps/rhino-cli-go/internal/docs/links_scanner.go:78,121-126`,
   `apps/rhino-cli-go/internal/docs/links_validator.go:13,47`] This plan widens its scope to the
@@ -94,10 +100,21 @@ in the markdown workflow.
 ### In scope
 
 - **Gate A — Mermaid** (both CLIs): expand the default scan from four hardcoded dirs to
-  **repo-wide minus exclusions**; add a repeatable `--exclude <path>` flag; **move local
-  enforcement from pre-push to pre-commit staged-only** (remove the mermaid trigger at
-  `.husky/pre-push:22-24`); keep blocking semantics. Mermaid checks are per-file (no cross-file
-  dependency), so staged-only loses nothing.
+  **repo-wide minus exclusions**; add a repeatable `--exclude <path>` flag; pin the gate
+  invocation to `docs validate-mermaid --max-depth=4 --exclude plans/done` (`--max-depth=4` is
+  standardized across all three aligned repos' gate invocations — it demotes wide+deep diagrams
+  from error to warning identically everywhere); **move local enforcement from pre-push to
+  pre-commit staged-only** (remove the mermaid trigger at `.husky/pre-push:22-24`); keep
+  blocking semantics. Mermaid checks are per-file (no cross-file dependency), so staged-only
+  loses nothing. Additionally adopt the two upstream parser fixes from the 2026-06-06
+  cross-repo alignment in BOTH CLIs (same commits, shadow-diff byte parity):
+  1. **Pipe-labeled edges** (`A -->|text| B`, standard Mermaid) previously failed target-node
+     extraction — edges were dropped and nodes mis-ranked. Fix: strip `|label|` segments
+     following arrows before edge splitting.
+  2. **Cyclic diagrams** previously produced an empty Kahn queue — every node ranked 0 and the
+     bogus span equaled the node count. Fix: detect back edges via iterative DFS in
+     node-declaration order, remove them, then run Kahn longest-path ranking on the remaining
+     DAG.
 - **Gate B — Relative-link checker** (both CLIs):
   1. Add a repeatable `--exclude <path>` CLI flag, threaded into `ScanOptions.skip_paths`
      (appended to the existing `.opencode/skill/` baked-in skip); call sites pass the named
@@ -142,7 +159,8 @@ in the markdown workflow.
 
 - Porting the upstream mermaid feature set this repo's validator lacks (inline `%%` exemptions,
   color-palette checks, structural/correctness flowchart checks beyond the existing label/width
-  rules). The mermaid validator's checks stay as-is; only scope and enforcement change.
+  rules). The mermaid validator's check set stays as-is; only scope, enforcement, and the two
+  parser bug fixes (pipe-labeled edges, cyclic diagrams) change.
   [Judgment call]
 - Mermaid **rendering** verification (static analysis only).
 - Cross-file link-graph analysis beyond existence + anchor presence.
@@ -166,7 +184,8 @@ flowchart TB
   Clean --> Docs[Governance plus push]
 ```
 
-Gate A keeps its existing checks, goes repo-wide with `--exclude`, and moves to pre-commit. Gate B
+Gate A keeps its existing check set, fixes the upstream pipe-label and cycle parser bugs, goes
+repo-wide with `--exclude` and a pinned `--max-depth=4`, and moves to pre-commit. Gate B
 gains `--exclude`, a repo-wide scan minus exclusions, and `#fragment` anchor validation via a
 GFM-correct slug helper and a shared fence-aware heading parser. Gate C is built from scratch and
 wired under a prose-allowlist default-deny scope so agent/skill artifacts can never trip it. All
@@ -187,8 +206,9 @@ Existing violations are cleaned per tree (gated), and governance docs are propag
 - `plans/done/` — frozen archive; completed plans are historical artifacts, not maintained prose.
 
 Unlike the upstream repo, this repo has no specialized web-content trees with their own link
-CLIs, so `plans/done/` is the only named exclusion. The noise-skip set (build artifacts, vendored
-deps, worktrees) is baked into the walkers — see
+CLIs, so `plans/done/` is the only named exclusion. The **standardized cross-repo noise-skip
+set** (build artifacts, generated outputs, worktrees — identical across the three aligned
+repos) is baked into the walkers — see
 [tech-docs.md Scope Matrix](./tech-docs.md#scope-matrix) for the authoritative list.
 
 ## Document Map
@@ -213,11 +233,15 @@ which skipped it and shipped a simplified algorithm). Key findings, all carried 
   [Web-cited — `github.com/Flet/github-slugger` (issue #56 confirms the regex is `[^\w -]`
   Unicode-aware); `gist.github.com/asabaylus/3071099`; GitHub Community Discussion #21546 (no
   formal spec exists; GitHub staff point to html-pipeline)]
-- The upstream plan's simplified "strip non-alphanumeric except hyphen" is **wrong** for
-  underscores (kept by GitHub) and Unicode (kept by GitHub). One conflicting source
-  (`vscode-markdown` issue #537) claims underscores are stripped — flagged
-  **[Needs Verification]**; the delivery plan unit-tests underscore/Unicode/backtick/multi-space
-  fixtures and notes the live-render caveat.
+- The upstream plan's original simplified "strip non-alphanumeric except hyphen" was **wrong**
+  for underscores (kept by GitHub) and Unicode (kept by GitHub); ose-public's implementation
+  was corrected to the algorithm above during the 2026-06-06 cross-repo alignment (it
+  previously stripped underscores). The underscore question is empirically settled:
+  `github-slugger` v2 executed directly yields `slug('foo_bar baz')` → `foo_bar-baz`
+  (underscores KEPT) and `slug('a  b')` → `a--b` (no space collapsing), with Unicode
+  letters/digits kept. [Verified 2026-06-06 — executed github-slugger v2 directly] The
+  conflicting `vscode-markdown` issue #537 claim (underscores stripped) is wrong. The delivery
+  plan still unit-tests underscore/Unicode/backtick/multi-space fixtures in BOTH CLIs.
 - Inline markup in headings (backticks, links): markup is stripped, text is kept. Emoji are
   stripped.
 - No maintained Go library reproduces `github-slugger`, and the closest Rust crate is pre-1.0 —
