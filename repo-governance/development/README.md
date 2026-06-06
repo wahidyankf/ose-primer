@@ -109,6 +109,7 @@ Development practices in this directory fall into several categories:
 - [CI Monitoring Convention](./workflow/ci-monitoring.md) - Standards for monitoring GitHub Actions CI runs without exhausting the GitHub API rate limit — required tooling, poll intervals, trigger discipline, and recovery procedures
 - [CI Post-Push Verification Convention](./workflow/ci-post-push-verification.md) - After pushing to origin main, manually trigger all related GitHub CI workflows and verify they pass before considering the work complete
 - [Test-Driven Development Convention](./workflow/test-driven-development.md) - Mandates TDD (Red→Green→Refactor) as the required practice for all code changes across the repository
+- [Dependency Bump Stability & Safety Policy](./workflow/dependency-bump-policy.md) - Three-path decision tree (LTS / 60-day soak / security waiver), exact-pin hard rule, five-source CVE clearance, and EPSS escalation governing every dependency bump across npm, Cargo, .NET, Go, Docker, and GitHub Actions
 
 ### Quality Standards Documentation
 
@@ -126,12 +127,19 @@ Development practices in this directory fall into several categories:
 - [CI Blocker Resolution Convention](./quality/ci-blocker-resolution.md) - Practice mandating that preexisting CI blockers are investigated at the root cause and fixed properly, never bypassed
 - [Post-Push CI Verification Convention](./quality/post-push-ci-verification.md) - Requirement to trigger and verify related GitHub Actions CI workflows after pushing to origin main, for both human contributors and AI agents
 - [Plan Anti-Hallucination Convention](./quality/plan-anti-hallucination.md) - Anti-hallucination guardrails for plan-maker and plan-checker agents: repo-grounding rules, web-research delegation thresholds, and claim verification requirements
+- [No Secrets in Committed Files Convention](./quality/no-secrets-in-committed-files.md) - Hard iron rule prohibiting system secrets (SSH keys, passwords, tokens, API keys) from any git-committed file, including plans and docs
+- [Environment File Access Convention](./quality/env-file-access.md) - Six-layer policy governing AI agent access to `.env*` files; only `.env.example` is permitted for reading, writing, editing, and committing
 
 ### Pattern Documentation
 
 - [Database Audit Trail Pattern](./pattern/database-audit-trail.md) - Required 6-column audit trail (created_at/by, updated_at/by, deleted_at/by) that every database table must include. Covers the migration tool for each of the 12 demo backends, language-agnostic migration requirements, Java/Spring Boot (Liquibase + JPA Auditing), and soft-delete discipline
 - [Maker-Checker-Fixer Pattern Convention](./pattern/maker-checker-fixer.md) - Three-stage quality workflow for content creation and validation. Covers agent roles, workflow stages with user review gates, and confidence level integration
 - [Functional Programming Practices](./pattern/functional-programming.md) - Guidelines for applying functional programming principles in TypeScript/JavaScript. Covers immutability patterns, pure functions, and function composition
+- [Hexagonal Architecture](./pattern/hexagonal-architecture.md) - Architectural pattern for structuring applications with clear separation between business logic and external adapters
+- [Hexagonal Architecture — Backend](./pattern/hexagonal-architecture-be.md) - Backend-specific application of hexagonal architecture for API and service layers
+- [Hexagonal Architecture — Web](./pattern/hexagonal-architecture-web.md) - Web UI application of hexagonal architecture for frontend projects
+- [Hexagonal Architecture — CLI](./pattern/hexagonal-architecture-cli.md) - CLI application of hexagonal architecture for command-line tools
+- [OpenAPI Contract-First Development](./pattern/openapi-contract-first.md) - Contract-first API development pattern using OpenAPI 3.1 specs as the single source of truth for types and codegen
 
 ### Practice Documentation
 
@@ -143,6 +151,7 @@ Development practices in this directory fall into several categories:
 - [Skill Context Architecture](./agents/skill-context-architecture.md) - Architectural constraint requiring all repository skills to use inline context for universal subagent compatibility. Documents subagent spawning limitation and fork skill alternatives
 - [Agent Workflow Orchestration Convention](./agents/agent-workflow-orchestration.md) - Standards for how AI agents plan, execute, verify, and self-improve during multi-step tasks. Covers plan mode triggers, subagent strategy, verification before done, autonomous bug fixing, the self-improvement loop, and task management
 - [Model Selection Convention](./agents/model-selection.md) - Standards for selecting the appropriate model tier (opus, sonnet, haiku) for AI agents based on task complexity, with justification requirements and tier comparison
+- [Subagent Orchestration Convention](./agents/subagent-orchestration.md) - Rules governing how agents spawn and coordinate subagents, including concurrency limits, result handling, and orchestration patterns
 
 ### Infrastructure Documentation
 

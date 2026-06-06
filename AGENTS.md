@@ -119,11 +119,13 @@ Three-stage quality workflow:
 
 **Categories** (representative examples — see full catalog below):
 
-- **Documentation**: `docs-applying-content-quality`, `docs-applying-diataxis-framework`, `docs-creating-accessible-diagrams`, `docs-creating-by-example-tutorials`, `docs-creating-in-the-field-tutorials`
+- **Documentation**: `docs-applying-content-quality`, `docs-applying-diataxis-framework`, `docs-creating-accessible-diagrams`, `docs-creating-by-example-tutorials`, `docs-creating-in-the-field-tutorials`, `docs-validating-factual-accuracy`, `docs-validating-links`, `docs-validating-software-engineering-separation`
+- **README**: `readme-writing-readme-files`
 - **Planning**: `grill-me`, `plan-creating-project-plans`, `plan-writing-gherkin-criteria`
 - **Agent Development**: `agent-developing-agents`
-- **Repository Patterns**: `repo-applying-maker-checker-fixer`, `repo-assessing-criticality-confidence`, `repo-generating-validation-reports`, `repo-understanding-repository-architecture`
-- **Development Workflow**: `repo-practicing-trunk-based-development`, `swe-developing-applications-common`
+- **CI Standards**: `ci-standards`
+- **Repository Patterns**: `repo-applying-maker-checker-fixer`, `repo-assessing-criticality-confidence`, `repo-defining-workflows`, `repo-generating-validation-reports`, `repo-understanding-repository-architecture`
+- **Development Workflow**: `repo-practicing-trunk-based-development`, `swe-developing-applications-common`, `swe-developing-e2e-test-with-playwright`, `swe-developing-frontend-ui`
 - **Programming Languages**: `swe-programming-clojure`, `swe-programming-csharp`, `swe-programming-dart`, `swe-programming-elixir`, `swe-programming-fsharp`, `swe-programming-golang`, `swe-programming-java`, `swe-programming-kotlin`, `swe-programming-python`, `swe-programming-rust`, `swe-programming-typescript`
 
 **Service Relationship**: Agent skills serve agents with knowledge and execution but don't govern them (service infrastructure, not governance layer).

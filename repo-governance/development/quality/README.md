@@ -39,6 +39,7 @@ These standards define **HOW to maintain and validate quality**, covering automa
 - [CI Blocker Resolution Convention](./ci-blocker-resolution.md) - Practice mandating that preexisting CI blockers are investigated at the root cause and fixed properly, never bypassed
 - [Post-Push CI Verification Convention](./post-push-ci-verification.md) - Requirement to trigger and verify related GitHub Actions CI workflows after pushing to origin main, for both human contributors and AI agents
 - [Plan Anti-Hallucination Convention](./plan-anti-hallucination.md) - Anti-hallucination guardrails the `plan-checker` agent cites when validating plan claims (confidence labels, AP-1 through AP-10 catalog, web-research delegation thresholds)
+- [Environment File Access Convention](./env-file-access.md) - Six-layer policy governing AI agent access to `.env*` files; only `.env.example` is permitted; real env files are off-limits for reading, writing, editing, and committing
 
 ## Companion Documents
 

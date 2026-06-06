@@ -136,7 +136,7 @@ All READMEs must include:
 Brief description of what the project does.
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
-[![License](https://img.shields.io/badge/license-FSL--1.1--MIT-blue)]()
+[![License](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
 
 ## Why This Project?
 
@@ -182,7 +182,7 @@ We welcome contributions! Please read our [Contributing Guide](../../../CONTRIBU
 
 ## License
 
-This project uses uniform MIT licensing across the entire repository. See [LICENSING-NOTICE.md](./LICENSING-NOTICE.md) for details.
+This project uses uniform MIT licensing across the entire repository. See [LICENSING-NOTICE.md](../../../LICENSING-NOTICE.md) for details.
 ````
 
 ### References
