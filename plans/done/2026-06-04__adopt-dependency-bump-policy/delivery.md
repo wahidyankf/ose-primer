@@ -397,7 +397,7 @@ setup, planning)`, and added a `*-planning` accept case. `test:unit` passes; gol
 - [x] [AI] Verify ALL delivery checklist items are ticked. _Done: only this Archival section
       remained; Phases 0–6 all ticked with notes (verified via grep)._
 - [x] [AI] Verify ALL quality gates pass (local + CI). _Done: `nx affected -t typecheck lint
-  test:quick spec-coverage` green; pre-push gate (incl. lint:md, validate-naming, mermaid,
+test:quick spec-coverage` green; pre-push gate (incl. lint:md, validate-naming, mermaid,
       cross-vendor-parity) passed; no push-to-main CI exists (vacuously green)._
 - [x] [AI] Move plan folder to done via
       `git mv plans/in-progress/adopt-dependency-bump-policy plans/done/2026-06-04__adopt-dependency-bump-policy`.
