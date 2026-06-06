@@ -1,9 +1,9 @@
 ---
 description: Creates LinkedIn posts from project updates and documentation. Optimizes for engagement and professional tone.
 model: opencode-go/minimax-m2.7
-tools:
-  grep: true
-  read: true
+permission:
+  grep: allow
+  read: allow
 color: primary
 skills:
   - docs-applying-content-quality

@@ -1,13 +1,13 @@
 ---
 description: Develops Kotlin applications following null safety principles, coroutine patterns, and platform coding standards. Use when implementing Kotlin code for demo.
 model: opencode-go/minimax-m2.7
-tools:
-  bash: true
-  edit: true
-  glob: true
-  grep: true
-  read: true
-  write: true
+permission:
+  bash: allow
+  edit: allow
+  glob: allow
+  grep: allow
+  read: allow
+  write: allow
 color: secondary
 skills:
   - swe-programming-kotlin

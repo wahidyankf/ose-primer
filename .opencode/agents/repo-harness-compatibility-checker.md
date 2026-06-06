@@ -1,14 +1,14 @@
 ---
 description: Validates that the platform-bindings catalog and committed binding files match each supported coding-agent harness's current upstream configuration conventions; use when external harness docs may have drifted from the repo's recorded expectations.
 model: opencode-go/minimax-m2.7
-tools:
-  bash: true
-  glob: true
-  grep: true
-  read: true
-  webfetch: true
-  websearch: true
-  write: true
+permission:
+  bash: allow
+  glob: allow
+  grep: allow
+  read: allow
+  webfetch: allow
+  websearch: allow
+  write: allow
 color: success
 skills:
   - repo-assessing-criticality-confidence

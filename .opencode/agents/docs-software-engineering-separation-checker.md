@@ -1,12 +1,12 @@
 ---
 description: Validates software engineering documentation separation — ensures docs/explanation/ style guides focus on repository-specific conventions only (not language tutorials), and that every programming language README has proper prerequisite statements linking to external learning resources.
 model: opencode-go/minimax-m2.7
-tools:
-  bash: true
-  glob: true
-  grep: true
-  read: true
-  write: true
+permission:
+  bash: allow
+  glob: allow
+  grep: allow
+  read: allow
+  write: allow
 color: success
 skills:
   - docs-validating-software-engineering-separation
