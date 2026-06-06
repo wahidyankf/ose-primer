@@ -871,26 +871,35 @@ mirroring the existing link step; extend the link step's skip paths.
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] Run all three markdown gates full-scan:
+- [x] [AI] Run all three markdown gates full-scan:
       `npx nx run rhino-cli-rust:validate:mermaid && npx nx run rhino-cli-rust:validate:links && npx nx run rhino-cli-rust:validate:heading-hierarchy`
       — acceptance: all three exit 0 (zero findings within scope).
-- [ ] [AI] Run the full parity harness over the changed corpora:
+  - _Done 2026-06-07. All three exit 0 (cache-skipped runs)._
+- [x] [AI] Run the full parity harness over the changed corpora:
       `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs git`
       — acceptance: exits 0.
-- [ ] [AI] Run affected typecheck: `npx nx affected -t typecheck` — acceptance: exits 0.
-- [ ] [AI] Run affected linting: `npx nx affected -t lint` — acceptance: exits 0.
-- [ ] [AI] Run affected quick tests: `npx nx affected -t test:quick` — acceptance: exits 0.
-- [ ] [AI] Run affected spec coverage: `npx nx affected -t spec-coverage` — acceptance: exits 0.
-- [ ] [AI] Run both CLIs' integration suites:
+  - _Done 2026-06-07. PASS — 91 cases byte-identical._
+- [x] [AI] Run affected typecheck: `npx nx affected -t typecheck` — acceptance: exits 0.
+  - _Done 2026-06-07. Exit 0._
+- [x] [AI] Run affected linting: `npx nx affected -t lint` — acceptance: exits 0.
+  - _Done 2026-06-07. Exit 0._
+- [x] [AI] Run affected quick tests: `npx nx affected -t test:quick` — acceptance: exits 0.
+  - _Done 2026-06-07. Exit 0._
+- [x] [AI] Run affected spec coverage: `npx nx affected -t spec-coverage` — acceptance: exits 0.
+  - _Done 2026-06-07. Exit 0._
+- [x] [AI] Run both CLIs' integration suites:
       `npx nx run rhino-cli-rust:test:integration && npx nx run rhino-cli-go:test:integration`
       — acceptance: both exit 0.
-- [ ] [AI] Run markdown lint: `npm run lint:md` — acceptance: exits 0.
-- [ ] [AI] Fix ALL failures — including preexisting issues not caused by these changes — and
+  - _Done 2026-06-07. Both exit 0._
+- [x] [AI] Run markdown lint: `npm run lint:md` — acceptance: exits 0.
+  - _Done 2026-06-07. Exit 0._
+- [x] [AI] Fix ALL failures — including preexisting issues not caused by these changes — and
       re-run the failing checks to confirm resolution. Verify zero failures before pushing.
+  - _Done 2026-06-07. Zero failures in the final pass. Preexisting issues fixed during execution (each committed separately): spec-coverage extractor comment-poison + const-indirection bugs, fence-tracker CommonMark bug, fresh-worktree env gaps (elixir hex deps, clojure classes/), unbalanced fence in TS TDD doc, stale governance facts (repo-rules gate)._
 
 ### Commit Guidelines
 
-- [ ] [AI] Commit changes thematically (Conventional Commits `<type>(<scope>): <description>`),
+- [x] [AI] Commit changes thematically (Conventional Commits `<type>(<scope>): <description>`),
       each dual-CLI change in ONE commit covering BOTH implementations, for example:
   - `feat(rhino-cli): add --exclude flag and repo-wide scan to validate-links (rust+go)`
   - `feat(rhino-cli): validate markdown anchors against target headings (rust+go)`
@@ -908,6 +917,7 @@ mirroring the existing link step; extend the link step's skip paths.
   - Preexisting fixes get their own separate commits.
     — acceptance: no unrelated changes bundled into a single commit; no commit touches only one
     CLI for a behavior change.
+  - _Done 2026-06-07. 13 thematic commits pending push (validate-links rust+go; heading-hierarchy rust+go; mermaid widen rust+go; pre-commit steps rust+go; husky+legacy-workflow removal; Nx targets; validate-markdown workflow; fence-tracker fix rust+go; per-tree cleanups governance/docs/plans/specs; governance doc updates; repo-rules fixes; plan ticks). Every dual-CLI behavior change covers BOTH CLIs in one commit; preexisting fixes separate._
 
 ### Push and Post-Push CI Verification
 
