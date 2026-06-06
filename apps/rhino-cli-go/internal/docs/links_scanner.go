@@ -2,6 +2,7 @@ package docs
 
 import (
 	"bufio"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -73,9 +74,53 @@ func getStagedMarkdownFiles(repoRoot string) ([]string, error) {
 	})
 }
 
-// getAllMarkdownFiles returns all markdown files in core directories.
+// noiseDirs is the standardized cross-repo noise-skip set: directory NAMES
+// dropped from the repo-wide walk wherever they appear, plus `.git`.
+// Identical across the three aligned repos (ose-public / ose-infra /
+// ose-primer). Mirrors the Rust `NOISE_DIRS` constant.
+var noiseDirs = map[string]bool{
+	"node_modules":        true,
+	"dist":                true,
+	"target":              true,
+	".next":               true,
+	"coverage":            true,
+	"generated-reports":   true,
+	"local-temp":          true,
+	"archived":            true,
+	"apps-labs":           true,
+	"worktrees":           true,
+	".terraform":          true,
+	"generated-contracts": true,
+	".nx":                 true,
+	".git":                true,
+}
+
+// getAllMarkdownFiles returns all markdown files via a repo-wide walk that
+// skips the standardized noise-skip set by directory name. The walk root
+// itself is never skipped, only descendants. filepath.WalkDir yields
+// deterministic lexical order (mirrors Rust WalkDir.sort_by_file_name).
 func getAllMarkdownFiles(repoRoot string) ([]string, error) {
-	return fileutil.WalkMarkdownDirs(repoRoot, []string{"repo-governance", "docs", ".claude"})
+	var files []string
+	err := filepath.WalkDir(repoRoot, func(path string, d fs.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			// Skip unreadable entries (mirrors Rust filter_map(Result::ok)).
+			return nil //nolint:nilerr // intentional: unreadable entries are skipped, not fatal
+		}
+		if d.IsDir() {
+			if path != repoRoot && noiseDirs[d.Name()] {
+				return fs.SkipDir
+			}
+			return nil
+		}
+		if strings.HasSuffix(path, ".md") {
+			files = append(files, path)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return files, nil
 }
 
 // ExtractLinks extracts markdown links from a file with line numbers.
@@ -95,7 +140,10 @@ func ExtractLinks(filePath string) ([]LinkInfo, error) {
 		lineNumber++
 		line := scanner.Text()
 
-		// Track code block boundaries
+		// Fence toggle. Deliberately recognises only ``` fences — the
+		// historical link-checker behaviour, kept for cross-repo output
+		// parity. CollectATXHeadings (headings.go) additionally recognises
+		// `~~~` fences; see the divergence note there.
 		if strings.HasPrefix(strings.TrimSpace(line), "```") {
 			inCodeBlock = !inCodeBlock
 			continue
@@ -117,10 +165,10 @@ func ExtractLinks(filePath string) ([]LinkInfo, error) {
 			// Strip angle brackets if present (markdown autolink syntax)
 			url = strings.Trim(url, "<>")
 
-			// Skip external URLs, anchors, and mailto
+			// Skip external URLs and mailto. Pure-anchor links (`#fragment`)
+			// ARE extracted so same-file anchors reach validation.
 			if strings.HasPrefix(url, "http://") ||
 				strings.HasPrefix(url, "https://") ||
-				strings.HasPrefix(url, "#") ||
 				strings.HasPrefix(url, "mailto:") {
 				continue
 			}

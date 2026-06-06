@@ -353,8 +353,9 @@ corpus_crud_spec_coverage() {
 corpus_docs() {
   echo "── docs corpus ──" >&2
 
-  # --- validate-links: full default corpus, every format (zero findings → ---
-  # --- deterministic; counts/timestamps normalised). -------------------------
+  # --- validate-links: full default corpus, every format. The link reporter ---
+  # --- sorts categories (fixed order), files (alphabetical), and lines, so ----
+  # --- output is deterministic even with findings (counts/TS normalised). -----
   for fmt in text json markdown; do
     run_case "links default ${fmt}"  docs validate-links -o "${fmt}" --no-color
   done
@@ -411,6 +412,39 @@ corpus_docs() {
   else
     echo "shadow-diff: no single-file mermaid finding found in corpus; skipping single-file text cases" >&2
   fi
+
+  # --- Anchor + --exclude fixtures: synthetic tree UNDER the repo root (the ---
+  # --- repo-wide walk starts at the git root, so out-of-repo temp files are ---
+  # --- never scanned). All findings live in ONE file and ONE category --------
+  # --- (broken-anchor), so text/markdown ordering is deterministic (see NOTE).
+  # --- Link URLs deliberately avoid the skip-list substrings (link/target). ---
+  local lf_dir=".shadow-links-fixtures"
+  local lf_abs="${REPO_ROOT}/${lf_dir}"
+  rm -rf "${lf_abs}"
+  mkdir -p "${lf_abs}"
+  printf '# Dest\n\n## Real Section\n\nBody.\n' > "${lf_abs}/dest.md"
+  printf '# Source\n\n## Local Heading\n\n[ok](./dest.md#real-section)\n\n[bad](./dest.md#missing-section)\n\n[self ok](#local-heading)\n\n[self bad](#nonexistent-heading)\n' > "${lf_abs}/source.md"
+
+  # Anchor findings: a broken #anchor to an existing file plus a same-file
+  # pure-anchor broken link (2 findings), alongside a valid cross-file #anchor
+  # and a valid same-file pure anchor (0 findings from those two).
+  for fmt in text json markdown; do
+    run_case "links anchors ${fmt}"  docs validate-links -o "${fmt}" --no-color
+  done
+  run_case "links anchors quiet"    docs validate-links -q --no-color
+  run_case "links anchors verbose"  docs validate-links -v --no-color
+
+  # --exclude that CHANGES the result: excluding the fixture tree removes both
+  # fixture findings (broken count drops by 2 vs the anchors cases above). The
+  # repeatable form and a non-fixture exclusion are diffed via JSON so
+  # total_files/total_links/broken_count prove the filter took effect
+  # identically in both binaries.
+  run_case "links exclude fixture"       docs validate-links --exclude "${lf_dir}/" --no-color
+  run_case "links exclude fixture json"  docs validate-links --exclude "${lf_dir}/" -o json --no-color
+  run_case "links exclude repeat json"   docs validate-links --exclude "${lf_dir}/" --exclude docs/ -o json --no-color
+  run_case "links exclude other json"    docs validate-links --exclude docs/ -o json --no-color
+
+  rm -rf "${lf_abs}"
 }
 
 corpus_agents() {

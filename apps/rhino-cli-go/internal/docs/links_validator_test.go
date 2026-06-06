@@ -267,6 +267,154 @@ func TestValidateAll_WithValidLinks(t *testing.T) {
 	}
 }
 
+func TestValidateAll_ExcludesPlansDoneViaSkipPaths(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	for _, sub := range []string{"plans/done", "plans/active"} {
+		if err := os.MkdirAll(filepath.Join(tmpDir, sub), 0755); err != nil {
+			t.Fatalf("failed to create %s: %v", sub, err)
+		}
+	}
+
+	archived := filepath.Join(tmpDir, "plans", "done", "archived.md")
+	if err := os.WriteFile(archived, []byte("[bad](./missing-a.md)\n"), 0644); err != nil {
+		t.Fatalf("failed to create archived.md: %v", err)
+	}
+	current := filepath.Join(tmpDir, "plans", "active", "current.md")
+	if err := os.WriteFile(current, []byte("[bad](./missing-b.md)\n"), 0644); err != nil {
+		t.Fatalf("failed to create current.md: %v", err)
+	}
+
+	// Mirrors `docs validate-links --exclude plans/done`.
+	opts := ScanOptions{
+		RepoRoot:   tmpDir,
+		StagedOnly: false,
+		SkipPaths:  []string{"plans/done"},
+	}
+
+	result, err := ValidateAllLinks(opts)
+	if err != nil {
+		t.Fatalf("ValidateAllLinks() error: %v", err)
+	}
+
+	if len(result.BrokenLinks) != 1 {
+		t.Fatalf("expected only the non-excluded broken link to be reported, got %d: %+v",
+			len(result.BrokenLinks), result.BrokenLinks)
+	}
+	if got := filepath.ToSlash(result.BrokenLinks[0].SourceFile); got != "plans/active/current.md" {
+		t.Errorf("broken link source = %q, want %q", got, "plans/active/current.md")
+	}
+}
+
+func TestValidateFile_ReportsBrokenAnchorForMissingSection(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	docsDir := filepath.Join(tmpDir, "docs")
+	if err := os.MkdirAll(docsDir, 0755); err != nil {
+		t.Fatalf("failed to create docs dir: %v", err)
+	}
+
+	chapter := filepath.Join(docsDir, "chapter.md")
+	if err := os.WriteFile(chapter, []byte("# Chapter\n\n## Real Section\n\ntext\n"), 0644); err != nil {
+		t.Fatalf("failed to create chapter.md: %v", err)
+	}
+
+	source := filepath.Join(docsDir, "source.md")
+	if err := os.WriteFile(source, []byte("[X](./chapter.md#missing-section)\n"), 0644); err != nil {
+		t.Fatalf("failed to create source.md: %v", err)
+	}
+
+	opts := ScanOptions{
+		RepoRoot: tmpDir,
+	}
+
+	broken, err := ValidateFile(source, opts)
+	if err != nil {
+		t.Fatalf("ValidateFile() error = %v", err)
+	}
+
+	if len(broken) != 1 {
+		t.Fatalf("missing anchor in an existing file must yield a finding, got %d: %+v", len(broken), broken)
+	}
+	if broken[0].Category != "broken-anchor" {
+		t.Errorf("Category = %q, want %q", broken[0].Category, "broken-anchor")
+	}
+	if broken[0].LinkText != "./chapter.md#missing-section" {
+		t.Errorf("LinkText = %q, want %q", broken[0].LinkText, "./chapter.md#missing-section")
+	}
+	if broken[0].LineNumber != 1 {
+		t.Errorf("LineNumber = %d, want 1", broken[0].LineNumber)
+	}
+}
+
+func TestValidateFile_AcceptsExistingAnchor(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	docsDir := filepath.Join(tmpDir, "docs")
+	if err := os.MkdirAll(docsDir, 0755); err != nil {
+		t.Fatalf("failed to create docs dir: %v", err)
+	}
+
+	chapter := filepath.Join(docsDir, "chapter.md")
+	if err := os.WriteFile(chapter, []byte("# Chapter\n\n## Real Section\n\ntext\n"), 0644); err != nil {
+		t.Fatalf("failed to create chapter.md: %v", err)
+	}
+
+	source := filepath.Join(docsDir, "source.md")
+	if err := os.WriteFile(source, []byte("[X](./chapter.md#real-section)\n"), 0644); err != nil {
+		t.Fatalf("failed to create source.md: %v", err)
+	}
+
+	opts := ScanOptions{
+		RepoRoot: tmpDir,
+	}
+
+	broken, err := ValidateFile(source, opts)
+	if err != nil {
+		t.Fatalf("ValidateFile() error = %v", err)
+	}
+
+	if len(broken) != 0 {
+		t.Errorf("anchor matching an existing heading must not be reported, got %+v", broken)
+	}
+}
+
+func TestValidateFile_ReportsBrokenAnchorForSameFileLink(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	docsDir := filepath.Join(tmpDir, "docs")
+	if err := os.MkdirAll(docsDir, 0755); err != nil {
+		t.Fatalf("failed to create docs dir: %v", err)
+	}
+
+	source := filepath.Join(docsDir, "source.md")
+	if err := os.WriteFile(source, []byte("# Title\n\nSee [X](#own-section).\n"), 0644); err != nil {
+		t.Fatalf("failed to create source.md: %v", err)
+	}
+
+	opts := ScanOptions{
+		RepoRoot: tmpDir,
+	}
+
+	broken, err := ValidateFile(source, opts)
+	if err != nil {
+		t.Fatalf("ValidateFile() error = %v", err)
+	}
+
+	if len(broken) != 1 {
+		t.Fatalf("pure-anchor link with no matching heading must yield a finding, got %d: %+v", len(broken), broken)
+	}
+	if broken[0].Category != "broken-anchor" {
+		t.Errorf("Category = %q, want %q", broken[0].Category, "broken-anchor")
+	}
+	if broken[0].LinkText != "#own-section" {
+		t.Errorf("LinkText = %q, want %q", broken[0].LinkText, "#own-section")
+	}
+	if broken[0].LineNumber != 3 {
+		t.Errorf("LineNumber = %d, want 3", broken[0].LineNumber)
+	}
+}
+
 func TestValidateAll_WithBrokenLinks(t *testing.T) {
 	tmpDir := t.TempDir()
 

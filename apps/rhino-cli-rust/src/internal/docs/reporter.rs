@@ -16,6 +16,7 @@ const CATEGORY_ORDER: &[&str] = &[
     "workflows/ paths",
     "vision/ paths",
     "conventions README",
+    "broken-anchor",
 ];
 
 /// Formats the validation result as human-readable text. Mirrors Go `FormatLinkText`.

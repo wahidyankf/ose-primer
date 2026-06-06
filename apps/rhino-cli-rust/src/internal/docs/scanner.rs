@@ -97,39 +97,51 @@ fn get_staged_markdown_files(repo_root: &Path) -> Result<Vec<PathBuf>, Error> {
     Ok(files)
 }
 
-/// Returns all markdown files in core directories. Mirrors Go `getAllMarkdownFiles`
-/// → `fileutil.WalkMarkdownDirs(repoRoot, ["repo-governance", "docs", ".claude"])`.
+/// Standardized cross-repo noise-skip set: directory NAMES dropped from the
+/// repo-wide walk wherever they appear, plus `.git`. Identical across the
+/// three aligned repos (ose-public / ose-infra / ose-primer).
+const NOISE_DIRS: &[&str] = &[
+    "node_modules",
+    "dist",
+    "target",
+    ".next",
+    "coverage",
+    "generated-reports",
+    "local-temp",
+    "archived",
+    "apps-labs",
+    "worktrees",
+    ".terraform",
+    "generated-contracts",
+    ".nx",
+    ".git",
+];
+
+/// Returns all markdown files via a repo-wide walk that skips the
+/// standardized noise-skip set by directory name. Mirrors the planned Go
+/// `getAllMarkdownFiles` repo-wide walker.
 fn get_all_markdown_files(repo_root: &Path) -> Vec<PathBuf> {
     let mut files = Vec::new();
 
-    for dir in ["repo-governance", "docs", ".claude"] {
-        let dir_path = repo_root.join(dir);
-        if !dir_path.exists() {
-            continue;
-        }
-        // filepath.Walk yields lexical order; WalkDir.sort_by_file_name matches it.
-        for entry in WalkDir::new(&dir_path)
-            .sort_by_file_name()
-            .into_iter()
-            .filter_map(std::result::Result::ok)
-        {
-            let path = entry.path();
-            if entry.file_type().is_file() && path.to_string_lossy().ends_with(".md") {
-                files.push(path.to_path_buf());
-            }
+    // filepath.Walk yields lexical order; WalkDir.sort_by_file_name matches it.
+    for entry in WalkDir::new(repo_root)
+        .sort_by_file_name()
+        .into_iter()
+        .filter_entry(|e| {
+            // Never filter the walk root itself (depth 0), only descendants.
+            e.depth() == 0
+                || !(e.file_type().is_dir()
+                    && e.file_name()
+                        .to_str()
+                        .is_some_and(|name| NOISE_DIRS.contains(&name)))
+        })
+        .filter_map(std::result::Result::ok)
+    {
+        let path = entry.path();
+        if entry.file_type().is_file() && path.to_string_lossy().ends_with(".md") {
+            files.push(path.to_path_buf());
         }
     }
-
-    // Root-level *.md files (filepath.Glob — lexical order).
-    let mut root_mds: Vec<PathBuf> = std::fs::read_dir(repo_root)
-        .into_iter()
-        .flatten()
-        .filter_map(std::result::Result::ok)
-        .map(|e| e.path())
-        .filter(|p| p.is_file() && p.to_string_lossy().ends_with(".md"))
-        .collect();
-    root_mds.sort();
-    files.extend(root_mds);
 
     files
 }
@@ -164,10 +176,10 @@ pub fn extract_links(file_path: &Path) -> Result<Vec<LinkInfo>, Error> {
             // Strip angle brackets if present (markdown autolink syntax).
             let url = url_match.as_str().trim_matches(|c| c == '<' || c == '>');
 
-            // Skip external URLs, anchors, and mailto.
+            // Skip external URLs and mailto. Pure-anchor links (`#fragment`)
+            // ARE extracted so same-file anchors reach validation.
             if url.starts_with("http://")
                 || url.starts_with("https://")
-                || url.starts_with('#')
                 || url.starts_with("mailto:")
             {
                 continue;
@@ -324,10 +336,14 @@ mod tests {
         writeln!(file, "```").unwrap();
         writeln!(file, "[anchor](#section)").unwrap();
         let links = extract_links(&f).unwrap();
-        assert_eq!(links.len(), 1);
+        assert_eq!(links.len(), 2);
         assert_eq!(links[0].url, "./real.md");
         assert_eq!(links[0].line_number, 2);
         assert!(links[0].is_relative);
+        // Pure-anchor links are extracted so same-file anchors get validated.
+        assert_eq!(links[1].url, "#section");
+        assert_eq!(links[1].line_number, 6);
+        assert!(links[1].is_relative);
     }
 
     #[test]
@@ -357,6 +373,51 @@ mod tests {
         let files = vec![PathBuf::from("/repo/docs/y.md")];
         let out = filter_skip_paths(files.clone(), &root, &[]);
         assert_eq!(out, files);
+    }
+
+    #[test]
+    fn get_markdown_files_walks_repo_wide_and_skips_noise_dirs() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        for sub in [
+            "libs/my-lib",
+            "docs",
+            "node_modules/some-pkg",
+            "generated-reports",
+            "worktrees/copy/docs",
+        ] {
+            std::fs::create_dir_all(root.join(sub)).unwrap();
+        }
+        std::fs::write(root.join("libs/my-lib/README.md"), "[bad](./missing.md)\n").unwrap();
+        std::fs::write(root.join("docs/a.md"), "ok\n").unwrap();
+        std::fs::write(root.join("node_modules/some-pkg/README.md"), "skip\n").unwrap();
+        std::fs::write(root.join("generated-reports/report.md"), "skip\n").unwrap();
+        std::fs::write(root.join("worktrees/copy/docs/a.md"), "skip\n").unwrap();
+
+        let opts = ScanOptions {
+            repo_root: root.to_path_buf(),
+            ..Default::default()
+        };
+        let files = get_markdown_files(&opts).unwrap();
+        let rels: Vec<String> = files
+            .iter()
+            .map(|f| f.strip_prefix(root).unwrap().to_string_lossy().into_owned())
+            .collect();
+
+        // Repo-wide walk must reach beyond the historical 3-dir set.
+        assert!(
+            rels.contains(&"libs/my-lib/README.md".to_string()),
+            "expected libs/ file in scan set, got {rels:?}"
+        );
+        assert!(rels.contains(&"docs/a.md".to_string()));
+
+        // Standardized noise dirs must be skipped by name.
+        for noise in ["node_modules/", "generated-reports/", "worktrees/"] {
+            assert!(
+                !rels.iter().any(|r| r.starts_with(noise)),
+                "noise dir {noise} leaked into scan set: {rels:?}"
+            );
+        }
     }
 
     #[test]

@@ -34,9 +34,10 @@ rhino-cli docs validate-links -o json\n\n  \
 rhino-cli docs validate-links -o markdown\n\n  \
 # Verbose mode with quiet output\n  \
 rhino-cli docs validate-links -v -q\n\n\
-Flags:\n  \
--h, --help          help for validate-links\n      \
---staged-only   only validate staged files\n\n\
+Flags:\n      \
+--exclude stringArray   path prefixes to exclude from validation (repeatable)\n  \
+-h, --help                  help for validate-links\n      \
+--staged-only           only validate staged files\n\n\
 Global Flags:\n      \
 --no-color        disable colored output\n  \
 -o, --output string   output format: text, json, markdown (default \"text\")\n  \
@@ -49,6 +50,9 @@ pub struct ValidateLinksArgs {
     /// Only validate staged files.
     #[arg(long = "staged-only")]
     pub staged_only: bool,
+    /// Path prefixes to exclude from validation (repeatable).
+    #[arg(long = "exclude", value_name = "PATH")]
+    pub exclude: Vec<String>,
 }
 
 pub fn run_validate_links(
@@ -60,11 +64,15 @@ pub fn run_validate_links(
     let repo_root =
         git::root::find_root().map_err(|e| anyhow!("failed to find git repository root: {e}"))?;
 
+    // Exclude auto-generated skill files (matches Go), then append any
+    // caller-provided `--exclude` prefixes AFTER the baked-in entry.
+    let mut skip_paths = vec![".opencode/skill/".to_string()];
+    skip_paths.extend(args.exclude.iter().cloned());
+
     let opts = ScanOptions {
         repo_root,
         staged_only: args.staged_only,
-        // Exclude auto-generated skill files (matches Go).
-        skip_paths: vec![".opencode/skill/".to_string()],
+        skip_paths,
         verbose,
         quiet,
     };
@@ -339,8 +347,12 @@ mod tests {
 
     #[test]
     fn links_args_default() {
-        let args = ValidateLinksArgs { staged_only: false };
+        let args = ValidateLinksArgs {
+            staged_only: false,
+            exclude: vec![],
+        };
         assert!(!args.staged_only);
+        assert!(args.exclude.is_empty());
     }
 
     #[test]

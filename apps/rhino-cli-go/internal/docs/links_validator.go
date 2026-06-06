@@ -41,7 +41,25 @@ func ValidateLink(sourceFile, link, repoRoot string) (bool, error) {
 	return true, nil
 }
 
+// anchorExists checks whether fragment matches a heading anchor in the
+// target file (GFM slugs with `-N` collision suffixes, case-sensitive).
+// Unreadable targets are treated as valid so an I/O hiccup never becomes a
+// finding. Mirrors Rust `anchor_exists`.
+func anchorExists(targetPath, fragment string) bool {
+	content, err := os.ReadFile(targetPath)
+	if err != nil {
+		return true
+	}
+	for _, anchor := range CollectHeadingAnchors(string(content)) {
+		if anchor == fragment {
+			return true
+		}
+	}
+	return false
+}
+
 // ValidateFile validates all links in a single file.
+// Skill files (`.claude/skills/`) are skipped wholesale.
 func ValidateFile(filePath string, opts ScanOptions) ([]BrokenLink, error) {
 	// Skip validation for skill files as they contain many examples
 	if strings.Contains(filePath, ".claude/skills/") {
@@ -55,21 +73,29 @@ func ValidateFile(filePath string, opts ScanOptions) ([]BrokenLink, error) {
 
 	var brokenLinks []BrokenLink
 
+	// Get relative path for reporting
+	relPath, err := filepath.Rel(opts.RepoRoot, filePath)
+	if err != nil {
+		relPath = filePath
+	}
+
 	for _, linkInfo := range links {
+		// Capture the `#fragment` BEFORE resolution strips it.
+		fragment := ""
+		hasFragment := false
+		if idx := strings.Index(linkInfo.URL, "#"); idx >= 0 {
+			hasFragment = true
+			fragment = linkInfo.URL[idx+1:]
+		}
+
 		valid, err := ValidateLink(filePath, linkInfo.URL, opts.RepoRoot)
 		if err != nil {
 			return nil, err
 		}
+		targetPath := ResolveLink(filePath, linkInfo.URL, opts.RepoRoot)
 
 		if !valid {
-			targetPath := ResolveLink(filePath, linkInfo.URL, opts.RepoRoot)
 			category := CategorizeBrokenLink(linkInfo.URL)
-
-			// Get relative path for reporting
-			relPath, err := filepath.Rel(opts.RepoRoot, filePath)
-			if err != nil {
-				relPath = filePath
-			}
 
 			brokenLinks = append(brokenLinks, BrokenLink{
 				LineNumber: linkInfo.LineNumber,
@@ -77,6 +103,23 @@ func ValidateFile(filePath string, opts ScanOptions) ([]BrokenLink, error) {
 				LinkText:   linkInfo.URL,
 				TargetPath: targetPath,
 				Category:   category,
+			})
+			continue
+		}
+
+		// Target exists — validate the fragment (if any) against the target
+		// file's heading anchor set. A pure anchor (`#fragment`) resolves to
+		// the source file, so same-file anchors are covered too.
+		if !hasFragment || fragment == "" || !strings.HasSuffix(targetPath, ".md") {
+			continue
+		}
+		if !anchorExists(targetPath, fragment) {
+			brokenLinks = append(brokenLinks, BrokenLink{
+				LineNumber: linkInfo.LineNumber,
+				SourceFile: relPath,
+				LinkText:   linkInfo.URL,
+				TargetPath: targetPath,
+				Category:   "broken-anchor",
 			})
 		}
 	}

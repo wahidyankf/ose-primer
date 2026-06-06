@@ -25,7 +25,8 @@ func FormatLinkText(result *LinkValidationResult, verbose, quiet bool) string {
 	output.WriteString("# Broken Links Report\n\n")
 	_, _ = fmt.Fprintf(&output, "**Total broken links**: %d\n", len(result.BrokenLinks))
 
-	// Category order for report (matches Python version)
+	// Category order for report (matches Python version; broken-anchor
+	// appended at the end, mirroring the Rust CATEGORY_ORDER)
 	categoryOrder := []string{
 		"Legacy prefixed paths",
 		"Missing files",
@@ -33,6 +34,7 @@ func FormatLinkText(result *LinkValidationResult, verbose, quiet bool) string {
 		"workflows/ paths",
 		"vision/ paths",
 		"conventions README",
+		"broken-anchor",
 	}
 
 	for _, category := range categoryOrder {

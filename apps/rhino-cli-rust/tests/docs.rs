@@ -27,6 +27,12 @@ struct DocsWorld {
     /// reachable with non-default thresholds, since the local Go default
     /// `--max-depth` is unlimited.
     mermaid_thresholds: Option<(i64, i64)>,
+    /// Repo-relative path of the fixture file that carries the broken link,
+    /// asserted by the shared "identifies the file" Then step.
+    broken_source: Option<String>,
+    /// Link text of the fixture's broken-anchor link, asserted by the
+    /// broken-anchor Then step.
+    broken_anchor_link: Option<String>,
     output: Option<Output>,
 }
 
@@ -47,6 +53,8 @@ impl DocsWorld {
             work,
             extra_args: Vec::new(),
             mermaid_thresholds: None,
+            broken_source: None,
+            broken_anchor_link: None,
             output: None,
         }
     }
@@ -130,6 +138,49 @@ fn given_links_broken(w: &mut DocsWorld) {
         "docs/index.md",
         "# Index\nSee [missing](./does-not-exist.md).\n",
     );
+    w.broken_source = Some("docs/index.md".to_string());
+}
+
+#[given("a markdown file with a broken link inside a directory tree")]
+fn given_links_broken_in_tree(w: &mut DocsWorld) {
+    w.write(
+        "legacy/notes.md",
+        "# Notes\nSee [missing](./does-not-exist.md).\n",
+    );
+}
+
+#[given("a markdown file under libs with a link pointing to a non-existent file")]
+fn given_links_broken_under_libs(w: &mut DocsWorld) {
+    w.write(
+        "libs/my-lib/README.md",
+        "# Lib\nSee [missing](./does-not-exist.md).\n",
+    );
+    w.broken_source = Some("libs/my-lib/README.md".to_string());
+}
+
+#[given("a markdown file with a link to an existing file whose anchor matches no heading")]
+fn given_links_broken_anchor(w: &mut DocsWorld) {
+    w.write("docs/chapter.md", "# Chapter\n\n## Real Section\n\ntext\n");
+    w.write(
+        "docs/index.md",
+        "# Index\nSee [X](./chapter.md#missing-section).\n",
+    );
+    w.broken_anchor_link = Some("./chapter.md#missing-section".to_string());
+}
+
+#[given("a markdown file with a link to an existing file whose anchor matches a heading")]
+fn given_links_valid_anchor(w: &mut DocsWorld) {
+    w.write("docs/chapter.md", "# Chapter\n\n## Real Section\n\ntext\n");
+    w.write(
+        "docs/index.md",
+        "# Index\nSee [X](./chapter.md#real-section).\n",
+    );
+}
+
+#[given("a markdown file with a pure-anchor link that matches no heading in the same file")]
+fn given_links_same_file_broken_anchor(w: &mut DocsWorld) {
+    w.write("docs/index.md", "# Title\n\nSee [X](#own-section).\n");
+    w.broken_anchor_link = Some("#own-section".to_string());
 }
 
 #[given("a markdown file containing only external HTTPS links")]
@@ -158,6 +209,13 @@ fn when_links_run_staged(w: &mut DocsWorld) {
     w.exec(&["docs", "validate-links"]);
 }
 
+#[when("the developer runs docs validate-links with the --exclude flag for that tree")]
+fn when_links_run_exclude(w: &mut DocsWorld) {
+    w.extra_args.push("--exclude".to_string());
+    w.extra_args.push("legacy".to_string());
+    w.exec(&["docs", "validate-links"]);
+}
+
 #[then("the output reports no broken links found")]
 fn then_links_none(w: &mut DocsWorld) {
     assert!(
@@ -171,9 +229,21 @@ fn then_links_none(w: &mut DocsWorld) {
 #[then("the output identifies the file containing the broken link")]
 fn then_links_identifies(w: &mut DocsWorld) {
     let out = w.stdout();
+    let source = w.broken_source.clone().expect("fixture set broken_source");
     assert!(out.contains("Broken Links Report"), "got: {out}");
-    assert!(out.contains("docs/index.md"), "got: {out}");
+    assert!(out.contains(&source), "got: {out}");
     assert!(out.contains("./does-not-exist.md"), "got: {out}");
+}
+
+#[then("the output reports a broken-anchor finding for the link")]
+fn then_links_broken_anchor(w: &mut DocsWorld) {
+    let out = w.stdout();
+    let link = w
+        .broken_anchor_link
+        .clone()
+        .expect("fixture set broken_anchor_link");
+    assert!(out.contains("broken-anchor"), "got: {out}");
+    assert!(out.contains(&link), "got: {out}");
 }
 
 // ===========================================================================

@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -66,7 +67,7 @@ This is a [valid link](../docs/README.md) and [another](./file.md).
 ` + "```" + `
 
 External [link](https://example.com) should be skipped.
-Internal [anchor](#section) should be skipped.
+Internal [anchor](#section) should be extracted for anchor validation.
 Email [contact](mailto:test@example.com) should be skipped.
 
 This [placeholder](path.md) should be skipped.
@@ -84,10 +85,12 @@ This [real link](../../repo-governance/README.md) should not be skipped.
 		t.Fatalf("ExtractLinks() error = %v", err)
 	}
 
-	// Expected links (not skipped)
+	// Expected links (not skipped). Pure-anchor links are extracted so
+	// same-file anchors reach validation.
 	expected := map[string]int{
 		"../docs/README.md":               3,
 		"./file.md":                       3,
+		"#section":                        10,
 		"../../repo-governance/README.md": 14,
 	}
 
@@ -289,6 +292,111 @@ func TestFilterSkipPaths_WithSkipPath(t *testing.T) {
 		if len(rel) > 10 && rel[:10] == "repo-governance" {
 			t.Errorf("expected governance files to be filtered out, got %v", result)
 		}
+	}
+}
+
+func TestGetMarkdownFiles_RepoWideWalkSkipsNoiseDirs(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	for _, sub := range []string{
+		"libs/my-lib",
+		"docs",
+		"node_modules/some-pkg",
+		"generated-reports",
+		"worktrees/copy/docs",
+	} {
+		if err := os.MkdirAll(filepath.Join(tmpDir, sub), 0755); err != nil {
+			t.Fatalf("failed to create %s: %v", sub, err)
+		}
+	}
+
+	writes := map[string]string{
+		"libs/my-lib/README.md":           "[bad](./missing.md)\n",
+		"docs/a.md":                       "ok\n",
+		"node_modules/some-pkg/README.md": "skip\n",
+		"generated-reports/report.md":     "skip\n",
+		"worktrees/copy/docs/a.md":        "skip\n",
+	}
+	for rel, content := range writes {
+		if err := os.WriteFile(filepath.Join(tmpDir, rel), []byte(content), 0644); err != nil {
+			t.Fatalf("failed to write %s: %v", rel, err)
+		}
+	}
+
+	opts := ScanOptions{
+		RepoRoot:   tmpDir,
+		StagedOnly: false,
+	}
+
+	files, err := GetMarkdownFiles(opts)
+	if err != nil {
+		t.Fatalf("GetMarkdownFiles() error: %v", err)
+	}
+
+	rels := make(map[string]bool, len(files))
+	var relList []string
+	for _, f := range files {
+		rel, relErr := filepath.Rel(tmpDir, f)
+		if relErr != nil {
+			t.Fatalf("failed to get relative path for %s: %v", f, relErr)
+		}
+		rel = filepath.ToSlash(rel)
+		rels[rel] = true
+		relList = append(relList, rel)
+	}
+
+	// Repo-wide walk must reach beyond the historical 3-dir set.
+	if !rels["libs/my-lib/README.md"] {
+		t.Errorf("expected libs/my-lib/README.md in scan set, got %v", relList)
+	}
+	if !rels["docs/a.md"] {
+		t.Errorf("expected docs/a.md in scan set, got %v", relList)
+	}
+
+	// Standardized noise dirs must be skipped by name.
+	for _, noise := range []string{"node_modules/", "generated-reports/", "worktrees/"} {
+		for _, rel := range relList {
+			if strings.HasPrefix(rel, noise) {
+				t.Errorf("noise dir %s leaked into scan set: %v", noise, relList)
+			}
+		}
+	}
+}
+
+func TestExtractLinks_PureAnchorExtracted(t *testing.T) {
+	tmpDir := t.TempDir()
+	testFile := filepath.Join(tmpDir, "test.md")
+
+	content := `# Title
+
+See [doc](./real.md) and [ext](https://example.com).
+
+[anchor](#section)
+`
+
+	if err := os.WriteFile(testFile, []byte(content), 0644); err != nil {
+		t.Fatalf("Failed to create test file: %v", err)
+	}
+
+	links, err := ExtractLinks(testFile)
+	if err != nil {
+		t.Fatalf("ExtractLinks() error = %v", err)
+	}
+
+	// Pure-anchor links must be extracted so same-file anchors reach
+	// validation; external URLs are still skipped.
+	if len(links) != 2 {
+		t.Fatalf("ExtractLinks() found %d links, want 2 (./real.md and #section): %+v", len(links), links)
+	}
+
+	if links[0].URL != "./real.md" || links[0].LineNumber != 3 {
+		t.Errorf("links[0] = %+v, want URL ./real.md at line 3", links[0])
+	}
+	if links[1].URL != "#section" || links[1].LineNumber != 5 {
+		t.Errorf("links[1] = %+v, want URL #section at line 5", links[1])
+	}
+	if !links[1].IsRelative {
+		t.Errorf("pure-anchor link should be relative: %+v", links[1])
 	}
 }
 

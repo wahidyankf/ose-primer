@@ -9,6 +9,7 @@ import (
 
 var (
 	validateDocsLinksStagedOnly bool
+	validateDocsLinksExclude    []string
 )
 
 var validateDocsLinksCmd = &cobra.Command{
@@ -43,6 +44,7 @@ By default, scans all markdown files in core directories (docs/, repo-governance
 func init() {
 	docsCmd.AddCommand(validateDocsLinksCmd)
 	validateDocsLinksCmd.Flags().BoolVar(&validateDocsLinksStagedOnly, "staged-only", false, "only validate staged files")
+	validateDocsLinksCmd.Flags().StringArrayVar(&validateDocsLinksExclude, "exclude", nil, "path prefixes to exclude from validation (repeatable)")
 }
 
 func runValidateDocsLinks(cmd *cobra.Command, args []string) error {
@@ -52,11 +54,16 @@ func runValidateDocsLinks(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to find git repository root: %w", err)
 	}
 
+	// Exclude auto-generated skill files, then append any caller-provided
+	// `--exclude` prefixes AFTER the baked-in entry (mirrors Rust).
+	skipPaths := []string{".opencode/skill/"}
+	skipPaths = append(skipPaths, validateDocsLinksExclude...)
+
 	// Build scan options from flags
 	opts := docs.ScanOptions{
 		RepoRoot:   repoRoot,
 		StagedOnly: validateDocsLinksStagedOnly,
-		SkipPaths:  []string{".opencode/skill/"}, // Exclude auto-generated skill files
+		SkipPaths:  skipPaths,
 		Verbose:    verbose,
 		Quiet:      quiet,
 	}
