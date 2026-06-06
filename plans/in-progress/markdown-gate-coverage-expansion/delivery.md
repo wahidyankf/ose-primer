@@ -61,41 +61,51 @@ and
 
 > _Executor: repo-setup-manager_
 
-- [ ] [AI] Provision the worktree from repo root:
+- [x] [AI] Provision the worktree from repo root:
       `claude --worktree markdown-gate-coverage-expansion`
       — acceptance: `worktrees/markdown-gate-coverage-expansion/` exists.
-- [ ] [AI] Initialize the toolchain in the **root** worktree (not the new worktree):
+  - _Done 2026-06-06. Status: complete. Provisioned via EnterWorktree (WorktreeCreate hook routed to `worktrees/markdown-gate-coverage-expansion/`). Verified: `git worktree list` shows the path on branch `worktree/markdown-gate-coverage-expansion`._
+- [x] [AI] Initialize the toolchain in the **root** worktree (not the new worktree):
       `npm install && npm run doctor -- --fix`
       — acceptance: both exit 0; `node_modules/` synchronized; no unresolved toolchain drift.
       (See
       [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md).)
-- [ ] [AI] Build the Rust CLI:
+  - _Done 2026-06-06. Status: complete. `npm install` exit 0; `npm run doctor -- --fix` exit 0 — 18/19 tools OK, 1 warning (python v3.13.1 < 3.13.12; doctor reports "Nothing to fix"), 0 missing._
+- [x] [AI] Build the Rust CLI:
       `cargo build --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml`
       — acceptance: exits 0.
-- [ ] [AI] Build the Go CLI: `npx nx run rhino-cli-go:build`
+  - _Done 2026-06-06. Status: complete. Build exit 0 (cache hit — 0 crates recompiled)._
+- [x] [AI] Build the Go CLI: `npx nx run rhino-cli-go:build`
       — acceptance: exits 0; `apps/rhino-cli-go/dist/rhino-cli` exists.
-- [ ] [AI] Run the Rust test suite to establish the green baseline:
+  - _Done 2026-06-06. Status: complete. Build exit 0; binary present at `apps/rhino-cli-go/dist/rhino-cli`._
+- [x] [AI] Run the Rust test suite to establish the green baseline:
       `npx nx run rhino-cli-rust:test:quick`
       — acceptance: baseline pass count recorded; all preexisting failures documented.
-- [ ] [AI] Run the Go test suite to establish the green baseline:
+  - _Done 2026-06-06. Status: complete. Baseline: 527 passed, 0 failed, 0 ignored. No preexisting failures._
+- [x] [AI] Run the Go test suite to establish the green baseline:
       `npx nx run rhino-cli-go:test:quick`
       — acceptance: baseline pass count recorded; all preexisting failures documented.
-- [ ] [AI] Run the parity harness to confirm the docs corpus is currently byte-identical:
+  - _Done 2026-06-06. Status: complete. Baseline: all 14 packages ok (cmd 83.2%, docs 91.6%, git 95.0%, mermaid 95.7% coverage, etc.). No preexisting failures._
+- [x] [AI] Run the parity harness to confirm the docs corpus is currently byte-identical:
       `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs`
       — acceptance: exits 0.
-- [ ] [AI] Capture the **mermaid** baseline (current four-dir scope):
+  - _Done 2026-06-06. Status: complete. Shadow diff PASS — 31 cases byte-identical; exit 0._
+- [x] [AI] Capture the **mermaid** baseline (current four-dir scope):
       `npx nx run rhino-cli-rust:validate:mermaid`
       — acceptance: pass/fail + findings recorded in phase notes.
-- [ ] [AI] Capture the **current link** baseline (current three-dir scope):
+  - _Done 2026-06-06. Status: complete. PASS (exit 0): 0 violations, 1 warning (`docs/reference/system-architecture/applications.md` block 0 line 78 — subgraph_density 11 children > 6) across 167 files / 571 blocks._
+- [x] [AI] Capture the **current link** baseline (current three-dir scope):
       `cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-links -o json`
       — acceptance: `total_files`, broken-link count, and any broken links recorded in phase
       notes.
+  - _Done 2026-06-06. Status: complete. Baseline: total_files=608, broken-link count=0 (exit 0)._
 - [ ] [AI] Establish a **provisional repo-wide link backlog** with the CURRENT binary (still
       three-dir scope) by grepping for relative markdown links in the not-yet-scanned trees:
       `grep -rnoE '\]\([^)#][^)]*\.md(#[^)]*)?\)' plans/ apps/ libs/ specs/ --include='*.md' --exclude-dir=node_modules --exclude-dir=deps --exclude-dir=_build --exclude-dir=plans/done 2>/dev/null | head -100`
       — acceptance: a provisional per-tree list of relative links (with `#anchor` ones flagged)
       recorded in phase notes. Estimate only; the authoritative backlog is re-measured per tree
       once the widened link checker + anchor validation land (Phase 1).
+  - _Done 2026-06-06. Status: complete. Provisional relative-md-link counts (excl `plans/done/`): apps=116, libs=3, plans=101, specs=103 — 323 total, 27 carrying `#anchor` fragments. Estimate only; authoritative re-measure in Phases 6-10._
 - [ ] [AI] Establish a **provisional prose-heading backlog** (no heading validator exists yet —
       grep-based estimate): for each allowlist tree, list files whose count of `^#` lines
       differs from 1:
@@ -103,30 +113,44 @@ and
       — acceptance: provisional duplicate-H1 / missing-H1 candidate list recorded in phase notes
       (skipped-level estimation is deferred to the real validator in Phase 2; expect
       false positives from `#` inside code fences — this is an estimate only).
-- [ ] [AI] Confirm `.claude/`/`.opencode/` files would violate heading rules (proof the allowlist
+  - _Done 2026-06-06. Status: complete. 60+ candidate files with `^#` count ≠ 1; top: `docs/.../python/anti-patterns.md` (264), `python/idioms.md` (155), `repo-governance/development/workflow/best-practices.md` (123), `apps/rhino-cli-go/README.md` (120). Nearly all are `#` comment lines inside code fences (expected false positives) — authoritative measure deferred to the fence-aware Phase 2 validator._
+- [x] [AI] Confirm `.claude/`/`.opencode/` files would violate heading rules (proof the allowlist
       is needed), using the same grep over the denied trees:
       `for f in .claude/agents/*.md .claude/skills/*/SKILL.md .opencode/agents/*.md; do n=$(grep -c '^# ' "$f" 2>/dev/null || echo 0); [ "$n" -ne 1 ] && echo "$n $f"; done | head -20`
       — acceptance: at least one agent/skill file with ≠1 H1 recorded (fixture candidates for the
       Phase 2 allowlist tests).
-- [ ] [AI] Resolve all preexisting failures before proceeding
+  - _Done 2026-06-06. Status: complete. 20 files with ≠1 `^#` count, e.g. `.claude/agents/repo-rules-fixer.md` (18), `.claude/skills/plan-writing-gherkin-criteria/SKILL.md` (17), `.claude/agents/readme-fixer.md` (7) — allowlist need confirmed; fixture candidates recorded._
+- [x] [AI] Resolve all preexisting failures before proceeding
       — acceptance: no preexisting failures remain unresolved.
+  - _Done 2026-06-06. Status: complete. No preexisting failures found: Rust 527/527 pass, Go 14/14 packages ok, shadow-diff PASS (31 cases), mermaid 0 violations, links 0 broken. Nothing to resolve._
 
 ### Phase 0 Gate
 
 > All checks below must pass before starting Phase 1.
 
-- [ ] [AI] `cargo build --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml` and
+- [x] [AI] `cargo build --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml` and
       `npx nx run rhino-cli-go:build` both exit 0.
-- [ ] [AI] `npx nx run rhino-cli-rust:test:quick` and `npx nx run rhino-cli-go:test:quick` are
+  - _Done 2026-06-06. Both builds exit 0 (verified above; Go binary present)._
+- [x] [AI] `npx nx run rhino-cli-rust:test:quick` and `npx nx run rhino-cli-go:test:quick` are
       both green; baselines recorded.
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs` exits 0.
-- [ ] [AI] Provisional per-tree link, anchor, and prose-heading backlogs recorded in phase notes.
+  - _Done 2026-06-06. Rust 527 passed / 0 failed; Go 14/14 packages ok. Baselines recorded in items above._
+- [x] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh docs` exits 0.
+  - _Done 2026-06-06. PASS — 31 cases byte-identical, exit 0._
+- [x] [AI] Provisional per-tree link, anchor, and prose-heading backlogs recorded in phase notes.
+  - _Done 2026-06-06. Link backlog (323 links, 27 anchored, per tree), prose-heading candidates (60+ files, fence false-positives noted), and `.claude/`/`.opencode/` violation proof recorded in the items above and the Phase 0 notes below._
 
 > **Pause Safety**: only the toolchain was verified and baselines recorded — no source changed.
 > Safe to stop indefinitely. To resume: re-run both `test:quick` targets and confirm they are
 > still green.
 
-**Phase 0 notes** (executor fills in): _baseline results, per-tree provisional counts._
+**Phase 0 notes** (executor fills in): Baselines 2026-06-06 — Rust test:quick 527 passed / 0
+failed; Go test:quick all 14 packages ok (docs 91.6%, git 95.0%, mermaid 95.7% coverage);
+shadow-diff docs PASS 31 cases; mermaid current-scope 0 violations + 1 warning
+(`docs/reference/system-architecture/applications.md` subgraph_density); links current-scope
+608 files / 0 broken. Provisional backlogs — relative md links (excl `plans/done/`): apps=116,
+plans=101, specs=103, libs=3 (323 total, 27 with anchors); prose-heading grep estimate: 60+
+files ≠1 H1 (mostly code-fence false positives); `.claude/`/`.opencode/` denied trees: 20 files
+≠1 H1 (allowlist need proven). No preexisting failures.
 
 ---
 
