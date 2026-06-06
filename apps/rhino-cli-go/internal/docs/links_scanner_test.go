@@ -166,6 +166,186 @@ After code block [link3](./file3.md)
 	}
 }
 
+func TestExtractLinks_NestedFences(t *testing.T) {
+	tmpDir := t.TempDir()
+	testFile := filepath.Join(tmpDir, "test.md")
+
+	// CommonMark: the ````markdown fence closes only on a backtick run of
+	// >= 4, so the inner ``` pair is fence content. Every link inside the
+	// outer block must be skipped; the link after it must be extracted.
+	content := strings.Join([]string{
+		"# Test",
+		"",
+		"Before [outside1](./before.md)",
+		"",
+		"````markdown",
+		"[inside outer](./outer.md)",
+		"```json",
+		"[inside inner](./inner.md)",
+		"```",
+		"[still inside outer](./still-outer.md)",
+		"````",
+		"",
+		"After [outside2](./after.md)",
+		"",
+	}, "\n")
+
+	if err := os.WriteFile(testFile, []byte(content), 0644); err != nil {
+		t.Fatalf("Failed to create test file: %v", err)
+	}
+
+	links, err := ExtractLinks(testFile)
+	if err != nil {
+		t.Fatalf("ExtractLinks() error = %v", err)
+	}
+
+	if len(links) != 2 {
+		t.Errorf("ExtractLinks() found %d links, want 2", len(links))
+		for _, link := range links {
+			t.Logf("  Found: %s at line %d", link.URL, link.LineNumber)
+		}
+	}
+
+	foundURLs := make(map[string]bool)
+	for _, link := range links {
+		foundURLs[link.URL] = true
+	}
+
+	if !foundURLs["./before.md"] {
+		t.Error("Expected to find ./before.md (before nested block)")
+	}
+	if !foundURLs["./after.md"] {
+		t.Error("Expected to find ./after.md (after nested block)")
+	}
+	for _, inside := range []string{"./outer.md", "./inner.md", "./still-outer.md"} {
+		if foundURLs[inside] {
+			t.Errorf("Should not find %s (inside nested fenced block)", inside)
+		}
+	}
+}
+
+func TestExtractLinks_IndentedFencesInsideListItems(t *testing.T) {
+	tmpDir := t.TempDir()
+	testFile := filepath.Join(tmpDir, "test.md")
+
+	// Deliberate CommonMark deviation: Prettier indents fences inside
+	// nested list items by 4-7 spaces. The flat tracker accepts ANY
+	// leading whitespace on opening AND closing fences so the fence body
+	// (e.g. example markdown containing link syntax) never produces false
+	// link extractions. Regression case from
+	// repo-governance/workflows/plan/plan-execution.md:524.
+	content := strings.Join([]string{
+		"# Test",
+		"",
+		"Before [outside1](./before.md)",
+		"",
+		"1. List item:",
+		"",
+		"   - Nested item:",
+		"",
+		"     ```markdown",
+		"     [inside indented fence](./inside.md)",
+		"     ```",
+		"",
+		"After [outside2](./after.md)",
+		"",
+	}, "\n")
+
+	if err := os.WriteFile(testFile, []byte(content), 0644); err != nil {
+		t.Fatalf("Failed to create test file: %v", err)
+	}
+
+	links, err := ExtractLinks(testFile)
+	if err != nil {
+		t.Fatalf("ExtractLinks() error = %v", err)
+	}
+
+	if len(links) != 2 {
+		t.Errorf("ExtractLinks() found %d links, want 2", len(links))
+		for _, link := range links {
+			t.Logf("  Found: %s at line %d", link.URL, link.LineNumber)
+		}
+	}
+
+	foundURLs := make(map[string]bool)
+	for _, link := range links {
+		foundURLs[link.URL] = true
+	}
+
+	if !foundURLs["./before.md"] {
+		t.Error("Expected to find ./before.md (before indented block)")
+	}
+	if !foundURLs["./after.md"] {
+		t.Error("Expected to find ./after.md (after indented block)")
+	}
+	if foundURLs["./inside.md"] {
+		t.Error("Should not find ./inside.md (inside indented fenced block)")
+	}
+}
+
+func TestExtractLinks_TildeFences(t *testing.T) {
+	tmpDir := t.TempDir()
+	testFile := filepath.Join(tmpDir, "test.md")
+
+	// ~~~ fences are now recognised (aligned with CollectATXHeadings), and
+	// a ``` line inside a ~~~ fence is content, not a closer — and vice
+	// versa.
+	content := strings.Join([]string{
+		"# Test",
+		"",
+		"Before [outside1](./before.md)",
+		"",
+		"~~~",
+		"[inside tilde](./tilde.md)",
+		"```",
+		"[still inside tilde](./still-tilde.md)",
+		"```",
+		"~~~",
+		"",
+		"```",
+		"~~~",
+		"[inside backtick](./backtick.md)",
+		"~~~",
+		"```",
+		"",
+		"After [outside2](./after.md)",
+		"",
+	}, "\n")
+
+	if err := os.WriteFile(testFile, []byte(content), 0644); err != nil {
+		t.Fatalf("Failed to create test file: %v", err)
+	}
+
+	links, err := ExtractLinks(testFile)
+	if err != nil {
+		t.Fatalf("ExtractLinks() error = %v", err)
+	}
+
+	if len(links) != 2 {
+		t.Errorf("ExtractLinks() found %d links, want 2", len(links))
+		for _, link := range links {
+			t.Logf("  Found: %s at line %d", link.URL, link.LineNumber)
+		}
+	}
+
+	foundURLs := make(map[string]bool)
+	for _, link := range links {
+		foundURLs[link.URL] = true
+	}
+
+	if !foundURLs["./before.md"] {
+		t.Error("Expected to find ./before.md (before tilde block)")
+	}
+	if !foundURLs["./after.md"] {
+		t.Error("Expected to find ./after.md (after both blocks)")
+	}
+	for _, inside := range []string{"./tilde.md", "./still-tilde.md", "./backtick.md"} {
+		if foundURLs[inside] {
+			t.Errorf("Should not find %s (inside fenced block)", inside)
+		}
+	}
+}
+
 func TestExtractLinksAngleBrackets(t *testing.T) {
 	tmpDir := t.TempDir()
 	testFile := filepath.Join(tmpDir, "test.md")

@@ -32,25 +32,21 @@ type ATXHeading struct {
 //
 // Lines inside fenced code blocks (``` or ~~~) are ignored; trailing closing
 // hashes are stripped; up to three leading spaces are tolerated per
-// CommonMark.
+// CommonMark. Fence state is tracked with CommonMark close semantics (same
+// char, >= opening length, no info string) via fenceTracker — see fences.go.
 func CollectATXHeadings(content string) []ATXHeading {
 	var headings []ATXHeading
-	inCodeBlock := false
+	var fences fenceTracker
 
 	for idx, line := range strings.Split(content, "\n") {
 		line = strings.TrimSuffix(line, "\r")
-		trimmed := strings.TrimLeftFunc(line, unicode.IsSpace)
 
-		// Fence toggle. Unlike ExtractLinks (which keeps the historical
-		// ```-only check), heading collection also recognises `~~~` fences so
-		// anchors inside tilde blocks are ignored.
-		if strings.HasPrefix(trimmed, "```") || strings.HasPrefix(trimmed, "~~~") {
-			inCodeBlock = !inCodeBlock
+		// Skip fence delimiter lines and fence content.
+		if fences.observe(line) {
 			continue
 		}
-		if inCodeBlock {
-			continue
-		}
+
+		trimmed := strings.TrimLeftFunc(line, unicode.IsSpace)
 
 		// CommonMark tolerates up to three leading spaces before the hashes.
 		indent := len(line) - len(trimmed)

@@ -8,6 +8,7 @@ use anyhow::Error;
 use regex::Regex;
 use walkdir::WalkDir;
 
+use super::fences::FenceTracker;
 use super::types::{LinkInfo, ScanOptions};
 
 /// Matches markdown links: `[text](url)`. Mirrors Go `linkRegex`.
@@ -166,20 +167,17 @@ pub fn extract_links(file_path: &Path) -> Result<Vec<LinkInfo>, Error> {
     let reader = io::BufReader::new(file);
 
     let mut links = Vec::new();
-    let mut in_code_block = false;
+    let mut fences = FenceTracker::new();
 
     for (idx, line) in reader.lines().enumerate() {
         let line = line?;
         let line_number = idx + 1;
 
-        // Track code block boundaries.
-        // Mirrors Go: strings.HasPrefix(strings.TrimSpace(line), "```").
-        if line.trim().starts_with("```") {
-            in_code_block = !in_code_block;
-            continue;
-        }
-
-        if in_code_block {
+        // Skip fenced code (``` and ~~~) using CommonMark open/close pairing
+        // (see `super::fences`). This replaced the historical ```-only naive
+        // toggle (shared with the Go scanner, fixed identically in parallel)
+        // which desynced on nested example fences and extracted false links.
+        if fences.consume_line(&line) {
             continue;
         }
 
@@ -358,6 +356,34 @@ mod tests {
         assert_eq!(links[1].url, "#section");
         assert_eq!(links[1].line_number, 6);
         assert!(links[1].is_relative);
+    }
+
+    #[test]
+    fn extract_links_skips_links_inside_nested_fences() {
+        // A ````markdown example fence containing inner ``` fences: nothing
+        // inside the outer fence is a real link. The naive toggle desyncs on
+        // the inner ``` lines and would extract the link on line 5.
+        let dir = tempfile::tempdir().unwrap();
+        let f = dir.path().join("nested.md");
+        let content = "[before](./real.md)\n\n````markdown\n```json\n[inside](./missing.md)\n```\n````\n\n[after](./other.md)\n";
+        std::fs::write(&f, content).unwrap();
+        let links = extract_links(&f).unwrap();
+        let urls: Vec<&str> = links.iter().map(|l| l.url.as_str()).collect();
+        assert_eq!(urls, vec!["./real.md", "./other.md"]);
+        assert_eq!(links[1].line_number, 9);
+    }
+
+    #[test]
+    fn extract_links_recognizes_tilde_fences() {
+        // ~~~ opens a fence; a ``` line inside it is content, not a closer.
+        // The naive ```-only toggle would extract both inner links.
+        let dir = tempfile::tempdir().unwrap();
+        let f = dir.path().join("tilde.md");
+        let content = "~~~text\n[inside](./missing.md)\n```\n[also inside](./missing-too.md)\n```\n~~~\n\n[after](./real.md)\n";
+        std::fs::write(&f, content).unwrap();
+        let links = extract_links(&f).unwrap();
+        let urls: Vec<&str> = links.iter().map(|l| l.url.as_str()).collect();
+        assert_eq!(urls, vec!["./real.md"]);
     }
 
     #[test]

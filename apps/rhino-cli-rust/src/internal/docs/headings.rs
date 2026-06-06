@@ -9,6 +9,8 @@ use std::sync::LazyLock;
 
 use regex::Regex;
 
+use super::fences::FenceTracker;
+
 /// Characters removed by GFM slugging: everything OUTSIDE Unicode letters,
 /// Unicode digits, underscore, hyphen, and space. Mirrors `github-slugger` v2.
 static NON_SLUG_CHARS: LazyLock<Regex> =
@@ -17,26 +19,20 @@ static NON_SLUG_CHARS: LazyLock<Regex> =
 /// Parses ATX headings (`#` through `######`) from markdown content.
 ///
 /// Returns `(line_number, level, title)` tuples with 1-based line numbers.
-/// Lines inside fenced code blocks (` ``` ` or `~~~`) are ignored; trailing
-/// closing hashes are stripped; up to three leading spaces are tolerated per
+/// Lines inside fenced code blocks (` ``` ` or `~~~`, tracked per CommonMark
+/// open/close pairing — see [`super::fences`]) are ignored; trailing closing
+/// hashes are stripped; up to three leading spaces are tolerated per
 /// CommonMark.
 pub fn collect_atx_headings(content: &str) -> Vec<(usize, usize, String)> {
     let mut headings = Vec::new();
-    let mut in_code_block = false;
+    let mut fences = FenceTracker::new();
 
     for (idx, line) in content.lines().enumerate() {
-        let trimmed = line.trim_start();
+        if fences.consume_line(line) {
+            continue;
+        }
 
-        // Fence toggle. Unlike `scanner::extract_links` (which mirrors the Go
-        // scanner's ```-only check byte-for-byte), heading collection also
-        // recognises `~~~` fences so anchors inside tilde blocks are ignored.
-        if trimmed.starts_with("```") || trimmed.starts_with("~~~") {
-            in_code_block = !in_code_block;
-            continue;
-        }
-        if in_code_block {
-            continue;
-        }
+        let trimmed = line.trim_start();
 
         // CommonMark tolerates up to three leading spaces before the hashes.
         let indent = line.len() - trimmed.len();
@@ -151,5 +147,42 @@ mod tests {
             headings,
             vec![(1, 1, "Real".to_string()), (7, 2, "Another".to_string())]
         );
+    }
+
+    #[test]
+    fn collect_atx_headings_handles_nested_fences() {
+        // A 4-backtick outer fence containing a 3-backtick inner fence: per
+        // CommonMark only a >=4-backtick line closes the outer fence, so every
+        // heading between lines 3 and 7 is fence content. The naive toggle
+        // desyncs on the inner ``` lines and would parse line 5.
+        let content =
+            "# Real\n\n````markdown\n```json\n## Looks like heading\n```\n````\n\n## After\n";
+        let headings = collect_atx_headings(content);
+        assert_eq!(
+            headings,
+            vec![(1, 1, "Real".to_string()), (9, 2, "After".to_string())]
+        );
+    }
+
+    #[test]
+    fn collect_atx_headings_backtick_does_not_close_tilde_fence() {
+        let content = "~~~text\n```\n# inside tilde\n```\n~~~\n\n# Real\n";
+        let headings = collect_atx_headings(content);
+        assert_eq!(headings, vec![(7, 1, "Real".to_string())]);
+    }
+
+    #[test]
+    fn collect_atx_headings_tilde_does_not_close_backtick_fence() {
+        let content = "```text\n~~~\n# inside backticks\n~~~\n```\n\n# Real\n";
+        let headings = collect_atx_headings(content);
+        assert_eq!(headings, vec![(7, 1, "Real".to_string())]);
+    }
+
+    #[test]
+    fn collect_atx_headings_short_run_does_not_close_longer_fence() {
+        // ``` (3) cannot close a ```` (4) fence; the later ```` does.
+        let content = "````\n```\n# inside\n````\n# Real\n";
+        let headings = collect_atx_headings(content);
+        assert_eq!(headings, vec![(5, 1, "Real".to_string())]);
     }
 }

@@ -8,6 +8,7 @@
 //! and placeholder links are skipped.
 
 pub mod categorizer;
+pub mod fences;
 pub mod heading_hierarchy;
 pub mod headings;
 pub mod reporter;

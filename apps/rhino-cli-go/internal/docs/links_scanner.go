@@ -155,23 +155,19 @@ func ExtractLinks(filePath string) ([]LinkInfo, error) {
 	var links []LinkInfo
 	scanner := bufio.NewScanner(file)
 	lineNumber := 0
-	inCodeBlock := false
+	var fences fenceTracker
 
 	for scanner.Scan() {
 		lineNumber++
 		line := scanner.Text()
 
-		// Fence toggle. Deliberately recognises only ``` fences — the
-		// historical link-checker behaviour, kept for cross-repo output
-		// parity. CollectATXHeadings (headings.go) additionally recognises
-		// `~~~` fences; see the divergence note there.
-		if strings.HasPrefix(strings.TrimSpace(line), "```") {
-			inCodeBlock = !inCodeBlock
-			continue
-		}
-
-		// Skip lines inside code blocks
-		if inCodeBlock {
+		// Skip fence delimiter lines and fence content. Fence state uses
+		// CommonMark close semantics (same char, >= opening length, no
+		// info string) and recognises both ``` and ~~~ fences — aligned
+		// with CollectATXHeadings (headings.go) via fenceTracker
+		// (fences.go). This deliberately replaces the historical ```-only
+		// naive toggle; the Rust twin carries the identical change.
+		if fences.observe(line) {
 			continue
 		}
 
