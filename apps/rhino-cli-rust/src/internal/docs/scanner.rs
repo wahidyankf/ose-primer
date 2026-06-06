@@ -29,7 +29,13 @@ pub fn get_markdown_files(opts: &ScanOptions) -> Result<Vec<PathBuf>, Error> {
 }
 
 /// Filters out files matching any skip path (relative-prefix match). Mirrors Go `filterSkipPaths`.
-fn filter_skip_paths(files: Vec<PathBuf>, repo_root: &Path, skip_paths: &[String]) -> Vec<PathBuf> {
+/// Shared with the mermaid `--exclude` filter (`commands::docs::filter_mermaid_excluded`)
+/// so both gates use one prefix implementation per CLI (plan DD-2).
+pub(crate) fn filter_skip_paths(
+    files: Vec<PathBuf>,
+    repo_root: &Path,
+    skip_paths: &[String],
+) -> Vec<PathBuf> {
     if skip_paths.is_empty() {
         return files;
     }
@@ -99,8 +105,10 @@ fn get_staged_markdown_files(repo_root: &Path) -> Result<Vec<PathBuf>, Error> {
 
 /// Standardized cross-repo noise-skip set: directory NAMES dropped from the
 /// repo-wide walk wherever they appear, plus `.git`. Identical across the
-/// three aligned repos (ose-public / ose-infra / ose-primer).
-const NOISE_DIRS: &[&str] = &[
+/// three aligned repos (ose-public / ose-infra / ose-primer). This is the
+/// ONE definition per CLI (plan DD-3), consumed only by
+/// `get_all_markdown_files` below.
+pub(crate) const NOISE_DIRS: &[&str] = &[
     "node_modules",
     "dist",
     "target",
@@ -117,16 +125,20 @@ const NOISE_DIRS: &[&str] = &[
     ".git",
 ];
 
-/// Returns all markdown files via a repo-wide walk that skips the
-/// standardized noise-skip set by directory name. Mirrors the planned Go
-/// `getAllMarkdownFiles` repo-wide walker. Shared with the heading-hierarchy
-/// validator (`super::heading_hierarchy`) — the walker has exactly one
-/// definition per CLI.
-pub(crate) fn get_all_markdown_files(repo_root: &Path) -> Vec<PathBuf> {
+/// Returns all `*.md` files under `root` (any directory, or a single file —
+/// the walk root at depth 0 is never filtered) via a walk that skips the
+/// standardized noise-skip set by directory name. Mirrors Go
+/// `getAllMarkdownFiles` (`links_scanner.go`). The ONE walker definition per
+/// CLI (plan DD-3), shared by the links gate, the heading-hierarchy validator
+/// (`super::heading_hierarchy`), and the mermaid command walkers
+/// (`commands::docs::{collect_md_files, collect_md_default_dirs}`). The Go
+/// twin still keeps a separate cmd-level `walkMDFiles` with the historical
+/// three-dir skip set; convergence on this shared walker is planned there.
+pub(crate) fn get_all_markdown_files(root: &Path) -> Vec<PathBuf> {
     let mut files = Vec::new();
 
     // filepath.Walk yields lexical order; WalkDir.sort_by_file_name matches it.
-    for entry in WalkDir::new(repo_root)
+    for entry in WalkDir::new(root)
         .sort_by_file_name()
         .into_iter()
         .filter_entry(|e| {

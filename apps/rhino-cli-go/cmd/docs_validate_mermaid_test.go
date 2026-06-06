@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strings"
 	"testing"
 
@@ -31,6 +32,7 @@ func (s *validateMermaidUnitSteps) before(_ context.Context, _ *godog.Scenario) 
 	output = "text"
 	validateMermaidStagedOnly = false
 	validateMermaidChangedOnly = false
+	validateMermaidExclude = nil
 	validateMermaidMaxLabelLen = 30
 	validateMermaidMaxWidth = 3
 	validateMermaidMaxDepth = 5
@@ -647,4 +649,152 @@ func (s *validateMermaidUnitSteps) aMarkdownFileContainingMermaidBlockWithExactl
 		return mermaid.ValidationResult{}
 	}
 	return nil
+}
+
+// ---------------------------------------------------------------------------
+// Phase 3 TDD RED (plan DD-2/DD-3): repo-wide default scan + --exclude.
+//
+// These tests mirror the Rust twin's canonical spec in
+// `apps/rhino-cli-rust/src/commands/docs.rs`
+// (collect_md_default_dirs_walks_repo_wide,
+// default_scan_skips_standardized_noise_set,
+// filter_mermaid_excluded_drops_excluded_prefixes) so the Go GREEN step
+// converges on identical behavior.
+// ---------------------------------------------------------------------------
+
+// writeMermaidFixture writes content to root/rel, creating parent directories.
+func writeMermaidFixture(t *testing.T, root, rel, content string) {
+	t.Helper()
+	path := filepath.Join(root, rel)
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		t.Fatalf("mkdir %s: %v", rel, err)
+	}
+	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+		t.Fatalf("write %s: %v", rel, err)
+	}
+}
+
+// --- (a) repo-wide default scan ---
+
+func TestCollectMDDefaultDirs_WalksRepoWide(t *testing.T) {
+	// Plan DD-3: the default mermaid scan must be a repo-wide walk, not the
+	// historical four-dir set (docs/repo-governance/.claude/plans). Files
+	// under trees OUTSIDE that set must be collected.
+	root := t.TempDir()
+	writeMermaidFixture(t, root, filepath.Join("specs", "apps", "spec.md"), "x\n")
+	writeMermaidFixture(t, root, filepath.Join("libs", "my-lib", "README.md"), "y\n")
+
+	files, err := collectMDDefaultDirs(root)
+	if err != nil {
+		t.Fatalf("collectMDDefaultDirs() error: %v", err)
+	}
+	if !slices.Contains(files, filepath.Join(root, "specs", "apps", "spec.md")) {
+		t.Errorf("repo-wide scan must collect specs/ markdown, got %v", files)
+	}
+	if !slices.Contains(files, filepath.Join(root, "libs", "my-lib", "README.md")) {
+		t.Errorf("repo-wide scan must collect libs/ markdown, got %v", files)
+	}
+}
+
+// --- (b) standardized noise-skip set ---
+
+func TestCollectMDDefaultDirs_SkipsStandardizedNoiseSet(t *testing.T) {
+	// Plan DD-3: the walk must skip the full standardized cross-repo
+	// noise-skip set by directory name (same set as the links walker's
+	// noiseDirs), not just the historical .next/node_modules/.git trio. The
+	// `worktrees` skip is non-negotiable: without it a repo-wide walk
+	// re-scans entire repo copies. The noise list is identical to the Rust
+	// twin's fixture; specs/keep.md (outside the historical four-dir set) is
+	// added so this test fails under the old enumerating implementation and
+	// proves the skip happens on a genuinely repo-wide walk.
+	noiseDirNames := []string{
+		"node_modules",
+		"dist",
+		"target",
+		".next",
+		"coverage",
+		"generated-reports",
+		"local-temp",
+		"archived",
+		"apps-labs",
+		"worktrees",
+		".terraform",
+		"generated-contracts",
+		".nx",
+		".git",
+	}
+	root := t.TempDir()
+	for _, noise := range noiseDirNames {
+		writeMermaidFixture(t, root, filepath.Join(noise, "skip.md"), "skip\n")
+	}
+	writeMermaidFixture(t, root, filepath.Join("docs", "keep.md"), "keep\n")
+	writeMermaidFixture(t, root, filepath.Join("specs", "keep.md"), "keep\n")
+
+	files, err := collectMDDefaultDirs(root)
+	if err != nil {
+		t.Fatalf("collectMDDefaultDirs() error: %v", err)
+	}
+	for _, f := range files {
+		rel, relErr := filepath.Rel(root, f)
+		if relErr != nil {
+			t.Fatalf("rel(%s): %v", f, relErr)
+		}
+		for _, comp := range strings.Split(rel, string(filepath.Separator)) {
+			if slices.Contains(noiseDirNames, comp) {
+				t.Errorf("noise dir %s leaked into the walk: %v", comp, files)
+			}
+		}
+	}
+	if len(files) != 2 {
+		t.Errorf("expected exactly docs/keep.md and specs/keep.md, got %d: %v", len(files), files)
+	}
+	if !slices.Contains(files, filepath.Join(root, "docs", "keep.md")) {
+		t.Errorf("docs/keep.md missing from walk: %v", files)
+	}
+	if !slices.Contains(files, filepath.Join(root, "specs", "keep.md")) {
+		t.Errorf("specs/keep.md missing from walk: %v", files)
+	}
+}
+
+// --- (c) --exclude prefix filtering ---
+
+func TestFilterMermaidExcluded_DropsExcludedPrefixes(t *testing.T) {
+	// Plan DD-2: `--exclude plans/done` semantics — files whose
+	// repo-relative path starts with an excluded prefix (raw or
+	// trailing-slash form) are dropped from the collected set; all other
+	// files survive in order.
+	root := "/repo"
+
+	files := []string{
+		"/repo/plans/done/old.md",
+		"/repo/plans/in-progress/cur.md",
+		"/repo/docs/a.md",
+	}
+	got := filterMermaidExcluded(root, files, []string{"plans/done"})
+	want := []string{
+		"/repo/plans/in-progress/cur.md",
+		"/repo/docs/a.md",
+	}
+	if !slices.Equal(got, want) {
+		t.Errorf("exclude plans/done: got %v, want %v", got, want)
+	}
+
+	// Trailing-slash exclude form behaves identically (clean-path parity
+	// with the links filterSkipPaths).
+	files = []string{
+		"/repo/plans/done/old.md",
+		"/repo/docs/a.md",
+	}
+	got = filterMermaidExcluded(root, files, []string{"plans/done/"})
+	want = []string{"/repo/docs/a.md"}
+	if !slices.Equal(got, want) {
+		t.Errorf("exclude plans/done/: got %v, want %v", got, want)
+	}
+
+	// Empty exclude list keeps everything.
+	files = []string{"/repo/docs/a.md"}
+	got = filterMermaidExcluded(root, files, nil)
+	if !slices.Equal(got, files) {
+		t.Errorf("empty exclude: got %v, want %v", got, files)
+	}
 }

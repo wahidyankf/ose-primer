@@ -13,7 +13,7 @@ use clap::Args;
 
 use crate::internal::cliout::OutputFormat;
 use crate::internal::docs::{
-    heading_hierarchy, reporter as link_reporter, types::ScanOptions, validator,
+    heading_hierarchy, reporter as link_reporter, scanner, types::ScanOptions, validator,
 };
 use crate::internal::git;
 use crate::internal::mermaid::{
@@ -122,7 +122,8 @@ rhino-cli docs validate-mermaid -o json\n\n  \
 # Set custom thresholds\n  \
 rhino-cli docs validate-mermaid --max-label-len 20 --max-width 4\n\n\
 Flags:\n      \
---changed-only             only validate files changed since upstream (pre-push use)\n  \
+--changed-only             only validate files changed since upstream (pre-push use)\n      \
+--exclude stringArray      path prefixes to exclude from validation (repeatable)\n  \
 -h, --help                     help for validate-mermaid\n      \
 --max-depth int            depth threshold for the both-exceeded warning: when span>max-width AND depth>max-depth, emit warning not error\n      \
 --max-label-len int        max characters in a node label (default 30 ~ Mermaid wrappingWidth:200px at 16px font) (default 30)\n      \
@@ -147,6 +148,9 @@ pub struct ValidateMermaidArgs {
     /// Only validate files changed since upstream (pre-push use).
     #[arg(long = "changed-only")]
     pub changed_only: bool,
+    /// Path prefixes to exclude from validation (repeatable).
+    #[arg(long = "exclude", value_name = "PATH")]
+    pub exclude: Vec<String>,
     /// Max characters in a node label.
     #[arg(long = "max-label-len", default_value_t = 30)]
     pub max_label_len: i64,
@@ -183,6 +187,9 @@ pub fn run_validate_mermaid(
     } else {
         collect_md_default_dirs(&repo_root)
     };
+
+    // Apply `--exclude` prefix filtering to the collected set (plan DD-2).
+    let md_files = filter_mermaid_excluded(&repo_root, md_files, &args.exclude);
 
     // Extract and validate blocks.
     let mut all_blocks = Vec::new();
@@ -245,7 +252,7 @@ fn get_mermaid_staged_files(repo_root: &std::path::Path) -> Result<Vec<PathBuf>,
 }
 
 /// Returns `*.md` files changed since upstream. Mirrors Go `getMermaidChangedFiles`.
-/// On no-upstream or empty result, falls back to the default directory scan.
+/// On no-upstream or empty result, falls back to the default repo-wide scan.
 fn get_mermaid_changed_files(repo_root: &std::path::Path) -> Result<Vec<PathBuf>, Error> {
     let output = std::process::Command::new("git")
         .arg("-C")
@@ -286,6 +293,10 @@ fn filter_md_paths(repo_root: &std::path::Path, rel_paths: &[String]) -> Vec<Pat
 }
 
 /// Walks given paths (files or dirs) collecting `*.md`. Mirrors Go `collectMDFiles`.
+/// Delegates to the links scanner's walker (`scanner::get_all_markdown_files`)
+/// — the single noise-skipping walk definition per CLI (plan DD-3). A file
+/// path yields itself at depth 0 (never filtered), matching the previous
+/// per-command walker byte-for-byte.
 fn collect_md_files(repo_root: &std::path::Path, paths: &[String]) -> Result<Vec<PathBuf>, Error> {
     let mut files = Vec::new();
     for p in paths {
@@ -294,54 +305,33 @@ fn collect_md_files(repo_root: &std::path::Path, paths: &[String]) -> Result<Vec
         } else {
             repo_root.join(p)
         };
-        files.extend(walk_md_files(&abs));
+        files.extend(scanner::get_all_markdown_files(&abs));
     }
     Ok(files)
 }
 
-/// Scans the default directories plus root `*.md`. Mirrors Go `collectMDDefaultDirs`.
+/// Scans the whole repository for `*.md` files (plan DD-3): a repo-wide walk
+/// skipping the standardized noise-skip set by directory name, replacing the
+/// historical four-dir default (docs/repo-governance/.claude/plans) plus root
+/// glob. Delegates to `scanner::get_all_markdown_files`, the one walker per
+/// CLI. Mirrors the planned Go `collectMDDefaultDirs` repo-wide twin (the Go
+/// cmd-level `walkMDFiles` still carries the historical three-dir skip set
+/// until it converges on the shared walker).
 fn collect_md_default_dirs(repo_root: &std::path::Path) -> Vec<PathBuf> {
-    let mut files = Vec::new();
-    for dir in ["docs", "repo-governance", ".claude", "plans"] {
-        let dir_path = repo_root.join(dir);
-        files.extend(walk_md_files(&dir_path));
-    }
-    // Root *.md files (filepath.Glob — lexical).
-    let mut root_mds: Vec<PathBuf> = std::fs::read_dir(repo_root)
-        .into_iter()
-        .flatten()
-        .filter_map(std::result::Result::ok)
-        .map(|e| e.path())
-        .filter(|p| p.is_file() && p.to_string_lossy().ends_with(".md"))
-        .collect();
-    root_mds.sort();
-    files.extend(root_mds);
-    files
+    scanner::get_all_markdown_files(repo_root)
 }
 
-/// Returns all `*.md` files under `dir` recursively, skipping build-artifact
-/// dirs (`.next`, `node_modules`, `.git`). Mirrors Go `walkMDFiles`.
-fn walk_md_files(dir: &std::path::Path) -> Vec<PathBuf> {
-    use walkdir::WalkDir;
-    let mut files = Vec::new();
-    for entry in WalkDir::new(dir)
-        .sort_by_file_name()
-        .into_iter()
-        .filter_entry(|e| {
-            !(e.file_type().is_dir()
-                && matches!(
-                    e.file_name().to_str(),
-                    Some(".next" | "node_modules" | ".git")
-                ))
-        })
-        .filter_map(std::result::Result::ok)
-    {
-        let path = entry.path();
-        if entry.file_type().is_file() && path.to_string_lossy().ends_with(".md") {
-            files.push(path.to_path_buf());
-        }
-    }
-    files
+/// Applies `--exclude` prefix semantics to the collected mermaid file list
+/// (plan DD-2): drops files whose repo-root-relative path starts with any
+/// excluded prefix (raw or trailing-slash-cleaned). Delegates to the links
+/// walker's `filter_skip_paths` so both gates share one prefix
+/// implementation per CLI.
+fn filter_mermaid_excluded(
+    repo_root: &std::path::Path,
+    files: Vec<PathBuf>,
+    exclude: &[String],
+) -> Vec<PathBuf> {
+    scanner::filter_skip_paths(files, repo_root, exclude)
 }
 
 // ---------------------------------------------------------------------------
@@ -489,6 +479,7 @@ mod tests {
             paths: vec![],
             staged_only: false,
             changed_only: false,
+            exclude: vec![],
             max_label_len: 30,
             max_width: 4,
             max_depth: 0,
@@ -497,6 +488,7 @@ mod tests {
         assert_eq!(args.max_label_len, 30);
         assert_eq!(args.max_width, 4);
         assert_eq!(args.max_subgraph_nodes, 6);
+        assert!(args.exclude.is_empty());
     }
 
     #[test]
@@ -521,15 +513,119 @@ mod tests {
     }
 
     #[test]
-    fn walk_md_files_skips_build_dirs() {
+    fn default_scan_skips_build_dirs() {
         let dir = tempfile::tempdir().unwrap();
         let root = dir.path();
         std::fs::create_dir_all(root.join("node_modules")).unwrap();
         std::fs::write(root.join("node_modules/x.md"), "skip\n").unwrap();
         std::fs::write(root.join("keep.md"), "keep\n").unwrap();
-        let files = walk_md_files(root);
+        let files = collect_md_default_dirs(root);
         assert_eq!(files.len(), 1);
         assert!(files[0].ends_with("keep.md"));
+    }
+
+    #[test]
+    fn collect_md_default_dirs_walks_repo_wide() {
+        // Plan DD-3: the default mermaid scan must be a repo-wide walk, not
+        // the historical four-dir set (docs/repo-governance/.claude/plans).
+        // Files under trees OUTSIDE that set must be collected.
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        std::fs::create_dir_all(root.join("specs/apps")).unwrap();
+        std::fs::write(root.join("specs/apps/spec.md"), "x\n").unwrap();
+        std::fs::create_dir_all(root.join("libs/my-lib")).unwrap();
+        std::fs::write(root.join("libs/my-lib/README.md"), "y\n").unwrap();
+
+        let files = collect_md_default_dirs(root);
+        assert!(
+            files.iter().any(|p| p.ends_with("specs/apps/spec.md")),
+            "repo-wide scan must collect specs/ markdown, got {files:?}"
+        );
+        assert!(
+            files.iter().any(|p| p.ends_with("libs/my-lib/README.md")),
+            "repo-wide scan must collect libs/ markdown, got {files:?}"
+        );
+    }
+
+    #[test]
+    fn default_scan_skips_standardized_noise_set() {
+        // Plan DD-3: the walk must skip the full standardized cross-repo
+        // noise-skip set by directory name (same set as scanner NOISE_DIRS),
+        // not just the historical .next/node_modules/.git trio. The
+        // `worktrees` skip is non-negotiable: without it a repo-wide walk
+        // re-scans entire repo copies.
+        let noise_dirs = [
+            "node_modules",
+            "dist",
+            "target",
+            ".next",
+            "coverage",
+            "generated-reports",
+            "local-temp",
+            "archived",
+            "apps-labs",
+            "worktrees",
+            ".terraform",
+            "generated-contracts",
+            ".nx",
+            ".git",
+        ];
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        for noise in noise_dirs {
+            std::fs::create_dir_all(root.join(noise)).unwrap();
+            std::fs::write(root.join(noise).join("skip.md"), "skip\n").unwrap();
+        }
+        std::fs::create_dir_all(root.join("docs")).unwrap();
+        std::fs::write(root.join("docs/keep.md"), "keep\n").unwrap();
+
+        let files = collect_md_default_dirs(root);
+        for noise in noise_dirs {
+            assert!(
+                !files
+                    .iter()
+                    .any(|p| p.components().any(|c| c.as_os_str() == noise)),
+                "noise dir {noise} leaked into the walk: {files:?}"
+            );
+        }
+        assert_eq!(files.len(), 1, "only docs/keep.md expected, got {files:?}");
+        assert!(files[0].ends_with("docs/keep.md"));
+    }
+
+    #[test]
+    fn filter_mermaid_excluded_drops_excluded_prefixes() {
+        // Plan DD-2: `--exclude plans/done` semantics — files whose
+        // repo-relative path starts with an excluded prefix (raw or
+        // trailing-slash form) are dropped from the collected set; all
+        // other files survive in order.
+        let root = std::path::Path::new("/repo");
+        let files = vec![
+            PathBuf::from("/repo/plans/done/old.md"),
+            PathBuf::from("/repo/plans/in-progress/cur.md"),
+            PathBuf::from("/repo/docs/a.md"),
+        ];
+        let out = filter_mermaid_excluded(root, files, &["plans/done".to_string()]);
+        assert_eq!(
+            out,
+            vec![
+                PathBuf::from("/repo/plans/in-progress/cur.md"),
+                PathBuf::from("/repo/docs/a.md"),
+            ]
+        );
+
+        // Trailing-slash exclude form behaves identically (clean-path parity
+        // with the links filter_skip_paths).
+        let files = vec![
+            PathBuf::from("/repo/plans/done/old.md"),
+            PathBuf::from("/repo/docs/a.md"),
+        ];
+        let out = filter_mermaid_excluded(root, files, &["plans/done/".to_string()]);
+        assert_eq!(out, vec![PathBuf::from("/repo/docs/a.md")]);
+
+        // Empty exclude list keeps everything.
+        let files = vec![PathBuf::from("/repo/docs/a.md")];
+        let out = filter_mermaid_excluded(root, files.clone(), &[]);
+        assert_eq!(out, files);
     }
 
     #[test]

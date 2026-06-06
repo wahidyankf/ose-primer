@@ -392,6 +392,60 @@ end`
 	}
 }
 
+// ---------------------------------------------------------------------------
+// Phase 3 TDD RED (plan DD-14 fix 1): pipe-labeled edges.
+//
+// Mirrors the Rust twin's canonical spec in
+// `apps/rhino-cli-rust/src/internal/mermaid/parser.rs`
+// (pipe_labeled_edge_parses_as_edge,
+// pipe_labeled_edge_target_ranked_below_source) — fixtures identical.
+// ---------------------------------------------------------------------------
+
+func TestParseDiagram_PipeLabeledEdgeParsesAsEdge(t *testing.T) {
+	// Plan DD-14 fix 1: `A -->|text| B` is standard Mermaid. The `|text|`
+	// segment after the arrow must be stripped before edge splitting so
+	// the edge survives and the target node B is extracted.
+	d, count, err := ParseDiagram(makeBlock("flowchart TD\n  A -->|text| B"))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if count != 1 {
+		t.Fatalf("count = %d, want 1", count)
+	}
+	if len(d.Edges) != 1 {
+		t.Fatalf("pipe-labeled edge must parse as an edge, got %+v", d.Edges)
+	}
+	if d.Edges[0].From != "A" || d.Edges[0].To != "B" {
+		t.Errorf("edge = %+v, want A->B", d.Edges[0])
+	}
+	foundB := false
+	for _, n := range d.Nodes {
+		if n.ID == "B" {
+			foundB = true
+			break
+		}
+	}
+	if !foundB {
+		t.Errorf("target node B must be extracted, got %+v", d.Nodes)
+	}
+}
+
+func TestParseDiagram_PipeLabeledEdgeTargetRankedBelowSource(t *testing.T) {
+	// Plan DD-14 fix 1: with the pipe-labeled edge extracted, B ranks one
+	// level below A — chain of two: span 1, depth 2 (today the dropped
+	// edge mis-ranks the diagram).
+	d, _, err := ParseDiagram(makeBlock("flowchart TD\n  A -->|yes| B"))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if got := MaxWidth(d.Nodes, d.Edges); got != 1 {
+		t.Errorf("MaxWidth = %d, want 1", got)
+	}
+	if got := Depth(d.Nodes, d.Edges); got != 2 {
+		t.Errorf("Depth = %d, want 2", got)
+	}
+}
+
 func TestParseDiagram_SubgraphHeaderNotANode(t *testing.T) {
 	source := `flowchart TD
 subgraph sg

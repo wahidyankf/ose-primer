@@ -103,18 +103,37 @@ NOTE on crud-spec-coverage corpus:
   checkout are skipped with a logged notice rather than failing the run.
 
 NOTE on docs text/markdown output:
-  The Go `docs validate-mermaid` (and validate-links) text/markdown formatters
-  group findings into a Go map and range it, so the file ordering is
+  The Go `docs validate-mermaid` (and validate-links) TEXT formatter groups
+  findings into a Go map and ranges it, so the file ordering is
   NON-DETERMINISTIC across runs whenever 2+ files have findings — the Go binary
   cannot even match itself. The Rust port emits sorted (deterministic) output.
-  The docs corpus therefore restricts text/markdown finding-cases to a SINGLE
-  file (where ordering is trivially identical) and exercises all multi-file
-  finding cases via JSON, whose slice ordering IS deterministic and matches
-  byte-for-byte. Full-corpus default runs (zero findings) are deterministic.
+  The docs corpus therefore restricts text finding-cases to a SINGLE file
+  (where ordering is trivially identical) and exercises all multi-file finding
+  cases via JSON or markdown: the mermaid JSON and MARKDOWN formatters iterate
+  the violations/warnings slices directly (discovery order), so both ARE
+  deterministic and match byte-for-byte. The live tree carries mermaid
+  findings at default thresholds (cleaned in a later phase), so repo-wide
+  default-scan cases — including -q/-v, whose suppression only applies when
+  there are NO findings — must avoid TEXT until that cleanup lands; -q/-v
+  text parity is covered by fixture-confined scans instead.
   validate-heading-hierarchy is exempt from this restriction: BOTH binaries
   emit findings in discovery order from a lexically sorted walk (Go
   filepath.WalkDir / Rust WalkDir.sort_by_file_name), so multi-file
   text/markdown finding cases are deterministic and diffable.
+
+NOTE on mermaid fixtures:
+  The pipe-labeled-edge and cyclic-diagram parser fixtures live under
+  docs/.shadow-mermaid-fixtures/ (the repo-wide walk only skips the named
+  noise dirs, not hidden dirs, so both the default scan and a positional scan
+  see them). Both fixtures are CLEAN at default thresholds (chain span 1,
+  depth 2/3), so they add no findings to the default scan — the fixture-aware
+  default-scan cases still run JSON/markdown only because the LIVE tree
+  carries findings (see NOTE on docs text/markdown output). The computed
+  span/depth is surfaced via the threshold device --max-width 0 --max-depth 1
+  (the integration-test trick), which turns the rank observation into a
+  complex_diagram warning carrying the values. The tree is created after the
+  single-file cases and deleted before the links fixtures are seeded, so no
+  other docs case ever sees it.
 
 NOTE on heading-hierarchy fixtures:
   validate-heading-hierarchy file selection is allowlist default-deny — only
@@ -379,21 +398,31 @@ corpus_docs() {
   # staged-only on a clean tree → no staged files → success, identical output.
   run_case "links staged-only"  docs validate-links --staged-only --no-color
 
-  # --- validate-mermaid: full default corpus, every format (zero findings). ---
-  for fmt in text json markdown; do
+  # --- validate-mermaid: full default corpus. The live tree has findings in --
+  # --- many files at default thresholds (cleaned in a later phase), so every --
+  # --- repo-wide / multi-finding-file case runs JSON or markdown — never ------
+  # --- text (see NOTE on docs text/markdown output). --------------------------
+  for fmt in json markdown; do
     run_case "mermaid default ${fmt}"  docs validate-mermaid -o "${fmt}" --no-color
   done
-  run_case "mermaid quiet"    docs validate-mermaid -q --no-color
-  run_case "mermaid verbose"  docs validate-mermaid -v --no-color
-  # Scoped to individual real directories (still zero findings on this corpus).
-  run_case "mermaid docs dir"        docs validate-mermaid docs --no-color
+  # -q/-v over the repo-wide scan: findings exist, so -q does NOT suppress and
+  # the text path would hit Go map ordering — exercise the flags via JSON; the
+  # text -q/-v paths are covered by the fixture-confined cases further down.
+  run_case "mermaid quiet json"    docs validate-mermaid -q -o json --no-color
+  run_case "mermaid verbose json"  docs validate-mermaid -v -o json --no-color
+  # Scoped to individual real directories. docs/ has findings in 2+ files →
+  # markdown/JSON only; repo-governance/ has findings in exactly one file and
+  # .claude/ has none, so their text scans stay deterministic.
+  run_case "mermaid docs dir md"     docs validate-mermaid docs -o markdown --no-color
   run_case "mermaid docs dir json"   docs validate-mermaid docs -o json --no-color
   run_case "mermaid repo-gov dir"    docs validate-mermaid repo-governance --no-color
   run_case "mermaid .claude dir"     docs validate-mermaid .claude --no-color
   run_case "mermaid multi dir json"  docs validate-mermaid docs repo-governance .claude -o json --no-color
-  # staged-only / changed-only on a clean tree.
-  run_case "mermaid staged-only"   docs validate-mermaid --staged-only --no-color
-  run_case "mermaid changed-only"  docs validate-mermaid --changed-only --no-color
+  # staged-only on a clean tree → no staged files → deterministic empty scan.
+  # changed-only falls back to the repo-wide default scan (no upstream delta)
+  # → findings in many files → JSON only.
+  run_case "mermaid staged-only"        docs validate-mermaid --staged-only --no-color
+  run_case "mermaid changed-only json"  docs validate-mermaid --changed-only -o json --no-color
 
   # --- Finding cases: JSON only across the whole corpus (deterministic slice ---
   # --- order). These exercise every violation/warning kind on real files. -----
@@ -427,6 +456,76 @@ corpus_docs() {
   else
     echo "shadow-diff: no single-file mermaid finding found in corpus; skipping single-file text cases" >&2
   fi
+
+  # --- Mermaid parser fixtures: pipe-labeled edge + cyclic diagram (see NOTE ---
+  # --- on mermaid fixtures). Both are CLEAN at default thresholds; the ---------
+  # --- --max-width 0 --max-depth 1 device surfaces the computed span/depth ----
+  # --- in a complex_diagram warning, proving edge parsing and back-edge -------
+  # --- removal rank identically in both binaries. ------------------------------
+  local mf_dir="docs/.shadow-mermaid-fixtures"
+  local mf_abs="${REPO_ROOT}/${mf_dir}"
+  rm -rf "${mf_abs}"
+  mkdir -p "${mf_abs}"
+  printf '# Pipe Fixture\n\n```mermaid\nflowchart TD\n    A -->|text| B\n```\n' > "${mf_abs}/pipe.md"
+  printf '# Cycle Fixture\n\n```mermaid\nflowchart TD\n    A-->B-->C-->A\n```\n' > "${mf_abs}/cycle.md"
+
+  # Pipe-labeled edge: chain A->B → span 1, depth 2. A parser that drops the
+  # |text| edge (and node B) would report different values. Single file →
+  # text/markdown ordering is trivially deterministic.
+  for fmt in text json markdown; do
+    run_case "mermaid fixture pipe ${fmt}" \
+      docs validate-mermaid "${mf_dir}/pipe.md" --max-width 0 --max-depth 1 -o "${fmt}" --no-color
+  done
+  # Cycle A->B->C->A: after back-edge removal the chain ranks span 1, depth 3.
+  # The old fallback ranked all nodes 0 (span 3).
+  for fmt in text json markdown; do
+    run_case "mermaid fixture cycle ${fmt}" \
+      docs validate-mermaid "${mf_dir}/cycle.md" --max-width 0 --max-depth 1 -o "${fmt}" --no-color
+  done
+  # Both fixture files have findings → multi-file case is JSON-only (see NOTE
+  # on docs text/markdown output).
+  run_case "mermaid fixture dir json" \
+    docs validate-mermaid "${mf_dir}" --max-width 0 --max-depth 1 -o json --no-color
+
+  # -q/-v TEXT parity, fixture-confined so output stays deterministic: the
+  # fixture dir is clean at default thresholds (quiet → empty, verbose →
+  # summary only), and the single-file threshold runs print findings under
+  # both flags (one file → trivially ordered).
+  run_case "mermaid fixture quiet"    docs validate-mermaid "${mf_dir}" -q --no-color
+  run_case "mermaid fixture verbose"  docs validate-mermaid "${mf_dir}" -v --no-color
+  run_case "mermaid fixture pipe quiet" \
+    docs validate-mermaid "${mf_dir}/pipe.md" --max-width 0 --max-depth 1 -q --no-color
+  run_case "mermaid fixture pipe verbose" \
+    docs validate-mermaid "${mf_dir}/pipe.md" --max-width 0 --max-depth 1 -v --no-color
+
+  # Repo-wide default scan with the fixtures present: live findings span many
+  # files → JSON/markdown only; the file/block counts prove the default walk
+  # picked the fixture tree up identically in both binaries.
+  run_case "mermaid default fixtures md"    docs validate-mermaid -o markdown --no-color
+  run_case "mermaid default fixtures json"  docs validate-mermaid -o json --no-color
+  # Repo-wide default scan with the threshold device: every live diagram's
+  # span/depth is computed and compared. Findings span many files → JSON only
+  # (deterministic slice order).
+  run_case "mermaid default thresholds json" \
+    docs validate-mermaid --max-width 0 --max-depth 1 -o json --no-color
+
+  # --exclude that CHANGES the result: excluding the fixture tree drops both
+  # fixture files from the default scan (file/block counts shrink vs the
+  # "default fixtures" cases above). Trailing-slash, slash-less, and repeated
+  # forms; JSON counts prove the filter took effect identically. Repo-wide →
+  # JSON/markdown only (live findings, see NOTE).
+  run_case "mermaid exclude fixture md"     docs validate-mermaid --exclude "${mf_dir}/" -o markdown --no-color
+  run_case "mermaid exclude fixture json"   docs validate-mermaid --exclude "${mf_dir}/" -o json --no-color
+  run_case "mermaid exclude noslash json"   docs validate-mermaid --exclude "${mf_dir}" -o json --no-color
+  run_case "mermaid exclude repeat json"    docs validate-mermaid --exclude "${mf_dir}/" --exclude repo-governance/ -o json --no-color
+  # Positional dir + file-prefix --exclude: only the pipe fixture remains (one
+  # finding file → text is deterministic too).
+  run_case "mermaid dir+exclude text" \
+    docs validate-mermaid "${mf_dir}" --exclude "${mf_dir}/cycle.md" --max-width 0 --max-depth 1 --no-color
+  run_case "mermaid dir+exclude json" \
+    docs validate-mermaid "${mf_dir}" --exclude "${mf_dir}/cycle.md" --max-width 0 --max-depth 1 -o json --no-color
+
+  rm -rf "${mf_abs}"
 
   # --- Anchor + --exclude fixtures: synthetic tree UNDER the repo root (the ---
   # --- repo-wide walk starts at the git root, so out-of-repo temp files are ---

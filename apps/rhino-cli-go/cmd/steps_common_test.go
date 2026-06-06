@@ -415,4 +415,12 @@ const (
 	stepMermaidFileUnderPlansLongLabel                 = `^a markdown file under plans/ containing a Mermaid flowchart with a label longer than 30 characters$`
 	stepDeveloperRunsDocsValidateMermaidNoArgs         = `^the developer runs docs validate-mermaid without path arguments$`
 	stepMermaidOutputIdentifiesFileUnderPlans          = `^the output identifies the file under plans/$`
+	stepMermaidFileOutsideOldDirsLabelTooLong          = `^a markdown file outside the docs, repo-governance, \.claude, and plans directories containing a flowchart with a node label longer than the limit$`
+	stepMermaidOutputIdentifiesViolationInThatFile     = `^the output identifies the violation in that file$`
+	stepMermaidFileLabelTooLongUnderExcludedSubdir     = `^a markdown file containing a flowchart with a node label longer than the limit placed under a subdirectory to be excluded$`
+	stepDeveloperRunsDocsValidateMermaidExcludeSubdir  = `^the developer runs docs validate-mermaid with --exclude pointing at that subdirectory$`
+	stepMermaidFilePipeLabeledEdge                     = `^a markdown file containing a flowchart where one edge uses the pipe-label syntax A -->\|text\| B$`
+	stepMermaidOutputReportsNodeBRankedBelowA          = `^the output reports that node B is ranked one level below node A$`
+	stepMermaidFileCycleABCA                           = `^a markdown file containing a flowchart with the cycle A-->B-->C-->A$`
+	stepMermaidOutputReportsSpan1Depth3                = `^the output reports the diagram has span 1 and depth 3$`
 )

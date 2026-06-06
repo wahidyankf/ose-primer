@@ -32,6 +32,13 @@ static NODE_ID_RE: LazyLock<Regex> =
 static LINK_TEXT_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"--[^->\n]+?-->").expect("valid link text regex"));
 
+/// Pipe edge-label cleanup: strips a `|label|` segment that follows an arrow
+/// token (`A -->|text| B`) so the target node survives edge splitting (plan
+/// DD-14 fix 1). Mirrors the Go `pipeLabelRe` twin.
+static PIPE_LABEL_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"(-->|---|-\.->|==>|--o|--x|<-->)\s*\|[^|]*\|").expect("valid pipe label regex")
+});
+
 /// Node shape patterns: order matters (longest/most-specific first). Each captures
 /// (nodeID, label). Mirrors Go `nodeShapePatterns`.
 static NODE_SHAPE_PATTERNS: LazyLock<Vec<Regex>> = LazyLock::new(|| {
@@ -277,13 +284,16 @@ fn collect_node_order(source: &str, node_map: &NodeMap) -> Vec<String> {
 
 /// Pulls every node ID referenced on a single line. Mirrors Go `extractAllNodeIDs`.
 fn extract_all_node_ids(line: &str) -> Vec<String> {
+    // Strip `|label|` edge labels first so the target node of `A -->|text| B`
+    // is seen by the ordering scan as well (plan DD-14 fix 1).
+    let line = PIPE_LABEL_RE.replace_all(line, "$1");
     let mut ids = Vec::new();
-    if ARROW_TOKEN_RE.is_match(line) {
-        for seg in ARROW_TOKEN_RE.split(line) {
+    if ARROW_TOKEN_RE.is_match(&line) {
+        for seg in ARROW_TOKEN_RE.split(&line) {
             ids.extend(extract_node_ids_from_segment(seg));
         }
     } else {
-        ids.extend(extract_node_ids_from_segment(line));
+        ids.extend(extract_node_ids_from_segment(&line));
     }
     ids
 }
@@ -345,6 +355,9 @@ fn extract_standalone_node(line: &str, node_map: &mut NodeMap) {
 fn extract_edge_line(line: &str, node_map: &mut NodeMap, edges: &mut Vec<Edge>) {
     // Replace `-- text -->` edge labels with `-->`.
     let line = LINK_TEXT_RE.replace_all(line, "-->");
+    // Strip `|label|` segments following arrows BEFORE edge splitting so the
+    // pipe-labeled edge keeps its target node (plan DD-14 fix 1).
+    let line = PIPE_LABEL_RE.replace_all(&line, "$1");
 
     // Split on arrow tokens — each part is one node group (possibly &-joined).
     let parts: Vec<&str> = ARROW_TOKEN_RE.split(&line).collect();
@@ -505,6 +518,38 @@ mod tests {
         assert_eq!(d.edges.len(), 1);
         assert_eq!(d.edges[0].from, "A");
         assert_eq!(d.edges[0].to, "B");
+    }
+
+    #[test]
+    fn pipe_labeled_edge_parses_as_edge() {
+        // Plan DD-14 fix 1: `A -->|text| B` is standard Mermaid. The `|text|`
+        // segment after the arrow must be stripped before edge splitting so
+        // the edge survives and the target node B is extracted.
+        let (d, _c) = parse_diagram(&block("flowchart TD\n  A -->|text| B"));
+        assert_eq!(
+            d.edges.len(),
+            1,
+            "pipe-labeled edge must parse as an edge, got {:?}",
+            d.edges
+        );
+        assert_eq!(d.edges[0].from, "A");
+        assert_eq!(d.edges[0].to, "B");
+        assert!(
+            d.nodes.iter().any(|n| n.id == "B"),
+            "target node B must be extracted, got {:?}",
+            d.nodes
+        );
+    }
+
+    #[test]
+    fn pipe_labeled_edge_target_ranked_below_source() {
+        // Plan DD-14 fix 1: with the pipe-labeled edge extracted, B ranks one
+        // level below A — chain of two: span 1, depth 2 (today the dropped
+        // edge mis-ranks the diagram).
+        use super::super::graph;
+        let (d, _c) = parse_diagram(&block("flowchart TD\n  A -->|yes| B"));
+        assert_eq!(graph::max_width(&d.nodes, &d.edges), 1);
+        assert_eq!(graph::depth(&d.nodes, &d.edges), 2);
     }
 
     #[test]

@@ -19,8 +19,14 @@ var flowchartHeaderRe = regexp.MustCompile(`(?m)^\s*(flowchart|graph)(\s+(TB|TD|
 //	subgraph WF1["Label"]— id + bracketed quoted label.
 var subgraphHeaderRe = regexp.MustCompile(`^subgraph(?:\s+([^\s\["]+))?(?:\s*\[\s*"?([^"\]]*)"?\s*\])?\s*$`)
 
-// arrowTokens is the set of substrings that identify edge lines.
+// arrowTokenRe matches the arrow tokens that identify edge lines. Mirrors the
+// Rust `ARROW_TOKEN_RE` twin.
 var arrowTokenRe = regexp.MustCompile(`-->|---|-\.->|==>|--o|--x|<-->`)
+
+// pipeLabelRe strips a `|label|` segment that follows an arrow token
+// (`A -->|text| B`) so the target node survives edge splitting (plan
+// DD-14 fix 1). Mirrors the Rust `PIPE_LABEL_RE` twin.
+var pipeLabelRe = regexp.MustCompile(`(-->|---|-\.->|==>|--o|--x|<-->)\s*\|[^|]*\|`)
 
 // Node shape regexes: order matters — longest/most-specific match first.
 // Each captures (nodeID, label).
@@ -229,6 +235,9 @@ func collectNodeOrder(source string, nodeMap map[string]string) []string {
 // extractAllNodeIDs pulls every node ID referenced on a single line.
 // '&' multi-target operator expands so every group member contributes an ID.
 func extractAllNodeIDs(line string) []string {
+	// Strip `|label|` edge labels first so the target node of `A -->|text| B`
+	// is seen by the ordering scan as well (plan DD-14 fix 1).
+	line = pipeLabelRe.ReplaceAllString(line, "$1")
 	var ids []string
 	if arrowTokenRe.MatchString(line) {
 		segments := arrowTokenRe.Split(line, -1)
@@ -298,6 +307,9 @@ func extractEdgeLine(line string, nodeMap map[string]string, edges *[]Edge) {
 	// adjacent arrow, leaving chains like "A --> B --> C" intact.
 	linkTextRe := regexp.MustCompile(`--[^->\n]+?-->`)
 	line = linkTextRe.ReplaceAllString(line, "-->")
+	// Strip `|label|` segments following arrows BEFORE edge splitting so the
+	// pipe-labeled edge keeps its target node (plan DD-14 fix 1).
+	line = pipeLabelRe.ReplaceAllString(line, "$1")
 
 	// Split on arrow tokens — each part is one node group (possibly &-joined).
 	parts := arrowTokenRe.Split(line, -1)

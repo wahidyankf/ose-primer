@@ -137,3 +137,26 @@ Feature: Mermaid Flowchart Structural Validation
     When the developer runs docs validate-mermaid without path arguments
     Then the command exits with a failure code
     And the output identifies the file under plans/
+
+  Scenario: Default scan reports a violation outside the old four-directory scope
+    Given a markdown file outside the docs, repo-governance, .claude, and plans directories containing a flowchart with a node label longer than the limit
+    When the developer runs docs validate-mermaid
+    Then the command exits with a failure code
+    And the output identifies the violation in that file
+
+  Scenario: Excluded directory tree is not scanned
+    Given a markdown file containing a flowchart with a node label longer than the limit placed under a subdirectory to be excluded
+    When the developer runs docs validate-mermaid with --exclude pointing at that subdirectory
+    Then the command exits successfully
+
+  Scenario: A pipe-labeled edge is parsed and the target node is ranked below the source
+    Given a markdown file containing a flowchart where one edge uses the pipe-label syntax A -->|text| B
+    When the developer runs docs validate-mermaid
+    Then the command exits successfully
+    And the output reports that node B is ranked one level below node A
+
+  Scenario: A cyclic diagram is ranked as a chain after back-edge removal
+    Given a markdown file containing a flowchart with the cycle A-->B-->C-->A
+    When the developer runs docs validate-mermaid
+    Then the command exits successfully
+    And the output reports the diagram has span 1 and depth 3

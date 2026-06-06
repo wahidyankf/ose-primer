@@ -2,19 +2,20 @@ package cmd
 
 import (
 	"fmt"
-	"io/fs"
 	"math"
 	"os/exec"
 	"path/filepath"
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/docs"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/mermaid"
 )
 
 var (
 	validateMermaidStagedOnly       bool
 	validateMermaidChangedOnly      bool
+	validateMermaidExclude          []string
 	validateMermaidMaxLabelLen      int
 	validateMermaidMaxWidth         int
 	validateMermaidMaxDepth         int
@@ -64,6 +65,8 @@ func init() {
 		"only validate staged files (pre-commit use)")
 	validateMermaidCmd.Flags().BoolVar(&validateMermaidChangedOnly, "changed-only", false,
 		"only validate files changed since upstream (pre-push use)")
+	validateMermaidCmd.Flags().StringArrayVar(&validateMermaidExclude, "exclude", nil,
+		"path prefixes to exclude from validation (repeatable)")
 	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxLabelLen, "max-label-len", 30,
 		"max characters in a node label (default 30 ~ Mermaid wrappingWidth:200px at 16px font)")
 	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxWidth, "max-width", 4,
@@ -104,6 +107,9 @@ func runValidateMermaid(cmd *cobra.Command, args []string) error {
 			return fmt.Errorf("failed to collect default files: %w", err)
 		}
 	}
+
+	// Apply `--exclude` prefix filtering to the collected set (plan DD-2).
+	mdFiles = filterMermaidExcluded(repoRoot, mdFiles, validateMermaidExclude)
 
 	// Extract and validate blocks.
 	var allBlocks []mermaid.MermaidBlock
@@ -185,7 +191,11 @@ func filterMDPaths(repoRoot string, relPaths []string) []string {
 	return out
 }
 
-// collectMDFiles walks given paths (files or directories) and collects *.md files.
+// collectMDFiles walks given paths (files or directories) and collects *.md
+// files. Delegates to the links scanner's walker (docs.GetAllMarkdownFiles) —
+// the single noise-skipping walk definition per CLI (plan DD-3). A file path
+// yields itself at depth 0 (never filtered), matching the previous
+// per-command walker byte-for-byte. Mirrors Rust `collect_md_files`.
 func collectMDFiles(repoRoot string, paths []string) ([]string, error) {
 	var files []string
 	for _, p := range paths {
@@ -193,7 +203,7 @@ func collectMDFiles(repoRoot string, paths []string) ([]string, error) {
 		if !filepath.IsAbs(p) {
 			abs = filepath.Join(repoRoot, p)
 		}
-		walked, err := walkMDFiles(abs)
+		walked, err := docs.GetAllMarkdownFiles(abs)
 		if err != nil {
 			return nil, err
 		}
@@ -202,52 +212,21 @@ func collectMDFiles(repoRoot string, paths []string) ([]string, error) {
 	return files, nil
 }
 
-// collectMDDefaultDirs scans docs/, repo-governance/, .claude/, plans/, and root *.md files.
+// collectMDDefaultDirs scans the whole repository for *.md files (plan DD-3):
+// a repo-wide walk skipping the standardized noise-skip set by directory
+// name, replacing the historical four-dir default
+// (docs/repo-governance/.claude/plans) plus root glob. Delegates to
+// docs.GetAllMarkdownFiles, the one walker per CLI. Mirrors Rust
+// `collect_md_default_dirs`.
 func collectMDDefaultDirs(repoRoot string) ([]string, error) {
-	dirs := []string{
-		filepath.Join(repoRoot, "docs"),
-		filepath.Join(repoRoot, "repo-governance"),
-		filepath.Join(repoRoot, ".claude"),
-		filepath.Join(repoRoot, "plans"),
-	}
-	var files []string
-	for _, dir := range dirs {
-		walked, err := walkMDFiles(dir)
-		if err != nil {
-			continue // dir may not exist
-		}
-		files = append(files, walked...)
-	}
-	// Root *.md files.
-	rootMDs, err := filepath.Glob(filepath.Join(repoRoot, "*.md"))
-	if err == nil {
-		files = append(files, rootMDs...)
-	}
-	return files, nil
+	return docs.GetAllMarkdownFiles(repoRoot)
 }
 
-// skipDirs are directory names that are never scanned for Mermaid diagrams.
-var skipDirs = map[string]bool{
-	".next":        true, // Next.js build artifacts
-	"node_modules": true, // npm dependencies
-	".git":         true, // git internals
-}
-
-// walkMDFiles returns all *.md files under dir recursively, skipping build artifact dirs.
-func walkMDFiles(dir string) ([]string, error) {
-	var files []string
-	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, walkErr error) error {
-		if walkErr != nil {
-			// Skip unreadable entries rather than aborting the entire walk.
-			return nil //nolint:nilerr
-		}
-		if d.IsDir() && skipDirs[d.Name()] {
-			return filepath.SkipDir
-		}
-		if !d.IsDir() && strings.HasSuffix(path, ".md") {
-			files = append(files, path)
-		}
-		return nil
-	})
-	return files, err
+// filterMermaidExcluded applies `--exclude` prefix semantics to the collected
+// mermaid file list (plan DD-2): drops files whose repo-root-relative path
+// starts with any excluded prefix (raw or trailing-slash-cleaned). Delegates
+// to the links walker's FilterSkipPaths so both gates share one prefix
+// implementation per CLI. Mirrors Rust `filter_mermaid_excluded`.
+func filterMermaidExcluded(repoRoot string, files []string, exclude []string) []string {
+	return docs.FilterSkipPaths(files, repoRoot, exclude)
 }

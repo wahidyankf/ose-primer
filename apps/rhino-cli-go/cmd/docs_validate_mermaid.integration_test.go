@@ -23,11 +23,24 @@ var specsDirIntMermaid = func() string {
 	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino/behavior/cli/gherkin")
 }()
 
+// mermaidThresholdPair carries the width/depth thresholds the plain
+// `validate-mermaid` run should apply. Set by fixtures whose contract intent
+// (a complex-diagram warning carrying the computed span/depth) is only
+// reachable with non-default thresholds, since the local Go default
+// `--max-depth` is unlimited. Mirrors the Rust DocsWorld `mermaid_thresholds`
+// world-state pattern.
+type mermaidThresholdPair struct {
+	maxWidth int
+	maxDepth int
+}
+
 type validateMermaidIntSteps struct {
 	originalWd string
 	tmpDir     string
 	cmdErr     error
 	cmdOutput  string
+	// thresholds the plain When step applies before running (world state).
+	mermaidThresholds *mermaidThresholdPair
 }
 
 func (s *validateMermaidIntSteps) before(_ context.Context, _ *godog.Scenario) (context.Context, error) {
@@ -39,9 +52,11 @@ func (s *validateMermaidIntSteps) before(_ context.Context, _ *godog.Scenario) (
 	output = "text"
 	validateMermaidStagedOnly = false
 	validateMermaidChangedOnly = false
+	validateMermaidExclude = nil
 	validateMermaidMaxLabelLen = 30
 	validateMermaidMaxWidth = 3
 	validateMermaidMaxDepth = 5
+	s.mermaidThresholds = nil
 	// Restore real implementations so integration tests exercise actual code.
 	docsValidateMermaidFn = mermaid.ValidateBlocks
 	readFileFn = os.ReadFile
@@ -54,6 +69,7 @@ func (s *validateMermaidIntSteps) before(_ context.Context, _ *godog.Scenario) (
 func (s *validateMermaidIntSteps) after(_ context.Context, _ *godog.Scenario, _ error) (context.Context, error) {
 	_ = os.Chdir(s.originalWd)
 	_ = os.RemoveAll(s.tmpDir)
+	validateMermaidExclude = nil
 	docsValidateMermaidFn = mermaid.ValidateBlocks
 	readFileFn = os.ReadFile
 	getMermaidStagedFilesFn = getMermaidStagedFiles
@@ -200,9 +216,49 @@ func (s *validateMermaidIntSteps) aMarkdownFileUnderPlansLongLabel() error {
 		"# Plan\n\n```mermaid\nflowchart TB\n  A[This is exactly thirty-five chars!!] --> B[ok]\n```\n")
 }
 
+func (s *validateMermaidIntSteps) aMarkdownFileOutsideOldDirsWithLabelViolation() error {
+	// Plan DD-3: the default scan is repo-wide, so a violation under a tree
+	// outside the historical four-dir set must be reported. The plain When
+	// step already runs without positional paths (the Go in-process twin of
+	// the Rust world's mermaid_default_scan flag).
+	return s.writeMD("services/notes.md",
+		"# Notes\n\n```mermaid\nflowchart TD\n    A[This label is definitely longer than thirty characters total]\n```\n")
+}
+
+func (s *validateMermaidIntSteps) aMarkdownFileWithLabelViolationUnderExcludedSubdir() error {
+	// Plan DD-2: the repo-wide default scan would report this file unless the
+	// When step's --exclude prefix drops it.
+	return s.writeMD("legacy-diagrams/old.md",
+		"# Old\n\n```mermaid\nflowchart TD\n    A[This label is definitely longer than thirty characters total]\n```\n")
+}
+
+func (s *validateMermaidIntSteps) aMarkdownFileContainingPipeLabeledEdge() error {
+	// Rank observation (plan DD-14 fix 1): with --max-width 0 --max-depth 1
+	// the complex_diagram warning reports the actual span/depth without
+	// failing the run. A correctly parsed pipe-labeled edge yields the chain
+	// A->B (span 1, depth 2); the old parser dropped the edge and node B.
+	s.mermaidThresholds = &mermaidThresholdPair{maxWidth: 0, maxDepth: 1}
+	return s.writeMD("docs/d.md",
+		"# Doc\n\n```mermaid\nflowchart TD\n    A -->|text| B\n```\n")
+}
+
+func (s *validateMermaidIntSteps) aMarkdownFileContainingCycleABCA() error {
+	// Rank observation (plan DD-14 fix 2): with --max-width 0 --max-depth 1
+	// the complex_diagram warning reports the actual span/depth without
+	// failing the run. After back-edge removal the cycle ranks as the chain
+	// A->B->C (span 1, depth 3); the old fallback ranked all nodes 0 (span 3).
+	s.mermaidThresholds = &mermaidThresholdPair{maxWidth: 0, maxDepth: 1}
+	return s.writeMD("docs/d.md",
+		"# Doc\n\n```mermaid\nflowchart TD\n    A-->B-->C-->A\n```\n")
+}
+
 // --- When steps ---
 
 func (s *validateMermaidIntSteps) theDeveloperRunsDocsValidateMermaid() error {
+	if s.mermaidThresholds != nil {
+		validateMermaidMaxWidth = s.mermaidThresholds.maxWidth
+		validateMermaidMaxDepth = s.mermaidThresholds.maxDepth
+	}
 	s.runCmd([]string{})
 	return nil
 }
@@ -241,6 +297,13 @@ func (s *validateMermaidIntSteps) theDeveloperRunsDocsValidateMermaidWithChanged
 	// No upstream configured → falls back to default dirs which contain the (unviolating) file.
 	// Swap to a clean file so the fallback scan passes.
 	validateMermaidChangedOnly = true
+	s.runCmd([]string{})
+	return nil
+}
+
+func (s *validateMermaidIntSteps) theDeveloperRunsDocsValidateMermaidWithExcludeSubdir() error {
+	// Default repo-wide scan with the violating subtree excluded by prefix.
+	validateMermaidExclude = []string{"legacy-diagrams"}
 	s.runCmd([]string{})
 	return nil
 }
@@ -375,6 +438,46 @@ func (s *validateMermaidIntSteps) theOutputIdentifiesFileUnderPlans() error {
 	return nil
 }
 
+func (s *validateMermaidIntSteps) theOutputIdentifiesViolationInThatFile() error {
+	if s.cmdErr == nil {
+		return fmt.Errorf("expected violation, got success; output: %s", s.cmdOutput)
+	}
+	if !strings.Contains(s.cmdOutput, filepath.Join("services", "notes.md")) {
+		return fmt.Errorf("expected output to mention services/notes.md, got: %s", s.cmdOutput)
+	}
+	if !strings.Contains(s.cmdOutput, "label_too_long") {
+		return fmt.Errorf("expected output to mention label_too_long, got: %s", s.cmdOutput)
+	}
+	return nil
+}
+
+func (s *validateMermaidIntSteps) theOutputReportsNodeBRankedBelowA() error {
+	// The complex_diagram warning (thresholds set by the Given step) carries
+	// the computed span/depth: a two-node chain means B sits one rank below A.
+	if s.cmdErr != nil {
+		return fmt.Errorf("expected success (warning only), got error: %w\nOutput: %s", s.cmdErr, s.cmdOutput)
+	}
+	want := "span 1 (max 0) and depth 2 (max 1) both exceeded"
+	if !strings.Contains(s.cmdOutput, want) {
+		return fmt.Errorf("expected output to contain %q, got: %s", want, s.cmdOutput)
+	}
+	return nil
+}
+
+func (s *validateMermaidIntSteps) theOutputReportsSpan1Depth3() error {
+	// The complex_diagram warning (thresholds set by the Given step) carries
+	// the computed span/depth: span 1, depth 3 proves the cycle ranked as the
+	// chain A->B->C after back-edge removal.
+	if s.cmdErr != nil {
+		return fmt.Errorf("expected success (warning only), got error: %w\nOutput: %s", s.cmdErr, s.cmdOutput)
+	}
+	want := "span 1 (max 0) and depth 3 (max 1) both exceeded"
+	if !strings.Contains(s.cmdOutput, want) {
+		return fmt.Errorf("expected output to contain %q, got: %s", want, s.cmdOutput)
+	}
+	return nil
+}
+
 func InitializeValidateMermaidScenario(sc *godog.ScenarioContext) {
 	s := &validateMermaidIntSteps{}
 	sc.Before(s.before)
@@ -402,6 +505,10 @@ func InitializeValidateMermaidScenario(sc *godog.ScenarioContext) {
 	sc.Step(stepMermaidFileLabelLengthViolation, s.aMarkdownFileContainingFlowchartWithLabelLengthViolation)
 	sc.Step(stepMermaidFileNoViolations, s.aMarkdownFileContainingFlowchartNoViolationsInt)
 	sc.Step(stepMermaidFileUnderPlansLongLabel, s.aMarkdownFileUnderPlansLongLabel)
+	sc.Step(stepMermaidFileOutsideOldDirsLabelTooLong, s.aMarkdownFileOutsideOldDirsWithLabelViolation)
+	sc.Step(stepMermaidFileLabelTooLongUnderExcludedSubdir, s.aMarkdownFileWithLabelViolationUnderExcludedSubdir)
+	sc.Step(stepMermaidFilePipeLabeledEdge, s.aMarkdownFileContainingPipeLabeledEdge)
+	sc.Step(stepMermaidFileCycleABCA, s.aMarkdownFileContainingCycleABCA)
 
 	// When.
 	sc.Step(stepDeveloperRunsDocsValidateMermaid, s.theDeveloperRunsDocsValidateMermaid)
@@ -415,6 +522,7 @@ func InitializeValidateMermaidScenario(sc *godog.ScenarioContext) {
 	sc.Step(stepDeveloperRunsDocsValidateMermaidMarkdownOutput, s.theDeveloperRunsDocsValidateMermaidWithMarkdownOutput)
 	sc.Step(stepDeveloperRunsDocsValidateMermaidVerbose, s.theDeveloperRunsDocsValidateMermaidWithVerbose)
 	sc.Step(stepDeveloperRunsDocsValidateMermaidQuiet, s.theDeveloperRunsDocsValidateMermaidWithQuiet)
+	sc.Step(stepDeveloperRunsDocsValidateMermaidExcludeSubdir, s.theDeveloperRunsDocsValidateMermaidWithExcludeSubdir)
 
 	// Then.
 	sc.Step(stepExitsSuccessfully, s.theValidateMermaidCommandExitsSuccessfully)
@@ -430,6 +538,9 @@ func InitializeValidateMermaidScenario(sc *godog.ScenarioContext) {
 	sc.Step(stepMermaidOutputIncludesPerFileDetail, s.theOutputIncludesPerFileScanDetailLines)
 	sc.Step(stepMermaidOutputContainsNoText, s.theOutputContainsNoText)
 	sc.Step(stepMermaidOutputIdentifiesFileUnderPlans, s.theOutputIdentifiesFileUnderPlans)
+	sc.Step(stepMermaidOutputIdentifiesViolationInThatFile, s.theOutputIdentifiesViolationInThatFile)
+	sc.Step(stepMermaidOutputReportsNodeBRankedBelowA, s.theOutputReportsNodeBRankedBelowA)
+	sc.Step(stepMermaidOutputReportsSpan1Depth3, s.theOutputReportsSpan1Depth3)
 }
 
 func TestIntegrationValidateMermaid(t *testing.T) {

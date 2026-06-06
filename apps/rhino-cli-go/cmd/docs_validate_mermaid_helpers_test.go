@@ -28,7 +28,7 @@ func TestFilterMDPaths_AbsolutePaths(t *testing.T) {
 	}
 }
 
-func TestWalkMDFiles_FindsMDFiles(t *testing.T) {
+func TestCollectMDDefaultDirs_FindsMDFiles(t *testing.T) {
 	dir := t.TempDir()
 	// Create a few files.
 	if err := os.WriteFile(filepath.Join(dir, "a.md"), []byte("# hello"), 0o600); err != nil {
@@ -45,7 +45,7 @@ func TestWalkMDFiles_FindsMDFiles(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	files, err := walkMDFiles(dir)
+	files, err := collectMDDefaultDirs(dir)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -54,9 +54,9 @@ func TestWalkMDFiles_FindsMDFiles(t *testing.T) {
 	}
 }
 
-func TestWalkMDFiles_NonexistentDir(t *testing.T) {
-	// walkMDFiles tolerates nonexistent dirs (walk function suppresses errors).
-	files, err := walkMDFiles("/nonexistent-dir-xyz")
+func TestCollectMDDefaultDirs_NonexistentDir(t *testing.T) {
+	// The shared walker tolerates nonexistent dirs (walk function suppresses errors).
+	files, err := collectMDDefaultDirs("/nonexistent-dir-xyz")
 	if err != nil {
 		t.Errorf("expected nil error for nonexistent dir (tolerant design), got: %v", err)
 	}
@@ -65,7 +65,7 @@ func TestWalkMDFiles_NonexistentDir(t *testing.T) {
 	}
 }
 
-func TestWalkMDFiles_SkipsBuildArtifactDirs(t *testing.T) {
+func TestCollectMDDefaultDirs_SkipsBuildArtifactDirs(t *testing.T) {
 	dir := t.TempDir()
 	// md file at root — should be found
 	if err := os.WriteFile(filepath.Join(dir, "root.md"), []byte("# root"), 0o600); err != nil {
@@ -88,7 +88,7 @@ func TestWalkMDFiles_SkipsBuildArtifactDirs(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	files, err := walkMDFiles(dir)
+	files, err := collectMDDefaultDirs(dir)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -129,7 +129,7 @@ func TestCollectMDDefaultDirs_ReturnsNoErrorOnMissingDirs(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	// No docs/, repo-governance/, .claude/ subdirs and no root *.md → empty result.
+	// Empty temp dir → repo-wide walk finds nothing.
 	if len(files) != 0 {
 		t.Errorf("expected 0 files, got %d", len(files))
 	}

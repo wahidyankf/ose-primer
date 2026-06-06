@@ -97,7 +97,7 @@ func IsProseAllowlisted(repoRel string) bool {
 
 // isHeadingExcluded returns true when repoRel starts with any `--exclude`
 // prefix, raw or trailing-slash-trimmed — the same practical semantics as the
-// link scanner's filterSkipPaths. Deliberately a self-contained string
+// link scanner's FilterSkipPaths. Deliberately a self-contained string
 // predicate (mirrors the Rust `is_excluded`): the scanner's filter is
 // path-shaped and kept byte-for-byte for the link checker, while this
 // validator operates on repo-relative strings.
@@ -150,7 +150,7 @@ func headingRelUnderRoot(root, abs string) (string, bool) {
 func collectHeadingCandidateRels(opts HeadingScanOptions) ([]string, error) {
 	var rels []string
 	if len(opts.Paths) == 0 {
-		files, err := getAllMarkdownFiles(opts.Root)
+		files, err := GetAllMarkdownFiles(opts.Root)
 		if err != nil {
 			return nil, err
 		}
@@ -166,7 +166,7 @@ func collectHeadingCandidateRels(opts HeadingScanOptions) ([]string, error) {
 				abs = filepath.Join(opts.Root, p)
 			}
 			if info, statErr := os.Stat(abs); statErr == nil && info.IsDir() {
-				files, err := getAllMarkdownFiles(abs)
+				files, err := GetAllMarkdownFiles(abs)
 				if err != nil {
 					return nil, err
 				}

@@ -4,8 +4,68 @@ use std::collections::HashMap;
 
 use super::types::{Edge, Node};
 
-/// Runs Kahn's BFS longest-path rank assignment. Returns `nodeID -> rank`.
-/// Nodes in cycles get rank 0 (fallback). Mirrors Go `rankAssign`.
+/// DFS colors for back-edge detection.
+const WHITE: u8 = 0;
+const GRAY: u8 = 1;
+const BLACK: u8 = 2;
+
+/// Detects back edges (edges pointing at a node currently on the DFS stack)
+/// via iterative DFS, visiting roots in node-declaration order and children
+/// in edge-declaration order (plan DD-14 fix 2). Returns the indices of back
+/// edges in the caller's edge slice. Mirrors the planned Go `findBackEdges`
+/// twin.
+fn find_back_edges(
+    nodes: &[Node],
+    adj: &HashMap<&str, Vec<(usize, &str)>>,
+) -> std::collections::HashSet<usize> {
+    let mut color: HashMap<&str, u8> = HashMap::with_capacity(nodes.len());
+    for n in nodes {
+        color.insert(n.id.as_str(), WHITE);
+    }
+
+    let mut back = std::collections::HashSet::new();
+    for n in nodes {
+        if color.get(n.id.as_str()).copied().unwrap_or(WHITE) != WHITE {
+            continue;
+        }
+        // Stack of (node, next-child cursor) frames.
+        let mut stack: Vec<(&str, usize)> = vec![(n.id.as_str(), 0)];
+        color.insert(n.id.as_str(), GRAY);
+        while let Some(&(cur, cursor)) = stack.last() {
+            let children: &[(usize, &str)] = adj.get(cur).map_or(&[], Vec::as_slice);
+            if cursor < children.len() {
+                if let Some(top) = stack.last_mut() {
+                    top.1 += 1;
+                }
+                let (edge_idx, child) = children[cursor];
+                match color.get(child).copied().unwrap_or(WHITE) {
+                    GRAY => {
+                        // Child is on the active DFS path → cycle-closing edge.
+                        back.insert(edge_idx);
+                    }
+                    WHITE => {
+                        color.insert(child, GRAY);
+                        stack.push((child, 0));
+                    }
+                    _ => {} // BLACK: forward/cross edge — keep it.
+                }
+            } else {
+                color.insert(cur, BLACK);
+                stack.pop();
+            }
+        }
+    }
+    back
+}
+
+/// Runs Kahn's BFS longest-path rank assignment on the DAG left after
+/// back-edge removal. Returns `nodeID -> rank`.
+///
+/// Plan DD-14 fix 2: back edges are detected via iterative DFS in
+/// node-declaration order and removed before ranking, so cyclic diagrams
+/// rank as chains. Previously a cycle emptied Kahn's queue, every node fell
+/// back to rank 0, and the bogus span equaled the node count. Mirrors the
+/// planned Go `rankAssign` twin.
 fn rank_assign(nodes: &[Node], edges: &[Edge]) -> HashMap<String, i64> {
     if nodes.is_empty() {
         return HashMap::new();
@@ -17,14 +77,35 @@ fn rank_assign(nodes: &[Node], edges: &[Edge]) -> HashMap<String, i64> {
         node_set.insert(n.id.as_str(), true);
     }
 
-    // Adjacency (out-edges) and in-degree for valid nodes only.
+    // Adjacency over valid edges only, carrying each edge's index so back
+    // edges can be excluded from the ranking pass below.
+    let mut adj_idx: HashMap<&str, Vec<(usize, &str)>> = HashMap::with_capacity(nodes.len());
+    for n in nodes {
+        adj_idx.entry(n.id.as_str()).or_default();
+    }
+    for (i, e) in edges.iter().enumerate() {
+        if node_set.contains_key(e.from.as_str()) && node_set.contains_key(e.to.as_str()) {
+            adj_idx
+                .entry(e.from.as_str())
+                .or_default()
+                .push((i, e.to.as_str()));
+        }
+    }
+
+    let back_edges = find_back_edges(nodes, &adj_idx);
+
+    // Adjacency (out-edges) and in-degree for valid nodes only, skipping the
+    // detected back edges.
     let mut adj: HashMap<String, Vec<String>> = HashMap::with_capacity(nodes.len());
     let mut in_degree: HashMap<String, i64> = HashMap::with_capacity(nodes.len());
     for n in nodes {
         adj.entry(n.id.clone()).or_default();
         in_degree.entry(n.id.clone()).or_insert(0);
     }
-    for e in edges {
+    for (i, e) in edges.iter().enumerate() {
+        if back_edges.contains(&i) {
+            continue;
+        }
         if node_set.contains_key(e.from.as_str()) && node_set.contains_key(e.to.as_str()) {
             adj.entry(e.from.clone()).or_default().push(e.to.clone());
             *in_degree.entry(e.to.clone()).or_insert(0) += 1;
@@ -64,7 +145,9 @@ fn rank_assign(nodes: &[Node], edges: &[Edge]) -> HashMap<String, i64> {
         }
     }
 
-    // Cycle fallback: rank 0 for unvisited nodes.
+    // Safety fallback: rank 0 for any node the BFS did not reach. With back
+    // edges removed the remaining graph is a DAG and Kahn visits everything,
+    // so this is defensive only.
     for n in nodes {
         if !visited.get(&n.id).copied().unwrap_or(false) {
             rank.insert(n.id.clone(), 0);
@@ -144,11 +227,38 @@ mod tests {
     }
 
     #[test]
-    fn cycle_nodes_rank_zero() {
-        // A <-> B cycle: both unvisited, rank 0, width 2, depth 1.
+    fn cycle_ranks_as_chain_after_back_edge_removal() {
+        // Plan DD-14 fix 2: the cyclic diagram `A-->B-->C-->A` must rank as a
+        // chain — the back edge (C->A, found via iterative DFS in
+        // node-declaration order) is removed, then Kahn longest-path ranking
+        // runs on the remaining DAG A->B->C: span 1, depth 3. Today the cycle
+        // empties Kahn's queue, every node falls back to rank 0, and the
+        // bogus span equals the node count.
+        let nodes = vec![n("A"), n("B"), n("C")];
+        let edges = vec![e("A", "B"), e("B", "C"), e("C", "A")];
+        assert_eq!(
+            max_width(&nodes, &edges),
+            1,
+            "cycle must rank as a chain (span 1)"
+        );
+        assert_eq!(
+            depth(&nodes, &edges),
+            3,
+            "cycle must rank as a chain (depth 3)"
+        );
+    }
+
+    #[test]
+    fn two_node_cycle_ranks_as_chain() {
+        // BEHAVIOR CHANGE (plan DD-14 fix 2): this test previously pinned the
+        // OLD cycle fallback (`cycle_nodes_rank_zero`), where the A <-> B
+        // cycle emptied Kahn's queue and both nodes fell back to rank 0
+        // (width 2, depth 1). The back edge B->A (found via iterative DFS in
+        // node-declaration order) is now removed before ranking, so the cycle
+        // ranks as the chain A->B: span 1, depth 2.
         let nodes = vec![n("A"), n("B")];
         let edges = vec![e("A", "B"), e("B", "A")];
-        assert_eq!(max_width(&nodes, &edges), 2);
-        assert_eq!(depth(&nodes, &edges), 1);
+        assert_eq!(max_width(&nodes, &edges), 1);
+        assert_eq!(depth(&nodes, &edges), 2);
     }
 }

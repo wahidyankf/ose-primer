@@ -262,7 +262,7 @@ func TestGetMarkdownFiles_WithSkipPaths(t *testing.T) {
 
 func TestFilterSkipPaths_Empty(t *testing.T) {
 	files := []string{"/repo/docs/file.md", "/repo/repo-governance/other.md"}
-	result := filterSkipPaths(files, "/repo", []string{})
+	result := FilterSkipPaths(files, "/repo", []string{})
 	if len(result) != len(files) {
 		t.Errorf("expected all files with empty skip paths, got %d files", len(result))
 	}
@@ -285,7 +285,7 @@ func TestFilterSkipPaths_WithSkipPath(t *testing.T) {
 		filepath.Join(govDir, "other.md"),
 		filepath.Join(docsDir, "nested", "deep.md"),
 	}
-	result := filterSkipPaths(files, tmpDir, []string{"repo-governance"})
+	result := FilterSkipPaths(files, tmpDir, []string{"repo-governance"})
 
 	for _, f := range result {
 		rel, _ := filepath.Rel(tmpDir, f)

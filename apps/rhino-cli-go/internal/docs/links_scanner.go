@@ -24,7 +24,7 @@ func GetMarkdownFiles(opts ScanOptions) ([]string, error) {
 	if opts.StagedOnly {
 		files, err = getStagedMarkdownFiles(opts.RepoRoot)
 	} else {
-		files, err = getAllMarkdownFiles(opts.RepoRoot)
+		files, err = GetAllMarkdownFiles(opts.RepoRoot)
 	}
 
 	if err != nil {
@@ -32,11 +32,18 @@ func GetMarkdownFiles(opts ScanOptions) ([]string, error) {
 	}
 
 	// Filter out skip paths
-	return filterSkipPaths(files, opts.RepoRoot, opts.SkipPaths), nil
+	return FilterSkipPaths(files, opts.RepoRoot, opts.SkipPaths), nil
 }
 
-// filterSkipPaths filters out files that match any of the skip paths.
-func filterSkipPaths(files []string, repoRoot string, skipPaths []string) []string {
+// FilterSkipPaths filters out files whose repo-root-relative path starts with
+// any of the skip paths (raw or trailing-slash-cleaned prefix). Exported as
+// the single path-shaped prefix implementation per CLI, consumed by the links
+// gate (GetMarkdownFiles) and the mermaid cmd (filterMermaidExcluded); the
+// heading-hierarchy validator applies the same `--exclude` semantics via its
+// deliberately self-contained string predicate isHeadingExcluded (see the
+// divergence note in heading_hierarchy.go). Plan DD-2; mirrors Rust
+// `scanner::filter_skip_paths`.
+func FilterSkipPaths(files []string, repoRoot string, skipPaths []string) []string {
 	if len(skipPaths) == 0 {
 		return files
 	}
@@ -95,11 +102,17 @@ var noiseDirs = map[string]bool{
 	".git":                true,
 }
 
-// getAllMarkdownFiles returns all markdown files via a repo-wide walk that
+// GetAllMarkdownFiles returns all markdown files via a repo-wide walk that
 // skips the standardized noise-skip set by directory name. The walk root
-// itself is never skipped, only descendants. filepath.WalkDir yields
-// deterministic lexical order (mirrors Rust WalkDir.sort_by_file_name).
-func getAllMarkdownFiles(repoRoot string) ([]string, error) {
+// itself is never skipped, only descendants — a `.md` file passed as the root
+// yields itself. filepath.WalkDir yields deterministic lexical order (mirrors
+// Rust WalkDir.sort_by_file_name). Exported as the single noise-skipping walk
+// definition per CLI, shared by all three markdown gates: the links gate
+// (GetMarkdownFiles), the heading-hierarchy validator
+// (collectHeadingCandidateRels), and the mermaid cmd (collectMDFiles /
+// collectMDDefaultDirs). Plan DD-3; mirrors Rust
+// `scanner::get_all_markdown_files`.
+func GetAllMarkdownFiles(repoRoot string) ([]string, error) {
 	var files []string
 	err := filepath.WalkDir(repoRoot, func(path string, d fs.DirEntry, walkErr error) error {
 		if walkErr != nil {

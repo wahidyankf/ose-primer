@@ -82,11 +82,18 @@ func TestMaxWidth(t *testing.T) {
 			want:  2, // rank 0: A, C (count=2); rank 1: B, D (count=2)
 		},
 		{
-			name:  "cycle A->B B->A no panic",
+			// BEHAVIOR CHANGE (plan DD-14 fix 2): this entry previously
+			// pinned the OLD cycle fallback (Go twin of Rust's
+			// `cycle_nodes_rank_zero`), where the A <-> B cycle emptied
+			// Kahn's queue and both nodes fell back to rank 0 (width 2,
+			// depth 1). The back edge B->A (found via iterative DFS in
+			// node-declaration order) is now removed before ranking, so the
+			// cycle ranks as the chain A->B: span 1, depth 2 (mirrors the
+			// Rust twin's updated `two_node_cycle_ranks_as_chain`).
+			name:  "two node cycle ranks as chain",
 			nodes: makeNodes("A", "B"),
 			edges: makeEdges("A", "B", "B", "A"),
-			// Both get rank 0 after cycle fallback → width = 2
-			want: 2,
+			want:  1,
 		},
 	}
 
@@ -138,10 +145,18 @@ func TestDepth(t *testing.T) {
 			want:  3,
 		},
 		{
-			name:  "cycle A->B B->A depth 1 after fallback",
+			// BEHAVIOR CHANGE (plan DD-14 fix 2): this entry previously
+			// pinned the OLD cycle fallback (Go twin of Rust's
+			// `cycle_nodes_rank_zero`), where the A <-> B cycle emptied
+			// Kahn's queue and both nodes fell back to rank 0 (width 2,
+			// depth 1). The back edge B->A (found via iterative DFS in
+			// node-declaration order) is now removed before ranking, so the
+			// cycle ranks as the chain A->B: span 1, depth 2 (mirrors the
+			// Rust twin's updated `two_node_cycle_ranks_as_chain`).
+			name:  "two node cycle ranks as chain",
 			nodes: makeNodes("A", "B"),
 			edges: makeEdges("A", "B", "B", "A"),
-			want:  1,
+			want:  2,
 		},
 	}
 
@@ -152,5 +167,30 @@ func TestDepth(t *testing.T) {
 				t.Errorf("Depth = %d, want %d", got, tt.want)
 			}
 		})
+	}
+}
+
+// ---------------------------------------------------------------------------
+// Phase 3 TDD RED (plan DD-14 fix 2): cyclic-diagram ranking.
+//
+// Mirrors the Rust twin's canonical spec in
+// `apps/rhino-cli-rust/src/internal/mermaid/graph.rs`
+// (cycle_ranks_as_chain_after_back_edge_removal) — fixtures identical.
+// ---------------------------------------------------------------------------
+
+func TestCycleRanksAsChainAfterBackEdgeRemoval(t *testing.T) {
+	// Plan DD-14 fix 2: the cyclic diagram `A-->B-->C-->A` must rank as a
+	// chain — the back edge (C->A, found via iterative DFS in
+	// node-declaration order) is removed, then Kahn longest-path ranking
+	// runs on the remaining DAG A->B->C: span 1, depth 3. Today the cycle
+	// empties Kahn's queue, every node falls back to rank 0, and the
+	// bogus span equals the node count.
+	nodes := makeNodes("A", "B", "C")
+	edges := makeEdges("A", "B", "B", "C", "C", "A")
+	if got := MaxWidth(nodes, edges); got != 1 {
+		t.Errorf("MaxWidth = %d, want 1 (cycle must rank as a chain)", got)
+	}
+	if got := Depth(nodes, edges); got != 3 {
+		t.Errorf("Depth = %d, want 3 (cycle must rank as a chain)", got)
 	}
 }

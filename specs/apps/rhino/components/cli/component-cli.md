@@ -127,14 +127,15 @@ ignored. The command is read-only — it never modifies any file.
 
 ### Flags
 
-| Flag                   | Type | Default         | Description                                                                                                                                                                            |
-| ---------------------- | ---- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--staged-only`        | bool | `false`         | Only validate files currently staged in git (pre-commit use).                                                                                                                          |
-| `--changed-only`       | bool | `false`         | Only validate files changed since upstream (`@{u}..HEAD`). Falls back to default directory scan when no upstream exists or the diff is empty. Pre-push use.                            |
-| `--max-label-len`      | int  | `30`            | Maximum characters in a node label. Default approximates Mermaid `wrappingWidth:200px` at 16 px font.                                                                                  |
-| `--max-width`          | int  | `4`             | Maximum nodes at the same rank.                                                                                                                                                        |
-| `--max-depth`          | int  | `0` (unlimited) | Depth threshold for the both-exceeded warning. `0` is treated as unlimited (`MaxInt`). When span > `--max-width` AND depth > `--max-depth`, a warning is emitted rather than an error. |
-| `--max-subgraph-nodes` | int  | `6`             | Maximum direct child nodes per subgraph. Exceeding this limit emits a `subgraph_density` warning.                                                                                      |
+| Flag                   | Type                | Default         | Description                                                                                                                                                                                                   |
+| ---------------------- | ------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--staged-only`        | bool                | `false`         | Only validate files currently staged in git (pre-commit use).                                                                                                                                                 |
+| `--changed-only`       | bool                | `false`         | Only validate files changed since upstream (`@{u}..HEAD`). Falls back to default directory scan when no upstream exists or the diff is empty. Pre-push use.                                                   |
+| `--max-label-len`      | int                 | `30`            | Maximum characters in a node label. Default approximates Mermaid `wrappingWidth:200px` at 16 px font.                                                                                                         |
+| `--max-width`          | int                 | `4`             | Maximum nodes at the same rank.                                                                                                                                                                               |
+| `--max-depth`          | int                 | `0` (unlimited) | Depth threshold for the both-exceeded warning. `0` is treated as unlimited (`MaxInt`). When span > `--max-width` AND depth > `--max-depth`, a warning is emitted rather than an error.                        |
+| `--max-subgraph-nodes` | int                 | `6`             | Maximum direct child nodes per subgraph. Exceeding this limit emits a `subgraph_density` warning.                                                                                                             |
+| `--exclude`            | string (repeatable) | —               | **Incoming.** Exclude a path prefix from validation. Can be supplied multiple times. Values are appended to the internal skip list after the built-in noise-directory entries (e.g. `node_modules/`, `.git`). |
 
 In addition, the command accepts zero or more positional `PATH` arguments (files or directories).
 When paths are given, only those paths are scanned; `--staged-only` and `--changed-only` take
@@ -171,6 +172,12 @@ rhino-cli docs validate-mermaid -o json
 
 # Set custom thresholds
 rhino-cli docs validate-mermaid --max-label-len 20 --max-width 4
+
+# Exclude a directory tree from validation (incoming)
+rhino-cli docs validate-mermaid --exclude plans/done
+
+# Combine exclusions (incoming)
+rhino-cli docs validate-mermaid --exclude plans/done --exclude apps-labs
 ```
 
 ### Implementation references
@@ -261,20 +268,23 @@ rhino-cli docs validate-heading-hierarchy --exclude docs --exclude plans/in-prog
 
 ## Default scan scope
 
-Both commands share the same default directory scan logic when no targeting flags or positional
-paths are supplied:
+`docs validate-links` and `docs validate-heading-hierarchy` share the same four-directory default
+scan. `docs validate-mermaid` default scan is **incoming** repo-wide: when no targeting flags or
+positional paths are supplied, the mermaid validator walks the entire repository minus the
+standardized noise-skip set.
 
-| Directory          | Included                              |
-| ------------------ | ------------------------------------- |
-| `docs/`            | Yes                                   |
-| `repo-governance/` | Yes                                   |
-| `.claude/`         | Yes                                   |
-| `plans/`           | Yes                                   |
-| Root `*.md` files  | Yes                                   |
-| `.opencode/skill/` | No — always excluded (auto-generated) |
-| `node_modules/`    | No — skipped during walk              |
-| `.next/`           | No — skipped during walk              |
-| `.git/`            | No — skipped during walk              |
+| Directory              | `validate-links` / `validate-heading-hierarchy` | `validate-mermaid` (incoming) |
+| ---------------------- | ----------------------------------------------- | ----------------------------- |
+| `docs/`                | Yes                                             | Yes                           |
+| `repo-governance/`     | Yes                                             | Yes                           |
+| `.claude/`             | Yes                                             | Yes                           |
+| `plans/`               | Yes                                             | Yes                           |
+| Root `*.md` files      | Yes                                             | Yes                           |
+| `specs/`, `apps/`, etc | No — outside four-dir scope                     | Yes — **Incoming** repo-wide  |
+| `.opencode/skill/`     | No — always excluded (auto-generated)           | No — always excluded          |
+| `node_modules/`        | No — skipped during walk                        | No — skipped during walk      |
+| `.next/`               | No — skipped during walk                        | No — skipped during walk      |
+| `.git/`                | No — skipped during walk                        | No — skipped during walk      |
 
 ---
 
@@ -286,7 +296,7 @@ Behavior scenarios for all commands live in
 | Feature file                              | Command                           | Scenarios |
 | ----------------------------------------- | --------------------------------- | --------- |
 | `docs-validate-links.feature`             | `docs validate-links`             | 9         |
-| `docs-validate-mermaid.feature`           | `docs validate-mermaid`           | 22        |
+| `docs-validate-mermaid.feature`           | `docs validate-mermaid`           | 26        |
 | `docs-validate-heading-hierarchy.feature` | `docs validate-heading-hierarchy` | 9         |
 
 ---

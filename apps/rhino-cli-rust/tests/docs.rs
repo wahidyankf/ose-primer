@@ -27,6 +27,10 @@ struct DocsWorld {
     /// reachable with non-default thresholds, since the local Go default
     /// `--max-depth` is unlimited.
     mermaid_thresholds: Option<(i64, i64)>,
+    /// When true, the plain `validate-mermaid` run uses the default repo-wide
+    /// scan (no positional `docs` path). Set by fixtures that live outside
+    /// `docs/` and exercise the plan DD-3 repo-wide default scan.
+    mermaid_default_scan: bool,
     /// Repo-relative path of the fixture file that carries the broken link,
     /// asserted by the shared "identifies the file" Then step.
     broken_source: Option<String>,
@@ -56,6 +60,7 @@ impl DocsWorld {
             work,
             extra_args: Vec::new(),
             mermaid_thresholds: None,
+            mermaid_default_scan: false,
             broken_source: None,
             broken_anchor_link: None,
             heading_file: None,
@@ -416,15 +421,23 @@ fn given_m_violation_unstaged(w: &mut DocsWorld) {
 
 #[given("a markdown file with a mermaid violation that is not in the push range")]
 fn given_m_violation_not_pushed(w: &mut DocsWorld) {
-    // Committed (so not staged) but no upstream is configured → changed-only
-    // falls back to default scan. Place the violating file OUTSIDE scanned dirs
-    // so the fallback default scan finds no violations.
+    // Commit the violating file, then mark that commit as the upstream so the
+    // later clean-file commit is the only thing in the push range. The
+    // repo-wide default scan (plan DD-3) means there is no longer any
+    // "outside scanned dirs" location, so the fixture must genuinely sit
+    // upstream of the push range for --changed-only to skip it.
     w.write(
         "outside/d.md",
         &mermaid_block(
             "flowchart TD\n    A[This label is definitely longer than thirty characters total]",
         ),
     );
+    w.git(&["add", "-A"]);
+    w.git(&["commit", "-q", "-m", "violation upstream"]);
+    w.git(&["branch", "upstream-marker"]);
+    w.git(&["branch", "--set-upstream-to=upstream-marker"]);
+    // The clean file committed by the When step forms the push range.
+    w.write("docs/clean.md", "# Clean\n");
 }
 
 #[given("a markdown file containing a flowchart with a label length violation")]
@@ -457,25 +470,79 @@ fn given_m_plans_violation(w: &mut DocsWorld) {
     );
 }
 
+#[given(
+    "a markdown file outside the docs, repo-governance, .claude, and plans directories containing a flowchart with a node label longer than the limit"
+)]
+fn given_m_violation_outside_old_dirs(w: &mut DocsWorld) {
+    // Plan DD-3: the default scan is repo-wide, so a violation under a tree
+    // outside the historical four-dir set must be reported.
+    w.write(
+        "services/notes.md",
+        &mermaid_block(
+            "flowchart TD\n    A[This label is definitely longer than thirty characters total]",
+        ),
+    );
+    w.mermaid_default_scan = true;
+}
+
+#[given(
+    "a markdown file containing a flowchart with a node label longer than the limit placed under a subdirectory to be excluded"
+)]
+fn given_m_violation_under_excluded_subdir(w: &mut DocsWorld) {
+    // Plan DD-2: the repo-wide default scan would report this file unless the
+    // When step's --exclude prefix drops it.
+    w.write(
+        "legacy-diagrams/old.md",
+        &mermaid_block(
+            "flowchart TD\n    A[This label is definitely longer than thirty characters total]",
+        ),
+    );
+}
+
+#[given(
+    "a markdown file containing a flowchart where one edge uses the pipe-label syntax A -->|text| B"
+)]
+fn given_m_pipe_labeled_edge(w: &mut DocsWorld) {
+    w.write(
+        "docs/d.md",
+        &mermaid_block("flowchart TD\n    A -->|text| B"),
+    );
+    // Rank observation (plan DD-14 fix 1): with --max-width 0 --max-depth 1
+    // the complex_diagram warning reports the actual span/depth without
+    // failing the run. A correctly parsed pipe-labeled edge yields the chain
+    // A->B (span 1, depth 2); the old parser dropped the edge and node B.
+    w.mermaid_thresholds = Some((0, 1));
+}
+
+#[given("a markdown file containing a flowchart with the cycle A-->B-->C-->A")]
+fn given_m_cycle(w: &mut DocsWorld) {
+    w.write(
+        "docs/d.md",
+        &mermaid_block("flowchart TD\n    A-->B-->C-->A"),
+    );
+    // Rank observation (plan DD-14 fix 2): with --max-width 0 --max-depth 1
+    // the complex_diagram warning reports the actual span/depth without
+    // failing the run. After back-edge removal the cycle ranks as the chain
+    // A->B->C (span 1, depth 3); the old fallback ranked all nodes 0 (span 3).
+    w.mermaid_thresholds = Some((0, 1));
+}
+
 // --- mermaid When steps ---
 
 #[when("the developer runs docs validate-mermaid")]
 fn when_m_run(w: &mut DocsWorld) {
-    if let Some((mw, md)) = w.mermaid_thresholds {
-        let mw = mw.to_string();
-        let md = md.to_string();
-        w.exec(&[
-            "docs",
-            "validate-mermaid",
-            "docs",
-            "--max-width",
-            &mw,
-            "--max-depth",
-            &md,
-        ]);
-    } else {
-        w.exec(&["docs", "validate-mermaid", "docs"]);
+    let mut args: Vec<String> = vec!["docs".into(), "validate-mermaid".into()];
+    if !w.mermaid_default_scan {
+        args.push("docs".into());
     }
+    if let Some((mw, md)) = w.mermaid_thresholds {
+        args.push("--max-width".into());
+        args.push(mw.to_string());
+        args.push("--max-depth".into());
+        args.push(md.to_string());
+    }
+    let refs: Vec<&str> = args.iter().map(String::as_str).collect();
+    w.exec(&refs);
 }
 
 #[when("the developer runs docs validate-mermaid with --max-label-len 40")]
@@ -511,8 +578,9 @@ fn when_m_staged(w: &mut DocsWorld) {
 
 #[when("the developer runs docs validate-mermaid with the --changed-only flag")]
 fn when_m_changed(w: &mut DocsWorld) {
-    // Commit the fixture so it is not staged; with no upstream, changed-only
-    // falls back to the default-dir scan (which excludes the outside/ file).
+    // Commit the remaining (clean) fixture so the push range @{u}..HEAD
+    // contains only it — the upstream marker set by the Given step keeps the
+    // violating file out of the range.
     w.git(&["add", "-A"]);
     w.git(&["commit", "-q", "-m", "fixture"]);
     w.exec(&["docs", "validate-mermaid", "--changed-only"]);
@@ -541,6 +609,12 @@ fn when_m_quiet(w: &mut DocsWorld) {
 #[when("the developer runs docs validate-mermaid without path arguments")]
 fn when_m_no_paths(w: &mut DocsWorld) {
     w.exec(&["docs", "validate-mermaid"]);
+}
+
+#[when("the developer runs docs validate-mermaid with --exclude pointing at that subdirectory")]
+fn when_m_run_exclude(w: &mut DocsWorld) {
+    // Default repo-wide scan with the violating subtree excluded by prefix.
+    w.exec(&["docs", "validate-mermaid", "--exclude", "legacy-diagrams"]);
 }
 
 // --- mermaid Then steps ---
@@ -635,6 +709,36 @@ fn then_m_plans(w: &mut DocsWorld) {
     let out = w.stdout();
     assert!(out.contains("plans/p.md"), "got: {out}");
     assert!(out.contains("label_too_long"), "got: {out}");
+}
+
+#[then("the output identifies the violation in that file")]
+fn then_m_outside_violation(w: &mut DocsWorld) {
+    let out = w.stdout();
+    assert!(out.contains("services/notes.md"), "got: {out}");
+    assert!(out.contains("label_too_long"), "got: {out}");
+}
+
+#[then("the output reports that node B is ranked one level below node A")]
+fn then_m_pipe_rank(w: &mut DocsWorld) {
+    // The complex_diagram warning (thresholds set by the Given step) carries
+    // the computed span/depth: a two-node chain means B sits one rank below A.
+    let out = w.stdout();
+    assert!(
+        out.contains("span 1 (max 0) and depth 2 (max 1) both exceeded"),
+        "got: {out}"
+    );
+}
+
+#[then("the output reports the diagram has span 1 and depth 3")]
+fn then_m_cycle_chain(w: &mut DocsWorld) {
+    // The complex_diagram warning (thresholds set by the Given step) carries
+    // the computed span/depth: span 1, depth 3 proves the cycle ranked as the
+    // chain A->B->C after back-edge removal.
+    let out = w.stdout();
+    assert!(
+        out.contains("span 1 (max 0) and depth 3 (max 1) both exceeded"),
+        "got: {out}"
+    );
 }
 
 // ===========================================================================
