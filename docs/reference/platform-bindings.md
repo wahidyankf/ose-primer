@@ -83,9 +83,12 @@ Two sets of binding directories already exist in the repository but were **not**
   `.github/skills/` subtree contains Nx-provided skill files. These are managed by Nx/tooling, not
   by `rhino-cli agents sync`.
 
-- **`.codex/{config.toml,agents/}`** — created by Nx tooling and the OpenAI Codex CLI integration.
-  `.codex/config.toml` is the Codex CLI project config; `.codex/agents/ci-monitor-subagent.toml`
-  is a Codex agent definition. These are managed by Nx/tooling, not by `rhino-cli agents sync`.
+- **`.codex/config.toml`** — created by Nx tooling and the OpenAI Codex CLI integration.
+  It is the Codex CLI project config; the `ci-monitor-subagent` agent is declared as an
+  `[agents.<name>]` sub-table whose `config_file` points to `.codex/ci-monitor-subagent.toml`.
+  The former `.codex/agents/` directory was removed (2026-06-06): it was never an official
+  Codex CLI convention — the official per-agent mechanism is `config.toml` `agents.<name>`
+  sub-tables. These files are managed by Nx/tooling, not by `rhino-cli agents sync`.
 
 The multi-harness compatibility work documents these directories rather than clobbering them. The
 `rhino-cli agents validate-bindings` command (see below) treats them as known-partial bindings and

@@ -84,7 +84,7 @@ Specialized agents organized into families:
 
 Agent definition files use YAML frontmatter. The exact tool encoding differs between bindings; see the [Platform Binding Examples](#platform-binding-examples) section at the bottom for binding-specific YAML samples.
 
-This format is auto-generated from the primary binding's array form (tool arrays → boolean flags) by the sync command.
+This format is auto-generated from the primary binding's array form (tool arrays → `permission` object; the older boolean-flags output is deprecated/legacy and no longer emitted) by the sync command.
 
 ## Maker-Checker-Fixer Pattern
 
@@ -213,7 +213,7 @@ tools: [Read, Write, Edit, Glob, Grep]
 ### Secondary binding: OpenCode (`.opencode/`)
 
 - Auto-generated directory: `.opencode/agents/` (plural per opencode.ai/docs/agents/)
-- Agent files: `.opencode/agents/*.md` with frontmatter using boolean tool flags and `opencode-go/*` model IDs
+- Agent files: `.opencode/agents/*.md` with frontmatter using a `permission` object (the older boolean tool flags are deprecated/legacy and no longer emitted) and `opencode-go/*` model IDs
 - Skills: NOT mirrored — OpenCode reads `.claude/skills/{name}/SKILL.md` natively per opencode.ai/docs/skills/
 - Permission scheme: `.opencode/opencode.json`
 - MCP servers (Playwright, Nx, Perplexity)
@@ -222,11 +222,11 @@ tools: [Read, Write, Edit, Glob, Grep]
 ---
 description: Brief description of what the agent does
 model: opencode-go/minimax-m2.7
-tools:
-  read: true
-  write: true
-  edit: true
-  glob: true
-  grep: true
+permission:
+  read: allow
+  write: allow
+  edit: allow
+  glob: allow
+  grep: allow
 ---
 ```
