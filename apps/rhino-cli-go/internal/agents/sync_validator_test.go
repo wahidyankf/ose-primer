@@ -119,38 +119,44 @@ func TestValidateAgentCountMismatch(t *testing.T) {
 	}
 }
 
-func TestToolsMatch(t *testing.T) {
+func TestPermissionsMatch(t *testing.T) {
 	tests := []struct {
 		name     string
-		a        map[string]bool
-		b        map[string]bool
+		a        map[string]string
+		b        map[string]string
 		expected bool
 	}{
 		{
-			name:     "matching tools",
-			a:        map[string]bool{"read": true, "write": true},
-			b:        map[string]bool{"read": true, "write": true},
+			name:     "matching permissions",
+			a:        map[string]string{"read": "allow", "write": "allow"},
+			b:        map[string]string{"read": "allow", "write": "allow"},
 			expected: true,
 		},
 		{
 			name:     "different tools",
-			a:        map[string]bool{"read": true, "write": true},
-			b:        map[string]bool{"read": true, "edit": true},
+			a:        map[string]string{"read": "allow", "write": "allow"},
+			b:        map[string]string{"read": "allow", "edit": "allow"},
+			expected: false,
+		},
+		{
+			name:     "different values for same tool",
+			a:        map[string]string{"read": "allow"},
+			b:        map[string]string{"read": "deny"},
 			expected: false,
 		},
 		{
 			name:     "different lengths",
-			a:        map[string]bool{"read": true},
-			b:        map[string]bool{"read": true, "write": true},
+			a:        map[string]string{"read": "allow"},
+			b:        map[string]string{"read": "allow", "write": "allow"},
 			expected: false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := toolsMatch(tt.a, tt.b)
+			result := permissionsMatch(tt.a, tt.b)
 			if result != tt.expected {
-				t.Errorf("toolsMatch() = %v, want %v", result, tt.expected)
+				t.Errorf("permissionsMatch() = %v, want %v", result, tt.expected)
 			}
 		})
 	}
@@ -219,10 +225,10 @@ func TestCountMarkdownFiles(t *testing.T) {
 }
 
 func TestSortedKeys(t *testing.T) {
-	m := map[string]bool{
-		"write": true,
-		"read":  true,
-		"bash":  true,
+	m := map[string]string{
+		"write": "allow",
+		"read":  "allow",
+		"bash":  "allow",
 	}
 	keys := sortedKeys(m)
 	expected := []string{"bash", "read", "write"}
@@ -574,7 +580,7 @@ func TestValidateAgentFile_DescriptionMismatch(t *testing.T) {
 	}
 
 	// Write opencode file with different description
-	opencodeContent := "---\ndescription: Different description\ntools:\n  read: true\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nBody.\n"
+	opencodeContent := "---\ndescription: Different description\npermission:\n  read: allow\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nBody.\n"
 	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
 		t.Fatalf("failed to create opencode agent: %v", err)
 	}
@@ -621,7 +627,7 @@ func TestValidateAgentFile_ModelMismatch(t *testing.T) {
 	}
 
 	// OpenCode has wrong model (description matches but model doesn't)
-	opencodeContent := "---\ndescription: Same desc\ntools:\n  read: true\nmodel: wrong-model\nskills: []\n---\n\nBody.\n"
+	opencodeContent := "---\ndescription: Same desc\npermission:\n  read: allow\nmodel: wrong-model\nskills: []\n---\n\nBody.\n"
 	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
 		t.Fatalf("failed to create opencode agent: %v", err)
 	}
@@ -648,7 +654,7 @@ func TestValidateAgentFile_ToolsMismatch(t *testing.T) {
 	}
 
 	// OpenCode has matching description and model but different tools
-	opencodeContent := "---\ndescription: Same desc\ntools:\n  write: true\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nBody.\n"
+	opencodeContent := "---\ndescription: Same desc\npermission:\n  write: allow\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nBody.\n"
 	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
 		t.Fatalf("failed to create opencode agent: %v", err)
 	}
@@ -675,7 +681,7 @@ func TestValidateAgentFile_BodyMismatch(t *testing.T) {
 	}
 
 	// OpenCode has matching description, model, tools but different body
-	opencodeContent := "---\ndescription: Same desc\ntools:\n  read: true\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nDifferent body.\n"
+	opencodeContent := "---\ndescription: Same desc\npermission:\n  read: allow\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nDifferent body.\n"
 	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
 		t.Fatalf("failed to create opencode agent: %v", err)
 	}
@@ -702,7 +708,7 @@ func TestValidateAgentFile_SkillsMismatch(t *testing.T) {
 	}
 
 	// OpenCode has matching description, model, tools but no skills
-	opencodeContent := "---\ndescription: Same desc\ntools:\n  read: true\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nBody.\n"
+	opencodeContent := "---\ndescription: Same desc\npermission:\n  read: allow\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nBody.\n"
 	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
 		t.Fatalf("failed to create opencode agent: %v", err)
 	}
@@ -737,7 +743,7 @@ func TestValidateSync_WithMismatches(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(claudeAgentsDir, "agent-b.md"), []byte(claudeContent), 0644); err != nil {
 		t.Fatalf("failed to create claude agent-b: %v", err)
 	}
-	if err := os.WriteFile(filepath.Join(opencodeAgentDir, "agent-a.md"), []byte("---\ndescription: Agent A\ntools:\n  read: true\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nBody A.\n"), 0644); err != nil {
+	if err := os.WriteFile(filepath.Join(opencodeAgentDir, "agent-a.md"), []byte("---\ndescription: Agent A\npermission:\n  read: allow\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nBody A.\n"), 0644); err != nil {
 		t.Fatalf("failed to create opencode agent: %v", err)
 	}
 
@@ -872,8 +878,8 @@ func TestValidateAgentFile_ClaudeYAMLUnmarshalError(t *testing.T) {
 func TestValidateAgentFile_OpenCodeYAMLUnmarshalError(t *testing.T) {
 	// Tests sync_validator.go yaml.Unmarshal(opencodeFront, &opencodeAgent) error
 	// Need Claude frontmatter that extracts AND unmarshals OK, but OpenCode frontmatter
-	// that fails to unmarshal into OpenCodeAgent (tools must be map[string]bool,
-	// so providing "tools: just-a-string" will cause unmarshal failure).
+	// that fails to unmarshal into OpenCodeAgent (permission must be map[string]string,
+	// so providing "permission: just-a-string" will cause unmarshal failure).
 	tmpDir := t.TempDir()
 
 	claudePath := filepath.Join(tmpDir, "agent.md")
@@ -885,8 +891,8 @@ func TestValidateAgentFile_OpenCodeYAMLUnmarshalError(t *testing.T) {
 		t.Fatalf("failed to create claude agent: %v", err)
 	}
 
-	// OpenCode frontmatter where tools is a plain string (incompatible with map[string]bool)
-	opencodeContent := "---\ndescription: Test\nmodel: opencode-go/minimax-m2.7\ntools: read,write\n---\n\nBody.\n"
+	// OpenCode frontmatter where permission is a plain string (incompatible with map[string]string)
+	opencodeContent := "---\ndescription: Test\nmodel: opencode-go/minimax-m2.7\npermission: read,write\n---\n\nBody.\n"
 	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
 		t.Fatalf("failed to create opencode agent: %v", err)
 	}

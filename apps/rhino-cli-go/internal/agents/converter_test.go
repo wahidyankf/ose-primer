@@ -3,6 +3,7 @@ package agents
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"gopkg.in/yaml.v3"
@@ -123,51 +124,58 @@ func TestParseClaudeTools(t *testing.T) {
 	}
 }
 
-func TestConvertTools(t *testing.T) {
+func TestConvertPermission(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    []string
-		expected map[string]bool
+		expected map[string]string
 	}{
 		{
 			name:  "standard tools",
 			input: []string{"Read", "Write", "Edit", "Glob", "Grep"},
-			expected: map[string]bool{
-				"read":  true,
-				"write": true,
-				"edit":  true,
-				"glob":  true,
-				"grep":  true,
+			expected: map[string]string{
+				"read":  "allow",
+				"write": "allow",
+				"edit":  "allow",
+				"glob":  "allow",
+				"grep":  "allow",
 			},
 		},
 		{
 			name:  "mixed case",
 			input: []string{"READ", "write", "Edit"},
-			expected: map[string]bool{
-				"read":  true,
-				"write": true,
-				"edit":  true,
+			expected: map[string]string{
+				"read":  "allow",
+				"write": "allow",
+				"edit":  "allow",
+			},
+		},
+		{
+			name:  "whitespace trimmed and empties dropped",
+			input: []string{"  Read  ", "", "   "},
+			expected: map[string]string{
+				"read": "allow",
 			},
 		},
 		{
 			name:     "empty array",
 			input:    []string{},
-			expected: map[string]bool{},
+			expected: map[string]string{},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := ConvertTools(tt.input)
+			result := ConvertPermission(tt.input)
 
 			if len(result) != len(tt.expected) {
-				t.Errorf("ConvertTools() length = %d, want %d", len(result), len(tt.expected))
+				t.Errorf("ConvertPermission() length = %d, want %d", len(result), len(tt.expected))
 				return
 			}
 
 			for key, value := range tt.expected {
 				if result[key] != value {
-					t.Errorf("ConvertTools()[%q] = %v, want %v", key, result[key], value)
+					t.Errorf("ConvertPermission()[%q] = %v, want %v", key, result[key], value)
 				}
 			}
 		})
@@ -261,14 +269,14 @@ This is the agent body content.
 		t.Errorf("Color = %q, want %q", agent.Color, "primary")
 	}
 
-	expectedTools := map[string]bool{"read": true, "write": true, "edit": true}
-	if len(agent.Tools) != len(expectedTools) {
-		t.Errorf("Tools length = %d, want %d", len(agent.Tools), len(expectedTools))
+	expectedPermission := map[string]string{"read": "allow", "write": "allow", "edit": "allow"}
+	if len(agent.Permission) != len(expectedPermission) {
+		t.Errorf("Permission length = %d, want %d", len(agent.Permission), len(expectedPermission))
 	}
 
-	for key, value := range expectedTools {
-		if agent.Tools[key] != value {
-			t.Errorf("Tools[%q] = %v, want %v", key, agent.Tools[key], value)
+	for key, value := range expectedPermission {
+		if agent.Permission[key] != value {
+			t.Errorf("Permission[%q] = %v, want %v", key, agent.Permission[key], value)
 		}
 	}
 
@@ -497,6 +505,48 @@ func TestConvertAllAgents_ReadDirError(t *testing.T) {
 	_, _, _, err := ConvertAllAgents(tmpDir, false)
 	if err == nil {
 		t.Error("expected error when .claude/agents directory is missing")
+	}
+}
+
+// TestConvertPermission_MapsGrantedToolsToAllow is the parity guard mirroring
+// the Rust converter's convert_permission_maps_granted_tools_to_allow test:
+// every trimmed, lower-cased, non-empty Claude tool becomes a `permission`
+// entry with value "allow", emitted as a `permission:` block in the OpenCode
+// frontmatter — and the legacy boolean `tools:` map must NOT be emitted.
+func TestConvertPermission_MapsGrantedToolsToAllow(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	inputPath := filepath.Join(tmpDir, "in.md")
+	inputContent := "---\nname: foo-maker\ndescription: d\ntools: Read, Write\nmodel:\n---\nbody\n"
+	if err := os.WriteFile(inputPath, []byte(inputContent), 0644); err != nil {
+		t.Fatalf("Failed to create test input file: %v", err)
+	}
+
+	outputPath := filepath.Join(tmpDir, "out", "in.md")
+	if err := ConvertAgent(inputPath, outputPath, false); err != nil {
+		t.Fatalf("ConvertAgent() failed: %v", err)
+	}
+
+	outputContent, err := os.ReadFile(outputPath)
+	if err != nil {
+		t.Fatalf("Failed to read output file: %v", err)
+	}
+	written := string(outputContent)
+
+	if !strings.Contains(written, "permission:\n") {
+		t.Errorf("expected a permission: block in frontmatter, got:\n%s", written)
+	}
+	if !strings.Contains(written, "  read: allow\n") {
+		t.Errorf("expected granted tool read mapped to allow, got:\n%s", written)
+	}
+	if !strings.Contains(written, "  write: allow\n") {
+		t.Errorf("expected granted tool write mapped to allow, got:\n%s", written)
+	}
+	if strings.Contains(written, "tools:") {
+		t.Errorf("boolean tools: map must not be emitted, got:\n%s", written)
+	}
+	if strings.Contains(written, "read: true") {
+		t.Errorf("boolean tool flags must not be emitted, got:\n%s", written)
 	}
 }
 

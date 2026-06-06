@@ -23,16 +23,16 @@ func TestClaudeAgent(t *testing.T) {
 }
 
 func TestOpenCodeAgent(t *testing.T) {
-	tools := map[string]bool{
-		"read":  true,
-		"write": true,
-		"edit":  true,
+	permission := map[string]string{
+		"read":  "allow",
+		"write": "allow",
+		"edit":  "allow",
 	}
 
 	agent := OpenCodeAgent{
 		Description: "Test agent description",
 		Model:       "opencode-go/minimax-m2.7",
-		Tools:       tools,
+		Permission:  permission,
 	}
 
 	if agent.Description != "Test agent description" {
@@ -41,11 +41,11 @@ func TestOpenCodeAgent(t *testing.T) {
 	if agent.Model != "opencode-go/minimax-m2.7" {
 		t.Errorf("Expected model 'opencode-go/minimax-m2.7', got '%s'", agent.Model)
 	}
-	if len(agent.Tools) != 3 {
-		t.Errorf("Expected 3 tools, got %d", len(agent.Tools))
+	if len(agent.Permission) != 3 {
+		t.Errorf("Expected 3 permission entries, got %d", len(agent.Permission))
 	}
-	if !agent.Tools["read"] {
-		t.Error("Expected 'read' tool to be true")
+	if agent.Permission["read"] != "allow" {
+		t.Errorf("Expected 'read' permission to be 'allow', got '%s'", agent.Permission["read"])
 	}
 }
 

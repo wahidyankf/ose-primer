@@ -99,18 +99,19 @@ func ParseClaudeTools(toolsRaw interface{}) []string {
 	return tools
 }
 
-// ConvertTools converts Claude tools array to OpenCode tools map.
-func ConvertTools(claudeTools []string) map[string]bool {
-	tools := make(map[string]bool)
+// ConvertPermission converts a Claude tools array to the OpenCode permission
+// map: every trimmed, lower-cased, non-empty tool name maps to "allow".
+func ConvertPermission(claudeTools []string) map[string]string {
+	permission := make(map[string]string)
 
 	for _, tool := range claudeTools {
 		toolLower := strings.ToLower(strings.TrimSpace(tool))
 		if toolLower != "" {
-			tools[toolLower] = true
+			permission[toolLower] = "allow"
 		}
 	}
 
-	return tools
+	return permission
 }
 
 // claudeToOpenCodeColor maps Claude named colors to OpenCode theme tokens.
@@ -218,7 +219,7 @@ func ConvertAgent(inputPath, outputPath string, dryRun bool) error {
 	opencodeAgent := OpenCodeAgent{
 		Description: description,
 		Model:       ConvertModel(model),
-		Tools:       ConvertTools(tools),
+		Permission:  ConvertPermission(tools),
 		Color:       ConvertColor(color),
 		Skills:      skills,
 	}

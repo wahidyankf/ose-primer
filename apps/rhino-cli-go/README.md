@@ -345,7 +345,7 @@ rhino-cli agents sync -v
 
 **Agents (`.claude/agents/` → `.opencode/agents/`):**
 
-- Converts tools array to boolean map (`Read, Write` → `read: true, write: true`)
+- Converts tools array to permission map (`Read, Write` → `read: allow, write: allow`)
 - Maps models (`sonnet`/`opus` → `opencode-go/minimax-m2.7`, `haiku` → `opencode-go/glm-5`, empty → `opencode-go/minimax-m2.7`)
 - Removes Claude-specific fields (`name`, `color`)
 - Preserves description, skills, and body content

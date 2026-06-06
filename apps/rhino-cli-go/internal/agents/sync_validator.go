@@ -266,19 +266,19 @@ func validateAgentFile(name, claudePath, opencodePath string) ValidationCheck {
 		}
 	}
 
-	// Check tools
+	// Check tools (emitted as the OpenCode permission map).
 	var claudeTools []string
 	if toolsRaw, ok := claudeData["tools"]; ok {
 		claudeTools = ParseClaudeTools(toolsRaw)
 	}
-	expectedTools := ConvertTools(claudeTools)
+	expectedPermission := ConvertPermission(claudeTools)
 
-	if !toolsMatch(expectedTools, opencodeAgent.Tools) {
+	if !permissionsMatch(expectedPermission, opencodeAgent.Permission) {
 		return ValidationCheck{
 			Name:     fmt.Sprintf("Agent: %s", name),
 			Status:   "failed",
-			Expected: fmt.Sprintf("Tools: %v", sortedKeys(expectedTools)),
-			Actual:   fmt.Sprintf("Tools: %v", sortedKeys(opencodeAgent.Tools)),
+			Expected: fmt.Sprintf("Tools: %v", sortedKeys(expectedPermission)),
+			Actual:   fmt.Sprintf("Tools: %v", sortedKeys(opencodeAgent.Permission)),
 			Message:  "Tools mismatch",
 		}
 	}
@@ -402,7 +402,7 @@ func countMarkdownFiles(dir string) int {
 	return count
 }
 
-func toolsMatch(a, b map[string]bool) bool {
+func permissionsMatch(a, b map[string]string) bool {
 	if len(a) != len(b) {
 		return false
 	}
@@ -430,7 +430,7 @@ func skillsMatch(a, b []string) bool {
 	return true
 }
 
-func sortedKeys(m map[string]bool) []string {
+func sortedKeys(m map[string]string) []string {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
