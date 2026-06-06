@@ -54,6 +54,7 @@ The repository follows a **six-layer governance architecture** (Vision → Princ
 
 - **[Rules](../../repo-governance/README.md)** - All governance layers (Vision, Principles, Conventions, Development, Workflows)
 - **[Repository Governance Architecture](../../repo-governance/repository-governance-architecture.md)** - Comprehensive architecture deep-dive
+- **[Plan Domain Parity — Design Decisions](./plan-domain-parity-decisions.md)** - All 26 deviation-matrix decisions from the 2026-06-06 cross-repo parity effort, including the recorded Safety Invariant 6 direct-push deviation
 
 ### Software Engineering
 
