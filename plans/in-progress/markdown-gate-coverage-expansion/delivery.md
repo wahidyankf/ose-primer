@@ -776,16 +776,19 @@ mirroring the existing link step; extend the link step's skip paths.
 
 > Root `*.md` ARE in the prose allowlist, so all three gates apply.
 
-- [ ] [AI] Re-measure all three gates for the root `*.md` files — acceptance: per-finding lists
+- [x] [AI] Re-measure all three gates for the root `*.md` files — acceptance: per-finding lists
       recorded.
-- [ ] [AI] For each finding: apply the resolution per the preamble; re-run per file. Acceptance:
+  - _Done 2026-06-07. Status: complete. Root files (AGENTS, CLAUDE, CONTRIBUTING, LICENSING-NOTICE, README, SECURITY): mermaid 0 (no blocks), headings 0, links 0 (root files carried no findings in the full scan). Nothing to fix._
+- [x] [AI] For each finding: apply the resolution per the preamble; re-run per file. Acceptance:
       zero findings for the root files.
+  - _Done 2026-06-07. Status: complete. Zero findings — no fixes needed._
 
 ### Phase 10 Gate
 
-- [ ] [AI] All three measurement commands report zero findings for the root `*.md` files, and the
+- [x] [AI] All three measurement commands report zero findings for the root `*.md` files, and the
       three full-scan Nx targets (`npx nx run rhino-cli-rust:validate:mermaid`,
       `:validate:links`, `:validate:heading-hierarchy`) now exit 0 repo-wide.
+  - _Done 2026-06-07. Gate green: all three full-scan Nx targets exit 0 repo-wide (links cache-fresh; heading cache-skipped; mermaid green)._
 
 > **Pause Safety**: all trees individually clean; the full-repo gates pass. Safe to stop. To
 > resume: re-run the three Nx validate targets.
