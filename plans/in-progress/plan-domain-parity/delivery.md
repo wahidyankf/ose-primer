@@ -628,36 +628,62 @@ changes so capability parity holds.
 
 ## Phase 6: Supersede planning-system-overhaul (Row 23)
 
-- [ ] [AI] Re-inventory `plans/in-progress/planning-system-overhaul/delivery.md` for
+- [x] [AI] Re-inventory `plans/in-progress/planning-system-overhaul/delivery.md` for
       unchecked items: `grep -n "^- \[ \]" plans/in-progress/planning-system-overhaul/delivery.md`
       — acceptance: confirmed that only archival items remain (lines 216–232 as of
       2026-06-06 [Repo-grounded]); if any NEW substantive unchecked item appears, absorb
       it into this checklist before proceeding and record the absorption in the commit
       message.
-- [ ] [AI] Add a supersession pointer to
+  - _Implementation notes (2026-06-07)_: Status DONE. 7 unchecked items, all archival
+    (lines 216–232 confirmed). KEY DISCOVERY: an authoritative archive ALREADY exists
+    at plans/done/2026-05-26\_\_planning-system-overhaul (status Completed; done README
+    entry present; its tech-docs carries the newer wording) — the in-progress folder
+    was a stale duplicate left by a copy-instead-of-move archival. Nothing substantive
+    to absorb.
+- [x] [AI] Add a supersession pointer to
       `plans/in-progress/planning-system-overhaul/README.md`: a `## Superseded` section
       stating the plan is closed by `plans/in-progress/plan-domain-parity/` (matrix
       row 23) with a relative link — acceptance: section present; `npm run lint:md`
       passes on the file.
-- [ ] [AI] Archive with completion-date prefix (today's date at execution time):
+  - _Implementation notes (2026-06-07)_: Status DONE (adapted). The target file was a
+    stale duplicate slated for deletion — adding a section to a file being removed
+    would be pointless; the supersession/closure rationale is recorded in the cleanup
+    commit body and here instead.
+- [x] [AI] Archive with completion-date prefix (today's date at execution time):
       `git mv plans/in-progress/planning-system-overhaul "plans/done/$(date +%F)__planning-system-overhaul"`
       — acceptance: folder exists under `plans/done/` with the date prefix; nothing
       remains under `plans/in-progress/planning-system-overhaul/`.
-- [ ] [AI] Update `plans/in-progress/README.md` (remove the entry) and
+  - _Implementation notes (2026-06-07)_: Status DONE (adapted). A dated archive
+    already existed (2026-05-26 prefix); a second dated copy would duplicate the
+    archive, so the stale in-progress folder was `git rm`'d instead. Acceptance state
+    holds: the plan lives under plans/done/ with a date prefix and nothing remains
+    under plans/in-progress/planning-system-overhaul/.
+- [x] [AI] Update `plans/in-progress/README.md` (remove the entry) and
       `plans/done/README.md` (add the entry with completion date and supersession note)
       — acceptance: both lists accurate.
-- [ ] [AI] Sweep orphaned references:
+  - _Implementation notes (2026-06-07)_: Status DONE. In-progress entry removed (and
+    its plans.md anchor drift fixed: #-plan-folder-naming → #plan-folder-naming);
+    done README already carried the 2026-05-26 entry — both lists accurate.
+- [x] [AI] Sweep orphaned references:
       `grep -rn "in-progress/planning-system-overhaul" . --include="*.md" | grep -v plans/done`
       — acceptance: zero live references.
-- [ ] [AI] Commit: `chore(plans): archive planning-system-overhaul as superseded by plan-domain-parity`
+  - _Implementation notes (2026-06-07)_: Status DONE — zero live references (this
+    plan's own historical notes excluded).
+- [x] [AI] Commit: `chore(plans): archive planning-system-overhaul as superseded by plan-domain-parity`
       — acceptance: single archival commit.
+  - _Implementation notes (2026-06-07)_: Status DONE. Single commit
+    `chore(plans): remove stale planning-system-overhaul duplicate superseded by
+plan-domain-parity` (7 files, +334/−863) — message adapted to the
+    duplicate-cleanup reality.
 
 ### Phase 6 Gate
 
 > All checks below must pass before starting Phase 7.
 
-- [ ] [AI] `test ! -d plans/in-progress/planning-system-overhaul` exits 0.
-- [ ] [AI] The orphan-reference sweep returns zero live references; `npm run lint:md` exits 0.
+- [x] [AI] `test ! -d plans/in-progress/planning-system-overhaul` exits 0.
+  - _Implementation notes (2026-06-07)_: Status PASS — absent.
+- [x] [AI] The orphan-reference sweep returns zero live references; `npm run lint:md` exits 0.
+  - _Implementation notes (2026-06-07)_: Status PASS — sweep 0; lint:md exit 0.
 
 > **Pause Safety**: exactly one in-progress plan owns the planning-system concern; the
 > old plan is archived with a pointer. Safe to stop. To resume: re-run the orphan sweep.
@@ -666,7 +692,7 @@ changes so capability parity holds.
 
 > _Suggested executor: `docs-maker`_
 
-- [ ] [AI] Create `docs/explanation/plan-domain-parity-decisions.md` (_New file_,
+- [x] [AI] Create `docs/explanation/plan-domain-parity-decisions.md` (_New file_,
       Diátaxis explanation type, sibling reference: `docs/explanation/README.md` index
       style) explaining EVERY matrix decision (all 26 rows with justifications, sourced
       from [tech-docs.md](../../../plans/in-progress/plan-domain-parity/tech-docs.md) —
@@ -677,18 +703,28 @@ changes so capability parity holds.
       plan-multi-repo-parity-planning workflow; matrix row 22) — acceptance: file exists;
       all 26 rows covered; the deviation section names Safety Invariant 6 and the
       approval provenance (invoker grill, 2026-06-06).
-- [ ] [AI] Index the new doc in `docs/explanation/README.md` — acceptance: entry present
+  - _Implementation notes (2026-06-07)_: Status DONE (executor: docs-maker). 26 `### Row`
+    sections; Safety Invariant 6 named 4× with invoker-grill provenance; primer-specific
+    outcomes documented (rows 11/19/21/23 differ from upstream narrative). prettier +
+    markdownlint 0 errors. Files changed:
+    docs/explanation/plan-domain-parity-decisions.md (new).
+- [x] [AI] Index the new doc in `docs/explanation/README.md` — acceptance: entry present
       with a one-line description.
-- [ ] [AI] Commit: `docs(explanation): add plan-domain-parity decision rationale` —
+  - _Implementation notes (2026-06-07)_: Status DONE (same docs-maker run). Entry under
+    Repository Governance. Files changed: docs/explanation/README.md.
+- [x] [AI] Commit: `docs(explanation): add plan-domain-parity decision rationale` —
       acceptance: committed.
+  - _Implementation notes (2026-06-07)_: Status DONE. Commit landed (2 files, +422).
 
 ### Phase 7 Gate
 
 > All checks below must pass before starting Phase 8.
 
-- [ ] [AI] `test -f docs/explanation/plan-domain-parity-decisions.md` exits 0;
+- [x] [AI] `test -f docs/explanation/plan-domain-parity-decisions.md` exits 0;
       `grep -n "Safety Invariant 6" docs/explanation/plan-domain-parity-decisions.md` ≥ 1.
-- [ ] [AI] `npm run lint:md` exits 0; `git status` clean.
+  - _Implementation notes (2026-06-07)_: Status PASS — file exists; 4 mentions.
+- [x] [AI] `npm run lint:md` exits 0; `git status` clean.
+  - _Implementation notes (2026-06-07)_: Status PASS — lint 0; clean except plan notes.
 
 > **Pause Safety**: the decision record is durable in git; only delivery (push + CI +
 > archival) remains. Safe to stop. To resume: `git status && npm run lint:md`.
@@ -700,33 +736,52 @@ changes so capability parity holds.
 > **Important**: Fix ALL failures found during quality gates, not just those caused by
 > your changes (root-cause orientation; preexisting fixes get separate commits).
 
-- [ ] [AI] Run affected typecheck: `npx nx affected -t typecheck` — exits 0.
-- [ ] [AI] Run affected linting: `npx nx affected -t lint` — exits 0.
-- [ ] [AI] Run affected quick tests: `npx nx affected -t test:quick` — exits 0.
-- [ ] [AI] Run affected spec coverage: `npx nx affected -t spec-coverage` — exits 0.
-- [ ] [AI] Run markdown gates: `npm run lint:md && npm run format:md:check` — exit 0.
-- [ ] [AI] Run the full binding chain once more: `npm run validate:config` — exits 0.
-- [ ] [AI] Re-run any failing check after fixing — acceptance: zero failures remain.
+- [x] [AI] Run affected typecheck: `npx nx affected -t typecheck` — exits 0.
+  - _Implementation notes (2026-06-07)_: Status PASS after fixing three PREEXISTING
+    fresh-worktree environment gaps (machine-level, no repo changes): `mix deps.get`
+    in 4 Elixir projects, `dotnet restore` for crud-be-{fsharp-giraffe,
+    csharp-aspnetcore} (fsharp needs explicit .fsproj paths — no .sln), and the
+    missing gitignored `classes/` compile dir for clojure-openapi-codegen.
+- [x] [AI] Run affected linting: `npx nx affected -t lint` — exits 0.
+  - _Implementation notes (2026-06-07)_: Status PASS — exit 0.
+- [x] [AI] Run affected quick tests: `npx nx affected -t test:quick` — exits 0.
+  - _Implementation notes (2026-06-07)_: Status PASS — exit 0.
+- [x] [AI] Run affected spec coverage: `npx nx affected -t spec-coverage` — exits 0.
+  - _Implementation notes (2026-06-07)_: Status PASS — exit 0.
+- [x] [AI] Run markdown gates: `npm run lint:md && npm run format:md:check` — exit 0.
+  - _Implementation notes (2026-06-07)_: Status PASS — exit 0.
+- [x] [AI] Run the full binding chain once more: `npm run validate:config` — exits 0.
+  - _Implementation notes (2026-06-07)_: Status PASS — exit 0.
+- [x] [AI] Re-run any failing check after fixing — acceptance: zero failures remain.
+  - _Implementation notes (2026-06-07)_: Status PASS — typecheck re-run green after
+    the environment fixes; zero failures remain.
 
 ### Manual CLI Verification (No UI/API in Scope)
 
 This plan touches no web UI or HTTP API, so Playwright MCP / curl sections do not apply.
 CLI behavior is asserted directly:
 
-- [ ] [AI] Smoke-check a regenerated mirror: read `.opencode/agents/plan-maker.md`
+- [x] [AI] Smoke-check a regenerated mirror: read `.opencode/agents/plan-maker.md`
       frontmatter — acceptance: `permission` object present, no boolean `tools` map,
       `opencode-go/*` model ID intact.
-- [ ] [AI] Smoke-check Codex config: parse `.codex/config.toml` and confirm the
+  - _Implementation notes (2026-06-07)_: Status PASS — permission block present,
+    model opencode-go/minimax-m2.7 intact, no tools map.
+- [x] [AI] Smoke-check Codex config: parse `.codex/config.toml` and confirm the
       `agents.ci-monitor-subagent` sub-table — acceptance: parse exits 0, sub-table
       present, `test ! -d .codex/agents` exits 0.
+  - _Implementation notes (2026-06-07)_: Status PASS — all three checks green.
 
 ### Delivery Push (Worktree-to-Main, Row 22 Deviation)
 
-- [ ] [AI] Confirm the push target one final time (primer `origin main`; deviation
+- [x] [AI] Confirm the push target one final time (primer `origin main`; deviation
       recorded in README, tech-docs, and the rationale doc) — acceptance: the rationale
       doc exists on this branch before the push.
-- [ ] [AI] Push: `git push origin HEAD:main` — acceptance: push accepted by
+  - _Implementation notes (2026-06-07)_: Status DONE. Rationale doc committed on this
+    branch; push target primer origin main per the recorded row-22 deviation.
+- [x] [AI] Push: `git push origin HEAD:main` — acceptance: push accepted by
       `ose-primer` origin.
+  - _Implementation notes (2026-06-07)_: Status DONE — push accepted (SHA recorded in
+    the Phase 8 gate note below after CI verification).
 
 ### Post-Push CI Verification
 
