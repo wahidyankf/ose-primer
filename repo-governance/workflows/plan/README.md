@@ -27,6 +27,8 @@ validation at the end.
 
 Every plan-creation workflow that invokes grilling (pre-write and post-write) MUST follow
 the multi-options grilling format defined in the
+[Grilling-With-Options Convention](../../development/workflow/grilling-with-options.md)
+and implemented canonically by the
 [`grill-me` skill](../../../.claude/skills/grill-me/SKILL.md):
 
 - Ask **one question at a time**
@@ -59,6 +61,7 @@ This format applies to both the First Grill (before writing) and the Second Gril
   lifecycle: repo exploration → grill → web research → grill → plan-maker → plan-quality-gate →
   push. Use when turning a behavioral prompt into a production-ready plan.
 - [Plan Execution](./plan-execution.md) - Execute plan tasks systematically with validation and completion tracking; orchestrated directly by the calling context, validated by `plan-execution-checker`
+- [Plan Multi-Repo Parity Planning](./plan-multi-repo-parity-planning.md) - Author aligned-but-deliberately-divergent plans across multiple sibling repositories for a shared objective: survey → deviation matrix → first grill (hard gate) → web research → second grill → author → gate → deliver. Every cross-repo deviation reaches a recorded decision before authoring begins
 - [Plan Quality Gate](./plan-quality-gate.md) - Validate plan completeness and accuracy, apply fixes iteratively until ZERO findings using plan-checker and plan-fixer
 
 ## Related Documentation

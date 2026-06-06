@@ -25,6 +25,7 @@ These standards define **HOW to execute development workflows**, covering the th
 ## Documents
 
 - [Commit Message Convention](./commit-messages.md) - Understanding Conventional Commits, commit granularity, and why we use them
+- [Grilling-With-Options Convention](./grilling-with-options.md) - Every design-decision interaction with the user (plan creation, design review, stress-testing, requirements clarification) MUST use structured multiple-choice questions: 2-4 concrete options with trade-offs, exactly one Recommended; open-ended questions are forbidden
 - [Implementation Workflow Convention](./implementation.md) - Three-stage development workflow: make it work, make it right, make it fast. Includes surgical changes (touch only what you must) and goal-driven execution (define success criteria, loop until verified)
 - [Reproducible Environments Convention](./reproducible-environments.md) - Practices for creating consistent, reproducible development and build environments
 - [Dependency Bump Stability & Safety Policy](./dependency-bump-policy.md) - Three-path decision tree (LTS / 60-day soak / security waiver), exact-pin hard rule, five-source CVE clearance, CISA KEV fast-track, and EPSS escalation governing every dependency bump across npm, Cargo, .NET, Go, Docker, and GitHub Actions

@@ -60,7 +60,8 @@ Specialized agents organized into families:
 1. **Documentation**: `docs-maker`, `docs-checker`, `docs-fixer`, `docs-tutorial-maker`, `docs-tutorial-checker`, `docs-tutorial-fixer`, `docs-link-checker`, `docs-file-manager`, `docs-software-engineering-separation-checker`, `docs-software-engineering-separation-fixer`
 2. **README**: `readme-maker`, `readme-checker`, `readme-fixer`
 3. **Project Planning**: `plan-maker` (mandates grilling before and after plan creation
-   using 2–4 concrete options per question with a recommended option marked;
+   using 2–4 concrete options per question with a recommended option marked, per the
+   [Grilling-With-Options Convention](./repo-governance/development/workflow/grilling-with-options.md);
    delivery checklists must begin with Phase 0; every checkbox carries an `[AI]`/`[HUMAN]`
    execution marker with a legend and handoff/resume signal for any `[HUMAN]` step; every phase
    closes with a `### Phase N Gate` and a `> **Pause Safety**:` note making it a natural pause),
