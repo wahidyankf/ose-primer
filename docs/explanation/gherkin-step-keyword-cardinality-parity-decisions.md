@@ -23,13 +23,13 @@ repositories via governance docs and a deterministic audit command, and retrofit
 `specs/**/*.feature` corpus to conform.
 
 The full deviation matrix lives in
-[`plans/in-progress/gherkin-step-keyword-cardinality/tech-docs.md`](../../plans/in-progress/gherkin-step-keyword-cardinality/tech-docs.md).
+[`plans/done/2026-06-07__gherkin-step-keyword-cardinality/tech-docs.md`](../../plans/done/2026-06-07__gherkin-step-keyword-cardinality/tech-docs.md).
 
 Sibling plans in the other repositories also carry the rule and are executed in the same
 parity set:
 
-- `ose-public`: `plans/in-progress/gherkin-step-keyword-cardinality/`
-- `ose-infra`: `plans/in-progress/gherkin-step-keyword-cardinality/`
+- `ose-public`: `plans/done/2026-06-07__gherkin-step-keyword-cardinality/`
+- `ose-infra`: `plans/done/2026-06-07__gherkin-step-keyword-cardinality/`
 
 ## Background
 
@@ -255,4 +255,4 @@ is a silent divergence.
 - [BDD Spec-to-Test Mapping Convention](../../repo-governance/development/infra/bdd-spec-test-mapping.md) - How Gherkin connects to tests
 - [Rhino CLI Dual-Implementation Parity Convention](../../repo-governance/conventions/structure/rhino-cli-dual-implementation-parity.md) - Why both CLIs must land together
 - [Plan Domain Parity — Design Decisions](./plan-domain-parity-decisions.md) - Precedent for this document format
-- [Plan](../../plans/in-progress/gherkin-step-keyword-cardinality/tech-docs.md) - Full deviation matrix and design decisions
+- [Plan](../../plans/done/2026-06-07__gherkin-step-keyword-cardinality/tech-docs.md) - Full deviation matrix and design decisions
