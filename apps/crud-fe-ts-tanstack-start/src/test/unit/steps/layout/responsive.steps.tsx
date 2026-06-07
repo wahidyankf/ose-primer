@@ -276,7 +276,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByRole("button", { name: /toggle navigation menu/i })).toBeInTheDocument();
     });
 
-    When("alice taps the hamburger menu button", async () => {
+    And("alice taps the hamburger menu button", async () => {
       const user = userEvent.setup();
       await user.click(screen.getByRole("button", { name: /toggle navigation menu/i }));
       await waitFor(() => {
@@ -284,7 +284,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
-    Then("a slide-out navigation drawer should appear", () => {
+    And("a slide-out navigation drawer should appear", () => {
       expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
   });

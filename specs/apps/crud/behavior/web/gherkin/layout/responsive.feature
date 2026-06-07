@@ -26,8 +26,8 @@ Feature: Responsive Layout
     When alice navigates to the dashboard
     Then the sidebar should not be visible
     And a hamburger menu button should be displayed in the header
-    When alice taps the hamburger menu button
-    Then a slide-out navigation drawer should appear
+    And alice taps the hamburger menu button
+    And a slide-out navigation drawer should appear
 
   Scenario: Mobile navigation drawer closes on item selection
     Given the viewport is set to "mobile" (375x667)
