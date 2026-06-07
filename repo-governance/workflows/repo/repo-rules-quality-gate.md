@@ -82,6 +82,9 @@ User: "Run repository rules quality gate workflow in normal mode"
 
 The AI will:
 
+0. Build the canonical Rust binary if missing (`npx nx run rhino-cli-rust:build`), then run
+   the deterministic preflight (Step 0.5) capturing each category's output to
+   `generated-reports/`.
 1. Invoke `repo-rules-checker` via the Agent tool (reads governance files, writes audit)
 2. Invoke `repo-rules-fixer` via the Agent tool (reads audit, applies fixes, writes fix report)
 3. Iterate until zero findings achieved
@@ -98,6 +101,59 @@ The AI executes checker and fixer logic directly using Read/Write/Edit tools in 
 context — use this when agent delegation is unavailable.
 
 ## Steps
+
+### 0.5. Deterministic Preflight (Sequential)
+
+Run the deterministic governance audits before invoking the AI checker. This repository has
+no audit orchestrator — its deterministic checks are **standalone `repo-governance`
+subcommands**, executed via the canonical Rust binary (per the
+[Dual-Implementation Parity Convention](../../conventions/structure/rhino-cli-dual-implementation-parity.md),
+the Rust implementation is the one CI and the developer toolchain invoke). Each category
+executes in milliseconds and caches via Nx; the AI checker then spends its budget only on
+the AI-judgment categories (semantic contradictions, terminology alignment,
+principle-appropriateness, markdown-fence Gherkin review).
+
+**Why Step 0.5 (and not Step 1, renumbering everything down)**: this step was inserted
+between the pre-existing "Execution Mode" material and Step 1 (Initial Validation).
+Decimal numbering preserves the existing Step 1–6 references in the checker/fixer prompts
+that pre-date the preflight, following the sibling-repo precedent for non-disruptive
+sub-step insertions.
+
+**Deterministic categories** (run BOTH, sequentially, from the repo root):
+
+```bash
+mkdir -p generated-reports
+./apps/rhino-cli-rust/dist/rhino-cli repo-governance vendor-audit \
+  > generated-reports/preflight-vendor-audit__{uuid}__{timestamp}.txt
+# record the exit code per category before running the next one
+./apps/rhino-cli-rust/dist/rhino-cli repo-governance gherkin-keyword-cardinality \
+  > generated-reports/preflight-gherkin-keyword-cardinality__{uuid}__{timestamp}.txt
+```
+
+The binary must be built first via `npx nx run rhino-cli-rust:build`; the prebuilt path is
+`apps/rhino-cli-rust/dist/rhino-cli`.
+
+- **Output**: `{preflight-reports}` — one captured output file per category in
+  `generated-reports/`.
+- **Exit handling** (evaluated per category):
+  - **Exit 0 (clean)**: the category passes; hand the captured output to the checker as
+    evidence.
+  - **Exit 1 with an `AUDIT FAILED` header on stdout (findings)**: deterministic findings
+    present; hand the captured output to the checker, which incorporates the findings
+    verbatim into the final audit's "Deterministic Findings (rhino-cli preflight)" section.
+    Deterministic findings are reported but do NOT count toward the mode threshold — they
+    are fixed at their root (the offending file) rather than iterated through the AI loop.
+  - **Exit 2, or exit 1 without a findings header (invocation error)**: terminate the
+    workflow with `fail` status. **Debugging hint**: re-run the failing subcommand directly
+    (e.g. `./apps/rhino-cli-rust/dist/rhino-cli repo-governance gherkin-keyword-cardinality`)
+    for a human-readable diagnostic. Common causes: missing binary (rebuild via
+    `npx nx run rhino-cli-rust:build`); running outside a git repository.
+
+**Success criteria**: both categories executed; each captured output file exists and
+contains either the category's `PASSED` line or its findings list.
+
+**Depends on**: None (first step in each iteration). Runs again before every re-validation
+iteration so the checker always sees current deterministic state.
 
 ### 1. Initial Validation (Sequential)
 
