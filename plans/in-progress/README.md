@@ -4,12 +4,6 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- [Gherkin step-keyword cardinality rule](./gherkin-step-keyword-cardinality/README.md)
-  — explicit HARD rule (one primary `Given`/`When`/`Then` per scenario, extras chained
-  via `And`/`But`), propagated across governance, enforced by a new deterministic
-  `repo-governance gherkin-keyword-cardinality` audit implemented in BOTH rhino-cli
-  implementations from one behavior contract, with spec retrofit. Part of a three-repo
-  parity set with `ose-public` and `ose-infra`.
 - [Add `investment-oracle` desktop demo](./add-investment-oracle-app/README.md)
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
