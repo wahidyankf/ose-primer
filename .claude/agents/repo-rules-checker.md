@@ -70,6 +70,10 @@ Skill: `repo-generating-validation-reports` (progressive streaming)
 3. **Inconsistencies**: Misaligned terminology, broken cross-references
 4. **Traceability Violations**: Missing required sections (Principles/Conventions Implemented)
 5. **Layer Coherence**: Ensure each layer properly governs/implements layers below
+6. **Gherkin Keyword Cardinality**: Any Gherkin scenario in governance docs that uses more than
+   one primary `Given`, `When`, or `Then` keyword line violates the HARD rule — flag as HIGH.
+   `Background` blocks and `Scenario Outline` `Examples` tables are exempt. See
+   [HARD Rule — Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality).
 
 **Detection Methods**:
 
@@ -690,7 +694,13 @@ Validate file naming, linking, emoji usage, convention compliance per existing l
    - Verify no stale "all specs are FSL" language without demo exception
    - **Criticality**: Missing LICENSE = CRITICAL; wrong license type = HIGH; cross-doc inconsistency = MEDIUM
 
-7. **Write findings progressively** using report format above
+7. **Gherkin Keyword Cardinality (markdown fences)** (see [Acceptance Criteria Convention §HARD Rule — Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality)):
+   - Scope: ` ```gherkin ` fences in `repo-governance/`, `docs/`, `.claude/skills/`, and active plans (`plans/in-progress/`, `plans/backlog/`); `plans/done/` is exempt (immutable archive). Tracked `.feature` files are covered by the deterministic `repo-governance gherkin-keyword-cardinality` command, NOT this step.
+   - For each fence, group lines by `Scenario` and count primary `Given`/`When`/`Then` keyword lines (a primary keyword starts the trimmed line; `And`/`But`/`*` never count; `Background` blocks and `Scenario Outline` `Examples` tables are exempt).
+   - Flag any scenario with more than one primary keyword of the same type — UNLESS the fence carries an explicit deliberate-example label (e.g. a `# NON-CONFORMING EXAMPLE — deliberate…` comment inside the fence), which exempts it.
+   - **Criticality**: unlabeled violating scenario = HIGH; missing deliberate-example label on an intentional teaching counter-example = MEDIUM
+
+8. **Write findings progressively** using report format above
 
 ### Step 8: Software Documentation Validation
 

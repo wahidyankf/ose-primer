@@ -72,6 +72,11 @@ Per the [Content-Placement Rules](../../repo-governance/conventions/structure/pl
 - Personas listed (solo-maintainer hats + consuming agents; **not** external stakeholder roles — flag HIGH if present)
 - User stories follow `As a … I want … So that …` format
 - Acceptance criteria in Gherkin (Given / When / Then / And); flag if Gherkin lives in a different file
+- **Gherkin keyword cardinality (HARD RULE)**: every `Scenario` in Gherkin blocks MUST use
+  exactly one primary `Given`, one `When`, and one `Then` — extras chain with `And`/`But`.
+  Flag as **HIGH** any scenario with two or more primary `Given`, `When`, or `Then` keyword
+  lines. `Background` blocks and `Scenario Outline` `Examples` tables are exempt. See
+  [HARD Rule — Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality).
 - Product scope (in-scope + out-of-scope)
 - Product-level risks
 

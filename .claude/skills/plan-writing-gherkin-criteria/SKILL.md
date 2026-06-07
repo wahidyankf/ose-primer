@@ -57,6 +57,43 @@ Scenario: User logs in with valid credentials
   And session token should be stored in cookies
 ```
 
+## Step-Keyword Cardinality (HARD Rule)
+
+> **HARD rule — one primary keyword each**: Every `Scenario` MUST use exactly **one**
+> primary `Given` line, exactly **one** primary `When` line, and exactly **one** primary
+> `Then` line. Every additional precondition, action, or outcome MUST be chained with
+> `And` or `But` — never a repeated `Given` / `When` / `Then` keyword. This reinforces
+> the "one action / one behavior per scenario" norm.
+>
+> **Exemptions**: `Background` blocks and `Scenario Outline` `Examples` tables are
+> exempt from the one-each constraint.
+
+**Conforming example**:
+
+```gherkin
+Scenario: Login succeeds
+  Given a registered user
+  And the login page is open
+  When the user submits valid credentials
+  Then the dashboard is shown
+  And a session token is set
+```
+
+**Non-conforming example** (violates — two primary `When` keyword lines):
+
+```gherkin
+# NON-CONFORMING EXAMPLE — deliberate illustration of the violation
+Scenario: Login succeeds
+  Given a registered user
+  When the user opens the login page
+  When the user submits valid credentials
+  Then the dashboard is shown
+```
+
+(The fix replaces the second `When` with `And`.)
+
+**Canonical convention**: [HARD Rule — Step-Keyword Cardinality](../../../repo-governance/development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality)
+
 ## Basic Scenario Patterns
 
 ### Pattern 1: Simple Success Path
@@ -477,10 +514,11 @@ Then the response should be received within 200ms
 ```gherkin
 # ❌ Bad - Multiple behaviors
 Scenario: User management and article creation
-  Given I create user "Alice"
-  Then user "Alice" should exist
+  Given I am logged in as admin
+  When I create user "Alice"
   And I create article "Test"
-  Then article "Test" should exist
+  Then user "Alice" should exist
+  And article "Test" should exist
 
 # ✅ Good - Separate scenarios
 Scenario: Create new user

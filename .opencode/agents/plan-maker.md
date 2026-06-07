@@ -233,6 +233,10 @@ plan is complete and correct.
 - Acceptance criteria are testable
 - Scope is clearly defined
 - Constraints are documented
+- **Gherkin keyword cardinality (HARD RULE)**: every `Scenario` uses exactly one primary
+  `Given`, one `When`, and one `Then`; extras chain with `And`/`But`. `Background` blocks
+  and `Scenario Outline` `Examples` tables are exempt. See
+  [HARD Rule — Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality).
 
 ### Technical Documentation Quality
 
