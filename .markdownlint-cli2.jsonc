@@ -21,7 +21,9 @@
     "apps/*/playwright-report/**",
     "apps/*/test-results/**",
     "apps/*/.venv/**",
+    "**/.venv/**",
     ".claude/worktrees/**",
+    "worktrees/**",
     // Archived content — internal links may be stale; do not validate
     "plans/done/**",
     "archived/**",

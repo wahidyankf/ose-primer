@@ -43,3 +43,9 @@ apps/*/test-results/
 # Archived content — internal links may be stale; do not validate
 plans/done/
 archived/
+
+# Git worktrees (gitignored working copies — linted in their own checkouts)
+worktrees/
+
+# Python virtual environments
+**/.venv/
