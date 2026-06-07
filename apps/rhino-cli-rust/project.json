@@ -131,6 +131,12 @@
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/repo-governance/**/*.md"],
       "outputs": []
     },
+    "validate:gherkin-keyword-cardinality": {
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- repo-governance gherkin-keyword-cardinality",
+      "cache": true,
+      "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.feature"],
+      "outputs": []
+    },
     "validate:harness-bindings": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- agents validate-bindings",
       "cache": false,

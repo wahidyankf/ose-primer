@@ -40,7 +40,7 @@ COMMANDS:
                    shared-steps corpus above does not exercise — see NOTE).
   docs             Diff the `docs validate-links|validate-mermaid|validate-heading-hierarchy` corpus
   agents           Diff the `agents sync|validate-claude|validate-sync|validate-naming` corpus
-  repo-governance  Diff the `repo-governance vendor-audit` corpus
+  repo-governance  Diff the `repo-governance vendor-audit|gherkin-keyword-cardinality` corpus
   workflows        Diff the `workflows validate-naming` corpus
   git              Diff the `git pre-commit` corpus (error path only — see NOTE)
   contracts        Diff the `contracts java-clean-imports|dart-scaffold` corpus
@@ -717,6 +717,32 @@ corpus_repo_governance() {
   run_case "vendor-audit fixture clean"  repo-governance vendor-audit "${fix_dir}/clean.md" --no-color
 
   rm -rf "${fix_abs}"
+
+  # --- gherkin-keyword-cardinality: default repo scan + error path. Both
+  # --- binaries emit findings sorted by (path, line) from a lexical walk, so
+  # --- the default scan is deterministic and diffable even while the live tree
+  # --- carries offenders (the retrofit phases clean them later). --------------
+  run_case "gherkin-cardinality default"      repo-governance gherkin-keyword-cardinality --no-color
+  run_case "gherkin-cardinality nonexistent"  repo-governance gherkin-keyword-cardinality does/not/exist --no-color
+
+  # --- Synthetic gherkin fixtures UNDER the repo root (the path argument is
+  # --- joined under the git root by both binaries). One violating + one
+  # --- conforming feature file, each across every format, plus the directory
+  # --- walk over both. --------------------------------------------------------
+  local gkc_dir=".shadow-gherkin-fixtures"
+  local gkc_abs="${REPO_ROOT}/${gkc_dir}"
+  rm -rf "${gkc_abs}"
+  mkdir -p "${gkc_abs}"
+  printf 'Feature: Fixture\n\n  Scenario: Double when offender\n    Given a start\n    When the first action runs\n    When the second action runs\n    Then the outcome is checked\n' > "${gkc_abs}/violating.feature"
+  printf 'Feature: Fixture\n\n  Scenario: Conforming chained scenario\n    Given a start\n    And another precondition\n    When the action runs\n    Then the outcome is checked\n' > "${gkc_abs}/conforming.feature"
+
+  for fmt in text json markdown; do
+    run_case "gherkin-cardinality violating ${fmt}"   repo-governance gherkin-keyword-cardinality "${gkc_dir}/violating.feature" -o "${fmt}" --no-color
+    run_case "gherkin-cardinality conforming ${fmt}"  repo-governance gherkin-keyword-cardinality "${gkc_dir}/conforming.feature" -o "${fmt}" --no-color
+  done
+  run_case "gherkin-cardinality fixture dir"  repo-governance gherkin-keyword-cardinality "${gkc_dir}" --no-color
+
+  rm -rf "${gkc_abs}"
 }
 
 corpus_workflows() {

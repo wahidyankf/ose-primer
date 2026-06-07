@@ -94,6 +94,12 @@
       "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/repo-governance/**/*.md"],
       "outputs": []
     },
+    "validate:gherkin-keyword-cardinality": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go repo-governance gherkin-keyword-cardinality",
+      "cache": true,
+      "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/**/*.feature"],
+      "outputs": []
+    },
     "validate:harness-bindings": {
       "command": "CGO_ENABLED=0 go run -C apps/rhino-cli-go main.go agents validate-bindings",
       "cache": false,

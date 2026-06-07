@@ -134,6 +134,9 @@ pub enum RepoGovernanceCommands {
     /// Scan governance markdown files for forbidden vendor-specific terms.
     #[command(name = "vendor-audit")]
     VendorAudit(repo_governance::VendorAuditArgs),
+    /// Audit feature files for scenarios with repeated primary Gherkin keywords.
+    #[command(name = "gherkin-keyword-cardinality")]
+    GherkinKeywordCardinality(repo_governance::GherkinKeywordCardinalityArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -257,6 +260,10 @@ fn dispatch(cmd: &Commands, output_format: OutputFormat, verbose: bool, quiet: b
             RepoGovernanceCommands::VendorAudit(args) => (
                 repo_governance::run_vendor_audit(args, output_format),
                 repo_governance::VENDOR_AUDIT_USAGE,
+            ),
+            RepoGovernanceCommands::GherkinKeywordCardinality(args) => (
+                repo_governance::run_gherkin_keyword_cardinality(args, output_format),
+                repo_governance::GHERKIN_KEYWORD_CARDINALITY_USAGE,
             ),
         },
         Commands::Workflows(wf) => match wf {

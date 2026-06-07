@@ -1,10 +1,11 @@
-//! Cucumber-rs integration tests for the `repo-governance vendor-audit` command.
+//! Cucumber-rs integration tests for the `repo-governance vendor-audit` and
+//! `repo-governance gherkin-keyword-cardinality` commands.
 //!
-//! Wires the behavior-contract feature file at
+//! Wires the behavior-contract feature files at
 //! `specs/apps/rhino/behavior/cli/gherkin/repo-governance/` to step definitions
-//! that synthesize governance markdown fixtures inside a fresh git-rooted temp
-//! workspace and drive the compiled `rhino-cli` binary, asserting on its output
-//! and exit code.
+//! that synthesize markdown / feature-file fixtures inside a fresh git-rooted
+//! temp workspace and drive the compiled `rhino-cli` binary, asserting on its
+//! output and exit code.
 
 use std::path::PathBuf;
 use std::process::Output;
@@ -21,6 +22,8 @@ struct GovernanceWorld {
     work: TempDir,
     /// Repo-relative path of the fixture file or directory to audit.
     target: String,
+    /// `repo-governance` subcommand under test.
+    subcommand: &'static str,
     output: Option<Output>,
 }
 
@@ -39,6 +42,7 @@ impl GovernanceWorld {
         Self {
             work,
             target: String::new(),
+            subcommand: "vendor-audit",
             output: None,
         }
     }
@@ -55,7 +59,7 @@ impl GovernanceWorld {
         let out = std::process::Command::new(cargo_bin("rhino-cli"))
             .args([
                 "repo-governance",
-                "vendor-audit",
+                self.subcommand,
                 &self.target,
                 "--no-color",
             ])
@@ -152,6 +156,64 @@ fn given_skills_in_fence(w: &mut GovernanceWorld) {
     w.write(&w.target.clone(), "# Doc\n\n```\nSkills\n```\n");
 }
 
+#[given(r#"a feature file containing a scenario with two primary "When" keywords"#)]
+fn given_feature_two_primary_whens(w: &mut GovernanceWorld) {
+    w.target = "specs/violating.feature".to_string();
+    w.write(
+        &w.target.clone(),
+        "Feature: Fixture\n\n  Scenario: Double when offender\n    Given a start\n    When the first action runs\n    When the second action runs\n    Then the outcome is checked\n",
+    );
+}
+
+#[given(r#"a feature file whose scenarios each use one primary keyword chained with "And""#)]
+fn given_feature_conforming_chained(w: &mut GovernanceWorld) {
+    w.target = "specs/conforming.feature".to_string();
+    w.write(
+        &w.target.clone(),
+        "Feature: Fixture\n\n  Scenario: Conforming chained scenario\n    Given a start\n    And another precondition\n    When the action runs\n    Then the outcome is checked\n    And a second outcome is checked\n    But a third outcome is absent\n",
+    );
+}
+
+#[given(r#"a feature file whose Background block repeats the "Given" keyword"#)]
+fn given_feature_background_repeats(w: &mut GovernanceWorld) {
+    w.target = "specs/background.feature".to_string();
+    w.write(
+        &w.target.clone(),
+        "Feature: Fixture\n\n  Background:\n    Given one precondition\n    Given another precondition\n\n  Scenario: Conforming body\n    Given a thing\n    When it acts\n    Then it is checked\n",
+    );
+}
+
+#[given("a feature file with a Scenario Outline whose Examples table has many rows")]
+fn given_feature_outline_examples(w: &mut GovernanceWorld) {
+    w.target = "specs/outline.feature".to_string();
+    w.write(
+        &w.target.clone(),
+        "Feature: Fixture\n\n  Scenario Outline: Outline body obeys the rule\n    Given a value <v>\n    When it is processed\n    Then it succeeds\n\n    Examples:\n      | v |\n      | 1 |\n      | 2 |\n      | 3 |\n",
+    );
+}
+
+#[given("a feature file whose doc-strings and comments contain primary keyword words")]
+fn given_feature_docstrings_comments(w: &mut GovernanceWorld) {
+    w.target = "specs/docstring.feature".to_string();
+    w.write(
+        &w.target.clone(),
+        "Feature: Fixture\n\n  Scenario: Docstring and comment heavy\n    Given a setup\n    When something runs with this payload\n      \"\"\"\n      When this line is data, not a step\n      Then neither is this one\n      \"\"\"\n    # Then this comment line is ignored\n    Then the result is checked\n",
+    );
+}
+
+#[given("a directory of feature files that all obey the one-each keyword rule")]
+fn given_conforming_feature_directory(w: &mut GovernanceWorld) {
+    w.target = "specs".to_string();
+    w.write(
+        "specs/a.feature",
+        "Feature: A\n\n  Scenario: Conforming chained scenario\n    Given a start\n    And another precondition\n    When the action runs\n    Then the outcome is checked\n",
+    );
+    w.write(
+        "specs/b.feature",
+        "Feature: B\n\n  Background:\n    Given one precondition\n    Given another precondition\n\n  Scenario: Conforming body\n    Given a thing\n    When it acts\n    Then it is checked\n",
+    );
+}
+
 // ===========================================================================
 // When steps
 // ===========================================================================
@@ -159,6 +221,13 @@ fn given_skills_in_fence(w: &mut GovernanceWorld) {
 #[when("the developer runs repo-governance vendor-audit on the file")]
 #[when("the developer runs repo-governance vendor-audit on the directory")]
 fn when_run_audit(w: &mut GovernanceWorld) {
+    w.exec();
+}
+
+#[when("the developer runs repo-governance gherkin-keyword-cardinality on the file")]
+#[when("the developer runs repo-governance gherkin-keyword-cardinality on the directory")]
+fn when_run_cardinality_audit(w: &mut GovernanceWorld) {
+    w.subcommand = "gherkin-keyword-cardinality";
     w.exec();
 }
 
@@ -188,6 +257,26 @@ fn then_zero_findings(w: &mut GovernanceWorld) {
     let out = w.stdout();
     assert!(
         out.contains("GOVERNANCE VENDOR AUDIT PASSED: no violations found"),
+        "got: {out}"
+    );
+}
+
+#[then("the output names the offending file and scenario")]
+fn then_names_offending_file_and_scenario(w: &mut GovernanceWorld) {
+    let out = w.stdout();
+    assert!(
+        out.contains("GHERKIN KEYWORD CARDINALITY AUDIT FAILED"),
+        "got: {out}"
+    );
+    assert!(out.contains("violating.feature:"), "got: {out}");
+    assert!(out.contains("Double when offender"), "got: {out}");
+}
+
+#[then("the output reports zero cardinality findings")]
+fn then_zero_cardinality_findings(w: &mut GovernanceWorld) {
+    let out = w.stdout();
+    assert!(
+        out.contains("GHERKIN KEYWORD CARDINALITY AUDIT PASSED: no violations found"),
         "got: {out}"
     );
 }
