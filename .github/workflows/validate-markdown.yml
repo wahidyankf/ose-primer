@@ -32,3 +32,6 @@ jobs:
 
       - name: Validate heading hierarchy
         run: npx nx run rhino-cli-rust:validate:heading-hierarchy
+
+      - name: Validate gherkin keyword cardinality
+        run: npx nx run rhino-cli-rust:validate:gherkin-keyword-cardinality
