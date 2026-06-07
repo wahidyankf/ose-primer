@@ -97,7 +97,7 @@ This rule applies when a harness convention change requires updating generator l
 - **Generator-logic change** (a translation rule in `apps/rhino-cli-go/internal/agents/` or `apps/rhino-cli-rust/src/`): this is a code change and falls under Rule 1. The fixer surfaces it as a coupled both-CLI finding rather than applying it automatically. The identical change must land in both implementations in the same delivery.
 
 **Rule 2 — The spec is the source of truth.**
-Behavior is defined in `specs/apps/rhino/behavior/cli/gherkin/`. When the desired behavior changes, update the spec first, then update both implementations to match. Do not add behavior to an implementation that is not expressed in the spec.
+Behavior is defined in `specs/apps/rhino/behavior/cli/gherkin/`. When the desired behavior changes, update the spec first, then update both implementations to match. Do not add behavior to an implementation that is not expressed in the spec. Every scenario in the spec MUST follow the one-each keyword rule (exactly one primary `Given`, one `When`, one `Then`; extras chain with `And`/`But`). See [HARD Rule — Step-Keyword Cardinality](../../development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality).
 
 **Rule 3 — Spec-coverage must pass for both.**
 Each implementation has its own spec-coverage target. Both must pass. A green Rust spec-coverage result does not substitute for a Go spec-coverage result.

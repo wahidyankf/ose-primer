@@ -181,6 +181,9 @@ the three phase items.
 
 Acceptance criteria in `prd.md` are written as Gherkin scenarios (per the
 [plan-writing-gherkin-criteria skill](../../../.claude/skills/plan-writing-gherkin-criteria/SKILL.md)).
+Every Gherkin scenario MUST follow the one-each keyword rule: exactly one primary `Given`,
+one `When`, and one `Then` per scenario (extras chain with `And`/`But`). See
+[HARD Rule — Step-Keyword Cardinality](../infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality).
 Those Gherkin scenarios are the natural source of the first failing tests. The chain:
 
 ```

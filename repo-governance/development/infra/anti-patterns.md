@@ -325,6 +325,46 @@ local-temp/temp-backup-v2.tar.gz
 - Retention policies unknown
 - Documentation prevents confusion
 
+### Anti-Pattern 11: Multiple Primary Keyword Lines in One Scenario
+
+**Problem**: Using more than one primary `When` or `Then` keyword line in a single `Scenario`.
+This violates the HARD rule that every `Scenario` uses exactly one primary `Given`, one `When`,
+and one `Then`. See
+[HARD Rule — Step-Keyword Cardinality](./acceptance-criteria.md#hard-rule--step-keyword-cardinality).
+
+**Bad Example:**
+
+```gherkin
+# NON-CONFORMING EXAMPLE — deliberate illustration of the violation
+# NON-CONFORMING — deliberate illustration of the violation
+Scenario: User logs in
+  Given a registered user
+  When the user opens the login page
+  When the user submits valid credentials
+  Then the dashboard is shown
+  Then a session token is set
+```
+
+**Solution:**
+
+```gherkin
+Scenario: User logs in
+  Given a registered user
+  When the user submits valid credentials
+  Then the dashboard is shown
+  And a session token is set
+```
+
+**Rationale:**
+
+- Multiple primary `When` lines hide multiple actions inside one scenario — obscuring intent
+- Multiple primary `Then` lines mix distinct outcomes that belong in separate scenarios
+- The one-each rule enforces "one action / one behavior per scenario"
+- `And`/`But` express continuation of the same phase, not a new phase
+
+**Note**: `Background` blocks and `Scenario Outline` `Examples` tables are exempt from the
+one-each constraint.
+
 ## 📋 Summary of Anti-Patterns
 
 | Anti-Pattern                  | Problem                | Solution                           |
@@ -339,6 +379,7 @@ local-temp/temp-backup-v2.tar.gz
 | **Never Cleaning Up**         | Directory bloat        | Periodic cleanup                   |
 | **Conversation-Only Output**  | Lost during compaction | Write report files                 |
 | **Undocumented Temp Files**   | Purpose unclear        | Add README documentation           |
+| **Multi-Keyword Scenarios**   | Violates one-each rule | Chain extras with `And`/`But`      |
 
 ## 🔗 Related Documentation
 

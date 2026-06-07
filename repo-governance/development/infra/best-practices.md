@@ -195,6 +195,12 @@ CHAIN_FILE="generated-reports/.execution-chain"
 
 **Principle**: Use Given-When-Then format for testable requirements.
 
+**HARD rule — one primary keyword each**: Every `Scenario` MUST use exactly one primary
+`Given` line, exactly one primary `When` line, and exactly one primary `Then` line.
+Extras chain with `And`/`But`. `Background` blocks and `Scenario Outline` `Examples`
+tables are exempt. See
+[HARD Rule — Step-Keyword Cardinality](./acceptance-criteria.md#hard-rule--step-keyword-cardinality).
+
 **Good Example:**
 
 ```gherkin
@@ -205,7 +211,19 @@ Scenario: User logs in with valid credentials
   And a session token is created
 ```
 
-**Bad Example:**
+**Bad Example (multiple primary `When` keyword lines — VIOLATES the HARD rule):**
+
+```gherkin
+# NON-CONFORMING EXAMPLE — deliberate illustration of the violation
+# NON-CONFORMING — deliberate illustration of the violation
+Scenario: User logs in with valid credentials
+  Given a registered user with email "user@example.com"
+  When the user opens the login page
+  When the user submits login form with correct password
+  Then the user is redirected to dashboard
+```
+
+**Bad Example (vague, not Gherkin):**
 
 ```markdown
 The system should allow users to log in.
@@ -215,6 +233,7 @@ The system should allow users to log in.
 
 - Testable and executable specifications
 - Clear setup, action, and expected outcome
+- One action / one behavior per scenario (enforced by the one-each keyword rule)
 - Enables automated testing
 - Reduces ambiguity in requirements
 
