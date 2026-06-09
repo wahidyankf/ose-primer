@@ -1,0 +1,77 @@
+# Migrate rhino-cli (Go + Rust) to Hexagonal Architecture
+
+> **Status**: In Progress (planning artifact — NOT yet executed)
+> **Identifier**: `migrate-rhino-cli-to-hexagonal`
+> **Stage**: `in-progress`
+> **Worktree**: `worktrees/migrate-rhino-cli-to-hexagonal/`
+
+## Context
+
+The two sibling CLI applications — `apps/rhino-cli-go` (Go, cobra, ~10,400 LOC
+non-test) [Repo-grounded] and `apps/rhino-cli-rust` (Rust, clap, ~19,410 LOC
+non-test) [Repo-grounded] — implement the same 13 features and are kept
+byte-for-byte behaviorally identical by a cross-language golden-master script
+(`apps/rhino-cli-rust/scripts/shadow-diff.sh`, 1207 lines) [Repo-grounded]. Today
+both apps mix domain logic, IO, and CLI wiring inside flat `internal/<feature>`
+and `cmd/`/`commands/` packages. The `git` feature is already the partial
+exemplar: it injects all IO through a `Deps` struct of function fields in both
+languages [Repo-grounded — `apps/rhino-cli-go/internal/git/runner.go` and
+`apps/rhino-cli-rust/src/internal/git/runner.rs`].
+
+This plan migrates BOTH apps to **hexagonal (ports-and-adapters) architecture**
+in a phased, behavior-preserving fashion, formalizing the existing `git`
+dependency-injection pattern into named ports across every feature.
+
+## Scope
+
+**In scope**:
+
+- Full migration of all 13 features in BOTH `apps/rhino-cli-go` and
+  `apps/rhino-cli-rust` to a hybrid `domain/shared/` kernel + per-feature
+  vertical-slice layout.
+- Maximal port extraction: every IO boundary (filesystem, process/exec spawn,
+  network) becomes a named port (Go interface / Rust `Box<dyn Trait>`).
+- A purely structural refactor: the output surface is **frozen** (zero visible
+  change), verified by `shadow-diff.sh` against the Phase 0 baseline throughout.
+- Updating the convention document
+  `repo-governance/development/pattern/hexagonal-architecture-cli.md`
+  [Repo-grounded].
+
+**Out of scope**:
+
+- Adding a new architecture/import-direction lint (enforcement via language
+  tooling only — Go `internal/` wall + `go vet`; Rust module privacy + clippy).
+- Any change to golden CLI output (the output surface is frozen — no bytes change
+  during the migration; the corpus is never re-baselined).
+- Performance optimization, new features, dependency upgrades unrelated to
+  layering.
+
+## Document Map
+
+| File                       | Purpose                                                                    |
+| -------------------------- | -------------------------------------------------------------------------- |
+| [`brd.md`](./brd.md)       | WHY — business goal, impact, risks, success metrics                        |
+| [`prd.md`](./prd.md)       | WHAT — personas, user stories, Gherkin acceptance criteria, product scope  |
+| [`tech-docs.md`](./tech-docs.md) | HOW — layout, port mechanism, the maximal-vs-lean trade-off, migration recipe |
+| [`delivery.md`](./delivery.md)   | DO — phased checklist (Phase 0 baseline → git pilot → features → convention doc) |
+
+## Approach Summary
+
+1. **Phase 0** — establish a green baseline on both apps (build, unit,
+   integration, coverage ≥90%, shadow-diff, cross-vendor-parity).
+2. **Phase 1** — PILOT: migrate the `git` feature across BOTH languages as the
+   proof gate, formalizing its `Deps` into named ports.
+3. **Phases 2–N** — migrate the shared kernels (`mermaid`; Rust `cliout`) early,
+   then the remaining features, grouping by IO-heaviness and dependency order.
+4. **Final phase** — update the hexagonal-CLI convention doc (vendor-neutral).
+
+Every feature phase runs `shadow-diff.sh` GREEN before AND after the move, keeps
+all suites + coverage green, and updates the Rust `test:quick` coverage-ignore
+allowlist in lockstep as files relocate.
+
+## Constraint
+
+This is a **planning artifact only**. Do NOT execute it now. Execution proceeds
+via the [plan-execution workflow](../../../repo-governance/workflows/plan/plan-execution.md)
+in a later step, after the orchestrator resolves the items in
+`delivery.md` → "## Decisions Requiring User Approval".
