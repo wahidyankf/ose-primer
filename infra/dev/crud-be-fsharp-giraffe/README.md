@@ -30,11 +30,11 @@ is always up to date.
 
 ## Environment Variables
 
-| Variable            | Default                                    | Description                      |
-| ------------------- | ------------------------------------------ | -------------------------------- |
-| `POSTGRES_USER`     | `crud_be_fsharp_giraffe`                   | PostgreSQL username              |
-| `POSTGRES_PASSWORD` | `crud_be_fsharp_giraffe`                   | PostgreSQL password              |
-| `APP_JWT_SECRET`    | `change-me-in-dev-only-not-for-production` | JWT signing secret (HMAC-SHA256) |
+| Variable                            | Default                                    | Description                      |
+| ----------------------------------- | ------------------------------------------ | -------------------------------- |
+| `POSTGRES_USER`                     | `crud_be_fsharp_giraffe`                   | PostgreSQL username              |
+| `POSTGRES_PASSWORD`                 | `crud_be_fsharp_giraffe`                   | PostgreSQL password              |
+| `CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET` | `change-me-in-dev-only-not-for-production` | JWT signing secret (HMAC-SHA256) |
 
 Override defaults by setting variables in your shell or in a `.env` file alongside
 `docker-compose.yml`.

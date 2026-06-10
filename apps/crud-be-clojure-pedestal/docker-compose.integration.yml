@@ -27,6 +27,7 @@ services:
       DATABASE_URL: "jdbc:postgresql://postgres:5432/crud_be_cjpd_test"
       DB_USER: "crud_be_cjpd"
       DB_PASSWORD: "crud_be_cjpd"
-      APP_JWT_SECRET: "integration-test-secret-key-at-least-32-characters"
+      CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET: "integration-test-secret-key-at-least-32-characters"
+      CRUD_BE_CLOJURE_PEDESTAL_PORT: "8201"
     volumes:
       - ../../specs:/specs:ro

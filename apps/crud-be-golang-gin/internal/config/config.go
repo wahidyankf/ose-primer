@@ -13,11 +13,11 @@ type Config struct {
 
 // Load reads configuration from environment variables with defaults.
 func Load() *Config {
-	port := os.Getenv("PORT")
+	port := os.Getenv("CRUD_BE_GOLANG_GIN_PORT")
 	if port == "" {
 		port = "8201"
 	}
-	jwtSecret := os.Getenv("APP_JWT_SECRET")
+	jwtSecret := os.Getenv("CRUD_BE_GOLANG_GIN_JWT_SECRET")
 	if jwtSecret == "" {
 		jwtSecret = "dev-jwt-secret-at-least-32-chars-long"
 	}

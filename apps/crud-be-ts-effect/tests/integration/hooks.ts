@@ -18,7 +18,8 @@ import { JwtServiceLive } from "../../src/auth/jwt.js";
 import { SqlClient } from "@effect/sql";
 import type { SqlError } from "@effect/sql/SqlError";
 
-export const TEST_JWT_SECRET = process.env["APP_JWT_SECRET"] ?? "test-jwt-secret-at-least-32-chars-long!!";
+export const TEST_JWT_SECRET =
+  process.env["CRUD_BE_TS_EFFECT_JWT_SECRET"] ?? "test-jwt-secret-at-least-32-chars-long!!";
 
 const DATABASE_URL = process.env["DATABASE_URL"] ?? "";
 

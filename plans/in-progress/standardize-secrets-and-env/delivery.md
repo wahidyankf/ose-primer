@@ -107,44 +107,44 @@ For **each** of the 11 backends (`crud-be-rust-axum`, `crud-be-golang-gin`, `cru
 `crud-be-java-springboot`, `crud-be-java-vertx`, `crud-be-kotlin-ktor`, `crud-be-python-fastapi`,
 `crud-be-ts-effect`):
 
-- [ ] [AI] Re-grep the app for its app-defined env reads:
+- [x] [AI] Re-grep the app for its app-defined env reads:
       `grep -rniE "APP_JWT_SECRET|APP_PORT|JWT_SECRET|getenv|env::var|environ|System\.getenv|System/getenv|GetEnvironmentVariable|System.get_env|Config\.string" apps/<app>`
       — record every read site (config file + any auxiliary reader).
   - _Suggested executor: `swe-rust-dev` (Rust), `swe-golang-dev` (Go),
     `swe-typescript-dev` (TS), `swe-java-dev` (Java), `swe-kotlin-dev` (Kotlin),
     `swe-elixir-dev` (Elixir), `swe-python-dev` (Python), `swe-fsharp-dev` (F#),
     `swe-csharp-dev` (C#), `swe-clojure-dev` (Clojure)._
-- [ ] [AI] **RED**: add/adjust a unit test in the app's config test asserting the **prefixed** key
+- [x] [AI] **RED**: add/adjust a unit test in the app's config test asserting the **prefixed** key
       resolves (e.g. setting `CRUD_BE_RUST_AXUM_PORT` resolves the port). Run that app's
       `./node_modules/.bin/nx run <app>:test:unit` — acceptance: it fails because the code still reads
       the old key.
-- [ ] [AI] **GREEN**: rename the read key(s) in the app's config code to the per-app-prefixed name
+- [x] [AI] **GREEN**: rename the read key(s) in the app's config code to the per-app-prefixed name
       (leave shared/framework vars untouched). Run `./node_modules/.bin/nx run <app>:test:unit` —
       acceptance: the prefixed-key test passes.
-- [ ] [AI] **REFACTOR**: verify the renamed config code is idiomatic for this language family (no dead
+- [x] [AI] **REFACTOR**: verify the renamed config code is idiomatic for this language family (no dead
       default paths, clean struct/record layout). Run `./node_modules/.bin/nx run <app>:test:quick` —
       acceptance: all tests still pass, coverage ≥ baseline.
-- [ ] [AI] Edit `infra/dev/<app>/.env.example`: rename the same app-defined keys to the prefixed
+- [x] [AI] Edit `infra/dev/<app>/.env.example`: rename the same app-defined keys to the prefixed
       names; keep placeholders obviously-dev.
-- [ ] [AI] Edit `infra/dev/<app>/docker-compose.yml` and `docker-compose.ci.yml` (where present): in
+- [x] [AI] Edit `infra/dev/<app>/docker-compose.yml` and `docker-compose.ci.yml` (where present): in
       each `environment:` block rename the same keys.
-- [ ] [AI] Verify zero residue for this app:
+- [x] [AI] Verify zero residue for this app:
       `grep -rn "APP_JWT_SECRET\|APP_PORT" apps/<app> infra/dev/<app>` returns zero app-defined hits
       (framework `PORT`, if any, remains only where the framework owns it).
-- [ ] [AI] Run `./node_modules/.bin/nx run <app>:test:quick` — exits 0, coverage ≥ baseline.
+- [x] [AI] Run `./node_modules/.bin/nx run <app>:test:quick` — exits 0, coverage ≥ baseline.
 
 ### Phase 1 Gate
 
 > All checks below must pass before starting Phase 2; if any fails, fix it in Phase 1 first.
 
-- [ ] [AI] `grep -rn "APP_JWT_SECRET\|APP_PORT\|JWT_SECRET" apps/crud-be-* infra/dev` returns zero
+- [x] [AI] `grep -rn "APP_JWT_SECRET\|APP_PORT\|JWT_SECRET" apps/crud-be-* infra/dev` returns zero
       **app-defined** hits (only framework-owned `PORT` may remain, where the framework binds it).
       Note: `JWT_SECRET` hits are the Kotlin `crud-be-kotlin-ktor` bare key that Phase 1 renames; any
       remaining `JWT_SECRET` match outside test scaffolding is an outstanding rename target.
-- [ ] [AI] Every backend's `./node_modules/.bin/nx run <app>:test:quick` exits 0 with coverage ≥
+- [x] [AI] Every backend's `./node_modules/.bin/nx run <app>:test:quick` exits 0 with coverage ≥
       baseline.
-- [ ] [AI] `npm run lint:md` exits 0.
-- [ ] [AI] Commit thematically (one commit per backend family, or grouped sensibly,
+- [x] [AI] `npm run lint:md` exits 0.
+- [x] [AI] Commit thematically (one commit per backend family, or grouped sensibly,
       `refactor(<app>): rename env vars to per-app prefix`) and push to `origin main`; `git status`
       clean.
 

@@ -17,8 +17,8 @@ public interface IJwtService
 public class JwtService(IConfiguration config) : IJwtService
 {
     private readonly string _secret =
-        config["APP_JWT_SECRET"]
-        ?? throw new InvalidOperationException("APP_JWT_SECRET not configured");
+        config["CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET"]
+        ?? throw new InvalidOperationException("CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET not configured");
 
     private SymmetricSecurityKey Key =>
         new(Encoding.UTF8.GetBytes(_secret));

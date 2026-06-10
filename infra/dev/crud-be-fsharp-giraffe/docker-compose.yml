@@ -46,7 +46,7 @@ services:
     environment:
       - DOTNET_ENVIRONMENT=Development
       - DATABASE_URL=Host=crud-be-fsharp-giraffe-db;Port=5432;Database=crud_be_fsharp_giraffe;Username=crud_be_fsharp_giraffe;Password=crud_be_fsharp_giraffe
-      - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
+      - CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET=${CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET:-change-me-in-dev-only-not-for-production}
 
     command: dotnet run --project src/DemoBeFsgi/DemoBeFsgi.fsproj
 

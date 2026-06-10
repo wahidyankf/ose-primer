@@ -99,13 +99,13 @@ nx run crud-be-fsharp-giraffe:codegen
 
 ## Environment Variables
 
-| Variable          | Required       | Default                                          | Description                                                                                                                                           |
-| ----------------- | -------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `DATABASE_URL`    | Yes (non-test) | —                                                | PostgreSQL connection string (e.g., `Host=localhost;Database=crud_be_fsharp_giraffe;Username=crud_be_fsharp_giraffe;Password=crud_be_fsharp_giraffe`) |
-| `APP_JWT_SECRET`  | Yes (prod)     | `change-me-in-production-at-least-32-chars-long` | JWT signing secret (min 32 chars for HS256)                                                                                                           |
-| `ASPNETCORE_URLS` | No             | `http://+:8201`                                  | Override the listening URL                                                                                                                            |
+| Variable                            | Required       | Default                                          | Description                                                                                                                                           |
+| ----------------------------------- | -------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`                      | Yes (non-test) | —                                                | PostgreSQL connection string (e.g., `Host=localhost;Database=crud_be_fsharp_giraffe;Username=crud_be_fsharp_giraffe;Password=crud_be_fsharp_giraffe`) |
+| `CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET` | Yes (prod)     | `change-me-in-production-at-least-32-chars-long` | JWT signing secret (min 32 chars for HS256)                                                                                                           |
+| `ASPNETCORE_URLS`                   | No             | `http://+:8201`                                  | Override the listening URL                                                                                                                            |
 
-**Security note**: Set a strong `APP_JWT_SECRET` in production. Never commit real secrets to
+**Security note**: Set a strong `CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET` in production. Never commit real secrets to
 version control.
 
 ## Database Migrations

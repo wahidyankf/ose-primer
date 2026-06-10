@@ -24,6 +24,6 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: "jdbc:postgresql://postgres:5432/crud_be_kotlin_ktor_test?user=crud_be_kotlin_ktor&password=crud_be_kotlin_ktor"
-      JWT_SECRET: "integration-test-secret-key-at-least-32-characters"
+      CRUD_BE_KOTLIN_KTOR_JWT_SECRET: "integration-test-secret-key-at-least-32-characters"
     volumes:
       - ../../specs:/specs:ro

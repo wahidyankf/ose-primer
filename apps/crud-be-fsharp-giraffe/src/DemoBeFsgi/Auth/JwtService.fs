@@ -7,7 +7,7 @@ open System.Text
 open Microsoft.IdentityModel.Tokens
 
 let private getSecret () =
-    let s = Environment.GetEnvironmentVariable("APP_JWT_SECRET")
+    let s = Environment.GetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET")
 
     if String.IsNullOrEmpty s then
         "dev-jwt-secret-at-least-32-characters-long-for-hmac"

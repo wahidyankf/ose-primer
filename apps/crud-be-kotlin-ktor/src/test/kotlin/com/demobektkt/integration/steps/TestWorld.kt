@@ -25,7 +25,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
 /** JWT secret read from environment or a fixed fallback for local runs. */
 val WORLD_JWT_SECRET: String =
-  System.getenv("JWT_SECRET") ?: "integration-test-secret-key-at-least-32-characters"
+  System.getenv("CRUD_BE_KOTLIN_KTOR_JWT_SECRET") ?: "integration-test-secret-key-at-least-32-characters"
 
 /** Shared mutable test state for Cucumber step definitions. */
 object TestWorld {

@@ -46,7 +46,7 @@ services:
     environment:
       - PORT=8201
       - DATABASE_URL=postgresql://crud_be_python_fastapi:crud_be_python_fastapi@crud-be-python-fastapi-db:5432/crud_be_python_fastapi
-      - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
+      - CRUD_BE_PYTHON_FASTAPI_JWT_SECRET=${CRUD_BE_PYTHON_FASTAPI_JWT_SECRET:-change-me-in-dev-only-not-for-production}
 
     command: sh -c "uv sync && uv run uvicorn crud_be_python_fastapi.main:app --host 0.0.0.0 --port 8201"
 

@@ -24,6 +24,6 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: "postgresql://crud_be_exph:crud_be_exph@postgres:5432/crud_be_exph_test"
-      APP_JWT_SECRET: "integration-test-secret-key-at-least-32-characters"
+      CRUD_BE_ELIXIR_PHOENIX_JWT_SECRET: "integration-test-secret-key-at-least-32-characters"
     volumes:
       - ../../specs:/specs:ro

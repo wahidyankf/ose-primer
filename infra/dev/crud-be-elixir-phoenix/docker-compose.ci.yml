@@ -26,9 +26,9 @@ services:
       - HEALTH_SHOW_DETAILS=false
       - ENABLE_TEST_API=true
       - MIX_ENV=dev
-      - PORT=8201
+      - CRUD_BE_ELIXIR_PHOENIX_PORT=8201
       - DATABASE_URL=ecto://crud_be_elixir_phoenix:crud_be_elixir_phoenix@crud-be-elixir-phoenix-db:5432/crud_be_elixir_phoenix
-      - APP_JWT_SECRET=change-me-in-dev-only-not-for-production
+      - CRUD_BE_ELIXIR_PHOENIX_JWT_SECRET=change-me-in-dev-only-not-for-production
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8201/health"]
       interval: 30s

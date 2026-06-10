@@ -24,6 +24,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: "Host=postgres;Port=5432;Database=crud_be_csas_test;Username=crud_be_csas;Password=crud_be_csas"
-      APP_JWT_SECRET: "integration-test-secret-key-at-least-32-characters"
+      CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET: "integration-test-secret-key-at-least-32-characters"
+      CRUD_BE_CSHARP_ASPNETCORE_PORT: "8201"
     volumes:
       - ../../specs:/specs:ro

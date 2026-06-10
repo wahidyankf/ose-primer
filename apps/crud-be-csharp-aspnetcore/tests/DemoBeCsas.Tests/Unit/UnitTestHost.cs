@@ -15,7 +15,7 @@ namespace DemoBeCsas.Tests.Unit;
 public sealed class UnitTestHost : ITestHost, IDisposable
 {
     private static string JwtSecret =>
-        Environment.GetEnvironmentVariable("APP_JWT_SECRET")
+        Environment.GetEnvironmentVariable("CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET")
         ?? "test-jwt-secret-at-least-32-chars-long!!";
 
     private readonly ServiceProvider _provider;
@@ -34,10 +34,10 @@ public sealed class UnitTestHost : ITestHost, IDisposable
     {
         var services = new ServiceCollection();
 
-        // Configuration — expose APP_JWT_SECRET for JwtService
+        // Configuration — expose CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET for JwtService
         var config = new ConfigurationBuilder()
             .AddInMemoryCollection(
-                new Dictionary<string, string?> { ["APP_JWT_SECRET"] = JwtSecret }
+                new Dictionary<string, string?> { ["CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET"] = JwtSecret }
             )
             .Build();
         services.AddSingleton<IConfiguration>(config);

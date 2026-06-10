@@ -174,10 +174,14 @@ type JwtServiceTests() =
 
     [<Fact>]
     member _.``generateAccessToken uses environment variable when set``() =
-        let original = Environment.GetEnvironmentVariable("APP_JWT_SECRET")
+        let original =
+            Environment.GetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET")
 
         try
-            Environment.SetEnvironmentVariable("APP_JWT_SECRET", "test-secret-long-enough-for-hmac-sha256-minimum")
+            Environment.SetEnvironmentVariable(
+                "CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET",
+                "test-secret-long-enough-for-hmac-sha256-minimum"
+            )
 
             let userId = Guid.NewGuid()
 
@@ -187,9 +191,9 @@ type JwtServiceTests() =
             Assert.False(String.IsNullOrEmpty(token))
         finally
             if original = null then
-                Environment.SetEnvironmentVariable("APP_JWT_SECRET", null)
+                Environment.SetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET", null)
             else
-                Environment.SetEnvironmentVariable("APP_JWT_SECRET", original)
+                Environment.SetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET", original)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Handler coverage via direct service calls

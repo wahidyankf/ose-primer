@@ -48,7 +48,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8201
       - DATABASE_URL=Host=crud-be-csharp-aspnetcore-db;Port=5432;Database=crud_be_csharp_aspnetcore;Username=crud_be_csharp_aspnetcore;Password=crud_be_csharp_aspnetcore
-      - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
+      - CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET=${CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET:-change-me-in-dev-only-not-for-production}
+      - CRUD_BE_CSHARP_ASPNETCORE_PORT=8201
 
     command: dotnet run --project src/DemoBeCsas/DemoBeCsas.csproj
 

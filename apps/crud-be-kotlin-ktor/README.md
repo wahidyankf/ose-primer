@@ -29,13 +29,13 @@ Kotlin + Ktor REST API backend — a functional twin of `crud-be-golang-gin` (Go
 
 ### Environment Variables
 
-| Variable            | Default                                                | Description         |
-| ------------------- | ------------------------------------------------------ | ------------------- |
-| `PORT`              | `8201`                                                 | HTTP port           |
-| `DATABASE_URL`      | `jdbc:postgresql://localhost:5432/crud_be_kotlin_ktor` | JDBC connection URL |
-| `DATABASE_USER`     | `crud_be_kotlin_ktor`                                  | Database username   |
-| `DATABASE_PASSWORD` | `crud_be_kotlin_ktor`                                  | Database password   |
-| `JWT_SECRET`        | (dev default)                                          | JWT signing secret  |
+| Variable                         | Default                                                | Description         |
+| -------------------------------- | ------------------------------------------------------ | ------------------- |
+| `CRUD_BE_KOTLIN_KTOR_PORT`       | `8201`                                                 | HTTP port           |
+| `DATABASE_URL`                   | `jdbc:postgresql://localhost:5432/crud_be_kotlin_ktor` | JDBC connection URL |
+| `DATABASE_USER`                  | `crud_be_kotlin_ktor`                                  | Database username   |
+| `DATABASE_PASSWORD`              | `crud_be_kotlin_ktor`                                  | Database password   |
+| `CRUD_BE_KOTLIN_KTOR_JWT_SECRET` | (dev default)                                          | JWT signing secret  |
 
 ### Run locally
 

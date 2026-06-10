@@ -51,7 +51,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://crud-be-db:5432/crud_be
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-demo}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-demo}
-      - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
+      - CRUD_BE_JAVA_SPRINGBOOT_JWT_SECRET=${CRUD_BE_JAVA_SPRINGBOOT_JWT_SECRET:-change-me-in-dev-only-not-for-production}
 
     # Run Spring Boot with DevTools for auto-reload
     # Maven is pre-installed in the custom dev image (see Dockerfile.be.dev)

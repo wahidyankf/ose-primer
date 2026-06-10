@@ -22,6 +22,6 @@ COPY detekt.yml .
 ENV SKIP_SPEC_COPY=1
 
 # Run integration tests.
-# DATABASE_URL and JWT_SECRET are supplied by docker-compose as environment variables.
+# DATABASE_URL and CRUD_BE_KOTLIN_KTOR_JWT_SECRET are supplied by docker-compose as environment variables.
 # Specs are copied from the mounted volume into the classpath before running tests.
 CMD ["sh", "-c", "mkdir -p src/test/resources/specs/apps/crud/behavior/be/gherkin && cp -r /specs/apps/crud/behavior/be/gherkin/* src/test/resources/specs/apps/crud/behavior/be/gherkin/ && ./gradlew testIntegration --no-daemon --console=plain"]

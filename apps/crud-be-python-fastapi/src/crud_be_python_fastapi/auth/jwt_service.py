@@ -23,7 +23,7 @@ def create_access_token(user_id: str, username: str, role: str) -> str:
         "jti": str(uuid4()),
         "type": "access",
     }
-    return jwt.encode(payload, settings.app_jwt_secret, algorithm="HS256")
+    return jwt.encode(payload, settings.crud_be_python_fastapi_jwt_secret, algorithm="HS256")
 
 
 def create_refresh_token(user_id: str) -> str:
@@ -37,7 +37,7 @@ def create_refresh_token(user_id: str) -> str:
         "jti": str(uuid4()),
         "type": "refresh",
     }
-    return jwt.encode(payload, settings.app_jwt_secret, algorithm="HS256")
+    return jwt.encode(payload, settings.crud_be_python_fastapi_jwt_secret, algorithm="HS256")
 
 
 def create_expired_refresh_token(user_id: str) -> str:
@@ -51,7 +51,7 @@ def create_expired_refresh_token(user_id: str) -> str:
         "jti": str(uuid4()),
         "type": "refresh",
     }
-    return jwt.encode(payload, settings.app_jwt_secret, algorithm="HS256")
+    return jwt.encode(payload, settings.crud_be_python_fastapi_jwt_secret, algorithm="HS256")
 
 
 def decode_token(token: str) -> dict[str, Any]:
@@ -60,7 +60,7 @@ def decode_token(token: str) -> dict[str, Any]:
     Raises UnauthorizedError on invalid or expired tokens.
     """
     try:
-        return jwt.decode(token, settings.app_jwt_secret, algorithms=["HS256"])
+        return jwt.decode(token, settings.crud_be_python_fastapi_jwt_secret, algorithms=["HS256"])
     except jwt.ExpiredSignatureError as err:
         raise UnauthorizedError("Token has expired") from err
     except jwt.InvalidTokenError as err:
@@ -72,7 +72,7 @@ def decode_token_unverified(token: str) -> dict[str, Any]:
     try:
         return jwt.decode(
             token,
-            settings.app_jwt_secret,
+            settings.crud_be_python_fastapi_jwt_secret,
             algorithms=["HS256"],
             options={"verify_exp": False},
         )

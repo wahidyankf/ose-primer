@@ -22,7 +22,7 @@ public static class TokenEndpoints
 
     private static IResult GetJwks(IConfiguration config)
     {
-        var secret = config["APP_JWT_SECRET"] ?? string.Empty;
+        var secret = config["CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET"] ?? string.Empty;
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
         var keyId = Convert.ToBase64String(key.ComputeJwkThumbprint())
             .Replace('+', '-')

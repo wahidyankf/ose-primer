@@ -24,6 +24,6 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: "Host=postgres;Port=5432;Database=crud_be_fsgi_test;Username=crud_be_fsgi;Password=crud_be_fsgi"
-      APP_JWT_SECRET: "integration-test-secret-key-at-least-32-characters"
+      CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET: "integration-test-secret-key-at-least-32-characters"
     volumes:
       - ../../specs:/specs:ro

@@ -40,6 +40,6 @@ COPY apps/crud-be-csharp-aspnetcore/tests/ tests/
 RUN dotnet build tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj
 
 # Run all tests against real PostgreSQL.
-# DATABASE_URL and APP_JWT_SECRET are supplied by docker-compose as environment variables.
+# DATABASE_URL and CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET are supplied by docker-compose as environment variables.
 # The TestWebApplicationFactory detects DATABASE_URL and uses Npgsql instead of SQLite.
 CMD ["dotnet", "test", "tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj", "--no-build", "--logger", "console;verbosity=normal"]

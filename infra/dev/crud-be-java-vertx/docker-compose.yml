@@ -44,9 +44,9 @@ services:
         condition: service_healthy
 
     environment:
-      - PORT=8201
+      - CRUD_BE_JAVA_VERTX_PORT=8201
       - DATABASE_URL=postgresql://crud_be_java_vertx:crud_be_java_vertx@crud-be-java-vertx-db:5432/crud_be_java_vertx
-      - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
+      - CRUD_BE_JAVA_VERTX_JWT_SECRET=${CRUD_BE_JAVA_VERTX_JWT_SECRET:-change-me-in-dev-only-not-for-production}
 
     command: mvn compile exec:java
 

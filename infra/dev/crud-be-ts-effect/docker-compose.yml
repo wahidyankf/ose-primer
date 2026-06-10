@@ -42,9 +42,9 @@ services:
         condition: service_healthy
 
     environment:
-      - PORT=8201
+      - CRUD_BE_TS_EFFECT_PORT=8201
       - DATABASE_URL=postgresql://crud_be_ts_effect:crud_be_ts_effect@crud-be-ts-effect-db:5432/crud_be_ts_effect
-      - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
+      - CRUD_BE_TS_EFFECT_JWT_SECRET=${CRUD_BE_TS_EFFECT_JWT_SECRET:-change-me-in-dev-only-not-for-production}
 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8201/health"]

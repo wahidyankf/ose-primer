@@ -23,8 +23,8 @@ func mustSetenv(t *testing.T, key, val string) {
 
 func TestUnitConfigLoad(t *testing.T) {
 	t.Run("defaults", func(t *testing.T) {
-		mustUnsetenv(t, "PORT")
-		mustUnsetenv(t, "APP_JWT_SECRET")
+		mustUnsetenv(t, "CRUD_BE_GOLANG_GIN_PORT")
+		mustUnsetenv(t, "CRUD_BE_GOLANG_GIN_JWT_SECRET")
 		mustUnsetenv(t, "DATABASE_URL")
 		cfg := config.Load()
 		if cfg.Port != "8201" {
@@ -39,12 +39,12 @@ func TestUnitConfigLoad(t *testing.T) {
 	})
 
 	t.Run("custom values", func(t *testing.T) {
-		mustSetenv(t, "PORT", "9000")
-		mustSetenv(t, "APP_JWT_SECRET", "my-secret")
+		mustSetenv(t, "CRUD_BE_GOLANG_GIN_PORT", "9000")
+		mustSetenv(t, "CRUD_BE_GOLANG_GIN_JWT_SECRET", "my-secret")
 		mustSetenv(t, "DATABASE_URL", "postgres://localhost/test")
 		defer func() {
-			mustUnsetenv(t, "PORT")
-			mustUnsetenv(t, "APP_JWT_SECRET")
+			mustUnsetenv(t, "CRUD_BE_GOLANG_GIN_PORT")
+			mustUnsetenv(t, "CRUD_BE_GOLANG_GIN_JWT_SECRET")
 			mustUnsetenv(t, "DATABASE_URL")
 		}()
 		cfg := config.Load()

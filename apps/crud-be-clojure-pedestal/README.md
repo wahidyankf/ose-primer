@@ -38,11 +38,11 @@ The server starts on port **8201** by default.
 
 ### Environment Variables
 
-| Variable         | Default                 | Description        |
-| ---------------- | ----------------------- | ------------------ |
-| `PORT`           | `8201`                  | HTTP server port   |
-| `DATABASE_URL`   | `jdbc:sqlite::memory:`  | JDBC database URL  |
-| `APP_JWT_SECRET` | `default-dev-secret...` | JWT signing secret |
+| Variable                              | Default                 | Description        |
+| ------------------------------------- | ----------------------- | ------------------ |
+| `CRUD_BE_CLOJURE_PEDESTAL_PORT`       | `8201`                  | HTTP server port   |
+| `DATABASE_URL`                        | `jdbc:sqlite::memory:`  | JDBC database URL  |
+| `CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET` | `default-dev-secret...` | JWT signing secret |
 
 For PostgreSQL:
 

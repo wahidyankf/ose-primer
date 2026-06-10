@@ -22,7 +22,7 @@ docker compose up --build
 
 ```bash
 cd apps/crud-be-csharp-aspnetcore
-export APP_JWT_SECRET="change-me-in-dev-only-not-for-production"
+export CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET="change-me-in-dev-only-not-for-production"
 export DATABASE_URL="Host=localhost;Port=5432;Database=crud_be_csharp_aspnetcore;Username=crud_be_csharp_aspnetcore;Password=crud_be_csharp_aspnetcore"
 dotnet run --project src/DemoBeCsas/DemoBeCsas.csproj
 ```
@@ -108,11 +108,11 @@ nx run crud-be-csharp-aspnetcore:test:integration
 
 ## Environment Variables
 
-| Variable         | Required | Description                        |
-| ---------------- | -------- | ---------------------------------- |
-| `APP_JWT_SECRET` | Yes      | HMAC-SHA256 secret for JWT signing |
-| `DATABASE_URL`   | Yes      | PostgreSQL connection string       |
-| `PORT`           | No       | HTTP port (default: 8201)          |
+| Variable                               | Required | Description                        |
+| -------------------------------------- | -------- | ---------------------------------- |
+| `CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET` | Yes      | HMAC-SHA256 secret for JWT signing |
+| `DATABASE_URL`                         | Yes      | PostgreSQL connection string       |
+| `CRUD_BE_CSHARP_ASPNETCORE_PORT`       | No       | HTTP port (default: 8201)          |
 
 ## API Endpoints
 

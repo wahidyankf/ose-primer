@@ -44,11 +44,11 @@ services:
         condition: service_healthy
 
     environment:
-      - PORT=8201
+      - CRUD_BE_CLOJURE_PEDESTAL_PORT=8201
       - DATABASE_URL=jdbc:postgresql://crud-be-clojure-pedestal-db:5432/crud_be_clojure_pedestal
       - DB_USER=crud_be_clojure_pedestal
       - DB_PASSWORD=crud_be_clojure_pedestal
-      - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
+      - CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET=${CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET:-change-me-in-dev-only-not-for-production}
 
     command: clojure -M -m crud-be-cjpd.main
 

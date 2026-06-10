@@ -25,14 +25,14 @@ Demo Backend - Spring Boot REST API
 
 ## Environment Variables
 
-| Variable                     | Required       | Default                                          | Description                                         |
-| ---------------------------- | -------------- | ------------------------------------------------ | --------------------------------------------------- |
-| `APP_JWT_SECRET`             | Yes (prod)     | `change-me-in-production-at-least-32-chars-long` | JWT signing secret (min 32 chars for HS256)         |
-| `SPRING_DATASOURCE_URL`      | Yes (non-test) | —                                                | JDBC URL (e.g., `jdbc:postgresql://host:5432/demo`) |
-| `SPRING_DATASOURCE_USERNAME` | Yes (non-test) | —                                                | Database username                                   |
-| `SPRING_DATASOURCE_PASSWORD` | Yes (non-test) | —                                                | Database password                                   |
+| Variable                             | Required       | Default                                          | Description                                         |
+| ------------------------------------ | -------------- | ------------------------------------------------ | --------------------------------------------------- |
+| `CRUD_BE_JAVA_SPRINGBOOT_JWT_SECRET` | Yes (prod)     | `change-me-in-production-at-least-32-chars-long` | JWT signing secret (min 32 chars for HS256)         |
+| `SPRING_DATASOURCE_URL`              | Yes (non-test) | —                                                | JDBC URL (e.g., `jdbc:postgresql://host:5432/demo`) |
+| `SPRING_DATASOURCE_USERNAME`         | Yes (non-test) | —                                                | Database username                                   |
+| `SPRING_DATASOURCE_PASSWORD`         | Yes (non-test) | —                                                | Database password                                   |
 
-**Security note**: Set a strong `APP_JWT_SECRET` in production (min 32 random characters).
+**Security note**: Set a strong `CRUD_BE_JAVA_SPRINGBOOT_JWT_SECRET` in production (min 32 random characters).
 Never commit real secrets to version control. Copy `infra/dev/crud-be-java-springboot/.env.example`
 to `infra/dev/crud-be-java-springboot/.env` for local development.
 

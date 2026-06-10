@@ -21,17 +21,19 @@ if System.get_env("PHX_SERVER") do
 end
 
 config :crud_be_exph, CrudBeExphWeb.Endpoint,
-  http: [port: String.to_integer(System.get_env("PORT", "8201"))]
+  http: [port: String.to_integer(System.get_env("CRUD_BE_ELIXIR_PHOENIX_PORT", "8201"))]
 
 # Guardian JWT config — evaluated at runtime so Docker/CI can inject secrets.
 # Do not move to config/config.exs — System.get_env must run at startup, not compile time.
 # In :test env this block is unreachable because config/test.exs overrides the Guardian
 # key before runtime.exs is evaluated, so the || raise(...) guard never fires during tests.
-# In :integration env, APP_JWT_SECRET is supplied by docker-compose.
+# In :integration env, CRUD_BE_ELIXIR_PHOENIX_JWT_SECRET is supplied by docker-compose.
 if config_env() not in [:test] do
   config :crud_be_exph, CrudBeExph.Auth.Guardian,
     issuer: "crud_be_exph",
-    secret_key: System.get_env("APP_JWT_SECRET") || raise("APP_JWT_SECRET is not set"),
+    secret_key:
+      System.get_env("CRUD_BE_ELIXIR_PHOENIX_JWT_SECRET") ||
+        raise("CRUD_BE_ELIXIR_PHOENIX_JWT_SECRET is not set"),
     ttl: {24, :hours}
 end
 

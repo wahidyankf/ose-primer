@@ -44,9 +44,9 @@ services:
         condition: service_healthy
 
     environment:
-      - PORT=8201
+      - CRUD_BE_GOLANG_GIN_PORT=8201
       - DATABASE_URL=postgresql://crud_be_golang_gin:crud_be_golang_gin@crud-be-golang-gin-db:5432/crud_be_golang_gin
-      - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
+      - CRUD_BE_GOLANG_GIN_JWT_SECRET=${CRUD_BE_GOLANG_GIN_JWT_SECRET:-change-me-in-dev-only-not-for-production}
 
     command: go run ./cmd/server
 

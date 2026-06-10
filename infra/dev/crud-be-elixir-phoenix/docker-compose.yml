@@ -50,9 +50,9 @@ services:
 
     environment:
       - MIX_ENV=dev
-      - PORT=8201
+      - CRUD_BE_ELIXIR_PHOENIX_PORT=8201
       - DATABASE_URL=ecto://crud_be_elixir_phoenix:crud_be_elixir_phoenix@crud-be-elixir-phoenix-db:5432/crud_be_elixir_phoenix
-      - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
+      - CRUD_BE_ELIXIR_PHOENIX_JWT_SECRET=${CRUD_BE_ELIXIR_PHOENIX_JWT_SECRET:-change-me-in-dev-only-not-for-production}
 
     # Run migrations before starting the server so fresh containers have the schema applied.
     command: sh -c "mix deps.get && mix ecto.migrate && mix phx.server"

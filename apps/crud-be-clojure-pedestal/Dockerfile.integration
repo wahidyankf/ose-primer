@@ -20,7 +20,7 @@ COPY tests.edn .
 
 # Specs are mounted from the host by docker-compose.
 # Copy them into the test features directory before running tests.
-# DATABASE_URL, DB_USER, DB_PASSWORD and APP_JWT_SECRET are supplied by docker-compose.
+# DATABASE_URL, DB_USER, DB_PASSWORD and CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET are supplied by docker-compose.
 CMD ["sh", "-c", \
      "rm -rf test/features && cp -r /specs/apps/crud/behavior/be/gherkin test/features && \
       clojure -M:test -m kaocha.runner bdd"]

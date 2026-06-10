@@ -7,9 +7,9 @@
   "Return application configuration from environment variables.
    Validates the result against schemas/Config."
   []
-  (let [config {:port         (Integer/parseInt (or (System/getenv "PORT") "8201"))
+  (let [config {:port         (Integer/parseInt (or (System/getenv "CRUD_BE_CLOJURE_PEDESTAL_PORT") "8201"))
                 :database-url (or (System/getenv "DATABASE_URL") "jdbc:sqlite::memory:")
-                :jwt-secret   (or (System/getenv "APP_JWT_SECRET") "default-dev-secret-change-in-production")}]
+                :jwt-secret   (or (System/getenv "CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET") "default-dev-secret-change-in-production")}]
     (assert (m/validate schemas/Config config)
             (str "Invalid configuration: " (pr-str (m/explain schemas/Config config))))
     config))

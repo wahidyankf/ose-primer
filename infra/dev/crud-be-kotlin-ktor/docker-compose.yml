@@ -44,11 +44,11 @@ services:
         condition: service_healthy
 
     environment:
-      - PORT=8201
+      - CRUD_BE_KOTLIN_KTOR_PORT=8201
       - DATABASE_URL=jdbc:postgresql://crud-be-kotlin-ktor-db:5432/crud_be_kotlin_ktor
       - DATABASE_USER=${POSTGRES_USER:-crud_be_kotlin_ktor}
       - DATABASE_PASSWORD=${POSTGRES_PASSWORD:-crud_be_kotlin_ktor}
-      - JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
+      - CRUD_BE_KOTLIN_KTOR_JWT_SECRET=${CRUD_BE_KOTLIN_KTOR_JWT_SECRET:-change-me-in-dev-only-not-for-production}
 
     command: ./gradlew run
 

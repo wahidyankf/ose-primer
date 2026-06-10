@@ -37,8 +37,8 @@ public class MainVerticle extends AbstractVerticle {
 
     @Override
     public void start(Promise<Void> startPromise) {
-        String jwtSecret = System.getenv().getOrDefault("APP_JWT_SECRET", DEFAULT_JWT_SECRET);
-        int port = parsePort(System.getenv("APP_PORT"), DEFAULT_PORT);
+        String jwtSecret = System.getenv().getOrDefault("CRUD_BE_JAVA_VERTX_JWT_SECRET", DEFAULT_JWT_SECRET);
+        int port = parsePort(System.getenv("CRUD_BE_JAVA_VERTX_PORT"), DEFAULT_PORT);
         String databaseUrl = System.getenv("DATABASE_URL");
         boolean enableTestApi = "true".equalsIgnoreCase(System.getenv("ENABLE_TEST_API"));
 

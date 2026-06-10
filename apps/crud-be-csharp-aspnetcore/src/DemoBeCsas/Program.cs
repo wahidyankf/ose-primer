@@ -25,7 +25,7 @@ builder.Services.ConfigureHttpJsonOptions(opts =>
 });
 
 // Configuration
-builder.WebHost.UseUrls($"http://+:{builder.Configuration["PORT"] ?? "8201"}");
+builder.WebHost.UseUrls($"http://+:{builder.Configuration["CRUD_BE_CSHARP_ASPNETCORE_PORT"] ?? "8201"}");
 
 // Database
 var databaseUrl = builder.Configuration["DATABASE_URL"];
@@ -37,8 +37,8 @@ if (!string.IsNullOrEmpty(databaseUrl))
 
 // Authentication
 var jwtSecret =
-    builder.Configuration["APP_JWT_SECRET"]
-    ?? throw new InvalidOperationException("APP_JWT_SECRET is required");
+    builder.Configuration["CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET"]
+    ?? throw new InvalidOperationException("CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET is required");
 
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

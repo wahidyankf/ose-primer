@@ -16,7 +16,7 @@ config :crud_be_exph, CrudBeExphWeb.Endpoint,
   secret_key_base: "9nYAOfW0t4BGQgRMTz9Wo7C9vwlrhrSLoIfWbZK8fxxz6E4ehacBRt29myR/Hi3o",
   server: false
 
-# Guardian — APP_JWT_SECRET is required (supplied by docker-compose).
+# Guardian — CRUD_BE_ELIXIR_PHOENIX_JWT_SECRET is required (supplied by docker-compose).
 config :crud_be_exph, CrudBeExph.Auth.Guardian,
   issuer: "crud_be_exph",
   ttl: {24, :hours}

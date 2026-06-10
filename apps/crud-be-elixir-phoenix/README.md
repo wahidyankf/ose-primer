@@ -15,15 +15,15 @@ The server listens on port **8201** (`http://localhost:8201`).
 
 ## Environment Variables
 
-| Variable          | Required   | Description                          |
-| ----------------- | ---------- | ------------------------------------ |
-| `DATABASE_URL`    | Dev / Prod | Ecto connection URL (`ecto://...`)   |
-| `APP_JWT_SECRET`  | Dev / Prod | HS256 secret for Guardian JWT tokens |
-| `PORT`            | Optional   | HTTP port (default: `4000`)          |
-| `PHX_HOST`        | Prod only  | Canonical hostname (`example.com`)   |
-| `SECRET_KEY_BASE` | Prod only  | Phoenix cookie encryption key        |
+| Variable                            | Required   | Description                          |
+| ----------------------------------- | ---------- | ------------------------------------ |
+| `DATABASE_URL`                      | Dev / Prod | Ecto connection URL (`ecto://...`)   |
+| `CRUD_BE_ELIXIR_PHOENIX_JWT_SECRET` | Dev / Prod | HS256 secret for Guardian JWT tokens |
+| `CRUD_BE_ELIXIR_PHOENIX_PORT`       | Optional   | HTTP port (default: `8201`)          |
+| `PHX_HOST`                          | Prod only  | Canonical hostname (`example.com`)   |
+| `SECRET_KEY_BASE`                   | Prod only  | Phoenix cookie encryption key        |
 
-> `APP_JWT_SECRET` is **not** required during `mix test` — `config/test.exs` supplies a
+> `CRUD_BE_ELIXIR_PHOENIX_JWT_SECRET` is **not** required during `mix test` — `config/test.exs` supplies a
 > hardcoded test secret so CI can run without injecting secrets.
 
 ## Nx Targets

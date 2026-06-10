@@ -31,7 +31,7 @@ COPY apps/crud-be-elixir-phoenix/config/ config/
 COPY apps/crud-be-elixir-phoenix/priv/ priv/
 
 # Specs are mounted at /specs by docker-compose.
-# DATABASE_URL and APP_JWT_SECRET are supplied by docker-compose as environment variables.
+# DATABASE_URL and CRUD_BE_ELIXIR_PHOENIX_JWT_SECRET are supplied by docker-compose as environment variables.
 CMD ["sh", "-c", \
      "MIX_ENV=integration mix ecto.create && \
       MIX_ENV=integration mix ecto.migrate && \

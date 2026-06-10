@@ -16,9 +16,47 @@ public class JwtServiceTests
     private static JwtService CreateService()
     {
         var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?> { ["APP_JWT_SECRET"] = TestSecret })
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET"] = TestSecret })
             .Build();
         return new JwtService(config);
+    }
+
+    [Fact]
+    public void Constructor_ReadsSecretFromEnvironmentVariable()
+    {
+        // Arrange — wire the config key from the new canonical env var name
+        const string envSecret = "env-driven-secret-for-unit-test-32chars!";
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET"] = envSecret,
+            })
+            .Build();
+
+        // Act — construction must succeed (throws when key is missing)
+        var service = new JwtService(config);
+
+        // Assert — a token can be produced using that secret
+        var token = service.CreateAccessToken(Guid.NewGuid().ToString(), "bob", "User");
+        token.Should().NotBeNullOrEmpty();
+
+        // And the token can be decoded with the same service (same secret was used)
+        var principal = service.DecodeToken(token);
+        principal.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void Constructor_ThrowsWhenJwtSecretKeyIsMissing()
+    {
+        // Arrange — configuration with no JWT secret key present
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>())
+            .Build();
+
+        // Act & Assert
+        var act = () => new JwtService(config);
+        act.Should().Throw<InvalidOperationException>()
+            .WithMessage("*CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET*");
     }
 
     [Fact]

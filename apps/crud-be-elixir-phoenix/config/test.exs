@@ -7,7 +7,7 @@ config :crud_be_exph, CrudBeExphWeb.Endpoint,
   secret_key_base: "9nYAOfW0t4BGQgRMTz9Wo7C9vwlrhrSLoIfWbZK8fxxz6E4ehacBRt29myR/Hi3o",
   server: false
 
-# Guardian test secret — overrides runtime.exs so APP_JWT_SECRET is not required during tests
+# Guardian test secret — overrides runtime.exs so CRUD_BE_ELIXIR_PHOENIX_JWT_SECRET is not required during tests
 # config/test.exs is evaluated before runtime.exs, taking precedence in the test env.
 config :crud_be_exph, CrudBeExph.Auth.Guardian,
   secret_key: "test_secret_do_not_use_in_production",

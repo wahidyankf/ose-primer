@@ -34,7 +34,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseSetting("APP_JWT_SECRET", "test-jwt-secret-at-least-32-chars-long!!");
+        builder.UseSetting("CRUD_BE_CSHARP_ASPNETCORE_JWT_SECRET", "test-jwt-secret-at-least-32-chars-long!!");
         builder.UseEnvironment("Development");
 
         if (!UsePostgres)
