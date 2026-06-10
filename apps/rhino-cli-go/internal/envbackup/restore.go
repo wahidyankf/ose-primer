@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 )
 
 // Restore copies .env* files from opts.BackupDir back to opts.RepoRoot,
@@ -73,7 +72,7 @@ func Restore(opts Options) (*Result, error) {
 		var restoreEntries []FileEntry
 		for _, e := range entries {
 			base := filepath.Base(e.RelPath)
-			if e.Source == "config" || strings.HasPrefix(base, ".env") {
+			if e.Source == "config" || IsSecretFile(base, e.RelPath) {
 				restoreEntries = append(restoreEntries, e)
 			}
 		}
@@ -91,10 +90,27 @@ func Restore(opts Options) (*Result, error) {
 		WorktreeName: opts.WorktreeName,
 	}
 
+	// Dry-run: list what would be restored without writing anything.
+	if opts.DryRun {
+		for _, e := range entries {
+			base := filepath.Base(e.RelPath)
+			if e.Source != "config" && !IsSecretFile(base, e.RelPath) {
+				continue
+			}
+			result.Files = append(result.Files, e)
+			if e.Skipped {
+				result.Skipped++
+			} else {
+				result.Copied++
+			}
+		}
+		return result, nil
+	}
+
 	for _, e := range entries {
-		// Only restore files whose basename starts with ".env" OR config files.
+		// Only restore secret files (widened allowlist) OR config files.
 		base := filepath.Base(e.RelPath)
-		if e.Source != "config" && !strings.HasPrefix(base, ".env") {
+		if e.Source != "config" && !IsSecretFile(base, e.RelPath) {
 			continue
 		}
 

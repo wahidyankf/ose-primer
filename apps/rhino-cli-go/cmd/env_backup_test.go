@@ -36,6 +36,7 @@ func (s *envBackupUnitSteps) before(_ context.Context, _ *godog.Scenario) (conte
 	envBackupWorktreeAware = false
 	envBackupForce = false
 	envBackupIncludeConfig = false
+	envBackupDryRun = false
 	s.cmdErr = nil
 	s.cmdOutput = ""
 	s.backupDir = ""
@@ -625,6 +626,118 @@ func (s *envBackupUnitSteps) onlyTheEnvFileCopiedToBackupDir() error {
 	return nil
 }
 
+// --- Secrets and dry-run Given steps ---
+
+func (s *envBackupUnitSteps) aGitRepositoryContainingSecretsJSON() error {
+	envBackupFn = func(opts envbackup.Options) (*envbackup.Result, error) {
+		return &envbackup.Result{
+			Direction: "backup",
+			Dir:       opts.BackupDir,
+			Files:     []envbackup.FileEntry{{RelPath: "secrets.json", AbsPath: "/mock-repo/secrets.json", Size: 20}},
+			Copied:    1,
+			Skipped:   0,
+		}, nil
+	}
+	return nil
+}
+
+func (s *envBackupUnitSteps) aGitRepositoryContainingCertPem() error {
+	envBackupFn = func(opts envbackup.Options) (*envbackup.Result, error) {
+		return &envbackup.Result{
+			Direction: "backup",
+			Dir:       opts.BackupDir,
+			Files:     []envbackup.FileEntry{{RelPath: "cert.pem", AbsPath: "/mock-repo/cert.pem", Size: 30}},
+			Copied:    1,
+			Skipped:   0,
+		}, nil
+	}
+	return nil
+}
+
+func (s *envBackupUnitSteps) aGitRepositoryContainingSecretsDirFile() error {
+	envBackupFn = func(opts envbackup.Options) (*envbackup.Result, error) {
+		return &envbackup.Result{
+			Direction: "backup",
+			Dir:       opts.BackupDir,
+			Files:     []envbackup.FileEntry{{RelPath: ".secrets/notes.md", AbsPath: "/mock-repo/.secrets/notes.md", Size: 15}},
+			Copied:    1,
+			Skipped:   0,
+		}, nil
+	}
+	return nil
+}
+
+func (s *envBackupUnitSteps) aGitRepositoryContainingEnvAndSecretsJSON() error {
+	envBackupFn = func(opts envbackup.Options) (*envbackup.Result, error) {
+		files := []envbackup.FileEntry{
+			{RelPath: "secrets.json", AbsPath: "/mock-repo/secrets.json", Size: 20},
+		}
+		if !opts.DryRun {
+			files[0].AbsPath = "/mock-repo/secrets.json"
+		}
+		return &envbackup.Result{
+			Direction: "backup",
+			Dir:       opts.BackupDir,
+			Files:     files,
+			Copied:    1,
+			Skipped:   0,
+		}, nil
+	}
+	return nil
+}
+
+// --- Secrets and dry-run When steps ---
+
+func (s *envBackupUnitSteps) theDeveloperRunsEnvBackupWithDryRun() error {
+	envBackupDryRun = true
+	return s.runEnvBackupCmd()
+}
+
+// --- Secrets and dry-run Then steps ---
+
+func (s *envBackupUnitSteps) secretsJSONCopiedToBackupDir() error {
+	if !strings.Contains(s.cmdOutput, "secrets.json") {
+		return fmt.Errorf("expected secrets.json in output, got: %s", s.cmdOutput)
+	}
+	return nil
+}
+
+func (s *envBackupUnitSteps) certPemCopiedToBackupDir() error {
+	if !strings.Contains(s.cmdOutput, "cert.pem") {
+		return fmt.Errorf("expected cert.pem in output, got: %s", s.cmdOutput)
+	}
+	return nil
+}
+
+func (s *envBackupUnitSteps) secretsDirFileCopiedToBackupDirPath() error {
+	if !strings.Contains(s.cmdOutput, ".secrets") {
+		return fmt.Errorf("expected .secrets in output, got: %s", s.cmdOutput)
+	}
+	return nil
+}
+
+func (s *envBackupUnitSteps) noFilesFromGitDirBacked() error {
+	if strings.Contains(s.cmdOutput, ".git/") {
+		return fmt.Errorf("expected no .git/ files in output, got: %s", s.cmdOutput)
+	}
+	return nil
+}
+
+func (s *envBackupUnitSteps) noFilesWrittenToBackupDir() error {
+	// dry-run: command succeeds and no error, output may say "0 file(s)" or just list files
+	if s.cmdErr != nil {
+		return fmt.Errorf("expected no error for dry-run, got: %w", s.cmdErr)
+	}
+	return nil
+}
+
+func (s *envBackupUnitSteps) outputListsFilesWouldBeBackedUp() error {
+	if !strings.Contains(s.cmdOutput, "secrets.json") && !strings.Contains(s.cmdOutput, "backup") {
+		return fmt.Errorf("expected file listing in output, got: %s", s.cmdOutput)
+	}
+	return nil
+}
+
 func TestUnitEnvBackup(t *testing.T) {
 	s := &envBackupUnitSteps{}
 	suite := godog.TestSuite{
@@ -691,11 +804,24 @@ func TestUnitEnvBackup(t *testing.T) {
 			sc.Step(stepClaudeConfigCopiedToBackupDir, s.theClaudeConfigCopiedToBackupDir)
 			sc.Step(stepClaudeConfigNotCopiedToBackupDir, s.theClaudeConfigNotCopiedToBackupDir)
 			sc.Step(stepOnlyEnvFileCopiedToBackupDir, s.onlyTheEnvFileCopiedToBackupDir)
+
+			// Secrets and dry-run scenario steps.
+			sc.Step(stepRepoWithSecretsJSON, s.aGitRepositoryContainingSecretsJSON)
+			sc.Step(stepRepoWithCertPem, s.aGitRepositoryContainingCertPem)
+			sc.Step(stepRepoWithSecretsDirFile, s.aGitRepositoryContainingSecretsDirFile)
+			sc.Step(stepRepoWithEnvAndSecretsJSON, s.aGitRepositoryContainingEnvAndSecretsJSON)
+			sc.Step(stepDeveloperRunsEnvBackupWithDryRun, s.theDeveloperRunsEnvBackupWithDryRun)
+			sc.Step(stepSecretsJSONCopiedToBackupDir, s.secretsJSONCopiedToBackupDir)
+			sc.Step(stepCertPemCopiedToBackupDir, s.certPemCopiedToBackupDir)
+			sc.Step(stepSecretsDirFileCopiedToBackupDirPath, s.secretsDirFileCopiedToBackupDirPath)
+			sc.Step(stepNoFilesFromGitDirBacked, s.noFilesFromGitDirBacked)
+			sc.Step(stepNoFilesWrittenToBackupDir, s.noFilesWrittenToBackupDir)
+			sc.Step(stepOutputListsFilesWouldBeBackedUp, s.outputListsFilesWouldBeBackedUp)
 		},
 		Options: &godog.Options{
 			Format:   "pretty",
 			Paths:    []string{specsDirUnitEnvBackup},
-			Tags:     "@env-backup,@env-backup-confirm,@env-backup-config",
+			Tags:     "@env-backup,@env-backup-confirm,@env-backup-config,@env-backup-secrets,@env-backup-dry-run",
 			TestingT: t,
 		},
 	}

@@ -306,6 +306,35 @@ const (
 	stepEnvFileCopiedToBackupDir                   = `^the \.env file is copied to the backup directory$`
 )
 
+// Env backup secrets and dry-run step patterns.
+const (
+	stepRepoWithSecretsJSON                 = `^a git repository containing a secrets\.json file at the root$`
+	stepRepoWithCertPem                     = `^a git repository containing a cert\.pem file at the root$`
+	stepRepoWithSecretsDirFile              = `^a git repository containing a \.secrets/notes\.md file$`
+	stepRepoWithEnvAndSecretsJSON           = `^a git repository containing a \.env file and a secrets\.json file$`
+	stepDeveloperRunsEnvBackupWithDryRun    = `^the developer runs rhino-cli env backup with --dry-run$`
+	stepSecretsJSONCopiedToBackupDir        = `^secrets\.json is copied to the backup directory$`
+	stepCertPemCopiedToBackupDir            = `^cert\.pem is copied to the backup directory$`
+	stepSecretsDirFileCopiedToBackupDirPath = `^\.secrets/notes\.md is copied to the backup directory preserving its relative path$`
+	stepNoFilesFromGitDirBacked             = `^no files from the \.git directory are backed up$`
+	stepNoFilesWrittenToBackupDir           = `^no files are written to the backup directory$`
+	stepOutputListsFilesWouldBeBackedUp     = `^the output lists the files that would be backed up$`
+)
+
+// Env restore secrets and dry-run step patterns.
+const (
+	stepBackupDirWithSecretsJSON           = `^a backup directory containing a secrets\.json file$`
+	stepBackupDirWithCertPem               = `^a backup directory containing a cert\.pem file$`
+	stepBackupDirWithSecretsDirFile        = `^a backup directory containing a \.secrets/notes\.md file$`
+	stepBackupDirWithEnvAndSecretsJSON     = `^a backup directory containing a \.env file and a secrets\.json file$`
+	stepDeveloperRunsEnvRestoreWithDryRun  = `^the developer runs rhino-cli env restore with --dry-run$`
+	stepSecretsJSONCopiedBackToRepo        = `^secrets\.json is copied back to the repository$`
+	stepCertPemCopiedBackToRepo            = `^cert\.pem is copied back to the repository$`
+	stepSecretsDirFileCopiedBackToRepoPath = `^\.secrets/notes\.md is copied back to the repository preserving its relative path$`
+	stepNoFilesWrittenToRepo               = `^no files are written to the repository$`
+	stepOutputListsFilesWouldBeRestored    = `^the output lists the files that would be restored$`
+)
+
 // Env backup config step patterns.
 const (
 	stepRepoWithEnvFileAndClaudeConfig               = `^a git repository containing a \.env file and a \.claude/settings\.local\.json file$`

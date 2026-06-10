@@ -9,8 +9,39 @@ import (
 	"strings"
 )
 
-// Discover walks RepoRoot and returns all .env* files found, including those that
-// were skipped due to being symlinks or exceeding MaxSize. Results are sorted by
+// IsSecretFile returns true if a file at relPath with base filename should be
+// backed up or restored. Mirrors Rust `is_secret_file`.
+func IsSecretFile(base, relPath string) bool {
+	if strings.HasPrefix(base, ".env") {
+		return true
+	}
+	if base == "secrets.json" {
+		return true
+	}
+	// *.pem / *.key / *.crt / *.pfx certificate and key files
+	ext := strings.ToLower(filepath.Ext(base))
+	switch ext {
+	case ".pem", ".key", ".crt", ".pfx":
+		return true
+	}
+	// Any file descended into via .secrets/ (carved out of hidden-dir skip)
+	if strings.HasPrefix(relPath, ".secrets/") || strings.HasPrefix(relPath, ".secrets\\") {
+		return true
+	}
+	// *.tfvars and inventory files — activate when IaC is added (R3/R11)
+	// if strings.HasSuffix(base, ".tfvars") { return true }
+	return false
+}
+
+// DefaultBackupDirName returns the default backup directory name derived from
+// the repo root basename: "<repo-basename>-env-backup". Mirrors Rust
+// `default_backup_dir_name`.
+func DefaultBackupDirName(repoBasename string) string {
+	return repoBasename + "-env-backup"
+}
+
+// Discover walks RepoRoot and returns all secret files found, including those
+// skipped due to being symlinks or exceeding MaxSize. Results are sorted by
 // RelPath for deterministic ordering.
 func Discover(opts Options) ([]FileEntry, error) {
 	if opts.MaxSize <= 0 {
@@ -37,6 +68,10 @@ func Discover(opts Options) ([]FileEntry, error) {
 			if path == opts.RepoRoot {
 				return nil
 			}
+			// Carve out .secrets/ so its contents are discoverable.
+			if base == ".secrets" {
+				return nil
+			}
 			// Skip hidden directories (basename starts with ".").
 			if strings.HasPrefix(base, ".") {
 				return filepath.SkipDir
@@ -48,14 +83,14 @@ func Discover(opts Options) ([]FileEntry, error) {
 			return nil
 		}
 
-		// Only process files whose basename starts with ".env".
-		if !strings.HasPrefix(base, ".env") {
-			return nil
-		}
-
 		relPath, err := filepath.Rel(opts.RepoRoot, path)
 		if err != nil {
 			return fmt.Errorf("compute relative path for %s: %w", path, err)
+		}
+
+		// Apply widened allowlist: .env*, secrets.json, cert files, .secrets/ contents.
+		if !IsSecretFile(base, relPath) {
+			return nil
 		}
 
 		// Use Lstat to detect symlinks without following them.

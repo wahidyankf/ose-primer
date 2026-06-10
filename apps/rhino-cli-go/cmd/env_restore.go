@@ -13,13 +13,14 @@ var envRestoreDir string
 var envRestoreWorktreeAware bool
 var envRestoreForce bool
 var envRestoreIncludeConfig bool
+var envRestoreDryRun bool
 
 var envRestoreCmd = &cobra.Command{
 	Use:   "restore",
-	Short: "Restore .env files from a backup",
-	Long: `Copy previously backed-up .env* files from the backup directory back to
-their original repository paths. Only files whose basename starts with
-".env" are restored; other files in the backup are ignored.
+	Short: "Restore .env and secret files from a backup",
+	Long: `Copy previously backed-up .env*, secrets.json, *.pem/key/crt/pfx, and
+.secrets/ files from the backup directory back to their original repository
+paths. Other files in the backup are ignored.
 
 If destination files already exist, the user is prompted for confirmation
 before overwriting. Use --force to skip the prompt. JSON and markdown output
@@ -27,7 +28,7 @@ modes imply --force. Non-TTY stdin also implies --force.
 
 Use --include-config to also restore known uncommitted local configuration
 files (AI tool settings, Docker overrides, version managers, direnv).`,
-	Example: `  # Restore from default directory ~/ose-open-env-backup
+	Example: `  # Restore from default directory ~/<repo-name>-env-backup
   rhino-cli env restore
 
   # Restore from a custom directory
@@ -42,6 +43,9 @@ files (AI tool settings, Docker overrides, version managers, direnv).`,
   # Include config files
   rhino-cli env restore --include-config
 
+  # Preview what would be restored without writing
+  rhino-cli env restore --dry-run
+
   # JSON output (implies --force)
   rhino-cli env restore -o json`,
 	Args:          cobra.NoArgs,
@@ -51,10 +55,11 @@ files (AI tool settings, Docker overrides, version managers, direnv).`,
 
 func init() {
 	envCmd.AddCommand(envRestoreCmd)
-	envRestoreCmd.Flags().StringVar(&envRestoreDir, "dir", "", "backup source directory (default: ~/ose-open-env-backup)")
+	envRestoreCmd.Flags().StringVar(&envRestoreDir, "dir", "", "backup source directory (default: ~/<repo-name>-env-backup)")
 	envRestoreCmd.Flags().BoolVar(&envRestoreWorktreeAware, "worktree-aware", false, "read from worktree-namespaced backup")
 	envRestoreCmd.Flags().BoolVarP(&envRestoreForce, "force", "f", false, "skip overwrite confirmation")
 	envRestoreCmd.Flags().BoolVar(&envRestoreIncludeConfig, "include-config", false, "also restore known uncommitted config files")
+	envRestoreCmd.Flags().BoolVar(&envRestoreDryRun, "dry-run", false, "preview what would be restored without writing")
 }
 
 func runEnvRestore(cmd *cobra.Command, _ []string) error {
@@ -69,7 +74,8 @@ func runEnvRestore(cmd *cobra.Command, _ []string) error {
 		if err != nil {
 			return fmt.Errorf("cannot determine home directory: %w", err)
 		}
-		backupDir = filepath.Join(home, envbackup.DefaultBackupDir)
+		repoBasename := filepath.Base(repoRoot)
+		backupDir = filepath.Join(home, envbackup.DefaultBackupDirName(repoBasename))
 	} else {
 		backupDir, err = envbackup.ExpandTilde(backupDir)
 		if err != nil {
@@ -98,6 +104,7 @@ func runEnvRestore(cmd *cobra.Command, _ []string) error {
 		WorktreeAware: envRestoreWorktreeAware,
 		Force:         force,
 		IncludeConfig: envRestoreIncludeConfig,
+		DryRun:        envRestoreDryRun,
 	}
 
 	if !force {

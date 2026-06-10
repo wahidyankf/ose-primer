@@ -557,3 +557,48 @@ func TestBackup_SkippedFileCountedCorrectly(t *testing.T) {
 		t.Errorf("Skipped: got %d, want 1", result.Skipped)
 	}
 }
+
+func TestBackup_DryRunWritesNothing(t *testing.T) {
+	tmp := t.TempDir()
+	repo := makeDir(t, tmp, "repo")
+	bkup := makeDir(t, tmp, "backup")
+
+	writeFile(t, filepath.Join(repo, ".env"), "A=1")
+	writeFile(t, filepath.Join(repo, "secrets.json"), "{}")
+
+	result, err := Backup(Options{
+		RepoRoot:  repo,
+		BackupDir: bkup,
+		SkipDirs:  DefaultSkipDirs,
+		MaxSize:   DefaultMaxSize,
+		Force:     true,
+		DryRun:    true,
+	})
+	if err != nil {
+		t.Fatalf("Backup error: %v", err)
+	}
+	if result.Direction != "backup" {
+		t.Errorf("Direction: got %q, want %q", result.Direction, "backup")
+	}
+	// No files written.
+	if _, err := os.Stat(filepath.Join(bkup, ".env")); !os.IsNotExist(err) {
+		t.Error("dry-run must not write .env")
+	}
+	if _, err := os.Stat(filepath.Join(bkup, "secrets.json")); !os.IsNotExist(err) {
+		t.Error("dry-run must not write secrets.json")
+	}
+	// Files still listed in result.
+	var rels []string
+	for _, f := range result.Files {
+		rels = append(rels, f.RelPath)
+	}
+	hasEnvOrSecrets := false
+	for _, r := range rels {
+		if r == ".env" || r == "secrets.json" {
+			hasEnvOrSecrets = true
+		}
+	}
+	if !hasEnvOrSecrets {
+		t.Errorf("expected .env or secrets.json in result files, got %v", rels)
+	}
+}

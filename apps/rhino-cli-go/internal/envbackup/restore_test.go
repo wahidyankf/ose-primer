@@ -440,3 +440,65 @@ func TestRestore_DefaultMaxSizeApplied(t *testing.T) {
 		t.Errorf("Copied: got %d, want 1", result.Copied)
 	}
 }
+
+func TestRestore_SecretKindsRoundtrip(t *testing.T) {
+	tmp := t.TempDir()
+	bkup := makeDir(t, tmp, "backup")
+	repo := makeDir(t, tmp, "repo")
+
+	writeFile(t, filepath.Join(bkup, "secrets.json"), "{}")
+	writeFile(t, filepath.Join(bkup, "cert.pem"), "PEM")
+	writeFile(t, filepath.Join(bkup, ".secrets", "notes.md"), "secret")
+
+	result, err := Restore(Options{
+		RepoRoot:  repo,
+		BackupDir: bkup,
+		MaxSize:   DefaultMaxSize,
+		Force:     true,
+	})
+	if err != nil {
+		t.Fatalf("Restore error: %v", err)
+	}
+	if result.Direction != "restore" {
+		t.Errorf("Direction: got %q, want %q", result.Direction, "restore")
+	}
+	if _, err := os.Stat(filepath.Join(repo, "secrets.json")); err != nil {
+		t.Errorf("secrets.json should be restored: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(repo, "cert.pem")); err != nil {
+		t.Errorf("cert.pem should be restored: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(repo, ".secrets", "notes.md")); err != nil {
+		t.Errorf(".secrets/notes.md should be restored: %v", err)
+	}
+}
+
+func TestRestore_DryRunWritesNothing(t *testing.T) {
+	tmp := t.TempDir()
+	bkup := makeDir(t, tmp, "backup")
+	repo := makeDir(t, tmp, "repo")
+
+	writeFile(t, filepath.Join(bkup, ".env"), "A=1")
+	writeFile(t, filepath.Join(bkup, "secrets.json"), "{}")
+
+	result, err := Restore(Options{
+		RepoRoot:  repo,
+		BackupDir: bkup,
+		MaxSize:   DefaultMaxSize,
+		Force:     true,
+		DryRun:    true,
+	})
+	if err != nil {
+		t.Fatalf("Restore error: %v", err)
+	}
+	if result.Direction != "restore" {
+		t.Errorf("Direction: got %q, want %q", result.Direction, "restore")
+	}
+	// No files written to repo.
+	if _, err := os.Stat(filepath.Join(repo, ".env")); !os.IsNotExist(err) {
+		t.Error("dry-run must not write .env to repo")
+	}
+	if _, err := os.Stat(filepath.Join(repo, "secrets.json")); !os.IsNotExist(err) {
+		t.Error("dry-run must not write secrets.json to repo")
+	}
+}

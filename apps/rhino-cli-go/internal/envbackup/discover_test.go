@@ -227,3 +227,104 @@ func TestDiscover_MultipleEnvVariants(t *testing.T) {
 		t.Errorf("expected 4 entries, got %d", len(entries))
 	}
 }
+
+func TestDiscover_SecretsJSON(t *testing.T) {
+	root := t.TempDir()
+	writeFile(t, filepath.Join(root, "secrets.json"), "{}")
+	writeFile(t, filepath.Join(root, ".env"), "A=1")
+
+	entries, err := Discover(Options{RepoRoot: root, MaxSize: DefaultMaxSize})
+	if err != nil {
+		t.Fatalf("Discover error: %v", err)
+	}
+	var rels []string
+	for _, e := range entries {
+		rels = append(rels, e.RelPath)
+	}
+	found := false
+	for _, r := range rels {
+		if r == "secrets.json" {
+			found = true
+		}
+	}
+	if !found {
+		t.Errorf("expected secrets.json in %v", rels)
+	}
+}
+
+func TestDiscover_PEMFile(t *testing.T) {
+	root := t.TempDir()
+	writeFile(t, filepath.Join(root, "cert.pem"), "-----BEGIN CERT-----")
+	writeFile(t, filepath.Join(root, ".env"), "A=1")
+
+	entries, err := Discover(Options{RepoRoot: root, MaxSize: DefaultMaxSize})
+	if err != nil {
+		t.Fatalf("Discover error: %v", err)
+	}
+	var rels []string
+	for _, e := range entries {
+		rels = append(rels, e.RelPath)
+	}
+	found := false
+	for _, r := range rels {
+		if r == "cert.pem" {
+			found = true
+		}
+	}
+	if !found {
+		t.Errorf("expected cert.pem in %v", rels)
+	}
+}
+
+func TestDiscover_SecretsDirFiles(t *testing.T) {
+	root := t.TempDir()
+	writeFile(t, filepath.Join(root, ".secrets", "notes.md"), "secret notes")
+	writeFile(t, filepath.Join(root, ".env"), "A=1")
+
+	entries, err := Discover(Options{RepoRoot: root, MaxSize: DefaultMaxSize})
+	if err != nil {
+		t.Fatalf("Discover error: %v", err)
+	}
+	want := filepath.Join(".secrets", "notes.md")
+	var rels []string
+	for _, e := range entries {
+		rels = append(rels, e.RelPath)
+	}
+	found := false
+	for _, r := range rels {
+		if r == want {
+			found = true
+		}
+	}
+	if !found {
+		t.Errorf("expected %s in %v", want, rels)
+	}
+}
+
+func TestDiscover_GitDirStillSkipped(t *testing.T) {
+	root := t.TempDir()
+	writeFile(t, filepath.Join(root, ".git", "config"), "[core]")
+	writeFile(t, filepath.Join(root, ".env"), "A=1")
+
+	entries, err := Discover(Options{RepoRoot: root, SkipDirs: DefaultSkipDirs, MaxSize: DefaultMaxSize})
+	if err != nil {
+		t.Fatalf("Discover error: %v", err)
+	}
+	for _, e := range entries {
+		if len(e.RelPath) >= 5 && e.RelPath[:5] == ".git/" {
+			t.Errorf(".git/ should be skipped, found: %s", e.RelPath)
+		}
+		if e.RelPath == filepath.Join(".git", "config") {
+			t.Errorf(".git/config should be skipped")
+		}
+	}
+	found := false
+	for _, e := range entries {
+		if e.RelPath == ".env" {
+			found = true
+		}
+	}
+	if !found {
+		t.Error(".env should be discovered")
+	}
+}

@@ -72,15 +72,27 @@ func Backup(opts Options) (*Result, error) {
 		}
 	}
 
-	if err := os.MkdirAll(destRoot, 0o750); err != nil {
-		return nil, fmt.Errorf("create backup dir: %w", err)
-	}
-
 	result := &Result{
 		Direction:    "backup",
 		Dir:          opts.BackupDir,
 		Files:        entries,
 		WorktreeName: opts.WorktreeName,
+	}
+
+	// Dry-run: list what would be backed up without writing anything.
+	if opts.DryRun {
+		for _, e := range entries {
+			if e.Skipped {
+				result.Skipped++
+			} else {
+				result.Copied++
+			}
+		}
+		return result, nil
+	}
+
+	if err := os.MkdirAll(destRoot, 0o750); err != nil {
+		return nil, fmt.Errorf("create backup dir: %w", err)
 	}
 
 	for i := range entries {

@@ -36,6 +36,7 @@ func (s *envRestoreUnitSteps) before(_ context.Context, _ *godog.Scenario) (cont
 	envRestoreWorktreeAware = false
 	envRestoreForce = false
 	envRestoreIncludeConfig = false
+	envRestoreDryRun = false
 	s.cmdErr = nil
 	s.cmdOutput = ""
 	s.backupDir = ""
@@ -533,6 +534,128 @@ func (s *envRestoreUnitSteps) theClaudeConfigNotRestoredToRepo() error {
 	return nil
 }
 
+// --- Secrets and dry-run Given steps ---
+
+func (s *envRestoreUnitSteps) aBackupDirWithSecretsJSON() error {
+	tmpBackup, err := os.MkdirTemp("", "env-restore-bk-*")
+	if err != nil {
+		return fmt.Errorf("create temp backup dir: %w", err)
+	}
+	s.backupDir = tmpBackup
+	envRestoreDir = tmpBackup
+	envRestoreFn = func(opts envbackup.Options) (*envbackup.Result, error) {
+		return &envbackup.Result{
+			Direction: "restore",
+			Dir:       opts.BackupDir,
+			Files:     []envbackup.FileEntry{{RelPath: "secrets.json", AbsPath: tmpBackup + "/secrets.json", Size: 20}},
+			Copied:    1,
+			Skipped:   0,
+		}, nil
+	}
+	return nil
+}
+
+func (s *envRestoreUnitSteps) aBackupDirWithCertPem() error {
+	tmpBackup, err := os.MkdirTemp("", "env-restore-bk-*")
+	if err != nil {
+		return fmt.Errorf("create temp backup dir: %w", err)
+	}
+	s.backupDir = tmpBackup
+	envRestoreDir = tmpBackup
+	envRestoreFn = func(opts envbackup.Options) (*envbackup.Result, error) {
+		return &envbackup.Result{
+			Direction: "restore",
+			Dir:       opts.BackupDir,
+			Files:     []envbackup.FileEntry{{RelPath: "cert.pem", AbsPath: tmpBackup + "/cert.pem", Size: 30}},
+			Copied:    1,
+			Skipped:   0,
+		}, nil
+	}
+	return nil
+}
+
+func (s *envRestoreUnitSteps) aBackupDirWithSecretsDirFile() error {
+	tmpBackup, err := os.MkdirTemp("", "env-restore-bk-*")
+	if err != nil {
+		return fmt.Errorf("create temp backup dir: %w", err)
+	}
+	s.backupDir = tmpBackup
+	envRestoreDir = tmpBackup
+	envRestoreFn = func(opts envbackup.Options) (*envbackup.Result, error) {
+		return &envbackup.Result{
+			Direction: "restore",
+			Dir:       opts.BackupDir,
+			Files:     []envbackup.FileEntry{{RelPath: ".secrets/notes.md", AbsPath: tmpBackup + "/.secrets/notes.md", Size: 15}},
+			Copied:    1,
+			Skipped:   0,
+		}, nil
+	}
+	return nil
+}
+
+func (s *envRestoreUnitSteps) aBackupDirWithEnvAndSecretsJSON() error {
+	tmpBackup, err := os.MkdirTemp("", "env-restore-bk-*")
+	if err != nil {
+		return fmt.Errorf("create temp backup dir: %w", err)
+	}
+	s.backupDir = tmpBackup
+	envRestoreDir = tmpBackup
+	envRestoreFn = func(opts envbackup.Options) (*envbackup.Result, error) {
+		return &envbackup.Result{
+			Direction: "restore",
+			Dir:       opts.BackupDir,
+			Files:     []envbackup.FileEntry{{RelPath: "secrets.json", AbsPath: tmpBackup + "/secrets.json", Size: 20}},
+			Copied:    1,
+			Skipped:   0,
+		}, nil
+	}
+	return nil
+}
+
+// --- Secrets and dry-run When steps ---
+
+func (s *envRestoreUnitSteps) theDeveloperRunsEnvRestoreWithDryRun() error {
+	envRestoreDryRun = true
+	return s.runEnvRestoreCmd()
+}
+
+// --- Secrets and dry-run Then steps ---
+
+func (s *envRestoreUnitSteps) secretsJSONCopiedBackToRepo() error {
+	if !strings.Contains(s.cmdOutput, "secrets.json") {
+		return fmt.Errorf("expected secrets.json in output, got: %s", s.cmdOutput)
+	}
+	return nil
+}
+
+func (s *envRestoreUnitSteps) certPemCopiedBackToRepo() error {
+	if !strings.Contains(s.cmdOutput, "cert.pem") {
+		return fmt.Errorf("expected cert.pem in output, got: %s", s.cmdOutput)
+	}
+	return nil
+}
+
+func (s *envRestoreUnitSteps) secretsDirFileCopiedBackToRepoPath() error {
+	if !strings.Contains(s.cmdOutput, ".secrets") {
+		return fmt.Errorf("expected .secrets in output, got: %s", s.cmdOutput)
+	}
+	return nil
+}
+
+func (s *envRestoreUnitSteps) noFilesWrittenToRepo() error {
+	if s.cmdErr != nil {
+		return fmt.Errorf("expected no error for dry-run restore, got: %w", s.cmdErr)
+	}
+	return nil
+}
+
+func (s *envRestoreUnitSteps) outputListsFilesWouldBeRestored() error {
+	if !strings.Contains(s.cmdOutput, "secrets.json") && !strings.Contains(s.cmdOutput, "restore") {
+		return fmt.Errorf("expected file listing in output, got: %s", s.cmdOutput)
+	}
+	return nil
+}
+
 func TestUnitEnvRestore(t *testing.T) {
 	s := &envRestoreUnitSteps{}
 	suite := godog.TestSuite{
@@ -589,11 +712,23 @@ func TestUnitEnvRestore(t *testing.T) {
 			sc.Step(stepDeveloperRunsEnvRestoreWithForceOnly, s.theDeveloperRunsEnvRestoreWithForceOnly)
 			sc.Step(stepClaudeConfigRestoredToRepo, s.theClaudeConfigRestoredToRepo)
 			sc.Step(stepClaudeConfigNotRestoredToRepo, s.theClaudeConfigNotRestoredToRepo)
+
+			// Secrets and dry-run scenario steps.
+			sc.Step(stepBackupDirWithSecretsJSON, s.aBackupDirWithSecretsJSON)
+			sc.Step(stepBackupDirWithCertPem, s.aBackupDirWithCertPem)
+			sc.Step(stepBackupDirWithSecretsDirFile, s.aBackupDirWithSecretsDirFile)
+			sc.Step(stepBackupDirWithEnvAndSecretsJSON, s.aBackupDirWithEnvAndSecretsJSON)
+			sc.Step(stepDeveloperRunsEnvRestoreWithDryRun, s.theDeveloperRunsEnvRestoreWithDryRun)
+			sc.Step(stepSecretsJSONCopiedBackToRepo, s.secretsJSONCopiedBackToRepo)
+			sc.Step(stepCertPemCopiedBackToRepo, s.certPemCopiedBackToRepo)
+			sc.Step(stepSecretsDirFileCopiedBackToRepoPath, s.secretsDirFileCopiedBackToRepoPath)
+			sc.Step(stepNoFilesWrittenToRepo, s.noFilesWrittenToRepo)
+			sc.Step(stepOutputListsFilesWouldBeRestored, s.outputListsFilesWouldBeRestored)
 		},
 		Options: &godog.Options{
 			Format:   "pretty",
 			Paths:    []string{specsDirUnitEnvRestore},
-			Tags:     "@env-restore,@env-restore-confirm,@env-restore-config",
+			Tags:     "@env-restore,@env-restore-confirm,@env-restore-config,@env-restore-secrets,@env-restore-dry-run",
 			TestingT: t,
 		},
 	}

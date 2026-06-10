@@ -12,7 +12,7 @@ use anyhow::{Context, Error, anyhow};
 
 use super::config::{DEFAULT_CONFIG_PATTERNS, discover_config};
 use super::confirm::find_existing;
-use super::discover::{DiscoverOptions, discover};
+use super::discover::{DiscoverOptions, discover, is_secret_file};
 use super::types::{DEFAULT_MAX_SIZE, DEFAULT_SKIP_DIRS, EnvResult, FileEntry};
 
 /// Callback invoked when destination files already exist. Returns true to
@@ -31,7 +31,14 @@ pub struct Options<'a> {
     pub worktree_name: String,
     pub force: bool,
     pub include_config: bool,
+    pub dry_run: bool,
     pub confirm: Option<&'a mut ConfirmFn<'a>>,
+}
+
+/// Returns the default backup directory basename derived from the repo root
+/// basename: `<repo-basename>-env-backup`. Mirrors Go `DefaultBackupDirName`.
+pub fn default_backup_dir_name(repo_basename: &str) -> String {
+    format!("{repo_basename}-env-backup")
 }
 
 /// Replaces a leading `~` with the current user's home directory. Mirrors Go
@@ -176,8 +183,6 @@ pub fn backup(mut opts: Options) -> Result<EnvResult, Error> {
         }
     }
 
-    std::fs::create_dir_all(&dest_root).context("create backup dir")?;
-
     let mut result = EnvResult {
         direction: "backup".to_string(),
         dir: opts.backup_dir.clone(),
@@ -185,6 +190,20 @@ pub fn backup(mut opts: Options) -> Result<EnvResult, Error> {
         worktree_name: opts.worktree_name.clone(),
         ..Default::default()
     };
+
+    // Dry-run: list what would be backed up without writing anything.
+    if opts.dry_run {
+        for e in &entries {
+            if e.skipped {
+                result.skipped += 1;
+            } else {
+                result.copied += 1;
+            }
+        }
+        return Ok(result);
+    }
+
+    std::fs::create_dir_all(&dest_root).context("create backup dir")?;
 
     for e in &entries {
         if e.skipped {
@@ -268,7 +287,16 @@ pub fn restore(mut opts: Options) -> Result<EnvResult, Error> {
     {
         let restore_entries: Vec<FileEntry> = entries
             .iter()
-            .filter(|e| e.source == "config" || base_starts_with_env(&e.rel_path))
+            .filter(|e| {
+                if e.source == "config" {
+                    return true;
+                }
+                let base = std::path::Path::new(&e.rel_path)
+                    .file_name()
+                    .map(|b| b.to_string_lossy().into_owned())
+                    .unwrap_or_default();
+                is_secret_file(&base, &e.rel_path)
+            })
             .cloned()
             .collect();
         let existing = find_existing(&restore_entries, &opts.repo_root);
@@ -282,27 +310,68 @@ pub fn restore(mut opts: Options) -> Result<EnvResult, Error> {
         }
     }
 
+    if opts.dry_run {
+        return Ok(restore_dry_run(
+            entries,
+            opts.backup_dir,
+            opts.worktree_name,
+        ));
+    }
+
     let mut result = EnvResult {
         direction: "restore".to_string(),
         dir: opts.backup_dir.clone(),
         worktree_name: opts.worktree_name.clone(),
         ..Default::default()
     };
+    restore_entries_to_repo(entries, &opts.repo_root, &mut result);
+    Ok(result)
+}
 
+/// Handles dry-run path for restore: counts and lists what would be restored without
+/// writing anything. Extracted to keep `restore` under the line-count limit.
+fn restore_dry_run(entries: Vec<FileEntry>, dir: String, worktree_name: String) -> EnvResult {
+    let mut result = EnvResult {
+        direction: "restore".to_string(),
+        dir,
+        worktree_name,
+        ..Default::default()
+    };
     for e in entries {
-        // Only restore files whose basename starts with ".env" OR config files.
-        if e.source != "config" && !base_starts_with_env(&e.rel_path) {
+        let base = Path::new(&e.rel_path)
+            .file_name()
+            .map(|b| b.to_string_lossy().into_owned())
+            .unwrap_or_default();
+        if e.source != "config" && !is_secret_file(&base, &e.rel_path) {
             continue;
         }
-
         result.files.push(e.clone());
+        if e.skipped {
+            result.skipped += 1;
+        } else {
+            result.copied += 1;
+        }
+    }
+    result
+}
 
+/// Copies entries from the backup dir back to `repo_root`, filtering to secret
+/// and config files only. Extracted to keep `restore` under the line-count limit.
+fn restore_entries_to_repo(entries: Vec<FileEntry>, repo_root: &str, result: &mut EnvResult) {
+    for e in entries {
+        let base = Path::new(&e.rel_path)
+            .file_name()
+            .map(|b| b.to_string_lossy().into_owned())
+            .unwrap_or_default();
+        if e.source != "config" && !is_secret_file(&base, &e.rel_path) {
+            continue;
+        }
+        result.files.push(e.clone());
         if e.skipped {
             result.skipped += 1;
             continue;
         }
-
-        let dst = Path::new(&opts.repo_root).join(&e.rel_path);
+        let dst = Path::new(repo_root).join(&e.rel_path);
         if let Some(parent) = dst.parent()
             && let Err(err) = std::fs::create_dir_all(parent)
         {
@@ -312,7 +381,6 @@ pub fn restore(mut opts: Options) -> Result<EnvResult, Error> {
             result.skipped += 1;
             continue;
         }
-
         if let Err(err) = copy_file(&e.abs_path, &dst.to_string_lossy()) {
             result.errors.push(format!("copy {}: {err:#}", e.rel_path));
             result.skipped += 1;
@@ -320,16 +388,6 @@ pub fn restore(mut opts: Options) -> Result<EnvResult, Error> {
         }
         result.copied += 1;
     }
-
-    Ok(result)
-}
-
-/// Whether the basename of `rel_path` starts with `.env` (Go `filepath.Base` +
-/// `strings.HasPrefix`).
-fn base_starts_with_env(rel_path: &str) -> bool {
-    Path::new(rel_path)
-        .file_name()
-        .is_some_and(|b| b.to_string_lossy().starts_with(".env"))
 }
 
 /// Renders an io error message close to Go's `%v`. Used only inside non-fatal
@@ -359,6 +417,7 @@ mod tests {
             worktree_name: String::new(),
             force: true,
             include_config: false,
+            dry_run: false,
             confirm: None,
         }
     }
@@ -488,6 +547,57 @@ mod tests {
         o.include_config = true;
         let _ = restore(o).unwrap();
         assert!(repo.path().join(".claude/settings.local.json").exists());
+    }
+
+    #[test]
+    fn backup_dry_run_writes_nothing() {
+        let repo = tempfile::tempdir().unwrap();
+        let bk = tempfile::tempdir().unwrap();
+        write(repo.path(), ".env", b"A=1\n");
+        write(repo.path(), "secrets.json", b"{}\n");
+        let mut o = opts(repo.path(), bk.path());
+        o.dry_run = true;
+        let result = backup(o).unwrap();
+        assert_eq!(result.direction, "backup");
+        // dry-run: no files actually written
+        assert!(
+            !bk.path().join(".env").exists(),
+            "dry-run must not write .env"
+        );
+        assert!(
+            !bk.path().join("secrets.json").exists(),
+            "dry-run must not write secrets.json"
+        );
+        // files still listed in result
+        assert!(
+            result
+                .files
+                .iter()
+                .any(|f| f.rel_path == ".env" || f.rel_path == "secrets.json")
+        );
+    }
+
+    #[test]
+    fn restore_secret_kinds_roundtrip() {
+        let repo = tempfile::tempdir().unwrap();
+        let bk = tempfile::tempdir().unwrap();
+        write(bk.path(), "secrets.json", b"{}\n");
+        write(bk.path(), "cert.pem", b"PEM\n");
+        write(bk.path(), ".secrets/notes.md", b"secret\n");
+        let result = restore(opts(repo.path(), bk.path())).unwrap();
+        assert_eq!(result.direction, "restore");
+        assert!(
+            repo.path().join("secrets.json").exists(),
+            "secrets.json should be restored"
+        );
+        assert!(
+            repo.path().join("cert.pem").exists(),
+            "cert.pem should be restored"
+        );
+        assert!(
+            repo.path().join(".secrets/notes.md").exists(),
+            ".secrets/notes.md should be restored"
+        );
     }
 
     #[cfg(unix)]

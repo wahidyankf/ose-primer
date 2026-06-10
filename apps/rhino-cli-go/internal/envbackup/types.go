@@ -11,6 +11,7 @@ type Options struct {
 	WorktreeName  string                       // Set by cmd layer from detectWorktree(); used to populate Result.
 	Force         bool                         // Skip confirmation prompt.
 	IncludeConfig bool                         // Also discover config files.
+	DryRun        bool                         // Preview only — discover but write nothing.
 	ConfirmFn     func(existing []string) bool // Called when destinations exist; nil = force
 }
 
@@ -59,5 +60,7 @@ var DefaultSkipDirs = []string{
 // DefaultMaxSize is the maximum backup file size in bytes.
 const DefaultMaxSize = 1024 * 1024 // 1 MB
 
-// DefaultBackupDir is the default directory name for environment backups.
-const DefaultBackupDir = "ose-open-env-backup"
+// DefaultBackupDir is the fallback directory name when repo root cannot be
+// determined. In practice the cmd layer always derives <repo-basename>-env-backup
+// from the actual repo root (R11b). Mirrors Rust DEFAULT_BACKUP_DIR.
+const DefaultBackupDir = "env-backup"

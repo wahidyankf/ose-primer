@@ -95,8 +95,10 @@ pub const DEFAULT_SKIP_DIRS: &[&str] = &[
 /// Maximum backup file size in bytes (1 MB). Mirrors Go `DefaultMaxSize`.
 pub const DEFAULT_MAX_SIZE: i64 = 1024 * 1024;
 
-/// Default backup directory name. Mirrors Go `DefaultBackupDir`.
-pub const DEFAULT_BACKUP_DIR: &str = "ose-open-env-backup";
+/// Fallback backup directory name when repo root cannot be determined.
+/// In practice the cmd layer always derives `<repo-basename>-env-backup`
+/// from the actual repo root (R11b). Mirrors Go `DefaultBackupDir`.
+pub const DEFAULT_BACKUP_DIR: &str = "env-backup";
 
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::panic)]
@@ -116,9 +118,19 @@ mod tests {
     #[test]
     fn constants_match_go() {
         assert_eq!(DEFAULT_MAX_SIZE, 1024 * 1024);
-        assert_eq!(DEFAULT_BACKUP_DIR, "ose-open-env-backup");
         assert_eq!(DEFAULT_SKIP_DIRS[0], ".git");
         assert!(DEFAULT_SKIP_DIRS.contains(&"node_modules"));
         assert!(DEFAULT_SKIP_DIRS.contains(&"generated-contracts"));
+    }
+
+    #[test]
+    fn default_backup_dir_name_derives_from_repo_basename() {
+        // R11b: default backup dir must be <repo-basename>-env-backup.
+        // For a repo root named "ose-primer", the suffix is "ose-primer-env-backup",
+        // NOT the hardcoded "ose-open-env-backup".
+        let derived = super::super::ops::default_backup_dir_name("ose-primer");
+        assert_eq!(derived, "ose-primer-env-backup");
+        let derived2 = super::super::ops::default_backup_dir_name("my-project");
+        assert_eq!(derived2, "my-project-env-backup");
     }
 }

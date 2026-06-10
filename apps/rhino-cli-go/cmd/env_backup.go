@@ -13,12 +13,14 @@ var envBackupDir string
 var envBackupWorktreeAware bool
 var envBackupForce bool
 var envBackupIncludeConfig bool
+var envBackupDryRun bool
 
 var envBackupCmd = &cobra.Command{
 	Use:   "backup",
-	Short: "Back up .env files from the repository",
-	Long: `Recursively find all .env* files in the repository and copy them to a
-backup directory, preserving the relative directory structure.
+	Short: "Back up .env and secret files from the repository",
+	Long: `Recursively find all .env*, secrets.json, *.pem/key/crt/pfx, and .secrets/
+files in the repository and copy them to a backup directory, preserving the
+relative directory structure.
 
 Auto-generated directories (node_modules, dist, build, .next, etc.) are
 skipped. Symlinks and files larger than 1 MB are skipped with a warning.
@@ -29,7 +31,7 @@ modes imply --force. Non-TTY stdin also implies --force.
 
 Use --include-config to also back up known uncommitted local configuration
 files (AI tool settings, Docker overrides, version managers, direnv).`,
-	Example: `  # Back up to default directory ~/ose-open-env-backup
+	Example: `  # Back up to default directory ~/<repo-name>-env-backup
   rhino-cli env backup
 
   # Back up to a custom directory
@@ -44,6 +46,9 @@ files (AI tool settings, Docker overrides, version managers, direnv).`,
   # Include uncommitted config files
   rhino-cli env backup --include-config
 
+  # Preview what would be backed up without writing
+  rhino-cli env backup --dry-run
+
   # JSON output (implies --force)
   rhino-cli env backup -o json`,
 	Args:          cobra.NoArgs,
@@ -53,10 +58,11 @@ files (AI tool settings, Docker overrides, version managers, direnv).`,
 
 func init() {
 	envCmd.AddCommand(envBackupCmd)
-	envBackupCmd.Flags().StringVar(&envBackupDir, "dir", "", "backup directory (default: ~/ose-open-env-backup)")
+	envBackupCmd.Flags().StringVar(&envBackupDir, "dir", "", "backup directory (default: ~/<repo-name>-env-backup)")
 	envBackupCmd.Flags().BoolVar(&envBackupWorktreeAware, "worktree-aware", false, "namespace backup by worktree/repo directory name")
 	envBackupCmd.Flags().BoolVarP(&envBackupForce, "force", "f", false, "skip overwrite confirmation")
 	envBackupCmd.Flags().BoolVar(&envBackupIncludeConfig, "include-config", false, "also back up known uncommitted config files")
+	envBackupCmd.Flags().BoolVar(&envBackupDryRun, "dry-run", false, "preview what would be backed up without writing")
 }
 
 func runEnvBackup(cmd *cobra.Command, _ []string) error {
@@ -71,7 +77,8 @@ func runEnvBackup(cmd *cobra.Command, _ []string) error {
 		if err != nil {
 			return fmt.Errorf("cannot determine home directory: %w", err)
 		}
-		backupDir = filepath.Join(home, envbackup.DefaultBackupDir)
+		repoBasename := filepath.Base(repoRoot)
+		backupDir = filepath.Join(home, envbackup.DefaultBackupDirName(repoBasename))
 	} else {
 		backupDir, err = envbackup.ExpandTilde(backupDir)
 		if err != nil {
@@ -101,6 +108,7 @@ func runEnvBackup(cmd *cobra.Command, _ []string) error {
 		WorktreeAware: envBackupWorktreeAware,
 		Force:         force,
 		IncludeConfig: envBackupIncludeConfig,
+		DryRun:        envBackupDryRun,
 	}
 
 	if !force {

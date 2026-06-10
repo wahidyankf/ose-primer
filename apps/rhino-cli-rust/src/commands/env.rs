@@ -40,7 +40,7 @@ Global Flags:\n      \
 pub const ENV_BACKUP_USAGE: &str = "Usage:\n  \
 rhino-cli env backup [flags]\n\n\
 Examples:\n  \
-# Back up to default directory ~/ose-open-env-backup\n  \
+# Back up to default directory ~/<repo-name>-env-backup\n  \
 rhino-cli env backup\n\n  \
 # Back up to a custom directory\n  \
 rhino-cli env backup --dir /tmp/my-env-backup\n\n  \
@@ -50,10 +50,13 @@ rhino-cli env backup --worktree-aware\n\n  \
 rhino-cli env backup --force\n\n  \
 # Include uncommitted config files\n  \
 rhino-cli env backup --include-config\n\n  \
+# Preview what would be backed up without writing\n  \
+rhino-cli env backup --dry-run\n\n  \
 # JSON output (implies --force)\n  \
 rhino-cli env backup -o json\n\n\
 Flags:\n      \
---dir string       backup directory (default: ~/ose-open-env-backup)\n  \
+--dir string       backup directory (default: ~/<repo-name>-env-backup)\n      \
+--dry-run          preview what would be backed up without writing\n  \
 -f, --force            skip overwrite confirmation\n  \
 -h, --help             help for backup\n      \
 --include-config   also back up known uncommitted config files\n      \
@@ -69,7 +72,7 @@ Global Flags:\n      \
 pub const ENV_RESTORE_USAGE: &str = "Usage:\n  \
 rhino-cli env restore [flags]\n\n\
 Examples:\n  \
-# Restore from default directory ~/ose-open-env-backup\n  \
+# Restore from default directory ~/<repo-name>-env-backup\n  \
 rhino-cli env restore\n\n  \
 # Restore from a custom directory\n  \
 rhino-cli env restore --dir /tmp/my-env-backup\n\n  \
@@ -79,10 +82,13 @@ rhino-cli env restore --worktree-aware\n\n  \
 rhino-cli env restore --force\n\n  \
 # Include config files\n  \
 rhino-cli env restore --include-config\n\n  \
+# Preview what would be restored without writing\n  \
+rhino-cli env restore --dry-run\n\n  \
 # JSON output (implies --force)\n  \
 rhino-cli env restore -o json\n\n\
 Flags:\n      \
---dir string       backup source directory (default: ~/ose-open-env-backup)\n  \
+--dir string       backup source directory (default: ~/<repo-name>-env-backup)\n      \
+--dry-run          preview what would be restored without writing\n  \
 -f, --force            skip overwrite confirmation\n  \
 -h, --help             help for restore\n      \
 --include-config   also restore known uncommitted config files\n      \
@@ -192,7 +198,7 @@ pub fn run_env_init(args: &EnvInitArgs) -> Result<(), Error> {
 
 #[derive(Args, Debug)]
 pub struct EnvBackupArgs {
-    /// Backup directory (default: ~/ose-open-env-backup).
+    /// Backup directory (default: ~/<repo-name>-env-backup).
     #[arg(long, default_value = "")]
     pub dir: String,
     /// Namespace backup by worktree/repo directory name.
@@ -204,11 +210,14 @@ pub struct EnvBackupArgs {
     /// Also back up known uncommitted config files.
     #[arg(long = "include-config")]
     pub include_config: bool,
+    /// Preview what would be backed up without writing anything.
+    #[arg(long = "dry-run")]
+    pub dry_run: bool,
 }
 
 #[derive(Args, Debug)]
 pub struct EnvRestoreArgs {
-    /// Backup source directory (default: ~/ose-open-env-backup).
+    /// Backup source directory (default: ~/<repo-name>-env-backup).
     #[arg(long, default_value = "")]
     pub dir: String,
     /// Read from worktree-namespaced backup.
@@ -220,16 +229,24 @@ pub struct EnvRestoreArgs {
     /// Also restore known uncommitted config files.
     #[arg(long = "include-config")]
     pub include_config: bool,
+    /// Preview what would be restored without writing anything.
+    #[arg(long = "dry-run")]
+    pub dry_run: bool,
 }
 
-/// Resolves the effective backup directory, mirroring the Go cmd's `--dir`
-/// handling: empty → `~/DEFAULT_BACKUP_DIR`; otherwise expand `~` then make
-/// absolute.
-fn resolve_backup_dir(dir: &str) -> Result<String, Error> {
+/// Resolves the effective backup directory (R11b): when `dir` is empty, derive
+/// `~/<repo-basename>-env-backup` from the repo root; otherwise expand `~` then
+/// make absolute. Mirrors Go cmd `--dir` handling.
+fn resolve_backup_dir(dir: &str, repo_root: &str) -> Result<String, Error> {
     if dir.is_empty() {
         let home = expand_tilde("~").context("cannot determine home directory")?;
+        let repo_basename = Path::new(repo_root).file_name().map_or_else(
+            || DEFAULT_BACKUP_DIR.to_string(),
+            |n| n.to_string_lossy().into_owned(),
+        );
+        let dir_name = envbackup::default_backup_dir_name(&repo_basename);
         Ok(Path::new(&home)
-            .join(DEFAULT_BACKUP_DIR)
+            .join(dir_name)
             .to_string_lossy()
             .into_owned())
     } else {
@@ -316,7 +333,7 @@ pub fn run_env_backup(
     let repo_root = find_root().context("failed to find git repository root")?;
     let repo_root_str = repo_root.to_string_lossy().into_owned();
 
-    let backup_dir = resolve_backup_dir(&args.dir)?;
+    let backup_dir = resolve_backup_dir(&args.dir, &repo_root_str)?;
     let force = effective_force(args.force, output);
 
     let worktree_name = if args.worktree_aware {
@@ -345,6 +362,7 @@ pub fn run_env_backup(
         worktree_name,
         force,
         include_config: args.include_config,
+        dry_run: args.dry_run,
         confirm: if force {
             None
         } else {
@@ -366,7 +384,7 @@ pub fn run_env_restore(
     let repo_root = find_root().context("failed to find git repository root")?;
     let repo_root_str = repo_root.to_string_lossy().into_owned();
 
-    let backup_dir = resolve_backup_dir(&args.dir)?;
+    let backup_dir = resolve_backup_dir(&args.dir, &repo_root_str)?;
     let force = effective_force(args.force, output);
 
     let worktree_name = if args.worktree_aware {
@@ -393,6 +411,7 @@ pub fn run_env_restore(
         worktree_name,
         force,
         include_config: args.include_config,
+        dry_run: args.dry_run,
         confirm: if force {
             None
         } else {

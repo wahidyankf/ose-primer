@@ -787,6 +787,157 @@ fn then_valid_json(w: &mut EnvWorld) {
     assert!(parsed.is_ok(), "invalid JSON: {out}");
 }
 
+// Secrets and dry-run steps (env-backup-secrets, env-backup-dry-run).
+
+#[given("a git repository containing a secrets.json file at the root")]
+fn given_repo_secrets_json(w: &mut EnvWorld) {
+    w.write("secrets.json", "{}\n");
+}
+
+#[given("a git repository containing a cert.pem file at the root")]
+fn given_repo_cert_pem(w: &mut EnvWorld) {
+    w.write("cert.pem", "-----BEGIN CERT-----\n");
+}
+
+#[given("a git repository containing a .secrets/notes.md file")]
+fn given_repo_secrets_dir_file(w: &mut EnvWorld) {
+    w.write(".secrets/notes.md", "secret notes\n");
+}
+
+#[given("a git repository containing a .env file and a secrets.json file")]
+fn given_repo_env_and_secrets_json(w: &mut EnvWorld) {
+    w.write("secrets.json", "{}\n");
+}
+
+#[when("the developer runs rhino-cli env backup with --dry-run")]
+fn when_env_backup_dry_run(w: &mut EnvWorld) {
+    let dir = w.backup_dir_arg();
+    w.exec(&["env", "backup", "--dir", &dir, "--dry-run"]);
+}
+
+#[then("secrets.json is copied to the backup directory")]
+fn then_secrets_json_copied_to_backup(w: &mut EnvWorld) {
+    assert!(
+        w.stdout().contains("secrets.json"),
+        "expected secrets.json in output: {}",
+        w.stdout()
+    );
+}
+
+#[then("cert.pem is copied to the backup directory")]
+fn then_cert_pem_copied_to_backup(w: &mut EnvWorld) {
+    assert!(
+        w.stdout().contains("cert.pem"),
+        "expected cert.pem in output: {}",
+        w.stdout()
+    );
+}
+
+#[then(".secrets/notes.md is copied to the backup directory preserving its relative path")]
+fn then_secrets_dir_copied_to_backup(w: &mut EnvWorld) {
+    assert!(
+        w.stdout().contains(".secrets"),
+        "expected .secrets in output: {}",
+        w.stdout()
+    );
+}
+
+#[then("no files from the .git directory are backed up")]
+fn then_no_git_dir_backed(w: &mut EnvWorld) {
+    assert!(
+        !w.stdout().contains(".git/"),
+        "expected no .git/ in output: {}",
+        w.stdout()
+    );
+}
+
+#[then("no files are written to the backup directory")]
+fn then_no_files_written_to_backup(w: &mut EnvWorld) {
+    assert_eq!(
+        w.exit_code(),
+        0,
+        "expected success for dry-run: {}",
+        w.stdout()
+    );
+}
+
+#[then("the output lists the files that would be backed up")]
+fn then_output_lists_would_be_backed_up(w: &mut EnvWorld) {
+    let out = w.stdout();
+    assert!(!out.is_empty(), "expected non-empty output listing files");
+}
+
+// Secrets and dry-run steps (env-restore-secrets, env-restore-dry-run).
+
+#[given("a backup directory containing a secrets.json file")]
+fn given_backup_with_secrets_json(w: &mut EnvWorld) {
+    w.write_backup("secrets.json", "{}\n");
+}
+
+#[given("a backup directory containing a cert.pem file")]
+fn given_backup_with_cert_pem(w: &mut EnvWorld) {
+    w.write_backup("cert.pem", "-----BEGIN CERT-----\n");
+}
+
+#[given("a backup directory containing a .secrets/notes.md file")]
+fn given_backup_with_secrets_dir_file(w: &mut EnvWorld) {
+    w.write_backup(".secrets/notes.md", "secret notes\n");
+}
+
+#[given("a backup directory containing a .env file and a secrets.json file")]
+fn given_backup_with_env_and_secrets_json(w: &mut EnvWorld) {
+    w.write_backup("secrets.json", "{}\n");
+}
+
+#[when("the developer runs rhino-cli env restore with --dry-run")]
+fn when_env_restore_dry_run(w: &mut EnvWorld) {
+    let dir = w.backup_dir_arg();
+    w.exec(&["env", "restore", "--dir", &dir, "--dry-run"]);
+}
+
+#[then("secrets.json is copied back to the repository")]
+fn then_secrets_json_copied_back(w: &mut EnvWorld) {
+    assert!(
+        w.stdout().contains("secrets.json"),
+        "expected secrets.json in output: {}",
+        w.stdout()
+    );
+}
+
+#[then("cert.pem is copied back to the repository")]
+fn then_cert_pem_copied_back(w: &mut EnvWorld) {
+    assert!(
+        w.stdout().contains("cert.pem"),
+        "expected cert.pem in output: {}",
+        w.stdout()
+    );
+}
+
+#[then(".secrets/notes.md is copied back to the repository preserving its relative path")]
+fn then_secrets_dir_copied_back(w: &mut EnvWorld) {
+    assert!(
+        w.stdout().contains(".secrets"),
+        "expected .secrets in output: {}",
+        w.stdout()
+    );
+}
+
+#[then("no files are written to the repository")]
+fn then_no_files_written_to_repo(w: &mut EnvWorld) {
+    assert_eq!(
+        w.exit_code(),
+        0,
+        "expected success for dry-run restore: {}",
+        w.stdout()
+    );
+}
+
+#[then("the output lists the files that would be restored")]
+fn then_output_lists_would_be_restored(w: &mut EnvWorld) {
+    let out = w.stdout();
+    assert!(!out.is_empty(), "expected non-empty output listing files");
+}
+
 #[tokio::main]
 async fn main() {
     EnvWorld::run(feature_dir()).await;
