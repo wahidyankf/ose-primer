@@ -15,4 +15,4 @@ class Settings(BaseSettings):
     max_attachment_size_bytes: int = 10 * 1024 * 1024  # 10MB
 
 
-settings = Settings()
+settings = Settings()  # type: ignore[call-arg]
