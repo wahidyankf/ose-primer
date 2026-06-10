@@ -273,12 +273,15 @@ fn collect_node_order(source: &str, node_map: &NodeMap) -> Vec<String> {
             }
         }
     }
-    // Include any IDs in node_map not yet seen (insertion order; matches Go's safety pass).
-    for id in &node_map.order {
-        if seen.insert(id.clone()) {
-            order.push(id.clone());
-        }
-    }
+    // Include any IDs in node_map not yet seen (sorted for determinism; mirrors Go's safety pass).
+    let mut remaining: Vec<String> = node_map
+        .order
+        .iter()
+        .filter(|id| !seen.contains(*id))
+        .cloned()
+        .collect();
+    remaining.sort();
+    order.extend(remaining);
     order
 }
 

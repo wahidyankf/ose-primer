@@ -3,6 +3,7 @@ package mermaid
 import (
 	"regexp"
 	"slices"
+	"sort"
 	"strings"
 )
 
@@ -222,13 +223,15 @@ func collectNodeOrder(source string, nodeMap map[string]string) []string {
 			}
 		}
 	}
-	// Include any node IDs in nodeMap not yet seen (shouldn't happen but be safe).
+	// Include any node IDs in nodeMap not yet seen (sorted for determinism).
+	remaining := make([]string, 0, len(nodeMap))
 	for id := range nodeMap {
 		if !seen[id] {
-			seen[id] = true
-			order = append(order, id)
+			remaining = append(remaining, id)
 		}
 	}
+	sort.Strings(remaining)
+	order = append(order, remaining...)
 	return order
 }
 
