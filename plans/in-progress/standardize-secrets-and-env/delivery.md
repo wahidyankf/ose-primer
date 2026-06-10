@@ -201,23 +201,23 @@ For **each** of the 11 backends (`crud-be-rust-axum`, `crud-be-golang-gin`, `cru
 > Spec-first dual-implementation. Author scenarios, implement Rust-canonical, then Go-twin, then prove
 > byte-identical with the shadow-diff harness.
 
-- [ ] [AI] **Spec**: extend `specs/apps/rhino/behavior/cli/gherkin/env/env-backup.feature` and
+- [x] [AI] **Spec**: extend `specs/apps/rhino/behavior/cli/gherkin/env/env-backup.feature` and
       `env-restore.feature` with scenarios for: (a) `secrets.json` is backed up; (b) a `*.pem` is
       backed up; (c) a `.secrets/` file is backed up; (d) `.git/` is still skipped; (e) `--dry-run`
       writes nothing and lists the would-back-up/would-restore set. Each scenario uses exactly one
       primary `Given`/`When`/`Then` (extras chained with `And`). Run
       `./node_modules/.bin/nx run rhino-cli-rust:validate:gherkin-keyword-cardinality` — exits 0. - _Suggested executor: `specs-maker`._
-- [ ] [AI] **RED (Rust canonical)**: add failing unit tests in
+- [x] [AI] **RED (Rust canonical)**: add failing unit tests in
       `apps/rhino-cli-rust/src/internal/envbackup/discover.rs` (temp-dir fixtures) asserting:
       `.secrets/notes.md`, `secrets.json`, and `cert.pem` appear in the discovered set; `.git/` is
       still skipped; a `dry_run=true` backup creates no files. Run
       `./node_modules/.bin/nx run rhino-cli-rust:test:unit` — acceptance: all new tests fail. - _Suggested executor: `swe-rust-dev`._
-- [ ] [AI] **GREEN (Rust) — carve `.secrets/` out of the hidden-dir skip**: in
+- [x] [AI] **GREEN (Rust) — carve `.secrets/` out of the hidden-dir skip**: in
       `apps/rhino-cli-rust/src/internal/envbackup/discover.rs`, at the hidden-dir prune (`:50`,
       `base.starts_with('.')`), add an exception so a top-level `.secrets/` is descended into; all
       other dot-dirs still pruned. Run `./node_modules/.bin/nx run rhino-cli-rust:test:unit` —
       acceptance: the `.secrets/` test passes.
-- [ ] [AI] **GREEN (Rust) — widen the secret allowlist**: replace the `discover.rs:71` basename filter
+- [x] [AI] **GREEN (Rust) — widen the secret allowlist**: replace the `discover.rs:71` basename filter
       (`!base.starts_with(".env")`) with an allowlist matching `.env`/`.env.*`, `secrets.json`,
       `*.pem`/`*.key`/`*.crt`/`*.pfx`, and any file reached under `.secrets/`. Apply the same widened
       filter to `restore`'s non-config branch (`ops.rs:294` / `base_starts_with_env`). Ship the
@@ -225,35 +225,35 @@ For **each** of the 11 backends (`crud-be-rust-axum`, `crud-be-golang-gin`, `cru
       Keep all existing skip-dir, max-size, and inside-repo-refusal checks intact. Run
       `./node_modules/.bin/nx run rhino-cli-rust:test:unit` — acceptance: the `secrets.json`/`*.pem`
       tests pass.
-- [ ] [AI] **GREEN (Rust) — add `--dry-run`**: add a `dry_run: bool` to the shared `Options`; add a
+- [x] [AI] **GREEN (Rust) — add `--dry-run`**: add a `dry_run: bool` to the shared `Options`; add a
       `--dry-run` clap arg to the backup and restore commands in `apps/rhino-cli-rust/src/commands/env.rs`;
       when set, run discovery but perform **no** writes and report the would-act file list. Run
       `./node_modules/.bin/nx run rhino-cli-rust:test:unit` — acceptance: the dry-run no-write test
       passes; then `./node_modules/.bin/nx run rhino-cli-rust:test:quick` exits 0, coverage ≥ gate.
-- [ ] [AI] **RED (Rust) — backup default dir (R11b)**: add a failing unit test in
+- [x] [AI] **RED (Rust) — backup default dir (R11b)**: add a failing unit test in
       `apps/rhino-cli-rust/src/internal/envbackup/types.rs` (or a test module adjacent to
       `commands/env.rs`) asserting that when `--dir` is empty the derived default equals
       `~/<repo-root-basename>-env-backup` for a fixture repo root (e.g. a temp dir named `ose-primer`
       produces `~/ose-primer-env-backup`, not `~/ose-open-env-backup`). Run
       `./node_modules/.bin/nx run rhino-cli-rust:test:unit` — acceptance: the new test fails because the
       code still returns the hardcoded `ose-open-env-backup` path.
-- [ ] [AI] **GREEN (Rust) — backup default dir (R11b)**: change `DEFAULT_BACKUP_DIR` handling in
+- [x] [AI] **GREEN (Rust) — backup default dir (R11b)**: change `DEFAULT_BACKUP_DIR` handling in
       `apps/rhino-cli-rust/src/internal/envbackup/types.rs` + `commands/env.rs` so the `--dir`-empty
       fallback derives `~/<repo-root-basename>-env-backup` from the already-computed repo-root path
       (replacing the hardcoded `ose-open-env-backup`); update the help/example strings accordingly. Run
       `./node_modules/.bin/nx run rhino-cli-rust:test:unit` — acceptance: the derived-default test passes.
-- [ ] [AI] **GREEN (Go twin)**: mirror every change byte-identically in
+- [x] [AI] **GREEN (Go twin)**: mirror every change byte-identically in
       `apps/rhino-cli-go/internal/envbackup/discover.go` (the `:41` hidden-dir skip and `:52`
       allowlist), `restore.go` (the `:97` filter), the `--dry-run` flag in
       `apps/rhino-cli-go/cmd/env_backup.go` + `env_restore.go`, **and the per-repo-derived backup
       default dir + help strings (R11b)**. Port the unit tests. Run
       `./node_modules/.bin/nx run rhino-cli-go:test:unit` then `:test:quick` — both exit 0. - _Suggested executor: `swe-golang-dev`._
-- [ ] [AI] **REFACTOR**: review the widened discover/ops code in both implementations for duplication
+- [x] [AI] **REFACTOR**: review the widened discover/ops code in both implementations for duplication
       or dead code. Run `./node_modules/.bin/nx run rhino-cli-rust:test:unit` and
       `./node_modules/.bin/nx run rhino-cli-go:test:unit` — acceptance: all tests still pass.
-- [ ] [AI] **Shadow-diff**: run `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0
+- [x] [AI] **Shadow-diff**: run `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0
       (byte-identical stdout/stderr/exit codes across all output formats).
-- [ ] [AI] Smoke-check: place a throwaway `secrets.json`, `throwaway.pem`, and `.secrets/throwaway.md`,
+- [x] [AI] Smoke-check: place a throwaway `secrets.json`, `throwaway.pem`, and `.secrets/throwaway.md`,
       run the built `env backup --dry-run` — the would-back-up list now includes all three (Phase 0
       gaps closed) and creates nothing. Remove the throwaway files.
 
@@ -261,16 +261,16 @@ For **each** of the 11 backends (`crud-be-rust-axum`, `crud-be-golang-gin`, `cru
 
 > All checks below must pass before starting Phase 4; if any fails, fix it in Phase 3 first.
 
-- [ ] [AI] `rhino-cli-rust:test:quick`, `rhino-cli-go:test:quick`, and both `spec-coverage` exit 0.
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` exits 0 (parity preserved).
-- [ ] [AI] `env backup --dry-run` lists `secrets.json`, a `*.pem`, and `.secrets/` files and writes
+- [x] [AI] `rhino-cli-rust:test:quick`, `rhino-cli-go:test:quick`, and both `spec-coverage` exit 0.
+- [x] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` exits 0 (parity preserved).
+- [x] [AI] `env backup --dry-run` lists `secrets.json`, a `*.pem`, and `.secrets/` files and writes
       nothing; a backup→restore round-trip over a fixture reproduces all secret kinds byte-for-byte.
-- [ ] [AI] **Backup default dir (R11b) lands in BOTH twins**: `env backup`/`restore` with no `--dir`
+- [x] [AI] **Backup default dir (R11b) lands in BOTH twins**: `env backup`/`restore` with no `--dir`
       resolves to `~/ose-primer-env-backup` (per-repo-derived, not `~/ose-open-env-backup`) in both the
       Rust and Go binaries, and `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` confirms the new
       default path + help text are **byte-identical** across the twins (hard acceptance criterion).
-- [ ] [AI] `npm run lint:md` exits 0.
-- [ ] [AI] Commit (`feat(rhino-cli): back up and restore all secret kinds; add --dry-run; per-repo backup dir`)
+- [x] [AI] `npm run lint:md` exits 0.
+- [x] [AI] Commit (`feat(rhino-cli): back up and restore all secret kinds; add --dry-run; per-repo backup dir`)
       and push; `git status` clean.
 
 > **Pause Safety**: Phase 3 left backup/restore covering every active secret kind, able to preview
@@ -286,7 +286,7 @@ For **each** of the 11 backends (`crud-be-rust-axum`, `crud-be-golang-gin`, `cru
 > Where the idiomatic path is framework-native with no new dependency, skip the clearance step for
 > that family and do only the code RED→GREEN.
 
-- [ ] [AI] **Dependency clearance (HARD, all families)**: per
+- [x] [AI] **Dependency clearance (HARD, all families)**: per
       [tech-docs.md §7](./tech-docs.md#7-dependency-additions--security-clearance-dependency-bump-policy),
       compute the cutoff (`today − 60 days`) in writing; for each named validator dep (`dotenvy`,
       `envy`, `caarlos0/env` v11, `@t3-oss/env-nextjs`, `zod`, Spring Validation, and the long-tail
@@ -299,31 +299,31 @@ For **each** of the 11 backends (`crud-be-rust-axum`, `crud-be-golang-gin`, `cru
 
 For **each** app in [tech-docs.md §4](./tech-docs.md#4-startup-validation-per-language):
 
-- [ ] [AI] Add the family's validator dependency as an **exact pin** to that app's manifest (skip if
+- [x] [AI] Add the family's validator dependency as an **exact pin** to that app's manifest (skip if
       framework-native, no dep); build the app and run its language-appropriate audit — clean.
-- [ ] [AI] **RED**: write a failing test asserting the app's config loader returns/raises an error
+- [x] [AI] **RED**: write a failing test asserting the app's config loader returns/raises an error
       **naming the variable** when a required var is unset (for build-time-validated frontends, assert
       the build/typecheck fails naming the var). Run `./node_modules/.bin/nx run <app>:test:unit`
       (or `:test:quick` where unit is not split) — acceptance: the test fails (validator not yet
       wired). - _Suggested executor: the language-matching dev agent._
-- [ ] [AI] **GREEN**: rewrite the app's config loader to the fail-fast shape from
+- [x] [AI] **GREEN**: rewrite the app's config loader to the fail-fast shape from
       [tech-docs.md §4](./tech-docs.md#4-startup-validation-per-language) (required vars have no
       default; missing → named error). For `crud-be-ts-effect`, **remove** the
       `Effect.catchAll(() => Effect.succeed(defaults))` wrapper in
       `apps/crud-be-ts-effect/src/config.ts`. Run `./node_modules/.bin/nx run <app>:test:quick` —
       acceptance: the RED test passes and the loader resolves correctly when all required vars are set.
-- [ ] [AI] **REFACTOR**: tidy the loader (extract a single config struct/record, remove dead default
+- [x] [AI] **REFACTOR**: tidy the loader (extract a single config struct/record, remove dead default
       paths). Run `./node_modules/.bin/nx run <app>:test:quick` — acceptance: all tests still pass,
       coverage ≥ gate.
 
 After all apps:
 
-- [ ] [AI] Prove the Effect swallow is gone:
+- [x] [AI] Prove the Effect swallow is gone:
       `grep -n "catchAll" apps/crud-be-ts-effect/src/config.ts` shows no default-swallowing handler.
-- [ ] [AI] Prove one Next.js build-time validation: in `crud-fe-ts-nextjs`, temporarily unset its
+- [x] [AI] Prove one Next.js build-time validation: in `crud-fe-ts-nextjs`, temporarily unset its
       required `NEXT_PUBLIC_*` var and run `./node_modules/.bin/nx run crud-fe-ts-nextjs:build` —
       acceptance: build fails naming the var; restore and re-run — acceptance: build exits 0.
-- [ ] [AI] **Manual API verification (curl)** for one representative backend (e.g. `crud-be-rust-axum`):
+- [x] [AI] **Manual API verification (curl)** for one representative backend (e.g. `crud-be-rust-axum`):
       start it with all required prefixed vars set
       (`CRUD_BE_RUST_AXUM_PORT=8299 CRUD_BE_RUST_AXUM_JWT_SECRET=dev-secret DATABASE_URL=<local-dev-url>`)
       and run `curl -sf http://localhost:8299/health` — acceptance: HTTP 200 with a JSON body; then
@@ -333,14 +333,14 @@ After all apps:
 
 > All checks below must pass before starting Phase 5; if any fails, fix it in Phase 4 first.
 
-- [ ] [AI] `tech-docs.md §7` clearance table filled (exact versions, Path B, CVE status); no
+- [x] [AI] `tech-docs.md §7` clearance table filled (exact versions, Path B, CVE status); no
       caret/tilde/range in any touched manifest; all language audits clean.
-- [ ] [AI] Every app's `./node_modules/.bin/nx run <app>:test:quick` exits 0 with coverage ≥ gate; the
+- [x] [AI] Every app's `./node_modules/.bin/nx run <app>:test:quick` exits 0 with coverage ≥ gate; the
       missing-required-var test asserts a named error for each.
-- [ ] [AI] `grep -n "catchAll" apps/crud-be-ts-effect/src/config.ts` shows no default swallow; one
+- [x] [AI] `grep -n "catchAll" apps/crud-be-ts-effect/src/config.ts` shows no default swallow; one
       Next.js build fails-then-passes as expected.
-- [ ] [AI] `npm run lint:md` exits 0.
-- [ ] [AI] Commit thematically per app/family (`feat(<app>): fail-fast env validation`) and push;
+- [x] [AI] `npm run lint:md` exits 0.
+- [x] [AI] Commit thematically per app/family (`feat(<app>): fail-fast env validation`) and push;
       `git status` clean.
 
 > **Pause Safety**: Phase 4 left every app validating env at startup/build with all gates green and
@@ -350,25 +350,25 @@ After all apps:
 
 ## Phase 5 — `.env.example` Annotation Format
 
-- [ ] [AI] For each `infra/dev/<app>/.env.example` (15 files): above each variable add a comment block
+- [x] [AI] For each `infra/dev/<app>/.env.example` (15 files): above each variable add a comment block
       stating required-or-optional, type, and format per the hub doc's annotation standard. Example for
       a JWT secret: `# Required. String, min 32 chars. Generate with: openssl rand -hex 32`. Mark
       shared `DATABASE_URL` / `POSTGRES_*` and framework `NEXT_PUBLIC_*` explicitly.
-- [ ] [AI] Annotate the root `.env.example` (`OPENCODE_GO_API_KEY`) to the same standard (it already
+- [x] [AI] Annotate the root `.env.example` (`OPENCODE_GO_API_KEY`) to the same standard (it already
       carries prose comments — fold them into the standard's shape).
-- [ ] [AI] Verify placeholders are obviously-dev (no real-looking secret): run
+- [x] [AI] Verify placeholders are obviously-dev (no real-looking secret): run
       `grep -rnE "secret|token|key|pass" infra/dev/*/.env.example .env.example` and confirm every value
       is a placeholder, not a credential.
-- [ ] [AI] Run `npm run lint:md` and `npm run format:md:check` — exit 0.
+- [x] [AI] Run `npm run lint:md` and `npm run format:md:check` — exit 0.
 
 ### Phase 5 Gate
 
 > All checks below must pass before starting Phase 6; if any fails, fix it in Phase 5 first.
 
-- [ ] [AI] Every variable in every annotated `.env.example` has a required/optional + type + format
+- [x] [AI] Every variable in every annotated `.env.example` has a required/optional + type + format
       comment.
-- [ ] [AI] `npm run lint:md` exits 0.
-- [ ] [AI] Commit (`docs(env): annotate env example files with type and required status`) and push;
+- [x] [AI] `npm run lint:md` exits 0.
+- [x] [AI] Commit (`docs(env): annotate env example files with type and required status`) and push;
       `git status` clean.
 
 > **Pause Safety**: Phase 5 left the env templates self-documenting; no code touched. Resume by
@@ -381,62 +381,62 @@ After all apps:
 > Spec-first dual-implementation again. App surface is the only **active** surface in primer;
 > Terraform/Ansible validators ship documented-but-gated (R3).
 
-- [ ] [AI] **Spec**: create `specs/apps/rhino/behavior/cli/gherkin/env/env-validate.feature` with
+- [x] [AI] **Spec**: create `specs/apps/rhino/behavior/cli/gherkin/env/env-validate.feature` with
       scenarios: (a) a seeded declared-but-unread key in a fixture app → non-zero exit naming the key;
       (b) a read-but-undeclared key → non-zero exit naming the key; (c) a matching app → exit 0; (d)
       allowlisted keys (`ENABLE_TEST_API`, framework `PORT`) are ignored. Each scenario uses one
       primary `Given`/`When`/`Then`. Run
       `./node_modules/.bin/nx run rhino-cli-rust:validate:gherkin-keyword-cardinality` — exits 0. - _Suggested executor: `specs-maker`._
-- [ ] [AI] Inspect rhino-cli's existing subcommand + config layout (`apps/rhino-cli-rust/src/`) to
+- [x] [AI] Inspect rhino-cli's existing subcommand + config layout (`apps/rhino-cli-rust/src/`) to
       match the established clap-subcommand pattern. Decide the contract surface (`env-contract.yaml`
       via an already-present parser, or an existing config block — **no new crate**) and record the
       choice as a `// ENV-VALIDATE CONFIG: <choice>` comment at the top of the new
       `apps/rhino-cli-rust/src/commands/env_validate.rs`. The contract lists **surfaces**, each with a
       root, kind (`app` only in primer), globs, and an allowlist.
-- [ ] [AI] **RED (Rust canonical)**: write failing unit tests in `apps/rhino-cli-rust/src/` (in-memory
+- [x] [AI] **RED (Rust canonical)**: write failing unit tests in `apps/rhino-cli-rust/src/` (in-memory
       fixtures) for the app validator: a fixture app with a seeded declared-but-unread key → non-zero
       naming the key; a read-but-undeclared key → non-zero naming the key. Run
       `./node_modules/.bin/nx run rhino-cli-rust:test:unit` — acceptance: the new tests fail. - _Suggested executor: `swe-rust-dev`._
-- [ ] [AI] **GREEN (Rust) — app validator**: parse `infra/dev/<app>/.env.example` declared keys; scan
+- [x] [AI] **GREEN (Rust) — app validator**: parse `infra/dev/<app>/.env.example` declared keys; scan
       each language's literal env-read form (see
       [tech-docs.md §6.1](./tech-docs.md#61-app-validator-the-only-active-surface-in-primer)) for read
       keys; compute declared-but-unread and read-but-undeclared; honor the allowlist; exit non-zero
       naming keys on any non-empty set. Ship Terraform/Ansible validators **stubbed-but-gated** (no
       surface configured for primer). Run `./node_modules/.bin/nx run rhino-cli-rust:test:unit` —
       acceptance: the RED tests pass.
-- [ ] [AI] Write Rust integration tests (`cargo test --tests`) with temp-dir fixtures: a seeded
+- [x] [AI] Write Rust integration tests (`cargo test --tests`) with temp-dir fixtures: a seeded
       mismatch (non-zero + key named) and a matching app (exit 0). Run
       `./node_modules/.bin/nx run rhino-cli-rust:test:quick` — exits 0, coverage ≥ gate.
-- [ ] [AI] **GREEN (Go twin)**: implement the identical `env validate` app validator in
+- [x] [AI] **GREEN (Go twin)**: implement the identical `env validate` app validator in
       `apps/rhino-cli-go/cmd/env_validate.go` + internal package, byte-identical behavior; port the
       unit + integration tests. Run `./node_modules/.bin/nx run rhino-cli-go:test:quick` — exits 0. - _Suggested executor: `swe-golang-dev`._
-- [ ] [AI] **REFACTOR**: review the `env validate` code in both implementations (extract helpers,
+- [x] [AI] **REFACTOR**: review the `env validate` code in both implementations (extract helpers,
       reduce duplication). Run `./node_modules/.bin/nx run rhino-cli-rust:test:unit` and
       `./node_modules/.bin/nx run rhino-cli-go:test:unit` — acceptance: all tests pass.
-- [ ] [AI] **Shadow-diff**: run `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0
+- [x] [AI] **Shadow-diff**: run `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0
       (byte-identical).
-- [ ] [AI] Run the built `rhino-cli env validate` against the real repo — exits 0 on the app surface
+- [x] [AI] Run the built `rhino-cli env validate` against the real repo — exits 0 on the app surface
       (Phases 1–2 + 5 aligned every app's reads and declarations; allowlist framework-injected `PORT`
       and `ENABLE_TEST_API`).
-- [ ] [AI] Add `rhino-cli env validate` to `.husky/pre-push` (after the existing
+- [x] [AI] Add `rhino-cli env validate` to `.husky/pre-push` (after the existing
       `npx nx affected … && npm run lint:md` sequence). Verify by running the pre-push script body
       locally — it invokes the command and passes.
-- [ ] [AI] Add a CI invocation: add a step running `rhino-cli env validate` to the appropriate
+- [x] [AI] Add a CI invocation: add a step running `rhino-cli env validate` to the appropriate
       existing `.github/workflows/` workflow (matched to the repo's layout). Validate the YAML per the
       repo's workflow conventions.
-- [ ] [AI] Prove the guard bites: temporarily rename a key in one app's
+- [x] [AI] Prove the guard bites: temporarily rename a key in one app's
       `infra/dev/<app>/.env.example` → `rhino-cli env validate` exits non-zero naming the key; revert.
 
 ### Phase 6 Gate
 
 > All checks below must pass before starting Phase 7; if any fails, fix it in Phase 6 first.
 
-- [ ] [AI] `rhino-cli-rust:test:quick`, `rhino-cli-go:test:quick`, and both `spec-coverage` exit 0.
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` exits 0 (parity preserved).
-- [ ] [AI] `rhino-cli env validate` exits 0 on the clean repo and non-zero on a seeded app mismatch.
-- [ ] [AI] `.husky/pre-push` and a `.github/workflows/` workflow both invoke the command.
-- [ ] [AI] `npm run lint:md` exits 0.
-- [ ] [AI] Commit (`feat(rhino-cli): add env validate drift guard (app surface; IaC gated)`) and push;
+- [x] [AI] `rhino-cli-rust:test:quick`, `rhino-cli-go:test:quick`, and both `spec-coverage` exit 0.
+- [x] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` exits 0 (parity preserved).
+- [x] [AI] `rhino-cli env validate` exits 0 on the clean repo and non-zero on a seeded app mismatch.
+- [x] [AI] `.husky/pre-push` and a `.github/workflows/` workflow both invoke the command.
+- [x] [AI] `npm run lint:md` exits 0.
+- [x] [AI] Commit (`feat(rhino-cli): add env validate drift guard (app surface; IaC gated)`) and push;
       `git status` clean.
 
 > **Pause Safety**: Phase 6 left a working app-surface drift guard enforced by pre-push and CI,
@@ -447,13 +447,13 @@ After all apps:
 
 ## Phase 7 — Hub Convention Doc + Stub Redirects + Rationale Doc + Link Repointing
 
-- [ ] [AI] **Doc canonicalization (R10b)**: `git mv` the two security docs from
+- [x] [AI] **Doc canonicalization (R10b)**: `git mv` the two security docs from
       `repo-governance/development/quality/` → `repo-governance/conventions/security/`
       (`no-secrets-in-committed-files.md`, `env-file-access.md`), creating the `conventions/security/`
       directory if absent. This aligns primer's governance paths with the `ose-infra` canonical layout.
       Record that primer's `repository-ecosystem` convention update (it currently pins these under
       `development/quality/`) is an **authorized downstream follow-up**, not part of this plan.
-- [ ] [AI] Create `repo-governance/conventions/security/secrets-and-env-standards.md` — the hub
+- [x] [AI] Create `repo-governance/conventions/security/secrets-and-env-standards.md` — the hub
       convention: principles, naming standard (per-app prefix + framework-exemption table including the
       12-factor "authorizes-not-prescribes" framing and the exempt class `NEXT_PUBLIC_*` / `PORT` /
       `NODE_ENV` / `DATABASE_URL`), the
@@ -463,20 +463,20 @@ After all apps:
       table, the **gated IaC scaffold** (commented `*.tfvars`/inventory patterns + the inert
       Terraform/Ansible validators with their "activate when IaC is added" trigger), and the
       storage-tier ladder + Tier-1 trigger. Fold the substantive content of the three existing docs in. - _Suggested executor: `repo-rules-maker`._
-- [ ] [AI] In the hub doc, add the canonical **secret-surface census** table: one row per active
+- [x] [AI] In the hub doc, add the canonical **secret-surface census** table: one row per active
       secret kind (`.env*`, `secrets.json`, `*.pem`/`*.key`/`*.crt`/`*.pfx`, `.secrets/`), each with
       its path/pattern, whether it is **backed up** (all) and **validated** (app surface only); plus a
       clearly-marked **gated** section for `*.tfvars` / inventories. Bless `.secrets/` as the catch-all
       home for homeless secrets (always backed up, never validated). Cross-link `.gitignore` lines 104
       and 105/108–111.
-- [ ] [AI] Reduce `repo-governance/conventions/security/no-secrets-in-committed-files.md` (at its new
+- [x] [AI] Reduce `repo-governance/conventions/security/no-secrets-in-committed-files.md` (at its new
       moved path) to a stub: keep its title + a one-paragraph summary (so the rule stays greppable) and
       link to the hub doc.
-- [ ] [AI] Reduce `repo-governance/conventions/security/env-file-access.md` (at its new moved path) to
+- [x] [AI] Reduce `repo-governance/conventions/security/env-file-access.md` (at its new moved path) to
       a stub redirecting to the hub doc (preserve the agent-permission rule summary).
-- [ ] [AI] Reduce `repo-governance/development/workflow/reproducible-environments.md` to a stub
+- [x] [AI] Reduce `repo-governance/development/workflow/reproducible-environments.md` to a stub
       redirecting to the hub doc (preserve the `.env.example` pattern summary).
-- [ ] [AI] Create `docs/explanation/standardize-secrets-and-env-parity-decisions.md` — a plain-language
+- [x] [AI] Create `docs/explanation/standardize-secrets-and-env-parity-decisions.md` — a plain-language
       explanation of **every** decision in the deviation matrix, matching the existing
       `*-parity-decisions.md` precedents. Explain especially: the **PR-override** (R5/R2 — why primer
       pushes directly to `main` this once and who owns it, and that the sync-governance change is a
@@ -487,7 +487,7 @@ After all apps:
       deferred downstream), the **backup default dir** (R11b — per-repo-derived `~/<repo-basename>-env-backup`
       in both twins), the **full polyglot adoption** (R7/R8), the **no-migration layout** (R12), and the
       **canonical/twin correction** (R6 — Rust canonical, Go twin). - _Suggested executor: `docs-maker`._
-- [ ] [AI] Repoint **active** inbound links to the hub doc (a **link-check gate** — `npm run lint:md`
+- [x] [AI] Repoint **active** inbound links to the hub doc (a **link-check gate** — `npm run lint:md`
       must report zero broken links after the move + fold): update the root governance indexes
       (`repo-governance/development/quality/README.md`, `repo-governance/conventions/security/README.md`
       if created, `repo-governance/development/workflow/README.md`, `repo-governance/conventions/README.md`
@@ -495,10 +495,10 @@ After all apps:
       `.claude/`/`.opencode/` agent/skill references found by the inbound-link sweep — rewriting both
       the changed **paths** (`development/quality/` → `conventions/security/`) and the changed targets.
       Leave `plans/done/**` links pointing at the stubs (historical, must not be rewritten).
-- [ ] [AI] If any `.claude/` agent/skill text changed, run the repo's binding-sync (e.g.
+- [x] [AI] If any `.claude/` agent/skill text changed, run the repo's binding-sync (e.g.
       `npm run generate:bindings` or `rhino-cli agents sync`) to resync `.opencode/`.
-- [ ] [AI] Run `npm run lint:md` — exits 0 (no broken links from the fold).
-- [ ] [AI] Inbound-link verification:
+- [x] [AI] Run `npm run lint:md` — exits 0 (no broken links from the fold).
+- [x] [AI] Inbound-link verification:
       `grep -rl "no-secrets-in-committed-files\|env-file-access\|reproducible-environments" --include="*.md" . | grep -v node_modules | grep -v plans/done`
       — every remaining active hit is either a stub file itself or now also links the hub doc.
 
@@ -506,16 +506,16 @@ After all apps:
 
 > All checks below must pass before starting Phase 8; if any fails, fix it in Phase 7 first.
 
-- [ ] [AI] `repo-governance/conventions/security/secrets-and-env-standards.md` exists; the two
+- [x] [AI] `repo-governance/conventions/security/secrets-and-env-standards.md` exists; the two
       security docs have moved to `conventions/security/` (R10b) and the three prior docs are stubs
       linking to it.
-- [ ] [AI] `docs/explanation/standardize-secrets-and-env-parity-decisions.md` exists and covers all 16
+- [x] [AI] `docs/explanation/standardize-secrets-and-env-parity-decisions.md` exists and covers all 16
       decisions, including R5/R2 (PR-override), R3 (IaC = N/A), R10b (doc canonicalization), R11b
       (per-repo backup dir), and R6 (canonical/twin correction).
-- [ ] [AI] `npm run lint:md` exits 0 (link check passes; no `done/` link broken).
-- [ ] [AI] If `.claude/` changed, `.opencode/` is in sync (`git status` shows matching regenerated
+- [x] [AI] `npm run lint:md` exits 0 (link check passes; no `done/` link broken).
+- [x] [AI] If `.claude/` changed, `.opencode/` is in sync (`git status` shows matching regenerated
       files).
-- [ ] [AI] Commit (`docs(governance): consolidate secrets/env rules into one hub convention`) and push;
+- [x] [AI] Commit (`docs(governance): consolidate secrets/env rules into one hub convention`) and push;
       `git status` clean.
 
 > **Pause Safety**: Phase 7 left one authoritative hub doc with the three prior docs redirecting, the
@@ -525,22 +525,22 @@ After all apps:
 
 ## Phase 8 — Final Quality Gate + Commit + Push
 
-- [ ] [AI] Run the full affected gate:
+- [x] [AI] Run the full affected gate:
       `npx nx affected -t typecheck lint test:quick spec-coverage` across `main` — all exit 0.
-- [ ] [AI] Run `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (parity green).
-- [ ] [AI] Run the built `rhino-cli env validate` — exits 0 on the app surface.
-- [ ] [AI] Run `npm run lint:md` and `npm run format:md:check` — exit 0.
-- [ ] [AI] Re-verify every BRD success criterion: per-app naming applied (grep-to-zero per app);
+- [x] [AI] Run `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (parity green).
+- [x] [AI] Run the built `rhino-cli env validate` — exits 0 on the app surface.
+- [x] [AI] Run `npm run lint:md` and `npm run format:md:check` — exit 0.
+- [x] [AI] Re-verify every BRD success criterion: per-app naming applied (grep-to-zero per app);
       fail-fast validation active in every app; Effect swallow removed; backup covers every active
       secret kind with working `--dry-run`; backup default dir per-repo-derived in both twins
       (both resolve `~/ose-primer-env-backup`, shadow-diff green); dual-impl parity preserved;
       guard wired into pre-push + CI;
       hub doc exists with the three stubs; IaC scaffold present but gated; PR-override recorded in
       `tech-docs.md §1` + the rationale doc; deps exact-pinned + cleared.
-- [ ] [AI] Confirm all per-phase commits landed on `origin main`:
+- [x] [AI] Confirm all per-phase commits landed on `origin main`:
       `git log --oneline origin/main -20` shows the Phase 1–7 commits; `git status` clean, nothing
       unpushed.
-- [ ] [AI] Confirm the Phase 4 manual curl assertion is carried forward as the terminal record: the
+- [x] [AI] Confirm the Phase 4 manual curl assertion is carried forward as the terminal record: the
       Phase 4 step started `crud-be-rust-axum` with all required prefixed vars and confirmed
       `curl -sf http://localhost:8299/health` returns HTTP 200, and confirmed non-zero exit when
       `CRUD_BE_RUST_AXUM_JWT_SECRET` is unset. No app startup code changes after Phase 4, so no
@@ -550,11 +550,11 @@ After all apps:
 
 > All checks below must pass before archiving this plan; if any fails, fix it in Phase 8 first.
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` exits 0.
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` exits 0; `rhino-cli env validate` exits 0;
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` exits 0.
+- [x] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` exits 0; `rhino-cli env validate` exits 0;
       `npm run lint:md` exits 0.
-- [ ] [AI] Every BRD success criterion verified true.
-- [ ] [AI] Working tree clean; all phase commits pushed to `origin main`.
+- [x] [AI] Every BRD success criterion verified true.
+- [x] [AI] Working tree clean; all phase commits pushed to `origin main`.
 
 > **Pause Safety**: Phase 8 is terminal — the standard is live and self-enforcing across the polyglot
 > template, byte-identical across both rhino-cli implementations. The plan is ready for archival.
@@ -563,13 +563,13 @@ After all apps:
 
 ## Plan Archival
 
-- [ ] [AI] Verify ALL delivery checklist items are ticked.
-- [ ] [AI] Verify ALL quality gates pass (local affected gate + shadow-diff + `env validate` + CI).
-- [ ] [AI] Verify ALL manual assertions pass (curl health check; one Next.js build fail-then-pass).
-- [ ] [AI] Rename and move:
+- [x] [AI] Verify ALL delivery checklist items are ticked.
+- [x] [AI] Verify ALL quality gates pass (local affected gate + shadow-diff + `env validate` + CI).
+- [x] [AI] Verify ALL manual assertions pass (curl health check; one Next.js build fail-then-pass).
+- [x] [AI] Rename and move:
       `git mv plans/in-progress/standardize-secrets-and-env/ plans/done/2026-MM-DD__standardize-secrets-and-env/`
       using today's date as the **completion** date (not the creation date).
-- [ ] [AI] Update `plans/in-progress/README.md` — remove the plan entry.
-- [ ] [AI] Update `plans/done/README.md` — add the plan entry with the completion date.
-- [ ] [AI] Update any other READMEs that reference this plan (e.g. `plans/README.md`).
-- [ ] [AI] Commit the archival: `chore(plans): move standardize-secrets-and-env to done` and push.
+- [x] [AI] Update `plans/in-progress/README.md` — remove the plan entry.
+- [x] [AI] Update `plans/done/README.md` — add the plan entry with the completion date.
+- [x] [AI] Update any other READMEs that reference this plan (e.g. `plans/README.md`).
+- [x] [AI] Commit the archival: `chore(plans): move standardize-secrets-and-env to done` and push.
