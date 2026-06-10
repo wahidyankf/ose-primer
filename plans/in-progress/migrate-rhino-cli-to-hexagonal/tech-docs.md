@@ -8,20 +8,20 @@ Each layer holds a shared kernel subpackage plus one subpackage per feature.
 flowchart LR
   %% Colour-blind-friendly palette (blue / orange)
   subgraph Inbound["Inbound adapter (CLI parser)"]
-    GO_CMD["Go: cmd/ + internal/adapter/command/&lt;feature&gt;/"]
+    GO_CMD["Go: cmd/ + adapter/cmd/"]
     RS_CMD["Rust: src/commands/"]
   end
   subgraph App["Application (use cases + port defs)"]
-    GO_APP["Go: internal/application/&lt;feature&gt;/"]
-    RS_APP["Rust: src/application/&lt;feature&gt;/"]
+    GO_APP["Go: internal/application/"]
+    RS_APP["Rust: src/application/"]
   end
   subgraph Dom["Domain (pure, zero IO)"]
-    GO_DOM["Go: internal/domain/shared/ + internal/domain/&lt;feature&gt;/"]
-    RS_DOM["Rust: src/domain/shared/ + src/domain/&lt;feature&gt;/"]
+    GO_DOM["Go: internal/domain/"]
+    RS_DOM["Rust: src/domain/"]
   end
   subgraph Out["Outbound adapters (IO behind ports)"]
-    GO_OUT["Go: adapters implementing ports"]
-    RS_OUT["Rust: src/infrastructure/&lt;feature&gt;/"]
+    GO_OUT["Go: adapters impl ports"]
+    RS_OUT["Rust: src/infrastructure/"]
   end
   Inbound --> App
   App --> Dom
@@ -36,12 +36,12 @@ flowchart LR
 
 ### Layer directories (verified present)
 
-| Layer        | Go                                       | Rust                                |
-| ------------ | ---------------------------------------- | ----------------------------------- |
-| Domain       | `internal/domain/` (exists) [Repo-grounded] | `src/domain/` (exists) [Repo-grounded] |
-| Application  | `internal/application/` (exists) [Repo-grounded] | `src/application/` (exists per inventory) |
-| Outbound     | adapters under `internal/adapter/` [Repo-grounded] | `src/infrastructure/` (exists per inventory) |
-| Inbound (CLI)| `cmd/` (exists) + `internal/adapter/command/` (exists) [Repo-grounded] | `src/commands/` (exists) [Repo-grounded] |
+| Layer         | Go                                                                     | Rust                                         |
+| ------------- | ---------------------------------------------------------------------- | -------------------------------------------- |
+| Domain        | `internal/domain/` (exists) [Repo-grounded]                            | `src/domain/` (exists) [Repo-grounded]       |
+| Application   | `internal/application/` (exists) [Repo-grounded]                       | `src/application/` (exists per inventory)    |
+| Outbound      | adapters under `internal/adapter/` [Repo-grounded]                     | `src/infrastructure/` (exists per inventory) |
+| Inbound (CLI) | `cmd/` (exists) + `internal/adapter/command/` (exists) [Repo-grounded] | `src/commands/` (exists) [Repo-grounded]     |
 
 The Go `internal/domain/`, `internal/application/`, and `internal/adapter/`
 directories already exist [Repo-grounded — `ls -d apps/rhino-cli-go/internal/*/`].
@@ -55,10 +55,10 @@ A type or util enters the shared kernel ONLY if used by 2+ features; a
 single-consumer item stays feature-local. The result is **asymmetric and
 accepted**:
 
-| Language | Shared kernel                     | Rationale                                                             |
-| -------- | --------------------------------- | --------------------------------------------------------------------- |
-| Go       | `{mermaid}`                       | `mermaid` imported by `docs` and `git` [Repo-grounded — `runner.go` imports `internal/mermaid`]. |
-| Rust     | `{mermaid, cliout}`               | `mermaid` by docs+git; `cliout` by doctor, envbackup, mermaid (inventory). |
+| Language | Shared kernel       | Rationale                                                                                        |
+| -------- | ------------------- | ------------------------------------------------------------------------------------------------ |
+| Go       | `{mermaid}`         | `mermaid` imported by `docs` and `git` [Repo-grounded — `runner.go` imports `internal/mermaid`]. |
+| Rust     | `{mermaid, cliout}` | `mermaid` by docs+git; `cliout` by doctor, envbackup, mermaid (inventory).                       |
 
 Single-consumer, stays feature-local: `fileutil` (Go, docs-only), `naming` (Go
 unused / Rust agents-only).
@@ -99,18 +99,19 @@ pub trait ToolProber { fn run(&self, name: &str, args: &[&str], cwd: &Path) -> i
 
 > If any port needs `async fn`, note that `async fn` in traits (Rust 1.75) cannot
 > be used with `dyn` without the `async-trait` crate (heap alloc) [Web-cited —
-> see Research Basis]. No current `git` seam is async; flag per feature if one
-> arises.
+>
+> > see Research Basis]. No current `git` seam is async; flag per feature if one
+> > arises.
 
 ## Port Naming Rule (domain role, not technology)
 
 Name ports for the **domain role** they play, never the technology:
 
-| Good (domain role)     | Bad (technology)   |
-| ---------------------- | ------------------ |
-| `StagedFileProvider`   | `FileSystem`       |
-| `ToolProber`           | `CommandExecutor`  |
-| `CoverageReader`       | `FileReader`       |
+| Good (domain role)   | Bad (technology)  |
+| -------------------- | ----------------- |
+| `StagedFileProvider` | `FileSystem`      |
+| `ToolProber`         | `CommandExecutor` |
+| `CoverageReader`     | `FileReader`      |
 
 This rule is codified in the convention doc in the final phase.
 
@@ -168,14 +169,14 @@ grouped. The exact grouping is proposed in `delivery.md` for user confirmation.
 
 ## File-Impact Summary
 
-| Path                                                    | Change                                                              |
-| ------------------------------------------------------- | ------------------------------------------------------------------- |
-| `apps/rhino-cli-go/internal/{domain,application,adapter}/` | Populated with per-feature + shared subpackages [Repo-grounded — dirs exist] |
-| `apps/rhino-cli-rust/src/{domain,application,infrastructure}/` | Populated with per-feature + shared modules                     |
-| `apps/rhino-cli-go/internal/<feature>/`                 | Logic relocated into layers; thin shims removed                     |
-| `apps/rhino-cli-rust/src/internal/<feature>/`           | Same                                                                |
-| `apps/rhino-cli-rust/project.json`                      | `test:quick` `--ignore-filename-regex` allowlist updated per phase [Repo-grounded — line 83] |
-| `repo-governance/development/pattern/hexagonal-architecture-cli.md` | Final-phase content update [Repo-grounded — file exists]   |
+| Path                                                                | Change                                                                                       |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `apps/rhino-cli-go/internal/{domain,application,adapter}/`          | Populated with per-feature + shared subpackages [Repo-grounded — dirs exist]                 |
+| `apps/rhino-cli-rust/src/{domain,application,infrastructure}/`      | Populated with per-feature + shared modules                                                  |
+| `apps/rhino-cli-go/internal/<feature>/`                             | Logic relocated into layers; thin shims removed                                              |
+| `apps/rhino-cli-rust/src/internal/<feature>/`                       | Same                                                                                         |
+| `apps/rhino-cli-rust/project.json`                                  | `test:quick` `--ignore-filename-regex` allowlist updated per phase [Repo-grounded — line 83] |
+| `repo-governance/development/pattern/hexagonal-architecture-cli.md` | Final-phase content update [Repo-grounded — file exists]                                     |
 
 ## Quality Gates (Nx targets — all verified present)
 

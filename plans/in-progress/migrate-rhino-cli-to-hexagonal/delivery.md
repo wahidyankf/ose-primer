@@ -28,11 +28,11 @@ writes behind named ports without changing a single emitted byte. The candidate 
 retained purely for traceability; **none of these candidates introduces a visible change, and
 none requires re-capturing the shadow-diff baseline.**
 
-| #  | Command / surface                          | Current output (observed)                                                                 | Byte-neutral seam extraction (NO visible change)                                | Why it aids layering                                                                  |
-| -- | ------------------------------------------ | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| O1 | `--say` with `--verbose` (root)            | `[<ts>] INFO: Executing say command` then `[<ts>] INFO: Message: <msg>` [Repo-grounded — `cmd/root.go` lines 31–36] | Route the two INFO lines through a domain-role `DiagnosticLogger` port — **identical bytes** | Forces the verbose-logging seam behind a port; **byte-neutral** |
-| O2 | `git pre-commit` step warnings            | `⚠️  Step %q timed out…` / `⚠️  Total pre-commit timeout reached…` [Repo-grounded — `runner.go` lines 64,79] | Route emoji-warning writes through a `StepReporter` port — **identical bytes**   | Removes direct `Fprintf(deps.Stdout,…)` from orchestration; pure seam extraction       |
-| O3 | Error prefix on failure (root `Execute`)   | `Error: %v` to stderr [Repo-grounded — `cmd/root.go` line 46]                             | Centralize through an inbound-adapter error presenter — **identical bytes**      | Makes the inbound adapter the single error-formatting point                            |
+| #   | Command / surface                        | Current output (observed)                                                                                           | Byte-neutral seam extraction (NO visible change)                                             | Why it aids layering                                                             |
+| --- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| O1  | `--say` with `--verbose` (root)          | `[<ts>] INFO: Executing say command` then `[<ts>] INFO: Message: <msg>` [Repo-grounded — `cmd/root.go` lines 31–36] | Route the two INFO lines through a domain-role `DiagnosticLogger` port — **identical bytes** | Forces the verbose-logging seam behind a port; **byte-neutral**                  |
+| O2  | `git pre-commit` step warnings           | `⚠️  Step %q timed out…` / `⚠️  Total pre-commit timeout reached…` [Repo-grounded — `runner.go` lines 64,79]        | Route emoji-warning writes through a `StepReporter` port — **identical bytes**               | Removes direct `Fprintf(deps.Stdout,…)` from orchestration; pure seam extraction |
+| O3  | Error prefix on failure (root `Execute`) | `Error: %v` to stderr [Repo-grounded — `cmd/root.go` line 46]                                                       | Centralize through an inbound-adapter error presenter — **identical bytes**                  | Makes the inbound adapter the single error-formatting point                      |
 
 > **Frozen-output rule (binding on every phase)**: O1/O2/O3 are byte-neutral seam extractions
 > only. No phase introduces a visible text/format change, and no phase re-captures the
@@ -737,8 +737,9 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 ## Phase 12: `repo-governance` (both languages)
 
 > Rust logic currently lives in `commands/` only [Repo-grounded — Rust `repo_governance` logic in
-> `commands/`]; extract the use case into `application/`, pure rules into `domain/`, keep a thin
-> inbound shim. Validate with the governance gates.
+>
+> > `commands/`]; extract the use case into `application/`, pure rules into `domain/`, keep a thin
+> > inbound shim. Validate with the governance gates.
 
 - [ ] [AI] Confirm shadow-diff GREEN: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
 - [ ] [AI] **RED**: add a failing fake-backed unit test for the `repo-governance` use case (assert
@@ -840,8 +841,9 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 ## Phase 14: `workflows` (both languages)
 
 > Go logic currently lives in `cmd/` only [Repo-grounded — `workflows` has Go logic in `cmd/`
-> only]; move the use case into `application/`/`domain/`, keep a thin inbound shim. Validate with
-> `validate:naming-workflows`.
+>
+> > only]; move the use case into `application/`/`domain/`, keep a thin inbound shim. Validate with
+> > `validate:naming-workflows`.
 
 - [ ] [AI] Confirm shadow-diff GREEN: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
 - [ ] [AI] **RED**: add a failing fake-backed unit test for the `workflows` use case — Go in

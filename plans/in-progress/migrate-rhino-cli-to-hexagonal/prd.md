@@ -10,13 +10,13 @@ byte-for-byte (verified by `shadow-diff.sh`): the output surface is **frozen**
 
 ## Personas (maintainer hats + consuming agents)
 
-| Persona                     | Need                                                                       |
-| --------------------------- | -------------------------------------------------------------------------- |
-| Maintainer-as-Go-developer  | A predictable place for domain logic, ports, and adapters per feature.     |
-| Maintainer-as-Rust-developer| The same layout mirrored in Rust, keeping the two binaries parallel.       |
-| Maintainer-as-reviewer      | A green shadow-diff + parity script as the single behavior-preservation gate. |
-| `swe-golang-dev` agent      | Unambiguous, execution-grade steps for Go file moves and port extraction.  |
-| `swe-rust-dev` agent        | The same for Rust, plus the coverage-allowlist update reminder.            |
+| Persona                      | Need                                                                          |
+| ---------------------------- | ----------------------------------------------------------------------------- |
+| Maintainer-as-Go-developer   | A predictable place for domain logic, ports, and adapters per feature.        |
+| Maintainer-as-Rust-developer | The same layout mirrored in Rust, keeping the two binaries parallel.          |
+| Maintainer-as-reviewer       | A green shadow-diff + parity script as the single behavior-preservation gate. |
+| `swe-golang-dev` agent       | Unambiguous, execution-grade steps for Go file moves and port extraction.     |
+| `swe-rust-dev` agent         | The same for Rust, plus the coverage-allowlist update reminder.               |
 
 ## User Stories
 
@@ -164,8 +164,8 @@ to the kernel — these stay feature-local per the 2+-consumer rule.
 
 ## Product-Level Risks
 
-| Risk                                                              | Mitigation                                                                 |
-| ----------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| A "structural-only" move silently changes visible output          | Output frozen (empty change list); shadow-diff GREEN required before AND after every move AND must stay GREEN vs the Phase 0 baseline every phase. |
-| Maximal ports over-abstract trivial seams                         | Accepted trade-off; uniformity is the deliberate benefit (tech-docs.md).   |
-| Coverage gate breaks on file relocation                           | Mandatory allowlist update step in every Rust-touching phase.              |
+| Risk                                                     | Mitigation                                                                                                                                         |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A "structural-only" move silently changes visible output | Output frozen (empty change list); shadow-diff GREEN required before AND after every move AND must stay GREEN vs the Phase 0 baseline every phase. |
+| Maximal ports over-abstract trivial seams                | Accepted trade-off; uniformity is the deliberate benefit (tech-docs.md).                                                                           |
+| Coverage gate breaks on file relocation                  | Mandatory allowlist update step in every Rust-touching phase.                                                                                      |

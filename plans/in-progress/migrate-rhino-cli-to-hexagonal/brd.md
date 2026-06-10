@@ -37,12 +37,12 @@ inside the hexagon. No surveyed source disagrees with CLI-as-inbound-adapter.
 
 ## Business Impact
 
-| Dimension              | Before                                                              | After (target)                                                              |
-| ---------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| Unit-test reach        | IO seams hard to fake; coverage leans on integration + allowlist    | Every IO boundary is a fakeable named port; domain is pure and fully unit-testable |
-| Cross-language parity  | Maintained manually + caught only at output layer by shadow-diff    | Structurally parallel layers in both langs; divergence visible at the seam   |
-| Onboarding             | Per-feature bespoke shapes                                          | One uniform layout: `domain/shared` kernel + per-feature slices              |
-| Change locality        | Logic + IO + wiring entangled                                       | Logic changes touch `domain/`; IO changes touch adapters only               |
+| Dimension             | Before                                                           | After (target)                                                                     |
+| --------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Unit-test reach       | IO seams hard to fake; coverage leans on integration + allowlist | Every IO boundary is a fakeable named port; domain is pure and fully unit-testable |
+| Cross-language parity | Maintained manually + caught only at output layer by shadow-diff | Structurally parallel layers in both langs; divergence visible at the seam         |
+| Onboarding            | Per-feature bespoke shapes                                       | One uniform layout: `domain/shared` kernel + per-feature slices                    |
+| Change locality       | Logic + IO + wiring entangled                                    | Logic changes touch `domain/`; IO changes touch adapters only                      |
 
 ## Affected Roles (solo-maintainer repo — hats, not sign-offs)
 
@@ -85,13 +85,13 @@ inside the hexagon. No surveyed source disagrees with CLI-as-inbound-adapter.
 
 ## Business Risks and Mitigations
 
-| Risk                                                                 | Likelihood | Mitigation                                                                                              |
-| -------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------- |
-| Behavior regression during a move                                    | Medium     | Per-feature shadow-diff GREEN before AND after; phase gate blocks progress on any red.                  |
-| Coverage gate false-break when Rust files relocate                   | High       | Mandatory lockstep update of the Rust `test:quick` `--ignore-filename-regex` allowlist in every phase.  |
-| Over-engineering (maximal ports add boilerplate)                     | Medium     | Accepted trade-off (see tech-docs.md); maximal chosen deliberately over lean; mitigated by uniformity.  |
-| Go/Rust structural divergence during migration                       | Medium     | Each feature phase migrates BOTH languages together; parity script + shadow-diff gate per phase.        |
-| Vendor-specific terms leak into the convention doc                   | Low        | `validate:repo-governance-vendor-audit` + `validate:cross-vendor-parity` gate the final phase.          |
+| Risk                                               | Likelihood | Mitigation                                                                                             |
+| -------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------ |
+| Behavior regression during a move                  | Medium     | Per-feature shadow-diff GREEN before AND after; phase gate blocks progress on any red.                 |
+| Coverage gate false-break when Rust files relocate | High       | Mandatory lockstep update of the Rust `test:quick` `--ignore-filename-regex` allowlist in every phase. |
+| Over-engineering (maximal ports add boilerplate)   | Medium     | Accepted trade-off (see tech-docs.md); maximal chosen deliberately over lean; mitigated by uniformity. |
+| Go/Rust structural divergence during migration     | Medium     | Each feature phase migrates BOTH languages together; parity script + shadow-diff gate per phase.       |
+| Vendor-specific terms leak into the convention doc | Low        | `validate:repo-governance-vendor-audit` + `validate:cross-vendor-parity` gate the final phase.         |
 
 ## Cross-Cutting Note
 

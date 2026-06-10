@@ -48,11 +48,11 @@ dependency-injection pattern into named ports across every feature.
 
 ## Document Map
 
-| File                       | Purpose                                                                    |
-| -------------------------- | -------------------------------------------------------------------------- |
-| [`brd.md`](./brd.md)       | WHY — business goal, impact, risks, success metrics                        |
-| [`prd.md`](./prd.md)       | WHAT — personas, user stories, Gherkin acceptance criteria, product scope  |
-| [`tech-docs.md`](./tech-docs.md) | HOW — layout, port mechanism, the maximal-vs-lean trade-off, migration recipe |
+| File                             | Purpose                                                                          |
+| -------------------------------- | -------------------------------------------------------------------------------- |
+| [`brd.md`](./brd.md)             | WHY — business goal, impact, risks, success metrics                              |
+| [`prd.md`](./prd.md)             | WHAT — personas, user stories, Gherkin acceptance criteria, product scope        |
+| [`tech-docs.md`](./tech-docs.md) | HOW — layout, port mechanism, the maximal-vs-lean trade-off, migration recipe    |
 | [`delivery.md`](./delivery.md)   | DO — phased checklist (Phase 0 baseline → git pilot → features → convention doc) |
 
 ## Approach Summary
