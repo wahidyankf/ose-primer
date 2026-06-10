@@ -170,7 +170,7 @@ for arg in "$@"; do
       print_help
       exit 0
       ;;
-    test-coverage | spec-coverage | crud-spec-coverage | docs | agents | repo-governance | workflows | git | contracts | java | env | doctor)
+    test-coverage | spec-coverage | crud-spec-coverage | docs | agents | repo-governance | workflows | git | contracts | java | env | env-validate | doctor)
       COMMANDS+=("${arg}")
       ;;
     *)
@@ -181,7 +181,7 @@ for arg in "$@"; do
   esac
 done
 if [[ ${#COMMANDS[@]} -eq 0 ]]; then
-  COMMANDS=(test-coverage spec-coverage crud-spec-coverage docs agents repo-governance workflows git contracts java env doctor)
+  COMMANDS=(test-coverage spec-coverage crud-spec-coverage docs agents repo-governance workflows git contracts java env env-validate doctor)
 fi
 
 # --- Build both binaries ---
@@ -1163,6 +1163,29 @@ corpus_env() {
   rm -rf "${grm}" "${rrm}"
 }
 
+corpus_env_validate() {
+  echo "── env-validate corpus ──" >&2
+
+  # Clean repo: no apps/ or infra/dev/ → all 15 surfaces pass.
+  for fmt in text json; do
+    local gv rv; gv="$(mktemp -d)"; rv="$(mktemp -d)"
+    for d in "${gv}" "${rv}"; do mkdir -p "${d}/.git"; done
+    run_case_in_dir "env validate clean ${fmt}" "${gv}" env validate -o "${fmt}" --no-color
+    rm -rf "${gv}" "${rv}"
+  done
+
+  # Violation repo: declare a key for crud-be-clojure-pedestal but no source.
+  local gf rf; gf="$(mktemp -d)"; rf="$(mktemp -d)"
+  for d in "${gf}" "${rf}"; do
+    mkdir -p "${d}/.git" "${d}/infra/dev/crud-be-clojure-pedestal"
+    printf 'CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET=dev-secret\n' \
+      > "${d}/infra/dev/crud-be-clojure-pedestal/.env.example"
+  done
+  run_case_in_dir "env validate violation text" "${gf}" env validate --no-color
+  run_case_in_dir "env validate violation json" "${gf}" env validate -o json --no-color
+  rm -rf "${gf}" "${rf}"
+}
+
 corpus_doctor() {
   echo "── doctor corpus ──" >&2
   # doctor probes the host's tools; both binaries see the same versions on this
@@ -1192,6 +1215,7 @@ for cmd in "${COMMANDS[@]}"; do
     contracts) corpus_contracts ;;
     java) corpus_java ;;
     env) corpus_env ;;
+    env-validate) corpus_env_validate ;;
     doctor) corpus_doctor ;;
   esac
 done

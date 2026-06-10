@@ -10,6 +10,7 @@ pub mod contracts;
 pub mod docs;
 pub mod doctor;
 pub mod envbackup;
+pub mod envvalidate;
 pub mod git;
 pub mod java;
 pub mod mermaid;

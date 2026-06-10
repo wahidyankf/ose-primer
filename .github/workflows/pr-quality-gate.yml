@@ -239,6 +239,15 @@ jobs:
       - run: npx nx run rhino-cli-rust:validate:naming-agents
       - run: npx nx run rhino-cli-rust:validate:naming-workflows
 
+  env-validate:
+    name: Env validate (declared vs read drift)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-golang
+      - run: npx nx run rhino-cli-go:env:validate
+
   parity:
     name: rhino-cli go-vs-rust parity (shadow-diff)
     needs: detect
@@ -259,7 +268,23 @@ jobs:
   quality-gate:
     name: Quality gate
     needs:
-      [detect, format, typescript, golang, jvm, dotnet, python, rust, elixir, clojure, dart, markdown, naming, parity]
+      [
+        detect,
+        format,
+        typescript,
+        golang,
+        jvm,
+        dotnet,
+        python,
+        rust,
+        elixir,
+        clojure,
+        dart,
+        markdown,
+        naming,
+        env-validate,
+        parity,
+      ]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -267,7 +292,7 @@ jobs:
         run: |
           echo "Checking quality gate results..."
           FAILED=false
-          for job in typescript golang jvm dotnet python rust elixir clojure dart markdown naming parity; do
+          for job in typescript golang jvm dotnet python rust elixir clojure dart markdown naming env-validate parity; do
             RESULT="${{ toJSON(needs) }}"
             # A skipped job is OK (language not affected). Only failure blocks.
           done

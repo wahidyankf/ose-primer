@@ -1,8 +1,8 @@
 use clap::{Parser, Subcommand};
 
 use crate::commands::{
-    agents, contracts, docs, doctor, env, git, java, repo_governance, speccoverage, testcoverage,
-    workflows,
+    agents, contracts, docs, doctor, env, env_validate, git, java, repo_governance, speccoverage,
+    testcoverage, workflows,
 };
 use crate::internal::cliout::OutputFormat;
 
@@ -103,6 +103,8 @@ pub enum EnvCommands {
     Backup(env::EnvBackupArgs),
     /// Restore .env files from a backup.
     Restore(env::EnvRestoreArgs),
+    /// Validate .env.example declarations against source reads.
+    Validate(env_validate::EnvValidateArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -379,6 +381,10 @@ fn dispatch_env(
         EnvCommands::Restore(args) => (
             env::run_env_restore(args, output_format, verbose, quiet),
             env::ENV_RESTORE_USAGE,
+        ),
+        EnvCommands::Validate(args) => (
+            env_validate::run_env_validate(args, output_format, verbose, quiet),
+            env_validate::ENV_VALIDATE_USAGE,
         ),
     }
 }

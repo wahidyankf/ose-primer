@@ -79,6 +79,10 @@ name = "env"
 harness = false
 
 [[test]]
+name = "env_validate"
+harness = false
+
+[[test]]
 name = "doctor"
 harness = false
 

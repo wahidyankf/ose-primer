@@ -9,6 +9,7 @@ pub mod contracts;
 pub mod docs;
 pub mod doctor;
 pub mod env;
+pub mod env_validate;
 pub mod git;
 pub mod java;
 pub mod repo_governance;
