@@ -55,7 +55,7 @@ spec-first, Rust-canonical → Go-twin dual-implementation flow) to cover every 
 `--dry-run`, **adds a `rhino-cli env validate` drift guard**, and **consolidates** the three
 governance documents into one hub convention. It converges to the **same end-state output** as the
 sibling `ose-infra` and `ose-public` plans, with every primer-specific divergence recorded in
-[tech-docs.md §1 (Deviation Matrix)](./tech-docs.md#1-resolved-deviation-matrix-all-14-decisions).
+[tech-docs.md §1 (Deviation Matrix)](./tech-docs.md#1-resolved-deviation-matrix-all-16-decisions).
 
 > **No secrets in this plan.** Per the
 > [No Secrets in Committed Files](../../../repo-governance/development/quality/no-secrets-in-committed-files.md)
@@ -66,10 +66,12 @@ sibling `ose-infra` and `ose-public` plans, with every primer-specific divergenc
 
 ### In Scope
 
-- **One hub convention** — `repo-governance/development/quality/secrets-and-env-standards.md`
+- **One hub convention** — `repo-governance/conventions/security/secrets-and-env-standards.md`
   absorbing the substantive content of the three existing docs (naming, layout, annotation,
-  validation, secret-surface census, storage-tier ladder). The three existing docs become short
-  **stub redirects** preserving every inbound link.
+  validation, secret-surface census, storage-tier ladder). As part of canonicalizing to `ose-infra`,
+  `no-secrets-in-committed-files.md` and `env-file-access.md` are **moved** from
+  `development/quality/` → `conventions/security/`; all three existing docs become short **stub
+  redirects** preserving every inbound link (decision **R10b**).
 - **Per-app naming standard** — `SCREAMING_SNAKE_CASE`; a **per-app prefix** derived from the Nx
   project name (`crud-be-rust-axum` → `CRUD_BE_RUST_AXUM_*`) for app-defined values; framework-
   reserved names (`NEXT_PUBLIC_*`, Next.js / framework `PORT`) kept as the framework demands; shared
@@ -117,7 +119,8 @@ sibling `ose-infra` and `ose-public` plans, with every primer-specific divergenc
   `--dry-run`, new `env validate`
 - `specs/apps/rhino/behavior/cli/gherkin/env/` — new/updated env feature specs (source of truth)
 - `infra/dev/<app>/.env.example` and `infra/dev/<app>/docker-compose*.yml` — rename + annotate
-- `repo-governance/development/quality/` and `repo-governance/development/workflow/` — hub doc + stubs
+- `repo-governance/conventions/security/` (hub doc + two moved stubs) and
+  `repo-governance/development/workflow/` (`reproducible-environments.md` stub) — doc consolidation
 - `.husky/` (pre-push wiring) and `.github/workflows/` (CI wiring)
 - `docs/explanation/` — the parity-decisions rationale doc
 - Documentation and convention indexes referencing the three folded docs
@@ -207,7 +210,7 @@ pushed to `origin main` at each phase gate.
 > **draft PR** (the sibling-sync safety invariant). This plan pushes **directly to `ose-primer`
 > `main`** (`worktree-to-main`), bypassing that PR-only rule. This is an explicit, one-off, invoker-
 > owned deviation, recorded as decision **R5** in
-> [tech-docs.md §1](./tech-docs.md#1-resolved-deviation-matrix-all-14-decisions) and explained in the
+> [tech-docs.md §1](./tech-docs.md#1-resolved-deviation-matrix-all-16-decisions) and explained in the
 > Phase 7 rationale doc. No `--force` is ever used; every push is a normal fast-forward to `main`.
 
 ## Current Status

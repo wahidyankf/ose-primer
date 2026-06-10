@@ -57,14 +57,15 @@ Hats the maintainer wears and agents that consume the outputs (not external stak
 
 Every scenario uses exactly one primary `Given`/`When`/`Then`, with extras chained via `And`.
 
-### AC-01 — Single hub convention exists and the prior docs redirect
+### AC-01 — Single hub convention exists at the canonical path and the prior docs redirect
 
 ```gherkin
 Scenario: Contributor finds one authoritative secrets/env document
-  Given the repository governance under repo-governance/development/quality/
+  Given the repository governance under repo-governance/conventions/security/
   When a contributor opens secrets-and-env-standards.md
   Then it documents naming, annotation, per-language validation, the secret-surface census, and the storage-tier ladder
-  And no-secrets-in-committed-files.md, env-file-access.md, and reproducible-environments.md each contain a stub pointing to it
+  And no-secrets-in-committed-files.md and env-file-access.md have moved here from development/quality/ and each contain a stub pointing to it
+  And reproducible-environments.md under development/workflow/ contains a stub pointing to it
   And the repository markdown link check reports zero broken links
 ```
 
@@ -159,6 +160,17 @@ Scenario: Rust and Go implementations stay byte-identical
   And both implementations pass their own spec-coverage target
 ```
 
+### AC-10b — Backup default directory is per-repo-derived in both twins
+
+```gherkin
+Scenario: env backup defaults to a per-repo-derived directory in both implementations
+  Given rhino-cli-rust and rhino-cli-go both ship the per-repo-derived backup default dir
+  When the operator runs env backup with no --dir flag in either binary
+  Then the default backup directory is ~/ose-primer-env-backup (derived from the repo-root basename)
+  And it is no longer the hardcoded ~/ose-open-env-backup
+  And the shadow-diff parity harness reports the default path and help text byte-identical across the twins
+```
+
 ### AC-11 — Annotated env example
 
 ```gherkin
@@ -203,13 +215,16 @@ Scenario: The direct-to-main deviation is documented in plain language
 
 ### In Scope (Product)
 
-- Hub convention document and the three stub redirects.
+- Hub convention document at `repo-governance/conventions/security/` plus the three stub redirects;
+  the two security docs are **moved** from `development/quality/` → `conventions/security/` (R10b).
 - Per-app naming standard applied to all backends (rename) and documented for all apps.
 - Fail-fast startup validation in every backend and frontend (new deps under the Dependency Bump
   Policy).
 - `rhino-cli env backup`/`restore` widened from `.env*`-only to a secret allowlist (`.env*`,
   `secrets.json`, `*.pem`/`*.key`/`*.crt`/`*.pfx`, and the `.secrets/` directory via a hidden-dir-skip
-  exception), plus `--dry-run` — authored spec-first, Rust-canonical → Go-twin, shadow-diff-gated.
+  exception), plus `--dry-run`, plus a **per-repo-derived backup default dir**
+  (`~/<repo-basename>-env-backup`, R11b) — all authored spec-first, Rust-canonical → Go-twin,
+  shadow-diff-gated in **both** twins.
 - `rhino-cli env validate` app drift guard (spec-first dual-impl) + pre-push + CI wiring.
 - Annotated `infra/dev/<app>/.env.example` files.
 - Gated IaC scaffold (commented backup patterns + documented-but-inert Terraform/Ansible validators).

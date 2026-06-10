@@ -4,28 +4,30 @@ This document holds the resolved deviation matrix, the design decisions and thei
 file-impact analysis, and the mechanics. The step-by-step checklist lives in
 [delivery.md](./delivery.md).
 
-## 1. Resolved Deviation Matrix (all 14 decisions)
+## 1. Resolved Deviation Matrix (all 16 decisions)
 
 This is the full cross-repo deviation matrix from the parity effort, reproduced verbatim with
 `ose-primer`'s column and justification. The matrix is the source of truth; nothing in this plan
-silently deviates from it. **Deviation count: 14 recorded decisions, 0 silent deviations.**
+silently deviates from it. **Deviation count: 16 recorded decisions, 0 silent deviations.**
 
-| #   | Dimension                 | Decision (primer)                                                                                                                                                                                                                                                       | Justification                                                                                                          |
-| --- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| R1  | Parity set                | primer is authored alongside public; infra is the reference (already gated/passing)                                                                                                                                                                                     | infra plan already gated; avoid regression                                                                             |
-| R2  | Delivery mode             | **`worktree-to-main`** (push directly to `ose-primer` `main`)                                                                                                                                                                                                           | invoker choice                                                                                                         |
-| R3  | IaC surfaces              | **Forward-looking scaffold** — IaC validators + `*.tfvars`/inventory backup patterns shipped **commented/gated** "when IaC is added"; primer has no IaC today                                                                                                           | keep design ready without standing up inert tooling                                                                    |
-| R4  | Research                  | Ran — Go/Effect/long-tail validator findings in [§9](./tech-docs.md#9-research-findings-cited)                                                                                                                                                                          | tooling needed verification                                                                                            |
-| R5  | **PR override**           | **DEVIATION ACCEPTED**: primer is delivered `worktree-to-main` despite the sibling-sync rule that `ose-primer` receives governance changes via a **draft PR**. Explicit, one-off, **invoker-owned**. Recorded here and in the Phase 7 rationale doc. No `--force` ever. | invoker explicitly accepted; one-off, owned by invoker                                                                 |
-| R6  | rhino-cli tooling         | **Spec-first dual-impl**: update `specs/apps/rhino/behavior/cli/gherkin/env/` → implement **Rust (canonical)** → implement **Go (twin)** → shadow-diff byte-identical. `env validate` authored Rust-canonical.                                                          | preserve primer's mandated dual-CLI parity model (see correction below)                                                |
-| R7  | Startup validation        | **Full adoption in every app** (11 backends + 4 frontends)                                                                                                                                                                                                              | maximal convergence (invoker)                                                                                          |
-| R8  | primer polyglot reach     | **All 11 backends** — validator-per-language table ([§4](./tech-docs.md#4-startup-validation-per-language)) + one delivery sub-phase per family                                                                                                                         | honors full-adoption literally                                                                                         |
-| R9  | Naming prefix             | **Full per-app prefix rename across all existing app-defined vars**                                                                                                                                                                                                     | maximal convergence (invoker)                                                                                          |
-| R10 | Hub doc                   | New `repo-governance/development/quality/secrets-and-env-standards.md`; fold the three existing docs to stub redirects                                                                                                                                                  | cross-repo structural symmetry (primer's security docs live under `development/quality/`, not `conventions/security/`) |
-| R11 | Backup allowlist          | **Real floor + IaC gated scaffold**: `.env*` + `.secrets/` + `secrets.json` + `*.pem`/`*.key`/`*.crt`/`*.pfx`; `*.tfvars`/inventory patterns shipped **commented** forward-scaffold. Hybrid floor ∪ optional registry `backup_globs`.                                   | per-repo honesty + ready for IaC                                                                                       |
-| R12 | Layout                    | **primer keeps its `infra/dev/<app>/` layout and root `.env.example`** (no migration to `apps/<app>/`); `env init` keeps walking `infra/dev/`. Real gitignored-file relocations (none expected) would be **[HUMAN]** (env-file-access guard).                           | primer is a template repo; preserve its layout + Nx scaffold path                                                      |
-| R13 | Rationale doc             | `docs/explanation/standardize-secrets-and-env-parity-decisions.md`                                                                                                                                                                                                      | aligns with existing `*-parity-decisions.md` precedents                                                                |
-| R14 | Drift `APP_PORT` live-fix | **DROP** — no such live drift exists in primer (the `APP_*` reads are renamed for naming, not to fix a live mismatch)                                                                                                                                                   | no such drift exists here                                                                                              |
+| #    | Dimension                 | Decision (primer)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Justification                                                           |
+| ---- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| R1   | Parity set                | primer is authored alongside public; infra is the reference (already gated/passing)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | infra plan already gated; avoid regression                              |
+| R2   | Delivery mode             | **`worktree-to-main`** (push directly to `ose-primer` `main`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | invoker choice                                                          |
+| R3   | IaC surfaces              | **Forward-looking scaffold** — IaC validators + `*.tfvars`/inventory backup patterns shipped **commented/gated** "when IaC is added"; primer has no IaC today                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | keep design ready without standing up inert tooling                     |
+| R4   | Research                  | Ran — Go/Effect/long-tail validator findings in [§9](./tech-docs.md#9-research-findings-cited)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | tooling needed verification                                             |
+| R5   | **PR override**           | **DEVIATION ACCEPTED**: primer is delivered `worktree-to-main` despite the sibling-sync rule that `ose-primer` receives governance changes via a **draft PR**. Explicit, one-off, **invoker-owned**. Recorded here and in the Phase 7 rationale doc. No `--force` ever.                                                                                                                                                                                                                                                                                                                                                                                                                 | invoker explicitly accepted; one-off, owned by invoker                  |
+| R6   | rhino-cli tooling         | **Spec-first dual-impl**: update `specs/apps/rhino/behavior/cli/gherkin/env/` → implement **Rust (canonical)** → implement **Go (twin)** → shadow-diff byte-identical. `env validate` authored Rust-canonical.                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | preserve primer's mandated dual-CLI parity model (see correction below) |
+| R7   | Startup validation        | **Full adoption in every app** (11 backends + 4 frontends)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | maximal convergence (invoker)                                           |
+| R8   | primer polyglot reach     | **All 11 backends** — validator-per-language table ([§4](./tech-docs.md#4-startup-validation-per-language)) + one delivery sub-phase per family                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | honors full-adoption literally                                          |
+| R9   | Naming prefix             | **Full per-app prefix rename across all existing app-defined vars**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | maximal convergence (invoker)                                           |
+| R10  | Hub doc                   | New `repo-governance/conventions/security/secrets-and-env-standards.md`; fold the three existing docs to stub redirects at their **new** `conventions/security/` location                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | cross-repo structural symmetry; ose-infra canonical                     |
+| R10b | **Doc canonicalization**  | **THIS repo acts**: MOVE `no-secrets-in-committed-files.md` and `env-file-access.md` from `repo-governance/development/quality/` → `repo-governance/conventions/security/` to match the `ose-infra` canonical layout; fold both into the hub `conventions/security/secrets-and-env-standards.md` with stubs at the **new** location; REWRITE all inbound links. (`reproducible-environments.md` stays under `development/workflow/`; only its secrets/env content folds out.) Authorized canonicalization; primer's `repository-ecosystem` convention pins these under `development/quality/`, so the ecosystem-convention update is a **downstream follow-up**, not part of this plan. | ose-infra is the canonical reference; align primer's paths to it        |
+| R11  | Backup allowlist          | **Real floor + IaC gated scaffold**: `.env*` + `.secrets/` + `secrets.json` + `*.pem`/`*.key`/`*.crt`/`*.pfx`; `*.tfvars`/inventory patterns shipped **commented** forward-scaffold. Hybrid floor ∪ optional registry `backup_globs`.                                                                                                                                                                                                                                                                                                                                                                                                                                                   | per-repo honesty + ready for IaC                                        |
+| R11b | **Backup default dir**    | **Adopt canonical per-repo-derived `~/<repo-root-basename>-env-backup`** (replacing today's hardcoded `ose-open-env-backup`), implemented in **BOTH** `rhino-cli-rust` **and** `rhino-cli-go`, with the **shadow-diff parity gate as a hard acceptance criterion**. All-three-align; ose-infra canonical; primer applies it in both twins.                                                                                                                                                                                                                                                                                                                                              | ose-infra canonical; primer applies in both twins                       |
+| R12  | Layout                    | **primer keeps its `infra/dev/<app>/` layout and root `.env.example`** (no migration to `apps/<app>/`); `env init` keeps walking `infra/dev/`. Real gitignored-file relocations (none expected) would be **[HUMAN]** (env-file-access guard).                                                                                                                                                                                                                                                                                                                                                                                                                                           | primer is a template repo; preserve its layout + Nx scaffold path       |
+| R13  | Rationale doc             | `docs/explanation/standardize-secrets-and-env-parity-decisions.md`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | aligns with existing `*-parity-decisions.md` precedents                 |
+| R14  | Drift `APP_PORT` live-fix | **DROP** — no such live drift exists in primer (the `APP_*` reads are renamed for naming, not to fix a live mismatch)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | no such drift exists here                                               |
 
 ### Correction to the matrix note (R6 canonical/twin direction)
 
@@ -39,7 +41,69 @@ implements **Rust first, then Go**, shadow-diff-gated. This is a correction to t
 label, not a new deviation — the spec-first, both-land-together, shadow-diff-gated **model** is exactly
 what the matrix intended.
 
+### Cross-repo deviation matrix (parity set)
+
+The three sibling plans deliver the same end-state — named, startup-validated, drift-guarded,
+fully-backed-up secrets/env consolidated into one hub doc — but are **not identical**: each diverges
+where its repo's reality forces it. **`ose-infra` is the CANONICAL reference member**; its governance
+paths are already canonical (`repo-governance/conventions/security/`), so the siblings canonicalize
+**to** `ose-infra`. Every divergence below is intentional and recorded (zero silent deviations).
+
+| #    | Dimension             | ose-infra (canonical)                          | ose-primer (this plan)                                                        | ose-public                                                    |
+| ---- | --------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| R2   | Delivery mode         | `main-to-main` (Trunk-Based, normal)           | `worktree → push origin main` (PR-override, maintainer-authorized)            | `worktree → push origin main`                                 |
+| R3   | Terraform/Ansible     | full IaC validators + backup (**real**)        | **none → N/A** (no infra; never receives infra artifacts; gated scaffold)     | none → forward-scaffold (commented)                           |
+| R6   | rhino-cli tooling     | Rust, single impl                              | **spec-first DUAL-impl** (Rust canonical + Go twin, shadow-diff)              | Rust, single impl                                             |
+| R7   | Startup validation    | `coralpolyp-be` + `coralpolyp-fe`              | full adoption, all 11 polyglot backends + 4 frontends                         | full adoption, both Rust backends + all Next.js webs          |
+| R9   | Naming prefix         | `CORALPOLYP_BE_*` rename                       | full per-app prefix rename                                                    | full per-app prefix rename                                    |
+| R10b | Doc canonicalization  | already canonical (`conventions/security/`)    | **MOVE** docs `development/quality/` → `conventions/security/`; rewrite links | rename `no-secrets-in-git.md` → canonical name; rewrite links |
+| R11  | Backup floor          | `.env*`, `*.tfvars`, inventories, `.secrets/`  | `.env*`, `.secrets/`, `secrets.json`, `*.pem/key/crt/pfx` + IaC scaffold      | `.env*`, `.secrets/`, `secrets.json` + IaC scaffold           |
+| R11b | Backup default dir    | `~/<repo-basename>-env-backup` (**canonical**) | adopt canonical derivation, in **BOTH** rust + go twins (shadow-diff parity)  | adopt canonical derivation                                    |
+| R12  | Layout                | `infra/dev/<app>` → `apps/<app>`               | keep root template (no migration)                                             | consolidate `apps/<app>` (remove `infra/dev` dup)             |
+| R13  | Parity-decisions doc  | `docs/explanation/…-parity-decisions.md`       | same path under primer `docs/explanation/`                                    | same path under public `docs/explanation/`                    |
+| R14  | Live `APP_PORT` drift | fix (real bug)                                 | drop (no drift)                                                               | drop (no drift)                                               |
+
+**On R2 (delivery mode) — the `ose-primer` PR-override.** This parity run delivers all three plans the
+same operational way: a git worktree, then a direct push to `origin main` (no PR). For `ose-infra` this
+is ordinary Trunk-Based Development. For `ose-primer` it is an **explicit, maintainer-authorized
+deviation** from that repo's PR-only sync invariant — justified as a synchronized cross-repo parity
+landing treated as one maintainer-driven operation rather than three independent contributions. The
+corresponding change to the `ose-primer` sync governance is a **separate downstream follow-up**, NOT
+part of this plan.
+
+**On R3 (IaC = N/A, primer-specific).** `ose-primer` holds no Terraform or Ansible and, per its
+repository-ecosystem convention, **never receives infra artifacts**. So the Terraform/Ansible
+drift-guard surfaces are **dropped as N/A** — unlike `ose-infra` (where they are real) and `ose-public`
+(where they ship commented as a forward-scaffold). Primer ships only the inert contract-schema stub so
+a downstream fork can activate the discipline if it ever adds IaC.
+
+**On R10b / R11b (canonicalization toward ose-infra).** Primer fully canonicalizes its governance doc
+paths to match `ose-infra`: it **moves** `no-secrets-in-committed-files.md` and `env-file-access.md`
+from `development/quality/` → `conventions/security/`, folds them into the hub, and rewrites inbound
+links. Primer's `repository-ecosystem` convention currently pins these docs under `development/quality/`,
+so the matching ecosystem-convention update is an **authorized downstream follow-up**, not part of this
+plan. The per-repo-derived backup default dir (`~/<repo-root-basename>-env-backup`), previously an
+`ose-infra`-only behavior, is now the **canonical standard adopted by all three** — primer applies it in
+**both** its Rust and Go rhino-cli twins so the shadow-diff stays in parity.
+
 ## 2. Naming Standard
+
+**On 12-factor authority (precise framing).** The Twelve-Factor App is **silent on naming
+structure**: it mandates config-in-environment and per-deploy values, but prescribes nothing about
+prefixes or casing. So 12-factor **authorizes** a per-app prefix without **prescribing** it; the
+prefix is a **practitioner-consensus** convention for shared environments where many services' vars
+coexist (primer's compose stacks load several apps' vars at once), not a 12-factor requirement. This
+is also what resolves primer's current inconsistency — some backends read `APP_PORT`, others read a
+bare `PORT` for the same app-owned bind — by giving every app-defined value one per-app-prefixed
+form. Distinct from app-defined names is a **framework-reserved / exempt class** that this standard
+never prefixes:
+
+| Reserved/exempt name | Why exempt                                           |
+| -------------------- | ---------------------------------------------------- |
+| `NEXT_PUBLIC_*`      | Framework-required (Next.js browser-exposure prefix) |
+| `PORT`               | Platform convention (host/PaaS injects it)           |
+| `NODE_ENV`           | Node reserved                                        |
+| `DATABASE_URL`       | Cross-ecosystem convention, intentionally unprefixed |
 
 ### Decision
 
@@ -97,7 +161,8 @@ shared names.
 
 > Source: [The Twelve-Factor App — Config](https://12factor.net/config) (accessed 2026-06-09): store
 > config in environment variables; keys identical across deploys, only values differ — hence no
-> environment tier in the name.
+> environment tier in the name. 12-factor is silent on prefix/casing structure; it authorizes but does
+> not prescribe per-app prefixes (those are practitioner consensus, not a 12-factor mandate).
 
 ## 3. Layout Decision — no migration
 
@@ -112,6 +177,16 @@ principal layout divergence from the `ose-infra` reference (which does migrate).
 Because there is no migration, there is also **no backup-first migration ritual** in this plan (the
 reference's Phase 3). The widened backup tooling (§5/§6) is still delivered — it is independently
 valuable — but it is not gating a layout move.
+
+> **Env-loading mechanics (why colocation matters, recorded for forks).** `.env.local` is loaded from
+> each frontend app's **root**, not from `src/`; `.env.example` is **never** auto-loaded by Next.js or
+> Nx (it is a committed documentation/template file only). Nx loads env from **both** the workspace
+> root **and** the project root, with the **project root taking priority** — so colocating env files
+> with the app is precisely what enables auto-loading. Primer's current layout keeps these templates
+> under `infra/dev/<app>/` (R12), so primer's apps rely on the documented dev workflow rather than
+> tool-mandated auto-load paths; the colocation rationale is recorded here so a downstream fork that
+> chooses to migrate to `apps/<app>/` understands what auto-loading it would gain. (Cross-tool
+> consensus: Nx and Turborepo both colocate env files with the package.)
 
 ## 4. Startup Validation (per language)
 
@@ -151,6 +226,27 @@ with a serde-derived struct deserialized by `envy` after `dotenvy::dotenv().ok()
 non-`Option`, no `#[serde(default)]` → a missing value is a hard error naming the field. The struct
 field name `crud_be_rust_axum_jwt_secret` maps to env var `CRUD_BE_RUST_AXUM_JWT_SECRET`.
 
+- New crate deps: `dotenvy`, `envy` (serde is already present). `dotenv` (the unmaintained
+  predecessor, RUSTSEC-2021-0141) is **not** used. Exact pins chosen at execution per §7.
+- **`envy` staleness caveat.** `envy`'s last crates.io release is `0.4.2` (Jan 2021, ~5 years stale).
+  It carries **no** RustSec/CVE advisory and is functionally complete for its narrow scope (deserialize
+  env vars into a serde struct), so it stays a Path-B candidate — but the staleness is recorded
+  explicitly in §7 and a `Cargo.toml` comment notes a re-evaluation trigger: if a RustSec advisory
+  analogous to RUSTSEC-2021-0141 (the `dotenv` unmaintained flag) is ever filed against `envy`,
+  re-evaluate the dependency.
+- **`dotenvy` note.** `dotenvy` is the accepted successor to the unmaintained `dotenv`
+  (RUSTSEC-2021-0141). Its last release is `0.15.7` (Mar 2023, ~3-year gap; the `0.16` branch is
+  unpublished); it carries no CVE — stable-but-not-recently-released rather than abandoned. Pin `"0.15.7"`.
+
+> Source: [envy — docs.rs](https://docs.rs/envy) (accessed 2026-06-09): field `foo_bar` ↔ `FOO_BAR`;
+> non-`Option` fields fail fast when absent. Last release `0.4.2` (Jan 2021); no RustSec advisory.
+
+<!-- separates adjacent blockquotes (markdownlint MD028) -->
+
+> Source: [dotenvy — crates.io](https://crates.io/crates/dotenvy) (accessed 2026-06-09): maintained
+> successor to the unmaintained `dotenv` crate (RUSTSEC-2021-0141). Last release `0.15.7` (Mar 2023);
+> no CVE.
+
 ### Go (`crud-be-golang-gin`) — `caarlos0/env` v11
 
 Replace the `os.Getenv` reads in `apps/crud-be-golang-gin/internal/config/config.go` [Repo-grounded]
@@ -161,7 +257,27 @@ returns a hard error naming a missing required var.
 
 Add `src/env.ts` exporting a validated `env` object; import it in `next.config.ts` so validation runs
 at build time. `t3-env` enforces the `NEXT_PUBLIC_` prefix on client vars at TypeScript compile time,
-encoding the naming standard into the type system.
+encoding the naming standard into the type system. The `createEnv({ server, client, runtimeEnv })`
+API is current.
+
+- **`zod` v4 API form (HARD).** The default `zod` export is v4 (v4 has been the default export since
+  Jul 2025; v3 now lives at `zod/v3`). In v4 the string-format helpers moved to top-level functions:
+  `z.string().email()` / `.uuid()` / `.ip()` became `z.email()` / `z.uuid()` / `z.ipv4()`. The env
+  schemas in this plan MUST use the new top-level form (e.g. `z.url()`, not `z.string().url()`). The
+  hub doc's annotation/validation section records this so future env schemas do not regress to the v3
+  form. Pin on the **4.x** line, exact pin (no caret/tilde — keep the exact-pin policy).
+- **`zod` is an OPTIONAL peer of `t3-env`, not a hard requirement.** `@t3-oss/env-nextjs` accepts any
+  Standard-Schema-v1 validator (Valibot, ArkType, …); `zod` is needed only because we author
+  zod-based schemas. The dependency on `zod` is ours, not transitively forced by t3-env — relevant
+  when reasoning about the dependency surface in §7.
+- **Next.js standalone caveat.** A standalone Next.js build must list `@t3-oss/env-nextjs` and
+  `@t3-oss/env-core` in `transpilePackages` (`next.config.ts`) so the validator is bundled. t3-env
+  requires Next.js ≥ 13.4.4 (both primer Next.js frontends satisfy this).
+
+> Source: [T3 Env — Next.js](https://env.t3.gg/docs/nextjs) (accessed 2026-06-09): import `env.ts`
+> into `next.config.ts` for build-time validation; client vars must carry `NEXT_PUBLIC_`; zod is an
+> optional Standard-Schema-v1 peer (any Standard-Schema-v1 validator works); standalone builds need
+> `@t3-oss/env-nextjs` + `@t3-oss/env-core` in `transpilePackages`; Next.js ≥ 13.4.4 required.
 
 ### Effect backend (`crud-be-ts-effect`) — fail-fast Effect `Config`
 
@@ -227,6 +343,21 @@ discovery/skip-dir logic but perform **no** filesystem writes; report a "would b
 restore" list. Honored across all three output formats (text/json/markdown), implies no overwrite
 prompt.
 
+### 5.2b Backup default directory — canonical per-repo derivation (R11b)
+
+Today both twins hardcode `DEFAULT_BACKUP_DIR = "ose-open-env-backup"` (`types.rs:99` and the Go
+mirror) [Repo-grounded], so `env backup`/`restore` default to `~/ose-open-env-backup`. This plan
+adopts the **canonical per-repo-derived** default `~/<repo-root-basename>-env-backup`: the basename
+comes from the already-computed repo-root path (the same `git`-root result the discovery walker uses),
+so `ose-primer` defaults to `~/ose-primer-env-backup`. This matches the `ose-infra` canonical behavior
+(now adopted by all three repos) and stops sibling repos from colliding on one shared backup dir.
+
+Because the change touches a shared constant and its `--dir`-empty fallback, it **MUST land in BOTH**
+`rhino-cli-rust` (canonical) **and** `rhino-cli-go` (twin), and the **shadow-diff parity gate passing
+is a hard acceptance criterion** for the change — the help text, the default path, and every output
+format must stay byte-identical across the twins. Update the example/help strings (`commands/env.rs`
+and `cmd/env_*.go`) in lockstep so no twin advertises the old `ose-open-env-backup` path.
+
 ### 5.3 Spec-first, both-land-together, shadow-diff
 
 Per the
@@ -261,12 +392,41 @@ new parser dependency** added in either implementation.
 3. Report **declared-but-unread** and **read-but-undeclared** sets; exit non-zero if either is
    non-empty (subject to allowlist — e.g. `ENABLE_TEST_API`, framework-injected `PORT`).
 
-### 6.2 Terraform/Ansible validators — gated scaffold only (R3)
+#### App-surface regex extractor failure modes (known, deliberate)
 
-The Terraform (`tfvars.example` vs `variables.tf`) and Ansible (`.env.example` vs playbook `lookup`
-keys) validators ship **documented and code-stubbed but inert**: no surface of kind `terraform` or
-`ansible` is configured for primer, so `env validate` runs **only** the app surface. The hub doc and
-the contract schema document how a fork activates them when it adds IaC. This is decision R3.
+Because the env-read extractor is line-oriented regex with **no language-parser dependency**, it has
+known false-positive/negative modes on the **app** surface (the only surface primer runs). These are
+documented openly — the per-surface allowlist + the required-comment rule **surface** (not silence)
+any case the regex cannot handle:
+
+- **Dynamic / computed reads** — a key built at runtime (`os.Getenv(prefix + name)`,
+  `process.env[keyVar]`, `System.getenv(buildKey())`) cannot be resolved statically by a
+  literal-argument matcher; it must be allowlisted with a comment so the contract records it.
+- **Multi-line constructs** — a read split across lines, a struct-tag block, or an `import.meta.env`
+  destructure spanning multiple lines can confuse the line-oriented matcher.
+- **String/comment false hits** — the literal text of a key appearing inside a comment or unrelated
+  string can register as a spurious read.
+
+Mature linters use full parsers; the regex here is a **deliberate lightweight first-approximation**
+sized to primer's actual app files, not a general source analyzer. Any construct the regex cannot
+resolve statically MUST be allowlisted with a comment, so the unsupported case is visible in the
+contract rather than silently mis-scanned. The extractors are unit-tested against the real app files
+to keep the approximation honest. (Primer holds **no** Terraform or Ansible surface, so the
+HCL/heredoc and Ansible `lookup(...)`/Jinja2 regex modes the `ose-infra` reference documents are
+**N/A here** — see §6.2.)
+
+### 6.2 Terraform/Ansible validators — N/A for ose-primer (no infra); gated scaffold only (R3)
+
+`ose-primer` holds **no Terraform or Ansible**, and per its repository-ecosystem convention it
+**never receives infra artifacts** — so the Terraform/Ansible drift-guard surfaces are **N/A here**.
+This is the primer-specific contrast in the parity set: `ose-infra` has these validators **real** and
+`ose-public` ships them **commented as a forward-scaffold**, whereas primer drops them as N/A. To keep
+the contract schema cross-repo-symmetric (so a downstream fork that adds IaC can activate the
+discipline with a config flip rather than a redesign), the Terraform (`tfvars.example` vs
+`variables.tf`) and Ansible (`.env.example` vs playbook `lookup` keys) validators ship **documented
+and code-stubbed but inert**: no surface of kind `terraform` or `ansible` is configured for primer, so
+`env validate` runs **only** the app surface. The hub doc and the contract schema document how a fork
+activates them when it adds IaC. This is decision R3.
 
 ### 6.3 Configuration & spec-first dual-impl
 
@@ -292,16 +452,44 @@ bump date AND CVE-clean). `zod` is named in the policy as a Path-B example. The 
 (widened backup/restore, `--dry-run`, `env validate`) adds **no** new external crates/modules in
 either implementation — the extractors are line-oriented regex over already-walked files.
 
-| Dependency                                                                     | Manifest                                                                                                          | Path | Clearance (verify at execution)                                                                               |
-| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ---- | ------------------------------------------------------------------------------------------------------------- |
-| `dotenvy`                                                                      | `apps/crud-be-rust-axum/Cargo.toml`                                                                               | B    | TBD at execution                                                                                              |
-| `envy`                                                                         | `apps/crud-be-rust-axum/Cargo.toml`                                                                               | B    | TBD at execution                                                                                              |
-| `github.com/caarlos0/env/v11`                                                  | `apps/crud-be-golang-gin/go.mod`                                                                                  | B    | TBD at execution                                                                                              |
-| `@t3-oss/env-nextjs`                                                           | `apps/crud-fe-ts-nextjs/package.json`, `crud-fs-ts-nextjs/package.json`                                           | B    | TBD at execution                                                                                              |
-| `zod`                                                                          | `apps/crud-fe-ts-nextjs/package.json`, `crud-fs-ts-nextjs/package.json`, `crud-fe-ts-tanstack-start/package.json` | B    | TBD at execution                                                                                              |
-| `pydantic-settings`                                                            | `apps/crud-be-python-fastapi/pyproject.toml`                                                                      | B    | **ALREADY INSTALLED** (`pydantic-settings==2.13.1` — no new dep needed) [Repo-grounded — `pyproject.toml:18`] |
-| Spring Validation starter (Jakarta)                                            | `apps/crud-be-java-springboot/pom.xml`                                                                            | B    | TBD at execution                                                                                              |
-| Long-tail validator libs (Vert.x, Ktor, F#, C#, Clojure, TanStack-Start, Dart) | respective manifests                                                                                              | B    | **lib + pin selected at execution** (or framework-native, no dep)                                             |
+| Dependency                                                                     | Manifest                                                                                                          | Path | Version line              | Clearance (verify at execution)                                                                               |
+| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ---- | ------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `dotenvy`                                                                      | `apps/crud-be-rust-axum/Cargo.toml`                                                                               | B    | `0.15.7` (stable)         | TBD at execution                                                                                              |
+| `envy`                                                                         | `apps/crud-be-rust-axum/Cargo.toml`                                                                               | B    | `0.4.2` (**stale**)       | TBD at execution                                                                                              |
+| `github.com/caarlos0/env/v11`                                                  | `apps/crud-be-golang-gin/go.mod`                                                                                  | B    | v11 latest                | TBD at execution                                                                                              |
+| `@t3-oss/env-nextjs`                                                           | `apps/crud-fe-ts-nextjs/package.json`, `crud-fs-ts-nextjs/package.json`                                           | B    | `0.13.x` latest           | TBD at execution                                                                                              |
+| `zod`                                                                          | `apps/crud-fe-ts-nextjs/package.json`, `crud-fs-ts-nextjs/package.json`, `crud-fe-ts-tanstack-start/package.json` | B    | `4.x` (v4 default export) | TBD at execution                                                                                              |
+| `pydantic-settings`                                                            | `apps/crud-be-python-fastapi/pyproject.toml`                                                                      | B    | (already pinned)          | **ALREADY INSTALLED** (`pydantic-settings==2.13.1` — no new dep needed) [Repo-grounded — `pyproject.toml:18`] |
+| Spring Validation starter (Jakarta)                                            | `apps/crud-be-java-springboot/pom.xml`                                                                            | B    | starter latest            | TBD at execution                                                                                              |
+| Long-tail validator libs (Vert.x, Ktor, F#, C#, Clojure, TanStack-Start, Dart) | respective manifests                                                                                              | B    | per-family                | **lib + pin selected at execution** (or framework-native, no dep)                                             |
+
+**Version-line notes (per-dep):**
+
+- **`zod` — 4.x line, exact pin.** Since Jul 2025 the default `zod` export is v4 (v3 now lives at
+  `zod/v3`). New code targets v4, so this plan pins on the **4.x** line. The Dependency Bump Policy
+  requires an **exact** pin (no caret/tilde): `"zod": "X.Y.Z"` resolved at execution to the current
+  eligible 4.x version. A bare `"^4"` is **not** acceptable (it is a caret range, not exact); `"4"` is
+  likewise not an exact pin. The 4.x line is the constraint; the exact patch is filled in at execution.
+  v4 also relocates string-format helpers to top-level (`z.email()` / `z.uuid()` / `z.ipv4()` replace
+  `z.string().email()` / `.uuid()` / `.ip()`) — env schemas use the new form (§2/§4).
+- **`@t3-oss/env-nextjs` — 0.13.x.** `createEnv({ server, client, runtimeEnv })` API is current. `zod`
+  is an **optional** Standard-Schema-v1 peer (t3-env accepts Valibot/ArkType/etc.); our `zod`
+  dependency is a choice, not a transitive requirement of t3-env. Standalone builds need
+  `@t3-oss/env-nextjs` + `@t3-oss/env-core` in `transpilePackages`; Next.js ≥ 13.4.4 required.
+- **`dotenvy` — 0.15.7.** Pin `"0.15.7"` (Mar 2023; `0.16` unpublished). No CVE; the accepted
+  successor to the unmaintained `dotenv` (RUSTSEC-2021-0141). Stable-but-not-recently-released.
+- **`envy` — 0.4.2 (STALENESS CAVEAT).** Last release `0.4.2` (Jan 2021, ~5 years stale); **no**
+  CVE/RustSec advisory; functionally complete for its narrow deserialize-env-into-struct scope. It
+  stays Path B, but `apps/crud-be-rust-axum/Cargo.toml` carries a comment recording the staleness and
+  the **re-evaluation trigger**: revisit if a RustSec advisory analogous to RUSTSEC-2021-0141 is ever
+  filed against `envy`. Example pin + comment:
+
+  ```toml
+  # envy 0.4.2 is the latest release (Jan 2021); stale but advisory-clean and
+  # functionally complete. Re-evaluate if a RustSec advisory (cf. RUSTSEC-2021-0141)
+  # is ever filed against envy.
+  envy = "0.4.2"
+  ```
 
 ### Execution-time obligations (HARD)
 
@@ -341,15 +529,17 @@ needed for that family — only the code change.
 | `specs/apps/rhino/behavior/cli/gherkin/env/env-validate.feature` (new)                | New scenarios for the drift guard                                                                                         | 6     |
 | `apps/rhino-cli-rust/src/internal/envbackup/discover.rs`, `ops.rs`, `commands/env.rs` | Carve `.secrets/` exception; widen allowlist; `--dry-run`; tests (canonical)                                              | 3     |
 | `apps/rhino-cli-go/internal/envbackup/discover.go`, `restore.go`, `cmd/env_*.go`      | Same widening + `--dry-run`, byte-identical (twin)                                                                        | 3     |
+| `apps/rhino-cli-rust/src/internal/envbackup/types.rs` + `commands/env.rs` (help)      | Backup default dir → per-repo-derived `~/<repo-basename>-env-backup` (R11b); update help strings (canonical)              | 3     |
+| `apps/rhino-cli-go` backup-dir constant + `cmd/env_*.go` (help)                       | Same per-repo-derived default dir + help strings, byte-identical (twin)                                                   | 3     |
 | `apps/rhino-cli-rust/src/commands/env_validate.rs` (new) + tests                      | App validator (canonical); Terraform/Ansible validators stubbed-but-gated                                                 | 6     |
 | `apps/rhino-cli-go/cmd/env_validate.go` (new) + tests                                 | App validator (twin), byte-identical                                                                                      | 6     |
 | `apps/rhino-cli-rust/scripts/shadow-diff.sh` (run, not edited)                        | Parity gate run after every rhino-cli change                                                                              | 3, 6  |
 | `.husky/pre-push`                                                                     | Invoke `rhino-cli env validate`                                                                                           | 6     |
 | `.github/workflows/` (existing)                                                       | Invoke `rhino-cli env validate`                                                                                           | 6     |
-| `repo-governance/development/quality/secrets-and-env-standards.md` (new)              | Hub convention                                                                                                            | 7     |
-| `repo-governance/development/quality/no-secrets-in-committed-files.md`                | Reduce to stub redirect (preserve `done/` inbound links)                                                                  | 7     |
-| `repo-governance/development/quality/env-file-access.md`                              | Reduce to stub redirect                                                                                                   | 7     |
-| `repo-governance/development/workflow/reproducible-environments.md`                   | Reduce to stub redirect                                                                                                   | 7     |
+| `repo-governance/conventions/security/secrets-and-env-standards.md` (new)             | Hub convention (new `conventions/security/` location — R10b)                                                              | 7     |
+| `repo-governance/conventions/security/no-secrets-in-committed-files.md` (moved stub)  | MOVED from `development/quality/`; reduced to stub redirect at the new path (R10b)                                        | 7     |
+| `repo-governance/conventions/security/env-file-access.md` (moved stub)                | MOVED from `development/quality/`; reduced to stub redirect at the new path (R10b)                                        | 7     |
+| `repo-governance/development/workflow/reproducible-environments.md`                   | Reduce to stub redirect (stays under `development/workflow/`; only its secrets/env content folds out)                     | 7     |
 | `docs/explanation/standardize-secrets-and-env-parity-decisions.md` (new)              | Plain-language rationale for every decision (esp. PR-override, no-IaC scaffold, full polyglot adoption)                   | 7     |
 | Active inbound links (root governance docs, indexes, docs/, agents/skills)            | Repoint to hub doc; `done/` plan links left on stubs                                                                      | 7     |
 

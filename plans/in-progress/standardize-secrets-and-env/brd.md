@@ -80,21 +80,32 @@ All criteria are **observable facts** verifiable on demand — no fabricated met
 6. **Drift guard wired into gates**: the pre-push hook and a CI workflow both invoke
    `rhino-cli env validate`; a forced key mismatch in any app fails both. Verify: seed a mismatch,
    confirm non-zero exit naming the key, then revert.
-7. **Single hub doc exists**: `repo-governance/development/quality/secrets-and-env-standards.md`
-   exists and the three prior docs are stubs pointing to it; no inbound link is broken (the repo's
-   markdown link check passes).
+7. **Single hub doc exists at the canonical path**:
+   `repo-governance/conventions/security/secrets-and-env-standards.md` exists; the two security docs
+   (`no-secrets-in-committed-files.md`, `env-file-access.md`) have been **moved** from
+   `development/quality/` → `conventions/security/` and reduced to stubs there, and
+   `reproducible-environments.md` is a stub under `development/workflow/`; no inbound link is broken
+   (the repo's markdown link check passes). Verify: confirm the moved paths exist and
+   `grep -rl "development/quality/no-secrets-in-committed-files\|development/quality/env-file-access" --include="*.md" . | grep -v plans/done`
+   returns no active (non-`done/`) references.
 8. **IaC scaffold present but gated**: the hub doc and the backup floor carry the `*.tfvars` /
    inventory patterns **commented** with an "activate when IaC is added" note, and no IaC validator
-   runs against primer. Verify: `grep -n "tfvars" repo-governance/development/quality/secrets-and-env-standards.md`
+   runs against primer. Verify: `grep -n "tfvars" repo-governance/conventions/security/secrets-and-env-standards.md`
    shows them inside a commented/"future" block.
 9. **PR-override deviation recorded**: `tech-docs.md §1` row R5 and the Phase 7 rationale doc both
    state, in plain language, that this plan pushes directly to `ose-primer` `main` despite the normal
-   PR-only sibling-sync rule, why, and who owns it.
+   PR-only sibling-sync rule, why, who owns it, and that the corresponding sync-governance change is a
+   separate downstream follow-up.
 10. **Dependency policy satisfied**: every new dependency (the per-language validators, `caarlos0/env`,
-    `envy`, `dotenvy`, `@t3-oss/env-nextjs`, `zod`, and the long-tail libs) is pinned exactly,
-    classified Path B, and CVE-cleared per the
+    `envy`, `dotenvy`, `@t3-oss/env-nextjs`, `zod` on the 4.x line, and the long-tail libs) is pinned
+    exactly (no caret/tilde/range), classified Path B, and CVE-cleared per the
     [Dependency Bump Policy](../../../repo-governance/development/workflow/dependency-bump-policy.md);
     `tech-docs.md §7` carries the Security Clearance table.
+11. **Backup default dir is per-repo-derived in both twins**: `rhino-cli env backup` / `env restore`
+    with no `--dir` default to `~/ose-primer-env-backup` (derived from the repo-root basename, not the
+    old hardcoded `ose-open-env-backup`) in **both** `rhino-cli-rust` and `rhino-cli-go`, and the
+    shadow-diff parity harness exits 0 on the change. Verify: run each binary's `env backup --help` and
+    confirm the documented default path; run `shadow-diff.sh`.
 
 ## Non-Goals (Business Scope)
 
