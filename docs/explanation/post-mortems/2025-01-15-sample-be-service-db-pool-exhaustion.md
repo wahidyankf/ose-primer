@@ -134,7 +134,7 @@ The trigger (the traffic spike) was consequential only because the root cause co
 - `plans/backlog/2025-01-15__db-pool-alerting/` — action item plan for pool-saturation alerting (to be created)
 - `plans/backlog/2025-01-15__catalog-search-slow-query/` — action item plan for slow-query fix (to be created)
 - [Post-Mortem Convention](../../../repo-governance/conventions/structure/post-mortems.md) — authoritative standard this document follows
-- [No Secrets in Committed Files](../../../repo-governance/development/quality/no-secrets-in-committed-files.md) — applied throughout; connection strings appear as `<db-connection-string>`
+- [No Secrets in Committed Files](../../../repo-governance/conventions/security/no-secrets-in-committed-files.md) — applied throughout; connection strings appear as `<db-connection-string>`
 
 **Industry sources:**
 

@@ -63,7 +63,7 @@ The `plans/` folder serves as the workspace for project planning activities:
 
 **Key Distinction**: Plans are temporary working documents that eventually move to `done/` and may be archived, while `docs/` contains permanent documentation that evolves over time.
 
-**No secrets in plans**: Plan documents are committed to git — including `done/` history, which is permanent. Never put a secret value (credentials, SSH keys, tokens, API keys, sensitive usernames, or connection strings with real credentials) in any plan. Name the variable and state where the value lives, never the value itself. This is a hard iron rule — see [No Secrets in Committed Files Convention](../../development/quality/no-secrets-in-committed-files.md).
+**No secrets in plans**: Plan documents are committed to git — including `done/` history, which is permanent. Never put a secret value (credentials, SSH keys, tokens, API keys, sensitive usernames, or connection strings with real credentials) in any plan. Name the variable and state where the value lives, never the value itself. This is a hard iron rule — see [No Secrets in Committed Files Convention](../security/no-secrets-in-committed-files.md).
 
 ## ️ Folder Structure
 
@@ -209,7 +209,7 @@ archiving from `in-progress/`, add the completion date prefix.
 > — SSH keys, passwords, sensitive usernames, API keys, tokens, or connection strings with real
 > credentials — in any plan file. Reference secrets by variable name and location only (e.g.
 > "set `DEPLOY_TOKEN` in `.env`"); real values belong in uncommitted files. See the
-> [No Secrets in Committed Files Convention](../../development/quality/no-secrets-in-committed-files.md).
+> [No Secrets in Committed Files Convention](../security/no-secrets-in-committed-files.md).
 
 Plans can use either **single-file** or **multi-file** structure depending on size and complexity.
 
@@ -383,7 +383,7 @@ Every delivery checklist item MUST make clear **who can execute it**. Some work 
 > privileged-credential handling). `[AI+HUMAN]`: agent prepares, human approves or finishes.
 ```
 
-**Default bias**: prefer `[AI]` for anything an agent can mechanically do; reserve `[HUMAN]` for what is genuinely impossible or unsafe for AI. When a sanctioned channel lets an agent do something that looks human-only (for example, copying a real secret via an `[AI]`-authored script through the [`guard-env-file-access`](../../development/quality/env-file-access.md) sanctioned path), it stays `[AI]` — document the channel inline.
+**Default bias**: prefer `[AI]` for anything an agent can mechanically do; reserve `[HUMAN]` for what is genuinely impossible or unsafe for AI. When a sanctioned channel lets an agent do something that looks human-only (for example, copying a real secret via an `[AI]`-authored script through the [`guard-env-file-access`](../security/env-file-access.md) sanctioned path), it stays `[AI]` — document the channel inline.
 
 **Execution semantics**: when the [plan-execution workflow](../../workflows/plan/plan-execution.md) reaches a `[HUMAN]` item, it STOPS, surfaces the item to the user with the instruction and the acceptance criterion, and waits for the human to confirm completion before continuing. A `[HUMAN]` step is a legitimate, expected stop — it overrides the "never stop between phases" execution default.
 
@@ -665,7 +665,7 @@ Use the verification tip from the [Linking Convention](../formatting/linking.md#
 - [Color Accessibility Convention](../formatting/color-accessibility.md) - Verified accessible palette, WCAG AA requirements, and color-blindness coverage for all diagram fills
 - [Worktree Path Convention](./worktree-path.md) - Worktree routing to `worktrees/<name>/` (referenced by the Worktree Specification rule above)
 - [Plan Anti-Hallucination Convention](../../development/quality/plan-anti-hallucination.md) - Pre-write verification recipes, repo-grounding rule, refuse-on-uncertainty, anti-pattern catalog (AP-1 through AP-10), specialized-executor annotation; consumed by the Execution-Grade Clarity rule above and by the four plan agents
-- [No Secrets in Committed Files Convention](../../development/quality/no-secrets-in-committed-files.md) - Hard iron rule prohibiting secret values in any committed file, including plans and their permanent `done/` history
+- [No Secrets in Committed Files Convention](../security/no-secrets-in-committed-files.md) - Hard iron rule prohibiting secret values in any committed file, including plans and their permanent `done/` history
 - [Grilling-With-Options Convention](../../development/workflow/grilling-with-options.md) - Every grill question during plan creation (pre-write, post-write) MUST present 2-4 concrete options with trade-off descriptions; open-ended questions without options are FORBIDDEN; consumed by plan-maker Steps 1 and 8
 
 **Development Guides**:
@@ -702,7 +702,7 @@ Use the verification tip from the [Linking Convention](../formatting/linking.md#
 
 ### Never Put Secrets in Plans
 
-Plans are committed to git, so the [No Secrets in Committed Files](../../development/quality/no-secrets-in-committed-files.md) hard iron
+Plans are committed to git, so the [No Secrets in Committed Files](../security/no-secrets-in-committed-files.md) hard iron
 rule applies in full. Never paste system secrets (SSH/private keys, passwords, API tokens, privileged
 usernames, certificates, connection strings, and similar) into any plan document. When a plan must
 reference a secret, name the environment variable (e.g. `DATABASE_URL`) or use a placeholder

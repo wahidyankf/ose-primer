@@ -562,7 +562,7 @@ config changes. Execution of the objective happens downstream via the
 repo. No hook bypassing; no `--no-verify`.
 
 **Secrets rule**: The
-[No Secrets in Committed Files convention](../../development/quality/no-secrets-in-committed-files.md)
+[No Secrets in Committed Files convention](../../conventions/security/no-secrets-in-committed-files.md)
 applies in full. No system secret (key, password, API token, connection string) enters any plan
 file.
 
@@ -616,7 +616,7 @@ select `worktree-to-pr`. The PRs remain in draft until the invoker promotes them
   GitHub-compatible markdown with `.md` extensions and relative paths.
 - **[File Naming Convention](../../conventions/structure/file-naming.md)**: Lowercase kebab-case
   for all plan files and rationale docs created by this workflow.
-- **[No Secrets in Committed Files Convention](../../development/quality/no-secrets-in-committed-files.md)**:
+- **[No Secrets in Committed Files Convention](../../conventions/security/no-secrets-in-committed-files.md)**:
   No system secret enters any plan file or rationale doc created by this workflow.
 - **[Web Research Delegation Convention](../../conventions/writing/web-research-delegation.md)**:
   External research delegated to `web-research-maker` in Step 4 when the research-needed flag

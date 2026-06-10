@@ -211,8 +211,8 @@ For non-sensitive path leaks (e.g., a developer's home directory appeared in a t
 
 ## 🔗 Related Documentation
 
-- [No Secrets in Committed Files Convention](./no-secrets-in-committed-files.md) - The broad iron rule prohibiting any system secret (SSH keys, passwords, tokens, sensitive usernames) in committed files; literal credentials are the most severe case of machine-specific information
-- [Environment File Access Convention](./env-file-access.md) - Six-layer technical enforcement keeping real `.env*` files out of agent reach and git history
+- [No Secrets in Committed Files Convention](../../conventions/security/no-secrets-in-committed-files.md) - The broad iron rule prohibiting any system secret (SSH keys, passwords, tokens, sensitive usernames) in committed files; literal credentials are the most severe case of machine-specific information
+- [Environment File Access Convention](../../conventions/security/env-file-access.md) - Six-layer technical enforcement keeping real `.env*` files out of agent reach and git history
 - [Code Quality Convention](./code.md) - Git hooks and pre-commit automation that help catch violations before they reach the remote
 - [Reproducible Environments](../workflow/reproducible-environments.md) - Volta pinning, package-lock.json, and `.env.example` templates for consistent developer environments
 - [Commit Message Convention](../workflow/commit-messages.md) - Conventional Commits format for the corrective commit

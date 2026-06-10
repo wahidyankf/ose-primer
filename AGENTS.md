@@ -139,9 +139,9 @@ Three-stage quality workflow:
 
 **Rationale**: Agent skills execute with agent permissions and can access repository content. Only load agent skills from verified sources.
 
-**Environment File Guard**: AI agents MUST NOT read, write, edit, or commit real `.env*` files (`.env`, `.env.local`, `.env.production`, etc.). Only `.env.example` is permitted. See [env-file-access convention](./repo-governance/development/quality/env-file-access.md) for the full six-layer policy, script carve-out, and known gaps.
+**Environment File Guard**: AI agents MUST NOT read, write, edit, or commit real `.env*` files (`.env`, `.env.local`, `.env.production`, etc.). Only `.env.example` is permitted. See [env-file-access convention](./repo-governance/conventions/security/env-file-access.md) for the full six-layer policy, script carve-out, and known gaps.
 
-**No Secrets in Committed Files (iron rule)**: NEVER put system secrets — SSH keys, passwords, sensitive usernames, API keys, tokens, connection strings with real credentials, or similar — into ANY file committed to git, including plans (`plans/**`), docs, code, config, and commit messages. Git history is permanent; a pushed secret is a leaked secret. Put real secrets only in uncommitted files: `.env*` (except `.env.example`) or another gitignored location, and reference them by variable name. See [No Secrets in Committed Files convention](./repo-governance/development/quality/no-secrets-in-committed-files.md) for the full rule, examples, and remediation.
+**No Secrets in Committed Files (iron rule)**: NEVER put system secrets — SSH keys, passwords, sensitive usernames, API keys, tokens, connection strings with real credentials, or similar — into ANY file committed to git, including plans (`plans/**`), docs, code, config, and commit messages. Git history is permanent; a pushed secret is a leaked secret. Put real secrets only in uncommitted files: `.env*` (except `.env.example`) or another gitignored location, and reference them by variable name. See [No Secrets in Committed Files convention](./repo-governance/conventions/security/no-secrets-in-committed-files.md) for the full rule, examples, and remediation.
 
 ## Governance Alignment
 

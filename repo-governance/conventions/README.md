@@ -126,6 +126,14 @@ Documentation organization frameworks, file naming, and project planning structu
 - [Workflow Naming Convention](./structure/workflow-naming.md) - Single exception-free filename rule for workflow files under `repo-governance/workflows/` (except `meta/` reference docs). Defines scope vocabulary, type vocabulary (quality-gate, execution, setup, planning), and the audit command enforced by `repo-rules-checker` and `rhino-cli workflows validate-naming`
 - [Worktree Path Convention](./structure/worktree-path.md) - Canonical default location for git worktrees (`.claude/worktrees/<name>/`)
 
+## Security
+
+Security conventions governing secrets, environment variables, and agent access controls.
+
+- [Secrets and Environment Variable Standards](./security/secrets-and-env-standards.md) - Hub convention: naming standard (per-app prefix, framework exemptions), `.env.example` annotation format, fail-fast startup validation table, `rhino-cli env` tooling (backup/restore/init/validate), secret-surface census, and gated IaC scaffold
+- [No Secrets in Committed Files Convention](./security/no-secrets-in-committed-files.md) - Hard iron rule prohibiting system secrets from any committed file (stub — see hub doc above)
+- [Environment File Access Convention](./security/env-file-access.md) - Six-layer policy governing AI agent access to real `.env*` files (stub — see hub doc above)
+
 ## Tutorials
 
 Tutorial conventions are delivered via skills rather than standalone convention files. Use the following skills for tutorial guidance:

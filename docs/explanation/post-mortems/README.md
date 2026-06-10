@@ -84,7 +84,7 @@ tags:
 - **Layout**: flat directory — no subdirectories inside `docs/explanation/post-mortems/`. Revisit folder grouping only if volume grows.
 - **Timing**: write promptly while details are fresh (within a few days of the incident).
 - **`doc_status`**: `draft` → `reviewed` → `closed` (close only once all P0 action items resolve).
-- **No secrets**: never commit real API tokens, connection strings, service hosts, or keys. Use placeholders (`<api-token>`, `<db-connection-string>`, `<service-host>`) per the [No Secrets in Committed Files](../../../repo-governance/development/quality/no-secrets-in-committed-files.md) rule.
+- **No secrets**: never commit real API tokens, connection strings, service hosts, or keys. Use placeholders (`<api-token>`, `<db-connection-string>`, `<service-host>`) per the [No Secrets in Committed Files](../../../repo-governance/conventions/security/no-secrets-in-committed-files.md) rule.
 - **Blameless tone**: describe systems and decisions, not people.
 
 ## Index

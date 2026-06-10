@@ -127,8 +127,8 @@ Development practices in this directory fall into several categories:
 - [CI Blocker Resolution Convention](./quality/ci-blocker-resolution.md) - Practice mandating that preexisting CI blockers are investigated at the root cause and fixed properly, never bypassed
 - [Post-Push CI Verification Convention](./quality/post-push-ci-verification.md) - Requirement to trigger and verify related GitHub Actions CI workflows after pushing to origin main, for both human contributors and AI agents
 - [Plan Anti-Hallucination Convention](./quality/plan-anti-hallucination.md) - Anti-hallucination guardrails for plan-maker and plan-checker agents: repo-grounding rules, web-research delegation thresholds, and claim verification requirements
-- [No Secrets in Committed Files Convention](./quality/no-secrets-in-committed-files.md) - Hard iron rule prohibiting system secrets (SSH keys, passwords, tokens, API keys) from any git-committed file, including plans and docs
-- [Environment File Access Convention](./quality/env-file-access.md) - Six-layer policy governing AI agent access to `.env*` files; only `.env.example` is permitted for reading, writing, editing, and committing
+- [No Secrets in Committed Files Convention](../conventions/security/no-secrets-in-committed-files.md) - Hard iron rule prohibiting system secrets (SSH keys, passwords, tokens, API keys) from any git-committed file, including plans and docs
+- [Environment File Access Convention](../conventions/security/env-file-access.md) - Six-layer policy governing AI agent access to `.env*` files; only `.env.example` is permitted for reading, writing, editing, and committing
 
 ### Pattern Documentation
 

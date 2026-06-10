@@ -32,14 +32,14 @@ These standards define **HOW to maintain and validate quality**, covering automa
 - [Fixer Confidence Levels Convention](./fixer-confidence-levels.md) - Universal confidence level system for fixer agents to assess and apply validated fixes (HIGH/MEDIUM/FALSE_POSITIVE)
 - [Repository Validation Methodology Convention](./repository-validation.md) - Standard validation methods and patterns for repository consistency checking
 - [No Machine-Specific Information in Commits](./no-machine-specific-commits.md) - Practice prohibiting absolute local paths, usernames, IP addresses, and environment-specific configuration from committed code
-- [No Secrets in Committed Files Convention](./no-secrets-in-committed-files.md) - Hard iron rule prohibiting system secrets (SSH keys, passwords, sensitive usernames, tokens, API keys) from any git-committed file, including plans and docs; secrets belong only in uncommitted `.env*` (except `.env.example`) or other gitignored files
+- [No Secrets in Committed Files Convention](../../conventions/security/no-secrets-in-committed-files.md) - Hard iron rule prohibiting system secrets (SSH keys, passwords, sensitive usernames, tokens, API keys) from any git-committed file, including plans and docs; secrets belong only in uncommitted `.env*` (except `.env.example`) or other gitignored files
 - [Specs-Application Sync Convention](./specs-application-sync.md) - Bidirectional synchronization requirement between specs/ and application code in apps/, libs/, and apps-labs/: C4 diagrams, Gherkin feature files, and specs READMEs must reflect actual architecture and behavior
 - [Manual Behavioral Verification Convention](./manual-behavioral-verification.md) - Practice requiring manual verification of UI features and API endpoints using Playwright MCP tools and curl after implementing changes
 - [Feature Change Completeness Convention](./feature-change-completeness.md) - Practice requiring all related specs, contracts, tests, and documentation to be updated as part of any feature change
 - [CI Blocker Resolution Convention](./ci-blocker-resolution.md) - Practice mandating that preexisting CI blockers are investigated at the root cause and fixed properly, never bypassed
 - [Post-Push CI Verification Convention](./post-push-ci-verification.md) - Requirement to trigger and verify related GitHub Actions CI workflows after pushing to origin main, for both human contributors and AI agents
 - [Plan Anti-Hallucination Convention](./plan-anti-hallucination.md) - Anti-hallucination guardrails the `plan-checker` agent cites when validating plan claims (confidence labels, AP-1 through AP-10 catalog, web-research delegation thresholds)
-- [Environment File Access Convention](./env-file-access.md) - Six-layer policy governing AI agent access to `.env*` files; only `.env.example` is permitted; real env files are off-limits for reading, writing, editing, and committing
+- [Environment File Access Convention](../../conventions/security/env-file-access.md) - Six-layer policy governing AI agent access to `.env*` files; only `.env.example` is permitted; real env files are off-limits for reading, writing, editing, and committing
 
 ## Companion Documents
 
