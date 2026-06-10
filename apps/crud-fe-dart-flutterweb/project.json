@@ -7,7 +7,7 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g dart -o $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts --additional-properties=pubName=crud_contracts --global-property=models,modelDocs=false,apiDocs=false && (WS_ROOT=$(pwd) && cd $(pwd) && cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- contracts dart-scaffold $WS_ROOT/apps/crud-fe-dart-flutterweb/generated-contracts) && cd $(pwd)/apps/crud-fe-dart-flutterweb && flutter pub get"
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g dart -o $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts --additional-properties=pubName=crud_contracts --global-property=models,modelDocs=false,apiDocs=false && (WS_ROOT=$(pwd) && cd $(pwd) && cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- contracts dart-scaffold $WS_ROOT/apps/crud-fe-dart-flutterweb/generated-contracts) && cd $(pwd)/apps/crud-fe-dart-flutterweb && flutter pub get --enforce-lockfile"
       },
       "dependsOn": ["crud-contracts:bundle"],
       "cache": true,
