@@ -56,22 +56,28 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 > This follows the root cause orientation principle — proactively fix preexisting errors encountered
 > during work.
 
-- [ ] [AI] From the worktree root, run `npm install` — exits 0 and `node_modules/` is present.
-- [ ] [AI] Converge the polyglot toolchain: run `npm run doctor -- --fix` — exits 0 with no
-      unresolved drift (Rust, Go, Node, JVM, Python, Elixir, Dart, etc. report present).
-- [ ] [AI] Capture the rhino-cli baseline (both implementations): run
-      `./node_modules/.bin/nx run rhino-cli-rust:test:quick` and
-      `./node_modules/.bin/nx run rhino-cli-go:test:quick` — both exit 0 (record coverage %).
-- [ ] [AI] Capture the parity baseline: run `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits
-      0 (byte-identical) — record that parity is green before any change.
-- [ ] [AI] Record the naming baseline: run
-      `grep -rn "APP_JWT_SECRET\|APP_PORT\|JWT_SECRET" apps/crud-be-* apps/crud-fs-ts-nextjs infra/dev`
-      and save the hit list per app — Phases 1–2 eliminate exactly these app-defined reads.
-- [ ] [AI] Confirm the secret-backup gap: run `./node_modules/.bin/nx run rhino-cli-rust:build` then
-      run the built binary `env backup` to a throwaway dir (place a throwaway `secrets.json`, a
-      `throwaway.pem`, and a `.secrets/throwaway.md` first) and confirm **all three** are **absent**
-      from the archive (proving the `.env`-prefix filter at `discover.rs:71` and the hidden-dir skip
-      at `discover.rs:50`). Delete the throwaway files and dir after. Phase 3 makes them appear.
+- [x] [AI] From the worktree root, run `npm install` — exits 0 and `node_modules/` is present.
+<!-- Date: 2026-06-10 | Status: done | Files Changed: none | Notes: npm install ran in worktrees/standardize-secrets-and-env/, node_modules/.bin/nx present, npm audit warnings only (no failures) -->
+- [x] [AI] Converge the polyglot toolchain: run `npm run doctor -- --fix` — exits 0 with no
+    unresolved drift (Rust, Go, Node, JVM, Python, Elixir, Dart, etc. report present).
+<!-- Date: 2026-06-10 | Status: done | Files Changed: none | Notes: 19/19 tools OK (volta, node, npm, java, maven, golang, python, rust, cargo-llvm-cov, elixir, erlang, dotnet, clojure, dart, flutter, docker, jq, playwright) -->
+- [x] [AI] Capture the rhino-cli baseline (both implementations): run
+    `./node_modules/.bin/nx run rhino-cli-rust:test:quick` and
+    `./node_modules/.bin/nx run rhino-cli-go:test:quick` — both exit 0 (record coverage %).
+<!-- Date: 2026-06-10 | Status: done | Files Changed: none | Notes: Rust 617 tests pass; Go line coverage 90.14% (≥90% threshold). Both exit 0. -->
+- [x] [AI] Capture the parity baseline: run `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits
+    0 (byte-identical) — record that parity is green before any change.
+<!-- Date: 2026-06-10 | Status: done | Files Changed: apps/rhino-cli-rust/src/internal/mermaid/parser.rs, apps/rhino-cli-go/internal/mermaid/parser.go (worktree) | Notes: Preexisting mermaid parity bug fixed (HTML entity & in node label caused non-deterministic fallback ordering in Go). Both Rust and Go fallback now sort remaining node IDs alphabetically. Shadow-diff PASS: 267/267 cases byte-identical. -->
+- [x] [AI] Record the naming baseline: run
+    `grep -rn "APP_JWT_SECRET\|APP_PORT\|JWT_SECRET" apps/crud-be-* apps/crud-fs-ts-nextjs infra/dev`
+    and save the hit list per app — Phases 1–2 eliminate exactly these app-defined reads.
+<!-- Date: 2026-06-10 | Status: done | Files Changed: none (read-only baseline) | Notes: APP_JWT_SECRET in code: clojure-pedestal, csharp-aspnetcore, elixir-phoenix, fsharp-giraffe, golang-gin, java-springboot, java-vertx, python-fastapi, rust-axum, ts-effect, crud-fs-ts-nextjs. JWT_SECRET (bare) in code: kotlin-ktor, golang-gin-test. APP_PORT in code: java-vertx, rust-axum. PORT (bare) in code: clojure, csharp, elixir, golang-gin, kotlin-ktor, ts-effect. -->
+- [x] [AI] Confirm the secret-backup gap: run `./node_modules/.bin/nx run rhino-cli-rust:build` then
+    run the built binary `env backup` to a throwaway dir (place a throwaway `secrets.json`, a
+    `throwaway.pem`, and a `.secrets/throwaway.md` first) and confirm **all three** are **absent**
+    from the archive (proving the `.env`-prefix filter at `discover.rs:71` and the hidden-dir skip
+    at `discover.rs:50`). Delete the throwaway files and dir after. Phase 3 makes them appear.
+<!-- Date: 2026-06-10 | Status: done | Files Changed: none (throwaway files created and deleted) | Notes: env backup collected only 16 .env.example files. secrets.json, throwaway.pem, .secrets/throwaway.md all absent from backup output — gap confirmed. Phase 3 will widen discover.rs to include these secret kinds. -->
 
 ### Phase 0 Gate
 
