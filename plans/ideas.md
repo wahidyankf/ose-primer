@@ -9,3 +9,9 @@ When an idea is ready for implementation, create a proper plan folder in `backlo
 - **Upgrade Rust MSRV to 1.94.1** (fixes CVE-2026-33056 in Cargo tar handling): deferred from
   `update-toolchain-versions` plan because local rustc was 1.94.0. Upgrade when Rust 1.94.1+ is
   available in the developer toolchain (`rustup update stable`).
+- **Source-code credential scanning** — evaluate Betterleaks (gitleaks successor, MIT, v1.0.0 early 2026) for pre-commit + CI detection of hard-coded credentials in `.rs`/`.go`/`.ts`/`.tf` source
+  files once it reaches stable production use. This public repo already has free GitHub Secret
+  Scanning post-push coverage (700+ partner patterns + AI-backed generic detection). Gitleaks itself
+  is feature-frozen with an unresolved entropy false-positive regression
+  ([#1830](https://github.com/gitleaks/gitleaks/issues/1830)) affecting Rust/Go identifier names.
+  Re-evaluate after Betterleaks has 60+ days of production soak.
