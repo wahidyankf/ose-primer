@@ -1,8 +1,7 @@
 //! `spec-coverage validate` command.
 //!
-//! Byte-for-byte port of the Go `cmd/spec_coverage_validate.go` handler. Takes
-//! exactly two positional args (`<specs-dir> <app-dir>`). Output is written
-//! with `print!` (no trailing newline) to mirror Go's `Fprint`.
+//! Takes exactly two positional args (`<specs-dir> <app-dir>`). Output is written with
+//! `print!` (no trailing newline).
 
 use anyhow::{Context, Error, anyhow};
 use clap::Args;
@@ -11,7 +10,7 @@ use crate::internal::cliout::OutputFormat;
 use crate::internal::git;
 use crate::internal::speccoverage::{checker, reporter, types::ScanOptions};
 
-/// Cobra-style usage block printed to stderr when `validate` returns an error.
+/// Usage block printed to stderr when `validate` returns an error.
 pub const VALIDATE_USAGE: &str = "Usage:\n  \
 rhino-cli spec-coverage validate <specs-dir> <app-dir> [flags]\n\n\
 Examples:\n  \

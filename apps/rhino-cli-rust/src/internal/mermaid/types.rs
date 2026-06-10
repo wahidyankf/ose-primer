@@ -1,6 +1,6 @@
-//! Mermaid validation data types. Mirrors Go `types.go`.
+//! Mermaid validation data types.
 
-/// Layout direction of a Mermaid flowchart. Mirrors Go `Direction`.
+/// Layout direction of a Mermaid flowchart.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Direction {
     Tb,
@@ -23,7 +23,7 @@ impl Direction {
     }
 }
 
-/// Category of a blocking rule violation. Mirrors Go `ViolationKind`.
+/// Category of a blocking rule violation.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ViolationKind {
     LabelTooLong,
@@ -32,7 +32,7 @@ pub enum ViolationKind {
 }
 
 impl ViolationKind {
-    /// Wire string (used in text/json/markdown output). Mirrors Go constants.
+    /// Wire string (used in text/json/markdown output).
     pub fn as_str(self) -> &'static str {
         match self {
             ViolationKind::LabelTooLong => "label_too_long",
@@ -42,7 +42,7 @@ impl ViolationKind {
     }
 }
 
-/// Category of a non-blocking warning. Mirrors Go `WarningKind`.
+/// Category of a non-blocking warning.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum WarningKind {
     ComplexDiagram,
@@ -58,7 +58,7 @@ impl WarningKind {
     }
 }
 
-/// Raw source of a single ```` ```mermaid ```` fenced code block. Mirrors Go `MermaidBlock`.
+/// Raw source of a single ```` ```mermaid ```` fenced code block.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MermaidBlock {
     pub file_path: String,
@@ -68,14 +68,14 @@ pub struct MermaidBlock {
     pub start_line: usize,
 }
 
-/// A flowchart node with an ID and optional label. Mirrors Go `Node`.
+/// A flowchart node with an ID and optional label.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Node {
     pub id: String,
     pub label: String,
 }
 
-/// A directed connection between two nodes. Mirrors Go `Edge`.
+/// A directed connection between two nodes.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Edge {
     pub from: String,
@@ -83,7 +83,7 @@ pub struct Edge {
 }
 
 /// A Mermaid `subgraph ... end` block. `node_ids` holds direct children only.
-/// `start_line` is 1-indexed within the parent block. Mirrors Go `Subgraph`.
+/// `start_line` is 1-indexed within the parent block.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Subgraph {
     pub id: String,
@@ -92,7 +92,7 @@ pub struct Subgraph {
     pub start_line: usize,
 }
 
-/// Result of parsing a single `MermaidBlock`. Mirrors Go `ParsedDiagram`.
+/// Result of parsing a single `MermaidBlock`.
 #[derive(Debug, Clone)]
 pub struct ParsedDiagram {
     pub block: MermaidBlock,
@@ -102,7 +102,7 @@ pub struct ParsedDiagram {
     pub subgraphs: Vec<Subgraph>,
 }
 
-/// A non-blocking finding (exit 0). Mirrors Go `Warning`.
+/// A non-blocking finding (exit 0).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Warning {
     pub kind: WarningKind,
@@ -122,7 +122,7 @@ pub struct Warning {
     pub max_subgraph_nodes: i64,
 }
 
-/// A blocking rule violation (non-zero exit). Mirrors Go `Violation`.
+/// A blocking rule violation (non-zero exit).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Violation {
     pub kind: ViolationKind,
@@ -137,7 +137,7 @@ pub struct Violation {
     pub max_width: i64,
 }
 
-/// Aggregate findings of a validation run. Mirrors Go `ValidationResult`.
+/// Aggregate findings of a validation run.
 #[derive(Debug, Clone, Default)]
 pub struct ValidationResult {
     pub files_scanned: usize,

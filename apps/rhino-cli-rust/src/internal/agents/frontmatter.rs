@@ -1,9 +1,6 @@
 //! Frontmatter extraction, YAML normalization, and minimal YAML parsing.
 //!
-//! Byte-for-byte port of the relevant parts of
-//! `apps/rhino-cli-go/internal/agents/converter.go`:
-//! `ExtractFrontmatter`, `normalizeYAML`, and `ParseClaudeTools`. The Go code
-//! splits content on `\n`, validates the `---` fences, normalizes missing
+//! The Go code splits content on `\n`, validates the `---` fences, normalizes missing
 //! spaces after colons, and parses the YAML with `gopkg.in/yaml.v3`.
 //!
 //! The parse step uses `serde_norway` (an order-preserving serde_yaml fork) to
@@ -28,8 +25,7 @@ pub enum YamlValue {
 }
 
 impl YamlValue {
-    /// Returns the string value if this is a `String` (mirrors Go's
-    /// `claudeData["k"].(string)` type assertion: only succeeds for strings).
+    /// Returns the string value if this is a `String`, otherwise `None`.
     pub fn as_str(&self) -> Option<&str> {
         match self {
             YamlValue::String(s) => Some(s),
@@ -42,13 +38,13 @@ impl YamlValue {
 fn normalize_re() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
     RE.get_or_init(|| {
-        // Mirrors Go `(?m)^([a-zA-Z0-9_-]+):([^\s])`.
+        //
         Regex::new(r"(?m)^([a-zA-Z0-9_-]+):([^\s])").expect("valid regex")
     })
 }
 
 /// Adds a space after colons where missing in key-value lines
-/// (e.g. `name:value` → `name: value`). Mirrors Go `normalizeYAML`. Operates on
+/// (e.g. `name:value` → `name: value`). Operates on
 /// the byte content as UTF-8 text; non-UTF-8 bytes are left untouched (the Go
 /// code operates on bytes but the regex only matches ASCII).
 pub fn normalize_yaml(content: &[u8]) -> Vec<u8> {
@@ -57,8 +53,7 @@ pub fn normalize_yaml(content: &[u8]) -> Vec<u8> {
     normalized.into_owned().into_bytes()
 }
 
-/// Extracts YAML frontmatter and body from markdown content. Mirrors Go
-/// `ExtractFrontmatter`: splits on `\n`, requires the first line to be `---`,
+/// Extracts YAML frontmatter and body from markdown content.
 /// finds the closing `---`, normalizes the frontmatter, and returns
 /// `(frontmatter, body)`. The frontmatter excludes the fences; the body is
 /// everything after the closing fence (joined with `\n`).
@@ -135,7 +130,7 @@ fn trim_space(s: &[u8]) -> &[u8] {
 }
 
 /// Parses normalized frontmatter bytes into an order-preserving [`YamlValue`].
-/// Returns an error mirroring Go's `yaml.Unmarshal` failure path.
+/// Returns an error. failure path.
 pub fn parse_yaml_value(frontmatter: &[u8]) -> Result<YamlValue, Error> {
     // serde_norway parses the document into an order-preserving Value.
     let raw: serde_norway::Value =
@@ -182,7 +177,7 @@ fn norway_scalar_string(v: &serde_norway::Value) -> String {
 }
 
 /// Parses Claude tools from either an array or a comma-separated string.
-/// Mirrors Go `ParseClaudeTools`: array elements that are strings are kept
+///: array elements that are strings are kept
 /// verbatim; a string is split on commas and each non-empty trimmed part is
 /// kept.
 pub fn parse_claude_tools(tools_raw: &YamlValue) -> Vec<String> {
@@ -289,7 +284,7 @@ mod tests {
 
     #[test]
     fn parse_tools_non_collection_is_empty() {
-        // A bool/number value yields no tools (mirrors Go's type switch default).
+        // A bool/number value yields no tools.
         assert!(parse_claude_tools(&YamlValue::Bool(true)).is_empty());
         assert!(parse_claude_tools(&YamlValue::Number("3".to_string())).is_empty());
         assert!(parse_claude_tools(&YamlValue::Null).is_empty());

@@ -1,8 +1,6 @@
 //! Output formatting for contract codegen post-processing results.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/contracts/reporter.go`.
-//! JSON timestamps use the same RFC3339-with-offset shape as Go's
-//! `timeutil.Timestamp()`.
+//! JSON timestamps use the same RFC3339-with-offset shape as Go's `timeutil.Timestamp()`.
 
 use std::fmt::Write as _;
 
@@ -25,7 +23,7 @@ fn timestamp() -> String {
 
 /// Formats the Java import cleaning result as human-readable text. In quiet mode
 /// with no modifications it returns an empty string; in verbose mode the
-/// modified file paths are listed. Mirrors Go `FormatJavaCleanImportsText`.
+/// modified file paths are listed.
 pub fn format_java_clean_imports_text(
     result: &JavaCleanImportsResult,
     verbose: bool,
@@ -65,8 +63,7 @@ struct JavaCleanImportsJson<'a> {
     modified: &'a [String],
 }
 
-/// Formats the Java import cleaning result as JSON. Mirrors Go
-/// `FormatJavaCleanImportsJSON`.
+/// Formats the Java import cleaning result as JSON.
 pub fn format_java_clean_imports_json(result: &JavaCleanImportsResult) -> Result<String, Error> {
     let out = JavaCleanImportsJson {
         status: "success",
@@ -79,8 +76,7 @@ pub fn format_java_clean_imports_json(result: &JavaCleanImportsResult) -> Result
     Ok(json)
 }
 
-/// Formats the Java import cleaning result as markdown. Mirrors Go
-/// `FormatJavaCleanImportsMarkdown`.
+/// Formats the Java import cleaning result as markdown.
 pub fn format_java_clean_imports_markdown(result: &JavaCleanImportsResult) -> String {
     let mut out = String::new();
 
@@ -106,8 +102,7 @@ pub fn format_java_clean_imports_markdown(result: &JavaCleanImportsResult) -> St
 // ===========================================================================
 
 /// Formats the Dart scaffold result as human-readable text. In quiet mode it
-/// returns `"ok\n"`; in verbose mode the model files are listed. Mirrors Go
-/// `FormatDartScaffoldText`.
+/// returns `"ok\n"`; in verbose mode the model files are listed.
 pub fn format_dart_scaffold_text(
     result: &DartScaffoldResult,
     verbose: bool,
@@ -144,7 +139,7 @@ struct DartScaffoldJson<'a> {
     model_files: &'a [String],
 }
 
-/// Formats the Dart scaffold result as JSON. Mirrors Go `FormatDartScaffoldJSON`.
+/// Formats the Dart scaffold result as JSON.
 pub fn format_dart_scaffold_json(result: &DartScaffoldResult) -> Result<String, Error> {
     let out = DartScaffoldJson {
         status: "success",
@@ -157,8 +152,7 @@ pub fn format_dart_scaffold_json(result: &DartScaffoldResult) -> Result<String, 
     Ok(json)
 }
 
-/// Formats the Dart scaffold result as markdown. Mirrors Go
-/// `FormatDartScaffoldMarkdown`.
+/// Formats the Dart scaffold result as markdown.
 pub fn format_dart_scaffold_markdown(result: &DartScaffoldResult) -> String {
     let mut out = String::new();
 

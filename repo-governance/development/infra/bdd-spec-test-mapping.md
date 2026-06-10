@@ -36,13 +36,13 @@ This practice respects the following core principles:
 
 ### Core Rule
 
-**Every Cobra command file must have a corresponding `@tag` in a Gherkin feature file under `specs/`.**
+**Every command module must have a corresponding `@tag` in a Gherkin feature file under `specs/`.**
 
-Infrastructure files (`root.go`, `helpers.go`) and parent command files (e.g., `agents.go`, `docs.go`) that do not implement logic are exempt.
+Infrastructure modules (`main.rs`, helpers) and parent command modules (e.g., `agents`, `docs`) that do not implement logic are exempt.
 
 ## Domain-Prefixed Subcommands
 
-All CLI apps in this monorepo use **Cobra subcommands** grouped by domain. The domain is the prefix in every artifact:
+The CLI uses **subcommands** grouped by domain. The domain is the prefix in every artifact:
 
 ```
 rhino-cli {domain} {action}
@@ -56,16 +56,16 @@ The mapping operates at three levels:
 
 ### 1. Command to Tag (mandatory)
 
-The `@tag` is derived from the Go filename: replace underscores with hyphens.
+The `@tag` is derived from the command module filename: replace underscores with hyphens.
 
-| Command File                | Full Invocation          | Feature `@tag`            |
+| Command Module              | Full Invocation          | Feature `@tag`            |
 | --------------------------- | ------------------------ | ------------------------- |
-| `agents_sync.go`            | `agents sync`            | `@agents-sync`            |
-| `agents_validate_sync.go`   | `agents validate-sync`   | `@agents-validate-sync`   |
-| `agents_validate_claude.go` | `agents validate-claude` | `@agents-validate-claude` |
-| `docs_validate_links.go`    | `docs validate-links`    | `@docs-validate-links`    |
-| `spec_coverage_validate.go` | `spec-coverage validate` | `@spec-coverage-validate` |
-| `doctor.go`                 | `doctor`                 | `@doctor`                 |
+| `agents_sync.rs`            | `agents sync`            | `@agents-sync`            |
+| `agents_validate_sync.rs`   | `agents validate-sync`   | `@agents-validate-sync`   |
+| `agents_validate_claude.rs` | `agents validate-claude` | `@agents-validate-claude` |
+| `docs_validate_links.rs`    | `docs validate-links`    | `@docs-validate-links`    |
+| `spec_coverage_validate.rs` | `spec-coverage validate` | `@spec-coverage-validate` |
+| `doctor.rs`                 | `doctor`                 | `@doctor`                 |
 
 ### 2. Tag to Feature File (flexible)
 
@@ -97,49 +97,23 @@ specs/apps/rhino/behavior/cli/gherkin/agents/agents-validate-claude.feature     
 
 Each command has dedicated test files at both levels that filter scenarios by `@tag`. The same tag is used at both levels, pointing to the same feature file:
 
-**Unit test** (no build tag — runs in `test:quick`):
+**Unit test** (runs in `test:quick`): the unit test harness loads the feature files under `specsDir` and filters scenarios to the `@agents-validate-sync` tag, invoking command logic with mocked I/O.
 
-```go
-func TestUnitValidateSync(t *testing.T) {
-    suite := godog.TestSuite{
-        ScenarioInitializer: InitializeValidateSyncUnitScenario,
-        Options: &godog.Options{
-            Paths: []string{specsDir},
-            Tags:  "agents-validate-sync",  // filters to matching @tag
-        },
-    }
-    // ...
-}
-```
-
-**Integration test** (`//go:build integration` — runs in `test:integration`):
-
-```go
-func TestIntegrationValidateSync(t *testing.T) {
-    suite := godog.TestSuite{
-        ScenarioInitializer: InitializeValidateSyncScenario,
-        Options: &godog.Options{
-            Paths: []string{specsDir},
-            Tags:  "agents-validate-sync",  // same @tag, different step implementations
-        },
-    }
-    // ...
-}
-```
+**Integration test** (runs in `test:integration`): the integration test harness loads the same feature files, filters to the same `@agents-validate-sync` tag, and drives the command against real `/tmp` filesystem fixtures.
 
 ## File Naming Convention
 
 | Artifact         | Pattern                                     | Example                                                       |
 | ---------------- | ------------------------------------------- | ------------------------------------------------------------- |
-| Parent cmd       | `{domain}.go`                               | `agents.go`                                                   |
-| Command file     | `{domain}_{action}.go`                      | `agents_validate_sync.go`                                     |
-| Unit test        | `{domain}_{action}_test.go`                 | `agents_validate_sync_test.go`                                |
-| Integration test | `{domain}_{action}.integration_test.go`     | `agents_validate_sync.integration_test.go`                    |
+| Parent cmd       | `{domain}.rs`                               | `agents.rs`                                                   |
+| Command module   | `{domain}_{action}.rs`                      | `agents_validate_sync.rs`                                     |
+| Unit test        | `{domain}_{action}_test.rs`                 | `agents_validate_sync_test.rs`                                |
+| Integration test | `{domain}_{action}_integration_test.rs`     | `agents_validate_sync_integration_test.rs`                    |
 | Feature file     | `specs/{app}/cli/gherkin/{command}.feature` | `specs/apps/rhino/behavior/cli/gherkin/system/doctor.feature` |
 
-**Unit test files** (`{domain}_{action}_test.go`) serve dual purpose: they contain both godog BDD step definitions (consuming Gherkin specs via `TestUnit*` functions) and any non-BDD pure function tests for edge cases not covered by the Gherkin scenarios. The godog step definitions in unit test files use mocked I/O function variables instead of real filesystem access.
+**Unit test files** (`{domain}_{action}_test.rs`) serve dual purpose: they contain both BDD step definitions (consuming Gherkin specs) and any non-BDD pure function tests for edge cases not covered by the Gherkin scenarios. The step definitions in unit test files use mocked I/O instead of real filesystem access.
 
-**The universal rule**: All Go files (command, unit test, integration test) use underscores. Feature files and `@tag`s use hyphens. The `spec-coverage validate` tool normalises hyphens to underscores when matching feature stems to Go test files.
+**The universal rule**: All Rust files (command, unit test, integration test) use underscores. Feature files and `@tag`s use hyphens. The `spec-coverage validate` tool normalises hyphens to underscores when matching feature stems to test files.
 
 ## ✅ Coverage Enforcement
 
@@ -152,24 +126,20 @@ The `spec-coverage validate` command enforces this mapping at three levels:
 Run the check:
 
 ```bash
-# Using the Rust implementation (canonical):
 rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli-rust
-
-# Using the Go twin (parity reference):
-rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli-go
 ```
 
-**Scope**: Spec-coverage enforcement is currently active for **CLI apps only** (Go + Godog naming
-conventions for `rhino-cli-go`; Rust equivalent for `rhino-cli-rust`). Enforcement for crud-be
+**Scope**: Spec-coverage enforcement is currently active for **CLI apps only** (Rust test
+conventions for `rhino-cli-rust`). Enforcement for crud-be
 backends is **planned but deferred** — the tool needs enhancement to support crud-be test file
-naming conventions (e.g., `health_steps_test.go` for Go, `HealthSteps.java` for Java) which differ
+naming conventions (e.g., `HealthSteps.java` for Java) which differ
 from the CLI app naming patterns the tool currently expects. This will be addressed in a follow-up plan.
 
 ## Adding a New Command
 
-New commands must be implemented in both `rhino-cli-rust` (canonical) and `rhino-cli-go` (parity twin). Both share the same Gherkin spec in `specs/apps/rhino/`.
+New commands are implemented in `rhino-cli-rust`, driven by the Gherkin spec in `specs/apps/rhino/`.
 
-**For `rhino-cli-rust` (Rust, canonical)**:
+**For `rhino-cli-rust`**:
 
 1. Create the feature file `specs/apps/rhino/{domain}/{domain}-{action}.feature`
 2. Create the Rust command module in `apps/rhino-cli-rust/src/cmd/{domain}_{action}.rs`
@@ -177,41 +147,29 @@ New commands must be implemented in both `rhino-cli-rust` (canonical) and `rhino
 4. Add integration tests in `apps/rhino-cli-rust/tests/{domain}_{action}_integration_test.rs`
 5. Verify: `rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli-rust`
 
-**For `rhino-cli-go` (Go, parity twin)**:
-
-1. Create the parent command file `apps/rhino-cli-go/cmd/{domain}.go` if the domain is new
-2. Create `apps/rhino-cli-go/cmd/{domain}_{action}.go` with the Cobra command (register with parent)
-3. Create `apps/rhino-cli-go/cmd/{domain}_{action}_test.go` with godog unit step definitions — use package-level function variables to mock all I/O, no build tag (runs in `test:quick`)
-4. Create `apps/rhino-cli-go/cmd/{domain}_{action}.integration_test.go` with godog integration steps — add `//go:build integration`, drive via `cmd.RunE()` against real `/tmp` fixtures
-5. Verify: `rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli-go`
-
-The parity CI job then runs a shadow-diff to confirm both implementations produce byte-identical output for all spec scenarios.
-
 ## CLI Apps: Dual-Level Spec Consumption
 
-CLI apps (`rhino-cli-rust`, `rhino-cli-go`) consume Gherkin specs at both the unit and integration test levels. The same feature files in `specs/apps/rhino/` serve as the contract for both levels and both implementations — only the step implementations differ. `rhino-cli-rust` uses Rust test conventions; `rhino-cli-go` uses Go + Godog conventions. See [rhino-cli Dual Implementation Parity](../../conventions/structure/rhino-cli-dual-implementation-parity.md).
+`rhino-cli-rust` consumes Gherkin specs at both the unit and integration test levels. The same feature files in `specs/apps/rhino/` serve as the contract for both levels — only the step implementations differ. `rhino-cli-rust` uses Rust test conventions.
 
 ### Architecture
 
-| Level       | Nx Target          | Test File Pattern                       | Step Implementation                          | Dependencies    |
-| ----------- | ------------------ | --------------------------------------- | -------------------------------------------- | --------------- |
-| Unit        | `test:unit`        | `{domain}_{action}_test.go` (no tag)    | Package-level mock function vars replace I/O | All mocked      |
-| Integration | `test:integration` | `{domain}_{action}.integration_test.go` | `cmd.RunE()` against real `/tmp` fixtures    | Real filesystem |
+| Level       | Nx Target          | Test File Pattern                       | Step Implementation                        | Dependencies    |
+| ----------- | ------------------ | --------------------------------------- | ------------------------------------------ | --------------- |
+| Unit        | `test:unit`        | `{domain}_{action}_test.rs`             | Mock dependencies replace I/O              | All mocked      |
+| Integration | `test:integration` | `{domain}_{action}_integration_test.rs` | Command logic against real `/tmp` fixtures | Real filesystem |
 
 ### Unit-Level Step Definitions
 
-Unit steps call command logic directly with mocked dependencies. Package-level function variables (e.g., `readFileFn`, `writeFileFn`, `statFn`) are overridden in step setup to inject controlled behavior without touching the real filesystem.
+Unit steps call command logic directly with mocked dependencies. Injectable dependencies are overridden in step setup to inject controlled behavior without touching the real filesystem.
 
-- No build tag — included in `go test ./...` and `test:quick`
+- Included in `cargo test` and `test:quick`
 - Coverage is measured at this level (≥90% line coverage)
 - Must run all Gherkin scenarios for the command's `@tag`
 
 ### Integration-Level Step Definitions
 
-Integration steps drive commands in-process via `cmd.RunE()` against controlled `/tmp` filesystem fixtures. Steps create temporary directory structures, invoke the command, and assert on stdout/stderr and exit code.
+Integration steps drive commands against controlled `/tmp` filesystem fixtures. Steps create temporary directory structures, invoke the command, and assert on stdout/stderr and exit code.
 
-- Build tag: `//go:build integration`
-- Runs via `go test -tags=integration -run TestIntegration ./cmd/...`
 - Coverage is NOT measured at this level
 - Must run all Gherkin scenarios for the command's `@tag`
 
@@ -221,8 +179,6 @@ The `@agents-validate-sync` tag lives inside `agents-sync.feature` (shared featu
 
 ```
 specs/apps/rhino/behavior/cli/gherkin/agents/agents-sync.feature  (contains @agents-sync + @agents-validate-sync)
-  -> Go unit steps in:             apps/rhino-cli-go/cmd/agents_validate_sync_test.go
-  -> Go integration steps in:      apps/rhino-cli-go/cmd/agents_validate_sync.integration_test.go
   -> Rust unit steps in:           apps/rhino-cli-rust/src/cmd/agents_validate_sync_test.rs (or equivalent)
   -> Rust integration steps in:    apps/rhino-cli-rust/tests/agents_validate_sync_integration_test.rs
 ```
@@ -304,7 +260,6 @@ All three commands must report all scenarios passing. The Gherkin feature files 
 - [Specs Directory Structure Convention](../../conventions/structure/specs-directory-structure.md) - Canonical path patterns and domain subdirectory rules
 - [Three-Level Testing Standard](../quality/three-level-testing-standard.md) - Mandatory isolation boundaries for unit, integration, and E2E levels where Gherkin specs are consumed
 - [Nx Target Standards](./nx-targets.md) - `test:integration` target definitions and caching rules
-- [rhino-cli Dual Implementation Parity](../../conventions/structure/rhino-cli-dual-implementation-parity.md) - Rust (canonical) and Go (twin) implementation model and parity enforcement
 - [specs/README.md](../../../specs/README.md) - Spec directory organization
-- [specs/apps/rhino/README.md](../../../specs/apps/rhino/README.md) - rhino-cli spec structure (shared by both implementations)
+- [specs/apps/rhino/README.md](../../../specs/apps/rhino/README.md) - rhino-cli spec structure
 - [specs/apps/crud/behavior/be/README.md](../../../specs/apps/crud/behavior/be/README.md) - Demo-be spec structure and three-level consumption

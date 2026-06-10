@@ -1,10 +1,9 @@
 //! `java` command family: `validate-annotations`.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/cmd/java_validate_annotations.go`.
-//! The source-root argument is resolved with Go `filepath.Abs` semantics. After
-//! emitting the formatted output, when violations exist the handler prints a
-//! trailing `❌ Found N violation(s)` line to stderr (text, non-quiet only) and
-//! returns an error so the process exits non-zero — mirroring the Go command.
+//! The source-root argument is resolved with Go `filepath.Abs` semantics. After emitting
+//! the formatted output, when violations exist the handler prints a trailing `❌ Found N
+//! violation(s)` line to stderr (text, non-quiet only) and returns an error so the process
+//! exits non-zero — mirroring the Go command.
 
 use anyhow::{Context, Error, anyhow};
 use clap::Args;
@@ -15,7 +14,7 @@ use crate::internal::java::reporter;
 use crate::internal::java::types::ValidationOptions;
 use crate::internal::java::validator::validate_all;
 
-/// Cobra-style usage block printed to stderr when `validate-annotations` errors.
+/// Usage block printed to stderr when `validate-annotations` errors.
 pub const VALIDATE_ANNOTATIONS_USAGE: &str = "Usage:\n  \
 rhino-cli java validate-annotations <source-root> [flags]\n\n\
 Examples:\n  \
@@ -46,7 +45,7 @@ pub struct ValidateAnnotationsArgs {
     pub annotation: String,
 }
 
-/// Runs `java validate-annotations`. Mirrors Go `runValidateJavaAnnotations`.
+/// Runs `java validate-annotations`.
 pub fn run_validate_annotations(
     args: &ValidateAnnotationsArgs,
     output: OutputFormat,

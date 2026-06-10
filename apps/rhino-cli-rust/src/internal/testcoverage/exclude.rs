@@ -1,4 +1,4 @@
-// Port of `apps/rhino-cli/internal/testcoverage/exclude.go`.
+// Path-exclusion filtering for coverage reports.
 
 use std::path::Path;
 
@@ -59,7 +59,7 @@ pub fn matches_any_exclude_pattern(path: &str, patterns: &[String]) -> bool {
     false
 }
 
-/// Port of Go's path/filepath.Match. Single-segment globbing; `*` does not cross `/`.
+/// Single-segment glob match; `*` does not cross `/`.
 fn go_filepath_match(pattern: &str, name: &str) -> bool {
     let p: Vec<char> = pattern.chars().collect();
     let n: Vec<char> = name.chars().collect();

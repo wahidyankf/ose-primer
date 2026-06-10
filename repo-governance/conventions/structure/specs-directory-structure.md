@@ -233,7 +233,7 @@ README files serve as entry points when browsing the specs directory on GitHub, 
 
 The `specs/apps/rhino/` tree documents rhino-cli behavior: Gherkin scenarios under `behavior/`, container and component descriptions, and README claims. This tree has two update sources:
 
-- **Behavior-driven development**: when rhino-cli gains new functionality, contributors update `specs/apps/rhino/` first (spec-first per Rule 2 of the [Rhino CLI Dual-Implementation Parity Convention](./rhino-cli-dual-implementation-parity.md)), then update both CLI implementations to match.
+- **Behavior-driven development**: when rhino-cli gains new functionality, contributors update `specs/apps/rhino/` first (spec-first), then update the CLI implementation to match.
 - **Harness convention changes**: when the `repo-harness-compatibility-quality-gate` workflow detects that an upstream harness changed a convention that rhino-cli emits, the `repo-harness-compatibility-fixer` agent edits the affected `specs/apps/rhino/` files as part of the same fix pass — preserving Given-When-Then structure (and the one-each keyword rule: exactly one primary `Given`, one `When`, one `Then` per scenario — see [HARD Rule — Step-Keyword Cardinality](../../development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality)) and recording each touched spec file in the fix report.
 
 Both sources are additive: the spec remains the authoritative description of rhino-cli behavior regardless of which update path triggered the change.
@@ -287,7 +287,6 @@ used in earlier versions. The migration recipe is documented in:
 - [Acceptance Criteria Convention](../../development/infra/acceptance-criteria.md) - Gherkin writing standards for feature files
 - [File Naming Convention](./file-naming.md) - General file naming patterns (README.md exception applies here)
 - [Plans Organization Convention](./plans.md) - Similar convention for plans/ directory structure
-- [Rhino CLI Dual-Implementation Parity Convention](./rhino-cli-dual-implementation-parity.md) - Spec-first rule and both-implementation lock-step obligation for `specs/apps/rhino/`
 - [Multi-Harness Binding Convention](./multi-harness-binding.md) - Harness-compatibility fixer's obligation to keep `specs/apps/rhino/` consistent with catalog and binding changes
 
 ---

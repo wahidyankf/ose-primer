@@ -1,9 +1,7 @@
 //! Per-agent validation (the 12 rules of `validate-claude`).
 //!
-//! Byte-for-byte port of
-//! `apps/rhino-cli-go/internal/agents/agent_validator.go`. The Go code parses
-//! the normalized frontmatter into a `ClaudeAgentFull` struct (where `tools` is
-//! a comma-separated string) and a generic `yaml.Node` for field-order
+//! The Go code parses the normalized frontmatter into a `ClaudeAgentFull` struct (where
+//! `tools` is a comma-separated string) and a generic `yaml.Node` for field-order
 //! detection. We reuse the order-preserving [`YamlValue`] parse for both.
 
 use std::collections::BTreeSet;
@@ -15,7 +13,7 @@ use super::types::{
 };
 use super::yaml_formatting::validate_yaml_formatting_raw;
 
-/// Typed view of an agent's frontmatter, mirroring Go `ClaudeAgentFull`.
+/// Typed view of an agent's frontmatter.
 struct ClaudeAgentFull {
     name: String,
     description: String,
@@ -85,7 +83,7 @@ fn scalar_string(v: &YamlValue, _key: &str) -> Result<String, String> {
 }
 
 /// Validates a single agent, returning the ordered list of check results.
-/// Mirrors Go `validateAgent`. `agent_names` accumulates seen names for the
+/// `agent_names` accumulates seen names for the
 /// uniqueness rule; `skill_names` is the set of valid skill directory names.
 pub fn validate_agent(
     agent_path: &std::path::Path,
@@ -433,8 +431,7 @@ fn validate_generated_reports_tools(filename: &str, tools_str: &str) -> Validati
     )
 }
 
-/// Validates every agent under `.claude/agents/`. Mirrors Go
-/// `validateAllAgents`. Returns the flattened, in-directory-order check list.
+/// Validates every agent under `.claude/agents/`.
 pub fn validate_all_agents(
     repo_root: &std::path::Path,
     skill_names: &BTreeSet<String>,

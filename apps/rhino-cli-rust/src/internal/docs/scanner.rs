@@ -1,4 +1,4 @@
-//! Markdown file discovery and link extraction. Mirrors Go `links_scanner.go`.
+//! Markdown file discovery and link extraction.
 
 use std::io::{self, BufRead};
 use std::path::{Path, PathBuf};
@@ -11,7 +11,7 @@ use walkdir::WalkDir;
 use super::fences::FenceTracker;
 use super::types::{LinkInfo, ScanOptions};
 
-/// Matches markdown links: `[text](url)`. Mirrors Go `linkRegex`.
+/// Matches markdown links: `[text](url)`.
 static LINK_REGEX: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"\[([^\]]+)\]\(([^)]+)\)").expect("valid link regex"));
 
@@ -19,7 +19,7 @@ static LINK_REGEX: LazyLock<Regex> =
 static BRACKET_PLACEHOLDER_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"\[[\w-]+\]").expect("valid bracket placeholder regex"));
 
-/// Returns markdown files to scan based on options. Mirrors Go `GetMarkdownFiles`.
+/// Returns markdown files to scan based on options.
 pub fn get_markdown_files(opts: &ScanOptions) -> Result<Vec<PathBuf>, Error> {
     let files = if opts.staged_only {
         get_staged_markdown_files(&opts.repo_root)?
@@ -29,7 +29,7 @@ pub fn get_markdown_files(opts: &ScanOptions) -> Result<Vec<PathBuf>, Error> {
     Ok(filter_skip_paths(files, &opts.repo_root, &opts.skip_paths))
 }
 
-/// Filters out files matching any skip path (relative-prefix match). Mirrors Go `filterSkipPaths`.
+/// Filters out files matching any skip path (relative-prefix match).
 /// Shared with the mermaid `--exclude` filter (`commands::docs::filter_mermaid_excluded`)
 /// so both gates use one prefix implementation per CLI (plan DD-2).
 pub(crate) fn filter_skip_paths(
@@ -79,7 +79,7 @@ fn clean_path(p: &str) -> String {
     }
 }
 
-/// Returns staged markdown files from git (absolute paths). Mirrors Go `getStagedMarkdownFiles`.
+/// Returns staged markdown files from git (absolute paths).
 fn get_staged_markdown_files(repo_root: &Path) -> Result<Vec<PathBuf>, Error> {
     let output = std::process::Command::new("git")
         .arg("diff")
@@ -128,13 +128,10 @@ pub(crate) const NOISE_DIRS: &[&str] = &[
 
 /// Returns all `*.md` files under `root` (any directory, or a single file —
 /// the walk root at depth 0 is never filtered) via a walk that skips the
-/// standardized noise-skip set by directory name. Mirrors Go
-/// `getAllMarkdownFiles` (`links_scanner.go`). The ONE walker definition per
-/// CLI (plan DD-3), shared by the links gate, the heading-hierarchy validator
+/// standardized noise-skip set by directory name. This is the one shared
+/// walker definition, used by the links gate, the heading-hierarchy validator
 /// (`super::heading_hierarchy`), and the mermaid command walkers
-/// (`commands::docs::{collect_md_files, collect_md_default_dirs}`). The Go
-/// twin still keeps a separate cmd-level `walkMDFiles` with the historical
-/// three-dir skip set; convergence on this shared walker is planned there.
+/// (`commands::docs::{collect_md_files, collect_md_default_dirs}`).
 pub(crate) fn get_all_markdown_files(root: &Path) -> Vec<PathBuf> {
     let mut files = Vec::new();
 
@@ -161,7 +158,7 @@ pub(crate) fn get_all_markdown_files(root: &Path) -> Vec<PathBuf> {
     files
 }
 
-/// Extracts markdown links from a file with line numbers. Mirrors Go `ExtractLinks`.
+/// Extracts markdown links from a file with line numbers.
 pub fn extract_links(file_path: &Path) -> Result<Vec<LinkInfo>, Error> {
     let file = std::fs::File::open(file_path)?;
     let reader = io::BufReader::new(file);
@@ -214,7 +211,7 @@ pub fn extract_links(file_path: &Path) -> Result<Vec<LinkInfo>, Error> {
 }
 
 /// Placeholder substrings that mark a link as a documentation example, not a
-/// real target. Mirrors Go `placeholders`.
+/// real target.
 const PLACEHOLDERS: &[&str] = &[
     "path.md",
     "target",
@@ -227,7 +224,7 @@ const PLACEHOLDERS: &[&str] = &[
     "./relative/path/to/",
 ];
 
-/// Example file-name substrings that are clearly illustrative. Mirrors Go `examplePatterns`.
+/// Example file-name substrings that are clearly illustrative.
 const EXAMPLE_PATTERNS: &[&str] = &[
     "./overview",
     "./guide.md",
@@ -250,7 +247,7 @@ const EXAMPLE_PATTERNS: &[&str] = &[
     "../../.opencode/",
 ];
 
-/// Determines if a link should be skipped during validation. Mirrors Go `ShouldSkipLink`.
+/// Determines if a link should be skipped during validation.
 pub fn should_skip_link(link: &str) -> bool {
     // Skip Hugo absolute paths.
     if link.starts_with('/') {

@@ -55,7 +55,7 @@ The repository follows a **six-layer governance architecture** (Vision → Princ
 - **[Rules](../../repo-governance/README.md)** - All governance layers (Vision, Principles, Conventions, Development, Workflows)
 - **[Repository Governance Architecture](../../repo-governance/repository-governance-architecture.md)** - Comprehensive architecture deep-dive
 - **[Plan Domain Parity — Design Decisions](./plan-domain-parity-decisions.md)** - All 26 deviation-matrix decisions from the 2026-06-06 cross-repo parity effort, including the recorded Safety Invariant 6 direct-push deviation
-- **[Gherkin Step-Keyword Cardinality — Cross-Repo Parity Decisions](./gherkin-step-keyword-cardinality-parity-decisions.md)** - All 13 deviation-matrix decisions from the 2026-06-07 cross-repo parity effort, including the four deliberate deviations (dual-CLI architecture, Step 0.5 preflight port, per-repo CI wiring, direct-main-push mode)
+- **[Gherkin Step-Keyword Cardinality — Cross-Repo Parity Decisions](./gherkin-step-keyword-cardinality-parity-decisions.md)** - All 13 deviation-matrix decisions from the 2026-06-07 cross-repo parity effort, including the four deliberate deviations (standalone Rust CLI command, Step 0.5 preflight port, per-repo CI wiring, direct-main-push mode)
 
 ### Software Engineering
 

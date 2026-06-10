@@ -1,6 +1,4 @@
 //! Types for the env-validate subsystem.
-//!
-//! Byte-for-byte port target: `apps/rhino-cli-go/internal/envvalidate/types.go`.
 
 use std::collections::BTreeSet;
 

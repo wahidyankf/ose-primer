@@ -1,12 +1,11 @@
-//! Go-compatible JSON encoding helpers.
+//! JSON encoding helpers for the CLI's `encoding/json`-style output dialect.
 //!
-//! Go's `encoding/json` HTML-escapes `<`, `>`, `&`, U+2028, and U+2029 in
-//! string values by default (both `Marshal` and `MarshalIndent`). serde_json
-//! does not, so to reach byte-identical parity with the Go CLI's JSON output we
-//! post-process serde's output, applying the same escaping inside string
-//! literals only.
+//! That dialect HTML-escapes `<`, `>`, `&`, U+2028, and U+2029 in string values
+//! by default. serde_json does not, so we post-process serde's output, applying
+//! the same escaping inside string literals only.
 
-/// Applies Go's default HTML escaping to a serde_json-produced document.
+/// Applies the `encoding/json`-style HTML escaping to a serde_json-produced
+/// document.
 ///
 /// serde_json already escapes `"` and `\`, so every remaining unescaped `<`,
 /// `>`, and `&` that survives into the output sits inside a string literal

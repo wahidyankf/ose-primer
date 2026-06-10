@@ -1,10 +1,8 @@
 //! Shared types for the `env backup` / `env restore` subsystem.
-//!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/envbackup/types.go`.
 
 /// A single `.env` (or config) file found or processed during a backup/restore.
 ///
-/// Mirrors Go `FileEntry`. The `source` field is `""` for plain `.env` files
+/// The `source` field is `""` for plain `.env` files
 /// discovered by the walk and `"config"` for known config patterns.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FileEntry {
@@ -36,7 +34,7 @@ impl FileEntry {
     }
 }
 
-/// Outcome of a backup or restore operation. Mirrors Go `Result`.
+/// Outcome of a backup or restore operation.
 #[derive(Debug, Clone, Default)]
 pub struct EnvResult {
     /// `"backup"` or `"restore"`.
@@ -92,12 +90,12 @@ pub const DEFAULT_SKIP_DIRS: &[&str] = &[
     "generated-contracts",
 ];
 
-/// Maximum backup file size in bytes (1 MB). Mirrors Go `DefaultMaxSize`.
+/// Maximum backup file size in bytes (1 MB).
 pub const DEFAULT_MAX_SIZE: i64 = 1024 * 1024;
 
 /// Fallback backup directory name when repo root cannot be determined.
 /// In practice the cmd layer always derives `<repo-basename>-env-backup`
-/// from the actual repo root (R11b). Mirrors Go `DefaultBackupDir`.
+/// from the actual repo root (R11b).
 pub const DEFAULT_BACKUP_DIR: &str = "env-backup";
 
 #[cfg(test)]

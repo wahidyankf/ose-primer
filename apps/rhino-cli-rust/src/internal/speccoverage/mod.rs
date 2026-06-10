@@ -1,8 +1,6 @@
 //! Multi-language BDD spec coverage validation.
 //!
-//! Byte-for-byte port of the Go `internal/speccoverage` package
-//! (`apps/rhino-cli-go/internal/speccoverage`). Walks a specs tree for
-//! `.feature` files and validates that each has matching test files,
+//! Walks a specs tree for `.feature` files and validates that each has matching test files,
 //! scenarios, and step definitions across many languages.
 
 pub mod checker;

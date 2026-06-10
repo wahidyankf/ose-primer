@@ -96,7 +96,6 @@ fn skip_dirs() -> &'static HashSet<&'static str> {
 
 /// Entry point. In default mode: 1:1 file matching + scenario + step validation.
 /// In `--shared-steps` mode: step-only validation across ALL source files.
-/// Mirrors Go `CheckAll`.
 pub fn check_all(opts: &ScanOptions) -> std::result::Result<CheckResult, Error> {
     if opts.shared_steps {
         check_shared_steps(opts)
@@ -212,7 +211,7 @@ fn check_one_to_one(opts: &ScanOptions) -> std::result::Result<CheckResult, Erro
 }
 
 /// Returns all `.feature` files under `dir` recursively (lexically ordered to
-/// mirror Go's `filepath.Walk`), excluding directories named in `exclude_dirs`.
+/// match the `filepath.Walk` behaviour), excluding directories named in `exclude_dirs`.
 fn walk_feature_files(
     dir: &Path,
     exclude_dirs: &[String],
@@ -242,7 +241,7 @@ fn walk_feature_files(
     Ok(files)
 }
 
-/// Converts a kebab-case stem to PascalCase. Mirrors Go `toPascalCase`.
+/// Converts a kebab-case stem to PascalCase.
 fn to_pascal_case(stem: &str) -> String {
     let mut b = String::new();
     for p in stem.split('-') {
@@ -261,7 +260,6 @@ fn to_pascal_case(stem: &str) -> String {
 }
 
 /// Whether a file's base name matches a feature stem (kebab/snake/Pascal/test_).
-/// Mirrors Go `matchesStem`.
 fn matches_stem(base: &str, stem: &str) -> bool {
     let snake = stem.replace('-', "_");
     let pascal = to_pascal_case(stem);
@@ -284,8 +282,7 @@ fn matches_stem(base: &str, stem: &str) -> bool {
     base == stem || base == snake
 }
 
-/// Whether a file is a test file per language conventions. Mirrors Go
-/// `isTestFile`. `ext` is the extension WITHOUT the leading dot.
+/// Whether a file is a test file per language conventions.
 fn is_test_file(path: &Path) -> bool {
     let base = path.file_name().and_then(|s| s.to_str()).unwrap_or("");
     let ext = path.extension().and_then(|s| s.to_str()).unwrap_or("");
@@ -323,7 +320,6 @@ fn is_in_test_dir(path: &Path) -> bool {
 
 /// Returns the path of the FIRST test file under `app_dir` matching the stem
 /// (lexical order, matching Go's `filepath.Walk` + `SkipAll`), or `None`.
-/// Mirrors Go `findMatchingTestFile`.
 fn find_matching_test_file(
     app_dir: &Path,
     stem: &str,
@@ -356,7 +352,7 @@ fn find_matching_test_file(
 }
 
 /// Reads ONLY the matching test file and returns scenario titles (normalized),
-/// dispatching by extension. Mirrors Go `extractScenarioTitles`.
+/// dispatching by extension.
 fn extract_scenario_titles(test_file_path: &Path) -> std::result::Result<HashSet<String>, Error> {
     let ext = test_file_path
         .extension()
@@ -396,8 +392,7 @@ fn extract_go_scenario_titles(p: &Path) -> std::result::Result<HashSet<String>, 
 }
 
 /// Walks ALL source files under `app_dir`, skipping build-artifact dirs, and
-/// returns a [`StepMatcher`] of all step definitions found. Mirrors Go
-/// `extractAllStepTexts`.
+/// returns a [`StepMatcher`] of all step definitions found.
 pub fn extract_all_step_texts(app_dir: &Path) -> std::result::Result<StepMatcher, Error> {
     let mut sm = StepMatcher::new();
     if !app_dir.exists() {
@@ -456,7 +451,7 @@ pub fn extract_all_step_texts(app_dir: &Path) -> std::result::Result<StepMatcher
 }
 
 /// Reads a TS/JS file (raw, no comment stripping — matching Go) and adds all
-/// step texts and regex-literal patterns. Mirrors Go `extractTSStepTexts`.
+/// step texts and regex-literal patterns.
 fn extract_ts_step_texts(path: &Path, sm: &mut StepMatcher) -> std::result::Result<(), Error> {
     let src = fs::read_to_string(path)?;
 

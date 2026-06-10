@@ -172,7 +172,7 @@ When a new tRPC router is added to `apps/crud-fs-ts-nextjs/`, a new component en
 
 CLI apps (`rhino-cli`, `rhino-cli`, `rhino-cli`) use the automated enforcement path:
 
-- Each Cobra command file maps to a `@tag` in a Gherkin feature file
+- Each command module maps to a `@tag` in a Gherkin feature file
 - `rhino-cli spec-coverage validate` enforces the 1:1 mapping automatically
 - Adding a command without a spec causes `test:quick` to fail
 

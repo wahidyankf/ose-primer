@@ -1,14 +1,12 @@
 //! YAML frontmatter formatting check (space after colons).
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/agents/yaml_formatting.go`.
-//! The check runs on the RAW (pre-normalization) content so it can flag
-//! `name:value` style errors that normalization would otherwise mask.
+//! The check runs on the RAW (pre-normalization) content so it can flag `name:value` style
+//! errors that normalization would otherwise mask.
 
 use super::types::ValidationCheck;
 
 /// Checks YAML frontmatter formatting (space after colons). `check_name` is the
 /// full `ValidationCheck.name`, e.g. `"Agent: foo.md - YAML Formatting"`.
-/// Mirrors Go `validateYAMLFormattingRaw`.
 pub fn validate_yaml_formatting_raw(check_name: &str, content: &[u8]) -> ValidationCheck {
     let lines: Vec<&[u8]> = content.split(|&b| b == b'\n').collect();
 

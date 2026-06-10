@@ -1,9 +1,7 @@
 //! Sync orchestration.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/agents/sync.go`. Skills are
-//! NOT copied: OpenCode reads `.claude/skills/<name>/SKILL.md` natively, so the
-//! `--skills-only` flag is a no-op that yields an empty result (kept for CLI
-//! back-compat).
+//! Skills are NOT copied: OpenCode reads `.claude/skills/<name>/SKILL.md` natively, so the
+//! `--skills-only` flag is a no-op that yields an empty result (kept for CLI back-compat).
 
 use std::time::Instant;
 
@@ -12,7 +10,7 @@ use anyhow::Error;
 use super::converter::convert_all_agents;
 use super::types::{SyncOptions, SyncResult};
 
-/// Performs the complete sync operation. Mirrors Go `SyncAll`.
+/// Performs the complete sync operation.
 pub fn sync_all(opts: &SyncOptions) -> Result<SyncResult, Error> {
     let start = Instant::now();
     let mut result = SyncResult {

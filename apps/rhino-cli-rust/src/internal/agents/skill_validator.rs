@@ -1,7 +1,4 @@
 //! Per-skill validation (the rules of `validate-claude` for skills).
-//!
-//! Byte-for-byte port of
-//! `apps/rhino-cli-go/internal/agents/skill_validator.go`.
 
 use std::collections::BTreeSet;
 
@@ -13,13 +10,12 @@ use super::types::ValidationCheck;
 use super::yaml_formatting::validate_yaml_formatting_raw;
 
 /// Skill name pattern: lowercase letters, numbers, hyphens, 1–64 chars.
-/// Mirrors Go `ValidSkillNamePattern`.
 fn skill_name_re() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
     RE.get_or_init(|| Regex::new(r"^[a-z0-9-]{1,64}$").expect("valid regex"))
 }
 
-/// Validates a single skill (all rules). Mirrors Go `validateSkill`.
+/// Validates a single skill (all rules).
 pub fn validate_skill(skill_path: &std::path::Path, skill_name: &str) -> Vec<ValidationCheck> {
     let mut checks: Vec<ValidationCheck> = Vec::new();
 
@@ -196,8 +192,7 @@ fn extract_skill(value: &YamlValue) -> (String, String) {
     (name, description)
 }
 
-/// Validates all skills under `.claude/skills/`. Mirrors Go
-/// `validateAllSkills`. Returns `(checks, valid_skill_names)`; a skill is added
+/// Validates all skills under `.claude/skills/`.
 /// to the name set only when ALL its checks pass.
 pub fn validate_all_skills(
     repo_root: &std::path::Path,

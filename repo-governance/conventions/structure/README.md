@@ -23,7 +23,7 @@ This directory contains standards for how documentation is organized, named, and
 - [Diataxis Framework](./diataxis-framework.md) - Understanding the four-category documentation organization framework we use (Tutorials, How-To, Reference, Explanation). Foundational framework for all documentation structure
 - [File Naming Convention](./file-naming.md) - Kebab-case filename rules for docs/, repo-governance/, and plans/ directories
 - [Governance Vendor Independence](./governance-vendor-independence.md) - Vendor-neutral governance prose: vendor names allowed only inside ` ```binding-example ` fences. Enforced by `rhino-cli repo-governance vendor-audit`
-- [Multi-Harness Binding](./multi-harness-binding.md) - Two-tier binding strategy keeping the repo compatible with many coding-agent harnesses: AGENTS.md-canonical, no-shadowing hard rule, mechanical generation, and dual-implementation byte-parity. Companion to Governance Vendor Independence
+- [Multi-Harness Binding](./multi-harness-binding.md) - Two-tier binding strategy keeping the repo compatible with many coding-agent harnesses: AGENTS.md-canonical, no-shadowing hard rule, and mechanical generation. Companion to Governance Vendor Independence
 - [Plans Organization](./plans.md) - Standards for organizing project planning documents in plans/ folder including structure (ideas.md, backlog/, in-progress/, done/), naming patterns (YYYY-MM-DD\_\_identifier/), lifecycle stages, project identifiers, [executor tagging (`[AI]`/`[HUMAN]`)](./plans.md#executor-tagging--ai-vs-human-hard-rule), and [phases as natural pauses with clear gates](./plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule)
 - [Post-Mortem Convention](./post-mortems.md) - Standards for writing and organizing blameless incident post-mortems in `docs/explanation/post-mortems/`: mandatory sections, severity scale (Sev-1..Sev-4), action-item tracking, `doc_status` lifecycle, and the no-secrets requirement
 - [Specs Directory Structure](./specs-directory-structure.md) - Canonical directory structure for Gherkin feature files, C4 architecture diagrams, and OpenAPI contracts in the specs/ directory. Defines path patterns, domain subdirectory rules (required for BE/FE, flat for CLI), and lib spec organization
@@ -32,7 +32,6 @@ This directory contains standards for how documentation is organized, named, and
 - [No Last-Updated Metadata](./no-last-updated.md) - Companion to no-date-metadata: do not write `**Last Updated**` rows in markdown files
 - [Programming Language Docs Separation](./programming-language-docs-separation.md) - Boundary between generic dev docs and language-specific (Go, TypeScript, Rust, etc.) docs
 - [Repository Ecosystem Convention](./repository-ecosystem.md) - The three sibling OSE repositories (`ose-public`, `ose-primer`, `ose-infra`), their roles, propagation rules, and verification steps. Replaces the deleted `ose-projects` umbrella as the canonical description of the family relationship
-- [Rhino CLI Dual-Implementation Parity](./rhino-cli-dual-implementation-parity.md) - Model, roles, and parity enforcement rules for shipping `rhino-cli` as two byte-identical implementations (Rust = canonical toolchain CLI; Go = parity twin), both driven by the single Gherkin behavior contract at `specs/apps/rhino/`
 
 ## Key Concepts
 

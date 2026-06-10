@@ -102,7 +102,7 @@ See `repo-applying-maker-checker-fixer` skill for complete workflow patterns.
 1. Edit skills in `.claude/skills/` directory
 2. Run: `npm run generate:bindings` to regenerate `.opencode/agents/` (agents only; skills are not copied)
 
-**See**: [CLAUDE.md](../../CLAUDE.md) for complete guidance, [apps/rhino-cli-go/README.md](../../apps/rhino-cli-go/README.md) for rhino-cli details
+**See**: [CLAUDE.md](../../CLAUDE.md) for complete guidance, [apps/rhino-cli-rust/README.md](../../apps/rhino-cli-rust/README.md) for rhino-cli details
 
 ## Skills vs Agents
 

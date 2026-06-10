@@ -1,9 +1,8 @@
 //! Output formatting for doctor results.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/doctor/reporter.go`. Text
-//! uses Go's `%-10s %-14s` column widths; JSON mirrors `JSONOutput` field order
-//! and `omitempty` semantics; markdown mirrors the table layout. JSON
-//! timestamps use the same RFC3339-with-offset shape as `timeutil.Timestamp()`.
+//! Text uses Go's `%-10s %-14s` column widths; JSON mirrors `JSONOutput` field order and
+//! `omitempty` semantics; markdown mirrors the table layout. JSON timestamps use the same
+//! RFC3339-with-offset shape as `timeutil.Timestamp()`.
 
 use std::fmt::Write as _;
 
@@ -68,9 +67,9 @@ fn pad_left_runes(s: &str, width: usize) -> String {
     }
 }
 
-/// Formats the doctor result as human-readable text. Mirrors Go `FormatText`.
-/// The verbose `Duration:` line is wall-clock dependent (normalised in the
-/// shadow-diff harness); the round-to-ms rendering matches Go's `%v`.
+/// Formats the doctor result as human-readable text.
+/// The verbose `Duration:` line is wall-clock dependent and rendered rounded to
+/// the millisecond.
 pub fn format_text(result: &DoctorResult, verbose: bool, quiet: bool) -> String {
     let mut sb = String::new();
 
@@ -110,9 +109,8 @@ pub fn format_text(result: &DoctorResult, verbose: bool, quiet: bool) -> String 
     sb
 }
 
-/// Renders milliseconds as Go's `time.Duration` `%v` after `Round(Millisecond)`.
-/// Only the millisecond-and-up scale ever appears here. This output is masked by
-/// the shadow-diff normaliser, so exact sub-forms need not match byte-for-byte.
+/// Renders an elapsed duration in milliseconds, rounded to the millisecond.
+/// Only the millisecond-and-up scale ever appears here.
 fn render_duration_ms(ms: i64) -> String {
     if ms == 0 {
         return "0s".to_string();
@@ -124,8 +122,7 @@ fn render_duration_ms(ms: i64) -> String {
     format!("{secs}s")
 }
 
-/// One tool entry in JSON output. Field order + `omitempty` mirror Go
-/// `JSONToolItem`.
+/// One tool entry in JSON output. Empty fields are omitted.
 #[derive(Serialize)]
 struct JsonToolItem {
     name: String,
@@ -141,7 +138,7 @@ struct JsonToolItem {
     note: String,
 }
 
-/// JSON output document. Mirrors Go `JSONOutput`.
+/// JSON output document.
 #[derive(Serialize)]
 struct JsonOutput {
     status: String,
@@ -155,7 +152,7 @@ struct JsonOutput {
     tools: Vec<JsonToolItem>,
 }
 
-/// Formats the doctor result as JSON. Mirrors Go `FormatJSON`.
+/// Formats the doctor result as JSON.
 pub fn format_json(result: &DoctorResult) -> Result<String, Error> {
     let tools: Vec<JsonToolItem> = result
         .checks
@@ -186,7 +183,7 @@ pub fn format_json(result: &DoctorResult) -> Result<String, Error> {
     Ok(gojson::html_escape(&body))
 }
 
-/// Formats the doctor result as a markdown report. Mirrors Go `FormatMarkdown`.
+/// Formats the doctor result as a markdown report.
 pub fn format_markdown(result: &DoctorResult) -> String {
     let mut sb = String::new();
 

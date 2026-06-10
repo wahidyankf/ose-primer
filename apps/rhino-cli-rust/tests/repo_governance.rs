@@ -99,10 +99,18 @@ fn init_git_repo(dir: &std::path::Path) {
 // Given steps
 // ===========================================================================
 
-#[given(r#"a governance markdown file containing "Claude Code" in plain prose"#)]
-fn given_brand_in_prose(w: &mut GovernanceWorld) {
+// Matches any quoted term/path in plain prose, including the Scenario Outline
+// placeholders (`"<term>"`, `"<path>"`) and the substituted example values
+// (e.g. `"Junie"`, `".junie/"`). The captured token is embedded verbatim in the
+// fixture prose so the scanner has something to flag.
+#[given(regex = r#"^a governance markdown file containing "([^"]+)" in plain prose$"#)]
+#[allow(clippy::needless_pass_by_value)] // cucumber-rs binds the capture by value
+fn given_term_in_prose(w: &mut GovernanceWorld, term: String) {
     w.target = "repo-governance/doc.md".to_string();
-    w.write(&w.target.clone(), "# Doc\n\nWe use Claude Code daily.\n");
+    w.write(
+        &w.target.clone(),
+        &format!("# Doc\n\nWe use {term} daily.\n"),
+    );
 }
 
 #[given(r#"a governance markdown file containing "Claude Code" inside a code fence"#)]
@@ -120,14 +128,18 @@ fn given_brand_in_binding_example(w: &mut GovernanceWorld) {
     );
 }
 
+// Matches any quoted term under a "Platform Binding Examples" heading (the
+// term is exempt there). Covers both `"Claude Code"` and the `"Junie"` outline
+// example value.
 #[given(
-    r#"a governance markdown file containing "Claude Code" under a "Platform Binding Examples" heading"#
+    regex = r#"^a governance markdown file containing "([^"]+)" under a "Platform Binding Examples" heading$"#
 )]
-fn given_brand_under_pb_heading(w: &mut GovernanceWorld) {
+#[allow(clippy::needless_pass_by_value)] // cucumber-rs binds the capture by value
+fn given_term_under_pb_heading(w: &mut GovernanceWorld, term: String) {
     w.target = "repo-governance/doc.md".to_string();
     w.write(
         &w.target.clone(),
-        "# Doc\n\n## Platform Binding Examples\n\nClaude Code is fine here.\n",
+        &format!("# Doc\n\n## Platform Binding Examples\n\n{term} is fine here.\n"),
     );
 }
 
@@ -142,12 +154,6 @@ fn given_clean_directory(w: &mut GovernanceWorld) {
         "repo-governance/b.md",
         "# B\n\nThe coding agent does the work.\n",
     );
-}
-
-#[given(r#"a governance markdown file containing "Skills" in plain prose"#)]
-fn given_skills_in_prose(w: &mut GovernanceWorld) {
-    w.target = "repo-governance/doc.md".to_string();
-    w.write(&w.target.clone(), "# Doc\n\nWe rely on Skills heavily.\n");
 }
 
 #[given(r#"a governance markdown file containing "Skills" inside a code fence"#)]

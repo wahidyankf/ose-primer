@@ -1,10 +1,9 @@
 //! Agent naming-convention orchestration.
 //!
-//! Byte-for-byte port of the agent-relevant orchestration in
-//! `cmd/agents_validate_naming.go`. The pure validators (`Violation`,
-//! `validate_suffix`, `validate_frontmatter_name`, `validate_mirror`) live in
-//! the shared [`crate::internal::naming`] module — this module re-exports them
-//! and adds the filesystem walk over `.claude/agents` and `.opencode/agents`.
+//! The pure validators (`Violation`, `validate_suffix`, `validate_frontmatter_name`,
+//! `validate_mirror`) live in the shared [`crate::internal::naming`] module — this module
+//! re-exports them and adds the filesystem walk over `.claude/agents` and
+//! `.opencode/agents`.
 
 // Re-export the shared pure validators so existing callers
 // (`agents::run_validate_naming`, `agents::reporter`) keep their
@@ -13,12 +12,11 @@ pub use crate::internal::naming::{
     Violation, basename_sans_ext, validate_frontmatter_name, validate_mirror, validate_suffix,
 };
 
-/// Trailing role tokens permitted by the agent naming convention. Mirrors Go
-/// `agentRoles`.
+/// Trailing role tokens permitted by the agent naming convention.
 pub const AGENT_ROLES: &[&str] = &["maker", "checker", "fixer", "dev", "deployer", "manager"];
 
 /// Walks the agent tree under `repo_root` and returns every naming violation,
-/// sorted by path then kind. Mirrors Go `agentsValidateNaming`.
+/// sorted by path then kind.
 pub fn validate_naming(repo_root: &std::path::Path) -> Result<Vec<Violation>, anyhow::Error> {
     let claude_dir = repo_root.join(".claude").join("agents");
     let opencode_dir = repo_root.join(".opencode").join("agents");
@@ -49,7 +47,7 @@ pub fn validate_naming(repo_root: &std::path::Path) -> Result<Vec<Violation>, an
     // Mirror-drift check.
     violations.extend(validate_mirror(&claude_files, &opencode_files));
 
-    // Stable sort by (path, kind) — mirrors Go's sort.SliceStable.
+    // Stable sort by (path, kind).
     violations.sort_by(|a, b| {
         if a.path == b.path {
             a.kind.cmp(&b.kind)
@@ -63,7 +61,7 @@ pub fn validate_naming(repo_root: &std::path::Path) -> Result<Vec<Violation>, an
 
 /// Returns absolute paths for `*.md` files directly under `dir`, excluding
 /// `README.md` and `ci-monitor-subagent.md`. A missing dir yields an empty
-/// list. Mirrors Go `listAgentFiles`.
+/// list.
 fn list_agent_files(dir: &std::path::Path) -> Result<Vec<String>, anyhow::Error> {
     let entries = match std::fs::read_dir(dir) {
         Ok(e) => e,

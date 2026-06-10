@@ -1,15 +1,11 @@
-//! Claude → OpenCode agent conversion.
+//! Claude → OpenCode agent conversion, including OpenCode `permission`-object
+//! emission.
 //!
-//! Ported from `apps/rhino-cli-go/internal/agents/converter.go`; now extended with
-//! OpenCode `permission`-object emission (Go gains the same in the parity port).
-//!
-//! The Go encoder uses `gopkg.in/yaml.v3` with `SetIndent(2)`. To reach
-//! byte-identical output we replicate that emitter's behavior for the specific
-//! `OpenCodeAgent` shape with a hand-rolled serializer ([`emit_opencode_yaml`]).
-//! yaml.v3 emits plain (unquoted) scalars whenever the value is "plain-safe"
-//! and never folds long scalars by default, so the emitter mirrors exactly
-//! those rules. Map keys (the permission entries) are emitted in sorted order,
-//! matching yaml.v3's deterministic map-key sorting.
+//! A hand-rolled YAML serializer ([`emit_opencode_yaml`]) renders the
+//! `OpenCodeAgent` frontmatter with two-space indentation: plain (unquoted)
+//! scalars whenever the value is "plain-safe", no folding of long scalars, and
+//! map keys (the permission entries) emitted in sorted order for deterministic
+//! output.
 
 use std::collections::{BTreeMap, HashMap};
 use std::fmt::Write as _;
@@ -22,8 +18,7 @@ use super::frontmatter::{YamlValue, extract_frontmatter, parse_claude_tools, par
 use super::types::OpenCodeAgent;
 
 /// Canonical relative path (from repo root) where converted OpenCode agent
-/// files are written. Plural form per opencode.ai/docs/agents/. Mirrors Go
-/// `OpenCodeAgentDir`.
+/// files are written. Plural form per opencode.ai/docs/agents/.
 pub const OPENCODE_AGENT_DIR: &str = ".opencode/agents";
 
 /// Converts a Claude tools array to an OpenCode permission map (lowercased
@@ -40,8 +35,7 @@ pub fn convert_permission(claude_tools: &[String]) -> BTreeMap<String, String> {
     permission
 }
 
-/// Converts a Claude model name to an OpenCode model ID. Mirrors Go
-/// `ConvertModel`: `haiku` → `opencode-go/glm-5`, everything else (including
+/// Converts a Claude model name to an OpenCode model ID.
 /// empty/unknown) → `opencode-go/minimax-m2.7`.
 pub fn convert_model(claude_model: &str) -> String {
     match claude_model.trim() {
@@ -72,8 +66,7 @@ fn claude_to_opencode_color() -> &'static HashMap<&'static str, &'static str> {
 
 /// Translate a Claude named color to the corresponding `OpenCode` theme token.
 /// An empty string stays empty; a value that is already an `OpenCode` token or
-/// an unknown/hex value passes through unchanged (escape hatch). Mirrors Go
-/// `ConvertColor`.
+/// an unknown/hex value passes through unchanged (escape hatch).
 pub fn convert_color(c: &str) -> String {
     let color = c.trim();
     if color.is_empty() {
@@ -147,8 +140,7 @@ pub fn build_opencode_agent(frontmatter: &[u8]) -> Result<OpenCodeAgent, Error> 
     })
 }
 
-/// Converts a single Claude agent file to OpenCode format. Mirrors Go
-/// `ConvertAgent`. When `dry_run` is true, performs the full transform but
+/// Converts a single Claude agent file to OpenCode format.
 /// writes nothing.
 pub fn convert_agent(input_path: &Path, output_path: &Path, dry_run: bool) -> Result<(), Error> {
     let content = std::fs::read(input_path).map_err(|e| anyhow!("failed to read file: {e}"))?;
@@ -179,12 +171,12 @@ pub fn convert_agent(input_path: &Path, output_path: &Path, dry_run: bool) -> Re
 }
 
 /// Serializes an [`OpenCodeAgent`] to YAML frontmatter (without the `---`
-/// fences), byte-identical to Go's `yaml.v3` encoder with `SetIndent(2)`.
+/// fences) with two-space indentation.
 ///
 /// Emission order is `description`, `model`, `permission`, `color`, `skills`.
-/// `color` and `skills` are omitted entirely when empty (Go `omitempty`). The
-/// `permission` map keys are already sorted (BTreeMap). A trailing newline
-/// terminates the document, as yaml.v3 produces.
+/// `color` and `skills` are omitted entirely when empty. The `permission` map
+/// keys are already sorted (BTreeMap). A trailing newline terminates the
+/// document.
 pub fn emit_opencode_yaml(agent: &OpenCodeAgent) -> String {
     let mut out = String::new();
 
@@ -372,7 +364,7 @@ fn emit_double_quoted(s: &str) -> String {
 }
 
 /// Converts every Claude agent in `.claude/agents/` to the canonical plural
-/// OpenCode directory. Mirrors Go `ConvertAllAgents`. Returns
+/// OpenCode directory. Returns
 /// `(converted, failed, failed_files)`.
 pub fn convert_all_agents(
     repo_root: &Path,

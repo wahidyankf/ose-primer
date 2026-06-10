@@ -1,8 +1,7 @@
-// Internal support modules for rhino-cli.
-//
-// Phase 3 adds the test-coverage and spec-coverage subsystems plus the minimal
-// git-root helper they depend on. Later phases add the remaining per-domain
-// helpers (agents, docs, doctor, …) that back each command namespace.
+// Internal support modules for rhino-cli. Each submodule holds the per-domain
+// logic (agents, docs, doctor, env, git, java, mermaid, naming,
+// repo-governance, spec-coverage, test-coverage, …) that backs a command
+// namespace, kept separate from the thin `commands` adapters.
 
 pub mod agents;
 pub mod cliout;

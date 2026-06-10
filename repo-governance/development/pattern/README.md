@@ -26,7 +26,7 @@ These patterns define **HOW to structure development workflows and code**, cover
 - [Database Audit Trail Pattern](./database-audit-trail.md) - Required 6-column audit trail (created_at/by, updated_at/by, deleted_at/by) for every database table. Covers the migration tool used by each of the 12 demo backends, language-agnostic migration requirements, Java/Spring Boot guidance (Liquibase changelogs, JPA Auditing, `@NullMarked`), and soft-delete discipline
 - [Functional Programming Practices](./functional-programming.md) - Guidelines for applying functional programming principles in TypeScript/JavaScript (immutability patterns, pure functions, function composition)
 - [Hexagonal Architecture](./hexagonal-architecture.md) - Shared principles, dependency rule diagram, and terminology for the Ports and Adapters pattern used across all non-E2E apps
-- [Hexagonal Architecture — CLI Apps](./hexagonal-architecture-cli.md) - Layer conventions for `rhino-cli-rust` (Rust) and `rhino-cli-go` (Go) including the Go `internal/` constraint
+- [Hexagonal Architecture — CLI Apps](./hexagonal-architecture-cli.md) - Layer conventions for `rhino-cli-rust` (Rust)
 - [Hexagonal Architecture — Web/FE Apps](./hexagonal-architecture-web.md) - Layer conventions for the four frontend apps (Next.js, TanStack Start, Flutter Web, fullstack Next.js)
 - [Hexagonal Architecture — Backend Apps](./hexagonal-architecture-be.md) - Bounded-context layer conventions for all 11 backend apps with language-specific directory layouts and the `api/http/` two-level structure
 - [Maker-Checker-Fixer Pattern](./maker-checker-fixer.md) - Three-stage quality workflow for content creation and validation with user review gates and confidence level integration

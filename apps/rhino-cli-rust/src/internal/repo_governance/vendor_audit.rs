@@ -1,8 +1,5 @@
 //! Vendor-independence audit scanner.
 //!
-//! Byte-for-byte port of
-//! `apps/rhino-cli-go/internal/repo-governance/governance_vendor_audit.go`.
-//!
 //! The scanner detects forbidden vendor-specific terms in prose and reports
 //! them with suggested replacements. Several regions are exempt: code fences
 //! (all backtick-delimited blocks), YAML frontmatter, multi-line HTML comments,
@@ -18,10 +15,9 @@ use anyhow::{Context, Error};
 use regex::Regex;
 use walkdir::WalkDir;
 
-/// A single vendor-term violation found in a file. Mirrors Go `Finding`.
-/// Serialized JSON keys mirror Go's exported field names (`Path`, `Line`,
-/// `Match`, `Replacement` → default json tags lower-cased by the command's
-/// own DTO; this struct is internal and not serialized directly).
+/// A single vendor-term violation found in a file. This struct is internal and
+/// not serialized directly; the command's own DTO lower-cases the JSON keys
+/// (`path`, `line`, `match`, `replacement`).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Finding {
     pub path: String,
@@ -31,7 +27,7 @@ pub struct Finding {
 }
 
 /// Path suffix of the convention definition file, which is exempt from
-/// scanning. Mirrors Go `forbiddenConvention`.
+/// scanning.
 const FORBIDDEN_CONVENTION_SUFFIX: &str =
     "repo-governance/conventions/structure/governance-vendor-independence.md";
 
@@ -50,8 +46,7 @@ fn mk(pattern: &str, term: &'static str, replacement: &'static str) -> Forbidden
 }
 
 /// Forbidden patterns mapped to suggested replacements. Order matters: longer /
-/// more-specific patterns appear before shorter overlapping ones. Mirrors Go
-/// `forbiddenTerms` exactly (same order, same display terms, same replacement
+/// more-specific patterns appear before shorter overlapping ones.
 /// strings).
 fn forbidden_terms() -> &'static Vec<ForbiddenTerm> {
     static TERMS: OnceLock<Vec<ForbiddenTerm>> = OnceLock::new();
@@ -226,8 +221,7 @@ fn link_url_re() -> &'static Regex {
     RE.get_or_init(|| Regex::new(r"\[([^\]]*)\]\([^)]*\)").expect("valid hardcoded regex"))
 }
 
-/// Reads the file at `path` and returns all vendor-term findings. Mirrors Go
-/// `ScanFile`.
+/// Reads the file at `path` and returns all vendor-term findings.
 pub fn scan_file(path: &Path) -> Result<Vec<Finding>, Error> {
     let data = fs::read_to_string(path).with_context(|| format!("read {}", path.display()))?;
     Ok(scan_lines(&path.to_string_lossy(), &data))
@@ -235,10 +229,10 @@ pub fn scan_file(path: &Path) -> Result<Vec<Finding>, Error> {
 
 /// Walks all `.md` files under `root` recursively and returns all findings.
 /// Skips the governance-vendor-independence.md convention definition file. A
-/// missing `root` yields an empty slice, not an error. Mirrors Go `Walk`.
+/// missing `root` yields an empty slice, not an error.
 ///
-/// Entries are visited in lexical (sorted) order to match Go's
-/// `filepath.WalkDir`, ensuring byte-identical finding ordering.
+/// Entries are visited in lexical (sorted) order for deterministic finding
+/// ordering.
 pub fn walk(root: &Path) -> Result<Vec<Finding>, Error> {
     if !root.exists() {
         return Ok(Vec::new());
@@ -264,7 +258,7 @@ pub fn walk(root: &Path) -> Result<Vec<Finding>, Error> {
 
 /// Core line-by-line scanner, tracking exemption state for code fences, YAML
 /// frontmatter, multi-line HTML comments, and Platform Binding Examples
-/// headings. Mirrors Go `scanLines`.
+/// headings.
 fn scan_lines(path: &str, content: &str) -> Vec<Finding> {
     let lines: Vec<&str> = content.split('\n').collect();
     let mut findings = Vec::new();
@@ -374,7 +368,7 @@ fn scan_lines(path: &str, content: &str) -> Vec<Finding> {
 }
 
 /// Returns the number of leading backticks on a fence delimiter line (>= 3 to
-/// be a valid fence), or 0 if not a fence line. Mirrors Go `fenceLineLen`.
+/// be a valid fence), or 0 if not a fence line.
 fn fence_line_len(line: &str) -> usize {
     let trimmed = line.trim();
     let mut n = 0;
@@ -389,7 +383,7 @@ fn fence_line_len(line: &str) -> usize {
 }
 
 /// Removes regions of a line exempt from scanning: HTML comments, inline code
-/// spans, and link URL portions. Mirrors Go `stripNonProse`.
+/// spans, and link URL portions.
 fn strip_non_prose(line: &str) -> String {
     let s = html_comment_re().replace_all(line, "");
     let s = inline_code_re().replace_all(&s, "``");
@@ -398,7 +392,7 @@ fn strip_non_prose(line: &str) -> String {
 }
 
 /// Detects ATX headings (`## Heading`) and returns the level. Returns `None` if
-/// the line is not a heading. Mirrors Go `parseHeading`.
+/// the line is not a heading.
 fn parse_heading(line: &str) -> Option<usize> {
     let trimmed = line.trim();
     if !trimmed.starts_with('#') {
@@ -424,7 +418,7 @@ fn parse_heading(line: &str) -> Option<usize> {
 }
 
 /// Reports whether the heading text contains "Platform Binding Examples"
-/// (case-insensitive). Mirrors Go `isPlatformBindingHeading`.
+/// (case-insensitive).
 fn is_platform_binding_heading(line: &str) -> bool {
     line.to_lowercase().contains("platform binding examples")
 }

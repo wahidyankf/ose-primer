@@ -1,7 +1,5 @@
 //! ENV-VALIDATE CONFIG: hardcoded constants (single stable app surface in ose-primer;
 //! no env-contract.yaml needed — all 15 surfaces are known at compile time).
-//!
-//! Byte-for-byte port target: `apps/rhino-cli-go/internal/envvalidate/contract.go`.
 
 /// A configured app surface for env-validate.
 pub struct AppSurface {

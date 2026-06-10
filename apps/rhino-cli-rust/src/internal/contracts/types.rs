@@ -1,16 +1,13 @@
 //! Domain types for contract codegen post-processing.
-//!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/contracts/types.go`.
 
-/// Configures the `java-clean-imports` command. Mirrors Go
-/// `JavaCleanImportsOptions`.
+/// Configures the `java-clean-imports` command.
 #[derive(Debug, Clone)]
 pub struct JavaCleanImportsOptions {
     /// Absolute path to the generated-contracts directory.
     pub dir: String,
 }
 
-/// Results of cleaning Java imports. Mirrors Go `JavaCleanImportsResult`.
+/// Results of cleaning Java imports.
 #[derive(Debug, Clone, Default)]
 pub struct JavaCleanImportsResult {
     /// Number of `.java` files found.
@@ -21,14 +18,14 @@ pub struct JavaCleanImportsResult {
     pub modified: Vec<String>,
 }
 
-/// Configures the `dart-scaffold` command. Mirrors Go `DartScaffoldOptions`.
+/// Configures the `dart-scaffold` command.
 #[derive(Debug, Clone)]
 pub struct DartScaffoldOptions {
     /// Absolute path to the generated-contracts directory.
     pub dir: String,
 }
 
-/// Results of Dart scaffolding. Mirrors Go `DartScaffoldResult`.
+/// Results of Dart scaffolding.
 #[derive(Debug, Clone, Default)]
 pub struct DartScaffoldResult {
     /// Whether `pubspec.yaml` was written.

@@ -365,8 +365,8 @@ fn given_m_both_exceeded(w: &mut DocsWorld) {
 
 #[given("a markdown file containing a flowchart with 4 nodes at one rank and exactly 4 ranks deep")]
 fn given_m_width_depth_4(w: &mut DocsWorld) {
-    // Mirrors Go fixture `depth4.md`: span 4 (Root→A,B,C,D) and depth 4
-    // (A→E→F→G). With `--max-width 3 --max-depth 3`, both exceed → warning.
+    // Fixture: span 4 (Root→A,B,C,D) and depth 4 (A→E→F→G). With
+    // `--max-width 3 --max-depth 3`, both exceed → warning.
     let body = "flowchart TB\n    Root --> A\n    Root --> B\n    Root --> C\n    Root --> D\n    A --> E\n    E --> F\n    F --> G";
     w.write("docs/d.md", &mermaid_block(body));
 }

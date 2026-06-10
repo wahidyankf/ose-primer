@@ -1,4 +1,4 @@
-// Port of `apps/rhino-cli/internal/testcoverage/diff.go` + `gitdiff.go`.
+// Coverage diffing against git-changed lines.
 
 use std::process::Command;
 

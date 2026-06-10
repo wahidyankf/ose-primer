@@ -1,8 +1,6 @@
 //! Output formatting for sync, validation, and naming results.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/agents/reporter.go` plus
-//! the naming formatters in `cmd/agents_validate_naming.go`. JSON timestamps
-//! use the same RFC3339-with-offset shape as Go's `timeutil.Timestamp()`.
+//! JSON timestamps use the same RFC3339-with-offset shape as Go's `timeutil.Timestamp()`.
 
 use std::fmt::Write as _;
 use std::time::Duration;
@@ -43,7 +41,7 @@ fn go_duration(d: Duration) -> String {
 }
 
 /// Formats a float with up to 9 fractional digits, trimming trailing zeros and
-/// a trailing dot (mirrors Go's duration formatting which drops trailing zeros).
+/// a trailing dot.
 fn trim_frac(v: f64) -> String {
     let mut s = format!("{v:.9}");
     while s.contains('.') && s.ends_with('0') {
@@ -59,7 +57,7 @@ fn trim_frac(v: f64) -> String {
 // Sync formatting
 // ---------------------------------------------------------------------------
 
-/// Formats sync results as plain text. Mirrors Go `FormatSyncText`.
+/// Formats sync results as plain text.
 pub fn format_sync_text(result: &SyncResult, _verbose: bool, quiet: bool) -> String {
     let mut sb = String::new();
 
@@ -102,7 +100,7 @@ pub fn format_sync_text(result: &SyncResult, _verbose: bool, quiet: bool) -> Str
     sb
 }
 
-/// JSON output shape for sync results. Mirrors Go `syncJSONOutput`.
+/// JSON output shape for sync results.
 #[derive(Serialize)]
 struct SyncJsonOutput {
     status: &'static str,
@@ -115,7 +113,7 @@ struct SyncJsonOutput {
     duration_ms: i64,
 }
 
-/// Formats sync results as JSON. Mirrors Go `FormatSyncJSON`.
+/// Formats sync results as JSON.
 pub fn format_sync_json(result: &SyncResult) -> Result<String, Error> {
     let status = if result.failed_files.is_empty() {
         "success"
@@ -139,7 +137,7 @@ pub fn format_sync_json(result: &SyncResult) -> Result<String, Error> {
     ))
 }
 
-/// Formats sync results as markdown. Mirrors Go `FormatSyncMarkdown`.
+/// Formats sync results as markdown.
 pub fn format_sync_markdown(result: &SyncResult) -> String {
     let mut sb = String::new();
     sb.push_str("# Sync Results\n\n");
@@ -175,7 +173,7 @@ pub fn format_sync_markdown(result: &SyncResult) -> String {
 // Validation formatting
 // ---------------------------------------------------------------------------
 
-/// Formats validation results as plain text. Mirrors Go `FormatValidationText`.
+/// Formats validation results as plain text.
 pub fn format_validation_text(result: &ValidationResult, verbose: bool, quiet: bool) -> String {
     let mut sb = String::new();
 
@@ -234,7 +232,7 @@ pub fn format_validation_text(result: &ValidationResult, verbose: bool, quiet: b
     sb
 }
 
-/// JSON output shape for validation results. Mirrors Go `validationJSONOutput`.
+/// JSON output shape for validation results.
 #[derive(Serialize)]
 struct ValidationJsonOutput {
     status: &'static str,
@@ -246,7 +244,7 @@ struct ValidationJsonOutput {
     checks: Vec<ValidationJsonCheck>,
 }
 
-/// A single check in JSON form. Mirrors Go `validationJSONCheck`: expected,
+/// A single check in JSON form.: expected,
 /// actual, message are `omitempty`.
 #[derive(Serialize)]
 struct ValidationJsonCheck {
@@ -272,7 +270,7 @@ impl From<&ValidationCheck> for ValidationJsonCheck {
     }
 }
 
-/// Formats validation results as JSON. Mirrors Go `FormatValidationJSON`.
+/// Formats validation results as JSON.
 pub fn format_validation_json(result: &ValidationResult) -> Result<String, Error> {
     let status = if result.failed_checks > 0 {
         "failure"
@@ -301,8 +299,7 @@ pub fn format_validation_json(result: &ValidationResult) -> Result<String, Error
     ))
 }
 
-/// Formats validation results as markdown. Mirrors Go
-/// `FormatValidationMarkdown`.
+/// Formats validation results as markdown.
 pub fn format_validation_markdown(result: &ValidationResult, verbose: bool) -> String {
     let mut sb = String::new();
     sb.push_str("# Validation Results\n\n");
@@ -365,7 +362,7 @@ pub fn format_validation_markdown(result: &ValidationResult, verbose: bool) -> S
 // preserve the existing `agents::reporter::format_naming_*` call sites.
 
 /// Renders a human-readable summary of naming violations. Delegates to the
-/// shared reporter. Mirrors Go `formatNamingText`.
+/// shared reporter.
 pub fn format_naming_text(
     label: &str,
     violations: &[Violation],
@@ -382,7 +379,7 @@ pub fn format_naming_json(kind: &str, violations: &[Violation]) -> Result<String
 }
 
 /// PR-friendly markdown table for naming violations. Delegates to the shared
-/// reporter. Mirrors Go `formatNamingMarkdown`.
+/// reporter.
 pub fn format_naming_markdown(label: &str, violations: &[Violation]) -> String {
     crate::internal::naming::reporter::format_naming_markdown(label, violations)
 }

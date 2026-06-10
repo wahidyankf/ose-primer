@@ -1,10 +1,8 @@
 //! Shared naming-violation reporter used by `agents validate-naming` and
 //! `workflows validate-naming`.
 //!
-//! Byte-for-byte port of `formatNamingText/JSON/Markdown` in
-//! `apps/rhino-cli-go/cmd/agents_validate_naming.go`. JSON is HTML-escaped to
-//! match Go's `json.MarshalIndent` default; markdown wraps the path column in
-//! backticks (the primer's Go reference uses `` `%s` `` for the path cell).
+//! JSON is HTML-escaped to match Go's `json.MarshalIndent` default; markdown wraps the path
+//! column in backticks (the primer's Go reference uses `` `%s` `` for the path cell).
 
 use std::fmt::Write as _;
 
@@ -13,8 +11,7 @@ use serde::Serialize;
 
 use super::Violation;
 
-/// Renders a human-readable summary of naming violations. Mirrors Go
-/// `formatNamingText`.
+/// Renders a human-readable summary of naming violations.
 pub fn format_naming_text(
     label: &str,
     violations: &[Violation],
@@ -45,7 +42,7 @@ pub fn format_naming_text(
     b
 }
 
-/// JSON report for naming violations. Mirrors Go `formatNamingJSON`. Emits a
+/// JSON report for naming violations. Emits a
 /// trailing newline (Go appends `"\n"`).
 pub fn format_naming_json(kind: &str, violations: &[Violation]) -> Result<String, Error> {
     #[derive(Serialize)]
@@ -63,8 +60,7 @@ pub fn format_naming_json(kind: &str, violations: &[Violation]) -> Result<String
     Ok(format!("{json}\n"))
 }
 
-/// PR-friendly markdown table for naming violations. Mirrors Go
-/// `formatNamingMarkdown` (path cell wrapped in backticks).
+/// PR-friendly markdown table for naming violations.
 pub fn format_naming_markdown(label: &str, violations: &[Violation]) -> String {
     let mut b = String::new();
     let _ = write!(b, "## {label} naming validation\n\n");

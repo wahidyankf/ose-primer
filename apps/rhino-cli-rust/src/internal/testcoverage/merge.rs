@@ -1,4 +1,4 @@
-// Port of `apps/rhino-cli/internal/testcoverage/merge.go`.
+// Coverage-file merging.
 
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
@@ -29,7 +29,7 @@ pub struct BranchCoverage {
 }
 
 /// filepath → line_number → LineCoverage.
-/// BTreeMap to mirror Go's `sort.Strings(files)` + `sort.Ints(lineNos)` deterministic output.
+/// BTreeMap + `sort.Ints(lineNos)` deterministic output.
 pub type CoverageMap = BTreeMap<String, BTreeMap<i64, LineCoverage>>;
 
 /// Union multiple CoverageMaps. Max hit count per line; branches unioned by (block, branch).

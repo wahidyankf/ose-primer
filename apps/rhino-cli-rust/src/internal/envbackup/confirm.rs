@@ -1,6 +1,4 @@
 //! Overwrite-confirmation helpers.
-//!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/envbackup/confirm.go`.
 
 use std::io::{BufRead, Write};
 use std::path::Path;
@@ -9,7 +7,7 @@ use super::types::FileEntry;
 
 /// Returns the subset of `entries` whose destination paths already exist on
 /// disk. For backup, `dest_root` is the backup directory; for restore, it is
-/// the repo root. Mirrors Go `FindExisting`.
+/// the repo root.
 pub fn find_existing(entries: &[FileEntry], dest_root: &str) -> Vec<String> {
     let mut existing = Vec::new();
     for e in entries {
@@ -26,7 +24,7 @@ pub fn find_existing(entries: &[FileEntry], dest_root: &str) -> Vec<String> {
 
 /// Prints the list of conflicting files and prompts with `[y/N]`, reading the
 /// answer from `reader` and writing the prompt to `writer`. Returns true only
-/// for `y`/`yes` (case-insensitive). Mirrors Go `DefaultConfirmFn`.
+/// for `y`/`yes` (case-insensitive).
 pub fn default_confirm<R: BufRead, W: Write>(
     reader: &mut R,
     writer: &mut W,

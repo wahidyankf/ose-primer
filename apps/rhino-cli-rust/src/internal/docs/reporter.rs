@@ -1,4 +1,4 @@
-//! Link validation result formatting. Mirrors Go `links_reporter.go`.
+//! Link validation result formatting.
 
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
@@ -8,7 +8,7 @@ use serde::Serialize;
 
 use super::types::{BrokenLink, LinkValidationResult};
 
-/// Category display order for the text/markdown report. Mirrors Go `categoryOrder`.
+/// Category display order for the text/markdown report.
 const CATEGORY_ORDER: &[&str] = &[
     "Legacy prefixed paths",
     "Missing files",
@@ -19,7 +19,7 @@ const CATEGORY_ORDER: &[&str] = &[
     "broken-anchor",
 ];
 
-/// Formats the validation result as human-readable text. Mirrors Go `FormatLinkText`.
+/// Formats the validation result as human-readable text.
 pub fn format_link_text(result: &LinkValidationResult, _verbose: bool, quiet: bool) -> String {
     let mut out = String::new();
 
@@ -67,7 +67,7 @@ pub fn format_link_text(result: &LinkValidationResult, _verbose: bool, quiet: bo
     out
 }
 
-/// JSON output shape. Mirrors Go `LinkJSONOutput`.
+/// JSON output shape.
 #[derive(Serialize)]
 struct LinkJsonOutput {
     status: &'static str,
@@ -79,7 +79,7 @@ struct LinkJsonOutput {
     categories: BTreeMap<String, Vec<JsonBrokenLink>>,
 }
 
-/// JSON broken-link shape. Mirrors Go `JSONBrokenLink`.
+/// JSON broken-link shape.
 #[derive(Serialize)]
 struct JsonBrokenLink {
     source_file: String,
@@ -88,7 +88,7 @@ struct JsonBrokenLink {
     target_path: String,
 }
 
-/// Formats the validation result as JSON. Mirrors Go `FormatLinkJSON`.
+/// Formats the validation result as JSON.
 pub fn format_link_json(result: &LinkValidationResult) -> Result<String, Error> {
     let status = if result.broken_links.is_empty() {
         "success"
@@ -132,7 +132,6 @@ pub fn format_link_json(result: &LinkValidationResult) -> Result<String, Error> 
 }
 
 /// Markdown delegates to text — the text format is already markdown-compatible.
-/// Mirrors Go `FormatLinkMarkdown`.
 pub fn format_link_markdown(result: &LinkValidationResult) -> String {
     format_link_text(result, false, false)
 }

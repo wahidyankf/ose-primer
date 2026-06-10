@@ -35,21 +35,19 @@ The full resolved matrix lives in
 
 The three sibling repositories share a governance layer originally authored in
 ose-public and propagated outward. Over time each repo accumulated independent
-improvements — infra added mandatory grilling gates to a skill, primer added a
-dual-CLI setup, ose-public renamed a convention file. The gaps compounded until a
+improvements — infra added mandatory grilling gates to a skill, primer renamed its
+rhino-cli app, ose-public renamed a convention file. The gaps compounded until a
 structured comparison revealed 26 distinct deviations. This document explains the
 thinking behind every resolution, from the primer's perspective.
 
 ## Primer-Specific Context
 
-Primer carries two structures not present in ose-public:
+Primer carries one structure not present in ose-public:
 
-- **Dual CLIs**: `apps/rhino-cli-rust` (canonical for binding generation) and
-  `apps/rhino-cli-go` (Go implementation maintained for capability parity).
 - **Naming divergence**: upstream uses `apps/rhino-cli`; primer uses
-  `apps/rhino-cli-rust` and `apps/rhino-cli-go`.
+  `apps/rhino-cli-rust`.
 
-These divergences affect rows 11, 20, and 21 and are explicitly preserved during
+This divergence affects rows 11, 20, and 21 and is explicitly preserved during
 every 3-way merge described below.
 
 ## Survey Findings That Informed Decisions
@@ -78,13 +76,11 @@ The survey (empirical, 2026-06-06) established these facts before any decisions:
 Pre-write verification against the `plan-domain-parity` worktree found one matrix
 premise that needed refinement:
 
-**Row 21 premise partially outdated.** `apps/rhino-cli-go` already ships
-`agents sync` and `agents emit-bindings` commands with tests
-(`cmd/agents_sync.go`, `cmd/agents_emit_bindings.go`, and 19 Go files under
-`internal/agents/` including `bindings.go`, `converter.go`,
-`sync_validator.go`). The remaining row-21 work is therefore **porting the
-row-18/row-19 emitter changes** (permission object, Codex layout) to the Go
-implementation — not building emission from scratch.
+**Row 21 premise partially outdated.** `apps/rhino-cli-rust` already ships
+`agents sync` and `agents emit-bindings` commands with tests. The remaining
+row-21 work is therefore **applying the row-18/row-19 emitter changes**
+(permission object, Codex layout) to the Rust implementation — not building
+emission from scratch.
 
 Research findings from web-research-maker (2026-06-05 to 2026-06-06) are cited
 per decision where relevant.
@@ -244,9 +240,8 @@ regeneration.
 
 **Decision**: modernize the rhino-cli OpenCode emitters in primer from the
 deprecated boolean `tools` flags format to the `permission` object format
-(`allow`/`ask`/`deny` per tool). In primer this means updating both
-`apps/rhino-cli-rust/src/internal/agents/converter.rs` and
-`apps/rhino-cli-go/internal/agents/converter.go`. After the code changes,
+(`allow`/`ask`/`deny` per tool). In primer this means updating
+`apps/rhino-cli-rust/src/internal/agents/converter.rs`. After the code changes,
 regenerate all 50 `.opencode/agents/*.md` mirrors.
 
 **Rationale**: the OpenCode official documentation deprecates the boolean flags
@@ -293,21 +288,16 @@ compilation step.
 family: `generate:bindings`, `sync:agents`, `sync:skills`, `sync:dry-run`,
 `validate:sync`, `validate:claude`, and `validate:harness-bindings`.
 
-### Row 21 — Primer Dual-CLI Emitters
+### Row 21 — Primer Emitter Changes
 
-**Decision**: the Rust CLI (`apps/rhino-cli-rust`) remains canonical in the
+**Decision**: the Rust CLI (`apps/rhino-cli-rust`) is canonical in the
 `generate:bindings` script. The bindings emission capability is **already present**
-in the Go CLI (survey correction: `agents sync` and `emit-bindings` already ship in
-`apps/rhino-cli-go`). The remaining work is porting the row-18 and row-19 emitter
-changes (permission object, Codex layout) to the Go implementation so capability
-parity holds after the Rust emitter changes. The parity guard is validated via
-`nx run rhino-cli-{rust,go}:validate:cross-vendor-parity` and is **not** wired into
-the `generate:bindings` script.
+(`agents sync` and `emit-bindings` ship in `apps/rhino-cli-rust`). The remaining
+work is applying the row-18 and row-19 emitter changes (permission object, Codex
+layout) to the Rust implementation.
 
-**Rationale**: the invoker confirmed in the second grill session that the Go port
-scope was appropriate and that the script should stay Rust-canonical. Separating
-the parity guard from the generation script keeps scripts deterministic and avoids
-circular validation.
+**Rationale**: the invoker confirmed in the second grill session that the emitter
+change scope was appropriate and that the script stays Rust-canonical.
 
 ### Row 22 — Primer Direct-Push Deviation (Safety Invariant 6)
 

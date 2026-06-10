@@ -1,8 +1,7 @@
 //! Output formatting for Java annotation validation results.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/java/reporter.go`. JSON
-//! timestamps use the same RFC3339-with-offset shape as Go's
-//! `timeutil.Timestamp()` and existing Phase-4 reporters.
+//! JSON timestamps use the same RFC3339-with-offset shape as Go's `timeutil.Timestamp()`
+//! and existing Phase-4 reporters.
 
 use std::fmt::Write as _;
 
@@ -21,7 +20,7 @@ fn timestamp() -> String {
 
 /// Formats the validation result as human-readable text. Each package is shown
 /// with a `✓` or `✗` prefix and its status, followed by a blank line and the
-/// violation count summary. Mirrors Go `FormatText`.
+/// violation count summary.
 pub fn format_text(result: &ValidationResult, _verbose: bool, quiet: bool) -> String {
     let mut out = String::new();
 
@@ -77,9 +76,8 @@ struct JsonOutput<'a> {
     violations: Vec<JsonViolation<'a>>,
 }
 
-/// Formats the validation result as JSON. Mirrors Go `FormatJSON`
-/// (`json.MarshalIndent` with HTML escaping; no trailing newline — the Go
-/// `writeFormatted` helper does not append one).
+/// Formats the validation result as JSON (two-space indent, HTML escaping, no
+/// trailing newline).
 pub fn format_json(result: &ValidationResult) -> Result<String, Error> {
     let num_violations = result.total_packages - result.valid_packages;
     let status = if num_violations > 0 {
@@ -111,8 +109,7 @@ pub fn format_json(result: &ValidationResult) -> Result<String, Error> {
     Ok(json)
 }
 
-/// Formats the validation result as a markdown report. Mirrors Go
-/// `FormatMarkdown`.
+/// Formats the validation result as a markdown report.
 pub fn format_markdown(result: &ValidationResult) -> String {
     let mut out = String::new();
 

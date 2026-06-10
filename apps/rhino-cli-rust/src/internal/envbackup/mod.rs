@@ -1,8 +1,8 @@
 //! Environment-file backup and restore subsystem.
 //!
-//! Port of `apps/rhino-cli-go/internal/envbackup/`. Provides `.env` discovery,
-//! config-file discovery, worktree detection, the backup/restore engine, and
-//! the text/JSON/markdown reporters consumed by the `env` command family.
+//! Provides `.env` discovery, config-file discovery, worktree detection, the
+//! backup/restore engine, and the text/JSON/markdown reporters consumed by the
+//! `env` command family.
 
 pub mod config;
 pub mod confirm;

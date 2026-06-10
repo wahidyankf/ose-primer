@@ -1,6 +1,4 @@
 //! Null-safety annotation validation.
-//!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/java/validator.go`.
 
 use std::path::Path;
 
@@ -15,8 +13,6 @@ use super::types::{PackageEntry, ValidationOptions, ValidationResult, ViolationT
 ///  1. `package-info.java` exists — [`ViolationType::MissingPackageInfo`] if absent.
 ///  2. `package-info.java` contains `@<annotation>` — [`ViolationType::MissingAnnotation`]
 ///     if missing.
-///
-/// Mirrors Go `ValidateAll`.
 pub fn validate_all(opts: &ValidationOptions) -> Result<ValidationResult, Error> {
     let packages = scan_packages(&opts.source_root)?;
 
@@ -65,9 +61,8 @@ pub fn validate_all(opts: &ValidationOptions) -> Result<ValidationResult, Error>
     Ok(result)
 }
 
-/// Computes the relative path of `target` from `base`, mirroring Go's
-/// `filepath.Rel`. On failure Go falls back to the absolute `target`, which we
-/// replicate by returning `target` verbatim when stripping the prefix fails.
+/// Computes the relative path of `target` from `base`. On failure it returns
+/// `target` verbatim (when stripping the prefix fails).
 fn rel_path(base: &str, target: &str) -> String {
     match Path::new(target).strip_prefix(base) {
         Ok(rel) => {
@@ -84,7 +79,7 @@ fn rel_path(base: &str, target: &str) -> String {
 }
 
 /// True when `haystack` contains `needle` as a contiguous byte sub-slice,
-/// mirroring Go's `bytes.Contains`.
+///.
 fn bytes_contains(haystack: &[u8], needle: &[u8]) -> bool {
     if needle.is_empty() {
         return true;

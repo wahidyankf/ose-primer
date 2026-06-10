@@ -13,7 +13,7 @@ use super::cucumber_expr::{
 use super::util::{escape_re2_literal_braces, first_non_empty, normalize_ws, unescape_string};
 
 /// Holds exact step texts (literal matches) and compiled regex patterns.
-/// Mirrors Go `stepMatcher`. Step texts are whitespace-normalized on insert.
+/// Step texts are whitespace-normalized on insert.
 #[derive(Debug, Default)]
 pub struct StepMatcher {
     exact: HashMap<String, bool>,
@@ -26,7 +26,7 @@ impl StepMatcher {
     }
 
     /// True if `step_text` matches an exact entry or any compiled pattern.
-    /// Mirrors Go `stepMatcher.matches`.
+    ///
     pub fn matches(&self, step_text: &str) -> bool {
         let normalized = normalize_ws(step_text);
         if self.exact.contains_key(&normalized) {
@@ -55,7 +55,7 @@ impl StepMatcher {
     }
 }
 
-/// Generic step-text → matcher inserter. Mirrors Go `addStepToMatcher`.
+/// Generic step-text → matcher inserter.
 /// - Text starting with `^` → traditional regex.
 /// - Text containing `{...}` → Cucumber expression (`^…$` anchored).
 /// - Otherwise → exact literal (Cucumber-unescaped first).
@@ -81,7 +81,7 @@ pub fn add_step_to_matcher(sm: &mut StepMatcher, text: &str) {
 }
 
 /// Python-specific variant — handles `parsers.parse({name:d})` format strings
-/// before falling back to the generic path. Mirrors Go `addPythonStepToMatcher`.
+/// before falling back to the generic path.
 pub fn add_python_step_to_matcher(sm: &mut StepMatcher, text: &str) {
     let text = normalize_ws(text);
     if text.is_empty() {
@@ -157,8 +157,37 @@ fn rs_step_expr_re() -> &'static Regex {
 fn rs_step_regex_re() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
     RE.get_or_init(|| {
-        Regex::new(r##"#\[(?:given|when|then)\s*\(\s*regex\s*=\s*r#"(.*?)"#\s*\)\s*\]"##)
+        Regex::new(r##"(?s)#\[(?:given|when|then)\s*\(\s*regex\s*=\s*r#"(.*?)"#\s*\)\s*\]"##)
             .expect("valid regex")
+    })
+}
+
+/// Matches the hash-less raw-string `regex = r"..."` step-definition form.
+fn rs_step_regex_plain_re() -> &'static Regex {
+    static RE: OnceLock<Regex> = OnceLock::new();
+    RE.get_or_init(|| {
+        Regex::new(r#"#\[(?:given|when|then)\s*\(\s*regex\s*=\s*r"([^"]*)"\s*\)\s*\]"#)
+            .expect("valid regex")
+    })
+}
+
+/// Matches the literal raw-string `#[given(r#"..."#)]` step-definition form
+/// (a literal step text wrapped in a hash-delimited raw string, used when the
+/// text itself contains `"` characters).
+fn rs_step_literal_raw_hash_re() -> &'static Regex {
+    static RE: OnceLock<Regex> = OnceLock::new();
+    RE.get_or_init(|| {
+        Regex::new(r##"(?s)#\[(?:given|when|then)\s*\(\s*r#"(.*?)"#\s*\)\s*\]"##)
+            .expect("valid regex")
+    })
+}
+
+/// Matches the literal hash-less raw-string `#[given(r"...")]` step-definition
+/// form.
+fn rs_step_literal_raw_re() -> &'static Regex {
+    static RE: OnceLock<Regex> = OnceLock::new();
+    RE.get_or_init(|| {
+        Regex::new(r#"#\[(?:given|when|then)\s*\(\s*r"([^"]*)"\s*\)\s*\]"#).expect("valid regex")
     })
 }
 
@@ -238,7 +267,7 @@ pub fn extract_python_step_texts(
     Ok(())
 }
 
-/// Extracts `@scenario("feature.feature", "Title")` titles. Mirrors Go.
+/// Extracts `@scenario("feature.feature", "Title")` titles.
 pub fn extract_python_scenario_titles(
     test_file_path: &Path,
 ) -> std::result::Result<HashSet<String>, Error> {
@@ -256,20 +285,33 @@ pub fn extract_rust_step_texts(
     path: &Path,
     sm: &mut StepMatcher,
 ) -> std::result::Result<(), Error> {
+    // Scan the whole file content (not line-by-line) so that step attributes
+    // split across multiple lines — e.g. `#[given(` / `"text"` / `)]` — are
+    // matched. The attribute regexes allow newlines between tokens.
     let content = fs::read_to_string(path)?;
-    for line in content.lines() {
-        for caps in rs_step_regex_re().captures_iter(line) {
-            let pattern = caps.get(1).map_or("", |m| m.as_str());
-            if let Ok(re) = Regex::new(&escape_re2_literal_braces(pattern)) {
-                sm.add_pattern(re);
-            }
+    for caps in rs_step_regex_re().captures_iter(&content) {
+        let pattern = caps.get(1).map_or("", |m| m.as_str());
+        if let Ok(re) = Regex::new(&escape_re2_literal_braces(pattern)) {
+            sm.add_pattern(re);
         }
-        for caps in rs_step_expr_re().captures_iter(line) {
-            add_step_to_matcher(sm, caps.get(1).map_or("", |m| m.as_str()));
+    }
+    for caps in rs_step_regex_plain_re().captures_iter(&content) {
+        let pattern = caps.get(1).map_or("", |m| m.as_str());
+        if let Ok(re) = Regex::new(&escape_re2_literal_braces(pattern)) {
+            sm.add_pattern(re);
         }
-        for caps in rs_step_literal_re().captures_iter(line) {
-            add_step_to_matcher(sm, caps.get(1).map_or("", |m| m.as_str()));
-        }
+    }
+    for caps in rs_step_expr_re().captures_iter(&content) {
+        add_step_to_matcher(sm, caps.get(1).map_or("", |m| m.as_str()));
+    }
+    for caps in rs_step_literal_re().captures_iter(&content) {
+        add_step_to_matcher(sm, caps.get(1).map_or("", |m| m.as_str()));
+    }
+    for caps in rs_step_literal_raw_hash_re().captures_iter(&content) {
+        add_step_to_matcher(sm, caps.get(1).map_or("", |m| m.as_str()));
+    }
+    for caps in rs_step_literal_raw_re().captures_iter(&content) {
+        add_step_to_matcher(sm, caps.get(1).map_or("", |m| m.as_str()));
     }
     Ok(())
 }
@@ -466,6 +508,22 @@ mod tests {
         assert!(sm.matches("user logs in"));
         assert!(sm.matches("count is 42"));
         assert!(sm.matches("result is 7"));
+    }
+
+    #[test]
+    fn rust_plain_raw_string_regex() {
+        // The hash-less `regex = r"..."` form used across the rhino-cli-rust
+        // cucumber step definitions.
+        let tmp = TempDir::new().unwrap();
+        let p = write(
+            tmp.path(),
+            "x.rs",
+            "#[given(regex = r\"^a file recording (\\d+)% coverage$\")]\n",
+        );
+        let mut sm = StepMatcher::new();
+        extract_rust_step_texts(&p, &mut sm).unwrap();
+        assert!(sm.matches("a file recording 80% coverage"));
+        assert!(!sm.matches("a file recording abc% coverage"));
     }
 
     #[test]

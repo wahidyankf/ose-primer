@@ -513,11 +513,11 @@ nx run crud-fs-ts-nextjs:links:check
 3. Fix by correcting the target path in the source file
 4. Re-run `nx run crud-fs-ts-nextjs:links:check` to confirm
 
-**Dependency chain:** `rhino-cli-go:build` → `crud-fs-ts-nextjs:links:check` → `crud-fs-ts-nextjs:test:quick`
+**Dependency chain:** `rhino-cli-rust:build` → `crud-fs-ts-nextjs:links:check` → `crud-fs-ts-nextjs:test:quick`
 
-## Go CLI Linting
+## Go Linting
 
-Go CLI projects (`apps/rhino-cli-go`, `apps/rhino-cli-go`) use [golangci-lint](https://golangci-lint.run/) for static analysis.
+Go projects (`apps/crud-be-golang-gin`, `libs/golang-commons`) use [golangci-lint](https://golangci-lint.run/) for static analysis.
 
 **Shared configuration**: A single `.golangci.yml` at the repository root serves all Go CLIs. golangci-lint discovers it automatically by walking up the directory tree from each app's working directory — no `--config` flag or per-project files are needed.
 
@@ -532,11 +532,10 @@ Go CLI projects (`apps/rhino-cli-go`, `apps/rhino-cli-go`) use [golangci-lint](h
 
 ```bash
 # Run from app directory
-cd apps/rhino-cli-go && golangci-lint run ./...
+cd apps/crud-be-golang-gin && golangci-lint run ./...
 
 # Run via Nx
-nx lint rhino-cli
-nx lint rhino-cli
+nx lint crud-be-golang-gin
 
 # Verify which config file is resolved (verbose flag)
 golangci-lint run -v ./... 2>&1 | grep "Config"

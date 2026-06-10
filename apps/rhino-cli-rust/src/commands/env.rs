@@ -1,10 +1,8 @@
 //! `env` command family: `init`, `backup`, `restore`.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/cmd/env.go`, `env_init.go`,
-//! `env_backup.go`, and `env_restore.go`. The `init` walk lives here (it lived
-//! in the Go cmd layer); `backup`/`restore` delegate to
+//! The `init` walk lives in this command layer; `backup`/`restore` delegate to
 //! [`crate::internal::envbackup`]. On error the dispatcher prints the matching
-//! cobra-style usage block (the `*_USAGE` constants) to stderr.
+//! usage block (the `*_USAGE` constants) to stderr.
 
 use std::io::Write as _;
 use std::path::Path;
@@ -20,10 +18,10 @@ use crate::internal::envbackup::{
 use crate::internal::git::root::find_root;
 
 // ===========================================================================
-// Usage blocks (cobra-style, printed to stderr on error)
+// Usage blocks (printed to stderr on error)
 // ===========================================================================
 
-/// Usage block for `env init` (cobra `UsageString`).
+/// Usage block for `env init`.
 pub const ENV_INIT_USAGE: &str = "Usage:\n  \
 rhino-cli env init [flags]\n\n\
 Flags:\n      \
@@ -111,8 +109,8 @@ pub struct EnvInitArgs {
     pub force: bool,
 }
 
-/// Runs `env init`. Mirrors Go `runEnvInit`: walks `infra/dev/` for
-/// `.env.example` files and copies each to `.env` in the same directory.
+/// Runs `env init`: walks `infra/dev/` for `.env.example` files and copies each
+/// to `.env` in the same directory.
 pub fn run_env_init(args: &EnvInitArgs) -> Result<(), Error> {
     let repo_root = find_root().context("failed to find git repository root")?;
     let infra_dev_dir = repo_root.join("infra").join("dev");
@@ -121,13 +119,10 @@ pub fn run_env_init(args: &EnvInitArgs) -> Result<(), Error> {
     let mut skipped: i64 = 0;
     let mut errs: Vec<String> = Vec::new();
 
-    // Walk infra/dev/ for .env.example files. Go's filepath.WalkDir errors out
-    // entirely if the root cannot be walked; a missing infra/dev simply yields
-    // zero matches in walkdir terms, but Go's WalkDir surfaces the stat error of
-    // the root. We mirror Go: a missing root produces a walk error.
+    // Walk infra/dev/ for .env.example files. A missing infra/dev is treated as
+    // a walk error rather than an empty result, so the caller surfaces the
+    // missing-root condition explicitly.
     if !infra_dev_dir.exists() {
-        // Go's WalkDir invokes the callback with the lstat error for the root,
-        // and runEnvInit returns it wrapped as "failed to walk infra/dev/".
         return Err(anyhow!(
             "failed to walk infra/dev/: lstat {}: no such file or directory",
             infra_dev_dir.to_string_lossy()
@@ -236,7 +231,7 @@ pub struct EnvRestoreArgs {
 
 /// Resolves the effective backup directory (R11b): when `dir` is empty, derive
 /// `~/<repo-basename>-env-backup` from the repo root; otherwise expand `~` then
-/// make absolute. Mirrors Go cmd `--dir` handling.
+/// make absolute.
 fn resolve_backup_dir(dir: &str, repo_root: &str) -> Result<String, Error> {
     if dir.is_empty() {
         let home = expand_tilde("~").context("cannot determine home directory")?;
@@ -256,7 +251,7 @@ fn resolve_backup_dir(dir: &str, repo_root: &str) -> Result<String, Error> {
     }
 }
 
-/// Mirrors Go `filepath.Abs`: joins with the cwd when relative, then cleans.
+///: joins with the cwd when relative, then cleans.
 fn go_abs(path: &str) -> Result<String, Error> {
     let p = Path::new(path);
     let abs = if p.is_absolute() {
@@ -303,12 +298,10 @@ fn effective_force(flag_force: bool, output: OutputFormat) -> bool {
     !stdin_is_terminal()
 }
 
-/// Reports whether stdin is a terminal, mirroring Go's
-/// `fi.Mode()&os.ModeCharDevice != 0` check on `os.Stdin.Stat()`. We avoid an
-/// `unsafe` libc `isatty` call (the crate forbids unsafe) by stat-ing the fd 0
-/// device and testing for a character device. In the shadow-diff harness and
-/// integration tests stdin is always piped (non-char-device), so this returns
-/// false there, matching the Go binary's behaviour under the same conditions.
+/// Reports whether stdin is a terminal. We avoid an `unsafe` libc `isatty`
+/// call (the crate forbids unsafe) by stat-ing the fd 0 device and testing for
+/// a character device. Under integration tests stdin is always piped
+/// (non-char-device), so this returns false there.
 #[cfg(unix)]
 fn stdin_is_terminal() -> bool {
     use std::os::unix::fs::FileTypeExt as _;
@@ -323,7 +316,7 @@ fn stdin_is_terminal() -> bool {
     true
 }
 
-/// Runs `env backup`. Mirrors Go `runEnvBackup`.
+/// Runs `env backup`.
 pub fn run_env_backup(
     args: &EnvBackupArgs,
     output: OutputFormat,
@@ -374,7 +367,7 @@ pub fn run_env_backup(
     write_formatted(&result, output, verbose, quiet)
 }
 
-/// Runs `env restore`. Mirrors Go `runEnvRestore`.
+/// Runs `env restore`.
 pub fn run_env_restore(
     args: &EnvRestoreArgs,
     output: OutputFormat,
@@ -423,7 +416,7 @@ pub fn run_env_restore(
     write_formatted(&result, output, verbose, quiet)
 }
 
-/// Selects the formatter and prints to stdout. Mirrors Go `writeFormatted`.
+/// Selects the formatter and prints to stdout.
 fn write_formatted(
     result: &envbackup::EnvResult,
     output: OutputFormat,

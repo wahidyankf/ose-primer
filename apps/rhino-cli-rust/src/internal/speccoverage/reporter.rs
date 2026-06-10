@@ -13,7 +13,7 @@ fn go_quote(s: &str) -> String {
     format!("{s:?}")
 }
 
-/// Human-readable spec-coverage report. Mirrors Go `FormatText`.
+/// Human-readable spec-coverage report.
 pub fn format_text(r: &CheckResult, _verbose: bool, quiet: bool) -> String {
     let has_gaps = !r.gaps.is_empty() || !r.scenario_gaps.is_empty() || !r.step_gaps.is_empty();
 
@@ -178,7 +178,6 @@ pub fn format_json(r: &CheckResult) -> std::result::Result<String, Error> {
 }
 
 /// Markdown delegates to text — the text format is already markdown-compatible.
-/// Mirrors Go `FormatMarkdown`.
 pub fn format_markdown(r: &CheckResult) -> String {
     format_text(r, false, false)
 }

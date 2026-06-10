@@ -1,8 +1,7 @@
 //! Version readers, parsers, comparators, and the subprocess runner.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/doctor/checker.go`. The
-//! comparator return strings (including the `≥` U+2265 character) match Go
-//! exactly so text/JSON/markdown output is byte-identical.
+//! The comparator return strings include the `≥` (U+2265) character, which is
+//! emitted verbatim in the text/JSON/markdown output.
 
 use std::path::Path;
 use std::process::Command;
@@ -26,14 +25,13 @@ pub struct RunOutput {
 }
 
 /// Injectable command runner. Production uses [`real_runner`]; tests inject
-/// fakes. Mirrors Go `CommandRunner` (the exit code is ignored downstream so it
-/// is not surfaced here — only "found in PATH or not" matters).
+/// fakes. The exit code is ignored downstream — only "found in PATH or not"
+/// matters.
 pub type CommandRunner<'a> = dyn Fn(&str, &[&str]) -> RunOutput + 'a;
 
 /// Executes a command via `std::process::Command`, returning captured output.
-/// Returns `found: false` when the binary cannot be located (mirrors Go
-/// `realRunner` returning an error from `exec.LookPath`). A non-zero exit is not
-/// treated as "not found" — the output is still captured.
+/// Returns `found: false` when the binary cannot be located. A non-zero exit is
+/// not treated as "not found" — the output is still captured.
 pub fn real_runner(name: &str, args: &[&str]) -> RunOutput {
     let output = Command::new(name).args(args).output();
     match output {
@@ -87,9 +85,10 @@ pub fn read_java_version(pom_xml_path: &Path) -> Option<String> {
     Some(rest[..end].trim().to_string())
 }
 
-/// Reads the required Go version from the `go X.Y` directive in go.mod.
-pub fn read_go_version(go_mod_path: &Path) -> Option<String> {
-    let data = std::fs::read_to_string(go_mod_path).ok()?;
+/// Reads the required Go version from the `go X.Y` directive in a `go.work`
+/// (or `go.mod`) file.
+pub fn read_go_version(go_version_path: &Path) -> Option<String> {
+    let data = std::fs::read_to_string(go_version_path).ok()?;
     for line in data.split('\n') {
         let line = line.trim();
         if let Some(rest) = line.strip_prefix("go ") {
@@ -109,8 +108,7 @@ pub fn read_python_version(path: &Path) -> Option<String> {
     Some(data.trim().to_string())
 }
 
-/// Reads a tool version from a `.tool-versions` file. Mirrors Go
-/// `readToolVersionsEntry`.
+/// Reads a tool version from a `.tool-versions` file.
 pub fn read_tool_versions_entry(path: &Path, tool_name: &str) -> Option<String> {
     let data = std::fs::read_to_string(path).ok()?;
     for line in data.split('\n') {
@@ -134,7 +132,7 @@ pub fn read_dotnet_version(global_json_path: &Path) -> Option<String> {
 }
 
 /// Reads the Dart SDK version from pubspec.yaml `environment.sdk`, stripping
-/// `^`/`>=` prefixes. Mirrors Go `readDartSDKVersion`.
+/// `^`/`>=` prefixes.
 pub fn read_dart_sdk_version(pubspec_path: &Path) -> Option<String> {
     read_pubspec_env_field(pubspec_path, "sdk:")
 }
@@ -169,8 +167,7 @@ fn read_pubspec_env_field(pubspec_path: &Path, key: &str) -> Option<String> {
     None
 }
 
-/// Reads the MSRV from Cargo.toml's `rust-version` field. Mirrors Go
-/// `readRustVersion` (returns empty string, not an error, when absent).
+/// Reads the MSRV from Cargo.toml's `rust-version` field.
 pub fn read_rust_version(cargo_toml_path: &Path) -> Option<String> {
     let data = std::fs::read_to_string(cargo_toml_path).ok()?;
     for line in data.split('\n') {
@@ -189,18 +186,18 @@ pub fn read_rust_version(cargo_toml_path: &Path) -> Option<String> {
 // Normalisation + line parsing
 // ===========================================================================
 
-/// Strips a leading `v` from a version string. Mirrors Go `normalizeSimpleVersion`.
+/// Strips a leading `v` from a version string.
 pub fn normalize_simple_version(s: &str) -> String {
     s.strip_prefix('v').unwrap_or(s).to_string()
 }
 
-/// Trims whitespace then strips a leading `v`. Mirrors Go `parseTrimVersion`.
+/// Trims whitespace then strips a leading `v`.
 pub fn parse_trim_version(s: &str) -> String {
     normalize_simple_version(s.trim())
 }
 
 /// Returns the `word_idx`-th whitespace token from the first line starting with
-/// `line_prefix`, optionally stripping `token_prefix`. Mirrors Go `parseLineWord`.
+/// `line_prefix`, optionally stripping `token_prefix`.
 pub fn parse_line_word(
     output: &str,
     line_prefix: &str,
@@ -224,8 +221,7 @@ pub fn parse_line_word(
 // Per-tool parsers
 // ===========================================================================
 
-/// Extracts the Java major version from `java -version` stderr. Mirrors Go
-/// `parseJavaVersion`.
+/// Extracts the Java major version from `java -version` stderr.
 pub fn parse_java_version(stderr: &str) -> String {
     for line in stderr.split('\n') {
         if line.contains("version") {
@@ -319,7 +315,7 @@ pub fn parse_playwright_version(output: &str) -> String {
 // Version comparators
 // ===========================================================================
 
-/// Compares versions exactly (after normalisation). Mirrors Go `compareExact`.
+/// Compares versions exactly (after normalisation).
 pub fn compare_exact(installed: &str, required: &str) -> (ToolStatus, String) {
     if required.is_empty() {
         return (ToolStatus::Ok, "no version requirement".to_string());
@@ -336,7 +332,7 @@ pub fn compare_exact(installed: &str, required: &str) -> (ToolStatus, String) {
     }
 }
 
-/// Compares only the major component. Mirrors Go `compareMajor`.
+/// Compares only the major component.
 pub fn compare_major(installed: &str, required: &str) -> (ToolStatus, String) {
     if required.is_empty() {
         return (ToolStatus::Ok, "no version requirement".to_string());
@@ -356,7 +352,7 @@ pub fn compare_major(installed: &str, required: &str) -> (ToolStatus, String) {
 }
 
 /// Splits a version into (major, minor, patch). Returns None if any present
-/// part is non-numeric. Mirrors Go `parseVersionParts`.
+/// part is non-numeric.
 fn parse_version_parts(s: &str) -> Option<(i64, i64, i64)> {
     let s = normalize_simple_version(s);
     let parts: Vec<&str> = s.splitn(3, '.').collect();
@@ -367,7 +363,7 @@ fn parse_version_parts(s: &str) -> Option<(i64, i64, i64)> {
     Some((nums[0], nums[1], nums[2]))
 }
 
-/// Checks installed major >= required major. Mirrors Go `compareMajorGTE`.
+/// Checks installed major >= required major.
 pub fn compare_major_gte(installed: &str, required: &str) -> (ToolStatus, String) {
     if required.is_empty() {
         return (ToolStatus::Ok, "no version requirement".to_string());
@@ -394,7 +390,7 @@ pub fn compare_major_gte(installed: &str, required: &str) -> (ToolStatus, String
     }
 }
 
-/// Checks installed >= required. Mirrors Go `compareGTE`.
+/// Checks installed >= required.
 pub fn compare_gte(installed: &str, required: &str) -> (ToolStatus, String) {
     if required.is_empty() {
         return (ToolStatus::Ok, "no version requirement".to_string());
@@ -420,7 +416,7 @@ pub fn compare_gte(installed: &str, required: &str) -> (ToolStatus, String) {
 }
 
 /// Playwright comparator: warns when browsers are missing. The browser-presence
-/// probe is injectable so tests and shadow-diff stay deterministic.
+/// probe is injectable so tests stay deterministic.
 pub fn compare_playwright(
     _installed: &str,
     _required: &str,
@@ -437,7 +433,6 @@ pub fn compare_playwright(
 }
 
 /// Checks whether Playwright chromium browsers exist in the platform cache.
-/// Mirrors Go `checkPlaywrightBrowsers`.
 pub fn check_playwright_browsers() -> bool {
     let Ok(home) = std::env::var("HOME") else {
         return false;
@@ -465,7 +460,7 @@ pub fn check_playwright_browsers() -> bool {
 // Check execution
 // ===========================================================================
 
-/// Executes a single tool-check definition. Mirrors Go `runOneDef`.
+/// Executes a single tool-check definition.
 fn run_one_def(runner: &CommandRunner, def: &ToolDef, browsers_present: bool) -> ToolCheck {
     let required_version = (def.read_req)();
     let mut check = ToolCheck {
@@ -501,8 +496,7 @@ fn run_one_def(runner: &CommandRunner, def: &ToolDef, browsers_present: bool) ->
     check
 }
 
-/// Runs all tool checks (filtered by scope) and aggregates results. Mirrors Go
-/// `CheckAll`. `scope` selects which tools run; `scope_raw` is echoed into JSON.
+/// Runs all tool checks (filtered by scope) and aggregates results.
 /// `browsers_present` is the injectable Playwright probe; production passes
 /// [`check_playwright_browsers`]`()`.
 pub fn check_all_with(
@@ -779,12 +773,7 @@ mod tests {
             "<project><properties><java.version>21</java.version></properties></project>",
         )
         .unwrap();
-        std::fs::create_dir_all(root.join("apps/rhino-cli-go")).unwrap();
-        std::fs::write(
-            root.join("apps/rhino-cli-go/go.mod"),
-            "module x\n\ngo 1.24.0\n",
-        )
-        .unwrap();
+        std::fs::write(root.join("go.work"), "go 1.24.0\n\nuse (\n\t./x\n)\n").unwrap();
     }
 
     #[test]

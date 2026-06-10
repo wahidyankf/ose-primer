@@ -84,7 +84,7 @@
       },
       "inputs": ["{projectRoot}/src/**/*.rs", "{projectRoot}/Cargo.toml"],
       "outputs": ["{projectRoot}/lcov.info"],
-      "comment": "Library coverage gate at 90% lines. Ignored files are exercised only via integration tests / git- and external-tool-dependent paths: cli.rs + main.rs (entrypoint/dispatch), commands/*.rs (thin clap adapters covered by cucumber tests — testcoverage, speccoverage, docs, agents, git, contracts, java, env, doctor), internal/git/root.rs (filesystem walk-up + os.Getwd-parity logical-path resolution), internal/git/runner.rs (pre-commit orchestrator whose steps shell out to docker/nx/npx/npm/git — only the error path is byte-checkable; its branch logic is covered by injected-Deps unit tests), and testcoverage/{diff,merge}.rs (git-diff and on-disk-merge paths). The env/doctor engines (internal/envbackup/*, internal/doctor/*) carry the logic and are unit-tested directly. Actual measured lines coverage is ~92%."
+      "comment": "Library coverage gate at 90% lines. Ignored files are exercised only via integration tests / git- and external-tool-dependent paths: cli.rs + main.rs (entrypoint/dispatch), commands/*.rs (thin clap adapters covered by cucumber tests — testcoverage, speccoverage, docs, agents, git, contracts, java, env, doctor), internal/git/root.rs (filesystem walk-up + logical-path working-directory resolution), internal/git/runner.rs (pre-commit orchestrator whose steps shell out to docker/nx/npx/npm/git — only the error path is deterministically checkable; its branch logic is covered by injected-Deps unit tests), and testcoverage/{diff,merge}.rs (git-diff and on-disk-merge paths). The env/doctor engines (internal/envbackup/*, internal/doctor/*) carry the logic and are unit-tested directly. Actual measured lines coverage is ~92%."
     },
     "test:integration": {
       "executor": "nx:run-commands",
@@ -100,14 +100,14 @@
       }
     },
     "spec-coverage": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- spec-coverage validate specs/apps/rhino/behavior/cli/gherkin apps/rhino-cli-go --shared-steps",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- spec-coverage validate specs/apps/rhino/behavior/cli/gherkin apps/rhino-cli-rust --shared-steps",
       "cache": true,
       "inputs": [
         "{workspaceRoot}/specs/apps/rhino/behavior/cli/gherkin/**/*.feature",
         "{projectRoot}/src/**/*.rs",
-        "{workspaceRoot}/apps/rhino-cli-go/**/*.go"
+        "{projectRoot}/tests/**/*.rs"
       ],
-      "comment": "Mirrors rhino-cli-go:spec-coverage exactly (same gherkin dir + scanned impl dir + --shared-steps), swapping only the binary to the Rust port. The shared-steps validator confirms every gherkin step has a matching step definition in the canonical Go test suite; the Rust binary produces byte-identical results (verified via shadow-diff `sc shared`). Scanning apps/rhino-cli-go (not apps/rhino-cli-rust) is intentional: the Go test suite is the canonical fully-covered implementation, and the parity-locked literal-step extractor (shared by both binaries) does not recognise the `regex = r\"...\"` cucumber-rs attribute form the Rust tests use, so scanning the Rust tree would report false-positive gaps identical under either binary."
+      "comment": "Validates that every gherkin step under specs/apps/rhino/behavior/cli/gherkin has a matching cucumber-rs step definition in apps/rhino-cli-rust/tests (--shared-steps does step-only validation across the whole tree). The step extractor recognises the literal `#[given(\"...\")]`, `expr = \"...\"`, and raw-string `regex = r\"...\"` / `regex = r#\"...\"#` attribute forms used by the test suite, so the gate fails if any step lacks a definition."
     },
     "validate:naming-agents": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- agents validate-naming",
@@ -140,6 +140,12 @@
     "validate:harness-bindings": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- agents validate-bindings",
       "cache": false,
+      "outputs": []
+    },
+    "env:validate": {
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- env validate",
+      "cache": false,
+      "inputs": ["{projectRoot}/**/*.rs", "{workspaceRoot}/infra/dev/**", "{workspaceRoot}/apps/**"],
       "outputs": []
     },
     "validate:cross-vendor-parity": {

@@ -1,6 +1,4 @@
 //! `env validate` command: detect drift between .env.example and source reads.
-//!
-//! Byte-for-byte port target: `apps/rhino-cli-go/cmd/env_validate.go`.
 
 use anyhow::{Context, Error};
 use clap::Args;

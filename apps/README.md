@@ -10,15 +10,15 @@ Apps follow the naming pattern: **`{domain}-{part}`**
 
 Where `{part}` describes the role and technology stack:
 
-| Part pattern                | Examples                                              | Description                                                  |
-| --------------------------- | ----------------------------------------------------- | ------------------------------------------------------------ |
-| `be-{lang}-{framework}`     | `be-golang-gin`, `be-java-springboot`, `be-ts-effect` | Backend service                                              |
-| `fe-{lang}-{framework}`     | `fe-ts-nextjs`, `fe-dart-flutterweb`                  | Frontend application                                         |
-| `fs-{lang}-{framework}`     | `fs-ts-nextjs`                                        | Fullstack application (FE + BE combined)                     |
-| `cli` / `<name>-cli-{lang}` | `rhino-cli-rust`, `rhino-cli-go`                      | CLI tool (polyglot CLIs use the `-cli-{lang}` parity suffix) |
-| `web`                       | `crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`              | Web platform (content site)                                  |
-| `{role}-e2e`                | `be-e2e`, `fe-e2e`, `crud-fe-e2e`                     | E2E test project for the named role                          |
-| `be` / `fe`                 | `crud-be-fsharp-giraffe`, `crud-fe-ts-nextjs`         | Simple single-technology projects                            |
+| Part pattern                | Examples                                              | Description                                                           |
+| --------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------- |
+| `be-{lang}-{framework}`     | `be-golang-gin`, `be-java-springboot`, `be-ts-effect` | Backend service                                                       |
+| `fe-{lang}-{framework}`     | `fe-ts-nextjs`, `fe-dart-flutterweb`                  | Frontend application                                                  |
+| `fs-{lang}-{framework}`     | `fs-ts-nextjs`                                        | Fullstack application (FE + BE combined)                              |
+| `cli` / `<name>-cli-{lang}` | `rhino-cli-rust`                                      | CLI tool (the `-cli-{lang}` suffix names the implementation language) |
+| `web`                       | `crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`              | Web platform (content site)                                           |
+| `{role}-e2e`                | `be-e2e`, `fe-e2e`, `crud-fe-e2e`                     | E2E test project for the named role                                   |
+| `be` / `fe`                 | `crud-be-fsharp-giraffe`, `crud-fe-ts-nextjs`         | Simple single-technology projects                                     |
 
 **Language abbreviations** (`{lang}`): `ts` (TypeScript), `golang` (Go), `java` (Java), `kt` (Kotlin),
 `py` (Python), `rs` (Rust), `cs` (C#), `fs` (F#), `clj` (Clojure), `dart` (Dart), `ex` (Elixir).
@@ -32,7 +32,6 @@ Where `{part}` describes the role and technology stack:
 - `crud-be-e2e` - Playwright BE E2E tests for crud-fs-ts-nextjs tRPC API
 - `crud-fe-e2e` - Playwright FE E2E tests for crud-fs-ts-nextjs UI
 - `rhino-cli-rust` - Repository Hygiene & INtegration Orchestrator CLI (Rust) - **the implementation CI and the developer toolchain invoke**; consumes `specs/apps/rhino/`
-- `rhino-cli-go` - the same CLI in Go - retained as a behaviorally-identical **parity twin** (validated against `rhino-cli-rust` by the shadow-diff parity gate); consumes the same `specs/apps/rhino/`. See [rhino-cli dual-implementation parity convention](../repo-governance/conventions/structure/rhino-cli-dual-implementation-parity.md).
 - `crud-fe-ts-nextjs` - demo landing website (www.example.com) - Next.js app (port 3200)
 - `crud-be-fsharp-giraffe` - demo backend API (F#/Giraffe) - F# application (port 8202)
 - `crud-fe-e2e` - FE E2E tests for crud-fe-ts-nextjs - Playwright (browser testing)
@@ -50,35 +49,18 @@ Where `{part}` describes the role and technology stack:
 
 ## App Structure Examples
 
-### Go CLI Application (Current)
+### Rust CLI Application (Current)
 
 ```
-├── cmd/                     # CLI commands
-├── internal/                # Internal packages
+apps/rhino-cli-rust/
+├── src/
+│   ├── commands/            # CLI command handlers (one module per command)
+│   ├── internal/            # Internal domain logic
+│   ├── cli.rs               # Argument parsing + dispatch
+│   └── main.rs              # Entry point
+├── tests/                   # Integration tests
 ├── dist/                    # Build output (gitignored)
-├── main.go                  # Entry point
-├── go.mod                   # Go module definition
-├── project.json             # Nx project configuration
-└── README.md                # App documentation
-```
-
-```
-apps/rhino-cli/
-├── cmd/                     # CLI commands
-├── internal/                # Internal packages
-├── dist/                    # Build output (gitignored)
-├── main.go                  # Entry point
-├── go.mod                   # Go module definition
-├── project.json             # Nx project configuration
-└── README.md                # App documentation
-```
-
-```
-├── internal/                # Internal packages (links/)
-├── cmd/                     # CLI commands
-├── dist/                    # Build output (gitignored)
-├── main.go                  # Entry point
-├── go.mod                   # Go module definition
+├── Cargo.toml               # Crate manifest
 ├── project.json             # Nx project configuration
 └── README.md                # App documentation
 ```
@@ -261,7 +243,7 @@ Use the corresponding deployer agent (e.g. `apps-crud-fe-ts-nextjs-deployer`) fo
 
 Currently:
 
-- **Go** (CLI tools) - rhino-cli, rhino-cli
+- **Rust** (CLI tools) - rhino-cli-rust
 - **TypeScript/Next.js** (web applications) - crud-fe-ts-nextjs, crud-fs-ts-nextjs
 - **F#/Giraffe** (backend API) - crud-be-fsharp-giraffe
 - **Go/Gin** (backend API) - crud-be-golang-gin

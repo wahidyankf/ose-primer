@@ -1,4 +1,4 @@
-//! Mermaid rule validation. Mirrors Go `validator.go`.
+//! Mermaid rule validation.
 
 use std::collections::HashMap;
 
@@ -8,7 +8,7 @@ use super::types::{
     Direction, MermaidBlock, ValidationResult, Violation, ViolationKind, Warning, WarningKind,
 };
 
-/// Validation thresholds. Mirrors Go `ValidateOptions`.
+/// Validation thresholds.
 #[derive(Debug, Clone, Copy)]
 pub struct ValidateOptions {
     pub max_label_len: i64,
@@ -18,8 +18,7 @@ pub struct ValidateOptions {
 }
 
 impl Default for ValidateOptions {
-    /// Standard validation thresholds. Mirrors Go `DefaultValidateOptions`
-    /// (MaxDepth = math.MaxInt).
+    /// Standard validation thresholds (MaxDepth = `i64::MAX`).
     fn default() -> Self {
         Self {
             max_label_len: 30,
@@ -31,7 +30,7 @@ impl Default for ValidateOptions {
 }
 
 /// Validates a slice of `MermaidBlock`s against the given options. Applies four
-/// rules (three blocking violations, two warnings). Mirrors Go `ValidateBlocks`.
+/// rules (three blocking violations, two warnings).
 ///
 /// Note: `files_scanned` is set by the caller in the Go command handler (from
 /// the count of files that produced blocks); `ValidateBlocks` itself sets it to

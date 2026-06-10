@@ -1,5 +1,4 @@
-// Byte-for-byte port of `apps/rhino-cli/internal/testcoverage/reporter.go`.
-// Format strings match exactly so shadow-diff against the Go binary passes.
+// Output formatting for coverage results.
 
 use std::fmt::Write as _;
 
@@ -43,7 +42,7 @@ impl From<&FileResult> for FileResultJson {
     }
 }
 
-/// Human-readable coverage report. Mirrors Go's `FormatText`.
+/// Human-readable coverage report.
 /// Output:
 ///   "Line coverage: 86.08% (2411 covered, 141 partial, 249 missed, 2801 total)"
 ///   "PASS: 86.08% >= 85% threshold"   (or FAIL: ... < ... threshold)
@@ -200,7 +199,7 @@ mod tests {
 
     fn sample_result(passed: bool) -> CoverageResult {
         CoverageResult {
-            file: "apps/rhino-cli/cover.out".to_string(),
+            file: "cover.out".to_string(),
             format: Format::Go,
             covered: 2411,
             partial: 141,

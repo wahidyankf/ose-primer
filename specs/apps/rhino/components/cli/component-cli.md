@@ -1,8 +1,8 @@
 # Component Diagram: rhino-cli `docs` Command Handler
 
 Level 3 of the C4 model for the rhino-cli demo application. Shows the internal structure of the
-`docs` command namespace — the command handlers, validation engines, and output layer — across
-both CLI implementations (`apps/rhino-cli-rust/` and `apps/rhino-cli-go/`).
+`docs` command namespace — the command handlers, validation engines, and output layer — in the
+CLI implementation (`apps/rhino-cli-rust/`).
 
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
@@ -105,10 +105,9 @@ rhino-cli docs validate-links --exclude plans/done --exclude apps-labs
 
 ### Implementation references
 
-| Implementation | Flag struct                                                    | Handler                | Source                                         |
-| -------------- | -------------------------------------------------------------- | ---------------------- | ---------------------------------------------- |
-| Rust (clap)    | `ValidateLinksArgs`                                            | `run_validate_links`   | `apps/rhino-cli-rust/src/commands/docs.rs`     |
-| Go (cobra)     | `validateDocsLinksStagedOnly` var + `--exclude` StringArrayVar | `runValidateDocsLinks` | `apps/rhino-cli-go/cmd/docs_validate_links.go` |
+| Implementation | Flag struct         | Handler              | Source                                     |
+| -------------- | ------------------- | -------------------- | ------------------------------------------ |
+| Rust (clap)    | `ValidateLinksArgs` | `run_validate_links` | `apps/rhino-cli-rust/src/commands/docs.rs` |
 
 ---
 
@@ -182,10 +181,9 @@ rhino-cli docs validate-mermaid --exclude plans/done --exclude apps-labs
 
 ### Implementation references
 
-| Implementation | Flag struct             | Handler                | Source                                           |
-| -------------- | ----------------------- | ---------------------- | ------------------------------------------------ |
-| Rust (clap)    | `ValidateMermaidArgs`   | `run_validate_mermaid` | `apps/rhino-cli-rust/src/commands/docs.rs`       |
-| Go (cobra)     | `validateMermaid*` vars | `runValidateMermaid`   | `apps/rhino-cli-go/cmd/docs_validate_mermaid.go` |
+| Implementation | Flag struct           | Handler                | Source                                     |
+| -------------- | --------------------- | ---------------------- | ------------------------------------------ |
+| Rust (clap)    | `ValidateMermaidArgs` | `run_validate_mermaid` | `apps/rhino-cli-rust/src/commands/docs.rs` |
 
 ---
 
@@ -259,10 +257,9 @@ rhino-cli docs validate-heading-hierarchy --exclude docs --exclude plans/in-prog
 
 ### Implementation references
 
-| Implementation | Flag struct                      | Handler                          | Source                                                     |
-| -------------- | -------------------------------- | -------------------------------- | ---------------------------------------------------------- |
-| Rust (clap)    | `ValidateHeadingHierarchyArgs`   | `run_validate_heading_hierarchy` | `apps/rhino-cli-rust/src/commands/docs.rs`                 |
-| Go (cobra)     | `validateHeadingHierarchy*` vars | `runValidateHeadingHierarchy`    | `apps/rhino-cli-go/cmd/docs_validate_heading_hierarchy.go` |
+| Implementation | Flag struct                    | Handler                          | Source                                     |
+| -------------- | ------------------------------ | -------------------------------- | ------------------------------------------ |
+| Rust (clap)    | `ValidateHeadingHierarchyArgs` | `run_validate_heading_hierarchy` | `apps/rhino-cli-rust/src/commands/docs.rs` |
 
 ---
 
@@ -305,5 +302,4 @@ Behavior scenarios for all commands live in
 
 - **Parent**: [cli component](./README.md)
 - **Behavior specs**: [behavior/cli/gherkin/docs/](../../behavior/cli/gherkin/docs/README.md)
-- **Rust implementation**: `apps/rhino-cli-rust/src/commands/docs.rs`
-- **Go implementation**: `apps/rhino-cli-go/cmd/docs_validate_links.go`, `apps/rhino-cli-go/cmd/docs_validate_mermaid.go`, `apps/rhino-cli-go/cmd/docs_validate_heading_hierarchy.go`
+- **Implementation**: `apps/rhino-cli-rust/src/commands/docs.rs`

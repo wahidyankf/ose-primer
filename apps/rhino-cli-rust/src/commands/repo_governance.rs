@@ -1,9 +1,7 @@
 //! `repo-governance vendor-audit` command.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/cmd/governance_vendor_audit.go`.
-//! Output is written with `print!` (no implicit trailing newline) to mirror
-//! Go's `Fprint`. The cobra-style usage block (printed to stderr on error by
-//! the dispatcher) reproduces the Go binary's help text.
+//! Output is written with `print!` (no implicit trailing newline). The usage
+//! block is printed to stderr on error by the dispatcher.
 
 use std::fmt::Write as _;
 use std::path::PathBuf;
@@ -19,7 +17,7 @@ use crate::internal::repo_governance::gherkin_keyword_cardinality::{
 };
 use crate::internal::repo_governance::vendor_audit::{Finding, walk};
 
-/// Cobra-style usage block printed to stderr when `vendor-audit` errors.
+/// Usage block printed to stderr when `vendor-audit` errors.
 pub const VENDOR_AUDIT_USAGE: &str = "Usage:\n  \
 rhino-cli repo-governance vendor-audit [path] [flags]\n\n\
 Examples:\n  \
@@ -44,7 +42,7 @@ pub struct VendorAuditArgs {
     pub path: Option<String>,
 }
 
-/// Cobra-style usage block printed to stderr when
+/// Usage block printed to stderr when
 /// `gherkin-keyword-cardinality` errors.
 pub const GHERKIN_KEYWORD_CARDINALITY_USAGE: &str = "Usage:\n  \
 rhino-cli repo-governance gherkin-keyword-cardinality [path] [flags]\n\n\
@@ -90,9 +88,8 @@ pub fn run_vendor_audit(args: &VendorAuditArgs, output: OutputFormat) -> Result<
         git::root::find_root().map_err(|e| anyhow!("failed to find git repository root: {e}"))?;
 
     let scan_path = args.path.as_deref().unwrap_or("repo-governance");
-    // Mirror Go's `filepath.Join(repoRoot, scanPath)`: an absolute scanPath is
-    // treated as relative (joined under repo root), matching the Go binary's
-    // path resolution exactly.
+    // Join semantics: an absolute scanPath is treated as relative (joined under
+    // the repo root) rather than overriding it.
     let full_path = go_join(&repo_root, scan_path);
 
     let findings = walk(&full_path).context("vendor audit failed")?;
@@ -110,8 +107,7 @@ pub fn run_vendor_audit(args: &VendorAuditArgs, output: OutputFormat) -> Result<
     Ok(())
 }
 
-/// Runs the `repo-governance gherkin-keyword-cardinality` command. Mirrors Go
-/// `runGovernanceGherkinKeywordCardinality`.
+/// Runs the `repo-governance gherkin-keyword-cardinality` command.
 pub fn run_gherkin_keyword_cardinality(
     args: &GherkinKeywordCardinalityArgs,
     output: OutputFormat,
@@ -120,7 +116,7 @@ pub fn run_gherkin_keyword_cardinality(
         git::root::find_root().map_err(|e| anyhow!("failed to find git repository root: {e}"))?;
 
     let scan_path = args.path.as_deref().unwrap_or(".");
-    // Mirror Go's `filepath.Join(repoRoot, scanPath)` (see `go_join`).
+    // Join scan_path under the repo root (see `go_join`).
     let full_path = go_join(&repo_root, scan_path);
 
     let findings = walk_features(&full_path).context("gherkin keyword cardinality audit failed")?;
@@ -192,7 +188,7 @@ fn clean(path: &std::path::Path) -> PathBuf {
     out
 }
 
-/// Formats findings as human-readable text. Mirrors Go `formatVendorAuditText`.
+/// Formats findings as human-readable text.
 fn format_vendor_audit_text(findings: &[Finding]) -> String {
     if findings.is_empty() {
         return "GOVERNANCE VENDOR AUDIT PASSED: no violations found\n".to_string();
@@ -213,8 +209,8 @@ fn format_vendor_audit_text(findings: &[Finding]) -> String {
     sb
 }
 
-/// Formats findings as JSON. Mirrors Go `formatVendorAuditJSON`
-/// (`json.MarshalIndent` → HTML-escaped, with trailing newline).
+/// Formats findings as JSON (two-space indent, HTML-escaped, with trailing
+/// newline).
 fn format_vendor_audit_json(findings: &[Finding]) -> Result<String, Error> {
     let status = if findings.is_empty() {
         "passed"
@@ -240,7 +236,7 @@ fn format_vendor_audit_json(findings: &[Finding]) -> Result<String, Error> {
     Ok(format!("{json}\n"))
 }
 
-/// Formats findings as a markdown table. Mirrors Go `formatVendorAuditMarkdown`.
+/// Formats findings as a markdown table.
 fn format_vendor_audit_markdown(findings: &[Finding]) -> String {
     if findings.is_empty() {
         return "## Governance Vendor Audit\n\n**PASSED**: no violations found\n".to_string();
@@ -278,8 +274,7 @@ struct JsonCardinalityResult<'a> {
     findings: Vec<JsonCardinalityFinding<'a>>,
 }
 
-/// Formats cardinality findings as human-readable text. Mirrors Go
-/// `formatGherkinCardinalityText`.
+/// Formats cardinality findings as human-readable text.
 fn format_gherkin_cardinality_text(findings: &[CardinalityFinding]) -> String {
     if findings.is_empty() {
         return "GHERKIN KEYWORD CARDINALITY AUDIT PASSED: no violations found\n".to_string();
@@ -300,8 +295,7 @@ fn format_gherkin_cardinality_text(findings: &[CardinalityFinding]) -> String {
     sb
 }
 
-/// Formats cardinality findings as JSON. Mirrors Go
-/// `formatGherkinCardinalityJSON` (`json.MarshalIndent` → HTML-escaped, with
+/// Formats cardinality findings as JSON.
 /// trailing newline).
 fn format_gherkin_cardinality_json(findings: &[CardinalityFinding]) -> Result<String, Error> {
     let status = if findings.is_empty() {
@@ -328,8 +322,7 @@ fn format_gherkin_cardinality_json(findings: &[CardinalityFinding]) -> Result<St
     Ok(format!("{json}\n"))
 }
 
-/// Formats cardinality findings as a markdown table. Mirrors Go
-/// `formatGherkinCardinalityMarkdown`.
+/// Formats cardinality findings as a markdown table.
 fn format_gherkin_cardinality_markdown(findings: &[CardinalityFinding]) -> String {
     if findings.is_empty() {
         return "## Gherkin Keyword Cardinality Audit\n\n**PASSED**: no violations found\n"

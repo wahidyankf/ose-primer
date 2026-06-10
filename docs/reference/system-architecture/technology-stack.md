@@ -36,10 +36,10 @@ Technology stack summary, quality tools, and future architecture considerations 
 
 ### CLI Tools
 
-- **Language**: Go 1.26
-- **Build**: Native Go toolchain via Nx
+- **Language**: Rust
+- **Build**: Cargo toolchain via Nx
 - **Distribution**: Local binaries
-- **Applications**: rhino-cli-go, rhino-cli-rust
+- **Applications**: rhino-cli-rust
 
 ### Infrastructure
 

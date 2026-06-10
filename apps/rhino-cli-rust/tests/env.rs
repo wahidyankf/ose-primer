@@ -71,12 +71,11 @@ impl EnvWorld {
 
     /// Runs `rhino-cli` from the repo (or `run_dir`) with the given args plus
     /// `--no-color`. Stdin is a closed pipe (non-char-device → the binary's
-    /// non-TTY detection triggers force mode, mirroring Go's
-    /// `os.Stdin.Stat()&ModeCharDevice == 0`), so the interactive confirm
+    /// non-TTY detection triggers force mode), so the interactive confirm
     /// prompt is skipped and overwrites proceed deterministically. `PWD` is set
-    /// to the working dir so the binary's Go-parity `getwd()` honours the
-    /// logical path — keeping `find_root` in the same namespace as a
-    /// repo-relative `--dir` for the inside-repo rejection scenario.
+    /// to the working dir so the binary's `getwd()` honours the logical path —
+    /// keeping `find_root` in the same namespace as a repo-relative `--dir` for
+    /// the inside-repo rejection scenario.
     fn exec(&mut self, args: &[&str]) {
         let cwd = self
             .run_dir

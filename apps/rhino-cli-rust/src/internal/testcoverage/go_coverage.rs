@@ -1,5 +1,5 @@
-// Byte-for-byte port of `apps/rhino-cli/internal/testcoverage/go_coverage.go`.
-// Algorithm steps (matching tech-docs §Coverage Validator Port):
+// Go `cover.out` coverage parsing.
+// Algorithm steps:
 //   1. Parse cover.out blocks via regex.
 //   2. Group blocks by file.
 //   3. For each line in each file, collect ALL counts across all blocks covering that line.
@@ -22,7 +22,7 @@ use super::types::{FileResult, Format, Result as CoverageResult};
 fn cover_block_re() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
     RE.get_or_init(|| {
-        // Mirrors Go's coverBlockRe at apps/rhino-cli/internal/testcoverage/go_coverage.go:13.
+        // Matches a `cover.out` block line: file:startLine.col,endLine.col stmts count.
         Regex::new(r"^(.+):(\d+)\.\d+,(\d+)\.\d+ \d+ (\d+)$").expect("valid regex")
     })
 }
@@ -61,8 +61,7 @@ pub(crate) fn get_source_lines_from(
     Some(lines)
 }
 
-/// Classifies whether a source line contains executable Go code. Mirrors
-/// `apps/rhino-cli/internal/testcoverage/go_coverage.go:59`.
+/// Classifies whether a source line contains executable Go code.
 ///
 /// Excluded:
 ///   - Blank lines
@@ -272,7 +271,7 @@ mod tests {
         p
     }
 
-    // ---- isGoCodeLine cases (ported from go_coverage_test.go:18) ----
+    // ---- isGoCodeLine cases ----
     #[test]
     fn is_go_code_line_cases() {
         let cases = [
@@ -299,7 +298,7 @@ mod tests {
         }
     }
 
-    // ---- getModuleNameFrom cases (port of go_coverage_test.go:45 + 53) ----
+    // ---- getModuleNameFrom cases ----
     #[test]
     fn get_module_name_from_no_go_mod_returns_empty() {
         let tmp = TempDir::new().unwrap();
@@ -317,7 +316,7 @@ mod tests {
         assert_eq!(get_module_name_from(tmp.path()), "github.com/example/myapp");
     }
 
-    // ---- getSourceLinesFrom cases (port of go_coverage_test.go:66 + 74) ----
+    // ---- getSourceLinesFrom cases ----
     #[test]
     fn get_source_lines_from_missing_file_returns_none() {
         let tmp = TempDir::new().unwrap();
@@ -334,7 +333,7 @@ mod tests {
         assert_eq!(lines.get(&3).map(String::as_str), Some("line3"));
     }
 
-    // ---- parseCoverOut cases (port of go_coverage_test.go:90 + 97) ----
+    // ---- parseCoverOut cases ----
     #[test]
     fn parse_cover_out_file_not_found_errors() {
         let err = parse_cover_out("/nonexistent/cover.out").unwrap_err();

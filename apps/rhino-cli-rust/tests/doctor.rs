@@ -103,7 +103,10 @@ impl DoctorWorld {
             "apps/crud-be-fsharp-giraffe-jasb/pom.xml",
             "<project><properties><java.version>21</java.version></properties></project>",
         );
-        w("apps/rhino-cli-go/go.mod", "module foo\n\ngo 1.24.0\n");
+        w(
+            "go.work",
+            "go 1.24.0\n\nuse (\n\t./apps/crud-be-golang-gin\n)\n",
+        );
         w("apps/crud-be-python-fastapi/.python-version", "3.13\n");
         w(".tool-versions", "erlang 27.0\nelixir 1.19.0-otp-27\n");
         w(

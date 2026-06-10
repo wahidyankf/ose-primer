@@ -116,9 +116,7 @@ pub fn is_prose_allowlisted(repo_rel: &str) -> bool {
 /// trailing-slash-trimmed — the same practical semantics as the link
 /// scanner's `filter_skip_paths`. Deliberately a self-contained string
 /// predicate rather than a shared helper: the scanner's filter is
-/// `PathBuf`-shaped and mirrors Go `filterSkipPaths` byte-for-byte
-/// (including `filepath.Clean` edge cases), while this validator is
-/// Rust-canonical and operates on repo-relative strings.
+/// `PathBuf`-shaped, while this validator operates on repo-relative strings.
 fn is_excluded(repo_rel: &str, exclude: &[String]) -> bool {
     exclude.iter().any(|prefix| {
         let cleaned = prefix.trim_end_matches('/');
@@ -281,8 +279,8 @@ struct HeadingJsonFinding {
     message: String,
 }
 
-/// Formats findings as JSON (Go-style HTML-escaped, mirroring the link
-/// reporter so the planned Go twin can match byte-for-byte).
+/// Formats findings as JSON (HTML-escaped, matching the link reporter's
+/// output shape).
 pub fn format_heading_json(findings: &[HeadingFinding]) -> Result<String, Error> {
     let status = if findings.is_empty() {
         "success"

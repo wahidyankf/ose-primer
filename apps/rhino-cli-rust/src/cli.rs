@@ -53,11 +53,9 @@ pub struct Cli {
     pub command: Option<Commands>,
 }
 
-/// Top-level command namespaces.
-///
-/// Phase 3 registers `test-coverage` and `spec-coverage`. The remaining
-/// namespaces from the Go CLI (agents, contracts, docs, doctor, env, git, java,
-/// repo-governance, workflows) are added in later phases.
+/// Top-level command namespaces: `test-coverage`, `spec-coverage`, `agents`,
+/// `contracts`, `docs`, `doctor`, `env`, `git`, `java`, `repo-governance`, and
+/// `workflows`.
 #[derive(Subcommand, Debug)]
 pub enum Commands {
     /// Test coverage commands.
@@ -232,9 +230,9 @@ pub fn run() -> i32 {
 }
 
 fn dispatch(cmd: &Commands, output_format: OutputFormat, verbose: bool, quiet: bool) -> i32 {
-    // Each arm returns the run result paired with the command's cobra-style usage
-    // block, which is printed to stderr on error to mirror cobra's default
-    // (SilenceUsage is unset on the Go commands; only SilenceErrors is set).
+    // Each arm returns the run result paired with the command's usage block,
+    // which is printed to stderr on error (errors themselves are printed
+    // separately by the caller).
     let (result, usage) = match cmd {
         Commands::TestCoverage(tc) => dispatch_test_coverage(tc, output_format, verbose, quiet),
         Commands::SpecCoverage(sc) => match sc {

@@ -1,12 +1,10 @@
 //! Git worktree detection for `--worktree-aware`.
-//!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/envbackup/worktree.go`.
 
 use std::path::Path;
 
 use anyhow::{Context, Error, anyhow};
 
-/// Information about a git worktree or repository. Mirrors Go `WorktreeInfo`.
+/// Information about a git worktree or repository.
 #[derive(Debug)]
 pub struct WorktreeInfo {
     /// True when `repoRoot/.git` is a file (linked worktree).
@@ -16,7 +14,7 @@ pub struct WorktreeInfo {
 }
 
 /// Inspects `repo_root` to determine whether it is a linked git worktree or a
-/// normal repository. Mirrors Go `DetectWorktree`.
+/// normal repository.
 pub fn detect_worktree(repo_root: &str) -> Result<WorktreeInfo, Error> {
     let git_path = Path::new(repo_root).join(".git");
 

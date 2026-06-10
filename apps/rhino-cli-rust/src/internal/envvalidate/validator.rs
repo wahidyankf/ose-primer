@@ -1,6 +1,4 @@
 //! Core env-validate logic: parse .env.example, scan source, compute drift.
-//!
-//! Byte-for-byte port target: `apps/rhino-cli-go/internal/envvalidate/validator.go`.
 
 use std::collections::BTreeSet;
 use std::path::Path;

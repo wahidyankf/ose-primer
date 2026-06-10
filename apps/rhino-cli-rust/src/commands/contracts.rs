@@ -1,11 +1,9 @@
 //! `contracts` command family: `java-clean-imports`, `dart-scaffold`.
 //!
-//! Byte-for-byte ports of `apps/rhino-cli-go/cmd/contracts_java_clean_imports.go`
-//! and `cmd/contracts_dart_scaffold.go`. The directory argument is resolved with
-//! Go `filepath.Abs` semantics (joined under the process CWD and lexically
-//! cleaned, NOT canonicalized) so the walk and relative-path reporting match the
-//! Go binary exactly. Output is written with `print!` (no trailing newline added)
-//! to mirror Go's `Fprint`.
+//! The directory argument is resolved by joining it under the process CWD and
+//! lexically cleaning it (NOT canonicalizing), so the walk and relative-path
+//! reporting are stable across symlinks. Output is written with `print!` (no
+//! trailing newline added).
 
 use std::path::{Component, Path, PathBuf};
 
@@ -18,7 +16,7 @@ use crate::internal::contracts::java_clean_imports::clean_java_imports;
 use crate::internal::contracts::reporter;
 use crate::internal::contracts::types::{DartScaffoldOptions, JavaCleanImportsOptions};
 
-/// Cobra-style usage block printed to stderr when `java-clean-imports` errors.
+/// Usage block printed to stderr when `java-clean-imports` errors.
 pub const JAVA_CLEAN_IMPORTS_USAGE: &str = "Usage:\n  \
 rhino-cli contracts java-clean-imports <generated-contracts-dir> [flags]\n\n\
 Examples:\n  \
@@ -33,7 +31,7 @@ Global Flags:\n      \
 --say string      echo a message to stdout\n  \
 -v, --verbose         verbose output with timestamps\n\n";
 
-/// Cobra-style usage block printed to stderr when `dart-scaffold` errors.
+/// Usage block printed to stderr when `dart-scaffold` errors.
 pub const DART_SCAFFOLD_USAGE: &str = "Usage:\n  \
 rhino-cli contracts dart-scaffold <generated-contracts-dir> [flags]\n\n\
 Examples:\n  \
@@ -60,7 +58,7 @@ pub struct DartScaffoldArgs {
     pub dir: String,
 }
 
-/// Runs `contracts java-clean-imports`. Mirrors Go `runContractsJavaCleanImports`.
+/// Runs `contracts java-clean-imports`.
 pub fn run_java_clean_imports(
     args: &JavaCleanImportsArgs,
     output: OutputFormat,
@@ -85,7 +83,7 @@ pub fn run_java_clean_imports(
     Ok(())
 }
 
-/// Runs `contracts dart-scaffold`. Mirrors Go `runContractsDartScaffold`.
+/// Runs `contracts dart-scaffold`.
 pub fn run_dart_scaffold(
     args: &DartScaffoldArgs,
     output: OutputFormat,

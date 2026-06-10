@@ -1,10 +1,9 @@
-//! Mermaid fenced-code-block extraction. Mirrors Go `extractor.go`.
+//! Mermaid fenced-code-block extraction.
 
 use super::types::MermaidBlock;
 
 /// Scans markdown content line-by-line and returns all mermaid fenced code
 /// blocks. `start_line` is the 1-based line number of the opening fence.
-/// Mirrors Go `ExtractBlocks`.
 pub fn extract_blocks(file_path: &str, content: &str) -> Vec<MermaidBlock> {
     let mut blocks = Vec::new();
     // Go uses strings.Split(content, "\n"); replicate exactly (no trailing-empty trimming).

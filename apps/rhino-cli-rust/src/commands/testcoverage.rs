@@ -1,7 +1,6 @@
 //! `test-coverage` command family: `validate`, `diff`, `merge`.
 //!
-//! Byte-for-byte ports of the Go `cmd/test_coverage_*.go` handlers. Output is
-//! written with `print!` (no trailing newline added) to mirror Go's `Fprint`.
+//! Output is written with `print!` (no trailing newline added).
 
 use anyhow::{Context, Error, anyhow};
 use clap::Args;
@@ -17,20 +16,20 @@ use crate::internal::testcoverage::{
     types::{Format, Result as CoverageResult},
 };
 
-/// Cobra-style usage block printed to stderr when `validate` returns an error.
+/// Usage block printed to stderr when `validate` returns an error.
 pub const VALIDATE_USAGE: &str = "Usage:\n  \
 rhino-cli test-coverage validate <coverage-file> <threshold> [flags]\n\n\
 Examples:\n  \
 # Check Go coverage\n  \
-rhino-cli test-coverage validate apps/rhino-cli/cover.out 85\n\n  \
+rhino-cli test-coverage validate apps/crud-be-golang-gin/cover.out 85\n\n  \
 # Check LCOV coverage\n  \
 rhino-cli test-coverage validate apps/crud-fe-ts-nextjs/coverage/lcov.info 85\n\n  \
 # Check JaCoCo XML coverage\n  \
 rhino-cli test-coverage validate apps/crud-be-java-springboot/target/site/jacoco-integration/jacoco.xml 85\n\n  \
 # Output as JSON\n  \
-rhino-cli test-coverage validate apps/rhino-cli/cover.out 85 -o json\n\n  \
+rhino-cli test-coverage validate apps/crud-be-golang-gin/cover.out 85 -o json\n\n  \
 # Output as markdown\n  \
-rhino-cli test-coverage validate apps/rhino-cli/cover.out 85 -o markdown\n\n\
+rhino-cli test-coverage validate apps/crud-be-golang-gin/cover.out 85 -o markdown\n\n\
 Flags:\n      \
 --below-threshold float   with --per-file, show only files below this coverage percentage\n      \
 --exclude stringArray     exclude files matching glob pattern (repeatable)\n  \
@@ -43,7 +42,7 @@ Global Flags:\n      \
 --say string      echo a message to stdout\n  \
 -v, --verbose         verbose output with timestamps\n\n";
 
-/// Cobra-style usage block printed to stderr when `diff` returns an error.
+/// Usage block printed to stderr when `diff` returns an error.
 pub const DIFF_USAGE: &str = "Usage:\n  \
 rhino-cli test-coverage diff <coverage-file> [flags]\n\n\
 Examples:\n  \
@@ -69,7 +68,7 @@ Global Flags:\n      \
 --say string      echo a message to stdout\n  \
 -v, --verbose         verbose output with timestamps\n\n";
 
-/// Cobra-style usage block printed to stderr when `merge` returns an error.
+/// Usage block printed to stderr when `merge` returns an error.
 pub const MERGE_USAGE: &str = "Usage:\n  \
 rhino-cli test-coverage merge <file1> <file2> [file3...] [flags]\n\n\
 Examples:\n  \

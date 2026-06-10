@@ -1,6 +1,4 @@
 //! Text and JSON reporters for env-validate results.
-//!
-//! Byte-for-byte port target: `apps/rhino-cli-go/internal/envvalidate/reporter.go`.
 
 use std::fmt::Write as _;
 
@@ -8,7 +6,7 @@ use anyhow::{Error, Result};
 
 use super::types::ValidateResult;
 
-/// Format text output for env validate. Mirrors Go format_text.
+/// Format text output for env validate.
 pub fn format_text(result: &ValidateResult) -> String {
     if result.is_ok() {
         return "✓ Env validate passed! All app surfaces clean.\n".to_string();
@@ -35,7 +33,7 @@ pub fn format_text(result: &ValidateResult) -> String {
     out
 }
 
-/// Format JSON output for env validate. Mirrors Go format_json.
+/// Format JSON output for env validate.
 pub fn format_json(result: &ValidateResult) -> Result<String, Error> {
     let mut surfaces_json = Vec::new();
     for s in &result.surfaces {

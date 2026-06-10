@@ -1,9 +1,7 @@
 //! Backup and restore engine.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/envbackup/backup.go` and
-//! `restore.go`. Discovers `.env*` files (and optional config files), then
-//! copies them between the repo root and a backup directory while preserving
-//! relative structure and file permissions.
+//! Discovers `.env*` files (and optional config files), then copies them between the repo
+//! root and a backup directory while preserving relative structure and file permissions.
 
 use std::io;
 use std::path::{Path, PathBuf};
@@ -16,10 +14,10 @@ use super::discover::{DiscoverOptions, discover, is_secret_file};
 use super::types::{DEFAULT_MAX_SIZE, DEFAULT_SKIP_DIRS, EnvResult, FileEntry};
 
 /// Callback invoked when destination files already exist. Returns true to
-/// proceed with the overwrite, false to cancel. Mirrors Go `Options.ConfirmFn`.
+/// proceed with the overwrite, false to cancel.
 pub type ConfirmFn<'a> = dyn FnMut(&[String]) -> bool + 'a;
 
-/// Configures a backup or restore operation. Mirrors Go `Options`. `skip_dirs`
+/// Configures a backup or restore operation. `skip_dirs`
 /// and `max_size` use the `<= 0` / empty defaults from the Go engine.
 #[derive(Default)]
 pub struct Options<'a> {
@@ -36,13 +34,12 @@ pub struct Options<'a> {
 }
 
 /// Returns the default backup directory basename derived from the repo root
-/// basename: `<repo-basename>-env-backup`. Mirrors Go `DefaultBackupDirName`.
+/// basename: `<repo-basename>-env-backup`.
 pub fn default_backup_dir_name(repo_basename: &str) -> String {
     format!("{repo_basename}-env-backup")
 }
 
-/// Replaces a leading `~` with the current user's home directory. Mirrors Go
-/// `ExpandTilde`.
+/// Replaces a leading `~` with the current user's home directory.
 pub fn expand_tilde(path: &str) -> Result<String, Error> {
     if !path.starts_with('~') {
         return Ok(path.to_string());
@@ -59,7 +56,7 @@ pub fn expand_tilde(path: &str) -> Result<String, Error> {
     }
 }
 
-/// Returns the current user's home directory, mirroring Go `os.UserHomeDir`
+/// Returns the current user's home directory.
 /// (which reads `$HOME` on unix).
 fn home_dir() -> Result<String, Error> {
     std::env::var("HOME")
@@ -68,8 +65,7 @@ fn home_dir() -> Result<String, Error> {
         .ok_or_else(|| anyhow!("$HOME is not defined"))
 }
 
-/// Reports whether `backup_dir` is inside (or equal to) `repo_root`. Mirrors Go
-/// `isInsideRepo` using `filepath.Rel` semantics.
+/// Reports whether `backup_dir` is inside (or equal to) `repo_root`.
 fn is_inside_repo(backup_dir: &str, repo_root: &str) -> bool {
     match go_rel(repo_root, backup_dir) {
         Ok(rel) => !rel.starts_with(".."),
@@ -100,7 +96,6 @@ fn go_rel(base: &str, target: &str) -> Result<String, Error> {
 }
 
 /// Copies `src` to `dst`, preserving source permissions and truncating `dst`.
-/// Mirrors Go `copyFile`.
 fn copy_file(src: &str, dst: &str) -> Result<(), Error> {
     let meta = std::fs::symlink_metadata(src).context("lstat src")?;
     std::fs::copy(src, dst).context("copy data")?;
@@ -119,7 +114,7 @@ fn copy_file(src: &str, dst: &str) -> Result<(), Error> {
 }
 
 /// Discovers all `.env` files under `opts.repo_root` and copies them to
-/// `opts.backup_dir`. Mirrors Go `Backup`.
+/// `opts.backup_dir`.
 pub fn backup(mut opts: Options) -> Result<EnvResult, Error> {
     if opts.max_size <= 0 {
         opts.max_size = DEFAULT_MAX_SIZE;
@@ -234,7 +229,6 @@ pub fn backup(mut opts: Options) -> Result<EnvResult, Error> {
 }
 
 /// Copies `.env*` files from `opts.backup_dir` back to `opts.repo_root`.
-/// Mirrors Go `Restore`.
 pub fn restore(mut opts: Options) -> Result<EnvResult, Error> {
     if opts.max_size <= 0 {
         opts.max_size = DEFAULT_MAX_SIZE;

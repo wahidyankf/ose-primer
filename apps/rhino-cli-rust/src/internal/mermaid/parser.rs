@@ -1,4 +1,4 @@
-//! Mermaid flowchart parsing. Mirrors Go `parser.go`.
+//! Mermaid flowchart parsing.
 //!
 //! Pure regex/string parsing (no tree-sitter — matching the Go implementation).
 
@@ -9,38 +9,38 @@ use regex::Regex;
 
 use super::types::{Direction, Edge, MermaidBlock, Node, ParsedDiagram, Subgraph};
 
-/// Matches a flowchart/graph header line (with optional direction). Mirrors Go `flowchartHeaderRe`.
+/// Matches a flowchart/graph header line (with optional direction).
 static FLOWCHART_HEADER_RE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"(?m)^\s*(flowchart|graph)(\s+(TB|TD|BT|LR|RL))?\s*$").expect("valid header regex")
 });
 
-/// Captures optional ID and label of a subgraph declaration. Mirrors Go `subgraphHeaderRe`.
+/// Captures optional ID and label of a subgraph declaration.
 static SUBGRAPH_HEADER_RE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r#"^subgraph(?:\s+([^\s\["]+))?(?:\s*\[\s*"?([^"\]]*)"?\s*\])?\s*$"#)
         .expect("valid subgraph regex")
 });
 
-/// Identifies edge lines. Mirrors Go `arrowTokenRe`.
+/// Identifies edge lines.
 static ARROW_TOKEN_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"-->|---|-\.->|==>|--o|--x|<-->").expect("valid arrow regex"));
 
-/// Matches a bare word node identifier. Mirrors Go `nodeIDRe`.
+/// Matches a bare word node identifier.
 static NODE_ID_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"^(\w+)$").expect("valid node id regex"));
 
-/// Edge-label cleanup: replaces `-- text -->` with `-->`. Mirrors Go `linkTextRe`.
+/// Edge-label cleanup: replaces `-- text -->` with `-->`.
 static LINK_TEXT_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"--[^->\n]+?-->").expect("valid link text regex"));
 
 /// Pipe edge-label cleanup: strips a `|label|` segment that follows an arrow
 /// token (`A -->|text| B`) so the target node survives edge splitting (plan
-/// DD-14 fix 1). Mirrors the Go `pipeLabelRe` twin.
+/// DD-14 fix 1).
 static PIPE_LABEL_RE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"(-->|---|-\.->|==>|--o|--x|<-->)\s*\|[^|]*\|").expect("valid pipe label regex")
 });
 
 /// Node shape patterns: order matters (longest/most-specific first). Each captures
-/// (nodeID, label). Mirrors Go `nodeShapePatterns`.
+/// (nodeID, label).
 static NODE_SHAPE_PATTERNS: LazyLock<Vec<Regex>> = LazyLock::new(|| {
     [
         // Double-circle: A(((label)))
@@ -75,9 +75,9 @@ static NODE_SHAPE_PATTERNS: LazyLock<Vec<Regex>> = LazyLock::new(|| {
     .collect()
 });
 
-/// An insertion-ordered map mirroring Go's `map[string]string` usage where
-/// node IDs are inserted in encounter order and looked up by key. Ordering is
-/// preserved so that the `new_keys` diff is deterministic.
+/// An insertion-ordered map where node IDs are inserted in encounter order and
+/// looked up by key. Ordering is preserved so that the `new_keys` diff is
+/// deterministic.
 #[derive(Default)]
 struct NodeMap {
     order: Vec<String>,
@@ -96,8 +96,8 @@ impl NodeMap {
         self.map.insert(k.to_string(), v);
     }
 
-    /// Inserts an empty label only if the key is absent (mirrors Go's
-    /// `if _, exists := nodeMap[id]; !exists { nodeMap[id] = "" }`).
+    /// Inserts an empty label only if the key is absent (existing labels are
+    /// left untouched).
     fn set_if_absent(&mut self, k: &str) {
         if !self.map.contains_key(k) {
             self.order.push(k.to_string());
@@ -116,7 +116,7 @@ impl NodeMap {
 
 /// Parses a `MermaidBlock` into a `ParsedDiagram`. The second return value is
 /// the number of flowchart/graph headers found (0 → not a flowchart;
-/// >1 → caller emits MultipleDiagrams). Mirrors Go `ParseDiagram`.
+/// >1 → caller emits MultipleDiagrams).
 pub fn parse_diagram(block: &MermaidBlock) -> (ParsedDiagram, usize) {
     let matches: Vec<regex::Captures> = FLOWCHART_HEADER_RE.captures_iter(&block.source).collect();
     let count = matches.len();
@@ -218,7 +218,7 @@ pub fn parse_diagram(block: &MermaidBlock) -> (ParsedDiagram, usize) {
     )
 }
 
-/// Extracts optional ID and label from a subgraph header. Mirrors Go `parseSubgraphHeader`.
+/// Extracts optional ID and label from a subgraph header.
 fn parse_subgraph_header(line: &str) -> (String, String) {
     if let Some(m) = SUBGRAPH_HEADER_RE.captures(line) {
         let id = m.get(1).map_or(String::new(), |g| g.as_str().to_string());
@@ -231,7 +231,7 @@ fn parse_subgraph_header(line: &str) -> (String, String) {
     (String::new(), rest.to_string())
 }
 
-/// Keys in `node_map` absent from the snapshot. Mirrors Go `newKeys`.
+/// Keys in `node_map` absent from the snapshot.
 /// Iterates in insertion order for deterministic attribution.
 fn new_keys(node_map: &NodeMap, snapshot: &std::collections::HashSet<String>) -> Vec<String> {
     node_map
@@ -242,7 +242,7 @@ fn new_keys(node_map: &NodeMap, snapshot: &std::collections::HashSet<String>) ->
         .collect()
 }
 
-/// Dedups IDs preserving first occurrence. Mirrors Go `dedupOrder`.
+/// Dedups IDs preserving first occurrence.
 fn dedup_order(ids: &[String]) -> Vec<String> {
     let mut seen = std::collections::HashSet::new();
     let mut out = Vec::new();
@@ -254,7 +254,7 @@ fn dedup_order(ids: &[String]) -> Vec<String> {
     out
 }
 
-/// Node IDs in first-seen order from the source lines. Mirrors Go `collectNodeOrder`.
+/// Node IDs in first-seen order from the source lines.
 fn collect_node_order(source: &str, node_map: &NodeMap) -> Vec<String> {
     let mut seen = std::collections::HashSet::new();
     let mut order = Vec::new();
@@ -273,7 +273,7 @@ fn collect_node_order(source: &str, node_map: &NodeMap) -> Vec<String> {
             }
         }
     }
-    // Include any IDs in node_map not yet seen (sorted for determinism; mirrors Go's safety pass).
+    // Include any IDs in node_map not yet seen (sorted for determinism).
     let mut remaining: Vec<String> = node_map
         .order
         .iter()
@@ -285,7 +285,7 @@ fn collect_node_order(source: &str, node_map: &NodeMap) -> Vec<String> {
     order
 }
 
-/// Pulls every node ID referenced on a single line. Mirrors Go `extractAllNodeIDs`.
+/// Pulls every node ID referenced on a single line.
 fn extract_all_node_ids(line: &str) -> Vec<String> {
     // Strip `|label|` edge labels first so the target node of `A -->|text| B`
     // is seen by the ordering scan as well (plan DD-14 fix 1).
@@ -301,7 +301,7 @@ fn extract_all_node_ids(line: &str) -> Vec<String> {
     ids
 }
 
-/// Splits a segment on `&` and extracts all node IDs. Mirrors Go `extractNodeIDsFromSegment`.
+/// Splits a segment on `&` and extracts all node IDs.
 fn extract_node_ids_from_segment(seg: &str) -> Vec<String> {
     let mut ids = Vec::new();
     for sub in seg.split('&') {
@@ -313,7 +313,7 @@ fn extract_node_ids_from_segment(seg: &str) -> Vec<String> {
     ids
 }
 
-/// Extracts a node ID from a single segment. Mirrors Go `extractNodeIDFromSegment`.
+/// Extracts a node ID from a single segment.
 fn extract_node_id_from_segment(seg: &str) -> String {
     let seg = seg.trim();
     if seg.is_empty() {
@@ -335,7 +335,6 @@ fn extract_node_id_from_segment(seg: &str) -> String {
 }
 
 /// Parses a standalone node declaration line, updating `node_map`.
-/// Mirrors Go `extractStandaloneNode`.
 fn extract_standalone_node(line: &str, node_map: &mut NodeMap) {
     let line = line.trim();
     for re in NODE_SHAPE_PATTERNS.iter() {
@@ -354,7 +353,7 @@ fn extract_standalone_node(line: &str, node_map: &mut NodeMap) {
 }
 
 /// Parses an edge line, updating `node_map` and appending edges. Handles the
-/// `&` multi-target operator via Cartesian product. Mirrors Go `extractEdgeLine`.
+/// `&` multi-target operator via Cartesian product.
 fn extract_edge_line(line: &str, node_map: &mut NodeMap, edges: &mut Vec<Edge>) {
     // Replace `-- text -->` edge labels with `-->`.
     let line = LINK_TEXT_RE.replace_all(line, "-->");
@@ -391,7 +390,7 @@ fn extract_edge_line(line: &str, node_map: &mut NodeMap, edges: &mut Vec<Edge>) 
     }
 }
 
-/// Splits `part` on `&`, extracts node IDs and updates labels. Mirrors Go `extractNodeGroup`.
+/// Splits `part` on `&`, extracts node IDs and updates labels.
 fn extract_node_group(part: &str, node_map: &mut NodeMap) -> Vec<String> {
     let mut ids = Vec::new();
     for seg in part.split('&') {
@@ -408,7 +407,6 @@ fn extract_node_group(part: &str, node_map: &mut NodeMap) -> Vec<String> {
 }
 
 /// Returns the node ID for a segment, updating the label if present.
-/// Mirrors Go `extractNodeIDAndLabel`.
 fn extract_node_id_and_label(seg: &str, node_map: &mut NodeMap) -> String {
     for re in NODE_SHAPE_PATTERNS.iter() {
         if let Some(m) = re.captures(seg) {
@@ -427,7 +425,7 @@ fn extract_node_id_and_label(seg: &str, node_map: &mut NodeMap) -> String {
     String::new()
 }
 
-/// Strips surrounding quotes (single/double) and backtick wrappers. Mirrors Go `normalizeLabel`.
+/// Strips surrounding quotes (single/double) and backtick wrappers.
 fn normalize_label(s: &str) -> String {
     let s = s.trim();
     let bytes = s.as_bytes();
@@ -446,7 +444,6 @@ fn normalize_label(s: &str) -> String {
 
 /// Display length of a Mermaid node label. Multi-line variants (`<br/>`, `\n`)
 /// are checked per visual line; the longest line length (in runes) is returned.
-/// Mirrors Go `EffectiveLabelLen`.
 pub fn effective_label_len(label: &str) -> usize {
     if label.is_empty() {
         return 0;

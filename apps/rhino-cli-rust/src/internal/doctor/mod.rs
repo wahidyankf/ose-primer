@@ -1,8 +1,8 @@
 //! Development-environment health-check subsystem.
 //!
-//! Port of `apps/rhino-cli-go/internal/doctor/`. Probes required tools, parses
-//! and compares their versions against repository config, optionally installs
-//! missing tools (`--fix`), and renders text/JSON/markdown reports.
+//! Probes required tools, parses and compares their versions against repository
+//! config, optionally installs missing tools (`--fix`), and renders
+//! text/JSON/markdown reports.
 
 pub mod checker;
 pub mod fixer;

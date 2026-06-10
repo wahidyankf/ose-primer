@@ -1,6 +1,4 @@
 //! Known uncommitted config-file discovery for `--include-config`.
-//!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/envbackup/config.go`.
 
 use std::path::Path;
 
@@ -8,7 +6,7 @@ use anyhow::{Context, Error};
 
 use super::types::{DEFAULT_MAX_SIZE, FileEntry};
 
-/// A known uncommitted config file. Mirrors Go `ConfigPattern`.
+/// A known uncommitted config file.
 pub struct ConfigPattern {
     /// Exact relative path from repo root.
     pub rel_path: &'static str,
@@ -66,7 +64,7 @@ pub const DEFAULT_CONFIG_PATTERNS: &[ConfigPattern] = &[
 
 /// Checks each pattern against `repo_root` and returns `FileEntry` items for
 /// files that exist, applying the same symlink/size checks as [`super::discover`].
-/// Every returned entry has `source: "config"`. Mirrors Go `DiscoverConfig`.
+/// Every returned entry has `source: "config"`.
 pub fn discover_config(
     repo_root: &str,
     patterns: &[ConfigPattern],

@@ -4,7 +4,7 @@ use std::path::Path;
 
 use anyhow::Error;
 
-/// A single step line from a Gherkin scenario. Mirrors Go `ParsedStep`.
+/// A single step line from a Gherkin scenario.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ParsedStep {
     /// Given/When/Then/And/But (title case, trimmed).
@@ -13,7 +13,7 @@ pub struct ParsedStep {
     pub text: String,
 }
 
-/// A Gherkin Scenario block with its steps. Mirrors Go `ParsedScenario`.
+/// A Gherkin Scenario block with its steps.
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct ParsedScenario {
     pub title: String,

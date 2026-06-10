@@ -59,7 +59,6 @@ All backend services implement the same OpenAPI contract (`specs/apps/crud/conta
 
 | App              | Language | Purpose                          | Build Command             |
 | ---------------- | -------- | -------------------------------- | ------------------------- |
-| `rhino-cli-go`   | Go       | Repository management automation | `nx build rhino-cli-go`   |
 | `rhino-cli-rust` | Rust     | Repository management automation | `nx build rhino-cli-rust` |
 
 ## 🏗️ C4 Level 2: Container Diagram
@@ -95,7 +94,6 @@ graph LR
     end
 
     subgraph "CLI Tools"
-        RHINO_GO[rhino-cli-go<br/>Go CLI]
         RHINO_RUST[rhino-cli-rust<br/>Rust CLI]
     end
 
@@ -124,7 +122,7 @@ graph LR
 
     NX -.->|manages| FE_NEXTJS
     NX -.->|manages| BE_FSHARP
-    NX -.->|manages| RHINO_GO
+    NX -.->|manages| RHINO_RUST
 
     style FE_NEXTJS fill:#0077b6,stroke:#03045e,color:#ffffff
     style FE_TANSTACK fill:#0077b6,stroke:#03045e,color:#ffffff
@@ -143,7 +141,6 @@ graph LR
     style BE_TS fill:#e76f51,stroke:#9d0208,color:#ffffff
     style FE_E2E fill:#457b9d,stroke:#1d3557,color:#ffffff
     style BE_E2E fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style RHINO_GO fill:#2a9d8f,stroke:#264653,color:#ffffff
     style RHINO_RUST fill:#2a9d8f,stroke:#264653,color:#ffffff
     style NX fill:#6a4c93,stroke:#22223b,color:#ffffff
     style CONTRACT fill:#6a4c93,stroke:#22223b,color:#ffffff
@@ -169,7 +166,6 @@ interchangeable — frontends can point to any backend.
 
 **CLI Tools:**
 
-- `rhino-cli-go` — repository management automation (Go implementation)
 - `rhino-cli-rust` — repository management automation (Rust implementation)
 
 **Build-Time Dependencies:**

@@ -1,8 +1,7 @@
 //! Shared types for the `agents` command family.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/agents/types.go`. The
-//! struct field order and the `Valid*` sets mirror the Go originals exactly,
-//! since they drive both validation messages and YAML serialization.
+//! The struct field order and the `Valid*` sets mirror the Go originals exactly, since they
+//! drive both validation messages and YAML serialization.
 
 use std::time::Duration;
 
@@ -24,7 +23,7 @@ pub struct OpenCodeAgent {
     pub skills: Vec<String>,
 }
 
-/// Configures sync behavior. Mirrors Go `SyncOptions`.
+/// Configures sync behavior.
 #[derive(Debug, Clone)]
 pub struct SyncOptions {
     pub repo_root: std::path::PathBuf,
@@ -35,7 +34,7 @@ pub struct SyncOptions {
     pub quiet: bool,
 }
 
-/// Sync operation results. Mirrors Go `SyncResult`.
+/// Sync operation results.
 #[derive(Debug, Clone, Default)]
 pub struct SyncResult {
     pub agents_converted: i64,
@@ -46,7 +45,7 @@ pub struct SyncResult {
     pub duration: Duration,
 }
 
-/// Validation results. Mirrors Go `ValidationResult`.
+/// Validation results.
 #[derive(Debug, Clone, Default)]
 pub struct ValidationResult {
     pub total_checks: i64,
@@ -56,7 +55,7 @@ pub struct ValidationResult {
     pub duration: Duration,
 }
 
-/// A single validation check. Mirrors Go `ValidationCheck`. The `status` field
+/// A single validation check. The `status` field
 /// is the literal string `"passed"` or `"failed"` to match Go's JSON output.
 #[derive(Debug, Clone)]
 pub struct ValidationCheck {
@@ -80,7 +79,7 @@ impl ValidationCheck {
     }
 }
 
-/// Configures `validate-claude` behavior. Mirrors Go `ValidateClaudeOptions`.
+/// Configures `validate-claude` behavior.
 #[derive(Debug, Clone)]
 pub struct ValidateClaudeOptions {
     pub repo_root: std::path::PathBuf,
@@ -88,8 +87,7 @@ pub struct ValidateClaudeOptions {
     pub skills_only: bool,
 }
 
-/// Recognized tool names in Claude Code agent frontmatter. Mirrors Go
-/// `ValidTools`.
+/// Recognized tool names in Claude Code agent frontmatter.
 pub const VALID_TOOLS: &[&str] = &[
     "Read",
     "Write",
@@ -102,14 +100,13 @@ pub const VALID_TOOLS: &[&str] = &[
     "WebSearch",
 ];
 
-/// Recognized model values (empty inherits). Mirrors Go `ValidModels`.
+/// Recognized model values (empty inherits).
 pub const VALID_MODELS: &[&str] = &["", "sonnet", "opus", "haiku"];
 
-/// Recognized color values. Mirrors Go `ValidColors`.
+/// Recognized color values.
 pub const VALID_COLORS: &[&str] = &["blue", "green", "yellow", "purple"];
 
-/// Mandatory field ordering in agent frontmatter. Mirrors Go
-/// `RequiredFieldOrder`.
+/// Mandatory field ordering in agent frontmatter.
 pub const REQUIRED_FIELD_ORDER: &[&str] =
     &["name", "description", "tools", "model", "color", "skills"];
 

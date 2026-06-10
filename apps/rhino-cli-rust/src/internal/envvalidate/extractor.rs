@@ -2,8 +2,6 @@
 //!
 //! All extractors use simple regex matches — no language parser dependency.
 //! Known false-positive/negative modes are documented in tech-docs.md §6.1.
-//!
-//! Byte-for-byte port target: `apps/rhino-cli-go/internal/envvalidate/extractor.go`.
 
 use std::collections::BTreeSet;
 

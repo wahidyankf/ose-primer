@@ -1,8 +1,6 @@
 //! Domain types for Java null-safety annotation validation.
-//!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/java/types.go`.
 
-/// The category of a package violation. Mirrors Go `ViolationType`.
+/// The category of a package violation.
 ///
 /// The string codes (`missing_package_info`, `missing_annotation`) are the
 /// JSON-serialized `violation_type` values and must match the Go constants
@@ -25,7 +23,7 @@ impl ViolationType {
     }
 }
 
-/// A single Java package with its validation status. Mirrors Go `PackageEntry`.
+/// A single Java package with its validation status.
 #[derive(Debug, Clone)]
 pub struct PackageEntry {
     /// Relative path from the source root.
@@ -36,8 +34,7 @@ pub struct PackageEntry {
     pub violation_type: Option<ViolationType>,
 }
 
-/// Complete results of a null-safety validation scan. Mirrors Go
-/// `ValidationResult`.
+/// Complete results of a null-safety validation scan.
 #[derive(Debug, Clone, Default)]
 pub struct ValidationResult {
     /// Total number of Java packages scanned.
@@ -50,7 +47,7 @@ pub struct ValidationResult {
     pub annotation: String,
 }
 
-/// Configures how validation runs. Mirrors Go `ValidationOptions`.
+/// Configures how validation runs.
 #[derive(Debug, Clone)]
 pub struct ValidationOptions {
     /// Absolute path to the Java source root.

@@ -1,10 +1,8 @@
 //! `validate-sync` orchestration.
 //!
-//! Ported from `apps/rhino-cli-go/internal/agents/sync_validator.go`; now
-//! validates the OpenCode `permission`-object frontmatter shape (Go gains the
-//! same in the parity port). Confirms `.claude/` and `.opencode/agents/` are
-//! semantically equivalent and that no stale singular agent dir or mirrored
-//! skill copies exist.
+//! Validates the OpenCode `permission`-object frontmatter shape and confirms
+//! that `.claude/` and `.opencode/agents/` are semantically equivalent and that
+//! no stale singular agent dir or mirrored skill copies exist.
 
 use std::collections::BTreeMap;
 use std::collections::BTreeSet;
@@ -17,8 +15,7 @@ use super::frontmatter::{YamlValue, extract_frontmatter, parse_claude_tools, par
 use super::types::ValidationCheck;
 use super::types::ValidationResult;
 
-/// Validates that `.claude/` and `.opencode/` are in sync. Mirrors Go
-/// `ValidateSync`.
+/// Validates that `.claude/` and `.opencode/` are in sync.
 pub fn validate_sync(repo_root: &std::path::Path) -> Result<ValidationResult, Error> {
     let start = Instant::now();
     let mut result = ValidationResult {
@@ -54,8 +51,7 @@ fn tally(result: &mut ValidationResult, check: ValidationCheck) {
     result.checks.push(check);
 }
 
-/// Asserts the legacy singular `.opencode/agent/` does not exist. Mirrors Go
-/// `validateNoStaleAgentDir`.
+/// Asserts the legacy singular `.opencode/agent/` does not exist.
 fn validate_no_stale_agent_dir(repo_root: &std::path::Path) -> ValidationCheck {
     let stale = repo_root.join(".opencode").join("agent");
     match std::fs::symlink_metadata(&stale) {
@@ -93,7 +89,6 @@ fn validate_no_stale_agent_dir(repo_root: &std::path::Path) -> ValidationCheck {
 }
 
 /// Checks that the OpenCode dir contains at least as many agents as Claude.
-/// Mirrors Go `validateAgentCount`.
 fn validate_agent_count(repo_root: &std::path::Path) -> ValidationCheck {
     let claude_dir = repo_root.join(".claude").join("agents");
     let opencode_dir = repo_root.join(OPENCODE_AGENT_DIR);
@@ -120,8 +115,7 @@ fn validate_agent_count(repo_root: &std::path::Path) -> ValidationCheck {
     }
 }
 
-/// Per-agent semantic equivalence checks for the Claude-side set. Mirrors Go
-/// `validateAgentEquivalence`.
+/// Per-agent semantic equivalence checks for the Claude-side set.
 fn validate_agent_equivalence(repo_root: &std::path::Path) -> Vec<ValidationCheck> {
     let claude_dir = repo_root.join(".claude").join("agents");
     let opencode_dir = repo_root.join(OPENCODE_AGENT_DIR);
@@ -159,8 +153,7 @@ fn validate_agent_equivalence(repo_root: &std::path::Path) -> Vec<ValidationChec
     checks
 }
 
-/// Checks a single agent file pair for semantic equivalence. Mirrors Go
-/// `validateAgentFile`.
+/// Checks a single agent file pair for semantic equivalence.
 fn validate_agent_file(
     name: &str,
     claude_path: &std::path::Path,
@@ -355,8 +348,7 @@ fn parse_opencode_agent(frontmatter: &[u8]) -> Result<ParsedOpenCode, Error> {
     Ok(out)
 }
 
-/// Asserts no rhino-cli-managed skill mirror exists. Mirrors Go
-/// `validateNoSyncedSkills`.
+/// Asserts no rhino-cli-managed skill mirror exists.
 fn validate_no_synced_skills(repo_root: &std::path::Path) -> ValidationCheck {
     let claude_dir = repo_root.join(".claude").join("skills");
     let mut claude_names: BTreeSet<String> = BTreeSet::new();

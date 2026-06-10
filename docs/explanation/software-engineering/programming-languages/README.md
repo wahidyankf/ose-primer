@@ -40,7 +40,7 @@ Multiple domain-focused standards files covering specific areas (testing, securi
 | Complex domain logic with DDD            | Java                   | [Java Idioms](./java/README.md)         |
 | REST API with business rules             | Java                   | [Java Best Practices](./java/README.md) |
 | Frontend web application                 | TypeScript             | TypeScript docs (planned)               |
-| CLI tool for repository automation       | Go                     | See rhino-cli-go, rhino-cli-go          |
+| CLI tool for repository automation       | Rust                   | See rhino-cli-rust                      |
 | Data processing and analytics            | Python                 | Python docs (planned)                   |
 | Microservice with high concurrency       | Java (Virtual Threads) | [Java Concurrency](./java/README.md)    |
 | Infrastructure tooling                   | Go                     | See existing CLI tools                  |
@@ -50,7 +50,7 @@ Multiple domain-focused standards files covering specific areas (testing, securi
 
 - **Java**: Primary language for domain models, aggregates, and business logic
 - **TypeScript**: Future frontend applications and Node.js services
-- **Go**: Active for CLI tools (rhino-cli-go, rhino-cli-go)
+- **Rust**: Active for CLI tools (rhino-cli-rust)
 - **Python**: Planned for data processing and AI/ML integration
 
 ## Purpose
@@ -226,7 +226,7 @@ Kotlin is a modern, concise JVM language with null safety, coroutines for struct
 
 **Go development for CLI tools and infrastructure services**
 
-Go is used for CLI tools and infrastructure services in the repository. The platform uses Go for rhino-cli-go (repository management) and rhino-cli-go (content automation).
+Go is used for CLI tools and infrastructure services in the repository. The platform applies Go idioms to backend services and command-line tooling.
 
 **Use Go when you need:**
 
@@ -319,19 +319,19 @@ Languages in this documentation are chosen based on:
 
 ### Current Language Usage
 
-| Language       | Primary Use Cases                               | Status                                 |
-| -------------- | ----------------------------------------------- | -------------------------------------- |
-| **Clojure**    | Functional microservices, data pipelines        | 📋 Planned - Future integration        |
-| **C#**         | Enterprise APIs, ASP.NET Core services          | 📋 Planned - Future integration        |
-| **Dart**       | Flutter mobile and web applications             | 📋 Planned - Future integration        |
-| **Elixir**     | Phoenix backend, real-time features             | ✅ Active - Phoenix services           |
-| **F#**         | Functional computation, financial engines       | 📋 Planned - Future integration        |
-| **Go**         | CLI tools, infrastructure services              | ✅ Active - rhino-cli-go, rhino-cli-go |
-| **Java** ☕    | Backend services, domain models, business logic | ✅ Active - In production              |
-| **Kotlin**     | Coroutine-based services, Ktor APIs             | 📋 Planned - Future integration        |
-| **Python**     | Data processing, AI/ML integration              | 📋 Planned - Future integration        |
-| **Rust**       | High-performance computation, WebAssembly       | 📋 Planned - Future integration        |
-| **TypeScript** | Frontend applications, Node.js services         | ✅ Active - crud-fe-ts-nextjs          |
+| Language       | Primary Use Cases                               | Status                          |
+| -------------- | ----------------------------------------------- | ------------------------------- |
+| **Clojure**    | Functional microservices, data pipelines        | 📋 Planned - Future integration |
+| **C#**         | Enterprise APIs, ASP.NET Core services          | 📋 Planned - Future integration |
+| **Dart**       | Flutter mobile and web applications             | 📋 Planned - Future integration |
+| **Elixir**     | Phoenix backend, real-time features             | ✅ Active - Phoenix services    |
+| **F#**         | Functional computation, financial engines       | 📋 Planned - Future integration |
+| **Go**         | CLI tools, infrastructure services              | ✅ Active - In production       |
+| **Java** ☕    | Backend services, domain models, business logic | ✅ Active - In production       |
+| **Kotlin**     | Coroutine-based services, Ktor APIs             | 📋 Planned - Future integration |
+| **Python**     | Data processing, AI/ML integration              | 📋 Planned - Future integration |
+| **Rust**       | CLI tools, high-performance computation         | ✅ Active - rhino-cli-rust      |
+| **TypeScript** | Frontend applications, Node.js services         | ✅ Active - crud-fe-ts-nextjs   |
 
 **Legend**: ✅ Active (in use) | 📋 Planned (documentation ready, not yet implemented)
 

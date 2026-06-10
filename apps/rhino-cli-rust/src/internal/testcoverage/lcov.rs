@@ -1,6 +1,6 @@
-// Byte-for-byte port of `apps/rhino-cli/internal/testcoverage/lcov_coverage.go`.
-// Same SF:/DA:/BRDA: state machine, same "duplicate DA → take max count" rule,
-// same branch-coverage classification (allPositive→covered, anyPositive→partial, none→missed).
+// LCOV coverage parsing.
+// SF:/DA:/BRDA: state machine with the "duplicate DA → take max count" rule and
+// branch-coverage classification (allPositive→covered, anyPositive→partial, none→missed).
 
 use std::collections::HashMap;
 use std::fs::File;

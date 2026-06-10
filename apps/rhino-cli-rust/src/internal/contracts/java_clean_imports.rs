@@ -1,9 +1,8 @@
 //! Java import cleaning for generated contracts.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/contracts/java_clean_imports.go`.
-//! Removes same-package imports, unused imports (class name not referenced in the
-//! file body), and duplicate import lines. Files are rewritten atomically (temp
-//! file + rename) only when changes are detected.
+//! Removes same-package imports, unused imports (class name not referenced in the file
+//! body), and duplicate import lines. Files are rewritten atomically (temp file + rename)
+//! only when changes are detected.
 
 use std::collections::HashSet;
 use std::path::Path;
@@ -15,7 +14,7 @@ use super::types::{JavaCleanImportsOptions, JavaCleanImportsResult};
 
 /// Removes unused and same-package imports from all `.java` files in `opts.dir`.
 ///
-/// Mirrors Go `CleanJavaImports`: walks the directory in lexical order, and for
+///: walks the directory in lexical order, and for
 /// each `.java` file applies the two-pass [`process_java_file`] transform.
 pub fn clean_java_imports(opts: &JavaCleanImportsOptions) -> Result<JavaCleanImportsResult, Error> {
     let mut result = JavaCleanImportsResult {
@@ -135,13 +134,13 @@ fn process_java_file(path: &Path) -> Result<bool, Error> {
     Ok(true)
 }
 
-/// Trims trailing `\n` characters, mirroring Go's `strings.TrimRight(s, "\n")`.
+/// Trims trailing `\n` characters.
 fn trim_end_newlines(s: &str) -> &str {
     s.trim_end_matches('\n')
 }
 
-/// Computes the relative path of `target` from `base`, mirroring Go's
-/// `filepath.Rel`; on failure Go falls back to the absolute path.
+/// Computes the relative path of `target` from `base`; on failure it falls
+/// back to the absolute path.
 fn rel_path(base: &str, target: &str) -> String {
     match Path::new(target).strip_prefix(base) {
         Ok(rel) => rel.to_string_lossy().into_owned(),

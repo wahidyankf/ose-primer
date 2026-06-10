@@ -1,8 +1,5 @@
 //! Gherkin step-keyword cardinality audit.
 //!
-//! Byte-for-byte port of
-//! `apps/rhino-cli-go/internal/repo-governance/governance_gherkin_keyword_cardinality.go`.
-//!
 //! Flags every `Scenario` (and `Scenario Outline` body) that uses more than
 //! one primary `Given`, `When`, or `Then` keyword line. Primary keywords start
 //! the trimmed line; `And`/`But`/`*` chains are not counted. `Background`
@@ -15,8 +12,7 @@ use std::path::Path;
 use anyhow::{Context, Error};
 use walkdir::WalkDir;
 
-/// A single scenario violating the one-each primary-keyword rule. Mirrors Go
-/// `CardinalityFinding`.
+/// A single scenario violating the one-each primary-keyword rule.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Finding {
     pub path: String,
@@ -26,8 +22,7 @@ pub struct Finding {
 }
 
 /// Directory names skipped at any depth during the feature-file walk (build
-/// outputs, dependency trees, worktrees, archives). Mirrors Go
-/// `cardinalityExcludedDirs`.
+/// outputs, dependency trees, worktrees, archives).
 const EXCLUDED_DIR_NAMES: [&str; 7] = [
     "bin",
     "build",
@@ -40,15 +35,13 @@ const EXCLUDED_DIR_NAMES: [&str; 7] = [
 
 /// Slash-path fragments identifying BDD-library self-test fixture trees,
 /// excluded wherever they appear (those fixtures test the Gherkin parser
-/// itself and may deliberately use odd shapes). Mirrors Go
-/// `cardinalityExcludedPathParts`.
+/// itself and may deliberately use odd shapes).
 const EXCLUDED_PATH_PARTS: [&str; 2] = [
     "libs/elixir-cabbage/test/features/",
     "libs/elixir-gherkin/test/fixtures/",
 ];
 
 /// Reads the feature file at `path` and returns all cardinality findings.
-/// Mirrors Go `ScanFeatureFile`.
 pub fn scan_feature_file(path: &Path) -> Result<Vec<Finding>, Error> {
     let data = fs::read_to_string(path).with_context(|| format!("read {}", path.display()))?;
     Ok(scan_feature_content(&path.to_string_lossy(), &data))
@@ -57,10 +50,10 @@ pub fn scan_feature_file(path: &Path) -> Result<Vec<Finding>, Error> {
 /// Walks all `.feature` files under `root` recursively and returns all
 /// findings sorted by (path, line). Excluded directory names and BDD-library
 /// fixture trees are skipped. A missing `root` yields an empty slice, not an
-/// error. Mirrors Go `WalkFeatures`.
+/// error.
 ///
-/// Entries are visited in lexical (sorted) order to match Go's
-/// `filepath.WalkDir`, ensuring byte-identical finding ordering.
+/// Entries are visited in lexical (sorted) order for deterministic finding
+/// ordering.
 pub fn walk_features(root: &Path) -> Result<Vec<Finding>, Error> {
     if !root.exists() {
         return Ok(Vec::new());
@@ -92,14 +85,13 @@ pub fn walk_features(root: &Path) -> Result<Vec<Finding>, Error> {
     Ok(findings)
 }
 
-/// Orders findings by (path, line) ascending. Mirrors Go
-/// `sortCardinalityFindings`.
+/// Orders findings by (path, line) ascending.
 fn sort_findings(findings: &mut [Finding]) {
     findings.sort_by(|a, b| a.path.cmp(&b.path).then(a.line.cmp(&b.line)));
 }
 
 /// Core line-by-line scan of a feature file's content, tracking doc-string
-/// state and the current scenario block. Mirrors Go `ScanFeatureContent`.
+/// state and the current scenario block.
 pub fn scan_feature_content(path: &str, content: &str) -> Vec<Finding> {
     let mut findings = Vec::new();
 
@@ -225,8 +217,7 @@ fn is_exempt_or_structural_header(trimmed: &str) -> bool {
 }
 
 /// Returns the doc-string delimiter opening on this trimmed line (`"""` or
-/// "```", possibly followed by a content type), or `None`. Mirrors Go
-/// `docStringDelimiter`.
+/// "```", possibly followed by a content type), or `None`.
 fn doc_string_delimiter(trimmed: &str) -> Option<&'static str> {
     if trimmed.starts_with("\"\"\"") {
         return Some("\"\"\"");
@@ -239,7 +230,7 @@ fn doc_string_delimiter(trimmed: &str) -> Option<&'static str> {
 
 /// Classifies a trimmed step line, returning the primary keyword starting it
 /// (`Given`, `When`, `Then`) or `None` when the line is a chain step
-/// (`And`/`But`/`*`) or not a step at all. Mirrors Go `primaryKeyword`.
+/// (`And`/`But`/`*`) or not a step at all.
 fn primary_keyword(trimmed: &str) -> Option<&'static str> {
     ["Given", "When", "Then"].into_iter().find(|kw| {
         trimmed
@@ -250,7 +241,7 @@ fn primary_keyword(trimmed: &str) -> Option<&'static str> {
 
 /// Renders the repeated-keyword summary (e.g. "2 When, 2 Then") for counts
 /// above one, in Given/When/Then order. Returns "" when the scenario
-/// conforms. Mirrors Go `cardinalityDetail`.
+/// conforms.
 fn cardinality_detail(given: usize, when: usize, then: usize) -> String {
     let mut parts = Vec::new();
     if given > 1 {

@@ -1,5 +1,4 @@
-// Sealed Format enum + Result types. Mirrors
-// `apps/rhino-cli/internal/testcoverage/types.go`.
+// Sealed Format enum and result types for coverage parsing.
 
 use serde::Serialize;
 

@@ -1,8 +1,8 @@
 //! Env variable drift guard subsystem (env validate).
 //!
-//! Port of `apps/rhino-cli-go/internal/envvalidate/`. Validates each app's
-//! declared env vars (infra/dev/<app>/.env.example) against what its source
-//! code actually reads, using line-oriented regex extractors per language.
+//! Validates each app's declared env vars (infra/dev/<app>/.env.example)
+//! against what its source code actually reads, using line-oriented regex
+//! extractors per language.
 
 pub mod contract;
 pub mod extractor;

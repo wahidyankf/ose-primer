@@ -1,11 +1,10 @@
 //! Pure naming-convention validators shared by `agents validate-naming` and
 //! `workflows validate-naming`.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/naming/naming.go`. The
-//! validators are filesystem-agnostic: callers collect the file lists (and
-//! content bytes for frontmatter checks) and pass them in. The orchestration
-//! that walks the real tree lives in the per-command modules
-//! (`internal::agents::naming`, `commands::workflows`).
+//! The validators are filesystem-agnostic: callers collect the file lists (and content
+//! bytes for frontmatter checks) and pass them in. The orchestration that walks the real
+//! tree lives in the per-command modules (`internal::agents::naming`,
+//! `commands::workflows`).
 
 pub mod reporter;
 
@@ -13,7 +12,7 @@ use std::path::Path;
 
 use serde::Serialize;
 
-/// A single naming-rule failure. Mirrors Go `naming.Violation`. Serialized to
+/// A single naming-rule failure. Serialized to
 /// JSON with `Path`, `Kind`, `Message` keys (Go uses exported field names with
 /// default json tags → PascalCase keys).
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -26,8 +25,7 @@ pub struct Violation {
     pub message: String,
 }
 
-/// Returns the filename of `path` with the final extension stripped. Mirrors Go
-/// `basenameSansExt` (`filepath.Base` then `TrimSuffix(base, filepath.Ext)`).
+/// Returns the filename of `path` with the final extension stripped.
 pub fn basename_sans_ext(path: &str) -> String {
     let base = Path::new(path)
         .file_name()
@@ -43,7 +41,6 @@ pub fn basename_sans_ext(path: &str) -> String {
 
 /// Returns a [`Violation`] when `basename(path)` (without `.md`) does not end
 /// with any of `allowed_suffixes`. A bare suffix (e.g. `maker.md`) is invalid.
-/// Mirrors Go `ValidateSuffix`.
 pub fn validate_suffix(path: &str, allowed_suffixes: &[&str], kind: &str) -> Option<Violation> {
     let name = basename_sans_ext(path);
     for suffix in allowed_suffixes {
@@ -67,7 +64,7 @@ pub fn validate_suffix(path: &str, allowed_suffixes: &[&str], kind: &str) -> Opt
 }
 
 /// Returns the value of the top-level `name:` field from the YAML frontmatter
-/// of `content`, or empty if absent. Mirrors Go `extractFrontmatterName`: a
+/// of `content`, or empty if absent.: a
 /// minimal parser reading the first `name:` line in the delimited block.
 fn extract_frontmatter_name(content: &[u8]) -> String {
     let text = String::from_utf8_lossy(content);
@@ -91,8 +88,7 @@ fn extract_frontmatter_name(content: &[u8]) -> String {
 }
 
 /// Returns a [`Violation`] when the frontmatter `name:` field does not equal
-/// `basename(path)`. No frontmatter / no `name:` → no violation. Mirrors Go
-/// `ValidateFrontmatterName`.
+/// `basename(path)`. No frontmatter / no `name:` → no violation.
 pub fn validate_frontmatter_name(path: &str, content: &[u8]) -> Option<Violation> {
     let name = extract_frontmatter_name(content);
     if name.is_empty() {
@@ -110,7 +106,7 @@ pub fn validate_frontmatter_name(path: &str, content: &[u8]) -> Option<Violation
 }
 
 /// Returns violations for every file present in exactly one of `claude_files`
-/// and `opencode_files` (compared by basename). Mirrors Go `ValidateMirror`,
+/// and `opencode_files` (compared by basename).
 /// including its `.opencode/agent/` (singular) wording in the messages.
 pub fn validate_mirror(claude_files: &[String], opencode_files: &[String]) -> Vec<Violation> {
     use std::collections::BTreeMap;

@@ -1,9 +1,8 @@
 //! Dart package scaffolding for generated contracts.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/contracts/dart_scaffold.go`.
-//! Writes `pubspec.yaml`, ensures `lib/` exists, globs `lib/model/*.dart`, and
-//! builds a barrel library with `part` directives for each model file plus the
-//! shared utility functions.
+//! Writes `pubspec.yaml`, ensures `lib/` exists, globs `lib/model/*.dart`, and builds a
+//! barrel library with `part` directives for each model file plus the shared utility
+//! functions.
 
 use std::fmt::Write as _;
 
@@ -11,18 +10,17 @@ use anyhow::{Context, Error};
 
 use super::types::{DartScaffoldOptions, DartScaffoldResult};
 
-/// `pubspec.yaml` content (byte-identical to the Go raw string literal).
+/// `pubspec.yaml` content emitted for the generated package.
 const PUBSPEC_CONTENT: &str = "name: crud_contracts\npublish_to: \"none\"\nversion: 1.0.0\nenvironment:\n  sdk: ^3.11.1\ndependencies:\n  collection: ^1.18.0\n";
 
-/// Barrel library header (byte-identical to the Go raw string literal).
+/// Barrel library header.
 const BARREL_HEADER: &str = "// AUTO-GENERATED — do not edit. Recreated by rhino-cli contracts dart-scaffold.\n// @dart=2.18\n// ignore_for_file: type=lint\nlibrary openapi.api;\n\nimport 'package:collection/collection.dart';\n";
 
-/// Barrel library utility functions (byte-identical to the Go raw string
-/// literal; note the leading newline).
+/// Barrel library utility functions (note the leading newline).
 const BARREL_UTILS: &str = "\nconst _deepEquality = DeepCollectionEquality();\nfinal _dateFormatter = _DateFormatter();\n\nclass _DateFormatter {\n  String format(DateTime dt) =>\n      '${dt.year.toString().padLeft(4, '0')}'\n      '-${dt.month.toString().padLeft(2, '0')}'\n      '-${dt.day.toString().padLeft(2, '0')}';\n}\n\nT? mapValueOfType<T>(Map<String, dynamic> map, String key) {\n  final v = map[key];\n  return v is T ? v : null;\n}\n\nDateTime? mapDateTime(Map<String, dynamic> map, String key, String? f) {\n  final v = map[key];\n  return v is String && v.isNotEmpty ? DateTime.tryParse(v) : null;\n}\n\nMap<K, V>? mapCastOfType<K, V>(Map<String, dynamic> map, String key) {\n  final v = map[key];\n  return v is Map ? v.cast<K, V>() : null;\n}\n";
 
 /// Creates `pubspec.yaml` and a barrel library for the Dart generated-contracts
-/// package. Mirrors Go `ScaffoldDart` step-for-step.
+/// package.
 pub fn scaffold_dart(opts: &DartScaffoldOptions) -> Result<DartScaffoldResult, Error> {
     let mut result = DartScaffoldResult {
         pubspec_created: false,
@@ -47,8 +45,7 @@ pub fn scaffold_dart(opts: &DartScaffoldOptions) -> Result<DartScaffoldResult, E
 
     let mut basenames: Vec<String> = Vec::new();
     for m in matches {
-        // glob errors here mirror Go's filepath.Glob returning only pattern
-        // errors; per-entry IO errors are surfaced as the walk error.
+        // Per-entry IO errors are surfaced as the walk error.
         let p = m.context("globbing model files")?;
         if let Some(name) = p.file_name() {
             basenames.push(name.to_string_lossy().into_owned());

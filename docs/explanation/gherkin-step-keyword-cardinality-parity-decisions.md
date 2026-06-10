@@ -55,25 +55,22 @@ from scratch — rejected because the existing plan's Phase 0 baseline was alrea
 
 ### Row 2: Linter Architecture (Deliberate Deviation)
 
-**Decision**: ose-primer implements the audit as a standalone dual-CLI command
-(`rhino-cli repo-governance gherkin-keyword-cardinality`) in both Rust and Go, driven by
+**Decision**: ose-primer implements the audit as a standalone command
+(`rhino-cli repo-governance gherkin-keyword-cardinality`) in the Rust CLI, driven by
 a single Gherkin behavior contract in `specs/apps/rhino/`. ose-public and ose-infra add a
 new category to their existing `audit_orchestrator.rs` pattern.
 
 **Why**: ose-primer has no audit orchestrator. Its existing deterministic governance checks
-are standalone `repo-governance` subcommands (currently only `vendor-audit`), and its
-[Dual-Implementation Parity Convention](../../repo-governance/conventions/structure/rhino-cli-dual-implementation-parity.md)
-requires byte-identical Rust and Go CLIs driven by one behavior contract. Adding an
-orchestrator would be a bigger architectural change than the new command warrants.
+are standalone `repo-governance` subcommands (currently only `vendor-audit`) in the single
+`rhino-cli-rust` implementation. Adding an orchestrator would be a bigger architectural
+change than the new command warrants.
 
 **What was rejected**: Adding an orchestrator layer to ose-primer — rejected because the
-standalone-command pattern is already established and the parity convention requires both
-implementations anyway.
+standalone-command pattern is already established.
 
 **Impact on delivery**: Phase 4 is the largest phase in ose-primer's plan — it delivers the
-behavior contract, the Rust implementation, the Go implementation, the shadow-diff corpus
-extension, and the Nx `validate:` targets all in one phase. In ose-public, the equivalent
-work is a single-file addition to the orchestrator.
+behavior contract, the Rust implementation, and the Nx `validate:` targets all in one phase.
+In ose-public, the equivalent work is a single-file addition to the orchestrator.
 
 ### Row 3: Retrofit Phases
 
@@ -140,13 +137,13 @@ the parity gap with ose-public.
 
 - ose-public: existing governance-audit CI path.
 - ose-infra: `validate-markdown.yml` on a self-hosted runner.
-- ose-primer: GitHub-hosted `validate-markdown.yml` + dual-CLI parity job in
+- ose-primer: GitHub-hosted `validate-markdown.yml` + the rhino-cli integration-test job in
   `pr-quality-gate.yml`.
 
 **Why**: CI topology is a repo-specific concern that cannot be unified. ose-infra uses a
-private self-hosted runner; ose-primer uses GitHub-hosted runners. The parity job in
-ose-primer's `pr-quality-gate.yml` (shadow-diff harness) covers the new command on PRs
-automatically because the shadow-diff corpus is extended in Phase 4.
+private self-hosted runner; ose-primer uses GitHub-hosted runners. The integration-test job
+in ose-primer's `pr-quality-gate.yml` covers the new command on PRs automatically because the
+behavior contract is extended in Phase 4.
 
 **What was rejected**: Unifying CI topology across repos — rejected because self-hosted
 and GitHub-hosted runners have incompatible configuration.
@@ -241,7 +238,7 @@ Four of the thirteen rows are deliberate deviations from the common cross-repo b
 
 | Row | Dimension              | ose-primer deviation                                                                   |
 | --- | ---------------------- | -------------------------------------------------------------------------------------- |
-| 2   | Linter architecture    | Standalone dual-CLI command (Rust + Go) + Gherkin behavior contract; no orchestrator   |
+| 2   | Linter architecture    | Standalone Rust CLI command + Gherkin behavior contract; no orchestrator               |
 | 6   | Quality-gate preflight | Port Step 0.5 section first, then enumerate category (siblings had no Step 0.5)        |
 | 7   | CI wiring              | GitHub-hosted runners; new step in `validate-markdown.yml`; parity job auto-covers PRs |
 | 8   | Push mode              | Direct push to `origin main`; no PR (invoker-approved, matches repo default)           |
@@ -253,6 +250,5 @@ is a silent divergence.
 
 - [HARD Rule — Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality) - The canonical rule text
 - [BDD Spec-to-Test Mapping Convention](../../repo-governance/development/infra/bdd-spec-test-mapping.md) - How Gherkin connects to tests
-- [Rhino CLI Dual-Implementation Parity Convention](../../repo-governance/conventions/structure/rhino-cli-dual-implementation-parity.md) - Why both CLIs must land together
 - [Plan Domain Parity — Design Decisions](./plan-domain-parity-decisions.md) - Precedent for this document format
 - [Plan](../../plans/done/2026-06-07__gherkin-step-keyword-cardinality/tech-docs.md) - Full deviation matrix and design decisions

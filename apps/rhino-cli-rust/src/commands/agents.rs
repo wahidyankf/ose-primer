@@ -1,11 +1,9 @@
 //! `agents sync`, `agents validate-claude`, `agents validate-sync`, and
 //! `agents validate-naming` commands.
 //!
-//! Byte-for-byte ports of the Go `cmd/agents_*.go` handlers. Output is written
-//! with `print!` (no implicit trailing newline) to mirror Go's `Fprint`. The
-//! cobra-style usage blocks (printed to stderr on error by the dispatcher)
-//! reproduce the Go binary's help text, including cobra's alphabetical flag
-//! ordering.
+//! Output is written with `print!` (no implicit trailing newline). The usage
+//! blocks (printed to stderr on error by the dispatcher) list flags in
+//! alphabetical order.
 
 use anyhow::{Error, anyhow};
 use clap::Args;
@@ -21,7 +19,7 @@ use crate::internal::git;
 // sync
 // ---------------------------------------------------------------------------
 
-/// Cobra-style usage block printed to stderr when `sync` errors.
+/// Usage block printed to stderr when `sync` errors.
 pub const SYNC_USAGE: &str = "Usage:\n  \
 rhino-cli agents sync [flags]\n\n\
 Examples:\n  \
@@ -68,7 +66,7 @@ pub fn run_sync(
     verbose: bool,
     quiet: bool,
 ) -> Result<(), Error> {
-    // Validate flags (mirrors Go's exact message).
+    // Validate flags.
     if args.agents_only && args.skills_only {
         return Err(anyhow!("cannot use both --agents-only and --skills-only"));
     }
@@ -107,7 +105,7 @@ pub fn run_sync(
 // validate-claude
 // ---------------------------------------------------------------------------
 
-/// Cobra-style usage block printed to stderr when `validate-claude` errors.
+/// Usage block printed to stderr when `validate-claude` errors.
 pub const VALIDATE_CLAUDE_USAGE: &str = "Usage:\n  \
 rhino-cli agents validate-claude [flags]\n\n\
 Examples:\n  \
@@ -186,7 +184,7 @@ pub fn run_validate_claude(
 // validate-sync
 // ---------------------------------------------------------------------------
 
-/// Cobra-style usage block printed to stderr when `validate-sync` errors.
+/// Usage block printed to stderr when `validate-sync` errors.
 pub const VALIDATE_SYNC_USAGE: &str = "Usage:\n  \
 rhino-cli agents validate-sync [flags]\n\n\
 Examples:\n  \
@@ -234,7 +232,7 @@ pub fn run_validate_sync(output: OutputFormat, verbose: bool, quiet: bool) -> Re
 // validate-naming
 // ---------------------------------------------------------------------------
 
-/// Cobra-style usage block printed to stderr when `validate-naming` errors.
+/// Usage block printed to stderr when `validate-naming` errors.
 pub const VALIDATE_NAMING_USAGE: &str = "Usage:\n  \
 rhino-cli agents validate-naming [flags]\n\n\
 Examples:\n  \
@@ -277,7 +275,7 @@ pub fn run_validate_naming(output: OutputFormat, verbose: bool, quiet: bool) -> 
 // emit-bindings
 // ---------------------------------------------------------------------------
 
-/// Cobra-style usage block printed to stderr when `emit-bindings` errors.
+/// Usage block printed to stderr when `emit-bindings` errors.
 pub const EMIT_BINDINGS_USAGE: &str = "Usage:\n  \
 rhino-cli agents emit-bindings [flags]\n\n\
 Examples:\n  \
@@ -315,7 +313,7 @@ pub fn run_emit_bindings(args: &EmitBindingsArgs) -> Result<(), Error> {
 // validate-bindings
 // ---------------------------------------------------------------------------
 
-/// Cobra-style usage block printed to stderr when `validate-bindings` errors.
+/// Usage block printed to stderr when `validate-bindings` errors.
 pub const VALIDATE_BINDINGS_USAGE: &str = "Usage:\n  \
 rhino-cli agents validate-bindings [flags]\n\n\
 Examples:\n  \

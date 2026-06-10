@@ -1,8 +1,6 @@
 //! Shared types for the `doctor` subsystem.
-//!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/doctor/types.go`.
 
-/// Health status of a tool check. Mirrors Go `ToolStatus`. The string codes
+/// Health status of a tool check. The string codes
 /// (`ok`/`warning`/`missing`) match Go and feed the JSON `status` field.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ToolStatus {
@@ -22,7 +20,7 @@ impl ToolStatus {
     }
 }
 
-/// Result of checking a single tool. Mirrors Go `ToolCheck`.
+/// Result of checking a single tool.
 #[derive(Debug, Clone)]
 pub struct ToolCheck {
     pub name: String,
@@ -34,7 +32,7 @@ pub struct ToolCheck {
     pub note: String,
 }
 
-/// Tool scope. Mirrors Go `Scope` (`full` default, `minimal` core-only).
+/// Tool scope.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Scope {
     Full,
@@ -53,7 +51,7 @@ impl Scope {
     }
 }
 
-/// Tool names in the minimal scope. Mirrors Go `MinimalTools`.
+/// Tool names in the minimal scope.
 pub const MINIMAL_TOOLS: &[&str] = &["git", "volta", "node", "npm", "golang", "docker", "jq"];
 
 /// Whether `name` is part of the minimal tool set.
@@ -61,7 +59,7 @@ pub fn is_minimal_tool(name: &str) -> bool {
     MINIMAL_TOOLS.contains(&name)
 }
 
-/// Aggregated results of all tool checks. Mirrors Go `DoctorResult`.
+/// Aggregated results of all tool checks.
 /// `duration_ms` stores the elapsed milliseconds (Go `time.Duration`).
 pub struct DoctorResult {
     pub checks: Vec<ToolCheck>,

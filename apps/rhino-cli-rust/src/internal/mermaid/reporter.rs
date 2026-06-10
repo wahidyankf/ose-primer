@@ -1,4 +1,4 @@
-//! Mermaid validation result formatting. Mirrors Go `reporter.go`.
+//! Mermaid validation result formatting.
 
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
@@ -16,7 +16,7 @@ fn go_quote(s: &str) -> String {
     format!("{s:?}")
 }
 
-/// Formats the validation result as human-readable text. Mirrors Go `FormatText`.
+/// Formats the validation result as human-readable text.
 /// With quiet=true and no findings, returns empty string.
 pub fn format_text(result: &ValidationResult, verbose: bool, quiet: bool) -> String {
     let has_findings = !result.violations.is_empty() || !result.warnings.is_empty();
@@ -156,7 +156,6 @@ fn warning_detail(w: &Warning) -> String {
 }
 
 /// JSON violation shape with camelCase names and Go `omitempty` semantics.
-/// Mirrors Go `jsonViolation`.
 #[derive(Serialize)]
 struct JsonViolation<'a> {
     kind: &'a str,
@@ -181,7 +180,6 @@ struct JsonViolation<'a> {
 }
 
 /// JSON warning shape with camelCase names and Go `omitempty` semantics.
-/// Mirrors Go `jsonWarning`.
 #[derive(Serialize)]
 struct JsonWarning<'a> {
     kind: &'a str,
@@ -227,7 +225,7 @@ fn is_zero_usize(v: &usize) -> bool {
     *v == 0
 }
 
-/// Formats the validation result as JSON. Mirrors Go `FormatJSON`.
+/// Formats the validation result as JSON.
 pub fn format_json(result: &ValidationResult) -> Result<String, Error> {
     let violations: Vec<JsonViolation> = result
         .violations
@@ -275,7 +273,7 @@ pub fn format_json(result: &ValidationResult) -> Result<String, Error> {
     Ok(gojson::html_escape(&serde_json::to_string_pretty(&out)?))
 }
 
-/// Formats the validation result as a markdown table. Mirrors Go `FormatMarkdown`.
+/// Formats the validation result as a markdown table.
 pub fn format_markdown(result: &ValidationResult) -> String {
     if result.violations.is_empty() && result.warnings.is_empty() {
         return format!(

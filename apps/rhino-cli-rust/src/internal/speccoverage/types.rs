@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use std::time::Duration;
 
-/// Options controlling a spec-coverage scan. Mirrors Go `ScanOptions`.
+/// Options controlling a spec-coverage scan.
 #[derive(Debug, Clone, Default)]
 pub struct ScanOptions {
     /// Absolute path to repository root.
@@ -41,7 +41,7 @@ pub struct StepGap {
     pub step_text: String,
 }
 
-/// Aggregate result of a spec-coverage scan. Mirrors Go `CheckResult`.
+/// Aggregate result of a spec-coverage scan.
 #[derive(Debug, Clone, Default)]
 pub struct CheckResult {
     pub total_specs: usize,

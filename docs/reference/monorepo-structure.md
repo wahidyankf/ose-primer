@@ -112,17 +112,14 @@ E2E test suites:
 
 CLI tools:
 
-- `rhino-cli-go` - Repository management automation (Go)
 - `rhino-cli-rust` - Repository management automation (Rust)
 
-### App Structure (Go CLI Application)
+### App Structure (Rust CLI Application)
 
 ```
-├── cmd/                       # CLI commands
-├── internal/                  # Internal packages
+├── src/                       # Source code (commands, internal modules)
 ├── dist/                      # Build output (gitignored)
-├── main.go                    # Entry point
-├── go.mod                     # Go module definition
+├── Cargo.toml                 # Rust crate manifest
 ├── project.json               # Nx project configuration
 └── README.md                  # App documentation
 ```
@@ -261,7 +258,7 @@ The repository contains two distinct project structures with different purposes 
 
 - Next.js frontend applications
 - Spring Boot backend services
-- Go CLI tools
+- Rust CLI tools
 - Reusable TypeScript and Go libraries
 
 ### Experimental Projects (`apps-labs/`)

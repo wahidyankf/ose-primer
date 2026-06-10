@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use std::time::Duration;
 
-/// A single broken link found during validation. Mirrors Go `BrokenLink`.
+/// A single broken link found during validation.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BrokenLink {
     /// Line number where the link appears (1-based).
@@ -17,7 +17,7 @@ pub struct BrokenLink {
     pub category: String,
 }
 
-/// Complete results of a link validation scan. Mirrors Go `LinkValidationResult`.
+/// Complete results of a link validation scan.
 #[derive(Debug, Clone, Default)]
 pub struct LinkValidationResult {
     /// Total number of files scanned.
@@ -32,7 +32,7 @@ pub struct LinkValidationResult {
     pub scan_duration: Duration,
 }
 
-/// Configures how the link validation scan runs. Mirrors Go `ScanOptions`.
+/// Configures how the link validation scan runs.
 #[derive(Debug, Clone, Default)]
 pub struct ScanOptions {
     /// Absolute path to repository root.
@@ -47,7 +47,7 @@ pub struct ScanOptions {
     pub quiet: bool,
 }
 
-/// A link found in a markdown file. Mirrors Go `LinkInfo`.
+/// A link found in a markdown file.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LinkInfo {
     /// Line number where the link appears (1-based).

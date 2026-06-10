@@ -40,7 +40,6 @@
     "dev:crud-fe-ts-tanstack-start": "docker compose -f infra/dev/crud-fe-ts-tanstack-start/docker-compose.yml up --build",
     "dev:crud-fe-dart-flutterweb": "docker compose -f infra/dev/crud-fe-dart-flutterweb/docker-compose.yml up --build",
     "dev:crud-fs-ts-nextjs": "docker compose -f infra/dev/crud-fs-ts-nextjs/docker-compose.yml up --build",
-    "dev:rhino-cli": "docker compose -f infra/dev/rhino-cli-go/docker-compose.yml up --build",
     "generate:bindings": "cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- agents sync && cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- agents emit-bindings",
     "sync:agents": "cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- agents sync --agents-only",
     "sync:skills": "cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- agents sync --skills-only",

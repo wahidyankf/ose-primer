@@ -1,10 +1,7 @@
 //! `docs validate-links`, `docs validate-mermaid`, and
 //! `docs validate-heading-hierarchy` commands.
 //!
-//! Byte-for-byte ports of the Go `cmd/docs_validate_links.go` and
-//! `cmd/docs_validate_mermaid.go` handlers (the heading-hierarchy command is
-//! Rust-canonical; its Go cobra twin mirrors these bytes). Output is written
-//! with `print!` (no implicit trailing newline) to mirror Go's `Fprint`.
+//! Output is written with `print!` (no implicit trailing newline).
 
 use std::path::PathBuf;
 
@@ -24,7 +21,7 @@ use crate::internal::mermaid::{
 // validate-links
 // ---------------------------------------------------------------------------
 
-/// Cobra-style usage block printed to stderr when `validate-links` errors.
+/// Usage block printed to stderr when `validate-links` errors.
 pub const VALIDATE_LINKS_USAGE: &str = "Usage:\n  \
 rhino-cli docs validate-links [flags]\n\n\
 Examples:\n  \
@@ -105,7 +102,7 @@ pub fn run_validate_links(
 // validate-mermaid
 // ---------------------------------------------------------------------------
 
-/// Cobra-style usage block printed to stderr when `validate-mermaid` errors.
+/// Usage block printed to stderr when `validate-mermaid` errors.
 pub const VALIDATE_MERMAID_USAGE: &str = "Usage:\n  \
 rhino-cli docs validate-mermaid [flags]\n\n\
 Examples:\n  \
@@ -233,7 +230,7 @@ pub fn run_validate_mermaid(
     Ok(())
 }
 
-/// Returns `*.md` files staged in git. Mirrors Go `getMermaidStagedFiles`.
+/// Returns `*.md` files staged in git.
 fn get_mermaid_staged_files(repo_root: &std::path::Path) -> Result<Vec<PathBuf>, Error> {
     let output = std::process::Command::new("git")
         .arg("-C")
@@ -251,7 +248,7 @@ fn get_mermaid_staged_files(repo_root: &std::path::Path) -> Result<Vec<PathBuf>,
     Ok(filter_md_paths(repo_root, &rel))
 }
 
-/// Returns `*.md` files changed since upstream. Mirrors Go `getMermaidChangedFiles`.
+/// Returns `*.md` files changed since upstream.
 /// On no-upstream or empty result, falls back to the default repo-wide scan.
 fn get_mermaid_changed_files(repo_root: &std::path::Path) -> Result<Vec<PathBuf>, Error> {
     let output = std::process::Command::new("git")
@@ -277,7 +274,7 @@ fn get_mermaid_changed_files(repo_root: &std::path::Path) -> Result<Vec<PathBuf>
     }
 }
 
-/// Converts relative paths to absolute, keeping only `*.md`. Mirrors Go `filterMDPaths`.
+/// Converts relative paths to absolute, keeping only `*.md`.
 fn filter_md_paths(repo_root: &std::path::Path, rel_paths: &[String]) -> Vec<PathBuf> {
     let mut out = Vec::new();
     for p in rel_paths {
@@ -292,11 +289,10 @@ fn filter_md_paths(repo_root: &std::path::Path, rel_paths: &[String]) -> Vec<Pat
     out
 }
 
-/// Walks given paths (files or dirs) collecting `*.md`. Mirrors Go `collectMDFiles`.
+/// Walks given paths (files or dirs) collecting `*.md`.
 /// Delegates to the links scanner's walker (`scanner::get_all_markdown_files`)
 /// — the single noise-skipping walk definition per CLI (plan DD-3). A file
-/// path yields itself at depth 0 (never filtered), matching the previous
-/// per-command walker byte-for-byte.
+/// path yields itself at depth 0 (never filtered).
 fn collect_md_files(repo_root: &std::path::Path, paths: &[String]) -> Result<Vec<PathBuf>, Error> {
     let mut files = Vec::new();
     for p in paths {
@@ -313,10 +309,7 @@ fn collect_md_files(repo_root: &std::path::Path, paths: &[String]) -> Result<Vec
 /// Scans the whole repository for `*.md` files (plan DD-3): a repo-wide walk
 /// skipping the standardized noise-skip set by directory name, replacing the
 /// historical four-dir default (docs/repo-governance/.claude/plans) plus root
-/// glob. Delegates to `scanner::get_all_markdown_files`, the one walker per
-/// CLI. Mirrors the planned Go `collectMDDefaultDirs` repo-wide twin (the Go
-/// cmd-level `walkMDFiles` still carries the historical three-dir skip set
-/// until it converges on the shared walker).
+/// glob. Delegates to `scanner::get_all_markdown_files`, the one walker per CLI.
 fn collect_md_default_dirs(repo_root: &std::path::Path) -> Vec<PathBuf> {
     scanner::get_all_markdown_files(repo_root)
 }
@@ -338,9 +331,8 @@ fn filter_mermaid_excluded(
 // validate-heading-hierarchy
 // ---------------------------------------------------------------------------
 
-/// Cobra-style usage block printed to stderr when `validate-heading-hierarchy`
-/// errors. Shaped exactly the way cobra generates it so the planned Go twin
-/// matches byte-for-byte (same flag set and alignment as `validate-links`).
+/// Usage block printed to stderr when `validate-heading-hierarchy`
+/// errors (same flag set and alignment as `validate-links`).
 pub const VALIDATE_HEADING_HIERARCHY_USAGE: &str = "Usage:\n  \
 rhino-cli docs validate-heading-hierarchy [flags]\n\n\
 Examples:\n  \
@@ -613,8 +605,8 @@ mod tests {
             ]
         );
 
-        // Trailing-slash exclude form behaves identically (clean-path parity
-        // with the links filter_skip_paths).
+        // Trailing-slash exclude form behaves identically (matching the
+        // links filter_skip_paths clean-path handling).
         let files = vec![
             PathBuf::from("/repo/plans/done/old.md"),
             PathBuf::from("/repo/docs/a.md"),

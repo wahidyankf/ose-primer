@@ -76,7 +76,7 @@ Feature: Governance Vendor Audit
       | .agents/  |
 
   # FP-safety for ambiguous tokens (math constant "pi", bare capital "Q") is verified
-  # against the real scanner in the rhino-cli-rust and rhino-cli-go unit suites
+  # against the real scanner in the rhino-cli-rust unit suite
   # (detects/FP-safe tests), since this CLI-wiring feature mocks the scanner per step.
 
   Scenario: A new harness vendor name under a Platform Binding Examples heading passes the audit

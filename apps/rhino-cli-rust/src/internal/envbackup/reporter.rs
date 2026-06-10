@@ -1,8 +1,7 @@
 //! Output formatting for backup/restore results.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/envbackup/reporter.go`.
-//! JSON uses Go `encoding/json` `MarshalIndent` semantics (two-space indent,
-//! `omitempty`, HTML escaping via [`crate::internal::cliout::gojson`]).
+//! JSON uses Go `encoding/json` `MarshalIndent` semantics (two-space indent, `omitempty`,
+//! HTML escaping via [`crate::internal::cliout::gojson`]).
 
 use std::fmt::Write as _;
 
@@ -13,8 +12,8 @@ use crate::internal::cliout::gojson;
 
 use super::types::EnvResult;
 
-/// Returns `s` with the first byte upper-cased. Mirrors Go `capitalize`, which
-/// upper-cases `s[:1]` (a single byte). All call sites pass ASCII.
+/// Returns `s` with its first byte upper-cased (a single byte). All call sites
+/// pass ASCII.
 fn capitalize(s: &str) -> String {
     if s.is_empty() {
         return String::new();
@@ -24,7 +23,7 @@ fn capitalize(s: &str) -> String {
     format!("{}{}", first.to_ascii_uppercase(), chars.as_str())
 }
 
-/// Renders a human-readable summary. Mirrors Go `FormatText`.
+/// Renders a human-readable summary.
 pub fn format_text(r: &EnvResult, verbose: bool, quiet: bool) -> String {
     let mut sb = String::new();
 
@@ -101,8 +100,8 @@ pub fn format_text(r: &EnvResult, verbose: bool, quiet: bool) -> String {
     sb
 }
 
-/// Serialisable file entry. Field order and `omitempty` semantics mirror Go's
-/// `jsonFileEntry`; `absPath` is intentionally absent.
+/// Serialisable file entry. Empty fields are omitted; `absPath` is
+/// intentionally absent.
 #[derive(Serialize)]
 struct JsonFileEntry {
     #[serde(rename = "relPath")]
@@ -117,7 +116,7 @@ struct JsonFileEntry {
     source: String,
 }
 
-/// Serialisable result. Mirrors Go `jsonResult`.
+/// Serialisable result.
 #[derive(Serialize)]
 struct JsonResult {
     direction: String,
@@ -143,7 +142,7 @@ fn is_false(v: &bool) -> bool {
     !*v
 }
 
-/// Serialises the result to a JSON string. Mirrors Go `FormatJSON`.
+/// Serialises the result to a JSON string.
 pub fn format_json(r: &EnvResult) -> Result<String, Error> {
     let files: Vec<JsonFileEntry> = r
         .files
@@ -172,7 +171,7 @@ pub fn format_json(r: &EnvResult) -> Result<String, Error> {
     Ok(gojson::html_escape(&body))
 }
 
-/// Renders the result as a Markdown table. Mirrors Go `FormatMarkdown`.
+/// Renders the result as a Markdown table.
 pub fn format_markdown(r: &EnvResult) -> String {
     let mut sb = String::new();
 
@@ -255,7 +254,7 @@ pub fn format_markdown(r: &EnvResult) -> String {
     sb
 }
 
-/// Mirrors Go `filepath.ToSlash` on unix (already `/`-separated).
+/// Normalises path separators to `/` (a no-op on unix).
 fn to_slash(p: &str) -> String {
     p.replace('\\', "/")
 }

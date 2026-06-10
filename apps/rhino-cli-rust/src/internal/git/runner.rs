@@ -1,16 +1,13 @@
 //! Pre-commit hook orchestration.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/git/runner.go`. Runs all
-//! pre-commit steps in order, failing fast on the first error (except step 3,
-//! which only warns). Each step is bounded by a 30s timeout; the entire run is
-//! bounded by 120s. A timed-out step logs a warning and is skipped rather than
-//! blocking the commit.
+//! Runs all pre-commit steps in order, failing fast on the first error (except step 3,
+//! which only warns). Each step is bounded by a 30s timeout; the entire run is bounded by
+//! 120s. A timed-out step logs a warning and is skipped rather than blocking the commit.
 //!
 //! Most steps shell out to external tools (`docker`, `nx`, `npx`, `npm`, `git`)
 //! whose output is environment-dependent, so they are injected through [`Deps`]
-//! for testability. The deterministic, byte-checkable surface is the skip /
-//! warning / status messages this module prints, which mirror the Go reference
-//! line-for-line.
+//! for testability. The deterministic, checkable surface is the skip / warning
+//! / status messages this module prints.
 
 use std::io::Write;
 use std::path::Path;
@@ -31,8 +28,7 @@ use crate::internal::mermaid::{
     extractor, reporter as mermaid_reporter, validator as mermaid_validator,
 };
 
-/// Maximum duration allowed for the entire pre-commit run. Mirrors Go
-/// `totalTimeout` (120s).
+/// Maximum duration allowed for the entire pre-commit run.
 ///
 /// Go also defines a 30s per-step timeout (`stepTimeout`) enforced via a
 /// goroutine + `context` cancellation `select`. The Rust port runs each step
@@ -52,7 +48,7 @@ type SyncAllFn = dyn Fn(&SyncOptions) -> Result<crate::internal::agents::types::
 type ValidateSyncFn = dyn Fn(&Path) -> Result<ValidationResult, Error>;
 type ValidateLinksFn = dyn Fn(&ScanOptions) -> Result<LinkValidationResult, Error>;
 
-/// Injectable dependencies for full testability. Mirrors Go `Deps`.
+/// Injectable dependencies for full testability.
 pub struct Deps<'a> {
     /// Returns the staged file list (`git diff --cached --name-only`).
     pub get_staged_files: Box<StagedFn>,
@@ -61,7 +57,7 @@ pub struct Deps<'a> {
     /// stdio. Returns the exit status.
     pub exec_command: Box<ExecRunner>,
     /// Runs an external command capturing nothing (output suppressed), used by
-    /// best-effort steps (`git add`). Mirrors Go's `cmd.Run()` without piping.
+    /// best-effort steps (`git add`).
     pub exec_command_quiet: Box<ExecRunner>,
 
     pub validate_claude: Box<ValidateClaudeFn>,
@@ -69,9 +65,9 @@ pub struct Deps<'a> {
     pub validate_sync: Box<ValidateSyncFn>,
     pub validate_links: Box<ValidateLinksFn>,
 
-    /// Sink for the step status / warning messages (mirrors Go `deps.Stdout`).
+    /// Sink for the step status / warning messages.
     pub stdout: Box<dyn Write + 'a>,
-    /// Sink for error messages (mirrors Go `deps.Stderr`).
+    /// Sink for error messages.
     pub stderr: Box<dyn Write + 'a>,
 }
 
@@ -82,7 +78,7 @@ impl Default for Deps<'_> {
 }
 
 impl Deps<'_> {
-    /// Production-ready dependencies. Mirrors Go `DefaultDeps`.
+    /// Production-ready dependencies.
     pub fn production() -> Self {
         Deps {
             get_staged_files: Box::new(default_get_staged_files),
@@ -101,9 +97,9 @@ impl Deps<'_> {
 /// Runs `fn` within [`STEP_TIMEOUT`]. The Go version uses goroutine + context
 /// cancellation; here the steps are synchronous and bounded by wall-clock
 /// budget checks rather than preemption — a step that exceeds the total budget
-/// at its START is skipped with the same warning Go prints. Because the steps
-/// are synchronous, in-flight preemption is not possible; the timeout messages
-/// are emitted on the same conditions the Go reference checks before each step.
+/// at its START is skipped with a warning. Because the steps are synchronous,
+/// in-flight preemption is not possible; the timeout messages are emitted based
+/// on the elapsed budget checked before each step.
 fn run_with_step_timeout<F>(start: Instant, name: &str, deps: &mut Deps, f: F) -> Result<(), Error>
 where
     F: FnOnce(&mut Deps) -> Result<(), Error>,
@@ -119,7 +115,6 @@ where
 }
 
 /// Executes all pre-commit steps in order, failing fast on the first error.
-/// Mirrors Go `Run`.
 pub fn run(git_root: &Path, mut deps: Deps) -> Result<(), Error> {
     let start = Instant::now();
 
@@ -160,8 +155,7 @@ pub fn run(git_root: &Path, mut deps: Deps) -> Result<(), Error> {
     })
 }
 
-/// Returns staged files via `git diff --cached --name-only`. Mirrors Go
-/// `defaultGetStagedFiles`.
+/// Returns staged files via `git diff --cached --name-only`.
 fn default_get_staged_files(git_root: &Path) -> Result<Vec<String>, Error> {
     let out = Command::new("git")
         .args(["diff", "--cached", "--name-only"])
@@ -188,8 +182,8 @@ fn run_inherited(
     Command::new(name).args(args).current_dir(dir).status()
 }
 
-/// Runs an external command discarding all output. Mirrors Go's best-effort
-/// `cmd.Run()` for `git add`.
+/// Runs an external command discarding all output (best-effort, used for
+/// `git add`).
 fn run_quiet(name: &str, args: &[&str], dir: &Path) -> std::io::Result<std::process::ExitStatus> {
     Command::new(name)
         .args(args)
@@ -199,13 +193,13 @@ fn run_quiet(name: &str, args: &[&str], dir: &Path) -> std::io::Result<std::proc
         .status()
 }
 
-/// True if any staged file satisfies `pred`. Mirrors Go `hasMatch`.
+/// True if any staged file satisfies `pred`.
 fn has_match(staged: &[String], pred: impl Fn(&str) -> bool) -> bool {
     staged.iter().any(|f| pred(f))
 }
 
 /// Validates `.claude/` and `.opencode/` configuration if config files are
-/// staged. Mirrors Go `step1Config`.
+/// staged.
 fn step1_config(git_root: &Path, staged: &[String], deps: &mut Deps) -> Result<(), Error> {
     let has_config = has_match(staged, |f| {
         f.starts_with(".claude/") || f.starts_with(".opencode/")
@@ -288,7 +282,7 @@ fn step1_config(git_root: &Path, staged: &[String], deps: &mut Deps) -> Result<(
     Ok(())
 }
 
-/// Validates staged docker-compose files. Mirrors Go `step2DockerCompose`.
+/// Validates staged docker-compose files.
 fn step2_docker_compose(git_root: &Path, staged: &[String], deps: &mut Deps) -> Result<(), Error> {
     let compose_files: Vec<&String> = staged
         .iter()
@@ -323,8 +317,7 @@ fn step2_docker_compose(git_root: &Path, staged: &[String], deps: &mut Deps) -> 
     Ok(())
 }
 
-/// Runs `nx affected -t run-pre-commit`; failure is a warning only. Mirrors Go
-/// `step3NxPreCommit`.
+/// Runs `nx affected -t run-pre-commit`; failure is a warning only.
 fn step3_nx_pre_commit(git_root: &Path, deps: &mut Deps) {
     let status = (deps.exec_command)(
         "nx",
@@ -341,12 +334,11 @@ fn step3_nx_pre_commit(git_root: &Path, deps: &mut Deps) {
 }
 
 /// Auto-stages crud-fs-ts-nextjs content changes. Best-effort; errors ignored.
-/// Mirrors Go `step4StageAyokoding`.
 fn step4_stage_ayokoding(git_root: &Path, deps: &mut Deps) {
     let _ = (deps.exec_command_quiet)("git", &["add", "apps/crud-fs-ts-nextjs/content/"], git_root);
 }
 
-/// Runs `npx lint-staged`. Mirrors Go `step5LintStaged`.
+/// Runs `npx lint-staged`.
 fn step5_lint_staged(git_root: &Path, deps: &mut Deps) -> Result<(), Error> {
     let status = (deps.exec_command)("npx", &["lint-staged"], git_root);
     let ok = status.is_ok_and(|s| s.success());
@@ -357,7 +349,7 @@ fn step5_lint_staged(git_root: &Path, deps: &mut Deps) -> Result<(), Error> {
 }
 
 /// Regenerates app-level `package-lock.json` when an app `package.json` is
-/// staged. Mirrors Go `step5bSyncLockfiles`.
+/// staged.
 fn step5b_sync_lockfiles(git_root: &Path, staged: &[String], deps: &mut Deps) -> Result<(), Error> {
     let mut apps_to_sync: Vec<String> = Vec::new();
 
@@ -441,9 +433,8 @@ fn staged_markdown_files(
 
 /// Validates mermaid diagrams in staged markdown files, blocking the commit on
 /// any violation. Staged-only counterpart of `docs validate-mermaid` (DD-8).
-/// Mirrors Go `step6mValidateMermaid` (lands in the Go GREEN step; output is
-/// byte-parity-designed — repo-relative paths into the shared reporter, one
-/// `❌` summary line on stderr mirroring step 7's shape).
+/// Feeds repo-relative paths into the shared reporter and prints one `❌`
+/// summary line on stderr, matching step 7's shape.
 fn step6m_validate_mermaid(
     git_root: &Path,
     staged: &[String],
@@ -489,8 +480,7 @@ fn step6m_validate_mermaid(
 /// Validates heading hierarchy in staged prose-allowlisted markdown files,
 /// blocking the commit on any finding. Staged-only counterpart of
 /// `docs validate-heading-hierarchy` (DD-8); non-allowlisted files (e.g.
-/// `.claude/skills/**`) are exempt. Mirrors Go
-/// `step6hValidateHeadingHierarchy` (lands in the Go GREEN step).
+/// `.claude/skills/**`) are exempt.
 fn step6h_validate_heading_hierarchy(
     git_root: &Path,
     staged: &[String],
@@ -524,7 +514,7 @@ fn step6h_validate_heading_hierarchy(
     ))
 }
 
-/// Validates markdown links in staged files. Mirrors Go `step7ValidateLinks`.
+/// Validates markdown links in staged files.
 /// Skip paths cover generated skill mirrors, worktree copies, and the frozen
 /// `plans/done` archive (DD-8) — existing entries are preserved.
 fn step7_validate_links(git_root: &Path, deps: &mut Deps) -> Result<(), Error> {
@@ -550,7 +540,7 @@ fn step7_validate_links(git_root: &Path, deps: &mut Deps) -> Result<(), Error> {
     Ok(())
 }
 
-/// Runs `npm run lint:md`. Mirrors Go `step8LintMarkdown`.
+/// Runs `npm run lint:md`.
 fn step8_lint_markdown(git_root: &Path, deps: &mut Deps) -> Result<(), Error> {
     let status = (deps.exec_command)("npm", &["run", "lint:md"], git_root);
     let ok = status.is_ok_and(|s| s.success());
@@ -560,9 +550,9 @@ fn step8_lint_markdown(git_root: &Path, deps: &mut Deps) -> Result<(), Error> {
     Ok(())
 }
 
-/// Returns the directory portion of a forward-slash path, mirroring Go's
-/// `filepath.Dir` for the slash-separated repo-relative paths this module
-/// handles (e.g. `apps/foo/package.json` → `apps/foo`).
+/// Returns the directory portion of a forward-slash path for the
+/// slash-separated repo-relative paths this module handles (e.g.
+/// `apps/foo/package.json` → `apps/foo`).
 fn dir_name(path: &str) -> String {
     match path.rfind('/') {
         Some(idx) => path[..idx].to_string(),

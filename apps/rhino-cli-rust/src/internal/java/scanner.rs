@@ -1,6 +1,4 @@
 //! Package discovery for the Java validator.
-//!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/java/scanner.go`.
 
 use std::collections::BTreeSet;
 use std::path::Path;
@@ -12,7 +10,7 @@ use walkdir::WalkDir;
 /// at least one `.java` file (`package-info.java` counts). The returned vector
 /// is sorted lexicographically, matching Go's `sort.Strings` on absolute paths.
 ///
-/// Mirrors Go `ScanPackages`: it uses a set keyed on the parent directory of
+///: it uses a set keyed on the parent directory of
 /// each `.java` file, then sorts the resulting paths.
 pub fn scan_packages(source_root: &str) -> Result<Vec<String>, Error> {
     let mut package_set: BTreeSet<String> = BTreeSet::new();
@@ -34,8 +32,7 @@ pub fn scan_packages(source_root: &str) -> Result<Vec<String>, Error> {
     Ok(package_set.into_iter().collect())
 }
 
-/// Returns true when `path`'s extension is exactly `.java`, mirroring Go's
-/// `filepath.Ext(path) == ".java"` (case-sensitive, like the Go reference).
+/// Returns true when `path`'s extension is exactly `.java` (case-sensitive).
 fn has_java_ext(path: &Path) -> bool {
     path.extension().is_some_and(|ext| ext == "java")
 }

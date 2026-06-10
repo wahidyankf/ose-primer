@@ -1,4 +1,4 @@
-// Byte-for-byte port of `apps/rhino-cli/internal/testcoverage/cobertura_coverage.go`.
+// Cobertura XML coverage parsing.
 // Cobertura XML: <coverage><packages><package><classes><class filename="..."><lines><line number hits branch condition-coverage/>
 // Classification:
 //   hits > 0 && (!branch || all branches covered) → covered

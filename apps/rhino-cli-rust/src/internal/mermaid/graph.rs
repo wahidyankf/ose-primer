@@ -1,4 +1,4 @@
-//! Rank assignment and width/depth metrics. Mirrors Go `graph.go`.
+//! Rank assignment and width/depth metrics.
 
 use std::collections::HashMap;
 
@@ -12,8 +12,7 @@ const BLACK: u8 = 2;
 /// Detects back edges (edges pointing at a node currently on the DFS stack)
 /// via iterative DFS, visiting roots in node-declaration order and children
 /// in edge-declaration order (plan DD-14 fix 2). Returns the indices of back
-/// edges in the caller's edge slice. Mirrors the planned Go `findBackEdges`
-/// twin.
+/// edges in the caller's edge slice.
 fn find_back_edges(
     nodes: &[Node],
     adj: &HashMap<&str, Vec<(usize, &str)>>,
@@ -64,8 +63,7 @@ fn find_back_edges(
 /// Plan DD-14 fix 2: back edges are detected via iterative DFS in
 /// node-declaration order and removed before ranking, so cyclic diagrams
 /// rank as chains. Previously a cycle emptied Kahn's queue, every node fell
-/// back to rank 0, and the bogus span equaled the node count. Mirrors the
-/// planned Go `rankAssign` twin.
+/// back to rank 0, and the bogus span equaled the node count.
 fn rank_assign(nodes: &[Node], edges: &[Edge]) -> HashMap<String, i64> {
     if nodes.is_empty() {
         return HashMap::new();
@@ -158,7 +156,6 @@ fn rank_assign(nodes: &[Node], edges: &[Edge]) -> HashMap<String, i64> {
 }
 
 /// Maximum number of nodes sharing the same rank. 0 for empty graphs.
-/// Mirrors Go `MaxWidth`.
 pub fn max_width(nodes: &[Node], edges: &[Edge]) -> i64 {
     if nodes.is_empty() {
         return 0;
@@ -174,7 +171,6 @@ pub fn max_width(nodes: &[Node], edges: &[Edge]) -> i64 {
 }
 
 /// Number of distinct rank values (longest path length + 1). 0 for empty graphs.
-/// Mirrors Go `Depth`.
 pub fn depth(nodes: &[Node], edges: &[Edge]) -> i64 {
     if nodes.is_empty() {
         return 0;

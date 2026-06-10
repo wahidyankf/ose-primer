@@ -245,25 +245,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
-      - uses: ./.github/actions/setup-golang
-      - run: npx nx run rhino-cli-go:env:validate
-
-  parity:
-    name: rhino-cli go-vs-rust parity (shadow-diff)
-    needs: detect
-    # Fires when either CLI's source (go/rust) or the markdown/spec corpus the
-    # validators run against changes — the two implementations must stay byte-identical.
-    if: needs.detect.outputs.has-golang == 'true' || needs.detect.outputs.has-rust == 'true' || needs.detect.outputs.has-markdown == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - uses: ./.github/actions/setup-node
-      - uses: ./.github/actions/setup-golang
       - uses: ./.github/actions/setup-rust
-      - name: Shadow-diff all commands (rhino-cli-go vs rhino-cli-rust)
-        run: bash apps/rhino-cli-rust/scripts/shadow-diff.sh test-coverage spec-coverage docs agents repo-governance workflows git contracts java env doctor
+      - run: npx nx run rhino-cli-rust:env:validate
 
   quality-gate:
     name: Quality gate
@@ -283,7 +266,6 @@ jobs:
         markdown,
         naming,
         env-validate,
-        parity,
       ]
     if: always()
     runs-on: ubuntu-latest
@@ -292,7 +274,7 @@ jobs:
         run: |
           echo "Checking quality gate results..."
           FAILED=false
-          for job in typescript golang jvm dotnet python rust elixir clojure dart markdown naming env-validate parity; do
+          for job in typescript golang jvm dotnet python rust elixir clojure dart markdown naming env-validate; do
             RESULT="${{ toJSON(needs) }}"
             # A skipped job is OK (language not affected). Only failure blocks.
           done

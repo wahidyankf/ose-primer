@@ -1,4 +1,4 @@
-//! Broken-link categorization. Mirrors Go `links_categorizer.go`.
+//! Broken-link categorization.
 
 /// Categorizes a broken link by pattern. Checks patterns in order
 /// (most specific first), matching the Go `CategorizeBrokenLink`.

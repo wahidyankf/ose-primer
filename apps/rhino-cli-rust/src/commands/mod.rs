@@ -1,8 +1,6 @@
-// Command registry for rhino-cli.
-//
-// Phase 3 adds the `test-coverage` and `spec-coverage` command families. The
-// remaining namespaces (agents_*, docs_*, doctor, env_*, git_*, governance_*,
-// workflows_*, …) ported from the Go CLI are declared here in later phases.
+// Command registry for rhino-cli. Each submodule backs one command family
+// (agents, contracts, docs, doctor, env, git, java, repo-governance,
+// spec-coverage, test-coverage, workflows).
 
 pub mod agents;
 pub mod contracts;

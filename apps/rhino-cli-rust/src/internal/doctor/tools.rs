@@ -1,9 +1,8 @@
 //! Tool-check definitions.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/doctor/tools.go`. Each
-//! [`ToolDef`] describes how to probe a tool, parse its version, compare it
-//! against the requirement, read the requirement source, and (optionally)
-//! install it. The ordering of the returned slice IS the report ordering.
+//! Each [`ToolDef`] describes how to probe a tool, parse its version, compare it against
+//! the requirement, read the requirement source, and (optionally) install it. The ordering
+//! of the returned slice IS the report ordering.
 
 use std::path::Path;
 
@@ -19,7 +18,7 @@ use super::checker::{
 };
 use super::types::ToolStatus;
 
-/// A single installation command. Mirrors Go `InstallStep`.
+/// A single installation command.
 pub struct InstallStep {
     pub description: String,
     pub command: String,
@@ -27,8 +26,7 @@ pub struct InstallStep {
 }
 
 /// Closure that returns install steps for a tool on a platform (`"darwin"` or
-/// `"linux"`). Empty result means "cannot install on this platform". Mirrors Go
-/// `InstallFunc`. `None` (the field is `Option`) means "cannot auto-install".
+/// `"linux"`). Empty result means "cannot install on this platform".
 type InstallFn = Box<dyn Fn(&str, &str) -> Vec<InstallStep>>;
 
 /// Version parser closure: raw command output → parsed version string.
@@ -40,7 +38,7 @@ type CompareFn = Box<dyn Fn(&str, &str, bool) -> (ToolStatus, String)>;
 /// Requirement reader closure: returns the required version (`""` when none).
 type ReadReqFn = Box<dyn Fn() -> String>;
 
-/// One tool-check definition. Mirrors Go `toolDef`.
+/// One tool-check definition.
 pub struct ToolDef {
     pub name: &'static str,
     pub binary: &'static str,
@@ -58,15 +56,14 @@ fn plain(f: fn(&str, &str) -> (ToolStatus, String)) -> CompareFn {
     Box::new(move |i, r, _| f(i, r))
 }
 
-/// Builds the ordered list of tool definitions for `repo_root`. Mirrors Go
-/// `buildToolDefs`.
+/// Builds the ordered list of tool definitions for `repo_root`.
 pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
     let package_json = repo_root.join("package.json");
     let pom_xml = repo_root
         .join("apps")
         .join("crud-be-fsharp-giraffe-jasb")
         .join("pom.xml");
-    let go_mod = repo_root.join("apps").join("rhino-cli-go").join("go.mod");
+    let go_work = repo_root.join("go.work");
     let python_version = repo_root
         .join("apps")
         .join("crud-be-python-fastapi")
@@ -87,7 +84,7 @@ pub fn build_tool_defs(repo_root: &Path) -> Vec<ToolDef> {
 
     let mut defs = build_core_tools(&package_json, &pom_xml);
     defs.extend(build_system_lang_tools(
-        &go_mod,
+        &go_work,
         &python_version,
         &cargo_toml,
     ));
@@ -255,28 +252,28 @@ fn build_jvm_tools(pom_xml: &std::path::Path) -> Vec<ToolDef> {
 
 /// golang, python, rust, cargo-llvm-cov.
 fn build_system_lang_tools(
-    go_mod: &std::path::Path,
+    go_work: &std::path::Path,
     python_version: &std::path::Path,
     cargo_toml: &std::path::Path,
 ) -> Vec<ToolDef> {
-    let mut defs = build_go_python_tools(go_mod, python_version);
+    let mut defs = build_go_python_tools(go_work, python_version);
     defs.extend(build_rust_tools(cargo_toml));
     defs
 }
 
 /// golang, python.
 fn build_go_python_tools(
-    go_mod: &std::path::Path,
+    go_work: &std::path::Path,
     python_version: &std::path::Path,
 ) -> Vec<ToolDef> {
     let mut defs: Vec<ToolDef> = Vec::new();
 
     {
-        let gm = go_mod.to_path_buf();
+        let gm = go_work.to_path_buf();
         defs.push(ToolDef {
             name: "golang",
             binary: "go",
-            source: "apps/rhino-cli-go/go.mod \u{2192} go directive",
+            source: "go.work \u{2192} go directive",
             args: vec!["version"],
             use_stderr: false,
             parse_ver: Box::new(|s| parse_line_word(s, "go version ", 2, "go")),
@@ -750,10 +747,7 @@ mod tests {
             by("java").source,
             "apps/crud-be-fsharp-giraffe-jasb/pom.xml \u{2192} <java.version>"
         );
-        assert_eq!(
-            by("golang").source,
-            "apps/rhino-cli-go/go.mod \u{2192} go directive"
-        );
+        assert_eq!(by("golang").source, "go.work \u{2192} go directive");
         assert!(by("git").source == "(no config file)");
         assert_eq!(by("playwright").source, "node_modules (npx playwright)");
     }
@@ -844,9 +838,9 @@ mod tests {
     }
 
     /// Exercises every tool's install-step closure on both platforms (the
-    /// darwin/linux branches), and confirms the per-platform command choices
-    /// match the Go reference. This drives the large install closures that the
-    /// black-box doctor cucumber test cannot reach deterministically.
+    /// darwin/linux branches), and confirms the per-platform command choices.
+    /// This drives the large install closures that the black-box doctor
+    /// cucumber test cannot reach deterministically.
     #[test]
     fn install_commands_cover_all_tools_both_platforms() {
         let tmp = tempfile::tempdir().unwrap();
@@ -865,7 +859,7 @@ mod tests {
         }
 
         let by = |n: &str| defs.iter().find(|d| d.name == n).unwrap();
-        // Spot-check the per-platform divergences from the Go reference.
+        // Spot-check the per-platform command divergences.
         assert_eq!(
             by("git").install_cmd.as_ref().unwrap()("", "darwin")[0].command,
             "xcode-select"

@@ -1,4 +1,4 @@
-//! Link resolution and validation. Mirrors Go `links_validator.go`.
+//! Link resolution and validation.
 
 use std::path::{Component, Path, PathBuf};
 use std::time::Instant;
@@ -11,7 +11,7 @@ use super::scanner::{extract_links, get_markdown_files};
 use super::types::{BrokenLink, LinkValidationResult, ScanOptions};
 
 /// Resolves a relative link to an absolute, lexically-cleaned path.
-/// Mirrors Go `ResolveLink` (`filepath.Join` + `filepath.Clean`).
+/// Resolves a link target relative to the source file (join + clean).
 pub fn resolve_link(source_file: &Path, link: &str) -> PathBuf {
     // Remove anchor if present.
     let link_without_anchor = link.split('#').next().unwrap_or("");
@@ -81,7 +81,7 @@ fn anchor_exists(target: &Path, fragment: &str) -> bool {
         .any(|anchor| anchor == fragment)
 }
 
-/// Validates all links in a single file. Mirrors Go `ValidateFile`.
+/// Validates all links in a single file.
 /// Skill files (`.claude/skills/`) are skipped wholesale.
 pub fn validate_file(file_path: &Path, opts: &ScanOptions) -> Result<Vec<BrokenLink>, Error> {
     if file_path.to_string_lossy().contains(".claude/skills/") {
@@ -134,7 +134,7 @@ pub fn validate_file(file_path: &Path, opts: &ScanOptions) -> Result<Vec<BrokenL
     Ok(broken)
 }
 
-/// Validates all markdown files based on options. Mirrors Go `ValidateAllLinks`.
+/// Validates all markdown files based on options.
 pub fn validate_all_links(opts: &ScanOptions) -> Result<LinkValidationResult, Error> {
     let start = Instant::now();
 

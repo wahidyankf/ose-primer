@@ -217,12 +217,10 @@ Apply validated drift fixes from the audit report based on mode level.
   the pre-push guard corpus)
 - Higher-precedence filename discoveries (AD3 implications require human judgment per the
   [Multi-Harness Binding Convention](../../conventions/structure/multi-harness-binding.md))
-- New harness additions (full onboarding involves catalog row, binding directory decision,
-  and dual-CLI implementation per AD8)
+- New harness additions (full onboarding involves catalog row and binding directory decision)
 - rhino-cli **generator-logic** changes (a translation rule, not just regenerated data):
-  `apps/rhino-cli-go/` and `apps/rhino-cli-rust/` are a parity pair, so the identical change
-  must land in both `apps/rhino-cli-go/internal/agents/` and `apps/rhino-cli-rust/src/` in
-  lock-step — surfaced as one coupled finding for human or language-dev-agent authorship
+  the change lands in `apps/rhino-cli-rust/src/` — surfaced as a finding for human or
+  language-dev-agent authorship
 - Evidence that conflicts across sources (checker must escalate to human with both sources)
 
 **On out-of-scope findings**: Surface with full context in the orchestrator's user-visible
@@ -353,11 +351,11 @@ Scenario: Fixer updates rhino specs when a harness change alters documented CLI 
   And it preserves the Given-When-Then scenario structure
   And it records each touched spec file in the fix report
 
-Scenario: rhino-cli generator-logic change is surfaced as a coupled both-CLI finding
+Scenario: rhino-cli generator-logic change is surfaced as a code-authorship finding
   Given the audit contains a finding that requires changing a binding translation rule
   When repo-harness-compatibility-fixer encounters it
   Then it flags the change as out-of-scope code authorship
-  And it states the identical change must land in both apps/rhino-cli-go and apps/rhino-cli-rust
+  And it states the change must land in apps/rhino-cli-rust
   And the workflow surfaces it for human or language-dev-agent resolution
 
 Scenario: Out-of-scope findings escalate to human without looping

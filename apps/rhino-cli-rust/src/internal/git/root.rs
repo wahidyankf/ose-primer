@@ -2,17 +2,16 @@ use std::path::PathBuf;
 
 use anyhow::{Error, anyhow};
 
-/// Returns the current working directory, mirroring Go's `os.Getwd()`.
+/// Returns the current working directory, preferring the *logical* path.
 ///
-/// Go prefers `$PWD` when it is absolute and refers to the same directory as
-/// the syscall result (same device + inode), returning the *logical* path
-/// (which preserves symlinks such as macOS's `/var` → `/private/var`). Only
-/// when `$PWD` is unset/stale does it fall back to the resolved syscall path.
-/// Plain `std::env::current_dir()` always returns the resolved physical path,
-/// which diverges from the Go CLI on symlinked working directories (e.g.
-/// `mktemp -d` under `/var/folders` on macOS). The `env backup` inside-repo
-/// check compares this against a user-supplied `--dir`, so the namespaces must
-/// match exactly for byte-parity.
+/// We prefer `$PWD` when it is absolute and refers to the same directory as the
+/// syscall result (same device + inode), which preserves symlinks such as
+/// macOS's `/var` → `/private/var`. Only when `$PWD` is unset/stale do we fall
+/// back to the resolved syscall path. Plain `std::env::current_dir()` always
+/// returns the resolved physical path, which would diverge on symlinked working
+/// directories (e.g. `mktemp -d` under `/var/folders` on macOS). The `env
+/// backup` inside-repo check compares this against a user-supplied `--dir`, so
+/// the namespaces must match exactly.
 fn getwd() -> std::io::Result<PathBuf> {
     let resolved = std::env::current_dir()?;
     if let Some(pwd) = std::env::var_os("PWD") {

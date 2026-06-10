@@ -1,8 +1,8 @@
-// Byte-for-byte port of `apps/rhino-cli/internal/testcoverage/detect.go`.
+// Coverage-format auto-detection.
 //
 // Detection priority:
 //   1. Filename-based: .info / contains "lcov" → LCOV; .xml + "jacoco" → JaCoCo; .xml + "cobertura" → Cobertura
-//   2. Content-based:  mode: → Go; SF:/TN: → LCOV; <report → JaCoCo; <coverage → Cobertura
+//   2. Content-based: mode: → Go; SF:/TN: → LCOV; <report → JaCoCo; <coverage → Cobertura
 //   3. Fallback: Go
 
 use std::fs::File;

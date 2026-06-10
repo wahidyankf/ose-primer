@@ -162,8 +162,7 @@ build time. Full adoption across all 11 backend families and 4 frontend apps.
 
 ## 5. `rhino-cli env` Tooling
 
-All commands available in both `rhino-cli-rust` (canonical) and `rhino-cli-go`
-(parity twin). Output is byte-identical across the twins (shadow-diff gate).
+All commands are provided by `rhino-cli-rust`.
 
 ### `env backup` / `env restore`
 
@@ -208,7 +207,6 @@ the per-surface allowlist). Wired into `.husky/pre-push` and the CI workflow.
 
 ```bash
 npx nx run rhino-cli-rust:run -- env validate
-npx nx run rhino-cli-go:run -- env validate   # parity twin
 ```
 
 Reports two violation classes per surface:
@@ -289,5 +287,4 @@ and backed up by `env backup`.
 - [Environment File Access Convention](./env-file-access.md) — stub redirect (six-layer agent enforcement)
 - [Reproducible Environments](../../development/workflow/reproducible-environments.md) — stub redirect (`.env.example` pattern, Volta, lockfiles)
 - [No Machine-Specific Information in Commits](../../development/quality/no-machine-specific-commits.md) — companion rule: paths, usernames, local IPs
-- [rhino-cli Dual-Implementation Parity Convention](../structure/rhino-cli-dual-implementation-parity.md) — shadow-diff gate requirement
 - [Standardize Secrets and Env Parity Decisions](../../../docs/explanation/standardize-secrets-and-env-parity-decisions.md) — plain-language rationale for all 16 decisions

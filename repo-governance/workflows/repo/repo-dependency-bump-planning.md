@@ -125,7 +125,7 @@ governed by the policy (intersected with `scope-filter`/`ecosystems`) in `ose-pr
 - **.NET**: `apps/crud-be-csharp-aspnetcore/**/*.csproj` and `apps/crud-be-fsharp-giraffe/**/*.fsproj`
   `<PackageReference>` entries. The .NET SDK version IS pinned per-app via a `global.json` in each
   of `apps/crud-be-csharp-aspnetcore/` and `apps/crud-be-fsharp-giraffe/` — inventory both.
-- **Go**: `apps/crud-be-golang-gin/go.mod`, `apps/rhino-cli-go/go.mod`, and `libs/golang-commons/go.mod`
+- **Go**: `apps/crud-be-golang-gin/go.mod` and `libs/golang-commons/go.mod`
   Go version + module requirements.
 - **Docker**: `FROM` base-image tags in **all** Dockerfiles (`apps/*/Dockerfile*` and
   `infra/dev/**/Dockerfile*`) plus the `image:` references in `apps/*/docker-compose*.yml` and

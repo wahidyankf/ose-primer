@@ -20,24 +20,24 @@
 
 **RESOLVED.** The user chose **strict zero visible-output-change**. The frozen output-change
 list is **EMPTY** — no visible text or format change is in scope anywhere in this plan. The
-golden corpus is therefore **unchanged**, and `shadow-diff.sh` is compared against the
+golden corpus is therefore **unchanged**, and the golden-master CLI suite is compared against the
 **EXISTING Phase 0 baseline throughout the whole plan**. There is **no re-baselining anywhere**.
 
 O1/O2/O3 below still occur, but **ONLY as byte-neutral port extractions** — they relocate IO
 writes behind named ports without changing a single emitted byte. The candidate table is
 retained purely for traceability; **none of these candidates introduces a visible change, and
-none requires re-capturing the shadow-diff baseline.**
+none requires re-capturing the golden corpus.**
 
-| #   | Command / surface                        | Current output (observed)                                                                                           | Byte-neutral seam extraction (NO visible change)                                             | Why it aids layering                                                             |
-| --- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| O1  | `--say` with `--verbose` (root)          | `[<ts>] INFO: Executing say command` then `[<ts>] INFO: Message: <msg>` [Repo-grounded — `cmd/root.go` lines 31–36] | Route the two INFO lines through a domain-role `DiagnosticLogger` port — **identical bytes** | Forces the verbose-logging seam behind a port; **byte-neutral**                  |
-| O2  | `git pre-commit` step warnings           | `⚠️  Step %q timed out…` / `⚠️  Total pre-commit timeout reached…` [Repo-grounded — `runner.go` lines 64,79]        | Route emoji-warning writes through a `StepReporter` port — **identical bytes**               | Removes direct `Fprintf(deps.Stdout,…)` from orchestration; pure seam extraction |
-| O3  | Error prefix on failure (root `Execute`) | `Error: %v` to stderr [Repo-grounded — `cmd/root.go` line 46]                                                       | Centralize through an inbound-adapter error presenter — **identical bytes**                  | Makes the inbound adapter the single error-formatting point                      |
+| #   | Command / surface                       | Current output (observed)                                                                        | Byte-neutral seam extraction (NO visible change)                                             | Why it aids layering                                                  |
+| --- | --------------------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| O1  | `--say` with `--verbose` (root)         | `[<ts>] INFO: Executing say command` then `[<ts>] INFO: Message: <msg>`                          | Route the two INFO lines through a domain-role `DiagnosticLogger` port — **identical bytes** | Forces the verbose-logging seam behind a port; **byte-neutral**       |
+| O2  | `git pre-commit` step warnings          | `⚠️  Step %q timed out…` / `⚠️  Total pre-commit timeout reached…` [Repo-grounded — `runner.rs`] | Route emoji-warning writes through a `StepReporter` port — **identical bytes**               | Removes direct stdout writes from orchestration; pure seam extraction |
+| O3  | Error prefix on failure (root dispatch) | `Error: %v` to stderr                                                                            | Centralize through an inbound-adapter error presenter — **identical bytes**                  | Makes the inbound adapter the single error-formatting point           |
 
 > **Frozen-output rule (binding on every phase)**: O1/O2/O3 are byte-neutral seam extractions
-> only. No phase introduces a visible text/format change, and no phase re-captures the
-> shadow-diff baseline. Every phase compares `shadow-diff.sh` against the existing Phase 0
-> baseline and expects GREEN with a byte-identical, unchanged corpus.
+> only. No phase introduces a visible text/format change, and no phase re-captures the golden
+> corpus. Every phase compares the golden-master CLI suite against the existing Phase 0
+> baseline and expects GREEN with a byte-for-byte unchanged corpus.
 
 ### D2. Phase grouping for the 13 features — RESOLVED: one phase per feature
 
@@ -45,8 +45,8 @@ none requires re-capturing the shadow-diff baseline.**
 gate), rejecting the previously-drafted grouped Option A. The delivery checklist below
 implements one feature per phase in dependency-respecting order (Phases 2–14), with the `git`
 pilot at Phase 1 and the convention-doc update at Phase 15. Each feature phase carries the same
-per-phase machinery the pilot uses: shadow-diff GREEN before + after, RED→GREEN→REFACTOR where
-ports are extracted, a coverage-allowlist lockstep item for any relocated Rust file, Local
+per-phase machinery the pilot uses: golden-master suite GREEN before + after, RED→GREEN→REFACTOR
+where ports are extracted, a coverage-allowlist lockstep item for any relocated file, Local
 Quality Gates, Post-Push Verification per D3, and a `### Phase N Gate` + Pause Safety note.
 
 ### D3. Execution push mode for the eventual CODE refactor (flag for execution phase)
@@ -91,24 +91,21 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 - [ ] [AI] Install dependencies in the root worktree: `npm install`
       — acceptance: exits 0, `node_modules/` synchronized.
 - [ ] [AI] Converge the full polyglot toolchain in the root worktree: `npm run doctor -- --fix`
-      — acceptance: exits 0 with no unresolved drift (Go + Rust toolchains present).
-- [ ] [AI] Build both binaries: `npx nx run rhino-cli-go:build` and
-      `npx nx run rhino-cli-rust:build` — acceptance: both exit 0; `apps/rhino-cli-go/dist/rhino-cli`
-      and `apps/rhino-cli-rust/dist/rhino-cli` exist.
-- [ ] [AI] Capture the golden-master baseline: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh`
+      — acceptance: exits 0 with no unresolved drift (Rust toolchain present).
+- [ ] [AI] Build the binary: `npx nx run rhino-cli-rust:build`
+      — acceptance: exits 0; `apps/rhino-cli-rust/dist/rhino-cli` exists.
+- [ ] [AI] Capture the golden-master baseline with the golden-master CLI suite
       — acceptance: exits 0 (GREEN) with zero divergence; record the run in this checklist.
-- [ ] [AI] Establish test + coverage baseline on both apps:
-      `npx nx run-many -t test:unit test:integration test:quick --projects=rhino-cli-go,rhino-cli-rust`
-      — acceptance: record pass/fail counts and coverage % for each; both `test:quick` report ≥90%.
-- [ ] [AI] Establish lint + typecheck + parity baseline:
-      `npx nx run-many -t lint typecheck --projects=rhino-cli-go,rhino-cli-rust` and
-      `npx nx run rhino-cli-rust:validate:cross-vendor-parity`
+- [ ] [AI] Establish test + coverage baseline on the app:
+      `npx nx run-many -t test:unit test:integration test:quick --projects=rhino-cli-rust`
+      — acceptance: record pass/fail counts and coverage %; `test:quick` reports ≥90%.
+- [ ] [AI] Establish lint + typecheck baseline:
+      `npx nx run-many -t lint typecheck --projects=rhino-cli-rust`
       — acceptance: all exit 0; document any preexisting failures.
 - [ ] [AI] Resolve ALL preexisting failures before proceeding (root-cause orientation)
       — acceptance: no unresolved preexisting failures remain.
 - [ ] [AI] Confirm the empty hex placeholder dirs exist:
-      `ls apps/rhino-cli-go/internal/domain apps/rhino-cli-go/internal/application apps/rhino-cli-go/internal/adapter`
-      and `ls apps/rhino-cli-rust/src/domain apps/rhino-cli-rust/src/application apps/rhino-cli-rust/src/infrastructure`
+      `ls apps/rhino-cli-rust/src/domain apps/rhino-cli-rust/src/application apps/rhino-cli-rust/src/infrastructure`
       — acceptance: all listed (placeholders present); note any missing dir as a Phase-1 prerequisite.
 
 ### Phase 0 Gate
@@ -116,54 +113,24 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 > All checks below must pass before starting Phase 1.
 
 - [ ] [AI] `npm install` exited 0 and `npm run doctor -- --fix` reports no unresolved drift.
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` exits 0 (GREEN baseline recorded).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust`
-      all green; both `test:quick` ≥90%; baseline counts recorded; zero preexisting failures unresolved.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` exits 0.
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN baseline recorded).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust`
+      all green; `test:quick` ≥90%; baseline counts recorded; zero preexisting failures unresolved.
 
 > **Pause Safety**: only the local toolchain was verified and the baseline recorded — no feature
-> work exists yet. Safe to stop indefinitely. To resume: re-run the shadow-diff and the
+> work exists yet. Safe to stop indefinitely. To resume: re-run the golden-master CLI suite and the
 > run-many baseline command and confirm both are still GREEN.
 
 ---
 
-## Phase 1: PILOT — Migrate the `git` feature (both languages) [PROOF GATE]
+## Phase 1: PILOT — Migrate the `git` feature [PROOF GATE]
 
 > Migrates the most-DI-mature feature first; proves the migration recipe end-to-end. `git`
-> already injects IO via `Deps` in both languages, so this phase formalizes that into named
-> consumer-owned ports.
+> already injects IO via `Deps`, so this phase formalizes that into named consumer-owned ports.
 
-### 1a. Go `git` slice
+### 1a. Rust `git` slice
 
-- [ ] [AI] Confirm shadow-diff GREEN before any move:
-      `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — acceptance: exits 0.
-- [ ] [AI] **RED**: add a failing fake-backed unit test for the git pre-commit use case in
-      `apps/rhino-cli-go/internal/application/git/run_test.go` (new file; sibling pattern:
-      existing `apps/rhino-cli-go/internal/git/runner_test.go`) asserting the use case calls
-      injected `StagedFileProvider`/`ToolProber` ports — command:
-      `npx nx run rhino-cli-go:test:unit` — acceptance: fails (port types undefined).
-  - _Suggested executor: `swe-golang-dev`_
-- [ ] [AI] **GREEN**: define domain-role ports (`StagedFileProvider`, `ToolProber`, and one
-      named port per remaining `Deps` field) in `apps/rhino-cli-go/internal/application/git/ports.go`
-      (new file) and the use case in `internal/application/git/run.go`; move pure logic into
-      `apps/rhino-cli-go/internal/domain/git/` — command: `npx nx run rhino-cli-go:test:unit`
-      — acceptance: new test passes; no other Go test broken.
-  - _Suggested executor: `swe-golang-dev`_
-- [ ] [AI] **GREEN**: implement outbound adapters under `apps/rhino-cli-go/internal/adapter/`
-      (e.g. `internal/adapter/git/staged_files.go`) backing each port with the existing
-      `DefaultDeps` implementations; wire them in `apps/rhino-cli-go/cmd/git_pre_commit.go`
-      [Repo-grounded — file exists] — command: `npx nx run rhino-cli-go:test:integration`
-      — acceptance: integration tests pass.
-  - _Suggested executor: `swe-golang-dev`_
-- [ ] [AI] **REFACTOR**: remove the now-redundant `Deps` struct from
-      `apps/rhino-cli-go/internal/git/runner.go` (or reduce the package to adapter shims) and
-      confirm `internal/domain/git/` imports no IO package — command:
-      `npx nx run rhino-cli-go:typecheck` and `grep -rEn "os/exec|\"os\"|\"io\"|net|path/filepath" apps/rhino-cli-go/internal/domain/git/`
-      — acceptance: `go vet` exits 0; grep returns no IO imports.
-  - _Suggested executor: `swe-golang-dev`_
-
-### 1b. Rust `git` slice
-
+- [ ] [AI] Confirm the golden-master CLI suite GREEN before any move — acceptance: exits 0.
 - [ ] [AI] **RED**: add a failing fake-backed unit test for the git pre-commit use case in
       `apps/rhino-cli-rust/src/application/git/run.rs` (`#[cfg(test)]` module; sibling pattern:
       existing tests in `apps/rhino-cli-rust/src/internal/git/runner.rs`) asserting the use case
@@ -199,7 +166,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 - [ ] [AI] `npx nx affected -t typecheck` — exits 0.
 - [ ] [AI] `npx nx affected -t lint` — exits 0.
-- [ ] [AI] `npx nx affected -t test:quick` — exits 0; both apps ≥90%.
+- [ ] [AI] `npx nx affected -t test:quick` — exits 0; ≥90%.
 - [ ] [AI] `npx nx affected -t spec-coverage` — exits 0.
 - [ ] [AI] Fix ALL failures found — including preexisting issues not caused by these changes.
 
@@ -210,8 +177,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 ### Commit Guidelines (applies to every phase)
 
 - [ ] [AI] Commit thematically; Conventional Commits `refactor(rhino-cli): …` /
-      `test(rhino-cli): …`; split Go and Rust into separate commits; preexisting fixes get
-      their own commits.
+      `test(rhino-cli): …`; preexisting fixes get their own commits.
 
 ### Post-Push Verification (push mode per D3)
 
@@ -223,33 +189,31 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before starting Phase 2.
 
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (GREEN, unchanged corpus).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick --projects=rhino-cli-go,rhino-cli-rust`
-      — all green; both `test:quick` ≥90%.
-- [ ] [AI] `npx nx run-many -t lint typecheck --projects=rhino-cli-go,rhino-cli-rust` — all exit 0.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
-- [ ] [AI] `git` `Deps` is replaced by named consumer-owned ports in BOTH languages; both
-      `domain/git/` dirs contain zero IO imports (grep confirmed).
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN, unchanged corpus).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick --projects=rhino-cli-rust`
+      — all green; `test:quick` ≥90%.
+- [ ] [AI] `npx nx run-many -t lint typecheck --projects=rhino-cli-rust` — all exit 0.
+- [ ] [AI] `git` `Deps` is replaced by named consumer-owned ports; `domain/git/` contains zero IO
+      imports (grep confirmed).
 
 > **Pause Safety**: the `git` feature is fully migrated and behavior-identical; all other
 > features remain on the old shape (compiling, green). Safe to stop indefinitely. To resume:
-> re-run the shadow-diff + run-many gate commands and confirm GREEN, then begin Phase 2.
+> re-run the golden-master suite + run-many gate commands and confirm GREEN, then begin Phase 2.
 
 ---
 
-## Phase 2: Rust shared kernel `cliout` (Rust-only) [DEPENDENCY ROOT]
+## Phase 2: shared kernel `cliout` [DEPENDENCY ROOT]
 
-> Rust-only shared kernel; migrate before its consumers (`doctor`, `envbackup`, `mermaid`). Go
-> has **no** `cliout` kernel — **Go is a no-op for this phase**.
+> Shared kernel; migrate before its consumers (`doctor`, `envbackup`, `mermaid`).
 
-- [ ] [AI] Confirm shadow-diff GREEN before moves: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
+- [ ] [AI] Confirm the golden-master CLI suite GREEN before moves — exits 0.
 - [ ] [AI] **RED**: add a failing fake-backed unit test asserting the relocated `cliout` kernel
       API in `apps/rhino-cli-rust/src/domain/shared/cliout/` (new module; `#[cfg(test)]`; sibling
       pattern: existing `cliout` tests in `apps/rhino-cli-rust/src/internal/cliout/`) — command:
       `npx nx run rhino-cli-rust:test:unit` — acceptance: fails to compile (module not yet relocated).
   - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **GREEN**: move the pure `cliout` logic into `apps/rhino-cli-rust/src/domain/shared/cliout/`
-      (Rust-only kernel; 3 consumers: `doctor`, `envbackup`, `mermaid`); update the three consumers'
+      (3 consumers: `doctor`, `envbackup`, `mermaid`); update the three consumers'
       `use` paths to the relocated kernel — command: `npx nx run rhino-cli-rust:test:unit`
       — acceptance: new test passes; consumers import the relocated kernel; no other Rust test broken.
   - _Suggested executor: `swe-rust-dev`_
@@ -265,12 +229,10 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
       relocated file is now directly unit-tested) — command: `npx nx run rhino-cli-rust:test:quick`
       — acceptance: ≥90%, no false break.
   - _Suggested executor: `swe-rust-dev`_
-- [ ] [AI] Go no-op confirmation: Go has no `cliout` kernel — record "Go: no change this phase" in
-      this checklist — acceptance: note present; no Go files touched.
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; both apps ≥90%.
+- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; ≥90%.
 - [ ] [AI] Fix ALL failures (root-cause orientation), including preexisting.
 
 ### Post-Push Verification
@@ -281,40 +243,36 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before starting Phase 3.
 
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust` — all green; both ≥90%.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
-- [ ] [AI] Rust `cliout` lives in `src/domain/shared/cliout/`, IO-free (grep); its 3 consumers import the relocated kernel.
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust` — all green; ≥90%.
+- [ ] [AI] `cliout` lives in `src/domain/shared/cliout/`, IO-free (grep); its 3 consumers import the relocated kernel.
 
-> **Pause Safety**: Rust `cliout` kernel relocated; all other features unchanged and green. Safe
+> **Pause Safety**: `cliout` kernel relocated; all other features unchanged and green. Safe
 > to stop. To resume: re-run the gate commands and confirm GREEN, then begin Phase 3.
 
 ---
 
-## Phase 3: `mermaid` shared kernel (both languages) [DEPENDENCY ROOT]
+## Phase 3: `mermaid` shared kernel [DEPENDENCY ROOT]
 
-> Shared kernel in BOTH languages (dependency constraint: `mermaid` is imported by `docs` and
-> `git`). Migrate before `docs`.
+> Shared kernel (dependency constraint: `mermaid` is imported by `docs` and `git`). Migrate
+> before `docs`.
 
-- [ ] [AI] Confirm shadow-diff GREEN before moves: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
+- [ ] [AI] Confirm the golden-master CLI suite GREEN before moves — exits 0.
 - [ ] [AI] **RED**: add a failing fake-backed unit test for the relocated `mermaid` kernel API —
-      Go in `apps/rhino-cli-go/internal/domain/shared/mermaid/mermaid_test.go` (new file) and Rust
       `#[cfg(test)]` in `apps/rhino-cli-rust/src/domain/shared/mermaid/` (sibling pattern: existing
-      `internal/mermaid` tests) — commands: `npx nx run rhino-cli-go:test:unit` /
-      `npx nx run rhino-cli-rust:test:unit` — acceptance: both fail (kernel not yet relocated).
-  - _Suggested executor: `swe-golang-dev` (Go) / `swe-rust-dev` (Rust)_
-- [ ] [AI] **GREEN**: move `mermaid` into the shared kernel: Go → `apps/rhino-cli-go/internal/domain/shared/mermaid/`;
-      Rust → `apps/rhino-cli-rust/src/domain/shared/mermaid/`; update `docs` and `git` consumers to
-      import the relocated kernel — commands: `npx nx run rhino-cli-go:test:unit` /
-      `npx nx run rhino-cli-rust:test:unit` — acceptance: both green; `docs` and `git` import the relocated kernel.
-  - _Suggested executor: `swe-golang-dev` (Go) / `swe-rust-dev` (Rust)_
-- [ ] [AI] **REFACTOR**: reduce/remove the old `internal/mermaid` packages; confirm both
-      `domain/shared/mermaid/` dirs import no IO — commands: `npx nx run rhino-cli-go:typecheck` /
-      `npx nx run rhino-cli-rust:lint` and
-      `grep -rEn "os/exec|\"os\"|\"io\"|net|path/filepath" apps/rhino-cli-go/internal/domain/shared/mermaid/`
-      plus `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/shared/mermaid/`
-      — acceptance: `go vet` exits 0; clippy `-D warnings` exits 0; both greps return no IO imports.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
+      `internal/mermaid` tests) — command: `npx nx run rhino-cli-rust:test:unit` — acceptance:
+      fails (kernel not yet relocated).
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **GREEN**: move `mermaid` into the shared kernel at
+      `apps/rhino-cli-rust/src/domain/shared/mermaid/`; update `docs` and `git` consumers to
+      import the relocated kernel — command: `npx nx run rhino-cli-rust:test:unit` — acceptance:
+      green; `docs` and `git` import the relocated kernel.
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **REFACTOR**: reduce/remove the old `internal/mermaid` module; confirm
+      `domain/shared/mermaid/` imports no IO — command: `npx nx run rhino-cli-rust:lint` and
+      `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/shared/mermaid/`
+      — acceptance: clippy `-D warnings` exits 0; grep returns no IO imports.
+  - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **CRITICAL — coverage allowlist lockstep**: in `apps/rhino-cli-rust/project.json`
       `test:quick` `--ignore-filename-regex` [Repo-grounded — line 83], update any
       `internal/mermaid/…` entry to its relocated `domain/shared/mermaid/…` path (or remove if now
@@ -323,7 +281,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; both ≥90%. Fix ALL failures.
+- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; ≥90%. Fix ALL failures.
 
 ### Post-Push Verification
 
@@ -333,40 +291,36 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before starting Phase 4.
 
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust` — green; both ≥90%.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
-- [ ] [AI] `mermaid` lives in `domain/shared/mermaid/` in BOTH languages, IO-free (grep); `docs` and `git` import the relocated kernel.
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust` — green; ≥90%.
+- [ ] [AI] `mermaid` lives in `domain/shared/mermaid/`, IO-free (grep); `docs` and `git` import the relocated kernel.
 
-> **Pause Safety**: `mermaid` kernel relocated in both languages; remaining features green. Safe
+> **Pause Safety**: `mermaid` kernel relocated; remaining features green. Safe
 > to stop. To resume: re-run the gate commands and confirm GREEN, then begin Phase 4.
 
 ---
 
-## Phase 4: `naming` (both languages, feature-local) [DEPENDENCY ROOT]
+## Phase 4: `naming` (feature-local) [DEPENDENCY ROOT]
 
 > Feature-local (single consumer — NOT a kernel). Migrate before `agents`, which consumes
-> `naming` in Rust.
+> `naming`.
 
-- [ ] [AI] Confirm shadow-diff GREEN: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
-- [ ] [AI] **RED**: add a failing fake-backed unit test for the relocated `naming` use case — Go in
-      `apps/rhino-cli-go/internal/application/naming/` (new test file) and Rust `#[cfg(test)]` in
-      `apps/rhino-cli-rust/src/application/naming/` (sibling pattern: existing `internal/naming`
-      tests) — commands: `npx nx run rhino-cli-go:test:unit` / `npx nx run rhino-cli-rust:test:unit`
-      — acceptance: both fail (slice not yet present).
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **GREEN**: migrate `naming` (both langs, feature-local) into `domain/naming/` +
+- [ ] [AI] Confirm the golden-master CLI suite GREEN — exits 0.
+- [ ] [AI] **RED**: add a failing fake-backed unit test for the relocated `naming` use case —
+      `#[cfg(test)]` in `apps/rhino-cli-rust/src/application/naming/` (sibling pattern: existing
+      `internal/naming` tests) — command: `npx nx run rhino-cli-rust:test:unit`
+      — acceptance: fails (slice not yet present).
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **GREEN**: migrate `naming` (feature-local) into `domain/naming/` +
       `application/naming/`; port any IO seam; inbound stays the existing command entry —
-      commands: `npx nx run rhino-cli-go:test:unit` / `npx nx run rhino-cli-rust:test:unit` and
-      `npx nx run rhino-cli-go:validate:naming-agents` (and Rust equivalent if present) —
-      acceptance: green; `agents` (Rust) imports the relocated `naming`.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **REFACTOR**: reduce/remove the old `internal/naming`; confirm both `domain/naming/`
-      dirs import no IO — commands: `npx nx run rhino-cli-go:typecheck` / `npx nx run rhino-cli-rust:lint`
-      and `grep -rEn "os/exec|\"os\"|\"io\"|net|path/filepath" apps/rhino-cli-go/internal/domain/naming/`
-      plus `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/naming/`
-      — acceptance: `go vet` exits 0; clippy `-D warnings` exits 0; both greps return no IO imports.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
+      command: `npx nx run rhino-cli-rust:test:unit` and the Rust naming-agents validate target if present —
+      acceptance: green; `agents` imports the relocated `naming`.
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **REFACTOR**: reduce/remove the old `internal/naming`; confirm `domain/naming/`
+      imports no IO — command: `npx nx run rhino-cli-rust:lint`
+      and `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/naming/`
+      — acceptance: clippy `-D warnings` exits 0; grep returns no IO imports.
+  - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **CRITICAL — coverage allowlist lockstep**: in `apps/rhino-cli-rust/project.json`
       `test:quick` `--ignore-filename-regex` [Repo-grounded — line 83], update any
       `internal/naming/…` entry to its relocated `domain/naming/…` or `application/naming/…` path
@@ -376,7 +330,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; both ≥90%. Fix ALL failures.
+- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; ≥90%. Fix ALL failures.
 
 ### Post-Push Verification
 
@@ -386,36 +340,33 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before starting Phase 5.
 
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust` — green; both ≥90%.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
-- [ ] [AI] `naming` lives in `domain/naming/` + `application/naming/` in BOTH languages, IO-free (grep).
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust` — green; ≥90%.
+- [ ] [AI] `naming` lives in `domain/naming/` + `application/naming/`, IO-free (grep).
 
-> **Pause Safety**: `naming` migrated in both languages; remaining features green. Safe to stop.
+> **Pause Safety**: `naming` migrated; remaining features green. Safe to stop.
 > To resume: re-run the gate commands and confirm GREEN, then begin Phase 5.
 
 ---
 
-## Phase 5: `docs` (both languages; depends on `mermaid`)
+## Phase 5: `docs` (depends on `mermaid`)
 
-- [ ] [AI] Confirm shadow-diff GREEN: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
-- [ ] [AI] **RED**: add a failing fake-backed unit test for the `docs` use case — Go in
-      `apps/rhino-cli-go/internal/application/docs/` and Rust `#[cfg(test)]` in
-      `apps/rhino-cli-rust/src/application/docs/` (sibling pattern: existing `internal/docs` tests)
-      — commands: `npx nx run rhino-cli-go:test:unit` / `npx nx run rhino-cli-rust:test:unit`
-      — acceptance: both fail (ports/slice not yet present).
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **GREEN**: migrate `docs` (both langs) into `domain/docs/`, `application/docs/`, adapters
-      (Go `internal/adapter/docs/` / Rust `src/infrastructure/docs/`); `docs` imports the relocated
-      `mermaid` kernel; inbound stays `cmd/docs_*.go` / `src/commands/docs.rs` [Repo-grounded —
-      files exist] — commands: `test:unit`, `test:integration` both apps — acceptance: green.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **REFACTOR**: reduce/remove old `internal/docs`; confirm both `domain/docs/` dirs are
-      IO-free — commands: `npx nx run rhino-cli-go:typecheck` / `npx nx run rhino-cli-rust:lint` and
-      `grep -rEn "os/exec|\"os\"|\"io\"|net|path/filepath" apps/rhino-cli-go/internal/domain/docs/`
-      plus `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/docs/`
-      — acceptance: `go vet` exits 0; clippy `-D warnings` exits 0; both greps return no IO imports.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
+- [ ] [AI] Confirm the golden-master CLI suite GREEN — exits 0.
+- [ ] [AI] **RED**: add a failing fake-backed unit test for the `docs` use case —
+      `#[cfg(test)]` in `apps/rhino-cli-rust/src/application/docs/` (sibling pattern: existing
+      `internal/docs` tests) — command: `npx nx run rhino-cli-rust:test:unit`
+      — acceptance: fails (ports/slice not yet present).
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **GREEN**: migrate `docs` into `domain/docs/`, `application/docs/`, adapters
+      (`src/infrastructure/docs/`); `docs` imports the relocated `mermaid` kernel; inbound stays
+      `src/commands/docs.rs` [Repo-grounded — file exists] — commands: `test:unit`,
+      `test:integration` — acceptance: green.
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **REFACTOR**: reduce/remove old `internal/docs`; confirm `domain/docs/` is
+      IO-free — command: `npx nx run rhino-cli-rust:lint` and
+      `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/docs/`
+      — acceptance: clippy `-D warnings` exits 0; grep returns no IO imports.
+  - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **CRITICAL — coverage allowlist lockstep**: in `apps/rhino-cli-rust/project.json`
       `test:quick` `--ignore-filename-regex` [Repo-grounded — line 83], update the `commands/docs\.rs`
       entry (and any relocated `internal/docs` file) to its new path — command:
@@ -424,7 +375,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; both ≥90%. Fix ALL failures.
+- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; ≥90%. Fix ALL failures.
 
 ### Post-Push Verification
 
@@ -434,36 +385,33 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before starting Phase 6.
 
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust` — green; both ≥90%.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
-- [ ] [AI] `docs` slice complete in BOTH languages, domain IO-free (grep); imports the relocated `mermaid` kernel.
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust` — green; ≥90%.
+- [ ] [AI] `docs` slice complete, domain IO-free (grep); imports the relocated `mermaid` kernel.
 
-> **Pause Safety**: `docs` migrated in both languages; remaining features green. Safe to stop.
+> **Pause Safety**: `docs` migrated; remaining features green. Safe to stop.
 > To resume: re-run the gate commands and confirm GREEN, then begin Phase 6.
 
 ---
 
-## Phase 6: `doctor` (both languages; depends on Rust `cliout`)
+## Phase 6: `doctor` (depends on `cliout`)
 
-- [ ] [AI] Confirm shadow-diff GREEN: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
+- [ ] [AI] Confirm the golden-master CLI suite GREEN — exits 0.
 - [ ] [AI] **RED**: add a failing fake-backed unit test for the `doctor` use case (assert injected
-      `ToolProber`-style ports) — Go in `apps/rhino-cli-go/internal/application/doctor/` and Rust
-      `#[cfg(test)]` in `apps/rhino-cli-rust/src/application/doctor/` (sibling pattern: existing
-      `internal/doctor` tests) — commands: `npx nx run rhino-cli-go:test:unit` /
-      `npx nx run rhino-cli-rust:test:unit` — acceptance: both fail (ports not yet defined).
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **GREEN**: migrate `doctor` (both langs) to slices; extract a `ToolProber`-style port per
-      probed tool seam (doctor shells out heavily); Rust `doctor` imports the relocated `cliout`
-      kernel; inbound stays `cmd/doctor.go` / `src/commands/doctor.rs` [Repo-grounded — files exist]
-      — commands: `test:unit`, `test:integration` both apps — acceptance: green.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **REFACTOR**: reduce/remove old `internal/doctor`; confirm both `domain/doctor/` dirs are
-      IO-free — commands: `npx nx run rhino-cli-go:typecheck` / `npx nx run rhino-cli-rust:lint` and
-      `grep -rEn "os/exec|\"os\"|\"io\"|net|path/filepath" apps/rhino-cli-go/internal/domain/doctor/`
-      plus `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/doctor/`
-      — acceptance: `go vet` exits 0; clippy `-D warnings` exits 0; both greps return no IO imports.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
+      `ToolProber`-style ports) — `#[cfg(test)]` in `apps/rhino-cli-rust/src/application/doctor/`
+      (sibling pattern: existing `internal/doctor` tests) — command:
+      `npx nx run rhino-cli-rust:test:unit` — acceptance: fails (ports not yet defined).
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **GREEN**: migrate `doctor` to slices; extract a `ToolProber`-style port per
+      probed tool seam (doctor shells out heavily); `doctor` imports the relocated `cliout`
+      kernel; inbound stays `src/commands/doctor.rs` [Repo-grounded — file exists]
+      — commands: `test:unit`, `test:integration` — acceptance: green.
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **REFACTOR**: reduce/remove old `internal/doctor`; confirm `domain/doctor/` is
+      IO-free — command: `npx nx run rhino-cli-rust:lint` and
+      `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/doctor/`
+      — acceptance: clippy `-D warnings` exits 0; grep returns no IO imports.
+  - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **CRITICAL — coverage allowlist lockstep**: in `apps/rhino-cli-rust/project.json`
       `test:quick` `--ignore-filename-regex` [Repo-grounded — line 83], update the `commands/doctor\.rs`
       entry (and any relocated `internal/doctor` file) to its new path — command:
@@ -472,7 +420,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; both ≥90%. Fix ALL failures.
+- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; ≥90%. Fix ALL failures.
 
 ### Post-Push Verification
 
@@ -482,36 +430,33 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before starting Phase 7.
 
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust` — green; both ≥90%.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
-- [ ] [AI] `doctor` slice complete in BOTH languages, domain IO-free (grep); Rust `doctor` imports the relocated `cliout` kernel.
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust` — green; ≥90%.
+- [ ] [AI] `doctor` slice complete, domain IO-free (grep); `doctor` imports the relocated `cliout` kernel.
 
-> **Pause Safety**: `doctor` migrated in both languages; remaining features green. Safe to stop.
+> **Pause Safety**: `doctor` migrated; remaining features green. Safe to stop.
 > To resume: re-run the gate commands and confirm GREEN, then begin Phase 7.
 
 ---
 
-## Phase 7: `envbackup` / `env` (both languages; depends on Rust `cliout`)
+## Phase 7: `envbackup` / `env` (depends on `cliout`)
 
-- [ ] [AI] Confirm shadow-diff GREEN: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
+- [ ] [AI] Confirm the golden-master CLI suite GREEN — exits 0.
 - [ ] [AI] **RED**: add a failing fake-backed unit test for the `envbackup` use case (assert
-      injected file-read/write + exec ports) — Go in `apps/rhino-cli-go/internal/application/envbackup/`
-      and Rust `#[cfg(test)]` in `apps/rhino-cli-rust/src/application/env/` (sibling pattern: existing
-      `internal/envbackup` tests) — commands: `npx nx run rhino-cli-go:test:unit` /
-      `npx nx run rhino-cli-rust:test:unit` — acceptance: both fail (ports not yet defined).
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **GREEN**: migrate `envbackup` (both langs) to slices; extract one named port per IO seam
-      (file read/write, exec); Rust `env` imports the relocated `cliout` kernel; inbound stays
-      `cmd/env_*.go` / `src/commands/env.rs` [Repo-grounded — files exist] — commands: `test:unit`,
-      `test:integration` both apps — acceptance: green.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **REFACTOR**: reduce/remove old `internal/envbackup`; confirm both domain dirs are IO-free
-      — commands: `npx nx run rhino-cli-go:typecheck` / `npx nx run rhino-cli-rust:lint` and
-      `grep -rEn "os/exec|\"os\"|\"io\"|net|path/filepath" apps/rhino-cli-go/internal/domain/envbackup/`
-      plus `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/env/`
-      — acceptance: `go vet` exits 0; clippy `-D warnings` exits 0; both greps return no IO imports.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
+      injected file-read/write + exec ports) — `#[cfg(test)]` in
+      `apps/rhino-cli-rust/src/application/env/` (sibling pattern: existing `internal/envbackup`
+      tests) — command: `npx nx run rhino-cli-rust:test:unit` — acceptance: fails (ports not yet defined).
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **GREEN**: migrate `envbackup` to slices; extract one named port per IO seam
+      (file read/write, exec); `env` imports the relocated `cliout` kernel; inbound stays
+      `src/commands/env.rs` [Repo-grounded — file exists] — commands: `test:unit`,
+      `test:integration` — acceptance: green.
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **REFACTOR**: reduce/remove old `internal/envbackup`; confirm the domain dir is IO-free
+      — command: `npx nx run rhino-cli-rust:lint` and
+      `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/env/`
+      — acceptance: clippy `-D warnings` exits 0; grep returns no IO imports.
+  - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **CRITICAL — coverage allowlist lockstep**: in `apps/rhino-cli-rust/project.json`
       `test:quick` `--ignore-filename-regex` [Repo-grounded — line 83], update the `commands/env\.rs`
       entry (and any relocated `internal/envbackup` file) to its new path — command:
@@ -520,7 +465,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; both ≥90%. Fix ALL failures.
+- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; ≥90%. Fix ALL failures.
 
 ### Post-Push Verification
 
@@ -530,38 +475,34 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before starting Phase 8.
 
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust` — green; both ≥90%.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
-- [ ] [AI] `envbackup`/`env` slice complete in BOTH languages, domain IO-free (grep); Rust `env` imports the relocated `cliout` kernel.
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust` — green; ≥90%.
+- [ ] [AI] `envbackup`/`env` slice complete, domain IO-free (grep); `env` imports the relocated `cliout` kernel.
 
-> **Pause Safety**: `envbackup`/`env` migrated in both languages; remaining features green. Safe
+> **Pause Safety**: `envbackup`/`env` migrated; remaining features green. Safe
 > to stop. To resume: re-run the gate commands and confirm GREEN, then begin Phase 8.
 
 ---
 
-## Phase 8: `testcoverage` (both languages; file + exec; git-diff/merge paths)
+## Phase 8: `testcoverage` (file + exec; git-diff/merge paths)
 
-- [ ] [AI] Confirm shadow-diff GREEN: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
+- [ ] [AI] Confirm the golden-master CLI suite GREEN — exits 0.
 - [ ] [AI] **RED**: add a failing fake-backed unit test for the `testcoverage` use case (assert
-      injected `CoverageReader`-style ports for read/diff/merge) — Go in
-      `apps/rhino-cli-go/internal/application/testcoverage/` and Rust `#[cfg(test)]` in
+      injected `CoverageReader`-style ports for read/diff/merge) — `#[cfg(test)]` in
       `apps/rhino-cli-rust/src/application/testcoverage/` (sibling pattern: existing
-      `internal/testcoverage` tests) — commands: `npx nx run rhino-cli-go:test:unit` /
-      `npx nx run rhino-cli-rust:test:unit` — acceptance: both fail (ports not yet defined).
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **GREEN**: migrate `testcoverage` (both langs) to slices; extract `CoverageReader`-style
-      ports for the file-read/diff/merge seams; inbound stays `cmd/test_coverage.go`,
-      `cmd/test_coverage_diff.go`, `cmd/test_coverage_merge.go` /
-      `src/commands/testcoverage.rs` [Repo-grounded — files exist] — commands: `test:unit`,
-      `test:integration` both apps — acceptance: green.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **REFACTOR**: reduce/remove old `internal/testcoverage`; confirm both domain dirs are
-      IO-free — commands: `npx nx run rhino-cli-go:typecheck` / `npx nx run rhino-cli-rust:lint` and
-      `grep -rEn "os/exec|\"os\"|\"io\"|net|path/filepath" apps/rhino-cli-go/internal/domain/testcoverage/`
-      plus `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/testcoverage/`
-      — acceptance: `go vet` exits 0; clippy `-D warnings` exits 0; both greps return no IO imports.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
+      `internal/testcoverage` tests) — command: `npx nx run rhino-cli-rust:test:unit`
+      — acceptance: fails (ports not yet defined).
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **GREEN**: migrate `testcoverage` to slices; extract `CoverageReader`-style
+      ports for the file-read/diff/merge seams; inbound stays
+      `src/commands/testcoverage.rs` [Repo-grounded — file exists] — commands: `test:unit`,
+      `test:integration` — acceptance: green.
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **REFACTOR**: reduce/remove old `internal/testcoverage`; confirm the domain dir is
+      IO-free — command: `npx nx run rhino-cli-rust:lint` and
+      `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/testcoverage/`
+      — acceptance: clippy `-D warnings` exits 0; grep returns no IO imports.
+  - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **CRITICAL — coverage allowlist lockstep**: in `apps/rhino-cli-rust/project.json`
       `test:quick` `--ignore-filename-regex` [Repo-grounded — line 83], update the entries
       `commands/testcoverage\.rs`, `internal/testcoverage/diff\.rs`, and
@@ -572,7 +513,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; both ≥90%. Fix ALL failures.
+- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; ≥90%. Fix ALL failures.
 
 ### Post-Push Verification
 
@@ -582,36 +523,32 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before starting Phase 9.
 
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust` — green; both ≥90%.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
-- [ ] [AI] `testcoverage` slice complete in BOTH languages, domain IO-free (grep); all three Rust allowlist entries updated.
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust` — green; ≥90%.
+- [ ] [AI] `testcoverage` slice complete, domain IO-free (grep); all three allowlist entries updated.
 
-> **Pause Safety**: `testcoverage` migrated in both languages; remaining features green. Safe to
+> **Pause Safety**: `testcoverage` migrated; remaining features green. Safe to
 > stop. To resume: re-run the gate commands and confirm GREEN, then begin Phase 9.
 
 ---
 
-## Phase 9: `agents` (both languages; depends on `naming`)
+## Phase 9: `agents` (depends on `naming`)
 
-- [ ] [AI] Confirm shadow-diff GREEN: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
+- [ ] [AI] Confirm the golden-master CLI suite GREEN — exits 0.
 - [ ] [AI] **RED**: add a failing fake-backed unit test for the `agents` use case (assert injected
-      file-scan + exec ports) — Go in `apps/rhino-cli-go/internal/application/agents/` and Rust
-      `#[cfg(test)]` in `apps/rhino-cli-rust/src/application/agents/` (sibling pattern: existing
-      `internal/agents` tests) — commands: `npx nx run rhino-cli-go:test:unit` /
-      `npx nx run rhino-cli-rust:test:unit` — acceptance: both fail (ports not yet defined).
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **GREEN**: migrate `agents` (both langs) to slices; ports for file-scan + exec seams;
-      Rust `agents` imports the relocated `naming`; inbound stays `cmd/agents_*.go` /
-      `src/commands/agents.rs` [Repo-grounded — files exist] — commands: `test:unit`,
-      `test:integration` both apps — acceptance: green.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **REFACTOR**: reduce/remove old `internal/agents`; confirm both `domain/agents/` dirs are
-      IO-free — commands: `npx nx run rhino-cli-go:typecheck` / `npx nx run rhino-cli-rust:lint` and
-      `grep -rEn "os/exec|\"os\"|\"io\"|net|path/filepath" apps/rhino-cli-go/internal/domain/agents/`
-      plus `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/agents/`
-      — acceptance: `go vet` exits 0; clippy `-D warnings` exits 0; both greps return no IO imports.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
+      file-scan + exec ports) — `#[cfg(test)]` in `apps/rhino-cli-rust/src/application/agents/`
+      (sibling pattern: existing `internal/agents` tests) — command:
+      `npx nx run rhino-cli-rust:test:unit` — acceptance: fails (ports not yet defined).
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **GREEN**: migrate `agents` to slices; ports for file-scan + exec seams;
+      `agents` imports the relocated `naming`; inbound stays `src/commands/agents.rs`
+      [Repo-grounded — file exists] — commands: `test:unit`, `test:integration` — acceptance: green.
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **REFACTOR**: reduce/remove old `internal/agents`; confirm `domain/agents/` is
+      IO-free — command: `npx nx run rhino-cli-rust:lint` and
+      `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/agents/`
+      — acceptance: clippy `-D warnings` exits 0; grep returns no IO imports.
+  - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **CRITICAL — coverage allowlist lockstep**: in `apps/rhino-cli-rust/project.json`
       `test:quick` `--ignore-filename-regex` [Repo-grounded — line 83], update the `commands/agents\.rs`
       entry (and any relocated `internal/agents` file) to its new path — command:
@@ -620,7 +557,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; both ≥90%. Fix ALL failures.
+- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; ≥90%. Fix ALL failures.
 
 ### Post-Push Verification
 
@@ -630,35 +567,32 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before starting Phase 10.
 
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust` — green; both ≥90%.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
-- [ ] [AI] `agents` slice complete in BOTH languages, domain IO-free (grep); Rust `agents` imports the relocated `naming`.
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust` — green; ≥90%.
+- [ ] [AI] `agents` slice complete, domain IO-free (grep); `agents` imports the relocated `naming`.
 
-> **Pause Safety**: `agents` migrated in both languages; remaining features green. Safe to stop.
+> **Pause Safety**: `agents` migrated; remaining features green. Safe to stop.
 > To resume: re-run the gate commands and confirm GREEN, then begin Phase 10.
 
 ---
 
-## Phase 10: `contracts` (both languages)
+## Phase 10: `contracts`
 
-- [ ] [AI] Confirm shadow-diff GREEN: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
+- [ ] [AI] Confirm the golden-master CLI suite GREEN — exits 0.
 - [ ] [AI] **RED**: add a failing fake-backed unit test for the `contracts` use case (assert
-      injected scaffold file-write + exec ports) — Go in `apps/rhino-cli-go/internal/application/contracts/`
-      and Rust `#[cfg(test)]` in `apps/rhino-cli-rust/src/application/contracts/` (sibling pattern:
-      existing `internal/contracts` tests) — commands: `npx nx run rhino-cli-go:test:unit` /
-      `npx nx run rhino-cli-rust:test:unit` — acceptance: both fail (ports not yet defined).
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **GREEN**: migrate `contracts` (both langs) to slices; ports for scaffold file-write +
-      exec seams; inbound stays `cmd/contracts_*.go` / `src/commands/contracts.rs` [Repo-grounded —
-      files exist] — commands: `test:unit`, `test:integration` both apps — acceptance: green.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **REFACTOR**: reduce/remove old `internal/contracts`; confirm both `domain/contracts/`
-      dirs are IO-free — commands: `npx nx run rhino-cli-go:typecheck` / `npx nx run rhino-cli-rust:lint`
-      and `grep -rEn "os/exec|\"os\"|\"io\"|net|path/filepath" apps/rhino-cli-go/internal/domain/contracts/`
-      plus `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/contracts/`
-      — acceptance: `go vet` exits 0; clippy `-D warnings` exits 0; both greps return no IO imports.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
+      injected scaffold file-write + exec ports) — `#[cfg(test)]` in
+      `apps/rhino-cli-rust/src/application/contracts/` (sibling pattern: existing `internal/contracts`
+      tests) — command: `npx nx run rhino-cli-rust:test:unit` — acceptance: fails (ports not yet defined).
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **GREEN**: migrate `contracts` to slices; ports for scaffold file-write +
+      exec seams; inbound stays `src/commands/contracts.rs` [Repo-grounded —
+      file exists] — commands: `test:unit`, `test:integration` — acceptance: green.
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **REFACTOR**: reduce/remove old `internal/contracts`; confirm `domain/contracts/`
+      is IO-free — command: `npx nx run rhino-cli-rust:lint`
+      and `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/contracts/`
+      — acceptance: clippy `-D warnings` exits 0; grep returns no IO imports.
+  - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **CRITICAL — coverage allowlist lockstep**: in `apps/rhino-cli-rust/project.json`
       `test:quick` `--ignore-filename-regex` [Repo-grounded — line 83], update the `commands/contracts\.rs`
       entry (and any relocated `internal/contracts` file) to its new path — command:
@@ -667,7 +601,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; both ≥90%. Fix ALL failures.
+- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; ≥90%. Fix ALL failures.
 
 ### Post-Push Verification
 
@@ -677,35 +611,31 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before starting Phase 11.
 
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust` — green; both ≥90%.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
-- [ ] [AI] `contracts` slice complete in BOTH languages, domain IO-free (grep).
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust` — green; ≥90%.
+- [ ] [AI] `contracts` slice complete, domain IO-free (grep).
 
-> **Pause Safety**: `contracts` migrated in both languages; remaining features green. Safe to
+> **Pause Safety**: `contracts` migrated; remaining features green. Safe to
 > stop. To resume: re-run the gate commands and confirm GREEN, then begin Phase 11.
 
 ---
 
-## Phase 11: `java` (both languages)
+## Phase 11: `java`
 
-- [ ] [AI] Confirm shadow-diff GREEN: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
+- [ ] [AI] Confirm the golden-master CLI suite GREEN — exits 0.
 - [ ] [AI] **RED**: add a failing fake-backed unit test for the `java` use case (assert injected
-      file-scan port) — Go in `apps/rhino-cli-go/internal/application/java/` and Rust `#[cfg(test)]`
-      in `apps/rhino-cli-rust/src/application/java/` (sibling pattern: existing `internal/java`
-      tests) — commands: `npx nx run rhino-cli-go:test:unit` / `npx nx run rhino-cli-rust:test:unit`
-      — acceptance: both fail (port not yet defined).
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **GREEN**: migrate `java` (both langs) to slices; port the file-scan seam; inbound stays
-      `cmd/java_*.go` / `src/commands/java.rs` [Repo-grounded] — commands: `test:unit` both apps
-      — acceptance: green.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **REFACTOR**: reduce/remove old `internal/java`; confirm both `domain/java/` dirs are
-      IO-free — commands: `npx nx run rhino-cli-go:typecheck` / `npx nx run rhino-cli-rust:lint` and
-      `grep -rEn "os/exec|\"os\"|\"io\"|net|path/filepath" apps/rhino-cli-go/internal/domain/java/`
-      plus `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/java/`
-      — acceptance: `go vet` exits 0; clippy `-D warnings` exits 0; both greps return no IO imports.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
+      file-scan port) — `#[cfg(test)]` in `apps/rhino-cli-rust/src/application/java/` (sibling
+      pattern: existing `internal/java` tests) — command: `npx nx run rhino-cli-rust:test:unit`
+      — acceptance: fails (port not yet defined).
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **GREEN**: migrate `java` to slices; port the file-scan seam; inbound stays
+      `src/commands/java.rs` [Repo-grounded] — command: `test:unit` — acceptance: green.
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **REFACTOR**: reduce/remove old `internal/java`; confirm `domain/java/` is
+      IO-free — command: `npx nx run rhino-cli-rust:lint` and
+      `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/java/`
+      — acceptance: clippy `-D warnings` exits 0; grep returns no IO imports.
+  - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **CRITICAL — coverage allowlist lockstep**: in `apps/rhino-cli-rust/project.json`
       `test:quick` `--ignore-filename-regex` [Repo-grounded — line 83], update the `commands/java\.rs`
       entry (and any relocated `internal/java` file) to its new path — command:
@@ -714,7 +644,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; both ≥90%. Fix ALL failures.
+- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; ≥90%. Fix ALL failures.
 
 ### Post-Push Verification
 
@@ -724,44 +654,41 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before starting Phase 12.
 
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust` — green; both ≥90%.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
-- [ ] [AI] `java` slice complete in BOTH languages, domain IO-free (grep).
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust` — green; ≥90%.
+- [ ] [AI] `java` slice complete, domain IO-free (grep).
 
-> **Pause Safety**: `java` migrated in both languages; remaining features green. Safe to stop.
+> **Pause Safety**: `java` migrated; remaining features green. Safe to stop.
 > To resume: re-run the gate commands and confirm GREEN, then begin Phase 12.
 
 ---
 
-## Phase 12: `repo-governance` (both languages)
+## Phase 12: `repo-governance`
 
-> Rust logic currently lives in `commands/` only [Repo-grounded — Rust `repo_governance` logic in
+> Logic currently lives in `commands/` only [Repo-grounded — `repo_governance` logic in
 >
 > > `commands/`]; extract the use case into `application/`, pure rules into `domain/`, keep a thin
 > > inbound shim. Validate with the governance gates.
 
-- [ ] [AI] Confirm shadow-diff GREEN: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
+- [ ] [AI] Confirm the golden-master CLI suite GREEN — exits 0.
 - [ ] [AI] **RED**: add a failing fake-backed unit test for the `repo-governance` use case (assert
-      injected file-scan port; pure rule logic separated) — Go in
-      `apps/rhino-cli-go/internal/application/repogovernance/` and Rust `#[cfg(test)]` in
+      injected file-scan port; pure rule logic separated) — `#[cfg(test)]` in
       `apps/rhino-cli-rust/src/application/repo_governance/` (sibling pattern: existing
-      `commands/repo_governance.rs` tests) — commands: `npx nx run rhino-cli-go:test:unit` /
-      `npx nx run rhino-cli-rust:test:unit` — acceptance: both fail (use case not yet extracted).
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
+      `commands/repo_governance.rs` tests) — command: `npx nx run rhino-cli-rust:test:unit`
+      — acceptance: fails (use case not yet extracted).
+  - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **GREEN**: extract the vendor-audit + gherkin-cardinality use cases into `application/`,
-      pure rule logic into `domain/`; thin inbound shim stays `cmd/governance_*.go` /
+      pure rule logic into `domain/`; thin inbound shim stays
       `src/commands/repo_governance.rs` [Repo-grounded] — commands: `test:unit`,
-      `npx nx run rhino-cli-go:validate:repo-governance-vendor-audit`,
-      `npx nx run rhino-cli-go:validate:gherkin-keyword-cardinality` (and Rust equivalents) both apps
+      `npx nx run rhino-cli-rust:validate:repo-governance-vendor-audit`,
+      `npx nx run rhino-cli-rust:validate:gherkin-keyword-cardinality`
       — acceptance: green.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **REFACTOR**: reduce the inbound to a thin shim; confirm both `domain/` rule dirs are
-      IO-free — commands: `npx nx run rhino-cli-go:typecheck` / `npx nx run rhino-cli-rust:lint` and
-      `grep -rEn "os/exec|\"os\"|\"io\"|net|path/filepath" apps/rhino-cli-go/internal/domain/repogovernance/`
-      plus `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/repo_governance/`
-      — acceptance: `go vet` exits 0; clippy `-D warnings` exits 0; both greps return no IO imports.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **REFACTOR**: reduce the inbound to a thin shim; confirm the `domain/` rule dir is
+      IO-free — command: `npx nx run rhino-cli-rust:lint` and
+      `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/repo_governance/`
+      — acceptance: clippy `-D warnings` exits 0; grep returns no IO imports.
+  - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **CRITICAL — coverage allowlist lockstep**: in `apps/rhino-cli-rust/project.json`
       `test:quick` `--ignore-filename-regex` [Repo-grounded — line 83], update any
       `commands/repo_governance\.rs` entry to its relocated path (or remove if now directly
@@ -770,7 +697,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; both ≥90%. Fix ALL failures.
+- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; ≥90%. Fix ALL failures.
 
 ### Post-Push Verification
 
@@ -780,36 +707,34 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before starting Phase 13.
 
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust` — green; both ≥90%.
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust` — green; ≥90%.
 - [ ] [AI] `npx nx run rhino-cli-rust:validate:repo-governance-vendor-audit` and `:validate:gherkin-keyword-cardinality` — exit 0.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
-- [ ] [AI] `repo-governance` use case in `application/`, rules in `domain/` (IO-free, grep), thin inbound shim — BOTH languages.
+- [ ] [AI] `repo-governance` use case in `application/`, rules in `domain/` (IO-free, grep), thin inbound shim.
 
-> **Pause Safety**: `repo-governance` migrated in both languages; remaining features green. Safe
+> **Pause Safety**: `repo-governance` migrated; remaining features green. Safe
 > to stop. To resume: re-run the gate commands and confirm GREEN, then begin Phase 13.
 
 ---
 
-## Phase 13: `speccoverage` (both languages)
+## Phase 13: `speccoverage`
 
-- [ ] [AI] Confirm shadow-diff GREEN: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
+- [ ] [AI] Confirm the golden-master CLI suite GREEN — exits 0.
 - [ ] [AI] **RED**: add a failing fake-backed unit test for the `speccoverage` use case (assert
-      injected gherkin/impl on-disk scan port) — Go in `apps/rhino-cli-go/internal/application/speccoverage/`
-      and Rust `#[cfg(test)]` in `apps/rhino-cli-rust/src/application/speccoverage/` (sibling pattern:
-      existing `internal/speccoverage` tests) — commands: `npx nx run rhino-cli-go:test:unit` /
-      `npx nx run rhino-cli-rust:test:unit` — acceptance: both fail (port not yet defined).
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **GREEN**: migrate `speccoverage` (both langs) to slices; port the on-disk gherkin/impl
-      scan seam; inbound stays `cmd/spec_coverage*.go` / `src/commands/speccoverage.rs` [Repo-grounded]
-      — commands: `test:unit` both apps — acceptance: green.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **REFACTOR**: reduce/remove old `internal/speccoverage`; confirm both domain dirs are
-      IO-free — commands: `npx nx run rhino-cli-go:typecheck` / `npx nx run rhino-cli-rust:lint` and
-      `grep -rEn "os/exec|\"os\"|\"io\"|net|path/filepath" apps/rhino-cli-go/internal/domain/speccoverage/`
-      plus `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/speccoverage/`
-      — acceptance: `go vet` exits 0; clippy `-D warnings` exits 0; both greps return no IO imports.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
+      injected gherkin/impl on-disk scan port) — `#[cfg(test)]` in
+      `apps/rhino-cli-rust/src/application/speccoverage/` (sibling pattern:
+      existing `internal/speccoverage` tests) — command: `npx nx run rhino-cli-rust:test:unit`
+      — acceptance: fails (port not yet defined).
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **GREEN**: migrate `speccoverage` to slices; port the on-disk gherkin/impl
+      scan seam; inbound stays `src/commands/speccoverage.rs` [Repo-grounded]
+      — command: `test:unit` — acceptance: green.
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **REFACTOR**: reduce/remove old `internal/speccoverage`; confirm the domain dir is
+      IO-free — command: `npx nx run rhino-cli-rust:lint` and
+      `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/speccoverage/`
+      — acceptance: clippy `-D warnings` exits 0; grep returns no IO imports.
+  - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **CRITICAL — coverage allowlist lockstep**: in `apps/rhino-cli-rust/project.json`
       `test:quick` `--ignore-filename-regex` [Repo-grounded — line 83], update the `commands/speccoverage\.rs`
       entry (and any relocated `internal/speccoverage` file) to its new path — command:
@@ -818,7 +743,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; both ≥90%. Fix ALL failures.
+- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; ≥90%. Fix ALL failures.
 
 ### Post-Push Verification
 
@@ -828,50 +753,45 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before starting Phase 14.
 
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust` — green; both ≥90%.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
-- [ ] [AI] `speccoverage` slice complete in BOTH languages, domain IO-free (grep).
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust` — green; ≥90%.
+- [ ] [AI] `speccoverage` slice complete, domain IO-free (grep).
 
-> **Pause Safety**: `speccoverage` migrated in both languages; remaining features green. Safe to
+> **Pause Safety**: `speccoverage` migrated; remaining features green. Safe to
 > stop. To resume: re-run the gate commands and confirm GREEN, then begin Phase 14.
 
 ---
 
-## Phase 14: `workflows` (both languages)
+## Phase 14: `workflows`
 
-> Go logic currently lives in `cmd/` only [Repo-grounded — `workflows` has Go logic in `cmd/`
->
-> > only]; move the use case into `application/`/`domain/`, keep a thin inbound shim. Validate with
-> > `validate:naming-workflows`.
+> Move the use case into `application/`/`domain/`, keep a thin inbound shim. Validate with
+> `validate:naming-workflows`.
 
-- [ ] [AI] Confirm shadow-diff GREEN: `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0.
-- [ ] [AI] **RED**: add a failing fake-backed unit test for the `workflows` use case — Go in
-      `apps/rhino-cli-go/internal/application/workflows/` and Rust `#[cfg(test)]` in
-      `apps/rhino-cli-rust/src/application/workflows/` (sibling pattern: existing `workflows` tests)
-      — commands: `npx nx run rhino-cli-go:test:unit` / `npx nx run rhino-cli-rust:test:unit`
-      — acceptance: both fail (use case not yet extracted).
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **GREEN**: migrate `workflows` (both langs); move the Go use case from `cmd/` into
-      `application/`/`domain/`, keep a thin inbound shim; Rust to slices — commands: `test:unit`,
-      `npx nx run rhino-cli-go:validate:naming-workflows` (and Rust equivalent if present) both apps
+- [ ] [AI] Confirm the golden-master CLI suite GREEN — exits 0.
+- [ ] [AI] **RED**: add a failing fake-backed unit test for the `workflows` use case —
+      `#[cfg(test)]` in `apps/rhino-cli-rust/src/application/workflows/` (sibling pattern: existing
+      `workflows` tests) — command: `npx nx run rhino-cli-rust:test:unit`
+      — acceptance: fails (use case not yet extracted).
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **GREEN**: migrate `workflows`; move the use case into
+      `application/`/`domain/`, keep a thin inbound shim — commands: `test:unit`,
+      `npx nx run rhino-cli-rust:validate:naming-workflows` (if present)
       — acceptance: green.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
-- [ ] [AI] **REFACTOR**: reduce the inbound to a thin shim; confirm both `domain/workflows/` dirs
-      are IO-free — commands: `npx nx run rhino-cli-go:typecheck` / `npx nx run rhino-cli-rust:lint`
-      and `grep -rEn "os/exec|\"os\"|\"io\"|net|path/filepath" apps/rhino-cli-go/internal/domain/workflows/`
-      plus `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/workflows/`
-      — acceptance: `go vet` exits 0; clippy `-D warnings` exits 0; both greps return no IO imports.
-  - _Suggested executor: `swe-golang-dev` / `swe-rust-dev`_
+  - _Suggested executor: `swe-rust-dev`_
+- [ ] [AI] **REFACTOR**: reduce the inbound to a thin shim; confirm `domain/workflows/`
+      is IO-free — command: `npx nx run rhino-cli-rust:lint`
+      and `grep -rEn "std::fs|std::process|std::net" apps/rhino-cli-rust/src/domain/workflows/`
+      — acceptance: clippy `-D warnings` exits 0; grep returns no IO imports.
+  - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **CRITICAL — coverage allowlist lockstep**: in `apps/rhino-cli-rust/project.json`
-      `test:quick` `--ignore-filename-regex` [Repo-grounded — line 83], update any relocated Rust
+      `test:quick` `--ignore-filename-regex` [Repo-grounded — line 83], update any relocated
       `workflows` entry to its new path (or remove if now directly unit-tested) — command:
       `npx nx run rhino-cli-rust:test:quick` — acceptance: ≥90%, no false break.
   - _Suggested executor: `swe-rust-dev`_
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; both ≥90%. Fix ALL failures.
+- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` — all exit 0; ≥90%. Fix ALL failures.
 
 ### Post-Push Verification
 
@@ -881,16 +801,15 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before starting Phase 15.
 
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` — exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
-- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust` — green; both ≥90%.
-- [ ] [AI] `npx nx run rhino-cli-go:validate:naming-workflows` — exits 0.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
-- [ ] [AI] `workflows` use case in `application/`/`domain/` (IO-free, grep), thin inbound shim — BOTH languages.
-- [ ] [AI] ALL 13 features now live in hexagonal slices in BOTH languages; every `domain/<feature>/`
-      and `domain/shared/` dir is IO-free (grep across both apps returns no IO imports under domain).
+- [ ] [AI] The golden-master CLI suite exits 0 (GREEN against the existing Phase 0 baseline; corpus unchanged).
+- [ ] [AI] `npx nx run-many -t test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust` — green; ≥90%.
+- [ ] [AI] `npx nx run rhino-cli-rust:validate:naming-workflows` — exits 0.
+- [ ] [AI] `workflows` use case in `application/`/`domain/` (IO-free, grep), thin inbound shim.
+- [ ] [AI] ALL 13 features now live in hexagonal slices; every `domain/<feature>/`
+      and `domain/shared/` dir is IO-free (grep across the app returns no IO imports under domain).
 
-> **Pause Safety**: the full structural migration is complete and behavior-identical in both
-> binaries. Safe to stop. To resume: re-run the gate commands and confirm GREEN, then begin Phase 15.
+> **Pause Safety**: the full structural migration is complete and behavior-identical. Safe to
+> stop. To resume: re-run the gate commands and confirm GREEN, then begin Phase 15.
 
 ---
 
@@ -904,15 +823,15 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
       per-feature vertical-slice layout; (b) the maximal-ports requirement (every IO boundary is a
       named port) with the one-line accepted trade-off vs. the lean approach; (c) the domain-role
       port-naming rule (`StagedFileProvider`, not `FileSystem`); (d) the 2+-consumer shared-kernel
-      rule with the accepted Go/Rust asymmetry (`{mermaid}` vs `{mermaid, cliout}`) — acceptance:
+      rule (`{mermaid, cliout}`) — acceptance:
       the four topics are present; no vendor terms; no arch-lint reference.
   - _Suggested executor: `repo-rules-maker`_
 - [ ] [AI] Render-check any added Mermaid diagram and heading hierarchy:
-      `npx nx run rhino-cli-go:validate:mermaid` and `npx nx run rhino-cli-go:validate:heading-hierarchy`
+      `npx nx run rhino-cli-rust:validate:mermaid` and `npx nx run rhino-cli-rust:validate:heading-hierarchy`
       — acceptance: both exit 0.
 - [ ] [AI] Vendor-neutrality + link checks:
-      `npx nx run rhino-cli-go:validate:repo-governance-vendor-audit` and
-      `npx nx run rhino-cli-go:validate:links` — acceptance: both exit 0.
+      `npx nx run rhino-cli-rust:validate:repo-governance-vendor-audit` and
+      `npx nx run rhino-cli-rust:validate:links` — acceptance: both exit 0.
 
 ### Local Quality Gates (Before Push)
 
@@ -926,9 +845,8 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 > All checks below must pass before final verification.
 
-- [ ] [AI] `npx nx run rhino-cli-go:validate:repo-governance-vendor-audit` — exits 0 (vendor-neutral).
-- [ ] [AI] `npx nx run rhino-cli-go:validate:links` and `:validate:heading-hierarchy` — exit 0.
-- [ ] [AI] `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — exits 0.
+- [ ] [AI] `npx nx run rhino-cli-rust:validate:repo-governance-vendor-audit` — exits 0 (vendor-neutral).
+- [ ] [AI] `npx nx run rhino-cli-rust:validate:links` and `:validate:heading-hierarchy` — exit 0.
 - [ ] [AI] The convention doc documents all four required topics (layout, maximal ports + trade-off,
       domain-role naming, 2+-consumer kernel rule) and references no arch lint.
 
@@ -941,21 +859,20 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 
 ```gherkin
 Scenario: The migration is complete and behavior-preserving
-  Given all 13 features are migrated to hexagonal slices in both Go and Rust
-  When the full gate suite runs across both apps
-  Then shadow-diff, test:unit, test:integration, test:quick (>=90%), lint, typecheck, and validate:cross-vendor-parity all pass
+  Given all 13 features are migrated to hexagonal slices
+  When the full gate suite runs across the app
+  Then the golden-master CLI suite, test:unit, test:integration, test:quick (>=90%), lint, and typecheck all pass
   And the convention doc records the architecture vendor-neutrally
 ```
 
-- [ ] [AI] Full sweep: `npx nx run-many -t build test:unit test:integration test:quick lint typecheck --projects=rhino-cli-go,rhino-cli-rust`
-      and `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` and
-      `npx nx run rhino-cli-rust:validate:cross-vendor-parity` — acceptance: all GREEN; both apps ≥90%.
+- [ ] [AI] Full sweep: `npx nx run-many -t build test:unit test:integration test:quick lint typecheck --projects=rhino-cli-rust`
+      and run the golden-master CLI suite — acceptance: all GREEN; ≥90%.
 
 ## Plan Archival
 
 - [ ] [AI] Verify ALL delivery checklist items are ticked.
 - [ ] [AI] Verify ALL quality gates pass (local + CI) and ALL phase gates were green.
-- [ ] [AI] Verify shadow-diff GREEN at completion.
+- [ ] [AI] Verify the golden-master CLI suite GREEN at completion.
 - [ ] [AI] Move: `git mv plans/in-progress/migrate-rhino-cli-to-hexagonal plans/done/2026-06-09__migrate-rhino-cli-to-hexagonal`
       (use the actual completion date if later) — acceptance: folder relocated under `plans/done/`.
 - [ ] [AI] Update `plans/in-progress/README.md` — remove the plan entry.

@@ -395,16 +395,16 @@ Integration: Gherkin Step -> cmd.RunE()   -> Real /tmp filesystem
 
 The three-level standard applies universally, with adaptations per project type:
 
-| Project Type                   | Unit                            | Integration                           | E2E                                  | test:quick | Gherkin Specs                           |
-| ------------------------------ | ------------------------------- | ------------------------------------- | ------------------------------------ | ---------- | --------------------------------------- |
-| Demo-be API backend            | All mocked + specs              | Real PostgreSQL, no HTTP + specs      | Playwright + specs                   | Yes        | `specs/apps/crud/behavior/be/gherkin/`  |
-| Web UI app (crud-fe-ts-nextjs) | Vitest mocks                    | MSW in-process (cacheable)            | Playwright                           | Yes        | Project-specific                        |
-| Content platform               | Vitest mocks                    | MSW/tRPC in-process (cacheable)       | Playwright + specs                   | Yes        | `specs/apps/{domain}/{be,fe}/gherkin/`  |
-| CLI app (Go)                   | Go test mocks + Gherkin (godog) | Godog BDD in-process (cacheable)      | N/A                                  | Yes        | `specs/{app}/`                          |
-| Library (Go)                   | Go test mocks                   | Godog BDD in-process (cacheable)      | N/A                                  | Yes        | `specs/{lib}/`                          |
-| Demo-fe frontend               | Vitest/Flutter mocks + specs    | N/A                                   | Playwright (via crud-fe-e2e) + specs | Yes        | `specs/apps/crud/behavior/web/gherkin/` |
-| Fullstack (FS)                 | Vitest mocks + specs            | Mandatory (MSW/real DB as applicable) | Playwright + specs                   | Yes        | `specs/apps/crud/` (BE + FE specs)      |
-| E2E runner                     | N/A                             | N/A                                   | Playwright                           | N/A        | Shared specs                            |
+| Project Type                   | Unit                         | Integration                           | E2E                                  | test:quick | Gherkin Specs                           |
+| ------------------------------ | ---------------------------- | ------------------------------------- | ------------------------------------ | ---------- | --------------------------------------- |
+| Demo-be API backend            | All mocked + specs           | Real PostgreSQL, no HTTP + specs      | Playwright + specs                   | Yes        | `specs/apps/crud/behavior/be/gherkin/`  |
+| Web UI app (crud-fe-ts-nextjs) | Vitest mocks                 | MSW in-process (cacheable)            | Playwright                           | Yes        | Project-specific                        |
+| Content platform               | Vitest mocks                 | MSW/tRPC in-process (cacheable)       | Playwright + specs                   | Yes        | `specs/apps/{domain}/{be,fe}/gherkin/`  |
+| CLI app (Rust)                 | Rust mocks + Gherkin         | BDD in-process (cacheable)            | N/A                                  | Yes        | `specs/{app}/`                          |
+| Library (Go)                   | Go test mocks                | Godog BDD in-process (cacheable)      | N/A                                  | Yes        | `specs/{lib}/`                          |
+| Demo-fe frontend               | Vitest/Flutter mocks + specs | N/A                                   | Playwright (via crud-fe-e2e) + specs | Yes        | `specs/apps/crud/behavior/web/gherkin/` |
+| Fullstack (FS)                 | Vitest mocks + specs         | Mandatory (MSW/real DB as applicable) | Playwright + specs                   | Yes        | `specs/apps/crud/` (BE + FE specs)      |
+| E2E runner                     | N/A                          | N/A                                   | Playwright                           | N/A        | Shared specs                            |
 
 **Key rules by project type**:
 
@@ -412,7 +412,7 @@ The three-level standard applies universally, with adaptations per project type:
 - **Content platforms**: All three levels mandatory; integration uses MSW/tRPC in-process mocking (cacheable); Gherkin consumption planned (see "Known Gaps")
 - **Web UI apps**: All three levels mandatory; integration uses in-process mocking (MSW); cacheable
 - **Fullstack apps**: All three levels mandatory; consume Gherkin specs from both `specs/apps/crud/behavior/be/gherkin/` and `specs/apps/crud/behavior/web/gherkin/` (the FS app spans both layers)
-- **CLI apps**: Unit + integration mandatory; both levels consume Gherkin specs via godog; unit mocks all I/O via package-level function variables; integration uses real filesystem with `/tmp` fixtures; cacheable
+- **CLI apps**: Unit + integration mandatory; both levels consume Gherkin specs; unit mocks all I/O; integration uses real filesystem with `/tmp` fixtures; cacheable
 - **Libraries**: Unit mandatory; integration optional (Godog BDD with public API calls); cacheable
 - **Demo-fe frontends**: Two-level testing (unit + E2E); no integration tier; all consume Gherkin specs from `specs/apps/crud/behavior/web/gherkin/`; E2E via centralized `crud-fe-e2e` Playwright suite
 

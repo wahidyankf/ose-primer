@@ -106,10 +106,8 @@ context — use this when agent delegation is unavailable.
 
 Run the deterministic governance audits before invoking the AI checker. This repository has
 no audit orchestrator — its deterministic checks are **standalone `repo-governance`
-subcommands**, executed via the canonical Rust binary (per the
-[Dual-Implementation Parity Convention](../../conventions/structure/rhino-cli-dual-implementation-parity.md),
-the Rust implementation is the one CI and the developer toolchain invoke). Each category
-executes in milliseconds and caches via Nx; the AI checker then spends its budget only on
+subcommands**, executed via the Rust binary that CI and the developer toolchain invoke. Each
+category executes in milliseconds and caches via Nx; the AI checker then spends its budget only on
 the AI-judgment categories (semantic contradictions, terminology alignment,
 principle-appropriateness, markdown-fence Gherkin review).
 

@@ -15,7 +15,7 @@ fn python_parsers_param_re() -> &'static Regex {
 }
 
 /// Processes Cucumber expression escape sequences in literal text:
-/// `\X` → `X` for every escaped char. Mirrors Go `unescapeCucumberExpr`.
+/// `\X` → `X` for every escaped char.
 pub fn unescape_cucumber_expr(s: &str) -> String {
     let chars: Vec<char> = s.chars().collect();
     let mut out = String::with_capacity(s.len());
@@ -33,7 +33,6 @@ pub fn unescape_cucumber_expr(s: &str) -> String {
 }
 
 /// Converts the inner part of a Cucumber parameter (without braces) to regex.
-/// Mirrors Go `cucumberParamToRegex`.
 pub fn cucumber_param_to_regex(param_name: &str) -> &'static str {
     match param_name {
         "string" => "\"[^\"]*\"",
@@ -45,7 +44,7 @@ pub fn cucumber_param_to_regex(param_name: &str) -> &'static str {
 }
 
 /// Converts a Cucumber expression to a regex source string, QuoteMeta-escaping
-/// literal text. Mirrors Go `cucumberExprToRegex`.
+/// literal text.
 pub fn cucumber_expr_to_regex(text: &str) -> String {
     let re = cucumber_param_re();
     let mut sb = String::new();
@@ -76,7 +75,6 @@ pub fn has_cucumber_expressions(text: &str) -> bool {
 }
 
 /// Converts a Python `parsers.parse` format string to a regex source string.
-/// Mirrors Go `convertPythonParsersExpr`.
 pub fn convert_python_parsers_expr(text: &str) -> String {
     let re = python_parsers_param_re();
     let mut sb = String::new();

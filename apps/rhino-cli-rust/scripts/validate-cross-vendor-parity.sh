@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Validate cross-vendor behavioral-parity invariants (Rust port).
+# Validate cross-vendor behavioral-parity invariants.
 #
 # This script is the implementation behind the
 # rhino-cli-rust:validate:cross-vendor-parity Nx target. It mirrors the five
-# invariants validated by the repo-harness-compatibility-checker agent (Phase 0)
-# and the Go script apps/rhino-cli-go/scripts/validate-cross-vendor-parity.sh,
-# but drives the Rust rhino-cli binary for the governance vendor-audit
-# invariants. Exits 0 if all invariants hold, non-zero otherwise.
+# invariants validated by the repo-harness-compatibility-checker agent (Phase 0),
+# driving the rhino-cli binary for the governance vendor-audit invariants.
+# Exits 0 if all invariants hold, non-zero otherwise.
 #
 # The script is intentionally implemented as a thin shell wrapper that invokes
 # existing tools (rhino-cli vendor-audit, npm generate:bindings, ls/grep/diff)

@@ -1,9 +1,7 @@
 //! `workflows validate-naming` command.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/cmd/workflows_validate_naming.go`.
-//! Reuses the shared naming validators and reporter in
-//! [`crate::internal::naming`]. Output is written with `print!` (no implicit
-//! trailing newline) to mirror Go's `Fprint`.
+//! Reuses the shared naming validators and reporter in [`crate::internal::naming`]. Output
+//! is written with `print!` (no implicit trailing newline).
 
 use std::fs;
 use std::path::Path;
@@ -17,7 +15,7 @@ use crate::internal::naming::reporter::{
 };
 use crate::internal::naming::{self, Violation};
 
-/// Cobra-style usage block printed to stderr when `validate-naming` errors.
+/// Usage block printed to stderr when `validate-naming` errors.
 pub const VALIDATE_NAMING_USAGE: &str = "Usage:\n  \
 rhino-cli workflows validate-naming [flags]\n\n\
 Examples:\n  \
@@ -36,8 +34,7 @@ Global Flags:\n      \
 --say string      echo a message to stdout\n  \
 -v, --verbose         verbose output with timestamps\n\n";
 
-/// Trailing type tokens permitted by the workflow naming convention. Mirrors Go
-/// `workflowTypes`.
+/// Trailing type tokens permitted by the workflow naming convention.
 const WORKFLOW_TYPES: &[&str] = &["quality-gate", "execution", "setup", "planning"];
 
 pub fn run_validate_naming(output: OutputFormat, verbose: bool, quiet: bool) -> Result<(), Error> {
@@ -62,7 +59,7 @@ pub fn run_validate_naming(output: OutputFormat, verbose: bool, quiet: bool) -> 
 
 /// Walks `repo-governance/workflows/` recursively, excluding README.md files and
 /// anything under `meta/`, and returns every naming violation sorted by (path,
-/// kind). Mirrors Go `workflowsValidateNaming`.
+/// kind).
 fn workflows_validate_naming(repo_root: &Path) -> Result<Vec<Violation>, Error> {
     let root = repo_root.join("repo-governance").join("workflows");
     let files = list_workflow_files(&root);
@@ -78,7 +75,7 @@ fn workflows_validate_naming(repo_root: &Path) -> Result<Vec<Violation>, Error> 
         }
     }
 
-    // Stable sort by (path, kind) — mirrors Go's sort.SliceStable.
+    // Stable sort by (path, kind).
     violations.sort_by(|a, b| a.path.cmp(&b.path).then(a.kind.cmp(&b.kind)));
     Ok(violations)
 }
@@ -86,7 +83,7 @@ fn workflows_validate_naming(repo_root: &Path) -> Result<Vec<Violation>, Error> 
 /// Returns every `.md` file under `root` eligible for validation. Files named
 /// `README.md` and anything under a `meta/` directory (at any depth below
 /// `root`) are filtered out per convention. A missing root yields an empty
-/// slice. Mirrors Go `listWorkflowFiles` (lexical walk + final sort).
+/// slice.
 fn list_workflow_files(root: &Path) -> Vec<String> {
     if !root.exists() {
         return Vec::new();

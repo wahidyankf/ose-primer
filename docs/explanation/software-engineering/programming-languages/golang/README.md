@@ -232,12 +232,10 @@ graph LR
 
 **CLI Tools**:
 
-- rhino-cli-go MUST use Go for content automation (link validation, content checks)
-- rhino-cli-go MUST use Go for repository management (RHINO = Repository Hygiene & INtegration Orchestrator; includes `java validate-annotations` for Java null-safety annotation validation)
-- rhino-cli-go MUST use Go for demo site validation (link checking)
+- Content automation (link validation, content checks) SHOULD use Go for fast startup
 - Administrative tools SHOULD use Go for fast startup and easy distribution (single binary)
 - Code generation and scaffolding MAY use Go with `text/template` or `html/template`
-- All demo CLI apps MUST use domain-prefixed Cobra subcommands (`{cli-name} {domain} {action}`) — see [BDD Spec-to-Test Mapping Convention](../../../../../repo-governance/development/infra/bdd-spec-test-mapping.md) for source file and Gherkin tag naming rules
+- Go CLI apps MUST use domain-prefixed Cobra subcommands (`{cli-name} {domain} {action}`) — see [BDD Spec-to-Test Mapping Convention](../../../../../repo-governance/development/infra/bdd-spec-test-mapping.md) for source file and Gherkin tag naming rules
 
 **High-Performance Services**:
 

@@ -1,8 +1,7 @@
 //! Auto-install ("--fix") engine.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/doctor/fixer.go`. The
-//! per-step progress lines, the skip messages, and the one-line summary all
-//! match Go exactly.
+//! The per-step progress lines, the skip messages, and the one-line summary all match Go
+//! exactly.
 
 use std::path::Path;
 use std::process::Command;
@@ -10,12 +9,12 @@ use std::process::Command;
 use super::tools::{InstallStep, build_tool_defs};
 use super::types::{DoctorResult, Scope, ToolStatus, is_minimal_tool};
 
-/// Fix behaviour options. Mirrors Go `FixOptions`.
+/// Fix behaviour options.
 pub struct FixOptions {
     pub dry_run: bool,
 }
 
-/// Outcome of a fix attempt. Mirrors Go `FixResult`.
+/// Outcome of a fix attempt.
 #[derive(Default)]
 pub struct FixResult {
     pub fixed: i64,
@@ -25,7 +24,6 @@ pub struct FixResult {
 }
 
 /// Executes an install command. Returns `Ok(())` on success (zero exit).
-/// Mirrors Go `FixRunnerFunc` / `realFixRunner` (inherits stdio).
 pub type FixRunner<'a> = dyn Fn(&str, &[String]) -> Result<(), String> + 'a;
 
 /// Production runner: spawns the command inheriting the parent's stdio.
@@ -40,7 +38,6 @@ pub fn real_fix_runner(command: &str, args: &[String]) -> Result<(), String> {
 
 /// Attempts to install missing tools, driven by the per-tool definitions.
 /// `printf` receives each progress/skip line (already newline-terminated).
-/// Mirrors Go `Fix`.
 pub fn fix(
     result: &DoctorResult,
     defs: &[super::tools::ToolDef],
@@ -109,7 +106,7 @@ pub fn fix(
 }
 
 /// Attempts to install missing tools detected by a prior check. Rebuilds the
-/// tool defs from the same scope, then runs [`fix`]. Mirrors Go `FixAll`.
+/// tool defs from the same scope, then runs [`fix`].
 pub fn fix_all(
     result: &DoctorResult,
     repo_root: &Path,
@@ -126,7 +123,7 @@ pub fn fix_all(
     fix(result, &defs, opts, platform, runner, printf)
 }
 
-/// One-line summary. Mirrors Go `FormatFixSummary`.
+/// One-line summary.
 pub fn format_fix_summary(fr: &FixResult) -> String {
     format!(
         "\nFix summary: {} fixed, {} failed, {} already OK\n",

@@ -40,7 +40,7 @@ This convention resolves all three problems with four architecture decisions app
 - The two-tier classification of harnesses by whether they read `AGENTS.md` natively (AD2).
 - The no-shadowing rule prohibiting higher-precedence files with divergent content (AD3).
 - The mechanical-generation requirement for any binding file that must exist (AD4).
-- The dual-implementation parity requirement for the CLI commands that generate and validate bindings (AD8).
+- The single CLI implementation that generates and validates bindings (AD8).
 - The pre-push deterministic guard that checks binding files before each push.
 
 > **On the decision numbering**: this convention documents the binding-strategy decisions AD1, AD2, AD3, AD4, and AD8. The intermediate decisions from the source design live in their natural homes rather than here: AD5 (reconciling pre-existing tool-provided bindings) is recorded in the [platform-bindings catalog](../../../docs/reference/platform-bindings.md); AD6 (the compatibility-audit workflow) is the [`repo-harness-compatibility-quality-gate`](../../workflows/repo/repo-harness-compatibility-quality-gate.md) workflow itself; and AD7 (the deterministic pre-push guard) is implemented as the `validate:harness-bindings` npm script wired into `.husky/pre-push`. The numbering is preserved for traceability to the originating plan.
@@ -107,22 +107,19 @@ Hand-writing or hand-editing generated binding files is prohibited. Changes to t
 
 **Rationale**: a script whose name encodes specific harness or vendor product names couples the invocation surface to those products. When a harness is added, renamed, or removed, every caller must be updated. A vendor-neutral operation name (`generate:bindings`) remains stable across harness lifecycle changes.
 
-### AD8 — Dual-Implementation Byte-Parity (ose-primer-Specific)
+### AD8 — Single CLI Implementation (ose-primer-Specific)
 
-This repository maintains two co-equal CLI implementations: one in Rust and one in Go. A shadow-diff parity harness asserts byte-identical stdout, stderr, and exit codes for every command in the corpus. Any binding-emitter or binding-validation behavior implemented in one CLI must be implemented identically in the other.
+This repository maintains one CLI implementation, in Rust (`apps/rhino-cli-rust/`). All binding-emitter and binding-validation behavior lives there.
 
 Consequences:
 
-- `agents emit-bindings` and `agents validate-bindings` are implemented in both CLI codebases.
-- The shadow-diff corpus includes `emit-bindings --dry-run` cases and `validate-bindings` cases (clean and drifted fixtures).
-- Each change to the Rust implementation is paired with the identical change in the Go implementation in the same delivery phase; the shadow-diff gate must pass before push.
-
-This requirement exists because both CLIs are published from `ose-primer` as reference implementations. A behavioral divergence between them would undermine their use as a trustworthy pair.
+- `agents emit-bindings` and `agents validate-bindings` are implemented in the Rust CLI.
+- The `validate-bindings` corpus includes `emit-bindings --dry-run` cases and `validate-bindings` cases (clean and drifted fixtures).
 
 **Generator-logic vs regenerated data**: When a harness convention change requires updating the CLI, the type of change determines who handles it. Two categories exist:
 
 - **Regenerated data** — the translation tables or catalog content that the CLI reads at runtime change, but the code that reads and applies them does not. The harness-compatibility fixer handles this automatically by updating the catalog and re-running `npm run generate:bindings`.
-- **Generator-logic change** — a translation rule itself changes (a new field mapping, a new output format rule, a new validation predicate). This is a code change and must land identically in both `apps/rhino-cli-go/internal/agents/` and `apps/rhino-cli-rust/src/` within the same delivery. The harness-compatibility fixer does not make code changes; it surfaces the requirement as a coupled both-CLI finding for human or language-dev-agent authorship. The shadow-diff gate must pass before push.
+- **Generator-logic change** — a translation rule itself changes (a new field mapping, a new output format rule, a new validation predicate). This is a code change and must land in `apps/rhino-cli-rust/src/`. The harness-compatibility fixer does not make code changes; it surfaces the requirement as a finding for human or language-dev-agent authorship.
 
 ## Validation
 
@@ -203,13 +200,13 @@ Two automated quality gates enforce different invariants for the binding surface
 
 The pre-push guard is fast and deterministic: it catches cases where `AGENTS.md` changed but the generated binding files were not regenerated. The compatibility gate is comprehensive: its Phase 0 catches internal disagreement between the primary and secondary binding directories (and vendor-name leakage in governance prose) entirely offline, and its Phase 1 catches cases where an upstream harness changed its conventions without any corresponding local change. Neither gate can substitute for the other.
 
-Internal cross-vendor parity is **not a separate workflow** — it is Phase 0 of the harness-compatibility gate above (matching the single-gate structure in `ose-public`). The deterministic `validate:cross-vendor-parity` Nx target remains as part of the pre-push byte guard.
+Internal cross-vendor parity is **not a separate workflow** — it is Phase 0 of the harness-compatibility gate above (matching the single-gate structure in `ose-public`). The deterministic `rhino-cli agents validate-bindings` guard enforces internal byte-equality as part of the pre-push hook.
 
 ## Tools and Automation
 
 - **`repo-harness-compatibility-checker`** — Checker agent; delegates to web research, diffs current upstream harness conventions against the platform-bindings catalog and committed binding files. Run via the `repo-harness-compatibility-quality-gate` workflow.
 - **`repo-harness-compatibility-fixer`** — Fixer agent; applies validated updates to the catalog and binding files after a checker audit. Also updates `specs/apps/rhino/` when a harness convention change alters rhino-cli behavior that those specs document.
-- **`rhino-cli agents emit-bindings`** — Generates all Tier 2 bridge files and any thin pointers from `AGENTS.md`. Implemented in both the Rust and Go CLI implementations.
+- **`rhino-cli agents emit-bindings`** — Generates all Tier 2 bridge files and any thin pointers from `AGENTS.md`. Implemented in the Rust CLI (`apps/rhino-cli-rust/`).
 - **`rhino-cli agents validate-bindings`** — Asserts byte-equality between committed binding files and what `emit-bindings` would produce; also asserts that every binding directory on disk has a row in `docs/reference/platform-bindings.md`.
 - **`npm run validate:harness-bindings`** — npm script wrapping `rhino-cli agents validate-bindings`; wired into `.husky/pre-push`.
 

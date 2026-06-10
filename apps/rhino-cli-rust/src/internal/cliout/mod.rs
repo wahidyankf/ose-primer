@@ -1,5 +1,5 @@
-// Sealed OutputFormat enum. Mirrors `apps/rhino-cli-go/internal/cliout/format.go`
-// — same canonical codes, same "" → Text default, same error string on unknown.
+// Sealed OutputFormat enum: canonical lowercase codes, "" parses to the Text
+// default, and an unknown code yields an error.
 
 pub mod gojson;
 
@@ -19,7 +19,7 @@ pub enum OutputFormat {
 }
 
 impl OutputFormat {
-    /// Canonical lowercase code (mirrors Go `Code()`).
+    /// Canonical lowercase code for this format.
     pub fn code(self) -> &'static str {
         match self {
             OutputFormat::Text => "text",

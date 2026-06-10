@@ -2,7 +2,7 @@
 
 Audience: Engineers, Technical Product/Project Managers
 
-Behavior specifications for [rhino-cli](../../../../apps/rhino-cli-go/README.md) — the Repository
+Behavior specifications for [rhino-cli](../../../../apps/rhino-cli-rust/README.md) — the Repository
 Hygiene & INtegration Orchestrator CLI. Sliced by interface type so each test runner wires
 step implementations against the right glob.
 
@@ -12,9 +12,9 @@ step implementations against the right glob.
 
 ## Perspectives
 
-| Perspective | Background                          | Step style                           | Consumed by                                           |
-| ----------- | ----------------------------------- | ------------------------------------ | ----------------------------------------------------- |
-| `cli`       | `Given the CLI binary is available` | `runs`, exit code, output assertions | `apps/rhino-cli-go` (Go test + godog, `cli/gherkin/`) |
+| Perspective | Background                          | Step style                           | Consumed by                                       |
+| ----------- | ----------------------------------- | ------------------------------------ | ------------------------------------------------- |
+| `cli`       | `Given the CLI binary is available` | `runs`, exit code, output assertions | `apps/rhino-cli-rust` (Rust test, `cli/gherkin/`) |
 
 ## Related
 

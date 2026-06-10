@@ -1,10 +1,9 @@
 //! Secret-file discovery walk.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/internal/envbackup/discover.go`.
 //! Walks the repo root collecting all secret files: `.env*` files, `secrets.json`,
-//! `*.pem`/`*.key`/`*.crt`/`*.pfx` certificates, and any file under `.secrets/`.
-//! Records symlinks and oversized files as skipped entries. Results are sorted
-//! by `rel_path` for deterministic ordering (matching Go's `sort.Slice` on `RelPath`).
+//! `*.pem`/`*.key`/`*.crt`/`*.pfx` certificates, and any file under `.secrets/`. Records
+//! symlinks and oversized files as skipped entries. Results are sorted by `rel_path` for
+//! deterministic ordering (matching Go's `sort.Slice` on `RelPath`).
 
 use std::collections::HashSet;
 use std::path::Path;
@@ -23,7 +22,7 @@ pub struct DiscoverOptions<'a> {
 }
 
 /// Returns true if a file at `rel_path` with `base` filename is a secret file
-/// that should be backed up or restored. Mirrors Go `isSecretFile`.
+/// that should be backed up or restored.
 pub fn is_secret_file(base: &str, rel_path: &str) -> bool {
     if base.starts_with(".env") {
         return true;
@@ -47,7 +46,7 @@ pub fn is_secret_file(base: &str, rel_path: &str) -> bool {
 }
 
 /// Walks `opts.repo_root` and returns all secret files found, including those
-/// skipped (symlinks, oversized). Mirrors Go `Discover`.
+/// skipped (symlinks, oversized).
 pub fn discover(opts: &DiscoverOptions) -> Result<Vec<FileEntry>, Error> {
     let max_size = if opts.max_size <= 0 {
         DEFAULT_MAX_SIZE

@@ -1,9 +1,8 @@
 //! `doctor` command: check required tool versions, optionally auto-install.
 //!
-//! Byte-for-byte port of `apps/rhino-cli-go/cmd/doctor.go`. Delegates the
-//! checks/fix to [`crate::internal::doctor`]. On error the dispatcher prints
-//! [`DOCTOR_USAGE`] to stderr; only missing tools cause a non-zero exit
-//! (version warnings are advisory).
+//! Delegates the checks/fix to [`crate::internal::doctor`]. On error the dispatcher prints
+//! [`DOCTOR_USAGE`] to stderr; only missing tools cause a non-zero exit (version warnings
+//! are advisory).
 
 use std::io::Write as _;
 
@@ -14,7 +13,7 @@ use crate::internal::cliout::OutputFormat;
 use crate::internal::doctor::{self, FixOptions, Scope};
 use crate::internal::git::root::find_root;
 
-/// Usage block for `doctor` (cobra `UsageString`), printed to stderr on error.
+/// Usage block for `doctor`, printed to stderr on error.
 pub const DOCTOR_USAGE: &str = "Usage:\n  \
 rhino-cli doctor [flags]\n\n\
 Examples:\n  \
@@ -59,7 +58,7 @@ pub struct DoctorArgs {
     pub dry_run: bool,
 }
 
-/// Runs `doctor`. Mirrors Go `runDoctor`.
+/// Runs `doctor`.
 pub fn run_doctor(
     args: &DoctorArgs,
     output: OutputFormat,

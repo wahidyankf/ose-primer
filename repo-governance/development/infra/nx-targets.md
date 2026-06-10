@@ -133,7 +133,7 @@ Use these canonical names. Aliases (`serve`, `start:dev`, `unit-test`) are anti-
 
 - Use `dev` for the development server — never `serve`, never `start:dev`
 - Use `start` for the production server — never `serve`
-- Use `test:quick` for the fast pre-push gate; `test:unit` for isolated unit tests with mocked dependencies (Go CLI apps consume Gherkin specs via godog at this level); `test:integration` for tests with real infrastructure (crud-be: PostgreSQL via docker-compose) or in-process mocking (MSW, Godog); `test:e2e` for end-to-end tests; `spec-coverage` for Gherkin step definition coverage validation — run targets individually rather than through an aggregate wrapper
+- Use `test:quick` for the fast pre-push gate; `test:unit` for isolated unit tests with mocked dependencies (`rhino-cli-rust` consumes Gherkin specs at this level); `test:integration` for tests with real infrastructure (crud-be: PostgreSQL via docker-compose) or in-process mocking (MSW, Godog); `test:e2e` for end-to-end tests; `spec-coverage` for Gherkin step definition coverage validation — run targets individually rather than through an aggregate wrapper
 - Separate target variants with a colon (`build:web`, `test:e2e:ui`), not a hyphen or underscore
 - All target names use lowercase with hyphens for multi-word names (`run-pre-commit`)
 
@@ -182,7 +182,6 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 | `crud-fe-ts-tanstack-start` | `["type:app", "platform:vite", "lang:ts", "domain:crud-fe"]`           |
 | `crud-fs-ts-nextjs`         | `["type:app", "platform:nextjs", "lang:ts", "domain:crud-fs"]`         |
 | `rhino-cli-rust`            | `["type:app", "platform:cli", "lang:rust", "domain:tooling"]`          |
-| `rhino-cli-go`              | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`        |
 | `golang-commons`            | `["type:lib", "lang:golang"]`                                          |
 | `clojure-openapi-codegen`   | `["type:lib", "lang:clojure", "domain:tooling"]`                       |
 | `elixir-cabbage`            | `["type:lib", "lang:elixir", "domain:tooling"]`                        |
@@ -347,19 +346,19 @@ Spring Boot, Python apps, TypeScript apps:
 
 Two integration test patterns exist depending on project type:
 
-| Pattern             | Projects                                                    | Requirement                                                                                                                                                | Cacheable |
-| ------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| Docker + PostgreSQL | All 11 crud-be backends                                     | Real PostgreSQL via `docker-compose.integration.yml`; calls application code directly (no HTTP layer); runs all shared Gherkin scenarios; fresh DB per run | No        |
-| In-process mocking  | `crud-fe-ts-nextjs` (MSW), Go CLIs (Godog), Go libs (Godog) | In-process mocking only (MSW / godog `RunE` / mock fixtures); no real database or external services; fully deterministic                                   | Yes       |
+| Pattern             | Projects                                                     | Requirement                                                                                                                                                | Cacheable |
+| ------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| Docker + PostgreSQL | All 11 crud-be backends                                      | Real PostgreSQL via `docker-compose.integration.yml`; calls application code directly (no HTTP layer); runs all shared Gherkin scenarios; fresh DB per run | No        |
+| In-process mocking  | `crud-fe-ts-nextjs` (MSW), `rhino-cli-rust`, Go libs (Godog) | In-process mocking only (MSW / Rust mocks / godog mock fixtures); no real database or external services; fully deterministic                               | Yes       |
 
 **Crud-be backends** expose `test:integration` which runs `docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`. This starts a fresh PostgreSQL container, runs migrations, and executes all shared Gherkin scenarios by calling application service/repository functions directly — no HTTP layer. Each backend has a `docker-compose.integration.yml` (postgres + test runner services) and a `Dockerfile.integration` (language runtime + test execution). Coverage is NOT measured at the integration level — coverage comes from `test:unit` only.
 
-**Go CLIs** consume Gherkin specs at both test levels. Each command has two test files:
+**`rhino-cli-rust`** consumes Gherkin specs at both test levels. Each command has two test files:
 
-- `{stem}_test.go` (no build tag) — godog unit step definitions; runs in `test:quick` as part of `go test ./...`; mocks all I/O via package-level function variables; coverage measured here
-- `{stem}.integration_test.go` (`//go:build integration`) — godog integration step definitions; drives the command in-process via `cmd.RunE()` against controlled `/tmp` filesystem fixtures; runs in `test:integration` via `-tags=integration -run TestIntegration`
+- `{stem}_test.rs` — unit step definitions; runs in `test:quick` as part of `cargo test`; mocks all I/O; coverage measured here
+- `{stem}_integration_test.rs` — integration step definitions; drives the command in-process against controlled `/tmp` filesystem fixtures; runs in `test:integration`
 
-Both files are co-located in the same `cmd/` package (not a separate folder) to access unexported package-level flag variables (`output`, `quiet`, `verbose`). Both levels filter scenarios by the same `@tag` from the same feature file. See
+Both levels filter scenarios by the same `@tag` from the same feature file. See
 [BDD Spec-to-Test Mapping Convention](./bdd-spec-test-mapping.md) for the mandatory 1:1 mapping
 between commands and feature file `@tags`.
 
@@ -425,7 +424,6 @@ the project's feature files has a matching step definition in the implementation
 
 | Project group                              | Status   | Notes                                                                                       |
 | ------------------------------------------ | -------- | ------------------------------------------------------------------------------------------- |
-| Go CLI app (`rhino-cli-go`)                | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                    |
 | Rust CLI app (`rhino-cli-rust`)            | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                    |
 | Crud-be backends (all 11)                  | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
 | Crud-fe frontends                          | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
@@ -610,14 +608,12 @@ language:
 **Note**: Python and Clojure use underscore in `generated_contracts/` (matching their language
 conventions). All other languages use hyphen in `generated-contracts/`.
 
-**Go CLI apps** (`rhino-cli-go`) also consume Gherkin specs in `test:unit` (godog unit step definitions run without a build tag). Their `test:unit` and `test:quick` inputs must include the CLI's own spec files. `rhino-cli-rust` consumes the same shared specs via its own Rust test harness. Both implementations share `specs/apps/rhino/`.
+**`rhino-cli-rust`** consumes Gherkin specs in `test:unit` via its own Rust test harness. Its `test:unit` and `test:quick` inputs must include the CLI's own spec files under `specs/apps/rhino/`.
 
 | CLI App          | Gherkin specs input                             |
 | ---------------- | ----------------------------------------------- |
 | `rhino-cli-rust` | `{workspaceRoot}/specs/apps/rhino/**/*.feature` |
-| `rhino-cli-go`   | `{workspaceRoot}/specs/apps/rhino/**/*.feature` |
 | `rhino-cli-rust` | `{workspaceRoot}/specs/apps/crud/**/*.feature`  |
-| `rhino-cli-go`   | `{workspaceRoot}/specs/apps/crud/**/*.feature`  |
 
 Example for `rhino-cli-rust` `test:unit` inputs:
 
@@ -626,18 +622,6 @@ Example for `rhino-cli-rust` `test:unit` inputs:
   "{projectRoot}/src/**/*.rs",
   "{projectRoot}/Cargo.toml",
   "{projectRoot}/Cargo.lock",
-  "{workspaceRoot}/specs/apps/rhino/**/*.feature"
-]
-```
-
-Example for `rhino-cli-go` `test:unit` inputs:
-
-```json
-"inputs": [
-  "{projectRoot}/cmd/**/*.go",
-  "{projectRoot}/internal/**/*.go",
-  "{projectRoot}/go.mod",
-  "{projectRoot}/go.sum",
   "{workspaceRoot}/specs/apps/rhino/**/*.feature"
 ]
 ```

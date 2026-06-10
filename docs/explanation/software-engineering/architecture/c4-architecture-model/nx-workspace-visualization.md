@@ -36,8 +36,7 @@ This document defines **authoritative standards** for visualizing Nx monorepo st
 ```
 apps/
 ├── crud-fs-ts-nextjs/        # Next.js fullstack app
-├── rhino-cli-go/          # Go CLI tool
-└── rhino-cli-go/              # Go CLI tool
+└── rhino-cli-rust/           # Rust CLI tool
 ```
 
 **C4 Container Diagram**:
@@ -45,10 +44,8 @@ apps/
 ```mermaid
 graph TD
     OseWeb["demo Web<br/>[Container: Next.js]<br/>Fullstack app"]:::blue
-    AyoCLI["demo CLI<br/>[Container: Go]<br/>Content automation"]:::blue
-    RhinoCLI["Rhino CLI<br/>[Container: Go]<br/>Repository management"]:::blue
+    RhinoCLI["Rhino CLI<br/>[Container: Rust]<br/>Repository management"]:::blue
 
-    AyoCLI -->|"Validates links<br/>[File system]"| OseWeb
     RhinoCLI -->|"Manages repository<br/>[File system]"| OseWeb
 
     classDef blue fill:#0173B2,stroke:#000,color:#FFF
@@ -76,7 +73,7 @@ graph TD
 
 **Example**:
 
-If `rhino-cli-go` has an Nx dependency on `crud-fs-ts-nextjs` (builds it), show this as a relationship in the container diagram.
+If `rhino-cli-rust` has an Nx dependency on `crud-fs-ts-nextjs` (builds it), show this as a relationship in the container diagram.
 
 ## Container Naming for Nx Apps
 

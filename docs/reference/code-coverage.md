@@ -5,13 +5,13 @@ category: reference
 tags:
   - coverage
   - testing
-  - rhino-cli-go
+  - rhino-cli-rust
   - quality
 ---
 
 # Code Coverage Reference
 
-How code coverage is measured locally via `rhino-cli-go` across all projects in the monorepo.
+How code coverage is measured locally via `rhino-cli-rust` across all projects in the monorepo.
 
 ## 📋 Coverage Algorithm
 
@@ -26,7 +26,7 @@ Partial lines count as NOT covered.
 
 ## Supported Formats
 
-`rhino-cli-go` auto-detects the coverage format from the file:
+`rhino-cli-rust` auto-detects the coverage format from the file:
 
 | Format       | Detection                                                                | Used By                                                 |
 | ------------ | ------------------------------------------------------------------------ | ------------------------------------------------------- |
@@ -57,7 +57,6 @@ Partial lines count as NOT covered.
 
 | Project            | Coverage File               | Threshold | Exclusions                                          |
 | ------------------ | --------------------------- | --------- | --------------------------------------------------- |
-| rhino-cli-go       | `cover.out`                 | 90%       | None                                                |
 | golang-commons     | `cover.out`                 | 90%       | None                                                |
 | crud-be-golang-gin | `cover_unit.out` (filtered) | 90%       | gorm_store, server, cmd/server, generated-contracts |
 
@@ -118,6 +117,7 @@ Exclusions are configured in `[tool.coverage.run].omit` in `pyproject.toml`.
 | Project           | Threshold | Exclusions                                  |
 | ----------------- | --------- | ------------------------------------------- |
 | crud-be-rust-axum | 90%       | None (cargo-llvm-cov covers the full crate) |
+| rhino-cli-rust    | 90%       | None (cargo-llvm-cov covers the full crate) |
 
 ### Elixir Projects
 
@@ -180,12 +180,12 @@ Coverage is measured during `test:quick` (part of the pre-push hook and main CI)
 
 New source files with no test coverage appear as 0% in rhino-cli output. Either write tests or add the file to the appropriate exclusion config (language tool config).
 
-### `rhino-cli-go --exclude` flag
+### `rhino-cli --exclude` flag
 
 `rhino-cli test-coverage validate` supports `--exclude` glob patterns for runtime exclusion without modifying the coverage file. Note: glob matching may not work with Go's full module paths in `cover.out` — use `grep -v` for Go projects instead.
 
 ## 🔗 Related Documentation
 
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) - Coverage thresholds and testing levels
-- [Project Dependency Graph](./project-dependency-graph.md) - Which projects depend on rhino-cli-go
+- [Project Dependency Graph](./project-dependency-graph.md) - Which projects depend on rhino-cli-rust
 - [Nx Configuration](./nx-configuration.md) - How test:quick targets are configured

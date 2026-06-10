@@ -1,8 +1,6 @@
 //! `validate-claude` orchestration.
 //!
-//! Byte-for-byte port of
-//! `apps/rhino-cli-go/internal/agents/claude_validator.go`. Skills are
-//! validated first (their names feed the agent skill-reference rule), then
+//! Skills are validated first (their names feed the agent skill-reference rule), then
 //! agents.
 
 use std::collections::BTreeSet;
@@ -14,7 +12,7 @@ use super::agent_validator::validate_all_agents;
 use super::skill_validator::validate_all_skills;
 use super::types::{ValidateClaudeOptions, ValidationResult};
 
-/// Validates the `.claude/` directory format. Mirrors Go `ValidateClaude`.
+/// Validates the `.claude/` directory format.
 pub fn validate_claude(opts: &ValidateClaudeOptions) -> Result<ValidationResult, Error> {
     let start = Instant::now();
     let mut result = ValidationResult {

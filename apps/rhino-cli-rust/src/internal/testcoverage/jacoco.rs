@@ -1,4 +1,4 @@
-// Byte-for-byte port of `apps/rhino-cli/internal/testcoverage/jacoco_coverage.go`.
+// JaCoCo XML coverage parsing.
 // JaCoCo XML schema: <report><package name=...><sourcefile name=...><line nr,mi,ci,mb,cb/>...
 // Classification: ci > 0 && mb == 0 → covered; ci > 0 && mb > 0 → partial; ci == 0 → missed.
 

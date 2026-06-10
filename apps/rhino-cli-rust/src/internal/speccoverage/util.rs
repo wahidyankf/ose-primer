@@ -1,10 +1,10 @@
 /// Collapses internal whitespace runs and trims, so matching is
-/// whitespace-insensitive. Mirrors Go `normalizeWS` (`strings.Fields` + join).
+/// whitespace-insensitive.
 pub fn normalize_ws(s: &str) -> String {
     s.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
-/// Returns `a` when non-empty, otherwise `b`. Mirrors Go `firstNonEmpty`.
+/// Returns `a` when non-empty, otherwise `b`.
 pub fn first_non_empty<'a>(a: &'a str, b: &'a str) -> &'a str {
     if a.is_empty() { b } else { a }
 }
@@ -14,19 +14,20 @@ pub fn first_non_empty<'a>(a: &'a str, b: &'a str) -> &'a str {
 ///
 /// # Why this exists
 ///
-/// The Go spec-coverage extractors compile raw step-definition patterns with
-/// `regexp.Compile`. RE2 treats `{` as a repetition operator **only** when it
-/// is immediately followed by a valid count form (`{n}`, `{n,}`, or `{n,m}`);
-/// any other `{` is a literal brace, and a lone `}` is always literal. Rust's
-/// `regex` crate is stricter and returns a parse error for patterns such as
-/// `{alice_id}` or `body { "x": 1 }`.
+/// Some step-definition patterns were authored against RE2-style semantics,
+/// where `{` is a repetition operator **only** when immediately followed by a
+/// valid count form (`{n}`, `{n,}`, or `{n,m}`); any other `{` is a literal
+/// brace, and a lone `}` is always literal. Rust's `regex` crate is stricter
+/// and returns a parse error for patterns such as `{alice_id}` or
+/// `body { "x": 1 }`.
 ///
 /// Spec-coverage marker patterns (e.g. Kotlin `SpecCoverageMarkers.kt`) embed
 /// literal JSON braces inside `^…$`-anchored regexes precisely because RE2
 /// tolerates them. Compiling those raw under Rust silently dropped the pattern
 /// (`if let Ok(re)`), producing phantom step gaps. This helper escapes every
-/// `{` that does not begin a valid RE2 quantifier so the compiled regex matches
-/// the same input strings as RE2 — a byte-for-byte parity fix, not a heuristic.
+/// `{` that does not begin a valid quantifier so the compiled regex matches the
+/// same input strings the marker author intended — an exact fix, not a
+/// heuristic.
 ///
 /// Character classes (`[...]`) and already-escaped braces (`\{`) are preserved
 /// verbatim. Iterates by `char` for UTF-8 safety.
@@ -99,7 +100,7 @@ fn is_valid_quantifier(chars: &[char], start: usize) -> bool {
 
 /// JS/TS-style escape sequence handling: `\'`, `\"`, `\\`, `\/`, `\n`, `\t`,
 /// `\r`. Unknown escapes keep both the backslash and the following char.
-/// Mirrors Go `unescapeString`. UTF-8 safe — iterates by chars, not bytes.
+/// UTF-8 safe — iterates by chars, not bytes.
 pub fn unescape_string(s: &str) -> String {
     let chars: Vec<char> = s.chars().collect();
     let mut out = String::with_capacity(s.len());
