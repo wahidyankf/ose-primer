@@ -1,6 +1,6 @@
 # rhino-cli Gherkin Specs
 
-Gherkin feature files for [rhino-cli](../../../../../../apps/rhino-cli-rust/README.md) — the Repository
+Gherkin feature files for [rhino-cli](../../../../../../apps/rhino-cli/README.md) — the Repository
 Hygiene & INtegration Orchestrator CLI. 20 files, 155 scenarios across 11 domains.
 
 ## Feature Files

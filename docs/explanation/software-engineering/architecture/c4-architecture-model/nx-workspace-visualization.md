@@ -36,7 +36,7 @@ This document defines **authoritative standards** for visualizing Nx monorepo st
 ```
 apps/
 ├── crud-fs-ts-nextjs/        # Next.js fullstack app
-└── rhino-cli-rust/           # Rust CLI tool
+└── rhino-cli/           # Rust CLI tool
 ```
 
 **C4 Container Diagram**:
@@ -73,7 +73,7 @@ graph TD
 
 **Example**:
 
-If `rhino-cli-rust` has an Nx dependency on `crud-fs-ts-nextjs` (builds it), show this as a relationship in the container diagram.
+If `rhino-cli` has an Nx dependency on `crud-fs-ts-nextjs` (builds it), show this as a relationship in the container diagram.
 
 ## Container Naming for Nx Apps
 

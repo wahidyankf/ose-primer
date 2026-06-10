@@ -526,7 +526,7 @@ async fn main() {
 
 /// Resolves the repo's behavior-contract feature directory for `test-coverage`.
 fn repo_feature_dir() -> PathBuf {
-    // CARGO_MANIFEST_DIR = apps/rhino-cli-rust → up 2 = repo root.
+    // CARGO_MANIFEST_DIR = apps/rhino-cli → up 2 = repo root.
     let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     manifest
         .join("../../specs/apps/rhino/behavior/cli/gherkin/test-coverage")

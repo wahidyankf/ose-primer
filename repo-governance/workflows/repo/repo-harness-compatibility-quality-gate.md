@@ -219,7 +219,7 @@ Apply validated drift fixes from the audit report based on mode level.
   [Multi-Harness Binding Convention](../../conventions/structure/multi-harness-binding.md))
 - New harness additions (full onboarding involves catalog row and binding directory decision)
 - rhino-cli **generator-logic** changes (a translation rule, not just regenerated data):
-  the change lands in `apps/rhino-cli-rust/src/` — surfaced as a finding for human or
+  the change lands in `apps/rhino-cli/src/` — surfaced as a finding for human or
   language-dev-agent authorship
 - Evidence that conflicts across sources (checker must escalate to human with both sources)
 
@@ -355,7 +355,7 @@ Scenario: rhino-cli generator-logic change is surfaced as a code-authorship find
   Given the audit contains a finding that requires changing a binding translation rule
   When repo-harness-compatibility-fixer encounters it
   Then it flags the change as out-of-scope code authorship
-  And it states the change must land in apps/rhino-cli-rust
+  And it states the change must land in apps/rhino-cli
   And the workflow surfaces it for human or language-dev-agent resolution
 
 Scenario: Out-of-scope findings escalate to human without looping

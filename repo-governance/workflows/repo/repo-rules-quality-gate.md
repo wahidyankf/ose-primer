@@ -82,7 +82,7 @@ User: "Run repository rules quality gate workflow in normal mode"
 
 The AI will:
 
-0. Build the canonical Rust binary if missing (`npx nx run rhino-cli-rust:build`), then run
+0. Build the canonical Rust binary if missing (`npx nx run rhino-cli:build`), then run
    the deterministic preflight (Step 0.5) capturing each category's output to
    `generated-reports/`.
 1. Invoke `repo-rules-checker` via the Agent tool (reads governance files, writes audit)
@@ -121,15 +121,15 @@ sub-step insertions.
 
 ```bash
 mkdir -p generated-reports
-./apps/rhino-cli-rust/dist/rhino-cli repo-governance vendor-audit \
+./apps/rhino-cli/dist/rhino-cli repo-governance vendor-audit \
   > generated-reports/preflight-vendor-audit__{uuid}__{timestamp}.txt
 # record the exit code per category before running the next one
-./apps/rhino-cli-rust/dist/rhino-cli repo-governance gherkin-keyword-cardinality \
+./apps/rhino-cli/dist/rhino-cli repo-governance gherkin-keyword-cardinality \
   > generated-reports/preflight-gherkin-keyword-cardinality__{uuid}__{timestamp}.txt
 ```
 
-The binary must be built first via `npx nx run rhino-cli-rust:build`; the prebuilt path is
-`apps/rhino-cli-rust/dist/rhino-cli`.
+The binary must be built first via `npx nx run rhino-cli:build`; the prebuilt path is
+`apps/rhino-cli/dist/rhino-cli`.
 
 - **Output**: `{preflight-reports}` — one captured output file per category in
   `generated-reports/`.
@@ -143,9 +143,9 @@ The binary must be built first via `npx nx run rhino-cli-rust:build`; the prebui
     are fixed at their root (the offending file) rather than iterated through the AI loop.
   - **Exit 2, or exit 1 without a findings header (invocation error)**: terminate the
     workflow with `fail` status. **Debugging hint**: re-run the failing subcommand directly
-    (e.g. `./apps/rhino-cli-rust/dist/rhino-cli repo-governance gherkin-keyword-cardinality`)
+    (e.g. `./apps/rhino-cli/dist/rhino-cli repo-governance gherkin-keyword-cardinality`)
     for a human-readable diagnostic. Common causes: missing binary (rebuild via
-    `npx nx run rhino-cli-rust:build`); running outside a git repository.
+    `npx nx run rhino-cli:build`); running outside a git repository.
 
 **Success criteria**: both categories executed; each captured output file exists and
 contains either the category's `PASSED` line or its findings list.

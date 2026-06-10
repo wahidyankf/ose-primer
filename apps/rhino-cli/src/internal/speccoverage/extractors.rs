@@ -512,7 +512,7 @@ mod tests {
 
     #[test]
     fn rust_plain_raw_string_regex() {
-        // The hash-less `regex = r"..."` form used across the rhino-cli-rust
+        // The hash-less `regex = r"..."` form used across the rhino-cli
         // cucumber step definitions.
         let tmp = TempDir::new().unwrap();
         let p = write(

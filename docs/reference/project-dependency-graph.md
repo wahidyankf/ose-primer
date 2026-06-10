@@ -24,7 +24,7 @@ Declared in `project.json`. When the dependency project changes, `nx affected`
 flags the dependent project for re-testing.
 
 ```json
-"implicitDependencies": ["crud-contracts", "rhino-cli-rust"]
+"implicitDependencies": ["crud-contracts", "rhino-cli"]
 ```
 
 ### 2. `dependsOn` (Task-Level)
@@ -59,7 +59,7 @@ The full dependency graph is shown across three focused diagrams below.
 
 ```mermaid
 graph LR
-  RC[rhino-cli-rust]:::cli
+  RC[rhino-cli]:::cli
   GC[golang-commons]:::lib
 
   GC -.->|coverage validation| RC
@@ -78,7 +78,7 @@ graph LR
   COC[clojure-openapi-codegen]:::lib
   ELIXIR[crud-be-elixir-phoenix]:::backend
   EOC[elixir-openapi-codegen]:::lib
-  RC[rhino-cli-rust]:::cli
+  RC[rhino-cli]:::cli
   DC[crud-contracts]:::spec
 
   BEE2E --> BE
@@ -114,7 +114,7 @@ graph LR
   FLUTTER[crud-fe-dart-flutterweb]:::frontend
   OLE[crud-fe-e2e]:::e2e
   OLW[crud-fe-ts-nextjs]:::site
-  RC[rhino-cli-rust]:::cli
+  RC[rhino-cli]:::cli
   DC[crud-contracts]:::spec
 
   FEE2E --> NEXTJS
@@ -160,9 +160,9 @@ The OpenAPI 3.1 specification consumed by all demo apps for type generation.
 - **Mechanism**: `implicitDependencies` + `codegen.dependsOn: ["crud-contracts:bundle"]`
 - **Spec input**: `{workspaceRoot}/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml`
 
-### rhino-cli-rust
+### rhino-cli
 
-**Location**: `apps/rhino-cli-rust/`
+**Location**: `apps/rhino-cli/`
 
 Repository management CLI used by most projects for coverage validation
 (`test-coverage validate`), spec coverage (`spec-coverage validate`),
@@ -171,9 +171,9 @@ and annotation validation (`java validate-annotations`).
 
 - **Dependents**: 20 projects (all demo apps, libs, crud-fs-ts-nextjs)
 - **Mechanism**: `implicitDependencies`
-- **Note**: `golang-commons` uses `rhino-cli-rust` for coverage validation but does
+- **Note**: `golang-commons` uses `rhino-cli` for coverage validation but does
   NOT declare it as a dependency, to avoid a circular dependency. Changes to
-  `rhino-cli-rust`'s coverage algorithm are caught by the main CI running `--all`.
+  `rhino-cli`'s coverage algorithm are caught by the main CI running `--all`.
 
 ### golang-commons
 
@@ -190,19 +190,19 @@ Shared Go utilities (time formatting, test helpers, output capture).
 
 All demo backends share the same dependency pattern.
 
-| Project                   | Dependencies                                                                           | Spec Inputs                 |
-| ------------------------- | -------------------------------------------------------------------------------------- | --------------------------- |
-| crud-be-clojure-pedestal  | clojure-openapi-codegen, crud-contracts, rhino-cli-rust                                | contracts/\*, be/gherkin/\* |
-| crud-be-csharp-aspnetcore | crud-contracts, rhino-cli-rust                                                         | contracts/\*, be/gherkin/\* |
-| crud-be-elixir-phoenix    | crud-contracts, elixir-cabbage, elixir-gherkin, elixir-openapi-codegen, rhino-cli-rust | contracts/\*, be/gherkin/\* |
-| crud-be-fsharp-giraffe    | crud-contracts, rhino-cli-rust                                                         | contracts/\*, be/gherkin/\* |
-| crud-be-golang-gin        | crud-contracts, rhino-cli-rust                                                         | contracts/\*, be/gherkin/\* |
-| crud-be-java-springboot   | crud-contracts, rhino-cli-rust                                                         | contracts/\*, be/gherkin/\* |
-| crud-be-java-vertx        | crud-contracts, rhino-cli-rust                                                         | contracts/\*, be/gherkin/\* |
-| crud-be-kotlin-ktor       | crud-contracts, rhino-cli-rust                                                         | contracts/\*, be/gherkin/\* |
-| crud-be-python-fastapi    | crud-contracts, rhino-cli-rust                                                         | contracts/\*, be/gherkin/\* |
-| crud-be-rust-axum         | crud-contracts, rhino-cli-rust                                                         | contracts/\*, be/gherkin/\* |
-| crud-be-ts-effect         | crud-contracts, rhino-cli-rust                                                         | contracts/\*, be/gherkin/\* |
+| Project                   | Dependencies                                                                      | Spec Inputs                 |
+| ------------------------- | --------------------------------------------------------------------------------- | --------------------------- |
+| crud-be-clojure-pedestal  | clojure-openapi-codegen, crud-contracts, rhino-cli                                | contracts/\*, be/gherkin/\* |
+| crud-be-csharp-aspnetcore | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-elixir-phoenix    | crud-contracts, elixir-cabbage, elixir-gherkin, elixir-openapi-codegen, rhino-cli | contracts/\*, be/gherkin/\* |
+| crud-be-fsharp-giraffe    | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-golang-gin        | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-java-springboot   | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-java-vertx        | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-kotlin-ktor       | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-python-fastapi    | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-rust-axum         | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| crud-be-ts-effect         | crud-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
 
 **Spec input paths**:
 
@@ -211,11 +211,11 @@ All demo backends share the same dependency pattern.
 
 ### Demo Frontends
 
-| Project                   | Dependencies                   | Spec Inputs                 |
-| ------------------------- | ------------------------------ | --------------------------- |
-| crud-fe-dart-flutterweb   | crud-contracts, rhino-cli-rust | contracts/\*, fe/gherkin/\* |
-| crud-fe-ts-nextjs         | crud-contracts, rhino-cli-rust | contracts/\*, fe/gherkin/\* |
-| crud-fe-ts-tanstack-start | crud-contracts, rhino-cli-rust | contracts/\*, fe/gherkin/\* |
+| Project                   | Dependencies              | Spec Inputs                 |
+| ------------------------- | ------------------------- | --------------------------- |
+| crud-fe-dart-flutterweb   | crud-contracts, rhino-cli | contracts/\*, fe/gherkin/\* |
+| crud-fe-ts-nextjs         | crud-contracts, rhino-cli | contracts/\*, fe/gherkin/\* |
+| crud-fe-ts-tanstack-start | crud-contracts, rhino-cli | contracts/\*, fe/gherkin/\* |
 
 **Spec input paths**:
 
@@ -236,33 +236,33 @@ when feature files change.
 
 ### Next.js Content Platforms
 
-| Project           | Dependencies   | Spec Inputs |
-| ----------------- | -------------- | ----------- |
-| crud-fs-ts-nextjs | rhino-cli-rust | (none)      |
+| Project           | Dependencies | Spec Inputs |
+| ----------------- | ------------ | ----------- |
+| crud-fs-ts-nextjs | rhino-cli    | (none)      |
 
-crud-fs-ts-nextjs depends on rhino-cli-rust for link validation.
+crud-fs-ts-nextjs depends on rhino-cli for link validation.
 
 ### CLI Tools
 
-| Project        | Dependencies | Spec Inputs                          |
-| -------------- | ------------ | ------------------------------------ |
-| rhino-cli-rust | (none)       | rhino-cli-rust/\* (test:integration) |
+| Project   | Dependencies | Spec Inputs                     |
+| --------- | ------------ | ------------------------------- |
+| rhino-cli | (none)       | rhino-cli/\* (test:integration) |
 
 ### demo
 
-| Project           | Dependencies   | Spec Inputs                             |
-| ----------------- | -------------- | --------------------------------------- |
-| crud-fe-ts-nextjs | rhino-cli-rust | crud-fe-ts-nextjs/\* (test:integration) |
+| Project           | Dependencies | Spec Inputs                             |
+| ----------------- | ------------ | --------------------------------------- |
+| crud-fe-ts-nextjs | rhino-cli    | crud-fe-ts-nextjs/\* (test:integration) |
 
 ### Libraries
 
-| Project                 | Dependencies                   | Spec Inputs                          |
-| ----------------------- | ------------------------------ | ------------------------------------ |
-| golang-commons          | (none)                         | golang-commons/\* (test:integration) |
-| elixir-gherkin          | rhino-cli-rust                 | (none)                               |
-| elixir-cabbage          | elixir-gherkin, rhino-cli-rust | (none)                               |
-| elixir-openapi-codegen  | crud-contracts, rhino-cli-rust | (none)                               |
-| clojure-openapi-codegen | crud-contracts, rhino-cli-rust | (none)                               |
+| Project                 | Dependencies              | Spec Inputs                          |
+| ----------------------- | ------------------------- | ------------------------------------ |
+| golang-commons          | (none)                    | golang-commons/\* (test:integration) |
+| elixir-gherkin          | rhino-cli                 | (none)                               |
+| elixir-cabbage          | elixir-gherkin, rhino-cli | (none)                               |
+| elixir-openapi-codegen  | crud-contracts, rhino-cli | (none)                               |
+| clojure-openapi-codegen | crud-contracts, rhino-cli | (none)                               |
 
 ### Specs
 
@@ -275,25 +275,25 @@ crud-fs-ts-nextjs depends on rhino-cli-rust for link validation.
 All Gherkin specs and API contracts live under `specs/` and are consumed via
 `{workspaceRoot}` inputs.
 
-| Spec Directory                          | Consumed By                       | Targets                          |
-| --------------------------------------- | --------------------------------- | -------------------------------- |
-| `specs/apps/crud/containers/contracts/` | all 14 demo apps                  | codegen                          |
-| `specs/apps/crud/behavior/be/gherkin/`  | 11 demo backends + crud-be-e2e    | test:unit, test:quick, typecheck |
-| `specs/apps/crud/behavior/web/gherkin/` | 3 demo frontends + crud-fe-e2e    | test:unit, test:quick, typecheck |
-| `specs/apps/rhino/`                     | rhino-cli-rust                    | test:integration                 |
-| `specs/apps/crud/`                      | rhino-cli-rust, crud-fs-ts-nextjs | test:integration                 |
-| `specs/apps/crud/`                      | rhino-cli-rust, crud-fs-ts-nextjs | test:integration                 |
-| `specs/libs/golang-commons/`            | golang-commons                    | test:integration                 |
-| `specs/libs/golang-commons/`            | golang-commons                    | test:integration                 |
+| Spec Directory                          | Consumed By                    | Targets                          |
+| --------------------------------------- | ------------------------------ | -------------------------------- |
+| `specs/apps/crud/containers/contracts/` | all 14 demo apps               | codegen                          |
+| `specs/apps/crud/behavior/be/gherkin/`  | 11 demo backends + crud-be-e2e | test:unit, test:quick, typecheck |
+| `specs/apps/crud/behavior/web/gherkin/` | 3 demo frontends + crud-fe-e2e | test:unit, test:quick, typecheck |
+| `specs/apps/rhino/`                     | rhino-cli                      | test:integration                 |
+| `specs/apps/crud/`                      | rhino-cli, crud-fs-ts-nextjs   | test:integration                 |
+| `specs/apps/crud/`                      | rhino-cli, crud-fs-ts-nextjs   | test:integration                 |
+| `specs/libs/golang-commons/`            | golang-commons                 | test:integration                 |
+| `specs/libs/golang-commons/`            | golang-commons                 | test:integration                 |
 
 ## Design Decisions
 
-### Why `golang-commons` does not depend on `rhino-cli-rust`
+### Why `golang-commons` does not depend on `rhino-cli`
 
-`golang-commons` uses `rhino-cli-rust` in its `test:quick` target for coverage
+`golang-commons` uses `rhino-cli` in its `test:quick` target for coverage
 validation, but declaring this dependency would create a circular dependency:
-`golang-commons -> rhino-cli-rust -> golang-commons`. The risk is minimal because
-`rhino-cli-rust` coverage algorithm changes are rare and are caught by the main CI
+`golang-commons -> rhino-cli -> golang-commons`. The risk is minimal because
+`rhino-cli` coverage algorithm changes are rare and are caught by the main CI
 workflow which runs `--all` projects.
 
 ### Why contracts use `implicitDependencies` instead of just `dependsOn`

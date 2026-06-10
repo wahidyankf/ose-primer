@@ -53,7 +53,7 @@ level definitions, coverage thresholds, Docker patterns, GitHub Actions structur
 
 All developer machines run three Husky hooks. Hook logic is implemented via `rhino-cli` subcommands
 to keep the raw hook files thin and testable. The `rhino-cli` binary invoked by all hooks and
-package.json scripts is implemented in `apps/rhino-cli-rust/`.
+package.json scripts is implemented in `apps/rhino-cli/`.
 
 ### pre-commit
 
@@ -122,8 +122,8 @@ Then push again — the cached results make the second run fast.
 After the baseline gate, the hook conditionally runs the naming validators when the push range
 touches the relevant trees:
 
-- `nx run rhino-cli-rust:validate:naming-agents` — fires when `.claude/agents/**` or `.opencode/agents/**` changed
-- `nx run rhino-cli-rust:validate:naming-workflows` — fires when `repo-governance/workflows/**` changed
+- `nx run rhino-cli:validate:naming-agents` — fires when `.claude/agents/**` or `.opencode/agents/**` changed
+- `nx run rhino-cli:validate:naming-workflows` — fires when `repo-governance/workflows/**` changed
 
 Both are cacheable, so no-op pushes pay near-zero cost. The CI quality-gate workflow also runs
 both targets unconditionally on every PR against `main` to catch drift from hand-edited files

@@ -109,7 +109,7 @@ Hand-writing or hand-editing generated binding files is prohibited. Changes to t
 
 ### AD8 — Single CLI Implementation (ose-primer-Specific)
 
-This repository maintains one CLI implementation, in Rust (`apps/rhino-cli-rust/`). All binding-emitter and binding-validation behavior lives there.
+This repository maintains one CLI implementation, in Rust (`apps/rhino-cli/`). All binding-emitter and binding-validation behavior lives there.
 
 Consequences:
 
@@ -119,7 +119,7 @@ Consequences:
 **Generator-logic vs regenerated data**: When a harness convention change requires updating the CLI, the type of change determines who handles it. Two categories exist:
 
 - **Regenerated data** — the translation tables or catalog content that the CLI reads at runtime change, but the code that reads and applies them does not. The harness-compatibility fixer handles this automatically by updating the catalog and re-running `npm run generate:bindings`.
-- **Generator-logic change** — a translation rule itself changes (a new field mapping, a new output format rule, a new validation predicate). This is a code change and must land in `apps/rhino-cli-rust/src/`. The harness-compatibility fixer does not make code changes; it surfaces the requirement as a finding for human or language-dev-agent authorship.
+- **Generator-logic change** — a translation rule itself changes (a new field mapping, a new output format rule, a new validation predicate). This is a code change and must land in `apps/rhino-cli/src/`. The harness-compatibility fixer does not make code changes; it surfaces the requirement as a finding for human or language-dev-agent authorship.
 
 ## Validation
 
@@ -130,7 +130,7 @@ The following commands verify compliance with this convention:
 npm run validate:harness-bindings
 
 # Check that repo-governance/ prose contains no vendor terms outside allowlisted regions
-npx nx run rhino-cli-rust:validate:repo-governance-vendor-audit
+npx nx run rhino-cli:validate:repo-governance-vendor-audit
 ```
 
 Both commands run automatically in `.husky/pre-push` when the relevant surfaces change and in the CI quality gate.
@@ -206,7 +206,7 @@ Internal cross-vendor parity is **not a separate workflow** — it is Phase 0 of
 
 - **`repo-harness-compatibility-checker`** — Checker agent; delegates to web research, diffs current upstream harness conventions against the platform-bindings catalog and committed binding files. Run via the `repo-harness-compatibility-quality-gate` workflow.
 - **`repo-harness-compatibility-fixer`** — Fixer agent; applies validated updates to the catalog and binding files after a checker audit. Also updates `specs/apps/rhino/` when a harness convention change alters rhino-cli behavior that those specs document.
-- **`rhino-cli agents emit-bindings`** — Generates all Tier 2 bridge files and any thin pointers from `AGENTS.md`. Implemented in the Rust CLI (`apps/rhino-cli-rust/`).
+- **`rhino-cli agents emit-bindings`** — Generates all Tier 2 bridge files and any thin pointers from `AGENTS.md`. Implemented in the Rust CLI (`apps/rhino-cli/`).
 - **`rhino-cli agents validate-bindings`** — Asserts byte-equality between committed binding files and what `emit-bindings` would produce; also asserts that every binding directory on disk has a row in `docs/reference/platform-bindings.md`.
 - **`npm run validate:harness-bindings`** — npm script wrapping `rhino-cli agents validate-bindings`; wired into `.husky/pre-push`.
 

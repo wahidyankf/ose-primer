@@ -40,7 +40,7 @@ Multiple domain-focused standards files covering specific areas (testing, securi
 | Complex domain logic with DDD            | Java                   | [Java Idioms](./java/README.md)         |
 | REST API with business rules             | Java                   | [Java Best Practices](./java/README.md) |
 | Frontend web application                 | TypeScript             | TypeScript docs (planned)               |
-| CLI tool for repository automation       | Rust                   | See rhino-cli-rust                      |
+| CLI tool for repository automation       | Rust                   | See rhino-cli                           |
 | Data processing and analytics            | Python                 | Python docs (planned)                   |
 | Microservice with high concurrency       | Java (Virtual Threads) | [Java Concurrency](./java/README.md)    |
 | Infrastructure tooling                   | Go                     | See existing CLI tools                  |
@@ -50,7 +50,7 @@ Multiple domain-focused standards files covering specific areas (testing, securi
 
 - **Java**: Primary language for domain models, aggregates, and business logic
 - **TypeScript**: Future frontend applications and Node.js services
-- **Rust**: Active for CLI tools (rhino-cli-rust)
+- **Rust**: Active for CLI tools (rhino-cli)
 - **Python**: Planned for data processing and AI/ML integration
 
 ## Purpose
@@ -330,7 +330,7 @@ Languages in this documentation are chosen based on:
 | **Java** ☕    | Backend services, domain models, business logic | ✅ Active - In production       |
 | **Kotlin**     | Coroutine-based services, Ktor APIs             | 📋 Planned - Future integration |
 | **Python**     | Data processing, AI/ML integration              | 📋 Planned - Future integration |
-| **Rust**       | CLI tools, high-performance computation         | ✅ Active - rhino-cli-rust      |
+| **Rust**       | CLI tools, high-performance computation         | ✅ Active - rhino-cli           |
 | **TypeScript** | Frontend applications, Node.js services         | ✅ Active - crud-fe-ts-nextjs   |
 
 **Legend**: ✅ Active (in use) | 📋 Planned (documentation ready, not yet implemented)

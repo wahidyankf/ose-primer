@@ -32,7 +32,7 @@
       "options": {
         "commands": [
           "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:coverage -m kaocha.runner unit --plugin cloverage --lcov --cov-output coverage",
-          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- test-coverage validate libs/clojure-openapi-codegen/coverage/lcov.info 90)"
+          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate libs/clojure-openapi-codegen/coverage/lcov.info 90)"
         ],
         "parallel": false,
         "cwd": "libs/clojure-openapi-codegen"
@@ -55,5 +55,5 @@
       "cache": true
     }
   },
-  "implicitDependencies": ["crud-contracts", "rhino-cli-rust"]
+  "implicitDependencies": ["crud-contracts", "rhino-cli"]
 }

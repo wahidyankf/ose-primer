@@ -7,14 +7,14 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g dart -o $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts --additional-properties=pubName=crud_contracts --global-property=models,modelDocs=false,apiDocs=false && (WS_ROOT=$(pwd) && cd $(pwd) && cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- contracts dart-scaffold $WS_ROOT/apps/crud-fe-dart-flutterweb/generated-contracts) && cd $(pwd)/apps/crud-fe-dart-flutterweb && flutter pub get --enforce-lockfile"
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g dart -o $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts --additional-properties=pubName=crud_contracts --global-property=models,modelDocs=false,apiDocs=false && (WS_ROOT=$(pwd) && cd $(pwd) && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- contracts dart-scaffold $WS_ROOT/apps/crud-fe-dart-flutterweb/generated-contracts) && cd $(pwd)/apps/crud-fe-dart-flutterweb && flutter pub get --enforce-lockfile"
       },
       "dependsOn": ["crud-contracts:bundle"],
       "cache": true,
       "inputs": [
         "{workspaceRoot}/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml",
-        "{workspaceRoot}/apps/rhino-cli-rust/src/**/*.rs",
-        "{workspaceRoot}/apps/rhino-cli-rust/Cargo.toml"
+        "{workspaceRoot}/apps/rhino-cli/src/**/*.rs",
+        "{workspaceRoot}/apps/rhino-cli/Cargo.toml"
       ],
       "outputs": ["{projectRoot}/generated-contracts"]
     },
@@ -63,7 +63,7 @@
       "options": {
         "commands": [
           "flutter test test/unit --coverage",
-          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- test-coverage validate apps/crud-fe-dart-flutterweb/coverage/lcov.info 70)"
+          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate apps/crud-fe-dart-flutterweb/coverage/lcov.info 70)"
         ],
         "parallel": false,
         "cwd": "{projectRoot}"
@@ -84,11 +84,11 @@
       }
     },
     "spec-coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- spec-coverage validate --shared-steps specs/apps/crud/behavior/web/gherkin apps/crud-fe-dart-flutterweb",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps specs/apps/crud/behavior/web/gherkin apps/crud-fe-dart-flutterweb",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature", "{projectRoot}/**/*.dart"]
     }
   },
   "tags": ["type:app", "platform:flutter", "lang:dart", "domain:crud-fe"],
-  "implicitDependencies": ["crud-contracts", "rhino-cli-rust"]
+  "implicitDependencies": ["crud-contracts", "rhino-cli"]
 }

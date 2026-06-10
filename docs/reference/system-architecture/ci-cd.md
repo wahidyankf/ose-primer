@@ -130,9 +130,9 @@ graph TB
 
 1. Checkout branch
 2. Setup Node.js (Volta) and Rust toolchain
-3. Run Mermaid diagram validation (`npx nx run rhino-cli-rust:validate:mermaid`)
-4. Run link and anchor validation (`npx nx run rhino-cli-rust:validate:links`)
-5. Run heading-hierarchy validation (`npx nx run rhino-cli-rust:validate:heading-hierarchy`)
+3. Run Mermaid diagram validation (`npx nx run rhino-cli:validate:mermaid`)
+4. Run link and anchor validation (`npx nx run rhino-cli:validate:links`)
+5. Run heading-hierarchy validation (`npx nx run rhino-cli:validate:heading-hierarchy`)
 6. Fail if any gate exits non-zero
 
 **Purpose**: Enforce all three markdown content gates on every pull request and every

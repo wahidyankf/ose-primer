@@ -7,12 +7,12 @@
 
 ## Context
 
-The CLI application `apps/rhino-cli-rust` (Rust, clap, ~19,410 LOC non-test)
+The CLI application `apps/rhino-cli` (Rust, clap, ~19,410 LOC non-test)
 [Repo-grounded] implements 13 features. Today the app mixes domain logic, IO, and
 CLI wiring inside flat `internal/<feature>` and `commands/` packages. The `git`
 feature is already the partial exemplar: it injects all IO through a `Deps`
 struct of function fields [Repo-grounded —
-`apps/rhino-cli-rust/src/internal/git/runner.rs`].
+`apps/rhino-cli/src/internal/git/runner.rs`].
 
 This plan migrates the app to **hexagonal (ports-and-adapters) architecture**
 in a phased, behavior-preserving fashion, formalizing the existing `git`
@@ -22,7 +22,7 @@ dependency-injection pattern into named ports across every feature.
 
 **In scope**:
 
-- Full migration of all 13 features in `apps/rhino-cli-rust` to a hybrid
+- Full migration of all 13 features in `apps/rhino-cli` to a hybrid
   `domain/shared/` kernel + per-feature vertical-slice layout.
 - Maximal port extraction: every IO boundary (filesystem, process/exec spawn,
   network) becomes a named port (Rust `Box<dyn Trait>`).

@@ -66,7 +66,7 @@ skill. **Phase 0 always runs regardless of the `scope` input.**
 
 ### Invariant 1 — Governance prose vendor-neutrality
 
-- **Tool**: `nx run rhino-cli-rust:build --skip-nx-cache && ./apps/rhino-cli-rust/dist/rhino-cli repo-governance vendor-audit repo-governance/`
+- **Tool**: `nx run rhino-cli:build --skip-nx-cache && ./apps/rhino-cli/dist/rhino-cli repo-governance vendor-audit repo-governance/`
 - **Pass**: command exits 0 with `GOVERNANCE VENDOR AUDIT PASSED: no violations found`
 - **Fail**: any non-zero exit; report each violation with file path, line number, forbidden term,
   and suggested replacement (already in tool output)

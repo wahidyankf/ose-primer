@@ -59,7 +59,7 @@ Single-consumer, stays feature-local: `naming` (agents-only).
 ### Rust — trait objects (`Box<dyn Trait>`)
 
 Formalizes the existing Rust `git` `Deps<'a>` which already uses `Box<dyn Fn...>`
-and `Box<dyn Write>` [Repo-grounded — `apps/rhino-cli-rust/src/internal/git/runner.rs`
+and `Box<dyn Write>` [Repo-grounded — `apps/rhino-cli/src/internal/git/runner.rs`
 lines 48–76] into named multi-method traits. The application layer defines small
 traits; adapters implement them; wiring is done once at `main()`/`cli::run()`. Do
 NOT use generics/monomorphization for injection (avoids the lifetime/verbosity
@@ -109,7 +109,7 @@ against the decision.
 ## Enforcement (language tooling only)
 
 - **Rust**: module privacy (`pub`/non-`pub`) + `cargo clippy -- -D warnings`
-  (part of the `lint` target) [Repo-grounded — `rhino-cli-rust` `lint`].
+  (part of the `lint` target) [Repo-grounded — `rhino-cli` `lint`].
 
 No new architecture/import-direction lint is added.
 
@@ -141,14 +141,14 @@ volume; lighter features are grouped. The exact grouping is proposed in
 
 | Path                                                                | Change                                                                                       |
 | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `apps/rhino-cli-rust/src/{domain,application,infrastructure}/`      | Populated with per-feature + shared modules                                                  |
-| `apps/rhino-cli-rust/src/internal/<feature>/`                       | Logic relocated into layers; thin shims removed                                              |
-| `apps/rhino-cli-rust/project.json`                                  | `test:quick` `--ignore-filename-regex` allowlist updated per phase [Repo-grounded — line 83] |
+| `apps/rhino-cli/src/{domain,application,infrastructure}/`           | Populated with per-feature + shared modules                                                  |
+| `apps/rhino-cli/src/internal/<feature>/`                            | Logic relocated into layers; thin shims removed                                              |
+| `apps/rhino-cli/project.json`                                       | `test:quick` `--ignore-filename-regex` allowlist updated per phase [Repo-grounded — line 83] |
 | `repo-governance/development/pattern/hexagonal-architecture-cli.md` | Final-phase content update [Repo-grounded — file exists]                                     |
 
 ## Quality Gates (Nx targets — all verified present)
 
-[Repo-grounded — `apps/rhino-cli-rust/project.json`]: `build`, `test:unit`,
+[Repo-grounded — `apps/rhino-cli/project.json`]: `build`, `test:unit`,
 `test:quick` (coverage ≥90%), `test:integration`, `lint`, `typecheck`,
 `spec-coverage`, plus other `validate:*`. Behavior gate: the golden-master CLI
 suite.

@@ -45,7 +45,7 @@ thinking behind every resolution, from the primer's perspective.
 Primer carries one structure not present in ose-public:
 
 - **Naming divergence**: upstream uses `apps/rhino-cli`; primer uses
-  `apps/rhino-cli-rust`.
+  `apps/rhino-cli`.
 
 This divergence affects rows 11, 20, and 21 and is explicitly preserved during
 every 3-way merge described below.
@@ -76,7 +76,7 @@ The survey (empirical, 2026-06-06) established these facts before any decisions:
 Pre-write verification against the `plan-domain-parity` worktree found one matrix
 premise that needed refinement:
 
-**Row 21 premise partially outdated.** `apps/rhino-cli-rust` already ships
+**Row 21 premise partially outdated.** `apps/rhino-cli` already ships
 `agents sync` and `agents emit-bindings` commands with tests. The remaining
 row-21 work is therefore **applying the row-18/row-19 emitter changes**
 (permission object, Codex layout) to the Rust implementation — not building
@@ -174,9 +174,9 @@ CLI names) preserved.
 ### Row 11 — repo-setup-manager Primer Three-Line Drift
 
 **Decision**: keep primer's three-line deviation if it reflects the primer-specific
-`rhino-cli-rust` naming; merge the remainder.
+`rhino-cli` naming; merge the remainder.
 
-**Rationale**: primer uses `apps/rhino-cli-rust` (not `apps/rhino-cli`). Those
+**Rationale**: primer uses `apps/rhino-cli` (not `apps/rhino-cli`). Those
 three lines naming the Rust CLI are intentional. Overwriting them would break
 primer's setup sequence.
 
@@ -241,7 +241,7 @@ regeneration.
 **Decision**: modernize the rhino-cli OpenCode emitters in primer from the
 deprecated boolean `tools` flags format to the `permission` object format
 (`allow`/`ask`/`deny` per tool). In primer this means updating
-`apps/rhino-cli-rust/src/internal/agents/converter.rs`. After the code changes,
+`apps/rhino-cli/src/internal/agents/converter.rs`. After the code changes,
 regenerate all 50 `.opencode/agents/*.md` mirrors.
 
 **Rationale**: the OpenCode official documentation deprecates the boolean flags
@@ -275,24 +275,24 @@ CLI implementations keep `.codex` (the directory itself remains; only the
 ### Row 20 — generate:bindings Invocation Alignment
 
 **Decision**: align primer to invoke the rhino-cli Rust binary directly via
-`cargo run --manifest-path apps/rhino-cli-rust/Cargo.toml`. This replaces the
-existing `nx run rhino-cli-rust:build && ./apps/rhino-cli-rust/dist/rhino-cli`
+`cargo run --manifest-path apps/rhino-cli/Cargo.toml`. This replaces the
+existing `nx run rhino-cli:build && ./apps/rhino-cli/dist/rhino-cli`
 pattern in `package.json`.
 
 **Rationale**: uniform invocation simplifies cross-repo maintenance. The accepted
-trade-off is losing the Nx build-cache wrapper around the rhino-cli-rust
+trade-off is losing the Nx build-cache wrapper around the rhino-cli
 compilation step.
 
-**Primer-specific**: the manifest path is `apps/rhino-cli-rust/Cargo.toml`
+**Primer-specific**: the manifest path is `apps/rhino-cli/Cargo.toml`
 (upstream uses `apps/rhino-cli/Cargo.toml`). The alignment covers the full script
 family: `generate:bindings`, `sync:agents`, `sync:skills`, `sync:dry-run`,
 `validate:sync`, `validate:claude`, and `validate:harness-bindings`.
 
 ### Row 21 — Primer Emitter Changes
 
-**Decision**: the Rust CLI (`apps/rhino-cli-rust`) is canonical in the
+**Decision**: the Rust CLI (`apps/rhino-cli`) is canonical in the
 `generate:bindings` script. The bindings emission capability is **already present**
-(`agents sync` and `emit-bindings` ship in `apps/rhino-cli-rust`). The remaining
+(`agents sync` and `emit-bindings` ship in `apps/rhino-cli`). The remaining
 work is applying the row-18 and row-19 emitter changes (permission object, Codex
 layout) to the Rust implementation.
 

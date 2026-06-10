@@ -235,7 +235,7 @@ Enforcement is automated via `rhino-cli repo-governance vendor-audit`.
 rhino-cli repo-governance vendor-audit repo-governance/
 
 # Or via Nx (cached)
-npx nx run rhino-cli-rust:validate:repo-governance-vendor-audit
+npx nx run rhino-cli:validate:repo-governance-vendor-audit
 ```
 
 Exit code 0 means clean; exit code 1 means violations found. Each finding prints:

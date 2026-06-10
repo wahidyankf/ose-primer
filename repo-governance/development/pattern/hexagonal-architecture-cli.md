@@ -1,20 +1,20 @@
 # Hexagonal Architecture — CLI Apps
 
 Canonical hexagonal layer conventions for the CLI app in ose-primer:
-`rhino-cli-rust` (Rust).
+`rhino-cli` (Rust).
 
 See [Hexagonal Architecture](./hexagonal-architecture.md) for shared principles and
 terminology that apply across all app types.
 
 ## Scope
 
-| App                   | Language |
-| --------------------- | -------- |
-| `apps/rhino-cli-rust` | Rust     |
+| App              | Language |
+| ---------------- | -------- |
+| `apps/rhino-cli` | Rust     |
 
 ## Rust CLI Layer Directories
 
-Source root: `apps/rhino-cli-rust/src/`
+Source root: `apps/rhino-cli/src/`
 
 | Layer                    | Directory             | Purpose                                                 |
 | ------------------------ | --------------------- | ------------------------------------------------------- |

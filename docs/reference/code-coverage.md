@@ -5,13 +5,13 @@ category: reference
 tags:
   - coverage
   - testing
-  - rhino-cli-rust
+  - rhino-cli
   - quality
 ---
 
 # Code Coverage Reference
 
-How code coverage is measured locally via `rhino-cli-rust` across all projects in the monorepo.
+How code coverage is measured locally via `rhino-cli` across all projects in the monorepo.
 
 ## 📋 Coverage Algorithm
 
@@ -26,7 +26,7 @@ Partial lines count as NOT covered.
 
 ## Supported Formats
 
-`rhino-cli-rust` auto-detects the coverage format from the file:
+`rhino-cli` auto-detects the coverage format from the file:
 
 | Format       | Detection                                                                | Used By                                                 |
 | ------------ | ------------------------------------------------------------------------ | ------------------------------------------------------- |
@@ -117,7 +117,7 @@ Exclusions are configured in `[tool.coverage.run].omit` in `pyproject.toml`.
 | Project           | Threshold | Exclusions                                  |
 | ----------------- | --------- | ------------------------------------------- |
 | crud-be-rust-axum | 90%       | None (cargo-llvm-cov covers the full crate) |
-| rhino-cli-rust    | 90%       | None (cargo-llvm-cov covers the full crate) |
+| rhino-cli         | 90%       | None (cargo-llvm-cov covers the full crate) |
 
 ### Elixir Projects
 
@@ -187,5 +187,5 @@ New source files with no test coverage appear as 0% in rhino-cli output. Either 
 ## 🔗 Related Documentation
 
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) - Coverage thresholds and testing levels
-- [Project Dependency Graph](./project-dependency-graph.md) - Which projects depend on rhino-cli-rust
+- [Project Dependency Graph](./project-dependency-graph.md) - Which projects depend on rhino-cli
 - [Nx Configuration](./nx-configuration.md) - How test:quick targets are configured

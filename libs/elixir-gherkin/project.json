@@ -8,7 +8,7 @@
       "options": {
         "commands": [
           "mix cover.lcov",
-          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- test-coverage validate libs/elixir-gherkin/cover/lcov.info 90)",
+          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate libs/elixir-gherkin/cover/lcov.info 90)",
           "mix credo --strict",
           "mix format --check-formatted"
         ],
@@ -46,5 +46,5 @@
     }
   },
   "tags": ["type:lib", "lang:elixir", "domain:tooling"],
-  "implicitDependencies": ["rhino-cli-rust"]
+  "implicitDependencies": ["rhino-cli"]
 }

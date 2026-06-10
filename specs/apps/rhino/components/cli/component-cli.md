@@ -2,7 +2,7 @@
 
 Level 3 of the C4 model for the rhino-cli demo application. Shows the internal structure of the
 `docs` command namespace — the command handlers, validation engines, and output layer — in the
-CLI implementation (`apps/rhino-cli-rust/`).
+CLI implementation (`apps/rhino-cli/`).
 
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
@@ -105,9 +105,9 @@ rhino-cli docs validate-links --exclude plans/done --exclude apps-labs
 
 ### Implementation references
 
-| Implementation | Flag struct         | Handler              | Source                                     |
-| -------------- | ------------------- | -------------------- | ------------------------------------------ |
-| Rust (clap)    | `ValidateLinksArgs` | `run_validate_links` | `apps/rhino-cli-rust/src/commands/docs.rs` |
+| Implementation | Flag struct         | Handler              | Source                                |
+| -------------- | ------------------- | -------------------- | ------------------------------------- |
+| Rust (clap)    | `ValidateLinksArgs` | `run_validate_links` | `apps/rhino-cli/src/commands/docs.rs` |
 
 ---
 
@@ -181,9 +181,9 @@ rhino-cli docs validate-mermaid --exclude plans/done --exclude apps-labs
 
 ### Implementation references
 
-| Implementation | Flag struct           | Handler                | Source                                     |
-| -------------- | --------------------- | ---------------------- | ------------------------------------------ |
-| Rust (clap)    | `ValidateMermaidArgs` | `run_validate_mermaid` | `apps/rhino-cli-rust/src/commands/docs.rs` |
+| Implementation | Flag struct           | Handler                | Source                                |
+| -------------- | --------------------- | ---------------------- | ------------------------------------- |
+| Rust (clap)    | `ValidateMermaidArgs` | `run_validate_mermaid` | `apps/rhino-cli/src/commands/docs.rs` |
 
 ---
 
@@ -257,9 +257,9 @@ rhino-cli docs validate-heading-hierarchy --exclude docs --exclude plans/in-prog
 
 ### Implementation references
 
-| Implementation | Flag struct                    | Handler                          | Source                                     |
-| -------------- | ------------------------------ | -------------------------------- | ------------------------------------------ |
-| Rust (clap)    | `ValidateHeadingHierarchyArgs` | `run_validate_heading_hierarchy` | `apps/rhino-cli-rust/src/commands/docs.rs` |
+| Implementation | Flag struct                    | Handler                          | Source                                |
+| -------------- | ------------------------------ | -------------------------------- | ------------------------------------- |
+| Rust (clap)    | `ValidateHeadingHierarchyArgs` | `run_validate_heading_hierarchy` | `apps/rhino-cli/src/commands/docs.rs` |
 
 ---
 
@@ -302,4 +302,4 @@ Behavior scenarios for all commands live in
 
 - **Parent**: [cli component](./README.md)
 - **Behavior specs**: [behavior/cli/gherkin/docs/](../../behavior/cli/gherkin/docs/README.md)
-- **Implementation**: `apps/rhino-cli-rust/src/commands/docs.rs`
+- **Implementation**: `apps/rhino-cli/src/commands/docs.rs`

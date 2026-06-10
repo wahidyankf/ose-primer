@@ -120,7 +120,7 @@ governed by the policy (intersected with `scope-filter`/`ecosystems`) in `ose-pr
 - **npm**: workspace-root `package.json` (`volta` block = Node/npm language pins; `dependencies`,
   `devDependencies`, `optionalDependencies`), `apps/*/package.json`, `libs/*/package.json`, and the
   `.opencode/package.json` binding manifest.
-- **Cargo**: `apps/crud-be-rust-axum/Cargo.toml` and `apps/rhino-cli-rust/Cargo.toml`
+- **Cargo**: `apps/crud-be-rust-axum/Cargo.toml` and `apps/rhino-cli/Cargo.toml`
   `[dependencies]`, plus each project's `rust-toolchain.toml` compiler-channel pin.
 - **.NET**: `apps/crud-be-csharp-aspnetcore/**/*.csproj` and `apps/crud-be-fsharp-giraffe/**/*.fsproj`
   `<PackageReference>` entries. The .NET SDK version IS pinned per-app via a `global.json` in each

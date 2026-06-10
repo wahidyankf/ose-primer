@@ -4,7 +4,7 @@ Gherkin behavioral specifications for the Repository Hygiene & INtegration
 Orchestrator CLI, which ships as a single implementation that consumes these
 specs:
 
-- [`rhino-cli-rust`](../../../apps/rhino-cli-rust/README.md) — Rust; the implementation CI and the developer toolchain invoke.
+- [`rhino-cli`](../../../apps/rhino-cli/README.md) — Rust; the implementation CI and the developer toolchain invoke.
 
 ## Purpose
 
@@ -48,17 +48,17 @@ dependencies; integration tests run against real filesystem fixtures.
 
 ```bash
 # Run all unit tests (includes BDD scenarios with mocked I/O)
-nx run rhino-cli-rust:test:quick
+nx run rhino-cli:test:quick
 
 # Run unit tests directly
-cd apps/rhino-cli-rust
+cd apps/rhino-cli
 cargo test --lib
 
 # Run all BDD integration tests (real filesystem fixtures)
-nx run rhino-cli-rust:test:integration
+nx run rhino-cli:test:integration
 
 # Run a specific integration suite during development
-cd apps/rhino-cli-rust
+cd apps/rhino-cli
 cargo test --test integration doctor
 ```
 
@@ -69,19 +69,19 @@ The `test:integration` target is cached — it only re-runs when source files in
 ## Adding New Specs
 
 1. Create `specs/apps/rhino/behavior/cli/gherkin/<domain>/<domain>-<action>.feature` (create the domain subdir if it does not exist)
-2. Create the unit test under `apps/rhino-cli-rust/src/commands/` (mocked I/O):
+2. Create the unit test under `apps/rhino-cli/src/commands/` (mocked I/O):
    - Include a `// Scenario: <title>` comment for every scenario
    - Register step definitions using mocked function injection for all I/O
    - Name the test module `unit_<command>`
-3. Create the integration test under `apps/rhino-cli-rust/tests/` (real filesystem fixtures):
+3. Create the integration test under `apps/rhino-cli/tests/` (real filesystem fixtures):
    - Include a `// Scenario: <title>` comment for every scenario
    - Register step definitions that drive the command handler against real `/tmp` fixtures
    - Name the test `integration_<command>`
 4. Verify with:
 
    ```bash
-   cd apps/rhino-cli-rust
-   cargo run -- spec-coverage validate specs/apps/rhino/behavior/cli/gherkin apps/rhino-cli-rust
+   cd apps/rhino-cli
+   cargo run -- spec-coverage validate specs/apps/rhino/behavior/cli/gherkin apps/rhino-cli
    ```
 
 ## Dual Consumption

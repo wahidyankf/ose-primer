@@ -7,7 +7,7 @@ set -e
 PARALLEL=$(( $(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4) - 1 ))
 npx nx affected -t typecheck lint test:quick spec-coverage --parallel="$PARALLEL"
 npm run lint:md
-npx nx run rhino-cli-rust:env:validate
+npx nx run rhino-cli:env:validate
 
 # Naming validators — scoped to pushes that touch the relevant trees.
 # Upstream may be missing on first push of a branch; default to empty range in that case.
@@ -15,15 +15,15 @@ RANGE=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1 && 
 if [ -n "$RANGE" ]; then
   CHANGED=$(git diff --name-only "$RANGE" 2>/dev/null || echo "")
   if echo "$CHANGED" | grep -qE '^(\.claude/agents/|\.opencode/agents/)'; then
-    npx nx run rhino-cli-rust:validate:naming-agents
+    npx nx run rhino-cli:validate:naming-agents
   fi
   if echo "$CHANGED" | grep -qE '^repo-governance/workflows/'; then
-    npx nx run rhino-cli-rust:validate:naming-workflows
+    npx nx run rhino-cli:validate:naming-workflows
   fi
   # Cross-vendor parity gate (W5 of adopt-ose-public plan): fires when any
   # parity-relevant surface changes. Cheap (~5s); not cacheable.
   if echo "$CHANGED" | grep -qE '^(repo-governance/.*\.md|AGENTS\.md|CLAUDE\.md|\.claude/agents/|\.opencode/agents/)'; then
-    npx nx run rhino-cli-rust:validate:cross-vendor-parity
+    npx nx run rhino-cli:validate:cross-vendor-parity
   fi
   # Deterministic harness-binding parity guard (multi-harness-compatibility plan):
   # fires when any binding surface changes. Re-derives the generated bindings from

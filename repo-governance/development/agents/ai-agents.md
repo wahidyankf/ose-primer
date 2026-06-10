@@ -2596,7 +2596,7 @@ The content below is platform-specific. It documents the concrete translation ap
 
 The named color (`blue`, `green`, etc.) written by hand in `.claude/agents/*.md` is the **source of truth**. Authors never touch `.opencode/agents/*.md` directly — those are regenerated artefacts. When the sync tool writes secondary binding files, it translates the named color to a platform-compatible value.
 
-**Translation table** (mirrors `claude_to_opencode_color()` in `apps/rhino-cli-rust/src/internal/agents/converter.rs`):
+**Translation table** (mirrors `claude_to_opencode_color()` in `apps/rhino-cli/src/internal/agents/converter.rs`):
 
 | Claude color | OpenCode value | Role hint                         |
 | ------------ | -------------- | --------------------------------- |
@@ -2609,6 +2609,6 @@ The named color (`blue`, `green`, etc.) written by hand in `.claude/agents/*.md`
 | `pink`       | `accent`       | Reserved future role              |
 | `cyan`       | `info`         | Reserved future role              |
 
-**Single source of truth**: `apps/rhino-cli-rust/src/internal/agents/converter.rs` — `claude_to_opencode_color()`. Any change to the mapping MUST update the implementation and this table in the same commit.
+**Single source of truth**: `apps/rhino-cli/src/internal/agents/converter.rs` — `claude_to_opencode_color()`. Any change to the mapping MUST update the implementation and this table in the same commit.
 
 **Escape hatch**: If you write a hex code (e.g., `#3B82F6`) or a valid OpenCode theme token (e.g., `primary`) directly in `.claude/agents/*.md`, the converter passes it through unchanged.

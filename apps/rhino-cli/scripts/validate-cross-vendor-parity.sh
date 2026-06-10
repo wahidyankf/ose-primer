@@ -2,7 +2,7 @@
 # Validate cross-vendor behavioral-parity invariants.
 #
 # This script is the implementation behind the
-# rhino-cli-rust:validate:cross-vendor-parity Nx target. It mirrors the five
+# rhino-cli:validate:cross-vendor-parity Nx target. It mirrors the five
 # invariants validated by the repo-harness-compatibility-checker agent (Phase 0),
 # driving the rhino-cli binary for the governance vendor-audit invariants.
 # Exits 0 if all invariants hold, non-zero otherwise.
@@ -15,10 +15,10 @@
 
 set -euo pipefail
 
-# Resolve repo root (the script lives at apps/rhino-cli-rust/scripts/).
+# Resolve repo root (the script lives at apps/rhino-cli/scripts/).
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
-RS_DIR="${REPO_ROOT}/apps/rhino-cli-rust"
+RS_DIR="${REPO_ROOT}/apps/rhino-cli"
 RS_BIN="${RS_DIR}/target/release/rhino-cli"
 cd "${REPO_ROOT}"
 

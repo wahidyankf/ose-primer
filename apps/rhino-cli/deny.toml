@@ -1,5 +1,5 @@
 # cargo-deny configuration for rhino-cli.
-# Run: cargo deny --manifest-path apps/rhino-cli-rust/Cargo.toml check
+# Run: cargo deny --manifest-path apps/rhino-cli/Cargo.toml check
 
 [graph]
 targets = []

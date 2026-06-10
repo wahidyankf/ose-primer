@@ -148,7 +148,7 @@ The Claude Code binding uses named color strings (`blue`, `green`, `yellow`, `pu
 agent frontmatter. OpenCode uses theme tokens (`primary`, `success`, `warning`, `secondary`, etc.).
 
 - **Source**: `.claude/agents/<name>.md` frontmatter `color:` field
-- **Transform**: `convert_color` in `apps/rhino-cli-rust/src/internal/agents/converter.rs`
+- **Transform**: `convert_color` in `apps/rhino-cli/src/internal/agents/converter.rs`
 - **Sink**: `.opencode/agents/<name>.md` frontmatter `color:` field
 - **Policy**: [Dual-Mode Color Translation](../../repo-governance/development/agents/ai-agents.md)
   ("Dual-Mode Color Translation — Claude Code to OpenCode" subsection)
@@ -171,7 +171,7 @@ Claude Code agent frontmatter uses short aliases (`sonnet`, `haiku`) or omits `m
 planning-grade inheritance. OpenCode uses Zhipu AI GLM model IDs.
 
 - **Source**: `.claude/agents/<name>.md` frontmatter `model:` field
-- **Transform**: `convert_model` in `apps/rhino-cli-rust/src/internal/agents/converter.rs`
+- **Transform**: `convert_model` in `apps/rhino-cli/src/internal/agents/converter.rs`
 - **Sink**: `.opencode/agents/<name>.md` frontmatter `model:` field
 - **Policy**: [Model Selection Convention](../../repo-governance/development/agents/model-selection.md)
   ("Platform Binding Equivalents" section)
@@ -188,7 +188,7 @@ Claude Code agent frontmatter lists tools as an array of string names. OpenCode 
 object (`allow`/`ask`/`deny` per tool).
 
 - **Source**: `.claude/agents/<name>.md` frontmatter `tools:` array
-- **Transform**: `convert_permission` in `apps/rhino-cli-rust/src/internal/agents/converter.rs`
+- **Transform**: `convert_permission` in `apps/rhino-cli/src/internal/agents/converter.rs`
 - **Sink**: `.opencode/agents/<name>.md` frontmatter `permission` object (`read`, `write`, `edit`, etc.)
 
 ## Adding a New Platform Binding
@@ -198,7 +198,7 @@ To add a new binding (e.g., `.cursor/rules/`):
 1. Create the binding directory and its root instruction file (or confirm `AGENTS.md` suffices).
 2. Add a row to the Platform Binding Directories table above.
 3. Identify any per-field translations needed (`rhino-cli agents sync` applies them).
-4. Implement translations in `apps/rhino-cli-rust/src/internal/agents/converter.rs` and add tests.
+4. Implement translations in `apps/rhino-cli/src/internal/agents/converter.rs` and add tests.
 5. Update this document's Translation Artifacts section.
 
 ## Related

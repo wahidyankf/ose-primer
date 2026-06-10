@@ -112,7 +112,7 @@ E2E test suites:
 
 CLI tools:
 
-- `rhino-cli-rust` - Repository management automation (Rust)
+- `rhino-cli` - Repository management automation (Rust)
 
 ### App Structure (Rust CLI Application)
 

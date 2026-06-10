@@ -39,7 +39,7 @@ Technology stack summary, quality tools, and future architecture considerations 
 - **Language**: Rust
 - **Build**: Cargo toolchain via Nx
 - **Distribution**: Local binaries
-- **Applications**: rhino-cli-rust
+- **Applications**: rhino-cli
 
 ### Infrastructure
 

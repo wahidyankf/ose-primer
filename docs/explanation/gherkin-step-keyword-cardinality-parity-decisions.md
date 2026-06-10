@@ -62,7 +62,7 @@ new category to their existing `audit_orchestrator.rs` pattern.
 
 **Why**: ose-primer has no audit orchestrator. Its existing deterministic governance checks
 are standalone `repo-governance` subcommands (currently only `vendor-audit`) in the single
-`rhino-cli-rust` implementation. Adding an orchestrator would be a bigger architectural
+`rhino-cli` implementation. Adding an orchestrator would be a bigger architectural
 change than the new command warrants.
 
 **What was rejected**: Adding an orchestrator layer to ose-primer — rejected because the

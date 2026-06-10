@@ -2,7 +2,7 @@
 
 ## Product Overview
 
-The `rhino-cli-rust` binary is refactored into a hexagonal layout:
+The `rhino-cli` binary is refactored into a hexagonal layout:
 a `domain/shared/` kernel plus per-feature vertical slices, with every IO
 boundary expressed as a named port. The observable CLI behavior is preserved
 exactly (verified by the golden-master CLI suite): the output surface is
@@ -110,8 +110,8 @@ Scenario: The git pilot validates the migration recipe
 Scenario: Coverage allowlist tracks relocated files
   Given a file listed in the test:quick --ignore-filename-regex allowlist is moved
   When the migration relocates that file to its hexagonal slice
-  Then the allowlist entry in apps/rhino-cli-rust/project.json is updated to the new path in the same phase
-  And nx run rhino-cli-rust:test:quick reports coverage at or above 90% without false breakage
+  Then the allowlist entry in apps/rhino-cli/project.json is updated to the new path in the same phase
+  And nx run rhino-cli:test:quick reports coverage at or above 90% without false breakage
 ```
 
 ### Output surface is frozen (zero visible change)

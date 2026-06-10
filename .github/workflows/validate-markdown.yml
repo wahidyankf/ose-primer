@@ -25,13 +25,13 @@ jobs:
         uses: ./.github/actions/setup-rust
 
       - name: Validate mermaid diagrams
-        run: npx nx run rhino-cli-rust:validate:mermaid
+        run: npx nx run rhino-cli:validate:mermaid
 
       - name: Validate markdown links
-        run: npx nx run rhino-cli-rust:validate:links
+        run: npx nx run rhino-cli:validate:links
 
       - name: Validate heading hierarchy
-        run: npx nx run rhino-cli-rust:validate:heading-hierarchy
+        run: npx nx run rhino-cli:validate:heading-hierarchy
 
       - name: Validate gherkin keyword cardinality
-        run: npx nx run rhino-cli-rust:validate:gherkin-keyword-cardinality
+        run: npx nx run rhino-cli:validate:gherkin-keyword-cardinality

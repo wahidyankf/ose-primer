@@ -664,7 +664,7 @@ export class CampaignController {
 ```
 apps/
 ├── crud-fs-ts-nextjs/         # Next.js fullstack app
-└── rhino-cli-rust/            # Rust CLI tool
+└── rhino-cli/            # Rust CLI tool
 
 libs/
 ├── ts-logger/               # Shared logging library

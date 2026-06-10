@@ -40,7 +40,7 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "CGO_ENABLED=0 go test -coverprofile=cover.out ./... -count=1 && head -1 cover.out > cover_unit.out && grep -v 'gorm_store\\|internal/server\\|cmd/server\\|generated-contracts' cover.out >> cover_unit.out && (cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- test-coverage validate apps/crud-be-golang-gin/cover_unit.out 90)",
+        "command": "CGO_ENABLED=0 go test -coverprofile=cover.out ./... -count=1 && head -1 cover.out > cover_unit.out && grep -v 'gorm_store\\|internal/server\\|cmd/server\\|generated-contracts' cover.out >> cover_unit.out && (cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate apps/crud-be-golang-gin/cover_unit.out 90)",
         "cwd": "apps/crud-be-golang-gin"
       },
       "cache": true,
@@ -100,10 +100,10 @@
       }
     },
     "spec-coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-golang-gin",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-golang-gin",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature", "{projectRoot}/**/*.go"]
     }
   },
-  "implicitDependencies": ["crud-contracts", "rhino-cli-rust"]
+  "implicitDependencies": ["crud-contracts", "rhino-cli"]
 }

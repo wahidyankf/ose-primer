@@ -20,7 +20,7 @@ Shows the internal components within each container. Components are groupings of
 
 `crud-fs-ts-nextjs` is a Next.js 16 fullstack application using the App Router with tRPC for type-safe API routes. It serves as a demo educational platform with bilingual support (default English). See the [Applications inventory](./applications.md) for full details.
 
-### rhino-cli-rust Components (Rust CLI Tool)
+### rhino-cli Components (Rust CLI Tool)
 
 ```mermaid
 graph TB
@@ -65,6 +65,6 @@ graph TB
 
 Shows implementation details for critical components. Focus on the Rust CLI tool module structure and key implementation patterns.
 
-### rhino-cli-rust Module Structure (Rust)
+### rhino-cli Module Structure (Rust)
 
-rhino-cli-rust provides `links check` for validating internal links in crud-fs-ts-nextjs content, alongside its repository-automation and binding-generation commands.
+rhino-cli provides `links check` for validating internal links in crud-fs-ts-nextjs content, alongside its repository-automation and binding-generation commands.

@@ -63,7 +63,7 @@
       ],
       "outputs": ["{projectRoot}/coverage"],
       "options": {
-        "command": "npx vitest run --coverage && (cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- test-coverage validate apps/crud-fe-ts-tanstack-start/coverage/lcov.info 70)",
+        "command": "npx vitest run --coverage && (cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate apps/crud-fe-ts-tanstack-start/coverage/lcov.info 70)",
         "cwd": "{projectRoot}"
       }
     },
@@ -82,11 +82,11 @@
       "dependsOn": ["codegen"]
     },
     "spec-coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/web/gherkin apps/crud-fe-ts-tanstack-start",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/web/gherkin apps/crud-fe-ts-tanstack-start",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     }
   },
   "tags": ["type:app", "platform:vite", "lang:ts", "domain:crud-fe"],
-  "implicitDependencies": ["crud-contracts", "rhino-cli-rust"]
+  "implicitDependencies": ["crud-contracts", "rhino-cli"]
 }

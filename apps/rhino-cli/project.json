@@ -1,38 +1,38 @@
 {
-  "name": "rhino-cli-rust",
-  "sourceRoot": "apps/rhino-cli-rust/src",
+  "name": "rhino-cli",
+  "sourceRoot": "apps/rhino-cli/src",
   "projectType": "application",
   "tags": ["type:app", "platform:cli", "lang:rust", "domain:tooling"],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo build --release --manifest-path apps/rhino-cli-rust/Cargo.toml && mkdir -p apps/rhino-cli-rust/dist && cp apps/rhino-cli-rust/target/release/rhino-cli apps/rhino-cli-rust/dist/rhino-cli"
+        "command": "cargo build --release --manifest-path apps/rhino-cli/Cargo.toml && mkdir -p apps/rhino-cli/dist && cp apps/rhino-cli/target/release/rhino-cli apps/rhino-cli/dist/rhino-cli"
       },
       "outputs": ["{projectRoot}/dist", "{projectRoot}/target"]
     },
     "install": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo fetch --manifest-path apps/rhino-cli-rust/Cargo.toml"
+        "command": "cargo fetch --manifest-path apps/rhino-cli/Cargo.toml"
       }
     },
     "run": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo run --manifest-path apps/rhino-cli-rust/Cargo.toml --"
+        "command": "cargo run --manifest-path apps/rhino-cli/Cargo.toml --"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo check --manifest-path apps/rhino-cli-rust/Cargo.toml --all-targets"
+        "command": "cargo check --manifest-path apps/rhino-cli/Cargo.toml --all-targets"
       }
     },
     "fmt": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo fmt --manifest-path apps/rhino-cli-rust/Cargo.toml"
+        "command": "cargo fmt --manifest-path apps/rhino-cli/Cargo.toml"
       }
     },
     "fmt:check": {
@@ -40,7 +40,7 @@
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{projectRoot}/.rustfmt.toml", "{workspaceRoot}/.rustfmt.toml"],
       "options": {
-        "command": "cargo fmt --manifest-path apps/rhino-cli-rust/Cargo.toml -- --check"
+        "command": "cargo fmt --manifest-path apps/rhino-cli/Cargo.toml -- --check"
       }
     },
     "deny:check": {
@@ -48,7 +48,7 @@
       "cache": true,
       "inputs": ["{projectRoot}/Cargo.toml", "{projectRoot}/Cargo.lock", "{projectRoot}/deny.toml"],
       "options": {
-        "command": "cargo deny --manifest-path apps/rhino-cli-rust/Cargo.toml check"
+        "command": "cargo deny --manifest-path apps/rhino-cli/Cargo.toml check"
       }
     },
     "check:msrv": {
@@ -56,15 +56,15 @@
       "cache": true,
       "inputs": ["{projectRoot}/Cargo.toml", "{projectRoot}/src/**/*.rs"],
       "options": {
-        "command": "cargo hack --manifest-path apps/rhino-cli-rust/Cargo.toml check --rust-version"
+        "command": "cargo hack --manifest-path apps/rhino-cli/Cargo.toml check --rust-version"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "cargo fmt --manifest-path apps/rhino-cli-rust/Cargo.toml -- --check",
-          "cargo clippy --manifest-path apps/rhino-cli-rust/Cargo.toml --all-targets -- -D warnings"
+          "cargo fmt --manifest-path apps/rhino-cli/Cargo.toml -- --check",
+          "cargo clippy --manifest-path apps/rhino-cli/Cargo.toml --all-targets -- -D warnings"
         ],
         "parallel": false
       }
@@ -74,13 +74,13 @@
       "cache": true,
       "inputs": ["{projectRoot}/Cargo.toml", "{projectRoot}/src/**/*.rs"],
       "options": {
-        "command": "cargo test --manifest-path apps/rhino-cli-rust/Cargo.toml --lib"
+        "command": "cargo test --manifest-path apps/rhino-cli/Cargo.toml --lib"
       }
     },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo llvm-cov --manifest-path apps/rhino-cli-rust/Cargo.toml --lib --ignore-filename-regex '(cli\\.rs|main\\.rs|commands/testcoverage\\.rs|commands/speccoverage\\.rs|commands/docs\\.rs|commands/agents\\.rs|commands/git\\.rs|commands/contracts\\.rs|commands/java\\.rs|commands/env\\.rs|commands/doctor\\.rs|internal/git/root\\.rs|internal/git/runner\\.rs|internal/testcoverage/diff\\.rs|internal/testcoverage/merge\\.rs)' --lcov --output-path apps/rhino-cli-rust/lcov.info --fail-under-lines 90"
+        "command": "cargo llvm-cov --manifest-path apps/rhino-cli/Cargo.toml --lib --ignore-filename-regex '(cli\\.rs|main\\.rs|commands/testcoverage\\.rs|commands/speccoverage\\.rs|commands/docs\\.rs|commands/agents\\.rs|commands/git\\.rs|commands/contracts\\.rs|commands/java\\.rs|commands/env\\.rs|commands/doctor\\.rs|internal/git/root\\.rs|internal/git/runner\\.rs|internal/testcoverage/diff\\.rs|internal/testcoverage/merge\\.rs)' --lcov --output-path apps/rhino-cli/lcov.info --fail-under-lines 90"
       },
       "inputs": ["{projectRoot}/src/**/*.rs", "{projectRoot}/Cargo.toml"],
       "outputs": ["{projectRoot}/lcov.info"],
@@ -96,21 +96,21 @@
         "{workspaceRoot}/specs/apps/rhino/**/*.feature"
       ],
       "options": {
-        "command": "cargo test --manifest-path apps/rhino-cli-rust/Cargo.toml --tests"
+        "command": "cargo test --manifest-path apps/rhino-cli/Cargo.toml --tests"
       }
     },
     "spec-coverage": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- spec-coverage validate specs/apps/rhino/behavior/cli/gherkin apps/rhino-cli-rust --shared-steps",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate specs/apps/rhino/behavior/cli/gherkin apps/rhino-cli --shared-steps",
       "cache": true,
       "inputs": [
         "{workspaceRoot}/specs/apps/rhino/behavior/cli/gherkin/**/*.feature",
         "{projectRoot}/src/**/*.rs",
         "{projectRoot}/tests/**/*.rs"
       ],
-      "comment": "Validates that every gherkin step under specs/apps/rhino/behavior/cli/gherkin has a matching cucumber-rs step definition in apps/rhino-cli-rust/tests (--shared-steps does step-only validation across the whole tree). The step extractor recognises the literal `#[given(\"...\")]`, `expr = \"...\"`, and raw-string `regex = r\"...\"` / `regex = r#\"...\"#` attribute forms used by the test suite, so the gate fails if any step lacks a definition."
+      "comment": "Validates that every gherkin step under specs/apps/rhino/behavior/cli/gherkin has a matching cucumber-rs step definition in apps/rhino-cli/tests (--shared-steps does step-only validation across the whole tree). The step extractor recognises the literal `#[given(\"...\")]`, `expr = \"...\"`, and raw-string `regex = r\"...\"` / `regex = r#\"...\"#` attribute forms used by the test suite, so the gate fails if any step lacks a definition."
     },
     "validate:naming-agents": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- agents validate-naming",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- agents validate-naming",
       "cache": true,
       "inputs": [
         "{projectRoot}/src/**/*.rs",
@@ -120,36 +120,36 @@
       "outputs": []
     },
     "validate:naming-workflows": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- workflows validate-naming",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- workflows validate-naming",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/repo-governance/workflows/**/*.md"],
       "outputs": []
     },
     "validate:repo-governance-vendor-audit": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- repo-governance vendor-audit repo-governance/",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- repo-governance vendor-audit repo-governance/",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/repo-governance/**/*.md"],
       "outputs": []
     },
     "validate:gherkin-keyword-cardinality": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- repo-governance gherkin-keyword-cardinality",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- repo-governance gherkin-keyword-cardinality",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.feature"],
       "outputs": []
     },
     "validate:harness-bindings": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- agents validate-bindings",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- agents validate-bindings",
       "cache": false,
       "outputs": []
     },
     "env:validate": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- env validate",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- env validate",
       "cache": false,
       "inputs": ["{projectRoot}/**/*.rs", "{workspaceRoot}/infra/dev/**", "{workspaceRoot}/apps/**"],
       "outputs": []
     },
     "validate:cross-vendor-parity": {
-      "command": "bash apps/rhino-cli-rust/scripts/validate-cross-vendor-parity.sh",
+      "command": "bash apps/rhino-cli/scripts/validate-cross-vendor-parity.sh",
       "cache": false,
       "inputs": [
         "{projectRoot}/**/*.rs",
@@ -163,19 +163,19 @@
       "outputs": []
     },
     "validate:mermaid": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-mermaid --max-depth=4 --exclude plans/done",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- docs validate-mermaid --max-depth=4 --exclude plans/done",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
       "outputs": []
     },
     "validate:links": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-links --exclude plans/done --exclude apps/crud-be-elixir-phoenix/deps --exclude apps/crud-be-kotlin-ktor/build --exclude libs/elixir-cabbage/deps --exclude libs/elixir-gherkin/deps --exclude libs/elixir-openapi-codegen/deps",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- docs validate-links --exclude plans/done --exclude apps/crud-be-elixir-phoenix/deps --exclude apps/crud-be-kotlin-ktor/build --exclude libs/elixir-cabbage/deps --exclude libs/elixir-gherkin/deps --exclude libs/elixir-openapi-codegen/deps",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
       "outputs": []
     },
     "validate:heading-hierarchy": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- docs validate-heading-hierarchy",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- docs validate-heading-hierarchy",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
       "outputs": []

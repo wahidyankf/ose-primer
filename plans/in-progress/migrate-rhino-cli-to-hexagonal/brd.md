@@ -12,12 +12,12 @@ The repository maintains a single CLI binary whose visible behavior must be
 preserved exactly during refactors. Today domain logic, IO, and CLI wiring are
 interleaved in flat per-feature packages, with only the `git` feature
 demonstrating clean dependency injection via a `Deps` struct
-[Repo-grounded — `apps/rhino-cli-rust/src/internal/git/runner.rs`]. The result:
+[Repo-grounded — `apps/rhino-cli/src/internal/git/runner.rs`]. The result:
 
 - **Pain — test friction**: IO-heavy features (envbackup, doctor, testcoverage)
   are hard to unit-test without real filesystem/process effects, pushing coverage
   onto integration tests and the hardcoded coverage-ignore allowlist
-  [Repo-grounded — `apps/rhino-cli-rust/project.json` `test:quick`
+  [Repo-grounded — `apps/rhino-cli/project.json` `test:quick`
   `--ignore-filename-regex` list].
 - **Pain — regression risk**: with no enforced layering, a change can entangle
   domain logic with IO in ways that the test suite catches only at the output

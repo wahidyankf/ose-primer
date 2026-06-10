@@ -57,9 +57,9 @@ All backend services implement the same OpenAPI contract (`specs/apps/crud/conta
 
 ### CLI Tools
 
-| App              | Language | Purpose                          | Build Command             |
-| ---------------- | -------- | -------------------------------- | ------------------------- |
-| `rhino-cli-rust` | Rust     | Repository management automation | `nx build rhino-cli-rust` |
+| App         | Language | Purpose                          | Build Command        |
+| ----------- | -------- | -------------------------------- | -------------------- |
+| `rhino-cli` | Rust     | Repository management automation | `nx build rhino-cli` |
 
 ## 🏗️ C4 Level 2: Container Diagram
 
@@ -94,7 +94,7 @@ graph LR
     end
 
     subgraph "CLI Tools"
-        RHINO_RUST[rhino-cli-rust<br/>Rust CLI]
+        RHINO_RUST[rhino-cli<br/>Rust CLI]
     end
 
     subgraph "Shared Infrastructure"
@@ -166,7 +166,7 @@ interchangeable — frontends can point to any backend.
 
 **CLI Tools:**
 
-- `rhino-cli-rust` — repository management automation (Rust implementation)
+- `rhino-cli` — repository management automation (Rust implementation)
 
 **Build-Time Dependencies:**
 

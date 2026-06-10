@@ -18,7 +18,7 @@ runs:
           ~/.cargo/registry
           ~/.cargo/git
           apps/crud-be-rust-axum/target
-          apps/rhino-cli-rust/target
+          apps/rhino-cli/target
         key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
         restore-keys: |
           cargo-${{ runner.os }}-

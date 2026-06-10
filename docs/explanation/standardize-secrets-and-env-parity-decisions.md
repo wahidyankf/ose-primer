@@ -67,7 +67,7 @@ follow-up**, not part of this plan.
 ## R6 — rhino-cli tooling
 
 `ose-primer`'s rhino-cli has a single implementation:
-**`apps/rhino-cli-rust/` is the sole CLI** (all `package.json` scripts and Husky
+**`apps/rhino-cli/` is the sole CLI** (all `package.json` scripts and Husky
 hooks invoke it). The spec-first flow implemented the CLI in Rust and validated it
 against the behavior contract.
 
@@ -144,7 +144,7 @@ This plan adopted the **canonical per-repo-derived** default from `ose-infra`:
 `~/<repo-root-basename>-env-backup`. For `ose-primer`, this resolves to
 `~/ose-primer-env-backup`.
 
-The change was applied in `rhino-cli-rust`, the sole CLI implementation.
+The change was applied in `rhino-cli`, the sole CLI implementation.
 
 ---
 
@@ -188,7 +188,7 @@ not a fix for a live environment mismatch. This decision was dropped as N/A.
 | R3   | IaC surfaces          | N/A — gated scaffold only, no real validators                                                       |
 | R4   | Research              | Ran — findings in tech-docs.md §9                                                                   |
 | R5   | PR override           | Accepted, invoker-owned, one-off; ecosystem-convention update deferred                              |
-| R6   | rhino-cli direction   | Single Rust implementation (`apps/rhino-cli-rust`)                                                  |
+| R6   | rhino-cli direction   | Single Rust implementation (`apps/rhino-cli`)                                                       |
 | R7   | Startup validation    | Full adoption — all 11 backends + 4 frontends                                                       |
 | R8   | Polyglot reach        | All 14 apps, one sub-phase per family                                                               |
 | R9   | Naming prefix         | Full per-app prefix rename across all app-defined vars                                              |

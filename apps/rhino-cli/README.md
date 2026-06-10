@@ -10,13 +10,13 @@
 
 ```bash
 # Build the release binary (also copied to dist/rhino-cli)
-nx run rhino-cli-rust:build
+nx run rhino-cli:build
 
 # Run any command via cargo
-cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- doctor
+cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- doctor
 
 # Check all required polyglot toolchains are installed
-cargo run --release -q --manifest-path apps/rhino-cli-rust/Cargo.toml -- doctor --fix
+cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- doctor --fix
 ```
 
 ## Commands
@@ -40,10 +40,10 @@ Run `rhino-cli <command> --help` for full flags. Global flags: `--output text\|j
 ## Develop
 
 ```bash
-nx run rhino-cli-rust:lint           # rustfmt --check + clippy -D warnings
-nx run rhino-cli-rust:test:quick     # library coverage gate (90% lines)
-nx run rhino-cli-rust:test:integration   # cucumber suites against specs/apps/rhino
-nx run rhino-cli-rust:spec-coverage  # every Gherkin step has a step definition
+nx run rhino-cli:lint           # rustfmt --check + clippy -D warnings
+nx run rhino-cli:test:quick     # library coverage gate (90% lines)
+nx run rhino-cli:test:integration   # cucumber suites against specs/apps/rhino
+nx run rhino-cli:spec-coverage  # every Gherkin step has a step definition
 ```
 
 The binary is implemented with [clap](https://docs.rs/clap) and follows a hexagonal layout: thin command adapters in `src/commands/` over domain logic in `src/internal/`. See the [Hexagonal Architecture (CLI)](../../repo-governance/development/pattern/hexagonal-architecture-cli.md) pattern.

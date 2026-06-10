@@ -126,30 +126,30 @@ The `spec-coverage validate` command enforces this mapping at three levels:
 Run the check:
 
 ```bash
-rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli-rust
+rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli
 ```
 
 **Scope**: Spec-coverage enforcement is currently active for **CLI apps only** (Rust test
-conventions for `rhino-cli-rust`). Enforcement for crud-be
+conventions for `rhino-cli`). Enforcement for crud-be
 backends is **planned but deferred** — the tool needs enhancement to support crud-be test file
 naming conventions (e.g., `HealthSteps.java` for Java) which differ
 from the CLI app naming patterns the tool currently expects. This will be addressed in a follow-up plan.
 
 ## Adding a New Command
 
-New commands are implemented in `rhino-cli-rust`, driven by the Gherkin spec in `specs/apps/rhino/`.
+New commands are implemented in `rhino-cli`, driven by the Gherkin spec in `specs/apps/rhino/`.
 
-**For `rhino-cli-rust`**:
+**For `rhino-cli`**:
 
 1. Create the feature file `specs/apps/rhino/{domain}/{domain}-{action}.feature`
-2. Create the Rust command module in `apps/rhino-cli-rust/src/cmd/{domain}_{action}.rs`
-3. Add unit tests in the same file or `apps/rhino-cli-rust/src/cmd/{domain}_{action}_test.rs`
-4. Add integration tests in `apps/rhino-cli-rust/tests/{domain}_{action}_integration_test.rs`
-5. Verify: `rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli-rust`
+2. Create the Rust command module in `apps/rhino-cli/src/cmd/{domain}_{action}.rs`
+3. Add unit tests in the same file or `apps/rhino-cli/src/cmd/{domain}_{action}_test.rs`
+4. Add integration tests in `apps/rhino-cli/tests/{domain}_{action}_integration_test.rs`
+5. Verify: `rhino-cli spec-coverage validate specs/apps/rhino apps/rhino-cli`
 
 ## CLI Apps: Dual-Level Spec Consumption
 
-`rhino-cli-rust` consumes Gherkin specs at both the unit and integration test levels. The same feature files in `specs/apps/rhino/` serve as the contract for both levels — only the step implementations differ. `rhino-cli-rust` uses Rust test conventions.
+`rhino-cli` consumes Gherkin specs at both the unit and integration test levels. The same feature files in `specs/apps/rhino/` serve as the contract for both levels — only the step implementations differ. `rhino-cli` uses Rust test conventions.
 
 ### Architecture
 
@@ -179,8 +179,8 @@ The `@agents-validate-sync` tag lives inside `agents-sync.feature` (shared featu
 
 ```
 specs/apps/rhino/behavior/cli/gherkin/agents/agents-sync.feature  (contains @agents-sync + @agents-validate-sync)
-  -> Rust unit steps in:           apps/rhino-cli-rust/src/cmd/agents_validate_sync_test.rs (or equivalent)
-  -> Rust integration steps in:    apps/rhino-cli-rust/tests/agents_validate_sync_integration_test.rs
+  -> Rust unit steps in:           apps/rhino-cli/src/cmd/agents_validate_sync_test.rs (or equivalent)
+  -> Rust integration steps in:    apps/rhino-cli/tests/agents_validate_sync_integration_test.rs
 ```
 
 ## Demo-be Backend: Three-Level Spec Consumption

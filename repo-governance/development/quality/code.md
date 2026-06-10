@@ -140,7 +140,7 @@ npx prettier --write [file-path]
 
 1. Commit proceeds if no errors
 
-**Implementation**: `apps/rhino-cli-rust/src/internal/git/runner.rs` — all steps call internal Rust functions directly (no subprocess round-trips for rhino-cli-owned logic); external tools are shelled out via `std::process::Command`.
+**Implementation**: `apps/rhino-cli/src/internal/git/runner.rs` — all steps call internal Rust functions directly (no subprocess round-trips for rhino-cli-owned logic); external tools are shelled out via `std::process::Command`.
 
 **What It Validates**:
 
@@ -513,7 +513,7 @@ nx run crud-fs-ts-nextjs:links:check
 3. Fix by correcting the target path in the source file
 4. Re-run `nx run crud-fs-ts-nextjs:links:check` to confirm
 
-**Dependency chain:** `rhino-cli-rust:build` → `crud-fs-ts-nextjs:links:check` → `crud-fs-ts-nextjs:test:quick`
+**Dependency chain:** `rhino-cli:build` → `crud-fs-ts-nextjs:links:check` → `crud-fs-ts-nextjs:test:quick`
 
 ## Go Linting
 

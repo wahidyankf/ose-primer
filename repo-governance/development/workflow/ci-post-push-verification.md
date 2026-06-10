@@ -51,7 +51,7 @@ After pushing app or library code to `origin main`, you MUST:
 | `apps/crud-fe-ts-nextjs/`, `apps/crud-fs-ts-nextjs/`        | Frontend/fullstack CI workflow for that app |
 | `apps/crud-be-*/`                                           | Backend CI workflow for that app            |
 | `apps/crud-fe-e2e/`, `apps/crud-be-e2e/`                    | E2E CI workflow                             |
-| `apps/rhino-cli-rust/`                                      | CLI CI workflow                             |
+| `apps/rhino-cli/`                                           | CLI CI workflow                             |
 | `libs/`, shared infrastructure, or cross-cutting governance | All workflows for apps in blast radius      |
 
 When a change touches shared code (a lib, a shared type, a contract), trigger every workflow for every app that imports that code — not just the app most obviously related to the change.

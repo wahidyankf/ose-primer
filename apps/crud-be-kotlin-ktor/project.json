@@ -42,7 +42,7 @@
       "options": {
         "commands": [
           "JAVA_HOME=${JAVA_HOME_21_X64:-$(ls -d ${SDKMAN_DIR:-$HOME/.sdkman}/candidates/java/21* 2>/dev/null | head -1)} ./gradlew testUnit koverXmlReport",
-          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- test-coverage validate apps/crud-be-kotlin-ktor/build/reports/kover/report.xml 90)"
+          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate apps/crud-be-kotlin-ktor/build/reports/kover/report.xml 90)"
         ],
         "parallel": false,
         "cwd": "apps/crud-be-kotlin-ktor"
@@ -95,11 +95,11 @@
       "cache": true
     },
     "spec-coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-kotlin-ktor",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-kotlin-ktor",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature", "{projectRoot}/**/*.kt"]
     }
   },
   "tags": ["type:app", "platform:ktor", "lang:kotlin", "domain:crud-be"],
-  "implicitDependencies": ["crud-contracts", "rhino-cli-rust"]
+  "implicitDependencies": ["crud-contracts", "rhino-cli"]
 }

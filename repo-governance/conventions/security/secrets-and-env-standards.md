@@ -162,7 +162,7 @@ build time. Full adoption across all 11 backend families and 4 frontend apps.
 
 ## 5. `rhino-cli env` Tooling
 
-All commands are provided by `rhino-cli-rust`.
+All commands are provided by `rhino-cli`.
 
 ### `env backup` / `env restore`
 
@@ -171,17 +171,17 @@ Back up and restore all gitignored secret files. Default directory:
 
 ```bash
 # Back up all secret files to the default directory
-npx nx run rhino-cli-rust:run -- env backup
+npx nx run rhino-cli:run -- env backup
 
 # Preview without writing (dry run)
-npx nx run rhino-cli-rust:run -- env backup --dry-run
+npx nx run rhino-cli:run -- env backup --dry-run
 
 # Custom directory
-npx nx run rhino-cli-rust:run -- env backup --dir /tmp/my-backup
+npx nx run rhino-cli:run -- env backup --dir /tmp/my-backup
 
 # Restore
-npx nx run rhino-cli-rust:run -- env restore
-npx nx run rhino-cli-rust:run -- env restore --dry-run
+npx nx run rhino-cli:run -- env restore
+npx nx run rhino-cli:run -- env restore --dry-run
 ```
 
 `--dry-run` prints the file set and intended actions but performs no filesystem
@@ -196,7 +196,7 @@ writes. Supported in all three output formats (`--output text|json|markdown`).
 Scaffold `.env` files from `.env.example` templates under `infra/dev/<app>/`.
 
 ```bash
-npx nx run rhino-cli-rust:run -- env init
+npx nx run rhino-cli:run -- env init
 ```
 
 ### `env validate`
@@ -206,7 +206,7 @@ keys its source code **actually reads**. Exits non-zero on any drift (subject to
 the per-surface allowlist). Wired into `.husky/pre-push` and the CI workflow.
 
 ```bash
-npx nx run rhino-cli-rust:run -- env validate
+npx nx run rhino-cli:run -- env validate
 ```
 
 Reports two violation classes per surface:

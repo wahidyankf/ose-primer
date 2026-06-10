@@ -15,7 +15,7 @@ Where `{part}` describes the role and technology stack:
 | `be-{lang}-{framework}`     | `be-golang-gin`, `be-java-springboot`, `be-ts-effect` | Backend service                                                       |
 | `fe-{lang}-{framework}`     | `fe-ts-nextjs`, `fe-dart-flutterweb`                  | Frontend application                                                  |
 | `fs-{lang}-{framework}`     | `fs-ts-nextjs`                                        | Fullstack application (FE + BE combined)                              |
-| `cli` / `<name>-cli-{lang}` | `rhino-cli-rust`                                      | CLI tool (the `-cli-{lang}` suffix names the implementation language) |
+| `cli` / `<name>-cli-{lang}` | `rhino-cli`                                           | CLI tool (the `-cli-{lang}` suffix names the implementation language) |
 | `web`                       | `crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`              | Web platform (content site)                                           |
 | `{role}-e2e`                | `be-e2e`, `fe-e2e`, `crud-fe-e2e`                     | E2E test project for the named role                                   |
 | `be` / `fe`                 | `crud-be-fsharp-giraffe`, `crud-fe-ts-nextjs`         | Simple single-technology projects                                     |
@@ -31,7 +31,7 @@ Where `{part}` describes the role and technology stack:
 - `crud-fs-ts-nextjs` - demo website ([example.com](https://example.com)) - Next.js 16 fullstack content platform (TypeScript, tRPC)
 - `crud-be-e2e` - Playwright BE E2E tests for crud-fs-ts-nextjs tRPC API
 - `crud-fe-e2e` - Playwright FE E2E tests for crud-fs-ts-nextjs UI
-- `rhino-cli-rust` - Repository Hygiene & INtegration Orchestrator CLI (Rust) - **the implementation CI and the developer toolchain invoke**; consumes `specs/apps/rhino/`
+- `rhino-cli` - Repository Hygiene & INtegration Orchestrator CLI (Rust) - **the implementation CI and the developer toolchain invoke**; consumes `specs/apps/rhino/`
 - `crud-fe-ts-nextjs` - demo landing website (www.example.com) - Next.js app (port 3200)
 - `crud-be-fsharp-giraffe` - demo backend API (F#/Giraffe) - F# application (port 8202)
 - `crud-fe-e2e` - FE E2E tests for crud-fe-ts-nextjs - Playwright (browser testing)
@@ -52,7 +52,7 @@ Where `{part}` describes the role and technology stack:
 ### Rust CLI Application (Current)
 
 ```
-apps/rhino-cli-rust/
+apps/rhino-cli/
 ├── src/
 │   ├── commands/            # CLI command handlers (one module per command)
 │   ├── internal/            # Internal domain logic
@@ -243,7 +243,7 @@ Use the corresponding deployer agent (e.g. `apps-crud-fe-ts-nextjs-deployer`) fo
 
 Currently:
 
-- **Rust** (CLI tools) - rhino-cli-rust
+- **Rust** (CLI tools) - rhino-cli
 - **TypeScript/Next.js** (web applications) - crud-fe-ts-nextjs, crud-fs-ts-nextjs
 - **F#/Giraffe** (backend API) - crud-be-fsharp-giraffe
 - **Go/Gin** (backend API) - crud-be-golang-gin

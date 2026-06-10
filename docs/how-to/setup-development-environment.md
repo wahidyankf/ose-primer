@@ -321,10 +321,10 @@ restore them:
 
 ```bash
 # Restore .env files from the default backup location (~/ose-primer-env-backup)
-cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- env restore --force
+cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- env restore --force
 
 # Also restore uncommitted config files (AI tool settings, Docker overrides, etc.)
-cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- env restore --force --include-config
+cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- env restore --force --include-config
 ```
 
 If this is a fresh setup with no backup, copy `.env.example` to `.env` in each app you
@@ -333,7 +333,7 @@ plan to work on and fill in the required values.
 To create a backup for future use:
 
 ```bash
-cargo run --release --quiet --manifest-path apps/rhino-cli-rust/Cargo.toml -- env backup --include-config
+cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- env backup --include-config
 ```
 
 ### Step 15: Install Playwright Browsers
