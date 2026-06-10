@@ -83,9 +83,12 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 > All checks below must pass before starting Phase 1; if any fails, fix it in Phase 0 first.
 
-- [ ] [AI] `rhino-cli-rust:test:quick` and `rhino-cli-go:test:quick` both exit 0 (clean baseline).
-- [ ] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` exits 0 (parity green at baseline).
-- [ ] [AI] Run `git status` — working tree clean (no changes yet).
+- [x] [AI] `rhino-cli-rust:test:quick` and `rhino-cli-go:test:quick` both exit 0 (clean baseline).
+<!-- Date: 2026-06-10 | Status: done | Notes: Rust 617 tests pass (cache hit); Go 90.14% (cache hit). Preexisting mermaid parity fix committed and pushed. -->
+- [x] [AI] `bash apps/rhino-cli-rust/scripts/shadow-diff.sh` exits 0 (parity green at baseline).
+<!-- Date: 2026-06-10 | Status: done | Notes: Shadow-diff PASS 270/270 cases byte-identical. -->
+- [x] [AI] Run `git status` — working tree clean (no changes yet).
+<!-- Date: 2026-06-10 | Status: done | Notes: Worktree clean after committing mermaid parity fix and delivery.md P0 baseline checkboxes. Both commits pushed to origin main. -->
 
 > **Pause Safety**: Phase 0 made no code changes; the repo is at a clean, green, parity-aligned
 > baseline. Resume by re-running both `test:quick` targets and the shadow-diff harness.
