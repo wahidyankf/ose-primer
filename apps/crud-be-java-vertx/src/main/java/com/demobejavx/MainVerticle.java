@@ -33,11 +33,14 @@ import org.jspecify.annotations.Nullable;
 public class MainVerticle extends AbstractVerticle {
 
     private static final int DEFAULT_PORT = 8201;
-    private static final String DEFAULT_JWT_SECRET = "dev-jwt-secret-at-least-32-chars-long";
 
     @Override
     public void start(Promise<Void> startPromise) {
-        String jwtSecret = System.getenv().getOrDefault("CRUD_BE_JAVA_VERTX_JWT_SECRET", DEFAULT_JWT_SECRET);
+        String jwtSecret = System.getenv("CRUD_BE_JAVA_VERTX_JWT_SECRET");
+        if (jwtSecret == null || jwtSecret.isEmpty()) {
+            startPromise.fail("CRUD_BE_JAVA_VERTX_JWT_SECRET is required");
+            return;
+        }
         int port = parsePort(System.getenv("CRUD_BE_JAVA_VERTX_PORT"), DEFAULT_PORT);
         String databaseUrl = System.getenv("DATABASE_URL");
         boolean enableTestApi = "true".equalsIgnoreCase(System.getenv("ENABLE_TEST_API"));

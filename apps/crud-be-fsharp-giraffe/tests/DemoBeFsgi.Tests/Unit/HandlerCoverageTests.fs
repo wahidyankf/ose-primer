@@ -131,6 +131,21 @@ type ExpenseModuleTests() =
 
 [<Trait("Category", "Unit")>]
 type JwtServiceTests() =
+    let originalSecret =
+        Environment.GetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET")
+
+    do
+        Environment.SetEnvironmentVariable(
+            "CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET",
+            "dev-jwt-secret-at-least-32-characters-long-for-hmac"
+        )
+
+    interface IDisposable with
+        member _.Dispose() =
+            if originalSecret = null then
+                Environment.SetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET", null)
+            else
+                Environment.SetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET", originalSecret)
 
     [<Fact>]
     member _.``validateToken returns None for invalid token``() =
@@ -174,26 +189,33 @@ type JwtServiceTests() =
 
     [<Fact>]
     member _.``generateAccessToken uses environment variable when set``() =
-        let original =
-            Environment.GetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET")
+        let userId = Guid.NewGuid()
 
-        try
-            Environment.SetEnvironmentVariable(
-                "CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET",
-                "test-secret-long-enough-for-hmac-sha256-minimum"
+        let token =
+            DemoBeFsgi.Auth.JwtService.generateAccessToken userId "bob" "bob@example.com" "user"
+
+        Assert.False(String.IsNullOrEmpty(token))
+
+    [<Fact>]
+    member _.``JwtService source has no soft fallback for missing secret``() =
+        let src =
+            System.IO.File.ReadAllText(
+                System.IO.Path.Combine(
+                    __SOURCE_DIRECTORY__,
+                    "..",
+                    "..",
+                    "..",
+                    "src",
+                    "DemoBeFsgi",
+                    "Auth",
+                    "JwtService.fs"
+                )
             )
 
-            let userId = Guid.NewGuid()
-
-            let token =
-                DemoBeFsgi.Auth.JwtService.generateAccessToken userId "bob" "bob@example.com" "user"
-
-            Assert.False(String.IsNullOrEmpty(token))
-        finally
-            if original = null then
-                Environment.SetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET", null)
-            else
-                Environment.SetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET", original)
+        Assert.False(
+            src.Contains("dev-jwt-secret-at-least-32-characters-long-for-hmac"),
+            "JwtService.fs must not contain a soft default — absent var must failwith"
+        )
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Handler coverage via direct service calls

@@ -35,6 +35,11 @@ uuid = { version = "1.23.0", features = ["v4", "serde"] }
 chrono = { version = "0.4.44", features = ["serde"] }
 thiserror = "2.0.18"
 anyhow = "1.0.102"
+dotenvy = "0.15.7"
+# envy 0.4.2 is the latest release (Jan 2021); stale but advisory-clean and
+# functionally complete. Re-evaluate if a RustSec advisory (cf. RUSTSEC-2021-0141)
+# is ever filed against envy.
+envy = "0.4.2"
 async-trait = "0.1.89"
 tower = "0.5.3"
 tower-http = { version = "0.6.8", features = ["cors", "request-id", "trace"] }

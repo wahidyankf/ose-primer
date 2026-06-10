@@ -1,32 +1,21 @@
 // Package config loads and provides application configuration from environment variables.
 package config
 
-import "os"
+import env "github.com/caarlos0/env/v11"
 
 // Config holds the application configuration loaded from environment variables.
 type Config struct {
-	Port          string
-	JWTSecret     string
-	DatabaseURL   string
-	EnableTestAPI bool
+	Port          string `env:"CRUD_BE_GOLANG_GIN_PORT" envDefault:"8201"`
+	JWTSecret     string `env:"CRUD_BE_GOLANG_GIN_JWT_SECRET,required"`
+	DatabaseURL   string `env:"DATABASE_URL"`
+	EnableTestAPI bool   `env:"ENABLE_TEST_API"`
 }
 
-// Load reads configuration from environment variables with defaults.
-func Load() *Config {
-	port := os.Getenv("CRUD_BE_GOLANG_GIN_PORT")
-	if port == "" {
-		port = "8201"
+// Load reads configuration from environment variables, returning an error if required vars are absent.
+func Load() (*Config, error) {
+	cfg := &Config{}
+	if err := env.Parse(cfg); err != nil {
+		return nil, err
 	}
-	jwtSecret := os.Getenv("CRUD_BE_GOLANG_GIN_JWT_SECRET")
-	if jwtSecret == "" {
-		jwtSecret = "dev-jwt-secret-at-least-32-chars-long"
-	}
-	databaseURL := os.Getenv("DATABASE_URL")
-	enableTestAPI := os.Getenv("ENABLE_TEST_API") == "true"
-	return &Config{
-		Port:          port,
-		JWTSecret:     jwtSecret,
-		DatabaseURL:   databaseURL,
-		EnableTestAPI: enableTestAPI,
-	}
+	return cfg, nil
 }

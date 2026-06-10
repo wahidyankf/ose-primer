@@ -1,6 +1,13 @@
 """Root test configuration and fixtures."""
 
 import os
+
+# Must be set before any app import triggers Settings() instantiation.
+os.environ.setdefault(
+    "CRUD_BE_PYTHON_FASTAPI_JWT_SECRET",
+    "test-jwt-secret-for-tests-at-least-32-chars!!",
+)
+
 from collections.abc import Generator
 
 import pytest

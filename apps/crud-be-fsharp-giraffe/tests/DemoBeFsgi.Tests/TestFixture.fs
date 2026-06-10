@@ -6,6 +6,15 @@ open Microsoft.EntityFrameworkCore
 open DbUp
 open DemoBeFsgi.Infrastructure.AppDbContext
 
+// Ensure JWT secret is set for all tests that exercise the JWT service.
+// setdefault: only writes when absent so a real env var always wins.
+do
+    if String.IsNullOrEmpty(Environment.GetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET")) then
+        Environment.SetEnvironmentVariable(
+            "CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET",
+            "dev-jwt-secret-at-least-32-characters-long-for-hmac"
+        )
+
 /// Returns true when a real PostgreSQL DATABASE_URL is present in the environment.
 /// Integration tests (docker-compose) always set DATABASE_URL.
 /// Unit/test:quick mode runs without DATABASE_URL and uses SQLite in-memory.

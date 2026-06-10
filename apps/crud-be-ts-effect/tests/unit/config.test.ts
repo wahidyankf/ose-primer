@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { Effect } from "effect";
+import { Effect, Exit } from "effect";
 import { loadConfig } from "../../src/config.js";
 
 describe("loadConfig", () => {
@@ -8,14 +8,8 @@ describe("loadConfig", () => {
     delete process.env["CRUD_BE_TS_EFFECT_PORT"];
   });
 
-  it("returns default config when env vars are not set", async () => {
-    const config = await Effect.runPromise(loadConfig());
-    expect(config.databaseUrl).toBe("sqlite::memory:");
-    expect(config.jwtSecret).toBe("dev-jwt-secret-at-least-32-chars-long");
-    expect(config.port).toBe(8201);
-  });
-
-  it("returns an object with required keys", async () => {
+  it("returns an object with required keys when secret is set", async () => {
+    process.env["CRUD_BE_TS_EFFECT_JWT_SECRET"] = "test-secret-value-at-least-32-characters-long";
     const config = await Effect.runPromise(loadConfig());
     expect(config).toHaveProperty("databaseUrl");
     expect(config).toHaveProperty("jwtSecret");
@@ -30,5 +24,11 @@ describe("loadConfig", () => {
 
     expect(config.jwtSecret).toBe("test-secret-value-at-least-32-characters-long");
     expect(config.port).toBe(9999);
+  });
+
+  it("fails when CRUD_BE_TS_EFFECT_JWT_SECRET is not set", async () => {
+    delete process.env["CRUD_BE_TS_EFFECT_JWT_SECRET"];
+    const exit = await Effect.runPromiseExit(loadConfig());
+    expect(Exit.isFailure(exit)).toBe(true);
   });
 });

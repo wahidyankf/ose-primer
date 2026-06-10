@@ -6,7 +6,7 @@ use crud_be_rust_axum::{app, config::Config, db::pool::create_pool, state::AppSt
 async fn main() {
     tracing_subscriber::fmt::init();
 
-    let config = Config::from_env();
+    let config = Config::from_env().expect("Failed to load configuration");
     let pool = create_pool(&config.database_url)
         .await
         .expect("Failed to create database pool");

@@ -10,7 +10,7 @@ let private getSecret () =
     let s = Environment.GetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET")
 
     if String.IsNullOrEmpty s then
-        "dev-jwt-secret-at-least-32-characters-long-for-hmac"
+        failwith "CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET is required"
     else
         s
 

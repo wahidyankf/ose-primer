@@ -17,10 +17,12 @@ import (
 
 // Run starts the HTTP server.
 func Run() {
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("failed to load configuration: %v", err)
+	}
 
 	var db *gorm.DB
-	var err error
 	if cfg.DatabaseURL != "" {
 		db, err = gorm.Open(postgres.Open(cfg.DatabaseURL), &gorm.Config{})
 	} else {

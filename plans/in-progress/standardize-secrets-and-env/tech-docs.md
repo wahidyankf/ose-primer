@@ -253,12 +253,20 @@ Replace the `os.Getenv` reads in `apps/crud-be-golang-gin/internal/config/config
 with a struct whose fields carry `env:"CRUD_BE_GOLANG_GIN_JWT_SECRET,required"` tags; `env.Parse`
 returns a hard error naming a missing required var.
 
-### Next.js frontends — `@t3-oss/env-nextjs` + `zod`
+### Next.js frontends — plain `zod` (as-executed) / `@t3-oss/env-nextjs` (plan)
+
+**As-executed divergence:** plan specified `@t3-oss/env-nextjs` + `zod`; execution used **plain `zod`
+only** in `src/env.ts` (t3-env installed in `package.json` but not used in env module). Root cause:
+`@t3-oss/env-nextjs` uses a Proxy for server-var access that throws in the vitest jsdom environment
+(`TypeError: Cannot access server-side environment variable ... on the client`). Plain `z.object({
+... }).parse({ ... })` avoids the Proxy path entirely, satisfies the same validation contract, and
+keeps vitest clean. The `@t3-oss/env-nextjs` + `@t3-oss/env-core` packages remain in `package.json`
+(locked during Phase 4) and their §7 clearance row stands — they are installed but not load-path
+active in the env module.
 
 Add `src/env.ts` exporting a validated `env` object; import it in `next.config.ts` so validation runs
-at build time. `t3-env` enforces the `NEXT_PUBLIC_` prefix on client vars at TypeScript compile time,
-encoding the naming standard into the type system. The `createEnv({ server, client, runtimeEnv })`
-API is current.
+at build time. The `createEnv({ server, client, runtimeEnv })` API (t3-env) is not used but was
+planned; the plain-zod shape achieves the same fail-fast behavior at build and runtime.
 
 - **`zod` v4 API form (HARD).** The default `zod` export is v4 (v4 has been the default export since
   Jul 2025; v3 now lives at `zod/v3`). In v4 the string-format helpers moved to top-level functions:
@@ -452,16 +460,22 @@ bump date AND CVE-clean). `zod` is named in the policy as a Path-B example. The 
 (widened backup/restore, `--dry-run`, `env validate`) adds **no** new external crates/modules in
 either implementation — the extractors are line-oriented regex over already-walked files.
 
-| Dependency                                                                     | Manifest                                                                                                          | Path | Version line              | Clearance (verify at execution)                                                                               |
-| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ---- | ------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `dotenvy`                                                                      | `apps/crud-be-rust-axum/Cargo.toml`                                                                               | B    | `0.15.7` (stable)         | TBD at execution                                                                                              |
-| `envy`                                                                         | `apps/crud-be-rust-axum/Cargo.toml`                                                                               | B    | `0.4.2` (**stale**)       | TBD at execution                                                                                              |
-| `github.com/caarlos0/env/v11`                                                  | `apps/crud-be-golang-gin/go.mod`                                                                                  | B    | v11 latest                | TBD at execution                                                                                              |
-| `@t3-oss/env-nextjs`                                                           | `apps/crud-fe-ts-nextjs/package.json`, `crud-fs-ts-nextjs/package.json`                                           | B    | `0.13.x` latest           | TBD at execution                                                                                              |
-| `zod`                                                                          | `apps/crud-fe-ts-nextjs/package.json`, `crud-fs-ts-nextjs/package.json`, `crud-fe-ts-tanstack-start/package.json` | B    | `4.x` (v4 default export) | TBD at execution                                                                                              |
-| `pydantic-settings`                                                            | `apps/crud-be-python-fastapi/pyproject.toml`                                                                      | B    | (already pinned)          | **ALREADY INSTALLED** (`pydantic-settings==2.13.1` — no new dep needed) [Repo-grounded — `pyproject.toml:18`] |
-| Spring Validation starter (Jakarta)                                            | `apps/crud-be-java-springboot/pom.xml`                                                                            | B    | starter latest            | TBD at execution                                                                                              |
-| Long-tail validator libs (Vert.x, Ktor, F#, C#, Clojure, TanStack-Start, Dart) | respective manifests                                                                                              | B    | per-family                | **lib + pin selected at execution** (or framework-native, no dep)                                             |
+**Execution-time cutoff (recorded 2026-06-10):** `2026-06-10 − 60 days = 2026-04-11`. Eligible
+versions are those released on or before 2026-04-11 that are not yanked and carry no open
+release-blocker. GitHub Advisories checked via `gh api advisories?ecosystem=...&package=...` on
+2026-06-10. Long-tail families (Vert.x, Ktor, F#, C#, Clojure, Dart) use framework-native +
+explicit-guard — no new dependency; no clearance row needed per §7 obligation 6.
+
+| Dependency                                      | Manifest                                                                                                          | Path | Version line                 | Clearance                                                                                                     |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---- | ---------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `dotenvy`                                       | `apps/crud-be-rust-axum/Cargo.toml`                                                                               | B    | `0.15.7` (2023-03-22)        | **CLEAR** — no CVE/RustSec advisory; checked 2026-06-10                                                       |
+| `envy`                                          | `apps/crud-be-rust-axum/Cargo.toml`                                                                               | B    | `0.4.2` (**stale**, 2021-01) | **CLEAR (staleness caveat)** — no CVE/RustSec; 5 yr stale; re-eval trigger: if RustSec advisory filed         |
+| `github.com/caarlos0/env/v11`                   | `apps/crud-be-golang-gin/go.mod`                                                                                  | B    | `v11.4.0` (2026-02-22)       | **CLEAR** — no v11.x-range advisory in GitHub Advisories; checked 2026-06-10                                  |
+| `@t3-oss/env-nextjs`                            | `apps/crud-fe-ts-nextjs/package.json`, `crud-fs-ts-nextjs/package.json`                                           | B    | `0.13.11` (2026-03-22)       | **CLEAR** — no known advisory; checked 2026-06-10                                                             |
+| `zod`                                           | `apps/crud-fe-ts-nextjs/package.json`, `crud-fs-ts-nextjs/package.json`, `crud-fe-ts-tanstack-start/package.json` | B    | `4.3.6` (2026-01-22)         | **CLEAR** — listed advisories affect v0.x/v1.x ranges only; v4.3.6 unaffected; checked 2026-06-10             |
+| `pydantic-settings`                             | `apps/crud-be-python-fastapi/pyproject.toml`                                                                      | B    | (already pinned)             | **ALREADY INSTALLED** (`pydantic-settings==2.13.1` — no new dep needed) [Repo-grounded — `pyproject.toml:18`] |
+| Spring Validation starter (Jakarta)             | `apps/crud-be-java-springboot/pom.xml`                                                                            | B    | BOM-managed (parent `4.0.6`) | **BOM-MANAGED** — spring-boot-starter-parent 4.0.6 governs version; no explicit pin needed                    |
+| Long-tail (Vert.x, Ktor, F#, C#, Clojure, Dart) | n/a                                                                                                               | B    | n/a                          | **FRAMEWORK-NATIVE** — no new dep; explicit required-env guard added in code only                             |
 
 **Version-line notes (per-dep):**
 
@@ -512,6 +526,28 @@ execution**. When the relevant phase runs, the executor MUST:
 For the long-tail families, the executor MAY choose a **framework-native + explicit-guard** approach
 (no new dependency) where that is the idiomatic fail-fast path; in that case no clearance row is
 needed for that family — only the code change.
+
+### Post-install audit results (recorded 2026-06-10)
+
+`cargo audit` (Rust workspace, after adding `dotenvy`/`envy`): **1 advisory, 1 warning — both
+pre-existing, not in our deps**.
+
+- RUSTSEC-2023-0071 (`rsa 0.9.10`, medium CVSS 5.9): Marvin Attack timing side-channel in
+  `sqlx-mysql 0.8.6` transitive dep. No fix available. Pre-existing before Phase 4.
+- RUSTSEC-2026-0097 (`rand 0.8.5`, warning/unsound): unsound with custom logger, from `sqlx`
+  transitive dep. Pre-existing before Phase 4.
+
+`dotenvy 0.15.7` and `envy 0.4.2`: **no advisory in cargo audit output** — CLEAR.
+
+`npm audit --audit-level=moderate` (`crud-fe-ts-nextjs`, `crud-fs-ts-nextjs` after adding
+`@t3-oss/env-nextjs`/`zod`): **2 moderate — pre-existing in `next` itself, not in our deps**.
+
+- GHSA-qx2v-qp2m-jg93 (`postcss < 8.5.10`, moderate): XSS in CSS stringify output; found in
+  `node_modules/next/node_modules/postcss`. Pre-existing before Phase 4; fix would require `next@9.3.3`
+  (breaking downgrade — not applicable).
+
+`@t3-oss/env-nextjs 0.13.11`, `@t3-oss/env-core 0.13.11`, `zod 4.3.6`: **no advisory output from
+npm audit** — CLEAR.
 
 ## 8. File-Impact Analysis
 

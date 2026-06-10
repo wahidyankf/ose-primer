@@ -1,6 +1,7 @@
 """Unit tests for application configuration settings."""
 
 import pytest
+from pydantic import ValidationError
 
 from crud_be_python_fastapi.config import Settings
 
@@ -20,9 +21,10 @@ class TestSettings:
         s = Settings()
         assert s.crud_be_python_fastapi_jwt_secret == "test-secret-value-at-least-32-chars-long"
 
-    def test_crud_be_python_fastapi_jwt_secret_has_default(self) -> None:
-        """Settings has a safe default for the JWT secret when env var is absent."""
-        s = Settings()
-        assert (
-            s.crud_be_python_fastapi_jwt_secret == "dev-jwt-secret-at-least-32-chars-long-for-dev"
-        )
+    def test_missing_jwt_secret_raises_validation_error(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Settings must raise ValidationError when CRUD_BE_PYTHON_FASTAPI_JWT_SECRET is absent."""
+        monkeypatch.delenv("CRUD_BE_PYTHON_FASTAPI_JWT_SECRET", raising=False)
+        with pytest.raises(ValidationError):
+            Settings()
