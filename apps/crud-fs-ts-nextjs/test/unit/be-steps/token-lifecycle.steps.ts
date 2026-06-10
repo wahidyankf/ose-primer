@@ -8,7 +8,7 @@ const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/crud/behavior/be/gherkin/authentication/token-lifecycle.feature"),
 );
 
-const JWT_SECRET = process.env.APP_JWT_SECRET ?? "test-jwt-secret-at-least-32-chars-long!!";
+const JWT_SECRET = process.env.CRUD_FS_TS_NEXTJS_JWT_SECRET ?? "test-jwt-secret-at-least-32-chars-long!!";
 
 describeFeature(feature, ({ Scenario, Background }) => {
   let ctx: TestContext;

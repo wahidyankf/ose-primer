@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { SignJWT } from "jose";
 import type { CustomWorld } from "../world";
 
-const JWT_SECRET = process.env.APP_JWT_SECRET ?? "test-jwt-secret-at-least-32-chars-long!!";
+const JWT_SECRET = process.env.CRUD_FS_TS_NEXTJS_JWT_SECRET ?? "test-jwt-secret-at-least-32-chars-long!!";
 
 Given("alice's refresh token has expired", async function (this: CustomWorld) {
   const secret = new TextEncoder().encode(JWT_SECRET);

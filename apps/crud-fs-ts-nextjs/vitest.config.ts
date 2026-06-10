@@ -9,7 +9,7 @@ export default defineConfig({
   test: {
     passWithNoTests: true,
     env: {
-      APP_JWT_SECRET: "test-jwt-secret-at-least-32-chars-long!!",
+      CRUD_FS_TS_NEXTJS_JWT_SECRET: "test-jwt-secret-at-least-32-chars-long!!",
     },
     coverage: {
       provider: "v8",

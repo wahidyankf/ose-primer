@@ -156,19 +156,19 @@ For **each** of the 11 backends (`crud-be-rust-axum`, `crud-be-golang-gin`, `cru
 
 ## Phase 2 — Naming Standard + Per-App Rename (frontends)
 
-- [ ] [AI] **RED**: in `apps/crud-fs-ts-nextjs/src/lib/jwt.ts`, add/adjust a unit test asserting
+- [x] [AI] **RED**: in `apps/crud-fs-ts-nextjs/src/lib/jwt.ts`, add/adjust a unit test asserting
       `process.env.CRUD_FS_TS_NEXTJS_JWT_SECRET` resolves the JWT secret. Run
       `./node_modules/.bin/nx run crud-fs-ts-nextjs:test:unit` — acceptance: the test fails because the
       code still reads `process.env.APP_JWT_SECRET`. - _Suggested executor: `swe-typescript-dev`._
-- [ ] [AI] **GREEN**: rename the server-side read in `apps/crud-fs-ts-nextjs/src/lib/jwt.ts` from
+- [x] [AI] **GREEN**: rename the server-side read in `apps/crud-fs-ts-nextjs/src/lib/jwt.ts` from
       `process.env.APP_JWT_SECRET` to `process.env.CRUD_FS_TS_NEXTJS_JWT_SECRET`. Run
       `./node_modules/.bin/nx run crud-fs-ts-nextjs:test:unit` — acceptance: the prefixed-key test
       passes. - _Suggested executor: `swe-typescript-dev`._
-- [ ] [AI] Update `infra/dev/crud-fs-ts-nextjs/.env.example` (rename `APP_JWT_SECRET` →
+- [x] [AI] Update `infra/dev/crud-fs-ts-nextjs/.env.example` (rename `APP_JWT_SECRET` →
       `CRUD_FS_TS_NEXTJS_JWT_SECRET`) and the matching key in its compose env block.
-- [ ] [AI] **REFACTOR**: tidy the jwt.ts module if needed (no dead branches, clean types). Run
+- [x] [AI] **REFACTOR**: tidy the jwt.ts module if needed (no dead branches, clean types). Run
       `./node_modules/.bin/nx run crud-fs-ts-nextjs:test:unit` — acceptance: all tests still pass.
-- [ ] [AI] `crud-fe-ts-nextjs`, `crud-fe-ts-tanstack-start`, `crud-fe-dart-flutterweb`: re-grep each
+- [x] [AI] `crud-fe-ts-nextjs`, `crud-fe-ts-tanstack-start`, `crud-fe-dart-flutterweb`: re-grep each
       for any **app-defined** env read (`grep -rniE "process\.env\.|import\.meta\.env\.|String\.fromEnvironment" apps/<app>/src`),
       excluding framework-reserved `NEXT_PUBLIC_*` and shared `DATABASE_URL`. Rename only app-defined
       reads to the per-app prefix; update the matching `infra/dev/<app>/.env.example`. If an app has
@@ -177,18 +177,18 @@ For **each** of the 11 backends (`crud-be-rust-axum`, `crud-be-golang-gin`, `cru
       `NEXT_PUBLIC_*` and shared vars) are expected; run the grep to confirm and record the observation
       in a checklist note. The Phase 2 gate grep confirms zero `APP_JWT_SECRET` residue across all
       frontends; if the per-app grep surfaces any additional old-form app-defined read, rename it too.
-- [ ] [AI] Run each touched frontend's `./node_modules/.bin/nx run <app>:typecheck` and
+- [x] [AI] Run each touched frontend's `./node_modules/.bin/nx run <app>:typecheck` and
       `./node_modules/.bin/nx run <app>:test:quick` — both exit 0.
 
 ### Phase 2 Gate
 
 > All checks below must pass before starting Phase 3; if any fails, fix it in Phase 2 first.
 
-- [ ] [AI] `grep -rn "APP_JWT_SECRET" apps/crud-fs-ts-nextjs apps/crud-fe-* infra/dev/crud-fe-* infra/dev/crud-fs-*`
+- [x] [AI] `grep -rn "APP_JWT_SECRET" apps/crud-fs-ts-nextjs apps/crud-fe-* infra/dev/crud-fe-* infra/dev/crud-fs-*`
       returns zero hits.
-- [ ] [AI] Every touched frontend's `typecheck` and `test:quick` exit 0.
-- [ ] [AI] `npm run lint:md` exits 0.
-- [ ] [AI] Commit (`refactor(frontends): rename app-defined env vars to per-app prefix`) and push;
+- [x] [AI] Every touched frontend's `typecheck` and `test:quick` exit 0.
+- [x] [AI] `npm run lint:md` exits 0.
+- [x] [AI] Commit (`refactor(frontends): rename app-defined env vars to per-app prefix`) and push;
       `git status` clean.
 
 > **Pause Safety**: Phase 2 left all frontends naming app-defined env vars by per-app prefix; types

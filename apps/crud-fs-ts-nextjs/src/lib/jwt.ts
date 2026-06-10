@@ -13,8 +13,8 @@ export interface JwtClaims {
 }
 
 const getSecret = () => {
-  const secret = process.env.APP_JWT_SECRET;
-  if (!secret) throw new Error("APP_JWT_SECRET is not set");
+  const secret = process.env.CRUD_FS_TS_NEXTJS_JWT_SECRET;
+  if (!secret) throw new Error("CRUD_FS_TS_NEXTJS_JWT_SECRET is not set");
   return new TextEncoder().encode(secret);
 };
 

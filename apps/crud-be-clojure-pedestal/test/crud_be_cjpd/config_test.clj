@@ -1,6 +1,7 @@
 (ns crud-be-cjpd.config-test
   (:require [clojure.test :refer [deftest testing is]]
             [clojure.java.io :as io]
+            [clojure.string :as str]
             [crud-be-cjpd.config :as sut]))
 
 (deftest load-config-test
@@ -20,9 +21,9 @@
 
   (testing "config source reads CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET env var name"
     (let [src (slurp (io/resource "crud_be_cjpd/config.clj"))]
-      (is (clojure.string/includes? src "CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET"))
-      (is (not (clojure.string/includes? src "APP_JWT_SECRET")))))
+      (is (str/includes? src "CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET"))
+      (is (not (str/includes? src "APP_JWT_SECRET")))))
 
   (testing "config source reads CRUD_BE_CLOJURE_PEDESTAL_PORT env var name"
     (let [src (slurp (io/resource "crud_be_cjpd/config.clj"))]
-      (is (clojure.string/includes? src "CRUD_BE_CLOJURE_PEDESTAL_PORT")))))
+      (is (str/includes? src "CRUD_BE_CLOJURE_PEDESTAL_PORT")))))

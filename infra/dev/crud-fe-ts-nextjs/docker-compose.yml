@@ -34,9 +34,9 @@ services:
       crud-be-db:
         condition: service_healthy
     environment:
-      - PORT=8201
+      - CRUD_BE_GOLANG_GIN_PORT=8201
       - DATABASE_URL=postgresql://${POSTGRES_USER:-demo}:${POSTGRES_PASSWORD:-demo}@crud-be-db:5432/crud_be
-      - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
+      - CRUD_BE_GOLANG_GIN_JWT_SECRET=${CRUD_BE_GOLANG_GIN_JWT_SECRET:-change-me-in-dev-only-not-for-production}
       - ENABLE_TEST_API=true
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8201/health"]
