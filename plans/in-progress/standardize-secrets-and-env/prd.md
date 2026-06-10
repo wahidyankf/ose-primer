@@ -235,6 +235,16 @@ Scenario: The direct-to-main deviation is documented in plain language
 - Migrating the `infra/dev/<app>/` env-template layout (primer keeps it).
 - Any live IaC validation.
 - Any UI; this is governance + CLI + per-app config code.
+- **Source-code credential scanning (gitleaks / Betterleaks)** — evaluated and deferred. The
+  pre-commit layer from `guard-env-file-access` already hard-blocks staging `.env*` files (the
+  highest-risk path), making gitleaks redundant for that class. Gitleaks's unique value — detecting
+  hard-coded credentials in `.rs`/`.go`/`.ts` source files — is a separate concern outside this
+  plan's scope. Gitleaks is also feature-frozen (maintenance-only) with an unresolved entropy
+  false-positive regression ([#1830](https://github.com/gitleaks/gitleaks/issues/1830)) affecting
+  Rust/Go identifier names. This public repo already has free GitHub Secret Scanning post-push
+  coverage (700+ partner patterns + AI-backed generic detection). Re-evaluate Betterleaks (gitleaks
+  successor, MIT, v1.0.0 early 2026) once it has 60+ days of production soak. Tracked in
+  `plans/ideas.md`.
 
 ## Product-Level Risks
 
