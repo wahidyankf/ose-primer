@@ -11,7 +11,10 @@ import * as attachmentsApi from "@/lib/api/attachments";
 import * as usersApi from "@/lib/api/users";
 
 const feature = await loadFeature(
-  path.resolve(__dirname, "../../../../../../specs/apps/crud/behavior/web/gherkin/expenses/currency-handling.feature"),
+  path.resolve(
+    __dirname,
+    "../../../../../../specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature",
+  ),
 );
 
 const mockPush = vi.fn();

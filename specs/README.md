@@ -27,7 +27,7 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 ## App Specs
 
 - **[crud/](./apps/crud/README.md)** — CRUD application specifications
-  (platform-agnostic Gherkin — see [be/gherkin](./apps/crud/behavior/be/gherkin/README.md) and [web/gherkin](./apps/crud/behavior/web/gherkin/README.md) for details)
+  (platform-agnostic Gherkin — see [be/gherkin](./apps/crud/behavior/crud-be/gherkin/README.md) and [web/gherkin](./apps/crud/behavior/crud-web/gherkin/README.md) for details)
 - **[rhino/](./apps/rhino/README.md)** — Repository management CLI specifications (Go, godog)
 
 ## Experimental App Specs

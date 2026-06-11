@@ -4,7 +4,7 @@ import { expect } from "vitest";
 import { createTestContext, registerUser, loginUser, getAuth, type TestContext } from "./helpers/test-context";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/crud/behavior/be/gherkin/expenses/expense-management.feature"),
+  path.resolve(process.cwd(), "../../specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature"),
 );
 
 async function createExpense(ctx: TestContext, username: string, body: Record<string, unknown>): Promise<string> {

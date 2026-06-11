@@ -23,8 +23,8 @@ behavior/
 
 ## Surfaces
 
-- [be/](./be/) — Backend (Go Gin, Java Spring Boot, Kotlin Ktor, etc.)
-- [web/](./web/) — Web frontend (Next.js, TanStack Start, Flutter Web)
+- [be/](./crud-be/) — Backend (Go Gin, Java Spring Boot, Kotlin Ktor, etc.)
+- [web/](./crud-web/) — Web frontend (Next.js, TanStack Start, Flutter Web)
 
 ## Related
 

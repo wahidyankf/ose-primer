@@ -12,7 +12,7 @@ void main() {
   });
 
   describeFeature(
-    '../../specs/apps/crud/behavior/web/gherkin/expenses/currency-handling.feature',
+    '../../specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature',
     (feature) {
       feature.scenario('USD expense displays two decimal places', (s) {
         late String createdId;

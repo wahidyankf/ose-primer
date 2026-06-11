@@ -32,7 +32,7 @@ void main() {
     createdExpenseId = null;
   });
 
-  describeFeature('../../specs/apps/crud/behavior/web/gherkin/layout/responsive.feature', (
+  describeFeature('../../specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature', (
     feature,
   ) {
     // ---------------------------------------------------------------------------

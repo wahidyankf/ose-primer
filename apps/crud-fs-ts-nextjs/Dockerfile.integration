@@ -22,6 +22,6 @@ RUN npx @hey-api/openapi-ts -i specs/apps/crud/containers/contracts/generated/op
 WORKDIR /app/apps/crud-fs-ts-nextjs
 
 # Copy gherkin specs into container
-COPY specs/apps/crud/behavior/be/gherkin/ /specs/apps/crud/behavior/be/gherkin/
+COPY specs/apps/crud/behavior/crud-be/gherkin/ /specs/apps/crud/behavior/crud-be/gherkin/
 
 CMD sh -c "npx cucumber-js --config cucumber.integration.js 2>&1; EXIT=$?; echo \"EXIT CODE: $EXIT\"; exit $EXIT"

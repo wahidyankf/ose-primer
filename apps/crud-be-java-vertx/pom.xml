@@ -309,7 +309,7 @@
                         <configuration>
                             <target>
                                 <copy todir="${project.build.testOutputDirectory}">
-                                    <fileset dir="${project.basedir}/../../specs/apps/crud/behavior/be/gherkin"/>
+                                    <fileset dir="${project.basedir}/../../specs/apps/crud/behavior/crud-be/gherkin"/>
                                 </copy>
                             </target>
                         </configuration>

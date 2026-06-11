@@ -9,7 +9,7 @@ import * as reportsApi from "@/lib/api/reports";
 import * as usersApi from "@/lib/api/users";
 
 const feature = await loadFeature(
-  path.resolve(__dirname, "../../../../../../specs/apps/crud/behavior/web/gherkin/expenses/reporting.feature"),
+  path.resolve(__dirname, "../../../../../../specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature"),
 );
 
 const mockPush = vi.fn();

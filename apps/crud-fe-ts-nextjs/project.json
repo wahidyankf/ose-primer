@@ -59,7 +59,7 @@
       "inputs": [
         "default",
         "{projectRoot}/src/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature"
       ],
       "outputs": ["{projectRoot}/coverage"],
       "options": {
@@ -73,7 +73,7 @@
       "inputs": [
         "default",
         "{projectRoot}/src/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature"
       ],
       "options": {
         "command": "npx vitest run --project unit",
@@ -82,9 +82,12 @@
       "dependsOn": ["codegen"]
     },
     "spec-coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/web/gherkin apps/crud-fe-ts-nextjs",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/crud-web/gherkin apps/crud-fe-ts-nextjs",
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
+      "inputs": [
+        "{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature",
+        "{projectRoot}/**/*.{ts,tsx}"
+      ]
     }
   },
   "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:crud-fe"],

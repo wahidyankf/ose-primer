@@ -92,6 +92,6 @@ nginx/
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
-- [Frontend Gherkin Specs](../../specs/apps/crud/behavior/web/gherkin/README.md) — Shared feature files (source of truth)
+- [Frontend Gherkin Specs](../../specs/apps/crud/behavior/crud-web/gherkin/README.md) — Shared feature files (source of truth)
 - [OpenAPI Contract](../../specs/apps/crud/containers/contracts/README.md) — API contract and codegen
 - [crud-fe-e2e](../crud-fe-e2e/README.md) — Centralized E2E tests for all crud-fe frontends

@@ -18,7 +18,7 @@ void main() {
     resetResponse = null;
   });
 
-  describeFeature('../../specs/apps/crud/behavior/web/gherkin/admin/admin-panel.feature', (
+  describeFeature('../../specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature', (
     feature,
   ) {
     // ---------------------------------------------------------------------------

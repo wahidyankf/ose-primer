@@ -80,7 +80,7 @@ This project uses a three-level test architecture:
 
 - Run all shared Gherkin scenarios against a real PostgreSQL 17 database
 - Launched via Docker Compose (`docker-compose.integration.yml`)
-- Reads specs from `/specs/apps/crud/behavior/be/gherkin/` (mounted volume)
+- Reads specs from `/specs/apps/crud/behavior/crud-be/gherkin/` (mounted volume)
 - Not cached — always runs fresh
 - Used by `test:integration` target
 
@@ -101,5 +101,5 @@ nx run crud-be-rust-axum:test:integration
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
-- [Backend Gherkin Specs](../../specs/apps/crud/behavior/be/gherkin/README.md) — Shared feature files (source of truth)
+- [Backend Gherkin Specs](../../specs/apps/crud/behavior/crud-be/gherkin/README.md) — Shared feature files (source of truth)
 - [OpenAPI Contract](../../specs/apps/crud/containers/contracts/README.md) — API contract and codegen

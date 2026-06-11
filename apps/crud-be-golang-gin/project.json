@@ -49,7 +49,7 @@
         "{projectRoot}/cmd/**/*.go",
         "{projectRoot}/db/**/*",
         "{projectRoot}/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature"
       ],
       "outputs": ["{projectRoot}/cover.out", "{projectRoot}/cover_unit.out"]
     },
@@ -65,7 +65,7 @@
         "{projectRoot}/cmd/**/*.go",
         "{projectRoot}/db/**/*",
         "{projectRoot}/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature"
       ]
     },
     "test:integration": {
@@ -100,9 +100,9 @@
       }
     },
     "spec-coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-golang-gin",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-golang-gin",
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature", "{projectRoot}/**/*.go"]
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.go"]
     }
   },
   "implicitDependencies": ["crud-contracts", "rhino-cli"]

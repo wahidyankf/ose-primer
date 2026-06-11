@@ -51,7 +51,7 @@
         "{projectRoot}/lib/**/*.ex",
         "{projectRoot}/test/**/*.exs",
         "{projectRoot}/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature"
       ],
       "outputs": ["{projectRoot}/cover/lcov.info"]
     },
@@ -66,7 +66,7 @@
         "{projectRoot}/lib/**/*.ex",
         "{projectRoot}/test/**/*.exs",
         "{projectRoot}/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature"
       ]
     },
     "test:integration": {
@@ -101,9 +101,9 @@
       }
     },
     "spec-coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/be/gherkin apps/crud-be-elixir-phoenix",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-elixir-phoenix",
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature", "{projectRoot}/**/*.{ex,exs}"]
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.{ex,exs}"]
     }
   },
   "tags": ["type:app", "platform:phoenix", "lang:elixir", "domain:crud-be"]

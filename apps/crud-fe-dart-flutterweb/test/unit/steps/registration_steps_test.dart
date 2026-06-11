@@ -17,7 +17,7 @@ void main() {
   });
 
   describeFeature(
-    '../../specs/apps/crud/behavior/web/gherkin/user-lifecycle/registration.feature',
+    '../../specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature',
     (feature) {
       // ---------------------------------------------------------------------------
       // Scenario: Successful registration navigates to the login page with success message

@@ -11,7 +11,7 @@ void main() {
   });
 
   describeFeature(
-    '../../specs/apps/crud/behavior/web/gherkin/authentication/login.feature',
+    '../../specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature',
     (feature) {
       // -----------------------------------------------------------------------
       // Scenario: Successful login navigates to the dashboard

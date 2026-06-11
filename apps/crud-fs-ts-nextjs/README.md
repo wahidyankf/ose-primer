@@ -61,7 +61,7 @@ Three-level testing following the project standard:
 ## Related Documentation
 
 - [OpenAPI Contract](../../specs/apps/crud/containers/contracts/)
-- [BE Gherkin Specs](../../specs/apps/crud/behavior/be/gherkin/)
-- [FE Gherkin Specs](../../specs/apps/crud/behavior/web/gherkin/)
+- [BE Gherkin Specs](../../specs/apps/crud/behavior/crud-be/gherkin/)
+- [FE Gherkin Specs](../../specs/apps/crud/behavior/crud-web/gherkin/)
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md)
 - [Nx Targets Convention](../../repo-governance/development/infra/nx-targets.md)

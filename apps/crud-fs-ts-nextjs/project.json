@@ -59,8 +59,8 @@
       "inputs": [
         "default",
         "{projectRoot}/src/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature",
-        "{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature",
+        "{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature"
       ],
       "outputs": ["{projectRoot}/coverage"],
       "options": {
@@ -74,8 +74,8 @@
       "inputs": [
         "default",
         "{projectRoot}/src/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature",
-        "{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature",
+        "{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature"
       ],
       "options": {
         "command": "npx vitest run",

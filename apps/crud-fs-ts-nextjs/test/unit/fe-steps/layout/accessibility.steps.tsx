@@ -10,7 +10,7 @@ import * as expensesApi from "@/lib/api/expenses";
 import * as usersApi from "@/lib/api/users";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/crud/behavior/web/gherkin/layout/accessibility.feature"),
+  path.resolve(process.cwd(), "../../specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature"),
 );
 
 const mockPush = vi.fn();

@@ -33,18 +33,18 @@ domains.
 ## Relationship to crud-be
 
 These specs are the **frontend counterpart** to
-[be/gherkin/](../../be/gherkin/README.md). Both cover the same 7 shared domains (FE adds `layout/`
+[be/gherkin/](../../crud-be/gherkin/README.md). Both cover the same 7 shared domains (FE adds `layout/`
 as an 8th domain), but:
 
 - **be**: HTTP-semantic (GET, POST, status codes, response bodies)
 - **web**: UI-semantic (clicks, types, sees, navigates, form submissions)
 
 Each `apps/crud-fe-{lang}-{framework}/` (e.g., `crud-fe-ts-nextjs`) consumes these specs, just as
-`apps/crud-be-{lang}-{framework}/` consumes `specs/apps/crud/behavior/be/gherkin/`. Step definitions
+`apps/crud-be-{lang}-{framework}/` consumes `specs/apps/crud/behavior/crud-be/gherkin/`. Step definitions
 translate UI actions into component renders and API call verifications.
 
 ## Related
 
-- **Backend counterpart**: [be gherkin specs](../../be/gherkin/README.md)
+- **Backend counterpart**: [be gherkin specs](../../crud-be/gherkin/README.md)
 - **Parent**: [web specs](../README.md)
 - **BDD Standards**: [behavior-driven-development-bdd/](../../../../../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md)

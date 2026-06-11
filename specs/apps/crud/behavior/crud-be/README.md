@@ -105,7 +105,7 @@ This spec is organized into two subdirectories:
 ## Feature File Organization
 
 ```
-specs/apps/crud/behavior/be/
+specs/apps/crud/behavior/crud-be/
 ├── README.md
 └── gherkin/
     ├── README.md
@@ -160,7 +160,7 @@ affected test targets automatically.
 The canonical input pattern used in every backend's `project.json`:
 
 ```
-"{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"
+"{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature"
 ```
 
 `test:integration` has `cache: false` and does not need explicit spec inputs.
@@ -176,7 +176,7 @@ follow-up plan.
 ## Adding a Feature File
 
 1. Identify the bounded context (e.g., `authentication`, `user-lifecycle`)
-2. Create the folder if it does not exist: `specs/apps/crud/behavior/be/gherkin/[context]/`
+2. Create the folder if it does not exist: `specs/apps/crud/behavior/crud-be/gherkin/[context]/`
 3. Create the `.feature` file: `[domain-capability].feature`
 4. Open with `Feature:` then a user story block (`As a … / I want … / So that …`)
 5. Use `Given the API is running` as the first Background step
@@ -185,5 +185,5 @@ follow-up plan.
 ## Related
 
 - **Parent**: [crud specs](../../README.md)
-- **Web frontend counterpart**: [web/](../web/README.md) — UI-semantic web frontend specs
+- **Web frontend counterpart**: [web/](../crud-web/README.md) — UI-semantic web frontend specs
 - **BDD Standards**: [behavior-driven-development-bdd/](../../../../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md)

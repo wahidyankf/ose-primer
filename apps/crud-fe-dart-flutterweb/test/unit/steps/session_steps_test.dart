@@ -11,7 +11,7 @@ void main() {
   });
 
   describeFeature(
-    '../../specs/apps/crud/behavior/web/gherkin/authentication/session.feature',
+    '../../specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature',
     (feature) {
       // -----------------------------------------------------------------------
       // Scenario: Session refreshes automatically before the access token expires

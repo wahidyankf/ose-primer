@@ -12,7 +12,7 @@ import * as usersApi from "@/lib/api/users";
 const feature = await loadFeature(
   path.resolve(
     __dirname,
-    "../../../../../../../specs/apps/crud/behavior/web/gherkin/expenses/expense-management.feature",
+    "../../../../../../../specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature",
   ),
 );
 

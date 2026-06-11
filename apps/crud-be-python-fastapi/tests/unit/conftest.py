@@ -27,7 +27,7 @@ else:
         / "apps"
         / "crud"
         / "behavior"
-        / "be"
+        / "crud-be"
         / "gherkin"
     )
 

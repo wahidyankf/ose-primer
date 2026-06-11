@@ -17,7 +17,7 @@
         "command": "tsc --noEmit",
         "cwd": "{projectRoot}"
       },
-      "inputs": ["default", "{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature"]
+      "inputs": ["default", "{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature"]
     },
     "lint": {
       "executor": "nx:run-commands",
@@ -33,7 +33,7 @@
         "parallel": true,
         "cwd": "{projectRoot}"
       },
-      "inputs": ["default", "{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature"]
+      "inputs": ["default", "{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature"]
     },
     "test:e2e": {
       "executor": "nx:run-commands",
@@ -64,9 +64,9 @@
       }
     },
     "spec-coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps specs/apps/crud/behavior/web/gherkin apps/crud-fe-e2e",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps specs/apps/crud/behavior/crud-web/gherkin apps/crud-fe-e2e",
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/web/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
     }
   },
   "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:crud-fe"],

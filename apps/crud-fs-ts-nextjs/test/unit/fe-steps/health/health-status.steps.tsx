@@ -7,7 +7,7 @@ import * as authApi from "@/lib/api/auth";
 import HomePage from "@/app/page";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/crud/behavior/web/gherkin/health/health-status.feature"),
+  path.resolve(process.cwd(), "../../specs/apps/crud/behavior/crud-web/gherkin/health/health-status.feature"),
 );
 
 vi.mock("@/lib/api/auth", () => ({

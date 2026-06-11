@@ -11,7 +11,10 @@ import * as usersApi from "@/lib/api/users";
 import type { Expense } from "@/lib/api/types";
 
 const feature = await loadFeature(
-  path.resolve(__dirname, "../../../../../../specs/apps/crud/behavior/web/gherkin/expenses/expense-management.feature"),
+  path.resolve(
+    __dirname,
+    "../../../../../../specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature",
+  ),
 );
 
 const mockPush = vi.fn();

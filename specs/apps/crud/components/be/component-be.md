@@ -125,7 +125,7 @@ graph LR
 ## Gherkin Coverage by Component
 
 Each component above is exercised by Gherkin features from
-[`specs/apps/crud/behavior/be/gherkin/`](../../behavior/be/gherkin/README.md):
+[`specs/apps/crud/behavior/crud-be/gherkin/`](../../behavior/crud-be/gherkin/README.md):
 
 | Component                               | Gherkin Domain(s) | Features                                                         |
 | --------------------------------------- | ----------------- | ---------------------------------------------------------------- |
@@ -167,5 +167,5 @@ Each backend uses the idiomatic migration tool for its language ecosystem. See [
 - **Container diagram**: [container.md](../../containers/container.md)
 - **Frontend component diagram**: [component-web.md](../web/component-web.md)
 - **API contract**: [../../containers/contracts/openapi.yaml](../../containers/contracts/openapi.yaml)
-- **Backend gherkin specs**: [be/gherkin/](../../behavior/be/gherkin/README.md)
+- **Backend gherkin specs**: [be/gherkin/](../../behavior/crud-be/gherkin/README.md)
 - **Migration tool reference**: [Database Audit Trail Pattern](../../../../../repo-governance/development/pattern/database-audit-trail.md)

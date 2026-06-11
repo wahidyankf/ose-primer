@@ -19,7 +19,7 @@ void main() {
   });
 
   describeFeature(
-    '../../specs/apps/crud/behavior/web/gherkin/user-lifecycle/user-profile.feature',
+    '../../specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature',
     (feature) {
       // ---------------------------------------------------------------------------
       // Scenario: Profile page displays username, email, and display name

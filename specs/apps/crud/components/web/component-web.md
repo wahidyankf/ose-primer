@@ -131,7 +131,7 @@ graph LR
 ## Gherkin Coverage by Component
 
 Each component above is exercised by Gherkin features from
-[`specs/apps/crud/behavior/web/gherkin/`](../../behavior/web/gherkin/README.md):
+[`specs/apps/crud/behavior/crud-web/gherkin/`](../../behavior/crud-web/gherkin/README.md):
 
 | Component                             | Gherkin Domain(s) | Features                                                         |
 | ------------------------------------- | ----------------- | ---------------------------------------------------------------- |
@@ -172,4 +172,4 @@ API modules (Next.js, TanStack Start).
 - **Container diagram**: [container.md](../../containers/container.md)
 - **Backend component diagram**: [component-be.md](../be/component-be.md)
 - **API contract**: [../../containers/contracts/openapi.yaml](../../containers/contracts/openapi.yaml)
-- **Frontend gherkin specs**: [web/gherkin/](../../behavior/web/gherkin/README.md)
+- **Frontend gherkin specs**: [web/gherkin/](../../behavior/crud-web/gherkin/README.md)

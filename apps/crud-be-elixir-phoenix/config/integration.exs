@@ -22,7 +22,7 @@ config :crud_be_exph, CrudBeExph.Auth.Guardian,
   ttl: {24, :hours}
 
 # Elixir Cabbage BDD — specs volume mounted at /specs by docker-compose.
-config :elixir_cabbage, features: "/specs/apps/crud/behavior/be/gherkin/"
+config :elixir_cabbage, features: "/specs/apps/crud/behavior/crud-be/gherkin/"
 
 # Print only warnings and errors during test
 config :logger, level: :warning

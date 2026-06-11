@@ -7,7 +7,10 @@ import { vi, expect } from "vitest";
 import * as tokensApi from "@/lib/api/tokens";
 
 const feature = await loadFeature(
-  path.resolve(__dirname, "../../../../../../../specs/apps/crud/behavior/web/gherkin/token-management/tokens.feature"),
+  path.resolve(
+    __dirname,
+    "../../../../../../../specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature",
+  ),
 );
 
 const mockNavigate = vi.fn();

@@ -481,7 +481,7 @@ apps/crud-be-java-springboot/
 
 ## Testing
 
-Three levels of testing consume the shared Gherkin scenarios from [`specs/apps/crud/behavior/be/gherkin/`](../../specs/apps/crud/behavior/be/gherkin/README.md):
+Three levels of testing consume the shared Gherkin scenarios from [`specs/apps/crud/behavior/crud-be/gherkin/`](../../specs/apps/crud/behavior/crud-be/gherkin/README.md):
 
 | Level       | Tool                           | Dependencies         | Command                                           | Cached? |
 | ----------- | ------------------------------ | -------------------- | ------------------------------------------------- | ------- |
@@ -541,5 +541,5 @@ nx run crud-be-e2e:test:e2e
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries
 - [Code Coverage Reference](../../docs/reference/code-coverage.md) — Coverage tools and thresholds
 - [Project Dependency Graph](../../docs/reference/project-dependency-graph.md) — Nx dependency visualization
-- [Backend Gherkin Specs](../../specs/apps/crud/behavior/be/gherkin/README.md) — Shared feature files (source of truth)
+- [Backend Gherkin Specs](../../specs/apps/crud/behavior/crud-be/gherkin/README.md) — Shared feature files (source of truth)
 - [OpenAPI Contract](../../specs/apps/crud/containers/contracts/README.md) — API contract and codegen

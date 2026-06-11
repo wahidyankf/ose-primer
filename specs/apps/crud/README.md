@@ -33,13 +33,13 @@ specs/apps/crud/
 
 ## Backend vs Web Frontend
 
-| Aspect      | Backend (behavior/be/)                             | Web Frontend (behavior/web/)                         |
-| ----------- | -------------------------------------------------- | ---------------------------------------------------- |
-| Perspective | HTTP-semantic (GET, POST, status codes)            | UI-semantic (clicks, types, sees)                    |
-| Background  | `Given the API is running`                         | `Given the app is running`                           |
-| Scenarios   | See [be/gherkin/](./behavior/be/gherkin/README.md) | See [web/gherkin/](./behavior/web/gherkin/README.md) |
-| Domains     | 7 domains                                          | 8 domains (7 shared + layout)                        |
-| Consumed by | `apps/crud-be-{lang}-{framework}/` (11 backends)   | `apps/crud-fe-{lang}-{framework}/` (5 frontends)     |
+| Aspect      | Backend (behavior/be/)                                  | Web Frontend (behavior/web/)                              |
+| ----------- | ------------------------------------------------------- | --------------------------------------------------------- |
+| Perspective | HTTP-semantic (GET, POST, status codes)                 | UI-semantic (clicks, types, sees)                         |
+| Background  | `Given the API is running`                              | `Given the app is running`                                |
+| Scenarios   | See [be/gherkin/](./behavior/crud-be/gherkin/README.md) | See [web/gherkin/](./behavior/crud-web/gherkin/README.md) |
+| Domains     | 7 domains                                               | 8 domains (7 shared + layout)                             |
+| Consumed by | `apps/crud-be-{lang}-{framework}/` (11 backends)        | `apps/crud-fe-{lang}-{framework}/` (5 frontends)          |
 
 Both spec sets cover the same functional surface from different perspectives. The frontend app
 consumes the backend API.
@@ -65,8 +65,8 @@ since they combine backend and frontend in a single deployable unit.
 - **[system-context/](./system-context/README.md)** — C4 Level 1 system context diagram
 - **[containers/](./containers/README.md)** — C4 Level 2 container diagram + OpenAPI contracts
 - **[components/](./components/README.md)** — C4 Level 3 component diagrams (be, web)
-- **[behavior/be/](./behavior/be/README.md)** — Backend API specs ([Gherkin features](./behavior/be/gherkin/README.md))
-- **[behavior/web/](./behavior/web/README.md)** — Web frontend app specs ([Gherkin features](./behavior/web/gherkin/README.md))
+- **[behavior/be/](./behavior/crud-be/README.md)** — Backend API specs ([Gherkin features](./behavior/crud-be/gherkin/README.md))
+- **[behavior/web/](./behavior/crud-web/README.md)** — Web frontend app specs ([Gherkin features](./behavior/crud-web/gherkin/README.md))
 
 ## Spec Consumption
 

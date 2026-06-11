@@ -12,7 +12,7 @@ void main() {
   });
 
   describeFeature(
-    '../../specs/apps/crud/behavior/web/gherkin/expenses/expense-management.feature',
+    '../../specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature',
     (feature) {
       feature.scenario('Creating an expense entry adds it to the entry list', (
         s,
