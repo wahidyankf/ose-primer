@@ -83,7 +83,6 @@
     "*.fs": "fantomas",
     "*.{ex,exs}": "scripts/format-elixir.sh",
     "*.py": "ruff format",
-    "*.rs": "rustfmt --edition 2024",
     "*.cs": "scripts/format-csharp.sh",
     "*.clj": "scripts/format-clojure.sh",
     "*.dart": "scripts/format-dart.sh",

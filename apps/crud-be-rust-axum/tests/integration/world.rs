@@ -6,15 +6,15 @@ use uuid::Uuid;
 use crud_be_rust_axum::{
     auth::{
         jwt::{
-            ISSUER, decode_access_token, decode_claims_unchecked, decode_refresh_token,
-            encode_access_token, encode_refresh_token,
+            decode_access_token, decode_claims_unchecked, decode_refresh_token,
+            encode_access_token, encode_refresh_token, ISSUER,
         },
         password::{hash_password, verify_password},
     },
     domain::{
-        attachment::{Attachment, MAX_FILE_SIZE, is_allowed_content_type},
+        attachment::{is_allowed_content_type, Attachment, MAX_FILE_SIZE},
         errors::AppError,
-        expense::{Expense, parse_amount},
+        expense::{parse_amount, Expense},
         types::{Currency, Role, UserStatus},
         user::{validate_email, validate_password},
     },
@@ -632,7 +632,7 @@ pub async fn svc_login(state: &AppState, username: &str, password: &str) -> Serv
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::Unauthorized {
                 message: "Invalid credentials".to_string(),
-            });
+            })
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -724,7 +724,7 @@ pub async fn svc_refresh(state: &AppState, refresh_token_str: &str) -> ServiceRe
         Err(_) => {
             return ServiceResponse::from_error(&AppError::Unauthorized {
                 message: "Invalid token".to_string(),
-            });
+            })
         }
     };
 
@@ -733,7 +733,7 @@ pub async fn svc_refresh(state: &AppState, refresh_token_str: &str) -> ServiceRe
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::Unauthorized {
                 message: "User not found".to_string(),
-            });
+            })
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -899,7 +899,7 @@ pub async fn svc_change_password(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "user".to_string(),
-            });
+            })
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -1085,7 +1085,7 @@ pub async fn svc_admin_force_password_reset(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "user".to_string(),
-            });
+            })
         }
         Err(e) => return ServiceResponse::from_error(&e),
         Ok(Some(_)) => {}
@@ -1134,7 +1134,7 @@ pub async fn svc_create_expense(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "currency".to_string(),
                 message: format!("unsupported currency: {currency_str}"),
-            });
+            })
         }
     };
 
@@ -1149,7 +1149,7 @@ pub async fn svc_create_expense(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "type".to_string(),
                 message: format!("unsupported entry type: {other}"),
-            });
+            })
         }
     };
 
@@ -1159,7 +1159,7 @@ pub async fn svc_create_expense(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "date".to_string(),
                 message: "invalid date format, use YYYY-MM-DD".to_string(),
-            });
+            })
         }
     };
 
@@ -1265,7 +1265,7 @@ pub async fn svc_update_expense(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "expense".to_string(),
-            });
+            })
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -1282,7 +1282,7 @@ pub async fn svc_update_expense(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "currency".to_string(),
                 message: format!("unsupported currency: {currency_str}"),
-            });
+            })
         }
     };
 
@@ -1297,7 +1297,7 @@ pub async fn svc_update_expense(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "type".to_string(),
                 message: format!("unsupported entry type: {other}"),
-            });
+            })
         }
     };
 
@@ -1307,7 +1307,7 @@ pub async fn svc_update_expense(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "date".to_string(),
                 message: "invalid date format, use YYYY-MM-DD".to_string(),
-            });
+            })
         }
     };
 
@@ -1361,7 +1361,7 @@ pub async fn svc_delete_expense(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "expense".to_string(),
-            });
+            })
         }
         Err(e) => return ServiceResponse::from_error(&e),
     }
@@ -1418,7 +1418,7 @@ pub async fn svc_upload_attachment(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "expense".to_string(),
-            });
+            })
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -1472,7 +1472,7 @@ pub async fn svc_list_attachments(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "expense".to_string(),
-            });
+            })
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -1508,7 +1508,7 @@ pub async fn svc_delete_attachment(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "expense".to_string(),
-            });
+            })
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -1524,7 +1524,7 @@ pub async fn svc_delete_attachment(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "attachment".to_string(),
-            });
+            })
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -1567,7 +1567,7 @@ pub async fn svc_pl_report(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "from".to_string(),
                 message: "invalid date format".to_string(),
-            });
+            })
         }
     };
     let to = match NaiveDate::parse_from_str(to_str, "%Y-%m-%d") {
@@ -1576,7 +1576,7 @@ pub async fn svc_pl_report(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "to".to_string(),
                 message: "invalid date format".to_string(),
-            });
+            })
         }
     };
     let currency = match Currency::parse_from_str(currency_str) {
@@ -1585,7 +1585,7 @@ pub async fn svc_pl_report(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "currency".to_string(),
                 message: format!("unsupported currency: {currency_str}"),
-            });
+            })
         }
     };
 
