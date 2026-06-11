@@ -1,7 +1,7 @@
 //! Cucumber-rs integration tests for the `spec-coverage validate` command.
 //!
 //! Wires the behavior-contract feature file at
-//! `specs/apps/rhino/behavior/cli/gherkin/spec-coverage/` to step definitions
+//! `specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/` to step definitions
 //! that synthesize specs/app fixtures and drive the compiled `rhino-cli`
 //! binary, asserting on its output and exit code.
 
@@ -258,7 +258,7 @@ async fn main() {
 fn repo_feature_dir() -> PathBuf {
     let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     manifest
-        .join("../../specs/apps/rhino/behavior/cli/gherkin/spec-coverage")
+        .join("../../specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage")
         .canonicalize()
         .expect("feature dir resolvable")
 }

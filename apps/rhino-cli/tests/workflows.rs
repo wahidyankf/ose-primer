@@ -1,7 +1,7 @@
 //! Cucumber-rs integration tests for the `workflows validate-naming` command.
 //!
 //! Wires the behavior-contract feature file at
-//! `specs/apps/rhino/behavior/cli/gherkin/workflows/` to step definitions that
+//! `specs/apps/rhino/behavior/rhino-cli/gherkin/workflows/` to step definitions that
 //! synthesize a `repo-governance/workflows/` tree inside a fresh git-rooted
 //! temp workspace and drive the compiled `rhino-cli` binary, asserting on its
 //! output and exit code.
@@ -187,7 +187,7 @@ async fn main() {
 fn feature_dir() -> PathBuf {
     let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     manifest
-        .join("../../specs/apps/rhino/behavior/cli/gherkin/workflows")
+        .join("../../specs/apps/rhino/behavior/rhino-cli/gherkin/workflows")
         .canonicalize()
         .expect("feature dir resolvable")
 }

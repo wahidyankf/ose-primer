@@ -1,7 +1,7 @@
 //! Cucumber-rs integration tests for the `env init|backup|restore` commands.
 //!
 //! Wires the behavior-contract feature files at
-//! `specs/apps/rhino/behavior/cli/gherkin/env/` to step definitions that build
+//! `specs/apps/rhino/behavior/rhino-cli/gherkin/env/` to step definitions that build
 //! synthetic git repositories and backup directories inside fresh temp dirs and
 //! drive the compiled `rhino-cli` binary. Nothing here touches the real repo's
 //! `.env` files. Step-definition text mirrors the gherkin verbatim so the
@@ -945,7 +945,7 @@ async fn main() {
 fn feature_dir() -> PathBuf {
     let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     manifest
-        .join("../../specs/apps/rhino/behavior/cli/gherkin/env")
+        .join("../../specs/apps/rhino/behavior/rhino-cli/gherkin/env")
         .canonicalize()
         .expect("feature dir resolvable")
 }

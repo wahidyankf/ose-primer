@@ -100,14 +100,14 @@
       }
     },
     "spec-coverage": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate specs/apps/rhino/behavior/cli/gherkin apps/rhino-cli --shared-steps",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate specs/apps/rhino/behavior/rhino-cli/gherkin apps/rhino-cli --shared-steps",
       "cache": true,
       "inputs": [
-        "{workspaceRoot}/specs/apps/rhino/behavior/cli/gherkin/**/*.feature",
+        "{workspaceRoot}/specs/apps/rhino/behavior/rhino-cli/gherkin/**/*.feature",
         "{projectRoot}/src/**/*.rs",
         "{projectRoot}/tests/**/*.rs"
       ],
-      "comment": "Validates that every gherkin step under specs/apps/rhino/behavior/cli/gherkin has a matching cucumber-rs step definition in apps/rhino-cli/tests (--shared-steps does step-only validation across the whole tree). The step extractor recognises the literal `#[given(\"...\")]`, `expr = \"...\"`, and raw-string `regex = r\"...\"` / `regex = r#\"...\"#` attribute forms used by the test suite, so the gate fails if any step lacks a definition."
+      "comment": "Validates that every gherkin step under specs/apps/rhino/behavior/rhino-cli/gherkin has a matching cucumber-rs step definition in apps/rhino-cli/tests (--shared-steps does step-only validation across the whole tree). The step extractor recognises the literal `#[given(\"...\")]`, `expr = \"...\"`, and raw-string `regex = r\"...\"` / `regex = r#\"...\"#` attribute forms used by the test suite, so the gate fails if any step lacks a definition."
     },
     "validate:naming-agents": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- agents validate-naming",

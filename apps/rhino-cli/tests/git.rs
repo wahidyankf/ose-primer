@@ -1,7 +1,7 @@
 //! Cucumber-rs integration tests for the `git pre-commit` command.
 //!
 //! Wires the behavior-contract feature file at
-//! `specs/apps/rhino/behavior/cli/gherkin/git/` to step definitions that drive
+//! `specs/apps/rhino/behavior/rhino-cli/gherkin/git/` to step definitions that drive
 //! the compiled `rhino-cli` binary.
 //!
 //! Two fixture shapes are used:
@@ -284,7 +284,7 @@ async fn main() {
 fn feature_dir() -> PathBuf {
     let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     manifest
-        .join("../../specs/apps/rhino/behavior/cli/gherkin/git")
+        .join("../../specs/apps/rhino/behavior/rhino-cli/gherkin/git")
         .canonicalize()
         .expect("feature dir resolvable")
 }

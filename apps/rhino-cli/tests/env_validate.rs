@@ -201,6 +201,8 @@ fn then_reports_passed(w: &mut EnvValidateWorld) {
 
 #[tokio::main]
 async fn main() {
-    EnvValidateWorld::run("../../specs/apps/rhino/behavior/cli/gherkin/env/env-validate.feature")
-        .await;
+    EnvValidateWorld::run(
+        "../../specs/apps/rhino/behavior/rhino-cli/gherkin/env/env-validate.feature",
+    )
+    .await;
 }

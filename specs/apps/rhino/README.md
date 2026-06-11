@@ -39,7 +39,7 @@ specs/apps/rhino/
             └── workflows/
 ```
 
-See [behavior/cli/gherkin/README.md](./behavior/cli/gherkin/README.md) for the full file inventory.
+See [behavior/rhino-cli/gherkin/README.md](./behavior/rhino-cli/gherkin/README.md) for the full file inventory.
 
 ## Running the Tests
 
@@ -68,7 +68,7 @@ The `test:integration` target is cached — it only re-runs when source files in
 
 ## Adding New Specs
 
-1. Create `specs/apps/rhino/behavior/cli/gherkin/<domain>/<domain>-<action>.feature` (create the domain subdir if it does not exist)
+1. Create `specs/apps/rhino/behavior/rhino-cli/gherkin/<domain>/<domain>-<action>.feature` (create the domain subdir if it does not exist)
 2. Create the unit test under `apps/rhino-cli/src/commands/` (mocked I/O):
    - Include a `// Scenario: <title>` comment for every scenario
    - Register step definitions using mocked function injection for all I/O
@@ -81,7 +81,7 @@ The `test:integration` target is cached — it only re-runs when source files in
 
    ```bash
    cd apps/rhino-cli
-   cargo run -- spec-coverage validate specs/apps/rhino/behavior/cli/gherkin apps/rhino-cli
+   cargo run -- spec-coverage validate specs/apps/rhino/behavior/rhino-cli/gherkin apps/rhino-cli
    ```
 
 ## Dual Consumption

@@ -1,7 +1,7 @@
 //! Cucumber-rs integration tests for the `doctor` command.
 //!
 //! Wires the behavior-contract feature file at
-//! `specs/apps/rhino/behavior/cli/gherkin/system/doctor.feature` to step
+//! `specs/apps/rhino/behavior/rhino-cli/gherkin/system/doctor.feature` to step
 //! definitions that build a synthetic repo (config files) plus a controlled
 //! `PATH` of stub tool scripts, then drive the compiled `rhino-cli` binary.
 //! This mirrors the Go integration test's PATH-manipulation strategy but makes
@@ -376,7 +376,7 @@ async fn main() {
 fn feature_dir() -> PathBuf {
     let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     manifest
-        .join("../../specs/apps/rhino/behavior/cli/gherkin/system")
+        .join("../../specs/apps/rhino/behavior/rhino-cli/gherkin/system")
         .canonicalize()
         .expect("feature dir resolvable")
 }

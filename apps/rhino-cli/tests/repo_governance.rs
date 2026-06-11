@@ -2,7 +2,7 @@
 //! `repo-governance gherkin-keyword-cardinality` commands.
 //!
 //! Wires the behavior-contract feature files at
-//! `specs/apps/rhino/behavior/cli/gherkin/repo-governance/` to step definitions
+//! `specs/apps/rhino/behavior/rhino-cli/gherkin/repo-governance/` to step definitions
 //! that synthesize markdown / feature-file fixtures inside a fresh git-rooted
 //! temp workspace and drive the compiled `rhino-cli` binary, asserting on its
 //! output and exit code.
@@ -295,7 +295,7 @@ async fn main() {
 fn feature_dir() -> PathBuf {
     let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     manifest
-        .join("../../specs/apps/rhino/behavior/cli/gherkin/repo-governance")
+        .join("../../specs/apps/rhino/behavior/rhino-cli/gherkin/repo-governance")
         .canonicalize()
         .expect("feature dir resolvable")
 }

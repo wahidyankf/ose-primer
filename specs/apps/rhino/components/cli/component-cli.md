@@ -288,7 +288,7 @@ standardized noise-skip set.
 ## Gherkin Coverage
 
 Behavior scenarios for all commands live in
-[`specs/apps/rhino/behavior/cli/gherkin/docs/`](../../behavior/cli/gherkin/docs/README.md):
+[`specs/apps/rhino/behavior/rhino-cli/gherkin/docs/`](../../behavior/rhino-cli/gherkin/docs/README.md):
 
 | Feature file                              | Command                           | Scenarios |
 | ----------------------------------------- | --------------------------------- | --------- |
@@ -301,5 +301,5 @@ Behavior scenarios for all commands live in
 ## Related
 
 - **Parent**: [cli component](./README.md)
-- **Behavior specs**: [behavior/cli/gherkin/docs/](../../behavior/cli/gherkin/docs/README.md)
+- **Behavior specs**: [behavior/rhino-cli/gherkin/docs/](../../behavior/rhino-cli/gherkin/docs/README.md)
 - **Implementation**: `apps/rhino-cli/src/commands/docs.rs`

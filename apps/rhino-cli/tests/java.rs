@@ -1,7 +1,7 @@
 //! Cucumber-rs integration tests for the `java validate-annotations` command.
 //!
 //! Wires the behavior-contract feature file at
-//! `specs/apps/rhino/behavior/cli/gherkin/java/` to step definitions that
+//! `specs/apps/rhino/behavior/rhino-cli/gherkin/java/` to step definitions that
 //! synthesize Java source trees inside a fresh temp directory and drive the
 //! compiled `rhino-cli` binary, asserting on output and exit code.
 
@@ -164,7 +164,7 @@ async fn main() {
 fn feature_dir() -> PathBuf {
     let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     manifest
-        .join("../../specs/apps/rhino/behavior/cli/gherkin/java")
+        .join("../../specs/apps/rhino/behavior/rhino-cli/gherkin/java")
         .canonicalize()
         .expect("feature dir resolvable")
 }

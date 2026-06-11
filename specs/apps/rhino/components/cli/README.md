@@ -11,4 +11,4 @@ C4 Level 3 component diagrams for the rhino-cli internals.
 ## Related
 
 - **Parent**: [components](../README.md)
-- **Behavior specs**: [behavior/cli/gherkin/](../../behavior/cli/gherkin/README.md)
+- **Behavior specs**: [behavior/rhino-cli/gherkin/](../../behavior/rhino-cli/gherkin/README.md)

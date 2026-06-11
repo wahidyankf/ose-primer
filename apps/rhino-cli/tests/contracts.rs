@@ -2,7 +2,7 @@
 //! `contracts dart-scaffold` commands.
 //!
 //! Wires the behavior-contract feature files at
-//! `specs/apps/rhino/behavior/cli/gherkin/contracts/` to step definitions that
+//! `specs/apps/rhino/behavior/rhino-cli/gherkin/contracts/` to step definitions that
 //! synthesize generated-contracts fixtures inside a fresh temp directory and
 //! drive the compiled `rhino-cli` binary, asserting on output, exit code, and
 //! the on-disk effects (rewritten Java files / generated Dart scaffold).
@@ -251,7 +251,7 @@ async fn main() {
 fn feature_dir() -> PathBuf {
     let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     manifest
-        .join("../../specs/apps/rhino/behavior/cli/gherkin/contracts")
+        .join("../../specs/apps/rhino/behavior/rhino-cli/gherkin/contracts")
         .canonicalize()
         .expect("feature dir resolvable")
 }

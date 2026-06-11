@@ -2,7 +2,7 @@
 //! `agents validate-sync`, and `agents validate-naming` commands.
 //!
 //! Wires the behavior-contract feature files at
-//! `specs/apps/rhino/behavior/cli/gherkin/agents/` to step definitions that
+//! `specs/apps/rhino/behavior/rhino-cli/gherkin/agents/` to step definitions that
 //! synthesize `.claude/` and `.opencode/` fixtures inside a fresh git-rooted
 //! temp workspace and drive the compiled `rhino-cli` binary, asserting on
 //! output and exit code.
@@ -692,7 +692,7 @@ async fn main() {
 fn feature_dir() -> PathBuf {
     let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     manifest
-        .join("../../specs/apps/rhino/behavior/cli/gherkin/agents")
+        .join("../../specs/apps/rhino/behavior/rhino-cli/gherkin/agents")
         .canonicalize()
         .expect("feature dir resolvable")
 }
