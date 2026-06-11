@@ -44,7 +44,7 @@ This agent receives an explicit target path (or list of paths) where content sho
 target: specs/apps/investment-oracle
 
 # Create missing README in an existing directory
-target: specs/apps/crud/behavior/be/gherkin/health
+target: specs/apps/crud/behavior/crud-be/gherkin/health
 
 # Scaffold C4 diagrams for an existing spec area
 ```
@@ -99,10 +99,39 @@ Generate Mermaid-based C4 diagrams following the accessible color palette:
 ### Feature File Naming
 
 - Pattern: `{domain-capability}.feature` (kebab-case)
-- BE/FE/build-tools: MUST be placed in domain subdirectories under `gherkin/`
-- CLI: MUST be placed flat under `gherkin/` (no domain subdirectories)
+- BE/web/CLI: MUST be placed in domain subdirectories under `gherkin/` — no flat-structure exception
 - Libs: MUST be placed in package subdirectories under `gherkin/`
 - See [Specs Directory Structure Convention](../../repo-governance/conventions/structure/specs-directory-structure.md) for full rules
+
+### Behavior Directory Naming (Flat Product-Surface Scheme)
+
+Behavior directories use the **flat product-surface** pattern: `behavior/<product>-<surface>/gherkin/`.
+
+- **`<product>`** = product name token (for single-product families, equals the family name)
+- **`<surface>`** = `be` (backend HTTP), `web` (frontend), or `cli` (command-line)
+- **`be` is the only backend surface name** — do NOT use `api`
+- **`fe` is retired** — use `web`
+
+Surface-profile scaffolding targets:
+
+| Profile    | Behavior dirs to scaffold                                           |
+| ---------- | ------------------------------------------------------------------- |
+| full-stack | `behavior/<product>-be/gherkin/`, `behavior/<product>-web/gherkin/` |
+| web-only   | `behavior/<product>-web/gherkin/`                                   |
+| CLI-only   | `behavior/<product>-cli/gherkin/`                                   |
+
+Example (crud family, single-product):
+
+```
+specs/apps/crud/behavior/crud-be/gherkin/<domain>/<feature>.feature
+specs/apps/crud/behavior/crud-web/gherkin/<domain>/<feature>.feature
+```
+
+Example (rhino family, CLI-only):
+
+```
+specs/apps/rhino/behavior/rhino-cli/gherkin/<domain>/<feature>.feature
+```
 
 ### README Structure (Spec Area Root)
 

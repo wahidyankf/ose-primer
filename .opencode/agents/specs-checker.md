@@ -38,10 +38,10 @@ folders and their subfolders — nothing else.
 
 ```
 # Single folder — validate crud backend behavior and all its subfolders
-folders: [specs/apps/crud/behavior/be]
+folders: [specs/apps/crud/behavior/crud-be]
 
 # Multiple folders — validate each AND check cross-folder consistency
-folders: [specs/apps/crud/behavior/be, specs/apps/crud/behavior/web]
+folders: [specs/apps/crud/behavior/crud-be, specs/apps/crud/behavior/crud-web]
 
 # Mixed tiers
 folders: [specs/apps/crud, specs/libs/golang-commons]
@@ -52,10 +52,22 @@ folders: [specs/apps/crud, specs/libs/golang-commons]
 - Each folder in the list is validated independently (Categories 1-3, 5-8)
 - Cross-folder consistency (Category 4) runs **only** across the listed folders
 - Subfolders are always included automatically — listing `specs/apps/crud` includes
-  `specs/apps/crud/behavior/be/gherkin/`, `specs/apps/crud/components/`, and all children
+  `specs/apps/crud/behavior/crud-be/gherkin/`, `specs/apps/crud/components/`, and all children
 - Folders NOT in the list are completely ignored, even if referenced by listed folders
 
 ## Validation Categories
+
+### Category 0: Flat Product-Surface Naming (Structural Invariants)
+
+Before any other validation, enforce the flat product-surface naming rules:
+
+1. **One tree per family**: each `specs/apps/<family>/` must map to exactly one family — no sibling directories (e.g., no `specs/apps/crud-app/` and `specs/apps/crud-platform/` split).
+2. **Flat product-surface behavior dirs**: every `behavior/` subdirectory MUST follow the pattern `behavior/<product>-<surface>/gherkin/`. The `<surface>` token must be `be`, `web`, or `cli`.
+3. **No bare-surface dirs**: `behavior/be/`, `behavior/web/`, and `behavior/cli/` are NON-STANDARD and must be flagged.
+4. **No `api` surface**: `behavior/api/` and `behavior/build-tools/` are NON-STANDARD — use `behavior/<product>-be/` instead.
+
+**CRITICAL**: Any `behavior/be/`, `behavior/web/`, `behavior/cli/`, or `behavior/api/` directory found in listed folders
+**HIGH**: behavior dir exists but does not match `<product>-<surface>` pattern (e.g., missing product prefix)
 
 ### Category 1: Structural Completeness (README Coverage)
 
@@ -222,8 +234,8 @@ Use the standard audit report format:
 
 **Folders validated**:
 
-- `specs/apps/crud/behavior/be`
-- `specs/apps/crud/behavior/web`
+- `specs/apps/crud/behavior/crud-be`
+- `specs/apps/crud/behavior/crud-web`
 
 **Timestamp**: YYYY-MM-DD--HH-MM UTC+7
 **UUID Chain**: {uuid}
@@ -239,7 +251,7 @@ Use the standard audit report format:
 
 ## Findings by Folder
 
-### specs/apps/crud/behavior/be
+### specs/apps/crud/behavior/crud-be
 
 #### [CRITICAL] {Category} — {Brief description}
 
@@ -249,7 +261,7 @@ Use the standard audit report format:
 **Expected**: What should be there
 **Confidence**: HIGH | MEDIUM
 
-### specs/apps/crud/behavior/web
+### specs/apps/crud/behavior/crud-web
 
 [... findings for this folder ...]
 
@@ -257,7 +269,7 @@ Use the standard audit report format:
 
 #### [HIGH] Cross-Folder Consistency — {Brief description}
 
-**Folders**: `specs/apps/crud/behavior/be`, `specs/apps/crud/behavior/web`
+**Folders**: `specs/apps/crud/behavior/crud-be`, `specs/apps/crud/behavior/crud-web`
 **Evidence**: What contradicts or doesn't blend
 **Expected**: What consistency looks like
 **Confidence**: HIGH | MEDIUM
