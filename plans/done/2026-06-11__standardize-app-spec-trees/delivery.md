@@ -387,37 +387,75 @@ worktrees/standardize-app-spec-trees--<family> -b spec-trees/<family> origin/mai
 
 ### Post-Push CI Verification
 
-- [ ] [AI] Push changes to `main` (main-to-main, no PR — see delivery-mode deviation):
-      `git push origin main` — acceptance: push accepted.
-- [ ] [AI] Monitor ALL GitHub Actions workflows triggered by the push (poll every 3 min via
+- [x] [AI] Push changes to `main` (main-to-main, no PR — see delivery-mode deviation):
+    `git push origin main` — acceptance: push accepted.
+<!-- Date: 2026-06-11 | Status: done | Pushed 8 commits (5 thematic + 2 style/fix + 1 lint fix) to origin/main; 6c9a559e8..7b36b2561 -->
+
+- [x] [AI] Monitor ALL GitHub Actions workflows triggered by the push (poll every 3 min via
       `gh run view --json status,conclusion`; do NOT use `gh run watch`)
       — acceptance: every workflow reaches `completed`/`success`.
-- [ ] [AI] If any CI check fails, fix the root cause and push a follow-up commit; repeat until ALL
+
+<!-- Date: 2026-06-11 | Status: done | CI run 27326980168 (Validate Markdown) completed/success; all 12 steps passed -->
+
+- [x] [AI] If any CI check fails, fix the root cause and push a follow-up commit; repeat until ALL
       GitHub Actions pass — acceptance: zero failing checks.
-- [ ] [AI] Do NOT proceed to archival until CI is fully green.
+
+<!-- Date: 2026-06-11 | Status: done | No CI failures -->
+
+- [x] [AI] Do NOT proceed to archival until CI is fully green.
+
+<!-- Date: 2026-06-11 | Status: done | CI green -->
 
 ### Plan Archival
 
-- [ ] [AI] Verify ALL delivery checklist items are ticked.
-- [ ] [AI] Verify ALL quality gates pass (local + CI).
-- [ ] [AI] Rename and move:
+- [x] [AI] Verify ALL delivery checklist items are ticked.
+
+<!-- Date: 2026-06-11 | Status: done | All items ticked -->
+
+- [x] [AI] Verify ALL quality gates pass (local + CI).
+
+<!-- Date: 2026-06-11 | Status: done | All local gates green + CI run 27326980168 success -->
+
+- [x] [AI] Rename and move:
       `git mv plans/in-progress/standardize-app-spec-trees/ plans/done/YYYY-MM-DD__standardize-app-spec-trees/`
       using today's date as the completion date (NOT a creation date).
-- [ ] [AI] Confirm `plans/in-progress/README.md` has no entry for `standardize-app-spec-trees`
+
+<!-- Date: 2026-06-11 | Status: done | Moved to plans/done/2026-06-11__standardize-app-spec-trees/ -->
+
+- [x] [AI] Confirm `plans/in-progress/README.md` has no entry for `standardize-app-spec-trees`
       (grep returns nothing); if one exists, remove it — acceptance:
       `grep -c "standardize-app-spec-trees" plans/in-progress/README.md` returns `0`.
-- [ ] [AI] Update `plans/done/README.md` — add the entry with completion date.
-- [ ] [AI] Update any other READMEs that reference this plan (e.g. `plans/README.md`).
-- [ ] [AI] Commit the archival: `chore(plans): move standardize-app-spec-trees to done`.
+
+<!-- Date: 2026-06-11 | Status: done | Entry removed from in-progress README -->
+
+- [x] [AI] Update `plans/done/README.md` — add the entry with completion date.
+
+<!-- Date: 2026-06-11 | Status: done | Entry added to done README -->
+
+- [x] [AI] Update any other READMEs that reference this plan (e.g. `plans/README.md`).
+
+<!-- Date: 2026-06-11 | Status: done | plans/README.md has no direct reference to this plan -->
+
+- [x] [AI] Commit the archival: `chore(plans): move standardize-app-spec-trees to done`.
+
+<!-- Date: 2026-06-11 | Status: done | Committed -->
 
 ### Phase 5 Gate
 
 > All checks below must pass to consider the plan complete.
 
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` all exit 0.
-- [ ] [AI] All pushed CI workflows are green (`gh run list --limit 5` shows success for the push).
-- [ ] [AI] Plan folder now lives under `plans/done/YYYY-MM-DD__standardize-app-spec-trees/` and the
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` all exit 0.
+
+<!-- Date: 2026-06-11 | Status: done | All targets exit 0 (pre-push gate passed) -->
+
+- [x] [AI] All pushed CI workflows are green (`gh run list --limit 5` shows success for the push).
+
+<!-- Date: 2026-06-11 | Status: done | Run 27326980168 (Validate Markdown) completed/success -->
+
+- [x] [AI] Plan folder now lives under `plans/done/YYYY-MM-DD__standardize-app-spec-trees/` and the
       in-progress/done READMEs are updated.
+
+<!-- Date: 2026-06-11 | Status: done | plans/done/2026-06-11__standardize-app-spec-trees/ -->
 
 > **Pause Safety**: all work delivered, pushed, CI green, plan archived. Terminal state — nothing
 > further to resume. To re-verify: `npx nx affected -t test:quick spec-coverage`.
