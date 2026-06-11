@@ -153,8 +153,8 @@ Use this table when uncertain whether a change requires a spec update:
 `specs/apps/crud/` serves all 11 backend implementations and 3 frontend implementations from a single set of shared specs. This demonstrates the pattern at scale:
 
 - `specs/apps/crud/components/` — C4 diagrams for the demo application architecture
-- `specs/apps/crud/behavior/be/gherkin/` — Shared Gherkin scenarios consumed by all backends at unit, integration, and E2E levels
-- `specs/apps/crud/behavior/web/gherkin/` — Shared Gherkin scenarios consumed by frontend implementations
+- `specs/apps/crud/behavior/crud-be/gherkin/` — Shared Gherkin scenarios consumed by all backends at unit, integration, and E2E levels
+- `specs/apps/crud/behavior/crud-web/gherkin/` — Shared Gherkin scenarios consumed by frontend implementations
 - `specs/apps/crud/containers/contracts/` — OpenAPI 3.1 contract spec that all backends and frontends implement
 
 When a new endpoint is added to the OpenAPI spec in `crud-contracts`, both the corresponding Gherkin scenarios and the C4 component diagram must be updated to reflect the new behavior and component.
@@ -164,7 +164,7 @@ When a new endpoint is added to the OpenAPI spec in `crud-contracts`, both the c
 `specs/apps/crud/` maintains C4 diagrams and Gherkin scenarios for the Next.js 16 fullstack platform:
 
 - `specs/apps/crud/components/` — Architecture diagrams kept current with the Next.js App Router structure and tRPC routers
-- `specs/apps/crud/behavior/be/gherkin/` — Scenarios for tRPC procedures consumed by `crud-be-e2e`
+- `specs/apps/crud/behavior/crud-be/gherkin/` — Scenarios for tRPC procedures consumed by `crud-be-e2e`
 
 When a new tRPC router is added to `apps/crud-fs-ts-nextjs/`, a new component entry appears in the C4 component diagram and new scenarios are added to the Gherkin directory.
 
@@ -188,7 +188,7 @@ They:
 
 1. Update `specs/apps/crud/containers/contracts/` (OpenAPI spec) with the new endpoint definition
 2. Run `nx run crud-contracts:codegen` and related codegen targets
-3. Add a Gherkin scenario to `specs/apps/crud/behavior/be/gherkin/products/get-product.feature`
+3. Add a Gherkin scenario to `specs/apps/crud/behavior/crud-be/gherkin/products/get-product.feature`
 4. Update the C4 component diagram in `specs/apps/crud/components/` if the endpoint belongs to a new component
 5. Implement the endpoint in `apps/crud-be-golang-gin/`
 
@@ -208,7 +208,7 @@ The `apps/crud-be-clojure-pedestal/` app is removed from the monorepo.
 
 The developer also:
 
-1. Removes any Clojure-specific references from `specs/apps/crud/behavior/be/README.md`
+1. Removes any Clojure-specific references from `specs/apps/crud/behavior/crud-be/README.md`
 2. Updates the root `specs/README.md` if it listed the backend explicitly
 3. Verifies no Gherkin scenarios reference Clojure-specific step definitions (shared scenarios remain intact)
 
@@ -251,7 +251,7 @@ It does not apply to:
 ## Tools and Automation
 
 - **`rhino-cli spec-coverage validate`**: Enforces spec-to-test mapping for CLI apps. Integrated into `test:quick`. Violations cause CI to fail.
-- **Nx cache inputs**: `test:unit` and `test:quick` targets for crud-be backends declare `specs/apps/crud/behavior/be/gherkin/**/*.feature` as inputs, so Nx invalidates cached results when Gherkin specs change.
+- **Nx cache inputs**: `test:unit` and `test:quick` targets for crud-be backends declare `specs/apps/crud/behavior/crud-be/gherkin/**/*.feature` as inputs, so Nx invalidates cached results when Gherkin specs change.
 - **`crud-contracts` codegen target**: Generates types from the OpenAPI spec. Declared as a dependency of `typecheck` and `build`, so stale contracts are caught in CI before merge.
 - **`repo-rules-checker`**: Validates that specs folders exist for apps that require them. Flags missing or misnamed spec folders.
 
@@ -261,4 +261,4 @@ It does not apply to:
 - [BDD Spec-to-Test Mapping](../infra/bdd-spec-test-mapping.md) - Mandatory 1:1 mapping for CLI apps; three-level consumption for crud-be backends
 - [Nx Target Standards](../infra/nx-targets.md) - Cache input declarations that include Gherkin specs
 - [specs/README.md](../../../specs/README.md) - Spec directory organization and per-app spec structure
-- [specs/apps/crud/behavior/be/README.md](../../../specs/apps/crud/behavior/be/README.md) - Demo-be shared spec structure and three-level consumption
+- [specs/apps/crud/behavior/crud-be/README.md](../../../specs/apps/crud/behavior/crud-be/README.md) - Demo-be shared spec structure and three-level consumption

@@ -15,7 +15,7 @@ tags:
 
 # Three-Level Testing Standard
 
-Defines the mandatory three-level testing architecture for all projects in the monorepo. The standard applies universally with project-type-specific adaptations. Demo-be backends consume shared Gherkin specifications from `specs/apps/crud/behavior/be/gherkin/` at all three levels. Other projects follow the same isolation boundaries appropriate to their domain.
+Defines the mandatory three-level testing architecture for all projects in the monorepo. The standard applies universally with project-type-specific adaptations. Demo-be backends consume shared Gherkin specifications from `specs/apps/crud/behavior/crud-be/gherkin/` at all three levels. Other projects follow the same isolation boundaries appropriate to their domain.
 
 ## Principles Implemented/Respected
 
@@ -37,17 +37,17 @@ Defines the mandatory three-level testing architecture for all projects in the m
 
 **Purpose**: Verify business logic in complete isolation.
 
-| Aspect            | Rule                                                                      |
-| ----------------- | ------------------------------------------------------------------------- |
-| Dependencies      | **All mocked** — no real database, no real HTTP, no real filesystem       |
-| Gherkin specs     | **Must consume** shared specs from `specs/apps/crud/behavior/be/gherkin/` |
-| Database          | Mocked repositories / in-memory stores                                    |
-| HTTP layer        | None — call service functions directly                                    |
-| External services | None                                                                      |
-| Coverage          | Measured here (>=90% line coverage via `rhino-cli`)                       |
-| Nx caching        | `cache: true` (deterministic)                                             |
-| Nx inputs         | Source files + `generated-contracts/**/*` + Gherkin specs                 |
-| Runs in           | `test:quick` (pre-push gate)                                              |
+| Aspect            | Rule                                                                           |
+| ----------------- | ------------------------------------------------------------------------------ |
+| Dependencies      | **All mocked** — no real database, no real HTTP, no real filesystem            |
+| Gherkin specs     | **Must consume** shared specs from `specs/apps/crud/behavior/crud-be/gherkin/` |
+| Database          | Mocked repositories / in-memory stores                                         |
+| HTTP layer        | None — call service functions directly                                         |
+| External services | None                                                                           |
+| Coverage          | Measured here (>=90% line coverage via `rhino-cli`)                            |
+| Nx caching        | `cache: true` (deterministic)                                                  |
+| Nx inputs         | Source files + `generated-contracts/**/*` + Gherkin specs                      |
+| Runs in           | `test:quick` (pre-push gate)                                                   |
 
 **Architecture**: Step definitions call service/handler functions directly, injecting mocked repository implementations. No HTTP framework, no routing, no serialization.
 
@@ -74,16 +74,16 @@ Then the product should be created successfully
 
 **Purpose**: Verify that business logic works correctly with a real database, testing data persistence, migrations, constraints, and transactions.
 
-| Aspect            | Rule                                                                      |
-| ----------------- | ------------------------------------------------------------------------- |
-| Dependencies      | **Real database only** — no HTTP, no external services                    |
-| Gherkin specs     | **Must consume** shared specs from `specs/apps/crud/behavior/be/gherkin/` |
-| Database          | **Real PostgreSQL** via `docker-compose.integration.yml`                  |
-| HTTP layer        | **None** — call service/repository functions directly, no HTTP dispatch   |
-| External services | None                                                                      |
-| Coverage          | Not measured at this level                                                |
-| Nx caching        | `cache: false` (real database = non-deterministic)                        |
-| Runs in           | Scheduled CI (combined with E2E in per-service workflows)                 |
+| Aspect            | Rule                                                                           |
+| ----------------- | ------------------------------------------------------------------------------ |
+| Dependencies      | **Real database only** — no HTTP, no external services                         |
+| Gherkin specs     | **Must consume** shared specs from `specs/apps/crud/behavior/crud-be/gherkin/` |
+| Database          | **Real PostgreSQL** via `docker-compose.integration.yml`                       |
+| HTTP layer        | **None** — call service/repository functions directly, no HTTP dispatch        |
+| External services | None                                                                           |
+| Coverage          | Not measured at this level                                                     |
+| Nx caching        | `cache: false` (real database = non-deterministic)                             |
+| Runs in           | Scheduled CI (combined with E2E in per-service workflows)                      |
 
 **Architecture**: Step definitions call service/repository functions directly with a real PostgreSQL connection. No HTTP framework is involved — no MockMvc, no TestClient, no httptest, no ConnTest, no WebApplicationFactory, no fetch, no clj-http, no Router.oneshot.
 
@@ -113,16 +113,16 @@ The test harness MUST:
 
 **Purpose**: Verify the complete system works end-to-end, including HTTP routing, serialization, authentication, and database persistence.
 
-| Aspect            | Rule                                                                      |
-| ----------------- | ------------------------------------------------------------------------- |
-| Dependencies      | **All real** — real HTTP, real database, real server                      |
-| Gherkin specs     | **Must consume** shared specs from `specs/apps/crud/behavior/be/gherkin/` |
-| Database          | Real PostgreSQL (via docker-compose in CI)                                |
-| HTTP layer        | Real HTTP requests via Playwright                                         |
-| External services | As needed                                                                 |
-| Coverage          | Not measured at this level                                                |
-| Nx caching        | `cache: false` (full stack = non-deterministic)                           |
-| Runs in           | Scheduled CI (per-service workflows)                                      |
+| Aspect            | Rule                                                                           |
+| ----------------- | ------------------------------------------------------------------------------ |
+| Dependencies      | **All real** — real HTTP, real database, real server                           |
+| Gherkin specs     | **Must consume** shared specs from `specs/apps/crud/behavior/crud-be/gherkin/` |
+| Database          | Real PostgreSQL (via docker-compose in CI)                                     |
+| HTTP layer        | Real HTTP requests via Playwright                                              |
+| External services | As needed                                                                      |
+| Coverage          | Not measured at this level                                                     |
+| Nx caching        | `cache: false` (full stack = non-deterministic)                                |
+| Runs in           | Scheduled CI (per-service workflows)                                           |
 
 **Architecture**: Playwright sends real HTTP requests to a running server backed by a real database.
 
@@ -132,7 +132,7 @@ Playwright -> HTTP Request -> Running Server -> Real PostgreSQL
 
 ## Spec Consumption Summary
 
-All three levels consume the same shared Gherkin scenarios from [`specs/apps/crud/behavior/be/gherkin/`](../../../specs/apps/crud/behavior/be/gherkin/README.md). The difference is HOW the step definitions execute them:
+All three levels consume the same shared Gherkin scenarios from [`specs/apps/crud/behavior/crud-be/gherkin/`](../../../specs/apps/crud/behavior/crud-be/gherkin/README.md). The difference is HOW the step definitions execute them:
 
 | Level       | Step Implementation                          | What Varies                |
 | ----------- | -------------------------------------------- | -------------------------- |
@@ -148,14 +148,14 @@ For Nx to invalidate cached test results when relevant files change, all `test:u
 1. **Source files** — language-specific glob patterns (e.g., `{projectRoot}/src/**/*.go`)
 2. **Generated contracts** — `{projectRoot}/generated-contracts/**/*` (or `generated_contracts/`
    for Python and Clojure, which use underscore)
-3. **Gherkin specs** — `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` (crud-be
+3. **Gherkin specs** — `{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature` (crud-be
    backends only)
 
 Without these explicit inputs, Nx may serve a cached result after a Gherkin spec is updated or
 after the OpenAPI contract spec triggers a `codegen` run — causing stale test results.
 
 Frontend apps (`crud-fe-*`) include generated contracts in `inputs` but do not include Gherkin
-specs because they use a separate spec directory (`specs/apps/crud/behavior/web/gherkin/`).
+specs because they use a separate spec directory (`specs/apps/crud/behavior/crud-web/gherkin/`).
 
 See [Nx Target Standards](../infra/nx-targets.md) for the full canonical inputs table per language.
 
@@ -395,26 +395,26 @@ Integration: Gherkin Step -> cmd.RunE()   -> Real /tmp filesystem
 
 The three-level standard applies universally, with adaptations per project type:
 
-| Project Type                   | Unit                         | Integration                           | E2E                                  | test:quick | Gherkin Specs                           |
-| ------------------------------ | ---------------------------- | ------------------------------------- | ------------------------------------ | ---------- | --------------------------------------- |
-| Demo-be API backend            | All mocked + specs           | Real PostgreSQL, no HTTP + specs      | Playwright + specs                   | Yes        | `specs/apps/crud/behavior/be/gherkin/`  |
-| Web UI app (crud-fe-ts-nextjs) | Vitest mocks                 | MSW in-process (cacheable)            | Playwright                           | Yes        | Project-specific                        |
-| Content platform               | Vitest mocks                 | MSW/tRPC in-process (cacheable)       | Playwright + specs                   | Yes        | `specs/apps/{domain}/{be,fe}/gherkin/`  |
-| CLI app (Rust)                 | Rust mocks + Gherkin         | BDD in-process (cacheable)            | N/A                                  | Yes        | `specs/{app}/`                          |
-| Library (Go)                   | Go test mocks                | Godog BDD in-process (cacheable)      | N/A                                  | Yes        | `specs/{lib}/`                          |
-| Demo-fe frontend               | Vitest/Flutter mocks + specs | N/A                                   | Playwright (via crud-fe-e2e) + specs | Yes        | `specs/apps/crud/behavior/web/gherkin/` |
-| Fullstack (FS)                 | Vitest mocks + specs         | Mandatory (MSW/real DB as applicable) | Playwright + specs                   | Yes        | `specs/apps/crud/` (BE + FE specs)      |
-| E2E runner                     | N/A                          | N/A                                   | Playwright                           | N/A        | Shared specs                            |
+| Project Type                   | Unit                         | Integration                           | E2E                                  | test:quick | Gherkin Specs                                |
+| ------------------------------ | ---------------------------- | ------------------------------------- | ------------------------------------ | ---------- | -------------------------------------------- |
+| Demo-be API backend            | All mocked + specs           | Real PostgreSQL, no HTTP + specs      | Playwright + specs                   | Yes        | `specs/apps/crud/behavior/crud-be/gherkin/`  |
+| Web UI app (crud-fe-ts-nextjs) | Vitest mocks                 | MSW in-process (cacheable)            | Playwright                           | Yes        | Project-specific                             |
+| Content platform               | Vitest mocks                 | MSW/tRPC in-process (cacheable)       | Playwright + specs                   | Yes        | `specs/apps/{domain}/{be,fe}/gherkin/`       |
+| CLI app (Rust)                 | Rust mocks + Gherkin         | BDD in-process (cacheable)            | N/A                                  | Yes        | `specs/{app}/`                               |
+| Library (Go)                   | Go test mocks                | Godog BDD in-process (cacheable)      | N/A                                  | Yes        | `specs/{lib}/`                               |
+| Demo-fe frontend               | Vitest/Flutter mocks + specs | N/A                                   | Playwright (via crud-fe-e2e) + specs | Yes        | `specs/apps/crud/behavior/crud-web/gherkin/` |
+| Fullstack (FS)                 | Vitest mocks + specs         | Mandatory (MSW/real DB as applicable) | Playwright + specs                   | Yes        | `specs/apps/crud/` (BE + FE specs)           |
+| E2E runner                     | N/A                          | N/A                                   | Playwright                           | N/A        | Shared specs                                 |
 
 **Key rules by project type**:
 
 - **Demo-be backends**: All three levels mandatory; all consume Gherkin specs; integration uses real PostgreSQL with no HTTP
 - **Content platforms**: All three levels mandatory; integration uses MSW/tRPC in-process mocking (cacheable); Gherkin consumption planned (see "Known Gaps")
 - **Web UI apps**: All three levels mandatory; integration uses in-process mocking (MSW); cacheable
-- **Fullstack apps**: All three levels mandatory; consume Gherkin specs from both `specs/apps/crud/behavior/be/gherkin/` and `specs/apps/crud/behavior/web/gherkin/` (the FS app spans both layers)
+- **Fullstack apps**: All three levels mandatory; consume Gherkin specs from both `specs/apps/crud/behavior/crud-be/gherkin/` and `specs/apps/crud/behavior/crud-web/gherkin/` (the FS app spans both layers)
 - **CLI apps**: Unit + integration mandatory; both levels consume Gherkin specs; unit mocks all I/O; integration uses real filesystem with `/tmp` fixtures; cacheable
 - **Libraries**: Unit mandatory; integration optional (Godog BDD with public API calls); cacheable
-- **Demo-fe frontends**: Two-level testing (unit + E2E); no integration tier; all consume Gherkin specs from `specs/apps/crud/behavior/web/gherkin/`; E2E via centralized `crud-fe-e2e` Playwright suite
+- **Demo-fe frontends**: Two-level testing (unit + E2E); no integration tier; all consume Gherkin specs from `specs/apps/crud/behavior/crud-web/gherkin/`; E2E via centralized `crud-fe-e2e` Playwright suite
 
 ## ❌ Anti-Patterns
 

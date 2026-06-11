@@ -185,12 +185,12 @@ specs/apps/rhino/behavior/cli/gherkin/agents/agents-sync.feature  (contains @age
 
 ## Demo-be Backend: Three-Level Spec Consumption
 
-All 11 crud-be backends consume the **same shared Gherkin scenarios** from [`specs/apps/crud/behavior/be/gherkin/`](../../../specs/apps/crud/behavior/be/gherkin/README.md) at three test levels. The feature files are the shared contract — only the step implementations change per level.
+All 11 crud-be backends consume the **same shared Gherkin scenarios** from [`specs/apps/crud/behavior/crud-be/gherkin/`](../../../specs/apps/crud/behavior/crud-be/gherkin/README.md) at three test levels. The feature files are the shared contract — only the step implementations change per level.
 
 ### Shared Specs
 
 ```
-specs/apps/crud/behavior/be/gherkin/
+specs/apps/crud/behavior/crud-be/gherkin/
 ├── auth/
 │   ├── login.feature
 │   ├── register.feature
@@ -262,4 +262,4 @@ All three commands must report all scenarios passing. The Gherkin feature files 
 - [Nx Target Standards](./nx-targets.md) - `test:integration` target definitions and caching rules
 - [specs/README.md](../../../specs/README.md) - Spec directory organization
 - [specs/apps/rhino/README.md](../../../specs/apps/rhino/README.md) - rhino-cli spec structure
-- [specs/apps/crud/behavior/be/README.md](../../../specs/apps/crud/behavior/be/README.md) - Demo-be spec structure and three-level consumption
+- [specs/apps/crud/behavior/crud-be/README.md](../../../specs/apps/crud/behavior/crud-be/README.md) - Demo-be spec structure and three-level consumption
