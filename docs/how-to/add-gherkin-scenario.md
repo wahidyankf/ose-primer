@@ -19,8 +19,8 @@ step definitions at each test level.
 
 Gherkin feature files are shared across all implementations:
 
-- **Backend**: `specs/apps/crud/behavior/be/gherkin/` — consumed by all 11 `crud-be-*` backends
-- **Frontend**: `specs/apps/crud/behavior/web/gherkin/` — consumed by all 3 `crud-fe-*` frontends
+- **Backend**: `specs/apps/crud/behavior/crud-be/gherkin/` — consumed by all 11 `crud-be-*` backends
+- **Frontend**: `specs/apps/crud/behavior/crud-web/gherkin/` — consumed by all 3 `crud-fe-*` frontends
 
 When you add a scenario, every implementation must add step definitions for it.
 
@@ -28,7 +28,7 @@ When you add a scenario, every implementation must add step definitions for it.
 
 ### 1. Choose or Create a Feature File
 
-Feature files are organized by domain under `specs/apps/crud/behavior/be/gherkin/`:
+Feature files are organized by domain under `specs/apps/crud/behavior/crud-be/gherkin/`:
 
 ```
 gherkin/
@@ -43,7 +43,7 @@ gherkin/
 ```
 
 Add your scenario to an existing feature file, or create a new one if it represents a
-new domain. See [gherkin README](../../specs/apps/crud/behavior/be/gherkin/README.md) for conventions.
+new domain. See [gherkin README](../../specs/apps/crud/behavior/crud-be/gherkin/README.md) for conventions.
 
 ### 2. Write the Scenario
 
@@ -101,7 +101,7 @@ E2E steps send real HTTP requests via Playwright.
 ### 6. Update the Gherkin README
 
 If you added a new feature file or changed the scenario count, update
-`specs/apps/crud/behavior/be/gherkin/README.md` — this is the
+`specs/apps/crud/behavior/crud-be/gherkin/README.md` — this is the
 [authoritative source](../../repo-governance/conventions/writing/dynamic-collection-references.md)
 for scenario counts.
 
@@ -120,7 +120,7 @@ truth — a failing scenario means the backend is non-compliant.
 
 ## Frontend Scenarios
 
-The process is identical but uses `specs/apps/crud/behavior/web/gherkin/` and frontend-specific
+The process is identical but uses `specs/apps/crud/behavior/crud-web/gherkin/` and frontend-specific
 step definitions:
 
 - **Unit steps**: Component logic tests with mocked API
@@ -128,8 +128,8 @@ step definitions:
 
 ## 🔗 Related Documentation
 
-- [Backend Gherkin Specs](../../specs/apps/crud/behavior/be/gherkin/README.md) — Feature file conventions
-- [Frontend Gherkin Specs](../../specs/apps/crud/behavior/web/gherkin/README.md) — Frontend feature conventions
+- [Backend Gherkin Specs](../../specs/apps/crud/behavior/crud-be/gherkin/README.md) — Feature file conventions
+- [Frontend Gherkin Specs](../../specs/apps/crud/behavior/crud-web/gherkin/README.md) — Frontend feature conventions
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md) — What's real vs mocked at each level
 - [BDD Spec-Test Mapping](../../repo-governance/development/infra/bdd-spec-test-mapping.md) — How specs map to tests
 - [BDD Standards](../explanation/software-engineering/development/behavior-driven-development-bdd/README.md) — Gherkin writing standards

@@ -165,6 +165,6 @@ See [CI/CD Reference](../reference/system-architecture/ci-cd.md) for workflow de
 
 - [Three-Level Testing Standard](../../repo-governance/development/quality/three-level-testing-standard.md)
 - [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md)
-- [Backend Gherkin Specs](../../specs/apps/crud/behavior/be/gherkin/README.md)
-- [Frontend Gherkin Specs](../../specs/apps/crud/behavior/web/gherkin/README.md)
+- [Backend Gherkin Specs](../../specs/apps/crud/behavior/crud-be/gherkin/README.md)
+- [Frontend Gherkin Specs](../../specs/apps/crud/behavior/crud-web/gherkin/README.md)
 - [Playwright Standards](../explanation/software-engineering/automation-testing/tools/playwright/README.md)

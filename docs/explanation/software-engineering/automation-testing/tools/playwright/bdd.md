@@ -84,7 +84,7 @@ import { defineBddConfig } from "playwright-bdd";
 
 const testDir = defineBddConfig({
   featuresRoot: "../../specs/apps/crud/behavior/be/gherkin",
-  features: "../../specs/apps/crud/behavior/be/gherkin/**/*.feature",
+  features: "../../specs/apps/crud/behavior/crud-be/gherkin/**/*.feature",
   steps: "./tests/steps/**/*.ts",
 });
 
@@ -291,7 +291,7 @@ npx bddgen && npx playwright test
 
 - **[BDD Standards](../../../development/behavior-driven-development-bdd/README.md)** — Framework
   requirements, Three Amigos process, coverage rules
-- **[specs/apps/crud/behavior/be/gherkin/](../../../../../../specs/apps/crud/behavior/be/gherkin/README.md)** — Feature files
+- **[specs/apps/crud/behavior/crud-be/gherkin/](../../../../../../specs/apps/crud/behavior/crud-be/gherkin/README.md)** — Feature files
   and their organization
 - **[Configuration Standards](configuration.md)** — playwright.config.ts
   patterns including the BDD configuration section
