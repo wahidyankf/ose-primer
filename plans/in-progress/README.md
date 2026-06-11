@@ -8,6 +8,9 @@ Active project plans currently being worked on.
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
   exports research dossiers.
+- [standardize-app-spec-trees](./standardize-app-spec-trees/README.md) — adopt the flat
+  product-surface spec-tree standard across all `apps/` families (`crud`, `rhino`); part of a
+  3-repo parity set with `ose-public` and `ose-infra`.
 
 ## Folder Naming
 
