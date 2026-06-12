@@ -8,16 +8,16 @@ Active project plans currently being worked on.
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
   exports research dossiers.
-- [Mermaid state diagram validation](./mermaid-state-diagram-validation/README.md)
-  — extend rhino-cli's Mermaid render-discipline rules to cover `stateDiagram-v2` and
-  `stateDiagram`, re-shape the validator onto a fresh kind-agnostic module design, and
-  clean up every violating state diagram repo-wide.
-- [Standardize CI parity](./standardize-ci-parity/README.md)
-  — third sibling of the three-repo `standardize-ci-parity` set (with `ose-public` and
-  `ose-infra`): converge ose-primer CI to the shared, static Converged CI Target. Primer
-  is already the most converged sibling; the gaps it closes are concurrency blocks on all
-  workflows, a `specs-gate` job, and scheduled-cadence alignment. Parallel-safe — no
-  cross-repo plan ordering.
+- [Standardize repo toolchain parity](./standardize-repo-toolchain-parity/README.md)
+  — third sibling of the three-repo `standardize-repo-toolchain-parity` set (with `ose-public`
+  and `ose-infra`): converge the whole repo toolchain (CI workflows + names, git hooks, rhino-cli
+  hexagonal arch + union commands + verb-first CLI, `{domain}:{work}` targets, Mermaid
+  state-diagram validation, governance docs) to the shared Converged Toolchain Target. Primer is
+  the most-converged sibling; its gaps are concurrency on all workflows, a `specs-gate` job,
+  push-to-main gate, adding `Specs`+`Ddd` commands, and `env:validate`→`env:validation`. A/B/E/F
+  parallel-safe; C/D/G port from the ose-public reference. Folds in the former
+  `mermaid-state-diagram-validation` (→ workstream G) and `migrate-rhino-cli-to-hexagonal`
+  (→ workstream C) plans, both deleted.
 
 ## Folder Naming
 
