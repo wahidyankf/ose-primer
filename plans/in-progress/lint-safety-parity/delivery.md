@@ -36,31 +36,44 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 > _Executor: repo-setup-manager_
 
-- [ ] [AI] Install dependencies in the root worktree: `npm install`
+- [x] [AI] Install dependencies in the root worktree: `npm install`
       — acceptance: exits 0, `node_modules/` synchronized.
-- [ ] [AI] Converge the toolchain in the root worktree: `npm run doctor -- --fix`
+  - _Date_: 2026-06-12. _Status_: DONE (repo-setup-manager). _Files Changed_: none. _Notes_: `npm install` exited 0, node_modules synchronized in worktree.
+- [x] [AI] Converge the toolchain in the root worktree: `npm run doctor -- --fix`
       — acceptance: exits 0 with no unresolved drift.
-- [ ] [AI] Install the new linter binaries available to CI/local: `hadolint`, `shellcheck`,
+  - _Date_: 2026-06-12. _Status_: DONE (repo-setup-manager). _Files Changed_: none. _Notes_: `npm run doctor -- --fix` exited 0; all 19 polyglot tools present, no drift.
+- [x] [AI] Install the new linter binaries available to CI/local: `hadolint`, `shellcheck`,
       `actionlint` (record install method per tool) — acceptance: `hadolint --version`,
       `shellcheck --version`, `actionlint --version` each exit 0.
-- [ ] [AI] Record the affected-project baseline:
+  - _Date_: 2026-06-12. _Status_: DONE. _Files Changed_: none (binaries already installed via Homebrew).
+    _Notes_: All three present — `hadolint` 2.14.0, `shellcheck` 0.11.0, `actionlint` 1.7.12; each `--version` exits 0. Install method: Homebrew (pre-existing on PATH).\_
+- [x] [AI] Record the affected-project baseline:
       `npx nx affected -t typecheck lint test:quick spec-coverage`
       — acceptance: baseline pass/fail recorded; every preexisting failure documented.
-- [ ] [AI] Re-derive exact file lists for D6/D7/D8 (Dockerfiles, shell scripts, workflows) excluding
+  - _Date_: 2026-06-12. _Status_: DONE. _Files Changed_: none (measurement). _Notes_: Ran `npx nx run-many -t typecheck lint test:quick spec-coverage --all` — "Successfully ran for 26 projects". One real preexisting failure found: `clojure-openapi-codegen:build` (AOT compile aborted, missing `classes/` dir) — resolved separately (see next item). The setup agent's initially-reported "5 Elixir + flaky Rust/TS" failures were **phantom** (re-running each project's `test:quick` directly returned exit 0; the agent's failure list did not reproduce). Nx's post-run "flaky tasks" notice is historical detection, not current failures.\_
+- [x] [AI] Re-derive exact file lists for D6/D7/D8 (Dockerfiles, shell scripts, workflows) excluding
       `node_modules/`, `.venv/`, `target/`, `deps/`, `archived/` — acceptance: three lists written
       into the plan working notes.
-- [ ] [AI] Confirm `apps/crud-be-rust-axum/src` contains no handwritten `unsafe`:
+  - _Date_: 2026-06-12. _Status_: DONE. _Files Changed_: none (derivation only).
+    _Notes_: **D6 Dockerfiles (30)** — 18 under `apps/*` (`Dockerfile`, `Dockerfile.integration`) + 12 under `infra/dev/*` (`Dockerfile.be.dev`/`.ci`). **D7 shell (14)** — `.claude/hooks/*.sh` (4), `scripts/*.sh` (6: check-no-env-staged, format-clojure, format-csharp, format-dart, format-elixir, git-identity-check), `apps/crud-fe-dart-flutterweb/nginx/entrypoint.sh`, `apps/rhino-cli/scripts/validate-cross-vendor-parity.sh`, `.husky/{pre-commit,pre-push,commit-msg}`. **D8 workflows (24)** — all `.github/workflows/*.yml` (7 `_reusable-*`, `pr-quality-gate`, `validate-markdown`, 15 `test-crud-*`).\_
+- [x] [AI] Confirm `apps/crud-be-rust-axum/src` contains no handwritten `unsafe`:
       `grep -rn "unsafe" apps/crud-be-rust-axum/src` — acceptance: no matches.
-- [ ] [AI] Resolve all preexisting failures before proceeding — acceptance: none remain unresolved.
+  - _Date_: 2026-06-12. _Status_: DONE. _Files Changed_: none (verification only).
+    _Notes_: `grep -rn "unsafe" apps/crud-be-rust-axum/src` returned no matches (exit 1). Confirms `forbid(unsafe_code)` needs no D1b test refactor here.\_
+- [x] [AI] Resolve all preexisting failures before proceeding — acceptance: none remain unresolved.
+  - _Date_: 2026-06-12. _Status_: DONE. _Files Changed_: `libs/clojure-openapi-codegen/project.json`, `libs/clojure-openapi-codegen/.gitignore` (new). _Notes_: Fixed `clojure-openapi-codegen:build` — `(compile ...)` requires its `*compile-path*` (`classes/`) to exist; prepended `mkdir -p classes &&` to the build command, added `"outputs": ["{projectRoot}/classes"]`, and gitignored `classes/`. Verified `nx run clojure-openapi-codegen:build --skip-nx-cache` exits 0. This is in scope because Phase 5 edits `apps/rhino-cli/project.json` and ~20 projects (incl. this lib) carry `rhino-cli` as an implicit dependency, so the final `nx affected` fans out to the whole workspace. Committed separately as a preexisting fix. Full workspace baseline now green.\_
 
 ### Phase 0 Gate
 
 > All checks below must pass before starting Phase 1.
 
-- [ ] [AI] `npm install` exited 0 and `npm run doctor -- --fix` reports no unresolved drift.
-- [ ] [AI] `hadolint`, `shellcheck`, `actionlint` all resolve on PATH.
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` baseline recorded; zero
+- [x] [AI] `npm install` exited 0 and `npm run doctor -- --fix` reports no unresolved drift.
+  - _Date_: 2026-06-12. _Status_: GREEN. _Notes_: Both exited 0; 19 tools converged, no drift.
+- [x] [AI] `hadolint`, `shellcheck`, `actionlint` all resolve on PATH.
+  - _Date_: 2026-06-12. _Status_: GREEN. _Notes_: hadolint 2.14.0, shellcheck 0.11.0, actionlint 1.7.12 — all on PATH (Homebrew).
+- [x] [AI] `npx nx affected -t typecheck lint test:quick spec-coverage` baseline recorded; zero
       unresolved preexisting failures.
+  - _Date_: 2026-06-12. _Status_: GREEN. _Notes_: Full-workspace `run-many` succeeded for all 26 projects after the clojure-openapi-codegen build fix. Zero unresolved failures.\_
 
 > **Pause Safety**: only the local toolchain was verified and the baseline recorded — no feature
 > work exists yet. Safe to stop indefinitely. To resume: re-run the baseline command and confirm it
