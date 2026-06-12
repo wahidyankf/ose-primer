@@ -26,8 +26,7 @@ fn row_to_refresh_token(row: &AnyRow) -> RefreshToken {
         user_id: Uuid::parse_str(&user_id_str).unwrap_or_else(|_| Uuid::new_v4()),
         token_hash: row.get("token_hash"),
         expires_at: chrono::DateTime::parse_from_rfc3339(&expires_str)
-            .map(|dt| dt.with_timezone(&Utc))
-            .unwrap_or_else(|_| Utc::now()),
+            .map_or_else(|_| Utc::now(), |dt| dt.with_timezone(&Utc)),
         // SQLite stores BOOLEAN as INTEGER 0/1; the Any driver cannot decode SqliteTypeInfo(Bool)
         // to bool, so fall back to reading as i32 and converting.
         revoked: row
@@ -35,8 +34,7 @@ fn row_to_refresh_token(row: &AnyRow) -> RefreshToken {
             .or_else(|_| row.try_get::<i32, _>("revoked").map(|v| v != 0))
             .unwrap_or(false),
         created_at: chrono::DateTime::parse_from_rfc3339(&created_str)
-            .map(|dt| dt.with_timezone(&Utc))
-            .unwrap_or_else(|_| Utc::now()),
+            .map_or_else(|_| Utc::now(), |dt| dt.with_timezone(&Utc)),
     }
 }
 
@@ -53,8 +51,8 @@ pub async fn create_refresh_token(
     let now_str = Utc::now().to_rfc3339();
 
     sqlx::query(
-        r#"INSERT INTO refresh_tokens (id, user_id, token_hash, expires_at, revoked, created_at)
-           VALUES ($1, $2, $3, $4, 0, $5)"#,
+        r"INSERT INTO refresh_tokens (id, user_id, token_hash, expires_at, revoked, created_at)
+           VALUES ($1, $2, $3, $4, 0, $5)",
     )
     .bind(&id_str)
     .bind(&user_id_str)
@@ -122,8 +120,8 @@ pub async fn list_active_for_user(
     let user_id_str = user_id.to_string();
     let now_str = Utc::now().to_rfc3339();
     let rows = sqlx::query(
-        r#"SELECT id, user_id, token_hash, expires_at, revoked, created_at
-           FROM refresh_tokens WHERE user_id = $1 AND revoked = 0 AND expires_at > $2"#,
+        r"SELECT id, user_id, token_hash, expires_at, revoked, created_at
+           FROM refresh_tokens WHERE user_id = $1 AND revoked = 0 AND expires_at > $2",
     )
     .bind(&user_id_str)
     .bind(&now_str)
@@ -135,6 +133,15 @@ pub async fn list_active_for_user(
 
 #[cfg(test)]
 mod tests {
+    // `unwrap`/`expect`/`panic` and exact float comparisons are idiomatic in
+    // tests, where a failed assumption should fail the test loudly.
+    #![allow(
+        clippy::unwrap_used,
+        clippy::expect_used,
+        clippy::panic,
+        clippy::float_cmp
+    )]
+
     use super::*;
     use crate::db::pool::create_test_pool;
     use crate::db::user_repo;

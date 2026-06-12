@@ -92,7 +92,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["cargo fmt --check", "cargo clippy -- -D warnings"],
+        "commands": ["cargo fmt --check", "cargo clippy --all-targets -- -D warnings"],
         "parallel": false,
         "cwd": "apps/crud-be-rust-axum"
       }

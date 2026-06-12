@@ -33,25 +33,25 @@ pub enum AppError {
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status, body) = match &self {
-            AppError::Validation { field, message } => (
+            Self::Validation { field, message } => (
                 StatusCode::BAD_REQUEST,
                 json!({"message": format!("{field}: {message}")}),
             ),
-            AppError::NotFound { .. } => (StatusCode::NOT_FOUND, json!({"message": "Not found"})),
-            AppError::Forbidden { message } => (StatusCode::FORBIDDEN, json!({"message": message})),
-            AppError::Conflict { message } => (StatusCode::CONFLICT, json!({"message": message})),
-            AppError::Unauthorized { message } => {
+            Self::NotFound { .. } => (StatusCode::NOT_FOUND, json!({"message": "Not found"})),
+            Self::Forbidden { message } => (StatusCode::FORBIDDEN, json!({"message": message})),
+            Self::Conflict { message } => (StatusCode::CONFLICT, json!({"message": message})),
+            Self::Unauthorized { message } => {
                 (StatusCode::UNAUTHORIZED, json!({"message": message}))
             }
-            AppError::FileTooLarge => (
+            Self::FileTooLarge => (
                 StatusCode::PAYLOAD_TOO_LARGE,
                 json!({"message": "File size exceeds the maximum allowed limit"}),
             ),
-            AppError::UnsupportedMediaType => (
+            Self::UnsupportedMediaType => (
                 StatusCode::UNSUPPORTED_MEDIA_TYPE,
                 json!({"message": "file: Unsupported file type"}),
             ),
-            AppError::Database(_) | AppError::Jwt(_) | AppError::Internal(_) => (
+            Self::Database(_) | Self::Jwt(_) | Self::Internal(_) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 json!({"message": "Internal server error"}),
             ),

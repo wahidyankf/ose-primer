@@ -5,6 +5,14 @@ use uuid::Uuid;
 use crate::domain::errors::AppError;
 use crate::domain::types::{Currency, EntryType};
 
+/// Converts a whole-number monetary amount into `f64`. Monetary values stay far
+/// below `f64`'s 2^53 exact-integer ceiling, so the documented precision loss
+/// cannot occur in practice.
+#[allow(clippy::cast_precision_loss)]
+const fn whole_amount_to_f64(value: i64) -> f64 {
+    value as f64
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Expense {
     pub id: Uuid,
@@ -66,7 +74,7 @@ pub fn parse_amount(currency: &Currency, input: &str) -> Result<f64, AppError> {
             }
             input
                 .parse::<i64>()
-                .map(|v| v as f64)
+                .map(whole_amount_to_f64)
                 .map_err(|_| AppError::Validation {
                     field: "amount".to_string(),
                     message: "invalid amount".to_string(),
@@ -94,7 +102,7 @@ pub fn parse_amount(currency: &Currency, input: &str) -> Result<f64, AppError> {
                 // No decimal point — treat as whole number
                 input
                     .parse::<i64>()
-                    .map(|v| v as f64)
+                    .map(whole_amount_to_f64)
                     .map_err(|_| AppError::Validation {
                         field: "amount".to_string(),
                         message: "invalid amount".to_string(),
@@ -106,6 +114,15 @@ pub fn parse_amount(currency: &Currency, input: &str) -> Result<f64, AppError> {
 
 #[cfg(test)]
 mod tests {
+    // `unwrap`/`expect`/`panic` and exact float comparisons are idiomatic in
+    // tests, where a failed assumption should fail the test loudly.
+    #![allow(
+        clippy::unwrap_used,
+        clippy::expect_used,
+        clippy::panic,
+        clippy::float_cmp
+    )]
+
     use super::*;
 
     #[test]

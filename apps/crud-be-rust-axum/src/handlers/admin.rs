@@ -58,14 +58,19 @@ pub async fn list_users(
         })
         .collect();
 
-    let total_pages = ((result.total as f64) / (page_size as f64)).ceil() as i32;
+    // Integer ceiling division avoids floating-point precision loss.
+    let total_pages = if page_size > 0 {
+        (result.total + page_size - 1) / page_size
+    } else {
+        0
+    };
 
     Ok(Json(UserListResponse {
         content,
-        total_elements: result.total as i32,
-        total_pages,
-        page: page as i32,
-        size: page_size as i32,
+        total_elements: i32::try_from(result.total).unwrap_or(i32::MAX),
+        total_pages: i32::try_from(total_pages).unwrap_or(i32::MAX),
+        page: i32::try_from(page).unwrap_or(i32::MAX),
+        size: i32::try_from(page_size).unwrap_or(i32::MAX),
     }))
 }
 

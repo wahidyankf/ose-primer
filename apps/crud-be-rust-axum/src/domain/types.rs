@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum Currency {
     Usd,
@@ -11,10 +11,10 @@ pub enum Currency {
 impl Currency {
     /// Returns the number of decimal places for display.
     #[must_use]
-    pub fn decimal_places(&self) -> u32 {
+    pub const fn decimal_places(&self) -> u32 {
         match self {
-            Currency::Usd => 2,
-            Currency::Idr => 0,
+            Self::Usd => 2,
+            Self::Idr => 0,
         }
     }
 
@@ -22,24 +22,24 @@ impl Currency {
     #[must_use]
     pub fn format_amount(&self, stored: f64) -> String {
         match self {
-            Currency::Usd => format!("{:.2}", stored),
-            Currency::Idr => format!("{:.0}", stored),
+            Self::Usd => format!("{stored:.2}"),
+            Self::Idr => format!("{stored:.0}"),
         }
     }
 
-    pub fn parse_from_str(s: &str) -> Option<Currency> {
+    pub fn parse_from_str(s: &str) -> Option<Self> {
         match s {
-            "USD" => Some(Currency::Usd),
-            "IDR" => Some(Currency::Idr),
+            "USD" => Some(Self::Usd),
+            "IDR" => Some(Self::Idr),
             _ => None,
         }
     }
 
     #[must_use]
-    pub fn as_str(&self) -> &'static str {
+    pub const fn as_str(&self) -> &'static str {
         match self {
-            Currency::Usd => "USD",
-            Currency::Idr => "IDR",
+            Self::Usd => "USD",
+            Self::Idr => "IDR",
         }
     }
 }
@@ -50,7 +50,7 @@ impl fmt::Display for Currency {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Role {
     User,
@@ -60,23 +60,23 @@ pub enum Role {
 impl fmt::Display for Role {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Role::User => write!(f, "USER"),
-            Role::Admin => write!(f, "ADMIN"),
+            Self::User => write!(f, "USER"),
+            Self::Admin => write!(f, "ADMIN"),
         }
     }
 }
 
 impl Role {
-    pub fn parse_str(s: &str) -> Option<Role> {
+    pub fn parse_str(s: &str) -> Option<Self> {
         match s {
-            "USER" => Some(Role::User),
-            "ADMIN" => Some(Role::Admin),
+            "USER" => Some(Self::User),
+            "ADMIN" => Some(Self::Admin),
             _ => None,
         }
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum UserStatus {
     Active,
@@ -88,27 +88,27 @@ pub enum UserStatus {
 impl fmt::Display for UserStatus {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            UserStatus::Active => write!(f, "ACTIVE"),
-            UserStatus::Inactive => write!(f, "INACTIVE"),
-            UserStatus::Disabled => write!(f, "DISABLED"),
-            UserStatus::Locked => write!(f, "LOCKED"),
+            Self::Active => write!(f, "ACTIVE"),
+            Self::Inactive => write!(f, "INACTIVE"),
+            Self::Disabled => write!(f, "DISABLED"),
+            Self::Locked => write!(f, "LOCKED"),
         }
     }
 }
 
 impl UserStatus {
-    pub fn parse_str(s: &str) -> Option<UserStatus> {
+    pub fn parse_str(s: &str) -> Option<Self> {
         match s {
-            "ACTIVE" => Some(UserStatus::Active),
-            "INACTIVE" => Some(UserStatus::Inactive),
-            "DISABLED" => Some(UserStatus::Disabled),
-            "LOCKED" => Some(UserStatus::Locked),
+            "ACTIVE" => Some(Self::Active),
+            "INACTIVE" => Some(Self::Inactive),
+            "DISABLED" => Some(Self::Disabled),
+            "LOCKED" => Some(Self::Locked),
             _ => None,
         }
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum EntryType {
     Expense,
@@ -118,17 +118,17 @@ pub enum EntryType {
 impl fmt::Display for EntryType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            EntryType::Expense => write!(f, "expense"),
-            EntryType::Income => write!(f, "income"),
+            Self::Expense => write!(f, "expense"),
+            Self::Income => write!(f, "income"),
         }
     }
 }
 
 impl EntryType {
-    pub fn parse_str(s: &str) -> Option<EntryType> {
+    pub fn parse_str(s: &str) -> Option<Self> {
         match s {
-            "expense" => Some(EntryType::Expense),
-            "income" => Some(EntryType::Income),
+            "expense" => Some(Self::Expense),
+            "income" => Some(Self::Income),
             _ => None,
         }
     }
@@ -145,6 +145,16 @@ pub fn is_supported_unit(unit: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
+    // `unwrap`/`expect`/`panic`, exact float comparisons, and unseparated
+    // numeric literals are idiomatic in tests.
+    #![allow(
+        clippy::unwrap_used,
+        clippy::expect_used,
+        clippy::panic,
+        clippy::float_cmp,
+        clippy::unreadable_literal
+    )]
+
     use super::*;
 
     #[test]

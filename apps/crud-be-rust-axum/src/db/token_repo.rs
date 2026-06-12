@@ -65,8 +65,8 @@ pub async fn is_user_all_revoked_after(
         .to_rfc3339();
     let prefix = format!("user-revoke-all-{user_id}-%");
     let row: AnyRow = sqlx::query(
-        r#"SELECT COUNT(*) as cnt FROM revoked_tokens
-           WHERE user_id = $1 AND jti LIKE $2 AND revoked_at > $3"#,
+        r"SELECT COUNT(*) as cnt FROM revoked_tokens
+           WHERE user_id = $1 AND jti LIKE $2 AND revoked_at > $3",
     )
     .bind(&user_id_str)
     .bind(&prefix)

@@ -9,6 +9,13 @@ pub const ACCESS_TOKEN_DURATION_SECS: i64 = 15 * 60; // 15 minutes
 pub const REFRESH_TOKEN_DURATION_SECS: i64 = 7 * 24 * 60 * 60; // 7 days
 pub const ISSUER: &str = "crud-be-rust-axum";
 
+/// Converts a Unix timestamp (seconds) into the `usize` representation expected
+/// by JWT `exp`/`iat` claims. Returns an error if the value is negative, which
+/// can only occur for timestamps before the Unix epoch.
+fn timestamp_to_claim(seconds: i64) -> Result<usize, AppError> {
+    usize::try_from(seconds).map_err(|_| AppError::Jwt("timestamp out of range".to_string()))
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Claims {
     pub sub: String,
@@ -42,8 +49,8 @@ pub fn encode_access_token(
         role: role.to_string(),
         jti: jti.clone(),
         iss: ISSUER.to_string(),
-        exp: (now + ACCESS_TOKEN_DURATION_SECS) as usize,
-        iat: now as usize,
+        exp: timestamp_to_claim(now + ACCESS_TOKEN_DURATION_SECS)?,
+        iat: timestamp_to_claim(now)?,
     };
     let token = encode(
         &Header::new(Algorithm::HS256),
@@ -60,8 +67,8 @@ pub fn encode_refresh_token(user_id: Uuid, secret: &str) -> Result<(String, Stri
     let claims = RefreshClaims {
         sub: user_id.to_string(),
         jti: jti.clone(),
-        exp: (now + REFRESH_TOKEN_DURATION_SECS) as usize,
-        iat: now as usize,
+        exp: timestamp_to_claim(now + REFRESH_TOKEN_DURATION_SECS)?,
+        iat: timestamp_to_claim(now)?,
     };
     let token = encode(
         &Header::new(Algorithm::HS256),
@@ -134,6 +141,15 @@ pub fn decode_claims_unchecked(token: &str, secret: &str) -> Result<Claims, AppE
 
 #[cfg(test)]
 mod tests {
+    // `unwrap`/`expect`/`panic` and exact float comparisons are idiomatic in
+    // tests, where a failed assumption should fail the test loudly.
+    #![allow(
+        clippy::unwrap_used,
+        clippy::expect_used,
+        clippy::panic,
+        clippy::float_cmp
+    )]
+
     use super::*;
 
     const SECRET: &str = "test-secret-that-is-32-chars-long!!";

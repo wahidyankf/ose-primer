@@ -29,6 +29,15 @@ impl Config {
 
 #[cfg(test)]
 mod tests {
+    // `unwrap`/`expect`/`panic` and exact float comparisons are idiomatic in
+    // tests, where a failed assumption should fail the test loudly.
+    #![allow(
+        clippy::unwrap_used,
+        clippy::expect_used,
+        clippy::panic,
+        clippy::float_cmp
+    )]
+
     use super::*;
     use std::env;
     use std::sync::Mutex;

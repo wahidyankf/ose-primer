@@ -9,14 +9,16 @@ pub async fn get_claims(auth_user: AuthUser) -> Result<Json<TokenClaims>, AppErr
     Ok(Json(TokenClaims {
         sub: auth_user.user_id.to_string(),
         iss: crate::auth::jwt::ISSUER.to_string(),
-        // exp and iat not available in AuthUser; use 0 as placeholder (contract requires i32)
+        // exp not available in AuthUser; use 0 as placeholder (contract requires i32)
         exp: 0,
-        iat: auth_user.iat as i32,
+        // Contract requires i32; saturate if the timestamp exceeds i32 range.
+        iat: i32::try_from(auth_user.iat).unwrap_or(i32::MAX),
         roles: vec![auth_user.role.to_string()],
     }))
 }
 
 /// GET /.well-known/jwks.json — Return JWKS (public key info for HS256).
+///
 /// For HMAC-SHA256 (symmetric), we return a minimal JWKS with the algorithm info.
 /// The `n` and `e` fields are RSA-specific and set to empty strings for this HS256 key.
 pub async fn jwks() -> Json<JwksResponse> {

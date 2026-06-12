@@ -15,7 +15,7 @@ pub struct SqlxExpenseRepository {
 
 impl SqlxExpenseRepository {
     #[must_use]
-    pub fn new(pool: AnyPool) -> Self {
+    pub const fn new(pool: AnyPool) -> Self {
         Self { pool }
     }
 }

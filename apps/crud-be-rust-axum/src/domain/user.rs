@@ -73,7 +73,7 @@ pub fn validate_password(password: &str) -> Result<(), AppError> {
             message: "must be at least 12 characters".to_string(),
         });
     }
-    if !password.chars().any(|c| c.is_uppercase()) {
+    if !password.chars().any(char::is_uppercase) {
         return Err(AppError::Validation {
             field: "password".to_string(),
             message: "must contain at least one uppercase letter".to_string(),

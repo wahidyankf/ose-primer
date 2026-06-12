@@ -1,14 +1,25 @@
 use chrono::{NaiveDate, Utc};
 use sqlx::any::AnyRow;
 use sqlx::AnyPool;
+use sqlx::Row;
 use uuid::Uuid;
 
 use crate::domain::errors::AppError;
 use crate::domain::expense::Expense;
 use crate::domain::types::Currency;
 
+/// Converts an integer monetary amount read from a database column into `f64`.
+///
+/// Some backends (notably `SQLite`) may return a whole-number sum as an integer
+/// rather than a real, so we fall back to this conversion. Monetary values stay
+/// far below `f64`'s 2^53 exact-integer ceiling, so the documented precision
+/// loss cannot occur in practice.
+#[allow(clippy::cast_precision_loss)]
+const fn i64_to_money(value: i64) -> f64 {
+    value as f64
+}
+
 fn row_to_expense(row: &AnyRow) -> Expense {
-    use sqlx::Row;
     let id_str: String = row.get("id");
     let user_id_str: String = row.get("user_id");
     let date_str: String = row.get("date");
@@ -20,7 +31,7 @@ fn row_to_expense(row: &AnyRow) -> Expense {
         user_id: Uuid::parse_str(&user_id_str).unwrap_or_else(|_| Uuid::new_v4()),
         amount: row
             .try_get::<f64, _>("amount")
-            .or_else(|_| row.try_get::<i64, _>("amount").map(|v| v as f64))
+            .or_else(|_| row.try_get::<i64, _>("amount").map(i64_to_money))
             .unwrap_or(0.0),
         currency: row.get("currency"),
         category: row.get("category"),
@@ -38,14 +49,12 @@ fn row_to_expense(row: &AnyRow) -> Expense {
             .flatten(),
         unit: row.try_get("unit").ok().flatten(),
         created_at: chrono::DateTime::parse_from_rfc3339(&created_str)
-            .map(|dt| dt.with_timezone(&Utc))
-            .unwrap_or_else(|_| Utc::now()),
+            .map_or_else(|_| Utc::now(), |dt| dt.with_timezone(&Utc)),
         created_by: row
             .try_get("created_by")
             .unwrap_or_else(|_| "system".to_string()),
         updated_at: chrono::DateTime::parse_from_rfc3339(&updated_str)
-            .map(|dt| dt.with_timezone(&Utc))
-            .unwrap_or_else(|_| Utc::now()),
+            .map_or_else(|_| Utc::now(), |dt| dt.with_timezone(&Utc)),
         updated_by: row
             .try_get("updated_by")
             .unwrap_or_else(|_| "system".to_string()),
@@ -78,8 +87,8 @@ pub async fn create_expense(
     let now_str = Utc::now().to_rfc3339();
 
     sqlx::query(
-        r#"INSERT INTO expenses (id, user_id, amount, currency, category, description, date, type, quantity, unit, created_at, created_by, updated_at, updated_by)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'system', $12, 'system')"#,
+        r"INSERT INTO expenses (id, user_id, amount, currency, category, description, date, type, quantity, unit, created_at, created_by, updated_at, updated_by)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'system', $12, 'system')",
     )
     .bind(&id_str)
     .bind(&user_id_str)
@@ -106,9 +115,9 @@ pub async fn create_expense(
 pub async fn find_by_id(pool: &AnyPool, id: Uuid) -> Result<Option<Expense>, AppError> {
     let id_str = id.to_string();
     let row = sqlx::query(
-        r#"SELECT id, user_id, amount, currency, category, description, date, type, quantity, unit,
+        r"SELECT id, user_id, amount, currency, category, description, date, type, quantity, unit,
                   created_at, created_by, updated_at, updated_by, deleted_at, deleted_by
-           FROM expenses WHERE id = $1"#,
+           FROM expenses WHERE id = $1",
     )
     .bind(&id_str)
     .fetch_optional(pool)
@@ -132,9 +141,9 @@ pub async fn list_for_user(
     let offset = (page - 1) * page_size;
 
     let rows = sqlx::query(
-        r#"SELECT id, user_id, amount, currency, category, description, date, type, quantity, unit,
+        r"SELECT id, user_id, amount, currency, category, description, date, type, quantity, unit,
                   created_at, created_by, updated_at, updated_by, deleted_at, deleted_by
-           FROM expenses WHERE user_id = $1 ORDER BY date DESC LIMIT $2 OFFSET $3"#,
+           FROM expenses WHERE user_id = $1 ORDER BY date DESC LIMIT $2 OFFSET $3",
     )
     .bind(&user_id_str)
     .bind(page_size)
@@ -144,7 +153,6 @@ pub async fn list_for_user(
 
     let expenses = rows.iter().map(row_to_expense).collect();
 
-    use sqlx::Row;
     let count_row: AnyRow = sqlx::query("SELECT COUNT(*) as cnt FROM expenses WHERE user_id = $1")
         .bind(&user_id_str)
         .fetch_one(pool)
@@ -172,8 +180,8 @@ pub async fn update_expense(
     let now_str = Utc::now().to_rfc3339();
 
     sqlx::query(
-        r#"UPDATE expenses SET amount = $1, currency = $2, category = $3, description = $4, date = $5,
-           type = $6, quantity = $7, unit = $8, updated_at = $9, updated_by = 'system' WHERE id = $10"#,
+        r"UPDATE expenses SET amount = $1, currency = $2, category = $3, description = $4, date = $5,
+           type = $6, quantity = $7, unit = $8, updated_at = $9, updated_by = 'system' WHERE id = $10",
     )
     .bind(amount)
     .bind(currency)
@@ -217,11 +225,10 @@ pub async fn summarize_by_currency(
     pool: &AnyPool,
     user_id: Uuid,
 ) -> Result<Vec<CurrencySummary>, AppError> {
-    use sqlx::Row;
     let user_id_str = user_id.to_string();
     let rows = sqlx::query(
-        r#"SELECT currency, SUM(amount) as total FROM expenses
-           WHERE user_id = $1 AND type = 'expense' GROUP BY currency"#,
+        r"SELECT currency, SUM(amount) as total FROM expenses
+           WHERE user_id = $1 AND type = 'expense' GROUP BY currency",
     )
     .bind(&user_id_str)
     .fetch_all(pool)
@@ -233,7 +240,7 @@ pub async fn summarize_by_currency(
             currency: r.get("currency"),
             total: r
                 .try_get::<f64, _>("total")
-                .or_else(|_| r.try_get::<i64, _>("total").map(|v| v as f64))
+                .or_else(|_| r.try_get::<i64, _>("total").map(i64_to_money))
                 .unwrap_or(0.0),
         })
         .collect())
@@ -258,16 +265,15 @@ pub async fn pl_report(
     from: NaiveDate,
     to: NaiveDate,
 ) -> Result<PlReport, AppError> {
-    use sqlx::Row;
     let user_id_str = user_id.to_string();
     let currency_str = currency.as_str();
     let from_str = from.to_string();
     let to_str = to.to_string();
 
     let income_row: AnyRow = sqlx::query(
-        r#"SELECT COALESCE(SUM(amount), 0) as total FROM expenses
+        r"SELECT COALESCE(SUM(amount), 0) as total FROM expenses
            WHERE user_id = $1 AND currency = $2 AND type = 'income'
-           AND date >= $3 AND date <= $4"#,
+           AND date >= $3 AND date <= $4",
     )
     .bind(&user_id_str)
     .bind(currency_str)
@@ -277,13 +283,13 @@ pub async fn pl_report(
     .await?;
     let income_total: f64 = income_row
         .try_get::<f64, _>("total")
-        .or_else(|_| income_row.try_get::<i64, _>("total").map(|v| v as f64))
+        .or_else(|_| income_row.try_get::<i64, _>("total").map(i64_to_money))
         .unwrap_or(0.0);
 
     let expense_row: AnyRow = sqlx::query(
-        r#"SELECT COALESCE(SUM(amount), 0) as total FROM expenses
+        r"SELECT COALESCE(SUM(amount), 0) as total FROM expenses
            WHERE user_id = $1 AND currency = $2 AND type = 'expense'
-           AND date >= $3 AND date <= $4"#,
+           AND date >= $3 AND date <= $4",
     )
     .bind(&user_id_str)
     .bind(currency_str)
@@ -293,13 +299,13 @@ pub async fn pl_report(
     .await?;
     let expense_total: f64 = expense_row
         .try_get::<f64, _>("total")
-        .or_else(|_| expense_row.try_get::<i64, _>("total").map(|v| v as f64))
+        .or_else(|_| expense_row.try_get::<i64, _>("total").map(i64_to_money))
         .unwrap_or(0.0);
 
     let income_rows = sqlx::query(
-        r#"SELECT category, SUM(amount) as total FROM expenses
+        r"SELECT category, SUM(amount) as total FROM expenses
            WHERE user_id = $1 AND currency = $2 AND type = 'income'
-           AND date >= $3 AND date <= $4 GROUP BY category"#,
+           AND date >= $3 AND date <= $4 GROUP BY category",
     )
     .bind(&user_id_str)
     .bind(currency_str)
@@ -309,9 +315,9 @@ pub async fn pl_report(
     .await?;
 
     let expense_rows = sqlx::query(
-        r#"SELECT category, SUM(amount) as total FROM expenses
+        r"SELECT category, SUM(amount) as total FROM expenses
            WHERE user_id = $1 AND currency = $2 AND type = 'expense'
-           AND date >= $3 AND date <= $4 GROUP BY category"#,
+           AND date >= $3 AND date <= $4 GROUP BY category",
     )
     .bind(&user_id_str)
     .bind(currency_str)
@@ -329,7 +335,7 @@ pub async fn pl_report(
                 category: r.get("category"),
                 total: r
                     .try_get::<f64, _>("total")
-                    .or_else(|_| r.try_get::<i64, _>("total").map(|v| v as f64))
+                    .or_else(|_| r.try_get::<i64, _>("total").map(i64_to_money))
                     .unwrap_or(0.0),
             })
             .collect(),
@@ -339,7 +345,7 @@ pub async fn pl_report(
                 category: r.get("category"),
                 total: r
                     .try_get::<f64, _>("total")
-                    .or_else(|_| r.try_get::<i64, _>("total").map(|v| v as f64))
+                    .or_else(|_| r.try_get::<i64, _>("total").map(i64_to_money))
                     .unwrap_or(0.0),
             })
             .collect(),

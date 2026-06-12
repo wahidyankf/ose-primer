@@ -28,8 +28,7 @@ fn row_to_attachment(row: &AnyRow) -> Attachment {
         size: row.get("size"),
         data: row.get("data"),
         created_at: chrono::DateTime::parse_from_rfc3339(&created_str)
-            .map(|dt| dt.with_timezone(&Utc))
-            .unwrap_or_else(|_| Utc::now()),
+            .map_or_else(|_| Utc::now(), |dt| dt.with_timezone(&Utc)),
     }
 }
 
@@ -42,8 +41,8 @@ pub async fn create_attachment(
     let now_str = Utc::now().to_rfc3339();
 
     sqlx::query(
-        r#"INSERT INTO attachments (id, expense_id, filename, content_type, size, data, created_at)
-           VALUES ($1, $2, $3, $4, $5, $6, $7)"#,
+        r"INSERT INTO attachments (id, expense_id, filename, content_type, size, data, created_at)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)",
     )
     .bind(&id_str)
     .bind(&expense_id_str)
@@ -65,8 +64,8 @@ pub async fn create_attachment(
 pub async fn find_by_id(pool: &AnyPool, id: Uuid) -> Result<Option<Attachment>, AppError> {
     let id_str = id.to_string();
     let row = sqlx::query(
-        r#"SELECT id, expense_id, filename, content_type, size, data, created_at
-           FROM attachments WHERE id = $1"#,
+        r"SELECT id, expense_id, filename, content_type, size, data, created_at
+           FROM attachments WHERE id = $1",
     )
     .bind(&id_str)
     .fetch_optional(pool)
@@ -81,8 +80,8 @@ pub async fn list_for_expense(
 ) -> Result<Vec<Attachment>, AppError> {
     let expense_id_str = expense_id.to_string();
     let rows = sqlx::query(
-        r#"SELECT id, expense_id, filename, content_type, size, data, created_at
-           FROM attachments WHERE expense_id = $1 ORDER BY created_at ASC"#,
+        r"SELECT id, expense_id, filename, content_type, size, data, created_at
+           FROM attachments WHERE expense_id = $1 ORDER BY created_at ASC",
     )
     .bind(&expense_id_str)
     .fetch_all(pool)

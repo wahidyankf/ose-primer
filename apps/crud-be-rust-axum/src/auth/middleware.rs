@@ -48,6 +48,10 @@ impl FromRequestParts<Arc<AppState>> for AuthUser {
             message: "Invalid user ID in token".to_string(),
         })?;
 
+        let iat = i64::try_from(claims.iat).map_err(|_| AppError::Unauthorized {
+            message: "Invalid token issued-at claim".to_string(),
+        })?;
+
         // Check if token is revoked (by jti)
         let revoked = state.token_repo.is_revoked(&claims.jti).await?;
         if revoked {
@@ -59,7 +63,7 @@ impl FromRequestParts<Arc<AppState>> for AuthUser {
         // Check if there's a revoke-all for this user issued after token issuance
         let all_revoked = state
             .token_repo
-            .is_user_all_revoked_after(user_id, claims.iat as i64)
+            .is_user_all_revoked_after(user_id, iat)
             .await?;
         if all_revoked {
             return Err(AppError::Unauthorized {
@@ -86,17 +90,17 @@ impl FromRequestParts<Arc<AppState>> for AuthUser {
 
         let role = Role::parse_str(&claims.role).unwrap_or(Role::User);
 
-        Ok(AuthUser {
+        Ok(Self {
             user_id,
             username: claims.username,
             role,
             jti: claims.jti,
-            iat: claims.iat as i64,
+            iat,
         })
     }
 }
 
-/// Admin-only guard (composes with AuthUser)
+/// Admin-only guard (composes with `AuthUser`)
 pub struct AdminUser(pub AuthUser);
 
 impl FromRequestParts<Arc<AppState>> for AdminUser {
@@ -112,6 +116,6 @@ impl FromRequestParts<Arc<AppState>> for AdminUser {
                 message: "Admin only".to_string(),
             });
         }
-        Ok(AdminUser(user))
+        Ok(Self(user))
     }
 }

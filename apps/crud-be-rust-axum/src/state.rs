@@ -8,7 +8,7 @@ use crate::repositories::{
 
 #[derive(Clone)]
 pub struct AppState {
-    /// Raw pool kept for handlers that run ad-hoc DDL/DML (test_api reset_db, promote_admin).
+    /// Raw pool kept for handlers that run ad-hoc DDL/DML (`test_api` `reset_db`, `promote_admin`).
     pub pool: AnyPool,
     pub jwt_secret: String,
     pub user_repo: Arc<dyn UserRepository>,

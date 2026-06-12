@@ -35,7 +35,7 @@ fn attachment_to_response(att: &crate::domain::attachment::Attachment) -> Attach
             id: att.id.to_string(),
             filename: att.filename.clone(),
             content_type: att.content_type.clone(),
-            size: att.size as i32,
+            size: i32::try_from(att.size).unwrap_or(i32::MAX),
             created_at: att.created_at.to_rfc3339(),
         },
         expense_id: att.expense_id.to_string(),
@@ -82,11 +82,10 @@ pub async fn upload_attachment(
         }
     })? {
         let field_name = field.name().unwrap_or("").to_string();
-        let file_name = field.file_name().map(String::from);
+        let uploaded_name = field.file_name().map(String::from);
         let ct = field
             .content_type()
-            .map(String::from)
-            .unwrap_or_else(|| "application/octet-stream".to_string());
+            .map_or_else(|| "application/octet-stream".to_string(), String::from);
 
         let bytes = field.bytes().await.map_err(|e| {
             let msg = e.to_string();
@@ -97,8 +96,8 @@ pub async fn upload_attachment(
             }
         })?;
 
-        if field_name == "file" || file_name.is_some() {
-            filename = file_name.or_else(|| Some("upload".to_string()));
+        if field_name == "file" || uploaded_name.is_some() {
+            filename = uploaded_name.or_else(|| Some("upload".to_string()));
             content_type = Some(ct);
             data = Some(bytes);
         }
@@ -121,6 +120,10 @@ pub async fn upload_attachment(
         return Err(AppError::FileTooLarge);
     }
 
+    // Safe: `data.len()` is bounded by `MAX_FILE_SIZE`, well within `i64` range.
+    let size =
+        i64::try_from(data.len()).map_err(|_| AppError::Internal("file too large".to_string()))?;
+
     let att_id = Uuid::new_v4();
     let attachment = state
         .attachment_repo
@@ -129,7 +132,7 @@ pub async fn upload_attachment(
             expense_id,
             filename,
             content_type,
-            size: data.len() as i64,
+            size,
             data: data.to_vec(),
         })
         .await?;

@@ -13,7 +13,7 @@ pub struct SqlxUserRepository {
 
 impl SqlxUserRepository {
     #[must_use]
-    pub fn new(pool: AnyPool) -> Self {
+    pub const fn new(pool: AnyPool) -> Self {
         Self { pool }
     }
 }
