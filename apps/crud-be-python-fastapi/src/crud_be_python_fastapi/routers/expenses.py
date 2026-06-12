@@ -5,7 +5,7 @@ from datetime import UTC, date, datetime
 from decimal import Decimal
 
 from fastapi import APIRouter, Depends, Query
-from generated_contracts import CreateExpenseRequest, Expense, ExpenseListResponse
+from generated_contracts import CreateExpenseRequest, Expense, ExpenseListResponse, Type
 from sqlalchemy.orm import Session
 
 from crud_be_python_fastapi.auth.dependencies import get_current_user
@@ -16,7 +16,7 @@ from crud_be_python_fastapi.domain.expense import (
     validate_currency,
     validate_unit,
 )
-from crud_be_python_fastapi.infrastructure.models import UserModel
+from crud_be_python_fastapi.infrastructure.models import ExpenseModel, UserModel
 
 router = APIRouter()
 
@@ -45,20 +45,16 @@ def _ensure_utc(dt: datetime) -> datetime:
     return dt
 
 
-def _model_to_contract(m) -> Expense:  # type: ignore[no-untyped-def]
+def _model_to_contract(m: ExpenseModel) -> Expense:
     """Map an ExpenseModel ORM instance to the generated Expense contract type."""
-    quantity = None
+    quantity: float | None = None
     if m.quantity is not None:
         try:
             quantity = float(m.quantity)
         except (ValueError, TypeError):
             quantity = None
     # ORM stores date as a date object; ensure it is a date for contract compliance
-    expense_date: date
-    if isinstance(m.date, str):
-        expense_date = date.fromisoformat(m.date)
-    else:
-        expense_date = m.date
+    expense_date = date.fromisoformat(m.date) if isinstance(m.date, str) else m.date
     return Expense(
         id=str(m.id),
         userId=str(m.user_id),
@@ -67,7 +63,7 @@ def _model_to_contract(m) -> Expense:  # type: ignore[no-untyped-def]
         category=m.category,
         description=m.description or "",
         date=expense_date,
-        type=m.type,
+        type=Type(m.type),
         quantity=quantity,
         unit=m.unit,
         createdAt=_ensure_utc(m.created_at),

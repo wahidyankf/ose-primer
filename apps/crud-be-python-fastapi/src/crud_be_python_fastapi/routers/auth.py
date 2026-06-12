@@ -22,6 +22,7 @@ from crud_be_python_fastapi.domain.errors import (
     ValidationError,
 )
 from crud_be_python_fastapi.domain.user import validate_password_strength
+from crud_be_python_fastapi.infrastructure.models import UserModel
 from crud_be_python_fastapi.infrastructure.password_hasher import hash_password, verify_password
 
 router = APIRouter()
@@ -64,7 +65,7 @@ def _ensure_utc(dt: datetime) -> datetime:
     return dt
 
 
-def _user_to_contract(user) -> User:  # type: ignore[no-untyped-def]
+def _user_to_contract(user: UserModel) -> User:
     """Map a UserModel ORM instance to the generated User contract type."""
     return User(
         id=str(user.id),
@@ -176,7 +177,7 @@ def refresh(
 def logout(
     authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
-) -> dict:
+) -> dict[str, str]:
     """Revoke current access token. Idempotent."""
     if authorization and authorization.startswith("Bearer "):
         token = authorization[7:]
@@ -195,7 +196,7 @@ def logout(
 def logout_all(
     authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
-) -> dict:
+) -> dict[str, str]:
     """Revoke all tokens for the current user."""
     if authorization and authorization.startswith("Bearer "):
         token = authorization[7:]

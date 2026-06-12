@@ -3,7 +3,7 @@
 from pytest_bdd import given, parsers, scenarios, then, when
 
 from tests.integration.service_client import FakeResponse, ServiceClient
-from tests.integration.steps.security_steps import _ADMIN_PASSWORD, _register_and_promote_admin
+from tests.integration.steps.security_steps import ADMIN_PASSWORD, register_and_promote_admin
 from tests.unit.conftest import GHERKIN_ROOT
 
 scenarios(str(GHERKIN_ROOT / "admin" / "admin.feature"))
@@ -16,8 +16,8 @@ _PASSWORD = "Str0ng#Pass1"
     target_fixture="admin_tokens",
 )
 def admin_login(client: ServiceClient, username: str) -> dict:
-    user_data = _register_and_promote_admin(client, username, _ADMIN_PASSWORD)
-    tokens = client.login_user(username, _ADMIN_PASSWORD)
+    user_data = register_and_promote_admin(client, username, ADMIN_PASSWORD)
+    tokens = client.login_user(username, ADMIN_PASSWORD)
     return {**tokens, "admin_id": user_data["id"]}
 
 

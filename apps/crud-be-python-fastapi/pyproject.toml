@@ -26,7 +26,7 @@ dev = [
     "coverage[toml]==7.13.5",
     "httpx==0.28.1",
     "ruff==0.15.9",
-    "pyright==1.1.408",
+    "basedpyright==1.39.7",
 ]
 
 [tool.uv]
@@ -49,7 +49,7 @@ dev = [
     "coverage[toml]==7.13.5",
     "httpx==0.28.1",
     "ruff==0.15.9",
-    "pyright==1.1.408",
+    "basedpyright==1.39.7",
 ]
 
 [tool.pytest.ini_options]
@@ -83,18 +83,42 @@ src = ["src"]
 line-length = 100
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "N", "UP", "B", "A", "C4", "PT"]
+select = ["E", "W", "F", "B", "UP", "SIM", "I", "N", "S", "RUF", "C4", "T20", "ANN"]
 ignore = [
-    "B008",  # FastAPI Depends() in argument defaults is idiomatic and correct
-    "N815",  # Pydantic response models use camelCase field names to match the camelCase JSON API contract
+    "B008",    # FastAPI Depends() in argument defaults is idiomatic and correct
+    "N815",    # Pydantic response models use camelCase field names to match the camelCase JSON API contract
+    "ANN101",  # Deprecated: type annotation for `self` is unnecessary
+    "ANN102",  # Deprecated: type annotation for `cls` is unnecessary
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/steps/*_steps.py" = ["E501"]  # Long BDD step strings must stay on one line for spec-coverage regex matching
+"tests/**" = ["S101", "S105", "S106", "S107", "ANN"]  # pytest uses bare assert; S105-S107 are deterministic test-fixture passwords, not real secrets; BDD step/fixture annotations are exercised by basedpyright instead
+"**/test_*.py" = ["S101", "S105", "S106", "S107", "ANN"]  # same: assert-based tests, fixture passwords, untyped fixtures
 
-[tool.pyright]
+[tool.basedpyright]
 include = ["src", "tests"]
 pythonVersion = "3.13"
-typeCheckingMode = "basic"
+typeCheckingMode = "strict"
 venvPath = "."
 venv = ".venv"
+# FastAPI registers route handlers and exception handlers via decorators, so basedpyright
+# cannot see the call site and reports them as unused. The framework owns the call.
+reportUnusedFunction = false
+
+# Production code (src) runs under full strict. The BDD test glue deserializes dynamic JSON
+# response bodies (FakeResponse.json() -> Any) and uses pytest-bdd fixtures whose values are
+# injected dynamically, so the "Any propagation" diagnostics fire on essentially every
+# assertion. Relax only that family for the tests tree; every other strict check (unused
+# imports, missing returns, incompatible overrides, etc.) stays enabled.
+[[tool.basedpyright.executionEnvironments]]
+root = "tests"
+# tests use absolute imports rooted at the project dir (e.g. tests.integration.service_client),
+# so keep the project root on the import path for this environment.
+extraPaths = ["."]
+reportUnknownArgumentType = false
+reportUnknownVariableType = false
+reportUnknownMemberType = false
+reportUnknownParameterType = false
+reportUnknownLambdaType = false
+reportMissingTypeArgument = false

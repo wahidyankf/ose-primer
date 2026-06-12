@@ -4,7 +4,7 @@
 FROM python:3.13-slim
 
 # Install uv
-RUN pip install uv --quiet
+RUN pip install --no-cache-dir uv --quiet
 
 WORKDIR /build
 

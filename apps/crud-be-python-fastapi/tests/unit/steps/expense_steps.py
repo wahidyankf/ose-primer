@@ -64,7 +64,7 @@ def alice_post_expense(client: ServiceClient, alice_tokens: dict, body: str) -> 
 
 
 @when(
-    'the client sends POST /api/v1/expenses with body { "amount": "10.00", "currency": "USD", "category": "food", "description": "Coffee", "date": "2025-01-01", "type": "expense" }',  # noqa: E501
+    'the client sends POST /api/v1/expenses with body { "amount": "10.00", "currency": "USD", "category": "food", "description": "Coffee", "date": "2025-01-01", "type": "expense" }',
     target_fixture="response",
 )
 def unauth_post_expense(client: ServiceClient) -> FakeResponse:

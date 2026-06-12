@@ -70,7 +70,7 @@ def disable_user(
     body: DisableRequest | None = None,
     db: Session = Depends(get_db),
     _admin: UserModel = Depends(require_admin),
-) -> dict:
+) -> dict[str, str]:
     """Disable a user account (admin only)."""
     user_repo = get_user_repo(db)
     user = user_repo.update_status(user_id, "DISABLED")
@@ -89,7 +89,7 @@ def enable_user(
     user_id: str,
     db: Session = Depends(get_db),
     _admin: UserModel = Depends(require_admin),
-) -> dict:
+) -> dict[str, str]:
     """Enable a user account (admin only)."""
     user_repo = get_user_repo(db)
     user = user_repo.update_status(user_id, "ACTIVE")
@@ -103,7 +103,7 @@ def unlock_user(
     user_id: str,
     db: Session = Depends(get_db),
     _admin: UserModel = Depends(require_admin),
-) -> dict:
+) -> dict[str, str]:
     """Unlock a locked user account (admin only)."""
     user_repo = get_user_repo(db)
     user = user_repo.unlock(user_id)

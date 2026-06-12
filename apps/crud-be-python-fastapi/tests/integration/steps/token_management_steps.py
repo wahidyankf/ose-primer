@@ -7,7 +7,7 @@ from pytest_bdd import given, parsers, scenarios, then, when
 
 from tests.integration.conftest import GHERKIN_ROOT
 from tests.integration.service_client import FakeResponse, ServiceClient
-from tests.integration.steps.security_steps import _ADMIN_PASSWORD, _register_and_promote_admin
+from tests.integration.steps.security_steps import ADMIN_PASSWORD, register_and_promote_admin
 
 scenarios(str(GHERKIN_ROOT / "token-management" / "tokens.feature"))
 
@@ -32,8 +32,8 @@ def alice_logout_blacklisted(client: ServiceClient, alice_tokens: dict) -> None:
     target_fixture="admin_tokens",
 )
 def admin_login_for_tokens(client: ServiceClient, username: str) -> dict:
-    user_data = _register_and_promote_admin(client, username, _ADMIN_PASSWORD)
-    tokens = client.login_user(username, _ADMIN_PASSWORD)
+    user_data = register_and_promote_admin(client, username, ADMIN_PASSWORD)
+    tokens = client.login_user(username, ADMIN_PASSWORD)
     return {**tokens, "id": user_data["id"]}
 
 

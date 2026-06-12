@@ -549,7 +549,7 @@ class ServiceClient:
     # Expenses
     # ------------------------------------------------------------------
 
-    def _validate_expense_request(self, data: dict) -> tuple[bool, FakeResponse | None]:
+    def _validate_expense_request(self, data: dict[str, Any]) -> tuple[bool, FakeResponse | None]:
         """Validate an expense request dict; return (valid, error_response)."""
         try:
             currency = validate_currency(data.get("currency", ""))
@@ -560,7 +560,7 @@ class ServiceClient:
         except ValidationError as exc:
             return False, _err(exc)
 
-    def _pydantic_validate_expense(self, data: dict) -> FakeResponse | None:
+    def _pydantic_validate_expense(self, data: dict[str, Any]) -> FakeResponse | None:
         """Return 400 response for missing required expense fields."""
         required = ["amount", "currency", "category", "date"]
         for f in required:
@@ -568,7 +568,7 @@ class ServiceClient:
                 return _pydantic_error(f, f"Field required: {f}")
         return None
 
-    def post_expense(self, authorization: str | None, data: dict) -> FakeResponse:
+    def post_expense(self, authorization: str | None, data: dict[str, Any]) -> FakeResponse:
         """POST /api/v1/expenses"""
         token = _bearer(authorization)
         if not token:
@@ -647,7 +647,9 @@ class ServiceClient:
         except (UnauthorizedError, ForbiddenError) as exc:
             return _err(exc)
 
-    def put_expense(self, expense_id: str, authorization: str | None, data: dict) -> FakeResponse:
+    def put_expense(
+        self, expense_id: str, authorization: str | None, data: dict[str, Any]
+    ) -> FakeResponse:
         """PUT /api/v1/expenses/{expense_id}"""
         token = _bearer(authorization)
         if not token:
@@ -734,7 +736,7 @@ class ServiceClient:
         return str(val)
 
     @staticmethod
-    def _expense_to_dict(m: Any) -> dict:
+    def _expense_to_dict(m: Any) -> dict[str, Any]:
         quantity = None
         if m.quantity is not None:
             try:
@@ -938,14 +940,14 @@ class ServiceClient:
         username: str,
         email: str | None = None,
         password: str = "Str0ng#Pass1",
-    ) -> dict:
+    ) -> dict[str, Any]:
         """Register a user and return the response body dict. Asserts success."""
         resolved_email = email or f"{username}@example.com"
         resp = self.post_register(username, resolved_email, password)
         assert resp.status_code == 201, f"Registration failed: {resp.text}"
         return resp.json()
 
-    def login_user(self, username: str, password: str = "Str0ng#Pass1") -> dict:
+    def login_user(self, username: str, password: str = "Str0ng#Pass1") -> dict[str, Any]:
         """Log in and return the token dict. Asserts success."""
         resp = self.post_login(username, password)
         assert resp.status_code == 200, f"Login failed: {resp.text}"

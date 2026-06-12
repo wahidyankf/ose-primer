@@ -1,7 +1,8 @@
 """Repository Protocol definitions for structural typing (PEP 544)."""
 
-from datetime import datetime
-from typing import Protocol
+from datetime import date, datetime
+from decimal import Decimal
+from typing import Protocol, TypedDict
 
 from crud_be_python_fastapi.infrastructure.models import (
     AttachmentModel,
@@ -9,6 +10,40 @@ from crud_be_python_fastapi.infrastructure.models import (
     RefreshTokenModel,
     UserModel,
 )
+
+
+class ExpenseData(TypedDict):
+    """Expense payload passed to the expense repository.
+
+    Keys mirror the columns written by ExpenseRepository.create/update. Both router
+    callers populate every key on create and update, so all keys are required.
+    """
+
+    amount: str
+    currency: str
+    category: str
+    description: str | None
+    date: str | date
+    type: str
+    quantity: str | float | None
+    unit: str | None
+
+
+class CurrencySummary(TypedDict):
+    """One per-currency expense total produced by summary_by_currency."""
+
+    currency: str
+    total: Decimal
+
+
+class PLReport(TypedDict):
+    """Profit-and-loss aggregate produced by pl_report (all amounts pre-formatted)."""
+
+    totalIncome: str
+    totalExpense: str
+    net: str
+    income_breakdown: dict[str, str]
+    expense_breakdown: dict[str, str]
 
 
 class UserRepositoryProtocol(Protocol):
@@ -49,7 +84,7 @@ class UserRepositoryProtocol(Protocol):
 class ExpenseRepositoryProtocol(Protocol):
     """Structural interface for expense repository implementations."""
 
-    def create(self, user_id: str, data: dict) -> ExpenseModel: ...
+    def create(self, user_id: str, data: ExpenseData) -> ExpenseModel: ...
 
     def find_by_id(self, expense_id: str) -> ExpenseModel | None: ...
 
@@ -57,11 +92,11 @@ class ExpenseRepositoryProtocol(Protocol):
         self, user_id: str, page: int, size: int
     ) -> tuple[list[ExpenseModel], int]: ...
 
-    def update(self, expense_id: str, data: dict) -> ExpenseModel | None: ...
+    def update(self, expense_id: str, data: ExpenseData) -> ExpenseModel | None: ...
 
     def delete(self, expense_id: str) -> None: ...
 
-    def summary_by_currency(self, user_id: str) -> list[dict]: ...
+    def summary_by_currency(self, user_id: str) -> list[CurrencySummary]: ...
 
     def pl_report(
         self,
@@ -69,7 +104,7 @@ class ExpenseRepositoryProtocol(Protocol):
         from_date: str,
         to_date: str,
         currency: str,
-    ) -> dict: ...
+    ) -> PLReport: ...
 
 
 class AttachmentRepositoryProtocol(Protocol):

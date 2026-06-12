@@ -13,6 +13,11 @@ from crud_be_python_fastapi.infrastructure.models import (
     RevokedTokenModel,
     UserModel,
 )
+from crud_be_python_fastapi.infrastructure.protocols import (
+    CurrencySummary,
+    ExpenseData,
+    PLReport,
+)
 
 
 def _to_str(value: str | _uuid_mod.UUID) -> str:
@@ -164,21 +169,20 @@ class ExpenseRepository:
     def __init__(self, db: Session) -> None:
         self._db = db
 
-    def create(self, user_id: str, data: dict) -> ExpenseModel:
+    def create(self, user_id: str, data: ExpenseData) -> ExpenseModel:
         # date may come in as a string ISO date or a date object
-        expense_date = data["date"]
-        if isinstance(expense_date, str):
-            expense_date = date.fromisoformat(expense_date)
+        raw_date = data["date"]
+        expense_date = date.fromisoformat(raw_date) if isinstance(raw_date, str) else raw_date
         expense = ExpenseModel(
             user_id=user_id,
             amount=str(data["amount"]),
             currency=data["currency"],
             category=data["category"],
-            description=data.get("description") or "",
+            description=data["description"] or "",
             date=expense_date,
-            type=data.get("type", "expense").lower(),
-            quantity=str(data["quantity"]) if data.get("quantity") is not None else None,
-            unit=data.get("unit"),
+            type=data["type"].lower(),
+            quantity=str(data["quantity"]) if data["quantity"] is not None else None,
+            unit=data["unit"],
         )
         self._db.add(expense)
         self._db.commit()
@@ -195,23 +199,20 @@ class ExpenseRepository:
         items = list(self._db.execute(query.offset(offset).limit(size)).scalars().all())
         return items, total
 
-    def update(self, expense_id: str, data: dict) -> ExpenseModel | None:
+    def update(self, expense_id: str, data: ExpenseData) -> ExpenseModel | None:
         expense = self.find_by_id(expense_id)
         if expense is None:
             return None
-        expense_date = data["date"]
-        if isinstance(expense_date, str):
-            expense_date = date.fromisoformat(expense_date)
+        raw_date = data["date"]
+        expense_date = date.fromisoformat(raw_date) if isinstance(raw_date, str) else raw_date
         expense.amount = str(data["amount"])
         expense.currency = data["currency"]
         expense.category = data["category"]
-        expense.description = data.get("description") or ""
+        expense.description = data["description"] or ""
         expense.date = expense_date
-        expense.type = data.get("type", "expense").lower()
-        if "quantity" in data:
-            expense.quantity = str(data["quantity"]) if data["quantity"] is not None else None
-        if "unit" in data:
-            expense.unit = data.get("unit")
+        expense.type = data["type"].lower()
+        expense.quantity = str(data["quantity"]) if data["quantity"] is not None else None
+        expense.unit = data["unit"]
         self._db.commit()
         self._db.refresh(expense)
         return expense
@@ -222,7 +223,7 @@ class ExpenseRepository:
             self._db.delete(expense)
             self._db.commit()
 
-    def summary_by_currency(self, user_id: str) -> list[dict]:
+    def summary_by_currency(self, user_id: str) -> list[CurrencySummary]:
         stmt = select(ExpenseModel).where(
             ExpenseModel.user_id == _to_str(user_id),
             ExpenseModel.type == "expense",
@@ -241,9 +242,9 @@ class ExpenseRepository:
         from_date: str,
         to_date: str,
         currency: str,
-    ) -> dict:
-        from_date_obj = date.fromisoformat(from_date) if isinstance(from_date, str) else from_date
-        to_date_obj = date.fromisoformat(to_date) if isinstance(to_date, str) else to_date
+    ) -> PLReport:
+        from_date_obj = date.fromisoformat(from_date)
+        to_date_obj = date.fromisoformat(to_date)
         stmt = select(ExpenseModel).where(
             ExpenseModel.user_id == _to_str(user_id),
             ExpenseModel.currency == currency,

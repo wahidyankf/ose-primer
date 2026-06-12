@@ -2,6 +2,7 @@
 
 import logging
 import os
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
@@ -43,7 +44,7 @@ _ALEMBIC_INI = Path(__file__).parents[2] / "alembic.ini"
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):  # type: ignore[no-untyped-def]
+async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     """Application lifespan: run Alembic migrations to head on startup."""
     database_url = os.environ.get("DATABASE_URL", "")
     if database_url.startswith("postgresql"):
@@ -74,7 +75,7 @@ def create_app() -> FastAPI:
 
     # JWKS well-known endpoint
     @app.get("/.well-known/jwks.json")
-    def jwks() -> Any:
+    def jwks() -> dict[str, Any]:
         return get_jwks()
 
     # Convert Pydantic 422 validation errors to 400
@@ -163,4 +164,5 @@ app = create_app()
 if __name__ == "__main__":  # pragma: no cover
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8201)
+    # Binding to all interfaces is intentional for the container entrypoint.
+    uvicorn.run(app, host="0.0.0.0", port=8201)  # noqa: S104

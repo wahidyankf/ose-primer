@@ -17,6 +17,11 @@ from crud_be_python_fastapi.infrastructure.models import (
     RevokedTokenModel,
     UserModel,
 )
+from crud_be_python_fastapi.infrastructure.protocols import (
+    CurrencySummary,
+    ExpenseData,
+    PLReport,
+)
 
 
 def _now() -> datetime:
@@ -55,11 +60,10 @@ def _make_user(
     )
 
 
-def _make_expense(user_id: str, data: dict) -> ExpenseModel:
-    expense_date = data["date"]
-    if isinstance(expense_date, str):
-        expense_date = date.fromisoformat(expense_date)
-    quantity = data.get("quantity")
+def _make_expense(user_id: str, data: ExpenseData) -> ExpenseModel:
+    raw_date = data["date"]
+    expense_date = date.fromisoformat(raw_date) if isinstance(raw_date, str) else raw_date
+    quantity = data["quantity"]
     now = _now()
     return ExpenseModel(
         id=_new_id(),
@@ -68,10 +72,10 @@ def _make_expense(user_id: str, data: dict) -> ExpenseModel:
         amount=str(data["amount"]),
         currency=data["currency"],
         category=data["category"],
-        description=data.get("description") or "",
-        type=data.get("type", "expense").lower(),
+        description=data["description"] or "",
+        type=data["type"].lower(),
         quantity=str(quantity) if quantity is not None else None,
-        unit=data.get("unit"),
+        unit=data["unit"],
         created_at=now,
         created_by="system",
         updated_at=now,
@@ -226,7 +230,7 @@ class InMemoryExpenseRepository:
     def __init__(self) -> None:
         self._expenses: dict[str, ExpenseModel] = {}
 
-    def create(self, user_id: str, data: dict) -> ExpenseModel:
+    def create(self, user_id: str, data: ExpenseData) -> ExpenseModel:
         expense = _make_expense(user_id, data)
         self._expenses[expense.id] = expense
         return expense
@@ -240,31 +244,28 @@ class InMemoryExpenseRepository:
         offset = (page - 1) * size
         return items[offset : offset + size], total
 
-    def update(self, expense_id: str, data: dict) -> ExpenseModel | None:
+    def update(self, expense_id: str, data: ExpenseData) -> ExpenseModel | None:
         expense = self.find_by_id(expense_id)
         if expense is None:
             return None
-        expense_date = data["date"]
-        if isinstance(expense_date, str):
-            expense_date = date.fromisoformat(expense_date)
+        raw_date = data["date"]
+        expense_date = date.fromisoformat(raw_date) if isinstance(raw_date, str) else raw_date
         expense.amount = str(data["amount"])
         expense.currency = data["currency"]
         expense.category = data["category"]
-        expense.description = data.get("description") or ""
+        expense.description = data["description"] or ""
         expense.date = expense_date
-        expense.type = data.get("type", "expense").lower()
-        if "quantity" in data:
-            quantity = data["quantity"]
-            expense.quantity = str(quantity) if quantity is not None else None
-        if "unit" in data:
-            expense.unit = data.get("unit")
+        expense.type = data["type"].lower()
+        quantity = data["quantity"]
+        expense.quantity = str(quantity) if quantity is not None else None
+        expense.unit = data["unit"]
         expense.updated_at = _now()
         return expense
 
     def delete(self, expense_id: str) -> None:
         self._expenses.pop(str(expense_id), None)
 
-    def summary_by_currency(self, user_id: str) -> list[dict]:
+    def summary_by_currency(self, user_id: str) -> list[CurrencySummary]:
         items = [
             e
             for e in self._expenses.values()
@@ -283,9 +284,9 @@ class InMemoryExpenseRepository:
         from_date: str,
         to_date: str,
         currency: str,
-    ) -> dict:
-        from_date_obj = date.fromisoformat(from_date) if isinstance(from_date, str) else from_date
-        to_date_obj = date.fromisoformat(to_date) if isinstance(to_date, str) else to_date
+    ) -> PLReport:
+        from_date_obj = date.fromisoformat(from_date)
+        to_date_obj = date.fromisoformat(to_date)
         items = [
             e
             for e in self._expenses.values()

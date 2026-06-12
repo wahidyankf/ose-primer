@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy.orm import Session
 
 from crud_be_python_fastapi.auth.jwt_service import decode_token
 from crud_be_python_fastapi.dependencies import get_db, get_revoked_token_repo, get_user_repo
@@ -17,12 +18,22 @@ from crud_be_python_fastapi.infrastructure.protocols import (
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 
+def _provide_user_repo(db: Session = Depends(get_db)) -> UserRepositoryProtocol:
+    """FastAPI provider that builds a user repository bound to the request session."""
+    return get_user_repo(db)
+
+
+def _provide_revoked_token_repo(
+    db: Session = Depends(get_db),
+) -> RevokedTokenRepositoryProtocol:
+    """FastAPI provider that builds a revoked-token repository bound to the request session."""
+    return get_revoked_token_repo(db)
+
+
 def get_current_user(
     token: str = Depends(oauth2_scheme),
-    user_repo: UserRepositoryProtocol = Depends(lambda db=Depends(get_db): get_user_repo(db)),
-    revoked_repo: RevokedTokenRepositoryProtocol = Depends(
-        lambda db=Depends(get_db): get_revoked_token_repo(db)
-    ),
+    user_repo: UserRepositoryProtocol = Depends(_provide_user_repo),
+    revoked_repo: RevokedTokenRepositoryProtocol = Depends(_provide_revoked_token_repo),
 ) -> UserModel:
     """Extract and validate the current user from the JWT token."""
     payload = decode_token(token)

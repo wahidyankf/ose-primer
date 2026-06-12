@@ -50,18 +50,16 @@ def test_client() -> Generator[ServiceClient]:  # type: ignore[override]
 # (e.g. GHERKIN_ROOT=/specs/apps/crud/behavior/crud-be/gherkin) since the relative parent
 # traversal may exceed path depth in non-monorepo contexts.
 _gherkin_root_env = os.environ.get("GHERKIN_ROOT")
-if _gherkin_root_env:
-    GHERKIN_ROOT = pathlib.Path(_gherkin_root_env)
-else:
-    GHERKIN_ROOT = (
-        pathlib.Path(__file__).parents[4]
-        / "specs"
-        / "apps"
-        / "crud"
-        / "behavior"
-        / "crud-be"
-        / "gherkin"
-    )
+_default_gherkin_root = (
+    pathlib.Path(__file__).parents[4]
+    / "specs"
+    / "apps"
+    / "crud"
+    / "behavior"
+    / "crud-be"
+    / "gherkin"
+)
+GHERKIN_ROOT = pathlib.Path(_gherkin_root_env) if _gherkin_root_env else _default_gherkin_root
 
 _STRONG_PASSWORD = "Str0ng#Pass1"
 

@@ -89,7 +89,7 @@
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "uv run pyright",
+        "command": "uv run basedpyright",
         "cwd": "apps/crud-be-python-fastapi"
       },
       "dependsOn": ["codegen"],

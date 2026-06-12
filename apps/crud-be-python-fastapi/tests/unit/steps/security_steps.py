@@ -9,10 +9,10 @@ from tests.unit.conftest import GHERKIN_ROOT
 scenarios(str(GHERKIN_ROOT / "security" / "security.feature"))
 
 _PASSWORD = "Str0ng#Pass1"
-_ADMIN_PASSWORD = "Admin#Str0ng1"
+ADMIN_PASSWORD = "Admin#Str0ng1"
 
 
-def _register_and_promote_admin(client: ServiceClient, username: str, password: str) -> dict:
+def register_and_promote_admin(client: ServiceClient, username: str, password: str) -> dict:
     """Register a user, immediately set their role to ADMIN, and return user data."""
     user_data = client.register_user(username, password=password)
     client.promote_to_admin(user_data["id"])
@@ -36,8 +36,8 @@ def register_and_lock_user(client: ServiceClient, username: str) -> dict:
     target_fixture="admin_tokens",
 )
 def register_admin_and_login(client: ServiceClient, username: str) -> dict:
-    user_data = _register_and_promote_admin(client, username, _ADMIN_PASSWORD)
-    tokens = client.login_user(username, _ADMIN_PASSWORD)
+    user_data = register_and_promote_admin(client, username, ADMIN_PASSWORD)
+    tokens = client.login_user(username, ADMIN_PASSWORD)
     return {**tokens, "id": user_data["id"]}
 
 
@@ -51,8 +51,8 @@ def alice_max_failed_attempts(client: ServiceClient, registered_user: dict) -> N
 
 @given("an admin has unlocked alice's account")
 def admin_unlocks_alice(client: ServiceClient, locked_user: dict) -> None:
-    _register_and_promote_admin(client, "tmpadmin", _ADMIN_PASSWORD)
-    admin_tokens = client.login_user("tmpadmin", _ADMIN_PASSWORD)
+    register_and_promote_admin(client, "tmpadmin", ADMIN_PASSWORD)
+    admin_tokens = client.login_user("tmpadmin", ADMIN_PASSWORD)
     resp = client.post_admin_unlock_user(
         locked_user["id"],
         f"Bearer {admin_tokens['accessToken']}",

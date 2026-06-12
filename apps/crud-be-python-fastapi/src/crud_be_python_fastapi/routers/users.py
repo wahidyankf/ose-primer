@@ -63,11 +63,15 @@ def change_password(
     body: ChangePasswordRequest,
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
-) -> dict:
+) -> dict[str, str]:
     """Change password for the current user."""
     if not verify_password(body.oldPassword, current_user.password_hash):
         raise UnauthorizedError("Invalid credentials")
-    new_hash = hash_password(body.newPassword)
+    # generated_contracts annotates newPassword with pydantic constr(), which datamodel-codegen
+    # emits as an un-stubbed runtime type, so basedpyright cannot resolve the member type. At
+    # runtime pydantic validates it to a plain str; str() and the narrow ignore reflect that.
+    new_password: str = str(body.newPassword)  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
+    new_hash = hash_password(new_password)
     user_repo = get_user_repo(db)
     user_repo.update_password(str(current_user.id), new_hash)
     return {"message": "Password changed"}
@@ -77,7 +81,7 @@ def change_password(
 def deactivate(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
-) -> dict:
+) -> dict[str, str]:
     """Self-deactivate the current user's account."""
     user_repo = get_user_repo(db)
     user_repo.update_status(str(current_user.id), "INACTIVE")
