@@ -7,11 +7,12 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M -e '(compile (symbol \"openapi-codegen.core\"))'",
+        "command": "mkdir -p classes && JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M -e '(compile (symbol \"openapi-codegen.core\"))'",
         "cwd": "libs/clojure-openapi-codegen"
       },
       "cache": true,
-      "inputs": ["{projectRoot}/src/**/*.clj", "{projectRoot}/deps.edn"]
+      "inputs": ["{projectRoot}/src/**/*.clj", "{projectRoot}/deps.edn"],
+      "outputs": ["{projectRoot}/classes"]
     },
     "test:unit": {
       "executor": "nx:run-commands",
