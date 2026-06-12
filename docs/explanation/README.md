@@ -57,6 +57,7 @@ The repository follows a **six-layer governance architecture** (Vision → Princ
 - **[Plan Domain Parity — Design Decisions](./plan-domain-parity-decisions.md)** - All 26 deviation-matrix decisions from the 2026-06-06 cross-repo parity effort, including the recorded Safety Invariant 6 direct-push deviation
 - **[Gherkin Step-Keyword Cardinality — Cross-Repo Parity Decisions](./gherkin-step-keyword-cardinality-parity-decisions.md)** - All 13 deviation-matrix decisions from the 2026-06-07 cross-repo parity effort, including the four deliberate deviations (standalone Rust CLI command, Step 0.5 preflight port, per-repo CI wiring, direct-main-push mode)
 - **[Standardize App Spec Trees — Parity Decisions](./standardize-app-spec-trees-parity-decisions.md)** - All parity decisions from the 2026-06-11 cross-repo spec-tree rename effort, including the flat product-surface naming scheme, the `be`-over-`api` rule, the TDD-shaped Rust test update, and the recorded main-to-main delivery deviation
+- **[Lint and Safety Parity — Design Decisions](./lint-safety-parity-decisions.md)** - Every deviation-matrix decision from the 2026-06-12 cross-repo lint-and-safety effort, including the executed gates (Rust `forbid(unsafe_code)`, C# `AnalysisLevel=latest-All`, Python basedpyright-strict, hadolint/shellcheck/actionlint), the skipped rows (D1b/D2/D5/D9/D10), the D5 deferral and exemption philosophy, and the recorded main-to-main delivery deviation
 
 ### Software Engineering
 

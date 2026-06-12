@@ -114,6 +114,9 @@ Use these canonical names. Aliases (`serve`, `start:dev`, `unit-test`) are anti-
 | `build`            | Produce deployable or runnable artifacts                                                                                 | Compiled and bundled projects     |
 | `typecheck`        | Verify type correctness without producing artifacts                                                                      | Statically typed languages        |
 | `lint`             | Static analysis, code style checks, and static a11y checks (oxlint jsx-a11y for TS UI projects, `dart analyze` for Dart) | All projects                      |
+| `lint:dockerfiles` | Workspace-wide Dockerfile lint via `hadolint` at warning threshold (hosted on `rhino-cli`)                               | Hosted once on `rhino-cli`        |
+| `lint:shell`       | Workspace-wide shell-script lint via `shellcheck --severity=warning` (hosted on `rhino-cli`)                             | Hosted once on `rhino-cli`        |
+| `lint:actions`     | Workspace-wide GitHub Actions lint via `actionlint` (hosted on `rhino-cli`)                                              | Hosted once on `rhino-cli`        |
 | `test:quick`       | Fast quality gate for pre-push and PR merge; composed of fast checks                                                     | All projects                      |
 | `spec-coverage`    | Validate that every Gherkin step has a matching step definition; uses `rhino-cli spec-coverage validate`                 | All apps and E2E runners          |
 | `test:unit`        | Isolated unit tests with mocked dependencies; must consume Gherkin specs (crud-be backends and Go CLI apps)              | Projects with unit tests          |
@@ -136,6 +139,46 @@ Use these canonical names. Aliases (`serve`, `start:dev`, `unit-test`) are anti-
 - Use `test:quick` for the fast pre-push gate; `test:unit` for isolated unit tests with mocked dependencies (`rhino-cli` consumes Gherkin specs at this level); `test:integration` for tests with real infrastructure (crud-be: PostgreSQL via docker-compose) or in-process mocking (MSW, Godog); `test:e2e` for end-to-end tests; `spec-coverage` for Gherkin step definition coverage validation — run targets individually rather than through an aggregate wrapper
 - Separate target variants with a colon (`build:web`, `test:e2e:ui`), not a hyphen or underscore
 - All target names use lowercase with hyphens for multi-word names (`run-pre-commit`)
+
+## Cross-Cutting Infra-Lint Gates (`lint:dockerfiles` / `lint:shell` / `lint:actions`)
+
+Three workspace-wide static-analysis gates are hosted once on `rhino-cli` (modeled
+on its `validate:*` run-commands targets) rather than per project, because they lint
+cross-cutting infrastructure files that do not belong to a single app:
+
+| Target             | Tool         | Scope                                             | Config           |
+| ------------------ | ------------ | ------------------------------------------------- | ---------------- |
+| `lint:dockerfiles` | `hadolint`   | All `Dockerfile*` (vendored dirs excluded)        | `.hadolint.yaml` |
+| `lint:shell`       | `shellcheck` | All `*.sh` plus the extensionless `.husky/` hooks | `.shellcheckrc`  |
+| `lint:actions`     | `actionlint` | `.github/workflows/`                              | none required    |
+
+**Gating policy — "error threshold = fail on warning-and-above"**: these gates fail
+the build on warning-level findings and above, matching how Prettier and markdownlint
+are already gated. Operationally that means `hadolint --failure-threshold warning` and
+`shellcheck --severity=warning`; `actionlint` fails on any finding. Tool-specific
+justified exemptions live in the config files (e.g. `.hadolint.yaml` ignores
+version-pinning rules for demo/dev images). All three are wired into three enforcement
+surfaces: the Nx target graph, the CI quality gate (`pr-quality-gate.yml`, on PRs), and
+the local `.husky/pre-push` hook (scoped to pushes that touch the relevant trees).
+
+## Quality Gates by Language (Strictness Standard)
+
+The repository enforces a shared cross-language code-strictness bar. Each language's
+`lint`/`typecheck` target runs at the strictest practical setting, and the three
+cross-cutting infra-lint gates above complete the matrix:
+
+| Dimension      | Enforced standard                                                                                           |
+| -------------- | ----------------------------------------------------------------------------------------------------------- |
+| Rust           | `forbid(unsafe_code)` + public `[lints]` standard; `cargo clippy --all-targets -D warnings`                 |
+| C#             | `AnalysisLevel=latest-All` + `TreatWarningsAsErrors=true` + SonarAnalyzer at error severity                 |
+| F#             | `TreatWarningsAsErrors=true` strict stack (reference standard)                                              |
+| Python         | `basedpyright` `typeCheckingMode = "strict"` + expanded ruff select (`E,W,F,B,UP,SIM,I,N,S,RUF,C4,T20,ANN`) |
+| Dockerfile     | `hadolint` at warning threshold (`.hadolint.yaml`)                                                          |
+| Shell          | `shellcheck --severity=warning` (`.shellcheckrc`)                                                           |
+| GitHub Actions | `actionlint`                                                                                                |
+
+See [Lint and Safety Parity — Design Decisions](../../../docs/explanation/lint-safety-parity-decisions.md)
+for the per-dimension rationale, the skipped dimensions, and the recorded delivery deviation.
 
 ## Tag Convention
 
