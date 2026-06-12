@@ -8,6 +8,10 @@ Active project plans currently being worked on.
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
   exports research dossiers.
+- [Mermaid state diagram validation](./mermaid-state-diagram-validation/README.md)
+  — extend rhino-cli's Mermaid render-discipline rules to cover `stateDiagram-v2` and
+  `stateDiagram`, re-shape the validator onto a fresh kind-agnostic module design, and
+  clean up every violating state diagram repo-wide.
 
 ## Folder Naming
 
