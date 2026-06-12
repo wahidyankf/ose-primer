@@ -178,6 +178,8 @@ jobs:
           # Export extra env vars if provided
           if [ -n "${{ inputs.be-e2e-extra-env }}" ]; then
             while IFS= read -r line; do
+              # Each line is a literal KEY=VALUE pair to inject into the env.
+              # shellcheck disable=SC2163  # exporting a KEY=VALUE string is intentional here
               [ -n "$line" ] && export "$line"
             done <<< "${{ inputs.be-e2e-extra-env }}"
           fi

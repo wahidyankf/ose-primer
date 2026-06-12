@@ -34,16 +34,18 @@ jobs:
         run: |
           AFFECTED=$(npx nx show projects --affected 2>/dev/null || echo "")
           # Check language tags for affected projects
-          echo "has-ts=false" >> "$GITHUB_OUTPUT"
-          echo "has-golang=false" >> "$GITHUB_OUTPUT"
-          echo "has-jvm=false" >> "$GITHUB_OUTPUT"
-          echo "has-dotnet=false" >> "$GITHUB_OUTPUT"
-          echo "has-python=false" >> "$GITHUB_OUTPUT"
-          echo "has-rust=false" >> "$GITHUB_OUTPUT"
-          echo "has-elixir=false" >> "$GITHUB_OUTPUT"
-          echo "has-clojure=false" >> "$GITHUB_OUTPUT"
-          echo "has-dart=false" >> "$GITHUB_OUTPUT"
-          echo "has-markdown=false" >> "$GITHUB_OUTPUT"
+          {
+            echo "has-ts=false"
+            echo "has-golang=false"
+            echo "has-jvm=false"
+            echo "has-dotnet=false"
+            echo "has-python=false"
+            echo "has-rust=false"
+            echo "has-elixir=false"
+            echo "has-clojure=false"
+            echo "has-dart=false"
+            echo "has-markdown=false"
+          } >> "$GITHUB_OUTPUT"
 
           for project in $AFFECTED; do
             TAGS=$(npx nx show project "$project" --json 2>/dev/null | jq -r '.tags[]' 2>/dev/null || echo "")
@@ -248,6 +250,42 @@ jobs:
       - uses: ./.github/actions/setup-rust
       - run: npx nx run rhino-cli:env:validate
 
+  hadolint:
+    name: Dockerfile lint (hadolint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-node
+      - name: Install hadolint
+        run: |
+          sudo curl -fsSL -o /usr/local/bin/hadolint \
+            https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-Linux-x86_64
+          sudo chmod +x /usr/local/bin/hadolint
+          hadolint --version
+      - run: npx nx run rhino-cli:lint:dockerfiles
+
+  shellcheck:
+    name: Shell lint (shellcheck)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-node
+      # shellcheck is preinstalled on ubuntu-latest GitHub-hosted runners.
+      - run: shellcheck --version
+      - run: npx nx run rhino-cli:lint:shell
+
+  actionlint:
+    name: Actions lint (actionlint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-node
+      - name: Install actionlint
+        run: |
+          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash) 1.7.12
+          echo "$PWD/bin" >> "$GITHUB_PATH"
+      - run: npx nx run rhino-cli:lint:actions
+
   quality-gate:
     name: Quality gate
     needs:
@@ -266,6 +304,9 @@ jobs:
         markdown,
         naming,
         env-validate,
+        hadolint,
+        shellcheck,
+        actionlint,
       ]
     if: always()
     runs-on: ubuntu-latest
@@ -273,11 +314,7 @@ jobs:
       - name: Check all gates
         run: |
           echo "Checking quality gate results..."
-          FAILED=false
-          for job in typescript golang jvm dotnet python rust elixir clojure dart markdown naming env-validate; do
-            RESULT="${{ toJSON(needs) }}"
-            # A skipped job is OK (language not affected). Only failure blocks.
-          done
+          # A skipped job is OK (language not affected). Only a failure blocks.
           if [ "${{ contains(needs.*.result, 'failure') }}" = "true" ]; then
             echo "One or more quality gate jobs failed"
             exit 1

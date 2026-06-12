@@ -179,6 +179,27 @@
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
       "outputs": []
+    },
+    "lint:dockerfiles": {
+      "command": "find . -type f \\( -name Dockerfile -o -name 'Dockerfile.*' \\) -not -path '*/node_modules/*' -not -path '*/deps/*' -not -path '*/_build/*' -not -path '*/.venv/*' -not -path '*/target/*' -not -path '*/archived/*' -not -path '*/worktrees/*' -exec hadolint --failure-threshold warning {} +",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/**/Dockerfile*", "{workspaceRoot}/.hadolint.yaml"],
+      "outputs": [],
+      "comment": "Dockerfile lint gate (lint-safety-parity D6). Fails on warning-and-above per .hadolint.yaml. Vendored Dockerfiles (deps/_build/.venv/target/archived/node_modules) excluded."
+    },
+    "lint:shell": {
+      "command": "shellcheck --severity=warning $(find . -type f -name '*.sh' -not -path '*/node_modules/*' -not -path '*/deps/*' -not -path '*/_build/*' -not -path '*/.venv/*' -not -path '*/target/*' -not -path '*/archived/*' -not -path '*/worktrees/*') .husky/pre-commit .husky/pre-push .husky/commit-msg",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/**/*.sh", "{workspaceRoot}/.husky/*", "{workspaceRoot}/.shellcheckrc"],
+      "outputs": [],
+      "comment": "Shell lint gate (lint-safety-parity D7). shellcheck --severity=warning over all *.sh scripts plus the extensionless husky hooks; config in .shellcheckrc."
+    },
+    "lint:actions": {
+      "command": "actionlint",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/.github/workflows/**", "{workspaceRoot}/.github/actionlint.yaml"],
+      "outputs": [],
+      "comment": "GitHub Actions lint gate (lint-safety-parity D8). actionlint auto-discovers .github/workflows/ and type-checks expressions, runner labels, and embedded run: shell scripts (via shellcheck)."
     }
   }
 }

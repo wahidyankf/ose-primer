@@ -1,0 +1,32 @@
+# hadolint configuration — Dockerfile lint gate (lint-safety-parity D6)
+#
+# Gate policy: fail the build on warning-and-above findings, matching the
+# repo-wide "error threshold = fail on warning" standard used by shellcheck
+# and the markdown/prettier gates. See
+# docs/explanation/lint-safety-parity-decisions.md for the full rationale.
+failure-threshold: warning
+
+# Only these registries may be used in FROM lines (DL3026).
+trustedRegistries:
+  - docker.io
+  - ghcr.io
+  - mcr.microsoft.com # Microsoft Artifact Registry — official .NET SDK/runtime images (C#, F#)
+
+# Justified per-rule ignores. Every entry below is deliberate for this repo's
+# demo / development / integration images, which are NOT production artifacts:
+#
+#   DL3018 — "Pin versions in apk add". Alpine package pinning is brittle and
+#            high-churn for demo images; intentionally unpinned.
+#   DL3008 — "Pin versions in apt-get install". Same rationale (Debian/Ubuntu).
+#   DL3013 — "Pin versions in pip". Demo dependency-management layers install
+#            tooling (e.g. uv) unpinned by design.
+#   DL3007 — "Using latest". Integration-test builder stages intentionally
+#            track the latest language toolchain image.
+#   DL3003 — "Use WORKDIR to switch directory". A few multi-step build RUNs use
+#            `cd` deliberately for a single transient step; WORKDIR would leak.
+ignored:
+  - DL3018
+  - DL3008
+  - DL3013
+  - DL3007
+  - DL3003

@@ -6,7 +6,7 @@ FROM python:3.13-slim
 # Install curl for healthcheck and uv for dependency management
 RUN apt-get update && apt-get install -y --no-install-recommends curl && \
     rm -rf /var/lib/apt/lists/* && \
-    pip install uv
+    pip install --no-cache-dir uv
 
 WORKDIR /workspace
 

@@ -1,0 +1,14 @@
+# shellcheck configuration — shell lint gate (lint-safety-parity D7)
+#
+# Gate policy: fail on warning-and-above (the gate command passes
+# `--severity=warning`), matching the repo-wide "error threshold = fail on
+# warning" standard. See docs/explanation/lint-safety-parity-decisions.md.
+
+# Default dialect for scripts that lack a shebang. Files WITH a shebang
+# (e.g. the husky hooks use `#!/usr/bin/env sh`) are analysed per their
+# shebang; this default only applies to shebang-less scripts.
+shell=bash
+
+# Allow shellcheck to follow `source`/`.` includes so sourced helpers are
+# analysed together rather than warned about as unreadable (SC1091).
+external-sources=true

@@ -11,7 +11,7 @@ npx nx run rhino-cli:env:validate
 
 # Naming validators — scoped to pushes that touch the relevant trees.
 # Upstream may be missing on first push of a branch; default to empty range in that case.
-RANGE=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1 && echo "@{u}..HEAD" || echo "")
+RANGE=$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1 && echo '@{u}..HEAD' || echo "")
 if [ -n "$RANGE" ]; then
   CHANGED=$(git diff --name-only "$RANGE" 2>/dev/null || echo "")
   if echo "$CHANGED" | grep -qE '^(\.claude/agents/|\.opencode/agents/)'; then
@@ -30,5 +30,16 @@ if [ -n "$RANGE" ]; then
   # AGENTS.md and asserts byte-equality + catalog coverage. No network, no agent.
   if echo "$CHANGED" | grep -qE '^(\.amazonq/|AGENTS\.md|docs/reference/platform-bindings\.md|\.claude/|\.opencode/|\.codex/|\.github/)'; then
     npm run validate:harness-bindings
+  fi
+  # Infra-lint gates (lint-safety-parity D6/D7/D8) — scoped to pushes that touch
+  # the relevant trees. Each nx target is cached, so an unchanged tree is a no-op.
+  if echo "$CHANGED" | grep -qE '(^|/)Dockerfile(\.|$)'; then
+    npx nx run rhino-cli:lint:dockerfiles
+  fi
+  if echo "$CHANGED" | grep -qE '\.sh$|^\.husky/'; then
+    npx nx run rhino-cli:lint:shell
+  fi
+  if echo "$CHANGED" | grep -qE '^\.github/workflows/'; then
+    npx nx run rhino-cli:lint:actions
   fi
 fi
