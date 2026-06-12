@@ -122,20 +122,22 @@ This applies Standard 4 of [Proactive Preexisting Error Resolution](../practice/
 
 **Scope of "fix now"**: remove the unsolicited PR step from the checklist and, if the plan is in `plans/in-progress/`, note the fix in the same commit message. If the plan is in `plans/done/` (archived), leave it — historical records are read-only.
 
-### Standard 6: Worktree Branches Push to main, Not to Worktree Branch
+### Standard 6: Worktree Execution Does Not Change the Default
 
-When working inside a git worktree (e.g., on branch `worktree-<name>`), the default is still to land changes on `origin main`. The worktree branch is an isolation mechanism — not a feature branch. Push the worktree's HEAD directly to main:
+Running from inside a git worktree does not automatically trigger branch + draft PR behavior. The default remains direct push to `origin main` regardless of execution context.
 
-```bash
-# From inside a worktree on branch worktree-<name>
-git push origin HEAD:main
-```
+This standard covers all worktree execution patterns:
 
-Equivalently, when working in the main worktree (not a named worktree), the standard `git push origin main` applies unchanged.
+- An AI agent using `isolation: "worktree"` in the Agent tool.
+- An agent or developer session started inside a path created by `git worktree add`.
+- Any working directory under `worktrees/` or any other `git worktree add` target.
 
-A pull request from a worktree branch is created only when the user's prompt or the plan document explicitly requests one — the same opt-in rule as Standard 2.
+Branch + PR from a worktree is opt-in. It is triggered only by:
 
-**What this standard does NOT cover**: this convention governs work done inside `ose-primer` itself. The previously-referenced `ose-projects` umbrella repository has been deleted; `ose-primer` is now an independent top-level repository alongside its siblings [`ose-public`](https://github.com/wahidyankf/ose-public) and [`ose-infra`](https://github.com/wahidyankf/ose-infra) (see the [Repository Ecosystem Convention](../../conventions/structure/repository-ecosystem.md)). Each sibling defines its own push policy independently.
+- An explicit user instruction ("create a PR", "use a branch", "open a pull request", or equivalent phrasing in the prompt).
+- An explicit `- [ ] Create PR` or `- [ ] Open PR` step in the plan's delivery checklist that satisfies Standard 3.
+
+Absent one of those explicit signals, an agent executing from inside a worktree MUST commit and push directly to `origin main`, not open a branch or PR.
 
 ## Examples
 
