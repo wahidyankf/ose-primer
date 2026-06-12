@@ -22,7 +22,9 @@ dotnet_style_qualification_for_method = false
 dotnet_style_qualification_for_event = false
 
 # Modifier preferences
-dotnet_style_require_accessibility_modifiers = always
+# Interface members are implicitly public and idiomatically omit modifiers, so
+# IDE0040 is scoped to non-interface members under the strict baseline.
+dotnet_style_require_accessibility_modifiers = for_non_interface_members
 
 # Expression-level preferences
 dotnet_style_object_initializer = true
@@ -35,7 +37,11 @@ dotnet_style_null_propagation = true
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true
 
 # C# style rules
-csharp_style_var_for_built_in_types = false
+# `var` everywhere: the codebase is written in a uniformly var-heavy style.
+# Setting all three preferences to true keeps the strict baseline internally
+# consistent and prevents the mutually-contradictory IDE0007 (use var) /
+# IDE0008 (use explicit type) pair from both firing as errors.
+csharp_style_var_for_built_in_types = true
 csharp_style_var_when_type_is_apparent = true
 csharp_style_var_elsewhere = true
 csharp_style_expression_bodied_methods = when_on_single_line
@@ -46,6 +52,61 @@ csharp_new_line_before_else = true
 csharp_new_line_before_catch = true
 csharp_new_line_before_finally = true
 csharp_prefer_braces = true
+
+# File-scoped namespaces (modern C# default already used throughout). This pins
+# IDE0161 as the active rule and silences IDE0160 (which would demand the legacy
+# block-scoped form).
+csharp_style_namespace_declarations = file_scoped
+
+# Guard-clause readability: keep explicit `if (cond) return X;` guard clauses
+# rather than collapsing them into a single conditional expression/assignment.
+# IDE0045/IDE0046 hurt readability in the domain validation and endpoint handlers.
+# The preference flags below set the desired direction; because the catch-all
+# `dotnet_analyzer_diagnostic.severity = error` would otherwise still surface
+# these as build errors, the two rules are explicitly silenced.
+csharp_style_prefer_conditional_expression_over_assignment = false
+csharp_style_prefer_conditional_expression_over_return = false
+dotnet_diagnostic.IDE0045.severity = none
+dotnet_diagnostic.IDE0046.severity = none
+
+# Analyzer severity escalation (Phase 2: D3 C# strict baseline)
+# Escalate every analyzer-emitted diagnostic to error so that the full
+# SonarAnalyzer.CSharp ruleset AND the Microsoft.CodeAnalysis.NetAnalyzers
+# (CAxxxx) ruleset enabled via <AnalysisLevel>latest-All</AnalysisLevel> are
+# build-breaking. A single catch-all is used rather than per-category settings
+# because Sonar does not publish stable Roslyn category strings; this guarantees
+# no Sonar (Sxxxx) or CA finding can slip through as a non-fatal warning.
+dotnet_analyzer_diagnostic.severity = error
+
+# IDE0058 (expression value is never used) is excluded from the build-breaking
+# baseline. It is a false positive across this codebase's idiomatic fluent
+# builder chains (EF Core ModelBuilder, ASP.NET endpoint mapping) and
+# fire-and-forget repository writes whose returned entity is intentionally
+# discarded. Suppressing the rule outright is preferred over scattering
+# discards (`_ = ...`) through otherwise-clean code.
+dotnet_diagnostic.IDE0058.severity = none
+
+# Contracts/Option.cs is a hand-written compatibility shim that mirrors the
+# Org.OpenAPITools.Client.Option<T> API surface emitted by the OpenAPI csharp
+# generator. Its shape (block-bodied constructor, mutable-looking struct, the
+# conversion operator, type name, and namespace-to-folder mapping) is dictated
+# by the generated-code contract, not a free design choice, so the relevant
+# refactoring/naming analyzers are scoped off for this one file.
+[**/Contracts/Option.cs]
+dotnet_diagnostic.CA1716.severity = none   # "Option" mirrors generated identifier
+dotnet_diagnostic.IDE0250.severity = none  # struct cannot be marked readonly (mirrors generated shape)
+dotnet_diagnostic.IDE0290.severity = none  # keep explicit constructor (generated shape)
+dotnet_diagnostic.IDE0023.severity = none  # keep operator body form (generated shape)
+dotnet_diagnostic.IDE0130.severity = none  # namespace intentionally differs from folder
+
+# EF Core migrations are generated code (scaffolded by `dotnet ef migrations add`).
+# They use the legacy block-scoped namespace / `#nullable disable` shape that the
+# tooling emits and are regenerated on schema changes, so style and analyzer rules
+# are disabled for them rather than hand-edited away.
+[**/Migrations/*.cs]
+generated_code = true
+dotnet_analyzer_diagnostic.severity = none
+dotnet_diagnostic.IDE0161.severity = none
 
 [*.{csproj,fsproj,props,targets}]
 indent_size = 2

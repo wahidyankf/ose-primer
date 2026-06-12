@@ -54,7 +54,7 @@ public class AttachmentRepository(AppDbContext db) : IAttachmentRepository
     {
         // Use client-side sort to avoid SQLite DateTimeOffset ORDER BY translation issue
         var items = await db.Attachments.Where(a => a.ExpenseId == expenseId).ToListAsync(ct);
-        return items.OrderBy(a => a.CreatedAt).ToList();
+        return [.. items.OrderBy(a => a.CreatedAt)];
     }
 
     public Task<AttachmentModel?> FindByIdAsync(

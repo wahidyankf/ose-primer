@@ -17,7 +17,7 @@ public interface IExpenseRepository
         ExpenseType type,
         double? quantity,
         string? unit,
-        DateOnly date,
+        DateOnly expenseDate,
         CancellationToken ct = default
     );
     Task<ExpenseModel?> FindByIdAsync(Guid expenseId, Guid userId, CancellationToken ct = default);
@@ -37,7 +37,7 @@ public interface IExpenseRepository
         ExpenseType type,
         double? quantity,
         string? unit,
-        DateOnly date,
+        DateOnly expenseDate,
         CancellationToken ct = default
     );
     Task DeleteAsync(Guid expenseId, Guid userId, CancellationToken ct = default);
@@ -47,8 +47,8 @@ public interface IExpenseRepository
     );
     Task<IReadOnlyList<ExpenseModel>> ListByUserAndDateRangeAsync(
         Guid userId,
-        DateOnly from,
-        DateOnly to,
+        DateOnly fromDate,
+        DateOnly toDate,
         string? currency,
         CancellationToken ct = default
     );
@@ -65,7 +65,7 @@ public class ExpenseRepository(AppDbContext db) : IExpenseRepository
         ExpenseType type,
         double? quantity,
         string? unit,
-        DateOnly date,
+        DateOnly expenseDate,
         CancellationToken ct = default
     )
     {
@@ -81,7 +81,7 @@ public class ExpenseRepository(AppDbContext db) : IExpenseRepository
             Type = type,
             Quantity = quantity,
             Unit = unit,
-            Date = date,
+            Date = expenseDate,
             CreatedAt = now,
             UpdatedAt = now,
         };
@@ -128,7 +128,7 @@ public class ExpenseRepository(AppDbContext db) : IExpenseRepository
         ExpenseType type,
         double? quantity,
         string? unit,
-        DateOnly date,
+        DateOnly expenseDate,
         CancellationToken ct = default
     )
     {
@@ -143,7 +143,7 @@ public class ExpenseRepository(AppDbContext db) : IExpenseRepository
         expense.Type = type;
         expense.Quantity = quantity;
         expense.Unit = unit;
-        expense.Date = date;
+        expense.Date = expenseDate;
         expense.UpdatedAt = DateTimeOffset.UtcNow;
         await db.SaveChangesAsync(ct);
         return expense;
@@ -169,32 +169,34 @@ public class ExpenseRepository(AppDbContext db) : IExpenseRepository
     )
     {
         var expenses = await db.Expenses.Where(e => e.UserId == userId).ToListAsync(ct);
-        return expenses
-            .GroupBy(e => e.Currency)
-            .Select(g => new CurrencySummary(
-                g.Key,
-                g.Where(e => e.Type == ExpenseType.Income).Sum(e => e.Amount),
-                g.Where(e => e.Type == ExpenseType.Expense).Sum(e => e.Amount)
-            ))
-            .ToList();
+        return
+        [
+            .. expenses
+                .GroupBy(e => e.Currency)
+                .Select(g => new CurrencySummary(
+                    g.Key,
+                    g.Where(e => e.Type == ExpenseType.Income).Sum(e => e.Amount),
+                    g.Where(e => e.Type == ExpenseType.Expense).Sum(e => e.Amount)
+                )),
+        ];
     }
 
     public async Task<IReadOnlyList<ExpenseModel>> ListByUserAndDateRangeAsync(
         Guid userId,
-        DateOnly from,
-        DateOnly to,
+        DateOnly fromDate,
+        DateOnly toDate,
         string? currency,
         CancellationToken ct = default
     )
     {
         var allExpenses = await db.Expenses.Where(e => e.UserId == userId).ToListAsync(ct);
-        var filtered = allExpenses.Where(e => e.Date >= from && e.Date <= to);
+        var filtered = allExpenses.Where(e => e.Date >= fromDate && e.Date <= toDate);
         if (!string.IsNullOrWhiteSpace(currency))
         {
             var upper = currency.ToUpperInvariant();
             filtered = filtered.Where(e => e.Currency == upper);
         }
 
-        return filtered.ToList();
+        return [.. filtered];
     }
 }

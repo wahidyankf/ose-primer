@@ -1,6 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using DemoBeCsas.Auth;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DemoBeCsas.Endpoints;

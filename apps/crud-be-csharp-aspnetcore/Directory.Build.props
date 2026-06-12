@@ -6,6 +6,13 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);NU1605</NoWarn>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest-All</AnalysisLevel>
+    <!-- IDE0005 (remove unnecessary usings) only runs on build when a documentation
+         file is generated. Enable it so unused-import detection is part of the strict
+         baseline; suppress the XML-doc-comment warnings (CS1591/CS1573) because this is
+         an application, not a documented library that ships an XML doc file. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>

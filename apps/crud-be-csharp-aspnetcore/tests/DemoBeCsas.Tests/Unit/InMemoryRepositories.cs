@@ -104,7 +104,7 @@ public sealed class InMemoryExpenseRepository : IExpenseRepository
         ExpenseType type,
         double? quantity,
         string? unit,
-        DateOnly date,
+        DateOnly expenseDate,
         CancellationToken ct = default
     )
     {
@@ -120,7 +120,7 @@ public sealed class InMemoryExpenseRepository : IExpenseRepository
             Type = type,
             Quantity = quantity,
             Unit = unit,
-            Date = date,
+            Date = expenseDate,
             CreatedAt = now,
             UpdatedAt = now,
         };
@@ -162,7 +162,7 @@ public sealed class InMemoryExpenseRepository : IExpenseRepository
         ExpenseType type,
         double? quantity,
         string? unit,
-        DateOnly date,
+        DateOnly expenseDate,
         CancellationToken ct = default
     )
     {
@@ -178,7 +178,7 @@ public sealed class InMemoryExpenseRepository : IExpenseRepository
         expense.Type = type;
         expense.Quantity = quantity;
         expense.Unit = unit;
-        expense.Date = date;
+        expense.Date = expenseDate;
         expense.UpdatedAt = DateTimeOffset.UtcNow;
         _store[expenseId] = expense;
         return Task.FromResult(expense);
@@ -209,14 +209,14 @@ public sealed class InMemoryExpenseRepository : IExpenseRepository
 
     public Task<IReadOnlyList<ExpenseModel>> ListByUserAndDateRangeAsync(
         Guid userId,
-        DateOnly from,
-        DateOnly to,
+        DateOnly fromDate,
+        DateOnly toDate,
         string? currency,
         CancellationToken ct = default
     )
     {
         var query = _store.Values
-            .Where(e => e.UserId == userId && e.Date >= from && e.Date <= to);
+            .Where(e => e.UserId == userId && e.Date >= fromDate && e.Date <= toDate);
         if (!string.IsNullOrWhiteSpace(currency))
         {
             var upper = currency.ToUpperInvariant();

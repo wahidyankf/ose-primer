@@ -1,0 +1,68 @@
+# Test-project analyzer baseline.
+#
+# Inherits the strict app baseline from the project-root .editorconfig
+# (AnalysisLevel=latest-All + SonarAnalyzer + the catch-all escalation) but
+# relaxes the rules that target shipped-library code or that conflict with
+# established xUnit / Reqnroll test idioms. Correctness-oriented analyzers
+# (Sonar Sxxxx, nullability, async-misuse) stay at error.
+root = false
+
+[*.cs]
+
+# --- Rules that are inappropriate for test assemblies ---
+
+# CA2007: ConfigureAwait(false) is a library concern. Test methods run on the
+# test framework's synchronization context and Microsoft explicitly recommends
+# leaving CA2007 off for test and application projects.
+dotnet_diagnostic.CA2007.severity = none
+
+# CA1515: Reqnroll step-definition classes and xUnit fixtures must be public so
+# the test runner can discover and instantiate them; they cannot be internal.
+dotnet_diagnostic.CA1515.severity = none
+
+# CA1707: xUnit/Reqnroll test and step methods use underscore-separated names
+# (Given_When_Then / Method_State_Expectation), which is the community standard.
+dotnet_diagnostic.CA1707.severity = none
+
+# CA2234: Test HTTP helpers call HttpClient with string request URIs by design;
+# constructing System.Uri instances adds noise without value in tests.
+dotnet_diagnostic.CA2234.severity = none
+
+# CA1062: Argument-null validation on public members is a library guard; test
+# helpers and step methods receive framework-supplied, non-null arguments.
+dotnet_diagnostic.CA1062.severity = none
+
+# CA1822: Reqnroll binding methods must be instance methods on the binding class
+# even when they do not touch instance state; they cannot be made static.
+dotnet_diagnostic.CA1822.severity = none
+
+# CA1051: Reqnroll/xUnit fixtures expose simple instance fields shared across
+# step methods; visible-instance-field hardening is a public-library concern.
+dotnet_diagnostic.CA1051.severity = none
+
+# CA2000: Test hosts (WebApplicationFactory, DbContext) are owned by the test
+# fixture lifecycle / DI container and disposed there, not at the call site.
+dotnet_diagnostic.CA2000.severity = none
+
+# CA1308: Test assertions normalize casing with ToLowerInvariant for readability;
+# the "normalize to uppercase" guidance targets security-sensitive library code.
+dotnet_diagnostic.CA1308.severity = none
+
+# CA1869: Caching JsonSerializerOptions is a hot-path optimization irrelevant to
+# one-shot test serialization.
+dotnet_diagnostic.CA1869.severity = none
+
+# --- Pure-style IDE rules: keep tests readable in their existing form ---
+# Test step methods are intentionally written as block bodies, and the test tree
+# is not held to the same expression-body / collection-expression styling as src.
+dotnet_diagnostic.IDE0022.severity = none
+dotnet_diagnostic.IDE0011.severity = none
+dotnet_diagnostic.IDE0037.severity = none
+dotnet_diagnostic.IDE0290.severity = none
+dotnet_diagnostic.IDE0300.severity = none
+dotnet_diagnostic.IDE0305.severity = none
+dotnet_diagnostic.IDE0028.severity = none
+
+# IDE0060: Reqnroll binds Gherkin step arguments positionally; some bound
+# parameters are intentionally unused in a given step implementation.
+dotnet_diagnostic.IDE0060.severity = none

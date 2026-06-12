@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -37,7 +38,7 @@ public class JwtService(IConfiguration config) : IJwtService
                 new Claim("username", username),
                 new Claim("role", role),
                 new Claim(JwtRegisteredClaimNames.Jti, jti),
-                new Claim(JwtRegisteredClaimNames.Iat, now.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
+                new Claim(JwtRegisteredClaimNames.Iat, now.ToUnixTimeSeconds().ToString(CultureInfo.InvariantCulture), ClaimValueTypes.Integer64),
             ],
             expires: DateTime.UtcNow.AddMinutes(15),
             signingCredentials: creds
@@ -58,7 +59,7 @@ public class JwtService(IConfiguration config) : IJwtService
                 new Claim(JwtRegisteredClaimNames.Sub, userId),
                 new Claim("token_type", "refresh"),
                 new Claim(JwtRegisteredClaimNames.Jti, jti),
-                new Claim(JwtRegisteredClaimNames.Iat, now.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
+                new Claim(JwtRegisteredClaimNames.Iat, now.ToUnixTimeSeconds().ToString(CultureInfo.InvariantCulture), ClaimValueTypes.Integer64),
             ],
             expires: DateTime.UtcNow.AddDays(7),
             signingCredentials: creds

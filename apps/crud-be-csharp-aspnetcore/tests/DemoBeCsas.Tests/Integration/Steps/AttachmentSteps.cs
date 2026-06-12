@@ -31,7 +31,7 @@ public class AttachmentSteps(
             contentType,
             data
         );
-        ((int)response.StatusCode).Should().Be(
+        response.StatusCode.Should().Be(
             201,
             $"Failed to upload attachment: {response.Body}"
         );

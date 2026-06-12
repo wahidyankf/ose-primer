@@ -1,7 +1,6 @@
 using DemoBeCsas.Domain;
 using DemoBeCsas.Endpoints;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Xunit;
 
 namespace DemoBeCsas.Tests.Unit;

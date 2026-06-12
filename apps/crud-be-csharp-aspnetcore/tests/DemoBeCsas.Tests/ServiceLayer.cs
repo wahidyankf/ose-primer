@@ -1,8 +1,8 @@
+using System.Globalization;
 using System.Text.Json;
 using DemoBeCsas.Auth;
 using DemoBeCsas.Domain;
 using DemoBeCsas.Infrastructure;
-using DemoBeCsas.Infrastructure.Models;
 using DemoBeCsas.Infrastructure.Repositories;
 using DemoBeCsas.Tests.ScenarioContext;
 using Microsoft.EntityFrameworkCore;
@@ -1442,8 +1442,8 @@ public class ServiceLayer(ITestHost host)
 
     private static string FormatAmount(decimal amount, string currency) =>
         currency == "IDR"
-            ? Math.Round(amount, 0, MidpointRounding.AwayFromZero).ToString("F0")
-            : amount.ToString("F2");
+            ? Math.Round(amount, 0, MidpointRounding.AwayFromZero).ToString("F0", CultureInfo.InvariantCulture)
+            : amount.ToString("F2", CultureInfo.InvariantCulture);
 
     private static DateOnly ParseDate(string? dateStr)
     {
@@ -1456,7 +1456,7 @@ public class ServiceLayer(ITestHost host)
 
         return DateOnly.TryParse(
             raw,
-            System.Globalization.CultureInfo.InvariantCulture,
+            CultureInfo.InvariantCulture,
             out var parsed
         )
             ? parsed
@@ -1474,7 +1474,7 @@ public class ServiceLayer(ITestHost host)
             type = e.Type.ToString().ToLowerInvariant(),
             quantity = e.Quantity,
             unit = e.Unit,
-            date = e.Date.ToString("yyyy-MM-dd"),
+            date = e.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
             created_at = e.CreatedAt,
             updated_at = e.UpdatedAt,
         };

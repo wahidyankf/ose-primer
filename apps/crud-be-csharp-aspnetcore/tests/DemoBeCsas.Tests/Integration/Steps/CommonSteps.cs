@@ -1,8 +1,6 @@
-using System.Text.Json;
 using DemoBeCsas.Tests.ScenarioContext;
 using FluentAssertions;
 using Reqnroll;
-using Xunit;
 
 namespace DemoBeCsas.Tests.Integration.Steps;
 

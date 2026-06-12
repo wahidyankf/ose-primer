@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using FluentAssertions;
 using Reqnroll;
@@ -38,7 +39,7 @@ public class UnitExpenseSteps(UnitServiceLayer svc, UnitSharedState state, UnitA
             unit,
             date
         );
-        ((int)response.StatusCode).Should().Be(201, $"Failed to create entry: {response.Body}");
+        response.StatusCode.Should().Be(201, $"Failed to create entry: {response.Body}");
         using var doc = JsonDocument.Parse(response.Body);
         if (doc.RootElement.TryGetProperty("id", out var idEl))
         {
@@ -85,7 +86,7 @@ public class UnitExpenseSteps(UnitServiceLayer svc, UnitSharedState state, UnitA
             unit,
             date
         );
-        ((int)response.StatusCode).Should().Be(201, $"Failed to create bob's entry: {response.Body}");
+        response.StatusCode.Should().Be(201, $"Failed to create bob's entry: {response.Body}");
         using var doc = JsonDocument.Parse(response.Body);
         if (doc.RootElement.TryGetProperty("id", out var idEl))
         {
@@ -207,7 +208,7 @@ public class UnitExpenseSteps(UnitServiceLayer svc, UnitSharedState state, UnitA
             .Should().BeTrue($"Field '{field}' not found in: {body}");
         var actual = el.ValueKind == JsonValueKind.Number
             ? el.GetDouble()
-            : double.Parse(el.GetString()!);
+            : double.Parse(el.GetString()!, CultureInfo.InvariantCulture);
         actual.Should().BeApproximately(value, 0.0001);
     }
 
@@ -221,8 +222,8 @@ public class UnitExpenseSteps(UnitServiceLayer svc, UnitSharedState state, UnitA
             .Should().BeTrue($"Currency '{currency}' not found in: {body}");
         var actual = el.ValueKind == JsonValueKind.Number
             ? el.GetDecimal()
-            : decimal.Parse(el.GetString()!);
-        actual.Should().Be(decimal.Parse(expectedTotal));
+            : decimal.Parse(el.GetString()!, CultureInfo.InvariantCulture);
+        actual.Should().Be(decimal.Parse(expectedTotal, CultureInfo.InvariantCulture));
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -244,15 +245,15 @@ public class UnitExpenseSteps(UnitServiceLayer svc, UnitSharedState state, UnitA
         using var doc = JsonDocument.Parse(bodyJson);
         var root = doc.RootElement;
 
-        string? description = root.TryGetProperty("description", out var d) ? d.GetString() : null;
-        string? title = root.TryGetProperty("title", out var t) ? t.GetString() : null;
-        string? category = root.TryGetProperty("category", out var c) ? c.GetString() : null;
-        string? currency = root.TryGetProperty("currency", out var cur) ? cur.GetString() : null;
-        string? type = root.TryGetProperty("type", out var tp) ? tp.GetString() : null;
-        string? unit = root.TryGetProperty("unit", out var u) ? u.GetString() : null;
-        string? date = root.TryGetProperty("date", out var dt) ? dt.GetString() : null;
+        var description = root.TryGetProperty("description", out var d) ? d.GetString() : null;
+        var title = root.TryGetProperty("title", out var t) ? t.GetString() : null;
+        var category = root.TryGetProperty("category", out var c) ? c.GetString() : null;
+        var currency = root.TryGetProperty("currency", out var cur) ? cur.GetString() : null;
+        var type = root.TryGetProperty("type", out var tp) ? tp.GetString() : null;
+        var unit = root.TryGetProperty("unit", out var u) ? u.GetString() : null;
+        var date = root.TryGetProperty("date", out var dt) ? dt.GetString() : null;
 
-        decimal amount = 0m;
+        var amount = 0m;
         if (root.TryGetProperty("amount", out var amtEl))
         {
             if (amtEl.ValueKind == JsonValueKind.Number)

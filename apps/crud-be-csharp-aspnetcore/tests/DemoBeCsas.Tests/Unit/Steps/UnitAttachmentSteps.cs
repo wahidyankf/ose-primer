@@ -36,7 +36,7 @@ public class UnitAttachmentSteps(
             contentType,
             data
         );
-        ((int)response.StatusCode).Should().Be(201, $"Failed to upload attachment: {response.Body}");
+        response.StatusCode.Should().Be(201, $"Failed to upload attachment: {response.Body}");
         using var doc = JsonDocument.Parse(response.Body);
         if (doc.RootElement.TryGetProperty("id", out var idEl))
         {

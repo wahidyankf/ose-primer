@@ -120,5 +120,7 @@ await app.RunAsync();
 
 // Needed for WebApplicationFactory in integration tests
 #pragma warning disable S1118 // Add a 'protected' constructor or the 'static' keyword to the class declaration
+#pragma warning disable ASP0027 // The test host (WebApplicationFactory) requires a public partial Program; the suggested IVT-based alternative is unnecessary for this in-repo test project
 public partial class Program { }
+#pragma warning restore ASP0027
 #pragma warning restore S1118

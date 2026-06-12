@@ -106,7 +106,7 @@ public class UnitTestSupportSteps(
     {
         // After host.Clear() in WhenPostResetDb, expenses are gone.
         // A listing for any user should return empty.
-        var (items, total) = host.ExpenseRepo.ListByUserAsync(Guid.NewGuid(), 1, 100).Result;
+        var (_, total) = host.ExpenseRepo.ListByUserAsync(Guid.NewGuid(), 1, 100).Result;
         total.Should().Be(0);
     }
 

@@ -1,3 +1,4 @@
+using System.Globalization;
 using DemoBeCsas.Domain;
 using DemoBeCsas.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -86,8 +87,8 @@ public static class ReportEndpoints
 
     private static string FormatAmount(decimal amount, string currency) =>
         currency == "IDR"
-            ? Math.Round(amount, 0, MidpointRounding.AwayFromZero).ToString("F0")
-            : amount.ToString("F2");
+            ? Math.Round(amount, 0, MidpointRounding.AwayFromZero).ToString("F0", CultureInfo.InvariantCulture)
+            : amount.ToString("F2", CultureInfo.InvariantCulture);
 
     private static Guid? GetUserId(HttpContext ctx)
     {

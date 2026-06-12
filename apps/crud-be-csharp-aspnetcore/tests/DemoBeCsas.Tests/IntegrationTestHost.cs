@@ -3,7 +3,6 @@ using DemoBeCsas.Infrastructure;
 using DemoBeCsas.Infrastructure.Repositories;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,7 +20,7 @@ namespace DemoBeCsas.Tests;
 public sealed class IntegrationTestHost : ITestHost, IDisposable
 {
     private readonly ServiceProvider _provider;
-    private SqliteConnection? _sharedConnection;
+    private readonly SqliteConnection? _sharedConnection;
 
     private static string? DatabaseUrl =>
         Environment.GetEnvironmentVariable("DATABASE_URL");

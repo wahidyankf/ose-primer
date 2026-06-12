@@ -1,3 +1,4 @@
+using System.Globalization;
 using DemoBeCsas.Domain;
 using DemoBeCsas.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -208,7 +209,7 @@ public static class ExpenseEndpoints
         var date = req.Date ?? existing.Date;
         var category = req.Category ?? existing.Category;
         var quantity = req.Quantity.HasValue
-            ? (double?)Convert.ToDouble(req.Quantity.Value)
+            ? Convert.ToDouble(req.Quantity.Value)
             : existing.Quantity;
 
         var updated = await expenseRepo.UpdateAsync(
@@ -261,8 +262,8 @@ public static class ExpenseEndpoints
 
     private static string FormatAmount(decimal amount, string currency) =>
         currency == "IDR"
-            ? Math.Round(amount, 0, MidpointRounding.AwayFromZero).ToString("F0")
-            : amount.ToString("F2");
+            ? Math.Round(amount, 0, MidpointRounding.AwayFromZero).ToString("F0", CultureInfo.InvariantCulture)
+            : amount.ToString("F2", CultureInfo.InvariantCulture);
 
     private static Expense ToResponse(Infrastructure.Models.ExpenseModel e)
     {
@@ -272,11 +273,11 @@ public static class ExpenseEndpoints
 
         var quantity = e.Quantity.HasValue
             ? new Option<decimal?>((decimal)e.Quantity.Value)
-            : default(Option<decimal?>);
+            : new Option<decimal?>();
 
         var unit = e.Unit is not null
             ? new Option<string?>(e.Unit)
-            : default(Option<string?>);
+            : new Option<string?>();
 
         return new Expense(
             id: e.Id.ToString(),
