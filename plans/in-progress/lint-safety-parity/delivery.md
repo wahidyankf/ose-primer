@@ -355,15 +355,16 @@ git push origin HEAD:refs/heads/$PROBE
 
 ## Local Quality Gates (Before Push)
 
-- [ ] [AI] Run affected typecheck: `npx nx affected -t typecheck`
-- [ ] [AI] Run affected linting: `npx nx affected -t lint`
-- [ ] [AI] Run affected quick tests: `npx nx affected -t test:quick`
-- [ ] [AI] Run affected spec coverage: `npx nx affected -t spec-coverage`
-- [ ] [AI] Run the three infra-lint targets: `npx nx run rhino-cli:lint:dockerfiles`,
+- [x] [AI] Run affected typecheck: `npx nx affected -t typecheck`
+- [x] [AI] Run affected linting: `npx nx affected -t lint`
+- [x] [AI] Run affected quick tests: `npx nx affected -t test:quick`
+- [x] [AI] Run affected spec coverage: `npx nx affected -t spec-coverage`
+- [x] [AI] Run the three infra-lint targets: `npx nx run rhino-cli:lint:dockerfiles`,
       `:lint:shell`, `:lint:actions`
-- [ ] [AI] Run markdown lint: `npm run lint:md`
-- [ ] [AI] Fix ALL failures found — including preexisting issues not caused by these changes
-- [ ] [AI] Verify zero failures before pushing
+- [x] [AI] Run markdown lint: `npm run lint:md`
+- [x] [AI] Fix ALL failures found — including preexisting issues not caused by these changes
+- [x] [AI] Verify zero failures before pushing
+  - _Date_: 2026-06-12. _Status_: GREEN. _Notes_: `npx nx affected -t typecheck lint test:quick spec-coverage --base=origin/main` succeeded for 22 projects (rhino-cli project.json change fans out to the workspace). The three `rhino-cli:lint:*` targets, `npm run lint:md` (0 errors / 799 files), and `actionlint` all exit 0. Preexisting fix made: `clojure-openapi-codegen:build` (committed separately). Also installed `ruff==0.15.9` to `~/.local/bin` (via `uv tool`) so the pre-commit `ruff format` hook resolves in this worktree (pyenv global 3.13.12 lacked ruff) — environment fix, not a repo change.
 
 > **Important**: Fix ALL failures found during quality gates, not just those caused by your changes.
 > This follows the root cause orientation principle — proactively fix preexisting errors encountered
@@ -381,11 +382,12 @@ git push origin HEAD:refs/heads/$PROBE
 
 ## Commit Guidelines
 
-- [ ] [AI] Commit changes thematically — group related changes into logically cohesive commits
-- [ ] [AI] Follow Conventional Commits format: `<type>(<scope>): <description>`
-- [ ] [AI] Split different domains/concerns into separate commits (one per dimension where practical)
-- [ ] [AI] Preexisting fixes get their own commits, separate from plan work
-- [ ] [AI] Do NOT bundle unrelated changes into a single commit
+- [x] [AI] Commit changes thematically — group related changes into logically cohesive commits
+- [x] [AI] Follow Conventional Commits format: `<type>(<scope>): <description>`
+- [x] [AI] Split different domains/concerns into separate commits (one per dimension where practical)
+- [x] [AI] Preexisting fixes get their own commits, separate from plan work
+- [x] [AI] Do NOT bundle unrelated changes into a single commit
+  - _Date_: 2026-06-12. _Status_: DONE. _Notes_: Commits: `fix(clojure-openapi-codegen)` (preexisting, separate), `docs(plans)` Phase 0 baseline, `build(crud-be-rust-axum)` D1, `build(crud-be-csharp-aspnetcore)` D3, `build(crud-be-python-fastapi)` D4, `ci(lint)` D6/D7/D8 + wiring, `docs(lint-safety-parity)` Phase 6, `docs(plans)` checklist ticks.
 
 ## Plan Archival
 
