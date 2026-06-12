@@ -372,13 +372,14 @@ git push origin HEAD:refs/heads/$PROBE
 
 ## Post-Push CI Verification
 
-- [ ] [AI] Push changes to `main` (main-to-main; **no PR** — see M1)
-- [ ] [AI] Monitor ALL GitHub Actions workflows triggered by the push (poll every 3 min; do NOT use
+- [x] [AI] Push changes to `main` (main-to-main; **no PR** — see M1)
+- [x] [AI] Monitor ALL GitHub Actions workflows triggered by the push (poll every 3 min; do NOT use
       `gh run watch`)
-- [ ] [AI] Verify ALL CI checks pass — no exceptions
-- [ ] [AI] If any CI check fails, fix immediately and push a follow-up commit
-- [ ] [AI] Repeat until ALL GitHub Actions pass with zero failures
-- [ ] [AI] Do NOT proceed to archival until CI is fully green
+- [x] [AI] Verify ALL CI checks pass — no exceptions
+- [x] [AI] If any CI check fails, fix immediately and push a follow-up commit
+- [x] [AI] Repeat until ALL GitHub Actions pass with zero failures
+- [x] [AI] Do NOT proceed to archival until CI is fully green
+  - _Date_: 2026-06-12. _Status_: GREEN. _Notes_: Pushes to `main` trigger the **Validate Markdown** workflow (per-language `test-crud-*` run on cron/dispatch; `pr-quality-gate` runs on PRs only — see M1). Run 27407434822 (HEAD `f9915557`) passed all checks: mermaid, markdown links, heading hierarchy, gherkin keyword cardinality. A preexisting broken-link failure inherited from an unrelated governance commit (renamed Standard 6 anchor) was fixed in a follow-up commit (`fix(docs): repoint Standard 6 anchor links`) and CI is now fully green.
 
 ## Commit Guidelines
 
@@ -391,12 +392,13 @@ git push origin HEAD:refs/heads/$PROBE
 
 ## Plan Archival
 
-- [ ] [AI] Verify ALL delivery checklist items are ticked
-- [ ] [AI] Verify ALL quality gates pass (local + CI)
-- [ ] [AI] Rename and move:
+- [x] [AI] Verify ALL delivery checklist items are ticked
+- [x] [AI] Verify ALL quality gates pass (local + CI)
+- [x] [AI] Rename and move:
       `git mv plans/in-progress/lint-safety-parity/ plans/done/YYYY-MM-DD__lint-safety-parity/`
       using today's date as the completion date (NOT the creation date)
-- [ ] [AI] Update `plans/in-progress/README.md` — remove the plan entry
-- [ ] [AI] Update `plans/done/README.md` — add the plan entry with completion date
-- [ ] [AI] Update any other READMEs that reference this plan (e.g. `plans/README.md`)
-- [ ] [AI] Commit the archival: `chore(plans): move lint-safety-parity to done`
+- [x] [AI] Update `plans/in-progress/README.md` — remove the plan entry
+- [x] [AI] Update `plans/done/README.md` — add the plan entry with completion date
+- [x] [AI] Update any other READMEs that reference this plan (e.g. `plans/README.md`)
+- [x] [AI] Commit the archival: `chore(plans): move lint-safety-parity to done`
+  - _Date_: 2026-06-12. _Status_: DONE. _Notes_: All checklist items ticked; local gates + CI green. Moved to `plans/done/2026-06-12__lint-safety-parity/` via `git mv`; updated `plans/in-progress/README.md`, `plans/done/README.md`, `plans/README.md`; committed as `chore(plans): move lint-safety-parity to done`.

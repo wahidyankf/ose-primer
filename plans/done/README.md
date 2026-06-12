@@ -14,6 +14,20 @@ Example: `2026-04-27__adopt-mermaid-checker-from-ose-public/` where `2026-04-27`
 
 ## Completed Projects
 
+- [2026-06-12: Lint and Safety Parity](./2026-06-12__lint-safety-parity/README.md) — ose-primer side
+  of the 3-repo lint-and-safety parity effort. Strengthened static-analysis gates across six
+  dimensions and wired each into Nx, the CI quality gate, and the pre-push hook at a
+  "fail-on-warning-and-above" threshold (clean-then-gate TDD). **D1 Rust**: `forbid(unsafe_code)` +
+  the public `[lints]` clippy standard (121 violations cleaned; `--all-targets` escalation; scoped
+  test allows). **D3 C#**: `AnalysisLevel=latest-All` + Sonar-at-error (~700 findings cleaned via a
+  layered editorconfig). **D4 Python**: pyright→basedpyright strict + expanded ruff select (1037 type
+  errors + 36 lint cleaned). **D6/D7/D8**: new `.hadolint.yaml`/`.shellcheckrc`, three `rhino-cli`
+  `lint:dockerfiles`/`lint:shell`/`lint:actions` targets, three CI jobs, and scoped pre-push branches.
+  Skipped D1b/D2/D5/D9/D10 with recorded reasons; D5 deferral + exemption philosophy and the M1
+  main-to-main deviation documented in `docs/explanation/lint-safety-parity-decisions.md`. Preexisting
+  fixes (separate commits): `clojure-openapi-codegen:build` AOT compile-path, and a broken Standard 6
+  anchor link inherited from an unrelated governance commit. All local gates + Validate Markdown CI
+  green. (Completed: 2026-06-12)
 - [2026-06-11: Standardize App Spec Trees](./2026-06-11__standardize-app-spec-trees/README.md)
   — ose-primer side of the 3-repo spec-tree parity set (sibling: ose-public). Renamed bare
   `behavior/be/`, `behavior/web/`, `behavior/cli/` directories to flat product-surface names
