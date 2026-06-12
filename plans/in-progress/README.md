@@ -12,6 +12,12 @@ Active project plans currently being worked on.
   — extend rhino-cli's Mermaid render-discipline rules to cover `stateDiagram-v2` and
   `stateDiagram`, re-shape the validator onto a fresh kind-agnostic module design, and
   clean up every violating state diagram repo-wide.
+- [Standardize CI parity](./standardize-ci-parity/README.md)
+  — third sibling of the three-repo `standardize-ci-parity` set (with `ose-public` and
+  `ose-infra`): converge ose-primer CI to the shared, static Converged CI Target. Primer
+  is already the most converged sibling; the gaps it closes are concurrency blocks on all
+  workflows, a `specs-gate` job, and scheduled-cadence alignment. Parallel-safe — no
+  cross-repo plan ordering.
 
 ## Folder Naming
 
