@@ -364,13 +364,49 @@ Add to the delivery checklist:
 
 ## Diagram Format Fixes
 
+Two categories of diagram findings come from plan-checker. Handle them separately.
+
+### ASCII-should-be-Mermaid Fixes
+
 When plan-checker reports a MEDIUM finding for ASCII art in plan files where Mermaid would be more appropriate, apply these fixes:
 
-### Confidence Assessment
+#### Confidence Assessment
 
 - **HIGH Confidence**: ASCII art clearly depicts a flow, sequence, state machine, or component interaction — the Mermaid equivalent is unambiguous. Auto-convert.
 - **MEDIUM Confidence**: ASCII art is ambiguous (e.g., a hybrid table/diagram). Flag for manual review.
 - **FALSE_POSITIVE**: ASCII art is a simple directory tree or file listing. These are explicitly exempted — do not convert.
+
+### Missing Diagram Fixes (Diagram Coverage Check)
+
+When plan-checker reports a MEDIUM finding for a missing diagram — prose that describes component interactions, sequences, state transitions, or decision branches but has no accompanying Mermaid diagram — apply these fixes:
+
+#### Confidence Assessment
+
+- **HIGH Confidence** (auto-apply): The plan prose unambiguously describes a relationship, flow, sequence, state, or decision branch that can be drawn directly and completely from the text. Author the Mermaid diagram using the accessible palette, insert it adjacent to the prose that prompted the finding, and apply without requesting confirmation.
+- **MEDIUM Confidence** (flag for plan-maker, do not auto-apply): Relationships are partially described, ambiguous, or require inferring details not present in the plan text. Add a `<!-- TODO: diagram warranted here — relationships unclear, delegate to plan-maker -->` comment at the location and include a note in the audit response describing what is missing.
+- **FALSE_POSITIVE**: The plan is genuinely trivial — single-file, rename, copy-edit, dependency-bump, or docs-only — and falls under the "When a Plan MAY Skip Diagrams" escape hatch. Do not add a diagram.
+
+#### Anti-hallucination rule
+
+**NEVER** invent relationships, node connections, participants, states, or transitions that are not explicitly stated or directly implied by the plan text. If the diagram would require fabricating details, treat as MEDIUM Confidence and flag for plan-maker instead.
+
+#### How to Author a Missing Diagram
+
+1. **Choose the right diagram type** using the per-document opportunity guide:
+   - Component interactions, architecture → `flowchart LR`
+   - Cross-system/agent order-of-operations → `sequenceDiagram`
+   - Entity lifecycle with named states → `stateDiagram-v2`
+   - Data model / schema → `erDiagram`
+   - Phase/gate ordering in `delivery.md` → `flowchart LR` or `flowchart TD`
+   - UX decision branches in `prd.md` → `flowchart LR`
+
+2. **Orientation**: default to `flowchart LR`; use top-down only when semantically required; add a `%%` comment explaining why.
+
+3. **Palette**: use only the eight verified accessible hex codes; never use red, green, or yellow fills. See the `docs-creating-accessible-diagrams` Skill and [repo-governance/conventions/formatting/diagrams.md](../../repo-governance/conventions/formatting/diagrams.md) for the full palette and syntax rules.
+
+4. **Placement**: insert the diagram block immediately after the prose section that describes the structure, before the next heading.
+
+**Reference**: [repo-governance/conventions/structure/plans.md §Diagram Coverage Contract](../../repo-governance/conventions/structure/plans.md#diagram-coverage-contract).
 
 ### How to Convert ASCII Art to Mermaid
 

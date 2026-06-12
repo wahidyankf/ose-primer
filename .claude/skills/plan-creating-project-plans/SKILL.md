@@ -728,6 +728,25 @@ Every delivery plan MUST end with a plan archival section:
 
 `plan-checker` flags combined TDD items as HIGH severity findings.
 
+## Diagram Coverage
+
+Plans must be **diagram-rich**. Visualize structure, flow, and decisions liberally — when a concept involves more than two interacting parts, an ordering, a lifecycle, or a branch, draw it rather than describing it in prose.
+
+**Per-document guide** (summary — authoritative source: [plans.md §Diagram Coverage Contract](../../../repo-governance/conventions/structure/plans.md#diagram-coverage-contract)):
+
+| Plan file      | Typical diagram opportunities                                                                                      |
+| -------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `README.md`    | Architecture/component flowcharts (`flowchart LR`); ER diagrams for data-model changes                             |
+| `tech-docs.md` | Architecture flowcharts; sequence diagrams for cross-system/agent order-of-operations; state diagrams; ER diagrams |
+| `delivery.md`  | Phase/dependency flowcharts when phases have non-linear dependencies or parallel tracks                            |
+| `prd.md`       | Decision-branch flowcharts for non-trivial UX flows with more than one branch or outcome                           |
+
+**plan-maker** must add diagrams proactively wherever the guide applies — not wait to be asked. **plan-checker** flags a missing warranted diagram as MEDIUM (Diagram Coverage Check). **plan-fixer** authors the diagram when the prose is unambiguous, or flags for plan-maker when relationships are not fully grounded in the plan text.
+
+Escape hatch: trivial single-file, rename, copy-edit, dependency-bump, and docs-only plans may skip diagrams.
+
+For accessible palette, syntax rules, and WCAG compliance, see [Color Accessibility Convention](../../../repo-governance/conventions/formatting/color-accessibility.md), [Diagram and Schema Convention](../../../repo-governance/conventions/formatting/diagrams.md), and the `docs-creating-accessible-diagrams` Skill.
+
 ## References
 
 **Primary Convention**: [Plans Organization Convention](../../../repo-governance/conventions/structure/plans.md)

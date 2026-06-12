@@ -99,11 +99,24 @@ Per the [Content-Placement Rules](../../repo-governance/conventions/structure/pl
 
 #### Diagram Format Check
 
-Audit all plan files (`README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`) for diagram format compliance:
+Audit all plan files (`README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`) for diagram format compliance. Two distinct sub-checks apply:
+
+**Sub-check A — ASCII-should-be-Mermaid (existing)**:
 
 - **Flag MEDIUM** when a plan contains ASCII art that depicts component interactions, data flows, sequences, state machines, or decision branches — a Mermaid diagram would be more appropriate.
 - **Acceptable ASCII** exception: simple directory-tree listings (e.g., `apps/foo/bar.ts`) are not diagrams and do not require flagging.
-- **Reference**: [repo-governance/conventions/structure/plans.md §Diagrams in Plans](../../repo-governance/conventions/structure/plans.md) and [repo-governance/conventions/formatting/diagrams.md](../../repo-governance/conventions/formatting/diagrams.md).
+
+**Sub-check B — Diagram Coverage Check (missing diagram — NEW)**:
+
+- **Flag MEDIUM** when a plan file's prose clearly describes one or more of the following but contains NO corresponding Mermaid diagram:
+  - Component interactions (which services, agents, apps, or libraries call which)
+  - Cross-system or cross-agent sequences (order-of-operations, async hand-offs)
+  - Entity state transitions (lifecycle with named states and triggers)
+  - Multi-outcome or nested decision branches (more than two outcomes, or nested conditionals)
+- Use the per-document opportunity guide to calibrate expectations per file: `README.md` warrants architecture/component flowcharts and ER diagrams for data-model changes; `tech-docs.md` warrants architecture flowcharts, sequence diagrams, state diagrams, and ER diagrams; `delivery.md` warrants phase/dependency flowcharts when phases have non-linear dependencies; `prd.md` warrants decision-branch flowcharts for non-trivial UX flows.
+- **Escape hatch**: do NOT flag trivial single-file, rename, copy-edit, dependency-bump, or docs-only plans (per [plans.md §When a Plan MAY Skip Diagrams](../../repo-governance/conventions/structure/plans.md#when-a-plan-may-skip-diagrams)).
+
+**Reference**: [repo-governance/conventions/structure/plans.md §Diagram Coverage Contract](../../repo-governance/conventions/structure/plans.md#diagram-coverage-contract) and [repo-governance/conventions/formatting/diagrams.md](../../repo-governance/conventions/formatting/diagrams.md).
 
 ### 4. Delivery Checklist Validation
 

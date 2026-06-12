@@ -248,6 +248,17 @@ When plan content (any of `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `deli
 - **Use ASCII art only** for simple directory trees or rare edge cases where Mermaid is genuinely not the right fit (e.g., table-like comparisons that render poorly in Mermaid).
 - Follow full Mermaid syntax rules in [repo-governance/conventions/formatting/diagrams.md](../../repo-governance/conventions/formatting/diagrams.md): `LR` orientation default, colour-blind-friendly palette, `%%` comment syntax.
 
+#### Diagram Coverage (proactive)
+
+Plans must be diagram-rich. Do not wait to be asked — proactively add Mermaid diagrams wherever the per-document opportunity guide in [plans.md §Diagram Coverage Contract](../../repo-governance/conventions/structure/plans.md#diagram-coverage-contract) applies:
+
+- **`README.md`** — architecture/component-interaction flowcharts (`flowchart LR`) when the plan touches multiple services, agents, or apps; ER diagrams (`erDiagram`) for any data-model changes.
+- **`tech-docs.md`** — architecture/component-interaction flowcharts (`flowchart LR`); sequence diagrams (`sequenceDiagram`) for cross-system or cross-agent order-of-operations; state diagrams (`stateDiagram-v2`) for entity lifecycles; ER diagrams (`erDiagram`) for schema changes.
+- **`delivery.md`** — phase/dependency flowcharts (`flowchart LR` or `flowchart TD`) when phases have non-linear dependencies or parallel tracks.
+- **`prd.md`** — decision-branch flowcharts (`flowchart LR`) for non-trivial UX flows with more than one branch or outcome.
+
+The bias is: when a concept involves more than two interacting parts, an ordering, a lifecycle, or a branch, draw it. Plans that describe these structures only in prose are incomplete under the Diagram Coverage Contract.
+
 ### Delivery Checklist Quality
 
 - Steps are executable (clear actions)

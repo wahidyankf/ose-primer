@@ -543,6 +543,8 @@ Each subfolder (`backlog/`, `in-progress/`, `done/`) has a `README.md` that:
 
 Files in `plans/` folder MUST use **Mermaid diagrams** as the primary format (same as all markdown files in the repository).
 
+**Opening principle — diagram-rich plans**: Plans should visualize structure, flow, and decisions liberally rather than describing them in prose. The bias is additive: when a concept involves more than two interacting parts, an ordering, a lifecycle, or a branch, draw it. A redundant diagram costs less than a missed architectural ambiguity.
+
 **Diagram Standards**:
 
 - **Primary Format**: Mermaid diagrams for all flowcharts, architecture diagrams, sequences
@@ -557,7 +559,23 @@ Files in `plans/` folder MUST use **Mermaid diagrams** as the primary format (sa
 - Easy to update and maintain
 - Supports multiple diagram types (flowchart, sequence, class, ER, etc.)
 
-### When a Plan MUST Include a Diagram
+### Diagram Coverage Contract
+
+This is the named enforcement contract that governs diagram expectations across plan files. All three plan agents — **plan-maker**, **plan-checker**, and **plan-fixer** — operate against these rules.
+
+#### Per-Document Diagram Opportunity Guide
+
+Each plan file has predictable diagram opportunities. Authors and validators use this guide to determine where diagrams are warranted.
+
+| Plan File      | Diagram types typically warranted                                                                                                                                                                                                                                     |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `README.md`    | Architecture and component-interaction flowcharts (`flowchart LR`) when the plan touches multiple services/agents/apps; ER diagrams (`erDiagram`) for data-model changes                                                                                              |
+| `tech-docs.md` | Architecture and component-interaction flowcharts (`flowchart LR`); sequence diagrams (`sequenceDiagram`) for cross-system or cross-agent order-of-operations; state diagrams (`stateDiagram-v2`) for entity lifecycles; ER diagrams (`erDiagram`) for schema changes |
+| `delivery.md`  | Phase/dependency flowcharts (`flowchart LR` or `flowchart TD`) showing phase ordering and gate flow when phases have non-linear dependencies or parallel tracks                                                                                                       |
+| `prd.md`       | User-flow and decision-branch flowcharts (`flowchart LR`) for non-trivial UX flows with more than one branch or outcome                                                                                                                                               |
+| `brd.md`       | Stakeholder or role-interaction diagrams when multiple roles interact in non-obvious ways; generally diagram-light unless the business process has branches                                                                                                           |
+
+#### When a Plan MUST Include a Diagram
 
 A plan MUST include at least one Mermaid diagram when the plan covers any of the following concerns and a reader would otherwise have to reconstruct the picture mentally from prose:
 
@@ -566,7 +584,11 @@ A plan MUST include at least one Mermaid diagram when the plan covers any of the
 - **State transitions** — lifecycle of an entity (plan folder, request, deployment, entitlement) with named states and triggered transitions (stateDiagram-v2)
 - **Decision branches** — non-trivial conditional logic with more than two outcomes or nested decisions (flowchart with labelled edges)
 
-If unsure whether a diagram is warranted, add it. A redundant diagram costs less than a missed architectural ambiguity.
+#### Agent Responsibilities Under This Contract
+
+- **plan-maker** MUST proactively add diagrams wherever the per-document opportunity guide applies — not wait to be asked. Consult the guide for each file as it is authored; if the content fits a listed opportunity, include the diagram.
+- **plan-checker** MUST flag a MISSING diagram as a **MEDIUM** finding when a plan file's prose clearly describes component interactions, cross-system/agent sequences, entity state transitions, or multi-outcome/nested decision branches but contains NO corresponding Mermaid diagram. This is separate from (and in addition to) the existing ASCII-should-be-Mermaid check.
+- **plan-fixer** adds the missing diagram (HIGH confidence, auto-apply) when the plan prose unambiguously describes a flow, sequence, state, or decision that can be drawn directly from the text; when relationships are ambiguous or not fully grounded in the plan text, flags for plan-maker rather than fabricating — never invents relationships not present in the plan.
 
 ### When a Plan MAY Skip Diagrams
 
@@ -575,6 +597,8 @@ Text-only is acceptable only when the plan is genuinely linear and trivially sma
 - Single-file README-only plans touching one file or one config value
 - Renames, copy edits, documentation fixes
 - Dependency bumps with no behavioural change
+
+This escape hatch keeps the Diagram Coverage Contract proportionate — do not apply it to plans with substantive architectural, product, or delivery complexity.
 
 ### Accessibility and Palette Requirements
 
