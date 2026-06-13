@@ -7,7 +7,7 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g java -o $(pwd)/apps/crud-be-java-vertx/generated-contracts --model-package com.demobejavx.contracts --additional-properties=library=resttemplate,dateLibrary=java8,openApiNullable=false,useBeanValidation=false,serializationLibrary=jackson --global-property=models,modelDocs=false,apiDocs=false && (WS_ROOT=$(pwd) && cd $(pwd) && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs clean java-imports $WS_ROOT/apps/crud-be-java-vertx/generated-contracts)"
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g java -o $(pwd)/apps/crud-be-java-vertx/generated-contracts --model-package com.demobejavx.contracts --additional-properties=library=resttemplate,dateLibrary=java8,openApiNullable=false,useBeanValidation=false,serializationLibrary=jackson --global-property=models,modelDocs=false,apiDocs=false && (WS_ROOT=$(pwd) && cd $(pwd) && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs clean java-imports --dir $WS_ROOT/apps/crud-be-java-vertx/generated-contracts)"
       },
       "dependsOn": ["crud-contracts:bundle"],
       "cache": true,
