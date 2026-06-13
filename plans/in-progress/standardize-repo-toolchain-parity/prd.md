@@ -16,16 +16,26 @@ ose-primer ports):
    file/`name:`/job-id naming onto the canonical BLOCK 1-A scheme; keep the `test-crud-*` app
    schedulers weekly (ose-primer runs no governance sweep). Confirm-only: `nx affected` per-language
    jobs, tool-named lint jobs, and the gherkin keyword-cardinality target + CI wiring.
-2. **B — Hooks**: `commit-msg`/`pre-commit`/`pre-push` converge to the canonical BLOCK 1-B lifecycle.
-3. **C — rhino-cli architecture (PORT)**: placeholder layout → full hexagonal, behavior-frozen by a
+2. **B — Hooks**: `commit-msg`/`pre-commit`/`pre-push` converge to the canonical BLOCK 1-B lifecycle
+   (pre-commit gains `test:quick` = format+lint+typecheck+test:unit; pre-push = `specs:coverage` +
+   `test-coverage`).
+3. **H — Test Lifecycle Architecture**: three-level testing (unit/integration/e2e) sharing the same
+   `.feature` files; `test:unit` (mocked) at pre-commit via `test:quick`; `specs:coverage` +
+   `test-coverage` at pre-push; **`test:integration`+`test:e2e` CRON-only** per app-group at **1×/day**
+   (ose-primer); `specs:coverage` enforces all scenarios across all three levels; heavy-test workflow
+   `test-and-deploy-{app-group}-development.yml` only — **ose-primer builds NO staging container and
+   runs NO staging test (no staging area)**; prod deploy manual.
+4. **C — rhino-cli architecture (PORT)**: placeholder layout → full hexagonal, behavior-frozen by a
    golden-master CLI suite, mirroring `ose-public`'s reference.
-4. **D — rhino-cli commands (PORT)**: add `Specs` + `Ddd` (ose-primer already has `Java` +
-   `Contracts`); fold `SpecCoverage` into `Specs`.
-5. **E — Target naming**: `{domain}:{work}` rename (incl. `env:validate`→`env:validation`) +
+5. **D — rhino-cli commands + scope-based regroup (PORT)**: rationalize + regroup (`docs`→`md`,
+   `agents`→`harness`, `java`→`lang`; fold `spec-coverage`/`ddd`/`contracts`/`gherkin`→`specs`; new
+   `convention`; `docs` reserved) + uniform grammar; port the **`specs` structural set** (ose-primer
+   already has `Java` + `Contracts` → now `lang` + `specs` codegen; `SpecCoverage` folds into `specs`).
+6. **E — Target naming**: `{domain}:{work}` rename (incl. `env:validate`→`env:validation`) +
    `spec-coverage`→`specs:coverage` repo-wide.
-6. **F — Governance**: **create** `cross-language-lint-strictness.md` (missing in primer); update all
+7. **F — Governance**: **create** `cross-language-lint-strictness.md` (missing in primer); update all
    other related docs, run `repo-rules-maker`, then `repo-rules-quality-gate` until clean.
-7. **G — Mermaid state-diagram validation (PORT)**: add the `state.rs` front-end + width/label rules
+8. **G — Mermaid state-diagram validation (PORT)**: add the `state.rs` front-end + width/label rules
    for state diagrams to the migrated Mermaid slice, mirror `ose-public`'s shared golden corpus
    byte-identical, and clean up every violating state diagram repo-wide. Depends on workstream C.
 
@@ -59,8 +69,11 @@ Solo-maintainer repo — hats the maintainer wears plus consuming agents:
   that the local pre-flight contract is identical across repos.
 - **US-7 (C)** — As a toolchain maintainer, I want rhino-cli ported to the full hexagonal layout with
   its behavior frozen so that the CLI is testable and identical to `ose-public`'s reference.
-- **US-8 (D)** — As a toolchain maintainer, I want the `Specs` and `Ddd` subcommands added (and
-  `SpecCoverage` folded into `Specs`) so that the CLI is the union superset and drop-in across repos.
+- **US-8 (D)** — As a toolchain maintainer, I want the command surface **regrouped by scope**
+  (`docs`→`md`, `agents`→`harness`, `java`→`lang`; `ddd`/`contracts`/`spec-coverage`/`gherkin` folded
+  into `specs`; new `convention`) under one **uniform `<group> [<language>] <verb> [<object>]` grammar**,
+  and the missing **`specs` structural set** added, so that the CLI is the union superset and drop-in
+  across repos.
 - **US-9 (E)** — As a toolchain maintainer, I want every governance target renamed to `{domain}:{work}`
   (incl. `env:validate`→`env:validation`) and `spec-coverage`→`specs:coverage` so that target names
   are canonical everywhere.
@@ -128,7 +141,7 @@ Scenario: Gherkin keyword-cardinality validator already runs in CI
   When the validator dimension is confirmed
   Then the markdown validator workflow invokes the gherkin keyword-cardinality target
   And the target passes against the current repository tree
-  But the target is renamed to the canonical gherkin:keyword-cardinality-validation name in Phase 10
+  But the target is renamed to the canonical specs:gherkin-cardinality-validation name in Phase 10
 ```
 
 ```gherkin
@@ -157,22 +170,24 @@ Scenario: rhino-cli ports to the full hexagonal architecture with behavior froze
 ```
 
 ```gherkin
-Scenario: rhino-cli subcommands are renamed to the verb-first git-style scheme
-  Given rhino-cli subcommands use hyphenated forms like docs validate-mermaid and agents emit-bindings
-  When the Phase 9b verb-first rename is applied
-  Then every subcommand reads verb-first like docs validate mermaid and agents emit amazonq
-  And no caller (project.json, hooks, package.json, docs) invokes an old hyphenated subcommand
+Scenario: rhino-cli subcommands are regrouped by scope and renamed to the uniform grammar
+  Given rhino-cli uses old groups and hyphenated forms like docs validate-mermaid and agents emit-bindings
+  When the Phase 9a scope-based regroup and Phase 9b uniform-grammar rename are applied
+  Then every subcommand reads uniform like md validate mermaid and harness emit amazonq
+  And the docs group is reserved and the convention group exists
+  And no caller (project.json, hooks, package.json, docs) invokes an old group or hyphenated subcommand
   And the golden-master corpus is re-captured for the renamed surface
   But env init/backup/restore/validate and git pre-commit stay unchanged
 ```
 
 ```gherkin
-Scenario: rhino-cli exposes the union command superset
-  Given rhino-cli is missing the Specs and Ddd subcommands
-  When the union-command port is applied
-  Then rhino-cli --help lists the Specs and Ddd subcommands
-  And SpecCoverage is folded into the Specs group
-  And the command surface matches the union superset shared across the three repos
+Scenario: rhino-cli exposes the regrouped union command superset
+  Given rhino-cli is missing the specs structural set under the regrouped surface
+  When the scope-based regroup and the specs structural-set port are applied
+  Then rhino-cli --help lists the md, convention, harness, specs, and lang groups
+  And the specs group carries adoption, counts, tree, links, coverage, bc, ul, and gherkin-cardinality
+  And SpecCoverage, Ddd, Contracts, and the gherkin validator are folded into specs
+  And the command surface matches the regrouped union superset shared across the three repos
 ```
 
 ```gherkin
@@ -199,7 +214,36 @@ Scenario: Full toolchain green after push
   When GitHub Actions runs the standardized workflows
   Then all CI checks pass with zero failures
   And the new specs-gate job and the concurrency-equipped workflows ran and are green
-  And the gherkin:keyword-cardinality-validation step is present and green
+  And the specs:gherkin-cardinality-validation step is present and green
+```
+
+### Workstream H — Test Lifecycle Architecture acceptance criteria
+
+```gherkin
+Scenario: The three test levels share one set of feature specs
+  Given an app has Gherkin .feature files under specs
+  When test:unit, test:integration, and test:e2e run for that app
+  Then all three levels execute the same .feature scenarios
+  And test:unit uses mocks while test:integration uses same-container deps and test:e2e may use any deps
+  And specs:coverage fails if any scenario is unimplemented in any of the three levels
+```
+
+```gherkin
+Scenario: Heavy tests run only from CRON
+  Given test:integration and test:e2e are heavy
+  When the pre-commit, pre-push, PR gate, and push-to-main stages run
+  Then none of those stages invoke test:integration or test:e2e
+  And the heavy tests run only from the scheduled per-app-group workflows
+  But pre-commit still runs test:unit via test:quick
+```
+
+```gherkin
+Scenario: Heavy-test workflow exists per app-group at the ose-primer cadence
+  Given each app-group is a deployable family from the Nx project graph
+  When the heavy-test workflow is created for ose-primer
+  Then test-and-deploy-{app-group}-development.yml runs integration and e2e using Dockerfile or local deps
+  And the cadence is 1x per day for ose-primer
+  But ose-primer builds no staging container and runs no test-{app-group}-staging.yml
 ```
 
 ### Workstream G — Mermaid state-diagram validation acceptance criteria
@@ -207,7 +251,8 @@ Scenario: Full toolchain green after push
 > These scenarios (ported from the folded `mermaid-state-diagram-validation` plan) become the first
 > failing tests in Phase 8. Each uses exactly one primary `Given`, one `When`, one `Then`; extras
 > chain with `And`/`But`. The Phase 8 target name is still `validate:mermaid` (the rename to
-> `mermaid:validation` is Phase 10); the underlying `docs validate-mermaid` CLI command is unchanged.
+> `mermaid:validation` is Phase 10); the underlying `docs validate-mermaid` CLI command is unchanged at
+> Phase 8 (Phase 9 later regroups it to `md validate mermaid`).
 
 ```gherkin
 Feature: State diagram width validation
@@ -307,10 +352,18 @@ Feature: Legacy v1 state diagram header is recognized
   `validate-env.yml` + `test-crud-*.yml` (concurrency; `test-crud-*` schedulers stay weekly).
   Confirm-only: per-language `nx affected`, tool-named lint jobs, gherkin target. ose-primer carries
   **no image-publishing workflow** (recorded deviation).
-- **B** — `.husky/commit-msg`, `.husky/pre-commit`, `.husky/pre-push` converge to BLOCK 1-B.
+- **B** — `.husky/commit-msg`, `.husky/pre-commit`, `.husky/pre-push` converge to BLOCK 1-B
+  (pre-commit `test:quick` = format+lint+typecheck+test:unit; pre-push = `specs:coverage` +
+  `test-coverage`).
+- **H** — three-level test targets (`test:unit`/`test:integration`/`test:e2e`) in `apps/*/project.json`
+  sharing `.feature` files; `test:unit` mocked at pre-commit; **integration/e2e CRON-only** via the
+  `test-and-deploy-{app-group}-development.yml` heavy-test workflow at **1×/day** (ose-primer); `specs:coverage`
+  extended to enforce all three levels; **NO staging workflow / NO staging container for ose-primer**.
 - **C** — port `apps/rhino-cli/src/` to the full hexagonal layout (from primer's placeholder layout),
   golden-master-frozen, mirroring `ose-public`'s reference.
-- **D** — add `Specs` + `Ddd` subcommands to rhino-cli; fold `SpecCoverage` into `Specs`.
+- **D** — **scope-based regroup** (`docs`→`md`, `agents`→`harness`, `java`→`lang`; fold
+  `spec-coverage`/`ddd`/`contracts`/`gherkin`→`specs`; new `convention`; `docs` reserved) + uniform
+  grammar; add the missing **`specs` structural set** to rhino-cli; fold `SpecCoverage` into `specs`.
 - **E** — `{domain}:{work}` rename in `apps/rhino-cli/project.json` (incl.
   `env:validate`→`env:validation`); `spec-coverage`→`specs:coverage` in every app/lib `project.json`;
   update all callers.

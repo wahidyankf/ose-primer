@@ -132,9 +132,12 @@ consume the outputs**:
 - **C — Hexagonal migration complete**: rhino-cli has the `domain`/`application`/`infrastructure`/
   `commands` layout and the golden-master CLI suite is byte-identical to the Phase 0 baseline.
   [Observable — directory layout + golden-master diff = empty]
-- **D — Union command surface met**: `rhino-cli` exposes the full superset including the newly-added
-  `Specs` and `Ddd` (ose-primer already carries `Java` + `Contracts`); `SpecCoverage` is folded into
-  `Specs`. [Observable — `rhino-cli --help` lists all union subcommands]
+- **D — Regrouped union command surface met**: `rhino-cli`'s surface is **regrouped by scope**
+  (`docs`→`md`, `agents`→`harness`, `java`→`lang`; `ddd`/`contracts`/`spec-coverage`/`gherkin` folded
+  into `specs`; new `convention`; `docs` reserved) under one uniform grammar, and exposes the full
+  superset including the newly-ported **`specs` structural set** (ose-primer already carries `Java` +
+  `Contracts` → now `lang` + `specs` codegen; `SpecCoverage` folds into `specs`). [Observable —
+  `rhino-cli --help` lists `md`/`convention`/`harness`/`specs`/`lang` and all union subcommands]
 - **E — Target naming met**: every governance/validation/lint/check target uses `{domain}:{work}`
   (incl. `env:validate`→`env:validation`) and `specs:coverage` repo-wide; no caller references an old
   name. [Observable — grep the project.json files, hooks, workflows, package.json]
@@ -145,6 +148,13 @@ consume the outputs**:
   after the aggressive cleanup; the golden corpus mirrors `ose-public`'s byte-identical violation
   output; flowchart behavior is unchanged. [Observable — run the gate over the over-wide fixtures and
   a full-repo scan; diff the committed expected-JSON against `ose-public`'s corpus]
+- **H — Test Lifecycle Architecture met**: `test:unit`/`test:integration`/`test:e2e` consume the same
+  `.feature` files; `test:integration`+`test:e2e` appear in **no** pre-merge surface (CRON-only);
+  `specs:coverage` fails on any scenario missing from any of the three levels; the per-app-group
+  heavy-test workflow exists at **1×/day** for ose-primer with **no staging** (no
+  `test-{app-group}-staging.yml`, no staging container). [Observable — grep hooks/PR gate for
+  integration/e2e (none); list the heavy-test workflow; run `specs:coverage` against a
+  deliberately-incomplete fixture]
 - **All CI green after push** — the standardized toolchain passes on `origin main`. [Observable —
   GitHub Actions status]
 

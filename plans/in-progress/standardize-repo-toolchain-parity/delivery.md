@@ -9,10 +9,14 @@
 > is not complete until its gate is green; do not start phase N+1 while any gate check fails.
 
 This checklist delivers **only ose-primer's** convergence. Workstreams **A (CI), B (hooks),
-E (target rename), F (governance docs)** are **parallel-safe** with the sibling plans (`ose-public`,
+E (target rename), F (governance docs), H (Test Lifecycle Architecture — Phases 5b/6/9)** are
+**parallel-safe** with the sibling plans (`ose-public`,
 `ose-infra`): the [Converged Toolchain Target](./tech-docs.md#converged-toolchain-target-shared-across-the-three-repo-sibling-set)
-is a fixed static spec, so no sibling plan must finish first. Workstreams **C (rhino-cli hexagonal
-arch, Phase 7), D (union commands, Phase 9), and G (Mermaid state-diagram validation, Phase 8) PORT
+is a fixed static spec, so no sibling plan must finish first. (H wires the three-level test lifecycle —
+`test:unit` mocked at pre-commit; `test:integration`+`test:e2e` **CRON-only** at **1×/day** with **no
+staging** for ose-primer; `specs:coverage` enforces all three levels.) Workstreams **C (rhino-cli
+hexagonal arch, Phase 7), D (command surface — rationalize + scope-based regroup + port the `specs`
+structural set, Phase 9), and G (Mermaid state-diagram validation, Phase 8) PORT
 from `ose-public`'s REFERENCE**: `ose-public` authors them first; ose-primer ports the identical crate
 structure, command surface, and golden corpus — so ose-primer's C/D/G phases depend on `ose-public`'s
 reference landing first. **G depends on C** — the Mermaid feature is migrated into its hexagonal slice
@@ -260,7 +264,8 @@ carries the `naming` validator job but **no `specs-gate`** (see
 [tech-docs.md § D4](./tech-docs.md#d4--specs-gate-ci-job--gherkin-target-confirmrename)). The gherkin
 keyword-cardinality validator **already exists and is wired into CI** in ose-primer (source name
 `validate:gherkin-keyword-cardinality`), so it is **confirm-only** here and is **renamed** to the
-canonical `gherkin:keyword-cardinality-validation` in Phase 10.
+canonical `specs:gherkin-cardinality-validation` (re-domained to the `specs` group in the Phase 9a
+regroup — `.feature` files live under `specs/` — and run in the `specs-gate` job) in Phase 10.
 
 _Suggested executor: `ci-fixer`_
 
@@ -350,6 +355,47 @@ _Suggested executor: `ci-fixer`_
       push run.
 - [ ] [AI] Lint all edited workflows — acceptance: exits 0.
 
+### Phase 5b — Heavy-test CRON workflow (per app-group; development-only, NO staging)
+
+> Wire the **heavy tests** (`test:integration` + `test:e2e`) into a scheduled per-app-group
+> **development** workflow per the
+> [Test Lifecycle Architecture](./tech-docs.md#test-lifecycle-architecture-spec-shared-three-level-testing).
+> **HARD RULE: integration/e2e run ONLY here (CRON) — never in pre-commit/pre-push/PR/push-to-main.**
+> **ose-primer has NO staging area** — it builds **no** staging container and creates **no**
+> `test-{app-group}-staging.yml` (consistent with its no-container-images / demo-template deviation).
+> App-group = a deployable family keyed off the Nx project graph.
+
+- [ ] [AI] **Uniform target surface — RED**: prove some project is missing a lifecycle target —
+      `npx nx run-many -t test:e2e --all` errors "target not found" on at least one project (e.g. a
+      backend service with no e2e) — acceptance: the missing-target error is reproduced and recorded.
+- [ ] [AI] **Uniform target surface — GREEN**: in **every** `apps/*/project.json` (and lib) declare the
+      full set `format`, `lint`, `typecheck`, `test:unit`, `test:integration`, `test:e2e`, `test:quick`,
+      `spec-coverage` (current name; → `specs:coverage` in Phase 10), `test-coverage` — a **no-op `echo`
+      stub (exit 0)** where the target doesn't apply to that project type (a backend service's `test:e2e`
+      = echo; an `*-e2e` project's `test:unit`/`test:integration` = echo) — acceptance:
+      `npx nx run-many -t test:unit test:integration test:e2e --all` exits 0 with no missing-target error.
+- [ ] [AI] **Uniform target surface — REFACTOR**: factor the repeated stub into a shared Nx
+      `targetDefaults` where the tooling allows, so new projects inherit the full surface — acceptance:
+      `nx run-many`/`nx affected` for any lifecycle target sweeps the whole graph with no missing-target
+      failure; no per-project stub drift.
+- [ ] [AI] **Identify app-groups**: enumerate the deployable app-group families from the Nx project
+      graph (`npx nx graph`) — acceptance: a written list of app-groups and their member projects.
+- [ ] [AI] **GREEN — development workflow** (per app-group): create
+      `.github/workflows/test-and-deploy-{app-group}-development.yml` running `nx run-many -t
+test:integration test:e2e` for the group using Dockerfile/local deps — schedule **1×/day** (a single
+      cron line); **NO staging-container-build step** (ose-primer ships no images)
+      — acceptance: the workflow runs the group's integration+e2e at 1×/day and builds no staging image.
+- [ ] [AI] **Confirm NO staging workflow**: assert ose-primer creates no `test-{app-group}-staging.yml`
+      — acceptance: `rtk proxy grep -rln 'staging' .github/workflows/test-*-development.yml` and a
+      directory listing confirm no `test-*-staging.yml` exists (recorded deviation).
+- [ ] [AI] **Guard — no heavy tests pre-merge**: assert no pre-merge surface invokes integration/e2e —
+      `rtk grep -rn 'test:integration|test:e2e' .husky .github/workflows/pr-quality-gate.yml`
+      — acceptance: matches appear ONLY in the `test-and-deploy-*-development` CRON workflows, never in
+      hooks or the PR gate.
+- [ ] [AI] **Production deploy is manual** — record that prod deploy is manual for now (no automated
+      prod workflow) in the workflow header comment — acceptance: the note is present.
+- [ ] [AI] Lint the new workflow — acceptance: exits 0.
+
 ### Phase 5 Gate
 
 > All checks below must pass before starting Phase 6.
@@ -358,8 +404,12 @@ _Suggested executor: `ci-fixer`_
       `push: branches: [main]` — expected: present.
 - [ ] [AI] `test-crud-*` schedulers remain weekly (`0 10 * * 5`) — expected: unchanged (recorded
       deviation); no governance sweep to converge.
+- [ ] [AI] Heavy-test **development** workflow exists per app-group
+      (`test-and-deploy-{group}-development.yml`) at **1×/day**; **NO `test-{group}-staging.yml`** and no
+      staging-container-build (recorded ose-primer deviation); `test:integration`/`test:e2e` appear in
+      **no** pre-merge surface — expected: the guard grep passes.
 - [ ] [AI] Workflows lint clean — expected: exits 0.
-- [ ] [AI] Commit: `rtk git commit -m "ci(pr-gate): run full quality gate on push to main"`.
+- [ ] [AI] Commit: `rtk git commit -m "ci(pr-gate): full gate on push to main + dev-only heavy-test CRON (no staging)"`.
 
 > **Pause Safety**: the full quality gate now runs on push to `main` and the weekly app scheduler
 > cadence is confirmed; workflows lint clean and the change is committed. Safe to stop. To resume:
@@ -385,16 +435,22 @@ _Suggested executor: `ci-fixer`_
 - [ ] [AI] **GREEN — pre-commit**: ensure the order is
       `git-identity-check.sh` → `check-no-env-staged.sh` → canonical staged-file lint
       (`shellcheck`/`hadolint`/`actionlint` on staged files, graceful skip if absent) →
-      `rhino-cli git pre-commit` built with `--release`
-      — acceptance: pre-commit matches BLOCK 1-B order and uses the `--release` build.
-- [ ] [AI] **GREEN — pre-push**: ensure pre-push runs `nx affected -t` with the BLOCK 1-B target set
-      followed by `markdown:lint` → `env:validation` → the changed-path-gated conditionals
-      (`naming:*-validation`, `governance:vendor-audit-validation`, `cross-vendor:parity-validation`,
-      `harness:bindings-validation`, `shell`/`dockerfile`/`actions` lint). **Keep the
-      currently-existing target names** (e.g. `spec-coverage`, `validate:specs-*`, `validate:env`)
-      so the hook stays runnable; Phase 10 re-points them to the canonical names
-      — acceptance: pre-push matches the BLOCK 1-B lifecycle shape; every target it references
-      currently exists.
+      `rhino-cli git pre-commit` built with `--release` → **`nx affected -t test:quick`** (the redefined
+      app bundle **format + lint + typecheck + `test:unit`**, mocked; changed apps — per the
+      [Test Lifecycle Architecture](./tech-docs.md#test-lifecycle-architecture-spec-shared-three-level-testing))
+      — acceptance: pre-commit matches BLOCK 1-B order, uses the `--release` build, and runs
+      `test:quick` (format+lint+typecheck+test:unit) on affected apps.
+- [ ] [AI] **GREEN — pre-push**: ensure pre-push leads with **`nx affected -t spec-coverage
+test-coverage`** (per-app: every `.feature` implemented across unit+integration+e2e, + line-coverage
+      threshold; uses the CURRENT `spec-coverage` name, re-pointed to `specs:coverage` in Phase 10) →
+      `nx affected -t validate:specs-tree validate:specs-links validate:specs-counts validate:specs-adoption` →
+      `markdown:lint` → `env:validate` → the changed-path-gated conditionals (`validate:naming-*`, the
+      vendor-audit/cross-vendor/harness-bindings validators, `shell`/`dockerfile`/`actions` lint).
+      **`test:integration`/`test:e2e` are NOT here — CRON only.** **Keep the currently-existing target
+      names** (e.g. `spec-coverage`, `validate:specs-*`, `env:validate`) so the hook stays runnable;
+      Phase 10 re-points them to the canonical names
+      — acceptance: pre-push matches the BLOCK 1-B lifecycle shape (coverage gates lead; no
+      integration/e2e); every target it references currently exists.
 - [ ] [AI] **REFACTOR**: run a no-op commit + dry-run push in the worktree to confirm the hooks
       execute end-to-end without referencing a missing target
       — acceptance: hooks run clean on a trivial change.
@@ -704,29 +760,35 @@ _Suggested executor: `swe-rust-dev`_
 > (still `validate:mermaid` until Phase 10). Safe to stop. To resume: `npx nx run rhino-cli:test:unit`
 > and `npx nx run rhino-cli:validate:mermaid`, confirm the Phase 8 commits.
 
-## Phase 9: rhino-cli Union Commands — Rationalize Surface, Verb-First Rename, then Add `Specs` + `Ddd`
+## Phase 9: rhino-cli Union Commands — Rationalize + Scope Regroup, Uniform Rename, Port `specs` Structural Set
 
-> **WORKSTREAM D — PORT from `ose-public`.** Three parts: **9a** rationalizes the existing surface
-> (merge overlaps, delete unused subcommands per the catalogued dispositions, and **fold `SpecCoverage`
-> into the new `Specs` group**); **9b** renames every subcommand to the **verb-first git-style** scheme
-> (BLOCK 11) and updates all callers + the golden-master corpus; then **9c** ports the **`Specs` and
-> `Ddd`** subcommands from `ose-public`'s reference implementation **into the hexagonal layout** (after
-> Phase 7), so the CLI surface is the **rationalized + verb-first** union superset (ose-primer already
-> carries `Java` + `Contracts`, which are confirm-only). See
-> [tech-docs.md § D8](./tech-docs.md#d8--union-command-surface-add-specs--ddd) and
-> [§ (a-ter) verb-first rename](./tech-docs.md#a-ter-rhino-cli-verb-first-subcommand-rename-beforeafter).
+> **WORKSTREAM D — PORT from `ose-public`.** Three parts: **9a** rationalizes the existing surface (merge overlaps,
+> delete unused subcommands) **and regroups every command by the scope it operates on** (group = its
+> operation target: `docs`→`md`, `agents`→`harness`, `java`→`lang`; fold `spec-coverage`/`ddd`/
+> `contracts`/`gherkin-keyword-cardinality` into `specs`; move broad markdown audits to `md`, repo-wide
+> non-doc audits to the new `convention` group; `repo-governance` keeps only repo-governance/-exclusive
+> audits; `docs` reserved); **9b** renames every subcommand to the **uniform grammar**
+> `<group> [<language>] <verb> [<object>]` (every check `validate`, `audit`=group run-all, fixed
+> generator verbs — BLOCK 11) and updates all callers + the golden-master corpus; then **9c** ports the
+> **`specs` structural set** (`validate adoption`/`counts`/`tree`/`links` + the `bc`/`ul` folded from
+> `ddd`) from `ose-public`'s reference **into the hexagonal layout** (ose-primer already carries
+> `Java`+`Contracts` → now `lang`+`specs` codegen, which are confirm-only) (see
+> [tech-docs.md § D8](./tech-docs.md#d8--union-command-surface-add-specs--ddd)
+> and [§ (a-ter) uniform rename](./tech-docs.md#a-ter-rhino-cli-verb-first-subcommand-rename-beforeafter)).
 
 _Suggested executor: `swe-rust-dev`_
 
-### Phase 9a — Command rationalization pass (keep / merge / delete, before the port)
+### Phase 9a — Rationalization + scope-based regroup (keep / merge / delete / regroup, before the port)
 
 > Resolve the overlap/deletion shortlist in
 > [tech-docs.md § (a-bis)](./tech-docs.md#a-bis-command-surface-rationalization--overlap--deletion-candidates)
-> and [§ D8](./tech-docs.md#d8--union-command-surface-add-specs--ddd) BEFORE porting `Specs`/`Ddd`,
-> so the union lands against the rationalized surface. Reference-first: ose-public decides the
-> dispositions; ose-primer mirrors the consolidated surface. Any surface change (merge that renames a
-> subcommand, or a deletion) is a **deliberate golden-master update** — update the frozen corpus entry
-> in the same step and note it in the commit.
+> and [§ D8](./tech-docs.md#d8--union-command-surface-add-specs--ddd), **and apply
+> the scope-based regroup** (group = the scope it operates on) per the
+> [§ D group table](./tech-docs.md#d--rhino-cli-command-surface-union-superset-identical-in-all-repos),
+> BEFORE porting the JVM/contract commands, so the union lands against the rationalized + regrouped
+> surface. Reference-first: ose-public decides; infra/primer mirror. Any surface change (a merge that
+> renames a subcommand, a deletion, or a regroup move) is a **deliberate golden-master update** — update
+> the frozen corpus entry in the same step and note it in the commit.
 
 - [ ] [AI] **`env init`/`backup`/`restore` — KEEP verdict (no longer delete-candidates)**: these
       manage `.env` secret files (create from `.env.example`, back up, restore) and are **KEPT** per
@@ -742,119 +804,170 @@ _Suggested executor: `swe-rust-dev`_
       the only remaining evaluate; if no caller, delete the CLI variants + dispatch arms + modules +
       tests and drop their golden-master entries; if a caller exists, record "kept — caller at <path>").
 - [ ] [AI] **Fold — `SpecCoverage` → `Specs`**: move the `spec-coverage validate` command into the
-      `specs` group as `specs validate coverage` (verb-first form lands in 9b); remove the
+      `specs` group as `specs validate coverage` (uniform form lands in 9b); remove the
       `SpecCoverage` top-level group + its `*Commands` enum + dispatch arm; the per-project Nx target
       `spec-coverage` renames to `specs:coverage` in Phase 10 (callers updated there). Update the
       golden-master entry for the moved command
       — acceptance: `rhino-cli specs --help` lists `coverage`; `rhino-cli spec-coverage` no longer
       exists; behavior of the coverage check is unchanged; golden-master updated for the move.
-- [ ] [AI] **Merge — link engine**: make `specs validate-links` and the `links:validation` target
-      reuse the `docs validate-links` resolver (one link-resolution core; no duplicated logic)
+- [ ] [AI] **Enhance `specs validate coverage` (three-level) — RED**: add a fixture app whose
+      `.feature` scenario is implemented in `test:unit` but missing from `test:integration`/`test:e2e`;
+      assert the current coverage check passes (it shouldn't, per the
+      [Test Lifecycle Architecture](./tech-docs.md#test-lifecycle-architecture-spec-shared-three-level-testing))
+      — acceptance: a failing test exists proving the check doesn't yet enforce all three levels.
+- [ ] [AI] **Enhance `specs validate coverage` (three-level) — GREEN**: implement detection that every
+      scenario in every `.feature` is implemented in `test:unit`, `test:integration`, AND `test:e2e`
+      for the owning app; update the golden-master entry
+      — acceptance: a scenario absent from any level fails the coverage check; full three-level coverage
+      passes; corpus updated for the behavior change.
+- [ ] [AI] **Enhance `specs validate coverage` (three-level) — REFACTOR**: share one `.feature`-parse
+      with the existing scanner; `cargo fmt` + clippy `-D warnings`
+      — acceptance: `:test:unit`/`:lint` GREEN; coverage ≥90; no duplicated `.feature` parse.
+- [ ] [AI] **`Ddd` → `Specs` (N/A to fold in ose-primer — added fresh in 9c)**: ose-primer carries
+      **no** `Ddd` group today, so there is nothing to fold here; the `specs validate bc`/`ul`
+      subcommands are added directly under `specs` in **Phase 9c** (ported from `ose-public`), with Nx
+      targets authored as `specs:bc-validation`/`specs:ul-validation` in Phase 10
+      — acceptance: a note records that `Ddd` is absent in ose-primer and `bc`/`ul` are ported under
+      `specs` in 9c (no fold step needed).
+- [ ] [AI] **Fold — `Contracts` → `Specs`**: move `contracts java-clean-imports`/`dart-scaffold` into
+      `specs` (contract source under `specs/apps/*/containers/contracts/`); remove the `Contracts`
+      top-level group — acceptance: the codegen subcommands resolve under `specs` (active in ose-primer — it carries Contracts);
+      `rhino-cli contracts` gone; golden-master updated.
+- [ ] [AI] **Move — `gherkin-keyword-cardinality` `repo-governance` → `specs`**: the `.feature` parser
+      moves into `specs`; target authored as `specs:gherkin-cardinality-validation` (Phase 4) runs in
+      the `specs-gate` job — acceptance: `rhino-cli specs --help` lists `gherkin-cardinality`; no longer
+      under `repo-governance`; golden-master updated.
+- [ ] [AI] **Regroup — `Docs` → `Md`**: the 5 general markdown validators (naming, frontmatter,
+      heading-hierarchy, links, mermaid) move from `docs` to the new `md` group (they scan multiple
+      roots — general markdown, not `docs/`-specific); the `docs` group becomes **reserved** (no
+      command) — acceptance: `rhino-cli md --help` lists the 5; `rhino-cli docs` has no subcommands;
+      golden-master updated.
+- [ ] [AI] **Move — broad markdown audits `repo-governance` → `Md`**: `frontmatter-audit` →
+      `md validate frontmatter-dates`, `readme-index-audit` → `md validate readme-index` (both scan broad
+      `.md`) — acceptance: under `md`; removed from `repo-governance`; golden-master updated.
+- [ ] [AI] **Regroup — new `Convention` group** (repo-wide non-doc rule audits): move `emoji-audit` →
+      `convention validate emoji`, `license-audit` → `convention validate license`, `agents-md-size` →
+      `convention validate agents-md-size` out of `repo-governance` (they target code/config/single
+      files, not a doc tree) — acceptance: `rhino-cli convention --help` lists the three; removed from
+      `repo-governance`; golden-master updated. (`repo-governance` now holds only `vendor`/
+      `layer-coherence`/`traceability` + the group `audit`.)
+- [ ] [AI] **Rename — `Agents` → `Harness`**: rename the group (it manages cross-harness bindings, not
+      just agent defs); all subcommands keep their behavior — acceptance: `rhino-cli harness --help`
+      works; `rhino-cli agents` gone; golden-master updated.
+- [ ] [AI] **Rename — `Java` → `Lang`** (nested by language): `java validate-annotations` →
+      `lang java validate null-safety-annotations` (dormant in ose-public) — acceptance: command resolves
+      under `lang java`; `rhino-cli java` gone; golden-master updated.
+- [ ] [AI] **Merge — link engine**: make `specs` link validation and the `links:validation` target
+      reuse the `md` link resolver (one link-resolution core; no duplicated logic)
       — acceptance: behavior unchanged (golden-master + corpus identical); the duplicate logic is gone.
 - [ ] [AI] **Merge — filename-convention core**: extract the shared kebab-case filename pass used by
-      `docs`/`agents`/`workflows` `validate-naming` into one core in `domain/`; each keeps its
+      `md`/`harness`/`workflows` `validate naming` into one core in `domain/`; each keeps its
       domain-specific rule (agent mirror parity, workflow frontmatter-name) layered on top
-      — acceptance: all three `validate-naming` outputs byte-identical to baseline.
-- [ ] [AI] **Merge — binding generation**: collapse `agents sync` (+OpenCode) and `agents emit-bindings`
-      (+Amazon Q) into one `agents generate-bindings` with per-harness flags (keep thin aliases only if
-      a caller needs them); `npm run generate:bindings` calls the merged command
+      — acceptance: all three `validate naming` outputs byte-identical to baseline.
+- [ ] [AI] **Merge — binding generation**: collapse `harness sync opencode` and `harness emit amazonq`
+      into one `harness generate bindings` with per-harness flags (keep thin aliases only if a caller
+      needs them); `npm run generate:bindings` calls the merged command
       — acceptance: `.opencode/` + `.amazonq/` regenerate byte-identically; golden-master updated for
       the surface change.
-- [ ] [AI] **Merge — binding parity**: consolidate `agents validate-sync` + `validate-bindings` +
-      `validate-claude` (and the `cross-vendor:parity-validation` / `harness:bindings-validation`
+- [ ] [AI] **Merge — binding parity**: consolidate `harness validate sync` + `validate bindings` +
+      `validate claude` (and the `cross-vendor:parity-validation` / `harness:bindings-validation`
       target logic) into one binding-parity validator family with per-harness arms
       — acceptance: each parity check still runs; one shared implementation; outputs unchanged.
-- [ ] [AI] **Merge — governance audit sharing**: ensure `repo-governance audit` and the nine granular
-      audit subcommands share one rule implementation each (no duplicated rule bodies)
-      — acceptance: `audit` envelope == union of the granular outputs; no rule logic duplicated.
-- [ ] [AI] **Merge — frontmatter parse**: `docs validate-frontmatter` and
-      `repo-governance frontmatter-audit` share one frontmatter parse; the two distinct rules stay
-      — acceptance: both validators' outputs unchanged; one parse path.
+- [ ] [AI] **Merge — group audit sharing**: ensure each group's `audit` aggregate
+      (`repo-governance audit`, `md audit`, `convention audit`, `specs audit`, `harness audit`) and its
+      granular `validate` subcommands share one rule implementation each (no duplicated rule bodies)
+      — acceptance: each `audit` envelope == union of that group's granular outputs; no rule logic
+      duplicated.
+- [ ] [AI] **Merge — frontmatter parse**: `md validate frontmatter` (schema) and
+      `md validate frontmatter-dates` (manual-date) share one frontmatter parse; the two distinct rules
+      stay — acceptance: both validators' outputs unchanged; one parse path.
 - [ ] [AI] Commit the rationalization separately:
       `rtk git commit -m "refactor(rhino-cli): rationalize command surface (merge overlaps, drop unused env utils)"`.
 
-### Phase 9b — Verb-first git-style subcommand rename (BLOCK 11)
+### Phase 9b — Uniform-grammar subcommand rename (BLOCK 11)
 
-> Rename every subcommand to the **verb-first git-style** `<group> <verb> [<object>]` scheme per
-> [tech-docs.md § (a-ter) BLOCK 11](./tech-docs.md#a-ter-rhino-cli-verb-first-subcommand-rename-beforeafter)
-> (e.g. `docs validate-mermaid` → `docs validate mermaid`, `repo-governance vendor-audit` →
-> `repo-governance audit vendor`, `agents sync` → `agents sync opencode`, `agents emit-bindings` →
-> `agents emit amazonq`, `specs validate-tree` → `specs validate tree`). Top-level groups are
-> **unchanged**. `env init`/`backup`/`restore`/`validate` and `git pre-commit` are already verb-first
-> (unchanged). This is a **deliberate divergence** from the object-verb `{domain}:{work}` Nx target
-> scheme — the CLI optimizes for natural typing, the targets for namespaced grouping. The subcommand
-> surface change is a **deliberate golden-master corpus update** (re-capture the renamed invocations).
-> Reference-first: ose-public renames; ose-primer mirrors the identical surface. (`Specs`/`Ddd` are
-> added in 9c directly in verb-first form, so 9b renames the groups ose-primer already carries.)
+> Rename every subcommand to the **uniform grammar** `<group> [<language>] <verb> [<object>]` per
+> [tech-docs.md § (a-ter) BLOCK 11](./tech-docs.md#a-ter-rhino-cli-verb-first-subcommand-rename-beforeafter):
+> **every read-only check is `validate <object>`; `<group> audit` is the group run-all aggregate;
+> generators/mutators use a fixed verb set** (e.g. `md validate mermaid`, `repo-governance validate
+vendor`, `convention validate emoji`, `specs validate gherkin-cardinality`, `harness validate
+duplication`, `harness sync opencode`, `harness emit amazonq`, `lang java validate
+null-safety-annotations`). The old per-check verbs `detect`/`*-audit` collapse into `validate`. The
+> groups are the **regrouped** set from 9a. `env init`/`backup`/`restore`/`validate` and `git
+pre-commit` are already conformant. This is a **deliberate divergence** from the object-verb
+> `{domain}:{work}` Nx target scheme. The surface change is a **deliberate golden-master corpus update**.
+> Reference-first: ose-public renames; infra/primer mirror the identical surface.
 
-- [ ] [AI] **RED**: add/extend a CLI-surface test asserting the **new** verb-first invocations resolve
-      (e.g. parse `docs validate mermaid`, `repo-governance audit vendor`, `agents sync opencode`) and
-      the old hyphenated forms (`docs validate-mermaid`, `repo-governance vendor-audit`, `agents sync`)
-      no longer parse. Run `npx nx run rhino-cli:test:unit`
-      — acceptance: test FAILS (the clap command tree still uses the old hyphenated subcommands).
+- [ ] [AI] **RED**: add/extend a CLI-surface test asserting the **new** uniform invocations resolve
+      (e.g. parse `md validate mermaid`, `repo-governance validate vendor`, `convention validate emoji`,
+      `harness sync opencode`, `specs validate gherkin-cardinality`) and the old hyphenated forms
+      (`docs validate-mermaid`, `repo-governance vendor-audit`, `agents detect-duplication`) no longer
+      parse. Run `npx nx run rhino-cli:test:unit`
+      — acceptance: test FAILS (the clap command tree still uses the old groups/hyphenated subcommands).
   - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **GREEN — rename the clap command tree**: in `apps/rhino-cli/src/commands/` (post-Phase-7
-      hexagonal layout) rename every `*Commands` enum variant + its clap attributes to the verb-first
-      scheme per the BLOCK 11 table — ose-primer's existing groups `docs`, `agents`, `workflows`,
-      `repo-governance`, `java`, `contracts`, and the new `specs` group folded from `SpecCoverage` in 9a;
-      `git`/`env`/`doctor` unchanged. (`Ddd` is added in 9c directly in verb-first form.) Run
-      `npx nx run rhino-cli:test:unit`
+      hexagonal layout) rename every `*Commands` enum variant + its clap attributes to the uniform
+      grammar per the BLOCK 11 table across the regrouped groups — `md`, `repo-governance`, `convention`,
+      `specs`, `harness`, `workflows`, `lang`; `git`/`env`/`doctor` unchanged; `docs` reserved. Add the
+      bare `<group> audit` aggregate where ≥2 `validate`s exist. Run `npx nx run rhino-cli:test:unit`
       — acceptance: the new-invocation parse test passes; old forms rejected.
   - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] **GREEN — update ALL callers**: re-point every invocation of a renamed subcommand in Nx
       `project.json` target `options.command` strings (`apps/*/project.json`, `libs/*/project.json`),
       `.husky/*` hooks (note: `rhino-cli git pre-commit` is unchanged, but any renamed invocation in a
       hook changes), `package.json` scripts, and docs that show the old command form —
-      `rtk grep -rn 'docs validate-|agents sync|agents emit-bindings|vendor-audit|validate-tree|validate-naming|validate-counts|validate-adoption|validate-annotations|java-clean-imports|dart-scaffold' .husky .github package.json apps/*/project.json libs/*/project.json repo-governance docs AGENTS.md`
-      then rewrite each hit to the verb-first form
+      `rtk grep -rn 'docs validate-|agents (sync|emit|validate|detect)|repo-governance (vendor-audit|emoji-audit|frontmatter-audit|readme-index-audit|license-audit|agents-md-size|gherkin)|ddd (bc|ul)|java validate-annotations|contracts (java-clean-imports|dart-scaffold)|spec-coverage validate' .husky .github package.json apps/*/project.json libs/*/project.json repo-governance docs AGENTS.md`
+      then rewrite each hit to the uniform form in its new group
       — acceptance: the grep returns no old-form invocation in any caller (docs prose examples updated too).
-- [ ] [AI] **GREEN — update the golden-master corpus**: re-capture the renamed subcommand invocations
-      into the golden-master corpus (the surface change is a **deliberate** corpus update, not drift) —
-      record the old→new mapping in the commit body
+- [ ] [AI] **GREEN — update the golden-master corpus**: re-capture the renamed/regrouped subcommand
+      invocations into the golden-master corpus (the surface change is a **deliberate** corpus update,
+      not drift) — record the old→new mapping in the commit body
       — acceptance: the corpus replay is GREEN against the renamed surface; every renamed invocation has
-      a corpus entry; no **unrenamed** entry silently changed.
+      a corpus entry; no **unmoved** entry silently changed.
   - _Suggested executor: `swe-rust-dev`_
-- [ ] [AI] **REFACTOR**: confirm the controlled verb vocabulary (`validate`, `audit`, `detect`, `sync`,
-      `emit`, `clean`, `scaffold`, `diff`, `merge`, `init`, `backup`, `restore`, `pre-commit`, `doctor`)
-      is the complete set after rename; `cargo fmt`; run `npx nx run rhino-cli:lint && npx nx run rhino-cli:test:unit`
+- [ ] [AI] **REFACTOR**: confirm the controlled verb vocabulary (`validate`, `audit` [group run-all only],
+      `sync`, `emit`, `clean`, `scaffold`, `diff`, `merge`, `init`, `backup`, `restore`, `pre-commit`,
+      `doctor`) is the complete set after rename — **no `detect` or `*-audit` per-check verb remains**;
+      `cargo fmt`; run `npx nx run rhino-cli:lint && npx nx run rhino-cli:test:unit`
       — acceptance: lint exits 0 (clippy `-D warnings`); all tests pass; no stray verb outside the vocabulary.
   - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] Commit the rename separately:
-      `rtk git commit -m "refactor(rhino-cli)!: rename subcommands to verb-first git-style surface"`.
+      `rtk git commit -m "refactor(rhino-cli)!: regroup by scope + uniform verb-first subcommand surface"`.
 
-### Phase 9c — Port the union additions (`Specs` + `Ddd`)
+### Phase 9c — Port the `specs` structural set (and the `bc`/`ul` folded from `ddd`)
 
-> The two new groups land in the **already-renamed verb-first surface** (Phase 9b ran first), so
-> `Specs` is added with `specs validate adoption`/`counts`/`tree`/`links` (plus the `coverage` folded
-> from `SpecCoverage` in 9a) and `Ddd` as `ddd validate bc` + `ddd validate ul` (per the BLOCK 11
-> after-column), not the old hyphenated forms. ose-primer **already carries `Java` + `Contracts`**, so
-> those are confirm-only here — only `Specs` + `Ddd` are added.
+> The `specs` structural set lands in the **already-regrouped, uniform-grammar surface** (9a + 9b ran
+> first), so it is added as `specs validate adoption`/`counts`/`tree`/`links` plus the `coverage`
+> folded from `SpecCoverage` in 9a, and `specs validate bc` + `specs validate ul` (ose-primer carries
+> **no** `Ddd` group, so `bc`/`ul` are ported fresh under `specs`, not folded). ose-primer **already
+> carries `Java` + `Contracts`** — now `lang` + `specs` codegen after the 9a regroup — so those are
+> confirm-only here. The `gherkin-cardinality` and contract-codegen subcommands already moved into
+> `specs` in 9a.
 
-- [ ] [AI] **RED**: assert the `Specs` and `Ddd` groups are absent:
-      `cargo run --release --manifest-path apps/rhino-cli/Cargo.toml -- --help | grep -Eiw 'specs|ddd'`
-      — acceptance: no top-level `specs`/`ddd` group match (only the residual `spec-coverage` exists
-      pre-fold, which 9a moves into the new `specs` group).
-- [ ] [AI] Port-research — read `ose-public`'s `Specs` and `Ddd` reference implementations (cited by
+- [ ] [AI] **RED**: assert the `specs` structural subcommands are absent:
+      `cargo run --release --manifest-path apps/rhino-cli/Cargo.toml -- specs --help | grep -Eiw 'adoption|counts|tree|bc|ul'`
+      — acceptance: the structural validators are missing (only the folded `coverage`/`gherkin-cardinality`
+      from 9a exist pre-port).
+- [ ] [AI] Port-research — read `ose-public`'s `specs` structural reference implementation (cited by
       path; the union-surface spec in BLOCK 1-D) — acceptance: the expected subcommand surface (args,
-      output) for `specs validate {adoption,counts,tree,links,coverage}` and `ddd validate {bc,ul}` is
-      recorded.
-- [ ] [AI] **GREEN — `Specs`**: add the `Specs` subcommand group in the hexagonal layout
+      output) for `specs validate {adoption,counts,tree,links,bc,ul}` is recorded.
+- [ ] [AI] **GREEN — `specs` structural set**: add the structural validators in the hexagonal layout
       (`domain/specs/` + `application/specs/` ports + `infrastructure/specs/` adapters +
-      `commands/specs_*`) with the verb-first surface `specs validate adoption`/`counts`/`tree`/`links`
-      and the folded `specs validate coverage`, behavior matching `ose-public`'s reference
-      — acceptance: `rhino-cli specs --help` lists `validate` with `adoption`/`counts`/`tree`/`links`/`coverage`.
-- [ ] [AI] **GREEN — `Ddd`**: add the `Ddd` subcommand group similarly with the verb-first surface
-      `ddd validate bc` + `ddd validate ul`
-      — acceptance: `rhino-cli ddd --help` lists `validate` with `bc` and `ul`.
-- [ ] [AI] **Confirm `Java`/`Contracts` present (no port needed)**:
-      `cargo run --release --manifest-path apps/rhino-cli/Cargo.toml -- --help | grep -Eiw 'java|contracts'`
-      — acceptance: both groups are listed (ose-primer already carries them; confirm-only, dormant).
-- [ ] [AI] **GREEN — extend golden-master**: capture the new `specs`/`ddd` subcommands into the
+      `commands/specs_*`) with the uniform surface `specs validate adoption`/`counts`/`tree`/`links` and
+      `specs validate bc`/`ul` (the `bc`/`ul` ported fresh — no `Ddd` group existed), behavior matching
+      `ose-public`'s reference
+      — acceptance: `rhino-cli specs --help` lists `validate` with `adoption`/`counts`/`tree`/`links`/`coverage`/`bc`/`ul`/`gherkin-cardinality`.
+- [ ] [AI] **Confirm `lang` (was `java`) + `specs` codegen (was `contracts`) present (no port needed)**:
+      `cargo run --release --manifest-path apps/rhino-cli/Cargo.toml -- --help | grep -Eiw 'lang|specs'`
+      then `rhino-cli lang java --help` and `rhino-cli specs --help | grep -Ei 'clean|scaffold'`
+      — acceptance: `lang java validate null-safety-annotations` and `specs clean java-imports`/`specs
+scaffold dart` resolve (ose-primer already carries the JVM/contract surface; active, confirm-only).
+- [ ] [AI] **GREEN — extend golden-master**: capture the new `specs` structural subcommands into the
       golden-master corpus (additive extension, not a change to existing entries)
-      — acceptance: existing corpus entries unchanged; new `specs`/`ddd` entries recorded.
-- [ ] [AI] **REFACTOR**: unit tests for the two new groups + clippy `-D warnings`
+      — acceptance: existing corpus entries unchanged; new `specs` structural entries recorded.
+- [ ] [AI] **REFACTOR**: unit tests for the new structural validators + clippy `-D warnings`
       — acceptance: `:test:unit` and `:lint` GREEN; coverage met.
-- [ ] [AI] Commit: `rtk git commit -m "feat(rhino-cli): add Specs and Ddd subcommands (union surface)"`.
+- [ ] [AI] Commit: `rtk git commit -m "feat(rhino-cli): port specs structural set (union surface)"`.
 
 ### Phase 9 Gate
 
@@ -864,16 +977,17 @@ _Suggested executor: `swe-rust-dev`_
       shortlist item; `env init`/`backup`/`restore` recorded **KEPT** (`.env` secret management);
       `test-coverage diff`/`merge` carry a usage-check verdict; merges leave one shared engine with
       unchanged outputs — expected: the rationalization commit is present.
-- [ ] [AI] **Verb-first rename (9b) applied**: every subcommand uses the verb-first git-style scheme
-      (BLOCK 11); no old hyphenated invocation remains in any caller —
-      `rtk grep -rn 'docs validate-|agents sync$|agents emit-bindings|vendor-audit|validate-tree|validate-naming|validate-annotations|java-clean-imports|dart-scaffold' .husky .github package.json apps/*/project.json libs/*/project.json repo-governance docs AGENTS.md`
-      returns nothing — expected: the verb-first rename commit is present and the golden-master corpus
+- [ ] [AI] **Regroup + uniform rename (9a+9b) applied**: every subcommand uses the uniform grammar
+      (BLOCK 11) in its regrouped group; no old hyphenated/old-group invocation remains in any caller —
+      `rtk grep -rn 'docs validate-|agents (sync|emit|validate|detect)|repo-governance (vendor-audit|emoji-audit|frontmatter-audit|readme-index-audit|license-audit|agents-md-size|gherkin)|ddd (bc|ul)|java validate-annotations|contracts (java-clean-imports|dart-scaffold)|spec-coverage validate' .husky .github package.json apps/*/project.json libs/*/project.json repo-governance docs AGENTS.md`
+      returns nothing — expected: the regroup+rename commit is present and the golden-master corpus
       was deliberately re-captured for the renamed surface.
-- [ ] [AI] `rhino-cli --help` lists `specs` and `ddd` (the added groups, verb-first surface), confirms
-      `java` and `contracts` (already present), and shows the kept (rationalized) subcommand set —
-      expected: union groups present (TestCoverage, RepoGovernance, Docs, Agents, Workflows, Specs
-      [incl. folded `coverage`], Ddd, Git, Env, Java, Contracts; `SpecCoverage` folded into `Specs`);
-      `env` init/backup/restore/validate all present; any deleted subcommand absent.
+- [ ] [AI] `rhino-cli --help` lists the **regrouped** union (uniform surface) and the kept
+      (rationalized) subcommand set — expected: groups present are `test-coverage`, `repo-governance`,
+      `convention`, `md`, `docs` (reserved — no subcommand), `harness`, `workflows`, `specs` [incl.
+      folded `coverage`/`bc`/`ul`/`gherkin-cardinality` + contract codegen], `lang`, `git`, `env`,
+      `doctor`; old groups `agents`/`docs`-validators/`ddd`/`java`/`contracts` no longer top-level;
+      `env` init/backup/restore/validate all present; any deleted subcommand absent in all three repos.
 - [ ] [AI] Golden-master replay — expected: **unrenamed** entries byte-identical; deliberately
       renamed/merged/deleted/added entries match the updated corpus (no accidental drift).
 - [ ] [AI] `:test:unit` and `:lint` GREEN; coverage met.
@@ -902,8 +1016,9 @@ _Suggested executor: `ci-fixer`_
       ose-primer's env validator source name is **`env:validate`**, not `validate:env`).
 - [ ] [AI] **GREEN — rename in `apps/rhino-cli/project.json`**: apply the rename map
       (**`env:validate`→`env:validation`** — ose-primer's source name; `validate:specs-tree`→`specs:tree-validation`, …,
-      `validate:gherkin-keyword-cardinality`→`gherkin:keyword-cardinality-validation`,
-      `fmt:check`→`format:check`, `check:msrv`→`msrv:check`; `deny:check` unchanged)
+      `validate:naming-agents`→`naming:harness-validation`,
+      `validate:gherkin-keyword-cardinality`→`specs:gherkin-cardinality-validation` (re-domained to
+      `specs` in 9a), `fmt:check`→`format:check`, `check:msrv`→`msrv:check`; `deny:check` unchanged)
       — acceptance: `grep -oE '"[a-z-]+:[a-z-]+"' apps/rhino-cli/project.json` shows only canonical
       `{domain}:{work}` names; no `validate:*`/`env:validate`/`fmt:check`/`check:msrv` remain.
 - [ ] [AI] **GREEN — `spec-coverage`→`specs:coverage` repo-wide**: rename the target key in **every**
@@ -919,7 +1034,7 @@ _Suggested executor: `ci-fixer`_
     lists with `specs:coverage`; replace `rhino-cli:fmt:check`/`check:msrv` with
     `rhino-cli:format:check`/`msrv:check`.
   - `validate-markdown.yml`: re-point the gherkin step from `validate:gherkin-keyword-cardinality` to
-    `gherkin:keyword-cardinality-validation`.
+    `specs:gherkin-cardinality-validation`.
   - `package.json`: replace any script referencing an old target name (incl. `env:validate`).
     — acceptance: `grep -rn 'spec-coverage\|fmt:check\|check:msrv\|env:validate\|validate:specs\|validate:gherkin' .husky/ .github/workflows/ package.json`
     returns nothing.
@@ -1007,9 +1122,9 @@ _Suggested executor: `repo-rules-maker`_
       `validate:mermaid`/`mermaid:validation`] — acceptance: each register/checker that lists the
       Mermaid gate notes state diagrams are now in scope.
   - _Suggested executor: `repo-rules-maker`_
-- [ ] [AI] Update `AGENTS.md`: Cross-Language Lint Gates, rhino-cli command surface (union superset
-      incl. the added `Specs`/`Ddd`), target naming — acceptance: the three areas reflect the converged
-      toolchain (no Go change — ose-primer keeps its full polyglot matrix).
+- [ ] [AI] Update `AGENTS.md`: Cross-Language Lint Gates, rhino-cli command surface (regrouped union:
+      `md`/`convention`/`harness`/`specs`/`lang`; `docs` reserved), target naming — acceptance: the three
+      areas reflect the converged toolchain (no Go change — ose-primer keeps its full polyglot matrix).
 - [ ] [AI] Update `apps/rhino-cli/README.md`: command surface + hexagonal architecture — acceptance:
       both documented.
 - [ ] [AI] Update the index READMEs that list the above (governance dev/quality/infra/pattern/workflow
@@ -1060,7 +1175,7 @@ _Suggested executor: `repo-rules-maker`_
 - [ ] [AI] `npx nx affected -t test:quick` — exits 0.
 - [ ] [AI] `npx nx affected -t specs:coverage` — exits 0 (canonical name post-Phase-10).
 - [ ] [AI] Full validator set locally (canonical names):
-      `npx nx run rhino-cli:gherkin:keyword-cardinality-validation`,
+      `npx nx run rhino-cli:specs:gherkin-cardinality-validation`,
       `:links:validation`, `:mermaid:validation` (now covers state diagrams),
       `:headings:hierarchy-validation`, `:env:validation` — all exit 0.
 - [ ] [AI] Golden-master replay harness — corpus byte-identical (existing flowchart entries) + new
@@ -1086,7 +1201,7 @@ _Suggested executor: `repo-rules-maker`_
 - [ ] [AI] Monitor ALL GitHub Actions workflows triggered by the push, polling every 3 minutes via
       `gh run view --json status,conclusion` (do NOT use `gh run watch`).
 - [ ] [AI] Verify ALL CI checks pass — confirm the new **`specs-gate` job**, the
-      concurrency-equipped workflows, the `gherkin:keyword-cardinality-validation` step, and the
+      concurrency-equipped workflows, the `specs:gherkin-cardinality-validation` step, and the
       **push-to-main full gate** all ran and are green.
 - [ ] [AI] If any CI check fails, fix immediately and push a follow-up commit; repeat until ALL pass.
 - [ ] [AI] Do NOT proceed to archival until CI is fully green.

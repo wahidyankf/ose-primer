@@ -31,10 +31,11 @@ The work is organized into **seven workstreams (A–G)**:
 | A — CI workflows                     | concurrency on all workflows, `specs-gate` job, workflow file/`name:`/job-id naming, scheduler-cadence align; confirm-only on action majors, `nx affected`, tool-named lint jobs, gherkin target, full gate on push-to-main | No single anchor (parallel-safe)                  |
 | B — Git hooks                        | canonical commit-msg / pre-commit / pre-push lifecycle                                                                                                                                                                      | No single anchor (parallel-safe)                  |
 | C — rhino-cli architecture           | flat/placeholder layout → hexagonal (domain/application/infrastructure/commands)                                                                                                                                            | **`ose-public` is the reference** (siblings port) |
-| D — rhino-cli command surface        | union superset (primer adds `Specs` + `Ddd`)                                                                                                                                                                                | **`ose-public` is the reference** for the port    |
+| D — rhino-cli command surface        | scope-based regroup (`docs`→`md`, `agents`→`harness`, `java`→`lang`; fold `ddd`/`contracts`/`spec-coverage`/`gherkin`→`specs`; new `convention`) + uniform grammar; primer ports the `specs` structural set                 | **`ose-public` is the reference** for the port    |
 | E — Nx target naming                 | `{domain}:{work}` rename + `spec-coverage`→`specs:coverage`                                                                                                                                                                 | No single anchor (parallel-safe)                  |
 | F — Governance docs                  | converged conventions + repo-rules quality gate                                                                                                                                                                             | No single anchor (parallel-safe)                  |
 | G — Mermaid state-diagram validation | `state.rs` front-end + width/label rules + shared golden corpus + repo-wide cleanup                                                                                                                                         | **`ose-public` is the reference** (depends on C)  |
+| H — Test Lifecycle Architecture      | three-level testing (unit/integration/e2e) sharing `.feature` files; integration/e2e **CRON-only** at **1×/day**; **no staging** for ose-primer; `specs:coverage` enforces all three levels                                 | No single anchor (parallel-safe)                  |
 
 There is **no single anchor repo** for A/B/E/F — each repo leads on some dimensions and trails on
 others, and the genuine per-repo deviations (runner choice, language matrix, self-hosted Docker, the
@@ -135,9 +136,13 @@ only cross-repo ordering relationship.
    layout (still carrying `src/internal/`) to the full hexagonal
    `domain`/`application`/`infrastructure`/`commands` layout, behavior-frozen by a golden-master CLI
    suite. `ose-public` authors the reference in full; ose-primer ports the identical crate structure.
-4. **rhino-cli commands (D — PORT from `ose-public`)** — add the missing `Specs` and `Ddd`
-   subcommands so the CLI surface is the union superset (ose-primer already carries `Java` +
-   `Contracts`; `SpecCoverage` folds into the new `Specs` group).
+4. **rhino-cli commands + scope-based regroup (D — PORT from `ose-public`)** — rationalize and
+   **regroup the command surface by scope** (`docs`→`md`, `agents`→`harness`, `java`→`lang`; fold
+   `spec-coverage`/`ddd`/`contracts`/`gherkin-keyword-cardinality`→`specs`; new `convention` group;
+   `docs` reserved) under one **uniform `<group> [<language>] <verb> [<object>]` grammar**, and port the
+   missing **`specs` structural set** so the CLI is the union superset (ose-primer already carries
+   `Java` + `Contracts` → now `lang` + `specs` codegen; `SpecCoverage` folds into `specs validate
+coverage`).
 5. **Target naming (E)** — rename every governance/validation/lint/check target to `{domain}:{work}`
    and `spec-coverage`→`specs:coverage` repo-wide, updating every caller (hooks, workflows,
    `package.json`).
@@ -199,11 +204,19 @@ to ose-primer** (solid reference arrow), reflecting the reference-first model.
   job; add the full quality gate on `push` to `main`; workflow file/`name:`/job-id naming onto the
   BLOCK 1-A scheme; keep the `test-crud-*` app schedulers weekly. Confirm-only: `nx affected`,
   tool-named lint jobs, gherkin target + CI wiring.
-- **B — Hooks**: converge `commit-msg`/`pre-commit`/`pre-push` to BLOCK 1-B canonical.
+- **B — Hooks**: converge `commit-msg`/`pre-commit`/`pre-push` to BLOCK 1-B canonical (pre-commit
+  gains `test:quick` = format+lint+typecheck+test:unit; pre-push = `specs:coverage`+`test-coverage`).
+- **H — Test Lifecycle Architecture**: three-level testing (unit/integration/e2e) all sharing the same
+  `.feature` files; `test:unit` mocked at pre-commit; **`test:integration`+`test:e2e` CRON-only** (heavy)
+  per app-group at **1×/day** (ose-primer); `specs:coverage` enforces all scenarios across all three
+  levels; heavy-test workflow `test-and-deploy-{app-group}-development.yml` only — **ose-primer builds
+  NO staging container and runs NO staging test (no staging area)**; prod deploy manual.
 - **C — rhino-cli architecture (PORT)**: full hexagonal migration from primer's placeholder layout,
   golden-master-frozen, mirroring `ose-public`'s reference crate structure.
-- **D — rhino-cli commands (PORT)**: add `Specs` + `Ddd` (primer already has `Java` + `Contracts`);
-  fold `SpecCoverage` into `Specs`.
+- **D — rhino-cli commands + scope-based regroup (PORT)**: rationalize + regroup (`docs`→`md`,
+  `agents`→`harness`, `java`→`lang`; fold `spec-coverage`/`ddd`/`contracts`/`gherkin`→`specs`; new
+  `convention`; `docs` reserved) + uniform grammar; port the **`specs` structural set** (primer already
+  carries `Java`+`Contracts` → now `lang`+`specs` codegen; `SpecCoverage` folds into `specs`).
 - **E — Target naming**: `{domain}:{work}` rename (incl. `env:validate`→`env:validation`) +
   `spec-coverage`→`specs:coverage` repo-wide + all callers.
 - **F — Governance**: **create** `cross-language-lint-strictness.md` (missing in primer); update all
@@ -272,21 +285,21 @@ design becomes workstream G —
 
 ## Delivery Phases at a Glance
 
-| Phase | Title                                                                                                      | Workstream    | Mode |
-| ----- | ---------------------------------------------------------------------------------------------------------- | ------------- | ---- |
-| 0     | Setup + baseline + **golden-master CLI capture** (_repo-setup-manager_)                                    | —             | AI   |
-| 1     | CI — workflow file/`name:`/job-id naming (BLOCK 1-A); confirm `nx affected`                                | A             | AI   |
-| 2     | CI — canonical concurrency on all ~23 workflows (primer's main A gap)                                      | A             | AI   |
-| 3     | CI — confirm tool-named lint jobs `shellcheck`/`hadolint`/`actionlint` (already at target)                 | A             | AI   |
-| 4     | CI — add `specs-gate` job; confirm gherkin keyword-cardinality target + CI wiring                          | A             | AI   |
-| 5     | CI — add full quality gate on push-to-main; `test-crud-*` schedulers stay weekly                           | A             | AI   |
-| 6     | Git hooks — converge to BLOCK 1-B canonical                                                                | B             | AI   |
-| 7     | **rhino-cli hexagonal migration (PORT)** — sub-phased, golden-frozen; Mermaid slice migrated here          | C (+ G slice) | AI   |
-| 8     | **Mermaid state-diagram validation (PORT)** — `state.rs` + mirrored corpus + D-CLEAN cleanup               | G             | AI   |
-| 9     | **rhino-cli command surface** — 9a rationalize · 9b verb-first rename (BLOCK 11) · 9c add `Specs`+`Ddd`    | D             | AI   |
-| 10    | Target rename `{domain}:{work}` (incl. `env:validate`→`env:validation`) + `spec-coverage`→`specs:coverage` | E             | AI   |
-| 11    | Governance docs (**create** cross-lint doc) → `repo-rules-maker` → repo-rules quality gate (hard gate)     | F             | AI   |
-| 12    | Final quality gate + push + CI verify + archival                                                           | —             | AI   |
+| Phase | Title                                                                                                                                        | Workstream    | Mode |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------- | ---- |
+| 0     | Setup + baseline + **golden-master CLI capture** (_repo-setup-manager_)                                                                      | —             | AI   |
+| 1     | CI — workflow file/`name:`/job-id naming (BLOCK 1-A); confirm `nx affected`                                                                  | A             | AI   |
+| 2     | CI — canonical concurrency on all ~23 workflows (primer's main A gap)                                                                        | A             | AI   |
+| 3     | CI — confirm tool-named lint jobs `shellcheck`/`hadolint`/`actionlint` (already at target)                                                   | A             | AI   |
+| 4     | CI — add `specs-gate` job; confirm gherkin keyword-cardinality target + CI wiring                                                            | A             | AI   |
+| 5     | CI — add full quality gate on push-to-main; `test-crud-*` schedulers stay weekly                                                             | A             | AI   |
+| 6     | Git hooks — converge to BLOCK 1-B canonical (pre-commit `test:quick`; pre-push `specs:coverage`+`test-coverage`)                             | B (+ H)       | AI   |
+| 7     | **rhino-cli hexagonal migration (PORT)** — sub-phased, golden-frozen; Mermaid slice migrated here                                            | C (+ G slice) | AI   |
+| 8     | **Mermaid state-diagram validation (PORT)** — `state.rs` + mirrored corpus + D-CLEAN cleanup                                                 | G             | AI   |
+| 9     | **rhino-cli command surface** — 9a rationalize + scope-based regroup · 9b uniform-grammar rename (BLOCK 11) · 9c port `specs` structural set | D             | AI   |
+| 10    | Target rename `{domain}:{work}` (incl. `env:validate`→`env:validation`) + `spec-coverage`→`specs:coverage`                                   | E             | AI   |
+| 11    | Governance docs (**create** cross-lint doc) → `repo-rules-maker` → repo-rules quality gate (hard gate)                                       | F             | AI   |
+| 12    | Final quality gate + push + CI verify + archival                                                                                             | —             | AI   |
 
 **Phase 0 ownership.** Across **all three sibling plans** (`ose-public`, `ose-infra`, `ose-primer`),
 Phase 0 (Environment Setup, Baseline, and Golden-Master Capture) is owned by the
