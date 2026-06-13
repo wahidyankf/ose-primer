@@ -290,6 +290,20 @@ jobs:
           echo "$PWD/bin" >> "$GITHUB_PATH"
       - run: npx nx run rhino-cli:lint:actions
 
+  specs-gate:
+    name: Specs gate (BDD spec validators)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-rust
+      # spec-coverage validates all .feature scenarios have test implementations
+      - run: npx nx run rhino-cli:spec-coverage
+      # gherkin-keyword-cardinality validates feature file structure
+      # (canonical rename to specs:gherkin-cardinality-validation happens in Phase 10)
+      - run: npx nx run rhino-cli:validate:gherkin-keyword-cardinality
+      # Note: structural set (adoption/tree/counts/links validators) added in Phase 9c
+
   quality-gate:
     name: Quality gate
     needs:
@@ -311,6 +325,7 @@ jobs:
         hadolint,
         shellcheck,
         actionlint,
+        specs-gate,
       ]
     if: always()
     runs-on: ubuntu-latest
