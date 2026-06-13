@@ -290,8 +290,9 @@ jobs:
       - uses: ./.github/actions/setup-node
       - name: Install actionlint
         run: |
-          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash) 1.7.12
-          echo "$PWD/bin" >> "$GITHUB_PATH"
+          curl -sSL -o /tmp/download-actionlint.bash \
+            https://raw.githubusercontent.com/rhysd/actionlint/v1.7.12/scripts/download-actionlint.bash
+          bash /tmp/download-actionlint.bash 1.7.12 /usr/local/bin
       - run: npx nx run rhino-cli:actions:lint
 
   specs-gate:
