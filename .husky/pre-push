@@ -1,38 +1,39 @@
 #!/usr/bin/env sh
 set -e
 
-# Pre-commit: rhino-cli checks (formatting, link validation, config sync)
-# Pre-push: typecheck + lint + test:quick + spec-coverage + markdown linting (all cacheable by Nx)
-# If pre-push times out, run `npx nx affected -t typecheck lint test:quick spec-coverage` first to warm the cache, then push again
+# Pre-push: coverage gates (spec + line) + specs validators + markdown + env + conditional gates
+# test:integration and test:e2e are NOT here — CRON-only (Test Lifecycle Architecture)
+# If pre-push times out, run the nx affected commands below first to warm cache, then push again.
 PARALLEL=$(( $(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4) - 1 ))
-npx nx affected -t typecheck lint test:quick spec-coverage --parallel="$PARALLEL"
+
+# 1. Coverage gates (lead the pre-push per BLOCK 1-B)
+# spec-coverage: every .feature scenario implemented across unit+integration+e2e per app
+# (renamed to specs:coverage in Phase 10)
+npx nx affected -t spec-coverage --parallel="$PARALLEL"
+
+# 2. Markdown lint (renamed to markdown:lint target in Phase 10)
 npm run lint:md
+
+# 3. Env validation (renamed to env:validation in Phase 10)
 npx nx run rhino-cli:env:validate
 
-# Naming validators — scoped to pushes that touch the relevant trees.
-# Upstream may be missing on first push of a branch; default to empty range in that case.
+# 4. Named validators — scoped to pushes that touch the relevant trees
 RANGE=$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1 && echo '@{u}..HEAD' || echo "")
 if [ -n "$RANGE" ]; then
   CHANGED=$(git diff --name-only "$RANGE" 2>/dev/null || echo "")
+
   if echo "$CHANGED" | grep -qE '^(\.claude/agents/|\.opencode/agents/)'; then
     npx nx run rhino-cli:validate:naming-agents
   fi
   if echo "$CHANGED" | grep -qE '^repo-governance/workflows/'; then
     npx nx run rhino-cli:validate:naming-workflows
   fi
-  # Cross-vendor parity gate (W5 of adopt-ose-public plan): fires when any
-  # parity-relevant surface changes. Cheap (~5s); not cacheable.
   if echo "$CHANGED" | grep -qE '^(repo-governance/.*\.md|AGENTS\.md|CLAUDE\.md|\.claude/agents/|\.opencode/agents/)'; then
     npx nx run rhino-cli:validate:cross-vendor-parity
   fi
-  # Deterministic harness-binding parity guard (multi-harness-compatibility plan):
-  # fires when any binding surface changes. Re-derives the generated bindings from
-  # AGENTS.md and asserts byte-equality + catalog coverage. No network, no agent.
   if echo "$CHANGED" | grep -qE '^(\.amazonq/|AGENTS\.md|docs/reference/platform-bindings\.md|\.claude/|\.opencode/|\.codex/|\.github/)'; then
     npm run validate:harness-bindings
   fi
-  # Infra-lint gates (lint-safety-parity D6/D7/D8) — scoped to pushes that touch
-  # the relevant trees. Each nx target is cached, so an unchanged tree is a no-op.
   if echo "$CHANGED" | grep -qE '(^|/)Dockerfile(\.|$)'; then
     npx nx run rhino-cli:lint:dockerfiles
   fi

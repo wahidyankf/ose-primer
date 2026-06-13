@@ -1,3 +1,36 @@
+#!/usr/bin/env sh
+set -e
+
 ./scripts/git-identity-check.sh
 ./scripts/check-no-env-staged.sh
+
+# Staged-file lint gates (graceful skip if tool absent)
+STAGED_SH=$(git diff --cached --name-only | grep '\.sh$' || true)
+STAGED_DOCKER=$(git diff --cached --name-only | grep -E '(^|/)Dockerfile(\.|$)' || true)
+STAGED_ACTIONS=$(git diff --cached --name-only | grep '^\.github/workflows/' || true)
+
+if [ -n "$STAGED_SH" ] && command -v shellcheck >/dev/null 2>&1; then
+  echo "$STAGED_SH" | xargs shellcheck --severity=warning
+elif [ -n "$STAGED_SH" ]; then
+  echo "shellcheck not installed, skipping (run: npm run doctor -- --fix)" >&2
+fi
+
+if [ -n "$STAGED_DOCKER" ] && command -v hadolint >/dev/null 2>&1; then
+  echo "$STAGED_DOCKER" | xargs hadolint --failure-threshold warning
+elif [ -n "$STAGED_DOCKER" ]; then
+  echo "hadolint not installed, skipping (run: npm run doctor -- --fix)" >&2
+fi
+
+if [ -n "$STAGED_ACTIONS" ] && command -v actionlint >/dev/null 2>&1; then
+  # shellcheck disable=SC2086
+  actionlint $STAGED_ACTIONS
+elif [ -n "$STAGED_ACTIONS" ]; then
+  echo "actionlint not installed, skipping (run: npm run doctor -- --fix)" >&2
+fi
+
+# rhino-cli git pre-commit (config sync, format, doc validation)
 cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- git pre-commit
+
+# Affected apps: format + lint + typecheck + test:unit (mocked; per Test Lifecycle Architecture)
+PARALLEL=$(( $(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4) - 1 ))
+npx nx affected -t test:quick --parallel="$PARALLEL"
