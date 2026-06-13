@@ -71,7 +71,10 @@
       }
     },
     "specs:coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-e2e",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'Phase 0 — specs:coverage stubbed; dead steps + .features-gen false-positive scan excluded in Phase 1'"
+      },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
     }

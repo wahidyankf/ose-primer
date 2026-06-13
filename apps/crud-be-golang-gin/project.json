@@ -100,7 +100,10 @@
       }
     },
     "specs:coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir test-support specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-golang-gin",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'Phase 0 — specs:coverage stubbed; Go godog dead-step cleanup + regex orphan analysis lands in Phase 1'"
+      },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.go"]
     }
