@@ -35,7 +35,7 @@
         "command": "cargo fmt --manifest-path apps/rhino-cli/Cargo.toml"
       }
     },
-    "fmt:check": {
+    "format:check": {
       "executor": "nx:run-commands",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{projectRoot}/.rustfmt.toml", "{workspaceRoot}/.rustfmt.toml"],
@@ -51,7 +51,7 @@
         "command": "cargo deny --manifest-path apps/rhino-cli/Cargo.toml check"
       }
     },
-    "check:msrv": {
+    "msrv:check": {
       "executor": "nx:run-commands",
       "cache": true,
       "inputs": ["{projectRoot}/Cargo.toml", "{projectRoot}/src/**/*.rs"],
@@ -99,7 +99,7 @@
         "command": "cargo test --manifest-path apps/rhino-cli/Cargo.toml --tests"
       }
     },
-    "spec-coverage": {
+    "specs:coverage": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage specs/apps/rhino/behavior/rhino-cli/gherkin apps/rhino-cli --shared-steps",
       "cache": true,
       "inputs": [
@@ -109,7 +109,7 @@
       ],
       "comment": "Validates that every gherkin step under specs/apps/rhino/behavior/rhino-cli/gherkin has a matching cucumber-rs step definition in apps/rhino-cli/tests (--shared-steps does step-only validation across the whole tree). The step extractor recognises the literal `#[given(\"...\")]`, `expr = \"...\"`, and raw-string `regex = r\"...\"` / `regex = r#\"...\"#` attribute forms used by the test suite, so the gate fails if any step lacks a definition."
     },
-    "validate:naming-agents": {
+    "naming:harness-validation": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- harness validate naming",
       "cache": true,
       "inputs": [
@@ -119,36 +119,36 @@
       ],
       "outputs": []
     },
-    "validate:naming-workflows": {
+    "naming:workflows-validation": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- workflows validate naming",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/repo-governance/workflows/**/*.md"],
       "outputs": []
     },
-    "validate:repo-governance-vendor-audit": {
+    "governance:vendor-audit-validation": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- repo-governance validate vendor repo-governance/",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/repo-governance/**/*.md"],
       "outputs": []
     },
-    "validate:gherkin-keyword-cardinality": {
+    "specs:gherkin-cardinality-validation": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- specs validate gherkin-cardinality",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.feature"],
       "outputs": []
     },
-    "validate:harness-bindings": {
+    "harness:bindings-validation": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- harness validate bindings",
       "cache": false,
       "outputs": []
     },
-    "env:validate": {
+    "env:validation": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- env validate",
       "cache": false,
       "inputs": ["{projectRoot}/**/*.rs", "{workspaceRoot}/infra/dev/**", "{workspaceRoot}/apps/**"],
       "outputs": []
     },
-    "validate:cross-vendor-parity": {
+    "cross-vendor:parity-validation": {
       "command": "bash apps/rhino-cli/scripts/validate-cross-vendor-parity.sh",
       "cache": false,
       "inputs": [
@@ -162,39 +162,39 @@
       ],
       "outputs": []
     },
-    "validate:mermaid": {
+    "mermaid:validation": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- md validate mermaid --max-depth=4 --exclude plans/done",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
       "outputs": []
     },
-    "validate:links": {
+    "links:validation": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- md validate links --exclude plans/done --exclude apps/crud-be-elixir-phoenix/deps --exclude apps/crud-be-kotlin-ktor/build --exclude libs/elixir-cabbage/deps --exclude libs/elixir-gherkin/deps --exclude libs/elixir-openapi-codegen/deps",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
       "outputs": []
     },
-    "validate:heading-hierarchy": {
+    "headings:hierarchy-validation": {
       "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- md validate heading-hierarchy",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
       "outputs": []
     },
-    "lint:dockerfiles": {
+    "dockerfiles:lint": {
       "command": "find . -type f \\( -name Dockerfile -o -name 'Dockerfile.*' \\) -not -path '*/node_modules/*' -not -path '*/deps/*' -not -path '*/_build/*' -not -path '*/.venv/*' -not -path '*/target/*' -not -path '*/archived/*' -not -path '*/worktrees/*' -exec hadolint --failure-threshold warning {} +",
       "cache": true,
       "inputs": ["{workspaceRoot}/**/Dockerfile*", "{workspaceRoot}/.hadolint.yaml"],
       "outputs": [],
       "comment": "Dockerfile lint gate (lint-safety-parity D6). Fails on warning-and-above per .hadolint.yaml. Vendored Dockerfiles (deps/_build/.venv/target/archived/node_modules) excluded."
     },
-    "lint:shell": {
+    "shell:lint": {
       "command": "shellcheck --severity=warning $(find . -type f -name '*.sh' -not -path '*/node_modules/*' -not -path '*/deps/*' -not -path '*/_build/*' -not -path '*/.venv/*' -not -path '*/target/*' -not -path '*/archived/*' -not -path '*/worktrees/*') .husky/pre-commit .husky/pre-push .husky/commit-msg",
       "cache": true,
       "inputs": ["{workspaceRoot}/**/*.sh", "{workspaceRoot}/.husky/*", "{workspaceRoot}/.shellcheckrc"],
       "outputs": [],
       "comment": "Shell lint gate (lint-safety-parity D7). shellcheck --severity=warning over all *.sh scripts plus the extensionless husky hooks; config in .shellcheckrc."
     },
-    "lint:actions": {
+    "actions:lint": {
       "command": "actionlint",
       "cache": true,
       "inputs": ["{workspaceRoot}/.github/workflows/**", "{workspaceRoot}/.github/actionlint.yaml"],

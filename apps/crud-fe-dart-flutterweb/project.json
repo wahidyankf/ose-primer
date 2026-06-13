@@ -83,7 +83,7 @@
         "cwd": "{projectRoot}"
       }
     },
-    "spec-coverage": {
+    "specs:coverage": {
       "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps specs/apps/crud/behavior/crud-web/gherkin apps/crud-fe-dart-flutterweb",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature", "{projectRoot}/**/*.dart"]

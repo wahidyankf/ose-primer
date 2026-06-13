@@ -102,7 +102,7 @@
       "dependsOn": ["codegen"],
       "cache": true
     },
-    "spec-coverage": {
+    "specs:coverage": {
       "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir test-support specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-fsharp-giraffe",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.fs"]

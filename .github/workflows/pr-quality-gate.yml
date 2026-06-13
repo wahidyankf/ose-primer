@@ -99,7 +99,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --exclude='tag:lang:golang,tag:lang:java,tag:lang:kotlin,tag:lang:fsharp,tag:lang:csharp,tag:lang:python,tag:lang:rust,tag:lang:elixir,tag:lang:clojure,tag:lang:dart'
+      - run: npx nx affected -t typecheck lint test:quick specs:coverage --exclude='tag:lang:golang,tag:lang:java,tag:lang:kotlin,tag:lang:fsharp,tag:lang:csharp,tag:lang:python,tag:lang:rust,tag:lang:elixir,tag:lang:clojure,tag:lang:dart'
 
   golang:
     name: Go quality gate
@@ -115,7 +115,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-golang
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:golang'
+      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:golang'
 
   jvm:
     name: JVM quality gate
@@ -131,7 +131,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-jvm
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:java,tag:lang:kotlin'
+      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:java,tag:lang:kotlin'
 
   dotnet:
     name: .NET quality gate
@@ -147,7 +147,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-dotnet
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:fsharp,tag:lang:csharp'
+      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:fsharp,tag:lang:csharp'
 
   python:
     name: Python quality gate
@@ -163,7 +163,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-python
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:python'
+      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:python'
 
   rust:
     name: Rust quality gate
@@ -179,7 +179,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-rust
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:rust'
+      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:rust'
 
   elixir:
     name: Elixir quality gate
@@ -195,7 +195,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-elixir
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:elixir'
+      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:elixir'
 
   clojure:
     name: Clojure quality gate
@@ -211,7 +211,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-clojure
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:clojure'
+      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:clojure'
 
   dart:
     name: Dart quality gate
@@ -227,7 +227,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-flutter
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:dart'
+      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:dart'
 
   markdown:
     name: Markdown quality gate
@@ -246,8 +246,8 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-rust
-      - run: npx nx run rhino-cli:validate:naming-agents
-      - run: npx nx run rhino-cli:validate:naming-workflows
+      - run: npx nx run rhino-cli:naming:harness-validation
+      - run: npx nx run rhino-cli:naming:workflows-validation
 
   env-validate:
     name: Env validate (declared vs read drift)
@@ -256,7 +256,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-rust
-      - run: npx nx run rhino-cli:env:validate
+      - run: npx nx run rhino-cli:env:validation
 
   hadolint:
     name: Dockerfile lint (hadolint)
@@ -270,7 +270,7 @@ jobs:
             https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-Linux-x86_64
           sudo chmod +x /usr/local/bin/hadolint
           hadolint --version
-      - run: npx nx run rhino-cli:lint:dockerfiles
+      - run: npx nx run rhino-cli:dockerfiles:lint
 
   shellcheck:
     name: Shell lint (shellcheck)
@@ -280,7 +280,7 @@ jobs:
       - uses: ./.github/actions/setup-node
       # shellcheck is preinstalled on ubuntu-latest GitHub-hosted runners.
       - run: shellcheck --version
-      - run: npx nx run rhino-cli:lint:shell
+      - run: npx nx run rhino-cli:shell:lint
 
   actionlint:
     name: Actions lint (actionlint)
@@ -292,7 +292,7 @@ jobs:
         run: |
           bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash) 1.7.12
           echo "$PWD/bin" >> "$GITHUB_PATH"
-      - run: npx nx run rhino-cli:lint:actions
+      - run: npx nx run rhino-cli:actions:lint
 
   specs-gate:
     name: Specs gate (BDD spec validators)
@@ -301,11 +301,10 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-rust
-      # spec-coverage validates all .feature scenarios have test implementations
-      - run: npx nx run rhino-cli:spec-coverage
-      # gherkin-keyword-cardinality validates feature file structure
-      # (canonical rename to specs:gherkin-cardinality-validation happens in Phase 10)
-      - run: npx nx run rhino-cli:validate:gherkin-keyword-cardinality
+      # specs:coverage validates all .feature scenarios have test implementations
+      - run: npx nx run rhino-cli:specs:coverage
+      # specs:gherkin-cardinality-validation validates feature file structure
+      - run: npx nx run rhino-cli:specs:gherkin-cardinality-validation
       # Note: structural set (adoption/tree/counts/links validators) added in Phase 9c
 
   quality-gate:

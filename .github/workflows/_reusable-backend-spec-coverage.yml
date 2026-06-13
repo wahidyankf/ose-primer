@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  spec-coverage:
+  specs-coverage:
     name: Spec coverage ${{ inputs.backend-name }}
     runs-on: ubuntu-latest
     steps:
@@ -36,4 +36,4 @@ jobs:
         run: |
           npx nx run crud-contracts:bundle
           npx nx run ${{ inputs.backend-name }}:codegen
-      - run: npx nx run ${{ inputs.backend-name }}:spec-coverage
+      - run: npx nx run ${{ inputs.backend-name }}:specs:coverage

@@ -81,7 +81,7 @@
       },
       "dependsOn": ["codegen"]
     },
-    "spec-coverage": {
+    "specs:coverage": {
       "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir test-support specs/apps/crud/behavior/crud-web/gherkin apps/crud-fe-ts-nextjs",
       "cache": true,
       "inputs": [

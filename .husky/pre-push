@@ -7,15 +7,14 @@ set -e
 PARALLEL=$(( $(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4) - 1 ))
 
 # 1. Coverage gates (lead the pre-push per BLOCK 1-B)
-# spec-coverage: every .feature scenario implemented across unit+integration+e2e per app
-# (renamed to specs:coverage in Phase 10)
-npx nx affected -t spec-coverage --parallel="$PARALLEL"
+# specs:coverage: every .feature scenario implemented across unit+integration+e2e per app
+npx nx affected -t specs:coverage --parallel="$PARALLEL"
 
-# 2. Markdown lint (renamed to markdown:lint target in Phase 10)
+# 2. Markdown lint
 npm run lint:md
 
-# 3. Env validation (renamed to env:validation in Phase 10)
-npx nx run rhino-cli:env:validate
+# 3. Env validation
+npx nx run rhino-cli:env:validation
 
 # 4. Named validators — scoped to pushes that touch the relevant trees
 RANGE=$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1 && echo '@{u}..HEAD' || echo "")
@@ -23,24 +22,24 @@ if [ -n "$RANGE" ]; then
   CHANGED=$(git diff --name-only "$RANGE" 2>/dev/null || echo "")
 
   if echo "$CHANGED" | grep -qE '^(\.claude/agents/|\.opencode/agents/)'; then
-    npx nx run rhino-cli:validate:naming-agents
+    npx nx run rhino-cli:naming:harness-validation
   fi
   if echo "$CHANGED" | grep -qE '^repo-governance/workflows/'; then
-    npx nx run rhino-cli:validate:naming-workflows
+    npx nx run rhino-cli:naming:workflows-validation
   fi
   if echo "$CHANGED" | grep -qE '^(repo-governance/.*\.md|AGENTS\.md|CLAUDE\.md|\.claude/agents/|\.opencode/agents/)'; then
-    npx nx run rhino-cli:validate:cross-vendor-parity
+    npx nx run rhino-cli:cross-vendor:parity-validation
   fi
   if echo "$CHANGED" | grep -qE '^(\.amazonq/|AGENTS\.md|docs/reference/platform-bindings\.md|\.claude/|\.opencode/|\.codex/|\.github/)'; then
     npm run validate:harness-bindings
   fi
   if echo "$CHANGED" | grep -qE '(^|/)Dockerfile(\.|$)'; then
-    npx nx run rhino-cli:lint:dockerfiles
+    npx nx run rhino-cli:dockerfiles:lint
   fi
   if echo "$CHANGED" | grep -qE '\.sh$|^\.husky/'; then
-    npx nx run rhino-cli:lint:shell
+    npx nx run rhino-cli:shell:lint
   fi
   if echo "$CHANGED" | grep -qE '^\.github/workflows/'; then
-    npx nx run rhino-cli:lint:actions
+    npx nx run rhino-cli:actions:lint
   fi
 fi

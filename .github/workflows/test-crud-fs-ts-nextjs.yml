@@ -13,14 +13,14 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  spec-coverage:
+  specs-coverage:
     name: Spec coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-golang
-      - run: npx nx run crud-fs-ts-nextjs:spec-coverage
+      - run: npx nx run crud-fs-ts-nextjs:specs:coverage
   lint:
     name: Lint
     runs-on: ubuntu-latest
