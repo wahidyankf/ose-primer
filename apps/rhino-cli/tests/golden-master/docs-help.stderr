@@ -1,0 +1,6 @@
+error: 'rhino-cli docs' requires a subcommand but one was not provided
+  [subcommands: validate-links, validate-mermaid, validate-heading-hierarchy, help]
+
+Usage: rhino-cli docs [OPTIONS] <COMMAND>
+
+For more information, try 'help'.

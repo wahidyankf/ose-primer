@@ -1,0 +1,4 @@
+error: the following required arguments were not provided:
+  <DIR>
+
+Usage: rhino-cli contracts dart-scaffold --help --no-color <DIR>

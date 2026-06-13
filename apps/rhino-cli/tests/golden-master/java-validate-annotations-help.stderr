@@ -1,0 +1,4 @@
+error: the following required arguments were not provided:
+  <SOURCE_ROOT>
+
+Usage: rhino-cli java validate-annotations --help --no-color <SOURCE_ROOT>

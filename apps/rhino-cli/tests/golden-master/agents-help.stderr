@@ -1,0 +1,6 @@
+error: 'rhino-cli agents' requires a subcommand but one was not provided
+  [subcommands: sync, validate-claude, validate-sync, validate-naming, emit-bindings, validate-bindings, help]
+
+Usage: rhino-cli agents [OPTIONS] <COMMAND>
+
+For more information, try 'help'.
