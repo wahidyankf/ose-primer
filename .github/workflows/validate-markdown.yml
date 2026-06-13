@@ -1,4 +1,4 @@
-name: Validate Markdown
+name: Validate - Markdown
 
 on:
   pull_request:
