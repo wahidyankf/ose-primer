@@ -310,6 +310,80 @@ pub fn format_heading_markdown(findings: &[HeadingFinding]) -> String {
     format_heading_text(findings, false)
 }
 
+// ---------------------------------------------------------------------------
+// Sibling-module helpers (used by internal::docs::links)
+// ---------------------------------------------------------------------------
+
+/// Parses the opening of a fenced code block from the start of a line.
+///
+/// Returns `Some((fence_char, length))` when the line begins with three or
+/// more identical `` ` `` or `~` characters; otherwise returns `None`.
+///
+/// # Panics
+///
+/// Panics if `s` is non-empty but has no first character (impossible in practice).
+fn parse_fence_open(s: &str) -> Option<(char, usize)> {
+    if s.is_empty() {
+        return None;
+    }
+    let first = s.chars().next().expect("s is non-empty — checked above");
+    if first != '`' && first != '~' {
+        return None;
+    }
+    let mut n = 0;
+    for c in s.chars() {
+        if c == first {
+            n += 1;
+        } else {
+            break;
+        }
+    }
+    if n < 3 {
+        return None;
+    }
+    Some((first, n))
+}
+
+/// Parses the ATX heading level (1–6) from the start of a trimmed line.
+///
+/// Returns `None` when the line is not a valid ATX heading (wrong prefix,
+/// no space after `#` characters, or empty heading text).
+fn parse_heading_level(s: &str) -> Option<usize> {
+    let bytes = s.as_bytes();
+    if bytes.is_empty() || bytes[0] != b'#' {
+        return None;
+    }
+    let mut level = 0;
+    while level < bytes.len() && bytes[level] == b'#' {
+        level += 1;
+    }
+    if !(1..=6).contains(&level) {
+        return None;
+    }
+    if level >= bytes.len() {
+        return None;
+    }
+    let next = bytes[level];
+    if next != b' ' && next != b'\t' {
+        return None;
+    }
+    let rest = s[level + 1..].trim();
+    if rest.is_empty() {
+        return None;
+    }
+    Some(level)
+}
+
+/// Public re-export of [`parse_fence_open`] for use by sibling modules.
+pub(crate) fn parse_fence_open_pub(s: &str) -> Option<(char, usize)> {
+    parse_fence_open(s)
+}
+
+/// Public re-export of [`parse_heading_level`] for use by sibling modules.
+pub(crate) fn parse_heading_level_pub(s: &str) -> Option<usize> {
+    parse_heading_level(s)
+}
+
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::panic)]
 mod tests {

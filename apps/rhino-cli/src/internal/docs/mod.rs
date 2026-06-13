@@ -9,6 +9,7 @@ pub mod categorizer;
 pub mod fences;
 pub mod heading_hierarchy;
 pub mod headings;
+pub mod links;
 pub mod reporter;
 pub mod scanner;
 pub mod types;
