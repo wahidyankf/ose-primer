@@ -17,9 +17,9 @@ use std::time::{Duration, Instant};
 use anyhow::{Error, anyhow};
 
 use crate::internal::agents::claude_validator::validate_claude;
-use crate::internal::agents::sync::sync_all;
+use crate::internal::agents::sync::{SyncOptions, SyncResult, sync_all};
 use crate::internal::agents::sync_validator::validate_sync;
-use crate::internal::agents::types::{SyncOptions, ValidateClaudeOptions, ValidationResult};
+use crate::internal::agents::types::{ValidateClaudeOptions, ValidationResult};
 use crate::internal::docs::heading_hierarchy;
 use crate::internal::docs::scanner::NOISE_DIRS;
 use crate::internal::docs::types::{LinkValidationResult, ScanOptions};
@@ -43,9 +43,9 @@ const TOTAL_TIMEOUT: Duration = Duration::from_secs(120);
 
 type ExecRunner = dyn Fn(&str, &[&str], &Path) -> std::io::Result<std::process::ExitStatus>;
 type StagedFn = dyn Fn(&Path) -> Result<Vec<String>, Error>;
-type ValidateClaudeFn = dyn Fn(&ValidateClaudeOptions) -> Result<ValidationResult, Error>;
-type SyncAllFn = dyn Fn(&SyncOptions) -> Result<crate::internal::agents::types::SyncResult, Error>;
-type ValidateSyncFn = dyn Fn(&Path) -> Result<ValidationResult, Error>;
+type ValidateClaudeFn = dyn Fn(&ValidateClaudeOptions) -> ValidationResult;
+type SyncAllFn = dyn Fn(&SyncOptions) -> Result<SyncResult, String>;
+type ValidateSyncFn = dyn Fn(&Path) -> ValidationResult;
 type ValidateLinksFn = dyn Fn(&ScanOptions) -> Result<LinkValidationResult, Error>;
 
 /// Injectable dependencies for full testability.
@@ -217,20 +217,11 @@ fn step1_config(git_root: &Path, staged: &[String], deps: &mut Deps) -> Result<(
         "🔍 Validating .claude/ and .opencode/ configuration..."
     );
 
-    let result = match (deps.validate_claude)(&ValidateClaudeOptions {
+    let result = (deps.validate_claude)(&ValidateClaudeOptions {
         repo_root: git_root.to_path_buf(),
         agents_only: false,
         skills_only: false,
-    }) {
-        Ok(r) => r,
-        Err(e) => {
-            let _ = writeln!(
-                deps.stdout,
-                "❌ Configuration validation failed. Fix errors above before committing."
-            );
-            return Err(e);
-        }
-    };
+    });
     if result.failed_checks > 0 {
         let _ = writeln!(
             deps.stdout,
@@ -254,19 +245,10 @@ fn step1_config(git_root: &Path, staged: &[String], deps: &mut Deps) -> Result<(
             deps.stdout,
             "❌ Configuration sync failed. Fix errors above before committing."
         );
-        return Err(e);
+        return Err(anyhow!("{e}"));
     }
 
-    let sync_result = match (deps.validate_sync)(git_root) {
-        Ok(r) => r,
-        Err(e) => {
-            let _ = writeln!(
-                deps.stdout,
-                "❌ Configuration validation failed. Fix errors above before committing."
-            );
-            return Err(e);
-        }
-    };
+    let sync_result = (deps.validate_sync)(git_root);
     if sync_result.failed_checks > 0 {
         let _ = writeln!(
             deps.stdout,
@@ -597,9 +579,9 @@ mod tests {
             get_staged_files: Box::new(|_| Ok(Vec::new())),
             exec_command: Box::new(|_, _, _| Ok(ok_status())),
             exec_command_quiet: Box::new(|_, _, _| Ok(ok_status())),
-            validate_claude: Box::new(|_| Ok(ValidationResult::default())),
-            sync_all: Box::new(|_| Ok(crate::internal::agents::types::SyncResult::default())),
-            validate_sync: Box::new(|_| Ok(ValidationResult::default())),
+            validate_claude: Box::new(|_| ValidationResult::default()),
+            sync_all: Box::new(|_| Ok(SyncResult::default())),
+            validate_sync: Box::new(|_| ValidationResult::default()),
             validate_links: Box::new(|_| Ok(LinkValidationResult::default())),
             stdout: Box::new(out),
             stderr: Box::new(err),
@@ -628,9 +610,9 @@ mod tests {
             get_staged_files: Box::new(|_| Ok(vec![".claude/agents/x.md".to_string()])),
             exec_command: Box::new(|_, _, _| Ok(ok_status())),
             exec_command_quiet: Box::new(|_, _, _| Ok(ok_status())),
-            validate_claude: Box::new(|_| Ok(ValidationResult::default())),
-            sync_all: Box::new(|_| Ok(crate::internal::agents::types::SyncResult::default())),
-            validate_sync: Box::new(|_| Ok(ValidationResult::default())),
+            validate_claude: Box::new(|_| ValidationResult::default()),
+            sync_all: Box::new(|_| Ok(SyncResult::default())),
+            validate_sync: Box::new(|_| ValidationResult::default()),
             validate_links: Box::new(|_| Ok(LinkValidationResult::default())),
             stdout: Box::new(out.clone()),
             stderr: Box::new(SharedBuf::default()),
@@ -649,14 +631,12 @@ mod tests {
             get_staged_files: Box::new(|_| Ok(Vec::new())),
             exec_command: Box::new(|_, _, _| Ok(ok_status())),
             exec_command_quiet: Box::new(|_, _, _| Ok(ok_status())),
-            validate_claude: Box::new(|_| {
-                Ok(ValidationResult {
-                    failed_checks: 2,
-                    ..ValidationResult::default()
-                })
+            validate_claude: Box::new(|_| ValidationResult {
+                failed_checks: 2,
+                ..ValidationResult::default()
             }),
-            sync_all: Box::new(|_| Ok(crate::internal::agents::types::SyncResult::default())),
-            validate_sync: Box::new(|_| Ok(ValidationResult::default())),
+            sync_all: Box::new(|_| Ok(SyncResult::default())),
+            validate_sync: Box::new(|_| ValidationResult::default()),
             validate_links: Box::new(|_| Ok(LinkValidationResult::default())),
             stdout: Box::new(out.clone()),
             stderr: Box::new(SharedBuf::default()),

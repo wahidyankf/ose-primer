@@ -7,7 +7,7 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g dart -o $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts --additional-properties=pubName=crud_contracts --global-property=models,modelDocs=false,apiDocs=false && (WS_ROOT=$(pwd) && cd $(pwd) && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- contracts dart-scaffold $WS_ROOT/apps/crud-fe-dart-flutterweb/generated-contracts) && cd $(pwd)/apps/crud-fe-dart-flutterweb && flutter pub get --enforce-lockfile"
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g dart -o $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts --additional-properties=pubName=crud_contracts --global-property=models,modelDocs=false,apiDocs=false && (WS_ROOT=$(pwd) && cd $(pwd) && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs scaffold dart --dir $WS_ROOT/apps/crud-fe-dart-flutterweb/generated-contracts) && cd $(pwd)/apps/crud-fe-dart-flutterweb && flutter pub get"
       },
       "dependsOn": ["crud-contracts:bundle"],
       "cache": true,
@@ -84,7 +84,7 @@
       }
     },
     "spec-coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps specs/apps/crud/behavior/crud-web/gherkin apps/crud-fe-dart-flutterweb",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps specs/apps/crud/behavior/crud-web/gherkin apps/crud-fe-dart-flutterweb",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature", "{projectRoot}/**/*.dart"]
     }

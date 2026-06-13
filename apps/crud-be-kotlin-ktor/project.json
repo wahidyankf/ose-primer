@@ -95,7 +95,7 @@
       "cache": true
     },
     "spec-coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-kotlin-ktor",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir test-support specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-kotlin-ktor",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.kt"]
     }

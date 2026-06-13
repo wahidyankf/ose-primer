@@ -1,8 +1,12 @@
 {
   "name": "ose-default",
-  "description": "Default agent for this repository. Loads the canonical AGENTS.md instructions and all .amazonq/rules files.",
+  "description": "Loads the repository's canonical AGENTS.md instructions and project rules.",
+  "prompt": "Follow the canonical repository instructions in AGENTS.md and the rules in .amazonq/rules/.",
   "resources": [
     "file://AGENTS.md",
     "file://.amazonq/rules/**/*.md"
+  ],
+  "tools": [
+    "*"
   ]
 }

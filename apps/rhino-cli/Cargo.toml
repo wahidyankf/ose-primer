@@ -80,7 +80,7 @@ harness = false
 
 [[test]]
 name = "env_validate"
-harness = false
+harness = true
 
 [[test]]
 name = "doctor"

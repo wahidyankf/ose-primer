@@ -92,7 +92,7 @@
       "cache": false
     },
     "spec-coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/crud apps/crud-fs-ts-nextjs",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir test-support specs/apps/crud apps/crud-fs-ts-nextjs",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     }

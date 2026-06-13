@@ -14,3 +14,9 @@ pub mod reporter;
 pub mod scanner;
 pub mod types;
 pub mod validator;
+
+// Re-export application-layer modules expected by the ose-public command surface.
+/// YAML frontmatter validation (from application layer).
+pub use crate::application::docs::frontmatter;
+/// Markdown filename convention validation (from application layer).
+pub use crate::application::docs::naming;

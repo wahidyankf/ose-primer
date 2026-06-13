@@ -32,5 +32,7 @@ fi
 cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- git pre-commit
 
 # Affected apps: format + lint + typecheck + test:unit (mocked; per Test Lifecycle Architecture)
+# Unset git worktree env vars so subprocesses (e.g. flutter tool build) use their own git context.
+unset GIT_DIR GIT_WORK_TREE
 PARALLEL=$(( $(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4) - 1 ))
 npx nx affected -t test:quick --parallel="$PARALLEL"

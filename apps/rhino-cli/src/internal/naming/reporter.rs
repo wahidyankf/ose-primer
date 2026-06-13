@@ -4,6 +4,9 @@
 //! JSON is HTML-escaped to match Go's `json.MarshalIndent` default; markdown wraps the path
 //! column in backticks (the primer's Go reference uses `` `%s` `` for the path cell).
 
+// Re-export the canonical names that ose-public command files expect.
+pub use crate::application::naming::reporter::{format_json, format_markdown, format_text};
+
 use std::fmt::Write as _;
 
 use anyhow::Error;

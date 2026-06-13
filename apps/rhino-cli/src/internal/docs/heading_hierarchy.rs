@@ -10,6 +10,12 @@
 //! [`super::headings::collect_atx_headings`] so headings inside code fences
 //! are ignored.
 
+// Re-export the ose-public API names from the application layer.
+pub use crate::application::docs::heading_hierarchy::{
+    DocsHeadingFinding, validate_docs_heading_hierarchy,
+    validate_docs_heading_hierarchy_allowlisted,
+};
+
 use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 

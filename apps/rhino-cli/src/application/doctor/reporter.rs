@@ -71,7 +71,7 @@ fn format_go_duration_ms_rounded(d: std::time::Duration) -> String {
     let rounded = std::time::Duration::from_nanos(
         u64::try_from(ms_rounded * 1_000_000).expect("rounded nanos fit in u64"),
     );
-    crate::application::agents::reporter::format_go_duration(rounded)
+    crate::internal::agents::reporter::format_go_duration(rounded)
 }
 
 /// Formats `result` as human-readable text.

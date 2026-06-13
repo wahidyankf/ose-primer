@@ -100,7 +100,7 @@
       }
     },
     "spec-coverage": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- spec-coverage validate specs/apps/rhino/behavior/rhino-cli/gherkin apps/rhino-cli --shared-steps",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage specs/apps/rhino/behavior/rhino-cli/gherkin apps/rhino-cli --shared-steps",
       "cache": true,
       "inputs": [
         "{workspaceRoot}/specs/apps/rhino/behavior/rhino-cli/gherkin/**/*.feature",
@@ -110,7 +110,7 @@
       "comment": "Validates that every gherkin step under specs/apps/rhino/behavior/rhino-cli/gherkin has a matching cucumber-rs step definition in apps/rhino-cli/tests (--shared-steps does step-only validation across the whole tree). The step extractor recognises the literal `#[given(\"...\")]`, `expr = \"...\"`, and raw-string `regex = r\"...\"` / `regex = r#\"...\"#` attribute forms used by the test suite, so the gate fails if any step lacks a definition."
     },
     "validate:naming-agents": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- agents validate-naming",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- harness validate naming",
       "cache": true,
       "inputs": [
         "{projectRoot}/src/**/*.rs",
@@ -120,25 +120,25 @@
       "outputs": []
     },
     "validate:naming-workflows": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- workflows validate-naming",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- workflows validate naming",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/repo-governance/workflows/**/*.md"],
       "outputs": []
     },
     "validate:repo-governance-vendor-audit": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- repo-governance vendor-audit repo-governance/",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- repo-governance validate vendor repo-governance/",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/repo-governance/**/*.md"],
       "outputs": []
     },
     "validate:gherkin-keyword-cardinality": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- repo-governance gherkin-keyword-cardinality",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- specs validate gherkin-cardinality",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.feature"],
       "outputs": []
     },
     "validate:harness-bindings": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- agents validate-bindings",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- harness validate bindings",
       "cache": false,
       "outputs": []
     },
@@ -163,19 +163,19 @@
       "outputs": []
     },
     "validate:mermaid": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- docs validate-mermaid --max-depth=4 --exclude plans/done",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- md validate mermaid --max-depth=4 --exclude plans/done",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
       "outputs": []
     },
     "validate:links": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- docs validate-links --exclude plans/done --exclude apps/crud-be-elixir-phoenix/deps --exclude apps/crud-be-kotlin-ktor/build --exclude libs/elixir-cabbage/deps --exclude libs/elixir-gherkin/deps --exclude libs/elixir-openapi-codegen/deps",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- md validate links --exclude plans/done --exclude apps/crud-be-elixir-phoenix/deps --exclude apps/crud-be-kotlin-ktor/build --exclude libs/elixir-cabbage/deps --exclude libs/elixir-gherkin/deps --exclude libs/elixir-openapi-codegen/deps",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
       "outputs": []
     },
     "validate:heading-hierarchy": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- docs validate-heading-hierarchy",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- md validate heading-hierarchy",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
       "outputs": []
