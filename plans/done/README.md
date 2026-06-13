@@ -14,6 +14,20 @@ Example: `2026-04-27__adopt-mermaid-checker-from-ose-public/` where `2026-04-27`
 
 ## Completed Projects
 
+- [2026-06-14: Standardize Repo Toolchain Parity](./2026-06-14__standardize-repo-toolchain-parity/README.md)
+  — ose-primer side of the three-repo `standardize-repo-toolchain-parity` set (siblings: ose-public,
+  ose-infra). Converged the full repo toolchain to the shared Converged Toolchain Target: canonical CI
+  workflow naming (BLOCK 1-A), concurrency on every workflow, `specs-gate` job, push-to-main gate,
+  daily development CRON workflows, tool-named lint jobs (shellcheck/hadolint/actionlint); BLOCK 1-B
+  hook lifecycle (commit-msg→pre-commit staged-lint+test:quick→pre-push specs:coverage+markdown:lint
+  +env:validation+conditionals); rhino-cli hexagonal architecture PORT (domain/application/infrastructure/
+  commands layers); union command surface with uniform verb-first grammar (md/harness/convention/specs/lang
+  groups; docs reserved); Mermaid state-diagram validation PORT (stateDiagram-v2 + v1 parser, width +
+  label rules, 7-fixture golden corpus, D-CLEAN repo-wide); `{domain}:{work}` Nx target naming + specs:coverage
+  rename; governance docs created/updated (cross-language-lint-strictness.md, nx-target-naming.md,
+  git-hook-lifecycle.md, ci-conventions, hexagonal-arch, diagrams, AGENTS.md). Folds in former
+  `mermaid-state-diagram-validation` (workstream G) and `migrate-rhino-cli-to-hexagonal` (workstream C).
+  (Completed: 2026-06-14)
 - [2026-06-12: Lint and Safety Parity](./2026-06-12__lint-safety-parity/README.md) — ose-primer side
   of the 3-repo lint-and-safety parity effort. Strengthened static-analysis gates across six
   dimensions and wired each into Nx, the CI quality gate, and the pre-push hook at a
