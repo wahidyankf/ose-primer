@@ -1,0 +1,45 @@
+name: Test And Deploy - Frontend - Development
+
+# Runs E2E tests for all crud-fe-* frontends daily.
+# Production deploy is manual — no automated prod workflow.
+# test:e2e is a heavy test intentionally excluded from the pre-merge quality
+# gate (pr-quality-gate.yml) and Husky hooks.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 1 * * *" # 08:00 WIB daily
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  ts-nextjs:
+    name: E2E - crud-fe-ts-nextjs
+    uses: ./.github/workflows/_reusable-frontend-e2e.yml
+    with:
+      frontend-name: crud-fe-ts-nextjs
+      compose-dir: infra/dev/crud-fe-ts-nextjs
+      extra-codegen-targets: "crud-fe-ts-tanstack-start:codegen"
+
+  ts-tanstack-start:
+    name: E2E - crud-fe-ts-tanstack-start
+    uses: ./.github/workflows/_reusable-frontend-e2e.yml
+    with:
+      frontend-name: crud-fe-ts-tanstack-start
+      compose-dir: infra/dev/crud-fe-ts-tanstack-start
+      extra-codegen-targets: "crud-fe-ts-nextjs:codegen"
+
+  dart-flutterweb:
+    name: E2E - crud-fe-dart-flutterweb
+    uses: ./.github/workflows/_reusable-frontend-e2e.yml
+    with:
+      frontend-name: crud-fe-dart-flutterweb
+      compose-dir: infra/dev/crud-fe-dart-flutterweb
+      extra-language: flutter
+      extra-codegen-targets: "crud-fe-ts-nextjs:codegen crud-fe-ts-tanstack-start:codegen"
+      health-timeout: 600

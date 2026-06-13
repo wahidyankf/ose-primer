@@ -1,0 +1,33 @@
+name: Test And Deploy - Fullstack - Development
+
+# Runs integration + E2E tests for all crud-fs-* fullstack apps daily.
+# Production deploy is manual — no automated prod workflow.
+# test:integration and test:e2e are heavy tests intentionally excluded from
+# the pre-merge quality gate (pr-quality-gate.yml) and Husky hooks.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 1 * * *" # 08:00 WIB daily
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  ts-nextjs:
+    name: Integration + E2E - crud-fs-ts-nextjs
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-fs-ts-nextjs
+      language: typescript
+      compose-dir: infra/dev/crud-fs-ts-nextjs
+      compose-file: infra/dev/crud-fs-ts-nextjs/docker-compose.yml
+      frontend-port: 3401
+      backend-port: 3401
+      be-e2e-target: "test:e2e:no-test-api"
+      be-e2e-extra-env: "DATABASE_URL=postgresql://crud_fs_ts_nextjs:crud_fs_ts_nextjs@localhost:5438/crud_fs_ts_nextjs"
+      skip-fe-e2e: true

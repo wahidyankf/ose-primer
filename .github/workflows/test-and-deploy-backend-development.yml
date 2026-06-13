@@ -1,0 +1,107 @@
+name: Test And Deploy - Backend - Development
+
+# Runs integration + E2E tests for all crud-be-* backends daily.
+# Production deploy is manual — no automated prod workflow.
+# test:integration and test:e2e are heavy tests intentionally excluded from
+# the pre-merge quality gate (pr-quality-gate.yml) and Husky hooks.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 1 * * *" # 08:00 WIB daily
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  clojure-pedestal:
+    name: Integration + E2E - crud-be-clojure-pedestal
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-clojure-pedestal
+      language: clojure
+      compose-dir: infra/dev/crud-be-clojure-pedestal
+
+  csharp-aspnetcore:
+    name: Integration + E2E - crud-be-csharp-aspnetcore
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-csharp-aspnetcore
+      language: dotnet
+      compose-dir: infra/dev/crud-be-csharp-aspnetcore
+
+  elixir-phoenix:
+    name: Integration + E2E - crud-be-elixir-phoenix
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-elixir-phoenix
+      language: elixir
+      compose-dir: infra/dev/crud-be-elixir-phoenix
+
+  fsharp-giraffe:
+    name: Integration + E2E - crud-be-fsharp-giraffe
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-fsharp-giraffe
+      language: dotnet
+      compose-dir: infra/dev/crud-be-fsharp-giraffe
+
+  golang-gin:
+    name: Integration + E2E - crud-be-golang-gin
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-golang-gin
+      language: golang
+      compose-dir: infra/dev/crud-be-golang-gin
+
+  java-springboot:
+    name: Integration + E2E - crud-be-java-springboot
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-java-springboot
+      language: jvm
+      compose-dir: infra/dev/crud-be-java-springboot
+
+  java-vertx:
+    name: Integration + E2E - crud-be-java-vertx
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-java-vertx
+      language: jvm
+      compose-dir: infra/dev/crud-be-java-vertx
+
+  kotlin-ktor:
+    name: Integration + E2E - crud-be-kotlin-ktor
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-kotlin-ktor
+      language: jvm
+      compose-dir: infra/dev/crud-be-kotlin-ktor
+
+  python-fastapi:
+    name: Integration + E2E - crud-be-python-fastapi
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-python-fastapi
+      language: python
+      compose-dir: infra/dev/crud-be-python-fastapi
+
+  rust-axum:
+    name: Integration + E2E - crud-be-rust-axum
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-rust-axum
+      language: rust
+      compose-dir: infra/dev/crud-be-rust-axum
+
+  ts-effect:
+    name: Integration + E2E - crud-be-ts-effect
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: crud-be-ts-effect
+      language: typescript
+      compose-dir: infra/dev/crud-be-ts-effect
