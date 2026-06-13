@@ -143,6 +143,54 @@ Three-stage quality workflow:
 
 **No Secrets in Committed Files (iron rule)**: NEVER put system secrets — SSH keys, passwords, sensitive usernames, API keys, tokens, connection strings with real credentials, or similar — into ANY file committed to git, including plans (`plans/**`), docs, code, config, and commit messages. Git history is permanent; a pushed secret is a leaked secret. Put real secrets only in uncommitted files: `.env*` (except `.env.example`) or another gitignored location, and reference them by variable name. See [No Secrets in Committed Files convention](./repo-governance/conventions/security/no-secrets-in-committed-files.md) for the full rule, examples, and remediation.
 
+## Cross-Language Lint Gates
+
+Beyond markdown, the repo gates shell scripts, Dockerfiles, and GitHub Actions
+workflows at a uniform **warning-and-above** threshold, enforced in both CI
+(`.github/workflows/pr-quality-gate.yml`) and the local Husky hooks:
+
+- **shellcheck** (`--severity=warning`, root `.shellcheckrc`) — all tracked `.sh` files (CI `shellcheck` job)
+- **hadolint** (`--failure-threshold warning`, root `.hadolint.yaml`) — all Dockerfiles (CI `hadolint` job)
+- **actionlint** — all `.github/workflows/*.yml` (CI `actionlint` job)
+
+All three linters are installed by `npm run doctor -- --fix`. The CI jobs are named
+after the tool they run (Invariant A in the parity checklist).
+
+**See**: [Cross-Language Lint Strictness](./repo-governance/development/quality/cross-language-lint-strictness.md)
+
+## rhino-cli Command Surface
+
+All callers (hooks, CI workflows, `package.json` scripts) use the canonical
+`{domain}:{work}` Nx target form or `rhino {group} {verb}` CLI form. The old
+`validate:*` prefix is abolished.
+
+**Command groups** (Nx targets on `rhino-cli`):
+
+| Group          | Status   | Representative targets                                                                       |
+| -------------- | -------- | -------------------------------------------------------------------------------------------- |
+| `specs`        | Active   | `specs:coverage`, `specs:tree-validation`, `specs:adoption-validation`                       |
+| `links`        | Active   | `links:validation`                                                                           |
+| `mermaid`      | Active   | `mermaid:validation` (flowchart + state diagrams)                                            |
+| `headings`     | Active   | `headings:hierarchy-validation`                                                              |
+| `env`          | Active   | `env:validation`                                                                             |
+| `naming`       | Active   | `naming:harness-validation`, `naming:workflows-validation`                                   |
+| `governance`   | Active   | `governance:vendor-audit-validation`                                                         |
+| `cross-vendor` | Active   | `cross-vendor:parity-validation`                                                             |
+| `harness`      | Active   | `harness:bindings-validation`                                                                |
+| `format`       | Active   | `format:check` (Rust)                                                                        |
+| `msrv`         | Active   | `msrv:check` (Rust)                                                                          |
+| `md`           | Active   | Markdown-specific subcommands (validate-mermaid, validate-links, validate-heading-hierarchy) |
+| `convention`   | Active   | Convention validation subcommands                                                            |
+| `lang`         | Active   | Language-specific helpers (java validate-annotations, dart-scaffold)                         |
+| `docs`         | RESERVED | Reserved namespace — do not add targets under `docs:*`                                       |
+
+**Target naming rule**: governance/validation targets use `{domain}:{work}` where
+`{work}` ends in `-validation` for pure checks or is a bare verb (`check`). Never
+invent `validate:{thing}` prefixes.
+
+**See**: [Nx Target Naming Convention](./repo-governance/development/infra/nx-target-naming.md),
+[CI/CD Conventions](./repo-governance/development/infra/ci-conventions.md)
+
 ## Governance Alignment
 
 All agents follow foundational principles:
