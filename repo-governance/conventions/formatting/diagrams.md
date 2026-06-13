@@ -428,13 +428,50 @@ recommendation for displayed sites.
 Run the validator manually:
 
 ```bash
-npx nx run rhino-cli:validate:mermaid
+npx nx run rhino-cli:mermaid:validation
 ```
 
 Or for a single directory:
 
 ```bash
 cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- docs validate-mermaid docs/explanation/
+```
+
+### State Diagram Validation
+
+`stateDiagram-v2` and `stateDiagram` (v1) diagrams are subject to the same width and
+label rules as flowchart diagrams, enforced by `rhino-cli:mermaid:validation`.
+
+**Node width**: State node count contributes to the diagram width calculation. A
+diagram with more than 4 state nodes at the same rank level triggers `width_exceeded`.
+Diagrams exceeding the width limit must be split or redesigned.
+
+**Label length**: Both state display names and transition edge labels are limited to 30
+characters. Use abbreviations or split composite states when labels exceed this limit.
+
+**`[*]` and stereotype nodes**: The start/end pseudo-state `[*]` and stereotype nodes
+(e.g., `<<fork>>`, `<<join>>`) count toward the width calculation.
+
+**Composite states**: Composite states are treated as subgraphs. States nested inside
+a composite state are counted at their local rank, not the top-level rank.
+
+**Direction**: Use `direction TB` (top-to-bottom, default), `BT`, `LR`, or `RL` inside
+the diagram. The same direction-aware horizontal axis rule as flowcharts applies.
+
+**Colon restriction**: Transition edge labels cannot contain colon characters (`:`)
+because the colon separates the transition target from its label text. Use plain words
+instead of code-literal notation (e.g., use `update count` not `:count`).
+
+**Example (valid)**:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Pending
+    Pending --> Processing : start
+    Processing --> Done : success
+    Processing --> Failed : error
+    Failed --> Pending : retry
+    Done --> [*]
 ```
 
 ### Width Violation Fix Strategy Guide

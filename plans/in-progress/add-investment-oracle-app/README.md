@@ -317,8 +317,8 @@ graph TD
   pgvector; mocked LLM/embedding HTTP)
 - `npx nx run investment-oracle-be-e2e:test:e2e` exits 0
 - `npx nx run investment-oracle-fe-e2e:test:e2e` exits 0
-- `npx nx run investment-oracle-be:spec-coverage` exits 0
-- `npx nx run investment-oracle-fe:spec-coverage` exits 0
+- `npx nx run investment-oracle-be:specs:coverage` exits 0
+- `npx nx run investment-oracle-fe:specs:coverage` exits 0
 - `npx nx run investment-oracle-fe:tauri-build` exits 0 on at least one
   platform (CI runs the macOS-arm64 lane; Windows + Linux are manual)
 - `npm run lint:md` exits 0

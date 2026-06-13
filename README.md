@@ -11,7 +11,7 @@ Use it by forking, cloning, or copying the directories that fit your project —
 ## What it ships
 
 - **Polyglot `crud-*` scaffolding** — 11 backend demos (Go, Java/Spring, Elixir/Phoenix, F#/Giraffe, Python/FastAPI, Rust/Axum, Kotlin/Ktor, Java/Vert.x, TypeScript/Effect, C#/ASP.NET, Clojure/Pedestal), 3 frontends (Next.js, TanStack Start, Flutter Web), one fullstack (Next.js), 2 E2E harnesses, and a shared OpenAPI contract (`crud-contracts`) that drives codegen across all of them.
-- **`rhino-cli`** — Rust CLI for repository hygiene: `doctor`, `test-coverage`, `spec-coverage`, `agents validate-naming`, `workflows validate-naming`, `env backup|restore`, and more. `apps/rhino-cli/` is invoked by CI and all toolchain scripts, and consumes the behavior contract in `specs/apps/rhino/`.
+- **`rhino-cli`** — Rust CLI for repository hygiene: `doctor`, `test-coverage`, `specs:coverage validate`, `convention validate-naming-harness`, `convention validate-naming-workflows`, `env backup|restore`, and more. `apps/rhino-cli/` is invoked by CI and all toolchain scripts, and consumes the behavior contract in `specs/apps/rhino/`.
 - **Shared libs** — `golang-commons` and small TypeScript utilities.
 - **Governance** — six-layer hierarchy (Vision → Principles → Conventions → Development → Agents → Workflows) under `repo-governance/`.
 - **Generic AI agents + skills** — Maker/Checker/Fixer pattern for plans, repo rules, workflows, UI, code, docs, CI; plus language-specific development agents (`swe-*-dev`). No product-specific agents.
@@ -44,8 +44,8 @@ npm run lint:md:fix              # Auto-fix markdown violations
 
 nx dev [app-name]                # Start a dev server
 nx build [app-name]              # Build one project
-nx affected -t typecheck lint test:quick spec-coverage  # Pre-push gate
-nx run-many -t typecheck lint test:quick spec-coverage  # Full workspace gate
+nx affected -t typecheck lint test:quick specs:coverage  # Pre-push gate
+nx run-many -t typecheck lint test:quick specs:coverage  # Full workspace gate
 nx graph                         # Visualise dependencies
 
 npm run generate:bindings  # Regenerate .opencode/ from .claude/

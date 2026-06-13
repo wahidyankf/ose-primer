@@ -213,7 +213,7 @@ gates on staged files:
 **Actions**:
 
 - Automatically formats staged markdown files (Prettier via lint-staged, step 5)
-- Validates Mermaid diagram structure in staged files (step 6m, blocks commit on exit 1)
+- Validates Mermaid diagram structure in staged files via `mermaid:validation` (step 6m, blocks commit on exit 1; covers both `flowchart`/`graph` and `stateDiagram-v2`/`stateDiagram` blocks)
 - Validates heading hierarchy in staged prose files (step 6h, blocks commit on exit 1)
 - Validates markdown links and anchors in staged files (step 7, blocks commit on exit 1)
 

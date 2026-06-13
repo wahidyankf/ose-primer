@@ -734,11 +734,11 @@ where possible:
 | `test:quick`       |    yes    | pre-push, PR (unit + coverage)        |
 | `test:integration` |    no     | PR (real DB)                          |
 | `test:e2e`         |    no     | PR (real BE HTTP)                     |
-| `spec-coverage`    |    yes    | pre-push, PR (Gherkin → step binding) |
+| `specs:coverage`   |    yes    | pre-push, PR (Gherkin → step binding) |
 | `tauri-build`      |    yes    | PR (macOS arm64 only)                 |
 | Real-vendor smoke  |    n/a    | workflow-dispatch + weekly cron       |
 
-`spec-coverage` is the often-forgotten target: it asserts every
+`specs:coverage` is the often-forgotten target: it asserts every
 Gherkin scenario in `specs/.../*.feature` has a binding step
 implementation in `tests/`. Catches drift when a feature file is
 edited but the test impls are not, or vice versa.

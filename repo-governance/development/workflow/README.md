@@ -38,6 +38,7 @@ These standards define **HOW to execute development workflows**, covering the th
 - [CI Monitoring](./ci-monitoring.md) - Monitor GitHub Actions after every push (post-push-verification companion)
 - [CI Post-Push Verification](./ci-post-push-verification.md) - Verify CI status after every push, fix preexisting failures per Iron Rule 3
 - [Test-Driven Development](./test-driven-development.md) - Red→Green→Refactor mandate; author the failing test before the implementation; required for code-touching delivery checklist items
+- [Git Hook Lifecycle](./git-hook-lifecycle.md) - Canonical reference for the three Husky hooks (commit-msg, pre-commit, pre-push), their step order, failure modes, and relationship to CI
 
 ## Companion Documents
 

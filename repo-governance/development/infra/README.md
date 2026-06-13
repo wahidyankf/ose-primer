@@ -29,6 +29,7 @@ These standards define **HOW to manage development infrastructure**, including w
 - [CI/CD Conventions](./ci-conventions.md) - Central reference for CI/CD conventions: git hooks, test level definitions, coverage thresholds, Docker patterns, GitHub Actions structure, and naming rules
 - [Docker Monorepo Build Patterns](./docker-monorepo-builds.md) - Patterns and pitfalls for building Docker images in an npm workspace monorepo (symlink resolution, direct node_modules injection, transitive dependency hoisting)
 - [GitHub Actions Workflow Naming Convention](./github-actions-workflow-naming.md) - Workflow filenames must mirror their `name:` field using a consistent kebab-case derivation rule
+- [Nx Target Naming Convention](./nx-target-naming.md) - Derivation rules for Nx target names: the `{domain}:{work}` scheme for governance/validation targets and the lifecycle scheme for build/test targets
 - [Nx Target Standards](./nx-targets.md) - Standard Nx targets that apps and libs must expose, canonical target names, caching rules, build output conventions, and the four-dimension tag scheme for `project.json`
 - [Quality Gate Workflow Defaults Convention](./quality-gate-defaults.md) - Canonical default values (`mode: strict`, `max-iterations: 7`) that all quality gate workflows must use for consistency and auditability
 - [Temporary Files Convention](./temporary-files.md) - Guidelines for AI agents creating temporary uncommitted files and folders

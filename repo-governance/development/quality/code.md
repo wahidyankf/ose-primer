@@ -232,7 +232,7 @@ $ git commit -m "added new feature"
 4. `typecheck` runs for each affected project that declares it
 5. `lint` runs for each affected project
 6. `test:quick` runs for each affected project
-7. `spec-coverage` runs for each affected project that declares it
+7. `specs:coverage` runs for each affected project that declares it
 8. Push proceeds if all four gates pass
 
 **What It Validates**:
@@ -245,9 +245,9 @@ $ git commit -m "added new feature"
 - **Fast quality gate** (`test:quick`): Unit tests, build smoke tests, or other fast checks
   defined per project. Also enforced remotely as a required GitHub Actions status check before PR
   merge.
-- **Spec coverage** (`spec-coverage`): Validates that every Gherkin step in feature files has a
+- **Spec coverage** (`specs:coverage`): Validates that every Gherkin step in feature files has a
   matching step definition in source code. Compulsory for all apps and E2E runners. Uses
-  `rhino-cli spec-coverage validate`.
+  `rhino-cli specs:coverage validate`.
 
 **What Happens on Failure**:
 
@@ -278,9 +278,9 @@ $ git push origin main
    crud-fe-ts-nextjs
  All checks passed
 
-> nx affected -t spec-coverage
+> nx affected -t specs:coverage
 
- Running target spec-coverage for affected projects...
+ Running target specs:coverage for affected projects...
    crud-fe-ts-nextjs
  All checks passed
 
@@ -353,13 +353,13 @@ Bypassing hooks regularly defeats the purpose of automated quality checks.
 
 ```bash
 # Run all four targets first (this warms the cache)
-npx nx affected -t typecheck lint test:quick spec-coverage
+npx nx affected -t typecheck lint test:quick specs:coverage
 
 # Now push — the hook replays from cache (near-instant)
 git push
 ```
 
-**Why this works**: `typecheck`, `lint`, `test:quick`, and `spec-coverage` are all cacheable Nx targets (`cache: true` in `nx.json`). Running them manually stores results in the local Nx cache. When the pre-push hook runs the same targets, Nx replays from cache instead of re-executing — making the hook near-instant regardless of how many projects are affected.
+**Why this works**: `typecheck`, `lint`, `test:quick`, and `specs:coverage` are all cacheable Nx targets (`cache: true` in `nx.json`). Running them manually stores results in the local Nx cache. When the pre-push hook runs the same targets, Nx replays from cache instead of re-executing — making the hook near-instant regardless of how many projects are affected.
 
 ### Tests Fail on Pre-push
 

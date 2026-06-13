@@ -15,46 +15,41 @@ tags:
 
 Defines the standard Nx targets that apps and libs expose, what each target must do, and naming conventions that keep all projects consistent across the workspace.
 
-## ⚙️ Execution Model
+## Execution Model
 
 ### Quality Gates (pre-push enforcement)
 
-`typecheck`, `lint`, `test:quick`, and `spec-coverage` run at two mandatory checkpoints — locally
+`typecheck`, `lint`, `test:quick`, and `specs:coverage` run at two mandatory checkpoints — locally
 before push and remotely before merge.
-
-**Pre-push hook:**
 
 ```mermaid
 flowchart TD
     A[Developer pushes code] --> B[Pre-push hook]
-    B --> C["typecheck + lint"]
-    B --> E["test:quick<br/>+ spec-coverage"]
-    C --> F{All pass?}
-    E --> F
+    B --> C["typecheck<br/>nx affected -t typecheck"]
+    B --> D["lint<br/>nx affected -t lint"]
+    C --> E["test:quick<br/>nx affected -t test:quick"]
+    D --> E
+    E --> SC["specs:coverage<br/>nx affected -t specs:coverage"]
+    SC --> F{All pass?}
     F -- No --> G[Push blocked]
     F -- Yes --> H[Push succeeds]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#029E73,color:#fff
-```
-
-**PR CI gate:**
-
-```mermaid
-flowchart TD
-    P[PR opened / updated] --> Q["GitHub Actions CI<br/>lint + test:quick"]
+    P[PR opened / updated] --> Q["GitHub Actions CI<br/>nx affected -t lint test:quick"]
     Q --> R{Pass?}
     R -- No --> S[PR merge blocked]
     R -- Yes --> T[PR merge allowed]
 
+    style A fill:#0173B2,color:#fff
+    style B fill:#DE8F05,color:#fff
+    style C fill:#029E73,color:#fff
+    style D fill:#029E73,color:#fff
+    style E fill:#029E73,color:#fff
+    style SC fill:#029E73,color:#fff
+    style F fill:#DE8F05,color:#fff
+    style G fill:#CC78BC,color:#fff
+    style H fill:#029E73,color:#fff
     style P fill:#0173B2,color:#fff
     style Q fill:#DE8F05,color:#fff
-    style R fill:#DE8F05,color:#fff
     style S fill:#CC78BC,color:#fff
     style T fill:#029E73,color:#fff
 ```
@@ -63,26 +58,18 @@ flowchart TD
 
 Deeper tests run outside the pre-push/PR cycle — on a schedule or triggered explicitly.
 
-Scheduled CRON workflows run 5 parallel tracks: lint, typecheck, test:quick (with coverage), spec-coverage, and integration→e2e (sequential chain).
-
-**Scheduled (CRON):**
+Scheduled CRON workflows run 5 parallel tracks: lint, typecheck, test:quick (with coverage), specs:coverage, and integration→e2e (sequential chain).
 
 ```mermaid
 flowchart TD
-    H2["GitHub Actions<br/>cron 2× per day"] --> I2["test:integration<br/>+ test:e2e"]
+    H2["GitHub Actions<br/>cron weekly"] --> I2["test:integration<br/>+ test:e2e"]
+
+    J[On demand / CI matrix] --> K[test:unit]
+    J --> L[test:integration]
+    L --> M[test:e2e]
 
     style H2 fill:#0173B2,color:#fff
     style I2 fill:#CA9161,color:#fff
-```
-
-**On demand / CI matrix:**
-
-```mermaid
-flowchart TD
-    J[On demand / CI] --> K[test:unit]
-    J --> L[test:integration]
-    J --> M[test:e2e]
-
     style J fill:#0173B2,color:#fff
     style K fill:#CA9161,color:#fff
     style L fill:#CA9161,color:#fff
@@ -105,7 +92,7 @@ flowchart TD
 
 - **[Three-Level Testing Standard](../quality/three-level-testing-standard.md)**: The `test:unit`, `test:integration`, and `test:e2e` targets defined here map to the mandatory three-level testing architecture. Each target's isolation boundaries, caching rules, and CI schedule derive from that standard.
 
-## 📋 Target Naming Standards
+## Target Naming Standards
 
 Use these canonical names. Aliases (`serve`, `start:dev`, `unit-test`) are anti-patterns.
 
@@ -114,11 +101,8 @@ Use these canonical names. Aliases (`serve`, `start:dev`, `unit-test`) are anti-
 | `build`            | Produce deployable or runnable artifacts                                                                                 | Compiled and bundled projects     |
 | `typecheck`        | Verify type correctness without producing artifacts                                                                      | Statically typed languages        |
 | `lint`             | Static analysis, code style checks, and static a11y checks (oxlint jsx-a11y for TS UI projects, `dart analyze` for Dart) | All projects                      |
-| `lint:dockerfiles` | Workspace-wide Dockerfile lint via `hadolint` at warning threshold (hosted on `rhino-cli`)                               | Hosted once on `rhino-cli`        |
-| `lint:shell`       | Workspace-wide shell-script lint via `shellcheck --severity=warning` (hosted on `rhino-cli`)                             | Hosted once on `rhino-cli`        |
-| `lint:actions`     | Workspace-wide GitHub Actions lint via `actionlint` (hosted on `rhino-cli`)                                              | Hosted once on `rhino-cli`        |
 | `test:quick`       | Fast quality gate for pre-push and PR merge; composed of fast checks                                                     | All projects                      |
-| `spec-coverage`    | Validate that every Gherkin step has a matching step definition; uses `rhino-cli spec-coverage validate`                 | All apps and E2E runners          |
+| `specs:coverage`   | Validate that every Gherkin step has a matching step definition; uses `rhino-cli specs:coverage validate`                | All apps and E2E runners          |
 | `test:unit`        | Isolated unit tests with mocked dependencies; must consume Gherkin specs (crud-be backends and Go CLI apps)              | Projects with unit tests          |
 | `test:integration` | Crud-be: real PostgreSQL via docker-compose, direct code calls (no HTTP). Others: existing patterns (MSW, Godog)         | Projects with integration tests   |
 | `test:e2e`         | Run E2E tests headlessly against a running app; must consume Gherkin specs (crud-be backends) via Playwright             | E2E test projects (`*-e2e`)       |
@@ -136,36 +120,52 @@ Use these canonical names. Aliases (`serve`, `start:dev`, `unit-test`) are anti-
 
 - Use `dev` for the development server — never `serve`, never `start:dev`
 - Use `start` for the production server — never `serve`
-- Use `test:quick` for the fast pre-push gate; `test:unit` for isolated unit tests with mocked dependencies (`rhino-cli` consumes Gherkin specs at this level); `test:integration` for tests with real infrastructure (crud-be: PostgreSQL via docker-compose) or in-process mocking (MSW, Godog); `test:e2e` for end-to-end tests; `spec-coverage` for Gherkin step definition coverage validation — run targets individually rather than through an aggregate wrapper
+- Use `test:quick` for the fast pre-push gate; `test:unit` for isolated unit tests with mocked dependencies (`rhino-cli` consumes Gherkin specs at this level); `test:integration` for tests with real infrastructure (crud-be: PostgreSQL via docker-compose) or in-process mocking (MSW, Godog); `test:e2e` for end-to-end tests; `specs:coverage` for Gherkin step definition coverage validation — run targets individually rather than through an aggregate wrapper
 - Separate target variants with a colon (`build:web`, `test:e2e:ui`), not a hyphen or underscore
 - All target names use lowercase with hyphens for multi-word names (`run-pre-commit`)
 
-## Cross-Cutting Infra-Lint Gates (`lint:dockerfiles` / `lint:shell` / `lint:actions`)
+### `{domain}:{work}` Naming for Governance and Validation Targets
 
-Three workspace-wide static-analysis gates are hosted once on `rhino-cli` (modeled
-on its `validate:*` run-commands targets) rather than per project, because they lint
-cross-cutting infrastructure files that do not belong to a single app:
+Governance, validation, lint, and format targets use the `{domain}:{work}` scheme rather than the
+`validate:*` prefix. The domain names the scope or subject of the check; the work names the
+operation. This distinguishes governance targets from language-level lifecycle targets
+(`test:quick`, `build`, etc.) and makes the Nx target list self-describing.
 
-| Target             | Tool         | Scope                                             | Config           |
-| ------------------ | ------------ | ------------------------------------------------- | ---------------- |
-| `lint:dockerfiles` | `hadolint`   | All `Dockerfile*` (vendored dirs excluded)        | `.hadolint.yaml` |
-| `lint:shell`       | `shellcheck` | All `*.sh` plus the extensionless `.husky/` hooks | `.shellcheckrc`  |
-| `lint:actions`     | `actionlint` | `.github/workflows/`                              | none required    |
+**Canonical governance and validation targets** (defined on `rhino-cli`):
 
-**Gating policy — "error threshold = fail on warning-and-above"**: these gates fail
-the build on warning-level findings and above, matching how Prettier and markdownlint
-are already gated. Operationally that means `hadolint --failure-threshold warning` and
-`shellcheck --severity=warning`; `actionlint` fails on any finding. Tool-specific
-justified exemptions live in the config files (e.g. `.hadolint.yaml` ignores
-version-pinning rules for demo/dev images). All three are wired into three enforcement
-surfaces: the Nx target graph, the CI quality gate (`pr-quality-gate.yml`, on PRs), and
-the local `.husky/pre-push` hook (scoped to pushes that touch the relevant trees).
+| Target                                 | What it validates                                                  |
+| -------------------------------------- | ------------------------------------------------------------------ |
+| `specs:coverage`                       | Every Gherkin step has a matching step definition                  |
+| `specs:tree-validation`                | `specs/apps/` directory structure matches app registrations        |
+| `specs:links-validation`               | Internal links in spec `.md` files are valid                       |
+| `specs:counts-validation`              | Spec scenario/step counts match expected thresholds                |
+| `specs:adoption-validation`            | All apps have a spec directory (no orphan app)                     |
+| `specs:gherkin-cardinality-validation` | Each Gherkin keyword used within cardinality bounds                |
+| `links:validation`                     | Internal links in all non-excluded `.md` files                     |
+| `mermaid:validation`                   | Mermaid diagram width, label, and syntax rules (flowchart + state) |
+| `headings:hierarchy-validation`        | Heading nesting in prose allowlist paths                           |
+| `env:validation`                       | `.env.example` surfaces match `env-contract.yaml`                  |
+| `naming:harness-validation`            | Agent definition file names match the naming convention            |
+| `naming:workflows-validation`          | Workflow file names match the naming convention                    |
+| `governance:vendor-audit-validation`   | `repo-governance/` docs contain no vendor-specific content         |
+| `cross-vendor:parity-validation`       | Cross-vendor behavioral parity (Phase 0 deterministic invariants)  |
+| `harness:bindings-validation`          | `.claude/` ↔ `.opencode/` ↔ `.amazonq/` binding parity             |
+| `format:check`                         | `rustfmt --check` (Rust projects only)                             |
+| `msrv:check`                           | Minimum Supported Rust Version compatibility                       |
+
+**Rule**: governance/validation target keys are `{domain}:{work}` where both parts are lowercase
+kebab-case. The domain must be a recognizable noun (the scope); the work must be a verb phrase
+ending in `-validation` (for pure checks) or a bare verb (`check`). Do not invent `validate:*`
+prefixes — use the canonical list above or follow the `{domain}:{work}` pattern.
+
+See [nx-target-naming.md](./nx-target-naming.md) for the full derivation rule and examples.
 
 ## Quality Gates by Language (Strictness Standard)
 
 The repository enforces a shared cross-language code-strictness bar. Each language's
-`lint`/`typecheck` target runs at the strictest practical setting, and the three
-cross-cutting infra-lint gates above complete the matrix:
+`lint`/`typecheck` target runs at the strictest practical setting. The three cross-cutting
+infra-lint gates (shell, Dockerfile, GitHub Actions) are documented in
+[Cross-Language Lint Strictness](../quality/cross-language-lint-strictness.md).
 
 | Dimension      | Enforced standard                                                                                           |
 | -------------- | ----------------------------------------------------------------------------------------------------------- |
@@ -259,22 +259,22 @@ A Go lib has no platform boundary and no domain, so it omits both:
 - **Adding a `stack:` dimension**: The four-dimension scheme captures type, platform, language, and domain. A separate `stack:` field duplicates `platform:` and `lang:` without adding information. Use the defined dimensions instead.
 - **Tagging apps with `domain:tooling` when they belong to a product**: `domain:tooling` is for general-purpose dev utilities with no product affiliation. An app that serves a specific product must carry that product's domain tag.
 
-## ✅ Mandatory Targets by Project Type
+## Mandatory Targets by Project Type
 
 ### Summary Matrix
 
-Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → integration tests, (3) All web apps (APIs + web UIs) → E2E tests. legacy sites are exempt from all rules. `spec-coverage` is compulsory for all apps and E2E runners.
+Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → integration tests, (3) All web apps (APIs + web UIs) → E2E tests. legacy sites are exempt from all rules. `specs:coverage` is compulsory for all apps and E2E runners.
 
-| Project Type                  | `test:unit` | `test:integration` | `test:e2e` | `test:quick` | `spec-coverage` | `lint` | `build` | `typecheck`  |
-| ----------------------------- | ----------- | ------------------ | ---------- | ------------ | --------------- | ------ | ------- | ------------ |
-| API Backend                   | Yes         | Yes (PG)           | Yes\*      | Yes          | Yes             | Yes    | Yes     | Yes (all 11) |
-| Web UI App                    | Yes         | Yes (MSW)          | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
-| Crud-fe FE                    | Yes         | —                  | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
-| Fullstack                     | Yes         | Yes                | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
-| CLI App                       | Yes         | Yes (Godog)        | —          | Yes          | Yes             | Yes    | Yes     | If typed     |
-| Library                       | Yes         | Optional           | —          | Yes          | Yes             | Yes    | —       | If typed     |
-| static-site Site (historical) | —           | —                  | —          | Yes          | —               | —      | Yes     | —            |
-| E2E Runner                    | —           | —                  | Yes        | Yes          | Yes             | Yes    | —       | If typed     |
+| Project Type                  | `test:unit` | `test:integration` | `test:e2e` | `test:quick` | `specs:coverage` | `lint` | `build` | `typecheck`  |
+| ----------------------------- | ----------- | ------------------ | ---------- | ------------ | ---------------- | ------ | ------- | ------------ |
+| API Backend                   | Yes         | Yes (PG)           | Yes\*      | Yes          | Yes              | Yes    | Yes     | Yes (all 11) |
+| Web UI App                    | Yes         | Yes (MSW)          | Yes\*      | Yes          | Yes              | Yes    | Yes     | If typed     |
+| Crud-fe FE                    | Yes         | —                  | Yes\*      | Yes          | Yes              | Yes    | Yes     | If typed     |
+| Fullstack                     | Yes         | Yes                | Yes\*      | Yes          | Yes              | Yes    | Yes     | If typed     |
+| CLI App                       | Yes         | Yes (Godog)        | —          | Yes          | Yes              | Yes    | Yes     | If typed     |
+| Library                       | Yes         | Optional           | —          | Yes          | Yes              | Yes    | —       | If typed     |
+| static-site Site (historical) | —           | —                  | —          | Yes          | —                | —      | Yes     | —            |
+| E2E Runner                    | —           | —                  | Yes        | Yes          | Yes              | Yes    | —       | If typed     |
 
 **Crud-be backend `typecheck` commands** (all 11 backends have `typecheck` with `dependsOn: ["codegen"]`):
 
@@ -300,12 +300,12 @@ Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → int
 
 Every project in `apps/` and `libs/` must expose:
 
-| Target          | Requirement                                                                                                                                                                                           |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `test:quick`    | Complete in a few minutes (not tens of minutes); enforced by the pre-push hook and as a required GitHub Actions status check before PR merge                                                          |
-| `spec-coverage` | Compulsory for all apps and E2E runners; validates every Gherkin step has a matching step definition via `rhino-cli spec-coverage validate`; enforced by the pre-push hook and scheduled CI workflows |
-| `lint`          | Exit non-zero on violations; enforced by the pre-push hook, the PR quality gate, and scheduled Test CI workflows. UI projects must include static a11y checks (see "Accessibility Testing" below)     |
-| `typecheck`     | Required for statically typed projects and all crud-be backends; enforced by the pre-push hook; skipped by Nx for projects that do not declare this target                                            |
+| Target           | Requirement                                                                                                                                                                                            |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `test:quick`     | Complete in a few minutes (not tens of minutes); enforced by the pre-push hook and as a required GitHub Actions status check before PR merge                                                           |
+| `specs:coverage` | Compulsory for all apps and E2E runners; validates every Gherkin step has a matching step definition via `rhino-cli specs:coverage validate`; enforced by the pre-push hook and scheduled CI workflows |
+| `lint`           | Exit non-zero on violations; enforced by the pre-push hook, the PR quality gate, and scheduled Test CI workflows. UI projects must include static a11y checks (see "Accessibility Testing" below)      |
+| `typecheck`      | Required for statically typed projects and all crud-be backends; enforced by the pre-push hook; skipped by Nx for projects that do not declare this target                                             |
 
 **`test:quick` composition** — each project decides which fast checks form its gate. The target runs its checks directly (calling the underlying tools, not other Nx targets) to avoid double execution when `lint` or `typecheck` are also run standalone by the pre-push hook. Common compositions:
 
@@ -449,11 +449,11 @@ by calling application service/repository functions directly — no HTTP layer. 
 mounted read-only at `../../specs:/specs:ro`. After tests complete, `docker-compose` tears down all
 containers and volumes.
 
-### Spec-Coverage Projects
+### Specs-Coverage Projects
 
-`spec-coverage` is compulsory for ALL apps and E2E runners. It validates that every Gherkin step in
+`specs:coverage` is compulsory for ALL apps and E2E runners. It validates that every Gherkin step in
 the project's feature files has a matching step definition in the implementation. It runs
-`rhino-cli spec-coverage validate` and is enforced by the pre-push hook alongside `typecheck`,
+`rhino-cli specs:coverage validate` and is enforced by the pre-push hook alongside `typecheck`,
 `lint`, and `test:quick`, as well as in all scheduled Test CI workflows.
 
 **Command flags used across project types**:
@@ -465,26 +465,26 @@ the project's feature files has a matching step definition in the implementation
 
 **Project coverage status**:
 
-| Project group                              | Status   | Notes                                                                                       |
-| ------------------------------------------ | -------- | ------------------------------------------------------------------------------------------- |
-| Rust CLI app (`rhino-cli`)                 | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                    |
-| Crud-be backends (all 11)                  | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| Crud-fe frontends                          | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| Fullstack (`crud-fs-ts-nextjs`)            | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| E2E runners (`crud-be-e2e`, `crud-fe-e2e`) | Enforced | `--shared-steps` only; test-support steps are implemented here                              |
-| Web UI apps (`crud-fe-ts-nextjs`)          | Enforced | `--shared-steps`                                                                            |
-| CRUD backend (`crud-be-fsharp-giraffe`)    | Enforced | `--shared-steps`                                                                            |
-| Libraries (`golang-commons`)               | Enforced | `--shared-steps`                                                                            |
-| Projects with genuine step gaps            | Deferred | `spec-coverage` target exists but validation deferred until step implementation is complete |
+| Project group                              | Status   | Notes                                                                                        |
+| ------------------------------------------ | -------- | -------------------------------------------------------------------------------------------- |
+| Rust CLI app (`rhino-cli`)                 | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                     |
+| Crud-be backends (all 11)                  | Enforced | `--shared-steps --exclude-dir test-support`                                                  |
+| Crud-fe frontends                          | Enforced | `--shared-steps --exclude-dir test-support`                                                  |
+| Fullstack (`crud-fs-ts-nextjs`)            | Enforced | `--shared-steps --exclude-dir test-support`                                                  |
+| E2E runners (`crud-be-e2e`, `crud-fe-e2e`) | Enforced | `--shared-steps` only; test-support steps are implemented here                               |
+| Web UI apps (`crud-fe-ts-nextjs`)          | Enforced | `--shared-steps`                                                                             |
+| CRUD backend (`crud-be-fsharp-giraffe`)    | Enforced | `--shared-steps`                                                                             |
+| Libraries (`golang-commons`)               | Enforced | `--shared-steps`                                                                             |
+| Projects with genuine step gaps            | Deferred | `specs:coverage` target exists but validation deferred until step implementation is complete |
 
-All apps and E2E runners are required to have a `spec-coverage` target. Projects with genuine step
+All apps and E2E runners are required to have a `specs:coverage` target. Projects with genuine step
 gaps have the target deferred temporarily until step implementations are complete.
 
-**Nx inputs for `spec-coverage`**: The target must declare the project's feature files and source
+**Nx inputs for `specs:coverage`**: The target must declare the project's feature files and source
 files as inputs so the cache invalidates when specs or step definitions change:
 
 ```json
-"spec-coverage": {
+"specs:coverage": {
   "executor": "nx:run-commands",
   "cache": true,
   "inputs": [
@@ -492,7 +492,7 @@ files as inputs so the cache invalidates when specs or step definitions change:
     "{projectRoot}/src/**/*.go"
   ],
   "options": {
-    "command": "rhino-cli spec-coverage validate specs/apps/crud/behavior/be/gherkin --shared-steps --exclude-dir test-support apps/crud-be-golang-gin/internal apps/crud-be-golang-gin/cmd"
+    "command": "rhino-cli specs:coverage validate specs/apps/crud/behavior/be/gherkin --shared-steps --exclude-dir test-support apps/crud-be-golang-gin/internal apps/crud-be-golang-gin/cmd"
   }
 }
 ```
@@ -562,7 +562,7 @@ each component.
     "test:unit": {
       "cache": true
     },
-    "spec-coverage": {
+    "specs:coverage": {
       "cache": true
     },
     "test:integration": {
@@ -583,7 +583,7 @@ each component.
 | `typecheck`        | Yes    | Pure analysis; safe to cache against source changes                                                                                                                                                                                        |
 | `lint`             | Yes    | Pure static analysis; safe to cache                                                                                                                                                                                                        |
 | `test:quick`       | Yes    | Cache hit skips redundant pre-push runs                                                                                                                                                                                                    |
-| `spec-coverage`    | Yes    | Pure analysis of Gherkin steps against step definitions; deterministic against source and spec changes                                                                                                                                     |
+| `specs:coverage`   | Yes    | Pure analysis of Gherkin steps against step definitions; deterministic against source and spec changes                                                                                                                                     |
 | `test:unit`        | Yes    | Deterministic; safe to cache against source changes                                                                                                                                                                                        |
 | `test:integration` | No     | Crud-be backends use real PostgreSQL via docker-compose (non-deterministic external state). Default `cache: false` in `nx.json`. Projects using in-process mocking only (MSW, Godog) may override to `cache: true` in their `project.json` |
 | `dev`              | No     | Long-running process                                                                                                                                                                                                                       |
@@ -673,11 +673,11 @@ Example for `rhino-cli` `test:unit` inputs:
 spec changes (triggering `codegen`), `test:unit` and `test:quick` must re-run even if application
 source files are unchanged. Without these paths in `inputs`, Nx incorrectly serves cached results.
 
-**Note on spec-coverage enforcement**: `spec-coverage` is compulsory for all apps and E2E runners.
-`rhino-cli spec-coverage validate` runs as the `spec-coverage` Nx target, enforced by the pre-push
+**Note on specs:coverage enforcement**: `specs:coverage` is compulsory for all apps and E2E runners.
+`rhino-cli specs:coverage validate` runs as the `specs:coverage` Nx target, enforced by the pre-push
 hook alongside `typecheck`, `lint`, and `test:quick`, and in all scheduled Test CI workflows.
 Projects with genuine step gaps have the target deferred temporarily until step implementations are
-complete. See the "Spec-Coverage Projects" section for flags and project-by-project status.
+complete. See the "Specs-Coverage Projects" section for flags and project-by-project status.
 
 ## Codegen Dependency Chain
 
@@ -722,10 +722,10 @@ runs when artifacts already exist from a prior `build` or `typecheck` execution.
 
 ## Principles Traceability
 
-| Decision                                                                                                                                                 | Principle                                                                                 |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| Consistent target names across all projects                                                                                                              | [Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md) |
-| `typecheck`, `lint`, `test:quick`, `spec-coverage` enforced at pre-push; `lint` and `test:quick` at PR merge gate; `lint` in scheduled Test CI workflows | [Automation Over Manual](../../principles/software-engineering/automation-over-manual.md) |
-| Minimum required targets per project type                                                                                                                | [Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)      |
-| `outputs` required for cacheable targets                                                                                                                 | [Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md) |
-| Four-dimension tag scheme with controlled vocabulary declared in every `project.json`                                                                    | [Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md) |
+| Decision                                                                                                                                                  | Principle                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Consistent target names across all projects                                                                                                               | [Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md) |
+| `typecheck`, `lint`, `test:quick`, `specs:coverage` enforced at pre-push; `lint` and `test:quick` at PR merge gate; `lint` in scheduled Test CI workflows | [Automation Over Manual](../../principles/software-engineering/automation-over-manual.md) |
+| Minimum required targets per project type                                                                                                                 | [Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)      |
+| `outputs` required for cacheable targets                                                                                                                  | [Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md) |
+| Four-dimension tag scheme with controlled vocabulary declared in every `project.json`                                                                     | [Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md) |

@@ -130,9 +130,9 @@ graph TB
 
 1. Checkout branch
 2. Setup Node.js (Volta) and Rust toolchain
-3. Run Mermaid diagram validation (`npx nx run rhino-cli:validate:mermaid`)
-4. Run link and anchor validation (`npx nx run rhino-cli:validate:links`)
-5. Run heading-hierarchy validation (`npx nx run rhino-cli:validate:heading-hierarchy`)
+3. Run Mermaid diagram validation (`npx nx run rhino-cli:mermaid:validation`)
+4. Run link and anchor validation (`npx nx run rhino-cli:links:validation`)
+5. Run heading-hierarchy validation (`npx nx run rhino-cli:headings:hierarchy-validation`)
 6. Fail if any gate exits non-zero
 
 **Purpose**: Enforce all three markdown content gates on every pull request and every
@@ -168,7 +168,7 @@ coverage.
 
 **Steps:**
 
-1. Run `spec-coverage` across all demo projects (`crud-be-fsharp-giraffe`, `crud-fe-ts-nextjs`, `crud-be-e2e`, `crud-fe-e2e`)
+1. Run `specs:coverage` across all demo projects (`crud-be-fsharp-giraffe`, `crud-fe-ts-nextjs`, `crud-be-e2e`, `crud-fe-e2e`)
 2. Run `fe-lint` for `crud-fe-ts-nextjs`
 3. Run `be-integration` tests with docker-compose (real PostgreSQL)
 4. Run `fe-integration` tests (MSW-mocked)

@@ -254,7 +254,7 @@ Both sources are additive: the spec remains the authoritative description of rhi
 
 The `rhino-cli spec-coverage validate` command validates that all Gherkin feature files under `specs/` have corresponding test implementations. It uses recursive globs (`**/*.feature`) to discover feature files, so it works correctly with all surfaces and nested domain subdirectory structures.
 
-The `spec-coverage` target runs as part of the pre-push hook for projects that have it configured. It ensures specs and application code stay synchronized.
+The `specs:coverage` target runs as part of the pre-push hook for projects that have it configured. It ensures specs and application code stay synchronized.
 
 ### Manual Verification
 

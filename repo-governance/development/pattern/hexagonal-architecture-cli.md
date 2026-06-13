@@ -32,6 +32,36 @@ flags and translates them into use-case calls. The hexagonal convention for CLI 
 this inbound adapter `commands/` to make its inbound role explicit. This differs from backend
 apps where outbound adapters are named `infrastructure/`.
 
+## rhino-cli Reference Layout
+
+`apps/rhino-cli/src/` contains the canonical four-layer layout:
+
+```
+src/
+├── domain/         # Pure business logic — no std::fs, no HTTP, no env reads
+├── application/    # Use-case orchestration; calls domain; injects infra via trait
+├── infrastructure/ # All I/O: filesystem, network, env reads
+└── commands/       # Inbound adapter: parses CLI args, delegates to application
+```
+
+No file in `src/domain/` may import from `src/infrastructure/`. This constraint is
+enforced by `clippy` — a cross-layer import is a lint error, not just a code smell.
+
+## Shared-Kernel Rule
+
+Types and traits shared between layers (e.g., result types, port trait definitions)
+live in a `shared_kernel` or `ports` module accessible to all layers. They must
+contain no I/O code. Place them in `src/domain/` or a sibling `src/ports/` module,
+never in `src/infrastructure/`.
+
+## Golden-Master Enforcement
+
+Integration tests for rhino-cli commands compare CLI output against golden-master
+snapshots in `tests/fixtures/`. A command's observable output (stdout, stderr, exit
+code) is part of its Gherkin contract. Update the golden master when the contract
+changes intentionally; a diff against the master is a CI-blocking violation when
+unexpected.
+
 ## References
 
 - [Hexagonal Architecture](./hexagonal-architecture.md) — shared principles and dependency rule

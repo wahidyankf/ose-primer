@@ -523,7 +523,7 @@ tools and file formats.
 
 Create `.github/workflows/test-crud-be-{lang}-{framework}.yml`. Keep it to approximately 40
 lines by inlining the job steps directly rather than duplicating setup logic across jobs. The file
-follows the 5-track parallel structure (lint, typecheck, test:quick, spec-coverage,
+follows the 5-track parallel structure (lint, typecheck, test:quick, specs:coverage,
 integration → E2E), though integration and E2E are sequenced within a single job:
 
 ```yaml

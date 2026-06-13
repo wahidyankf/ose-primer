@@ -229,7 +229,7 @@ When proposing or executing a dependency bump, follow these steps in order:
     10a. Cross-reference every CVE from steps 3–5 against the CISA KEV feed: `curl -s https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json | jq '.vulnerabilities[] | select(.cveID=="CVE-YYYY-NNNNN")'`. Record `dateAdded` and `knownRansomwareCampaignUse` for any matches; append `(KEV-listed)` to the clearance status in the plan's `tech-docs.md`.
     10b. Query EPSS for any CVE with CVSS ≥ 7.0: `curl -s "https://api.first.org/data/v1/epss?cve=CVE-YYYY-NNNNN"`. Record the score and percentile in the clearance table. If score ≥ 0.5, flag for expedited scheduling (EPSS Escalation applies).
 11. Document the audit results and any waivers in the plan's `tech-docs.md`
-12. Run quality gates for affected projects: typecheck, lint, test:quick, spec-coverage
+12. Run quality gates for affected projects: typecheck, lint, test:quick, specs:coverage
 
 ## Tools and Automation
 

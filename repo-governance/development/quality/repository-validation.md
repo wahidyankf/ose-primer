@@ -71,17 +71,18 @@ Three automated markdown gates enforce content correctness at pre-commit and in 
 
 ### Gate 1: Mermaid diagram validation
 
-**Tool**: `rhino-cli docs validate-mermaid` (Nx target: `validate:mermaid`)
+**Tool**: `rhino-cli docs validate-mermaid` (Nx target: `mermaid:validation`)
 
 **Scope**: repo-wide minus `plans/done/` and standard noise directories, with
 `--max-depth=4`.
 
-Enforces flowchart/graph width constraints, label length limits, and comment syntax.
+Enforces width constraints, label length limits, and comment syntax for both
+`flowchart`/`graph` blocks and `stateDiagram-v2`/`stateDiagram` (v1) blocks.
 Violations exit with code 1.
 
 ### Gate 2: Link validation (including anchor validation)
 
-**Tool**: `validate:links` Nx target
+**Tool**: `links:validation` Nx target
 
 **Scope**: repo-wide minus exclusions.
 

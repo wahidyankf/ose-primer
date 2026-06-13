@@ -308,7 +308,7 @@ This section clarifies the two distinct execution modes in this repository and t
 - **Commit directly to `main`**. No branch. No PR.
 - **Push directly to `main`**. No merge request.
 - **No review step** (unless explicitly requested by the user).
-- Quality gates run via the pre-push hook (typecheck, lint, test:quick, spec-coverage).
+- Quality gates run via the pre-push hook (typecheck, lint, test:quick, specs:coverage).
 
 This is the standard TBD workflow described throughout this document. It applies to all routine development: features, bug fixes, refactors, documentation, and governance changes.
 
@@ -329,7 +329,7 @@ git push origin main
 - **Default**: push the worktree's HEAD straight to `main` via `git push origin HEAD:main`. No PR.
 - **Opt-in PR**: open a draft pull request only when the user's prompt or the plan document explicitly requests one (`gh pr create --draft --base main`). Same opt-in trigger phrases as the [Git Push Default Convention](./git-push-default.md) Standard 2.
 - **Linear history**: rebase before push if `origin/main` has moved, per the [Git Push Default Convention](./git-push-default.md) Standard 4.
-- **Quality gates**: pre-push hook (typecheck, lint, test:quick, spec-coverage) runs the same as on main.
+- **Quality gates**: pre-push hook (typecheck, lint, test:quick, specs:coverage) runs the same as on main.
 
 This rule is triggered by execution mode (any worktree entry), and the default is direct push to main even for "small" or "docs-only" worktree commits. PR creation requires explicit instruction.
 

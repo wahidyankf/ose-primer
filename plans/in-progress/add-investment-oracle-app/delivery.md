@@ -134,7 +134,7 @@ for the rationale.
 - [ ] Verify dev mode: `npx nx run investment-oracle-fe:dev` opens a Tauri
       window pointing at the Vite dev server
 - [ ] Add Nx targets: `dev`, `build`, `tauri-build`, `typecheck`, `lint`,
-      `test:unit`, `test:e2e`, `codegen`, `spec-coverage`
+      `test:unit`, `test:e2e`, `codegen`, `specs:coverage`
 
 ## Phase 3 — Sidecar Python project scaffolding
 
@@ -149,7 +149,7 @@ for the rationale.
   - [ ] typecheck: `pyright`
   - [ ] packaging: `pyinstaller`
 - [ ] Add Nx targets: `dev`, `build`, `typecheck`, `lint`, `test:unit`,
-      `test:integration`, `test:quick`, `codegen`, `spec-coverage`,
+      `test:integration`, `test:quick`, `codegen`, `specs:coverage`,
       `pyinstaller-build`
 - [ ] Confirm PyMuPDF is **not** in deps; document the ban in
       `apps/investment-oracle-be/CONTRIBUTING.md`
@@ -394,8 +394,8 @@ after Phase 16 FE e2e tests pass.
 
 ## Phase 17 — Spec coverage
 
-- [ ] `nx run investment-oracle-be:spec-coverage` exits 0
-- [ ] `nx run investment-oracle-fe:spec-coverage` exits 0
+- [ ] `nx run investment-oracle-be:specs:coverage` exits 0
+- [ ] `nx run investment-oracle-fe:specs:coverage` exits 0
 - [ ] Investigate any gaps; either add a step impl or remove the scenario
 
 ## Phase 18 — CI workflows
@@ -434,7 +434,7 @@ after Phase 16 FE e2e tests pass.
 
 ## Phase 21 — Fix-all sweep (root-cause orientation)
 
-- [ ] Run `npm run lint:md`, `nx affected -t lint typecheck test:quick spec-coverage`
+- [ ] Run `npm run lint:md`, `nx affected -t lint typecheck test:quick specs:coverage`
 - [ ] Fix every finding at the root cause (per the
       [Root Cause Orientation principle](../../../repo-governance/principles/README.md));
       do **not** suppress or stub

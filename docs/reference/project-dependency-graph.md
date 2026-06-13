@@ -165,9 +165,9 @@ The OpenAPI 3.1 specification consumed by all demo apps for type generation.
 **Location**: `apps/rhino-cli/`
 
 Repository management CLI used by most projects for coverage validation
-(`test-coverage validate`), spec coverage (`spec-coverage validate`),
-contract post-processing (`contracts java-clean-imports`, `contracts dart-scaffold`),
-and annotation validation (`java validate-annotations`).
+(`test-coverage validate`), spec coverage (`specs:coverage validate`),
+contract post-processing (`lang java-clean-imports`, `lang dart-scaffold`),
+and annotation validation (`lang java-validate-annotations`).
 
 - **Dependents**: 20 projects (all demo apps, libs, crud-fs-ts-nextjs)
 - **Mechanism**: `implicitDependencies`

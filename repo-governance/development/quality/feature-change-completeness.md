@@ -36,7 +36,7 @@ This practice implements/respects the following conventions:
 
 - **[Three-Level Testing Standard](./three-level-testing-standard.md)**: All three test levels consume shared artifacts (Gherkin specs, contracts). When a feature changes, the tests at all affected levels must be updated.
 
-- **[Code Quality Convention](./code.md)**: Quality gates (typecheck, lint, test:quick, spec-coverage) catch many forms of incompleteness automatically. This convention defines the complete set of artifacts that constitute a "done" change.
+- **[Code Quality Convention](./code.md)**: Quality gates (typecheck, lint, test:quick, specs:coverage) catch many forms of incompleteness automatically. This convention defines the complete set of artifacts that constitute a "done" change.
 
 ## The Rule
 
@@ -89,7 +89,7 @@ A feature change is not complete until all four categories are addressed.
 - **E2E tests**: Changes to user-facing flows, API contracts, or full-stack behavior require updated E2E tests.
 - **Accessibility tests**: UI changes require accessibility verification (static analysis via oxlint jsx-a11y plugin, manual WCAG AA checks).
 
-**Automated enforcement**: Coverage thresholds in `test:quick` catch missing unit tests. `spec-coverage` catches missing step definitions.
+**Automated enforcement**: Coverage thresholds in `test:quick` catch missing unit tests. `specs:coverage` catches missing step definitions.
 
 ### 4. Documentation
 
@@ -149,7 +149,7 @@ They update, in the same commit or PR:
 
 ### ❌ Code without specs
 
-A developer adds the endpoint but does not add Gherkin scenarios or update the OpenAPI contract. `spec-coverage` fails. `codegen` produces stale types. The change is incomplete.
+A developer adds the endpoint but does not add Gherkin scenarios or update the OpenAPI contract. `specs:coverage` fails. `codegen` produces stale types. The change is incomplete.
 
 ### ❌ Code and specs without tests
 

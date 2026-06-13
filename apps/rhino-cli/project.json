@@ -163,7 +163,7 @@
       "outputs": []
     },
     "mermaid:validation": {
-      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- md validate mermaid --max-depth=4 --exclude plans/done",
+      "command": "cargo run --release -q --manifest-path apps/rhino-cli/Cargo.toml -- md validate mermaid --max-depth=4 --exclude plans/done --exclude apps/rhino-cli/tests/fixtures",
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*.rs", "{workspaceRoot}/**/*.md"],
       "outputs": []

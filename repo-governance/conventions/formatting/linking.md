@@ -373,7 +373,7 @@ When creating documentation, verify links by:
    target file (use the GFM slug algorithm described in [Fragment Validation
    (Automated)](#fragment-validation-automated))
 
-The automated link gate (`validate:links` Nx target) runs repo-wide minus exclusions at
+The automated link gate (`links:validation` Nx target) runs repo-wide minus exclusions at
 pre-commit staged-only (step 7) and via the consolidated
 `.github/workflows/validate-markdown.yml` CI workflow on pull requests to main and
 pushes to main. It checks both broken file paths and broken anchors (`broken-anchor`
