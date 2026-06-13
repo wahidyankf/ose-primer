@@ -8,122 +8,113 @@ infrastructure.
 **Protected pages** pass through Auth Guard before rendering.
 **Admin pages** additionally pass through Admin Guard after Auth Guard.
 
+## Component Diagrams
+
+### Auth and Core Pages Routing
+
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
-graph LR
-    EU("End User<br/>Desktop / Tablet / Mobile"):::actor
+graph TB
+    EU("End User"):::actor
     ADM("Administrator"):::actor_admin
 
-    subgraph SPA["Single Page Application"]
-
-        subgraph LAYER1["Pages"]
-            LP["Login Page<br/>────────────────<br/>Username + password<br/>Error display<br/>Public"]:::page
-            RP["Registration Page<br/>────────────────<br/>Form validation<br/>Password strength<br/>Public"]:::page
-            DP["Dashboard Page<br/>────────────────<br/>Overview stats<br/>Quick actions<br/>Protected"]:::page
-            PP["Profile Page<br/>────────────────<br/>Display name edit<br/>Password change<br/>Deactivate account"]:::page
-            ELP["Entry List Page<br/>────────────────<br/>Paginated table/cards<br/>Filter and sort<br/>Responsive layout"]:::page
-            EDP["Entry Detail Page<br/>────────────────<br/>Full entry view<br/>Edit inline<br/>Attachment list"]:::page
-            NEP["New Entry Page<br/>────────────────<br/>Entry form<br/>Currency select<br/>Unit select"]:::page
-            RPP["Reporting Page<br/>────────────────<br/>Date range picker<br/>Currency filter<br/>P&L chart"]:::page
-            AP["Admin Panel<br/>────────────────<br/>User list and search<br/>Disable, enable<br/>Unlock, reset"]:::page_admin
-            HSP["Health Status<br/>────────────────<br/>Backend health<br/>indicator"]:::page
-        end
-
-        subgraph LAYER2["Shared Components"]
-            NAV["Navigation<br/>────────────────<br/>Sidebar (desktop)<br/>Icons (tablet)<br/>Drawer (mobile)"]:::component
-            FORM["Form Kit<br/>────────────────<br/>Inputs, selects<br/>Validation display<br/>File upload"]:::component
-            TABLE["Data Display<br/>────────────────<br/>Table (desktop)<br/>Cards (mobile)<br/>Pagination"]:::component
-            MODAL["Modal and Dialog<br/>────────────────<br/>Confirmation<br/>Focus trap<br/>Accessible"]:::component
-        end
-
-        subgraph LAYER3["State Management"]
-            AUTH_STORE["Auth Store<br/>────────────────<br/>Access token<br/>Refresh token<br/>User info<br/>Auto-refresh"]:::state
-            ENTRY_STORE["Entry Store<br/>────────────────<br/>Entry list cache<br/>Pagination state<br/>Filter state"]:::state
-            UI_STORE["UI Store<br/>────────────────<br/>Viewport size<br/>Sidebar state<br/>Theme"]:::state
-        end
-
-        subgraph LAYER4["API Client"]
-            HTTP["HTTP Client<br/>────────────────<br/>Base URL config<br/>Auth header inject<br/>Token refresh<br/>Error handling"]:::api
-            AUTH_API["Auth API<br/>────────────────<br/>login, register<br/>refresh, logout"]:::api
-            USER_API["User API<br/>────────────────<br/>profile, password<br/>deactivate"]:::api
-            EXPENSE_API["Expense API<br/>────────────────<br/>CRUD, summary<br/>P&L reports"]:::api
-            ATTACH_API["Attachment API<br/>────────────────<br/>upload, list<br/>delete"]:::api
-            ADMIN_API["Admin API<br/>────────────────<br/>users, disable<br/>enable, unlock<br/>reset"]:::api
-        end
-
-        subgraph LAYER5["Infrastructure"]
-            ROUTER["Router<br/>────────────────<br/>Client-side routing<br/>Route guards<br/>Lazy loading"]:::infra
-            AUTH_GUARD["Auth Guard<br/>────────────────<br/>Check token<br/>Redirect to login"]:::guard
-            ADMIN_GUARD["Admin Guard<br/>────────────────<br/>Check admin role<br/>Redirect to 403"]:::guard
-            VIEWPORT["Viewport Observer<br/>────────────────<br/>Resize listener<br/>Breakpoint detection<br/>desktop/tablet/mobile"]:::infra
-        end
-
-    end
-
-    API["Demo Backend<br/>REST API"]:::external
-
-    %% Public entry points — bypass Auth Guard
-    EU -->|"public: login, register"| ROUTER
-    EU -->|"protected routes"| ROUTER
-
+    EU -->|"public/protected routes"| ROUTER
     ADM -->|"admin routes"| ROUTER
 
-    %% Router → Guards → Pages
+    ROUTER["Router<br/>────────────────<br/>Client-side routing<br/>Route guards"]:::infra
     ROUTER -->|"public routes"| LP
     ROUTER -->|"public routes"| RP
     ROUTER -->|"public routes"| HSP
     ROUTER -->|"protected routes"| AUTH_GUARD
+
+    LP["Login Page<br/>────────────────<br/>Username + password<br/>Public"]:::page
+    RP["Registration Page<br/>────────────────<br/>Form validation<br/>Public"]:::page
+    HSP["Health Status<br/>────────────────<br/>Backend health<br/>indicator"]:::page
+    AUTH_GUARD["Auth Guard<br/>────────────────<br/>Check token<br/>Redirect to login"]:::guard
+
     AUTH_GUARD --> DP
     AUTH_GUARD --> PP
-    AUTH_GUARD --> ELP
-    AUTH_GUARD --> EDP
-    AUTH_GUARD --> NEP
-    AUTH_GUARD --> RPP
-    AUTH_GUARD -->|"admin routes"| ADMIN_GUARD
+    AUTH_GUARD --> ADMIN_GUARD
+
+    DP["Dashboard Page<br/>────────────────<br/>Overview stats<br/>Quick actions"]:::page
+    PP["Profile Page<br/>────────────────<br/>Display name edit<br/>Password change"]:::page
+    ADMIN_GUARD["Admin Guard<br/>────────────────<br/>Check admin role<br/>Redirect to 403"]:::guard
+
     ADMIN_GUARD --> AP
 
-    %% Pages → Shared Components
-    ELP --> TABLE
-    ELP --> NAV
-    EDP --> FORM
-    EDP --> MODAL
-    NEP --> FORM
-    AP --> TABLE
-    RPP --> TABLE
+    AP["Admin Panel<br/>────────────────<br/>User list, search<br/>Disable, enable"]:::page_admin
 
-    %% Pages → State
     LP --> AUTH_STORE
-    DP --> ENTRY_STORE
-    ELP --> ENTRY_STORE
-    NAV --> UI_STORE
-
-    %% State → API Client
-    AUTH_STORE --> AUTH_API
-    ENTRY_STORE --> EXPENSE_API
+    AUTH_GUARD --> AUTH_STORE
     PP --> USER_API
-    EDP --> ATTACH_API
-    AP --> ADMIN_API
 
-    %% API Client → HTTP Client → Backend
+    AUTH_STORE["Auth Store<br/>────────────────<br/>Access token<br/>Refresh token"]:::state
+    USER_API["User API<br/>────────────────<br/>profile, password<br/>deactivate"]:::api
+
+    AUTH_STORE --> AUTH_API
+    AP --> ADMIN_API
     AUTH_API --> HTTP
     USER_API --> HTTP
-    EXPENSE_API --> HTTP
-    ATTACH_API --> HTTP
     ADMIN_API --> HTTP
+
+    AUTH_API["Auth API<br/>────────────────<br/>login, register<br/>refresh, logout"]:::api
+    ADMIN_API["Admin API<br/>────────────────<br/>users, disable<br/>enable, unlock"]:::api
+    HTTP["HTTP Client<br/>────────────────<br/>Auth header inject<br/>Token refresh"]:::api
     HTTP -->|"REST calls"| API
 
-    %% Infrastructure
-    VIEWPORT --> UI_STORE
-    AUTH_GUARD --> AUTH_STORE
+    API["Demo Backend<br/>REST API"]:::external
 
     classDef actor fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef actor_admin fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef page fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef page_admin fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef component fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef state fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef api fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef infra fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef guard fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef external fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px,stroke-dasharray:5 5
+```
+
+### Expense Pages and Data Flow
+
+```mermaid
+%% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Gray #808080
+graph TB
+    EU("End User"):::actor
+
+    EU -->|"protected routes"| AUTH_GUARD
+    AUTH_GUARD["Auth Guard<br/>────────────────<br/>Check token<br/>Redirect to login"]:::guard
+
+    AUTH_GUARD --> ELP
+    AUTH_GUARD --> EDP
+    AUTH_GUARD --> NEP
+    AUTH_GUARD --> RPP
+
+    ELP["Entry List Page<br/>────────────────<br/>Paginated table<br/>Filter and sort"]:::page
+    EDP["Entry Detail Page<br/>────────────────<br/>Full entry view<br/>Attachment list"]:::page
+    NEP["New Entry Page<br/>────────────────<br/>Entry form<br/>Currency select"]:::page
+    RPP["Reporting Page<br/>────────────────<br/>Date range picker<br/>P&L chart"]:::page
+
+    ELP --> ENTRY_STORE
+    EDP --> ATTACH_API
+
+    ENTRY_STORE["Entry Store<br/>────────────────<br/>Entry list cache<br/>Filter state"]:::state
+
+    ENTRY_STORE --> EXPENSE_API
+    ATTACH_API --> HTTP
+    EXPENSE_API --> HTTP
+
+    EXPENSE_API["Expense API<br/>────────────────<br/>CRUD, summary<br/>P&L reports"]:::api
+    ATTACH_API["Attachment API<br/>────────────────<br/>upload, list<br/>delete"]:::api
+    HTTP["HTTP Client<br/>────────────────<br/>Auth header inject<br/>Token refresh"]:::api
+    HTTP -->|"REST calls"| API
+
+    API["Demo Backend<br/>REST API"]:::external
+
+    classDef actor fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef page fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef state fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef api fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef guard fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef external fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px,stroke-dasharray:5 5
 ```

@@ -191,25 +191,20 @@ async function processParallel(ids: string[]): Promise<Donation[]> {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph LR
+graph TB
     A["Multiple Promises<br/>to Coordinate?"]:::blue --> B{"What<br/>Behavior?"}:::orange
 
-    B -->|"All must succeed"| C["✅ Promise.all()<br/>(Fail-fast)"]:::teal
+    B -->|"All must succeed"| C["Promise.all()<br/>(Fail-fast)"]:::teal
     B -->|"First to complete"| D{"Success or<br/>Completion?"}:::orange
-    B -->|"Need all results"| E["✅ Promise.allSettled()<br/>(Never rejects)"]:::teal
+    B -->|"Need all results"| E["Promise.allSettled()<br/>(Never rejects)"]:::teal
 
-    D -->|"First success"| F["✅ Promise.any()<br/>(Ignore failures)"]:::purple
-    D -->|"First complete"| G["✅ Promise.race()<br/>(Success or failure)"]:::purple
+    D -->|"First success"| F["Promise.any()<br/>(Ignore failures)"]:::purple
+    D -->|"First complete"| G["Promise.race()<br/>(First wins)"]:::purple
 
     C --> C1["All succeed → array<br/>One fails → reject"]
-    E --> E1["All settle → array<br/>{status, value/reason}"]
+    E --> E1["All settle → array<br/>status + value/reason"]
     F --> F1["One succeeds → value<br/>All fail → AggregateError"]
-    G --> G1["First complete → value/error"]
-
-    Ex1["Example: Fetch 3 donations<br/>Need all or none"]:::blue --> C
-    Ex2["Example: Check all records<br/>Want all results"]:::blue --> E
-    Ex3["Example: Fetch from mirrors<br/>First success wins"]:::blue --> F
-    Ex4["Example: Fetch with timeout<br/>First to finish"]:::blue --> G
+    G --> G1["First complete<br/>value or error"]
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000

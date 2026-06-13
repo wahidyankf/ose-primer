@@ -8,85 +8,40 @@ infrastructure (repositories + shared utilities).
 **Protected routes** pass through JWT Middleware before reaching their handler.
 **Admin routes** additionally pass through Admin Middleware after JWT Middleware.
 
+## Component Diagrams
+
+### Auth and User Domain
+
 ```mermaid
-%% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
-graph LR
+%% Color Palette: Blue #0173B2 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
+graph TB
     EU("End User"):::actor
     ADM("Administrator"):::actor_admin
 
-    subgraph RESTAPI["REST API Container"]
-
-        subgraph LAYER1["HTTP Handlers"]
-            HH["Health Handler<br/>────────────────<br/>GET /health<br/>GET /jwks.json<br/>Public"]:::handler
-            AH["Auth Handler<br/>────────────────<br/>register, login<br/>Public<br/>refresh, logout<br/>logout-all"]:::handler
-            UH["User Handler<br/>────────────────<br/>GET profile<br/>PATCH profile<br/>change password<br/>deactivate"]:::handler
-            ADMH["Admin Handler<br/>────────────────<br/>list users<br/>disable, enable<br/>unlock<br/>force-reset"]:::handler_admin
-            EH["Expense Handler<br/>────────────────<br/>create, list<br/>get, update<br/>delete, summary"]:::handler
-            RPH["Reporting Handler<br/>────────────────<br/>GET P&L report<br/>by date range"]:::handler
-            ATH["Attachment Handler<br/>────────────────<br/>upload, list<br/>delete"]:::handler
-        end
-
-        subgraph LAYER2["Middleware"]
-            JWTMW["JWT Middleware<br/>────────────────<br/>Validate token<br/>Check blacklist<br/>Check account<br/>All protected routes"]:::middleware
-            ADMINMW["Admin Middleware<br/>────────────────<br/>Verify admin role<br/>Admin routes only"]:::middleware
-        end
-
-        subgraph LAYER3["Domain Services"]
-            AS["Auth Service<br/>────────────────<br/>Password hash<br/>JWT issuance<br/>Token rotation<br/>Lockout tracking<br/>Revoke all tokens"]:::service
-            US["User Service<br/>────────────────<br/>Profile CRUD<br/>Password change<br/>Self-deactivation"]:::service
-            ADMS["Admin Service<br/>────────────────<br/>User list, search<br/>Disable, enable<br/>Unlock account<br/>Force-reset token"]:::service_admin
-            ES["Expense Service<br/>────────────────<br/>Entry CRUD<br/>Currency validation<br/>Amount validation<br/>Ownership check"]:::service
-            RS["Reporting Service<br/>────────────────<br/>P&L aggregation<br/>Category breakdown<br/>Net calculation"]:::service
-            ATS["Attachment Service<br/>────────────────<br/>Type whitelist<br/>Size limit check<br/>File storage I/O<br/>Ownership check"]:::service
-        end
-
-        subgraph LAYER4["Infrastructure"]
-            UR["User Repository<br/>────────────────<br/>User CRUD<br/>Status updates<br/>Email lookup"]:::repo
-            TR["Token Repository<br/>────────────────<br/>Token rotation<br/>Blacklist CRUD<br/>Revoke all"]:::repo
-            ER["Expense Repository<br/>────────────────<br/>Entry CRUD<br/>Summary queries<br/>P&L queries"]:::repo
-            AR["Attachment Repo<br/>────────────────<br/>Metadata CRUD"]:::repo
-            KP["JWT Key Pair<br/>────────────────<br/>RSA private key<br/>RSA public key"]:::infra
-            PH["Password Hasher<br/>────────────────<br/>Hash on register<br/>Compare on login"]:::infra
-        end
-
-    end
-
-    DB[("Database<br/>SQLite or Postgres")]:::datastore
-    FS[("File Storage")]:::filestorage
-    FE["Single Page Application"]:::external
-
-    %% Public entry points — bypass JWT Middleware
     EU -->|"public: register, login"| AH
-    EU -->|"public: health, JWKS"| HH
-
-    %% Protected entry points — through JWT Middleware
     EU -->|"protected routes"| JWTMW
     ADM -->|"protected routes"| JWTMW
 
-    %% Middleware routing
-    JWTMW -->|"user routes"| UH
-    JWTMW -->|"expense routes"| EH
-    JWTMW -->|"report routes"| RPH
-    JWTMW -->|"attachment routes"| ATH
+    JWTMW["JWT Middleware<br/>────────────────<br/>Validate token<br/>Check blacklist<br/>Check account"]:::middleware
     JWTMW -->|"refresh, logout"| AH
+    JWTMW -->|"user routes"| UH
     JWTMW -->|"admin routes"| ADMINMW
+
+    AH["Auth Handler<br/>────────────────<br/>register, login<br/>refresh, logout"]:::handler
+    UH["User Handler<br/>────────────────<br/>GET/PATCH profile<br/>change password"]:::handler
+    ADMINMW["Admin Middleware<br/>────────────────<br/>Verify admin role"]:::middleware
     ADMINMW -->|"admin routes"| ADMH
 
-    %% Middleware checks infrastructure
-    JWTMW -->|"verify signature"| KP
-    JWTMW -->|"check blacklist"| TR
-    JWTMW -->|"check account"| UR
+    ADMH["Admin Handler<br/>────────────────<br/>list users<br/>disable, enable"]:::handler_admin
 
-    %% Handlers → Services
     AH --> AS
     UH --> US
     ADMH --> ADMS
-    EH --> ES
-    RPH --> RS
-    ATH --> ATS
-    HH -->|"read public key"| KP
 
-    %% Services → Repositories and shared infrastructure
+    AS["Auth Service<br/>────────────────<br/>Password hash<br/>JWT issuance<br/>Token rotation"]:::service
+    US["User Service<br/>────────────────<br/>Profile CRUD<br/>Password change"]:::service
+    ADMS["Admin Service<br/>────────────────<br/>User list, search<br/>Disable, enable"]:::service_admin
+
     AS --> UR
     AS --> TR
     AS --> KP
@@ -95,18 +50,19 @@ graph LR
     US --> TR
     US --> PH
     ADMS --> UR
-    ES --> ER
-    RS --> ER
-    ATS --> AR
+    JWTMW -->|"verify signature"| KP
+    JWTMW -->|"check blacklist"| TR
+    JWTMW -->|"check account"| UR
 
-    %% Repositories → Database
+    UR["User Repository<br/>────────────────<br/>User CRUD<br/>Status updates"]:::repo
+    TR["Token Repository<br/>────────────────<br/>Token rotation<br/>Blacklist CRUD"]:::repo
+    KP["JWT Key Pair<br/>────────────────<br/>RSA private key<br/>RSA public key"]:::infra
+    PH["Password Hasher<br/>────────────────<br/>Hash on register<br/>Compare on login"]:::infra
+
     UR --> DB
     TR --> DB
-    ER --> DB
-    AR --> DB
 
-    %% Attachment Service → File Storage
-    ATS --> FS
+    DB[("Database<br/>SQLite or Postgres")]:::datastore
 
     classDef actor fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef actor_admin fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
@@ -118,8 +74,58 @@ graph LR
     classDef repo fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef infra fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef datastore fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
+### Expense and Attachment Domain
+
+```mermaid
+%% Color Palette: Blue #0173B2 | Teal #029E73 | Purple #CC78BC | Gray #808080
+graph TB
+    EU("End User"):::actor
+
+    EU -->|"public: health, JWKS"| HH
+    EU -->|"protected routes"| JWTMW
+
+    HH["Health Handler<br/>────────────────<br/>GET /health<br/>GET /jwks.json"]:::handler
+    JWTMW["JWT Middleware<br/>────────────────<br/>Validate token<br/>All protected routes"]:::middleware
+
+    JWTMW -->|"expense routes"| EH
+    JWTMW -->|"report routes"| RPH
+    JWTMW -->|"attachment routes"| ATH
+
+    EH["Expense Handler<br/>────────────────<br/>create, list<br/>get, update, delete"]:::handler
+    RPH["Reporting Handler<br/>────────────────<br/>GET P&L report<br/>by date range"]:::handler
+    ATH["Attachment Handler<br/>────────────────<br/>upload, list, delete"]:::handler
+
+    EH --> ES
+    RPH --> RS
+    ATH --> ATS
+
+    ES["Expense Service<br/>────────────────<br/>Entry CRUD<br/>Currency validation"]:::service
+    RS["Reporting Service<br/>────────────────<br/>P&L aggregation<br/>Category breakdown"]:::service
+    ATS["Attachment Service<br/>────────────────<br/>Type whitelist<br/>File storage I/O"]:::service
+
+    ES --> ER
+    RS --> ER
+    ATS --> AR
+
+    ER["Expense Repository<br/>────────────────<br/>Entry CRUD<br/>P&L queries"]:::repo
+    AR["Attachment Repo<br/>────────────────<br/>Metadata CRUD"]:::repo
+
+    ER --> DB
+    AR --> DB
+    ATS --> FS
+
+    DB[("Database<br/>SQLite or Postgres")]:::datastore
+    FS[("File Storage")]:::filestorage
+
+    classDef actor fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef handler fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef middleware fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef service fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef repo fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef datastore fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef filestorage fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px,stroke-dasharray:5 5
-    classDef external fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px,stroke-dasharray:5 5
 ```
 
 ## Gherkin Coverage by Component

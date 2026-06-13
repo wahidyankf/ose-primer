@@ -10,7 +10,7 @@ title: "Tech Docs: Harness/Vendor Neutrality Blueprint — Phase 1 (ose-primer)"
 flowchart LR
     A[".claude/agents/*.md\nPrimary Source"] -->|agents sync| B[".opencode/agents/*.md\nOpenCode mirror"]
     A -->|agents emit-bindings| C[".amazonq/\nAmazon Q bridge"]
-    D["npm run generate:bindings"] -->|"nx build (once)"| E["./apps/rhino-cli-rust/dist/rhino-cli"]
+    D["npm run generate:bindings"] -->|"nx build (once)"| E["./dist/rhino-cli"]
     E -->|agents sync| B
     E -->|then agents emit-bindings| C
 
