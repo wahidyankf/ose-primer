@@ -85,6 +85,10 @@ Trigger the run, record the run ID, schedule a wakeup for 3-5 minutes, check sta
 
 **Why 3-5 min:** Fast enough for responsive feedback; safe forever at 12-20 req/hour (0.4% of the 5,000/hour budget).
 
+**Default poll interval: 3 minutes.**
+
+**Absolute floor: never poll CI or GitHub Actions faster than once every 2 minutes.** Two minutes is the hard, never-exceed minimum spacing for any CI or Actions status check; the 3-minute default above sits comfortably on the safe side of this floor. Any cadence faster than once per 2 minutes is forbidden regardless of mechanism (manual loop, scheduled wakeup, or stream-watch).
+
 ```bash
 # Step 1: trigger and capture run ID
 gh workflow run <your-workflow>.yml

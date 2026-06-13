@@ -156,7 +156,7 @@ For each dependency/runtime, determine its policy path and the version to propos
 external research to `web-research-maker` — the [default primitive for public-web information
 gathering](../../conventions/writing/web-research-delegation.md). **Group research by ecosystem**
 (one agent per ecosystem batch) rather than one agent per package, and cap concurrent agents at
-**3** per the [Subagent Orchestration Convention](../../development/agents/subagent-orchestration.md).
+**2** per the [Subagent Orchestration Convention](../../development/agents/subagent-orchestration.md).
 
 Each research batch must return, per package:
 
@@ -304,7 +304,7 @@ Scenario: User declines at the checkpoint
 - [plan-establishment-execution workflow](../plan/plan-establishment-execution.md) — invoked in Phase 5 to author the plan (which this workflow then relocates to `backlog/`).
 - [Plan Execution workflow](../plan/plan-execution.md) — runs the plan later, after promotion to `in-progress/`.
 - [web-research-maker Agent](../../../.claude/agents/web-research-maker.md) — Phase 2 version/CVE/KEV/EPSS research.
-- [Subagent Orchestration Convention](../../development/agents/subagent-orchestration.md) — Phase 2 research agents capped at 3 concurrent.
+- [Subagent Orchestration Convention](../../development/agents/subagent-orchestration.md) — Phase 2 research agents capped at 2 concurrent.
 - [security-waivers register](../../../docs/reference/security-waivers.md) — destination for WAIVER / FUNCTIONAL-HOLD / KEV-listed entries.
 - [CISA KEV JSON feed](https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json) — daily feed of CVEs with confirmed active exploitation.
 - [FIRST.org EPSS API](https://api.first.org/data/v1/epss) — ML exploitation-probability scores by CVE ID.
@@ -322,5 +322,5 @@ Scenario: User declines at the checkpoint
 - **[Workflow Naming Convention](../../conventions/structure/workflow-naming.md)**: Basename `repo-dependency-bump-planning` parses as scope=`repo`, qualifier=`dependency-bump`, type=`planning`.
 - **[Plans Organization Convention](../../conventions/structure/plans.md)**: The backlog plan uses the `YYYY-MM-DD__<identifier>/` creation-date-prefixed folder form.
 - **[Web Research Delegation Convention](../../conventions/writing/web-research-delegation.md)**: Version/CVE/yank research delegated to `web-research-maker`.
-- **[Subagent Orchestration Convention](../../development/agents/subagent-orchestration.md)**: Research agents capped at 3 concurrent.
+- **[Subagent Orchestration Convention](../../development/agents/subagent-orchestration.md)**: Research agents capped at 2 concurrent.
 - **[Linking Convention](../../conventions/formatting/linking.md)**: Cross-references use GitHub-compatible markdown with `.md` extensions.
