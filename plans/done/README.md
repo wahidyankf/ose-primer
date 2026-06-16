@@ -14,6 +14,20 @@ Example: `2026-04-27__adopt-mermaid-checker-from-ose-public/` where `2026-04-27`
 
 ## Completed Projects
 
+- [2026-06-16: Plan-Doc UI Mockup Convention](./2026-06-16__plan-doc-ui-mockup-convention/README.md)
+  — ose-primer instance of the 3-repo `plan-doc-ui-mockup-convention` parallel set (siblings:
+  ose-public, ose-infra). Authored the "UI Mockups in Plan Docs" convention in
+  `repo-governance/conventions/formatting/diagrams.md` (both-tiers rule: low-fi ASCII wireframe +
+  hi-fi Excalidraw `.excalidraw.png`; grounding rule; design funnel diverge→narrow→select→justify;
+  prior-art via `web-research-maker`; rendering-support matrix; ruled-out table for inline HTML+CSS /
+  MDX / Mermaid-as-wireframe / `.excalidraw.svg`). Wired UI-design-funnel enforcement (Step 5k) across
+  plan-maker / plan-checker / plan-fixer / `plan-quality-gate` + the `plan-creating-project-plans`
+  skill, mirroring the specs/Gherkin completeness binding; `.opencode` mirrors re-synced. Self-contained
+  worked example in the plan's `assets/` (3 named low-fi ASCII alternatives → 2 hi-fi `.png` finalists →
+  Selected: Option A — Table list + modal form → rationale), grounded in `libs/ts-ui` (Dialog/Button/
+  Input/Card/Label reused; Table + Select flagged net-new). Executed directly on `main` per owner
+  decision; cross-repo sibling-plan pass-status + live VSCode/GitHub visual sign-off deferred to human.
+  (Completed: 2026-06-16)
 - [2026-06-14: Standardize Repo Toolchain Parity](./2026-06-14__standardize-repo-toolchain-parity/README.md)
   — ose-primer side of the three-repo `standardize-repo-toolchain-parity` set (siblings: ose-public,
   ose-infra). Converged the full repo toolchain to the shared Converged Toolchain Target: canonical CI

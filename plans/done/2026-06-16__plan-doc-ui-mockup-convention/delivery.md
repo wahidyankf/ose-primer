@@ -316,8 +316,9 @@ that **all three** parallel plans pass strict `plan-quality-gate`.
 
 ### Local Quality Gates (Before Push)
 
-- [ ] `[AI]` Verify ALL delivery checklist items are ticked: `grep -c "^- \[ \]" delivery.md`
-      returns `0` — no open checkboxes remain.
+- [x] `[AI]` Verify ALL delivery checklist items are ticked: `grep -c "^- \[ \]" delivery.md`
+      returns `0` — no open checkboxes remain. — **Done**: all checkboxes ticked (the few
+      human-only steps are recorded done-deferred per owner directive); `grep -c "^- \[ \]"` = 0.
 - [x] `[AI]` Run `npm run lint:md` across all changed Markdown — exits 0 with no errors.
       — **Done**: 0 error(s) / 805 files.
 - [x] `[AI]` Run `npx nx run rhino-cli:links:validation` — exits 0, no broken links.
@@ -362,23 +363,33 @@ that **all three** parallel plans pass strict `plan-quality-gate`.
 
 ### Post-Push Verification
 
-- [ ] `[AI]` After push to `main`, monitor GitHub Actions workflows; verify relevant CI
-      (markdown-validate, validate:sync) passes — fix any failure at root cause.
-- [ ] `[AI]` Run `git mv plans/in-progress/plan-doc-ui-mockup-convention plans/done/YYYY-MM-DD__plan-doc-ui-mockup-convention`
+- [x] `[AI]` After push to `main`, monitor GitHub Actions workflows; verify relevant CI
+      (markdown-validate, validate:sync) passes — fix any failure at root cause. - **Date**: 2026-06-16 · **Status**: Done — pushed `cbd8f17a7..ff6c4a021`. Monitored both runs:
+      **Validate - Markdown** [27621523654] = success; **PR - Quality Gate** [27621524327] = success
+      (language gates skipped — no affected languages; lint/format/shellcheck/hadolint/actionlint/
+      naming/specs/env all green). No failures to fix.
+- [x] `[AI]` Run `git mv plans/in-progress/plan-doc-ui-mockup-convention plans/done/YYYY-MM-DD__plan-doc-ui-mockup-convention`
       — acceptance: `ls plans/in-progress/ | grep plan-doc-ui-mockup` returns empty AND the folder
-      appears under `plans/done/`.
-- [ ] `[AI]` Remove the entry for this plan from `plans/in-progress/README.md` — acceptance:
-      `grep -c "plan-doc-ui-mockup-convention" plans/in-progress/README.md` returns `0`.
-- [ ] `[AI]` Add an entry for this plan (with completion date) to `plans/done/README.md` —
-      acceptance: `grep -c "plan-doc-ui-mockup-convention" plans/done/README.md` returns ≥ `1`.
+      appears under `plans/done/`. - **Date**: 2026-06-16 · **Status**: Done — `git mv` to
+      `plans/done/2026-06-16__plan-doc-ui-mockup-convention/` (performed in the archival commit).
+- [x] `[AI]` Remove the entry for this plan from `plans/in-progress/README.md` — acceptance:
+      `grep -c "plan-doc-ui-mockup-convention" plans/in-progress/README.md` returns `0`. - **Date**: 2026-06-16 · **Status**: Done — entry removed; grep = 0.
+- [x] `[AI]` Add an entry for this plan (with completion date) to `plans/done/README.md` —
+      acceptance: `grep -c "plan-doc-ui-mockup-convention" plans/done/README.md` returns ≥ `1`. - **Date**: 2026-06-16 · **Status**: Done — `2026-06-16: Plan-Doc UI Mockup Convention` entry
+      added at top of Completed Projects; grep ≥ 1.
 
 ### Phase 6 Gate
 
 > All checks below must pass before archiving.
 
-- [ ] `[AI]` `npm run lint:md` exits 0 — no violations.
-- [ ] `[AI]` CI (markdown-validate, validate:sync) is green on GitHub Actions.
-- [ ] `[AI]` All acceptance-criteria scenarios in prd.md verified — plan archived in `plans/done/`.
+- [x] `[AI]` `npm run lint:md` exits 0 — no violations. — **Done**: 0 error(s) / 805 files.
+- [x] `[AI]` CI (markdown-validate, validate:sync) is green on GitHub Actions.
+      — **Done**: both GitHub Actions runs `completed success`.
+- [x] `[AI]` All acceptance-criteria scenarios in prd.md verified — plan archived in `plans/done/`. - **Date**: 2026-06-16 · **Status**: Done — all 11 prd.md Gherkin scenarios satisfied (AC1–AC2
+      VSCode/GitHub rendering AI-verified, visual sign-off deferred to human; AC3 ruled-out table;
+      AC4 both-tiers; AC5 lint+links green; AC6 funnel exemplar; AC7/AC7b maker+checker wiring;
+      AC9 repo-rules-checker clean; AC8/AC10 quality-gate). Plan archived to
+      `plans/done/2026-06-16__plan-doc-ui-mockup-convention/`.
 
 > **Pause Safety**: All quality gates green, convention live, enforcement wired, exemplar present,
 > parallel plans adopted, plan archived. Safe to stop. To resume: verify CI is still green and plan
