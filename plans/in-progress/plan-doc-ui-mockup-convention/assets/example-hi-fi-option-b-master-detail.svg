@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="420" viewBox="0 0 680 420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" role="img" aria-label="High-fidelity mockup of Option B — master-detail layout with the expense list on the left and an edit form on the right">
+  <rect width="680" height="420" fill="#f1f5f9"/>
+  <rect x="24" y="24" width="632" height="372" rx="14" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+
+  <!-- vertical divider between list and form -->
+  <line x1="300" y1="44" x2="300" y2="376" stroke="#e2e8f0" stroke-width="1.2"/>
+
+  <!-- LEFT: list header -->
+  <text x="48" y="68" font-size="17" font-weight="700" fill="#0f172a">Expenses</text>
+  <rect x="208" y="50" width="68" height="28" rx="8" fill="#4f46e5"/>
+  <text x="242" y="69" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle">+ New</text>
+
+  <!-- list rows -->
+  <text x="48" y="108" font-size="13.5" fill="#0f172a">Office lunch</text>
+  <text x="232" y="108" font-size="13.5" fill="#64748b">$42</text>
+
+  <!-- selected row -->
+  <rect x="36" y="120" width="252" height="34" rx="8" fill="#eef2ff"/>
+  <rect x="36" y="120" width="3" height="34" rx="1.5" fill="#4f46e5"/>
+  <text x="48" y="142" font-size="13.5" font-weight="600" fill="#3730a3">Train pass</text>
+  <text x="232" y="142" font-size="13.5" font-weight="600" fill="#3730a3">$88</text>
+
+  <text x="48" y="182" font-size="13.5" fill="#0f172a">Cloud hosting</text>
+  <text x="228" y="182" font-size="13.5" fill="#64748b">$120</text>
+
+  <text x="48" y="216" font-size="13.5" fill="#0f172a">Domain renew</text>
+  <text x="232" y="216" font-size="13.5" fill="#64748b">$14</text>
+
+  <!-- RIGHT: form header -->
+  <text x="330" y="68" font-size="16" font-weight="700" fill="#0f172a">Edit expense</text>
+  <line x1="330" y1="82" x2="632" y2="82" stroke="#e2e8f0" stroke-width="1.2"/>
+
+  <!-- field: Date -->
+  <text x="330" y="112" font-size="12" fill="#475569">Date</text>
+  <rect x="330" y="118" width="302" height="30" rx="7" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+  <text x="342" y="138" font-size="13" fill="#0f172a">2026-06-03</text>
+
+  <!-- field: Description -->
+  <text x="330" y="170" font-size="12" fill="#475569">Description</text>
+  <rect x="330" y="176" width="302" height="30" rx="7" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+  <text x="342" y="196" font-size="13" fill="#0f172a">Train pass</text>
+
+  <!-- field: Category + Amount -->
+  <text x="330" y="228" font-size="12" fill="#475569">Category</text>
+  <rect x="330" y="234" width="146" height="30" rx="7" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+  <text x="342" y="254" font-size="13" fill="#0f172a">Transit</text>
+  <path d="M458 246 l6 7 l6 -7" fill="none" stroke="#64748b" stroke-width="1.5"/>
+  <text x="488" y="228" font-size="12" fill="#475569">Amount</text>
+  <rect x="488" y="234" width="144" height="30" rx="7" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+  <text x="500" y="254" font-size="13" fill="#0f172a">88.00</text>
+  <text x="600" y="254" font-size="12" fill="#64748b">USD</text>
+
+  <!-- actions -->
+  <rect x="470" y="296" width="76" height="30" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2"/>
+  <text x="508" y="316" font-size="13" font-weight="600" fill="#475569" text-anchor="middle">Cancel</text>
+  <rect x="556" y="296" width="76" height="30" rx="8" fill="#4f46e5"/>
+  <text x="594" y="316" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle">Save</text>
+</svg>

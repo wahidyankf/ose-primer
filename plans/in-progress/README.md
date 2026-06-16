@@ -8,6 +8,10 @@ Active project plans currently being worked on.
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
   exports research dossiers.
+- [Plan-Doc UI Mockup Convention](./plan-doc-ui-mockup-convention/README.md)
+  — repository convention for embedding draft / low-fidelity UI mockups inside Markdown
+  plan documents so they render in both VSCode and GitHub; ose-primer instance of the
+  3-repo parallel adoption set, worked example is a CRUD entity list + create/edit form.
 
 ## Folder Naming
 
