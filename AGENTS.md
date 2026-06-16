@@ -158,6 +158,17 @@ after the tool they run (Invariant A in the parity checklist).
 
 **See**: [Cross-Language Lint Strictness](./repo-governance/development/quality/cross-language-lint-strictness.md)
 
+## Specs & Gherkin Completeness (Both Paths)
+
+Code under `apps/`/`libs/` never lands without its companion `specs/` Gherkin. This binds **both** ways a behavior change arrives at `apps/`, `libs/`, or `specs/`:
+
+- **Direct change (no plan doc)**: edit app/lib code and add/update the matching `specs/apps/**` or `specs/libs/**` Gherkin `.feature` files (plus contracts/tests/docs) in the **same commit or PR**. Enforced by the `specs:coverage` Nx target and `swe-code-checker` (Step 6.6).
+- **Planned change (plan doc)**: any plan whose scope touches `apps/`, `libs/`, or `specs/` MUST carry explicit delivery-checklist steps that add/update the companion Gherkin and run `specs:coverage`. `plan-maker` emits them; `plan-checker` (Step 5j) flags their absence.
+
+Pure refactors that preserve behavior, dependency bumps with no behavior change, and docs/governance-only changes are exempt.
+
+**See**: [repo-governance/development/quality/feature-change-completeness.md](./repo-governance/development/quality/feature-change-completeness.md)
+
 ## rhino-cli Command Surface
 
 All callers (hooks, CI workflows, `package.json` scripts) use the canonical
