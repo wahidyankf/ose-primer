@@ -159,11 +159,11 @@ gh pr create --title "plan: <objective> parity" --body "..." --draft
 
 Use this mode when a formal review step is wanted before plans land on `main`.
 
-**Note on ose-primer**: The ose-primer Sync Convention defaults propagation to PRs (every
-mutation reaching `ose-primer` must flow through a worktree + branch + draft PR). When the
-selected mode is `main-to-main` or `worktree-to-main` this is a documented, invoker-approved
-deviation from that default. The grilling in Step 3 MUST surface this conflict explicitly and
-record the invoker's decision before proceeding.
+**Note on ose-primer**: Propagation into `ose-primer` may land via a worktree + branch + draft
+PR **or** via a direct push to `main` — both modes are allowed, the invoker chooses per run, and
+neither is the default. The grilling in Step 3 MUST surface this choice explicitly and record the
+invoker's decision (PR vs direct-to-main) before proceeding, so the selected delivery mode for the
+`ose-primer` mutation is never implicit.
 
 ## Steps
 
@@ -212,8 +212,9 @@ Meta-dimensions to include alongside technical dimensions:
 - **Rationale doc location**: where each repo's `docs/explanation/<objective-slug>-parity-decisions.md`
   (or closest equivalent) will be created (app-scoped `apps/<app>/docs/`, lib-scoped
   `libs/<lib>/docs/`, repo governance tree, etc.)
-- **ose-primer sync conflict**: whether the selected mode deviates from the primer's PR-only
-  default (applies when ose-primer is in the parity set and mode is a main-push mode)
+- **ose-primer delivery mode**: which delivery mode (draft PR or direct push to `main`) carries
+  the `ose-primer` mutation — both are allowed and neither is the default, so the choice must be
+  recorded (applies when ose-primer is in the parity set)
 - **Repo-specific constraints**: any repo constraint (private visibility, self-hosted CI runner,
   dual-CLI parity guard, missing toolchain) that forces a per-repo deviation
 
