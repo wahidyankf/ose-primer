@@ -11,7 +11,7 @@ copy-paste examples, and citations.
 GitHub's Markdown HTML sanitizer removes the `style=`, `class`, and `id` attributes and the
 `<style>` and `<script>` elements entirely. It is an allowlist, not a partial filter — only legacy
 presentation attributes survive: `align`, `border`, `cellpadding`, `cellspacing`, `color`, `height`,
-`width`, `valign`, `colspan`, `rowspan`, plus `href`/`src`/`alt`/`title`. [Web-cited, accessed
+`width`, `valign`, `colspan`, `rowspan`, plus `href`/`src`/`alt`/`title`. [Web-cited: https://github.com/rhysd/marked-sanitizer-github, accessed
 2026-06-16; excerpt: the `rhysd/marked-sanitizer-github` allowlist enumerates permitted attributes
 and confirms `style`, `class`, `id` are absent from it.]
 
@@ -27,14 +27,14 @@ Allowed elements include `table`, `thead`, `tbody`, `tr`, `td`, `th`, `details`,
 VSCode's built-in Markdown preview uses **markdown-it** with raw-HTML passthrough enabled. Its
 webview CSP blocks `<script>` execution and external HTTP resources, but does **not** strip
 `style=`. So inline HTML+CSS renders fully in VSCode. This is the asymmetry that makes inline-HTML
-mockups misleading: they look right locally and break on GitHub. [Web-cited, accessed 2026-06-16;
+mockups misleading: they look right locally and break on GitHub. [Web-cited: https://code.visualstudio.com/docs/languages/markdown, accessed 2026-06-16;
 excerpt: VS Code Markdown documentation states the preview "renders HTML blocks and inline HTML
 directly" using markdown-it, with CSP restricting scripts but not style attributes.]
 
 ### Mermaid has no wireframe type
 
 Mermaid renders natively on both GitHub and VSCode, but it has **no UI/wireframe diagram type**
-(requested 2020 in mermaid-js/mermaid#1184, still "contributor needed"). [Web-cited, accessed
+(requested 2020 in mermaid-js/mermaid#1184, still "contributor needed"). [Web-cited: https://github.com/mermaid-js/mermaid/issues/1184, accessed
 2026-06-16; excerpt: mermaid-js/mermaid#1184 issue open since 2020, status "contributor needed" with
 no merged implementation.] Repurposing flowchart nodes produces a flow diagram, not a UI. The repo's
 own mermaid validator (`rhino-cli md validate mermaid`) further caps node width and label length,
@@ -46,7 +46,7 @@ making any UI layout impossible. **Not viable for wireframes.**
 in metadata — both re-open as an editable canvas in the Excalidraw VSCode extension or on
 excalidraw.com. Both render on GitHub via `![](./file)`. **But** Excalidraw's custom hand-drawn
 fonts (Virgil, Cascadia) load from a CDN that GitHub's CSP blocks for SVG, so `.excalidraw.svg` text
-labels fall back to a generic font on GitHub (excalidraw/excalidraw#4855 [Web-cited, accessed
+labels fall back to a generic font on GitHub (excalidraw/excalidraw#4855 [Web-cited: https://github.com/excalidraw/excalidraw/issues/4855, accessed
 2026-06-16; excerpt: excalidraw/excalidraw#4855 confirms font CDN blocked by GitHub CSP, causing
 text fallback in SVG exports]). `.excalidraw.png` rasterises the fonts and renders faithfully →
 **use PNG for any GitHub-visible mockup.**
@@ -93,9 +93,9 @@ A mockup invented from scratch drifts from what the app can actually render and 
 the mockup from what is already there:
 
 - **Shared kit — `libs/ts-ui`**: the canonical component inventory (shadcn/ui + Radix + Tailwind),
-  its `libs/ts-ui-tokens` design tokens, and its Storybook. Reuse these components (table, dialog,
-  inputs, select, buttons, badges, cards) and token-driven spacing/color instead of inventing visual
-  language.
+  its `libs/ts-ui-tokens` design tokens, and its Storybook. Reuse the components that actually ship
+  today (`Dialog`, `Button`, `Input`, `Card`, `Label`, `Alert`) and token-driven spacing/color
+  instead of inventing visual language; anything the kit does not yet provide is flagged net-new.
 - **Target app**: the app's existing pages, layout shell, theme, and locale/i18n structure (e.g.
   `apps/crud-fe-dart-flutterweb` for the CRUD list + form example) — so the new screen matches the
   surrounding site.
@@ -104,8 +104,9 @@ the mockup from what is already there:
   the brand context to honour.
 
 Output of the survey: the mockup reuses real components and tokens, and any **net-new** component is
-named explicitly (the CRUD list + form example does this for the modal `Dialog` primitive it composes
-from `libs/ts-ui`) so the build gap is visible up front. The hi-fi example under [`assets/`](./assets/README.md)
+named explicitly (the CRUD list + form example flags a **`Table`** and a **`Select`** as the two
+net-new primitives — they do not yet exist in `libs/ts-ui`, whereas `Dialog`/`Button`/`Input`/`Card`
+are reused) so the build gap is visible up front. The hi-fi example under [`assets/`](./assets/README.md)
 deliberately uses the `ts-ui` palette (indigo primary, slate neutrals) to model this.
 
 ## Design funnel (diverge → narrow → select → justify)
@@ -152,7 +153,7 @@ refactors and non-UI plans are exempt, exactly as with the specs/Gherkin binding
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Gray #808080
 %% Enforcement chain: plan-maker → plan-checker → plan-fixer → plan-quality-gate
-flowchart LR
+flowchart TD
     A["plan-maker<br/>Requires funnel artefacts<br/>on UI-bearing plans;<br/>emits delivery steps"]:::blue
     B["plan-checker<br/>#40;new step#41;<br/>FLAGs HIGH any missing<br/>funnel artefact;<br/>exempts no-UI plans"]:::orange
     C["plan-fixer<br/>Scaffolds missing<br/>funnel sections;<br/>re-validates before apply"]:::teal
@@ -239,7 +240,7 @@ iterating.
 | PlantUML Salt           | Great wireframe syntax, but renders on neither GitHub nor VSCode built-in.        |
 | Inline `<svg>` in `.md` | Sanitizer strips inline SVG on GitHub; only file-referenced SVG renders.          |
 
-[Web-cited, accessed 2026-06-16; PlantUML Salt: plantuml.com/salt documents the wireframe syntax;
+[Web-cited: https://plantuml.com/salt, accessed 2026-06-16; PlantUML Salt: plantuml.com/salt documents the wireframe syntax;
 VSCode built-in preview has no PlantUML renderer and the jebbs extension is required. GitHub.com
 does not render PlantUML natively.]
 

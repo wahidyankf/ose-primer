@@ -84,6 +84,27 @@ authors at it.
    its own UI lib; all three pass strict `plan-quality-gate`.
 7. **Phase 6 — Quality gates + archival**.
 
+The convention enforcement chain — from authoring through validation to quality-gate — flows through
+four agents:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+flowchart TD
+    A["repo-rules-maker<br/>Authors & propagates<br/>convention"]:::blue
+    B["plan-maker<br/>Requires funnel on<br/>UI-bearing plans"]:::blue
+    C["plan-checker<br/>Flags missing funnel<br/>(HIGH)"]:::orange
+    D["plan-fixer<br/>Scaffolds missing<br/>funnel sections"]:::teal
+    E["plan-quality-gate<br/>Gate fails if funnel<br/>skipped"]:::purple
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
 ## Documents
 
 | Document                       | Purpose                                                    |

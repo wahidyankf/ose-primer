@@ -17,7 +17,7 @@ clear (BRD/PRD) and the existing UI is surveyed (R5). See
 ```mermaid
 %% Color Palette: Orange #DE8F05, Teal #029E73
 %% Funnel stages: DIVERGE (low-fi) → NARROW (hi-fi shortlist) → SELECT → JUSTIFY
-flowchart LR
+flowchart TD
     B["DIVERGE<br/>≥2 named low-fi<br/>ASCII alternatives"]:::orange
     C["NARROW<br/>2 hi-fi .excalidraw.png<br/>finalists"]:::orange
     D["SELECT<br/>Name the winner<br/>e.g. Table + modal"]:::teal
@@ -196,7 +196,8 @@ plan never passes without its design funnel enforced by `plan-checker` + `plan-f
   system rather than inventing them; the `swe-developing-frontend-ui` skill / `ts-ui` kit is the
   reference for tokens and component inventory.
 - Any **net-new** component the mockup introduces MUST be called out explicitly (as the CRUD list +
-  form example does for the modal `Dialog` primitive), so the gap is visible before build.
+  form example does for the `Table` and `Select` primitives — both absent from `libs/ts-ui`, whereas
+  the modal `Dialog` is reused), so the gap is visible before build.
 
 ### R6 — Design funnel (diverge → narrow → select → justify)
 

@@ -4,7 +4,8 @@ ASCII / Unicode wireframes in fenced code blocks are cheap, so this is where the
 present several genuinely different layouts for the screen, name them, and let reviewers compare
 line-by-line. All three options below target the same screen — a CRUD **entity list + create/edit
 form** (an expense tracker, the kind `apps/crud-fe-dart-flutterweb` ships) — and all reuse `libs/ts-ui`
-controls (table, dialog, inputs, select, buttons).
+components (`dialog`, `input`, `button`, `card`, `label`) plus two net-new primitives (`table` for the
+list, `select` for the dropdowns) flagged in [assets/README.md](./README.md).
 
 These feed Stage 2 (hi-fi shortlist) and Stage 3 (selection) — see
 [assets/README.md](./README.md) for which option was chosen and why.
