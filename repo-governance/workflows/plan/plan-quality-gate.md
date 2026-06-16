@@ -112,7 +112,8 @@ Run plan validation to identify completeness, accuracy, and hallucination issues
 - **Args**: `scope: {input.scope}`
 - **Output**: `{audit-report-1}` - Initial audit report in `generated-reports/`
 
-**Validation scope** (per `plan-checker` Steps 0-7 + 5b/5c/5d/5e/5f/5g):
+**Validation scope** (per `plan-checker` Steps 0–7, including mandatory Step 5 sub-steps
+5b / 5c / 5d / 5e / 5f / 5g / 5j / 5k):
 
 - Structure (folder name, file layout, mandatory sections)
 - Requirements (BRD + PRD content placement, Gherkin)
@@ -128,6 +129,13 @@ Run plan validation to identify completeness, accuracy, and hallucination issues
 - **Harness-neutrality scan** (Step 5g — conditional: fires only when the plan touches agents,
   skills, rules, or `repo-governance/` paths) per the
   [Multi-Harness Binding Convention](../../conventions/structure/multi-harness-binding.md)
+- **UI-design-funnel completeness** (Step 5k — conditional: fires only when the plan is
+  **UI-bearing**, i.e. it adds/changes user-facing screens or components under `apps/` or `libs/`).
+  FLAGS at HIGH any missing design-funnel artefact (≥2 named low-fi alternatives, 2 hi-fi
+  `.excalidraw.png` finalists, a named selection, a rationale, the grounding/prior-art note);
+  pure-refactor / no-UI plans are exempt. The gate fails when a UI-bearing plan skips the funnel.
+  See the [UI Mockups in Plan Docs](../../conventions/formatting/diagrams.md#ui-mockups-in-plan-docs)
+  convention.
 
 For external claims that are not already documented in the repo and require more than a
 single-shot URL fetch, `plan-checker` delegates research to
@@ -466,3 +474,4 @@ This workflow ensures plan quality and implementation readiness through iterativ
 - **[Plans Organization Convention](../../conventions/structure/plans.md)**: Workflow validates the five-document structure and worktree section per the convention
 - **[Plan Anti-Hallucination Convention](../../development/quality/plan-anti-hallucination.md)**: plan-checker's Step 5f enforces this convention's recipes, confidence labels, and Anti-Pattern Catalog
 - **[Multi-Harness Binding Convention](../../conventions/structure/multi-harness-binding.md)**: plan-checker's Step 5g (harness-neutrality scan) enforces this convention when the plan touches agents, skills, rules, or `repo-governance/` paths
+- **[UI Mockups in Plan Docs (diagrams convention)](../../conventions/formatting/diagrams.md#ui-mockups-in-plan-docs)**: plan-checker's Step 5k (UI-design-funnel completeness) enforces the both-tiers rule and design funnel when the plan is UI-bearing

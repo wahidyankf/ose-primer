@@ -216,6 +216,7 @@ The `repo-assessing-criticality-confidence` Skill provides complete confidence l
 - [Multi-Harness Binding Convention](../../repo-governance/conventions/structure/multi-harness-binding.md) - Rules applied during harness-neutrality scan fixes (Step 5g findings)
 - [Plans Organization Convention §Executor Tagging](../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule) - `[AI]`/`[HUMAN]` marker rules, legend, handoff/resume signal requirement (Step 5h fixes)
 - [Plans Organization Convention §Phases as Natural Pauses With Clear Gates](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule) - Phase gate scaffold, Pause Safety note, barrier rule (Step 5h fixes)
+- [Diagram and Schema Convention §UI Mockups in Plan Docs](../../repo-governance/conventions/formatting/diagrams.md#ui-mockups-in-plan-docs) - Both-tiers rule, design funnel, grounding, and exemption rules scaffolded for UI-design-funnel gaps (Step 5k fixes)
 
 You validate thoroughly, apply fixes confidently (for objective issues only), and report transparently. Your goal is to improve plan quality while avoiding false positives.
 
@@ -723,3 +724,147 @@ The fixer's refusal options when verification fails:
 4. **Convert to placeholder** — `_Unknown — verify before authoring_` with a delivery item under Open Questions.
 
 Forbidden: replacing one hallucination with a more plausible-sounding hallucination. The fixer's job is to ground claims in repo or web evidence, not to make broken plans look polished.
+
+## UI-Design-Funnel Fixes (Step 5k Findings)
+
+When `plan-checker` reports missing `UI-design-funnel` artefacts for a **UI-bearing** plan (Step 5k
+findings), scaffold the missing sections so the plan author can fill in the design content.
+
+### Confidence Assessment
+
+- **HIGH Confidence** (scaffold and apply): The plan is confirmed UI-bearing (scope touches `apps/`
+  or `libs/` user-facing components), and a specific artefact is entirely absent. Scaffold the
+  missing section with stubs.
+- **MEDIUM Confidence** (flag for manual review, do not auto-scaffold): It is unclear whether the
+  plan is genuinely UI-bearing (e.g., the scope touches `libs/ts-utils` only, not UI components).
+  Do not scaffold; write to `## Manual Review Required` with the ambiguity described.
+- **FALSE_POSITIVE**: A `UI-design-funnel exemption` blockquote is already present in `tech-docs.md`
+  — the plan is legitimately no-UI. Document per the Skip-List protocol.
+
+### How to Fix Missing Funnel Artefacts
+
+**Re-validate before applying**: Confirm the plan is UI-bearing by reading `prd.md`, `tech-docs.md`,
+and delivery steps for references to `libs/ts-ui`, `libs/ts-ui-tokens`, or frontend component
+paths. If the plan is not UI-bearing, classify FALSE_POSITIVE.
+
+#### 1. Missing `prd.md §UI-Design-Funnel` section (grounding + prior-art + wireframes + selection)
+
+Append to `prd.md` (after the Product Scope section):
+
+````markdown
+## UI-Design-Funnel
+
+> _This section tracks the design-funnel artefacts required for UI-bearing plans._
+> _See [Diagram and Schema Convention §UI Mockups in Plan Docs](../../repo-governance/conventions/formatting/diagrams.md#ui-mockups-in-plan-docs)._
+
+### Grounding Note
+
+<!-- TODO [plan-maker]: Survey libs/ts-ui/, libs/ts-ui-tokens/, and <target-app>/src/components/.
+List components available for reuse and identify any net-new components needed. -->
+
+_Reusable components_: [to be filled by plan-maker]
+
+_Net-new components_: [to be filled by plan-maker]
+
+### Prior-Art Research
+
+<!-- TODO [plan-maker]: Delegate to web-research-maker for published UI patterns relevant to this
+surface. Embed cited excerpt + URL + access date inline. -->
+
+_Prior art_: [to be filled via web-research-maker]
+
+### Low-Fi Wireframe Alternatives
+
+<!-- TODO [plan-maker]: Author ≥2 named ASCII wireframe alternatives. Name each option clearly. -->
+
+```text
+Option A: [Name — e.g., Table + Modal]
+
+[ASCII wireframe here]
+
+Option B: [Name — e.g., Master-Detail]
+
+[ASCII wireframe here]
+```
+
+### Hi-Fi Finalists
+
+<!-- TODO [plan-maker]: Produce 2 hi-fi Excalidraw PNG files in plans/<plan>/assets/ and reference
+them here. Name them descriptively. -->
+
+- `assets/option-a-<name>.excalidraw.png` — [Option A description]
+- `assets/option-b-<name>.excalidraw.png` — [Option B description]
+
+### Selected Design
+
+<!-- TODO [HUMAN]: Choose the winning design and write a one-sentence rationale. -->
+
+Selected: [Option A or B — fill in the name]
+
+Decision rationale: [one sentence explaining why this option was chosen over the alternative]
+````
+
+#### 2. Missing hi-fi finalist files in `assets/`
+
+Create the `assets/` directory and placeholder files:
+
+```bash
+mkdir -p plans/<plan-folder>/assets
+touch plans/<plan-folder>/assets/option-a-<name>.excalidraw.png
+touch plans/<plan-folder>/assets/option-b-<name>.excalidraw.png
+```
+
+After creating the placeholders, add a `<!-- TODO: replace with real Excalidraw export -->` comment
+inline in `prd.md` under the Hi-Fi Finalists subsection.
+
+#### 3. Missing `UI-design-funnel` delivery checklist steps
+
+When the delivery checklist has no `UI-design-funnel` steps, insert the following block into
+`delivery.md` (or the single-file plan's Delivery Checklist section) as the first phase or as a
+sub-phase of the relevant implementation phase:
+
+```markdown
+### UI-Design-Funnel Artefacts
+
+- [ ] [AI] Grounding survey: read `libs/ts-ui/`, `libs/ts-ui-tokens/`, and `<target-app>/src/components/`
+      — list reusable components and flag net-new. Acceptance: grounding note present in
+      `prd.md §UI-Design-Funnel §Grounding Note`.
+- [ ] [AI] Prior-art research: delegate to `web-research-maker` for published UI patterns
+      relevant to this surface — embed cited excerpt + URL + access date inline.
+      Acceptance: prior-art section present in `prd.md §UI-Design-Funnel §Prior-Art Research`.
+- [ ] [AI] Low-fi diverge: author ≥2 named ASCII wireframe alternatives in
+      `prd.md §UI-Design-Funnel §Low-Fi Wireframe Alternatives`
+      — acceptance: at least two named options present in a fenced code block.
+- [ ] [AI] Hi-fi narrow: produce 2 hi-fi Excalidraw PNG finalists in `plans/<plan>/assets/`
+      (e.g. `option-a-<name>.excalidraw.png`, `option-b-<name>.excalidraw.png`)
+      — acceptance: both files committed; referenced from `prd.md §UI-Design-Funnel §Hi-Fi Finalists`.
+- [ ] [HUMAN] Select + justify: choose the winning design by name and write a one-sentence
+      decision rationale in `prd.md §UI-Design-Funnel §Selected Design`.
+      Observable resume signal: `prd.md` contains "Selected: Option" and a rationale sentence;
+      verify with `grep -i "Selected: Option" plans/<plan>/prd.md`.
+```
+
+#### 4. Missing exemption when plan is no-UI
+
+When `plan-checker` flags the absence of both funnel artefacts AND an exemption statement, and the
+plan is confirmed to be pure-refactor/no-UI, add the exemption blockquote to `tech-docs.md`:
+
+```markdown
+> **UI-design-funnel exemption**: this plan is pure-refactor/no-UI — no new or changed screens.
+> Verified: scope touches only [list non-UI paths, e.g., `libs/ts-utils/src/`].
+```
+
+Classify **HIGH confidence** if the plan's scope section explicitly lists only non-UI paths.
+Classify **MEDIUM confidence** (manual review) if the scope is ambiguous.
+
+### Self-Verification After Scaffold
+
+After inserting scaffolded sections, verify:
+
+```bash
+grep -i "UI-design-funnel" plans/<plan>/prd.md || echo "WARNING: section missing"
+grep -i "UI-design-funnel exemption" plans/<plan>/tech-docs.md || echo "WARNING: exemption missing"
+grep -i "Selected: Option" plans/<plan>/prd.md && echo "selection present" || echo "WARNING: selection missing"
+```
+
+Log results as **APPLIED (verified)** or **FAILED (not applied)** in the fix report.

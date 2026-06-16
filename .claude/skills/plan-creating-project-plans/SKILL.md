@@ -44,6 +44,10 @@ tiebreaker for genuinely ambiguous decisions.
 - What is the scope? What is explicitly out of scope?
 - What are the constraints (performance, harness-neutrality, backwards compatibility)?
 - Are there design decision forks where the user has a preference?
+- **`UI-design-funnel` (UI-bearing plans only)** — Does this plan add or change any user-facing screens or components under `apps/` or `libs/` (e.g. `libs/ts-ui`)? If yes, three structured questions apply (present each as 2-4 options with a `(Recommended)` pick):
+  - **(a) Low-fi diverge**: Which 2+ named low-fi ASCII wireframe alternatives should we explore? Options: (1) List two named layouts now (Recommended); (2) List three named layouts; (3) List four; (4) Chat about the design space first.
+  - **(b) Prior art**: What existing `libs/ts-ui` / `libs/ts-ui-tokens` components or published UI patterns inform these layouts? Options: (1) Survey the repo first, then answer (Recommended); (2) Delegate to `web-research-maker` for external prior art; (3) Use only internal components; (4) Chat about prior art first.
+  - **(c) Select + justify**: Which layout is selected and why — what is the one-sentence design rationale? Options: (1) State selection + rationale now (Recommended); (2) Defer selection to hi-fi phase; (3) Let plan-checker flag the gap; (4) Chat about tradeoffs.
 
 **Post-write grill covers** (each as a structured multiple-choice question):
 
@@ -54,6 +58,7 @@ tiebreaker for genuinely ambiguous decisions.
 - Is Phase 0 (Environment Setup and Baseline) the first phase in `delivery.md`?
 - Does `delivery.md` open with the `[AI]`/`[HUMAN]` executor legend, and is every step that only a human can do tagged `[HUMAN]`?
 - Does every phase end with a `### Phase N Gate` (must-pass verification) followed by a Pause Safety note?
+- **`UI-design-funnel` (UI-bearing plans only)** — If the plan is UI-bearing, does `prd.md` (or the single-file README) contain: (a) ≥2 named low-fi ASCII wireframe alternatives, (b) 2 hi-fi `.excalidraw.png` finalist references, (c) a NAMED selected design, (d) a one-sentence rationale/decision record, (e) a grounding note surveying existing `libs/ts-ui` / `libs/ts-ui-tokens` and the target app, and (f) prior-art citations? Options: (1) All funnel artefacts are present — proceed (Recommended); (2) One or more artefacts are missing — revise before signaling done; (3) Plan is pure-refactor/no-UI and is explicitly exempt; (4) Chat about which artefacts are needed.
 
 **Do NOT proceed to writing until all pre-write branches are resolved.** Unresolved design
 decisions force expensive rewrites.
@@ -747,6 +752,43 @@ Escape hatch: trivial single-file, rename, copy-edit, dependency-bump, and docs-
 
 For accessible palette, syntax rules, and WCAG compliance, see [Color Accessibility Convention](../../../repo-governance/conventions/formatting/color-accessibility.md), [Diagram and Schema Convention](../../../repo-governance/conventions/formatting/diagrams.md), and the `docs-creating-accessible-diagrams` Skill.
 
+## UI-Design-Funnel for UI-Bearing Plans
+
+A plan is **UI-bearing** when it adds or changes user-facing screens or components under `apps/` or `libs/` (e.g. `libs/ts-ui`). Pure-refactor, dependency-bump, and no-UI plans are EXEMPT — state the exemption explicitly in `tech-docs.md`, mirroring the specs/Gherkin exemption.
+
+For every UI-bearing plan the `UI-design-funnel` MUST produce:
+
+1. **Grounding note** — survey existing `libs/ts-ui`, `libs/ts-ui-tokens`, and the target app. Identify which components to reuse and which would be net-new. Place in `prd.md` (or the single-file README's Product Requirements section).
+2. **Prior-art research** — delegate to `web-research-maker` to find published UI patterns, component-library examples, or design-system precedents that inform the design. Embed the cited excerpt + URL + access date inline.
+3. **Low-fi diverge (≥2 named alternatives)** — produce at least two named ASCII wireframe alternatives inside a fenced code block (e.g. `Option A: Table + Modal`, `Option B: Master-Detail`). Each wireframe is named and shows the key structural difference.
+4. **Hi-fi narrow (2 finalists)** — produce exactly two hi-fi `.excalidraw.png` files (named descriptively, e.g. `option-a-table-modal.excalidraw.png`, `option-b-master-detail.excalidraw.png`) committed to the plan's `assets/` folder. Reference them from `prd.md`.
+5. **Select (NAMED selection)** — state the selected design by name (e.g. "Selected: Option A — Table + Modal").
+6. **Justify (decision record)** — write a one-sentence rationale/decision record explaining why this option was chosen over the alternatives.
+
+**Delivery-checklist steps** — plan-maker MUST emit explicit `UI-design-funnel` delivery steps:
+
+```markdown
+- [ ] [AI] Grounding survey: read `libs/ts-ui/`, `libs/ts-ui-tokens/`, and the target app's
+      existing component usage — list reusable components and flag net-new components needed.
+      Acceptance: grounding note present in `prd.md §UI-Design-Funnel`.
+- [ ] [AI] Prior-art research: delegate to `web-research-maker` for published UI patterns
+      relevant to this surface — embed cited excerpt + URL + access date inline.
+      Acceptance: prior-art section present in `prd.md §UI-Design-Funnel`.
+- [ ] [AI] Low-fi diverge: author ≥2 named ASCII wireframe alternatives in `prd.md`
+      — acceptance: at least two named options present in a fenced code block.
+- [ ] [AI] Hi-fi narrow: produce 2 hi-fi Excalidraw PNG finalists in `plans/.../assets/`
+      (e.g. `option-a-<name>.excalidraw.png`, `option-b-<name>.excalidraw.png`)
+      — acceptance: both files committed; referenced from `prd.md §UI-Design-Funnel`.
+- [ ] [HUMAN] Select + justify: choose the winning design by name and write a one-sentence
+      decision rationale in `prd.md §UI-Design-Funnel`.
+      Observable resume signal: `prd.md` contains "Selected: Option" and a rationale sentence;
+      verify with `grep -i "Selected: Option" plans/.../prd.md`.
+```
+
+**Exemption** — a plan is exempt when its scope is confirmed to touch zero user-facing screens or components. The exemption MUST be stated explicitly: add a `> **UI-design-funnel exemption**: this plan is pure-refactor/no-UI — no new or changed screens.` blockquote in `tech-docs.md`. `plan-checker` (Step 5k) flags the absence of either the funnel artefacts or the exemption statement as **HIGH**.
+
+**Cross-reference**: [Diagram and Schema Convention §UI Mockups in Plan Docs](../../../repo-governance/conventions/formatting/diagrams.md#ui-mockups-in-plan-docs) for the authoritative rule.
+
 ## References
 
 **Primary Convention**: [Plans Organization Convention](../../../repo-governance/conventions/structure/plans.md)
@@ -764,6 +806,7 @@ For accessible palette, syntax rules, and WCAG compliance, see [Color Accessibil
 - [CI Blocker Resolution](../../../repo-governance/development/quality/ci-blocker-resolution.md) - Preexisting CI failures must be fixed, never bypassed
 - [Acceptance Criteria Convention](../../../repo-governance/development/infra/acceptance-criteria.md) - Gherkin format details
 - [File Naming Convention](../../../repo-governance/conventions/structure/file-naming.md) - Naming standards
+- [Diagram and Schema Convention §UI Mockups in Plan Docs](../../../repo-governance/conventions/formatting/diagrams.md#ui-mockups-in-plan-docs) - UI-design-funnel: design-funnel rule for UI-bearing plans (low-fi ASCII alternatives → hi-fi Excalidraw finalists → named selection → rationale)
 
 **Related Skills**:
 

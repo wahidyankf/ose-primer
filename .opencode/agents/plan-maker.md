@@ -542,6 +542,41 @@ or deletes observable behavior in `apps/`, `libs/`, or `specs/`; see
 Pure refactors that preserve behavior, dependency bumps with no behavior change, and
 docs/governance-only plans are exempt — state the exemption explicitly in `tech-docs.md`.
 
+**2c. UI-Design-Funnel Delivery** (conditional — MANDATORY when the plan is **UI-bearing**: it adds
+or changes any user-facing screens or components under `apps/` or `libs/`, e.g. `libs/ts-ui`; see
+[Diagram and Schema Convention §UI Mockups in Plan Docs](../../repo-governance/conventions/formatting/diagrams.md#ui-mockups-in-plan-docs)):
+
+```markdown
+### UI-Design-Funnel Artefacts
+
+- [ ] [AI] Grounding survey: read `libs/ts-ui/`, `libs/ts-ui-tokens/`, and the target app's
+      existing component usage — list reusable components and flag net-new components needed.
+      Acceptance: grounding note present in `prd.md §UI-Design-Funnel`.
+- [ ] [AI] Prior-art research: delegate to `web-research-maker` for published UI patterns
+      relevant to this surface — embed cited excerpt + URL + access date inline.
+      Acceptance: prior-art section present in `prd.md §UI-Design-Funnel`.
+- [ ] [AI] Low-fi diverge: author ≥2 named ASCII wireframe alternatives in `prd.md`
+      — acceptance: at least two named options present in a fenced code block.
+- [ ] [AI] Hi-fi narrow: produce 2 hi-fi Excalidraw PNG finalists in `plans/<plan>/assets/`
+      (e.g. `option-a-<name>.excalidraw.png`, `option-b-<name>.excalidraw.png`)
+      — acceptance: both files committed; referenced from `prd.md §UI-Design-Funnel`.
+- [ ] [HUMAN] Select + justify: choose the winning design by name and write a one-sentence
+      decision rationale in `prd.md §UI-Design-Funnel`.
+      Observable resume signal: `prd.md` contains "Selected: Option" and a rationale sentence;
+      verify with `grep -i "Selected: Option" plans/<plan>/prd.md`.
+```
+
+A plan is **UI-bearing** when its scope creates, modifies, or deletes user-facing screens or
+components under `apps/` or `libs/`. Pure-refactor and no-UI plans are exempt — state the
+exemption explicitly:
+
+```markdown
+> **UI-design-funnel exemption**: this plan is pure-refactor/no-UI — no new or changed screens.
+```
+
+Add this blockquote to `tech-docs.md`. `plan-checker` (Step 5k) flags the absence of either the
+funnel artefacts or the exemption statement as **HIGH**.
+
 **3. Post-Push CI Verification** (after every push step):
 
 ```markdown

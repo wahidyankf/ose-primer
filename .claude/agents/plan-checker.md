@@ -648,3 +648,61 @@ Enforces the [Feature Change Completeness Convention §Two Paths](../../repo-gov
 - Specs/Gherkin step present but no `specs:coverage` gate: **HIGH**
 - Step present but vague (no specific `.feature` path or domain): **MEDIUM**
 - Illegitimate "no behavior change" exemption used to skip specs: **HIGH**
+
+### 17. UI-Design-Funnel Completeness (Step 5k — MANDATORY for UI-Bearing Plans)
+
+Enforces the `UI-design-funnel` requirement defined in
+[Diagram and Schema Convention §UI Mockups in Plan Docs](../../repo-governance/conventions/formatting/diagrams.md#ui-mockups-in-plan-docs)
+for the plan path: a plan that adds or changes user-facing screens or components under `apps/` or
+`libs/` (e.g. `libs/ts-ui`) MUST carry explicit design-funnel artefacts and the delivery-checklist
+steps that produce them.
+
+#### What to Validate
+
+1. **UI-bearing scope detection** — From the plan's Scope (`README.md` / `prd.md`), file-impact
+   (`tech-docs.md`), and delivery steps, determine whether the plan creates, modifies, or deletes
+   user-facing screens or components under any `apps/**` or `libs/**` path. The canonical indicator
+   is any change to component files in `libs/ts-ui`, `libs/ts-ui-tokens`, or a frontend app's
+   `src/components/` tree.
+
+2. **Low-fi diverge (≥2 named alternatives)** — If UI-bearing, `prd.md` (or the single-file
+   README's Product Requirements section) MUST contain at least two named ASCII wireframe
+   alternatives in a fenced code block. Missing or just one alternative: **HIGH**.
+
+3. **Hi-fi narrow (2 finalists)** — `prd.md` MUST reference exactly two hi-fi `.excalidraw.png`
+   finalist files committed to the plan's `assets/` folder. Missing finalist references or missing
+   committed files: **HIGH**.
+
+4. **Named selection** — `prd.md` MUST state the selected design by name (e.g., "Selected: Option A
+   — Table + Modal"). An unnamed or implicit selection: **HIGH**.
+
+5. **Rationale / decision record** — A one-sentence rationale explaining why this option was chosen
+   over the alternatives MUST appear adjacent to the named selection. Missing rationale: **HIGH**.
+
+6. **Grounding note** — `prd.md` MUST contain a grounding note surveying existing `libs/ts-ui`,
+   `libs/ts-ui-tokens`, and the target app's components — listing what is reusable and what would
+   be net-new. Missing grounding note: **HIGH**.
+
+7. **Prior-art research** — `prd.md` MUST contain cited prior-art (inline excerpt + URL + access
+   date from `web-research-maker` delegation). Missing prior-art section: **HIGH**.
+
+8. **Delivery steps present** — The delivery checklist MUST include explicit `UI-design-funnel`
+   steps (grounding survey, prior-art, low-fi diverge, hi-fi narrow, select + justify).
+   Missing delivery steps: **HIGH**.
+
+9. **Exemption claim** — A plan is exempt when its scope is confirmed to touch zero user-facing
+   screens or components. The exemption MUST be stated explicitly as a blockquote in `tech-docs.md`:
+   `> **UI-design-funnel exemption**: this plan is pure-refactor/no-UI — no new or changed screens.`
+   An illegitimate exemption claim used to skip the funnel is **HIGH**.
+
+#### Finding Severity
+
+- UI-bearing plan with no low-fi wireframe alternatives (or only one): **HIGH**
+- UI-bearing plan with no hi-fi finalist references or committed files: **HIGH**
+- UI-bearing plan with an unnamed or implicit design selection: **HIGH**
+- UI-bearing plan with no rationale / decision record: **HIGH**
+- UI-bearing plan with no grounding note: **HIGH**
+- UI-bearing plan with no prior-art research citation: **HIGH**
+- UI-bearing plan with no `UI-design-funnel` delivery checklist steps: **HIGH**
+- Funnel artefacts present but vague (wireframe not named, no specific file paths): **MEDIUM**
+- Illegitimate "no-UI" exemption used to skip funnel: **HIGH**
