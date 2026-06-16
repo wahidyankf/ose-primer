@@ -24,7 +24,7 @@ These conventions define **HOW to format markdown content** including indentatio
 ## Conventions
 
 - [Color Accessibility](./color-accessibility.md) - MASTER REFERENCE for all color decisions. Verified accessible color palette supporting all color blindness types
-- [Diagrams and Schemas](./diagrams.md) - Standards for Mermaid diagrams (primary) and ASCII art (optional) with color-blind friendly colors
+- [Diagrams and Schemas](./diagrams.md) - Standards for Mermaid diagrams (primary), ASCII art (optional) with color-blind friendly colors, and UI mockups in plan docs (both-tiers rule: low-fi ASCII wireframe + hi-fi `.excalidraw.png`; design funnel; grounding rule; rendering-support matrix; ruled-out options)
 - [Emoji Usage](./emoji.md) - Semantic emoji usage to enhance document scannability and engagement
 - [Indentation](./indentation.md) - Standard markdown indentation using 2 spaces per indentation level
 - [Linking Convention](./linking.md) - Standards for linking between documentation files using GitHub-compatible markdown
