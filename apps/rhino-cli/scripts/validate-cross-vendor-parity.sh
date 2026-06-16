@@ -47,21 +47,21 @@ echo "validate-cross-vendor-parity: building Rust binary…" >&2
 
 # Invariant 1: governance prose vendor-neutrality.
 print_invariant 1 "Governance prose vendor-neutrality"
-if "${RS_BIN}" repo-governance vendor-audit repo-governance/ >/tmp/parity-rs-inv1.log 2>&1; then
-  pass "rhino-cli repo-governance vendor-audit repo-governance/ (0 violations)"
+if "${RS_BIN}" repo-governance validate vendor repo-governance/ >/tmp/parity-rs-inv1.log 2>&1; then
+  pass "rhino-cli repo-governance validate vendor repo-governance/ (0 violations)"
 else
   cat /tmp/parity-rs-inv1.log
-  fail "rhino-cli repo-governance vendor-audit repo-governance/ reported violations"
+  fail "rhino-cli repo-governance validate vendor repo-governance/ reported violations"
 fi
 
 # Invariant 2: root instruction surface vendor-neutrality.
 print_invariant 2 "AGENTS.md and CLAUDE.md vendor-neutrality"
 for target in AGENTS.md CLAUDE.md; do
-  if "${RS_BIN}" repo-governance vendor-audit "${target}" >/tmp/parity-rs-inv2.log 2>&1; then
-    pass "rhino-cli repo-governance vendor-audit ${target} (0 violations)"
+  if "${RS_BIN}" repo-governance validate vendor "${target}" >/tmp/parity-rs-inv2.log 2>&1; then
+    pass "rhino-cli repo-governance validate vendor ${target} (0 violations)"
   else
     cat /tmp/parity-rs-inv2.log
-    fail "rhino-cli repo-governance vendor-audit ${target} reported violations"
+    fail "rhino-cli repo-governance validate vendor ${target} reported violations"
   fi
 done
 
