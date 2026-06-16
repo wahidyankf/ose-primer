@@ -29,6 +29,8 @@ This convention implements the following core principles:
 
 - **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: Mermaid as the primary format for all markdown files provides a single, universal approach instead of juggling multiple diagram tools. Simple, text-based syntax that's easy to learn and version control.
 
+- **[Documentation First](../../principles/content/documentation-first.md)**: The [UI Mockups in Plan Docs](#ui-mockups-in-plan-docs) section requires every UI-bearing plan to document its design exploration visibly — alternatives considered, selection made, rationale preserved — so later readers can trace why a layout was chosen.
+
 ## Purpose
 
 This convention establishes Mermaid diagrams as the primary visualization format for all markdown files in the repository. It ensures diagrams are accessible, maintainable, and render consistently across GitHub, VS Code, and mobile platforms. This replaces fragmented diagram approaches with a single, universal standard that works everywhere.
@@ -48,7 +50,7 @@ This convention establishes Mermaid diagrams as the primary visualization format
 ### What This Convention Does NOT Cover
 
 - **Diagram content strategy** - What diagrams to create (covered in specific domain conventions)
-- **General-purpose vector graphics or images** - This convention is only for text-based diagrams (Mermaid and ASCII) and plan-doc UI mockup artifacts; `.excalidraw.png` and plain `.png` are in scope only as plan-doc UI-mockup tier artifacts (see UI Mockups in Plan Docs section)
+- **Vector graphics or images** - This convention is only for text-based diagrams (Mermaid and ASCII), **except** the high-fidelity `.excalidraw.png` plan mockups governed by the [UI Mockups in Plan Docs](#ui-mockups-in-plan-docs) section below
 - **Interactive diagram features** - Platform-specific interactivity (zoom, pan) is implementation detail
 - **Diagram export formats** - Exporting Mermaid to PNG, SVG, PDF (tool-specific, not repository standard)
 
@@ -1520,161 +1522,279 @@ Renders as: "HashMap<K, V> / O(1) lookup / Values: [1, 2, 3] / Dict: {a: 1}"
 
 ## UI Mockups in Plan Docs
 
-This section defines how plan authors represent draft UI inside plan `.md` files. The rules apply to any plan that adds or changes user-facing screens or components under `apps/` or `libs/` (a "UI-bearing plan"). Pure-refactor and non-UI plans are exempt.
+This section governs how draft UI screens are represented inside plan documents (files under
+`plans/`). It is part of the diagrams convention because plan UI mockups are a third visualization
+category alongside Mermaid diagrams and ASCII art, and keeping them here avoids convention sprawl.
+
+Originating plan: [`plans/done/2026-06-16__plan-doc-ui-mockup-convention/`](../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/)
+
+### Principles in Practice (UI Mockups)
+
+This section applies the convention's canonical principles (see the top-level
+[Principles Implemented/Respected](#principles-implementedrespected)) to UI mockups specifically:
+
+- **[Accessibility First](../../principles/content/accessibility-first.md)**: ASCII wireframes
+  render identically in every surface including screen readers and terminal output. Excalidraw PNG
+  mockups bake in the design-system color palette and token-driven spacing for readers who rely on
+  visual clarity.
+- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: Only
+  two formats are approved. Ruled-out options are named explicitly so authors do not spend effort
+  on approaches that fail on GitHub.
+- **[Documentation First](../../principles/content/documentation-first.md)**: Every UI-bearing
+  plan must document the design exploration visibly — alternatives considered, selection made,
+  rationale preserved — so later readers can trace why a layout was chosen.
+
+### Scope
+
+This section applies to **UI-bearing plans**: plans that add or change user-facing screens or
+components under `apps/` or `libs/`. Pure refactors, non-UI plans, and governance-only changes
+are exempt.
+
+### Rendering-Support Matrix
+
+The following rendering-support matrix summarises the candidate formats evaluated during the
+research that produced this section (research in
+[tech-docs.md](../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/tech-docs.md)):
+
+| Format                           | VSCode built-in | VSCode + extension      | GitHub.com              | Diffable      | Lint-safe |
+| -------------------------------- | --------------- | ----------------------- | ----------------------- | ------------- | --------- |
+| **ASCII wireframe (code block)** | Renders         | —                       | Renders                 | Excellent     | Yes       |
+| **`.excalidraw.png` + `![]()`**  | Renders (image) | Edit: pomdtr Excalidraw | Renders                 | No (binary)   | Yes       |
+| **Plain `.png` screenshot**      | Renders         | —                       | Renders                 | No (binary)   | Yes       |
+| `.excalidraw.svg` + `![]()`      | Renders (image) | Edit: pomdtr Excalidraw | Renders (font fallback) | Partial (XML) | Yes       |
+| Inline HTML + CSS                | Renders fully   | —                       | **Style stripped**      | Yes           | Yes       |
+| Mermaid                          | Renders         | —                       | Renders                 | Yes           | Yes       |
+| MDX (`.mdx`)                     | No              | —                       | No                      | Yes           | n/a       |
+| Inline `<svg>` in `.md`          | Renders         | —                       | **Stripped**            | Yes           | Yes       |
+
+### Ruled-Out Formats
+
+The following ruled-out table lists formats that MUST NOT be used for plan-doc UI mockups, each
+with a one-line reason:
+
+| Option               | Why not (for plan docs)                                                           |
+| -------------------- | --------------------------------------------------------------------------------- |
+| Inline HTML + CSS    | GitHub strips `style=`/`class`/`id` → renders unstyled on GitHub; VSCode-only.    |
+| MDX (`.mdx`)         | Needs a build/runtime; renders on neither GitHub nor VSCode preview as plan docs. |
+| Mermaid as wireframe | No wireframe diagram type; repo validator caps layout. Flowchart ≠ UI.            |
+| `.excalidraw.svg`    | Excalidraw fonts blocked by GitHub CSP → text falls back to generic font.         |
+
+**Why inline HTML+CSS fails on GitHub**: GitHub's Markdown sanitizer removes `style=`, `class`,
+`id`, `<style>`, and `<script>` entirely — only a legacy set of presentation attributes survives
+(`align`, `border`, `color`, `width`, `height`, `colspan`, `rowspan`, `href`, `src`, `alt`).
+An `<div style="...">` mockup renders fully in VSCode but becomes an unstyled bare element on
+GitHub. [Web-cited: `rhysd/marked-sanitizer-github` confirms `style`, `class`, `id` absent from
+the allowed-attribute list; accessed 2026-06-16]
+
+**Why `.excalidraw.png` is required over `.excalidraw.svg`**: Excalidraw's custom hand-drawn fonts
+(Virgil, Cascadia) load from a CDN that GitHub's CSP blocks for SVG files, so `.excalidraw.svg`
+text labels fall back to a generic font on GitHub. `.excalidraw.png` rasterises the fonts and
+renders faithfully. [Web-cited: excalidraw/excalidraw#4855 confirms font CSP fallback on GitHub;
+accessed 2026-06-16]
 
 ### The Both-Tiers Rule
 
-Every screen in a UI-bearing plan must be documented at **two fidelities** in **separate, labelled subsections**. This is the both-tiers rule: a low-fidelity wireframe (ASCII/Unicode in a fenced code block) AND a high-fidelity mockup (`.excalidraw.png` referenced via `![]()`), both required, not alternatives.
+Every screen in a UI-bearing plan MUST be documented at **both** fidelities, in **separate,
+labelled subsections**. This is the **both-tiers rule**:
 
-The two tiers are complementary:
+| Tier          | Format                                    | Role                                                    |
+| ------------- | ----------------------------------------- | ------------------------------------------------------- |
+| Low-fidelity  | ASCII / Unicode wireframe in fenced block | Structure, control placement, flow — diffable, inline   |
+| High-fidelity | Excalidraw `.excalidraw.png` via `![]()`  | Spacing, color, typography, visual hierarchy — editable |
 
-- **Low-fidelity (Tier 1)** — ASCII/Unicode wireframe in a fenced code block. The diffable structural source of truth: captures layout, control placement, and flow. Zero dependencies; renders identically on GitHub, in VSCode, and in terminals. Reviewers comment on it line-by-line. Generators: [BareMinimum](https://bareminimum.design/), [Mockdown](https://www.mockdown.design/).
-- **High-fidelity (Tier 2)** — Excalidraw `.excalidraw.png` referenced via `![]()`. Shows real spacing, color, typography, and visual hierarchy while keeping the file editable (the PNG carries the embedded scene). View requires no extension; edit requires the `pomdtr.excalidraw-editor` VSCode extension. The binary diff is accepted — the diffable structural record lives in the Tier-1 wireframe.
+The two tiers are **complementary**, not alternatives. The low-fidelity tier is the diffable
+structural source of truth that reviewers comment on line-by-line. The high-fidelity tier shows
+what the screen actually looks like with real design-system spacing and color.
 
-**Tier 1 copy-paste example** (paste straight into a plan `.md`):
+**Plain `.png` screenshot** is the high-fidelity fallback once a design is final and no longer
+iterating — it renders everywhere but is binary and must be replaced on every change.
 
-````markdown
-### Low-Fidelity Wireframe — Expense List + Modal Form
+#### Tier 1 — Low-Fidelity ASCII Wireframe (Required)
 
-```
-┌──────────────────────────────────────────────────────┐
-│  Expenses                              [ + New ]     │
-├──────────────────────────────────────────────────────┤
-│  Date        Description     Category   Amount   ⋯   │
-│  ──────────  ──────────────  ────────   ──────       │
-│  2026-06-01  Office lunch     Meals     $42.00  ✎ ✕  │
-│  2026-06-03  Train pass       Transit   $88.00  ✎ ✕  │
-│  2026-06-05  Cloud hosting    Software  $120.00 ✎ ✕  │
-├──────────────────────────────────────────────────────┤
-│   ┌── New expense ─────────────────────┐ ← modal     │
-│   │ Date        [ 2026-06-08        ]  │             │
-│   │ Description [____________________] │             │
-│   │ Category    [ Meals            ▼]  │             │
-│   │ Amount      [ 0.00 ] [ USD ▼ ]     │             │
-│   │            [ Cancel ]  [ Save ]    │             │
-│   └────────────────────────────────────┘             │
-└──────────────────────────────────────────────────────┘
-```
-````
+Zero dependencies. Renders identically in GitHub, VSCode, and terminals. Perfectly diffable.
+Stays inline in the `.md` file. Captures layout, control placement, and flow.
 
-**Tier 2 copy-paste example**:
+Copy-paste example:
 
 ```markdown
-### High-Fidelity Mockup — Expense List + Modal Form
+### Low-Fidelity Wireframe — Compare-All Mode
 
-![Expense list + modal form — high-fidelity mockup](./ui-expense-list.excalidraw.png)
+\`\`\`
+┌──────────────────────────────────────────────────────┐
+│ Salary Savings Calculator │
+├──────────────────────────────────────────────────────┤
+│ [ Compare All ] ( Single City ) ← tab toggle │
+├──────────────────────────────────────────────────────┤
+│ Salary (USD/mo): [________________] │
+│ Household: [ Single ▼] │
+│ Area: ( ) Center (•) Rural │
+├──────────────────────────────────────────────────────┤
+│ City Savings/mo % of Salary │
+│ ────────────── ─────────── ─────────── │
+│ Singapore $1,200 30% │
+│ Jakarta $2,100 52% │
+│ Kuala Lumpur $1,800 45% │
+└──────────────────────────────────────────────────────┘
+\`\`\`
+```
+
+#### Tier 2 — High-Fidelity Excalidraw PNG (Required)
+
+Real spacing, grouping, color, typography, and visual hierarchy, while staying editable (embedded
+scene). The PNG file lives beside the plan, for example
+`plans/in-progress/<name>/ui-compare-all.excalidraw.png`.
+
+**Tooling**: The Excalidraw VSCode extension (`pomdtr.excalidraw-editor`) is needed to **edit**
+an `.excalidraw.png` but not to **view** it. ASCII needs nothing.
+
+Copy-paste example:
+
+```markdown
+### High-Fidelity Mockup — Compare-All Mode
+
+![Compare-All mode — high-fidelity mockup](./ui-compare-all.excalidraw.png)
 
 _High-fidelity mockup. Edit with the Excalidraw VSCode extension — the PNG carries the scene._
 ```
 
-**Hi-fi fallback**: a plain `.png` screenshot is acceptable as the Tier-2 artifact only when the design is final and no longer iterating (zero tooling, renders everywhere, but binary and replace-on-every-change).
+### Responsive Design — Mobile / Tablet / Desktop
+
+Every UI-bearing screen MUST be designed for all three display classes, **mobile-first**. A
+desktop-only mockup does not pass review.
+
+| Display class | Breakpoint (Tailwind) | Reference width |
+| ------------- | --------------------- | --------------- |
+| Mobile        | base (`< sm`)         | ~360 px         |
+| Tablet        | `md` (≥ 768 px)       | ~768 px         |
+| Desktop       | `lg` (≥ 1024 px)      | ~1280 px        |
+
+The mockups MUST make the responsive behaviour explicit rather than showing a single desktop width:
+
+- **Low-fidelity (Tier 1)** — provide an ASCII wireframe (or an inline note) for at least the
+  **mobile** and **desktop** layouts where they differ, showing how the layout reflows: e.g. a
+  multi-column table collapses to stacked cards on mobile; a left control rail moves into a top
+  sheet / drawer; a two-pane split becomes a single column.
+- **High-fidelity (Tier 2)** — the selected design's record MUST state the **responsive strategy**
+  per breakpoint: which components stack, collapse, hide, or change, grounded in the repo's UI-kit
+  breakpoint tokens (Tailwind `sm` / `md` / `lg`).
+- **Selection rationale** — each finalist MUST be evaluated on its **responsive behaviour
+  (mobile-first)**, not only its desktop appearance; a layout that only works on desktop is not a
+  valid finalist.
 
 ### Grounding Rule (R5)
 
-Before drafting either tier, the author must survey the existing UI of the related app(s) and lib(s). Mockups invented from scratch drift from what the app can actually render and create rework.
+Before drafting **either** tier, the author MUST survey the existing UI in the related app(s) and
+lib(s) and build the mockup from what is already there:
 
-Survey the following before drawing:
+- **Shared kit** — `libs/ts-ui`: the canonical component inventory (shadcn/ui + Radix + Tailwind),
+  its design tokens, and its Storybook. Reuse real components (tabs, inputs, toggles, radio groups,
+  combobox, badges, alerts, cards, table) and token-driven spacing and color instead of inventing
+  visual language.
+- **Target app** — the app's existing pages, layout shell, theme, and locale/i18n structure so the
+  new screen matches the surrounding site.
+- **Sibling screens** — any existing page the new screen should visually match.
+- **Skill reference** — `swe-developing-frontend-ui` documents token usage, component patterns, and
+  the brand context to honour.
 
-- **`libs/ts-ui`** — the canonical component inventory (shadcn/ui + Radix + Tailwind), its `libs/ts-ui-tokens` design tokens, and its Storybook. Reuse existing components (table, dialog, inputs, select, buttons, badges, cards) and token-driven spacing/color.
-- **Target app** — the app's existing pages, layout shell, theme, and locale/i18n structure, so the new screen matches its surroundings.
-- **Sibling screens** — any existing tool or page the new screen should visually match.
-- **`swe-developing-frontend-ui` skill** — documents token usage, component patterns, and brand context to honor.
+Any **net-new component** the mockup introduces MUST be named explicitly (for example the `Table`
+primitive the salary-savings plan adds to `libs/ts-ui`), so the build gap is visible before
+development begins.
 
-The survey output: the mockup reuses real components and tokens. Any **net-new component** the mockup introduces must be named explicitly so the build gap is visible up front.
+### Design Funnel (R6)
 
-**Grounding note copy-paste example** (add near the top of the UI section in the plan):
+The both-tiers rule describes the **artefacts**. The **design funnel** is the process that produces
+them. Low-fidelity is cheap, so design divergence happens there; high-fidelity is more expensive, so
+only the shortlist receives that treatment. The funnel keeps the design space wide early and the
+commitment explicit late.
+
+Every stage of the funnel is visible in the plan. No alternative is silently discarded.
+
+| Stage      | Fidelity | Count       | What lands in the plan                                                  |
+| ---------- | -------- | ----------- | ----------------------------------------------------------------------- |
+| 1. Diverge | Low-fi   | ≥ 2 (aim 3) | Named ASCII alternatives (Option A / B / C), genuinely different        |
+| 2. Narrow  | Hi-fi    | 2 finalists | `.excalidraw.png` mockups of the two strongest; one-line drop reasons   |
+| 3. Select  | —        | 1 (named)   | The chosen design, **named** (e.g. "Selected: Option A — Ranked Table") |
+| 4. Justify | —        | 1 record    | Rationale: why the winner won, why each runner-up lost                  |
+
+**Copy-paste example — funnel record (place in plan's `prd.md`)**:
 
 ```markdown
-**Grounding note**: Surveyed `libs/ts-ui` (Table, Dialog, Input, Select, Button components),
-`libs/ts-ui-tokens` (indigo primary, slate neutrals), and `apps/crud-fe-dart-flutterweb`
-existing list pages. Net-new: `Dialog` modal primitive from `libs/ts-ui` (no custom code needed).
-```
+## UI Design Funnel — Compare-All Screen
 
-### Design Funnel (R6): Diverge → Narrow → Select → Justify
+### Stage 1 — Diverge (Low-Fidelity Alternatives)
 
-The two tiers are the artefacts; the funnel is the process that produces them. Low-fidelity is cheap, so divergence happens there. High-fidelity is more expensive, so only the shortlist gets that treatment. The funnel keeps the design space wide early and the commitment explicit late.
+#### Option A — Ranked Table
 
-| Stage        | Fidelity | Count             | What lands in the plan                                               |
-| ------------ | -------- | ----------------- | -------------------------------------------------------------------- |
-| 0. Prior art | —        | cited survey      | `web-research-maker` findings: how comparable tools solve this (R7)  |
-| 1. Diverge   | Low-fi   | ≥ 2 (aim 3)       | Named ASCII alternatives (Option A / B / C), genuinely different     |
-| 2. Narrow    | Hi-fi    | 2 finalists       | `.excalidraw.png` mockups of the strongest; one-line drop reasons    |
-| 3. Select    | —        | 1+ (named)        | The chosen design, named (e.g. "Selected: Option A — Table + modal") |
-| 4. Justify   | —        | 1 decision record | Rationale: why the winner won, why each runner-up lost               |
+\`\`\`
+┌────────────────────────────────────────────────────────────┐
+│ ┏ Compare All ┓ ( Single City ) │
+│ Salary [ 4,000 USD/mo ] Household [ Single ▼ ] (•)Rural │
+├────────────────────────────────────────────────────────────┤
+│ City Savings/mo % of salary ⇅ │
+│ Jakarta $2,100 52% ███████ │
+│ Kuala Lumpur $1,800 45% ██████ │
+│ Singapore $1,200 30% ████ │
+└────────────────────────────────────────────────────────────┘
+\`\`\`
 
-No alternative is silently discarded. The funnel artefacts live in the plan (`prd.md` plus the plan's `assets/`).
+#### Option B — Card Grid
 
-**Named selection copy-paste example**:
+\`\`\`
+┌────────────────────────────────────────────────────────────┐
+│ ┏ Compare All ┓ ( Single City ) │
+│ ┌── Jakarta ───────┐ ┌── Kuala Lumpur ──┐ │
+│ │ Save $2,100/mo │ │ Save $1,800/mo │ │
+│ └──────────────────┘ └──────────────────┘ │
+└────────────────────────────────────────────────────────────┘
+\`\`\`
 
-```markdown
-**Selected: Option A — Table list + modal form**
+### Stage 2 — Narrow (Hi-Fi Finalists)
 
-| Criterion       | Option A (Table + modal)       | Option B (Master-detail) |
-| --------------- | ------------------------------ | ------------------------ |
-| Keyboard access | Excellent (modal traps focus)  | Good                     |
-| Screen reuse    | High (same list, inline modal) | Low (split panes)        |
-| Mobile fit      | Good (full-screen modal)       | Poor (split panes)       |
-| Reason dropped  | —                              | Poor on narrow screens   |
+Option B dropped here: shows few cities per screen, weak for side-by-side number comparison.
+
+#### Finalist 1 — Option A (Ranked Table)
+
+![Option A — Ranked Table, hi-fi mockup](./assets/ui-compare-all-option-a.excalidraw.png)
+
+#### Finalist 2 — Option C (Split Layout)
+
+![Option C — Split layout, hi-fi mockup](./assets/ui-compare-all-option-c.excalidraw.png)
+
+### Stage 3 — Selection
+
+**Selected: Option A — Ranked Table.**
+
+### Stage 4 — Rationale
+
+| Option         | Outcome           | Why                                                                         |
+| -------------- | ----------------- | --------------------------------------------------------------------------- |
+| A — Ranked Tbl | **Chosen**        | Densest scan; native sort; reuses ts-ui Table; collapses cleanly on mobile. |
+| C — Split      | Runner-up         | Left rail wastes space on mobile; no advantage over A for compare task.     |
+| B — Card Grid  | Dropped (Stage 2) | Weak for precise side-by-side number comparison.                            |
 ```
 
 ### Prior-Art Recommendation (R7)
 
-When crafting designs, the author should consult prior art — how comparable tools and screens are designed in the wild — via the `web-research-maker` agent, so divergent alternatives are informed rather than invented from a blank page. This complements the internal grounding rule (R5) with an external pattern survey; cited findings inform Stage 1 alternatives and the rationale.
+When crafting the divergent low-fidelity alternatives, the author SHOULD consult prior art — how
+comparable tools solve the same screen in the wild — using the `web-research-maker` agent.
 
-**Prior-art note copy-paste example**:
+This complements the internal grounding rule (R5, the repo's own design system) with an external
+pattern survey. Cited findings inform the Stage 1 alternatives and the Stage 4 rationale, so
+alternatives are informed by real-world patterns rather than invented from a blank page.
 
-```markdown
-**Prior art (via `web-research-maker`)**: Linear, Notion, and Airtable all use an inline
-modal for quick-add on list views; master-detail is reserved for detail-heavy entities.
-Informs Option A preference.
-```
+### Worked Example
 
-### Rendering-Support Matrix
+The full funnel is demonstrated for the Salary Savings Calculator compare-all screen in
+[`plans/done/2026-06-16__plan-doc-ui-mockup-convention/assets/`](../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/assets/):
 
-Use the rendering-support matrix below to understand why certain formats are required or ruled out. GitHub's Markdown sanitizer removes `style=`, `class`, `id`, `<style>`, and `<script>` entirely — only a legacy allowlist of presentation attributes survives. This means inline-CSS mockups render in VSCode but become unstyled blobs on GitHub. Excalidraw's custom fonts (Virgil, Cascadia) load from a CDN that GitHub's CSP blocks for SVG, so `.excalidraw.svg` text falls back to a generic font on GitHub — use `.excalidraw.png` instead, which rasterises the fonts and renders faithfully.
-
-| Approach                         | VSCode built-in | VSCode + extension      | GitHub.com              | Diffable      | Lint-safe       |
-| -------------------------------- | --------------- | ----------------------- | ----------------------- | ------------- | --------------- |
-| **ASCII wireframe (code block)** | Renders         | —                       | Renders                 | Excellent     | Yes             |
-| **`.excalidraw.png` + `![]()`**  | Renders (image) | Edit: pomdtr Excalidraw | Renders                 | No (binary)   | Yes             |
-| **Plain `.png` screenshot**      | Renders         | —                       | Renders                 | No (binary)   | Yes             |
-| `.excalidraw.svg` + `![]()`      | Renders (image) | Edit: pomdtr Excalidraw | Renders (font fallback) | Partial (XML) | Yes             |
-| Inline HTML + CSS                | Renders fully   | —                       | **Style stripped**      | Yes           | Yes (MD033 off) |
-| Mermaid                          | Renders         | —                       | Renders                 | Yes           | Yes             |
-| PlantUML Salt                    | No (built-in)   | jebbs PlantUML          | **No**                  | Yes           | Yes             |
-| MDX (`.mdx`)                     | No              | —                       | **No**                  | Yes           | n/a             |
-| Inline `<svg>` in `.md`          | Renders         | —                       | **Stripped**            | Yes           | Yes (MD033 off) |
-
-Note: markdownlint MD033 (inline HTML) is disabled in this repo (`.markdownlint-cli2.jsonc`), and Prettier uses `proseWrap: preserve`, so inline HTML is not a lint problem — it is purely a GitHub-rendering problem.
-
-### Ruled-Out Options
-
-The following approaches must not appear in plan docs, each for the reason stated:
-
-| Option                  | Why not (for plan docs)                                                           |
-| ----------------------- | --------------------------------------------------------------------------------- |
-| Inline HTML + CSS       | GitHub strips `style=`/`class`/`id` → renders unstyled on GitHub; VSCode-only.    |
-| MDX (`.mdx`)            | Needs a build/runtime; renders on neither GitHub nor VSCode preview as plan docs. |
-| Mermaid as wireframe    | No wireframe diagram type; repo validator caps layout. Flowchart ≠ UI.            |
-| `.excalidraw.svg`       | Excalidraw fonts blocked by GitHub CSP → text falls back to generic font.         |
-| PlantUML Salt           | Great wireframe syntax, but renders on neither GitHub nor VSCode built-in.        |
-| Inline `<svg>` in `.md` | Sanitizer strips inline SVG on GitHub; only file-referenced SVG renders.          |
-
-### Tooling
-
-- **ASCII wireframe** — no tooling required. Optional generators: [BareMinimum](https://bareminimum.design/), [Mockdown](https://www.mockdown.design/).
-- **`.excalidraw.png`** — view requires no extension (it is a standard PNG). Edit requires the `pomdtr.excalidraw-editor` VSCode extension, which reopens the PNG as an editable Excalidraw canvas (the scene JSON is embedded in the file metadata).
-
-### Enforcement
-
-The funnel is enforced by the plan maker → checker → fixer chain, mirroring how the repo's Specs and Gherkin completeness binding works across both direct-code and plan paths. Each surface in the chain carries a defined responsibility:
-
-- **`plan-maker`** — when producing a UI-bearing plan, must emit delivery-checklist steps that add the required funnel artefacts (both tiers, design funnel stages, grounding note, prior-art note). A UI-bearing plan without those steps is incomplete output.
-- **`plan-checker`** — must flag (HIGH criticality) any UI-bearing plan that is missing a required funnel artefact, and must exempt pure-refactor or non-UI plans. This checker step is the primary gate that catches missing mockup coverage.
-- **`plan-fixer`** — when the checker flags a missing funnel section, the fixer scaffolds the missing section structure for the author to fill in.
-- **`plan-quality-gate` workflow** — a UI-bearing plan cannot pass the gate without the required funnel artefacts having been validated by the checker step. The workflow scope must include this UI-mockup validation step.
-
-Until each surface above is updated to implement its responsibility, adherence to the both-tiers rule and design funnel requires manual verification by plan authors and reviewers.
+- Stage 1 diverge (low-fi): three named alternatives in
+  [`example-low-fi-wireframe.md`](../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/assets/example-low-fi-wireframe.md)
+- Stage 2 narrow (hi-fi finalists):
+  [`example-hi-fi-option-a-ranked-table.png`](../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/assets/example-hi-fi-option-a-ranked-table.png)
+  and
+  [`example-hi-fi-option-c-split.png`](../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/assets/example-hi-fi-option-c-split.png)
+- Stages 3–4 select + justify: named selection (Option A) and the rationale table in
+  [`assets/README.md`](../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/assets/README.md)
 
 ## Related Documentation
 
