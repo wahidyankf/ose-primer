@@ -129,7 +129,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 > All checks below must pass before starting Phase 2.
 
 - [x] [AI] `.github/workflows/pr-quality-gate.yml` codegen ordering dependency confirmed present.
-- [ ] [AI] `.NET quality gate` job on the next all-affected CI run concludes `success` with no `CS2001`.
+- [x] [AI] `.NET quality gate` job on the next all-affected CI run concludes `success` with no `CS2001`.
 
 > **Pause Safety**: CI-only ordering issues investigated and fixed (or documented). Safe to stop. To resume:
 > re-read this Phase 1b Gate and verify the `CS2001` fix is in place by re-checking the workflow file.
@@ -431,18 +431,30 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 - [x] [AI] Push all commits to `origin main` directly (Trunk Based Development — no PR unless explicitly
       requested). Acceptance: `git push origin HEAD:main` exits 0.
 
-- [ ] [AI] Trigger an all-affected condition (these fixes touch app config; if not all-affected, a
+- [x] [AI] Trigger an all-affected condition (these fixes touch app config; if not all-affected, a
       follow-up `rhino-cli`-touching commit or a manual `workflow_dispatch` exercises the full matrix).
       Monitor `PR - Quality Gate` at https://github.com/wahidyankf/ose-primer/actions until every
       per-language job concludes `success` (poll per CI-monitoring convention; never use `gh run watch`).
       Fix-forward any residual failure; do not bypass.
+
+  > **Implementation notes** — Date: 2026-06-20. Status: DONE. Three rhino-cli touching commits used to
+  > trigger all-affected matrix. During CI runs, three additional pre-existing issues surfaced and
+  > fixed-forward: (1) `setup-elixir` never ran `mix deps.get` for any of the 4 Elixir mix projects
+  > (`apps/crud-be-elixir-phoenix`, `libs/elixir-openapi-codegen`, `libs/elixir-cabbage`,
+  > `libs/elixir-gherkin`) — fixed by adding `mix deps.get` to `.github/actions/setup-elixir/action.yml`
+  > and extending cache paths; (2) `setup-dotnet` never ran `dotnet restore` — F# `typecheck` uses
+  > `--no-restore` so `project.assets.json` was always missing on fresh CI runs — fixed by adding
+  > `dotnet restore` for all 4 .NET project files in `.github/actions/setup-dotnet/action.yml`;
+  > (3) `crud-be-rust-axum` had 2 `clippy::unnecessary_sort_by` errors (`-D warnings` → errors) in
+  > `tests/unit/in_memory_repos.rs` — fixed by replacing `sort_by` closures with `sort_by_key + Reverse`.
+  > CI run 27840103269 (commit `0d76903c7`) shows all 9 language gates + quality gate: success.
 
 ### Phase 8 Gate
 
 > All checks below must pass before starting Phase 9.
 
 - [x] [AI] `git log --oneline origin/main | head -1` returns the most recent fix commit.
-- [ ] [AI] `PR - Quality Gate` on GitHub Actions shows every per-language job as `success` on an
+- [x] [AI] `PR - Quality Gate` on GitHub Actions shows every per-language job as `success` on an
       all-affected commit.
 
 > **Pause Safety**: All commits pushed and CI is green on a full all-affected run. Safe to stop. To resume:
@@ -450,23 +462,23 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 ## Phase 9: Archival
 
-- [ ] [AI] Verify ALL delivery checklist items above are ticked.
-- [ ] [AI] Verify ALL quality gates pass (local + CI).
-- [ ] [AI] Move plan folder: `git mv plans/in-progress/primer-polyglot-codegen-ci-restoration plans/done/$(date +%Y-%m-%d)__primer-polyglot-codegen-ci-restoration`.
+- [x] [AI] Verify ALL delivery checklist items above are ticked.
+- [x] [AI] Verify ALL quality gates pass (local + CI).
+- [x] [AI] Move plan folder: `git mv plans/in-progress/primer-polyglot-codegen-ci-restoration plans/done/$(date +%Y-%m-%d)__primer-polyglot-codegen-ci-restoration`.
       Acceptance: `git status` shows the rename.
-- [ ] [AI] Update `plans/in-progress/README.md` — remove the `primer-polyglot-codegen-ci-restoration` entry.
+- [x] [AI] Update `plans/in-progress/README.md` — remove the `primer-polyglot-codegen-ci-restoration` entry.
       Acceptance: entry absent from file.
-- [ ] [AI] Update `plans/done/README.md` — add the entry with the completion date.
+- [x] [AI] Update `plans/done/README.md` — add the entry with the completion date.
       Acceptance: entry present in file.
-- [ ] [AI] Commit: `chore(plans): move primer-polyglot-codegen-ci-restoration to done`. Push to `origin main`.
+- [x] [AI] Commit: `chore(plans): move primer-polyglot-codegen-ci-restoration to done`. Push to `origin main`.
 
 ### Phase 9 Gate
 
 > All checks below must pass to declare this plan complete.
 
-- [ ] [AI] Plan folder exists under `plans/done/YYYY-MM-DD__primer-polyglot-codegen-ci-restoration/`.
-- [ ] [AI] `plans/in-progress/README.md` does NOT contain `primer-polyglot-codegen-ci-restoration`.
-- [ ] [AI] `plans/done/README.md` DOES contain `primer-polyglot-codegen-ci-restoration`.
+- [x] [AI] Plan folder exists under `plans/done/YYYY-MM-DD__primer-polyglot-codegen-ci-restoration/`.
+- [x] [AI] `plans/in-progress/README.md` does NOT contain `primer-polyglot-codegen-ci-restoration`.
+- [x] [AI] `plans/done/README.md` DOES contain `primer-polyglot-codegen-ci-restoration`.
 
 > **Pause Safety**: Plan archived. All work complete. Safe to stop.
 
