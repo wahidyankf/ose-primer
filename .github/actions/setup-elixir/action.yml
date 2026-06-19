@@ -24,6 +24,12 @@ runs:
         path: |
           apps/crud-be-elixir-phoenix/deps
           apps/crud-be-elixir-phoenix/_build
+          libs/elixir-openapi-codegen/deps
+          libs/elixir-openapi-codegen/_build
+          libs/elixir-cabbage/deps
+          libs/elixir-cabbage/_build
+          libs/elixir-gherkin/deps
+          libs/elixir-gherkin/_build
         key: elixir-${{ runner.os }}-${{ inputs.elixir-version }}-${{ inputs.otp-version }}-${{ hashFiles('**/mix.lock') }}
         restore-keys: |
           elixir-${{ runner.os }}-${{ inputs.elixir-version }}-${{ inputs.otp-version }}-
@@ -33,3 +39,11 @@ runs:
       run: |
         mix local.hex --force
         mix local.rebar --force
+
+    - name: Install Elixir deps (all mix projects)
+      shell: bash
+      run: |
+        (cd apps/crud-be-elixir-phoenix && mix deps.get)
+        (cd libs/elixir-openapi-codegen && mix deps.get)
+        (cd libs/elixir-cabbage && mix deps.get)
+        (cd libs/elixir-gherkin && mix deps.get)
