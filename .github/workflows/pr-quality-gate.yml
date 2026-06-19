@@ -115,7 +115,13 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-golang
-      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:golang'
+      - run: |
+          PROJECTS=$(npx nx show projects --affected --projects='tag:lang:golang' --json | jq -r 'join(",")')
+          if [ -n "$PROJECTS" ]; then
+            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+          else
+            echo "No affected tag:lang:golang projects — skipping"
+          fi
 
   jvm:
     name: JVM quality gate
@@ -131,7 +137,13 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-jvm
-      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:java,tag:lang:kotlin'
+      - run: |
+          PROJECTS=$(npx nx show projects --affected --projects='tag:lang:java,tag:lang:kotlin' --json | jq -r 'join(",")')
+          if [ -n "$PROJECTS" ]; then
+            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+          else
+            echo "No affected tag:lang:java,tag:lang:kotlin projects — skipping"
+          fi
 
   dotnet:
     name: .NET quality gate
@@ -147,7 +159,13 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-dotnet
-      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:fsharp,tag:lang:csharp'
+      - run: |
+          PROJECTS=$(npx nx show projects --affected --projects='tag:lang:fsharp,tag:lang:csharp' --json | jq -r 'join(",")')
+          if [ -n "$PROJECTS" ]; then
+            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+          else
+            echo "No affected tag:lang:fsharp,tag:lang:csharp projects — skipping"
+          fi
 
   python:
     name: Python quality gate
@@ -163,7 +181,13 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-python
-      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:python'
+      - run: |
+          PROJECTS=$(npx nx show projects --affected --projects='tag:lang:python' --json | jq -r 'join(",")')
+          if [ -n "$PROJECTS" ]; then
+            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+          else
+            echo "No affected tag:lang:python projects — skipping"
+          fi
 
   rust:
     name: Rust quality gate
@@ -179,7 +203,13 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-rust
-      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:rust'
+      - run: |
+          PROJECTS=$(npx nx show projects --affected --projects='tag:lang:rust' --json | jq -r 'join(",")')
+          if [ -n "$PROJECTS" ]; then
+            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+          else
+            echo "No affected tag:lang:rust projects — skipping"
+          fi
 
   elixir:
     name: Elixir quality gate
@@ -195,7 +225,13 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-elixir
-      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:elixir'
+      - run: |
+          PROJECTS=$(npx nx show projects --affected --projects='tag:lang:elixir' --json | jq -r 'join(",")')
+          if [ -n "$PROJECTS" ]; then
+            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+          else
+            echo "No affected tag:lang:elixir projects — skipping"
+          fi
 
   clojure:
     name: Clojure quality gate
@@ -211,7 +247,13 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-clojure
-      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:clojure'
+      - run: |
+          PROJECTS=$(npx nx show projects --affected --projects='tag:lang:clojure' --json | jq -r 'join(",")')
+          if [ -n "$PROJECTS" ]; then
+            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+          else
+            echo "No affected tag:lang:clojure projects — skipping"
+          fi
 
   dart:
     name: Dart quality gate
@@ -227,7 +269,13 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-flutter
-      - run: npx nx affected -t typecheck lint test:quick specs:coverage --projects='tag:lang:dart'
+      - run: |
+          PROJECTS=$(npx nx show projects --affected --projects='tag:lang:dart' --json | jq -r 'join(",")')
+          if [ -n "$PROJECTS" ]; then
+            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+          else
+            echo "No affected tag:lang:dart projects — skipping"
+          fi
 
   markdown:
     name: Markdown quality gate
