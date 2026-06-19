@@ -95,7 +95,8 @@
         "commands": ["cargo fmt --check", "cargo clippy --all-targets -- -D warnings"],
         "parallel": false,
         "cwd": "apps/crud-be-rust-axum"
-      }
+      },
+      "dependsOn": ["codegen"]
     },
     "typecheck": {
       "executor": "nx:run-commands",
@@ -107,7 +108,7 @@
       "cache": true
     },
     "specs:coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir test-support specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-rust-axum",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-rust-axum",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.rs"]
     }
