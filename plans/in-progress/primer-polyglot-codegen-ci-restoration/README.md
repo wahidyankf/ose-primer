@@ -57,6 +57,33 @@ codegen `dependsOn` ordering under the cold-cache matrix, first-run generator-JA
 races, or parallel-restore races (the .NET NuGet `nuget.g.targets` "already exists" race and the ose-public
 `.NET` flake are the same family). Class B needs CI-side investigation, not local code fixes.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
+%% Failure class decision branches and remediation paths
+flowchart TD
+    A["CI gate fails\non fresh checkout"]:::blue
+    B{"Fails locally too?\n#40;rm -rf generated-contracts\n+ --skip-nx-cache#41;"}:::orange
+    C["Class A — locally reproducible\nDart / Rust / Go"]:::blue
+    D["Class B — CI-only\n.NET codegen / Elixir"]:::teal
+    E["Fix codegen target\nin project.json\n#40;app-level code fix#41;"]:::blue
+    F["Investigate CI ordering\nor dependency race\n#40;CI-side fix#41;"]:::teal
+    G["Dart: emit pubspec.yaml\nRust: fix cwd or &&-chain\nGo: use 3.1-capable generator"]:::gray
+    H[".NET: fix codegen dependsOn\nElixir: document transient\nor pin offending dep"]:::gray
+
+    A --> B
+    B -->|Yes| C
+    B -->|No| D
+    C --> E
+    D --> F
+    E --> G
+    F --> H
+
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
 ## Approach summary
 
 Restore **fresh-checkout codegen** for each demo app so the per-language gate passes on a clean tree:

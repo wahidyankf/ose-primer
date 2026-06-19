@@ -2,7 +2,7 @@
 
 ## How the breakage stayed hidden
 
-- `generated-contracts/` is **gitignored** (`.gitignore:150: **/generated-contracts/`). It is produced by
+- `generated-contracts/` is **gitignored** [Repo-grounded] (`.gitignore:150: **/generated-contracts/`). It is produced by
   each app's `codegen` target, declared as a `dependsOn` of `typecheck`/`lint`/`test:quick`.
 - Local working trees retained **stale-but-working** `generated-contracts/` from older (working) codegen
   runs, so local gates passed. Nx **caches** codegen outputs too, so even a `rm -rf` followed by a normal
@@ -13,6 +13,33 @@
   `--projects` fix (`9ede6a70e`) made the jobs run their language's affected projects correctly, and a
   `rhino-cli` change (`researcher` role) made every demo app affected. That first honest, all-affected,
   cold-cache run exposed the latent breakage.
+
+## Codegen orchestration overview
+
+The diagram below shows the multi-step codegen flow shared across all four language targets. Each target
+follows the same high-level sequence: nx invokes a `codegen` target which chains generator + manifest
+scaffolding, then `lint`/`test` targets consume the output.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Gray #808080
+%% Dart codegen sequence: nx -> openapi-generator -> pubspec scaffold -> flutter pub get -> lint
+sequenceDiagram
+    participant NX as nx run :codegen
+    participant OAG as openapi-generator-cli
+    participant SC as scaffold step
+    participant PM as package manager
+    participant LINT as nx run :lint
+
+    NX->>OAG: generate -g dart/rust/go models
+    OAG-->>NX: model files written to generated-contracts/
+    NX->>SC: printf pubspec.yaml / Cargo.toml / types.gen.go
+    Note over SC: Dart#58; pubspec.yaml missing #40;bug#41;<br/>Rust#58; Cargo.toml missing under nx #40;bug#41;<br/>Go#58; types.gen.go missing #40;3.1 unsupported#41;
+    SC-->>NX: manifest written #40;or fails silently#41;
+    NX->>PM: flutter pub get / cargo check / go build
+    PM-->>NX: resolves package or fails #40;no manifest#41;
+    NX->>LINT: typecheck + lint + test:quick + specs:coverage
+    LINT-->>NX: exit 0 #40;green#41; or exit 1 #40;red#41;
+```
 
 ## Per-gate root-cause analysis
 
@@ -28,13 +55,21 @@ not be found`. The C# `codegen` (`openapi-generator -g csharp --global-property=
 #### SQLite CVE (fixed)
 
 - `Microsoft.EntityFrameworkCore.Sqlite` 10.0.8 → `Microsoft.Data.Sqlite` → `SQLitePCLRaw.bundle_e_sqlite3`
-  resolves the lowest satisfying version **2.1.11**, flagged `NU1903` (GHSA-2m69-gcr7-jv3q /
-  CVE-2025-6965 — SQLite < 3.50.2 memory corruption). The 2.x SQLitePCLRaw line is EOL; no 2.x patch.
+  resolves the lowest satisfying version **2.1.11**, flagged `NU1903`
+  (GHSA-2m69-gcr7-jv3q / CVE-2025-6965 — SQLite < 3.50.2 memory corruption).
+  [Web-cited: GitHub Advisory Database, GHSA-2m69-gcr7-jv3q, https://github.com/advisories/GHSA-2m69-gcr7-jv3q,
+  accessed 2026-06-19, excerpt: "There exists a vulnerability in SQLite versions before 3.50.2 where the
+  number of aggregate terms could exceed the number of columns available. This could lead to a memory
+  corruption issue." Affects SQLitePCLRaw.lib.e_sqlite3 ≤ 2.1.11; no 2.x patched version available.]
 - **Fix applied**: pin a direct `PackageReference` to `SQLitePCLRaw.bundle_e_sqlite3` **3.0.3** (current
-  stable; bundles SQLite 3.50.4 via `SourceGear.sqlite3` 3.50.4.5; CVE-clean across GitHub Advisory DB,
-  NuGet, GitLab advisory). C# uses Central Package Management → `PackageVersion` in
-  `Directory.Packages.props` + `PackageReference` in `DemoBeCsas.Tests.csproj`; F# pins inline in
-  `DemoBeFsgi.fsproj`. Verified: `dotnet build` of both test projects → 0 errors, no `NU1903`.
+  stable as of 2026-05-07 [Web-cited: NuGet Gallery, https://www.nuget.org/packages/sqlitepclraw.bundle_e_sqlite3/,
+  accessed 2026-06-19, excerpt: "Latest version 3.0.3, updated 5/7/2026"]; bundles SQLite 3.50.4 via
+  `SourceGear.sqlite3` 3.50.4.5 [Web-cited: NuGet Gallery package dependency graph, same URL, excerpt:
+  "Depends on SourceGear.sqlite3 >= 3.50.4.5"] — CVE-clean since SQLite ≥ 3.50.2 is unaffected per the
+  advisory). C# uses Central Package Management → `PackageVersion` in
+  `Directory.Packages.props` [Repo-grounded] + `PackageReference` in `DemoBeCsas.Tests.csproj` [Repo-grounded];
+  F# pins inline in `DemoBeFsgi.fsproj` [Repo-grounded]. Verified: `dotnet build` of both test projects →
+  0 errors, no `NU1903`.
 
 ### Dart — dormant `rhino-cli specs scaffold dart`
 
@@ -77,9 +112,10 @@ not be found`. The C# `codegen` (`openapi-generator -g csharp --global-property=
 ### Go — `oapi-codegen` vs OpenAPI 3.1
 
 - `codegen` = `mkdir -p …/generated-contracts && oapi-codegen -generate types -package contracts -o
-…/types.gen.go specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml`.
+…/types.gen.go specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml`. [Repo-grounded: verified in `apps/crud-be-golang-gin/project.json`]
 - CI warns: "You are using an OpenAPI 3.1.x specification, which is not yet supported by oapi-codegen …".
-  Fresh, `types.gen.go` is **missing** → `go build`/`golangci-lint` fail (no `contracts` package).
+  [Judgment call: observed in live CI run on 2026-06-19; no permalink URL captured — verify during Phase 4 execution]
+  Fresh, `types.gen.go` is **missing** → `go build`/`golangci-lint` fail (no `contracts` package). [Repo-grounded: reproduced with `--skip-nx-cache`]
 - **Remediation options**: (A) switch the Go types target to an OpenAPI-3.1-capable generator (e.g.,
   `openapi-generator -g go` models, matching the Rust/Dart pattern), or (B) add a 3.0 downconversion of the
   bundled spec feeding only the Go types step. Keep generated type names stable for the app code.
@@ -118,12 +154,12 @@ npx nx run <app>:codegen --skip-nx-cache    # or :lint to also build
 
 ## Files in play
 
-- `.github/workflows/pr-quality-gate.yml` — per-language matrix (already corrected)
-- `apps/crud-fe-dart-flutterweb/project.json` — dart `codegen` command
-- `apps/crud-be-rust-axum/project.json` — rust `codegen` command (inline manifest printf)
-- `apps/crud-be-golang-gin/project.json` — go `codegen` command (`oapi-codegen`)
-- `apps/crud-be-elixir-phoenix/` + `libs/elixir-openapi-codegen/` — elixir codegen
+- `.github/workflows/pr-quality-gate.yml` — per-language matrix (already corrected) [Repo-grounded]
+- `apps/crud-fe-dart-flutterweb/project.json` — dart `codegen` command [Repo-grounded]
+- `apps/crud-be-rust-axum/project.json` — rust `codegen` command (inline manifest printf) [Repo-grounded]
+- `apps/crud-be-golang-gin/project.json` — go `codegen` command (`oapi-codegen`) [Repo-grounded]
+- `apps/crud-be-elixir-phoenix/` + `libs/elixir-openapi-codegen/` — elixir codegen [Repo-grounded]
 - `apps/crud-be-csharp-aspnetcore/Directory.Packages.props`, `…/DemoBeCsas.Tests.csproj`,
-  `apps/crud-be-fsharp-giraffe/src/DemoBeFsgi/DemoBeFsgi.fsproj` — .NET CVE pin (done)
+  `apps/crud-be-fsharp-giraffe/src/DemoBeFsgi/DemoBeFsgi.fsproj` — .NET CVE pin (done) [Repo-grounded]
 - `apps/rhino-cli/src/commands/specs_scaffold_dart.rs`, `apps/rhino-cli/src/internal/contracts/dart_scaffold.rs`
-  — dormant dart scaffold (only if Dart option B is chosen)
+  — dormant dart scaffold (only if Dart option B is chosen) [Repo-grounded]

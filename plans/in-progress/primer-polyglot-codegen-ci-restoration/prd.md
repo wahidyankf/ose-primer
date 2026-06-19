@@ -67,9 +67,9 @@ Scenario: Fresh Go codegen yields types.gen.go from a 3.1 spec
 ```gherkin
 Scenario: Elixir demo app builds from clean deps
   Given a clean _build and deps for crud-be-elixir-phoenix
-  When mix deps.get and mix compile --warnings-as-errors run
-  Then compilation succeeds
-  And the Elixir quality gate passes on three consecutive CI runs (or the failing dependency is fixed)
+  When mix deps.clean --all and mix deps.get and MIX_ENV=test mix compile --warnings-as-errors run
+  Then compilation succeeds with exit 0 and no dependency errors
+  And the Elixir quality gate job in the ose-primer PR - Quality Gate workflow concludes success on the commit that fixes or documents the dependency issue
 ```
 
 ### AC-5: .NET apps are CVE-clean and build (already satisfied)

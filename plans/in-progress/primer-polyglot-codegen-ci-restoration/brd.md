@@ -16,12 +16,16 @@ template's proof that the contract-first, codegen-driven approach works across l
 - **The showcase is broken on a clean checkout.** Anyone who clones the template and runs the gate (or
   whose CI builds the apps fresh) gets red across Dart/Rust/Go. That directly undermines the template's
   credibility for its primary audience.
-- **CI was dishonest, now honest.** Before the matrix fix (`9ede6a70e`) the per-language jobs never built
-  the demo apps, so the gate was green-by-omission. The fix made CI honest; this plan makes the apps
-  actually pass, closing the gap between "CI green" and "showcase works."
-- **A real security exposure was carried in the demo apps.** The SQLite `NU1903` CVE (CVE-2025-6965) was
-  pinned to a vulnerable transitive version. Already remediated here; the rest of this plan ensures the
-  apps that ship the fix actually build.
+- **CI was dishonest, now honest.** Before the matrix fix (`9ede6a70e` [Repo-grounded]) the per-language
+  jobs never built the demo apps, so the gate was green-by-omission. The fix made CI honest; this plan
+  makes the apps actually pass, closing the gap between "CI green" and "showcase works."
+- **A real security exposure was carried in the demo apps.** The SQLite `NU1903` CVE (CVE-2025-6965
+  [Web-cited: GitHub Advisory Database, GHSA-2m69-gcr7-jv3q, https://github.com/advisories/GHSA-2m69-gcr7-jv3q,
+  accessed 2026-06-19, excerpt: "There exists a vulnerability in SQLite versions before 3.50.2 where
+  the number of aggregate terms could exceed the number of columns available. This could lead to a
+  memory corruption issue."]) was pinned to a vulnerable transitive version. Already remediated by
+  commit `c82c66c6f` [Repo-grounded]; the rest of this plan ensures the apps that ship the fix
+  actually build.
 
 ## Affected Roles
 

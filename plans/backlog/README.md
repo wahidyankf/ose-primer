@@ -4,11 +4,7 @@ Planned projects for future implementation.
 
 ## Planned Projects
 
-- **[Primer Polyglot Demo-App CI Restoration](./2026-06-19__primer-polyglot-codegen-ci-restoration/)** —
-  Restore fresh-checkout codegen + green per-language CI for the `crud-*` demo apps. The .NET SQLite CVE
-  (`NU1903`) is already fixed; Dart (dormant `rhino-cli specs scaffold dart`), Rust (nx manifest
-  generation), and Go (`oapi-codegen` vs OpenAPI 3.1) need fresh-codegen fixes; Elixir CI deps failure to
-  verify/transient. Surfaced when the corrected per-language matrix first built the demo apps fresh.
+_No backlog plans currently. See [in-progress](../in-progress/README.md) for active plans._
 
 ## Instructions
 
