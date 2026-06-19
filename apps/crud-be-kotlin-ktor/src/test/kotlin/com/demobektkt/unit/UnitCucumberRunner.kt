@@ -13,4 +13,5 @@ import org.junit.platform.suite.api.Suite
 @SelectClasspathResource("specs/apps/crud/behavior/crud-be/gherkin")
 @ConfigurationParameter(key = Constants.PLUGIN_PROPERTY_NAME, value = "pretty")
 @ConfigurationParameter(key = Constants.PLUGIN_PUBLISH_QUIET_PROPERTY_NAME, value = "true")
+@ConfigurationParameter(key = Constants.FILTER_TAGS_PROPERTY_NAME, value = "not @codegen")
 class UnitCucumberRunner

@@ -47,6 +47,7 @@
         "parallel": false,
         "cwd": "apps/crud-be-csharp-aspnetcore"
       },
+      "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
         "{projectRoot}/src/**/*.cs",
@@ -83,7 +84,8 @@
       "options": {
         "command": "dotnet build src/DemoBeCsas/DemoBeCsas.csproj /p:TreatWarningsAsErrors=true",
         "cwd": "apps/crud-be-csharp-aspnetcore"
-      }
+      },
+      "dependsOn": ["codegen"]
     },
     "typecheck": {
       "executor": "nx:run-commands",

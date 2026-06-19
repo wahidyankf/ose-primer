@@ -57,6 +57,7 @@
         "{projectRoot}/generated-contracts/**/*",
         "{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature"
       ],
+      "dependsOn": ["codegen"],
       "outputs": ["{projectRoot}/coverage/altcov.info"]
     },
     "test:unit": {
@@ -91,7 +92,8 @@
         ],
         "parallel": false,
         "cwd": "apps/crud-be-fsharp-giraffe"
-      }
+      },
+      "dependsOn": ["codegen"]
     },
     "typecheck": {
       "executor": "nx:run-commands",
@@ -103,7 +105,7 @@
       "cache": true
     },
     "specs:coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir test-support specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-fsharp-giraffe",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-fsharp-giraffe",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.fs"]
     }

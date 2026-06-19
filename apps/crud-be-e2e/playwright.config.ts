@@ -3,7 +3,10 @@ import { defineBddConfig } from "playwright-bdd";
 
 const testDir = defineBddConfig({
   featuresRoot: "../../specs/apps/crud/behavior/crud-be/gherkin",
-  features: "../../specs/apps/crud/behavior/crud-be/gherkin/**/*.feature",
+  features: [
+    "../../specs/apps/crud/behavior/crud-be/gherkin/**/*.feature",
+    "!../../specs/apps/crud/behavior/crud-be/gherkin/codegen/**/*.feature",
+  ],
   steps: ["./tests/steps/**/*.ts", "./tests/hooks/**/*.ts"],
 });
 

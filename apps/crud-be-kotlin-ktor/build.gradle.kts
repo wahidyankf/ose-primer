@@ -135,6 +135,8 @@ tasks.register<Test>("testUnit") {
   systemProperty("cucumber.junit-platform.naming-strategy", "long")
   // Override cucumber.glue to use unit step definitions only
   systemProperty("cucumber.glue", "com.demobektkt.unit.steps")
+  // Exclude codegen scenarios — CI infrastructure scenarios with no step implementations
+  systemProperty("cucumber.filter.tags", "not @codegen")
   maxParallelForks = 1
   reports.junitXml.required.set(false)
   reports.html.required.set(false)
