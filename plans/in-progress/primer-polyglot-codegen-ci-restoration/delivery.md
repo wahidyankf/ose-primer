@@ -412,14 +412,23 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 ### Commit Guidelines
 
-- [ ] [AI] Commit changes thematically using Conventional Commits format (`<type>(<scope>): <description>`):
+- [x] [AI] Commit changes thematically using Conventional Commits format (`<type>(<scope>): <description>`):
       one commit per language fix — e.g., `fix(dart): emit pubspec.yaml from codegen target`,
       `fix(rust): replace $(pwd) with {workspaceRoot} in codegen command`, `fix(go): switch to 3.1-capable generator`,
       `fix(elixir): pin offending dep or document transient flake`. Commit CI/workflow changes separately:
       `fix(ci): ensure dotnet codegen dependsOn ordering`. Do NOT bundle fixes for different languages or
       CI/app into one commit. Do NOT include unrelated changes.
 
-- [ ] [AI] Push all commits to `origin main` directly (Trunk Based Development — no PR unless explicitly
+  Committed thematically (7 commits):
+  - `fix(ts)`: tanstack-start ApiError class + waitFor fix (e87ebc5ad)
+  - `fix(dart)`: full contract package generation (8dc4254db)
+  - `fix(rust)`: add codegen dependsOn to lint (142ca6760)
+  - `fix(go)`: codegen dependsOn + godog ~@codegen filter (be1ccdbc9)
+  - `fix(elixir)`: preferred_envs to def cli (22e2bb984)
+  - `feat(specs)`: codegen Gherkin + all BDD runner exclusions (39c5189b9)
+  - `fix(md)`: exclude generated-contracts from markdownlint (f5c5e4e0d)
+
+- [x] [AI] Push all commits to `origin main` directly (Trunk Based Development — no PR unless explicitly
       requested). Acceptance: `git push origin HEAD:main` exits 0.
 
 - [ ] [AI] Trigger an all-affected condition (these fixes touch app config; if not all-affected, a
@@ -432,7 +441,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 > All checks below must pass before starting Phase 9.
 
-- [ ] [AI] `git log --oneline origin/main | head -1` returns the most recent fix commit.
+- [x] [AI] `git log --oneline origin/main | head -1` returns the most recent fix commit.
 - [ ] [AI] `PR - Quality Gate` on GitHub Actions shows every per-language job as `success` on an
       all-affected commit.
 
