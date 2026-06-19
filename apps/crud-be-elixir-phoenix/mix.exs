@@ -13,11 +13,7 @@ defmodule CrudBeExph.MixProject do
       test_coverage: [tool: ExCoveralls],
       test_paths: test_paths(Mix.env()),
       test_pattern: "**/*_{test,steps}.exs",
-      test_load_filters: [~r/_test\.exs$/, ~r/_steps\.exs$/],
-      preferred_cli_env: [
-        coveralls: :test,
-        "coveralls.lcov": :test
-      ]
+      test_load_filters: [~r/_test\.exs$/, ~r/_steps\.exs$/]
     ]
   end
 
@@ -34,7 +30,9 @@ defmodule CrudBeExph.MixProject do
       preferred_envs: [
         precommit: :test,
         "test:unit": :test,
-        "test:integration": :integration
+        "test:integration": :integration,
+        coveralls: :test,
+        "coveralls.lcov": :test
       ]
     ]
   end
