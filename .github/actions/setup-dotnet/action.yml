@@ -28,3 +28,11 @@ runs:
     - name: Install fsharplint
       shell: bash
       run: dotnet tool install -g dotnet-fsharplint
+
+    - name: Restore NuGet packages (all .NET projects)
+      shell: bash
+      run: |
+        dotnet restore apps/crud-be-csharp-aspnetcore/src/DemoBeCsas/DemoBeCsas.csproj
+        dotnet restore apps/crud-be-csharp-aspnetcore/tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj
+        dotnet restore apps/crud-be-fsharp-giraffe/src/DemoBeFsgi/DemoBeFsgi.fsproj
+        dotnet restore apps/crud-be-fsharp-giraffe/tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj
