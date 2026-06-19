@@ -129,6 +129,7 @@ Development practices in this directory fall into several categories:
 - [Plan Anti-Hallucination Convention](./quality/plan-anti-hallucination.md) - Anti-hallucination guardrails for plan-maker and plan-checker agents: repo-grounding rules, web-research delegation thresholds, and claim verification requirements
 - [No Secrets in Committed Files Convention](../conventions/security/no-secrets-in-committed-files.md) - Hard iron rule prohibiting system secrets (SSH keys, passwords, tokens, API keys) from any git-committed file, including plans and docs
 - [Environment File Access Convention](../conventions/security/env-file-access.md) - Six-layer policy governing AI agent access to `.env*` files; only `.env.example` is permitted for reading, writing, editing, and committing
+- [User-Facing Delivery Hardening Convention](./quality/user-facing-delivery-hardening.md) - Fourteen durable rules so design-parity and behavioral defects cannot ship past green gates for user-facing work
 
 ### Pattern Documentation
 

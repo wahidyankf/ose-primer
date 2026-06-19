@@ -202,6 +202,13 @@ invent `validate:{thing}` prefixes.
 **See**: [Nx Target Naming Convention](./repo-governance/development/infra/nx-target-naming.md),
 [CI/CD Conventions](./repo-governance/development/infra/ci-conventions.md)
 
+## Manual Verification & CI Blockers
+
+- **Verify behavior**: Playwright MCP for UI, curl for API ([manual-behavioral-verification.md](./repo-governance/development/quality/manual-behavioral-verification.md))
+- **User-facing delivery hardening**: For any user-facing change, follow the fourteen rules — visual-parity sign-off against the design mockups per breakpoint/locale **before archival**, name the design-system primitive, per-breakpoint responsive deliverables, value-bearing tests, mockup-colors-as-theme-tokens, deploy-config-is-code, checkbox lockstep ([user-facing-delivery-hardening.md](./repo-governance/development/quality/user-facing-delivery-hardening.md))
+- **CI blockers**: Investigate root cause, fix properly, never bypass ([ci-blocker-resolution.md](./repo-governance/development/quality/ci-blocker-resolution.md))
+- **CI post-push verification**: After pushing app or lib code to `origin main`, trigger relevant GitHub CI workflows and verify they pass before declaring work done — pre-push hook alone is not sufficient ([ci-post-push-verification.md](./repo-governance/development/workflow/ci-post-push-verification.md))
+
 ## Governance Alignment
 
 All agents follow foundational principles:

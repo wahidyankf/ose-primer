@@ -181,6 +181,7 @@ Update status to "Complete", add summary and recommendation (approve/revise).
 
 - [Plans Organization Convention §Executor Tagging](../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule) - `[AI]`/`[HUMAN]` marker rules, legend, handoff/resume signal requirement (validated in Step 5f-gates)
 - [Plans Organization Convention §Phases as Natural Pauses With Clear Gates](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule) - Phase gate barrier rule, Pause Safety requirement (validated in Step 5f-gates)
+- [User-Facing Delivery Hardening Convention](../../repo-governance/development/quality/user-facing-delivery-hardening.md) — Before approving archival of a UI-bearing plan, verify the production visual sign-off (rule 1) was performed per breakpoint/locale, and that the deploy-config smoke test (rule 11) passed; a plan missing this evidence must not be archived.
 
 **Remember**: This is the final quality gate. Be thorough, independent, and uncompromising on quality.
 

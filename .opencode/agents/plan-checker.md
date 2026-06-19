@@ -273,6 +273,10 @@ Update status to "Complete", add summary statistics and prioritized recommendati
 - [Multi-Harness Binding Convention](../../repo-governance/conventions/structure/multi-harness-binding.md) - Two-tier binding model and no-shadowing rule
 - [Governance Vendor-Independence Convention](../../repo-governance/conventions/structure/governance-vendor-independence.md) - Platform Binding Examples heading rule
 
+**User-Facing Quality:**
+
+- [User-Facing Delivery Hardening Convention](../../repo-governance/development/quality/user-facing-delivery-hardening.md) — On UI-bearing plans, flag as HIGH: missing visual-parity gate before archival (rule 1), raw-value mockup colors not using theme tokens (rule 8), presence-only ordering tests that cannot distinguish a correct result from a plausible bug (rule 5), and missing per-breakpoint responsive deliverables for mobile/tablet/desktop (rules 3–4).
+
 ### Escalation After Repeated Disagreements
 
 If a finding was flagged in iteration N, marked FALSE_POSITIVE by fixer, and re-flagged by checker in iteration N+2:

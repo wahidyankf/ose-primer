@@ -422,6 +422,10 @@ Unsolicited PR steps conflict with Trunk Based Development. `plan-checker` will 
 - `plan-fixer` - Fixes plan issues
 - `grill-me` skill - Stress-test open design decisions before committing to implementation; every question presents 2-4 concrete options plus two standing options — a free-form blank-state type and a "chat about this" path (use `AskUserQuestion` tool in Claude Code or markdown format); invoke via the `grill-me` Skill when requirements have unresolved branches
 
+**Related Conventions:**
+
+- [User-Facing Delivery Hardening Convention](../../repo-governance/development/quality/user-facing-delivery-hardening.md) — Emit delivery steps for rules 1–8: visual-parity sign-off before archival (rule 1), name the design-system primitive (rule 2), per-breakpoint responsive deliverables (rules 3–4), value-bearing tests (rule 5), mockup-colors-as-theme-tokens (rule 8).
+
 **Remember**: Good plans are executable blueprints, not vague intentions. Make them specific, structured, and actionable.
 
 ## Factual Accuracy Verification

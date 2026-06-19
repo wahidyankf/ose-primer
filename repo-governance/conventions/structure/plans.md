@@ -541,12 +541,12 @@ Plans differ from `docs/` in several important ways:
 
 ### Completing Work
 
-1. **Verify completion**: Ensure all deliverables and acceptance criteria met
+1. **Verify completion**: Ensure all deliverables and acceptance criteria met. For user-facing plans, the archival criterion (rule 10 of the [User-Facing Delivery Hardening Convention](../../development/quality/user-facing-delivery-hardening.md)) requires a production visual sign-off per breakpoint/locale before the plan may be moved to `done/`.
 2. **Add completion date prefix**: Rename folder from `in-progress/[identifier]/` to `done/YYYY-MM-DD__[identifier]/` using today's date (the completion date, not the original creation date)
 3. **Move folder**: Move renamed folder to `done/`
-4. **Update index**: Update both `in-progress/README.md` and `done/README.md`
+4. **Update index**: Update both `in-progress/README.md` and `done/README.md`. Tick every delivery checkbox before archiving — the Atomic Sync Ritual (rule 13 of the [User-Facing Delivery Hardening Convention](../../development/quality/user-facing-delivery-hardening.md)) requires checkbox lockstep throughout execution, not batch-ticking at archival time.
 5. **Git commit**: Commit the move with completion message
-6. **Archive**: Plan is now archived for historical reference
+6. **Archive**: Plan is now archived for historical reference. If a defect is found post-archival, reopen the plan by moving it back to `in-progress/` per rule 14 of the [User-Facing Delivery Hardening Convention](../../development/quality/user-facing-delivery-hardening.md) rather than creating a silent patch.
 
 ### Infra-Apply Gate (HARD RULE)
 
@@ -721,6 +721,7 @@ Use the verification tip from the [Linking Convention](../formatting/linking.md#
 - [Plan Anti-Hallucination Convention](../../development/quality/plan-anti-hallucination.md) - Pre-write verification recipes, repo-grounding rule, refuse-on-uncertainty, anti-pattern catalog (AP-1 through AP-10), specialized-executor annotation; consumed by the Execution-Grade Clarity rule above and by the four plan agents
 - [No Secrets in Committed Files Convention](../security/no-secrets-in-committed-files.md) - Hard iron rule prohibiting secret values in any committed file, including plans and their permanent `done/` history
 - [Grilling-With-Options Convention](../../development/workflow/grilling-with-options.md) - Every grill question during plan creation (pre-write, post-write) MUST present 2-4 concrete options with trade-off descriptions; open-ended questions without options are FORBIDDEN; consumed by plan-maker Steps 1 and 8
+- [User-Facing Delivery Hardening Convention](../../development/quality/user-facing-delivery-hardening.md) - Rule 10 (archival criterion = production visual sign-off per breakpoint/locale), rule 13 (Atomic Sync Ritual / checkbox lockstep throughout execution), and rule 14 (reopen path for post-archival defects) apply directly to the Completing Work lifecycle above
 
 **Development Guides**:
 

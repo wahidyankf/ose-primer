@@ -421,3 +421,4 @@ Workflow verifiable and safe.
 - [plan-writing-gherkin-criteria skill](../../../.claude/skills/plan-writing-gherkin-criteria/SKILL.md) - Writing Gherkin scenarios that map to first failing tests
 - [BDD Spec-to-Test Mapping Convention](../infra/bdd-spec-test-mapping.md) - Mandatory 1:1 mapping between specs and tests
 - [Code Quality Convention](../quality/code.md) - Pre-push hooks that run the test suite TDD produces
+- [User-Facing Delivery Hardening Convention](../quality/user-facing-delivery-hardening.md) — Rule 5: tests for user-facing computations must assert the computed value, not just presence or ordering, so a plausible off-by-one bug returns a different result; rule 12: each test must distinguish correct behavior from the most likely incorrect alternative.

@@ -104,6 +104,7 @@ For every new component, create these files:
 - [Component Patterns Convention](../../repo-governance/development/frontend/component-patterns.md)
 - [Accessibility Convention](../../repo-governance/development/frontend/accessibility.md)
 - [Styling Convention](../../repo-governance/development/frontend/styling.md)
+- [User-Facing Delivery Hardening Convention](../../repo-governance/development/quality/user-facing-delivery-hardening.md) — Rule 2: name the design-system primitive when building net-new or known components; rule 8: use design-system theme tokens for colors in mockups and implementations, never raw hex/rgb values.
 
 **Skills**:
 

@@ -531,6 +531,8 @@ Determine whether to continue execution or terminate.
 
 Report final status, archive plan if successful, and update all related READMEs.
 
+> **UI-bearing plan pre-archival gate (rules 1, 10, 14)**: Before archiving a plan that adds or changes user-facing screens, verify the production visual sign-off per breakpoint/locale was performed (rule 1), confirm the archival criterion is met (rule 10), and note the reopen path if a defect surfaces post-archival (rule 14). See [User-Facing Delivery Hardening Convention](../../development/quality/user-facing-delivery-hardening.md).
+
 **Logic**:
 
 - If status is `pass` (zero findings):

@@ -1803,6 +1803,7 @@ The full funnel is demonstrated for the Salary Savings Calculator compare-all sc
 - [Linking Convention](./linking.md) - How to link between files
 - [Diátaxis Framework](../structure/diataxis-framework.md) - Documentation organization principles
 - [Conventions Index](../README.md) - Overview of all conventions
+- [User-Facing Delivery Hardening Convention](../../development/quality/user-facing-delivery-hardening.md) — In the UI Mockups in Plan Docs section: rule 2 requires naming the net-new or known design-system primitive for every component depicted; rule 8 requires mockup colors to reference design-system tokens rather than raw hex/rgb values.
 
 ## External Resources
 
