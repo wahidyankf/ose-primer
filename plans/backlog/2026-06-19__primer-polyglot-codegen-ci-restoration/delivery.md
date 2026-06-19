@@ -13,11 +13,24 @@
       `npx nx run <app>:lint --skip-nx-cache`; record the exact failure for dart, rust, go (and the
       elixir clean-deps reproduction). These are the RED states the fixes must turn GREEN.
 
-## Phase 1: .NET — DONE (verify only)
+## Phase 1: .NET CVE — DONE (verify only)
 
 - [ ] Confirm `c82c66c6f` is present: `git log --oneline | grep SQLitePCLRaw`. Verify
       `dotnet build apps/crud-be-fsharp-giraffe/tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj -c Release`
-      and the C# test project build with 0 errors and no `NU1903`.
+      and the C# test project build with 0 errors and no `NU1903`. (CI on `c82c66c6f` confirms `NU1903` is
+      gone; the `.NET quality gate` now fails on a separate Class B codegen-ordering issue — Phase 5b.)
+
+## Phase 5b: Class B (CI-only) — .NET codegen ordering + Elixir deps
+
+- [ ] These pass fresh locally but fail in CI. Investigate CI-side, not app code:
+- [ ] **.NET `CS2001`**: confirm the C# `codegen` `dependsOn` actually runs and completes before the C#
+      build under the cold-cache matrix; check first-run `openapi-generator` JAR download. Fix the ordering
+      / ensure contracts exist before compile. Verify on CI (not just locally, where it already passes).
+- [ ] **Elixir deps**: see Phase 5; if it recurs in CI after a clean local repro passes, treat as a
+      first-run Hex dependency-compile race and add a retry/soak or pin the offending dep.
+- [ ] Cross-check the parallel-restore race family (the .NET `nuget.g.targets` "already exists" race seen on
+      the first run; the ose-public `.NET` flake) — consider disabling intra-job restore parallelism if it
+      recurs.
 
 ## Phase 2: Dart — produce a resolvable package fresh (AC-1)
 
@@ -26,9 +39,9 @@
       the Rust target's `Cargo.toml`); **B** activate `rhino-cli specs scaffold dart` runtime-conditionally
       (preserve byte-identical mirror + update harness-compat checker). Record the choice + rationale.
 - [ ] RED: `rm -rf apps/crud-fe-dart-flutterweb/generated-contracts && npx nx run
-  crud-fe-dart-flutterweb:codegen --skip-nx-cache` fails (no pubspec).
+crud-fe-dart-flutterweb:codegen --skip-nx-cache` fails (no pubspec).
 - [ ] GREEN: implement the chosen fix; re-run the same command → `pubspec.yaml` exists and `flutter pub
-  get` resolves `crud_contracts`; `npx nx run crud-fe-dart-flutterweb:lint --skip-nx-cache` exits 0.
+get` resolves `crud_contracts`; `npx nx run crud-fe-dart-flutterweb:lint --skip-nx-cache` exits 0.
 - [ ] If option B: run `npm run generate:bindings`; `rhino-cli` source stays byte-identical across repos
       (md5 compare vs ose-public/ose-infra) OR the divergence is deliberate with the harness-compat checker
       updated; `npx nx run rhino-cli:cross-vendor:parity-validation` exits 0.
@@ -36,7 +49,7 @@
 ## Phase 3: Rust — deterministic manifest under nx (AC-2)
 
 - [ ] Diagnose: run the exact `codegen` command via `npx nx run crud-be-rust-axum:codegen --skip-nx-cache
-  --verbose`; capture cwd and per-`&&`-step exit codes to confirm why `Cargo.toml` is not written.
+--verbose`; capture cwd and per-`&&`-step exit codes to confirm why `Cargo.toml` is not written.
 - [ ] RED: fresh `nx run crud-be-rust-axum:lint --skip-nx-cache` fails (Cargo.toml missing).
 - [ ] GREEN: make manifest generation robust (replace `$(pwd)` with `{workspaceRoot}`, de-`&&`-chain into
       ordered steps, or move scaffolding to a small script). Re-run → `Cargo.toml`, `src/lib.rs`,
@@ -54,7 +67,7 @@
 ## Phase 5: Elixir — reproduce or confirm transient (AC-4)
 
 - [ ] Reproduce clean: `cd apps/crud-be-elixir-phoenix && mix deps.clean --all && mix deps.get && MIX_ENV=test
-  mix compile --warnings-as-errors`. If it fails, root-cause the offending dependency and fix; if it
+mix compile --warnings-as-errors`. If it fails, root-cause the offending dependency and fix; if it
       passes, document the CI failure as transient.
 - [ ] Optional hygiene: move `:preferred_cli_env` from `def project` to `def cli` in
       `apps/crud-be-elixir-phoenix/mix.exs` to clear the deprecation warning.
@@ -63,7 +76,7 @@
 
 - [ ] For each language: `rm -rf` its `generated-contracts` then run the per-language `run-many` exactly as
       the workflow does (`nx show projects --affected … | nx run-many -t typecheck lint test:quick
-  specs:coverage -p …`) with `--skip-nx-cache`; all exit 0.
+specs:coverage -p …`) with `--skip-nx-cache`; all exit 0.
 - [ ] `npm run lint:md` exits 0; `npx nx run rhino-cli:cross-vendor:parity-validation` exits 0 (if
       Phase 2B touched `rhino-cli`).
 

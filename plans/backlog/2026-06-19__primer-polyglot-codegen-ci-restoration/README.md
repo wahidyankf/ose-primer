@@ -41,13 +41,21 @@ so the polyglot showcase builds green from a clean checkout.
 
 ## Status of each gate (as of 2026-06-19)
 
-| Gate (lang)  | Symptom on fresh CI                                       | Root cause                                                                                                                        | Status                                       |
-| ------------ | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| .NET (C#/F#) | `NU1903` SQLite CVE, build-as-error                       | `Microsoft.EntityFrameworkCore.Sqlite` 10.0.8 pulls vulnerable `SQLitePCLRaw.bundle_e_sqlite3` 2.1.11                             | **DONE** — pinned 3.0.3 (commit `c82c66c6f`) |
-| Dart         | `flutter pub get`: no `pubspec.yaml` for `crud_contracts` | `rhino-cli specs scaffold dart` is a dormant stub ("dormant in ose-public"); codegen is models-only                               | TODO                                         |
-| Rust         | `cargo` lint/build: `Cargo.toml` missing                  | nx-orchestrated `codegen` does not leave a `Cargo.toml`; the standalone `openapi-generator` step works, the nx-run chain does not | TODO (confirm mechanism)                     |
-| Go           | `golangci-lint`/build: `types.gen.go` missing             | `oapi-codegen` warns it does not support OpenAPI 3.1.x and emits no types                                                         | TODO                                         |
-| Elixir       | `** (Mix) Can't continue due to errors on dependencies`   | Not reproducible fresh locally (typecheck passes) — CI deps-compile/network flake                                                 | TODO (verify / re-run)                       |
+| Gate (lang)            | Symptom on fresh CI                                       | Root cause                                                                                                                                                                 | Status                                                                  |
+| ---------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| .NET CVE (C#/F#)       | `NU1903` SQLite CVE, build-as-error                       | `Microsoft.EntityFrameworkCore.Sqlite` 10.0.8 pulls vulnerable `SQLitePCLRaw.bundle_e_sqlite3` 2.1.11                                                                      | **DONE** — pinned 3.0.3 (commit `c82c66c6f`); CI confirms `NU1903` gone |
+| Dart (Class A)         | `flutter pub get`: no `pubspec.yaml` for `crud_contracts` | `rhino-cli specs scaffold dart` is a dormant stub ("dormant in ose-public"); codegen is models-only                                                                        | TODO                                                                    |
+| Rust (Class A)         | `cargo` lint/build: `Cargo.toml` missing                  | nx-orchestrated `codegen` does not leave a `Cargo.toml`; the standalone `openapi-generator` step works, the nx-run chain does not                                          | TODO (confirm mechanism)                                                |
+| Go (Class A)           | `golangci-lint`/build: `types.gen.go` missing             | `oapi-codegen` warns it does not support OpenAPI 3.1.x and emits no types                                                                                                  | TODO                                                                    |
+| .NET codegen (Class B) | `CS2001`: generated `*.cs` contract files not found       | C# codegen **succeeds fresh locally** (contracts produced) but CI shows the C# build running before/without the generated contracts — a CI-only ordering/environment issue | TODO (investigate CI ordering)                                          |
+| Elixir (Class B)       | `** (Mix) Can't continue due to errors on dependencies`   | **Passes fresh locally** (typecheck + full `mix compile --warnings-as-errors` clean) — CI deps-compile/network flake                                                       | TODO (verify / re-run)                                                  |
+
+**Two failure classes.** _Class A — locally reproducible_ (Dart/Rust/Go): a cleaned tree + `--skip-nx-cache`
+fails identically to CI; these are genuine fresh-codegen bugs. _Class B — CI-only_ (.NET codegen, Elixir):
+the same cleaned-tree reproduction **passes locally** but CI fails; these point at CI-environment causes —
+codegen `dependsOn` ordering under the cold-cache matrix, first-run generator-JAR/Hex dependency download
+races, or parallel-restore races (the .NET NuGet `nuget.g.targets` "already exists" race and the ose-public
+`.NET` flake are the same family). Class B needs CI-side investigation, not local code fixes.
 
 ## Approach summary
 

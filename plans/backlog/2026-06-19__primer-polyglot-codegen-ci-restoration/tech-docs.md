@@ -16,7 +16,16 @@
 
 ## Per-gate root-cause analysis
 
-### .NET (C#/F#) — DONE (commit `c82c66c6f`)
+### .NET (C#/F#) — CVE DONE (commit `c82c66c6f`); codegen is Class B (CI-only)
+
+> The SQLite CVE below is fixed and verified. Separately, the `.NET quality gate` on the fix commit shows a
+> **Class B** failure: `CS2001: …/generated-contracts/src/Org.OpenAPITools/DemoBeCsas.Contracts/*.cs could
+not be found`. The C# `codegen` (`openapi-generator -g csharp --global-property=models`) **succeeds fresh
+> locally** (the `*.cs` model files are produced), so this is a CI-side ordering/environment issue — the C#
+> build runs without the generated contracts present. Investigate the codegen `dependsOn` ordering under the
+> cold-cache matrix and the first-run generator-JAR download, not the app code. See "Two failure classes".
+
+#### SQLite CVE (fixed)
 
 - `Microsoft.EntityFrameworkCore.Sqlite` 10.0.8 → `Microsoft.Data.Sqlite` → `SQLitePCLRaw.bundle_e_sqlite3`
   resolves the lowest satisfying version **2.1.11**, flagged `NU1903` (GHSA-2m69-gcr7-jv3q /
