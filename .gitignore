@@ -160,7 +160,8 @@ specs/apps/demo/contracts/generated/
 .claude/*.lock
 
 # Root-level worktrees (git worktree add targets)
-worktrees/
+worktrees/*
+!worktrees/.gitkeep
 
 # Claude memory search cache
 .memsearch/
