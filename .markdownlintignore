@@ -32,6 +32,9 @@ generated-reports/
 # Flutter generated files
 **/.dart_tool/
 
+# OpenAPI generated contracts (third-party generated content)
+**/generated-contracts/
+
 # Playwright generated test reports and results
 apps/*/playwright-report/
 apps/*/test-results/

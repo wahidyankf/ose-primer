@@ -16,6 +16,7 @@
     "apps-labs/**",
     "generated-reports/**",
     "**/.dart_tool/**",
+    "**/generated-contracts/**",
     ".vscode/**",
     ".idea/**",
     "apps/*/playwright-report/**",
