@@ -171,7 +171,7 @@ impl UserRepository for InMemoryUserRepository {
         };
 
         // Sort by created_at desc (most recent first)
-        all.sort_by(|a, b| b.created_at.cmp(&a.created_at));
+        all.sort_by_key(|u| std::cmp::Reverse(u.created_at));
 
         let total = all.len() as i64;
         let offset = ((page - 1) * page_size) as usize;
@@ -255,7 +255,7 @@ impl ExpenseRepository for InMemoryExpenseRepository {
             .filter(|e| e.user_id == user_id)
             .cloned()
             .collect();
-        all.sort_by(|a, b| b.date.cmp(&a.date));
+        all.sort_by_key(|e| std::cmp::Reverse(e.date));
 
         let total = all.len() as i64;
         let offset = ((page - 1) * page_size) as usize;
