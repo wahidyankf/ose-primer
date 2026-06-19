@@ -7,15 +7,11 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g dart -o $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts --additional-properties=pubName=crud_contracts --global-property=models,modelDocs=false,apiDocs=false && (WS_ROOT=$(pwd) && cd $(pwd) && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs scaffold dart --dir $WS_ROOT/apps/crud-fe-dart-flutterweb/generated-contracts) && cd $(pwd)/apps/crud-fe-dart-flutterweb && flutter pub get"
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g dart -o $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts --additional-properties=pubName=crud_contracts --global-property=modelDocs=false,apiDocs=false && mv $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts/lib/api.dart $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts/lib/crud_contracts.dart && cd $(pwd)/apps/crud-fe-dart-flutterweb && flutter pub get"
       },
       "dependsOn": ["crud-contracts:bundle"],
       "cache": true,
-      "inputs": [
-        "{workspaceRoot}/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml",
-        "{workspaceRoot}/apps/rhino-cli/src/**/*.rs",
-        "{workspaceRoot}/apps/rhino-cli/Cargo.toml"
-      ],
+      "inputs": ["{workspaceRoot}/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml"],
       "outputs": ["{projectRoot}/generated-contracts"]
     },
     "dev": {
@@ -84,7 +80,7 @@
       }
     },
     "specs:coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps specs/apps/crud/behavior/crud-web/gherkin apps/crud-fe-dart-flutterweb",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir codegen specs/apps/crud/behavior/crud-web/gherkin apps/crud-fe-dart-flutterweb",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature", "{projectRoot}/**/*.dart"]
     }
