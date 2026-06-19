@@ -17,6 +17,9 @@
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.8.0.113526" />
     <!-- Test -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.8" />
+    <!-- Pin patched SQLite native bundle to clear GHSA-2m69-gcr7-jv3q (CVE-2025-6965);
+         Microsoft.EntityFrameworkCore.Sqlite 10.0.8 still resolves the vulnerable 2.1.11 transitively. -->
+    <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.8" />
     <PackageVersion Include="Reqnroll" Version="3.0.0" />
     <PackageVersion Include="Reqnroll.xUnit" Version="3.0.0" />

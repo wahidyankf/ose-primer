@@ -60,6 +60,9 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
     <PackageReference Include="EFCore.NamingConventions" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.8" />
+    <!-- Pin patched SQLite native bundle to clear GHSA-2m69-gcr7-jv3q (CVE-2025-6965);
+         EFCore.Sqlite 10.0.8 still resolves the vulnerable SQLitePCLRaw 2.1.11 transitively. -->
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="FSharp.SystemTextJson" Version="1.4.36" />
