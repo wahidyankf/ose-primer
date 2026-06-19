@@ -54,6 +54,10 @@ This directory contains specialized AI agents for the ose-primer repository temp
 
 - **web-research-maker** - Read-only web research specialist; returns cited, structured findings with confidence tags in an isolated context (no file writes, no shell). Invoke for current API/library docs, fact verification, best-practice surveys. Uses `color: green` despite the `-maker` suffix because web research is validation-adjacent (fact-checking, citation validation) and read-only by design. See [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md#color-to-role-mapping) for this documented exception.
 
+### 🧪 Testing
+
+- **[exploratory-web-tester](exploratory-web-tester.md)** - Session-based exploratory testing of a live site against a goal; files findings (functional, UI/responsive, accessibility, performance, safe security surface) as a new backlog plan (README + brd + prd + findings with steps-to-reproduce). Non-destructive; does not modify the site or fix code.
+
 ### 💻 Development
 
 - **swe-clojure-dev** - Clojure application development
@@ -73,7 +77,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 
 Every agent filename follows: `<scope>(-<qualifier>)*-<role>`
 
-- `scope` — top-level domain (`apps`, `docs`, `plan`, `repo`, `swe`, `ci`, `readme`, `specs`, `social`, `web`, `agent`).
+- `scope` — top-level domain (`apps`, `docs`, `exploratory`, `plan`, `repo`, `swe`, `ci`, `readme`, `specs`, `social`, `web`, `agent`).
 - `qualifier` — zero or more refinement tokens (e.g., `crud-fs-ts-nextjs`, `link`, `ui`, `execution`).
 - `role` — exactly one trailing token from the Role Vocabulary below.
 
@@ -83,14 +87,15 @@ Normative source: [Agent Naming Convention](../../repo-governance/conventions/st
 
 ## Role Vocabulary
 
-| Role       | Semantics                                                 | Example agents                                               |
-| ---------- | --------------------------------------------------------- | ------------------------------------------------------------ |
-| `maker`    | Produces a content/research artifact                      | `docs-maker`, `web-research-maker`                           |
-| `checker`  | Validates an artifact against standards                   | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
-| `fixer`    | Applies validated checker findings                        | `plan-fixer`, `swe-ui-fixer`                                 |
-| `dev`      | Writes code in a language or test framework               | `swe-rust-dev`, `swe-e2e-dev`                                |
-| `deployer` | Deploys an application to an environment                  | `apps-<scope>-deployer` (scope-specific deployer)            |
-| `manager`  | Performs file or resource operations (rename/move/delete) | `docs-file-manager`                                          |
+| Role       | Semantics                                                  | Example agents                                               |
+| ---------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
+| `maker`    | Produces a content/research artifact                       | `docs-maker`, `web-research-maker`                           |
+| `checker`  | Validates an artifact against standards                    | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
+| `fixer`    | Applies validated checker findings                         | `plan-fixer`, `swe-ui-fixer`                                 |
+| `dev`      | Writes code in a language or test framework                | `swe-rust-dev`, `swe-e2e-dev`                                |
+| `deployer` | Deploys an application to an environment                   | `apps-<scope>-deployer` (scope-specific deployer)            |
+| `manager`  | Performs file or resource operations (rename/move/delete)  | `docs-file-manager`                                          |
+| `tester`   | Explores a running system or live site and reports defects | `exploratory-web-tester`                                     |
 
 Enforcement: `rhino-cli agents validate-naming` (wired into pre-push and CI).
 
