@@ -8,10 +8,6 @@ Active project plans currently being worked on.
   — second demo family alongside `crud-*`: a four-project desktop suite that ingests
   financial reports (10-K filings, annual reports), generates LLM-driven analysis, and
   exports research dossiers.
-- [Primer Polyglot Demo-App CI Restoration](./primer-polyglot-codegen-ci-restoration/README.md)
-  — restore fresh-checkout codegen + green per-language CI for the `crud-*` demo apps. The .NET
-  SQLite CVE (`NU1903`) is already fixed; Dart, Rust, and Go need fresh-codegen fixes; Elixir CI
-  deps failure to verify/transient.
 
 ## Folder Naming
 

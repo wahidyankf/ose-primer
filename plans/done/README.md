@@ -14,6 +14,14 @@ Example: `2026-04-27__adopt-mermaid-checker-from-ose-public/` where `2026-04-27`
 
 ## Completed Projects
 
+- [2026-06-20: Primer Polyglot Demo-App CI Restoration](./2026-06-20__primer-polyglot-codegen-ci-restoration/README.md)
+  — restored fresh-checkout codegen + green per-language CI for all `crud-*` demo apps. Fixed Dart
+  codegen (full package generation, barrel rename), Rust/Go codegen race (added `dependsOn: codegen`
+  to lint/test:quick), Elixir `preferred_cli_env` deprecation. Fixed three CI setup gaps surfaced
+  during verification: `setup-elixir` missing `mix deps.get` for all 4 mix projects, `setup-dotnet`
+  missing `dotnet restore` (F# uses `--no-restore`), and `crud-be-rust-axum` `clippy::unnecessary_sort_by`
+  under `-D warnings`. All 9 language quality gates green on CI run 27840103269. (Completed: 2026-06-20)
+
 - [2026-06-16: Plan-Doc UI Mockup Convention](./2026-06-16__plan-doc-ui-mockup-convention/README.md)
   — ose-primer instance of the 3-repo `plan-doc-ui-mockup-convention` parallel set (siblings:
   ose-public, ose-infra). Authored the "UI Mockups in Plan Docs" convention in
