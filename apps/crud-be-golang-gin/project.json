@@ -43,6 +43,7 @@
         "command": "CGO_ENABLED=0 go test -coverprofile=cover.out ./... -count=1 && head -1 cover.out > cover_unit.out && grep -v 'gorm_store\\|internal/server\\|cmd/server\\|generated-contracts' cover.out >> cover_unit.out && (cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate apps/crud-be-golang-gin/cover_unit.out 90)",
         "cwd": "apps/crud-be-golang-gin"
       },
+      "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
         "{projectRoot}/internal/**/*.go",
@@ -81,7 +82,8 @@
       "options": {
         "command": "CGO_ENABLED=0 golangci-lint run --allow-parallel-runners ./...",
         "cwd": "apps/crud-be-golang-gin"
-      }
+      },
+      "dependsOn": ["codegen"]
     },
     "typecheck": {
       "executor": "nx:run-commands",

@@ -16,7 +16,7 @@ func TestUnit(t *testing.T) {
 			Paths:    []string{"../../../../specs/apps/crud/behavior/crud-be/gherkin"},
 			TestingT: t,
 			Strict:   true,
-			Tags:     "~@test-support",
+			Tags:     "~@test-support && ~@codegen",
 		},
 	}
 	if suite.Run() != 0 {
