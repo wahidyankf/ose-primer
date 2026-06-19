@@ -8,6 +8,7 @@ import { vi, expect } from "vitest";
 import * as expensesApi from "@/lib/api/expenses";
 import * as attachmentsApi from "@/lib/api/attachments";
 import * as usersApi from "@/lib/api/users";
+import { ApiError } from "@/lib/api/client";
 
 const feature = await loadFeature(
   path.resolve(
@@ -404,19 +405,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
 
     And("the attachment has been deleted from another session", () => {
-      const { ApiError } = (() => {
-        const ApiErrorClass = class ApiError extends Error {
-          status: number;
-          body: unknown;
-          constructor(status: number, body: unknown) {
-            super(`API error: ${status}`);
-            this.name = "ApiError";
-            this.status = status;
-            this.body = body;
-          }
-        };
-        return { ApiError: ApiErrorClass };
-      })();
       vi.mocked(attachmentsApi.deleteAttachment).mockRejectedValue(new ApiError(404, null));
     });
 
@@ -442,9 +430,8 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
-    Then("an error message about attachment not found should be displayed", () => {
-      // After failed deletion, error message appears
-      waitFor(() => {
+    Then("an error message about attachment not found should be displayed", async () => {
+      await waitFor(() => {
         expect(screen.getByText(/attachment not found/i)).toBeInTheDocument();
       });
     });
