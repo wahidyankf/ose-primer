@@ -76,7 +76,7 @@ Specialized agents organized into families:
 6. **Harness Compatibility**: `repo-harness-compatibility-checker`, `repo-harness-compatibility-fixer` — the single harness-compat pair covering internal cross-vendor parity invariants (Phase 0) and external harness-convention drift (Phase 1)
 7. **Specs Validation**: `specs-maker`, `specs-checker`, `specs-fixer`
 8. **CI/CD**: `ci-checker`, `ci-fixer`
-9. **Research**: `web-research-maker`
+9. **Research**: `web-researcher`
 
 **Full agent catalog**: See [`.claude/agents/README.md`](./.claude/agents/README.md) (canonical source synced to the secondary binding directory)
 
@@ -99,7 +99,7 @@ Three-stage quality workflow:
 
 **See**: `.claude/skills/repo-applying-maker-checker-fixer/SKILL.md` (read natively by the secondary binding)
 
-**Web Research Default**: `web-research-maker` is the default primitive for public-web information gathering across all agents. See [Web Research Delegation Convention](./repo-governance/conventions/writing/web-research-delegation.md) for the normative rule, delegation threshold (2+ `WebSearch` or 3+ `WebFetch` per claim), and enumerated exceptions (single-shot known URL; fixer re-validation; link-reachability checkers).
+**Web Research Default**: `web-researcher` is the default primitive for public-web information gathering across all agents. See [Web Research Delegation Convention](./repo-governance/conventions/writing/web-research-delegation.md) for the normative rule, delegation threshold (2+ `WebSearch` or 3+ `WebFetch` per claim), and enumerated exceptions (single-shot known URL; fixer re-validation; link-reachability checkers).
 
 ## Agent-Skill Integration
 

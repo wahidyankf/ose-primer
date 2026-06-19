@@ -453,7 +453,7 @@ the 1 agent modified in Phase 5.
 | `swe-ui-checker`             | SWE/Checker   | sonnet  | sonnet      | —               | Token compliance, accessibility, responsive design validation                                 |
 | `swe-ui-fixer`               | SWE/Fixer     | sonnet  | sonnet      | —               | Apply UI component fixes                                                                      |
 | `swe-ui-maker`               | SWE/Maker     | omit    | omit        | —               | CVA variants + Radix + a11y + tests + Storybook simultaneously                                |
-| `web-research-maker`         | Meta/Research | sonnet  | sonnet      | —               | Structured web research following citation pattern                                            |
+| `web-researcher`             | Meta/Research | sonnet  | sonnet      | —               | Structured web research following citation pattern                                            |
 
 **Tier totals after changes**:
 

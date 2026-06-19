@@ -89,7 +89,7 @@ Source-of-truth (hand-edited) files:
 | `.claude/agents/repo-parity-checker.md`                                     | 2     | Invariant 3 tool string (incl. `.opencode/` diff) |
 | `.claude/agents/repo-parity-fixer.md`                                       | 3     | Description + body instruction                    |
 | `.claude/agents/repo-rules-fixer.md`                                        | 1     | Instruction                                       |
-| `.claude/agents/web-research-maker.md`                                      | 1     | Reference                                         |
+| `.claude/agents/web-researcher.md`                                          | 1     | Reference                                         |
 | `.claude/skills/agent-developing-agents/SKILL.md`                           | 1     | Skill instruction                                 |
 | `.claude/skills/README.md`                                                  | 1     | Reference                                         |
 
@@ -103,7 +103,7 @@ residual survives sync):
 | `.opencode/agents/repo-parity-checker.md`              | `.claude/agents/repo-parity-checker.md` |
 | `.opencode/agents/repo-parity-fixer.md`                | `.claude/agents/repo-parity-fixer.md`   |
 | `.opencode/agents/repo-rules-fixer.md`                 | `.claude/agents/repo-rules-fixer.md`    |
-| `.opencode/agents/web-research-maker.md`               | `.claude/agents/web-research-maker.md`  |
+| `.opencode/agents/web-researcher.md`                   | `.claude/agents/web-researcher.md`      |
 
 Total: ~36 occurrences across 22 source-of-truth files (plus 6 auto-generated mirror files).
 
@@ -239,7 +239,7 @@ row + list item), `repo-governance/workflows/repo/README.md` (drop parity bullet
 
 ### `.claude/agents/repo-rules-fixer.md` [MODIFY] — 1 location
 
-### `.claude/agents/web-research-maker.md` [MODIFY] — 1 location
+### `.claude/agents/web-researcher.md` [MODIFY] — 1 location
 
 ### `.claude/skills/agent-developing-agents/SKILL.md` [MODIFY] — 1 location
 

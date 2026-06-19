@@ -1,7 +1,7 @@
 # Technical Documentation — Dependency Bump June 2026
 
 All version, CVE, EPSS, KEV, and release-date claims below are `[Web-cited]` via the
-[June 2026 clearance report][clearance-report] (which delegated verification to `web-research-maker`
+[June 2026 clearance report][clearance-report] (which delegated verification to `web-researcher`
 against NVD, GHSA, Snyk, vendor pages, and the CISA KEV catalog). All manifest paths are
 `[Repo-grounded]` and were confirmed to resolve in the current commit.
 

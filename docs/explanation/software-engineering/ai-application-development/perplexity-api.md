@@ -332,7 +332,7 @@ A short framing for picking the right tool:
 
 In this repo, the canonical pattern is:
 
-- The `web-research-maker` agent handles in-session research that may use
+- The `web-researcher` agent handles in-session research that may use
   WebFetch or WebSearch — humans rarely call Sonar directly during
   development.
 - Sonar is wired into a demo backend only when the demo scenario itself is

@@ -32,7 +32,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **swe-ui-checker** - UI component quality validation
 - **ci-checker** - CI/CD standards validation (mandatory Nx targets, coverage thresholds, Docker setup, Gherkin specs)
 - **docs-software-engineering-separation-checker** - Validates the boundary between generic dev docs and language-specific (Go, TypeScript, Rust, etc.) docs per the [Programming Language Docs Separation](../../repo-governance/conventions/structure/programming-language-docs-separation.md) convention
-- **repo-harness-compatibility-checker** - The single harness-compat checker. **Phase 0** runs 5 deterministic cross-vendor parity invariants (governance/root-surface vendor-neutrality, binding sync no-op over `.opencode/` + `.amazonq/`, agent count parity, color + tier maps); **Phase 1** detects external drift between each supported harness's current upstream config conventions and the platform-bindings catalog + committed binding files (delegates multi-page research to `web-research-maker`). Writes a dual-label audit to `generated-reports/`
+- **repo-harness-compatibility-checker** - The single harness-compat checker. **Phase 0** runs 5 deterministic cross-vendor parity invariants (governance/root-surface vendor-neutrality, binding sync no-op over `.opencode/` + `.amazonq/`, agent count parity, color + tier maps); **Phase 1** detects external drift between each supported harness's current upstream config conventions and the platform-bindings catalog + committed binding files (delegates multi-page research to `web-researcher`). Writes a dual-label audit to `generated-reports/`
 - **repo-setup-manager** - Executes Phase 0 environment setup (npm install, doctor --fix, baseline tests) before plan execution; resolves all preexisting failures to establish a clean, known-good baseline
 
 ### 🟨 Fixing (Fixers)
@@ -52,7 +52,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 
 ### 🟩 Research (validation-adjacent)
 
-- **web-research-maker** - Read-only web research specialist; returns cited, structured findings with confidence tags in an isolated context (no file writes, no shell). Invoke for current API/library docs, fact verification, best-practice surveys. Uses `color: green` despite the `-maker` suffix because web research is validation-adjacent (fact-checking, citation validation) and read-only by design. See [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md#color-to-role-mapping) for this documented exception.
+- **web-researcher** - Read-only web research specialist; returns cited, structured findings with confidence tags in an isolated context (no file writes, no shell). Invoke for current API/library docs, fact verification, best-practice surveys. Uses `color: green` because web research is validation-adjacent (fact-checking, citation validation) and read-only by design; the `researcher` role maps to green. See [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md#color-to-role-mapping) for the color-to-role mapping.
 
 ### 🧪 Testing
 
@@ -87,15 +87,16 @@ Normative source: [Agent Naming Convention](../../repo-governance/conventions/st
 
 ## Role Vocabulary
 
-| Role       | Semantics                                                  | Example agents                                               |
-| ---------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
-| `maker`    | Produces a content/research artifact                       | `docs-maker`, `web-research-maker`                           |
-| `checker`  | Validates an artifact against standards                    | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
-| `fixer`    | Applies validated checker findings                         | `plan-fixer`, `swe-ui-fixer`                                 |
-| `dev`      | Writes code in a language or test framework                | `swe-rust-dev`, `swe-e2e-dev`                                |
-| `deployer` | Deploys an application to an environment                   | `apps-<scope>-deployer` (scope-specific deployer)            |
-| `manager`  | Performs file or resource operations (rename/move/delete)  | `docs-file-manager`                                          |
-| `tester`   | Explores a running system or live site and reports defects | `exploratory-web-tester`                                     |
+| Role         | Semantics                                                     | Example agents                                               |
+| ------------ | ------------------------------------------------------------- | ------------------------------------------------------------ |
+| `maker`      | Produces a content/research artifact                          | `docs-maker`, `docs-tutorial-maker`                          |
+| `checker`    | Validates an artifact against standards                       | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
+| `fixer`      | Applies validated checker findings                            | `plan-fixer`, `swe-ui-fixer`                                 |
+| `dev`        | Writes code in a language or test framework                   | `swe-rust-dev`, `swe-e2e-dev`                                |
+| `deployer`   | Deploys an application to an environment                      | `apps-<scope>-deployer` (scope-specific deployer)            |
+| `manager`    | Performs file or resource operations (rename/move/delete)     | `docs-file-manager`                                          |
+| `tester`     | Explores a running system or live site and reports defects    | `exploratory-web-tester`                                     |
+| `researcher` | Gathers and verifies external information; read-only research | `web-researcher`                                             |
 
 Enforcement: `rhino-cli agents validate-naming` (wired into pre-push and CI).
 

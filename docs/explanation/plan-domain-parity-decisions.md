@@ -82,7 +82,7 @@ row-21 work is therefore **applying the row-18/row-19 emitter changes**
 (permission object, Codex layout) to the Rust implementation — not building
 emission from scratch.
 
-Research findings from web-research-maker (2026-06-05 to 2026-06-06) are cited
+Research findings from web-researcher (2026-06-05 to 2026-06-06) are cited
 per decision where relevant.
 
 ## Decisions by Matrix Row
@@ -100,7 +100,7 @@ cross-repo parity sweep.
 
 **Decision**: amend all copies of `plan-multi-repo-parity-planning.md` to add a
 two-grill + web-research step: Survey → Matrix → First Grill (hard gate) →
-web-research-maker (conditional) → Second Grill (post-research) → Author → Gate →
+web-researcher (conditional) → Second Grill (post-research) → Author → Gate →
 Deliver.
 
 **Rationale**: the invoker required this pattern (2026-06-06) to mirror the
@@ -380,7 +380,7 @@ the benefit given the low frequency of parity sweeps.
 
 ## Research Citations
 
-All web research performed by web-research-maker on 2026-06-05 to 2026-06-06:
+All web research performed by web-researcher on 2026-06-05 to 2026-06-06:
 
 - **OpenCode agents format** (boolean `tools` → `permission` object, rows 17 and
   18): <https://opencode.ai/docs/agents/> (accessed 2026-06-05)

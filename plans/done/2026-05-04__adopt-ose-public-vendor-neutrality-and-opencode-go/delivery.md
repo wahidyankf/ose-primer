@@ -178,7 +178,7 @@ the GitHub UI URLs in tech-docs.md.
 - [x] Run `npm run sync:claude-to-opencode` a second time — must be no-op.
       _Date: 2026-05-04 / Status: done / Files: — / Notes: 0 unstaged-modified or untracked files in .opencode/agents/ post-2nd-run. No-op verified._
 - [x] Commit: `feat(rhino-cli,opencode): migrate OpenCode model provider to OpenCode Go`.
-      _Date: 2026-05-04 / Status: done / Files: SHA 7cb4a5c12 / Notes: 68 files; pre-commit broke 1st attempt on 4 broken links — root-cause fixed (3 in AGENTS.md singular .opencode/agent|skill refs from W1 deletion + 2 in .claude/agents/{docs-maker,web-research-maker}.md `./README.md` resolving wrong post-sync). Per Iron Rule 3, fixed preexisting issues and re-committed._
+      _Date: 2026-05-04 / Status: done / Files: SHA 7cb4a5c12 / Notes: 68 files; pre-commit broke 1st attempt on 4 broken links — root-cause fixed (3 in AGENTS.md singular .opencode/agent|skill refs from W1 deletion + 2 in .claude/agents/{docs-maker,web-researcher}.md `./README.md` resolving wrong post-sync). Per Iron Rule 3, fixed preexisting issues and re-committed._
 
 ## Phase 3 — W3: rhino-cli vendor-audit scanner
 

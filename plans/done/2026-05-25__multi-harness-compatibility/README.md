@@ -39,7 +39,7 @@ Google Antigravity CLI, and Pi (pi.dev).
 
 (OpenCode is already active and is treated as a tenth, already-covered harness.)
 
-Web research carried over from the `ose-public` adoption (delegated to `web-research-maker`,
+Web research carried over from the `ose-public` adoption (delegated to `web-researcher`,
 2026-05-24) established that **seven of the nine read the root `AGENTS.md` natively** — Copilot,
 Cursor, Windsurf, Junie, Codex CLI, Antigravity, and Pi. Only **Amazon Q Developer does not read
 `AGENTS.md`** (open upstream feature request), and **Claude Code reads `CLAUDE.md`** (already bridged
@@ -59,7 +59,7 @@ time. [Web-cited — see `tech-docs.md` §Harness Compatibility Matrix for per-t
 - Add or formalize platform bindings for the nine harnesses, using a **two-tier strategy** (native
   AGENTS.md readers get thin pointers / native reads; non-readers get an explicit bridge).
 - Create a new repository workflow `repo-harness-compatibility-quality-gate` that delegates to
-  `web-research-maker` to re-verify each harness's current config conventions and detect drift against
+  `web-researcher` to re-verify each harness's current config conventions and detect drift against
   the platform-bindings catalog.
 - Extend **both** rhino CLIs (vendor-audit regex + a new binding emitter + a new deterministic
   binding-parity guard) and keep them byte-identical via the shadow-diff parity gate; update
@@ -97,7 +97,7 @@ new/updated harness binding directories at the repo root (`.amazonq/`).
 3. **Generate/author the binding files** mechanically where possible (Amazon Q bridge, thin pointer
    files) via a new `agents emit-bindings` command in both CLIs, so they cannot drift from `AGENTS.md`.
 4. **Author the compatibility-audit workflow** and its checker/fixer agents that use
-   `web-research-maker` to keep the catalog honest over time (external drift).
+   `web-researcher` to keep the catalog honest over time (external drift).
 5. **Add a deterministic pre-push parity guard** (`rhino-cli agents validate-bindings`, no agent, both
    CLIs) for internal drift, wired into `.husky/pre-push`.
 6. **Update specs** (`specs/apps/rhino/`) for every new/changed rhino behavior.

@@ -23,7 +23,7 @@ repo's Prettier + markdownlint pipeline unchanged.
   alternatives considered and the rationale for the choice.
 - **`plan-checker` / `plan-fixer`** — gain a UI-design-funnel completeness check (checker flags a
   UI-bearing plan missing funnel artefacts; fixer scaffolds them) — enforcement, not just guidance.
-- **`web-research-maker`** — supplies prior-art research feeding the divergent alternatives.
+- **`web-researcher`** — supplies prior-art research feeding the divergent alternatives.
 - **Teams adopting the `ose-primer` template** — copy this convention into their own repos as part of
   the parallel cross-repo adoption set (this plan is the ose-primer instance of the 3-repo parallel
   set: ose-public, ose-infra, ose-primer).
@@ -43,7 +43,7 @@ consumer will build first, and it exercises both required mockup tiers (a list a
   subsections — each with a rendering-support matrix and a copy-paste example.
 - The convention requires authors to **ground mockups in the existing design system** (survey
   `libs/ts-ui`, `libs/ts-ui-tokens`, the target app, sibling screens; reuse real components/tokens;
-  flag net-new components) and to consult **prior art** via `web-research-maker` when crafting
+  flag net-new components) and to consult **prior art** via `web-researcher` when crafting
   designs.
 - The convention defines the **design funnel**: ≥2 named low-fi alternatives → 2 hi-fi finalists →
   a **named** selection → a **rationale** decision record; no alternative silently discarded.
@@ -70,16 +70,16 @@ consumer will build first, and it exercises both required mockup tiers (a list a
 
 ## Risks
 
-| Risk                                                                  | Mitigation                                                                                    |
-| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Authors still reach for inline HTML out of habit                      | Convention leads with the "ruled out + why" table; `plan-maker` nudges the default.           |
-| ASCII wireframes drift out of alignment over edits                    | Recommend generators (BareMinimum/Mockdown) and keep wireframes small/low-fidelity.           |
-| Excalidraw `.excalidraw.svg` chosen by mistake (GitHub font fallback) | Convention mandates `.excalidraw.png` for GitHub-visible mockups, documents the why.          |
-| Binary `.excalidraw.png` adds diff noise                              | Accepted: the diffable structural record lives in the paired Tier-1 ASCII wireframe.          |
-| Authors skip one tier (ship only ASCII or only hi-fi)                 | Convention + `plan-maker` state both tiers are required; reviewers check for both.            |
-| Mockup invented from scratch, drifts from what the app can render     | Grounding rule (R5): survey `libs/ts-ui` + target app UI first; reuse real components.        |
-| Funnel checker false-positives on non-UI plans (over-enforcement)     | "UI-bearing" scope mirrors specs/Gherkin binding; pure-refactor/no-UI plans exempt.           |
-| Prior-art research balloons plan context                              | Delegate to `web-research-maker` (isolated context); capture only cited, summarised findings. |
+| Risk                                                                  | Mitigation                                                                                |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Authors still reach for inline HTML out of habit                      | Convention leads with the "ruled out + why" table; `plan-maker` nudges the default.       |
+| ASCII wireframes drift out of alignment over edits                    | Recommend generators (BareMinimum/Mockdown) and keep wireframes small/low-fidelity.       |
+| Excalidraw `.excalidraw.svg` chosen by mistake (GitHub font fallback) | Convention mandates `.excalidraw.png` for GitHub-visible mockups, documents the why.      |
+| Binary `.excalidraw.png` adds diff noise                              | Accepted: the diffable structural record lives in the paired Tier-1 ASCII wireframe.      |
+| Authors skip one tier (ship only ASCII or only hi-fi)                 | Convention + `plan-maker` state both tiers are required; reviewers check for both.        |
+| Mockup invented from scratch, drifts from what the app can render     | Grounding rule (R5): survey `libs/ts-ui` + target app UI first; reuse real components.    |
+| Funnel checker false-positives on non-UI plans (over-enforcement)     | "UI-bearing" scope mirrors specs/Gherkin binding; pure-refactor/no-UI plans exempt.       |
+| Prior-art research balloons plan context                              | Delegate to `web-researcher` (isolated context); capture only cited, summarised findings. |
 
 ## Classification
 

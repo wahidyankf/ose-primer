@@ -17,7 +17,7 @@ Agents in this repository follow a **single filename rule with no exceptions**. 
 
 A uniform, exception-free naming rule gives the repository three concrete guarantees that loose naming cannot:
 
-- **Enforceable by checker**: A single regex suffix check (`-(maker|checker|fixer|dev|deployer|manager|tester)$`) decides conformance. No per-agent judgement, no grandfathered legacy names, no "this one is special" carve-outs. `repo-rules-checker` can audit the entire population in one pass and produce a deterministic result.
+- **Enforceable by checker**: A single regex suffix check (`-(maker|checker|fixer|dev|deployer|manager|tester|researcher)$`) decides conformance. No per-agent judgement, no grandfathered legacy names, no "this one is special" carve-outs. `repo-rules-checker` can audit the entire population in one pass and produce a deterministic result.
 - **Zero-exception discipline**: Exceptions erode conventions. Once one agent is allowed a bespoke suffix, reviewers lose the ability to reject the next one on principle alone. Holding every agent to the same structure keeps the rule teachable in one sentence and cheap to enforce forever.
 - **Harness parity**: the primary coding agent reads `.claude/agents/*.md` and the secondary coding agent reads `.opencode/agents/*.md`. The sync pipeline assumes a filename-for-filename mirror between the two directories. Drift in either direction — a rename in one tree but not the other, a `.claude/` agent with no `.opencode/` twin — breaks cross-harness invocation silently. A shared naming rule makes the mirror check a trivial set-difference.
 
@@ -62,15 +62,16 @@ New scope tokens MUST be added to this vocabulary first before any agent is name
 
 Exactly one of the following tokens MUST appear as the last token of every agent filename:
 
-| Role       | Semantics                                                   | Example agents                                               |
-| ---------- | ----------------------------------------------------------- | ------------------------------------------------------------ |
-| `maker`    | Produces a content or research artifact                     | `docs-maker`, `web-research-maker`                           |
-| `checker`  | Validates an artifact against standards                     | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
-| `fixer`    | Applies validated checker findings                          | `plan-fixer`, `swe-ui-fixer`                                 |
-| `dev`      | Writes code in a language or test framework                 | `swe-rust-dev`, `swe-e2e-dev`                                |
-| `deployer` | Deploys an application to an environment                    | `apps-<scope>-deployer` (scope-specific deployer)            |
-| `manager`  | Performs file or resource operations (rename, move, delete) | `docs-file-manager`                                          |
-| `tester`   | Explores a running system or live site and reports defects  | `exploratory-web-tester`                                     |
+| Role         | Semantics                                                     | Example agents                                               |
+| ------------ | ------------------------------------------------------------- | ------------------------------------------------------------ |
+| `maker`      | Produces a content or research artifact                       | `docs-maker`, `docs-tutorial-maker`                          |
+| `checker`    | Validates an artifact against standards                       | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
+| `fixer`      | Applies validated checker findings                            | `plan-fixer`, `swe-ui-fixer`                                 |
+| `dev`        | Writes code in a language or test framework                   | `swe-rust-dev`, `swe-e2e-dev`                                |
+| `deployer`   | Deploys an application to an environment                      | `apps-<scope>-deployer` (scope-specific deployer)            |
+| `manager`    | Performs file or resource operations (rename, move, delete)   | `docs-file-manager`                                          |
+| `tester`     | Explores a running system or live site and reports defects    | `exploratory-web-tester`                                     |
+| `researcher` | Gathers and verifies external information; read-only research | `web-researcher`                                             |
 
 No other role suffixes are permitted. Introducing a new role requires amending this table first.
 
@@ -90,7 +91,7 @@ Filenames MUST be identical pair-for-pair between the two directories. Every `.c
 ```bash
 ls `.claude/agents/`*.md \
   | sed 's|.*/||; s|\.md$||' \
-  | grep -vE -- '-(maker|checker|fixer|dev|deployer|manager|tester)$' \
+  | grep -vE -- '-(maker|checker|fixer|dev|deployer|manager|tester|researcher)$' \
   | grep -v '^README$'
 ```
 
@@ -100,13 +101,14 @@ Any non-empty output is a governance violation. Every line printed is an agent f
 
 Current agents, grouped by role, all conforming to the rule:
 
-- **`maker`** — `docs-maker` (scope `docs`, no qualifier, role `maker`), `web-research-maker` (scope `web`, qualifier `research`, role `maker`), `docs-tutorial-maker` (scope `docs`, qualifier `tutorial`, role `maker`)
+- **`maker`** — `docs-maker` (scope `docs`, no qualifier, role `maker`), `docs-tutorial-maker` (scope `docs`, qualifier `tutorial`, role `maker`)
 - **`checker`** — `plan-checker` (scope `plan`, role `checker`), `plan-execution-checker` (scope `plan`, qualifier `execution`, role `checker`), `swe-code-checker` (scope `swe`, qualifier `code`, role `checker`)
 - **`fixer`** — `plan-fixer` (scope `plan`, role `fixer`), `swe-ui-fixer` (scope `swe`, qualifier `ui`, role `fixer`)
 - **`dev`** — `swe-rust-dev` (scope `swe`, qualifier `rust`, role `dev`), `swe-e2e-dev` (scope `swe`, qualifier `e2e`, role `dev`)
 - **`deployer`** — `apps-<scope>-deployer` (scope `apps`, qualifiers identify the target app, role `deployer`)
 - **`manager`** — `docs-file-manager` (scope `docs`, qualifier `file`, role `manager`)
 - **`tester`** — `exploratory-web-tester` (scope `exploratory`, qualifier `web`, role `tester`)
+- **`researcher`** — `web-researcher` (scope `web`, no qualifier, role `researcher`)
 
 ## Related
 

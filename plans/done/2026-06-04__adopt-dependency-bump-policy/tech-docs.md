@@ -106,8 +106,8 @@ inventory them.
      [Plans Organization Convention](../../../repo-governance/conventions/structure/plans.md)), and
      updates the two plans index READMEs. The workflow body documents this verbatim so an invoking
      agent follows it deterministically.
-   - **Referenced agents exist** [Repo-grounded]: `web-research-maker` agent exists at
-     `.claude/agents/web-research-maker.md`; `plan-establishment-execution` and `plan-execution`
+   - **Referenced agents exist** [Repo-grounded]: `web-researcher` agent exists at
+     `.claude/agents/web-researcher.md`; `plan-establishment-execution` and `plan-execution`
      workflows exist. No referenced primitive is missing.
    - **Discoverability**: the workflow is indexed in `repo-governance/workflows/repo/README.md`
      and the top-level workflows catalog so the user can invoke it by path

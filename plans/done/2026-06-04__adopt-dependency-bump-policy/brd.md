@@ -27,7 +27,7 @@ checklist, and no auditable waiver trail. This adoption closes that gap.
 
 - **Repository maintainer** — gains a canonical policy to point to in review and a one-command
   planning sweep.
-- **AI coding agents** (`web-research-maker`, `repo-rules-checker`, plan-execution orchestrator) —
+- **AI coding agents** (`web-researcher`, `repo-rules-checker`, plan-execution orchestrator) —
   gain an explicit rule set to enforce and operationalize.
 - **Downstream template consumers** — inherit the policy automatically when they fork.
 

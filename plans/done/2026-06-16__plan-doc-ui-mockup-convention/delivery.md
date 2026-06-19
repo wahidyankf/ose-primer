@@ -90,11 +90,11 @@ Plan Docs` section to `diagrams.md` (host extended, no fallback file needed). **
       `repo-governance/conventions/formatting/diagrams.md`.
 - [x] `[AI]` The section states: the **both-tiers rule** (R1), the **grounding rule** (R5), the
       **design funnel** (R6: ≥2 named low-fi → 2 hi-fi finalists → named selection → rationale), and
-      the **prior-art** recommendation (R7, `web-research-maker`) — each with a copy-paste example.
+      the **prior-art** recommendation (R7, `web-researcher`) — each with a copy-paste example.
       Acceptance: `grep -c "both-tiers rule" repo-governance/conventions/formatting/diagrams.md`
       returns ≥ 1. (R1) - **Date**: 2026-06-16 · **Status**: Done — section states all four rules each with copy-paste
       examples (both-tiers ASCII+png example, grounding note, funnel stage table + "Selected:"
-      example, prior-art `web-research-maker` line). `grep -c "both-tiers rule"` = 3 (≥1).
+      example, prior-art `web-researcher` line). `grep -c "both-tiers rule"` = 3 (≥1).
 - [x] `[AI]` Add the **rendering-support matrix**, the **ruled-out table** (inline HTML+CSS, MDX,
       Mermaid-as-wireframe, `.excalidraw.svg`) with reasons, the GitHub-strips-`style=` fact, and the
       `.png`-over-`.svg` Excalidraw rule. Acceptance:
@@ -197,11 +197,11 @@ Plan Docs` section to `diagrams.md` (host extended, no fallback file needed). **
 The worked example lives **self-contained in this plan's own `assets/`** — ose-primer has no separate
 sibling UI plan to inject it into, so the funnel is demonstrated end-to-end here.
 
-- [x] `[AI]` **Prior-art research** (R7): invoke `web-research-maker` for how comparable CRUD admin
+- [x] `[AI]` **Prior-art research** (R7): invoke `web-researcher` for how comparable CRUD admin
       screens present an entity list with create/edit (table + modal vs master-detail vs card grid);
-      capture cited findings to inform the alternatives. Acceptance: `web-research-maker` returns a
+      capture cited findings to inform the alternatives. Acceptance: `web-researcher` returns a
       written summary citing ≥2 named prior-art patterns (e.g. table+modal, master-detail) — confirmed
-      when the next funnel step references those findings by name. - **Date**: 2026-06-16 · **Status**: Done — `web-research-maker` cited Ant Design "List"
+      when the next funnel step references those findings by name. - **Date**: 2026-06-16 · **Status**: Done — `web-researcher` cited Ant Design "List"
       (Modal / Dual-Panel / Full-Window), Carbon Design Create Flows (Modal / Side-panel / Full-page),
       Material React Table (Modal default). Added a new **Stage 0 — Prior art (cited)** section to
       `assets/README.md` referencing all three patterns by name with source URLs.

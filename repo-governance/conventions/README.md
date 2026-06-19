@@ -105,7 +105,7 @@ Content quality standards, validation methodology, and writing guidelines.
 - [No Date Metadata](./writing/no-date-metadata.md) - Forbids manual date fields in markdown. Git history is the single source of truth for file age.
 - [OSS Documentation](./writing/oss-documentation.md) - Standards for repository documentation files (README, CONTRIBUTING, ADRs, security) following open source best practices
 - [README Quality](./writing/readme-quality.md) - Quality standards for README.md files ensuring engagement, accessibility, and scannability. Defines problem-solution hooks, jargon elimination (plain language over corporate speak), acronym context requirements, benefits-focused language, navigation structure, and paragraph length limits. **Agents**: readme-maker, readme-checker
-- [Web Research Delegation](./writing/web-research-delegation.md) - Normative rule requiring AI agents to delegate public-web information gathering to the `web-research-maker` subagent when research exceeds the delegation threshold (2+ `WebSearch` calls or 3+ `WebFetch` calls for a single claim). Enumerates three exceptions (single-shot known URL; fixer re-validation; link-reachability checkers). **Agents**: web-research-maker, repo-rules-checker
+- [Web Research Delegation](./writing/web-research-delegation.md) - Normative rule requiring AI agents to delegate public-web information gathering to the `web-researcher` subagent when research exceeds the delegation threshold (2+ `WebSearch` calls or 3+ `WebFetch` calls for a single claim). Enumerates three exceptions (single-shot known URL; fixer re-validation; link-reachability checkers). **Agents**: web-researcher, repo-rules-checker
 
 ## 🗂️ Structure
 

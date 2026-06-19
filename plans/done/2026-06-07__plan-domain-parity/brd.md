@@ -31,12 +31,12 @@ vendor conventions.
 5. **Deprecated OpenCode agent format.** Primer's `.opencode/agents/*.md` mirrors use
    boolean `tools` flags, which OpenCode officially deprecated in favor of the
    `permission` object [Web-cited — <https://opencode.ai/docs/agents/>, accessed
-   2026-06-05 via web-research-maker; excerpt: "tools boolean flags deprecated — use
+   2026-06-05 via web-researcher; excerpt: "tools boolean flags deprecated — use
    permission object instead (allow/ask/deny per tool)"].
 6. **Unofficial Codex layout.** `.codex/agents/` is not a Codex-recognized convention;
    the official mechanism is `config.toml` `agents.<name>` sub-tables [Web-cited —
    <https://developers.openai.com/codex/config-reference>, accessed 2026-06-06 via
-   web-research-maker; excerpt: "agents.\<name\> sub-table in config.toml; config_file
+   web-researcher; excerpt: "agents.\<name\> sub-table in config.toml; config_file
    key points to agent TOML"].
 7. **Overlapping in-progress plan.** `plans/in-progress/planning-system-overhaul/`
    covers a subset of this objective; two open plans for one concern splits the source of

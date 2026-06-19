@@ -242,7 +242,7 @@ setup, planning)`, and added a `*-planning` accept case. `test:unit` passes; gol
       `plan-establishment-execution` as-is, (b) `git mv` the resulting plan to
       `plans/backlog/<YYYY-MM-DD>__<identifier>/` (backlog date-prefix per the Plans convention),
       (c) update `plans/in-progress/README.md` and `plans/backlog/README.md`. Verify every
-      referenced primitive resolves in-repo: `test -f .claude/agents/web-research-maker.md`,
+      referenced primitive resolves in-repo: `test -f .claude/agents/web-researcher.md`,
       `test -f repo-governance/workflows/plan/plan-establishment-execution.md`. Acceptance:
       `grep -c "target-stage" repo-governance/workflows/repo/repo-dependency-bump-planning.md` — the
       file does NOT pass an unsupported `target-stage: backlog` param; instead it documents the
@@ -252,7 +252,7 @@ setup, planning)`, and added a `*-planning` accept case. `test:unit` passes; gol
     no `target-stage` arg is passed; instead it invokes `plan-establishment-execution` (lands in
     `in-progress/`), then `git mv`s to `plans/backlog/<YYYY-MM-DD>__<identifier>/` and updates both
     plan index READMEs. `grep -c target-stage` finds only the two "no target-stage" explanatory
-    mentions, never a passed param. web-research-maker agent + plan-establishment-execution both
+    mentions, never a passed param. web-researcher agent + plan-establishment-execution both
     verified present. **Date**: 2026-06-04. **Status**: Completed.
     **Files Changed**: `repo-governance/workflows/repo/repo-dependency-bump-planning.md`.
 - [x] [AI] Add an index entry to `repo-governance/workflows/repo/README.md` linking
@@ -277,7 +277,7 @@ setup, planning)`, and added a `*-planning` accept case. `test:unit` passes; gol
 - [x] [AI] `find repo-governance/workflows -name '*.md' -not -name 'README.md' -not -path '*/meta/*' | sed 's|.*/||; s|\.md$||' | grep -vE -- '-(quality-gate|execution|setup|planning)$'` — prints nothing (naming gate green, including the new file). _Done: no output._
 - [x] [AI] `npx nx run rhino-cli-rust:validate:naming-workflows` and `npx nx run rhino-cli-go:validate:naming-workflows` — both exit 0 (the validators accept the new `-planning` file). _Done: "VALIDATION PASSED (0 violations)" on both._
 - [x] [AI] **Invocability check**: every primitive the workflow references resolves in-repo —
-      `test -f .claude/agents/web-research-maker.md`,
+      `test -f .claude/agents/web-researcher.md`,
       `test -f repo-governance/workflows/plan/plan-establishment-execution.md`,
       `test -f repo-governance/development/workflow/dependency-bump-policy.md`,
       `test -f repo-governance/development/agents/subagent-orchestration.md` — all exit 0; and the

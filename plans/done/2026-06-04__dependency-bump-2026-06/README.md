@@ -54,7 +54,7 @@ This plan operationalizes the clearance decisions in the
 [June 2026 dependency-bump clearance report][clearance-report] [Repo-grounded] (report ID
 `repo-dependency-bump-planning__be6560__2026-06-04--13-24`). Every version, CVE, EPSS, KEV, and
 release-date claim in this plan is sourced from that report and tagged `[Web-cited]` (the report
-itself delegated verification to `web-research-maker` against NVD, GHSA, Snyk, vendor pages, and
+itself delegated verification to `web-researcher` against NVD, GHSA, Snyk, vendor pages, and
 the CISA KEV catalog). Every manifest file path is tagged `[Repo-grounded]` and was confirmed to
 resolve in the current commit before authoring.
 

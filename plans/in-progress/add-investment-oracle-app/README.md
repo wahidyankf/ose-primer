@@ -326,7 +326,7 @@ graph TD
 
 ## Web research bedrock
 
-This plan was authored after a web-research-maker pass on 2026-04-27
+This plan was authored after a web-researcher pass on 2026-04-27
 verifying:
 
 - Anthropic model ids: `claude-haiku-4-5` (alias) /

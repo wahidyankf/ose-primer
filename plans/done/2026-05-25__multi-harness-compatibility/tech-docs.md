@@ -1,6 +1,6 @@
 # Technical Documentation — Multi-Harness Compatibility
 
-All harness-config facts below were established by `web-research-maker` runs on **2026-05-24** (during
+All harness-config facts below were established by `web-researcher` runs on **2026-05-24** (during
 the upstream `ose-public` adoption) and are labelled `[Web-cited]` with their source. They describe
 external-harness properties that do not change by repository, so they transfer to `ose-primer` unchanged;
 the new compatibility-audit workflow re-verifies them over time. Repository facts are labelled
@@ -120,7 +120,7 @@ and does not clobber them; it only adds what is missing (the Amazon Q bridge) an
 ### AD6 — Compatibility-audit workflow as a quality gate
 
 `[Judgment call]` Drift detection fits the maker-checker-fixer + `quality-gate` model: a checker fetches
-current upstream conventions (via `web-research-maker`) and diffs them against the catalog/binding files; a
+current upstream conventions (via `web-researcher`) and diffs them against the catalog/binding files; a
 fixer updates the catalog/bindings; iterate to zero drift. The workflow is named
 `repo-harness-compatibility-quality-gate` to satisfy the `<scope>-<qualifier>-<type>` rule (scope `repo`,
 qualifier `harness-compatibility`, type `quality-gate`). [Repo-grounded —
@@ -230,7 +230,7 @@ forbidden-paths table in `governance-vendor-independence.md`]
 **Agents (Layer 4) — authored under `.claude/agents/`, synced to `.opencode/`:**
 
 - `.claude/agents/repo-harness-compatibility-checker.md` — **new** checker; delegates to
-  `web-research-maker`, diffs findings vs catalog/bindings. _New file_
+  `web-researcher`, diffs findings vs catalog/bindings. _New file_
 - `.claude/agents/repo-harness-compatibility-fixer.md` — **new** fixer; updates catalog/bindings from a
   validated audit. _New file_
 - `.opencode/agents/repo-harness-compatibility-checker.md`, `.opencode/agents/repo-harness-compatibility-fixer.md`
@@ -316,8 +316,8 @@ targets are:
 - `rhino-cli-rust` is Rust (`swe-rust-dev`); `rhino-cli-go` is Go (`swe-golang-dev`). Both must keep
   `nx run rhino-cli-rust:test:quick` and `nx run rhino-cli-go:test:quick` green. [Repo-grounded — both
   `project.json`]
-- The compatibility workflow depends on `web-research-maker` (exists) and the two new agents.
-  [Repo-grounded — `.claude/agents/web-research-maker.md`]
+- The compatibility workflow depends on `web-researcher` (exists) and the two new agents.
+  [Repo-grounded — `.claude/agents/web-researcher.md`]
 
 ## Rollback
 

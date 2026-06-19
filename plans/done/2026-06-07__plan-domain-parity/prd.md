@@ -89,7 +89,7 @@ Scenario: Plans Organization Convention merged
 ```gherkin
 Scenario: Parity workflow exists in primer with the amended step structure
   When "repo-governance/workflows/plan/plan-multi-repo-parity-planning.md" is created
-  Then its step sequence is Survey, Matrix, First Grill (hard gate), web-research-maker (conditional), Second Grill (post-research), Author, Gate, Deliver
+  Then its step sequence is Survey, Matrix, First Grill (hard gate), web-researcher (conditional), Second Grill (post-research), Author, Gate, Deliver
   And "repo-governance/workflows/plan/README.md" indexes 4 workflows including the parity workflow
   And "repo-governance/workflows/README.md" lists the parity workflow
 

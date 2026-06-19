@@ -733,7 +733,7 @@ Agents are categorized by their **primary role** which aligns with naming suffix
 - **\*Yellow with Write**: Some Yellow fixer agents (e.g., readme-fixer, repo-rules-fixer) may have Write tool for audit report generation. Documented exception.
 - **\*Purple Bash-only**: Bash-only orchestrators only need Bash for git/deployment orchestration. Purple without Write/Edit is valid for Bash-only orchestrators.
 - **\*\*Green with Write + Edit**: Link checker agents (docs-link-checker) also have Edit and Write tools for cache file management, but their primary role is validation (checker). Color is green to reflect primary role. See "Link Checker Agents Note" below.
-- **Research/validation-adjacent agents**: `web-research-maker` uses `color: green` despite the `-maker` suffix. This is intentional — web research is validation-adjacent (verifying external claims) and read-only by design (no Write/Edit/Bash tools). The color reflects the agent's functional role (fact-checking, citation validation) rather than content creation. Documented exception to the blue=Maker/green=Checker color rule.
+- **Research/validation-adjacent agents**: `web-researcher` uses `color: green` and the `researcher` role suffix. This is intentional — web research is validation-adjacent (verifying external claims) and read-only by design (no Write/Edit/Bash tools). The color reflects the agent's functional role (fact-checking, citation validation) rather than content creation; the dedicated `researcher` role keeps role and color consistent.
 
 **Color Accessibility Note**: All four colors (blue, green, yellow, purple) are from the verified accessible palette defined in [Color Accessibility Convention](../../conventions/formatting/color-accessibility.md) - the master reference for all color usage in this repository. These colors meet WCAG AA standards for both light and dark modes and work for all types of color blindness (protanopia, deuteranopia, and tritanopia). See the accessibility section below for details on how agents are identified beyond color. All color-related work must reference the Color Accessibility Convention as the authoritative source.
 
@@ -741,7 +741,7 @@ Agents are categorized by their **primary role** which aligns with naming suffix
 
 This role-based categorization was chosen because it:
 
-1. **Aligns with naming conventions** - Role suffixes (-maker, -checker, -fixer, -dev, -deployer, -manager) directly map to colors
+1. **Aligns with naming conventions** - Role suffixes (-maker, -checker, -fixer, -dev, -deployer, -manager, -tester, -researcher) directly map to colors
 2. **Maps to tool permissions** - Clear security boundaries between read-only, edit-only, write-capable, and full-access agents
 3. **Provides clear user guidance** - Users can quickly identify which category of agent they need
 4. **Extensible** - New agents naturally fit into one of the four role categories
@@ -2601,7 +2601,7 @@ The named color (`blue`, `green`, etc.) written by hand in `.claude/agents/*.md`
 | Claude color | OpenCode value | Role hint                         |
 | ------------ | -------------- | --------------------------------- |
 | `blue`       | `primary`      | Maker                             |
-| `green`      | `success`      | Checker                           |
+| `green`      | `success`      | Checker / Researcher              |
 | `yellow`     | `warning`      | Fixer                             |
 | `purple`     | `secondary`    | Implementor                       |
 | `red`        | `error`        | Reserved future role              |

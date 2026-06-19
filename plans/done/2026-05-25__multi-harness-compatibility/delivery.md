@@ -371,7 +371,7 @@ validate-bindings`), mirroring `validate:sync`. `npm run validate:harness-bindin
 ## Phase 4 — Compatibility-audit workflow + agents
 
 - [x] Create `.claude/agents/repo-harness-compatibility-checker.md` _New file_ — checker that, for each supported
-      harness, delegates to `web-research-maker` to fetch current config conventions, diffs against
+      harness, delegates to `web-researcher` to fetch current config conventions, diffs against
       `docs/reference/platform-bindings.md` + committed binding files, and writes a dual-labelled drift audit
       to `generated-reports/`. Follow agent frontmatter + naming conventions.
   - _Suggested executor: `agent-maker`_
@@ -379,7 +379,7 @@ validate-bindings`), mirroring `validate:sync`. `npm run validate:harness-bindin
     `npx nx run rhino-cli-rust:validate:naming-agents` exits 0 (validates all agents, no path argument).
   - **Date**: 2026-05-25 | **Status**: Done | **Files Changed**: `.claude/agents/repo-harness-compatibility-checker.md`
   - **Notes**: Created via `agent-maker` (green, model sonnet, tools Read/Glob/Grep/Write/Bash/WebFetch/WebSearch/Agent;
-    delegates multi-page research to `web-research-maker`, dual-label findings to `generated-reports/`).
+    delegates multi-page research to `web-researcher`, dual-label findings to `generated-reports/`).
     naming-agents exits 0 (rust + go).
 - [x] Create `.claude/agents/repo-harness-compatibility-fixer.md` _New file_ — fixer that applies validated
       catalog/binding updates from a drift audit and re-validates before applying.
@@ -392,14 +392,14 @@ validate-bindings`), mirroring `validate:sync`. `npm run validate:harness-bindin
     re-validates). naming-agents exits 0.
 - [x] Create `repo-governance/workflows/repo/repo-harness-compatibility-quality-gate.md` _New file_ following the
       workflow pattern (frontmatter: name/title/goal/termination/inputs/outputs; phases; Gherkin success
-      criteria), delegating to the two new agents and `web-research-maker` (AC6). Link the new
+      criteria), delegating to the two new agents and `web-researcher` (AC6). Link the new
       `multi-harness-binding.md` convention. Add it to `repo-governance/workflows/repo/README.md`.
   - _Suggested executor: `repo-workflow-maker`_
   - Acceptance: `npx nx run rhino-cli-rust:validate:naming-workflows` exits 0 (validates all workflows, no
     path argument); the workflow is listed in `repo-governance/workflows/repo/README.md`.
   - **Date**: 2026-05-25 | **Status**: Done | **Files Changed**: `repo-governance/workflows/repo/repo-harness-compatibility-quality-gate.md`, `repo-governance/workflows/repo/README.md`
   - **Notes**: New `quality-gate` workflow (scope repo, qualifier harness-compatibility) delegating to the two
-    new agents + `web-research-maker`; six-step structure mirroring `repo-rules-quality-gate`; vendor names
+    new agents + `web-researcher`; six-step structure mirroring `repo-rules-quality-gate`; vendor names
     confined to a Platform Binding Examples section. Indexed in workflows/repo/README.md. naming-workflows +
     vendor-audit exit 0.
 - [x] Sync agents to OpenCode: `npm run sync:claude-to-opencode` then `npm run validate:opencode` — both exit
@@ -619,7 +619,7 @@ This plan touches a CLI and governance docs, not web UI or HTTP APIs — Playwri
   - Acceptance: either a drift report exists, or a note records that wiring was validated by
     `repo-workflow-checker`.
   - **Date**: 2026-05-25 | **Status**: Done (optional — not executed) | **Files Changed**: none
-  - **Notes**: Optional. Not run during execution — a full workflow run spawns per-harness `web-research-maker`
+  - **Notes**: Optional. Not run during execution — a full workflow run spawns per-harness `web-researcher`
     calls (network-heavy) and is operationally on-demand. The checker/fixer/workflow wiring was validated by
     `repo-workflow-checker` (0 HIGH/CRITICAL) and `repo-rules-checker` (double-zero) instead.
 

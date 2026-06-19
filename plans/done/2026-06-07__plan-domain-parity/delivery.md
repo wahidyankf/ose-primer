@@ -259,7 +259,7 @@ canon with target-stage and worktree default`) — acceptance: `git log` shows
       (_New file_) from the upstream amended copy at
       `/Users/wkf/ose-projects/ose-public/repo-governance/workflows/plan/plan-multi-repo-parity-planning.md`,
       adapting only repo-local link targets — acceptance: file exists; step sequence is
-      Survey → Matrix → First Grill (hard gate) → web-research-maker (conditional) →
+      Survey → Matrix → First Grill (hard gate) → web-researcher (conditional) →
       Second Grill (post-research) → Author → Gate → Deliver; workflow-naming validator
       passes (`npx nx run rhino-cli-rust:validate:naming-workflows` exits 0).
   - _Suggested executor: `repo-rules-maker`_
@@ -294,7 +294,7 @@ canon with target-stage and worktree default`) — acceptance: `git log` shows
       listed in the catalog table with description and participating agents.
   - _Implementation notes (2026-06-06)_: Status DONE (direct edit). Catalog row added
     with the two-grill+research description; agents column lists plan-maker,
-    web-research-maker, plan-checker, plan-fixer. Files changed:
+    web-researcher, plan-checker, plan-fixer. Files changed:
     repo-governance/workflows/README.md.
 - [x] [AI] Update `repo-governance/development/workflow/README.md` — acceptance:
       `grilling-with-options.md` indexed.

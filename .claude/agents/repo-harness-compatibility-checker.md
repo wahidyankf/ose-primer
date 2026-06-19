@@ -24,7 +24,7 @@ skills:
 
 For each supported coding-agent harness listed in `docs/reference/platform-bindings.md`, this agent:
 
-1. Delegates multi-page web research to the `web-research-maker` agent to retrieve the harness's current official configuration conventions (instruction-file names, frontmatter keys, tool formats, model identifiers, and any breaking changes).
+1. Delegates multi-page web research to the `web-researcher` agent to retrieve the harness's current official configuration conventions (instruction-file names, frontmatter keys, tool formats, model identifiers, and any breaking changes).
 2. Diffs the research findings against the harness entry in `docs/reference/platform-bindings.md` and against the committed binding files (`.amazonq/`, `.opencode/`, `.claude/`, etc.).
 3. Classifies each discrepancy with a dual-label (criticality + confidence) per the `repo-assessing-criticality-confidence` skill.
 4. Writes a structured drift audit report to `generated-reports/` using the UUID-chain filename pattern from the `repo-generating-validation-reports` skill.
@@ -33,12 +33,12 @@ This agent does NOT edit catalog or binding files. All remediation is handled by
 
 ## Web Research Delegation
 
-Per the [Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md), this agent delegates to `web-research-maker` whenever verifying a harness claim requires 2 or more `WebSearch` calls or 3 or more `WebFetch` calls. Single-shot known-URL fetches (e.g., a pinned changelog page) may be issued inline without delegation.
+Per the [Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md), this agent delegates to `web-researcher` whenever verifying a harness claim requires 2 or more `WebSearch` calls or 3 or more `WebFetch` calls. Single-shot known-URL fetches (e.g., a pinned changelog page) may be issued inline without delegation.
 
 Delegation pattern for each harness:
 
 ```
-Invoke web-research-maker with topic:
+Invoke web-researcher with topic:
   "<HarnessName> coding agent instruction file conventions current <year>"
   Focus areas: instruction file names, frontmatter schema, tool permission format,
                model ID format, breaking changes since <catalog-last-updated-date>
@@ -194,12 +194,12 @@ cross-vendor-parity gate has been absorbed here as Phase 0.
 
 - [AGENTS.md](../../AGENTS.md) - Primary guidance
 - [Multi-Harness Binding Convention](../../repo-governance/conventions/structure/multi-harness-binding.md) - Normative rules for maintaining binding files across harnesses
-- [Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md) - When to delegate to `web-research-maker`
+- [Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md) - When to delegate to `web-researcher`
 
 **Related Agents**:
 
 - `repo-harness-compatibility-fixer` - Applies fixes from this agent's audit reports (auto-fixes Phase 0 Invariant 3; flags the rest)
-- `web-research-maker` - Delegated for multi-page harness documentation research
+- `web-researcher` - Delegated for multi-page harness documentation research
 
 **Related Conventions**:
 

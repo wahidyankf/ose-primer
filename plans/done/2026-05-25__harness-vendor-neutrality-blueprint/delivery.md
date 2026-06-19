@@ -127,12 +127,12 @@ agent-maker (agents), or direct authoring by porting ose-public's merged files._
       `repo-parity-checker.md` and adapted to the rhino-cli-rust nx-build invocation; Invariant 3 =
       `npm run generate:bindings && git diff --quiet .opencode/ .amazonq/`; drop Aider Invariant 6);
       rename the existing external-drift scope to "Phase 1: External Harness Drift Validation"; add
-      `Agent` to the `tools` frontmatter (delegation to `web-research-maker`); remove the
+      `Agent` to the `tools` frontmatter (delegation to `web-researcher`); remove the
       `repo-parity-checker` bullet from Related Agents.
       Verify: `grep "generate:bindings && git diff --quiet .opencode/ .amazonq/" …checker.md` → ≥1;
       `grep -c "repo-parity-checker" …checker.md` → 0.
 
-<!-- Date: 2026-05-25 | Status: done | Files Changed: .claude/agents/repo-harness-compatibility-checker.md | Notes: Phase 0 (5 invariants, Invariant 1 corrected to rhino-cli-rust nx-build, Invariant 3 string, README skip note) added; scope renamed to Phase 1; parity Related-Agent removed; Workflow Integration notes Phase 0-first. DEVIATION: did NOT add `Agent` tool — existing tools (Bash/Read/Glob/Grep/Write/WebFetch/WebSearch) already cover Phase 0 Bash invariants and the pre-existing prose web-research-maker delegation; adding Agent was out of merge scope. Verified: Invariant3 string=1, repo-parity-checker=0 -->
+<!-- Date: 2026-05-25 | Status: done | Files Changed: .claude/agents/repo-harness-compatibility-checker.md | Notes: Phase 0 (5 invariants, Invariant 1 corrected to rhino-cli-rust nx-build, Invariant 3 string, README skip note) added; scope renamed to Phase 1; parity Related-Agent removed; Workflow Integration notes Phase 0-first. DEVIATION: did NOT add `Agent` tool — existing tools (Bash/Read/Glob/Grep/Write/WebFetch/WebSearch) already cover Phase 0 Bash invariants and the pre-existing prose web-researcher delegation; adding Agent was out of merge scope. Verified: Invariant3 string=1, repo-parity-checker=0 -->
 
 - [x] **2.3 Rewrite `.claude/agents/repo-harness-compatibility-fixer.md`** to add a Phase-0
       Invariant-3 auto-fix block (re-run `npm run generate:bindings`, stage `.opencode/agents/`) and
@@ -213,7 +213,7 @@ rename and any `repo-parity-*` → `repo-harness-compatibility-*` reference upda
 
 - [x] Edit `.claude/agents/repo-rules-fixer.md`: replace the 1 occurrence. Verify: zero.
 
-- [x] Edit `.claude/agents/web-research-maker.md`: replace the 1 occurrence. Verify: zero.
+- [x] Edit `.claude/agents/web-researcher.md`: replace the 1 occurrence. Verify: zero.
 
 - [x] Edit `.claude/skills/agent-developing-agents/SKILL.md`: replace the 1 occurrence. Verify: zero.
 

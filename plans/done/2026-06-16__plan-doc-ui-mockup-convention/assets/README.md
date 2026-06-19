@@ -24,7 +24,7 @@ neutrals). The mockups reuse those real components and tokens.
 
 ## Stage 0 — Prior art (cited)
 
-Before diverging, comparable CRUD admin screens were surveyed (R7, via `web-research-maker`). Every
+Before diverging, comparable CRUD admin screens were surveyed (R7, via `web-researcher`). Every
 major enterprise design system names the same triad of list + create/edit layouts, which directly
 seeded Options A / B / C below:
 

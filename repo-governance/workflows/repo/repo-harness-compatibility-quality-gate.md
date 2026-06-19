@@ -93,7 +93,7 @@ User: "Run harness compatibility quality gate workflow"
 The orchestrator will:
 
 1. Invoke `repo-harness-compatibility-checker` via the Agent tool (fetches current harness
-   conventions via `web-research-maker`, diffs against catalog and committed binding files,
+   conventions via `web-researcher`, diffs against catalog and committed binding files,
    writes drift audit report to `generated-reports/`)
 2. Invoke `repo-harness-compatibility-fixer` via the Agent tool (reads audit, applies
    validated catalog and binding-file updates)
@@ -140,7 +140,7 @@ for the full invariant definitions.
 - Reads the current platform-bindings catalog
   (`docs/reference/platform-bindings.md`) and committed binding files for each harness
   listed in scope
-- Delegates multi-page web research to `web-research-maker` to fetch the current upstream
+- Delegates multi-page web research to `web-researcher` to fetch the current upstream
   conventions for each supported harness (instruction-file model, native `AGENTS.md`
   support, higher-precedence filename forms, binding directory paths, MCP config paths,
   custom-agent surfaces, skills surfaces, and tier classification)
@@ -149,7 +149,7 @@ for the full invariant definitions.
 - Writes findings as a drift audit report with severity, evidence, and web citations
 
 **UUID Chain Tracking**: Checker generates a 6-char UUID and writes to
-`generated-reports/.execution-chain-harness-compat` before spawning `web-research-maker`
+`generated-reports/.execution-chain-harness-compat` before spawning `web-researcher`
 tasks. See the Temporary Files Convention for details.
 
 **Success criteria**: Checker completes and generates audit report.
@@ -316,7 +316,7 @@ Scenario: Phase 0 parity invariants run before external drift check
   Given the workflow runs with any scope
   When repo-harness-compatibility-checker is invoked
   Then it first runs the 5 deterministic cross-vendor parity invariants offline
-  And only then delegates Phase 1 external-drift research to web-research-maker
+  And only then delegates Phase 1 external-drift research to web-researcher
   And Phase 0 runs regardless of the scope input
 
 Scenario: Phase 0 binding sync drift is auto-fixed
@@ -329,7 +329,7 @@ Scenario: Phase 0 binding sync drift is auto-fixed
 Scenario: Checker delegates web research and produces a cited drift audit
   Given the workflow runs with scope "all"
   When repo-harness-compatibility-checker is invoked
-  Then it delegates multi-page upstream research to web-research-maker
+  Then it delegates multi-page upstream research to web-researcher
   And it fetches the current instruction-file model, tier, and binding paths for each supported harness
   And it diffs the fetched data against docs/reference/platform-bindings.md and committed binding files
   And it writes a drift audit to generated-reports/ citing the web sources for each finding
