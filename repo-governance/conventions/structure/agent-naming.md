@@ -62,16 +62,16 @@ New scope tokens MUST be added to this vocabulary first before any agent is name
 
 Exactly one of the following tokens MUST appear as the last token of every agent filename:
 
-| Role         | Semantics                                                     | Example agents                                               |
-| ------------ | ------------------------------------------------------------- | ------------------------------------------------------------ |
-| `maker`      | Produces a content or research artifact                       | `docs-maker`, `docs-tutorial-maker`                          |
-| `checker`    | Validates an artifact against standards                       | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
-| `fixer`      | Applies validated checker findings                            | `plan-fixer`, `swe-ui-fixer`                                 |
-| `dev`        | Writes code in a language or test framework                   | `swe-rust-dev`, `swe-e2e-dev`                                |
-| `deployer`   | Deploys an application to an environment                      | `apps-<scope>-deployer` (scope-specific deployer)            |
-| `manager`    | Performs file or resource operations (rename, move, delete)   | `docs-file-manager`                                          |
-| `tester`     | Explores a running system or live site and reports defects    | `exploratory-web-tester`                                     |
-| `researcher` | Gathers and verifies external information; read-only research | `web-researcher`                                             |
+| Role         | Semantics                                                                        | Example agents                                               |
+| ------------ | -------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `maker`      | Produces a content or research artifact                                          | `docs-maker`, `docs-tutorial-maker`                          |
+| `checker`    | Validates an artifact against standards                                          | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
+| `fixer`      | Applies validated checker findings                                               | `plan-fixer`, `swe-ui-fixer`                                 |
+| `dev`        | Writes code in a language or test framework                                      | `swe-rust-dev`, `swe-e2e-dev`                                |
+| `deployer`   | Deploys an application to an environment                                         | `apps-<scope>-deployer` (scope-specific deployer)            |
+| `manager`    | Performs file or resource operations (rename, move, delete)                      | `docs-file-manager`                                          |
+| `tester`     | Explores or evaluates a running system or live site and reports defects/friction | `web-exploratory-tester`, `web-usability-tester`             |
+| `researcher` | Gathers and verifies external information; read-only research                    | `web-researcher`                                             |
 
 No other role suffixes are permitted. Introducing a new role requires amending this table first.
 
@@ -107,7 +107,7 @@ Current agents, grouped by role, all conforming to the rule:
 - **`dev`** — `swe-rust-dev` (scope `swe`, qualifier `rust`, role `dev`), `swe-e2e-dev` (scope `swe`, qualifier `e2e`, role `dev`)
 - **`deployer`** — `apps-<scope>-deployer` (scope `apps`, qualifiers identify the target app, role `deployer`)
 - **`manager`** — `docs-file-manager` (scope `docs`, qualifier `file`, role `manager`)
-- **`tester`** — `exploratory-web-tester` (scope `exploratory`, qualifier `web`, role `tester`)
+- **`tester`** — `web-exploratory-tester` (scope `web`, qualifier `exploratory`, role `tester`), `web-usability-tester` (scope `web`, qualifier `usability`, role `tester`)
 - **`researcher`** — `web-researcher` (scope `web`, no qualifier, role `researcher`)
 
 ## Related

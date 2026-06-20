@@ -56,7 +56,8 @@ This directory contains specialized AI agents for the ose-primer repository temp
 
 ### 🧪 Testing
 
-- **[exploratory-web-tester](exploratory-web-tester.md)** - Session-based exploratory testing of a live site against a goal; files findings (functional, UI/responsive, accessibility, performance, safe security surface) as a new backlog plan (README + brd + prd + findings with steps-to-reproduce). Non-destructive; does not modify the site or fix code.
+- **[web-exploratory-tester](web-exploratory-tester.md)** - **Spec-aware** session-based exploratory testing of a live site against a goal; actively hunts edge cases and boundary conditions; files findings (functional, behavioural consistency, edge-case/boundary, UI/responsive, accessibility, performance, URL/IA quality, safe security surface) as a new backlog plan (README + brd + prd + findings + spec-gaps with steps-to-reproduce). Compares live behaviour against existing `specs/**` Gherkin and proposes new scenarios (Gherkin) for correct behaviours — especially edge cases — that lack coverage. Non-destructive; does not modify the site or fix code.
+- **[web-usability-tester](web-usability-tester.md)** - **Spec-blind** heuristic usability evaluation of a live site; judges only what a first-time user perceives (deliberately ignores specs/source/mockups) against established usability principles (Nielsen's 10 heuristics + 0–4 severity, cognitive walkthrough, information scent, first-click, Jakob's Law, ISO 9241-110, WCAG Understandable, UX laws). Evaluates predictability, internal/external consistency, information scent & flow, cognitive load, edge-case UX states (empty/loading/error), responsive usability (mobile/tablet/desktop), and URL/IA naturalness. Files findings as a backlog plan (README + brd + prd + findings + walkthrough + spec-suggestions). Suggests new behaviour for `specs/**` in Gherkin (spec-blind `USS-###` candidates, flagged for reconciliation — distinct from exploratory's spec-gaps). Distinct from web-exploratory-tester (correctness); non-destructive.
 
 ### 💻 Development
 
@@ -87,16 +88,16 @@ Normative source: [Agent Naming Convention](../../repo-governance/conventions/st
 
 ## Role Vocabulary
 
-| Role         | Semantics                                                     | Example agents                                               |
-| ------------ | ------------------------------------------------------------- | ------------------------------------------------------------ |
-| `maker`      | Produces a content/research artifact                          | `docs-maker`, `docs-tutorial-maker`                          |
-| `checker`    | Validates an artifact against standards                       | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
-| `fixer`      | Applies validated checker findings                            | `plan-fixer`, `swe-ui-fixer`                                 |
-| `dev`        | Writes code in a language or test framework                   | `swe-rust-dev`, `swe-e2e-dev`                                |
-| `deployer`   | Deploys an application to an environment                      | `apps-<scope>-deployer` (scope-specific deployer)            |
-| `manager`    | Performs file or resource operations (rename/move/delete)     | `docs-file-manager`                                          |
-| `tester`     | Explores a running system or live site and reports defects    | `exploratory-web-tester`                                     |
-| `researcher` | Gathers and verifies external information; read-only research | `web-researcher`                                             |
+| Role         | Semantics                                                                        | Example agents                                               |
+| ------------ | -------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `maker`      | Produces a content/research artifact                                             | `docs-maker`, `docs-tutorial-maker`                          |
+| `checker`    | Validates an artifact against standards                                          | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
+| `fixer`      | Applies validated checker findings                                               | `plan-fixer`, `swe-ui-fixer`                                 |
+| `dev`        | Writes code in a language or test framework                                      | `swe-rust-dev`, `swe-e2e-dev`                                |
+| `deployer`   | Deploys an application to an environment                                         | `apps-<scope>-deployer` (scope-specific deployer)            |
+| `manager`    | Performs file or resource operations (rename/move/delete)                        | `docs-file-manager`                                          |
+| `tester`     | Explores or evaluates a running system or live site and reports defects/friction | `web-exploratory-tester`, `web-usability-tester`             |
+| `researcher` | Gathers and verifies external information; read-only research                    | `web-researcher`                                             |
 
 Enforcement: `rhino-cli agents validate-naming` (wired into pre-push and CI).
 
