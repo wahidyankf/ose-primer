@@ -76,7 +76,8 @@ Specialized agents organized into families:
 6. **Harness Compatibility**: `repo-harness-compatibility-checker`, `repo-harness-compatibility-fixer` — the single harness-compat pair covering internal cross-vendor parity invariants (Phase 0) and external harness-convention drift (Phase 1)
 7. **Specs Validation**: `specs-maker`, `specs-checker`, `specs-fixer`
 8. **CI/CD**: `ci-checker`, `ci-fixer`
-9. **Research**: `web-researcher`
+9. **Testing**: `web-exploratory-tester` (spec-aware correctness), `web-usability-tester` (spec-blind first-time-user usability), `web-design-tester` (design-aware live mockup/token/design-system fidelity — runtime counterpart to `swe-ui-checker`) — the live-site advocate triad; non-destructive; each files findings as a backlog plan
+10. **Research**: `web-researcher`
 
 **Full agent catalog**: See [`.claude/agents/README.md`](./.claude/agents/README.md) (canonical source synced to the secondary binding directory)
 
@@ -205,7 +206,7 @@ invent `validate:{thing}` prefixes.
 ## Manual Verification & CI Blockers
 
 - **Verify behavior**: Playwright MCP for UI, curl for API ([manual-behavioral-verification.md](./repo-governance/development/quality/manual-behavioral-verification.md))
-- **User-facing delivery hardening**: For any user-facing change, follow the fifteen rules — visual-parity sign-off against the design mockups per breakpoint/locale **before archival**, name the design-system primitive, per-breakpoint responsive deliverables, value-bearing tests, mockup-colors-as-theme-tokens, deploy-config-is-code, checkbox lockstep, and — for web-UI plans — a near-end `web-exploratory-tester` retest round whose findings are appended to `delivery.md` as unchecked task-list items and fixed before archival ([user-facing-delivery-hardening.md](./repo-governance/development/quality/user-facing-delivery-hardening.md))
+- **User-facing delivery hardening**: For any user-facing change, follow the fifteen rules — visual-parity sign-off against the design mockups per breakpoint/locale **before archival**, name the design-system primitive, per-breakpoint responsive deliverables, value-bearing tests, mockup-colors-as-theme-tokens, deploy-config-is-code, checkbox lockstep, and — for web-UI feature-change plans — a near-end three-tester retest round (the `web-ux-test-fixing-planning` workflow: `web-exploratory-tester` + `web-usability-tester` + `web-design-tester`) whose EWT/UWT/DWT findings are appended to `delivery.md` as unchecked task-list items and fixed before archival ([user-facing-delivery-hardening.md](./repo-governance/development/quality/user-facing-delivery-hardening.md))
 - **CI blockers**: Investigate root cause, fix properly, never bypass ([ci-blocker-resolution.md](./repo-governance/development/quality/ci-blocker-resolution.md))
 - **CI post-push verification**: After pushing app or lib code to `origin main`, trigger relevant GitHub CI workflows and verify they pass before declaring work done — pre-push hook alone is not sufficient ([ci-post-push-verification.md](./repo-governance/development/workflow/ci-post-push-verification.md))
 
