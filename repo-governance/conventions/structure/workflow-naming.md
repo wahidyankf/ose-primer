@@ -50,6 +50,7 @@ Workflow scope MUST match its parent directory under `repo-governance/workflows/
 - **`repo`** — Repository-wide governance workflows (conventions, workflows, cross-reference integrity). Aligned with agent scope `repo` (both use `repo`, not `repository`).
 - **`specs`** — Workflows scoped to the `specs/` tree (Gherkin features, OpenAPI contracts, C4 diagrams).
 - **`ui`** — Workflows scoped to UI component quality (tokens, accessibility, responsive design).
+- **`web`** — Workflows that operate against the public web or a live running website: spec-aware exploratory testing, spec-blind heuristic-usability evaluation, and design-aware design-fidelity evaluation of a running site, optionally combined into a fix-planning deliverable. Aligned with agent scope `web` (`web-researcher`, `web-exploratory-tester`, `web-usability-tester`, `web-design-tester`).
 
 New scope tokens MUST be added to this vocabulary first before any workflow is named against them.
 
