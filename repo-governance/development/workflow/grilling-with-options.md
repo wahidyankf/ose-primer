@@ -215,14 +215,14 @@ choice.
 
 Grilling MUST follow this convention in all of the following contexts:
 
-| Context                                 | Trigger                                                         |
-| --------------------------------------- | --------------------------------------------------------------- |
-| **plan-maker pre-write grill**          | Before writing any plan — resolve macro design decisions        |
-| **plan-maker post-write grill**         | After writing the plan — validate and stress-test decisions     |
-| **plan-establishment-execution Step 1** | First grill: scope, constraints, push target                    |
-| **plan-establishment-execution Step 3** | Second grill: post-research validation                          |
-| **plan-execution pre-execution grill**  | Unresolved design decisions in the plan before execution begins |
-| **"Grill me" design review**            | Any explicit "grill me" invocation by the user                  |
+| Context                                | Trigger                                                         |
+| -------------------------------------- | --------------------------------------------------------------- |
+| **plan-maker pre-write grill**         | Before writing any plan — resolve macro design decisions        |
+| **plan-maker post-write grill**        | After writing the plan — validate and stress-test decisions     |
+| **plan-planning Step 1**               | First grill: scope, constraints, push target                    |
+| **plan-planning Step 3**               | Second grill: post-research validation                          |
+| **plan-execution pre-execution grill** | Unresolved design decisions in the plan before execution begins |
+| **"Grill me" design review**           | Any explicit "grill me" invocation by the user                  |
 
 ## Examples
 
@@ -336,19 +336,19 @@ A grill question is invalid when ANY of the following hold:
 
 ### Grilling Within plan-maker
 
-When `plan-maker` is invoked by `plan-establishment-execution`, the macro design decisions
+When `plan-maker` is invoked by `plan-planning`, the macro design decisions
 are already resolved by Steps 1 and 3 of that workflow. The `plan-maker` grilling sessions
 in that context become **validation passes** for micro-decisions (exact Gherkin phrasing,
 section ordering, step granularity). The structured format (Rules 2–5) still applies, but
 questions are narrower.
 
-When `plan-maker` is invoked standalone (not via `plan-establishment`), both the pre-write
+When `plan-maker` is invoked standalone (not via `plan-planning`), both the pre-write
 and post-write grills are full grill sessions resolving all open decisions.
 
 ### Grilling Is a Process Artifact, Not a Document Artifact
 
 Grilling produces answers that are captured in plan documents (resolved decisions in
-`tech-docs.md`, design-decision lists in the plan-establishment handoff). The grill session
+`tech-docs.md`, design-decision lists in the plan-planning handoff). The grill session
 itself does not produce a standalone artifact. Compliance with this convention is verified
 primarily by checking that plan-creation workflows and agent definitions reference it — not
 by inspecting a generated file.
@@ -357,7 +357,7 @@ by inspecting a generated file.
 plan-creation touchpoint that drops its reference to this convention. The touchpoints
 expected to reference this convention are:
 
-- The plan-establishment workflow's Step 1 and Step 3 sections.
+- The plan-planning workflow's Step 1 and Step 3 sections.
 - The plan-execution workflow's pre-execution grill section.
 - The Plans Organization Convention, where design-decision resolution is discussed.
 - The development/README.md index.
@@ -370,7 +370,7 @@ expected to reference this convention are:
 
 - **`grill-me` skill** — The canonical implementation of this convention. The
   [grill-me Skill](../../../.claude/skills/grill-me/SKILL.md) provides the grilling
-  service used by `plan-establishment-execution` and `plan-maker`. This convention governs
+  service used by `plan-planning` and `plan-maker`. This convention governs
   the format and mechanism that `grill-me` MUST use. Platform-specific tool invocations
   live in the Platform Binding Examples section below.
 - **`repo-rules-checker`** — Its general cross-reference/consistency validation flags a
@@ -439,7 +439,7 @@ identical regardless of rendering mechanism.
   implementation of this convention; its HARD RULES reflect the standards defined here
 - **[plan-maker Agent](../../../.claude/agents/plan-maker.md)** — Invokes grill-me in Steps
   1 and 8
-- **[plan-establishment-execution Workflow](../../workflows/plan/plan-establishment-execution.md)**
+- **[plan-planning Workflow](../../workflows/plan/plan-planning.md)**
   — Invokes grill-me in Steps 1 and 3
 - **[plan-execution Workflow](../../workflows/plan/plan-execution.md)** — Invokes grill-me
   before execution begins

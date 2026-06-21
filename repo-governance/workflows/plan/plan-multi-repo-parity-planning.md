@@ -573,7 +573,7 @@ select `worktree-to-pr`. The PRs remain in draft until the invoker promotes them
 ## Related Workflows
 
 - [Plan Quality Gate](./plan-quality-gate.md) — nested workflow called in Step 7 for each plan
-- [Plan Establishment](./plan-establishment-execution.md) — single-repo sibling; this workflow
+- [Plan Planning](./plan-planning.md) — single-repo sibling; this workflow
   is its multi-repo analogue (one plan per repo, one grill session across all repos)
 - [Plan Execution](./plan-execution.md) — downstream workflow that executes the plans this
   workflow creates; runs after plans are established and promoted to `in-progress/`

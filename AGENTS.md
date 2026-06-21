@@ -69,7 +69,7 @@ Specialized agents organized into families:
    `plan-fixer`, `repo-setup-manager` (executes Phase 0 environment setup and baseline in
    every plan) — plan execution is orchestrated directly by the calling context via the
    [plan-execution workflow](./repo-governance/workflows/plan/plan-execution.md) and the
-   [plan-establishment workflow](./repo-governance/workflows/plan/plan-establishment-execution.md);
+   [plan-planning workflow](./repo-governance/workflows/plan/plan-planning.md);
    no dedicated executor subagent
 4. **Software Engineering & Specialized**: `agent-maker`, `swe-code-checker`, `swe-ui-maker`, `swe-ui-checker`, `swe-ui-fixer`, `swe-clojure-dev`, `swe-csharp-dev`, `swe-dart-dev`, `swe-e2e-dev`, `swe-elixir-dev`, `swe-fsharp-dev`, `swe-golang-dev`, `swe-java-dev`, `swe-kotlin-dev`, `swe-python-dev`, `swe-rust-dev`, `swe-typescript-dev`, `social-linkedin-post-maker`
 5. **Repository Governance**: `repo-rules-maker`, `repo-rules-checker`, `repo-rules-fixer`, `repo-workflow-maker`, `repo-workflow-checker`, `repo-workflow-fixer`

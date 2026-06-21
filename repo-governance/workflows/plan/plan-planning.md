@@ -1,6 +1,6 @@
 ---
-name: plan-establishment-execution
-title: "plan-establishment-execution"
+name: plan-planning
+title: "plan-planning"
 goal: >
   Create a well-researched, grill-validated project plan in the resolved target stage
   (plans/in-progress/ by default, or plans/backlog/ when target-stage=backlog) from a user prompt
@@ -45,7 +45,7 @@ outputs:
     description: Final audit report from plan-quality-gate
 ---
 
-# Plan Establishment Workflow
+# Plan Planning Workflow
 
 **Purpose**: Transform a user prompt describing a desired behavior or change into a
 production-ready plan in the resolved target stage (`plans/in-progress/` by default, or
@@ -261,7 +261,7 @@ Delegate via the Agent tool. Provide a self-contained handoff prompt containing 
    `in-progress` plan under `backlog/` or vice versa.
 
 **Note on plan-maker's own grill protocol**: `plan-maker` mandates a pre-write grill (Step 1) and
-a post-write grill (Step 8). When invoked by `plan-establishment`, these become
+a post-write grill (Step 8). When invoked by `plan-planning`, these become
 **validation passes** — macro-decisions are already resolved. Micro-decisions (exact Gherkin
 phrasing, section ordering, step granularity) are still resolved by plan-maker's grills.
 
@@ -372,7 +372,7 @@ resolution.
 ## Related Workflows
 
 - [Plan Quality Gate](./plan-quality-gate.md) — called in Step 6
-- [Plan Execution](./plan-execution.md) — next workflow after plan-establishment
+- [Plan Execution](./plan-execution.md) — next workflow after plan-planning
 
 ## Related Documentation
 

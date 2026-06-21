@@ -56,7 +56,7 @@ The survey (empirical, 2026-06-06) established these facts before any decisions:
 
 - `plan-quality-gate.md` is byte-identical in all three repos — no action needed.
 - `plan-multi-repo-parity-planning.md` exists only in ose-public.
-- Primer's `plan-establishment-execution.md` lacks the `target-stage` input field
+- Primer's `plan-planning.md` lacks the `target-stage` input field
   that ose-public and ose-infra carry (zero grep matches in the worktree).
 - No grilling convention file exists in primer's
   `repo-governance/development/workflow/` (16 files verified; none match).
@@ -104,11 +104,11 @@ web-researcher (conditional) → Second Grill (post-research) → Author → Gat
 Deliver.
 
 **Rationale**: the invoker required this pattern (2026-06-06) to mirror the
-structure already established in `plan-establishment-execution.md`. Decisions that
+structure already established in `plan-planning.md`. Decisions that
 depend on external tool-convention research must not be locked in before the
 research runs.
 
-### Row 3 — plan-establishment-execution Merge; Worktree Default; target-stage
+### Row 3 — plan-planning Merge; Worktree Default; target-stage
 
 **Decision**: perform a 3-way best-of merge across all three repos. The merged
 version keeps the `target-stage` input that primer's copy lacked. The merged
