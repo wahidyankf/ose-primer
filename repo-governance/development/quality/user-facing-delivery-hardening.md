@@ -175,23 +175,32 @@ tag** marks where each rule binds, and each states the **gap** it closes and **h
     passive-security defects (exploratory), first-time-user confusion (usability), or runtime
     design-token / design-system / spacing drift (design) on the live build — exactly the classes of
     defect that ship past green gates. Apply: after the web UI is implemented and the Rule 10 visual
-    sign-off is recorded, run the three testers against the plan's running target URL(s) **across all
-    supported locales** (e.g., `/en/` and `/id/` paths for a bilingual app — a single-locale retest is
-    incomplete). **Record each resulting finding in `delivery.md` as a new unchecked task-list
-    checkbox**, source-attributed (`- [ ] EWT-NNN:` / `- [ ] UWT-NNN:` / `- [ ] DWT-NNN: <defect> —
-fix before archival`), in a labelled "Rule-15 three-tester retest follow-ups" section, and each
-    SG-### spec-gap / USS-### spec-suggestion as its own unchecked checkbox folded into the `specs/**`
-    coverage steps per [Feature Change Completeness](./feature-change-completeness.md). During
-    plan-execution these checkboxes materialize 1:1 as harness Task items, are fixed within the same
-    plan, and are ticked (`- [x]`) via the Atomic Sync Ritual; a finding may stay unchecked only if
-    explicitly deferred with written rationale recorded under the checkbox. Archival is blocked until
-    every rule-15 checkbox is ticked or deferred. `plan-maker` emits this step (with the follow-ups
-    section scaffold and a locale-coverage note); `plan-checker` flags its absence or
-    single-locale-only scope on web-UI feature-change plans; `plan-execution-checker` verifies the
-    three-tester round ran across all locales and every rule-15 checkbox is
+    sign-off is recorded, invoke each tester with **`output-mode: delivery`** and the executing
+    plan's **`plan-path`** — the unified in-place mechanism that appends findings directly to the
+    running plan's `delivery.md` rather than filing a separate backlog plan. Run all three testers
+    against the plan's running target URL(s) **across all supported locales** (e.g., `/en/` and `/id/`
+    paths for a bilingual app — a single-locale retest is incomplete). **Each tester appends its
+    findings to `delivery.md` as new unchecked task-list checkboxes**, source-attributed
+    (`- [ ] EWT-NNN:` / `- [ ] UWT-NNN:` / `- [ ] DWT-NNN: <defect> — fix before archival`), in a
+    labelled "Rule-15 three-tester retest follow-ups" section; each SG-### spec-gap / USS-###
+    spec-suggestion is its own unchecked checkbox folded into the `specs/**` coverage steps per
+    [Feature Change Completeness](./feature-change-completeness.md); screenshots go to the host
+    plan's `evidence/`. During plan-execution these checkboxes materialize 1:1 as harness Task items,
+    are fixed within the same plan, and are ticked (`- [x]`) via the Atomic Sync Ritual; a finding
+    may stay unchecked only if explicitly deferred with written rationale recorded under the checkbox.
+    Archival is blocked until every rule-15 checkbox is ticked or deferred. `plan-maker` emits this
+    step (with the follow-ups section scaffold and a locale-coverage note); `plan-checker` flags its
+    absence or single-locale-only scope on web-UI feature-change plans; `plan-execution-checker`
+    verifies the three-tester round ran across all locales and every rule-15 checkbox is
     resolved-or-explicitly-deferred before archival. Applies to web-UI **feature-change** plans
     (browser-rendered apps) only — not CLI/text user-facing output (which the testers cannot exercise)
     and not pure governance/agent-definition or no-behaviour-change plans.
+
+    The three testers support a selectable **`output-mode`** input: `plan` (default — files a new
+    backlog plan folder, unchanged prior behavior), `delivery` (appends findings in-place to an
+    existing plan's `delivery.md` given a `plan-path` — the mechanism used here for rule-15 retests),
+    and `local-temp` (writes a single `local-temp/<YYYY-MM-DD>__<slug>/findings.md` for immediate
+    direct fixing with no plan paperwork).
 
 ## Examples
 
@@ -227,7 +236,10 @@ fix before archival`), in a labelled "Rule-15 three-tester retest follow-ups" se
   [`web-ux-test-fixing-planning`](../../workflows/web/web-ux-test-fixing-planning.md) triad): the
   near-end three-tester round against the running web UI (Rule 15); runs across ALL supported locales;
   surfaces EWT-### (correctness) / UWT-### (usability) / DWT-### (design-fidelity) findings plus SG-###
-  spec-gap / USS-### spec-suggestion proposals; saves screenshots to the plan's `evidence/` folder.
+  spec-gap / USS-### spec-suggestion proposals; each tester supports a selectable `output-mode` input
+  (`plan` default / `delivery` for in-place rule-15 append / `local-temp` for immediate scratch);
+  invoke with `output-mode: delivery` and the plan's `plan-path` for the rule-15 retest so findings
+  append directly to the running plan's `delivery.md` and screenshots go to the plan's `evidence/`.
 - **`plan-maker`**: emits the delivery steps for Rules 1–8 and the rule-15 three-tester-retest step
   for web-UI feature-change plans; includes a locale-coverage note and evidence-capture steps.
 - **`plan-checker`**: flags missing visual-parity gate, raw-value mockup colors, presence-only

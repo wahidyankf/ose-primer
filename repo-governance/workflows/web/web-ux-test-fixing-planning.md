@@ -145,6 +145,16 @@ with Read/Write/Edit tools.
 - To refresh an existing findings plan: re-run all three testers and merge the new results into the
   prior plan folder (`plan-mode=merge`).
 
+> **Output-mode note**: This workflow uses the testers' default **`output-mode: plan`** — each tester
+> files its raw findings into the workflow-managed plan folder (new or merged), and the Phase 4
+> `plan-maker` consolidates them into one combined plan. The **`output-mode: delivery`** variant is the
+> in-place rule-15 mechanism used during plan execution: each tester is invoked individually with
+> `output-mode: delivery` and the executing plan's `plan-path`, appending findings directly to that
+> plan's `delivery.md` without creating a separate plan. See
+> [User-Facing Delivery Hardening Convention](../../development/quality/user-facing-delivery-hardening.md)
+> Rule 15 for details. A third mode, **`output-mode: local-temp`**, writes a scratch
+> `local-temp/<YYYY-MM-DD>__<slug>/findings.md` for immediate direct fixing with no plan paperwork.
+
 ## Inputs at a glance
 
 | Input              | Required | Default               | Notes                                      |

@@ -308,8 +308,12 @@ supports Indonesian.
 - [plan-maker](../../../.claude/agents/plan-maker.md) — emits evidence-capture steps in delivery
   checklists for web-UI plans.
 - [web-exploratory-tester](../../../.claude/agents/web-exploratory-tester.md) — saves screenshots to
-  the backlog plan's evidence/ folder during exploratory testing.
+  the output destination's `evidence/` folder during exploratory testing (backlog plan's `evidence/`
+  when `output-mode: plan` (default); the host plan's `evidence/` when `output-mode: delivery`;
+  `local-temp/<slug>/evidence/` when `output-mode: local-temp`).
 - [web-usability-tester](../../../.claude/agents/web-usability-tester.md) — saves screenshots to the
-  backlog plan's evidence/ folder during usability evaluation.
+  output destination's `evidence/` folder during usability evaluation (same three-mode logic as
+  `web-exploratory-tester`).
 - [web-design-tester](../../../.claude/agents/web-design-tester.md) — saves screenshots to the
-  backlog plan's evidence/ folder during design-fidelity evaluation.
+  output destination's `evidence/` folder during design-fidelity evaluation (same three-mode logic as
+  `web-exploratory-tester`).

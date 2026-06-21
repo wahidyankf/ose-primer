@@ -417,7 +417,7 @@ without evidence is incomplete. See [Evidence Capture Convention](../../developm
    - Verify the full flow (UI action → API call → response → UI update)
 4. **Fix any broken behavior** — including preexisting issues (Iron Rule 3)
 5. **Document evidence** in `delivery.md` under each ticked checkbox:
-   - Screenshot references: `![alt](./evidence/phase-N-...-{locale}-{breakpoint}px.png)`
+   - Screenshot references via Markdown image syntax pointing at `./evidence/phase-N-...-{locale}-{breakpoint}px.png`
    - curl commands, status codes, response bodies as fenced code blocks
    - Console-clean confirmation per locale
 
@@ -556,17 +556,19 @@ live or staging environment). Zero automated-gate findings are necessary but not
 rules 1, 10, and 15.
 
 **Rule-15 web-UI three-tester retest (near-end, before archival)**: For **web-UI feature-change**
-plans specifically, after the implementation lands and the rule-1 visual sign-off is recorded, run a
-**three-tester** round against the running target URL(s) across all supported locales — the
-[`web-ux-test-fixing-planning`](../web/web-ux-test-fixing-planning.md) workflow:
+plans specifically, after the implementation lands and the rule-1 visual sign-off is recorded, invoke
+each tester with **`output-mode: delivery`** and this plan's **`plan-path`** — the unified in-place
+mechanism that appends findings directly to the running plan's `delivery.md` rather than filing a
+separate backlog plan. Run all three testers against the running target URL(s) across all supported
+locales — the [`web-ux-test-fixing-planning`](../web/web-ux-test-fixing-planning.md) workflow:
 `web-exploratory-tester` (correctness), `web-usability-tester` (usability), and `web-design-tester`
 (design fidelity). Its output is folded back into THIS plan, not a separate plan:
 
-1. Append each finding to `delivery.md` as a **new unchecked task-list checkbox**, source-attributed
-   (`- [ ] EWT-NNN:` / `- [ ] UWT-NNN:` / `- [ ] DWT-NNN: <defect> — fix before archival`), and each
-   SG-### spec-gap / USS-### spec-suggestion as its own unchecked checkbox folded into the specs/\*\*
-   coverage steps. Place them in a clearly labelled "Rule-15 three-tester retest follow-ups" section
-   at the end of the checklist.
+1. Each tester appends its findings to `delivery.md` as **new unchecked task-list checkboxes**,
+   source-attributed (`- [ ] EWT-NNN:` / `- [ ] UWT-NNN:` / `- [ ] DWT-NNN: <defect> — fix before
+archival`); each SG-### spec-gap / USS-### spec-suggestion is its own unchecked checkbox folded
+   into the specs/\*\* coverage steps; screenshots go to this plan's `evidence/`. Place findings in a
+   clearly labelled "Rule-15 three-tester retest follow-ups" section at the end of the checklist.
 2. Each new checkbox materializes as exactly one harness task per the
    [Task-Checklist Synchronization](#task-checklist-synchronization) 1:1 mapping, giving the user
    live visibility of the retest backlog.
