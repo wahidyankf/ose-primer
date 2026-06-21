@@ -270,6 +270,14 @@ funnel. The funnel is authored per the
 
 ### Required Funnel Artefacts (require all on a UI-bearing plan)
 
+**PLACEMENT HARD RULE**: All funnel artefacts MUST be authored directly into the plan's
+**`prd.md`** — not in `README.md`, `brd.md`, `tech-docs.md`, or any separate markdown file.
+Binary mockup image assets (`.excalidraw.png` or plain `.png`) live under the plan's `assets/`
+folder and are embedded in `prd.md` via `![]()` image links. A UI-bearing plan whose `prd.md`
+does NOT contain the complete funnel record (all four stages plus embedded mockup links) fails the
+plan quality gate — `plan-checker` Step 5k flags each missing or misplaced element as HIGH.
+See [UI Mockups in Plan Docs — Placement](../../repo-governance/conventions/formatting/diagrams.md#placement--the-ui-lives-in-prdmd-hard-rule).
+
 For each UI-bearing screen, the plan (`prd.md` + the plan's `assets/`) MUST carry, in separate
 labelled subsections, with no alternative silently discarded:
 
@@ -788,7 +796,9 @@ Rule 15). This does NOT apply to CLI/text output or pure governance/agent-defini
 - [ ] [AI] Append each finding here as a new unchecked checkbox, source-attributed
       (`- [ ] EWT-NNN:` / `- [ ] UWT-NNN:` / `- [ ] DWT-NNN: <defect> — fix before archival`) and each
       SG-### spec-gap / USS-### spec-suggestion into the specs steps
-- [ ] [AI] Fix every rule-15 finding (or explicitly defer with rationale) before archival
+- [ ] [AI] Fix every rule-15 EWT/UWT/DWT defect finding before archival — deferral requires explicit user permission (only when genuinely impossible) for
+      defect findings (EWT/UWT/DWT); SG-### spec-gap proposals and USS-### spec-suggestions may be
+      triaged or deferred with written rationale
 ```
 
 ### Plan Archival Section
@@ -802,7 +812,8 @@ ALWAYS include at the end of the delivery checklist:
 - [ ] Verify ALL quality gates pass (local + CI)
 - [ ] Verify ALL manual assertions pass (Playwright MCP / curl) with committed evidence in `evidence/`
 - [ ] Verify ALL supported locales were exercised in UI verification (not just the default)
-- [ ] Verify every rule-15 three-tester finding (EWT/UWT/DWT) is fixed or explicitly deferred
+- [ ] Verify every rule-15 EWT/UWT/DWT defect finding is fixed (ticked) — deferral requires explicit user permission (only when genuinely impossible)
+      for defect findings; SG-### proposals and USS-### suggestions may be triaged or deferred
 - [ ] Rename and move: `git mv plans/in-progress/[identifier]/ plans/done/YYYY-MM-DD__[identifier]/` using today's date as the completion date (NOT the creation date)
 - [ ] Update `plans/in-progress/README.md` — remove the plan entry
 - [ ] Update `plans/done/README.md` — add the plan entry with completion date

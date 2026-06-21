@@ -573,9 +573,11 @@ archival`); each SG-### spec-gap / USS-### spec-suggestion is its own unchecked 
    [Task-Checklist Synchronization](#task-checklist-synchronization) 1:1 mapping, giving the user
    live visibility of the retest backlog.
 3. Loop back into execution (Steps 2–7) to fix each finding and tick its checkbox via the Atomic
-   Sync Ritual. A finding may be left unchecked only if it is explicitly deferred with written
-   rationale recorded under the checkbox.
-4. Archival is blocked until every rule-15 checkbox is `- [x]` (fixed) or explicitly deferred.
+   Sync Ritual. Every EWT-NNN/UWT-NNN/DWT-NNN defect finding MUST be fixed and ticked — deferral
+   of a defect finding requires explicit user permission and is allowed only when the fix is
+   genuinely impossible. (`SG-###` spec-gap proposals and `USS-###` spec-suggestions are proposals,
+   not defects, and may be triaged or deferred with written rationale recorded under the checkbox.)
+4. Archival is blocked until every rule-15 EWT/UWT/DWT defect checkbox is `- [x]` (fixed).
 
 **Logic**:
 

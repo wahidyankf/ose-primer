@@ -80,7 +80,7 @@ Conventions are organized into 6 semantic categories:
 Standards for markdown formatting, syntax, and visual elements.
 
 - [Color Accessibility](./formatting/color-accessibility.md) - MASTER REFERENCE for all color decisions. Verified accessible color palette (Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161) supporting all color blindness types, WCAG AA standards, with complete implementation guidance for Mermaid diagrams and AI agent categorization
-- [Diagrams and Schemas](./formatting/diagrams.md) - Standards for Mermaid diagrams (primary), ASCII art (optional) with color-blind friendly colors, and UI mockups in plan docs (both-tiers rule: low-fi ASCII wireframe + hi-fi `.excalidraw.png`; design funnel; grounding rule; rendering-support matrix; ruled-out options)
+- [Diagrams and Schemas](./formatting/diagrams.md) - Standards for Mermaid diagrams (primary) and ASCII art. Enforces an explicit Format Selection Rule: folder/file trees MUST use ASCII art (`├──`, `└──`, `│`); all relationship/flow diagram types (flow charts, sequence diagrams, state machines, architecture/component diagrams, dependency-direction, user-flow, ER/class, C4 model) MUST use Mermaid. Also contains the **UI Mockups in Plan Docs** section (both-tiers rule, design funnel, rendering-support matrix, ruled-out table) governing draft UI wireframes in UI-bearing plans; the **Placement HARD RULE** (`## Placement — the UI lives in prd.md`) requires all funnel artefacts (low-fi wireframes, hi-fi `![]()` embeds, selection, rationale) to reside in `prd.md` — a plan failing this gate is flagged HIGH by `plan-checker`. **Gate location**: Mermaid validation runs at pre-commit (staged `.md` files only) + `markdown-validate.yml` CI; does NOT run at pre-push
 - [Emoji Usage](./formatting/emoji.md) - Semantic emoji usage to enhance document scannability and engagement with accessible colored emojis
 - [Indentation](./formatting/indentation.md) - Standard markdown indentation using 2 spaces per indentation level. YAML frontmatter uses 2 spaces. Code blocks use language-specific conventions
 - [Linking Convention](./formatting/linking.md) - Standards for linking between documentation files using GitHub-compatible markdown. Defines two-tier formatting for rule references (first mention = markdown link, subsequent mentions = inline code)
@@ -94,7 +94,7 @@ Standards for cross-referencing and internal linking between repository content.
 
 See the `repo-governance/conventions/linking/` directory for linking conventions. No standalone convention files are currently defined here; linking standards are covered by [Linking Convention](./formatting/linking.md) in the Formatting section.
 
-## ✍️ Writing
+## 📝 Writing
 
 Content quality standards, validation methodology, and writing guidelines.
 
@@ -107,7 +107,7 @@ Content quality standards, validation methodology, and writing guidelines.
 - [README Quality](./writing/readme-quality.md) - Quality standards for README.md files ensuring engagement, accessibility, and scannability. Defines problem-solution hooks, jargon elimination (plain language over corporate speak), acronym context requirements, benefits-focused language, navigation structure, and paragraph length limits. **Agents**: readme-maker, readme-checker
 - [Web Research Delegation](./writing/web-research-delegation.md) - Normative rule requiring AI agents to delegate public-web information gathering to the `web-researcher` subagent when research exceeds the delegation threshold (2+ `WebSearch` calls or 3+ `WebFetch` calls for a single claim). Enumerates three exceptions (single-shot known URL; fixer re-validation; link-reachability checkers). **Agents**: web-researcher, repo-rules-checker
 
-## 🗂️ Structure
+## 📁 Structure
 
 Documentation organization frameworks, file naming, and project planning structure.
 

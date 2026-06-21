@@ -186,13 +186,16 @@ tag** marks where each rule binds, and each states the **gap** it closes and **h
     spec-suggestion is its own unchecked checkbox folded into the `specs/**` coverage steps per
     [Feature Change Completeness](./feature-change-completeness.md); screenshots go to the host
     plan's `evidence/`. During plan-execution these checkboxes materialize 1:1 as harness Task items,
-    are fixed within the same plan, and are ticked (`- [x]`) via the Atomic Sync Ritual; a finding
-    may stay unchecked only if explicitly deferred with written rationale recorded under the checkbox.
-    Archival is blocked until every rule-15 checkbox is ticked or deferred. `plan-maker` emits this
-    step (with the follow-ups section scaffold and a locale-coverage note); `plan-checker` flags its
-    absence or single-locale-only scope on web-UI feature-change plans; `plan-execution-checker`
-    verifies the three-tester round ran across all locales and every rule-15 checkbox is
-    resolved-or-explicitly-deferred before archival. Applies to web-UI **feature-change** plans
+    are fixed within the same plan, and are ticked (`- [x]`) via the Atomic Sync Ritual. Every
+    EWT-NNN/UWT-NNN/DWT-NNN defect finding MUST be fixed and ticked before archival — deferral
+    requires explicit user permission and is allowed only when the fix is genuinely impossible.
+    (`SG-###` spec-gap suggestions and `USS-###` spec-suggestions are proposals, not defects, and may
+    be triaged or deferred with written rationale recorded under the checkbox.) Archival is blocked
+    until every rule-15 defect checkbox is ticked (fixed). `plan-maker` emits this step (with the
+    follow-ups section scaffold and a locale-coverage note); `plan-checker` flags its absence or
+    single-locale-only scope on web-UI feature-change plans; `plan-execution-checker` verifies the
+    three-tester round ran across all locales and every rule-15 EWT/UWT/DWT defect checkbox is fixed
+    (ticked) before archival. Applies to web-UI **feature-change** plans
     (browser-rendered apps) only — not CLI/text user-facing output (which the testers cannot exercise)
     and not pure governance/agent-definition or no-behaviour-change plans.
 
@@ -247,8 +250,10 @@ tag** marks where each rule binds, and each states the **gap** it closes and **h
   locale coverage, and a missing rule-15 three-tester-retest step on web-UI feature-change plans.
 - **`plan-execution-checker`**: verifies the production visual sign-off and deploy-config smoke
   test were recorded before archival; verifies evidence/ screenshots exist and are referenced in
-  delivery.md; verifies the rule-15 three-tester retest round ran across all locales with its
-  EWT/UWT/DWT findings resolved-or-explicitly-deferred before archival.
+  delivery.md; verifies the rule-15 three-tester retest round ran across all locales and that every
+  rule-15 EWT/UWT/DWT defect checkbox is fixed (ticked) before archival — an unfixed defect finding
+  at archival time is a HIGH finding; SG-### spec-gap proposals and USS-### spec-suggestions may be
+  triaged or deferred.
 
 ## References
 
