@@ -99,11 +99,11 @@ ose-primer/
 
 `ose-primer` is one of three sibling repositories in the OSE (Open Sharia Enterprise) family. Each repo stands alone — there is no parent monorepo — but governance, conventions, and tooling are kept aligned across them via explicit cross-repo propagation.
 
-| Repository                                                           | Role                                                                                               | Visibility | License          |
-| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------- | ---------------- |
-| [`ose-public`](https://github.com/wahidyankf/ose-public)             | Main OSE platform monorepo. Source of governance, conventions, and AI agent patterns adopted here. | Public     | Source-available |
-| [`ose-primer`](https://github.com/wahidyankf/ose-primer) (this repo) | Repository template — clean MIT-licensed starting point for new OSE-style polyglot Nx monorepos.   | Public     | MIT              |
-| [`ose-infra`](https://github.com/wahidyankf/ose-infra)               | Private infrastructure (Terraform, deploy pipelines, cloud config) backing `ose-public`.           | Private    | Proprietary      |
+| Repository                                                           | Role                                                                                               | Visibility | License           |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------- | ----------------- |
+| [`ose-public`](https://github.com/wahidyankf/ose-public)             | Main OSE platform monorepo. Source of governance, conventions, and AI agent patterns adopted here. | Public     | Open source (MIT) |
+| [`ose-primer`](https://github.com/wahidyankf/ose-primer) (this repo) | Repository template — clean MIT-licensed starting point for new OSE-style polyglot Nx monorepos.   | Public     | MIT               |
+| [`ose-infra`](https://github.com/wahidyankf/ose-infra)               | Private infrastructure (Terraform, deploy pipelines, cloud config) backing `ose-public`.           | Private    | Proprietary       |
 
 **Propagation direction**: governance, conventions, agents, and skills generally flow `ose-public → ose-primer → downstream forks`. Infrastructure-only concerns flow `ose-public ↔ ose-infra`. Each repo is independently clonable; no submodules, no workspace links.
 

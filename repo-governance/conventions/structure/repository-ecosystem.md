@@ -36,11 +36,11 @@ Each repository in the family carries its own copy of this convention so that th
 
 ## Sibling Repositories
 
-| Repository   | URL                                      | Role                                                                                                                 | Visibility | License          |
-| ------------ | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------- | ---------------- |
-| `ose-public` | https://github.com/wahidyankf/ose-public | Main OSE platform monorepo; upstream source of governance, conventions, agents, and skills                           | Public     | Source-available |
-| `ose-primer` | https://github.com/wahidyankf/ose-primer | Repository template extracted from `ose-public`; MIT-licensed starting point for new OSE-style polyglot Nx monorepos | Public     | MIT              |
-| `ose-infra`  | https://github.com/wahidyankf/ose-infra  | Private infrastructure repo (Terraform, deploy pipelines, cloud configuration) backing `ose-public`                  | Private    | Proprietary      |
+| Repository   | URL                                      | Role                                                                                                                 | Visibility | License           |
+| ------------ | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------- | ----------------- |
+| `ose-public` | https://github.com/wahidyankf/ose-public | Main OSE platform monorepo; upstream source of governance, conventions, agents, and skills                           | Public     | Open source (MIT) |
+| `ose-primer` | https://github.com/wahidyankf/ose-primer | Repository template extracted from `ose-public`; MIT-licensed starting point for new OSE-style polyglot Nx monorepos | Public     | MIT               |
+| `ose-infra`  | https://github.com/wahidyankf/ose-infra  | Private infrastructure repo (Terraform, deploy pipelines, cloud configuration) backing `ose-public`                  | Private    | Proprietary       |
 
 Each repository is independently clonable. A contributor working in `ose-primer` does not need access to `ose-public` or `ose-infra` to do useful work.
 
