@@ -131,6 +131,8 @@ Development practices in this directory fall into several categories:
 - [No Secrets in Committed Files Convention](../conventions/security/no-secrets-in-committed-files.md) - Hard iron rule prohibiting system secrets (SSH keys, passwords, tokens, API keys) from any git-committed file, including plans and docs
 - [Environment File Access Convention](../conventions/security/env-file-access.md) - Six-layer policy governing AI agent access to `.env*` files; only `.env.example` is permitted for reading, writing, editing, and committing
 - [User-Facing Delivery Hardening Convention](./quality/user-facing-delivery-hardening.md) - Fourteen durable rules so design-parity and behavioral defects cannot ship past green gates for user-facing work
+- [Regression Test Mandate](./quality/regression-test-mandate.md) - Blocking rule requiring every bug fix to land with a reproducing test in the same commit/PR; the bug-driven dual of Feature Change Completeness, covering all defect types (behavioral, visual, content, API)
+- [Live-Tester Systematic Coverage](./quality/live-tester-systematic-coverage.md) - Six forcing-functions (shared-control matrix, URL round-trip, declared-invariant conformance, styling consistency audit, usability probes, recurrence critic) that convert sampling into enumeration for the three live-site tester agents and the web-ux-test-fixing-planning workflow
 
 ### Pattern Documentation
 

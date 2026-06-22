@@ -42,6 +42,8 @@ These standards define **HOW to maintain and validate quality**, covering automa
 - [Plan Anti-Hallucination Convention](./plan-anti-hallucination.md) - Anti-hallucination guardrails the `plan-checker` agent cites when validating plan claims (confidence labels, AP-1 through AP-10 catalog, web-research delegation thresholds)
 - [Environment File Access Convention](../../conventions/security/env-file-access.md) - Six-layer policy governing AI agent access to `.env*` files; only `.env.example` is permitted; real env files are off-limits for reading, writing, editing, and committing
 - [User-Facing Delivery Hardening Convention](./user-facing-delivery-hardening.md) - Fourteen durable rules for planning, executing, verifying, and archiving user-facing feature work so design-parity and behavioral defects cannot ship past green gates (visual-parity gate before archival, name the design-system primitive, per-breakpoint responsive deliverables, value-bearing tests, mockup-colors-as-theme-tokens, deploy-config-is-code, checkbox lockstep)
+- [Regression Test Mandate](./regression-test-mandate.md) - Blocking rule requiring every bug fix to land with a reproducing test in the same commit/PR; the bug-driven dual of Feature Change Completeness, covering all defect types (behavioral, visual, content, API)
+- [Live-Tester Systematic Coverage](./live-tester-systematic-coverage.md) - Six forcing-functions (shared-control matrix, URL round-trip, declared-invariant conformance, styling consistency audit, usability probes, recurrence critic) that convert sampling into enumeration for the three live-site tester agents and the web-ux-test-fixing-planning workflow
 
 ## Companion Documents
 
