@@ -1,6 +1,6 @@
 ---
 title: "CI Monitoring Convention"
-description: Standards for monitoring GitHub Actions CI runs without exhausting the GitHub API rate limit — required tooling, poll intervals, trigger discipline, and recovery procedures
+description: Standards for monitoring GitHub Actions CI runs without exhausting the GitHub API rate limit — required tooling, default 2-minute poll interval, trigger discipline, and recovery procedures
 category: explanation
 subcategory: development
 tags:
@@ -19,7 +19,7 @@ Monitoring CI runs is a required step after every push to `origin main`. How you
 
 This convention implements the following core principles:
 
-- **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)**: The required default approach for monitoring CI runs is `ScheduleWakeup` every 3-5 minutes with a single `gh run view` check — this replaces error-prone manual polling without exhausting the API rate limit. `gh run watch` is suitable only for short jobs expected to complete in under 5 minutes.
+- **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)**: The required default approach for monitoring CI runs is `ScheduleWakeup` every 2-5 minutes with a single `gh run view` check — this replaces error-prone manual polling without exhausting the API rate limit. `gh run watch` is suitable only for short jobs expected to complete in under 5 minutes.
 
 - **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: `ScheduleWakeup` + a single `gh run view` is simpler than a while-loop, a sleep, a JSON parser, and retry logic. A scheduled wakeup removes code that must be written, debugged, and maintained — and avoids the rate limit hazard that `gh run watch` introduces on jobs longer than 5 minutes.
 
@@ -31,7 +31,7 @@ This convention implements the following core principles:
 
 This convention implements/respects the following development practices:
 
-- **[CI Post-Push Verification Convention](./ci-post-push-verification.md)**: That convention mandates triggering and monitoring CI after every push. This convention specifies HOW to perform that monitoring safely — `ScheduleWakeup` every 3-5 min as the required default for standard CI jobs, `gh run watch` restricted to short jobs under 5 minutes, minimum intervals if manual polling is used, and recovery procedures when rate-limited.
+- **[CI Post-Push Verification Convention](./ci-post-push-verification.md)**: That convention mandates triggering and monitoring CI after every push. This convention specifies HOW to perform that monitoring safely — `ScheduleWakeup` every 2-5 min as the required default for standard CI jobs, `gh run watch` restricted to short jobs under 5 minutes, minimum intervals if manual polling is used, and recovery procedures when rate-limited.
 
 - **[CI Blocker Resolution Convention](../quality/ci-blocker-resolution.md)**: When a rate limit prevents CI verification, it is a blocker. This convention provides the correct recovery path (scheduled wakeup, not retry loop) rather than treating a 403 as a transient error and spinning.
 
@@ -79,22 +79,22 @@ A tight loop with no sleep issues hundreds of requests per minute. At 200 calls/
 
 Use the first approach that fits the situation. Only fall back to lower-priority approaches when the higher-priority one is not applicable.
 
-#### 1. `ScheduleWakeup` Every 3-5 Minutes (Required Default)
+#### 1. `ScheduleWakeup` Every 2-5 Minutes (Required Default)
 
-Trigger the run, record the run ID, schedule a wakeup for 3-5 minutes, check status, repeat until done. Each check is **one** `gh run view` call.
+Trigger the run, record the run ID, schedule a wakeup for 2-5 minutes, check status, repeat until done. Each check is **one** `gh run view` call.
 
-**Why 3-5 min:** Fast enough for responsive feedback; safe forever at 12-20 req/hour (0.4% of the 5,000/hour budget).
+**Why 2-5 min:** Fast enough for responsive feedback; safe forever at 18-30 req/hour (well under 1% of the 5,000/hour budget).
 
-**Default poll interval: 3 minutes.**
+**Default poll interval: 2 minutes.**
 
-**Absolute floor: never poll CI or GitHub Actions faster than once every 2 minutes.** Two minutes is the hard, never-exceed minimum spacing for any CI or Actions status check; the 3-minute default above sits comfortably on the safe side of this floor. Any cadence faster than once per 2 minutes is forbidden regardless of mechanism (manual loop, scheduled wakeup, or stream-watch).
+**Absolute floor: never poll CI or GitHub Actions faster than once every 2 minutes.** Two minutes is the hard, never-exceed minimum spacing for any CI or Actions status check; the 2-minute default above sits exactly at this floor — going slower (longer intervals) is always fine, going faster is forbidden. Any cadence faster than once per 2 minutes is forbidden regardless of mechanism (manual loop, scheduled wakeup, or stream-watch).
 
 ```bash
 # Step 1: trigger and capture run ID
 gh workflow run <your-workflow>.yml
 # URL output contains run ID, e.g. https://github.com/.../runs/12345678
 
-# Step 2: ScheduleWakeup(delaySeconds=180)  ← check in 3 min
+# Step 2: ScheduleWakeup(delaySeconds=120)  ← check in 2 min
 
 # Step 3: On wakeup — one check
 gh run view <run-id> --json conclusion,status,jobs
@@ -102,9 +102,9 @@ gh run view <run-id> --json conclusion,status,jobs
 # If completed → read conclusion and proceed
 ```
 
-At 3-5 min intervals a 35-min CI job needs 7-12 checks = **7-12 API calls total**. Zero burst.
+At 2-5 min intervals a 35-min CI job needs 7-18 checks = **7-18 API calls total**. Zero burst.
 
-**Rate limit math:** 1 call every 3 min = 20 calls/hour. Budget: 5,000/hour. Usage: 0.4%. Safe forever.
+**Rate limit math:** 1 call every 2 min = 30 calls/hour. Budget: 5,000/hour. Usage: 0.6%. Safe forever.
 
 #### 2. `gh run watch <run-id>` (Short Jobs Only, <5 min)
 
@@ -117,18 +117,18 @@ At 3-5 min intervals a 35-min CI job needs 7-12 checks = **7-12 API calls total*
 gh run watch <run-id>
 ```
 
-#### 3. Manual Polling With Minimum 3-Minute Sleep (Unavoidable Loop Cases)
+#### 3. Manual Polling With Minimum 2-Minute Sleep (Unavoidable Loop Cases)
 
-If `ScheduleWakeup` is not available, the minimum interval between successive `gh run view` calls is **3 minutes**.
+If `ScheduleWakeup` is not available, the minimum interval between successive `gh run view` calls is **2 minutes**.
 
 ```bash
-# PASS: Correct — 3-minute minimum sleep between checks
+# PASS: Correct — 2-minute minimum sleep between checks
 while true; do
   status=$(gh run view "$run_id" --json status --jq '.status')
   if [ "$status" = "completed" ]; then
     break
   fi
-  sleep 180
+  sleep 120
 done
 ```
 

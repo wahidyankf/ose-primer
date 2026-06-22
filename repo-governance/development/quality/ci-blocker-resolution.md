@@ -221,4 +221,4 @@ It does not apply to:
 - [Root Cause Orientation Principle](../../principles/general/root-cause-orientation.md) -- The foundational principle this convention implements
 - [Commit Message Convention](../workflow/commit-messages.md) -- Conventional commit format for preexisting fixes
 - [Nx Target Standards](../infra/nx-targets.md) -- Canonical target names for quality gates
-- [CI Monitoring Convention](../workflow/ci-monitoring.md) -- Safe CI / GitHub Actions monitoring cadence: never poll faster than once every two minutes (3-minute operational default)
+- [CI Monitoring Convention](../workflow/ci-monitoring.md) -- Safe CI / GitHub Actions monitoring cadence: never poll faster than once every two minutes (2-minute operational default)
