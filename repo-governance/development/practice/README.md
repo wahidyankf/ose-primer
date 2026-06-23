@@ -25,6 +25,8 @@ These practices define **HOW developers and AI agents should behave** when encou
 ## Documents
 
 - [Proactive Preexisting Error Resolution](./proactive-preexisting-error-resolution.md) - When encountering preexisting errors during any work, fix the root cause rather than ignoring, monkey-patching, or passively mentioning the problem
+- [Parallel-by-Default Practice](./parallel-by-default.md) - When work has independent sub-units (tool calls, file reads/edits, searches, or delegated agents), default to running them in parallel rather than serially, capped at three concurrent units
+- [Task List Discipline](./task-list-discipline.md) - For any non-trivial multi-step work (3+ distinct steps, or any task spanning multiple files or phases), maintain a live task list from the start and keep it continuously in sync with actual progress
 
 ## Related Documentation
 

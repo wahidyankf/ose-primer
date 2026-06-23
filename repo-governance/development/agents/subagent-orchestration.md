@@ -1,6 +1,6 @@
 ---
 title: "Subagent Orchestration Convention"
-description: Standards for capping concurrent background subagents at two to control token burn and avoid Claude API rate-limit hits, plus stuck-detection when a main agent spawns subagents via the Agent tool
+description: Standards for concurrency caps and stuck-detection when a main agent spawns subagents via the Agent tool, capping concurrent background subagents at three to control token burn and avoid Claude API rate-limit hits
 category: explanation
 subcategory: development
 tags:
@@ -25,7 +25,7 @@ This practice implements/respects the following core principles:
 
 - **[Root Cause Orientation](../../principles/general/root-cause-orientation.md)**: Stuck detection addresses the root cause (output-token-budget exhaustion during planning, causing silent stall) rather than the symptom (batch never completing). Relaunch restores completion; ignoring a stall compounds delay.
 
-- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: A fixed default cap (2) with a clearly-described override path is simpler than an adaptive scheduler. Three minutes between polls is a single number to remember. Concrete mtime-based stuck detection requires no additional tooling.
+- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: A fixed default cap (3) with a clearly-described override path is simpler than an adaptive scheduler. Three minutes between polls is a single number to remember. Concrete mtime-based stuck detection requires no additional tooling.
 
 - **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: The cap, polling interval, and stuck threshold are explicit constants stated in this document. Agents do not infer limits from context; they apply the values here.
 
@@ -71,26 +71,26 @@ This convention codifies two interlocking standards that address both failure mo
 
 ## Standards
 
-### Standard 1 — Default Concurrency Cap: 2
+### Standard 1 — Default Concurrency Cap: 3
 
-The main agent MUST NOT have more than **2 background subagents active simultaneously** at any point, unless the user explicitly raises the cap for a specific batch or session. The main thread's own work does not count toward this cap — only concurrent background subagents do. Both background slots should be kept productively in use whenever independent work is available; running one background subagent at a time when two independent units are ready leaves throughput on the table.
+The main agent MUST NOT have more than **3 background subagents active simultaneously** at any point, unless the user explicitly raises the cap for a specific session or batch. The main thread's own work does not count toward the cap — only concurrent background subagents do. When independent units of work are ready, background slots should be kept full rather than running them one at a time.
 
-**Applies to**: All Agent-tool spawns, whether background or foreground. Both content-producing makers and meta-agents (e.g., `repo-rules-maker`) count toward the cap. Total simultaneous Agent-tool invocations is the metric, not agent type.
+**Applies to**: All Agent-tool spawns, whether background or foreground. Both content-producing makers (e.g., `apps-ayokoding-www-by-example-maker`) and meta-agents (e.g., `repo-rules-maker`) count toward the cap. Total simultaneous Agent-tool invocations is the metric, not agent type.
 
-**Rationale**: Each subagent operates its own independent tool-call stream against the Claude API. Running more than 2 concurrently risks saturating the per-minute request quota at the model vendor and elevates the token burn rate, producing rate-limit errors that cascade and slow the entire batch. Two concurrent background agents deliver adequate throughput while staying safely below observed saturation thresholds.
+**Rationale**: Each subagent operates its own independent tool-call stream against the Claude API. Running more than 3 concurrently risks saturating the per-minute request quota at the model vendor and increases token burn rate, producing rate-limit errors that cascade and slow the entire batch. Three concurrent agents deliver meaningful parallel throughput while staying safely below observed saturation thresholds. This cap is the concrete subagent specialization of the broader parallel-by-default working norm — see [Parallel-by-Default Practice](../practice/parallel-by-default.md) for the general principle.
 
-**Sequencing rule**: Launch a new subagent only after a prior one completes (via task-notification message) or after calling `TaskStop` on a stuck agent. Do not pre-queue more than 2 pending launches at once.
+**Sequencing rule**: Launch a new subagent only after a prior one completes (via task-notification message) or after calling `TaskStop` on a stuck agent. Do not pre-queue more than 3 pending launches at once.
 
-**Override rule**: The user may instruct the main agent to raise the cap temporarily (e.g., "run 3 in parallel this batch"). The override applies for the duration of that session or batch only. After the batch completes, the default of 2 resumes automatically. The main agent MUST NOT self-promote the cap based on its own assessment of available headroom.
+**Override rule**: The user may instruct the main agent to raise the cap temporarily (e.g., "run 4 in parallel this batch"). The override applies for that session or batch only. After the batch completes, the default of 3 resumes automatically. The main agent MUST NOT self-promote the cap based on its own assessment of available headroom.
 
 #### Examples
 
 ```
-PASS: 2 background agents active → wait for one to complete → launch next
-PASS: Both background slots in use with independent work → keep both running
-PASS: User says "run 3 at once for this batch" → 3 active during that batch only
-FAIL: 4 background agents launched simultaneously without user instruction
-FAIL: Main agent raises cap to 3 because "the first two seem fast"
+PASS: 1 background agent active, a second independent unit is ready → launch the second (keep slots full)
+PASS: 3 background agents active → wait for one to complete → launch next
+PASS: User says "run 4 at once for this batch" → 4 active during that batch only
+FAIL: 5 background agents launched simultaneously without user instruction
+FAIL: Main agent raises cap to 4 because "the first three seem fast"
 ```
 
 ### Standard 2 — 3-Minute Stuck-Detection Polling
@@ -168,9 +168,9 @@ Task-notification messages from the harness signal completion (or kill). These a
 
 **Problem**: The main agent launches all subagents simultaneously to minimize total elapsed time.
 
-**Why it fails**: More than 2 concurrent background agents saturates the per-minute API quota and raises the token burn rate. Rate-limit errors cascade; agents that would have succeeded fast must retry, extending total batch time beyond the sequential baseline.
+**Why it fails**: More than 3 concurrent background agents saturates the per-minute API quota and increases token burn rate. Rate-limit errors cascade; agents that would have succeeded fast must retry, extending total batch time beyond the sequential baseline.
 
-**Fix**: Cap at 2. Launch the next agent only after one completes.
+**Fix**: Cap at 3. Launch the next agent only after one completes.
 
 ### Relying Solely on Task-Notifications for Stuck Detection
 
@@ -190,19 +190,19 @@ Task-notification messages from the harness signal completion (or kill). These a
 
 ### Self-Promoting the Concurrency Cap
 
-**Problem**: The main agent raises the cap to 3 or 4 on its own judgment because early agents are completing quickly.
+**Problem**: The main agent raises the cap to 4 or 5 on its own judgment because early agents are completing quickly.
 
-**Why it fails**: Completion speed varies. A batch that starts fast can become rate-limited as all agents hit their tool-intensive middle sections simultaneously. The default cap is set conservatively to stay safely below the saturation threshold at all batch phases.
+**Why it fails**: Completion speed varies. A batch that starts fast can become rate-limited as all agents hit their tool-intensive middle sections simultaneously. The default cap is set deliberately at 3 — the optimal balance between parallel throughput and API headroom — to stay safely below the saturation threshold at all batch phases.
 
-**Fix**: The cap is 2. Only explicit user instruction raises it, and only for a named session or batch.
+**Fix**: The cap is 3. Only explicit user instruction raises it, and only for a named session or batch.
 
 ### Running Background Work Serially
 
-**Problem**: The main agent launches one background subagent, waits for it to finish, then launches the next — even when multiple independent units of work are ready.
+**Problem**: The main agent runs background subagents one at a time — waiting for the first to finish before launching the second — even when two independent units of work are ready simultaneously.
 
-**Why it fails**: Running one background subagent at a time when two independent units are available halves throughput without any reduction in risk. The cap of two exists to bound resource use, not to discourage parallelism within that bound.
+**Why it fails**: Serial execution wastes available throughput. If two units are independent and a second background slot is free, holding it empty doubles elapsed time for no benefit.
 
-**Fix**: Keep both background slots in use whenever independent work is available. Launch the second subagent as soon as the first is dispatched; do not wait for completion before filling the second slot.
+**Fix**: Keep all background slots full up to the cap of three. When a slot frees and independent work is waiting, launch immediately.
 
 ### Monolithic Chunks Assigned to Single Agents
 
@@ -238,6 +238,7 @@ Task-notification messages from the harness signal completion (or kill). These a
 - [Agent Workflow Orchestration Convention](./agent-workflow-orchestration.md) - Delegated agent strategy; this convention specializes that model for background spawning
 - [AI Agents Convention](./ai-agents.md) - Agent file structure and frontmatter standards
 - [CI Monitoring Convention](../workflow/ci-monitoring.md) - `ScheduleWakeup` polling pattern reused here for stuck detection
+- [Parallel-by-Default Practice](../practice/parallel-by-default.md) - General parallel execution norm of which this convention is the concrete subagent specialization
 
 **Agents:**
 

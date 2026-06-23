@@ -148,6 +148,8 @@ Development practices in this directory fall into several categories:
 ### Practice Documentation
 
 - [Proactive Preexisting Error Resolution](./practice/proactive-preexisting-error-resolution.md) - When encountering preexisting errors, bugs, broken tests, or incorrect configurations during any work, fix the root cause rather than ignoring, monkey-patching, or passively mentioning the problem. Covers the three anti-patterns (acting ignorant, monkey-patching, passive mentioning), scope judgment (inline/separate commit/plan), and full agent requirements
+- [Parallel-by-Default Practice](./practice/parallel-by-default.md) - When work has independent sub-units (tool calls, file reads/edits, searches, or delegated agents), default to running them in parallel rather than serially, capped at three concurrent units of work. Covers the parallel-unless-dependent norm, the cap-3 rationale, and the subagent specialization relationship
+- [Task List Discipline](./practice/task-list-discipline.md) - For any non-trivial multi-step work (3+ distinct steps, or any task spanning multiple files or phases), maintain a live task list from the start and keep it continuously in sync with actual progress. Covers the five standards (create before starting, mark in-progress, mark completed immediately, add discovered tasks, one task per outcome) and the relationship to plan delivery checklists
 
 ### Agent Standards Documentation
 
