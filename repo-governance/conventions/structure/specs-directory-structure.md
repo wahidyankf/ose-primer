@@ -185,14 +185,12 @@ specs/
 │                   ├── README.md
 │                   └── {domain}/            # Domain subdirs (required for all surfaces)
 │                       └── {feature}.feature
-├── libs/
-│   └── {lib-name}/
-│       ├── README.md
-│       └── gherkin/
-│           └── {package}/
-│               └── {feature}.feature
-└── apps-labs/
-    └── README.md
+└── libs/
+    └── {lib-name}/
+        ├── README.md
+        └── gherkin/
+            └── {package}/
+                └── {feature}.feature
 ```
 
 ### Which Projects Have Which Directories

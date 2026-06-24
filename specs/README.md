@@ -30,11 +30,6 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
   (platform-agnostic Gherkin — see [be/gherkin](./apps/crud/behavior/crud-be/gherkin/README.md) and [web/gherkin](./apps/crud/behavior/crud-web/gherkin/README.md) for details)
 - **[rhino/](./apps/rhino/README.md)** — Repository management CLI specifications (Go, godog)
 
-## Experimental App Specs
-
-- **[apps-labs/](./apps-labs/README.md)** — Specs for framework evaluations, POCs, and tech stack
-  comparisons; graduates to `apps/` when the implementation is promoted
-
 ## Library Specs
 
 - **[golang-commons/](./libs/golang-commons/)** — Shared Go utility specifications (godog)
@@ -89,7 +84,7 @@ All feature files follow the BDD standards:
 ## Adding Specs
 
 1. Choose the appropriate subdirectory: `specs/apps/` for production-bound applications,
-   `specs/apps-labs/` for experimental/POC applications, `specs/libs/` for libraries
+   `specs/libs/` for libraries
 2. Create a folder matching the project name: `specs/apps/[app-name]/` or `specs/libs/[lib-name]/`
 3. Add a `README.md` describing the project, BDD framework, and feature file organization
 4. Organize `.feature` files by bounded context or user journey (kebab-case names)

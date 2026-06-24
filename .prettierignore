@@ -47,9 +47,6 @@ apps/*/coverage/
 **/cover.out
 **/cover_spec.out
 
-# Experimental
-apps-labs/
-
 # Claude Code worktrees
 .claude/worktrees/
 

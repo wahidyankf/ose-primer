@@ -8,7 +8,6 @@ coverage
 apps/crud-be-fsharp-giraffe/target
 apps/rhino-cli
 archived
-apps-labs
 docs
 plans
 governance

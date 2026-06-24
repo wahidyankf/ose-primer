@@ -100,7 +100,7 @@ rhino-cli docs validate-links -o markdown
 rhino-cli docs validate-links --exclude plans/done
 
 # Combine exclusions
-rhino-cli docs validate-links --exclude plans/done --exclude apps-labs
+rhino-cli docs validate-links --exclude plans/done --exclude archived
 ```
 
 ### Implementation references
@@ -176,7 +176,7 @@ rhino-cli docs validate-mermaid --max-label-len 20 --max-width 4
 rhino-cli docs validate-mermaid --exclude plans/done
 
 # Combine exclusions (incoming)
-rhino-cli docs validate-mermaid --exclude plans/done --exclude apps-labs
+rhino-cli docs validate-mermaid --exclude plans/done --exclude archived
 ```
 
 ### Implementation references

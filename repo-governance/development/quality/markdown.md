@@ -277,7 +277,6 @@ The following directories are excluded from linting and formatting:
 - `node_modules/`
 - `dist/`, `build/`, `.next/`, `.nx/`
 - `apps/*/public/` (static build output directories)
-- `apps-labs/` (experimental apps)
 - `generated-reports/`
 - `.vscode/`, `.idea/` (IDE files)
 

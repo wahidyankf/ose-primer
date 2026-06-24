@@ -466,7 +466,7 @@ Agent files follow kebab-case naming with **optional scope prefixes** for app-sp
 
 Where:
 
-- `scope` (optional): `apps-[app-name]-`, `libs-[lib-name]-`, or `apps-labs-[app-name]-`
+- `scope` (optional): `apps-[app-name]-` or `libs-[lib-name]-`
 - `agent-name`: descriptive kebab-case identifier
 
 ```
@@ -485,9 +485,6 @@ PASS: Good - App-scoped agents:
 PASS: Good - Lib-scoped agents (future):
 - libs__ts-auth__validator.md
 - libs__ts-payment__checker.md
-
-PASS: Good - Apps-labs scoped agents (future):
-- apps-labs__prototype-x__tester.md
 
 FAIL: Bad:
 - DocWriter.md (PascalCase)
@@ -510,11 +507,6 @@ FAIL: Bad:
    - Future use when monorepo has libraries with specific agents
    - Library-specific validation, testing, documentation
    - Examples: `libs-ts-auth-validator`, `libs-ts-payment-checker`
-
-3. **`apps-labs-[app-name]-`** - Agent works with experimental apps
-   - Future use for prototype-specific agents
-   - Experimental validation, testing workflows
-   - Examples: `apps-labs-prototype-x-tester`
 
 **When NOT to use scope prefixes:**
 

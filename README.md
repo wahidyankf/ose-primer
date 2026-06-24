@@ -79,7 +79,6 @@ ose-primer/
 │   ├── crud-fe-*/           # 3 frontend variants
 │   ├── crud-fe-e2e/
 │   └── crud-fs-ts-nextjs/   # Fullstack demo
-├── apps-labs/                 # Experimental apps (not in Nx)
 ├── libs/                      # Shared libraries (flat)
 ├── specs/                     # Gherkin, OpenAPI contracts, C4
 ├── docs/                      # Diátaxis docs (tutorials/how-to/reference/explanation)

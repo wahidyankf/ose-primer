@@ -13,7 +13,6 @@
     ".next/**",
     ".nx/**",
     "apps/*/public/**",
-    "apps-labs/**",
     "generated-reports/**",
     "**/.dart_tool/**",
     "**/generated-contracts/**",
