@@ -16,7 +16,7 @@ generated-reports/
 graph.html
 **/.features-gen/
 
-# Archived (legacy Hugo templates with Go template syntax)
+# Archived applications
 archived/
 
 # Language-specific build artifacts

@@ -194,7 +194,7 @@ pub fn extract_links(file_path: &Path) -> Result<Vec<LinkInfo>, Error> {
                 continue;
             }
 
-            // Skip placeholder/example/Hugo paths.
+            // Skip placeholder/example/absolute paths.
             if should_skip_link(url) {
                 continue;
             }
@@ -249,12 +249,12 @@ const EXAMPLE_PATTERNS: &[&str] = &[
 
 /// Determines if a link should be skipped during validation.
 pub fn should_skip_link(link: &str) -> bool {
-    // Skip Hugo absolute paths.
+    // Skip absolute paths.
     if link.starts_with('/') {
         return true;
     }
 
-    // Skip Hugo shortcodes.
+    // Skip templating shortcodes.
     if link.contains("{{<") || link.contains("{{%") {
         return true;
     }
@@ -299,7 +299,7 @@ mod tests {
 
     #[test]
     fn should_skip_absolute_and_shortcodes() {
-        assert!(should_skip_link("/hugo/path"));
+        assert!(should_skip_link("/absolute/path"));
         assert!(should_skip_link("{{< ref foo >}}"));
         assert!(should_skip_link("{{% something %}}"));
     }

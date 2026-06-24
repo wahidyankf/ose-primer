@@ -2,7 +2,7 @@
 //!
 //! Scans markdown files for `[text](url)` links and validates that internal links resolve
 //! to existing files and that `#fragment` anchors match a heading in the target file
-//! (`broken-anchor` findings, via [`headings`]). External URLs, Hugo paths, and placeholder
+//! (`broken-anchor` findings, via [`headings`]). External URLs, absolute paths, and placeholder
 //! links are skipped.
 
 pub mod categorizer;

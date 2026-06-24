@@ -17,7 +17,7 @@ build/
 .next/
 .nx/
 
-# Hugo public directories
+# Static public directories
 apps/*/public/
 
 # Lock files
