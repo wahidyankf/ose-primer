@@ -4,7 +4,8 @@ use clap::{Parser, Subcommand};
 
 use crate::commands::{
     convention_audit, convention_validate_agents_md_size, convention_validate_emoji,
-    convention_validate_license, doctor, env_backup, env_init, env_restore, env_validate,
+    convention_validate_instruction_size, convention_validate_license, doctor, env_backup,
+    env_init, env_restore, env_validate,
     git_pre_commit, governance_audit, governance_layer_coherence, governance_traceability_audit,
     governance_vendor_audit, harness_audit, harness_emit_bindings, harness_generate_bindings,
     harness_sync, harness_validate_bindings, harness_validate_claude, harness_validate_duplication,
@@ -363,6 +364,9 @@ pub enum ConventionValidateCommands {
     /// Audit AGENTS.md size against the 30/35/40 KB thresholds.
     #[command(name = "agents-md-size")]
     AgentsMdSize(convention_validate_agents_md_size::AgentsMdSizeArgs),
+    /// Check per-surface and resolved-tree byte budgets for instruction files.
+    #[command(name = "instruction-size")]
+    InstructionSize(convention_validate_instruction_size::InstructionSizeArgs),
 }
 
 // ---------------------------------------------------------------------------
@@ -513,6 +517,9 @@ fn dispatch(cmd: &Commands, output_format: OutputFormat) -> i32 {
                 }
                 ConventionValidateCommands::AgentsMdSize(args) => {
                     convention_validate_agents_md_size::run(args, output_format)
+                }
+                ConventionValidateCommands::InstructionSize(args) => {
+                    convention_validate_instruction_size::run(args, output_format)
                 }
             },
             ConventionCommands::Audit(args) => convention_audit::run(args, output_format),

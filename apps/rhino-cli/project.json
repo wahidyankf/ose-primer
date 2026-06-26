@@ -198,6 +198,19 @@
       "inputs": ["{workspaceRoot}/.github/workflows/**", "{workspaceRoot}/.github/actionlint.yaml"],
       "outputs": [],
       "comment": "GitHub Actions lint gate (lint-safety-parity D8). actionlint auto-discovers .github/workflows/ and type-checks expressions, runner labels, and embedded run: shell scripts (via shellcheck)."
+    },
+    "instruction-size:validation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- convention validate instruction-size"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.rs",
+        "{workspaceRoot}/instruction-size-budget.yaml",
+        "{workspaceRoot}/AGENTS.md",
+        "{workspaceRoot}/CLAUDE.md"
+      ]
     }
   }
 }

@@ -635,13 +635,27 @@ Validate file naming, linking, emoji usage, convention compliance per existing l
    - Suggest new Skill or extension
    - Write findings progressively
 
-### Step 6: AGENTS.md Size Check
+### Step 6: Instruction-File Size Budget
 
-1. Read AGENTS.md
-2. Count characters
-3. Calculate percentage of limits
-4. Assess status (Within Target / Warning / CRITICAL)
-5. Write finding if over target
+**Deterministic-gate annotation**: Byte counts for all auto-loaded instruction surfaces are enforced by
+the deterministic `rhino-cli convention validate instruction-size` gate (wired at pre-push and CI). If
+the `instruction-size` preflight output is available, its findings are already captured — DO NOT
+re-derive byte counts. Judge only qualitative concerns the mechanical gate cannot measure:
+
+1. **If `instruction-size` preflight is available**: Skip byte counting entirely. Check only for
+   qualitative bloat: sections that are verbose when a one-line summary + `See` link would suffice,
+   duplicate content already reachable via a link, or structure anti-patterns (all-at-once complexity,
+   no progressive layers).
+2. **If preflight is absent** (fallback): Read all monitored surfaces (`AGENTS.md`, `CLAUDE.md`, and
+   harness-specific surfaces listed in `instruction-size-budget.yaml`). Count bytes. Classify against
+   the thresholds in `instruction-size-budget.yaml`. Emit a finding for any surface exceeding the
+   `fail` ceiling. For surfaces in the `warn` zone, emit a lower-severity advisory.
+3. **Remediation guidance**: When flagging a size violation, the ONLY sanctioned fix is progressive
+   disclosure — replace inline-expanded content with a one-line summary and a `See` link. Document
+   this in the finding. Forbidden anti-fixes (delete rules, dense compression, split into another
+   auto-loaded file) MUST be called out if observed.
+
+See [Instruction-File Size Budget Convention](../../repo-governance/conventions/structure/instruction-file-size-budget.md).
 
 ### Step 7: Rules Governance Validation
 

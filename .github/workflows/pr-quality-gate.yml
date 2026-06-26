@@ -364,6 +364,15 @@ jobs:
           bash /tmp/download-actionlint.bash 1.7.12 /usr/local/bin
       - run: npx nx run rhino-cli:actions:lint
 
+  instruction-size:
+    name: Instruction-size budget gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-rust
+      - run: npx nx run rhino-cli:instruction-size:validation
+
   specs-gate:
     name: Specs gate (BDD spec validators)
     runs-on: ubuntu-latest
@@ -397,6 +406,7 @@ jobs:
         hadolint,
         shellcheck,
         actionlint,
+        instruction-size,
         specs-gate,
       ]
     if: always()

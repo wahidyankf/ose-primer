@@ -117,7 +117,7 @@ Decimal numbering preserves the existing Step 1–6 references in the checker/fi
 that pre-date the preflight, following the sibling-repo precedent for non-disruptive
 sub-step insertions.
 
-**Deterministic categories** (run BOTH, sequentially, from the repo root):
+**Deterministic categories** (run ALL THREE, sequentially, from the repo root):
 
 ```bash
 mkdir -p generated-reports
@@ -126,6 +126,8 @@ mkdir -p generated-reports
 # record the exit code per category before running the next one
 ./apps/rhino-cli/dist/rhino-cli repo-governance gherkin-keyword-cardinality \
   > generated-reports/preflight-gherkin-keyword-cardinality__{uuid}__{timestamp}.txt
+./apps/rhino-cli/dist/rhino-cli convention validate instruction-size \
+  > generated-reports/preflight-instruction-size__{uuid}__{timestamp}.txt
 ```
 
 The binary must be built first via `npx nx run rhino-cli:build`; the prebuilt path is
@@ -147,7 +149,7 @@ The binary must be built first via `npx nx run rhino-cli:build`; the prebuilt pa
     for a human-readable diagnostic. Common causes: missing binary (rebuild via
     `npx nx run rhino-cli:build`); running outside a git repository.
 
-**Success criteria**: both categories executed; each captured output file exists and
+**Success criteria**: all three categories executed; each captured output file exists and
 contains either the category's `PASSED` line or its findings list.
 
 **Depends on**: None (first step in each iteration). Runs again before every re-validation
