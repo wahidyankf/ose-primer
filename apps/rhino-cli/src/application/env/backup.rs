@@ -18,7 +18,7 @@ use walkdir::WalkDir;
 pub const DEFAULT_MAX_SIZE: i64 = 1024 * 1024;
 
 /// Default name of the backup directory placed outside the repository.
-pub const DEFAULT_BACKUP_DIR: &str = "ose-public-env-backup";
+pub const DEFAULT_BACKUP_DIR: &str = "ose-primer-env-backup";
 
 /// Returns the default list of directory names that the walker skips.
 ///
@@ -1310,13 +1310,12 @@ mod tests {
         );
     }
 
-    // Phase 2 RED2: canonical backup default dir.
-    // Fails until DEFAULT_BACKUP_DIR is changed to "ose-public-env-backup".
+    // Canonical per-repo backup default dir for ose-primer.
     #[test]
-    fn default_backup_dir_is_ose_public_env_backup() {
+    fn default_backup_dir_is_ose_primer_env_backup() {
         assert_eq!(
-            DEFAULT_BACKUP_DIR, "ose-public-env-backup",
-            "expected ose-public-env-backup but got {DEFAULT_BACKUP_DIR}"
+            DEFAULT_BACKUP_DIR, "ose-primer-env-backup",
+            "expected ose-primer-env-backup but got {DEFAULT_BACKUP_DIR}"
         );
     }
 }

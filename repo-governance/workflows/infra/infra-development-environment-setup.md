@@ -429,7 +429,7 @@ This also triggers Husky to install git hooks (pre-commit, commit-msg, pre-push)
 (from `rhino-cli env backup`), restore them now:
 
 ```bash
-# Restore .env files from default backup location (~/ose-open-env-backup)
+# Restore .env files from default backup location (~/ose-primer-env-backup)
 rhino-cli env restore --force
 
 # Include uncommitted config files (AI tool settings, Docker overrides, direnv, etc.)
