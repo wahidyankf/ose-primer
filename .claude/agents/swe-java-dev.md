@@ -2,7 +2,7 @@
 name: swe-java-dev
 description: Develops Java applications following OOP principles, Spring ecosystem patterns, and platform coding standards. Use when implementing Java code for demo.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model:
+model: sonnet
 color: purple
 skills:
   - swe-programming-java
@@ -16,7 +16,7 @@ skills:
 
 - **Role**: Implementor (purple)
 
-**Model Selection Justification**: This agent uses inherited `model: opus` (omit model field) because it requires:
+**Model Selection Justification**: This agent uses `model: sonnet` (sonnet-class) because language-specific implementation is structured work backed by a dedicated programming skill, and demands:
 
 - Advanced reasoning for complex software architecture decisions
 - Sophisticated understanding of Java-specific idioms and patterns

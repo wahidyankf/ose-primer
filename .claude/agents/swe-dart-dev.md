@@ -2,7 +2,7 @@
 name: swe-dart-dev
 description: Develops Dart applications following null safety principles, Flutter integration patterns, and platform coding standards. Use when implementing Dart code for demo.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model:
+model: sonnet
 color: purple
 skills:
   - swe-programming-dart
@@ -16,7 +16,7 @@ skills:
 
 - **Role**: Implementor (purple)
 
-**Model Selection Justification**: This agent uses inherited `model: opus` (omit model field) because it requires:
+**Model Selection Justification**: This agent uses `model: sonnet` (sonnet-class) because language-specific implementation is structured work backed by a dedicated programming skill, and demands:
 
 - Advanced reasoning for complex Flutter widget architecture decisions
 - Sophisticated understanding of Dart-specific null safety idioms and patterns

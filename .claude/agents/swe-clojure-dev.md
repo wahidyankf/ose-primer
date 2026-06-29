@@ -2,7 +2,7 @@
 name: swe-clojure-dev
 description: Develops Clojure applications following functional programming principles, REPL-driven development, and platform coding standards. Use when implementing Clojure code for demo.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model:
+model: sonnet
 color: purple
 skills:
   - swe-programming-clojure
@@ -16,7 +16,7 @@ skills:
 
 - **Role**: Implementor (purple)
 
-**Model Selection Justification**: This agent uses inherited `model: opus` (omit model field) because it requires:
+**Model Selection Justification**: This agent uses `model: sonnet` (sonnet-class) because language-specific implementation is structured work backed by a dedicated programming skill, and demands:
 
 - Advanced reasoning for functional domain modeling with Clojure data structures
 - Sophisticated understanding of Clojure idioms, macros, and concurrency primitives

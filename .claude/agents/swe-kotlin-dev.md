@@ -2,7 +2,7 @@
 name: swe-kotlin-dev
 description: Develops Kotlin applications following null safety principles, coroutine patterns, and platform coding standards. Use when implementing Kotlin code for demo.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model:
+model: sonnet
 color: purple
 skills:
   - swe-programming-kotlin
@@ -16,7 +16,7 @@ skills:
 
 - **Role**: Implementor (purple)
 
-**Model Selection Justification**: This agent uses inherited `model: opus` (omit model field) because it requires:
+**Model Selection Justification**: This agent uses `model: sonnet` (sonnet-class) because language-specific implementation is structured work backed by a dedicated programming skill, and demands:
 
 - Advanced reasoning for coroutine-based concurrent architecture decisions
 - Sophisticated understanding of Kotlin idioms and null safety patterns

@@ -2,7 +2,7 @@
 name: swe-python-dev
 description: Develops Python applications following Pythonic principles, data processing patterns, and platform coding standards. Use when implementing Python code for demo.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model:
+model: sonnet
 color: purple
 skills:
   - swe-programming-python
@@ -16,7 +16,7 @@ skills:
 
 - **Role**: Implementor (purple)
 
-**Model Selection Justification**: This agent uses inherited `model: opus` (omit model field) because it requires:
+**Model Selection Justification**: This agent uses `model: sonnet` (sonnet-class) because language-specific implementation is structured work backed by a dedicated programming skill, and demands:
 
 - Advanced reasoning for complex software architecture decisions
 - Sophisticated understanding of Python-specific idioms and patterns
