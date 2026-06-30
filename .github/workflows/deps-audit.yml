@@ -1,0 +1,38 @@
+name: Nightly Dependency Audit
+
+on:
+  schedule:
+    # Run at 02:00 UTC every day
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deps-audit:
+    name: Dependency audit (all projects)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/setup-golang
+      - uses: ./.github/actions/setup-jvm
+      - uses: ./.github/actions/setup-python
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/setup-elixir
+      - uses: ./.github/actions/setup-clojure
+      - uses: ./.github/actions/setup-flutter
+      - name: Install audit tools
+        run: |
+          # Rust: cargo-audit
+          cargo install cargo-audit --locked 2>/dev/null || true
+          # Go: govulncheck
+          go install golang.org/x/vuln/cmd/govulncheck@latest 2>/dev/null || true
+          # Python: pip-audit
+          pip install pip-audit 2>/dev/null || true
+          # Dart: osv-scanner
+          go install github.com/google/osv-scanner/cmd/osv-scanner@latest 2>/dev/null || true
+      - name: Run deps:audit on all projects
+        run: npx nx run-many --all -t deps:audit

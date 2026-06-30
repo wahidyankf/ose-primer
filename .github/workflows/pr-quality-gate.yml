@@ -1,4 +1,4 @@
-name: PR - Quality Gate
+name: pr-quality-gate
 
 on:
   pull_request:
@@ -12,6 +12,10 @@ permissions:
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  NX_BASE: ${{ github.event_name == 'push' && github.event.before || format('origin/{0}', github.base_ref) }}
+  NX_HEAD: ${{ github.sha }}
 
 jobs:
   detect:
@@ -28,11 +32,6 @@ jobs:
       has-clojure: ${{ steps.detect.outputs.has-clojure }}
       has-dart: ${{ steps.detect.outputs.has-dart }}
       has-markdown: ${{ steps.detect.outputs.has-markdown }}
-    env:
-      # For push events github.base_ref is empty, so fall back to HEAD~1 to
-      # compare the pushed commit against its immediate parent.
-      NX_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD~1' }}
-      NX_HEAD: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -41,7 +40,6 @@ jobs:
       - id: detect
         run: |
           AFFECTED=$(npx nx show projects --affected 2>/dev/null || echo "")
-          # Check language tags for affected projects
           {
             echo "has-ts=false"
             echo "has-golang=false"
@@ -61,8 +59,8 @@ jobs:
               case "$tag" in
                 lang:ts) echo "has-ts=true" >> "$GITHUB_OUTPUT" ;;
                 lang:golang) echo "has-golang=true" >> "$GITHUB_OUTPUT" ;;
-                lang:java|lang:kotlin) echo "has-jvm=true" >> "$GITHUB_OUTPUT" ;;
-                lang:fsharp|lang:csharp) echo "has-dotnet=true" >> "$GITHUB_OUTPUT" ;;
+                lang:java | lang:kotlin) echo "has-jvm=true" >> "$GITHUB_OUTPUT" ;;
+                lang:fsharp | lang:csharp) echo "has-dotnet=true" >> "$GITHUB_OUTPUT" ;;
                 lang:python) echo "has-python=true" >> "$GITHUB_OUTPUT" ;;
                 lang:rust) echo "has-rust=true" >> "$GITHUB_OUTPUT" ;;
                 lang:elixir) echo "has-elixir=true" >> "$GITHUB_OUTPUT" ;;
@@ -72,8 +70,7 @@ jobs:
             done
           done
 
-          # Check for markdown changes (NX_BASE already set correctly for both PR and push)
-          CHANGED_FILES=$(git diff --name-only "${NX_BASE}"...HEAD 2>/dev/null || echo "")
+          CHANGED_FILES=$(git diff --name-only "$NX_BASE"...HEAD 2>/dev/null || echo "")
           if echo "$CHANGED_FILES" | grep -q '\.md$'; then
             echo "has-markdown=true" >> "$GITHUB_OUTPUT"
           fi
@@ -107,29 +104,72 @@ jobs:
             git push origin "HEAD:$GITHUB_HEAD_REF"
           fi
 
+  shellcheck:
+    name: Shell lint (ShellCheck)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: ShellCheck (warning threshold)
+        run: |
+          shellcheck --version
+          files=$(git diff --diff-filter=ACM --name-only "$NX_BASE"...HEAD | grep '\.sh$' | grep -v 'husky/_/' | grep -v '^archived/' || true)
+          if [ -z "$files" ]; then echo "No changed shell scripts — skipping"; exit 0; fi
+          # shellcheck disable=SC2086
+          shellcheck --severity=warning $files
+
+  hadolint:
+    name: Dockerfile lint (hadolint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: hadolint (warning threshold)
+        run: |
+          sudo curl -sSL -o /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-Linux-x86_64
+          sudo chmod +x /usr/local/bin/hadolint
+          hadolint --version
+          files=$(git diff --diff-filter=ACM --name-only "$NX_BASE"...HEAD | grep -iE 'Dockerfile' | grep -vE '^archived/' || true)
+          if [ -z "$files" ]; then echo "No changed Dockerfiles — skipping"; exit 0; fi
+          # shellcheck disable=SC2086
+          hadolint --failure-threshold warning $files
+
+  actionlint:
+    name: GitHub Actions lint (actionlint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: actionlint
+        run: |
+          curl -sSL -o download-actionlint.bash \
+            https://raw.githubusercontent.com/rhysd/actionlint/v1.7.12/scripts/download-actionlint.bash
+          bash download-actionlint.bash 1.7.12
+          files=$(git diff --diff-filter=ACM --name-only "$NX_BASE"...HEAD | grep '^\.github/workflows/.*\.yml$' || true)
+          if [ -z "$files" ]; then echo "No changed workflow files — skipping"; exit 0; fi
+          # shellcheck disable=SC2086
+          ./actionlint -color $files
+
   typescript:
     name: TypeScript quality gate
     needs: detect
     if: needs.detect.outputs.has-ts == 'true'
     runs-on: ubuntu-latest
-    env:
-      NX_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD~1' }}
-      NX_HEAD: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
-      - run: npx nx affected -t typecheck lint test:quick specs:coverage --exclude='tag:lang:golang,tag:lang:java,tag:lang:kotlin,tag:lang:fsharp,tag:lang:csharp,tag:lang:python,tag:lang:rust,tag:lang:elixir,tag:lang:clojure,tag:lang:dart'
+      - run: npx nx affected -t typecheck lint test:quick specs:behavior:coverage --exclude='tag:lang:golang,tag:lang:java,tag:lang:kotlin,tag:lang:fsharp,tag:lang:csharp,tag:lang:python,tag:lang:rust,tag:lang:elixir,tag:lang:clojure,tag:lang:dart'
 
   golang:
     name: Go quality gate
     needs: detect
     if: needs.detect.outputs.has-golang == 'true'
     runs-on: ubuntu-latest
-    env:
-      NX_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD~1' }}
-      NX_HEAD: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -139,7 +179,7 @@ jobs:
       - run: |
           PROJECTS=$(npx nx show projects --affected --projects='tag:lang:golang' --json | jq -r 'join(",")')
           if [ -n "$PROJECTS" ]; then
-            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+            npx nx run-many -t typecheck lint test:quick specs:behavior:coverage -p "$PROJECTS"
           else
             echo "No affected tag:lang:golang projects — skipping"
           fi
@@ -149,9 +189,6 @@ jobs:
     needs: detect
     if: needs.detect.outputs.has-jvm == 'true'
     runs-on: ubuntu-latest
-    env:
-      NX_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD~1' }}
-      NX_HEAD: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -161,7 +198,7 @@ jobs:
       - run: |
           PROJECTS=$(npx nx show projects --affected --projects='tag:lang:java,tag:lang:kotlin' --json | jq -r 'join(",")')
           if [ -n "$PROJECTS" ]; then
-            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+            npx nx run-many -t typecheck lint test:quick specs:behavior:coverage -p "$PROJECTS"
           else
             echo "No affected tag:lang:java,tag:lang:kotlin projects — skipping"
           fi
@@ -171,9 +208,6 @@ jobs:
     needs: detect
     if: needs.detect.outputs.has-dotnet == 'true'
     runs-on: ubuntu-latest
-    env:
-      NX_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD~1' }}
-      NX_HEAD: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -183,7 +217,7 @@ jobs:
       - run: |
           PROJECTS=$(npx nx show projects --affected --projects='tag:lang:fsharp,tag:lang:csharp' --json | jq -r 'join(",")')
           if [ -n "$PROJECTS" ]; then
-            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+            npx nx run-many -t typecheck lint test:quick specs:behavior:coverage -p "$PROJECTS"
           else
             echo "No affected tag:lang:fsharp,tag:lang:csharp projects — skipping"
           fi
@@ -193,9 +227,6 @@ jobs:
     needs: detect
     if: needs.detect.outputs.has-python == 'true'
     runs-on: ubuntu-latest
-    env:
-      NX_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD~1' }}
-      NX_HEAD: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -205,7 +236,7 @@ jobs:
       - run: |
           PROJECTS=$(npx nx show projects --affected --projects='tag:lang:python' --json | jq -r 'join(",")')
           if [ -n "$PROJECTS" ]; then
-            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+            npx nx run-many -t typecheck lint test:quick specs:behavior:coverage -p "$PROJECTS"
           else
             echo "No affected tag:lang:python projects — skipping"
           fi
@@ -215,9 +246,6 @@ jobs:
     needs: detect
     if: needs.detect.outputs.has-rust == 'true'
     runs-on: ubuntu-latest
-    env:
-      NX_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD~1' }}
-      NX_HEAD: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -227,7 +255,7 @@ jobs:
       - run: |
           PROJECTS=$(npx nx show projects --affected --projects='tag:lang:rust' --json | jq -r 'join(",")')
           if [ -n "$PROJECTS" ]; then
-            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+            npx nx run-many -t typecheck lint test:quick specs:behavior:coverage -p "$PROJECTS"
           else
             echo "No affected tag:lang:rust projects — skipping"
           fi
@@ -237,9 +265,6 @@ jobs:
     needs: detect
     if: needs.detect.outputs.has-elixir == 'true'
     runs-on: ubuntu-latest
-    env:
-      NX_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD~1' }}
-      NX_HEAD: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -249,7 +274,7 @@ jobs:
       - run: |
           PROJECTS=$(npx nx show projects --affected --projects='tag:lang:elixir' --json | jq -r 'join(",")')
           if [ -n "$PROJECTS" ]; then
-            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+            npx nx run-many -t typecheck lint test:quick specs:behavior:coverage -p "$PROJECTS"
           else
             echo "No affected tag:lang:elixir projects — skipping"
           fi
@@ -259,9 +284,6 @@ jobs:
     needs: detect
     if: needs.detect.outputs.has-clojure == 'true'
     runs-on: ubuntu-latest
-    env:
-      NX_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD~1' }}
-      NX_HEAD: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -271,7 +293,7 @@ jobs:
       - run: |
           PROJECTS=$(npx nx show projects --affected --projects='tag:lang:clojure' --json | jq -r 'join(",")')
           if [ -n "$PROJECTS" ]; then
-            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+            npx nx run-many -t typecheck lint test:quick specs:behavior:coverage -p "$PROJECTS"
           else
             echo "No affected tag:lang:clojure projects — skipping"
           fi
@@ -281,9 +303,6 @@ jobs:
     needs: detect
     if: needs.detect.outputs.has-dart == 'true'
     runs-on: ubuntu-latest
-    env:
-      NX_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD~1' }}
-      NX_HEAD: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -293,10 +312,21 @@ jobs:
       - run: |
           PROJECTS=$(npx nx show projects --affected --projects='tag:lang:dart' --json | jq -r 'join(",")')
           if [ -n "$PROJECTS" ]; then
-            npx nx run-many -t typecheck lint test:quick specs:coverage -p "$PROJECTS"
+            npx nx run-many -t typecheck lint test:quick specs:behavior:coverage -p "$PROJECTS"
           else
             echo "No affected tag:lang:dart projects — skipping"
           fi
+
+  compat-min-version:
+    name: Minimum version compatibility (all affected)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-rust
+      - run: npx nx affected -t compat:min-version
 
   markdown:
     name: Markdown quality gate
@@ -318,52 +348,6 @@ jobs:
       - run: npx nx run rhino-cli:naming:harness-validation
       - run: npx nx run rhino-cli:naming:workflows-validation
 
-  env-validate:
-    name: Env validate (declared vs read drift)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup-node
-      - uses: ./.github/actions/setup-rust
-      - run: npx nx run rhino-cli:env:validation
-
-  hadolint:
-    name: Dockerfile lint (hadolint)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup-node
-      - name: Install hadolint
-        run: |
-          sudo curl -fsSL -o /usr/local/bin/hadolint \
-            https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-Linux-x86_64
-          sudo chmod +x /usr/local/bin/hadolint
-          hadolint --version
-      - run: npx nx run rhino-cli:dockerfiles:lint
-
-  shellcheck:
-    name: Shell lint (shellcheck)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup-node
-      # shellcheck is preinstalled on ubuntu-latest GitHub-hosted runners.
-      - run: shellcheck --version
-      - run: npx nx run rhino-cli:shell:lint
-
-  actionlint:
-    name: Actions lint (actionlint)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup-node
-      - name: Install actionlint
-        run: |
-          curl -sSL -o /tmp/download-actionlint.bash \
-            https://raw.githubusercontent.com/rhysd/actionlint/v1.7.12/scripts/download-actionlint.bash
-          bash /tmp/download-actionlint.bash 1.7.12 /usr/local/bin
-      - run: npx nx run rhino-cli:actions:lint
-
   instruction-size:
     name: Instruction-size budget gate
     runs-on: ubuntu-latest
@@ -374,23 +358,51 @@ jobs:
       - run: npx nx run rhino-cli:instruction-size:validation
 
   specs-gate:
-    name: Specs gate (BDD spec validators)
+    name: Specs gate (BDD+DDD validators)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-rust
-      # specs:coverage validates all .feature scenarios have test implementations
-      - run: npx nx run rhino-cli:specs:coverage
-      # specs:gherkin-cardinality-validation validates feature file structure
+      - run: npx nx run-many -t specs:structure-validation --projects=rhino-cli
       - run: npx nx run rhino-cli:specs:gherkin-cardinality-validation
-      # Note: structural set (adoption/tree/counts/links validators) added in Phase 9c
+
+  md-links:
+    name: Markdown link validation (repo-wide)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-rust
+      - run: cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- md links validate --exclude plans/done
+
+  readme-index:
+    name: README index validation (repo-wide)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-rust
+      - run: cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- md readme-index validate
+
+  governance:
+    name: Governance validators (vendor audit + license)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-rust
+      - run: cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- repo-governance vendor validate repo-governance/
+      - run: cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- convention license validate
 
   quality-gate:
     name: Quality gate
     needs:
       [
         detect,
+        shellcheck,
+        hadolint,
+        actionlint,
         typescript,
         golang,
         jvm,
@@ -400,14 +412,14 @@ jobs:
         elixir,
         clojure,
         dart,
+        compat-min-version,
         markdown,
         naming,
-        env-validate,
-        hadolint,
-        shellcheck,
-        actionlint,
         instruction-size,
         specs-gate,
+        md-links,
+        readme-index,
+        governance,
       ]
     if: always()
     runs-on: ubuntu-latest
@@ -415,7 +427,7 @@ jobs:
       - name: Check all gates
         run: |
           echo "Checking quality gate results..."
-          # A skipped job is OK (language not affected). Only a failure blocks.
+          # A skipped job is OK (language not affected). Only an actual failure blocks.
           if [ "${{ contains(needs.*.result, 'failure') }}" = "true" ]; then
             echo "One or more quality gate jobs failed"
             exit 1
