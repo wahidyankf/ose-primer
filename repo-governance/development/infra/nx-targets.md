@@ -9,6 +9,7 @@ tags:
   - project-json
   - build
   - scripts
+created: 2026-02-23
 ---
 
 # Nx Target Standards
@@ -19,22 +20,23 @@ Defines the standard Nx targets that apps and libs expose, what each target must
 
 ### Quality Gates (pre-push enforcement)
 
-`typecheck`, `lint`, `test:quick`, and `specs:coverage` run at two mandatory checkpoints — locally
-before push and remotely before merge.
+`typecheck`, `lint`, and `test:quick` run at three identical checkpoints: locally before push, in
+the PR gate, and at main merge. `test:quick` is a sequential 5-step composition
+(typecheck → lint → test:unit → test:coverage → test:specs) so the specs gate is already
+folded in — there is no separate `specs:behavior:coverage` step at pre-push or PR.
 
 ```mermaid
 flowchart TD
     A[Developer pushes code] --> B[Pre-push hook]
     B --> C["typecheck<br/>nx affected -t typecheck"]
     B --> D["lint<br/>nx affected -t lint"]
-    C --> E["test:quick<br/>nx affected -t test:quick"]
+    C --> E["test:quick<br/>nx affected -t test:quick<br/>(includes unit+cov+specs)"]
     D --> E
-    E --> SC["specs:coverage<br/>nx affected -t specs:coverage"]
-    SC --> F{All pass?}
+    E --> F{All pass?}
     F -- No --> G[Push blocked]
     F -- Yes --> H[Push succeeds]
 
-    P[PR opened / updated] --> Q["GitHub Actions CI<br/>nx affected -t lint test:quick"]
+    P[PR opened / updated] --> Q["GitHub Actions CI<br/>nx affected -t<br/>typecheck lint test:quick"]
     Q --> R{Pass?}
     R -- No --> S[PR merge blocked]
     R -- Yes --> T[PR merge allowed]
@@ -44,7 +46,6 @@ flowchart TD
     style C fill:#029E73,color:#fff
     style D fill:#029E73,color:#fff
     style E fill:#029E73,color:#fff
-    style SC fill:#029E73,color:#fff
     style F fill:#DE8F05,color:#fff
     style G fill:#CC78BC,color:#fff
     style H fill:#029E73,color:#fff
@@ -58,11 +59,11 @@ flowchart TD
 
 Deeper tests run outside the pre-push/PR cycle — on a schedule or triggered explicitly.
 
-Scheduled CRON workflows run 5 parallel tracks: lint, typecheck, test:quick (with coverage), specs:coverage, and integration→e2e (sequential chain).
+Scheduled CRON workflows run 5 parallel tracks: lint, typecheck, test:quick (with coverage), specs:behavior:coverage, and integration→e2e (sequential chain).
 
 ```mermaid
 flowchart TD
-    H2["GitHub Actions<br/>cron weekly"] --> I2["test:integration<br/>+ test:e2e"]
+    H2["GitHub Actions<br/>e2e-*.yml<br/>cron 2× per day<br/>(WIB 06, 18)"] --> I2["test:integration + test:e2e<br/>per service"]
 
     J[On demand / CI matrix] --> K[test:unit]
     J --> L[test:integration]
@@ -82,7 +83,7 @@ flowchart TD
 
 - **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)**: Targets integrate with Nx affected computation, caching, the pre-push hook, and the PR merge gate. Consistent naming allows workspace-level automation (`nx affected -t test:quick`) to work across all project types without special cases.
 
-- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: Each project exposes only the targets it actually needs. A Go CLI does not need `dev` or `start`. The full testing spectrum is composed from `test:quick`, `test:unit`, `test:integration`, and `test:e2e` — no aggregate wrapper target needed.
+- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: The mandatory-six targets (`test:unit`, `test:integration`, `test:e2e`, `test:quick`, `lint`, `typecheck`) use echo placeholders rather than omitting targets, so `nx affected -t <target>` covers every project uniformly with no special-casing. A Rust CLI does not need `dev` or `start`. The `test:specs` aggregate collects all `specs:*` validators into one target so the pre-push hook invokes the full specs gate through `test:quick` without separate gate steps.
 
 ## Conventions Implemented/Respected
 
@@ -96,31 +97,34 @@ flowchart TD
 
 Use these canonical names. Aliases (`serve`, `start:dev`, `unit-test`) are anti-patterns.
 
-| Target             | Purpose                                                                                                                  | When Required                     |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------- |
-| `build`            | Produce deployable or runnable artifacts                                                                                 | Compiled and bundled projects     |
-| `typecheck`        | Verify type correctness without producing artifacts                                                                      | Statically typed languages        |
-| `lint`             | Static analysis, code style checks, and static a11y checks (oxlint jsx-a11y for TS UI projects, `dart analyze` for Dart) | All projects                      |
-| `test:quick`       | Fast quality gate for pre-push and PR merge; composed of fast checks                                                     | All projects                      |
-| `specs:coverage`   | Validate that every Gherkin step has a matching step definition; uses `rhino-cli specs:coverage validate`                | All apps and E2E runners          |
-| `test:unit`        | Isolated unit tests with mocked dependencies; must consume Gherkin specs (crud-be backends and Go CLI apps)              | Projects with unit tests          |
-| `test:integration` | Crud-be: real PostgreSQL via docker-compose, direct code calls (no HTTP). Others: existing patterns (MSW, Godog)         | Projects with integration tests   |
-| `test:e2e`         | Run E2E tests headlessly against a running app; must consume Gherkin specs (crud-be backends) via Playwright             | E2E test projects (`*-e2e`)       |
-| `test:e2e:ui`      | Run E2E tests with interactive Playwright UI                                                                             | E2E test projects                 |
-| `test:e2e:report`  | Open the last E2E HTML report                                                                                            | E2E test projects                 |
-| `dev`              | Start local development server with hot-reload                                                                           | Apps with dev servers             |
-| `start`            | Start server in production mode                                                                                          | Apps with production server mode  |
-| `run`              | Execute the application directly                                                                                         | CLI applications                  |
-| `codegen`          | Generate code from OpenAPI contract spec into `generated-contracts/`                                                     | Demo apps with contract types     |
-| `docs`             | Generate browsable API documentation from contract spec                                                                  | Contract spec projects            |
-| `install`          | Install project-local dependencies                                                                                       | E2E suites, Go CLIs               |
-| `clean`            | Remove build artifacts and caches                                                                                        | Projects with large build outputs |
+| Target                    | Purpose                                                                                                                                                                                                                                                                                                      | When Required                      |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
+| `build`                   | Produce deployable or runnable artifacts                                                                                                                                                                                                                                                                     | Compiled and bundled projects      |
+| `typecheck`               | Verify type correctness without producing artifacts                                                                                                                                                                                                                                                          | Statically typed languages         |
+| `lint`                    | Static analysis, code style checks, and static a11y checks (oxlint jsx-a11y for TS UI projects)                                                                                                                                                                                                              | All projects                       |
+| `test:quick`              | Sequential 5-step quality gate (`typecheck` → `lint` → `test:unit` → `test:coverage` → `test:specs`); runs with `parallel: false`; enforced at pre-push, PR, and main merge                                                                                                                                  | All projects                       |
+| `specs:behavior:coverage` | Validate Gherkin feature/scenario coverage at the behavior level; every scenario exercised at the correct test level (renamed from `specs:coverage`)                                                                                                                                                         | All apps and E2E runners           |
+| `specs:domain:coverage`   | Validate domain-area coverage gated by the explicit `specs.domain-areas` allowlist in `repo-config.yml` (not folder-presence)                                                                                                                                                                                | All apps                           |
+| `test:specs`              | Aggregate of every `specs:*` validator for the project (`specs:structure-validation`, `specs:behavior:coverage`, `specs:domain:coverage` where in the `specs.domain-areas` allowlist; `echo` elsewhere); present on all projects; runs inside `test:quick` — replaces the separate specs-structural gate job | All projects (echo where no specs) |
+| `test:unit`               | Isolated unit tests with mocked dependencies; must consume Gherkin specs; `echo` placeholder where no real unit tests exist                                                                                                                                                                                  | All projects (echo where N/A)      |
+| `test:coverage`           | Native coverage gate (≥ 90% line coverage) per project via native test runner; `echo` where `test:unit` is `echo`                                                                                                                                                                                            | All projects (echo where N/A)      |
+| `test:integration`        | Demo-be: real PostgreSQL via docker-compose, direct code calls (no HTTP); others: in-process mocking (MSW, Godog); `echo` placeholder where no real integration tests exist                                                                                                                                  | All projects (echo where N/A)      |
+| `test:e2e`                | Real Playwright tests driving the running app over HTTP/UI — **only** on `*-e2e` projects; `echo` on all non-e2e projects; runs on scheduled CRON only (never pre-push/PR)                                                                                                                                   | All projects (echo on non-e2e)     |
+| `test:e2e:ui`             | Run E2E tests with interactive Playwright UI                                                                                                                                                                                                                                                                 | E2E test projects                  |
+| `test:e2e:report`         | Open the last E2E HTML report                                                                                                                                                                                                                                                                                | E2E test projects                  |
+| `dev`                     | Start local development server with hot-reload                                                                                                                                                                                                                                                               | Apps with dev servers              |
+| `start`                   | Start server in production mode                                                                                                                                                                                                                                                                              | Apps with production server mode   |
+| `run`                     | Execute the application directly                                                                                                                                                                                                                                                                             | CLI applications                   |
+| `codegen`                 | Generate code from OpenAPI contract spec into `generated-contracts/`                                                                                                                                                                                                                                         | Demo apps with contract types      |
+| `docs`                    | Generate browsable API documentation from contract spec                                                                                                                                                                                                                                                      | Contract spec projects             |
+| `install`                 | Install project-local dependencies                                                                                                                                                                                                                                                                           | E2E suites, Rust CLIs              |
+| `clean`                   | Remove build artifacts and caches                                                                                                                                                                                                                                                                            | Projects with large build outputs  |
 
 ### Naming Rules
 
 - Use `dev` for the development server — never `serve`, never `start:dev`
 - Use `start` for the production server — never `serve`
-- Use `test:quick` for the fast pre-push gate; `test:unit` for isolated unit tests with mocked dependencies (`rhino-cli` consumes Gherkin specs at this level); `test:integration` for tests with real infrastructure (crud-be: PostgreSQL via docker-compose) or in-process mocking (MSW, Godog); `test:e2e` for end-to-end tests; `specs:coverage` for Gherkin step definition coverage validation — run targets individually rather than through an aggregate wrapper
+- Use `test:quick` for the sequential 5-step quality gate (typecheck → lint → test:unit → test:coverage → test:specs); `test:unit` for isolated unit tests with mocked dependencies (Rust CLI apps consume Gherkin specs at this level; `echo` where N/A); `test:integration` for tests with real infrastructure (demo-be: PostgreSQL via docker-compose) or in-process mocking (MSW, Godog) — `echo` where N/A; `test:e2e` for Playwright E2E tests on `*-e2e` projects (CRON-only; `echo` on non-e2e projects); `test:coverage` for the native per-project coverage gate (≥ 90% line; `echo` where `test:unit` is `echo`); `test:specs` for the aggregate of all `specs:*` validators (runs inside `test:quick`); `specs:behavior:coverage` for Gherkin behavior-level coverage validation; `specs:domain:coverage` for domain-area coverage gated by `repo-config.yml`
 - Separate target variants with a colon (`build:web`, `test:e2e:ui`), not a hyphen or underscore
 - All target names use lowercase with hyphens for multi-word names (`run-pre-commit`)
 
@@ -133,26 +137,23 @@ operation. This distinguishes governance targets from language-level lifecycle t
 
 **Canonical governance and validation targets** (defined on `rhino-cli`):
 
-| Target                                 | What it validates                                                                         |
-| -------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `specs:coverage`                       | Every Gherkin step has a matching step definition                                         |
-| `specs:tree-validation`                | `specs/apps/` directory structure matches app registrations                               |
-| `specs:links-validation`               | Internal links in spec `.md` files are valid                                              |
-| `specs:counts-validation`              | Spec scenario/step counts match expected thresholds                                       |
-| `specs:adoption-validation`            | All apps have a spec directory (no orphan app)                                            |
-| `specs:gherkin-cardinality-validation` | Each Gherkin keyword used within cardinality bounds                                       |
-| `links:validation`                     | Internal links in all non-excluded `.md` files                                            |
-| `mermaid:validation`                   | Mermaid diagram width, label, and syntax rules (flowchart + state)                        |
-| `headings:hierarchy-validation`        | Heading nesting in prose allowlist paths                                                  |
-| `env:validation`                       | `.env.example` surfaces match `env-contract.yaml`                                         |
-| `naming:harness-validation`            | Agent definition file names match the naming convention                                   |
-| `naming:workflows-validation`          | Workflow file names match the naming convention                                           |
-| `governance:vendor-audit-validation`   | `repo-governance/` docs contain no vendor-specific content                                |
-| `cross-vendor:parity-validation`       | Cross-vendor behavioral parity (Phase 0 deterministic invariants)                         |
-| `instruction-size:validation`          | Byte budget on auto-loaded instruction files (`AGENTS.md`, `CLAUDE.md`, harness surfaces) |
-| `harness:bindings-validation`          | `.claude/` ↔ `.opencode/` ↔ `.amazonq/` binding parity                                    |
-| `format:check`                         | `rustfmt --check` (Rust projects only)                                                    |
-| `msrv:check`                           | Minimum Supported Rust Version compatibility                                              |
+| Target                                 | What it validates                                                                          |
+| -------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `specs:behavior:coverage`              | Gherkin feature/scenario coverage at the behavior level (renamed from `specs:coverage`)    |
+| `specs:domain:coverage`                | Domain-area coverage gated by the `specs.domain-areas` allowlist in `repo-config.yml`      |
+| `specs:structure-validation`           | Adoption + tree shape + counts validated together (merged from three removed leaf targets) |
+| `specs:gherkin-cardinality-validation` | Each Gherkin keyword used within cardinality bounds                                        |
+| `links:validation`                     | Internal links in all non-excluded `.md` files                                             |
+| `mermaid:validation`                   | Mermaid diagram width, label, and syntax rules (flowchart + state)                         |
+| `headings:hierarchy-validation`        | Heading nesting in prose allowlist paths                                                   |
+| `env:validation`                       | `.env.example` surfaces match the `env-contract:` section in `repo-config.yml`             |
+| `naming:harness-validation`            | Agent definition file names match the naming convention                                    |
+| `naming:workflows-validation`          | Workflow file names match the naming convention                                            |
+| `governance:vendor-audit-validation`   | `repo-governance/` docs contain no vendor-specific content                                 |
+| `cross-vendor:parity-validation`       | Cross-vendor behavioral parity (Phase 0 deterministic invariants)                          |
+| `instruction-size:validation`          | Byte budget on auto-loaded instruction files (`AGENTS.md`, `CLAUDE.md`, harness surfaces)  |
+| `harness:bindings-validation`          | `.claude/` ↔ `.opencode/` ↔ `.amazonq/` binding parity                                     |
+| `compat:min-version`                   | Minimum Supported Rust Version compatibility                                               |
 
 **Rule**: governance/validation target keys are `{domain}:{work}` where both parts are lowercase
 kebab-case. The domain must be a recognizable noun (the scope); the work must be a verb phrase
@@ -161,25 +162,44 @@ prefixes — use the canonical list above or follow the `{domain}:{work}` patter
 
 See [nx-target-naming.md](./nx-target-naming.md) for the full derivation rule and examples.
 
-## Quality Gates by Language (Strictness Standard)
+### Formatting and File-Type Linting (lint-staged, not Nx targets)
 
-The repository enforces a shared cross-language code-strictness bar. Each language's
-`lint`/`typecheck` target runs at the strictest practical setting. The three cross-cutting
-infra-lint gates (shell, Dockerfile, GitHub Actions) are documented in
-[Cross-Language Lint Strictness](../quality/cross-language-lint-strictness.md).
+Formatting and several file-type lint checks are **not** Nx targets. They run as
+[lint-staged](https://github.com/lint-staged/lint-staged) entries in `.husky/pre-commit`, keyed by
+glob pattern. The membership rule: a check belongs in lint-staged if and only if it is (a)
+file-type based (selected by a path glob) and (b) per-file isolated — its result does not depend on
+any other file's content.
 
-| Dimension      | Enforced standard                                                                                           |
-| -------------- | ----------------------------------------------------------------------------------------------------------- |
-| Rust           | `forbid(unsafe_code)` + public `[lints]` standard; `cargo clippy --all-targets -D warnings`                 |
-| C#             | `AnalysisLevel=latest-All` + `TreatWarningsAsErrors=true` + SonarAnalyzer at error severity                 |
-| F#             | `TreatWarningsAsErrors=true` strict stack (reference standard)                                              |
-| Python         | `basedpyright` `typeCheckingMode = "strict"` + expanded ruff select (`E,W,F,B,UP,SIM,I,N,S,RUF,C4,T20,ANN`) |
-| Dockerfile     | `hadolint` at warning threshold (`.hadolint.yaml`)                                                          |
-| Shell          | `shellcheck --severity=warning` (`.shellcheckrc`)                                                           |
-| GitHub Actions | `actionlint`                                                                                                |
+**Formatting** — direct CLI, one entry per shipped file type (no per-project `format` or
+`format:check` Nx target):
 
-See [Lint and Safety Parity — Design Decisions](../../../docs/explanation/lint-safety-parity-decisions.md)
-for the per-dimension rationale, the skipped dimensions, and the recorded delivery deviation.
+| Glob                                              | Formatter                                                       |
+| ------------------------------------------------- | --------------------------------------------------------------- |
+| `*.{md,json,yml,yaml,css,scss,js,jsx,ts,tsx,...}` | `prettier --write`                                              |
+| `*.rs`                                            | `rustfmt`                                                       |
+| `*.fs`                                            | `fantomas`                                                      |
+| `*.go`                                            | `gofmt -w`                                                      |
+| `*.py`                                            | `ruff format`                                                   |
+| `*.dart`                                          | `dart format`                                                   |
+| `*.clj`                                           | `cljfmt fix` (native binary)                                    |
+| `*.cs`                                            | `dotnet csharpier format`                                       |
+| `*.{ex,exs}`                                      | `scripts/format-elixir.sh` (CWD-aware wrapper for `mix format`) |
+
+The per-project `format` and `format:check` Nx targets are **not standard lifecycle targets** and
+**must not be added**. Only Elixir uses a wrapper script because `mix format` requires the project
+root to resolve `.formatter.exs`; every other formatter accepts bare file-path arguments.
+
+**Tool linting** — also lint-staged file-type entries, **not** Nx targets:
+
+| Glob                             | Tool                                   |
+| -------------------------------- | -------------------------------------- |
+| `*.sh`                           | `shellcheck --severity=warning`        |
+| `Dockerfile`, `*.Dockerfile`     | `hadolint --failure-threshold warning` |
+| `.github/workflows/*.{yml,yaml}` | `actionlint`                           |
+
+These are **not** Nx targets. Targets such as `shell:lint`, `dockerfiles:lint`, and `actions:lint`
+**must not exist** as Nx targets — they are lint-staged entries that run over the changed file set
+at pre-commit.
 
 ## Tag Convention
 
@@ -189,66 +209,53 @@ Tags are the standard mechanism for attaching structured metadata to projects in
 
 Every project declares tags along four dimensions. Each dimension uses a fixed prefix and a controlled vocabulary.
 
-| Dimension | Prefix      | Allowed Values                                                                                                                                                       | Required                       | Purpose                                                       |
-| --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
-| Type      | `type:`     | `app`, `lib`, `e2e`                                                                                                                                                  | Always                         | Distinguishes deployable apps, reusable libs, and test suites |
-| Platform  | `platform:` | `cli`, `nextjs`, `spring-boot`, `phoenix`, `giraffe`, `gin`, `fastapi`, `axum`, `ktor`, `vertx`, `playwright`, `vite`, `effect`, `flutter`, `pedestal`, `aspnetcore` | Apps and e2e projects          | Framework or runtime environment                              |
-| Language  | `lang:`     | `golang`, `ts`, `java`, `elixir`, `fsharp`, `python`, `rust`, `kotlin`, `dart`, `clojure`                                                                            | Projects with application code | Primary language of source code                               |
-| Domain    | `domain:`   | `crud-be`, `crud-fe`, `crud-fs`, `tooling`                                                                                                                           | Always                         | Business or product domain                                    |
+| Dimension | Prefix      | Allowed Values                                                             | Required                       | Purpose                                                       |
+| --------- | ----------- | -------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
+| Type      | `type:`     | `app`, `lib`, `e2e`                                                        | Always                         | Distinguishes deployable apps, reusable libs, and test suites |
+| Platform  | `platform:` | `cli`, `nextjs`, `axum`, `playwright`                                      | Apps and e2e projects          | Framework or runtime environment                              |
+| Language  | `lang:`     | `ts`, `rust`, `dotnet`                                                     | Projects with application code | Primary language of source code                               |
+| Domain    | `domain:`   | `ayokoding`, `crane`, `ose`, `organiclever`, `wahidyankf`, `tooling`, `ui` | Always                         | Business or product domain                                    |
 
 ### Special Rules
 
-**legacy sites omit `lang:` (historical -- no active legacy sites remain)**: legacy sites consist of templates and markdown content; `go.mod` and `go.sum` present in a static-site project are static-site module dependency files, not application source code. No application code is written in Go, so `lang:` does not apply.
-
-**Go libs omit `platform:`**: A Go library has no framework or runtime boundary — only a primary language. Declare `type:lib` and `lang:golang`; omit `platform:`.
+**Rust libs omit `platform:`**: A Rust library has no framework or runtime boundary — only a primary language. Declare `type:lib` and `lang:rust`; omit `platform:`.
 
 **Use `domain:tooling` for general-purpose utilities**: Projects that are not tied to a specific product domain (e.g., `rhino-cli`) use `domain:tooling`. Use a product domain tag only when the project belongs exclusively to that product.
 
 ### Current Project Tags
 
-| Project                     | Tags                                                                   |
-| --------------------------- | ---------------------------------------------------------------------- |
-| `crud-be-clojure-pedestal`  | `["type:app", "platform:pedestal", "lang:clojure", "domain:crud-be"]`  |
-| `crud-be-csharp-aspnetcore` | `["type:app", "platform:aspnetcore", "lang:csharp", "domain:crud-be"]` |
-| `crud-be-e2e`               | `["type:e2e", "platform:playwright", "lang:ts", "domain:crud-be"]`     |
-| `crud-be-elixir-phoenix`    | `["type:app", "platform:phoenix", "lang:elixir", "domain:crud-be"]`    |
-| `crud-be-fsharp-giraffe`    | `["type:app", "platform:giraffe", "lang:fsharp", "domain:crud-be"]`    |
-| `crud-be-golang-gin`        | `["type:app", "platform:gin", "lang:golang", "domain:crud-be"]`        |
-| `crud-be-java-springboot`   | `["type:app", "platform:spring-boot", "lang:java", "domain:crud-be"]`  |
-| `crud-be-java-vertx`        | `["type:app", "platform:vertx", "lang:java", "domain:crud-be"]`        |
-| `crud-be-kotlin-ktor`       | `["type:app", "platform:ktor", "lang:kotlin", "domain:crud-be"]`       |
-| `crud-be-python-fastapi`    | `["type:app", "platform:fastapi", "lang:python", "domain:crud-be"]`    |
-| `crud-be-rust-axum`         | `["type:app", "platform:axum", "lang:rust", "domain:crud-be"]`         |
-| `crud-be-ts-effect`         | `["type:app", "platform:effect", "lang:ts", "domain:crud-be"]`         |
-| `crud-fe-dart-flutterweb`   | `["type:app", "platform:flutter", "lang:dart", "domain:crud-fe"]`      |
-| `crud-fe-e2e`               | `["type:e2e", "platform:playwright", "lang:ts", "domain:crud-fe"]`     |
-| `crud-fe-ts-nextjs`         | `["type:app", "platform:nextjs", "lang:ts", "domain:crud-fe"]`         |
-| `crud-fe-ts-tanstack-start` | `["type:app", "platform:vite", "lang:ts", "domain:crud-fe"]`           |
-| `crud-fs-ts-nextjs`         | `["type:app", "platform:nextjs", "lang:ts", "domain:crud-fs"]`         |
-| `rhino-cli`                 | `["type:app", "platform:cli", "lang:rust", "domain:tooling"]`          |
-| `golang-commons`            | `["type:lib", "lang:golang"]`                                          |
-| `clojure-openapi-codegen`   | `["type:lib", "lang:clojure", "domain:tooling"]`                       |
-| `elixir-cabbage`            | `["type:lib", "lang:elixir", "domain:tooling"]`                        |
-| `elixir-gherkin`            | `["type:lib", "lang:elixir", "domain:tooling"]`                        |
-| `elixir-openapi-codegen`    | `["type:lib", "lang:elixir", "domain:tooling"]`                        |
+| Project                    | Tags                                                                     |
+| -------------------------- | ------------------------------------------------------------------------ |
+| `ayokoding-www`            | `["type:app", "platform:nextjs", "lang:ts", "domain:ayokoding"]`         |
+| `ayokoding-cli`            | `["type:app", "platform:cli", "lang:rust", "domain:ayokoding"]`          |
+| `rhino-cli`                | `["type:app", "platform:cli", "lang:rust", "domain:tooling"]`            |
+| `organiclever-app-web`     | `["type:app", "platform:nextjs", "lang:ts", "domain:organiclever"]`      |
+| `organiclever-be`          | `["type:app", "platform:giraffe", "lang:dotnet", "domain:organiclever"]` |
+| `organiclever-app-web-e2e` | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]`  |
+| `organiclever-be-e2e`      | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]`  |
+| `ose-cli`                  | `["type:app", "platform:cli", "lang:rust", "domain:ose"]`                |
+| `ose-www`                  | `["type:app", "platform:nextjs", "lang:ts", "domain:ose"]`               |
+| `wahidyankf-www`           | `["type:app", "platform:nextjs", "lang:ts", "domain:wahidyankf"]`        |
+| `wahidyankf-www-fe-e2e`    | `["type:e2e", "platform:playwright", "lang:ts", "domain:wahidyankf"]`    |
+| `rust-commons`             | `["type:lib", "lang:rust"]`                                              |
 
 ### Example: Complete Tag Declaration
 
-A Spring Boot app for the crud-be domain declares all four dimensions:
+An F#/Giraffe backend app declares all four dimensions:
 
 ```json
 {
-  "name": "crud-be-java-springboot",
-  "tags": ["type:app", "platform:spring-boot", "lang:java", "domain:crud-be"]
+  "name": "organiclever-be",
+  "tags": ["type:app", "platform:giraffe", "lang:dotnet", "domain:organiclever"]
 }
 ```
 
-A Go lib has no platform boundary and no domain, so it omits both:
+A Rust lib has no platform boundary and no domain, so it omits both:
 
 ```json
 {
-  "name": "golang-commons",
-  "tags": ["type:lib", "lang:golang"]
+  "name": "rust-commons",
+  "tags": ["type:lib", "lang:rust"]
 }
 ```
 
@@ -264,107 +271,157 @@ A Go lib has no platform boundary and no domain, so it omits both:
 
 ### Summary Matrix
 
-Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → integration tests, (3) All web apps (APIs + web UIs) → E2E tests. legacy sites are exempt from all rules. `specs:coverage` is compulsory for all apps and E2E runners.
+Per the mandatory-six rule, every project declares all six targets (`test:unit`, `test:integration`,
+`test:e2e`, `test:quick`, `lint`, `typecheck`). In this matrix, **"echo"** means the target is
+declared as a no-op echo placeholder — it is present but does no real work. `specs:behavior:coverage`
+is compulsory for all apps and E2E runners.
 
-| Project Type                  | `test:unit` | `test:integration` | `test:e2e` | `test:quick` | `specs:coverage` | `lint` | `build` | `typecheck`  |
-| ----------------------------- | ----------- | ------------------ | ---------- | ------------ | ---------------- | ------ | ------- | ------------ |
-| API Backend                   | Yes         | Yes (PG)           | Yes\*      | Yes          | Yes              | Yes    | Yes     | Yes (all 11) |
-| Web UI App                    | Yes         | Yes (MSW)          | Yes\*      | Yes          | Yes              | Yes    | Yes     | If typed     |
-| Crud-fe FE                    | Yes         | —                  | Yes\*      | Yes          | Yes              | Yes    | Yes     | If typed     |
-| Fullstack                     | Yes         | Yes                | Yes\*      | Yes          | Yes              | Yes    | Yes     | If typed     |
-| CLI App                       | Yes         | Yes (Godog)        | —          | Yes          | Yes              | Yes    | Yes     | If typed     |
-| Library                       | Yes         | Optional           | —          | Yes          | Yes              | Yes    | —       | If typed     |
-| static-site Site (historical) | —           | —                  | —          | Yes          | —                | —      | Yes     | —            |
-| E2E Runner                    | —           | —                  | Yes        | Yes          | Yes              | Yes    | —       | If typed     |
+| Project Type | `test:unit` | `test:integration` | `test:e2e` | `test:quick` | `specs:behavior:coverage` | `lint` | `build` | `typecheck`  |
+| ------------ | ----------- | ------------------ | ---------- | ------------ | ------------------------- | ------ | ------- | ------------ |
+| API Backend  | Yes         | Yes (PG)           | echo (†)   | Yes          | Yes                       | Yes    | Yes     | Yes (all 11) |
+| Web UI App   | Yes         | Yes (MSW)          | echo (†)   | Yes          | Yes                       | Yes    | Yes     | If typed     |
+| Demo-fe FE   | Yes         | echo               | echo (†)   | Yes          | Yes                       | Yes    | Yes     | If typed     |
+| Fullstack    | Yes         | Yes                | echo (†)   | Yes          | Yes                       | Yes    | Yes     | If typed     |
+| CLI App      | Yes         | Yes                | echo       | Yes          | Yes                       | Yes    | Yes     | If typed     |
+| Library      | Yes         | Optional / echo    | echo       | Yes          | Yes                       | Yes    | —       | If typed     |
+| E2E Runner   | echo        | echo               | Yes        | Yes          | Yes                       | Yes    | —       | If typed     |
 
-**Crud-be backend `typecheck` commands** (all 11 backends have `typecheck` with `dependsOn: ["codegen"]`):
+† E2E tests live in dedicated `*-e2e` runner projects; non-e2e projects declare `test:e2e: echo "no e2e tests"`.
 
-| Backend                     | `typecheck` command                                               |
-| --------------------------- | ----------------------------------------------------------------- |
-| `crud-be-golang-gin`        | `CGO_ENABLED=0 go vet ./...`                                      |
-| `crud-be-java-springboot`   | `rhino-cli java validate-annotations` + `mvn compile -Pnullcheck` |
-| `crud-be-java-vertx`        | `rhino-cli java validate-annotations` + `mvn compile -Pnullcheck` |
-| `crud-be-elixir-phoenix`    | `mix compile --warnings-as-errors`                                |
-| `crud-be-python-fastapi`    | `uv run pyright`                                                  |
-| `crud-be-fsharp-giraffe`    | `dotnet build .fsproj /p:TreatWarningsAsErrors=true --no-restore` |
-| `crud-be-ts-effect`         | `npx tsc --noEmit`                                                |
-| `crud-be-kotlin-ktor`       | `./gradlew compileKotlin`                                         |
-| `crud-be-csharp-aspnetcore` | `dotnet build .csproj /p:TreatWarningsAsErrors=true --no-restore` |
-| `crud-be-clojure-pedestal`  | `clj-kondo --lint src`                                            |
-| `crud-be-rust-axum`         | `cargo check`                                                     |
+**Product backend `typecheck` examples** (all statically typed backends use `typecheck` with `dependsOn: ["codegen"]` where codegen applies):
 
-\* E2E tests live in dedicated `*-e2e` runner projects, not in the backend/frontend project itself.
+| Backend           | `typecheck` command                                                   |
+| ----------------- | --------------------------------------------------------------------- |
+| `organiclever-be` | `dotnet build apps/organiclever-be/organiclever-be.fsproj -c Release` |
 
-**CI schedules**: Per-service "Test" workflows run 2x daily (WIB 06, 18) combining `lint`, `test:integration`, and `test:e2e` for each service. `lint` and `test:quick` run on every push to main and every PR.
+> For polyglot backend `typecheck` patterns (Go, F#, Java, Kotlin, Python, Rust, Elixir, TypeScript, C#, Clojure), see the [ose-primer](https://github.com/wahidyankf/ose-primer) repository.
+
+**CI schedules**: Per-service "Test" workflows run 2× daily (WIB 06, 18) combining `test:integration` and `test:e2e` for each service. `typecheck`, `lint`, and `test:quick` run on every push to main and every PR (all three gates are identical — see All-Four-Gates Rule below).
 
 ### All Projects
 
-Every project in `apps/` and `libs/` must expose:
+#### Mandatory-Six Targets
 
-| Target           | Requirement                                                                                                                                                                                            |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `test:quick`     | Complete in a few minutes (not tens of minutes); enforced by the pre-push hook and as a required GitHub Actions status check before PR merge                                                           |
-| `specs:coverage` | Compulsory for all apps and E2E runners; validates every Gherkin step has a matching step definition via `rhino-cli specs:coverage validate`; enforced by the pre-push hook and scheduled CI workflows |
-| `lint`           | Exit non-zero on violations; enforced by the pre-push hook, the PR quality gate, and scheduled Test CI workflows. UI projects must include static a11y checks (see "Accessibility Testing" below)      |
-| `typecheck`      | Required for statically typed projects and all crud-be backends; enforced by the pre-push hook; skipped by Nx for projects that do not declare this target                                             |
+Every direct child of `apps/` or `libs/` registered with Nx (i.e. has a `project.json`) **must declare
+all six targets below**, even when the body is a no-op `echo` placeholder. This ensures
+`nx affected -t <target>` covers every project uniformly with no special-casing.
 
-**`test:quick` composition** — each project decides which fast checks form its gate. The target runs its checks directly (calling the underlying tools, not other Nx targets) to avoid double execution when `lint` or `typecheck` are also run standalone by the pre-push hook. Common compositions:
+| Target             | Requirement                                                                                                                                                                                      |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `test:unit`        | Isolated unit tests with mocked dependencies; must consume Gherkin specs. `echo "no unit tests"` where no real unit tests exist                                                                  |
+| `test:integration` | Service-level or in-process integration tests; real PostgreSQL (BE) or MSW/PGlite (FE). `echo "no integration tests"` where no real integration tests exist                                      |
+| `test:e2e`         | Playwright E2E tests over HTTP/UI — real only on `*-e2e` projects; CRON-only (never pre-push/PR). `echo "no e2e tests"` on all non-e2e projects                                                  |
+| `test:quick`       | Sequential 5-step gate — see canonical composition below; enforced at pre-push, PR merge gate, and main merge gate                                                                               |
+| `lint`             | Static analysis and code-style checks; exit non-zero on violations; UI projects add `oxlint --jsx-a11y-plugin`. `echo` is not acceptable here — every project must have a real linter            |
+| `typecheck`        | Type-correctness check without emitting artifacts (`tsc --noEmit`, `dotnet build`, `cargo check`). `echo "no typecheck"` for dynamically typed projects where compilation already enforces types |
 
-| Project type                  | Typical `test:quick` composition                                                                                                                                                                               |
-| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TypeScript app                | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥90%                                                               |
-| Go app                        | `go test -coverprofile=cover.out ./... && rhino-cli test-coverage validate <project>/cover.out 90` — compiles and runs unit tests (excluding `//go:build integration` files), then enforces ≥90% line coverage |
-| Java/Spring Boot              | unit tests only (`mvn test`, includes `**/unit/**/*Test.java`); JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%. Integration tests run separately via `test:integration`              |
-| Java/Vert.x                   | unit tests with Cucumber JVM (mocked dependencies); JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                   |
-| Kotlin/Ktor                   | unit tests with Cucumber JVM (mocked dependencies); Kover JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                             |
-| Python/FastAPI                | unit tests with `pytest` (mocked dependencies) → LCOV → `rhino-cli test-coverage validate` ≥90%                                                                                                                |
-| Rust/Axum                     | unit tests with `cargo test --lib` + `cargo llvm-cov --lcov` → `rhino-cli test-coverage validate` ≥90%                                                                                                         |
-| static-site site (historical) | link check via the site's CLI tool (build runs separately via `nx build`)                                                                                                                                      |
-| Crud-fe TS app                | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥70%                                                               |
-| Crud-fe Dart/Flutter          | `flutter test test/unit --coverage`; LCOV coverage validated via `rhino-cli test-coverage validate` ≥70%                                                                                                       |
-| Crud-be Elixir/Phoenix        | unit tests (`mix coveralls.lcov --only unit`); LCOV coverage validated via `rhino-cli test-coverage validate` ≥90%                                                                                             |
-| Playwright `*-e2e`            | run the linter directly (no unit tests to add beyond linting)                                                                                                                                                  |
+**Echo-placeholder rule**: Declaring `test:unit: echo "no unit tests"` (or `test:integration`, `test:e2e`)
+as a mandatory placeholder is **required** for projects where the real implementation does not apply — it
+is **not** an anti-pattern. Omitting the target entirely is the anti-pattern. Echo placeholders enable
+`nx affected -t test:unit` (and similar) to run workspace-wide without special-casing.
 
-The rule: include only checks that complete fast. If `test:unit` is slow for a project, exclude it from `test:quick` and run it separately. **The target must always exist** — even if it only runs the type checker — so the pre-push hook covers every project.
+#### Required-Where-Applicable Targets
+
+Not part of the mandatory-six; declared only when the condition applies:
+
+| Target                    | Condition                                                                                                                                                                                   |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `build`                   | Compiled and bundled projects only (Rust, .NET, Next.js); not required for interpreted-language projects without a compile step                                                             |
+| `test:coverage`           | Wherever `test:unit` is real: native coverage gate (≥ 90% line) via `vitest --coverage`, `cargo llvm-cov`, or `dotnet test` coverage gate. `echo "no coverage"` where `test:unit` is `echo` |
+| `specs:behavior:coverage` | All apps and E2E runners; validates Gherkin feature/scenario coverage at the behavior level                                                                                                 |
+| `specs:domain:coverage`   | Projects listed in the `specs.domain-areas` allowlist in `repo-config.yml` (not folder-presence); `echo` elsewhere                                                                          |
+| `test:specs`              | All projects (echo where no specs); aggregate of `specs:structure-validation`, `specs:behavior:coverage`, and `specs:domain:coverage` — runs inside `test:quick`                            |
+
+#### Canonical `test:quick` Composition
+
+`test:quick` is a **sequential** `nx:run-commands` with `"parallel": false` running in this **exact order**:
+
+1. `nx run <project>:typecheck`
+2. `nx run <project>:lint`
+3. `nx run <project>:test:unit` (plain/fast smoke)
+4. `nx run <project>:test:coverage` (same suite under coverage, ≥ 90% line)
+5. `nx run <project>:test:specs` (all `specs:*` validators)
+
+It reuses each sibling target's definition and Nx cache. Order is guaranteed by `parallel: false`.
+It stops at the first failing step. Because `test:quick` composes `test:unit` + `test:coverage` +
+`test:specs`, **all three must be present on every project** (echo where N/A).
+
+Canonical example for a Rust CLI project (`rhino-cli`):
+
+```json
+{
+  "test:quick": {
+    "executor": "nx:run-commands",
+    "cache": true,
+    "inputs": [
+      "{projectRoot}/src/**/*.rs",
+      "{projectRoot}/tests/**/*.rs",
+      "{projectRoot}/Cargo.toml",
+      "{projectRoot}/Cargo.lock",
+      "{workspaceRoot}/specs/apps/rhino/**/*.feature"
+    ],
+    "options": {
+      "commands": [
+        "nx run rhino-cli:typecheck",
+        "nx run rhino-cli:lint",
+        "nx run rhino-cli:test:unit",
+        "nx run rhino-cli:test:coverage",
+        "nx run rhino-cli:test:specs"
+      ],
+      "parallel": false
+    }
+  }
+}
+```
+
+> For polyglot `test:quick` composition patterns (Go, Java, Kotlin, Python, Elixir, TypeScript, C#,
+> Clojure, Dart/Flutter, F#), see the [ose-primer](https://github.com/wahidyankf/ose-primer) repository.
+
+#### All-Four-Gates Rule
+
+**Gate rule**: `(pre-commit ∪ pre-push) == PR gate == main gate`.
+
+| Gate       | What runs                                                                               | When                               |
+| ---------- | --------------------------------------------------------------------------------------- | ---------------------------------- |
+| Pre-commit | Formatting only (lint-staged: prettier, rustfmt, fantomas, gofmt, …)                    | Every commit                       |
+| Pre-push   | `typecheck`, `lint`, `test:quick` (includes `test:unit`, `test:coverage`, `test:specs`) | Every push                         |
+| PR gate    | Identical to pre-push                                                                   | Every PR open / update             |
+| Main gate  | Identical to pre-push                                                                   | Every merge to main                |
+| CRON-only  | `test:integration`, `test:e2e`                                                          | Scheduled CI (2× daily, WIB 06/18) |
+
+`test:integration` and `test:e2e` are **CRON-only** — they run in scheduled CI workflows (2× daily at
+WIB 06:00 and 18:00), never in the pre-push hook or PR gate. This keeps the pre-push gate fast while
+ensuring continuous coverage.
 
 ### Statically Typed Projects
 
-TypeScript, Python (with pyright), and all crud-be backends:
+TypeScript and other statically typed projects:
 
 | Target      | Requirement                                                                |
 | ----------- | -------------------------------------------------------------------------- |
 | `typecheck` | Run the type checker without emitting artifacts (`tsc --noEmit`, `mypy .`) |
 
-**All 11 crud-be backends declare `typecheck`** with `dependsOn: ["codegen"]`. See the "Crud-be
-backend `typecheck` commands" table in the Summary Matrix section for per-language commands.
+**Statically typed backends declare `typecheck`** with `dependsOn: ["codegen"]` where contract codegen applies. The `ose-be` example: `dotnet build apps/ose-be/ose-be.fsproj -c Release`.
 
 **Not required for dynamically typed languages** (plain JavaScript, Ruby) or languages where
 compilation already enforces types and `build` covers it — except when an additional static
-analysis pass is warranted. **Exceptions that do declare `typecheck`**:
+analysis pass is warranted.
 
-- **Go crud-be backends**: `go vet ./...` catches type errors not caught by `go build` alone, and
-  ensures generated contract types compile correctly.
-- **Java projects (JSpecify + NullAway)**: NullAway runs as a separate Error Prone plugin pass via
-  a dedicated Maven profile not included in `build`. The `typecheck` target also runs
-  `rhino-cli java validate-annotations` to enforce that every package has a `package-info.java`
-  annotated with `@NullMarked`.
-- **Rust**: `cargo check` type-checks without linking — faster than `cargo build` for pure type
-  verification against generated contract types.
-- **Clojure**: `clj-kondo --lint src` catches type and arity errors the REPL-based build misses.
+> For polyglot `typecheck` patterns in Go, Java, Kotlin, Python, Rust, Elixir, TypeScript, C#, F#, and Clojure backends, see the [ose-primer](https://github.com/wahidyankf/ose-primer) repository.
 
 ### Compiled and Bundled Projects
 
-Projects that produce artifacts from a compilation or bundling step (Go, Java, static-site, Next.js):
+Projects that produce artifacts from a compilation or bundling step (Rust, .NET, Next.js):
 
 | Target  | Requirement                                                          |
 | ------- | -------------------------------------------------------------------- |
 | `build` | Produce production-ready artifacts; declare `outputs` for Nx caching |
 
-**Not required for interpreted languages** (Python, Ruby, plain Node.js scripts) where the source is the deployable artifact.
+**Not required for interpreted languages** (plain Node.js scripts) where the source is the deployable artifact.
 
 ### Apps with Development Servers
 
-legacy sites, Next.js, Spring Boot, Python web apps:
+Next.js and Axum apps:
 
 | Target | Requirement                                       |
 | ------ | ------------------------------------------------- |
@@ -372,7 +429,7 @@ legacy sites, Next.js, Spring Boot, Python web apps:
 
 ### Apps with Production Server Mode
 
-Spring Boot, Next.js, Python web apps:
+Next.js and Axum apps:
 
 | Target  | Requirement                |
 | ------- | -------------------------- |
@@ -380,7 +437,7 @@ Spring Boot, Next.js, Python web apps:
 
 ### Projects with Unit Tests
 
-Spring Boot, Python apps, TypeScript apps:
+Rust, .NET, TypeScript apps:
 
 | Target      | Requirement                                                          |
 | ----------- | -------------------------------------------------------------------- |
@@ -390,38 +447,36 @@ Spring Boot, Python apps, TypeScript apps:
 
 Two integration test patterns exist depending on project type:
 
-| Pattern             | Projects                                                | Requirement                                                                                                                                                | Cacheable |
-| ------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| Docker + PostgreSQL | All 11 crud-be backends                                 | Real PostgreSQL via `docker-compose.integration.yml`; calls application code directly (no HTTP layer); runs all shared Gherkin scenarios; fresh DB per run | No        |
-| In-process mocking  | `crud-fe-ts-nextjs` (MSW), `rhino-cli`, Go libs (Godog) | In-process mocking only (MSW / Rust mocks / godog mock fixtures); no real database or external services; fully deterministic                               | Yes       |
+| Pattern             | Projects                                              | Requirement                                                                                                                                                | Cacheable |
+| ------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| Docker + PostgreSQL | API backends (`organiclever-be`)                      | Real PostgreSQL via `docker-compose.integration.yml`; calls application code directly (no HTTP layer); runs all shared Gherkin scenarios; fresh DB per run | No        |
+| In-process mocking  | `organiclever-app-web` (MSW), Rust CLIs (cucumber-rs) | In-process mocking only (MSW / cucumber-rs / mock fixtures); no real database or external services; fully deterministic                                    | Yes       |
 
-**Crud-be backends** expose `test:integration` which runs `docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`. This starts a fresh PostgreSQL container, runs migrations, and executes all shared Gherkin scenarios by calling application service/repository functions directly — no HTTP layer. Each backend has a `docker-compose.integration.yml` (postgres + test runner services) and a `Dockerfile.integration` (language runtime + test execution). Coverage is NOT measured at the integration level — coverage comes from `test:unit` only.
+**API backends** expose `test:integration` which runs `docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`. This starts a fresh PostgreSQL container, runs migrations, and executes all shared Gherkin scenarios by calling application service/repository functions directly — no HTTP layer. Each backend has a `docker-compose.integration.yml` (postgres + test runner services) and a `Dockerfile.integration` (language runtime + test execution). Coverage is NOT measured at the integration level — coverage comes from `test:unit` only.
 
-**`rhino-cli`** consumes Gherkin specs at both test levels. Each command has two test files:
+> For polyglot `test:integration` Docker infrastructure patterns across 11 backend languages, see the [ose-primer](https://github.com/wahidyankf/ose-primer) repository.
 
-- `{stem}_test.rs` — unit step definitions; runs in `test:quick` as part of `cargo test`; mocks all I/O; coverage measured here
-- `{stem}_integration_test.rs` — integration step definitions; drives the command in-process against controlled `/tmp` filesystem fixtures; runs in `test:integration`
+**Rust CLIs** (`ayokoding-cli`, `ose-cli`, `rhino-cli`) consume Gherkin specs at both test levels. Each command has two test files:
 
-Both levels filter scenarios by the same `@tag` from the same feature file. See
+- `{domain}_{action}_test.rs` (unit, inline `#[cfg(test)]` or separate file) — cucumber-rs unit step definitions; runs in `test:quick` via `cargo test`; mocks all I/O via injected function types; coverage measured here
+- `tests/{domain}_{action}_integration_test.rs` — cucumber-rs integration step definitions; drives the command via process invocation against controlled `/tmp` filesystem fixtures; runs in `test:integration`
+
+Both levels consume the same feature file `@tag`. See
 [BDD Spec-to-Test Mapping Convention](./bdd-spec-test-mapping.md) for the mandatory 1:1 mapping
 between commands and feature file `@tags`.
 
-**Go libs** (`golang-commons`, `golang-commons`) also expose `test:integration` using the same Godog
-BDD pattern. Because libs have no CLI commands, integration tests call the public package API
-directly and use external test packages (`package foo_test`). They test complete library pipelines
-(e.g., `CheckLinks` → `OutputLinksText/JSON/Markdown`) and realistic consumer scenarios rather than
-isolated functions. Mock filesystem fixtures (tmpdir with controlled `.md` files) replace real static-site
-sites; `testutil.CaptureStdout` captures stdout from output functions. Feature files live in
-`specs/{lib-name}/{package}/`.
+**Rust libs** (`rust-commons`) expose `test:unit` using the standard `cargo test` harness with
+`cargo-llvm-cov` for coverage. Because libs have no CLI commands, unit tests call the public API
+directly. Feature files live in `specs/libs/{lib-name}/`.
 
 ### CLI Applications
 
-Go CLIs and similar tools:
+Rust CLIs and similar tools:
 
-| Target    | Requirement                                              |
-| --------- | -------------------------------------------------------- |
-| `run`     | Execute the application (`go run main.go` or equivalent) |
-| `install` | Sync dependencies (`go mod tidy` or equivalent)          |
+| Target    | Requirement                                         |
+| --------- | --------------------------------------------------- |
+| `run`     | Execute the application (`cargo run` or equivalent) |
+| `install` | Sync dependencies (`cargo build` or equivalent)     |
 
 ### E2E Test Projects
 
@@ -439,22 +494,22 @@ Playwright suites (`*-e2e`):
 **BDD suites**: When the E2E project uses playwright-bdd, `test:e2e` runs
 `npx bddgen && npx playwright test`. The `bddgen` step regenerates `.features-gen/`
 spec files from the Gherkin feature files before Playwright executes them.
-See `apps/crud-be-e2e/project.json` for the canonical example.
+See `apps/organiclever-be-e2e/project.json` for a canonical product-app example.
 
-**Crud-be `test:integration` with docker-compose**: All 11 crud-be backends expose `test:integration`
+**API backend `test:integration` with docker-compose**: API backends expose `test:integration`
 which runs `docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`.
 Each backend's `docker-compose.integration.yml` defines a `postgres` service (postgres:17-alpine with healthcheck)
 and a `test-runner` service that depends on PostgreSQL being healthy. The test runner runs migrations,
-optionally loads seed data, then executes all shared Gherkin scenarios from `specs/apps/crud/behavior/be/gherkin/`
+optionally loads seed data, then executes all shared Gherkin scenarios
 by calling application service/repository functions directly — no HTTP layer. The specs volume is
 mounted read-only at `../../specs:/specs:ro`. After tests complete, `docker-compose` tears down all
 containers and volumes.
 
-### Specs-Coverage Projects
+### Specs:Behavior:Coverage Projects
 
-`specs:coverage` is compulsory for ALL apps and E2E runners. It validates that every Gherkin step in
-the project's feature files has a matching step definition in the implementation. It runs
-`rhino-cli specs:coverage validate` and is enforced by the pre-push hook alongside `typecheck`,
+`specs:behavior:coverage` is compulsory for ALL apps and E2E runners (renamed from `specs:coverage`).
+It validates Gherkin feature/scenario coverage at the behavior level — every scenario must be
+exercised at the correct test level. It is enforced by the pre-push hook alongside `typecheck`,
 `lint`, and `test:quick`, as well as in all scheduled Test CI workflows.
 
 **Command flags used across project types**:
@@ -462,38 +517,36 @@ the project's feature files has a matching step definition in the implementation
 | Flag                         | Purpose                                                                                                               |
 | ---------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | `--shared-steps`             | Validates steps across ALL source files rather than requiring 1:1 file-to-feature matching; used by all projects      |
-| `--exclude-dir test-support` | Excludes E2E-only `test-support` API spec files from non-E2E projects; used by crud-be backends and crud-fe frontends |
+| `--exclude-dir test-support` | Excludes E2E-only `test-support` API spec files from non-E2E projects; used by demo-be backends and demo-fe frontends |
 
 **Project coverage status**:
 
-| Project group                              | Status   | Notes                                                                                        |
-| ------------------------------------------ | -------- | -------------------------------------------------------------------------------------------- |
-| Rust CLI app (`rhino-cli`)                 | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                     |
-| Crud-be backends (all 11)                  | Enforced | `--shared-steps --exclude-dir test-support`                                                  |
-| Crud-fe frontends                          | Enforced | `--shared-steps --exclude-dir test-support`                                                  |
-| Fullstack (`crud-fs-ts-nextjs`)            | Enforced | `--shared-steps --exclude-dir test-support`                                                  |
-| E2E runners (`crud-be-e2e`, `crud-fe-e2e`) | Enforced | `--shared-steps` only; test-support steps are implemented here                               |
-| Web UI apps (`crud-fe-ts-nextjs`)          | Enforced | `--shared-steps`                                                                             |
-| CRUD backend (`crud-be-fsharp-giraffe`)    | Enforced | `--shared-steps`                                                                             |
-| Libraries (`golang-commons`)               | Enforced | `--shared-steps`                                                                             |
-| Projects with genuine step gaps            | Deferred | `specs:coverage` target exists but validation deferred until step implementation is complete |
+| Project group                                                   | Status   | Notes                                                                                                 |
+| --------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
+| Rust CLI apps (`rhino-cli`, `ayokoding-cli`, `ose-cli`)         | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                              |
+| API backends (`organiclever-be`)                                | Enforced | `--shared-steps --exclude-dir test-support`                                                           |
+| E2E runners (`organiclever-be-e2e`, `organiclever-app-web-e2e`) | Enforced | `--shared-steps` only; test-support steps are implemented here                                        |
+| Content platforms (`ayokoding-www`, `ose-www`)                  | Enforced | `--shared-steps`                                                                                      |
+| Web UI apps (`organiclever-app-web`)                            | Enforced | `--shared-steps`                                                                                      |
+| Libraries (`rust-commons`)                                      | Enforced | `--shared-steps`                                                                                      |
+| Projects with genuine step gaps                                 | Deferred | `specs:behavior:coverage` target exists but validation deferred until step implementation is complete |
 
-All apps and E2E runners are required to have a `specs:coverage` target. Projects with genuine step
-gaps have the target deferred temporarily until step implementations are complete.
+All apps and E2E runners are required to have a `specs:behavior:coverage` target. Projects with
+genuine step gaps have the target deferred temporarily until step implementations are complete.
 
-**Nx inputs for `specs:coverage`**: The target must declare the project's feature files and source
-files as inputs so the cache invalidates when specs or step definitions change:
+**Nx inputs for `specs:behavior:coverage`**: The target must declare the project's feature files and
+source files as inputs so the cache invalidates when specs or step definitions change:
 
 ```json
-"specs:coverage": {
+"specs:behavior:coverage": {
   "executor": "nx:run-commands",
   "cache": true,
   "inputs": [
-    "{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature",
-    "{projectRoot}/src/**/*.go"
+    "{workspaceRoot}/specs/apps/organiclever-be/**/*.feature",
+    "{projectRoot}/src/**/*.rs"
   ],
   "options": {
-    "command": "rhino-cli specs:coverage validate specs/apps/crud/behavior/be/gherkin --shared-steps --exclude-dir test-support apps/crud-be-golang-gin/internal apps/crud-be-golang-gin/cmd"
+    "command": "rhino-cli specs behavior-coverage validate specs/apps/organiclever-be --shared-steps --exclude-dir test-support apps/organiclever-be/src"
   }
 }
 ```
@@ -508,10 +561,9 @@ Accessibility testing is compulsory for all UI-related projects. It operates at 
 **Static a11y linting** (enforced via the `lint` target at all three gates: pre-push hook, PR
 quality gate, and scheduled Test CI workflows):
 
-| Project                                                                             | Static a11y tool           |
-| ----------------------------------------------------------------------------------- | -------------------------- |
-| `crud-fe-ts-nextjs`, `crud-fe-ts-tanstack-start`, `crud-fs-ts-nextjs`, `libs/ts-ui` | `oxlint --jsx-a11y-plugin` |
-| `crud-fe-dart-flutterweb`                                                           | `dart analyze`             |
+| Project                                                                               | Static a11y tool           |
+| ------------------------------------------------------------------------------------- | -------------------------- |
+| `organiclever-app-web`, `organiclever-www`, `ayokoding-www`, `ose-www`, `libs/web-ui` | `oxlint --jsx-a11y-plugin` |
 
 Static a11y linting catches common accessibility violations at compile time: missing alt text,
 missing ARIA labels, invalid ARIA attributes, missing form labels, and incorrect role usage.
@@ -530,18 +582,12 @@ covering WCAG AA compliance. These tests verify:
 **Gherkin accessibility specs**: UI projects must have an `accessibility.feature` file under a
 domain subdirectory in `specs/apps/<domain>/fe/gherkin/` (e.g., `accessibility/accessibility.feature`
 or `layout/accessibility.feature`). UI component library specs in
-`specs/libs/ts-ui/gherkin/<component>/` must include "Has no accessibility violations" scenarios for
+`specs/libs/web-ui/gherkin/<component>/` must include "Has no accessibility violations" scenarios for
 each component.
-
-### static-site Sites (Historical -- No Active static-site Sites Remain)
-
-| Target  | Requirement                            |
-| ------- | -------------------------------------- |
-| `clean` | Remove `public/`, `resources/`, and `` |
 
 ## Workspace-Level Defaults
 
-`nx.json` `targetDefaults` provide inherited behaviour for standard targets. Individual `project.json` files override these when the project differs (e.g., legacy sites output to `public/` not `dist/`).
+`nx.json` `targetDefaults` provide inherited behaviour for standard targets. Individual `project.json` files override these when the project differs.
 
 ```json
 {
@@ -563,7 +609,16 @@ each component.
     "test:unit": {
       "cache": true
     },
-    "specs:coverage": {
+    "test:coverage": {
+      "cache": true
+    },
+    "specs:behavior:coverage": {
+      "cache": true
+    },
+    "specs:domain:coverage": {
+      "cache": true
+    },
+    "test:specs": {
       "cache": true
     },
     "test:integration": {
@@ -578,44 +633,46 @@ each component.
 
 ### Caching Rules
 
-| Target             | Cached | Notes                                                                                                                                                                                                                                      |
-| ------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `build`            | Yes    | Declare `outputs` in `project.json` for cache restoration                                                                                                                                                                                  |
-| `typecheck`        | Yes    | Pure analysis; safe to cache against source changes                                                                                                                                                                                        |
-| `lint`             | Yes    | Pure static analysis; safe to cache                                                                                                                                                                                                        |
-| `test:quick`       | Yes    | Cache hit skips redundant pre-push runs                                                                                                                                                                                                    |
-| `specs:coverage`   | Yes    | Pure analysis of Gherkin steps against step definitions; deterministic against source and spec changes                                                                                                                                     |
-| `test:unit`        | Yes    | Deterministic; safe to cache against source changes                                                                                                                                                                                        |
-| `test:integration` | No     | Crud-be backends use real PostgreSQL via docker-compose (non-deterministic external state). Default `cache: false` in `nx.json`. Projects using in-process mocking only (MSW, Godog) may override to `cache: true` in their `project.json` |
-| `dev`              | No     | Long-running process                                                                                                                                                                                                                       |
-| `start`            | No     | Long-running process                                                                                                                                                                                                                       |
-| `run`              | No     | Side-effectful execution                                                                                                                                                                                                                   |
-| `test:e2e`         | No     | Requires live app state; run via scheduled cron, not pre-push                                                                                                                                                                              |
-| `test:e2e:ui`      | No     | Interactive process                                                                                                                                                                                                                        |
-| `test:e2e:report`  | No     | Reads filesystem state at invocation time                                                                                                                                                                                                  |
-| `install`          | No     | Must always run to ensure dep state                                                                                                                                                                                                        |
-| `clean`            | No     | Destructive operation                                                                                                                                                                                                                      |
+| Target                    | Cached | Notes                                                                                                                                                                                                                                      |
+| ------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `build`                   | Yes    | Declare `outputs` in `project.json` for cache restoration                                                                                                                                                                                  |
+| `typecheck`               | Yes    | Pure analysis; safe to cache against source changes                                                                                                                                                                                        |
+| `lint`                    | Yes    | Pure static analysis; safe to cache                                                                                                                                                                                                        |
+| `test:quick`              | Yes    | Cache hit skips redundant pre-push runs                                                                                                                                                                                                    |
+| `test:unit`               | Yes    | Deterministic; safe to cache against source changes                                                                                                                                                                                        |
+| `test:coverage`           | Yes    | Deterministic native coverage gate; safe to cache against source changes                                                                                                                                                                   |
+| `specs:behavior:coverage` | Yes    | Pure behavior-level Gherkin coverage analysis; deterministic against source and spec changes                                                                                                                                               |
+| `specs:domain:coverage`   | Yes    | Pure domain-area coverage analysis; deterministic against source, spec, and `repo-config.yml` allowlist changes                                                                                                                            |
+| `test:specs`              | Yes    | Pure specs validation; deterministic against source, spec, and `repo-config.yml` changes; caches the aggregate of all `specs:*` validators                                                                                                 |
+| `test:integration`        | No     | Demo-be backends use real PostgreSQL via docker-compose (non-deterministic external state). Default `cache: false` in `nx.json`. Projects using in-process mocking only (MSW, Godog) may override to `cache: true` in their `project.json` |
+| `dev`                     | No     | Long-running process                                                                                                                                                                                                                       |
+| `start`                   | No     | Long-running process                                                                                                                                                                                                                       |
+| `run`                     | No     | Side-effectful execution                                                                                                                                                                                                                   |
+| `test:e2e`                | No     | Requires live app state; run via scheduled cron, not pre-push                                                                                                                                                                              |
+| `test:e2e:ui`             | No     | Interactive process                                                                                                                                                                                                                        |
+| `test:e2e:report`         | No     | Reads filesystem state at invocation time                                                                                                                                                                                                  |
+| `install`                 | No     | Must always run to ensure dep state                                                                                                                                                                                                        |
+| `clean`                   | No     | Destructive operation                                                                                                                                                                                                                      |
 
 ## Build Output Conventions
 
 Declare the output directory in `project.json` `outputs` to enable Nx cache restoration.
 
-| Project Type                  | Output Directory        |
-| ----------------------------- | ----------------------- |
-| Go CLI                        | `{projectRoot}/dist/`   |
-| static-site site (historical) | `{projectRoot}/public/` |
-| Next.js                       | `{projectRoot}/.next/`  |
-| Spring Boot                   | `{projectRoot}/target/` |
+| Project Type | Output Directory        |
+| ------------ | ----------------------- |
+| Rust CLI     | `{projectRoot}/dist/`   |
+| Next.js      | `{projectRoot}/.next/`  |
+| Spring Boot  | `{projectRoot}/target/` |
 
-Example override for a static-site site:
+Example override for a Next.js app with custom output:
 
 ```json
 {
   "targets": {
     "build": {
       "executor": "nx:run-commands",
-      "outputs": ["{projectRoot}/public"],
-      "options": { "command": "bash build.sh" }
+      "outputs": ["{projectRoot}/.next"],
+      "options": { "command": "next build" }
     }
   }
 }
@@ -629,44 +686,51 @@ cross-project dependencies like shared Gherkin specs or generated contracts.
 
 ### Canonical Inputs per Language
 
-All crud-be backends must include Gherkin specs and generated contracts in `test:unit` and
-`test:quick` inputs. The Gherkin specs path is always
-`{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature`. The generated-contracts path varies by
+API backends with contract codegen must include Gherkin specs and generated contracts in `test:unit`
+and `test:quick` inputs. The Gherkin specs path always points to
+`{workspaceRoot}/specs/apps/<app-name>/**/*.feature`. The generated-contracts path varies by
 language:
 
-| Language        | Source files                                                                                                       | Generated contracts                                   | Gherkin specs                                                      |
-| --------------- | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------------ |
-| Go              | `{projectRoot}/internal/**/*.go`, `{projectRoot}/cmd/**/*.go`, `{projectRoot}/go.mod`, `{projectRoot}/go.sum`      | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` |
-| Java (Maven)    | `{projectRoot}/src/**`, `{projectRoot}/pom.xml`                                                                    | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` |
-| Kotlin (Gradle) | `{projectRoot}/src/**`, `{projectRoot}/build.gradle.kts`                                                           | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` |
-| Rust            | `{projectRoot}/src/**/*.rs`, `{projectRoot}/tests/**/*.rs`, `{projectRoot}/Cargo.toml`, `{projectRoot}/Cargo.lock` | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` |
-| TypeScript      | `{projectRoot}/src/**/*.ts`, `{projectRoot}/tests/**/*.ts`, `{projectRoot}/vitest.config.ts`                       | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` |
-| Python          | `{projectRoot}/src/**/*.py`, `{projectRoot}/tests/**/*.py`                                                         | `{projectRoot}/generated_contracts/**/*` (underscore) | `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` |
-| Elixir          | `{projectRoot}/lib/**/*.ex`, `{projectRoot}/test/**/*.exs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` |
-| F#              | `{projectRoot}/src/**/*.fs`, `{projectRoot}/tests/**/*.fs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` |
-| C#              | `{projectRoot}/src/**/*.cs`, `{projectRoot}/tests/**/*.cs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` |
-| Clojure         | `{projectRoot}/src/**/*`, `{projectRoot}/test/**/*`, `{projectRoot}/tests.edn`                                     | `{projectRoot}/generated_contracts/**/*` (underscore) | `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` |
-| Frontend TS     | `{projectRoot}/src/**/*.ts`, `{projectRoot}/src/**/*.tsx`, `{projectRoot}/vitest.config.ts`                        | `{projectRoot}/src/generated-contracts/**/*`          | N/A                                                                |
-| Frontend Dart   | `{projectRoot}/lib/**/*.dart`, `{projectRoot}/test/**/*.dart`                                                      | `{projectRoot}/generated-contracts/**/*`              | N/A                                                                |
+| Language | Source files                                               | Generated contracts                      | Gherkin specs                                        |
+| -------- | ---------------------------------------------------------- | ---------------------------------------- | ---------------------------------------------------- |
+| Rust     | `{projectRoot}/src/**/*.rs`, `{projectRoot}/tests/**/*.rs` | `{projectRoot}/generated-contracts/**/*` | `{workspaceRoot}/specs/apps/<app-name>/**/*.feature` |
 
-**Note**: Python and Clojure use underscore in `generated_contracts/` (matching their language
-conventions). All other languages use hyphen in `generated-contracts/`.
+> For canonical inputs patterns across Go, Java, Kotlin, TypeScript, Python, Elixir, C#, F#, Clojure, and Dart, see the [ose-primer](https://github.com/wahidyankf/ose-primer) repository.
 
-**`rhino-cli`** consumes Gherkin specs in `test:unit` via its own Rust test harness. Its `test:unit` and `test:quick` inputs must include the CLI's own spec files under `specs/apps/rhino/`.
+**Rust CLI app** (`rhino-cli`) also consumes Gherkin specs in `test:unit`. Its `test:unit` and `test:quick` inputs must include the CLI's own spec files:
 
 | CLI App     | Gherkin specs input                             |
 | ----------- | ----------------------------------------------- |
 | `rhino-cli` | `{workspaceRoot}/specs/apps/rhino/**/*.feature` |
-| `rhino-cli` | `{workspaceRoot}/specs/apps/crud/**/*.feature`  |
 
 Example for `rhino-cli` `test:unit` inputs:
 
 ```json
 "inputs": [
   "{projectRoot}/src/**/*.rs",
+  "{projectRoot}/tests/**/*.rs",
   "{projectRoot}/Cargo.toml",
   "{projectRoot}/Cargo.lock",
   "{workspaceRoot}/specs/apps/rhino/**/*.feature"
+]
+```
+
+**Rust CLI apps** (`ayokoding-cli`, `ose-cli`) also consume Gherkin specs in `test:unit`. Their `test:unit` and `test:quick` inputs must include the CLI's own spec files:
+
+| CLI App         | Gherkin specs input                                 |
+| --------------- | --------------------------------------------------- |
+| `ayokoding-cli` | `{workspaceRoot}/specs/apps/ayokoding/**/*.feature` |
+| `ose-cli`       | `{workspaceRoot}/specs/apps/ose/**/*.feature`       |
+
+Example for `ayokoding-cli` `test:unit` inputs:
+
+```json
+"inputs": [
+  "{projectRoot}/cmd/**/*.go",
+  "{projectRoot}/internal/**/*.go",
+  "{projectRoot}/go.mod",
+  "{projectRoot}/go.sum",
+  "{workspaceRoot}/specs/apps/ayokoding/**/*.feature"
 ]
 ```
 
@@ -674,16 +738,18 @@ Example for `rhino-cli` `test:unit` inputs:
 spec changes (triggering `codegen`), `test:unit` and `test:quick` must re-run even if application
 source files are unchanged. Without these paths in `inputs`, Nx incorrectly serves cached results.
 
-**Note on specs:coverage enforcement**: `specs:coverage` is compulsory for all apps and E2E runners.
-`rhino-cli specs:coverage validate` runs as the `specs:coverage` Nx target, enforced by the pre-push
-hook alongside `typecheck`, `lint`, and `test:quick`, and in all scheduled Test CI workflows.
-Projects with genuine step gaps have the target deferred temporarily until step implementations are
-complete. See the "Specs-Coverage Projects" section for flags and project-by-project status.
+**Note on specs:behavior:coverage enforcement**: `specs:behavior:coverage` is compulsory for all
+apps and E2E runners (renamed from `specs:coverage`). `rhino-cli specs behavior-coverage validate`
+runs as the `specs:behavior:coverage` Nx target, enforced by the pre-push hook alongside
+`typecheck`, `lint`, and `test:quick`, and in all scheduled Test CI workflows. Projects with
+genuine step gaps have the target deferred temporarily until step implementations are complete. See
+the "Specs:Behavior:Coverage Projects" section for flags and project-by-project status.
 
 ## Codegen Dependency Chain
 
-All demo apps share a `codegen` target that generates types and encoders/decoders from the OpenAPI
-contract spec at `specs/apps/crud/containers/contracts/` into `generated-contracts/`.
+Apps with OpenAPI contract specs share a `codegen` target that generates types and
+encoders/decoders from the spec (e.g., `specs/apps/organiclever/containers/contracts/`) into
+`generated-contracts/`.
 
 The dependency chain is:
 
@@ -696,37 +762,51 @@ Both `typecheck` and `build` declare `dependsOn: ["codegen"]` in their `project.
 ensures generated contract types are always present before type-checking or building begins.
 
 **`test:unit` and `test:quick` do NOT directly depend on `codegen`** — they depend on source
-files being correct, which is already enforced by `typecheck` and `build`. The exceptions are
-`crud-be-rust-axum` and `crud-fe-dart-flutterweb`, which keep `dependsOn: ["codegen"]` in
-`test:unit` / `test:quick` because their build systems require generated code to be present before
-test compilation.
+files being correct, which is already enforced by `typecheck` and `build`. Some build systems (Rust) require generated code at compile time and therefore keep
+`dependsOn: ["codegen"]` in `test:unit` / `test:quick`.
 
 **Rationale**: Making `codegen` a dependency of `typecheck` and `build` (rather than of test
 targets) keeps the dependency graph minimal and avoids running codegen redundantly during test
 runs when artifacts already exist from a prior `build` or `typecheck` execution.
 
-## ❌ Anti-Patterns
+## Anti-Patterns
+
+### Echo Placeholders vs. Omitted Targets
+
+`test:unit: echo "no unit tests"`, `test:integration: echo "no integration tests"`, and
+`test:e2e: echo "no e2e tests"` declared as mandatory placeholder targets are **required** — they are
+**not anti-patterns**. The anti-pattern is _omitting_ the mandatory-six targets entirely. Echo
+placeholders enable `nx affected -t test:unit` (and similar) to run workspace-wide without
+special-casing any project.
+
+The `build` no-op rule still stands: do not add a no-op `build` to interpreted-language projects that
+have no compile step. Only the three test targets (`test:unit`, `test:integration`, `test:e2e`) and
+`typecheck` use echo placeholders as the required pattern when the real implementation does not apply.
+
+### Target Anti-Patterns
 
 - **Non-standard target names**: `serve` instead of `dev`/`start`, `unit-test` instead of `test:unit`, `integration-test` instead of `test:integration`, `check` instead of `lint` or `typecheck`, bare `test` or `test:full` instead of a specific `test:*` variant
+- **Omitting mandatory-six targets**: Every project must declare all six mandatory targets (`test:unit`, `test:integration`, `test:e2e`, `test:quick`, `lint`, `typecheck`); omitting any one silently breaks `nx affected -t <target>` workspace-wide — use echo placeholders instead
 - **Missing `test:quick`**: Omitting the pre-push gate target silently excludes the project from `nx affected -t test:quick` — this breaks the workspace-wide hook
 - **Missing `lint`**: Projects without `lint` cannot participate in workspace-wide lint runs or the pre-push hook lint gate
-- **Heavy `test:quick`**: Including slow integration tests or E2E in `test:quick` defeats its purpose — keep the total to a few minutes, not tens of minutes
+- **Heavy `test:quick`**: Including slow integration tests or E2E in `test:quick` defeats its purpose — `test:quick` composes `typecheck` → `lint` → `test:unit` → `test:coverage` → `test:specs`, all of which must stay fast; `test:integration` and `test:e2e` are CRON-only
 - **Mixing concerns in `test:unit`**: `test:unit` must not spin up databases, external APIs, or network services — those belong in `test:integration`
-- **Using a real database in unit tests**: Unit tests must use mocked repositories or in-memory implementations — never a real database (no Testcontainers, no H2, no Ecto SQL Sandbox). Real databases belong in integration tests (crud-be backends via docker-compose) or E2E tests
-- **Using HTTP dispatch in integration tests**: Integration tests for crud-be backends must call service/repository functions directly — not through MockMvc, TestClient, httptest, ConnTest, WebApplicationFactory, or any equivalent HTTP dispatch. HTTP contract verification belongs in E2E tests. See [Three-Level Testing Standard](../quality/three-level-testing-standard.md) for the full level boundaries
-- **Enabling cache on crud-be `test:integration`**: Crud-be integration tests use real PostgreSQL via docker-compose — setting `cache: true` would serve stale results when database state matters. Only in-process-mocking integration tests (MSW, Godog) may enable caching
-- **`build` on interpreted-language projects**: Adding a no-op `build` to Python or Ruby just to appear consistent — if there is no compile step, there is no `build` target
-- **`typecheck` on compile-enforced languages without additional analysis**: Go and plain Java enforce types through `build`; a separate `typecheck` that only re-runs the compiler is redundant. **Exception**: Java with JSpecify + NullAway warrants `typecheck` because NullAway is a distinct null-safety pass not included in `build`
+- **Using a real database in unit tests**: Unit tests must use mocked repositories or in-memory implementations — never a real database. Real databases belong in integration tests (API backends via docker-compose) or E2E tests
+- **Using HTTP dispatch in integration tests**: Integration tests for API backends must call service/repository functions directly — not through HTTP dispatch mechanisms. HTTP contract verification belongs in E2E tests. See [Three-Level Testing Standard](../quality/three-level-testing-standard.md) for the full level boundaries
+- **Enabling cache on `test:integration` with Docker**: Integration tests that use real PostgreSQL via docker-compose must have `cache: false` — stale results when database state matters. Only in-process-mocking integration tests (MSW, Godog) may enable caching
+- **`build` on interpreted-language projects**: Adding a no-op `build` to plain Node.js scripts just to appear consistent — if there is no compile step, there is no `build` target
+- **`typecheck` on compile-enforced languages without additional analysis**: Rust enforces types through `build`; a separate `typecheck` that only re-runs the compiler may be redundant for simple projects
 - **Undeclared outputs**: Omitting `outputs` on `build` disables caching and forces full rebuilds on every run
 - **Apps-only targets on libs**: Libs do not expose `dev` or `start`; those are app-specific concepts
-- **Creating a `test:full` wrapper**: Adding a `test:full` that just chains other targets adds indirection without value — run `test:unit`, `test:integration`, and `test:e2e` directly or via CI matrix steps
+- **Creating a `test:full` wrapper**: Adding a `test:full` that just chains other targets adds indirection without value — `test:integration` and `test:e2e` run directly in scheduled CI matrix steps, not through a wrapper
 
 ## Principles Traceability
 
-| Decision                                                                                                                                                  | Principle                                                                                 |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| Consistent target names across all projects                                                                                                               | [Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md) |
-| `typecheck`, `lint`, `test:quick`, `specs:coverage` enforced at pre-push; `lint` and `test:quick` at PR merge gate; `lint` in scheduled Test CI workflows | [Automation Over Manual](../../principles/software-engineering/automation-over-manual.md) |
-| Minimum required targets per project type                                                                                                                 | [Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)      |
-| `outputs` required for cacheable targets                                                                                                                  | [Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md) |
-| Four-dimension tag scheme with controlled vocabulary declared in every `project.json`                                                                     | [Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md) |
+| Decision                                                                                                                                                                                            | Principle                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Consistent target names across all projects                                                                                                                                                         | [Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md) |
+| `typecheck`, `lint`, `test:quick` (which includes `test:unit`, `test:coverage`, `test:specs`) enforced identically at pre-push, PR gate, and main gate; `test:integration` and `test:e2e` CRON-only | [Automation Over Manual](../../principles/software-engineering/automation-over-manual.md) |
+| Mandatory-six echo-placeholder rule ensures every project participates in workspace-wide `nx affected -t <target>` with no special-casing                                                           | [Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md) |
+| Minimum required targets per project type; echo placeholders preferred over target omission                                                                                                         | [Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)      |
+| `outputs` required for cacheable targets                                                                                                                                                            | [Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md) |
+| Four-dimension tag scheme with controlled vocabulary declared in every `project.json`                                                                                                               | [Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md) |

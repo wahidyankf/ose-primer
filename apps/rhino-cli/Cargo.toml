@@ -39,10 +39,6 @@ tempfile = "3.27.0"
 tokio = { version = "1.51.0", features = ["macros", "rt-multi-thread"] }
 
 [[test]]
-name = "test_coverage"
-harness = false
-
-[[test]]
 name = "spec_coverage"
 harness = false
 
@@ -60,10 +56,6 @@ harness = false
 
 [[test]]
 name = "workflows"
-harness = false
-
-[[test]]
-name = "git"
 harness = false
 
 [[test]]

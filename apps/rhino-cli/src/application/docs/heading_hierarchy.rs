@@ -241,15 +241,11 @@ fn collect_headings(content: &str) -> Vec<Heading> {
 }
 
 /// Public re-export of [`parse_fence_open`] for use by sibling modules.
-/// In ose-primer, `internal::docs::links` uses the counterpart in `internal::docs::heading_hierarchy`.
-#[allow(dead_code)]
 pub(crate) fn parse_fence_open_pub(s: &str) -> Option<(char, usize)> {
     parse_fence_open(s)
 }
 
 /// Public re-export of [`parse_heading_level`] for use by sibling modules.
-/// In ose-primer, `internal::docs::links` uses the counterpart in `internal::docs::heading_hierarchy`.
-#[allow(dead_code)]
 pub(crate) fn parse_heading_level_pub(s: &str) -> Option<usize> {
     parse_heading_level(s)
 }

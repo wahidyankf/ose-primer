@@ -15,7 +15,7 @@ use crate::internal::git;
 /// CLI arguments for `env backup`.
 #[derive(Args, Debug)]
 pub struct EnvBackupArgs {
-    /// Backup directory (default: `~/ose-primer-env-backup`).
+    /// Backup directory (default: `~/ose-public-env-backup`).
     #[arg(long = "dir", default_value = "")]
     pub dir: String,
     /// Namespace backup by worktree/repo directory name.

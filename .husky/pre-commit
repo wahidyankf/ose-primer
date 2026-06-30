@@ -1,38 +1,24 @@
 #!/usr/bin/env sh
 set -e
 
-./scripts/git-identity-check.sh
-./scripts/check-no-env-staged.sh
+# Step 1: Environment staged guard — reject staged real .env files
+cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- env staged-guard validate
 
-# Staged-file lint gates (graceful skip if tool absent)
-STAGED_SH=$(git diff --cached --name-only | grep '\.sh$' || true)
-STAGED_DOCKER=$(git diff --cached --name-only | grep -E '(^|/)Dockerfile(\.|$)' || true)
-STAGED_ACTIONS=$(git diff --cached --name-only | grep '^\.github/workflows/' || true)
+# Step 2: Per-file formatters + tool-linters + per-file validators (file-type dispatch)
+npx lint-staged
 
-if [ -n "$STAGED_SH" ] && command -v shellcheck >/dev/null 2>&1; then
-  echo "$STAGED_SH" | xargs shellcheck --severity=warning
-elif [ -n "$STAGED_SH" ]; then
-  echo "shellcheck not installed, skipping (run: npm run doctor -- --fix)" >&2
+# Step 3: Regenerate + auto-stage harness bindings (config-sync)
+cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- harness bindings generate
+
+# Step 4: Lockfile sync — regenerate + stage package-lock.json for staged apps
+staged_pkg=$(git diff --cached --name-only --diff-filter=ACM | grep 'apps/.*/package\.json$' || true)
+if [ -n "$staged_pkg" ]; then
+  echo "$staged_pkg" | while IFS= read -r pkg_path; do
+    app_dir=$(dirname "$pkg_path")
+    if [ -f "$app_dir/package-lock.json" ]; then
+      echo "Syncing $app_dir/package-lock.json..."
+      npm install --package-lock-only --prefix "$app_dir" --silent
+      git add "$app_dir/package-lock.json"
+    fi
+  done
 fi
-
-if [ -n "$STAGED_DOCKER" ] && command -v hadolint >/dev/null 2>&1; then
-  echo "$STAGED_DOCKER" | xargs hadolint --failure-threshold warning
-elif [ -n "$STAGED_DOCKER" ]; then
-  echo "hadolint not installed, skipping (run: npm run doctor -- --fix)" >&2
-fi
-
-if [ -n "$STAGED_ACTIONS" ] && command -v actionlint >/dev/null 2>&1; then
-  # shellcheck disable=SC2086
-  actionlint $STAGED_ACTIONS
-elif [ -n "$STAGED_ACTIONS" ]; then
-  echo "actionlint not installed, skipping (run: npm run doctor -- --fix)" >&2
-fi
-
-# rhino-cli git pre-commit (config sync, format, doc validation)
-cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- git pre-commit
-
-# Affected apps: format + lint + typecheck + test:unit (mocked; per Test Lifecycle Architecture)
-# Unset git worktree env vars so subprocesses (e.g. flutter tool build) use their own git context.
-unset GIT_DIR GIT_WORK_TREE
-PARALLEL=$(( $(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4) - 1 ))
-npx nx affected -t test:quick --parallel="$PARALLEL"

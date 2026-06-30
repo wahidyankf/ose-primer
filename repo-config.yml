@@ -1,0 +1,212 @@
+# repo-config.yml — schema: rhino-cli/repo-config/v1
+#
+# Unified repository configuration. Structure is byte-identical across all three
+# repos (ose-public, ose-primer, ose-infra); values reflect each repo's actual
+# project set and surfaces. rhino-cli commands read their relevant section.
+#
+# Sections defined here:
+#   harness          — all-harness binding registry (§3.2); EVERY `harness` command reads this list
+#   coverage         — per-project test-level registry (specs:behavior:coverage + specs:domain:coverage)
+#   specs            — spec-tree structure config (specs:structure-validation)
+#   instruction-size — per-surface instruction-file byte budgets (rhino-cli harness instruction-size validate)
+#   env-contract     — surface registry for rhino-cli env validate (code↔config drift detection)
+
+harness:
+  # Authoritative harness registry — all 11 supported coding-agent harnesses.
+  # Fields per entry:
+  #   name        — harness identifier
+  #   tier        — source | generated | source-config | native
+  #   agent-dir   — directory of per-agent files (naming/duplication checks)
+  #   skills-dir  — directory of skill files (source tier only)
+  #   rules-dir   — directory of injected rules (generated tier only)
+  #   mirrors     — source agent-dir this entry must mirror (generated tier)
+  #   config      — config file path (source-config tier)
+  #   forbid-dir  — directory that must NOT exist (source-config tier)
+  #   shadow      — thin-pointer file to check for no-shadowing (native tier)
+  #   instruction — instruction surfaces this harness reads (instruction-size budget)
+  #
+  # Adding a 12th harness = one entry here; every harness command picks it up automatically.
+  - { name: claude-code, tier: source, agent-dir: .claude/agents, skills-dir: .claude/skills, instruction: [CLAUDE.md] }
+  - { name: opencode, tier: generated, agent-dir: .opencode/agents, mirrors: .claude/agents }
+  - name: amazonq
+    tier: generated
+    rules-dir: .amazonq/rules
+    instruction:
+      - .amazonq/rules/*.md
+  - name: codex
+    tier: source-config
+    config: .codex/config.toml
+    forbid-dir: .codex/agents
+    instruction:
+      - AGENTS.md
+  - {
+      name: copilot,
+      tier: native,
+      shadow: .github/copilot-instructions.md,
+      instruction: [AGENTS.md, .github/copilot-instructions.md],
+    }
+  - { name: cursor, tier: native, shadow: .cursor/rules, instruction: [AGENTS.md, .cursor/rules] }
+  - { name: windsurf, tier: native, shadow: .windsurf/rules, instruction: [AGENTS.md, .windsurf/rules] }
+  - { name: junie, tier: native, shadow: .junie/guidelines.md, instruction: [AGENTS.md, .junie/guidelines.md] }
+  - { name: antigravity, tier: native, shadow: GEMINI.md, instruction: [AGENTS.md, GEMINI.md] }
+  - { name: pi, tier: native, instruction: [AGENTS.md, CLAUDE.md] }
+  - { name: aider, tier: native, shadow: CONVENTIONS.md, instruction: [AGENTS.md, CONVENTIONS.md] }
+
+coverage:
+  # Explicit per-project test-level registry. One entry per Nx project (apps,
+  # libs, *-e2e). No convention-derived defaults — every project is listed.
+  # A scenario's level envelope P = union of `levels` across ALL entries whose
+  # `specs` glob matches that scenario's feature file.
+  # `levels` = the test levels this project runs at.
+  # `specs`  = the feature-file glob this project owns (surface-precise for apps;
+  #             per-project for libs).
+  projects:
+    # rhino-cli (tooling)
+    - name: rhino-cli
+      levels: [unit, integration]
+      specs: "specs/apps/rhino/behavior/rhino-cli/**"
+
+    # crud domain — backends (11 polyglot implementations of the same spec)
+    - name: crud-be-clojure-pedestal
+      levels: [unit, integration]
+      specs: "specs/apps/crud/behavior/crud-be/**"
+    - name: crud-be-csharp-aspnetcore
+      levels: [unit, integration]
+      specs: "specs/apps/crud/behavior/crud-be/**"
+    - name: crud-be-elixir-phoenix
+      levels: [unit, integration]
+      specs: "specs/apps/crud/behavior/crud-be/**"
+    - name: crud-be-fsharp-giraffe
+      levels: [unit, integration]
+      specs: "specs/apps/crud/behavior/crud-be/**"
+    - name: crud-be-golang-gin
+      levels: [unit, integration]
+      specs: "specs/apps/crud/behavior/crud-be/**"
+    - name: crud-be-java-springboot
+      levels: [unit, integration]
+      specs: "specs/apps/crud/behavior/crud-be/**"
+    - name: crud-be-java-vertx
+      levels: [unit, integration]
+      specs: "specs/apps/crud/behavior/crud-be/**"
+    - name: crud-be-kotlin-ktor
+      levels: [unit, integration]
+      specs: "specs/apps/crud/behavior/crud-be/**"
+    - name: crud-be-python-fastapi
+      levels: [unit, integration]
+      specs: "specs/apps/crud/behavior/crud-be/**"
+    - name: crud-be-rust-axum
+      levels: [unit, integration]
+      specs: "specs/apps/crud/behavior/crud-be/**"
+    - name: crud-be-ts-effect
+      levels: [unit, integration]
+      specs: "specs/apps/crud/behavior/crud-be/**"
+    - name: crud-be-e2e
+      levels: [e2e]
+      specs: "specs/apps/crud/behavior/crud-be/**"
+
+    # crud domain — frontends
+    - name: crud-fe-dart-flutterweb
+      levels: [unit]
+      specs: "specs/apps/crud/behavior/crud-web/**"
+    - name: crud-fe-ts-nextjs
+      levels: [unit]
+      specs: "specs/apps/crud/behavior/crud-web/**"
+    - name: crud-fe-ts-tanstack-start
+      levels: [unit]
+      specs: "specs/apps/crud/behavior/crud-web/**"
+    - name: crud-fe-e2e
+      levels: [e2e]
+      specs: "specs/apps/crud/behavior/crud-web/**"
+
+    # crud domain — fullstack
+    - name: crud-fs-ts-nextjs
+      levels: [unit]
+      specs: "specs/apps/crud/behavior/crud-web/**"
+
+    # libs
+    - name: golang-commons
+      levels: [unit]
+      specs: "specs/libs/golang-commons/**"
+    - name: ts-ui
+      levels: [unit]
+      specs: "specs/libs/ts-ui/**"
+
+specs:
+  # Areas that must carry a ddd/ folder (bounded-context registry). Lifts the
+  # hardcoded apps_with_ddd() allowlist into explicit config.
+  # An area NOT listed must NOT carry ddd/ (unlisted area with ddd/ = error).
+  ddd-areas:
+    - crud
+
+  # Areas eligible for specs:domain:coverage (explicit allowlist; distinct from
+  # ddd-areas). A project NOT listed is skipped even if it has domain/** features.
+  # Today: the crud-be backends that own domain-bounded-context feature files.
+  domain-areas:
+    - crud-be-clojure-pedestal
+    - crud-be-csharp-aspnetcore
+    - crud-be-elixir-phoenix
+    - crud-be-fsharp-giraffe
+    - crud-be-golang-gin
+    - crud-be-java-springboot
+    - crud-be-java-vertx
+    - crud-be-kotlin-ktor
+    - crud-be-python-fastapi
+    - crud-be-rust-axum
+    - crud-be-ts-effect
+
+instruction-size:
+  surfaces:
+    - glob: "AGENTS.md"
+      target: 24000
+      warn: 27000
+      fail: 30000
+    - glob: "**/AGENTS.md"
+      target: 24000
+      warn: 27000
+      fail: 30000
+    - glob: "CLAUDE.md"
+      target: 6000
+      warn: 8000
+      fail: 10000
+    - glob: ".amazonq/rules/*.md"
+      target: 4000
+      warn: 8000
+      fail: 12000
+    - glob: ".windsurf/rules/*.md"
+      target: 6000
+      warn: 9000
+      fail: 12000
+    - glob: ".cursor/rules/*.mdc"
+      target: 4000
+      warn: 8000
+      fail: 12000
+    - glob: ".junie/guidelines.md"
+      target: 6000
+      warn: 8000
+      fail: 10000
+    - glob: ".github/copilot-instructions.md"
+      target: 6000
+      warn: 8000
+      fail: 10000
+    - glob: "CONVENTIONS.md"
+      target: 10000
+      warn: 13000
+      fail: 16000
+  resolved_tree:
+    root: "CLAUDE.md"
+    target: 30000
+    warn: 34000
+    fail: 38000
+
+env-contract:
+  # Surface registry for rhino-cli env validate (code↔config drift detection).
+  # ose-primer is a scaffold template repo; its CRUD demo apps use Docker Compose
+  # environment injection at test time rather than .env.example files.
+  # Surfaces will be registered here when apps adopt .env.example conventions.
+  surfaces: []
+
+env-injection:
+  # Value-less injection contract (extends env-contract:).
+  # ose-primer scaffold apps use Docker Compose injection; no .env.example conventions yet.
+  apps: []
+  ci-harness: []
