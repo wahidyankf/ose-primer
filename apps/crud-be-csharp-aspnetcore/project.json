@@ -96,13 +96,33 @@
       "dependsOn": ["codegen"],
       "cache": true
     },
-    "specs:coverage": {
+    "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'Phase 0 — specs:coverage stubbed; C# orphan step cleanup (test-support exclusion gaps) lands in Phase 1'"
+        "command": "echo 'Phase 0 \u2014 specs:coverage stubbed; C# orphan step cleanup (test-support exclusion gaps) lands in Phase 1'"
       },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.cs"]
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:e2e: not an e2e project (echo placeholder)'"
+      }
+    },
+    "deps:audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet list package --vulnerable",
+        "cwd": "apps/crud-be-csharp-aspnetcore"
+      },
+      "cache": false
+    },
+    "compat:min-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'compat:min-version: no min-version check for this language'"
+      }
     }
   },
   "tags": ["type:app", "platform:aspnetcore", "lang:csharp", "domain:crud-be"],

@@ -95,10 +95,31 @@
       "dependsOn": ["codegen"],
       "cache": true
     },
-    "specs:coverage": {
+    "specs:behavior:coverage": {
       "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-python-fastapi",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.py"]
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:e2e: not an e2e project (echo placeholder)'"
+      }
+    },
+    "deps:audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run pip-audit",
+        "cwd": "apps/crud-be-python-fastapi"
+      },
+      "cache": false
+    },
+    "compat:min-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run vermin --target 3.11- .",
+        "cwd": "apps/crud-be-python-fastapi"
+      }
     }
   },
   "tags": ["type:app", "platform:fastapi", "lang:python", "domain:crud-be"],

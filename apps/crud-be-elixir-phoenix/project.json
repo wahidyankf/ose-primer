@@ -100,10 +100,30 @@
         "cwd": "apps/crud-be-elixir-phoenix"
       }
     },
-    "specs:coverage": {
+    "specs:behavior:coverage": {
       "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-elixir-phoenix",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.{ex,exs}"]
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:e2e: not an e2e project (echo placeholder)'"
+      }
+    },
+    "deps:audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix hex.audit && mix deps.audit",
+        "cwd": "apps/crud-be-elixir-phoenix"
+      },
+      "cache": false
+    },
+    "compat:min-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'compat:min-version: no min-version check for this language'"
+      }
     }
   },
   "tags": ["type:app", "platform:phoenix", "lang:elixir", "domain:crud-be"]

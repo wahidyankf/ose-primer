@@ -107,10 +107,30 @@
       "dependsOn": ["codegen"],
       "cache": true
     },
-    "specs:coverage": {
+    "specs:behavior:coverage": {
       "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-rust-axum",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.rs"]
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:e2e: not an e2e project (echo placeholder)'"
+      }
+    },
+    "deps:audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo audit",
+        "cwd": "apps/crud-be-rust-axum"
+      },
+      "cache": false
+    },
+    "compat:min-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo hack --manifest-path apps/crud-be-rust-axum/Cargo.toml check --rust-version"
+      }
     }
   },
   "tags": ["type:app", "platform:axum", "lang:rust", "domain:crud-be"],

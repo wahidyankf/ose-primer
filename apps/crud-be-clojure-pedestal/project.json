@@ -96,13 +96,33 @@
       "dependsOn": ["codegen"],
       "cache": true
     },
-    "specs:coverage": {
+    "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'Phase 0 — specs:coverage stubbed; orphan step impl cleanup (dead steps + Clojure extractor gaps) lands in Phase 1'"
+        "command": "echo 'Phase 0 \u2014 specs:coverage stubbed; orphan step impl cleanup (dead steps + Clojure extractor gaps) lands in Phase 1'"
       },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.clj"]
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:e2e: not an e2e project (echo placeholder)'"
+      }
+    },
+    "deps:audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:nvd check",
+        "cwd": "apps/crud-be-clojure-pedestal"
+      },
+      "cache": false
+    },
+    "compat:min-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'compat:min-version: no min-version check for this language'"
+      }
     }
   },
   "implicitDependencies": ["clojure-openapi-codegen", "crud-contracts", "rhino-cli"]

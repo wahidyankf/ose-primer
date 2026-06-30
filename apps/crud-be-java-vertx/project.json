@@ -102,13 +102,33 @@
       "dependsOn": ["codegen"],
       "cache": true
     },
-    "specs:coverage": {
+    "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'Phase 0 — specs:coverage stubbed; JVM orphan step cleanup lands in Phase 1'"
+        "command": "echo 'Phase 0 \u2014 specs:coverage stubbed; JVM orphan step cleanup lands in Phase 1'"
       },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.java"]
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:e2e: not an e2e project (echo placeholder)'"
+      }
+    },
+    "deps:audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mvn org.owasp:dependency-check-maven:check -DskipTests",
+        "cwd": "apps/crud-be-java-vertx"
+      },
+      "cache": false
+    },
+    "compat:min-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'compat:min-version: no min-version check for this language'"
+      }
     }
   },
   "tags": ["type:app", "platform:vertx", "lang:java", "domain:crud-be"],

@@ -54,6 +54,38 @@
         "cwd": "libs/clojure-openapi-codegen"
       },
       "cache": true
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:integration: no integration tests (echo placeholder)'"
+      }
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:e2e: not an e2e project (echo placeholder)'"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'typecheck: no typecheck for this language (echo placeholder)'"
+      }
+    },
+    "deps:audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:nvd check",
+        "cwd": "libs/clojure-openapi-codegen"
+      },
+      "cache": false
+    },
+    "compat:min-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'compat:min-version: no min-version check for this language'"
+      }
     }
   },
   "implicitDependencies": ["crud-contracts", "rhino-cli"]

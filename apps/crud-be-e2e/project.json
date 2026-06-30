@@ -70,13 +70,39 @@
         "cwd": "apps/crud-be-e2e"
       }
     },
-    "specs:coverage": {
+    "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'Phase 0 — specs:coverage stubbed; dead steps + .features-gen false-positive scan excluded in Phase 1'"
+        "command": "echo 'Phase 0 \u2014 specs:coverage stubbed; dead steps + .features-gen false-positive scan excluded in Phase 1'"
       },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:unit: no unit tests (echo placeholder)'"
+      }
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:integration: no integration tests (echo placeholder)'"
+      }
+    },
+    "deps:audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm audit --audit-level=moderate",
+        "cwd": "apps/crud-be-e2e"
+      },
+      "cache": false
+    },
+    "compat:min-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'compat:min-version: no min-version check for this language'"
+      }
     }
   },
   "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:crud-be"],

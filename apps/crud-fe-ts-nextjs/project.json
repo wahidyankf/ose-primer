@@ -81,13 +81,39 @@
       },
       "dependsOn": ["codegen"]
     },
-    "specs:coverage": {
+    "specs:behavior:coverage": {
       "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-web/gherkin apps/crud-fe-ts-nextjs",
       "cache": true,
       "inputs": [
         "{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature",
         "{projectRoot}/**/*.{ts,tsx}"
       ]
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:integration: no integration tests (echo placeholder)'"
+      }
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:e2e: not an e2e project (echo placeholder)'"
+      }
+    },
+    "deps:audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm audit --audit-level=moderate",
+        "cwd": "apps/crud-fe-ts-nextjs"
+      },
+      "cache": false
+    },
+    "compat:min-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'compat:min-version: no min-version check for this language'"
+      }
     }
   },
   "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:crud-fe"],

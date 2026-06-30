@@ -19,6 +19,49 @@
       "cache": true,
       "inputs": ["{projectRoot}/generated/openapi-bundled.yaml", "{projectRoot}/redocly.yaml"],
       "outputs": ["{projectRoot}/generated/docs/"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'typecheck: no typecheck for this language (echo placeholder)'"
+      }
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:unit: no unit tests (echo placeholder)'"
+      }
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:integration: no integration tests (echo placeholder)'"
+      }
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:e2e: not an e2e project (echo placeholder)'"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx run crud-contracts:lint"],
+        "parallel": false
+      }
+    },
+    "deps:audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'deps:audit: no package dependencies (OpenAPI spec container)'"
+      }
+    },
+    "compat:min-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'compat:min-version: no min-version check for this language'"
+      }
     }
   }
 }
