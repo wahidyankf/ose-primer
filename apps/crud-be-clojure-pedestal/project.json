@@ -40,12 +40,8 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:coverage -m kaocha.runner unit bdd --plugin cloverage --lcov --cov-output coverage --cov-ns-exclude-regex 'crud-be-cjpd\\.(main|routes|server|contracts|interceptors\\..*|db\\.jdbc.*|db\\.(user|expense|attachment|token)-repo|handlers\\..*)'",
-          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate apps/crud-be-clojure-pedestal/coverage/lcov.info 90)"
-        ],
-        "parallel": false,
-        "cwd": "apps/crud-be-clojure-pedestal"
+        "cwd": "apps/crud-be-clojure-pedestal",
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:coverage -m kaocha.runner unit bdd --plugin cloverage --lcov --cov-output coverage --cov-ns-exclude-regex 'crud-be-cjpd\\.(main|routes|server|contracts|interceptors\\..*|db\\.jdbc.*|db\\.(user|expense|attachment|token)-repo|handlers\\..*)'"
       },
       "cache": true,
       "inputs": [

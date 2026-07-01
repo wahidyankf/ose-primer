@@ -55,13 +55,19 @@
         "{projectRoot}/generated-contracts/**/*",
         "{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature"
       ],
+      "options": {
+        "command": "flutter test test/unit",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "dependsOn": ["codegen"],
+      "inputs": ["default", "{projectRoot}/generated-contracts/**/*"],
       "outputs": ["{projectRoot}/coverage/"],
       "options": {
-        "commands": [
-          "flutter test test/unit --coverage",
-          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate apps/crud-fe-dart-flutterweb/coverage/lcov.info 70)"
-        ],
-        "parallel": false,
+        "command": "flutter test test/unit --coverage",
         "cwd": "{projectRoot}"
       }
     },

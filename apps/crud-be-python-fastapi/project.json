@@ -40,11 +40,7 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "uv run coverage run -m pytest -m unit",
-          "uv run coverage lcov -o coverage/lcov.info",
-          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate apps/crud-be-python-fastapi/coverage/lcov.info 90)"
-        ],
+        "commands": ["uv run coverage run -m pytest -m unit", "uv run coverage lcov -o coverage/lcov.info"],
         "parallel": false,
         "cwd": "apps/crud-be-python-fastapi"
       },

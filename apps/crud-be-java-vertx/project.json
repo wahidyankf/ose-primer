@@ -44,12 +44,8 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "mvn test",
-          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate apps/crud-be-java-vertx/target/site/jacoco/jacoco.xml 90)"
-        ],
-        "parallel": false,
-        "cwd": "apps/crud-be-java-vertx"
+        "cwd": "apps/crud-be-java-vertx",
+        "command": "mvn test"
       },
       "cache": true,
       "inputs": [

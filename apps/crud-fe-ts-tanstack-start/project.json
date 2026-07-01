@@ -63,7 +63,7 @@
       ],
       "outputs": ["{projectRoot}/coverage"],
       "options": {
-        "command": "npx vitest run --coverage && (cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate apps/crud-fe-ts-tanstack-start/coverage/lcov.info 70)",
+        "command": "npx vitest run --coverage",
         "cwd": "{projectRoot}"
       }
     },

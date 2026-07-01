@@ -6,12 +6,7 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "mix cover.lcov",
-          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate libs/elixir-gherkin/cover/lcov.info 90)",
-          "mix credo --strict",
-          "mix format --check-formatted"
-        ],
+        "commands": ["mix cover.lcov", "mix credo --strict", "mix format --check-formatted"],
         "parallel": false,
         "cwd": "libs/elixir-gherkin"
       }

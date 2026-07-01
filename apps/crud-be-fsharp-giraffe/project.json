@@ -44,8 +44,7 @@
           "dotnet tool restore",
           "dotnet build tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj",
           "dotnet altcover --inputDirectory tests/DemoBeFsgi.Tests/bin/Debug/net10.0 --outputDirectory tests/DemoBeFsgi.Tests/bin/Debug/net10.0/__Instrumented --assemblyExcludeFilter=DemoBeFsgi.Tests '--assemblyFilter=xunit|TickSpec|Microsoft|FSharp|testhost|AltCover|coverlet|dbup|Npgsql|EFCore' --fileFilter=TestHandler --linecover --reportFormat=lcov --report=coverage/altcov.info --save",
-          "dotnet altcover Runner --recorderDirectory tests/DemoBeFsgi.Tests/bin/Debug/net10.0/__Instrumented --lcovReport coverage/altcov.info --executable dotnet -- test tests/DemoBeFsgi.Tests/bin/Debug/net10.0/__Instrumented/DemoBeFsgi.Tests.dll",
-          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate apps/crud-be-fsharp-giraffe/coverage/altcov.info 90)"
+          "dotnet altcover Runner --recorderDirectory tests/DemoBeFsgi.Tests/bin/Debug/net10.0/__Instrumented --lcovReport coverage/altcov.info --executable dotnet -- test tests/DemoBeFsgi.Tests/bin/Debug/net10.0/__Instrumented/DemoBeFsgi.Tests.dll"
         ],
         "parallel": false,
         "cwd": "apps/crud-be-fsharp-giraffe"

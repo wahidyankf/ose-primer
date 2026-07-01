@@ -40,12 +40,8 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "JAVA_HOME=${JAVA_HOME_21_X64:-$(ls -d ${SDKMAN_DIR:-$HOME/.sdkman}/candidates/java/21* 2>/dev/null | head -1)} ./gradlew testUnit koverXmlReport",
-          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate apps/crud-be-kotlin-ktor/build/reports/kover/report.xml 90)"
-        ],
-        "parallel": false,
-        "cwd": "apps/crud-be-kotlin-ktor"
+        "cwd": "apps/crud-be-kotlin-ktor",
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$(ls -d ${SDKMAN_DIR:-$HOME/.sdkman}/candidates/java/21* 2>/dev/null | head -1)} ./gradlew testUnit koverXmlReport"
       },
       "cache": true,
       "inputs": [

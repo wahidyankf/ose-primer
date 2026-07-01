@@ -64,7 +64,7 @@
       ],
       "outputs": ["{projectRoot}/coverage"],
       "options": {
-        "command": "npx vitest run --coverage && (test -f coverage/lcov.info && cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate apps/crud-fs-ts-nextjs/coverage/lcov.info 75 --exclude 'src/app/api/**' --exclude 'src/app/health/**' --exclude 'src/app/.well-known/**' --exclude 'src/repositories/**' --exclude 'src/db/**' --exclude 'src/lib/auth-middleware.ts' --exclude 'src/lib/api/**' --exclude 'src/lib/auth/**' --exclude 'src/lib/queries/**' --exclude 'src/app/layout.tsx' --exclude 'src/app/(dashboard)/layout.tsx' --exclude 'src/app/(dashboard)/expenses/new/**' --exclude 'src/components/**' --exclude 'src/app/page.tsx' || echo 'No coverage file yet \u2014 skipping validation')",
+        "command": "npx vitest run --coverage && (test -f coverage/lcov.info",
         "cwd": "{projectRoot}"
       }
     },

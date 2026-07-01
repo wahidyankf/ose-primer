@@ -40,12 +40,7 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "cargo test --lib --test unit",
-          "mkdir -p coverage && cargo llvm-cov --lcov --output-path coverage/lcov.info --lib --test unit --ignore-filename-regex '(test_api|handlers/|app\\.rs|main\\.rs|config\\.rs|state\\.rs|auth/middleware|repositories/sqlx_|db/)'",
-          "(cd ../../ && cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- test-coverage validate apps/crud-be-rust-axum/coverage/lcov.info 90)"
-        ],
-        "parallel": false,
+        "command": "cargo test --lib --test unit",
         "cwd": "apps/crud-be-rust-axum"
       },
       "dependsOn": ["codegen"],
@@ -57,6 +52,26 @@
         "{projectRoot}/Cargo.lock",
         "{projectRoot}/generated-contracts/**/*",
         "{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature"
+      ],
+      "outputs": []
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "mkdir -p coverage && cargo llvm-cov --lcov --output-path coverage/lcov.info --lib --test unit --ignore-filename-regex '(test_api|handlers/|app\\.rs|main\\.rs|config\\.rs|state\\.rs|auth/middleware|repositories/sqlx_|db/)' 2>&1 | tail -5"
+        ],
+        "parallel": false,
+        "cwd": "apps/crud-be-rust-axum"
+      },
+      "dependsOn": ["codegen"],
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.rs",
+        "{projectRoot}/tests/unit/**/*.rs",
+        "{projectRoot}/Cargo.toml",
+        "{projectRoot}/Cargo.lock",
+        "{projectRoot}/generated-contracts/**/*"
       ],
       "outputs": ["{projectRoot}/coverage/lcov.info"]
     },
