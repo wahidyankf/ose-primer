@@ -1,14 +1,19 @@
-//! `specs validate-counts` — checks that spec folders have the minimum required file counts.
+//! `specs counts validate` — checks that spec folders have the minimum required file counts.
 //!
-//! Port of `apps/rhino-cli/cmd/specs_validate_counts.go`.
+//! Kept as a standalone leaf (mirroring ose-infra/ose-public) because `specs structure validate`
+//! hardcodes the `specs/apps/<name>` prefix and cannot reach spec trees that live outside
+//! `specs/apps/` — e.g. `specs/libs/ts-ui`, `specs/libs/ts-ui-tokens`, `specs/libs/golang-commons`,
+//! `specs/libs/elixir-cabbage`, `specs/libs/elixir-gherkin`, `specs/libs/elixir-openapi-codegen`,
+//! `specs/libs/clojure-openapi-codegen`, whose `specs:structure-validation` Nx targets pass an
+//! explicit `specs/libs/...` folder here.
 
 use anyhow::{Error, anyhow};
 use clap::Args;
 
+use crate::application::allowlist::apps_with_ddd;
+use crate::application::specs::validate_spec_counts;
 use crate::domain::cliout::OutputFormat;
-use crate::internal::allowlist::apps_with_ddd;
 use crate::internal::git;
-use crate::internal::specs::validate_spec_counts;
 
 /// CLI arguments for `specs validate-counts`.
 #[derive(Args, Debug)]
@@ -114,7 +119,7 @@ mod tests {
     #[test]
     fn run_at_root_clean_folder_passes() {
         let dir = tempfile::tempdir().unwrap();
-        for sub in crate::internal::specs::required_spec_folders() {
+        for sub in crate::application::specs::required_spec_folders() {
             let p = dir.path().join("specs/apps/x").join(sub);
             std::fs::create_dir_all(&p).unwrap();
             std::fs::write(p.join("a.md"), "x").unwrap();

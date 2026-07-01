@@ -86,10 +86,13 @@
     "specs:structure-validation": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs structure validate"
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs counts validate specs/libs/clojure-openapi-codegen"
       },
       "cache": true,
-      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
+      "inputs": [
+        "{workspaceRoot}/apps/rhino-cli/src/**/*.rs",
+        "{workspaceRoot}/specs/libs/clojure-openapi-codegen/**/*"
+      ]
     },
     "specs:behavior:coverage": {
       "executor": "nx:run-commands",

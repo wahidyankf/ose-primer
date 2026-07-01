@@ -82,10 +82,10 @@
     "specs:structure-validation": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs structure validate"
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs counts validate specs/libs/ts-ui"
       },
       "cache": true,
-      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
+      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/libs/ts-ui/**/*"]
     },
     "specs:behavior:coverage": {
       "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate specs/libs/ts-ui/behavior/gherkin libs/ts-ui",
