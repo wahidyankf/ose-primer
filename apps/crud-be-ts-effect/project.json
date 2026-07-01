@@ -47,6 +47,7 @@
         "parallel": false,
         "cwd": "apps/crud-be-ts-effect"
       },
+      "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
         "{projectRoot}/src/**/*.ts",
@@ -67,6 +68,7 @@
         "parallel": false,
         "cwd": "apps/crud-be-ts-effect"
       },
+      "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
         "{projectRoot}/src/**/*.ts",

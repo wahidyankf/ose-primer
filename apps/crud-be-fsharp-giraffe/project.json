@@ -65,6 +65,7 @@
         "command": "dotnet test tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj --filter Category=Unit",
         "cwd": "apps/crud-be-fsharp-giraffe"
       },
+      "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
         "{projectRoot}/src/**/*.fs",

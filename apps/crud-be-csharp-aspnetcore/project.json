@@ -59,6 +59,7 @@
         "command": "dotnet test tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj",
         "cwd": "apps/crud-be-csharp-aspnetcore"
       },
+      "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
         "{projectRoot}/src/**/*.cs",

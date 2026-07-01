@@ -141,10 +141,12 @@ mod tests {
             !config.coverage.projects.is_empty(),
             "coverage.projects must not be empty"
         );
-        // specs.ddd-areas must include crud (primer's polyglot domain area)
+        // specs.ddd-areas is intentionally empty: crud is a polyglot reference/demo app (11
+        // independently-structured backend implementations), not a single DDD-modeled
+        // codebase — see repo-config.yml's inline rationale.
         assert!(
-            config.specs.ddd_areas.contains(&"crud".to_string()),
-            "ddd-areas must contain crud"
+            config.specs.ddd_areas.is_empty(),
+            "ddd-areas must be empty for primer (crud is not DDD-modeled)"
         );
         // specs.domain-areas must include the crud-be backends
         assert!(

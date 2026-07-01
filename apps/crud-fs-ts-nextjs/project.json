@@ -55,6 +55,7 @@
     },
     "test:quick": {
       "executor": "nx:run-commands",
+      "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
         "default",

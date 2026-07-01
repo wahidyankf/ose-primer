@@ -33,5 +33,4 @@ specifications can drive fully interchangeable backend and frontend implementati
 - **Container diagram**: [container.md](../containers/container.md)
 - **Backend component diagram**: [component-be.md](../components/be/component-be.md)
 - **Frontend component diagram**: [component-web.md](../components/web/component-web.md)
-- **DDD registry**: [bounded-contexts.yaml](../ddd/bounded-contexts.yaml)
 - **Parent**: [crud specs](../README.md)

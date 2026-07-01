@@ -16,7 +16,7 @@ import (
 
 var specsTimeutilDir = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/libs/golang-commons/gherkin/timeutil")
+	return filepath.Join(filepath.Dir(f), "../../../specs/libs/golang-commons/behavior/gherkin/timeutil")
 }()
 
 type timestampSteps struct {

@@ -23,6 +23,16 @@ runs:
       shell: bash
       run: npm ci
 
+    - name: Cache openapi-generator-cli jar
+      uses: actions/cache@v5
+      with:
+        path: node_modules/@openapitools/openapi-generator-cli/versions
+        key: openapi-generator-cli-${{ hashFiles('openapitools.json') }}
+
+    - name: Pre-fetch openapi-generator-cli jar (sequential — avoids concurrent-download race across parallel codegen targets)
+      shell: bash
+      run: npx openapi-generator-cli version-manager set "$(node -p "require('./openapitools.json')['generator-cli'].version")"
+
     - name: Configure Nx cache
       uses: actions/cache@v5
       with:

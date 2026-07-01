@@ -42,6 +42,7 @@
         "cwd": "apps/crud-be-elixir-phoenix",
         "command": "MIX_ENV=test mix coveralls.lcov --only unit"
       },
+      "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
         "{projectRoot}/lib/**/*.ex",
@@ -57,6 +58,7 @@
         "command": "MIX_ENV=test mix test --only unit",
         "cwd": "apps/crud-be-elixir-phoenix"
       },
+      "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
         "{projectRoot}/lib/**/*.ex",

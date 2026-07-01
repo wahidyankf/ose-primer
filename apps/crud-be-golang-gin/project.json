@@ -60,6 +60,7 @@
         "command": "CGO_ENABLED=0 go test -v -run TestUnit ./... -count=1",
         "cwd": "apps/crud-be-golang-gin"
       },
+      "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
         "{projectRoot}/internal/**/*.go",

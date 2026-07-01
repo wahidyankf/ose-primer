@@ -135,8 +135,16 @@ specs:
   # Areas that must carry a ddd/ folder (bounded-context registry). Lifts the
   # hardcoded apps_with_ddd() allowlist into explicit config.
   # An area NOT listed must NOT carry ddd/ (unlisted area with ddd/ = error).
-  ddd-areas:
-    - crud
+  # crud is intentionally NOT listed: it is a polyglot reference/demo app (11
+  # backend implementations sharing one flat CRUD feature set), not a
+  # DDD-modeled production codebase like ose/organiclever. A bounded-context
+  # registry requires each context's `code` path to be a single directory
+  # whose subdirectories match its declared `layers` exactly — that
+  # presupposes one bounded-context-organized codebase, not 11 independently
+  # structured polyglot implementations. Forcing crud into ddd-areas would
+  # require restructuring all 11 backends into identical DDD layering, which
+  # is out of scope for SDLC parity.
+  ddd-areas: []
 
   # Areas eligible for specs:domain:coverage (explicit allowlist; distinct from
   # ddd-areas). A project NOT listed is skipped even if it has domain/** features.

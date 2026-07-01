@@ -47,6 +47,7 @@
         "cwd": "apps/crud-be-java-springboot",
         "command": "mvn test"
       },
+      "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
         "{projectRoot}/src/**",
@@ -62,6 +63,7 @@
         "command": "mvn test",
         "cwd": "apps/crud-be-java-springboot"
       },
+      "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
         "{projectRoot}/src/**",
