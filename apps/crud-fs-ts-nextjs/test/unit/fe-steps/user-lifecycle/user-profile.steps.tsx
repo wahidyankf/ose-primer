@@ -118,6 +118,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       );
       await waitFor(() => {
         expect(screen.getByText("alice")).toBeInTheDocument();
+        expect(screen.getByDisplayValue("Alice")).toBeInTheDocument();
       });
     });
 

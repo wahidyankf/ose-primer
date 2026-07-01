@@ -64,7 +64,7 @@
       ],
       "outputs": ["{projectRoot}/coverage"],
       "options": {
-        "command": "npx vitest run --coverage && (test -f coverage/lcov.info",
+        "command": "npx vitest run --coverage",
         "cwd": "{projectRoot}"
       }
     },
