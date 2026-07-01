@@ -86,7 +86,7 @@
       }
     },
     "specs:behavior:coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs validate coverage --shared-steps --exclude-dir codegen specs/apps/crud/behavior/crud-web/gherkin apps/crud-fe-dart-flutterweb",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps --exclude-dir codegen specs/apps/crud/behavior/crud-web/gherkin apps/crud-fe-dart-flutterweb",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature", "{projectRoot}/**/*.dart"]
     },
