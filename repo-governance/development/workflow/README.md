@@ -1,3 +1,12 @@
+---
+title: "Workflow Development"
+description: "Development workflow conventions governing how contributors and agents execute work — TDD, commits, branching, environment reproducibility, grilling, and CI."
+category: explanation
+subcategory: development
+tags: []
+created: 2026-05-12
+---
+
 # Workflow Development
 
 Development workflow standards covering implementation methodology, git workflows, commit messages, and reproducible environments.

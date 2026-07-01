@@ -1,5 +1,6 @@
 ---
 name: ci-quality-gate
+title: "ci-quality-gate"
 goal: Validate all projects conform to CI/CD standards and fix non-compliance iteratively
 termination: "Zero findings remain after validation or max-iterations reached (max-iterations defaults to 7, escalation warning at 5)"
 inputs:

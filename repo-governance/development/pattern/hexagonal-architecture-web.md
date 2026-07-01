@@ -1,3 +1,18 @@
+---
+title: Hexagonal Architecture — Web/FE Apps
+description: Hexagonal architecture specialization for frontend/web apps — layer directories, per-app source roots, and forbidden imports
+category: explanation
+subcategory: development
+tags:
+  - architecture
+  - hexagonal
+  - web
+  - frontend
+  - typescript
+  - dart
+created: 2026-07-01
+---
+
 # Hexagonal Architecture — Web/FE Apps
 
 Canonical hexagonal layer conventions for the four frontend apps in ose-primer.

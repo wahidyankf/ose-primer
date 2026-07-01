@@ -1,5 +1,6 @@
 ---
 name: docs-software-engineering-separation-quality-gate
+title: "docs-software-engineering-separation-quality-gate"
 goal: Validate software engineering documentation separation between demo style guides and demo educational content, apply fixes iteratively until zero findings achieved
 termination: "Zero findings on two consecutive validations (max-iterations defaults to 7, escalation warning at 5)"
 inputs:

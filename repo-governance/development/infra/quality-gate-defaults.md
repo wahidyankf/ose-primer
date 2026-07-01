@@ -1,6 +1,6 @@
 ---
 title: "Quality Gate Workflow Defaults Convention"
-description: Canonical default values (mode: strict, max-iterations: 7) that all quality gate workflows in this repository must use, so new workflows are consistent and existing workflows are auditable
+description: "Canonical default values (mode: strict, max-iterations: 7) that all quality gate workflows in this repository must use, so new workflows are consistent and existing workflows are auditable"
 category: explanation
 subcategory: development
 tags:
@@ -9,6 +9,7 @@ tags:
   - ci
   - defaults
   - strict-mode
+created: 2026-04-26
 ---
 
 # Quality Gate Workflow Defaults Convention

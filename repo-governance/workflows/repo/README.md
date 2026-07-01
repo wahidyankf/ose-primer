@@ -1,3 +1,12 @@
+---
+title: "Repository Workflows"
+description: "Orchestrated repository-level governance workflows — rules consistency, harness compatibility (parity + external drift), ose-primer content synchronization, and dependency bump planning."
+category: explanation
+subcategory: workflows
+tags: []
+created: 2026-05-12
+---
+
 # Repository Workflows
 
 Orchestrated workflows for validating repository-level operations across principles, conventions, development practices, and agents.

@@ -1,5 +1,6 @@
 ---
 name: repo-harness-compatibility-quality-gate
+title: "repo-harness-compatibility-quality-gate"
 goal: "Detect external drift between each supported coding-agent harness's current upstream conventions and the repository's platform-bindings catalog plus committed binding files, then apply fixes iteratively until zero findings achieved"
 termination: "Zero drift findings on two consecutive validations (max-iterations defaults to 7, escalation warning at 5)"
 inputs:

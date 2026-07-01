@@ -1,3 +1,17 @@
+---
+title: Hexagonal Architecture — CLI Apps
+description: Hexagonal architecture specialization for CLI apps — commands as inbound adapters, layer responsibilities, and forbidden imports
+category: explanation
+subcategory: development
+tags:
+  - architecture
+  - hexagonal
+  - cli
+  - rust
+  - fsharp
+created: 2026-05-26
+---
+
 # Hexagonal Architecture — CLI Apps
 
 Canonical hexagonal layer conventions for the CLI app in ose-primer:

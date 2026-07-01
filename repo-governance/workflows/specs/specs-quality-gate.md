@@ -1,5 +1,6 @@
 ---
 name: specs-quality-gate
+title: "specs-quality-gate"
 goal: "Validate explicitly listed specs/ folders for structural completeness, content accuracy, internal consistency, and cross-folder coherence, then apply fixes iteratively until zero findings achieved"
 termination: "Zero findings at the configured mode threshold on two consecutive validations (max-iterations defaults to 7, escalation warning at 5)"
 inputs:

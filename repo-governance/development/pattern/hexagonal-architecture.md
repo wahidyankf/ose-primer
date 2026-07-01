@@ -1,3 +1,16 @@
+---
+title: Hexagonal Architecture
+description: Core hexagonal architecture pattern — ports, adapters, dependency rule, and app-type specializations
+category: explanation
+subcategory: development
+tags:
+  - architecture
+  - hexagonal
+  - ports-and-adapters
+  - dependency-rule
+created: 2026-05-26
+---
+
 # Hexagonal Architecture
 
 Hexagonal Architecture (also called Ports and Adapters) is the canonical structural pattern

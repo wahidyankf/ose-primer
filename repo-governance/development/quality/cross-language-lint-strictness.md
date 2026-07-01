@@ -1,3 +1,15 @@
+---
+title: Cross-Language Lint Strictness
+description: Uniform warning-and-above lint threshold across every language and artifact type in this repository.
+category: development
+subcategory: quality
+tags:
+  - lint
+  - quality
+  - ci
+created: 2026-06-10
+---
+
 # Cross-Language Lint Strictness
 
 This repository enforces a **uniform strictness threshold across every language

@@ -1,3 +1,18 @@
+---
+title: Reproducible Environments
+description: Practices for creating consistent, reproducible development and build environments
+category: explanation
+subcategory: development
+tags:
+  - development
+  - reproducibility
+  - volta
+  - docker
+  - environment
+  - dependencies
+created: 2025-12-28
+---
+
 # Reproducible Environments
 
 Practices for creating consistent, reproducible development and build environments:

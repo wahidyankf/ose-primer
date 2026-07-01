@@ -1,6 +1,6 @@
 ---
 title: "Diagram and Schema Convention"
-description: Standards for using Mermaid diagrams and ASCII art in open-sharia-enterprise markdown files. Includes color-blind accessibility requirements and UI mockup standards for plan docs (both-tiers rule: low-fi ASCII wireframe + hi-fi Excalidraw `.excalidraw.png`, design funnel, rendering-support matrix)
+description: "Standards for using Mermaid diagrams and ASCII art in open-sharia-enterprise markdown files. Includes color-blind accessibility requirements and UI mockup standards for plan docs (both-tiers rule: low-fi ASCII wireframe + hi-fi Excalidraw `.excalidraw.png`, design funnel, rendering-support matrix)"
 category: explanation
 subcategory: conventions
 tags:
@@ -15,6 +15,7 @@ tags:
   - plan-docs
   - wireframe
   - excalidraw
+created: 2025-11-24
 ---
 
 # Diagram and Schema Convention

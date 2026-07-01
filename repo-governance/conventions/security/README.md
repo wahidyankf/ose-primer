@@ -1,3 +1,15 @@
+---
+title: "Security Conventions"
+description: Repository security conventions governing agent behavior and data protection
+category: explanation
+subcategory: conventions
+tags:
+  - index
+  - security
+  - conventions
+created: 2026-05-24
+---
+
 # Security Conventions
 
 Conventions governing secrets, environment variables, and agent access controls.

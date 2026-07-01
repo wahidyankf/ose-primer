@@ -1,3 +1,15 @@
+---
+title: "Infrastructure Workflows"
+description: Workflows for development environment and infrastructure setup
+category: explanation
+subcategory: workflows
+tags:
+  - index
+  - workflows
+  - infrastructure
+created: 2026-05-12
+---
+
 # Infrastructure Workflows
 
 Infrastructure-related workflows for environment setup, toolchain initialization, and operational procedures.

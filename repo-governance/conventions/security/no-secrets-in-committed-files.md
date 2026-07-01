@@ -1,3 +1,16 @@
+---
+title: "No Secrets in Committed Files"
+description: Hard iron rule — no system secret may enter any git-tracked file. Full standards in secrets-and-env-standards.md.
+category: explanation
+subcategory: conventions
+tags:
+  - security
+  - secrets
+  - git
+  - data-protection
+created: 2026-06-01
+---
+
 # No Secrets in Committed Files Convention
 
 Never put system secrets (SSH keys, passwords, API keys, tokens, connection strings with
