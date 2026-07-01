@@ -32,7 +32,17 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 
 ## Library Specs
 
+- **[clojure-openapi-codegen/](./libs/clojure-openapi-codegen/)** — OpenAPI-to-Malli schema
+  codegen specifications (Clojure)
+- **[elixir-cabbage/](./libs/elixir-cabbage/)** — Story BDD feature-compilation specifications
+  (Elixir, OSE fork of `cabbage-ex/cabbage`)
+- **[elixir-gherkin/](./libs/elixir-gherkin/)** — Gherkin feature-file parsing specifications
+  (Elixir, OSE fork of `cabbage-ex/gherkin`)
+- **[elixir-openapi-codegen/](./libs/elixir-openapi-codegen/)** — OpenAPI-to-Elixir-struct schema
+  codegen specifications (Elixir)
 - **[golang-commons/](./libs/golang-commons/)** — Shared Go utility specifications (godog)
+- **[ts-ui/](./libs/ts-ui/)** — Shared React component library specifications (Vitest)
+- **[ts-ui-tokens/](./libs/ts-ui-tokens/)** — Shared design token specifications (TypeScript)
 
 ## Standard Folder Pattern
 
