@@ -10,7 +10,7 @@
 use std::path::Path;
 use std::sync::OnceLock;
 
-use anyhow::{anyhow, Error};
+use anyhow::{Error, anyhow};
 use glob::Pattern;
 use regex::Regex;
 use walkdir::WalkDir;

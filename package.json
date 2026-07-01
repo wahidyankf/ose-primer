@@ -81,7 +81,7 @@
     "*.json": "prettier --write",
     "*.go": "gofmt -w",
     "*.fs": "fantomas",
-    "*.rs": "rustfmt",
+    "*.rs": "rustfmt --edition 2024",
     "*.{ex,exs}": "scripts/format-elixir.sh",
     "*.py": "ruff format",
     "*.cs": "scripts/format-csharp.sh",
