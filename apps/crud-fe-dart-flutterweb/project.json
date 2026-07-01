@@ -7,7 +7,7 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g dart -o $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts --additional-properties=pubName=crud_contracts --global-property=modelDocs=false,apiDocs=false && mv $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts/lib/api.dart $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts/lib/crud_contracts.dart && cd $(pwd)/apps/crud-fe-dart-flutterweb && flutter pub get"
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -g dart -o $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts --additional-properties=pubName=crud_contracts --global-property=modelDocs=false,apiDocs=false && for i in 1 2 3 4 5; do [ -f $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts/lib/api.dart ] && break; sleep 1; done && mv $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts/lib/api.dart $(pwd)/apps/crud-fe-dart-flutterweb/generated-contracts/lib/crud_contracts.dart && cd $(pwd)/apps/crud-fe-dart-flutterweb && flutter pub get"
       },
       "dependsOn": ["crud-contracts:bundle"],
       "cache": true,

@@ -131,21 +131,17 @@ type ExpenseModuleTests() =
 
 [<Trait("Category", "Unit")>]
 type JwtServiceTests() =
-    let originalSecret =
-        Environment.GetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET")
-
+    // xUnit runs test classes across an assembly in parallel by default. Setting-then-restoring
+    // this process-global env var here raced with any concurrently-running test that reads it
+    // (e.g. HttpMiddlewareCoverageTests' login flow), intermittently seeing it nulled out mid-run.
+    // TestFixture's module-level `do` block already sets this once, permanently, for the whole
+    // test run (setdefault semantics) — mirror that here instead of a destructive save/restore.
     do
-        Environment.SetEnvironmentVariable(
-            "CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET",
-            "dev-jwt-secret-at-least-32-characters-long-for-hmac"
-        )
-
-    interface IDisposable with
-        member _.Dispose() =
-            if originalSecret = null then
-                Environment.SetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET", null)
-            else
-                Environment.SetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET", originalSecret)
+        if String.IsNullOrEmpty(Environment.GetEnvironmentVariable("CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET")) then
+            Environment.SetEnvironmentVariable(
+                "CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET",
+                "dev-jwt-secret-at-least-32-characters-long-for-hmac"
+            )
 
     [<Fact>]
     member _.``validateToken returns None for invalid token``() =
