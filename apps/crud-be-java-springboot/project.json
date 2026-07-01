@@ -90,7 +90,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "nx run rhino-cli:build --skip-nx-cache && ./apps/rhino-cli/dist/rhino-cli lang java validate null-safety-annotations --dir apps/crud-be-java-springboot/src/main/java",
+          "nx run rhino-cli:build --skip-nx-cache && ./apps/rhino-cli/dist/rhino-cli lang java null-safety-annotations validate --dir apps/crud-be-java-springboot/src/main/java",
           "cd apps/crud-be-java-springboot && mvn compile -Pnullcheck"
         ],
         "parallel": false
