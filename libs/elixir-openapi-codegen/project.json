@@ -6,8 +6,20 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["mix cover.lcov", "mix credo --strict", "mix format --check-formatted"],
-        "parallel": false,
+        "commands": [
+          "nx run elixir-openapi-codegen:typecheck",
+          "nx run elixir-openapi-codegen:lint",
+          "nx run elixir-openapi-codegen:test:unit",
+          "nx run elixir-openapi-codegen:test:coverage",
+          "nx run elixir-openapi-codegen:test:specs"
+        ],
+        "parallel": false
+      }
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix cover.lcov",
         "cwd": "libs/elixir-openapi-codegen"
       }
     },
@@ -50,6 +62,31 @@
       "options": {
         "command": "echo 'test:e2e: not an e2e project (echo placeholder)'"
       }
+    },
+    "specs:structure-validation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs structure validate"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
+    },
+    "specs:behavior:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'specs:behavior:coverage: no Gherkin behavior specs for this codegen library (echo placeholder)'"
+      }
+    },
+    "test:specs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run elixir-openapi-codegen:specs:structure-validation",
+          "nx run elixir-openapi-codegen:specs:behavior:coverage"
+        ],
+        "parallel": false
+      },
+      "cache": true
     },
     "deps:audit": {
       "executor": "nx:run-commands",

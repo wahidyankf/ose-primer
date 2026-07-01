@@ -31,6 +31,20 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
+        "commands": [
+          "nx run clojure-openapi-codegen:typecheck",
+          "nx run clojure-openapi-codegen:lint",
+          "nx run clojure-openapi-codegen:test:unit",
+          "nx run clojure-openapi-codegen:test:coverage",
+          "nx run clojure-openapi-codegen:test:specs"
+        ],
+        "parallel": false
+      },
+      "cache": true
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
         "cwd": "libs/clojure-openapi-codegen",
         "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:coverage -m kaocha.runner unit --plugin cloverage --lcov --cov-output coverage"
       },
@@ -68,6 +82,31 @@
       "options": {
         "command": "echo 'typecheck: no typecheck for this language (echo placeholder)'"
       }
+    },
+    "specs:structure-validation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs structure validate"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
+    },
+    "specs:behavior:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'specs:behavior:coverage: no Gherkin behavior specs for this codegen library (echo placeholder)'"
+      }
+    },
+    "test:specs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run clojure-openapi-codegen:specs:structure-validation",
+          "nx run clojure-openapi-codegen:specs:behavior:coverage"
+        ],
+        "parallel": false
+      },
+      "cache": true
     },
     "deps:audit": {
       "executor": "nx:run-commands",

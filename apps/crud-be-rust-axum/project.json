@@ -40,20 +40,16 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo test --lib --test unit",
-        "cwd": "apps/crud-be-rust-axum"
+        "commands": [
+          "nx run crud-be-rust-axum:typecheck",
+          "nx run crud-be-rust-axum:lint",
+          "nx run crud-be-rust-axum:test:unit",
+          "nx run crud-be-rust-axum:test:coverage",
+          "nx run crud-be-rust-axum:test:specs"
+        ],
+        "parallel": false
       },
-      "dependsOn": ["codegen"],
-      "cache": true,
-      "inputs": [
-        "{projectRoot}/src/**/*.rs",
-        "{projectRoot}/tests/unit/**/*.rs",
-        "{projectRoot}/Cargo.toml",
-        "{projectRoot}/Cargo.lock",
-        "{projectRoot}/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature"
-      ],
-      "outputs": []
+      "cache": true
     },
     "test:coverage": {
       "executor": "nx:run-commands",
@@ -126,6 +122,31 @@
       "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-rust-axum",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.rs"]
+    },
+    "specs:structure-validation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs structure validate"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
+    },
+    "specs:domain:coverage": {
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs domain-coverage validate --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-rust-axum",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.rs"]
+    },
+    "test:specs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run crud-be-rust-axum:specs:structure-validation",
+          "nx run crud-be-rust-axum:specs:behavior:coverage",
+          "nx run crud-be-rust-axum:specs:domain:coverage"
+        ],
+        "parallel": false
+      },
+      "cache": true
     },
     "test:e2e": {
       "executor": "nx:run-commands",

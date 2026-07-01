@@ -55,6 +55,20 @@
     },
     "test:quick": {
       "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run crud-fe-ts-tanstack-start:typecheck",
+          "nx run crud-fe-ts-tanstack-start:lint",
+          "nx run crud-fe-ts-tanstack-start:test:unit",
+          "nx run crud-fe-ts-tanstack-start:test:coverage",
+          "nx run crud-fe-ts-tanstack-start:test:specs"
+        ],
+        "parallel": false
+      },
+      "cache": true
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
       "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
@@ -82,6 +96,14 @@
       },
       "dependsOn": ["codegen"]
     },
+    "specs:structure-validation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs structure validate"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
+    },
     "specs:behavior:coverage": {
       "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-web/gherkin apps/crud-fe-ts-tanstack-start",
       "cache": true,
@@ -89,6 +111,17 @@
         "{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature",
         "{projectRoot}/**/*.{ts,tsx}"
       ]
+    },
+    "test:specs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run crud-fe-ts-tanstack-start:specs:structure-validation",
+          "nx run crud-fe-ts-tanstack-start:specs:behavior:coverage"
+        ],
+        "parallel": false
+      },
+      "cache": true
     },
     "test:integration": {
       "executor": "nx:run-commands",

@@ -55,6 +55,20 @@
     },
     "test:quick": {
       "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run crud-fs-ts-nextjs:typecheck",
+          "nx run crud-fs-ts-nextjs:lint",
+          "nx run crud-fs-ts-nextjs:test:unit",
+          "nx run crud-fs-ts-nextjs:test:coverage",
+          "nx run crud-fs-ts-nextjs:test:specs"
+        ],
+        "parallel": false
+      },
+      "cache": true
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
       "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
@@ -92,13 +106,32 @@
       },
       "cache": false
     },
+    "specs:structure-validation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs structure validate"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
+    },
     "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'Phase 0 \u2014 specs:coverage stubbed; TS fullstack test-support orphan step cleanup lands in Phase 1'"
+        "command": "echo 'Phase 0 — specs:coverage stubbed; TS fullstack test-support orphan step cleanup lands in Phase 1'"
       },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
+    },
+    "test:specs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run crud-fs-ts-nextjs:specs:structure-validation",
+          "nx run crud-fs-ts-nextjs:specs:behavior:coverage"
+        ],
+        "parallel": false
+      },
+      "cache": true
     },
     "test:e2e": {
       "executor": "nx:run-commands",

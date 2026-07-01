@@ -29,11 +29,22 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["tsc --noEmit", "npx oxlint@latest ."],
-        "parallel": true,
-        "cwd": "{projectRoot}"
+        "commands": [
+          "nx run crud-fe-e2e:typecheck",
+          "nx run crud-fe-e2e:lint",
+          "nx run crud-fe-e2e:test:unit",
+          "nx run crud-fe-e2e:test:coverage",
+          "nx run crud-fe-e2e:test:specs"
+        ],
+        "parallel": false
       },
-      "inputs": ["default", "{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature"]
+      "cache": true
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:coverage: no coverage tool configured (echo placeholder)'"
+      }
     },
     "test:e2e": {
       "executor": "nx:run-commands",
@@ -63,10 +74,26 @@
         "cwd": "{projectRoot}"
       }
     },
+    "specs:structure-validation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs structure validate"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
+    },
     "specs:behavior:coverage": {
       "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps --exclude-dir codegen specs/apps/crud/behavior/crud-web/gherkin apps/crud-fe-e2e",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
+    },
+    "test:specs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx run crud-fe-e2e:specs:structure-validation", "nx run crud-fe-e2e:specs:behavior:coverage"],
+        "parallel": false
+      },
+      "cache": true
     },
     "test:unit": {
       "executor": "nx:run-commands",

@@ -41,6 +41,20 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
+          "nx run crud-be-fsharp-giraffe:typecheck",
+          "nx run crud-be-fsharp-giraffe:lint",
+          "nx run crud-be-fsharp-giraffe:test:unit",
+          "nx run crud-be-fsharp-giraffe:test:coverage",
+          "nx run crud-be-fsharp-giraffe:test:specs"
+        ],
+        "parallel": false
+      },
+      "cache": true
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
           "dotnet tool restore",
           "dotnet build tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj",
           "dotnet altcover --inputDirectory tests/DemoBeFsgi.Tests/bin/Debug/net10.0 --outputDirectory tests/DemoBeFsgi.Tests/bin/Debug/net10.0/__Instrumented --assemblyExcludeFilter=DemoBeFsgi.Tests '--assemblyFilter=xunit|TickSpec|Microsoft|FSharp|testhost|AltCover|coverlet|dbup|Npgsql|EFCore' --fileFilter=TestHandler --linecover --reportFormat=lcov --report=coverage/altcov.info --save",
@@ -104,10 +118,35 @@
       "dependsOn": ["codegen"],
       "cache": true
     },
+    "specs:structure-validation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs structure validate"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
+    },
     "specs:behavior:coverage": {
       "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-fsharp-giraffe",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.fs"]
+    },
+    "specs:domain:coverage": {
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs domain-coverage validate --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-fsharp-giraffe",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.fs"]
+    },
+    "test:specs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run crud-be-fsharp-giraffe:specs:structure-validation",
+          "nx run crud-be-fsharp-giraffe:specs:behavior:coverage",
+          "nx run crud-be-fsharp-giraffe:specs:domain:coverage"
+        ],
+        "parallel": false
+      },
+      "cache": true
     },
     "test:e2e": {
       "executor": "nx:run-commands",

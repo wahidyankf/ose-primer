@@ -40,6 +40,20 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
+        "commands": [
+          "nx run crud-be-golang-gin:typecheck",
+          "nx run crud-be-golang-gin:lint",
+          "nx run crud-be-golang-gin:test:unit",
+          "nx run crud-be-golang-gin:test:coverage",
+          "nx run crud-be-golang-gin:test:specs"
+        ],
+        "parallel": false
+      },
+      "cache": true
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
         "command": "CGO_ENABLED=0 go test -coverprofile=cover.out ./... -count=1 && head -1 cover.out > cover_unit.out && grep -v 'gorm_store\\|internal/server\\|cmd/server\\|generated-contracts' cover.out >> cover_unit.out",
         "cwd": "apps/crud-be-golang-gin"
       },
@@ -102,13 +116,41 @@
         "cwd": "apps/crud-be-golang-gin"
       }
     },
+    "specs:structure-validation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs structure validate"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
+    },
     "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'Phase 0 \u2014 specs:coverage stubbed; Go godog dead-step cleanup + regex orphan analysis lands in Phase 1'"
+        "command": "echo 'Phase 0 — specs:coverage stubbed; Go godog dead-step cleanup + regex orphan analysis lands in Phase 1'"
       },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.go"]
+    },
+    "specs:domain:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'Phase 0 — specs:domain:coverage stubbed; Go godog dead-step cleanup + regex orphan analysis lands in Phase 1'"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.go"]
+    },
+    "test:specs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run crud-be-golang-gin:specs:structure-validation",
+          "nx run crud-be-golang-gin:specs:behavior:coverage",
+          "nx run crud-be-golang-gin:specs:domain:coverage"
+        ],
+        "parallel": false
+      },
+      "cache": true
     },
     "test:e2e": {
       "executor": "nx:run-commands",

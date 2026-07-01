@@ -44,6 +44,20 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
+        "commands": [
+          "nx run crud-be-java-springboot:typecheck",
+          "nx run crud-be-java-springboot:lint",
+          "nx run crud-be-java-springboot:test:unit",
+          "nx run crud-be-java-springboot:test:coverage",
+          "nx run crud-be-java-springboot:test:specs"
+        ],
+        "parallel": false
+      },
+      "cache": true
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
         "cwd": "apps/crud-be-java-springboot",
         "command": "mvn test"
       },
@@ -100,13 +114,41 @@
       "dependsOn": ["codegen"],
       "cache": true
     },
+    "specs:structure-validation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs structure validate"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
+    },
     "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'Phase 0 \u2014 specs:coverage stubbed; JVM orphan step cleanup lands in Phase 1'"
+        "command": "echo 'Phase 0 — specs:coverage stubbed; JVM orphan step cleanup lands in Phase 1'"
       },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.java"]
+    },
+    "specs:domain:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'Phase 0 — specs:domain:coverage stubbed; JVM orphan step cleanup lands in Phase 1'"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.java"]
+    },
+    "test:specs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run crud-be-java-springboot:specs:structure-validation",
+          "nx run crud-be-java-springboot:specs:behavior:coverage",
+          "nx run crud-be-java-springboot:specs:domain:coverage"
+        ],
+        "parallel": false
+      },
+      "cache": true
     },
     "test:e2e": {
       "executor": "nx:run-commands",

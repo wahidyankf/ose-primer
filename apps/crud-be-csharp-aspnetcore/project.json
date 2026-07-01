@@ -40,6 +40,20 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
+        "commands": [
+          "nx run crud-be-csharp-aspnetcore:typecheck",
+          "nx run crud-be-csharp-aspnetcore:lint",
+          "nx run crud-be-csharp-aspnetcore:test:unit",
+          "nx run crud-be-csharp-aspnetcore:test:coverage",
+          "nx run crud-be-csharp-aspnetcore:test:specs"
+        ],
+        "parallel": false
+      },
+      "cache": true
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
         "cwd": "apps/crud-be-csharp-aspnetcore",
         "command": "dotnet test tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj --collect:'XPlat Code Coverage' --results-directory coverage --settings tests/DemoBeCsas.Tests/coverage.runsettings"
       },
@@ -93,13 +107,41 @@
       "dependsOn": ["codegen"],
       "cache": true
     },
+    "specs:structure-validation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs structure validate"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
+    },
     "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'Phase 0 \u2014 specs:coverage stubbed; C# orphan step cleanup (test-support exclusion gaps) lands in Phase 1'"
+        "command": "echo 'Phase 0 — specs:coverage stubbed; C# orphan step cleanup (test-support exclusion gaps) lands in Phase 1'"
       },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.cs"]
+    },
+    "specs:domain:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'Phase 0 — specs:domain:coverage stubbed; C# orphan step cleanup (test-support exclusion gaps) lands in Phase 1'"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.cs"]
+    },
+    "test:specs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run crud-be-csharp-aspnetcore:specs:structure-validation",
+          "nx run crud-be-csharp-aspnetcore:specs:behavior:coverage",
+          "nx run crud-be-csharp-aspnetcore:specs:domain:coverage"
+        ],
+        "parallel": false
+      },
+      "cache": true
     },
     "test:e2e": {
       "executor": "nx:run-commands",

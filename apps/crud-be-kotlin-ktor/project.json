@@ -40,6 +40,20 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
+        "commands": [
+          "nx run crud-be-kotlin-ktor:typecheck",
+          "nx run crud-be-kotlin-ktor:lint",
+          "nx run crud-be-kotlin-ktor:test:unit",
+          "nx run crud-be-kotlin-ktor:test:coverage",
+          "nx run crud-be-kotlin-ktor:test:specs"
+        ],
+        "parallel": false
+      },
+      "cache": true
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
         "cwd": "apps/crud-be-kotlin-ktor",
         "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$(ls -d ${SDKMAN_DIR:-$HOME/.sdkman}/candidates/java/21* 2>/dev/null | head -1)} ./gradlew testUnit koverXmlReport"
       },
@@ -92,13 +106,41 @@
       "dependsOn": ["codegen"],
       "cache": true
     },
+    "specs:structure-validation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs structure validate"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
+    },
     "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'Phase 0 \u2014 specs:coverage stubbed; Kotlin JVM escape-sequence unescaping + multi-line annotation parsing lands in Phase 1'"
+        "command": "echo 'Phase 0 — specs:coverage stubbed; Kotlin JVM escape-sequence unescaping + multi-line annotation parsing lands in Phase 1'"
       },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.kt"]
+    },
+    "specs:domain:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'Phase 0 — specs:domain:coverage stubbed; Kotlin JVM escape-sequence unescaping + multi-line annotation parsing lands in Phase 1'"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.kt"]
+    },
+    "test:specs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run crud-be-kotlin-ktor:specs:structure-validation",
+          "nx run crud-be-kotlin-ktor:specs:behavior:coverage",
+          "nx run crud-be-kotlin-ktor:specs:domain:coverage"
+        ],
+        "parallel": false
+      },
+      "cache": true
     },
     "test:e2e": {
       "executor": "nx:run-commands",

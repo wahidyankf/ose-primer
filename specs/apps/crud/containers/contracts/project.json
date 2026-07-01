@@ -32,6 +32,12 @@
         "command": "echo 'test:unit: no unit tests (echo placeholder)'"
       }
     },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'test:coverage: no coverage tool configured (echo placeholder)'"
+      }
+    },
     "test:integration": {
       "executor": "nx:run-commands",
       "options": {
@@ -44,10 +50,41 @@
         "command": "echo 'test:e2e: not an e2e project (echo placeholder)'"
       }
     },
+    "specs:structure-validation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs structure validate"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
+    },
+    "specs:behavior:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'specs:behavior:coverage: no Gherkin behavior specs for this OpenAPI contract project (echo placeholder)'"
+      }
+    },
+    "test:specs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run crud-contracts:specs:structure-validation",
+          "nx run crud-contracts:specs:behavior:coverage"
+        ],
+        "parallel": false
+      },
+      "cache": true
+    },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx run crud-contracts:lint"],
+        "commands": [
+          "nx run crud-contracts:typecheck",
+          "nx run crud-contracts:lint",
+          "nx run crud-contracts:test:unit",
+          "nx run crud-contracts:test:coverage",
+          "nx run crud-contracts:test:specs"
+        ],
         "parallel": false
       }
     },
