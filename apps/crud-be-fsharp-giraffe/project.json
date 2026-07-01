@@ -61,7 +61,10 @@
           "dotnet altcover Runner --recorderDirectory tests/DemoBeFsgi.Tests/bin/Debug/net10.0/__Instrumented --lcovReport coverage/altcov.info --executable dotnet -- test tests/DemoBeFsgi.Tests/bin/Debug/net10.0/__Instrumented/DemoBeFsgi.Tests.dll"
         ],
         "parallel": false,
-        "cwd": "apps/crud-be-fsharp-giraffe"
+        "cwd": "apps/crud-be-fsharp-giraffe",
+        "env": {
+          "CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET": "dev-jwt-secret-at-least-32-characters-long-for-hmac"
+        }
       },
       "cache": true,
       "inputs": [
@@ -77,7 +80,10 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "dotnet test tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj --filter Category=Unit",
-        "cwd": "apps/crud-be-fsharp-giraffe"
+        "cwd": "apps/crud-be-fsharp-giraffe",
+        "env": {
+          "CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET": "dev-jwt-secret-at-least-32-characters-long-for-hmac"
+        }
       },
       "dependsOn": ["codegen"],
       "cache": true,
