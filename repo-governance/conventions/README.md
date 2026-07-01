@@ -68,10 +68,11 @@ Documentation conventions and standards for the open-sharia-enterprise project. 
 
 Conventions are organized into 6 semantic categories:
 
-- **[formatting/](#-formatting)** - Markdown formatting, syntax, visual elements
-- **[linking/](#linking)** - Cross-reference and internal linking standards
-- **[writing/](#-writing)** - Content quality, validation, writing standards
-- **[structure/](#-structure)** - Documentation organization, file naming, plans
+- **[formatting/](./formatting/README.md)** - Markdown formatting, syntax, visual elements
+- **[linking/](./linking/README.md)** - Cross-reference and internal linking standards
+- **[writing/](./writing/README.md)** - Content quality, validation, writing standards
+- **[structure/](./structure/README.md)** - Documentation organization, file naming, plans
+- **[security/](./security/README.md)** - Security conventions governing agent behavior and data protection
 
 ---
 

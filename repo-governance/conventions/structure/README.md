@@ -33,6 +33,7 @@ This directory contains standards for how documentation is organized, named, and
 - [No Last-Updated Metadata](./no-last-updated.md) - Companion to no-date-metadata: do not write `**Last Updated**` rows in markdown files
 - [Programming Language Docs Separation](./programming-language-docs-separation.md) - Boundary between generic dev docs and language-specific (Go, TypeScript, Rust, etc.) docs
 - [Repository Ecosystem Convention](./repository-ecosystem.md) - The three sibling OSE repositories (`ose-public`, `ose-primer`, `ose-infra`), their roles, propagation rules, and verification steps. Replaces the deleted `ose-projects` umbrella as the canonical description of the family relationship
+- [Deterministic vs AI Validation Split](./deterministic-vs-ai-validation-split.md) - Canonical boundary between deterministic gate checks (pre-commit/pre-push/CI) and AI-agent-driven quality checks
 
 ## Key Concepts
 

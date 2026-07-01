@@ -303,6 +303,7 @@ graph LR
 - [Code Quality Standards](../../../../../repo-governance/development/quality/code.md) - MUST meet platform-wide quality requirements
 - [Commit Messages](../../../../../repo-governance/development/workflow/commit-messages.md) - MUST use Conventional Commits format
 - [BDD Spec-to-Test Mapping Convention](../../../../../repo-governance/development/infra/bdd-spec-test-mapping.md) - MUST follow Go source file naming and Gherkin tag conventions for CLI commands with Godog integration tests
+- [Templates Index](./templates/README.md) - Code templates and scaffolding for this language
 
 **Code Review Requirements**:
 

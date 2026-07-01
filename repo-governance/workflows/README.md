@@ -308,6 +308,17 @@ All workflows must respect core principles:
 - [Temporary Files](../development/infra/temporary-files.md) - Where workflow outputs go
 - [Plans Organization](../conventions/structure/plans.md) - How plans relate to workflows
 
+### Workflow Category Indexes
+
+- [CI Workflows](./ci/README.md) - Continuous integration workflow index
+- [Docs Workflows](./docs/README.md) - Documentation workflow index
+- [Infrastructure Workflows](./infra/README.md) - Infrastructure workflow index
+- [Meta Workflows](./meta/README.md) - Workflow meta-conventions index
+- [Plan Workflows](./plan/README.md) - Planning workflow index
+- [Repo Workflows](./repo/README.md) - Repository management workflow index
+- [Specs Workflows](./specs/README.md) - Specification workflow index
+- [UI Workflows](./ui/README.md) - UI development workflow index
+
 ### Layer Documentation
 
 - [Repository Governance Architecture](../repository-governance-architecture.md) - Complete six-layer architecture explanation

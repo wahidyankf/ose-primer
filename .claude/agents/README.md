@@ -6,53 +6,53 @@ This directory contains specialized AI agents for the ose-primer repository temp
 
 ### 🟦 Content Creation (Makers)
 
-- **docs-maker** - Expert documentation writer
-- **docs-tutorial-maker** - Tutorial creation specialist
-- **readme-maker** - README file writer
-- **plan-maker** - Project plan creation
-- **repo-rules-maker** - Governance document creation
-- **repo-workflow-maker** - Workflow documentation
-- **specs-maker** - Spec area scaffolding and feature file creation
-- **social-linkedin-post-maker** - LinkedIn content creation
-- **agent-maker** - Agent definition creation
-- **swe-ui-maker** - UI component creation
+- **[docs-maker](docs-maker.md)** - Expert documentation writer
+- **[docs-tutorial-maker](docs-tutorial-maker.md)** - Tutorial creation specialist
+- **[readme-maker](readme-maker.md)** - README file writer
+- **[plan-maker](plan-maker.md)** - Project plan creation
+- **[repo-rules-maker](repo-rules-maker.md)** - Governance document creation
+- **[repo-workflow-maker](repo-workflow-maker.md)** - Workflow documentation
+- **[specs-maker](specs-maker.md)** - Spec area scaffolding and feature file creation
+- **[social-linkedin-post-maker](social-linkedin-post-maker.md)** - LinkedIn content creation
+- **[agent-maker](agent-maker.md)** - Agent definition creation
+- **[swe-ui-maker](swe-ui-maker.md)** - UI component creation
 
 ### 🟩 Validation (Checkers)
 
-- **docs-checker** - Factual accuracy validation
-- **docs-tutorial-checker** - Tutorial quality validation
-- **docs-link-checker** - Link validity checking
-- **readme-checker** - README quality validation
-- **plan-checker** - Project plan validation
-- **plan-execution-checker** - Plan execution validation
-- **repo-rules-checker** - Governance compliance validation
-- **repo-workflow-checker** - Workflow documentation validation
-- **specs-checker** - Gherkin/BDD specs directory structural and content validation
-- **swe-code-checker** - Validates projects against platform coding standards (validates application code rather than documentation)
-- **swe-ui-checker** - UI component quality validation
-- **ci-checker** - CI/CD standards validation (mandatory Nx targets, coverage thresholds, Docker setup, Gherkin specs)
-- **docs-software-engineering-separation-checker** - Validates the boundary between generic dev docs and language-specific (Go, TypeScript, Rust, etc.) docs per the [Programming Language Docs Separation](../../repo-governance/conventions/structure/programming-language-docs-separation.md) convention
-- **repo-harness-compatibility-checker** - The single harness-compat checker. **Phase 0** runs 5 deterministic cross-vendor parity invariants (governance/root-surface vendor-neutrality, binding sync no-op over `.opencode/` + `.amazonq/`, agent count parity, color + tier maps); **Phase 1** detects external drift between each supported harness's current upstream config conventions and the platform-bindings catalog + committed binding files (delegates multi-page research to `web-researcher`). Writes a dual-label audit to `generated-reports/`
-- **repo-setup-manager** - Executes Phase 0 environment setup (npm install, doctor --fix, baseline tests) before plan execution; resolves all preexisting failures to establish a clean, known-good baseline
+- **[docs-checker](docs-checker.md)** - Factual accuracy validation
+- **[docs-tutorial-checker](docs-tutorial-checker.md)** - Tutorial quality validation
+- **[docs-link-checker](docs-link-checker.md)** - Link validity checking
+- **[readme-checker](readme-checker.md)** - README quality validation
+- **[plan-checker](plan-checker.md)** - Project plan validation
+- **[plan-execution-checker](plan-execution-checker.md)** - Plan execution validation
+- **[repo-rules-checker](repo-rules-checker.md)** - Governance compliance validation
+- **[repo-workflow-checker](repo-workflow-checker.md)** - Workflow documentation validation
+- **[specs-checker](specs-checker.md)** - Gherkin/BDD specs directory structural and content validation
+- **[swe-code-checker](swe-code-checker.md)** - Validates projects against platform coding standards (validates application code rather than documentation)
+- **[swe-ui-checker](swe-ui-checker.md)** - UI component quality validation
+- **[ci-checker](ci-checker.md)** - CI/CD standards validation (mandatory Nx targets, coverage thresholds, Docker setup, Gherkin specs)
+- **[docs-software-engineering-separation-checker](docs-software-engineering-separation-checker.md)** - Validates the boundary between generic dev docs and language-specific (Go, TypeScript, Rust, etc.) docs per the [Programming Language Docs Separation](../../repo-governance/conventions/structure/programming-language-docs-separation.md) convention
+- **[repo-harness-compatibility-checker](repo-harness-compatibility-checker.md)** - The single harness-compat checker. **Phase 0** runs 5 deterministic cross-vendor parity invariants (governance/root-surface vendor-neutrality, binding sync no-op over `.opencode/` + `.amazonq/`, agent count parity, color + tier maps); **Phase 1** detects external drift between each supported harness's current upstream config conventions and the platform-bindings catalog + committed binding files (delegates multi-page research to `web-researcher`). Writes a dual-label audit to `generated-reports/`
+- **[repo-setup-manager](repo-setup-manager.md)** - Executes Phase 0 environment setup (npm install, doctor --fix, baseline tests) before plan execution; resolves all preexisting failures to establish a clean, known-good baseline
 
 ### 🟨 Fixing (Fixers)
 
-- **docs-file-manager** - File organization and management
-- **docs-fixer** - Apply validated documentation fixes
-- **docs-tutorial-fixer** - Apply tutorial fixes
-- **readme-fixer** - Apply README fixes
-- **plan-fixer** - Apply plan fixes
-- **repo-rules-fixer** - Fix governance compliance issues
-- **repo-workflow-fixer** - Fix workflow documentation
-- **specs-fixer** - Fix specs structural and accuracy issues
-- **swe-ui-fixer** - Apply validated UI component fixes
-- **ci-fixer** - Apply validated CI/CD standards fixes
-- **docs-software-engineering-separation-fixer** - Auto-moves misplaced language docs to the canonical destination flagged by the separation checker
-- **repo-harness-compatibility-fixer** - Applies validated fixes from a harness-compatibility audit; auto-remediates Phase 0 binding-sync drift (Invariant 3) via `npm run generate:bindings`, applies Phase 1 catalog/binding updates, flags higher-judgement gaps (vendor-audit prose, color/tier maps, orphan agents, generator-logic changes) for human resolution, and re-validates each finding before applying
+- **[docs-file-manager](docs-file-manager.md)** - File organization and management
+- **[docs-fixer](docs-fixer.md)** - Apply validated documentation fixes
+- **[docs-tutorial-fixer](docs-tutorial-fixer.md)** - Apply tutorial fixes
+- **[readme-fixer](readme-fixer.md)** - Apply README fixes
+- **[plan-fixer](plan-fixer.md)** - Apply plan fixes
+- **[repo-rules-fixer](repo-rules-fixer.md)** - Fix governance compliance issues
+- **[repo-workflow-fixer](repo-workflow-fixer.md)** - Fix workflow documentation
+- **[specs-fixer](specs-fixer.md)** - Fix specs structural and accuracy issues
+- **[swe-ui-fixer](swe-ui-fixer.md)** - Apply validated UI component fixes
+- **[ci-fixer](ci-fixer.md)** - Apply validated CI/CD standards fixes
+- **[docs-software-engineering-separation-fixer](docs-software-engineering-separation-fixer.md)** - Auto-moves misplaced language docs to the canonical destination flagged by the separation checker
+- **[repo-harness-compatibility-fixer](repo-harness-compatibility-fixer.md)** - Applies validated fixes from a harness-compatibility audit; auto-remediates Phase 0 binding-sync drift (Invariant 3) via `npm run generate:bindings`, applies Phase 1 catalog/binding updates, flags higher-judgement gaps (vendor-audit prose, color/tier maps, orphan agents, generator-logic changes) for human resolution, and re-validates each finding before applying
 
 ### 🟩 Research (validation-adjacent)
 
-- **web-researcher** - Read-only web research specialist; returns cited, structured findings with confidence tags in an isolated context (no file writes, no shell). Invoke for current API/library docs, fact verification, best-practice surveys. Uses `color: green` because web research is validation-adjacent (fact-checking, citation validation) and read-only by design; the `researcher` role maps to green. See [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md#color-to-role-mapping) for the color-to-role mapping.
+- **[web-researcher](web-researcher.md)** - Read-only web research specialist; returns cited, structured findings with confidence tags in an isolated context (no file writes, no shell). Invoke for current API/library docs, fact verification, best-practice surveys. Uses `color: green` because web research is validation-adjacent (fact-checking, citation validation) and read-only by design; the `researcher` role maps to green. See [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md#color-to-role-mapping) for the color-to-role mapping.
 
 ### 🧪 Testing
 
@@ -63,18 +63,18 @@ This directory contains specialized AI agents for the ose-primer repository temp
 
 ### 💻 Development
 
-- **swe-clojure-dev** - Clojure application development
-- **swe-csharp-dev** - C# application development
-- **swe-dart-dev** - Dart application development
-- **swe-e2e-dev** - E2E testing with Playwright
-- **swe-elixir-dev** - Elixir application development
-- **swe-fsharp-dev** - F# application development
-- **swe-golang-dev** - Go application development
-- **swe-java-dev** - Java application development
-- **swe-kotlin-dev** - Kotlin application development
-- **swe-python-dev** - Python application development
-- **swe-rust-dev** - Rust application development
-- **swe-typescript-dev** - TypeScript application development
+- **[swe-clojure-dev](swe-clojure-dev.md)** - Clojure application development
+- **[swe-csharp-dev](swe-csharp-dev.md)** - C# application development
+- **[swe-dart-dev](swe-dart-dev.md)** - Dart application development
+- **[swe-e2e-dev](swe-e2e-dev.md)** - E2E testing with Playwright
+- **[swe-elixir-dev](swe-elixir-dev.md)** - Elixir application development
+- **[swe-fsharp-dev](swe-fsharp-dev.md)** - F# application development
+- **[swe-golang-dev](swe-golang-dev.md)** - Go application development
+- **[swe-java-dev](swe-java-dev.md)** - Java application development
+- **[swe-kotlin-dev](swe-kotlin-dev.md)** - Kotlin application development
+- **[swe-python-dev](swe-python-dev.md)** - Python application development
+- **[swe-rust-dev](swe-rust-dev.md)** - Rust application development
+- **[swe-typescript-dev](swe-typescript-dev.md)** - TypeScript application development
 
 ## Naming Rule
 

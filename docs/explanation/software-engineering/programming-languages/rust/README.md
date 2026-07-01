@@ -291,6 +291,7 @@ graph LR
 - [Implementation Workflow](../../../../../repo-governance/development/workflow/implementation.md) - MUST follow "make it work -> make it right -> make it fast" process
 - [Code Quality Standards](../../../../../repo-governance/development/quality/code.md) - MUST meet platform-wide quality requirements
 - [Commit Messages](../../../../../repo-governance/development/workflow/commit-messages.md) - MUST use Conventional Commits format
+- [Templates Index](./templates/README.md) - Code templates and scaffolding for this language
 
 **Code Review Requirements**:
 

@@ -707,6 +707,7 @@ dev_dependencies:
 - [DartPad](https://dartpad.dev/) - Online Dart playground
 - [Dart Codelabs](https://dart.dev/codelabs)
 - [Flutter Codelabs](https://docs.flutter.dev/codelabs)
+- [Templates Index](./templates/README.md) - Code templates and scaffolding for this language
 
 ### Platform Documentation
 

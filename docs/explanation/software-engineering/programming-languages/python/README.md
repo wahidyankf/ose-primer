@@ -815,6 +815,7 @@ This documentation comprises core documentation files organized into foundation,
 
 - [Web Services](./web-services.md) - FastAPI, Django, Flask, httpx
 - [Finite State Machine](./finite-state-machine.md) - FSM patterns with transitions library
+- [Templates Index](./templates/README.md) - Code templates and scaffolding for this language
 
 ### Beginner Path
 

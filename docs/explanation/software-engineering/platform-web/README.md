@@ -275,5 +275,6 @@ All framework documentation follows the repository's core principles:
 - **[Architecture](../architecture/README.md)** - Architecture patterns and models
 - **[Development Practices](../development/README.md)** - Development methodologies
 - **[Monorepo Structure](../../../reference/monorepo-structure.md)** - Nx workspace organization
+- [Platform Tools](./tools/README.md) - Framework and platform tool references
 
 ---

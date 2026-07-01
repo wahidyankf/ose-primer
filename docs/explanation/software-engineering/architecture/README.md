@@ -113,6 +113,7 @@ See DDD and C4 Integration for comprehensive examples and guidance.
 
 ## Related Documentation
 
+- **[Finite State Machine (FSM)](./finite-state-machine-fsm/README.md)** - FSM patterns, state modeling, and implementation guidance
 - **[Software Design Index](../README.md)** - Parent software design documentation
 - **[Explanation Documentation Index](../../README.md)** - All conceptual documentation
 - **[Repository Governance Architecture](../../../../repo-governance/repository-governance-architecture.md)** - Six-layer governance hierarchy

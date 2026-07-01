@@ -30,6 +30,7 @@ Complete TypeScript guide for the Open Sharia Enterprise (OSE) Platform. Covers 
 - [Code Examples](#code-examples-from-platform)
 - [Tools & Ecosystem](#tools-and-ecosystem)
 - [Resources](#resources-and-references)
+- [Templates Index](./templates/README.md) - Code templates and scaffolding for this language
 
 ## Overview
 

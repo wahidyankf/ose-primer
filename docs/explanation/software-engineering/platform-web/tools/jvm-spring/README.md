@@ -114,6 +114,12 @@ Spring Framework usage in this platform follows the the software engineering pri
 - [Observability](observability.md) - Monitoring and metrics
 - [Deployment](deployment.md) - Deployment strategies
 - [Version Migration](version-migration.md)- Upgrading Spring versions
+- [API design standards for Spring](api-standards.md) - API design standards for Spring
+- [Maven/Gradle build configuration](build-configuration.md) - Maven/Gradle build configuration
+- [Code quality tools and standards](code-quality.md) - Code quality tools and standards
+- [Concurrency patterns and thread safety](concurrency-standards.md) - Concurrency patterns and thread safety
+- [Domain-driven design patterns with Spring](ddd-standards.md) - Domain-driven design patterns with Spring
+- [Error handling and exception management](error-handling-standards.md) - Error handling and exception management
 
 ## Spring Framework Version Strategy
 

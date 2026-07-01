@@ -119,6 +119,9 @@ Spring Boot usage in this platform follows the the software engineering principl
 - [Security](security.md) - Spring Security, OAuth2, JWT
 - [Testing](testing.md) - @SpringBootTest, slices, TestContainers
 - [Observability](observability.md) - Actuator, metrics, health checks
+- [AOP](aop.md) - Aspect-oriented programming with Spring
+- [Deployment](deployment.md) - Spring Boot deployment strategies
+- [WebFlux Reactive](webflux-reactive.md) - Reactive programming with Spring WebFlux
 - [Performance](performance.md) - Optimization, caching, async processing
 - [Domain-Driven Design](domain-driven-design.md) - DDD with Spring Boot
 - [Functional Programming](functional-programming.md) - FP patterns with Spring

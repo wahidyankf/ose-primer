@@ -37,3 +37,5 @@ This directory contains demo-specific standards for automation testing tools inc
 ---
 
 **Maintainers**: Platform Documentation Team
+
+- [Testing Tools](./tools/README.md) - Automation testing tools and framework references
