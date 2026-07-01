@@ -96,7 +96,7 @@
         "command": "dotnet build src/DemoBeCsas/DemoBeCsas.csproj /p:TreatWarningsAsErrors=true",
         "cwd": "apps/crud-be-csharp-aspnetcore"
       },
-      "dependsOn": ["codegen"]
+      "dependsOn": ["codegen", "typecheck"]
     },
     "typecheck": {
       "executor": "nx:run-commands",

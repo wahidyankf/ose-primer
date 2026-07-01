@@ -107,7 +107,7 @@
         "parallel": false,
         "cwd": "apps/crud-be-fsharp-giraffe"
       },
-      "dependsOn": ["codegen"]
+      "dependsOn": ["codegen", "typecheck"]
     },
     "typecheck": {
       "executor": "nx:run-commands",
