@@ -14,6 +14,20 @@ Example: `2026-04-27__adopt-mermaid-checker-from-ose-public/` where `2026-04-27`
 
 ## Completed Projects
 
+- [2026-07-01: Standardize rhino-cli Checks & SDLC Commands](./2026-07-01__standardize-rhino-cli-sdlc-parity/README.md)
+  — ose-primer's Phase 3 of the 3-repo SDLC gate-mechanics parity effort (siblings: ose-public, ose-infra;
+  one shared plan folder copied into each repo). Standardized Nx target names (`test:unit`/`test:integration`/
+  `test:e2e`/`test:quick`/`test:coverage`/`lint`/`typecheck`/`specs:behavior:coverage`/`specs:domain:coverage`,
+  no per-project `format`/`format:check`) and `test:quick` = typecheck→lint→test:unit→test:coverage→test:specs
+  composition across all 26 projects; wired `specs:domain:coverage` on the 11 `crud-be-*` backends; created
+  missing C4 spec trees for 7 libs (`ts-ui`, `ts-ui-tokens`, `golang-commons`, `elixir-cabbage`,
+  `elixir-gherkin`, `elixir-openapi-codegen`, `clojure-openapi-codegen`); restored the orphaned
+  `specs counts validate` leaf command (rewired stale `internal::` imports); byte-parity `repo-config.yml`
+  section schema and canonical CI workflow names with public/infra. Fixed preexisting bugs surfaced along
+  the way: an MSBuild concurrent-build race on the F#/C# quality gates, a JWT-secret Nx-target env-injection
+  gap, and broken links in the new lib spec docs. Worktree-agnostic gate + full affected CI verified green.
+  Explicitly deferred: 9 projects' echo-stubbed `specs:behavior:coverage` (Phase 0 placeholders, tracked
+  separately). (Completed: 2026-07-01)
 - [2026-06-20: Primer Polyglot Demo-App CI Restoration](./2026-06-20__primer-polyglot-codegen-ci-restoration/README.md)
   — restored fresh-checkout codegen + green per-language CI for all `crud-*` demo apps. Fixed Dart
   codegen (full package generation, barrel rename), Rust/Go codegen race (added `dependsOn: codegen`
