@@ -113,7 +113,7 @@
     "compat:min-version": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "uv run vermin --target 3.11- .",
+        "command": "uv run --group dev vermin --target 3.11- .",
         "cwd": "apps/crud-be-python-fastapi"
       }
     }

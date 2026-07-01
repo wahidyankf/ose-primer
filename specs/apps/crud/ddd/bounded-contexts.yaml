@@ -1,0 +1,127 @@
+version: 2
+app: crud
+contexts:
+  - name: authentication
+    summary: >-
+      User registration, login (password-based), JWT access/refresh token
+      issuance, and logout (single-device and all-devices). Owns the auth
+      lifecycle from credential validation to token revocation.
+    layers:
+      - Domain
+      - Application
+      - Infrastructure
+      - Api
+    code:
+      - apps/crud-be-*/src
+    glossary: specs/apps/crud/ddd/ubiquitous-language/authentication.md
+    gherkin: specs/apps/crud/behavior/crud-be/gherkin/authentication
+    relationships:
+      - to: token-management
+        kind: customer-supplier
+        role: customer
+      - to: user-lifecycle
+        kind: customer-supplier
+        role: customer
+
+  - name: token-management
+    summary: >-
+      JWT access and refresh token lifecycle: issuance, refresh, revocation,
+      JWKS public-key endpoint. Owns token blacklisting and rotation policies.
+    layers:
+      - Domain
+      - Application
+      - Infrastructure
+      - Api
+    code:
+      - apps/crud-be-*/src
+    glossary: specs/apps/crud/ddd/ubiquitous-language/token-management.md
+    gherkin: specs/apps/crud/behavior/crud-be/gherkin/token-management
+    relationships:
+      - to: authentication
+        kind: customer-supplier
+        role: supplier
+
+  - name: user-lifecycle
+    summary: >-
+      User profile management (display name), password change, and account
+      deactivation. Owns the user entity state machine from active to inactive.
+    layers:
+      - Domain
+      - Application
+      - Infrastructure
+      - Api
+    code:
+      - apps/crud-be-*/src
+    glossary: specs/apps/crud/ddd/ubiquitous-language/user-lifecycle.md
+    gherkin: specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle
+    relationships:
+      - to: authentication
+        kind: customer-supplier
+        role: supplier
+
+  - name: expenses
+    summary: >-
+      Core expense entry CRUD (create, read, update, delete), multi-currency
+      support, category management, and P&L reporting. Owns the expense
+      aggregate and reporting projections.
+    layers:
+      - Domain
+      - Application
+      - Infrastructure
+      - Api
+    code:
+      - apps/crud-be-*/src
+    glossary: specs/apps/crud/ddd/ubiquitous-language/expenses.md
+    gherkin: specs/apps/crud/behavior/crud-be/gherkin/expenses
+    relationships:
+      - to: authentication
+        kind: customer-supplier
+        role: customer
+
+  - name: admin
+    summary: >-
+      Administrator-only operations: user listing, status management (activate,
+      deactivate, unlock), and password reset. Segregated from user-lifecycle
+      by actor role.
+    layers:
+      - Domain
+      - Application
+      - Infrastructure
+      - Api
+    code:
+      - apps/crud-be-*/src
+    glossary: specs/apps/crud/ddd/ubiquitous-language/admin.md
+    gherkin: specs/apps/crud/behavior/crud-be/gherkin/admin
+    relationships:
+      - to: user-lifecycle
+        kind: customer-supplier
+        role: customer
+
+  - name: health
+    summary: >-
+      Liveness endpoint — advertises service health to orchestrators and
+      monitoring systems. Stateless, no DB dependency.
+    layers:
+      - Domain
+      - Application
+      - Infrastructure
+      - Api
+    code:
+      - apps/crud-be-*/src
+    glossary: specs/apps/crud/ddd/ubiquitous-language/health.md
+    gherkin: specs/apps/crud/behavior/crud-be/gherkin/health
+    relationships: []
+
+  - name: security
+    summary: >-
+      Cross-cutting security policies: CORS headers, rate limiting, input
+      sanitisation, and injection-prevention guards. Applied as middleware
+      across all HTTP routes.
+    layers:
+      - Infrastructure
+      - Api
+    code:
+      - apps/crud-be-*/src
+    glossary: specs/apps/crud/ddd/ubiquitous-language/security.md
+    gherkin: specs/apps/crud/behavior/crud-be/gherkin/security
+    relationships: []

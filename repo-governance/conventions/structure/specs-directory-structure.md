@@ -140,11 +140,11 @@ Group CLI feature files by command group or functional area. A domain folder may
 **Lib specs** use package or module subdirectories under `gherkin/` (no surface segment because libs do not have BE/web/CLI layers):
 
 ```
-specs/libs/golang-commons/gherkin/testutil/capture-stdout.feature
-specs/libs/golang-commons/gherkin/timeutil/timestamp.feature
-specs/libs/ts-ui/gherkin/button/button.feature
-specs/libs/ts-ui/gherkin/dialog/dialog.feature
-specs/libs/golang-commons/gherkin/links/check-links.feature
+specs/libs/golang-commons/behavior/gherkin/testutil/capture-stdout.feature
+specs/libs/golang-commons/behavior/gherkin/timeutil/timestamp.feature
+specs/libs/ts-ui/behavior/gherkin/button/button.feature
+specs/libs/ts-ui/behavior/gherkin/dialog/dialog.feature
+specs/libs/golang-commons/behavior/gherkin/links/check-links.feature
 ```
 
 ## Full Directory Structure

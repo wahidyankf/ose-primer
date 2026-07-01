@@ -43,6 +43,7 @@
         "cwd": "apps/crud-be-kotlin-ktor",
         "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$(ls -d ${SDKMAN_DIR:-$HOME/.sdkman}/candidates/java/21* 2>/dev/null | head -1)} ./gradlew testUnit koverXmlReport"
       },
+      "dependsOn": ["codegen"],
       "cache": true,
       "inputs": [
         "{projectRoot}/src/**",

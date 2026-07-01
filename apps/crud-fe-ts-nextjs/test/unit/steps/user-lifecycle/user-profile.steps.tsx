@@ -132,9 +132,11 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText("alice@example.com")).toBeInTheDocument();
     });
 
-    And("the profile should display a display name", () => {
-      // Display name is shown as input field value
-      expect(screen.getByDisplayValue("Alice")).toBeInTheDocument();
+    And("the profile should display a display name", async () => {
+      // Display name is set via useEffect after user data loads, so wrap in waitFor
+      await waitFor(() => {
+        expect(screen.getByDisplayValue("Alice")).toBeInTheDocument();
+      });
     });
   });
 

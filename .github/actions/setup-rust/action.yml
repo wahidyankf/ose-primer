@@ -25,3 +25,6 @@ runs:
 
     - name: Install cargo-llvm-cov
       uses: taiki-e/install-action@cargo-llvm-cov
+
+    - name: Install cargo-hack
+      uses: taiki-e/install-action@cargo-hack
