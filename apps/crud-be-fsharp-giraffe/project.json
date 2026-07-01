@@ -49,6 +49,7 @@
         ],
         "parallel": false
       },
+      "dependsOn": ["typecheck", "lint"],
       "cache": true
     },
     "test:coverage": {
