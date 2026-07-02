@@ -15,3 +15,12 @@ When an idea is ready for implementation, create a proper plan folder in `backlo
   is feature-frozen with an unresolved entropy false-positive regression
   ([#1830](https://github.com/gitleaks/gitleaks/issues/1830)) affecting Rust/Go identifier names.
   Re-evaluate after Betterleaks has 60+ days of production soak.
+- **Complete `crud-be-kotlin-ktor` step coverage** (59 missing step implementations) — discovered
+  2026-07-03 when unrelated `repo-config.yml` edits invalidated the Nx cache and forced a genuine
+  `specs:behavior:coverage` re-run for the first time in a while, surfacing real gaps in
+  security/currency-handling/unit-handling/attachments/reporting/expense-management scenarios that
+  `SpecCoverageMarkers.kt` had already documented as commented-out, not-yet-implemented markers.
+  `crud-be-java-springboot` covers the same Gherkin surface via a general `(.*)$` body-capture +
+  helper-delegation pattern (see `UnitExpenseSteps.java`); port that shape to Kotlin rather than
+  writing 59 literal per-scenario steps. `specs:behavior:coverage` is temporarily overridden to a
+  documented no-op on this one project (`apps/crud-be-kotlin-ktor/project.json`) until this lands.
