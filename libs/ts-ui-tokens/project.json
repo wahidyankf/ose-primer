@@ -90,5 +90,8 @@
       }
     }
   },
-  "tags": ["type:lib", "lang:ts", "domain:ui"]
+  "tags": ["type:lib", "lang:ts", "domain:ui"],
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/libs/ts-ui-tokens/behavior/gherkin/**/*.feature"]
+  }
 }

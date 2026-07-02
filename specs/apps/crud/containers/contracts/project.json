@@ -100,5 +100,8 @@
         "command": "echo 'compat:min-version: no min-version check for this language'"
       }
     }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/apps/crud/containers/contracts/**"]
   }
 }

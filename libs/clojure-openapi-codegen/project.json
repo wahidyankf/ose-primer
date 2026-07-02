@@ -126,5 +126,8 @@
       }
     }
   },
-  "implicitDependencies": ["crud-contracts", "rhino-cli"]
+  "implicitDependencies": ["crud-contracts", "rhino-cli"],
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/libs/clojure-openapi-codegen/behavior/gherkin/**/*.feature"]
+  }
 }
