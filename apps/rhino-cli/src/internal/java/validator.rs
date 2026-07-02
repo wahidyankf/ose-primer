@@ -13,6 +13,11 @@ use super::types::{PackageEntry, ValidationOptions, ValidationResult, ViolationT
 ///  1. `package-info.java` exists — [`ViolationType::MissingPackageInfo`] if absent.
 ///  2. `package-info.java` contains `@<annotation>` — [`ViolationType::MissingAnnotation`]
 ///     if missing.
+///
+/// # Errors
+///
+/// Returns an error when the source root cannot be scanned or a
+/// `package-info.java` file cannot be read.
 pub fn validate_all(opts: &ValidationOptions) -> Result<ValidationResult, Error> {
     let packages = scan_packages(&opts.source_root)?;
 

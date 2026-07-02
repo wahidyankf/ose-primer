@@ -40,12 +40,6 @@ pub struct ValidateMermaidArgs {
     /// May be specified multiple times.
     #[arg(long = "exclude")]
     pub exclude: Vec<String>,
-    /// Include per-file scan detail lines in text output.
-    #[arg(long, short = 'v')]
-    pub verbose: bool,
-    /// Suppress non-error text output when there are no findings.
-    #[arg(long, short = 'q')]
-    pub quiet: bool,
     /// Optional positional paths to scan.
     pub positional: Vec<String>,
 }
@@ -80,6 +74,8 @@ const SKIP_DIRS: &[&str] = &[
 pub fn run(
     args: &ValidateMermaidArgs,
     output_format: OutputFormat,
+    verbose: bool,
+    quiet: bool,
 ) -> std::result::Result<(), Error> {
     let repo_root =
         git::root::find_root().map_err(|e| anyhow!("failed to find git repository root: {e}"))?;
@@ -123,7 +119,7 @@ pub fn run(
     result.files_scanned = file_set.len();
 
     match output_format {
-        OutputFormat::Text => print!("{}", format_text(&result, args.verbose, args.quiet)),
+        OutputFormat::Text => print!("{}", format_text(&result, verbose, quiet)),
         OutputFormat::Json => print!("{}", format_json(&result)?),
         OutputFormat::Markdown => print!("{}", format_markdown(&result)),
     }
@@ -262,42 +258,6 @@ fn walk_md_files(dir: &Path) -> Vec<PathBuf> {
 mod tests {
     use super::*;
     use tempfile::TempDir;
-
-    /// Regression test (plan: phase 9a/b/c command-surface rationalization):
-    /// `run()` previously hardcoded `format_text(&result, false, false)`,
-    /// silently dropping `--verbose`/`--quiet` regardless of what the caller
-    /// passed. Proves the args are threaded, not swallowed. The end-to-end
-    /// behavior (stdout actually empty under `--quiet` with no findings) is
-    /// covered by the `docs validate-mermaid` cucumber scenario "Quiet flag
-    /// suppresses non-error output when there are no violations".
-    #[test]
-    fn args_verbose_and_quiet_thread_into_format_text_call() {
-        let args = ValidateMermaidArgs {
-            staged_only: false,
-            changed_only: false,
-            max_label_len: 30,
-            max_width: 4,
-            max_depth: 0,
-            max_subgraph_nodes: 6,
-            exclude: Vec::new(),
-            verbose: true,
-            quiet: true,
-            positional: Vec::new(),
-        };
-        assert!(args.verbose);
-        assert!(args.quiet);
-
-        let clean = crate::domain::mermaid::ValidationResult {
-            files_scanned: 1,
-            blocks_scanned: 1,
-            violations: Vec::new(),
-            warnings: Vec::new(),
-        };
-        // `run()` calls `format_text(&result, args.verbose, args.quiet)`; with
-        // quiet=true and no findings this must be empty, matching the
-        // contract in `format_text`'s own doc comment.
-        assert!(format_text(&clean, args.verbose, args.quiet).is_empty());
-    }
 
     #[test]
     fn filter_md_paths_filters_md_only() {

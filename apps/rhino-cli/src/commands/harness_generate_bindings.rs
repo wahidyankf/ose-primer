@@ -4,7 +4,6 @@
 //! (`.claude/` → `.amazonq/`) into a single idempotent command.  Use `--harness opencode`
 //! or `--harness amazonq` to regenerate only one platform binding.  Legacy per-step flags
 //! `--opencode=false` and `--amazonq=false` are still accepted for compatibility.
-//! `--dry-run` previews both steps without writing any files.
 
 use std::path::Path;
 
@@ -30,8 +29,7 @@ pub struct GenerateBindingsArgs {
     /// Overrides `--opencode` / `--amazonq` flags when present.
     #[arg(long, value_name = "NAME")]
     pub harness: Option<String>,
-    /// Preview changes without modifying files (applies to both the `OpenCode`
-    /// sync step and the Amazon Q emit-bindings step).
+    /// Preview changes without modifying files (applies to `OpenCode` sync).
     #[arg(long = "dry-run")]
     pub dry_run: bool,
     /// Verbose output.
@@ -127,9 +125,6 @@ fn run_opencode_sync(
 }
 
 /// Run the Amazon Q emit-bindings sub-step.
-///
-/// In dry-run mode, previews the binding files that would be written without
-/// touching disk (mirrors the `OpenCode` sync step's `--dry-run` behavior).
 fn run_amazonq_emit(
     args: &GenerateBindingsArgs,
     repo_root: &Path,
@@ -179,8 +174,8 @@ fn run_amazonq_emit(
     Ok(())
 }
 
-/// Preview the Amazon Q binding files that would be written, without
-/// creating or modifying anything on disk.
+/// Previews the Amazon Q bridge files that `run_amazonq_emit` would write,
+/// without touching the filesystem.
 fn report_amazonq_dry_run(
     args: &GenerateBindingsArgs,
     output_format: OutputFormat,

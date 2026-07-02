@@ -131,8 +131,7 @@ fn parse_agent_yaml(frontmatter: &str) -> Result<ClaudeAgentFull, String> {
     Ok(agent)
 }
 
-/// Check that `name`, `description`, `tools`, and `color` are all present
-/// (`model` and `skills` may legitimately be empty).
+/// Check that `name`, `description`, and `tools` are all non-empty.
 fn validate_required_fields(filename: &str, agent: &ClaudeAgentFull) -> ValidationCheck {
     let mut missing: Vec<&str> = Vec::new();
     if agent.name.is_empty() {
@@ -144,11 +143,6 @@ fn validate_required_fields(filename: &str, agent: &ClaudeAgentFull) -> Validati
     if agent.tools.is_empty() {
         missing.push("tools");
     }
-    // model can be empty (valid — inherits).
-    if agent.color.is_empty() {
-        missing.push("color");
-    }
-    // skills can be empty (valid).
     if !missing.is_empty() {
         return ValidationCheck::failed(
             format!("Agent: {filename} - Required Fields"),
@@ -499,53 +493,10 @@ mod tests {
     fn validate_required_fields_missing_name() {
         let agent = ClaudeAgentFull {
             description: "desc".to_string(),
-            tools: vec!["Read".to_string()],
-            color: "blue".to_string(),
             ..Default::default()
         };
         let c = validate_required_fields("x.md", &agent);
         assert_eq!(c.status, "failed");
-    }
-
-    #[test]
-    fn validate_required_fields_missing_tools() {
-        let agent = ClaudeAgentFull {
-            name: "n".to_string(),
-            description: "d".to_string(),
-            color: "blue".to_string(),
-            ..Default::default()
-        };
-        let c = validate_required_fields("x.md", &agent);
-        assert_eq!(c.status, "failed");
-        assert!(c.actual.contains("tools"), "{c:#?}");
-    }
-
-    #[test]
-    fn validate_required_fields_missing_color() {
-        let agent = ClaudeAgentFull {
-            name: "n".to_string(),
-            description: "d".to_string(),
-            tools: vec!["Read".to_string()],
-            ..Default::default()
-        };
-        let c = validate_required_fields("x.md", &agent);
-        assert_eq!(c.status, "failed");
-        assert!(c.actual.contains("color"), "{c:#?}");
-    }
-
-    #[test]
-    fn validate_required_fields_model_and_skills_may_be_empty() {
-        // model and skills are optional — omitting them must still pass.
-        let agent = ClaudeAgentFull {
-            name: "n".to_string(),
-            description: "d".to_string(),
-            tools: vec!["Read".to_string()],
-            color: "blue".to_string(),
-            model: String::new(),
-            skills: Vec::new(),
-        };
-        let c = validate_required_fields("x.md", &agent);
-        assert_eq!(c.status, "passed");
     }
 
     #[test]
@@ -554,11 +505,21 @@ mod tests {
             name: "n".to_string(),
             description: "d".to_string(),
             tools: vec!["Read".to_string()],
-            color: "blue".to_string(),
             ..Default::default()
         };
         let c = validate_required_fields("x.md", &agent);
         assert_eq!(c.status, "passed");
+    }
+
+    #[test]
+    fn validate_required_fields_missing_tools() {
+        let agent = ClaudeAgentFull {
+            name: "n".to_string(),
+            description: "d".to_string(),
+            ..Default::default()
+        };
+        let c = validate_required_fields("x.md", &agent);
+        assert_eq!(c.status, "failed");
     }
 
     #[test]

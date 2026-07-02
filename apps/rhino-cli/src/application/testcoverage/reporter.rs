@@ -241,7 +241,7 @@ pub fn format_markdown(r: &CoverageResult, per_file: bool, below_threshold: f64)
 #[allow(clippy::unwrap_used, clippy::panic)]
 mod tests {
     use super::*;
-    use crate::internal::testcoverage::types::Format;
+    use crate::application::testcoverage::types::Format;
 
     fn sample_result(passed: bool) -> CoverageResult {
         CoverageResult {

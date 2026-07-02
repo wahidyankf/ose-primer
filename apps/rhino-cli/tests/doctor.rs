@@ -10,6 +10,11 @@
 //! what the host happens to have installed. Step-definition text mirrors the
 //! gherkin verbatim for `spec-coverage --shared-steps` coverage.
 
+// Test step-definition scaffolding: private World state and step fns are
+// self-documenting via their #[given]/#[when]/#[then] gherkin strings.
+#![allow(clippy::missing_docs_in_private_items)]
+#![allow(clippy::doc_markdown)]
+
 use std::path::{Path, PathBuf};
 use std::process::Output;
 
@@ -41,6 +46,9 @@ const STUB_TOOLS: &[(&str, &str)] = &[
     ("flutter", "Flutter 3.41.0"),
     ("docker", "Docker version 29.0.0, build abc"),
     ("jq", "jq-1.7.1"),
+    ("shellcheck", "version: 0.10.0"),
+    ("hadolint", "Haskell Dockerfile Linter 2.12.0"),
+    ("actionlint", "1.7.7"),
     // npx playwright --version → "Version 1.58.0".
 ];
 
@@ -49,8 +57,6 @@ const STUB_TOOLS: &[(&str, &str)] = &[
 struct DoctorWorld {
     repo: TempDir,
     bin: TempDir,
-    /// When true, run with an empty PATH (no tools found).
-    empty_path: bool,
     /// Override the node requirement to force a version mismatch (warning).
     node_req_override: Option<String>,
     scope: Option<String>,
@@ -73,7 +79,6 @@ impl DoctorWorld {
         Self {
             repo,
             bin: TempDir::new().expect("temp bin"),
-            empty_path: false,
             node_req_override: None,
             scope: None,
             fix: false,
@@ -213,14 +218,7 @@ impl DoctorWorld {
         }
         args.push("--no-color".to_string());
 
-        let path_value = if self.empty_path {
-            // Empty subdir of the bin TempDir → no tools resolvable.
-            let empty = self.bin.path().join("empty");
-            std::fs::create_dir_all(&empty).expect("mk empty bin");
-            empty.to_string_lossy().into_owned()
-        } else {
-            self.bin.path().to_string_lossy().into_owned()
-        };
+        let path_value = self.bin.path().to_string_lossy().into_owned();
 
         let out = std::process::Command::new(cargo_bin("rhino-cli"))
             .args(&args)
@@ -261,8 +259,13 @@ fn given_all_present(w: &mut DoctorWorld) {
 
 #[given("a required development tool is not found in the system PATH")]
 fn given_tool_missing(w: &mut DoctorWorld) {
+    // `doctor` resolves its repo root via `git rev-parse` before checking tools,
+    // so an entirely empty PATH would fail root-discovery before any tool report
+    // is printed. Instead, keep every stub present except one probed tool
+    // (`shellcheck`) so `doctor` runs and reports exactly that tool missing.
     w.write_config("24.11.1");
-    w.empty_path = true;
+    w.write_stubs();
+    let _ = std::fs::remove_file(w.bin.path().join("shellcheck"));
 }
 
 #[given("a required development tool is installed with a non-matching version")]
@@ -362,7 +365,7 @@ fn then_json_lists_tools(w: &mut DoctorWorld) {
         .get("tools")
         .and_then(|t| t.as_array())
         .expect("tools array");
-    assert_eq!(tools.len(), 19, "expected 19 tools, got {}", tools.len());
+    assert_eq!(tools.len(), 13, "expected 13 tools, got {}", tools.len());
     for t in tools {
         assert!(t.get("status").is_some(), "tool missing status: {t}");
     }

@@ -60,24 +60,38 @@ pub fn format_text(result: &ValidationResult, _verbose: bool, quiet: bool) -> St
     out
 }
 
+/// A single null-safety violation entry in the JSON output envelope.
 #[derive(Serialize)]
 struct JsonViolation<'a> {
+    /// Repo-relative directory of the offending package.
     package_dir: &'a str,
+    /// Kind of violation (missing `package-info.java` or missing annotation).
     violation_type: &'a str,
 }
 
+/// JSON output envelope for the null-safety validation report.
 #[derive(Serialize)]
 struct JsonOutput<'a> {
+    /// `"success"` when there are zero violations, `"failure"` otherwise.
     status: &'a str,
+    /// RFC 3339 timestamp of when the report was generated.
     timestamp: String,
+    /// Total number of packages scanned.
     total_packages: usize,
+    /// Number of packages that passed validation.
     valid_packages: usize,
+    /// Annotation name that was required.
     annotation: &'a str,
+    /// The individual violations found.
     violations: Vec<JsonViolation<'a>>,
 }
 
 /// Formats the validation result as JSON (two-space indent, HTML escaping, no
 /// trailing newline).
+///
+/// # Errors
+///
+/// Returns an error if JSON serialization fails.
 pub fn format_json(result: &ValidationResult) -> Result<String, Error> {
     let num_violations = result.total_packages - result.valid_packages;
     let status = if num_violations > 0 {

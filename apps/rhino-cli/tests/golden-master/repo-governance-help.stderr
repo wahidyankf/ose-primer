@@ -1,5 +1,5 @@
 error: 'rhino-cli repo-governance' requires a subcommand but one was not provided
-  [subcommands: vendor-audit, gherkin-keyword-cardinality, help]
+  [subcommands: vendor, layer-coherence, traceability, workflows, audit, help]
 
 Usage: rhino-cli repo-governance [OPTIONS] <COMMAND>
 

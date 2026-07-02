@@ -165,7 +165,7 @@ fn go_match_rec(p: &[char], mut pi: usize, n: &[char], mut ni: usize) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::internal::testcoverage::types::{FileResult, Format, Result as CoverageResult};
+    use crate::application::testcoverage::types::{FileResult, Format, Result as CoverageResult};
 
     fn fr(path: &str, c: usize, m: usize) -> FileResult {
         FileResult {

@@ -12,6 +12,10 @@ use walkdir::WalkDir;
 ///
 ///: it uses a set keyed on the parent directory of
 /// each `.java` file, then sorts the resulting paths.
+///
+/// # Errors
+///
+/// Returns an error when `source_root` cannot be walked.
 pub fn scan_packages(source_root: &str) -> Result<Vec<String>, Error> {
     let mut package_set: BTreeSet<String> = BTreeSet::new();
 

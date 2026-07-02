@@ -21,6 +21,11 @@ const BARREL_UTILS: &str = "\nconst _deepEquality = DeepCollectionEquality();\nf
 
 /// Creates `pubspec.yaml` and a barrel library for the Dart generated-contracts
 /// package.
+///
+/// # Errors
+///
+/// Returns an error when the target directory cannot be resolved or walked, or
+/// when `pubspec.yaml` or the barrel library cannot be written.
 pub fn scaffold_dart(opts: &DartScaffoldOptions) -> Result<DartScaffoldResult, Error> {
     let mut result = DartScaffoldResult {
         pubspec_created: false,

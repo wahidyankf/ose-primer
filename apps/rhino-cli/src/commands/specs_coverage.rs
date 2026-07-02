@@ -394,17 +394,17 @@ mod tests {
     #[test]
     fn run_domain_runs_full_scan_for_eligible_project() {
         let _cwd = CwdLock::acquire();
-        // "crud-be-rust-axum" IS listed in repo-config.yml's specs.domain-areas — falls through to run().
+        // "ose-be" IS listed in repo-config.yml's specs.domain-areas — falls through to run().
         let mut args = base_args(vec![
-            "specs/apps/crud/behavior/crud-be/gherkin".to_string(),
-            "apps/crud-be-rust-axum".to_string(),
+            "specs/apps/ose/behavior/be/gherkin".to_string(),
+            "apps/ose-be".to_string(),
         ]);
         args.shared_steps = true;
-        args.exclude_dir = vec!["test-support".to_string(), "codegen".to_string()];
+        args.exclude_dir = vec!["messaging".to_string()];
         let result = run_domain(&args, OutputFormat::Text);
         assert!(
             result.is_ok(),
-            "expected the real scan to pass for crud-be-rust-axum (matches its existing Nx target), got {result:?}"
+            "expected the real scan to pass for ose-be (matches its existing Nx target), got {result:?}"
         );
     }
 

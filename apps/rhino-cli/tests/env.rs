@@ -7,6 +7,11 @@
 //! `.env` files. Step-definition text mirrors the gherkin verbatim so the
 //! `spec-coverage --shared-steps` validator sees full coverage.
 
+// Test step-definition scaffolding: private World state and step fns are
+// self-documenting via their #[given]/#[when]/#[then] gherkin strings.
+#![allow(clippy::missing_docs_in_private_items)]
+#![allow(clippy::doc_markdown)]
+
 use std::path::{Path, PathBuf};
 use std::process::Output;
 

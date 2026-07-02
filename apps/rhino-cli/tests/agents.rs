@@ -10,6 +10,11 @@
 //! temp workspace and drive the compiled `rhino-cli` binary, asserting on
 //! output and exit code.
 
+// Test step-definition scaffolding: private World state and step fns are
+// self-documenting via their #[given]/#[when]/#[then] gherkin strings.
+#![allow(clippy::missing_docs_in_private_items)]
+#![allow(clippy::doc_markdown)]
+
 use std::fmt::Write as _;
 use std::path::PathBuf;
 use std::process::Output;

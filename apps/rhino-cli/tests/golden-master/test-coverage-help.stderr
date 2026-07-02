@@ -1,6 +1,0 @@
-error: 'rhino-cli test-coverage' requires a subcommand but one was not provided
-  [subcommands: validate, diff, merge, help]
-
-Usage: rhino-cli test-coverage [OPTIONS] <COMMAND>
-
-For more information, try 'help'.

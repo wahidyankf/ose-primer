@@ -58,57 +58,31 @@ pub fn cucumber_param_to_regex(param_name: &str) -> &'static str {
 /// Converts a full Cucumber expression string into a regex pattern string
 /// (without anchors).
 ///
-/// Each **unescaped** `{type}` placeholder is replaced by the regex from
-/// [`cucumber_param_to_regex`]. An escaped brace pair (`\{…\}`) is *not* a
-/// placeholder — per the Cucumber Expression spec, `\{` and `\}` denote a
-/// literal `{`/`}` character, which is how a step is written when the
-/// bound step-definition function takes no parameter for that segment (e.g.
-/// a URL path template kept as literal text such as `\{expenseId\}`).
-/// Literal text segments (including decoded escape sequences) are
-/// regex-escaped before being appended.
+/// Each `{type}` placeholder is replaced by the regex from
+/// [`cucumber_param_to_regex`]. Literal text segments are regex-escaped and
+/// Cucumber escape sequences are decoded first.
 pub fn cucumber_expr_to_regex(text: &str) -> String {
-    let chars: Vec<char> = text.chars().collect();
-    let n = chars.len();
-    let mut out = String::new();
-    let mut literal = String::new();
-    let mut i = 0usize;
-
-    while i < n {
-        let c = chars[i];
-        if c == '\\' && i + 1 < n {
-            // Escaped character: keep the escape pair intact in the literal
-            // buffer; `unescape_cucumber_expr` decodes it on flush. This is
-            // what makes `\{`/`\}` literal rather than a parameter boundary.
-            literal.push(c);
-            literal.push(chars[i + 1]);
-            i += 2;
-            continue;
+    let re = cucumber_param_re();
+    let mut sb = String::new();
+    let mut remaining = text;
+    loop {
+        match re.find(remaining) {
+            None => {
+                sb.push_str(&regex::escape(&unescape_cucumber_expr(remaining)));
+                break;
+            }
+            Some(m) => {
+                sb.push_str(&regex::escape(&unescape_cucumber_expr(
+                    &remaining[..m.start()],
+                )));
+                let param = &remaining[m.start()..m.end()];
+                let inner = &param[1..param.len() - 1];
+                sb.push_str(cucumber_param_to_regex(inner));
+                remaining = &remaining[m.end()..];
+            }
         }
-        if c == '{'
-            && let Some(rel_close) = chars[i + 1..].iter().position(|&ch| ch == '}')
-        {
-            let close = i + 1 + rel_close;
-            flush_literal(&mut out, &mut literal);
-            let inner: String = chars[i + 1..close].iter().collect();
-            out.push_str(cucumber_param_to_regex(&inner));
-            i = close + 1;
-            continue;
-        }
-        // If c == '{' but no matching '}' was found, fall through and treat '{' as literal.
-        literal.push(c);
-        i += 1;
     }
-    flush_literal(&mut out, &mut literal);
-    out
-}
-
-/// Decodes and regex-escapes any buffered literal text, appending it to
-/// `out`, then clears the buffer.
-fn flush_literal(out: &mut String, literal: &mut String) {
-    if !literal.is_empty() {
-        out.push_str(&regex::escape(&unescape_cucumber_expr(literal)));
-        literal.clear();
-    }
+    sb
 }
 
 /// Returns `true` if `text` contains at least one Cucumber parameter
@@ -227,28 +201,6 @@ mod tests {
     fn has_cucumber_expressions_detects_braces() {
         assert!(has_cucumber_expressions("user enters {string}"));
         assert!(!has_cucumber_expressions("user enters foo"));
-    }
-
-    #[test]
-    fn cucumber_expr_to_regex_escaped_braces_are_literal_not_a_parameter() {
-        // `\{expenseId\}` is an escaped (literal) brace pair per the Cucumber
-        // Expression spec — it must compile to a literal-text regex with NO
-        // capture group, matching a zero-argument step-definition function.
-        let r = cucumber_expr_to_regex(r"alice sends GET /api/v1/expenses/\{expenseId\}");
-        let re = Regex::new(&format!("^{r}$")).expect("valid regex");
-        assert!(re.is_match("alice sends GET /api/v1/expenses/{expenseId}"));
-        // Must not behave as a wildcard capturing arbitrary path segments.
-        assert!(!re.is_match("alice sends GET /api/v1/expenses/42"));
-    }
-
-    #[test]
-    fn cucumber_expr_to_regex_mixes_escaped_braces_and_real_params() {
-        // Escaped braces stay literal even when a real `{int}` parameter
-        // appears later in the same expression.
-        let r =
-            cucumber_expr_to_regex(r"POST /api/v1/admin/users/\{alice_id\}/disable/attempt/{int}");
-        let re = Regex::new(&format!("^{r}$")).expect("valid regex");
-        assert!(re.is_match("POST /api/v1/admin/users/{alice_id}/disable/attempt/3"));
     }
 
     #[test]

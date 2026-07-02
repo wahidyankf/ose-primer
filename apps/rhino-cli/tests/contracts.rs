@@ -7,6 +7,11 @@
 //! drive the compiled `rhino-cli` binary, asserting on output, exit code, and
 //! the on-disk effects (rewritten Java files / generated Dart scaffold).
 
+// Test step-definition scaffolding: private World state and step fns are
+// self-documenting via their #[given]/#[when]/#[then] gherkin strings.
+#![allow(clippy::missing_docs_in_private_items)]
+#![allow(clippy::doc_markdown)]
+
 use std::path::PathBuf;
 use std::process::Output;
 

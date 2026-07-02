@@ -917,12 +917,12 @@ mod tests {
         assert!(s.contains("nonexistent.md"));
     }
 
-    /// Regression test (plan: phase 9a/b/c command-surface rationalization):
-    /// `category_order` in [`format_link_text`] omitted `"broken-anchor"`, so
-    /// broken-anchor findings silently vanished from text/markdown reports —
-    /// the summary count still reflected them (and the command still failed
-    /// with a non-zero exit code), but the file/link responsible was never
-    /// named. Proves the finding's source file and link text now surface.
+    /// Regression test: `category_order` in [`format_link_text`] omitted
+    /// `"broken-anchor"`, so broken-anchor findings silently vanished from
+    /// text/markdown reports — the summary count still reflected them (and
+    /// the command still failed with a non-zero exit code), but the
+    /// file/link responsible was never named. Proves the finding's source
+    /// file and link text now surface.
     #[test]
     fn format_link_text_includes_broken_anchor_category() {
         let anchor_link = BrokenLink {

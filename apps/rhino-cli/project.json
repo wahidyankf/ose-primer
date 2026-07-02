@@ -1,8 +1,9 @@
 {
   "name": "rhino-cli",
-  "sourceRoot": "apps/rhino-cli/src",
+  "sourceRoot": "apps/rhino-cli",
   "projectType": "application",
   "tags": ["type:app", "platform:cli", "lang:rust", "domain:tooling"],
+  "implicitDependencies": [],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
@@ -15,18 +16,6 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "cargo fetch --manifest-path apps/rhino-cli/Cargo.toml"
-      }
-    },
-    "run": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "cargo run --manifest-path apps/rhino-cli/Cargo.toml --"
-      }
-    },
-    "typecheck": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "cargo check --manifest-path apps/rhino-cli/Cargo.toml --all-targets"
       }
     },
     "lint": {
@@ -60,42 +49,42 @@
       "cache": true,
       "inputs": ["{projectRoot}/Cargo.toml", "{projectRoot}/src/**/*.rs"]
     },
-    "test:unit": {
+    "run": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo test --manifest-path apps/rhino-cli/Cargo.toml --lib"
-      },
-      "cache": true,
-      "inputs": ["{projectRoot}/Cargo.toml", "{projectRoot}/src/**/*.rs"]
+        "command": "cargo run --manifest-path apps/rhino-cli/Cargo.toml --"
+      }
     },
-    "test:coverage": {
+    "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo llvm-cov --manifest-path apps/rhino-cli/Cargo.toml --lib --ignore-filename-regex '(cli\\.rs|main\\.rs|commands/testcoverage\\.rs|commands/speccoverage\\.rs|commands/docs\\.rs|commands/agents\\.rs|commands/git\\.rs|commands/contracts\\.rs|commands/java\\.rs|commands/env\\.rs|commands/doctor\\.rs|internal/git/root\\.rs|internal/git/runner\\.rs|internal/testcoverage/diff\\.rs|internal/testcoverage/merge\\.rs)' --lcov --output-path apps/rhino-cli/lcov.info --fail-under-lines 90"
+        "command": "echo 'Phase 1 — specs:behavior:coverage stub; full @covers wiring lands in Phase 1b wiring step'"
       },
       "cache": true,
-      "inputs": ["{projectRoot}/Cargo.toml", "{projectRoot}/src/**/*.rs"],
-      "outputs": ["{projectRoot}/lcov.info"]
+      "inputs": ["{workspaceRoot}/specs/apps/rhino/behavior/rhino-cli/gherkin/**/*.feature", "{projectRoot}/**/*.rs"]
     },
     "test:integration": {
       "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo test --manifest-path apps/rhino-cli/Cargo.toml --tests"
+      },
       "cache": true,
       "inputs": [
         "{projectRoot}/Cargo.toml",
         "{projectRoot}/src/**/*.rs",
         "{projectRoot}/tests/**/*.rs",
+        "{projectRoot}/tests/golden-master/**/*",
         "{workspaceRoot}/specs/apps/rhino/**/*.feature"
-      ],
-      "options": {
-        "command": "cargo test --manifest-path apps/rhino-cli/Cargo.toml --tests"
-      }
+      ]
     },
-    "test:e2e": {
+    "test:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'no-op: target not applicable for this project'"
+        "command": "cargo llvm-cov --manifest-path apps/rhino-cli/Cargo.toml --lib --ignore-filename-regex '(cli\\.rs|main\\.rs|internal/git\\.rs|commands/git_pre_commit\\.rs|commands/env_|commands/doctor\\.rs|application/git/pre_commit\\.rs|infrastructure/git/|application/doctor/tools\\.rs|application/doctor/fixer\\.rs|application/doctor/checker\\.rs|application/testcoverage/diff\\.rs|application/testcoverage/merge\\.rs|application/env/)' --lcov --output-path apps/rhino-cli/lcov.info --fail-under-lines 90"
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["{projectRoot}/Cargo.toml", "{projectRoot}/src/**/*.rs"],
+      "outputs": ["{projectRoot}/lcov.info"]
     },
     "test:quick": {
       "executor": "nx:run-commands",
@@ -112,13 +101,19 @@
       "cache": true,
       "inputs": ["default", "specs"]
     },
-    "specs:behavior:coverage": {
+    "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'Phase 0 — specs:behavior:coverage stubbed; cucumber-rs harness is future work'"
+        "command": "cargo test --manifest-path apps/rhino-cli/Cargo.toml --lib"
       },
       "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/rhino/behavior/rhino-cli/gherkin/**/*.feature", "{projectRoot}/**/*.rs"]
+      "inputs": ["{projectRoot}/Cargo.toml", "{projectRoot}/src/**/*.rs"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo check --manifest-path apps/rhino-cli/Cargo.toml --all-targets"
+      }
     },
     "specs:structure-validation": {
       "executor": "nx:run-commands",
@@ -199,6 +194,13 @@
         "{workspaceRoot}/apps/*/src/env.ts",
         "{workspaceRoot}/apps/*/src/**/*.rs"
       ]
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'no-op: target not applicable for this project'"
+      },
+      "cache": true
     }
   },
   "namedInputs": {

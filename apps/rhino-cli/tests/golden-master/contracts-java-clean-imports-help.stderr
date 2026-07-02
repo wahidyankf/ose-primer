@@ -1,4 +1,0 @@
-error: the following required arguments were not provided:
-  <DIR>
-
-Usage: rhino-cli contracts java-clean-imports --help --no-color <DIR>

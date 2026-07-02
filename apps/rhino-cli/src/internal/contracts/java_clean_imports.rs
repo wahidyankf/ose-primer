@@ -16,6 +16,11 @@ use super::types::{JavaCleanImportsOptions, JavaCleanImportsResult};
 ///
 ///: walks the directory in lexical order, and for
 /// each `.java` file applies the two-pass [`process_java_file`] transform.
+///
+/// # Errors
+///
+/// Returns an error when the target directory cannot be walked or a `.java`
+/// file cannot be read or rewritten.
 pub fn clean_java_imports(opts: &JavaCleanImportsOptions) -> Result<JavaCleanImportsResult, Error> {
     let mut result = JavaCleanImportsResult {
         total_files: 0,

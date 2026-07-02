@@ -3,7 +3,7 @@
 //!
 //! Post-processes `openapi-generator-cli`'s Dart output for the
 //! `crud-fe-dart-flutterweb` codegen pipeline: `flutter pub get` requires a
-//! valid `pubspec.yaml`, and the OpenAPI generator does not emit one for the
+//! valid `pubspec.yaml`, and the `OpenAPI` generator does not emit one for the
 //! Dart model-only target. See `crate::internal::contracts::dart_scaffold`
 //! for the scaffolding algorithm.
 

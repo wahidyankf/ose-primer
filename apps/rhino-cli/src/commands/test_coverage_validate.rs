@@ -8,12 +8,12 @@ use std::path::Path;
 use anyhow::{Context, Error, anyhow};
 use clap::Args;
 
-use crate::domain::cliout::OutputFormat;
-use crate::internal::git;
-use crate::internal::testcoverage::{
+use crate::application::testcoverage::{
     cobertura, detect, go_coverage, jacoco, lcov, reporter,
     types::{Format, Result as CoverageResult},
 };
+use crate::domain::cliout::OutputFormat;
+use crate::internal::git;
 
 /// CLI arguments for `test-coverage validate`.
 #[derive(Args, Debug)]
@@ -175,7 +175,7 @@ mod tests {
             threshold: 80.0,
             passed: false,
             files: vec![
-                crate::internal::testcoverage::types::FileResult {
+                crate::application::testcoverage::types::FileResult {
                     path: "src/test_mock.rs".into(),
                     covered: 0,
                     partial: 0,
@@ -183,7 +183,7 @@ mod tests {
                     total: 5,
                     pct: 0.0,
                 },
-                crate::internal::testcoverage::types::FileResult {
+                crate::application::testcoverage::types::FileResult {
                     path: "src/real.rs".into(),
                     covered: 10,
                     partial: 0,
@@ -213,7 +213,7 @@ mod tests {
             "cover.out",
             "mode: set\nexample.com/p/foo.go:1.1,1.20 1 1\n",
         );
-        let r = crate::internal::testcoverage::go_coverage::compute_go_result(
+        let r = crate::application::testcoverage::go_coverage::compute_go_result(
             cover.to_str().unwrap(),
             50.0,
         )
@@ -252,7 +252,7 @@ mod tests {
             pct: 100.0,
             threshold: 80.0,
             passed: true,
-            files: vec![crate::internal::testcoverage::types::FileResult {
+            files: vec![crate::application::testcoverage::types::FileResult {
                 path: "a.rs".into(),
                 covered: 5,
                 partial: 0,
@@ -278,7 +278,7 @@ mod tests {
             pct: 100.0,
             threshold: 80.0,
             passed: true,
-            files: vec![crate::internal::testcoverage::types::FileResult {
+            files: vec![crate::application::testcoverage::types::FileResult {
                 path: "drop.rs".into(),
                 covered: 5,
                 partial: 0,

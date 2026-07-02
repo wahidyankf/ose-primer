@@ -109,10 +109,10 @@ fn run_member(name: &str, output_format: OutputFormat) -> std::result::Result<()
                 max_subgraph_nodes: 6,
                 positional: vec![],
                 exclude: vec![],
-                verbose: false,
-                quiet: false,
             },
             output_format,
+            false,
+            false,
         ),
         "frontmatter-dates" => md_validate_frontmatter_dates::run(
             &md_validate_frontmatter_dates::FrontmatterAuditArgs {

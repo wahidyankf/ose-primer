@@ -218,23 +218,6 @@ pub fn extract_rust_step_texts(
 /// Recognises `@Given("…")`, `@When("…")`, `@Then("…")`, `@And("…")`,
 /// and `@But("…")` annotations.
 ///
-/// The regex is matched against the *whole file content* rather than
-/// line-by-line: Kotlin annotations are frequently written with the
-/// annotation name, the string literal, and the closing paren each on their
-/// own line (e.g. `@When(\n  "…"\n)`), and `\s*` in [`jvm_step_re`] matches
-/// across those newlines. Restricting the scan to individual lines would
-/// silently skip every such multi-line annotation.
-///
-/// The raw regex capture is the literal source text between the quotes, which
-/// still carries the source file's own Java/Kotlin string-literal escaping
-/// (e.g. `\\/` for a literal `/`, `\\{` for a literal `{`). That JVM-level
-/// escaping is decoded via [`unescape_string`] *before* the text is handed to
-/// [`add_step_to_matcher_with_origin`], which performs its own (separate)
-/// Cucumber-expression-level unescaping. Skipping this JVM decode step leaves
-/// a stray backslash in front of every escaped character, which breaks both
-/// exact-text matching and raw-regex compilation for any step definition that
-/// escapes a Cucumber Expression special character.
-///
 /// # Errors
 ///
 /// Returns an error if the file cannot be read.
@@ -246,13 +229,16 @@ pub fn extract_rust_step_texts(
 pub fn extract_jvm_step_texts(path: &Path, sm: &mut StepMatcher) -> std::result::Result<(), Error> {
     let content = fs::read_to_string(path)?;
     let path_s = path.to_string_lossy();
-    for caps in jvm_step_re().captures_iter(&content) {
-        let text = unescape_string(
-            caps.get(1)
-                .expect("capture group 1 always present")
-                .as_str(),
-        );
-        add_step_to_matcher_with_origin(sm, &text, &path_s);
+    for line in content.lines() {
+        for caps in jvm_step_re().captures_iter(line) {
+            add_step_to_matcher_with_origin(
+                sm,
+                caps.get(1)
+                    .expect("capture group 1 always present")
+                    .as_str(),
+                &path_s,
+            );
+        }
     }
     Ok(())
 }
@@ -579,60 +565,6 @@ mod tests {
         extract_jvm_step_texts(&p, &mut sm).unwrap();
         assert!(sm.matches("user logs in"));
         assert!(sm.matches(r#"submits "alice""#));
-    }
-
-    #[test]
-    fn jvm_step_extraction_decodes_kotlin_escaped_slashes_and_braces() {
-        // Kotlin source escapes each backslash itself (`\\` -> a single `\`
-        // at runtime), so a step annotated with an escaped URL path in the
-        // .kt *source* looks like `\\/api\\/v1\\/expenses\\/\\{id\\}` — two
-        // decode passes are required: first the JVM string-literal escape
-        // (`\\` -> `\`), then the Cucumber-expression escape (`\/` -> `/`,
-        // `\{`/`\}` -> literal braces). Skipping the JVM pass leaves a stray
-        // backslash in the matched text.
-        let tmp = TempDir::new().unwrap();
-        let p = write(
-            tmp.path(),
-            "Steps.kt",
-            "@When(\"alice sends GET \\\\/api\\\\/v1\\\\/expenses\\\\/\\\\{expenseId\\\\}\")\nfun step() {}\n",
-        );
-        let mut sm = StepMatcher::new();
-        extract_jvm_step_texts(&p, &mut sm).unwrap();
-        assert!(sm.matches("alice sends GET /api/v1/expenses/{expenseId}"));
-    }
-
-    #[test]
-    fn jvm_step_extraction_decodes_kotlin_escaped_raw_regex() {
-        // A caret-anchored raw-regex annotation is compiled as-is (no
-        // Cucumber-expression unescaping), so it must be JVM-decoded before
-        // compilation or the doubled backslashes produce a completely
-        // different (and non-matching) regex.
-        let tmp = TempDir::new().unwrap();
-        let p = write(
-            tmp.path(),
-            "Steps.kt",
-            "@When(\"^the admin sends GET /api/v1/admin/users\\\\?search=([^\\\\s]*)$\")\nfun step(s: String) {}\n",
-        );
-        let mut sm = StepMatcher::new();
-        extract_jvm_step_texts(&p, &mut sm).unwrap();
-        assert!(sm.matches("the admin sends GET /api/v1/admin/users?search=alice@example.com"));
-    }
-
-    #[test]
-    fn jvm_step_extraction_handles_multiline_annotation() {
-        // Kotlin frequently splits a long `@When(...)` annotation across
-        // three lines: the annotation name, the string literal, and the
-        // closing paren each on their own line. Line-by-line scanning would
-        // never see the whole `@When(\n "…"\n)` construct on one line.
-        let tmp = TempDir::new().unwrap();
-        let p = write(
-            tmp.path(),
-            "Steps.kt",
-            "@When(\n    \"alice sends a very long request\"\n  )\n  fun step() {}\n",
-        );
-        let mut sm = StepMatcher::new();
-        extract_jvm_step_texts(&p, &mut sm).unwrap();
-        assert!(sm.matches("alice sends a very long request"));
     }
 
     #[test]
