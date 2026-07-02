@@ -1,5 +1,5 @@
-//! Cucumber-rs integration tests for the `contracts java-clean-imports` and
-//! `contracts dart-scaffold` commands.
+//! Cucumber-rs integration tests for the `specs clean java-imports` and
+//! `specs scaffold dart` commands.
 //!
 //! Wires the behavior-contract feature files at
 //! `specs/apps/rhino/behavior/rhino-cli/gherkin/contracts/` to step definitions that
@@ -53,10 +53,15 @@ impl ContractsWorld {
         self.dir.path().join(rel).exists()
     }
 
-    fn exec(&mut self, subcommand: &str) {
+    /// Runs `rhino-cli` with `args` followed by `--dir <fixture-dir> --no-color`.
+    ///
+    /// `args` is the subcommand path, e.g. `["specs", "clean", "java-imports"]`
+    /// for `specs clean java-imports --dir <dir> --no-color`.
+    fn exec(&mut self, args: &[&str]) {
         let dir = self.dir.path().to_string_lossy().into_owned();
         let out = std::process::Command::new(cargo_bin("rhino-cli"))
-            .args(["contracts", subcommand, &dir, "--no-color"])
+            .args(args)
+            .args(["--dir", &dir, "--no-color"])
             .output()
             .expect("run rhino-cli");
         self.output = Some(out);
@@ -145,12 +150,12 @@ fn given_old_scaffold(w: &mut ContractsWorld) {
 
 #[when("the developer runs contracts java-clean-imports on the directory")]
 fn when_run_clean_imports(w: &mut ContractsWorld) {
-    w.exec("java-clean-imports");
+    w.exec(&["specs", "clean", "java-imports"]);
 }
 
 #[when("the developer runs contracts dart-scaffold on the directory")]
 fn when_run_dart_scaffold(w: &mut ContractsWorld) {
-    w.exec("dart-scaffold");
+    w.exec(&["specs", "scaffold", "dart"]);
 }
 
 // ===========================================================================

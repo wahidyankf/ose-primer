@@ -1,4 +1,4 @@
-//! Cucumber-rs integration tests for the `spec-coverage validate` command.
+//! Cucumber-rs integration tests for the `specs behavior-coverage validate` command.
 //!
 //! Wires the behavior-contract feature file at
 //! `specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/` to step definitions
@@ -32,7 +32,7 @@ impl std::fmt::Debug for SpecWorld {
 impl SpecWorld {
     fn new() -> Self {
         let work = TempDir::new().expect("temp workspace");
-        std::fs::create_dir_all(work.path().join(".git")).expect("mk .git");
+        init_git_repo(work.path());
         std::fs::create_dir_all(work.path().join("specs")).expect("mk specs");
         std::fs::create_dir_all(work.path().join("app")).expect("mk app");
         Self {
@@ -51,7 +51,7 @@ impl SpecWorld {
     }
 
     fn exec(&mut self, extra: &[&str]) {
-        let mut args = vec!["spec-coverage", "validate", "specs", "app"];
+        let mut args = vec!["specs", "behavior-coverage", "validate", "specs", "app"];
         args.extend_from_slice(extra);
         args.push("--no-color");
         let out = std::process::Command::new(cargo_bin("rhino-cli"))
@@ -74,6 +74,19 @@ impl SpecWorld {
             .code()
             .unwrap_or(-1)
     }
+}
+
+/// Initialises a minimal real git repository at `dir` (no commits needed) so
+/// `git rev-parse --show-toplevel` — which `find_root()` shells out to —
+/// resolves successfully. A bare `.git` directory (not an initialized
+/// repository) is insufficient for `git rev-parse` to succeed.
+fn init_git_repo(dir: &std::path::Path) {
+    let out = std::process::Command::new("git")
+        .args(["init", "-q"])
+        .current_dir(dir)
+        .output()
+        .expect("run git init");
+    assert!(out.status.success(), "git init failed: {out:?}");
 }
 
 // --- Given steps ---

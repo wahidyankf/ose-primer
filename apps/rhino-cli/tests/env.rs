@@ -38,8 +38,10 @@ impl std::fmt::Debug for EnvWorld {
 impl EnvWorld {
     fn new() -> Self {
         let repo = TempDir::new().expect("temp repo");
-        // Initialise a real .git directory so detect_worktree + findGitRoot work.
-        std::fs::create_dir_all(repo.path().join(".git")).expect("mk .git");
+        // Initialise a real git repository (not just a `.git` directory) so
+        // `find_root()` — which shells out to `git rev-parse --show-toplevel`
+        // — and `detect_worktree` both resolve successfully.
+        init_git_repo(repo.path());
         Self {
             repo,
             backup: TempDir::new().expect("temp backup"),
@@ -114,6 +116,20 @@ impl EnvWorld {
             .code()
             .unwrap_or(-1)
     }
+}
+
+/// Initialises a minimal real git repository at `dir` (no commits needed) so
+/// `git rev-parse --show-toplevel` — which `find_root()` shells out to —
+/// resolves successfully. A bare `.git` directory (not an initialized
+/// repository) is insufficient for `git rev-parse` to succeed.
+fn init_git_repo(dir: &Path) {
+    std::fs::create_dir_all(dir).expect("mk repo dir");
+    let out = std::process::Command::new("git")
+        .args(["init", "-q"])
+        .current_dir(dir)
+        .output()
+        .expect("run git init");
+    assert!(out.status.success(), "git init failed: {out:?}");
 }
 
 // ===========================================================================
@@ -250,7 +266,7 @@ fn given_worktree_named_feature_branch(w: &mut EnvWorld) {
     // worktree basename is deterministic.
     let parent = TempDir::new().expect("parent");
     let fb = parent.path().join("feature-branch");
-    std::fs::create_dir_all(fb.join(".git")).expect("mk .git");
+    init_git_repo(&fb);
     std::fs::write(fb.join(".env"), "ROOT=1\n").expect("write .env");
     w.run_dir = Some(fb.clone());
     // Persist the parent dir for the scenario's lifetime (it lives outside the
@@ -264,7 +280,7 @@ fn given_worktree_named_feature_branch(w: &mut EnvWorld) {
 fn given_main_repo_named(w: &mut EnvWorld) {
     let parent = TempDir::new().expect("parent");
     let main = parent.path().join("open-sharia-enterprise");
-    std::fs::create_dir_all(main.join(".git")).expect("mk .git");
+    init_git_repo(&main);
     std::fs::write(main.join(".env"), "ROOT=1\n").expect("write .env");
     w.run_dir = Some(main.clone());
     std::mem::forget(parent);
@@ -588,7 +604,7 @@ fn given_backup_under_feature_branch(w: &mut EnvWorld) {
     // Re-root the repo under a "feature-branch"-named dir.
     let parent = TempDir::new().expect("parent");
     let fb = parent.path().join("feature-branch");
-    std::fs::create_dir_all(fb.join(".git")).expect("mk .git");
+    init_git_repo(&fb);
     w.run_dir = Some(fb.clone());
     std::mem::forget(parent);
 }

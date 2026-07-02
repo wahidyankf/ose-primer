@@ -19,7 +19,7 @@ fn timestamp() -> String {
 }
 
 /// Formats the validation result as human-readable text. Each package is shown
-/// with a `✓` or `✗` prefix and its status, followed by a blank line and the
+/// with a `PASS` or `FAIL` prefix and its status, followed by a blank line and the
 /// violation count summary.
 pub fn format_text(result: &ValidationResult, _verbose: bool, quiet: bool) -> String {
     let mut out = String::new();
@@ -28,18 +28,18 @@ pub fn format_text(result: &ValidationResult, _verbose: bool, quiet: bool) -> St
         if pkg.valid {
             let _ = writeln!(
                 out,
-                "✓ {}\tpackage-info.java present, @{} found",
+                "PASS {}\tpackage-info.java present, @{} found",
                 pkg.package_dir, result.annotation
             );
         } else {
             match pkg.violation_type {
                 Some(ViolationType::MissingPackageInfo) => {
-                    let _ = writeln!(out, "✗ {}\tpackage-info.java missing", pkg.package_dir);
+                    let _ = writeln!(out, "FAIL {}\tpackage-info.java missing", pkg.package_dir);
                 }
                 Some(ViolationType::MissingAnnotation) => {
                     let _ = writeln!(
                         out,
-                        "✗ {}\tpackage-info.java present, @{} missing",
+                        "FAIL {}\tpackage-info.java present, @{} missing",
                         pkg.package_dir, result.annotation
                     );
                 }
@@ -105,8 +105,7 @@ pub fn format_json(result: &ValidationResult) -> Result<String, Error> {
         violations,
     };
 
-    let json = crate::internal::cliout::gojson::html_escape(&serde_json::to_string_pretty(&out)?);
-    Ok(json)
+    Ok(serde_json::to_string_pretty(&out)?)
 }
 
 /// Formats the validation result as a markdown report.
@@ -122,7 +121,7 @@ pub fn format_markdown(result: &ValidationResult) -> String {
     let _ = writeln!(out, "- **Violations**: {num_violations}\n");
 
     if num_violations == 0 {
-        out.push_str("✓ All packages have the required annotation.\n");
+        out.push_str("PASS All packages have the required annotation.\n");
         return out;
     }
 
@@ -197,7 +196,7 @@ mod tests {
         let s = format_text(&result_all_valid(), false, false);
         assert_eq!(
             s,
-            "✓ com/foo\tpackage-info.java present, @NullMarked found\n\n0 violations found.\n"
+            "PASS com/foo\tpackage-info.java present, @NullMarked found\n\n0 violations found.\n"
         );
     }
 
@@ -206,15 +205,15 @@ mod tests {
         let s = format_text(&result_all_valid(), false, true);
         assert_eq!(
             s,
-            "✓ com/foo\tpackage-info.java present, @NullMarked found\n"
+            "PASS com/foo\tpackage-info.java present, @NullMarked found\n"
         );
     }
 
     #[test]
     fn text_violations_always_print_summary() {
         let s = format_text(&result_with_violations(), false, true);
-        assert!(s.contains("✗ com/bar\tpackage-info.java missing\n"));
-        assert!(s.contains("✗ com/foo\tpackage-info.java present, @NullMarked missing\n"));
+        assert!(s.contains("FAIL com/bar\tpackage-info.java missing\n"));
+        assert!(s.contains("FAIL com/foo\tpackage-info.java present, @NullMarked missing\n"));
         assert!(s.ends_with("\n2 violation(s) found.\n"));
     }
 
@@ -245,7 +244,7 @@ mod tests {
         let s = format_markdown(&result_all_valid());
         assert!(s.starts_with("# Java Null Safety Validation Report\n\n"));
         assert!(s.contains("- **Annotation required**: `@NullMarked`\n"));
-        assert!(s.ends_with("✓ All packages have the required annotation.\n"));
+        assert!(s.ends_with("PASS All packages have the required annotation.\n"));
     }
 
     #[test]

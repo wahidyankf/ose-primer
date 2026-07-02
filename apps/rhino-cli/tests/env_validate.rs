@@ -12,6 +12,23 @@ fn write(dir: &TempDir, rel: &str, content: &str) {
     fs::write(p, content).unwrap();
 }
 
+/// Write `repo-config.yml` with a single `apps/myapp` surface (given `lang`) plus a
+/// matching `env-injection` entry so the manifest-consistency pass reports no findings
+/// of its own — keeps each scenario focused on `env-contract` drift only.
+///
+/// `env-contract:` and `env-injection:` are sections of `repo-config.yml`, not
+/// standalone files — see `apps/rhino-cli/src/application/env/validate.rs::load_contract`
+/// and `apps/rhino-cli/src/application/env/injection.rs::load_manifest`.
+fn write_repo_config(dir: &TempDir, lang: &str) {
+    write(
+        dir,
+        "repo-config.yml",
+        &format!(
+            "env-contract:\n  surfaces:\n    - root: apps/myapp\n      kind: app\n      lang: {lang}\n      allowlist: []\n\nenv-injection:\n  apps:\n    - app: myapp\n      keys-from: apps/myapp/.env.example\n      runtime:\n        local: env-local\n  ci-harness: []\n"
+        ),
+    );
+}
+
 const ARGS_NO_WARN: EnvValidateArgs = EnvValidateArgs { warn_only: false };
 
 // ── matching surface ─────────────────────────────────────────────────────────
@@ -20,11 +37,7 @@ const ARGS_NO_WARN: EnvValidateArgs = EnvValidateArgs { warn_only: false };
 fn integration_matching_typescript_surface_exits_clean() {
     let tmp = TempDir::new().unwrap();
 
-    write(
-        &tmp,
-        "env-contract.yaml",
-        "surfaces:\n  - root: apps/myapp\n    kind: app\n    lang: typescript\n    allowlist: []\n",
-    );
+    write_repo_config(&tmp, "typescript");
     write(&tmp, "apps/myapp/.env.example", "MY_KEY=value\n");
     write(
         &tmp,
@@ -47,11 +60,7 @@ fn integration_matching_typescript_surface_exits_clean() {
 fn integration_matching_rust_surface_exits_clean() {
     let tmp = TempDir::new().unwrap();
 
-    write(
-        &tmp,
-        "env-contract.yaml",
-        "surfaces:\n  - root: apps/myapp\n    kind: app\n    lang: rust\n    allowlist: []\n",
-    );
+    write_repo_config(&tmp, "rust");
     write(
         &tmp,
         "apps/myapp/.env.example",
@@ -79,11 +88,7 @@ fn integration_matching_rust_surface_exits_clean() {
 fn integration_declared_but_unread_exits_nonzero_and_names_key() {
     let tmp = TempDir::new().unwrap();
 
-    write(
-        &tmp,
-        "env-contract.yaml",
-        "surfaces:\n  - root: apps/myapp\n    kind: app\n    lang: typescript\n    allowlist: []\n",
-    );
+    write_repo_config(&tmp, "typescript");
     // STALE_KEY declared in .env.example but absent from code
     write(&tmp, "apps/myapp/.env.example", "STALE_KEY=value\n");
     write(
@@ -111,11 +116,7 @@ fn integration_declared_but_unread_exits_nonzero_and_names_key() {
 fn integration_read_but_undeclared_exits_nonzero_and_names_key() {
     let tmp = TempDir::new().unwrap();
 
-    write(
-        &tmp,
-        "env-contract.yaml",
-        "surfaces:\n  - root: apps/myapp\n    kind: app\n    lang: typescript\n    allowlist: []\n",
-    );
+    write_repo_config(&tmp, "typescript");
     // .env.example is empty; code reads NEW_KEY
     write(&tmp, "apps/myapp/.env.example", "");
     write(
@@ -145,11 +146,7 @@ fn integration_read_but_undeclared_exits_nonzero_and_names_key() {
 fn integration_warn_only_does_not_fail_on_drift() {
     let tmp = TempDir::new().unwrap();
 
-    write(
-        &tmp,
-        "env-contract.yaml",
-        "surfaces:\n  - root: apps/myapp\n    kind: app\n    lang: typescript\n    allowlist: []\n",
-    );
+    write_repo_config(&tmp, "typescript");
     write(&tmp, "apps/myapp/.env.example", "STALE_KEY=value\n");
     write(
         &tmp,

@@ -484,7 +484,7 @@ pub enum SpecsCountsCommands {
 /// Specs clean subcommands.
 #[derive(Subcommand, Debug)]
 pub enum SpecsCleanCommands {
-    /// Strip unused/same-package imports from generated Java contract files (dormant in ose-public).
+    /// Strip unused/same-package/duplicate imports from generated Java contract files.
     #[command(name = "java-imports")]
     JavaImports(specs_clean_java_imports::CleanJavaImportsArgs),
 }
@@ -492,7 +492,7 @@ pub enum SpecsCleanCommands {
 /// Specs scaffold subcommands.
 #[derive(Subcommand, Debug)]
 pub enum SpecsScaffoldCommands {
-    /// Generate Dart package scaffolding around generated contract types (dormant in ose-public).
+    /// Generate Dart package scaffolding (pubspec.yaml, barrel library) around generated contract types.
     #[command(name = "dart")]
     Dart(specs_scaffold_dart::ScaffoldDartArgs),
 }

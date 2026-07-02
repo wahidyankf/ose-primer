@@ -126,8 +126,13 @@ impl DoctorWorld {
     /// Creates executable stub scripts for every probed tool in `self.bin`.
     fn write_stubs(&self) {
         for (name, out) in STUB_TOOLS {
+            if *name == "git" {
+                // `git` gets a smarter stub — see `write_git_stub`.
+                continue;
+            }
             self.write_stub(name, &format!("printf '%s\\n' {}", shell_quote(out)));
         }
+        self.write_git_stub();
         // java -version → stderr.
         self.write_stub("java", "printf 'openjdk version \"21.0.1\" 2024\\n' 1>&2");
         // cargo llvm-cov --version → stdout.
@@ -138,9 +143,41 @@ impl DoctorWorld {
         self.write_stub("npx", "printf 'Version 1.58.0\\n'");
     }
 
+    /// Writes a `git` stub smarter than the generic version-echo stub used
+    /// for every other probed tool.
+    ///
+    /// `rhino-cli doctor` discovers its own repo root via
+    /// `git rev-parse --show-toplevel` *before* running any tool checks
+    /// (see `infrastructure::git::root::find_root`). With `PATH` restricted
+    /// to this synthetic `bin` directory, that call resolves to this very
+    /// stub, so a stub that always echoes a fixed version string
+    /// (ignoring its arguments, like every other stub) would make
+    /// `rev-parse --show-toplevel` print `"git version 2.43.0"` instead of a
+    /// real path — `doctor` would then fail before printing anything rather
+    /// than running its tool checks. This stub special-cases `rev-parse` to
+    /// echo the real synthetic repo path and falls through to the fixed
+    /// version string for `--version` (the "is git installed" probe).
+    fn write_git_stub(&self) {
+        let repo_path = self.repo_path().to_string_lossy().into_owned();
+        self.write_stub(
+            "git",
+            &format!(
+                "case \"$1\" in\n  rev-parse) printf '%s\\n' {} ;;\n  *) printf '%s\\n' 'git version 2.43.0' ;;\nesac",
+                shell_quote(&repo_path)
+            ),
+        );
+    }
+
     fn write_stub(&self, name: &str, body: &str) {
         let path = self.bin.path().join(name);
-        std::fs::write(&path, format!("#!/usr/bin/env bash\n{body}\n")).expect("write stub");
+        // `#!/bin/sh` (an absolute path the kernel execs directly) rather
+        // than `#!/usr/bin/env bash`: with `PATH` restricted to this
+        // synthetic `bin` directory (no system bin dirs), `env` cannot
+        // resolve `bash` via `PATH`, so every stub would fail at
+        // interpreter-launch time with "env: bash: No such file or
+        // directory" — before `body` (a POSIX `sh`-compatible one-liner)
+        // ever runs.
+        std::fs::write(&path, format!("#!/bin/sh\n{body}\n")).expect("write stub");
         #[cfg(unix)]
         {
             use std::os::unix::fs::PermissionsExt as _;
@@ -287,7 +324,7 @@ fn then_exit_fail(w: &mut DoctorWorld) {
 fn then_each_passing(w: &mut DoctorWorld) {
     let out = w.stdout();
     assert!(out.contains("Doctor Report"), "got: {out}");
-    assert!(!out.contains('\u{2717}'), "unexpected ✗ in: {out}");
+    assert!(!out.contains('\u{2717}'), "unexpected cross-mark in: {out}");
 }
 
 #[then("the output identifies the missing tool")]

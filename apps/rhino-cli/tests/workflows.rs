@@ -1,4 +1,4 @@
-//! Cucumber-rs integration tests for the `workflows validate-naming` command.
+//! Cucumber-rs integration tests for the `repo-governance workflows naming validate` command.
 //!
 //! Wires the behavior-contract feature file at
 //! `specs/apps/rhino/behavior/rhino-cli/gherkin/workflows/` to step definitions that
@@ -55,7 +55,13 @@ impl WorkflowsWorld {
 
     fn exec(&mut self) {
         let out = std::process::Command::new(cargo_bin("rhino-cli"))
-            .args(["workflows", "validate-naming", "--no-color"])
+            .args([
+                "repo-governance",
+                "workflows",
+                "naming",
+                "validate",
+                "--no-color",
+            ])
             .current_dir(self.work.path())
             .output()
             .expect("run rhino-cli");

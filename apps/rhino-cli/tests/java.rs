@@ -1,4 +1,5 @@
-//! Cucumber-rs integration tests for the `java validate-annotations` command.
+//! Cucumber-rs integration tests for the `lang java null-safety-annotations
+//! validate` command.
 //!
 //! Wires the behavior-contract feature file at
 //! `specs/apps/rhino/behavior/rhino-cli/gherkin/java/` to step definitions that
@@ -49,7 +50,14 @@ impl JavaWorld {
 
     fn exec(&mut self) {
         let root = self.root.path().to_string_lossy().into_owned();
-        let mut args = vec!["java".to_string(), "validate-annotations".to_string(), root];
+        let mut args = vec![
+            "lang".to_string(),
+            "java".to_string(),
+            "null-safety-annotations".to_string(),
+            "validate".to_string(),
+            "--dir".to_string(),
+            root,
+        ];
         if let Some(a) = &self.annotation {
             args.push("--annotation".to_string());
             args.push(a.clone());

@@ -1,5 +1,8 @@
-//! Cucumber-rs integration tests for the `repo-governance vendor-audit` and
-//! `repo-governance gherkin-keyword-cardinality` commands.
+//! Cucumber-rs integration tests for the `repo-governance vendor validate` and
+//! `specs gherkin-cardinality validate` commands (feature file names and
+//! Gherkin step text still say "gherkin-keyword-cardinality" for historical
+//! reasons — the underlying CLI subcommand moved under the `specs` noun
+//! during the phase 9a/b/c command-surface rationalization).
 //!
 //! Wires the behavior-contract feature files at
 //! `specs/apps/rhino/behavior/rhino-cli/gherkin/repo-governance/` to step definitions
@@ -22,8 +25,10 @@ struct GovernanceWorld {
     work: TempDir,
     /// Repo-relative path of the fixture file or directory to audit.
     target: String,
-    /// `repo-governance` subcommand under test.
-    subcommand: &'static str,
+    /// Full CLI subcommand path under test (e.g.
+    /// `["repo-governance", "vendor", "validate"]`), excluding the trailing
+    /// target path and `--no-color` flag.
+    subcommand: Vec<&'static str>,
     output: Option<Output>,
 }
 
@@ -42,7 +47,7 @@ impl GovernanceWorld {
         Self {
             work,
             target: String::new(),
-            subcommand: "vendor-audit",
+            subcommand: vec!["repo-governance", "vendor", "validate"],
             output: None,
         }
     }
@@ -56,13 +61,11 @@ impl GovernanceWorld {
     }
 
     fn exec(&mut self) {
+        let mut args: Vec<&str> = self.subcommand.clone();
+        args.push(&self.target);
+        args.push("--no-color");
         let out = std::process::Command::new(cargo_bin("rhino-cli"))
-            .args([
-                "repo-governance",
-                self.subcommand,
-                &self.target,
-                "--no-color",
-            ])
+            .args(&args)
             .current_dir(self.work.path())
             .output()
             .expect("run rhino-cli");
@@ -233,7 +236,7 @@ fn when_run_audit(w: &mut GovernanceWorld) {
 #[when("the developer runs repo-governance gherkin-keyword-cardinality on the file")]
 #[when("the developer runs repo-governance gherkin-keyword-cardinality on the directory")]
 fn when_run_cardinality_audit(w: &mut GovernanceWorld) {
-    w.subcommand = "gherkin-keyword-cardinality";
+    w.subcommand = vec!["specs", "gherkin-cardinality", "validate"];
     w.exec();
 }
 
@@ -282,7 +285,10 @@ fn then_names_offending_file_and_scenario(w: &mut GovernanceWorld) {
 fn then_zero_cardinality_findings(w: &mut GovernanceWorld) {
     let out = w.stdout();
     assert!(
-        out.contains("GHERKIN KEYWORD CARDINALITY AUDIT PASSED: no violations found"),
+        out.contains(
+            "GHERKIN KEYWORD CARDINALITY AUDIT PASSED: every scenario uses each primary \
+             keyword at most once"
+        ),
         "got: {out}"
     );
 }

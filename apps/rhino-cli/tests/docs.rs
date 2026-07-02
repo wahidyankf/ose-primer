@@ -209,20 +209,20 @@ fn given_links_broken_unstaged(w: &mut DocsWorld) {
 
 #[when("the developer runs docs validate-links")]
 fn when_links_run(w: &mut DocsWorld) {
-    w.exec(&["docs", "validate-links"]);
+    w.exec(&["md", "links", "validate"]);
 }
 
 #[when("the developer runs docs validate-links with the --staged-only flag")]
 fn when_links_run_staged(w: &mut DocsWorld) {
     w.extra_args.push("--staged-only".to_string());
-    w.exec(&["docs", "validate-links"]);
+    w.exec(&["md", "links", "validate"]);
 }
 
 #[when("the developer runs docs validate-links with the --exclude flag for that tree")]
 fn when_links_run_exclude(w: &mut DocsWorld) {
     w.extra_args.push("--exclude".to_string());
     w.extra_args.push("legacy".to_string());
-    w.exec(&["docs", "validate-links"]);
+    w.exec(&["md", "links", "validate"]);
 }
 
 #[then("the output reports no broken links found")]
@@ -531,7 +531,7 @@ fn given_m_cycle(w: &mut DocsWorld) {
 
 #[when("the developer runs docs validate-mermaid")]
 fn when_m_run(w: &mut DocsWorld) {
-    let mut args: Vec<String> = vec!["docs".into(), "validate-mermaid".into()];
+    let mut args: Vec<String> = vec!["md".into(), "mermaid".into(), "validate".into()];
     if !w.mermaid_default_scan {
         args.push("docs".into());
     }
@@ -547,12 +547,12 @@ fn when_m_run(w: &mut DocsWorld) {
 
 #[when("the developer runs docs validate-mermaid with --max-label-len 40")]
 fn when_m_label_40(w: &mut DocsWorld) {
-    w.exec(&["docs", "validate-mermaid", "docs", "--max-label-len", "40"]);
+    w.exec(&["md", "mermaid", "validate", "docs", "--max-label-len", "40"]);
 }
 
 #[when("the developer runs docs validate-mermaid with --max-width 5")]
 fn when_m_width_5(w: &mut DocsWorld) {
-    w.exec(&["docs", "validate-mermaid", "docs", "--max-width", "5"]);
+    w.exec(&["md", "mermaid", "validate", "docs", "--max-width", "5"]);
 }
 
 #[when("the developer runs docs validate-mermaid with --max-depth 3")]
@@ -561,8 +561,9 @@ fn when_m_depth_3(w: &mut DocsWorld) {
     // max-width is also lowered to 3 (the Go integration test relied on leaky
     // global flag state from a prior scenario; we set both explicitly here).
     w.exec(&[
-        "docs",
-        "validate-mermaid",
+        "md",
+        "mermaid",
+        "validate",
         "docs",
         "--max-width",
         "3",
@@ -573,7 +574,7 @@ fn when_m_depth_3(w: &mut DocsWorld) {
 
 #[when("the developer runs docs validate-mermaid with the --staged-only flag")]
 fn when_m_staged(w: &mut DocsWorld) {
-    w.exec(&["docs", "validate-mermaid", "--staged-only"]);
+    w.exec(&["md", "mermaid", "validate", "--staged-only"]);
 }
 
 #[when("the developer runs docs validate-mermaid with the --changed-only flag")]
@@ -583,38 +584,38 @@ fn when_m_changed(w: &mut DocsWorld) {
     // violating file out of the range.
     w.git(&["add", "-A"]);
     w.git(&["commit", "-q", "-m", "fixture"]);
-    w.exec(&["docs", "validate-mermaid", "--changed-only"]);
+    w.exec(&["md", "mermaid", "validate", "--changed-only"]);
 }
 
 #[when("the developer runs docs validate-mermaid with -o json")]
 fn when_m_json(w: &mut DocsWorld) {
-    w.exec(&["docs", "validate-mermaid", "docs", "-o", "json"]);
+    w.exec(&["md", "mermaid", "validate", "docs", "-o", "json"]);
 }
 
 #[when("the developer runs docs validate-mermaid with -o markdown")]
 fn when_m_markdown(w: &mut DocsWorld) {
-    w.exec(&["docs", "validate-mermaid", "docs", "-o", "markdown"]);
+    w.exec(&["md", "mermaid", "validate", "docs", "-o", "markdown"]);
 }
 
 #[when("the developer runs docs validate-mermaid with --verbose")]
 fn when_m_verbose(w: &mut DocsWorld) {
-    w.exec(&["docs", "validate-mermaid", "docs", "--verbose"]);
+    w.exec(&["md", "mermaid", "validate", "docs", "--verbose"]);
 }
 
 #[when("the developer runs docs validate-mermaid with --quiet")]
 fn when_m_quiet(w: &mut DocsWorld) {
-    w.exec(&["docs", "validate-mermaid", "docs", "--quiet"]);
+    w.exec(&["md", "mermaid", "validate", "docs", "--quiet"]);
 }
 
 #[when("the developer runs docs validate-mermaid without path arguments")]
 fn when_m_no_paths(w: &mut DocsWorld) {
-    w.exec(&["docs", "validate-mermaid"]);
+    w.exec(&["md", "mermaid", "validate"]);
 }
 
 #[when("the developer runs docs validate-mermaid with --exclude pointing at that subdirectory")]
 fn when_m_run_exclude(w: &mut DocsWorld) {
     // Default repo-wide scan with the violating subtree excluded by prefix.
-    w.exec(&["docs", "validate-mermaid", "--exclude", "legacy-diagrams"]);
+    w.exec(&["md", "mermaid", "validate", "--exclude", "legacy-diagrams"]);
 }
 
 // --- mermaid Then steps ---
@@ -824,12 +825,12 @@ fn given_h_governance_duplicate_h1(w: &mut DocsWorld) {
 
 #[when("the developer runs docs validate-heading-hierarchy")]
 fn when_h_run(w: &mut DocsWorld) {
-    w.exec(&["docs", "validate-heading-hierarchy"]);
+    w.exec(&["md", "heading-hierarchy", "validate"]);
 }
 
 #[when("the developer runs docs validate-heading-hierarchy with --exclude docs")]
 fn when_h_run_exclude_docs(w: &mut DocsWorld) {
-    w.exec(&["docs", "validate-heading-hierarchy", "--exclude", "docs"]);
+    w.exec(&["md", "heading-hierarchy", "validate", "--exclude", "docs"]);
 }
 
 // --- heading Then steps ---
@@ -838,7 +839,10 @@ fn when_h_run_exclude_docs(w: &mut DocsWorld) {
 fn assert_heading_finding(w: &DocsWorld, kind: &str) {
     let out = w.stdout();
     let file = w.heading_file.clone().expect("fixture set heading_file");
-    assert!(out.contains("Heading Hierarchy Report"), "got: {out}");
+    assert!(
+        out.contains("DOCS HEADING HIERARCHY VALIDATION FAILED"),
+        "got: {out}"
+    );
     assert!(out.contains(kind), "got: {out}");
     assert!(out.contains(&file), "got: {out}");
 }
