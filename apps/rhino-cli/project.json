@@ -109,7 +109,8 @@
         ],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "specs:behavior:coverage": {
       "executor": "nx:run-commands",
@@ -133,7 +134,8 @@
         "commands": ["npx nx run rhino-cli:specs:structure-validation", "npx nx run rhino-cli:specs:behavior:coverage"],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "specs:gherkin-cardinality-validation": {
       "executor": "nx:run-commands",
@@ -198,5 +200,8 @@
         "{workspaceRoot}/apps/*/src/**/*.rs"
       ]
     }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/apps/rhino/behavior/rhino-cli/gherkin/**/*.feature"]
   }
 }

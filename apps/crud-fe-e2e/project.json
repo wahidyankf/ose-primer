@@ -38,7 +38,8 @@
         ],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "test:coverage": {
       "executor": "nx:run-commands",
@@ -93,7 +94,8 @@
         "commands": ["nx run crud-fe-e2e:specs:structure-validation", "nx run crud-fe-e2e:specs:behavior:coverage"],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "test:unit": {
       "executor": "nx:run-commands",
@@ -121,6 +123,9 @@
         "command": "echo 'compat:min-version: no min-version check for this language'"
       }
     }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature"]
   },
   "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:crud-fe"],
   "implicitDependencies": [

@@ -35,7 +35,8 @@
           "nx run ts-ui:test:specs"
         ],
         "parallel": false
-      }
+      },
+      "inputs": ["default", "specs"]
     },
     "test:coverage": {
       "executor": "nx:run-commands",
@@ -98,7 +99,8 @@
         "commands": ["nx run ts-ui:specs:structure-validation", "nx run ts-ui:specs:behavior:coverage"],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "deps:audit": {
       "executor": "nx:run-commands",
@@ -114,6 +116,9 @@
         "command": "echo 'compat:min-version: no min-version check for this language'"
       }
     }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/libs/ts-ui/behavior/gherkin/**/*.feature"]
   },
   "tags": ["type:lib", "lang:ts", "domain:ui"]
 }

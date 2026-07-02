@@ -92,34 +92,6 @@ class ExpenseSteps {
   }
 
   @Given(
-    "^alice has created an entry with body \\{ \"amount\": \"([^\"]+)\", \"currency\": \"([^\"]+)\", \"category\": \"([^\"]+)\", \"description\": \"([^\"]+)\", \"date\": \"([^\"]+)\", \"type\": \"([^\"]+)\", \"quantity\": ([0-9.]+), \"unit\": \"([^\"]+)\" \\}$"
-  )
-  fun aliceHasCreatedEntryWithQuantityUnit(
-    amount: String,
-    currency: String,
-    category: String,
-    description: String,
-    date: String,
-    type: String,
-    quantity: String,
-    unit: String,
-  ) {
-    val body =
-      mapOf(
-        "amount" to amount,
-        "currency" to currency,
-        "category" to category,
-        "description" to description,
-        "date" to date,
-        "type" to type,
-        "quantity" to quantity,
-        "unit" to unit,
-      )
-    val id = createExpense("alice", body)
-    TestWorld.expenseIds["alice:last"] = id
-  }
-
-  @Given(
     "^alice has created an expense with body \\{ \"amount\": \"([^\"]+)\", \"currency\": \"([^\"]+)\", \"category\": \"([^\"]+)\", \"description\": \"([^\"]+)\", \"date\": \"([^\"]+)\", \"type\": \"([^\"]+)\", \"quantity\": ([0-9.]+), \"unit\": \"([^\"]+)\" \\}$"
   )
   fun aliceHasCreatedExpenseWithQuantityUnit(

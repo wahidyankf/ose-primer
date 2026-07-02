@@ -25,7 +25,6 @@ func registerAttachmentSteps(sc *godog.ScenarioContext, ctx *scenarioCtx) {
 	sc.Step(`^the response body should contain 2 items in the "([^"]*)" array$`, ctx.theResponseBodyShouldContain2Items)
 	sc.Step(`^the response body should contain an attachment with "([^"]*)" equal to "([^"]*)"$`, ctx.theResponseBodyShouldContainAttachmentWithField)
 	sc.Step(`^bob has created an entry with body \{ "amount": "([^"]*)", "currency": "([^"]*)", "category": "([^"]*)", "description": "([^"]*)", "date": "([^"]*)", "type": "([^"]*)" \}$`, ctx.bobHasCreatedEntry)
-	sc.Step(`^alice uploads file "([^"]*)" with content type "([^"]*)" to the entry$`, ctx.aliceHasUploadedFileTo)
 }
 
 // uploadAttachment calls UploadAttachment handler directly using multipart form data.

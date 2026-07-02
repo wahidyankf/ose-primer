@@ -5,10 +5,6 @@ import { validateResponseAgainstContract } from "../utils/contract-validator";
 
 const { Given, Then } = createBdd();
 
-Given("the demo API is running", async () => {
-  // No-op: the test suite assumes the API is running at baseURL.
-});
-
 Given("the API is running", async () => {
   // No-op: the test suite assumes the API is running at baseURL.
 });

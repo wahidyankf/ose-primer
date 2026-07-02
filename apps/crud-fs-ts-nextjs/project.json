@@ -65,7 +65,8 @@
         ],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "test:coverage": {
       "executor": "nx:run-commands",
@@ -117,7 +118,7 @@
     "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'Phase 0 — specs:coverage stubbed; TS fullstack test-support orphan step cleanup lands in Phase 1'"
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin specs/apps/crud/behavior/crud-web/gherkin apps/crud-fs-ts-nextjs"
       },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
@@ -131,7 +132,8 @@
         ],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "test:e2e": {
       "executor": "nx:run-commands",
@@ -153,6 +155,9 @@
         "command": "echo 'compat:min-version: no min-version check for this language'"
       }
     }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/apps/crud/**/*.feature"]
   },
   "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:crud-fs"],
   "implicitDependencies": ["crud-contracts", "rhino-cli"]

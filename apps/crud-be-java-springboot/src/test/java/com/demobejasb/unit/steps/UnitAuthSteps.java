@@ -15,8 +15,6 @@ import io.cucumber.java.en.When;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -61,14 +59,6 @@ public class UnitAuthSteps {
     // Registration — When steps
     // ============================================================
 
-    @When("^a client sends POST /api/v1/auth/register with body:$")
-    public void postRegisterWithBody(final String body) {
-        String username = extractJsonString(body, "username");
-        String email = extractJsonString(body, "email");
-        String password = extractJsonString(body, "password");
-        performRegister(username, email, password);
-    }
-
     @When("^the client sends POST /api/v1/auth/register with body [{] \"username\": \"([^\"]+)\", \"email\": \"([^\"]+)\", \"password\": \"([^\"]*)\" [}]$")
     public void theClientSendsPostRegisterWithBody(
             final String username, final String email, final String password) {
@@ -79,23 +69,9 @@ public class UnitAuthSteps {
     // Login — When steps
     // ============================================================
 
-    @When("^a client sends POST /api/v1/auth/login with body:$")
-    public void postLoginWithBody(final String body) {
-        String username = extractJsonString(body, "username");
-        String password = extractJsonString(body, "password");
-        performLogin(username, password);
-    }
-
     @When("^the client sends POST /api/v1/auth/login with body [{] \"username\": \"([^\"]+)\", \"password\": \"([^\"]+)\" [}]$")
     public void theClientSendsPostLoginWithBody(final String username, final String password) {
         performLogin(username, password);
-    }
-
-    @Given("the client has logged in as {string} and stored the JWT token")
-    public void clientLoggedIn(final String username) {
-        AuthTokens response = doLogin(username, "Str0ng#Pass1234");
-        stateStore.setAccessToken(response.getAccessToken());
-        stateStore.setCurrentUsername(username);
     }
 
     @Given("{string} has logged in and stored the access token")
@@ -204,14 +180,6 @@ public class UnitAuthSteps {
 
     @Then("the response body should contain a non-null {string} field")
     public void responseBodyContainsNonNullField(final String field) {
-        Object body = stateStore.getResponseBody();
-        assertThat(body).isNotNull();
-        Object value = resolveField(body, field);
-        assertThat(value).isNotNull();
-    }
-
-    @Then("the response body should contain a {string} field")
-    public void responseBodyContainsField(final String field) {
         Object body = stateStore.getResponseBody();
         assertThat(body).isNotNull();
         Object value = resolveField(body, field);
@@ -494,11 +462,5 @@ public class UnitAuthSteps {
             return map.get(jsonField);
         }
         return null;
-    }
-
-    private String extractJsonString(final String json, final String key) {
-        Pattern p = Pattern.compile("\"" + key + "\"\\s*:\\s*\"([^\"]*)\"");
-        Matcher m = p.matcher(json);
-        return m.find() ? m.group(1) : "";
     }
 }

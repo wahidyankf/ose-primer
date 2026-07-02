@@ -29,12 +29,6 @@ public class UnitTestSupportSteps(
         // In unit tests the service layer always supports test operations.
     }
 
-    [Given(@"^the test API is disabled$")]
-    public void GivenTestApiDisabled()
-    {
-        state.TestApiDisabled = true;
-    }
-
     [Given(@"^users and expenses exist in the database$")]
     public async Task GivenUsersAndExpensesExist()
     {

@@ -15,7 +15,8 @@
         ],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "test:coverage": {
       "executor": "nx:run-commands",
@@ -78,7 +79,7 @@
     "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'Phase 0 — specs:coverage stubbed; golang-commons scenario @covers-tag gaps land in Phase 1'"
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate specs/libs/golang-commons/behavior/gherkin libs/golang-commons"
       },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/libs/golang-commons/behavior/gherkin/**/*.feature", "{projectRoot}/**/*.go"]
@@ -92,7 +93,8 @@
         ],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "deps:audit": {
       "executor": "nx:run-commands",
@@ -108,6 +110,9 @@
         "command": "echo 'compat:min-version: no min-version check for this language'"
       }
     }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/libs/golang-commons/behavior/gherkin/**/*.feature"]
   },
   "tags": ["type:lib", "lang:golang"]
 }

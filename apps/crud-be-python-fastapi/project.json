@@ -49,7 +49,8 @@
         ],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "test:coverage": {
       "executor": "nx:run-commands",
@@ -135,7 +136,8 @@
         ],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "test:e2e": {
       "executor": "nx:run-commands",
@@ -158,6 +160,9 @@
         "cwd": "apps/crud-be-python-fastapi"
       }
     }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature"]
   },
   "tags": ["type:app", "platform:fastapi", "lang:python", "domain:crud-be"],
   "implicitDependencies": ["crud-contracts", "rhino-cli"]

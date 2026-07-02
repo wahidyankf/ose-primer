@@ -38,7 +38,8 @@
         ],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "test:coverage": {
       "executor": "nx:run-commands",
@@ -92,7 +93,7 @@
     "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'Phase 0 — specs:coverage stubbed; dead steps + .features-gen false-positive scan excluded in Phase 1'"
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-e2e"
       },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
@@ -103,7 +104,8 @@
         "commands": ["nx run crud-be-e2e:specs:structure-validation", "nx run crud-be-e2e:specs:behavior:coverage"],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "test:unit": {
       "executor": "nx:run-commands",
@@ -131,6 +133,9 @@
         "command": "echo 'compat:min-version: no min-version check for this language'"
       }
     }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature"]
   },
   "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:crud-be"],
   "implicitDependencies": [

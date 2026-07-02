@@ -1,6 +1,5 @@
 package com.demobejasb.integration.steps;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.demobejasb.auth.repository.UserRepository;
 import com.demobejasb.auth.service.AccountNotActiveException;
 import com.demobejasb.auth.service.AuthService;
@@ -38,26 +37,9 @@ public class AuthSteps {
     @Autowired
     private JwtUtil jwtUtil;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     // ============================================================
     // Registration helpers
     // ============================================================
-
-    @When("^a client sends POST /api/v1/auth/register with body:$")
-    public void postRegister(final String body) {
-        try {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> map = objectMapper.readValue(body, Map.class);
-            String username = (String) map.get("username");
-            String email = (String) map.get("email");
-            Object rawPassword = map.getOrDefault("password", "");
-            String password = rawPassword != null ? (String) rawPassword : "";
-            performRegister(username, email, password);
-        } catch (Exception e) {
-            responseStore.setResponse(400, Map.of("message", "Validation failed: " + e.getMessage()));
-        }
-    }
 
     @When("^the client sends POST /api/v1/auth/register with body \\{ \"username\": \"([^\"]+)\", \"email\": \"([^\"]+)\", \"password\": \"([^\"]*)\" \\}$")
     public void theClientSendsPostRegisterWithBody(
@@ -83,43 +65,13 @@ public class AuthSteps {
         }
     }
 
-    @Given("a user {string} is already registered")
-    public void userIsAlreadyRegistered(final String username) {
-        aUserIsRegisteredWithPassword(username, "Str0ng#Pass1234");
-    }
-
-    @Given("a user {string} is already registered with password {string}")
-    public void userIsAlreadyRegisteredWithPassword(
-            final String username, final String password) {
-        aUserIsRegisteredWithPassword(username, password);
-    }
-
     // ============================================================
     // Login helpers
     // ============================================================
 
-    @When("^a client sends POST /api/v1/auth/login with body:$")
-    public void postLogin(final String body) {
-        try {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> map = objectMapper.readValue(body, Map.class);
-            String username = (String) map.get("username");
-            String password = (String) map.get("password");
-            performLogin(username, password);
-        } catch (Exception e) {
-            responseStore.setResponse(400, Map.of("message", "Validation failed: " + e.getMessage()));
-        }
-    }
-
     @When("^the client sends POST /api/v1/auth/login with body \\{ \"username\": \"([^\"]+)\", \"password\": \"([^\"]+)\" \\}$")
     public void theClientSendsPostLoginWithBody(final String username, final String password) {
         performLogin(username, password);
-    }
-
-    @Given("the client has logged in as {string} and stored the JWT token")
-    public void clientLoggedIn(final String username) {
-        AuthTokens auth = loginOrFail(username, "Str0ng#Pass1234");
-        tokenStore.setToken(auth.getAccessToken());
     }
 
     @Given("{string} has logged in and stored the access token")
@@ -292,12 +244,6 @@ public class AuthSteps {
         Map<String, Object> body = responseStore.getBodyAsMap();
         assertThat(body).containsKey(field);
         assertThat(body.get(field)).isNotNull();
-    }
-
-    @Then("the response body should contain a {string} field")
-    public void responseBodyContainsField(final String field) {
-        Map<String, Object> body = responseStore.getBodyAsMap();
-        assertThat(body).containsKey(field);
     }
 
     @Then("the response body should contain an error message about duplicate username")

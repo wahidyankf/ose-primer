@@ -95,34 +95,6 @@ class UnitExpenseSteps {
   }
 
   @Given(
-    "^alice has created an entry with body \\{ \"amount\": \"([^\"]+)\", \"currency\": \"([^\"]+)\", \"category\": \"([^\"]+)\", \"description\": \"([^\"]+)\", \"date\": \"([^\"]+)\", \"type\": \"([^\"]+)\", \"quantity\": ([0-9.]+), \"unit\": \"([^\"]+)\" \\}$"
-  )
-  fun aliceHasCreatedEntryWithQuantityUnit(
-    amount: String,
-    currency: String,
-    category: String,
-    description: String,
-    date: String,
-    type: String,
-    quantity: String,
-    unit: String,
-  ) {
-    val id =
-      createExpenseFromFields(
-        "alice",
-        amount,
-        currency,
-        category,
-        description,
-        date,
-        type,
-        quantity.toDouble(),
-        unit,
-      )
-    UnitTestWorld.expenseIds["alice:last"] = id
-  }
-
-  @Given(
     "^alice has created an expense with body \\{ \"amount\": \"([^\"]+)\", \"currency\": \"([^\"]+)\", \"category\": \"([^\"]+)\", \"description\": \"([^\"]+)\", \"date\": \"([^\"]+)\", \"type\": \"([^\"]+)\", \"quantity\": ([0-9.]+), \"unit\": \"([^\"]+)\" \\}$"
   )
   fun aliceHasCreatedExpenseWithQuantityUnit(

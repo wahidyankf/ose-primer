@@ -50,7 +50,8 @@
         "parallel": false
       },
       "dependsOn": ["typecheck", "lint"],
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "test:coverage": {
       "executor": "nx:run-commands",
@@ -153,7 +154,8 @@
         ],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "test:e2e": {
       "executor": "nx:run-commands",
@@ -175,6 +177,9 @@
         "command": "echo 'compat:min-version: no min-version check for this language'"
       }
     }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature"]
   },
   "tags": ["type:app", "platform:giraffe", "lang:fsharp", "domain:crud-be"],
   "implicitDependencies": ["crud-contracts", "rhino-cli"]

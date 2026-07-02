@@ -99,12 +99,6 @@ public class AuthSteps {
         state.setLastResponse(response);
     }
 
-    @Given("a user {string} is registered with email {string} and password {string} for registration conflict")
-    public void registeredForConflict(String username, String email,
-            String password) throws Exception {
-        registerUser(username, email, password);
-    }
-
     /**
      * Helper: registers a user and optionally stores alice's user ID in state.
      */

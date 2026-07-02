@@ -1,5 +1,4 @@
 using DemoBeCsas.Tests.ScenarioContext;
-using FluentAssertions;
 using Reqnroll;
 using Xunit;
 
@@ -39,14 +38,4 @@ public class UserAccountSteps(ServiceLayer svc, SharedState state)
         state.LastResponse = await svc.DeactivateAsync(state.AccessToken);
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // Then steps (password change error)
-    // ─────────────────────────────────────────────────────────────
-
-    [Then(@"^the response body should contain an error message about incorrect password$")]
-    public void ThenErrorAboutIncorrectPassword()
-    {
-        state.LastResponse.Should().NotBeNull();
-        state.LastResponse!.StatusCode.Should().BeOneOf(400, 401);
-    }
 }

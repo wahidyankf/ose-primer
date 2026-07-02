@@ -48,6 +48,8 @@ func (s *timestampSteps) theResultContainsThePlusZeroSevenZeroZeroTimezoneOffset
 	return nil
 }
 
+// Scenario: Timestamp returns a valid RFC3339 formatted string
+// Scenario: JakartaTimestamp returns a timestamp with the Jakarta timezone offset
 func TestIntegrationTimestamp(t *testing.T) {
 	s := &timestampSteps{}
 	suite := godog.TestSuite{

@@ -22,9 +22,12 @@
     <ProjectReference Include="..\..\src\DemoBeCsas\DemoBeCsas.csproj" />
   </ItemGroup>
 
-  <!-- Include shared Gherkin feature files for Reqnroll code-behind generation -->
+  <!-- Include shared Gherkin feature files for Reqnroll code-behind generation.
+       The codegen/ subfolder is excluded: those scenarios are exercised by the Go
+       codegen fresh-checkout tooling, not by any per-backend Cucumber/Reqnroll
+       suite (mirrors rhino-cli's exclude dir codegen option for behavior-coverage). -->
   <ItemGroup>
-    <ReqnrollFeatureFiles Include="..\..\..\..\specs\apps\crud\be\gherkin\**\*.feature" />
+    <ReqnrollFeatureFiles Include="..\..\..\..\specs\apps\crud\behavior\crud-be\gherkin\**\*.feature" Exclude="..\..\..\..\specs\apps\crud\behavior\crud-be\gherkin\codegen\**\*.feature" />
   </ItemGroup>
 
   <!-- .NET 10 sets EnableDefaultCompileItems=false globally, breaking Reqnroll's auto-include.

@@ -34,11 +34,6 @@ public class CommonSteps {
         databaseCleaner.truncateAll();
     }
 
-    @Given("the demo API is running")
-    public void theDemoApiIsRunning() {
-        // No-op: Spring Boot context is always ready when scenarios execute.
-    }
-
     @Given("the API is running")
     public void theApiIsRunning() {
         // No-op: Spring Boot context is always ready when scenarios execute.

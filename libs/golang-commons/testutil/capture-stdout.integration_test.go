@@ -80,6 +80,8 @@ func (s *captureStdoutSteps) theCapturedStringContainsAllThreeWrittenLines() err
 	return nil
 }
 
+// Scenario: CaptureStdout captures a single line written with fmt.Println
+// Scenario: CaptureStdout captures multiple writes to stdout
 func TestIntegrationCaptureStdout(t *testing.T) {
 	s := newCaptureStdoutSteps(t)
 	suite := godog.TestSuite{

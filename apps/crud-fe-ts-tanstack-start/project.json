@@ -65,7 +65,8 @@
         ],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "test:coverage": {
       "executor": "nx:run-commands",
@@ -121,7 +122,8 @@
         ],
         "parallel": false
       },
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "specs"]
     },
     "test:integration": {
       "executor": "nx:run-commands",
@@ -149,6 +151,9 @@
         "command": "echo 'compat:min-version: no min-version check for this language'"
       }
     }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature"]
   },
   "tags": ["type:app", "platform:vite", "lang:ts", "domain:crud-fe"],
   "implicitDependencies": ["crud-contracts", "rhino-cli"]

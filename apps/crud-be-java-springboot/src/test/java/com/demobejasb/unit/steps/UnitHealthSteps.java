@@ -31,12 +31,6 @@ public class UnitHealthSteps {
         stateStore.setResponseBody(java.util.Map.of("status", "UP"));
     }
 
-    @When("^a client sends GET /health$")
-    public void aClientSendsGetHealth() {
-        stateStore.setStatusCode(200);
-        stateStore.setResponseBody(java.util.Map.of("status", "UP"));
-    }
-
     @Then("the health status should be {string}")
     public void theHealthStatusShouldBe(final String expectedStatus) {
         Object body = stateStore.getResponseBody();

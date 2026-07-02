@@ -12,10 +12,6 @@ When(/^an unauthenticated engineer sends GET \/health$/, async ({ request }) => 
   setResponse(await request.get("/health"));
 });
 
-When(/^a client sends GET \/health$/, async ({ request }) => {
-  setResponse(await request.get("/health"));
-});
-
 // oxlint-disable-next-line no-empty-pattern
 Then("the health status should be {string}", async ({}, status: string) => {
   const body = await getResponse().json();

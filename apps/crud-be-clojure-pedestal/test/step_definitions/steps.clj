@@ -43,9 +43,6 @@
   [state username email password]
   (common/register-user! state username :email email :password password))
 
-(Given "a user {string} is registered" [state username]
-  (common/register-user! state username))
-
 (Given "users {string}, {string}, and {string} are registered" [state u1 u2 u3]
   (-> state
       (common/register-user! u1)

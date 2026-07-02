@@ -25,11 +25,6 @@ public class HealthSteps {
         setHealthResponse();
     }
 
-    @When("^a client sends GET /health$")
-    public void aClientSendsGetHealth() {
-        setHealthResponse();
-    }
-
     @Then("the health status should be {string}")
     public void theHealthStatusShouldBe(final String expectedStatus) {
         Map<String, Object> body = responseStore.getBodyAsMap();

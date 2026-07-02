@@ -29,10 +29,4 @@ public class CommonSteps(ServiceLayer svc, SharedState state)
         );
     }
 
-    [Then("the response status code should be {int} or {int}")]
-    public void ThenStatusCodeOneOf(int code1, int code2)
-    {
-        state.LastResponse.Should().NotBeNull();
-        state.LastResponse!.StatusCode.Should().BeOneOf(code1, code2);
-    }
 }

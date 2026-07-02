@@ -92,11 +92,6 @@ public class UnitAuthSteps {
         state.setLastResponse(response);
     }
 
-    @Given("a user {string} is registered with email {string} and password {string} for registration conflict")
-    public void registeredForConflict(String username, String email, String password) throws Exception {
-        registerUser(username, email, password);
-    }
-
     public ServiceResponse registerUser(String username, String email,
             String password) throws Exception {
         ServiceResponse resp = svc().register(username, email, password);

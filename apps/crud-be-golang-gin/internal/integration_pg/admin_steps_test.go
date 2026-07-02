@@ -15,7 +15,6 @@ import (
 func registerAdminSteps(sc *godog.ScenarioContext, ctx *scenarioCtx) {
 	sc.Step(`^users "([^"]*)", "([^"]*)", and "([^"]*)" are registered$`, ctx.multipleUsersAreRegistered)
 	sc.Step(`^the admin sends GET /api/v1/admin/users$`, ctx.theAdminSendsGetAdminUsers)
-	sc.Step(`^the admin sends GET /api/v1/admin/users\?email=([^\s]*)$`, ctx.theAdminSendsGetAdminUsersWithEmail)
 	sc.Step(`^the response body should contain at least one user with "([^"]*)" equal to "([^"]*)"$`, ctx.responseBodyContainsAtLeastOneUserWithField)
 	sc.Step(`^the admin sends POST /api/v1/admin/users/\{alice_id\}/disable with body \{ "reason": "([^"]*)" \}$`, ctx.theAdminSendsDisableAlice)
 	sc.Step(`^the admin sends POST /api/v1/admin/users/\{alice_id\}/enable$`, ctx.theAdminSendsEnableAlice)
@@ -38,15 +37,6 @@ func (ctx *scenarioCtx) theAdminSendsGetAdminUsers() error {
 	c, w := buildGinContext("GET", "/api/v1/admin/users", nil, ctx.AdminToken, gin.Params{}, ctx.JWTSvc)
 	// Inject query parameters: page=1, size=20 (defaults).
 	c.Request.URL.RawQuery = "page=1&size=20"
-	ctx.Handler.ListUsers(c)
-	ctx.LastStatus = w.Code
-	ctx.LastBody = readResponse(w)
-	return nil
-}
-
-func (ctx *scenarioCtx) theAdminSendsGetAdminUsersWithEmail(email string) error {
-	c, w := buildGinContext("GET", "/api/v1/admin/users?email="+email, nil, ctx.AdminToken, gin.Params{}, ctx.JWTSvc)
-	c.Request.URL.RawQuery = "email=" + email + "&page=1&size=20"
 	ctx.Handler.ListUsers(c)
 	ctx.LastStatus = w.Code
 	ctx.LastBody = readResponse(w)

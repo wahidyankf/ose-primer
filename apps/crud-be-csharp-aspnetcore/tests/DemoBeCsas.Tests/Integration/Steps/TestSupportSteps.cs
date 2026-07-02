@@ -23,14 +23,6 @@ public class TestSupportSteps(ServiceLayer svc, SharedState state, IntegrationTe
         // No runtime check is needed here.
     }
 
-    [Given(@"^the test API is disabled$")]
-    public void GivenTestApiDisabled()
-    {
-        // Mark in state that we should simulate disabled behaviour (404) rather
-        // than actually invoking reset-db.
-        state.TestApiDisabled = true;
-    }
-
     [Given(@"^users and expenses exist in the database$")]
     public async Task GivenUsersAndExpensesExist()
     {

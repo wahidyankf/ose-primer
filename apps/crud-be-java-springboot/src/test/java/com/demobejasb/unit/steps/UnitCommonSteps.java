@@ -43,11 +43,6 @@ public class UnitCommonSteps {
         dataStore.reset();
     }
 
-    @Given("the demo API is running")
-    public void theDemoApiIsRunning() {
-        // No-op: services are always ready when scenarios execute.
-    }
-
     @Given("the API is running")
     public void theApiIsRunning() {
         // No-op: services are always ready when scenarios execute.
@@ -83,17 +78,6 @@ public class UnitCommonSteps {
     public void aUserIsRegisteredWithPassword(final String username, final String password) {
         String email = username + "@example.com";
         aUserIsRegisteredWithEmailAndPassword(username, email, password);
-    }
-
-    @Given("a user {string} is already registered")
-    public void userIsAlreadyRegistered(final String username) {
-        aUserIsRegisteredWithPassword(username, "Str0ng#Pass1234");
-    }
-
-    @Given("a user {string} is already registered with password {string}")
-    public void userIsAlreadyRegisteredWithPassword(
-            final String username, final String password) {
-        aUserIsRegisteredWithPassword(username, password);
     }
 
     @Given("a user {string} is registered and deactivated")

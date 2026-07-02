@@ -18,11 +18,6 @@ class UnitTestSupportSteps {
     UnitTestWorld.testApiEnabled = true
   }
 
-  @Given("the test API is disabled")
-  fun theTestApiIsDisabled() {
-    UnitTestWorld.testApiEnabled = false
-  }
-
   @Given("users and expenses exist in the database")
   fun usersAndExpensesExistInTheDatabase() {
     runBlocking {
