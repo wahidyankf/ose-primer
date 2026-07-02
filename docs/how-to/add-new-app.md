@@ -322,11 +322,25 @@ specs/apps/[domain]/
 
 **Codegen dependency chain**: Both `typecheck` and `build` must declare `dependsOn: ["codegen"]`. This ensures contract violations surface during `nx affected -t typecheck` and the pre-push `test:quick` gate.
 
-**Canonical inputs for cache invalidation** (add to `test:unit` and `test:quick`):
+**Canonical inputs for cache invalidation**: define a project-level `"namedInputs": {"specs": [...]}`
+block for the Gherkin glob, then reference it as `"specs"` in `test:unit` and `test:quick`'s `inputs`
+array — do not inline the raw glob directly into a target's `inputs`:
 
-- Include `{projectRoot}/generated-contracts/**/*` (or `generated_contracts` for Python/Clojure)
-- Include `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` for backends
-- Include language-specific source file globs (see `repo-governance/development/infra/nx-targets.md` for per-language patterns)
+```json
+{
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature"]
+  },
+  "targets": {
+    "test:quick": {
+      "inputs": ["default", "{projectRoot}/generated-contracts/**/*", "specs"]
+    }
+  }
+}
+```
+
+- `namedInputs.specs` — the `{workspaceRoot}/specs/apps/crud/behavior/be/gherkin/**/*.feature` glob for backends
+- `test:unit`/`test:quick` `inputs` — `"specs"` (the named-input reference) plus `{projectRoot}/generated-contracts/**/*` (or `generated_contracts` for Python/Clojure) and language-specific source file globs (see `repo-governance/development/infra/nx-targets.md` for per-language patterns)
 
 **See**: [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) for canonical target names, caching rules, and per-language input patterns.
 
