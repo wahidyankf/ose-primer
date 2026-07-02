@@ -17,7 +17,7 @@ with source URL, publication date, and confidence level. Last updated: 2026-04-1
 ## Purpose and Scope
 
 This document provides cited benchmark data for the five models used across Claude Code
-(`.claude/agents/`) and OpenCode (`.opencode/agent/`) runtimes. Tier assignments in
+(`.claude/agents/`) and OpenCode (`.opencode/agents/`) runtimes. Tier assignments in
 [model-selection.md](../../repo-governance/development/agents/model-selection.md) reference
 this document. Every benchmark claim in policy docs links back here; this document links
 to primary sources.
