@@ -15,12 +15,30 @@ When an idea is ready for implementation, create a proper plan folder in `backlo
   is feature-frozen with an unresolved entropy false-positive regression
   ([#1830](https://github.com/gitleaks/gitleaks/issues/1830)) affecting Rust/Go identifier names.
   Re-evaluate after Betterleaks has 60+ days of production soak.
-- **Complete `crud-be-kotlin-ktor` step coverage** (59 missing step implementations) — discovered
-  2026-07-03 when unrelated `repo-config.yml` edits invalidated the Nx cache and forced a genuine
-  `specs:behavior:coverage` re-run for the first time in a while, surfacing real gaps in
-  security/currency-handling/unit-handling/attachments/reporting/expense-management scenarios that
-  `SpecCoverageMarkers.kt` had already documented as commented-out, not-yet-implemented markers.
-  `crud-be-java-springboot` covers the same Gherkin surface via a general `(.*)$` body-capture +
-  helper-delegation pattern (see `UnitExpenseSteps.java`); port that shape to Kotlin rather than
-  writing 59 literal per-scenario steps. `specs:behavior:coverage` is temporarily overridden to a
-  documented no-op on this one project (`apps/crud-be-kotlin-ktor/project.json`) until this lands.
+- Fixed 2026-07-03 (`crud-be-kotlin-ktor` "59 missing step implementations"): the "gap" was never a
+  real feature gap — `contexts/expenses/` (an empty DDD-layered scaffold, `.gitkeep` only) misled the
+  earlier investigation; the real, fully-working implementation lives in the flat `routes/`/`domain/`
+  tree (`ExpenseRoutes.kt`, `ReportRoutes.kt`, `AttachmentRoutes.kt`, `ExpenseDomain.kt`,
+  `AttachmentDomain.kt`), and `nx run crud-be-kotlin-ktor:test:unit` already passed the whole time.
+  Root cause was a genuine rhino-cli bug: `extract_jvm_step_texts` scanned Java/Kotlin source
+  line-by-line, so any `@When(\n  "..."\n)` annotation with its string on its own line (a common
+  formatter wrap for long step text) was silently invisible to the coverage tool — fixed to scan
+  whole-file content instead (matching how `extract_dart_step_texts` already worked; no dotall flag
+  needed, `jvm_step_re()` has no `.` metacharacter). Backported byte-identical to all 3 repos. The
+  remaining 20 "orphan step implementation" reports were a separate, unrelated artifact: `--exclude-dir
+test-support` only ever applied to the Gherkin-side scan, never the Kotlin-side scan (a real,
+  still-open rhino-cli architecture gap — `extract_all_step_texts` uses a hardcoded `skip_dirs()`, not
+  the CLI's `exclude_dirs`), so Kotlin's fully-working `test-support/test-api.feature` steps in
+  `UnitTestSupportSteps.kt`/`IntegrationTestSupportSteps.kt` were flagged as orphaned once their
+  Gherkin scenario was excluded. Fixed by dropping `--exclude-dir test-support` from
+  `crud-be-kotlin-ktor`'s `specs:behavior:coverage` command specifically (Kotlin, unlike its siblings,
+  actually implements those scenarios) rather than deferring to the more invasive rhino-cli
+  architecture fix. `specs:behavior:coverage` re-enabled with its real command; `Spec coverage valid!
+14 specs, 92 scenarios, 344 steps — all covered.`
+- **rhino-cli**: `extract_all_step_texts` (shared-steps whole-app step-implementation scan) ignores
+  the CLI's `--exclude-dir` flag entirely — it only filters via a hardcoded `skip_dirs()` build-artifact
+  list, while `walk_feature_files` (the Gherkin-side scan) respects the user-supplied `exclude_dirs`.
+  Discovered 2026-07-03 fixing the item above; worked around per-project rather than fixed at the
+  rhino-cli level since nothing else currently depends on the asymmetry. Fix: thread `exclude_dirs`
+  through to `extract_all_step_texts` too, so both sides of a `--shared-steps` comparison exclude the
+  same directories consistently.
