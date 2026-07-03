@@ -84,7 +84,7 @@ User: "Run repository rules quality gate workflow in normal mode"
 The AI will:
 
 0. Build the canonical Rust binary if missing (`npx nx run rhino-cli:build`), then run
-   the deterministic preflight (Step 0.5) capturing each category's output to
+   the deterministic preflight (Step 0.5) capturing the four-category JSON envelope to
    `generated-reports/`.
 1. Invoke `repo-rules-checker` via the Agent tool (reads governance files, writes audit)
 2. Invoke `repo-rules-fixer` via the Agent tool (reads audit, applies fixes, writes fix report)
@@ -105,12 +105,7 @@ context — use this when agent delegation is unavailable.
 
 ### 0.5. Deterministic Preflight (Sequential)
 
-Run the deterministic governance audits before invoking the AI checker. This repository has
-no audit orchestrator — its deterministic checks are **standalone `repo-governance`
-subcommands**, executed via the Rust binary that CI and the developer toolchain invoke. Each
-category executes in milliseconds and caches via Nx; the AI checker then spends its budget only on
-the AI-judgment categories (semantic contradictions, terminology alignment,
-principle-appropriateness, markdown-fence Gherkin review).
+Step 0.5 runs the `rhino-cli` orchestrator to harvest the deterministic governance findings before invoking the AI checker. The `repo-governance audit` orchestrator runs exactly **four** governance categories in fixed order — `layer-coherence`, `traceability-audit`, `vendor-audit`, and `instruction-size` (byte budget check on all auto-loaded instruction surfaces per the `instruction-size:` section in `repo-config.yml`) — normalises their findings into one JSON envelope, and caches via Nx. The other deterministic markdown/convention/harness validators (file naming, frontmatter shape, license presence, README index integrity, emoji codepoints, heading hierarchy, agent-skill verbatim duplication, gherkin-keyword-cardinality) live under sibling `rhino-cli` subcommands (`md`, `convention`, `harness`, `specs`) and are enforced by the markdown and commit gates — they are not part of this preflight. The AI checker then runs only the AI-only categories (paraphrased duplication, semantic contradictions, terminology alignment, principle-appropriateness judgement).
 
 **Why Step 0.5 (and not Step 1, renumbering everything down)**: this step was inserted
 between the pre-existing "Execution Mode" material and Step 1 (Initial Validation).
@@ -118,43 +113,43 @@ Decimal numbering preserves the existing Step 1–6 references in the checker/fi
 that pre-date the preflight, following the sibling-repo precedent for non-disruptive
 sub-step insertions.
 
-**Deterministic categories** (run ALL THREE, sequentially, from the repo root):
+**Command**:
 
 ```bash
 mkdir -p generated-reports
-./apps/rhino-cli/dist/rhino-cli repo-governance vendor-audit \
-  > generated-reports/preflight-vendor-audit__{uuid}__{timestamp}.txt
-# record the exit code per category before running the next one
-./apps/rhino-cli/dist/rhino-cli repo-governance gherkin-keyword-cardinality \
-  > generated-reports/preflight-gherkin-keyword-cardinality__{uuid}__{timestamp}.txt
-./apps/rhino-cli/dist/rhino-cli convention validate instruction-size \
-  > generated-reports/preflight-instruction-size__{uuid}__{timestamp}.txt
+./apps/rhino-cli/dist/rhino-cli repo-governance audit -o json > generated-reports/repo-governance-audit__{uuid}__{timestamp}.json
 ```
 
 The binary must be built first via `npx nx run rhino-cli:build`; the prebuilt path is
 `apps/rhino-cli/dist/rhino-cli`.
 
-- **Output**: `{preflight-reports}` — one captured output file per category in
-  `generated-reports/`.
-- **Exit handling** (evaluated per category):
-  - **Exit 0 (clean)**: the category passes; hand the captured output to the checker as
-    evidence.
-  - **Exit 1 with an `AUDIT FAILED` header on stdout (findings)**: deterministic findings
-    present; hand the captured output to the checker, which incorporates the findings
-    verbatim into the final audit's "Deterministic Findings (rhino-cli preflight)" section.
-    Deterministic findings are reported but do NOT count toward the mode threshold — they
-    are fixed at their root (the offending file) rather than iterated through the AI loop.
-  - **Exit 2, or exit 1 without a findings header (invocation error)**: terminate the
-    workflow with `fail` status. **Debugging hint**: re-run the failing subcommand directly
-    (e.g. `./apps/rhino-cli/dist/rhino-cli repo-governance gherkin-keyword-cardinality`)
-    for a human-readable diagnostic. Common causes: missing binary (rebuild via
-    `npx nx run rhino-cli:build`); running outside a git repository.
+- **Output**: `{preflight-report}` — JSON envelope at the captured path; schema `rhino-cli/repo-governance-audit/v1`
+- **Exit handling**:
+  - Exit 0 (clean): All deterministic categories pass; pass JSON path to checker.
+  - Exit 1 (findings): Deterministic findings present; pass JSON path to checker (the checker
+    incorporates the deterministic findings verbatim into the final audit's "Deterministic
+    Findings (rhino-cli preflight)" section). Deterministic findings are reported but do NOT
+    count toward the mode threshold — they are fixed at their root (the offending file) rather
+    than iterated through the AI loop.
+  - Exit 2 (invocation error): Terminate the workflow with `fail` status. **Debugging hint**:
+    re-run with `./apps/rhino-cli/dist/rhino-cli repo-governance audit -o text` for a
+    human-readable diagnostic. Common causes: missing binary (rebuild via
+    `npx nx run rhino-cli:build`); a broken category function (run the individual
+    `./apps/rhino-cli/dist/rhino-cli repo-governance <category> validate` — one of
+    `layer-coherence`, `traceability`, `vendor` — or
+    `./apps/rhino-cli/dist/rhino-cli harness instruction-size validate` — to isolate); running
+    outside a git repository.
 
-**Success criteria**: all three categories executed; each captured output file exists and
-contains either the category's `PASSED` line or its findings list.
+> **Operator hatch**: The orchestrator accepts `--skip <category>` (one of `layer-coherence`,
+> `traceability-audit`, `vendor-audit`, `instruction-size`) to bypass a whole category, and
+> `--exclude <glob>` to drop findings whose path matches a glob.
+
+**Success criteria**: Preflight completes; JSON file exists at expected path; JSON parses as
+valid `AuditEnvelope` with `schema` field set to `rhino-cli/repo-governance-audit/v1`.
 
 **Depends on**: None (first step in each iteration). Runs again before every re-validation
-iteration so the checker always sees current deterministic state.
+iteration; if the JSON SHA-256 is unchanged from the prior iteration, the checker reuses the
+deterministic findings section unchanged and only re-evaluates AI-only categories.
 
 ### 1. Initial Validation (Sequential)
 
@@ -162,10 +157,12 @@ Run repository-wide consistency check to identify all issues.
 
 **Agent**: `repo-rules-checker`
 
-- **Args**: `scope: all, EXECUTION_SCOPE: repo-rules`
+- **Args**: `scope: all, EXECUTION_SCOPE: repo-rules, preflight-report: {step0_5.outputs.preflight-report}`
 - **Output**: `{audit-report-1}` - Initial audit report in `generated-reports/` (4-part format: `repo-rules__{uuid-chain}__{timestamp}__audit.md`)
 
 **UUID Chain Tracking**: Checker generates 6-char UUID and writes to `generated-reports/.execution-chain-repo-rules` before spawning any child agents. See [Temporary Files Convention](../../development/infra/temporary-files.md#uuid-generation) for details.
+
+**Note on preflight unavailability**: If the `preflight-report` argument is missing, the file does not exist, or the JSON fails schema validation, the AI checker falls back to full Steps 1-8 evaluation per its own Step 0.5 graceful-degradation rule (`.claude/agents/repo-rules-checker.md`). This is NOT a workflow failure — the checker logs a `[WARN]` in the audit report and the workflow proceeds. Only an Exit 2 from rhino-cli itself (broken binary, missing dependency) terminates the workflow with `fail`.
 
 **Success criteria**: Checker completes and generates audit report.
 
@@ -188,6 +185,10 @@ Analyze audit report to determine if fixes are needed.
 - **normal**: MEDIUM/LOW reported, not counted
 - **strict**: LOW reported, not counted
 - **ocd**: All findings counted
+
+Deterministic findings (those from the rhino-cli preflight) are reported in the `## Deterministic
+Findings (rhino-cli preflight)` section of the audit but do NOT count toward the mode threshold.
+Only AI-only findings count toward the mode threshold above.
 
 **Decision**:
 
@@ -230,13 +231,27 @@ Apply validated fixes from the audit report based on mode level.
 
 ### 4. Re-validate (Sequential)
 
-Run checker again to verify fixes resolved issues and no new issues introduced.
+Re-run the deterministic preflight (Step 0.5) first, then invoke the AI checker. If the preflight
+JSON SHA-256 is unchanged from the prior iteration, the checker reuses the deterministic findings
+section unchanged and only re-evaluates AI-only categories.
+
+**Preflight re-run**:
+
+```bash
+mkdir -p generated-reports
+./apps/rhino-cli/dist/rhino-cli repo-governance audit -o json > generated-reports/repo-governance-audit__{uuid}__{timestamp}.json
+```
+
+The binary must be built first via `npx nx run rhino-cli:build`; the prebuilt path is
+`apps/rhino-cli/dist/rhino-cli`.
 
 **Agent**: `repo-rules-checker`
 
-- **Args**: `scope: all`
+- **Args**: `scope: all, preflight-report: {step4.preflight.outputs.preflight-report}`
 - **Output**: `{audit-report-N}` - Verification audit report
 - **Depends on**: Step 3 completion
+
+**Note on preflight unavailability**: If the `preflight-report` argument is missing, the file does not exist, or the JSON fails schema validation, the AI checker falls back to full Steps 1-8 evaluation per its own Step 0.5 graceful-degradation rule (`.claude/agents/repo-rules-checker.md`). This is NOT a workflow failure — the checker logs a `[WARN]` in the audit report and the workflow proceeds. Only an Exit 2 from rhino-cli itself (broken binary, missing dependency) terminates the workflow with `fail`.
 
 **Success criteria**: Checker completes validation.
 
@@ -261,6 +276,10 @@ Determine whether to continue fixing or terminate.
 - If threshold-level findings > 0 AND (max-iterations not provided OR iterations < max-iterations): Loop back to step 3
 
 **Below-threshold findings**: Continue to be reported in audit but don't affect iteration logic
+
+Deterministic findings (those from the rhino-cli preflight) are reported in the audit but do NOT
+count toward the mode threshold. Only AI-only findings count toward the mode threshold and the
+`consecutive_zero_count` above.
 
 **Depends on**: Step 4 completion
 
@@ -302,6 +321,10 @@ Report final status and summary.
 **Failure** (`fail`):
 
 - Technical errors during check or fix
+
+**Note on deterministic findings**: Deterministic findings from preflight are reported in the audit's
+`## Deterministic Findings (rhino-cli preflight)` section but do NOT count toward any mode threshold.
+Two consecutive zero-finding validations refers to AI-only findings only.
 
 **Note**: Below-threshold findings are reported in final audit but don't prevent success status. Success requires two consecutive zero-finding validations (consecutive pass requirement).
 
@@ -447,6 +470,7 @@ This workflow ensures repository consistency through iterative validation and fi
 
 ## Conventions Implemented/Respected
 
+- **[Deterministic vs AI Validation Split Convention](../../conventions/structure/deterministic-vs-ai-validation-split.md)**: Step 0.5 preflight enforces the deterministic-vs-AI category split and the JSON envelope contract this workflow consumes; Step 0.5 implements the deterministic validation tier; AI checker (Steps 1-8) implements the AI-only tier
 - **[File Naming Convention](../../conventions/structure/file-naming.md)**: Workflow file follows plain name convention for workflows
 - **[Linking Convention](../../conventions/formatting/linking.md)**: All cross-references use GitHub-compatible markdown with `.md` extensions
 - **[Content Quality Principles](../../conventions/writing/quality.md)**: Active voice, proper heading hierarchy, single H1

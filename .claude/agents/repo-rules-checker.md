@@ -262,6 +262,31 @@ The agent should reference `[skill-name]` Skill instead of embedding this conten
 
 See `repo-generating-validation-reports` Skill for UUID chain, timestamp, progressive writing.
 
+### Step 0.5: Consume Deterministic Preflight
+
+**Input**: `preflight-report` argument — path to `generated-reports/repo-governance-audit__*.json`. The orchestrating workflow (`repo-governance/workflows/repo/repo-rules-quality-gate.md`) runs `./apps/rhino-cli/dist/rhino-cli repo-governance audit -o json` and passes the resulting JSON file path here.
+
+**Procedure**:
+
+1. **Read the preflight JSON**. Use `Read` on the path supplied.
+2. **Validate envelope**: confirm `schema` field equals `rhino-cli/repo-governance-audit/v1`. If missing or different, treat preflight as absent and run all Steps 1-8 in full (defensive fallback).
+3. **Extract findings**: parse `result.categories[]` (each carries `name`, `command`, `passed`, `findings[]`) and `result.skipped_false_positives[]`.
+4. **Populate the deterministic skip set** for this run. The `repo-governance audit` orchestrator emits exactly **four** categories; each tells which validation step (or sub-step) is already covered by rhino-cli and MUST NOT be re-evaluated by the AI checker:
+
+   | Preflight category   | Step covered (skip)                                                          |
+   | -------------------- | ---------------------------------------------------------------------------- |
+   | `layer-coherence`    | Step 7 layer-coherence portion                                               |
+   | `traceability-audit` | Step 7 traceability portion (Vision/Principles/Conventions)                  |
+   | `vendor-audit`       | Step 7 vendor-neutrality portion (governance prose terminology)              |
+   | `instruction-size`   | Step 6 byte-count portion (DO NOT re-derive byte counts; defer to preflight) |
+
+   **Not in this envelope**: file naming, frontmatter shape, emoji codepoints, heading hierarchy, README index integrity, license presence, and agent/skill verbatim duplication are NOT part of `repo-governance audit`. They run under the sibling `rhino-cli md`, `convention`, and `harness` subcommands, enforced by the pre-commit and markdown CI gates. Do not look for them in this JSON envelope.
+
+5. **Embed preflight findings in the final audit verbatim** under a new top-level section `## Deterministic Findings (rhino-cli preflight)` placed before `## AI-Only Findings`. Render each preflight finding as a regular report finding entry (same key/severity/criticality/file/line/message shape).
+6. **Re-validation iteration optimization**: compute `sha256(preflight-json-bytes)`. If identical to the prior iteration's preflight hash (stored under `generated-reports/.preflight-hash-<uuid-chain>`), reuse the prior deterministic findings section unchanged and ONLY re-evaluate AI-only categories. Store the new hash for the next iteration.
+
+**On failure**: If `preflight-report` argument is missing, the JSON file is absent, or the schema check fails, log a `[WARN]` line in the audit report explaining that preflight was unavailable, then proceed to Steps 1-8 in full as the defensive fallback.
+
 ### Step 1: Core Repository Validation
 
 #### Known False Positive Skip List
@@ -633,19 +658,17 @@ Validate file naming, linking, emoji usage, convention compliance per existing l
 
 ### Step 6: Instruction-File Size Budget
 
-**Deterministic-gate annotation**: Byte counts for all auto-loaded instruction surfaces are enforced by
-the deterministic `rhino-cli convention validate instruction-size` gate (wired at pre-push and CI). If
-the `instruction-size` preflight output is available, its findings are already captured — DO NOT
-re-derive byte counts. Judge only qualitative concerns the mechanical gate cannot measure:
+**Deterministic-gate annotation**: Byte counts for all auto-loaded instruction surfaces are enforced by the deterministic `rhino-cli harness instruction-size validate` gate (wired at pre-push, CI, and as `instruction-size` in the `repo-governance audit` preflight). If `instruction-size` is present in the Step 0.5 preflight JSON, its findings are already embedded verbatim in the `## Deterministic Findings` section — DO NOT re-derive byte counts. Judge only qualitative concerns the mechanical gate cannot measure:
 
-1. **If `instruction-size` preflight is available**: Skip byte counting entirely. Check only for
-   qualitative bloat: sections that are verbose when a one-line summary + `See` link would suffice,
-   duplicate content already reachable via a link, or structure anti-patterns (all-at-once complexity,
-   no progressive layers).
+1. **If `instruction-size` preflight is available**: Skip byte counting entirely. Read the preflight
+   findings section and check only for qualitative bloat: sections that are verbose when a one-line
+   summary + `See` link would suffice, duplicate content already reachable via a link, or structure
+   anti-patterns (all-at-once complexity, no progressive layers).
 2. **If preflight is absent** (fallback): Read all monitored surfaces (`AGENTS.md`, `CLAUDE.md`, and
-   harness-specific surfaces listed in `instruction-size-budget.yaml`). Count bytes. Classify against
-   the thresholds in `instruction-size-budget.yaml`. Emit a finding for any surface exceeding the
-   `fail` ceiling. For surfaces in the `warn` zone, emit a lower-severity advisory.
+   harness-specific surfaces listed in the `instruction-size:` section of `repo-config.yml`). Count
+   bytes. Classify against the thresholds in the `instruction-size:` section of `repo-config.yml`. Emit
+   a finding for any surface exceeding the `fail` ceiling. For surfaces in the `warn` zone, emit a
+   lower-severity advisory.
 3. **Remediation guidance**: When flagging a size violation, the ONLY sanctioned fix is progressive
    disclosure — replace inline-expanded content with a one-line summary and a `See` link. Document
    this in the finding. Forbidden anti-fixes (delete rules, dense compression, split into another
