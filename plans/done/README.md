@@ -14,6 +14,20 @@ Example: `2026-04-27__adopt-mermaid-checker-from-ose-public/` where `2026-04-27`
 
 ## Completed Projects
 
+- [2026-07-03: Unify rhino-cli, SDLC & Repo Structure Across the Three OSE Repos (Second Pass)](./2026-07-03__unify-rhino-cli-sdlc-parity/README.md)
+  — ose-primer's Phase 3 of the second-pass 3-repo rhino-cli/SDLC parity effort (siblings: ose-public,
+  ose-infra; successor to `2026-07-01__standardize-rhino-cli-sdlc-parity`). Adopted the canonical
+  byte-identical `apps/rhino-cli` synthesized in `ose-public` (union command surface incl. primer's own
+  cucumber-rs harness + testcoverage module, migrated to `0.23.0`); fixed the `.opencode/agent/`
+  (singular) → `agents/` bug; converged full `namedInputs.specs` coverage across all 26 projects
+  (incl. `coverage.projects` registry gaps and 9 stale cucumber suites discovered mid-plan). Root-caused
+  and fixed a real rhino-cli bug — Java/Kotlin doubled-backslash regex/Cucumber-expression escaping
+  breaking JVM step-text matching, surfaced via `crud-be-java-springboot`/`crud-be-kotlin-ktor` — and
+  backported the fix byte-identical to all 3 repos. Deliberately deferred, not silently dropped:
+  `crud-be-kotlin-ktor`'s 59 pre-existing missing step implementations, documented in `plans/ideas.md`
+  and overridden to an honest no-op target rather than risking incorrect business-logic stubs.
+  Phase 5 parity table all-green across all three repos; all three repos' latest push CI green.
+  (Completed: 2026-07-03)
 - [2026-07-01: Standardize rhino-cli Checks & SDLC Commands](./2026-07-01__standardize-rhino-cli-sdlc-parity/README.md)
   — ose-primer's Phase 3 of the 3-repo SDLC gate-mechanics parity effort (siblings: ose-public, ose-infra;
   one shared plan folder copied into each repo). Standardized Nx target names (`test:unit`/`test:integration`/
