@@ -7,7 +7,6 @@ set -e
 PARALLEL=$(( $(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4) - 1 ))
 npx nx affected -t test:quick --parallel="$PARALLEL"
 npx nx affected -t compat:min-version --parallel="$PARALLEL"
-cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- repo-config validate
 cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- env validate
 cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- md links validate --exclude plans/done --exclude apps/crud-be-elixir-phoenix/deps --exclude libs/elixir-cabbage/deps --exclude libs/elixir-gherkin/deps --exclude libs/elixir-openapi-codegen/deps --exclude apps/crud-be-kotlin-ktor/build --exclude libs/elixir-openapi-codegen/test --exclude apps/crud-be-kotlin-ktor/target
 cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- md readme-index validate

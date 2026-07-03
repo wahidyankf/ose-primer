@@ -27,7 +27,9 @@ Instructions for AI agents working with this repository.
 
 Cross-repo propagation flows `ose-public → ose-primer → downstream forks` for governance, agents, and skills; infrastructure-only concerns flow `ose-public ↔ ose-infra`. See the [Repository Ecosystem Convention](./repo-governance/conventions/structure/repository-ecosystem.md) for the canonical rules.
 
-`apps/rhino-cli` is required to be byte-identical (zero carve-outs) across all three repos per the
+`apps/rhino-cli` is required to be byte-identical (zero carve-outs) across all three repos, including
+its Gherkin behavior tree at `specs/apps/rhino/behavior/rhino-cli/gherkin/**` (every `.feature` file and
+every `README.md`), per the
 [SDLC Gate Standard](./docs/reference/sdlc-gate-standard.md#rhino-cli-byte-identity-boundary).
 
 - **Node.js**: 24.13.1 (LTS - Long-Term Support, managed by Volta)
