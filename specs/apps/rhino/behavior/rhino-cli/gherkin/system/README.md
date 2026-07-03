@@ -1,11 +1,10 @@
-# System Domain
+# rhino — behavior/rhino-cli/gherkin/system
 
-Gherkin specs for rhino-cli system health commands.
+Gherkin scenarios for rhino-cli system-level commands.
 
-| File             | Command  | Scenarios |
-| ---------------- | -------- | --------- |
-| `doctor.feature` | `doctor` | 9         |
+Features in this domain:
 
-## Related
+- `doctor.feature` — doctor environment check command
 
-- **Parent**: [gherkin](../README.md)
+See [Specs Directory Structure Convention](../../../../../../../repo-governance/conventions/structure/specs-directory-structure.md)
+for the canonical purpose of this folder.

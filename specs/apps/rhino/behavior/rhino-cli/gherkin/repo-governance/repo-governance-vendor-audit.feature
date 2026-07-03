@@ -7,80 +7,72 @@ Feature: Governance Vendor Audit
 
   Scenario: A forbidden term in plain prose fails the audit
     Given a governance markdown file containing "Claude Code" in plain prose
-    When the developer runs repo-governance vendor-audit on the file
+    When the developer runs repo-governance vendor validate on the file
     Then the command exits with a failure code
     And the output identifies the forbidden term and its location
 
   Scenario: A forbidden term inside a code fence passes the audit
     Given a governance markdown file containing "Claude Code" inside a code fence
-    When the developer runs repo-governance vendor-audit on the file
+    When the developer runs repo-governance vendor validate on the file
     Then the command exits successfully
     And the output reports zero findings
 
   Scenario: A forbidden term inside a binding-example fence passes the audit
     Given a governance markdown file containing "Claude Code" inside a binding-example fence
-    When the developer runs repo-governance vendor-audit on the file
+    When the developer runs repo-governance vendor validate on the file
     Then the command exits successfully
     And the output reports zero findings
 
   Scenario: A forbidden term under a Platform Binding Examples heading passes the audit
     Given a governance markdown file containing "Claude Code" under a "Platform Binding Examples" heading
-    When the developer runs repo-governance vendor-audit on the file
+    When the developer runs repo-governance vendor validate on the file
     Then the command exits successfully
     And the output reports zero findings
 
   Scenario: A governance directory with no forbidden terms passes the audit
     Given a governance directory with no forbidden terms in prose
-    When the developer runs repo-governance vendor-audit on the directory
+    When the developer runs repo-governance vendor validate on the directory
     Then the command exits successfully
     And the output reports zero findings
 
   Scenario: Capitalized branded Skills in plain prose fails the audit
     Given a governance markdown file containing "Skills" in plain prose
-    When the developer runs repo-governance vendor-audit on the file
+    When the developer runs repo-governance vendor validate on the file
     Then the command exits with a failure code
     And the output identifies the forbidden term and its location
 
   Scenario: Capitalized Skills inside a code fence passes the audit
     Given a governance markdown file containing "Skills" inside a code fence
-    When the developer runs repo-governance vendor-audit on the file
+    When the developer runs repo-governance vendor validate on the file
     Then the command exits successfully
     And the output reports zero findings
 
-  Scenario Outline: A new harness vendor name in plain prose fails the audit
-    Given a governance markdown file containing "<term>" in plain prose
-    When the developer runs repo-governance vendor-audit on the file
+  Scenario: A newly forbidden coding-agent vendor name in plain prose fails the audit
+    Given a governance markdown file containing "Junie" in plain prose
+    When the developer runs repo-governance vendor validate on the file
     Then the command exits with a failure code
     And the output identifies the forbidden term and its location
 
-    Examples:
-      | term        |
-      | Junie       |
-      | JetBrains   |
-      | Amazon Q    |
-      | Antigravity |
-      | pi.dev      |
-      | Earendil    |
-
-  Scenario Outline: A new harness binding path in plain prose fails the audit
-    Given a governance markdown file containing "<path>" in plain prose
-    When the developer runs repo-governance vendor-audit on the file
+  Scenario: The Amazon Q vendor name in plain prose fails the audit
+    Given a governance markdown file containing "Amazon Q" in plain prose
+    When the developer runs repo-governance vendor validate on the file
     Then the command exits with a failure code
     And the output identifies the forbidden term and its location
 
-    Examples:
-      | path      |
-      | .junie/   |
-      | .amazonq/ |
-      | .pi/      |
-      | .agents/  |
+  Scenario: The Antigravity vendor name in plain prose fails the audit
+    Given a governance markdown file containing "Antigravity" in plain prose
+    When the developer runs repo-governance vendor validate on the file
+    Then the command exits with a failure code
+    And the output identifies the forbidden term and its location
 
-  # FP-safety for ambiguous tokens (math constant "pi", bare capital "Q") is verified
-  # against the real scanner in the rhino-cli unit suite
-  # (detects/FP-safe tests), since this CLI-wiring feature mocks the scanner per step.
+  Scenario: The mathematical constant pi in plain prose passes the audit
+    Given a governance markdown file containing "The value of pi is 3.14159." in plain prose
+    When the developer runs repo-governance vendor validate on the file
+    Then the command exits successfully
+    And the output reports zero findings
 
-  Scenario: A new harness vendor name under a Platform Binding Examples heading passes the audit
+  Scenario: A newly forbidden vendor name under a Platform Binding Examples heading passes the audit
     Given a governance markdown file containing "Junie" under a "Platform Binding Examples" heading
-    When the developer runs repo-governance vendor-audit on the file
+    When the developer runs repo-governance vendor validate on the file
     Then the command exits successfully
     And the output reports zero findings

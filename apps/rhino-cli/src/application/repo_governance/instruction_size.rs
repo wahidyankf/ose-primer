@@ -5,11 +5,12 @@
 //! optionally resolves the transitive `@`-import tree to check aggregate size.
 
 use std::collections::HashSet;
-use std::fs;
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Error};
 use serde::Deserialize;
+
+use crate::application::fs::port::Fs;
 
 // ---------------------------------------------------------------------------
 // Configuration types
@@ -114,10 +115,77 @@ const PROGRESSIVE_DISCLOSURE_REF: &str =
 /// # Errors
 ///
 /// Returns an error when the file cannot be read or contains invalid YAML.
-pub fn load_budget_config(path: &Path) -> Result<BudgetConfig, Error> {
-    let data =
-        fs::read_to_string(path).with_context(|| format!("cannot read {}", path.display()))?;
+pub fn load_budget_config(fs: &dyn Fs, path: &Path) -> Result<BudgetConfig, Error> {
+    let data = fs
+        .read_to_string(path)
+        .with_context(|| format!("cannot read {}", path.display()))?;
     serde_norway::from_str(&data).with_context(|| format!("failed to parse {}", path.display()))
+}
+
+// ---------------------------------------------------------------------------
+// Merged config: repo-config.yml `instruction-size:` section ∪ harness registry
+// ---------------------------------------------------------------------------
+
+/// Default target budget applied to harness-registry `instruction:` surfaces
+/// that have no explicit `instruction-size:` entry.
+const REGISTRY_DEFAULT_TARGET: u64 = 10_000;
+/// Default warning threshold for registry surfaces without an explicit budget.
+const REGISTRY_DEFAULT_WARN: u64 = 13_000;
+/// Default hard-fail threshold for registry surfaces without an explicit budget.
+const REGISTRY_DEFAULT_FAIL: u64 = 16_000;
+
+/// Merges the `instruction-size:` section of `repo-config.yml` with the
+/// harness-registry `instruction:` glob lists into one [`BudgetConfig`].
+///
+/// Registry globs not already covered by an explicit `instruction-size:`
+/// surface receive the registry default thresholds. When neither source
+/// declares any surfaces, returns `None` (nothing to check). The
+/// `resolved_tree` budget is carried from the `instruction-size:` section
+/// when present; otherwise a sentinel with `u64::MAX` thresholds is used so
+/// [`check_resolved_tree`] never reports a finding for it.
+#[must_use]
+pub fn merged_budget_config(repo_root: &Path) -> Option<BudgetConfig> {
+    let repo_config = crate::application::repo_config::load_or_default(repo_root);
+    let registry_globs: Vec<String> = repo_config
+        .harness
+        .iter()
+        .flat_map(|e| e.instruction.iter().cloned())
+        .collect();
+    let yaml_config = repo_config.instruction_size;
+
+    let yaml_has_surfaces = yaml_config.as_ref().is_some_and(|c| !c.surfaces.is_empty());
+    if !yaml_has_surfaces && registry_globs.is_empty() {
+        return None;
+    }
+
+    let mut merged_surfaces: Vec<Surface> = yaml_config
+        .as_ref()
+        .map(|c| c.surfaces.clone())
+        .unwrap_or_default();
+    let mut seen_globs: HashSet<String> = merged_surfaces.iter().map(|s| s.glob.clone()).collect();
+    for glob in registry_globs {
+        if seen_globs.insert(glob.clone()) {
+            merged_surfaces.push(Surface {
+                glob,
+                target: REGISTRY_DEFAULT_TARGET,
+                warn: REGISTRY_DEFAULT_WARN,
+                fail: REGISTRY_DEFAULT_FAIL,
+            });
+        }
+    }
+
+    Some(BudgetConfig {
+        surfaces: merged_surfaces,
+        resolved_tree: yaml_config.map_or_else(
+            || ResolvedTree {
+                root: String::new(),
+                target: u64::MAX,
+                warn: u64::MAX,
+                fail: u64::MAX,
+            },
+            |c| c.resolved_tree,
+        ),
+    })
 }
 
 // ---------------------------------------------------------------------------
@@ -202,16 +270,23 @@ fn resolved_tree_message(size: u64, rt: &ResolvedTree, severity: &Severity) -> S
 /// Returns one [`Finding`] per matched file that is not within budget (`Warn`
 /// or `Fail`). Globs that match no files produce no findings.  `Ok`-severity
 /// files are not included in the result.
-pub fn check_instruction_sizes(repo_root: &Path, config: &BudgetConfig) -> Vec<Finding> {
+pub fn check_instruction_sizes(
+    fs: &dyn Fs,
+    repo_root: &Path,
+    config: &BudgetConfig,
+) -> Vec<Finding> {
     let mut findings: Vec<Finding> = Vec::new();
     for surface in &config.surfaces {
         let pattern = repo_root.join(&surface.glob);
         let pattern_str = pattern.to_string_lossy().to_string();
+        // NOTE: glob pattern matching stays on the real filesystem — the `Fs`
+        // seam has no virtual-glob equivalent; only the subsequent size stat
+        // goes through the injected port.
         let Ok(paths) = glob::glob(&pattern_str) else {
             continue;
         };
         for entry in paths.flatten() {
-            let size = fs::metadata(&entry).map_or(0, |m| m.len());
+            let size = fs.file_size(&entry).unwrap_or(0);
             let severity = classify(size, surface.target, surface.warn, surface.fail);
             if severity == Severity::Ok {
                 continue;
@@ -253,32 +328,40 @@ pub fn check_instruction_sizes(repo_root: &Path, config: &BudgetConfig) -> Vec<F
 /// recursion depth is capped at 4.  Cycles are detected via a set of
 /// canonicalized absolute paths; a cycle returns 0 bytes for the repeated
 /// node.
-pub fn resolve_tree_size(root: &Path) -> u64 {
+pub fn resolve_tree_size(fs: &dyn Fs, root: &Path) -> u64 {
     let mut visited: HashSet<PathBuf> = HashSet::new();
-    resolve_recursive(root, 0, &mut visited)
+    resolve_recursive(fs, root, 0, &mut visited)
 }
 
 /// Recursive helper for [`resolve_tree_size`].
 ///
 /// Returns 0 when the `depth` limit is exceeded or the `path` has already
 /// been visited (cycle guard).
-fn resolve_recursive(path: &Path, depth: usize, visited: &mut HashSet<PathBuf>) -> u64 {
+fn resolve_recursive(
+    fs: &dyn Fs,
+    path: &Path,
+    depth: usize,
+    visited: &mut HashSet<PathBuf>,
+) -> u64 {
     if depth > 4 {
         return 0;
     }
+    // NOTE: `canonicalize` stays on the real filesystem (no virtual-symlink
+    // equivalent in the `Fs` seam); it already falls back to the raw path on
+    // failure, so a mocked `Fs` still gets a stable cycle-guard key.
     let canonical = path.canonicalize().unwrap_or_else(|_| path.to_path_buf());
     if !visited.insert(canonical) {
         return 0; // cycle guard
     }
-    let size = fs::metadata(path).map_or(0, |m| m.len());
-    let content = fs::read_to_string(path).unwrap_or_default();
+    let size = fs.file_size(path).unwrap_or(0);
+    let content = fs.read_to_string(path).unwrap_or_default();
     let parent = path.parent().unwrap_or_else(|| Path::new("."));
     let imported: u64 = content
         .lines()
         .filter(|line| line.starts_with('@'))
         .map(|line| {
             let import_path = line[1..].trim();
-            resolve_recursive(&parent.join(import_path), depth + 1, visited)
+            resolve_recursive(fs, &parent.join(import_path), depth + 1, visited)
         })
         .sum();
     size + imported
@@ -290,9 +373,13 @@ fn resolve_recursive(path: &Path, depth: usize, visited: &mut HashSet<PathBuf>) 
 /// Returns `None` when the resolved size is within the target.  Returns
 /// `Some(Finding)` when the resolved size exceeds the target or fail
 /// threshold.
-pub fn check_resolved_tree(repo_root: &Path, config: &BudgetConfig) -> Option<Finding> {
+pub fn check_resolved_tree(
+    fs: &dyn Fs,
+    repo_root: &Path,
+    config: &BudgetConfig,
+) -> Option<Finding> {
     let root_path = repo_root.join(&config.resolved_tree.root);
-    let size = resolve_tree_size(&root_path);
+    let size = resolve_tree_size(fs, &root_path);
     let rt = &config.resolved_tree;
     let severity = classify(size, rt.target, rt.warn, rt.fail);
     if severity == Severity::Ok {
@@ -318,6 +405,7 @@ pub fn check_resolved_tree(repo_root: &Path, config: &BudgetConfig) -> Option<Fi
 #[allow(clippy::unwrap_used, clippy::panic)]
 mod tests {
     use super::*;
+    use crate::infrastructure::fs::real::RealFs;
     use std::fs;
     use tempfile::TempDir;
 
@@ -390,7 +478,7 @@ resolved_tree:
 "#;
         let path = tmp.path().join("instruction-size-budget.yaml");
         fs::write(&path, yaml).unwrap();
-        let config = load_budget_config(&path).unwrap();
+        let config = load_budget_config(&RealFs, &path).unwrap();
         assert_eq!(config.surfaces.len(), 1);
         assert_eq!(config.surfaces[0].glob, "AGENTS.md");
         assert_eq!(config.surfaces[0].fail, 30_000);
@@ -400,7 +488,7 @@ resolved_tree:
     fn load_budget_config_error_on_missing_file() {
         let tmp = TempDir::new().unwrap();
         let path = tmp.path().join("nonexistent.yaml");
-        let result = load_budget_config(&path);
+        let result = load_budget_config(&RealFs, &path);
         assert!(result.is_err());
     }
 
@@ -428,7 +516,7 @@ resolved_tree:
         let tmp = TempDir::new().unwrap();
         fs::write(tmp.path().join("AGENTS.md"), "x".repeat(31_000)).unwrap();
         let config = simple_config("AGENTS.md", 24_000, 27_000, 30_000);
-        let findings = check_instruction_sizes(tmp.path(), &config);
+        let findings = check_instruction_sizes(&RealFs, tmp.path(), &config);
         assert_eq!(findings.len(), 1);
         assert_eq!(findings[0].severity, Severity::Fail);
         assert!(findings[0].path == "AGENTS.md");
@@ -438,7 +526,7 @@ resolved_tree:
     fn check_no_finding_for_absent_glob() {
         let tmp = TempDir::new().unwrap();
         let config = simple_config(".github/copilot-instructions.md", 6_000, 8_000, 10_000);
-        let findings = check_instruction_sizes(tmp.path(), &config);
+        let findings = check_instruction_sizes(&RealFs, tmp.path(), &config);
         assert!(findings.is_empty());
     }
 
@@ -447,7 +535,7 @@ resolved_tree:
         let tmp = TempDir::new().unwrap();
         fs::write(tmp.path().join("AGENTS.md"), "x".repeat(10_000)).unwrap();
         let config = simple_config("AGENTS.md", 24_000, 27_000, 30_000);
-        let findings = check_instruction_sizes(tmp.path(), &config);
+        let findings = check_instruction_sizes(&RealFs, tmp.path(), &config);
         assert!(findings.is_empty(), "ok-severity files produce no finding");
     }
 
@@ -456,7 +544,7 @@ resolved_tree:
         let tmp = TempDir::new().unwrap();
         fs::write(tmp.path().join("AGENTS.md"), "x".repeat(25_000)).unwrap();
         let config = simple_config("AGENTS.md", 24_000, 27_000, 30_000);
-        let findings = check_instruction_sizes(tmp.path(), &config);
+        let findings = check_instruction_sizes(&RealFs, tmp.path(), &config);
         assert_eq!(findings.len(), 1);
         assert_eq!(findings[0].severity, Severity::Warn);
     }
@@ -466,7 +554,7 @@ resolved_tree:
         let tmp = TempDir::new().unwrap();
         fs::write(tmp.path().join("AGENTS.md"), "x".repeat(31_000)).unwrap();
         let config = simple_config("AGENTS.md", 24_000, 27_000, 30_000);
-        let findings = check_instruction_sizes(tmp.path(), &config);
+        let findings = check_instruction_sizes(&RealFs, tmp.path(), &config);
         assert_eq!(findings.len(), 1);
         let msg = &findings[0].message;
         assert!(
@@ -489,7 +577,7 @@ resolved_tree:
         let claude_content = "@AGENTS.md\n";
         let claude_bytes = claude_content.len() as u64;
         fs::write(tmp.path().join("CLAUDE.md"), claude_content).unwrap();
-        let total = resolve_tree_size(&tmp.path().join("CLAUDE.md"));
+        let total = resolve_tree_size(&RealFs, &tmp.path().join("CLAUDE.md"));
         assert_eq!(total, claude_bytes + agents_bytes as u64);
     }
 
@@ -499,7 +587,7 @@ resolved_tree:
         let content = "@NONEXISTENT.md\nsome text";
         let content_bytes = content.len() as u64;
         fs::write(tmp.path().join("CLAUDE.md"), content).unwrap();
-        let total = resolve_tree_size(&tmp.path().join("CLAUDE.md"));
+        let total = resolve_tree_size(&RealFs, &tmp.path().join("CLAUDE.md"));
         // Only CLAUDE.md bytes — nonexistent import contributes 0
         assert_eq!(total, content_bytes);
     }
@@ -513,7 +601,7 @@ resolved_tree:
         fs::write(tmp.path().join("A.md"), a_content).unwrap();
         fs::write(tmp.path().join("B.md"), b_content).unwrap();
         // Should not infinite-loop; result should be finite
-        let total = resolve_tree_size(&tmp.path().join("A.md"));
+        let total = resolve_tree_size(&RealFs, &tmp.path().join("A.md"));
         assert!(total > 0, "should count at least A.md and B.md bytes");
         // A + B counted once each (cycle guard stops re-entry)
         assert_eq!(total, a_content.len() as u64 + b_content.len() as u64);
@@ -536,7 +624,7 @@ resolved_tree:
                 fail: 38_000,
             },
         };
-        let finding = check_resolved_tree(tmp.path(), &config);
+        let finding = check_resolved_tree(&RealFs, tmp.path(), &config);
         assert!(finding.is_some());
         let f = finding.unwrap();
         assert_eq!(f.path, "resolved-tree");
@@ -561,7 +649,88 @@ resolved_tree:
                 fail: 38_000,
             },
         };
-        let finding = check_resolved_tree(tmp.path(), &config);
+        let finding = check_resolved_tree(&RealFs, tmp.path(), &config);
         assert!(finding.is_none());
+    }
+
+    // ---- merged_budget_config ----
+
+    #[test]
+    fn merged_budget_config_none_when_no_sources() {
+        let tmp = TempDir::new().unwrap();
+        assert!(merged_budget_config(tmp.path()).is_none());
+    }
+
+    #[test]
+    fn merged_budget_config_reads_yaml_section_from_repo_config() {
+        let tmp = TempDir::new().unwrap();
+        let repo_cfg = concat!(
+            "harness: []\n",
+            "coverage:\n  projects: []\n",
+            "specs:\n  ddd-areas: []\n  domain-areas: []\n",
+            "instruction-size:\n",
+            "  surfaces:\n",
+            "    - glob: \"AGENTS.md\"\n",
+            "      target: 24000\n",
+            "      warn: 27000\n",
+            "      fail: 30000\n",
+            "  resolved_tree:\n",
+            "    root: \"CLAUDE.md\"\n",
+            "    target: 30000\n",
+            "    warn: 34000\n",
+            "    fail: 38000\n",
+        );
+        fs::write(tmp.path().join("repo-config.yml"), repo_cfg).unwrap();
+        let config = merged_budget_config(tmp.path()).unwrap();
+        assert_eq!(config.surfaces.len(), 1);
+        assert_eq!(config.surfaces[0].glob, "AGENTS.md");
+        assert_eq!(config.resolved_tree.root, "CLAUDE.md");
+    }
+
+    #[test]
+    fn merged_budget_config_adds_registry_globs_with_defaults() {
+        let tmp = TempDir::new().unwrap();
+        let repo_cfg = concat!(
+            "harness:\n",
+            "  - { name: cursor, tier: native, shadow: .cursor/rules,",
+            " instruction: [.cursor/rules] }\n",
+            "coverage:\n  projects: []\n",
+            "specs:\n  ddd-areas: []\n  domain-areas: []\n",
+        );
+        fs::write(tmp.path().join("repo-config.yml"), repo_cfg).unwrap();
+        let config = merged_budget_config(tmp.path()).unwrap();
+        assert_eq!(config.surfaces.len(), 1);
+        assert_eq!(config.surfaces[0].glob, ".cursor/rules");
+        assert_eq!(config.surfaces[0].fail, REGISTRY_DEFAULT_FAIL);
+        // No `instruction-size:` section — resolved_tree sentinel never fails.
+        assert_eq!(config.resolved_tree.fail, u64::MAX);
+    }
+
+    #[test]
+    fn merged_budget_config_yaml_surface_wins_over_registry_default_for_same_glob() {
+        let tmp = TempDir::new().unwrap();
+        let repo_cfg = concat!(
+            "harness:\n",
+            "  - { name: cursor, tier: native, shadow: .cursor/rules,",
+            " instruction: [AGENTS.md] }\n",
+            "coverage:\n  projects: []\n",
+            "specs:\n  ddd-areas: []\n  domain-areas: []\n",
+            "instruction-size:\n",
+            "  surfaces:\n",
+            "    - glob: \"AGENTS.md\"\n",
+            "      target: 24000\n",
+            "      warn: 27000\n",
+            "      fail: 30000\n",
+            "  resolved_tree:\n",
+            "    root: \"CLAUDE.md\"\n",
+            "    target: 30000\n",
+            "    warn: 34000\n",
+            "    fail: 38000\n",
+        );
+        fs::write(tmp.path().join("repo-config.yml"), repo_cfg).unwrap();
+        let config = merged_budget_config(tmp.path()).unwrap();
+        // Only one surface for "AGENTS.md" — the explicit yaml entry, not a duplicate default.
+        assert_eq!(config.surfaces.len(), 1);
+        assert_eq!(config.surfaces[0].fail, 30_000);
     }
 }

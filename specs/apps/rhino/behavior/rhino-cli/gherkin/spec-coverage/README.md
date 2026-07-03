@@ -1,11 +1,10 @@
-# Spec Coverage Domain
+# rhino — behavior/rhino-cli/gherkin/spec-coverage
 
-Gherkin specs for rhino-cli spec-coverage validation commands.
+Gherkin scenarios for rhino-cli spec coverage validation commands.
 
-| File                             | Command                  | Scenarios |
-| -------------------------------- | ------------------------ | --------- |
-| `spec-coverage-validate.feature` | `spec-coverage validate` | 6         |
+Features in this domain:
 
-## Related
+- `spec-coverage-validate.feature` — validate spec-to-test coverage mapping
 
-- **Parent**: [gherkin](../README.md)
+See [Specs Directory Structure Convention](../../../../../../../repo-governance/conventions/structure/specs-directory-structure.md)
+for the canonical purpose of this folder.

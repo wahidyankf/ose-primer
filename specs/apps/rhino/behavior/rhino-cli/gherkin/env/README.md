@@ -1,13 +1,12 @@
-# Env Domain
+# rhino — behavior/rhino-cli/gherkin/env
 
-Gherkin specs for rhino-cli environment management commands.
+Gherkin scenarios for rhino-cli environment management commands.
 
-| File                  | Command       | Scenarios |
-| --------------------- | ------------- | --------- |
-| `env-backup.feature`  | `env backup`  | 18        |
-| `env-init.feature`    | `env init`    | 4         |
-| `env-restore.feature` | `env restore` | 13        |
+Features in this domain:
 
-## Related
+- `env-backup.feature` — environment backup
+- `env-init.feature` — environment initialization
+- `env-restore.feature` — environment restore
 
-- **Parent**: [gherkin](../README.md)
+See [Specs Directory Structure Convention](../../../../../../../repo-governance/conventions/structure/specs-directory-structure.md)
+for the canonical purpose of this folder.

@@ -1,11 +1,10 @@
-# Git Domain
+# rhino — behavior/rhino-cli/gherkin/git
 
-Gherkin specs for rhino-cli git hook commands.
+Gherkin scenarios for rhino-cli git integration commands.
 
-| File                     | Command          | Scenarios |
-| ------------------------ | ---------------- | --------- |
-| `git-pre-commit.feature` | `git pre-commit` | 1         |
+Features in this domain:
 
-## Related
+- `git-pre-commit.feature` — pre-commit hook validation
 
-- **Parent**: [gherkin](../README.md)
+See [Specs Directory Structure Convention](../../../../../../../repo-governance/conventions/structure/specs-directory-structure.md)
+for the canonical purpose of this folder.

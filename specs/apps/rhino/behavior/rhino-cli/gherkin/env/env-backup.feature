@@ -145,38 +145,28 @@ Feature: Env file backup
     And only the .env file is copied to the backup directory
 
   @env-backup-secrets
-  Scenario: secrets.json is backed up
+  Scenario: Backup discovers common secret file patterns
     Given a git repository containing a secrets.json file at the root
+    And a git repository containing a cert.pem file at the root
+    And a git repository containing a .secrets/notes.md file
     When the developer runs rhino-cli env backup
     Then the command exits successfully
     And secrets.json is copied to the backup directory
-
-  @env-backup-secrets
-  Scenario: A .pem certificate file is backed up
-    Given a git repository containing a cert.pem file at the root
-    When the developer runs rhino-cli env backup
-    Then the command exits successfully
     And cert.pem is copied to the backup directory
-
-  @env-backup-secrets
-  Scenario: A file inside .secrets/ is backed up
-    Given a git repository containing a .secrets/notes.md file
-    When the developer runs rhino-cli env backup
-    Then the command exits successfully
     And .secrets/notes.md is copied to the backup directory preserving its relative path
 
   @env-backup-secrets
-  Scenario: .git/ contents are still skipped during backup
-    Given a git repository containing a .env file at the root
+  Scenario: The .git directory itself is never backed up
+    Given a git repository containing a .env file and a secrets.json file
     When the developer runs rhino-cli env backup
     Then the command exits successfully
-    And the .env file is copied to the backup directory
     And no files from the .git directory are backed up
 
   @env-backup-dry-run
-  Scenario: Backup with --dry-run lists files without writing anything
-    Given a git repository containing a .env file and a secrets.json file
+  Scenario: Dry-run backup previews without writing files
+    Given a git repository containing a secrets.json file at the root
+    And a git repository containing a cert.pem file at the root
+    And a git repository containing a .secrets/notes.md file
     When the developer runs rhino-cli env backup with --dry-run
-    Then the command exits successfully
-    And no files are written to the backup directory
+    Then no files are written to the backup directory
     And the output lists the files that would be backed up

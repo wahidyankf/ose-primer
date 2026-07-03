@@ -1,12 +1,20 @@
-# Repo Governance Domain
+# rhino — behavior/rhino-cli/gherkin/repo-governance
 
-Gherkin specs for rhino-cli repository governance validation commands.
+Gherkin scenarios for rhino-cli repository governance audit commands.
 
-| File                                                  | Command                                       | Scenarios  |
-| ----------------------------------------------------- | --------------------------------------------- | ---------- |
-| `repo-governance-vendor-audit.feature`                | `repo-governance vendor-audit`                | (see file) |
-| `repo-governance-gherkin-keyword-cardinality.feature` | `repo-governance gherkin-keyword-cardinality` | (see file) |
+Features in this domain:
 
-## Related
+- `repo-governance-audit.feature` — general governance audit
+- `repo-governance-layer-coherence.feature` — governance layer coherence
+- `repo-governance-traceability-audit.feature` — traceability audit
+- `repo-governance-vendor-audit.feature` — vendor independence audit
 
-- **Parent**: [gherkin](../README.md)
+> The frontmatter-dates audit, README-index audit, emoji audit, license audit, and
+> instruction-size audits previously lived here but actually cover the `md`, `convention`, and
+> `harness` command groups respectively — they moved to
+> [`../md/`](../md/README.md), [`../convention/`](../convention/README.md), and
+> [`../harness/`](../harness/README.md) during the Phase 1 rename/split step of the
+> `enforce-identical-rhino-cli-gherkin` plan.
+
+See [Specs Directory Structure Convention](../../../../../../../repo-governance/conventions/structure/specs-directory-structure.md)
+for the canonical purpose of this folder.

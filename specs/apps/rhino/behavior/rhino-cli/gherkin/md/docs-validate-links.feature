@@ -28,32 +28,40 @@ Feature: Markdown Internal Link Validation
     When the developer runs docs validate-links with the --staged-only flag
     Then the command exits successfully
 
-  Scenario: With --exclude an excluded tree is not validated
-    Given a markdown file with a broken link inside a directory tree
-    When the developer runs docs validate-links with the --exclude flag for that tree
-    Then the command exits successfully
-    And the output reports no broken links found
+  Scenario: exclude flag skips the named subtree
+    Given a markdown file under plans/done with a broken internal link
+    And a markdown file under docs with a different broken internal link
+    When the developer runs docs validate-links with --exclude plans/done
+    Then the command exits with a failure code
+    And the output does not mention the plans/done file
+    But the output does mention the docs file
 
-  Scenario: A broken link outside the historic scan scope is detected
-    Given a markdown file under libs with a link pointing to a non-existent file
+  Scenario: repo-wide scan finds broken link outside original three-directory scope
+    Given a markdown file under libs with a broken internal link
     When the developer runs docs validate-links
     Then the command exits with a failure code
-    And the output identifies the file containing the broken link
+    And the output identifies the libs file containing the broken link
 
-  Scenario: A link to a missing anchor in an existing file is reported as a broken anchor
-    Given a markdown file with a link to an existing file whose anchor matches no heading
-    When the developer runs docs validate-links
-    Then the command exits with a failure code
-    And the output reports a broken-anchor finding for the link
-
-  Scenario: A link to a valid anchor in an existing file passes validation
-    Given a markdown file with a link to an existing file whose anchor matches a heading
+  Scenario: valid anchor link passes validation
+    Given a markdown file that links to an existing heading anchor in another file
     When the developer runs docs validate-links
     Then the command exits successfully
     And the output reports no broken links found
 
-  Scenario: A same-file anchor link with no matching heading is reported as a broken anchor
-    Given a markdown file with a pure-anchor link that matches no heading in the same file
+  Scenario: broken anchor link produces a broken-anchor finding
+    Given a markdown file that links to a non-existent heading anchor in an existing file
     When the developer runs docs validate-links
     Then the command exits with a failure code
-    And the output reports a broken-anchor finding for the link
+    And the output identifies the broken anchor
+
+  Scenario: same-file anchor with no matching heading produces a broken-anchor finding
+    Given a markdown file containing a same-file anchor link that has no matching heading
+    When the developer runs docs validate-links
+    Then the command exits with a failure code
+    And the output identifies the broken same-file anchor
+
+  Scenario: anchor slugs keep underscores per the GitHub reference algorithm
+    Given a markdown file that links to the anchor "#snake_case" of a file whose heading is "snake_case"
+    When the developer runs docs validate-links
+    Then the command exits successfully
+    And the output reports no broken links found

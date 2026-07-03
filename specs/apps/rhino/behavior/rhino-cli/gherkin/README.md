@@ -1,41 +1,129 @@
 # rhino-cli Gherkin Specs
 
 Gherkin feature files for [rhino-cli](../../../../../../apps/rhino-cli/README.md) — the Repository
-Hygiene & INtegration Orchestrator CLI. 20 files, 155 scenarios across 11 domains.
+Hygiene & INtegration Orchestrator CLI.
 
-## Feature Files
+## Structure
 
-| Domain          | File                                                   | Command                           | Scenarios |
-| --------------- | ------------------------------------------------------ | --------------------------------- | --------- |
-| agents          | `agents/agents-sync.feature`                           | `agents sync`                     | 7         |
-| agents          | `agents/agents-validate-claude.feature`                | `agents validate-claude`          | 5         |
-| agents          | `agents/agents-validate-naming.feature`                | `agents validate-naming`          | 4         |
-| contracts       | `contracts/contracts-dart-scaffold.feature`            | `contracts dart-scaffold`         | 3         |
-| contracts       | `contracts/contracts-java-clean-imports.feature`       | `contracts java-clean-imports`    | 5         |
-| docs            | `docs/docs-validate-links.feature`                     | `docs validate-links`             | 9         |
-| docs            | `docs/docs-validate-mermaid.feature`                   | `docs validate-mermaid`           | 27        |
-| docs            | `docs/docs-validate-heading-hierarchy.feature`         | `docs validate-heading-hierarchy` | 9         |
-| env             | `env/env-backup.feature`                               | `env backup`                      | 18        |
-| env             | `env/env-init.feature`                                 | `env init`                        | 4         |
-| env             | `env/env-restore.feature`                              | `env restore`                     | 13        |
-| git             | `git/git-pre-commit.feature`                           | `git pre-commit`                  | 1         |
-| java            | `java/java-validate-annotations.feature`               | `java validate-annotations`       | 4         |
-| repo-governance | `repo-governance/repo-governance-vendor-audit.feature` | `repo-governance vendor-audit`    | 7         |
-| spec-coverage   | `spec-coverage/spec-coverage-validate.feature`         | `spec-coverage validate`          | 6         |
-| system          | `system/doctor.feature`                                | `doctor`                          | 9         |
-| test-coverage   | `test-coverage/test-coverage-diff.feature`             | `test-coverage diff`              | 4         |
-| test-coverage   | `test-coverage/test-coverage-merge.feature`            | `test-coverage merge`             | 3         |
-| test-coverage   | `test-coverage/test-coverage-validate.feature`         | `test-coverage validate`          | 10        |
-| workflows       | `workflows/workflows-validate-naming.feature`          | `workflows validate-naming`       | 4         |
+Feature files are grouped into domain subdirectories, one per subcommand family:
+
+```
+behavior/rhino-cli/gherkin/
+├── convention/       # convention subcommand family
+├── ddd/              # ddd subcommand family
+├── env/              # env subcommand family
+├── git/              # git subcommand family
+├── harness/          # harness subcommand family (agent/binding machinery)
+├── md/               # md subcommand family
+├── repo-governance/  # repo-governance subcommand family
+├── spec-coverage/    # specs coverage command (folded from old spec-coverage subcommand)
+├── specs/            # specs subcommand family
+├── system/           # system commands (doctor)
+└── workflows/        # workflows subcommand family
+```
+
+## Feature Files by Domain
+
+### convention
+
+| File                                    | Command(s)                    | Scenarios |
+| --------------------------------------- | ----------------------------- | --------- |
+| `repo-governance-emoji-audit.feature`   | `convention emoji validate`   | 5         |
+| `repo-governance-license-audit.feature` | `convention license validate` | 4         |
+
+### ddd
+
+| File             | Command(s) | Scenarios |
+| ---------------- | ---------- | --------- |
+| `ddd-bc.feature` | `ddd bc`   | 11        |
+| `ddd-ul.feature` | `ddd ul`   | 7         |
+
+### env
+
+| File                  | Command(s)    | Scenarios |
+| --------------------- | ------------- | --------- |
+| `env-backup.feature`  | `env backup`  | 18        |
+| `env-init.feature`    | `env init`    | 4         |
+| `env-restore.feature` | `env restore` | 13        |
+
+### git
+
+| File                     | Command(s)       | Scenarios |
+| ------------------------ | ---------------- | --------- |
+| `git-pre-commit.feature` | `git pre-commit` | 1         |
+
+### harness
+
+| File                                                  | Command(s)                             | Scenarios |
+| ----------------------------------------------------- | -------------------------------------- | --------- |
+| `agents-bindings.feature`                             | `harness bindings validate`/`generate` | 8         |
+| `agents-detect-duplication.feature`                   | `harness duplication validate`         | 4         |
+| `agents-sync.feature`                                 | `harness sync validate`                | 7         |
+| `agents-validate-claude.feature`                      | `harness claude validate`              | 5         |
+| `agents-validate-naming.feature`                      | `harness naming validate`              | 4         |
+| `repo-governance-agents-md-size.feature`              | `harness instruction-size validate`    | 3         |
+| `repo-governance-instruction-size-governance.feature` | `harness instruction-size validate`    | 5         |
+| `repo-governance-instruction-size-pre-push.feature`   | `harness instruction-size validate`    | 3         |
+| `repo-governance-instruction-size.feature`            | `harness instruction-size validate`    | 6         |
+
+### md
+
+| File                                         | Command(s)                      | Scenarios |
+| -------------------------------------------- | ------------------------------- | --------- |
+| `docs-validate-frontmatter.feature`          | `md frontmatter validate`       | 5         |
+| `docs-validate-heading-hierarchy.feature`    | `md heading-hierarchy validate` | 4         |
+| `docs-validate-links.feature`                | `md links validate`             | 4         |
+| `docs-validate-mermaid.feature`              | `md mermaid validate`           | 22        |
+| `docs-validate-naming.feature`               | `md naming validate`            | 3         |
+| `repo-governance-frontmatter-audit.feature`  | `md frontmatter-dates validate` | 5         |
+| `repo-governance-readme-index-audit.feature` | `md readme-index validate`      | 4         |
+
+### repo-governance
+
+| File                                         | Command(s)                                 | Scenarios |
+| -------------------------------------------- | ------------------------------------------ | --------- |
+| `repo-governance-audit.feature`              | `repo-governance audit`                    | 5         |
+| `repo-governance-layer-coherence.feature`    | `repo-governance layer-coherence validate` | 3         |
+| `repo-governance-traceability-audit.feature` | `repo-governance traceability validate`    | 5         |
+| `repo-governance-vendor-audit.feature`       | `repo-governance vendor validate`          | 7         |
+
+### spec-coverage
+
+| File                             | Command(s)       | Scenarios |
+| -------------------------------- | ---------------- | --------- |
+| `spec-coverage-validate.feature` | `specs coverage` | 6         |
+
+### specs
+
+| File                        | Command(s)                | Scenarios |
+| --------------------------- | ------------------------- | --------- |
+| `validate-adoption.feature` | `specs validate-adoption` | planned   |
+| `validate-counts.feature`   | `specs validate-counts`   | planned   |
+| `validate-links.feature`    | `specs validate-links`    | planned   |
+| `validate-tree.feature`     | `specs validate-tree`     | planned   |
+
+### system
+
+| File             | Command(s) | Scenarios |
+| ---------------- | ---------- | --------- |
+| `doctor.feature` | `doctor`   | 9         |
+
+### workflows
+
+| File                                | Command(s)                  | Scenarios |
+| ----------------------------------- | --------------------------- | --------- |
+| `workflows-validate-naming.feature` | `workflows validate-naming` | 4         |
 
 ## Conventions
 
 - **File naming**: `[domain]-[action].feature` (kebab-case, domain-prefixed)
-- **Directory**: Each domain has its own subdirectory; file placed in `<domain>/`
 - **Step language**: CLI-semantic only — no framework or library names
 - **User story block**: Every `Feature:` block opens with `As a … / I want … / So that …`
 
 ## Related
 
-- **Parent**: [rhino-cli specs](../../../README.md)
+- **Parent**: [rhino-cli specs](../../README.md)
 - **BDD Standards**: [behavior-driven-development-bdd/](../../../../../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md)
+
+See [Specs Directory Structure Convention](../../../../../../repo-governance/conventions/structure/specs-directory-structure.md)
+for the canonical purpose of this folder.

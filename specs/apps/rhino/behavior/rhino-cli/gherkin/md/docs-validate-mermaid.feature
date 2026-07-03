@@ -46,8 +46,8 @@ Feature: Mermaid Flowchart Structural Validation
     Then the command exits successfully
     And the output reports no violations
 
-  Scenario: A LR flowchart with 4 rank columns is flagged
-    Given a markdown file containing an LR flowchart where depth spans 4 levels
+  Scenario: A LR flowchart with a chain 4 levels deep is flagged
+    Given a markdown file containing an LR flowchart with a chain that is 4 levels deep
     When the developer runs docs validate-mermaid
     Then the command exits with a failure code
     And the output identifies the file and block with the excessive width
@@ -138,25 +138,69 @@ Feature: Mermaid Flowchart Structural Validation
     Then the command exits with a failure code
     And the output identifies the file under plans/
 
-  Scenario: Default scan reports a violation outside the old four-directory scope
-    Given a markdown file outside the docs, repo-governance, .claude, and plans directories containing a flowchart with a node label longer than the limit
+  Scenario: A multi-target edge with the & operator expands into separate edges
+    Given a markdown file with a flowchart line "A --> B & C & D"
+    When the parser processes the file
+    Then three edges are produced: A->B, A->C, A->D
+    And nodes B, C, D each have an in-edge from A
+
+  Scenario: Multi-source and multi-target on both sides expand into a Cartesian product
+    Given a markdown file with a flowchart line "A & B --> C & D"
+    When the parser processes the file
+    Then four edges are produced: A->C, A->D, B->C, B->D
+
+  Scenario: A 5-target fan-out triggers width violation under default threshold
+    Given a markdown file with a flowchart "T --> A & B & C & D & E"
     When the developer runs docs validate-mermaid
     Then the command exits with a failure code
-    And the output identifies the violation in that file
+    And the output identifies the rank with 5 parallel nodes
 
-  Scenario: Excluded directory tree is not scanned
-    Given a markdown file containing a flowchart with a node label longer than the limit placed under a subdirectory to be excluded
-    When the developer runs docs validate-mermaid with --exclude pointing at that subdirectory
-    Then the command exits successfully
-
-  Scenario: A pipe-labeled edge is parsed and the target node is ranked below the source
-    Given a markdown file containing a flowchart where one edge uses the pipe-label syntax A -->|text| B
+  Scenario: A subgraph with 7 child nodes emits subgraph density warning
+    Given a markdown file containing a flowchart with a subgraph that holds 7 child nodes
     When the developer runs docs validate-mermaid
     Then the command exits successfully
-    And the output reports that node B is ranked one level below node A
+    And the output contains a warning about subgraph density
 
-  Scenario: A cyclic diagram is ranked as a chain after back-edge removal
-    Given a markdown file containing a flowchart with the cycle A-->B-->C-->A
+  Scenario: A subgraph with 6 children passes default threshold
+    Given a markdown file containing a flowchart with a subgraph that holds exactly 6 child nodes
     When the developer runs docs validate-mermaid
     Then the command exits successfully
-    And the output reports the diagram has span 1 and depth 3
+    And the output contains no subgraph density warning
+
+  Scenario: Subgraph density threshold is configurable
+    Given a markdown file containing a flowchart with a subgraph that holds 5 child nodes
+    When the developer runs docs validate-mermaid with --max-subgraph-nodes 4
+    Then the command exits successfully
+    And the output contains a warning about subgraph density
+
+  Scenario: Existing diagrams without & or large subgraphs are unaffected
+    Given a markdown file with a flowchart using only single-target edges and small subgraphs
+    When the developer runs docs validate-mermaid
+    Then the command exits successfully
+    And the output reports no new violations or warnings introduced by these fixes
+
+  Scenario: exclude flag skips the named subtree
+    Given a markdown file under plans/done containing a flowchart with a width violation
+    And a markdown file under docs containing a flowchart with a different width violation
+    When the developer runs docs validate-mermaid with --exclude plans/done
+    Then the command exits with a failure code
+    And the output does not mention the plans/done file
+    But the output does mention the docs file
+
+  Scenario: repo-wide default scan finds violation outside the legacy default directories
+    Given a markdown file under specs/ containing a flowchart with a width violation
+    When the developer runs docs validate-mermaid without path arguments
+    Then the command exits with a failure code
+    And the output identifies the file under specs/
+
+  Scenario: A pipe-labeled edge is parsed as an edge
+    Given a markdown file with a flowchart line "A -->|yes| B"
+    When the parser processes the file
+    Then one edge is produced: A->B
+    And node B is ranked one level below node A
+
+  Scenario: A cyclic flowchart ranks as its underlying chain
+    Given a markdown file with a flowchart forming the cycle A --> B --> C --> A
+    When the developer runs docs validate-mermaid
+    Then the command exits successfully
+    And no width violation is reported for the cycle members

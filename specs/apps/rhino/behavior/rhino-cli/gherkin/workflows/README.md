@@ -1,11 +1,10 @@
-# Workflows Domain
+# rhino — behavior/rhino-cli/gherkin/workflows
 
-Gherkin specs for rhino-cli workflow validation commands.
+Gherkin scenarios for rhino-cli workflow validation commands.
 
-| File                                | Command                     | Scenarios |
-| ----------------------------------- | --------------------------- | --------- |
-| `workflows-validate-naming.feature` | `workflows validate-naming` | 4         |
+Features in this domain:
 
-## Related
+- `workflows-validate-naming.feature` — validate workflow file naming conventions
 
-- **Parent**: [gherkin](../README.md)
+See [Specs Directory Structure Convention](../../../../../../../repo-governance/conventions/structure/specs-directory-structure.md)
+for the canonical purpose of this folder.

@@ -109,30 +109,28 @@ Feature: Env file restore
     And the .claude/settings.local.json is not restored to the repository
 
   @env-restore-secrets
-  Scenario: secrets.json is restored from backup
+  Scenario: Restore recovers common secret file patterns
     Given a backup directory containing a secrets.json file
+    And a backup directory containing a cert.pem file
+    And a backup directory containing a .secrets/notes.md file
+    When the developer runs rhino-cli env restore
+    Then the command exits successfully
+    And secrets.json is copied back to the repository
+    And cert.pem is copied back to the repository
+    And .secrets/notes.md is copied back to the repository preserving its relative path
+
+  @env-restore-secrets
+  Scenario: Restore recovers a mix of .env and secret files together
+    Given a backup directory containing a .env file and a secrets.json file
     When the developer runs rhino-cli env restore
     Then the command exits successfully
     And secrets.json is copied back to the repository
 
-  @env-restore-secrets
-  Scenario: A .pem certificate file is restored from backup
-    Given a backup directory containing a cert.pem file
-    When the developer runs rhino-cli env restore
-    Then the command exits successfully
-    And cert.pem is copied back to the repository
-
-  @env-restore-secrets
-  Scenario: A file inside .secrets/ is restored from backup
-    Given a backup directory containing a .secrets/notes.md file
-    When the developer runs rhino-cli env restore
-    Then the command exits successfully
-    And .secrets/notes.md is copied back to the repository preserving its relative path
-
   @env-restore-dry-run
-  Scenario: Restore with --dry-run lists files without writing anything
-    Given a backup directory containing a .env file and a secrets.json file
+  Scenario: Dry-run restore previews without writing files
+    Given a backup directory containing a secrets.json file
+    And a backup directory containing a cert.pem file
+    And a backup directory containing a .secrets/notes.md file
     When the developer runs rhino-cli env restore with --dry-run
-    Then the command exits successfully
-    And no files are written to the repository
+    Then no files are written to the repository
     And the output lists the files that would be restored

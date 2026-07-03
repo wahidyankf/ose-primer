@@ -1,110 +1,205 @@
-//! Cucumber-rs integration tests for the `repo-governance vendor validate` and
-//! `specs gherkin-cardinality validate` commands (feature file names and
-//! Gherkin step text still say "gherkin-keyword-cardinality" for historical
-//! reasons — the underlying CLI subcommand moved under the `specs` noun
-//! during the phase 9a/b/c command-surface rationalization).
+//! Cucumber-rs behavior tests for the `repo-governance` governance-audit
+//! validators: `repo-governance vendor validate`, `repo-governance
+//! layer-coherence validate`, `repo-governance traceability validate`, and
+//! `repo-governance audit`.
 //!
 //! Wires the behavior-contract feature files at
-//! `specs/apps/rhino/behavior/rhino-cli/gherkin/repo-governance/` to step definitions
-//! that synthesize markdown / feature-file fixtures inside a fresh git-rooted
-//! temp workspace and drive the compiled `rhino-cli` binary, asserting on its
-//! output and exit code.
+//! `specs/apps/rhino/behavior/rhino-cli/gherkin/repo-governance/` to step
+//! definitions that build an in-memory fixture via `MockFs` and call the
+//! Fs-injected validator functions directly (no process spawn), asserting on
+//! their typed return values.
 
 // Test step-definition scaffolding: private World state and step fns are
 // self-documenting via their #[given]/#[when]/#[then] gherkin strings.
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(clippy::doc_markdown)]
 
+use std::fmt::Write as _;
 use std::path::PathBuf;
-use std::process::Output;
 
-use assert_cmd::cargo::cargo_bin;
 use cucumber::{World as _, given, then, when};
-use tempfile::TempDir;
+use rhino_cli::application::fs::mock::MockFs;
+use rhino_cli::application::repo_governance::audit_orchestrator::{
+    AuditCategoryResult, AuditEnvelope, AuditOptions, run_audit as run_governance_audit,
+};
+use rhino_cli::application::repo_governance::layer_coherence::{
+    KIND_CROSS_FILE_NAME_MISMATCH, KIND_NUMBERING_GAP, LayerCoherenceFinding, audit_layer_coherence,
+};
+use rhino_cli::application::repo_governance::traceability_audit::{
+    KIND_MISSING_AGENT_REFERENCE, KIND_MISSING_CONVENTIONS_IMPLEMENTED,
+    KIND_MISSING_PRINCIPLES_IMPLEMENTED, KIND_MISSING_VISION_SUPPORTED, TraceabilityFinding,
+    audit_traceability,
+};
+use rhino_cli::application::repo_governance::vendor_audit::{Finding, walk as vendor_walk};
 
-/// Shared scenario state. Each scenario gets a fresh git-rooted temp workspace
-/// so the binary's `findGitRoot` resolves inside the fixture.
-#[derive(cucumber::World)]
-#[world(init = Self::new)]
-struct GovernanceWorld {
-    work: TempDir,
-    /// Repo-relative path of the fixture file or directory to audit.
-    target: String,
-    /// Full CLI subcommand path under test (e.g.
-    /// `["repo-governance", "vendor", "validate"]`), excluding the trailing
-    /// target path and `--no-color` flag.
-    subcommand: Vec<&'static str>,
-    output: Option<Output>,
+/// Fixed absolute repo root every scenario's `MockFs` fixture is rooted at.
+/// Never touches the real filesystem — every read is served by `MockFs`.
+fn repo_root() -> PathBuf {
+    PathBuf::from("/repo")
 }
 
-impl std::fmt::Debug for GovernanceWorld {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("GovernanceWorld")
-            .field("target", &self.target)
-            .finish_non_exhaustive()
-    }
+/// Shared scenario state. Each `When` step populates exactly one of the
+/// `*_findings`/`audit_env` fields with the typed result of calling a single
+/// Fs-injected validator against `fs`.
+#[derive(cucumber::World, Debug)]
+#[world(init = Self::new)]
+struct GovernanceWorld {
+    fs: MockFs,
+    /// Repo-root-relative scan path passed to the vendor-audit `walk()` call
+    /// (a file or a directory).
+    target: PathBuf,
+    vendor_findings: Option<Vec<Finding>>,
+    layer_findings: Option<Vec<LayerCoherenceFinding>>,
+    traceability_findings: Option<Vec<TraceabilityFinding>>,
+    audit_env: Option<AuditEnvelope>,
+    /// Captured JSON serializations from each invocation of a
+    /// repeated-invocation step (the byte-determinism scenario).
+    captured_runs: Vec<String>,
 }
 
 impl GovernanceWorld {
     fn new() -> Self {
-        let work = TempDir::new().expect("temp workspace");
-        init_git_repo(work.path());
         Self {
-            work,
-            target: String::new(),
-            subcommand: vec!["repo-governance", "vendor", "validate"],
-            output: None,
+            fs: MockFs::new(),
+            target: PathBuf::from("repo-governance"),
+            vendor_findings: None,
+            layer_findings: None,
+            traceability_findings: None,
+            audit_env: None,
+            captured_runs: Vec::new(),
         }
     }
 
-    fn write(&self, rel: &str, content: &str) {
-        let p = self.work.path().join(rel);
-        if let Some(parent) = p.parent() {
-            std::fs::create_dir_all(parent).expect("mk fixture dir");
-        }
-        std::fs::write(p, content).expect("write fixture");
+    /// Adds (or overwrites) a file at repo-root-relative `rel` with `content`.
+    fn write(&mut self, rel: &str, content: &str) {
+        let path = repo_root().join(rel);
+        self.fs = std::mem::take(&mut self.fs).with_file(path, content);
     }
 
-    fn exec(&mut self) {
-        let mut args: Vec<&str> = self.subcommand.clone();
-        args.push(&self.target);
-        args.push("--no-color");
-        let out = std::process::Command::new(cargo_bin("rhino-cli"))
-            .args(&args)
-            .current_dir(self.work.path())
-            .output()
-            .expect("run rhino-cli");
-        self.output = Some(out);
+    /// Writes identical layer declarations to both governance layer-coherence
+    /// documents (`repository-governance-architecture.md` and `README.md`) so
+    /// `repo-governance layer-coherence validate` reports zero findings for
+    /// them, leaving only whatever other fixtures the calling step wrote.
+    fn write_matching_layer_docs(&mut self, layers: &[(u32, &str)]) {
+        let doc = layer_doc(layers);
+        self.write(
+            "repo-governance/repository-governance-architecture.md",
+            &doc,
+        );
+        self.write("repo-governance/README.md", &doc);
     }
 
-    fn stdout(&self) -> String {
-        String::from_utf8_lossy(&self.output.as_ref().expect("ran").stdout).into_owned()
+    /// Runs `vendor_audit::walk` against `self.target` (resolved relative to
+    /// the fixed repo root) and stores the result.
+    fn run_vendor_validate(&mut self) {
+        let full = repo_root().join(&self.target);
+        self.vendor_findings =
+            Some(vendor_walk(&self.fs, &full).expect("vendor walk succeeds against MockFs"));
     }
 
-    fn exit_code(&self) -> i32 {
-        self.output
+    /// Runs `layer_coherence::audit_layer_coherence` against the fixed repo
+    /// root and stores the result.
+    fn run_layer_coherence(&mut self) {
+        self.layer_findings = Some(
+            audit_layer_coherence(&self.fs, &repo_root())
+                .expect("layer-coherence audit succeeds against MockFs"),
+        );
+    }
+
+    /// Runs `traceability_audit::audit_traceability` against the fixed repo
+    /// root and stores the result.
+    fn run_traceability(&mut self) {
+        self.traceability_findings = Some(
+            audit_traceability(&self.fs, &repo_root())
+                .expect("traceability audit succeeds against MockFs"),
+        );
+    }
+
+    /// Runs `audit_orchestrator::run_audit` with `opts` (whose `repo_root`
+    /// field is overwritten with the fixed scenario repo root) and stores the
+    /// resulting envelope.
+    fn exec_audit(&mut self, mut opts: AuditOptions) {
+        opts.repo_root = repo_root();
+        self.audit_env = Some(
+            run_governance_audit(&self.fs, &opts)
+                .expect("governance audit succeeds against MockFs"),
+        );
+    }
+
+    /// Returns `true` when the single validator that has run so far reported
+    /// zero findings (mirrors the subprocess binary's exit-0 behavior).
+    fn passed(&self) -> bool {
+        self.vendor_findings
             .as_ref()
-            .expect("ran")
-            .status
-            .code()
-            .unwrap_or(-1)
+            .map(Vec::is_empty)
+            .or_else(|| self.layer_findings.as_ref().map(Vec::is_empty))
+            .or_else(|| self.traceability_findings.as_ref().map(Vec::is_empty))
+            .or_else(|| {
+                self.audit_env
+                    .as_ref()
+                    .map(|env| env.result.total_findings == 0)
+            })
+            .expect("a validator has run before this Then step")
+    }
+
+    fn vendor(&self) -> &[Finding] {
+        self.vendor_findings
+            .as_deref()
+            .expect("vendor-audit validator has run")
+    }
+
+    fn layer(&self) -> &[LayerCoherenceFinding] {
+        self.layer_findings
+            .as_deref()
+            .expect("layer-coherence validator has run")
+    }
+
+    fn traceability(&self) -> &[TraceabilityFinding] {
+        self.traceability_findings
+            .as_deref()
+            .expect("traceability validator has run")
+    }
+
+    fn audit(&self) -> &AuditEnvelope {
+        self.audit_env
+            .as_ref()
+            .expect("governance-audit orchestrator has run")
     }
 }
 
-fn init_git_repo(dir: &std::path::Path) {
-    std::process::Command::new("git")
-        .args(["init", "-q"])
-        .current_dir(dir)
-        .env("GIT_AUTHOR_NAME", "t")
-        .env("GIT_AUTHOR_EMAIL", "t@t")
-        .env("GIT_COMMITTER_NAME", "t")
-        .env("GIT_COMMITTER_EMAIL", "t@t")
-        .output()
-        .expect("git init");
+/// Builds a Markdown fragment declaring each `(number, name)` pair using the
+/// bold `**Layer N: Name**` syntax the layer-coherence audit recognizes.
+fn layer_doc(layers: &[(u32, &str)]) -> String {
+    let mut s = String::new();
+    for (n, name) in layers {
+        let _ = writeln!(s, "**Layer {n}: {name}**");
+    }
+    s
+}
+
+/// Returns the `vendor-audit` category result from a `repo-governance audit`
+/// envelope.
+fn vendor_audit_category(env: &AuditEnvelope) -> &AuditCategoryResult {
+    env.result
+        .categories
+        .iter()
+        .find(|c| c.name == "vendor-audit")
+        .expect("vendor-audit category present in result")
+}
+
+/// Returns the `file` field of every finding in the `vendor-audit` category,
+/// with backslashes normalized to forward slashes for cross-platform
+/// comparison.
+fn vendor_audit_files(env: &AuditEnvelope) -> Vec<String> {
+    vendor_audit_category(env)
+        .findings
+        .iter()
+        .map(|f| f.file.replace('\\', "/"))
+        .collect()
 }
 
 // ===========================================================================
-// Given steps
+// Given steps — repo-governance vendor validate
 // ===========================================================================
 
 // Matches any quoted term/path in plain prose, including the Scenario Outline
@@ -114,24 +209,24 @@ fn init_git_repo(dir: &std::path::Path) {
 #[given(regex = r#"^a governance markdown file containing "([^"]+)" in plain prose$"#)]
 #[allow(clippy::needless_pass_by_value)] // cucumber-rs binds the capture by value
 fn given_term_in_prose(w: &mut GovernanceWorld, term: String) {
-    w.target = "repo-governance/doc.md".to_string();
+    w.target = PathBuf::from("repo-governance/doc.md");
     w.write(
-        &w.target.clone(),
+        "repo-governance/doc.md",
         &format!("# Doc\n\nWe use {term} daily.\n"),
     );
 }
 
 #[given(r#"a governance markdown file containing "Claude Code" inside a code fence"#)]
 fn given_brand_in_fence(w: &mut GovernanceWorld) {
-    w.target = "repo-governance/doc.md".to_string();
-    w.write(&w.target.clone(), "# Doc\n\n```\nClaude Code\n```\n");
+    w.target = PathBuf::from("repo-governance/doc.md");
+    w.write("repo-governance/doc.md", "# Doc\n\n```\nClaude Code\n```\n");
 }
 
 #[given(r#"a governance markdown file containing "Claude Code" inside a binding-example fence"#)]
 fn given_brand_in_binding_example(w: &mut GovernanceWorld) {
-    w.target = "repo-governance/doc.md".to_string();
+    w.target = PathBuf::from("repo-governance/doc.md");
     w.write(
-        &w.target.clone(),
+        "repo-governance/doc.md",
         "# Doc\n\n```binding-example\nClaude Code\n```\n",
     );
 }
@@ -144,16 +239,16 @@ fn given_brand_in_binding_example(w: &mut GovernanceWorld) {
 )]
 #[allow(clippy::needless_pass_by_value)] // cucumber-rs binds the capture by value
 fn given_term_under_pb_heading(w: &mut GovernanceWorld, term: String) {
-    w.target = "repo-governance/doc.md".to_string();
+    w.target = PathBuf::from("repo-governance/doc.md");
     w.write(
-        &w.target.clone(),
+        "repo-governance/doc.md",
         &format!("# Doc\n\n## Platform Binding Examples\n\n{term} is fine here.\n"),
     );
 }
 
 #[given("a governance directory with no forbidden terms in prose")]
 fn given_clean_directory(w: &mut GovernanceWorld) {
-    w.target = "repo-governance".to_string();
+    w.target = PathBuf::from("repo-governance");
     w.write(
         "repo-governance/a.md",
         "# A\n\nVendor-neutral prose only.\n",
@@ -166,141 +261,429 @@ fn given_clean_directory(w: &mut GovernanceWorld) {
 
 #[given(r#"a governance markdown file containing "Skills" inside a code fence"#)]
 fn given_skills_in_fence(w: &mut GovernanceWorld) {
-    w.target = "repo-governance/doc.md".to_string();
-    w.write(&w.target.clone(), "# Doc\n\n```\nSkills\n```\n");
+    w.target = PathBuf::from("repo-governance/doc.md");
+    w.write("repo-governance/doc.md", "# Doc\n\n```\nSkills\n```\n");
 }
 
-#[given(r#"a feature file containing a scenario with two primary "When" keywords"#)]
-fn given_feature_two_primary_whens(w: &mut GovernanceWorld) {
-    w.target = "specs/violating.feature".to_string();
+// ===========================================================================
+// Given steps — repo-governance layer-coherence validate
+// ===========================================================================
+
+#[given("a repository where both governance docs list layers 0 through 5 with identical names")]
+fn given_layers_identical(w: &mut GovernanceWorld) {
+    w.write_matching_layer_docs(&[
+        (0, "Vision"),
+        (1, "Principles"),
+        (2, "Conventions"),
+        (3, "Development"),
+        (4, "Agents"),
+        (5, "Workflows"),
+    ]);
+}
+
+#[given("a repository where the governance docs list layers 0, 1, and 3 with no layer 2")]
+fn given_layers_gap(w: &mut GovernanceWorld) {
+    w.write_matching_layer_docs(&[(0, "Vision"), (1, "Principles"), (3, "Development")]);
+}
+
+#[given(
+    "a repository where the two governance docs assign different names to the same layer number"
+)]
+fn given_layers_name_mismatch(w: &mut GovernanceWorld) {
     w.write(
-        &w.target.clone(),
-        "Feature: Fixture\n\n  Scenario: Double when offender\n    Given a start\n    When the first action runs\n    When the second action runs\n    Then the outcome is checked\n",
+        "repo-governance/repository-governance-architecture.md",
+        "**Layer 0: Vision**\n",
+    );
+    w.write("repo-governance/README.md", "**Layer 0: Mission**\n");
+}
+
+// ===========================================================================
+// Given steps — repo-governance traceability validate
+// ===========================================================================
+
+#[given("a repository where every governance document carries the required traceability sections")]
+fn given_traceability_clean(w: &mut GovernanceWorld) {
+    w.write(
+        "repo-governance/principles/p.md",
+        "# P\n\n## Vision Supported\n\nBody.\n",
+    );
+    w.write(
+        "repo-governance/conventions/c.md",
+        "# C\n\n## Principles Implemented/Respected\n\nBody.\n",
+    );
+    w.write(
+        "repo-governance/development/d.md",
+        "# D\n\n## Principles Implemented/Respected\n\n## Conventions Implemented/Respected\n\nBody.\n",
+    );
+    w.write(
+        "repo-governance/workflows/w.md",
+        "# W\n\nSee `.claude/agents/foo-bar.md`.\n",
     );
 }
 
-#[given(r#"a feature file whose scenarios each use one primary keyword chained with "And""#)]
-fn given_feature_conforming_chained(w: &mut GovernanceWorld) {
-    w.target = "specs/conforming.feature".to_string();
+#[given("a repository with a principle file that is missing the \"## Vision Supported\" heading")]
+fn given_principle_missing_vision(w: &mut GovernanceWorld) {
     w.write(
-        &w.target.clone(),
-        "Feature: Fixture\n\n  Scenario: Conforming chained scenario\n    Given a start\n    And another precondition\n    When the action runs\n    Then the outcome is checked\n    And a second outcome is checked\n    But a third outcome is absent\n",
+        "repo-governance/principles/p.md",
+        "# P\n\nNo heading here.\n",
     );
 }
 
-#[given(r#"a feature file whose Background block repeats the "Given" keyword"#)]
-fn given_feature_background_repeats(w: &mut GovernanceWorld) {
-    w.target = "specs/background.feature".to_string();
+#[given(
+    "a repository with a convention file that is missing the \"## Principles Implemented/Respected\" heading"
+)]
+fn given_convention_missing_principles(w: &mut GovernanceWorld) {
     w.write(
-        &w.target.clone(),
-        "Feature: Fixture\n\n  Background:\n    Given one precondition\n    Given another precondition\n\n  Scenario: Conforming body\n    Given a thing\n    When it acts\n    Then it is checked\n",
+        "repo-governance/conventions/c.md",
+        "# C\n\nNo heading here.\n",
     );
 }
 
-#[given("a feature file with a Scenario Outline whose Examples table has many rows")]
-fn given_feature_outline_examples(w: &mut GovernanceWorld) {
-    w.target = "specs/outline.feature".to_string();
+#[given(
+    "a repository with a development file that is missing the \"## Conventions Implemented/Respected\" heading"
+)]
+fn given_development_missing_conventions(w: &mut GovernanceWorld) {
     w.write(
-        &w.target.clone(),
-        "Feature: Fixture\n\n  Scenario Outline: Outline body obeys the rule\n    Given a value <v>\n    When it is processed\n    Then it succeeds\n\n    Examples:\n      | v |\n      | 1 |\n      | 2 |\n      | 3 |\n",
+        "repo-governance/development/d.md",
+        "# D\n\n## Principles Implemented/Respected\n\nBody.\n",
     );
 }
 
-#[given("a feature file whose doc-strings and comments contain primary keyword words")]
-fn given_feature_docstrings_comments(w: &mut GovernanceWorld) {
-    w.target = "specs/docstring.feature".to_string();
+#[given("a repository with a workflow file that contains no reference to any .claude/agents/ file")]
+fn given_workflow_missing_agent_ref(w: &mut GovernanceWorld) {
+    w.write("repo-governance/workflows/w.md", "# W\n\nno agent here.\n");
+}
+
+// ===========================================================================
+// Given steps — repo-governance audit
+// ===========================================================================
+
+#[given("a repository where every deterministic governance category reports zero findings")]
+fn given_audit_all_clean(w: &mut GovernanceWorld) {
+    w.write_matching_layer_docs(&[(0, "Vision")]);
+}
+
+#[given(
+    "a repository with forbidden vendor terms in repo-governance prose and also in out-of-scope paths such as build caches, app source, and worktrees"
+)]
+fn given_audit_vendor_scope(w: &mut GovernanceWorld) {
     w.write(
-        &w.target.clone(),
-        "Feature: Fixture\n\n  Scenario: Docstring and comment heavy\n    Given a setup\n    When something runs with this payload\n      \"\"\"\n      When this line is data, not a step\n      Then neither is this one\n      \"\"\"\n    # Then this comment line is ignored\n    Then the result is checked\n",
+        "repo-governance/conventions/foo.md",
+        "We use Claude Code internally.\n",
+    );
+    w.write("AGENTS.md", "Edited with Cursor today.\n");
+    w.write("CLAUDE.md", "Powered by Anthropic models.\n");
+    w.write(".nx/cache/x.md", "Built on OpenCode.\n");
+    w.write("apps/web/y.md", "Built on OpenCode.\n");
+    w.write("worktrees/wt/z.md", "Built on OpenCode.\n");
+}
+
+#[given(
+    "a repository where two deterministic governance categories report findings and the rest pass"
+)]
+fn given_audit_mixed(w: &mut GovernanceWorld) {
+    // layer-coherence passes: matching single-layer docs.
+    w.write_matching_layer_docs(&[(0, "Vision")]);
+    // vendor-audit fails: one forbidden term.
+    w.write("repo-governance/doc.md", "We use Claude Code daily.\n");
+    // traceability-audit fails: a principle missing its required heading.
+    w.write("repo-governance/principles/p.md", "# P\n\nNo heading.\n");
+}
+
+#[given("a repository where deterministic governance categories return a fixed finding set")]
+fn given_audit_fixed_set(w: &mut GovernanceWorld) {
+    w.write_matching_layer_docs(&[(0, "Vision")]);
+    w.write("repo-governance/doc.md", "We use Claude Code daily.\n");
+}
+
+#[given("a repository where a finding key matches a known-false-positives entry")]
+fn given_audit_false_positive(w: &mut GovernanceWorld) {
+    w.write_matching_layer_docs(&[(0, "Vision")]);
+    w.write("repo-governance/doc.md", "We use Claude Code daily.\n");
+
+    // Prime a run to learn the finding's exact key, then register it as a
+    // known false positive so the measured run in the `When` step suppresses
+    // it instead of counting it toward total_findings.
+    w.exec_audit(AuditOptions::default());
+    let key = vendor_audit_category(w.audit()).findings[0].key.clone();
+    w.write(
+        "generated-reports/.known-false-positives.md",
+        &format!("- `{key}`\n"),
     );
 }
 
-#[given("a directory of feature files that all obey the one-each keyword rule")]
-fn given_conforming_feature_directory(w: &mut GovernanceWorld) {
-    w.target = "specs".to_string();
-    w.write(
-        "specs/a.feature",
-        "Feature: A\n\n  Scenario: Conforming chained scenario\n    Given a start\n    And another precondition\n    When the action runs\n    Then the outcome is checked\n",
-    );
-    w.write(
-        "specs/b.feature",
-        "Feature: B\n\n  Background:\n    Given one precondition\n    Given another precondition\n\n  Scenario: Conforming body\n    Given a thing\n    When it acts\n    Then it is checked\n",
-    );
+#[given("a repository where deterministic governance categories return any finding set")]
+fn given_audit_any_set(w: &mut GovernanceWorld) {
+    w.write("repo-governance/doc.md", "We use Claude Code daily.\n");
 }
 
 // ===========================================================================
 // When steps
 // ===========================================================================
 
-#[when("the developer runs repo-governance vendor-audit on the file")]
-#[when("the developer runs repo-governance vendor-audit on the directory")]
-fn when_run_audit(w: &mut GovernanceWorld) {
-    w.exec();
+#[when("the developer runs repo-governance vendor validate on the file")]
+#[when("the developer runs repo-governance vendor validate on the directory")]
+fn when_run_vendor_validate(w: &mut GovernanceWorld) {
+    w.run_vendor_validate();
 }
 
-#[when("the developer runs repo-governance gherkin-keyword-cardinality on the file")]
-#[when("the developer runs repo-governance gherkin-keyword-cardinality on the directory")]
-fn when_run_cardinality_audit(w: &mut GovernanceWorld) {
-    w.subcommand = vec!["specs", "gherkin-cardinality", "validate"];
-    w.exec();
+#[when("the developer runs repo-governance layer-coherence validate")]
+fn when_run_layer_coherence(w: &mut GovernanceWorld) {
+    w.run_layer_coherence();
+}
+
+#[when("the developer runs repo-governance traceability validate")]
+fn when_run_traceability(w: &mut GovernanceWorld) {
+    w.run_traceability();
+}
+
+#[when("the developer runs repo-governance audit")]
+fn when_run_governance_audit(w: &mut GovernanceWorld) {
+    w.exec_audit(AuditOptions::default());
+}
+
+#[when("the developer runs repo-governance audit ten consecutive times with a fixed clock")]
+fn when_run_governance_audit_ten_times(w: &mut GovernanceWorld) {
+    let opts = AuditOptions {
+        repo_root: repo_root(),
+        now: Some("2026-01-01T00:00:00Z".to_string()),
+        ..Default::default()
+    };
+    let mut runs = Vec::with_capacity(10);
+    for _ in 0..10 {
+        let env =
+            run_governance_audit(&w.fs, &opts).expect("governance audit succeeds against MockFs");
+        runs.push(serde_json::to_string(&env).expect("envelope serializes to JSON"));
+    }
+    w.captured_runs = runs;
+}
+
+#[when("the developer runs repo-governance audit with include-category limited to one category")]
+fn when_run_governance_audit_include_category(w: &mut GovernanceWorld) {
+    w.exec_audit(AuditOptions {
+        include_only: vec!["layer-coherence".to_string()],
+        ..Default::default()
+    });
 }
 
 // ===========================================================================
-// Then steps
+// Then steps — shared exit-code assertions
 // ===========================================================================
 
 #[then("the command exits with a failure code")]
 fn then_exit_fail(w: &mut GovernanceWorld) {
-    assert_eq!(w.exit_code(), 1, "stdout: {}", w.stdout());
+    assert!(!w.passed(), "expected findings, got a clean result");
 }
 
 #[then("the command exits successfully")]
 fn then_exit_ok(w: &mut GovernanceWorld) {
-    assert_eq!(w.exit_code(), 0, "stdout: {}", w.stdout());
+    assert!(w.passed(), "expected zero findings");
 }
+
+// ===========================================================================
+// Then steps — repo-governance vendor validate
+// ===========================================================================
 
 #[then("the output identifies the forbidden term and its location")]
 fn then_identifies_term(w: &mut GovernanceWorld) {
-    let out = w.stdout();
-    assert!(out.contains("GOVERNANCE VENDOR AUDIT FAILED"), "got: {out}");
-    assert!(out.contains("doc.md:"), "got: {out}");
+    let findings = w.vendor();
+    assert!(!findings.is_empty(), "expected at least one finding");
+    assert!(
+        findings.iter().any(|f| f.path.ends_with("doc.md")),
+        "got: {findings:?}"
+    );
 }
 
 #[then("the output reports zero findings")]
 fn then_zero_findings(w: &mut GovernanceWorld) {
-    let out = w.stdout();
+    assert!(w.vendor().is_empty(), "got: {:?}", w.vendor());
+}
+
+// ===========================================================================
+// Then steps — repo-governance layer-coherence validate
+// ===========================================================================
+
+#[then("the layer-coherence output reports zero findings")]
+fn then_layer_zero_findings(w: &mut GovernanceWorld) {
+    assert!(w.layer().is_empty(), "got: {:?}", w.layer());
+}
+
+#[then("the layer-coherence output identifies the numbering gap")]
+fn then_layer_numbering_gap(w: &mut GovernanceWorld) {
+    let findings = w.layer();
     assert!(
-        out.contains("GOVERNANCE VENDOR AUDIT PASSED: no violations found"),
-        "got: {out}"
+        findings
+            .iter()
+            .any(|f| f.kind == KIND_NUMBERING_GAP && f.message.contains("Layer 2")),
+        "got: {findings:?}"
     );
 }
 
-#[then("the output names the offending file and scenario")]
-fn then_names_offending_file_and_scenario(w: &mut GovernanceWorld) {
-    let out = w.stdout();
+#[then("the layer-coherence output identifies the layer name disagreement")]
+fn then_layer_name_disagreement(w: &mut GovernanceWorld) {
+    let findings = w.layer();
     assert!(
-        out.contains("GHERKIN KEYWORD CARDINALITY AUDIT FAILED"),
-        "got: {out}"
+        findings
+            .iter()
+            .any(|f| f.kind == KIND_CROSS_FILE_NAME_MISMATCH
+                && f.message.contains("Vision")
+                && f.message.contains("Mission")),
+        "got: {findings:?}"
     );
-    assert!(out.contains("violating.feature:"), "got: {out}");
-    assert!(out.contains("Double when offender"), "got: {out}");
 }
 
-#[then("the output reports zero cardinality findings")]
-fn then_zero_cardinality_findings(w: &mut GovernanceWorld) {
-    let out = w.stdout();
+// ===========================================================================
+// Then steps — repo-governance traceability validate
+// ===========================================================================
+
+#[then("the traceability output reports zero findings")]
+fn then_traceability_zero(w: &mut GovernanceWorld) {
+    assert!(w.traceability().is_empty(), "got: {:?}", w.traceability());
+}
+
+#[then("the traceability output identifies the missing Vision Supported section")]
+fn then_traceability_missing_vision(w: &mut GovernanceWorld) {
+    let findings = w.traceability();
     assert!(
-        out.contains(
-            "GHERKIN KEYWORD CARDINALITY AUDIT PASSED: every scenario uses each primary \
-             keyword at most once"
-        ),
-        "got: {out}"
+        findings
+            .iter()
+            .any(|f| f.kind == KIND_MISSING_VISION_SUPPORTED),
+        "got: {findings:?}"
+    );
+}
+
+#[then("the traceability output identifies the missing Principles Implemented section")]
+fn then_traceability_missing_principles(w: &mut GovernanceWorld) {
+    let findings = w.traceability();
+    assert!(
+        findings
+            .iter()
+            .any(|f| f.kind == KIND_MISSING_PRINCIPLES_IMPLEMENTED),
+        "got: {findings:?}"
+    );
+}
+
+#[then("the traceability output identifies the missing Conventions Implemented section")]
+fn then_traceability_missing_conventions(w: &mut GovernanceWorld) {
+    let findings = w.traceability();
+    assert!(
+        findings
+            .iter()
+            .any(|f| f.kind == KIND_MISSING_CONVENTIONS_IMPLEMENTED),
+        "got: {findings:?}"
+    );
+}
+
+#[then("the traceability output identifies the missing agent reference")]
+fn then_traceability_missing_agent_ref(w: &mut GovernanceWorld) {
+    let findings = w.traceability();
+    assert!(
+        findings
+            .iter()
+            .any(|f| f.kind == KIND_MISSING_AGENT_REFERENCE),
+        "got: {findings:?}"
+    );
+}
+
+// ===========================================================================
+// Then steps — repo-governance audit
+// ===========================================================================
+
+#[then("the output reports total_findings equal to zero across all categories")]
+fn then_audit_zero_total(w: &mut GovernanceWorld) {
+    let env = w.audit();
+    assert_eq!(env.result.total_findings, 0, "got: {env:?}");
+}
+
+#[then(
+    "the vendor-audit category reports findings only from repo-governance, AGENTS.md, and CLAUDE.md"
+)]
+fn then_audit_vendor_scope(w: &mut GovernanceWorld) {
+    let env = w.audit();
+    let files = vendor_audit_files(env);
+    assert_eq!(files.len(), 3, "got: {files:?}");
+    assert!(
+        files
+            .iter()
+            .any(|f| f.ends_with("repo-governance/conventions/foo.md")),
+        "got: {files:?}"
+    );
+    assert!(
+        files.iter().any(|f| f.ends_with("/AGENTS.md")),
+        "got: {files:?}"
+    );
+    assert!(
+        files.iter().any(|f| f.ends_with("/CLAUDE.md")),
+        "got: {files:?}"
+    );
+}
+
+#[then(
+    "forbidden vendor terms in build caches, app source, and worktrees do not appear in the result"
+)]
+fn then_audit_vendor_scope_excludes(w: &mut GovernanceWorld) {
+    let env = w.audit();
+    let files = vendor_audit_files(env);
+    assert!(!files.iter().any(|f| f.contains("/.nx/")), "got: {files:?}");
+    assert!(
+        !files.iter().any(|f| f.contains("/apps/")),
+        "got: {files:?}"
+    );
+    assert!(
+        !files.iter().any(|f| f.contains("/worktrees/")),
+        "got: {files:?}"
+    );
+}
+
+#[then("the output reports total_findings equal to the sum of category findings")]
+fn then_audit_sum_total(w: &mut GovernanceWorld) {
+    let env = w.audit();
+    let sum: usize = env.result.categories.iter().map(|c| c.findings.len()).sum();
+    assert_eq!(env.result.total_findings, sum, "got: {env:?}");
+    let failing = env.result.categories.iter().filter(|c| !c.passed).count();
+    assert_eq!(
+        failing, 2,
+        "expected exactly two failing categories, got: {env:?}"
+    );
+}
+
+#[then("every run produces byte-identical JSON output")]
+fn then_audit_byte_identical(w: &mut GovernanceWorld) {
+    assert_eq!(w.captured_runs.len(), 10, "expected 10 captured runs");
+    let first = &w.captured_runs[0];
+    for (i, run) in w.captured_runs.iter().enumerate() {
+        assert_eq!(run, first, "run {i} diverged from run 0");
+    }
+}
+
+#[then("the matching finding appears under skipped_false_positives")]
+fn then_audit_skipped_false_positive(w: &mut GovernanceWorld) {
+    let env = w.audit();
+    assert_eq!(env.result.skipped_false_positives.len(), 1, "got: {env:?}");
+}
+
+#[then("the matching finding does not count toward total_findings")]
+fn then_audit_false_positive_excluded_from_total(w: &mut GovernanceWorld) {
+    let env = w.audit();
+    assert_eq!(env.result.total_findings, 0, "got: {env:?}");
+}
+
+#[then("only the listed category appears in the result categories list")]
+fn then_audit_include_category_filter(w: &mut GovernanceWorld) {
+    let env = w.audit();
+    assert_eq!(env.result.categories.len(), 1, "got: {env:?}");
+    assert_eq!(
+        env.result.categories[0].name, "layer-coherence",
+        "got: {env:?}"
     );
 }
 
 #[tokio::main]
 async fn main() {
-    GovernanceWorld::run(feature_dir()).await;
+    GovernanceWorld::cucumber()
+        .fail_on_skipped()
+        .run_and_exit(feature_dir())
+        .await;
 }
 
 fn feature_dir() -> PathBuf {
