@@ -79,6 +79,7 @@
                                                      :password "WrongP@ss!"})))
          new-state))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Unlocked account can log in with correct password
 (Given "an admin has unlocked alice's account" [state]
        (let [admin-state (-> state
                              (common/register-user! "superadmin-unlock")
@@ -91,6 +92,7 @@
          (common/call-admin-unlock-user admin-state admin-token alice-id)
          state))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Account is locked after exceeding the maximum failed login threshold
 (Given "{string} has had the maximum number of failed login attempts" [state username]
        (dotimes [_ 5]
          (common/call-login state
@@ -117,11 +119,13 @@
          (common/call-deactivate new-state token)
          new-state))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout is idempotent — repeating logout on the same token returns 200
 (Given "alice has already logged out once" [state]
        (let [token (common/get-access-token state "alice")]
          (common/call-logout state token))
        state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Blacklisted access token is rejected with 401 on protected endpoints
 (Given "alice has logged out and her access token is blacklisted" [state]
        (let [token (common/get-access-token state "alice")]
          (common/call-logout state token))
@@ -151,6 +155,7 @@
                                          (json/generate-string {:reason "Test"})))
        state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Deactivating a user revokes all their active tokens
 (Given "^the admin has disabled alice's account via POST /api/v1/admin/users/.alice_id./disable$"
        [state]
        (let [alice-id    (common/get-user-id state "alice")
@@ -170,6 +175,8 @@
          (assoc state :alice-expense-id (:id body)
                 :alice-last-expense body)))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:USD expense amount preserves two decimal places
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:IDR expense amount is stored and returned as a whole number
 (Given "^alice has created an expense with body (.+)$" [state body-str]
        (let [token  (common/get-access-token state "alice")
              result (common/call-create-expense state token body-str)
@@ -217,6 +224,7 @@
 ;; Self-deactivation setup
 ;; ============================================================
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Self-deactivated user cannot log in with previous credentials
 (Given "^alice has deactivated her own account via POST /api/v1/users/me/deactivate$" [state]
        (let [token (common/get-access-token state "alice")]
          (common/call-deactivate state token))
@@ -228,15 +236,26 @@
 
 (When "^the client sends POST (.+?) with body (.+)$" [state path body-str]
       (cond
+        ;; @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Successful registration response includes non-null user ID
+        ;; @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with invalid email format
+        ;; @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with empty password
+        ;; @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with weak password — no uppercase letter
+        ;; @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Reject password shorter than 12 characters
+        ;; @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Reject password with no special character
         (= "/api/v1/auth/register" path)
         (common/call-register state body-str)
 
+        ;; @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Successful login returns access token and refresh token
+        ;; @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Successful login response includes token type "Bearer"
+        ;; @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login with wrong password
+        ;; @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login for non-existent user
         (= "/api/v1/auth/login" path)
         (common/call-login state body-str)
 
         (= "/api/v1/auth/refresh" path)
         (common/call-refresh state body-str)
 
+        ;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Unauthenticated request to create an entry returns 401
         (= "/api/v1/expenses" path)
         (common/call-create-expense state nil body-str)
 
@@ -248,6 +267,7 @@
 (When "^the client sends GET (.+?) with alice's access token$" [state path]
       (let [token (common/get-access-token state "alice")]
         (cond
+          ;; @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Disabled user's access token is rejected with 401
           (= "/api/v1/users/me" path)
           (common/call-get-profile state token)
 
@@ -276,6 +296,7 @@
                :last-response {:status 404 :body {:message "Not found"}}
                :last-body {:message "Not found"})))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Health endpoint reports the service as UP
 (When "^an operations engineer sends GET (.+)$" [state path]
       (cond
         (= "/health" path)
@@ -300,12 +321,15 @@
 ;; Authenticated user actions (alice)
 ;; ============================================================
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Get own profile returns username, email, and display name
 (When "^alice sends GET /api/v1/users/me$" [state]
       (common/call-get-profile state (common/get-access-token state "alice")))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:List own entries returns a paginated response
 (When "^alice sends GET /api/v1/expenses$" [state]
       (common/call-list-expenses state (common/get-access-token state "alice")))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Get own entry by ID returns amount, currency, category, description, date, and type
 (When "^alice sends GET /api/v1/expenses/.expenseId.$" [state]
       (common/call-get-expense state
                                (common/get-access-token state "alice")
@@ -314,6 +338,11 @@
 (When "^alice sends GET /api/v1/expenses/summary$" [state]
       (common/call-expense-summary state (common/get-access-token state "alice")))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary returns income total, expense total, and net for a period
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:Income entries are excluded from expense total
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:Expense entries are excluded from income total
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary filters by currency without cross-currency mixing
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary for a period with no entries returns zero totals
 (When "^alice sends GET /api/v1/reports/pl\\?(.+)$" [state query-string]
       (let [token        (common/get-access-token state "alice")
             query-params (into {}
@@ -323,27 +352,40 @@
                                     (str/split query-string #"&")))]
         (common/call-pl-report state token query-params)))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Authenticated user self-deactivates their account
 (When "^alice sends POST /api/v1/users/me/deactivate$" [state]
       (common/call-deactivate state (common/get-access-token state "alice")))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Successful password change returns 200
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Reject password change with incorrect old password
 (When "^alice sends POST /api/v1/users/me/password with body (.+)$" [state body-str]
       (common/call-change-password state (common/get-access-token state "alice") body-str))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Create expense entry with amount and currency returns 201 with entry ID
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Create income entry with amount and currency returns 201 with entry ID
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Unsupported currency code returns 400
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Malformed currency code returns 400
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Negative amount is rejected with 400
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with an unsupported unit returns 400
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Expense without quantity and unit fields is accepted
 (When "^alice sends POST /api/v1/expenses with body (.+)$" [state body-str]
       (let [result (common/call-create-expense state
                                                (common/get-access-token state "alice")
                                                body-str)]
         (assoc result :alice-expense-id (get-in result [:last-body :id]))))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Update display name succeeds
 (When "^alice sends PATCH /api/v1/users/me with body (.+)$" [state body-str]
       (common/call-update-profile state (common/get-access-token state "alice") body-str))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Update an entry amount and description returns 200
 (When "^alice sends PUT /api/v1/expenses/.expenseId. with body (.+)$" [state body-str]
       (common/call-update-expense state
                                   (common/get-access-token state "alice")
                                   (:alice-expense-id state)
                                   body-str))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Delete an entry returns 204
 (When "^alice sends DELETE /api/v1/expenses/.expenseId.$" [state]
       (common/call-delete-expense state
                                   (common/get-access-token state "alice")
@@ -353,6 +395,7 @@
 ;; Auth token actions
 ;; ============================================================
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Successful refresh returns a new access token and refresh token
 (When "^alice sends POST /api/v1/auth/refresh with her refresh token$" [state]
       (let [refresh-token (or (:alice-refresh-token state)
                               (common/get-refresh-token state "alice"))]
@@ -366,6 +409,7 @@
 (When "^alice sends POST /api/v1/auth/logout with her access token$" [state]
       (common/call-logout state (common/get-access-token state "alice")))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout all devices invalidates tokens from all sessions
 (When "^alice sends POST /api/v1/auth/logout-all with her access token$" [state]
       (common/call-logout-all state (common/get-access-token state "alice")))
 
@@ -376,9 +420,11 @@
 (When "^the admin sends GET (.+)$" [state path]
       (let [token (common/get-access-token state "superadmin")]
         (cond
+          ;; @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:List all users returns a paginated response
           (= "/api/v1/admin/users" path)
           (common/call-admin-list-users state token)
 
+          ;; @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Search users by email returns matching results
           (re-matches #"/api/v1/admin/users\?.*" path)
           (let [query-string (second (str/split path #"\?"))
                 query-params (when query-string
@@ -394,6 +440,7 @@
                  :last-response {:status 404 :body {:message "Not found"}}
                  :last-body {:message "Not found"}))))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin disables a user account
 (When "^the admin sends POST /api/v1/admin/users/.alice_id./disable with body (.+)$"
       [state body-str]
       (common/call-admin-disable-user state
@@ -401,16 +448,19 @@
                                       (common/get-user-id state "alice")
                                       body-str))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin re-enables a disabled user account
 (When "^the admin sends POST /api/v1/admin/users/.alice_id./enable$" [state]
       (common/call-admin-enable-user state
                                      (common/get-access-token state "superadmin")
                                      (common/get-user-id state "alice")))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin generates a password-reset token for a user
 (When "^the admin sends POST /api/v1/admin/users/.alice_id./force-password-reset$" [state]
       (common/call-admin-force-password-reset state
                                               (common/get-access-token state "superadmin")
                                               (common/get-user-id state "alice")))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Admin unlocks a locked account
 (When "^the admin sends POST /api/v1/admin/users/.alice_id./unlock$" [state]
       (common/call-admin-unlock-user state
                                      (common/get-access-token state "superadmin")
@@ -427,6 +477,9 @@
 ;; Attachment actions
 ;; ============================================================
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload JPEG image returns 201 with attachment metadata
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload PDF document returns 201 with attachment metadata
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload unsupported file type returns 415
 (When "^alice uploads file \"([^\"]*)\" with content type \"([^\"]*)\" to POST /api/v1/expenses/.expenseId./attachments$"
       [state filename content-type]
       (let [token      (common/get-access-token state "alice")
@@ -436,6 +489,7 @@
                                                       filename content-type data)]
         (assoc result :alice-attachment-id (get-in result [:last-body :id]))))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload attachment to another user's entry returns 403
 (When "^alice uploads file \"([^\"]*)\" with content type \"([^\"]*)\" to POST /api/v1/expenses/.bobExpenseId./attachments$"
       [state filename content-type]
       (let [token      (common/get-access-token state "alice")
@@ -454,23 +508,27 @@
                                     (common/get-access-token state "alice")
                                     (:alice-expense-id state)))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments on another user's entry returns 403
 (When "^alice sends GET /api/v1/expenses/.bobExpenseId./attachments$" [state]
       (common/call-list-attachments state
                                     (common/get-access-token state "alice")
                                     (:bob-expense-id state)))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete attachment returns 204
 (When "^alice sends DELETE /api/v1/expenses/.expenseId./attachments/.attachmentId.$" [state]
       (common/call-delete-attachment state
                                      (common/get-access-token state "alice")
                                      (:alice-expense-id state)
                                      (:alice-attachment-id state)))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete attachment on another user's entry returns 403
 (When "^alice sends DELETE /api/v1/expenses/.bobExpenseId./attachments/.attachmentId.$" [state]
       (common/call-delete-attachment state
                                      (common/get-access-token state "alice")
                                      (:bob-expense-id state)
                                      (:alice-attachment-id state)))
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete non-existent attachment returns 404
 (When "^alice sends DELETE /api/v1/expenses/.expenseId./attachments/.randomAttachmentId.$" [state]
       (common/call-delete-attachment state
                                      (common/get-access-token state "alice")
@@ -491,6 +549,7 @@
       (is (= expected-status (:status (:last-body state))))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Anonymous health check does not expose component details
 (Then "the response should not include detailed component health information" [state]
       (let [body (:last-body state)]
         (is (nil? (:components body)))
@@ -514,6 +573,7 @@
             (str "Expected field " field " = " value " in " body)))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with metric unit "liter" stores quantity and unit correctly
 (Then "the response body should contain {string} equal to {double}" [state field value]
       (let [body   (:last-body state)
             actual (or (get body (keyword (str/replace field #"_" "-")))
@@ -524,6 +584,7 @@
             (str "Expected " field " = " value " in " body)))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with imperial unit "gallon" stores quantity and unit correctly
 (Then "the response body should contain {string} equal to {int}" [state field value]
       (let [body   (:last-body state)
             actual (or (get body (keyword (str/replace field #"_" "-")))
@@ -544,6 +605,7 @@
             (str "Expected non-null " field " in " body)))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Successful registration returns created user profile without password
 (Then "the response body should not contain a {string} field" [state field]
       (let [k    (keyword (str/replace field #"_" "-"))
             k2   (keyword field)
@@ -559,16 +621,20 @@
               (some? (:message (:last-body state)))))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login for deactivated account
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Refresh fails for a deactivated user
 (Then "the response body should contain an error message about account deactivation" [state]
       (is (or (some? (:error (:last-body state)))
               (some? (:message (:last-body state)))))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Reject refresh with an expired refresh token
 (Then "the response body should contain an error message about token expiration" [state]
       (is (or (some? (:error (:last-body state)))
               (some? (:message (:last-body state)))))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Original refresh token is rejected after rotation (single-use)
 (Then "the response body should contain an error message about invalid token" [state]
       (is (or (some? (:error (:last-body state)))
               (some? (:message (:last-body state)))))
@@ -582,6 +648,7 @@
             (str "Expected validation error for " field " in " body)))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency without cross-currency mixing
 (Then "the response body should contain {string} total equal to {string}" [state currency total]
       (let [body   (:last-body state)
             actual (or (get body (keyword currency))
@@ -600,6 +667,7 @@
             (str "Expected user with " field " = " value)))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:JWKS endpoint returns the public key for token signature verification
 (Then "the response body should contain at least one key in the {string} array" [state field]
       (let [arr (get (:last-body state) (keyword field))]
         (is (and (some? arr) (pos? (count arr)))))
@@ -624,24 +692,29 @@
                    (str/lower-case (or (:status user) "")))))))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout current session invalidates the access token
 (Then "alice's access token should be invalidated" [state]
       (let [token (common/get-access-token state "alice")]
         (is (not (common/token-valid? state token))
             "Alice's token should be invalid after logout/revocation"))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Logout blacklists the access token
 (Then "alice's access token should be recorded as revoked" [state]
       (let [token (common/get-access-token state "alice")]
         (is (not (common/token-valid? state token))
             "Alice's token should be revoked"))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains user ID claim
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains issuer claim
 (Then "the token should contain a non-null {string} claim" [state claim]
       (let [claims (:token-claims state)]
         (is (some? (get claims (keyword claim)))
             (str "Expected non-null claim " claim " in " claims)))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments for an entry returns all uploaded files with metadata
 (Then "the response body should contain {int} items in the {string} array" [state cnt field]
       (let [arr (get (:last-body state) (keyword field))]
         (is (= cnt (count arr))
@@ -656,6 +729,7 @@
             (str "Expected attachment with " field " = " value)))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L breakdown includes category-level amounts for income and expenses
 (Then "the income breakdown should contain {string} with amount {string}" [state category amount]
       (let [body      (:last-body state)
             breakdown (or (:incomeBreakdown body) (:income_breakdown body) (:income-breakdown body))
@@ -674,11 +748,13 @@
             (str "Expected expense breakdown " category " = " amount " in " breakdown)))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration when username already exists
 (Then "the response body should contain an error message about duplicate username" [state]
       (is (or (some? (:error (:last-body state)))
               (some? (:message (:last-body state)))))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload file exceeding the size limit returns 413
 (Then "the response body should contain an error message about file size" [state]
       (is (or (some? (:error (:last-body state)))
               (some? (:message (:last-body state)))))
@@ -761,11 +837,13 @@
         (is (zero? cnt) (str "Expected all expenses to be deleted but found " cnt)))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Reset database clears all user-created data
 (Then "all attachments should be deleted" [state]
       (let [cnt (common/count-all-attachments state)]
         (is (zero? cnt) (str "Expected all attachments to be deleted but found " cnt)))
       state)
 
+;; @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Promote user to admin role
 (Then "user {string} should have the {string} role" [state username expected-role]
       (let [user (proto/find-user-by-username (:user-repo state) username)]
         (is (some? user) (str "Expected user " username " to exist"))
