@@ -8,26 +8,31 @@ Feature: Password Login
     Given the app is running
     And a user "alice" is registered with password "Str0ng#Pass1"
 
+  @unit @e2e
   Scenario: Successful login navigates to the dashboard
     When alice submits the login form with username "alice" and password "Str0ng#Pass1"
     Then alice should be on the dashboard page
     And the navigation should display alice's username
 
+  @unit @e2e
   Scenario: Successful login stores session tokens
     When alice submits the login form with username "alice" and password "Str0ng#Pass1"
     Then an authentication session should be active
     And a refresh token should be stored
 
+  @unit @e2e
   Scenario: Login with wrong password shows an error
     When alice submits the login form with username "alice" and password "Wr0ngPass!"
     Then an error message about invalid credentials should be displayed
     And alice should remain on the login page
 
+  @unit @e2e
   Scenario: Login for non-existent user shows an error
     When alice submits the login form with username "ghost" and password "Str0ng#Pass1"
     Then an error message about invalid credentials should be displayed
     And alice should remain on the login page
 
+  @unit @e2e
   Scenario: Login for deactivated account shows an error
     Given a user "alice" is registered and deactivated
     When alice submits the login form with username "alice" and password "Str0ng#Pass1"

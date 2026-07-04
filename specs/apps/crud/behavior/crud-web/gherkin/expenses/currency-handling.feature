@@ -9,30 +9,35 @@ Feature: Currency Handling
     And a user "alice" is registered with email "alice@example.com" and password "Str0ng#Pass1"
     And alice has logged in
 
+  @unit @e2e
   Scenario: USD expense displays two decimal places
     Given alice has created an expense with amount "10.50", currency "USD", category "food", description "Coffee", and date "2025-01-15"
     When alice views the entry detail for "Coffee"
     Then the amount should display as "10.50"
     And the currency should display as "USD"
 
+  @unit @e2e
   Scenario: IDR expense displays as a whole number
     Given alice has created an expense with amount "150000", currency "IDR", category "transport", description "Taxi", and date "2025-01-15"
     When alice views the entry detail for "Taxi"
     Then the amount should display as "150000"
     And the currency should display as "IDR"
 
+  @unit @e2e
   Scenario: Unsupported currency code shows a validation error
     When alice navigates to the new entry form
     And alice fills in amount "10.00", currency "EUR", category "food", description "Lunch", date "2025-01-15", and type "expense"
     And alice submits the entry form
     Then a validation error for the currency field should be displayed
 
+  @unit @e2e
   Scenario: Malformed currency code shows a validation error
     When alice navigates to the new entry form
     And alice fills in amount "10.00", currency "US", category "food", description "Lunch", date "2025-01-15", and type "expense"
     And alice submits the entry form
     Then a validation error for the currency field should be displayed
 
+  @unit @e2e
   Scenario: Expense summary groups totals by currency
     Given alice has created expenses in both USD and IDR
     When alice navigates to the expense summary page
@@ -40,6 +45,7 @@ Feature: Currency Handling
     And the summary should display a separate total for "IDR"
     And no cross-currency total should be shown
 
+  @unit @e2e
   Scenario: Negative amount shows a validation error
     When alice navigates to the new entry form
     And alice fills in amount "-10.00", currency "USD", category "food", description "Refund", date "2025-01-15", and type "expense"

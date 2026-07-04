@@ -7,23 +7,27 @@ Feature: Accessibility
   Background:
     Given the app is running
 
+  @unit @e2e
   Scenario: All form inputs have associated labels
     When a visitor navigates to the registration page
     Then every input field should have an associated visible label
     And every input field should have an accessible name
 
+  @unit @e2e
   Scenario: Error messages are announced to screen readers
     Given a visitor is on the login page
     When the visitor submits the form with empty fields
     Then validation errors should have role "alert"
     And the errors should be associated with their respective fields via aria-describedby
 
+  @unit @e2e
   Scenario: Keyboard navigation works through all interactive elements
     Given a user "alice" is logged in
     When alice presses Tab repeatedly on the dashboard
     Then focus should move through all interactive elements in logical order
     And the currently focused element should have a visible focus indicator
 
+  @unit @e2e
   Scenario: Modal dialogs trap focus
     Given a user "alice" is logged in
     And alice is on an entry with an attachment
@@ -31,11 +35,13 @@ Feature: Accessibility
     Then focus should be trapped within the dialog
     And pressing Escape should close the dialog and return focus to the trigger
 
+  @unit @e2e
   Scenario: Color contrast meets WCAG AA standards
     Given a visitor opens the app
     Then all text should meet a minimum contrast ratio of 4.5:1 against its background
     And all interactive elements should meet a minimum contrast ratio of 3:1
 
+  @unit @e2e
   Scenario: Images and icons have alternative text
     Given a user "alice" is logged in
     And alice has an entry with a JPEG attachment

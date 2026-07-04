@@ -7,10 +7,12 @@ Feature: Service Health Status
   Background:
     Given the app is running
 
+  @unit @e2e
   Scenario: Health indicator shows the service is UP
     When the user opens the app
     Then the health status indicator should display "UP"
 
+  @unit @e2e
   Scenario: Health indicator does not expose component details to regular users
     When an unauthenticated user opens the app
     Then the health status indicator should display "UP"
