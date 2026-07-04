@@ -5,6 +5,12 @@ const testDir = defineBddConfig({
   featuresRoot: "../../specs/apps/crud/behavior/crud-web/gherkin",
   features: "../../specs/apps/crud/behavior/crud-web/gherkin/**/*.feature",
   steps: ["./tests/steps/**/*.steps.ts", "./tests/hooks/**/*.ts"],
+  // Excludes codegen/dart-codegen-fresh-checkout.feature: it exercises
+  // crud-fe-dart-flutterweb's own `codegen` Nx target on a fresh checkout and
+  // has no browser-driven step definitions in this project (crud-fe-e2e only
+  // drives real browsers against a running app). Tag-expression syntax per
+  // playwright-bdd's `tags` config option.
+  tags: "not @codegen",
 });
 
 export default defineConfig({
