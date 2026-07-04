@@ -18,6 +18,7 @@
  */
 
 import { Effect } from "effect";
+import { SqlClient } from "@effect/sql";
 import { UserRepository } from "../../../src/infrastructure/db/user-repo.js";
 import { ExpenseRepository } from "../../../src/infrastructure/db/expense-repo.js";
 import { AttachmentRepository } from "../../../src/infrastructure/db/attachment-repo.js";
@@ -39,7 +40,7 @@ import { CURRENCY_DECIMALS, isSupportedCurrency } from "../../../src/domain/type
 import { isAllowedContentType, MAX_ATTACHMENT_SIZE } from "../../../src/domain/attachment.js";
 import type { ExpenseType } from "../../../src/domain/expense.js";
 import type { UserStatus } from "../../../src/domain/types.js";
-import { serviceRuntime } from "./hooks.js";
+import { serviceRuntime, SqlLayer } from "./hooks.js";
 
 export interface HttpResponse {
   readonly status: number;
@@ -1237,6 +1238,60 @@ export async function adminForcePasswordReset(authHeader: string | undefined, us
 }
 
 // ---------------------------------------------------------------------------
+// Test-only support routes (mirrors src/routes/test-api.ts)
+// ---------------------------------------------------------------------------
+
+// These two routes issue raw SQL directly (DELETE / UPDATE across tables), which
+// falls outside what the repository layers expose. serviceRuntime's ManagedRuntime
+// does not itself expose SqlClient (each repository layer consumes it internally),
+// so — mirroring the pattern already used by hooks.ts's promoteToAdmin/countRows
+// helpers — these build their own scoped Effect against SqlLayer instead of
+// going through runEffect()/serviceRuntime.
+
+export async function resetTestDb(): Promise<HttpResponse> {
+  try {
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const sql = yield* SqlClient.SqlClient;
+        yield* sql`DELETE FROM attachments`;
+        yield* sql`DELETE FROM expenses`;
+        yield* sql`DELETE FROM revoked_tokens`;
+        yield* sql`DELETE FROM users`;
+      }).pipe(Effect.provide(SqlLayer)),
+    );
+    return { status: 200, body: { message: "Database reset successful" }, headers: {} };
+  } catch (error) {
+    return errorToResponse(error);
+  }
+}
+
+export async function promoteUserToAdmin(body: Record<string, unknown>): Promise<HttpResponse> {
+  const username = (body["username"] as string | undefined) ?? "";
+
+  try {
+    const found = await Effect.runPromise(
+      Effect.gen(function* () {
+        const sql = yield* SqlClient.SqlClient;
+        const existing = yield* sql`SELECT id FROM users WHERE username = ${username}`;
+        if (existing.length === 0) {
+          return false;
+        }
+        const now = new Date().toISOString();
+        yield* sql`UPDATE users SET role = 'ADMIN', updated_at = ${now} WHERE username = ${username}`;
+        return true;
+      }).pipe(Effect.provide(SqlLayer)),
+    );
+
+    if (!found) {
+      return errorToResponse(new NotFoundError({ resource: "User" }));
+    }
+    return { status: 200, body: { message: `User ${username} promoted to ADMIN` }, headers: {} };
+  } catch (error) {
+    return errorToResponse(error);
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Path-based router — maps HTTP paths/methods to service calls
 // ---------------------------------------------------------------------------
 
@@ -1374,6 +1429,14 @@ export async function dispatchRequest(
   // Reports
   if (method === "GET" && pathname === "/api/v1/reports/pl") {
     return getReport(authHeader, queryParams);
+  }
+
+  // Test-only support routes
+  if (method === "POST" && pathname === "/api/v1/test/reset-db") {
+    return resetTestDb();
+  }
+  if (method === "POST" && pathname === "/api/v1/test/promote-admin") {
+    return promoteUserToAdmin(body);
   }
 
   return { status: 404, body: { error: "Not found" }, headers: {} };

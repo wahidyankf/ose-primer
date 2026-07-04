@@ -27,7 +27,7 @@ export const TEST_PORT = 8300;
 // Use a temp file so both schema-init and ServiceLayer share the same SQLite database
 const TEST_DB_PATH = join(tmpdir(), `crud-be-ts-effect-unit-bdd-${process.pid}.db`);
 
-const SqlLayer = SqliteClient.layer({ filename: TEST_DB_PATH });
+export const SqlLayer = SqliteClient.layer({ filename: TEST_DB_PATH });
 
 // Initialize the SQLite schema using SQLite-compatible DDL statements.
 // The migration files use PostgreSQL-specific syntax (UUID, gen_random_uuid(), TIMESTAMPTZ)
@@ -115,4 +115,32 @@ export async function promoteToAdmin(username: string): Promise<void> {
       yield* sql.unsafe(`UPDATE users SET role = 'ADMIN' WHERE username = '${username}'`);
     }).pipe(Effect.provide(SqlLayer)),
   );
+}
+
+/**
+ * Count rows in the expenses table directly via the DB.
+ * Used by test-support step definitions to verify reset-db deletion behavior.
+ */
+export async function countExpenses(): Promise<number> {
+  const rows = await Effect.runPromise(
+    Effect.gen(function* () {
+      const sql = yield* SqlClient.SqlClient;
+      return yield* sql`SELECT COUNT(*) as count FROM expenses`;
+    }).pipe(Effect.provide(SqlLayer)),
+  );
+  return Number(rows[0]?.["count"] ?? 0);
+}
+
+/**
+ * Count rows in the attachments table directly via the DB.
+ * Used by test-support step definitions to verify reset-db deletion behavior.
+ */
+export async function countAttachments(): Promise<number> {
+  const rows = await Effect.runPromise(
+    Effect.gen(function* () {
+      const sql = yield* SqlClient.SqlClient;
+      return yield* sql`SELECT COUNT(*) as count FROM attachments`;
+    }).pipe(Effect.provide(SqlLayer)),
+  );
+  return Number(rows[0]?.["count"] ?? 0);
 }

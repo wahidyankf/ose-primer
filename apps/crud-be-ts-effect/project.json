@@ -57,7 +57,8 @@
       "options": {
         "commands": [
           "npx vitest run --coverage",
-          "npx cucumber-js '../../specs/apps/crud/behavior/crud-be/gherkin/**/*.feature' --require-module tsx/cjs --require 'tests/unit/bdd/hooks.ts' --require 'tests/unit/bdd/world.ts' --require 'tests/unit/bdd/steps/**/*.ts' --format progress --format 'json:coverage/cucumber-unit-report.json'"
+          "npx cucumber-js '../../specs/apps/crud/behavior/crud-be/gherkin/**/*.feature' --tags 'not @codegen' --require-module tsx/cjs --require 'tests/unit/bdd/hooks.ts' --require 'tests/unit/bdd/world.ts' --require 'tests/unit/bdd/steps/**/*.ts' --format progress --format 'json:coverage/cucumber-unit-report.json'",
+          "jq -e '[.[].elements[]?.steps[]?.result.status] | any(. == \"undefined\" or . == \"pending\" or . == \"skipped\" or . == \"ambiguous\") | not' coverage/cucumber-unit-report.json"
         ],
         "parallel": false,
         "cwd": "apps/crud-be-ts-effect"
@@ -78,7 +79,9 @@
       "options": {
         "commands": [
           "npx vitest run tests/unit",
-          "npx cucumber-js '../../specs/apps/crud/behavior/crud-be/gherkin/**/*.feature' --require-module tsx/cjs --require 'tests/unit/bdd/hooks.ts' --require 'tests/unit/bdd/world.ts' --require 'tests/unit/bdd/steps/**/*.ts' --format progress --format 'json:coverage/cucumber-unit-report.json'"
+          "! grep -rnE '\\.(skip|todo)\\(' --include='*.test.ts' tests/unit",
+          "npx cucumber-js '../../specs/apps/crud/behavior/crud-be/gherkin/**/*.feature' --tags 'not @codegen' --require-module tsx/cjs --require 'tests/unit/bdd/hooks.ts' --require 'tests/unit/bdd/world.ts' --require 'tests/unit/bdd/steps/**/*.ts' --format progress --format 'json:coverage/cucumber-unit-report.json'",
+          "jq -e '[.[].elements[]?.steps[]?.result.status] | any(. == \"undefined\" or . == \"pending\" or . == \"skipped\" or . == \"ambiguous\") | not' coverage/cucumber-unit-report.json"
         ],
         "parallel": false,
         "cwd": "apps/crud-be-ts-effect"
@@ -125,12 +128,12 @@
       "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
     },
     "specs:behavior:coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-ts-effect",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-ts-effect",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     },
     "specs:domain:coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs domain-coverage validate --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-ts-effect",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs domain-coverage validate --shared-steps --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-ts-effect",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     },
