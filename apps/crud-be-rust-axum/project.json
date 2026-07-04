@@ -75,7 +75,8 @@
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo test --lib --test unit",
+        "commands": ["cargo test --lib --test unit", "! grep -rnE '#\\[ignore\\]' src tests"],
+        "parallel": false,
         "cwd": "apps/crud-be-rust-axum"
       },
       "dependsOn": ["codegen"],
@@ -120,7 +121,7 @@
       "cache": true
     },
     "specs:behavior:coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-rust-axum",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-rust-axum",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.rs"]
     },
@@ -133,7 +134,7 @@
       "inputs": ["{workspaceRoot}/apps/rhino-cli/src/**/*.rs", "{workspaceRoot}/specs/apps/**/*"]
     },
     "specs:domain:coverage": {
-      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs domain-coverage validate --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-rust-axum",
+      "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs domain-coverage validate --shared-steps --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-rust-axum",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.rs"]
     },

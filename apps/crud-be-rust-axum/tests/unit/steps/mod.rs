@@ -6,6 +6,7 @@ pub mod currency_steps;
 pub mod expense_steps;
 pub mod reporting_steps;
 pub mod security_steps;
+pub mod test_api_steps;
 pub mod token_lifecycle_steps;
 pub mod token_management_steps;
 pub mod unit_handling_steps;

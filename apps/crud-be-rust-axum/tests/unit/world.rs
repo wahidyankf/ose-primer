@@ -5,15 +5,15 @@ use uuid::Uuid;
 use crud_be_rust_axum::{
     auth::{
         jwt::{
-            decode_access_token, decode_claims_unchecked, decode_refresh_token,
-            encode_access_token, encode_refresh_token, ISSUER,
+            ISSUER, decode_access_token, decode_claims_unchecked, decode_refresh_token,
+            encode_access_token, encode_refresh_token,
         },
         password::{hash_password, verify_password},
     },
     domain::{
-        attachment::{is_allowed_content_type, Attachment, MAX_FILE_SIZE},
+        attachment::{Attachment, MAX_FILE_SIZE, is_allowed_content_type},
         errors::AppError,
-        expense::{parse_amount, Expense},
+        expense::{Expense, parse_amount},
         types::{Currency, Role, UserStatus},
         user::{validate_email, validate_password},
     },
@@ -170,6 +170,17 @@ pub struct AppWorld {
     pub bob_auth_token: Option<String>,
     pub original_refresh_token: Option<String>,
     pub alice_id: Option<Uuid>,
+    /// Test-support-only handles for `test-support/test-api.feature` steps.
+    /// These are clones of the exact same `Arc`s wired into `state.user_repo` /
+    /// `state.expense_repo` / `state.attachment_repo` above — same underlying
+    /// stores, same data — kept at their concrete type because the repository
+    /// *traits* don't expose a "delete everything" or "count everything"
+    /// operation (the real `/api/v1/test/reset-db` handler reaches for raw SQL
+    /// `DELETE FROM ...` instead; see `src/handlers/test_api.rs`), which unit
+    /// tests bypass entirely since they call service functions in-process.
+    test_user_repo: Arc<InMemoryUserRepository>,
+    test_expense_repo: Arc<InMemoryExpenseRepository>,
+    test_attachment_repo: Arc<InMemoryAttachmentRepository>,
 }
 
 impl AppWorld {
@@ -178,12 +189,16 @@ impl AppWorld {
         // used by unit-test service calls since they all go through the repo traits.
         let pool = crud_be_rust_axum::db::pool::create_test_pool().await?;
 
+        let test_user_repo = Arc::new(InMemoryUserRepository::new());
+        let test_expense_repo = Arc::new(InMemoryExpenseRepository::new());
+        let test_attachment_repo = Arc::new(InMemoryAttachmentRepository::new());
+
         let state = Arc::new(AppState::with_repos(
             pool,
             TEST_JWT_SECRET.to_string(),
-            Arc::new(InMemoryUserRepository::new()),
-            Arc::new(InMemoryExpenseRepository::new()),
-            Arc::new(InMemoryAttachmentRepository::new()),
+            test_user_repo.clone(),
+            test_expense_repo.clone(),
+            test_attachment_repo.clone(),
             Arc::new(InMemoryTokenRepository::new()),
             Arc::new(InMemoryRefreshTokenRepository::new()),
         ));
@@ -205,6 +220,9 @@ impl AppWorld {
             bob_auth_token: None,
             original_refresh_token: None,
             alice_id: None,
+            test_user_repo,
+            test_expense_repo,
+            test_attachment_repo,
         })
     }
 
@@ -537,6 +555,45 @@ impl AppWorld {
         self.state.user_repo.update_role(user_id, "ADMIN").await?;
         Ok(())
     }
+
+    // -----------------------------------------------------------------------
+    // TEST-SUPPORT service calls (test-support/test-api.feature)
+    // -----------------------------------------------------------------------
+
+    /// POST /api/v1/test/reset-db — in-memory equivalent of the real handler's
+    /// raw SQL `DELETE FROM attachments/expenses/users` (see
+    /// `src/handlers/test_api.rs` and the `test_user_repo` field docs above).
+    pub async fn svc_test_reset_db(&mut self) {
+        use serde_json::json;
+
+        self.test_attachment_repo.clear().await;
+        self.test_expense_repo.clear().await;
+        self.test_user_repo.clear().await;
+        self.record(ServiceResponse::ok(
+            json!({"message": "Database reset successful"}),
+        ));
+    }
+
+    /// POST /api/v1/test/promote-admin
+    pub async fn svc_test_promote_admin(&mut self, username: &str) {
+        let resp = svc_test_promote_admin(&self.state, username).await;
+        self.record(resp);
+    }
+
+    /// Current user count, used to assert `reset-db` emptied the store.
+    pub async fn test_user_count(&self) -> usize {
+        self.test_user_repo.count().await
+    }
+
+    /// Current expense count, used to assert `reset-db` emptied the store.
+    pub async fn test_expense_count(&self) -> usize {
+        self.test_expense_repo.count().await
+    }
+
+    /// Current attachment count, used to assert `reset-db` emptied the store.
+    pub async fn test_attachment_count(&self) -> usize {
+        self.test_attachment_repo.count().await
+    }
 }
 
 // ===========================================================================
@@ -607,7 +664,7 @@ pub async fn svc_login(state: &AppState, username: &str, password: &str) -> Serv
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::Unauthorized {
                 message: "Invalid credentials".to_string(),
-            })
+            });
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -699,7 +756,7 @@ pub async fn svc_refresh(state: &AppState, refresh_token_str: &str) -> ServiceRe
         Err(_) => {
             return ServiceResponse::from_error(&AppError::Unauthorized {
                 message: "Invalid token".to_string(),
-            })
+            });
         }
     };
 
@@ -708,7 +765,7 @@ pub async fn svc_refresh(state: &AppState, refresh_token_str: &str) -> ServiceRe
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::Unauthorized {
                 message: "User not found".to_string(),
-            })
+            });
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -874,7 +931,7 @@ pub async fn svc_change_password(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "user".to_string(),
-            })
+            });
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -1060,7 +1117,7 @@ pub async fn svc_admin_force_password_reset(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "user".to_string(),
-            })
+            });
         }
         Err(e) => return ServiceResponse::from_error(&e),
         Ok(Some(_)) => {}
@@ -1109,7 +1166,7 @@ pub async fn svc_create_expense(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "currency".to_string(),
                 message: format!("unsupported currency: {currency_str}"),
-            })
+            });
         }
     };
 
@@ -1124,7 +1181,7 @@ pub async fn svc_create_expense(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "type".to_string(),
                 message: format!("unsupported entry type: {other}"),
-            })
+            });
         }
     };
 
@@ -1134,7 +1191,7 @@ pub async fn svc_create_expense(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "date".to_string(),
                 message: "invalid date format, use YYYY-MM-DD".to_string(),
-            })
+            });
         }
     };
 
@@ -1240,7 +1297,7 @@ pub async fn svc_update_expense(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "expense".to_string(),
-            })
+            });
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -1257,7 +1314,7 @@ pub async fn svc_update_expense(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "currency".to_string(),
                 message: format!("unsupported currency: {currency_str}"),
-            })
+            });
         }
     };
 
@@ -1272,7 +1329,7 @@ pub async fn svc_update_expense(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "type".to_string(),
                 message: format!("unsupported entry type: {other}"),
-            })
+            });
         }
     };
 
@@ -1282,7 +1339,7 @@ pub async fn svc_update_expense(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "date".to_string(),
                 message: "invalid date format, use YYYY-MM-DD".to_string(),
-            })
+            });
         }
     };
 
@@ -1336,7 +1393,7 @@ pub async fn svc_delete_expense(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "expense".to_string(),
-            })
+            });
         }
         Err(e) => return ServiceResponse::from_error(&e),
     }
@@ -1393,7 +1450,7 @@ pub async fn svc_upload_attachment(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "expense".to_string(),
-            })
+            });
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -1447,7 +1504,7 @@ pub async fn svc_list_attachments(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "expense".to_string(),
-            })
+            });
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -1483,7 +1540,7 @@ pub async fn svc_delete_attachment(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "expense".to_string(),
-            })
+            });
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -1499,7 +1556,7 @@ pub async fn svc_delete_attachment(
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "attachment".to_string(),
-            })
+            });
         }
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -1542,7 +1599,7 @@ pub async fn svc_pl_report(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "from".to_string(),
                 message: "invalid date format".to_string(),
-            })
+            });
         }
     };
     let to = match NaiveDate::parse_from_str(to_str, "%Y-%m-%d") {
@@ -1551,7 +1608,7 @@ pub async fn svc_pl_report(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "to".to_string(),
                 message: "invalid date format".to_string(),
-            })
+            });
         }
     };
     let currency = match Currency::parse_from_str(currency_str) {
@@ -1560,7 +1617,7 @@ pub async fn svc_pl_report(
             return ServiceResponse::from_error(&AppError::Validation {
                 field: "currency".to_string(),
                 message: format!("unsupported currency: {currency_str}"),
-            })
+            });
         }
     };
 
@@ -1603,6 +1660,30 @@ pub async fn svc_pl_report(
         }
         Err(e) => ServiceResponse::from_error(&e),
     }
+}
+
+// ---------------------------------------------------------------------------
+// TEST-SUPPORT
+// ---------------------------------------------------------------------------
+
+pub async fn svc_test_promote_admin(state: &AppState, username: &str) -> ServiceResponse {
+    use serde_json::json;
+
+    let user = match state.user_repo.find_by_username(username).await {
+        Ok(Some(u)) => u,
+        Ok(None) => {
+            return ServiceResponse::from_error(&AppError::NotFound {
+                entity: "user".to_string(),
+            });
+        }
+        Err(e) => return ServiceResponse::from_error(&e),
+    };
+
+    if let Err(e) = state.user_repo.update_role(user.id, "ADMIN").await {
+        return ServiceResponse::from_error(&e);
+    }
+
+    ServiceResponse::ok(json!({"message": format!("User {username} promoted to ADMIN")}))
 }
 
 // ---------------------------------------------------------------------------

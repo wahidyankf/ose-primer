@@ -36,6 +36,21 @@ impl InMemoryUserRepository {
     pub fn new() -> Self {
         Self::default()
     }
+
+    /// Test-support helper backing `test-support/test-api.feature`'s `reset-db`
+    /// scenario: deletes every user. Mirrors the real `/api/v1/test/reset-db`
+    /// handler's raw-SQL `DELETE FROM users` (see `src/handlers/test_api.rs`),
+    /// which unit tests can't reach directly since they call service functions
+    /// in-process instead of routing through the real Axum app + SQL pool.
+    pub async fn clear(&self) {
+        self.users.lock().await.clear();
+    }
+
+    /// Test-support helper: current row count, used to assert `reset-db`
+    /// actually emptied the store.
+    pub async fn count(&self) -> usize {
+        self.users.lock().await.len()
+    }
 }
 
 #[async_trait]
@@ -197,6 +212,19 @@ pub struct InMemoryExpenseRepository {
 impl InMemoryExpenseRepository {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    /// Test-support helper backing `test-support/test-api.feature`'s `reset-db`
+    /// scenario: deletes every expense. See `InMemoryUserRepository::clear` for
+    /// why unit tests need this in-memory equivalent of the real handler.
+    pub async fn clear(&self) {
+        self.expenses.lock().await.clear();
+    }
+
+    /// Test-support helper: current row count, used to assert `reset-db`
+    /// actually emptied the store.
+    pub async fn count(&self) -> usize {
+        self.expenses.lock().await.len()
     }
 }
 
@@ -379,6 +407,19 @@ pub struct InMemoryAttachmentRepository {
 impl InMemoryAttachmentRepository {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    /// Test-support helper backing `test-support/test-api.feature`'s `reset-db`
+    /// scenario: deletes every attachment. See `InMemoryUserRepository::clear`
+    /// for why unit tests need this in-memory equivalent of the real handler.
+    pub async fn clear(&self) {
+        self.attachments.lock().await.clear();
+    }
+
+    /// Test-support helper: current row count, used to assert `reset-db`
+    /// actually emptied the store.
+    pub async fn count(&self) -> usize {
+        self.attachments.lock().await.len()
     }
 }
 
