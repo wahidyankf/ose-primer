@@ -49,14 +49,17 @@ Then("the profile should display email {string}", async ({ page }, email: string
   await expect(page.getByText(email)).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Profile page displays username, email, and display name
 Then("the profile should display a display name", async ({ page }) => {
   await expect(page.getByLabel(/display name/i).or(page.getByTestId("display-name"))).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Updating display name shows the new value
 Then("the profile should display display name {string}", async ({ page }, displayName: string) => {
   await expect(page.getByText(displayName)).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Changing password with correct old password succeeds
 Then("a success message about password change should be displayed", async ({ page }) => {
   await expect(
     page

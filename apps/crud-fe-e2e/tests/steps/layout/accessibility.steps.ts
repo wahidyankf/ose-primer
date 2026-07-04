@@ -92,6 +92,7 @@ Then("every input field should have an associated visible label", async ({ page 
   }
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:All form inputs have associated labels
 Then("every input field should have an accessible name", async ({ page }) => {
   const inputs = await page.getByRole("textbox").all();
   for (const input of inputs) {
@@ -114,6 +115,7 @@ Then("validation errors should have role {string}", async ({ page }, role: strin
   await expect(errors.first()).toBeVisible({ timeout: 5000 });
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Error messages are announced to screen readers
 Then("the errors should be associated with their respective fields via aria-describedby", async ({ page }) => {
   const inputs = await page.getByRole("textbox").all();
   let hasDescribedBy = false;
@@ -136,6 +138,7 @@ Then("focus should move through all interactive elements in logical order", asyn
   expect(hasFocus, "An interactive element should have keyboard focus after Tab presses").toBe(true);
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Keyboard navigation works through all interactive elements
 Then("the currently focused element should have a visible focus indicator", async ({ page }) => {
   const outline = await page.locator(":focus").evaluate((el) => {
     const style = window.getComputedStyle(el);
@@ -157,6 +160,7 @@ Then("focus should be trapped within the dialog", async ({ page }) => {
   expect(isInDialog).toBe(true);
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Modal dialogs trap focus
 Then("pressing Escape should close the dialog and return focus to the trigger", async ({ page }) => {
   await page.keyboard.press("Escape");
   await expect(page.locator('[role="dialog"], [role="alertdialog"]').first()).not.toBeVisible({ timeout: 2000 });
@@ -168,6 +172,7 @@ Then("all text should meet a minimum contrast ratio of 4.5:1 against its backgro
   expect(results.violations).toHaveLength(0);
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Color contrast meets WCAG AA standards
 Then("all interactive elements should meet a minimum contrast ratio of 3:1", async ({ page }) => {
   const results = await new AxeBuilder({ page }).withRules(["color-contrast"]).analyze();
   expect(results.violations).toHaveLength(0);
@@ -182,6 +187,7 @@ Then("the image should have descriptive alt text", async ({ page }) => {
   }
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Images and icons have alternative text
 Then("decorative icons should be hidden from assistive technologies", async ({ page }) => {
   const decorativeIcons = page.locator('[aria-hidden="true"] svg, svg[aria-hidden="true"]');
   const count = await decorativeIcons.count();

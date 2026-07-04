@@ -93,10 +93,12 @@ Then("the list should include pagination controls", async ({ page }) => {
   ).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Admin panel displays a paginated user list
 Then("the list should display total user count", async ({ page }) => {
   await expect(page.getByText(/total|count|\d+ users/i)).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Searching users by email filters the list
 Then("the user list should display only users matching {string}", async ({ page }, searchTerm: string) => {
   await expect(page.getByText(searchTerm)).toBeVisible();
 });
@@ -105,6 +107,7 @@ Then("a password reset token should be displayed", async ({ page }) => {
   await expect(page.getByTestId("reset-token").first()).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Admin generates a password-reset token for a user
 Then("a copy-to-clipboard button should be available", async ({ page }) => {
   await expect(page.getByRole("button", { name: /copy/i })).toBeVisible();
 });

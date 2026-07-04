@@ -62,10 +62,14 @@ Then("the amount should display as {string}", async ({ page }, amount: string) =
   await expect(page.getByText(amount)).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:USD expense displays two decimal places
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:IDR expense displays as a whole number
 Then("the currency should display as {string}", async ({ page }, currency: string) => {
   await expect(page.getByText(currency)).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:Unsupported currency code shows a validation error
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:Malformed currency code shows a validation error
 Then("a validation error for the currency field should be displayed", async ({ page }) => {
   await expect(page.getByText(/invalid currency|unsupported currency|currency.*invalid/i)).toBeVisible();
 });
@@ -74,10 +78,12 @@ Then("the summary should display a separate total for {string}", async ({ page }
   await expect(page.getByText(currency).first()).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency
 Then("no cross-currency total should be shown", async ({ page }) => {
   await expect(page.getByText(/total.*all|combined total/i)).not.toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:Negative amount shows a validation error
 Then("a validation error for the amount field should be displayed", async ({ page }) => {
   await expect(page.getByText(/invalid amount|negative|amount.*invalid|must be positive/i)).toBeVisible();
 });

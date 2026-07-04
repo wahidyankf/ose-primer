@@ -37,10 +37,12 @@ Then("an error message about account lockout should be displayed", async ({ page
   await expect(page.getByText(/locked|too many attempts|account locked/i)).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/security/security.feature:Registration form rejects password shorter than 12 characters
 Then("the error should mention minimum length requirements", async ({ page }) => {
   await expect(page.getByText(/minimum|at least|characters|length/i)).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/security/security.feature:Registration form rejects password with no special character
 Then("the error should mention special character requirements", async ({ page }) => {
   await expect(page.getByText(/special character|symbol|!|@|#/i)).toBeVisible();
 });

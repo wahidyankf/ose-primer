@@ -57,6 +57,7 @@ Then("an authentication session should be active", async ({ page }) => {
   expect(hasToken).toBe(true);
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Successful login stores session tokens
 Then("a refresh token should be stored", async ({ page }) => {
   const localStorageData = await page.evaluate(() => {
     const keys = Object.keys(window.localStorage);

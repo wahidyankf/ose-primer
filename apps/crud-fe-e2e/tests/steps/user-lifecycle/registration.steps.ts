@@ -3,6 +3,7 @@ import { expect } from "@playwright/test";
 
 const { Then } = createBdd();
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Successful registration navigates to the login page with success message
 Then("a success message about account creation should be displayed", async ({ page }) => {
   await expect(
     page
@@ -12,6 +13,7 @@ Then("a success message about account creation should be displayed", async ({ pa
   ).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Successful registration does not display the password in any confirmation
 Then("no password value should be visible on the page", async ({ page }) => {
   // Wait for redirect away from registration (form may still show value= during "Creating account..." state)
   await page.waitForURL(/\/login/, { timeout: 15000 }).catch(() => {});

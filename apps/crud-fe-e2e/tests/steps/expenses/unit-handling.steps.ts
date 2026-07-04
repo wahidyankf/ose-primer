@@ -108,10 +108,13 @@ Then("the quantity should display as {string}", async ({ page }, quantity: strin
   await expect(page.getByText(quantity)).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/unit-handling.feature:Expense with metric unit "liter" displays quantity and unit
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/unit-handling.feature:Expense with imperial unit "gallon" displays quantity and unit
 Then("the unit should display as {string}", async ({ page }, unit: string) => {
   await expect(page.getByText(new RegExp(unit, "i"))).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/unit-handling.feature:Unsupported unit shows a validation error
 Then("a validation error for the unit field should be displayed", async ({ page }) => {
   await expect(page.getByText(/invalid unit|unsupported unit|unit.*invalid/i)).toBeVisible();
 });

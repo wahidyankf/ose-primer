@@ -230,10 +230,14 @@ Then("the report should display income total {string}", async ({ page }, amount:
   await expect(page.getByText(amount).first()).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:Income entries are excluded from expense total
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:Expense entries are excluded from income total
 Then("the report should display expense total {string}", async ({ page }, amount: string) => {
   await expect(page.getByText(amount).first()).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L report displays income total, expense total, and net for a period
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L report for a period with no entries shows zero totals
 Then("the report should display net {string}", async ({ page }, amount: string) => {
   await expect(page.getByText(amount).first()).toBeVisible();
 });
@@ -246,6 +250,7 @@ Then(
   },
 );
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L breakdown shows category-level amounts
 Then("the expense breakdown should list {string} category", async ({ page }, category: string) => {
   await expect(page.getByText(new RegExp(category, "i"))).toBeVisible();
 });
@@ -254,6 +259,7 @@ Then("the report should display only USD amounts", async ({ page }) => {
   await expect(page.getByTestId("pl-chart").getByText("USD").first()).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L report filters by currency without mixing
 Then("no IDR amounts should be included", async ({ page }) => {
   await expect(page.getByText("IDR")).not.toBeVisible();
 });

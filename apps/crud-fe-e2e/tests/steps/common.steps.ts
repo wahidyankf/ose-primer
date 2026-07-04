@@ -432,26 +432,38 @@ When("{word} opens the session info panel", async ({ page }) => {
 // Common assertions
 // ---------------------------------------------------------------------------
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/security/security.feature:Unlocked account can log in with correct password
 Then("{word} should be on the dashboard page", async ({ page }) => {
   // Give slow backends (e.g. JVM startup) time to process the login and complete navigation
   await page.waitForURL((url) => !url.toString().includes("/login"), { timeout: 15000 }).catch(() => {});
   await expect(page).not.toHaveURL(/\/login/);
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Original refresh token is rejected after rotation
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Unauthenticated visitor cannot access the entry form
+// @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Blacklisted token is rejected on protected page navigation
+// @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Self-deactivating account redirects to login
 Then("{word} should be redirected to the login page", async ({ page }) => {
   // Allow extra time for slow backends (auth check → clearTokens → redirect chain)
   await page.waitForURL(/\/login/, { timeout: 15000 }).catch(() => {});
   await expect(page).toHaveURL(/\/login/);
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Login with wrong password shows an error
+// @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Login for non-existent user shows an error
+// @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Login for deactivated account shows an error
+// @covers specs/apps/crud/behavior/crud-web/gherkin/security/security.feature:Account is locked after exceeding maximum failed login attempts
+// @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Self-deactivated user cannot log in
 Then("{word} should remain on the login page", async ({ page }) => {
   await expect(page).toHaveURL(/\/login/);
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Successful login navigates to the dashboard
 Then("the navigation should display {word}'s username", async ({ page }, username: string) => {
   await expect(page.getByText(username).first()).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Changing password with incorrect old password shows an error
 Then("an error message about invalid credentials should be displayed", async ({ page }) => {
   await expect(
     page
@@ -462,6 +474,7 @@ Then("an error message about invalid credentials should be displayed", async ({ 
   ).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Deactivated user is redirected to login on next action
 Then("an error message about account deactivation should be displayed", async ({ page }) => {
   await expect(
     page
@@ -472,6 +485,8 @@ Then("an error message about account deactivation should be displayed", async ({
   ).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Disabled user sees an error when trying to access their dashboard
+// @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Disabled user is immediately logged out
 Then("an error message about account being disabled should be displayed", async ({ page }) => {
   await expect(
     page
@@ -482,6 +497,8 @@ Then("an error message about account being disabled should be displayed", async 
   ).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Clicking logout ends the current session
+// @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Clicking "Log out all devices" ends all sessions
 Then("the authentication session should be cleared", async ({ page }) => {
   await page
     .waitForFunction(() => !Object.values(window.localStorage).some((v) => v?.includes("eyJ")), { timeout: 10000 })
@@ -492,6 +509,9 @@ Then("the authentication session should be cleared", async ({ page }) => {
   expect(hasToken).toBe(false);
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Admin disables a user account from the user detail page
+// @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Admin re-enables a disabled user account
+// @covers specs/apps/crud/behavior/crud-web/gherkin/security/security.feature:Admin unlocks a locked account via the admin panel
 Then("{word}'s status should display as {string}", async ({ page }, username: string, status: string) => {
   // Scope to the row containing the username to avoid strict mode violations
   // when multiple users have the same status.
@@ -501,11 +521,15 @@ Then("{word}'s status should display as {string}", async ({ page }, username: st
   await expect(row.getByText(new RegExp(status, "i"))).toBeVisible({ timeout: 15000 });
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Creating an expense entry adds it to the entry list
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Creating an income entry adds it to the entry list
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/unit-handling.feature:Expense without quantity and unit fields is accepted
 Then("the entry list should contain an entry with description {string}", async ({ page }, description: string) => {
   await page.goto("/expenses");
   await expect(page.getByText(description)).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Deleting an entry removes it from the list
 Then("the entry list should not contain an entry with description {string}", async ({ page }, description: string) => {
   await expect(page.getByText(description)).not.toBeVisible();
 });
@@ -526,6 +550,10 @@ Then("a validation error for the password field should be displayed", async ({ p
   ).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Registration with duplicate username shows an error
+// @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Registration with invalid email shows a validation error
+// @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Registration with empty password shows a validation error
+// @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Registration with weak password shows a validation error
 Then("the visitor should remain on the registration page", async ({ page }) => {
   await expect(page).toHaveURL(/\/register/);
 });
@@ -548,6 +576,7 @@ Then("the visitor should be on the login page", async ({ page }) => {
   await expect(page).toHaveURL(/\/login/);
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/health/health-status.feature:Health indicator shows the service is UP
 Then("the health status indicator should display {string}", async ({ page }, status: string) => {
   await expect(page.getByTestId("health-status").or(page.getByText(status))).toBeVisible();
   await expect(page.getByTestId("health-status").or(page.getByText(status))).toContainText(status);

@@ -133,6 +133,7 @@ Then("a new access token should be stored", async ({ page }) => {
   expect(hasToken).toBe(true);
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Session refreshes automatically before the access token expires
 Then("a new refresh token should be stored", async ({ page }) => {
   const hasRefresh = await page.evaluate(() => {
     return Object.keys(window.localStorage).some((k) => k.toLowerCase().includes("refresh"));
@@ -142,6 +143,7 @@ Then("a new refresh token should be stored", async ({ page }) => {
   expect(hasRefresh || hasCookieRefresh).toBe(true);
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Expired refresh token redirects to login
 Then("an error message about session expiration should be displayed", async ({ page }) => {
   await expect(
     page
@@ -151,6 +153,7 @@ Then("an error message about session expiration should be displayed", async ({ p
   ).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Clicking logout twice does not cause an error
 Then("no error should be displayed", async ({ page }) => {
   // Exclude Next.js route announcer which always has role="alert"
   const alerts = page.getByRole("alert").filter({ hasNot: page.locator("#__next-route-announcer__") });
@@ -159,6 +162,7 @@ Then("no error should be displayed", async ({ page }) => {
     .catch(() => {});
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Logging out marks the session as ended
 Then("navigating to a protected page should redirect to login", async ({ page }) => {
   await page.goto("/expenses");
   await expect(page).toHaveURL(/\/login/);

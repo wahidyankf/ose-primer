@@ -154,6 +154,7 @@ Then("the entry detail should display category {string}", async ({ page }, categ
   await expect(page.getByText(new RegExp(category, "i"))).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Editing an entry updates the displayed values
 Then("the entry detail should display description {string}", async ({ page }, description: string) => {
   await expect(page.getByText(description)).toBeVisible();
 });
@@ -162,10 +163,12 @@ Then("the entry detail should display date {string}", async ({ page }, date: str
   await expect(page.getByText(date)).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Clicking an entry shows its full details
 Then("the entry detail should display type {string}", async ({ page }, type: string) => {
   await expect(page.getByText(new RegExp(type, "i")).first()).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Entry list shows pagination for multiple entries
 Then("the entry list should show the total count", async ({ page }) => {
   await expect(page.getByText(/total|\d+ entries|\d+ records/i)).toBeVisible();
 });

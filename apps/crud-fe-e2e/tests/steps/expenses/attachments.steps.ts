@@ -166,6 +166,8 @@ Then("the attachment list should contain {string}", async ({ page }, filename: s
   await expect(page.getByText(filename)).toBeVisible({ timeout: 10000 });
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Uploading a JPEG image adds it to the attachment list
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Uploading a PDF document adds it to the attachment list
 Then("the attachment should display as type {string}", async ({ page }, mimeType: string) => {
   await expect(page.getByText(mimeType)).toBeVisible();
 });
@@ -177,10 +179,12 @@ Then("the attachment list should contain {int} items", async ({ page }, count: n
   await expect(attachmentItems).toHaveCount(count);
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Entry detail shows all uploaded attachments
 Then("the attachment list should include {string}", async ({ page }, filename: string) => {
   await expect(page.getByText(filename)).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Deleting an attachment removes it from the list
 Then("the attachment list should not contain {string}", async ({ page }, filename: string) => {
   await expect(page.getByText(filename)).not.toBeVisible();
 });
@@ -189,6 +193,8 @@ Then("an error message about unsupported file type should be displayed", async (
   await expect(page.getByText(/unsupported|invalid file type|not allowed/i)).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Uploading an unsupported file type shows an error
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Uploading an oversized file shows an error
 Then("the attachment list should remain unchanged", async ({ page }) => {
   const attachmentItems = page
     .getByTestId("attachment-item")
@@ -201,16 +207,19 @@ Then("an error message about file size limit should be displayed", async ({ page
   await expect(page.getByText(/too large|size limit|file.*size|maximum/i)).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Cannot upload attachment to another user's entry
 Then("the upload attachment button should not be visible", async ({ page }) => {
   await expect(page.locator('input[type="file"]')).not.toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Cannot view attachments on another user's entry
 Then("an access denied message should be displayed", async ({ page }) => {
   await expect(
     page.getByText(/access denied|forbidden|not authorized|permission|not found|failed to load/i).first(),
   ).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Cannot delete attachment on another user's entry
 Then("the delete attachment button should not be visible", async ({ page }) => {
   await expect(
     page.getByRole("button", {
@@ -219,6 +228,7 @@ Then("the delete attachment button should not be visible", async ({ page }) => {
   ).not.toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Deleting a non-existent attachment shows a not-found error
 Then("an error message about attachment not found should be displayed", async ({ page }) => {
   await expect(page.getByText(/not found|no longer exists|deleted/i)).toBeVisible();
 });

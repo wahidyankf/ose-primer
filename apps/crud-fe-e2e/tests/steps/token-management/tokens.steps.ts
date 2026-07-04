@@ -17,10 +17,12 @@ When("{word} attempts to access the dashboard directly", async ({ page }) => {
   }
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Session info displays the authenticated user's identity
 Then("the panel should display {word}'s user ID", async ({ page }, _username: string) => {
   await expect(page.getByTestId("token-subject").first()).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Session info shows the token issuer
 Then("the panel should display a non-empty issuer value", async ({ page }) => {
   await expect(
     page
@@ -30,6 +32,7 @@ Then("the panel should display a non-empty issuer value", async ({ page }) => {
   ).toBeVisible();
 });
 
+// @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:JWKS endpoint is accessible for token verification
 Then("at least one public key should be available", async ({ page }) => {
   const response = await page.request.get(
     `${process.env["BACKEND_URL"] ?? "http://localhost:8201"}/.well-known/jwks.json`,
