@@ -182,6 +182,7 @@ class UnitAttachmentSteps {
     )
   }
 
+  // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments for an entry returns all uploaded files with metadata
   @Then("the response body should contain an attachment with {string} equal to {string}")
   fun theResponseBodyShouldContainAttachmentWithField(field: String, expected: String) {
     val body = UnitTestWorld.lastResponseBody

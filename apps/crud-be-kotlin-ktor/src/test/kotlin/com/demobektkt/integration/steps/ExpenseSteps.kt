@@ -267,6 +267,7 @@ class ExpenseSteps {
     }
   }
 
+  // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency without cross-currency mixing
   @Then("the response body should contain {string} total equal to {string}")
   fun theResponseBodyShouldContainCurrencyTotalEqualTo(currency: String, total: String) {
     val body = TestWorld.lastResponseBody

@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 
 class TokenLifecycleSteps {
 
+  // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout current session invalidates the access token
+  // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout all devices invalidates tokens from all sessions
   @Then("alice's access token should be invalidated")
   fun alicesAccessTokenShouldBeInvalidated() {
     val token = TestWorld.accessTokens["alice"] ?: error("alice has no access token")

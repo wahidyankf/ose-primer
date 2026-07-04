@@ -51,6 +51,7 @@ class UnitAdminSteps {
     UnitTestWorld.lastResponseBody = body
   }
 
+  // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Search users by email returns matching results
   @Then("^the response body should contain at least one user with \"email\" equal to \"([^\"]+)\"$")
   fun theResponseBodyShouldContainAtLeastOneUserWithEmail(email: String) {
     val body = UnitTestWorld.lastResponseBody

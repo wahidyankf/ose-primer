@@ -134,12 +134,14 @@ class IntegrationTestSupportSteps {
     assertEquals(0L, count, "Expected all expenses to be deleted but found $count")
   }
 
+  // @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Reset database clears all user-created data
   @And("all attachments should be deleted")
   fun allAttachmentsShouldBeDeleted() {
     val count = transaction { AttachmentsTable.selectAll().count() }
     assertEquals(0L, count, "Expected all attachments to be deleted but found $count")
   }
 
+  // @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Promote user to admin role
   @And("user {string} should have the {string} role")
   fun userShouldHaveTheRole(username: String, expectedRole: String) {
     runBlocking {
