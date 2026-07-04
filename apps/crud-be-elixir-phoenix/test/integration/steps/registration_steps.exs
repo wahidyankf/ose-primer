@@ -42,6 +42,7 @@ defmodule CrudBeExphWeb.Integration.RegistrationSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Successful registration returns created user profile without password
   defthen ~r/^the response body should not contain a "(?<field>[^"]+)" field$/,
           %{field: field},
           %{response: response} = state do
@@ -49,6 +50,7 @@ defmodule CrudBeExphWeb.Integration.RegistrationSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Successful registration response includes non-null user ID
   defthen ~r/^the response body should contain a non-null "(?<field>[^"]+)" field$/,
           %{field: field},
           %{response: response} = state do
@@ -57,6 +59,7 @@ defmodule CrudBeExphWeb.Integration.RegistrationSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration when username already exists
   defthen ~r/^the response body should contain an error message about duplicate username$/,
           _vars,
           %{response: response} = state do
@@ -64,6 +67,9 @@ defmodule CrudBeExphWeb.Integration.RegistrationSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with invalid email format
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with empty password
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with weak password — no uppercase letter
   defthen ~r/^the response body should contain a validation error for "(?<field>[^"]+)"$/,
           %{field: field},
           %{response: response} = state do

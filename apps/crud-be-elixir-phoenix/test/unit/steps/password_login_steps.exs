@@ -59,6 +59,7 @@ defmodule CrudBeExphWeb.Unit.PasswordLoginSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Successful login returns access token and refresh token
   defthen ~r/^the response body should contain a non-null "(?<field>[^"]+)" field$/,
           %{field: field},
           %{conn: conn} = state do
@@ -68,6 +69,7 @@ defmodule CrudBeExphWeb.Unit.PasswordLoginSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Successful login response includes token type "Bearer"
   defthen ~r/^the response body should contain "(?<field>[^"]+)" equal to "(?<value>[^"]+)"$/,
           %{field: field, value: value},
           %{conn: conn} = state do
@@ -76,6 +78,8 @@ defmodule CrudBeExphWeb.Unit.PasswordLoginSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login with wrong password
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login for non-existent user
   defthen ~r/^the response body should contain an error message about invalid credentials$/,
           _vars,
           %{conn: conn} = state do
@@ -84,6 +88,7 @@ defmodule CrudBeExphWeb.Unit.PasswordLoginSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login for deactivated account
   defthen ~r/^the response body should contain an error message about account deactivation$/,
           _vars,
           %{conn: conn} = state do

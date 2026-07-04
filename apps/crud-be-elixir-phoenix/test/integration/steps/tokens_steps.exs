@@ -80,6 +80,8 @@ defmodule CrudBeExphWeb.Integration.TokensSteps do
     {:ok, Map.put(state, :response, response)}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Blacklisted access token is rejected with 401 on protected endpoints
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Deactivating a user revokes all their active tokens
   defthen ~r/^the response status code should be (?<code>\d+)$/,
           %{code: code},
           %{response: response} = state do
@@ -87,6 +89,8 @@ defmodule CrudBeExphWeb.Integration.TokensSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains user ID claim
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains issuer claim
   defthen ~r/^the token should contain a non-null "(?<claim>[^"]+)" claim$/,
           %{claim: claim},
           %{token_payload: payload} = state do
@@ -95,6 +99,7 @@ defmodule CrudBeExphWeb.Integration.TokensSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:JWKS endpoint returns the public key for token signature verification
   defthen ~r/^the response body should contain at least one key in the "(?<field>[^"]+)" array$/,
           %{field: field},
           %{response: response} = state do
@@ -103,6 +108,7 @@ defmodule CrudBeExphWeb.Integration.TokensSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Logout blacklists the access token
   defthen ~r/^alice's access token should be recorded as revoked$/,
           _vars,
           %{access_token: access_token} = state do

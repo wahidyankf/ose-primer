@@ -136,6 +136,11 @@ defmodule CrudBeExphWeb.Integration.AttachmentsSteps do
     {:ok, Map.put(state, :response, response)}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete attachment returns 204
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload attachment to another user's entry returns 403
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments on another user's entry returns 403
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete attachment on another user's entry returns 403
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete non-existent attachment returns 404
   defthen ~r/^the response status code should be (?<code>\d+)$/,
           %{code: code},
           %{response: response} = state do
@@ -143,6 +148,8 @@ defmodule CrudBeExphWeb.Integration.AttachmentsSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload JPEG image returns 201 with attachment metadata
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload PDF document returns 201 with attachment metadata
   defthen ~r/^the response body should contain a non-null "(?<field>[^"]+)" field$/,
           %{field: field},
           %{response: response} = state do
@@ -165,6 +172,7 @@ defmodule CrudBeExphWeb.Integration.AttachmentsSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments for an entry returns all uploaded files with metadata
   defthen ~r/^the response body should contain an attachment with "(?<field>[^"]+)" equal to "(?<value>[^"]+)"$/,
           %{field: field, value: value},
           %{response: response} = state do
@@ -173,6 +181,7 @@ defmodule CrudBeExphWeb.Integration.AttachmentsSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload unsupported file type returns 415
   defthen ~r/^the response body should contain a validation error for "(?<field>[^"]+)"$/,
           %{field: field},
           %{response: response} = state do
@@ -182,6 +191,7 @@ defmodule CrudBeExphWeb.Integration.AttachmentsSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload file exceeding the size limit returns 413
   defthen ~r/^the response body should contain an error message about file size$/,
           _vars,
           %{response: response} = state do

@@ -58,6 +58,11 @@ defmodule CrudBeExphWeb.Unit.ReportingSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary returns income total, expense total, and net for a period
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:Income entries are excluded from expense total
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:Expense entries are excluded from income total
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary filters by currency without cross-currency mixing
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary for a period with no entries returns zero totals
   defthen ~r/^the response body should contain "(?<field>[^"]+)" equal to "(?<value>[^"]+)"$/,
           %{field: field, value: value},
           %{conn: conn} = state do
@@ -84,6 +89,7 @@ defmodule CrudBeExphWeb.Unit.ReportingSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L breakdown includes category-level amounts for income and expenses
   defthen ~r/^the expense breakdown should contain "(?<category>[^"]+)" with amount "(?<amount>[^"]+)"$/,
           %{category: category, amount: amount},
           %{conn: conn} = state do

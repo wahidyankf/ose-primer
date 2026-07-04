@@ -153,6 +153,8 @@ defmodule CrudBeExphWeb.Unit.ExpenseManagementSteps do
     {:ok, Map.put(state, :conn, conn)}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Delete an entry returns 204
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Unauthenticated request to create an entry returns 401
   defthen ~r/^the response status code should be (?<code>\d+)$/,
           %{code: code},
           %{conn: conn} = state do
@@ -160,6 +162,9 @@ defmodule CrudBeExphWeb.Unit.ExpenseManagementSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Create expense entry with amount and currency returns 201 with entry ID
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Create income entry with amount and currency returns 201 with entry ID
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:List own entries returns a paginated response
   defthen ~r/^the response body should contain a non-null "(?<field>[^"]+)" field$/,
           %{field: field},
           %{conn: conn} = state do
@@ -169,6 +174,8 @@ defmodule CrudBeExphWeb.Unit.ExpenseManagementSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Get own entry by ID returns amount, currency, category, description, date, and type
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Update an entry amount and description returns 200
   defthen ~r/^the response body should contain "(?<field>[^"]+)" equal to "(?<value>[^"]+)"$/,
           %{field: field, value: value},
           %{conn: conn} = state do

@@ -87,6 +87,7 @@ defmodule CrudBeExphWeb.Integration.TokenLifecycleSteps do
     {:ok, Map.put(state, :response, response)}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout is idempotent — repeating logout on the same token returns 200
   defthen ~r/^the response status code should be (?<code>\d+)$/,
           %{code: code},
           %{response: response} = state do
@@ -94,6 +95,7 @@ defmodule CrudBeExphWeb.Integration.TokenLifecycleSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Successful refresh returns a new access token and refresh token
   defthen ~r/^the response body should contain a non-null "(?<field>[^"]+)" field$/,
           %{field: field},
           %{response: response} = state do
@@ -102,6 +104,7 @@ defmodule CrudBeExphWeb.Integration.TokenLifecycleSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Reject refresh with an expired refresh token
   defthen ~r/^the response body should contain an error message about token expiration$/,
           _vars,
           %{response: response} = state do
@@ -109,6 +112,7 @@ defmodule CrudBeExphWeb.Integration.TokenLifecycleSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Original refresh token is rejected after rotation (single-use)
   defthen ~r/^the response body should contain an error message about invalid token$/,
           _vars,
           %{response: response} = state do
@@ -116,6 +120,7 @@ defmodule CrudBeExphWeb.Integration.TokenLifecycleSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Refresh fails for a deactivated user
   defthen ~r/^the response body should contain an error message about account deactivation$/,
           _vars,
           %{response: response} = state do
@@ -123,6 +128,8 @@ defmodule CrudBeExphWeb.Integration.TokenLifecycleSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout current session invalidates the access token
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout all devices invalidates tokens from all sessions
   defthen ~r/^alice's access token should be invalidated$/,
           _vars,
           %{access_token: access_token} = state do

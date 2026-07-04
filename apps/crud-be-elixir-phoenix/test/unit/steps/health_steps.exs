@@ -26,12 +26,14 @@ defmodule CrudBeExphWeb.Unit.HealthSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Health endpoint reports the service as UP
   defthen ~r/^the health status should be "UP"$/, _vars, %{conn: conn} = state do
     body = Jason.decode!(conn.resp_body)
     assert body["status"] == "UP"
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Anonymous health check does not expose component details
   defthen ~r/^the response should not include detailed component health information$/,
           _vars,
           %{conn: conn} = state do

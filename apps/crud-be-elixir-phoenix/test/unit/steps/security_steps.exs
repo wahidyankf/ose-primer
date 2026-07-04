@@ -110,6 +110,7 @@ defmodule CrudBeExphWeb.Unit.SecuritySteps do
     {:ok, Map.put(state, :conn, conn)}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Admin unlocks a locked account
   defthen ~r/^the response status code should be (?<code>\d+)$/,
           %{code: code},
           %{conn: conn} = state do
@@ -117,6 +118,8 @@ defmodule CrudBeExphWeb.Unit.SecuritySteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Reject password shorter than 12 characters
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Reject password with no special character
   defthen ~r/^the response body should contain a validation error for "(?<field>[^"]+)"$/,
           %{field: field},
           %{conn: conn} = state do
@@ -128,6 +131,7 @@ defmodule CrudBeExphWeb.Unit.SecuritySteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Account is locked after exceeding the maximum failed login threshold
   defthen ~r/^alice's account status should be "(?<status>[^"]+)"$/,
           %{status: status},
           %{alice: alice} = state do
@@ -136,6 +140,7 @@ defmodule CrudBeExphWeb.Unit.SecuritySteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Unlocked account can log in with correct password
   defthen ~r/^the response body should contain a non-null "(?<field>[^"]+)" field$/,
           %{field: field},
           %{conn: conn} = state do

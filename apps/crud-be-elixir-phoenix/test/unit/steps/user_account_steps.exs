@@ -100,6 +100,8 @@ defmodule CrudBeExphWeb.Unit.UserAccountSteps do
     {:ok, Map.put(state, :conn, conn)}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Successful password change returns 200
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Authenticated user self-deactivates their account
   defthen ~r/^the response status code should be (?<code>\d+)$/,
           %{code: code},
           %{conn: conn} = state do
@@ -107,6 +109,7 @@ defmodule CrudBeExphWeb.Unit.UserAccountSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Update display name succeeds
   defthen ~r/^the response body should contain "(?<field>[^"]+)" equal to "(?<value>[^"]+)"$/,
           %{field: field, value: value},
           %{conn: conn} = state do
@@ -115,6 +118,7 @@ defmodule CrudBeExphWeb.Unit.UserAccountSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Get own profile returns username, email, and display name
   defthen ~r/^the response body should contain a non-null "(?<field>[^"]+)" field$/,
           %{field: field},
           %{conn: conn} = state do
@@ -124,6 +128,7 @@ defmodule CrudBeExphWeb.Unit.UserAccountSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Reject password change with incorrect old password
   defthen ~r/^the response body should contain an error message about invalid credentials$/,
           _vars,
           %{conn: conn} = state do
@@ -132,6 +137,7 @@ defmodule CrudBeExphWeb.Unit.UserAccountSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Self-deactivated user cannot log in with previous credentials
   defthen ~r/^the response body should contain an error message about account deactivation$/,
           _vars,
           %{conn: conn} = state do

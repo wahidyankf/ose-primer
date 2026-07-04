@@ -84,6 +84,8 @@ defmodule CrudBeExphWeb.Unit.CurrencyHandlingSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:USD expense amount preserves two decimal places
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:IDR expense amount is stored and returned as a whole number
   defthen ~r/^the response body should contain "(?<field>[^"]+)" equal to "(?<value>[^"]+)"$/,
           %{field: field, value: value},
           %{conn: conn} = state do
@@ -92,6 +94,9 @@ defmodule CrudBeExphWeb.Unit.CurrencyHandlingSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Unsupported currency code returns 400
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Malformed currency code returns 400
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Negative amount is rejected with 400
   defthen ~r/^the response body should contain a validation error for "(?<field>[^"]+)"$/,
           %{field: field},
           %{conn: conn} = state do
@@ -102,6 +107,7 @@ defmodule CrudBeExphWeb.Unit.CurrencyHandlingSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency without cross-currency mixing
   defthen ~r/^the response body should contain "(?<currency>[^"]+)" total equal to "(?<amount>[^"]+)"$/,
           %{currency: currency, amount: amount},
           %{conn: conn} = state do

@@ -129,6 +129,7 @@ defmodule CrudBeExphWeb.Unit.AdminSteps do
     {:ok, Map.put(state, :conn, conn)}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Disabled user's access token is rejected with 401
   defthen ~r/^the response status code should be (?<code>\d+)$/,
           %{code: code},
           %{conn: conn} = state do
@@ -136,6 +137,8 @@ defmodule CrudBeExphWeb.Unit.AdminSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:List all users returns a paginated response
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin generates a password-reset token for a user
   defthen ~r/^the response body should contain a non-null "(?<field>[^"]+)" field$/,
           %{field: field},
           %{conn: conn} = state do
@@ -145,6 +148,7 @@ defmodule CrudBeExphWeb.Unit.AdminSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Search users by email returns matching results
   defthen ~r/^the response body should contain at least one user with "(?<field>[^"]+)" equal to "(?<value>[^"]+)"$/,
           %{field: field, value: value},
           %{conn: conn} = state do
@@ -154,6 +158,8 @@ defmodule CrudBeExphWeb.Unit.AdminSteps do
     {:ok, state}
   end
 
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin disables a user account
+  # @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin re-enables a disabled user account
   defthen ~r/^alice's account status should be "(?<status>[^"]+)"$/,
           %{status: status},
           %{alice: alice} = state do
