@@ -9,6 +9,7 @@ Feature: Financial Reporting
     And a user "alice" is registered with email "alice@example.com" and password "Str0ng#Pass1"
     And "alice" has logged in and stored the access token
 
+  @unit @integration @e2e
   Scenario: P&L summary returns income total, expense total, and net for a period
     Given alice has created an entry with body { "amount": "5000.00", "currency": "USD", "category": "salary", "description": "Monthly salary", "date": "2025-01-15", "type": "income" }
     And alice has created an entry with body { "amount": "150.00", "currency": "USD", "category": "food", "description": "Groceries", "date": "2025-01-20", "type": "expense" }
@@ -18,6 +19,7 @@ Feature: Financial Reporting
     And the response body should contain "totalExpense" equal to "150.00"
     And the response body should contain "net" equal to "4850.00"
 
+  @unit @integration @e2e
   Scenario: P&L breakdown includes category-level amounts for income and expenses
     Given alice has created an entry with body { "amount": "3000.00", "currency": "USD", "category": "salary", "description": "Salary", "date": "2025-02-10", "type": "income" }
     And alice has created an entry with body { "amount": "500.00", "currency": "USD", "category": "freelance", "description": "Freelance project", "date": "2025-02-15", "type": "income" }
@@ -28,6 +30,7 @@ Feature: Financial Reporting
     And the income breakdown should contain "freelance" with amount "500.00"
     And the expense breakdown should contain "transport" with amount "200.00"
 
+  @unit @integration @e2e
   Scenario: Income entries are excluded from expense total
     Given alice has created an entry with body { "amount": "1000.00", "currency": "USD", "category": "salary", "description": "Bonus", "date": "2025-03-05", "type": "income" }
     When alice sends GET /api/v1/reports/pl?from=2025-03-01&to=2025-03-31&currency=USD
@@ -35,6 +38,7 @@ Feature: Financial Reporting
     And the response body should contain "totalIncome" equal to "1000.00"
     And the response body should contain "totalExpense" equal to "0.00"
 
+  @unit @integration @e2e
   Scenario: Expense entries are excluded from income total
     Given alice has created an entry with body { "amount": "75.00", "currency": "USD", "category": "utilities", "description": "Internet bill", "date": "2025-04-10", "type": "expense" }
     When alice sends GET /api/v1/reports/pl?from=2025-04-01&to=2025-04-30&currency=USD
@@ -42,6 +46,7 @@ Feature: Financial Reporting
     And the response body should contain "totalIncome" equal to "0.00"
     And the response body should contain "totalExpense" equal to "75.00"
 
+  @unit @integration @e2e
   Scenario: P&L summary filters by currency without cross-currency mixing
     Given alice has created an entry with body { "amount": "1000.00", "currency": "USD", "category": "freelance", "description": "USD project", "date": "2025-05-01", "type": "income" }
     And alice has created an entry with body { "amount": "5000000", "currency": "IDR", "category": "freelance", "description": "IDR project", "date": "2025-05-01", "type": "income" }
@@ -49,6 +54,7 @@ Feature: Financial Reporting
     Then the response status code should be 200
     And the response body should contain "totalIncome" equal to "1000.00"
 
+  @unit @integration @e2e
   Scenario: P&L summary for a period with no entries returns zero totals
     When alice sends GET /api/v1/reports/pl?from=2099-01-01&to=2099-01-31&currency=USD
     Then the response status code should be 200

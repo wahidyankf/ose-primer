@@ -8,6 +8,7 @@ Feature: Test Support API
   Background:
     Given the test API is enabled via ENABLE_TEST_API environment variable
 
+  @unit @integration @e2e
   Scenario: Reset database clears all user-created data
     Given users and expenses exist in the database
     When a POST request is sent to "/api/v1/test/reset-db"
@@ -16,6 +17,7 @@ Feature: Test Support API
     And all expenses should be deleted
     And all attachments should be deleted
 
+  @unit @integration @e2e
   Scenario: Promote user to admin role
     Given a user "alice" exists
     When a POST request is sent to "/api/v1/test/promote-admin" with body:

@@ -59,6 +59,7 @@ python_files = ["test_*.py", "*_steps.py"]
 markers = [
     "unit: unit tests",
     "integration: BDD integration tests",
+    "e2e: BDD end-to-end tests (not run by this project's own tiers, but declared so pytest-bdd's Gherkin-tag-to-marker conversion doesn't trip --strict-markers on shared-tree scenarios also tagged @e2e for crud-be-e2e)",
 ]
 
 [tool.coverage.run]

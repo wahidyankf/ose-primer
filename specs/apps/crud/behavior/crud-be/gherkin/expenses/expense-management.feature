@@ -9,16 +9,19 @@ Feature: Financial Entry Management
     And a user "alice" is registered with email "alice@example.com" and password "Str0ng#Pass1"
     And "alice" has logged in and stored the access token
 
+  @unit @integration @e2e
   Scenario: Create expense entry with amount and currency returns 201 with entry ID
     When alice sends POST /api/v1/expenses with body { "amount": "10.50", "currency": "USD", "category": "food", "description": "Lunch", "date": "2025-01-15", "type": "expense" }
     Then the response status code should be 201
     And the response body should contain a non-null "id" field
 
+  @unit @integration @e2e
   Scenario: Create income entry with amount and currency returns 201 with entry ID
     When alice sends POST /api/v1/expenses with body { "amount": "3000.00", "currency": "USD", "category": "salary", "description": "Monthly salary", "date": "2025-01-31", "type": "income" }
     Then the response status code should be 201
     And the response body should contain a non-null "id" field
 
+  @unit @integration @e2e
   Scenario: Get own entry by ID returns amount, currency, category, description, date, and type
     Given alice has created an entry with body { "amount": "10.50", "currency": "USD", "category": "food", "description": "Lunch", "date": "2025-01-15", "type": "expense" }
     When alice sends GET /api/v1/expenses/{expenseId}
@@ -30,6 +33,7 @@ Feature: Financial Entry Management
     And the response body should contain "date" equal to "2025-01-15"
     And the response body should contain "type" equal to "expense"
 
+  @unit @integration @e2e
   Scenario: List own entries returns a paginated response
     Given alice has created 3 entries
     When alice sends GET /api/v1/expenses
@@ -38,6 +42,7 @@ Feature: Financial Entry Management
     And the response body should contain a non-null "totalElements" field
     And the response body should contain a non-null "page" field
 
+  @unit @integration @e2e
   Scenario: Update an entry amount and description returns 200
     Given alice has created an entry with body { "amount": "10.00", "currency": "USD", "category": "food", "description": "Breakfast", "date": "2025-01-10", "type": "expense" }
     When alice sends PUT /api/v1/expenses/{expenseId} with body { "amount": "12.00", "currency": "USD", "category": "food", "description": "Updated breakfast", "date": "2025-01-10", "type": "expense" }
@@ -45,11 +50,13 @@ Feature: Financial Entry Management
     And the response body should contain "amount" equal to "12.00"
     And the response body should contain "description" equal to "Updated breakfast"
 
+  @unit @integration @e2e
   Scenario: Delete an entry returns 204
     Given alice has created an entry with body { "amount": "10.00", "currency": "USD", "category": "food", "description": "Snack", "date": "2025-01-05", "type": "expense" }
     When alice sends DELETE /api/v1/expenses/{expenseId}
     Then the response status code should be 204
 
+  @unit @integration @e2e
   Scenario: Unauthenticated request to create an entry returns 401
     When the client sends POST /api/v1/expenses with body { "amount": "10.00", "currency": "USD", "category": "food", "description": "Coffee", "date": "2025-01-01", "type": "expense" }
     Then the response status code should be 401

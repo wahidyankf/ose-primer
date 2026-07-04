@@ -55,7 +55,7 @@
       "executor": "nx:run-commands",
       "options": {
         "cwd": "apps/crud-be-elixir-phoenix",
-        "command": "MIX_ENV=test mix coveralls.lcov --only unit"
+        "command": "MIX_ENV=test mix coveralls.lcov test/unit test/crud_be_exph_web"
       },
       "dependsOn": ["codegen"],
       "cache": true,
@@ -70,7 +70,7 @@
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "! grep -rn '@tag :skip\\|@moduletag :skip' test && MIX_ENV=test mix test --only unit",
+        "command": "! grep -rn '@tag :skip\\|@moduletag :skip' test && MIX_ENV=test mix test test/unit test/crud_be_exph_web",
         "cwd": "apps/crud-be-elixir-phoenix"
       },
       "dependsOn": ["codegen"],

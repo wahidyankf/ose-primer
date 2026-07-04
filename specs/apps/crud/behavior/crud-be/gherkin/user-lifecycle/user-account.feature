@@ -9,6 +9,7 @@ Feature: User Account
     And a user "alice" is registered with email "alice@example.com" and password "Str0ng#Pass1"
     And "alice" has logged in and stored the access token
 
+  @unit @integration @e2e
   Scenario: Get own profile returns username, email, and display name
     When alice sends GET /api/v1/users/me
     Then the response status code should be 200
@@ -16,24 +17,29 @@ Feature: User Account
     And the response body should contain "email" equal to "alice@example.com"
     And the response body should contain a non-null "displayName" field
 
+  @unit @integration @e2e
   Scenario: Update display name succeeds
     When alice sends PATCH /api/v1/users/me with body { "displayName": "Alice Smith" }
     Then the response status code should be 200
     And the response body should contain "displayName" equal to "Alice Smith"
 
+  @unit @integration @e2e
   Scenario: Successful password change returns 200
     When alice sends POST /api/v1/users/me/password with body { "oldPassword": "Str0ng#Pass1", "newPassword": "NewPass#456" }
     Then the response status code should be 200
 
+  @unit @integration @e2e
   Scenario: Reject password change with incorrect old password
     When alice sends POST /api/v1/users/me/password with body { "oldPassword": "Wr0ngOld!", "newPassword": "NewPass#456" }
     Then the response status code should be 401
     And the response body should contain an error message about invalid credentials
 
+  @unit @integration @e2e
   Scenario: Authenticated user self-deactivates their account
     When alice sends POST /api/v1/users/me/deactivate
     Then the response status code should be 200
 
+  @unit @integration @e2e
   Scenario: Self-deactivated user cannot log in with previous credentials
     Given alice has deactivated her own account via POST /api/v1/users/me/deactivate
     When the client sends POST /api/v1/auth/login with body { "username": "alice", "password": "Str0ng#Pass1" }

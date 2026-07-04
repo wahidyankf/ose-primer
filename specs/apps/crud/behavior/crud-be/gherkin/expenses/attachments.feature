@@ -12,6 +12,7 @@ Feature: Entry Attachments
     And "alice" has logged in and stored the access token
     And alice has created an entry with body { "amount": "10.50", "currency": "USD", "category": "food", "description": "Lunch", "date": "2025-01-15", "type": "expense" }
 
+  @unit @integration @e2e
   Scenario: Upload JPEG image returns 201 with attachment metadata
     When alice uploads file "receipt.jpg" with content type "image/jpeg" to POST /api/v1/expenses/{expenseId}/attachments
     Then the response status code should be 201
@@ -20,6 +21,7 @@ Feature: Entry Attachments
     And the response body should contain "contentType" equal to "image/jpeg"
     And the response body should contain a non-null "url" field
 
+  @unit @integration @e2e
   Scenario: Upload PDF document returns 201 with attachment metadata
     When alice uploads file "invoice.pdf" with content type "application/pdf" to POST /api/v1/expenses/{expenseId}/attachments
     Then the response status code should be 201
@@ -28,6 +30,7 @@ Feature: Entry Attachments
     And the response body should contain "contentType" equal to "application/pdf"
     And the response body should contain a non-null "url" field
 
+  @unit @integration @e2e
   Scenario: List attachments for an entry returns all uploaded files with metadata
     Given alice has uploaded file "receipt.jpg" with content type "image/jpeg" to the entry
     And alice has uploaded file "invoice.pdf" with content type "application/pdf" to the entry
@@ -37,33 +40,39 @@ Feature: Entry Attachments
     And the response body should contain an attachment with "filename" equal to "receipt.jpg"
     And the response body should contain an attachment with "filename" equal to "invoice.pdf"
 
+  @unit @integration @e2e
   Scenario: Delete attachment returns 204
     Given alice has uploaded file "receipt.jpg" with content type "image/jpeg" to the entry
     When alice sends DELETE /api/v1/expenses/{expenseId}/attachments/{attachmentId}
     Then the response status code should be 204
 
+  @unit @integration @e2e
   Scenario: Upload unsupported file type returns 415
     When alice uploads file "malware.exe" with content type "application/octet-stream" to POST /api/v1/expenses/{expenseId}/attachments
     Then the response status code should be 415
     And the response body should contain a validation error for "file"
 
+  @unit @integration @e2e
   Scenario: Upload file exceeding the size limit returns 413
     When alice uploads an oversized file to POST /api/v1/expenses/{expenseId}/attachments
     Then the response status code should be 413
     And the response body should contain an error message about file size
 
+  @unit @integration @e2e
   Scenario: Upload attachment to another user's entry returns 403
     Given a user "bob" is registered with email "bob@example.com" and password "Str0ng#Pass2"
     And bob has created an entry with body { "amount": "25.00", "currency": "USD", "category": "transport", "description": "Taxi", "date": "2025-01-15", "type": "expense" }
     When alice uploads file "receipt.jpg" with content type "image/jpeg" to POST /api/v1/expenses/{bobExpenseId}/attachments
     Then the response status code should be 403
 
+  @unit @integration @e2e
   Scenario: List attachments on another user's entry returns 403
     Given a user "bob" is registered with email "bob@example.com" and password "Str0ng#Pass2"
     And bob has created an entry with body { "amount": "25.00", "currency": "USD", "category": "transport", "description": "Taxi", "date": "2025-01-15", "type": "expense" }
     When alice sends GET /api/v1/expenses/{bobExpenseId}/attachments
     Then the response status code should be 403
 
+  @unit @integration @e2e
   Scenario: Delete attachment on another user's entry returns 403
     Given a user "bob" is registered with email "bob@example.com" and password "Str0ng#Pass2"
     And bob has created an entry with body { "amount": "25.00", "currency": "USD", "category": "transport", "description": "Taxi", "date": "2025-01-15", "type": "expense" }
@@ -71,6 +80,7 @@ Feature: Entry Attachments
     When alice sends DELETE /api/v1/expenses/{bobExpenseId}/attachments/{attachmentId}
     Then the response status code should be 403
 
+  @unit @integration @e2e
   Scenario: Delete non-existent attachment returns 404
     Given alice has uploaded file "receipt.jpg" with content type "image/jpeg" to the entry
     When alice sends DELETE /api/v1/expenses/{expenseId}/attachments/{randomAttachmentId}

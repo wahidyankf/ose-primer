@@ -7,33 +7,39 @@ Feature: User Registration
   Background:
     Given the API is running
 
+  @unit @integration @e2e
   Scenario: Successful registration returns created user profile without password
     When the client sends POST /api/v1/auth/register with body { "username": "alice", "email": "alice@example.com", "password": "Str0ng#Pass1" }
     Then the response status code should be 201
     And the response body should contain "username" equal to "alice"
     And the response body should not contain a "password" field
 
+  @unit @integration @e2e
   Scenario: Successful registration response includes non-null user ID
     When the client sends POST /api/v1/auth/register with body { "username": "alice", "email": "alice@example.com", "password": "Str0ng#Pass1" }
     Then the response status code should be 201
     And the response body should contain a non-null "id" field
 
+  @unit @integration @e2e
   Scenario: Reject registration when username already exists
     Given a user "alice" is registered with email "alice@example.com" and password "Str0ng#Pass1"
     When the client sends POST /api/v1/auth/register with body { "username": "alice", "email": "new@example.com", "password": "Str0ng#Pass1" }
     Then the response status code should be 409
     And the response body should contain an error message about duplicate username
 
+  @unit @integration @e2e
   Scenario: Reject registration with invalid email format
     When the client sends POST /api/v1/auth/register with body { "username": "alice", "email": "not-an-email", "password": "Str0ng#Pass1" }
     Then the response status code should be 400
     And the response body should contain a validation error for "email"
 
+  @unit @integration @e2e
   Scenario: Reject registration with empty password
     When the client sends POST /api/v1/auth/register with body { "username": "alice", "email": "alice@example.com", "password": "" }
     Then the response status code should be 400
     And the response body should contain a validation error for "password"
 
+  @unit @integration @e2e
   Scenario: Reject registration with weak password — no uppercase letter
     When the client sends POST /api/v1/auth/register with body { "username": "alice", "email": "alice@example.com", "password": "str0ng#pass1" }
     Then the response status code should be 400
