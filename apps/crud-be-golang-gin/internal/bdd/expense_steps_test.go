@@ -29,6 +29,13 @@ func (ctx *scenarioCtx) createExpense(amount, currency, category, description, d
 	return w.Code, readResponse(w)
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Create expense entry with amount and currency returns 201 with entry ID
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Create income entry with amount and currency returns 201 with entry ID
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Unsupported currency code returns 400
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Malformed currency code returns 400
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Negative amount is rejected with 400
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Expense without quantity and unit fields is accepted
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsCreateExpense(amount, currency, category, description, date, expType string) error {
 	status, body := ctx.createExpense(amount, currency, category, description, date, expType, ctx.AccessToken)
 	ctx.LastStatus = status
@@ -66,6 +73,8 @@ func (ctx *scenarioCtx) aliceHasCreated3Entries() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Get own entry by ID returns amount, currency, category, description, date, and type
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsGetExpense() error {
 	params := gin.Params{{Key: "id", Value: ctx.ExpenseID}}
 	c, w := buildGinContext("GET", "/api/v1/expenses/"+ctx.ExpenseID, nil, ctx.AccessToken, params, ctx.JWTSvc)
@@ -75,6 +84,8 @@ func (ctx *scenarioCtx) aliceSendsGetExpense() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:List own entries returns a paginated response
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsListExpenses() error {
 	c, w := buildGinContext("GET", "/api/v1/expenses", nil, ctx.AccessToken, gin.Params{}, ctx.JWTSvc)
 	c.Request.URL.RawQuery = "page=1&size=20"
@@ -84,6 +95,8 @@ func (ctx *scenarioCtx) aliceSendsListExpenses() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Update an entry amount and description returns 200
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsPutExpense(amount, currency, category, description, date, expType string) error {
 	body := map[string]interface{}{
 		"amount": amount, "currency": currency, "category": category,
@@ -97,6 +110,8 @@ func (ctx *scenarioCtx) aliceSendsPutExpense(amount, currency, category, descrip
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Delete an entry returns 204
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsDeleteExpense() error {
 	params := gin.Params{{Key: "id", Value: ctx.ExpenseID}}
 	c, w := buildGinContext("DELETE", "/api/v1/expenses/"+ctx.ExpenseID, nil, ctx.AccessToken, params, ctx.JWTSvc)
@@ -106,6 +121,8 @@ func (ctx *scenarioCtx) aliceSendsDeleteExpense() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Unauthenticated request to create an entry returns 401
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) unauthClientSendsCreateExpense(amount, currency, category, description, date, expType string) error {
 	// No token — the handler will fail to extract claims and return 401.
 	status, body := ctx.createExpense(amount, currency, category, description, date, expType, "")

@@ -20,6 +20,8 @@ func (ctx *scenarioCtx) theAPIIsRunning() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Health endpoint reports the service as UP
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) operationsEngineerSendsGETHealth() error {
 	c, w := buildGinContext("GET", "/health", nil, "", gin.Params{}, ctx.JWTSvc)
 	ctx.Handler.Health(c)
@@ -54,6 +56,8 @@ func (ctx *scenarioCtx) theHealthStatusShouldBe(status string) error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Anonymous health check does not expose component details
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theResponseShouldNotIncludeDetailedComponentHealthInformation() error {
 	if _, ok := ctx.LastBody["components"]; ok {
 		return fmt.Errorf("response includes 'components' field, which should not be present")

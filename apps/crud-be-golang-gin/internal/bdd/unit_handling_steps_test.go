@@ -41,6 +41,8 @@ func (ctx *scenarioCtx) aliceHasCreatedExpenseWithUnit(amount, currency, categor
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with an unsupported unit returns 400
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsCreateExpenseWithUnit(amount, currency, category, description, date, expType, quantityStr, unit string) error {
 	quantity, err := strconv.ParseFloat(quantityStr, 64)
 	if err != nil {
@@ -57,6 +59,9 @@ func (ctx *scenarioCtx) aliceSendsCreateExpenseWithUnit(amount, currency, catego
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with metric unit "liter" stores quantity and unit correctly
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with imperial unit "gallon" stores quantity and unit correctly
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theResponseBodyShouldContainQuantityEqual(quantityStr string) error {
 	expected, err := strconv.ParseFloat(quantityStr, 64)
 	if err != nil {

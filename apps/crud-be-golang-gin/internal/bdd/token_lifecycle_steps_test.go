@@ -55,6 +55,8 @@ func (ctx *scenarioCtx) getProfile(token string) (int, map[string]interface{}) {
 	return w.Code, readResponse(w)
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Successful refresh returns a new access token and refresh token
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsRefreshWithRefreshToken() error {
 	status, body := ctx.refresh(ctx.RefreshToken)
 	ctx.LastStatus = status
@@ -124,6 +126,8 @@ func (ctx *scenarioCtx) aliceSendsLogoutWithAccessToken() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout all devices invalidates tokens from all sessions
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsLogoutAllWithAccessToken() error {
 	status, body := ctx.logoutAll(ctx.AccessToken)
 	ctx.LastStatus = status
@@ -131,6 +135,8 @@ func (ctx *scenarioCtx) aliceSendsLogoutAllWithAccessToken() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout current session invalidates the access token
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) alicesAccessTokenShouldBeInvalidated() error {
 	// After logout/logout-all, the access token should be blacklisted;
 	// a call to GetProfile must return 401.
@@ -152,6 +158,8 @@ func (ctx *scenarioCtx) alicesAccessTokenShouldBeInvalidated() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout is idempotent — repeating logout on the same token returns 200
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceHasAlreadyLoggedOutOnce() error {
 	status, body := ctx.logout(ctx.AccessToken)
 	if status != 200 {
@@ -160,6 +168,8 @@ func (ctx *scenarioCtx) aliceHasAlreadyLoggedOutOnce() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Reject refresh with an expired refresh token
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theResponseBodyShouldContainErrorAboutTokenExpiration() error {
 	if _, ok := ctx.LastBody["message"]; !ok {
 		return fmt.Errorf("no error message; body: %v", ctx.LastBody)
@@ -167,6 +177,8 @@ func (ctx *scenarioCtx) theResponseBodyShouldContainErrorAboutTokenExpiration() 
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Original refresh token is rejected after rotation (single-use)
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theResponseBodyShouldContainErrorAboutInvalidToken() error {
 	if _, ok := ctx.LastBody["message"]; !ok {
 		return fmt.Errorf("no error message; body: %v", ctx.LastBody)

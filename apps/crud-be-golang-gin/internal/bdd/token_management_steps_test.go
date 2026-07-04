@@ -39,6 +39,9 @@ func (ctx *scenarioCtx) aliceDecodesHerAccessTokenPayload() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains user ID claim
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains issuer claim
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theTokenShouldContainNonNullClaim(claim string) error {
 	v, ok := ctx.LastBody[claim]
 	if !ok || v == nil {
@@ -55,6 +58,8 @@ func (ctx *scenarioCtx) clientSendsGetJWKS() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:JWKS endpoint returns the public key for token signature verification
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theResponseBodyShouldContainAtLeastOneKeyInArray(field string) error {
 	v, ok := ctx.LastBody[field]
 	if !ok {
@@ -69,6 +74,8 @@ func (ctx *scenarioCtx) theResponseBodyShouldContainAtLeastOneKeyInArray(field s
 
 // alicesAccessTokenShouldBeRecordedAsRevoked verifies the token JTI is blacklisted
 // by querying the store directly, since we no longer route through HTTP middleware.
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Logout blacklists the access token
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) alicesAccessTokenShouldBeRecordedAsRevoked() error {
 	claims, err := ctx.JWTSvc.ValidateToken(ctx.AccessToken)
 	if err != nil {
@@ -85,6 +92,8 @@ func (ctx *scenarioCtx) alicesAccessTokenShouldBeRecordedAsRevoked() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Blacklisted access token is rejected with 401 on protected endpoints
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceHasLoggedOutAndHerAccessTokenIsBlacklisted() error {
 	status, body := ctx.logout(ctx.AccessToken)
 	if status != 200 {
@@ -93,6 +102,8 @@ func (ctx *scenarioCtx) aliceHasLoggedOutAndHerAccessTokenIsBlacklisted() error 
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Disabled user's access token is rejected with 401
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) clientSendsGetProfileWithAlicesToken() error {
 	status, body := ctx.getProfile(ctx.AccessToken)
 	ctx.LastStatus = status
@@ -100,6 +111,8 @@ func (ctx *scenarioCtx) clientSendsGetProfileWithAlicesToken() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Deactivating a user revokes all their active tokens
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theAdminHasDisabledAlicesAccount() error {
 	if ctx.AliceID == "" {
 		return fmt.Errorf("alice's ID not set")

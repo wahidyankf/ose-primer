@@ -93,6 +93,13 @@ func (ctx *scenarioCtx) aUserIsRegisteredAndDeactivated(username string) error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Successful registration response includes non-null user ID
+// @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with invalid email format
+// @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with empty password
+// @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with weak password — no uppercase letter
+// @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Reject password shorter than 12 characters
+// @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Reject password with no special character
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theClientSendsPostRegister(username, email, password string) error {
 	status, body := ctx.register(username, email, password)
 	ctx.LastStatus = status
@@ -100,6 +107,11 @@ func (ctx *scenarioCtx) theClientSendsPostRegister(username, email, password str
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Successful login returns access token and refresh token
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Successful login response includes token type "Bearer"
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login with wrong password
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login for non-existent user
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theClientSendsPostLogin(username, password string) error {
 	status, body := ctx.login(username, password)
 	ctx.LastStatus = status
@@ -126,6 +138,8 @@ func (ctx *scenarioCtx) theResponseBodyShouldContainNonNullField(field string) e
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Successful registration returns created user profile without password
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theResponseBodyShouldNotContainField(field string) error {
 	if _, ok := ctx.LastBody[field]; ok {
 		return fmt.Errorf("response unexpectedly contains field %q", field)
@@ -144,6 +158,9 @@ func (ctx *scenarioCtx) theResponseBodyShouldContainErrorAboutInvalidCredentials
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login for deactivated account
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Refresh fails for a deactivated user
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theResponseBodyShouldContainErrorAboutAccountDeactivation() error {
 	msg, ok := ctx.LastBody["message"]
 	if !ok {
@@ -155,6 +172,8 @@ func (ctx *scenarioCtx) theResponseBodyShouldContainErrorAboutAccountDeactivatio
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration when username already exists
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theResponseBodyShouldContainErrorAboutDuplicateUsername() error {
 	msg, ok := ctx.LastBody["message"]
 	if !ok {

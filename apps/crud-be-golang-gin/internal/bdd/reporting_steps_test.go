@@ -13,6 +13,12 @@ func registerReportingSteps(sc *godog.ScenarioContext, ctx *scenarioCtx) {
 	sc.Step(`^the expense breakdown should contain "([^"]*)" with amount "([^"]*)"$`, ctx.theExpenseBreakdownShouldContainCategory)
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary returns income total, expense total, and net for a period
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:Income entries are excluded from expense total
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:Expense entries are excluded from income total
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary filters by currency without cross-currency mixing
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary for a period with no entries returns zero totals
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsGetPLReport(from, to, currency string) error {
 	rawQuery := fmt.Sprintf("startDate=%s&endDate=%s&currency=%s", from, to, currency)
 	c, w := buildGinContext("GET", "/api/v1/reports/pl?"+rawQuery, nil, ctx.AccessToken, gin.Params{}, ctx.JWTSvc)
@@ -23,6 +29,8 @@ func (ctx *scenarioCtx) aliceSendsGetPLReport(from, to, currency string) error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L breakdown includes category-level amounts for income and expenses
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theIncomeBreakdownShouldContainCategory(category, amount string) error {
 	breakdown, ok := ctx.LastBody["incomeBreakdown"]
 	if !ok {

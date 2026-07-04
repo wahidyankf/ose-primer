@@ -15,6 +15,8 @@ func registerUserAccountSteps(sc *godog.ScenarioContext, ctx *scenarioCtx) {
 	sc.Step(`^alice has deactivated her own account via POST /api/v1/users/me/deactivate$`, ctx.aliceHasDeactivatedHerAccount)
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Get own profile returns username, email, and display name
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsGetProfile() error {
 	status, body := ctx.getProfile(ctx.AccessToken)
 	ctx.LastStatus = status
@@ -22,6 +24,8 @@ func (ctx *scenarioCtx) aliceSendsGetProfile() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Update display name succeeds
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsUpdateProfile(displayName string) error {
 	reqBody := map[string]string{"displayName": displayName}
 	c, w := buildGinContext("PATCH", "/api/v1/users/me", reqBody, ctx.AccessToken, gin.Params{}, ctx.JWTSvc)
@@ -31,6 +35,9 @@ func (ctx *scenarioCtx) aliceSendsUpdateProfile(displayName string) error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Successful password change returns 200
+// @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Reject password change with incorrect old password
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsChangePassword(oldPassword, newPassword string) error {
 	reqBody := map[string]string{
 		"oldPassword": oldPassword,
@@ -43,6 +50,8 @@ func (ctx *scenarioCtx) aliceSendsChangePassword(oldPassword, newPassword string
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Authenticated user self-deactivates their account
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsDeactivate() error {
 	status, body := ctx.deactivateSelf(ctx.AccessToken)
 	ctx.LastStatus = status
@@ -50,6 +59,8 @@ func (ctx *scenarioCtx) aliceSendsDeactivate() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Self-deactivated user cannot log in with previous credentials
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceHasDeactivatedHerAccount() error {
 	status, body := ctx.deactivateSelf(ctx.AccessToken)
 	if status != 200 {

@@ -34,6 +34,10 @@ func (ctx *scenarioCtx) uploadAttachment(expenseID, filename, contentType string
 	return w.Code, readResponse(w)
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload JPEG image returns 201 with attachment metadata
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload PDF document returns 201 with attachment metadata
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload unsupported file type returns 415
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceUploadsFileTo(filename, contentType string) error {
 	content := []byte("fake file content")
 	status, body := ctx.uploadAttachment(ctx.ExpenseID, filename, contentType, content, ctx.AccessToken)
@@ -47,6 +51,8 @@ func (ctx *scenarioCtx) aliceUploadsFileTo(filename, contentType string) error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload attachment to another user's entry returns 403
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceUploadsFileToBobExpense(filename, contentType string) error {
 	content := []byte("fake file content")
 	status, body := ctx.uploadAttachment(ctx.BobExpenseID, filename, contentType, content, ctx.AccessToken)
@@ -76,6 +82,8 @@ func (ctx *scenarioCtx) aliceSendsGetAttachments() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments on another user's entry returns 403
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsGetAttachmentsForBobExpense() error {
 	params := gin.Params{{Key: "id", Value: ctx.BobExpenseID}}
 	c, w := buildGinContext("GET", fmt.Sprintf("/api/v1/expenses/%s/attachments", ctx.BobExpenseID), nil, ctx.AccessToken, params, ctx.JWTSvc)
@@ -85,6 +93,8 @@ func (ctx *scenarioCtx) aliceSendsGetAttachmentsForBobExpense() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete attachment returns 204
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsDeleteAttachment() error {
 	params := gin.Params{
 		{Key: "id", Value: ctx.ExpenseID},
@@ -97,6 +107,8 @@ func (ctx *scenarioCtx) aliceSendsDeleteAttachment() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete non-existent attachment returns 404
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsDeleteNonExistentAttachment() error {
 	params := gin.Params{
 		{Key: "id", Value: ctx.ExpenseID},
@@ -109,6 +121,8 @@ func (ctx *scenarioCtx) aliceSendsDeleteNonExistentAttachment() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete attachment on another user's entry returns 403
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceSendsDeleteAttachmentOnBobExpense() error {
 	params := gin.Params{
 		{Key: "id", Value: ctx.BobExpenseID},
@@ -129,6 +143,8 @@ func (ctx *scenarioCtx) aliceUploadsOversizedFile() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments for an entry returns all uploaded files with metadata
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theResponseBodyShouldContain2Items(arrayField string) error {
 	v, ok := ctx.LastBody[arrayField]
 	if !ok {
@@ -165,6 +181,8 @@ func (ctx *scenarioCtx) theResponseBodyShouldContainAttachmentWithField(field, v
 	return fmt.Errorf("no attachment found with %q = %q", field, value)
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload file exceeding the size limit returns 413
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theResponseBodyShouldContainErrorAboutFileSize() error {
 	msg, ok := ctx.LastBody["message"]
 	if !ok {

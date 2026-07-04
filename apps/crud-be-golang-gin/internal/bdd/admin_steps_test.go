@@ -32,6 +32,8 @@ func (ctx *scenarioCtx) multipleUsersAreRegistered(user1, user2, user3 string) e
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:List all users returns a paginated response
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theAdminSendsGetAdminUsers() error {
 	c, w := buildGinContext("GET", "/api/v1/admin/users", nil, ctx.AdminToken, gin.Params{}, ctx.JWTSvc)
 	// Inject query parameters: page=1, size=20 (defaults).
@@ -42,6 +44,8 @@ func (ctx *scenarioCtx) theAdminSendsGetAdminUsers() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Search users by email returns matching results
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theAdminSendsGetAdminUsersWithSearch(search string) error {
 	c, w := buildGinContext("GET", "/api/v1/admin/users?search="+search, nil, ctx.AdminToken, gin.Params{}, ctx.JWTSvc)
 	c.Request.URL.RawQuery = "search=" + search + "&page=0&size=20"
@@ -84,6 +88,8 @@ func (ctx *scenarioCtx) resolveAliceID() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin disables a user account
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theAdminSendsDisableAlice(reason string) error {
 	if err := ctx.resolveAliceID(); err != nil {
 		return err
@@ -97,6 +103,8 @@ func (ctx *scenarioCtx) theAdminSendsDisableAlice(reason string) error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin re-enables a disabled user account
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theAdminSendsEnableAlice() error {
 	if err := ctx.resolveAliceID(); err != nil {
 		return err
@@ -125,6 +133,8 @@ func (ctx *scenarioCtx) alicesAccountHasBeenDisabledByAdmin() error {
 	return ctx.Store.RevokeAllRefreshTokensForUser(context.Background(), ctx.AliceID)
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin generates a password-reset token for a user
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theAdminSendsForcePasswordReset() error {
 	if err := ctx.resolveAliceID(); err != nil {
 		return err

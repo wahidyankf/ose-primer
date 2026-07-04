@@ -21,6 +21,8 @@ func registerSecuritySteps(sc *godog.ScenarioContext, ctx *scenarioCtx) {
 	sc.Step(`^an admin has unlocked alice's account$`, ctx.anAdminHasUnlockedAlicesAccount)
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Account is locked after exceeding the maximum failed login threshold
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) userHasHadMaxFailedLoginAttempts(username string) error {
 	for i := 0; i < 5; i++ {
 		body := map[string]string{"username": username, "password": "WrongPassword!"}
@@ -108,6 +110,8 @@ func (ctx *scenarioCtx) anAdminUserIsRegisteredAndLoggedIn(username string) erro
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Admin unlocks a locked account
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theAdminSendsUnlockAlice() error {
 	if ctx.AliceID == "" {
 		return fmt.Errorf("alice's ID not set")
@@ -120,6 +124,8 @@ func (ctx *scenarioCtx) theAdminSendsUnlockAlice() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Unlocked account can log in with correct password
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) anAdminHasUnlockedAlicesAccount() error {
 	if err := ctx.anAdminUserIsRegisteredAndLoggedIn("adminuser"); err != nil {
 		return err

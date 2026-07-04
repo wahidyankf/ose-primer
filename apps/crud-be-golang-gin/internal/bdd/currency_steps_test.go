@@ -13,6 +13,9 @@ func registerCurrencySteps(sc *godog.ScenarioContext, ctx *scenarioCtx) {
 	sc.Step(`^the response body should contain "([^"]*)" total equal to "([^"]*)"$`, ctx.theResponseBodyShouldContainCurrencyTotalEqualTo)
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:USD expense amount preserves two decimal places
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:IDR expense amount is stored and returned as a whole number
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) aliceHasCreatedExpenseWithBody(amount, currency, category, description, date, expType string) error {
 	status, body := ctx.createExpense(amount, currency, category, description, date, expType, ctx.AccessToken)
 	if status != 201 {
@@ -32,6 +35,8 @@ func (ctx *scenarioCtx) aliceSendsGetSummary() error {
 	return nil
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency without cross-currency mixing
+// Traced by rhino-cli behavior-coverage validate.
 func (ctx *scenarioCtx) theResponseBodyShouldContainCurrencyTotalEqualTo(currency, total string) error {
 	v, ok := ctx.LastBody[currency]
 	if !ok {
