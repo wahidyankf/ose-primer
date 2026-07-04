@@ -72,7 +72,8 @@
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "uv run pytest -m unit",
+        "commands": ["! grep -rn '@pytest\\.mark\\.skip' tests", "uv run pytest -m unit --strict-markers"],
+        "parallel": false,
         "cwd": "apps/crud-be-python-fastapi"
       },
       "dependsOn": ["codegen"],
