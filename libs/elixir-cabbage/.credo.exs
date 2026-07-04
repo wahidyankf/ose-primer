@@ -58,7 +58,12 @@
 
         # Cyclomatic complexity in __before_compile__ macro (generated code, inherently complex)
         # https://github.com/cabbage-ex/cabbage/blob/v0.4.1/lib/cabbage/feature.ex
-        {Credo.Check.Refactor.CyclomaticComplexity, false}
+        {Credo.Check.Refactor.CyclomaticComplexity, false},
+
+        # @covers <spec-path>:<scenario-title> marker comments in test/feature_suggestion_test.exs
+        # must stay on one line for rhino-cli's spec-coverage regex matching; the default 120
+        # doesn't fit long spec paths.
+        {Credo.Check.Readability.MaxLineLength, [max_length: 200]}
       ]
     }
   ]

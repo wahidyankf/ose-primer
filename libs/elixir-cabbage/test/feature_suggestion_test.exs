@@ -6,6 +6,7 @@ defmodule Cabbage.FeatureSuggestionTest do
   alias Cabbage.Feature.MissingStepError
 
   describe "provide simple missing steps" do
+    # @covers specs/libs/elixir-cabbage/behavior/gherkin/compile/feature-compilation.feature:A step with no matching macro clause fails at compile time
     test "Show missing Given step" do
       message = """
       Please add a matching step for:
@@ -98,6 +99,7 @@ defmodule Cabbage.FeatureSuggestionTest do
       end
     end
 
+    # @covers specs/libs/elixir-cabbage/behavior/gherkin/compile/feature-compilation.feature:A scenario with all steps matched compiles into a passing ExUnit test
     test "Doesnt suggest any features" do
       defmodule FeatureSuggestionTest5 do
         use Cabbage.Feature, file: "simple.feature"
