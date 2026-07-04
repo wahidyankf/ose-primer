@@ -47,6 +47,7 @@ void main() {
             // Represented by the token decoding in the assertion step.
           });
 
+          // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Session info displays the authenticated user's identity
           s.then("the panel should display alice's user ID", () async {
             final claims = await svc.decodeTokenClaims(svc.currentAccessToken!);
             expect(claims.sub, equals(aliceId));
@@ -81,6 +82,7 @@ void main() {
           // Represented by the token decoding in the assertion step.
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Session info shows the token issuer
         s.then('the panel should display a non-empty issuer value', () async {
           final claims = await svc.decodeTokenClaims(svc.currentAccessToken!);
           expect(claims.iss, isNotEmpty);
@@ -122,6 +124,7 @@ void main() {
           jwks = await svc.getJwks();
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:JWKS endpoint is accessible for token verification
         s.then('at least one public key should be available', () async {
           expect(jwks.keys, isNotEmpty);
         });
@@ -161,6 +164,7 @@ void main() {
           expect(svc.currentAccessToken, isNull);
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Logging out marks the session as ended
         s.and(
           'navigating to a protected page should redirect to login',
           () async {
@@ -213,6 +217,7 @@ void main() {
             }
           });
 
+          // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Blacklisted token is rejected on protected page navigation
           s.then('alice should be redirected to the login page', () async {
             expect(caughtError, isA<UnauthorizedError>());
             expect(svc.isAuthenticated, isFalse);
@@ -289,6 +294,7 @@ void main() {
           expect(svc.isAuthenticated, isFalse);
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Disabled user is immediately logged out
         s.and(
           'an error message about account being disabled should be displayed',
           () async {

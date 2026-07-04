@@ -77,6 +77,7 @@ void main() {
         expect(userListResponse!.size, greaterThan(0));
       });
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Admin panel displays a paginated user list
       s.and('the list should display total user count', () async {
         expect(userListResponse!.totalElements, greaterThan(0));
       });
@@ -132,6 +133,7 @@ void main() {
         },
       );
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Searching users by email filters the list
       s.then(
         'the user list should display only users matching "alice@example.com"',
         () async {
@@ -209,6 +211,7 @@ void main() {
         },
       );
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Admin disables a user account from the user detail page
       s.then('alice\'s status should display as "disabled"', () async {
         final user = await svc.getUserById(aliceId);
         expect(user.status.toLowerCase(), equals('disabled'));
@@ -285,6 +288,7 @@ void main() {
           expect(caught, isA<AccountDisabledError>());
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Disabled user sees an error when trying to access their dashboard
         s.and(
           'an error message about account being disabled should be displayed',
           () async {
@@ -359,6 +363,7 @@ void main() {
         await svc.enableUser(aliceId);
       });
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Admin re-enables a disabled user account
       s.then('alice\'s status should display as "active"', () async {
         final user = await svc.getUserById(aliceId);
         expect(user.status.toLowerCase(), equals('active'));
@@ -419,6 +424,7 @@ void main() {
         expect(resetResponse!.token, isNotEmpty);
       });
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Admin generates a password-reset token for a user
       s.and('a copy-to-clipboard button should be available', () async {
         // The reset token is a non-empty string that the UI can present
         // with a copy-to-clipboard affordance. Verify the token is present

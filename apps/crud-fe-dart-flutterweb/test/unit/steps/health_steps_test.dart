@@ -21,6 +21,7 @@ void main() {
           // No-op: action represented by the subsequent assertion.
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/health/health-status.feature:Health indicator shows the service is UP
         s.then('the health status indicator should display "UP"', () async {
           final response = await svc.getHealth();
           expect(response.status, equals('UP'));
@@ -43,6 +44,7 @@ void main() {
             expect(response.status, equals('UP'));
           });
 
+          // @covers specs/apps/crud/behavior/crud-web/gherkin/health/health-status.feature:Health indicator does not expose component details to regular users
           s.and(
             'no detailed component health information should be visible',
             () async {

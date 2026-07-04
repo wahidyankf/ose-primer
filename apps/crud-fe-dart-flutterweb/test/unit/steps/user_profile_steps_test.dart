@@ -24,51 +24,48 @@ void main() {
       // ---------------------------------------------------------------------------
       // Scenario: Profile page displays username, email, and display name
       // ---------------------------------------------------------------------------
-      feature.scenario(
-        'Profile page displays username, email, and display name',
-        (s) {
-          s.given('the app is running', () async {
-            // No-op: ServiceClient starts in a clean state.
-          });
+      feature.scenario('Profile page displays username, email, and display name', (
+        s,
+      ) {
+        s.given('the app is running', () async {
+          // No-op: ServiceClient starts in a clean state.
+        });
 
-          s.and(
-            'a user "alice" is registered with email "alice@example.com" and password "Str0ng#Pass1"',
-            () async {
-              svc.seedUser(
-                username: 'alice',
-                email: 'alice@example.com',
-                password: 'Str0ng#Pass1',
-              );
-            },
-          );
-
-          s.and('alice has logged in', () async {
-            await svc.login(
-              const LoginRequest(username: 'alice', password: 'Str0ng#Pass1'),
+        s.and(
+          'a user "alice" is registered with email "alice@example.com" and password "Str0ng#Pass1"',
+          () async {
+            svc.seedUser(
+              username: 'alice',
+              email: 'alice@example.com',
+              password: 'Str0ng#Pass1',
             );
-          });
+          },
+        );
 
-          s.when('alice navigates to the profile page', () async {
-            currentProfile = await svc.getCurrentUser();
-          });
-
-          s.then('the profile should display username "alice"', () async {
-            expect(currentProfile, isNotNull);
-            expect(currentProfile!.username, equals('alice'));
-          });
-
-          s.and(
-            'the profile should display email "alice@example.com"',
-            () async {
-              expect(currentProfile!.email, equals('alice@example.com'));
-            },
+        s.and('alice has logged in', () async {
+          await svc.login(
+            const LoginRequest(username: 'alice', password: 'Str0ng#Pass1'),
           );
+        });
 
-          s.and('the profile should display a display name', () async {
-            expect(currentProfile!.displayName, isNotEmpty);
-          });
-        },
-      );
+        s.when('alice navigates to the profile page', () async {
+          currentProfile = await svc.getCurrentUser();
+        });
+
+        s.then('the profile should display username "alice"', () async {
+          expect(currentProfile, isNotNull);
+          expect(currentProfile!.username, equals('alice'));
+        });
+
+        s.and('the profile should display email "alice@example.com"', () async {
+          expect(currentProfile!.email, equals('alice@example.com'));
+        });
+
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Profile page displays username, email, and display name
+        s.and('the profile should display a display name', () async {
+          expect(currentProfile!.displayName, isNotEmpty);
+        });
+      });
 
       // ---------------------------------------------------------------------------
       // Scenario: Updating display name shows the new value
@@ -107,6 +104,7 @@ void main() {
           // Profile was already persisted in the updateProfile call above.
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Updating display name shows the new value
         s.then(
           'the profile should display display name "Alice Smith"',
           () async {
@@ -171,6 +169,7 @@ void main() {
           }
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Changing password with correct old password succeeds
         s.then(
           'a success message about password change should be displayed',
           () async {
@@ -235,6 +234,7 @@ void main() {
             }
           });
 
+          // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Changing password with incorrect old password shows an error
           s.then(
             'an error message about invalid credentials should be displayed',
             () async {
@@ -284,6 +284,7 @@ void main() {
           await svc.deactivateAccount();
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Self-deactivating account redirects to login
         s.then('alice should be redirected to the login page', () async {
           // After deactivation the session is cleared — the service reflects
           // that the user is no longer authenticated.
@@ -348,6 +349,7 @@ void main() {
           },
         );
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Self-deactivated user cannot log in
         s.and('alice should remain on the login page', () async {
           expect(operationSucceeded, isFalse);
         });

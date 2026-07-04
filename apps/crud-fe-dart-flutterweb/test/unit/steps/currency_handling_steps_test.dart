@@ -62,6 +62,7 @@ void main() {
           expect(expense.amount, equals('10.50'));
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:USD expense displays two decimal places
         s.and('the currency should display as "USD"', () async {
           final expense = await svc.getExpense(createdId);
           expect(expense.currency, equals('USD'));
@@ -114,6 +115,7 @@ void main() {
           expect(expense.amount, equals('150000'));
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:IDR expense displays as a whole number
         s.and('the currency should display as "IDR"', () async {
           final expense = await svc.getExpense(createdId);
           expect(expense.currency, equals('IDR'));
@@ -163,6 +165,7 @@ void main() {
           caught = const ValidationError('Currency "EUR" is not supported');
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:Unsupported currency code shows a validation error
         s.then(
           'a validation error for the currency field should be displayed',
           () async {
@@ -207,6 +210,7 @@ void main() {
           );
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:Malformed currency code shows a validation error
         s.then(
           'a validation error for the currency field should be displayed',
           () async {
@@ -278,6 +282,7 @@ void main() {
           },
         );
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency
         s.and('no cross-currency total should be shown', () async {
           // Each summary call returns amounts only for the requested currency.
           final usdSummary = await svc.getExpenseSummary(currency: 'USD');
@@ -327,6 +332,7 @@ void main() {
           caught = const ValidationError('Amount must be greater than zero');
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:Negative amount shows a validation error
         s.then(
           'a validation error for the amount field should be displayed',
           () async {

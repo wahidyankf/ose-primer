@@ -64,6 +64,7 @@ void main() {
             expect(expense.quantity, equals(50.5));
           });
 
+          // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/unit-handling.feature:Expense with metric unit "liter" displays quantity and unit
           s.and('the unit should display as "liter"', () async {
             final expense = await svc.getExpense(createdId);
             expect(expense.unit, equals('liter'));
@@ -121,6 +122,7 @@ void main() {
             expect(expense.quantity, equals(10));
           });
 
+          // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/unit-handling.feature:Expense with imperial unit "gallon" displays quantity and unit
           s.and('the unit should display as "gallon"', () async {
             final expense = await svc.getExpense(createdId);
             expect(expense.unit, equals('gallon'));
@@ -163,6 +165,7 @@ void main() {
           caught = const ValidationError('Unit "fathom" is not supported');
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/unit-handling.feature:Unsupported unit shows a validation error
         s.then(
           'a validation error for the unit field should be displayed',
           () async {
@@ -217,6 +220,7 @@ void main() {
           );
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/unit-handling.feature:Expense without quantity and unit fields is accepted
         s.then(
           'the entry list should contain an entry with description "Dinner"',
           () async {

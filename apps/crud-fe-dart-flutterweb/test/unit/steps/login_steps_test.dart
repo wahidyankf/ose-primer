@@ -43,6 +43,7 @@ void main() {
           expect(svc.isAuthenticated, isTrue);
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Successful login navigates to the dashboard
         s.and("the navigation should display alice's username", () async {
           final user = await svc.getCurrentUser();
           expect(user.username, equals('alice'));
@@ -80,6 +81,7 @@ void main() {
           expect(svc.currentAccessToken, isNotNull);
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Successful login stores session tokens
         s.and('a refresh token should be stored', () async {
           expect(svc.currentRefreshToken, isNotNull);
         });
@@ -124,6 +126,7 @@ void main() {
           },
         );
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Login with wrong password shows an error
         s.and('alice should remain on the login page', () async {
           expect(svc.isAuthenticated, isFalse);
         });
@@ -168,6 +171,7 @@ void main() {
           },
         );
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Login for non-existent user shows an error
         s.and('alice should remain on the login page', () async {
           expect(svc.isAuthenticated, isFalse);
         });
@@ -221,6 +225,7 @@ void main() {
           },
         );
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Login for deactivated account shows an error
         s.and('alice should remain on the login page', () async {
           expect(svc.isAuthenticated, isFalse);
         });

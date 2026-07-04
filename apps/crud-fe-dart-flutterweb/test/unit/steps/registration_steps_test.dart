@@ -63,6 +63,7 @@ void main() {
             expect(lastError, isNull);
           });
 
+          // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Successful registration navigates to the login page with success message
           s.and(
             'a success message about account creation should be displayed',
             () async {
@@ -102,6 +103,7 @@ void main() {
             registrationSucceeded = true;
           });
 
+          // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Successful registration does not display the password in any confirmation
           s.then('no password value should be visible on the page', () async {
             // The User model returned by the service does not expose a password
             // field — asserting the model structure enforces this at the data layer.
@@ -170,6 +172,7 @@ void main() {
           },
         );
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Registration with duplicate username shows an error
         s.and('the visitor should remain on the registration page', () async {
           // Registration failed — the visitor stays on the registration page.
           expect(registrationSucceeded, isFalse);
@@ -179,50 +182,50 @@ void main() {
       // ---------------------------------------------------------------------------
       // Scenario: Registration with invalid email shows a validation error
       // ---------------------------------------------------------------------------
-      feature.scenario(
-        'Registration with invalid email shows a validation error',
-        (s) {
-          s.given('the app is running', () async {});
+      feature.scenario('Registration with invalid email shows a validation error', (
+        s,
+      ) {
+        s.given('the app is running', () async {});
 
-          s.when(
-            'a visitor fills in the registration form with username "alice", email "not-an-email", and password "Str0ng#Pass1"',
-            () async {
-              // Form data captured; submission happens in the next step.
-            },
-          );
+        s.when(
+          'a visitor fills in the registration form with username "alice", email "not-an-email", and password "Str0ng#Pass1"',
+          () async {
+            // Form data captured; submission happens in the next step.
+          },
+        );
 
-          s.and('the visitor submits the registration form', () async {
-            try {
-              await svc.register(
-                const RegisterRequest(
-                  username: 'alice',
-                  email: 'not-an-email',
-                  password: 'Str0ng#Pass1',
-                ),
-              );
-              registrationSucceeded = true;
-            } catch (e) {
-              lastError = e;
-              registrationSucceeded = false;
-            }
-          });
+        s.and('the visitor submits the registration form', () async {
+          try {
+            await svc.register(
+              const RegisterRequest(
+                username: 'alice',
+                email: 'not-an-email',
+                password: 'Str0ng#Pass1',
+              ),
+            );
+            registrationSucceeded = true;
+          } catch (e) {
+            lastError = e;
+            registrationSucceeded = false;
+          }
+        });
 
-          s.then(
-            'a validation error for the email field should be displayed',
-            () async {
-              expect(
-                lastError,
-                isA<ValidationError>(),
-                reason: 'Invalid email must raise ValidationError',
-              );
-            },
-          );
+        s.then(
+          'a validation error for the email field should be displayed',
+          () async {
+            expect(
+              lastError,
+              isA<ValidationError>(),
+              reason: 'Invalid email must raise ValidationError',
+            );
+          },
+        );
 
-          s.and('the visitor should remain on the registration page', () async {
-            expect(registrationSucceeded, isFalse);
-          });
-        },
-      );
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Registration with invalid email shows a validation error
+        s.and('the visitor should remain on the registration page', () async {
+          expect(registrationSucceeded, isFalse);
+        });
+      });
 
       // ---------------------------------------------------------------------------
       // Scenario: Registration with empty password shows a validation error
@@ -266,6 +269,7 @@ void main() {
             },
           );
 
+          // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Registration with empty password shows a validation error
           s.and('the visitor should remain on the registration page', () async {
             expect(registrationSucceeded, isFalse);
           });
@@ -316,6 +320,7 @@ void main() {
           },
         );
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Registration with weak password shows a validation error
         s.and('the visitor should remain on the registration page', () async {
           expect(registrationSucceeded, isFalse);
         });

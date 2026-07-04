@@ -57,6 +57,7 @@ void main() {
             expect(svc.currentAccessToken, isNot(equals(originalAccessToken)));
           });
 
+          // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Session refreshes automatically before the access token expires
           s.and('a new refresh token should be stored', () async {
             expect(svc.currentRefreshToken, isNotNull);
             expect(
@@ -109,6 +110,7 @@ void main() {
           expect(svc.isAuthenticated, isFalse);
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Expired refresh token redirects to login
         s.and(
           'an error message about session expiration should be displayed',
           () async {
@@ -164,6 +166,7 @@ void main() {
           },
         );
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Original refresh token is rejected after rotation
         s.then('alice should be redirected to the login page', () async {
           expect(caughtError, isA<TokenExpiredError>());
           expect(svc.isAuthenticated, isFalse);
@@ -173,58 +176,58 @@ void main() {
       // -----------------------------------------------------------------------
       // Scenario: Deactivated user is redirected to login on next action
       // -----------------------------------------------------------------------
-      feature.scenario(
-        'Deactivated user is redirected to login on next action',
-        (s) {
-          ServiceError? caughtError;
+      feature.scenario('Deactivated user is redirected to login on next action', (
+        s,
+      ) {
+        ServiceError? caughtError;
 
-          s.given('the app is running', () async {});
+        s.given('the app is running', () async {});
 
-          s.and(
-            'a user "alice" is registered with password "Str0ng#Pass1"',
-            () async {
-              svc.seedUser(
-                username: 'alice',
-                email: 'alice@example.com',
-                password: 'Str0ng#Pass1',
-              );
-            },
+        s.and(
+          'a user "alice" is registered with password "Str0ng#Pass1"',
+          () async {
+            svc.seedUser(
+              username: 'alice',
+              email: 'alice@example.com',
+              password: 'Str0ng#Pass1',
+            );
+          },
+        );
+
+        s.and('alice has logged in', () async {
+          await svc.login(
+            const LoginRequest(username: 'alice', password: 'Str0ng#Pass1'),
           );
+        });
 
-          s.and('alice has logged in', () async {
+        s.given("alice's account has been deactivated", () async {
+          await svc.deactivateAccount();
+        });
+
+        s.when('alice navigates to a protected page', () async {
+          // After deactivation + logout, alice tries to log in again
+          // which simulates navigating to a protected page (backend rejects)
+          try {
             await svc.login(
               const LoginRequest(username: 'alice', password: 'Str0ng#Pass1'),
             );
-          });
+          } on ServiceError catch (e) {
+            caughtError = e;
+          }
+        });
 
-          s.given("alice's account has been deactivated", () async {
-            await svc.deactivateAccount();
-          });
+        s.then('alice should be redirected to the login page', () async {
+          expect(svc.isAuthenticated, isFalse);
+        });
 
-          s.when('alice navigates to a protected page', () async {
-            // After deactivation + logout, alice tries to log in again
-            // which simulates navigating to a protected page (backend rejects)
-            try {
-              await svc.login(
-                const LoginRequest(username: 'alice', password: 'Str0ng#Pass1'),
-              );
-            } on ServiceError catch (e) {
-              caughtError = e;
-            }
-          });
-
-          s.then('alice should be redirected to the login page', () async {
-            expect(svc.isAuthenticated, isFalse);
-          });
-
-          s.and(
-            'an error message about account deactivation should be displayed',
-            () async {
-              expect(caughtError, isA<AccountInactiveError>());
-            },
-          );
-        },
-      );
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Deactivated user is redirected to login on next action
+        s.and(
+          'an error message about account deactivation should be displayed',
+          () async {
+            expect(caughtError, isA<AccountInactiveError>());
+          },
+        );
+      });
 
       // -----------------------------------------------------------------------
       // Scenario: Clicking logout ends the current session
@@ -257,6 +260,7 @@ void main() {
           expect(svc.isAuthenticated, isFalse);
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Clicking logout ends the current session
         s.and('the authentication session should be cleared', () async {
           expect(svc.currentAccessToken, isNull);
           expect(svc.currentRefreshToken, isNull);
@@ -294,6 +298,7 @@ void main() {
           expect(svc.isAuthenticated, isFalse);
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Clicking "Log out all devices" ends all sessions
         s.and('the authentication session should be cleared', () async {
           expect(svc.currentAccessToken, isNull);
           expect(svc.currentRefreshToken, isNull);
@@ -331,6 +336,7 @@ void main() {
           // No-op: navigation to login page does not interact with the service.
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Clicking logout twice does not cause an error
         s.then('no error should be displayed', () async {
           // A second logout should complete without throwing.
           await expectLater(svc.logout(), completes);

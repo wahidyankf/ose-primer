@@ -79,6 +79,7 @@ void main() {
         expect(user.username, equals('alice'));
       });
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Desktop viewport shows full sidebar navigation
       s.and(
         'the sidebar should display navigation labels alongside icons',
         () async {
@@ -130,6 +131,7 @@ void main() {
         },
       );
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Tablet viewport collapses sidebar to icons only
       s.and(
         'hovering over a sidebar icon should show a tooltip with the label',
         () async {
@@ -192,6 +194,7 @@ void main() {
         // Tap event is a UI concern; no state change at service layer.
       });
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Mobile viewport hides sidebar behind a hamburger menu
       s.then('a slide-out navigation drawer should appear', () async {
         // Drawer open is a UI concern. The service is ready to serve
         // navigation data once the drawer is displayed.
@@ -242,6 +245,7 @@ void main() {
         expect(svc.isAuthenticated, isTrue);
       });
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Mobile navigation drawer closes on item selection
       s.and('the selected page should load', () async {
         // Page load is routed by the UI. The service is ready to serve data.
         final user = await svc.getCurrentUser();
@@ -303,6 +307,7 @@ void main() {
         expect(result.totalElements, equals(3));
       });
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Entry list displays as a table on desktop
       s.and(
         'the table should show columns for date, description, category, amount, and currency',
         () async {
@@ -393,6 +398,7 @@ void main() {
         expect(result.totalElements, equals(3));
       });
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Entry list displays as cards on mobile
       s.and('each card should show description, amount, and date', () async {
         final result = await svc.listExpenses();
         for (final expense in result.content) {
@@ -474,6 +480,7 @@ void main() {
         expect(user.status, isNotEmpty);
       });
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Admin user list is scrollable horizontally on mobile
       s.and(
         'the visible columns should prioritize username and status',
         () async {
@@ -571,6 +578,7 @@ void main() {
         );
       });
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:P&L report chart adapts to viewport width
       s.and(
         'category breakdowns should stack vertically below the chart',
         () async {
@@ -646,6 +654,7 @@ void main() {
         },
       );
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Login form is centered and full-width on mobile
       s.and(
         'the form inputs should be large enough for touch interaction',
         () async {
@@ -717,6 +726,7 @@ void main() {
         },
       );
 
+      // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Attachment upload area adapts to mobile
       s.and('drag-and-drop should be replaced with a file picker', () async {
         // Drag-and-drop vs file-picker is a UI interaction pattern concern.
         // Verify the uploaded attachment is accessible via the service —

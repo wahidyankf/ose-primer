@@ -74,6 +74,7 @@ void main() {
           expect(attachments.any((a) => a.filename == 'receipt.jpg'), isTrue);
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Uploading a JPEG image adds it to the attachment list
         s.and('the attachment should display as type "image/jpeg"', () async {
           final attachments = await svc.listAttachments(expenseId);
           final receipt = attachments.firstWhere((a) => a.id == attachmentId);
@@ -141,6 +142,7 @@ void main() {
           expect(attachments.any((a) => a.filename == 'invoice.pdf'), isTrue);
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Uploading a PDF document adds it to the attachment list
         s.and(
           'the attachment should display as type "application/pdf"',
           () async {
@@ -210,6 +212,7 @@ void main() {
           expect(attachments.any((a) => a.filename == 'receipt.jpg'), isTrue);
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Entry detail shows all uploaded attachments
         s.and('the attachment list should include "invoice.pdf"', () async {
           final attachments = await svc.listAttachments(expenseId);
           expect(attachments.any((a) => a.filename == 'invoice.pdf'), isTrue);
@@ -277,6 +280,7 @@ void main() {
           await svc.deleteAttachment(expenseId, attachmentId);
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Deleting an attachment removes it from the list
         s.then(
           'the attachment list should not contain "receipt.jpg"',
           () async {
@@ -350,6 +354,7 @@ void main() {
           },
         );
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Uploading an unsupported file type shows an error
         s.and('the attachment list should remain unchanged', () async {
           final attachmentsAfter = await svc.listAttachments(expenseId);
           expect(attachmentsAfter.length, equals(attachmentsBefore.length));
@@ -421,6 +426,7 @@ void main() {
           },
         );
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Uploading an oversized file shows an error
         s.and('the attachment list should remain unchanged', () async {
           final attachmentsAfter = await svc.listAttachments(expenseId);
           expect(attachmentsAfter.length, equals(attachmentsBefore.length));
@@ -499,6 +505,7 @@ void main() {
 
         s.when("alice navigates to bob's entry detail", () async {});
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Cannot upload attachment to another user's entry
         s.then('the upload attachment button should not be visible', () async {
           // The service enforces ownership: uploading to bob's expense
           // throws ForbiddenError, confirming the UI must hide the button.
@@ -579,6 +586,7 @@ void main() {
 
         s.when("alice navigates to bob's entry detail", () async {});
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Cannot view attachments on another user's entry
         s.then('an access denied message should be displayed', () async {
           expect(
             () async => svc.listAttachments(bobExpenseId),
@@ -655,6 +663,7 @@ void main() {
 
         s.when("alice navigates to bob's entry detail", () async {});
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Cannot delete attachment on another user's entry
         s.then('the delete attachment button should not be visible', () async {
           // Attempting to list attachments on bob's entry throws ForbiddenError,
           // confirming the UI must hide the delete button.
@@ -665,85 +674,82 @@ void main() {
         });
       });
 
-      feature.scenario(
-        'Deleting a non-existent attachment shows a not-found error',
-        (s) {
-          late String expenseId;
-          late String attachmentId;
-          ServiceError? caught;
+      feature.scenario('Deleting a non-existent attachment shows a not-found error', (
+        s,
+      ) {
+        late String expenseId;
+        late String attachmentId;
+        ServiceError? caught;
 
-          s.given('the app is running', () async {});
+        s.given('the app is running', () async {});
 
-          s.and(
-            'a user "alice" is registered with email "alice@example.com" and password "Str0ng#Pass1"',
-            () async {
-              svc.seedUser(
-                username: 'alice',
-                email: 'alice@example.com',
-                password: 'Str0ng#Pass1',
-              );
-            },
-          );
-
-          s.and('alice has logged in', () async {
-            await svc.login(
-              const LoginRequest(username: 'alice', password: 'Str0ng#Pass1'),
+        s.and(
+          'a user "alice" is registered with email "alice@example.com" and password "Str0ng#Pass1"',
+          () async {
+            svc.seedUser(
+              username: 'alice',
+              email: 'alice@example.com',
+              password: 'Str0ng#Pass1',
             );
-          });
+          },
+        );
 
-          s.and(
-            'alice has created an entry with amount "10.50", currency "USD", category "food", description "Lunch", date "2025-01-15", and type "expense"',
-            () async {
-              final expense = await svc.createExpense(
-                const CreateExpenseRequest(
-                  amount: '10.50',
-                  currency: 'USD',
-                  category: 'food',
-                  description: 'Lunch',
-                  date: '2025-01-15',
-                  type: 'expense',
-                ),
-              );
-              expenseId = expense.id;
-            },
+        s.and('alice has logged in', () async {
+          await svc.login(
+            const LoginRequest(username: 'alice', password: 'Str0ng#Pass1'),
           );
+        });
 
-          s.and('alice has uploaded "receipt.jpg" to the entry', () async {
-            final attachment = await svc.uploadAttachment(
-              expenseId,
-              'receipt.jpg',
+        s.and(
+          'alice has created an entry with amount "10.50", currency "USD", category "food", description "Lunch", date "2025-01-15", and type "expense"',
+          () async {
+            final expense = await svc.createExpense(
+              const CreateExpenseRequest(
+                amount: '10.50',
+                currency: 'USD',
+                category: 'food',
+                description: 'Lunch',
+                date: '2025-01-15',
+                type: 'expense',
+              ),
             );
-            attachmentId = attachment.id;
-          });
+            expenseId = expense.id;
+          },
+        );
 
-          s.and(
-            'the attachment has been deleted from another session',
-            () async {
-              svc.removeAttachmentDirectly(attachmentId);
-            },
+        s.and('alice has uploaded "receipt.jpg" to the entry', () async {
+          final attachment = await svc.uploadAttachment(
+            expenseId,
+            'receipt.jpg',
           );
+          attachmentId = attachment.id;
+        });
 
-          s.when(
-            'alice clicks the delete button on attachment "receipt.jpg"',
-            () async {},
-          );
+        s.and('the attachment has been deleted from another session', () async {
+          svc.removeAttachmentDirectly(attachmentId);
+        });
 
-          s.and('alice confirms the deletion', () async {
-            try {
-              await svc.deleteAttachment(expenseId, attachmentId);
-            } on NotFoundError catch (e) {
-              caught = e;
-            }
-          });
+        s.when(
+          'alice clicks the delete button on attachment "receipt.jpg"',
+          () async {},
+        );
 
-          s.then(
-            'an error message about attachment not found should be displayed',
-            () async {
-              expect(caught, isA<NotFoundError>());
-            },
-          );
-        },
-      );
+        s.and('alice confirms the deletion', () async {
+          try {
+            await svc.deleteAttachment(expenseId, attachmentId);
+          } on NotFoundError catch (e) {
+            caught = e;
+          }
+        });
+
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Deleting a non-existent attachment shows a not-found error
+        s.then(
+          'an error message about attachment not found should be displayed',
+          () async {
+            expect(caught, isA<NotFoundError>());
+          },
+        );
+      });
     },
   );
 }

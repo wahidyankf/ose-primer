@@ -102,6 +102,7 @@ void main() {
           },
         );
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:All form inputs have associated labels
         s.and('every input field should have an accessible name', () async {
           // All three fields are individually validated by the service, so
           // each must be surfaced as a named input control to the user.
@@ -154,6 +155,7 @@ void main() {
           expect(loginAttempted, isFalse);
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Error messages are announced to screen readers
         s.and(
           'the errors should be associated with their respective fields via aria-describedby',
           () async {
@@ -203,6 +205,7 @@ void main() {
           },
         );
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Keyboard navigation works through all interactive elements
         s.and(
           'the currently focused element should have a visible focus indicator',
           () async {
@@ -267,6 +270,7 @@ void main() {
           );
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Modal dialogs trap focus
         s.and(
           'pressing Escape should close the dialog and return focus to the trigger',
           () async {
@@ -311,6 +315,7 @@ void main() {
           },
         );
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Color contrast meets WCAG AA standards
         s.and(
           'all interactive elements should meet a minimum contrast ratio of 3:1',
           () async {
@@ -382,6 +387,7 @@ void main() {
           );
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Images and icons have alternative text
         s.and(
           'decorative icons should be hidden from assistive technologies',
           () async {

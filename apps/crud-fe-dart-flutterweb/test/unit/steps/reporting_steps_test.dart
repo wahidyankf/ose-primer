@@ -93,6 +93,7 @@ void main() {
             expect(report.totalExpense, equals('150.00'));
           });
 
+          // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L report displays income total, expense total, and net for a period
           s.and('the report should display net "4850.00"', () async {
             final report = await svc.getPLReport(
               startDate: '2025-01-01',
@@ -188,6 +189,7 @@ void main() {
           },
         );
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L breakdown shows category-level amounts
         s.and(
           'the expense breakdown should list "transport" category',
           () async {
@@ -251,6 +253,7 @@ void main() {
           expect(report.totalIncome, equals('1000.00'));
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:Income entries are excluded from expense total
         s.and('the report should display expense total "0.00"', () async {
           final report = await svc.getPLReport(
             startDate: '2025-03-01',
@@ -308,6 +311,7 @@ void main() {
           expect(report.totalIncome, equals('0.00'));
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:Expense entries are excluded from income total
         s.and('the report should display expense total "75.00"', () async {
           final report = await svc.getPLReport(
             startDate: '2025-04-01',
@@ -376,6 +380,7 @@ void main() {
           expect(report.totalIncome, equals('2000.00'));
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L report filters by currency without mixing
         s.and('no IDR amounts should be included', () async {
           final report = await svc.getPLReport(
             startDate: '2025-06-01',
@@ -388,63 +393,63 @@ void main() {
         });
       });
 
-      feature.scenario(
-        'P&L report for a period with no entries shows zero totals',
-        (s) {
-          s.given('the app is running', () async {});
+      feature.scenario('P&L report for a period with no entries shows zero totals', (
+        s,
+      ) {
+        s.given('the app is running', () async {});
 
-          s.and(
-            'a user "alice" is registered with email "alice@example.com" and password "Str0ng#Pass1"',
-            () async {
-              svc.seedUser(
-                username: 'alice',
-                email: 'alice@example.com',
-                password: 'Str0ng#Pass1',
-              );
-            },
+        s.and(
+          'a user "alice" is registered with email "alice@example.com" and password "Str0ng#Pass1"',
+          () async {
+            svc.seedUser(
+              username: 'alice',
+              email: 'alice@example.com',
+              password: 'Str0ng#Pass1',
+            );
+          },
+        );
+
+        s.and('alice has logged in', () async {
+          await svc.login(
+            const LoginRequest(username: 'alice', password: 'Str0ng#Pass1'),
           );
+        });
 
-          s.and('alice has logged in', () async {
-            await svc.login(
-              const LoginRequest(username: 'alice', password: 'Str0ng#Pass1'),
-            );
-          });
+        s.when('alice navigates to the reporting page', () async {});
 
-          s.when('alice navigates to the reporting page', () async {});
+        s.and(
+          'alice selects date range "2099-01-01" to "2099-01-31" with currency "USD"',
+          () async {},
+        );
 
-          s.and(
-            'alice selects date range "2099-01-01" to "2099-01-31" with currency "USD"',
-            () async {},
+        s.then('the report should display income total "0.00"', () async {
+          final report = await svc.getPLReport(
+            startDate: '2099-01-01',
+            endDate: '2099-01-31',
+            currency: 'USD',
           );
+          expect(report.totalIncome, equals('0.00'));
+        });
 
-          s.then('the report should display income total "0.00"', () async {
-            final report = await svc.getPLReport(
-              startDate: '2099-01-01',
-              endDate: '2099-01-31',
-              currency: 'USD',
-            );
-            expect(report.totalIncome, equals('0.00'));
-          });
+        s.and('the report should display expense total "0.00"', () async {
+          final report = await svc.getPLReport(
+            startDate: '2099-01-01',
+            endDate: '2099-01-31',
+            currency: 'USD',
+          );
+          expect(report.totalExpense, equals('0.00'));
+        });
 
-          s.and('the report should display expense total "0.00"', () async {
-            final report = await svc.getPLReport(
-              startDate: '2099-01-01',
-              endDate: '2099-01-31',
-              currency: 'USD',
-            );
-            expect(report.totalExpense, equals('0.00'));
-          });
-
-          s.and('the report should display net "0.00"', () async {
-            final report = await svc.getPLReport(
-              startDate: '2099-01-01',
-              endDate: '2099-01-31',
-              currency: 'USD',
-            );
-            expect(report.net, equals('0.00'));
-          });
-        },
-      );
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L report for a period with no entries shows zero totals
+        s.and('the report should display net "0.00"', () async {
+          final report = await svc.getPLReport(
+            startDate: '2099-01-01',
+            endDate: '2099-01-31',
+            currency: 'USD',
+          );
+          expect(report.net, equals('0.00'));
+        });
+      });
     },
   );
 }

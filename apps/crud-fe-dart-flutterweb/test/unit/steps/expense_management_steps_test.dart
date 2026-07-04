@@ -62,6 +62,7 @@ void main() {
           );
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Creating an expense entry adds it to the entry list
         s.then(
           'the entry list should contain an entry with description "Lunch"',
           () async {
@@ -116,6 +117,7 @@ void main() {
           );
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Creating an income entry adds it to the entry list
         s.then(
           'the entry list should contain an entry with description "Monthly salary"',
           () async {
@@ -196,6 +198,7 @@ void main() {
           expect(expense.date, equals('2025-01-15'));
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Clicking an entry shows its full details
         s.and('the entry detail should display type "expense"', () async {
           final expense = await svc.getExpense(createdId);
           expect(expense.type, equals('expense'));
@@ -247,6 +250,7 @@ void main() {
           expect(response.totalPages, greaterThan(0));
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Entry list shows pagination for multiple entries
         s.and('the entry list should show the total count', () async {
           final response = await svc.listExpenses();
           expect(response.totalElements, equals(3));
@@ -321,6 +325,7 @@ void main() {
           expect(expense.amount, equals('12.00'));
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Editing an entry updates the displayed values
         s.and(
           'the entry detail should display description "Updated breakfast"',
           () async {
@@ -377,6 +382,7 @@ void main() {
           await svc.deleteExpense(createdId);
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Deleting an entry removes it from the list
         s.then(
           'the entry list should not contain an entry with description "Snack"',
           () async {
@@ -419,6 +425,7 @@ void main() {
           // No-op: navigation is a UI routing concern.
         });
 
+        // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Unauthenticated visitor cannot access the entry form
         s.then('alice should be redirected to the login page', () async {
           // Without an active session, any expense operation throws UnauthorizedError.
           expect(svc.isAuthenticated, isFalse);
