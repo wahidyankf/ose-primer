@@ -91,6 +91,7 @@ async fn response_array_count(world: &mut AppWorld, count: usize, field: String)
     );
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments for an entry returns all uploaded files with metadata
 #[then(
     regex = r#"the response body should contain an attachment with "([^"]+)" equal to "([^"]+)""#
 )]
@@ -116,6 +117,7 @@ async fn attachment_with_field(world: &mut AppWorld, field: String, value: Strin
     );
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload file exceeding the size limit returns 413
 #[then("the response body should contain an error message about file size")]
 async fn error_file_size(world: &mut AppWorld) {
     let msg = world

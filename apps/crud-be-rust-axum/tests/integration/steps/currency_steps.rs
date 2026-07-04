@@ -93,6 +93,7 @@ async fn alice_get_summary(world: &mut AppWorld) {
     world.svc_expense_summary(&bearer).await;
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency without cross-currency mixing
 #[then(expr = "the response body should contain {string} total equal to {string}")]
 async fn summary_total_equals(world: &mut AppWorld, currency: String, amount: String) {
     let actual = world

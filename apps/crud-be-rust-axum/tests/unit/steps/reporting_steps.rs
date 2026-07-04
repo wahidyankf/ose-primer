@@ -131,6 +131,7 @@ async fn income_breakdown_contains(world: &mut AppWorld, category: String, amoun
     );
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L breakdown includes category-level amounts for income and expenses
 #[then(expr = "the expense breakdown should contain {string} with amount {string}")]
 async fn expense_breakdown_contains(world: &mut AppWorld, category: String, amount: String) {
     let breakdown = world

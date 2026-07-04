@@ -8,6 +8,8 @@ async fn decode_alice_token(world: &mut AppWorld) {
     world.svc_get_claims(&bearer).await;
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains user ID claim
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains issuer claim
 #[then(expr = "the token should contain a non-null {string} claim")]
 async fn token_claim_non_null(world: &mut AppWorld, claim: String) {
     let val = world.last_body.get(&claim);
@@ -23,6 +25,7 @@ async fn get_jwks(world: &mut AppWorld) {
     world.svc_jwks().await;
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:JWKS endpoint returns the public key for token signature verification
 #[then(expr = "the response body should contain at least one key in the {string} array")]
 async fn jwks_has_keys(world: &mut AppWorld, field: String) {
     let keys = world
@@ -37,6 +40,7 @@ async fn jwks_has_keys(world: &mut AppWorld, field: String) {
     );
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Logout blacklists the access token
 #[then("alice's access token should be recorded as revoked")]
 async fn token_is_revoked(world: &mut AppWorld) {
     let token = world.auth_token.clone().unwrap_or_default();

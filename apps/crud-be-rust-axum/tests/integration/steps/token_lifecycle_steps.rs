@@ -72,6 +72,8 @@ async fn logout_all_alice(world: &mut AppWorld) {
     world.svc_logout_all(&format!("Bearer {token}")).await;
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout current session invalidates the access token
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout all devices invalidates tokens from all sessions
 #[then("alice's access token should be invalidated")]
 async fn check_token_invalidated(world: &mut AppWorld) {
     let token = world.auth_token.clone().unwrap_or_default();
@@ -89,6 +91,7 @@ async fn alice_already_logged_out(world: &mut AppWorld) {
     world.svc_logout(&format!("Bearer {token}")).await;
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Reject refresh with an expired refresh token
 #[then("the response body should contain an error message about token expiration")]
 async fn error_token_expired(world: &mut AppWorld) {
     let msg = world
@@ -103,6 +106,7 @@ async fn error_token_expired(world: &mut AppWorld) {
     );
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Original refresh token is rejected after rotation (single-use)
 #[then("the response body should contain an error message about invalid token")]
 async fn error_invalid_token(world: &mut AppWorld) {
     let msg = world

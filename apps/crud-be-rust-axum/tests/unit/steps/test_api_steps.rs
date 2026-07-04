@@ -149,6 +149,7 @@ async fn all_expenses_deleted(world: &mut AppWorld) {
     );
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Reset database clears all user-created data
 #[then("all attachments should be deleted")]
 async fn all_attachments_deleted(world: &mut AppWorld) {
     assert_eq!(
@@ -158,6 +159,7 @@ async fn all_attachments_deleted(world: &mut AppWorld) {
     );
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Promote user to admin role
 #[then(expr = "user {string} should have the {string} role")]
 async fn user_should_have_role(world: &mut AppWorld, username: String, expected_role: String) {
     let user = world

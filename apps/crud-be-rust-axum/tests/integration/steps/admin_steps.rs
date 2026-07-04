@@ -34,6 +34,7 @@ async fn admin_search_users_by_email(world: &mut AppWorld) {
         .await;
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Search users by email returns matching results
 #[then(expr = "the response body should contain at least one user with {string} equal to {string}")]
 async fn response_has_user_with_field(world: &mut AppWorld, field: String, value: String) {
     let data = world.last_body.get("content").and_then(|v| v.as_array());
@@ -100,6 +101,9 @@ async fn admin_enable_alice(world: &mut AppWorld) {
     world.svc_admin_enable_user(&bearer, alice_id).await;
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin disables a user account
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin re-enables a disabled user account
+// @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Account is locked after exceeding the maximum failed login threshold
 #[then(expr = "alice's account status should be {string}")]
 async fn alice_account_status(world: &mut AppWorld, expected: String) {
     let expected_lower = expected.to_lowercase();
