@@ -81,7 +81,7 @@
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "dotnet test tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj --filter Category=Unit",
+        "command": "! grep -rn 'Skip\\s*=' tests/DemoBeFsgi.Tests && dotnet test tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj --filter Category=Unit",
         "cwd": "apps/crud-be-fsharp-giraffe",
         "env": {
           "CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET": "dev-jwt-secret-at-least-32-characters-long-for-hmac"

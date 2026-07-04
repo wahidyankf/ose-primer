@@ -70,7 +70,7 @@
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "MIX_ENV=test mix test --only unit",
+        "command": "! grep -rn '@tag :skip\\|@moduletag :skip' test && MIX_ENV=test mix test --only unit",
         "cwd": "apps/crud-be-elixir-phoenix"
       },
       "dependsOn": ["codegen"],

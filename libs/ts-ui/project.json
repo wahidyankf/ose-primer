@@ -20,7 +20,11 @@
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx vitest run --coverage",
+        "commands": [
+          "npx vitest run --coverage",
+          "! grep -rnE '\\.(skip|todo)\\(' --include='*.test.*' --include='*.steps.*' src"
+        ],
+        "parallel": false,
         "cwd": "libs/ts-ui"
       }
     },

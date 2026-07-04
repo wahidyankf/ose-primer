@@ -82,7 +82,8 @@
         "{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature"
       ],
       "options": {
-        "command": "flutter test test/unit",
+        "commands": ["flutter test test/unit --run-skipped", "! grep -rnE 'skip:[[:space:]]*true' test/unit"],
+        "parallel": false,
         "cwd": "{projectRoot}"
       }
     },

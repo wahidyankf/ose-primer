@@ -75,7 +75,7 @@
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "mvn test",
+        "command": "! grep -rn '@Disabled' src/test && mvn test",
         "cwd": "apps/crud-be-java-vertx"
       },
       "dependsOn": ["codegen"],

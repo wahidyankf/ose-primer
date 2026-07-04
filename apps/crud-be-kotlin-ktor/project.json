@@ -71,7 +71,7 @@
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$(ls -d ${SDKMAN_DIR:-$HOME/.sdkman}/candidates/java/21* 2>/dev/null | head -1)} ./gradlew testUnit",
+        "command": "! grep -rn '@Disabled' src/test && JAVA_HOME=${JAVA_HOME_21_X64:-$(ls -d ${SDKMAN_DIR:-$HOME/.sdkman}/candidates/java/21* 2>/dev/null | head -1)} ./gradlew testUnit",
         "cwd": "apps/crud-be-kotlin-ktor"
       },
       "dependsOn": ["codegen"],

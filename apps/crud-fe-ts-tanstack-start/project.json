@@ -92,7 +92,11 @@
         "{workspaceRoot}/specs/apps/crud/behavior/crud-web/gherkin/**/*.feature"
       ],
       "options": {
-        "command": "npx vitest run --project unit",
+        "commands": [
+          "npx vitest run --project unit",
+          "! grep -rnE '\\.(skip|todo)\\(' --include='*.test.*' --include='*.steps.*' src"
+        ],
+        "parallel": false,
         "cwd": "{projectRoot}"
       },
       "dependsOn": ["codegen"]

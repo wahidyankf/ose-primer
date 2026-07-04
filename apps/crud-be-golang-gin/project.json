@@ -72,7 +72,7 @@
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "CGO_ENABLED=0 go test -v -run TestUnit ./... -count=1",
+        "command": "! grep -rn 't\\.Skip(' --include=*.go . && CGO_ENABLED=0 go test -v -run TestUnit ./... -count=1",
         "cwd": "apps/crud-be-golang-gin"
       },
       "dependsOn": ["codegen"],

@@ -19,7 +19,11 @@
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'test:unit: no unit tests (echo placeholder)'"
+        "commands": [
+          "echo 'test:unit: no unit tests (echo placeholder)'",
+          "! grep -rnE '\\.(skip|todo)\\(' --include='*.test.*' --include='*.steps.*' src"
+        ],
+        "parallel": false
       }
     },
     "test:coverage": {
