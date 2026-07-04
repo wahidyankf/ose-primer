@@ -44,6 +44,8 @@ def alice_get_unit_expense(
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with an unsupported unit returns 400
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Expense without quantity and unit fields is accepted
 @when(
     parsers.parse("alice sends POST /api/v1/expenses with body {body}"),
     target_fixture="response",
@@ -65,6 +67,8 @@ def check_quantity(response: FakeResponse, value: str) -> None:
     assert float(actual) == expected, f"Expected quantity={expected}, got {actual}"
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with metric unit "liter" stores quantity and unit correctly
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with imperial unit "gallon" stores quantity and unit correctly
 @then(parsers.parse('the response body should contain "unit" equal to "{value}"'))
 def check_unit(response: FakeResponse, value: str) -> None:
     body = response.json()

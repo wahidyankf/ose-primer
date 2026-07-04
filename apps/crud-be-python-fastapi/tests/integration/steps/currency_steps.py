@@ -34,6 +34,8 @@ def alice_create_currency_expense(client: ServiceClient, alice_tokens: dict, bod
 # --- When steps ---
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:USD expense amount preserves two decimal places
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:IDR expense amount is stored and returned as a whole number
 @when("alice sends GET /api/v1/expenses/{expenseId}", target_fixture="response")
 def alice_get_currency_expense(
     client: ServiceClient, alice_tokens: dict, created_expense: dict
@@ -44,6 +46,9 @@ def alice_get_currency_expense(
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Unsupported currency code returns 400
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Malformed currency code returns 400
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Negative amount is rejected with 400
 @when(
     parsers.parse("alice sends POST /api/v1/expenses with body {body}"),
     target_fixture="response",
@@ -63,6 +68,7 @@ def alice_get_summary(client: ServiceClient, alice_tokens: dict) -> FakeResponse
 # --- Then steps ---
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency without cross-currency mixing
 @then(parsers.parse('the response body should contain "{currency}" total equal to "{total}"'))
 def check_currency_total(response: FakeResponse, currency: str, total: str) -> None:
     body = response.json()

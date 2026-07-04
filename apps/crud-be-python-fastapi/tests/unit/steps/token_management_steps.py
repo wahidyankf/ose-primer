@@ -22,6 +22,7 @@ def alice_login_for_tokens(client: ServiceClient, registered_user: dict) -> dict
     return client.login_user("alice", _PASSWORD)
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Blacklisted access token is rejected with 401 on protected endpoints
 @given("alice has logged out and her access token is blacklisted")
 def alice_logout_blacklisted(client: ServiceClient, alice_tokens: dict) -> None:
     client.post_logout(f"Bearer {alice_tokens['accessToken']}")
@@ -37,6 +38,7 @@ def admin_login_for_tokens(client: ServiceClient, username: str) -> dict:
     return {**tokens, "id": user_data["id"]}
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Deactivating a user revokes all their active tokens
 @given("the admin has disabled alice's account via POST /api/v1/admin/users/{alice_id}/disable")
 def admin_disable_alice(client: ServiceClient, registered_user: dict, admin_tokens: dict) -> None:
     resp = client.post_admin_disable_user(
@@ -83,12 +85,15 @@ def get_me_with_alice_token(client: ServiceClient, alice_tokens: dict) -> FakeRe
 # --- Then steps ---
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains user ID claim
+# @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains issuer claim
 @then(parsers.parse('the token should contain a non-null "{claim}" claim'))
 def check_token_claim(decoded_payload: dict, claim: str) -> None:
     assert claim in decoded_payload, f"Claim '{claim}' not in token: {decoded_payload}"
     assert decoded_payload[claim] is not None, f"Claim '{claim}' is null"
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:JWKS endpoint returns the public key for token signature verification
 @then('the response body should contain at least one key in the "keys" array')
 def check_jwks_keys(response: FakeResponse) -> None:
     body = response.json()
@@ -96,6 +101,7 @@ def check_jwks_keys(response: FakeResponse) -> None:
     assert len(body["keys"]) > 0, "JWKS keys array is empty"
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Logout blacklists the access token
 @then("alice's access token should be recorded as revoked")
 def check_alice_token_revoked(client: ServiceClient, alice_tokens: dict) -> None:
     resp = client.get_me(f"Bearer {alice_tokens['accessToken']}")

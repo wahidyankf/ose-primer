@@ -71,6 +71,7 @@ def alice_account_disabled(
 # --- When steps ---
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:List all users returns a paginated response
 @when("the admin sends GET /api/v1/admin/users", target_fixture="response")
 def admin_list_users(client: ServiceClient, admin_tokens: dict) -> FakeResponse:
     return client.get_admin_users(f"Bearer {admin_tokens['accessToken']}")
@@ -87,6 +88,7 @@ def admin_search_users_by_email(client: ServiceClient, admin_tokens: dict) -> Fa
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin disables a user account
 @when(
     parsers.parse("the admin sends POST /api/v1/admin/users/{{alice_id}}/disable with body {body}"),
     target_fixture="response",
@@ -106,6 +108,7 @@ def admin_disable_alice(
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Disabled user's access token is rejected with 401
 @when(
     "the client sends GET /api/v1/users/me with alice's access token",
     target_fixture="response",
@@ -114,6 +117,7 @@ def get_me_alice_token(client: ServiceClient, alice_tokens: dict) -> FakeRespons
     return client.get_me(f"Bearer {alice_tokens['accessToken']}")
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin re-enables a disabled user account
 @when(
     parsers.parse("the admin sends POST /api/v1/admin/users/{{alice_id}}/enable"),
     target_fixture="response",
@@ -129,6 +133,7 @@ def admin_enable_alice(
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin generates a password-reset token for a user
 @when(
     parsers.parse("the admin sends POST /api/v1/admin/users/{{alice_id}}/force-password-reset"),
     target_fixture="response",
@@ -147,6 +152,7 @@ def admin_force_password_reset(
 # --- Then steps ---
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Search users by email returns matching results
 @then(
     'the response body should contain at least one user with "email" equal to "alice@example.com"'
 )

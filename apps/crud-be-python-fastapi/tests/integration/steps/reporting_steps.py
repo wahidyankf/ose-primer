@@ -52,6 +52,7 @@ def alice_get_pl_report(
 # --- Then steps ---
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary filters by currency without cross-currency mixing
 @then(parsers.parse('the response body should contain "totalIncome" equal to "{value}"'))
 def check_income_total(response: FakeResponse, value: str) -> None:
     body = response.json()
@@ -61,6 +62,8 @@ def check_income_total(response: FakeResponse, value: str) -> None:
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:Income entries are excluded from expense total
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:Expense entries are excluded from income total
 @then(parsers.parse('the response body should contain "totalExpense" equal to "{value}"'))
 def check_expense_total(response: FakeResponse, value: str) -> None:
     body = response.json()
@@ -70,6 +73,8 @@ def check_expense_total(response: FakeResponse, value: str) -> None:
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary returns income total, expense total, and net for a period
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary for a period with no entries returns zero totals
 @then(parsers.parse('the response body should contain "net" equal to "{value}"'))
 def check_net(response: FakeResponse, value: str) -> None:
     body = response.json()
@@ -88,6 +93,7 @@ def check_income_breakdown(response: FakeResponse, category: str, amount: str) -
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L breakdown includes category-level amounts for income and expenses
 @then(parsers.parse('the expense breakdown should contain "{category}" with amount "{amount}"'))
 def check_expense_breakdown(response: FakeResponse, category: str, amount: str) -> None:
     body = response.json()

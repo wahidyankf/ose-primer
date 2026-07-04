@@ -54,6 +54,8 @@ def alice_create_3_entries(client: ServiceClient, alice_tokens: dict) -> list:
 # --- When steps ---
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Create expense entry with amount and currency returns 201 with entry ID
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Create income entry with amount and currency returns 201 with entry ID
 @when(
     parsers.parse("alice sends POST /api/v1/expenses with body {body}"),
     target_fixture="response",
@@ -63,6 +65,7 @@ def alice_post_expense(client: ServiceClient, alice_tokens: dict, body: str) -> 
     return client.post_expense(f"Bearer {alice_tokens['accessToken']}", data)
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Unauthenticated request to create an entry returns 401
 @when(
     'the client sends POST /api/v1/expenses with body { "amount": "10.00", "currency": "USD", "category": "food", "description": "Coffee", "date": "2025-01-01", "type": "expense" }',
     target_fixture="response",
@@ -81,6 +84,7 @@ def unauth_post_expense(client: ServiceClient) -> FakeResponse:
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Get own entry by ID returns amount, currency, category, description, date, and type
 @when("alice sends GET /api/v1/expenses/{expenseId}", target_fixture="response")
 def alice_get_expense(
     client: ServiceClient, alice_tokens: dict, created_expense: dict
@@ -91,11 +95,13 @@ def alice_get_expense(
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:List own entries returns a paginated response
 @when("alice sends GET /api/v1/expenses", target_fixture="response")
 def alice_list_expenses(client: ServiceClient, alice_tokens: dict) -> FakeResponse:
     return client.get_expenses(f"Bearer {alice_tokens['accessToken']}")
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Update an entry amount and description returns 200
 @when(
     parsers.parse("alice sends PUT /api/v1/expenses/{{expenseId}} with body {body}"),
     target_fixture="response",
@@ -111,6 +117,7 @@ def alice_update_expense(
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Delete an entry returns 204
 @when("alice sends DELETE /api/v1/expenses/{expenseId}", target_fixture="response")
 def alice_delete_expense(
     client: ServiceClient, alice_tokens: dict, created_expense: dict

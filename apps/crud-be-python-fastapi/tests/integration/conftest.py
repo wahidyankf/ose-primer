@@ -90,6 +90,7 @@ def check_status_code(response: FakeResponse, code: int) -> None:
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Successful login response includes token type "Bearer"
 @then(parsers.parse('the response body should contain "{field}" equal to "{value}"'))
 def check_body_field_string(response: FakeResponse, field: str, value: str) -> None:
     body = response.json()
@@ -97,6 +98,8 @@ def check_body_field_string(response: FakeResponse, field: str, value: str) -> N
     assert str(body[field]) == value, f"Expected {field}={value!r}, got {body[field]!r}"
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Successful registration response includes non-null user ID
+# @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Successful login returns access token and refresh token
 @then(parsers.parse('the response body should contain a non-null "{field}" field'))
 def check_body_field_not_null(response: FakeResponse, field: str) -> None:
     body = response.json()
@@ -104,6 +107,8 @@ def check_body_field_not_null(response: FakeResponse, field: str) -> None:
     assert body[field] is not None, f"Field '{field}' is null in response: {body}"
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login with wrong password
+# @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login for non-existent user
 @then("the response body should contain an error message about invalid credentials")
 def check_invalid_credentials(response: FakeResponse) -> None:
     body = response.json()
@@ -229,6 +234,11 @@ def shared_post_register(client: ServiceClient, body: str) -> FakeResponse:
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with invalid email format
+# @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with empty password
+# @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with weak password — no uppercase letter
+# @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Reject password shorter than 12 characters
+# @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Reject password with no special character
 @then(parsers.parse('the response body should contain a validation error for "{field}"'))
 def shared_check_validation_error(response: FakeResponse, field: str) -> None:
     import json

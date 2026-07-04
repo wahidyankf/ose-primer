@@ -41,6 +41,7 @@ def register_admin_and_login(client: ServiceClient, username: str) -> dict:
     return {**tokens, "id": user_data["id"]}
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Account is locked after exceeding the maximum failed login threshold
 @given(
     parsers.parse('"alice" has had the maximum number of failed login attempts'),
 )
@@ -49,6 +50,7 @@ def alice_max_failed_attempts(client: ServiceClient, registered_user: dict) -> N
         client.post_login("alice", "WrongPass#1234")
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Unlocked account can log in with correct password
 @given("an admin has unlocked alice's account")
 def admin_unlocks_alice(client: ServiceClient, locked_user: dict) -> None:
     register_and_promote_admin(client, "tmpadmin", ADMIN_PASSWORD)
@@ -63,6 +65,7 @@ def admin_unlocks_alice(client: ServiceClient, locked_user: dict) -> None:
 # --- When steps ---
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Admin unlocks a locked account
 @when(
     parsers.parse("the admin sends POST /api/v1/admin/users/{{alice_id}}/unlock"),
     target_fixture="response",

@@ -18,6 +18,7 @@ def _login_user(client: ServiceClient, username: str, password: str = _STRONG_PA
 # --- Background steps only needed by these scenarios ---
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login for deactivated account
 @given(
     parsers.parse('a user "{username}" is registered and deactivated'),
     target_fixture="deactivated_user",
@@ -34,6 +35,7 @@ def register_and_deactivate_user(
 # --- Then steps ---
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Successful registration returns created user profile without password
 @then('the response body should not contain a "password" field')
 def check_no_password_field(response: FakeResponse) -> None:
     body = response.json()
@@ -41,6 +43,7 @@ def check_no_password_field(response: FakeResponse) -> None:
     assert "password_hash" not in body
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration when username already exists
 @then("the response body should contain an error message about duplicate username")
 def check_duplicate_username(response: FakeResponse) -> None:
     body = response.json()

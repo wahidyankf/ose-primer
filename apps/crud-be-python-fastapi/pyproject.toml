@@ -95,6 +95,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/steps/*_steps.py" = ["E501"]  # Long BDD step strings must stay on one line for spec-coverage regex matching
+"tests/**/conftest.py" = ["E501"]  # Shared cross-file step defs also carry @covers markers that must stay on one line
 "tests/**" = ["S101", "S105", "S106", "S107", "ANN"]  # pytest uses bare assert; S105-S107 are deterministic test-fixture passwords, not real secrets; BDD step/fixture annotations are exercised by basedpyright instead
 "**/test_*.py" = ["S101", "S105", "S106", "S107", "ANN"]  # same: assert-based tests, fixture passwords, untyped fixtures
 

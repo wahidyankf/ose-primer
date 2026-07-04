@@ -97,6 +97,7 @@ def alice_upload_file(
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload attachment to another user's entry returns 403
 @when(
     parsers.parse(
         'alice uploads file "{filename}" with content type "{content_type}" to POST /api/v1/expenses/{{bobExpenseId}}/attachments'
@@ -120,6 +121,7 @@ def alice_upload_to_bob_expense(
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload file exceeding the size limit returns 413
 @when(
     "alice uploads an oversized file to POST /api/v1/expenses/{expenseId}/attachments",
     target_fixture="response",
@@ -147,6 +149,7 @@ def alice_list_attachments(
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments on another user's entry returns 403
 @when("alice sends GET /api/v1/expenses/{bobExpenseId}/attachments", target_fixture="response")
 def alice_list_bob_attachments(
     client: ServiceClient, alice_tokens: dict, bob_expense: dict
@@ -157,6 +160,7 @@ def alice_list_bob_attachments(
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete attachment returns 204
 @when(
     "alice sends DELETE /api/v1/expenses/{expenseId}/attachments/{attachmentId}",
     target_fixture="response",
@@ -174,6 +178,7 @@ def alice_delete_attachment(
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete attachment on another user's entry returns 403
 @when(
     "alice sends DELETE /api/v1/expenses/{bobExpenseId}/attachments/{attachmentId}",
     target_fixture="response",
@@ -191,6 +196,7 @@ def alice_delete_bob_attachment(
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete non-existent attachment returns 404
 @when(
     "alice sends DELETE /api/v1/expenses/{expenseId}/attachments/{randomAttachmentId}",
     target_fixture="response",
@@ -216,6 +222,7 @@ def check_two_attachments(response: FakeResponse) -> None:
     assert len(attachments) == 2, f"Expected 2 attachments, got {len(attachments)}: {body}"
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments for an entry returns all uploaded files with metadata
 @then(
     parsers.parse(
         'the response body should contain an attachment with "filename" equal to "{filename}"'
@@ -229,6 +236,8 @@ def check_attachment_filename(response: FakeResponse, filename: str) -> None:
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload JPEG image returns 201 with attachment metadata
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload PDF document returns 201 with attachment metadata
 @then(parsers.parse('the response body should contain "contentType" equal to "{content_type}"'))
 def check_attachment_content_type(response: FakeResponse, content_type: str) -> None:
     body = response.json()
@@ -245,6 +254,7 @@ def check_filename(response: FakeResponse, filename: str) -> None:
     assert body["filename"] == filename, f"Expected filename={filename!r}, got {body['filename']!r}"
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload unsupported file type returns 415
 @then('the response body should contain a validation error for "file"')
 def check_file_validation_error(response: FakeResponse) -> None:
     body = response.json()

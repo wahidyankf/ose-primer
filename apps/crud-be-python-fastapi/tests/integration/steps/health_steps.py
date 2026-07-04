@@ -18,12 +18,14 @@ def get_health_unauthenticated(client: ServiceClient) -> FakeResponse:
     return client.get_health()
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Health endpoint reports the service as UP
 @then('the health status should be "UP"')
 def check_health_status(response: FakeResponse) -> None:
     body = response.json()
     assert body.get("status") == "UP", f"Expected status=UP, got: {body}"
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Anonymous health check does not expose component details
 @then("the response should not include detailed component health information")
 def check_no_component_details(response: FakeResponse) -> None:
     body = response.json()

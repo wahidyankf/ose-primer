@@ -19,6 +19,7 @@ def alice_login_tokens(client: ServiceClient, registered_user: dict) -> dict:
     return client.login_user("alice", _PASSWORD)
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Reject refresh with an expired refresh token
 @given("alice's refresh token has expired", target_fixture="alice_tokens")
 def alice_expired_refresh_token(client: ServiceClient, registered_user: dict) -> dict:
     # Get a real access token but substitute an expired refresh token
@@ -41,6 +42,7 @@ def alice_used_refresh_token(client: ServiceClient, registered_user: dict) -> di
     return {**tokens, "_original_refresh": original_refresh}
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Refresh fails for a deactivated user
 @given('the user "alice" has been deactivated', target_fixture="deactivated_alice")
 def deactivate_alice(client: ServiceClient, registered_user: dict, alice_tokens: dict) -> dict:
     resp = client.post_me_deactivate(f"Bearer {alice_tokens['accessToken']}")
@@ -48,6 +50,7 @@ def deactivate_alice(client: ServiceClient, registered_user: dict, alice_tokens:
     return registered_user
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout is idempotent — repeating logout on the same token returns 200
 @given("alice has already logged out once")
 def alice_already_logged_out(
     client: ServiceClient, registered_user: dict, alice_tokens: dict
@@ -58,11 +61,13 @@ def alice_already_logged_out(
 # --- When steps ---
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Successful refresh returns a new access token and refresh token
 @when("alice sends POST /api/v1/auth/refresh with her refresh token", target_fixture="response")
 def alice_refresh(client: ServiceClient, alice_tokens: dict) -> FakeResponse:
     return client.post_refresh(alice_tokens["refreshToken"])
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Original refresh token is rejected after rotation (single-use)
 @when(
     "alice sends POST /api/v1/auth/refresh with her original refresh token",
     target_fixture="response",
@@ -72,11 +77,13 @@ def alice_refresh_with_original(client: ServiceClient, alice_tokens: dict) -> Fa
     return client.post_refresh(original)
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout current session invalidates the access token
 @when("alice sends POST /api/v1/auth/logout with her access token", target_fixture="response")
 def alice_logout(client: ServiceClient, alice_tokens: dict) -> FakeResponse:
     return client.post_logout(f"Bearer {alice_tokens['accessToken']}")
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout all devices invalidates tokens from all sessions
 @when("alice sends POST /api/v1/auth/logout-all with her access token", target_fixture="response")
 def alice_logout_all(client: ServiceClient, alice_tokens: dict) -> FakeResponse:
     return client.post_logout_all(f"Bearer {alice_tokens['accessToken']}")

@@ -20,6 +20,7 @@ def alice_login(client: ServiceClient, registered_user: dict) -> dict:
     return client.login_user("alice", _PASSWORD)
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Self-deactivated user cannot log in with previous credentials
 @given("alice has deactivated her own account via POST /api/v1/users/me/deactivate")
 def alice_self_deactivate(client: ServiceClient, alice_tokens: dict) -> None:
     resp = client.post_me_deactivate(f"Bearer {alice_tokens['accessToken']}")
@@ -29,11 +30,13 @@ def alice_self_deactivate(client: ServiceClient, alice_tokens: dict) -> None:
 # --- When steps ---
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Get own profile returns username, email, and display name
 @when("alice sends GET /api/v1/users/me", target_fixture="response")
 def alice_get_me(client: ServiceClient, alice_tokens: dict) -> FakeResponse:
     return client.get_me(f"Bearer {alice_tokens['accessToken']}")
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Update display name succeeds
 @when(
     parsers.parse("alice sends PATCH /api/v1/users/me with body {body}"),
     target_fixture="response",
@@ -46,6 +49,8 @@ def alice_patch_me(client: ServiceClient, alice_tokens: dict, body: str) -> Fake
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Successful password change returns 200
+# @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Reject password change with incorrect old password
 @when(
     parsers.parse("alice sends POST /api/v1/users/me/password with body {body}"),
     target_fixture="response",
@@ -59,6 +64,7 @@ def alice_change_password(client: ServiceClient, alice_tokens: dict, body: str) 
     )
 
 
+# @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Authenticated user self-deactivates their account
 @when("alice sends POST /api/v1/users/me/deactivate", target_fixture="response")
 def alice_deactivate(client: ServiceClient, alice_tokens: dict) -> FakeResponse:
     return client.post_me_deactivate(f"Bearer {alice_tokens['accessToken']}")
