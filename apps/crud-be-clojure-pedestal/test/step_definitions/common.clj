@@ -3,6 +3,7 @@
    Calls service handler functions directly — no HTTP client, no embedded server."
   (:require [cheshire.core :as json]
             [next.jdbc :as jdbc]
+            [next.jdbc.result-set :as rs]
             [crud-be-cjpd.auth.jwt :as jwt]
             [crud-be-cjpd.config :as config]
             [crud-be-cjpd.db.core :as db]
@@ -20,6 +21,7 @@
             [crud-be-cjpd.handlers.health :as health-handler]
             [crud-be-cjpd.handlers.jwks :as jwks-handler]
             [crud-be-cjpd.handlers.report :as report-handler]
+            [crud-be-cjpd.handlers.test-api :as test-api-handler]
             [crud-be-cjpd.handlers.token :as token-handler]
             [crud-be-cjpd.handlers.user :as user-handler]))
 
@@ -298,10 +300,10 @@
   (let [{:keys [config user-repo]} ctx
         handler (auth-handler/register-handler config user-repo)
         request (public-request (json/generate-string
-                                  {:username    username
-                                   :email       email
-                                   :password    password
-                                   :displayName (or display-name username)}))
+                                 {:username    username
+                                  :email       email
+                                  :password    password
+                                  :displayName (or display-name username)}))
         result  (call-handler handler request)
         body    (:body result)]
     (assoc ctx
@@ -579,8 +581,8 @@
         result   (try
                    (let [identity (resolve-identity config user-repo token-repo token)
                          request  (assoc (auth-request identity
-                                                        :path-params {"id" expense-id}
-                                                        :headers {"host" "localhost"})
+                                                       :path-params {"id" expense-id}
+                                                       :headers {"host" "localhost"})
                                          :multipart-params {"file" file-map})]
                      (call-handler handler request))
                    (catch clojure.lang.ExceptionInfo e
@@ -696,3 +698,65 @@
       true
       (catch Exception _
         false))))
+
+;; ============================================================
+;; Test-support API (test-support/test-api.feature) — mirrors
+;; crud-be-cjpd.handlers.test-api's reset-db / promote-admin routes.
+;; ============================================================
+
+(defn reset-test-db!
+  "Test-support helper mirroring POST /api/v1/test/reset-db
+   (crud-be-cjpd.handlers.test-api/reset-db-handler!).
+   Integration mode: invokes the real production handler directly against the
+   shared datasource. Unit mode: there is no datasource (in-memory repos), so
+   this performs the equivalent reset — same tables/keys, same order — that
+   truncate-in-memory-repos! already uses for per-scenario test isolation.
+   Returns {:status N :body {...}}."
+  [ctx]
+  (if (:in-memory? ctx)
+    (do
+      (truncate-in-memory-repos! ctx)
+      {:status 200 :body {:message "Database reset successful"}})
+    (call-handler (test-api-handler/reset-db-handler! (:ds ctx)) {})))
+
+(defn promote-admin-by-username!
+  "Test-support helper mirroring POST /api/v1/test/promote-admin
+   (crud-be-cjpd.handlers.test-api/promote-admin-handler!).
+   Integration mode: invokes the real production handler directly. Unit mode:
+   looks the user up by username and promotes via the same promote-to-admin!
+   path used elsewhere in this namespace.
+   Returns {:status N :body {...}}."
+  [ctx username]
+  (if (:in-memory? ctx)
+    (let [user-repo (:user-repo ctx)
+          user      (proto/find-user-by-username user-repo username)]
+      (if-not user
+        {:status 404 :body {:message (str "User not found: " username)}}
+        (do
+          (promote-to-admin! ctx (:id user))
+          {:status 200 :body {:message (str "User " username " promoted to ADMIN")}})))
+    (call-handler (test-api-handler/promote-admin-handler! (:ds ctx) (:user-repo ctx))
+                  {:json-params {:username username}
+                   :headers {}
+                   :query-params {}
+                   :path-params {}})))
+
+(defn count-all-expenses
+  "Count all expense rows across every user. Dual-mode: reads the in-memory
+   atom directly in unit mode, issues a raw SQL count in integration mode
+   (ExpenseRepo has no protocol-level global count)."
+  [ctx]
+  (if (:in-memory? ctx)
+    (count @(:store (:expense-repo ctx)))
+    (:cnt (jdbc/execute-one! (:ds ctx) ["SELECT COUNT(*) AS cnt FROM expenses"]
+                             {:builder-fn rs/as-unqualified-maps}))))
+
+(defn count-all-attachments
+  "Count all attachment rows across every expense. Dual-mode: reads the
+   in-memory atom directly in unit mode, issues a raw SQL count in
+   integration mode (AttachmentRepo has no protocol-level global count)."
+  [ctx]
+  (if (:in-memory? ctx)
+    (count @(:store (:attachment-repo ctx)))
+    (:cnt (jdbc/execute-one! (:ds ctx) ["SELECT COUNT(*) AS cnt FROM attachments"]
+                             {:builder-fn rs/as-unqualified-maps}))))

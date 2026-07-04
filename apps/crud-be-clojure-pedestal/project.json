@@ -56,7 +56,10 @@
       "executor": "nx:run-commands",
       "options": {
         "cwd": "apps/crud-be-clojure-pedestal",
-        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:coverage -m kaocha.runner unit bdd --plugin cloverage --lcov --cov-output coverage --cov-ns-exclude-regex 'crud-be-cjpd\\.(main|routes|server|contracts|interceptors\\..*|db\\.jdbc.*|db\\.(user|expense|attachment|token)-repo|handlers\\..*)'"
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:coverage -m kaocha.runner unit bdd --plugin cloverage --lcov --cov-output coverage --cov-ns-exclude-regex 'crud-be-cjpd\\.(main|routes|server|contracts|interceptors\\..*|db\\.jdbc.*|db\\.(user|expense|attachment|token)-repo|handlers\\..*)' > /tmp/crud-be-clojure-pedestal-kaocha-coverage.log 2>&1; test_ec=$?; cat /tmp/crud-be-clojure-pedestal-kaocha-coverage.log; if [ $test_ec -ne 0 ]; then exit $test_ec; fi; ! grep -qE ', [1-9][0-9]* pending,' /tmp/crud-be-clojure-pedestal-kaocha-coverage.log",
+        "env": {
+          "CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET": "dev-jwt-secret-at-least-32-characters-long-for-hmac"
+        }
       },
       "dependsOn": ["codegen"],
       "cache": true,
@@ -72,8 +75,11 @@
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:test -m kaocha.runner unit bdd",
-        "cwd": "apps/crud-be-clojure-pedestal"
+        "command": "! grep -rn ':kaocha/skip\\|:kaocha/pending' test && JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:test -m kaocha.runner unit bdd > /tmp/crud-be-clojure-pedestal-kaocha-unit.log 2>&1; test_ec=$?; cat /tmp/crud-be-clojure-pedestal-kaocha-unit.log; if [ $test_ec -ne 0 ]; then exit $test_ec; fi; ! grep -qE ', [1-9][0-9]* pending,' /tmp/crud-be-clojure-pedestal-kaocha-unit.log",
+        "cwd": "apps/crud-be-clojure-pedestal",
+        "env": {
+          "CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET": "dev-jwt-secret-at-least-32-characters-long-for-hmac"
+        }
       },
       "dependsOn": ["codegen"],
       "cache": true,
@@ -120,7 +126,7 @@
     "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps --exclude-dir test-support --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-clojure-pedestal"
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps --exclude-dir codegen specs/apps/crud/behavior/crud-be/gherkin apps/crud-be-clojure-pedestal"
       },
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/crud/behavior/crud-be/gherkin/**/*.feature", "{projectRoot}/**/*.clj"]

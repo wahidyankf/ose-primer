@@ -29,4 +29,4 @@
 
   (testing "load-config throws when CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET is absent"
     (is (thrown? clojure.lang.ExceptionInfo
-                 (sut/load-config {})))))
+                 (sut/load-config {"CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET" nil})))))

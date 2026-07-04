@@ -9,8 +9,25 @@
   ;; BDD-level tests: kaocha-cucumber calling service handlers directly (no HTTP).
   ;; Uses real PostgreSQL when DATABASE_URL is set, otherwise falls back to SQLite in-memory.
   ;; No embedded HTTP server is started — all calls go through handler functions.
+  ;;
+  ;; :test-paths lists the shared gherkin tree's category subdirectories explicitly,
+  ;; excluding "codegen" — kaocha-cucumber 0.11.100 has no suite-level tag-filter
+  ;; config (its :kaocha.type/cucumber spec only accepts :kaocha/source-paths,
+  ;; :kaocha/test-paths, :cucumber/glue-paths, :cucumber/parameter-types,
+  ;; :cucumber/locale — no tag-exclusion key), so this explicit-list fallback is
+  ;; how @codegen-tagged scenarios (which test OTHER languages' codegen targets by
+  ;; name, e.g. go-codegen-fresh-checkout.feature) are kept out of this project's
+  ;; unit BDD tier. Re-check this list against
+  ;; `ls specs/apps/crud/behavior/crud-be/gherkin/` if a new category dir is added.
   {:id          :bdd
    :type        :kaocha.type/cucumber
    :source-paths ["src"]
-   :test-paths  ["test/features"]
+   :test-paths  ["test/features/admin"
+                 "test/features/authentication"
+                 "test/features/expenses"
+                 "test/features/health"
+                 "test/features/security"
+                 "test/features/test-support"
+                 "test/features/token-management"
+                 "test/features/user-lifecycle"]
    :cucumber/glue-paths  ["test/step_definitions"]}]}

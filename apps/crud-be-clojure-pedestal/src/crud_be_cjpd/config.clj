@@ -9,7 +9,9 @@
    Validates the result against schemas/Config."
   ([] (load-config {}))
   ([env-overrides]
-   (let [getenv (fn [k] (or (get env-overrides k) (System/getenv k)))
+   (let [getenv (fn [k] (if (contains? env-overrides k)
+                          (get env-overrides k)
+                          (System/getenv k)))
          jwt-secret (or (getenv "CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET")
                         (throw (ex-info "CRUD_BE_CLOJURE_PEDESTAL_JWT_SECRET is required" {})))
          config {:port         (Integer/parseInt (or (getenv "CRUD_BE_CLOJURE_PEDESTAL_PORT") "8201"))
