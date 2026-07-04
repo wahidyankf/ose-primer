@@ -144,6 +144,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByRole("button", { name: /next page/i })).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Admin panel displays a paginated user list
     And("the list should display total user count", () => {
       expect(screen.getByText(/page 1 of 1/i)).toBeInTheDocument();
     });
@@ -178,6 +179,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Searching users by email filters the list
     Then('the user list should display only users matching "alice@example.com"', () => {
       expect(screen.getByText("alice")).toBeInTheDocument();
       expect(screen.queryByText("bob")).not.toBeInTheDocument();
@@ -228,6 +230,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Admin disables a user account from the user detail page
     Then('alice\'s status should display as "disabled"', async () => {
       await waitFor(() => {
         expect(adminApi.disableUser).toHaveBeenCalled();
@@ -246,6 +249,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(mockPush).toHaveBeenCalledWith("/login");
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Disabled user sees an error when trying to access their dashboard
     And("an error message about account being disabled should be displayed", () => {
       expect(mockPush).toHaveBeenCalledWith("/login");
     });
@@ -293,6 +297,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Admin re-enables a disabled user account
     Then('alice\'s status should display as "active"', async () => {
       await waitFor(() => {
         expect(adminApi.enableUser).toHaveBeenCalled();
@@ -341,6 +346,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/admin/admin-panel.feature:Admin generates a password-reset token for a user
     And("a copy-to-clipboard button should be available", async () => {
       await waitFor(() => {
         expect(screen.getByRole("button", { name: /copy/i })).toBeInTheDocument();

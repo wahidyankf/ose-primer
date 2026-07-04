@@ -58,6 +58,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       // Verified by reset - no way to list without auth
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Reset database clears all user-created data
     And("all attachments should be deleted", () => {
       // Verified by reset
     });
@@ -76,6 +77,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(200);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Promote user to admin role
     And('user "alice" should have the "ADMIN" role', async () => {
       await loginUser(ctx, "alice", "Str0ng#Pass1");
       // Verify admin access by calling admin endpoint

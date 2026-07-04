@@ -49,6 +49,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect((ctx.response!.body as Record<string, unknown>).totalElements).toBeDefined();
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:List all users returns a paginated response
     And('the response body should contain a non-null "page" field', () => {
       expect((ctx.response!.body as Record<string, unknown>).page).toBeDefined();
     });
@@ -68,6 +69,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(200);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Search users by email returns matching results
     And('the response body should contain at least one user with "email" equal to "alice@example.com"', () => {
       const body = ctx.response!.body as { content: { email: string }[] };
       expect(body.content.some((u) => u.email === "alice@example.com")).toBe(true);
@@ -96,6 +98,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(200);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin disables a user account
     And('alice\'s account status should be "disabled"', async () => {
       const resp = await ctx.client.dispatch(
         "GET",
@@ -127,6 +130,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       ctx.response = await ctx.client.dispatch("GET", "/api/v1/users/me", null, getAuth(ctx, "alice"));
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Disabled user's access token is rejected with 401
     Then("the response status code should be 401", () => {
       expect(ctx.response!.status).toBe(401);
     });
@@ -157,6 +161,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(200);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin re-enables a disabled user account
     And('alice\'s account status should be "active"', async () => {
       const resp = await ctx.client.dispatch(
         "GET",
@@ -184,6 +189,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(200);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin generates a password-reset token for a user
     And('the response body should contain a non-null "token" field', () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(body.resetToken ?? body.token).toBeDefined();

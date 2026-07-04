@@ -157,6 +157,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(clientModule.setTokens).toHaveBeenCalledWith("new-access-token", "new-refresh-token");
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Session refreshes automatically before the access token expires
     And("a new refresh token should be stored", () => {
       expect(clientModule.setTokens).toHaveBeenCalledWith(expect.any(String), "new-refresh-token");
     });
@@ -182,6 +183,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(mockPush).toHaveBeenCalledWith("/login");
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Expired refresh token redirects to login
     And("an error message about session expiration should be displayed", () => {
       expect(mockPush).toHaveBeenCalledWith("/login");
     });
@@ -203,6 +205,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       }
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Original refresh token is rejected after rotation
     Then("alice should be redirected to the login page", () => {
       expect(mockPush).toHaveBeenCalledWith("/login");
     });
@@ -224,6 +227,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(mockPush).toHaveBeenCalledWith("/login");
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Deactivated user is redirected to login on next action
     And("an error message about account deactivation should be displayed", () => {
       expect(mockPush).toHaveBeenCalledWith("/login");
     });
@@ -257,6 +261,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(mockPush).toHaveBeenCalledWith("/login");
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Clicking logout ends the current session
     And("the authentication session should be cleared", () => {
       expect(clientModule.clearTokens).toHaveBeenCalled();
     });
@@ -290,6 +295,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(mockPush).toHaveBeenCalledWith("/login");
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Clicking "Log out all devices" ends all sessions
     And("the authentication session should be cleared", () => {
       expect(clientModule.clearTokens).toHaveBeenCalled();
     });
@@ -305,6 +311,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       mockPush("/login");
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/session.feature:Clicking logout twice does not cause an error
     Then("no error should be displayed", () => {
       expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     });

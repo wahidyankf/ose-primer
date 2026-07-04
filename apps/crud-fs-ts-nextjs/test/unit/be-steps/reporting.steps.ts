@@ -79,6 +79,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect((ctx.response!.body as Record<string, unknown>).totalExpense).toBe("150.00");
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary returns income total, expense total, and net for a period
     And('the response body should contain "net" equal to "4850.00"', () => {
       expect((ctx.response!.body as Record<string, unknown>).net).toBe("4850.00");
     });
@@ -154,6 +155,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(freelance!.total).toBe("500.00");
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L breakdown includes category-level amounts for income and expenses
     And('the expense breakdown should contain "transport" with amount "200.00"', () => {
       const body = ctx.response!.body as { expenseBreakdown: { category: string; total: string }[] };
       const transport = body.expenseBreakdown.find((b) => b.category === "transport");
@@ -194,6 +196,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect((ctx.response!.body as Record<string, unknown>).totalIncome).toBe("1000.00");
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:Income entries are excluded from expense total
     And('the response body should contain "totalExpense" equal to "0.00"', () => {
       expect((ctx.response!.body as Record<string, unknown>).totalExpense).toBe("0.00");
     });
@@ -231,6 +234,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect((ctx.response!.body as Record<string, unknown>).totalIncome).toBe("0.00");
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:Expense entries are excluded from income total
     And('the response body should contain "totalExpense" equal to "75.00"', () => {
       expect((ctx.response!.body as Record<string, unknown>).totalExpense).toBe("75.00");
     });
@@ -278,6 +282,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(200);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary filters by currency without cross-currency mixing
     And('the response body should contain "totalIncome" equal to "1000.00"', () => {
       expect((ctx.response!.body as Record<string, unknown>).totalIncome).toBe("1000.00");
     });
@@ -305,6 +310,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect((ctx.response!.body as Record<string, unknown>).totalExpense).toBe("0.00");
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary for a period with no entries returns zero totals
     And('the response body should contain "net" equal to "0.00"', () => {
       expect((ctx.response!.body as Record<string, unknown>).net).toBe("0.00");
     });

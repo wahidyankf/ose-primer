@@ -37,6 +37,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect((ctx.response!.body as Record<string, unknown>).username).toBe("alice");
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Successful registration returns created user profile without password
     And('the response body should not contain a "password" field', () => {
       expect(ctx.response!.body).not.toHaveProperty("password");
     });
@@ -59,6 +60,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(201);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Successful registration response includes non-null user ID
     And('the response body should contain a non-null "id" field', () => {
       expect((ctx.response!.body as Record<string, unknown>).id).toBeDefined();
     });
@@ -85,6 +87,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(409);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration when username already exists
     And("the response body should contain an error message about duplicate username", () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("username");
@@ -108,6 +111,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(400);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with invalid email format
     And('the response body should contain a validation error for "email"', () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("email");
@@ -131,6 +135,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(400);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with empty password
     And('the response body should contain a validation error for "password"', () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("password");
@@ -154,6 +159,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(400);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with weak password — no uppercase letter
     And('the response body should contain a validation error for "password"', () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("password");

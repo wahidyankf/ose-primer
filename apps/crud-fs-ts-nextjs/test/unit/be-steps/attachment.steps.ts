@@ -91,6 +91,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect((ctx.response!.body as Record<string, unknown>).contentType).toBe("image/jpeg");
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload JPEG image returns 201 with attachment metadata
     And('the response body should contain a non-null "url" field', () => {
       expect((ctx.response!.body as Record<string, unknown>).url).toBeDefined();
     });
@@ -126,6 +127,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect((ctx.response!.body as Record<string, unknown>).contentType).toBe("application/pdf");
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload PDF document returns 201 with attachment metadata
     And('the response body should contain a non-null "url" field', () => {
       expect((ctx.response!.body as Record<string, unknown>).url).toBeDefined();
     });
@@ -164,6 +166,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(body.attachments.some((a) => a.filename === "receipt.jpg")).toBe(true);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments for an entry returns all uploaded files with metadata
     And('the response body should contain an attachment with "filename" equal to "invoice.pdf"', () => {
       const body = ctx.response!.body as { attachments: { filename: string }[] };
       expect(body.attachments.some((a) => a.filename === "invoice.pdf")).toBe(true);
@@ -185,6 +188,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       );
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete attachment returns 204
     Then("the response status code should be 204", () => {
       expect(ctx.response!.status).toBe(204);
     });
@@ -208,6 +212,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(415);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload unsupported file type returns 415
     And('the response body should contain a validation error for "file"', () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("file");
@@ -231,6 +236,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(413);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload file exceeding the size limit returns 413
     And("the response body should contain an error message about file size", () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("size");
@@ -264,6 +270,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       },
     );
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload attachment to another user's entry returns 403
     Then("the response status code should be 403", () => {
       expect(ctx.response!.status).toBe(403);
     });
@@ -298,6 +305,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       );
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments on another user's entry returns 403
     Then("the response status code should be 403", () => {
       expect(ctx.response!.status).toBe(403);
     });
@@ -338,6 +346,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       );
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete attachment on another user's entry returns 403
     Then("the response status code should be 403", () => {
       expect(ctx.response!.status).toBe(403);
     });
@@ -358,6 +367,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       );
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete non-existent attachment returns 404
     Then("the response status code should be 404", () => {
       expect(ctx.response!.status).toBe(404);
     });

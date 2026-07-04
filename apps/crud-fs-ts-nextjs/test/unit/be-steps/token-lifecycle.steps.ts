@@ -41,6 +41,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect((ctx.response!.body as Record<string, unknown>).accessToken).toBeDefined();
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Successful refresh returns a new access token and refresh token
     And('the response body should contain a non-null "refreshToken" field', () => {
       expect((ctx.response!.body as Record<string, unknown>).refreshToken).toBeDefined();
     });
@@ -68,6 +69,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(401);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Reject refresh with an expired refresh token
     And("the response body should contain an error message about token expiration", () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).length).toBeGreaterThan(0);
@@ -97,6 +99,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(401);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Original refresh token is rejected after rotation (single-use)
     And("the response body should contain an error message about invalid token", () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).length).toBeGreaterThan(0);
@@ -118,6 +121,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(401);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Refresh fails for a deactivated user
     And("the response body should contain an error message about account deactivation", () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("deactivat");
@@ -133,6 +137,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(200);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout current session invalidates the access token
     And("alice's access token should be invalidated", async () => {
       const resp = await ctx.client.dispatch("GET", "/api/v1/users/me", null, getAuth(ctx, "alice"));
       expect(resp.status).toBe(401);
@@ -148,6 +153,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(200);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout all devices invalidates tokens from all sessions
     And("alice's access token should be invalidated", async () => {
       const resp = await ctx.client.dispatch("GET", "/api/v1/users/me", null, getAuth(ctx, "alice"));
       expect(resp.status).toBe(401);
@@ -163,6 +169,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       ctx.response = await ctx.client.dispatch("POST", "/api/v1/auth/logout", null, getAuth(ctx, "alice"));
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout is idempotent — repeating logout on the same token returns 200
     Then("the response status code should be 200", () => {
       expect(ctx.response!.status).toBe(200);
     });

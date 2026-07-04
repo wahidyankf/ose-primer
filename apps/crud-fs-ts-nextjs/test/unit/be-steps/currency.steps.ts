@@ -62,6 +62,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(String((ctx.response!.body as Record<string, unknown>).amount)).toBe("10.50");
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:USD expense amount preserves two decimal places
     And('the response body should contain "currency" equal to "USD"', () => {
       expect((ctx.response!.body as Record<string, unknown>).currency).toBe("USD");
     });
@@ -99,6 +100,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(String((ctx.response!.body as Record<string, unknown>).amount)).toBe("150000");
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:IDR expense amount is stored and returned as a whole number
     And('the response body should contain "currency" equal to "IDR"', () => {
       expect((ctx.response!.body as Record<string, unknown>).currency).toBe("IDR");
     });
@@ -128,6 +130,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(400);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Unsupported currency code returns 400
     And('the response body should contain a validation error for "currency"', () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("currency");
@@ -158,6 +161,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(400);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Malformed currency code returns 400
     And('the response body should contain a validation error for "currency"', () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("currency");
@@ -222,6 +226,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(parseFloat(usd!.totalExpense).toFixed(2)).toBe("30.00");
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency without cross-currency mixing
     And('the response body should contain "IDR" total equal to "150000"', () => {
       const body = ctx.response!.body as { currency: string; totalExpense: string }[];
       const idr = body.find((s) => s.currency === "IDR");
@@ -254,6 +259,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(400);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Negative amount is rejected with 400
     And('the response body should contain a validation error for "amount"', () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("amount");

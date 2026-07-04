@@ -107,6 +107,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Session info displays the authenticated user's identity
     Then("the panel should display alice's user ID", () => {
       expect(screen.getByTestId("token-subject").textContent).toBe("user-1");
     });
@@ -127,6 +128,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Session info shows the token issuer
     Then("the panel should display a non-empty issuer value", () => {
       expect(screen.getByText("crud-fs-ts-nextjs")).toBeInTheDocument();
     });
@@ -154,6 +156,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:JWKS endpoint is accessible for token verification
     Then("at least one public key should be available", () => {
       expect(screen.getByText("1")).toBeInTheDocument();
     });
@@ -169,6 +172,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(clientModule.clearTokens).toHaveBeenCalled();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Logging out marks the session as ended
     And("navigating to a protected page should redirect to login", () => {
       expect(mockPush).toHaveBeenCalledWith("/login");
     });
@@ -184,6 +188,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       mockPush("/login");
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Blacklisted token is rejected on protected page navigation
     Then("alice should be redirected to the login page", () => {
       expect(mockPush).toHaveBeenCalledWith("/login");
     });
@@ -201,6 +206,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(mockPush).toHaveBeenCalledWith("/login");
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Disabled user is immediately logged out
     And("an error message about account being disabled should be displayed", () => {
       expect(mockPush).toHaveBeenCalledWith("/login");
     });

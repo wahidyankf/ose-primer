@@ -156,6 +156,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getAllByText(/150\.00/).length).toBeGreaterThan(0);
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L report displays income total, expense total, and net for a period
     And('the report should display net "4850.00"', () => {
       expect(screen.getAllByText(/4850\.00/).length).toBeGreaterThan(0);
     });
@@ -189,6 +190,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText("freelance")).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L breakdown shows category-level amounts
     And('the expense breakdown should list "transport" category', () => {
       expect(screen.getByText("transport")).toBeInTheDocument();
     });
@@ -214,6 +216,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getAllByText(/1000\.00/).length).toBeGreaterThan(0);
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:Income entries are excluded from expense total
     And('the report should display expense total "0.00"', () => {
       expect(screen.getAllByText(/0\.00/).length).toBeGreaterThan(0);
     });
@@ -239,6 +242,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getAllByText(/0\.00/).length).toBeGreaterThan(0);
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:Expense entries are excluded from income total
     And('the report should display expense total "75.00"', () => {
       expect(screen.getAllByText(/75\.00/).length).toBeGreaterThan(0);
     });
@@ -264,6 +268,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getAllByText(/USD/).length).toBeGreaterThan(0);
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L report filters by currency without mixing
     And("no IDR amounts should be included", () => {
       expect(screen.queryByText(/IDR\s+\d/)).not.toBeInTheDocument();
     });
@@ -293,6 +298,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getAllByText(/0\.00/).length).toBeGreaterThan(0);
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L report for a period with no entries shows zero totals
     And('the report should display net "0.00"', () => {
       expect(screen.getAllByText(/0\.00/).length).toBeGreaterThan(0);
     });

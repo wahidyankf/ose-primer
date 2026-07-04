@@ -55,6 +55,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(201);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Create expense entry with amount and currency returns 201 with entry ID
     And('the response body should contain a non-null "id" field', () => {
       expect((ctx.response!.body as Record<string, unknown>).id).toBeDefined();
     });
@@ -84,6 +85,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(201);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Create income entry with amount and currency returns 201 with entry ID
     And('the response body should contain a non-null "id" field', () => {
       expect((ctx.response!.body as Record<string, unknown>).id).toBeDefined();
     });
@@ -139,6 +141,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
         expect((ctx.response!.body as Record<string, unknown>).date).toBe("2025-01-15");
       });
 
+      // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Get own entry by ID returns amount, currency, category, description, date, and type
       And('the response body should contain "type" equal to "expense"', () => {
         expect(String((ctx.response!.body as Record<string, unknown>).type).toLowerCase()).toBe("expense");
       });
@@ -175,6 +178,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect((ctx.response!.body as Record<string, unknown>).totalElements).toBeDefined();
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:List own entries returns a paginated response
     And('the response body should contain a non-null "page" field', () => {
       expect((ctx.response!.body as Record<string, unknown>).page).toBeDefined();
     });
@@ -222,6 +226,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(String((ctx.response!.body as Record<string, unknown>).amount)).toBe("12.00");
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Update an entry amount and description returns 200
     And('the response body should contain "description" equal to "Updated breakfast"', () => {
       expect((ctx.response!.body as Record<string, unknown>).description).toBe("Updated breakfast");
     });
@@ -251,6 +256,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       );
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Delete an entry returns 204
     Then("the response status code should be 204", () => {
       expect(ctx.response!.status).toBe(204);
     });
@@ -276,6 +282,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       },
     );
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Unauthenticated request to create an entry returns 401
     Then("the response status code should be 401", () => {
       expect(ctx.response!.status).toBe(401);
     });

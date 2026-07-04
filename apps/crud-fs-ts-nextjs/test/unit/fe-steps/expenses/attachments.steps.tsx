@@ -198,6 +198,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Uploading a JPEG image adds it to the attachment list
     And('the attachment should display as type "image/jpeg"', () => {
       expect(attachmentsApi.uploadAttachment).toHaveBeenCalled();
     });
@@ -233,6 +234,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Uploading a PDF document adds it to the attachment list
     And('the attachment should display as type "application/pdf"', () => {
       expect(attachmentsApi.uploadAttachment).toHaveBeenCalled();
     });
@@ -262,6 +264,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText("receipt.jpg")).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Entry detail shows all uploaded attachments
     And('the attachment list should include "invoice.pdf"', () => {
       expect(screen.getByText("invoice.pdf")).toBeInTheDocument();
     });
@@ -303,6 +306,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Deleting an attachment removes it from the list
     Then('the attachment list should not contain "receipt.jpg"', async () => {
       await waitFor(() => {
         expect(attachmentsApi.deleteAttachment).toHaveBeenCalled();
@@ -339,6 +343,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/unsupported file type/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Uploading an unsupported file type shows an error
     And("the attachment list should remain unchanged", () => {
       expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
     });
@@ -370,6 +375,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/too large/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Uploading an oversized file shows an error
     And("the attachment list should remain unchanged", () => {
       expect(screen.queryByText("large.jpg")).not.toBeInTheDocument();
     });
@@ -388,6 +394,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Cannot upload attachment to another user's entry
     Then("the upload attachment button should not be visible", () => {
       expect(screen.queryByLabelText(/upload attachment/i)).not.toBeInTheDocument();
     });
@@ -406,6 +413,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Cannot view attachments on another user's entry
     Then("an access denied message should be displayed", () => {
       expect(screen.getByText("Taxi")).toBeInTheDocument();
       expect(screen.queryByLabelText(/upload attachment/i)).not.toBeInTheDocument();
@@ -425,6 +433,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Cannot delete attachment on another user's entry
     Then("the delete attachment button should not be visible", () => {
       expect(
         screen.queryByRole("button", {
@@ -469,6 +478,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/attachments.feature:Deleting a non-existent attachment shows a not-found error
     Then("an error message about attachment not found should be displayed", async () => {
       await waitFor(() => {
         expect(attachmentsApi.deleteAttachment).toHaveBeenCalled();

@@ -39,6 +39,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       decodedPayload = JSON.parse(Buffer.from(parts[1]!, "base64url").toString());
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains user ID claim
     Then('the token should contain a non-null "sub" claim', () => {
       expect(decodedPayload.sub).toBeDefined();
     });
@@ -51,6 +52,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       decodedPayload = JSON.parse(Buffer.from(parts[1]!, "base64url").toString());
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains issuer claim
     Then('the token should contain a non-null "iss" claim', () => {
       expect(decodedPayload.iss).toBeDefined();
     });
@@ -65,6 +67,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(200);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:JWKS endpoint returns the public key for token signature verification
     And('the response body should contain at least one key in the "keys" array', () => {
       const body = ctx.response!.body as { keys: unknown[] };
       expect(body.keys.length).toBeGreaterThanOrEqual(1);
@@ -80,6 +83,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(200);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Logout blacklists the access token
     And("alice's access token should be recorded as revoked", async () => {
       const resp = await ctx.client.dispatch("GET", "/api/v1/users/me", null, getAuth(ctx, "alice"));
       expect(resp.status).toBe(401);
@@ -95,6 +99,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       ctx.response = await ctx.client.dispatch("GET", "/api/v1/users/me", null, getAuth(ctx, "alice"));
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Blacklisted access token is rejected with 401 on protected endpoints
     Then("the response status code should be 401", () => {
       expect(ctx.response!.status).toBe(401);
     });
@@ -119,6 +124,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       ctx.response = await ctx.client.dispatch("GET", "/api/v1/users/me", null, getAuth(ctx, "alice"));
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Deactivating a user revokes all their active tokens
     Then("the response status code should be 401", () => {
       expect(ctx.response!.status).toBe(401);
     });

@@ -41,6 +41,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect((ctx.response!.body as Record<string, unknown>).email).toBe("alice@example.com");
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Get own profile returns username, email, and display name
     And('the response body should contain a non-null "displayName" field', () => {
       expect((ctx.response!.body as Record<string, unknown>).displayName).toBeDefined();
     });
@@ -60,6 +61,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(200);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Update display name succeeds
     And('the response body should contain "displayName" equal to "Alice Smith"', () => {
       expect((ctx.response!.body as Record<string, unknown>).displayName).toBe("Alice Smith");
     });
@@ -78,6 +80,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       },
     );
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Successful password change returns 200
     Then("the response status code should be 200", () => {
       expect(ctx.response!.status).toBe(200);
     });
@@ -100,6 +103,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(401);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Reject password change with incorrect old password
     And("the response body should contain an error message about invalid credentials", () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("invalid");
@@ -111,6 +115,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       ctx.response = await ctx.client.dispatch("POST", "/api/v1/users/me/deactivate", null, getAuth(ctx, "alice"));
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Authenticated user self-deactivates their account
     Then("the response status code should be 200", () => {
       expect(ctx.response!.status).toBe(200);
     });
@@ -137,6 +142,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(401);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Self-deactivated user cannot log in with previous credentials
     And("the response body should contain an error message about account deactivation", () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("deactivat");

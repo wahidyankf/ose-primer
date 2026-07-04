@@ -46,6 +46,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(400);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Reject password shorter than 12 characters
     And('the response body should contain a validation error for "password"', () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("password");
@@ -69,6 +70,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(400);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Reject password with no special character
     And('the response body should contain a validation error for "password"', () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("password");
@@ -100,6 +102,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(401);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Account is locked after exceeding the maximum failed login threshold
     And('alice\'s account status should be "locked"', async () => {
       await setupAdmin(ctx);
       const resp = await ctx.client.dispatch(
@@ -133,6 +136,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       );
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Admin unlocks a locked account
     Then("the response status code should be 200", () => {
       expect(ctx.response!.status).toBe(200);
     });
@@ -166,6 +170,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(200);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Unlocked account can log in with correct password
     And('the response body should contain a non-null "accessToken" field', () => {
       expect((ctx.response!.body as Record<string, unknown>).accessToken).toBeDefined();
     });

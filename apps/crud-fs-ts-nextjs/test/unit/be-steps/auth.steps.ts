@@ -41,6 +41,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect((ctx.response!.body as Record<string, unknown>).accessToken).toBeDefined();
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Successful login returns access token and refresh token
     And('the response body should contain a non-null "refreshToken" field', () => {
       expect((ctx.response!.body as Record<string, unknown>).refreshToken).toBeDefined();
     });
@@ -63,6 +64,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(200);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Successful login response includes token type "Bearer"
     And('the response body should contain "tokenType" equal to "Bearer"', () => {
       expect((ctx.response!.body as Record<string, unknown>).tokenType).toBe("Bearer");
     });
@@ -85,6 +87,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(401);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login with wrong password
     And("the response body should contain an error message about invalid credentials", () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("invalid");
@@ -108,6 +111,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(401);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login for non-existent user
     And("the response body should contain an error message about invalid credentials", () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("invalid");
@@ -144,6 +148,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(401);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login for deactivated account
     And("the response body should contain an error message about account deactivation", () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("deactivat");

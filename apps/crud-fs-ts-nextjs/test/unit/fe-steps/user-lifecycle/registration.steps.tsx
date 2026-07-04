@@ -92,6 +92,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(mockPush).toHaveBeenCalledWith("/login?registered=true");
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Successful registration navigates to the login page with success message
     And("a success message about account creation should be displayed", () => {
       expect(mockPush).toHaveBeenCalledWith("/login?registered=true");
     });
@@ -120,6 +121,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Successful registration does not display the password in any confirmation
     Then("no password value should be visible on the page", () => {
       expect(screen.queryByText("Str0ng#Pass1")).not.toBeInTheDocument();
     });
@@ -155,6 +157,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/username or email already exists/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Registration with duplicate username shows an error
     And("the visitor should remain on the registration page", () => {
       expect(mockPush).not.toHaveBeenCalledWith("/login?registered=true");
     });
@@ -186,6 +189,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/enter a valid email/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Registration with invalid email shows a validation error
     And("the visitor should remain on the registration page", () => {
       expect(mockPush).not.toHaveBeenCalledWith("/login?registered=true");
     });
@@ -217,6 +221,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/password must meet/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Registration with empty password shows a validation error
     And("the visitor should remain on the registration page", () => {
       expect(mockPush).not.toHaveBeenCalledWith("/login?registered=true");
     });
@@ -249,6 +254,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/password must meet/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/registration.feature:Registration with weak password shows a validation error
     And("the visitor should remain on the registration page", () => {
       expect(mockPush).not.toHaveBeenCalledWith("/login?registered=true");
     });

@@ -66,6 +66,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
         expect(parseFloat(String((ctx.response!.body as Record<string, unknown>).quantity))).toBe(50.5);
       });
 
+      // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with metric unit "liter" stores quantity and unit correctly
       And('the response body should contain "unit" equal to "liter"', () => {
         expect((ctx.response!.body as Record<string, unknown>).unit).toBe("liter");
       });
@@ -108,6 +109,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
         expect(parseFloat(String((ctx.response!.body as Record<string, unknown>).quantity))).toBe(10);
       });
 
+      // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with imperial unit "gallon" stores quantity and unit correctly
       And('the response body should contain "unit" equal to "gallon"', () => {
         expect((ctx.response!.body as Record<string, unknown>).unit).toBe("gallon");
       });
@@ -140,6 +142,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(400);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with an unsupported unit returns 400
     And('the response body should contain a validation error for "unit"', () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(String(body.error).toLowerCase()).toContain("unit");
@@ -170,6 +173,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(201);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Expense without quantity and unit fields is accepted
     And('the response body should contain a non-null "id" field', () => {
       expect((ctx.response!.body as Record<string, unknown>).id).toBeDefined();
     });

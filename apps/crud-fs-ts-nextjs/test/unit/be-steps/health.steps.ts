@@ -25,6 +25,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(ctx.response!.status).toBe(200);
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Health endpoint reports the service as UP
     And('the health status should be "UP"', () => {
       expect((ctx.response!.body as Record<string, unknown>).status).toBe("UP");
     });
@@ -43,6 +44,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect((ctx.response!.body as Record<string, unknown>).status).toBe("UP");
     });
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Anonymous health check does not expose component details
     And("the response should not include detailed component health information", () => {
       const body = ctx.response!.body as Record<string, unknown>;
       expect(body).not.toHaveProperty("components");

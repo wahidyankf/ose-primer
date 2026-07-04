@@ -167,6 +167,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/10\.50/)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:USD expense displays two decimal places
     And('the currency should display as "USD"', () => {
       expect(screen.getAllByText(/USD/).length).toBeGreaterThan(0);
     });
@@ -212,6 +213,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/150000/)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:IDR expense displays as a whole number
     And('the currency should display as "IDR"', () => {
       expect(screen.getAllByText(/IDR/).length).toBeGreaterThan(0);
     });
@@ -267,6 +269,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:Unsupported currency code shows a validation error
     Then("a validation error for the currency field should be displayed", () => {
       expect(screen.getAllByRole("alert").length).toBeGreaterThan(0);
     });
@@ -322,6 +325,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:Malformed currency code shows a validation error
     Then("a validation error for the currency field should be displayed", () => {
       expect(screen.getAllByRole("alert").length).toBeGreaterThan(0);
     });
@@ -370,6 +374,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getAllByText(/USD/).length).toBeGreaterThan(0);
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency
     And("no cross-currency total should be shown", () => {
       expect(screen.queryByText(/IDR.*USD/i)).not.toBeInTheDocument();
     });
@@ -418,6 +423,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/currency-handling.feature:Negative amount shows a validation error
     Then("a validation error for the amount field should be displayed", () => {
       expect(screen.getByText(/non-negative/i)).toBeInTheDocument();
     });
