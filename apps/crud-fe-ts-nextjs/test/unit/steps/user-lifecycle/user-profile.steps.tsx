@@ -132,6 +132,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText("alice@example.com")).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Profile page displays username, email, and display name
     And("the profile should display a display name", async () => {
       // Display name is set via useEffect after user data loads, so wrap in waitFor
       await waitFor(() => {
@@ -173,6 +174,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Updating display name shows the new value
     Then('the profile should display display name "Alice Smith"', () => {
       expect(screen.getByText(/profile updated successfully/i)).toBeInTheDocument();
     });
@@ -207,6 +209,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Changing password with correct old password succeeds
     Then("a success message about password change should be displayed", () => {
       expect(screen.getByText(/password changed successfully/i)).toBeInTheDocument();
     });
@@ -242,6 +245,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Changing password with incorrect old password shows an error
     Then("an error message about invalid credentials should be displayed", () => {
       expect(screen.getByText(/current password is incorrect/i)).toBeInTheDocument();
     });
@@ -286,6 +290,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Self-deactivating account redirects to login
     Then("alice should be redirected to the login page", () => {
       expect(mockPush).toHaveBeenCalledWith("/login");
     });
@@ -325,6 +330,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/deactivated or disabled/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/user-lifecycle/user-profile.feature:Self-deactivated user cannot log in
     And("alice should remain on the login page", () => {
       expect(mockPush).not.toHaveBeenCalledWith("/");
     });

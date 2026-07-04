@@ -194,6 +194,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByRole("navigation")).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Desktop viewport shows full sidebar navigation
     And("the sidebar should display navigation labels alongside icons", () => {
       expect(screen.getByText("Expenses")).toBeInTheDocument();
       expect(screen.getByText("Profile")).toBeInTheDocument();
@@ -228,6 +229,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(links.length).toBeGreaterThan(0);
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Tablet viewport collapses sidebar to icons only
     And("hovering over a sidebar icon should show a tooltip with the label", () => {
       const nav = screen.getByRole("navigation");
       const links = nav.querySelectorAll("a[title]");
@@ -271,6 +273,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Mobile viewport hides sidebar behind a hamburger menu
     And("a slide-out navigation drawer should appear", () => {
       expect(screen.getByRole("navigation")).toBeInTheDocument();
     });
@@ -310,6 +313,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Mobile navigation drawer closes on item selection
     And("the selected page should load", () => {
       // Navigation link was clicked - page loading happens via router
       expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
@@ -358,6 +362,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByRole("table")).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Entry list displays as a table on desktop
     And("the table should show columns for date, description, category, amount, and currency", () => {
       expect(screen.getByText(/date/i)).toBeInTheDocument();
       expect(screen.getByText(/description/i)).toBeInTheDocument();
@@ -409,6 +414,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText("Entry 1")).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Entry list displays as cards on mobile
     And("each card should show description, amount, and date", () => {
       expect(screen.getByText("Entry 1")).toBeInTheDocument();
       expect(screen.getAllByText(/USD/).length).toBeGreaterThan(0);
@@ -456,6 +462,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByRole("table")).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Admin user list is scrollable horizontally on mobile
     And("the visible columns should prioritize username and status", () => {
       expect(screen.getByText("username", { exact: false })).toBeInTheDocument();
       expect(screen.getByText("status", { exact: false })).toBeInTheDocument();
@@ -500,6 +507,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getAllByText(/5000\.00/).length).toBeGreaterThan(0);
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:P&L report chart adapts to viewport width
     And("category breakdowns should stack vertically below the chart", () => {
       expect(screen.getByText("salary")).toBeInTheDocument();
       expect(screen.getByText("food")).toBeInTheDocument();
@@ -537,6 +545,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Login form is centered and full-width on mobile
     And("the form inputs should be large enough for touch interaction", () => {
       expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
@@ -584,6 +593,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByLabelText(/upload attachment/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/responsive.feature:Attachment upload area adapts to mobile
     And("drag-and-drop should be replaced with a file picker", () => {
       const fileInput = screen.getByLabelText(/upload attachment/i);
       expect(fileInput.tagName).toBe("INPUT");
