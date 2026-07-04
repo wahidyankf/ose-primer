@@ -80,6 +80,8 @@ Given("alice has already logged out once", async ({ request }) => {
   });
 });
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout current session invalidates the access token
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout all devices invalidates tokens from all sessions
 Then("alice's access token should be invalidated", async ({ request }) => {
   const token = getTokenForUser("alice");
   const res = await request.get("/api/v1/users/me", {

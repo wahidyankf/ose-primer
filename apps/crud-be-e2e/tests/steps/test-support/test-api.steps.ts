@@ -78,10 +78,12 @@ Then("all expenses should be deleted", async () => {
   expect(getResponse().status()).toBe(200);
 });
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Reset database clears all user-created data
 Then("all attachments should be deleted", async () => {
   expect(getResponse().status()).toBe(200);
 });
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Promote user to admin role
 Then("user {string} should have the {string} role", async ({}, _username: string, _role: string) => {
   // The promote-admin endpoint returns 200 on success; role verified by subsequent admin operations
   expect(getResponse().status()).toBe(200);

@@ -81,6 +81,7 @@ Then(
   },
 );
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments for an entry returns all uploaded files with metadata
 Then(
   "the response body should contain an attachment with {string} equal to {string}",
   // oxlint-disable-next-line no-empty-pattern
@@ -126,6 +127,7 @@ When(
   },
 );
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload file exceeding the size limit returns 413
 Then("the response body should contain an error message about file size", async () => {
   const body = (await getResponse().json()) as { message: string };
   expect(body.message).toMatch(/size|large|limit|too big/i);

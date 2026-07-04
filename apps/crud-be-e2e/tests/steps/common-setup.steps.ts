@@ -152,6 +152,9 @@ async function ensureSuperadmin(request: import("@playwright/test").APIRequestCo
   }
 }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin disables a user account
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin re-enables a disabled user account
+// @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Account is locked after exceeding the maximum failed login threshold
 Then("alice's account status should be {string}", async ({ request }, status: string) => {
   const adminToken = await ensureSuperadmin(request);
   const aliceId = getIdForUser("alice");
@@ -306,17 +309,22 @@ When(/^alice sends GET \/api\/v1\/expenses\/\{expenseId\}$/, async ({ request })
 // Error message assertions (shared across multiple features)
 // ---------------------------------------------------------------------------
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login for deactivated account
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Refresh fails for a deactivated user
+// @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Self-deactivated user cannot log in with previous credentials
 Then("the response body should contain an error message about account deactivation", async () => {
   const body = (await getResponse().json()) as { message: string };
   expect(body.message).toMatch(/deactivat|disabled/i);
 });
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Reject refresh with an expired refresh token
 Then("the response body should contain an error message about token expiration", async () => {
   const body = (await getResponse().json()) as { message: string };
   // Backend returns "Invalid token" for expired/revoked refresh tokens
   expect(body.message).toMatch(/expir|invalid|revoked/i);
 });
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Original refresh token is rejected after rotation (single-use)
 Then("the response body should contain an error message about invalid token", async () => {
   const body = (await getResponse().json()) as { message: string };
   expect(body.message).toMatch(/invalid|revoked/i);

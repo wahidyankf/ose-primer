@@ -114,6 +114,7 @@ When(/^the admin sends POST \/api\/v1\/admin\/users\/\{alice_id\}\/unlock$/, asy
   );
 });
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Search users by email returns matching results
 Then(
   "the response body should contain at least one user with {string} equal to {string}",
   // oxlint-disable-next-line no-empty-pattern

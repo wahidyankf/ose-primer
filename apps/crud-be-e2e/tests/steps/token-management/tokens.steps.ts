@@ -28,6 +28,8 @@ When(/^alice decodes her access token payload$/, async () => {
 // Module-level storage for decoded JWT payload (single worker, sequential tests)
 let decodedTokenPayload: Record<string, unknown> = {};
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains user ID claim
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains issuer claim
 Then(
   "the token should contain a non-null {string} claim",
   // oxlint-disable-next-line no-empty-pattern
@@ -41,6 +43,7 @@ When(/^the client sends GET \/\.well-known\/jwks\.json$/, async ({ request }) =>
   setResponse(await request.get("/.well-known/jwks.json"));
 });
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:JWKS endpoint returns the public key for token signature verification
 Then(
   "the response body should contain at least one key in the {string} array",
   // oxlint-disable-next-line no-empty-pattern
@@ -52,6 +55,7 @@ Then(
   },
 );
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Logout blacklists the access token
 Then("alice's access token should be recorded as revoked", async ({ request }) => {
   // Attempt to use the token on a protected endpoint; expect 401
   const token = getTokenForUser("alice");

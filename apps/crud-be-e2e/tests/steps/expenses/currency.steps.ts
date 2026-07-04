@@ -18,6 +18,7 @@ When(/^alice sends GET \/api\/v1\/expenses\/summary$/, async ({ request }) => {
   );
 });
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency without cross-currency mixing
 Then(
   "the response body should contain {string} total equal to {string}",
   // oxlint-disable-next-line no-empty-pattern
