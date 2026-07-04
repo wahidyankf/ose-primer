@@ -52,6 +52,7 @@ defmodule OpenApiCodegenTest do
       end)
     end
 
+    # @covers specs/libs/elixir-openapi-codegen/behavior/gherkin/generate/generate-schema-modules.feature:Generating a schema with required and optional properties
     test "generated User struct has enforce_keys for required fields", %{tmp_dir: tmp_dir} do
       assert {:ok, paths} = OpenApiCodegen.generate(@sample_yaml, tmp_dir, namespace: "Sample")
       user_path = Enum.find(paths, &String.ends_with?(&1, "user.ex"))
@@ -65,6 +66,20 @@ defmodule OpenApiCodegenTest do
 
     test "returns error for non-existent spec file", %{tmp_dir: tmp_dir} do
       assert {:error, _reason} = OpenApiCodegen.generate("/no/such/file.yaml", tmp_dir)
+    end
+
+    # @covers specs/libs/elixir-openapi-codegen/behavior/gherkin/generate/generate-schema-modules.feature:A spec with no components key fails to generate
+    test "returns error for spec with no components key", %{tmp_dir: tmp_dir} do
+      no_components = Path.join(@fixtures_dir, "no_components.yaml")
+      assert {:error, reason} = OpenApiCodegen.generate(no_components, tmp_dir)
+      assert reason =~ "components"
+    end
+
+    # @covers specs/libs/elixir-openapi-codegen/behavior/gherkin/generate/generate-schema-modules.feature:A spec with components but no schemas key fails to generate
+    test "returns error for spec with components but no schemas key", %{tmp_dir: tmp_dir} do
+      no_schemas = Path.join(@fixtures_dir, "no_schemas.yaml")
+      assert {:error, reason} = OpenApiCodegen.generate(no_schemas, tmp_dir)
+      assert reason =~ "components.schemas"
     end
   end
 
