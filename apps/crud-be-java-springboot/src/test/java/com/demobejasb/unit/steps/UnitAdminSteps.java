@@ -62,6 +62,7 @@ public class UnitAdminSteps {
         stateStore.setResponseBody(resp.getBody());
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Search users by email returns matching results
     @Then("the response body should contain at least one user with {string} equal to {string}")
     public void theResponseBodyShouldContainUserWithFieldEqual(
             final String field, final String value) {

@@ -104,6 +104,7 @@ public class ReportingSteps {
         assertThat(String.valueOf(entry.get("total"))).isEqualTo(amount);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L breakdown includes category-level amounts for income and expenses
     @Then("the expense breakdown should contain {string} with amount {string}")
     public void theExpenseBreakdownShouldContain(final String category, final String amount) {
         Map<String, Object> body = responseStore.getBodyAsMap();

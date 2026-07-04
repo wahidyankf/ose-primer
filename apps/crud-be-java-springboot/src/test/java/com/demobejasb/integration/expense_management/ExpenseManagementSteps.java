@@ -75,6 +75,7 @@ public class ExpenseManagementSteps {
         expenseHelper.updateExpense(expenseId, body);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Delete an entry returns 204
     @When("^alice sends DELETE /api/v1/expenses/\\{expenseId\\}$")
     public void aliceDeletesExpense() {
         UUID expenseId = tokenStore.getExpenseId();
@@ -84,6 +85,7 @@ public class ExpenseManagementSteps {
         expenseHelper.deleteExpense(expenseId);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Unauthenticated request to create an entry returns 401
     @When("^the client sends POST /api/v1/expenses with body \\{ \"amount\": \"10\\.00\", \"currency\": \"USD\", \"category\": \"food\", \"description\": \"Coffee\", \"date\": \"2025-01-01\", \"type\": \"expense\" \\}$")
     public void unauthenticatedClientCreatesExpense() {
         // Explicitly unauthenticated — must not use the token stored by the Background step

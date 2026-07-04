@@ -78,6 +78,7 @@ public class UnitAttachmentSteps {
         }
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete attachment returns 204
     @When("^alice sends DELETE /api/v1/expenses/[{]expenseId[}]/attachments/[{]attachmentId[}]$")
     public void aliceDeletesAttachment() {
         UUID expenseId = stateStore.getExpenseId();
@@ -110,6 +111,7 @@ public class UnitAttachmentSteps {
                 new RuntimeException("File size exceeds the maximum allowed size"));
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload attachment to another user's entry returns 403
     @When("^alice uploads file \"([^\"]*)\" with content type \"([^\"]*)\" to POST /api/v1/expenses/[{]bobExpenseId[}]/attachments$")
     public void aliceUploadsFileToBobsExpense(
             final String filename, final String contentType) {
@@ -117,6 +119,7 @@ public class UnitAttachmentSteps {
         performUpload(filename, contentType, bobExpenseId, true);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments on another user's entry returns 403
     @When("^alice sends GET /api/v1/expenses/[{]bobExpenseId[}]/attachments$")
     public void aliceSendsGetAttachmentsOnBobsExpense() {
         UUID bobExpenseId = stateStore.getBobExpenseId();
@@ -135,6 +138,7 @@ public class UnitAttachmentSteps {
         }
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete attachment on another user's entry returns 403
     @When("^alice sends DELETE /api/v1/expenses/[{]bobExpenseId[}]/attachments/[{]attachmentId[}]$")
     public void aliceDeletesAttachmentOnBobsExpense() {
         UUID bobExpenseId = stateStore.getBobExpenseId();
@@ -154,6 +158,7 @@ public class UnitAttachmentSteps {
         }
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete non-existent attachment returns 404
     @When("^alice sends DELETE /api/v1/expenses/[{]expenseId[}]/attachments/[{]randomAttachmentId[}]$")
     public void aliceDeletesNonExistentAttachment() {
         UUID expenseId = stateStore.getExpenseId();
@@ -182,6 +187,7 @@ public class UnitAttachmentSteps {
         }
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments for an entry returns all uploaded files with metadata
     @Then("the response body should contain an attachment with {string} equal to {string}")
     public void theResponseBodyShouldContainAttachmentWithFieldEqual(
             final String field, final String value) {
@@ -199,6 +205,7 @@ public class UnitAttachmentSteps {
         assertThat(found).isTrue();
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload file exceeding the size limit returns 413
     @Then("the response body should contain an error message about file size")
     public void theResponseBodyShouldContainErrorMessageAboutFileSize() {
         assertThat(stateStore.getStatusCode()).isEqualTo(413);

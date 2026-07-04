@@ -31,6 +31,7 @@ public class UnitHealthSteps {
         stateStore.setResponseBody(java.util.Map.of("status", "UP"));
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Health endpoint reports the service as UP
     @Then("the health status should be {string}")
     public void theHealthStatusShouldBe(final String expectedStatus) {
         Object body = stateStore.getResponseBody();
@@ -41,6 +42,7 @@ public class UnitHealthSteps {
         assertThat(map.get("status")).isEqualTo(expectedStatus);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Anonymous health check does not expose component details
     @Then("the response should not include detailed component health information")
     public void theResponseShouldNotIncludeComponentDetails() {
         Object body = stateStore.getResponseBody();

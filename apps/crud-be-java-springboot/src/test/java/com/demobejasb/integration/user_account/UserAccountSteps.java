@@ -58,6 +58,7 @@ public class UserAccountSteps {
         }, () -> responseStore.setResponse(404, Map.of("message", "User not found")));
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Successful password change returns 200
     @When("^alice sends POST /api/v1/users/me/password with body \\{ \"oldPassword\": \"Str0ng#Pass1\", \"newPassword\": \"NewPass#456\" \\}$")
     public void aliceSendsPostChangePasswordSuccess() {
         String token = tokenStore.getToken();
@@ -76,6 +77,7 @@ public class UserAccountSteps {
         performChangePassword(token, "Wr0ngOld!", "NewPass#456");
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Authenticated user self-deactivates their account
     @When("^alice sends POST /api/v1/users/me/deactivate$")
     public void aliceSendsPostSelfDeactivate() {
         String token = tokenStore.getToken();

@@ -115,6 +115,7 @@ public class UnitCommonSteps {
         });
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Disabled user's access token is rejected with 401
     @Given("alice's account has been disabled by the admin")
     public void alicesAccountHasBeenDisabledByAdmin() {
         userRepository.findByUsername("alice").ifPresent(user -> {

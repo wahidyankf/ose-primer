@@ -46,6 +46,7 @@ public class UnitUserAccountSteps {
         stateStore.setResponseBody(resp.getBody());
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Successful password change returns 200
     @When("^alice sends POST /api/v1/users/me/password with body [{] \"oldPassword\": \"Str0ng#Pass1\", \"newPassword\": \"NewPass#456\" [}]$")
     public void aliceSendsPostChangePasswordSuccess() {
         performChangePassword("Str0ng#Pass1", "NewPass#456");
@@ -56,6 +57,7 @@ public class UnitUserAccountSteps {
         performChangePassword("Wr0ngOld!", "NewPass#456");
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Authenticated user self-deactivates their account
     @When("^alice sends POST /api/v1/users/me/deactivate$")
     public void aliceSendsPostSelfDeactivate() {
         String username = resolveUsername();

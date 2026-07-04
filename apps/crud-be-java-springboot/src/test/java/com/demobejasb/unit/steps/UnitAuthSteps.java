@@ -145,6 +145,19 @@ public class UnitAuthSteps {
     // Assertion steps
     // ============================================================
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Successful login response includes token type "Bearer"
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:USD expense amount preserves two decimal places
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:IDR expense amount is stored and returned as a whole number
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Get own entry by ID returns amount, currency, category, description, date, and type
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Update an entry amount and description returns 200
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary returns income total, expense total, and net for a period
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:Income entries are excluded from expense total
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:Expense entries are excluded from income total
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary filters by currency without cross-currency mixing
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L summary for a period with no entries returns zero totals
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with metric unit "liter" stores quantity and unit correctly
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with imperial unit "gallon" stores quantity and unit correctly
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Update display name succeeds
     @Then("the response body should contain {string} equal to {string}")
     public void responseBodyContainsFieldEqualTo(final String field, final String value) {
         Object body = stateStore.getResponseBody();
@@ -165,6 +178,7 @@ public class UnitAuthSteps {
         assertThat(actualDouble).isEqualTo(value);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Successful registration returns created user profile without password
     @Then("the response body should not contain a {string} field")
     public void responseBodyShouldNotContainField(final String field) {
         // contracts.User (register response) intentionally omits password
@@ -178,6 +192,19 @@ public class UnitAuthSteps {
         // For other cases, absence is implicit in our type-safe response objects
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:List all users returns a paginated response
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin generates a password-reset token for a user
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Successful login returns access token and refresh token
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Successful refresh returns a new access token and refresh token
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload JPEG image returns 201 with attachment metadata
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload PDF document returns 201 with attachment metadata
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Create expense entry with amount and currency returns 201 with entry ID
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Create income entry with amount and currency returns 201 with entry ID
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:List own entries returns a paginated response
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Expense without quantity and unit fields is accepted
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Unlocked account can log in with correct password
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Successful registration response includes non-null user ID
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Get own profile returns username, email, and display name
     @Then("the response body should contain a non-null {string} field")
     public void responseBodyContainsNonNullField(final String field) {
         Object body = stateStore.getResponseBody();
@@ -186,6 +213,7 @@ public class UnitAuthSteps {
         assertThat(value).isNotNull();
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration when username already exists
     @Then("the response body should contain an error message about duplicate username")
     public void responseBodyContainsDuplicateUsernameError() {
         Exception ex = stateStore.getLastException();
@@ -193,6 +221,9 @@ public class UnitAuthSteps {
         assertThat(ex.getMessage()).containsIgnoringCase("already exists");
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login with wrong password
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login for non-existent user
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Reject password change with incorrect old password
     @Then("the response body should contain an error message about invalid credentials")
     public void responseBodyContainsInvalidCredentialsError() {
         Exception ex = stateStore.getLastException();
@@ -201,6 +232,9 @@ public class UnitAuthSteps {
                 InvalidCredentialsException.class, AccountNotActiveException.class);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/password-login.feature:Reject login for deactivated account
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Refresh fails for a deactivated user
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/user-account.feature:Self-deactivated user cannot log in with previous credentials
     @Then("the response body should contain an error message about account deactivation")
     public void responseBodyContainsAccountDeactivationError() {
         Exception ex = stateStore.getLastException();
@@ -208,6 +242,7 @@ public class UnitAuthSteps {
         assertThat(ex).isInstanceOf(AccountNotActiveException.class);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Reject refresh with an expired refresh token
     @Then("the response body should contain an error message about token expiration")
     public void responseBodyContainsTokenExpirationError() {
         Exception ex = stateStore.getLastException();
@@ -215,6 +250,7 @@ public class UnitAuthSteps {
         assertThat(ex.getMessage()).containsIgnoringCase("expir");
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Original refresh token is rejected after rotation (single-use)
     @Then("the response body should contain an error message about invalid token")
     public void responseBodyContainsInvalidTokenError() {
         int status = stateStore.getStatusCode();
@@ -226,12 +262,25 @@ public class UnitAuthSteps {
         assertThat(msg).matches(".*(?:invalid|expired|revoked|not found|token).*");
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Unsupported currency code returns 400
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Malformed currency code returns 400
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Negative amount is rejected with 400
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload unsupported file type returns 415
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/unit-handling.feature:Create expense with an unsupported unit returns 400
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Reject password shorter than 12 characters
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Reject password with no special character
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with invalid email format
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with empty password
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/user-lifecycle/registration.feature:Reject registration with weak password — no uppercase letter
     @Then("the response body should contain a validation error for {string}")
     public void responseBodyContainsValidationError(final String field) {
         int status = stateStore.getStatusCode();
         assertThat(status).isIn(400, 415);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin disables a user account
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin re-enables a disabled user account
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Account is locked after exceeding the maximum failed login threshold
     @Then("alice's account status should be {string}")
     public void alicesAccountStatusShouldBe(final String status) {
         String actualStatus = userRepository.findByUsername("alice")
@@ -265,6 +314,7 @@ public class UnitAuthSteps {
         stateStore.setResponseBody(resp.getBody());
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Admin unlocks a locked account
     @When("^the admin sends POST /api/v1/admin/users/[{]alice_id[}]/unlock$")
     public void theAdminSendsPostUnlockAliceShared() {
         java.util.UUID aliceId = stateStore.getAliceId();

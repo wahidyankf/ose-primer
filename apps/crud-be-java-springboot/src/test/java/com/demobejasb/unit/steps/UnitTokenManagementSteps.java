@@ -64,6 +64,8 @@ public class UnitTokenManagementSteps {
         stateStore.setResponseBody(jwtPayloadJson);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains user ID claim
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains issuer claim
     @Then("the token should contain a non-null {string} claim")
     public void theTokenShouldContainANonNullClaim(final String claim) {
         if (jwtPayloadJson.isEmpty()) {
@@ -85,6 +87,7 @@ public class UnitTokenManagementSteps {
         stateStore.setResponseBody(result);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:JWKS endpoint returns the public key for token signature verification
     @Then("the response body should contain at least one key in the {string} array")
     public void theResponseBodyShouldContainAtLeastOneKeyInArray(final String field) {
         Object body = stateStore.getResponseBody();
@@ -98,6 +101,7 @@ public class UnitTokenManagementSteps {
         assertThat((java.util.List<?>) keys).isNotEmpty();
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Logout blacklists the access token
     @Then("alice's access token should be recorded as revoked")
     public void alicesAccessTokenShouldBeRecordedAsRevoked() {
         String token = stateStore.getAccessToken();
@@ -105,6 +109,7 @@ public class UnitTokenManagementSteps {
         assertThat(revokedTokenRepository.existsByJti(token)).isTrue();
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Blacklisted access token is rejected with 401 on protected endpoints
     @Given("alice has logged out and her access token is blacklisted")
     public void aliceHasLoggedOutAndTokenIsBlacklisted() {
         String token = stateStore.getAccessToken();
@@ -113,6 +118,7 @@ public class UnitTokenManagementSteps {
         }
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Deactivating a user revokes all their active tokens
     @Given("^the admin has disabled alice's account via POST /api/v1/admin/users/[{]alice_id[}]/disable$")
     public void theAdminHasDisabledAlicesAccount() {
         java.util.UUID aliceId = stateStore.getAliceId();

@@ -110,6 +110,7 @@ public class AttachmentsSteps {
         listAttachments(token, expenseId);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete attachment returns 204
     @When("^alice sends DELETE /api/v1/expenses/\\{expenseId\\}/attachments/\\{attachmentId\\}$")
     public void aliceDeletesAttachment() {
         String token = tokenStore.getToken();
@@ -143,6 +144,7 @@ public class AttachmentsSteps {
         assertThat(list).hasSize(count);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments for an entry returns all uploaded files with metadata
     @Then("the response body should contain an attachment with {string} equal to {string}")
     public void theResponseBodyShouldContainAttachmentWithFieldEqual(
             final String field, final String value) {
@@ -151,6 +153,7 @@ public class AttachmentsSteps {
         assertThat(values).contains(value);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload file exceeding the size limit returns 413
     @Then("the response body should contain an error message about file size")
     public void theResponseBodyShouldContainErrorMessageAboutFileSize() {
         assertThat(responseStore.getBody()).containsIgnoringCase("size");
@@ -177,6 +180,7 @@ public class AttachmentsSteps {
         tokenStore.setBobExpenseId(id);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload attachment to another user's entry returns 403
     @When("^alice uploads file \"([^\"]*)\" with content type \"([^\"]*)\" to POST /api/v1/expenses/\\{bobExpenseId\\}/attachments$")
     public void aliceUploadsFileToBobsExpense(final String filename, final String contentType) {
         String token = tokenStore.getToken();
@@ -188,6 +192,7 @@ public class AttachmentsSteps {
         uploadAttachment(token, bobExpenseId, filename, contentType, fileContent);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments on another user's entry returns 403
     @When("^alice sends GET /api/v1/expenses/\\{bobExpenseId\\}/attachments$")
     public void aliceSendsGetAttachmentsOnBobsExpense() {
         String token = tokenStore.getToken();
@@ -198,6 +203,7 @@ public class AttachmentsSteps {
         listAttachments(token, bobExpenseId);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete attachment on another user's entry returns 403
     @When("^alice sends DELETE /api/v1/expenses/\\{bobExpenseId\\}/attachments/\\{attachmentId\\}$")
     public void aliceDeletesAttachmentOnBobsExpense() {
         String token = tokenStore.getToken();
@@ -209,6 +215,7 @@ public class AttachmentsSteps {
         deleteAttachment(token, bobExpenseId, attachmentId);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Delete non-existent attachment returns 404
     @When("^alice sends DELETE /api/v1/expenses/\\{expenseId\\}/attachments/\\{randomAttachmentId\\}$")
     public void aliceDeletesNonExistentAttachment() {
         String token = tokenStore.getToken();

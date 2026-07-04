@@ -52,6 +52,7 @@ public class UnitExpenseSteps {
         parseAndCreateOrValidateExpense(body, true);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Unauthenticated request to create an entry returns 401
     @When("^the client sends POST /api/v1/expenses with body [{] \"amount\": \"10[.]00\", \"currency\": \"USD\", \"category\": \"food\", \"description\": \"Coffee\", \"date\": \"2025-01-01\", \"type\": \"expense\" [}]$")
     public void unauthenticatedClientCreatesExpense() {
         // No token — unauthenticated
@@ -147,6 +148,7 @@ public class UnitExpenseSteps {
         }
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/expense-management.feature:Delete an entry returns 204
     @When("^alice sends DELETE /api/v1/expenses/[{]expenseId[}]$")
     public void aliceDeletesExpense() {
         UUID expenseId = stateStore.getExpenseId();
@@ -169,6 +171,7 @@ public class UnitExpenseSteps {
     // Currency summary assertion
     // ============================================================
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency without cross-currency mixing
     @Then("the response body should contain {string} total equal to {string}")
     public void theResponseBodyShouldContainCurrencyTotalEqual(
             final String currency, final String total) {

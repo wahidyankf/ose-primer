@@ -117,6 +117,8 @@ public class UnitTokenLifecycleSteps {
         stateStore.setResponseBody(java.util.Map.of("message", "Logged out from all devices"));
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout current session invalidates the access token
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout all devices invalidates tokens from all sessions
     @Then("alice's access token should be invalidated")
     public void alicesAccessTokenShouldBeInvalidated() {
         String token = stateStore.getAccessToken();
@@ -125,6 +127,7 @@ public class UnitTokenLifecycleSteps {
         assertThat(revoked).isTrue();
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout is idempotent — repeating logout on the same token returns 200
     @Given("alice has already logged out once")
     public void aliceHasAlreadyLoggedOutOnce() {
         String token = stateStore.getAccessToken();

@@ -90,6 +90,8 @@ public class TokenLifecycleSteps {
         responseStore.setResponse(200);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout current session invalidates the access token
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout all devices invalidates tokens from all sessions
     @Then("alice's access token should be invalidated")
     public void alicesAccessTokenShouldBeInvalidated() {
         String token = tokenStore.getToken();
@@ -112,6 +114,7 @@ public class TokenLifecycleSteps {
         responseStore.setResponse(200);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout is idempotent — repeating logout on the same token returns 200
     @Given("alice has already logged out once")
     public void aliceHasAlreadyLoggedOutOnce() {
         String token = tokenStore.getToken();
