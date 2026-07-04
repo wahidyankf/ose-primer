@@ -34,7 +34,12 @@
 
         # Parameter pattern matching consistency in gherkin.ex:109
         # https://github.com/cabbage-ex/gherkin/blob/v2.0.0/lib/gherkin.ex
-        {Credo.Check.Consistency.ParameterPatternMatching, false}
+        {Credo.Check.Consistency.ParameterPatternMatching, false},
+
+        # @covers <spec-path>:<scenario-title> marker comments in test/gherkin/gherkin_test.exs
+        # must stay on one line for rhino-cli's spec-coverage regex matching; the default 120
+        # doesn't fit long spec paths.
+        {Credo.Check.Readability.MaxLineLength, [max_length: 200]}
       ]
     }
   ]

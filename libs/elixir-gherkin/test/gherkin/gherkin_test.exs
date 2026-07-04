@@ -67,4 +67,49 @@ defmodule Gherkin.GherkinTest do
              scenarios: [%Gherkin.Elements.Scenario{}, %Gherkin.Elements.Scenario{}]
            } = Gherkin.flatten(feature)
   end
+
+  @simple_feature """
+  Feature: Say hello
+
+    Scenario: Greeting a user
+      Given a user named "Alice"
+      Then the greeting is "Hello, Alice"
+  """
+
+  # @covers specs/libs/elixir-gherkin/behavior/gherkin/parse/feature-parsing.feature:Parsing a simple feature returns its name and scenarios
+  test "parsing a simple feature returns its name and scenarios" do
+    assert %Gherkin.Elements.Feature{scenarios: scenarios} =
+             feature = @simple_feature |> Gherkin.parse()
+
+    assert feature.name == "Say hello"
+    assert length(scenarios) == 1
+    assert %Gherkin.Elements.Scenario{steps: steps} = hd(scenarios)
+    assert length(steps) == 2
+  end
+
+  @three_row_outline """
+  Feature: Serve coffee
+
+    Scenario Outline: Buy coffee
+      Given there are <coffees> coffees left in the machine
+      Then I should be served <served> coffees
+
+      Examples:
+        | coffees | served |
+        |  12     |  12    |
+        |  2      |  2     |
+        |  0      |  0     |
+  """
+
+  # @covers specs/libs/elixir-gherkin/behavior/gherkin/parse/feature-parsing.feature:Flattening a Scenario Outline expands one scenario per example row
+  test "flattening a scenario outline with 3 example rows expands 3 scenarios" do
+    feature = @three_row_outline |> Gherkin.parse()
+    flattened = Gherkin.flatten(feature)
+
+    assert %Gherkin.Elements.Feature{scenarios: scenarios} = flattened
+    assert length(scenarios) == 3
+
+    step_texts = Enum.map(scenarios, fn s -> Enum.map(s.steps, & &1.text) end)
+    refute Enum.any?(List.flatten(step_texts), &String.contains?(&1, "<"))
+  end
 end
