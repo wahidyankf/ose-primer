@@ -116,6 +116,7 @@ Then(
   },
 );
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency without cross-currency mixing
 Then(
   /^the response body should contain "([^"]*)" total equal to "([^"]*)"$/,
   function (this: CustomWorld, currency: string, amount: string) {

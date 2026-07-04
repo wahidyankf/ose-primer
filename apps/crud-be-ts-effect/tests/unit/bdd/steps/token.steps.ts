@@ -47,6 +47,8 @@ When("alice decodes her access token payload", function (this: CustomWorld) {
 
 // ---- Then ----
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains user ID claim
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains issuer claim
 Then("the token should contain a non-null {string} claim", function (this: CustomWorld, claim: string) {
   const payload = this.context["tokenPayload"] as Record<string, unknown>;
   expect(payload).toBeDefined();
@@ -54,6 +56,7 @@ Then("the token should contain a non-null {string} claim", function (this: Custo
   expect(payload[claim]).not.toBeUndefined();
 });
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:JWKS endpoint returns the public key for token signature verification
 Then(
   "the response body should contain at least one key in the {string} array",
   function (this: CustomWorld, field: string) {
@@ -66,6 +69,7 @@ Then(
   },
 );
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Logout blacklists the access token
 Then("alice's access token should be recorded as revoked", async function (this: CustomWorld) {
   const token = this.tokens.get("alice_access") ?? "";
   const res = await this.get("/api/v1/users/me", token);

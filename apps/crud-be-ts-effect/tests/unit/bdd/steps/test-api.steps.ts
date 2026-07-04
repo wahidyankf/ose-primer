@@ -91,10 +91,12 @@ Then("all expenses should be deleted", async function () {
   expect(await countExpenses()).toBe(0);
 });
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Reset database clears all user-created data
 Then("all attachments should be deleted", async function () {
   expect(await countAttachments()).toBe(0);
 });
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Promote user to admin role
 Then("user {string} should have the {string} role", async function (this: CustomWorld, username: string, role: string) {
   const password = (this.context[`${username}_password`] as string) ?? DEFAULT_PASSWORD;
   const loginRes = await this.post("/api/v1/auth/login", { username, password });

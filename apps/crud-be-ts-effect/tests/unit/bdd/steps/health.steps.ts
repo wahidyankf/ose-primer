@@ -10,11 +10,13 @@ When(/^an unauthenticated engineer sends GET \/health$/, async function (this: C
   this.response = await this.get("/health");
 });
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Health endpoint reports the service as UP
 Then("the health status should be {string}", function (this: CustomWorld, status: string) {
   expect(this.response).not.toBeNull();
   expect(this.response?.body?.status).toBe(status);
 });
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Anonymous health check does not expose component details
 Then("the response should not include detailed component health information", function (this: CustomWorld) {
   expect(this.response).not.toBeNull();
   const body = this.response?.body;

@@ -127,6 +127,7 @@ When(/^the admin sends POST \/api\/v1\/admin\/users\/\{alice_id\}\/unlock$/, asy
 
 // ---- Then: admin assertions ----
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Search users by email returns matching results
 Then(
   /^the response body should contain at least one user with "([^"]*)" equal to "([^"]*)"$/,
   function (this: CustomWorld, field: string, value: string) {

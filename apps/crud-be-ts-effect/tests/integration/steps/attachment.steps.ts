@@ -133,6 +133,7 @@ Then(
   },
 );
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments for an entry returns all uploaded files with metadata
 Then(
   /^the response body should contain an attachment with "([^"]*)" equal to "([^"]*)"$/,
   function (this: CustomWorld, field: string, value: string) {
@@ -146,6 +147,7 @@ Then(
   },
 );
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload file exceeding the size limit returns 413
 Then("the response body should contain an error message about file size", function (this: CustomWorld) {
   assert.ok(this.response !== null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
