@@ -1,8 +1,8 @@
 use axum::{
+    Json,
     extract::{Path, Query, State},
     http::StatusCode,
     response::IntoResponse,
-    Json,
 };
 use serde::Deserialize;
 use serde_json::json;
@@ -13,7 +13,7 @@ use crate::auth::middleware::AdminUser;
 use crate::domain::errors::AppError;
 use crate::state::AppState;
 use crud_contracts::models::{
-    user::Status as UserStatus, PasswordResetResponse, User, UserListResponse,
+    PasswordResetResponse, User, UserListResponse, user::Status as UserStatus,
 };
 
 #[derive(Deserialize)]

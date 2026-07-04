@@ -1,18 +1,18 @@
 use axum::{
+    Json,
     body::Bytes,
     extract::{Multipart, Path, State},
     http::StatusCode,
     response::IntoResponse,
-    Json,
 };
 use serde::Serialize;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::auth::middleware::AuthUser;
 use crate::domain::{
-    attachment::{is_allowed_content_type, MAX_FILE_SIZE},
+    attachment::{MAX_FILE_SIZE, is_allowed_content_type},
     errors::AppError,
 };
 use crate::repositories::NewAttachment;

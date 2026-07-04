@@ -1,12 +1,12 @@
 use axum::{
+    Json,
     extract::{Path, Query, State},
     http::StatusCode,
     response::IntoResponse,
-    Json,
 };
 use chrono::NaiveDate;
 use serde::Deserialize;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::sync::Arc;
 use uuid::Uuid;
 
@@ -14,7 +14,7 @@ use crate::auth::middleware::AuthUser;
 use crate::domain::{
     errors::AppError,
     expense::parse_amount,
-    types::{is_supported_unit, Currency},
+    types::{Currency, is_supported_unit},
 };
 use crate::state::AppState;
 use crud_contracts::models::{CreateExpenseRequest, UpdateExpenseRequest};
@@ -77,13 +77,13 @@ pub async fn create_expense(
         })?;
 
     // Validate unit if provided
-    if let Some(ref unit) = body.unit {
-        if !is_supported_unit(unit) {
-            return Err(AppError::Validation {
-                field: "unit".to_string(),
-                message: format!("unsupported unit: {unit}"),
-            });
-        }
+    if let Some(ref unit) = body.unit
+        && !is_supported_unit(unit)
+    {
+        return Err(AppError::Validation {
+            field: "unit".to_string(),
+            message: format!("unsupported unit: {unit}"),
+        });
     }
 
     let expense_id = Uuid::new_v4();
@@ -197,13 +197,13 @@ pub async fn update_expense(
             message: "invalid date format, use YYYY-MM-DD".to_string(),
         })?;
 
-    if let Some(ref unit) = body.unit {
-        if !is_supported_unit(unit) {
-            return Err(AppError::Validation {
-                field: "unit".to_string(),
-                message: format!("unsupported unit: {unit}"),
-            });
-        }
+    if let Some(ref unit) = body.unit
+        && !is_supported_unit(unit)
+    {
+        return Err(AppError::Validation {
+            field: "unit".to_string(),
+            message: format!("unsupported unit: {unit}"),
+        });
     }
 
     let updated = state

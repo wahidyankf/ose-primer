@@ -1,7 +1,7 @@
 use chrono::Utc;
-use sqlx::any::AnyRow;
 use sqlx::AnyPool;
 use sqlx::Row;
+use sqlx::any::AnyRow;
 use uuid::Uuid;
 
 use crate::domain::errors::AppError;

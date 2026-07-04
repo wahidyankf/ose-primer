@@ -697,10 +697,10 @@ pub async fn svc_login(state: &AppState, username: &str, password: &str) -> Serv
             Ok(a) => a,
             Err(e) => return ServiceResponse::from_error(&e),
         };
-        if attempts >= MAX_FAILED_ATTEMPTS {
-            if let Err(e) = state.user_repo.update_status(user.id, "LOCKED").await {
-                return ServiceResponse::from_error(&e);
-            }
+        if attempts >= MAX_FAILED_ATTEMPTS
+            && let Err(e) = state.user_repo.update_status(user.id, "LOCKED").await
+        {
+            return ServiceResponse::from_error(&e);
         }
         return ServiceResponse::from_error(&AppError::Unauthorized {
             message: "Invalid credentials".to_string(),
@@ -807,12 +807,12 @@ pub async fn svc_logout(state: &AppState, bearer: &str) -> ServiceResponse {
     use serde_json::json;
 
     let token = bearer.strip_prefix("Bearer ").unwrap_or(bearer).trim();
-    if !token.is_empty() {
-        if let Ok(claims) = decode_claims_unchecked(token, &state.jwt_secret) {
-            let user_id = Uuid::parse_str(&claims.sub).unwrap_or_else(|_| Uuid::new_v4());
-            if let Err(e) = state.token_repo.revoke_token(&claims.jti, user_id).await {
-                return ServiceResponse::from_error(&e);
-            }
+    if !token.is_empty()
+        && let Ok(claims) = decode_claims_unchecked(token, &state.jwt_secret)
+    {
+        let user_id = Uuid::parse_str(&claims.sub).unwrap_or_else(|_| Uuid::new_v4());
+        if let Err(e) = state.token_repo.revoke_token(&claims.jti, user_id).await {
+            return ServiceResponse::from_error(&e);
         }
     }
     ServiceResponse::ok(json!({"message": "Logged out"}))
@@ -1195,13 +1195,13 @@ pub async fn svc_create_expense(
         }
     };
 
-    if let Some(u) = unit {
-        if !is_supported_unit(u) {
-            return ServiceResponse::from_error(&AppError::Validation {
-                field: "unit".to_string(),
-                message: format!("unsupported unit: {u}"),
-            });
-        }
+    if let Some(u) = unit
+        && !is_supported_unit(u)
+    {
+        return ServiceResponse::from_error(&AppError::Validation {
+            field: "unit".to_string(),
+            message: format!("unsupported unit: {u}"),
+        });
     }
 
     let expense_id = Uuid::new_v4();
@@ -1343,13 +1343,13 @@ pub async fn svc_update_expense(
         }
     };
 
-    if let Some(u) = unit {
-        if !is_supported_unit(u) {
-            return ServiceResponse::from_error(&AppError::Validation {
-                field: "unit".to_string(),
-                message: format!("unsupported unit: {u}"),
-            });
-        }
+    if let Some(u) = unit
+        && !is_supported_unit(u)
+    {
+        return ServiceResponse::from_error(&AppError::Validation {
+            field: "unit".to_string(),
+            message: format!("unsupported unit: {u}"),
+        });
     }
 
     match state

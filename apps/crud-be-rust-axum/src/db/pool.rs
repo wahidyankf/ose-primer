@@ -1,5 +1,5 @@
-use sqlx::any::AnyPoolOptions;
 use sqlx::AnyPool;
+use sqlx::any::AnyPoolOptions;
 
 const MIGRATION_001: &str = include_str!("migrations/001_users.sql");
 const MIGRATION_002: &str = include_str!("migrations/002_refresh_tokens.sql");

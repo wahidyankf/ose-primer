@@ -11,12 +11,17 @@ pub struct Config {
 impl Config {
     pub fn from_env() -> Result<Self> {
         dotenvy::dotenv().ok();
-        let jwt_secret = env::var("CRUD_BE_RUST_AXUM_JWT_SECRET")
+        Self::from_provider(|key| env::var(key).ok())
+    }
+
+    /// Builds `Config` from an injectable lookup function, so tests can supply
+    /// values without mutating real process environment variables (which
+    /// `std::env::set_var`/`remove_var` require `unsafe` for as of Rust 2024).
+    fn from_provider(getenv: impl Fn(&str) -> Option<String>) -> Result<Self> {
+        let jwt_secret = getenv("CRUD_BE_RUST_AXUM_JWT_SECRET")
             .context("CRUD_BE_RUST_AXUM_JWT_SECRET is required")?;
-        let database_url =
-            env::var("DATABASE_URL").unwrap_or_else(|_| "sqlite::memory:".to_string());
-        let port = env::var("CRUD_BE_RUST_AXUM_PORT")
-            .ok()
+        let database_url = getenv("DATABASE_URL").unwrap_or_else(|| "sqlite::memory:".to_string());
+        let port = getenv("CRUD_BE_RUST_AXUM_PORT")
             .and_then(|p| p.parse().ok())
             .unwrap_or(8201);
         Ok(Self {
@@ -39,43 +44,38 @@ mod tests {
     )]
 
     use super::*;
-    use std::env;
-    use std::sync::Mutex;
-
-    static ENV_MUTEX: Mutex<()> = Mutex::new(());
+    use std::collections::HashMap;
 
     #[test]
     fn test_jwt_secret_read_from_crud_be_rust_axum_jwt_secret() {
-        let _guard = ENV_MUTEX.lock().unwrap();
-        let key = "CRUD_BE_RUST_AXUM_JWT_SECRET";
         let value = "test-secret-that-is-at-least-32-chars-long!!";
-        env::set_var(key, value);
-        let config = Config::from_env().expect("from_env must succeed when secret is set");
-        env::remove_var(key);
+        let env: HashMap<&str, &str> = HashMap::from([("CRUD_BE_RUST_AXUM_JWT_SECRET", value)]);
+        let config = Config::from_provider(|k| env.get(k).map(std::string::ToString::to_string))
+            .expect("from_provider must succeed when secret is set");
         assert_eq!(config.jwt_secret, value);
     }
 
     #[test]
     fn test_port_read_from_crud_be_rust_axum_port() {
-        let _guard = ENV_MUTEX.lock().unwrap();
-        let secret_key = "CRUD_BE_RUST_AXUM_JWT_SECRET";
-        let port_key = "CRUD_BE_RUST_AXUM_PORT";
-        env::set_var(secret_key, "test-secret-at-least-32-chars-long!!");
-        env::set_var(port_key, "9999");
-        let config = Config::from_env().expect("from_env must succeed when both vars are set");
-        env::remove_var(port_key);
-        env::remove_var(secret_key);
+        let env: HashMap<&str, &str> = HashMap::from([
+            (
+                "CRUD_BE_RUST_AXUM_JWT_SECRET",
+                "test-secret-at-least-32-chars-long!!",
+            ),
+            ("CRUD_BE_RUST_AXUM_PORT", "9999"),
+        ]);
+        let config = Config::from_provider(|k| env.get(k).map(std::string::ToString::to_string))
+            .expect("from_provider must succeed when both vars are set");
         assert_eq!(config.port, 9999);
     }
 
     #[test]
     fn test_missing_jwt_secret_is_error() {
-        let _guard = ENV_MUTEX.lock().unwrap();
-        env::remove_var("CRUD_BE_RUST_AXUM_JWT_SECRET");
-        let result = Config::from_env();
+        let env: HashMap<&str, &str> = HashMap::new();
+        let result = Config::from_provider(|k| env.get(k).map(std::string::ToString::to_string));
         assert!(
             result.is_err(),
-            "from_env() must fail when CRUD_BE_RUST_AXUM_JWT_SECRET is absent"
+            "from_provider() must fail when CRUD_BE_RUST_AXUM_JWT_SECRET is absent"
         );
         let err_str = result.unwrap_err().to_string();
         assert!(

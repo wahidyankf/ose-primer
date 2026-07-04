@@ -1,8 +1,8 @@
 use axum::{
+    Json,
     extract::State,
     http::{HeaderMap, StatusCode},
     response::IntoResponse,
-    Json,
 };
 use serde_json::json;
 use std::sync::Arc;
@@ -20,7 +20,7 @@ use crate::domain::{
 };
 use crate::state::AppState;
 use crud_contracts::models::{
-    user::Status as ContractStatus, AuthTokens, LoginRequest, RefreshRequest, RegisterRequest, User,
+    AuthTokens, LoginRequest, RefreshRequest, RegisterRequest, User, user::Status as ContractStatus,
 };
 
 const MAX_FAILED_ATTEMPTS: i64 = 5;

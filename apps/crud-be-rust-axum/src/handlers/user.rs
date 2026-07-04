@@ -1,4 +1,4 @@
-use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
+use axum::{Json, extract::State, http::StatusCode, response::IntoResponse};
 use serde_json::json;
 use std::sync::Arc;
 
@@ -9,7 +9,7 @@ use crate::auth::{
 use crate::domain::errors::AppError;
 use crate::state::AppState;
 use crud_contracts::models::{
-    user::Status as ContractStatus, ChangePasswordRequest, UpdateProfileRequest, User,
+    ChangePasswordRequest, UpdateProfileRequest, User, user::Status as ContractStatus,
 };
 
 fn domain_status_to_contract(status: &str) -> ContractStatus {
