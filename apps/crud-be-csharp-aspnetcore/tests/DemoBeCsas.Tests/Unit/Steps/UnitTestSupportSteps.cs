@@ -13,11 +13,7 @@ namespace DemoBeCsas.Tests.Unit.Steps;
 [Binding]
 [Trait("Category", "Unit")]
 [Scope(Tag = "unit")]
-public class UnitTestSupportSteps(
-    UnitServiceLayer svc,
-    UnitSharedState state,
-    UnitTestHost host
-)
+public class UnitTestSupportSteps(UnitServiceLayer svc, UnitSharedState state, UnitTestHost host)
 {
     // ─────────────────────────────────────────────────────────────
     // Background / Given steps
@@ -51,12 +47,18 @@ public class UnitTestSupportSteps(
     {
         if (state.TestApiDisabled)
         {
-            state.LastResponse = new ScenarioContext.ServiceResponse(404, """{"message":"Not Found"}""");
+            state.LastResponse = new ScenarioContext.ServiceResponse(
+                404,
+                """{"message":"Not Found"}"""
+            );
             return;
         }
 
         host.Clear();
-        state.LastResponse = new ScenarioContext.ServiceResponse(200, """{"message":"Database reset"}""");
+        state.LastResponse = new ScenarioContext.ServiceResponse(
+            200,
+            """{"message":"Database reset"}"""
+        );
     }
 
     [When(@"^a POST request is sent to ""/api/v1/test/promote-admin"" with body:$")]
@@ -64,11 +66,15 @@ public class UnitTestSupportSteps(
     {
         var headers = table.Header.ToList();
         var usernameIndex = headers.IndexOf("username");
-        var username = usernameIndex >= 0 && usernameIndex + 1 < headers.Count
-            ? headers[usernameIndex + 1]
-            : headers.Last();
+        var username =
+            usernameIndex >= 0 && usernameIndex + 1 < headers.Count
+                ? headers[usernameIndex + 1]
+                : headers.Last();
         await svc.SetUserRoleDirectAsync(username, "Admin");
-        state.LastResponse = new ScenarioContext.ServiceResponse(200, """{"message":"User promoted to admin"}""");
+        state.LastResponse = new ScenarioContext.ServiceResponse(
+            200,
+            """{"message":"User promoted to admin"}"""
+        );
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -79,10 +85,9 @@ public class UnitTestSupportSteps(
     public void ThenResponseStatusShouldBe(int expectedStatus)
     {
         state.LastResponse.Should().NotBeNull();
-        state.LastResponse!.StatusCode.Should().Be(
-            expectedStatus,
-            $"Response body: {state.LastResponse.Body}"
-        );
+        state
+            .LastResponse!.StatusCode.Should()
+            .Be(expectedStatus, $"Response body: {state.LastResponse.Body}");
     }
 
     [Then(@"^all user accounts should be deleted$")]
@@ -104,6 +109,7 @@ public class UnitTestSupportSteps(
         total.Should().Be(0);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Reset database clears all user-created data
     [Then(@"^all attachments should be deleted$")]
     public void ThenAllAttachmentsDeleted()
     {
@@ -112,6 +118,7 @@ public class UnitTestSupportSteps(
         items.Should().BeEmpty();
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Promote user to admin role
     [Then(@"^user ""([^""]+)"" should have the ""([^""]+)"" role$")]
     public async Task ThenUserShouldHaveRole(string username, string expectedRole)
     {

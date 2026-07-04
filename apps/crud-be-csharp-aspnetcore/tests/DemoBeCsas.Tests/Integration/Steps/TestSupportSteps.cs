@@ -62,9 +62,10 @@ public class TestSupportSteps(ServiceLayer svc, SharedState state, IntegrationTe
         // Read from the header directly since there is no data row.
         var headers = table.Header.ToList();
         var usernameIndex = headers.IndexOf("username");
-        var username = usernameIndex >= 0 && usernameIndex + 1 < headers.Count
-            ? headers[usernameIndex + 1]
-            : headers.Last();
+        var username =
+            usernameIndex >= 0 && usernameIndex + 1 < headers.Count
+                ? headers[usernameIndex + 1]
+                : headers.Last();
         await svc.SetUserRoleDirectAsync(username, "Admin");
         state.LastResponse = new ServiceResponse(200, """{"message":"User promoted to admin"}""");
     }
@@ -77,10 +78,9 @@ public class TestSupportSteps(ServiceLayer svc, SharedState state, IntegrationTe
     public void ThenResponseStatusShouldBe(int expectedStatus)
     {
         state.LastResponse.Should().NotBeNull();
-        state.LastResponse!.StatusCode.Should().Be(
-            expectedStatus,
-            $"Response body: {state.LastResponse.Body}"
-        );
+        state
+            .LastResponse!.StatusCode.Should()
+            .Be(expectedStatus, $"Response body: {state.LastResponse.Body}");
     }
 
     [Then(@"^all user accounts should be deleted$")]
@@ -101,6 +101,7 @@ public class TestSupportSteps(ServiceLayer svc, SharedState state, IntegrationTe
         count.Should().Be(0, "all expenses should have been deleted by reset-db");
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Reset database clears all user-created data
     [Then(@"^all attachments should be deleted$")]
     public async Task ThenAllAttachmentsDeleted()
     {
@@ -110,6 +111,7 @@ public class TestSupportSteps(ServiceLayer svc, SharedState state, IntegrationTe
         count.Should().Be(0, "all attachments should have been deleted by reset-db");
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/test-support/test-api.feature:Promote user to admin role
     [Then(@"^user ""([^""]+)"" should have the ""([^""]+)"" role$")]
     public async Task ThenUserShouldHaveRole(string username, string expectedRole)
     {

@@ -9,11 +9,7 @@ namespace DemoBeCsas.Tests.Integration.Steps;
 
 [Binding]
 [Trait("Category", "Integration")]
-public class AttachmentSteps(
-    ServiceLayer svc,
-    SharedState state,
-    ExpenseSteps expenseSteps
-)
+public class AttachmentSteps(ServiceLayer svc, SharedState state, ExpenseSteps expenseSteps)
 {
     // ─────────────────────────────────────────────────────────────
     // Given helpers
@@ -31,10 +27,7 @@ public class AttachmentSteps(
             contentType,
             data
         );
-        response.StatusCode.Should().Be(
-            201,
-            $"Failed to upload attachment: {response.Body}"
-        );
+        response.StatusCode.Should().Be(201, $"Failed to upload attachment: {response.Body}");
         using var doc = JsonDocument.Parse(response.Body);
         if (doc.RootElement.TryGetProperty("id", out var idEl))
         {
@@ -46,7 +39,9 @@ public class AttachmentSteps(
     // When steps
     // ─────────────────────────────────────────────────────────────
 
-    [When(@"^alice uploads file ""([^""]+)"" with content type ""([^""]+)"" to POST /api/v1/expenses/\{expenseId\}/attachments$")]
+    [When(
+        @"^alice uploads file ""([^""]+)"" with content type ""([^""]+)"" to POST /api/v1/expenses/\{expenseId\}/attachments$"
+    )]
     public async Task WhenAliceUploadsFileToExpense(string filename, string contentType)
     {
         state.LastExpenseId.Should().NotBeNull("expense ID should be set");
@@ -68,7 +63,9 @@ public class AttachmentSteps(
         }
     }
 
-    [When(@"^alice uploads file ""([^""]+)"" with content type ""([^""]+)"" to POST /api/v1/expenses/\{bobExpenseId\}/attachments$")]
+    [When(
+        @"^alice uploads file ""([^""]+)"" with content type ""([^""]+)"" to POST /api/v1/expenses/\{bobExpenseId\}/attachments$"
+    )]
     public async Task WhenAliceUploadsFileToBobsExpense(string filename, string contentType)
     {
         expenseSteps._bobExpenseId.Should().NotBeNull("bob's expense ID should be set");
@@ -142,7 +139,9 @@ public class AttachmentSteps(
         );
     }
 
-    [When(@"^alice sends DELETE /api/v1/expenses/\{expenseId\}/attachments/\{randomAttachmentId\}$")]
+    [When(
+        @"^alice sends DELETE /api/v1/expenses/\{expenseId\}/attachments/\{randomAttachmentId\}$"
+    )]
     public async Task WhenAliceDeletesNonExistentAttachment()
     {
         state.LastExpenseId.Should().NotBeNull("expense ID should be set");
@@ -165,19 +164,25 @@ public class AttachmentSteps(
         var body = state.LastResponse!.Body;
         using var doc = JsonDocument.Parse(body);
         doc.RootElement.TryGetProperty(arrayField, out var arr)
-            .Should().BeTrue($"'{arrayField}' not found in: {body}");
+            .Should()
+            .BeTrue($"'{arrayField}' not found in: {body}");
         arr.ValueKind.Should().Be(JsonValueKind.Array);
         arr.GetArrayLength().Should().Be(count);
     }
 
-    [Then(@"^the response body should contain an attachment with ""filename"" equal to ""([^""]+)""$")]
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments for an entry returns all uploaded files with metadata
+    [Then(
+        @"^the response body should contain an attachment with ""filename"" equal to ""([^""]+)""$"
+    )]
     public void ThenResponseContainsAttachmentWithFilename(string filename)
     {
         state.LastResponse.Should().NotBeNull();
         var body = state.LastResponse!.Body;
-        body.Should().Contain(filename, $"Expected attachment with filename '{filename}' in: {body}");
+        body.Should()
+            .Contain(filename, $"Expected attachment with filename '{filename}' in: {body}");
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:Upload file exceeding the size limit returns 413
     [Then(@"^the response body should contain an error message about file size$")]
     public void ThenErrorAboutFileSize()
     {

@@ -32,6 +32,8 @@ public class TokenManagementSteps(ServiceLayer svc, SharedState state)
     // Then steps
     // ─────────────────────────────────────────────────────────────
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains user ID claim
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains issuer claim
     [Then(@"^the token should contain a non-null ""([^""]+)"" claim$")]
     public void ThenTokenContainsClaim(string claimName)
     {
@@ -61,13 +63,16 @@ public class TokenManagementSteps(ServiceLayer svc, SharedState state)
         }
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:JWKS endpoint returns the public key for token signature verification
     [Then(@"^the response body should contain at least one key in the ""keys"" array$")]
     public void ThenJwksContainsKeys()
     {
         state.LastResponse.Should().NotBeNull();
         var body = state.LastResponse!.Body;
         using var doc = JsonDocument.Parse(body);
-        doc.RootElement.TryGetProperty("keys", out var keys).Should().BeTrue($"'keys' not found in: {body}");
+        doc.RootElement.TryGetProperty("keys", out var keys)
+            .Should()
+            .BeTrue($"'keys' not found in: {body}");
         keys.GetArrayLength().Should().BeGreaterThan(0, "JWKS should contain at least one key");
     }
 }

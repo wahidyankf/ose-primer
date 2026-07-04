@@ -61,15 +61,26 @@ public class ReportingSteps(ServiceLayer svc, SharedState state)
         var body = state.LastResponse!.Body;
         using var doc = JsonDocument.Parse(body);
         doc.RootElement.TryGetProperty("incomeBreakdown", out var breakdown)
-            .Should().BeTrue($"'incomeBreakdown' not found in: {body}");
-        var entry = breakdown.EnumerateArray()
-            .FirstOrDefault(el => el.TryGetProperty("category", out var cat) && cat.GetString() == category);
-        entry.ValueKind.Should().NotBe(JsonValueKind.Undefined, $"Category '{category}' not found in incomeBreakdown of: {body}");
+            .Should()
+            .BeTrue($"'incomeBreakdown' not found in: {body}");
+        var entry = breakdown
+            .EnumerateArray()
+            .FirstOrDefault(el =>
+                el.TryGetProperty("category", out var cat) && cat.GetString() == category
+            );
+        entry
+            .ValueKind.Should()
+            .NotBe(
+                JsonValueKind.Undefined,
+                $"Category '{category}' not found in incomeBreakdown of: {body}"
+            );
         var totalStr = entry.GetProperty("total").GetString()!;
         decimal.Parse(totalStr, System.Globalization.CultureInfo.InvariantCulture)
-            .Should().Be(decimal.Parse(amount, System.Globalization.CultureInfo.InvariantCulture));
+            .Should()
+            .Be(decimal.Parse(amount, System.Globalization.CultureInfo.InvariantCulture));
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L breakdown includes category-level amounts for income and expenses
     [Then(@"^the expense breakdown should contain ""([^""]+)"" with amount ""([^""]+)""$")]
     public void ThenExpenseBreakdownContains(string category, string amount)
     {
@@ -77,13 +88,23 @@ public class ReportingSteps(ServiceLayer svc, SharedState state)
         var body = state.LastResponse!.Body;
         using var doc = JsonDocument.Parse(body);
         doc.RootElement.TryGetProperty("expenseBreakdown", out var breakdown)
-            .Should().BeTrue($"'expenseBreakdown' not found in: {body}");
-        var entry = breakdown.EnumerateArray()
-            .FirstOrDefault(el => el.TryGetProperty("category", out var cat) && cat.GetString() == category);
-        entry.ValueKind.Should().NotBe(JsonValueKind.Undefined, $"Category '{category}' not found in expenseBreakdown of: {body}");
+            .Should()
+            .BeTrue($"'expenseBreakdown' not found in: {body}");
+        var entry = breakdown
+            .EnumerateArray()
+            .FirstOrDefault(el =>
+                el.TryGetProperty("category", out var cat) && cat.GetString() == category
+            );
+        entry
+            .ValueKind.Should()
+            .NotBe(
+                JsonValueKind.Undefined,
+                $"Category '{category}' not found in expenseBreakdown of: {body}"
+            );
         var totalStr = entry.GetProperty("total").GetString()!;
         decimal.Parse(totalStr, System.Globalization.CultureInfo.InvariantCulture)
-            .Should().Be(decimal.Parse(amount, System.Globalization.CultureInfo.InvariantCulture));
+            .Should()
+            .Be(decimal.Parse(amount, System.Globalization.CultureInfo.InvariantCulture));
     }
 
     // ─────────────────────────────────────────────────────────────

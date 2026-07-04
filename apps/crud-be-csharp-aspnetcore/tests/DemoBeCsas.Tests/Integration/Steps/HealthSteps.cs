@@ -22,6 +22,7 @@ public class HealthSteps(ServiceLayer svc, SharedState state)
         state.LastResponse = svc.HealthCheck();
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Health endpoint reports the service as UP
     [Then("the health status should be {string}")]
     public void ThenHealthStatus(string expectedStatus)
     {
@@ -31,6 +32,7 @@ public class HealthSteps(ServiceLayer svc, SharedState state)
         doc.RootElement.GetProperty("status").GetString().Should().Be(expectedStatus);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Anonymous health check does not expose component details
     [Then("the response should not include detailed component health information")]
     public void ThenNoDetailedHealthInfo()
     {

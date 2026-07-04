@@ -148,7 +148,10 @@ public class UnitExpenseSteps(UnitServiceLayer svc, UnitSharedState state, UnitA
     public async Task WhenAliceGetsExpense()
     {
         state.LastExpenseId.Should().NotBeNull("expense ID should be set");
-        state.LastResponse = await svc.GetExpenseAsync(state.AccessToken, state.LastExpenseId!.Value);
+        state.LastResponse = await svc.GetExpenseAsync(
+            state.AccessToken,
+            state.LastExpenseId!.Value
+        );
     }
 
     [When(@"^alice sends GET /api/v1/expenses$")]
@@ -205,13 +208,16 @@ public class UnitExpenseSteps(UnitServiceLayer svc, UnitSharedState state, UnitA
         var body = state.LastResponse!.Body;
         using var doc = JsonDocument.Parse(body);
         doc.RootElement.TryGetProperty(field, out var el)
-            .Should().BeTrue($"Field '{field}' not found in: {body}");
-        var actual = el.ValueKind == JsonValueKind.Number
-            ? el.GetDouble()
-            : double.Parse(el.GetString()!, CultureInfo.InvariantCulture);
+            .Should()
+            .BeTrue($"Field '{field}' not found in: {body}");
+        var actual =
+            el.ValueKind == JsonValueKind.Number
+                ? el.GetDouble()
+                : double.Parse(el.GetString()!, CultureInfo.InvariantCulture);
         actual.Should().BeApproximately(value, 0.0001);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency without cross-currency mixing
     [Then(@"^the response body should contain ""([^""]+)"" total equal to ""([^""]+)""$")]
     public void ThenResponseBodyContainsCurrencyTotal(string currency, string expectedTotal)
     {
@@ -219,10 +225,12 @@ public class UnitExpenseSteps(UnitServiceLayer svc, UnitSharedState state, UnitA
         var body = state.LastResponse!.Body;
         using var doc = JsonDocument.Parse(body);
         doc.RootElement.TryGetProperty(currency, out var el)
-            .Should().BeTrue($"Currency '{currency}' not found in: {body}");
-        var actual = el.ValueKind == JsonValueKind.Number
-            ? el.GetDecimal()
-            : decimal.Parse(el.GetString()!, CultureInfo.InvariantCulture);
+            .Should()
+            .BeTrue($"Currency '{currency}' not found in: {body}");
+        var actual =
+            el.ValueKind == JsonValueKind.Number
+                ? el.GetDecimal()
+                : decimal.Parse(el.GetString()!, CultureInfo.InvariantCulture);
         actual.Should().Be(decimal.Parse(expectedTotal, CultureInfo.InvariantCulture));
     }
 
@@ -262,7 +270,10 @@ public class UnitExpenseSteps(UnitServiceLayer svc, UnitSharedState state, UnitA
             }
             else if (amtEl.ValueKind == JsonValueKind.String)
             {
-                amount = decimal.Parse(amtEl.GetString()!, System.Globalization.CultureInfo.InvariantCulture);
+                amount = decimal.Parse(
+                    amtEl.GetString()!,
+                    System.Globalization.CultureInfo.InvariantCulture
+                );
             }
         }
 

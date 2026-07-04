@@ -31,7 +31,9 @@ public class AdminSteps(ServiceLayer svc, SharedState state, AuthSteps auth)
         );
     }
 
-    [When(@"^the admin sends POST /api/v1/admin/users/\{alice_id\}/disable with body \{ ""reason"": ""([^""]+)"" \}$")]
+    [When(
+        @"^the admin sends POST /api/v1/admin/users/\{alice_id\}/disable with body \{ ""reason"": ""([^""]+)"" \}$"
+    )]
     public async Task WhenAdminDisablesAlice(string reason)
     {
         var aliceId = state.LastCreatedId ?? auth._aliceId;
@@ -78,7 +80,10 @@ public class AdminSteps(ServiceLayer svc, SharedState state, AuthSteps auth)
     // Then steps
     // ─────────────────────────────────────────────────────────────
 
-    [Then(@"^the response body should contain at least one user with ""email"" equal to ""([^""]+)""$")]
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Search users by email returns matching results
+    [Then(
+        @"^the response body should contain at least one user with ""email"" equal to ""([^""]+)""$"
+    )]
     public void ThenResponseContainsUserWithEmail(string email)
     {
         state.LastResponse.Should().NotBeNull();
