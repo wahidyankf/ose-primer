@@ -54,6 +54,7 @@ let ``the income breakdown should contain "(.+)" with amount "(.+)"``
 
     state
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L breakdown includes category-level amounts for income and expenses
 [<Then>]
 let ``the expense breakdown should contain "(.+)" with amount "(.+)"``
     (category: string)

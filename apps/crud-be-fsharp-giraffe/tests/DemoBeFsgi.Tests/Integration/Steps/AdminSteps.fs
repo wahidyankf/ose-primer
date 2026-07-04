@@ -42,6 +42,7 @@ let ``the admin sends GET /api/v1/admin/users\?search=(.+)`` (email: string) (st
         Response = Some { Status = status; Body = body }
         ResponseBody = Some body }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Search users by email returns matching results
 [<Then>]
 let ``the response body should contain at least one user with "(.+)" equal to "(.+)"``
     (field: string)

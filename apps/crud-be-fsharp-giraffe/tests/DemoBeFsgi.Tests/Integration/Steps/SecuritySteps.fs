@@ -46,6 +46,9 @@ let ``"(.+)" has had the maximum number of failed login attempts`` (username: st
     { state with
         UserId = Some userId.Value }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin disables a user account
+// @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Admin re-enables a disabled user account
+// @covers specs/apps/crud/behavior/crud-be/gherkin/security/security.feature:Account is locked after exceeding the maximum failed login threshold
 [<Then>]
 let ``alice's account status should be "(.+)"`` (expectedStatus: string) (state: StepState) =
     let body = state.ResponseBody.Value

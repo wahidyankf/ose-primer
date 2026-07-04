@@ -24,6 +24,8 @@ let ``alice decodes her access token payload`` (state: StepState) =
 
     { state with ResponseBody = claimsJson }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains user ID claim
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains issuer claim
 [<Then>]
 let ``the token should contain a non-null "(.+)" claim`` (claim: string) (state: StepState) =
     let body = state.ResponseBody.Value
@@ -57,6 +59,7 @@ let ``the token should contain a non-null "(.+)" claim`` (claim: string) (state:
 
     state
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:JWKS endpoint returns the public key for token signature verification
 [<Then>]
 let ``the response body should contain at least one key in the "keys" array`` (state: StepState) =
     let body = state.ResponseBody.Value
@@ -71,6 +74,7 @@ let ``the response body should contain at least one key in the "keys" array`` (s
 
     state
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Logout blacklists the access token
 [<Then>]
 let ``alice's access token should be recorded as revoked`` (state: StepState) =
     // Attempt to use the token — it should be rejected because it was revoked

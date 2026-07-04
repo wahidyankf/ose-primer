@@ -103,6 +103,8 @@ let ``alice sends POST /api/v1/auth/logout-all with her access token`` (state: S
         Response = Some { Status = status; Body = body }
         ResponseBody = Some body }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout current session invalidates the access token
+// @covers specs/apps/crud/behavior/crud-be/gherkin/authentication/token-lifecycle.feature:Logout all devices invalidates tokens from all sessions
 [<Then>]
 let ``alice's access token should be invalidated`` (state: StepState) =
     let status, _body =

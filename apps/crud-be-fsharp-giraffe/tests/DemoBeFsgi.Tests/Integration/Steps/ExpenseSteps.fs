@@ -210,6 +210,7 @@ let ``alice sends GET /api/v1/expenses/summary`` (state: StepState) =
         Response = Some { Status = status; Body = body }
         ResponseBody = Some body }
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/currency-handling.feature:Expense summary groups totals by currency without cross-currency mixing
 [<Then>]
 let ``the response body should contain "(.+)" total equal to "(.+)"``
     (currency: string)

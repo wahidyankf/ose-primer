@@ -375,6 +375,7 @@ let ``the response body should contain 2 items in the "attachments" array`` (sta
 
     state
 
+// @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments for an entry returns all uploaded files with metadata
 [<Then>]
 let ``the response body should contain an attachment with "(.+)" equal to "(.+)"``
     (field: string)
