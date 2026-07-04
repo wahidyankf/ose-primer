@@ -34,6 +34,10 @@ defmodule OpenApiCodegen.MixProject do
   defp deps do
     [
       {:yaml_elixir, "== 2.12.1"},
+      # Test / BDD — vendored forks (local path deps, not Hex), same convention as
+      # apps/crud-be-elixir-phoenix.
+      {:elixir_gherkin, path: "../elixir-gherkin", only: :test},
+      {:elixir_cabbage, path: "../elixir-cabbage", only: :test},
       # Pin to 0.18.3 — 0.18.4+ has a code-path regression with Elixir 1.19.5 where
       # ExCoveralls module is not in the VM's code path at coverage-setup time.
       # Use the custom cover.lcov alias (below) which pre-starts :tools so

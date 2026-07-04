@@ -74,7 +74,7 @@
     "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'specs:behavior:coverage: plain ExUnit tests, no BDD step-registration framework — the live checker requires step-text matches it cannot find here; see enforce-repo-wide-scenario-implementation Batch Progress Log for the blocking finding. Scenarios ARE covered: see @covers markers in test/gherkin/gherkin_test.exs (echo placeholder pending a repo-wide decision)'"
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps specs/libs/elixir-gherkin/behavior/gherkin libs/elixir-gherkin"
       },
       "cache": true,
       "inputs": [
