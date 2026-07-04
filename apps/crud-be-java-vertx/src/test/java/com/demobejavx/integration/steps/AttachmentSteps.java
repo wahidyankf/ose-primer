@@ -161,6 +161,7 @@ public class AttachmentSteps {
                 "Expected " + count + " items in '" + field + "' but got " + arr.size());
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/attachments.feature:List attachments for an entry returns all uploaded files with metadata
     @Then("the response body should contain an attachment with {string} equal to {string}")
     public void responseBodyContainsAttachmentWithField(String field, String value) {
         ServiceResponse response = state.getLastResponse();

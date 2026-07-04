@@ -30,6 +30,8 @@ public class UnitTokenManagementSteps {
         state.setLastResponse(response);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains user ID claim
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains issuer claim
     @Then("the token should contain a non-null {string} claim")
     public void theTokenShouldContainNonNullClaim(String claim) {
         ServiceResponse response = state.getLastResponse();
@@ -49,6 +51,7 @@ public class UnitTokenManagementSteps {
         state.setLastResponse(response);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:JWKS endpoint returns the public key for token signature verification
     @Then("the response body should contain at least one key in the {string} array")
     public void responseBodyContainsAtLeastOneKeyInArray(String field) {
         ServiceResponse response = state.getLastResponse();
@@ -61,6 +64,7 @@ public class UnitTokenManagementSteps {
                 "Expected at least one key in '" + field + "' array");
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Logout blacklists the access token
     @Then("alice's access token should be recorded as revoked")
     public void alicesAccessTokenShouldBeRecordedAsRevoked() throws Exception {
         String token = state.getAccessToken();

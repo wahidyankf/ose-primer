@@ -28,6 +28,7 @@ public class UnitHealthSteps {
         state.setLastResponse(response);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Health endpoint reports the service as UP
     @Then("the health status should be {string}")
     public void healthStatusShouldBe(String expected) {
         ServiceResponse response = state.getLastResponse();
@@ -38,6 +39,7 @@ public class UnitHealthSteps {
         Assertions.assertEquals(expected, status);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/health/health-check.feature:Anonymous health check does not expose component details
     @Then("the response should not include detailed component health information")
     public void responseDoesNotIncludeDetailedComponentHealth() {
         ServiceResponse response = state.getLastResponse();

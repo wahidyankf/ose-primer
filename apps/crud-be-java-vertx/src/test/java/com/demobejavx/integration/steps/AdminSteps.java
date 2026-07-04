@@ -74,6 +74,7 @@ public class AdminSteps {
         state.setLastResponse(response);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/admin/admin.feature:Search users by email returns matching results
     @Then("the response body should contain at least one user with {string} equal to {string}")
     public void responseContainsUserWithField(String field, String value) {
         ServiceResponse response = state.getLastResponse();

@@ -31,6 +31,7 @@ public class ReportingSteps {
         checkBreakdown("incomeBreakdown", category, amount);
     }
 
+    // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L breakdown includes category-level amounts for income and expenses
     @Then("the expense breakdown should contain {string} with amount {string}")
     public void expenseBreakdownContains(String category, String amount) {
         checkBreakdown("expenseBreakdown", category, amount);
