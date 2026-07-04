@@ -148,6 +148,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(reportsApi.getPLReport).toHaveBeenCalled();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L report displays income total, expense total, and net for a period
     And('the report should display net "4850.00"', () => {
       expect(reportsApi.getPLReport).toHaveBeenCalled();
     });
@@ -184,6 +185,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(reportsApi.getPLReport).toHaveBeenCalled();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L breakdown shows category-level amounts
     And('the expense breakdown should list "transport" category', () => {
       expect(reportsApi.getPLReport).toHaveBeenCalled();
     });
@@ -215,6 +217,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(reportsApi.getPLReport).toHaveBeenCalled();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:Income entries are excluded from expense total
     And('the report should display expense total "0.00"', () => {
       expect(reportsApi.getPLReport).toHaveBeenCalled();
     });
@@ -246,6 +249,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(reportsApi.getPLReport).toHaveBeenCalled();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:Expense entries are excluded from income total
     And('the report should display expense total "75.00"', () => {
       expect(reportsApi.getPLReport).toHaveBeenCalled();
     });
@@ -269,6 +273,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(reportsApi.getPLReport).toHaveBeenCalled();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L report filters by currency without mixing
     And("no IDR amounts should be included", () => {
       expect(reportsApi.getPLReport).toHaveBeenCalled();
     });
@@ -304,6 +309,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(reportsApi.getPLReport).toHaveBeenCalled();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/reporting.feature:P&L report for a period with no entries shows zero totals
     And('the report should display net "0.00"', () => {
       expect(reportsApi.getPLReport).toHaveBeenCalled();
     });

@@ -115,6 +115,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(mockNavigate).toHaveBeenCalledWith(expect.objectContaining({ to: "/expenses" }));
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Successful login navigates to the dashboard
     And("the navigation should display alice's username", () => {
       expect(mockNavigate).toHaveBeenCalledWith(expect.objectContaining({ to: "/expenses" }));
     });
@@ -147,6 +148,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(clientModule.setTokens).toHaveBeenCalledWith("mock-access-token", "mock-refresh-token");
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Successful login stores session tokens
     And("a refresh token should be stored", () => {
       expect(clientModule.setTokens).toHaveBeenCalledWith(expect.any(String), "mock-refresh-token");
     });
@@ -176,6 +178,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/invalid username or password/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Login with wrong password shows an error
     And("alice should remain on the login page", () => {
       expect(mockNavigate).not.toHaveBeenCalledWith(expect.objectContaining({ to: "/expenses" }));
     });
@@ -205,6 +208,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/invalid username or password/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Login for non-existent user shows an error
     And("alice should remain on the login page", () => {
       expect(mockNavigate).not.toHaveBeenCalledWith(expect.objectContaining({ to: "/expenses" }));
     });
@@ -238,6 +242,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/deactivated or disabled/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/authentication/login.feature:Login for deactivated account shows an error
     And("alice should remain on the login page", () => {
       expect(mockNavigate).not.toHaveBeenCalledWith(expect.objectContaining({ to: "/expenses" }));
     });

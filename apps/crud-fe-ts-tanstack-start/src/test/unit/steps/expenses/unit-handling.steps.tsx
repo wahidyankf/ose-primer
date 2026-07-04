@@ -176,6 +176,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText("50.5")).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/unit-handling.feature:Expense with metric unit "liter" displays quantity and unit
     And('the unit should display as "liter"', () => {
       expect(screen.getByText("liter")).toBeInTheDocument();
     });
@@ -221,6 +222,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText("10")).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/unit-handling.feature:Expense with imperial unit "gallon" displays quantity and unit
     And('the unit should display as "gallon"', () => {
       expect(screen.getByText("gallon")).toBeInTheDocument();
     });
@@ -272,6 +274,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/unit-handling.feature:Unsupported unit shows a validation error
     Then("a validation error for the unit field should be displayed", () => {
       expect(screen.getAllByRole("alert").length).toBeGreaterThan(0);
     });
@@ -332,6 +335,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/unit-handling.feature:Expense without quantity and unit fields is accepted
     Then('the entry list should contain an entry with description "Dinner"', async () => {
       await waitFor(() => {
         expect(expensesApi.createExpense).toHaveBeenCalled();

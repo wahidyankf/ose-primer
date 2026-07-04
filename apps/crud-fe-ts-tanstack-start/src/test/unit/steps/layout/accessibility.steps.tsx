@@ -179,6 +179,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:All form inputs have associated labels
     And("every input field should have an accessible name", () => {
       const inputs = screen.getAllByRole("textbox");
       inputs.forEach((input) => {
@@ -220,6 +221,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(alerts.length).toBeGreaterThan(0);
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Error messages are announced to screen readers
     And("the errors should be associated with their respective fields via aria-describedby", () => {
       const usernameInput = screen.getByLabelText(/username/i);
       expect(usernameInput).toHaveAttribute("aria-invalid", "true");
@@ -260,6 +262,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(focusableElements.length).toBeGreaterThan(0);
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Keyboard navigation works through all interactive elements
     And("the currently focused element should have a visible focus indicator", () => {
       expect(document.activeElement).not.toBe(document.body);
     });
@@ -321,6 +324,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(dialog).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Modal dialogs trap focus
     And("pressing Escape should close the dialog and return focus to the trigger", async () => {
       const user = userEvent.setup();
       await user.keyboard("{Escape}");
@@ -353,6 +357,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByRole("button", { name: /create account/i })).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Color contrast meets WCAG AA standards
     And("all interactive elements should meet a minimum contrast ratio of 3:1", () => {
       const inputs = screen.getAllByRole("textbox");
       expect(inputs.length).toBeGreaterThan(0);
@@ -405,6 +410,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText("receipt.jpg")).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/layout/accessibility.feature:Images and icons have alternative text
     And("decorative icons should be hidden from assistive technologies", () => {
       expect(screen.getByText("receipt.jpg")).toBeInTheDocument();
     });

@@ -148,6 +148,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/password must meet/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/security/security.feature:Registration form rejects password shorter than 12 characters
     And("the error should mention minimum length requirements", () => {
       expect(screen.getByText(/at least 12/i)).toBeInTheDocument();
     });
@@ -183,6 +184,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/password must meet/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/security/security.feature:Registration form rejects password with no special character
     And("the error should mention special character requirements", () => {
       expect(screen.getByText(/at least one special character/i)).toBeInTheDocument();
     });
@@ -216,6 +218,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByRole("alert")).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/security/security.feature:Account is locked after exceeding maximum failed login attempts
     And("alice should remain on the login page", () => {
       expect(mockNavigate).not.toHaveBeenCalledWith(expect.objectContaining({ to: "/expenses" }));
     });
@@ -266,6 +269,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/security/security.feature:Admin unlocks a locked account via the admin panel
     Then('alice\'s status should display as "active"', async () => {
       await waitFor(() => {
         expect(adminApi.unlockUser).toHaveBeenCalled();
@@ -298,6 +302,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/security/security.feature:Unlocked account can log in with correct password
     Then("alice should be on the dashboard page", () => {
       expect(mockNavigate).toHaveBeenCalledWith(expect.objectContaining({ to: "/expenses" }));
     });

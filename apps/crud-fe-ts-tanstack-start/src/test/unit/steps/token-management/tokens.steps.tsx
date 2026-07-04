@@ -165,6 +165,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       await renderTokensPage(queryClient);
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Session info displays the authenticated user's identity
     Then("the panel should display alice's user ID", () => {
       expect(screen.getByText(/token inspector/i)).toBeInTheDocument();
     });
@@ -182,6 +183,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       await renderTokensPage(queryClient);
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Session info shows the token issuer
     Then("the panel should display a non-empty issuer value", () => {
       expect(screen.getByText(/token inspector/i)).toBeInTheDocument();
     });
@@ -220,6 +222,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:JWKS endpoint is accessible for token verification
     Then("at least one public key should be available", () => {
       // JWKS endpoint section is shown when JWKS data is loaded
       const jwksElements = screen.getAllByText(/JWKS/i);
@@ -236,6 +239,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/token inspector/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Logging out marks the session as ended
     And("navigating to a protected page should redirect to login", () => {
       expect(screen.getByText(/token inspector/i)).toBeInTheDocument();
     });
@@ -251,6 +255,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       await renderTokensPage(queryClient);
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Blacklisted token is rejected on protected page navigation
     Then("alice should be redirected to the login page", () => {
       expect(screen.getByText(/token inspector/i)).toBeInTheDocument();
     });
@@ -270,6 +275,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/token inspector/i)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/token-management/tokens.feature:Disabled user is immediately logged out
     And("an error message about account being disabled should be displayed", () => {
       expect(screen.getByText(/token inspector/i)).toBeInTheDocument();
     });

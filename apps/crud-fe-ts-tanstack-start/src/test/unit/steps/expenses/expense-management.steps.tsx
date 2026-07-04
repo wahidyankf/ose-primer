@@ -200,6 +200,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Creating an expense entry adds it to the entry list
     Then('the entry list should contain an entry with description "Lunch"', async () => {
       await waitFor(() => {
         expect(expensesApi.createExpense).toHaveBeenCalled();
@@ -255,6 +256,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Creating an income entry adds it to the entry list
     Then('the entry list should contain an entry with description "Monthly salary"', async () => {
       await waitFor(() => {
         expect(expensesApi.createExpense).toHaveBeenCalled();
@@ -316,6 +318,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText(/2025-01-15/)).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Clicking an entry shows its full details
     And('the entry detail should display type "expense"', () => {
       // Type is displayed as "EXPENSE" in the details list
       const typeTexts = screen.getAllByText(/EXPENSE/i);
@@ -356,6 +359,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByRole("button", { name: /next page/i })).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Entry list shows pagination for multiple entries
     And("the entry list should show the total count", () => {
       expect(screen.getByText(/page 1 of 1/i)).toBeInTheDocument();
     });
@@ -428,6 +432,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(expensesApi.updateExpense).toHaveBeenCalled();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Editing an entry updates the displayed values
     And('the entry detail should display description "Updated breakfast"', () => {
       expect(expensesApi.updateExpense).toHaveBeenCalled();
     });
@@ -481,6 +486,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Deleting an entry removes it from the list
     Then('the entry list should not contain an entry with description "Snack"', () => {
       expect(expensesApi.deleteExpense).toHaveBeenCalled();
     });
@@ -503,6 +509,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       );
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/expenses/expense-management.feature:Unauthenticated visitor cannot access the entry form
     Then("alice should be redirected to the login page", () => {
       // Auth guard handles redirect; in mocked environment the component renders anyway
       expect(true).toBe(true);

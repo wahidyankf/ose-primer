@@ -71,6 +71,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       });
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/health/health-status.feature:Health indicator shows the service is UP
     Then('the health status indicator should display "UP"', () => {
       expect(screen.getByText("UP")).toBeInTheDocument();
     });
@@ -93,6 +94,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText("UP")).toBeInTheDocument();
     });
 
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/health/health-status.feature:Health indicator does not expose component details to regular users
     And("no detailed component health information should be visible", () => {
       expect(screen.queryByText(/components/i)).not.toBeInTheDocument();
       expect(screen.queryByText(/details/i)).not.toBeInTheDocument();
