@@ -1,0 +1,4 @@
+{:config-in-ns
+ {step-definitions.steps
+  {:linters {:unused-binding {:level :off}
+             :unresolved-symbol {:level :off}}}}}

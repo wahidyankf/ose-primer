@@ -17,7 +17,7 @@
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:test -m kaocha.runner unit",
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:test -m kaocha.runner unit bdd",
         "cwd": "libs/clojure-openapi-codegen"
       },
       "cache": true,
@@ -25,7 +25,8 @@
         "{projectRoot}/src/**/*.clj",
         "{projectRoot}/test/**/*.clj",
         "{projectRoot}/deps.edn",
-        "{projectRoot}/tests.edn"
+        "{projectRoot}/tests.edn",
+        "{workspaceRoot}/specs/libs/clojure-openapi-codegen/behavior/gherkin/**/*.feature"
       ]
     },
     "test:quick": {
@@ -46,14 +47,15 @@
       "executor": "nx:run-commands",
       "options": {
         "cwd": "libs/clojure-openapi-codegen",
-        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:coverage -m kaocha.runner unit --plugin cloverage --lcov --cov-output coverage"
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:coverage -m kaocha.runner unit bdd --plugin cloverage --lcov --cov-output coverage"
       },
       "cache": true,
       "inputs": [
         "{projectRoot}/src/**/*.clj",
         "{projectRoot}/test/**/*.clj",
         "{projectRoot}/deps.edn",
-        "{projectRoot}/tests.edn"
+        "{projectRoot}/tests.edn",
+        "{workspaceRoot}/specs/libs/clojure-openapi-codegen/behavior/gherkin/**/*.feature"
       ],
       "outputs": ["{projectRoot}/coverage"]
     },
@@ -97,8 +99,13 @@
     "specs:behavior:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'specs:behavior:coverage: no Gherkin behavior specs for this codegen library (echo placeholder)'"
-      }
+        "command": "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs behavior-coverage validate --shared-steps specs/libs/clojure-openapi-codegen/behavior/gherkin libs/clojure-openapi-codegen"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/specs/libs/clojure-openapi-codegen/behavior/gherkin/**/*.feature",
+        "{projectRoot}/**/*.clj"
+      ]
     },
     "test:specs": {
       "executor": "nx:run-commands",
