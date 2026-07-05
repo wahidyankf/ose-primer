@@ -264,24 +264,23 @@ This repo runs on both the primary coding agent (`.claude/agents/`) and the seco
 The the secondary coding agent runtime uses Z.ai Coding Plan models. The sync pipeline
 (`npm run generate:bindings`) translates Claude model aliases automatically.
 
-| the primary coding agent alias | the secondary coding agent model ID | GLM tier                                      |
-| ------------------------------ | ----------------------------------- | --------------------------------------------- |
-| `opus` (inherit)               | `opencode-go/minimax-m2.7`          | 744B MoE; SWE-bench Pro 58.4 (self-reported)  |
-| `sonnet`                       | `opencode-go/minimax-m2.7`          | Same model as opus mapping                    |
-| `haiku`                        | `opencode-go/glm-5`                 | Purpose-built agentic; no standard benchmarks |
-| `""` (omit)                    | `opencode-go/minimax-m2.7`          | Default — same as opus/sonnet                 |
+| the primary coding agent alias | the secondary coding agent model ID | Tier                                                                       |
+| ------------------------------ | ----------------------------------- | -------------------------------------------------------------------------- |
+| `opus` (thinking)              | `opencode-go/glm-5.2`               | SWE-bench Pro 62.1%, ~7.1pp below Claude Opus 4.8 — closest available      |
+| `sonnet` (execution)           | `opencode-go/glm-5.2`               | Same model as thinking (intentional — see below); at/above Claude Sonnet 5 |
+| `""` (omit, execution)         | `opencode-go/glm-5.2`               | Default — same as opus/sonnet                                              |
+| `haiku` (fast)                 | `opencode-go/minimax-m3`            | SWE-bench Pro 59.0%, closest to Sonnet 5 without exceeding it              |
 
-**3-to-2 tier collapse**: Claude has three distinct tiers; Z.ai Coding Plan has two.
-Both `opus` and `sonnet` map to `glm-5.1` because it is the single top-tier option
-available. This means the cost/quality difference between `sonnet` and `omit` tiers
-disappears on the secondary coding agent — both execute at `glm-5.1`. Only `haiku` selects a different
-model (`glm-5-turbo`).
+**Tier collapse**: Claude has three distinct tiers (thinking/execution/fast); the secondary coding
+agent's `opencode-go` roster does not have a model that separately clears Claude Opus 4.8's tier, so
+`opus` and `sonnet`/omit both map to `opencode-go/glm-5.2` — the strongest roster model overall. This
+is an intentional, accepted platform constraint (not a bug): if a future roster model clears the
+Opus-4.8 bar without also being the execution-tier pick, only the `opus` mapping's literal needs to
+change. Only `haiku` selects a distinct, lighter model (`opencode-go/minimax-m3`).
 
-> ⚠️ **GLM-5-turbo has no published standard benchmark scores** (no SWE-bench, GPQA,
-> MMLU, or HumanEval data as of April 2026). Its use as the the secondary coding agent fast tier is a
-> platform constraint, not a benchmark-validated choice. See
-> [ai-model-benchmarks.md § GLM-5-turbo](../../../docs/reference/ai-model-benchmarks.md#glm-5-turbo)
-> for full sourcing details.
+See [AI Model Benchmarks Reference](../../../docs/reference/ai-model-benchmarks.md) for the full
+sourced comparison, including standard per-token pricing and a frontier/big-brand model reference
+table for cost/capability context.
 
 ## ❌ Common Mistakes
 

@@ -316,7 +316,7 @@ tools: [Read, Write, Edit, Glob, Grep]
 ```binding-example
 ---
 description: Brief description of what the agent does
-model: opencode-go/minimax-m2.7
+model: opencode-go/glm-5.2
 permission:
   read: allow
   write: allow
