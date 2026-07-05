@@ -244,6 +244,11 @@ Every plan-execution rule applies unchanged, including:
   fix ALL issues including preexisting, sacred delivery.md, local quality gates before push,
   post-push CI verification, thematic commits, manual behavioral assertions, progress streaming,
   disk-is-truth reconciliation.
+- **Knowledge Capture pre-archival gate**: each repo's plan-execution phase blocks its own
+  archival until every `learnings.md` entry is routed-inline, filed-as-backlog-plan, or
+  discarded-with-reason and both safety gates pass, per the
+  [Knowledge Capture Convention](../../development/quality/knowledge-capture.md) — an attention
+  point per repo, not a composite-wide one.
 - **Validation loop**: `plan-execution-checker` to zero findings (CRITICAL through LOW).
 - **Archival**: move the plan to `plans/done/YYYY-MM-DD__<objective-slug>/`, update plan READMEs,
   commit and push.
