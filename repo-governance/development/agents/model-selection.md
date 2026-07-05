@@ -258,7 +258,7 @@ For a deployer agent:
 | **Typical agents**     | Creative makers, developers                                                                              | Checkers, fixers, structured makers                                                                         | Deployers, link checkers, file manager                                                          |
 | **SWE-bench Verified** | [87.6% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-opus-47) (planning-grade 4.7) | [79.6% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46) (execution-grade 4.6) | [73.3% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-haiku-45) (fast 4.5) |
 
-## the secondary coding agent / GLM Equivalents
+## Platform Binding Examples
 
 This repo runs on both the primary coding agent (`.claude/agents/`) and the secondary coding agent (`.opencode/agents/`).
 The the secondary coding agent runtime uses Z.ai Coding Plan models. The sync pipeline
