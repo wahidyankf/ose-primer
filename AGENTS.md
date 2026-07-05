@@ -186,6 +186,14 @@ must become impossible to silently reintroduce. Enforced by `swe-code-checker` (
 
 **See**: [repo-governance/development/quality/regression-test-mandate.md](./repo-governance/development/quality/regression-test-mandate.md)
 
+## Knowledge Capture
+
+Every substantive plan ends its `delivery.md` with a Knowledge Capture phase: the plan's transient
+`learnings.md` running log is triaged to durable homes (or discarded with a reason) before archival,
+with an explicit "none" escape when nothing generalizable surfaced.
+
+**See**: [repo-governance/development/quality/knowledge-capture.md](./repo-governance/development/quality/knowledge-capture.md)
+
 ## rhino-cli Command Surface
 
 All callers (hooks, CI workflows, `package.json` scripts) use the canonical
