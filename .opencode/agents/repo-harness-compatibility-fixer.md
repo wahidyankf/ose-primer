@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from a repo-harness-compatibility-checker audit. Auto-remediates Phase 0 cross-vendor parity Invariant 3 (binding sync drift via npm run generate:bindings) and Phase 1 catalog/binding-file updates; re-validates each finding before applying, flags Phase 0 Invariants 1/2/4/5 for human resolution, and re-runs binding validation to confirm correctness.
-model: opencode-go/minimax-m2.7
+model: opencode-go/glm-5.2
 permission:
   bash: allow
   edit: allow

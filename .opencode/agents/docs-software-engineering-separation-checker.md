@@ -1,6 +1,6 @@
 ---
 description: Validates software engineering documentation separation — ensures docs/explanation/ style guides focus on repository-specific conventions only (not language tutorials), and that every programming language README has proper prerequisite statements linking to external learning resources.
-model: opencode-go/minimax-m2.7
+model: opencode-go/glm-5.2
 permission:
   bash: allow
   glob: allow

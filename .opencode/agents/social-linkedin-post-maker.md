@@ -1,6 +1,6 @@
 ---
 description: Creates LinkedIn posts from project updates and documentation. Optimizes for engagement and professional tone.
-model: opencode-go/minimax-m2.7
+model: opencode-go/glm-5.2
 permission:
   grep: allow
   read: allow

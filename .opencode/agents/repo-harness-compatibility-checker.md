@@ -1,6 +1,6 @@
 ---
 description: Validates that the platform-bindings catalog and committed binding files match each supported coding-agent harness's current upstream configuration conventions; use when external harness docs may have drifted from the repo's recorded expectations.
-model: opencode-go/minimax-m2.7
+model: opencode-go/glm-5.2
 permission:
   bash: allow
   glob: allow

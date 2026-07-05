@@ -1,6 +1,6 @@
 ---
 description: Develops Kotlin applications following null safety principles, coroutine patterns, and platform coding standards. Use when implementing Kotlin code for demo.
-model: opencode-go/minimax-m2.7
+model: opencode-go/glm-5.2
 permission:
   bash: allow
   edit: allow
