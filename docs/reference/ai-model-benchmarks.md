@@ -102,15 +102,23 @@ validation, deterministic file operations); the "fast"-tier alias mapped to Open
 was not directly accessible. Treat `[Needs Verification]` scores as approximate until
 confirmed. Haiku 3 (`claude-3-haiku-20240307`) was retired 2026-04-19.
 
-### Historical: Claude Opus 4.7 / Claude Sonnet 4.6 (superseded)
+### Claude Opus 4.7
 
-| Model             | SWE-bench Verified | SWE-bench Pro      | GPQA Diamond       | Pricing (in/out MTok) | Release    |
-| ----------------- | ------------------ | ------------------ | ------------------ | --------------------- | ---------- |
-| Claude Opus 4.7   | 87.6% `[Verified]` | 64.3% `[Verified]` | 94.2% `[Verified]` | $5/$25                | 2026-04-16 |
-| Claude Sonnet 4.6 | 79.6% `[Verified]` | —                  | 89.9% `[Verified]` | $3/$15                | 2026-02-17 |
+| Model           | SWE-bench Verified | SWE-bench Pro      | GPQA Diamond       | Pricing (in/out MTok) | Release    |
+| --------------- | ------------------ | ------------------ | ------------------ | --------------------- | ---------- |
+| Claude Opus 4.7 | 87.6% `[Verified]` | 64.3% `[Verified]` | 94.2% `[Verified]` | $5/$25                | 2026-04-16 |
 
-Superseded by Claude Opus 4.8 (2026-05-28) and Claude Sonnet 5 (2026-06-30) respectively — see the
-current sections above. Retained here for historical reference, not as current tier bars.
+Superseded by Claude Opus 4.8 (2026-05-28, above). Retained here for historical reference, not as a
+current tier bar.
+
+### Claude Sonnet 4.6
+
+| Model             | SWE-bench Verified | SWE-bench Pro | GPQA Diamond       | Pricing (in/out MTok) | Release    |
+| ----------------- | ------------------ | ------------- | ------------------ | --------------------- | ---------- |
+| Claude Sonnet 4.6 | 79.6% `[Verified]` | —             | 89.9% `[Verified]` | $3/$15                | 2026-02-17 |
+
+Superseded by Claude Sonnet 5 (2026-06-30, above). Retained here for historical reference, not as a
+current tier bar.
 
 ## OpenCode Go Models (opencode-go/ provider)
 
