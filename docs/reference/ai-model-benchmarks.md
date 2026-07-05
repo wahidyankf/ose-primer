@@ -125,9 +125,12 @@ current tier bar.
 **"Claude Opus 5" does not exist.** An earlier draft of the `upgrade-opencode-go-models` plan
 referenced it as the thinking-tier comparison bar; research confirmed no such model has been
 released as of 2026-07-05 — Claude Opus 4.8 (above) is the actual current Opus generation and the
-correct thinking-tier bar. No `opencode-go` roster model clears Opus 4.8's 69.2% SWE-bench Pro bar,
-so the thinking tier collapses onto the execution tier's target (`glm-5.2`) — an explicit, accepted
-tradeoff, not an oversight. See [AI Agent Model Selection Convention](../../repo-governance/development/agents/model-selection.md)
+correct thinking-tier bar. Anthropic did ship a tier _above_ Opus on 2026-06-09 — **Claude Fable 5**
+(GA, SWE-bench Pro ~80.3% `[Verified]`) and **Claude Mythos 5** (gated, not GA) — but neither is
+what the `opus` alias resolves to; noted here for completeness only, not tracked as a tier in this
+document. No `opencode-go` roster model clears Opus 4.8's 69.2% SWE-bench Pro bar, so the thinking
+tier collapses onto the execution tier's target (`glm-5.2`) — an explicit, accepted tradeoff, not an
+oversight. See [AI Agent Model Selection Convention](../../repo-governance/development/agents/model-selection.md)
 for the full tier-collapse rationale.
 
 **Correction (2026-07-05)**: this section previously described a `zai-coding-plan/*` provider
@@ -185,6 +188,71 @@ see [model-selection.md](../../repo-governance/development/agents/model-selectio
 **Note**: `opus` and `sonnet`/omit resolve to the identical OpenCode model (`glm-5.2`) — an
 intentional tier collapse (see the "OpenCode Go Models" section above), not an error. All benchmark
 citations in policy docs link to the relevant section anchors above.
+
+## Standard API Pricing (Non-Subscription, Per-Token)
+
+Retrieved 2026-07-05 for the `upgrade-opencode-go-models` plan. These are each model's own
+provider's direct pay-as-you-go rate — not the flat-rate `opencode-go` subscription price paid by
+this repo's actual subscribers.
+
+| Model             | Input $/1M                                  | Output $/1M                      | Source                                                                                                | Confidence       |
+| ----------------- | ------------------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------- |
+| `glm-5.2`         | $1.40                                       | $4.40                            | [Z.ai Pricing](https://docs.z.ai/guides/overview/pricing)                                             | `[Verified]`     |
+| `glm-5.1`         | $1.40                                       | $4.40                            | [Z.ai Pricing](https://docs.z.ai/guides/overview/pricing)                                             | `[Verified]` (a) |
+| `minimax-m3`      | $0.30 (≤512K) / $0.60 (>512K)               | $1.20 (≤512K) / $2.40 (>512K)    | [MiniMax Pay-as-you-go](https://platform.minimax.io/docs/guides/pricing-paygo)                        | `[Verified]`     |
+| `minimax-m2.7`    | $0.30                                       | $1.20                            | [MiniMax Pay-as-you-go](https://platform.minimax.io/docs/guides/pricing-paygo)                        | `[Verified]` (b) |
+| `kimi-k2.7-code`  | $0.95 (cache miss) / $0.19 (cache hit)      | $4.00                            | [Kimi Platform Pricing](https://platform.kimi.ai/docs/pricing/chat-k27-code)                          | `[Verified]`     |
+| `kimi-k2.6`       | $0.95 (cache miss) / $0.16 (cache hit)      | $4.00                            | [Kimi Platform Pricing](https://platform.kimi.ai/docs/pricing/chat-k26)                               | `[Verified]`     |
+| `deepseek-v4-pro` | $0.435 (cache miss) / $0.003625 (cache hit) | $0.87                            | [DeepSeek API Pricing](https://api-docs.deepseek.com/quick_start/pricing)                             | `[Verified]` (c) |
+| `mimo-v2.5-pro`   | ¥3 / ¥0.025 (cache) ≈ $0.44 / $0.004        | ¥6 ≈ $0.88                       | [Xiaomi MiMo Pay-as-you-go](https://mimo.mi.com/docs/price/pay-as-you-go)                             | `[Verified]` (d) |
+| `mimo-v2.5`       | ¥1 / ¥0.02 (cache) ≈ $0.15 / $0.003         | ¥2 ≈ $0.29                       | [Xiaomi MiMo Pay-as-you-go](https://mimo.mi.com/docs/price/pay-as-you-go)                             | `[Verified]` (d) |
+| `qwen3.7-max`     | $2.50 (Intl)                                | $7.50 (Intl)                     | [Alibaba Cloud Model Studio Pricing](https://www.alibabacloud.com/help/en/model-studio/model-pricing) | `[Verified]` (e) |
+| `qwen3.7-plus`    | $0.40 (0-256K) / $1.20 (256K-1M)            | $1.60 (0-256K) / $4.80 (256K-1M) | [Alibaba Cloud Model Studio Pricing](https://www.alibabacloud.com/help/en/model-studio/model-pricing) | `[Verified]` (e) |
+
+Notes: (a) GLM-5.1/5.2 show identical official rates on Z.ai's own pricing page — some aggregators
+list a lower third-party-hosted GLM-5.1 rate; that is reseller pricing, not Z.ai's. (b)
+MiniMax-M2.7/M3 show identical standard-tier rates on MiniMax's own pricing page — unusual for two
+model generations, worth a spot-check on next refresh. (c) DeepSeek's live official page shows no
+expiry note on this rate, but a secondary source claims it is a promotion that may revert to
+$1.74/$3.48 — re-verify before relying on it long-term. (d) Xiaomi MiMo publishes only CNY pricing;
+USD figures converted at the CNY/USD spot rate as of 2026-07-04, not an official USD list price. (e)
+Alibaba Cloud Model Studio prices by region; Singapore/International rates shown as the
+globally-reachable rate — China-mainland pricing is substantially lower.
+
+## Frontier/Big-Brand Model Reference (Informational Only — Not Available via `opencode-go`)
+
+Current Anthropic/OpenAI/Google flagship pricing and benchmarks, retrieved 2026-07-05, purely for
+cost/capability contrast — **none of these are, or will be, routed to by this repo's `convert_model()`
+or Pi's model pin** (see Decision 0, `upgrade-opencode-go-models` plan `tech-docs.md`: BYOM harnesses
+in this repo must not route to Anthropic, OpenAI, Google, or other frontier/big-brand providers).
+
+| Provider  | Model                    | SWE-bench Pro                             | SWE-bench Verified    | Input $/1M                    | Output $/1M                     | Release date | Confidence                                             |
+| --------- | ------------------------ | ----------------------------------------- | --------------------- | ----------------------------- | ------------------------------- | ------------ | ------------------------------------------------------ |
+| Anthropic | Claude Opus 4.8          | 69.2%                                     | 88.6%                 | $5.00                         | $25.00                          | 2026-05-28   | `[Verified]`                                           |
+| Anthropic | Claude Sonnet 5          | 63.2%                                     | 85.2%                 | $2.00→$3.00 (a)               | $10.00→$15.00                   | 2026-06-30   | `[Verified]`                                           |
+| Anthropic | Claude Fable 5           | 80.3%                                     | ~95.0% (b)            | not confirmed                 | not confirmed                   | 2026-06-09   | Benchmark `[Verified]`; pricing `[Needs Verification]` |
+| OpenAI    | GPT-5.5 (flagship)       | 58.6% (c)                                 | not reported (d)      | $5.00                         | $30.00                          | 2026-04-24   | Pricing `[Verified]`; benchmark `[Unverified]`         |
+| OpenAI    | GPT-5.4 (prior flagship) | 59.10% ±3.56% (e)                         | not reported (d)      | $2.50                         | $15.00                          | 2026-03-05   | `[Verified]`                                           |
+| OpenAI    | GPT-5.4-mini             | not found                                 | not reported          | $0.75                         | $4.50                           | 2026-03-17   | Pricing `[Verified]`; benchmark `[Needs Verification]` |
+| OpenAI    | GPT-5.4-nano             | not found                                 | not reported          | $0.20                         | $1.25                           | 2026-03-17   | Pricing `[Verified]`; benchmark `[Needs Verification]` |
+| Google    | Gemini 3.1 Pro (Preview) | 54.2% (self-reported) / 46.10% ±3.60% (f) | 80.6%                 | $2.00 (≤200k) / $4.00 (>200k) | $12.00 (≤200k) / $18.00 (>200k) | 2026-02-19   | `[Verified]` (dual-sourced conflict noted)             |
+| Google    | Gemini 3.5 Flash         | 55.1%                                     | not on model card (g) | $1.50                         | $9.00                           | 2026-05-19   | `[Verified]`                                           |
+
+Notes: (a) introductory rate through 2026-08-31, then standard rate. (b) third-party transcription
+of an image-embedded table on Anthropic's own announcement page — treat as directionally correct,
+not exact. (c) quoted consistently across independent outlets citing OpenAI's own announcement; the
+primary page returned HTTP 403 on every direct fetch attempt. (d) OpenAI has publicly stopped
+reporting SWE-bench Verified for current-generation models (training-data contamination/reward-
+hacking concerns); recommends SWE-bench Pro instead. Last officially-reported Verified figure was
+GPT-5.2 Thinking at 80% (2026-12-11), two generations behind current. (e) Scale AI's independent
+SWE-bench Pro leaderboard, xHigh reasoning setting — not vendor-self-reported. (f) Google's own
+model card self-reports 54.2%; the independent Scale AI leaderboard scores the same model at
+46.10% ± 3.60% — a real self-reported-vs-independent gap, both cited rather than silently picking
+one. (g) a 78% figure circulates across secondary sources but could not be confirmed on Google's own
+model card.
+
+**Not shown**: Gemini 3.5 Pro (still limited enterprise preview, not GA/priced as of 2026-07-05).
+Claude Mythos 5 (gated to Project Glasswing, not generally accessible).
 
 ## Limitations and Caveats
 
