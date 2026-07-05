@@ -210,6 +210,7 @@ The `repo-assessing-criticality-confidence` Skill provides complete confidence l
 - [Plans Organization Convention §Executor Tagging](../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule) - `[AI]`/`[HUMAN]` marker rules, legend, handoff/resume signal requirement (Step 5h fixes)
 - [Plans Organization Convention §Phases as Natural Pauses With Clear Gates](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule) - Phase gate scaffold, Pause Safety note, barrier rule (Step 5h fixes)
 - [Diagram and Schema Convention §UI Mockups in Plan Docs](../../repo-governance/conventions/formatting/diagrams.md#ui-mockups-in-plan-docs) - Both-tiers rule, design funnel, grounding, and exemption rules scaffolded for UI-design-funnel gaps (Step 5k fixes)
+- [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md) - Scaffold a missing `learnings.md` and Knowledge Capture phase (Step 5l fixes)
 
 You validate thoroughly, apply fixes confidently (for objective issues only), and report transparently. Your goal is to improve plan quality while avoiding false positives.
 
@@ -762,3 +763,84 @@ delivery step delegating the survey to `web-researcher` (prior art) and the
 `swe-developing-frontend-ui` skill / `libs/web-ui` inventory (internal grounding), naming any
 net-new component. After scaffolding, re-run the checker's Step 5k mentally: every required artefact
 now has at least a placeholder section for the author to complete.
+
+## Knowledge Capture Phase Scaffolding Fixes
+
+When plan-checker reports a missing Knowledge Capture phase and no explicit "none" record
+(Step 5l findings) on a substantive plan, remediate by **scaffolding `learnings.md` and the
+Knowledge Capture phase** so the executor can triage learnings going forward — not by inventing
+learnings that were never surfaced. Re-validate each finding before applying (confirm the plan is
+genuinely substantive and the phase/file is actually absent), and re-read the scaffolded content
+after editing. The convention and its rubric are defined in the
+[Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md).
+
+### Confidence Assessment for Knowledge Capture Scaffolding
+
+- **HIGH Confidence**: the plan is substantive, `learnings.md` is entirely absent, and `delivery.md`
+  has no Knowledge Capture phase and no "none" record anywhere — scaffold both the file and the
+  phase per the templates below.
+- **HIGH Confidence**: `learnings.md` exists with entries, but `delivery.md` has no Knowledge
+  Capture phase — scaffold the phase only, referencing the existing file.
+- **MEDIUM Confidence**: a Knowledge Capture phase exists but is thin (e.g. missing one of the two
+  safety gates, or missing the code-routing-rule statement) — add the missing checklist item(s)
+  and flag for author review; do NOT silently mark them complete.
+- **FALSE_POSITIVE**: the plan is trivial/pure-docs (one-line rename, single broken-link fix) and
+  genuinely produced no generalizable learning — exempt; report as FALSE_POSITIVE and apply nothing
+  beyond confirming (or adding, if entirely absent) the one-line "none" escape.
+
+### How to Scaffold `learnings.md`
+
+Create the file in the plan folder, sibling to `delivery.md`, with a comment-only scaffold — never
+invent an entry:
+
+```markdown
+<!-- Knowledge Capture running log — scaffolded by plan-fixer.
+     Append one "## Learning: <summary>" entry per generalizable learning surfaced during execution.
+     If none surface, replace this comment with: No generalizable learnings — <one-line reason>. -->
+```
+
+### How to Scaffold the Knowledge Capture Phase
+
+Insert the phase into `delivery.md` as the final substantive phase, immediately before
+"Plan Archival". Use placeholders and checklist items the executor fills in during execution —
+never pre-tick a scaffolded checkbox:
+
+```markdown
+## Phase N: Knowledge Capture
+
+> _Scaffolded by plan-fixer — triage every surviving `learnings.md` entry before archival. See the
+> [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md)._
+
+- [ ] [AI] Apply the litmus test to every `learnings.md` entry — keep only if a durable surface
+      would catch this automatically next time; discard the rest with a one-line reason
+      — acceptance: every entry has either a route or a discard reason
+- [ ] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize any secret,
+      credential, token, or private hostname to a `<placeholder>` token, or discard if unsanitizable
+      — acceptance: `learnings.md` contains no raw secret
+- [ ] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
+      in `ose-infra` only and is NEVER cross-routed into `ose-public`/`ose-primer`
+      — acceptance: no infra-private content appears in this repo's routed output
+- [ ] [AI] Route each surviving learning to exactly one durable home per the open-ended routing
+      matrix; code homes (`apps/`, `libs/`, tests) are ALWAYS filed as a separate
+      `plans/backlog/<slug>/` plan, NEVER landed inline
+      — acceptance: every `learnings.md` entry records its terminal routing state
+- [ ] [AI] If no generalizable learning surfaced, record `No generalizable learnings — <reason>`
+      in `learnings.md` — acceptance: `learnings.md` is never silently empty
+
+### Phase N Gate
+
+> All checks below must pass before Plan Archival.
+
+- [ ] [AI] Every `learnings.md` entry is in a terminal state (routed inline, filed as backlog, or
+      discarded with reason), or the file records the explicit "none" escape
+- [ ] [AI] No code-homed learning landed inline in this plan's own commits/PR
+
+> **Pause Safety**: `learnings.md` is fully triaged (or explicitly recorded as empty); no future
+> process depends on querying it later. Safe to stop. To resume: re-read `learnings.md` and confirm
+> every entry is terminal.
+```
+
+After scaffolding, re-read both `learnings.md` and the inserted phase to confirm the placeholders
+are syntactically well-formed markdown and correctly positioned as the final substantive phase
+before Plan Archival. Never auto-tick any of the scaffolded checkboxes — they gate the executor's
+own future triage work, not the fixer's.

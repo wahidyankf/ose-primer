@@ -244,6 +244,12 @@ Cover (each as a structured multiple-choice question):
   ≥2 named low-fi alternatives, 2 hi-fi `.excalidraw.png` finalists, a named selection, a rationale,
   the R5 grounding note, and R7 prior-art citation — and that delivery steps produce them. See
   [UI-Bearing Plans — Mandatory Design Funnel](#ui-bearing-plans--mandatory-design-funnel-hard-rule).
+- **Knowledge Capture phase present**: Does `delivery.md` end with a Knowledge Capture phase — the
+  FINAL substantive phase, immediately before Plan Archival — that scaffolds `learnings.md`, encodes
+  the open-ended triage rubric, states the code-routing rule (code-homed learnings are ALWAYS filed
+  as a separate `plans/backlog/` plan, never landed inline), and applies both the
+  secret/sensitivity gate and the repo-relevance gate? See the
+  [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md).
 
 Revise files as needed based on user feedback. Signal done only after the user confirms the
 plan is complete and correct.
@@ -434,6 +440,7 @@ Unsolicited PR steps conflict with Trunk Based Development. `plan-checker` will 
 
 **Related Conventions:**
 
+- [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md) — Mandatory final phase that triages the plan's `learnings.md` running log to a durable home (or an explicit discard) through both safety gates before archival
 - [User-Facing Delivery Hardening Convention](../../repo-governance/development/quality/user-facing-delivery-hardening.md) — Emit delivery steps for rules 1–8: visual-parity sign-off before archival (rule 1), name the design-system primitive (rule 2), per-breakpoint responsive deliverables (rules 3–4), value-bearing tests (rule 5), mockup-colors-as-theme-tokens (rule 8).
 
 **Remember**: Good plans are executable blueprints, not vague intentions. Make them specific, structured, and actionable.
@@ -684,6 +691,72 @@ a pause that is not real:
 Phase 0 and the final verification phase are legitimate gate-bearing phases even though they produce
 no commit.
 
+**6b. Knowledge Capture Phase** (MANDATORY — the FINAL substantive phase of every substantive
+plan's delivery checklist, positioned immediately before "Plan Archival"; see the
+[Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md)):
+
+Scaffold `learnings.md` in the plan folder (sibling to `delivery.md`) at plan-creation time — a
+transient running log the executor appends to during execution, one entry per generalizable
+learning, sanitized before it is ever written:
+
+```markdown
+## Learning: <one-line summary>
+
+- **Context**: what was being done when this surfaced
+- **Observation**: what was noticed (sanitized — see the secret/sensitivity gate below)
+- **Why it might generalize**: the litmus reasoning
+```
+
+Then emit the Knowledge Capture phase as the final phase of `delivery.md`, encoding the
+**open-ended, principle-based triage rubric** (route each surviving learning to whichever durable
+home owns that kind of knowledge — `repo-governance/`, `docs/`, `.claude/agents/`,
+`.claude/skills/`, a post-mortem, or any other surface; discard anything that fails the litmus
+test: "would a durable surface catch this automatically next time?"), the **code-routing rule** (a
+learning whose home is `apps/`, `libs/`, or tests is ALWAYS filed as a separate
+`plans/backlog/<slug>/` plan and NEVER landed inline in this plan's own commits/PR — the only
+carve-out is a blocker genuinely required to finish this plan's own scope, per Root Cause
+Orientation), and both mandatory safety gates:
+
+```markdown
+## Phase N: Knowledge Capture
+
+> _Triage every surviving `learnings.md` entry before archival. See the
+> [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md)._
+
+- [ ] [AI] Apply the litmus test to every `learnings.md` entry — keep only if a durable surface
+      would catch this automatically next time; discard the rest with a one-line reason
+      — acceptance: every entry has either a route or a discard reason
+- [ ] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize any secret,
+      credential, token, or private hostname to a `<placeholder>` token, or discard if unsanitizable
+      — acceptance: `learnings.md` contains no raw secret
+- [ ] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
+      in `ose-infra` only and is NEVER cross-routed into `ose-public`/`ose-primer`
+      — acceptance: no infra-private content appears in this repo's routed output
+- [ ] [AI] Route each surviving learning to exactly one durable home per the open-ended routing
+      matrix; code homes (`apps/`, `libs/`, tests) are ALWAYS filed as a separate
+      `plans/backlog/<slug>/` plan, NEVER landed inline
+      — acceptance: every `learnings.md` entry records its terminal routing state
+- [ ] [AI] If no generalizable learning surfaced, record `No generalizable learnings — <reason>`
+      in `learnings.md` — acceptance: `learnings.md` is never silently empty
+
+### Phase N Gate
+
+> All checks below must pass before Plan Archival.
+
+- [ ] [AI] Every `learnings.md` entry is in a terminal state (routed inline, filed as backlog, or
+      discarded with reason), or the file records the explicit "none" escape
+- [ ] [AI] No code-homed learning landed inline in this plan's own commits/PR
+
+> **Pause Safety**: `learnings.md` is fully triaged (or explicitly recorded as empty); no future
+> process depends on querying it later. Safe to stop. To resume: re-read `learnings.md` and confirm
+> every entry is terminal.
+```
+
+Pure-docs and trivial plans (one-line rename, single broken-link fix) MAY skip the elaborate phase
+— the explicit "none" escape above satisfies the requirement without inventing insight the plan
+never produced. Never leave `learnings.md` silently absent with no explanation; `plan-checker`
+flags silent absence at MEDIUM.
+
 ### Adapting to Plan Context
 
 - Customize the specific Nx targets based on which projects the plan affects
@@ -812,6 +885,10 @@ ALWAYS include at the end of the delivery checklist:
 ### Plan Archival
 
 - [ ] Verify ALL delivery checklist items are ticked
+- [ ] Verify the Knowledge Capture phase is complete — every `learnings.md` entry reached a
+      terminal state (routed inline, filed as a `plans/backlog/` plan, or discarded with reason)
+      or the file records the explicit `No generalizable learnings — <reason>` escape; both the
+      secret/sensitivity gate and the repo-relevance gate were applied to every surviving entry
 - [ ] Verify ALL quality gates pass (local + CI)
 - [ ] Verify ALL manual assertions pass (Playwright MCP / curl) with committed evidence in `evidence/`
 - [ ] Verify ALL supported locales were exercised in UI verification (not just the default)
