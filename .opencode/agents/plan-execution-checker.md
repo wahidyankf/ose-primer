@@ -68,6 +68,7 @@ Validate that completed plan implementation:
 3. Completes all delivery checklist items with implementation notes
 4. Satisfies all Gherkin acceptance criteria authored in `prd.md`
 5. Maintains code quality standards
+6. Verifies the plan's transient `learnings.md` was fully triaged — every entry reached a terminal state (routed inline, filed as a `plans/backlog/` plan, or discarded with reason) or the file records the explicit "none" escape — before blocking or clearing archival, per the [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md)
 
 ## Validation Scope
 
@@ -179,6 +180,7 @@ Update status to "Complete", add summary and recommendation (approve/revise).
 
 **Related Conventions:**
 
+- [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md) - Blocking archival gate (Step 5g): every `learnings.md` entry must reach a terminal state (routed inline, filed as a `plans/backlog/` plan for code homes, or discarded with reason) or record the explicit "none" escape; verify both the secret/sensitivity gate and the repo-relevance gate were applied, and that no code-homed learning landed inline instead of being backlogged
 - [Plans Organization Convention §Executor Tagging](../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule) - `[AI]`/`[HUMAN]` marker rules, legend, handoff/resume signal requirement (validated in Step 5f-gates)
 - [Plans Organization Convention §Phases as Natural Pauses With Clear Gates](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule) - Phase gate barrier rule, Pause Safety requirement (validated in Step 5f-gates)
 - [User-Facing Delivery Hardening Convention](../../repo-governance/development/quality/user-facing-delivery-hardening.md) - Verify that the production visual sign-off (rule 1), the deploy-config smoke test (rule 11), and — on web-UI plans — the near-end three-tester retest round ran (rule 15) with every rule-15 EWT/UWT/DWT defect checkbox in `delivery.md` fixed (ticked) before archival — deferral of a defect finding requires explicit user permission and is allowed only when the fix is genuinely impossible; an unfixed defect checkbox at archival time is a HIGH finding; flag their absence as HIGH on UI-bearing plans; SG-### proposals and USS-### suggestions may be triaged or deferred
@@ -520,3 +522,46 @@ For every relative cross-link in plan files:
 - Library upgrades during execution may have outdated cited versions.
 
 Both gates exist for a reason; do not skip Step 5f under time pressure.
+
+### 12. Knowledge Capture Routing Verification (Step 5g — MANDATORY BLOCKING GATE)
+
+Enforces the [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md).
+Archival is **BLOCKED** until every entry in the plan's `learnings.md` reaches a terminal state.
+
+#### What to Validate
+
+1. **`learnings.md` exists or "none" is recorded** — For a substantive plan, confirm `learnings.md`
+   exists in the plan folder, OR the plan explicitly records
+   `No generalizable learnings — <one-line reason>`. Silent absence of both: **HIGH** (archival blocker).
+2. **Every entry reached a terminal state** — For each entry in `learnings.md`, confirm it is one of:
+   (a) **routed inline** — the durable-home edit lands in this plan's own commits/PR (non-code homes
+   only: `repo-governance/`, `docs/`, `.claude/agents/`, `.claude/skills/`, a post-mortem, etc.);
+   (b) **filed as a `plans/backlog/<slug>/` plan** — mandatory for any code home (`apps/`, `libs/`,
+   tests); or (c) **discarded with a one-line reason**. An entry with no recorded terminal state:
+   **HIGH** (archival blocker).
+3. **No code-homed learning landed inline** — Cross-check every entry routed to `apps/`, `libs/`, or
+   tests: confirm it was filed as a separate `plans/backlog/` plan and did NOT land as a commit inside
+   this plan's own PR (the sole carve-out is a genuine blocker required to finish this plan's own
+   scope, per Root Cause Orientation — verify any such carve-out is legitimate). A code-homed learning
+   landed inline without a legitimate carve-out: **HIGH**.
+4. **Both safety gates were applied** — Spot-check surviving entries for raw secrets/credentials
+   (should be sanitized to `<placeholder>` tokens or discarded) and for infra-private content
+   (Terraform, k3s, Proxmox, `coralpolyp`, real hostnames/inventories — must never appear; that
+   content belongs in `ose-infra` only). A raw secret or cross-routed infra-private entry: **CRITICAL**.
+
+#### Finding Severity
+
+- `learnings.md` absent with no explicit "none" record anywhere: **HIGH** (blocks archival)
+- Any entry not in a terminal state (no route, no backlog filing, no discard reason): **HIGH**
+  (blocks archival)
+- Code-homed learning landed inline instead of filed as `plans/backlog/`: **HIGH**
+- Secret/credential surviving unsanitized, or infra-private content cross-routed out of `ose-infra`:
+  **CRITICAL**
+- Explicit "none" escape present and no `learnings.md` needed: **not flagged** (passes)
+
+#### Why This Gate Blocks Archival
+
+An untriaged `learnings.md` is a dangling TODO nobody will ever revisit once the plan folder moves to
+`plans/done/`. Blocking archival — rather than merely flagging the gap — is the only mechanism that
+guarantees generalizable learnings either become durable (governance/docs/agent/skill updates,
+backlog plans) or are consciously discarded, instead of silently evaporating.

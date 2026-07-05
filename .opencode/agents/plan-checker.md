@@ -144,6 +144,7 @@ Audit all plan files (`README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery
 - **Manual-assertion locale + evidence completeness (UI/API plans)**: a plan touching web UI or API MUST carry manual-assertion steps that (a) cover ALL supported locales for a multi-locale app and (b) capture committed evidence (screenshots to the plan's `evidence/` subfolder, curl responses inlined in `delivery.md`). Validated in detail by Step 5c (items 4 + 5). Single-locale-only verification on a multi-locale app, or a manual-assertion section with no evidence-capture step, is **HIGH**. See [Evidence Capture Convention](../../repo-governance/development/quality/evidence-capture.md).
 - **Rule-15 three-tester retest (web-UI feature-change plans)**: a web-UI **feature-change** plan MUST carry a near-end "Rule-15 three-tester retest" step running the [`web-ux-test-fixing-planning`](../../repo-governance/workflows/web/web-ux-test-fixing-planning.md) triad (`web-exploratory-tester` + `web-usability-tester` + `web-design-tester`) against the running target across ALL supported locales, with each `EWT-###`/`UWT-###`/`DWT-###` defect finding folded into `delivery.md` as an unchecked checkbox that MUST be fixed (ticked) before archival — deferral of an EWT/UWT/DWT defect finding requires explicit user permission and is allowed only when the fix is genuinely impossible. (`SG-###` spec-gap proposals and `USS-###` spec-suggestions are proposals, not defects, and may be triaged or deferred.) An unfixed EWT/UWT/DWT defect checkbox at archival time is a **HIGH** finding. A missing step, or single-locale-only scope, on a web-UI feature-change plan is **HIGH**. CLI/text output and pure governance/agent-definition plans are exempt. See [User-Facing Delivery Hardening](../../repo-governance/development/quality/user-facing-delivery-hardening.md) Rule 15.
 - **Rule-16 API exploratory retest (API feature-change plans)**: an API **feature-change** plan (REST or GraphQL endpoints in a backend or tRPC app) MUST carry a near-end "Rule-16 API exploratory retest" step running `api-exploratory-tester` (`output-mode: delivery`, the plan's `plan-path`) against the running endpoint(s) with the contract (OpenAPI 3.x / GraphQL SDL) as ground truth, with each `AET-###` defect finding folded into `delivery.md` as an unchecked checkbox that MUST be fixed (ticked) before archival — deferral of an AET defect finding requires explicit user permission and is allowed only when the fix is genuinely impossible. (`SG-###` spec-gap proposals are proposals, not defects, and may be triaged or deferred.) An unfixed `AET-###` defect checkbox at archival time is a **HIGH** finding. A missing step on an API feature-change plan is **HIGH**. The API tester never drives a browser, so this is independent of Rule 15 — a plan changing both a web UI and its API carries both retest steps. Frontend-only, CLI/text output, and pure governance/agent-definition plans are exempt. See [User-Facing Delivery Hardening](../../repo-governance/development/quality/user-facing-delivery-hardening.md) Rule 16.
+- **Knowledge Capture phase presence (substantive plans)**: a substantive plan's `delivery.md` MUST end with a Knowledge Capture phase — the final substantive phase, immediately before Plan Archival — that scaffolds `learnings.md`, applies the litmus test and both mandatory safety gates (secret/sensitivity, repo-relevance), and routes every surviving entry (code homes are ALWAYS filed as a separate `plans/backlog/` plan, never landed inline). A plan whose `delivery.md` records the explicit `No generalizable learnings — <reason>` escape is exempt from the phase requirement. Validated in detail by Step 5l (rule 18). See [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md).
 
 #### PR Step Authorization Check (per [Git Push Default Convention](../../repo-governance/development/workflow/git-push-default.md))
 
@@ -278,6 +279,7 @@ Update status to "Complete", add summary statistics and prioritized recommendati
 
 **Related Conventions:**
 
+- [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md) - Flag a substantive plan whose `delivery.md` has no Knowledge Capture phase and no explicit "none" record as MEDIUM (Step 5l); an explicit `No generalizable learnings — <reason>` record passes without a finding
 - [User-Facing Delivery Hardening Convention](../../repo-governance/development/quality/user-facing-delivery-hardening.md) - Flag missing visual-parity gate (rule 1), mockup colors not expressed as theme tokens (rule 8), presence-only ordering tests that do not distinguish correct from buggy values (rule 5), missing per-breakpoint responsive deliverable steps (rules 3, 4), and a missing near-end three-tester retest step (rule 15) as HIGH findings on UI-bearing plans (rule 15 applies to web-UI plans only); an unfixed EWT/UWT/DWT defect checkbox at archival time is a HIGH finding — deferral of a defect finding requires explicit user permission and is allowed only when the fix is genuinely impossible (SG-### proposals and USS-### suggestions may still be triaged)
 - [Manual Behavioral Verification Convention](../../repo-governance/development/quality/manual-behavioral-verification.md) - Flag missing Playwright/curl manual-assertion steps for UI/API plans (Step 5c)
 - [Evidence Capture Convention](../../repo-governance/development/quality/evidence-capture.md) - Flag single-locale-only verification on multi-locale apps and manual-assertion sections lacking evidence-capture steps (screenshots to `evidence/`, inline curl output) as HIGH findings (Step 5c items 4 + 5)
@@ -766,3 +768,38 @@ user-facing screens or components under any `apps/**` or `libs/**` path (e.g. `l
 - Artefact present but vague (e.g. alternatives not genuinely different, no drop reasons): **MEDIUM**
 - Illegitimate "no UI" exemption used to skip the funnel on a UI-bearing plan: **HIGH**
 - Non-UI / pure-refactor / governance-only plan: **not flagged** (exempt)
+
+### 18. Knowledge Capture Phase Presence (Step 5l — MANDATORY)
+
+Enforces the [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md).
+A substantive plan's `delivery.md` must end with a Knowledge Capture phase — the final substantive
+phase, immediately before Plan Archival — that scaffolds `learnings.md`, encodes the open-ended
+triage rubric, states the code-routing rule, and applies both mandatory safety gates.
+
+#### What to Validate
+
+1. **Phase presence** — Does `delivery.md` carry a Knowledge Capture phase as its final substantive
+   phase (immediately before Plan Archival)? Trivial/pure-docs plans (one-line rename, single
+   broken-link fix) MAY skip the elaborate phase if `learnings.md` records the explicit "none" escape.
+2. **`learnings.md` scaffold** — Does the plan folder scaffold `learnings.md` (sibling to
+   `delivery.md`) at plan-creation time, ready for the executor to append entries during execution?
+3. **Both safety gates present** — Does the phase apply the **secret/sensitivity gate** (sanitize or
+   discard unsanitizable secrets) and the **repo-relevance gate** (infra-private content never
+   cross-routed out of `ose-infra`) to every surviving entry?
+4. **Code-routing rule stated** — Does the phase state that a learning whose home is `apps/`,
+   `libs/`, or tests is ALWAYS filed as a separate `plans/backlog/<slug>/` plan and NEVER landed
+   inline in the current plan's own commits/PR?
+5. **Explicit "none" escape recognized** — A `learnings.md` (or Knowledge Capture phase) that records
+   `No generalizable learnings — <one-line reason>` is a **PASS**, not a finding. Only the silent
+   absence of both the phase AND any "none" record is penalized.
+
+#### Finding Severity
+
+- Substantive plan whose `delivery.md` has no Knowledge Capture phase and no explicit "none" record
+  anywhere: **MEDIUM**
+- Knowledge Capture phase present but missing the `learnings.md` scaffold, a safety gate, or the
+  code-routing rule statement: **MEDIUM**
+- Explicit `No generalizable learnings — <reason>` record present (phase or file): **not flagged**
+  (passes)
+- Trivial/pure-docs plan with no Knowledge Capture phase and no "none" record: **not flagged**
+  (exempt per the trivial-plan carve-out)
