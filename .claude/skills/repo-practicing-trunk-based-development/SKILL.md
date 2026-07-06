@@ -308,24 +308,24 @@ branch-justification: |
 - Flag unexpected branches in audit reports
 - Recommend merging long-lived branches
 
-### Worktree Mode (Direct Push to main; Draft PR Opt-In)
+### Worktree Mode (`worktree-to-pr` Default; Direct Push Is the Explicit Selection)
 
-When an agent operates inside a git worktree (created via `git worktree add`, the `EnterWorktree` tool, or `isolation: "worktree"`), the **same** TBD default applies: push the worktree's HEAD directly to `origin main` via `git push origin HEAD:main`. The worktree branch is an isolation mechanism for parallel working trees, not a feature branch.
+When an agent operates inside a git worktree (created via `git worktree add`, the `EnterWorktree` tool, or `isolation: "worktree"`), it resolves, absent an explicit override, to the repo-wide default delivery mode: `worktree-to-pr` — a short-lived plan branch pushed to a draft PR opened against `main`. The worktree branch is an isolation mechanism for parallel working trees, not evidence of a direct-push intent.
 
-- **Default**: `git push origin HEAD:main` — no PR.
-- **Opt-in PR**: open a draft PR (`gh pr create --draft --base main`) only when the user's prompt or plan document explicitly requests one.
+- **Default**: push the branch (`git push origin <plan-branch>`) and open a draft PR (`gh pr create --draft --base main`).
+- **Direct-push modes** (`worktree-to-origin-main`, `main-to-origin-main`): push straight to `origin main` via `git push origin HEAD:main`, but only when explicitly selected via an invocation argument or a plan's `## Delivery Mode` field — never inferred from execution context.
 - **Linear history**: rebase before push if `origin/main` has moved (`git pull --rebase origin main`).
 
 ```bash
-# Worktree mode — default direct push to main
-git push origin HEAD:main
-
-# Worktree mode — opt-in draft PR (only when explicitly requested)
-git push origin HEAD:worktree-feature-name
+# Worktree mode — default worktree-to-pr
+git push origin <plan-branch>
 gh pr create --draft --base main --title "feat(scope): description"
+
+# Worktree mode — explicit direct-push selection only
+git push origin HEAD:main
 ```
 
-See the [Trunk Based Development Convention](../../../repo-governance/development/workflow/trunk-based-development.md#worktree-mode-direct-push-to-main-draft-pr-opt-in) and Standard 6 of the [Git Push Default Convention](../../../repo-governance/development/workflow/git-push-default.md) for the full rule.
+See the [Default Push and Worktree Execution](../../../repo-governance/development/workflow/trunk-based-development.md#default-push-and-worktree-execution) section of the Trunk Based Development Convention and the [Plans Organization Convention — Delivery Mode](../../../repo-governance/conventions/structure/plans.md#delivery-mode) for the full three-tier precedence.
 
 ## Common Patterns
 
