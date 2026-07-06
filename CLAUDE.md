@@ -14,7 +14,7 @@ In addition to the standard Prettier + markdownlint pipeline, a Claude Code hook
 
 ### Worktree Path (Claude Code binding)
 
-Worktrees provisioned via `claude --worktree <name>` land at `.claude/worktrees/<name>/` per the [Worktree Path Convention](./repo-governance/conventions/structure/worktree-path.md). The path is gitignored and parallel-safe.
+Worktrees provisioned via `claude --worktree <name>` land at `worktrees/<name>/` (not the Claude Code default `.claude/worktrees/<name>/`) per the [Worktree Path Convention](./repo-governance/conventions/structure/worktree-path.md). The path is gitignored and parallel-safe.
 
 ### Development environment setup (Claude Code binding)
 
@@ -32,6 +32,15 @@ Edit `.claude/` and `.opencode/` files with normal `Write` / `Edit` tools. Both 
 - `.opencode/agents/*.md` — OpenCode agent mirrors (auto-synced from `.claude/agents/`)
 
 **See**: [primary binding agent catalog](./.claude/agents/README.md)
+
+### Delivery Mode default (Claude Code binding)
+
+`worktree-to-pr` is inherited as the plan default from `AGENTS.md`'s Git Workflow description (no
+local override in this file -- direct push to `main` is no longer the assumed default). The two
+PR-review-cycle agents, `pr-review-maker` and `pr-review-fixer`, are ordinary `.claude/agents/*.md`
+files under this binding; `pr-review-maker` writes only via the GitHub Reviews API (no local `git
+push`), while `pr-review-fixer` pushes commits to the PR branch through the same git tooling as any
+other agent in this repo.
 
 ### Dual-mode configuration (Claude Code + OpenCode)
 

@@ -16,6 +16,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **[social-linkedin-post-maker](social-linkedin-post-maker.md)** - LinkedIn content creation
 - **[agent-maker](agent-maker.md)** - Agent definition creation
 - **[swe-ui-maker](swe-ui-maker.md)** - UI component creation
+- **[pr-review-maker](pr-review-maker.md)** - Posts adversarial code-review findings on a GitHub PR via the GitHub Reviews API (SHA-pinned, confidence-scored); the maker half of the PR-Review Maker→Fixer Cycle for `*-to-pr` delivery-mode plans
 
 ### 🟩 Validation (Checkers)
 
@@ -49,6 +50,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **[ci-fixer](ci-fixer.md)** - Apply validated CI/CD standards fixes
 - **[docs-software-engineering-separation-fixer](docs-software-engineering-separation-fixer.md)** - Auto-moves misplaced language docs to the canonical destination flagged by the separation checker
 - **[repo-harness-compatibility-fixer](repo-harness-compatibility-fixer.md)** - Applies validated fixes from a harness-compatibility audit; auto-remediates Phase 0 binding-sync drift (Invariant 3) via `npm run generate:bindings`, applies Phase 1 catalog/binding updates, flags higher-judgement gaps (vendor-audit prose, color/tier maps, orphan agents, generator-logic changes) for human resolution, and re-validates each finding before applying
+- **[pr-review-fixer](pr-review-fixer.md)** - Triages and resolves `pr-review-maker` findings on a GitHub PR (fix / reject-with-reason / defer-with-reason / clarify), replying to and resolving review threads; the fixer half of the PR-Review Maker→Fixer Cycle
 
 ### 🟩 Research (validation-adjacent)
 

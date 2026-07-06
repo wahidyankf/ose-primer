@@ -56,6 +56,23 @@ This practice implements/respects the following conventions:
 5. **Continuous integration**: Every commit triggers automated testing
 6. **Small changes**: Break work into tiny, mergeable increments
 
+### TBD and the Short-Lived Branch-via-PR Flavor
+
+TBD's defining tenet is avoiding **long-lived** branches -- not avoiding branches altogether.
+[TrunkBasedDevelopment.com](https://trunkbaseddevelopment.com/) documents short-lived branches reviewed
+via pull request as an accepted TBD flavor alongside pure direct-commit, provided branches stay
+short-lived (merged per the lifespan rules below -- ideally same day, 1-2 days maximum) and integration
+into `main` stays frequent. Routing a short-lived, single-purpose plan branch through a PR before it
+lands on `main` therefore does not contradict TBD; it is one of TBD's recognized shapes.
+
+This repository's **repo-wide default delivery mode is `worktree-to-pr`**: a short-lived plan branch
+inside a disposable git worktree, pushed to a PR, driven to a green and fully-reviewed state, then
+merged by a human. Pure direct-commit-to-`main` remains a fully supported alternative mode. See
+[Default Push and Worktree Execution](#default-push-and-worktree-execution) below for the mechanics of
+all four delivery modes, and the
+[Plans Organization Convention — Delivery Mode](../../conventions/structure/plans.md#delivery-mode) for
+the canonical four-mode vocabulary and the three-tier precedence that resolves which mode is active.
+
 ### Why We Use TBD
 
 TBD addresses common problems with long-lived feature branches:
@@ -84,7 +101,12 @@ TBD addresses common problems with long-lived feature branches:
 
 ### Working on `main` Directly
 
-**Default workflow**: Commit directly to `main` when:
+> This subsection describes TBD's classic direct-commit-to-trunk shape -- one of the two direct-push
+> delivery modes available in this repo (`worktree-to-origin-main`, `main-to-origin-main`). This
+> repository's own **repo-wide default** is the short-lived-branch-via-PR shape (`worktree-to-pr`) --
+> see [Default Push and Worktree Execution](#default-push-and-worktree-execution) below.
+
+**One available workflow**: commit directly to `main` when:
 
 PASS: **You should commit directly to `main` when**:
 
@@ -116,43 +138,44 @@ git push origin main
 # Change is now visible to entire team
 ```
 
-### Short-Lived Branches (Rare)
+### Short-Lived Branches (the Default Shape)
 
-**Only use branches when**:
+Under the repo-wide `worktree-to-pr` default, a short-lived plan branch is the norm, not the exception.
+Direct commit to `main` (`worktree-to-origin-main`, `main-to-origin-main`) remains appropriate for
+small, well-understood changes -- see [Direct-Push Modes Remain Fully Available](#direct-push-modes-remain-fully-available)
+below.
 
-**Exceptional cases where branches are appropriate**:
+Branches are also used, as they always have been, for:
 
-- **Code review required**: Your team requires PR reviews (use branch for < 2 days)
-- **Experimental work**: Testing a risky approach that may be discarded
-- **External contribution**: Outside contributor submitting a PR
+- **External contribution**: Outside contributor submitting a PR (fork-based, not a plan branch)
 - **Regulatory requirement**: Compliance mandates review before merge
 - **Pair/mob programming**: Collaborating on a branch before merging
 
-**Branch workflow (when needed)**:
+**Branch workflow**:
 
 ```bash
-# Create short-lived branch
-git checkout -b feature/user-login
-git push -u origin feature/user-login
+# Create short-lived plan branch inside a worktree
+git worktree add worktrees/feature-user-login -b feature-user-login
+cd worktrees/feature-user-login
 
 # Make changes
 # ... edit files ...
 git commit -m "feat(auth): implement login endpoint"
 
 # Push frequently
-git push origin feature/user-login
+git push origin feature-user-login
 
-# Create PR immediately
-# Get review within hours (not days)
+# Open the PR as a draft immediately
+gh pr create --draft --base main --title "feat(auth): implement login endpoint"
 
-# Merge within 1-2 days MAX
-git checkout main
-git merge feature/user-login
-git push origin main
+# Get review within hours (not days), running the PR-Review Maker->Fixer Cycle
 
-# Delete branch immediately
-git branch -d feature/user-login
-git push origin --delete feature/user-login
+# When the done-definition is met, flip to ready and let a human merge via GitHub
+# (squash or rebase merge -- never a local `git merge`, to preserve linear history):
+gh pr ready
+
+# After merge, remove the worktree
+git worktree remove worktrees/feature-user-login
 ```
 
 **Branch lifespan rules**:
@@ -297,101 +320,146 @@ Commit 9: refactor(auth): remove old login code and feature flag
 
 Each commit is small, tested, and doesn't break `main`.
 
-## Main Branch vs Worktree Mode
+## Default Push and Worktree Execution
 
-This section clarifies the two distinct execution modes in this repository and their corresponding git workflows. This distinction is critical for AI agents: the execution mode determines the git workflow.
+This section clarifies the default delivery mode and how git worktrees relate to it. The default is
+consistent across all execution contexts and is defined once, canonically, in the
+[Plans Organization Convention — Delivery Mode](../../conventions/structure/plans.md#delivery-mode):
+four modes (`worktree-to-pr` **(default)**, `worktree-to-origin-main`, `main-to-origin-main`,
+`main-to-pr`), each fixing a work location, an integration target, and a merge authority, resolved by
+a three-tier precedence (invocation argument > plan field > default). This document does not redefine
+that vocabulary -- it explains how each mode plays out for TBD and for worktree execution specifically.
 
-### Main Branch (Default Mode)
+### Default Delivery Mode: `worktree-to-pr`
 
-**When working directly on main** -- which is the default for all development in this repository -- the git workflow is:
+**The repo-wide default for all development -- including when running from a git worktree -- is
+`worktree-to-pr`: a short-lived, single-purpose plan branch inside a disposable git worktree, pushed
+to a draft PR opened against `main`, driven through review and CI to a fully green state, then merged
+by a human.**
 
-- **Commit directly to `main`**. No branch. No PR.
-- **Push directly to `main`**. No merge request.
-- **No review step** (unless explicitly requested by the user).
-- Quality gates run via the pre-push hook (typecheck, lint, test:quick, specs:coverage).
+- **Work location**: `worktrees/<plan-identifier>/`, on a plan-scoped branch.
+- **Integration target**: a PR opened against `main` (opened as a GitHub **draft**; see Why Draft below).
+- **Merge authority**: `[HUMAN]` -- the AI drives the branch, the push, the review cycle, and the
+  quality gates; a human performs the actual merge, on their own schedule. This mirrors the
+  [PR Merge Protocol](./pr-merge-protocol.md) done-boundary: the AI hands off a green, fully-reviewed
+  PR; "done" (for the AI) is not "merged".
+- Quality gates run on every push to the PR branch via the pre-push hook (typecheck, lint, test:quick,
+  specs:coverage) AND on the PR itself via CI.
+- `*-to-pr` deliveries additionally run the **PR-Review Maker→Fixer Cycle**
+  (`repo-governance/workflows/pr/pr-review-quality-gate.md`) before the PR is considered done -- see
+  that workflow doc and the [PR Merge Protocol](./pr-merge-protocol.md) for the full cycle and
+  done-definition.
 
-This is the standard TBD workflow described throughout this document. It applies to all routine development: features, bug fixes, refactors, documentation, and governance changes.
+This applies to all routine development: features, bug fixes, refactors, documentation, governance
+changes, and work executed inside a git worktree -- the default is the same regardless of context.
 
 ```bash
-# Default workflow -- direct to main
-git checkout main
-git pull origin main
+# Default workflow -- worktree-to-pr (applies in worktrees, which is now the norm)
+git worktree add worktrees/<plan-id> -b <plan-id>
+cd worktrees/<plan-id>
 # ... make changes ...
 git add .
 git commit -m "feat(auth): add email validation"
-git push origin main
-```
+git push origin <plan-id>
 
-### Worktree Mode (Direct Push to main; Draft PR Opt-In)
+# Open as a draft -- not yet soliciting review
+gh pr create --draft --base main --title "feat(auth): add email validation"
 
-**When using git worktrees** -- specifically when an AI agent uses `isolation: "worktree"` in the Agent tool, when an agent is invoked inside an existing worktree session, or when a developer creates a worktree for isolated work -- the **same** TBD workflow applies as on the main branch: commits land on `origin main` directly. The worktree branch is an isolation mechanism, not a feature branch.
+# Iterate: push follow-up commits, run the PR-Review Maker->Fixer Cycle, keep CI green
 
-- **Default**: push the worktree's HEAD straight to `main` via `git push origin HEAD:main`. No PR.
-- **Opt-in PR**: open a draft pull request only when the user's prompt or the plan document explicitly requests one (`gh pr create --draft --base main`). Same opt-in trigger phrases as the [Git Push Default Convention](./git-push-default.md) Standard 2.
-- **Linear history**: rebase before push if `origin/main` has moved, per the [Git Push Default Convention](./git-push-default.md) Standard 4.
-- **Quality gates**: pre-push hook (typecheck, lint, test:quick, specs:coverage) runs the same as on main.
-
-This rule is triggered by execution mode (any worktree entry), and the default is direct push to main even for "small" or "docs-only" worktree commits. PR creation requires explicit instruction.
-
-```bash
-# Worktree mode -- default direct push to main
-git worktree add .claude/worktrees/feature-auth -b worktree-feature-auth
-cd .claude/worktrees/feature-auth
-# ... make changes ...
-git add .
-git commit -m "feat(auth): add email validation"
-
-# Rebase onto origin/main if remote moved
-git fetch origin main
-git pull --rebase origin main
-
-# Push HEAD directly to main
-git push origin HEAD:main
-```
-
-```bash
-# Worktree mode -- opt-in draft PR (only when user/plan explicitly asks)
-git push origin HEAD:worktree-feature-auth
-gh pr create --draft --base main \
-  --title "feat(auth): add email validation" \
-  --body "Draft PR per explicit request."
-
-# When ready, the author flips it to ready for review:
+# When the done-definition is met (see PR Merge Protocol), flip to ready:
 gh pr ready
-# At that point, the PR Merge Protocol approval gate applies.
+# A human reviews and merges -- outside the AI's done-boundary
 ```
 
-### Why Draft When a PR Is Requested?
+### Why Draft, Not Ready-for-Review, on Open
 
-When a worktree-mode PR is opened (opt-in only), opening it as a draft is deliberate:
+Opening every `worktree-to-pr` branch as a draft is deliberate:
 
 - **Signals in-progress status** to humans and CI -- the branch is not yet soliciting review.
 - **Prevents accidental auto-merge paths** that some "ready" PRs can trigger.
-- **Preserves the explicit human moment** when the author flips the PR to ready, which is the natural place for the PR Merge Protocol approval prompt to fire.
+- **Preserves the explicit human moment** when the AI flips the PR to ready after meeting the
+  done-definition, which is the natural place for the [PR Merge Protocol](./pr-merge-protocol.md)
+  approval prompt to fire.
+
+### Direct-Push Modes Remain Fully Available
+
+Two modes commit and push directly to `origin main`, with `[AI]` performing the push itself -- no
+branch, no PR, no review gate:
+
+- **`worktree-to-origin-main`** -- work happens in a disposable worktree, but pushes land directly on
+  `origin main`.
+- **`main-to-origin-main`** -- work happens in the primary checkout (no worktree), pushing directly to
+  `origin main`.
+
+Both remain fully valid TBD flavors -- they are TBD's classic direct-commit shape. Select one of these
+over the default when the change is small, well-understood, and does not warrant a review pass -- for
+example, a single-line typo fix or a mechanical rename.
+
+```bash
+# worktree-to-origin-main -- worktree isolation, direct push, no PR
+git worktree add worktrees/typo-fix -b typo-fix
+cd worktrees/typo-fix
+# ... make changes ...
+git add .
+git commit -m "docs: fix typo in README"
+git fetch origin main
+git pull --rebase origin main
+git push origin HEAD:main
+```
+
+**A fourth mode, `main-to-pr`,** uses the primary checkout (no worktree) but still routes through a PR
+-- useful when isolation via worktree is unnecessary but review is still wanted.
+
+**Plan delivery checklist tagging**: the git-mechanical lifecycle steps -- create worktree, commit,
+push (to the PR branch or to `origin main`, depending on mode), open/flip the PR, and remove worktree
+-- MUST be tagged `[AI]`, never `[HUMAN]`, in plan delivery checklists. The one step that is
+legitimately `[HUMAN]` under `*-to-pr` modes is the merge itself. See
+[Plans Organization Convention §Executor Tagging](../../conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule).
+
+### Mode Selection Does Not Depend on Execution Context Alone
+
+Running from inside a git worktree does not, by itself, force a PR -- a plan may still declare
+`worktree-to-origin-main` and push directly. Conversely, running from the primary checkout does not
+force direct push either -- `main-to-pr` uses the primary checkout while still routing through a PR.
+Work location (worktree vs. primary checkout) and integration target (PR vs. direct push) are
+independent axes; the active mode is whichever the three-tier precedence resolves to (invocation
+argument > plan field > default `worktree-to-pr`), never inferred from execution context alone.
 
 ### Decision Table
 
-| Situation                             | Mode          | Git Workflow                                                             |
-| ------------------------------------- | ------------- | ------------------------------------------------------------------------ |
-| Routine development on main           | Main branch   | Commit and push directly to main                                         |
-| AI agent with default isolation       | Main branch   | Commit and push directly to main                                         |
-| AI agent with `isolation: "worktree"` | Worktree mode | Default: `git push origin HEAD:main`. Opt-in draft PR only if requested. |
-| Agent invoked inside a worktree       | Worktree mode | Default: `git push origin HEAD:main`. Opt-in draft PR only if requested. |
-| Developer using `git worktree add`    | Worktree mode | Default: `git push origin HEAD:main`. Opt-in draft PR only if requested. |
-| Experimental/spike work               | Either        | Developer's choice                                                       |
-| External contribution                 | Worktree mode | Fork + draft PR                                                          |
+| Situation                               | Resolved Delivery Mode (absent an explicit override)    |
+| --------------------------------------- | ------------------------------------------------------- |
+| Routine development, no mode specified  | `worktree-to-pr` (repo-wide default)                    |
+| Plan declares `worktree-to-origin-main` | Worktree work location, direct push to `origin main`    |
+| Plan declares `main-to-origin-main`     | Primary checkout, direct push to `origin main`          |
+| Plan declares `main-to-pr`              | Primary checkout, PR opened against `main`              |
+| Invocation argument names a valid mode  | The named mode overrides the plan field and the default |
+| Experimental/spike work                 | Developer's choice, any mode                            |
+| External contribution                   | Fork + PR (follows the `*-to-pr` review/merge protocol) |
 
 ### Key Principle
 
-Execution mode does NOT change the default git workflow in this repository. Both main-branch and worktree work push directly to `main` by default. PRs are opt-in per the [Git Push Default Convention](./git-push-default.md) Standard 2, regardless of execution mode.
+The active delivery mode is resolved deterministically, never inferred from execution context alone:
 
-The worktree exists for isolation of working trees and toolchains -- not for branching strategy. AI agents and humans operating inside `.claude/worktrees/<name>/` push the worktree's HEAD to `main` (`git push origin HEAD:main`) and only open a draft PR when the user's prompt or plan document explicitly asks for one.
+- **Tier 1 (highest)**: an explicit invocation argument naming a valid mode.
+- **Tier 2**: a `## Delivery Mode` field declared in the plan's own docs.
+- **Tier 3 (default)**: `worktree-to-pr`.
 
-Note: this rule does **not** affect environment branches (`prod-crud-fs-ts-nextjs`, `prod-crud-fs-ts-nextjs`, `prod-demo-web`). Those remain CI-managed and follow their own documented deployment workflows.
+See the [Plans Organization Convention — Delivery Mode](../../conventions/structure/plans.md#delivery-mode)
+for the full algorithm and the [plan-execution workflow](../../workflows/plan/plan-execution.md) for
+how each mode changes Step 0 (worktree entry), the per-phase push target, and Step 8 (finalization and
+merge hand-off).
+
+Note: this does **not** affect environment branches (`prod-crud-fs-ts-nextjs`, `prod-demo-web`). Those
+remain CI-managed and follow their own documented deployment workflows.
 
 ## When Branches Are Appropriate
 
-While TBD emphasizes working on `main`, there are legitimate cases for short-lived branches:
+Under the repo-wide `worktree-to-pr` default, a short-lived branch is the norm for routine development,
+not an exception carved out from an otherwise branchless workflow. The cases below describe situations
+where a branch (via a plan's `worktree-to-pr` mode, or an external fork) has always been the natural
+fit -- they remain equally valid today, just no longer framed as rare deviations:
 
 ### Code Review Requirement
 
@@ -466,37 +534,40 @@ The `apps/crud-fs-ts-nextjs/` project uses a production deployment branch:
 
 ## ❌ What NOT to Do
 
-| FAIL: Anti-Pattern                   | PASS: TBD Approach                                                                          |
-| ------------------------------------ | ------------------------------------------------------------------------------------------- |
-| Long-lived feature branches          | Commit to `main` with feature flags                                                         |
-| Branches per developer               | All developers commit to `main`                                                             |
-| Delaying integration for weeks       | Integrate multiple times per day                                                            |
-| Large, infrequent commits            | Small, frequent commits (see [Commit Granularity](./commit-messages.md#commit-granularity)) |
-| Keeping branches "just in case"      | Delete branches immediately after merge                                                     |
-| Using branches to hide WIP           | Use feature flags to hide WIP                                                               |
-| Merging without CI passing           | CI must be green before merge                                                               |
-| Creating branches for every task     | Only branch when truly necessary (rare)                                                     |
-| Waiting for "perfect" code to commit | Commit working code, iterate in subsequent commits                                          |
-| Feature branches lasting weeks       | Branches (if used) last < 2 days                                                            |
+| FAIL: Anti-Pattern                                 | PASS: TBD Approach                                                                          |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Long-lived feature branches                        | Commit to `main` with feature flags                                                         |
+| Branches per developer                             | All developers commit to `main`                                                             |
+| Delaying integration for weeks                     | Integrate multiple times per day                                                            |
+| Large, infrequent commits                          | Small, frequent commits (see [Commit Granularity](./commit-messages.md#commit-granularity)) |
+| Keeping branches "just in case"                    | Delete branches immediately after merge                                                     |
+| Using branches to hide WIP                         | Use feature flags to hide WIP                                                               |
+| Merging without CI passing                         | CI must be green before merge                                                               |
+| Long-lived branches surviving days                 | Branches (if used) stay short-lived -- merge within 1-2 days                                |
+| Waiting for "perfect" code to commit               | Commit working code, iterate in subsequent commits                                          |
+| Skipping the PR-Review cycle before flipping ready | Run the PR-Review Maker→Fixer Cycle before `gh pr ready`                                    |
 
 ## TBD and Project Planning
 
-### Plans Should Assume `main` Branch
+### Plans Declare a Delivery Mode
 
 When creating project plans in `plans/` folder:
 
-- PASS: **Default assumption**: Implementation happens on `main`
-- PASS: **Don't specify branch**: Unless there's an explicit reason
-- **If branch needed**: Document why in plan (e.g., "requires isolated testing")
+- PASS: **Default assumption**: `worktree-to-pr` (repo-wide default) -- a short-lived plan branch in a
+  disposable worktree, pushed to a draft PR, merged by a human after the done-definition is met.
+- PASS: **Declare the mode explicitly** using a `## Delivery Mode` field only when overriding the
+  default (see the [Plans Organization Convention — Delivery Mode](../../conventions/structure/plans.md#delivery-mode)
+  for the field syntax and the three-tier precedence).
+- **If a direct-push mode is chosen** (`worktree-to-origin-main`, `main-to-origin-main`): document why
+  in the plan (e.g., "single-line config fix, no review warranted").
 
-**Example plan delivery.md**:
+**Example plan delivery.md (default mode, no field needed)**:
 
 ```markdown
 ## Overview
 
-**Git Workflow**: Commit to `main`
-
-All implementation happens directly on the `main` branch using feature flags to hide incomplete work.
+All implementation happens on a `worktree-to-pr` plan branch (the repo-wide default -- no
+`## Delivery Mode` field needed) using feature flags to hide incomplete work.
 
 **Feature flags**:
 
@@ -504,31 +575,32 @@ All implementation happens directly on the `main` branch using feature flags to 
 
 **Phases**:
 
-1. Phase 1: Add payment models (commit to `main`)
-2. Phase 2: Add payment API (commit to `main`, flag OFF)
-3. Phase 3: Add payment UI (commit to `main`, flag OFF)
+1. Phase 1: Add payment models
+2. Phase 2: Add payment API (flag OFF)
+3. Phase 3: Add payment UI (flag OFF)
 4. Phase 4: Integration testing (flag ON in staging)
-5. Phase 5: Production rollout (flag ON in production)
+5. Phase 5: Production rollout (flag ON in production) -- PR merged by a human once green
 ```
 
-### When Plans Specify Branches
+### When Plans Override the Default Mode
 
-Only specify a branch in a plan if:
+Specify a non-default `## Delivery Mode` field in a plan if:
 
-- **Experimental/risky**: Testing unproven technology
-- **External integration**: Working with third-party that requires branches
-- **Compliance**: Regulatory requirement for review process
+- **Trivial, well-understood change**: A single-line fix or mechanical rename that does not warrant a
+  review pass -- use `worktree-to-origin-main` or `main-to-origin-main`.
+- **External integration**: Working with a third party that requires a specific branch/PR shape.
+- **Compliance**: A regulatory requirement changes the review process beyond the standard PR-review
+  cycle.
 
-**Example plan with branch**:
+**Example plan overriding the default**:
 
 ```markdown
-## Overview
+## Delivery Mode
 
-**Git Workflow**: Branch (`experiment/blockchain-integration`)
+`worktree-to-origin-main`
 
-**Justification**: This plan explores blockchain integration, which is highly experimental and may be abandoned. A separate branch allows isolated testing without affecting `main` until viability is proven.
-
-**Decision Point**: After 2 days, decide to merge or discard based on performance results.
+**Justification**: This plan fixes a single typo in a config comment. The change is trivial and
+well-understood; a full PR-review cycle is unnecessary overhead.
 ```
 
 ## ✅ TBD Benefits for This Project
@@ -618,7 +690,9 @@ TBD works best when combined with:
 - **Automated Testing**: High test coverage enables confident commits
 - **Small Commits**: [Conventional Commits](./commit-messages.md)
 - **Pair/Mob Programming**: Real-time collaboration and review
-- **PR Merge Protocol**: [PR Merge Protocol](./pr-merge-protocol.md) - Required approval workflow for worktree-mode PRs
+- **PR Merge Protocol**: [PR Merge Protocol](./pr-merge-protocol.md) - Required approval workflow, PR-Review Maker→Fixer Cycle, and done-boundary for `worktree-to-pr` PRs
+- **Git Push Default Convention**: [Git Push Default Convention](./git-push-default.md) — Defines the PR-branch-as-default push target and the direct-push modes as explicit selections; governs plan-maker, plan-checker, plan-fixer, and the plan-execution workflow behavior
+- **CI Post-Push Verification**: [CI Post-Push Verification](./ci-post-push-verification.md) — Mandatory CI trigger-and-verify after every push, regardless of delivery mode
 - **Worktree Toolchain Initialization**: [Worktree Toolchain Initialization](./worktree-setup.md) - Mandatory two-step init (`npm install` + `npm run doctor -- --fix`) after creating or entering a worktree
 
 ## References and Further Reading

@@ -15,6 +15,13 @@ tags:
 
 AI agents and automation must never execute `git push --force`, `git push --force-with-lease`, or `git push --no-verify` without obtaining explicit, fresh user approval every single time. Prior approval for one instance does not carry forward to any subsequent invocation.
 
+These rules apply identically regardless of the active delivery mode (see the
+[Plans Organization Convention — Delivery Mode](../../conventions/structure/plans.md#delivery-mode)):
+a force-push or hook-bypass on a `worktree-to-pr` plan branch requires the same explicit, per-instance
+approval as one on `origin main` under `worktree-to-origin-main` or `main-to-origin-main`. The
+integration target changes what the approval prompt describes (a PR branch tip vs. the `main` tip); it
+does not change whether approval is required.
+
 ## Principles Implemented/Respected
 
 This practice respects the following core principles:
@@ -78,7 +85,7 @@ The state of a repository changes between operations. A force-push approved at 0
 
 Force-push and hook-bypass operations are not always wrong. Common legitimate situations include:
 
-- Cleaning up a local branch before merging (amending commits, squashing, rebasing) when the branch has no other contributors.
+- Cleaning up a local branch before merging (amending commits, squashing, rebasing) when the branch has no other contributors — including a `worktree-to-pr` plan branch mid-review, where a `--force-with-lease` push after a rebase is common once review feedback lands.
 - Emergency hotfix where the pre-push hook is malfunctioning and the hook problem is being tracked separately.
 - CI automation that explicitly documents the force-push in workflow files and is reviewed as part of code review (for example, the `prod-crud-fs-ts-nextjs` deployment workflow — see [Trunk Based Development Convention](./trunk-based-development.md)).
 
@@ -170,6 +177,7 @@ This rule applies to:
 - All AI agents defined in `.claude/agents/` and `.opencode/agents/`.
 - All automation scripts, npm scripts, Makefile targets, and shell helpers in the repository.
 - CI workflow steps, unless the workflow file is reviewed through the normal pull-request process and the force-push is explicitly documented in the workflow file itself.
+- Every delivery mode's push target: PR branches under `worktree-to-pr`/`main-to-pr`, and `origin main` under `worktree-to-origin-main`/`main-to-origin-main`.
 
 It does not apply to:
 
@@ -182,3 +190,4 @@ It does not apply to:
 - [Trunk Based Development Convention](./trunk-based-development.md) — Git workflow and the specific environment branches (`prod-crud-fs-ts-nextjs`, etc.) where CI-managed force-push is explicitly documented.
 - [Commit Message Convention](./commit-messages.md) — Conventional Commits format enforced by the commit-msg hook.
 - [Reproducible Environments Convention](./reproducible-environments.md) — Why deterministic, consistent operations matter across the team.
+- [Git Push Default Convention](./git-push-default.md) — The default integration target (a PR branch under `worktree-to-pr`) and the explicit direct-push modes (`worktree-to-origin-main`, `main-to-origin-main`) that this convention complements for destructive operations.
