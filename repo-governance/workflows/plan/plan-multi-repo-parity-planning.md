@@ -299,10 +299,12 @@ as the research-needed flag (yes / no). This flag governs whether Step 4 runs or
 
 **Mandatory meta-questions** (surface these explicitly regardless of mode):
 
-1. If ose-primer is in the parity set and mode is `main-to-main` or `worktree-to-main`:
-   "The ose-primer sync convention requires PRs for all mutations to ose-primer. The selected
-   mode bypasses this. Please confirm the deviation or switch to `worktree-to-pr`."
-   Options: (A) Accept deviation — record justification. (B) Switch mode to `worktree-to-pr`.
+1. If ose-primer is in the parity set: "The ose-primer sync convention allows EITHER a draft PR
+   OR a direct push to `ose-primer:main` for every mutation — neither is the default, so a
+   delivery mode must be chosen explicitly. The selected parity mode implies
+   {draft PR | direct push to main}. Please confirm the delivery mode for ose-primer."
+   Options: (A) Direct push to `main` (`main-to-main` / `worktree-to-main`). (B) Draft PR
+   (`worktree-to-pr`). Record the chosen mode.
 2. Rationale doc location per repo (where does `<objective-slug>-parity-decisions.md` live in
    each repo?).
 3. Any repo-specific constraint flagged in Step 2 that forces a deviation.
