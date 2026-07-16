@@ -13,6 +13,11 @@ runs:
       with:
         components: clippy,rustfmt,llvm-tools-preview
         cache: false
+        # This action defaults RUSTFLAGS to "-D warnings" job-wide, which would turn benign
+        # warnings (e.g. unused imports in openapi-generated crud-contracts) into hard errors under
+        # each crate's declared MSRV in compat:min-version. Clear it to match the prior baseline;
+        # the clippy targets still pass their own explicit `-- -D warnings`.
+        rustflags: ""
 
     - name: Cache Cargo
       uses: actions/cache@v5
