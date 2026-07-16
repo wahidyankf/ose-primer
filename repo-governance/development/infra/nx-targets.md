@@ -514,10 +514,11 @@ exercised at the correct test level. It is enforced by the pre-push hook alongsi
 
 **Command flags used across project types**:
 
-| Flag                         | Purpose                                                                                                               |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `--shared-steps`             | Validates steps across ALL source files rather than requiring 1:1 file-to-feature matching; used by all projects      |
-| `--exclude-dir test-support` | Excludes E2E-only `test-support` API spec files from non-E2E projects; used by demo-be backends and demo-fe frontends |
+| Flag                         | Purpose                                                                                                                                                                                                                                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--shared-steps`             | Validates steps across ALL source files rather than requiring 1:1 file-to-feature matching; used by all projects                                                                                                                                                                           |
+| `--exclude-dir test-support` | Excludes E2E-only `test-support` API spec files from non-E2E projects; used by demo-be backends and demo-fe frontends                                                                                                                                                                      |
+| `--exclude-source-dir <dir>` | Excludes a directory name from the **app-tree source walk only** (never the `.feature`-file walk); for a directory name legitimate in both trees but that must not be scanned as source, e.g. ayokoding-www's Next.js `content/` directory colliding with a Gherkin `content/` spec folder |
 
 **Project coverage status**:
 
