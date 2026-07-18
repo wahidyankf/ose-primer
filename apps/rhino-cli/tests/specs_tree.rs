@@ -122,8 +122,16 @@ const EC_FEATURE_FILE: &str = "example.feature";
 /// lives in for the e2e-coverage.feature subprocess fixtures.
 const EC_FEATURES_GEN_DIR: &str = ".features-gen";
 /// Filename of the generated `.spec.js` fixture written under
-/// [`EC_FEATURES_GEN_DIR`].
-const EC_SPEC_JS_FILE: &str = "example.spec.js";
+/// [`EC_FEATURES_GEN_DIR`]. Deliberately keeps [`EC_FEATURE_FILE`]'s
+/// `.feature` extension and appends `.spec.js` (i.e.
+/// `example.feature.spec.js`, not `example.spec.js`) to match playwright-bdd's
+/// real generated-filename convention — the same convention the `is_fixme`/
+/// `path_ends_with` pairing logic in `commands/specs_e2e_coverage.rs` relies
+/// on to match a declared scenario to its originating generated file. Using
+/// the pre-convention name here made `is_fixme` return `false` for every
+/// scenario this fixture writes (see the cycle-2 PR review finding that
+/// caught this).
+const EC_SPEC_JS_FILE: &str = "example.feature.spec.js";
 /// Project-relative path to the checked-in baseline manifest.
 const EC_BASELINE_PATH: &str = "e2e-coverage-baseline.json";
 
@@ -286,11 +294,28 @@ impl SpecsTreeWorld {
     /// exactly `titles` are marked `test.fixme` — the "current" unbound set
     /// a subsequent validate run observes. Also records `titles` into
     /// `self.ec_fixme_titles` for Then-step introspection.
+    ///
+    /// Every OTHER currently-tracked `@e2e` declared title (in
+    /// `self.ec_declared_titles`, not present in `titles`) is emitted as an
+    /// ordinary bound `test(...)` call — faithfully mirroring real
+    /// playwright-bdd output, where every declared scenario in a processed
+    /// `.feature` file gets EITHER a `test`/`test.fixme` call. Omitting a
+    /// non-fixme'd declared title from the generated fixture entirely (as
+    /// this helper did before the cycle-4 general absence fix) would now be
+    /// misread as "absent from rendered output" and falsely reported as a
+    /// gap — this is what the general fix is designed to catch for a REAL
+    /// zero-row Outline, so the fixture must not manufacture a false
+    /// positive of that same shape for an ordinary bound scenario.
     fn ec_write_fixme(&mut self, titles: &[&str]) {
         self.ec_fixme_titles = titles.iter().map(|t| (*t).to_string()).collect();
         let mut body = String::new();
         for t in titles {
             let _ = writeln!(body, "test.fixme(\"{t}\", async ({{ page }}) => {{}});");
+        }
+        for t in &self.ec_declared_titles {
+            if !titles.contains(&t.as_str()) {
+                let _ = writeln!(body, "test(\"{t}\", async ({{ page }}) => {{}});");
+            }
         }
         self.write(&format!("{EC_FEATURES_GEN_DIR}/{EC_SPEC_JS_FILE}"), &body);
     }
@@ -1390,6 +1415,90 @@ fn given_ec_unit_only_fixme(w: &mut SpecsTreeWorld) {
     w.ec_write_fixme(&[title]);
 }
 
+/// Declared title of the `Scenario Outline` [`given_ec_outline_with_unbound_example`]
+/// writes — shared with [`then_ec_reports_one_new_gap_for_outline`] so both
+/// sides of the fixture agree on the exact text without duplicating it.
+const EC_OUTLINE_TITLE: &str = "Renders the field correctly";
+
+#[given("an @e2e Scenario Outline whose generated Examples-row tests include one test.fixme")]
+fn given_ec_outline_with_unbound_example(w: &mut SpecsTreeWorld) {
+    // playwright-bdd wraps a Scenario Outline's Examples-row-derived tests in
+    // one `test.describe(...)` block titled with the outline's own raw
+    // Gherkin title; each row inside is titled per playwright-bdd's own
+    // convention (`Example #<N>` by default), never the outline's own title
+    // — see `parser::scan_unbound_describe_titles`'s doc comment. Only ONE
+    // of the two Examples rows is `test.fixme`.
+    w.write(
+        &format!("{EC_FEATURES_DIR}/{EC_FEATURE_FILE}"),
+        &format!(
+            "Feature: fixture\n\n@e2e\nScenario Outline: {EC_OUTLINE_TITLE}\n  Given a field\n\n  Examples:\n    | field |\n    | name  |\n    | email |\n"
+        ),
+    );
+    w.write(
+        &format!("{EC_FEATURES_GEN_DIR}/{EC_SPEC_JS_FILE}"),
+        &format!(
+            "test.describe('{EC_OUTLINE_TITLE}', () => {{\n  test.fixme('Example #1', async ({{ page }}) => {{\n  }});\n  test('Example #2', async ({{ page }}) => {{\n  }});\n}});\n"
+        ),
+    );
+}
+
+/// Declared title of the zero-row `Scenario Outline`
+/// [`given_ec_zero_row_outline`] writes — shared with
+/// [`then_ec_names_zero_row_outline`] so both sides of the fixture agree on
+/// the exact text without duplicating it.
+const EC_ZERO_ROW_OUTLINE_TITLE: &str = "Renders the field correctly with no examples";
+
+#[given("an @e2e Scenario Outline whose Examples table has zero data rows")]
+fn given_ec_zero_row_outline(w: &mut SpecsTreeWorld) {
+    // playwright-bdd's renderScenarioOutline emits NOTHING at all for a
+    // zero-row outline (`scenario.examples.forEach(...)` iterates zero rows,
+    // so it returns before emitting a single test/test.fixme/describe — see
+    // `parser::scan_all_rendered_titles`'s doc comment) — an empty generated
+    // file faithfully reproduces that real-world output.
+    w.write(
+        &format!("{EC_FEATURES_DIR}/{EC_FEATURE_FILE}"),
+        &format!(
+            "Feature: fixture\n\n@e2e\nScenario Outline: {EC_ZERO_ROW_OUTLINE_TITLE}\n  Given a field <field>\n\n  Examples:\n    | field |\n"
+        ),
+    );
+    w.write(&format!("{EC_FEATURES_GEN_DIR}/{EC_SPEC_JS_FILE}"), "");
+}
+
+#[then("it reports exactly one new unbound scenario for the zero-row outline")]
+fn then_ec_reports_one_new_gap_for_zero_row_outline(w: &mut SpecsTreeWorld) {
+    let out = w.output.as_ref().expect("ran");
+    let text = combined_output(out);
+    assert!(!out.status.success(), "expected failure, got: {text}");
+    assert!(
+        text.contains("1 new unbound scenario(s) found"),
+        "got: {text}"
+    );
+    assert!(text.contains(EC_ZERO_ROW_OUTLINE_TITLE), "got: {text}");
+}
+
+/// Declared title of the apostrophe-bearing scenario
+/// [`given_ec_apostrophe_titled_fixme`] writes — shared with
+/// [`then_ec_reports_one_new_gap_for_apostrophe_title`] so both sides of the
+/// fixture agree on the exact text without duplicating it.
+const EC_APOSTROPHE_TITLE: &str = "A user's profile renders correctly";
+
+#[given(
+    "an @e2e scenario titled with an apostrophe that appears as test.fixme using playwright-bdd's escaped single-quote convention"
+)]
+fn given_ec_apostrophe_titled_fixme(w: &mut SpecsTreeWorld) {
+    w.write(
+        &format!("{EC_FEATURES_DIR}/{EC_FEATURE_FILE}"),
+        &format!("Feature: fixture\n\n@e2e\nScenario: {EC_APOSTROPHE_TITLE}\n  Given a step\n"),
+    );
+    // playwright-bdd's default single-quote `jsStringWrap` escapes a literal
+    // `'` in the title to `\'` — the exact convention
+    // `parser::fixme_title_re`'s regression tests reproduce.
+    w.write(
+        &format!("{EC_FEATURES_GEN_DIR}/{EC_SPEC_JS_FILE}"),
+        "test.fixme('A user\\'s profile renders correctly', async ({ page }) => {\n});\n",
+    );
+}
+
 #[given("a project with no baseline manifest yet")]
 fn given_ec_no_baseline_yet(_w: &mut SpecsTreeWorld) {
     // No-op: deliberately never write a baseline manifest. `types::load_baseline`
@@ -1402,8 +1511,14 @@ fn given_ec_new_gap_scenario(w: &mut SpecsTreeWorld, title: String, file_name: S
         &format!("{EC_FEATURES_DIR}/{file_name}"),
         &format!("Feature: fixture\n\n@e2e\nScenario: {title}\n  Given a step\n"),
     );
+    // Mirrors playwright-bdd's real convention: the generated file keeps the
+    // declared `.feature` file's name (including its `.feature` extension)
+    // and appends `.spec.js` — matching `EC_SPEC_JS_FILE`'s convention and
+    // what `is_fixme`'s file-pairing logic in `specs_e2e_coverage.rs` relies
+    // on. A hardcoded `gap.spec.js` (unrelated to `file_name`) never pairs
+    // with the declared scenario's `.feature` path.
     w.write(
-        &format!("{EC_FEATURES_GEN_DIR}/gap.spec.js"),
+        &format!("{EC_FEATURES_GEN_DIR}/{file_name}.spec.js"),
         &format!("test.fixme(\"{title}\", async ({{ page }}) => {{}});\n"),
     );
 }
@@ -1516,7 +1631,7 @@ fn then_ec_newly_bound(w: &mut SpecsTreeWorld, title: String) {
     let out = w.output.as_ref().expect("ran");
     let text = combined_output(out);
     assert!(out.status.success(), "got: {text}");
-    assert!(text.contains("stale baseline entrie"), "got: {text}");
+    assert!(text.contains("stale baseline entries"), "got: {text}");
     let marker = format!("\"{title}\"");
     assert!(text.contains(&marker), "got: {text}");
 }
@@ -1526,7 +1641,7 @@ fn then_ec_stale_entry_prunable(w: &mut SpecsTreeWorld, title: String) {
     let out = w.output.as_ref().expect("ran");
     let text = combined_output(out);
     assert!(out.status.success(), "got: {text}");
-    assert!(text.contains("stale baseline entrie"), "got: {text}");
+    assert!(text.contains("stale baseline entries"), "got: {text}");
     let marker = format!("\"{title}\"");
     assert!(text.contains(&marker), "got: {text}");
 }
@@ -1539,6 +1654,30 @@ fn then_ec_unit_only_ignored(w: &mut SpecsTreeWorld) {
     for title in &w.ec_unit_only_titles {
         assert!(!text.contains(title.as_str()), "got: {text}");
     }
+}
+
+#[then("it reports exactly one new unbound scenario for the outline")]
+fn then_ec_reports_one_new_gap_for_outline(w: &mut SpecsTreeWorld) {
+    let out = w.output.as_ref().expect("ran");
+    let text = combined_output(out);
+    assert!(!out.status.success(), "expected failure, got: {text}");
+    assert!(
+        text.contains("1 new unbound scenario(s) found"),
+        "got: {text}"
+    );
+    assert!(text.contains(EC_OUTLINE_TITLE), "got: {text}");
+}
+
+#[then("it reports exactly one new unbound scenario for the apostrophe-bearing title")]
+fn then_ec_reports_one_new_gap_for_apostrophe_title(w: &mut SpecsTreeWorld) {
+    let out = w.output.as_ref().expect("ran");
+    let text = combined_output(out);
+    assert!(!out.status.success(), "expected failure, got: {text}");
+    assert!(
+        text.contains("1 new unbound scenario(s) found"),
+        "got: {text}"
+    );
+    assert!(text.contains(EC_APOSTROPHE_TITLE), "got: {text}");
 }
 
 #[then(regex = r#"^the failure output contains the scenario title "([^"]+)"$"#)]
