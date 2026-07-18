@@ -1,9 +1,10 @@
 package com.demobektkt.unit
 
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.nio.file.Files
-import java.nio.file.Path
+import java.util.Properties
+import kotlin.io.path.Path
+import kotlin.io.path.inputStream
 
 /**
  * Regression guard for the CI flakiness fixed by setting `kotlin.incremental=false`.
@@ -26,12 +27,18 @@ class BuildConfigIncrementalGuardTest {
 
     @Test
     fun `gradle_properties keeps Kotlin incremental compilation disabled`() {
-        val props = Files.readString(Path.of("gradle.properties"))
-        assertTrue(
-            props.lineSequence().any { it.trim() == "kotlin.incremental=false" },
+        // Parse as real properties (not literal line matching) so the guard tracks the
+        // *effective* value: last-wins on duplicate keys and whitespace around `=` are
+        // both honoured, so a later `kotlin.incremental=true` cannot slip through.
+        val props = Properties().apply {
+            Path("gradle.properties").inputStream().use { load(it) }
+        }
+        assertEquals(
+            "false",
+            props.getProperty("kotlin.incremental"),
             "gradle.properties must set `kotlin.incremental=false` to keep the CI " +
                 "Kotlin build deterministic (avoids the flaky 'Could not close " +
-                "incremental caches' daemon failure). Do not remove this property.",
+                "incremental caches' daemon failure). Do not remove or re-enable it.",
         )
     }
 }
