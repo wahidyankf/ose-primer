@@ -133,7 +133,7 @@ Development practices in this directory fall into several categories:
 - [User-Facing Delivery Hardening Convention](./quality/user-facing-delivery-hardening.md) - Fourteen durable rules so design-parity and behavioral defects cannot ship past green gates for user-facing work
 - [Regression Test Mandate](./quality/regression-test-mandate.md) - Blocking rule requiring every bug fix to land with a reproducing test in the same commit/PR; the bug-driven dual of Feature Change Completeness, covering all defect types (behavioral, visual, content, API)
 - [Live-Tester Systematic Coverage](./quality/live-tester-systematic-coverage.md) - Six forcing-functions (shared-control matrix, URL round-trip, declared-invariant conformance, styling consistency audit, usability probes, recurrence critic) that convert sampling into enumeration for the three live-site tester agents and the web-ux-test-fixing-planning workflow
-- [Git Fixture Isolation Convention](./quality/git-fixture-isolation.md) - Defense-in-depth mandate (six mandatory layers: capped discovery, explicit `GIT_DIR`/`GIT_WORK_TREE`, blanked identity/config, pre-write escape guard, exit-status checking, throwaway-clone-only diagnosis) for any test fixture that shells out to `git` to build throwaway repositories, so a fixture can never mutate the real repository
+- [Git Fixture Isolation Convention](./quality/git-fixture-isolation.md) - Defense-in-depth mandate (six mandatory layers: capped discovery, explicit `GIT_DIR`, blanked identity/config, pre-write escape guard, exit-status checking, throwaway-clone-only diagnosis) for any test fixture that shells out to `git` to build throwaway repositories, so a fixture can never mutate the real repository
 
 ### Pattern Documentation
 
