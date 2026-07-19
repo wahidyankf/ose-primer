@@ -11,6 +11,7 @@
 #   instruction-size — per-surface instruction-file byte budgets (rhino-cli harness instruction-size validate)
 #   env-contract     — surface registry for rhino-cli env validate (code↔config drift detection)
 #   env-injection    — value-less injection manifest for rhino-cli env validate (manifest-consistency)
+#   doctor           — tools from doctor's full roster this repo's toolchain does not need (rhino-cli doctor)
 
 harness:
   # Authoritative harness registry — all 11 supported coding-agent harnesses.
@@ -246,3 +247,12 @@ env-injection:
   # ose-primer scaffold apps use Docker Compose injection; no .env.example conventions yet.
   apps: []
   ci-harness: []
+
+doctor:
+  # Tools from doctor's full roster (apps/rhino-cli/src/application/doctor/tools.rs)
+  # that ose-primer's own toolchain does not invoke, so `doctor` stays dormant for
+  # them instead of hard-failing a plain (non-`--fix`) run. Verified: ose-primer's
+  # package.json lint-staged config never calls shfmt/tofu/clang-format (it
+  # shellchecks *.sh without formatting them, has no *.tf files, and its only
+  # *.c/*.h files are vendored Elixir NIF deps under deps/, never lint-staged'd).
+  skip-tools: [shfmt, tofu, clang-format]
