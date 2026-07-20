@@ -196,11 +196,14 @@ sibling per-plan `## Delivery Mode` field these plans separately declare (see
 [Relationship to Each Repo's Own `## Delivery Mode`](#relationship-to-each-repos-own--delivery-mode)
 below).
 
-**Note on ose-primer**: Propagation into `ose-primer` may land via a worktree + branch + draft
-PR **or** via a direct push to `main` — both modes are allowed, the invoker chooses per run, and
-neither is the default. The grilling in Step 3 MUST surface this choice explicitly and record the
-invoker's decision (PR vs direct-to-main) before proceeding, so the selected delivery mode for the
-`ose-primer` mutation is never implicit.
+**Note on ose-primer**: When `ose-primer` is a parity target, propagation to it can be delivered
+EITHER as a draft PR OR as a direct push to `ose-primer:main`. The delivery mode is the caller's
+per-run choice, independent of this workflow's own `worktree-to-pr` default, so selecting
+`worktree-to-origin-main` for ose-primer is a first-class choice, not a deviation. `ose-primer` is
+a **bare** repository with no primary checkout, so the two `main-to-*` modes are unavailable there
+— every ose-primer mutation flows through a worktree. The grilling in Step 3
+MUST surface the delivery-mode choice explicitly and record the invoker's decision before
+proceeding.
 
 ### Relationship to Each Repo's Own `## Delivery Mode`
 
