@@ -103,13 +103,13 @@ The trigger (the traffic spike) was consequential only because the root cause co
 
 ## Action Items
 
-| #   | Action                                                                                        | Owner        | Priority | Ticket                                                 | Status   |
-| --- | --------------------------------------------------------------------------------------------- | ------------ | -------- | ------------------------------------------------------ | -------- |
-| 1   | Add tuned DB pool-saturation alerting with validated production thresholds                    | Platform     | P0       | plans/backlog/2025-01-15\_\_db-pool-alerting/          | Resolved |
-| 2   | Fix connection leak on `/api/v1/catalog/search`: add LIMIT clause and index search predicate  | Backend Team | P1       | plans/backlog/2025-01-15\_\_catalog-search-slow-query/ | Resolved |
-| 3   | Establish cross-team change-communication process for marketing-driven load events            | Platform     | P1       | —                                                      | Resolved |
-| 4   | Add peak-concurrency load test to CI/CD pipeline to catch pool-ceiling regressions pre-deploy | Backend Team | P2       | —                                                      | Resolved |
-| 5   | Implement connection-wait timeouts and graceful request shedding in sample-be-service         | Backend Team | P2       | —                                                      | Resolved |
+| #   | Action                                                                                        | Owner        | Priority | Ticket                                   | Status   |
+| --- | --------------------------------------------------------------------------------------------- | ------------ | -------- | ---------------------------------------- | -------- |
+| 1   | Add tuned DB pool-saturation alerting with validated production thresholds                    | Platform     | P0       | plans/backlog/db-pool-alerting/          | Resolved |
+| 2   | Fix connection leak on `/api/v1/catalog/search`: add LIMIT clause and index search predicate  | Backend Team | P1       | plans/backlog/catalog-search-slow-query/ | Resolved |
+| 3   | Establish cross-team change-communication process for marketing-driven load events            | Platform     | P1       | —                                        | Resolved |
+| 4   | Add peak-concurrency load test to CI/CD pipeline to catch pool-ceiling regressions pre-deploy | Backend Team | P2       | —                                        | Resolved |
+| 5   | Implement connection-wait timeouts and graceful request shedding in sample-be-service         | Backend Team | P2       | —                                        | Resolved |
 
 ## What Went Well
 
@@ -131,8 +131,8 @@ The trigger (the traffic spike) was consequential only because the root cause co
 
 **In-repo (illustrative — fictional references matching the fabricated scenario):**
 
-- `plans/backlog/2025-01-15__db-pool-alerting/` — action item plan for pool-saturation alerting (to be created)
-- `plans/backlog/2025-01-15__catalog-search-slow-query/` — action item plan for slow-query fix (to be created)
+- `plans/backlog/db-pool-alerting/` — action item plan for pool-saturation alerting (to be created)
+- `plans/backlog/catalog-search-slow-query/` — action item plan for slow-query fix (to be created)
 - [Post-Mortem Convention](../../../repo-governance/conventions/structure/post-mortems.md) — authoritative standard this document follows
 - [No Secrets in Committed Files](../../../repo-governance/conventions/security/no-secrets-in-committed-files.md) — applied throughout; connection strings appear as `<db-connection-string>`
 

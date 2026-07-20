@@ -129,7 +129,7 @@ with a one-line reason rather than routing noise.
 ## The Code-Routing Downstream Rule
 
 **A learning whose durable home is `apps/`, `libs/`, or `specs/` is NEVER landed inline in the
-current plan's commits.** It is filed as a separate `plans/backlog/YYYY-MM-DD__<slug>/` follow-up
+current plan's commits.** It is filed as a separate `plans/backlog/<slug>/` follow-up
 plan instead. The current plan's scope was grilled and gated already; smuggling unrelated code
 changes into it under the label "knowledge capture" reopens scope that was already closed.
 
@@ -146,7 +146,7 @@ the change:
   tweak, a missing cross-reference) land **inline**, in the current plan's own commits, as part of
   the Knowledge Capture phase itself.
 - **Large non-code routings** (a new convention section, a new skill, a restructured workflow) and
-  **all code routings** (per the rule above) become a `plans/backlog/YYYY-MM-DD__<slug>/` follow-up
+  **all code routings** (per the rule above) become a `plans/backlog/<slug>/` follow-up
   plan -- never squeezed into the current plan's remaining scope.
 
 ## The Two Safety Gates (HARD -- run before routing)
@@ -237,7 +237,7 @@ own commits.
 
 The same plan's executor notices the repo has no convention describing when a new Nx project
 needs a `release` tag. This is a new convention section, not a one-liner. Knowledge Capture routes
-it as a `plans/backlog/2026-07-06__document-nx-release-tagging/` follow-up plan rather than
+it as a `plans/backlog/document-nx-release-tagging/` follow-up plan rather than
 expanding the current plan's scope.
 
 ### PASS: Discarded with reason

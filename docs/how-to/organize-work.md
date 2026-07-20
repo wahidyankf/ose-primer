@@ -115,7 +115,7 @@ See [Plans Folder Guide](../../plans/README.md) for full details.
 **Examples:**
 
 - "Quick idea: Add OAuth2 authentication" → `plans/ideas.md`
-- "I want to plan the monorepo migration" → `plans/backlog/2025-11-24__init-monorepo/`
+- "I want to plan the monorepo migration" → `plans/backlog/init-monorepo/`
 
 ### Use docs/ when you're
 
@@ -154,7 +154,7 @@ See [Plans Folder Guide](../../plans/README.md) for full details.
    When the idea is ready for formal planning:
 
    ```
-   plans/backlog/2025-11-25__notification-system/
+   plans/backlog/notification-system/
    ├── README.md
    ├── brd.md
    ├── prd.md
@@ -169,7 +169,7 @@ See [Plans Folder Guide](../../plans/README.md) for full details.
 3. **Move to in-progress/** (Execution Phase)
 
    ```
-   git mv plans/backlog/2025-11-25__notification-system/ plans/in-progress/notification-system/
+   git mv plans/backlog/notification-system/ plans/in-progress/notification-system/
    ```
 
 4. **Complete and archive**
@@ -188,7 +188,7 @@ See [Plans Folder Guide](../../plans/README.md) for full details.
 1. **Create plan in plans/backlog/** (Planning Phase)
 
    ```
-   plans/backlog/2025-11-24__brand-strategy/
+   plans/backlog/brand-strategy/
    ├── README.md           # Overview of brand strategy
    ├── brd.md              # Brand goals, business impact, affected roles
    ├── prd.md              # Target audience personas, brand user stories, Gherkin acceptance criteria
@@ -202,7 +202,7 @@ See [Plans Folder Guide](../../plans/README.md) for full details.
 2. **Move to in-progress/** (Execution Phase)
 
    ```
-   git mv plans/backlog/2025-11-24__brand-strategy/ plans/in-progress/brand-strategy/
+   git mv plans/backlog/brand-strategy/ plans/in-progress/brand-strategy/
    ```
 
    - Update README status to "In Progress"
@@ -236,7 +236,7 @@ See [Plans Folder Guide](../../plans/README.md) for full details.
 1. **Plan in plans/backlog/**
 
    ```
-   plans/backlog/2025-11-25__auth-system/
+   plans/backlog/auth-system/
    ```
 
    - Create structured plan with requirements
@@ -300,7 +300,7 @@ See [Plans Folder Guide](../../plans/README.md) for full details.
 
 **How:**
 
-1. Create new plan folder: `plans/backlog/YYYY-MM-DD__[project-name]/`
+1. Create new plan folder: `plans/backlog/[project-name]/`
 2. Structure ideas into `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md` (multi-file default) or a single `README.md` (trivially small)
 3. Remove or check off the idea from `plans/ideas.md`
 
@@ -337,7 +337,7 @@ This project is complete. See the following documentation:
 | If you're doing...                         | Use folder...        | Example                                         |
 | ------------------------------------------ | -------------------- | ----------------------------------------------- |
 | Quick project ideas (1-3 liners)           | `plans/ideas.md`     | "Add OAuth2 authentication"                     |
-| Planning a feature                         | `plans/backlog/`     | `2025-11-24__auth-system/`                      |
+| Planning a feature                         | `plans/backlog/`     | `auth-system/`                                  |
 | Working on a project                       | `plans/in-progress/` | Move from backlog when starting                 |
 | Archiving completed project                | `plans/done/`        | Move from in-progress when done                 |
 | Writing a tutorial                         | `docs/tutorials/`    | `getting-started.md`                            |

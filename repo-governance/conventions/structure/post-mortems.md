@@ -275,10 +275,10 @@ Priority definitions:
 Table columns (use this exact structure):
 
 ```markdown
-| #   | Action                                               | Owner        | Priority | Ticket                                        | Status |
-| --- | ---------------------------------------------------- | ------------ | -------- | --------------------------------------------- | ------ |
-| 1   | Add pool-saturation alerting to sample-be-service    | Backend Team | P0       | plans/backlog/2025-01-15\_\_db-pool-alerting/ | Open   |
-| 2   | Document DB pool tuning procedure in service runbook | Backend Team | P1       | —                                             | Open   |
+| #   | Action                                               | Owner        | Priority | Ticket                          | Status |
+| --- | ---------------------------------------------------- | ------------ | -------- | ------------------------------- | ------ |
+| 1   | Add pool-saturation alerting to sample-be-service    | Backend Team | P0       | plans/backlog/db-pool-alerting/ | Open   |
+| 2   | Document DB pool tuning procedure in service runbook | Backend Team | P1       | —                               | Open   |
 ```
 
 `Ticket` must be a `plans/` folder reference or an issue id. Use `—` only if the item has not
@@ -381,11 +381,11 @@ for a complete application of this convention.
 ### PASS: Action item table
 
 ```markdown
-| #   | Action                                                        | Owner        | Priority | Ticket                                        | Status |
-| --- | ------------------------------------------------------------- | ------------ | -------- | --------------------------------------------- | ------ |
-| 1   | Add pool-saturation alerting to sample-be-service             | Backend Team | P0       | plans/backlog/2025-01-15\_\_db-pool-alerting/ | Open   |
-| 2   | Document DB pool tuning procedure in service runbook          | Backend Team | P1       | —                                             | Open   |
-| 3   | Evaluate autoscaling policy to absorb deploy-time load spikes | Backend Team | P2       | —                                             | Open   |
+| #   | Action                                                        | Owner        | Priority | Ticket                          | Status |
+| --- | ------------------------------------------------------------- | ------------ | -------- | ------------------------------- | ------ |
+| 1   | Add pool-saturation alerting to sample-be-service             | Backend Team | P0       | plans/backlog/db-pool-alerting/ | Open   |
+| 2   | Document DB pool tuning procedure in service runbook          | Backend Team | P1       | —                               | Open   |
+| 3   | Evaluate autoscaling policy to absorb deploy-time load spikes | Backend Team | P2       | —                               | Open   |
 ```
 
 ### FAIL: Action item anti-patterns

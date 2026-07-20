@@ -27,13 +27,13 @@ Naming rules differ by stage:
 
 | Stage          | Pattern                             | Date            |
 | -------------- | ----------------------------------- | --------------- |
-| `backlog/`     | `YYYY-MM-DD__[project-identifier]/` | Creation date   |
+| `backlog/`     | `[project-identifier]/`             | No date prefix  |
 | `in-progress/` | `[project-identifier]/`             | No date prefix  |
 | `done/`        | `YYYY-MM-DD__[project-identifier]/` | Completion date |
 
 Examples:
 
-- `backlog/2025-12-01__auth-system/` (creation date)
+- `backlog/auth-system/` (no date prefix)
 - `in-progress/auth-system/` (no date)
 - `done/2025-12-15__auth-system/` (completion date)
 

@@ -953,7 +953,7 @@ The AI will invoke agents with extended iteration limit:
 ### Execute Plan from Backlog
 
 ```
-User: "Execute plan plans/backlog/2025-02-01__future-feature/plan.md"
+User: "Execute plan plans/backlog/future-feature/plan.md"
 ```
 
 The AI will invoke agents regardless of folder location:
