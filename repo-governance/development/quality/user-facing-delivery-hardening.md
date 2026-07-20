@@ -250,8 +250,12 @@ tag** marks where each rule binds, and each states the **gap** it closes and **h
     [plan-planning §Surface-Conditional Tester Gates](../../workflows/plan/plan-planning.md#surface-conditional-tester-gates),
     re-applied at execution, and enforced as **merge precondition clause (e)** in the
     [PR Review Quality Gate](../../workflows/pr/pr-review-quality-gate.md). A plan bearing neither
-    surface states that exemption explicitly in `tech-docs.md`. These surfaces are meant to agree —
-    if this rule and the workflow mapping ever diverge, the workflow mapping is the one to fix.
+    surface is **not thereby exempt** — the mapping above routes the common surfaces, it does not
+    bound the rule. A reachable surface with no gate listed (a CLI, a library, a hook, a CI workflow)
+    still exercises its changed behavior through its own interface; only a plan with no reachable
+    behavioral delta at all states that exemption explicitly in `tech-docs.md`. These surfaces are
+    meant to agree — if this rule and the workflow mapping ever diverge, the workflow mapping is the
+    one to fix.
 
 ## Examples
 
