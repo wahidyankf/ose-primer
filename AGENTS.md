@@ -204,25 +204,12 @@ All callers (hooks, CI workflows, `package.json` scripts) use the canonical
 `{domain}:{work}` Nx target form or `rhino {group} {verb}` CLI form. The old
 `validate:*` prefix is abolished.
 
-**Command groups** (Nx targets on `rhino-cli`):
+**Enumerating the surface**: the two namespaces have separate live authorities — never
+transcribe either into a table here, which drifts silently. CLI groups come from
+`cargo run --quiet --manifest-path apps/rhino-cli/Cargo.toml -- --help`; Nx targets come from
+`nx show project rhino-cli --json`.
 
-| Group          | Status   | Representative targets                                                                       |
-| -------------- | -------- | -------------------------------------------------------------------------------------------- |
-| `specs`        | Active   | `specs:coverage`, `specs:tree-validation`, `specs:adoption-validation`                       |
-| `links`        | Active   | `links:validation`                                                                           |
-| `mermaid`      | Active   | `mermaid:validation` (flowchart + state diagrams)                                            |
-| `headings`     | Active   | `headings:hierarchy-validation`                                                              |
-| `env`          | Active   | `env:validation`                                                                             |
-| `naming`       | Active   | `naming:harness-validation`, `naming:workflows-validation`                                   |
-| `governance`   | Active   | `governance:vendor-audit-validation`                                                         |
-| `cross-vendor` | Active   | `cross-vendor:parity-validation`                                                             |
-| `harness`      | Active   | `harness:bindings-validation`                                                                |
-| `format`       | Active   | `format:check` (Rust)                                                                        |
-| `msrv`         | Active   | `msrv:check` (Rust)                                                                          |
-| `md`           | Active   | Markdown-specific subcommands (validate-mermaid, validate-links, validate-heading-hierarchy) |
-| `convention`   | Active   | Convention validation subcommands                                                            |
-| `lang`         | Active   | Language-specific helpers (java validate-annotations, dart-scaffold)                         |
-| `docs`         | RESERVED | Reserved namespace — do not add targets under `docs:*`                                       |
+**Reserved namespace**: `docs` is reserved — do not add targets under `docs:*`.
 
 **Target naming rule**: governance/validation targets use `{domain}:{work}` where
 `{work}` ends in `-validation` for pure checks or is a bare verb (`check`). Never
