@@ -146,7 +146,7 @@ Workflows for UI component quality:
 
 ### API Workflows
 
-Workflows for live REST/GraphQL API quality:
+Workflows for live REST/GraphQL API quality ([api/README.md](./api/README.md)):
 
 - **api-quality-gate**: Exercise a running API against its contract (OpenAPI 3.x / GraphQL SDL) and
   existing Gherkin, fix findings, re-test until none remain. Tester-driven
@@ -320,6 +320,7 @@ All workflows must respect core principles:
 
 ### Workflow Category Indexes
 
+- [API Workflows](./api/README.md) - Live REST/GraphQL API quality workflow index
 - [CI Workflows](./ci/README.md) - Continuous integration workflow index
 - [Docs Workflows](./docs/README.md) - Documentation workflow index
 - [Infrastructure Workflows](./infra/README.md) - Infrastructure workflow index
