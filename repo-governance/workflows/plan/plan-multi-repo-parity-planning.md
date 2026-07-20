@@ -16,7 +16,7 @@ inputs:
   - name: mode
     type: enum
     values: [main-to-origin-main, worktree-to-origin-main, worktree-to-pr]
-    description: "Where plans are authored and how they are delivered (see Modes section)"
+    description: "Where plans are authored and how they are delivered (see Modes section). `main-to-origin-main` requires a primary checkout in every repo in the parity set and is unavailable for any bare repo (currently `ose-primer` and `ose-infra`)."
     required: false
     default: worktree-to-pr
   - name: stage
@@ -152,7 +152,15 @@ anchor repo has no special authority over other repos' plans.
 
 Author plans directly in the `main` working tree of each repo. Commit and push to `origin main`
 of each repo. Use when worktrees are not needed and direct main-branch access is acceptable for
-all repos in the parity set.
+all repos in the parity set. **Requires a primary checkout in every repo in the parity set** — a
+repo driven entirely through linked worktrees (a bare repo) has no primary `main` working tree to
+author in, so this mode is unavailable there. Currently `ose-primer` and `ose-infra` are both bare
+(`ose-public` is not); repo topology changes over time, so re-verify bareness per invocation via
+`git config --get core.bare` on the repo's **common dir** — never
+`git rev-parse --is-bare-repository` from inside a linked worktree, which reports `false` there
+regardless of the repo's actual topology (see
+[SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution))
+— rather than trusting this list.
 
 ### `worktree-to-origin-main`
 
@@ -297,10 +305,17 @@ Meta-dimensions to include alongside technical dimensions:
 - **Rationale doc location**: where each repo's `docs/explanation/<objective-slug>-parity-decisions.md`
   (or closest equivalent) will be created (app-scoped `apps/<app>/docs/`, lib-scoped
   `libs/<lib>/docs/`, repo governance tree, etc.)
-- **ose-primer delivery mode**: whether the `ose-primer` mutation lands via this workflow's own
-  `worktree-to-pr` default or the first-class opt-out `worktree-to-origin-main` — `main-to-*` modes
-  are unavailable because `ose-primer` is a bare repository with no primary checkout — so the choice
-  must be recorded (applies when ose-primer is in the parity set)
+- **Bare-repo delivery choice**: which Delivery Mode the invoker selects for any propagation
+  reaching a **bare** repo in the parity set — `worktree-to-pr` (draft PR) or
+  `worktree-to-origin-main` (direct push). A repo with no primary checkout (driven entirely
+  through linked worktrees) cannot use a `main-to-*` mode, because there is no primary `main`
+  working tree to author in or push from directly. Bind this rule to the property, not a repo
+  name — repo topology changes over time; currently both `ose-primer` and `ose-infra` are bare
+  (`ose-public` is not), but re-verify per invocation (see
+  [SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution))
+  rather than trusting this list. That per-destination choice is not settled by this workflow's own
+  `worktree-to-pr` default, so it must be recorded explicitly (applies whenever a bare repo is in
+  the parity set)
 - **Repo-specific constraints**: any repo constraint (private visibility, self-hosted CI runner,
   dual-CLI parity guard, missing toolchain) that forces a per-repo deviation
 
@@ -344,17 +359,42 @@ as the research-needed flag (yes / no). This flag governs whether Step 4 runs or
 
 **Mandatory meta-questions** (surface these explicitly regardless of mode):
 
-1. If ose-primer is in the parity set: "This workflow's default for `ose-primer` is `worktree-to-pr`
-   (a draft PR); `worktree-to-origin-main` (a direct push to `ose-primer:main`) is a first-class
-   opt-out, not a deviation. `main-to-origin-main` is unavailable — `ose-primer` is a bare
-   repository with no primary checkout. The selected parity mode implies
-   {draft PR | direct push to main}. Please confirm the delivery mode for ose-primer."
-   Options: (A) Draft PR (`worktree-to-pr`) — the workflow default. (B) Direct push to `main`
-   (`worktree-to-origin-main`). Record the chosen mode.
-2. Rationale doc location per repo (where does `<objective-slug>-parity-decisions.md` live in
+1. **Bare-repo mode availability** (property-bound — fires for any repo in the parity set with no
+   primary checkout, currently `ose-primer` and `ose-infra`; re-verify per invocation via
+   `git config --get core.bare` on the common dir, never `git rev-parse --is-bare-repository` from
+   a linked worktree (see
+   [SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution)),
+   rather than trusting this list) — if the selected `mode` is `main-to-origin-main` and any such
+   repo is in the parity set: "`<repo>` is a bare repo with no primary `main` working tree, so
+   `main-to-origin-main` cannot run there for the whole run — it is not a deviation to justify, it
+   is unexecutable. Switch the run to a mode that does not require a primary checkout."
+   Options: (A) Switch the whole run to `worktree-to-origin-main` — preserves the direct-push,
+   no-PR-review semantics closest to the originally selected `main-to-origin-main`, substituting
+   only a worktree for the unavailable primary checkout _(Recommended — smallest semantic change
+   from the mode the invoker actually chose)_. (B) Switch the whole run to `worktree-to-pr` — adds
+   a draft-PR review gate before the plan documents land on `main`; only offer this option when
+   `worktree-to-pr` is not itself excluded by the invocation's own constraints (for example, a
+   calling composite workflow that already pinned this run to a non-PR delivery mode) — when it is
+   excluded, present option (A) only. There is no "accept deviation" option here — an invoker
+   cannot justify past an impossible mode. **Re-evaluation on mode change**: question 2 below
+   conditions on `mode is worktree-to-origin-main`; a mode switch made here MUST be re-checked
+   against question 2's condition before proceeding — choosing (A) here can newly trigger
+   question 2's sync-convention deviation even when question 2 would not have fired against the
+   originally selected `mode`, so do not silently skip that re-check because question 2 was already
+   passed over once.
+2. If ose-primer is in the parity set and mode is `worktree-to-origin-main` (whether selected
+   directly or arrived at via question 1's re-evaluation above):
+   "The ose-primer sync convention requires PRs for all mutations to ose-primer. The selected
+   mode bypasses this. Please confirm the deviation or switch to `worktree-to-pr`."
+   Options: (A) Accept deviation — record the justification in the deviation matrix; keeps the
+   direct-push mode for ose-primer at the cost of bypassing its PR-review convention. (B) Switch
+   mode to `worktree-to-pr` — restores the repo-wide PR-review default for ose-primer without
+   reopening question 1's resolution for the rest of the parity set _(Recommended when no explicit
+   reason favors bypassing ose-primer's PR convention)_.
+3. Rationale doc location per repo (where does `<objective-slug>-parity-decisions.md` live in
    each repo?).
-3. Any repo-specific constraint flagged in Step 2 that forces a deviation.
-4. Research-needed flag: are there external claims (harness/vendor conventions, library/tool
+4. Any repo-specific constraint flagged in Step 2 that forces a deviation.
+5. Research-needed flag: are there external claims (harness/vendor conventions, library/tool
    behavior, prior art) that require verification before authoring the plans?
 
 **Output**: A fully resolved deviation matrix. Every row has a recorded decision and — for

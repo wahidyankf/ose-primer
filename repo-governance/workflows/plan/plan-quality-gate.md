@@ -279,10 +279,12 @@ resolves to one of four [Delivery Modes](../../conventions/structure/plans.md#de
 the three-tier precedence (invocation argument > plan field > `worktree-to-pr` default). For a plan
 executing under a `*-to-pr` mode (`worktree-to-pr` or `main-to-pr`), full "done" for the plan's
 actual delivery additionally requires satisfying the
-[PR-Review Maker→Fixer Cycle](../pr/pr-review-quality-gate.md)'s done-definition — N review
-cycles complete, every inline comment answered, all PR gates GREEN, archival committed inside the
-PR — before the merge. The two gates sit at different lifecycle stages: this workflow
-gates the plan document pre-execution; the PR-review cycle gates the delivered change pre-merge.
+[Done-Definition for `*-to-pr` Modes](../pr/pr-review-quality-gate.md#done-definition-for--to-pr-modes)
+— cited there rather than restated here, so a future strengthening of any item (for example, the
+requirement that an accepted fix be committed AND pushed, not merely replied to) cannot silently
+drift out of sync between the two documents — before the merge. The two gates sit at different
+lifecycle stages: this workflow gates the plan document pre-execution; the PR-review cycle gates
+the delivered change pre-merge.
 
 **The hardened merge preconditions** that gate that eventual merge are defined normatively in the
 [PR Review Quality Gate workflow](../pr/pr-review-quality-gate.md#hardened-merge-preconditions) —
