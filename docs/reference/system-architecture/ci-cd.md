@@ -181,15 +181,17 @@ coverage.
 
 **File**: `.github/workflows/main-ci.yml`
 
-**Trigger**: Push to `main` branch
+**Trigger**: Scheduled (4x/day: 06:00/12:00/18:00/00:00 WIB) or manual `workflow_dispatch` — no push
+trigger; `pr-quality-gate.yml` already covers push-to-`main`
 
-**Purpose**: Runs affected tests and quality checks on every push to main
+**Purpose**: Catches drift that affected-only PR checks can miss, by re-running the full gate
+against the entire monorepo on a fixed cadence independent of any single PR
 
 ### PR Quality Gate Workflow
 
 **File**: `.github/workflows/pr-quality-gate.yml`
 
-**Trigger**: Pull request opened, synchronized, or reopened
+**Trigger**: Pull request opened, synchronized, or reopened, or push to `main`
 
 **Purpose**: Runs affected tests and quality checks for pull requests
 
@@ -298,21 +300,26 @@ Each backend workflow runs its own backend stack — never a different backend.
    - Commit-msg hook validates format
    - Commit created
 
-4. **Push to Remote**:
+4. **Push to Remote** — target follows the declared Delivery Mode:
 
    ```bash
+   # Default (`worktree-to-pr`): push the short-lived plan branch
+   git push origin <plan-branch>
+
+   # Direct-push modes, when explicitly declared:
    git push origin main
    ```
 
-   - Pre-push hook runs:
+   - Pre-push hook runs (on any push target):
      - Tests affected projects
      - Lints markdown
 
-5. **Create Pull Request** (if using PR workflow):
-   - GitHub Actions run:
+5. **Open a Pull Request** — the default path (`worktree-to-pr`); skip only under a declared direct-push mode:
+   - GitHub Actions run the full quality gate on every PR event
      - Format check
      - Markdown validation (mermaid, links, headings)
-   - Review and merge
+   - PR-Review Maker→Fixer Cycle runs before the merge
+   - Merge once the five hardened merge preconditions hold — `[AI]` by default
 
 6. **Deploy** (for Vercel-hosted apps):
 

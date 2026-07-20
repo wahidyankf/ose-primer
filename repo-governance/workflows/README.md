@@ -67,7 +67,7 @@ Workflows support two execution modes (see [Workflow Execution Mode Convention](
 All workflows support standard input parameters:
 
 - **mode**: Quality threshold (lax/normal/strict/ocd) - default: strict
-- **max-concurrency**: Parallel execution limit - default: 2
+- **max-concurrency**: Background agents run concurrently — the N in the N+1 model (`1 main thread + N background agents = N+1 total`) - default: 3
 - **min-iterations**: Minimum check-fix cycles - optional
 - **max-iterations**: Maximum check-fix cycles - optional
 
@@ -86,6 +86,7 @@ All workflows support standard input parameters:
 | [Documentation Software Engineering Separation Quality Gate](./docs/docs-software-engineering-separation-quality-gate.md) | Validate software engineering documentation separation between demo style guides and demo educational content, apply fixes iteratively until ZERO findings                                                                                                                                                                                                                                                                                                                                                        | docs-software-engineering-separation-checker, docs-software-engineering-separation-fixer              | Medium     |
 | [Specs Validation](./specs/specs-quality-gate.md)                                                                         | Validate specs/ directory for structural completeness, content accuracy, cross-spec consistency, and C4 diagram correctness, apply fixes iteratively until ZERO findings                                                                                                                                                                                                                                                                                                                                          | specs-checker, specs-fixer                                                                            | Medium     |
 | [UI Quality Gate](./ui/ui-quality-gate.md)                                                                                | Validate UI component quality (tokens, accessibility, patterns, dark mode, responsive), apply fixes iteratively until ZERO findings                                                                                                                                                                                                                                                                                                                                                                               | swe-ui-checker, swe-ui-fixer                                                                          | Medium     |
+| [API Quality Gate](./api/api-quality-gate.md)                                                                             | Exercise a live REST/GraphQL API against its contract and specs, fix findings, re-test until the defect set is empty                                                                                                                                                                                                                                                                                                                                                                                              | api-exploratory-tester, `swe-*-dev`                                                                   | Medium     |
 | [CI Quality Gate](./ci/ci-quality-gate.md)                                                                                | Validate all projects conform to CI/CD standards (Nx targets, coverage, Docker, Gherkin, workflows), apply fixes iteratively until ZERO findings                                                                                                                                                                                                                                                                                                                                                                  | ci-checker, ci-fixer                                                                                  | Medium     |
 | [Harness Compatibility Quality Gate](./repo/repo-harness-compatibility-quality-gate.md)                                   | Validate internal cross-vendor parity invariants (Phase 0) and detect external harness-convention drift (Phase 1), apply fixes until zero findings                                                                                                                                                                                                                                                                                                                                                                | repo-harness-compatibility-checker, repo-harness-compatibility-fixer                                  | Medium     |
 | [Repository Dependency Bump Planning](./repo/repo-dependency-bump-planning.md)                                            | Survey every dependency manifest (npm, Cargo, .NET, Go, Docker, GitHub Actions), classify each candidate bump per the Dependency Bump Stability & Safety Policy, and author a validated backlog plan via plan-planning. Never edits a manifest                                                                                                                                                                                                                                                                    | web-researcher, plan-maker, plan-checker, plan-fixer                                                  | High       |
@@ -142,6 +143,14 @@ Workflows for specification quality:
 Workflows for UI component quality:
 
 - **ui**: UI component quality validation (tokens, accessibility, patterns, dark mode, responsive)
+
+### API Workflows
+
+Workflows for live REST/GraphQL API quality:
+
+- **api-quality-gate**: Exercise a running API against its contract (OpenAPI 3.x / GraphQL SDL) and
+  existing Gherkin, fix findings, re-test until none remain. Tester-driven
+  (`api-exploratory-tester` → `swe-*-dev`), not a checker/fixer pair
 
 ### CI/CD Workflows
 
