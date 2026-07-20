@@ -15,9 +15,9 @@ inputs:
     default: 10
   - name: max-concurrency
     type: number
-    description: Maximum number of agents/tasks that can run concurrently during workflow execution
+    description: "Background agents run concurrently — the N in the N+1 model (1 main thread + N background agents = N+1 total). Raise only when independent work, machine capacity, and budget headroom all allow; lower under budget, runner, or disk pressure. Never self-promoted beyond the declared value."
     required: false
-    default: 2
+    default: 3
 outputs:
   - name: final-status
     type: enum
@@ -107,6 +107,54 @@ The orchestrator selects the best agent for each delivery checklist item using t
 TypeScript backend change that also requires a README update), delegate each concern separately
 to its appropriate agent. Execute the implementation agent first, then the documentation agent.
 
+### Fan-Out, Ordering, and Delivery Shape
+
+**Fan-out follows the N+1 model**: `1 main thread + N background agents = N+1 total`, default
+**N=3**. The orchestrator keeps the main thread vacant and responsive — filling background slots
+first — and never silently self-promotes beyond the plan's declared N. See the
+[Agent Workflow Orchestration Convention](../../development/agents/agent-workflow-orchestration.md).
+
+**Ordering is DAG-first**: the plan's `## Parallelization Model` declares which nodes are
+independent. Independent nodes fan out up to N; dependent nodes serialize; **sequence is not
+dependency**. The DAG's independent-node width is the fan-out — N only caps it.
+
+**Delivery is 1-PR↔1-worktree**: each independent DAG node gets its own worktree, branch, and PR,
+merged per-phase as it completes rather than batched at plan end. Cleanup is the terminal DAG node,
+so a worktree is removed only once its own PR has landed and no in-flight node still needs it.
+
+**Git operations stay non-destructive and self-scoped**: assume other agents and engineers share
+this machine's disk, git object store, and worktrees. Never run an operation that discards a
+concurrent actor's uncommitted work, and never remove a worktree or branch you did not create. See
+[No Destructive Git Operations](../../development/workflow/no-destructive-git-operations.md) and
+[Worktree and Artifact Cleanup](../../development/workflow/worktree-and-artifact-cleanup.md).
+
+**Status cadence**: while checklist items are active, update the user every **3-5 minutes — not
+faster**, anchored to meaningful state changes rather than a timer.
+
+### Surface-Conditional Tester Gates
+
+Which quality gates this execution must run depends on **what surface the plan ships**. The rule
+binds here at execution, exactly as it bound at authoring time (see
+[plan-planning §Surface-Conditional Tester Gates](./plan-planning.md#surface-conditional-tester-gates)),
+and again as a merge precondition — clause (e) of the
+[PR Review Quality Gate](../pr/pr-review-quality-gate.md)'s hardened preconditions.
+
+- **UI-bearing plan** → run **both** [`ui/ui-quality-gate.md`](../ui/ui-quality-gate.md) (static)
+  and [`web/web-ux-test-fixing-planning.md`](../web/web-ux-test-fixing-planning.md) (running triad).
+- **API- or backend-bearing plan** → run [`api/api-quality-gate.md`](../api/api-quality-gate.md).
+- **Several of these** → run each set.
+- **A reachable surface with no gate listed above** (a CLI, a library under `libs/`, a hook, a CI
+  workflow) → **not exempt**. Exercise the changed behavior through its own interface and record what
+  was run.
+- **Genuinely no reachable behavior** → the plan MUST state the exemption explicitly in
+  `tech-docs.md`; an executor that finds no such statement treats it as a gap, not as a pass.
+
+**The three UI gates are complementary, never substitutes**: `plan-checker` **Step 5k** gates the
+UI **design funnel** in `prd.md` (pre-build); `ui/ui-quality-gate.md` gates the **built components**
+statically via `swe-ui-checker` / `swe-ui-fixer` (no browser); and
+`web/web-ux-test-fixing-planning.md` gates the **running UI** via the EWT/UWT/DWT triad in a real
+browser. Passing one never discharges another.
+
 ## Task-Checklist Synchronization
 
 The live Task list (`TaskCreate` / `TaskUpdate`) and the on-disk delivery checklist (`delivery.md`) are two views of the same state. They MUST agree at every moment of execution. Disagreement is a bug the orchestrator MUST detect and fix immediately.
@@ -145,11 +193,17 @@ If any of the above occur, the orchestrator MUST stop, reconcile (disk wins per 
 
 For each checklist item, the following three steps happen together, in this order, without interleaving other items' work:
 
-1. **Tick the checkbox**: `Edit` delivery.md to change `- [ ]` → `- [x]` for THIS one item (context-unique `old_string`, never `replace_all` on the whole file).
-2. **Persist implementation notes** under the ticked checkbox in the same or an immediately-following `Edit` call — Date, Status, Files Changed, brief notes on what was done.
+1. **Tick the checkbox**: `Edit` delivery.md to change `- [ ]` → `- [x]` for THIS one item (context-unique `old_string`, never `replace_all` on the whole file). **The tick MUST be its own `Edit`, and its `old_string` MUST include the literal `- [ ]` marker.**
+2. **Persist implementation notes** under the ticked checkbox in a separate, immediately-following `Edit` call — Date, Status, Files Changed, brief notes on what was done.
 3. **`TaskUpdate completed`** the matching task. The live list now matches disk truth.
 
 If any step fails, roll back the other two: untick the checkbox, remove the notes, leave the task in `in_progress`. The item is treated as incomplete.
+
+**Why step 1 must be a separate Edit anchored on `- [ ]` (HARD)**: when the tick and the notes are written as ONE `Edit` whose `old_string` is the tail of a multi-line checkbox (typically the acceptance clause), the anchor sits **below** the `- [ ]` marker, so the marker is never inside the replaced span. The edit succeeds, the notes appear, the task closes — and disk still says `- [ ]`. **Nothing errors.** This failure is invisible to every signal the executor watches: the Edit tool reports success, the task list looks correct, and the notes are genuinely on disk. Observed accumulating silently across 18 consecutive items before a gate check happened to run `grep -n "^- \[ \]"`. Anchoring the tick on the literal `- [ ]` makes a mis-anchored edit **fail loudly** instead of silently no-op'ing.
+
+**Per-gate assertion**: at every phase gate — not only at plan end — assert `count('- [x]') == count(completed tasks)`. An independent count is the only instrument that detects this class.
+
+**Repairing a silent-tick backlog**: never bulk-tick from memory. Verify each candidate item carries a `**Date**` evidence block bounded by the next checkbox, flip exactly those lines, then diff to confirm the change was purely `[ ]` → `[x]` with no prose touched. Ticking without the evidence check asserts completion from recall rather than from the record.
 
 ### Resume Reconciliation (disk is truth)
 
@@ -365,7 +419,11 @@ After completing all items in a delivery phase, verify the phase's authored gate
 5. Commit thematically (Iron Rule 7) — separate plan work from preexisting fixes
 6. Push to the resolved delivery mode's target (Iron Rule 5), only after ALL local quality gates pass. The push target depends on the delivery mode resolved in Step 0:
    - **`worktree-to-origin-main` / `main-to-origin-main`** (direct-push modes): push directly to `origin main`.
-   - **`worktree-to-pr` / `main-to-pr`** (`*-to-pr` modes): push to the plan's **PR branch**. If no PR exists yet for this branch, open one on the first push of the plan (`gh pr create --base main --head <branch> --title "<plan-identifier>" --body "<summary>"`, draft or non-draft per plan/user preference); every subsequent phase push targets that same PR branch. CI is monitored on the PR itself, not on `main` — see Step 2c.
+   - **`worktree-to-pr` / `main-to-pr`** (`*-to-pr` modes): push to the **PR branch of the DAG node being delivered**. Each independent node gets its own worktree, branch, and PR — a strict **one worktree → one branch → one PR → one node** mapping (see [plan-planning §Planning Granularity](./plan-planning.md#planning-granularity)). If no PR exists yet for this branch, open one on its first push (`gh pr create --base main --head <branch> --title "<plan-identifier>: <node>" --body "<summary>"`, draft or non-draft per plan/user preference). Genuinely dependent phases that cannot be separated share one PR; independent ones do not. CI is monitored on the PR itself, not on `main` — see Step 2c.
+
+   **Per-phase merging (not batch merging)**: each phase PR is **opened and merged** as that phase completes, once the hardened merge preconditions hold. Do **not** hold phase PRs open for a batch merge at plan end — that re-serialises work the DAG declared independent and grows the divergence each PR must reconcile. The **merge actor** is `[AI]` by default; `[HUMAN]` applies only where the plan's own step declares that gate. Partial work reaches `main` **merged but dark** behind a feature flag rather than waiting on a long-lived branch.
+
+   **The worktree is the unit of cleanup**: because the mapping is one worktree per PR, a node's worktree is removed when **its** PR lands — not deferred to plan end. Cleanup is the terminal node of the DAG and depends on every delivery node, so it can never remove a worktree an in-flight node still needs. See [Worktree and Artifact Cleanup](../../development/workflow/worktree-and-artifact-cleanup.md).
 
 **Output**: All quality gates passing, changes pushed
 
@@ -662,7 +720,7 @@ proceed until the plan's Knowledge Capture phase is complete.
   `learnings.md` is incomplete for archival purposes.
 
 **PR-Review Maker→Fixer Cycle gate (mandatory for `*-to-pr` modes, before archival and before the
-`[HUMAN]` merge)**: When the delivery mode resolved in Step 0 is `worktree-to-pr` or `main-to-pr`,
+merge)**: When the delivery mode resolved in Step 0 is `worktree-to-pr` or `main-to-pr`,
 archival additionally requires the
 [PR-Review Maker→Fixer Cycle](../pr/pr-review-quality-gate.md) workflow to run to completion
 against the plan's PR before any archival step below. This gate does not apply to the direct-push
@@ -673,23 +731,26 @@ modes (`worktree-to-origin-main`, `main-to-origin-main`), which carry no PR and 
   GitHub Reviews API, a `pr-review-fixer` triages and resolves every unresolved thread, and CI on
   the PR must be GREEN before the next cycle starts. See the linked workflow for the full Loop
   Algorithm, posting mechanics, and escalation rules.
-- **Done-definition for `*-to-pr` modes** (all four items required):
-  1. **N review cycles complete** (default 3).
-  2. **Every inline review comment is answered** — a fix applied and pushed, or a reasoned reject,
-     on every thread.
-  3. **All PR quality gates are GREEN** — both the local gates (Step 2b) and CI on the PR (Step 2c),
-     as of the PR's current head commit.
-  4. **Archival-in-PR is committed** — see below.
+- **Done-definition for `*-to-pr` modes**: the workflow's own
+  [done-definition](../pr/pr-review-quality-gate.md#done-definition-for--to-pr-modes) — cited here
+  rather than restated, so a future strengthening of any item (for example, requiring an accepted
+  fix be committed AND pushed, not merely replied to) cannot silently drift out of sync between the
+  two documents. This invocation additionally requires that definition's item 4, Archival-in-PR
+  (below); item 4 is N/A for invocations that do not carry a plan folder.
 - **Archival-in-PR**: for `*-to-pr` modes, the `git mv plans/in-progress/... plans/done/...` move
   (and the accompanying README index updates) is committed **inside the delivering PR itself**, as a
-  normal commit on the PR branch pushed before the `[HUMAN]` merge — not as a separate commit landed
+  normal commit on the PR branch pushed before the merge — not as a separate commit landed
   on `main` after merge. This keeps the archival move inside the same review cycle as the rest of the
-  plan's changes, so the PR that the human merges already contains the finished, archived plan.
-- The `[HUMAN]` merge sits **outside** this AI done-boundary: once all four done-definition items
-  are satisfied, the orchestrator hands off a green, fully-reviewed, archival-included PR, and the
-  human merges it on their own schedule — "done" (for the AI) is not the same as "merged" (see
+  plan's changes, so the merged PR already contains the finished, archived plan.
+- The merge sits **outside** this AI done-boundary: once the done-definition items
+  are satisfied, the orchestrator holds a green, fully-reviewed, archival-included PR, and the merge
+  follows — "done" is not the same as "merged" (see
   [Executor Tagging](../../conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule)).
-  Worktree cleanup for `*-to-pr` modes happens **after** the `[HUMAN]` merge completes (see the
+  **`[AI]` merges by default** once the hardened preconditions hold; a `[HUMAN]` merge gate applies
+  only where a plan's own step says so explicitly, and the preconditions are identical either way —
+  only the actor differs. See
+  [Delivery Mode](../../conventions/structure/plans.md#delivery-mode).
+  Worktree cleanup for `*-to-pr` modes happens **after** the merge completes (see the
   archival Logic below) — in contrast to the direct-push modes, where cleanup already correctly
   happens right after the push is confirmed green, because those modes have no separate merge step.
 
@@ -757,8 +818,8 @@ modes (`worktree-to-origin-main`, `main-to-origin-main`), which carry no PR and 
      4. **On decline**: keep the worktree and emit one line: `Worktree retained at worktrees/<plan-identifier>/ per user choice.`
 
   **`worktree-to-pr` / `main-to-pr` (`*-to-pr` modes)** — archival-in-PR: the plan-folder move lands
-  inside the delivering PR itself, gated by the PR-Review Maker→Fixer Cycle, before the `[HUMAN]`
-  merge:
+  inside the delivering PR itself, gated by the PR-Review Maker→Fixer Cycle, before the merge
+  (`[AI]` by default; `[HUMAN]` only where the plan's own step says so):
   1. Move entire plan folder from current location to `plans/done/` (same command as the direct-push
      path):
 
@@ -779,15 +840,17 @@ modes (`worktree-to-origin-main`, `main-to-origin-main`), which carry no PR and 
 
   7. **Run or complete the PR-Review Maker→Fixer Cycle** against the PR (see the gate above) — because
      each cycle's `pr-review-maker` reviews the full current state of the PR, its final pass also
-     covers this archival commit. Confirm all four done-definition items are satisfied: N cycles
-     complete, every comment answered, all gates GREEN (including CI on this last push), and the
-     archival commit present on the PR branch.
-  8. **`[HUMAN]` merge**: once the done-definition is fully satisfied, surface the PR URL and the
-     done-definition checklist to the user and STOP — do not merge. Merging the PR is a `[HUMAN]`
-     step outside the AI done-boundary; the orchestrator's role ends at handing off a ready-to-merge
-     PR.
-  9. **Worktree cleanup — prompted (after the `[HUMAN]` merge completes)**: once the user confirms
-     the PR is merged, offer to delete the plan's worktree, using the same safety preconditions and
+     covers this archival commit. Confirm the
+     [done-definition](../pr/pr-review-quality-gate.md#done-definition-for--to-pr-modes) is
+     satisfied, including the archival commit now present on the PR branch.
+  8. **Merge — `[AI]` by default**: once the done-definition is fully satisfied and the hardened
+     merge preconditions (a)-(e) hold, surface the PR URL and the done-definition checklist, then
+     merge. A `[HUMAN]` merge gate applies only where the plan's own step says so explicitly — in
+     that case, hand off the ready-to-merge PR and STOP instead of merging. The preconditions are
+     identical in both cases; only the actor differs. See
+     [Delivery Mode](../../conventions/structure/plans.md#delivery-mode).
+  9. **Worktree cleanup — prompted (after the merge completes)**: once the PR is confirmed
+     merged, offer to delete the plan's worktree, using the same safety preconditions and
      prompt mechanics as the direct-push path, but gated on merge completion instead of push
      completion:
      1. **Verify nothing unpushed and the merge landed** (safety precondition):

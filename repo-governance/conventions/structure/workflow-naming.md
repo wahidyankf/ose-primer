@@ -43,10 +43,12 @@ Additional filename rules inherit from the [File Naming Convention](./file-namin
 
 Workflow scope MUST match its parent directory under `repo-governance/workflows/`. Current scopes:
 
+- **`api`** — Workflows that operate against a live running HTTP API (REST or GraphQL): contract-conformance, auth/authz, pagination, idempotency, and edge-case exploratory testing of a deployed service. Aligned with agent scope `api` (`api-exploratory-tester`).
 - **`ci`** — Workflows that diagnose, validate, or repair continuous-integration pipelines.
 - **`docs`** — Workflows scoped to the `docs/` tree (Diátaxis content, link integrity, software-engineering separation).
 - **`infra`** — Workflows that provision development environments or infrastructure resources.
 - **`plan`** — Workflows in the plan lifecycle (authoring quality gate, plan execution).
+- **`pr`** — Workflows for the pull-request review lifecycle (maker→fixer review cycles gating the merge for `*-to-pr` delivery modes).
 - **`repo`** — Repository-wide governance workflows (conventions, workflows, cross-reference integrity). Aligned with agent scope `repo` (both use `repo`, not `repository`).
 - **`specs`** — Workflows scoped to the `specs/` tree (Gherkin features, OpenAPI contracts, C4 diagrams).
 - **`ui`** — Workflows scoped to UI component quality (tokens, accessibility, responsive design).

@@ -77,7 +77,12 @@ gh api graphql -f query='
 Filter the returned nodes to `isResolved: false` client-side if the schema does not expose a direct
 argument. Each thread's leading comment carries a `databaseId` — this is the exact value the REST
 API calls `comment_id`, and it is what this agent uses when replying via
-`gh api repos/{owner}/{repo}/pulls/comments/{comment_id}/replies` (or the GraphQL equivalent).
+`gh api repos/{owner}/{repo}/pulls/{pull_number}/comments/{comment_id}/replies` (or the GraphQL
+equivalent). **The `{pull_number}` segment is required** — the path without it returns 404, confirmed
+live against PR #13 in `ose-primer` on 2026-07-20. It is easy to omit because the sibling _read_
+endpoint for a single review comment genuinely is
+`repos/{owner}/{repo}/pulls/comments/{comment_id}`, with no pull number; only the reply sub-resource
+is nested under the pull.
 
 **[Unverified] spot-check reminder**: the precise GraphQL field casing for `reviewThreads` filtering
 and for the `resolveReviewThread` mutation (see below) should be spot-checked against live GitHub
@@ -129,6 +134,25 @@ rejection reply states the specific reason the cited evidence fails to hold.
   ONLY on threads that were fixed, or whose rejection is well-founded per the higher bar above.
   Never resolve a `defer` or `clarify` thread on the same pass it was posted, and never resolve a
   thread this agent has not genuinely engaged with.
+
+- **Never resolve a `fix` thread until the fix is COMMITTED AND PUSHED (HARD)** — thread state is
+  not fix state. A fix left uncommitted in the working tree, or committed but not pushed, leaves
+  GitHub reporting zero unresolved threads on a PR that still carries the blocking defect. This has
+  happened in practice. Before resolving any `fix` thread, verify against the PR's head, not
+  against the local tree:
+
+  ```bash
+  git status --porcelain          # no fix-related path may still be dirty
+  git log origin/<pr-branch> -1   # the fix commit MUST be on the pushed branch
+  gh pr diff <PR>                 # the fix MUST appear in the PR's own diff
+  ```
+
+  If the fix is not in the PR diff, reply on the thread but leave it UNRESOLVED.
+
+- **A declined-to-touch file is a `defer` or `reject`, never a `fix`** — when this agent correctly
+  declines to modify a file it was told to leave alone, that thread is deferred or rejected with
+  the scope reason, not resolved as fixed. Resolving it as fixed hides a live finding behind a
+  green thread count.
 
 ```bash
 gh api graphql -f query='

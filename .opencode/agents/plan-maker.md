@@ -190,9 +190,13 @@ the agent checks to resume.
 `[HUMAN]`: provisioning the worktree (`git worktree add …`), committing and pushing (to `origin main`
 for `*-to-origin-main` modes, or to the PR branch for `*-to-pr` modes), and removing the worktree
 (`git worktree remove …`). For the default `worktree-to-pr` mode, do NOT emit a `[HUMAN]` "review the
-diff and approve push" gate for the push itself — pushing to the PR branch is `[AI]`; only the final
-PR merge to `main` is `[HUMAN]`, and only after the PR-Review Maker→Fixer Cycle has completed (see
-Step 7 below). Write the push step as `- [ ] [AI] Commit and push to origin main` (direct-push modes)
+diff and approve push" gate for the push itself — pushing to the PR branch is `[AI]`; the final
+PR merge to `main` is also `[AI]` by default, once the PR-Review Maker→Fixer Cycle has completed and
+the hardened preconditions hold. Emit a `[HUMAN]` merge step only where the plan explicitly opts into
+that gate (see Step 7 below). **When re-authoring an existing plan, preserve a `[HUMAN]` merge step
+verbatim** — an already-declared `[HUMAN]` gate IS that plan's opt-in, and `[AI]`-by-default applies
+to plans being written fresh, never as a normalization of one already on disk. Removing or retagging
+it is out of scope for any re-authoring pass. Write the push step as `- [ ] [AI] Commit and push to origin main` (direct-push modes)
 or `- [ ] [AI] Commit and push to origin <pr-branch>` (`*-to-pr` modes). See the
 [Git Push Default Convention](../../repo-governance/development/workflow/git-push-default.md) and
 [Plans Organization Convention §Executor Tagging](../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule).
@@ -213,10 +217,14 @@ placed alongside `## Worktree`, declaring exactly one of the four modes:
 
 | Mode                      | Work location    | Integration target | Merge authority |
 | ------------------------- | ---------------- | ------------------ | --------------- |
-| `worktree-to-pr`          | Worktree         | Draft PR           | `[HUMAN]`       |
+| `worktree-to-pr`          | Worktree         | Draft PR           | `[AI]`\*        |
 | `worktree-to-origin-main` | Worktree         | Direct push        | `[AI]`          |
 | `main-to-origin-main`     | Primary checkout | Direct push        | `[AI]`          |
-| `main-to-pr`              | Primary checkout | Draft PR           | `[HUMAN]`       |
+| `main-to-pr`              | Primary checkout | Draft PR           | `[AI]`\*        |
+
+\* `[AI]` is the default merge actor for both PR modes, once the hardened preconditions hold. A
+`[HUMAN]` merge gate applies only where a plan explicitly opts into it; the preconditions are
+identical either way and only the actor differs.
 
 **`worktree-to-pr` is the default** — apply three-tier precedence: invocation argument (if the
 user or calling context specified a mode explicitly) → plan field (if a prior draft already
@@ -227,10 +235,11 @@ treat it as a grill question instead (Step 8).
 **PR-Review Maker→Fixer Cycle** steps (see
 [PR Review Quality Gate workflow](../../repo-governance/workflows/pr/pr-review-quality-gate.md)) —
 strictly sequential maker→fixer→maker→fixer→maker→fixer cycles (default 3), each cycle gated by a
-green CI run — **before** the `[HUMAN]` PR-merge step. Recall "done" (AI hands off a green,
-fully-reviewed PR) is NOT the same as "merged" (on the human's own schedule) — do not tag the PR
-merge itself as anything but `[HUMAN]`, and do not treat plan completion as blocked on the merge
-happening.
+green CI run — **before** the PR-merge step. Recall "done" (a green, fully-reviewed PR) is NOT the
+same as "merged" — tag the PR merge itself `[AI]`, which is the default actor once the hardened
+preconditions hold, and do not treat plan completion as blocked on the merge happening. Emit a
+`[HUMAN]` merge step only where the plan explicitly opts into that gate; the preconditions are
+identical either way.
 
 **For `*-to-origin-main` modes**: no PR-review cycle applies; the final push is `[AI]` and the plan
 completes once CI is green on `main`.
@@ -255,7 +264,7 @@ Cover (each as a structured multiple-choice question):
 
 - Is `## Delivery Mode: <mode>` present alongside `## Worktree`, declaring one of the four valid
   modes (defaulting to `worktree-to-pr` when unspecified), and — for `*-to-pr` modes — does the
-  checklist emit the PR-Review Maker→Fixer Cycle steps before the `[HUMAN]` merge?
+  checklist emit the PR-Review Maker→Fixer Cycle steps before the merge?
 - Does the plan structure match the user's intent? Are all acceptance criteria captured?
 - Are there open questions that surfaced during writing?
 - Is Gherkin completeness sufficient (every acceptance criterion has a scenario)?
@@ -449,12 +458,12 @@ The bias is: when a concept involves more than two interacting parts, an orderin
 
 #### PR Step Authoring Rule (per [Git Push Default Convention](../../repo-governance/development/workflow/git-push-default.md))
 
-Do NOT include `- [ ] Create PR`, `- [ ] Open PR`, `- [ ] Submit PR`, or equivalent PR creation steps in delivery.md unless EITHER:
+Emit PR steps according to the plan's declared Delivery Mode (Step 7 above):
 
-1. The user's prompt explicitly requests a PR.
-2. The plan's Git Workflow section contains an explicit PR instruction (not merely worktree execution).
+- **`worktree-to-pr` / `main-to-pr`** (the default is `worktree-to-pr`) — a `- [ ] [AI] Open a draft PR against main` step is **expected and correct**. Follow it with the PR-Review Maker→Fixer Cycle steps and then the merge step, tagged `[AI]` by default.
+- **`worktree-to-origin-main` / `main-to-origin-main`** — do NOT emit PR creation steps. These modes push straight to `main`; a PR step there contradicts the declared mode.
 
-Unsolicited PR steps conflict with Trunk Based Development. `plan-checker` will flag them as HIGH findings.
+The error to avoid is no longer "an unsolicited PR step" but **a PR step that disagrees with the declared mode in either direction**. `plan-checker`'s PR Step Authorization Check flags both directions.
 
 ## Reference Documentation
 
@@ -676,8 +685,8 @@ docs/governance-only plans are exempt — state the exemption explicitly in `tec
 ```markdown
 ### Post-Push CI Verification
 
-- [ ] Push changes to `main`
-- [ ] Monitor ALL GitHub Actions workflows triggered by the push
+- [ ] Push changes to the delivery target for the declared Delivery Mode (the PR branch under `worktree-to-pr` / `main-to-pr`; `origin main` under the direct-push modes)
+- [ ] Monitor ALL GitHub Actions workflows triggered by that push (for `*-to-pr` modes this is the PR's own check run)
 - [ ] Verify ALL CI checks pass — no exceptions
 - [ ] If any CI check fails, fix immediately and push a follow-up commit
 - [ ] Repeat until ALL GitHub Actions pass with zero failures

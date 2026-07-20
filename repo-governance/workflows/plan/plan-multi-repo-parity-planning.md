@@ -15,10 +15,10 @@ inputs:
     default: "ose-public, ose-primer, ose-infra"
   - name: mode
     type: enum
-    values: [main-to-main, worktree-to-main, worktree-to-pr]
-    description: "Where plans are authored and how they are delivered (see Modes section)"
+    values: [main-to-origin-main, worktree-to-origin-main, worktree-to-pr]
+    description: "Where plans are authored and how they are delivered (see Modes section). `main-to-origin-main` requires a primary checkout in every repo in the parity set and is unavailable for any bare repo (currently `ose-primer` and `ose-infra`)."
     required: false
-    default: worktree-to-main
+    default: worktree-to-pr
   - name: stage
     type: enum
     values: [in-progress, backlog]
@@ -33,9 +33,9 @@ inputs:
     default: strict
   - name: max-concurrency
     type: number
-    description: Maximum concurrent agents during gate runs
+    description: "Background agents run concurrently — the N in the N+1 model (1 main thread + N background agents = N+1 total). Raise only when independent work, machine capacity, and budget headroom all allow; lower under budget, runner, or disk pressure. Never self-promoted beyond the declared value."
     required: false
-    default: 2
+    default: 3
 outputs:
   - name: plans-created
     type: file-list
@@ -104,6 +104,37 @@ The orchestrator:
 7. Runs `plan-quality-gate` per plan until double-zero
 8. Delivers per the selected mode and reports outcomes
 
+### Parallel Propagation Shape
+
+The repos form a propagation fan-out, not a chain: **`ose-public` is the source of truth**, and
+`ose-primer` and `ose-infra` are independent downstream targets. Once the upstream decision is
+recorded, the two downstream repos are **independent DAG nodes** — author and deliver them in
+parallel under the N+1 model (`1 main thread + N background agents`, default **N=3**), never
+serialized behind one another. `ose-infra` does not participate in the parity loop for content it
+does not carry.
+
+The one hard serialization: **`apps/rhino-cli` must stay byte-identical across all three repos**, so
+plans touching it propagate one repo at a time rather than concurrently.
+
+### Delivery Shape Per Repo
+
+Each repo's plan is authored to the `worktree-to-pr` default, and each independent phase lands as
+its **own PR** — a strict **one worktree → one branch → one PR → one node** mapping, merged
+per-phase rather than batched at the end. Partial work reaches `main` merged-but-dark behind a
+**feature flag**; a phase lands unflagged only when it ships no user-reachable behaviour change and
+the step names that exemption. See
+[plan-planning §Planning Granularity](./plan-planning.md#planning-granularity) for the full rule,
+including per-phase PR granularity and the named flag-removal step.
+
+### Shared-Machine Safety
+
+All three repos share one machine's disk and git object store, and two of them are bare repos driven
+through worktrees. Every git action here is therefore bound by the **no-destructive-git** rule:
+never run an operation that discards a concurrent actor's uncommitted work, and never remove a
+worktree or branch you did not create. See
+[No Destructive Git Operations](../../development/workflow/no-destructive-git-operations.md) and
+[Worktree and Artifact Cleanup](../../development/workflow/worktree-and-artifact-cleanup.md).
+
 ## Invocation Point
 
 This workflow runs from the anchor repo — whichever repo in the parity set the invoker is
@@ -117,13 +148,21 @@ anchor repo has no special authority over other repos' plans.
 
 ## Modes
 
-### `main-to-main`
+### `main-to-origin-main`
 
 Author plans directly in the `main` working tree of each repo. Commit and push to `origin main`
 of each repo. Use when worktrees are not needed and direct main-branch access is acceptable for
-all repos in the parity set.
+all repos in the parity set. **Requires a primary checkout in every repo in the parity set** — a
+repo driven entirely through linked worktrees (a bare repo) has no primary `main` working tree to
+author in, so this mode is unavailable there. Currently `ose-primer` and `ose-infra` are both bare
+(`ose-public` is not); repo topology changes over time, so re-verify bareness per invocation via
+`git config --get core.bare` on the repo's **common dir** — never
+`git rev-parse --is-bare-repository` from inside a linked worktree, which reports `false` there
+regardless of the repo's actual topology (see
+[SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution))
+— rather than trusting this list.
 
-### `worktree-to-main` (Default)
+### `worktree-to-origin-main`
 
 Author plans in a worktree per repo. If the invoker is not already in a worktree when the
 workflow starts, provision one for each target repo:
@@ -143,11 +182,11 @@ initialization (`npm install` then `npm run doctor -- --fix`) is required per th
 practice. Commit in the worktree branch, push to `origin main` of each repo, then remove the
 worktree after delivery.
 
-### `worktree-to-pr`
+### `worktree-to-pr` (Default)
 
-Same worktree provisioning as `worktree-to-main`, but commit to a branch `plan/<objective-slug>`
-and push that branch. Create a PR per repo with `gh pr create` only if no open PR for that branch
-exists yet; otherwise push to the existing PR branch:
+Same worktree provisioning as `worktree-to-origin-main`, but commit to a branch
+`plan/<objective-slug>` and push that branch. Create a PR per repo with `gh pr create` only if no
+open PR for that branch exists yet; otherwise push to the existing PR branch:
 
 ```bash
 # Check for existing PR
@@ -157,13 +196,26 @@ gh pr list --head plan/<objective-slug>
 gh pr create --title "plan: <objective> parity" --body "..." --draft
 ```
 
-Use this mode when a formal review step is wanted before plans land on `main`.
+This is the repo-wide default (see the Git Workflow Delivery Modes bullet in
+[AGENTS.md](../../../AGENTS.md) and the
+[Plans Organization Convention §Delivery Mode](../../conventions/structure/plans.md#delivery-mode)):
+a formal review step happens before plans land on `main`, mirroring the same rationale for the
+sibling per-plan `## Delivery Mode` field these plans separately declare (see
+[Relationship to Each Repo's Own `## Delivery Mode`](#relationship-to-each-repos-own--delivery-mode)
+below).
 
-**Note on ose-primer**: Propagation into `ose-primer` may land via a worktree + branch + draft
-PR **or** via a direct push to `main` — both modes are allowed, the invoker chooses per run, and
-neither is the default. The grilling in Step 3 MUST surface this choice explicitly and record the
-invoker's decision (PR vs direct-to-main) before proceeding, so the selected delivery mode for the
-`ose-primer` mutation is never implicit.
+**Note on ose-primer**: When `ose-primer` is a parity target, propagation to it can be delivered
+EITHER as a draft PR OR as a direct push to `ose-primer:main`. The delivery mode is the caller's
+per-run choice, independent of this workflow's own `worktree-to-pr` default, so selecting
+`worktree-to-origin-main` for ose-primer is a first-class choice, not a deviation. In this family's
+current deployment, `ose-primer` (like `ose-infra`) is worked as a **bare** repository with no
+primary checkout — bareness is a property of a given clone, not a fixed attribute of the repo name,
+so re-verify with `git config --get core.bare` on the common dir or `git worktree list` rather than
+trusting this sentence to stay current (see
+[SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution)).
+Under that layout the two `main-to-*` modes are unavailable — every ose-primer mutation flows
+through a worktree. The grilling in Step 3 MUST surface the delivery-mode choice explicitly and
+record the invoker's decision before proceeding.
 
 ### Relationship to Each Repo's Own `## Delivery Mode`
 
@@ -253,9 +305,17 @@ Meta-dimensions to include alongside technical dimensions:
 - **Rationale doc location**: where each repo's `docs/explanation/<objective-slug>-parity-decisions.md`
   (or closest equivalent) will be created (app-scoped `apps/<app>/docs/`, lib-scoped
   `libs/<lib>/docs/`, repo governance tree, etc.)
-- **ose-primer delivery mode**: which delivery mode (draft PR or direct push to `main`) carries
-  the `ose-primer` mutation — both are allowed and neither is the default, so the choice must be
-  recorded (applies when ose-primer is in the parity set)
+- **Bare-repo delivery choice**: which Delivery Mode the invoker selects for any propagation
+  reaching a **bare** repo in the parity set — `worktree-to-pr` (draft PR) or
+  `worktree-to-origin-main` (direct push). A repo with no primary checkout (driven entirely
+  through linked worktrees) cannot use a `main-to-*` mode, because there is no primary `main`
+  working tree to author in or push from directly. Bind this rule to the property, not a repo
+  name — repo topology changes over time; currently both `ose-primer` and `ose-infra` are bare
+  (`ose-public` is not), but re-verify per invocation (see
+  [SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution))
+  rather than trusting this list. That per-destination choice is not settled by this workflow's own
+  `worktree-to-pr` default, so it must be recorded explicitly (applies whenever a bare repo is in
+  the parity set)
 - **Repo-specific constraints**: any repo constraint (private visibility, self-hosted CI runner,
   dual-CLI parity guard, missing toolchain) that forces a per-repo deviation
 
@@ -299,16 +359,42 @@ as the research-needed flag (yes / no). This flag governs whether Step 4 runs or
 
 **Mandatory meta-questions** (surface these explicitly regardless of mode):
 
-1. If ose-primer is in the parity set: "The ose-primer sync convention allows EITHER a draft PR
-   OR a direct push to `ose-primer:main` for every mutation — neither is the default, so a
-   delivery mode must be chosen explicitly. The selected parity mode implies
-   {draft PR | direct push to main}. Please confirm the delivery mode for ose-primer."
-   Options: (A) Direct push to `main` (`main-to-main` / `worktree-to-main`). (B) Draft PR
-   (`worktree-to-pr`). Record the chosen mode.
-2. Rationale doc location per repo (where does `<objective-slug>-parity-decisions.md` live in
+1. **Bare-repo mode availability** (property-bound — fires for any repo in the parity set with no
+   primary checkout, currently `ose-primer` and `ose-infra`; re-verify per invocation via
+   `git config --get core.bare` on the common dir, never `git rev-parse --is-bare-repository` from
+   a linked worktree (see
+   [SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution)),
+   rather than trusting this list) — if the selected `mode` is `main-to-origin-main` and any such
+   repo is in the parity set: "`<repo>` is a bare repo with no primary `main` working tree, so
+   `main-to-origin-main` cannot run there for the whole run — it is not a deviation to justify, it
+   is unexecutable. Switch the run to a mode that does not require a primary checkout."
+   Options: (A) Switch the whole run to `worktree-to-origin-main` — preserves the direct-push,
+   no-PR-review semantics closest to the originally selected `main-to-origin-main`, substituting
+   only a worktree for the unavailable primary checkout _(Recommended — smallest semantic change
+   from the mode the invoker actually chose)_. (B) Switch the whole run to `worktree-to-pr` — adds
+   a draft-PR review gate before the plan documents land on `main`; only offer this option when
+   `worktree-to-pr` is not itself excluded by the invocation's own constraints (for example, a
+   calling composite workflow that already pinned this run to a non-PR delivery mode) — when it is
+   excluded, present option (A) only. There is no "accept deviation" option here — an invoker
+   cannot justify past an impossible mode. **Re-evaluation on mode change**: question 2 below
+   conditions on `mode is worktree-to-origin-main`; a mode switch made here MUST be re-checked
+   against question 2's condition before proceeding — choosing (A) here can newly trigger
+   question 2's sync-convention deviation even when question 2 would not have fired against the
+   originally selected `mode`, so do not silently skip that re-check because question 2 was already
+   passed over once.
+2. If ose-primer is in the parity set and mode is `worktree-to-origin-main` (whether selected
+   directly or arrived at via question 1's re-evaluation above):
+   "The ose-primer sync convention requires PRs for all mutations to ose-primer. The selected
+   mode bypasses this. Please confirm the deviation or switch to `worktree-to-pr`."
+   Options: (A) Accept deviation — record the justification in the deviation matrix; keeps the
+   direct-push mode for ose-primer at the cost of bypassing its PR-review convention. (B) Switch
+   mode to `worktree-to-pr` — restores the repo-wide PR-review default for ose-primer without
+   reopening question 1's resolution for the rest of the parity set _(Recommended when no explicit
+   reason favors bypassing ose-primer's PR convention)_.
+3. Rationale doc location per repo (where does `<objective-slug>-parity-decisions.md` live in
    each repo?).
-3. Any repo-specific constraint flagged in Step 2 that forces a deviation.
-4. Research-needed flag: are there external claims (harness/vendor conventions, library/tool
+4. Any repo-specific constraint flagged in Step 2 that forces a deviation.
+5. Research-needed flag: are there external claims (harness/vendor conventions, library/tool
    behavior, prior art) that require verification before authoring the plans?
 
 **Output**: A fully resolved deviation matrix. Every row has a recorded decision and — for
@@ -499,11 +585,12 @@ docs(explanation): add <objective-slug> parity decisions rationale
 
 **Per mode**:
 
-- `main-to-main`: Push each repo's commits to `origin main` directly.
-- `worktree-to-main`: Push each repo's worktree commits to `origin main`. Remove worktrees
+- `main-to-origin-main`: Push each repo's commits to `origin main` directly.
+- `worktree-to-origin-main`: Push each repo's worktree commits to `origin main`. Remove worktrees
   after delivery: `git worktree remove worktrees/<objective-slug> && git worktree prune`.
-- `worktree-to-pr`: Push branch `plan/<objective-slug>` to each repo. Create or update a draft
-  PR per repo via `gh pr create --draft` (skip creation if a PR for that branch already exists).
+- `worktree-to-pr` (default): Push branch `plan/<objective-slug>` to each repo. Create or update a
+  draft PR per repo via `gh pr create --draft` (skip creation if a PR for that branch already
+  exists).
 
 **Success criteria**: All commits land at the intended targets; hooks pass; no secrets committed.
 
@@ -570,7 +657,7 @@ Every deviation requires:
 
 ## Example Usage
 
-### Default: All Three Repos, worktree-to-main, in-progress
+### Default: All Three Repos, worktree-to-pr, in-progress
 
 ```
 User: "Run plan-multi-repo-parity-planning for objective: standardize markdown gates across
@@ -580,18 +667,19 @@ User: "Run plan-multi-repo-parity-planning for objective: standardize markdown g
 The orchestrator surveys each repo, builds the deviation matrix, grills the invoker (Step 3),
 optionally delegates research to `web-researcher` (Step 4), grills again post-research
 (Step 5), authors three plans (one per repo) in `plans/in-progress/standardize-markdown-gates/`,
-gates each plan, and pushes each plan to its repo's `origin main` via worktrees.
+gates each plan, and opens a draft PR per repo rather than pushing directly to `origin main` —
+the repo-wide `worktree-to-pr` default.
 
-### worktree-to-pr with backlog stage
+### Direct push with backlog stage
 
 ```
 User: "Run plan-multi-repo-parity-planning for objective: align agent catalogs
-       mode: worktree-to-pr stage: backlog"
+       mode: worktree-to-origin-main stage: backlog"
 ```
 
 Creates three backlog plans at `plans/backlog/<YYYY-MM-DD>__align-agent-catalogs/`, gates
-each, and opens a draft PR per repo rather than pushing directly to main. Useful when the
-invoker wants a formal review before plans are active.
+each, and pushes each plan directly to its repo's `origin main` via worktrees instead of opening
+a PR. Useful when the invoker wants to skip the formal review step for low-risk plan documents.
 
 ### Subset of Two Repos
 

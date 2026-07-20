@@ -54,18 +54,18 @@ re-verified over time by the
 [`repo-harness-compatibility-quality-gate`](../../repo-governance/workflows/repo/repo-harness-compatibility-quality-gate.md)
 workflow.
 
-| Harness                    | Reads root `AGENTS.md`?                                | Tool-specific instruction surface                                                                        | Project MCP config                          | Custom-agent surface                                                   | Skills surface                           |
-| -------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------- |
-| **Claude Code**            | No — reads `CLAUDE.md` (bridged)                       | `CLAUDE.md` (shim `@AGENTS.md`), `.claude/`                                                              | `.mcp.json`                                 | `.claude/agents/*.md`                                                  | `.claude/skills/*/SKILL.md`              |
-| **OpenCode**               | Yes                                                    | `.opencode/agents/` (auto-synced); reads `.claude/skills/` natively                                      | `opencode.json`                             | `.opencode/agents/*.md`                                                | reads `.claude/skills/`                  |
-| **OpenAI Codex CLI**       | Yes (since Apr 2025)                                   | `AGENTS.override.md` (overrides), `.codex/config.toml`                                                   | `.codex/config.toml` `[mcp_servers]` (TOML) | `[agents.<name>]` in `config.toml`                                     | `.agents/skills/`                        |
-| **GitHub Copilot**         | Yes (nearest file wins)                                | `.github/copilot-instructions.md`, `.github/instructions/*.instructions.md`                              | `.vscode/mcp.json` (VS Code)                | `.github/agents/*.agent.md` (also reads `.claude/agents/`)             | n/a                                      |
-| **Cursor**                 | Yes                                                    | `.cursor/rules/*.mdc` (+ legacy `.cursorrules`)                                                          | `.cursor/mcp.json`                          | `.cursor/agents/*.md` (also reads `.claude/agents/`, `.codex/agents/`) | `.cursor/skills/`                        |
-| **Windsurf**               | Yes                                                    | `.windsurf/rules/*.md` (+ legacy `.windsurfrules`), `.windsurf/workflows/`                               | global only (no documented project file)    | not officially documented                                              | `.windsurf/skills/` (needs verification) |
-| **JetBrains Junie**        | Yes — `.junie/AGENTS.md` > root `AGENTS.md`            | `.junie/AGENTS.md`, `.junie/rules/*.md` (imports `.claude/agents/`, `.codex/agents/`, `.claude/skills/`) | `.junie/mcp/mcp.json`                       | `.junie/agents/`, `.agents/`                                           | `.junie/skills/<name>/SKILL.md`          |
-| **Amazon Q Developer**     | No (open feature request #2712)                        | `.amazonq/rules/*.md` (consumed via agent JSON `resources`)                                              | `.amazonq/mcp.json`                         | JSON in `.amazonq/` (local) or `~/.aws/amazonq/cli-agents/`            | none                                     |
-| **Google Antigravity CLI** | Yes (since v1.20.3) — `GEMINI.md` overrides if present | `GEMINI.md` (overrides), `.agent/rules/*.md`                                                             | `mcp_config.json` (root or `.agents/`)      | runtime-orchestrated (no declarative file)                             | `.agents/skills/<name>/SKILL.md`         |
-| **Pi (pi.dev)**            | Yes (also reads `CLAUDE.md`)                           | `.pi/settings.json`, `.pi/AGENTS.md`, `.pi/SYSTEM.md`                                                    | none (intentionally no native MCP)          | none built-in (extension-based)                                        | `.agents/skills/` or `.pi/skills/`       |
+| Harness                                                          | Reads root `AGENTS.md`?                                                                                                                            | Tool-specific instruction surface                                                                        | Project MCP config                                                 | Custom-agent surface                                                                             | Skills surface                            |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ----------------------------------------- |
+| **Claude Code**                                                  | No — reads `CLAUDE.md` (bridged)                                                                                                                   | `CLAUDE.md` (shim `@AGENTS.md`), `.claude/`                                                              | `.mcp.json`                                                        | `.claude/agents/*.md`                                                                            | `.claude/skills/*/SKILL.md`               |
+| **OpenCode**                                                     | Yes                                                                                                                                                | `.opencode/agents/` (auto-synced); reads `.claude/skills/` natively                                      | `opencode.json`                                                    | `.opencode/agents/*.md`                                                                          | reads `.claude/skills/`                   |
+| **OpenAI Codex CLI**                                             | Yes (since Apr 2025)                                                                                                                               | `AGENTS.override.md` (overrides), `.codex/config.toml`                                                   | `.codex/config.toml` `[mcp_servers]` (TOML)                        | `[agents.<name>]` in `config.toml`                                                               | `.agents/skills/`                         |
+| **GitHub Copilot**                                               | Yes (nearest file wins)                                                                                                                            | `.github/copilot-instructions.md`, `.github/instructions/*.instructions.md`                              | `.vscode/mcp.json` (VS Code)                                       | `.github/agents/*.agent.md` (also reads `.claude/agents/`)                                       | n/a                                       |
+| **Cursor**                                                       | Yes                                                                                                                                                | `.cursor/rules/*.mdc` (+ legacy `.cursorrules`)                                                          | `.cursor/mcp.json`                                                 | `.cursor/agents/*.md` (also reads `.claude/agents/`, `.codex/agents/`)                           | `.cursor/skills/`                         |
+| **Windsurf**                                                     | Yes                                                                                                                                                | `.windsurf/rules/*.md` (+ legacy `.windsurfrules`), `.windsurf/workflows/`                               | global only (no documented project file)                           | not officially documented                                                                        | `.windsurf/skills/` (needs verification)  |
+| **JetBrains Junie**                                              | Yes — `.junie/AGENTS.md` > root `AGENTS.md`                                                                                                        | `.junie/AGENTS.md`, `.junie/rules/*.md` (imports `.claude/agents/`, `.codex/agents/`, `.claude/skills/`) | `.junie/mcp/mcp.json`                                              | `.junie/agents/`, `.agents/`                                                                     | `.junie/skills/<name>/SKILL.md`           |
+| **Amazon Q Developer** (sunsetting — superseded by **Kiro CLI**) | Q Developer CLI: No (feature request #2712, still open). **Kiro CLI: Yes** — `AGENTS.md` at workspace root or `~/.kiro/steering/`, always included | Q Developer: `.amazonq/rules/*.md` (consumed via agent JSON `resources`) → Kiro: `.kiro/steering/`       | Q Developer: `.amazonq/mcp.json` → Kiro: `.kiro/settings/mcp.json` | Q Developer: JSON in `.amazonq/` (local) or `~/.aws/amazonq/cli-agents/` → Kiro: `.kiro/agents/` | Q Developer: none → Kiro: `.kiro/skills/` |
+| **Google Antigravity CLI**                                       | Yes (since v1.20.3) — `GEMINI.md` overrides if present                                                                                             | `GEMINI.md` (overrides), `.agent/rules/*.md`                                                             | `mcp_config.json` (root or `.agents/`)                             | runtime-orchestrated (no declarative file)                                                       | `.agents/skills/<name>/SKILL.md`          |
+| **Pi (pi.dev)**                                                  | Yes (also reads `CLAUDE.md`)                                                                                                                       | `.pi/settings.json`, `.pi/AGENTS.md`, `.pi/SYSTEM.md`                                                    | none (intentionally no native MCP)                                 | none built-in (extension-based)                                                                  | `.agents/skills/` or `.pi/skills/`        |
 
 **Note on Google Antigravity CLI**: Gemini CLI was superseded by Antigravity CLI in 2026. The
 `GEMINI.md` filename is a legacy artifact from Gemini CLI that Antigravity continues to support
@@ -93,6 +93,55 @@ Two sets of binding directories already exist in the repository but were **not**
 The multi-harness compatibility work documents these directories rather than clobbering them. The
 `rhino-cli agents validate-bindings` command (see below) treats them as known-partial bindings and
 does not fail if it encounters them without a generated counterpart.
+
+## Amazon Q Developer CLI → Kiro CLI succession
+
+**Verified 2026-07-20 against AWS and Kiro primary sources.** This transition is in progress through
+April 2027; re-check as the milestones below pass.
+
+AWS has **rebranded the Amazon Q Developer CLI to Kiro CLI** ("The Amazon Q Developer CLI has been
+rebranded to Kiro" —
+[AWS docs](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/upgrade-to-kiro.html)). Sunset
+milestones, from the
+[Amazon Q Developer end-of-support announcement](https://aws.amazon.com/blogs/devops/amazon-q-developer-end-of-support-announcement/):
+
+- **2026-05-15** — new sign-ups for Amazon Q Developer no longer available.
+- **2026-05-29** — Opus 4.6 no longer available on Q Developer Pro. Opus 4.5 and other existing
+  models remain; the latest coding models (including Opus 4.7) are available **exclusively on
+  Kiro**.
+- **2027-04-30** — Amazon Q Developer IDE plugins and paid subscriptions reach end of support,
+  giving a 12-month transition window.
+
+**The `AGENTS.md` situation reversed.** Amazon Q Developer CLI did not read `AGENTS.md` natively, and
+[feature request #2712](https://github.com/aws/amazon-q-developer-cli/issues/2712) remains open —
+never resolved for that product. **Kiro CLI supports the `AGENTS.md` standard natively**: files at
+the workspace root or in `~/.kiro/steering/` are picked up automatically and are **always included**,
+unlike custom steering files ([Kiro steering docs](https://kiro.dev/docs/cli/steering/)). Workspace
+scope overrides global on conflict. Note that **custom (non-default) Kiro agents do not auto-include
+steering** — they need an explicit `{"resources": ["file://.kiro/steering/**/*.md"]}` entry.
+
+Kiro CLI orchestration capabilities relevant to this repo's N+1 model
+([Kiro subagents docs](https://kiro.dev/docs/cli/chat/subagents/)):
+
+- **Native DAG task-graphs** — "Subagents support breaking down complex tasks into a directed
+  acyclic graph (DAG) where tasks can depend on each other"; independent tasks run in parallel while
+  dependent ones gate on their dependencies.
+- **Up to four concurrent subagents** — "The main agent can spawn up to four subagents at once."
+- **Isolation is context-level, not git-worktree-level.** Kiro's own docs describe each subagent
+  getting "its own isolated context" and say nothing about git worktrees. Worktree-based isolation
+  for Kiro exists only as a **third-party** orchestration pattern (e.g. the community
+  [`requix/kiro-team`](https://github.com/requix/kiro-team) project), not as a first-party feature.
+- **`q` and `q chat` are preserved** — "All the functionality in Amazon Q Developer CLI is available
+  in Kiro CLI", though `kiro-cli` is the recommended entry point.
+- **Config auto-migrates on upgrade** — agents and prompts from `~/.aws/amazonq` copy to `~/.kiro`,
+  `~/.aws/amazonq/mcp.json` to `~/.kiro/settings/mcp.json`, and the `rules` folder to
+  `~/.kiro/steering` ([migration guide](https://kiro.dev/docs/cli/migrating-from-q/)).
+
+**Implication for this repo's bridge**: the generated `.amazonq/` bridge exists because Q Developer
+could not read `AGENTS.md`. Kiro can. The bridge stays for now — it still serves Q Developer users
+through the 2027-04-30 end-of-support date — but once this repo targets Kiro rather than Q Developer,
+the bridge becomes redundant and `.amazonq/` can be retired in favour of Kiro's native `AGENTS.md`
+read. That retirement is a separate, deliberate change, not a side effect of this catalog update.
 
 ## No-Shadowing Note
 

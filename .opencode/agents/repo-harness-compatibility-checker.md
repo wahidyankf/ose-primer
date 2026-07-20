@@ -66,7 +66,7 @@ skill. **Phase 0 always runs regardless of the `scope` input.**
 
 ### Invariant 1 — Governance prose vendor-neutrality
 
-- **Tool**: `nx run rhino-cli:build --skip-nx-cache && ./apps/rhino-cli/dist/rhino-cli repo-governance vendor-audit repo-governance/`
+- **Tool**: `nx run rhino-cli:build --skip-nx-cache && ./apps/rhino-cli/dist/rhino-cli repo-governance vendor validate repo-governance/`
 - **Pass**: command exits 0 with `GOVERNANCE VENDOR AUDIT PASSED: no violations found`
 - **Fail**: any non-zero exit; report each violation with file path, line number, forbidden term,
   and suggested replacement (already in tool output)
@@ -74,7 +74,7 @@ skill. **Phase 0 always runs regardless of the `scope` input.**
 
 ### Invariant 2 — Root instruction surface vendor-neutrality
 
-- **Tool**: the same `rhino-cli repo-governance vendor-audit` binary run against `AGENTS.md` and `CLAUDE.md`
+- **Tool**: the same `rhino-cli repo-governance vendor validate` binary run against `AGENTS.md` and `CLAUDE.md`
 - **Pass**: both files exit 0 with no violations outside `binding-example` fences and "Platform Binding Examples" headings
 - **Fail**: any violation in load-bearing prose
 - **Default criticality**: HIGH · **Confidence**: HIGH (deterministic regex match)

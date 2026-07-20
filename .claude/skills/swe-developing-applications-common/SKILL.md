@@ -403,8 +403,8 @@ docs/explanation/software-engineering/programming-languages/[language]/README.md
 **Workflow Conventions**:
 
 - [Test-Driven Development Convention](../../../repo-governance/development/workflow/test-driven-development.md) - **Red→Green→Refactor mandate** — write failing test before any production code
-- [Trunk Based Development](../../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow details (default: direct push to `main` from main checkout AND from worktree via `git push origin HEAD:main`; draft PR opt-in only when explicitly requested)
-- [PR Merge Protocol](../../../repo-governance/development/workflow/pr-merge-protocol.md) - Explicit user approval required, all quality gates must pass
+- [Trunk Based Development](../../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow details (all development targets `main`; see [Plans Organization Convention §Delivery Mode](../../../repo-governance/conventions/structure/plans.md#delivery-mode) for how a plan reaches `main` — `worktree-to-pr` is the default)
+- [PR Merge Protocol](../../../repo-governance/development/workflow/pr-merge-protocol.md) - `[AI]` merges by default once the five hardened preconditions hold; a `[HUMAN]` merge gate is an explicit per-plan opt-in; all quality gates must pass before merge
 - [Commit Messages Convention](../../../repo-governance/development/workflow/commit-messages.md) - Conventional Commits specification
 - [Implementation Workflow](../../../repo-governance/development/workflow/implementation.md) - Make it work → right → fast (TDD drives each stage)
 

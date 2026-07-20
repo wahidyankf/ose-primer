@@ -79,8 +79,11 @@ will adopt the same text. Until `ose-public` Phase G ships, the diff check
 
 `ose-primer`'s Sync Convention Safety Invariant 6 mandates that every mutation
 reaching `ose-primer` MUST flow through a PR (PR-only default). This plan instead
-delivered **main-to-main**: commits pushed directly to `origin main` via the
-worktree branch, no PR.
+delivered **main-to-main** (the mode name at the time of this 2026-06-11 decision;
+the same primary-checkout-direct-push mode was later renamed `main-to-origin-main`
+in the canonical four-mode Delivery Mode vocabulary — see
+[Plans Organization Convention §Delivery Mode](../../repo-governance/conventions/structure/plans.md#delivery-mode)):
+commits pushed directly to `origin main` via the worktree branch, no PR.
 
 **Why the invoker accepted the deviation**: this plan is a docs-and-structure
 change — plan markdown, a rationale doc, a convention amendment, agent-doc

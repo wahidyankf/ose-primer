@@ -26,9 +26,9 @@ inputs:
     default: 7
   - name: max-concurrency
     type: number
-    description: Maximum number of agents/tasks that can run concurrently during workflow execution
+    description: "Background agents run concurrently — the N in the N+1 model (1 main thread + N background agents = N+1 total). Raise only when independent work, machine capacity, and budget headroom all allow; lower under budget, runner, or disk pressure. Never self-promoted beyond the declared value."
     required: false
-    default: 2
+    default: 3
 outputs:
   - name: final-status
     type: enum
@@ -120,7 +120,7 @@ Run the checker's **Phase 0 (deterministic cross-vendor parity invariants) first
 
 **Phase 0 — Cross-vendor parity invariants** (offline, Bash, run before any web research):
 
-1. **Governance prose vendor-neutrality** — `… rhino-cli repo-governance vendor-audit repo-governance/` (HIGH)
+1. **Governance prose vendor-neutrality** — `… rhino-cli repo-governance vendor validate repo-governance/` (HIGH)
 2. **Root instruction surface vendor-neutrality** — same vendor-audit on `AGENTS.md` and `CLAUDE.md` (HIGH)
 3. **Binding sync no-op** — `npm run generate:bindings && git diff --quiet .opencode/ .amazonq/` (MEDIUM) — covers both secondary binding directories
 4. **Agent count parity** — `ls .claude/agents/*.md | wc -l` vs `.opencode/agents/*.md` (README.md intentionally excluded) (HIGH)

@@ -99,7 +99,7 @@ rhino-cli agents validate-bindings
 Run the vendor audit using the `rhino-cli` build:
 
 ```bash
-nx run rhino-cli:build --skip-nx-cache && ./apps/rhino-cli/dist/rhino-cli repo-governance vendor-audit repo-governance/
+nx run rhino-cli:build --skip-nx-cache && ./apps/rhino-cli/dist/rhino-cli repo-governance vendor validate repo-governance/
 ```
 
 - **Pass**: exits 0 → log as VALIDATED
@@ -119,7 +119,7 @@ The fixer DOES NOT auto-remediate the following — it surfaces them in the fix 
 
 **Phase 0 parity invariants (only Invariant 3 is auto-fixable):**
 
-- **Invariant 1 fails** (`repo-governance` vendor-audit violations): rewriting governance prose requires human judgment per the convention's Migration Guidance
+- **Invariant 1 fails** (`repo-governance` vendor validate violations): rewriting governance prose requires human judgment per the convention's Migration Guidance
 - **Invariant 2 fails** (`AGENTS.md` / `CLAUDE.md` vendor-audit violations): rewriting load-bearing root-instruction prose requires human judgment
 - **Invariant 4 fails** (count mismatch / agent-set divergence): an orphan in `.opencode/` may need deletion OR a missing `.claude/` counterpart may need authoring — a product decision
 - **Invariant 5 fails** (color-map or tier-map gap): adding a new color/tier requires a role-mapping (color → role) or capability-tier (model → tier) decision a fixer cannot make mechanically

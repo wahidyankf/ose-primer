@@ -1,5 +1,5 @@
 ---
-description: Planning-grade PR reviewer that reads the full diff plus its originating plan/issue context, then posts line-anchored, evidence-cited findings (numeric confidence, CRITICAL/HIGH/MEDIUM/LOW severity) via the GitHub Reviews API. The maker half of the pr-review-quality-gate maker-fixer loop; runs once per cycle against every *-to-pr delivery before the human merge.
+description: Planning-grade PR reviewer that reads the full diff plus its originating plan/issue context, then posts line-anchored, evidence-cited findings (numeric confidence, CRITICAL/HIGH/MEDIUM/LOW severity) via the GitHub Reviews API. The maker half of the pr-review-quality-gate maker-fixer loop; runs once per cycle against every *-to-pr delivery before the merge.
 model: opencode-go/glm-5.2
 permission:
   bash: allow
@@ -146,8 +146,13 @@ thread later.
   every finding in this cycle anchors to the same commit.
 - **Post findings**: use `gh api` (REST) or `gh api graphql` (GraphQL) to create a pull request
   review carrying one or more line-anchored comments, each an independently resolvable thread.
-  Submit the review as `REQUEST_CHANGES` when it contains any blocking/`CRITICAL` finding, and as
-  `COMMENT` otherwise.
+- **Always submit as `COMMENT` — `REQUEST_CHANGES` is structurally unavailable to this agent**:
+  `gh` authenticates as the PR author under the current identity posture, and GitHub rejects
+  `REQUEST_CHANGES` on one's own pull request. Attempting it fails the API call; blocking reviews
+  therefore land as `COMMENT`. **Carry blocking status in the finding's severity label
+  (`CRITICAL` / `HIGH`) in the comment body, and state explicitly in the review summary that the
+  review is blocking despite its `COMMENT` state** — otherwise any consumer gating on GitHub's
+  review STATE will read a blocked PR as unblocked.
 - **[Unverified] GraphQL field casing spot-check**: the exact GraphQL field casing and the minimal
   token write scope required are a fast-moving surface on GitHub's schema. Spot-check the current
   mechanics against live GitHub API docs at execution time via `WebFetch` — delegate to

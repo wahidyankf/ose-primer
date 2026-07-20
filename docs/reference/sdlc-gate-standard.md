@@ -34,7 +34,7 @@ repo). Each stage names the surface file and the exact command sequence.
 | 2. commit-msg        | `.husky/commit-msg`                     | `git commit` (on the message) |
 | 3. pre-push          | `.husky/pre-push`                       | `git push`                    |
 | 4. PR quality gate   | `.github/workflows/pr-quality-gate.yml` | pull request (+ branch push)  |
-| 5. main quality gate | `.github/workflows/main-ci.yml`         | push to `main` (post-merge)   |
+| 5. main quality gate | `.github/workflows/main-ci.yml`         | schedule 4x/day + dispatch    |
 
 A standalone `validate-env.yml` workflow runs on `pull_request` and `push:main` in parallel with the
 PR and main gates. No CRON pipeline is part of the gate set; `test:integration`, `test:e2e`, and
@@ -184,9 +184,12 @@ everything the two local hooks run.
 
 ### Stage 5: Main Quality Gate
 
-`main-ci.yml` (post-merge, on push to `main`). Runs the same job set as the PR gate but across every
-project (`nx run-many --all`, not `nx affected`) — the one post-merge place the whole repo is
-re-verified green. The governance validators run unconditionally (not path-gated). `$P` = `$(($(nproc)-1))`.
+`main-ci.yml` runs on a **4x/day schedule** (`cron: "0 5,11,17,23 * * *"` — 06:00/12:00/18:00/00:00
+WIB) plus `workflow_dispatch`. It has **no `push` trigger**: the per-push trigger was dropped in
+favour of the schedule, accepting up to ~6h lag before `main` is re-verified, with manual dispatch
+available when a result is needed sooner. Runs the same job set as the PR gate but across every
+project (`nx run-many --all`, not `nx affected`) — the one place the whole repo is re-verified green
+rather than just the affected slice. The governance validators run unconditionally (not path-gated). `$P` = `$(($(nproc)-1))`.
 
 | Job                                                   | Exact command(s) CI runs                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Scope         |
 | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
@@ -214,8 +217,13 @@ Concretely: resolve the current tree root with `git rev-parse --show-toplevel` a
 with `git rev-parse --git-common-dir`; never treat `.git/` as a directory; resolve `repo-config.yml`,
 exclude lists, and test fixtures from the current worktree's toplevel, never the main checkout. Husky
 hooks invoke via `core.hooksPath`, which linked worktrees inherit from the common dir, so the hooks
-fire in a worktree unchanged. `ose-infra` is a bare repo worked only through linked worktrees (no
-primary checkout exists), so worktree-agnostic execution is a hard requirement there, not a nicety.
+fire in a worktree unchanged. Bareness is a property of a given clone, not a fixed attribute of a
+repo name — as of this writing `ose-infra` **and** `ose-primer` are both worked only through linked
+worktrees (no primary checkout exists for either), which makes worktree-agnostic execution a hard
+requirement for both, not a nicety confined to one. Verify current layout with
+`git config --get core.bare` on the common dir (never `git rev-parse --is-bare-repository` from
+inside a linked worktree — it reports `false` there regardless of the real topology) or
+`git worktree list`, rather than trusting this sentence to stay current.
 
 ## Target Standard
 
@@ -338,7 +346,7 @@ entries) are excluded per [Divergence Policy](#divergence-policy).
 | pre-push ≡ PR quality gate runs only `test:quick`                                                     | ✅     | `test:integration`/`test:e2e` never appear in any gate surface; CRON-only.                                                                                                                                                                                                                                                                                                                                                                                                |
 | Per-level `@covers` coverage model                                                                    | ⚠️     | Structurally present (target names, `coverage.projects` registry) in all 3. Content maturity varies: some primer projects still carry echo-stubbed `specs:behavior:coverage` pending real `@covers` tagging; infra's `coralpolyp-be` `specs:domain:coverage` is an echo placeholder pending a real `domain/**` split; the CLI's dedicated domain-scoping engine is unwired (routes to the same engine as behavior-coverage everywhere). Tracked separately, non-blocking. |
 | Canonical CI workflow names present                                                                   | ✅     | `pr-quality-gate.yml`, `validate-env.yml`, `main-ci.yml` in all 3.                                                                                                                                                                                                                                                                                                                                                                                                        |
-| Worktree-agnostic guardrails                                                                          | ✅     | Verified from both the primary checkout and a linked worktree in all 3 (infra's bare-repo-only layout is the hard case — confirmed via its actual daily worktree execution, not a throwaway check).                                                                                                                                                                                                                                                                       |
+| Worktree-agnostic guardrails                                                                          | ✅     | Verified from a linked worktree in all 3, and additionally from the primary checkout in ose-public (the only non-bare clone); the two bare repos (ose-infra, ose-primer) are the hard case — confirmed via actual daily worktree execution.                                                                                                                                                                                                                               |
 | specs/ C4 structure (every app + every lib)                                                           | ✅     | Every spec area across all 3 repos has `product/`, `system-context/`, `containers/`, `components/`, `behavior/gherkin/` — including all app-level libs (4 in public, 7 in primer, 2 in infra) that were missing this structure entirely before this pass.                                                                                                                                                                                                                 |
 
 All CI runs for the final commit on each repo's `main` are green (a transient jar-download flake on
