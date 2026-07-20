@@ -482,6 +482,29 @@ stateDiagram-v2
     Done --> [*]
 ```
 
+#### Render-Fidelity Caveat: Source-Correct Can Still Be Render-Wrong
+
+The character limits above are a **proxy**, not a guarantee. `stateDiagram-v2` edge labels can
+**clip in GitHub's renderer** — the diagram is syntactically valid, passes every text-based
+validator, and is still silently wrong as displayed to the reader. **No text-based validator can
+see this**, because the defect exists only in the rendered output.
+
+Three consequences bind any author or checker working on state diagrams:
+
+1. **Visually confirm state diagrams in the GitHub renderer** (or an equivalent Mermaid preview)
+   before treating them as correct. A green `rhino-cli docs validate-mermaid` run is necessary, not
+   sufficient.
+2. **Character count does not predict clipping.** Clipping depends on glyph widths and diagram
+   layout, not raw length — labels well under a character threshold have clipped in practice while
+   longer labels rendered fine elsewhere. Any future validator rule MUST therefore derive its
+   threshold **empirically** from rendered output, never assume a simple character count.
+3. **Any such rule must WARN, never FAIL.** A failing gate on a heuristic threshold would block on a
+   defect the validator cannot actually detect — a WARN-level check is the only form that is safe
+   to add without first exhaustively confirming which labels actually clip.
+
+A candidate `rhino-cli` WARN-level rule for this is a future enhancement, not yet filed as a plan in
+this repo.
+
 ### Width Violation Fix Strategy Guide
 
 When `rhino-cli docs validate-mermaid` reports a `width_exceeded` violation, follow

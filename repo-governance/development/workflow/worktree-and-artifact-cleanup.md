@@ -81,9 +81,7 @@ These bound every action the gate takes.
 - **Verify not in use before deleting.** Check, then delete. When in doubt, leave it. An artifact left
   behind costs disk; an artifact wrongly deleted costs someone else's work.
 - **Never delete a shared cache.** In particular, the **shared cargo `target/` directory** — the
-  symlinked shared build output introduced by the
-  [`rust-cargo-target-dir-sharing`](../../../plans/done/2026-07-19__rust-cargo-target-dir-sharing/)
-  plan — is depended on by concurrent builds in every other worktree. Removing it breaks them. The
+  symlinked shared build output — is depended on by concurrent builds in every other worktree. Removing it breaks them. The
   same reasoning applies to any shared cache: if another session can be relying on it, it is out of
   scope for a plan-scoped cleanup.
 - **Cleanup is itself non-destructive to others.** The gate may not use any operation that a
