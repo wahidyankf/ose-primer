@@ -222,9 +222,12 @@ by the invoker.
 **The default**: the `ose-primer` Sync Convention's PR-only Safety Invariant
 mandates that all `ose-primer` mutations flow through a **draft PR**.
 
-**The deviation**: this plan was delivered **main-to-main** — commits (plan files
-and the gate changes) push directly to `origin main`, bypassing the PR-only
-default. **No PR was opened.**
+**The deviation**: this plan was delivered **main-to-main** (the mode name at the time of this
+2026-06-12 decision; the same primary-checkout-direct-push mode was later renamed
+`main-to-origin-main` in the canonical four-mode Delivery Mode vocabulary — see
+[Plans Organization Convention §Delivery Mode](../../repo-governance/conventions/structure/plans.md#delivery-mode))
+— commits (plan files and the gate changes) push directly to `origin main`, bypassing the
+PR-only default. **No PR was opened.**
 
 **Justification** (verbatim from the source brief): "invoker explicit
 instruction; plan files are low-risk planning docs, not template-content

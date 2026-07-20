@@ -19,9 +19,12 @@ avoids any risk of primer regressing an already-green reference.
 
 ## R2 — Delivery mode
 
-`ose-primer`'s plan was delivered `worktree-to-main`: a git worktree was created,
-all work committed inside it, and then pushed directly to `origin main` via
-`git push origin HEAD:main`. This is ordinary Trunk-Based Development for a
+`ose-primer`'s plan was delivered `worktree-to-main` (the mode name at the time of this
+2026-06-10 decision; the same worktree-to-direct-push mode was later renamed
+`worktree-to-origin-main` in the canonical four-mode Delivery Mode vocabulary — see
+[Plans Organization Convention §Delivery Mode](../../repo-governance/conventions/structure/plans.md#delivery-mode)):
+a git worktree was created, all work committed inside it, and then pushed directly to
+`origin main` via `git push origin HEAD:main`. This is ordinary Trunk-Based Development for a
 maintainer-driven operation.
 
 ---

@@ -153,8 +153,11 @@ and GitHub-hosted runners have incompatible configuration.
 **Decision**: ose-primer's plan pushes directly to `origin main` from the worktree branch
 (`git push origin HEAD:main`), bypassing the PR-only default.
 
-**Why**: The invoker explicitly selected `worktree-to-main` for the entire parity set.
-ose-primer's own
+**Why**: The invoker explicitly selected `worktree-to-main` (the mode name at the time of this
+2026-06-07 decision; the same direct-push-to-`origin-main` mode was later renamed
+`worktree-to-origin-main` in the canonical four-mode Delivery Mode vocabulary — see
+[Plans Organization Convention §Delivery Mode](../../repo-governance/conventions/structure/plans.md#delivery-mode))
+for the entire parity set. ose-primer's own
 [git-push-default convention](../../repo-governance/development/workflow/git-push-default.md)
 also defaults to direct main push (no PR unless explicitly requested). This aligns with
 ose-primer's Trunk Based Development workflow.
