@@ -199,11 +199,15 @@ below).
 **Note on ose-primer**: When `ose-primer` is a parity target, propagation to it can be delivered
 EITHER as a draft PR OR as a direct push to `ose-primer:main`. The delivery mode is the caller's
 per-run choice, independent of this workflow's own `worktree-to-pr` default, so selecting
-`worktree-to-origin-main` for ose-primer is a first-class choice, not a deviation. `ose-primer` is
-a **bare** repository with no primary checkout, so the two `main-to-*` modes are unavailable there
-— every ose-primer mutation flows through a worktree. The grilling in Step 3
-MUST surface the delivery-mode choice explicitly and record the invoker's decision before
-proceeding.
+`worktree-to-origin-main` for ose-primer is a first-class choice, not a deviation. In this family's
+current deployment, `ose-primer` (like `ose-infra`) is worked as a **bare** repository with no
+primary checkout — bareness is a property of a given clone, not a fixed attribute of the repo name,
+so re-verify with `git config --get core.bare` on the common dir or `git worktree list` rather than
+trusting this sentence to stay current (see
+[SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution)).
+Under that layout the two `main-to-*` modes are unavailable — every ose-primer mutation flows
+through a worktree. The grilling in Step 3 MUST surface the delivery-mode choice explicitly and
+record the invoker's decision before proceeding.
 
 ### Relationship to Each Repo's Own `## Delivery Mode`
 
@@ -293,9 +297,10 @@ Meta-dimensions to include alongside technical dimensions:
 - **Rationale doc location**: where each repo's `docs/explanation/<objective-slug>-parity-decisions.md`
   (or closest equivalent) will be created (app-scoped `apps/<app>/docs/`, lib-scoped
   `libs/<lib>/docs/`, repo governance tree, etc.)
-- **ose-primer delivery mode**: which delivery mode (draft PR or direct push to `main`) carries
-  the `ose-primer` mutation — both are allowed and neither is the default, so the choice must be
-  recorded (applies when ose-primer is in the parity set)
+- **ose-primer delivery mode**: whether the `ose-primer` mutation lands via this workflow's own
+  `worktree-to-pr` default or the first-class opt-out `worktree-to-origin-main` — `main-to-*` modes
+  are unavailable because `ose-primer` is a bare repository with no primary checkout — so the choice
+  must be recorded (applies when ose-primer is in the parity set)
 - **Repo-specific constraints**: any repo constraint (private visibility, self-hosted CI runner,
   dual-CLI parity guard, missing toolchain) that forces a per-repo deviation
 
@@ -339,12 +344,13 @@ as the research-needed flag (yes / no). This flag governs whether Step 4 runs or
 
 **Mandatory meta-questions** (surface these explicitly regardless of mode):
 
-1. If ose-primer is in the parity set: "The ose-primer sync convention allows EITHER a draft PR
-   OR a direct push to `ose-primer:main` for every mutation — neither is the default, so a
-   delivery mode must be chosen explicitly. The selected parity mode implies
+1. If ose-primer is in the parity set: "This workflow's default for `ose-primer` is `worktree-to-pr`
+   (a draft PR); `worktree-to-origin-main` (a direct push to `ose-primer:main`) is a first-class
+   opt-out, not a deviation. `main-to-origin-main` is unavailable — `ose-primer` is a bare
+   repository with no primary checkout. The selected parity mode implies
    {draft PR | direct push to main}. Please confirm the delivery mode for ose-primer."
-   Options: (A) Direct push to `main` (`main-to-origin-main` / `worktree-to-origin-main`).
-   (B) Draft PR (`worktree-to-pr`). Record the chosen mode.
+   Options: (A) Draft PR (`worktree-to-pr`) — the workflow default. (B) Direct push to `main`
+   (`worktree-to-origin-main`). Record the chosen mode.
 2. Rationale doc location per repo (where does `<objective-slug>-parity-decisions.md` live in
    each repo?).
 3. Any repo-specific constraint flagged in Step 2 that forces a deviation.

@@ -217,8 +217,13 @@ Concretely: resolve the current tree root with `git rev-parse --show-toplevel` a
 with `git rev-parse --git-common-dir`; never treat `.git/` as a directory; resolve `repo-config.yml`,
 exclude lists, and test fixtures from the current worktree's toplevel, never the main checkout. Husky
 hooks invoke via `core.hooksPath`, which linked worktrees inherit from the common dir, so the hooks
-fire in a worktree unchanged. `ose-infra` is a bare repo worked only through linked worktrees (no
-primary checkout exists), so worktree-agnostic execution is a hard requirement there, not a nicety.
+fire in a worktree unchanged. Bareness is a property of a given clone, not a fixed attribute of a
+repo name — as of this writing `ose-infra` **and** `ose-primer` are both worked only through linked
+worktrees (no primary checkout exists for either), which makes worktree-agnostic execution a hard
+requirement for both, not a nicety confined to one. Verify current layout with
+`git config --get core.bare` on the common dir (never `git rev-parse --is-bare-repository` from
+inside a linked worktree — it reports `false` there regardless of the real topology) or
+`git worktree list`, rather than trusting this sentence to stay current.
 
 ## Target Standard
 
