@@ -120,11 +120,11 @@ is:
 1. Run the **PR-Review Maker→Fixer Cycle**
    (`repo-governance/workflows/pr/pr-review-quality-gate.md`) -- sequential review/fix cycles
    against the open PR, driving it toward a fully reviewed, green state.
-2. Confirm the **done-definition** is met:
-   - The review cycle has completed its configured number of passes.
-   - Every inline review comment has a reply (resolved or explicitly addressed).
-   - All quality gates are GREEN -- both local (pre-push hook) and CI.
-   - Archival-in-PR is committed -- the plan folder's archival move lands in the same PR.
+2. Confirm the
+   **[done-definition for `*-to-pr` modes](../../workflows/pr/pr-review-quality-gate.md#done-definition-for--to-pr-modes)**
+   is met. This protocol cites that definition rather than restating it here, so a future
+   strengthening of any item (for example, the requirement that an accepted fix be committed AND
+   pushed, not merely replied to) cannot silently drift out of sync between the two documents.
 3. Flip the PR from draft to ready for review (`gh pr ready`).
 
 **This done-definition is the AI's done-boundary.** Meeting it means the AI's work on the plan is

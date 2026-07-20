@@ -731,20 +731,18 @@ modes (`worktree-to-origin-main`, `main-to-origin-main`), which carry no PR and 
   GitHub Reviews API, a `pr-review-fixer` triages and resolves every unresolved thread, and CI on
   the PR must be GREEN before the next cycle starts. See the linked workflow for the full Loop
   Algorithm, posting mechanics, and escalation rules.
-- **Done-definition for `*-to-pr` modes** (all four items required):
-  1. **N review cycles complete** (default 3) **and the review loop did not exit `escalated`** — an
-     escalated exit blocks the merge on its own, whatever the other preconditions say.
-  2. **Every inline review comment is answered** — a fix applied and pushed, or a reasoned reject,
-     on every thread.
-  3. **All PR quality gates are GREEN** — both the local gates (Step 2b) and CI on the PR (Step 2c),
-     as of the PR's current head commit.
-  4. **Archival-in-PR is committed** — see below.
+- **Done-definition for `*-to-pr` modes**: the workflow's own
+  [done-definition](../pr/pr-review-quality-gate.md#done-definition-for--to-pr-modes) — cited here
+  rather than restated, so a future strengthening of any item (for example, requiring an accepted
+  fix be committed AND pushed, not merely replied to) cannot silently drift out of sync between the
+  two documents. This invocation additionally requires that definition's item 4, Archival-in-PR
+  (below); item 4 is N/A for invocations that do not carry a plan folder.
 - **Archival-in-PR**: for `*-to-pr` modes, the `git mv plans/in-progress/... plans/done/...` move
   (and the accompanying README index updates) is committed **inside the delivering PR itself**, as a
   normal commit on the PR branch pushed before the merge — not as a separate commit landed
   on `main` after merge. This keeps the archival move inside the same review cycle as the rest of the
   plan's changes, so the merged PR already contains the finished, archived plan.
-- The merge sits **outside** this AI done-boundary: once all four done-definition items
+- The merge sits **outside** this AI done-boundary: once the done-definition items
   are satisfied, the orchestrator holds a green, fully-reviewed, archival-included PR, and the merge
   follows — "done" is not the same as "merged" (see
   [Executor Tagging](../../conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule)).
@@ -842,9 +840,9 @@ modes (`worktree-to-origin-main`, `main-to-origin-main`), which carry no PR and 
 
   7. **Run or complete the PR-Review Maker→Fixer Cycle** against the PR (see the gate above) — because
      each cycle's `pr-review-maker` reviews the full current state of the PR, its final pass also
-     covers this archival commit. Confirm all four done-definition items are satisfied: N cycles
-     complete, every comment answered, all gates GREEN (including CI on this last push), and the
-     archival commit present on the PR branch.
+     covers this archival commit. Confirm the
+     [done-definition](../pr/pr-review-quality-gate.md#done-definition-for--to-pr-modes) is
+     satisfied, including the archival commit now present on the PR branch.
   8. **Merge — `[AI]` by default**: once the done-definition is fully satisfied and the hardened
      merge preconditions (a)-(e) hold, surface the PR URL and the done-definition checklist, then
      merge. A `[HUMAN]` merge gate applies only where the plan's own step says so explicitly — in

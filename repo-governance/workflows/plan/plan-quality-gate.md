@@ -284,14 +284,12 @@ cycles complete, every inline comment answered, all PR gates GREEN, archival com
 PR — before the merge. The two gates sit at different lifecycle stages: this workflow
 gates the plan document pre-execution; the PR-review cycle gates the delivered change pre-merge.
 
-**The hardened merge preconditions** that gate that eventual merge — **all five** required: (a) 3
-`pr-review-maker` → `pr-review-fixer` cycles complete **and the loop not exited `escalated`**;
-(b) 0 CRITICAL + 0 HIGH findings outstanding;
-(c) the branch **up-to-date with the latest `origin/main`**, brought forward **non-destructively**
-if behind (never a shared-history rewrite); (d) all PR quality gates green; (e) the
-surface-conditional tester gates run and their defect findings resolved, or the exemption explicitly
-recorded. `[AI]` merges once they hold; a `[HUMAN]` merge gate applies only where a plan's own step
-says so explicitly, with identical preconditions either way.
+**The hardened merge preconditions** that gate that eventual merge are defined normatively in the
+[PR Review Quality Gate workflow](../pr/pr-review-quality-gate.md#hardened-merge-preconditions) —
+**all five** required, cited there rather than restated here so a future strengthening of any
+clause cannot silently drift out of sync between the two documents. `[AI]` merges once they hold;
+a `[HUMAN]` merge gate applies only where a plan's own step says so explicitly, with identical
+preconditions either way.
 
 ## Example Usage
 
