@@ -67,7 +67,9 @@ lands on `main` therefore does not contradict TBD; it is one of TBD's recognized
 
 This repository's **repo-wide default delivery mode is `worktree-to-pr`**: a short-lived plan branch
 inside a disposable git worktree, pushed to a PR, driven to a green and fully-reviewed state, then
-merged once the hardened preconditions hold -- `[AI]` by default, `[HUMAN]` only where a plan says so. Pure direct-commit-to-`main` remains a fully supported alternative mode. See
+merged once the hardened preconditions hold -- `[AI]` by default, `[HUMAN]` only where a plan says so. Pure direct-commit-to-`main` remains a fully supported alternative mode wherever the clone's
+topology allows it -- see the bareness carve-out under
+[Working on `main` Directly](#working-on-main-directly) below. See
 [Default Push and Worktree Execution](#default-push-and-worktree-execution) below for the mechanics of
 all four delivery modes, and the
 [Plans Organization Convention — Delivery Mode](../../conventions/structure/plans.md#delivery-mode) for
@@ -102,9 +104,14 @@ TBD addresses common problems with long-lived feature branches:
 ### Working on `main` Directly
 
 > This subsection describes TBD's classic direct-commit-to-trunk shape -- one of the two direct-push
-> delivery modes available in this repo (`worktree-to-origin-main`, `main-to-origin-main`). This
-> repository's own **repo-wide default** is the short-lived-branch-via-PR shape (`worktree-to-pr`) --
-> see [Default Push and Worktree Execution](#default-push-and-worktree-execution) below.
+> modes in the four-mode vocabulary (`worktree-to-origin-main`, `main-to-origin-main`). Only
+> `worktree-to-origin-main` is available in this clone today: `main-to-origin-main` requires a primary
+> checkout, which a bare repository (`core.bare=true`) has none of, and this clone is currently bare --
+> see [Delivery Mode](../../conventions/structure/plans.md#delivery-mode) for the rule and the
+> [Bare-Repo Base-Worktree Landing Method](./bare-repo-landing-method.md) for the worktree-based
+> procedure that substitutes for it here. This repository's own **repo-wide default** is the
+> short-lived-branch-via-PR shape (`worktree-to-pr`) -- see
+> [Default Push and Worktree Execution](#default-push-and-worktree-execution) below.
 
 **One available workflow**: commit directly to `main` when:
 
@@ -142,7 +149,8 @@ git push origin main
 
 Under the repo-wide `worktree-to-pr` default, a short-lived plan branch is the norm, not the exception.
 Direct commit to `main` (`worktree-to-origin-main`, `main-to-origin-main`) remains appropriate for
-small, well-understood changes -- see [Direct-Push Modes Remain Fully Available](#direct-push-modes-remain-fully-available)
+small, well-understood changes where the mode is actually available in the clone you're working in --
+see [Direct-Push Modes Remain Available Where the Topology Supports Them](#direct-push-modes-remain-available-where-the-topology-supports-them)
 below.
 
 Branches are also used, as they always have been, for:
@@ -385,19 +393,27 @@ Opening every `worktree-to-pr` branch as a draft is deliberate:
   done-definition, which is the natural place for the [PR Merge Protocol](./pr-merge-protocol.md)
   approval prompt to fire.
 
-### Direct-Push Modes Remain Fully Available
+### Direct-Push Modes Remain Available Where the Topology Supports Them
 
 Two modes commit and push directly to `origin main`, with `[AI]` performing the push itself -- no
 branch, no PR, no review gate:
 
 - **`worktree-to-origin-main`** -- work happens in a disposable worktree, but pushes land directly on
-  `origin main`.
+  `origin main`. Available regardless of repo topology.
 - **`main-to-origin-main`** -- work happens in the primary checkout (no worktree), pushing directly to
-  `origin main`.
+  `origin main`. **Requires a primary checkout**: a bare repository (`core.bare=true`) has none, so
+  this mode is unavailable there -- every mutation flows through a linked worktree instead, per the
+  [Bare-Repo Base-Worktree Landing Method](./bare-repo-landing-method.md); see
+  [Delivery Mode](../../conventions/structure/plans.md#delivery-mode) for the canonical rule. This
+  clone is currently bare, so `main-to-origin-main` (and `main-to-pr`, below) are not available here
+  today -- re-verify with `git worktree list` (look for the `(bare)` marker) or the labelled
+  `core.bare` read, never `git rev-parse --is-bare-repository`, since topology can change.
 
-Both remain fully valid TBD flavors -- they are TBD's classic direct-commit shape. Select one of these
-over the default when the change is small, well-understood, and does not warrant a review pass -- for
-example, a single-line typo fix or a mechanical rename.
+Both remain fully valid TBD flavors in the general case -- they are TBD's classic direct-commit shape,
+and this document keeps both in the vocabulary because a fresh clone of this public template may well
+have a primary checkout even where this clone does not. Select one of these over the default when the
+change is small, well-understood, does not warrant a review pass, and is actually available in the
+clone you are working in -- for example, a single-line typo fix or a mechanical rename.
 
 ```bash
 # worktree-to-origin-main -- worktree isolation, direct push, no PR
@@ -412,7 +428,9 @@ git push origin HEAD:main
 ```
 
 **A fourth mode, `main-to-pr`,** uses the primary checkout (no worktree) but still routes through a PR
--- useful when isolation via worktree is unnecessary but review is still wanted.
+-- useful when isolation via worktree is unnecessary but review is still wanted. Like
+`main-to-origin-main`, it requires a primary checkout and is therefore unavailable in a bare repository
+-- this clone included, today -- per the carve-out above.
 
 **Plan delivery checklist tagging**: the git-mechanical lifecycle steps -- create worktree, commit,
 push (to the PR branch or to `origin main`, depending on mode), open/flip the PR, and remove worktree
@@ -591,7 +609,9 @@ All implementation happens on a `worktree-to-pr` plan branch (the repo-wide defa
 Specify a non-default `## Delivery Mode` field in a plan if:
 
 - **Trivial, well-understood change**: A single-line fix or mechanical rename that does not warrant a
-  review pass -- use `worktree-to-origin-main` or `main-to-origin-main`.
+  review pass -- use `worktree-to-origin-main`, or `main-to-origin-main` where the clone has a primary
+  checkout (see the bareness carve-out under
+  [Direct-Push Modes Remain Available Where the Topology Supports Them](#direct-push-modes-remain-available-where-the-topology-supports-them)).
 - **External integration**: Working with a third party that requires a specific branch/PR shape.
 - **Compliance**: A regulatory requirement changes the review process beyond the standard PR-review
   cycle.

@@ -154,12 +154,17 @@ Author plans directly in the `main` working tree of each repo. Commit and push t
 of each repo. Use when worktrees are not needed and direct main-branch access is acceptable for
 all repos in the parity set. **Requires a primary checkout in every repo in the parity set** — a
 repo driven entirely through linked worktrees (a bare repo) has no primary `main` working tree to
-author in, so this mode is unavailable there. Currently `ose-primer` and `ose-infra` are both bare
-(`ose-public` is not); repo topology changes over time, so re-verify bareness per invocation via
-`git config --get core.bare` on the repo's **common dir** — never
-`git rev-parse --is-bare-repository` from inside a linked worktree, which reports `false` there
-regardless of the repo's actual topology (see
-[SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution))
+author in, so this mode is unavailable there; those targets deliver through a worktree instead, per
+the
+[Bare-Repo Base-Worktree Landing Method](../../development/workflow/bare-repo-landing-method.md).
+Currently `ose-primer` and `ose-infra` are both bare (`ose-public` is not); repo topology changes
+over time, so re-verify bareness per invocation with `git worktree list` (look for the `(bare)`
+marker) or, when a scriptable form is needed, the labelled `core.bare` read — never
+`git rev-parse --is-bare-repository` **at all, regardless of where you are standing**, since that
+command answers "is _this checkout_ bare" rather than "is the repository bare" (see
+[SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution)
+and
+[Verify topology first](../../development/workflow/bare-repo-landing-method.md#verify-topology-first))
 — rather than trusting this list.
 
 ### `worktree-to-origin-main`
@@ -204,18 +209,21 @@ sibling per-plan `## Delivery Mode` field these plans separately declare (see
 [Relationship to Each Repo's Own `## Delivery Mode`](#relationship-to-each-repos-own--delivery-mode)
 below).
 
-**Note on ose-primer**: When `ose-primer` is a parity target, propagation to it can be delivered
-EITHER as a draft PR OR as a direct push to `ose-primer:main`. The delivery mode is the caller's
-per-run choice, independent of this workflow's own `worktree-to-pr` default, so selecting
-`worktree-to-origin-main` for ose-primer is a first-class choice, not a deviation. In this family's
-current deployment, `ose-primer` (like `ose-infra`) is worked as a **bare** repository with no
-primary checkout — bareness is a property of a given clone, not a fixed attribute of the repo name,
-so re-verify with `git config --get core.bare` on the common dir or `git worktree list` rather than
+**Note on bare-repo parity targets (`ose-primer`, `ose-infra`)**: When a bare repo is a parity
+target, propagation to it can be delivered EITHER as a draft PR OR as a direct push to its `main`,
+both through a worktree. The delivery mode is the caller's per-run choice, independent of this
+workflow's own `worktree-to-pr` default, so selecting `worktree-to-origin-main` for a bare target is
+a first-class choice, not a deviation. In this family's current deployment, `ose-primer` and
+`ose-infra` are both worked as **bare** repositories with no primary checkout — bareness is a
+property of a given clone, not a fixed attribute of the repo name, so re-verify with
+`git worktree list` (look for the `(bare)` marker) or the labelled `core.bare` read rather than
 trusting this sentence to stay current (see
 [SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution)).
-Under that layout the two `main-to-*` modes are unavailable — every ose-primer mutation flows
-through a worktree. The grilling in Step 3 MUST surface the delivery-mode choice explicitly and
-record the invoker's decision before proceeding.
+Under that layout the two `main-to-*` modes (`main-to-origin-main`, `main-to-pr`) are unavailable for
+either — every mutation against a bare target flows through a worktree, per the
+[Bare-Repo Base-Worktree Landing Method](../../development/workflow/bare-repo-landing-method.md).
+The grilling in Step 3 MUST surface the delivery-mode choice explicitly and record the invoker's
+decision before proceeding.
 
 ### Relationship to Each Repo's Own `## Delivery Mode`
 
@@ -231,10 +239,11 @@ Because this workflow produces one independent plan document per repo, each repo
 `## Delivery Mode` is resolved independently, per that repo's own plan and its own
 `## Worktree`/`## Delivery Mode` declaration, using the standard three-tier precedence (invocation
 argument > plan field > `worktree-to-pr` default). Repos in the same parity set are free to diverge
-here — for example, `ose-infra` may resolve to a direct-push mode while `ose-public` resolves to
-`worktree-to-pr` — exactly like any other per-repo deviation this workflow grills and records in the
-deviation matrix (Step 2). See Step 6 item 8 below for how `plan-maker` receives this instruction
-per repo.
+here — for example, `ose-infra` may resolve to `worktree-to-origin-main` (the only direct-push mode
+a bare repo can use — `main-to-origin-main` needs a primary checkout `ose-infra` does not have)
+while `ose-public` resolves to `worktree-to-pr` — exactly like any other per-repo deviation this
+workflow grills and records in the deviation matrix (Step 2). See Step 6 item 8 below for how
+`plan-maker` receives this instruction per repo.
 
 ## Steps
 
@@ -359,11 +368,13 @@ as the research-needed flag (yes / no). This flag governs whether Step 4 runs or
 
 **Mandatory meta-questions** (surface these explicitly regardless of mode):
 
-1. **Bare-repo mode availability** (property-bound — fires for any repo in the parity set with no
-   primary checkout, currently `ose-primer` and `ose-infra`; re-verify per invocation via
-   `git config --get core.bare` on the common dir, never `git rev-parse --is-bare-repository` from
-   a linked worktree (see
-   [SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution)),
+1. **Bare-repo mode availability** (property-bound — fires for **any bare repo** in the parity set
+   with no primary checkout, currently `ose-primer` and `ose-infra`; re-verify per invocation with
+   `git worktree list` or the labelled `core.bare` read, never `git rev-parse --is-bare-repository`
+   in any topology (see
+   [SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution)
+   and
+   [Verify topology first](../../development/workflow/bare-repo-landing-method.md#verify-topology-first)),
    rather than trusting this list) — if the selected `mode` is `main-to-origin-main` and any such
    repo is in the parity set: "`<repo>` is a bare repo with no primary `main` working tree, so
    `main-to-origin-main` cannot run there for the whole run — it is not a deviation to justify, it
@@ -498,7 +509,12 @@ Provide a self-contained handoff prompt per repo covering:
    `main-to-origin-main`, `main-to-pr`) governing that plan's own future execution, resolved
    independently per repo through the standard three-tier precedence (invocation argument > plan
    field > default) and recorded as its own deviation-matrix row when it diverges from sibling
-   repos. A repo whose plan resolves to a `*-to-pr` mode additionally runs the
+   repos. For a bare-repo target (`ose-primer`, `ose-infra` today), the two `main-to-*` values are
+   unavailable — see
+   [Plans Organization Convention §Delivery Mode](../../conventions/structure/plans.md#delivery-mode)
+   for the authoritative restriction, which governs this field independently of the restriction
+   [Modes](#modes) above places on this workflow's own 3-value vocabulary. A repo whose plan
+   resolves to a `*-to-pr` mode additionally runs the
    [PR-Review Maker→Fixer Cycle](../pr/pr-review-quality-gate.md) during its own execution.
 
 Each plan MUST include:
@@ -585,7 +601,9 @@ docs(explanation): add <objective-slug> parity decisions rationale
 
 **Per mode**:
 
-- `main-to-origin-main`: Push each repo's commits to `origin main` directly.
+- `main-to-origin-main`: Push each repo's commits to `origin main` directly. Not available for any
+  bare repo in the set (`ose-primer`, `ose-infra` today) — a bare repo has no primary checkout to
+  push from directly; those targets deliver via `worktree-to-origin-main` instead.
 - `worktree-to-origin-main`: Push each repo's worktree commits to `origin main`. Remove worktrees
   after delivery: `git worktree remove worktrees/<objective-slug> && git worktree prune`.
 - `worktree-to-pr` (default): Push branch `plan/<objective-slug>` to each repo. Create or update a

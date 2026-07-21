@@ -2,7 +2,7 @@
 name: pr-review-quality-gate
 title: "pr-review-quality-gate"
 goal: Run a strictly sequential N-cycle pr-review-maker to pr-review-fixer loop against a pull request until the *-to-pr done-definition is satisfied
-termination: at least N review cycles complete (default 3 minimum) AND saturation reached (two consecutive cycles with zero new finding categories on a flattened discovery curve), every inline review comment answered with its fix committed and pushed, and CI green on the PR after each cycle
+termination: exactly N review cycles complete (default 3, a hard ceiling never extended past this count), every inline review comment answered with its fix committed and pushed, and CI green on the PR after each cycle
 inputs:
   - name: pr
     type: string
@@ -47,13 +47,10 @@ gate before the next cycle starts.
 
 - **`pr-review-maker`** — planning/opus-tier reviewer agent. Reads full PR context, posts
   numeric-confidence, cited, line-anchored findings via the GitHub Reviews API. Defined at
-  `.claude/agents/pr-review-maker.md` (scaffolded in a later delivery phase of the
-  `worktree-to-pr-default-delivery-mode` plan; referenced here by name as this workflow's reviewing
-  actor).
+  `.claude/agents/pr-review-maker.md`; referenced here by name as this workflow's reviewing actor.
 - **`pr-review-fixer`** — execution/sonnet-tier agent. Lists unresolved review threads, triages each,
   applies fixes, pushes, replies, and resolves threads. Defined at
-  `.claude/agents/pr-review-fixer.md` (scaffolded in the same later delivery phase; referenced here by
-  name as this workflow's fixing actor).
+  `.claude/agents/pr-review-fixer.md`; referenced here by name as this workflow's fixing actor.
 
 ## Loop Algorithm
 
@@ -202,8 +199,7 @@ line nor resolve a thread.
 
 A `*-to-pr` delivery (`worktree-to-pr` or `main-to-pr`) is **done** when ALL of the following hold:
 
-1. **N review cycles complete** (default 3 minimum — but see
-   [Saturation, Not a Fixed Count](#saturation-not-a-fixed-count-loop-exit)).
+1. **N review cycles complete** (default 3 — a **hard ceiling**, never extended past this count).
 2. **Every inline review comment is answered AND every accepted fix is COMMITTED AND PUSHED** —
    thread state is not fix state. A thread may be legitimately replied to and resolved while the
    corresponding fix sits uncommitted in the working tree; GitHub then reports zero unresolved
@@ -231,11 +227,11 @@ A `*-to-pr` delivery (`worktree-to-pr` or `main-to-pr`) is **done** when ALL of 
 Being **done** is necessary but not sufficient to merge. A PR merges only when **all five** of the
 following hold:
 
-- **(a)** It has completed at least `{input.cycles}` cycles (default 3) — a MINIMUM, not a
-  sufficient stopping condition on its own (see
-  [Saturation, Not a Fixed Count](#saturation-not-a-fixed-count-loop-exit)) — **and the review loop
-  did not exit `escalated`** (see
-  [Loop-Exit and Escalation Rules](#loop-exit-and-escalation-rules)).
+- **(a)** It has passed the `pr-review-maker` → `pr-review-fixer` cycle for **3 cycles** **and the
+  review loop did not exit `escalated`** (see
+  [Loop-Exit and Escalation Rules](#loop-exit-and-escalation-rules)). The configured count is a
+  **hard ceiling, not a floor** — a PR merges once preconditions (b)-(e) also hold, never on
+  additional cycles beyond this count.
 - **(b)** **0 CRITICAL + 0 HIGH findings outstanding.**
 - **(c)** The branch is **up-to-date with the latest `origin/main`** at merge time. If it is behind,
   bring it forward by a **non-destructive forward update** — `git fetch origin` then
@@ -327,47 +323,10 @@ PRs in sibling repos with no plan folder use items 1–3 as their complete done-
   any review thread remains genuinely unresolved (not a reasoned reject, but a stalled discussion),
   status is `escalated`, not `done` — the caller (e.g., `plan-execution.md` Step 8) MUST NOT proceed
   to the merge until resolved — this applies whether the merge actor is `[AI]` (the default) or a plan-declared `[HUMAN]` gate.
-- **No silent early exit**: the loop does not stop early merely because zero new findings appear in a
-  single cycle — `{input.cycles}` is a **floor**, and the saturation rule below is the ceiling.
-
-## Saturation, Not a Fixed Count (Loop Exit)
-
-**`{input.cycles}` (default 3) is a MINIMUM, not a sufficient stopping condition.** Observed in
-practice: all 3 cycles found blocking defects, and 3 further verification passes after cycle 3 each
-found another. A count that a run has never once exhausted without finding something is not
-evidence of convergence — it is evidence the count is too low.
-
-**Exit condition**: the loop may stop when **two consecutive cycles produce zero new finding
-CATEGORIES** _and_ the tracked cumulative new-category discovery curve has visibly **flattened**.
-Both halves are required — two clean rounds without a tracked curve is a coincidence, not
-saturation.
-
-**Track this per cycle** (a running table in the PR or the plan's `delivery.md`):
-
-| Cycle | New findings | New finding CATEGORIES | Cumulative categories |
-| ----- | ------------ | ---------------------- | --------------------- |
-
-New _categories_, not raw counts, is the signal — a cycle that finds six more instances of an
-already-known category has not discovered anything new.
-
-**Why a fixed count cannot work** (research grounding, `[Web-cited]` at authoring time):
-
-- **Capture-recapture defect estimation** (Petersson et al., IEEE Transactions on Software
-  Engineering) estimates residual defects from overlap between reviewers, but requires **4+
-  genuinely INDEPENDENT** reviewers. One checker iterating over its own prior findings violates
-  independence by construction — its cycles are correlated, so no residual estimate is derivable
-  from them.
-- **Perspective-Based Reading** (Basili et al., plus the Springer replication studies) shows
-  reviewers reading through genuinely **disjoint lenses** find non-overlapping defects. The
-  practical trap: merely differently-**LABELED** perspectives converge on the same findings. Only a
-  materially different reading procedure buys independence.
-- **Thematic saturation** (PLOS ONE 2020, PMC7200005) documents "two consecutive clean rounds" as a
-  valid stopping rule **only** when paired with a tracked cumulative new-category discovery curve
-  that has flattened — which is precisely the two-part condition above.
-
-**Escalation**: if the saturation condition has not been met by `{input.cycles}`, do NOT silently
-extend and do NOT declare done — surface the cycle table to the human and let them set the cap, per
-the extension rule in [Notes](#notes).
+- **No early exit, no extension**: the loop always runs the full `{input.cycles}` (default 3, a
+  **hard ceiling**) — it does not stop early merely because zero new findings appear in a single
+  cycle, and it is never extended past this count either. Once the loop completes, the merge
+  decision rests on preconditions (b)-(e), never on running additional cycles.
 
 ## Applicability
 
@@ -411,19 +370,39 @@ Track across executions:
 
 - **Strictly sequential, never parallel**: this is a hard requirement — the loop's dedup logic and
   the CI-green gate both depend on each cycle observing the previous cycle's fully-settled state.
-- **N is a floor, saturation is the ceiling**: unlike the `*-quality-gate` workflows' pure
-  until-zero-findings loop, this loop runs at least `{input.cycles}` cycles and then stops on
-  tracked saturation — see
-  [Saturation, Not a Fixed Count](#saturation-not-a-fixed-count-loop-exit).
+- **N is a hard ceiling, not a floor**: unlike the `*-quality-gate` workflows' pure
+  until-zero-findings loop, this loop runs a **fixed** `{input.cycles}` cycles (default 3) and never
+  extends past it, however many findings a late cycle turns up — a PR merges once preconditions
+  (b)-(e) hold, never on additional cycles. `{input.cycles}` bounds the loop; it never waives a
+  finding, since precondition (b) (0 CRITICAL + 0 HIGH outstanding) stays supreme regardless of how
+  many cycles have run.
 - **AI-attribution, not a distinct bot identity**: both agents currently post under the existing
   personal `gh` identity with an explicit AI-attribution footer per comment/reply, because no
   dedicated bot/GitHub App identity is provisioned in this environment. This is a pragmatic fallback,
   not a permanent design decision — revisit if a bot/App identity is provisioned later. This does not
   touch the repo's Git Identity Guardrail (that guardrail governs `git config user.*` for commits;
   this is a `gh`/GitHub-API posting identity, a separate concern).
-- **Agents not yet implemented**: `pr-review-maker` and `pr-review-fixer` are referenced here by name
-  as this workflow's actors; their agent definition files are scaffolded in a later delivery phase of
-  the `worktree-to-pr-default-delivery-mode` plan, not by this document.
+- **Agents are implemented, not defined by this document**: `pr-review-maker` and `pr-review-fixer`
+  are referenced here by name as this workflow's actors; their agent definition files already exist —
+  `.claude/agents/pr-review-maker.md` and `.claude/agents/pr-review-fixer.md` (see Participants above)
+  — this workflow document orchestrates them, it does not define them.
+- **No extension past `{input.cycles}`, by design**: `{input.cycles}` (default 3) is a **hard
+  ceiling**. If cycles are exhausted with findings still outstanding, the
+  [cycle-exhaustion escalation rule](#loop-exit-and-escalation-rules) fires instead — the caller
+  escalates to the human rather than running a fourth cycle. This keeps the loop's effort bounded
+  and visible, and keeps precondition (b) meaningful: a PR never merges on the strength of "we ran
+  more cycles," only on the strength of an actually-empty CRITICAL/HIGH list.
+- **Byte-identity-boundary sibling PRs are a moving target until the source PR converges**: when a
+  plan opens a source PR (e.g. `ose-public`) alongside byte-identical mirror PRs in sibling repos
+  (e.g. `ose-primer`, `ose-infra`), running all repos' review-cycle loops concurrently from the start
+  means every fixer commit on the source PR immediately makes the siblings stale again, and each
+  sibling's next cycle re-discovers "stale vs. upstream" as its top finding instead of surfacing new
+  issues — a self-correcting but wasteful pattern observed to cost an extra cycle per sibling in
+  practice. Prefer running the source PR's loop to completion (CI-green at a stable head) first, then
+  starting or resuming each sibling's remaining cycles against that final head — a sibling cycle
+  already in flight when the source PR converges can still finish its current pass and resync on its
+  own next cycle, but do not deliberately kick off a NEW sibling cycle while the source PR's loop is
+  still open.
 
 ## Principles Implemented/Respected
 
