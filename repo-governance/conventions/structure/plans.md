@@ -701,9 +701,9 @@ The **preconditions are unchanged — only the actor is.** A PR still merges onl
 [hardened merge preconditions](../../workflows/pr/pr-review-quality-gate.md#hardened-merge-preconditions)
 hold — cited there rather than restated here, so a future strengthening of any clause (for example,
 a change to how the review-cycle count binds, which is today a **hard ceiling, not a floor**) cannot
-silently drift out of sync between the two documents. Inverting the default does not weaken any gate; it removes a queueing step that added
-latency without adding a check, since a human merging a PR that has already satisfied all five is
-performing a click, not a judgment.
+silently drift out of sync between the two documents. Inverting the default does not weaken any
+gate; it removes a queueing step that added latency without adding a check, since a human merging a
+PR that has already satisfied all five is performing a click, not a judgment.
 
 Where a plan **does** want human judgment at the merge point — an irreversible migration, a
 production cutover, a change whose blast radius the gates cannot express — it says so explicitly in
