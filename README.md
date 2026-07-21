@@ -23,7 +23,7 @@ Use it by forking, cloning, or copying the directories that fit your project —
 2. **Bootstrap the toolchain**: `npm install && npm run doctor -- --fix`. This pins Node via Volta, installs npm workspaces, and converges 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node).
 3. **Keep what you need, delete what you don't** — every `crud-*` variant is independently deletable with a single `git rm -r apps/<name>` (plus its `specs/apps/crud/behavior/be/gherkin/<name>/` entries, if present). The `rhino-cli`, `repo-governance/`, `docs/`, `.claude/`, `.opencode/`, and `plans/` trees are expected to survive; the rest is opt-in.
 4. **Rename to your project** — search-and-replace `ose-primer` across the repo, point `origin` at your new remote, and push to `main`.
-5. **Start your own plans** — drop quick ideas into `plans/ideas.md` and promote mature ones to a `plans/backlog/[identifier]/` folder following the five-document convention.
+5. **Start your own plans** — drop idea briefs (two-pagers) into `plans/ideas/` and promote ripe ones to a `plans/backlog/[identifier]/` folder following the five-document convention.
 
 The template practices **Trunk Based Development**: one branch (`main`), small commits, Husky-enforced quality gates. No PRs within the template itself — downstream forks decide their own branching and deployment policy.
 
@@ -83,7 +83,7 @@ ose-primer/
 ├── specs/                     # Gherkin, OpenAPI contracts, C4
 ├── docs/                      # Diátaxis docs (tutorials/how-to/reference/explanation)
 ├── repo-governance/                # Principles, conventions, development, workflows, vision
-├── plans/                     # ideas.md, backlog/, in-progress/, done/
+├── plans/                     # ideas/, backlog/, in-progress/, done/
 ├── .claude/                   # Claude Code agents, skills, settings
 ├── .opencode/                 # OpenCode mirror (auto-generated)
 ├── .husky/                    # Git hooks

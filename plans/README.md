@@ -10,7 +10,7 @@ This folder contains temporary, ephemeral project planning documents, distinct f
 
 ## 🧭 Quick Reference
 
-- **ideas.md** - Quick 1-3 liner ideas not yet formalized into plans
+- **ideas/** - Two-pager idea briefs not yet formalized into full plans (one file per idea)
 - ⏳ **backlog/** - Planned projects for future implementation
 - 🚧 **in-progress/** - Active plans currently being worked on
 - ✅ **done/** - Completed and archived plans
@@ -27,6 +27,7 @@ Naming rules differ by stage:
 
 | Stage          | Pattern                             | Date            |
 | -------------- | ----------------------------------- | --------------- |
+| `ideas/`       | `[idea-slug].md`                    | No date prefix  |
 | `backlog/`     | `[project-identifier]/`             | No date prefix  |
 | `in-progress/` | `[project-identifier]/`             | No date prefix  |
 | `done/`        | `YYYY-MM-DD__[project-identifier]/` | Completion date |

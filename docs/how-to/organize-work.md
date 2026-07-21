@@ -73,14 +73,14 @@ flowchart TD
 **Key Characteristics:**
 
 - **Lifecycle:** Temporary, moves between states, archived when done
-- **Structure:** Three states (backlog, in-progress, done) plus ideas.md for quick captures
-- **File Naming:** `backlog/` and `done/` use `YYYY-MM-DD__[identifier]/`; `in-progress/` uses `[identifier]/` (no date)
+- **Structure:** Three states (backlog, in-progress, done) plus `ideas/` for two-pager idea briefs
+- **File Naming:** Stage-aware — `backlog/` and `in-progress/` use `[identifier]`; `done/` uses `YYYY-MM-DD__[identifier]`
 - **Diagram Format:** ASCII art
 - **Audience:** Project team, stakeholders tracking progress
 
 **Root Level:**
 
-- `ideas.md` - Quick 1-3 liner ideas not yet formalized into plans
+- `ideas/` - Two-pager idea briefs not yet formalized into full plans (one file per idea, plus a `README.md` index)
 
 **Subfolders:**
 
@@ -104,7 +104,7 @@ See [Plans Folder Guide](../../plans/README.md) for full details.
 
 ### Use plans/ when you're
 
-✅ **Capturing quick ideas** - 1-3 liner todos for potential projects → `plans/ideas.md`
+✅ **Capturing an idea** - a two-pager brief for a potential project → `plans/ideas/`
 ✅ **Planning a feature** - Structured project with requirements and timeline → `plans/backlog/`
 ✅ **Organizing a sprint** - Time-boxed work with deliverables
 ✅ **Designing a system** - Technical planning with architecture decisions
@@ -114,7 +114,7 @@ See [Plans Folder Guide](../../plans/README.md) for full details.
 
 **Examples:**
 
-- "Quick idea: Add OAuth2 authentication" → `plans/ideas.md`
+- "Idea: Add OAuth2 authentication" → `plans/ideas/oauth2-authentication.md`
 - "I want to plan the monorepo migration" → `plans/backlog/init-monorepo/`
 
 ### Use docs/ when you're
@@ -136,18 +136,15 @@ See [Plans Folder Guide](../../plans/README.md) for full details.
 
 **Steps:**
 
-1. **Capture in plans/ideas.md** (Quick Capture Phase)
+1. **Capture as a two-pager in plans/ideas/** (Idea-Brief Phase)
 
-   ```markdown
-   # Ideas
-
-   - Add real-time notification system using WebSockets
-   - Create admin dashboard for user management
+   ```
+   plans/ideas/notification-system.md
    ```
 
-   - One-liner or short description
-   - No structure needed
-   - Fast capture
+   - A shortened idea brief: problem, why-now, direction sketch, scope, open questions
+   - Not a full plan — no BRD/PRD/tech-docs/delivery split
+   - Scan `plans/ideas/` first and fold into an existing brief if one already covers it
 
 2. **Promote to plans/backlog/** (When Ready for Planning)
 
@@ -164,7 +161,7 @@ See [Plans Folder Guide](../../plans/README.md) for full details.
 
    - Create full five-document plan structure
    - Define business intent (brd), product requirements (prd), technical approach (tech-docs), and delivery checklist (delivery)
-   - Remove or check off the idea from ideas.md
+   - Delete the two-pager from `plans/ideas/` (the idea now lives as a plan)
 
 3. **Move to in-progress/** (Execution Phase)
 
@@ -294,15 +291,15 @@ See [Plans Folder Guide](../../plans/README.md) for full details.
 
 ## Moving Content Between Folders
 
-### From plans/ideas.md to plans/backlog/
+### From plans/ideas/ to plans/backlog/
 
-**When:** Your quick idea has solidified into a concrete project with deliverables.
+**When:** Your two-pager has ripened into a concrete project with deliverables.
 
 **How:**
 
 1. Create new plan folder: `plans/backlog/[project-name]/`
-2. Structure ideas into `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md` (multi-file default) or a single `README.md` (trivially small)
-3. Remove or check off the idea from `plans/ideas.md`
+2. Carry the two-pager's problem, scope, and open questions into `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md` (multi-file default) or a single `README.md` (trivially small)
+3. Delete the two-pager from `plans/ideas/` and remove its line from `plans/ideas/README.md`
 
 ### From plans/ to docs/
 
@@ -336,7 +333,7 @@ This project is complete. See the following documentation:
 
 | If you're doing...                         | Use folder...        | Example                                         |
 | ------------------------------------------ | -------------------- | ----------------------------------------------- |
-| Quick project ideas (1-3 liners)           | `plans/ideas.md`     | "Add OAuth2 authentication"                     |
+| Idea briefs (two-pagers)                   | `plans/ideas/`       | `oauth2-authentication.md`                      |
 | Planning a feature                         | `plans/backlog/`     | `auth-system/`                                  |
 | Working on a project                       | `plans/in-progress/` | Move from backlog when starting                 |
 | Archiving completed project                | `plans/done/`        | Move from in-progress when done                 |
@@ -361,7 +358,7 @@ This project is complete. See the following documentation:
 - Will this need to be referenced months/years from now? → `docs/`
 - Is this specific to a time-bound project? → `plans/`
 
-**Rule of thumb:** When in doubt, start in `plans/ideas.md`. It's easier to promote quick ideas to full plans or permanent docs later.
+**Rule of thumb:** When in doubt, start in `plans/ideas/` with a two-pager. It's easier to promote a brief to a full plan or permanent docs later.
 
 ### "Should this be a plan or documentation?"
 
@@ -402,7 +399,7 @@ This project is complete. See the following documentation:
 | Troubleshooting guide  | `docs/how-to/`       | Problem-solving                         |
 | Product requirements   | `plans/backlog/`     | Project planning                        |
 | System requirements    | `docs/reference/`    | Permanent specs                         |
-| Quick ideas            | `plans/ideas.md`     | Fast capture of potential projects      |
+| Idea briefs (two-pagers) | `plans/ideas/`     | Promotable capture of potential projects |
 | Proof of concept       | `plans/in-progress/` | Structured exploration with deliverable |
 | Research findings      | `docs/explanation/`  | Permanent knowledge                     |
 

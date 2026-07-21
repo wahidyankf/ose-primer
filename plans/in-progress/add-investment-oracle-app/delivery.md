@@ -515,7 +515,7 @@ after Phase 16 FE e2e tests pass.
 
 ## Phase 26 — Post-merge
 
-- [ ] Update `plans/ideas.md` and `plans/backlog/` with follow-up notes
+- [ ] Update `plans/ideas/` and `plans/backlog/` with follow-up notes
       (export to PDF / DOCX, polyglot backend ports, real moderation
       provider, Linux + Windows CI lanes)
 - [ ] Tag the release in the README's "What this template ships" table

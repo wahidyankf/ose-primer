@@ -25,7 +25,7 @@ This directory contains standards for how documentation is organized, named, and
 - [Instruction-File Size Budget Convention](./instruction-file-size-budget.md) - Per-surface byte thresholds for auto-loaded instruction files (`AGENTS.md`, `CLAUDE.md`, harness-specific surfaces). Enforced by `rhino-cli convention validate instruction-size` at pre-push, pre-commit, CI, and as `repo-governance audit` category 4. Sole sanctioned remediation: progressive disclosure.
 - [Governance Vendor Independence](./governance-vendor-independence.md) - Vendor-neutral governance prose: vendor names allowed only inside ` ```binding-example ` fences. Enforced by `rhino-cli repo-governance vendor-audit`
 - [Multi-Harness Binding](./multi-harness-binding.md) - Two-tier binding strategy keeping the repo compatible with many coding-agent harnesses: AGENTS.md-canonical, no-shadowing hard rule, and mechanical generation. Companion to Governance Vendor Independence
-- [Plans Organization](./plans.md) - Standards for organizing project planning documents in plans/ folder including structure (ideas.md, backlog/, in-progress/, done/), naming patterns (YYYY-MM-DD\_\_identifier/), lifecycle stages, project identifiers, [executor tagging (`[AI]`/`[HUMAN]`)](./plans.md#executor-tagging--ai-vs-human-hard-rule), and [phases as natural pauses with clear gates](./plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule)
+- [Plans Organization](./plans.md) - Standards for organizing project planning documents in plans/ folder including structure (ideas/, backlog/, in-progress/, done/), naming patterns (YYYY-MM-DD\_\_identifier/), lifecycle stages, project identifiers, [executor tagging (`[AI]`/`[HUMAN]`)](./plans.md#executor-tagging--ai-vs-human-hard-rule), and [phases as natural pauses with clear gates](./plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule)
 - [Post-Mortem Convention](./post-mortems.md) - Standards for writing and organizing blameless incident post-mortems in `docs/explanation/post-mortems/`: mandatory sections, severity scale (Sev-1..Sev-4), action-item tracking, `doc_status` lifecycle, and the no-secrets requirement
 - [Specs Directory Structure](./specs-directory-structure.md) - Canonical directory structure for Gherkin feature files, C4 architecture diagrams, and OpenAPI contracts in the specs/ directory. Defines path patterns, domain subdirectory rules (required for BE/FE, flat for CLI), and lib spec organization
 - [Workflow Naming Convention](./workflow-naming.md) - Single exception-free filename rule for workflow files under `repo-governance/workflows/` (except `meta/` reference docs). Defines scope vocabulary, type vocabulary (quality-gate, execution, setup, planning), and the audit command enforced by `repo-rules-checker` and `rhino-cli workflows validate-naming`
@@ -53,7 +53,7 @@ Files use kebab-case names describing their content (e.g., `getting-started.md`,
 ### Plans Lifecycle
 
 ```
-ideas.md → backlog/ → in-progress/ → done/
+ideas/ → backlog/ → in-progress/ → done/
 ```
 
 ## Related Documentation

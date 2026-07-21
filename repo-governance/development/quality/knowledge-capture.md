@@ -119,6 +119,7 @@ enumeration. Route to whichever surface owns that kind of knowledge:
 | A user-facing or contributor-facing doc gap              | `docs/how-to/`, `docs/reference/`, or `docs/explanation/`                                                       |
 | A code defect or missing test                            | `apps/`, `libs/`, or `specs/` -- via a `plans/backlog/` follow-up plan (see the code-routing rule below)        |
 | A failure or incident worth a durable narrative          | `docs/explanation/post-mortems/` per the [Post-Mortems Convention](../../conventions/structure/post-mortems.md) |
+| A future-work idea, richer than a one-liner but not yet plan-ready | `plans/ideas/` as a two-pager brief -- fold into an existing brief if one already covers the same area (see the [Ideas Folder convention](../../conventions/structure/plans.md#ideas-folder-two-pagers)) |
 | Not generalizable -- true only for this plan's specifics | Discard with a one-line reason                                                                                  |
 
 **Litmus test**: would a durable surface (a convention, an agent prompt, a skill, a test) **catch
@@ -148,6 +149,13 @@ the change:
 - **Large non-code routings** (a new convention section, a new skill, a restructured workflow) and
   **all code routings** (per the rule above) become a `plans/backlog/<slug>/` follow-up
   plan -- never squeezed into the current plan's remaining scope.
+- **`plans/ideas/` two-pager**: a future-work idea that is not yet plan-ready becomes a two-pager
+  filed **inline** in the current plan's own commit/PR (creating one `plans/ideas/<slug>.md` is a
+  small doc edit). Distinguish from `backlog/`: a learning that is **already plan-ready** goes straight
+  to a `plans/backlog/<slug>/` follow-up plan; a promising-but-unripe idea that still needs its own
+  pitch/triage goes to `plans/ideas/`. Fold into an existing two-pager rather than duplicating. Any
+  eventual code work still flows through a full backlog plan when the two-pager is promoted, carrying
+  the code-routing rule above in full.
 
 ## The Two Safety Gates (HARD -- run before routing)
 

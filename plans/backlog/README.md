@@ -8,7 +8,7 @@ _No backlog plans currently. See [in-progress](../in-progress/README.md) for act
 
 ## Instructions
 
-**Quick Idea Capture**: For 1-3 liner ideas not ready for formal planning, use `../ideas.md`.
+**Idea Capture**: For ideas not ready for formal planning, write a two-pager in `../ideas/`.
 
 **Naming**: Plans in `backlog/` use NO date prefix — just the slug (e.g., `add-investment-oracle-app/`).
 A date prefix is applied only when a plan is archived to `done/`, where it records the completion date.
