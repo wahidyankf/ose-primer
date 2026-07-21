@@ -98,8 +98,16 @@ Under a declared direct-push mode the same loop applies without steps 1 and 4 �
 
 ### When a Direct-Push Mode Is Appropriate
 
-Select `worktree-to-origin-main` or `main-to-origin-main` — pushing straight to `main` with no PR —
-for changes that are small, well-understood, and safe to integrate immediately:
+Select `worktree-to-origin-main` — or, where the clone has a primary checkout, `main-to-origin-main`
+— pushing straight to `main` with no PR, for changes that are small, well-understood, and safe to
+integrate immediately. `main-to-origin-main` requires a primary checkout, which a bare repository
+(`core.bare=true`) has none of, and this clone is currently bare, so only `worktree-to-origin-main` is
+available here today — see the carve-out under
+[What is Trunk Based Development?](#what-is-trunk-based-development) above, the
+[Delivery Mode](../../../repo-governance/conventions/structure/plans.md#delivery-mode) rule, and the
+[Bare-Repo Base-Worktree Landing Method](../../../repo-governance/development/workflow/bare-repo-landing-method.md)
+for the worktree-based procedure that substitutes for it here. A non-bare clone of this public
+template may use either mode for:
 
 - **Small bug fixes** where the failure and the fix are both obvious
 - **Small, safe refactors** with existing test coverage
@@ -107,8 +115,9 @@ for changes that are small, well-understood, and safe to integrate immediately:
 - **Dependency updates** that pass the full gate locally
 
 **Key principle**: the direct-push modes trade review for speed. Choose them when the change is small
-enough that the trade is obviously worth it — and declare the mode explicitly in the plan, since it is
-a deliberate departure from the `worktree-to-pr` default rather than the assumed path.
+enough that the trade is obviously worth it and the chosen mode is actually available in the clone you
+are working in — and declare the mode explicitly in the plan, since it is a deliberate departure from
+the `worktree-to-pr` default rather than the assumed path.
 
 ## Keeping Branches Short-Lived
 

@@ -67,7 +67,9 @@ lands on `main` therefore does not contradict TBD; it is one of TBD's recognized
 
 This repository's **repo-wide default delivery mode is `worktree-to-pr`**: a short-lived plan branch
 inside a disposable git worktree, pushed to a PR, driven to a green and fully-reviewed state, then
-merged once the hardened preconditions hold -- `[AI]` by default, `[HUMAN]` only where a plan says so. Pure direct-commit-to-`main` remains a fully supported alternative mode. See
+merged once the hardened preconditions hold -- `[AI]` by default, `[HUMAN]` only where a plan says so. Pure direct-commit-to-`main` remains a fully supported alternative mode wherever the clone's
+topology allows it -- see the bareness carve-out under
+[Working on `main` Directly](#working-on-main-directly) below. See
 [Default Push and Worktree Execution](#default-push-and-worktree-execution) below for the mechanics of
 all four delivery modes, and the
 [Plans Organization Convention — Delivery Mode](../../conventions/structure/plans.md#delivery-mode) for
@@ -147,7 +149,8 @@ git push origin main
 
 Under the repo-wide `worktree-to-pr` default, a short-lived plan branch is the norm, not the exception.
 Direct commit to `main` (`worktree-to-origin-main`, `main-to-origin-main`) remains appropriate for
-small, well-understood changes -- see [Direct-Push Modes Remain Fully Available](#direct-push-modes-remain-fully-available)
+small, well-understood changes where the mode is actually available in the clone you're working in --
+see [Direct-Push Modes Remain Available Where the Topology Supports Them](#direct-push-modes-remain-available-where-the-topology-supports-them)
 below.
 
 Branches are also used, as they always have been, for:
@@ -390,7 +393,7 @@ Opening every `worktree-to-pr` branch as a draft is deliberate:
   done-definition, which is the natural place for the [PR Merge Protocol](./pr-merge-protocol.md)
   approval prompt to fire.
 
-### Direct-Push Modes Remain Fully Available
+### Direct-Push Modes Remain Available Where the Topology Supports Them
 
 Two modes commit and push directly to `origin main`, with `[AI]` performing the push itself -- no
 branch, no PR, no review gate:
@@ -606,7 +609,9 @@ All implementation happens on a `worktree-to-pr` plan branch (the repo-wide defa
 Specify a non-default `## Delivery Mode` field in a plan if:
 
 - **Trivial, well-understood change**: A single-line fix or mechanical rename that does not warrant a
-  review pass -- use `worktree-to-origin-main` or `main-to-origin-main`.
+  review pass -- use `worktree-to-origin-main`, or `main-to-origin-main` where the clone has a primary
+  checkout (see the bareness carve-out under
+  [Direct-Push Modes Remain Available Where the Topology Supports Them](#direct-push-modes-remain-available-where-the-topology-supports-them)).
 - **External integration**: Working with a third party that requires a specific branch/PR shape.
 - **Compliance**: A regulatory requirement changes the review process beyond the standard PR-review
   cycle.
