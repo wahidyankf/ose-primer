@@ -104,7 +104,7 @@ Current workflows, grouped by type, all conforming to the rule:
 - **`quality-gate`** — `plan-quality-gate` (scope `plan`, type `quality-gate`), `repo-rules-quality-gate` (scope `repo`, qualifier `rules`, type `quality-gate`), `specs-quality-gate` (scope `specs`, type `quality-gate`), `docs-quality-gate` (scope `docs`, type `quality-gate`), `docs-software-engineering-separation-quality-gate` (scope `docs`, qualifier `software-engineering-separation`, type `quality-gate`), `ci-quality-gate` (scope `ci`, type `quality-gate`), `ui-quality-gate` (scope `ui`, type `quality-gate`), `repo-harness-compatibility-quality-gate` (scope `repo`, qualifier `harness-compatibility`, type `quality-gate`)
 - **`execution`** — `plan-execution` (scope `plan`, type `execution`)
 - **`setup`** — `infra-development-environment-setup` (scope `infra`, qualifiers `development-environment`, type `setup`)
-- **`planning`** — `plan-planning` (scope `plan`, type `planning`; the deliverable is a plan), `repo-dependency-bump-planning` (scope `repo`, qualifier `dependency-bump`, type `planning`), `web-ux-test-fixing-planning` (scope `web`, qualifier `ux`, descriptor `test-fixing`, type `planning`)
+- **`planning`** — `plan-planning` (scope `plan`, type `planning`; the deliverable is a plan), `plan-idea-promotion-planning` (scope `plan`, qualifier `idea-promotion`, type `planning`), `repo-dependency-bump-planning` (scope `repo`, qualifier `dependency-bump`, type `planning`), `web-ux-test-fixing-planning` (scope `web`, qualifier `ux`, descriptor `test-fixing`, type `planning`)
 
 ## Related
 
