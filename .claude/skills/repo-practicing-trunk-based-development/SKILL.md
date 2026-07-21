@@ -33,8 +33,13 @@ This Skill provides comprehensive guidance on **Trunk Based Development (TBD)** 
 
 In this repo the default shape is `worktree-to-pr`: a short-lived plan branch in a disposable
 worktree, pushed to a draft PR, merged once the hardened preconditions hold. Committing straight to
-`main` is the `worktree-to-origin-main` / `main-to-origin-main` modes — fully supported, explicitly
-declared.
+`main` is the `worktree-to-origin-main` / `main-to-origin-main` modes — both explicitly declared, but
+only `worktree-to-origin-main` is available in this clone today: `main-to-origin-main` requires a
+primary checkout, which a bare repository (`core.bare=true`) has none of, and this clone is currently
+bare. See [Delivery Mode](../../../repo-governance/conventions/structure/plans.md#delivery-mode) for
+the rule and the
+[Bare-Repo Base-Worktree Landing Method](../../../repo-governance/development/workflow/bare-repo-landing-method.md)
+for the worktree-based procedure that substitutes for it here.
 
 ### Why TBD?
 
@@ -57,7 +62,7 @@ declared.
 
 ### Default Behavior
 
-**Work happens on short-lived branches that integrate into `main` continuously.** TBD's defining tenet is avoiding _long-lived_ branches, not avoiding branches: a short-lived branch reviewed via PR is a recognized TBD flavor, and it is this repo's default (`worktree-to-pr`). Direct commit to `main` remains fully supported for small, well-understood changes via the `worktree-to-origin-main` and `main-to-origin-main` modes.
+**Work happens on short-lived branches that integrate into `main` continuously.** TBD's defining tenet is avoiding _long-lived_ branches, not avoiding branches: a short-lived branch reviewed via PR is a recognized TBD flavor, and it is this repo's default (`worktree-to-pr`). Direct commit to `main` remains fully supported for small, well-understood changes via the `worktree-to-origin-main` and `main-to-origin-main` modes — though only `worktree-to-origin-main` is available in this clone today, since `main-to-origin-main` requires a primary checkout this bare clone does not have; see the bareness carve-out under [What is Trunk Based Development?](#what-is-trunk-based-development).
 
 **Standard workflow** (the default `worktree-to-pr` mode):
 
@@ -302,7 +307,7 @@ default `worktree-to-pr`. Never silently coerce an invalid non-empty value; ask 
 **If a direct-push mode is selected**: state why, since it trades away the review buffer:
 
 ```yaml
-delivery-mode: main-to-origin-main
+delivery-mode: worktree-to-origin-main
 rationale: "Single-line doc fix; full gate passes locally; no review value in a PR"
 ```
 

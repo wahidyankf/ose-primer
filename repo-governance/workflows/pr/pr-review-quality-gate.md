@@ -47,13 +47,10 @@ gate before the next cycle starts.
 
 - **`pr-review-maker`** — planning/opus-tier reviewer agent. Reads full PR context, posts
   numeric-confidence, cited, line-anchored findings via the GitHub Reviews API. Defined at
-  `.claude/agents/pr-review-maker.md` (scaffolded in a later delivery phase of the
-  `worktree-to-pr-default-delivery-mode` plan; referenced here by name as this workflow's reviewing
-  actor).
+  `.claude/agents/pr-review-maker.md`; referenced here by name as this workflow's reviewing actor.
 - **`pr-review-fixer`** — execution/sonnet-tier agent. Lists unresolved review threads, triages each,
   applies fixes, pushes, replies, and resolves threads. Defined at
-  `.claude/agents/pr-review-fixer.md` (scaffolded in the same later delivery phase; referenced here by
-  name as this workflow's fixing actor).
+  `.claude/agents/pr-review-fixer.md`; referenced here by name as this workflow's fixing actor.
 
 ## Loop Algorithm
 
@@ -385,9 +382,10 @@ Track across executions:
   not a permanent design decision — revisit if a bot/App identity is provisioned later. This does not
   touch the repo's Git Identity Guardrail (that guardrail governs `git config user.*` for commits;
   this is a `gh`/GitHub-API posting identity, a separate concern).
-- **Agents not yet implemented**: `pr-review-maker` and `pr-review-fixer` are referenced here by name
-  as this workflow's actors; their agent definition files are scaffolded in a later delivery phase of
-  the `worktree-to-pr-default-delivery-mode` plan, not by this document.
+- **Agents are implemented, not defined by this document**: `pr-review-maker` and `pr-review-fixer`
+  are referenced here by name as this workflow's actors; their agent definition files already exist —
+  `.claude/agents/pr-review-maker.md` and `.claude/agents/pr-review-fixer.md` (see Participants above)
+  — this workflow document orchestrates them, it does not define them.
 - **No extension past `{input.cycles}`, by design**: `{input.cycles}` (default 3) is a **hard
   ceiling**. If cycles are exhausted with findings still outstanding, the
   [cycle-exhaustion escalation rule](#loop-exit-and-escalation-rules) fires instead — the caller
