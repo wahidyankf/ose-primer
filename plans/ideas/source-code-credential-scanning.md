@@ -19,6 +19,22 @@ just as gitleaks itself has gone feature-frozen with an unresolved entropy false
 ([#1830](https://github.com/gitleaks/gitleaks/issues/1830)) that misfires on Rust/Go identifier
 names — so the incumbent tool is not a good fit for this repo's Rust-and-Go-heavy polyglot source.
 
+## Prior art / precedents
+
+- **gitleaks** — the incumbent MIT secret scanner, now feature-frozen with the entropy false-positive
+  regression (#1830) that makes it a poor fit for Rust/Go source.
+  [issue #1830](https://github.com/gitleaks/gitleaks/issues/1830)
+- **Betterleaks** — the MIT-licensed gitleaks successor from the original author that this idea proposes
+  evaluating. [betterleaks](https://github.com/betterleaks/betterleaks)
+- **TruffleHog** — an established pre-commit credential scanner that catches secrets "before they leave
+  your computer," exactly this idea's goal.
+  [trufflehog](https://github.com/trufflesecurity/trufflehog)
+- **GitHub Secret Scanning** — the existing post-push backstop this idea keeps as a complementary layer.
+  [about-secret-scanning](https://docs.github.com/en/code-security/secret-scanning/about-secret-scanning)
+- **Secrets and Env Standards (repo-internal)** — the repo's no-secrets-in-committed-files guardrail
+  this gate would reinforce.
+  [secrets-and-env-standards](../../repo-governance/conventions/security/secrets-and-env-standards.md)
+
 ## Proposed direction (sketch)
 
 - Once Betterleaks reaches stable production use, evaluate it for pre-commit + CI credential detection

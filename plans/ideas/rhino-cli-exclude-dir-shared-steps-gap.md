@@ -29,6 +29,18 @@ a latent trap. Any future project that legitimately needs a shared-steps compari
 directory will hit the same false-orphan report, and rhino-cli must stay byte-identical across all
 three repos, so a real fix propagates once and protects every consumer.
 
+## Prior art / precedents
+
+- **ripgrep** — a recursive scanner that applies one consistent set of ignore/exclusion rules across
+  every directory walk; this fix threads exclusions symmetrically the same way.
+  [ripgrep](https://github.com/BurntSushi/ripgrep)
+- **Cucumber step definitions** — rhino-cli's orphan-step-implementation report is the analogue of
+  Cucumber matching Gherkin steps to step definitions; symmetric exclusion keeps both scans in
+  agreement. [step-definitions](https://cucumber.io/docs/cucumber/step-definitions/)
+- **Regression Test Mandate (repo-internal)** — the promoted plan must land a reproducing fixture test
+  (fail-before / pass-after), exactly as the brief anticipates.
+  [regression-test-mandate](../../repo-governance/development/quality/regression-test-mandate.md)
+
 ## Proposed direction (sketch)
 
 - Thread the user-supplied `exclude_dirs` through to `extract_all_step_texts`, so the whole-app

@@ -20,6 +20,19 @@ available in the developer toolchain (`rustup update stable`). The moment that p
 the fix is a one-line version bump away, and leaving a CVE-carrying toolchain pinned longer than
 necessary is avoidable exposure.
 
+## Prior art / precedents
+
+- **rustup** — the toolchain manager whose `rustup update stable` yielding 1.94.1+ is the sole blocker
+  for this bump. [rustup](https://rust-lang.github.io/rustup/)
+- **Cargo `rust-version` (MSRV) field** — the manifest mechanism for declaring the minimum supported
+  Rust version this idea raises.
+  [manifest](https://doc.rust-lang.org/cargo/reference/manifest.html)
+- **RustSec Advisory Database** — the ecosystem's tracker for Rust security advisories that motivate
+  toolchain bumps like this one. [rustsec.org](https://rustsec.org/)
+- **Dependency Bump Stability & Safety Policy (repo-internal)** — the exact-pin, CVE-clean policy this
+  bump must follow.
+  [dependency-bump-policy](../../repo-governance/development/workflow/dependency-bump-policy.md)
+
 ## Proposed direction (sketch)
 
 - Once `rustc 1.94.1+` is available via `rustup update stable`, raise the pinned Rust version across
