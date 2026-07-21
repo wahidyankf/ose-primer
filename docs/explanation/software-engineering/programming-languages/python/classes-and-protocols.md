@@ -234,7 +234,7 @@ This state diagram shows how frozen dataclasses enforce immutability:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 stateDiagram-v2
   [*] --> Created: @dataclass#40;frozen=True#41;
-  Created --> Initialized: __post_init__#40;#41; validates
+  Created --> Initialized: __post_init__ validates
   Initialized --> Immutable: Instance ready
 
   Immutable --> AttemptModify: Try to modify attribute

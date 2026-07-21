@@ -4,7 +4,8 @@ Level 2 of the C4 model. Shows the internal containers of the rhino-cli system.
 
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
-graph LR
+%% TD required: the LR call chain (DEV → CMD → APP → INF → REPO) is 5 deep, exceeding MaxWidth=4; TD moves depth onto the unchecked vertical axis
+graph TD
     DEV("Developer / CI"):::actor
 
     subgraph RHINOCLI["rhino-cli binary"]

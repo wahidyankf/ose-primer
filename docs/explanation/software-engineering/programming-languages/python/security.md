@@ -373,7 +373,7 @@ stateDiagram-v2
   [*] --> Created: User login successful
   Created --> Active: Session token issued
 
-  Active --> Refreshed: Token refresh before expiration
+  Active --> Refreshed: Refresh before expiration
   Refreshed --> Active: New token issued
 
   Active --> Expired: Timeout reached
