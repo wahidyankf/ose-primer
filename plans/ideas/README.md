@@ -10,7 +10,6 @@ ideas/ (two-pagers) → backlog/ (full 5-doc plans) → in-progress/ → done/
 
 ## Two-Pagers
 
-- [bare-repo-worktree-landing-hygiene](./bare-repo-worktree-landing-hygiene.md) — stop local `main` diverging after side-worktree pushes; park long-lived WIP off the shared index.
 - [rust-msrv-1-94-1-upgrade](./rust-msrv-1-94-1-upgrade.md) — bump the Rust MSRV to 1.94.1 to pick up the `CVE-2026-33056` Cargo tar fix, once the toolchain ships it.
 - [source-code-credential-scanning](./source-code-credential-scanning.md) — evaluate Betterleaks (gitleaks successor) for pre-commit + CI credential detection in polyglot source.
 - [rhino-cli-exclude-dir-shared-steps-gap](./rhino-cli-exclude-dir-shared-steps-gap.md) — thread `--exclude-dir` through rhino-cli's whole-app step scan so both sides of a `--shared-steps` comparison exclude the same dirs.
