@@ -16,7 +16,15 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **[social-linkedin-post-maker](social-linkedin-post-maker.md)** - LinkedIn content creation
 - **[agent-maker](agent-maker.md)** - Agent definition creation
 - **[swe-ui-maker](swe-ui-maker.md)** - UI component creation
-- **[pr-review-maker](pr-review-maker.md)** - Posts adversarial code-review findings on a GitHub PR via the GitHub Reviews API (SHA-pinned, confidence-scored); the maker half of the PR-Review Maker→Fixer Cycle for `*-to-pr` delivery-mode plans
+- **[pr-review-architecture-maker](pr-review-architecture-maker.md)** - PR-review specialist scoped to architecture only: new tradeoffs, module boundaries, reversibility, blast radius, quality-attribute effects, novel dependencies
+- **[pr-review-logic-maker](pr-review-logic-maker.md)** - PR-review specialist scoped to business-logic/correctness only: behavior vs. domain intent plus Gherkin acceptance-criteria conformance across edge/error cases
+- **[pr-review-governance-maker](pr-review-governance-maker.md)** - PR-review specialist scoped to governance/rules-conformance only: mechanical conformance to already-documented repo-governance/ conventions, naming/structure, ADRs, spec-file presence
+- **[pr-review-security-maker](pr-review-security-maker.md)** - PR-review specialist scoped to security only: secrets in diffs, injection, untrusted-input handling, git-fixture isolation, unsafe git/FS operations
+- **[pr-review-integrity-maker](pr-review-integrity-maker.md)** - PR-review specialist scoped to CI-gaming/test-integrity only: weakened/skipped/narrowed tests, coverage-gaming, missing regression tests
+- **[pr-review-performance-maker](pr-review-performance-maker.md)** - PR-review specialist scoped to performance only: concrete/likely regressions, hot-path changes, algorithmic-complexity growth, resource concerns
+- **[pr-review-docs-maker](pr-review-docs-maker.md)** - PR-review specialist scoped to documentation-quality only: substantive README/docs/Diátaxis fit, doc drift vs. code, clarity, doc alt-text/accessibility
+- **[pr-review-instruction-maker](pr-review-instruction-maker.md)** - PR-review specialist scoped to instruction-decay only: a framework/build-tool/package-manager/env-var/CI change not reflected in AGENTS.md/CLAUDE.md/.claude/, and instruction bloat
+- **[pr-review-synthesis-maker](pr-review-synthesis-maker.md)** - Mandatory coordinator (opus) atop the eight sonnet-tier specialists: classifies PR risk tier + specialist set, assembles the shared full-diff context once, reads prior-cycle human-dismissal status, then dedups/re-categorizes/reasonableness-filters/tool-verifies raw findings into exactly ONE consolidated review
 
 ### 🟩 Validation (Checkers)
 
@@ -50,7 +58,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **[ci-fixer](ci-fixer.md)** - Apply validated CI/CD standards fixes
 - **[docs-software-engineering-separation-fixer](docs-software-engineering-separation-fixer.md)** - Auto-moves misplaced language docs to the canonical destination flagged by the separation checker
 - **[repo-harness-compatibility-fixer](repo-harness-compatibility-fixer.md)** - Applies validated fixes from a harness-compatibility audit; auto-remediates Phase 0 binding-sync drift (Invariant 3) via `npm run generate:bindings`, applies Phase 1 catalog/binding updates, flags higher-judgement gaps (vendor-audit prose, color/tier maps, orphan agents, generator-logic changes) for human resolution, and re-validates each finding before applying
-- **[pr-review-fixer](pr-review-fixer.md)** - Triages and resolves `pr-review-maker` findings on a GitHub PR (fix / reject-with-reason / defer-with-reason / clarify), replying to and resolving review threads; the fixer half of the PR-Review Maker→Fixer Cycle
+- **[pr-review-fixer](pr-review-fixer.md)** - Triages and resolves `pr-review-synthesis-maker`'s consolidated findings on a GitHub PR (fix / reject-with-reason / defer-with-reason / clarify), replying to and resolving review threads; the fixer half of the PR-Review Maker→Fixer Cycle
 
 ### 🟩 Research (validation-adjacent)
 

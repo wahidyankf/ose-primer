@@ -726,11 +726,12 @@ archival additionally requires the
 against the plan's PR before any archival step below. This gate does not apply to the direct-push
 modes (`worktree-to-origin-main`, `main-to-origin-main`), which carry no PR and no review cycle.
 
-- Run the workflow's strictly sequential N-cycle loop (default **N = 3**): each cycle, a fresh
-  `pr-review-maker` posts line-anchored findings against the PR's current head commit via the
-  GitHub Reviews API, a `pr-review-fixer` triages and resolves every unresolved thread, and CI on
-  the PR must be GREEN before the next cycle starts. See the linked workflow for the full Loop
-  Algorithm, posting mechanics, and escalation rules.
+- Run the workflow's strictly sequential N-cycle loop (default **N = 3**): each cycle, the eight
+  discipline specialists fan out and `pr-review-synthesis-maker` posts one consolidated set of
+  line-anchored findings against the PR's current head commit via the GitHub Reviews API, a
+  `pr-review-fixer` triages and resolves every unresolved thread, and CI on the PR must be GREEN
+  before the next cycle starts. See the linked workflow for the full Loop Algorithm, posting
+  mechanics, and escalation rules.
 - **Done-definition for `*-to-pr` modes**: the workflow's own
   [done-definition](../pr/pr-review-quality-gate.md#done-definition-for--to-pr-modes) — cited here
   rather than restated, so a future strengthening of any item (for example, requiring an accepted
@@ -839,7 +840,8 @@ modes (`worktree-to-origin-main`, `main-to-origin-main`), which carry no PR and 
      ```
 
   7. **Run or complete the PR-Review Maker→Fixer Cycle** against the PR (see the gate above) — because
-     each cycle's `pr-review-maker` reviews the full current state of the PR, its final pass also
+     each cycle's reviewer pipeline (eight specialists → `pr-review-synthesis-maker`) reviews the full
+     current state of the PR, its final pass also
      covers this archival commit. Confirm the
      [done-definition](../pr/pr-review-quality-gate.md#done-definition-for--to-pr-modes) is
      satisfied, including the archival commit now present on the PR branch.
