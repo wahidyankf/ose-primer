@@ -161,7 +161,7 @@ apply here and must not be used to "correct" the mode instead:
 
 - **HIGH confidence → delete the offending Phase 0 line(s)**, including a Phase 0 gate line asserting
   a PR was opened/reviewed/merged (e.g. `Draft PR opened; CI triggered; 3-cycle PR-Review complete;
-  CI green; PR [AI]-merged`). Deleting a Phase 0 merge line is the one sanctioned exception to the
+CI green; PR [AI]-merged`). Deleting a Phase 0 merge line is the one sanctioned exception to the
   "never delete a merge step" guard above, because the merge it asserts must not happen at all —
   it is not a human gate being weakened, it is a phase that has nothing to merge.
 - **If Phase 0 wrote evidence artifacts**, add a sentence to the Phase 1 steps stating that the
@@ -170,9 +170,40 @@ apply here and must not be used to "correct" the mode instead:
   it as a **mis-scoped Phase 0** for the author (MEDIUM confidence — grill first): the correct
   resolution is moving that work into Phase 1.
 - **If a Per-Phase Integration Protocol block is unscoped**, add `Phase 1 onward` to its heading or
-  its lead sentence, and state that Phase 0 is excluded. Do not delete the block.
+  its lead sentence, and state that Phase 0 is excluded. Do not delete the block. State as well
+  that its PR-opening, review-cycle, and merge steps fire only at a **delivery boundary**, and
+  prefer retitling it **Delivery-Boundary Integration Protocol** — it no longer runs once per phase.
 
 Verify after fixing by re-running the checker's Phase 0 detection command and reading `0`.
+
+#### PR Steps Outside a Delivery Boundary
+
+When plan-checker flags a PR-creation, PR-Review-Cycle, `gh pr ready`, merge, or post-push
+CI-verification step in a phase the plan does **not** declare a **delivery boundary**, the work is
+not deleted — it is **relocated**. A PR opens once per delivery unit, at the unit's boundary.
+
+- **HIGH confidence → move the integration steps down to the delivery unit's boundary phase**,
+  merging them into that phase's existing integration block rather than duplicating it. The
+  intermediate phase keeps its own `### Phase N Gate` and Pause Safety note; it simply integrates
+  nothing. This is a relocation, never a deletion — the work still has a route to `main`.
+- **If the intermediate phase genuinely satisfies the four-part boundary test** (coherent / green
+  standalone / defensible on `main` / reviewable whole), the opposite fix applies: promote it to a
+  boundary and add its row to the `### Delivery Boundaries` table. MEDIUM confidence — grill the
+  author first, since only they know whether the increment is genuinely shippable alone.
+- **If the `### Delivery Boundaries` table is missing**, add it to the plan's
+  `## Parallelization Model` with one row per delivery unit, mapping **every** change-producing
+  phase. Derive the rows from where the plan's existing integration steps already sit; do not
+  invent boundaries the delivery checklist does not support.
+- **If a change-producing phase appears in no row**, add it to the unit it belongs to rather than
+  giving it a unit of its own — unless it is genuinely independent in the DAG, in which case it
+  gets its own unit, worktree, and PR.
+- **If the last change-producing phase is not a boundary**, make it one. Work that never reaches a
+  boundary never merges.
+- **Never fold two independent DAG nodes into one delivery unit** to silence a finding — that
+  trades a HIGH for a re-serialised DAG.
+
+Verify after fixing by re-running the checker's two delivery-boundary detection commands and
+confirming the phases carrying integration steps are a subset of the declared boundaries.
 
 ### 4. Fix Report Generation
 

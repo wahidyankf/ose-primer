@@ -476,8 +476,10 @@ The active delivery mode is resolved deterministically, never inferred from exec
 
 See the [Plans Organization Convention — Delivery Mode](../../conventions/structure/plans.md#delivery-mode)
 for the full algorithm and the [plan-execution workflow](../../workflows/plan/plan-execution.md) for
-how each mode changes Step 0 (worktree entry), the per-phase push target, and Step 8 (finalization and
-merge hand-off).
+how each mode changes Step 0 (worktree entry), the push target at each phase gate, and Step 8
+(finalization and merge hand-off). Under a `*-to-pr` mode the PR itself opens only at a **delivery
+boundary**, not at every phase — see
+[Plans Organization Convention §PRs Open at Delivery Boundaries](../../conventions/structure/plans.md#prs-open-at-delivery-boundaries-not-every-phase-hard-rule).
 
 Note: this does **not** affect environment branches (`prod-crud-fs-ts-nextjs`, `prod-demo-web`). Those
 remain CI-managed and follow their own documented deployment workflows.
