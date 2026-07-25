@@ -242,7 +242,8 @@ Plan mode for non-trivial tasks (3+ steps or architecture decisions), delegated 
 
 **Background-slot preference**: Fill background slots up to N, keeping the main thread vacant and responsive (orchestrator, not worker) — never split dependent work merely to fill a slot. On harnesses without background subagents, degrade to a serial DAG walk.
 
-**Status cadence**: Update the user every **3-5 minutes, not faster**, while items are active.
+**Status cadence**: report every **5 min** (generic) or **3 min** (GitHub CI); mixed takes 3.
+Reporting only — poll floors unchanged.
 
 **Task-list discipline**: For any non-trivial multi-step work (3+ steps, or spanning multiple files/phases), maintain a live task list from the start (harness Task tool or a plan's delivery checklist) and keep it **continuously in sync** — mark a task in-progress before starting, completed right after verifying, and add discovered tasks on the spot. A stale list is a defect.
 

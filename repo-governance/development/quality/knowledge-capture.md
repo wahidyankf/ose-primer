@@ -110,17 +110,17 @@ plan when the details have faded.
 The rubric is deliberately **open-ended** -- it names candidate durable homes, not an exhaustive
 enumeration. Route to whichever surface owns that kind of knowledge:
 
-| Learning shape                                           | Candidate durable home                                                                                          |
-| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| A rule the repo should always enforce                    | `repo-governance/conventions/` or `repo-governance/development/`                                                |
-| A workflow procedure gap                                 | `repo-governance/workflows/`                                                                                    |
-| An agent behavior gap or missing capability              | `.claude/agents/<name>.md`                                                                                      |
-| A reusable technique or reference pattern                | `.claude/skills/<name>/SKILL.md` (or a reference module)                                                        |
-| A user-facing or contributor-facing doc gap              | `docs/how-to/`, `docs/reference/`, or `docs/explanation/`                                                       |
-| A code defect or missing test                            | `apps/`, `libs/`, or `specs/` -- via a `plans/backlog/` follow-up plan (see the code-routing rule below)        |
-| A failure or incident worth a durable narrative          | `docs/explanation/post-mortems/` per the [Post-Mortems Convention](../../conventions/structure/post-mortems.md) |
+| Learning shape                                                     | Candidate durable home                                                                                                                                                                                   |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A rule the repo should always enforce                              | `repo-governance/conventions/` or `repo-governance/development/`                                                                                                                                         |
+| A workflow procedure gap                                           | `repo-governance/workflows/`                                                                                                                                                                             |
+| An agent behavior gap or missing capability                        | `.claude/agents/<name>.md`                                                                                                                                                                               |
+| A reusable technique or reference pattern                          | `.claude/skills/<name>/SKILL.md` (or a reference module)                                                                                                                                                 |
+| A user-facing or contributor-facing doc gap                        | `docs/how-to/`, `docs/reference/`, or `docs/explanation/`                                                                                                                                                |
+| A code defect or missing test                                      | `apps/`, `libs/`, or `specs/` -- via a `plans/backlog/` follow-up plan (see the code-routing rule below)                                                                                                 |
+| A failure or incident worth a durable narrative                    | `docs/explanation/post-mortems/` per the [Post-Mortems Convention](../../conventions/structure/post-mortems.md)                                                                                          |
 | A future-work idea, richer than a one-liner but not yet plan-ready | `plans/ideas/` as a two-pager brief -- fold into an existing brief if one already covers the same area (see the [Ideas Folder convention](../../conventions/structure/plans.md#ideas-folder-two-pagers)) |
-| Not generalizable -- true only for this plan's specifics | Discard with a one-line reason                                                                                  |
+| Not generalizable -- true only for this plan's specifics           | Discard with a one-line reason                                                                                                                                                                           |
 
 **Litmus test**: would a durable surface (a convention, an agent prompt, a skill, a test) **catch
 this automatically next time** if it existed? If yes, the learning survives and is routed. If the
