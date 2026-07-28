@@ -9,6 +9,10 @@
       }
     }
   },
+  "tools": {
+    "websearch": true,
+    "codesearch": true
+  },
   "permission": {
     "read": {
       "*": "allow",
@@ -21,9 +25,7 @@
       "**/.env.example": "allow"
     },
     "edit": {
-      "*": "ask",
-      ".claude/**": "allow",
-      ".opencode/**": "allow",
+      "*": "allow",
       "**/.env": "deny",
       "**/.env.local": "deny",
       "**/.env.development": "deny",
@@ -33,33 +35,22 @@
       "**/.env.example": "allow"
     },
     "bash": {
-      "*": "ask",
-      "npm run sync*": "allow",
-      "git *": "allow",
-      "nx *": "allow",
-      "npx *": "ask",
-      "go *": "allow",
-      "gofmt *": "allow",
-      "rm -rf *": "deny"
+      "*": "allow"
     },
     "glob": "allow",
     "grep": "allow",
     "list": "allow",
     "skill": "allow",
+    "todowrite": "allow",
+    "question": "allow",
+    "webfetch": "allow",
+    "websearch": "allow",
+    "task": "allow",
     "external_directory": {
       "/tmp/**": "allow"
     }
   },
   "mcp": {
-    "perplexity": {
-      "type": "local",
-      "command": ["npx", "-y", "@perplexity-ai/mcp-server"]
-    },
-    "nx-mcp": {
-      "type": "local",
-      "command": ["npx", "-y", "nx-mcp"],
-      "enabled": true
-    },
     "playwright": {
       "type": "local",
       "command": ["npx", "-y", "@playwright/mcp@latest"]
