@@ -44,12 +44,13 @@ the GitHub Reviews API, while the eight specialists never post (they hand raw fi
 coordinator), and none does a local `git push`. `pr-review-fixer` pushes commits to the PR branch
 through the same git tooling as any other agent in this repo.
 
-### Dual-mode configuration (Claude Code + OpenCode)
+### Multi-harness configuration (Claude Code + OpenCode + Cursor)
 
-Repo maintains **dual compatibility** with Claude Code and OpenCode:
+Repo maintains **multi-harness compatibility** with Claude Code, OpenCode, and Cursor:
 
 - **`.claude/`**: Source of truth (PRIMARY) — All updates happen here first
 - **`.opencode/`**: Auto-generated (SECONDARY) — Synced from `.claude/`
+- **`.cursor/`**: Auto-generated (SECONDARY) — Cursor agent mirror emitted from `.claude/`
 
 **Making changes:**
 
