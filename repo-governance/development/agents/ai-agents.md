@@ -63,7 +63,7 @@ This repository maintains **dual compatibility** with both the primary coding ag
 - **`.opencode/agents/`** - SECONDARY (Auto-Generated)
   - Synced from `.claude/agents/` using `npm run generate:bindings`
   - Uses the secondary coding agent format: boolean flags `{ read: true, write: true }`
-  - Model selection: `opencode-go/glm-5.2` (thinking/execution) or `opencode-go/minimax-m3` (fast)
+  - Model selection: `zai-coding-plan/glm-5.2` for all tiers via the GLM Coding Plan primary provider
 
 **Workflow**: Always edit `.claude/agents/` first, then run sync script to regenerate `.opencode/agents/`.
 
@@ -152,7 +152,7 @@ skills: []
 ---
 ```
 
-**Format Note**: This example shows **the primary coding agent format** (`.claude/agents/`). The equivalent **the secondary coding agent format** (`.opencode/agents/`) uses boolean flags for tools: `tools: { read: true, glob: true, grep: true }` and model references like `model: opencode-go/glm-5.2` (thinking/execution) or `model: opencode-go/minimax-m3` (fast).
+**Format Note**: This example shows **the primary coding agent format** (`.claude/agents/`). The equivalent **the secondary coding agent format** (`.opencode/agents/`) uses boolean flags for tools: `tools: { read: true, glob: true, grep: true }` and model references like `model: zai-coding-plan/glm-5.2` for all tiers.
 
 **Field Order**: Fields MUST appear in this exact order (name, description, tools, model, color, skills) for consistency and grep-ability across all agents.
 
@@ -2502,8 +2502,7 @@ model: sonnet # or opus, haiku, or omit for inherit
 **the secondary coding agent**:
 
 ```yaml
-model: opencode-go/glm-5.2  # thinking/execution equivalent (intentionally identical)
-model: opencode-go/minimax-m3 # fast equivalent
+model: zai-coding-plan/glm-5.2 # all tiers via GLM Coding Plan primary provider
 ```
 
 #### agent skills Format

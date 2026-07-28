@@ -1,6 +1,6 @@
 ---
 description: Develops end-to-end tests using Playwright following demo testing patterns and standards. Use when implementing E2E tests for demo applications.
-model: opencode-go/glm-5.2
+model: zai-coding-plan/glm-5.2
 permission:
   bash: allow
   edit: allow

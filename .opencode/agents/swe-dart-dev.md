@@ -1,6 +1,6 @@
 ---
 description: Develops Dart applications following null safety principles, Flutter integration patterns, and platform coding standards. Use when implementing Dart code for demo.
-model: opencode-go/glm-5.2
+model: zai-coding-plan/glm-5.2
 permission:
   bash: allow
   edit: allow

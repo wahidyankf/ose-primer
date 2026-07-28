@@ -1,6 +1,6 @@
 ---
 description: Develops Python applications following Pythonic principles, data processing patterns, and platform coding standards. Use when implementing Python code for demo.
-model: opencode-go/glm-5.2
+model: zai-coding-plan/glm-5.2
 permission:
   bash: allow
   edit: allow

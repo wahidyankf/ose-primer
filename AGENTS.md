@@ -52,7 +52,7 @@ This repository maintains **dual compatibility** with two coding-agent platforms
 **Format differences** (canonical):
 
 - **Tools**: primary binding uses tool arrays; secondary binding uses boolean flag maps; the sync translates between them
-- **Models**: primary binding uses Claude tier names (sonnet/opus/haiku, or omits for inheritance); secondary binding uses opencode-go model IDs. See [model-selection.md](./repo-governance/development/agents/model-selection.md) for full capability-tier mapping
+- **Models**: primary binding uses Claude tier names (sonnet/opus/haiku, or omits for inheritance); secondary binding uses `zai-coding-plan/glm-5.2` for all tiers via the GLM Coding Plan primary provider. See [model-selection.md](./repo-governance/development/agents/model-selection.md) for full capability-tier mapping
 - **Agent skills**: same SKILL.md format; skills are read natively by the secondary binding from the primary binding directory — no mirror is written
 - **Permissions**: each binding has its own permission file with equivalent access configured
 - **Plugins/MCP**: each binding has its own extension format (plugins for one, MCP servers for the other)
@@ -319,7 +319,7 @@ tools: [Read, Write, Edit, Glob, Grep]
 ### Secondary binding: OpenCode (`.opencode/`)
 
 - Auto-generated directory: `.opencode/agents/` (plural per opencode.ai/docs/agents/)
-- Agent files: `.opencode/agents/*.md` with frontmatter using a `permission` object (the older boolean tool flags are deprecated/legacy and no longer emitted) and `opencode-go/*` model IDs
+- Agent files: `.opencode/agents/*.md` with frontmatter using a `permission` object (the older boolean tool flags are deprecated/legacy and no longer emitted) and `zai-coding-plan/glm-5.2` model IDs
 - Skills: NOT mirrored — OpenCode reads `.claude/skills/{name}/SKILL.md` natively per opencode.ai/docs/skills/
 - Permission scheme: `.opencode/opencode.json`
 - MCP servers (Playwright, Nx, Perplexity)
@@ -327,7 +327,7 @@ tools: [Read, Write, Edit, Glob, Grep]
 ```binding-example
 ---
 description: Brief description of what the agent does
-model: opencode-go/glm-5.2
+model: zai-coding-plan/glm-5.2
 permission:
   read: allow
   write: allow
