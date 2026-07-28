@@ -2584,9 +2584,11 @@ Agent skills are **read natively by the coding agent** from `.claude/skills/` â€
 
 The content below is platform-specific. It documents the concrete translation applied by `rhino-cli agents sync` and is intentionally vendor-specific. Per the [Governance Vendor Independence convention](../../conventions/structure/governance-vendor-independence.md), the vendor-audit scanner skips every line under this heading until the next same-level heading or end of file.
 
-### Color Translation Table
+### Platform Binding Color Translation
 
 The named color (`blue`, `green`, etc.) written by hand in `.claude/agents/*.md` is the **source of truth**. Authors never touch `.opencode/agents/*.md` directly â€” those are regenerated artefacts. When the sync tool writes secondary binding files, it translates the named color to a platform-compatible value.
+
+### Color Translation Table
 
 **Translation table** (mirrors `claude_to_opencode_color()` in `apps/rhino-cli/src/internal/agents/converter.rs`):
 
