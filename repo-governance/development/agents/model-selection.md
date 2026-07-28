@@ -1,6 +1,6 @@
 ---
 title: "AI Agent Model Selection Convention"
-description: Standards for selecting the appropriate model tier (opus, sonnet, haiku) for AI agents based on task complexity
+description: Standards for selecting the appropriate model tier (planning-grade, execution-grade, fast) for AI agents based on task complexity
 category: explanation
 subcategory: development
 tags:
@@ -8,11 +8,14 @@ tags:
   - model-selection
   - standards
   - development
+created: 2026-04-03
 ---
 
 # AI Agent Model Selection Convention
 
 This document defines the standards for selecting the appropriate model tier when creating or updating AI agents. The governing principle is **match model capability to task complexity** -- use the most capable model only when the task demands it, and use lighter models for structured or mechanical work.
+
+> **Note on terminology**: "planning-grade", "execution-grade", and "fast" are **internal repo vocabulary**, not an externally-recognized cross-vendor standard. Web research (2026-05-03) found no community usage of these tier names outside this repository. They serve as a vendor-neutral capability axis used by `repo-governance/` prose; concrete vendor model IDs (e.g., `claude-opus-4-7`, `opencode-go/glm-5.2`) live in platform-binding agent frontmatter and in the [AI Model Benchmarks Reference](../../../docs/reference/ai-model-benchmarks.md).
 
 ## Principles Implemented/Respected
 
@@ -50,9 +53,9 @@ Model selection directly affects agent quality, latency, and resource efficiency
 - Agent naming and file structure (see [AI Agents Convention](./ai-agents.md))
 - Workflow orchestration (see [Agent Workflow Orchestration](./agent-workflow-orchestration.md))
 
-## 🎯 Model Tiers
+## Model Tiers
 
-### planning-grade (Inherit / No Model Specified)
+### Planning-Grade (Inherit / No Model Specified)
 
 **When to use**: Tasks requiring creative reasoning, architectural decisions, code generation, multi-step judgment calls, or nuanced content creation.
 
@@ -74,7 +77,8 @@ Model selection directly affects agent quality, latency, and resource efficiency
 - **docs-tutorial-maker** -- produces tutorial content requiring pedagogical reasoning, narrative flow, and learning progression design
 - **swe-ui-maker** -- creates UI components requiring CVA variants, Radix composition, accessibility, tests, and stories in one pass
 
-**Frontmatter**: Omit the `model` field (inherits the default, which is opus-tier).
+**Frontmatter**: Omit the `model` field. This is intentional — the agent inherits the
+session's active model.
 
 ```yaml
 ---
@@ -85,28 +89,23 @@ color: purple
 ---
 ```
 
-Note: `model` field is omitted — inherits opus tier (creative reasoning, code generation). Do not add a YAML comment.
+**Budget-Adaptive Inheritance**: Omitting `model` is a deliberate design choice, not an
+oversight. The agent inherits the calling session's model, which adapts to the user's
+account tier and token budget:
 
-#### Budget-Adaptive Inheritance
+| Session plan               | Inherited model | Output quality |
+| -------------------------- | --------------- | -------------- |
+| Max / Team Premium         | `Opus 4.7`      | Highest        |
+| Pro / Standard / API       | `Sonnet 4.6`    | High           |
+| Bedrock / Vertex / Foundry | `Sonnet 4.5`    | High           |
 
-planning-grade-tier agents intentionally omit the `model` field so each session inherits its active
-model. This is the **correct and intended** behavior:
+This means a Max-plan user gets planning-grade plans, architecture, and code generation,
+while a Pro-plan user gets execution-grade output — proportional to their purchasing
+decision. Do NOT add `model: opus` to these agents. Doing so overrides budget-adaptive
+behavior and forces planning-grade API charges regardless of the user's account tier (see Common
+Mistakes).
 
-| Account tier         | Inherited model            | Effective behavior            |
-| -------------------- | -------------------------- | ----------------------------- |
-| Max / Team Premium   | Claude planning-grade 4.7  | Full reasoning capability     |
-| Pro / Standard / API | Claude execution-grade 4.6 | Matches user's purchased tier |
-
-**Why this matters**: A Pro-tier user who gets execution-grade-quality output from `plan-maker` is
-receiving behavior that matches their account — not a bug. Budget-adaptive inheritance lets
-a single agent configuration serve users across all account tiers correctly and
-cost-efficiently.
-
-> ⚠️ **Do NOT add `model: opus` to opus-tier agents.** Adding an explicit `model: opus`
-> field bypasses the inheritance chain and forces planning-grade charges on all users regardless of
-> their account tier, breaking the budget-adaptive behavior.
-
-### execution-grade
+### Execution-Grade
 
 **When to use**: Rule-based validation, applying validated fixes from audit reports, template-driven output, and structured pattern-following tasks.
 
@@ -122,10 +121,10 @@ cost-efficiently.
 
 **Agent examples**:
 
-- **All checkers** -- validate content against conventions using defined rulesets and produce structured audit reports (docs-checker, docs-tutorial-checker, readme-checker, specs-checker, repo-rules-checker, repo-workflow-checker, plan-checker, plan-execution-checker, swe-code-checker, swe-ui-checker, ci-checker)
-- **Most fixers** -- apply corrections from checker audit reports following documented fix procedures (docs-fixer, docs-tutorial-fixer, readme-fixer, specs-fixer, repo-rules-fixer, repo-workflow-fixer, plan-fixer, swe-ui-fixer, ci-fixer)
+- **All checkers** -- validate content against conventions using defined rulesets and produce structured audit reports (docs-checker, docs-tutorial-checker, docs-software-engineering-separation-checker, readme-checker, specs-checker, repo-rules-checker, repo-workflow-checker, plan-checker, plan-execution-checker, swe-code-checker, swe-ui-checker, ci-checker, apps-\*-checker)
+- **Most fixers** -- apply corrections from checker audit reports following documented fix procedures (docs-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, readme-fixer, specs-fixer, repo-rules-fixer, repo-workflow-fixer, plan-fixer, swe-ui-fixer, ci-fixer, apps-\*-fixer)
 - **social-linkedin-post-maker** -- generates social media posts following a defined template and tone guidelines
-- **Structured makers** -- makers with tight, well-defined skills that pin down most decisions, making them rule-following rather than open-ended creation (docs-maker, readme-maker, agent-maker, specs-maker, repo-workflow-maker, repo-rules-maker)
+- **Structured makers** -- makers with tight, well-defined skills that pin down most decisions, making them rule-following rather than open-ended creation (docs-maker, readme-maker, agent-maker, specs-maker, repo-workflow-maker, apps-ose-www-content-maker, apps-ayokoding-www-by-example-maker, apps-ayokoding-www-general-maker, apps-ayokoding-www-in-the-field-maker, repo-rules-maker)
 - **swe-e2e-dev** -- writes Playwright E2E tests following a dedicated skill with defined patterns (locators, fixtures, waits); lower stakes than production code written by language developer agents
 
 **Frontmatter**: Specify `model: sonnet` explicitly.
@@ -140,7 +139,7 @@ color: green
 ---
 ```
 
-### fast
+### Fast
 
 **When to use**: Purely mechanical tasks with no reasoning required -- simple automation, URL validation, deployment scripts, and straightforward command execution.
 
@@ -156,34 +155,24 @@ color: green
 
 **Agent examples**:
 
-- **Deployers** -- execute git branch operations and deployment commands following a fixed procedure
-- **Link checkers** (docs-link-checker) -- validate URLs by checking HTTP status codes and managing cache files
+- **Deployers** (apps-ayokoding-www-deployer, apps-ose-www-deployer, apps-organiclever-app-web-deployer, apps-wahidyankf-www-deployer) -- execute git branch operations and deployment commands following a fixed procedure
+- **Link checkers** (docs-link-checker, apps-ayokoding-www-link-checker) -- validate URLs by checking HTTP status codes and managing cache files
+- **apps-ayokoding-www-link-fixer** -- applies checker-identified broken links via deterministic URL replacement; no independent analysis required
 - **docs-file-manager** -- performs deterministic file operations (move, rename, delete) with `git mv`, kebab-case pattern matching, and mechanical link updates; no judgment calls required
 
 **Frontmatter**: Specify `model: haiku` explicitly.
 
 ```yaml
 ---
-name: docs-file-manager
-description: Expert file organization manager...
+name: apps-ayokoding-www-deployer
+description: Expert deployment orchestrator...
 tools: [Bash, Read, Glob, Grep]
 model: haiku
 color: purple
 ---
 ```
 
-## Current Model Versions (April 2026)
-
-| the primary coding agent alias | Model ID                    | Context | Pricing (in/out per MTok) | SWE-bench Verified                                                                    | Notes                                                          |
-| ------------------------------ | --------------------------- | ------- | ------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| `opus` (inherit)               | `claude-opus-4-7`           | 1M      | $5 / $25                  | [87.6% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-opus-47)   | Budget-adaptive; Max/Team gets this                            |
-| `sonnet`                       | `claude-sonnet-4-6`         | 1M      | $3 / $15                  | [79.6% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46) | Budget-adaptive inherit for Pro/Standard; explicit sonnet-tier |
-| `haiku`                        | `claude-haiku-4-5-20251001` | 200k    | $1 / $5                   | [73.3% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-haiku-45)  | fast 3 (`claude-3-haiku`) retired 2026-04-19                   |
-
-> **Note**: fast 3 (`claude-3-haiku-20240307`) was retired on 2026-04-19. All haiku-tier
-> agents in this repo use `claude-haiku-4-5-20251001` via the `haiku` alias.
-
-## 🌳 Model Selection Decision Tree
+## Model Selection Decision Tree
 
 ```
 Start: Choosing Agent Model
@@ -191,19 +180,19 @@ Start: Choosing Agent Model
     +-- Does the task require creative reasoning, code generation,
     |   architectural decisions, or nuanced content creation?
     |   |
-    |   +-- Yes --> planning-grade (omit model field)
+    |   +-- Yes --> Opus (omit model field)
     |   |
     |   +-- No --> Does the task require applying rules, validating
     |              against checklists, or following structured procedures?
     |              |
-    |              +-- Yes --> execution-grade (model: sonnet)
+    |              +-- Yes --> Sonnet (model: sonnet)
     |              |
     |              +-- No --> Is the task purely mechanical with
     |                         no reasoning required?
     |                         |
-    |                         +-- Yes --> fast (model: haiku)
+    |                         +-- Yes --> Haiku (model: haiku)
     |                         |
-    |                         +-- No --> Default to execution-grade
+    |                         +-- No --> Default to Sonnet
     |                                    (safer than haiku for
     |                                     ambiguous cases)
 ```
@@ -248,51 +237,97 @@ For a deployer agent:
 
 ## Tier Comparison Summary
 
-| Dimension              | planning-grade (inherit)                                                                                 | execution-grade                                                                                             | fast                                                                                            |
-| ---------------------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| **Reasoning depth**    | Deep, multi-step                                                                                         | Moderate, rule-based                                                                                        | Minimal, mechanical                                                                             |
-| **Creativity**         | High (novel solutions)                                                                                   | Low (follows templates)                                                                                     | None (fixed procedures)                                                                         |
-| **Task ambiguity**     | Handles open-ended problems                                                                              | Handles structured problems                                                                                 | Requires deterministic flow                                                                     |
-| **Output originality** | Creates new content/code                                                                                 | Transforms per rules                                                                                        | Executes predefined steps                                                                       |
-| **Error recovery**     | Adapts to unexpected states                                                                              | Follows fallback rules                                                                                      | Fails or retries                                                                                |
-| **Typical agents**     | Creative makers, developers                                                                              | Checkers, fixers, structured makers                                                                         | Deployers, link checkers, file manager                                                          |
-| **SWE-bench Verified** | [87.6% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-opus-47) (planning-grade 4.7) | [79.6% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46) (execution-grade 4.6) | [73.3% `[Verified]`](../../../docs/reference/ai-model-benchmarks.md#claude-haiku-45) (fast 4.5) |
+| Dimension              | Planning-Grade (inherit)                                                                    | Execution-Grade                                                                               | Fast                                                                                         |
+| ---------------------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **Reasoning depth**    | Deep, multi-step                                                                            | Moderate, rule-based                                                                          | Minimal, mechanical                                                                          |
+| **Creativity**         | High (novel solutions)                                                                      | Low (follows templates)                                                                       | None (fixed procedures)                                                                      |
+| **Task ambiguity**     | Handles open-ended problems                                                                 | Handles structured problems                                                                   | Requires deterministic flow                                                                  |
+| **Output originality** | Creates new content/code                                                                    | Transforms per rules                                                                          | Executes predefined steps                                                                    |
+| **Error recovery**     | Adapts to unexpected states                                                                 | Follows fallback rules                                                                        | Fails or retries                                                                             |
+| **Typical agents**     | Creative makers, developers                                                                 | Checkers, fixers, structured makers                                                           | Deployers, link checkers, file manager                                                       |
+| **SWE-bench Verified** | [87.6%](../../../docs/reference/ai-model-benchmarks.md#claude-opus-47) (Verified, Apr 2026) | [79.6%](../../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46) (Verified, Feb 2026) | [73.3%](../../../docs/reference/ai-model-benchmarks.md#claude-haiku-45) (Verified, Oct 2025) |
+
+## Common Mistakes
+
+| Mistake                                           | Problem                                                                          | Correction                                                          |
+| ------------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Using opus for validation tasks                   | Wastes resources; opus may over-interpret instead of checking                    | Use execution-grade tier for checkers and fixers                    |
+| Using fast tier for content creation              | Fast tier lacks reasoning depth for original content                             | Use planning-grade (inherit) for makers and developers              |
+| Using execution-grade tier for deployment scripts | Execution-grade tier is overqualified for deterministic command sequences        | Use fast tier for deployers and link checkers                       |
+| Omitting model justification                      | Future maintainers cannot assess whether the tier is appropriate                 | Always include Model Selection Justification block                  |
+| Defaulting to planning-grade "just in case"       | Violates Simplicity Over Complexity principle                                    | Analyze task requirements; use the simplest adequate tier           |
+| Using fast tier for tasks with error handling     | Fast tier cannot reason about unexpected states                                  | Use execution-grade or planning-grade depending on error complexity |
+| Adding `model: opus` to planning-grade agents     | Bypasses budget-adaptive inheritance; forces planning-grade API charges on users | Omit the field — inherit session model to match user's tier         |
+
+## Current Model Versions (April 2026)
+
+| Agent config alias | Model ID                    | Context     | Notes                 | Benchmark                                                                     |
+| ------------------ | --------------------------- | ----------- | --------------------- | ----------------------------------------------------------------------------- |
+| `opus` (inherit)   | `claude-opus-4-7`           | 1M tokens   | Current top tier      | [Benchmarks](../../../docs/reference/ai-model-benchmarks.md#claude-opus-47)   |
+| `sonnet`           | `claude-sonnet-4-6`         | 1M tokens   | Daily driver          | [Benchmarks](../../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46) |
+| `haiku`            | `claude-haiku-4-5-20251001` | 200k tokens | v3 retired 2026-04-19 | [Benchmarks](../../../docs/reference/ai-model-benchmarks.md#claude-haiku-45)  |
+
+Aliases (`opus`, `sonnet`, `haiku`) automatically track future model versions within each
+tier. The model IDs above are current as of April 2026.
 
 ## Platform Binding Examples
 
-This repo runs on both the primary coding agent (`.claude/agents/`) and the secondary coding agent (`.opencode/agents/`).
-The the secondary coding agent runtime uses Z.ai Coding Plan models. The sync pipeline
-(`npm run generate:bindings`) translates Claude model aliases automatically.
+Agents in the primary binding directory are auto-synced to the secondary binding directory by rhino-cli
+(`npm run generate:bindings`). The sync translates primary binding model aliases to
+secondary binding model IDs.
 
-| the primary coding agent alias | the secondary coding agent model ID | Tier                                                                       |
-| ------------------------------ | ----------------------------------- | -------------------------------------------------------------------------- |
-| `opus` (thinking)              | `opencode-go/glm-5.2`               | SWE-bench Pro 62.1%, ~7.1pp below Claude Opus 4.8 — closest available      |
-| `sonnet` (execution)           | `opencode-go/glm-5.2`               | Same model as thinking (intentional — see below); at/above Claude Sonnet 5 |
-| `""` (omit, execution)         | `opencode-go/glm-5.2`               | Default — same as opus/sonnet                                              |
-| `haiku` (fast)                 | `opencode-go/minimax-m3`            | SWE-bench Pro 59.0%, closest to Sonnet 5 without exceeding it              |
+### Model ID Mapping
 
-**Tier collapse**: Claude has three distinct tiers (thinking/execution/fast); the secondary coding
-agent's `opencode-go` roster does not have a model that separately clears Claude Opus 4.8's tier, so
-`opus` and `sonnet`/omit both map to `opencode-go/glm-5.2` — the strongest roster model overall. This
-is an intentional, accepted platform constraint (not a bug): if a future roster model clears the
-Opus-4.8 bar without also being the execution-tier pick, only the `opus` mapping's literal needs to
-change. Only `haiku` selects a distinct, lighter model (`opencode-go/minimax-m3`).
+| Primary binding                                  | Secondary binding        | Capability notes                                                                                                                                    |
+| ------------------------------------------------ | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `model: opus` (thinking-grade)                   | `opencode-go/glm-5.2`    | Zhipu GLM; SWE-bench Pro 62.1%, ~7.1pp below Claude Opus 4.8 (69.2%) — closest available, does not clear the thinking-tier bar                      |
+| omit (execution-grade inherit) / `model: sonnet` | `opencode-go/glm-5.2`    | Same model as thinking-grade (intentional — see Tier Collapse below); SWE-bench Pro 62.1%, at/slightly above Claude Sonnet 5's 63.2% (within noise) |
+| `model: haiku` (fast)                            | `opencode-go/minimax-m3` | SWE-bench Pro 59.0%, −4.2pp vs. Claude Sonnet 5 — closest available model to Sonnet-5 tier without exceeding it, cheaper per-token than glm-5.2     |
 
-See [AI Model Benchmarks Reference](../../../docs/reference/ai-model-benchmarks.md) for the full
-sourced comparison, including standard per-token pricing and a frontier/big-brand model reference
-table for cost/capability context.
+### Tier Collapse
 
-## ❌ Common Mistakes
+The primary binding has three tiers (planning-grade/thinking > execution-grade > fast). The secondary
+binding's `convert_model()` implements all three as explicit branches (`haiku` / `opus` / else), but
+the thinking and execution branches currently return the identical model ID: no model in the
+secondary binding's roster separately clears Claude Opus 4.8's benchmark tier, so thinking-grade
+collapses onto execution-grade's target rather than being held to a bar nothing in the roster meets.
+This is an accepted platform-level constraint, not an oversight — if a future roster model clears the
+Opus-4.8 bar without also being the execution-grade pick, only the `opus` branch's literal needs to
+change.
 
-| Mistake                                   | Problem                                                                                                     | Correction                                                  |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| Using opus for validation tasks           | Wastes resources; opus may over-interpret instead of checking                                               | Use sonnet for checkers and fixers                          |
-| Using haiku for content creation          | fast lacks reasoning depth for original content                                                             | Use opus (inherit) for makers and developers                |
-| Using sonnet for deployment scripts       | execution-grade is overqualified for deterministic command sequences                                        | Use haiku for deployers and link checkers                   |
-| Omitting model justification              | Future maintainers cannot assess whether the tier is appropriate                                            | Always include Model Selection Justification block          |
-| Defaulting to opus "just in case"         | Violates Simplicity Over Complexity principle                                                               | Analyze task requirements; use the simplest adequate tier   |
-| Using haiku for tasks with error handling | fast cannot reason about unexpected states                                                                  | Use sonnet or opus depending on error complexity            |
-| Adding `model: opus` to opus-tier agents  | Bypasses budget-adaptive inheritance; forces planning-grade charges on all users regardless of account tier | Omit the field — inherit session model to match user's tier |
+Tier assignments govern behavior in primary binding sessions (the primary runtime, where `opus`
+genuinely resolves to a stronger model than `sonnet`). The secondary binding uses the strongest
+available roster model for both non-fast tiers, and the closest-without-exceeding model for fast.
+
+### Why glm-5.2 and minimax-m3 as the Defaults
+
+`opencode-go/glm-5.2` is the strongest model in the secondary binding's roster on every published
+benchmark checked (SWE-bench Pro 62.1%, Terminal-Bench 2.1 81.0%) — at/above Claude Sonnet 5's tier,
+though still below Claude Opus 4.8's. `opencode-go/minimax-m3` is the closest roster model to Sonnet-5
+tier without exceeding it (SWE-bench Pro 59.0%), chosen over collapsing every tier onto `glm-5.2` so
+the fast tier stays genuinely lighter and cheaper (see
+[AI Model Benchmarks Reference](../../../docs/reference/ai-model-benchmarks.md) for the full
+comparison, including a standard per-token pricing table and a frontier/big-brand model reference for
+context). Both are available via the flat-rate secondary binding subscription; no per-token billing
+for the subscriber. If the roster's rankings change, update only `convert_model()` in
+`apps/rhino-cli/src/application/agents/converter.rs` and re-run `npm run generate:bindings`.
+
+### Model ID Mapping (Claude Code → Cursor)
+
+| Primary binding                                  | Cursor binding | Capability notes                                                    |
+| ------------------------------------------------ | -------------- | ------------------------------------------------------------------- |
+| `model: opus` (thinking-grade)                   | `composer-2.5` | Full tier collapse — thinking collapses onto execution              |
+| omit (execution-grade inherit) / `model: sonnet` | `composer-2.5` | Same pin as thinking-grade (intentional full-tier collapse)         |
+| `model: haiku` (fast)                            | `composer-2.5` | Fast tier also collapses — avoids the 6× `composer-2.5-fast` toggle |
+
+**Prohibition**: `rhino-cli` must never emit `composer-2.5-fast` into `.cursor/agents/`. That slug
+is the priced-fast inference toggle this binding exists to avoid.
+
+### Cursor Full-Tier Collapse
+
+Every non-fast Claude alias resolves to `composer-2.5`. Unlike OpenCode (where fast maps to a
+lighter model), Cursor's fast toggle is a latency/price choice on identical weights — so haiku-grade
+agents trade hypothetical input-cost savings for deterministic first-party pinning off the fast tier.
 
 ## Special Considerations
 
@@ -300,29 +335,33 @@ table for cost/capability context.
 
 Some agents straddle tier boundaries. When uncertain:
 
-1. **Analyze the core loop** -- what does the agent do repeatedly? If the core loop is rule application, use sonnet even if setup requires some reasoning.
+1. **Analyze the core loop** -- what does the agent do repeatedly? If the core loop is rule application, use execution-grade even if setup requires some reasoning.
 2. **Consider the failure mode** -- if the agent picks a wrong approach, how bad is the outcome? Higher-stakes failures justify a higher tier.
-3. **Start lower, promote if needed** -- begin with sonnet; promote to opus only if quality issues emerge in practice.
+3. **Start lower, promote if needed** -- begin with execution-grade; promote to planning-grade only if quality issues emerge in practice.
 
-### Link Checkers as fast
+### Link Checkers as Fast-Tier
 
-The docs-link-checker agent uses haiku despite being categorized as a checker (green). This is because their validation is purely mechanical (HTTP status code checking), not rule-based reasoning. The checker color reflects their role in the maker-checker-fixer workflow, while the model reflects their cognitive requirements.
+Link checker agents (docs-link-checker, apps-ayokoding-www-link-checker) use the fast tier despite being categorized as checkers (green). This is because their validation is purely mechanical (HTTP status code checking), not rule-based reasoning. The checker color reflects their role in the maker-checker-fixer workflow, while the model reflects their cognitive requirements.
 
-### Social Media Maker as execution-grade
+### Social Media Maker as Execution-Grade
 
-The social-linkedin-post-maker uses sonnet despite being a "maker" agent. This is because LinkedIn post generation follows a rigid template and tone guide, making it a structured pattern-following task rather than creative content creation.
+The social-linkedin-post-maker uses execution-grade despite being a "maker" agent. This is because LinkedIn post generation follows a rigid template and tone guide, making it a structured pattern-following task rather than creative content creation.
 
-### Structured Makers as execution-grade
+### Structured Makers as Execution-Grade
 
-Several maker agents use sonnet because their output is structured by tight skills with well-defined rubrics (docs-maker, readme-maker, agent-maker, specs-maker, repo-workflow-maker, repo-rules-maker). Each has a sonnet checker and sonnet fixer in its maker-checker-fixer trio, and the skill pins down most decisions. Contrast with opus-tier makers (plan-maker, docs-tutorial-maker, swe-ui-maker) where the creative work is open-ended, pedagogically demanding, or multi-concern.
+Several maker agents use execution-grade because their output is structured by tight skills with well-defined rubrics (docs-maker, readme-maker, agent-maker, specs-maker, repo-workflow-maker, apps-ose-www-content-maker, apps-ayokoding-www-by-example-maker, apps-ayokoding-www-general-maker, apps-ayokoding-www-in-the-field-maker, repo-rules-maker). Each has an execution-grade checker and execution-grade fixer in its maker-checker-fixer trio, and the skill pins down most decisions. Contrast with planning-grade makers (plan-maker, docs-tutorial-maker, swe-ui-maker) where the creative work is open-ended, pedagogically demanding, or multi-concern.
 
-### E2E Test Developer as execution-grade
+### E2E Test Developer as Execution-Grade
 
-The swe-e2e-dev uses sonnet despite the other 12 language developer agents being opus. Playwright E2E tests are pattern-driven (locators, fixtures, waits) with a dedicated skill, and test code regressions surface fast in CI. Production application code written by the language developers has higher stakes and unforgiving idioms, justifying their continued opus tier.
+The swe-e2e-dev uses execution-grade despite the other 12 language developer agents being planning-grade. Playwright E2E tests are pattern-driven (locators, fixtures, waits) with a dedicated skill, and test code regressions surface fast in CI. Production application code written by the language developers has higher stakes and unforgiving idioms, justifying their continued planning-grade tier.
 
-### File Manager as fast
+### File Manager as Fast-Tier
 
-The docs-file-manager uses haiku despite being categorized as a fixer (yellow). This is because its operations are deterministic file manipulation (`git mv`, `git rm`, find-and-replace link updates) with no judgment calls. The `agent-developing-agents` skill cites it as the canonical haiku example.
+The docs-file-manager uses the fast tier despite being categorized as a fixer (yellow). This is because its operations are deterministic file manipulation (`git mv`, `git rm`, find-and-replace link updates) with no judgment calls. The `agent-developing-agents` skill cites it as the canonical fast-tier example.
+
+### Link Fixer as Fast-Tier
+
+The apps-ayokoding-www-link-fixer uses the fast tier despite being a fixer (yellow) — previously execution-grade. Its work is deterministic URL replacement driven entirely by a checker audit report: no independent link analysis, no content reasoning, just old-URL → new-URL substitution followed by an HTTP status re-check. The fast-tier model (73.3% SWE-bench Verified — [benchmark reference](../../../docs/reference/ai-model-benchmarks.md#claude-haiku-45)) is fully sufficient and costs 5× less per token than the execution-grade tier. This is the fixer analogue of the Link Checkers as Fast-Tier rule above.
 
 ## Tools and Automation
 
@@ -332,7 +371,7 @@ The following agents enforce or assist with model selection:
 - **repo-rules-checker** -- validates that all agents have model justification blocks and appropriate tier assignments
 - **repo-rules-fixer** -- corrects model selection issues identified by the checker
 
-## 🔗 References
+## References
 
 **Related Development Practices:**
 
@@ -355,5 +394,3 @@ The following agents enforce or assist with model selection:
 - `agent-maker` -- Creates agents following these model selection standards
 - `repo-rules-checker` -- Validates model selection compliance
 - `repo-rules-fixer` -- Fixes model selection issues
-
----
