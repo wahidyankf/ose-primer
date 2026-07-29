@@ -534,7 +534,7 @@ Archival is **BLOCKED** until every entry in the plan's `learnings.md` reaches a
 4. **Both safety gates were applied** — Spot-check surviving entries for raw secrets/credentials
    (should be sanitized to `<placeholder>` tokens or discarded) and for infra-private content
    (Terraform, k3s, Proxmox, `coralpolyp`, real hostnames/inventories — must never appear; that
-   content belongs in `ose-infra` only). A raw secret or cross-routed infra-private entry: **CRITICAL**.
+   content belongs in `ose-private` only). A raw secret or cross-routed infra-private entry: **CRITICAL**.
 
 #### Finding Severity
 
@@ -542,7 +542,7 @@ Archival is **BLOCKED** until every entry in the plan's `learnings.md` reaches a
 - Any entry not in a terminal state (no route, no backlog filing, no discard reason): **HIGH**
   (blocks archival)
 - Code-homed learning landed inline instead of filed as `plans/backlog/`: **HIGH**
-- Secret/credential surviving unsanitized, or infra-private content cross-routed out of `ose-infra`:
+- Secret/credential surviving unsanitized, or infra-private content cross-routed out of `ose-private`:
   **CRITICAL**
 - Explicit "none" escape present and no `learnings.md` needed: **not flagged** (passes)
 
@@ -586,7 +586,7 @@ require the PR to be merged.
      updates) is part of the delivering PR's own commit history (`gh pr view <PR> --json commits` or
      `git log <branch>`), not deferred to a separate post-merge commit. This item is **N/A** for
      repos where the plan folder is not tracked (the three-repo nuance: e.g. a plan folder that
-     lives only in `ose-public` while the same plan also touches `ose-primer`/`ose-infra`). Missing
+     lives only in `ose-public` while the same plan also touches `ose-primer`/`ose-private`). Missing
      or post-merge-deferred archival on an applicable repo: **HIGH**.
    - **Completion does not require merge** — do NOT file a finding solely because the PR is still
      open/unmerged; a green, fully-reviewed, archival-committed PR awaiting its merge is the correct

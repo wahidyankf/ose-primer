@@ -898,7 +898,7 @@ triage rubric, states the code-routing rule, and applies both mandatory safety g
    `delivery.md`) at plan-creation time, ready for the executor to append entries during execution?
 3. **Both safety gates present** — Does the phase apply the **secret/sensitivity gate** (sanitize or
    discard unsanitizable secrets) and the **repo-relevance gate** (infra-private content never
-   cross-routed out of `ose-infra`) to every surviving entry?
+   cross-routed out of `ose-private`) to every surviving entry?
 4. **Code-routing rule stated** — Does the phase state that a learning whose home is `apps/`,
    `libs/`, or tests is ALWAYS filed as a separate `plans/backlog/<slug>/` plan and NEVER landed
    inline in the current plan's own commits/PR?
