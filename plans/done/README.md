@@ -2,6 +2,11 @@
 
 Archived plans and completed project planning documents.
 
+> **2026-07-29: Sibling repository renamed from `ose-infra` to `ose-private`.** Archived plan
+> bodies below deliberately retain the old `ose-infra` name — they are a historical record of what
+> was true when each plan executed, not live documentation. GitHub's permanent redirect from the
+> old repository name keeps every existing link, clone URL, and bookmark working.
+
 ## Folder Naming
 
 Folders in `done/` MUST carry a date prefix where the date is the **completion date** — the date of the last file modification in the folder before archival (the date of the final commit that touched the plan files). This is NOT the creation date.
