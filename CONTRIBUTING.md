@@ -2,7 +2,7 @@
 
 Thank you for your interest in contributing to `ose-primer`! We welcome contributions from the community and appreciate your time and effort.
 
-`ose-primer` is the MIT-licensed repository template in the OSE (Open Sharia Enterprise) family. Its sibling repositories are [`ose-public`](https://github.com/wahidyankf/ose-public) (main OSE platform) and [`ose-infra`](https://github.com/wahidyankf/ose-infra) (private infrastructure). See [README.md](./README.md#related-repositories) for the full ecosystem map.
+`ose-primer` is the MIT-licensed repository template in the OSE (Open Sharia Enterprise) family. Its sibling repositories are [`ose-public`](https://github.com/wahidyankf/ose-public) (main OSE platform) and [`ose-private`](https://github.com/wahidyankf/ose-private) (private, unexposed surface). See [README.md](./README.md#related-repositories) for the full ecosystem map.
 
 ## Table of Contents
 

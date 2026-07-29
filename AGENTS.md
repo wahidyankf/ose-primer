@@ -19,13 +19,13 @@ Instructions for AI agents working with this repository.
 
 `ose-primer` is one of three independently cloned repositories in the OSE (Open Sharia Enterprise) family. Agents should treat each as a standalone git repository — there is no umbrella workspace, and the previously-used `ose-projects` parent has been deleted.
 
-| Repository                                                           | Role                                                                                              | Visibility | License           |
-| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------- | ----------------- |
-| [`ose-public`](https://github.com/wahidyankf/ose-public)             | Main OSE platform monorepo. Upstream source of governance, conventions, and AI agent patterns.    | Public     | Open source (MIT) |
-| [`ose-primer`](https://github.com/wahidyankf/ose-primer) (this repo) | MIT-licensed template extracted from `ose-public`. Clean starting point for new OSE-style repos.  | Public     | MIT               |
-| [`ose-infra`](https://github.com/wahidyankf/ose-infra)               | Private infrastructure (Terraform, deploy pipelines, cloud config) for the `ose-public` platform. | Private    | Proprietary       |
+| Repository                                                           | Role                                                                                                                                            | Visibility | License           |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----------------- |
+| [`ose-public`](https://github.com/wahidyankf/ose-public)             | Main OSE platform monorepo. Upstream source of governance, conventions, and AI agent patterns.                                                  | Public     | Open source (MIT) |
+| [`ose-primer`](https://github.com/wahidyankf/ose-primer) (this repo) | MIT-licensed template extracted from `ose-public`. Clean starting point for new OSE-style repos.                                                | Public     | MIT               |
+| [`ose-private`](https://github.com/wahidyankf/ose-private)           | Unexposed surface of Open Sharia Enterprise (infrastructure, private source, and anything not publicly released) for the `ose-public` platform. | Private    | Proprietary       |
 
-Cross-repo propagation flows `ose-public → ose-primer → downstream forks` for governance, agents, and skills; infrastructure-only concerns flow `ose-public ↔ ose-infra`. See the [Repository Ecosystem Convention](./repo-governance/conventions/structure/repository-ecosystem.md) for the canonical rules.
+Cross-repo propagation flows `ose-public → ose-primer → downstream forks` for governance, agents, and skills; infrastructure-only concerns flow `ose-public ↔ ose-private`. See the [Repository Ecosystem Convention](./repo-governance/conventions/structure/repository-ecosystem.md) for the canonical rules.
 
 `apps/rhino-cli` is required to be byte-identical (zero carve-outs) across all three repos, including
 its Gherkin behavior tree at `specs/apps/rhino/behavior/rhino-cli/gherkin/**` (every `.feature` file and
