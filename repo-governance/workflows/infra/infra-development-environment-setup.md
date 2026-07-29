@@ -35,7 +35,7 @@ integration tests to E2E tests.
 > **Scope**: This setup workflow lives in [`ose-primer`](https://github.com/wahidyankf/ose-primer)
 > — the repository template that owns the polyglot `crud-*` demo apps. Sibling repositories
 > ([`ose-public`](https://github.com/wahidyankf/ose-public),
-> [`ose-infra`](https://github.com/wahidyankf/ose-infra)) maintain their own equivalent
+> [`ose-private`](https://github.com/wahidyankf/ose-private)) maintain their own equivalent
 > workflows; this file does not govern them.
 
 **When to use**:

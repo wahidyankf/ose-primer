@@ -12,7 +12,7 @@ below is intentional and recorded; zero silent deviations.
 ## R1 — Parity set
 
 Three repos participate: `ose-public` (canonical reference), `ose-primer`, and
-`ose-infra`. All three adopt flat product-surface behavior dir naming. Deviations
+`ose-private`. All three adopt flat product-surface behavior dir naming. Deviations
 are per-repo: each repo renames its own families, and only `ose-public` has a
 multi-product family consolidation.
 

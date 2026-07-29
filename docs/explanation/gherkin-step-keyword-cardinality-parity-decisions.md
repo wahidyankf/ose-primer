@@ -29,7 +29,7 @@ Sibling plans in the other repositories also carry the rule and are executed in 
 parity set:
 
 - `ose-public`: `plans/done/2026-06-07__gherkin-step-keyword-cardinality/`
-- `ose-infra`: `plans/done/2026-06-07__gherkin-step-keyword-cardinality/`
+- `ose-private`: `plans/done/2026-06-07__gherkin-step-keyword-cardinality/`
 
 ## Background
 
@@ -47,7 +47,7 @@ makes the rule explicit and enforces it deterministically.
 
 **Why**: The ose-public plan was already authored and gated at Phase 0 before the parity run
 began. Discarding a validated, gated plan to replace it with a fresh one wastes the work and
-re-introduces authoring risk. The sibling plans (ose-primer, ose-infra) were new because no
+re-introduces authoring risk. The sibling plans (ose-primer, ose-private) were new because no
 prior plan existed for this rule in those repos.
 
 **What was rejected**: Discarding the ose-public plan and authoring three identical plans
@@ -57,7 +57,7 @@ from scratch — rejected because the existing plan's Phase 0 baseline was alrea
 
 **Decision**: ose-primer implements the audit as a standalone command
 (`rhino-cli repo-governance gherkin-keyword-cardinality`) in the Rust CLI, driven by
-a single Gherkin behavior contract in `specs/apps/rhino/`. ose-public and ose-infra add a
+a single Gherkin behavior contract in `specs/apps/rhino/`. ose-public and ose-private add a
 new category to their existing `audit_orchestrator.rs` pattern.
 
 **Why**: ose-primer has no audit orchestrator. Its existing deterministic governance checks
@@ -116,7 +116,7 @@ separation demonstrates the rule propagates through both channels.
 ### Row 6: Quality-Gate Preflight (Deliberate Deviation)
 
 **Decision**: ose-public adds the new category to its existing Step 0.5 preflight.
-ose-primer (and ose-infra) must first **port** the Step 0.5 deterministic-preflight section
+ose-primer (and ose-private) must first **port** the Step 0.5 deterministic-preflight section
 into their `repo-rules-quality-gate.md`, then enumerate the new category.
 
 **Why**: ose-primer's `repo-rules-quality-gate.md` had no Step 0.5 section at all — the
@@ -136,11 +136,11 @@ the parity gap with ose-public.
 **Decision**: CI wiring differs per repo because CI topology differs.
 
 - ose-public: existing governance-audit CI path.
-- ose-infra: `validate-markdown.yml` on a self-hosted runner.
+- ose-private: `validate-markdown.yml` on a self-hosted runner.
 - ose-primer: GitHub-hosted `validate-markdown.yml` + the rhino-cli integration-test job in
   `pr-quality-gate.yml`.
 
-**Why**: CI topology is a repo-specific concern that cannot be unified. ose-infra uses a
+**Why**: CI topology is a repo-specific concern that cannot be unified. ose-private uses a
 private self-hosted runner; ose-primer uses GitHub-hosted runners. The integration-test job
 in ose-primer's `pr-quality-gate.yml` covers the new command on PRs automatically because the
 behavior contract is extended in Phase 4.

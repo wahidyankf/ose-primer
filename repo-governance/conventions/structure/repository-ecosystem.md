@@ -23,7 +23,7 @@ The OSE (Open Sharia Enterprise) family consists of three independent git reposi
 
 ## Purpose
 
-Before 2026-05-23, the three OSE repositories lived under a shared parent directory managed by an umbrella repository called `ose-projects`. That umbrella was deleted on 2026-05-23. The three repositories are now fully independent top-level git repositories.
+Before 2026-05-23, the three OSE repositories lived under a shared parent directory managed by an umbrella repository called `ose-projects`. That umbrella was deleted on 2026-05-23. The three repositories are now fully independent top-level git repositories. (The private sibling was renamed from `ose-infra` to `ose-private` on 2026-07-29 to state the property that governs its contents — not publicly exposed — rather than a subset of them.)
 
 This change means there is no structural mechanism — no shared `package.json`, no `.gitmodules`, no workspace link — to remind contributors that the three repos form a family. This convention provides that reminder. It records:
 
@@ -36,13 +36,13 @@ Each repository in the family carries its own copy of this convention so that th
 
 ## Sibling Repositories
 
-| Repository   | URL                                      | Role                                                                                                                 | Visibility | License           |
-| ------------ | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------- | ----------------- |
-| `ose-public` | https://github.com/wahidyankf/ose-public | Main OSE platform monorepo; upstream source of governance, conventions, agents, and skills                           | Public     | Open source (MIT) |
-| `ose-primer` | https://github.com/wahidyankf/ose-primer | Repository template extracted from `ose-public`; MIT-licensed starting point for new OSE-style polyglot Nx monorepos | Public     | MIT               |
-| `ose-infra`  | https://github.com/wahidyankf/ose-infra  | Private infrastructure repo (Terraform, deploy pipelines, cloud configuration) backing `ose-public`                  | Private    | Proprietary       |
+| Repository    | URL                                       | Role                                                                                                                                  | Visibility | License           |
+| ------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----------------- |
+| `ose-public`  | https://github.com/wahidyankf/ose-public  | Main OSE platform monorepo; upstream source of governance, conventions, agents, and skills                                            | Public     | Open source (MIT) |
+| `ose-primer`  | https://github.com/wahidyankf/ose-primer  | Repository template extracted from `ose-public`; MIT-licensed starting point for new OSE-style polyglot Nx monorepos                  | Public     | MIT               |
+| `ose-private` | https://github.com/wahidyankf/ose-private | Unexposed surface of Open Sharia Enterprise (infrastructure, private source, and anything not publicly released) backing `ose-public` | Private    | Proprietary       |
 
-Each repository is independently clonable. A contributor working in `ose-primer` does not need access to `ose-public` or `ose-infra` to do useful work.
+Each repository is independently clonable. A contributor working in `ose-primer` does not need access to `ose-public` or `ose-private` to do useful work.
 
 ## Propagation Rules
 
@@ -62,10 +62,10 @@ The multi-harness binding scaffolding propagates along this same path: the [Mult
 
 ### Infrastructure concerns
 
-Infrastructure configuration — Terraform modules, deploy pipelines, cloud resource definitions, secrets management — is managed between `ose-public` and `ose-infra` only:
+Infrastructure configuration — Terraform modules, deploy pipelines, cloud resource definitions, secrets management — is managed between `ose-public` and `ose-private` only:
 
 ```
-ose-public  ↔  ose-infra
+ose-public  ↔  ose-private
 ```
 
 `ose-primer` has no infrastructure. It does not receive infrastructure artifacts and does not propagate them.
@@ -80,7 +80,7 @@ The following never flow from `ose-public` to `ose-primer`:
 
 ### What does not propagate from `ose-primer`
 
-`ose-primer` is a downstream template, not an upstream source. Changes made in `ose-primer` do not automatically flow back to `ose-public` or to `ose-infra`. A human decision is required to contribute any `ose-primer` change upstream.
+`ose-primer` is a downstream template, not an upstream source. Changes made in `ose-primer` do not automatically flow back to `ose-public` or to `ose-private`. A human decision is required to contribute any `ose-primer` change upstream.
 
 ## Anti-Patterns
 
@@ -101,7 +101,7 @@ To confirm that a governance artifact has propagated from `ose-public` to `ose-p
 1. **Sibling URL presence in `README.md`**: The README must reference all three sibling URLs. Grep for any of the three repository URLs:
 
    ```bash
-   grep -n "wahidyankf/ose-public\|wahidyankf/ose-primer\|wahidyankf/ose-infra" README.md
+   grep -n "wahidyankf/ose-public\|wahidyankf/ose-primer\|wahidyankf/ose-private" README.md
    ```
 
    All three URLs should appear.
@@ -109,7 +109,7 @@ To confirm that a governance artifact has propagated from `ose-public` to `ose-p
 2. **Sibling URL presence in `AGENTS.md`**: The canonical agent instruction surface must also reference the sibling relationship:
 
    ```bash
-   grep -n "wahidyankf/ose-public\|wahidyankf/ose-primer\|wahidyankf/ose-infra" AGENTS.md
+   grep -n "wahidyankf/ose-public\|wahidyankf/ose-primer\|wahidyankf/ose-private" AGENTS.md
    ```
 
 3. **Presence of this convention file**: The convention file itself is the strongest signal. If `repo-governance/conventions/structure/repository-ecosystem.md` is present and non-empty, the propagation is confirmed for the ecosystem convention specifically:

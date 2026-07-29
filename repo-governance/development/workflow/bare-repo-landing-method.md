@@ -16,9 +16,11 @@ created: 2026-07-21
 
 This document defines the **bare-repo git-ops method**: the procedure for landing changes into a
 repository that has no primary checkout, and for closing the silent lag that a landing performed from
-a side worktree can leave behind in local `main`. Two repositories in this project's ecosystem —
-`ose-primer` and `ose-infra` — are bare (`core.bare=true`) today; any repository that later adopts the
-same shape needs the identical procedure.
+a side worktree can leave behind in local `main`. Bareness (`core.bare=true`) is a per-invocation
+property of a given clone, not a fixed fact about a named repository in this project's ecosystem —
+verify it with `git worktree list` (see [Verify Topology First](#verify-topology-first) below) before
+assuming which repositories, if any, currently need this procedure; any repository with that shape
+needs the identical procedure.
 
 ## Principles Implemented/Respected
 
@@ -53,9 +55,9 @@ This procedure implements/respects the following conventions:
 
 Use this method whenever either condition holds:
 
-- The target repository has **no primary checkout** — a bare repository (`core.bare=true`), which
-  today means `ose-primer` or `ose-infra`. Every mutation there must flow through a linked worktree,
-  because there is no other tree to work in.
+- The target repository has **no primary checkout** — a bare repository (`core.bare=true`), verified
+  per invocation with `git worktree list` rather than assumed from a fixed list of repo names. Every
+  mutation there must flow through a linked worktree, because there is no other tree to work in.
 - A landing is performed **from a side worktree rather than from the branch's own checkout**, even in
   a non-bare repository such as `ose-public`. The side worktree's push reaches the remote branch, but
   nothing about that push touches the local `main` sitting in the repository's own primary checkout —
@@ -173,13 +175,13 @@ topology rather than offering one universal command.
 
 ### Worked example — the 2026-07-21 sibling drift
 
-Both `ose-primer` and `ose-infra` were found in exactly the state this method exists to close, on the
+Both `ose-primer` and `ose-private` were found in exactly the state this method exists to close, on the
 same day this document was written:
 
 ```console
 $ git -C ose-primer rev-list --left-right --count origin/main...main
 2 0
-$ git -C ose-infra rev-list --left-right --count origin/main...main
+$ git -C ose-private rev-list --left-right --count origin/main...main
 2 0
 ```
 
@@ -195,9 +197,9 @@ $ git -C ose-primer fetch origin main:main
 $ git -C ose-primer rev-list --left-right --count origin/main...main
 0 0
 
-$ git -C ose-infra fetch origin main:main
+$ git -C ose-private fetch origin main:main
 fe4a0a66e..f6ecdcc0b  main       -> main
-$ git -C ose-infra rev-list --left-right --count origin/main...main
+$ git -C ose-private rev-list --left-right --count origin/main...main
 0 0
 ```
 
@@ -216,15 +218,15 @@ That false clean is not hypothetical. Immediately after a merge landed on the re
 was observed in a bare sibling:
 
 ```console
-$ git -C ose-infra rev-list --left-right --count origin/main...main
+$ git -C ose-private rev-list --left-right --count origin/main...main
 0 0
 
-$ git -C ose-infra fetch origin
-$ git -C ose-infra rev-list --left-right --count origin/main...main
+$ git -C ose-private fetch origin
+$ git -C ose-private rev-list --left-right --count origin/main...main
 1 0
 
-$ git -C ose-infra fetch origin main:main
-$ git -C ose-infra rev-list --left-right --count origin/main...main
+$ git -C ose-private fetch origin main:main
+$ git -C ose-private rev-list --left-right --count origin/main...main
 0 0
 ```
 

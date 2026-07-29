@@ -4,14 +4,14 @@ Plain-language explanation of every decision in the cross-repo deviation matrix
 for the "Standardize Secrets and Environment-Variable Storage" parity effort.
 Follows the `*-parity-decisions.md` precedents in this directory.
 
-`ose-infra` is the **canonical reference** for this parity set. Every divergence
+`ose-private` is the **canonical reference** for this parity set. Every divergence
 below is intentional and recorded; zero silent deviations.
 
 ---
 
 ## R1 — Parity set
 
-`ose-primer` is authored alongside `ose-public`; `ose-infra` is the reference
+`ose-primer` is authored alongside `ose-public`; `ose-private` is the reference
 because its plan already gated and passed before primer's plan started. This
 avoids any risk of primer regressing an already-green reference.
 
@@ -34,7 +34,7 @@ maintainer-driven operation.
 `ose-primer` holds no Terraform or Ansible and, per its repository-ecosystem
 convention, **never receives infra artifacts**. The Terraform/Ansible drift-guard
 validators and `*.tfvars`/inventory backup patterns are therefore **N/A** here —
-unlike `ose-infra` (where they are real) and `ose-public` (where they ship as a
+unlike `ose-private` (where they are real) and `ose-public` (where they ship as a
 commented forward-scaffold).
 
 Primer ships only inert commented scaffold patterns in the backup allowlist and
@@ -58,7 +58,7 @@ variable names. Findings are recorded in
 `ose-primer`'s governance sync invariant normally requires changes received from
 upstream (`ose-public`) to arrive via a **draft PR**, not a direct push to `main`.
 This parity run **explicitly overrode** that invariant, with the invoker's
-authorization, to deliver all three sibling plans (`ose-infra`, `ose-primer`,
+authorization, to deliver all three sibling plans (`ose-private`, `ose-primer`,
 `ose-public`) as a synchronized cross-repo parity landing treated as one
 maintainer-driven operation. No `--force` was used; the push was a normal fast-
 forward. The corresponding update to `ose-primer`'s `repository-ecosystem`
@@ -80,7 +80,7 @@ against the behavior contract.
 
 All 11 backend families and all 4 frontend apps received a language-idiomatic
 fail-fast validator. This is **full adoption** — every app in the monorepo, not
-just the two referenced in `ose-infra`. Chosen by the invoker for maximal
+just the two referenced in `ose-private`. Chosen by the invoker for maximal
 convergence.
 
 ---
@@ -108,7 +108,7 @@ A new hub convention document was created at
 existing documents (`no-secrets-in-committed-files.md`, `env-file-access.md`,
 `reproducible-environments.md`) were reduced to stub redirects pointing at the
 hub. This gives one authoritative source for all secrets and env-var rules and
-matches the `ose-infra` canonical doc layout.
+matches the `ose-private` canonical doc layout.
 
 ---
 
@@ -116,7 +116,7 @@ matches the `ose-infra` canonical doc layout.
 
 The two security docs were moved from `repo-governance/development/quality/` to
 `repo-governance/conventions/security/` to align `ose-primer`'s governance paths
-with the `ose-infra` canonical layout. All inbound links were rewritten to the
+with the `ose-private` canonical layout. All inbound links were rewritten to the
 new paths.
 
 `ose-primer`'s `repository-ecosystem` convention currently records these docs
@@ -143,7 +143,7 @@ backed up.
 
 The CLI previously hardcoded `ose-open-env-backup` as the backup directory
 name, so all sibling repos shared one backup folder (`~/ose-open-env-backup`).
-This plan adopted the **canonical per-repo-derived** default from `ose-infra`:
+This plan adopted the **canonical per-repo-derived** default from `ose-private`:
 `~/<repo-root-basename>-env-backup`. For `ose-primer`, this resolves to
 `~/ose-primer-env-backup`.
 
@@ -158,7 +158,7 @@ layout: a root `.env.example` template plus per-app `infra/dev/<app>/.env.exampl
 files. `rhino-cli env init` continues to walk `infra/dev/`. No migration to
 `apps/<app>/` was performed.
 
-This is the principal layout divergence from `ose-infra` (which migrated) and
+This is the principal layout divergence from `ose-private` (which migrated) and
 `ose-public` (which consolidated). Primer preserves its template-repo layout and
 Nx scaffold path. The env-loading rationale (why colocation matters for
 auto-loading) is documented in `tech-docs.md §3` for downstream forks that might
@@ -176,7 +176,7 @@ This document. Created at
 
 ## R14 — Live `APP_PORT` drift fix (dropped)
 
-The `ose-infra` plan fixed a live `APP_PORT` drift bug. No equivalent drift exists
+The `ose-private` plan fixed a live `APP_PORT` drift bug. No equivalent drift exists
 in `ose-primer` — the `APP_*` renaming was purely a naming-standard enforcement,
 not a fix for a live environment mismatch. This decision was dropped as N/A.
 
@@ -186,7 +186,7 @@ not a fix for a live environment mismatch. This decision was dropped as N/A.
 
 | #    | Decision              | Outcome                                                                                             |
 | ---- | --------------------- | --------------------------------------------------------------------------------------------------- |
-| R1   | Parity set            | `ose-infra` as canonical reference                                                                  |
+| R1   | Parity set            | `ose-private` as canonical reference                                                                |
 | R2   | Delivery mode         | `worktree-to-main` (ordinary TBD for maintainer op)                                                 |
 | R3   | IaC surfaces          | N/A — gated scaffold only, no real validators                                                       |
 | R4   | Research              | Ran — findings in tech-docs.md §9                                                                   |

@@ -10,13 +10,13 @@ inputs:
     required: true
   - name: repos
     type: string
-    description: "Comma-separated target repository names or absolute paths in the parity set (e.g., 'ose-public, ose-primer, ose-infra')"
+    description: "Comma-separated target repository names or absolute paths in the parity set (e.g., 'ose-public, ose-primer, ose-private')"
     required: false
-    default: "ose-public, ose-primer, ose-infra"
+    default: "ose-public, ose-primer, ose-private"
   - name: mode
     type: enum
     values: [main-to-origin-main, worktree-to-origin-main, worktree-to-pr]
-    description: "Where plans are authored and how they are delivered (see Modes section). `main-to-origin-main` requires a primary checkout in every repo in the parity set and is unavailable for any bare repo (currently `ose-primer` and `ose-infra`)."
+    description: "Where plans are authored and how they are delivered (see Modes section). `main-to-origin-main` requires a primary checkout in every repo in the parity set and is unavailable for any bare repo (verify per invocation with `git worktree list`, never assume from a fixed list)."
     required: false
     default: worktree-to-pr
   - name: stage
@@ -107,10 +107,10 @@ The orchestrator:
 ### Parallel Propagation Shape
 
 The repos form a propagation fan-out, not a chain: **`ose-public` is the source of truth**, and
-`ose-primer` and `ose-infra` are independent downstream targets. Once the upstream decision is
+`ose-primer` and `ose-private` are independent downstream targets. Once the upstream decision is
 recorded, the two downstream repos are **independent DAG nodes** — author and deliver them in
 parallel under the N+1 model (`1 main thread + N background agents`, default **N=3**), never
-serialized behind one another. `ose-infra` does not participate in the parity loop for content it
+serialized behind one another. `ose-private` does not participate in the parity loop for content it
 does not carry.
 
 The one hard serialization: **`apps/rhino-cli` must stay byte-identical across all three repos**, so
@@ -157,8 +157,8 @@ repo driven entirely through linked worktrees (a bare repo) has no primary `main
 author in, so this mode is unavailable there; those targets deliver through a worktree instead, per
 the
 [Bare-Repo Base-Worktree Landing Method](../../development/workflow/bare-repo-landing-method.md).
-Currently `ose-primer` and `ose-infra` are both bare (`ose-public` is not); repo topology changes
-over time, so re-verify bareness per invocation with `git worktree list` (look for the `(bare)`
+Which repos are bare changes over time and is never a fixed fact about a named repo — re-verify
+bareness per invocation with `git worktree list` (look for the `(bare)`
 marker) or, when a scriptable form is needed, the labelled `core.bare` read — never
 `git rev-parse --is-bare-repository` **at all, regardless of where you are standing**, since that
 command answers "is _this checkout_ bare" rather than "is the repository bare" (see
@@ -209,15 +209,14 @@ sibling per-plan `## Delivery Mode` field these plans separately declare (see
 [Relationship to Each Repo's Own `## Delivery Mode`](#relationship-to-each-repos-own--delivery-mode)
 below).
 
-**Note on bare-repo parity targets (`ose-primer`, `ose-infra`)**: When a bare repo is a parity
+**Note on bare-repo parity targets**: When a bare repo is a parity
 target, propagation to it can be delivered EITHER as a draft PR OR as a direct push to its `main`,
 both through a worktree. The delivery mode is the caller's per-run choice, independent of this
 workflow's own `worktree-to-pr` default, so selecting `worktree-to-origin-main` for a bare target is
-a first-class choice, not a deviation. In this family's current deployment, `ose-primer` and
-`ose-infra` are both worked as **bare** repositories with no primary checkout — bareness is a
-property of a given clone, not a fixed attribute of the repo name, so re-verify with
-`git worktree list` (look for the `(bare)` marker) or the labelled `core.bare` read rather than
-trusting this sentence to stay current (see
+a first-class choice, not a deviation. Bareness is a property of a given clone, not a fixed
+attribute of a repo name — any repo in this family may at a given time be worked as a **bare**
+repository with no primary checkout, so re-verify with `git worktree list` (look for the `(bare)`
+marker) or the labelled `core.bare` read rather than trusting a fixed list to stay current (see
 [SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution)).
 Under that layout the two `main-to-*` modes (`main-to-origin-main`, `main-to-pr`) are unavailable for
 either — every mutation against a bare target flows through a worktree, per the
@@ -239,8 +238,8 @@ Because this workflow produces one independent plan document per repo, each repo
 `## Delivery Mode` is resolved independently, per that repo's own plan and its own
 `## Worktree`/`## Delivery Mode` declaration, using the standard three-tier precedence (invocation
 argument > plan field > `worktree-to-pr` default). Repos in the same parity set are free to diverge
-here — for example, `ose-infra` may resolve to `worktree-to-origin-main` (the only direct-push mode
-a bare repo can use — `main-to-origin-main` needs a primary checkout `ose-infra` does not have)
+here — for example, `ose-private` may resolve to `worktree-to-origin-main` (the only direct-push mode
+a bare repo can use — `main-to-origin-main` needs a primary checkout `ose-private` does not have)
 while `ose-public` resolves to `worktree-to-pr` — exactly like any other per-repo deviation this
 workflow grills and records in the deviation matrix (Step 2). See Step 6 item 8 below for how
 `plan-maker` receives this instruction per repo.
@@ -274,7 +273,7 @@ configs, grep the files, run the tools — do not trust docs alone.
   git -C ose-primer ls-files apps/rhino-cli specs/apps/rhino/behavior/rhino-cli/gherkin \
     | grep -E '(apps/rhino-cli/.*|gherkin/.*\.feature$|gherkin/.*README\.md$)' | sort \
     | xargs md5 -q > /tmp/primer.md5
-  git -C ose-infra ls-files apps/rhino-cli specs/apps/rhino/behavior/rhino-cli/gherkin \
+  git -C ose-private ls-files apps/rhino-cli specs/apps/rhino/behavior/rhino-cli/gherkin \
     | grep -E '(apps/rhino-cli/.*|gherkin/.*\.feature$|gherkin/.*README\.md$)' | sort \
     | xargs md5 -q > /tmp/infra.md5
   diff /tmp/public.md5 /tmp/primer.md5
@@ -319,10 +318,9 @@ Meta-dimensions to include alongside technical dimensions:
   `worktree-to-origin-main` (direct push). A repo with no primary checkout (driven entirely
   through linked worktrees) cannot use a `main-to-*` mode, because there is no primary `main`
   working tree to author in or push from directly. Bind this rule to the property, not a repo
-  name — repo topology changes over time; currently both `ose-primer` and `ose-infra` are bare
-  (`ose-public` is not), but re-verify per invocation (see
+  name — repo topology changes over time, so re-verify bareness per invocation (see
   [SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution))
-  rather than trusting this list. That per-destination choice is not settled by this workflow's own
+  rather than trusting any fixed list. That per-destination choice is not settled by this workflow's own
   `worktree-to-pr` default, so it must be recorded explicitly (applies whenever a bare repo is in
   the parity set)
 - **Repo-specific constraints**: any repo constraint (private visibility, self-hosted CI runner,
@@ -369,7 +367,7 @@ as the research-needed flag (yes / no). This flag governs whether Step 4 runs or
 **Mandatory meta-questions** (surface these explicitly regardless of mode):
 
 1. **Bare-repo mode availability** (property-bound — fires for **any bare repo** in the parity set
-   with no primary checkout, currently `ose-primer` and `ose-infra`; re-verify per invocation with
+   with no primary checkout, currently `ose-primer` and `ose-private`; re-verify per invocation with
    `git worktree list` or the labelled `core.bare` read, never `git rev-parse --is-bare-repository`
    in any topology (see
    [SDLC Gate Standard §Worktree-Agnostic Execution](../../../docs/reference/sdlc-gate-standard.md#worktree-agnostic-execution)
@@ -509,7 +507,8 @@ Provide a self-contained handoff prompt per repo covering:
    `main-to-origin-main`, `main-to-pr`) governing that plan's own future execution, resolved
    independently per repo through the standard three-tier precedence (invocation argument > plan
    field > default) and recorded as its own deviation-matrix row when it diverges from sibling
-   repos. For a bare-repo target (`ose-primer`, `ose-infra` today), the two `main-to-*` values are
+   repos. For a bare-repo target (verify per invocation — never a fixed fact about a named repo),
+   the two `main-to-*` values are
    unavailable — see
    [Plans Organization Convention §Delivery Mode](../../conventions/structure/plans.md#delivery-mode)
    for the authoritative restriction, which governs this field independently of the restriction
@@ -532,7 +531,7 @@ at the agreed stage. Example (from a plan at `plans/in-progress/foo/README.md`):
 This plan is part of a parity set. See sibling plans for context:
 
 - `ose-primer`: `plans/in-progress/foo/README.md`
-- `ose-infra`: `plans/in-progress/foo/README.md`
+- `ose-private`: `plans/in-progress/foo/README.md`
 ```
 
 **(c) Delivery checklist item** to write a decision-rationale document at the agreed location per
@@ -602,7 +601,7 @@ docs(explanation): add <objective-slug> parity decisions rationale
 **Per mode**:
 
 - `main-to-origin-main`: Push each repo's commits to `origin main` directly. Not available for any
-  bare repo in the set (`ose-primer`, `ose-infra` today) — a bare repo has no primary checkout to
+  bare repo in the set (`ose-primer`, `ose-private` today) — a bare repo has no primary checkout to
   push from directly; those targets deliver via `worktree-to-origin-main` instead.
 - `worktree-to-origin-main`: Push each repo's worktree commits to `origin main`. Remove worktrees
   after delivery: `git worktree remove worktrees/<objective-slug> && git worktree prune`.
@@ -679,7 +678,7 @@ Every deviation requires:
 
 ```
 User: "Run plan-multi-repo-parity-planning for objective: standardize markdown gates across
-       ose-public, ose-primer, and ose-infra"
+       ose-public, ose-primer, and ose-private"
 ```
 
 The orchestrator surveys each repo, builds the deviation matrix, grills the invoker (Step 3),
@@ -707,7 +706,7 @@ User: "Run plan-multi-repo-parity-planning for objective: add spec-coverage gate
 ```
 
 Surveys only `ose-public` and `ose-primer`, builds a two-column deviation matrix, grills the
-invoker, authors two plans, and delivers both. `ose-infra` is excluded from this run.
+invoker, authors two plans, and delivers both. `ose-private` is excluded from this run.
 
 ## Safety Features
 

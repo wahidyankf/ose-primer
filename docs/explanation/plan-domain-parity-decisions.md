@@ -23,7 +23,7 @@ created: 2026-06-06
 This document records every decision made during the `plan-domain-parity` effort
 (2026-06-06, execution completed 2026-06-07). The effort aligned the
 planning-system files across three sibling repositories — ose-public, ose-primer,
-and ose-infra — covering fourteen governance markdown files, four AI agent
+and ose-private — covering fourteen governance markdown files, four AI agent
 definitions, three AI skills, and the multi-harness binding surface. All 26
 deviation-matrix rows were resolved in grilled sessions with the invoker on
 2026-06-06 before any implementation began.
@@ -57,7 +57,7 @@ The survey (empirical, 2026-06-06) established these facts before any decisions:
 - `plan-quality-gate.md` is byte-identical in all three repos — no action needed.
 - `plan-multi-repo-parity-planning.md` exists only in ose-public.
 - Primer's `plan-planning.md` lacks the `target-stage` input field
-  that ose-public and ose-infra carry (zero grep matches in the worktree).
+  that ose-public and ose-private carry (zero grep matches in the worktree).
 - No grilling convention file exists in primer's
   `repo-governance/development/workflow/` (16 files verified; none match).
 - `workflows/plan/` holds exactly 3 workflows + README in primer (the parity
@@ -120,7 +120,7 @@ with `git worktree remove`.
 
 **Rationale**: the invoker directed both the worktree default and the push
 mechanics (HEAD pushed to the confirmed push target, defaulting to `origin main`).
-The `target-stage` field is retained because ose-public and ose-infra already use
+The `target-stage` field is retained because ose-public and ose-private already use
 it; dropping it would be a regression.
 
 ### Row 4 — plan-execution.md Drift

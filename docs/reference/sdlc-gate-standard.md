@@ -1,6 +1,6 @@
 ---
 title: SDLC Gate Standard
-description: Target standard for gate mechanics across ose-public, ose-primer, and ose-infra — identical check set, order, and invocation mechanism; only project/app set diverges
+description: Target standard for gate mechanics across ose-public, ose-primer, and ose-private — identical check set, order, and invocation mechanism; only project/app set diverges
 category: reference
 tags:
   - sdlc
@@ -16,7 +16,7 @@ created: 2026-06-30
 > Source of truth: [`tech-docs.md`](../../plans/done/2026-07-01__standardize-rhino-cli-sdlc-parity/tech-docs.md)
 
 This document defines the target standard for SDLC gate mechanics across all three OSE repositories:
-`ose-public`, `ose-primer`, and `ose-infra`. **Identical gate mechanics** means the same check set,
+`ose-public`, `ose-primer`, and `ose-private`. **Identical gate mechanics** means the same check set,
 the same order, and the same invocation mechanism across all three repos. The only sanctioned variation
 is the project/app set (and therefore the per-app deploy/CRON workflows and language-specific gate
 jobs). See [Divergence Policy](#divergence-policy) for the exact boundary.
@@ -25,7 +25,7 @@ jobs). See [Divergence Policy](#divergence-policy) for the exact boundary.
 
 This section is the single normative reference for what runs, in what order, at every SDLC stage.
 After the standardization plan the command list below is byte-identical across `ose-public`,
-`ose-primer`, and `ose-infra` (only the affected project set differs, since `nx affected` resolves per
+`ose-primer`, and `ose-private` (only the affected project set differs, since `nx affected` resolves per
 repo). Each stage names the surface file and the exact command sequence.
 
 | Stage                | Surface                                 | Trigger                       |
@@ -226,10 +226,10 @@ marker) or, when a scriptable form is needed, the labelled `core.bare` read — 
 Resolve `repo-config.yml`, exclude lists, and test fixtures from the current worktree's toplevel,
 never the main checkout. Husky hooks invoke via `core.hooksPath`, which linked worktrees inherit from
 the common dir, so the hooks fire in a worktree unchanged. Bareness is a property of a given clone,
-not a fixed attribute of a repo name — as of this writing `ose-infra` **and** `ose-primer` are both
-worked only through linked worktrees (no primary checkout exists for either), which makes
-worktree-agnostic execution a hard requirement for both, not a nicety confined to one. Verify the
-current layout with the checks named above rather than trusting this sentence to stay current.
+not a fixed attribute of a repo name — any of the three repos may at a given time be worked only
+through linked worktrees (no primary checkout), which makes worktree-agnostic execution a hard
+requirement whenever that holds, not a nicety confined to one repo. Verify the current layout with
+the checks named above rather than trusting a fixed list to stay current.
 
 ## Target Standard
 
@@ -262,7 +262,7 @@ follows from it. Everything in "Drift" below must converge to one form.
 `apps/rhino-cli` is held to a stricter, second-pass target beyond the gate mechanics above: **zero
 carve-outs**. `apps/rhino-cli`'s `src/`, `Cargo.toml`, `Cargo.lock`, `project.json`, and `LICENSE`, plus
 the Gherkin behavior tree at `specs/apps/rhino/behavior/rhino-cli/gherkin/**` (every `.feature` file and
-every `README.md`), are byte-identical across `ose-public`, `ose-primer`, and `ose-infra`. The canonical source carries the
+every `README.md`), are byte-identical across `ose-public`, `ose-primer`, and `ose-private`. The canonical source carries the
 **union command surface** — every repo's `rhino-cli` binary exposes the full command superset, and a
 command with no applicable projects in a given repo (for example, `java` in `ose-public`) is
 **dormant, not absent**, rather than removed from the binary. A **schema-parity gate**
@@ -277,7 +277,7 @@ Within `apps/rhino-cli` itself, the only sanctioned divergence anywhere is:
 1. **Each repo's app/language set** — the data `repo-config.yml` carries per repo (domain-areas,
    ddd-areas, env-validation scan paths) differs, driving which of the union's dormant commands are
    actually exercised in that repo.
-2. **The CI runner label** (for example, `ose-infra`'s `[self-hosted, linux, ose-infra-runner]`) — a
+2. **The CI runner label** (for example, `ose-private`'s `[self-hosted, linux, ose-self-hosted]`) — a
    CI-workflow-YAML concern that lives outside `apps/rhino-cli` entirely, so it never affects source
    byte-identity.
 
@@ -290,17 +290,17 @@ The following variations are not flagged as drift:
 
 - **App set and per-app deploy CRONs** — `ose-public` ships content/web apps (`ose-www`,
   `ayokoding-www`, `organiclever-www`, `wahidyankf-www`, `*-app-web`, `*-be`); `ose-primer` ships
-  polyglot demo backends/frontends; `ose-infra` ships `coralpolyp`. Each repo keeps only the deploy
+  polyglot demo backends/frontends; `ose-private` ships `coralpolyp`. Each repo keeps only the deploy
   CRON workflows for apps it actually ships. `ose-primer`'s `test-and-deploy-*-development.yml`
   workflows are a **no-op deploy leg**: the `crud-*` apps are reference/template scaffolding for the
   polyglot showcase, not live products, so there is no staging/production environment to push to —
   each job runs the full test suite (quick+integration+e2e) via the shared `_reusable-*` workflows and
-  stops there. `ose-public`/`ose-infra`'s deploy CRONs push to real Vercel/self-hosted environments.
+  stops there. `ose-public`/`ose-private`'s deploy CRONs push to real Vercel/self-hosted environments.
 - **Language gate jobs** — the PR gate's per-language jobs (golang, jvm, dotnet, python, rust, elixir,
   clojure, dart, typescript) exist only for languages present in that repo.
 - **Infra-only IaC gates** — `terraform fmt`/`validate`/`tflint`, `ansible-lint`, `yamllint` exist
-  only in `ose-infra`, in both hooks and the PR gate.
-- **Self-hosted runner labels** — `ose-infra` runs on `[self-hosted, linux, ose-infra-runner]`.
+  only in `ose-private`, in both hooks and the PR gate.
+- **Self-hosted runner labels** — `ose-private` runs on `[self-hosted, linux, ose-self-hosted]`.
 - **lint-staged formatter entries** — only for languages present (for example `*.go`, `*.{ex,exs}`
   exist where that language ships). The common entries (`*.md`, `*.json`, `*.{yml,yaml}`,
   `*.{css,scss}`, `*.rs`, `*.fs`) must match across all repos.
@@ -324,7 +324,7 @@ The following must converge — this is the work of the standardization plan:
 
 ## Parity Status
 
-Verified 2026-07-01 across `ose-public`, `ose-primer`, `ose-infra` by directly running the acceptance
+Verified 2026-07-01 across `ose-public`, `ose-primer`, `ose-private` by directly running the acceptance
 command for every mechanics row (not by inspecting config alone; corrected same-day after a follow-up
 audit found two rows below were marked ✅ while infra's pre-commit still ran `test:quick` in the wrong
 stage via a legacy monolith that bypassed lint-staged — both fixed before this table's final pass). ✅ =
@@ -352,7 +352,7 @@ entries) are excluded per [Divergence Policy](#divergence-policy).
 | pre-push ≡ PR quality gate runs only `test:quick`                                                     | ✅     | `test:integration`/`test:e2e` never appear in any gate surface; CRON-only.                                                                                                                                                                                                                                                                                                                                                                                                |
 | Per-level `@covers` coverage model                                                                    | ⚠️     | Structurally present (target names, `coverage.projects` registry) in all 3. Content maturity varies: some primer projects still carry echo-stubbed `specs:behavior:coverage` pending real `@covers` tagging; infra's `coralpolyp-be` `specs:domain:coverage` is an echo placeholder pending a real `domain/**` split; the CLI's dedicated domain-scoping engine is unwired (routes to the same engine as behavior-coverage everywhere). Tracked separately, non-blocking. |
 | Canonical CI workflow names present                                                                   | ✅     | `pr-quality-gate.yml`, `validate-env.yml`, `main-ci.yml` in all 3.                                                                                                                                                                                                                                                                                                                                                                                                        |
-| Worktree-agnostic guardrails                                                                          | ✅     | Verified from a linked worktree in all 3, and additionally from the primary checkout in ose-public (the only non-bare clone); the two bare repos (ose-infra, ose-primer) are the hard case — confirmed via actual daily worktree execution.                                                                                                                                                                                                                               |
+| Worktree-agnostic guardrails                                                                          | ✅     | Verified from a linked worktree in all 3, and additionally from the primary checkout in ose-public (the only non-bare clone); the two bare repos (ose-private, ose-primer) are the hard case — confirmed via actual daily worktree execution.                                                                                                                                                                                                                             |
 | specs/ C4 structure (every app + every lib)                                                           | ✅     | Every spec area across all 3 repos has `product/`, `system-context/`, `containers/`, `components/`, `behavior/gherkin/` — including all app-level libs (4 in public, 7 in primer, 2 in infra) that were missing this structure entirely before this pass.                                                                                                                                                                                                                 |
 
 All CI runs for the final commit on each repo's `main` are green (a transient jar-download flake on
