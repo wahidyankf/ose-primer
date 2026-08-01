@@ -17,20 +17,22 @@ Instructions for AI agents working with this repository.
 
 ### Sibling repositories (no parent monorepo)
 
-`ose-primer` is one of three independently cloned repositories in the OSE (Open Sharia Enterprise) family. Agents should treat each as a standalone git repository — there is no umbrella workspace, and the previously-used `ose-projects` parent has been deleted.
+`ose-primer` is one of four independently cloned repositories in the OSE (Open Sharia Enterprise) family. Treat each as a standalone git repository — there is no umbrella workspace, and the previously-used `ose-projects` parent has been deleted.
 
-| Repository                                                           | Role                                                                                                         | Visibility | License           |
-| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------- | ----------------- |
-| [`ose-public`](https://github.com/wahidyankf/ose-public)             | Main OSE platform monorepo. Upstream source of governance, conventions, and AI agent patterns.               | Public     | Open source (MIT) |
-| [`ose-primer`](https://github.com/wahidyankf/ose-primer) (this repo) | MIT-licensed template extracted from `ose-public`. Clean starting point for new OSE-style repos.             | Public     | MIT               |
-| [`ose-private`](https://github.com/wahidyankf/ose-private)           | Unexposed surface of Open Sharia Enterprise: infrastructure, private source, anything not publicly released. | Private    | Proprietary       |
+- [`ose-public`](https://github.com/wahidyankf/ose-public) — public, MIT. Upstream platform monorepo.
+- [`ose-primer`](https://github.com/wahidyankf/ose-primer) — public, MIT. This repo; the template.
+- [`ose-private`](https://github.com/wahidyankf/ose-private) — private, proprietary. Unexposed surface.
+- [`beaver-nest`](https://github.com/wahidyankf/beaver-nest) — public, MIT. Product on this ecosystem.
 
-Cross-repo propagation flows `ose-public → ose-primer → downstream forks` for governance, agents, and skills; infrastructure-only concerns flow `ose-public ↔ ose-private`. See the [Repository Ecosystem Convention](./repo-governance/conventions/structure/repository-ecosystem.md) for the canonical rules.
+Propagation flows `ose-public → ose-primer → downstream forks` for governance, agents, and skills; infrastructure-only concerns flow `ose-public ↔ ose-private`. `beaver-nest` is a full family member sitting **outside** the propagation chain — it syncs nothing either way and is never a parity target.
 
-`apps/rhino-cli` is required to be byte-identical (zero carve-outs) across all three repos, including
-its Gherkin behavior tree at `specs/apps/rhino/behavior/rhino-cli/gherkin/**` (every `.feature` file and
-every `README.md`), per the
+`apps/rhino-cli` must be byte-identical (zero carve-outs) across the three sync-loop repos
+(`ose-public`, `ose-primer`, `ose-private`), including its Gherkin behavior tree at
+`specs/apps/rhino/behavior/rhino-cli/gherkin/**` (every `.feature` and `README.md`), per the
 [SDLC Gate Standard](./docs/reference/sdlc-gate-standard.md#rhino-cli-byte-identity-boundary).
+`beaver-nest` carries a fork of it, not bound by that rule.
+
+**See**: [Repository Ecosystem Convention](./repo-governance/conventions/structure/repository-ecosystem.md) (canonical rules) and [Related Repositories reference](./docs/reference/related-repositories.md) (full catalogue).
 
 - **Node.js**: 24.13.1 (LTS - Long-Term Support, managed by Volta)
 - **npm**: 11.10.1

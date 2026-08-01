@@ -32,4 +32,8 @@ Technical reference documentation for the open-sharia-enterprise project. These 
 - [AI Model Benchmarks](./ai-model-benchmarks.md) - Cited benchmark scores for all Claude and GLM models used in this project, with confidence levels and source URLs
 - [Platform Bindings](./platform-bindings.md) - Catalog of platform-specific bindings (Claude Code, OpenCode, Cursor, Copilot, etc.) — the only place vendor names are allowed outside ` ```binding-example ` fences per the [Governance Vendor Independence convention](../../repo-governance/conventions/structure/governance-vendor-independence.md)
 
+### Cross-Repository Context
+
+- [Related Repositories](./related-repositories.md) - Catalogue of the four sibling repositories in the Open Sharia Enterprise family (`ose-public`, `ose-primer`, `ose-private`, `beaver-nest`) with visibility, license, purpose, and each one's relationship to `ose-primer` — plus which repositories participate in content sync
+
 ---

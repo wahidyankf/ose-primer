@@ -96,15 +96,20 @@ ose-primer/
 
 ## Related repositories
 
-`ose-primer` is one of three sibling repositories in the OSE (Open Sharia Enterprise) family. Each repo stands alone — there is no parent monorepo — but governance, conventions, and tooling are kept aligned across them via explicit cross-repo propagation.
+`ose-primer` is one of four sibling repositories in the OSE (Open Sharia Enterprise) family. Each repo stands alone — there is no parent monorepo — but governance, conventions, and tooling are kept aligned across the sync-loop repos via explicit cross-repo propagation.
 
 | Repository                                                           | Role                                                                                                                                   | Visibility | License           |
 | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----------------- |
 | [`ose-public`](https://github.com/wahidyankf/ose-public)             | Main OSE platform monorepo. Source of governance, conventions, and AI agent patterns adopted here.                                     | Public     | Open source (MIT) |
 | [`ose-primer`](https://github.com/wahidyankf/ose-primer) (this repo) | Repository template — clean MIT-licensed starting point for new OSE-style polyglot Nx monorepos.                                       | Public     | MIT               |
 | [`ose-private`](https://github.com/wahidyankf/ose-private)           | Unexposed surface of Open Sharia Enterprise (infrastructure, private source, and anything not publicly released) backing `ose-public`. | Private    | Proprietary       |
+| [`beaver-nest`](https://github.com/wahidyankf/beaver-nest)           | BeaverNest — a personal operating layer (assistant, content builder, posting helper, workflow engine) built within the OSE ecosystem.  | Public     | MIT               |
 
 **Propagation direction**: governance, conventions, agents, and skills generally flow `ose-public → ose-primer → downstream forks`. Infrastructure-only concerns flow `ose-public ↔ ose-private`. Each repo is independently clonable; no submodules, no workspace links.
+
+**`beaver-nest` is outside the sync loop.** It is a full family member and cross-references the other three, but it scaffolded from this ecosystem and syncs no generic content in either direction. No parity plan targets it.
+
+See the [Related Repositories reference](./docs/reference/related-repositories.md) for the full catalogue.
 
 See the [Repository Ecosystem Convention](./repo-governance/conventions/structure/repository-ecosystem.md) for the canonical description of the sibling relationship and propagation rules.
 

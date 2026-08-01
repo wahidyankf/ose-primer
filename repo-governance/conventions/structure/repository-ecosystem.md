@@ -1,6 +1,6 @@
 ---
 title: "Repository Ecosystem Convention"
-description: Canonical description of the three sibling repositories in the OSE family, their roles, propagation rules, and how to verify that propagation has occurred.
+description: Canonical description of the four sibling repositories in the OSE family, their roles, propagation rules, and how to verify that propagation has occurred.
 category: explanation
 subcategory: conventions
 tags:
@@ -13,7 +13,9 @@ tags:
 
 # Repository Ecosystem Convention
 
-The OSE (Open Sharia Enterprise) family consists of three independent git repositories. There is no parent monorepo, no submodule relationship, and no shared workspace. The three repos stay aligned through explicit textual cross-references and deliberate propagation of governance artifacts.
+The OSE (Open Sharia Enterprise) family consists of four independent git repositories. There is no parent monorepo, no submodule relationship, and no shared workspace. The repos stay aware of one another through explicit textual cross-references; three of the four additionally stay aligned through deliberate propagation of governance artifacts.
+
+**Membership and propagation are separate.** All four repositories are family members and MUST cross-reference one another. Only `ose-public`, `ose-primer`, and `ose-private` participate in governance propagation. `beaver-nest` scaffolded from this family but propagates nothing in either direction — being outside the propagation chain never exempts it from the cross-reference rules.
 
 ## Principles Implemented/Respected
 
@@ -25,7 +27,7 @@ The OSE (Open Sharia Enterprise) family consists of three independent git reposi
 
 Before 2026-05-23, the three OSE repositories lived under a shared parent directory managed by an umbrella repository called `ose-projects`. That umbrella was deleted on 2026-05-23. The three repositories are now fully independent top-level git repositories. (The private sibling was renamed from `ose-infra` to `ose-private` on 2026-07-29 to state the property that governs its contents — not publicly exposed — rather than a subset of them.)
 
-This change means there is no structural mechanism — no shared `package.json`, no `.gitmodules`, no workspace link — to remind contributors that the three repos form a family. This convention provides that reminder. It records:
+This change means there is no structural mechanism — no shared `package.json`, no `.gitmodules`, no workspace link — to remind contributors that the repos form a family. This convention provides that reminder. It records:
 
 - which repositories belong to the family,
 - the role and visibility of each,
@@ -36,13 +38,14 @@ Each repository in the family carries its own copy of this convention so that th
 
 ## Sibling Repositories
 
-| Repository    | URL                                       | Role                                                                                                                                  | Visibility | License           |
-| ------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----------------- |
-| `ose-public`  | https://github.com/wahidyankf/ose-public  | Main OSE platform monorepo; upstream source of governance, conventions, agents, and skills                                            | Public     | Open source (MIT) |
-| `ose-primer`  | https://github.com/wahidyankf/ose-primer  | Repository template extracted from `ose-public`; MIT-licensed starting point for new OSE-style polyglot Nx monorepos                  | Public     | MIT               |
-| `ose-private` | https://github.com/wahidyankf/ose-private | Unexposed surface of Open Sharia Enterprise (infrastructure, private source, and anything not publicly released) backing `ose-public` | Private    | Proprietary       |
+| Repository    | URL                                       | Role                                                                                                                                                                             | Visibility | License           |
+| ------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----------------- |
+| `ose-public`  | https://github.com/wahidyankf/ose-public  | Main OSE platform monorepo; upstream source of governance, conventions, agents, and skills                                                                                       | Public     | Open source (MIT) |
+| `ose-primer`  | https://github.com/wahidyankf/ose-primer  | Repository template extracted from `ose-public`; MIT-licensed starting point for new OSE-style polyglot Nx monorepos                                                             | Public     | MIT               |
+| `ose-private` | https://github.com/wahidyankf/ose-private | Unexposed surface of Open Sharia Enterprise (infrastructure, private source, and anything not publicly released) backing `ose-public`                                            | Private    | Proprietary       |
+| `beaver-nest` | https://github.com/wahidyankf/beaver-nest | BeaverNest — a personal operating layer (assistant, content builder, posting helper, workflow engine) built as a product within the OSE ecosystem; outside the propagation chain | Public     | MIT               |
 
-Each repository is independently clonable. A contributor working in `ose-primer` does not need access to `ose-public` or `ose-private` to do useful work.
+Each repository is independently clonable. A contributor working in `ose-primer` does not need access to `ose-public`, `ose-private`, or `beaver-nest` to do useful work.
 
 ## Propagation Rules
 
@@ -82,11 +85,17 @@ The following never flow from `ose-public` to `ose-primer`:
 
 `ose-primer` is a downstream template, not an upstream source. Changes made in `ose-primer` do not automatically flow back to `ose-public` or to `ose-private`. A human decision is required to contribute any `ose-primer` change upstream.
 
+### What propagates to and from `beaver-nest`
+
+Nothing, in either direction. `beaver-nest` scaffolded from this family — its governance tree, agent catalog, skills, conventions, and CI harness all originate in `ose-public` lineage — but it participates in no ongoing propagation. No parity plan targets it, and adopting a family change there is a deliberate decision made inside that repository. Its product surface (`apps/beaver-nest-fe`, `apps/beaver-nest-be`) never flows outward.
+
+`beaver-nest` also carries a **fork** of `apps/rhino-cli` that is explicitly not bound by the byte-identity rule governing the three propagation-chain repositories.
+
 ## Anti-Patterns
 
 The following are explicitly prohibited. Do not introduce them, and remove them if found.
 
-**No submodules.** Do not add any of the three sibling repositories as a git submodule of another. Submodules create hidden coupling and complicate cloning for contributors who need only one repo.
+**No submodules.** Do not add any of the four sibling repositories as a git submodule of another. Submodules create hidden coupling and complicate cloning for contributors who need only one repo.
 
 **No workspace links.** Do not reference sibling repositories as npm workspaces, Go module replacements, or any other dependency-manager-level link. Each repo resolves its own dependencies from public registries.
 
@@ -96,35 +105,41 @@ The following are explicitly prohibited. Do not introduce them, and remove them 
 
 ## Verification
 
-To confirm that a governance artifact has propagated from `ose-public` to `ose-primer` (or to a downstream fork), check the following three signals in the destination repository:
+To confirm that a governance artifact has propagated from `ose-public` to `ose-primer` (or to a downstream fork), check the following five signals in the destination repository:
 
-1. **Sibling URL presence in `README.md`**: The README must reference all three sibling URLs. Grep for any of the three repository URLs:
+1. **Sibling URL presence in `README.md`**: The README must reference all four repository URLs. Grep for them:
 
    ```bash
-   grep -n "wahidyankf/ose-public\|wahidyankf/ose-primer\|wahidyankf/ose-private" README.md
+   grep -n "wahidyankf/ose-public\|wahidyankf/ose-primer\|wahidyankf/ose-private\|wahidyankf/beaver-nest" README.md
    ```
 
-   All three URLs should appear.
+   All four URLs should appear.
 
 2. **Sibling URL presence in `AGENTS.md`**: The canonical agent instruction surface must also reference the sibling relationship:
 
    ```bash
-   grep -n "wahidyankf/ose-public\|wahidyankf/ose-primer\|wahidyankf/ose-private" AGENTS.md
+   grep -n "wahidyankf/ose-public\|wahidyankf/ose-primer\|wahidyankf/ose-private\|wahidyankf/beaver-nest" AGENTS.md
    ```
 
-3. **Presence of this convention file**: The convention file itself is the strongest signal. If `repo-governance/conventions/structure/repository-ecosystem.md` is present and non-empty, the propagation is confirmed for the ecosystem convention specifically:
+3. **Presence of the canonical catalogue**: Every family member carries its own catalogue naming the other three siblings:
+
+   ```bash
+   test -s docs/reference/related-repositories.md && echo "present"
+   ```
+
+4. **Presence of this convention file**: The convention file itself is the strongest signal. If `repo-governance/conventions/structure/repository-ecosystem.md` is present and non-empty, the propagation is confirmed for the ecosystem convention specifically:
 
    ```bash
    test -s repo-governance/conventions/structure/repository-ecosystem.md && echo "present"
    ```
 
-4. **Convention index entry**: The `repo-governance/conventions/structure/README.md` must list this file. Grep for the entry:
+5. **Convention index entry**: The `repo-governance/conventions/structure/README.md` must list this file. Grep for the entry:
 
    ```bash
    grep -n "repository-ecosystem" repo-governance/conventions/structure/README.md
    ```
 
-A destination repo that passes all four checks has received this propagation.
+A destination repo that passes all five checks has received this propagation.
 
 ## Related
 
