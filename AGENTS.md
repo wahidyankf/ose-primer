@@ -65,35 +65,36 @@ This repository maintains **dual compatibility** with two coding-agent platforms
 
 Specialized agents organized into families:
 
-1. **Documentation**: `docs-maker`, `docs-checker`, `docs-fixer`, `docs-tutorial-maker`, `docs-tutorial-checker`, `docs-tutorial-fixer`, `docs-link-checker`, `docs-file-manager`, `docs-software-engineering-separation-checker`, `docs-software-engineering-separation-fixer`
-2. **README**: `readme-maker`, `readme-checker`, `readme-fixer`
-3. **Project Planning**: `plan-maker` (mandates grilling before and after plan creation
-   using 2–4 concrete options per question with a recommended option marked, per the
-   [Grilling-With-Options Convention](./repo-governance/development/workflow/grilling-with-options.md);
-   delivery checklists must begin with Phase 0; every checkbox carries an `[AI]`/`[HUMAN]`
-   execution marker with a legend and handoff/resume signal for any `[HUMAN]` step; every phase
-   closes with a `### Phase N Gate` and a `> **Pause Safety**:` note making it a natural pause),
-   `plan-checker`, `plan-execution-checker`,
-   `plan-fixer`, `repo-setup-manager` (executes Phase 0 environment setup and baseline in
-   every plan) — plan execution is orchestrated directly by the calling context via the
-   [plan-execution workflow](./repo-governance/workflows/plan/plan-execution.md) and the
-   [plan-planning workflow](./repo-governance/workflows/plan/plan-planning.md);
-   no dedicated executor subagent
-4. **Software Engineering & Specialized**: `agent-maker`, `swe-code-checker`, `swe-ui-maker`, `swe-ui-checker`, `swe-ui-fixer`, `swe-clojure-dev`, `swe-csharp-dev`, `swe-dart-dev`, `swe-e2e-dev`, `swe-elixir-dev`, `swe-fsharp-dev`, `swe-golang-dev`, `swe-java-dev`, `swe-kotlin-dev`, `swe-python-dev`, `swe-rust-dev`, `swe-typescript-dev`, `social-linkedin-post-maker`
-5. **Repository Governance**: `repo-rules-maker`, `repo-rules-checker`, `repo-rules-fixer`, `repo-workflow-maker`, `repo-workflow-checker`, `repo-workflow-fixer`
-6. **Harness Compatibility**: `repo-harness-compatibility-checker`, `repo-harness-compatibility-fixer` — the single harness-compat pair covering internal cross-vendor parity invariants (Phase 0) and external harness-convention drift (Phase 1)
-7. **Specs Validation**: `specs-maker`, `specs-checker`, `specs-fixer`
-8. **CI/CD**: `ci-checker`, `ci-fixer`
-9. **Testing**: `web-exploratory-tester` (spec-aware correctness), `web-usability-tester` (spec-blind first-time-user usability), `web-design-tester` (design-aware live mockup/token/design-system fidelity — runtime counterpart to `swe-ui-checker`) — the live-site advocate triad; plus `api-exploratory-tester` (spec-aware, contract-aware exploratory testing of a live REST or GraphQL API — the live-API counterpart; HTTP/curl-driven, never a browser) — all non-destructive; each supports a selectable **`output-mode`**: `plan` (default — files a new backlog plan folder), `delivery` (appends findings in-place to an existing plan's `delivery.md` given a `plan-path`; the rule-15 near-end retest mechanism), `local-temp` (writes a scratch `local-temp/<YYYY-MM-DD>__<slug>/findings.md` for immediate fixing)
-10. **Research**: `web-researcher`
-11. **PR Review Cycle**: fan-out (`pr-review-{architecture,logic,governance,security,integrity,performance,docs,instruction}-maker`)
-    to `pr-review-synthesis-maker` (coordinator) to `pr-review-fixer` — GitHub-Reviews-API-driven review
-    cycle for `*-to-pr` Delivery Mode plans (see
-    [Plans Organization Convention §Delivery Mode](./repo-governance/conventions/structure/plans.md#delivery-mode),
-    [PR Review Quality Gate workflow](./repo-governance/workflows/pr/pr-review-quality-gate.md), and
-    [PR Reviewer-Discipline Convention](./repo-governance/development/quality/pr-review-disciplines.md))
+The **[agent catalog](./.claude/agents/README.md) is authoritative** — every agent is listed there by
+family. Do not maintain a second roster here. Names follow `<domain>-<role>`:
 
-**Full agent catalog**: See [`.claude/agents/README.md`](./.claude/agents/README.md) (canonical source synced to the secondary binding directory)
+1. **maker / checker / fixer triads** — docs (plus tutorial, link, file-manager, and
+   software-engineering-separation variants), readme, specs, ci, `swe-{code,ui}`,
+   `repo-{rules,workflow}`, and `repo-harness-compatibility` (internal cross-vendor parity in
+   Phase 0, external harness-convention drift in Phase 1).
+2. **`swe-*-dev`** — one implementer per supported language. **Meta** — `agent-maker`,
+   `social-linkedin-post-maker`. **Research** — `web-researcher`.
+3. **Project Planning** — `plan-{maker,checker,execution-checker,fixer}` and `repo-setup-manager`
+   (Phase 0 setup and baseline). `plan-maker` grills the user before and after plan creation with
+   2–4 concrete options per question, one marked recommended, per the
+   [Grilling-With-Options Convention](./repo-governance/development/workflow/grilling-with-options.md);
+   checklists begin at Phase 0, every checkbox carries an `[AI]`/`[HUMAN]` marker, and every phase
+   closes with a `### Phase N Gate` plus a `> **Pause Safety**:` note. Execution is orchestrated by
+   the calling context via the
+   [plan-execution](./repo-governance/workflows/plan/plan-execution.md) and
+   [plan-planning](./repo-governance/workflows/plan/plan-planning.md) workflows — no dedicated
+   executor subagent.
+4. **Testing** — `web-{exploratory,usability,design}-tester` (spec-aware correctness / spec-blind
+   first-time-user usability / design-aware runtime fidelity, the counterpart to `swe-ui-checker`)
+   plus `api-exploratory-tester` (live REST or GraphQL, HTTP/curl-driven, never a browser). All
+   non-destructive, each with a selectable **`output-mode`**: `plan` (default — a new backlog plan
+   folder), `delivery` (appends to an existing plan's `delivery.md`; the rule-15 retest mechanism),
+   `local-temp` (a scratch `local-temp/<YYYY-MM-DD>__<slug>/findings.md`).
+5. **PR Review Cycle** — eight discipline `pr-review-*-maker` specialists fan out to
+   `pr-review-synthesis-maker` (coordinator) to `pr-review-fixer`, for `*-to-pr` Delivery Mode plans.
+   See [§Delivery Mode](./repo-governance/conventions/structure/plans.md#delivery-mode),
+   [PR Review Quality Gate](./repo-governance/workflows/pr/pr-review-quality-gate.md),
+   [PR Reviewer-Discipline Convention](./repo-governance/development/quality/pr-review-disciplines.md).
 
 ### Agent Format
 
@@ -239,6 +240,10 @@ Plan mode for non-trivial tasks (3+ steps or architecture decisions), delegated 
 **Subagent concurrency**: When spawning background subagents via the Agent tool, N is the background-agent count; the main thread is the +1. Poll output file mtime every **3 minutes**; if mtime unchanged for 30 minutes, call `TaskStop` and relaunch.
 
 **Same-machine assumption**: Always assume other agents, engineers, and processes run simultaneously on the **same shared machine** — sharing its disk, git object store, worktrees, and CI runners — so every orchestration and git action must be safe under concurrent actors. Never run a destructive or irreversible local git operation that could discard another actor's uncommitted work.
+
+**File-touch ledger**: because those other actors are editing constantly — in worktrees, on branches, and on local `main` — keep a deliberate, append-only record of every file you touch, **reproduce it in full through every compaction, summary, and handoff**, and reconcile it against `git status` before staging. `git status` is the union of everyone's work, never a report of yours. Anything not on your ledger is another actor's in-flight work: leave it untouched, and without a ledger assume **nothing** is yours. See [File-Touch Discipline](./repo-governance/development/practice/file-touch-discipline.md).
+
+**Harness mirrors are generated, not hand-written**: `.claude/` is the only hand-authored surface; `.opencode/`, `.cursor/`, and `.amazonq/` are emitted by `rhino-cli harness bindings generate` (`npm run generate:bindings`, also run and auto-staged by pre-commit). Those mirrors are files you touched — they go on your ledger and into the **same commit** as their source, never a follow-up sync commit. Verify with `npm run validate:sync`; never hand-edit a mirror.
 
 **DAG-first**: Every non-trivial task list and delivery checklist declares a dependency DAG (`blocks`/`blockedBy`); independent nodes fan out up to N, dependent nodes serialize, cleanup is the terminal node. DAG width is the fan-out — N only caps it. Sequence is not dependency.
 

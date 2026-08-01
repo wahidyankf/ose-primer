@@ -1123,3 +1123,5 @@ After scaffolding, re-read both `learnings.md` and the inserted phase to confirm
 are syntactically well-formed markdown and correctly positioned as the final substantive phase
 before Plan Archival. Never auto-tick any of the scaffolded checkboxes — they gate the executor's
 own future triage work, not the fixer's.
+
+- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths

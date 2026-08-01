@@ -60,7 +60,7 @@ Repo maintains **multi-harness compatibility** with Claude Code, OpenCode, and C
 
 **Format differences:**
 
-- **Tools**: Claude Code uses arrays `[Read, Write]`; OpenCode uses a `permission` object `{ read: allow, write: allow }` (current convention per [opencode.ai/docs/agents](https://opencode.ai/docs/agents/)). The older boolean flags form `{ read: true, write: true }` is deprecated/legacy — still accepted by OpenCode but no longer emitted by `rhino-cli agents sync`.
+- **Tools**: Claude Code uses arrays `[Read, Write]`; OpenCode uses a `permission` object `{ read: allow, write: allow }` (current convention per [opencode.ai/docs/agents](https://opencode.ai/docs/agents/)). The older boolean flags form `{ read: true, write: true }` is deprecated/legacy — still accepted by OpenCode but no longer emitted by `rhino-cli harness bindings generate`.
 - **Models**: Claude Code uses `sonnet`/`opus`/`haiku` (or omits for budget-adaptive opus-inherit — intentional, not legacy); OpenCode maps all tiers (`opus`, `sonnet`/omitted, `haiku`) to `zai-coding-plan/glm-5.2` via the GLM Coding Plan primary provider. The `opencode-go` provider remains configured for `/models` access. See [model-selection.md](./repo-governance/development/agents/model-selection.md) for full capability-tier mapping.
 - **Skills**: NOT mirrored — OpenCode reads `.claude/skills/{name}/SKILL.md` natively per [opencode.ai/docs/skills](https://opencode.ai/docs/skills/). The validate:sync `No Synced Skill Mirror` check fails if a stale `.opencode/skill/` or `.opencode/skills/<claude-name>` mirror reappears.
 - **Permissions**: Claude Code uses `settings.json` permissions, OpenCode uses `opencode.json` permission block (both configured with equivalent access)

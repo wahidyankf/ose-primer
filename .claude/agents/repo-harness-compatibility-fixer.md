@@ -68,7 +68,7 @@ Use `Edit` to update the specific harness section. Replace the outdated claim wi
 `rhino-cli` is the sole rhino-cli implementation and the generator wired into the npm scripts. When a harness frontmatter schema has changed (new required key, renamed field, changed value format), regenerate the affected binding files using:
 
 ```bash
-npm run generate:bindings   # rhino-cli agents sync + emit-bindings — regenerates ALL secondary binding files
+npm run generate:bindings   # rhino-cli harness bindings generate + emit-bindings — regenerates ALL secondary binding files
 ```
 
 This reads `.claude/agents/*.md` as the canonical source and regenerates all secondary binding files (`.opencode/agents/*.md` via `agents sync`, `.amazonq/` via `agents emit-bindings`) according to their current translation rules. Do not hand-edit secondary binding files directly.
@@ -88,7 +88,7 @@ When the Claude Code harness frontmatter schema has changed (e.g., a new require
 After all fixes are applied, run:
 
 ```bash
-rhino-cli agents validate-bindings
+rhino-cli harness bindings validate
 ```
 
 - **Pass**: command exits 0 → log as VALIDATED
@@ -158,3 +158,4 @@ This agent is the yellow fixer stage of the `repo-harness-compatibility-quality-
 - `repo-assessing-criticality-confidence` - Dual-label criticality/confidence classification for re-validation
 - `repo-applying-maker-checker-fixer` - Maker-checker-fixer pattern execution guidance
 - `repo-understanding-repository-architecture` - Repository layout and binding file locations
+- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths

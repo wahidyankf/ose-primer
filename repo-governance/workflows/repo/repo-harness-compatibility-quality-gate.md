@@ -60,7 +60,7 @@ Phase 0 here, so there is exactly ONE harness-compat workflow and ONE checker/fi
 
 **Three complementary guards (no overlap)**:
 
-- **Pre-push byte guard** — `rhino-cli agents validate-bindings` (via `npm run validate:harness-bindings`
+- **Pre-push byte guard** — `rhino-cli harness bindings validate` (via `npm run validate:harness-bindings`
   in the pre-push hook) plus the `validate:cross-vendor-parity` Nx target: deterministic, agent-free,
   detects **internal byte-drift** by re-deriving expected binding content and asserting byte-equality.
   Fast and offline; runs on every push.
@@ -490,7 +490,7 @@ there is no separate parity workflow to compose with.
 - **Phase 0 always runs**: the deterministic cross-vendor parity invariants run on every invocation
   regardless of `scope`; Phase 1 external-drift research follows
 - **Byte-level guard is separate**: internal byte-level binding consistency is enforced by the
-  deterministic `rhino-cli agents validate-bindings` pre-push guard and the
+  deterministic `rhino-cli harness bindings validate` pre-push guard and the
   `validate:cross-vendor-parity` Nx target — those survive independently of this workflow
 - **Fully automated** (in-scope fixes): No human checkpoints for catalog field updates and
   tier reclassifications backed by clear evidence; out-of-scope findings pause for human

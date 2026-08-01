@@ -2581,7 +2581,7 @@ Agent skills are **read natively by the coding agent** from `.claude/skills/` â€
 
 ## Platform Binding Examples
 
-The content below is platform-specific. It documents the concrete translation applied by `rhino-cli agents sync` and is intentionally vendor-specific. Per the [Governance Vendor Independence convention](../../conventions/structure/governance-vendor-independence.md), the vendor-audit scanner skips every line under this heading until the next same-level heading or end of file.
+The content below is platform-specific. It documents the concrete translation applied by `rhino-cli harness bindings generate` and is intentionally vendor-specific. Per the [Governance Vendor Independence convention](../../conventions/structure/governance-vendor-independence.md), the vendor-audit scanner skips every line under this heading until the next same-level heading or end of file.
 
 ### Platform Binding Color Translation
 

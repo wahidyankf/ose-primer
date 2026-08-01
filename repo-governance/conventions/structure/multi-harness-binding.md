@@ -177,10 +177,10 @@ stable as the harness matrix grows.
 
 **Canonical example**:
 
-| PASS: Correct                                                         | FAIL: Incorrect                               | Reason for failure                                     |
-| --------------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------ |
-| `"generate:bindings": "rhino-cli agents emit-bindings"`               | `"sync:vendor-a-to-vendor-b": "..."`          | Contains vendor names; implies per-harness             |
-| `"harness:bindings-validation": "rhino-cli agents validate-bindings"` | `"validate:specific-harness-bindings": "..."` | Names a specific harness rather than the logical check |
+| PASS: Correct                                                          | FAIL: Incorrect                               | Reason for failure                                     |
+| ---------------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------ |
+| `"generate:bindings": "rhino-cli harness bindings generate"`           | `"sync:vendor-a-to-vendor-b": "..."`          | Contains vendor names; implies per-harness             |
+| `"harness:bindings-validation": "rhino-cli harness bindings validate"` | `"validate:specific-harness-bindings": "..."` | Names a specific harness rather than the logical check |
 
 ### Rule 7 — Catalog Requirement
 
@@ -275,21 +275,34 @@ of 2026-05-24. They must not be committed with content that diverges from `AGENT
 
 ## Tools and Automation
 
-- **`rhino-cli agents sync`** — existing generator; produces agent definition files for secondary
+- **`rhino-cli harness bindings generate`** — existing generator; produces agent definition files for secondary
   platform bindings from the primary binding source. Extended under AD4 to emit Tier-2 bridge files.
-- **`rhino-cli agents emit-bindings`** — generator subcommand; emits all platform-binding artifacts
+- **`rhino-cli harness bindings generate`** — generator subcommand; emits all platform-binding artifacts
   from `AGENTS.md` in a single invocation (AD4). Invoked by the `generate:bindings` npm script.
 - **`generate:bindings`** npm script — harness-neutral name for the single binding-generation
-  operation (AD8). Runs `rhino-cli agents emit-bindings`; re-run whenever `AGENTS.md` changes.
-- **`rhino-cli agents validate-bindings`** — deterministic subcommand (AD7); re-derives each
+  operation (AD8). Runs `rhino-cli harness bindings generate`; re-run whenever `AGENTS.md` changes.
+- **`rhino-cli harness bindings validate`** — deterministic subcommand (AD7); re-derives each
   generated binding in memory, asserts byte-equality, asserts catalog completeness. Exits non-zero on
   any mismatch.
-- **`harness:bindings-validation`** npm script — wraps `rhino-cli agents validate-bindings`; appended
+- **`harness:bindings-validation`** npm script — wraps `rhino-cli harness bindings validate`; appended
   to the pre-push hook alongside `governance:vendor-audit-validation` and
   `cross-vendor:parity-validation` (AD8).
 - **`repo-harness-compatibility-checker`** / **`repo-harness-compatibility-fixer`** agents — run on
   demand or on a schedule; use web research to detect external upstream convention drift (distinct
   from the deterministic parity guard above).
+
+**Generated bindings ship in their source's commit.** Editing one primary-binding source file
+mechanically rewrites its mirror in every secondary binding directory, so a single logical change
+spans several files — most of which the author never opened. Those mirrors are still the author's
+changes: they belong on the touched-file ledger
+([File-Touch Discipline](../../development/practice/file-touch-discipline.md)) and in the **same
+commit** as the source that produced them.
+
+Splitting them into a follow-up "sync" commit publishes an intermediate tree in which a source and
+its generated mirror disagree — a state that fails the byte-equality guard for anyone who checks out
+that revision, for reasons unrelated to their own work. The pre-commit hook regenerates and
+auto-stages the mirrors precisely so this happens by default; bypassing the hook, or staging narrowly
+and reconciling afterwards, defeats it.
 
 ## Related
 
