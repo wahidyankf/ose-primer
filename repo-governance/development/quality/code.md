@@ -152,6 +152,7 @@ Validates `.claude/` and `.opencode/` consistency before commit:
 2. If changed:
    - Validates `.claude/` source format (YAML, tools, model, skills)
    - Syncs `.claude/` → `.opencode/` (auto-sync)
+   - **Mirrors ship in the same commit as their `.claude/` source** — the hook stages them for you; a follow-up "sync commit" publishes a tree where source and mirror disagree ([File-Touch Discipline](../practice/file-touch-discipline.md))
    - Validates `.opencode/` output (semantic equivalence)
 3. If unchanged: Skips validation (performance)
 

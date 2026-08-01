@@ -102,6 +102,8 @@ See `repo-applying-maker-checker-fixer` skill for complete workflow patterns.
 1. Edit skills in `.claude/skills/` directory
 2. Run: `npm run generate:bindings` to regenerate `.opencode/agents/` (agents only; skills are not copied)
 
+Those regenerated mirrors are part of your change: they belong on your touched-file ledger and MUST land in the **same commit** as the `.claude/` source that produced them, never a follow-up sync commit. Verify with `npm run validate:sync`; never hand-edit a mirror. See [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md).
+
 **See**: [CLAUDE.md](../../CLAUDE.md) for complete guidance, [apps/rhino-cli/README.md](../../apps/rhino-cli/README.md) for rhino-cli details
 
 ## Skills vs Agents
