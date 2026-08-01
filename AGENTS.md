@@ -17,7 +17,7 @@ Instructions for AI agents working with this repository.
 
 ### Sibling repositories (no parent monorepo)
 
-`ose-primer` is one of four independently cloned repositories in the OSE (Open Sharia Enterprise) family. Treat each as a standalone git repository — there is no umbrella workspace, and the previously-used `ose-projects` parent has been deleted.
+`ose-primer` is one of four independently cloned repositories in the OSE (Open Sharia Enterprise) family. Treat each as a standalone git repository — there is no umbrella workspace, and the previously-used `ose-projects` parent has been deleted. **"All of the OSE repos" means exactly these four**, `beaver-nest` included despite sitting outside the propagation chain.
 
 - [`ose-public`](https://github.com/wahidyankf/ose-public) — public, MIT. Upstream platform monorepo.
 - [`ose-primer`](https://github.com/wahidyankf/ose-primer) — public, MIT. This repo; the template.

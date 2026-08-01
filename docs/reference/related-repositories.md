@@ -27,6 +27,34 @@ The canonical rules governing this family live in the [Repository Ecosystem Conv
 | [`ose-private`](https://github.com/wahidyankf/ose-private) | Private    | Proprietary | Unexposed surface of OSE — self-hosted CI runner stack, `coralpolyp` app, on-premise infra      | Sync partner for generic content, with `ose-primer` as the shared upstream. No infrastructure flows here. |
 | [`beaver-nest`](https://github.com/wahidyankf/beaver-nest) | Public     | MIT         | BeaverNest — a personal operating layer (assistant, content builder, posting helper, workflows) | Cross-reference only. Scaffolded from this family but syncs no content in either direction.               |
 
+## Terminology — "the OSE repos"
+
+When a request says **"all of the OSE repositories"**, **"all of the OSE repos"**, **"all four
+repos"**, or any equivalent collective phrase, it means exactly these four, and nothing else:
+
+| #   | Repository    |
+| --- | ------------- |
+| 1   | `ose-public`  |
+| 2   | `ose-primer`  |
+| 3   | `ose-private` |
+| 4   | `beaver-nest` |
+
+Four consequences worth stating, because each has been a real source of ambiguity:
+
+- **`beaver-nest` is always included.** The collective term is **not** a synonym for the three-repo
+  parity loop. `beaver-nest` sits outside that loop but is a full family member.
+- **Only these four.** Other repositories that happen to sit in the same parent directory on a
+  developer machine are not part of the set.
+- **A change is incomplete until it lands in all four.** "Applied to the OSE repos" means four
+  repositories, not "the ones where it was convenient".
+- **Landing in all four is not the same as landing identically in all four.** Each repository's
+  footprint differs — a convention may reference a document one repo does not have, or govern a
+  surface that is empty there. Adapt per repository and say what differed; do not skip the repo, and
+  do not force an artefact that does not fit it.
+
+If a change genuinely should not apply to one of the four, name which one and why. Silently narrowing
+the set is the failure this definition exists to prevent.
+
 ## Lineage
 
 ```mermaid

@@ -42,6 +42,7 @@ These standards define **HOW to manage development infrastructure**, including w
 - [Nx Target Standards](./nx-targets.md) - Standard Nx targets that apps and libs must expose, canonical target names, caching rules, build output conventions, and the four-dimension tag scheme for `project.json`
 - [Quality Gate Workflow Defaults Convention](./quality-gate-defaults.md) - Canonical default values (`mode: strict`, `max-iterations: 7`) that all quality gate workflows must use for consistency and auditability
 - [Temporary Files Convention](./temporary-files.md) - Guidelines for AI agents creating temporary uncommitted files and folders
+- [Vercel MCP Capability Convention](./vercel-mcp.md) - An MCP server for Vercel is an assumed capability for plans touching a Vercel-deployed surface, probed at planning time and again at execution Phase 0, with an explicit boundary of what stays `[HUMAN]`
 
 ## Companion Documents
 
