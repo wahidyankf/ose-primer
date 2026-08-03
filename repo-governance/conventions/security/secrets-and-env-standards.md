@@ -46,14 +46,24 @@ A file is exempt from Rule 2 when **both** hold: it lives under an app's
 published content tree (`apps/<app>/content/**`), **and** its basename ends in
 `.env` without being a dotfile (`kata.env`, `app.env` qualify; `.env`,
 `.env.local` do not). A dotfile `.env*` under `content/` stays denied, and a
-`<word>.env` outside a content tree stays denied. Each repo enumerates its own
-excluded content trees, because the harness permission surfaces need exact
-subtree paths — Codex accepts `write` only on an exact path or a trailing `/**`,
-never on a glob. **This repo has no `apps/*/content` tree, so its exclusion list
-is currently empty**; adding one means updating
-`.claude/hooks/block-env-file-access.sh`, `.claude/settings.json`,
-`.opencode/opencode.json`, and the Codex permission profile in
+`<word>.env` outside a content tree stays denied.
+
+The exclusion is expressed by **pattern shape, not by an enumerated path list**.
+Every guard keys on a **dotfile** basename, so a `<word>.env` fixture falls
+outside the deny with no per-tree entry and a new content tree needs no
+configuration change. **The Codex profile is the surface that bites**: its deny
+globs were originally `**/*.env`, and the leading `*` matched `kata.env`. Adding
+a narrower `apps/<app>/content/** = "write"` does **not** reopen the files —
+Codex keeps the broader deny in force, contrary to the "more specific overrides
+broader" wording in its own docs — and it rejects a glob with `write` outright
+(`filesystem glob path ... only supports 'deny' access`). The deny must be shaped
+`**/.env*`, never `**/*.env*`. That profile lives in the developer's untracked
 `~/.codex/config.toml`.
+
+**Residual gap, accepted deliberately**: a real env file named without a leading
+dot (`prod.env`) is covered by no guard here. The gap predates this exclusion —
+every surface was already dotfile-keyed — and a 2026-08-03 sweep of both Codex
+workspace roots found no such file. Name real env files as dotfiles.
 
 **Where secrets belong.** Real secrets go in gitignored locations: `.env`,
 `.env.local`, `.env.production`, `.secrets/`, `secrets.json`, `*.pem`/`*.key`/
