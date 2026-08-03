@@ -10,7 +10,9 @@
       "Bash",
       "Bash(npm run sync\\:claude-to-opencode:*)",
       "Skill(update-config)",
-      "Read(.env.example)"
+      "Read(.env.example)",
+      "Read(apps/*/content/**/*.env)",
+      "Edit(apps/*/content/**/*.env)"
     ],
     "deny": [
       "Read(.env)",

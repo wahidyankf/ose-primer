@@ -19,4 +19,10 @@ This rule is enforced across six layers: coding-agent PreToolUse hooks, declarat
 rules, Bash command guards, secondary-binding permission blocks, gitignore + pre-commit
 guard, and this governance rule.
 
+**Content-fixture exclusion**: a non-dotfile `<word>.env` (e.g. `kata.env`, `app.env`) under an
+app's published content tree — `apps/<app>/content/**` — is curriculum material, not a real
+environment file, and is exempt. Dotfile `.env*` names stay denied even under `content/`, and a
+`<word>.env` outside a content tree stays denied. This repo currently has no `apps/*/content` tree,
+so its exclusion list is empty; add the tree here and to each enforcement surface when one lands.
+
 **Full detail**: [Secrets and Environment Variable Standards](./secrets-and-env-standards.md)

@@ -16,6 +16,12 @@ case "$TOOL_NAME" in
     if [ -z "$COMMAND" ]; then exit 0; fi
     if echo "$COMMAND" | grep -qE '^\s*(npm|npx|nx|pnpm|yarn)\s'; then exit 0; fi
     if echo "$COMMAND" | grep -qE '^\s*(apps|libs|scripts)/'; then exit 0; fi
+    # ALLOW: course/teaching fixtures under an app's published content tree, e.g.
+    # apps/ayokoding-www/content/**/kata.env — curriculum material, never real
+    # secrets. The char before `.env` must be neither `/` nor `.`, so dotfile
+    # `.env` / `.env.local` stay denied even under content/.
+    # See guard-env-file-access §9 content-fixture exclusion.
+    if echo "$COMMAND" | grep -qE 'apps/[^/[:space:]]+/content/[^[:space:]]*[^/.[:space:]]\.env([[:space:]]|$)'; then exit 0; fi
     stripped=$(echo "$COMMAND" | sed 's/\.env\.example//g')
     if echo "$stripped" | grep -qE '\.env'; then
       echo "BLOCKED: real .env* manipulation denied." >&2

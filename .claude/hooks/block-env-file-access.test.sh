@@ -80,6 +80,19 @@ chk allow "bash-cat-example"  "${BT}${CMD4}${BX}"
 chk allow "bash-git-example"  "${BT}${CMD5}${BX}"
 chk allow "bash-git-src"      "${BT}${CMD6}${BX}"
 
+# ── CONTENT-FIXTURE EXCLUSION (guard-env-file-access §9) ─────────────────────
+# Course fixtures named <word>.env under apps/<app>/content/** are curriculum
+# material, not real secrets. Dotfile env names stay denied even under content/.
+CT="/r/apps/ayokoding-www/content/en/c"
+WCT="/r/worktrees/wt/apps/ayokoding-www/content/en/c"
+chk allow "content-fixture-cat"       "${BT}cat ${CT}/kata${D}${V}${BX}"
+chk allow "content-fixture-worktree"  "${BT}cat ${WCT}/app${D}${V}${BX}"
+chk allow "content-fixture-write"     "${BT}echo FOO=bar > ${CT}/kata${D}${V}${BX}"
+chk allow "content-fixture-read-tool" "${RT}apps/ayokoding-www/content/en/c/kata${D}${V}${SX}"
+chk block "content-dotenv-cat"        "${BT}cat ${CT}/${BASE}${BX}"
+chk block "content-dotenv-read-tool"  "${RT}apps/ayokoding-www/content/en/c/${L}${SX}"
+chk block "non-content-word-env"      "${BT}cat /r/apps/ose-be/src/secrets${D}${V}${BX}"
+
 # ── SUMMARY ──────────────────────────────────────────────────────────────────
 echo ""
 echo "Results: ${PASS} passed, ${FAIL} failed"
