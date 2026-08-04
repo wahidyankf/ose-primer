@@ -1,12 +1,13 @@
 ---
 title: "Manual Behavioral Verification Convention"
-description: Practice requiring manual verification of UI features and API endpoints using Playwright MCP tools and curl after implementing changes
+description: Practice requiring manual verification of UI features with an available real-browser integration and API endpoints with curl after implementing changes
 category: explanation
 subcategory: development
 tags:
   - verification
   - testing
   - playwright
+  - chrome-devtools
   - api
   - quality
   - manual-testing
@@ -51,19 +52,44 @@ This applies to:
 
 ## UI Verification
 
-Use Playwright MCP tools to verify UI features and bugs in a real browser environment.
+Use an available real-browser integration to verify UI features and bugs in the rendered runtime.
 
-### Required Tools
+### Browser Integration Discovery and Selection
 
-| Tool                       | Purpose                                                |
-| -------------------------- | ------------------------------------------------------ |
-| `browser_navigate`         | Open the relevant page                                 |
-| `browser_snapshot`         | Capture the current DOM state for inspection           |
-| `browser_click`            | Interact with buttons, links, and interactive elements |
-| `browser_fill_form`        | Fill form fields to test input handling                |
-| `browser_console_messages` | Check for JavaScript errors, warnings, and logs        |
-| `browser_take_screenshot`  | Capture visual evidence of the rendered state          |
-| `browser_network_requests` | Verify API calls, response codes, and payload shapes   |
+Complete this procedure before browser-facing verification:
+
+1. **Discover available integrations**: Inspect the browser automation or inspection tools installed
+   on the machine and confirm which are healthy and callable in the current agent harness. Check for
+   Chrome/Chromium through Chrome DevTools MCP and for Playwright MCP before writing ad hoc scripts.
+2. **Select a real-browser tool**: Prefer Chrome/Chromium through Chrome DevTools MCP or Playwright
+   MCP. When both are callable, choose the one that best exposes the capabilities needed by the
+   verification charter. If neither is callable, use an equivalent installed real-browser tool, such
+   as another browser MCP, Puppeteer, Selenium, or the Playwright CLI.
+3. **Exercise the rendered behavior**: Navigate, interact, inspect the rendered DOM or accessibility
+   tree, check console and network activity, resize viewports, and capture screenshots as applicable.
+4. **Record the environment**: In `delivery.md`, identify the selected tool, any fallback, capability
+   gaps, browser and version when available, target URL, viewport, locale, and observed result.
+
+Static source inspection, `WebFetch`, HTML retrieval, and `curl` are useful supplements, but they do
+not satisfy UI verification when the target is reachable and live browser verification is feasible.
+If no real-browser integration can be used, record the discovery attempts and blocker explicitly;
+do not claim the UI was manually verified.
+
+### Required Browser Capabilities
+
+Tool names vary by integration. Use the selected integration's equivalent operations for these
+capabilities:
+
+| Capability                 | Purpose                                             |
+| -------------------------- | --------------------------------------------------- |
+| Navigate                   | Open the relevant page                              |
+| DOM/accessibility snapshot | Capture rendered structure for inspection           |
+| Click and keyboard input   | Exercise buttons, links, and interactive elements   |
+| Form input                 | Test input handling and validation                  |
+| Console inspection         | Check for JavaScript errors, warnings, and logs     |
+| Screenshot capture         | Preserve visual evidence of the rendered state      |
+| Network inspection         | Verify requests, response codes, and payload shapes |
+| Viewport/device emulation  | Verify responsive behavior at required breakpoints  |
 
 ### UI Verification Checklist
 
@@ -71,8 +97,9 @@ After implementing a UI change, verify:
 
 1. **Page renders**: Navigate to the page and take a snapshot. Confirm the expected elements are present.
 2. **Interactions work**: Click buttons, fill forms, and navigate between pages. Confirm the expected behavior occurs.
-3. **No console errors**: Check `browser_console_messages` for JavaScript errors or unexpected warnings.
-4. **Network requests succeed**: Check `browser_network_requests` for failed API calls, unexpected 4xx/5xx responses, or missing requests.
+3. **No console errors**: Inspect browser console output for JavaScript errors or unexpected warnings.
+4. **Network requests succeed**: Inspect browser network activity for failed API calls, unexpected
+   4xx/5xx responses, or missing requests.
 5. **Visual correctness**: Take a screenshot and confirm the layout, typography, and content match expectations.
 6. **All locales verified**: For multi-locale apps, repeat steps 1–5 for EVERY supported locale — navigate to each locale-prefixed URL (e.g., `/en/`, `/id/`). A UI change verified only in the default locale is incomplete. Confirm the `html[lang]` attribute matches each locale and that no strings are untranslated.
 7. **All breakpoints verified**: Repeat at mobile (375 px), tablet (768 px), and desktop (1280 px). Responsive behavior at one viewport does not imply correct behavior at others.
@@ -234,7 +261,10 @@ It does not apply to:
 
 ## Tools and Automation
 
-- **Playwright MCP tools**: Available to all agents for browser-based verification
+- **Preferred browser integrations**: Chrome/Chromium through Chrome DevTools MCP or Playwright MCP,
+  after confirming which installed tools are healthy and callable in the current harness
+- **Equivalent browser fallback**: Another installed real-browser MCP or automation/inspection tool
+  when the preferred integrations are unavailable
 - **curl**: Available via Bash for API verification
 - **jq**: Available via Bash for JSON response inspection
 

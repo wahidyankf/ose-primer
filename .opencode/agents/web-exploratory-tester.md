@@ -37,6 +37,17 @@ skills:
     mockups, `specs/**` Gherkin, app source, i18n catalogs).
   - `Write, Edit` — emit the backlog plan documents.
 
+## Browser Integration Requirement (Hard Rule)
+
+Before browser-facing verification, discover the real-browser integrations installed on the machine
+and confirm which are healthy and callable in the current harness. Prefer Chrome/Chromium through
+Chrome DevTools MCP or Playwright MCP; if neither is available, use an equivalent installed
+browser-driving tool. Record the selected tool, any fallback, browser/version when available, and
+capability gaps in the verification evidence. Static source, fetched HTML, `WebFetch`, and `curl`
+inspection are useful baselines, but do not count as live-browser verification when a working browser
+integration exists. Follow the detailed procedure in
+[Manual Behavioral Verification](../../repo-governance/development/quality/manual-behavioral-verification.md).
+
 ## Why This Agent Exists
 
 Automated gates (typecheck, lint, unit, E2E, CI) assert that code does what its tests say — they do not

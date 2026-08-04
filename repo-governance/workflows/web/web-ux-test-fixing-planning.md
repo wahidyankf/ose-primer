@@ -227,6 +227,15 @@ cross-tester completeness critic in Phase 3.5.
 
 ### 0. Pre-flight (Sequential)
 
+Before browser-facing verification, discover the real-browser integrations installed on the machine
+and confirm which are healthy and callable in the current harness. Prefer Chrome/Chromium through
+Chrome DevTools MCP or Playwright MCP; if neither is available, use an equivalent installed
+browser-driving tool. Record the selected tool, any fallback, browser/version when available, and
+capability gaps in the verification evidence. Static source, fetched HTML, `WebFetch`, and `curl`
+inspection are useful baselines, but do not count as live-browser verification when a working browser
+integration exists. Follow the detailed procedure in
+[Manual Behavioral Verification](../../development/quality/manual-behavioral-verification.md).
+
 **Actions**:
 
 - Confirm the `ose-public` working tree is clean (`git status --porcelain` empty).
