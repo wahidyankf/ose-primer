@@ -4,7 +4,9 @@ Planned projects for future implementation.
 
 ## Planned Projects
 
-_No backlog plans currently. See [in-progress](../in-progress/README.md) for active plans._
+_No backlog plans currently._ Ideas awaiting promotion live as two-pagers in
+[ideas](../ideas/README.md); plans already underway live in
+[in-progress](../in-progress/README.md).
 
 ## Instructions
 
