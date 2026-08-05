@@ -400,7 +400,7 @@ is a deliberate predictability trade-off, full stop.
 
 ## Post-Cutover Monitoring & Rollback
 
-The eight-discipline split retired the single `pr-review-maker` monolith at cutover by deletion, not
+The discipline split retired the single `pr-review-maker` monolith at cutover by deletion, not
 by a staged sunset gated on measurement. Everything in this section therefore watches the split
 **after** the monolith is already gone — it is **post-cutover monitoring**, not a pre-cutover
 evaluation gate the split had to clear before shipping. The

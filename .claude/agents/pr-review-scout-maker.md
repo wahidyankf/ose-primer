@@ -1,6 +1,6 @@
 ---
 name: pr-review-scout-maker
-description: Planning-grade PR-review pipeline stage 0 — the tenth pr-review-*-maker agent, running before every cycle's specialist fan-out. Owns risk-tier classification (trivial/lite/full) and specialist-set selection, assembles the shared PR/plan/full-diff context brief once per cycle, and reads prior-cycle thread-resolution status (including human dismissals) so no specialist re-litigates a settled thread. Never discovers or posts findings itself — its sole output is the cycle's tier decision, specialist set, and shared-context brief handed to the fan-out and to pr-review-synthesis-maker.
+description: Planning-grade PR-review pipeline stage 0, running before every cycle's specialist fan-out. Owns risk-tier classification (trivial/lite/full) and specialist-set selection, assembles the shared PR/plan/full-diff context brief once per cycle, and reads prior-cycle thread-resolution status (including human dismissals) so no specialist re-litigates a settled thread. Never discovers or posts findings itself — its sole output is the cycle's tier decision, specialist set, and shared-context brief handed to the fan-out and to pr-review-synthesis-maker.
 tools: Read, Bash, Grep, Glob
 model: opus
 color: blue
@@ -185,8 +185,10 @@ introduce.
 This agent's output, every cycle, is exactly three things:
 
 1. **Risk tier** — `trivial` / `lite` / `full`.
-2. **Selected specialist set** — the empty set for `trivial`, the four-specialist `lite` set, or all
-   nine specialists for `full`.
+2. **Selected specialist set** — the empty set for `trivial`, the four-specialist `lite` set, or up
+   to all nine specialists for `full` (minus DD-10's Content-Type Applicability Filter, which may
+   skip up to 2 — see
+   [Risk-Tier Classification](#risk-tier-classification--specialist-set-selection-d12)).
 3. **Shared-context brief** — the pinned head SHA, PR metadata, linked plan/issue context, the full
    diff (sliced if recorded), and the prior-cycle dismissal-read state.
 

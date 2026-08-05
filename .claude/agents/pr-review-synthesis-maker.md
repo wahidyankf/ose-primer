@@ -66,7 +66,10 @@ Concretely, before doing any dedup/re-categorize/filter/verify work:
    Every finding in the consolidated review anchors to the SHA scout already pinned — never a moving
    target.
 2. Confirm the risk tier and specialist set scout selected for this cycle (empty set for `trivial`,
-   the four-specialist `lite` set, or all nine specialists for `full`) match what actually fanned out.
+   the four-specialist `lite` set, or up to all nine specialists for `full` — minus DD-10's
+   Content-Type Applicability Filter, which may skip up to 2, see
+   [Risk-Tier Classification](./pr-review-scout-maker.md#risk-tier-classification--specialist-set-selection-d12))
+   match what actually fanned out.
 3. Receive the tier-selected specialists' raw findings — or, for a `trivial`-tier cycle, perform the
    single generalist review pass yourself (see
    [Trivial-Tier Handoff (DD-7)](./pr-review-scout-maker.md#trivial-tier-handoff-dd-7) in
