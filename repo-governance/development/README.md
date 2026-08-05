@@ -176,6 +176,7 @@ Development practices in this directory fall into several categories:
 - [Docker Monorepo Build Patterns](./infra/docker-monorepo-builds.md) - Patterns and pitfalls for building Docker images in an npm workspace monorepo (workspace symlink resolution, direct node_modules injection, transitive dependency hoisting)
 - [CI/CD Conventions](./infra/ci-conventions.md) - Central reference for CI/CD conventions: git hooks, test level definitions, coverage thresholds, Docker patterns, GitHub Actions structure, and naming rules
 - [Quality Gate Workflow Defaults Convention](./infra/quality-gate-defaults.md) - Canonical default values (`mode: strict`, `max-iterations: 7`) that all quality gate workflows must use for consistency and auditability
+- [Build-Artifact Sweeper Convention](./infra/build-artifact-sweeper.md) - An ambient scheduled sweeper on the host machine deletes gitignored build output (target/, dist/, .next/), tool caches (.nx/cache), and the shared cargo target/ at any time, without coordinating with any agent or plan. A missing artifact is expected: regenerate and continue, never file a finding or commit build output. Reconciles with the agent-side deletion rules in Worktree and Artifact Cleanup and with CI Blocker Resolution's root-cause discipline
 
 ### Frontend Development Documentation
 

@@ -83,7 +83,11 @@ These bound every action the gate takes.
 - **Never delete a shared cache.** In particular, the **shared cargo `target/` directory** — the
   symlinked shared build output — is depended on by concurrent builds in every other worktree. Removing it breaks them. The
   same reasoning applies to any shared cache: if another session can be relying on it, it is out of
-  scope for a plan-scoped cleanup.
+  scope for a plan-scoped cleanup. This ban binds **agents** specifically, and does not contradict the
+  ambient [Build-Artifact Sweeper Convention](../infra/build-artifact-sweeper.md), which may remove
+  the same cache on its own host-level schedule. A cache an agent must never delete can still
+  disappear between one command and the next — that is the environment behaving as documented, not a
+  rule violation by another actor.
 - **Cleanup is itself non-destructive to others.** The gate may not use any operation that a
   concurrent actor could be harmed by. It removes; it never force-removes, rewrites, or prunes shared
   state.
@@ -185,6 +189,10 @@ Explicitly **skip** the shared cargo `target/` and every other shared cache, and
 or `git prune` on the object store. History maintenance is a serialization point on a shared machine
 and stays out of the cleanup gate entirely.
 
+If build output is already gone when this gate runs, that is the ambient
+[Build-Artifact Sweeper](../infra/build-artifact-sweeper.md), not a missed step in this plan. Record
+the artifact class as already swept and move on — do not rebuild it solely to delete it again.
+
 ## Related Documentation
 
 - [Worktree Toolchain Initialization](./worktree-setup.md) — the **setup** half of the same lifecycle.
@@ -207,3 +215,8 @@ and stays out of the cleanup gate entirely.
 - [Agent Workflow Orchestration Convention](../agents/agent-workflow-orchestration.md) — the DAG model
   in which cleanup is the **terminal node**, depending on every delivery node so it cannot remove an
   artifact that in-flight work still needs.
+- [Build-Artifact Sweeper Convention](../infra/build-artifact-sweeper.md) — the environment-side
+  counterpart to this agent-side gate: it governs what the host machine may remove on its own
+  schedule, including the same shared cargo `target/` this convention forbids agents from deleting.
+  The two reconcile because they bind different actors — an agent's deletion ban is not violated by
+  the environment doing its own sweep.

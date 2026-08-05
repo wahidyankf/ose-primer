@@ -5,7 +5,7 @@
 
 **Problem**: Maintaining quality and consistency across many specialized agents, agent skills, and extensive documentation is time-consuming and error-prone when done manually.
 
-**Solution**: This repository uses specialized AI (Artificial Intelligence) agents that automate documentation creation, validation, content generation, and project planning—ensuring consistent quality, catching errors early, and freeing developers to focus on high-value work.
+**Solution**: Specialized AI (Artificial Intelligence) agents automate documentation, validation, content generation, and project planning — ensuring consistent quality, catching errors early, and freeing developers for high-value work.
 
 ---
 
@@ -40,7 +40,7 @@ Propagation flows `ose-public → ose-primer → downstream forks` for governanc
 - **Git Workflow**: Trunk Based Development (TBD). Every plan resolves to one of four **Delivery Modes** -- `worktree-to-pr` is the repo-wide default; the four-mode work-location/integration-target table is in the linked convention. `*-to-pr` modes run the
   **PR-Review Maker→Fixer Cycle** (default 3 sequential CI-gated cycles) before the merge. **`[AI]` merges by default** in every mode; a `[HUMAN]` merge gate applies only where a plan's own step says so explicitly, with identical preconditions -- only the actor differs. **The PR is the independent merge point** -- N parallel units become N independently reviewed and merged PRs, which is why `worktree-to-pr` is the default; each change-producing DAG leaf gets its own worktree and PR (strict 1-PR ↔ 1-worktree), dependent nodes staying one PR. **Phase 0 opens no PR under any mode** -- setup/baseline is not a delivery node, so it pushes no branch and merges nothing; **the earliest PR is Phase 1**, and Phase 0's evidence rides it (see [§Phase 0 Opens No PR](./repo-governance/conventions/structure/plans.md#phase-0-opens-no-pr--the-earliest-pr-is-phase-1-hard-rule)). **PRs open at delivery boundaries, not every phase** -- a PR covers a **delivery unit**, the contiguous phases ending where work becomes independently shippable, so a plan opens one once at the end or several times through; folding independent nodes together to cut PR count stays forbidden (see [§PRs Open at Delivery Boundaries](./repo-governance/conventions/structure/plans.md#prs-open-at-delivery-boundaries-not-every-phase-hard-rule)). A PR merges only when **all five hardened preconditions** (a)-(e) hold, and the review loop did not exit `escalated` -- see the [PR Merge Protocol](./repo-governance/development/workflow/pr-merge-protocol.md). See the [Trunk Based Development Convention](./repo-governance/development/workflow/trunk-based-development.md#default-delivery-mode-worktree-to-pr), the [Git Push Default Convention](./repo-governance/development/workflow/git-push-default.md), and the [Plans Organization Convention §Delivery Mode](./repo-governance/conventions/structure/plans.md#delivery-mode) for the full three-tier precedence (invocation argument > plan `## Delivery Mode` field > default) and mechanics.
 - **Worktree path**: Default worktree location is `worktrees/<name>/` per the [Worktree Path Convention](./repo-governance/conventions/structure/worktree-path.md) — parallel-safe, gitignored, no override.
-- **Worktree toolchain init**: After creating or entering a worktree, agents must run BOTH `npm install` AND `npm run doctor -- --fix` in the root repository worktree, in that order. See [Infra: Development Environment Setup](./repo-governance/workflows/infra/infra-development-environment-setup.md) for the full one-shot bootstrap (polyglot toolchain + `OPENCODE_GO_API_KEY` env var). The `package.json` `postinstall` hook runs `npm run doctor || true` which silently tolerates toolchain drift, so the explicit `doctor --fix` invocation is required to converge the 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node). See [Worktree Toolchain Initialization](./repo-governance/development/workflow/worktree-setup.md) for the full rationale and procedure.
+- **Worktree toolchain init**: After creating or entering a worktree, agents must run BOTH `npm install` AND `npm run doctor -- --fix` in the root repository worktree, in that order — `postinstall` runs `npm run doctor || true`, which silently tolerates drift, so the explicit `--fix` call is required to converge the 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node). See [Infra: Development Environment Setup](./repo-governance/workflows/infra/infra-development-environment-setup.md) for the one-shot bootstrap and [Worktree Toolchain Initialization](./repo-governance/development/workflow/worktree-setup.md) for full rationale.
 
 ## Dual-Binding Configuration
 
@@ -183,7 +183,7 @@ Code under `apps/`/`libs/` never lands without its companion `specs/` Gherkin. T
 
 Pure refactors that preserve behavior, dependency bumps with no behavior change, and docs/governance-only changes are exempt.
 
-**See**: [repo-governance/development/quality/feature-change-completeness.md](./repo-governance/development/quality/feature-change-completeness.md)
+**See**: [feature-change-completeness.md](./repo-governance/development/quality/feature-change-completeness.md)
 
 ## Regression Test Mandate (Every Bug Fix)
 
@@ -194,7 +194,7 @@ behaviour; DOM/computed-style/component test for visual; string assertion for co
 must become impossible to silently reintroduce. Enforced by `swe-code-checker` (Step 6.7) and
 `plan-checker` (Step 16b). This is the bug-driven dual of Specs & Gherkin Completeness above.
 
-**See**: [repo-governance/development/quality/regression-test-mandate.md](./repo-governance/development/quality/regression-test-mandate.md)
+**See**: [regression-test-mandate.md](./repo-governance/development/quality/regression-test-mandate.md)
 
 ## Knowledge Capture
 
@@ -202,7 +202,7 @@ Every substantive plan ends its `delivery.md` with a Knowledge Capture phase: th
 `learnings.md` running log is triaged to durable homes (or discarded with a reason) before archival,
 with an explicit "none" escape when nothing generalizable surfaced.
 
-**See**: [repo-governance/development/quality/knowledge-capture.md](./repo-governance/development/quality/knowledge-capture.md)
+**See**: [knowledge-capture.md](./repo-governance/development/quality/knowledge-capture.md)
 
 ## rhino-cli Command Surface
 
@@ -233,32 +233,32 @@ invent `validate:{thing}` prefixes.
   ([manual-behavioral-verification.md](./repo-governance/development/quality/manual-behavioral-verification.md)).
 - **User-facing delivery hardening**: For any user-facing change, follow the sixteen rules — visual-parity sign-off against the design mockups per breakpoint/locale **before archival**, name the design-system primitive, per-breakpoint responsive deliverables, value-bearing tests, mockup-colors-as-theme-tokens, deploy-config-is-code, checkbox lockstep, and — for web-UI feature-change plans — a near-end three-tester retest round (the `web-ux-test-fixing-planning` workflow: `web-exploratory-tester` + `web-usability-tester` + `web-design-tester`) invoked with **`output-mode: delivery`** and the plan's **`plan-path`** so EWT/UWT/DWT findings are appended in-place to `delivery.md` as unchecked task-list items and fixed before archival; and — for API feature-change plans (REST/GraphQL) — a near-end `api-exploratory-tester` retest round (`output-mode: delivery`, the plan's `plan-path`) whose AET findings are appended to `delivery.md` and fixed before archival, exactly as the web-triad findings are (Rule 16) ([user-facing-delivery-hardening.md](./repo-governance/development/quality/user-facing-delivery-hardening.md))
 - **CI blockers**: Investigate root cause, fix properly, never bypass ([ci-blocker-resolution.md](./repo-governance/development/quality/ci-blocker-resolution.md))
+- **Build-artifact sweeper**: An ambient sweeper deletes gitignored build output (`target/`, `dist/`, `.next/`), caches (`.nx/cache`), and the shared cargo `target/` at any time, mid-plan. Regenerate (`nx build`, `npm install`, `npm run doctor -- --fix`) and continue — never file a finding, commit build output, edit `.gitignore`, or blame a concurrent agent. It never touches tracked files, `.env*`, `generated-reports/`, `local-temp/`, worktrees, or git refs ([build-artifact-sweeper.md](./repo-governance/development/infra/build-artifact-sweeper.md))
 - **CI post-push verification**: After pushing app or lib code — to a PR branch under the default `worktree-to-pr`, or to `origin main` under the direct-push modes — trigger relevant GitHub CI workflows and verify they pass before declaring work done — pre-push hook alone is not sufficient ([ci-post-push-verification.md](./repo-governance/development/workflow/ci-post-push-verification.md))
 
 ## Agent Workflow Orchestration
 
 Plan mode for non-trivial tasks (3+ steps or architecture decisions), delegated agents for focused subtasks, verify before done, autonomous bug fixing, self-improvement loop after corrections.
 
-**Parallel-by-default**: When work has independent sub-units (multiple reads/edits, searches, or delegated agents), run them **in parallel**, not serially, under the **N+1 model** — `1 main thread + N background agents = N+1 total`, **default N=3** (4 total). N=3 is the deliberate optimum: it bounds token/compute-budget burn while still delivering real speedup. Raise N per-plan only when independent work, machine capacity, and budget headroom all allow; lower it under pressure; never self-promote beyond the declared N. Dependent steps stay sequential.
+**Parallel-by-default**: When work has independent sub-units (multiple reads/edits, searches, or delegated agents), run them **in parallel**, not serially, under the **N+1 model** — `1 main thread + N background agents = N+1 total`, **default N=3** (4 total) — the deliberate optimum bounding compute-budget burn while delivering real speedup. Raise N per-plan only when independent work, machine capacity, and budget headroom all allow; lower it under pressure; never self-promote beyond the declared N. Dependent steps stay sequential.
 
 **Subagent concurrency**: When spawning background subagents via the Agent tool, N is the background-agent count; the main thread is the +1. Poll output file mtime every **3 minutes**; if mtime unchanged for 30 minutes, call `TaskStop` and relaunch.
 
-**Same-machine assumption**: Always assume other agents, engineers, and processes run simultaneously on the **same shared machine** — sharing its disk, git object store, worktrees, and CI runners — so every orchestration and git action must be safe under concurrent actors. Never run a destructive or irreversible local git operation that could discard another actor's uncommitted work.
+**Same-machine assumption**: Assume other agents, engineers, and processes run simultaneously on the **same shared machine** — sharing its disk, git object store, worktrees, and CI runners — so every orchestration and git action must be safe under concurrent actors. Never run a destructive or irreversible local git operation that could discard another actor's uncommitted work.
 
-**File-touch ledger**: because those other actors are editing constantly — in worktrees, on branches, and on local `main` — keep a deliberate, append-only record of every file you touch, **reproduce it in full through every compaction, summary, and handoff**, and reconcile it against `git status` before staging. `git status` is the union of everyone's work, never a report of yours. Anything not on your ledger is another actor's in-flight work: leave it untouched, and without a ledger assume **nothing** is yours. See [File-Touch Discipline](./repo-governance/development/practice/file-touch-discipline.md).
+**File-touch ledger**: those other actors edit constantly — in worktrees, on branches, and on local `main` — so keep a deliberate, append-only record of every file you touch, **reproduce it in full through every compaction, summary, and handoff**, and reconcile it against `git status` before staging. `git status` is the union of everyone's work, never a report of yours. Anything not on your ledger is another actor's in-flight work: leave it untouched; without a ledger, assume **nothing** is yours. See [File-Touch Discipline](./repo-governance/development/practice/file-touch-discipline.md).
 
 **Harness mirrors are generated, not hand-written**: `.claude/` is the only hand-authored surface; `.opencode/`, `.cursor/`, and `.amazonq/` are emitted by `rhino-cli harness bindings generate` (`npm run generate:bindings`, also run and auto-staged by pre-commit). Those mirrors are files you touched — they go on your ledger and into the **same commit** as their source, never a follow-up sync commit. Verify with `npm run validate:sync`; never hand-edit a mirror.
 
-**DAG-first**: Every non-trivial task list and delivery checklist declares a dependency DAG (`blocks`/`blockedBy`); independent nodes fan out up to N, dependent nodes serialize, cleanup is the terminal node. DAG width is the fan-out — N only caps it. Sequence is not dependency.
+**DAG-first**: Every non-trivial task list and delivery checklist declares a dependency DAG (`blocks`/`blockedBy`); independent nodes fan out up to N, dependent nodes serialize, cleanup is the terminal node. DAG width is the fan-out — N only caps it; sequence is not dependency.
 
-**Background-slot preference**: Fill background slots up to N, keeping the main thread vacant and responsive (orchestrator, not worker) — never split dependent work merely to fill a slot. On harnesses without background subagents, degrade to a serial DAG walk.
+**Background-slot preference**: Fill background slots up to N, keeping the main thread vacant and responsive — never split dependent work merely to fill a slot. Harnesses without background subagents degrade to a serial DAG walk.
 
-**Status cadence**: report every **5 min** (generic) or **3 min** (GitHub CI); mixed takes 3.
-Reporting only — poll floors unchanged.
+**Status cadence**: report every **5 min** (generic) or **3 min** (GitHub CI); mixed takes 3. Reporting only — poll floors unchanged.
 
-**Task-list discipline**: For any non-trivial multi-step work (3+ steps, or spanning multiple files/phases), maintain a live task list from the start (harness Task tool or a plan's delivery checklist) and keep it **continuously in sync** — mark a task in-progress before starting, completed right after verifying, and add discovered tasks on the spot. A stale list is a defect.
+**Task-list discipline**: For non-trivial multi-step work (3+ steps, or spanning multiple files/phases), maintain a live task list from the start (harness Task tool or a plan's delivery checklist) and keep it **continuously in sync** — mark in-progress before starting, completed right after verifying, and add discovered tasks on the spot. A stale list is a defect.
 
-**See**: [repo-governance/development/agents/agent-workflow-orchestration.md](./repo-governance/development/agents/agent-workflow-orchestration.md), [Subagent Orchestration Convention](./repo-governance/development/agents/subagent-orchestration.md), [Parallel-by-Default Practice](./repo-governance/development/practice/parallel-by-default.md), [Task List Discipline](./repo-governance/development/practice/task-list-discipline.md), [No Destructive Git Operations](./repo-governance/development/workflow/no-destructive-git-operations.md), [Worktree and Artifact Cleanup](./repo-governance/development/workflow/worktree-and-artifact-cleanup.md)
+**See**: [agent-workflow-orchestration.md](./repo-governance/development/agents/agent-workflow-orchestration.md), [Subagent Orchestration Convention](./repo-governance/development/agents/subagent-orchestration.md), [Parallel-by-Default Practice](./repo-governance/development/practice/parallel-by-default.md), [Task List Discipline](./repo-governance/development/practice/task-list-discipline.md), [No Destructive Git Operations](./repo-governance/development/workflow/no-destructive-git-operations.md), [Worktree and Artifact Cleanup](./repo-governance/development/workflow/worktree-and-artifact-cleanup.md)
 
 ## Governance Alignment
 
@@ -272,7 +272,7 @@ All agents follow foundational principles:
 6. **Automation Over Manual** - Automate repetitive tasks
 7. **Root Cause Orientation** - Fix root causes, not symptoms; minimal impact; senior engineer standard
 
-**See**: [repo-governance/principles/README.md](./repo-governance/principles/README.md)
+**See**: [Principles README.md](./repo-governance/principles/README.md)
 
 ## Related Documentation
 

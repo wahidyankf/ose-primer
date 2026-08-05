@@ -153,6 +153,8 @@ The rule is **triggered by execution mode, not by intent**. Even "small" or "doc
 
 Agents that create or enter worktrees via `git worktree add`, the `EnterWorktree` tool, or an `isolation: "worktree"` configuration MUST run BOTH `npm install` AND `npm run doctor -- --fix` in the root repository worktree as immediate follow-up steps, in that order. Doing only one of the two steps is not sufficient and is treated as a rule violation.
 
+The same two-step init is also the correct response mid-session, whenever a worktree's dependencies or build output turn out to be missing after having been present earlier. The [Build-Artifact Sweeper Convention](../infra/build-artifact-sweeper.md) makes that an expected, ambient occurrence rather than a defect — re-run `npm install` and `npm run doctor -- --fix` (plus `nx build <project>` as needed for build output), never re-provision the worktree from scratch or investigate it as a bug.
+
 The root worktree path is available from the environment context or can be confirmed with `git worktree list`. See the [Git Worktree Awareness](../agents/ai-agents.md#git-worktree-awareness) section of the AI Agents Convention for the full set of rules governing agent behavior in worktrees.
 
 ## Related Documentation
