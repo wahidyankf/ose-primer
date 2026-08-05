@@ -37,10 +37,12 @@ Edit `.claude/` and `.opencode/` files with normal `Write` / `Edit` tools. Both 
 
 `worktree-to-pr` is inherited as the plan default from `AGENTS.md`'s Git Workflow description (no
 local override in this file -- direct push to `main` is no longer the assumed default). The
-PR-review-cycle agents -- the eight discipline specialists, the `pr-review-synthesis-maker`
-coordinator, and `pr-review-fixer` -- are ordinary `.claude/agents/*.md` files under this binding;
+PR-review-cycle agents -- `pr-review-scout-maker` (stage 0, classifies risk tier and assembles the
+shared context brief), the discipline specialists, the `pr-review-synthesis-maker` coordinator, and
+`pr-review-fixer` -- are ordinary `.claude/agents/*.md` files under this binding;
 `pr-review-synthesis-maker` is the sole poster of record -- it writes the one consolidated review via
-the GitHub Reviews API, while the eight specialists never post (they hand raw findings to the
+the GitHub Reviews API, while the scout and the discipline specialists never post (the scout hands
+its tier decision and context brief downstream, and the specialists hand raw findings to the
 coordinator), and none does a local `git push`. `pr-review-fixer` pushes commits to the PR branch
 through the same git tooling as any other agent in this repo.
 
