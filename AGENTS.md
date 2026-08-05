@@ -235,6 +235,9 @@ invent `validate:{thing}` prefixes.
 - **CI blockers**: Investigate root cause, fix properly, never bypass ([ci-blocker-resolution.md](./repo-governance/development/quality/ci-blocker-resolution.md))
 - **Build-artifact sweeper**: An ambient sweeper deletes gitignored build output (`target/`, `dist/`, `.next/`), caches (`.nx/cache`), and the shared cargo `target/` at any time, mid-plan. Regenerate (`nx build`, `npm install`, `npm run doctor -- --fix`) and continue — never file a finding, commit build output, edit `.gitignore`, or blame a concurrent agent. It never touches tracked files, `.env*`, `generated-reports/`, `local-temp/`, worktrees, or git refs ([build-artifact-sweeper.md](./repo-governance/development/infra/build-artifact-sweeper.md))
 - **CI post-push verification**: After pushing app or lib code — to a PR branch under the default `worktree-to-pr`, or to `origin main` under the direct-push modes — trigger relevant GitHub CI workflows and verify they pass before declaring work done — pre-push hook alone is not sufficient ([ci-post-push-verification.md](./repo-governance/development/workflow/ci-post-push-verification.md))
+- **`main-ci.yml` deprecated**: schedule/dispatch-only (no push trigger), being retired. Never trigger,
+  monitor, or gate plan creation/checking/execution on it — pre-commit, pre-push, and the PR quality
+  gate are sufficient.
 
 ## Agent Workflow Orchestration
 
