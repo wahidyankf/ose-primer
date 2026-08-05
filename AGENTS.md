@@ -90,7 +90,7 @@ family. Do not maintain a second roster here. Names follow `<domain>-<role>`:
    non-destructive, each with a selectable **`output-mode`**: `plan` (default — a new backlog plan
    folder), `delivery` (appends to an existing plan's `delivery.md`; the rule-15 retest mechanism),
    `local-temp` (a scratch `local-temp/<YYYY-MM-DD>__<slug>/findings.md`).
-5. **PR Review Cycle** — eight discipline `pr-review-*-maker` specialists fan out to
+5. **PR Review Cycle** — nine discipline `pr-review-*-maker` specialists fan out to
    `pr-review-synthesis-maker` (coordinator) to `pr-review-fixer`, for `*-to-pr` Delivery Mode plans.
    See [§Delivery Mode](./repo-governance/conventions/structure/plans.md#delivery-mode),
    [PR Review Quality Gate](./repo-governance/workflows/pr/pr-review-quality-gate.md),
