@@ -26,7 +26,7 @@ This directory contains specialized AI agents for the ose-primer repository temp
 - **[pr-review-docs-maker](pr-review-docs-maker.md)** - PR-review specialist scoped to documentation-quality only: substantive README/docs/Diátaxis fit, doc drift vs. code, clarity, doc alt-text/accessibility
 - **[pr-review-instruction-maker](pr-review-instruction-maker.md)** - PR-review specialist scoped to instruction-decay only: a framework/build-tool/package-manager/env-var/CI change not reflected in AGENTS.md/CLAUDE.md/.claude/, and instruction bloat
 - **[pr-review-types-maker](pr-review-types-maker.md)** - PR-review specialist scoped to type-soundness only: static type-escape-hatch soundness across TypeScript/Rust/F#/C# (unjustified `any`, unexplained `unsafe`, panic-prone `unwrap()`/`expect()`, `!` suppression, non-exhaustive matches) — never a compile/build failure, never general logic correctness
-- **[pr-review-synthesis-maker](pr-review-synthesis-maker.md)** - Mandatory coordinator (opus) atop the nine sonnet-tier specialists: consumes `pr-review-scout-maker`'s risk tier + specialist set + shared full-diff context brief, then dedups/re-categorizes/reasonableness-filters/tool-verifies raw findings into exactly ONE consolidated review
+- **[pr-review-synthesis-maker](pr-review-synthesis-maker.md)** - Mandatory coordinator (opus) atop the sonnet-tier specialists: consumes `pr-review-scout-maker`'s risk tier + specialist set + shared full-diff context brief, then dedups/re-categorizes/reasonableness-filters/tool-verifies raw findings into exactly ONE consolidated review
 
 ### 🟩 Validation (Checkers)
 

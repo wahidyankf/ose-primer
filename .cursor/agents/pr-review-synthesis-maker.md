@@ -329,7 +329,7 @@ job.
 - `pr-review-scout-maker` - Classifies each PR's risk tier and specialist set, assembles the
   shared-context brief, and reads prior-cycle thread-resolution status once per cycle, upstream of
   this agent's own dedup/re-categorize/filter/verify pipeline
-- [`pr-review-disciplines.md`'s nine-discipline table](../../repo-governance/development/quality/pr-review-disciplines.md#the-nine-reviewer-disciplines) - The full specialist roster whose raw findings feed this agent
+- [`pr-review-disciplines.md`'s discipline table](../../repo-governance/development/quality/pr-review-disciplines.md#the-reviewer-disciplines) - The full specialist roster whose raw findings feed this agent
 - `pr-review-architecture-maker`, `pr-review-logic-maker`, `pr-review-governance-maker`, `pr-review-security-maker`, `pr-review-integrity-maker`, `pr-review-performance-maker`, `pr-review-docs-maker`, `pr-review-instruction-maker`, `pr-review-types-maker` - The nine discipline specialists this agent coordinates, never discovers findings for
 - `pr-review-fixer` - Consumes this agent's single consolidated review, triages, fixes, pushes, and resolves threads
 - `web-researcher` - External fact verification during tool-verify

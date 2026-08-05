@@ -69,9 +69,9 @@ findings directly, the single explicit carve-out to its otherwise-transform-only
   specialist fan-out. Owns risk-tier classification and specialist-set selection (D12) and
   shared-context assembly (D13), and reads the prior cycle's thread-resolution/dismissal state so the
   fan-out does not re-litigate a settled thread. Defined at `.claude/agents/pr-review-scout-maker.md`.
-- **Nine discipline specialists** — execution/sonnet-tier agents, one per discipline, run
+- **Discipline specialists** — execution/sonnet-tier agents, one per discipline, run
   **concurrently** within a cycle's tier-selected fan-out. **Even under `full` tier, the fan-out is
-  not unconditionally all nine**: the scout's Content-Type Applicability Filter (DD-10) skips
+  not unconditionally the full roster**: the scout's Content-Type Applicability Filter (DD-10) skips
   `pr-review-types-maker` and `pr-review-integrity-maker` from a given cycle when their own declared
   artifact class (typed-language files; test/CI-workflow files, respectively) is verifiably absent
   from that cycle's current diff — see
@@ -88,7 +88,7 @@ findings directly, the single explicit carve-out to its otherwise-transform-only
   - `pr-review-docs-maker` — substantive documentation quality and completeness
   - `pr-review-instruction-maker` — instruction-decay against `AGENTS.md`/`CLAUDE.md`/`.claude/`
   - `pr-review-types-maker` — type-soundness: unsafe casts, `any`, `unsafe` blocks, `!` suppression
-- **`pr-review-synthesis-maker`** — planning/opus-tier coordinator, the eleventh pipeline agent.
+- **`pr-review-synthesis-maker`** — planning/opus-tier coordinator, the pipeline's final stage.
   Deduplicates, re-categorizes, reasonableness-filters, and tool-verifies the specialists' raw
   findings before posting exactly ONE consolidated, numeric-confidence, cited, line-anchored review
   via the GitHub Reviews API. Defined at `.claude/agents/pr-review-synthesis-maker.md`.
@@ -538,7 +538,7 @@ Track across executions:
   not a permanent design decision — revisit if a bot/App identity is provisioned later. This does not
   touch the repo's Git Identity Guardrail (that guardrail governs `git config user.*` for commits;
   this is a `gh`/GitHub-API posting identity, a separate concern).
-- **All eleven pipeline agents implemented and wired**: `pr-review-scout-maker`, the nine discipline
+- **All pipeline agents implemented and wired**: `pr-review-scout-maker`, the discipline
   specialists, and `pr-review-synthesis-maker` — defined per the
   [PR Reviewer-Discipline Convention](../../development/quality/pr-review-disciplines.md) — plus the
   unchanged `pr-review-fixer` are this workflow's live actors as of the `worktree-to-pr-hardening`
