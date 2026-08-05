@@ -490,6 +490,11 @@ after Phase 16 FE e2e tests pass.
 
 ### Push and CI verification
 
+**CI scope note**: "CI green"/CI checks below mean the push-triggered
+`test-investment-oracle-*.yml` and `build-investment-oracle-tauri.yml` workflows this plan
+creates (listed below) — never `.github/workflows/main-ci.yml`, which is deprecated,
+schedule/dispatch-only, and must not be monitored or gated on.
+
 - [ ] Push direct to `main` per Trunk Based Development
       ([git-push-default](../../../repo-governance/development/workflow/git-push-default.md)):
       `git push origin main`
