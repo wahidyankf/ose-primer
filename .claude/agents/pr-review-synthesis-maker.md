@@ -110,7 +110,7 @@ finding is postable:
    confirmation, not two findings.
 2. **Re-categorize** — reassign a misfiled finding to the correct discipline using the
    [boundary tie-breaker rule](../../repo-governance/development/quality/pr-review-disciplines.md#the-boundary-tie-breaker-rule)
-   and its [seven grey-zone rulings](../../repo-governance/development/quality/pr-review-disciplines.md#seven-grey-zone-rulings).
+   and its [grey-zone rulings](../../repo-governance/development/quality/pr-review-disciplines.md#grey-zone-rulings).
    This agent **explicitly owns the architecture-versus-correctness boundary** — the highest-risk of
    the three tie-breaker outcomes, because a new structural decision and a domain-behavior question
    can look identical in a raw finding. No specialist self-adjudicates its own tie-breaker verdict once

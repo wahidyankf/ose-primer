@@ -166,7 +166,7 @@ flowchart TD
   classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
-## Seven Grey-Zone Rulings
+## Grey-Zone Rulings
 
 The discipline split creates recurring boundary questions between adjacent disciplines. The
 following seven are pre-decided so the coordinator applies a lookup instead of re-deriving the
@@ -244,8 +244,9 @@ calls no specialist makes (risk-tier classification, shared-context assembly, cr
 dedup, arch↔correctness re-categorization, tool-verification) — while every discipline specialist
 runs **sonnet**, because recognizing an in-charter defect against a fixed, enumerable pattern per
 discipline is bounded pattern-matching, not novel judgment, and any subtle specialist miss is
-backstopped by the coordinator's own tool-verify pass and by selective adversarial verification on
-high-risk diffs (D4). This split is not permanent per discipline: the
+backstopped by the coordinator's own tool-verify pass and by
+[selective adversarial verification (D4)](#selective-adversarial-verification-d4) on high-risk
+diffs. This split is not permanent per discipline: the
 [Post-Cutover Monitoring Plan](#post-cutover-monitoring-plan)'s per-discipline acceptance-rate
 tracking can promote a specific lens to opus later if its acceptance rate lags the others — the same
 lever every specialist's tier is already subject to.
@@ -312,8 +313,9 @@ comment, or linked-issue text reaches a model, **strip user-supplied structural 
 fabricated delimiters such as `<mr_input>`, `<system>`, or `<review>` that a PR author could inject
 to spoof the prompt frame and redirect a reviewer's behavior. This is in addition to, not a
 replacement for, the inherited prompt-injection filtering every specialist, `pr-review-scout-maker`
-(the pipeline's first and only raw-input ingestion point), and `pr-review-synthesis-maker` already
-carry.
+(the pipeline's first and only ingestion point **for raw review-thread/comment text** — the same
+containment does NOT hold for PR title/body/author text or the diff, which every downstream
+specialist still filters itself), and `pr-review-synthesis-maker` already carry.
 
 ## Quality-Gate Enhancements
 

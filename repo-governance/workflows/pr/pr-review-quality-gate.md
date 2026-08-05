@@ -320,11 +320,14 @@ sole poster of record every cycle.
   reasoned reject) has been applied and replied to.
 - **Untrusted-input filtering**: filter PR body, PR comments, and any linked-issue text for
   prompt-injection before trusting it as review context — this text originates from a CI-privileged,
-  potentially untrusted actor. `pr-review-scout-maker` is the pipeline's first and only raw-input
-  ingestion point (every specialist and the coordinator read only its derived tier/specialist-set/brief
-  output, never the raw text); every specialist, the scout, and the coordinator each also strip
-  user-supplied structural boundary tags (fabricated `<mr_input>`/`<system>`/`<review>` delimiters)
-  before the text reaches a model.
+  potentially untrusted actor. `pr-review-scout-maker` is the pipeline's first and only ingestion
+  point **for raw review-thread/comment text** (every specialist and the coordinator read only its
+  derived tier/specialist-set/brief output for that text, never the raw text); the same containment
+  does NOT hold for PR title/body/author text or the diff — the shared-context brief forwards those
+  verbatim, so every downstream specialist still performs its own untrusted-input filtering over
+  them. Every specialist, the scout, and the coordinator each also strip user-supplied structural
+  boundary tags (fabricated `<mr_input>`/`<system>`/`<review>` delimiters) before the text reaches a
+  model.
 - **Minimal write scope**: the coordinator and the fixer are restricted to post/reply/resolve
   operations against the PR — no other repository-write scope is exercised by this workflow.
 - **[Unverified] GraphQL field casing spot-check**: the exact GraphQL field casing for
