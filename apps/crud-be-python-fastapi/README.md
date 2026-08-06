@@ -53,7 +53,7 @@ uv run uvicorn crud_be_python_fastapi.main:app --reload --port 8201
 Or via Nx:
 
 ```bash
-nx dev crud-be-python-fastapi
+npm exec nx -- dev crud-be-python-fastapi
 ```
 
 ### With Docker Compose (PostgreSQL)
@@ -65,16 +65,16 @@ docker compose up --build
 
 ## Nx Targets
 
-| Target                                           | Description                                              |
-| ------------------------------------------------ | -------------------------------------------------------- |
-| `nx build crud-be-python-fastapi`                | Build distributable wheel (depends on codegen)           |
-| `nx dev crud-be-python-fastapi`                  | Start dev server with reload                             |
-| `nx start crud-be-python-fastapi`                | Start production server                                  |
-| `nx run crud-be-python-fastapi:test:quick`       | Unit tests + coverage check (no lint, no integration)    |
-| `nx run crud-be-python-fastapi:test:unit`        | Unit tests only (SQLite in-memory, no external services) |
-| `nx run crud-be-python-fastapi:test:integration` | Integration tests via Docker Compose (real PostgreSQL)   |
-| `nx lint crud-be-python-fastapi`                 | Ruff lint check                                          |
-| `nx run crud-be-python-fastapi:typecheck`        | Pyright type check (depends on codegen)                  |
+| Target                                                       | Description                                              |
+| ------------------------------------------------------------ | -------------------------------------------------------- |
+| `npm exec nx -- build crud-be-python-fastapi`                | Build distributable wheel (depends on codegen)           |
+| `npm exec nx -- dev crud-be-python-fastapi`                  | Start dev server with reload                             |
+| `npm exec nx -- start crud-be-python-fastapi`                | Start production server                                  |
+| `npm exec nx -- run crud-be-python-fastapi:test:quick`       | Unit tests + coverage check (no lint, no integration)    |
+| `npm exec nx -- run crud-be-python-fastapi:test:unit`        | Unit tests only (SQLite in-memory, no external services) |
+| `npm exec nx -- run crud-be-python-fastapi:test:integration` | Integration tests via Docker Compose (real PostgreSQL)   |
+| `npm exec nx -- lint crud-be-python-fastapi`                 | Ruff lint check                                          |
+| `npm exec nx -- run crud-be-python-fastapi:typecheck`        | Pyright type check (depends on codegen)                  |
 
 `codegen` generates Pydantic models from the OpenAPI contract spec into `generated_contracts/` and
 is a dependency of both `typecheck` and `build`.
@@ -138,7 +138,7 @@ This project follows a three-level test strategy that separates concerns by exec
 - Includes all shared Gherkin scenarios via pytest-bdd with `TestClient` + SQLite override
 - Identical functional coverage to level 1; distinguishes test intent
 
-### Level 3: Docker integration tests (`nx run crud-be-python-fastapi:test:integration`)
+### Level 3: Docker integration tests (`npm exec nx -- run crud-be-python-fastapi:test:integration`)
 
 - Runs `tests/integration/` step definitions via Docker Compose
 - Database: Real PostgreSQL 17-alpine service
@@ -150,13 +150,13 @@ This project follows a three-level test strategy that separates concerns by exec
 
 ```bash
 # Fast quality gate (unit tests + coverage) — run by pre-push hook
-nx run crud-be-python-fastapi:test:quick
+npm exec nx -- run crud-be-python-fastapi:test:quick
 
 # Unit tests only
-nx run crud-be-python-fastapi:test:unit
+npm exec nx -- run crud-be-python-fastapi:test:unit
 
 # Full Docker integration tests (requires Docker)
-nx run crud-be-python-fastapi:test:integration
+npm exec nx -- run crud-be-python-fastapi:test:integration
 
 # Run unit tests directly
 cd apps/crud-be-python-fastapi

@@ -1,6 +1,6 @@
 ---
 title: How to Set Up Your Development Environment
-description: Install and configure all tools needed to develop, test, and contribute to the open-sharia-enterprise monorepo
+description: Start safely with ose-primer, then add only the toolchains your chosen example needs
 category: how-to
 tags:
   - onboarding
@@ -16,9 +16,11 @@ tags:
 
 # How to Set Up Your Development Environment
 
-This guide walks you through installing every tool required to work on any project in this
-monorepo. After completing it, your pre-commit hooks, pre-push hooks, unit tests, integration
-tests, and E2E tests will all work locally.
+`ose-primer` is a polyglot Nx starter: it gives you one small CRUD product implemented in several
+languages and frameworks, plus the automation that keeps those variants honest. Start with the
+smallest useful setup, prove the workspace is healthy, then add a language runtime when you choose
+an example to explore. You do not need every runtime—or Docker—to read the repository, run the
+repository checks, or make your first change.
 
 ## 📋 Overview
 
@@ -28,50 +30,41 @@ same Nx build system and git hooks.
 
 **Two setup paths**:
 
-- **Minimal** (~15 minutes) — Node.js + Go + Docker + jq. Covers git hooks, TypeScript/Go
-  projects, and basic E2E tests.
-- **Full** — All tools checked by doctor. Required if you work on Java, Kotlin, Python, Rust,
-  Elixir, F#, C#, Clojure, or Dart projects.
-- **Automated** — Run `npm run doctor -- --fix` to auto-install missing tools. Use
-  `npm run doctor -- --fix --dry-run` to preview what would be installed.
+- **Fresh checkout** — Volta-managed Node.js and npm, then `npm install`. This gets the workspace,
+  git hooks, and documentation tooling ready.
+- **Choose an example** — Add the runtime named in that app's README. Docker is only needed for a
+  containerized service, integration test, or E2E flow.
+- **Automated check** — Run `npm run doctor -- --fix` to detect and install supported missing
+  tools. Use `npm run doctor -- --fix --dry-run` to see the proposed changes first.
 
 ## Prerequisites
 
-- **macOS** (primary) or **Linux** (Debian/Ubuntu). Windows is not supported.
-- **Admin access** to install system packages.
-- **~10 GB disk space** for all runtimes, Docker images, and Playwright browsers.
+- **macOS** or **Ubuntu/Debian Linux**.
+- **Windows via WSL2 may work**, but it is not a supported or routinely verified path.
+- Admin access is useful only when you install optional system packages or Docker.
 
 ## 🚀 Quick Start (Minimal Setup)
 
-If you only work on TypeScript or Go projects, this is all you need:
+For the first checkout, this is all you need:
 
 ```bash
-# 1. Install Homebrew (macOS — skip if already installed)
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# 2. Install core tools
-brew install jq
-# Docker Desktop: download from https://docs.docker.com/desktop/setup/install/mac-install/
-
-# 3. Install Volta (Node.js version manager)
+# 1. Install Volta (macOS or Linux)
 curl https://get.volta.sh | bash
 source ~/.zshrc
 
-# 4. Install Go
-brew install go
-
-# 5. Clone and bootstrap
+# 2. Clone and bootstrap
 git clone https://github.com/wahidyankf/ose-primer.git
 cd ose-primer
-npm install          # Installs deps + git hooks
-npx playwright install  # Installs test browsers
+npm install
 
-# 6. Verify
-npm run doctor
+# 3. Verify the workspace and install supported optional tooling only when needed
+npm run doctor -- --fix
+npm exec nx -- run rhino-cli:test:quick
 ```
 
-If doctor shows all green, you are ready. Run `npx nx affected -t typecheck lint test:quick specs:coverage`
-to verify the full pre-push pipeline.
+The first command that needs a particular example's language runtime tells you what is missing.
+Install that runtime using the relevant section below, then rerun the command. Keep Docker and
+Playwright for the integration or browser-test work that actually needs them.
 
 ## Full Setup
 
@@ -135,14 +128,14 @@ After installation, entering the repo directory auto-installs the correct versio
 
 ```bash
 cd ose-primer
-node --version   # Expected: v24.13.1
+node --version   # Expected: v24.16.0
 npm --version    # Expected: 11.10.1
 ```
 
 If the versions don't match, force install:
 
 ```bash
-volta install node@24.13.1
+volta install node@24.16.0
 volta install npm@11.10.1
 ```
 
@@ -314,27 +307,12 @@ npm install
 2. Runs `npm run doctor` automatically (postinstall script) to verify your toolchain
 3. Sets up Husky git hooks (pre-commit, commit-msg, pre-push)
 
-### Step 14: Restore Environment Files
+### Step 14: Configure an App Only When It Needs Configuration
 
-`.env` files are gitignored but required by many apps. If you have a previous backup,
-restore them:
-
-```bash
-# Restore .env files from the default backup location (~/ose-primer-env-backup)
-cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- env restore --force
-
-# Also restore uncommitted config files (AI tool settings, Docker overrides, etc.)
-cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- env restore --force --include-config
-```
-
-If this is a fresh setup with no backup, copy `.env.example` to `.env` in each app you
-plan to work on and fill in the required values.
-
-To create a backup for future use:
-
-```bash
-cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- env backup --include-config
-```
+Do not copy, restore, inspect, or commit a real `.env` file as part of general onboarding. When
+an app's README says configuration is needed, consult its tracked `.env.example` and keep any real
+values only in your local, untracked environment. A fresh checkout does not require inherited
+credentials or someone else's configuration backup.
 
 ### Step 15: Install Playwright Browsers
 
@@ -367,17 +345,15 @@ step above.
 **Pre-commit** (runs on every commit — Prettier, markdownlint, lint-staged):
 
 ```bash
-# Make a trivial change and commit
-git commit --allow-empty -m "test: verify pre-commit hook"
-# If it succeeds, the hook works. Undo:
-git reset HEAD~1
+# Run the same registered gate without creating a throwaway commit
+cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- gate run --surface=pre-commit
 ```
 
-**Pre-push** (runs on every push — typecheck, lint, test:quick, specs:coverage):
+**Pre-push** (runs the repository's affected quality gates):
 
 ```bash
-# Dry-run: execute the same targets pre-push would
-npx nx affected -t typecheck lint test:quick specs:coverage
+# Run the fast affected check before a push
+npm exec nx -- affected -t test:quick
 ```
 
 This also warms the Nx cache, making subsequent pushes fast.
@@ -386,7 +362,7 @@ This also warms the Nx cache, making subsequent pushes fast.
 
 ```bash
 # Run one backend's integration suite (uses Docker + PostgreSQL)
-nx run crud-be-golang-gin:test:integration
+npm exec nx -- run crud-be-golang-gin:test:integration
 ```
 
 If this passes, Docker and database integration work correctly.
@@ -395,9 +371,9 @@ If this passes, Docker and database integration work correctly.
 
 ```bash
 # Start a backend, then run E2E tests
-nx run crud-be-golang-gin:dev &
+npm exec nx -- run crud-be-golang-gin:dev &
 sleep 5
-nx run crud-be-e2e:test:e2e
+npm exec nx -- run crud-be-e2e:test:e2e
 kill %1
 ```
 
@@ -411,11 +387,11 @@ the matching step above.
 
 ### Pre-push hook times out
 
-The pre-push hook runs `typecheck`, `lint`, `test:quick`, and `specs:coverage` for affected
-projects. On first run with a cold cache, this takes several minutes. Warm the cache first:
+The pre-push hook runs the registered affected quality gates. On a cold cache, it can take longer
+than usual. Warm the focused check first:
 
 ```bash
-npx nx affected -t typecheck lint test:quick specs:coverage
+npm exec nx -- affected -t test:quick
 ```
 
 Subsequent pushes reuse cached results and complete in seconds.

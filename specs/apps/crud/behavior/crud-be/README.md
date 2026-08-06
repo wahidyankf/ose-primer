@@ -139,16 +139,16 @@ specs/apps/crud/behavior/crud-be/
 
 ```bash
 # Unit tests (mocked dependencies, coverage measured here)
-nx run crud-be-{lang}-{framework}:test:unit
+npm exec nx -- run crud-be-{lang}-{framework}:test:unit
 
 # Integration tests (real PostgreSQL via docker-compose)
-nx run crud-be-{lang}-{framework}:test:integration
+npm exec nx -- run crud-be-{lang}-{framework}:test:integration
 
 # E2E tests (Playwright HTTP against running backend)
-nx run crud-be-e2e:test:e2e
+npm exec nx -- run crud-be-e2e:test:e2e
 
 # Fast quality gate (unit + coverage check)
-nx run crud-be-{lang}-{framework}:test:quick
+npm exec nx -- run crud-be-{lang}-{framework}:test:quick
 ```
 
 ## Nx Cache Inputs

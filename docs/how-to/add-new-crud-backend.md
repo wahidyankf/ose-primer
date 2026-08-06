@@ -523,7 +523,7 @@ tools and file formats.
 
 Create `.github/workflows/test-crud-be-{lang}-{framework}.yml`. Keep it to approximately 40
 lines by inlining the job steps directly rather than duplicating setup logic across jobs. The file
-follows the 5-track parallel structure (lint, typecheck, test:quick, specs:coverage,
+follows the 5-track parallel structure (lint, typecheck, test:quick, specs:behavior:coverage,
 integration → E2E), though integration and E2E are sequenced within a single job:
 
 ```yaml
@@ -549,8 +549,8 @@ jobs:
       - name: Generate contract types for backend
         run: |
           npm ci --ignore-scripts
-          npx nx run crud-contracts:bundle
-          npx nx run crud-be-{lang}-{framework}:codegen
+          npm exec nx -- run crud-contracts:bundle
+          npm exec nx -- run crud-be-{lang}-{framework}:codegen
       - name: Run integration tests
         run: |
           docker compose -f apps/crud-be-{lang}-{framework}/docker-compose.integration.yml down -v 2>/dev/null || true
@@ -571,10 +571,10 @@ jobs:
       - name: Generate contract types
         run: |
           npm ci --ignore-scripts
-          npx nx run crud-contracts:bundle
-          npx nx run crud-be-{lang}-{framework}:codegen
-          npx nx run crud-fe-ts-nextjs:codegen
-          npx nx run crud-fe-ts-tanstack-start:codegen
+          npm exec nx -- run crud-contracts:bundle
+          npm exec nx -- run crud-be-{lang}-{framework}:codegen
+          npm exec nx -- run crud-fe-ts-nextjs:codegen
+          npm exec nx -- run crud-fe-ts-tanstack-start:codegen
       - name: Install dependencies
         run: npm ci
       - name: Start full stack (DB + backend + frontend)
@@ -591,7 +591,7 @@ jobs:
         run: npx playwright install --with-deps chromium
         working-directory: apps/crud-fe-e2e
       - name: Run BE E2E tests
-        run: npx nx run crud-be-e2e:test:e2e
+        run: npm exec nx -- run crud-be-e2e:test:e2e
         env:
           BASE_URL: http://localhost:8201
       - name: Upload BE E2E report
@@ -681,8 +681,8 @@ are imported at compile time), add the app to the existing `Generate contract ty
 ```yaml
 - name: Generate contract types (required before typecheck/test:quick)
   run: |
-    npx nx run crud-contracts:bundle
-    npx nx run-many -t codegen --projects=crud-*
+    npm exec nx -- run crud-contracts:bundle
+    npm exec nx -- run-many -t codegen --projects=crud-*
     # The run-many above covers all crud-* projects including the new backend
     # if the project.json declares the codegen target correctly.
 ```
@@ -691,7 +691,7 @@ If `run-many --projects=crud-*` does not pick up the new backend (e.g., due to a
 mismatch), add an explicit call:
 
 ```yaml
-npx nx run crud-be-{lang}-{framework}:codegen
+npm exec nx -- run crud-be-{lang}-{framework}:codegen
 ```
 
 ### 13. Create README.md
@@ -712,13 +712,13 @@ Do **not** hardcode scenario or feature counts — reference the
 
 ```bash
 # Codegen works
-nx run crud-be-{lang}-{framework}:codegen
+npm exec nx -- run crud-be-{lang}-{framework}:codegen
 
 # All quality gates pass
-nx run crud-be-{lang}-{framework}:test:quick
+npm exec nx -- run crud-be-{lang}-{framework}:test:quick
 
 # Dependency graph is correct
-nx graph
+npm exec nx -- graph
 ```
 
 ## 🔗 Related Documentation

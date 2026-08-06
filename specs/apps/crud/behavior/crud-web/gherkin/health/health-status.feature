@@ -17,3 +17,8 @@ Feature: Service Health Status
     When an unauthenticated user opens the app
     Then the health status indicator should display "UP"
     And no detailed component health information should be visible
+
+  @unit
+  Scenario: Application configuration loads the environment module during startup
+    When the application configuration starts
+    Then the application configuration should load successfully

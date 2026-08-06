@@ -61,11 +61,11 @@ links.OutputLinksText(result, elapsed, quiet, verbose)
 
 ```bash
 # Run tests
-nx run golang-commons:test:quick
+npm exec nx -- run golang-commons:test:quick
 
 # Lint
-nx run golang-commons:lint
+npm exec nx -- run golang-commons:lint
 
 # Tidy dependencies
-nx run golang-commons:install
+npm exec nx -- run golang-commons:install
 ```

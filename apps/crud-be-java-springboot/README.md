@@ -95,7 +95,7 @@ Run directly on host machine (0.5-1 second restarts):
 
 ```bash
 # From repository root
-nx dev crud-be-java-springboot
+npm exec nx -- dev crud-be-java-springboot
 
 # Or from app directory
 cd apps/crud-be-java-springboot
@@ -177,7 +177,7 @@ docker run --rm -p 8201:8201 crud-be-java-springboot:latest
 
 ```bash
 # Build JAR
-nx build crud-be-java-springboot
+npm exec nx -- build crud-be-java-springboot
 
 # Or from app directory
 cd apps/crud-be-java-springboot
@@ -196,25 +196,25 @@ java -XX:+UseZGC -jar apps/crud-be-java-springboot/target/crud-be-java-springboo
 
 ```bash
 # Build JAR (depends on codegen)
-nx build crud-be-java-springboot
+npm exec nx -- build crud-be-java-springboot
 
 # Start development server (Maven spring-boot:run)
-nx dev crud-be-java-springboot
+npm exec nx -- dev crud-be-java-springboot
 
 # Start production server (runs built JAR)
-nx run crud-be-java-springboot:start
+npm exec nx -- run crud-be-java-springboot:start
 
 # Run fast quality gate: unit tests + coverage check (no running service needed)
-nx run crud-be-java-springboot:test:quick
+npm exec nx -- run crud-be-java-springboot:test:quick
 
 # Run unit tests only (Cucumber JVM + mocked repos, no Spring context)
-nx run crud-be-java-springboot:test:unit
+npm exec nx -- run crud-be-java-springboot:test:unit
 
 # Run integration tests (Cucumber JVM + real PostgreSQL via docker-compose)
-nx run crud-be-java-springboot:test:integration
+npm exec nx -- run crud-be-java-springboot:test:integration
 
 # Lint code
-nx lint crud-be-java-springboot
+npm exec nx -- lint crud-be-java-springboot
 
 # Package annotation + null-safety check (JSpecify + NullAway — runs in pre-push hook; depends on codegen)
 nx typecheck crud-be-java-springboot
@@ -377,19 +377,19 @@ docker-compose up
 
 ```bash
 # Fast quality gate: unit tests + coverage check (pre-push hook)
-nx run crud-be-java-springboot:test:quick
+npm exec nx -- run crud-be-java-springboot:test:quick
 
 # Unit tests only (Cucumber JVM + mocked repos)
-nx run crud-be-java-springboot:test:unit        # mvn test
+npm exec nx -- run crud-be-java-springboot:test:unit        # mvn test
 
 # Integration tests (Cucumber JVM + real PostgreSQL via docker-compose)
-nx run crud-be-java-springboot:test:integration # docker compose up --abort-on-container-exit
+npm exec nx -- run crud-be-java-springboot:test:integration # docker compose up --abort-on-container-exit
 ```
 
 ### 3. Production Build
 
 ```bash
-nx build crud-be-java-springboot
+npm exec nx -- build crud-be-java-springboot
 cd infra/dev/crud-be-java-springboot
 docker-compose -f docker-compose.yml up
 ```
@@ -483,11 +483,11 @@ apps/crud-be-java-springboot/
 
 Three levels of testing consume the shared Gherkin scenarios from [`specs/apps/crud/behavior/crud-be/gherkin/`](../../specs/apps/crud/behavior/crud-be/gherkin/README.md):
 
-| Level       | Tool                           | Dependencies         | Command                                           | Cached? |
-| ----------- | ------------------------------ | -------------------- | ------------------------------------------------- | ------- |
-| Unit        | Cucumber JVM + mocked repos    | InMemoryDataStore    | `nx run crud-be-java-springboot:test:unit`        | Yes     |
-| Integration | Cucumber JVM + real PostgreSQL | Docker Compose       | `nx run crud-be-java-springboot:test:integration` | No      |
-| E2E         | Playwright + HTTP              | Running backend + DB | `nx run crud-be-e2e:test:e2e`                     | No      |
+| Level       | Tool                           | Dependencies         | Command                                                       | Cached? |
+| ----------- | ------------------------------ | -------------------- | ------------------------------------------------------------- | ------- |
+| Unit        | Cucumber JVM + mocked repos    | InMemoryDataStore    | `npm exec nx -- run crud-be-java-springboot:test:unit`        | Yes     |
+| Integration | Cucumber JVM + real PostgreSQL | Docker Compose       | `npm exec nx -- run crud-be-java-springboot:test:integration` | No      |
+| E2E         | Playwright + HTTP              | Running backend + DB | `npm exec nx -- run crud-be-e2e:test:e2e`                     | No      |
 
 **What's mocked at each level**:
 
@@ -505,7 +505,7 @@ Cucumber JVM with mocked repositories. No database, no Spring Data JPA autoconfi
 All scenarios run against `UnitInMemoryDataStore`:
 
 ```bash
-nx run crud-be-java-springboot:test:unit
+npm exec nx -- run crud-be-java-springboot:test:unit
 # or: cd apps/crud-be-java-springboot && mvn test
 ```
 
@@ -516,7 +516,7 @@ the app, runs Liquibase migrations, and executes all Cucumber scenarios against 
 Not cached — always re-runs:
 
 ```bash
-nx run crud-be-java-springboot:test:integration
+npm exec nx -- run crud-be-java-springboot:test:integration
 # or: cd apps/crud-be-java-springboot && docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build
 ```
 
@@ -527,7 +527,7 @@ for this API. Run them after starting the backend:
 
 ```bash
 # Start backend (any method above), then:
-nx run crud-be-e2e:test:e2e
+npm exec nx -- run crud-be-e2e:test:e2e
 ```
 
 ## Next Steps

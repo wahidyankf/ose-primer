@@ -109,10 +109,10 @@ for scenario counts.
 
 ```bash
 # Run unit tests for all affected backends
-nx affected -t test:unit
+npm exec nx -- affected -t test:unit
 
 # Or test a specific backend
-nx run crud-be-golang-gin:test:quick
+npm exec nx -- run crud-be-golang-gin:test:quick
 ```
 
 All backends must pass all scenarios. The Gherkin feature files are the single source of

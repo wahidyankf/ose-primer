@@ -20,12 +20,12 @@ The canonical rules governing this family live in the [Repository Ecosystem Conv
 
 ## Repository Catalogue
 
-| Repository                                                 | Visibility | License     | Purpose                                                                                         | Relationship to `ose-primer`                                                                              |
-| ---------------------------------------------------------- | ---------- | ----------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| [`ose-public`](https://github.com/wahidyankf/ose-public)   | Public     | MIT         | Main OSE platform monorepo; upstream source of governance, conventions, agents, and skills      | **Upstream.** Governance artifacts originate there and propagate here.                                    |
-| [`ose-primer`](https://github.com/wahidyankf/ose-primer)   | Public     | MIT         | Repository template — clean MIT starting point for new OSE-style polyglot Nx monorepos          | This repository.                                                                                          |
-| [`ose-private`](https://github.com/wahidyankf/ose-private) | Private    | Proprietary | Unexposed surface of OSE — self-hosted CI runner stack, `coralpolyp` app, on-premise infra      | Sync partner for generic content, with `ose-primer` as the shared upstream. No infrastructure flows here. |
-| [`beaver-nest`](https://github.com/wahidyankf/beaver-nest) | Public     | MIT         | BeaverNest — a personal operating layer (assistant, content builder, posting helper, workflows) | Cross-reference only. Scaffolded from this family but syncs no content in either direction.               |
+| Repository                                                 | Visibility | License     | Purpose                                                                                         | Relationship to `ose-primer`                                                                                    |
+| ---------------------------------------------------------- | ---------- | ----------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| [`ose-public`](https://github.com/wahidyankf/ose-public)   | Public     | MIT         | Main OSE platform monorepo; upstream source of governance, conventions, agents, and skills      | **Upstream.** Governance artifacts originate there and propagate here.                                          |
+| [`ose-primer`](https://github.com/wahidyankf/ose-primer)   | Public     | MIT         | Repository template — clean MIT starting point for new OSE-style polyglot Nx monorepos          | This repository.                                                                                                |
+| [`ose-private`](https://github.com/wahidyankf/ose-private) | Private    | Proprietary | Private product operations and infrastructure for authorized maintainers                        | Listed for ecosystem context only; no private implementation detail or infrastructure flows into this template. |
+| [`beaver-nest`](https://github.com/wahidyankf/beaver-nest) | Public     | MIT         | BeaverNest — a personal operating layer (assistant, content builder, posting helper, workflows) | Cross-reference only. Scaffolded from this family but syncs no content in either direction.                     |
 
 ## Terminology — "the OSE repos"
 
@@ -96,7 +96,9 @@ These are two separate questions, and conflating them is the most common error w
 
 ## Propagation Summary
 
-Governance, conventions, agents, and skills flow `ose-public → ose-primer → downstream forks`. Infrastructure concerns flow `ose-public ↔ ose-private` and never reach `ose-primer`, which has no infrastructure. `ose-primer` is a downstream template, not an upstream source: changes made here do not automatically flow back, and contributing one upstream requires a human decision.
+Governance, conventions, agents, and skills flow `ose-public → ose-primer → downstream forks`.
+Private operational material does not flow into this template. `ose-primer` is a downstream
+template, not an upstream source: changes made here do not automatically flow back.
 
 Keeping the family aligned is a **manual** discipline — there is no automated sync agent. Coordinated changes that must land in more than one repository are authored via the [plan-multi-repo-parity-planning workflow](../../repo-governance/workflows/plan/plan-multi-repo-parity-planning.md), then executed within each repository.
 

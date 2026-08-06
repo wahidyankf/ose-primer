@@ -1,6 +1,8 @@
 # Claude Code Skills
 
-This directory contains skill packages that provide progressive knowledge delivery to agents. Skills bundle domain-specific conventions, standards, and best practices.
+This directory contains skill packages that give the template's AI agents focused, progressively
+loaded guidance. They preserve useful conventions without making every contributor read every rule
+up front.
 
 ## Skill Organization
 

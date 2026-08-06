@@ -1,6 +1,8 @@
 # Claude Code Agents
 
-This directory contains specialized AI agents for the ose-primer repository template. These agents are organized by role and follow the Maker-Checker-Fixer pattern where applicable.
+This directory contains the specialized AI agents bundled with the `ose-primer` template. They help
+maintainers draft, check, and improve work consistently; readers adapting the template do not need
+to learn the catalogue before running an example.
 
 ## Agent Organization
 

@@ -48,14 +48,14 @@ dependencies; integration tests run against real filesystem fixtures.
 
 ```bash
 # Run all unit tests (includes BDD scenarios with mocked I/O)
-nx run rhino-cli:test:quick
+npm exec nx -- run rhino-cli:test:quick
 
 # Run unit tests directly
 cd apps/rhino-cli
 cargo test --lib
 
 # Run all BDD integration tests (real filesystem fixtures)
-nx run rhino-cli:test:integration
+npm exec nx -- run rhino-cli:test:integration
 
 # Run a specific integration suite during development
 cd apps/rhino-cli

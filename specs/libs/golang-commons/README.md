@@ -41,8 +41,8 @@ specs/libs/golang-commons/
 ## Running the Tests
 
 ```bash
-nx run golang-commons:test:unit          # go test ./...
-nx run golang-commons:test:integration   # godog-driven Gherkin scenarios
+npm exec nx -- run golang-commons:test:unit          # go test ./...
+npm exec nx -- run golang-commons:test:integration   # godog-driven Gherkin scenarios
 ```
 
 Every scenario is consumed at the integration level via a matching `*.integration_test.go` file

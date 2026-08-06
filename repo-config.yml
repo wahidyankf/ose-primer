@@ -528,6 +528,9 @@ gates:
     type: check
     command: md naming validate
     kind: rhino-cli
+    args:
+      exempt:
+        - "CONTRIBUTING.md"
     surfaces:
       pre-commit: { scope: affected-file-type, glob: "*.md" }
       ci: { scope: all-file-type }

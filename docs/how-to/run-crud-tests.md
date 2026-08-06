@@ -31,13 +31,13 @@ Unit tests use mocked dependencies and run fast. They are the default for local 
 
 ```bash
 # Run unit tests for a specific backend
-nx run crud-be-golang-gin:test:unit
+npm exec nx -- run crud-be-golang-gin:test:unit
 
 # Run unit + coverage validation (pre-push gate)
-nx run crud-be-golang-gin:test:quick
+npm exec nx -- run crud-be-golang-gin:test:quick
 
 # Run for all affected projects
-nx affected -t test:quick
+npm exec nx -- affected -t test:quick
 ```
 
 ## Integration Tests (Docker + PostgreSQL)
@@ -63,7 +63,7 @@ The test runner:
 
 ```bash
 # Run integration tests for a specific backend
-nx run crud-be-golang-gin:test:integration
+npm exec nx -- run crud-be-golang-gin:test:integration
 
 # This is equivalent to:
 cd apps/crud-be-golang-gin
@@ -105,10 +105,10 @@ Tests live in `apps/crud-be-e2e/` and test any of the 11 backends.
 
 ```bash
 # Terminal 1: Start the backend
-nx run crud-be-golang-gin:dev
+npm exec nx -- run crud-be-golang-gin:dev
 
 # Terminal 2: Run E2E tests
-nx run crud-be-e2e:test:e2e
+npm exec nx -- run crud-be-e2e:test:e2e
 ```
 
 The `BASE_URL` defaults to `http://localhost:8080`. Override with an environment variable
@@ -122,13 +122,13 @@ Tests live in `apps/crud-fe-e2e/` and test any of the 3 frontends.
 
 ```bash
 # Terminal 1: Start the backend
-nx run crud-be-golang-gin:dev
+npm exec nx -- run crud-be-golang-gin:dev
 
 # Terminal 2: Start the frontend
-nx run crud-fe-ts-nextjs:dev
+npm exec nx -- run crud-fe-ts-nextjs:dev
 
 # Terminal 3: Run E2E tests
-nx run crud-fe-e2e:test:e2e
+npm exec nx -- run crud-fe-e2e:test:e2e
 ```
 
 ### Running in UI Mode
@@ -136,8 +136,8 @@ nx run crud-fe-e2e:test:e2e
 Playwright UI mode provides a visual debugger:
 
 ```bash
-nx run crud-be-e2e:test:e2e:ui
-nx run crud-fe-e2e:test:e2e:ui
+npm exec nx -- run crud-be-e2e:test:e2e:ui
+npm exec nx -- run crud-fe-e2e:test:e2e:ui
 ```
 
 ### CI Integration

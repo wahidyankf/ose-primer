@@ -625,7 +625,7 @@ Node.js and npm version pinning.
 ```json
 {
   "volta": {
-    "node": "24.13.1",
+    "node": "24.16.0",
     "npm": "11.10.1"
   }
 }

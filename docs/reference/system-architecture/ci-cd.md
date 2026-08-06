@@ -11,7 +11,8 @@ tags:
 
 # CI/CD Pipeline
 
-Git hooks, GitHub Actions workflows, Nx build system, and development workflow for the Open Sharia Enterprise platform.
+Git hooks, GitHub Actions workflows, Nx build system, and development workflow for the
+`ose-primer` template.
 
 ## 📋 CI/CD Pipeline Overview
 
@@ -130,9 +131,9 @@ graph TB
 
 1. Checkout branch
 2. Setup Node.js (Volta) and Rust toolchain
-3. Run Mermaid diagram validation (`npx nx run rhino-cli:mermaid:validation`)
-4. Run link and anchor validation (`npx nx run rhino-cli:links:validation`)
-5. Run heading-hierarchy validation (`npx nx run rhino-cli:headings:hierarchy-validation`)
+3. Run Mermaid diagram validation (`npm exec nx -- run rhino-cli:mermaid:validation`)
+4. Run link and anchor validation (`npm exec nx -- run rhino-cli:links:validation`)
+5. Run heading-hierarchy validation (`npm exec nx -- run rhino-cli:headings:hierarchy-validation`)
 6. Fail if any gate exits non-zero
 
 **Purpose**: Enforce all three markdown content gates on every pull request and every
@@ -155,27 +156,24 @@ coverage.
 **Steps:**
 
 1. If changes exist (or `force_deploy=true`): setup Volta, Go 1.26.0
-2. Install dependencies and run `nx build crud-fs-ts-nextjs`
+2. Install dependencies and run `npm exec nx -- build crud-fs-ts-nextjs`
 3. Force-push `main` to `prod-crud-fs-ts-nextjs`; Vercel auto-builds
 
 **Purpose**: Automated scheduled deployments for example.com with change detection to avoid unnecessary builds
 
-### Test and Deploy demo Workflow
+### CRUD Example Test Workflows
 
-**File**: `.github/workflows/test-and-deploy-demo.yml`
-
-**Trigger**: Scheduled (6 AM and 6 PM WIB daily) or manual `workflow_dispatch`
+The repository's `test-and-deploy-*-development.yml` workflows exercise the template examples.
+They do not describe an automatic production release for a downstream product.
 
 **Steps:**
 
-1. Run `specs:coverage` across all demo projects (`crud-be-fsharp-giraffe`, `crud-fe-ts-nextjs`, `crud-be-e2e`, `crud-fe-e2e`)
-2. Run `fe-lint` for `crud-fe-ts-nextjs`
-3. Run `be-integration` tests with docker-compose (real PostgreSQL)
-4. Run `fe-integration` tests (MSW-mocked)
-5. Run combined `e2e` stage: full stack via docker-compose, then `crud-be-e2e` and `crud-fe-e2e` Playwright tests
-6. `deploy` (gated on all test jobs + `detect-changes == true`): force-push `HEAD` to `prod-demo-web`; Vercel auto-builds
+1. Run the registered Gherkin behavior-coverage checks for the relevant CRUD projects
+2. Run fast quality checks and language-specific tests
+3. Run integration or E2E checks only for the example under test
 
-**Purpose**: Automated scheduled deployments for www.example.com, gated on full FE+BE test suite, with change detection to avoid unnecessary builds
+**Purpose**: keep the reference implementations demonstrably healthy. A team that forks the
+template defines its own deployment and release policy.
 
 ### PR Quality Gate Workflow
 

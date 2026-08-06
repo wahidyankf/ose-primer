@@ -12,13 +12,13 @@ code generators produce language-specific types, encoders, and decoders from thi
 
 ```bash
 # Lint the contract (bundles first, then runs Spectral)
-nx run crud-contracts:lint
+npm exec nx -- run crud-contracts:lint
 
 # Bundle into single resolved YAML + JSON
-nx run crud-contracts:bundle
+npm exec nx -- run crud-contracts:bundle
 
 # Generate browsable API documentation
-nx run crud-contracts:docs
+npm exec nx -- run crud-contracts:docs
 # Open specs/apps/crud/containers/contracts/generated/docs/index.html
 ```
 
@@ -42,9 +42,9 @@ contracts/
 ## Modifying the Contract
 
 1. Edit the relevant file in `schemas/` or `paths/`
-2. Run `nx run crud-contracts:lint` to validate
-3. Run `nx run crud-contracts:bundle` to regenerate the bundled spec
-4. Run codegen for affected apps: `nx affected -t codegen`
+2. Run `npm exec nx -- run crud-contracts:lint` to validate
+3. Run `npm exec nx -- run crud-contracts:bundle` to regenerate the bundled spec
+4. Run codegen for affected apps: `npm exec nx -- affected -t codegen`
 5. Fix any compile errors in affected apps
 6. Commit the contract changes (generated code is gitignored)
 

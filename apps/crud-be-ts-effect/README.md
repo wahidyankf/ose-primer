@@ -99,21 +99,21 @@ Full BDD scenarios run against a real PostgreSQL 17 database via Docker Compose.
 validates database compatibility and production-equivalent behaviour. Results are never cached.
 
 ```bash
-nx run crud-be-ts-effect:test:integration  # requires Docker
+npm exec nx -- run crud-be-ts-effect:test:integration  # requires Docker
 ```
 
 ## Nx Targets
 
 ```bash
-nx dev crud-be-ts-effect                      # Start dev server with tsx watch
-nx build crud-be-ts-effect                    # Build with Vite (depends on codegen)
-nx start crud-be-ts-effect                    # Run built dist/main.js
-nx run crud-be-ts-effect:codegen              # Generate contract types from OpenAPI spec
-nx run crud-be-ts-effect:test:quick           # Unit tests + coverage + BDD scenarios (pre-push gate)
-nx run crud-be-ts-effect:test:unit            # Unit tests + BDD scenarios only
-nx run crud-be-ts-effect:test:integration     # Cucumber.js BDD against PostgreSQL (Docker)
-nx run crud-be-ts-effect:lint                 # oxlint
-nx run crud-be-ts-effect:typecheck            # tsc --noEmit (depends on codegen)
+npm exec nx -- dev crud-be-ts-effect                      # Start dev server with tsx watch
+npm exec nx -- build crud-be-ts-effect                    # Build with Vite (depends on codegen)
+npm exec nx -- start crud-be-ts-effect                    # Run built dist/main.js
+npm exec nx -- run crud-be-ts-effect:codegen              # Generate contract types from OpenAPI spec
+npm exec nx -- run crud-be-ts-effect:test:quick           # Unit tests + coverage + BDD scenarios (pre-push gate)
+npm exec nx -- run crud-be-ts-effect:test:unit            # Unit tests + BDD scenarios only
+npm exec nx -- run crud-be-ts-effect:test:integration     # Cucumber.js BDD against PostgreSQL (Docker)
+npm exec nx -- run crud-be-ts-effect:lint                 # oxlint
+npm exec nx -- run crud-be-ts-effect:typecheck            # tsc --noEmit (depends on codegen)
 ```
 
 ## Environment Variables

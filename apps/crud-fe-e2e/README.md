@@ -50,13 +50,13 @@ backend must be running on `http://localhost:8201` before executing tests.
 **Start a backend**:
 
 ```bash
-nx dev crud-be-golang-gin
+npm exec nx -- dev crud-be-golang-gin
 ```
 
 **Start a frontend**:
 
 ```bash
-nx dev crud-fe-ts-nextjs
+npm exec nx -- dev crud-fe-ts-nextjs
 ```
 
 ## Setup
@@ -64,7 +64,7 @@ nx dev crud-fe-ts-nextjs
 Install Playwright and its dependencies (one-time setup):
 
 ```bash
-nx install crud-fe-e2e
+npm exec nx -- install crud-fe-e2e
 cd apps/crud-fe-e2e && npx playwright install --with-deps chromium && cd ../..
 ```
 
@@ -72,25 +72,25 @@ cd apps/crud-fe-e2e && npx playwright install --with-deps chromium && cd ../..
 
 ```bash
 # Run all BDD E2E tests headlessly (generates specs then runs)
-nx run crud-fe-e2e:test:e2e
+npm exec nx -- run crud-fe-e2e:test:e2e
 
 # Run with interactive Playwright UI
-nx run crud-fe-e2e:test:e2e:ui
+npm exec nx -- run crud-fe-e2e:test:e2e:ui
 
 # View HTML report from last run
-nx run crud-fe-e2e:test:e2e:report
+npm exec nx -- run crud-fe-e2e:test:e2e:report
 
 # Generate spec files only (without running tests)
 cd apps/crud-fe-e2e && npx bddgen
 
 # Lint TypeScript source files (oxlint)
-nx run crud-fe-e2e:lint
+npm exec nx -- run crud-fe-e2e:lint
 
 # Type check
 nx typecheck crud-fe-e2e
 
 # Pre-push quality gate (typecheck + lint)
-nx run crud-fe-e2e:test:quick
+npm exec nx -- run crud-fe-e2e:test:quick
 ```
 
 **See**: [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) for canonical E2E target names. `test:e2e` runs only on manual `workflow_dispatch` from the GitHub Actions UI, not on pre-push (cron schedules removed to conserve CI resources).
@@ -113,7 +113,7 @@ This suite runs in two contexts:
 Override the base URL to test a different frontend:
 
 ```bash
-BASE_URL=http://localhost:3301 nx run crud-fe-e2e:test:e2e
+BASE_URL=http://localhost:3301 npm exec nx -- run crud-fe-e2e:test:e2e
 ```
 
 ## Project Structure

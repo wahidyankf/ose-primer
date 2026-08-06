@@ -33,7 +33,7 @@ dotnet restore src/DemoBeFsgi/DemoBeFsgi.fsproj
 dotnet run --project src/DemoBeFsgi/DemoBeFsgi.fsproj
 
 # Or via Nx
-nx start crud-be-fsharp-giraffe
+npm exec nx -- start crud-be-fsharp-giraffe
 ```
 
 The application starts on `http://localhost:8201`.
@@ -42,31 +42,31 @@ The application starts on `http://localhost:8201`.
 
 ```bash
 # Build release artifact (depends on codegen)
-nx build crud-be-fsharp-giraffe
+npm exec nx -- build crud-be-fsharp-giraffe
 
 # Start development server with hot reload
-nx dev crud-be-fsharp-giraffe
+npm exec nx -- dev crud-be-fsharp-giraffe
 
 # Start production server
-nx start crud-be-fsharp-giraffe
+npm exec nx -- start crud-be-fsharp-giraffe
 
 # Run fast quality gate (BDD + unit tests with SQLite in-memory + coverage)
-nx run crud-be-fsharp-giraffe:test:quick
+npm exec nx -- run crud-be-fsharp-giraffe:test:quick
 
 # Run isolated unit tests only (pure function tests, no WebApplicationFactory)
-nx run crud-be-fsharp-giraffe:test:unit
+npm exec nx -- run crud-be-fsharp-giraffe:test:unit
 
 # Run integration tests against real PostgreSQL via Docker Compose
-nx run crud-be-fsharp-giraffe:test:integration
+npm exec nx -- run crud-be-fsharp-giraffe:test:integration
 
 # Lint with Fantomas (format check), FSharpLint (style rules), and G-Research analyzers (static analysis)
-nx lint crud-be-fsharp-giraffe
+npm exec nx -- lint crud-be-fsharp-giraffe
 
 # Type check (build with TreatWarningsAsErrors; depends on codegen)
 nx typecheck crud-be-fsharp-giraffe
 
 # Generate contract types from OpenAPI spec (required before build/typecheck)
-nx run crud-be-fsharp-giraffe:codegen
+npm exec nx -- run crud-be-fsharp-giraffe:codegen
 ```
 
 ## API Endpoints
@@ -145,7 +145,7 @@ For integration testing against real PostgreSQL, use `docker-compose.integration
 
 ```bash
 # Run integration tests against real PostgreSQL (via Nx)
-nx run crud-be-fsharp-giraffe:test:integration
+npm exec nx -- run crud-be-fsharp-giraffe:test:integration
 
 # Or directly with docker compose
 docker compose -f docker-compose.integration.yml down -v

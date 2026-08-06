@@ -89,22 +89,22 @@ conventions) works correctly end-to-end. Not cached by Nx.
 
 ```bash
 # Run docker-compose integration tests
-nx run crud-be-csharp-aspnetcore:test:integration
+npm exec nx -- run crud-be-csharp-aspnetcore:test:integration
 ```
 
 ## Nx Targets
 
-| Target             | Command                                             | Description                                               |
-| ------------------ | --------------------------------------------------- | --------------------------------------------------------- |
-| `codegen`          | `nx run crud-be-csharp-aspnetcore:codegen`          | Generate contract types from OpenAPI spec                 |
-| `build`            | `nx build crud-be-csharp-aspnetcore`                | Publish release artifact to `dist/` (depends on codegen)  |
-| `dev`              | `nx dev crud-be-csharp-aspnetcore`                  | Hot-reload development server                             |
-| `start`            | `nx start crud-be-csharp-aspnetcore`                | Run without hot-reload                                    |
-| `test:quick`       | `nx run crud-be-csharp-aspnetcore:test:quick`       | All tests (SQLite) + Coverlet LCOV coverage ≥90% (cached) |
-| `test:unit`        | `nx run crud-be-csharp-aspnetcore:test:unit`        | All tests (SQLite in-memory, no coverage report)          |
-| `test:integration` | `nx run crud-be-csharp-aspnetcore:test:integration` | BDD scenarios against real PostgreSQL via docker-compose  |
-| `lint`             | `nx run crud-be-csharp-aspnetcore:lint`             | Run Roslyn analyzers                                      |
-| `typecheck`        | `nx run crud-be-csharp-aspnetcore:typecheck`        | Build with TreatWarningsAsErrors (depends on codegen)     |
+| Target             | Command                                                         | Description                                               |
+| ------------------ | --------------------------------------------------------------- | --------------------------------------------------------- |
+| `codegen`          | `npm exec nx -- run crud-be-csharp-aspnetcore:codegen`          | Generate contract types from OpenAPI spec                 |
+| `build`            | `npm exec nx -- build crud-be-csharp-aspnetcore`                | Publish release artifact to `dist/` (depends on codegen)  |
+| `dev`              | `npm exec nx -- dev crud-be-csharp-aspnetcore`                  | Hot-reload development server                             |
+| `start`            | `npm exec nx -- start crud-be-csharp-aspnetcore`                | Run without hot-reload                                    |
+| `test:quick`       | `npm exec nx -- run crud-be-csharp-aspnetcore:test:quick`       | All tests (SQLite) + Coverlet LCOV coverage ≥90% (cached) |
+| `test:unit`        | `npm exec nx -- run crud-be-csharp-aspnetcore:test:unit`        | All tests (SQLite in-memory, no coverage report)          |
+| `test:integration` | `npm exec nx -- run crud-be-csharp-aspnetcore:test:integration` | BDD scenarios against real PostgreSQL via docker-compose  |
+| `lint`             | `npm exec nx -- run crud-be-csharp-aspnetcore:lint`             | Run Roslyn analyzers                                      |
+| `typecheck`        | `npm exec nx -- run crud-be-csharp-aspnetcore:typecheck`        | Build with TreatWarningsAsErrors (depends on codegen)     |
 
 ## Environment Variables
 
