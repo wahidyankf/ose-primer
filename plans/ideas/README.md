@@ -10,10 +10,19 @@ ideas/ (two-pagers) → backlog/ (full 5-doc plans) → in-progress/ → done/
 
 ## Two-Pagers
 
-- [merge-queue-adoption](./merge-queue-adoption.md) — adopt a merge queue so precondition (c) holds under concurrent merges, blocked today because GitHub's native queue needs organization ownership.
-- [rust-msrv-1-94-1-upgrade](./rust-msrv-1-94-1-upgrade.md) — bump the Rust MSRV to 1.94.1 to pick up the `CVE-2026-33056` Cargo tar fix, once the toolchain ships it.
-- [source-code-credential-scanning](./source-code-credential-scanning.md) — evaluate Betterleaks (gitleaks successor) for pre-commit + CI credential detection in polyglot source.
-- [rhino-cli-exclude-dir-shared-steps-gap](./rhino-cli-exclude-dir-shared-steps-gap.md) — thread `--exclude-dir` through rhino-cli's whole-app step scan so both sides of a `--shared-steps` comparison exclude the same dirs.
+Grouped into Eisenhower quadrants by [`plan-ideas-grooming`](../../repo-governance/workflows/plan/plan-ideas-grooming.md).
+
+### Q2 — Important, Not Urgent
+
+No active plan waits on these and no live defect is running, but each carries a real stake. This is the plan-from-here quadrant.
+
+- [demo-apps-standards-recheck](./q2-not-urgent-important/demo-apps-standards-recheck.md) — re-verify the ose-primer demo apps still meet current repo standards.
+
+### Q4 — Neither Urgent nor Important
+
+Parked deliberately. Kept because the need may become real, not because it is real now.
+
+- [rust-msrv-1-94-1-upgrade](./q4-not-urgent-not-important/rust-msrv-1-94-1-upgrade.md) — bump the Rust MSRV to 1.94.1 to pick up the `CVE-2026-33056` Cargo tar fix, once the toolchain ships it.
 
 ## What a Two-Pager Is
 
@@ -54,3 +63,20 @@ promoted yet" is a legitimate state, distinct from "rejected".
   — the authoritative convention, template, and discipline.
 - [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md) —
   routes future-work learnings from plan execution here as two-pagers.
+
+## Grooming Log
+
+### 2026-08-06 — plan-ideas-grooming (all four OSE repos in one run)
+
+Swept 120 two-pagers across `ose-public`, `ose-primer`, `ose-private`, and `beaver-nest`; 79 survive. Every surviving idea carries a residency verdict (R1 secrets-bearing, R2 single-repo-only, R3 generalizable) and an Eisenhower quadrant.
+
+- **Classified**: 2 idea(s) resident here, filed into quadrant folders.
+- **Relocated in** (1):
+  - `demo-apps-standards-recheck.md` from `ose-private` — rule R2: apps/crud-\* demo apps exist only in ose-primer
+- **Deduplicated out** (3) — the surviving copy is named for each:
+  - `merge-queue-adoption.md` → `ose-public/plans/ideas/q2-not-urgent-important/merge-queue-adoption.md`
+  - `pr-review-bot-identity.md` → `ose-public/plans/ideas/q2-not-urgent-important/pr-review-bot-identity.md`
+  - `source-code-credential-scanning.md` → `ose-public/plans/ideas/q2-not-urgent-important/source-code-credential-scanning.md`
+- **Unresolved follow-ups**: none. No relocation was interrupted and no filename collision was deferred.
+
+> Last groomed: 2026-08-06

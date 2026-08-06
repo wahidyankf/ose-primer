@@ -31,7 +31,7 @@ necessary is avoidable exposure.
   toolchain bumps like this one. [rustsec.org](https://rustsec.org/)
 - **Dependency Bump Stability & Safety Policy (repo-internal)** — the exact-pin, CVE-clean policy this
   bump must follow.
-  [dependency-bump-policy](../../repo-governance/development/workflow/dependency-bump-policy.md)
+  [dependency-bump-policy](../../../repo-governance/development/workflow/dependency-bump-policy.md)
 
 ## Proposed direction (sketch)
 
