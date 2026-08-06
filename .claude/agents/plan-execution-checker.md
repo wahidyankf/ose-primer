@@ -553,6 +553,14 @@ Archival is **BLOCKED** until every entry in the plan's `learnings.md` reaches a
    (should be sanitized to `<placeholder>` tokens or discarded) and for infra-private content
    (Terraform, k3s, Proxmox, `coralpolyp`, real hostnames/inventories — must never appear; that
    content belongs in `ose-private` only). A raw secret or cross-routed infra-private entry: **CRITICAL**.
+5. **No duplicate two-pager created in `plans/ideas/`** — For any entry routed to `plans/ideas/`,
+   confirm the routing note evidences the overlap scan required by
+   [Integrate Before You Add](../../repo-governance/conventions/structure/plans.md#integrate-before-you-add-no-duplicate-two-pagers):
+   either it names the pre-existing brief folded into, or it states the scan of
+   `plans/ideas/README.md` found no overlap before a new file was created. `Bash git diff` this
+   plan's commits for new `plans/ideas/` files and check each against the pre-existing index for a
+   same-topic near-duplicate. A new file created without that evidence, or one duplicating an
+   existing brief's topic: **HIGH**.
 
 #### Finding Severity
 
@@ -562,6 +570,8 @@ Archival is **BLOCKED** until every entry in the plan's `learnings.md` reaches a
 - Code-homed learning landed inline instead of filed as `plans/backlog/`: **HIGH**
 - Secret/credential surviving unsanitized, or infra-private content cross-routed out of `ose-private`:
   **CRITICAL**
+- New `plans/ideas/` two-pager created without evidence of the overlap scan, or one that duplicates
+  an existing brief's topic: **HIGH**
 - Explicit "none" escape present and no `learnings.md` needed: **not flagged** (passes)
 
 #### Why This Gate Blocks Archival

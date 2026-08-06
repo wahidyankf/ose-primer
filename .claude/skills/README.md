@@ -23,6 +23,7 @@ This directory contains skill packages that provide progressive knowledge delive
 
 - **grill-me** - Structured one-question-at-a-time interrogation skill for stress-testing plans and designs before implementation begins; every question presents 2–4 concrete options with a recommended option marked — no open-ended questions allowed
 - **plan-creating-project-plans** - Project planning methodology and structure
+- **plan-grooming-idea-briefs** - Invocable entry point for the plan-ideas-grooming workflow: cross-repo dedup, the three residency rules, Eisenhower-quadrant classification, fail-safe relocation, and the six-clause termination audit
 - **plan-writing-gherkin-criteria** - Gherkin-style acceptance criteria writing
 
 ### 🤖 Agent Development Skills

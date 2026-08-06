@@ -851,6 +851,23 @@ the PR is considered done. Selecting a `*-to-pr` mode authorizes PR steps at the
 never at Phase 0 under any mode, per
 [Phase 0 Opens No PR](#phase-0-opens-no-pr--the-earliest-pr-is-phase-1-hard-rule).
 
+**`main-to-origin-main` carries a further content restriction, on top of Standard 2's
+selection-signal test in the
+[Git Push Default Convention](../../development/workflow/git-push-default.md#standard-2-direct-push-modes-are-explicit-selections-not-inferred).**
+An explicit selection signal (invocation argument or plan field) is necessary but not sufficient:
+choosing `main-to-origin-main` is additionally valid only when **one** of two conditions holds —
+
+1. the change set is **`.md` files only** (no source, config, spec, or generated-mirror files), or
+2. the user has given **explicit, standing go-ahead** for that specific change.
+
+Absent one of these two, use `worktree-to-pr` even if a direct-push mode would otherwise be
+convenient. This restriction targets `main-to-origin-main` specifically — working directly in the
+primary checkout skips both PR review and worktree isolation, so it is held to a narrower bar than
+`worktree-to-origin-main`, which still isolates work from the primary checkout even though it also
+skips review. The [Plan-Docs-Only Carve-Out](../../workflows/plan/plan-planning.md#the-plan-docs-only-carve-out)
+is the plan-authoring-time instance of condition 1 above — see that section for how the two
+reconcile when a plan folder's push includes non-markdown evidence files.
+
 **[AI] merges by default.** A `[HUMAN]` merge gate applies only where a plan's own step says so explicitly.
 The **preconditions are unchanged — only the actor is.** A PR still merges only when all five
 [hardened merge preconditions](../../workflows/pr/pr-review-quality-gate.md#hardened-merge-preconditions)
@@ -937,11 +954,19 @@ Plans differ from `docs/` in several important ways:
 
 ### Starting Work
 
-1. **Provision worktree** (optional — the plan-execution Step 0 gate auto-provisions from the latest `origin/main` when missing): Run `claude --worktree <plan-identifier>` from the repo root — this creates `worktrees/<plan-identifier>/` in the repo root (not `.claude/worktrees/`). See [Worktree Path Convention](./worktree-path.md).
-2. **Initialize toolchain**: In the root worktree, run `npm install && npm run doctor -- --fix`. See [Worktree Toolchain Initialization](../../development/workflow/worktree-setup.md).
-3. **Move folder**: Move plan folder from `backlog/[identifier]/` to `in-progress/[identifier]/` — a pure move; neither stage carries a date prefix.
-4. **Update index**: Update both `backlog/README.md` and `in-progress/README.md`
-5. **Git commit**: Commit the move with appropriate message
+**Promotion precedes provisioning (HARD RULE)**: a plan in `backlog/` MUST be promoted to
+`in-progress/` — moved, committed, and pushed to `origin main` — on the **local `main` checkout**,
+never inside a worktree, BEFORE any worktree is provisioned or execution begins. The
+[plan-execution workflow's Step 0 gate](../../workflows/plan/plan-execution.md#0-enter-the-designated-worktree-sequential-hard-gate)
+performs this promotion automatically when invoked on a `plans/backlog/` plan path — see
+[Execute Plan from Backlog](../../workflows/plan/plan-execution.md#execute-plan-from-backlog). A plan
+is never executed directly out of `backlog/`.
+
+1. **Promote from backlog** (on the local `main` checkout, never inside a worktree): Move plan folder from `backlog/[identifier]/` to `in-progress/[identifier]/` — a pure move; neither stage carries a date prefix.
+2. **Update index**: Update both `backlog/README.md` and `in-progress/README.md`
+3. **Git commit and push**: Commit the move with an appropriate message and push directly to `origin main` — this must land before any worktree is provisioned or execution begins.
+4. **Provision worktree** (optional — the plan-execution Step 0 gate auto-provisions from the latest `origin/main` when missing): Run `claude --worktree <plan-identifier>` from the repo root — this creates `worktrees/<plan-identifier>/` in the repo root (not `.claude/worktrees/`). See [Worktree Path Convention](./worktree-path.md).
+5. **Initialize toolchain**: In the root worktree, run `npm install && npm run doctor -- --fix`. See [Worktree Toolchain Initialization](../../development/workflow/worktree-setup.md).
 6. **Begin execution**: Start implementing according to delivery checklist
 
 ### Completing Work

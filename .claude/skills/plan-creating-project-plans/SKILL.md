@@ -778,6 +778,9 @@ Plan Archival):
       `.claude/agents/`, `.claude/skills/`, a post-mortem, or any other durable home), landing a
       small non-code edit inline or filing a `plans/backlog/<slug>/` follow-up plan for
       larger non-code work.
+- [ ] [AI] For any entry routed to `plans/ideas/`, scan `plans/ideas/README.md` and the existing
+      two-pagers FIRST for a brief already covering the same area — fold in rather than creating a
+      new file (see [Integrate Before You Add](../../../repo-governance/conventions/structure/plans.md#integrate-before-you-add-no-duplicate-two-pagers)).
 - [ ] [AI] **Code-routing rule**: if a learning's home is `apps/`, `libs/`, or `specs/`, file it as
       a separate `plans/backlog/` plan — NEVER land it inline in this plan's commits/PR. The sole
       carve-out is a bug/lint/test failure that blocks THIS plan's own scope — that is fixed inline

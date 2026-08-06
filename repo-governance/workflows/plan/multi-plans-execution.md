@@ -158,6 +158,14 @@ the whole run** (never re-expanded later — a plan added to `plans/backlog/` mi
   a selector, the bucket + exclusions that produced it) so the caller can confirm scope. An empty
   resolved set (e.g., `all-in-progress` with nothing in-progress) terminates `fail` with a clear
   message — there is nothing to execute.
+- **Promote every resolved `plans/backlog/` entry before scheduling.** For each plan in the frozen
+  set that still resolves inside `plans/backlog/` (an explicit-list entry or any `all-backlog`/`all`
+  member), run the promotion from
+  [`plan-execution.md` Step 0](./plan-execution.md#0-enter-the-designated-worktree-sequential-hard-gate) —
+  `git mv plans/backlog/<slug>/ plans/in-progress/<slug>/`, commit, push to `origin main` — on the
+  local `main` checkout, never inside a worktree, before that plan's first node is scheduled. Only
+  after that push lands does the plan's path resolve to `plans/in-progress/` for the rest of this
+  run. No plan in the frozen set is ever scheduled directly out of `plans/backlog/`.
 
 **A2. Refuse unvetted plans.** For each plan, confirm it passed `plan-quality-gate` (a clean strict
 double-zero — check for the plan's audit trail or re-run the gate). A plan that has not been vetted

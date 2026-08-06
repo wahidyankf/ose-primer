@@ -929,7 +929,12 @@ triage rubric, states the code-routing rule, and applies both mandatory safety g
 4. **Code-routing rule stated** — Does the phase state that a learning whose home is `apps/`,
    `libs/`, or tests is ALWAYS filed as a separate `plans/backlog/<slug>/` plan and NEVER landed
    inline in the current plan's own commits/PR?
-5. **Explicit "none" escape recognized** — A `learnings.md` (or Knowledge Capture phase) that records
+5. **`plans/ideas/` overlap-scan step stated** — Does the phase's routing checklist include the step
+   requiring, for any entry routed to `plans/ideas/`, a scan of `plans/ideas/README.md` and the
+   existing two-pagers FIRST for a brief already covering the same area — fold in rather than
+   creating a new file — per
+   [Integrate Before You Add](../../repo-governance/conventions/structure/plans.md#integrate-before-you-add-no-duplicate-two-pagers)?
+6. **Explicit "none" escape recognized** — A `learnings.md` (or Knowledge Capture phase) that records
    `No generalizable learnings — <one-line reason>` is a **PASS**, not a finding. Only the silent
    absence of both the phase AND any "none" record is penalized.
 
@@ -937,8 +942,8 @@ triage rubric, states the code-routing rule, and applies both mandatory safety g
 
 - Substantive plan whose `delivery.md` has no Knowledge Capture phase and no explicit "none" record
   anywhere: **MEDIUM**
-- Knowledge Capture phase present but missing the `learnings.md` scaffold, a safety gate, or the
-  code-routing rule statement: **MEDIUM**
+- Knowledge Capture phase present but missing the `learnings.md` scaffold, a safety gate, the
+  code-routing rule statement, or the `plans/ideas/` overlap-scan step: **MEDIUM**
 - Explicit `No generalizable learnings — <reason>` record present (phase or file): **not flagged**
   (passes)
 - Trivial/pure-docs plan with no Knowledge Capture phase and no "none" record: **not flagged**
