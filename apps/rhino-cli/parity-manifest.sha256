@@ -55,7 +55,7 @@ f822da06492dffb5432c7f10f2a56601b144af68c45e8b6f8ab01ae31b21c0c7  apps/rhino-cli
 28be750d03925ea3707a0d0d6cc370ee11d3070a5fa728f65cb4fd089803071c  apps/rhino-cli/src/application/mod.rs
 920a5a1a6496e62cec69e912310f5f071fec8d04e01f37383b71af455b88cd17  apps/rhino-cli/src/application/naming/mod.rs
 c7cd04e0f276b3b4165df660873c0df359ba7e0f6aa65ac1cf5013d968b8bb5d  apps/rhino-cli/src/application/naming/reporter.rs
-7b6a53f976e4499b5fd7da2f8c5efa8f1cfa41b114e6065e8fae077ce5ab3b89  apps/rhino-cli/src/application/parity.rs
+10c22f36b81ae03f7d8a8def06b26f0bfe811ebbd0643b8990a5330a976eea54  apps/rhino-cli/src/application/parity.rs
 ec9dd4aa868ae0a197365232507a9b7c68d9958641150bcd5884144f37a4a440  apps/rhino-cli/src/application/repo_config/mod.rs
 f980d2e011fd9c472f105c77bb6be6be959253b8a3bd51c049a7b1665cf6e6cc  apps/rhino-cli/src/application/repo_governance/agents_md_size.rs
 2411777c9bbde3577087eac7fd75b429cb29a463cd3ce836ab68f8b957b03755  apps/rhino-cli/src/application/repo_governance/audit_orchestrator.rs
@@ -109,7 +109,7 @@ abc10d0efefbfab5dba718cc5d0010d86adfc33fa8ec1191d35841c3625d6918  apps/rhino-cli
 e3b5d928187db598a68b67f097810515cb517327834694b2780d991e45763991  apps/rhino-cli/src/commands/gate/list.rs
 d500838c85c402bd260502f1a28d489db2ea4e74bc5769f4adf42bb4fc2035b9  apps/rhino-cli/src/commands/gate/mod.rs
 b0940c9a1136b0d7f8b1e584ad144a8e7a23643f613487a1e02be8b27b1b99c4  apps/rhino-cli/src/commands/gate/run.rs
-1c16de819f68022856d9f3b61d363b9e763fb1f4edf2b90dc92e18be2c6fe698  apps/rhino-cli/src/commands/gate/validate.rs
+7b87f8563c141e8313417d654b7edde2208b1c58158c7345a20f8adbb16cd968  apps/rhino-cli/src/commands/gate/validate.rs
 82984cf76f12f92e8d4e9d9cd804c8b72377d2e168b9cc64d46d0ff3730eb908  apps/rhino-cli/src/commands/git/lockfile.rs
 e15eb24ffe611254491ab849e7acce1ab51996e2a38f04f9bf2f7c5fe447a0a7  apps/rhino-cli/src/commands/git/mod.rs
 c5c74b79fc101f8501632655f30528a56a9a81406c7f62bdf2efec349592a87e  apps/rhino-cli/src/commands/governance_audit.rs
