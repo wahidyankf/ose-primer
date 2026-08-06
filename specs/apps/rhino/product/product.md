@@ -22,7 +22,7 @@ language-specific linter.
 ## Actors
 
 - **Developer** — runs validators locally via pre-commit/pre-push hooks and on-demand
-- **CI Pipeline** — invokes `rhino-cli` as part of `main-ci.yml` and `pr-quality-gate.yml`
+- **CI Pipeline** — invokes `rhino-cli` as part of `pr-quality-gate.yml`
 - **Nx Targets** — `specs:behavior:coverage`, `specs:structure:validation`, `harness:duplication` targets
 
 ## Related

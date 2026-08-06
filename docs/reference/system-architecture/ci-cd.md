@@ -177,16 +177,6 @@ coverage.
 
 **Purpose**: Automated scheduled deployments for www.example.com, gated on full FE+BE test suite, with change detection to avoid unnecessary builds
 
-### Main CI Workflow
-
-**File**: `.github/workflows/main-ci.yml`
-
-**Trigger**: Scheduled (4x/day: 06:00/12:00/18:00/00:00 WIB) or manual `workflow_dispatch` — no push
-trigger; `pr-quality-gate.yml` already covers push-to-`main`
-
-**Purpose**: Catches drift that affected-only PR checks can miss, by re-running the full gate
-against the entire monorepo on a fixed cadence independent of any single PR
-
 ### PR Quality Gate Workflow
 
 **File**: `.github/workflows/pr-quality-gate.yml`
@@ -203,13 +193,15 @@ against the entire monorepo on a fixed cadence independent of any single PR
 
 **Trigger**: Manual `workflow_dispatch` only. Cron schedules removed to conserve CI resources; trigger from the GitHub Actions UI when needed.
 
-**Language version alignment**: All demo workflows use the same language versions as `main-ci.yml`:
+**Language version alignment**: All demo workflows use the same language versions, pinned once in
+the reusable `.github/actions/setup-*` composite actions (`setup-golang`, `setup-elixir`,
+`setup-python`, `setup-node`, `setup-rust`, `setup-flutter`) that every workflow calls into:
 
-- **Go**: 1.26.0 (used in golang-gin backend and all frontend workflows for codegen)
+- **Go**: 1.26.4 (used in golang-gin backend and all frontend workflows for codegen)
 - **Elixir**: 1.19 (OTP 27)
 - **Python**: 3.13
 - **Node.js**: 24 (all TypeScript/JavaScript backends and frontends)
-- **Rust**: `dtolnay/rust-toolchain@stable` (compilation inside Docker containers)
+- **Rust**: `actions-rust-lang/setup-rust-toolchain@v1` on `stable`, with `rust-toolchain.toml` taking precedence where present
 - **Flutter**: `subosito/flutter-action@v2` with `channel: stable`
 
 **Health check standardization**: All dev docker-compose files use `curl -f http://localhost:8201/health` for backend health checks. The Docker images for golang-gin, java-springboot, kotlin-ktor have `apk add --no-cache curl` in their Dockerfiles. Integration compose files only have PostgreSQL health checks (`pg_isready`) — no backend health checks needed there.

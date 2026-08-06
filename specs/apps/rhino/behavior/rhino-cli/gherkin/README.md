@@ -12,6 +12,7 @@ behavior/rhino-cli/gherkin/
 ├── convention/       # convention subcommand family
 ├── ddd/              # ddd subcommand family
 ├── env/              # env subcommand family
+├── gate/              # gate-registry command family
 ├── git/              # git subcommand family
 ├── harness/          # harness subcommand family (agent/binding machinery)
 ├── md/               # md subcommand family
@@ -45,6 +46,17 @@ behavior/rhino-cli/gherkin/
 | `env-backup.feature`  | `env backup`  | 18        |
 | `env-init.feature`    | `env init`    | 4         |
 | `env-restore.feature` | `env restore` | 13        |
+
+### gate
+
+| File                       | Command(s)                            | Scenarios |
+| -------------------------- | ------------------------------------- | --------- |
+| `gate-declaration.feature` | `repo-config validate` / `gate list`  | 9         |
+| `gate-emission.feature`    | `gate emit`                           | 2         |
+| `gate-enumeration.feature` | `gate list`                           | 6         |
+| `gate-execution.feature`   | `gate run`                            | 11        |
+| `gate-validation.feature`  | `gate validate`                       | 11        |
+| `parity-manifest.feature`  | `parity manifest generate`/`validate` | 4         |
 
 ### git
 

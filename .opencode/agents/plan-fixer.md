@@ -357,7 +357,7 @@ Add after the push step:
 ### Post-Push Verification
 
 - [ ] Push changes to the delivery target for the declared Delivery Mode (the PR branch under `worktree-to-pr` / `main-to-pr`; `origin main` under the direct-push modes)
-- [ ] Monitor GitHub Actions workflows for that push — the PR's check run under `*-to-pr` (list specific workflow names if known) — excludes `.github/workflows/main-ci.yml` (deprecated, schedule-only, never triggered by a push)
+- [ ] Monitor GitHub Actions workflows for that push — the PR's check run under `*-to-pr` (list specific workflow names if known); `.github/workflows/main-ci.yml` no longer exists (removed — its checks were folded into the gate registry driving `pr-quality-gate.yml`)
 - [ ] Verify all CI checks pass
 - [ ] If any CI check fails, fix immediately and push a follow-up commit
 - [ ] Do NOT proceed to next delivery phase until CI is green

@@ -5,8 +5,9 @@
 //! is byte-identical across all three repos (ose-public, ose-primer, ose-private);
 //! only the per-repo values differ.
 
+use std::collections::BTreeMap;
 use std::fs;
-use std::path::Path;
+use std::path::{Component, Path, PathBuf};
 
 use anyhow::{Context, Error};
 use serde::Deserialize;
@@ -67,6 +68,10 @@ pub struct HarnessEntry {
     /// Directory of injected rules files (generated tier only).
     #[serde(rename = "rules-dir", default)]
     pub rules_dir: Option<String>,
+    /// Generated default-agent name (present for generated harnesses that
+    /// materialize a named agent definition).
+    #[serde(rename = "agent-name", default)]
+    pub agent_name: Option<String>,
     /// Source agent-dir this entry must mirror (generated tier).
     #[serde(default)]
     pub mirrors: Option<String>,
@@ -96,10 +101,190 @@ impl HarnessEntry {
     }
 }
 
+/// Whether a gate validates or mutates repository content.
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "kebab-case")]
+pub enum GateType {
+    /// A non-mutating validation gate.
+    Check,
+    /// A gate that changes repository content.
+    Mutation,
+}
+
+/// Command runner for a gate.
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "kebab-case")]
+pub enum GateKind {
+    /// A command implemented by rhino-cli.
+    RhinoCli,
+    /// A command available on `PATH`.
+    External,
+    /// An Nx target.
+    Nx,
+}
+
+/// Execution wiring for a check gate.
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "kebab-case")]
+pub enum GateWiring {
+    /// Emit one CI job for this gate.
+    Matrix,
+    /// A workflow declares this gate directly.
+    HandWired,
+}
+
+/// A composition-rule exemption for a gate.
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "kebab-case")]
+pub enum GateCarveOut {
+    /// The check reads the Git index and therefore has no CI counterpart.
+    StagedOnly,
+}
+
+/// A gate execution surface.
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[serde(rename_all = "kebab-case")]
+pub enum GateSurface {
+    /// The commit-message hook.
+    CommitMsg,
+    /// The pre-commit hook.
+    PreCommit,
+    /// The pre-push hook.
+    PrePush,
+    /// Continuous integration.
+    Ci,
+}
+
+/// The scope that determines a gate's inputs on a surface.
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "kebab-case")]
+pub enum ScopeKind {
+    /// Files of a matching type in the change.
+    AffectedFileType,
+    /// All files of a matching type in the repository.
+    AllFileType,
+    /// Projects affected by the change.
+    AffectedProjects,
+    /// Every project in the repository.
+    AllProjects,
+    /// Gate-specific input handling.
+    Other,
+    /// A check activated only by matching paths.
+    PathGated,
+}
+
+/// Every tool identifier that Doctor can select from the registry.
+///
+/// This Rust-side inventory is the authoritative validation source for
+/// per-gate `doctor-tools` metadata. Workflow configuration consumes declared
+/// metadata and must not duplicate this list.
+pub const DOCTOR_TOOL_INVENTORY: &[&str] = &[
+    "git",
+    "volta",
+    "node",
+    "npm",
+    "rust",
+    "cargo-llvm-cov",
+    "dotnet",
+    "docker",
+    "jq",
+    "shellcheck",
+    "hadolint",
+    "actionlint",
+    "playwright",
+    "shfmt",
+    "tofu",
+    "clang-format",
+];
+
+/// One entry in the `gates:` registry of `repo-config.yml`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct GateEntry {
+    /// Stable, unique gate identifier.
+    pub id: String,
+    /// Whether the entry checks or mutates repository content.
+    #[serde(rename = "type")]
+    pub gate_type: GateType,
+    /// Leaf command run for this gate.
+    pub command: String,
+    /// Command runner (`rhino-cli`, `external`, or `nx`).
+    pub kind: GateKind,
+    /// Ordered Doctor tool identifiers needed before this gate can run.
+    #[serde(rename = "doctor-tools", default)]
+    pub doctor_tools: Vec<String>,
+    /// Optional execution-wiring override for checks.
+    #[serde(default)]
+    pub wiring: Option<GateWiring>,
+    /// Whether a mutation must re-stage its generated output.
+    #[serde(default)]
+    pub restages: bool,
+    /// Command-specific arguments, such as exclusion lists.
+    #[serde(default)]
+    pub args: BTreeMap<String, Vec<String>>,
+    /// Per-surface execution scopes.
+    pub surfaces: BTreeMap<GateSurface, SurfaceScope>,
+    /// Exemption from the cross-surface composition rule.
+    #[serde(rename = "carve-out", default)]
+    pub carve_out: Option<GateCarveOut>,
+    /// Mutation gate verified by this check.
+    #[serde(default)]
+    pub verifies: Option<String>,
+    /// Mutation category, such as `formatter`.
+    #[serde(default)]
+    pub category: Option<String>,
+}
+
+/// Return registry arguments that are forwarded to the declared gate command.
+///
+/// Every key becomes a repeatable long option, preserving the configuration's
+/// deterministic key and value ordering. `exclude` also shapes candidate-path
+/// selection, but remains a fixed argument for commands that enforce their own
+/// exclusion semantics.
+#[must_use]
+pub fn fixed_arguments(gate: &GateEntry) -> Vec<String> {
+    gate.args
+        .iter()
+        .flat_map(|(key, values)| {
+            values
+                .iter()
+                .flat_map(move |value| [format!("--{key}"), value.clone()])
+        })
+        .collect()
+}
+
+/// A gate's scope on one execution surface.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SurfaceScope {
+    /// Scope descriptor for the surface.
+    pub scope: ScopeKind,
+    /// Single file glob for an affected-file-type scope.
+    #[serde(default)]
+    pub glob: Option<String>,
+    /// Multiple file globs for an affected-file-type scope.
+    #[serde(default)]
+    pub globs: Vec<String>,
+    /// Optional shell command emitted instead of the default lint-staged command.
+    ///
+    /// The value is meaningful only for the pre-commit affected-file-type
+    /// surface. When present, emitters use it verbatim, or substitute its one
+    /// optional `{{command}}` marker with the rendered registry command.
+    #[serde(rename = "lint-staged-shell", default)]
+    pub lint_staged_shell: Option<String>,
+    /// Paths that activate a path-gated scope.
+    #[serde(default)]
+    pub trigger: Vec<String>,
+}
+
 /// The `doctor:` section of `repo-config.yml`.
 #[derive(Debug, Clone, Deserialize, Default)]
 #[serde(deny_unknown_fields)]
 pub struct DoctorConfig {
+    /// Repository-relative `global.json` supplying the required .NET SDK
+    /// version. When absent, Doctor uses the conventional root `global.json`.
+    #[serde(rename = "dotnet-global-json", default)]
+    pub dotnet_global_json: Option<String>,
     /// Tool names (from `doctor::tools::build_tool_defs`'s full roster) that
     /// this repo's dev workflow does not need — e.g. a formatter binary this
     /// repo's `lint-staged` config never invokes. Excluded from `doctor`'s
@@ -109,6 +294,67 @@ pub struct DoctorConfig {
     /// byte-identical Rust; only this list's *values* differ per repo.
     #[serde(rename = "skip-tools", default)]
     pub skip_tools: Vec<String>,
+}
+
+/// Validate a configured repository-relative file path before it is joined to
+/// a repository root. This is intentionally lexical so schema validation can
+/// report unsafe configuration even when the configured file does not exist.
+///
+/// # Errors
+///
+/// Returns an error when the path is empty, absolute, or contains a parent
+/// directory component.
+pub fn validate_repo_relative_path(value: &str) -> Result<(), String> {
+    let path = Path::new(value);
+    if value.is_empty() || path.is_absolute() {
+        return Err("must be a non-empty repository-relative path".to_string());
+    }
+    if path.components().any(|component| {
+        matches!(
+            component,
+            Component::ParentDir | Component::RootDir | Component::Prefix(_)
+        )
+    }) {
+        return Err("must not contain an absolute or parent-directory component".to_string());
+    }
+    Ok(())
+}
+
+/// Resolve a configured repository-relative path while proving that existing
+/// path components do not escape `repo_root` through symlinks.
+///
+/// Missing final components are allowed: the caller may use the returned path
+/// to report an absent optional configuration file. The nearest existing
+/// ancestor is still canonicalized, which catches a symlinked intermediate
+/// directory that points outside the repository.
+///
+/// # Errors
+///
+/// Returns an error when the configured path is lexically unsafe, the root or
+/// nearest existing ancestor cannot be canonicalized, or that ancestor lies
+/// outside the repository root.
+pub fn confined_repo_path(repo_root: &Path, value: &str) -> Result<PathBuf, Error> {
+    validate_repo_relative_path(value).map_err(Error::msg)?;
+    let canonical_root = repo_root
+        .canonicalize()
+        .with_context(|| format!("canonicalize repository root {}", repo_root.display()))?;
+    let candidate = repo_root.join(value);
+    let existing_ancestor = candidate
+        .ancestors()
+        .find(|path| path.exists())
+        .ok_or_else(|| Error::msg("configured path has no existing repository ancestor"))?;
+    let canonical_ancestor = existing_ancestor.canonicalize().with_context(|| {
+        format!(
+            "canonicalize configured path ancestor {}",
+            existing_ancestor.display()
+        )
+    })?;
+    if !canonical_ancestor.starts_with(&canonical_root) {
+        return Err(Error::msg(format!(
+            "configured path {value:?} escapes the repository root through a symlink"
+        )));
+    }
+    Ok(candidate)
 }
 
 /// Parsed `repo-config.yml` — the canonical schema, byte-identical across all
@@ -124,6 +370,9 @@ pub struct RepoConfig {
     /// All-harness binding registry (§3.2); every `harness` command reads this list.
     #[serde(default)]
     pub harness: Vec<HarnessEntry>,
+    /// Gate registry declaring checks and mutations on every execution surface.
+    #[serde(default)]
+    pub gates: Vec<GateEntry>,
     /// Per-project test-level registry for the spec coverage validators.
     #[serde(default)]
     pub coverage: CoverageConfig,
@@ -154,7 +403,30 @@ pub fn load(repo_root: &Path) -> Result<RepoConfig, Error> {
     let data = fs::read_to_string(&path)
         .with_context(|| format!("cannot read repo-config.yml at {}", path.display()))?;
     serde_norway::from_str(&data)
+        .map_err(|error| {
+            let parse_error = error.to_string();
+            if let Some(gate_id) = gate_id_from_parse_error(&data, &parse_error) {
+                Error::msg(format!("{parse_error} (gate id {gate_id:?})"))
+            } else {
+                Error::msg(parse_error)
+            }
+        })
         .with_context(|| format!("failed to parse repo-config.yml at {}", path.display()))
+}
+
+/// Finds a gate identifier for a Serde error scoped to a `gates[index]` path.
+fn gate_id_from_parse_error(data: &str, parse_error: &str) -> Option<String> {
+    let index = parse_error
+        .split_once("gates[")?
+        .1
+        .split_once(']')?
+        .0
+        .parse::<usize>()
+        .ok()?;
+    data.lines()
+        .filter_map(|line| line.trim_start().strip_prefix("- id: "))
+        .map(|id| id.trim().trim_matches(['\'', '"']).to_owned())
+        .nth(index)
 }
 
 /// Load `repo-config.yml` at `repo_root`, returning an empty default if the file is absent or
@@ -167,7 +439,63 @@ pub fn load_or_default(repo_root: &Path) -> RepoConfig {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::commands::repo_config_validate::gate_semantic_findings;
     use crate::internal::git;
+    use crate::test_support::CwdLock;
+
+    fn parse_gate_config(doctor_tools: Option<&str>) -> RepoConfig {
+        let metadata = doctor_tools
+            .map(|tools| format!("    doctor-tools: {tools}\n"))
+            .unwrap_or_default();
+        serde_norway::from_str(&format!(
+            "gates:\n  - id: doctor-bootstrap\n    type: check\n    command: doctor\n    kind: rhino-cli\n    surfaces:\n      ci: {{ scope: other }}\n{metadata}"
+        ))
+        .expect("doctor-tools fixture must deserialize")
+    }
+
+    #[test]
+    fn doctor_tools_metadata_is_optional_and_defaults_empty() {
+        let config = parse_gate_config(None);
+
+        assert!(config.gates[0].doctor_tools.is_empty());
+        assert!(gate_semantic_findings(&config).is_empty());
+    }
+
+    #[test]
+    fn doctor_tools_metadata_accepts_known_inventory_in_order() {
+        let config = parse_gate_config(Some("[git, node]"));
+
+        assert_eq!(config.gates[0].doctor_tools, ["git", "node"]);
+        assert!(gate_semantic_findings(&config).is_empty());
+    }
+
+    #[test]
+    fn doctor_tools_metadata_rejects_duplicates() {
+        let config = parse_gate_config(Some("[git, git]"));
+        let findings = gate_semantic_findings(&config);
+
+        assert!(
+            findings.iter().any(|finding| {
+                finding.contains("doctor-tools")
+                    && finding.contains("duplicate")
+                    && finding.contains("git")
+            }),
+            "duplicate Doctor tools must be rejected; got: {findings:?}"
+        );
+    }
+
+    #[test]
+    fn doctor_tools_metadata_rejects_unknown_inventory_entries() {
+        let config = parse_gate_config(Some("[not-a-doctor-tool]"));
+        let findings = gate_semantic_findings(&config);
+
+        assert!(
+            findings.iter().any(|finding| {
+                finding.contains("doctor-tools") && finding.contains("not-a-doctor-tool")
+            }),
+            "unknown Doctor tools must be rejected; got: {findings:?}"
+        );
+    }
 
     // Regression: this test used to hard-assert repo-specific domain literals
     // ("organiclever", "ose-be", ...), which only hold in ose-public's own
@@ -179,6 +507,7 @@ mod tests {
     // project under test-level coverage (rhino-cli itself, at minimum).
     #[test]
     fn loads_repo_config_from_repo_root() {
+        let _cwd = CwdLock::acquire();
         let repo_root = git::root::find_root().expect("must be in a git repo");
         let config = load(&repo_root).expect("repo-config.yml must be loadable");
         assert!(
@@ -189,6 +518,7 @@ mod tests {
 
     #[test]
     fn coverage_project_has_correct_fields() {
+        let _cwd = CwdLock::acquire();
         let repo_root = git::root::find_root().expect("must be in a git repo");
         let config = load(&repo_root).expect("repo-config.yml must be loadable");
         let rhino = config
@@ -209,5 +539,34 @@ mod tests {
             rhino.specs.starts_with("specs/apps/rhino"),
             "rhino-cli specs glob must point to specs/apps/rhino"
         );
+    }
+
+    #[test]
+    fn configured_repository_path_rejects_absolute_and_parent_components() {
+        for path in [
+            "/tmp/global.json",
+            "../global.json",
+            "tooling/../../global.json",
+        ] {
+            assert!(
+                validate_repo_relative_path(path).is_err(),
+                "unsafe configured path {path:?} must be rejected"
+            );
+        }
+        assert!(validate_repo_relative_path("tooling/sdk/global.json").is_ok());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn confined_repository_path_rejects_a_symlink_escape() {
+        use std::os::unix::fs::symlink;
+
+        let root = tempfile::tempdir().expect("create repository root");
+        let outside = tempfile::tempdir().expect("create outside directory");
+        symlink(outside.path(), root.path().join("tooling")).expect("create symlink escape");
+
+        let error = confined_repo_path(root.path(), "tooling/sdk/global.json")
+            .expect_err("symlinked configured path must fail");
+        assert!(format!("{error:#}").contains("escapes the repository root"));
     }
 }

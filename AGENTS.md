@@ -166,12 +166,17 @@ Beyond markdown, the repo gates shell scripts, Dockerfiles, and GitHub Actions
 workflows at a uniform **warning-and-above** threshold, enforced in both CI
 (`.github/workflows/pr-quality-gate.yml`) and the local Husky hooks:
 
-- **shellcheck** (`--severity=warning`, root `.shellcheckrc`) — all tracked `.sh` files (CI `shellcheck` job)
-- **hadolint** (`--failure-threshold warning`, root `.hadolint.yaml`) — all Dockerfiles (CI `hadolint` job)
-- **actionlint** — all `.github/workflows/*.yml` (CI `actionlint` job)
+- **shellcheck** (`--severity=warning`, root `.shellcheckrc`) — all tracked `.sh` files (CI `shellcheck` matrix leg)
+- **hadolint** (`--failure-threshold warning`, root `.hadolint.yaml`) — all Dockerfiles (CI `hadolint` matrix leg)
+- **actionlint** — all `.github/workflows/*.yml` (CI `actionlint` matrix leg)
 
-All three linters are installed by `npm run doctor -- --fix`. The CI jobs are named
-after the tool they run (Invariant A in the parity checklist).
+Each linter's provisioning is registry-declared per gate (`doctor-tools:` in `repo-config.yml`), not
+a blanket `npm run doctor -- --fix`: the CI `gate` job reads each matrix leg's `doctor_tools` and
+runs `npm run doctor -- --fix --tools <tools>` only for what that leg declares. Locally, `npm run
+doctor -- --fix` (no `--tools` filter) still installs everything, including these three. The CI jobs
+are registry matrix legs named after their gate id (`${{ matrix.gate.id }}`), which is why they still
+display as `actionlint`/`hadolint`/`shellcheck` (Invariant A in the parity checklist) even though
+they run through the shared `gate` job rather than standalone job keys.
 
 **See**: [Cross-Language Lint Strictness](./repo-governance/development/quality/cross-language-lint-strictness.md)
 
@@ -232,11 +237,17 @@ invent `validate:{thing}` prefixes.
   tool as fallback. Record the tool, fallback, and capability gaps; static inspection cannot replace a
   working browser integration. Use curl for API-only surfaces
   ([manual-behavioral-verification.md](./repo-governance/development/quality/manual-behavioral-verification.md)).
-- **User-facing delivery hardening**: For any user-facing change, follow the sixteen rules — visual-parity sign-off against the design mockups per breakpoint/locale **before archival**, name the design-system primitive, per-breakpoint responsive deliverables, value-bearing tests, mockup-colors-as-theme-tokens, deploy-config-is-code, checkbox lockstep, and — for web-UI feature-change plans — a near-end three-tester retest round (the `web-ux-test-fixing-planning` workflow: `web-exploratory-tester` + `web-usability-tester` + `web-design-tester`) invoked with **`output-mode: delivery`** and the plan's **`plan-path`** so EWT/UWT/DWT findings are appended in-place to `delivery.md` as unchecked task-list items and fixed before archival; and — for API feature-change plans (REST/GraphQL) — a near-end `api-exploratory-tester` retest round (`output-mode: delivery`, the plan's `plan-path`) whose AET findings are appended to `delivery.md` and fixed before archival, exactly as the web-triad findings are (Rule 16) ([user-facing-delivery-hardening.md](./repo-governance/development/quality/user-facing-delivery-hardening.md))
+- **User-facing delivery hardening**: For any user-facing change, follow the sixteen rules, including
+  near-end EWT/UWT/DWT (web) or AET (API) retest rounds appended to `delivery.md` before archival
+  ([user-facing-delivery-hardening.md](./repo-governance/development/quality/user-facing-delivery-hardening.md))
 - **CI blockers**: Investigate root cause, fix properly, never bypass ([ci-blocker-resolution.md](./repo-governance/development/quality/ci-blocker-resolution.md))
 - **Build-artifact sweeper**: An ambient sweeper deletes gitignored build output/caches at any time, mid-plan. Regenerate (`nx build`, `npm run doctor -- --fix`) and continue — never file a finding or blame a concurrent agent; it never touches tracked files ([build-artifact-sweeper.md](./repo-governance/development/infra/build-artifact-sweeper.md))
 - **CI post-push verification**: After pushing app or lib code, trigger and verify relevant GitHub CI workflows pass before declaring work done — pre-push hook alone is not sufficient ([ci-post-push-verification.md](./repo-governance/development/workflow/ci-post-push-verification.md))
-- **`main-ci.yml` deprecated**: schedule/dispatch-only, no push trigger, being retired — never trigger, monitor, or gate plan work on it; pre-commit, pre-push, and the PR quality gate remain sufficient.
+
+## Git Hooks (Automated Quality)
+
+Husky hooks are registry shims (`gate list/run/validate`); `repo-config.yml`'s `gates:` is
+authoritative, never hand-maintained. See [SDLC Gate Standard](./docs/reference/sdlc-gate-standard.md).
 
 ## Agent Workflow Orchestration
 

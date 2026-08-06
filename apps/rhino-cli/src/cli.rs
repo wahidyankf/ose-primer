@@ -4,15 +4,15 @@ use clap::{Parser, Subcommand};
 
 use crate::commands::{
     convention_audit, convention_validate_emoji, convention_validate_license, doctor, env_backup,
-    env_init, env_restore, env_staged_guard, env_validate, governance_audit,
+    env_init, env_restore, env_staged_guard, env_validate, gate, git, governance_audit,
     governance_layer_coherence, governance_traceability_audit, governance_vendor_audit,
     harness_audit, harness_generate_bindings, harness_validate_bindings, harness_validate_claude,
     harness_validate_duplication, harness_validate_instruction_size, harness_validate_naming,
     harness_validate_sync, lang_java_validate_null_safety, md_audit, md_validate_frontmatter,
     md_validate_frontmatter_dates, md_validate_heading_hierarchy, md_validate_links,
-    md_validate_mermaid, md_validate_naming, md_validate_readme_index, repo_config_validate,
-    specs_audit, specs_clean_java_imports, specs_coverage, specs_e2e_coverage,
-    specs_gherkin_cardinality, specs_scaffold_dart, specs_structure_validate,
+    md_validate_mermaid, md_validate_naming, md_validate_readme_index, parity,
+    repo_config_validate, specs_audit, specs_clean_java_imports, specs_coverage,
+    specs_e2e_coverage, specs_gherkin_cardinality, specs_scaffold_dart, specs_structure_validate,
     specs_validate_counts, test_coverage_validate, workflows_validate_naming,
 };
 use crate::domain::cliout::OutputFormat;
@@ -102,6 +102,15 @@ pub enum Commands {
     /// Environment file helpers (init, backup, restore, validate, staged-guard).
     #[command(name = "env", subcommand)]
     Env(EnvCommands),
+    /// Gate-registry commands.
+    #[command(name = "gate", subcommand)]
+    Gate(GateCommands),
+    /// Git workflow helpers.
+    #[command(name = "git", subcommand)]
+    Git(GitCommands),
+    /// Rhino CLI byte-identity boundary helpers.
+    #[command(name = "parity", subcommand)]
+    Parity(ParityCommands),
     /// Check required tool versions are installed and correct.
     #[command(name = "doctor")]
     Doctor(doctor::DoctorArgs),
@@ -130,6 +139,51 @@ pub enum TestCoverageCommands {
 pub enum RepoConfigCommands {
     /// Strict-deserialize `repo-config.yml` against the canonical schema (key-set + enum parity).
     Validate(repo_config_validate::ValidateArgs),
+}
+
+/// Gate-registry subcommands.
+#[derive(Subcommand, Debug)]
+pub enum GateCommands {
+    /// List declared gates for an execution surface.
+    List(gate::list::ListArgs),
+    /// Emit the generated artifact for a gate surface.
+    Emit(gate::emit::EmitArgs),
+    /// Run declared gates for an execution surface.
+    Run(gate::run::RunArgs),
+    /// Validate gate-registry composition rules.
+    Validate(gate::validate::ValidateArgs),
+}
+
+/// Git workflow helper subcommands.
+#[derive(Subcommand, Debug)]
+pub enum GitCommands {
+    /// Lockfile synchronization commands.
+    #[command(subcommand)]
+    Lockfile(GitLockfileCommands),
+}
+
+/// Lockfile synchronization subcommands.
+#[derive(Subcommand, Debug)]
+pub enum GitLockfileCommands {
+    /// Regenerate and stage lockfiles for staged app manifests.
+    Sync(git::lockfile::SyncArgs),
+}
+
+/// Byte-identity parity subcommands.
+#[derive(Subcommand, Debug)]
+pub enum ParityCommands {
+    /// Checksum-manifest operations.
+    #[command(name = "manifest", subcommand)]
+    Manifest(ParityManifestCommands),
+}
+
+/// `parity manifest` subcommands.
+#[derive(Subcommand, Debug)]
+pub enum ParityManifestCommands {
+    /// Deliberately regenerate the committed parity manifest.
+    Generate(parity::GenerateArgs),
+    /// Verify the committed parity manifest without regenerating it.
+    Validate(parity::ValidateArgs),
 }
 
 // ---------------------------------------------------------------------------
@@ -633,6 +687,23 @@ fn dispatch(cmd: &Commands, output_format: OutputFormat, verbose: bool, quiet: b
         Commands::Lang(lc) => dispatch_lang(lc, output_format),
         Commands::RepoConfig(rc) => match rc {
             RepoConfigCommands::Validate(args) => repo_config_validate::run(args, output_format),
+        },
+        Commands::Gate(gc) => match gc {
+            GateCommands::List(args) => gate::list::run(args, output_format),
+            GateCommands::Emit(args) => gate::emit::run(args, output_format),
+            GateCommands::Run(args) => gate::run::run(args, output_format),
+            GateCommands::Validate(args) => gate::validate::run(args, output_format),
+        },
+        Commands::Git(gc) => match gc {
+            GitCommands::Lockfile(lc) => match lc {
+                GitLockfileCommands::Sync(args) => git::lockfile::run(args, output_format),
+            },
+        },
+        Commands::Parity(pc) => match pc {
+            ParityCommands::Manifest(mc) => match mc {
+                ParityManifestCommands::Generate(args) => parity::generate(args, output_format),
+                ParityManifestCommands::Validate(args) => parity::validate(args, output_format),
+            },
         },
         Commands::Env(ec) => match ec {
             EnvCommands::Init(args) => env_init::run(args, output_format),

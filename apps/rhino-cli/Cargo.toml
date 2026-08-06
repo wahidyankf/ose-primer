@@ -18,7 +18,7 @@ path = "src/lib.rs"
 [dependencies]
 clap = { version = "4.6.1", features = ["derive", "env"] }
 serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.150"
+serde_json = { version = "1.0.150", features = ["preserve_order"] }
 serde_norway = "0.9.42"
 walkdir = "2.5.0"
 ignore = "0.4.25"
@@ -30,6 +30,9 @@ quick-xml = { version = "0.40.1", features = ["serialize"] }
 chrono = { version = "0.4.44", default-features = false, features = ["serde", "clock"] }
 glob = "0.3.3"
 sha2 = "0.11.0"
+
+[target.'cfg(unix)'.dependencies]
+rustix = { version = "1.1.4", features = ["fs"] }
 
 [dev-dependencies]
 cucumber = "0.23.0"
@@ -53,6 +56,10 @@ harness = false
 
 [[test]]
 name = "doctor"
+harness = false
+
+[[test]]
+name = "fsharp_tool_invocation"
 harness = false
 
 [[test]]
@@ -117,6 +124,10 @@ harness = false
 
 [[test]]
 name = "specs_tree"
+harness = false
+
+[[test]]
+name = "gate_specs"
 harness = false
 
 [lints.rust]

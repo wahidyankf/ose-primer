@@ -77,33 +77,78 @@
     "tsx": "4.21.0"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,mjs,cjs}": "prettier --write",
-    "*.json": "prettier --write",
-    "*.go": "gofmt -w",
-    "*.fs": "fantomas",
-    "*.rs": "rustfmt --edition 2024",
-    "*.{ex,exs}": "scripts/format-elixir.sh",
-    "*.py": "ruff format",
-    "*.cs": "dotnet csharpier format",
-    "*.clj": "cljfmt fix",
-    "*.dart": "dart format",
+    "repo-config.yml": [
+      "bash -c 'cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- repo-config validate' --"
+    ],
     "*.md": [
       "prettier --write",
       "markdownlint-cli2",
-      "cargo run --release --manifest-path apps/rhino-cli/Cargo.toml -- md mermaid validate",
-      "cargo run --release --manifest-path apps/rhino-cli/Cargo.toml -- md heading-hierarchy validate",
-      "cargo run --release --manifest-path apps/rhino-cli/Cargo.toml -- md naming validate",
-      "cargo run --release --manifest-path apps/rhino-cli/Cargo.toml -- md frontmatter validate"
+      "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- md mermaid validate --exclude \"apps/rhino-cli/tests/fixtures\" --exclude \"plans/done\"",
+      "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- md heading-hierarchy validate",
+      "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- md naming validate",
+      "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- md frontmatter validate"
     ],
-    "*.{yml,yaml}": "prettier --write",
-    ".github/workflows/*.{yml,yaml}": "actionlint",
-    "*.{css,scss}": "prettier --write",
-    "*.sh": "shellcheck --severity=warning",
-    "**/Dockerfile*": "hadolint --failure-threshold warning",
-    "*.{json,toml,ts,tsx,js,jsx,mjs,cjs,rs,go,py,cs,clj,dart,ex,exs,fs}": "cargo run --release --manifest-path apps/rhino-cli/Cargo.toml -- convention emoji validate",
-    "*.feature": "cargo run --release --manifest-path apps/rhino-cli/Cargo.toml -- specs gherkin-cardinality validate",
-    "repo-config.yml": "bash -c 'cargo run --release --manifest-path apps/rhino-cli/Cargo.toml -- repo-config validate' --",
-    "docker-compose*.{yml,yaml}": "bash -c 'for f; do docker compose -f \"$f\" config > /dev/null; done' --"
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "prettier --write"
+    ],
+    "*.json": [
+      "prettier --write"
+    ],
+    "*.{yml,yaml}": [
+      "prettier --write"
+    ],
+    "*.{css,scss}": [
+      "prettier --write"
+    ],
+    "*.html": [
+      "prettier --write"
+    ],
+    "*.sql": [
+      "prettier --write"
+    ],
+    "*.rs": [
+      "rustfmt --edition 2024"
+    ],
+    "*.sh": [
+      "shfmt -w",
+      "shellcheck --severity=warning"
+    ],
+    "*.fs": [
+      "fantomas"
+    ],
+    "*.py": [
+      "ruff format"
+    ],
+    "*.go": [
+      "gofmt -w"
+    ],
+    "*.{ex,exs}": [
+      "scripts/format-elixir.sh"
+    ],
+    "*.cs": [
+      "dotnet csharpier format"
+    ],
+    "*.clj": [
+      "cljfmt fix"
+    ],
+    "*.dart": [
+      "dart format"
+    ],
+    ".github/workflows/*.{yml,yaml}": [
+      "actionlint"
+    ],
+    "**/Dockerfile*": [
+      "hadolint --failure-threshold warning"
+    ],
+    "*.{json,toml,yml,yaml,ts,tsx,js,jsx,mjs,cjs,rs,go,py,cs,clj,dart,ex,exs,fs}": [
+      "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- convention emoji validate"
+    ],
+    "*.feature": [
+      "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- specs gherkin-cardinality validate"
+    ],
+    "docker-compose*.{yml,yaml}": [
+      "bash -c 'set -e; for f; do base=${f%.ci.yml}.yml; if [ \"$base\" != \"$f\" ] && [ -f \"$base\" ]; then docker compose -f \"$base\" -f \"$f\" config > /dev/null; else docker compose -f \"$f\" config > /dev/null; fi; done' --"
+    ]
   },
   "dependencies": {
     "tailwindcss": "4.2.2"

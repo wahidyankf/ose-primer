@@ -296,7 +296,7 @@ is compulsory for all apps and E2E runners.
 
 > For polyglot backend `typecheck` patterns (Go, F#, Java, Kotlin, Python, Rust, Elixir, TypeScript, C#, Clojure), see the [ose-primer](https://github.com/wahidyankf/ose-primer) repository.
 
-**CI schedules**: Per-service "Test" workflows run 2× daily (WIB 06, 18) combining `test:integration` and `test:e2e` for each service. `typecheck`, `lint`, and `test:quick` run on every PR event and on every push to `main` via `pr-quality-gate.yml`, and again across the whole repo on `main-ci.yml`'s 4x/day schedule (WIB 06/12/18/00) plus manual dispatch — `main-ci.yml` has no push trigger. All gates run the identical check set — see All-Four-Gates Rule below.
+**CI schedules**: Per-service "Test" workflows run 2× daily (WIB 06, 18) combining `test:integration` and `test:e2e` for each service. `typecheck`, `lint`, and `test:quick` run on every PR event and on every push to `main` via `pr-quality-gate.yml`. `main-ci.yml` (the former scheduled full-repo re-run of the same checks, independent of any single push/PR) is deleted and has no successor — drift-catching for the affected-only PR/push checks now relies solely on `pr-quality-gate.yml`'s per-push/PR execution. All gates run the identical check set — see All-Four-Gates Rule below.
 
 ### All Projects
 

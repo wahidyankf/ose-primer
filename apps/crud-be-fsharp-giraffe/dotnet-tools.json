@@ -2,6 +2,11 @@
   "version": 1,
   "isRoot": true,
   "tools": {
+    "fantomas": {
+      "version": "7.0.5",
+      "commands": ["fantomas"],
+      "rollForward": false
+    },
     "altcover.global": {
       "version": "9.0.102",
       "commands": ["altcover"],

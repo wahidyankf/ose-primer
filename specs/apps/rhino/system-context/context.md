@@ -8,7 +8,7 @@ adjacent systems.
 graph LR
     DEV("Developer<br/>──────────────────<br/>Runs validators<br/>via hooks or CLI"):::actor
 
-    CI("CI Pipeline<br/>──────────────────<br/>main-ci.yml<br/>pr-quality-gate.yml"):::actor_ci
+    CI("CI Pipeline<br/>──────────────────<br/>pr-quality-gate.yml"):::actor_ci
 
     SYSTEM["rhino-cli<br/>──────────────────<br/>Docs validation<br/>Specs validation<br/>Harness checks<br/>Naming checks"]:::system
 
