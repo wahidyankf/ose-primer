@@ -350,7 +350,24 @@ jobs:
 
   quality-gate:
     name: Quality gate
-    needs: [detect, format, enumerate, gate, typescript, golang, jvm, dotnet, python, rust, elixir, clojure, dart, compat-min-version, specs-structure]
+    needs:
+      [
+        detect,
+        format,
+        enumerate,
+        gate,
+        typescript,
+        golang,
+        jvm,
+        dotnet,
+        python,
+        rust,
+        elixir,
+        clojure,
+        dart,
+        compat-min-version,
+        specs-structure,
+      ]
     if: always()
     runs-on: ubuntu-latest
     steps:
