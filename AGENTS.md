@@ -235,7 +235,14 @@ invent `validate:{thing}` prefixes.
 - **CI blockers**: Investigate root cause, fix properly, never bypass ([ci-blocker-resolution.md](./repo-governance/development/quality/ci-blocker-resolution.md))
 - **Build-artifact sweeper**: An ambient sweeper deletes gitignored build output/caches at any time, mid-plan. Regenerate (`nx build`, `npm run doctor -- --fix`) and continue — never file a finding or blame a concurrent agent; it never touches tracked files ([build-artifact-sweeper.md](./repo-governance/development/infra/build-artifact-sweeper.md))
 - **CI post-push verification**: After pushing app or lib code, trigger and verify relevant GitHub CI workflows pass before declaring work done — pre-push hook alone is not sufficient ([ci-post-push-verification.md](./repo-governance/development/workflow/ci-post-push-verification.md))
-- **`main-ci.yml` deprecated**: schedule/dispatch-only, no push trigger, being retired — never trigger, monitor, or gate plan work on it; pre-commit, pre-push, and the PR quality gate remain sufficient.
+
+## Git Hooks (Automated Quality)
+
+The three Husky files are registry shims (`rhino-cli gate list/run/validate`). `repo-config.yml`'s
+`gates:` registry is authoritative — never hand-maintain hook or CI command lists. `main-ci.yml` is
+deleted; never trigger, monitor, or gate plan work on it.
+
+**See**: [SDLC Gate Standard](./docs/reference/sdlc-gate-standard.md)
 
 ## Agent Workflow Orchestration
 

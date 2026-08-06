@@ -154,12 +154,15 @@ jobs:
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-rust
       - name: Provision registry-declared tools
+        env:
+          GATE_DOCTOR_TOOLS: ${{ join(matrix.gate.doctor_tools, ',') }}
         run: |
-          tools="${{ join(matrix.gate.doctor_tools, ',') }}"
-          if [ -n "$tools" ]; then
-            npm run doctor -- --fix --tools "$tools"
+          if [ -n "$GATE_DOCTOR_TOOLS" ]; then
+            npm run doctor -- --fix --tools "$GATE_DOCTOR_TOOLS"
           fi
-      - run: cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- gate run --surface=ci --only=${{ matrix.gate.id }}
+      - env:
+          GATE_ID: ${{ matrix.gate.id }}
+        run: cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- gate run --surface=ci --only="$GATE_ID"
 
   typescript:
     name: TypeScript quality gate

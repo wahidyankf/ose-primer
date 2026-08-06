@@ -77,27 +77,39 @@ The result must exactly match the filename (without path).
 
 ### Complete Codebase Reference
 
-Every workflow currently in the repository follows this rule:
+Every non-reusable workflow currently in the repository follows this rule. Reusable workflows
+(filenames prefixed `_`, triggered only via `workflow_call` — see [Scope](#what-this-convention-does-not-cover))
+are intentionally omitted below: they never appear standalone in the GitHub Actions UI, so
+filename/`name:` derivation has no reader-facing purpose for them. The reusable workflows currently
+in the repository are `_reusable-backend-coverage.yml`, `_reusable-backend-e2e.yml`,
+`_reusable-backend-integration.yml`, `_reusable-backend-lint.yml`,
+`_reusable-backend-spec-coverage.yml`, `_reusable-backend-typecheck.yml`, and
+`_reusable-frontend-e2e.yml`.
 
-| `name:` field                                | Filename                             |
-| -------------------------------------------- | ------------------------------------ |
-| `PR - Quality Gate`                          | `pr-quality-gate.yml`                |
-| `Validate Markdown`                          | `validate-markdown.yml`              |
-| `Test - Crud FS (TypeScript/Next.js)`        | `test-crud-fs-ts-nextjs.yml`         |
-| `Test - Crud BE (Java/Spring Boot)`          | `test-crud-be-java-springboot.yml`   |
-| `Test - Crud BE (Java/Vert.x)`               | `test-crud-be-java-vertx.yml`        |
-| `Test - Crud BE (Elixir/Phoenix)`            | `test-crud-be-elixir-phoenix.yml`    |
-| `Test - Crud BE (F#/Giraffe)`                | `test-crud-be-fsharp-giraffe.yml`    |
-| `Test - Crud BE (Go/Gin)`                    | `test-crud-be-golang-gin.yml`        |
-| `Test - Crud BE (Python/FastAPI)`            | `test-crud-be-python-fastapi.yml`    |
-| `Test - Crud BE (Rust/Axum)`                 | `test-crud-be-rust-axum.yml`         |
-| `Test - Crud BE (Kotlin/Ktor)`               | `test-crud-be-kotlin-ktor.yml`       |
-| `Test - Crud BE (TypeScript/Effect)`         | `test-crud-be-ts-effect.yml`         |
-| `Test - Crud BE (C#/ASP.NET Core)`           | `test-crud-be-csharp-aspnetcore.yml` |
-| `Test - Crud BE (Clojure/Pedestal)`          | `test-crud-be-clojure-pedestal.yml`  |
-| `Test - Crud FE (TypeScript/Next.js)`        | `test-crud-fe-ts-nextjs.yml`         |
-| `Test - Crud FE (TypeScript/TanStack Start)` | `test-crud-fe-ts-tanstack-start.yml` |
-| `Test - Crud FE (Dart/Flutter Web)`          | `test-crud-fe-dart-flutterweb.yml`   |
+| `name:` field                                | Filename                                    |
+| -------------------------------------------- | ------------------------------------------- |
+| `PR - Quality Gate`                          | `pr-quality-gate.yml`                       |
+| `validate-env`                               | `validate-env.yml`                          |
+| `Dependency Vulnerability Audit`             | `dependency-vulnerability-audit.yml`        |
+| `Rhino CLI Parity Audit`                     | `rhino-cli-parity-audit.yml`                |
+| `Test And Deploy - Backend - Development`    | `test-and-deploy-backend-development.yml`   |
+| `Test And Deploy - Frontend - Development`   | `test-and-deploy-frontend-development.yml`  |
+| `Test And Deploy - Fullstack - Development`  | `test-and-deploy-fullstack-development.yml` |
+| `Test - Crud FS (TypeScript/Next.js)`        | `test-crud-fs-ts-nextjs.yml`                |
+| `Test - Crud BE (Java/Spring Boot)`          | `test-crud-be-java-springboot.yml`          |
+| `Test - Crud BE (Java/Vert.x)`               | `test-crud-be-java-vertx.yml`               |
+| `Test - Crud BE (Elixir/Phoenix)`            | `test-crud-be-elixir-phoenix.yml`           |
+| `Test - Crud BE (F#/Giraffe)`                | `test-crud-be-fsharp-giraffe.yml`           |
+| `Test - Crud BE (Go/Gin)`                    | `test-crud-be-golang-gin.yml`               |
+| `Test - Crud BE (Python/FastAPI)`            | `test-crud-be-python-fastapi.yml`           |
+| `Test - Crud BE (Rust/Axum)`                 | `test-crud-be-rust-axum.yml`                |
+| `Test - Crud BE (Kotlin/Ktor)`               | `test-crud-be-kotlin-ktor.yml`              |
+| `Test - Crud BE (TypeScript/Effect)`         | `test-crud-be-ts-effect.yml`                |
+| `Test - Crud BE (C#/ASP.NET Core)`           | `test-crud-be-csharp-aspnetcore.yml`        |
+| `Test - Crud BE (Clojure/Pedestal)`          | `test-crud-be-clojure-pedestal.yml`         |
+| `Test - Crud FE (TypeScript/Next.js)`        | `test-crud-fe-ts-nextjs.yml`                |
+| `Test - Crud FE (TypeScript/TanStack Start)` | `test-crud-fe-ts-tanstack-start.yml`        |
+| `Test - Crud FE (Dart/Flutter Web)`          | `test-crud-fe-dart-flutterweb.yml`          |
 
 ## Examples
 
@@ -150,28 +162,27 @@ The pattern `(Language/Framework)` in a name maps to `language-framework` in the
 
 ### Version Alignment Policy
 
-`main-ci.yml` is the **source of truth** for language version choices. All `test-crud-*`
-workflows must use the same language versions as `main-ci.yml`.
+`main-ci.yml` is deleted; it is no longer the source of truth for language versions. Each
+language's version is instead pinned once, as the `default:` on that language's setup composite
+action input, and every workflow that calls the action inherits it unless it explicitly overrides
+the input:
 
-**Rule**: When upgrading a language version in `main-ci.yml`, update all CRUD and deploy workflows
-that use that language in the same commit. Version drift between `main-ci.yml` and these workflows
-creates inconsistencies where CI passes on main but manually dispatched integration tests fail
-(or vice versa).
+| Language | Composite action               | Version input    |
+| -------- | ------------------------------ | ---------------- |
+| Go       | `.github/actions/setup-golang` | `go-version`     |
+| Elixir   | `.github/actions/setup-elixir` | `elixir-version` |
+| Python   | `.github/actions/setup-python` | `python-version` |
+| Node.js  | `.github/actions/setup-node`   | `node-version`   |
 
-**Workflows that must stay aligned**:
-
-| Language | `main-ci.yml` step | Scheduled workflows to update                                                     |
-| -------- | ------------------ | --------------------------------------------------------------------------------- |
-| Go       | `go-version`       | `test-crud-be-golang-gin.yml`, all frontend workflows that install Go for codegen |
-| Elixir   | `elixir-version`   | `test-crud-be-elixir-phoenix.yml`                                                 |
-| Python   | `python-version`   | `test-crud-be-python-fastapi.yml`                                                 |
-| Node.js  | `node-version`     | All workflows installing Node.js                                                  |
+**Rule**: When upgrading a language version, update the composite action's `default:` in the same
+commit as any workflow that pins its own explicit override for that language. Version drift between
+the composite action's default and a workflow's explicit override creates inconsistencies where CI
+passes on `main` but a manually dispatched workflow fails (or vice versa).
 
 **Frontend workflows install Go for codegen**: The three CRUD frontend workflows
 (`test-crud-fe-ts-nextjs.yml`, `test-crud-fe-ts-tanstack-start.yml`,
 `test-crud-fe-dart-flutterweb.yml`) install Go and run `rhino-cli` for contract codegen before
-running tests. The Go version in these workflows must match the version used in `main-ci.yml` and
-`test-crud-be-golang-gin.yml`.
+running tests, via the same `setup-golang` composite action as `test-crud-be-golang-gin.yml`.
 
 ### Adding new workflows
 

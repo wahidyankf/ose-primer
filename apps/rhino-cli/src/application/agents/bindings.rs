@@ -186,15 +186,22 @@ fn emit_bindings_no_follow(repo_root: &Path) -> Result<EmitResult, String> {
     let rules = open_or_create_directory(&amazonq, "rules")?;
     let definitions = open_or_create_directory(&amazonq, "cli-agents")?;
 
-    write_no_follow_file(&rules, "00-agents-md.md", &bindings[0].content)?;
+    let [rules_binding, definition_binding] = bindings.as_slice() else {
+        return Err(format!(
+            "expected exactly 2 Amazon Q binding files (rules pointer + agent definition), got {}",
+            bindings.len()
+        ));
+    };
+
+    write_no_follow_file(&rules, "00-agents-md.md", &rules_binding.content)?;
     write_no_follow_file(
         &definitions,
         &format!("{agent_name}.json"),
-        &bindings[1].content,
+        &definition_binding.content,
     )?;
     result.written = bindings
-        .into_iter()
-        .map(|binding| binding.rel_path)
+        .iter()
+        .map(|binding| binding.rel_path.clone())
         .collect();
 
     remove_stale_amazonq_definitions_no_follow(&definitions, &agent_name)?;

@@ -258,10 +258,11 @@ doctor:
   # Tools from doctor's full roster (apps/rhino-cli/src/application/doctor/tools.rs)
   # that ose-primer's own toolchain does not invoke, so `doctor` stays dormant for
   # them instead of hard-failing a plain (non-`--fix`) run. Verified: ose-primer's
-  # package.json lint-staged config never calls shfmt/tofu/clang-format (it
-  # shellchecks *.sh without formatting them, has no *.tf files, and its only
-  # *.c/*.h files are vendored Elixir NIF deps under deps/, never lint-staged'd).
-  skip-tools: [shfmt, tofu, clang-format]
+  # gates now wire shfmt into format-shfmt/format-verify-shfmt (pre-commit) and CI,
+  # so it is no longer skipped here. tofu/clang-format remain skipped: no *.tf
+  # files, and the only *.c/*.h files are vendored Elixir NIF deps under deps/,
+  # never lint-staged'd.
+  skip-tools: [tofu, clang-format]
 gates:
   # ---------------------------------------------------------------- commit-msg
   - id: commitlint
@@ -544,7 +545,7 @@ gates:
     kind: external
     surfaces:
       pre-commit: { scope: affected-file-type, glob: "*.sh" }
-      ci: { scope: affected-file-type, glob: "*.sh" }
+      ci: { scope: all-file-type, glob: "*.sh" }
 
   - id: hadolint
     type: check
@@ -552,7 +553,7 @@ gates:
     kind: external
     surfaces:
       pre-commit: { scope: affected-file-type, glob: "**/Dockerfile*" }
-      ci: { scope: affected-file-type, glob: "**/Dockerfile*" }
+      ci: { scope: all-file-type, glob: "**/Dockerfile*" }
 
   - id: convention-emoji
     type: check
@@ -671,7 +672,21 @@ gates:
     command: parity manifest validate
     kind: rhino-cli
     surfaces:
-      pre-push: { scope: other }
+      pre-push:
+        scope: path-gated
+        trigger:
+          - apps/rhino-cli/src/
+          - apps/rhino-cli/tests/
+          - apps/rhino-cli/Cargo.toml
+          - apps/rhino-cli/Cargo.lock
+          - apps/rhino-cli/project.json
+          - apps/rhino-cli/LICENSE
+          - specs/apps/rhino/behavior/rhino-cli/gherkin/
+          - apps/rhino-cli/parity-manifest.sha256
+      # CI stays unconditional: the byte-identity boundary spans repos, so a
+      # manifest can go stale via a change made elsewhere with no local
+      # trigger path. See apps/rhino-cli/src/application/parity.rs's
+      # BOUNDARY_PATHS for the same path list — keep both in sync.
       ci: { scope: other }
 
   # --------------------------------------------- path-gated governance checks
