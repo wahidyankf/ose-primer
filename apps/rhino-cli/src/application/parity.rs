@@ -596,12 +596,69 @@ mod tests {
         fs::write(path, contents).expect("write fixture file");
     }
 
-    fn run_git(repo: &Path, args: &[&str]) {
-        let status = Command::new("git")
+    /// Builds a `git` [`Command`] targeting `repo` with full ambient-discovery
+    /// isolation, per the [Git Fixture Isolation] convention: explicit `GIT_DIR`
+    /// so git performs zero upward discovery and cannot resolve to an
+    /// ancestor/real repository via a CWD race, `GIT_CEILING_DIRECTORIES` to
+    /// cap any residual walk at `repo`, and nulled global/system config so the
+    /// developer's real identity never bleeds in and the fixture's throwaway
+    /// identity never bleeds out.
+    ///
+    /// [Git Fixture Isolation]: ../../../../repo-governance/development/quality/git-fixture-isolation.md
+    fn iso_git(repo: &Path) -> Command {
+        let mut command = Command::new("git");
+        command
             .current_dir(repo)
-            .args(args)
-            .status()
-            .expect("run git");
+            .env("GIT_DIR", repo.join(".git"))
+            .env("GIT_CEILING_DIRECTORIES", repo)
+            .env("GIT_CONFIG_GLOBAL", "/dev/null")
+            .env("GIT_CONFIG_SYSTEM", "/dev/null")
+            .env_remove("GIT_WORK_TREE")
+            .env_remove("GIT_INDEX_FILE")
+            .env_remove("GIT_OBJECT_DIRECTORY")
+            .env_remove("GIT_ALTERNATE_OBJECT_DIRECTORIES")
+            .env_remove("GIT_COMMON_DIR")
+            .env_remove("GIT_PREFIX");
+        command
+    }
+
+    /// Pre-write escape guard (Standard 4): panics unless `git`, under
+    /// [`iso_git`] isolation, resolves its top level to `repo` (canonicalized).
+    /// Called before every write once `repo/.git` exists, so a missed
+    /// isolation env or any other escape mechanism fails loud instead of
+    /// silently corrupting a repository this fixture was never meant to touch.
+    fn assert_no_escape(repo: &Path) {
+        let output = iso_git(repo)
+            .args(["rev-parse", "--show-toplevel"])
+            .output()
+            .expect("escape guard: git rev-parse must spawn");
+        assert!(
+            output.status.success(),
+            "escape guard: `git rev-parse --show-toplevel` failed in {repo:?}: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        let resolved = String::from_utf8_lossy(&output.stdout).trim().to_string();
+        let expected = fs::canonicalize(repo).unwrap_or_else(|_| repo.to_path_buf());
+        let actual =
+            fs::canonicalize(&resolved).unwrap_or_else(|_| Path::new(&resolved).to_path_buf());
+        assert_eq!(
+            actual, expected,
+            "escape guard: fixture git resolved to {actual:?}, not the intended fixture \
+             repository {expected:?} — refusing to run a write command against the wrong \
+             repository"
+        );
+    }
+
+    /// Runs an isolated `git` write command against `repo`, guarding every
+    /// call after `git init` per Standard 4 and asserting the exit status per
+    /// Standard 5. `init` is the sole pre-repository command (no `.git` yet)
+    /// and is exempt from the escape guard; its own failure is still caught by
+    /// the exit-status assert below.
+    fn run_git(repo: &Path, args: &[&str]) {
+        if repo.join(".git").exists() {
+            assert_no_escape(repo);
+        }
+        let status = iso_git(repo).args(args).status().expect("run git");
         assert!(status.success(), "git {args:?} failed");
     }
 

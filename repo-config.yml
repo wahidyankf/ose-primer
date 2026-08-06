@@ -463,9 +463,14 @@ gates:
 
   - id: format-verify-cljfmt
     type: check
-    # Assumes the standalone cljfmt binary on PATH, which `npm run doctor`
-    # provisions here (the mutation above already relies on it). In a toolchain
-    # without it the form is `clj -Tcljfmt check` or `lein cljfmt check`.
+    # Assumes the standalone cljfmt binary is already on PATH (the mutation
+    # above already relies on it). `npm run doctor` does NOT provision it —
+    # `cljfmt` is absent from DOCTOR_TOOL_INVENTORY
+    # (apps/rhino-cli/src/application/repo_config/mod.rs) and this gate
+    # declares no `doctor-tools:`. It must be installed out-of-band (e.g. via
+    # a Clojure CLI/Leiningen toolchain) until Doctor support lands. In a
+    # toolchain without the standalone binary, the form is
+    # `clj -Tcljfmt check` or `lein cljfmt check`.
     command: cljfmt check
     kind: external
     verifies: format-cljfmt
