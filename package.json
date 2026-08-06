@@ -140,7 +140,7 @@
     "**/Dockerfile*": [
       "hadolint --failure-threshold warning"
     ],
-    "*.{json,toml,ts,tsx,js,jsx,mjs,cjs,rs,go,py,cs,clj,dart,ex,exs,fs}": [
+    "*.{json,toml,yml,yaml,ts,tsx,js,jsx,mjs,cjs,rs,go,py,cs,clj,dart,ex,exs,fs}": [
       "cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- convention emoji validate"
     ],
     "*.feature": [

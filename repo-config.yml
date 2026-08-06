@@ -562,7 +562,7 @@ gates:
     surfaces:
       pre-commit:
         scope: affected-file-type
-        glob: "*.{json,toml,ts,tsx,js,jsx,mjs,cjs,rs,go,py,cs,clj,dart,ex,exs,fs}"
+        glob: "*.{json,toml,yml,yaml,ts,tsx,js,jsx,mjs,cjs,rs,go,py,cs,clj,dart,ex,exs,fs}"
       ci: { scope: all-file-type }
 
   - id: specs-gherkin-cardinality
