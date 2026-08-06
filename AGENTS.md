@@ -232,18 +232,17 @@ invent `validate:{thing}` prefixes.
   tool as fallback. Record the tool, fallback, and capability gaps; static inspection cannot replace a
   working browser integration. Use curl for API-only surfaces
   ([manual-behavioral-verification.md](./repo-governance/development/quality/manual-behavioral-verification.md)).
-- **User-facing delivery hardening**: For any user-facing change, follow the sixteen rules — visual-parity sign-off against the design mockups per breakpoint/locale **before archival**, name the design-system primitive, per-breakpoint responsive deliverables, value-bearing tests, mockup-colors-as-theme-tokens, deploy-config-is-code, checkbox lockstep, and — for web-UI feature-change plans — a near-end three-tester retest round (the `web-ux-test-fixing-planning` workflow: `web-exploratory-tester` + `web-usability-tester` + `web-design-tester`) invoked with **`output-mode: delivery`** and the plan's **`plan-path`** so EWT/UWT/DWT findings are appended in-place to `delivery.md` as unchecked task-list items and fixed before archival; and — for API feature-change plans (REST/GraphQL) — a near-end `api-exploratory-tester` retest round (`output-mode: delivery`, the plan's `plan-path`) whose AET findings are appended to `delivery.md` and fixed before archival, exactly as the web-triad findings are (Rule 16) ([user-facing-delivery-hardening.md](./repo-governance/development/quality/user-facing-delivery-hardening.md))
+- **User-facing delivery hardening**: For any user-facing change, follow the sixteen rules, including
+  near-end EWT/UWT/DWT (web) or AET (API) retest rounds appended to `delivery.md` before archival
+  ([user-facing-delivery-hardening.md](./repo-governance/development/quality/user-facing-delivery-hardening.md))
 - **CI blockers**: Investigate root cause, fix properly, never bypass ([ci-blocker-resolution.md](./repo-governance/development/quality/ci-blocker-resolution.md))
 - **Build-artifact sweeper**: An ambient sweeper deletes gitignored build output/caches at any time, mid-plan. Regenerate (`nx build`, `npm run doctor -- --fix`) and continue — never file a finding or blame a concurrent agent; it never touches tracked files ([build-artifact-sweeper.md](./repo-governance/development/infra/build-artifact-sweeper.md))
 - **CI post-push verification**: After pushing app or lib code, trigger and verify relevant GitHub CI workflows pass before declaring work done — pre-push hook alone is not sufficient ([ci-post-push-verification.md](./repo-governance/development/workflow/ci-post-push-verification.md))
 
 ## Git Hooks (Automated Quality)
 
-The three Husky files are registry shims (`rhino-cli gate list/run/validate`). `repo-config.yml`'s
-`gates:` registry is authoritative — never hand-maintain hook or CI command lists. `main-ci.yml` is
-deleted; never trigger, monitor, or gate plan work on it.
-
-**See**: [SDLC Gate Standard](./docs/reference/sdlc-gate-standard.md)
+Husky hooks are registry shims (`gate list/run/validate`); `repo-config.yml`'s `gates:` is
+authoritative, never hand-maintained. See [SDLC Gate Standard](./docs/reference/sdlc-gate-standard.md).
 
 ## Agent Workflow Orchestration
 
