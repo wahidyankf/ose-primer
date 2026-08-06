@@ -126,7 +126,7 @@ Each component above is exercised by Gherkin features from
 
 | Component                             | Gherkin Domain(s) | Features                                                         |
 | ------------------------------------- | ----------------- | ---------------------------------------------------------------- |
-| Health Status                         | health            | health-status (2)                                                |
+| Health Status                         | health            | health-status (3)                                                |
 | Login Page + Auth Store               | authentication    | login (5), session (7)                                           |
 | Registration Page                     | user-lifecycle    | registration (6)                                                 |
 | Profile Page                          | user-lifecycle    | user-profile (6)                                                 |

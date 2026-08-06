@@ -34,7 +34,7 @@ Propagation flows `ose-public → ose-primer → downstream forks` for governanc
 
 **See**: [Repository Ecosystem Convention](./repo-governance/conventions/structure/repository-ecosystem.md) (canonical rules) and [Related Repositories reference](./docs/reference/related-repositories.md) (full catalogue).
 
-- **Node.js**: 24.13.1 (LTS - Long-Term Support, managed by Volta)
+- **Node.js**: 24.16.0 (LTS - Long-Term Support, managed by Volta)
 - **npm**: 11.10.1
 - **Monorepo**: Nx with `apps/` and `libs/` structure
 - **Git Workflow**: Trunk Based Development (TBD). Every plan resolves to one of four **Delivery Modes** -- `worktree-to-pr` is the repo-wide default; the four-mode work-location/integration-target table is in the linked convention. `*-to-pr` modes run the
@@ -184,8 +184,8 @@ they run through the shared `gate` job rather than standalone job keys.
 
 Code under `apps/`/`libs/` never lands without its companion `specs/` Gherkin. This binds **both** ways a behavior change arrives at `apps/`, `libs/`, or `specs/`:
 
-- **Direct change (no plan doc)**: edit app/lib code and add/update the matching `specs/apps/**` or `specs/libs/**` Gherkin `.feature` files (plus contracts/tests/docs) in the **same commit or PR**. Enforced by the `specs:coverage` Nx target and `swe-code-checker` (Step 6.6).
-- **Planned change (plan doc)**: any plan whose scope touches `apps/`, `libs/`, or `specs/` MUST carry explicit delivery-checklist steps that add/update the companion Gherkin and run `specs:coverage`. `plan-maker` emits them; `plan-checker` (Step 5j) flags their absence.
+- **Direct change (no plan doc)**: edit app/lib code and add/update the matching `specs/apps/**` or `specs/libs/**` Gherkin `.feature` files (plus contracts/tests/docs) in the **same commit or PR**. Enforced by the `specs:behavior:coverage` Nx target and `swe-code-checker` (Step 6.6).
+- **Planned change (plan doc)**: any plan whose scope touches `apps/`, `libs/`, or `specs/` MUST carry explicit delivery-checklist steps that add/update the companion Gherkin and run `specs:behavior:coverage`. `plan-maker` emits them; `plan-checker` (Step 5j) flags their absence.
 
 Pure refactors that preserve behavior, dependency bumps with no behavior change, and docs/governance-only changes are exempt.
 
@@ -304,7 +304,7 @@ All agents follow foundational principles:
 
 - For navigating/exploring the workspace, invoke the `nx-workspace` agent skill first - it has patterns for querying projects, targets, and dependencies
 - When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e. `nx run`, `nx run-many`, `nx affected`) instead of using the underlying tooling directly
-- Prefix nx commands with the workspace's package manager (e.g., `pnpm nx build`, `npm exec nx test`) - avoids using globally installed CLI
+- Prefix nx commands with the workspace's package manager (for example, `npm exec nx -- build`) - avoids using a globally installed CLI
 - You have access to the Nx MCP server and its tools, use them to help the user
 - For Nx plugin best practices, check `node_modules/@nx/<plugin>/PLUGIN.md`. Not all plugins have this file - proceed without it if unavailable.
 - NEVER guess CLI flags - always check nx_docs or `--help` first when unsure

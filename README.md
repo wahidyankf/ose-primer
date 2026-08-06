@@ -1,120 +1,122 @@
 # ose-primer
 
-Repository template for OSE-style polyglot Nx monorepos. Clone it whole or cherry-pick the parts you need to bootstrap a new repo that ships with governance, AI agents, skills, polyglot demo apps, and shared repo tooling already wired together.
+🚀 A reusable Nx starter for teams that want a thoughtful, polyglot workspace before their product gets complicated.
 
-## 🎯 What this is
+`ose-primer` gives you a working place to begin: example CRUD applications, shared contracts, quality gates, AI-ready repository guidance, and a documentation structure that can grow with your project. It is a template to adapt, not an OSE product to operate.
 
-`ose-primer` is a **clean, opinionated starting point** — not a product. It is everything a new OSE-style monorepo needs on day one: Nx workspace wiring, a Husky + lint-staged + commitlint pre-commit/pre-push stack, markdown tooling, doctor-based polyglot toolchain convergence, the `rhino-cli` repo-management CLI, the Diátaxis governance tree, and a ready-to-run three-level testing standard demonstrated across eleven backend and three frontend stacks.
+## Start here
 
-Use it by forking, cloning, or copying the directories that fit your project — the template itself is intentionally minimal and **MIT-licensed** so you can relicense freely downstream.
+Choose the route that matches why you opened the repository:
 
-## What it ships
+- **I want to see something run.** Follow [Run the Next.js demo](#run-the-nextjs-demo). You will start `crud-fe-ts-nextjs` and open it at `http://localhost:3301`.
+- **I want a starter for my own project.** Follow [Make the starter yours](#make-the-starter-yours) after the demo is running.
+- **I want to understand the system.** Read the [documentation map](./docs/README.md), then use the [architecture reference](./docs/reference/system-architecture/README.md) when you need detail.
 
-- **Polyglot `crud-*` scaffolding** — 11 backend demos (Go, Java/Spring, Elixir/Phoenix, F#/Giraffe, Python/FastAPI, Rust/Axum, Kotlin/Ktor, Java/Vert.x, TypeScript/Effect, C#/ASP.NET, Clojure/Pedestal), 3 frontends (Next.js, TanStack Start, Flutter Web), one fullstack (Next.js), 2 E2E harnesses, and a shared OpenAPI contract (`crud-contracts`) that drives codegen across all of them.
-- **`rhino-cli`** — Rust CLI for repository hygiene: `doctor`, `test-coverage`, `specs:coverage validate`, `convention validate-naming-harness`, `convention validate-naming-workflows`, `env backup|restore`, and more. `apps/rhino-cli/` is invoked by CI and all toolchain scripts, and consumes the behavior contract in `specs/apps/rhino/`.
-- **Shared libs** — `golang-commons` and small TypeScript utilities.
-- **Governance** — six-layer hierarchy (Vision → Principles → Conventions → Development → Agents → Workflows) under `repo-governance/`.
-- **Generic AI agents + skills** — Maker/Checker/Fixer pattern for plans, repo rules, workflows, UI, code, docs, CI; plus language-specific development agents (`swe-*-dev`). No product-specific agents.
-- **Dual-mode configuration** — `.claude/` (source of truth) auto-synced to `.opencode/`.
+## What problem it solves
 
-## How to use this template
+Starting a product repository usually means solving the same setup problems again: predictable tooling, a safe development workflow, a place for decisions, a way to test across languages, and a project structure people can learn. `ose-primer` packages those foundations with runnable examples so a team can spend its early energy on its product rather than reassembling repository mechanics.
 
-1. **Clone or fork**: `git clone git@github.com:wahidyankf/ose-primer.git my-new-repo && cd my-new-repo`.
-2. **Bootstrap the toolchain**: `npm install && npm run doctor -- --fix`. This pins Node via Volta, installs npm workspaces, and converges 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node).
-3. **Keep what you need, delete what you don't** — every `crud-*` variant is independently deletable with a single `git rm -r apps/<name>` (plus its `specs/apps/crud/behavior/be/gherkin/<name>/` entries, if present). The `rhino-cli`, `repo-governance/`, `docs/`, `.claude/`, `.opencode/`, and `plans/` trees are expected to survive; the rest is opt-in.
-4. **Rename to your project** — search-and-replace `ose-primer` across the repo, point `origin` at your new remote, and push to `main`.
-5. **Start your own plans** — drop idea briefs (two-pagers) into `plans/ideas/` and promote ripe ones to a `plans/backlog/[identifier]/` folder following the five-document convention.
+It is deliberately different from [ose-public](https://github.com/wahidyankf/ose-public):
 
-The template practices **Trunk Based Development**: one branch (`main`), small commits, Husky-enforced quality gates. No PRs within the template itself — downstream forks decide their own branching and deployment policy.
+| Repository                                               | Start here when you need…                                                                                      |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| [`ose-public`](https://github.com/wahidyankf/ose-public) | The public Open Sharia Enterprise platform, its product context, and its active applications.                  |
+| `ose-primer`                                             | A reusable MIT-licensed Nx foundation and polyglot reference implementations to reshape into a new repository. |
 
-## Prerequisites
+## Run the Next.js demo
 
-- **Node.js 24.13.1** + **npm 11.10.1** via [Volta](https://docs.volta.sh/guide/getting-started).
-- Everything else (Go, Java, Python, Rust, Elixir, Kotlin, C#, Clojure, Dart, Docker, jq, Playwright) is auto-installed by `npm run doctor -- --fix`.
+This is the smallest useful fresh-checkout journey. It needs Node.js and npm; Docker and the rest of the polyglot toolchain are not required for this first screen.
 
-## 🛠️ Common commands
+### 1. Prepare your machine
+
+- **macOS and Ubuntu Linux:** install [Volta](https://docs.volta.sh/guide/getting-started), then open a new terminal. The repository pins Node.js `24.16.0` and npm `11.10.1`.
+- **Windows:** this path may work through WSL2. Use an Ubuntu distribution in WSL2 and follow the Linux instructions there; it is not a separately supported native-Windows setup.
+
+### 2. Clone and install
 
 ```bash
-npm install                      # Install deps + set up Husky hooks
-npm run doctor                   # Check polyglot toolchain
-npm run doctor -- --fix          # Auto-install missing tools
-
-npm run lint:md                  # Lint all markdown
-npm run lint:md:fix              # Auto-fix markdown violations
-
-nx dev [app-name]                # Start a dev server
-nx build [app-name]              # Build one project
-nx affected -t typecheck lint test:quick specs:coverage  # Pre-push gate
-nx run-many -t typecheck lint test:quick specs:coverage  # Full workspace gate
-nx graph                         # Visualise dependencies
-
-npm run generate:bindings  # Regenerate .opencode/ from .claude/
-npm run validate:claude          # Lint .claude/ source format
-npm run validate:opencode        # Lint .opencode/ output format
+git clone https://github.com/wahidyankf/ose-primer.git
+cd ose-primer
+npm install
 ```
 
-See [CLAUDE.md](./CLAUDE.md) for the full command + convention reference tailored for AI-assisted sessions.
+`npm install` prepares the JavaScript workspace and hooks. If you later work with another language, run `npm run doctor -- --fix` to converge the complete native toolchain.
 
-## 📚 Governance & conventions
+### 3. Start the demo
 
-The `repo-governance/` tree is the rulebook:
-
-- **[principles/](./repo-governance/principles/README.md)** — Root values (Simplicity Over Complexity, Root Cause Orientation, Reproducibility First, No Time Estimates, …).
-- **[conventions/](./repo-governance/conventions/README.md)** — File naming, linking, indentation, emoji, diagrams, agent naming, workflow naming, plans.
-- **[development/](./repo-governance/development/README.md)** — Three-level testing standard, Nx targets, code quality, commit messages, worktree setup.
-- **[workflows/](./repo-governance/workflows/README.md)** — Orchestrated multi-agent processes (plan-quality-gate, plan-execution, repo-rules-quality-gate, docs-quality-gate, specs-quality-gate, ci-quality-gate).
-- **[vision/](./repo-governance/vision/README.md)** — High-level purpose.
-- **[repository-governance-architecture.md](./repo-governance/repository-governance-architecture.md)** — How the six layers compose.
-
-Agents live under `.claude/agents/` (source of truth) and `.opencode/agents/` (mirror). Skills live under `.claude/skills/` and `.opencode/skills/`. See [.claude/agents/README.md](./.claude/agents/README.md).
-
-## 📂 Repository layout
-
+```bash
+npm exec nx -- dev crud-fe-ts-nextjs
 ```
-ose-primer/
-├── apps/                      # Deployable applications (Nx)
-│   ├── rhino-cli/        # Rust — repository-management CLI
-│   ├── crud-be-*/           # 11 polyglot backend demos
-│   ├── crud-be-e2e/
-│   ├── crud-fe-*/           # 3 frontend variants
-│   ├── crud-fe-e2e/
-│   └── crud-fs-ts-nextjs/   # Fullstack demo
-├── libs/                      # Shared libraries (flat)
-├── specs/                     # Gherkin, OpenAPI contracts, C4
-├── docs/                      # Diátaxis docs (tutorials/how-to/reference/explanation)
-├── repo-governance/                # Principles, conventions, development, workflows, vision
-├── plans/                     # ideas/, backlog/, in-progress/, done/
-├── .claude/                   # Claude Code agents, skills, settings
-├── .opencode/                 # OpenCode mirror (auto-generated)
-├── .husky/                    # Git hooks
-├── infra/                     # docker-compose infra for demo backends
-├── nx.json                    # Nx workspace config
-├── tsconfig.base.json         # Base TS config
-├── CLAUDE.md                  # Full repo guidance for Claude Code sessions
-└── AGENTS.md                  # OpenCode equivalent of CLAUDE.md
+
+Open <http://localhost:3301>. You now have a running Next.js reference application. Stop it with `Ctrl+C` when you are done.
+
+If the port is occupied, stop the process using port `3301` or choose a different demo. For project-specific commands, start with [`apps/crud-fe-ts-nextjs/README.md`](./apps/crud-fe-ts-nextjs/README.md).
+
+## Make the starter yours
+
+Once the demo is running, create a copy that you control:
+
+1. Fork or clone this repository into a new project directory.
+2. Keep the apps, libraries, specifications, and governance pieces that help your team; remove examples you do not need alongside their related specifications.
+3. Rename `ose-primer`, set your own remote, and describe your product in the root README.
+4. Keep the quality gates and documentation habits that serve your team; adapt the rest deliberately.
+
+The template is MIT-licensed, so downstream projects may choose their own license and delivery policy.
+
+## What is included
+
+- **Reference applications:** CRUD backends in multiple languages, frontend examples, a full-stack Next.js example, and paired end-to-end test harnesses.
+- **Shared contract:** an OpenAPI contract and generated clients that make the demos useful for comparing implementation choices.
+- **`rhino-cli`:** local repository checks, toolchain doctor, and documentation validation used by the workspace.
+- **Repository foundations:** Nx configuration, Husky quality hooks, a Diátaxis documentation tree, planning conventions, and AI-agent guidance.
+
+See [apps/README.md](./apps/README.md) for the available demos and [docs/reference/README.md](./docs/reference/README.md) for reference material.
+
+## Everyday commands
+
+```bash
+# Check or converge the full polyglot toolchain
+npm run doctor
+npm run doctor -- --fix
+
+# Work with one project
+npm exec nx -- build crud-fe-ts-nextjs
+npm exec nx -- run crud-fe-ts-nextjs:test:quick
+
+# Work across the workspace
+npm exec nx -- affected -t build,test:quick,lint
+npm run lint:md
+npm run validate:sync
 ```
+
+Use `npm exec nx --` so npm forwards the command to the workspace version of Nx. The [development reference](./repo-governance/development/README.md) explains the testing and quality-gate vocabulary.
+
+## Documentation map
+
+📚 The documentation is arranged by the kind of help you need:
+
+- [Tutorials](./docs/tutorials/README.md) — learn by completing a guided outcome.
+- [How-to guides](./docs/how-to/README.md) — solve a focused problem.
+- [Reference](./docs/reference/README.md) — look up commands, structure, and contracts.
+- [Explanation](./docs/explanation/README.md) — understand the decisions behind the workspace.
+
+## External contributions
+
+This repository is shared as a reusable reference, but it is not accepting external pull requests, issues, feature requests, or support requests. You are welcome to fork it and shape the copy around your own product. Authorized maintainers use the repository's internal delivery workflow.
+
+For a security concern, follow [SECURITY.md](./SECURITY.md); do not publish sensitive details in a public channel.
 
 ## Related repositories
 
-`ose-primer` is one of four sibling repositories in the OSE (Open Sharia Enterprise) family. Each repo stands alone — there is no parent monorepo — but governance, conventions, and tooling are kept aligned across the sync-loop repos via explicit cross-repo propagation.
+`ose-primer` is one of the Open Sharia Enterprise repositories. It shares selected governance and tooling conventions with its siblings while staying independently clonable:
 
-| Repository                                                           | Role                                                                                                                                   | Visibility | License           |
-| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----------------- |
-| [`ose-public`](https://github.com/wahidyankf/ose-public)             | Main OSE platform monorepo. Source of governance, conventions, and AI agent patterns adopted here.                                     | Public     | Open source (MIT) |
-| [`ose-primer`](https://github.com/wahidyankf/ose-primer) (this repo) | Repository template — clean MIT-licensed starting point for new OSE-style polyglot Nx monorepos.                                       | Public     | MIT               |
-| [`ose-private`](https://github.com/wahidyankf/ose-private)           | Unexposed surface of Open Sharia Enterprise (infrastructure, private source, and anything not publicly released) backing `ose-public`. | Private    | Proprietary       |
-| [`beaver-nest`](https://github.com/wahidyankf/beaver-nest)           | BeaverNest — a personal operating layer (assistant, content builder, posting helper, workflow engine) built within the OSE ecosystem.  | Public     | MIT               |
+- [`ose-public`](https://github.com/wahidyankf/ose-public) — the public OSE platform.
+- [`ose-primer`](https://github.com/wahidyankf/ose-primer) — this reusable template and reference workspace.
+- [`ose-private`](https://github.com/wahidyankf/ose-private) — private operations for authorized maintainers.
+- [`beaver-nest`](https://github.com/wahidyankf/beaver-nest) — a separate product in the ecosystem.
 
-**Propagation direction**: governance, conventions, agents, and skills generally flow `ose-public → ose-primer → downstream forks`. Infrastructure-only concerns flow `ose-public ↔ ose-private`. Each repo is independently clonable; no submodules, no workspace links.
-
-**`beaver-nest` is outside the sync loop.** It is a full family member and cross-references the other three, but it scaffolded from this ecosystem and syncs no generic content in either direction. No parity plan targets it.
-
-See the [Related Repositories reference](./docs/reference/related-repositories.md) for the full catalogue.
-
-See the [Repository Ecosystem Convention](./repo-governance/conventions/structure/repository-ecosystem.md) for the canonical description of the sibling relationship and propagation rules.
+See [Related Repositories](./docs/reference/related-repositories.md) for the documented boundaries.
 
 ## License
 
-**MIT** across the entire repo. See [LICENSE](./LICENSE) and [LICENSING-NOTICE.md](./LICENSING-NOTICE.md).
-
-MIT is the lowest-friction choice for a template: downstream cloners can relicense freely without encountering FSL or other delayed-open-source constraints they did not choose.
+MIT. See [LICENSE](./LICENSE) and [LICENSING-NOTICE.md](./LICENSING-NOTICE.md).

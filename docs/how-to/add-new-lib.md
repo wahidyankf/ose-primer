@@ -15,7 +15,7 @@ This guide shows you how to create a new reusable library in the `libs/` folder 
 
 ## 📋 Prerequisites
 
-- Node.js 24.13.1 and npm 11.10.1 (managed by Volta)
+- Node.js 24.16.0 and npm 11.10.1 (managed by Volta)
 - Nx workspace initialized
 - Understanding of the library's purpose and scope
 
@@ -220,15 +220,15 @@ const result = functionName("example");
 
 # Build library
 
-nx build ts-[name]
+npm exec nx -- build ts-[name]
 
 # Run fast quality gate (pre-push standard)
 
-nx run ts-[name]:test:quick
+npm exec nx -- run ts-[name]:test:quick
 
 # Run isolated unit tests
 
-nx run ts-[name]:test:unit
+npm exec nx -- run ts-[name]:test:unit
 \`\`\`
 
 ## Dependencies
@@ -256,16 +256,16 @@ npm install
 
 ```bash
 # Build library
-nx build ts-[name]
+npm exec nx -- build ts-[name]
 
 # Run fast quality gate (pre-push standard)
-nx run ts-[name]:test:quick
+npm exec nx -- run ts-[name]:test:quick
 
 # Run isolated unit tests
-nx run ts-[name]:test:unit
+npm exec nx -- run ts-[name]:test:unit
 
 # View dependency graph
-nx graph
+npm exec nx -- graph
 ```
 
 ### Step 10: Use Library in Apps
@@ -323,7 +323,7 @@ ts-users imports ts-auth  ❌ CIRCULAR DEPENDENCY
 **Use `nx graph` to monitor dependencies**:
 
 ```bash
-nx graph  # View full dependency graph
+npm exec nx -- graph  # View full dependency graph
 ```
 
 ### Language Boundaries

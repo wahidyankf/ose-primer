@@ -44,10 +44,10 @@ Follow the existing conventions:
 
 ```bash
 # Lint validates the spec and bundles it
-nx run crud-contracts:lint
+npm exec nx -- run crud-contracts:lint
 
 # Or bundle only (no lint)
-nx run crud-contracts:bundle
+npm exec nx -- run crud-contracts:bundle
 ```
 
 This produces `specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml` — the single file
@@ -57,10 +57,10 @@ consumed by all codegen targets.
 
 ```bash
 # Regenerate for all demo apps at once
-nx run-many -t codegen --projects=demo-*
+npm exec nx -- run-many -t codegen --projects=crud-*
 
 # Or regenerate for a specific app
-nx run crud-be-golang-gin:codegen
+npm exec nx -- run crud-be-golang-gin:codegen
 ```
 
 Each app's `codegen` target depends on `crud-contracts:bundle`, so Nx ensures the bundle
@@ -75,7 +75,7 @@ If you added or changed endpoints:
 - The `typecheck` target will catch type mismatches:
 
 ```bash
-nx affected -t typecheck
+npm exec nx -- affected -t typecheck
 ```
 
 ### 5. Update Gherkin Scenarios (If Needed)
@@ -90,16 +90,16 @@ process.
 
 ```bash
 # Run all quality gates for affected projects
-nx affected -t test:quick
+npm exec nx -- affected -t test:quick
 
 # Verify types compile
-nx affected -t typecheck
+npm exec nx -- affected -t typecheck
 ```
 
 ### 7. Generate API Documentation (Optional)
 
 ```bash
-nx run crud-contracts:docs
+npm exec nx -- run crud-contracts:docs
 ```
 
 This generates browsable HTML documentation at

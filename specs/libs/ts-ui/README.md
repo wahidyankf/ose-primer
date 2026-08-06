@@ -45,7 +45,7 @@ specs/libs/ts-ui/
 ## Running the Tests
 
 ```bash
-nx run ts-ui:test:unit
+npm exec nx -- run ts-ui:test:unit
 ```
 
 Every scenario is consumed at the unit level via the matching `*.steps.tsx` file co-located with

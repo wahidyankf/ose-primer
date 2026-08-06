@@ -15,7 +15,10 @@ tags:
 
 # Rules - Repository Governance
 
-This directory contains all governance layers that define WHY the project exists, WHAT we value, WHAT documentation standards we follow, HOW we develop software, and WHEN we orchestrate multi-step processes.
+This directory explains the guardrails carried by `ose-primer`: why the starter exists, how its
+documentation stays useful, and how a team can make deliberate product changes without losing the
+quality checks that make the examples comparable. Read it when you need a decision rule, not before
+your first run.
 
 All governance content is organized under this `repo-governance/` directory for clear semantic grouping while maintaining the six-layer architecture terminology.
 

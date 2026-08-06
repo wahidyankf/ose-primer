@@ -491,13 +491,13 @@ import { formatDate } from "@open-sharia-enterprise/ts-utils";
 
 ```bash
 # View full dependency graph
-nx graph
+npm exec nx -- graph
 
 # View specific project dependencies
-nx graph --focus=crud-fs-ts-nextjs
+npm exec nx -- graph --focus=crud-fs-ts-nextjs
 
 # View affected projects
-nx affected:graph
+npm exec nx -- graph --affected
 ```
 
 ## Path Mappings

@@ -1,19 +1,22 @@
-# Specs
+# Specifications
 
-Gherkin acceptance specifications for applications in this monorepo.
+`specs/` is the readable contract layer for this primer’s reference applications and libraries.
+It shows how product intent, observable behavior, API contracts, and architecture records can stay
+close to implementation without being hidden inside it. Treat the examples as patterns to adapt to
+your own product—not a fixed specification for a "CRUD" product. 📐
 
 ## What This Is
 
-This directory holds executable specifications written in Gherkin — the shared language between
-business stakeholders, developers, and QA engineers. These specs describe _what_ each app does,
-not _how_ it is implemented.
+This directory holds executable specifications written in Gherkin—the shared language between
+product people, engineers, and quality collaborators. They describe _what_ a reference app does,
+not _how_ a particular implementation achieves it.
 
 ## Why Specs Live Here
 
 Acceptance specs belong at the monorepo root rather than inside app directories because:
 
-- **Stakeholder access** — business owners and QA engineers read specs without navigating app internals
-- **Shared ownership** — Three Amigos (business + development + QA) collectively own these files
+- **Product access** — product people and quality collaborators can read behavior without navigating implementation internals
+- **Shared ownership** — the people shaping product, development, and quality can use the same language
 - **Clear separation** — specs define behavior; implementation tests live inside the apps
 
 ## Testing Layers
@@ -28,7 +31,7 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 
 - **[crud/](./apps/crud/README.md)** — CRUD application specifications
   (platform-agnostic Gherkin — see [be/gherkin](./apps/crud/behavior/crud-be/gherkin/README.md) and [web/gherkin](./apps/crud/behavior/crud-web/gherkin/README.md) for details)
-- **[rhino/](./apps/rhino/README.md)** — Repository management CLI specifications (Go, godog)
+- **[rhino/](./apps/rhino/README.md)** — Repository management CLI specifications (Rust implementation)
 
 ## Library Specs
 

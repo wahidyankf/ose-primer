@@ -10,7 +10,9 @@ tags:
 
 # Explanation
 
-**Understanding-oriented documentation** that provides background, context, and conceptual knowledge about the open-sharia-enterprise project.
+**Understanding-oriented documentation** for people adapting `ose-primer`. It explains the
+decisions behind the polyglot starter, its shared quality model, and the OSE conventions it carries.
+Start with the tutorial for a first run; use these pages when you want the reasoning behind it.
 
 ## What is Explanation Documentation?
 

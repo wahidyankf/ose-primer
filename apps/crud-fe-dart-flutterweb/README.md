@@ -22,19 +22,19 @@ ensure full Playwright E2E compatibility. All pages produce real `<input>`, `<bu
 
 ```bash
 # Development server
-nx dev crud-fe-dart-flutterweb
+npm exec nx -- dev crud-fe-dart-flutterweb
 
 # Build
-nx build crud-fe-dart-flutterweb
+npm exec nx -- build crud-fe-dart-flutterweb
 
 # Lint (dart analyze — depends on codegen)
-nx lint crud-fe-dart-flutterweb
+npm exec nx -- lint crud-fe-dart-flutterweb
 
 # Fast quality gate: unit tests + coverage check (>=70%)
-nx run crud-fe-dart-flutterweb:test:quick
+npm exec nx -- run crud-fe-dart-flutterweb:test:quick
 
 # Unit tests only
-nx run crud-fe-dart-flutterweb:test:unit
+npm exec nx -- run crud-fe-dart-flutterweb:test:unit
 ```
 
 **See**: [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) for canonical target names.
@@ -70,7 +70,7 @@ Generated Dart types live in `generated-contracts/` (gitignored). The `codegen` 
 ```bash
 # With docker compose running:
 BASE_URL=http://localhost:3301 BACKEND_URL=http://localhost:8201 \
-  npx nx run crud-fe-e2e:test:e2e
+  npm exec nx -- run crud-fe-e2e:test:e2e
 ```
 
 ## Project Structure

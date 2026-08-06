@@ -23,25 +23,25 @@ Demo Frontend - TanStack Start (TypeScript) implementation consuming the
 
 ```bash
 # Start development server (localhost:3301)
-nx dev crud-fe-ts-tanstack-start
+npm exec nx -- dev crud-fe-ts-tanstack-start
 
 # Production build
-nx build crud-fe-ts-tanstack-start
+npm exec nx -- build crud-fe-ts-tanstack-start
 
 # Start production server
-nx run crud-fe-ts-tanstack-start:start
+npm exec nx -- run crud-fe-ts-tanstack-start:start
 
 # Type checking
 nx typecheck crud-fe-ts-tanstack-start
 
 # Lint code (oxlint)
-nx lint crud-fe-ts-tanstack-start
+npm exec nx -- lint crud-fe-ts-tanstack-start
 
 # Fast quality gate: unit tests + coverage check
-nx run crud-fe-ts-tanstack-start:test:quick
+npm exec nx -- run crud-fe-ts-tanstack-start:test:quick
 
 # Unit tests only
-nx run crud-fe-ts-tanstack-start:test:unit
+npm exec nx -- run crud-fe-ts-tanstack-start:test:unit
 ```
 
 **See**: [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) for canonical target names.
@@ -67,10 +67,10 @@ apps/crud-fe-ts-tanstack-start/
 
 Two levels of testing consume the shared Gherkin scenarios from [`specs/apps/crud/behavior/crud-web/gherkin/`](../../specs/apps/crud/behavior/crud-web/gherkin/README.md):
 
-| Level | Tool                        | Dependencies | Command                                      | Cached? |
-| ----- | --------------------------- | ------------ | -------------------------------------------- | ------- |
-| Unit  | @amiceli/vitest-cucumber    | All mocked   | `nx run crud-fe-ts-tanstack-start:test:unit` | Yes     |
-| E2E   | Playwright + playwright-bdd | Full stack   | `nx run crud-fe-e2e:test:e2e`                | No      |
+| Level | Tool                        | Dependencies | Command                                                  | Cached? |
+| ----- | --------------------------- | ------------ | -------------------------------------------------------- | ------- |
+| Unit  | @amiceli/vitest-cucumber    | All mocked   | `npm exec nx -- run crud-fe-ts-tanstack-start:test:unit` | Yes     |
+| E2E   | Playwright + playwright-bdd | Full stack   | `npm exec nx -- run crud-fe-e2e:test:e2e`                | No      |
 
 **Coverage**: Measured from `test:unit` only (Vitest v8). `test:quick` = `test:unit` + `rhino-cli test-coverage validate` (>=70%). Both `test:quick` and `test:unit` include `{projectRoot}/src/generated-contracts/**/*` as cache inputs so contract changes invalidate the cache.
 
@@ -80,7 +80,7 @@ Steps test component logic and state management with fully mocked dependencies.
 No DOM rendering, no HTTP calls:
 
 ```bash
-nx run crud-fe-ts-tanstack-start:test:unit
+npm exec nx -- run crud-fe-ts-tanstack-start:test:unit
 ```
 
 ### E2E Tests
@@ -90,13 +90,13 @@ for all crud-fe frontends. Run them after starting this frontend and a backend:
 
 ```bash
 # Start backend
-nx dev crud-be-golang-gin
+npm exec nx -- dev crud-be-golang-gin
 
 # Start this frontend (in another terminal)
-nx dev crud-fe-ts-tanstack-start
+npm exec nx -- dev crud-fe-ts-tanstack-start
 
 # Run E2E tests (in another terminal)
-BASE_URL=http://localhost:3301 nx run crud-fe-e2e:test:e2e
+BASE_URL=http://localhost:3301 npm exec nx -- run crud-fe-e2e:test:e2e
 ```
 
 ## Related Documentation

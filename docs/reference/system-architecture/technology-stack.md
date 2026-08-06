@@ -10,7 +10,9 @@ tags:
 
 # Technology Stack
 
-Technology stack summary, quality tools, and future architecture considerations for the Open Sharia Enterprise platform.
+Technology stack summary for `ose-primer`, a reusable polyglot Nx starter rather than a deployed
+product platform. The examples let a team compare implementation choices while retaining shared
+contracts, specifications, and delivery checks.
 
 ## Technology Stack Summary
 
@@ -44,7 +46,7 @@ Technology stack summary, quality tools, and future architecture considerations 
 ### Infrastructure
 
 - **Monorepo**: Nx workspace
-- **Node.js**: 24.13.1 LTS (Volta-managed)
+- **Node.js**: 24.16.0 LTS (Volta-managed)
 - **Package Manager**: npm 11.10.1
 - **Git Workflow**: Trunk-Based Development
 - **CI**: GitHub Actions

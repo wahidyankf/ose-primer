@@ -14,7 +14,10 @@ tags:
 
 # Software Design
 
-**Understanding-oriented documentation** on software design patterns, architectural models, and design practices for building complex enterprise systems.
+**Understanding-oriented documentation** on patterns you can use while adapting the starter into a
+real product. It connects architecture choices to the practical questions product-minded engineers
+and early-career developers tend to ask: what are we changing, why does the boundary exist, and how
+will we know the change is safe?
 
 ## 📋 What is Software Design?
 

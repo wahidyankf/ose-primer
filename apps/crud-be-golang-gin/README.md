@@ -48,13 +48,13 @@ curl http://localhost:8201/health
 ## Nx Targets
 
 ```bash
-nx build crud-be-golang-gin                   # Compile binary (depends on codegen)
-nx dev crud-be-golang-gin                     # Start development server
-nx run crud-be-golang-gin:typecheck           # go vet ./... (depends on codegen)
-nx run crud-be-golang-gin:test:quick          # Unit (BDD) tests + coverage gate (>=90%)
-nx run crud-be-golang-gin:test:unit           # BDD unit tests only (verbose)
-nx run crud-be-golang-gin:test:integration    # PostgreSQL integration tests via Docker Compose
-nx lint crud-be-golang-gin                    # Run golangci-lint
+npm exec nx -- build crud-be-golang-gin                   # Compile binary (depends on codegen)
+npm exec nx -- dev crud-be-golang-gin                     # Start development server
+npm exec nx -- run crud-be-golang-gin:typecheck           # go vet ./... (depends on codegen)
+npm exec nx -- run crud-be-golang-gin:test:quick          # Unit (BDD) tests + coverage gate (>=90%)
+npm exec nx -- run crud-be-golang-gin:test:unit           # BDD unit tests only (verbose)
+npm exec nx -- run crud-be-golang-gin:test:integration    # PostgreSQL integration tests via Docker Compose
+npm exec nx -- lint crud-be-golang-gin                    # Run golangci-lint
 ```
 
 `codegen` generates Go types from the OpenAPI contract spec into `generated-contracts/` and is a

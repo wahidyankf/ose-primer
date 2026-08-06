@@ -1,4 +1,5 @@
 import path from "path";
+import { readFile } from "node:fs/promises";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { render, screen, waitFor, cleanup } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -33,11 +34,23 @@ function createQueryClient() {
 
 describeFeature(feature, ({ Scenario, Background }) => {
   let queryClient: QueryClient;
+  let configurationSource: string;
 
   Background(({ Given }) => {
     Given("the app is running", () => {
       cleanup();
       queryClient = createQueryClient();
+    });
+  });
+
+  Scenario("Application configuration loads the environment module during startup", ({ When, Then }) => {
+    When("the application configuration starts", async () => {
+      configurationSource = await readFile(path.resolve(process.cwd(), "next.config.ts"), "utf8");
+    });
+
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/health/health-status.feature:Application configuration loads the environment module during startup
+    Then("the application configuration should load successfully", () => {
+      expect(configurationSource).toContain('import "./src/env"');
     });
   });
 

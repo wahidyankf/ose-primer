@@ -22,16 +22,16 @@ import { Button, Card, CardHeader, CardTitle, cn } from "@open-sharia-enterprise
 ## Development
 
 ```bash
-nx run ts-ui:typecheck        # Type checking
-nx run ts-ui:test:unit        # Unit tests with vitest-axe
-nx run ts-ui:test:quick       # Tests + coverage validation (>=70%)
+npm exec nx -- run ts-ui:typecheck        # Type checking
+npm exec nx -- run ts-ui:test:unit        # Unit tests with vitest-axe
+npm exec nx -- run ts-ui:test:quick       # Tests + coverage validation (>=70%)
 ```
 
 ## Storybook
 
 ```bash
 nx storybook ts-ui             # Dev server on http://localhost:6006
-nx build-storybook ts-ui       # Static build
+npm exec nx -- build-storybook ts-ui       # Static build
 ```
 
 ## Visual Regression
@@ -39,8 +39,8 @@ nx build-storybook ts-ui       # Static build
 Playwright-based screenshot tests compare components against committed baselines.
 
 ```bash
-nx run ts-ui:test:visual                           # Run visual tests
-nx run ts-ui:test:visual -- --update-snapshots     # Update baselines after intentional changes
+npm exec nx -- run ts-ui:test:visual                           # Run visual tests
+npm exec nx -- run ts-ui:test:visual -- --update-snapshots     # Update baselines after intentional changes
 ```
 
 **When to update baselines**: After intentional visual changes to components (new variants, color

@@ -1,5 +1,3 @@
-// RED: src/env.ts does not exist yet — this import causes "Cannot find module".
-// GREEN will create src/env.ts with @t3-oss/env-nextjs + zod validation of BACKEND_URL.
 import { describe, it, expect } from "vitest";
 import { env } from "./env.js";
 

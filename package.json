@@ -1,7 +1,7 @@
 {
   "name": "ose-primer",
   "version": "1.0.0",
-  "description": "Repository template for OSE-style polyglot Nx monorepos",
+  "description": "A polyglot Nx starter with OSE governance, testing, automation, and reference apps already wired.",
   "private": true,
   "workspaces": [
     "apps/*",

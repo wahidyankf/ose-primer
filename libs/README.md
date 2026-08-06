@@ -1,218 +1,44 @@
-# Libs Folder
+# Shared libraries
 
-## Purpose
+`libs/` holds small reusable building blocks for the primer’s reference apps. They are examples of
+how to draw a boundary around code that more than one project can use—not a promise that every
+downstream repository needs every package. Keep the libraries that help your product; remove or
+replace the rest as your own architecture becomes clear. 🧩
 
-The `libs/` directory contains **reusable library packages** that can be shared across multiple applications. Libraries provide shared functionality, utilities, components, and services.
+## Current libraries
 
-## Folder Organization
+| Library                                         | What it demonstrates                                         | Used by                 |
+| ----------------------------------------------- | ------------------------------------------------------------ | ----------------------- |
+| [`golang-commons/`](./golang-commons/README.md) | Focused Go utilities and Gherkin-backed integration behavior | Go tooling and examples |
+| [`elixir-cabbage/`](./elixir-cabbage/README.md) | Compiling Gherkin behavior for Elixir tests                  | Elixir reference apps   |
+| [`elixir-gherkin/`](./elixir-gherkin/README.md) | Parsing Gherkin feature files in Elixir                      | Elixir reference apps   |
+| [`ts-ui-tokens/`](./ts-ui-tokens/README.md)     | Structural design tokens shared by web interfaces            | TypeScript frontends    |
+| [`ts-ui/`](./ts-ui/README.md)                   | Accessible React components built on those tokens            | TypeScript frontends    |
 
-**Flat Structure**: All libraries exist at the same level in `libs/` directory. No nested scopes or subdirectories.
+The repository also contains language-specific OpenAPI code-generation libraries. Their behavior
+and architecture records are in [specs/libs/](../specs/README.md#library-specs); open the consuming
+app README to understand when a particular generator is useful.
 
-```
-libs/
-└── golang-commons/    # Shared Go utilities (current)
-```
+## Rules of thumb
 
-## Naming Convention
+- Apps may import libraries; apps do not import one another.
+- Give a library one clear job and a documented public API.
+- Keep dependencies narrow and avoid circular library relationships.
+- Let each language use its native packaging and test tooling, with Nx providing a consistent
+  workspace command surface.
 
-Libraries follow the pattern: **`[language-prefix]-[name]`**
-
-This flat structure with language prefixes supports a **polyglot monorepo** where libraries can be written in multiple programming languages.
-
-### Language Prefixes
-
-- **`ts-*`** - TypeScript libraries (future)
-- **`go-*`** - Go libraries (current implementation — `golang-commons` uses full name for clarity)
-- **`java-*`** - Java libraries (future)
-- **`kt-*`** - Kotlin libraries (future)
-- **`py-*`** - Python libraries (future)
-
-### Examples
-
-**TypeScript libraries** (planned):
-
-- `ts-utils` - TypeScript utility functions
-- `ts-components` - Reusable React components
-- `ts-hooks` - Custom React hooks
-- `ts-api` - API client libraries
-
-**Go libraries** (current):
-
-- `golang-commons` - Shared Go utilities (links checker, output)
-
-**Future polyglot examples**:
-
-- `java-services` - Java backend services
-- `java-utils` - Java utility libraries
-- `kt-android` - Kotlin Android libraries
-- `kt-backend` - Kotlin backend services
-- `py-ml` - Python machine learning models
-- `py-data` - Python data processing
-
-## Current Implementation
-
-**`golang-commons`** - Shared Go utilities (link checking, timeutil, testutil) used by Go CLI tools.
-
-**`elixir-openapi-codegen`** - Elixir library that reads an OpenAPI 3.1 bundled YAML spec and
-generates Elixir struct modules with `defstruct`, `@enforce_keys`, and `@type` typespecs. Used by
-`crud-be-elixir-phoenix` to generate contract types from `specs/apps/crud/containers/contracts/`.
-
-**`clojure-openapi-codegen`** - Clojure library that reads an OpenAPI 3.1 bundled YAML spec and
-generates Malli schema definitions. Used by `crud-be-clojure-pedestal` to generate contract
-schemas from `specs/apps/crud/containers/contracts/`.
-
-**`elixir-cabbage`** / **`elixir-gherkin`** - Elixir Gherkin BDD testing libraries.
-
-## Library Characteristics
-
-- **Polyglot-Ready** - Designed to support multiple languages (TypeScript now, Java/Kotlin/Python future)
-- **Flat Structure** - All libs at same level (no nested scopes)
-- **Language-Specific** - Each language uses its own conventions and tools
-- **Reusable** - Libs are designed to be imported by apps and other libs
-- **Focused** - Each lib has a single, clear purpose
-- **Public API** - Exports controlled through index.ts (TypeScript) or language-specific mechanisms
-- **Testable** - Can be tested independently using language-specific test frameworks
-
-## Required Files (TypeScript Libraries)
-
-Each TypeScript library requires:
-
-```
-libs/ts-[name]/
-├── src/
-│   ├── index.ts             # Public API (barrel export)
-│   ├── lib/                 # Implementation
-│   │   ├── [feature].ts
-│   │   └── [feature].test.ts
-│   └── __tests__/           # Integration tests
-├── dist/                    # Build output (gitignored)
-├── package.json             # Lib dependencies (if any)
-├── project.json             # Nx project configuration
-├── tsconfig.json            # TypeScript configuration
-├── tsconfig.build.json      # Build-specific TS config
-└── README.md                # Library documentation
-```
-
-## Required Files (Go Libraries)
-
-Each Go library requires:
-
-```
-libs/golang-commons/
-├── links/              # Sub-package: link checker + output
-│   ├── checker.go
-│   ├── checker_test.go
-│   └── output.go
-├── go.mod              # Go module definition
-├── project.json        # Nx project configuration
-└── README.md           # Library documentation
-```
-
-Go libraries are consumed via the Go workspace (`go.work`) at the repository root. No `replace` directives needed.
-
-## Nx Configuration (project.json)
-
-Each library must have a `project.json` file:
-
-```json
-{
-  "name": "ts-library-name",
-  "sourceRoot": "libs/ts-library-name/src",
-  "projectType": "library",
-  "targets": {
-    "build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "tsc -p libs/ts-library-name/tsconfig.build.json",
-        "cwd": "."
-      },
-      "outputs": ["{projectRoot}/dist"]
-    },
-    "test": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node --test libs/ts-library-name/src/**/*.test.ts",
-        "cwd": "."
-      },
-      "dependsOn": ["build"]
-    }
-  }
-}
-```
-
-**Note**: This repository uses vanilla Nx (no plugins), so all executors use `nx:run-commands` to run standard build tools directly.
-
-## Dependency Guidelines
-
-### General Rules
-
-1. **Apps can import from any lib** - Applications are consumers
-2. **Libs can import from other libs** - Cross-library dependencies allowed
-3. **No circular dependencies** - Strictly prohibited (A → B → A not allowed)
-4. **Language boundaries** - TypeScript libs can't directly import Go/Python/Rust libs (use APIs or IPC)
-5. **Keep dependencies minimal** - Each lib should have clear, focused dependencies
-
-### Monitoring Dependencies
-
-Use Nx dependency graph to visualize and monitor:
+## Work with a library
 
 ```bash
-nx graph                    # View full dependency graph
-nx affected:graph           # View affected projects
+# Inspect a library’s available targets
+npm exec nx -- show project ts-ui
+
+# Run one library’s quick verification
+npm exec nx -- run ts-ui:test:quick
+
+# Inspect workspace dependencies
+npm exec nx -- graph
 ```
 
-## How to Add a New Library
-
-See the how-to guide: `docs/how-to/add-new-lib.md` (to be created)
-
-## Path Mappings
-
-TypeScript libraries use workspace path mappings configured in `tsconfig.base.json`:
-
-```json
-{
-  "paths": {
-    "@open-sharia-enterprise/ts-*": ["libs/ts-*/src/index.ts"]
-  }
-}
-```
-
-This allows clean imports:
-
-```typescript
-import { utils } from "@open-sharia-enterprise/ts-utils";
-import { Button } from "@open-sharia-enterprise/ts-components";
-```
-
-## Running Library Commands
-
-Use Nx commands to work with libraries:
-
-```bash
-# Build a library
-nx build ts-library-name
-
-# Run fast quality gate (pre-push standard)
-nx run ts-library-name:test:quick
-
-# Run isolated unit tests
-nx run ts-library-name:test:unit
-
-# Lint a library
-nx lint ts-library-name
-
-# Build all libraries
-nx run-many -t build
-```
-
-**See**: [Nx Target Standards](../repo-governance/development/infra/nx-targets.md) for canonical target names and mandatory targets per project type.
-
-## Future Language Support
-
-While the current implementation focuses on TypeScript, the structure is designed to support:
-
-- **Java**: Using Maven or Gradle, standard Java project structure
-- **Kotlin**: Using Gradle, Kotlin project conventions
-- **Python**: Using pip/poetry, standard Python package structure
-
-Each language will use its own build tools via `nx:run-commands` executor, maintaining the vanilla Nx approach.
+For the reusable conventions behind these examples, see the
+[monorepo structure reference](../docs/reference/monorepo-structure.md).

@@ -7,7 +7,7 @@ domains.
 
 | Domain           | File                                  | Scenarios |
 | ---------------- | ------------------------------------- | --------- |
-| health           | `health/health-status.feature`        | 2         |
+| health           | `health/health-status.feature`        | 3         |
 | authentication   | `authentication/login.feature`        | 5         |
 | authentication   | `authentication/session.feature`      | 7         |
 | user-lifecycle   | `user-lifecycle/registration.feature` | 6         |

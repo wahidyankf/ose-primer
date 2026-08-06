@@ -25,7 +25,7 @@ specs/libs/golang-commons/behavior/
 ## Running the tests
 
 ```bash
-nx run golang-commons:test:integration
+npm exec nx -- run golang-commons:test:integration
 ```
 
 Every scenario is consumed at the integration level via a matching `*.integration_test.go` file
@@ -39,7 +39,7 @@ against `godog.ScenarioContext.Step` registrations.
 `specs:behavior:coverage` is currently a stubbed `echo` placeholder (Phase 0) — automated
 `@covers-tag` gap detection between these scenarios and the `godog` step implementations lands in
 a later phase. Until then, coverage is verified manually by running
-`nx run golang-commons:test:integration` and confirming every scenario passes.
+`npm exec nx -- run golang-commons:test:integration` and confirming every scenario passes.
 
 ## Related
 

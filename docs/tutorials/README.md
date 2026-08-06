@@ -1,44 +1,18 @@
 ---
 title: "Tutorials"
-description: Tutorials have been migrated to crud-fs-ts-nextjs
+description: "Learn ose-primer by running and adapting a reference application."
 category: tutorial
 tags:
   - index
   - tutorials
-  - migration
 ---
 
 # Tutorials
 
-**All tutorial content has been migrated to the demo website.**
+🎓 Tutorials are the best place to begin when you want to learn the starter by doing something real.
 
-## 📍 New Location
+## Start with one small win
 
-Tutorials are now available at:
+- [Run a Next.js demo from a fresh checkout](./getting-started-with-ose-primer.md) — install the workspace, start `crud-fe-ts-nextjs`, and see it at `localhost:3301`.
 
-- **Website**: [example.com](https://example.com) (when deployed)
-
-## 📚 Migrated Content
-
-The following content has been migrated:
-
-- Golang tutorials (Initial Setup, Quick Start, Beginner, Intermediate, Advanced, Cookbook)
-- Java tutorials (Initial Setup, Quick Start, Beginner, Intermediate, Advanced, Cookbook)
-
-## 🔄 Migration Date
-
-Content migrated: **December 8, 2025**
-
-All tutorials are now part of the demo educational platform and benefit from:
-
-- Better navigation and discoverability
-- Integration with other learning content
-- Public web access
-
----
-
-For internal project documentation, see the `docs/` directory structure:
-
-- `docs/explanation/` - Conceptual documentation
-- `docs/how-to/` - Problem-solving guides
-- `docs/reference/` - Technical reference
+The older language-learning material lives in the demo applications. The tutorial above is the maintained repository entry point; it gives you the context to choose the example stack you want to study next.

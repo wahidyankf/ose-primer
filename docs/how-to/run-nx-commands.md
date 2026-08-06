@@ -11,7 +11,12 @@ tags:
 
 # How to Run Nx Commands
 
-This guide covers common Nx workflows and commands for working with the monorepo.
+This guide covers common Nx workflows in `ose-primer`. It is a starter with real CRUD examples,
+not a generic application catalogue: discover the projects available in your checkout before
+choosing a command.
+
+Run Nx through the workspace dependency, not a global install. Every command below uses
+`npm exec nx --` for that reason.
 
 ## 📋 Basic Project Commands
 
@@ -21,48 +26,48 @@ This guide covers common Nx workflows and commands for working with the monorepo
 
 ```bash
 # Build a specific project
-nx build [project-name]
+npm exec nx -- build [project-name]
 
 # Run the fast pre-push quality gate
-nx run [project-name]:test:quick
+npm exec nx -- run [project-name]:test:quick
 
 # Run isolated unit tests
-nx run [project-name]:test:unit
+npm exec nx -- run [project-name]:test:unit
 
 # Lint a specific project
-nx lint [project-name]
+npm exec nx -- lint [project-name]
 
 # Start development server for an app
-nx dev [app-name]
+npm exec nx -- dev [app-name]
 
 # Start production server for an app
-nx start [app-name]
+npm exec nx -- start [app-name]
 ```
 
 **Examples**:
 
 ```bash
-nx build ts-utils                    # Build library
-nx run ts-utils:test:quick           # Fast quality gate (pre-push)
-nx run ts-utils:test:unit            # Isolated unit tests
-nx dev customer-portal               # Start Next.js dev server
-nx build customer-portal             # Build Next.js app
+npm exec nx -- build ts-ui                        # Build a shared TypeScript library
+npm exec nx -- run ts-ui:test:quick               # Fast quality gate
+npm exec nx -- run crud-be-golang-gin:test:quick  # One backend example
+npm exec nx -- dev crud-fe-ts-nextjs              # Start a frontend example
+npm exec nx -- build crud-fe-ts-nextjs            # Build that frontend
 ```
 
 ### Run Multiple Projects
 
 ```bash
 # Build all projects
-nx run-many -t build
+npm exec nx -- run-many -t build
 
 # Run fast quality gate across all projects
-nx run-many -t test:quick
+npm exec nx -- run-many -t test:quick
 
 # Lint all projects
-nx run-many -t lint
+npm exec nx -- run-many -t lint
 
 # Run multiple targets
-nx run-many -t build lint
+npm exec nx -- run-many -t build lint
 ```
 
 **Using npm scripts**:
@@ -76,10 +81,10 @@ npm run lint     # Same as: nx run-many -t lint
 
 ```bash
 # Build specific projects
-nx run-many -t build -p ts-utils ts-components
+npm exec nx -- run-many -t build -p ts-ui crud-fe-ts-nextjs
 
 # Run test:quick for specific projects
-nx run-many -t test:quick -p ts-utils customer-portal
+npm exec nx -- run-many -t test:quick -p ts-ui crud-fe-ts-nextjs
 ```
 
 ## Affected Commands
@@ -90,17 +95,17 @@ Affected commands only run tasks for projects that changed since the last commit
 
 ```bash
 # Build affected projects (since main branch)
-nx affected -t build
+npm exec nx -- affected -t build
 
 # Run fast quality gate for affected projects (pre-push standard)
-nx affected -t test:quick
+npm exec nx -- affected -t test:quick
 
 # Lint affected projects
-nx affected -t lint
+npm exec nx -- affected -t lint
 
 # Specify a different base
-nx affected -t build --base=abc123
-nx affected -t test:quick --base=origin/main
+npm exec nx -- affected -t build --base=abc123
+npm exec nx -- affected -t test:quick --base=origin/main
 ```
 
 **Using npm scripts**:
@@ -115,19 +120,19 @@ npm run affected:lint          # Same as: nx affected -t lint
 
 ```bash
 # View affected projects graph
-nx affected:graph
+npm exec nx -- graph --affected
 
 # View affected projects graph (custom base)
-nx affected:graph --base=origin/main
+npm exec nx -- graph --affected --base=origin/main
 ```
 
 ### Affected Detection in CI/CD
 
 ```bash
 # In CI pipeline (GitHub Actions example)
-nx affected -t build --base=origin/main --head=HEAD
-nx affected -t test:quick --base=origin/main --head=HEAD
-nx affected -t lint --base=origin/main --head=HEAD
+npm exec nx -- affected -t build --base=origin/main --head=HEAD
+npm exec nx -- affected -t test:quick --base=origin/main --head=HEAD
+npm exec nx -- affected -t lint --base=origin/main --head=HEAD
 ```
 
 ## Dependency Graph
@@ -136,7 +141,7 @@ nx affected -t lint --base=origin/main --head=HEAD
 
 ```bash
 # Open dependency graph in browser
-nx graph
+npm exec nx -- graph
 
 # Using npm script
 npm run graph
@@ -152,20 +157,20 @@ This opens an interactive visualization showing:
 
 ```bash
 # Show dependencies of a specific project
-nx graph --focus=ts-utils
+npm exec nx -- graph --focus=ts-ui
 
 # Show what depends on a project
-nx graph --focus=ts-utils --groupByFolder
+npm exec nx -- graph --focus=ts-ui --groupByFolder
 ```
 
 ### Export Graph
 
 ```bash
 # Export graph as HTML
-nx graph --file=dependency-graph.html
+npm exec nx -- graph --file=dependency-graph.html
 
 # Export graph as JSON
-nx graph --file=dependency-graph.json
+npm exec nx -- graph --file=dependency-graph.json
 ```
 
 ## Caching
@@ -176,11 +181,11 @@ Nx caches task outputs to speed up subsequent runs.
 
 ```bash
 # First build (executes task)
-nx build ts-utils
+npm exec nx -- build ts-ui
 # Output: Compiled successfully
 
 # Second build (uses cache)
-nx build ts-utils
+npm exec nx -- build ts-ui
 # Output: [existing outputs match the cache, left as is]
 ```
 
@@ -191,17 +196,17 @@ nx build ts-utils
 rm -rf .nx/cache
 
 # Or clear specific project cache
-nx reset
+npm exec nx -- reset
 ```
 
 ### Disable Cache (Development)
 
 ```bash
 # Skip cache for a single run
-nx build ts-utils --skip-nx-cache
+npm exec nx -- build ts-ui --skip-nx-cache
 
 # Skip cache for affected
-nx affected -t build --skip-nx-cache
+npm exec nx -- affected -t build --skip-nx-cache
 ```
 
 ## Workspace Commands
@@ -210,33 +215,33 @@ nx affected -t build --skip-nx-cache
 
 ```bash
 # List all projects in workspace
-nx show projects
+npm exec nx -- show projects
 
 # List only apps
-nx show projects --type=app
+npm exec nx -- show projects --type=app
 
 # List only libs
-nx show projects --type=lib
+npm exec nx -- show projects --type=lib
 ```
 
 ### Show Project Details
 
 ```bash
 # Show project configuration
-nx show project ts-utils
+npm exec nx -- show project ts-ui
 
 # Show project graph
-nx graph --focus=ts-utils
+npm exec nx -- graph --focus=ts-ui
 ```
 
 ### Workspace Information
 
 ```bash
 # Show Nx version
-npx nx --version
+npm exec nx -- --version
 
 # Show workspace information
-nx report
+npm exec nx -- report
 ```
 
 ## 🔄 Common Workflows
@@ -250,66 +255,66 @@ nx report
 git pull origin main
 
 # 2. Start development server
-nx dev customer-portal
+npm exec nx -- dev crud-fe-ts-nextjs
 
 # 3. Make changes to app or libs
 
 # 4. Test changes
-nx run ts-utils:test:quick
-nx build customer-portal
+npm exec nx -- run ts-ui:test:quick
+npm exec nx -- build crud-fe-ts-nextjs
 
 # 5. View affected projects
-nx affected:graph
+npm exec nx -- graph --affected
 ```
 
 ### Testing Workflow
 
 ```bash
 # 1. Run fast quality gate for changed projects (pre-push standard)
-nx affected -t test:quick
+npm exec nx -- affected -t test:quick
 
 # 2. Run test:quick for a specific project
-nx run ts-utils:test:quick
+npm exec nx -- run ts-ui:test:quick
 
 # 3. Run isolated unit tests for a specific project
-nx run ts-utils:test:unit
+npm exec nx -- run ts-ui:test:unit
 
 # 4. Run all test:quick targets
-nx run-many -t test:quick
+npm exec nx -- run-many -t test:quick
 ```
 
 ### Build Workflow
 
 ```bash
 # 1. Build affected projects
-nx affected -t build
+npm exec nx -- affected -t build
 
 # 2. Build specific project and its dependencies
-nx build customer-portal
-# (Automatically builds ts-utils first)
+npm exec nx -- build crud-fe-ts-nextjs
+# (Automatically builds ts-ui first)
 
 # 3. Build all projects
-nx run-many -t build
+npm exec nx -- run-many -t build
 
 # 4. Verify build outputs
-ls libs/ts-utils/dist
-ls apps/customer-portal/.next
+ls libs/ts-ui/dist
+ls apps/crud-fe-ts-nextjs/.next
 ```
 
 ### Pre-Commit Workflow
 
 ```bash
 # 1. Check affected projects
-nx affected:graph
+npm exec nx -- graph --affected
 
 # 2. Build affected
-nx affected -t build
+npm exec nx -- affected -t build
 
 # 3. Run fast quality gate for affected (same as pre-push hook)
-nx affected -t test:quick
+npm exec nx -- affected -t test:quick
 
 # 4. Lint affected
-nx affected -t lint
+npm exec nx -- affected -t lint
 
 # 5. If all pass, commit changes
 git add .
@@ -336,7 +341,7 @@ jobs:
    - name: Setup Node.js
     uses: actions/setup-node@v3
     with:
-     node-version: '24.13.1'
+     node-version: '24.16.0'
 
    - name: Install dependencies
     run: npm ci
@@ -373,13 +378,13 @@ Instead of rebuilding everything:
 
 ```bash
 # ❌ Slow: Build everything
-nx run-many -t build
+npm exec nx -- run-many -t build
 
 # ✅ Fast: Build only affected
-nx affected -t build
+npm exec nx -- affected -t build
 
 # ✅ Fast quality gate (pre-push and CI)
-nx affected -t test:quick
+npm exec nx -- affected -t test:quick
 ```
 
 ### Use Parallel Execution
@@ -388,14 +393,14 @@ Nx automatically runs tasks in parallel when possible:
 
 ```bash
 # Runs builds in parallel (respects dependency order)
-nx run-many -t build --parallel=3
+npm exec nx -- run-many -t build --parallel=3
 ```
 
 ### Use Watch Mode for Development
 
 ```bash
 # Watch mode for builds (if configured)
-nx build ts-utils --watch
+npm exec nx -- build ts-ui --watch
 ```
 
 ## 🔬 Troubleshooting
@@ -408,10 +413,10 @@ nx build ts-utils --watch
 
 ```bash
 # Clear Nx cache
-nx reset
+npm exec nx -- reset
 
 # Rebuild from scratch
-nx build ts-utils --skip-nx-cache
+npm exec nx -- build ts-ui --skip-nx-cache
 ```
 
 ### Dependency Issues
@@ -422,11 +427,11 @@ nx build ts-utils --skip-nx-cache
 
 ```bash
 # Check if dependency exists in graph
-nx graph --focus=customer-portal
+npm exec nx -- graph --focus=crud-fe-ts-nextjs
 
 # Ensure library is built first
-nx build ts-utils
-nx build customer-portal
+npm exec nx -- build ts-ui
+npm exec nx -- build crud-fe-ts-nextjs
 ```
 
 ### Affected Detection Issues
@@ -443,10 +448,10 @@ git status
 git add .
 
 # Use specific base
-nx affected -t build --base=origin/main
+npm exec nx -- affected -t build --base=origin/main
 
 # View affected graph to debug
-nx affected:graph
+npm exec nx -- graph --affected
 ```
 
 ## Advanced Commands
@@ -455,30 +460,30 @@ nx affected:graph
 
 ```bash
 # Set environment variable for command
-NODE_ENV=production nx build customer-portal
+NODE_ENV=production npm exec nx -- build crud-fe-ts-nextjs
 
 # Multiple environment variables
-NODE_ENV=production DEBUG=true nx build customer-portal
+NODE_ENV=production DEBUG=true npm exec nx -- build crud-fe-ts-nextjs
 ```
 
 ### Run Custom Commands
 
 ```bash
 # Run arbitrary command for all projects
-nx run-many -t custom-script
+npm exec nx -- run-many -t custom-script
 
 # Run command for specific projects
-nx run custom-target -p customer-portal
+npm exec nx -- run custom-target -p crud-fe-ts-nextjs
 ```
 
 ### Generate Dependency Report
 
 ```bash
 # Export dependency graph as JSON
-nx graph --file=graph.json
+npm exec nx -- graph --file=graph.json
 
 # Use jq to analyze dependencies
-nx graph --file=graph.json | jq '.dependencies'
+npm exec nx -- graph --file=graph.json | jq '.dependencies'
 ```
 
 ## 🔗 Related Documentation

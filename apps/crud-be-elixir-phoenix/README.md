@@ -29,14 +29,14 @@ The server listens on port **8201** (`http://localhost:8201`).
 ## Nx Targets
 
 ```bash
-nx run crud-be-elixir-phoenix:install          # mix deps.get
-nx run crud-be-elixir-phoenix:dev              # mix phx.server (development)
-nx run crud-be-elixir-phoenix:test:quick       # coveralls.lcov (unit only) + rhino-cli coverage gate (>=90%)
-nx run crud-be-elixir-phoenix:test:unit        # mix test --only unit (no coverage measurement)
-nx run crud-be-elixir-phoenix:test:integration # docker compose: real PostgreSQL + all BDD scenarios
-nx run crud-be-elixir-phoenix:lint             # mix credo --strict
-nx run crud-be-elixir-phoenix:typecheck        # mix compile (warnings-as-errors; depends on codegen)
-nx run crud-be-elixir-phoenix:build            # mix compile (prod, warnings-as-errors; depends on codegen)
+npm exec nx -- run crud-be-elixir-phoenix:install          # mix deps.get
+npm exec nx -- run crud-be-elixir-phoenix:dev              # mix phx.server (development)
+npm exec nx -- run crud-be-elixir-phoenix:test:quick       # coveralls.lcov (unit only) + rhino-cli coverage gate (>=90%)
+npm exec nx -- run crud-be-elixir-phoenix:test:unit        # mix test --only unit (no coverage measurement)
+npm exec nx -- run crud-be-elixir-phoenix:test:integration # docker compose: real PostgreSQL + all BDD scenarios
+npm exec nx -- run crud-be-elixir-phoenix:lint             # mix credo --strict
+npm exec nx -- run crud-be-elixir-phoenix:typecheck        # mix compile (warnings-as-errors; depends on codegen)
+npm exec nx -- run crud-be-elixir-phoenix:build            # mix compile (prod, warnings-as-errors; depends on codegen)
 ```
 
 `test:quick` and `test:unit` are distinct targets. `test:unit` runs `mix test --only unit` for fast
@@ -96,10 +96,10 @@ or external services are required. These tests are **fully cached** by Nx.
 
 ```bash
 # Fast feedback — run unit tests without coverage overhead
-nx run crud-be-elixir-phoenix:test:unit
+npm exec nx -- run crud-be-elixir-phoenix:test:unit
 
 # Pre-push quality gate — run unit tests with coverage + enforce >=90%
-nx run crud-be-elixir-phoenix:test:quick
+npm exec nx -- run crud-be-elixir-phoenix:test:quick
 ```
 
 `test:unit` runs `mix test --only unit`. `test:quick` runs `mix coveralls.lcov --only unit` to
@@ -130,7 +130,7 @@ Integration tests run the same shared Gherkin BDD scenarios (`test/integration/s
 a real PostgreSQL 17 database via Docker Compose. These tests are **never cached**.
 
 ```bash
-nx run crud-be-elixir-phoenix:test:integration
+npm exec nx -- run crud-be-elixir-phoenix:test:integration
 ```
 
 **What runs:**
