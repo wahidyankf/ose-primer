@@ -347,6 +347,7 @@ gates:
     category: formatter
     command: shfmt -w
     kind: external
+    doctor-tools: [shfmt]
     restages: true
     surfaces:
       pre-commit: { scope: affected-file-type, glob: "*.sh" }
@@ -355,6 +356,7 @@ gates:
     type: check
     command: shfmt -d
     kind: external
+    doctor-tools: [shfmt]
     verifies: format-shfmt
     surfaces:
       ci: { scope: affected-file-type, glob: "*.sh" }
@@ -501,6 +503,10 @@ gates:
     type: check
     command: md mermaid validate
     kind: rhino-cli
+    args:
+      exclude:
+        - apps/rhino-cli/tests/fixtures
+        - plans/done
     surfaces:
       pre-commit: { scope: affected-file-type, glob: "*.md" }
       ci: { scope: all-file-type }
@@ -533,6 +539,7 @@ gates:
     type: check
     command: actionlint
     kind: external
+    doctor-tools: [actionlint]
     surfaces:
       pre-commit:
         scope: affected-file-type
@@ -543,6 +550,7 @@ gates:
     type: check
     command: shellcheck --severity=warning
     kind: external
+    doctor-tools: [shellcheck]
     surfaces:
       pre-commit: { scope: affected-file-type, glob: "*.sh" }
       ci: { scope: all-file-type, glob: "*.sh" }
@@ -551,6 +559,7 @@ gates:
     type: check
     command: hadolint --failure-threshold warning
     kind: external
+    doctor-tools: [hadolint]
     surfaces:
       pre-commit: { scope: affected-file-type, glob: "**/Dockerfile*" }
       ci: { scope: all-file-type, glob: "**/Dockerfile*" }
@@ -575,14 +584,19 @@ gates:
 
   - id: docker-compose-config
     type: check
-    command: docker compose config
+    command: 'sh -ec ''for f; do base=${f%.ci.yml}.yml; if [ "$base" != "$f" ] && [ -f "$base" ]; then docker compose -f "$base" -f "$f" config > /dev/null; else docker compose -f "$f" config > /dev/null; fi; done'' --'
     kind: external
+    doctor-tools: [docker]
     surfaces:
       pre-commit:
         scope: affected-file-type
         glob: "docker-compose*.{yml,yaml}"
-        lint-staged-shell: 'for f; do docker compose -f "$f" config > /dev/null; done'
-      ci: { scope: all-file-type }
+        lint-staged-shell: 'set -e; for f; do base=${f%.ci.yml}.yml; if [ "$base" != "$f" ] && [ -f "$base" ]; then docker compose -f "$base" -f "$f" config > /dev/null; else docker compose -f "$f" config > /dev/null; fi; done'
+      ci:
+        scope: all-file-type
+        globs:
+          - "**/docker-compose*.yml"
+          - "**/docker-compose*.yaml"
 
   # ------------------------------------- pre-commit mutations, run last (order)
   - id: harness-bindings-generate

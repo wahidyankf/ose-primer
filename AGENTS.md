@@ -166,12 +166,17 @@ Beyond markdown, the repo gates shell scripts, Dockerfiles, and GitHub Actions
 workflows at a uniform **warning-and-above** threshold, enforced in both CI
 (`.github/workflows/pr-quality-gate.yml`) and the local Husky hooks:
 
-- **shellcheck** (`--severity=warning`, root `.shellcheckrc`) — all tracked `.sh` files (CI `shellcheck` job)
-- **hadolint** (`--failure-threshold warning`, root `.hadolint.yaml`) — all Dockerfiles (CI `hadolint` job)
-- **actionlint** — all `.github/workflows/*.yml` (CI `actionlint` job)
+- **shellcheck** (`--severity=warning`, root `.shellcheckrc`) — all tracked `.sh` files (CI `shellcheck` matrix leg)
+- **hadolint** (`--failure-threshold warning`, root `.hadolint.yaml`) — all Dockerfiles (CI `hadolint` matrix leg)
+- **actionlint** — all `.github/workflows/*.yml` (CI `actionlint` matrix leg)
 
-All three linters are installed by `npm run doctor -- --fix`. The CI jobs are named
-after the tool they run (Invariant A in the parity checklist).
+Each linter's provisioning is registry-declared per gate (`doctor-tools:` in `repo-config.yml`), not
+a blanket `npm run doctor -- --fix`: the CI `gate` job reads each matrix leg's `doctor_tools` and
+runs `npm run doctor -- --fix --tools <tools>` only for what that leg declares. Locally, `npm run
+doctor -- --fix` (no `--tools` filter) still installs everything, including these three. The CI jobs
+are registry matrix legs named after their gate id (`${{ matrix.gate.id }}`), which is why they still
+display as `actionlint`/`hadolint`/`shellcheck` (Invariant A in the parity checklist) even though
+they run through the shared `gate` job rather than standalone job keys.
 
 **See**: [Cross-Language Lint Strictness](./repo-governance/development/quality/cross-language-lint-strictness.md)
 

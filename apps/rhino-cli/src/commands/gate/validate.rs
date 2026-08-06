@@ -383,14 +383,26 @@ fn validate_ci_doctor_bootstrap(
             })
     });
     let matrix_uses_declared_tools = workflow.jobs.get("gate").is_some_and(|job| {
-        job.steps
-            .iter()
-            .filter_map(|step| step.run.as_deref())
-            .any(|run| {
-                run.contains("matrix.gate.doctor_tools")
-                    && run.contains("npm run doctor -- --fix --tools")
-                    && run.contains("if [ -n \"$tools\" ]")
-            })
+        job.steps.iter().any(|step| {
+            let Some(run) = step.run.as_deref() else {
+                return false;
+            };
+            if !run.contains("npm run doctor -- --fix --tools") {
+                return false;
+            }
+            // Accept the direct inline splice `tools="${{ join(matrix.gate.doctor_tools, ',') }}"`
+            // for backward compatibility with the ose-public canonical shape...
+            let inline_splice =
+                run.contains("matrix.gate.doctor_tools") && run.contains("if [ -n \"$tools\" ]");
+            // ...but prefer the injection-safe indirection this repo's workflow actually uses:
+            // an `env:` block routes the registry-sourced matrix value through a named shell
+            // variable rather than splicing `${{ }}` directly into `run:`.
+            let env_indirection = step.env.iter().any(|(name, value)| {
+                value.contains("matrix.gate.doctor_tools")
+                    && run.contains(&format!("if [ -n \"${name}\" ]"))
+            });
+            inline_splice || env_indirection
+        })
     });
     if format_derives_tool_union && matrix_uses_declared_tools {
         return Ok(());
@@ -2008,6 +2020,50 @@ fn doctor_tool_metadata_requires_registry_derived_format_and_matrix_selection() 
     assert!(
         validate_ci_doctor_bootstrap(&config, &workflow, &mut Vec::new()).is_ok(),
         "registry-derived Doctor selections must validate"
+    );
+}
+
+#[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::panic)]
+#[test]
+fn doctor_tool_metadata_accepts_the_injection_safe_env_indirection_shape() {
+    // The matrix leg may route the registry-sourced `doctor_tools` value through an `env:`
+    // block and reference it as `$VAR`, instead of splicing `${{ }}` directly into `run:`.
+    // This is the safer of the two shapes the validator accepts.
+    let config: repo_config::RepoConfig = serde_norway::from_str(concat!(
+        "gates:\n",
+        "  - id: shellcheck\n",
+        "    type: check\n",
+        "    command: shellcheck\n",
+        "    kind: external\n",
+        "    doctor-tools: [shellcheck]\n",
+        "    surfaces:\n",
+        "      ci: { scope: all-file-type }\n",
+    ))
+    .unwrap();
+    let workflow: Workflow = serde_norway::from_str(concat!(
+        "jobs:\n",
+        "  format:\n",
+        "    steps:\n",
+        "      - run: |\n",
+        "          tools=$(rhino-cli gate list --surface=pre-commit --format=json | jq -r '[.[] | .doctor_tools[]] | unique | join(\",\")')\n",
+        "          if [ -n \"$tools\" ]; then\n",
+        "            npm run doctor -- --fix --tools \"$tools\"\n",
+        "          fi\n",
+        "  gate:\n",
+        "    steps:\n",
+        "      - env:\n",
+        "          GATE_DOCTOR_TOOLS: ${{ join(matrix.gate.doctor_tools, ',') }}\n",
+        "        run: |\n",
+        "          if [ -n \"$GATE_DOCTOR_TOOLS\" ]; then\n",
+        "            npm run doctor -- --fix --tools \"$GATE_DOCTOR_TOOLS\"\n",
+        "          fi\n",
+    ))
+    .unwrap();
+
+    assert!(
+        validate_ci_doctor_bootstrap(&config, &workflow, &mut Vec::new()).is_ok(),
+        "the env-indirection shape must validate exactly like the inline-splice shape"
     );
 }
 

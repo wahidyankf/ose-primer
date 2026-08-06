@@ -453,6 +453,217 @@ fn ci_affected_file_gate_uses_supplied_changed_base() {
     );
 }
 
+/// A path deleted between the CI event base and `HEAD` must never reach the CI leaf's
+/// argument list — `git diff --name-only` alone reports deletions, which formatters
+/// then fail on ("file does not exist").
+// @covers specs/apps/rhino/behavior/rhino-cli/gherkin/gate/gate-execution.feature:A path deleted since the CI event base is excluded from derived candidates
+#[test]
+fn ci_affected_file_gate_excludes_a_path_deleted_since_the_base() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let repo = tempfile::TempDir::new().expect("create fixture repository");
+    let bin = repo.path().join("bin");
+    let arguments = repo.path().join("captured-ci-arguments.txt");
+    std::fs::create_dir_all(&bin).expect("create fixture bin directory");
+    std::fs::write(repo.path().join("kept.md"), "# Kept\n").expect("write kept fixture file");
+    std::fs::write(repo.path().join("doomed.md"), "# Doomed\n")
+        .expect("write fixture file that will be deleted");
+    std::fs::write(
+        repo.path().join("repo-config.yml"),
+        concat!(
+            "gates:\n",
+            "  - id: ci-markdown\n",
+            "    type: check\n",
+            "    command: capture\n",
+            "    kind: external\n",
+            "    surfaces:\n",
+            "      ci: { scope: affected-file-type, glob: '*.md' }\n",
+        ),
+    )
+    .expect("write gate registry");
+    let capture = bin.join("capture");
+    std::fs::write(
+        &capture,
+        "#!/bin/sh\nprintf '%s\\n' \"$@\" > \"$GATE_CI_ARGUMENTS\"\n",
+    )
+    .expect("write capture stub");
+    std::fs::set_permissions(&capture, std::fs::Permissions::from_mode(0o755))
+        .expect("make capture stub executable");
+    assert!(
+        fixture_git_command(repo.path())
+            .args(["init", "--quiet"])
+            .status()
+            .expect("initialize fixture git repository")
+            .success(),
+        "git init must succeed"
+    );
+    assert!(
+        fixture_git_command(repo.path())
+            .args(["add", "repo-config.yml", "kept.md", "doomed.md"])
+            .status()
+            .expect("stage fixture baseline")
+            .success(),
+        "git add must succeed"
+    );
+    fixture_commit(repo.path(), "test: baseline");
+    let base = String::from_utf8(
+        fixture_git_command(repo.path())
+            .args(["rev-parse", "HEAD"])
+            .output()
+            .expect("read fixture baseline")
+            .stdout,
+    )
+    .expect("fixture baseline is UTF-8");
+
+    std::fs::write(repo.path().join("kept.md"), "# Kept after\n")
+        .expect("modify kept fixture file");
+    assert!(
+        fixture_git_command(repo.path())
+            .args(["rm", "--quiet", "doomed.md"])
+            .status()
+            .expect("delete fixture file")
+            .success(),
+        "git rm must succeed"
+    );
+    assert!(
+        fixture_git_command(repo.path())
+            .args(["add", "kept.md"])
+            .status()
+            .expect("stage fixture change")
+            .success(),
+        "git add must succeed"
+    );
+    fixture_commit(repo.path(), "test: delete one file, modify another");
+
+    let existing_path = std::env::var_os("PATH").expect("PATH must be set for CI fixture");
+    let path =
+        std::env::join_paths(std::iter::once(bin).chain(std::env::split_paths(&existing_path)))
+            .expect("join fixture PATH");
+    let output = fixture_rhino_command(repo.path())
+        .args(["gate", "run", "--surface=ci", "--only=ci-markdown"])
+        .env("PATH", path)
+        .env("GATE_CHANGED_BASE", base.trim())
+        .env("GATE_CI_ARGUMENTS", &arguments)
+        .output()
+        .expect("run CI gate dispatcher");
+
+    assert!(
+        output.status.success(),
+        "CI leaf must exit successfully even though a matched file was deleted; stdout: {}; \
+         stderr: {}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        std::fs::read_to_string(arguments).unwrap_or_default(),
+        "kept.md\n",
+        "the deleted doomed.md must never reach the CI leaf's argument list"
+    );
+}
+
+/// A deletion staged for commit must never reach the pre-commit leaf's argument
+/// list either — `git diff --cached --name-only` alone reports the staged
+/// deletion, which formatters then fail on ("file does not exist").
+// @covers specs/apps/rhino/behavior/rhino-cli/gherkin/gate/gate-execution.feature:A path staged for deletion is excluded from derived candidates at pre-commit
+#[test]
+fn pre_commit_affected_file_gate_excludes_a_staged_deletion() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let repo = tempfile::TempDir::new().expect("create fixture repository");
+    let bin = repo.path().join("bin");
+    let arguments = repo.path().join("captured-precommit-arguments.txt");
+    std::fs::create_dir_all(&bin).expect("create fixture bin directory");
+    std::fs::write(repo.path().join("kept.md"), "# Kept\n").expect("write kept fixture file");
+    std::fs::write(repo.path().join("doomed.md"), "# Doomed\n")
+        .expect("write fixture file that will be staged for deletion");
+    std::fs::write(
+        repo.path().join("repo-config.yml"),
+        concat!(
+            "gates:\n",
+            "  - id: precommit-markdown\n",
+            "    type: check\n",
+            "    command: capture\n",
+            "    kind: external\n",
+            "    surfaces:\n",
+            "      pre-commit: { scope: affected-file-type, glob: '*.md' }\n",
+        ),
+    )
+    .expect("write gate registry");
+    let capture = bin.join("capture");
+    std::fs::write(
+        &capture,
+        "#!/bin/sh\nprintf '%s\\n' \"$@\" > \"$GATE_CI_ARGUMENTS\"\n",
+    )
+    .expect("write capture stub");
+    std::fs::set_permissions(&capture, std::fs::Permissions::from_mode(0o755))
+        .expect("make capture stub executable");
+    assert!(
+        fixture_git_command(repo.path())
+            .args(["init", "--quiet"])
+            .status()
+            .expect("initialize fixture git repository")
+            .success(),
+        "git init must succeed"
+    );
+    assert!(
+        fixture_git_command(repo.path())
+            .args(["add", "repo-config.yml", "kept.md", "doomed.md"])
+            .status()
+            .expect("stage fixture baseline")
+            .success(),
+        "git add must succeed"
+    );
+    fixture_commit(repo.path(), "test: baseline");
+
+    std::fs::write(repo.path().join("kept.md"), "# Kept staged\n")
+        .expect("modify kept fixture file for staging");
+    assert!(
+        fixture_git_command(repo.path())
+            .args(["rm", "--quiet", "doomed.md"])
+            .status()
+            .expect("stage a deletion")
+            .success(),
+        "git rm must succeed"
+    );
+    assert!(
+        fixture_git_command(repo.path())
+            .args(["add", "kept.md"])
+            .status()
+            .expect("stage fixture change")
+            .success(),
+        "git add must succeed"
+    );
+
+    let existing_path = std::env::var_os("PATH").expect("PATH must be set for pre-commit fixture");
+    let path =
+        std::env::join_paths(std::iter::once(bin).chain(std::env::split_paths(&existing_path)))
+            .expect("join fixture PATH");
+    let output = fixture_rhino_command(repo.path())
+        .args([
+            "gate",
+            "run",
+            "--surface=pre-commit",
+            "--only=precommit-markdown",
+        ])
+        .env("PATH", path)
+        .env("GATE_CI_ARGUMENTS", &arguments)
+        .output()
+        .expect("run pre-commit gate dispatcher");
+
+    assert!(
+        output.status.success(),
+        "pre-commit leaf must exit successfully even though a matched file was staged for \
+         deletion; stdout: {}; stderr: {}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        std::fs::read_to_string(arguments).unwrap_or_default(),
+        "kept.md\n",
+        "the staged deletion of doomed.md must never reach the pre-commit leaf's argument list"
+    );
+}
+
 /// An Nx affected-projects gate delegates through the repository's Nx runner.
 #[cfg(unix)]
 // @covers specs/apps/rhino/behavior/rhino-cli/gherkin/gate/gate-execution.feature:Nx kind delegates the affected project graph

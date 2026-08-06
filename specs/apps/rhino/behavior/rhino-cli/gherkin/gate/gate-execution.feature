@@ -16,6 +16,16 @@ Feature: Gate execution
     When an affected-file-type CI gate runs after main advances
     Then the gate receives the files changed from the supplied base
 
+  Scenario: A path deleted since the CI event base is excluded from derived candidates
+    Given a CI event base predates a deletion of a matched file
+    When an affected-file-type CI gate runs after the deletion
+    Then the deleted path never reaches the leaf's argument list and the gate still succeeds
+
+  Scenario: A path staged for deletion is excluded from derived candidates at pre-commit
+    Given a matched file is staged for deletion
+    When an affected-file-type pre-commit gate runs
+    Then the deleted path never reaches the leaf's argument list and the gate still succeeds
+
   Scenario: External kind resolves a repository-local binary
     Given an external gate command exists only in the repository node_modules bin directory
     When its repository-local external gate runs
