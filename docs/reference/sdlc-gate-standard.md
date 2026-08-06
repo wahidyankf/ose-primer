@@ -166,6 +166,32 @@ All jobs run in parallel (matrix + independent jobs); `quality-gate` is the join
 `test:integration`/`test:e2e` — same fast set as pre-push, recomputed server-side and widened to cover
 everything the two local hooks run.
 
+### Worktree-Agnostic Execution
+
+Every guardrail in this section — the `.husky` hooks, every
+`cargo run -- … validate`/`generate` call, `lint-staged`, and the `nx affected`/`run-many` targets
+they invoke — must run identically whether launched from the primary checkout (where `.git/` is a real
+directory) or a linked worktree under `worktrees/<name>/` (where `.git` is a gitdir-pointer file and
+the shared object store and refs live in the common dir).
+
+Concretely: resolve the current tree root with `git rev-parse --show-toplevel` and shared metadata
+with `git rev-parse --git-common-dir`; never treat `.git/` as a directory. A related but separate
+question is whether the repository is bare at all — never answer that with
+`git rev-parse --is-bare-repository` **at all, regardless of where you are standing**, since that
+command answers "is _this checkout_ bare" (always `false` from a linked worktree, by documented
+design — and correct only when run from the bare repository's own main worktree, which is exactly
+the fact this question exists to establish, not something to assume in advance), not "is the
+repository bare." Ask the bareness question instead with `git worktree list` (look for the `(bare)`
+marker) or, when a scriptable form is needed, the labelled `core.bare` read — both defined in the
+[Bare-Repo Base-Worktree Landing Method](../../repo-governance/development/workflow/bare-repo-landing-method.md#verify-topology-first).
+Resolve `repo-config.yml`, exclude lists, and test fixtures from the current worktree's toplevel,
+never the main checkout. Husky hooks invoke via `core.hooksPath`, which linked worktrees inherit from
+the common dir, so the hooks fire in a worktree unchanged. Bareness is a property of a given clone,
+not a fixed attribute of a repo name — any of the three repos may at a given time be worked only
+through linked worktrees (no primary checkout), which makes worktree-agnostic execution a hard
+requirement whenever that holds, not a nicety confined to one repo. Verify the current layout with
+the checks named above rather than trusting a fixed list to stay current.
+
 ## Target Standard
 
 The gate-check standard is synthesized by picking the strongest wiring per surface, even where that
