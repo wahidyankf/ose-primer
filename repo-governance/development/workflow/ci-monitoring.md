@@ -15,6 +15,27 @@ tags:
 
 Monitoring CI runs is a required step after every push, whether the target is a PR branch (the default `worktree-to-pr`) or `origin main` (the direct-push modes). How you monitor matters as much as whether you monitor. Polling `gh run view` in a tight loop without delay can exhaust the GitHub API rate limit (5,000 requests/hour) within minutes, blocking all subsequent `gh` commands for up to an hour. This convention defines the correct tools, minimum intervals, trigger discipline, and recovery procedures to ensure CI monitoring never burns API quota unnecessarily.
 
+## Runner Contention Across the OSE Repos (Read First)
+
+**Runner capacity across the OSE repos is limited and shared — contention is expected, not a bug.** `ose-public`, `ose-primer`, and `beaver-nest` run CI on GitHub's free-tier hosted runners (`runs-on: ubuntu-latest`), which share GitHub's per-account concurrent-job cap across every public repo under [github.com/wahidyankf](https://github.com/wahidyankf). `ose-private` runs on a small, fixed pool of self-hosted runners. Both pools are finite. When multiple repos or workflows queue jobs at the same time, a run can sit `queued`, or a step can stall with no progress — this is runner/action contention, not a defect in the pushed code, and it is not something a code fix or a retry resolves.
+
+**Response: wait patiently, then check what else is running before assuming anything is broken.**
+
+```bash
+# Queued/in-progress runs in one repo
+gh run list --status=queued --status=in_progress --limit=20
+
+# Same check across every OSE repo
+for repo in ose-public ose-primer ose-private beaver-nest; do
+  echo "== $repo =="
+  gh run list --repo wahidyankf/$repo --status=queued --status=in_progress --limit=10
+done
+
+# Org/account-wide view (browser) — https://github.com/wahidyankf, then each repo's Actions tab
+```
+
+Keep the same [2-5 minute `ScheduleWakeup` cadence](#preferred-monitoring-approaches-priority-order) already required by this convention while waiting — do not shorten it because the cause is suspected to be contention rather than a normal-length job. Do not cancel/rerun a queued or stalled job as a first response to suspected contention: that only consumes another slot in the same congested pool.
+
 ## Principles Implemented/Respected
 
 This convention implements the following core principles:
@@ -50,6 +71,8 @@ The target audience is any agent or developer performing the post-push CI verifi
 - Trigger discipline to avoid redundant concurrent runs
 - Rate limit budget facts and window behavior
 - Recovery procedure when rate-limited (HTTP 403 from `gh`)
+- Runner/action contention across the shared, limited OSE runner pools (free hosted + self-hosted) and the wait-and-check response
+- Retriggering a genuinely stuck run (no contention) via rebase-and-push
 - Application of these rules in plan execution (Step 2c of `plan-execution.md`)
 
 ### What This Convention Does NOT Cover
@@ -158,6 +181,29 @@ Triggering the same workflow repeatedly before prior runs complete multiplies AP
 
 3. If a run was cancelled by a concurrency group, wait for the currently-running run to reach a terminal state before deciding whether to trigger again.
 4. In plan execution, if CI was triggered for a push and the run is still in progress, use `gh run watch <id>` on the existing run — do not trigger a new run.
+
+### Retriggering a Stuck Run With No Contention (PR Branches)
+
+If [runner contention across the OSE repos](#runner-contention-across-the-ose-repos-read-first) has
+been ruled out (nothing else queued or running) and a `worktree-to-pr` run is still stuck — queued
+indefinitely, or wedged in a way `gh run cancel`/`gh run rerun` does not clear — rebase the PR branch
+onto latest `origin/main` and push. The new commit SHA registers as a fresh trigger, which often
+clears whatever the platform wedged on:
+
+```bash
+git fetch origin main
+git rebase origin/main
+git push --force-with-lease
+```
+
+Use `--force-with-lease`, never `--force`, per the
+[No Destructive Git Operations Convention](./no-destructive-git-operations.md). This applies to
+`worktree-to-pr` branches only — a direct push to `main` has no PR branch to rebase; if that is stuck
+with contention ruled out, wait longer instead.
+
+The rebase lands foreign `origin/main` commits on the branch — apply the
+[Integration Diff Review Convention](./integration-diff-review.md) before continuing. Retriggering
+CI is not a reason to skip diff review of what just landed.
 
 ### Recovery When Rate-Limited
 
