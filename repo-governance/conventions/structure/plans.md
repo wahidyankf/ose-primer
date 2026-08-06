@@ -954,11 +954,19 @@ Plans differ from `docs/` in several important ways:
 
 ### Starting Work
 
-1. **Provision worktree** (optional — the plan-execution Step 0 gate auto-provisions from the latest `origin/main` when missing): Run `claude --worktree <plan-identifier>` from the repo root — this creates `worktrees/<plan-identifier>/` in the repo root (not `.claude/worktrees/`). See [Worktree Path Convention](./worktree-path.md).
-2. **Initialize toolchain**: In the root worktree, run `npm install && npm run doctor -- --fix`. See [Worktree Toolchain Initialization](../../development/workflow/worktree-setup.md).
-3. **Move folder**: Move plan folder from `backlog/[identifier]/` to `in-progress/[identifier]/` — a pure move; neither stage carries a date prefix.
-4. **Update index**: Update both `backlog/README.md` and `in-progress/README.md`
-5. **Git commit**: Commit the move with appropriate message
+**Promotion precedes provisioning (HARD RULE)**: a plan in `backlog/` MUST be promoted to
+`in-progress/` — moved, committed, and pushed to `origin main` — on the **local `main` checkout**,
+never inside a worktree, BEFORE any worktree is provisioned or execution begins. The
+[plan-execution workflow's Step 0 gate](../../workflows/plan/plan-execution.md#0-enter-the-designated-worktree-sequential-hard-gate)
+performs this promotion automatically when invoked on a `plans/backlog/` plan path — see
+[Execute Plan from Backlog](../../workflows/plan/plan-execution.md#execute-plan-from-backlog). A plan
+is never executed directly out of `backlog/`.
+
+1. **Promote from backlog** (on the local `main` checkout, never inside a worktree): Move plan folder from `backlog/[identifier]/` to `in-progress/[identifier]/` — a pure move; neither stage carries a date prefix.
+2. **Update index**: Update both `backlog/README.md` and `in-progress/README.md`
+3. **Git commit and push**: Commit the move with an appropriate message and push directly to `origin main` — this must land before any worktree is provisioned or execution begins.
+4. **Provision worktree** (optional — the plan-execution Step 0 gate auto-provisions from the latest `origin/main` when missing): Run `claude --worktree <plan-identifier>` from the repo root — this creates `worktrees/<plan-identifier>/` in the repo root (not `.claude/worktrees/`). See [Worktree Path Convention](./worktree-path.md).
+5. **Initialize toolchain**: In the root worktree, run `npm install && npm run doctor -- --fix`. See [Worktree Toolchain Initialization](../../development/workflow/worktree-setup.md).
 6. **Begin execution**: Start implementing according to delivery checklist
 
 ### Completing Work

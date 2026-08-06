@@ -69,10 +69,12 @@ results to `plan-planning` to author the plan.
 
 > **The outcome is the plan, not the implementation.** This workflow never edits a manifest,
 > never updates a lockfile, and never runs a bump. It produces a proposal in `plans/backlog/`. The
-> actual edits happen later, only after a human promotes the backlog plan to `plans/in-progress/`
-> and runs the [Plan Execution workflow](../plan/plan-execution.md). The policy's Application
-> Workflow steps 8–12 (pin, lockfile, re-audit, document, quality gates) become the plan's
-> delivery checklist — they are executed then, not now.
+> actual edits happen later, once the [Plan Execution workflow](../plan/plan-execution.md) runs —
+> that workflow's own Step 0 gate promotes a `plans/backlog/` plan to `plans/in-progress/`
+> (commit + push on the local `main` checkout) before execution begins, so no separate manual
+> promotion step is required first. The policy's Application Workflow steps 8–12 (pin, lockfile,
+> re-audit, document, quality gates) become the plan's delivery checklist — they are executed
+> then, not now.
 
 This is a `planning`-type workflow (per the
 [Workflow Naming Convention](../../conventions/structure/workflow-naming.md) Type Vocabulary): a

@@ -917,6 +917,11 @@ Orientation), and both mandatory safety gates:
       matrix; code homes (`apps/`, `libs/`, tests) are ALWAYS filed as a separate
       `plans/backlog/<slug>/` plan, NEVER landed inline
       — acceptance: every `learnings.md` entry records its terminal routing state
+- [ ] [AI] For any entry routed to `plans/ideas/`, scan `plans/ideas/README.md` and the existing
+      two-pagers FIRST for a brief already covering the same area — fold in rather than creating a
+      new file (see [Integrate Before You Add](../../repo-governance/conventions/structure/plans.md#integrate-before-you-add-no-duplicate-two-pagers))
+      — acceptance: the entry's routing line names either the folded-into brief or confirms the
+      overlap scan found nothing
 - [ ] [AI] If no generalizable learning surfaced, record `No generalizable learnings — <reason>`
       in `learnings.md` — acceptance: `learnings.md` is never silently empty
 

@@ -66,8 +66,10 @@ idea now lives as a plan.
 
 > **The outcome is the plan, not the implementation.** This workflow never writes application or
 > library code, never runs a delivery checklist, and never touches `plans/in-progress/`. It produces
-> a proposal in `plans/backlog/`. The actual work happens later, only after a human promotes the
-> backlog plan to `plans/in-progress/` and runs the [Plan Execution workflow](./plan-execution.md).
+> a proposal in `plans/backlog/`. The actual work happens later, once the
+> [Plan Execution workflow](./plan-execution.md) runs — that workflow's own Step 0 gate promotes a
+> `plans/backlog/` plan to `plans/in-progress/` (commit + push on the local `main` checkout) before
+> execution begins, so no separate manual promotion step is required first.
 
 This is a `planning`-type workflow: a single forward procedure whose terminal deliverable is a plan
 document. It is **not** an iterative quality gate. Per the
