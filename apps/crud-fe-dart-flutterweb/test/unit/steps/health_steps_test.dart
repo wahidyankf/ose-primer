@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:crud_fe_dart_flutterweb/config/backend_mode.dart';
 import '../gherkin_helper.dart';
 import '../service_client.dart';
 
@@ -53,6 +54,35 @@ void main() {
               final response = await svc.getHealth();
               expect(response.status, equals('UP'));
             },
+          );
+        },
+      );
+
+      feature.scenario(
+        'Frontend-only reference start does not request an unavailable backend',
+        (s) {
+          var healthRequested = true;
+
+          s.given('the app is running', () async {});
+
+          // @covers specs/apps/crud/behavior/crud-web/gherkin/health/health-status.feature:Frontend-only reference start does not request an unavailable backend
+          s.when('the user opens the frontend-only reference app', () async {
+            healthRequested = shouldRequestBackendHealth(false);
+          });
+
+          s.then(
+            'the app should explain that a backend can be connected later',
+            () async {
+              expect(
+                frontendOnlyStartGuidance,
+                contains('Connect one when you are ready'),
+              );
+            },
+          );
+
+          s.and(
+            'the frontend-only reference app should not request backend health',
+            () async => expect(healthRequested, isFalse),
           );
         },
       );

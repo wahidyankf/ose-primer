@@ -37,6 +37,10 @@ npm exec nx -- run crud-fe-dart-flutterweb:test:quick
 npm exec nx -- run crud-fe-dart-flutterweb:test:unit
 ```
 
+The development server is intentionally frontend-only, so it is useful from a fresh checkout without a backend.
+For the connected Flutter reference app, use the full-stack Docker Compose command in [Docker](#docker);
+it builds the frontend with backend health enabled and supplies its internal backend address.
+
 **See**: [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) for canonical target names.
 
 ## Testing
