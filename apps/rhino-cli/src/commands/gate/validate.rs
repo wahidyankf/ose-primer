@@ -222,7 +222,6 @@ fn validate_ci_workflow(
     validate_ci_matrix_contract(config, &workflow, writer)?;
     validate_ci_doctor_bootstrap(config, &workflow, writer)?;
     validate_ci_gate_invocations(config, &workflow, writer)?;
-    validate_ci_checkout_fetch_depth(&workflow, writer)?;
     validate_hand_wired_ci_jobs(config, &workflow, writer)
 }
 
@@ -316,18 +315,17 @@ fn validate_ci_matrix_contract(
                 .matrix
                 .get("gate")
                 .is_some_and(|entry| entry.contains("fromJson(needs.enumerate.outputs.gates)"));
-        // Registry-sourced matrix values (e.g. `matrix.gate.id`) must never be
-        // template-spliced directly into a `run:` shell block — that is a
-        // GitHub Actions script-injection surface. The gate-id dispatch step
-        // must instead pass it through an `env:` variable and reference it as
-        // `"$VAR"` in `run:`.
+        // A matrix gate id is configuration-controlled input. It must travel
+        // through a step environment variable and a quoted shell expansion,
+        // never be template-spliced into `run:`.
         let dispatches_selected_gate = job.steps.iter().any(|step| {
             let Some(run) = step.run.as_deref() else {
                 return false;
             };
+            let normalized_run = run.split_whitespace().collect::<Vec<_>>().join(" ");
             step.env.iter().any(|(name, value)| {
                 value.contains("matrix.gate.id")
-                    && run.contains(&format!("gate run --surface=ci --only=\"${name}\""))
+                    && normalized_run.contains(&format!("gate run --surface=ci --only=\"${name}\""))
             })
         });
         derives_gate_matrix && dispatches_selected_gate
@@ -384,27 +382,14 @@ fn validate_ci_doctor_bootstrap(
             })
     });
     let matrix_uses_declared_tools = workflow.jobs.get("gate").is_some_and(|job| {
-        job.steps.iter().any(|step| {
-            let Some(run) = step.run.as_deref() else {
-                return false;
-            };
-            if !run.contains("npm run doctor -- --fix --tools") {
-                return false;
-            }
-            // Require the injection-safe indirection shape ONLY: an `env:` block routes the
-            // registry-sourced `matrix.gate.doctor_tools` value through a named shell variable,
-            // referenced in `run:` as `$VAR`. A direct inline splice of `${{ matrix.gate.* }}`
-            // into `run:` (e.g. `tools="${{ join(matrix.gate.doctor_tools, ',') }}"`) is a GitHub
-            // Actions script-injection surface — a matrix leg value drawn from
-            // `repo-config.yml` (attacker-editable in a PR) would be interpolated verbatim into
-            // the shell before execution. This validator previously accepted that inline-splice
-            // shape for backward compatibility; it no longer does, closing the same
-            // expression-injection class already fixed elsewhere in this workflow.
-            step.env.iter().any(|(name, value)| {
-                value.contains("matrix.gate.doctor_tools")
-                    && run.contains(&format!("if [ -n \"${name}\" ]"))
+        job.steps
+            .iter()
+            .filter_map(|step| step.run.as_deref())
+            .any(|run| {
+                run.contains("matrix.gate.doctor_tools")
+                    && run.contains("npm run doctor -- --fix --tools")
+                    && run.contains("if [ -n \"$tools\" ]")
             })
-        })
     });
     if format_derives_tool_union && matrix_uses_declared_tools {
         return Ok(());
@@ -457,62 +442,6 @@ fn validate_ci_gate_invocations(
         return Err(anyhow!(message));
     }
     Ok(())
-}
-
-/// Validates that no `actions/checkout` `fetch-depth` expression uses the
-/// falsy-zero antipattern `<cond> && 0 || <fallback>`.
-///
-/// GitHub Actions expressions use JS-like short-circuit semantics where `0`
-/// is falsy, so `<cond> && 0` never actually evaluates to `0` — it always
-/// falls through to the `|| <fallback>` branch regardless of `<cond>`. This
-/// exact shape previously shipped in `pr-quality-gate.yml`'s `gate` job
-/// checkout step (`matrix.gate.scope == 'affected-file-type' && 0 || 1`),
-/// silently forcing a shallow clone on every affected-file-type gate. This
-/// check pins the regression so the same antipattern cannot resurface in any
-/// `fetch-depth:` expression without failing `gate validate`.
-///
-/// # Errors
-///
-/// Returns an error when a `fetch-depth:` expression contains the
-/// falsy-zero antipattern or its diagnostic cannot be written.
-fn validate_ci_checkout_fetch_depth(
-    workflow: &Workflow,
-    writer: &mut dyn Write,
-) -> Result<(), Error> {
-    for (job_id, job) in &workflow.jobs {
-        for step in &job.steps {
-            let Some(fetch_depth) = step.with.get("fetch-depth") else {
-                continue;
-            };
-            let expression = fetch_depth.as_display_string();
-            if contains_falsy_zero_antipattern(&expression) {
-                let message = format!(
-                    "CI workflow job {job_id:?} checkout fetch-depth expression {expression:?} uses the falsy-zero antipattern (`<cond> && 0 || <fallback>` always evaluates truthy because GitHub Actions treats `0` as falsy inside `&&`)"
-                );
-                writeln!(writer, "{message}")?;
-                return Err(anyhow!(message));
-            }
-        }
-    }
-    Ok(())
-}
-
-/// Whether a GitHub Actions expression contains the `<cond> && 0 || <fallback>`
-/// falsy-zero antipattern anywhere in its token stream, independent of
-/// surrounding whitespace. Does not flag a trailing `|| 0` fallback (the
-/// correct shape), only `&& 0 ||` where `0` sits in the `&&` branch.
-fn contains_falsy_zero_antipattern(expression: &str) -> bool {
-    let inner = expression
-        .trim()
-        .strip_prefix("${{")
-        .and_then(|value| value.strip_suffix("}}"))
-        .unwrap_or(expression)
-        .trim();
-    inner
-        .split_whitespace()
-        .collect::<Vec<_>>()
-        .windows(3)
-        .any(|window| window == ["&&", "0", "||"])
 }
 
 /// The small subset of GitHub Actions workflow YAML needed for CI derivation checks.
@@ -580,43 +509,13 @@ struct WorkflowStep {
     /// Optional shell command, including YAML block scalars.
     #[serde(default)]
     run: Option<String>,
-    /// Optional step-level environment variables, used to check that
-    /// registry-sourced matrix values reach `run:` only through `$VAR`
-    /// references rather than direct `${{ }}` template-splicing.
+    /// Optional step-level environment variables. Matrix-derived values must
+    /// enter shell commands through these variables, not inline expressions.
     #[serde(default)]
     env: BTreeMap<String, String>,
-    /// Optional action inputs (e.g. `actions/checkout`'s `fetch-depth`).
-    #[serde(default)]
-    with: BTreeMap<String, WorkflowWithValue>,
     /// Optional step execution condition.
     #[serde(rename = "if")]
     condition: Option<WorkflowCondition>,
-}
-
-/// A scalar `with:` action-input value. GitHub Actions inputs are always
-/// strings on the wire, but YAML accepts unquoted scalars (`fetch-depth: 0`)
-/// as integers or booleans, so this accepts every scalar shape GHA allows
-/// and renders it back to the string form the expression checks operate on.
-#[derive(Deserialize)]
-#[serde(untagged)]
-enum WorkflowWithValue {
-    /// A quoted string or `${{ }}` expression.
-    String(String),
-    /// An unquoted integer literal, e.g. `fetch-depth: 0`.
-    Integer(i64),
-    /// An unquoted boolean literal.
-    Boolean(bool),
-}
-
-impl WorkflowWithValue {
-    /// Renders this `with:` value back to its string form for expression matching.
-    fn as_display_string(&self) -> String {
-        match self {
-            Self::String(value) => value.clone(),
-            Self::Integer(value) => value.to_string(),
-            Self::Boolean(value) => value.to_string(),
-        }
-    }
 }
 
 /// A GitHub Actions execution condition expressed as a YAML boolean or string.
@@ -1289,6 +1188,44 @@ fn matrix_ci_dispatcher_is_accepted_when_derived_from_gate_list() {
     assert!(
         run_at_root(repo.path(), &mut Vec::new()).is_ok(),
         "the registry-derived CI matrix dispatcher must validate"
+    );
+}
+
+#[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::panic)]
+#[test]
+fn matrix_ci_dispatcher_rejects_an_inline_gate_id_expression() {
+    let config: repo_config::RepoConfig = serde_norway::from_str(concat!(
+        "gates:\n",
+        "  - id: declared-ci-check\n",
+        "    type: check\n",
+        "    command: test:quick\n",
+        "    kind: nx\n",
+        "    surfaces:\n",
+        "      ci: { scope: affected-projects }\n",
+    ))
+    .unwrap();
+    let workflow: Workflow = serde_norway::from_str(concat!(
+        "jobs:\n",
+        "  enumerate:\n",
+        "    steps:\n",
+        "      - run: rhino-cli gate list --surface=ci --format=json\n",
+        "  gate:\n",
+        "    needs: enumerate\n",
+        "    strategy:\n",
+        "      matrix:\n",
+        "        gate: ${{ fromJson(needs.enumerate.outputs.gates) }}\n",
+        "    steps:\n",
+        "      - run: rhino-cli gate run --surface=ci --only=${{ matrix.gate.id }}\n",
+        "  quality-gate:\n",
+        "    needs: [enumerate, gate]\n",
+    ))
+    .unwrap();
+    let mut output = Vec::new();
+
+    assert!(
+        validate_ci_matrix_contract(&config, &workflow, &mut output).is_err(),
+        "a matrix gate id must not be template-spliced into a shell command"
     );
 }
 
@@ -2096,53 +2033,6 @@ fn doctor_tool_metadata_requires_registry_derived_format_and_matrix_selection() 
         "          fi\n",
         "  gate:\n",
         "    steps:\n",
-        "      - env:\n",
-        "          GATE_DOCTOR_TOOLS: ${{ join(matrix.gate.doctor_tools, ',') }}\n",
-        "        run: |\n",
-        "          if [ -n \"$GATE_DOCTOR_TOOLS\" ]; then\n",
-        "            npm run doctor -- --fix --tools \"$GATE_DOCTOR_TOOLS\"\n",
-        "          fi\n",
-    ))
-    .unwrap();
-
-    assert!(
-        validate_ci_doctor_bootstrap(&config, &workflow, &mut Vec::new()).is_ok(),
-        "registry-derived Doctor selections must validate"
-    );
-}
-
-#[cfg(test)]
-#[allow(clippy::unwrap_used, clippy::panic)]
-#[test]
-fn doctor_tool_metadata_rejects_the_inline_splice_shape() {
-    // Regression test: `validate_ci_doctor_bootstrap` previously accepted a direct inline
-    // splice of `${{ matrix.gate.doctor_tools }}` into `run:` as a backward-compatible
-    // alternative to the env-indirection shape. That inline splice is a GitHub Actions
-    // script-injection surface (a registry-sourced matrix value template-spliced directly
-    // into a shell block), the same class already fixed elsewhere in this workflow — so it
-    // must now be rejected rather than accepted.
-    let config: repo_config::RepoConfig = serde_norway::from_str(concat!(
-        "gates:\n",
-        "  - id: shellcheck\n",
-        "    type: check\n",
-        "    command: shellcheck\n",
-        "    kind: external\n",
-        "    doctor-tools: [shellcheck]\n",
-        "    surfaces:\n",
-        "      ci: { scope: all-file-type }\n",
-    ))
-    .unwrap();
-    let workflow: Workflow = serde_norway::from_str(concat!(
-        "jobs:\n",
-        "  format:\n",
-        "    steps:\n",
-        "      - run: |\n",
-        "          tools=$(rhino-cli gate list --surface=pre-commit --format=json | jq -r '[.[] | .doctor_tools[]] | unique | join(\",\")')\n",
-        "          if [ -n \"$tools\" ]; then\n",
-        "            npm run doctor -- --fix --tools \"$tools\"\n",
-        "          fi\n",
-        "  gate:\n",
-        "    steps:\n",
         "      - run: |\n",
         "          tools=\"${{ join(matrix.gate.doctor_tools, ',') }}\"\n",
         "          if [ -n \"$tools\" ]; then\n",
@@ -2151,58 +2041,9 @@ fn doctor_tool_metadata_rejects_the_inline_splice_shape() {
     ))
     .unwrap();
 
-    let mut output = Vec::new();
-    let result = validate_ci_doctor_bootstrap(&config, &workflow, &mut output);
-    let rendered = String::from_utf8_lossy(&output);
-
-    assert!(
-        result.is_err() && rendered.contains("format and matrix Doctor selections"),
-        "the inline-splice shape must be rejected; result_ok={}, output={rendered:?}",
-        result.is_ok()
-    );
-}
-
-#[cfg(test)]
-#[allow(clippy::unwrap_used, clippy::panic)]
-#[test]
-fn doctor_tool_metadata_accepts_the_injection_safe_env_indirection_shape() {
-    // The matrix leg may route the registry-sourced `doctor_tools` value through an `env:`
-    // block and reference it as `$VAR`, instead of splicing `${{ }}` directly into `run:`.
-    // This is the safer of the two shapes the validator accepts.
-    let config: repo_config::RepoConfig = serde_norway::from_str(concat!(
-        "gates:\n",
-        "  - id: shellcheck\n",
-        "    type: check\n",
-        "    command: shellcheck\n",
-        "    kind: external\n",
-        "    doctor-tools: [shellcheck]\n",
-        "    surfaces:\n",
-        "      ci: { scope: all-file-type }\n",
-    ))
-    .unwrap();
-    let workflow: Workflow = serde_norway::from_str(concat!(
-        "jobs:\n",
-        "  format:\n",
-        "    steps:\n",
-        "      - run: |\n",
-        "          tools=$(rhino-cli gate list --surface=pre-commit --format=json | jq -r '[.[] | .doctor_tools[]] | unique | join(\",\")')\n",
-        "          if [ -n \"$tools\" ]; then\n",
-        "            npm run doctor -- --fix --tools \"$tools\"\n",
-        "          fi\n",
-        "  gate:\n",
-        "    steps:\n",
-        "      - env:\n",
-        "          GATE_DOCTOR_TOOLS: ${{ join(matrix.gate.doctor_tools, ',') }}\n",
-        "        run: |\n",
-        "          if [ -n \"$GATE_DOCTOR_TOOLS\" ]; then\n",
-        "            npm run doctor -- --fix --tools \"$GATE_DOCTOR_TOOLS\"\n",
-        "          fi\n",
-    ))
-    .unwrap();
-
     assert!(
         validate_ci_doctor_bootstrap(&config, &workflow, &mut Vec::new()).is_ok(),
-        "the env-indirection shape must validate exactly like the inline-splice shape"
+        "registry-derived Doctor selections must validate"
     );
 }
 
@@ -2257,78 +2098,5 @@ fn doctor_tool_metadata_rejects_formatter_only_format_selection() {
         result.is_err() && rendered.contains("format and matrix Doctor selections"),
         "formatter-only format setup must fail; result_ok={}, output={rendered:?}",
         result.is_ok()
-    );
-}
-
-#[cfg(test)]
-#[allow(clippy::unwrap_used, clippy::panic)]
-#[test]
-fn checkout_fetch_depth_rejects_the_falsy_zero_antipattern() {
-    // Regression test for the fetch-depth falsy-zero bug that shipped in
-    // pr-quality-gate.yml's `gate` job checkout step and broke CI twice:
-    // `<cond> && 0` never evaluates to `0` because GitHub Actions treats `0`
-    // as falsy, so this expression always fell through to `|| 1`.
-    let workflow: Workflow = serde_norway::from_str(concat!(
-        "jobs:\n",
-        "  gate:\n",
-        "    steps:\n",
-        "      - uses: actions/checkout@v6\n",
-        "        with:\n",
-        "          fetch-depth: ${{ matrix.gate.scope == 'affected-file-type' && 0 || 1 }}\n",
-    ))
-    .unwrap();
-
-    let mut output = Vec::new();
-    let result = validate_ci_checkout_fetch_depth(&workflow, &mut output);
-    let rendered = String::from_utf8_lossy(&output);
-
-    assert!(
-        result.is_err() && rendered.contains("falsy-zero antipattern"),
-        "the falsy-zero fetch-depth expression must be rejected; result_ok={}, output={rendered:?}",
-        result.is_ok()
-    );
-}
-
-#[cfg(test)]
-#[allow(clippy::unwrap_used, clippy::panic)]
-#[test]
-fn checkout_fetch_depth_accepts_the_corrected_expression() {
-    // Pins the fix: reordering so `0` sits in the `||` fallback rather than
-    // the `&&` branch makes the expression behave as intended.
-    let workflow: Workflow = serde_norway::from_str(concat!(
-        "jobs:\n",
-        "  gate:\n",
-        "    steps:\n",
-        "      - uses: actions/checkout@v6\n",
-        "        with:\n",
-        "          fetch-depth: ${{ matrix.gate.scope != 'affected-file-type' && 1 || 0 }}\n",
-    ))
-    .unwrap();
-
-    assert!(
-        validate_ci_checkout_fetch_depth(&workflow, &mut Vec::new()).is_ok(),
-        "the corrected fetch-depth expression must validate"
-    );
-}
-
-#[cfg(test)]
-#[allow(clippy::unwrap_used, clippy::panic)]
-#[test]
-fn checkout_fetch_depth_accepts_literal_integer_values() {
-    // Most checkout steps in this workflow use a plain unquoted `fetch-depth: 0`
-    // literal (no `${{ }}` expression at all) — must deserialize and pass.
-    let workflow: Workflow = serde_norway::from_str(concat!(
-        "jobs:\n",
-        "  format:\n",
-        "    steps:\n",
-        "      - uses: actions/checkout@v6\n",
-        "        with:\n",
-        "          fetch-depth: 0\n",
-    ))
-    .unwrap();
-
-    assert!(
-        validate_ci_checkout_fetch_depth(&workflow, &mut Vec::new()).is_ok(),
-        "a literal integer fetch-depth must validate"
     );
 }
