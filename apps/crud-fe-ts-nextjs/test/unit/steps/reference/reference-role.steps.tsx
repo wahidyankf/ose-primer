@@ -1,8 +1,9 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, waitFor, cleanup } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { vi, expect } from "vitest";
+import * as authApi from "@/lib/api/auth";
 import HomePage from "@/app/page";
 
 const feature = await loadFeature(
@@ -35,12 +36,16 @@ describeFeature(feature, ({ Scenario, Background }) => {
   });
 
   Scenario("Landing page explains its reference role", ({ When, Then, And }) => {
-    When("a visitor opens the Next.js demo", () => {
+    When("a visitor opens the Next.js demo", async () => {
+      vi.mocked(authApi.getHealth).mockResolvedValue({ status: "UP" });
       render(
         <QueryClientProvider client={createQueryClient()}>
           <HomePage />
         </QueryClientProvider>,
       );
+      await waitFor(() => {
+        expect(screen.getByText("UP")).toBeInTheDocument();
+      });
     });
 
     // @covers specs/apps/crud/behavior/crud-web/gherkin/reference/reference-role.feature:Landing page explains its reference role
