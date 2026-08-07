@@ -121,6 +121,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     // @covers specs/apps/crud/behavior/crud-web/gherkin/health/health-status.feature:Frontend-only reference start does not request an unavailable backend
     And("the frontend-only reference app should not request backend health", () => {
       expect(authApi.getHealth).not.toHaveBeenCalled();
+      expect(screen.queryByRole("heading", { name: "Backend Status" })).not.toBeInTheDocument();
     });
   });
 });
