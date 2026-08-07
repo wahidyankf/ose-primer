@@ -83,4 +83,23 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.queryByText(/details/i)).not.toBeInTheDocument();
     });
   });
+
+  Scenario("Landing page explains its reference role", ({ When, Then, And }) => {
+    When("a visitor opens the app", () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <HomePage />
+        </QueryClientProvider>,
+      );
+    });
+
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/health/health-status.feature:Landing page explains its reference role
+    Then("the landing page should identify itself as a reusable reference application", () => {
+      expect(screen.getByText(/reusable reference application/i)).toBeInTheDocument();
+    });
+
+    And("it should explain that the example can be adapted for a team's product", () => {
+      expect(screen.getByText(/adapt.*team.*product/i)).toBeInTheDocument();
+    });
+  });
 });
