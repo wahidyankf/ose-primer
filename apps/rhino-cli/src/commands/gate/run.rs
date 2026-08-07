@@ -532,13 +532,7 @@ fn changed_paths_from_base(
     label: &str,
 ) -> Result<Vec<String>, Error> {
     let output = Command::new("git")
-        .args([
-            "diff",
-            "--name-only",
-            "--diff-filter=ACMR",
-            base.trim(),
-            "HEAD",
-        ])
+        .args(["diff", "--name-only", base.trim(), "HEAD"])
         .current_dir(repo_root)
         .output()?;
     if !output.status.success() {
@@ -553,7 +547,7 @@ fn changed_paths_from_base(
 /// Returns paths staged in the Git index at the explicit repository root.
 fn staged_paths(repo_root: &Path) -> Result<Vec<String>, Error> {
     let output = Command::new("git")
-        .args(["diff", "--cached", "--name-only", "--diff-filter=ACMR"])
+        .args(["diff", "--cached", "--name-only"])
         .current_dir(repo_root)
         .env("GIT_DIR", repo_root.join(".git"))
         .env("GIT_CEILING_DIRECTORIES", repo_root)

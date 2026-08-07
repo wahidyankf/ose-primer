@@ -285,32 +285,6 @@ impl GateWorld {
         );
     }
 
-    fn run_precommit_captured_gate(&mut self) {
-        let arguments = self
-            .ci_arguments
-            .as_ref()
-            .expect("pre-commit arguments capture must be configured");
-        let mut command = self.fixture_rhino_command();
-        command
-            .args([
-                "gate",
-                "run",
-                "--surface=pre-commit",
-                "--only=precommit-markdown",
-            ])
-            .env("GATE_CI_ARGUMENTS", arguments);
-        if let Some(path) = &self.path {
-            command.env("PATH", path);
-        }
-        let output = command.output().expect("run pre-commit captured gate");
-        self.succeeded = Some(output.status.success());
-        self.output = format!(
-            "{}{}",
-            String::from_utf8_lossy(&output.stdout),
-            String::from_utf8_lossy(&output.stderr)
-        );
-    }
-
     fn is_success(&self) -> bool {
         self.succeeded.expect("scenario command ran")
     }
@@ -422,103 +396,6 @@ fn given_ci_changed_base(w: &mut GateWorld) {
     w.ci_arguments = Some(arguments);
 }
 
-#[given("a CI event base predates a deletion of a matched file")]
-fn given_ci_deleted_since_base(w: &mut GateWorld) {
-    use std::os::unix::fs::PermissionsExt;
-
-    let bin = w.root().join("bin");
-    let arguments = w.root().join("captured-ci-arguments.txt");
-    std::fs::create_dir_all(&bin).expect("create CI fixture bin directory");
-    w.write("kept.md", "# Kept\n");
-    w.write("doomed.md", "# Doomed\n");
-    w.write(
-        "repo-config.yml",
-        &config(&gate(
-            "ci-markdown",
-            "check",
-            "capture",
-            "external",
-            "      ci: { scope: affected-file-type, glob: '*.md' }\n",
-        )),
-    );
-    let capture = bin.join("capture");
-    std::fs::write(
-        &capture,
-        "#!/bin/sh\nprintf '%s\\n' \"$@\" > \"$GATE_CI_ARGUMENTS\"\n",
-    )
-    .expect("write CI capture stub");
-    std::fs::set_permissions(&capture, std::fs::Permissions::from_mode(0o755))
-        .expect("make CI capture stub executable");
-    w.init_git();
-    w.stage(&["repo-config.yml", "kept.md", "doomed.md"]);
-    w.commit("test: baseline");
-    let base = w
-        .fixture_git_command()
-        .args(["rev-parse", "HEAD"])
-        .output()
-        .expect("read CI fixture baseline");
-    assert!(base.status.success(), "git rev-parse HEAD must succeed");
-    w.ci_changed_base = Some(
-        String::from_utf8(base.stdout)
-            .expect("CI fixture base must be UTF-8")
-            .trim()
-            .to_owned(),
-    );
-    w.write("kept.md", "# Kept after\n");
-    let removal = w
-        .fixture_git_command()
-        .args(["rm", "--quiet", "doomed.md"])
-        .output()
-        .expect("delete fixture file");
-    assert!(removal.status.success(), "git rm must succeed");
-    w.stage(&["kept.md"]);
-    w.commit("test: delete one file, modify another");
-    w.prepend_bin_to_path("bin");
-    w.ci_arguments = Some(arguments);
-}
-
-#[given("a matched file is staged for deletion")]
-fn given_staged_deletion(w: &mut GateWorld) {
-    use std::os::unix::fs::PermissionsExt;
-
-    let bin = w.root().join("bin");
-    let arguments = w.root().join("captured-precommit-arguments.txt");
-    std::fs::create_dir_all(&bin).expect("create pre-commit fixture bin directory");
-    w.write("kept.md", "# Kept\n");
-    w.write("doomed.md", "# Doomed\n");
-    w.write(
-        "repo-config.yml",
-        &config(&gate(
-            "precommit-markdown",
-            "check",
-            "capture",
-            "external",
-            "      pre-commit: { scope: affected-file-type, glob: '*.md' }\n",
-        )),
-    );
-    let capture = bin.join("capture");
-    std::fs::write(
-        &capture,
-        "#!/bin/sh\nprintf '%s\\n' \"$@\" > \"$GATE_CI_ARGUMENTS\"\n",
-    )
-    .expect("write pre-commit capture stub");
-    std::fs::set_permissions(&capture, std::fs::Permissions::from_mode(0o755))
-        .expect("make pre-commit capture stub executable");
-    w.init_git();
-    w.stage(&["repo-config.yml", "kept.md", "doomed.md"]);
-    w.commit("test: baseline");
-    w.write("kept.md", "# Kept staged\n");
-    let removal = w
-        .fixture_git_command()
-        .args(["rm", "--quiet", "doomed.md"])
-        .output()
-        .expect("stage a deletion");
-    assert!(removal.status.success(), "git rm must succeed");
-    w.stage(&["kept.md"]);
-    w.prepend_bin_to_path("bin");
-    w.ci_arguments = Some(arguments);
-}
-
 #[given("a check declares pre-commit but no ci surface or carve-out")]
 fn given_missing_ci_check(w: &mut GateWorld) {
     w.write(
@@ -607,7 +484,7 @@ fn given_undeclared_ci_command(w: &mut GateWorld) {
         concat!(
             "jobs:\n",
             "  enumerate:\n    steps:\n      - run: rhino-cli gate list --surface=ci --format=json\n",
-            "  gate:\n    needs: enumerate\n    strategy:\n      matrix:\n        gate: '${{ fromJson(needs.enumerate.outputs.gates) }}'\n    steps:\n      - env:\n          GATE_ID: ${{ matrix.gate.id }}\n        run: rhino-cli gate run --surface=ci --only=\"$GATE_ID\"\n",
+            "  gate:\n    needs: enumerate\n    strategy:\n      matrix:\n        gate: '${{ fromJson(needs.enumerate.outputs.gates) }}'\n    steps:\n      - run: rhino-cli gate run --surface=ci --only=${{ matrix.gate.id }}\n",
             "  quality-gate:\n    needs: [enumerate, gate]\n    steps:\n      - run: rhino-cli gate run --surface=ci --only=unknown-check\n",
         ),
     );
@@ -630,7 +507,7 @@ fn given_matrix_aggregate_missing_enumerate(w: &mut GateWorld) {
         concat!(
             "jobs:\n",
             "  enumerate:\n    steps:\n      - run: rhino-cli gate list --surface=ci --format=json\n",
-            "  gate:\n    needs: enumerate\n    strategy:\n      matrix:\n        gate: '${{ fromJson(needs.enumerate.outputs.gates) }}'\n    steps:\n      - env:\n          GATE_ID: ${{ matrix.gate.id }}\n        run: rhino-cli gate run --surface=ci --only=\"$GATE_ID\"\n",
+            "  gate:\n    needs: enumerate\n    strategy:\n      matrix:\n        gate: '${{ fromJson(needs.enumerate.outputs.gates) }}'\n    steps:\n      - run: rhino-cli gate run --surface=ci --only=${{ matrix.gate.id }}\n",
             "  quality-gate:\n    needs: gate\n",
         ),
     );
@@ -712,7 +589,7 @@ fn given_hand_wired_job(w: &mut GateWorld) {
         concat!(
             "jobs:\n",
             "  enumerate:\n    steps:\n      - run: rhino-cli gate list --surface=ci --format=json\n",
-            "  gate:\n    needs: enumerate\n    strategy:\n      matrix:\n        gate: '${{ fromJson(needs.enumerate.outputs.gates) }}'\n    steps:\n      - env:\n          GATE_ID: ${{ matrix.gate.id }}\n        run: rhino-cli gate run --surface=ci --only=\"$GATE_ID\"\n",
+            "  gate:\n    needs: enumerate\n    strategy:\n      matrix:\n        gate: '${{ fromJson(needs.enumerate.outputs.gates) }}'\n    steps:\n      - run: rhino-cli gate run --surface=ci --only=${{ matrix.gate.id }}\n",
             "  test-quick:\n    steps:\n      - run: npx nx affected -t test:quick\n",
             "  quality-gate:\n    needs: [enumerate, gate, test-quick]\n",
         ),
@@ -900,14 +777,8 @@ fn when_gate_validate_runs(w: &mut GateWorld) {
 }
 
 #[when("an affected-file-type CI gate runs after main advances")]
-#[when("an affected-file-type CI gate runs after the deletion")]
 fn when_ci_changed_base_gate_runs(w: &mut GateWorld) {
     w.run_ci_changed_base_gate();
-}
-
-#[when("an affected-file-type pre-commit gate runs")]
-fn when_precommit_captured_gate_runs(w: &mut GateWorld) {
-    w.run_precommit_captured_gate();
 }
 
 #[then("it fails and names the Gate Composition Rule, gate, and ci surface")]
@@ -934,20 +805,6 @@ fn then_ci_changed_base_gate_receives_changed_file(w: &mut GateWorld) {
         std::fs::read_to_string(arguments).unwrap_or_default(),
         "changed.md\n",
         "the supplied CI event base must provide the committed changed path"
-    );
-}
-
-#[then("the deleted path never reaches the leaf's argument list and the gate still succeeds")]
-fn then_deleted_path_excluded(w: &mut GateWorld) {
-    assert!(w.is_success(), "gate failed: {}", w.output);
-    let arguments = w
-        .ci_arguments
-        .as_ref()
-        .expect("arguments capture must be configured");
-    assert_eq!(
-        std::fs::read_to_string(arguments).unwrap_or_default(),
-        "kept.md\n",
-        "the deleted/staged-for-deletion doomed.md must never reach the leaf's argument list"
     );
 }
 
@@ -1051,7 +908,7 @@ fn given_complete_shipped_registry(w: &mut GateWorld) {
         concat!(
             "jobs:\n",
             "  enumerate:\n    steps:\n      - run: rhino-cli gate list --surface=ci --format=json\n",
-            "  gate:\n    needs: enumerate\n    strategy:\n      matrix:\n        gate: '${{ fromJson(needs.enumerate.outputs.gates) }}'\n    steps:\n      - env:\n          GATE_ID: ${{ matrix.gate.id }}\n        run: rhino-cli gate run --surface=ci --only=\"$GATE_ID\"\n",
+            "  gate:\n    needs: enumerate\n    strategy:\n      matrix:\n        gate: '${{ fromJson(needs.enumerate.outputs.gates) }}'\n    steps:\n      - run: rhino-cli gate run --surface=ci --only=${{ matrix.gate.id }}\n",
             "  test-quick:\n    steps:\n      - run: npx nx affected -t test:quick\n",
             "  quality-gate:\n    needs: [enumerate, gate, test-quick]\n",
         ),
