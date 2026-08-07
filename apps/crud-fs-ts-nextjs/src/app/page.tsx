@@ -4,7 +4,8 @@ import { useHealth } from "@/lib/queries/use-auth";
 import { useAuth } from "@/lib/auth/auth-provider";
 
 export default function HomePage() {
-  const { data, isLoading, isError } = useHealth();
+  const backendEnabled = process.env.NEXT_PUBLIC_BACKEND_ENABLED === "true";
+  const { data, isLoading, isError } = useHealth(backendEnabled);
   const { isAuthenticated } = useAuth();
 
   return (
@@ -14,6 +15,12 @@ export default function HomePage() {
       <div className="mb-8 rounded-lg border border-blue-200 bg-blue-50 p-6 text-left text-slate-700">
         <p className="font-semibold text-slate-900">A reusable reference application</p>
         <p className="mt-2">Explore this working example, then adapt it to fit your team&apos;s product.</p>
+        {!backendEnabled && (
+          <p className="mt-3">
+            This frontend-only reference starts without a backend. Connect one when you are ready to explore the full
+            flow.
+          </p>
+        )}
       </div>
 
       <div className="rounded-lg border border-gray-300 bg-white p-8 shadow-md">

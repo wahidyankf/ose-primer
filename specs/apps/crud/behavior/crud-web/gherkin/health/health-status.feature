@@ -18,7 +18,7 @@ Feature: Service Health Status
     Then the health status indicator should display "UP"
     And no detailed component health information should be visible
 
-  @unit
+  @unit @frontend-only
   Scenario: Frontend-only reference start does not request an unavailable backend
     When the user opens the frontend-only reference app
     Then the app should explain that a backend can be connected later

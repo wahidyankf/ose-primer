@@ -43,6 +43,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
 
   Scenario("Health indicator shows the service is UP", ({ When, Then }) => {
     When("the user opens the app", async () => {
+      vi.stubEnv("NEXT_PUBLIC_BACKEND_ENABLED", "true");
       vi.mocked(authApi.getHealth).mockResolvedValue({ status: "UP" });
       render(
         <QueryClientProvider client={queryClient}>
@@ -62,6 +63,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
 
   Scenario("Health indicator does not expose component details to regular users", ({ When, Then, And }) => {
     When("an unauthenticated user opens the app", async () => {
+      vi.stubEnv("NEXT_PUBLIC_BACKEND_ENABLED", "true");
       vi.mocked(authApi.getHealth).mockResolvedValue({ status: "UP" });
       render(
         <QueryClientProvider client={queryClient}>
@@ -81,6 +83,27 @@ describeFeature(feature, ({ Scenario, Background }) => {
     And("no detailed component health information should be visible", () => {
       expect(screen.queryByText(/components/i)).not.toBeInTheDocument();
       expect(screen.queryByText(/details/i)).not.toBeInTheDocument();
+    });
+  });
+
+  Scenario("Frontend-only reference start does not request an unavailable backend", ({ When, Then, And }) => {
+    When("the user opens the frontend-only reference app", () => {
+      vi.stubEnv("NEXT_PUBLIC_BACKEND_ENABLED", "false");
+      vi.mocked(authApi.getHealth).mockClear();
+      render(
+        <QueryClientProvider client={queryClient}>
+          <HomePage />
+        </QueryClientProvider>,
+      );
+    });
+
+    Then("the app should explain that a backend can be connected later", () => {
+      expect(screen.getByText(/connect one when you are ready/i)).toBeInTheDocument();
+    });
+
+    // @covers specs/apps/crud/behavior/crud-web/gherkin/health/health-status.feature:Frontend-only reference start does not request an unavailable backend
+    And("the frontend-only reference app should not request backend health", () => {
+      expect(authApi.getHealth).not.toHaveBeenCalled();
     });
   });
 });

@@ -14,9 +14,11 @@ describe("env", () => {
     expect(typeof env.CRUD_FS_TS_NEXTJS_JWT_SECRET).toBe("string");
   });
 
-  it("loads the environment module during Next.js startup", async () => {
+  it("uses an explicit non-secret public mode at build time", async () => {
     const configurationSource = await readFile(path.resolve(__dirname, "../next.config.ts"), "utf8");
 
-    expect(configurationSource).toContain('import "./src/env"');
+    expect(configurationSource).not.toContain('import "./src/env"');
+    expect(configurationSource).toContain("NEXT_PUBLIC_BACKEND_ENABLED");
+    expect(configurationSource).not.toContain("CRUD_FS_TS_NEXTJS_JWT_SECRET");
   });
 });

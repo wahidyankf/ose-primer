@@ -17,6 +17,8 @@ COPY libs/ts-ui-tokens/src/ ./node_modules/@open-sharia-enterprise/ts-ui-tokens/
 COPY libs/ts-ui-tokens/package.json ./node_modules/@open-sharia-enterprise/ts-ui-tokens/
 COPY specs/apps/crud/containers/contracts/generated/ ./specs/apps/crud/containers/contracts/generated/
 ENV NEXT_TELEMETRY_DISABLED=1
+ARG NEXT_PUBLIC_BACKEND_ENABLED=false
+ENV NEXT_PUBLIC_BACKEND_ENABLED=$NEXT_PUBLIC_BACKEND_ENABLED
 WORKDIR /app/apps/crud-fs-ts-nextjs
 RUN npx @hey-api/openapi-ts -i ../../specs/apps/crud/containers/contracts/generated/openapi-bundled.yaml -o src/generated-contracts -s
 RUN npx next build
