@@ -6,7 +6,8 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
-  const { data, isLoading, isError } = useHealth();
+  const backendEnabled = import.meta.env.VITE_BACKEND_ENABLED === "true";
+  const { data, isLoading, isError } = useHealth(backendEnabled);
 
   return (
     <main
@@ -34,6 +35,12 @@ function HomePage() {
         <p style={{ margin: "0.5rem 0 0" }}>
           Explore this working example, then adapt it to fit your team&apos;s product.
         </p>
+        {!backendEnabled && (
+          <p style={{ margin: "0.75rem 0 0" }}>
+            This frontend-only reference starts without a backend. Connect one when you are ready to explore the full
+            flow.
+          </p>
+        )}
       </div>
 
       <div
