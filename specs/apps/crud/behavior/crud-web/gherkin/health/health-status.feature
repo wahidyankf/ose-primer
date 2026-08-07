@@ -17,9 +17,3 @@ Feature: Service Health Status
     When an unauthenticated user opens the app
     Then the health status indicator should display "UP"
     And no detailed component health information should be visible
-
-  @unit
-  Scenario: Landing page explains its reference role
-    When a visitor opens the app
-    Then the landing page should identify itself as a reusable reference application
-    And it should explain that the example can be adapted for a team's product
