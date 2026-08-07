@@ -386,22 +386,22 @@ This project is complete. See the following documentation:
 
 **Common specific cases:**
 
-| What                   | Where                | Why                                     |
-| ---------------------- | -------------------- | --------------------------------------- |
-| Git commit history     | Git only             | Not in this system                      |
-| Code comments          | Source code          | Not in this system                      |
-| README.md (repo root)  | Repo root            | Special file for GitHub                 |
-| CLAUDE.md              | Repo root            | Special file for Claude Code            |
-| API schemas            | `docs/reference/`    | Permanent reference                     |
-| Architecture diagrams  | `docs/explanation/`  | Permanent system understanding          |
-| Sprint burndown charts | `plans/in-progress/` | Project-specific tracking               |
-| Team onboarding guide  | `docs/tutorials/`    | Learning-oriented                       |
-| Troubleshooting guide  | `docs/how-to/`       | Problem-solving                         |
-| Product requirements   | `plans/backlog/`     | Project planning                        |
-| System requirements    | `docs/reference/`    | Permanent specs                         |
-| Idea briefs (two-pagers) | `plans/ideas/`     | Promotable capture of potential projects |
-| Proof of concept       | `plans/in-progress/` | Structured exploration with deliverable |
-| Research findings      | `docs/explanation/`  | Permanent knowledge                     |
+| What                     | Where                | Why                                      |
+| ------------------------ | -------------------- | ---------------------------------------- |
+| Git commit history       | Git only             | Not in this system                       |
+| Code comments            | Source code          | Not in this system                       |
+| README.md (repo root)    | Repo root            | Special file for GitHub                  |
+| CLAUDE.md                | Repo root            | Special file for Claude Code             |
+| API schemas              | `docs/reference/`    | Permanent reference                      |
+| Architecture diagrams    | `docs/explanation/`  | Permanent system understanding           |
+| Sprint burndown charts   | `plans/in-progress/` | Project-specific tracking                |
+| Team onboarding guide    | `docs/tutorials/`    | Learning-oriented                        |
+| Troubleshooting guide    | `docs/how-to/`       | Problem-solving                          |
+| Product requirements     | `plans/backlog/`     | Project planning                         |
+| System requirements      | `docs/reference/`    | Permanent specs                          |
+| Idea briefs (two-pagers) | `plans/ideas/`       | Promotable capture of potential projects |
+| Proof of concept         | `plans/in-progress/` | Structured exploration with deliverable  |
+| Research findings        | `docs/explanation/`  | Permanent knowledge                      |
 
 ## 🔗 Related Documentation
 
@@ -409,7 +409,7 @@ This project is complete. See the following documentation:
 - [File Naming Convention](../../repo-governance/conventions/structure/file-naming.md) - How to name files in `docs/`
 - [Diagram and Schema Convention](../../repo-governance/conventions/formatting/diagrams.md) - When to use Mermaid vs ASCII art
 - [Plans Folder Guide](../../plans/README.md) - Detailed guide to the plans/ folder
-- [Documentation Structure](../README.md#-organization-structure) - Overview of docs/ structure
+- [Documentation Structure](../README.md#how-this-documentation-is-organized) - Overview of docs/ structure
 
 ---
 
