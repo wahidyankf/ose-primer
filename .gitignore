@@ -8,6 +8,7 @@ dist/
 build/
 *.tsbuildinfo
 .next/
+next-env.d.ts
 out/
 cover.out
 coverage.html
