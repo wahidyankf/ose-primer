@@ -37,6 +37,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
 
   Scenario("Landing page explains its reference role", ({ When, Then, And }) => {
     When("a reader opens the demo application", async () => {
+      vi.stubEnv("NEXT_PUBLIC_BACKEND_ENABLED", "true");
       vi.mocked(authApi.getHealth).mockResolvedValue({ status: "UP" });
       render(
         <QueryClientProvider client={createQueryClient()}>
