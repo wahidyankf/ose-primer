@@ -23,7 +23,8 @@ class UnitReportingSteps {
     )
   }
 
-  // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L breakdown includes category-level amounts for income and expenses
+  // @covers specs/apps/crud/behavior/crud-be/gherkin/expenses/reporting.feature:P&L breakdown
+  // includes category-level amounts for income and expenses
   @Then("the expense breakdown should contain {string} with amount {string}")
   fun theExpenseBreakdownShouldContain(category: String, amount: String) {
     val body = UnitTestWorld.lastResponseBody

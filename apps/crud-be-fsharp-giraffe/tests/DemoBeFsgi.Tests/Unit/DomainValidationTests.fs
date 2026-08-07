@@ -1,10 +1,12 @@
 module DemoBeFsgi.Tests.Unit.DomainValidationTests
 
+open System.Globalization
 open Xunit
 open DemoBeFsgi.Domain.Types
 open DemoBeFsgi.Domain.User
 open DemoBeFsgi.Domain.Expense
 open DemoBeFsgi.Domain.Attachment
+open DemoBeFsgi.Domain.AmountFormatting
 
 [<Trait("Category", "Unit")>]
 type DomainValidationTests() =
@@ -106,6 +108,16 @@ type DomainValidationTests() =
     [<Fact>]
     member _.``IDR whole number passes``() =
         Assert.True(Result.isOk (validateCurrencyPrecision "IDR" 150000m))
+
+    [<Fact>]
+    member _.``USD amount formatting remains invariant under a comma-decimal culture``() =
+        let originalCulture = CultureInfo.CurrentCulture
+
+        try
+            CultureInfo.CurrentCulture <- CultureInfo.GetCultureInfo("fr-FR")
+            Assert.Equal("10.50", formatAmount "USD" 10.50m)
+        finally
+            CultureInfo.CurrentCulture <- originalCulture
 
     // Unit validation
     [<Fact>]
