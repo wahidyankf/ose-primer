@@ -7,7 +7,7 @@ Feature: Demo Reference Role
   Background:
     Given the demo application is running
 
-  @unit
+  @unit @e2e
   Scenario: Landing page explains its reference role
     When a reader opens the demo application
     Then the landing page should identify itself as a reusable reference application
