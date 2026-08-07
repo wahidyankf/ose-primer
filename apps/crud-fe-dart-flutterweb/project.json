@@ -53,6 +53,7 @@
           "nx run crud-fe-dart-flutterweb:typecheck",
           "nx run crud-fe-dart-flutterweb:lint",
           "nx run crud-fe-dart-flutterweb:test:unit",
+          "nx run crud-fe-dart-flutterweb:test:web",
           "nx run crud-fe-dart-flutterweb:test:coverage",
           "nx run crud-fe-dart-flutterweb:test:specs"
         ],
@@ -84,6 +85,15 @@
       "options": {
         "commands": ["flutter test test/unit --run-skipped", "! grep -rnE 'skip:[[:space:]]*true' test/unit"],
         "parallel": false,
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:web": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default"],
+      "options": {
+        "command": "flutter test --platform chrome test/web/reference_role_test.dart",
         "cwd": "{projectRoot}"
       }
     },
