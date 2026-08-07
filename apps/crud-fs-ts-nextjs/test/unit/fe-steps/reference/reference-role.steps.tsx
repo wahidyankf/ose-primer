@@ -7,10 +7,7 @@ import * as authApi from "@/lib/api/auth";
 import HomePage from "@/app/page";
 
 const feature = await loadFeature(
-  path.resolve(
-    __dirname,
-    "../../../../../../specs/apps/crud/behavior/crud-web/gherkin/reference/reference-role.feature",
-  ),
+  path.resolve(process.cwd(), "../../specs/apps/crud/behavior/crud-web/gherkin/reference/reference-role.feature"),
 );
 
 vi.mock("@/lib/api/auth", () => ({
@@ -20,6 +17,16 @@ vi.mock("@/lib/api/auth", () => ({
   refreshToken: vi.fn(),
   logout: vi.fn(),
   logoutAll: vi.fn(),
+}));
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+  useSearchParams: () => new URLSearchParams(),
+  usePathname: () => "/",
+}));
+
+vi.mock("@/lib/auth/auth-provider", () => ({
+  useAuth: () => ({ isAuthenticated: false }),
 }));
 
 function createQueryClient() {

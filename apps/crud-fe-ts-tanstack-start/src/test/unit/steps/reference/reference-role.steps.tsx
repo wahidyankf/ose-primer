@@ -1,15 +1,16 @@
 import path from "path";
+import React from "react";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { render, screen, waitFor, cleanup } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { vi, expect } from "vitest";
 import * as authApi from "@/lib/api/auth";
-import HomePage from "@/app/page";
+import { Route as HomeRoute } from "@/routes/index";
 
 const feature = await loadFeature(
   path.resolve(
     __dirname,
-    "../../../../../../specs/apps/crud/behavior/crud-web/gherkin/reference/reference-role.feature",
+    "../../../../../../../specs/apps/crud/behavior/crud-web/gherkin/reference/reference-role.feature",
   ),
 );
 
@@ -22,10 +23,27 @@ vi.mock("@/lib/api/auth", () => ({
   logoutAll: vi.fn(),
 }));
 
+vi.mock("@tanstack/react-router", () => ({
+  createFileRoute: (_path: string) => (opts: { component: React.ComponentType }) => ({
+    options: opts,
+    component: opts.component,
+  }),
+  Link: ({ children, to, style }: { children: React.ReactNode; to: string; style?: React.CSSProperties }) => (
+    <a href={to} style={style}>
+      {children}
+    </a>
+  ),
+}));
+
 function createQueryClient() {
   return new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
+}
+
+function HomePageWrapper() {
+  const Component = HomeRoute.options.component as React.ComponentType;
+  return <Component />;
 }
 
 describeFeature(feature, ({ Scenario, Background }) => {
@@ -40,7 +58,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       vi.mocked(authApi.getHealth).mockResolvedValue({ status: "UP" });
       render(
         <QueryClientProvider client={createQueryClient()}>
-          <HomePage />
+          <HomePageWrapper />
         </QueryClientProvider>,
       );
       await waitFor(() => {

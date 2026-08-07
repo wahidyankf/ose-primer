@@ -1,14 +1,14 @@
-Feature: Next.js Reference Role
+Feature: Demo Reference Role
 
-  As a product-minded engineer evaluating the starter
-  I want the Next.js demo to explain its role
+  As a product-minded engineer evaluating a demo application
+  I want the landing page to explain its role
   So that I know I can adapt the example for my team's product
 
   Background:
-    Given the Next.js demo is running
+    Given the demo application is running
 
   @unit
   Scenario: Landing page explains its reference role
-    When a visitor opens the Next.js demo
+    When a reader opens the demo application
     Then the landing page should identify itself as a reusable reference application
     And it should explain that the example can be adapted for a team's product

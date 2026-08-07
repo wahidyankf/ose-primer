@@ -16,6 +16,30 @@ void render(Element parent) {
   h1.style.setProperty('margin-bottom', '1.5rem');
   main.appendChild(h1);
 
+  final reference = document.createElement('div') as HTMLDivElement;
+  reference.style.setProperty('margin-bottom', '2rem');
+  reference.style.setProperty('border', '1px solid #bfdbfe');
+  reference.style.setProperty('border-radius', '8px');
+  reference.style.setProperty('padding', '1.5rem');
+  reference.style.setProperty('background-color', '#eff6ff');
+  reference.style.setProperty('color', '#334155');
+  reference.style.setProperty('text-align', 'left');
+
+  final referenceTitle = document.createElement('p') as HTMLParagraphElement;
+  referenceTitle.textContent = 'A reusable reference application';
+  referenceTitle.style.setProperty('margin', '0');
+  referenceTitle.style.setProperty('font-weight', 'bold');
+  referenceTitle.style.setProperty('color', '#0f172a');
+  reference.appendChild(referenceTitle);
+
+  final referenceDescription =
+      document.createElement('p') as HTMLParagraphElement;
+  referenceDescription.textContent =
+      'Explore this working example, then adapt it to fit your team\'s product.';
+  referenceDescription.style.setProperty('margin', '0.5rem 0 0');
+  reference.appendChild(referenceDescription);
+  main.appendChild(reference);
+
   final card = document.createElement('div') as HTMLDivElement;
   card.style.setProperty('border', '1px solid #ddd');
   card.style.setProperty('border-radius', '8px');

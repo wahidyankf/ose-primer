@@ -11,6 +11,11 @@ export default function HomePage() {
     <main className="mx-auto mt-16 max-w-[40rem] p-8 text-center">
       <h1 className="mb-6">Demo Fullstack</h1>
 
+      <div className="mb-8 rounded-lg border border-blue-200 bg-blue-50 p-6 text-left text-slate-700">
+        <p className="font-semibold text-slate-900">A reusable reference application</p>
+        <p className="mt-2">Explore this working example, then adapt it to fit your team&apos;s product.</p>
+      </div>
+
       <div className="rounded-lg border border-gray-300 bg-white p-8 shadow-md">
         <h2 className="mt-0 mb-4">Backend Status</h2>
 
