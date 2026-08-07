@@ -35,6 +35,7 @@
     <Compile Include="Domain/Types.fs" />
     <Compile Include="Domain/User.fs" />
     <Compile Include="Domain/Expense.fs" />
+    <Compile Include="Domain/AmountFormatting.fs" />
     <Compile Include="Domain/Attachment.fs" />
     <Compile Include="Infrastructure/AppDbContext.fs" />
     <Compile Include="Infrastructure/PasswordHasher.fs" />

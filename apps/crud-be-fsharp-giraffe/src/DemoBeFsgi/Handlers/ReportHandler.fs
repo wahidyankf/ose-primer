@@ -3,6 +3,7 @@ module DemoBeFsgi.Handlers.ReportHandler
 open System
 open Giraffe
 open DemoBeFsgi.Infrastructure.Repositories.RepositoryTypes
+open DemoBeFsgi.Domain.AmountFormatting
 
 let profitAndLoss: HttpHandler =
     fun next ctx ->
@@ -48,18 +49,13 @@ let profitAndLoss: HttpHandler =
             let expenseTotal = expenseEntries |> List.sumBy (fun e -> e.Amount)
             let net = incomeTotal - expenseTotal
 
-            let formatAmount (a: decimal) =
-                match currency with
-                | "IDR" -> a.ToString("0")
-                | _ -> a.ToString("0.00")
-
             let incomeBreakdown =
                 incomeEntries
                 |> List.groupBy (fun e -> e.Category)
                 |> List.map (fun (cat, items) ->
                     {| category = cat
                        ``type`` = "income"
-                       total = formatAmount (items |> List.sumBy (fun e -> e.Amount)) |})
+                       total = formatAmount currency (items |> List.sumBy (fun e -> e.Amount)) |})
                 |> List.toArray
 
             let expenseBreakdown =
@@ -68,14 +64,14 @@ let profitAndLoss: HttpHandler =
                 |> List.map (fun (cat, items) ->
                     {| category = cat
                        ``type`` = "expense"
-                       total = formatAmount (items |> List.sumBy (fun e -> e.Amount)) |})
+                       total = formatAmount currency (items |> List.sumBy (fun e -> e.Amount)) |})
                 |> List.toArray
 
             return!
                 json
-                    {| totalIncome = formatAmount incomeTotal
-                       totalExpense = formatAmount expenseTotal
-                       net = formatAmount net
+                    {| totalIncome = formatAmount currency incomeTotal
+                       totalExpense = formatAmount currency expenseTotal
+                       net = formatAmount currency net
                        currency = currency
                        incomeBreakdown = incomeBreakdown
                        expenseBreakdown = expenseBreakdown |}
