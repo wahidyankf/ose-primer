@@ -16,7 +16,7 @@ This guide shows you how to create a new application in the `apps/` folder of th
 
 ## 📋 Prerequisites
 
-- Node.js 24.13.1 and npm 11.10.1 (managed by Volta)
+- Node.js 24.16.0 and npm 11.10.1 (managed by Volta)
 - Nx workspace initialized
 - Understanding of the app you want to create (Next.js, Express API, etc.)
 
@@ -214,19 +214,19 @@ Create `apps/[app-name]/README.md`:
 
 # Start development server
 
-nx dev [app-name]
+npm exec nx -- dev [app-name]
 
 # Build for production
 
-nx build [app-name]
+npm exec nx -- build [app-name]
 
 # Run fast quality gate (pre-push standard)
 
-nx run [app-name]:test:quick
+npm exec nx -- run [app-name]:test:quick
 
 # Run isolated unit tests
 
-nx run [app-name]:test:unit
+npm exec nx -- run [app-name]:test:unit
 \`\`\`
 
 ## Dependencies
@@ -250,13 +250,13 @@ npm install
 
 ```bash
 # Test development server
-nx dev [app-name]
+npm exec nx -- dev [app-name]
 
 # Test build
-nx build [app-name]
+npm exec nx -- build [app-name]
 
 # View dependency graph
-nx graph
+npm exec nx -- graph
 ```
 
 ### Step 10: Import Libraries (If Needed)

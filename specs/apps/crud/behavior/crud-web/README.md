@@ -70,7 +70,7 @@ specs/apps/crud/behavior/crud-web/
 └── gherkin/
     ├── README.md
     ├── health/
-    │   └── health-status.feature           (2 scenarios)
+    │   └── health-status.feature           (3 scenarios)
     ├── authentication/
     │   ├── login.feature                   (5 scenarios)
     │   └── session.feature                 (7 scenarios)

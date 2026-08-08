@@ -39,7 +39,7 @@ specs/libs/ts-ui-tokens/
 
 ## Status
 
-`test:unit` (`nx run ts-ui-tokens:test:unit`) is currently an `echo` placeholder — `ts-ui-tokens`
+`test:unit` (`npm exec nx -- run ts-ui-tokens:test:unit`) is currently an `echo` placeholder — `ts-ui-tokens`
 is CSS plus minimal TypeScript re-exports with no dedicated test runner yet. `specs:behavior:coverage`
 is likewise an `echo` placeholder until a runner is wired up. The scenario below documents the
 intended token-export contract that `ts-ui` (its only consumer) already relies on at compile time.

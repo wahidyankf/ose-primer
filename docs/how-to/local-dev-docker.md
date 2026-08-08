@@ -1,6 +1,6 @@
 ---
 title: How to Set Up Local Development with Docker
-description: Set up a reproducible local development environment using Docker and Docker Compose for all services
+description: Run an individual ose-primer example locally with Docker Compose when its workflow needs containers
 category: how-to
 tags:
   - docker
@@ -12,13 +12,16 @@ tags:
 
 ## 📋 Overview
 
-This guide explains how to set up a reproducible local development environment using Docker and Docker Compose for all services in the open-sharia-enterprise platform.
+Use this guide when the particular CRUD example you chose needs a containerized database, service,
+or end-to-end test. Docker is not part of the fresh-checkout path: you can explore the template,
+run its repository checks, and work on many examples without it.
 
-**Goal**: Ensure all developers work in identical environments, regardless of their host operating system or installed tools.
+**Goal**: make the chosen service stack repeatable without pretending that one container setup fits
+every language example.
 
 ## ⚙️ Prerequisites
 
-- **Docker Desktop** (macOS/Windows) or **Docker Engine + Docker Compose v2** (Linux):
+- **Docker Desktop** (macOS) or **Docker Engine + Docker Compose v2** (Ubuntu/Debian Linux):
   - Docker Engine: 20.10+ ([Install Docker](https://docs.docker.com/get-docker/))
   - Docker Compose: v2.0+ (included with Docker Desktop; install separately on Linux)
 - **Docker resources**: Minimum 2 CPU cores and 4 GB RAM recommended (configure in Docker Desktop → Settings → Resources)
@@ -35,8 +38,8 @@ This guide explains how to set up a reproducible local development environment u
 1. **Environment Consistency**: All developers use identical runtime environments
 2. **Isolation**: Services don't conflict with host system or each other
 3. **Production Parity**: Development environment matches production deployment
-4. **Easy Onboarding**: New developers get started in minutes
-5. **Clean System**: No need to install multiple language runtimes
+4. **Focused onboarding**: Add Docker when the selected example needs it
+5. **Clean system**: Avoid installing every runtime before you have chosen an example
 6. **Network Simulation**: Test service-to-service communication locally
 
 ## Repository Structure
@@ -94,15 +97,10 @@ docker compose -f infra/dev/crud-fs-ts-nextjs/docker-compose.yml up
 
 > **Note**: All `crud-be-*` backends bind port 8201 and are mutually exclusive — do not run two backend stacks simultaneously.
 
-### 3. Configure Environment (Optional)
+### 3. Configure the Chosen Stack Only When Its README Requires It
 
-```bash
-# Copy environment template
-cp .env.example .env
-
-# Edit configuration (optional, defaults work)
-nano .env
-```
+Do not create, copy, or restore a root `.env` file. If a specific stack requires configuration,
+read that stack's tracked README and `.env.example`; keep real values local and untracked.
 
 ### 4. Build Application (If Needed)
 
@@ -114,7 +112,7 @@ cd ../../../apps/crud-be-java-springboot
 mvn clean package -DskipTests
 
 # Or using Nx
-nx run crud-be-java-springboot:build
+npm exec nx -- run crud-be-java-springboot:build
 
 # Return to Docker Compose directory
 cd ../../infra/dev/crud-be-java-springboot
@@ -149,7 +147,7 @@ curl http://localhost:8201/health
 With the backend running, execute the API-level Playwright E2E suite from the repository root:
 
 ```bash
-nx run crud-be-e2e:test:e2e
+npm exec nx -- run crud-be-e2e:test:e2e
 ```
 
 See [`apps/crud-be-e2e/`](../../apps/crud-be-e2e/README.md) for setup and options.
@@ -157,7 +155,7 @@ See [`apps/crud-be-e2e/`](../../apps/crud-be-e2e/README.md) for setup and option
 With the frontend running, execute the web Playwright suite:
 
 ```bash
-nx run crud-fe-e2e:test:e2e
+npm exec nx -- run crud-fe-e2e:test:e2e
 ```
 
 ### 7. Stop Services
@@ -240,7 +238,7 @@ docker compose -f infra/dev/crud-be-java-springboot/docker-compose.yml restart c
 
 ```bash
 # 1. Rebuild the application
-nx run crud-be-java-springboot:build
+npm exec nx -- run crud-be-java-springboot:build
 
 # 2. Restart the service
 docker compose -f infra/dev/crud-be-java-springboot/docker-compose.yml restart crud-be-java-springboot
@@ -281,7 +279,7 @@ docker compose -f infra/dev/crud-be-java-springboot/docker-compose.yml up -d
 
 # 2. Make changes to code
 # 3. Rebuild and restart (Java requires rebuild; Go/Python restart is sufficient)
-nx run crud-be-java-springboot:build
+npm exec nx -- run crud-be-java-springboot:build
 docker compose -f infra/dev/crud-be-java-springboot/docker-compose.yml restart crud-be-java-springboot
 
 # 4. Test changes
@@ -609,14 +607,10 @@ image: eclipse-temurin:25-jre-alpine
 image: eclipse-temurin:latest
 ```
 
-### 2. Use .env Files, Never Commit Secrets
+### 2. Keep Credentials Out of the Repository
 
-```bash
-# Good: Use .env.example as template
-cp .env.example .env
-
-# Bad: Hardcode secrets in docker-compose.yml
-```
+Use a stack's tracked `.env.example` as documentation only. Keep real values in your local,
+untracked environment; never paste credentials into Compose files, documentation, or commits.
 
 ### 3. Mount Volumes Read-Only When Possible
 

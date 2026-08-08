@@ -21,6 +21,23 @@ function HomePage() {
 
       <div
         style={{
+          marginBottom: "2rem",
+          border: "1px solid #bfdbfe",
+          borderRadius: "8px",
+          padding: "1.5rem",
+          backgroundColor: "#eff6ff",
+          color: "#334155",
+          textAlign: "left",
+        }}
+      >
+        <p style={{ margin: 0, fontWeight: "bold", color: "#0f172a" }}>A reusable reference application</p>
+        <p style={{ margin: "0.5rem 0 0" }}>
+          Explore this working example, then adapt it to fit your team&apos;s product.
+        </p>
+      </div>
+
+      <div
+        style={{
           border: "1px solid #ddd",
           borderRadius: "8px",
           padding: "2rem",

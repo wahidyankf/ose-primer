@@ -7,6 +7,7 @@ open DemoBeFsgi.Infrastructure.AppDbContext
 open DemoBeFsgi.Infrastructure.Repositories.RepositoryTypes
 open DemoBeFsgi.Domain.Types
 open DemoBeFsgi.Domain.Expense
+open DemoBeFsgi.Domain.AmountFormatting
 open DemoBeFsgi.Contracts.ContractWrappers
 
 let private parseAmount (s: string) =
@@ -180,10 +181,7 @@ let create: HttpHandler =
 
                                 ctx.Response.StatusCode <- 201
 
-                                let formattedAmount =
-                                    match r.currency.ToUpperInvariant() with
-                                    | "IDR" -> validAmount.ToString("0")
-                                    | _ -> validAmount.ToString("0.00")
+                                let formattedAmount = formatAmount r.currency validAmount
 
                                 return!
                                     json
@@ -230,10 +228,7 @@ let list: HttpHandler =
             let data =
                 expenses
                 |> List.map (fun e ->
-                    let formattedAmount =
-                        match e.Currency with
-                        | "IDR" -> e.Amount.ToString("0")
-                        | _ -> e.Amount.ToString("0.00")
+                    let formattedAmount = formatAmount e.Currency e.Amount
 
                     let qtyOpt =
                         if e.Quantity.HasValue then
@@ -290,10 +285,7 @@ let getById (expenseId: Guid) : HttpHandler =
                         earlyReturn
                         ctx
             | Some expense ->
-                let formattedAmount =
-                    match expense.Currency with
-                    | "IDR" -> expense.Amount.ToString("0")
-                    | _ -> expense.Amount.ToString("0.00")
+                let formattedAmount = formatAmount expense.Currency expense.Amount
 
                 let qtyOpt =
                     if expense.Quantity.HasValue then
@@ -421,10 +413,7 @@ let update (expenseId: Guid) : HttpHandler =
 
                         let! saved = expenseRepo.Update updated
 
-                        let formattedAmount =
-                            match saved.Currency with
-                            | "IDR" -> saved.Amount.ToString("0")
-                            | _ -> saved.Amount.ToString("0.00")
+                        let formattedAmount = formatAmount saved.Currency saved.Amount
 
                         return!
                             json
@@ -488,10 +477,7 @@ let summary: HttpHandler =
                 |> List.map (fun (currency, items) ->
                     let total = items |> List.sumBy (fun e -> e.Amount)
 
-                    let formattedTotal =
-                        match currency with
-                        | "IDR" -> total.ToString("0")
-                        | _ -> total.ToString("0.00")
+                    let formattedTotal = formatAmount currency total
 
                     currency, formattedTotal)
                 |> Map.ofList

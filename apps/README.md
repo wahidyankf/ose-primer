@@ -1,252 +1,60 @@
-# Apps Folder
+# Applications
 
-## Purpose
+`apps/` is the hands-on reference library in `ose-primer`. Each project is a deliberately small,
+working example of a delivery surface or language stack—not a product that a new repository must
+keep. Use these apps to see how the workspace, contracts, tests, and quality gates fit together;
+then keep, adapt, or remove them when you make the primer your own. 🧭
 
-The `apps/` directory contains **deployable application projects** (executables). These are the final artifacts that can be run, deployed, and served to end users.
+## Start with one example
 
-## Naming Convention
-
-Apps follow the naming pattern: **`{domain}-{part}`**
-
-Where `{part}` describes the role and technology stack:
-
-| Part pattern                | Examples                                              | Description                                                           |
-| --------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------- |
-| `be-{lang}-{framework}`     | `be-golang-gin`, `be-java-springboot`, `be-ts-effect` | Backend service                                                       |
-| `fe-{lang}-{framework}`     | `fe-ts-nextjs`, `fe-dart-flutterweb`                  | Frontend application                                                  |
-| `fs-{lang}-{framework}`     | `fs-ts-nextjs`                                        | Fullstack application (FE + BE combined)                              |
-| `cli` / `<name>-cli-{lang}` | `rhino-cli`                                           | CLI tool (the `-cli-{lang}` suffix names the implementation language) |
-| `web`                       | `crud-fs-ts-nextjs`, `crud-fs-ts-nextjs`              | Web platform (content site)                                           |
-| `{role}-e2e`                | `be-e2e`, `fe-e2e`, `crud-fe-e2e`                     | E2E test project for the named role                                   |
-| `be` / `fe`                 | `crud-be-fsharp-giraffe`, `crud-fe-ts-nextjs`         | Simple single-technology projects                                     |
-
-**Language abbreviations** (`{lang}`): `ts` (TypeScript), `golang` (Go), `java` (Java), `kt` (Kotlin),
-`py` (Python), `rs` (Rust), `cs` (C#), `fs` (F#), `clj` (Clojure), `dart` (Dart), `ex` (Elixir).
-
-**Framework abbreviations** (`{framework}`): `nextjs`, `gin`, `springboot`, `ktor`, `fastapi`, `axum`,
-`aspnetcore`, `giraffe`, `pedestal`, `phoenix`, `vertx`, `effect`, `tanstack-start`, `flutterweb`.
-
-### Current Apps
-
-- `crud-fs-ts-nextjs` - demo website ([example.com](https://example.com)) - Next.js 16 fullstack content platform (TypeScript, tRPC)
-- `crud-be-e2e` - Playwright BE E2E tests for crud-fs-ts-nextjs tRPC API
-- `crud-fe-e2e` - Playwright FE E2E tests for crud-fs-ts-nextjs UI
-- `rhino-cli` - Repository Hygiene & INtegration Orchestrator CLI (Rust) - **the implementation CI and the developer toolchain invoke**; consumes `specs/apps/rhino/`
-- `crud-fe-ts-nextjs` - demo landing website (www.example.com) - Next.js app (port 3200)
-- `crud-be-fsharp-giraffe` - demo backend API (F#/Giraffe) - F# application (port 8202)
-- `crud-fe-e2e` - FE E2E tests for crud-fe-ts-nextjs - Playwright (browser testing)
-- `crud-be-e2e` - BE E2E tests for crud-be-fsharp-giraffe - Playwright (API testing)
-- `crud-be-golang-gin` - demo backend API (Go/Gin) - Go application (port 8201)
-- `crud-be-e2e` - E2E tests for crud-be REST API - Playwright (API testing)
-
-## Application Characteristics
-
-- **Consumers** - Apps import and use libs, but don't export anything for reuse
-- **Isolated** - Apps should NOT import from other apps
-- **Deployable** - Each app is independently deployable
-- **Specific** - Contains app-specific logic and configuration
-- **Entry Points** - Has clear entry points (index.ts, main.ts, etc.)
-
-## App Structure Examples
-
-### Rust CLI Application (Current)
-
-```
-apps/rhino-cli/
-├── src/
-│   ├── commands/            # CLI command handlers (one module per command)
-│   ├── internal/            # Internal domain logic
-│   ├── cli.rs               # Argument parsing + dispatch
-│   └── main.rs              # Entry point
-├── tests/                   # Integration tests
-├── dist/                    # Build output (gitignored)
-├── Cargo.toml               # Crate manifest
-├── project.json             # Nx project configuration
-└── README.md                # App documentation
-```
-
-### Go/Gin Application (Current Default)
-
-```
-apps/crud-be-golang-gin/
-├── cmd/server/              # Main entry point
-│   └── main.go
-├── internal/                # Internal packages
-│   ├── config/              # Configuration (env vars)
-│   ├── handler/             # HTTP handlers
-│   ├── router/              # Gin router setup
-│   ├── server/              # Server startup
-│   └── store/               # Data access layer
-├── go.mod                   # Go module definition
-├── go.sum                   # Dependency checksums
-├── Dockerfile               # Production Docker image
-├── project.json             # Nx configuration
-└── README.md                # App documentation
-```
-
-### Playwright E2E Test App (Current)
-
-```
-apps/crud-be-e2e/
-├── playwright.config.ts         # Playwright configuration (baseURL, reporters)
-├── package.json                 # Pinned @playwright/test dependency
-├── tsconfig.json                # TypeScript config (extends workspace base)
-├── project.json                 # Nx configuration
-├── tests/
-│   ├── e2e/
-│   │   ├── hello/
-│   │   │   └── hello.spec.ts    # Tests for GET /api/v1/hello
-│   │   └── actuator/
-│   │       └── health.spec.ts   # Tests for GET /actuator/health
-│   └── utils/
-│       └── api-helpers.ts       # Shared request utilities
-└── README.md                    # App documentation
-```
-
-### Next.js Application (Current)
-
-```
-├── src/
-│   ├── app/                    # Next.js App Router pages
-│   │   ├── dashboard/          # Dashboard route
-│   │   ├── login/              # Login route
-│   │   ├── api/                # API route handlers
-│   │   ├── layout.tsx          # Root layout
-│   │   └── page.tsx            # Root page
-│   ├── components/             # Reusable React components
-│   │   └── ui/                 # shadcn-ui component library
-│   ├── contexts/               # Shared React contexts
-│   ├── data/                   # JSON data files
-│   └── lib/                    # Utility functions and helpers
-├── public/                     # Static assets
-├── components.json             # shadcn-ui configuration
-├── next.config.mjs             # Next.js configuration
-├── tailwind.config.ts          # TailwindCSS configuration
-├── tsconfig.json               # TypeScript configuration
-├── vercel.json                 # Vercel deployment configuration
-├── project.json                # Nx project configuration
-└── README.md                   # App documentation
-```
-
-### Future App Types
-
-Kotlin, Python apps will have language-specific structures and tooling.
-
-## Nx Configuration (project.json)
-
-Each app must have a `project.json` file with Nx configuration.
-
-**Next.js App Example (crud-fs-ts-nextjs)**:
-
-```json
-{
-  "name": "crud-fs-ts-nextjs",
-  "projectType": "application",
-  "targets": {
-    "dev": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "next dev"
-      }
-    },
-    "build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "next build"
-      },
-      "outputs": ["{projectRoot}/.next"]
-    }
-  },
-  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:demo"]
-}
-```
-
-**Note**: This repository uses vanilla Nx (no plugins), so all executors use `nx:run-commands` to run standard build tools directly (Go, Next.js, etc.).
-
-## How to Add a New App
-
-See the how-to guide: `docs/how-to/add-new-app.md` (to be created)
-
-## Importing from Libraries
-
-Apps can import from any library in `libs/` using path mappings:
-
-```typescript
-// Future TypeScript apps will use path mappings like:
-import { utils } from "@open-sharia-enterprise/ts-utils";
-import { Button } from "@open-sharia-enterprise/ts-components";
-```
-
-Path mappings are configured in the workspace `tsconfig.base.json` file.
-
-**Note**: Currently there are no libraries in `libs/`. Libraries will be created as shared functionality is identified.
-
-## Running Apps
-
-Use Nx commands to run apps:
+From the repository root, run a project through Nx with the workspace-pinned CLI:
 
 ```bash
-# Development mode (Next.js)
-nx dev crud-fs-ts-nextjs
-nx dev crud-fe-ts-nextjs
-
-# Build for production
-nx build crud-fs-ts-nextjs
-nx build crud-fs-ts-nextjs
-nx build rhino-cli
-nx build rhino-cli
-nx build crud-fe-ts-nextjs
-
-# Run CLI applications
-nx run rhino-cli
-
-# Clean build artifacts
-nx clean crud-fs-ts-nextjs
-
-# Run E2E tests for crud-fe-ts-nextjs (crud-fe-ts-nextjs must be running first)
-nx run crud-fe-e2e:test:e2e
-
-# Run API E2E tests (backend must be running first)
-nx run crud-be-e2e:test:e2e
+npm exec nx -- dev crud-fe-ts-nextjs
 ```
 
-## Deployment Branches
+The Next.js frontend starts on its configured local port. For a backend example, choose one
+implementation and read its README before starting it—the backend examples share a behavioral
+contract but use their language-native tooling and, for some flows, a local database.
 
-Vercel-deployed apps use dedicated production branches (deployment-only — never commit directly):
+## What is here
 
-| Branch                   | Production URL                              | App               |
-| ------------------------ | ------------------------------------------- | ----------------- |
-| `prod-crud-fs-ts-nextjs` | [example.com](https://example.com)          | crud-fs-ts-nextjs |
-| `prod-crud-fs-ts-nextjs` | [example.com](https://example.com)          | crud-fs-ts-nextjs |
-| `prod-demo-web`          | [www.example.com](https://www.example.com/) | crud-fe-ts-nextjs |
+| Group                | Projects                                                                                                                                                          | Why you might open it                                                                                                          |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Backend references   | `crud-be-{clojure-pedestal,csharp-aspnetcore,elixir-phoenix,fsharp-giraffe,golang-gin,java-springboot,java-vertx,kotlin-ktor,python-fastapi,rust-axum,ts-effect}` | Compare one API contract across practical language and framework choices.                                                      |
+| Frontend references  | `crud-fe-{dart-flutterweb,ts-nextjs,ts-tanstack-start}`                                                                                                           | Explore separate web-client approaches for the same kind of product work.                                                      |
+| Full-stack reference | `crud-fs-ts-nextjs`                                                                                                                                               | See a compact Next.js application that owns both browser and server concerns.                                                  |
+| End-to-end harnesses | `crud-be-e2e`, `crud-fe-e2e`                                                                                                                                      | Learn how Gherkin behavior is exercised against a running backend or browser UI.                                               |
+| Repository tooling   | `rhino-cli`                                                                                                                                                       | The workspace’s Rust CLI for repository checks and automation; it is maintained in lockstep with its sibling OSE repositories. |
 
-**crud-fs-ts-nextjs**: Deploy by force-pushing `main` to the production branch:
+The `crud-*` names identify examples, not a required product domain. Their shared contract and
+behavioral specifications live in [specs/](../specs/README.md).
+
+## Conventions that matter
+
+- Apps are deployable workspace projects. They can import reusable packages from
+  [libs/](../libs/README.md), but must not import another app.
+- Names describe the surface and implementation: `be` for backend, `fe` for frontend, `fs` for
+  full-stack, and `*-e2e` for an end-to-end test harness.
+- Read an app’s own README for prerequisites and first-run commands. The examples intentionally
+  demonstrate different runtimes, so there is no single runtime prerequisite beyond the workspace
+  setup described in the root README.
+- Never copy real credentials into documentation or committed files. When an app supports local
+  configuration, begin with its tracked example configuration and keep real values local.
+
+## Useful commands
 
 ```bash
-git push origin main:prod-crud-fs-ts-nextjs --force
+# See the targets a project exposes
+npm exec nx -- show project crud-fe-ts-nextjs
+
+# Run the quick quality gate for one project
+npm exec nx -- run crud-fe-ts-nextjs:test:quick
+
+# See workspace relationships
+npm exec nx -- graph
 ```
 
-**crud-fs-ts-nextjs**: Deployed automatically by scheduled GitHub Actions
-workflow (`test-and-deploy-crud-fs-ts-nextjs.yml`) running at 6 AM and 6 PM
-WIB. The workflow detects changes scoped to the app directory before building and deploying.
-Trigger on-demand from the GitHub Actions UI (set `force_deploy=true` to skip change detection).
-
-**crud-fe-ts-nextjs**: Deploy by force-pushing `main` to the production branch:
-
-```bash
-git push origin main:prod-demo-web --force
-```
-
-Use the corresponding deployer agent (e.g. `apps-crud-fe-ts-nextjs-deployer`) for guided deployment.
-
-## Language Support
-
-Currently:
-
-- **Rust** (CLI tools) - rhino-cli
-- **TypeScript/Next.js** (web applications) - crud-fe-ts-nextjs, crud-fs-ts-nextjs
-- **F#/Giraffe** (backend API) - crud-be-fsharp-giraffe
-- **Go/Gin** (backend API) - crud-be-golang-gin
-- **TypeScript/Playwright** (E2E testing) - crud-be-e2e, crud-fe-e2e, crud-be-e2e
-
-Future: Kotlin, Python apps (each language will have language-specific structure and tooling)
+For a clean starting point, the root [README](../README.md) explains how to keep only the examples
+that serve your new repository. The rest of the docs explain the reusable workflow rather than
+treating these references as a production service catalogue.

@@ -15,8 +15,10 @@ class TokenManagementSteps {
     TestWorld.lastResponseBody = body
   }
 
-  // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains user ID claim
-  // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token payload contains issuer claim
+  // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token
+  // payload contains user ID claim
+  // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Access token
+  // payload contains issuer claim
   @Then("the token should contain a non-null {string} claim")
   fun theTokenShouldContainNonNullClaim(claim: String) {
     JsonHelper.assertNonNull(TestWorld.lastResponseBody, claim)
@@ -29,7 +31,8 @@ class TokenManagementSteps {
     TestWorld.lastResponseBody = body
   }
 
-  // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:JWKS endpoint returns the public key for token signature verification
+  // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:JWKS endpoint
+  // returns the public key for token signature verification
   @Then("^the response body should contain at least one key in the \"keys\" array$")
   fun theResponseBodyShouldContainAtLeastOneKeyInKeysArray() {
     val body = TestWorld.lastResponseBody
@@ -37,7 +40,8 @@ class TokenManagementSteps {
     assertTrue(body.contains("kty"), "Expected at least one key object in: $body")
   }
 
-  // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Logout blacklists the access token
+  // @covers specs/apps/crud/behavior/crud-be/gherkin/token-management/tokens.feature:Logout
+  // blacklists the access token
   @Then("alice's access token should be recorded as revoked")
   fun alicesAccessTokenShouldBeRecordedAsRevoked() {
     val token = TestWorld.accessTokens["alice"] ?: error("alice has no access token")

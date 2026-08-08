@@ -52,13 +52,13 @@ curl http://localhost:8201/health
 ## Nx Targets
 
 ```bash
-nx build crud-be-java-vertx                    # Compile with Maven (depends on codegen)
-nx dev crud-be-java-vertx                      # Start development server
-nx run crud-be-java-vertx:typecheck            # Annotation + null-safety check (JSpecify + NullAway; depends on codegen)
-nx run crud-be-java-vertx:test:quick           # Unit tests + coverage gate (fast, cacheable)
-nx run crud-be-java-vertx:test:unit            # Unit tests only (mvn test)
-nx run crud-be-java-vertx:test:integration     # Integration tests via Docker Compose + PostgreSQL
-nx lint crud-be-java-vertx                     # Run Checkstyle + PMD
+npm exec nx -- build crud-be-java-vertx                    # Compile with Maven (depends on codegen)
+npm exec nx -- dev crud-be-java-vertx                      # Start development server
+npm exec nx -- run crud-be-java-vertx:typecheck            # Annotation + null-safety check (JSpecify + NullAway; depends on codegen)
+npm exec nx -- run crud-be-java-vertx:test:quick           # Unit tests + coverage gate (fast, cacheable)
+npm exec nx -- run crud-be-java-vertx:test:unit            # Unit tests only (mvn test)
+npm exec nx -- run crud-be-java-vertx:test:integration     # Integration tests via Docker Compose + PostgreSQL
+npm exec nx -- lint crud-be-java-vertx                     # Run Checkstyle + PMD
 ```
 
 `codegen` generates Java model classes from the OpenAPI contract spec into `generated-contracts/`
@@ -106,12 +106,12 @@ Runs Playwright against any backend implementation. See `apps/crud-be-e2e/`.
 
 ### Test Commands Summary
 
-| Command                                                | Scope           | Speed   | Cached |
-| ------------------------------------------------------ | --------------- | ------- | ------ |
-| `nx run crud-be-java-vertx:test:quick`                 | Unit + coverage | Fast    | Yes    |
-| `nx run crud-be-java-vertx:test:unit`                  | Unit only       | Fast    | Yes    |
-| `nx run crud-be-java-vertx:test:integration`           | Docker + PG     | Slow    | No     |
-| `nx run crud-be-e2e:test:e2e --app=crud-be-java-vertx` | Full E2E        | Slowest | No     |
+| Command                                                            | Scope           | Speed   | Cached |
+| ------------------------------------------------------------------ | --------------- | ------- | ------ |
+| `npm exec nx -- run crud-be-java-vertx:test:quick`                 | Unit + coverage | Fast    | Yes    |
+| `npm exec nx -- run crud-be-java-vertx:test:unit`                  | Unit only       | Fast    | Yes    |
+| `npm exec nx -- run crud-be-java-vertx:test:integration`           | Docker + PG     | Slow    | No     |
+| `npm exec nx -- run crud-be-e2e:test:e2e --app=crud-be-java-vertx` | Full E2E        | Slowest | No     |
 
 ## Database Migrations
 

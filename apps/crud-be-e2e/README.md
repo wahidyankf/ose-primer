@@ -48,7 +48,7 @@ docker compose up -d
 **Alternative — local Maven** (requires Maven installed):
 
 ```bash
-nx dev crud-be-golang-gin
+npm exec nx -- dev crud-be-golang-gin
 ```
 
 See [crud-be-golang-gin README](../crud-be-golang-gin/README.md) for full startup options.
@@ -58,7 +58,7 @@ See [crud-be-golang-gin README](../crud-be-golang-gin/README.md) for full startu
 Install Playwright and its dependencies (one-time setup):
 
 ```bash
-nx install crud-be-e2e
+npm exec nx -- install crud-be-e2e
 cd apps/crud-be-e2e && npx playwright install --with-deps && cd ../..
 ```
 
@@ -66,22 +66,22 @@ cd apps/crud-be-e2e && npx playwright install --with-deps && cd ../..
 
 ```bash
 # Run all BDD E2E tests headlessly (generates specs then runs)
-nx run crud-be-e2e:test:e2e
+npm exec nx -- run crud-be-e2e:test:e2e
 
 # Run with interactive Playwright UI
-nx run crud-be-e2e:test:e2e:ui
+npm exec nx -- run crud-be-e2e:test:e2e:ui
 
 # View HTML report from last run
-nx run crud-be-e2e:test:e2e:report
+npm exec nx -- run crud-be-e2e:test:e2e:report
 
 # Generate spec files only (without running tests)
 cd apps/crud-be-e2e && npx bddgen
 
 # Lint TypeScript source files (oxlint)
-nx run crud-be-e2e:lint
+npm exec nx -- run crud-be-e2e:lint
 
 # Pre-push quality gate (lint + typecheck in parallel)
-nx run crud-be-e2e:test:quick
+npm exec nx -- run crud-be-e2e:test:quick
 ```
 
 **See**: [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) for canonical E2E target names. `test:e2e` runs only on manual `workflow_dispatch` from the GitHub Actions UI, not on pre-push (cron schedules removed to conserve CI resources).
@@ -100,7 +100,7 @@ before each scenario. This requires the `pg` package (installed as a devDependen
 Override the base URL to test against a different environment:
 
 ```bash
-BASE_URL=http://staging.example.com nx run crud-be-e2e:test:e2e
+BASE_URL=http://staging.example.com npm exec nx -- run crud-be-e2e:test:e2e
 ```
 
 ## Project Structure

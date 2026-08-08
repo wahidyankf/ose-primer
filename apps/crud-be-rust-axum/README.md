@@ -47,13 +47,13 @@ curl http://localhost:8201/health
 ## Nx Targets
 
 ```bash
-nx build crud-be-rust-axum                    # Compile release binary (depends on codegen)
-nx dev crud-be-rust-axum                      # Start development server
-nx run crud-be-rust-axum:typecheck            # cargo check (depends on codegen)
-nx run crud-be-rust-axum:test:quick           # Unit tests + coverage gate (no lint; depends on codegen)
-nx run crud-be-rust-axum:test:unit            # Unit tests only (lib + BDD with SQLite in-memory; depends on codegen)
-nx run crud-be-rust-axum:test:integration     # Integration tests via Docker Compose (PostgreSQL)
-nx lint crud-be-rust-axum                     # Run clippy + rustfmt check
+npm exec nx -- build crud-be-rust-axum                    # Compile release binary (depends on codegen)
+npm exec nx -- dev crud-be-rust-axum                      # Start development server
+npm exec nx -- run crud-be-rust-axum:typecheck            # cargo check (depends on codegen)
+npm exec nx -- run crud-be-rust-axum:test:quick           # Unit tests + coverage gate (no lint; depends on codegen)
+npm exec nx -- run crud-be-rust-axum:test:unit            # Unit tests only (lib + BDD with SQLite in-memory; depends on codegen)
+npm exec nx -- run crud-be-rust-axum:test:integration     # Integration tests via Docker Compose (PostgreSQL)
+npm exec nx -- lint crud-be-rust-axum                     # Run clippy + rustfmt check
 ```
 
 `codegen` generates Rust model structs from the OpenAPI contract spec into `generated-contracts/`
@@ -93,7 +93,7 @@ This project uses a three-level test architecture:
 
 ```bash
 # Runs PostgreSQL + test-runner in Docker, tears down on completion
-nx run crud-be-rust-axum:test:integration
+npm exec nx -- run crud-be-rust-axum:test:integration
 ```
 
 ## Related Documentation

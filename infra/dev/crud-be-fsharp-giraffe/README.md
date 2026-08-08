@@ -1,7 +1,7 @@
-# Demo Backend Dev Stack — FSGI (F#/Giraffe)
+# CRUD Backend Dev Stack — FSGI (F#/Giraffe)
 
 Local development environment for `crud-be-fsharp-giraffe`, the F#/Giraffe
-alternative backend for the Demo Backend platform. Runs on the same port (8201) as the
+alternative backend for the shared CRUD product. Runs on the same port (8201) as the
 Go/Gin backend (`crud-be-golang-gin`) and the Elixir/Phoenix backend (`crud-be-elixir-phoenix`) — the
 stacks are mutually exclusive and **must not be started simultaneously**.
 
@@ -28,16 +28,11 @@ docker compose up
 EF Core auto-migrates the database on startup via `EnsureCreated`, so the schema
 is always up to date.
 
-## Environment Variables
+## Environment Configuration
 
-| Variable                            | Default                                    | Description                      |
-| ----------------------------------- | ------------------------------------------ | -------------------------------- |
-| `POSTGRES_USER`                     | `crud_be_fsharp_giraffe`                   | PostgreSQL username              |
-| `POSTGRES_PASSWORD`                 | `crud_be_fsharp_giraffe`                   | PostgreSQL password              |
-| `CRUD_BE_FSHARP_GIRAFFE_JWT_SECRET` | `change-me-in-dev-only-not-for-production` | JWT signing secret (HMAC-SHA256) |
-
-Override defaults by setting variables in your shell or in a `.env` file alongside
-`docker-compose.yml`.
+This stack reads PostgreSQL and JWT configuration from its Compose environment. Start with the
+tracked configuration guidance for this stack; keep any real credentials in your local, untracked
+environment and never place them in this README or a committed `.env` file.
 
 ## Manual Smoke Test
 
@@ -49,13 +44,13 @@ curl http://localhost:8201/health
 # Register a user
 curl -X POST http://localhost:8201/api/v1/auth/register \
   -H "Content-Type: application/json" \
-  -d '{"username":"alice","email":"alice@example.com","password":"Str0ng#Pass1"}'
+  -d '{"username":"alice","email":"alice@example.com","password":"<test-password>"}'
 # Expected: {"id":"<uuid>","username":"alice","email":"alice@example.com"}
 
 # Login
 curl -X POST http://localhost:8201/api/v1/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"username":"alice","password":"Str0ng#Pass1"}'
+  -d '{"username":"alice","password":"<test-password>"}'
 # Expected: {"access_token":"<jwt>","refresh_token":"<refresh>","token_type":"Bearer"}
 
 # Get profile (replace <jwt> with access_token from login)
@@ -71,7 +66,7 @@ curl http://localhost:8201/api/v1/users/me \
 docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
 
 # Run E2E tests from workspace root
-BASE_URL=http://localhost:8201 npx nx run crud-be-e2e:test:e2e
+BASE_URL=http://localhost:8201 npm exec nx -- run crud-be-e2e:test:e2e
 
 # Stop stack
 docker compose -f docker-compose.yml -f docker-compose.ci.yml down

@@ -17,17 +17,17 @@ App Router in a single deployable unit. Built with TypeScript, Drizzle ORM, and 
 
 ```bash
 # Development
-nx dev crud-fs-ts-nextjs              # Start dev server on port 3401
-nx build crud-fs-ts-nextjs            # Production build
-nx run crud-fs-ts-nextjs:typecheck    # Type checking
-nx run crud-fs-ts-nextjs:lint         # Linting (oxlint)
+npm exec nx -- dev crud-fs-ts-nextjs              # Start dev server on port 3401
+npm exec nx -- build crud-fs-ts-nextjs            # Production build
+npm exec nx -- run crud-fs-ts-nextjs:typecheck    # Type checking
+npm exec nx -- run crud-fs-ts-nextjs:lint         # Linting (oxlint)
 
 # Testing
-nx run crud-fs-ts-nextjs:test:unit    # Run all unit tests (BE + FE BDD)
-nx run crud-fs-ts-nextjs:test:quick   # Unit tests + coverage validation (75%+)
+npm exec nx -- run crud-fs-ts-nextjs:test:unit    # Run all unit tests (BE + FE BDD)
+npm exec nx -- run crud-fs-ts-nextjs:test:quick   # Unit tests + coverage validation (75%+)
 
 # Code generation
-nx run crud-fs-ts-nextjs:codegen      # Generate types from OpenAPI spec
+npm exec nx -- run crud-fs-ts-nextjs:codegen      # Generate types from OpenAPI spec
 ```
 
 ## Architecture

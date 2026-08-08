@@ -23,25 +23,25 @@ Demo Frontend - Next.js 16 (App Router) implementation consuming the
 
 ```bash
 # Start development server (localhost:3301)
-nx dev crud-fe-ts-nextjs
+npm exec nx -- dev crud-fe-ts-nextjs
 
 # Production build
-nx build crud-fe-ts-nextjs
+npm exec nx -- build crud-fe-ts-nextjs
 
 # Start production server
-nx run crud-fe-ts-nextjs:start
+npm exec nx -- run crud-fe-ts-nextjs:start
 
 # Type checking
 nx typecheck crud-fe-ts-nextjs
 
 # Lint code (oxlint)
-nx lint crud-fe-ts-nextjs
+npm exec nx -- lint crud-fe-ts-nextjs
 
 # Fast quality gate: unit tests + coverage check + specs coverage check
-nx run crud-fe-ts-nextjs:test:quick
+npm exec nx -- run crud-fe-ts-nextjs:test:quick
 
 # Unit tests only
-nx run crud-fe-ts-nextjs:test:unit
+npm exec nx -- run crud-fe-ts-nextjs:test:unit
 ```
 
 **See**: [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) for canonical target names.
@@ -68,10 +68,10 @@ apps/crud-fe-ts-nextjs/
 
 Two levels of testing consume the shared Gherkin scenarios from [`specs/apps/crud/behavior/crud-web/gherkin/`](../../specs/apps/crud/behavior/crud-web/gherkin/README.md):
 
-| Level | Tool                        | Dependencies | Command                              | Cached? |
-| ----- | --------------------------- | ------------ | ------------------------------------ | ------- |
-| Unit  | @amiceli/vitest-cucumber    | All mocked   | `nx run crud-fe-ts-nextjs:test:unit` | Yes     |
-| E2E   | Playwright + playwright-bdd | Full stack   | `nx run crud-fe-e2e:test:e2e`        | No      |
+| Level | Tool                        | Dependencies | Command                                          | Cached? |
+| ----- | --------------------------- | ------------ | ------------------------------------------------ | ------- |
+| Unit  | @amiceli/vitest-cucumber    | All mocked   | `npm exec nx -- run crud-fe-ts-nextjs:test:unit` | Yes     |
+| E2E   | Playwright + playwright-bdd | Full stack   | `npm exec nx -- run crud-fe-e2e:test:e2e`        | No      |
 
 **Coverage**: Measured from `test:unit` only (Vitest v8). `test:quick` = `test:unit` + `rhino-cli test-coverage validate` (>=70%). Both `test:quick` and `test:unit` include `{projectRoot}/src/generated-contracts/**/*` as cache inputs so contract changes invalidate the cache.
 
@@ -81,7 +81,7 @@ Steps test component logic and state management with fully mocked dependencies.
 No DOM rendering, no HTTP calls:
 
 ```bash
-nx run crud-fe-ts-nextjs:test:unit
+npm exec nx -- run crud-fe-ts-nextjs:test:unit
 ```
 
 ### E2E Tests
@@ -91,13 +91,13 @@ for all crud-fe frontends. Run them after starting this frontend and a backend:
 
 ```bash
 # Start backend
-nx dev crud-be-golang-gin
+npm exec nx -- dev crud-be-golang-gin
 
 # Start this frontend (in another terminal)
-nx dev crud-fe-ts-nextjs
+npm exec nx -- dev crud-fe-ts-nextjs
 
 # Run E2E tests (in another terminal)
-BASE_URL=http://localhost:3301 nx run crud-fe-e2e:test:e2e
+BASE_URL=http://localhost:3301 npm exec nx -- run crud-fe-e2e:test:e2e
 ```
 
 ## Docker

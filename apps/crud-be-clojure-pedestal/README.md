@@ -31,7 +31,7 @@ etc.) using the same Gherkin scenarios.
 ### Start Development Server
 
 ```bash
-nx dev crud-be-clojure-pedestal
+npm exec nx -- dev crud-be-clojure-pedestal
 ```
 
 The server starts on port **8201** by default.
@@ -98,7 +98,7 @@ Runs all unit-level tests (both `:unit` and `:bdd` kaocha suites) with cloverage
 then validates ≥90% line coverage via `rhino-cli`. No lint. This is the pre-push gate.
 
 ```bash
-nx run crud-be-clojure-pedestal:test:quick
+npm exec nx -- run crud-be-clojure-pedestal:test:quick
 ```
 
 ### Level 3: Integration tests (`test:integration`)
@@ -107,7 +107,7 @@ Runs the BDD scenarios against a real PostgreSQL 17 database inside Docker. Uses
 `docker-compose.integration.yml` + `Dockerfile.integration`.
 
 ```bash
-nx run crud-be-clojure-pedestal:test:integration
+npm exec nx -- run crud-be-clojure-pedestal:test:integration
 ```
 
 This target is **not cached** (`cache: false`) because it exercises an external database service.
@@ -133,11 +133,11 @@ The `crud-be-cjpd.main` namespace is excluded from coverage (entry point only).
 | `typecheck`        | Run clj-kondo on `src` only (depends on codegen)        |
 
 ```bash
-nx run crud-be-clojure-pedestal:test:quick
-nx run crud-be-clojure-pedestal:test:unit
-nx run crud-be-clojure-pedestal:test:integration
-nx build crud-be-clojure-pedestal
-nx run crud-be-clojure-pedestal:typecheck
+npm exec nx -- run crud-be-clojure-pedestal:test:quick
+npm exec nx -- run crud-be-clojure-pedestal:test:unit
+npm exec nx -- run crud-be-clojure-pedestal:test:integration
+npm exec nx -- build crud-be-clojure-pedestal
+npm exec nx -- run crud-be-clojure-pedestal:typecheck
 ```
 
 ## API Endpoints

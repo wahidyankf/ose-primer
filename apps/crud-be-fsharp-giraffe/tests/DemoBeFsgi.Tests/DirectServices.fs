@@ -14,6 +14,7 @@ open DemoBeFsgi.Infrastructure.PasswordHasher
 open DemoBeFsgi.Domain.Types
 open DemoBeFsgi.Domain.User
 open DemoBeFsgi.Domain.Expense
+open DemoBeFsgi.Domain.AmountFormatting
 open DemoBeFsgi.Domain.Attachment
 open DemoBeFsgi.Auth.JwtService
 
@@ -803,10 +804,7 @@ let createExpense
 
                             let! _ = expenseRepo.Create entity |> Async.AwaitTask
 
-                            let formattedAmount =
-                                match currency.ToUpperInvariant() with
-                                | "IDR" -> validAmount.ToString("0")
-                                | _ -> validAmount.ToString("0.00")
+                            let formattedAmount = formatAmount currency validAmount
 
                             return
                                 created
@@ -841,10 +839,7 @@ let listExpenses
             let data =
                 expenses
                 |> List.map (fun e ->
-                    let formattedAmount =
-                        match e.Currency with
-                        | "IDR" -> e.Amount.ToString("0")
-                        | _ -> e.Amount.ToString("0.00")
+                    let formattedAmount = formatAmount e.Currency e.Amount
 
                     let qtyOpt =
                         if e.Quantity.HasValue then
@@ -889,10 +884,7 @@ let getExpenseById
             | None -> return notFound "Expense not found"
             | Some expense when expense.UserId <> userId -> return forbidden "Access denied"
             | Some expense ->
-                let formattedAmount =
-                    match expense.Currency with
-                    | "IDR" -> expense.Amount.ToString("0")
-                    | _ -> expense.Amount.ToString("0.00")
+                let formattedAmount = formatAmount expense.Currency expense.Amount
 
                 let qtyOpt =
                     if expense.Quantity.HasValue then
@@ -973,10 +965,7 @@ let updateExpense
 
                     let! saved = expenseRepo.Update updated |> Async.AwaitTask
 
-                    let formattedAmount =
-                        match saved.Currency with
-                        | "IDR" -> saved.Amount.ToString("0")
-                        | _ -> saved.Amount.ToString("0.00")
+                    let formattedAmount = formatAmount saved.Currency saved.Amount
 
                     return
                         ok
@@ -1032,10 +1021,7 @@ let expenseSummary
                 |> List.map (fun (currency, items) ->
                     let total = items |> List.sumBy (fun e -> e.Amount)
 
-                    let formattedTotal =
-                        match currency with
-                        | "IDR" -> total.ToString("0")
-                        | _ -> total.ToString("0.00")
+                    let formattedTotal = formatAmount currency total
 
                     currency, formattedTotal)
                 |> Map.ofList
@@ -1207,18 +1193,13 @@ let profitAndLoss
             let expenseTotal = expenseEntries |> List.sumBy (fun e -> e.Amount)
             let net = incomeTotal - expenseTotal
 
-            let formatAmount (a: decimal) =
-                match curr with
-                | "IDR" -> a.ToString("0")
-                | _ -> a.ToString("0.00")
-
             let incomeBreakdown =
                 incomeEntries
                 |> List.groupBy (fun e -> e.Category)
                 |> List.map (fun (cat, items) ->
                     {| category = cat
                        ``type`` = "income"
-                       total = formatAmount (items |> List.sumBy (fun e -> e.Amount)) |})
+                       total = formatAmount curr (items |> List.sumBy (fun e -> e.Amount)) |})
                 |> List.toArray
 
             let expenseBreakdown =
@@ -1227,14 +1208,14 @@ let profitAndLoss
                 |> List.map (fun (cat, items) ->
                     {| category = cat
                        ``type`` = "expense"
-                       total = formatAmount (items |> List.sumBy (fun e -> e.Amount)) |})
+                       total = formatAmount curr (items |> List.sumBy (fun e -> e.Amount)) |})
                 |> List.toArray
 
             return
                 ok
-                    {| totalIncome = formatAmount incomeTotal
-                       totalExpense = formatAmount expenseTotal
-                       net = formatAmount net
+                    {| totalIncome = formatAmount curr incomeTotal
+                       totalExpense = formatAmount curr expenseTotal
+                       net = formatAmount curr net
                        currency = curr
                        incomeBreakdown = incomeBreakdown
                        expenseBreakdown = expenseBreakdown |}

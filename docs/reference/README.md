@@ -1,6 +1,6 @@
 ---
 title: "Reference"
-description: Technical reference documentation for open-sharia-enterprise
+description: Technical reference for ose-primer's polyglot Nx starter and its delivery conventions
 category: reference
 tags:
   - index
@@ -10,7 +10,9 @@ tags:
 
 # Reference
 
-Technical reference documentation for the open-sharia-enterprise project. These documents provide detailed specifications, API documentation, and technical details.
+Technical reference for `ose-primer`: the reusable polyglot Nx starter in the Open Sharia Enterprise
+family. Use the [getting-started tutorial](../tutorials/getting-started-with-ose-primer.md) first;
+come here when you need exact structure, configuration, or ecosystem boundaries.
 
 ## 📋 Contents
 

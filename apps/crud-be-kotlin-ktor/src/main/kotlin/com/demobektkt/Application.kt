@@ -23,7 +23,8 @@ fun Application.module() {
 
   DatabaseFactory.init(jdbcUrl, dbUser, dbPassword)
 
-  val jwtSecret = System.getenv("CRUD_BE_KOTLIN_KTOR_JWT_SECRET")
+  val jwtSecret =
+    System.getenv("CRUD_BE_KOTLIN_KTOR_JWT_SECRET")
       ?: error("CRUD_BE_KOTLIN_KTOR_JWT_SECRET is required")
 
   configureDI(jwtSecret)

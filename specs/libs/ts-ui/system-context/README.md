@@ -13,7 +13,7 @@ C4 Level 1 system context for `ts-ui`.
 - **Frontend developers** — import components directly from `@open-sharia-enterprise/ts-ui`.
 - **Consuming apps** — every TypeScript frontend that renders shared UI in this workspace.
 - **Storybook** — hosts an isolated visual catalogue of every component for manual review
-  (`nx run ts-ui:storybook`).
+  (`npm exec nx -- run ts-ui:storybook`).
 - **`ts-ui-tokens`** — upstream design-token dependency; `ts-ui` consumes its color, radius,
   spacing, and typography tokens rather than hardcoding values.
 

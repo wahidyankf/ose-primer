@@ -53,15 +53,15 @@ curl http://localhost:8201/health
 ## Nx Targets
 
 ```bash
-nx build crud-be-kotlin-ktor              # Compile and package fat JAR (depends on codegen)
-nx dev crud-be-kotlin-ktor               # Start development server
-nx start crud-be-kotlin-ktor             # Start production JAR
-nx run crud-be-kotlin-ktor:codegen       # Generate contract types from OpenAPI spec
-nx run crud-be-kotlin-ktor:test:quick    # Unit tests + coverage gate (no lint)
-nx run crud-be-kotlin-ktor:test:unit     # Unit tests only (Cucumber + JUnit)
-nx run crud-be-kotlin-ktor:test:integration  # Integration tests (Docker + PostgreSQL)
-nx lint crud-be-kotlin-ktor              # Run detekt linter
-nx run crud-be-kotlin-ktor:typecheck     # Compile Kotlin sources (./gradlew compileKotlin, depends on codegen)
+npm exec nx -- build crud-be-kotlin-ktor              # Compile and package fat JAR (depends on codegen)
+npm exec nx -- dev crud-be-kotlin-ktor               # Start development server
+npm exec nx -- start crud-be-kotlin-ktor             # Start production JAR
+npm exec nx -- run crud-be-kotlin-ktor:codegen       # Generate contract types from OpenAPI spec
+npm exec nx -- run crud-be-kotlin-ktor:test:quick    # Unit tests + coverage gate (no lint)
+npm exec nx -- run crud-be-kotlin-ktor:test:unit     # Unit tests only (Cucumber + JUnit)
+npm exec nx -- run crud-be-kotlin-ktor:test:integration  # Integration tests (Docker + PostgreSQL)
+npm exec nx -- lint crud-be-kotlin-ktor              # Run detekt linter
+npm exec nx -- run crud-be-kotlin-ktor:typecheck     # Compile Kotlin sources (./gradlew compileKotlin, depends on codegen)
 ```
 
 ## API Endpoints

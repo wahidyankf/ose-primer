@@ -33,8 +33,8 @@ specs/libs/ts-ui/behavior/
 ## Running the tests
 
 ```bash
-nx run ts-ui:test:unit
-nx run ts-ui:specs:behavior:coverage
+npm exec nx -- run ts-ui:test:unit
+npm exec nx -- run ts-ui:specs:behavior:coverage
 ```
 
 Every scenario is consumed at the unit level via the matching `*.steps.tsx` file co-located with
