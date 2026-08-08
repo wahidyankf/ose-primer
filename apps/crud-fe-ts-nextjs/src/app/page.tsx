@@ -3,7 +3,8 @@
 import { useHealth } from "@/lib/queries/use-auth";
 
 export default function HomePage() {
-  const { data, isLoading, isError } = useHealth();
+  const backendEnabled = process.env.NEXT_PUBLIC_BACKEND_ENABLED === "true";
+  const { data, isLoading, isError } = useHealth(backendEnabled);
 
   return (
     <main className="mx-auto mt-16 max-w-[40rem] p-8 text-center">
@@ -22,6 +23,13 @@ export default function HomePage() {
         {isError && (
           <p role="alert" className="rounded bg-red-50 p-3 text-red-700">
             Backend unavailable
+          </p>
+        )}
+
+        {!backendEnabled && (
+          <p className="rounded bg-slate-50 p-3 text-slate-700">
+            This frontend-only reference starts without a backend. Connect one when you are ready to explore the full
+            flow.
           </p>
         )}
 

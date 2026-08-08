@@ -10,7 +10,7 @@ const testDir = defineBddConfig({
   // has no browser-driven step definitions in this project (crud-fe-e2e only
   // drives real browsers against a running app). Tag-expression syntax per
   // playwright-bdd's `tags` config option.
-  tags: "not @codegen",
+  tags: "@e2e and not @codegen",
 });
 
 export default defineConfig({

@@ -52,6 +52,8 @@ services:
     build:
       context: ../../../apps/crud-fe-dart-flutterweb
       dockerfile: Dockerfile
+      args:
+        BACKEND_ENABLED: "true"
     container_name: crud-fe-dfw
     ports:
       - "3301:3301"

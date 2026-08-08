@@ -3,10 +3,11 @@ import * as authApi from "../api/auth";
 import { setTokens, clearTokens, getRefreshToken } from "../api/client";
 import type { LoginRequest, RegisterRequest } from "../api/types";
 
-export function useHealth() {
+export function useHealth(enabled = true) {
   return useQuery({
     queryKey: ["health"],
     queryFn: authApi.getHealth,
+    enabled,
     retry: false,
   });
 }

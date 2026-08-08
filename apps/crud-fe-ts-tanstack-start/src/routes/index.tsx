@@ -6,7 +6,8 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
-  const { data, isLoading, isError } = useHealth();
+  const backendEnabled = import.meta.env.VITE_BACKEND_ENABLED === "true";
+  const { data, isLoading, isError } = useHealth(backendEnabled);
 
   return (
     <main
@@ -34,58 +35,66 @@ function HomePage() {
         <p style={{ margin: "0.5rem 0 0" }}>
           Explore this working example, then adapt it to fit your team&apos;s product.
         </p>
-      </div>
-
-      <div
-        style={{
-          border: "1px solid #ddd",
-          borderRadius: "8px",
-          padding: "2rem",
-          backgroundColor: "#ffffff",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-        }}
-      >
-        <h2 style={{ marginTop: 0, marginBottom: "1rem" }}>Backend Status</h2>
-
-        {isLoading && <p style={{ color: "#666" }}>Checking backend status...</p>}
-
-        {isError && (
-          <p
-            role="alert"
-            style={{
-              color: "#c0392b",
-              backgroundColor: "#fdf2f2",
-              padding: "0.75rem",
-              borderRadius: "4px",
-            }}
-          >
-            Backend unavailable
+        {!backendEnabled && (
+          <p style={{ margin: "0.75rem 0 0" }}>
+            This frontend-only reference starts without a backend. Connect one when you are ready to explore the full
+            flow.
           </p>
         )}
+      </div>
 
-        {data && (
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", justifyContent: "center" }}>
-            <span
-              aria-hidden="true"
+      {backendEnabled && (
+        <div
+          style={{
+            border: "1px solid #ddd",
+            borderRadius: "8px",
+            padding: "2rem",
+            backgroundColor: "#ffffff",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+          }}
+        >
+          <h2 style={{ marginTop: 0, marginBottom: "1rem" }}>Backend Status</h2>
+
+          {isLoading && <p style={{ color: "#666" }}>Checking backend status...</p>}
+
+          {isError && (
+            <p
+              role="alert"
               style={{
-                width: "0.75rem",
-                height: "0.75rem",
-                borderRadius: "50%",
-                backgroundColor: data.status === "UP" ? "#2d7a2d" : "#c0392b",
-                display: "inline-block",
-              }}
-            />
-            <span
-              style={{
-                fontWeight: "bold",
-                color: data.status === "UP" ? "#2d7a2d" : "#c0392b",
+                color: "#c0392b",
+                backgroundColor: "#fdf2f2",
+                padding: "0.75rem",
+                borderRadius: "4px",
               }}
             >
-              {data.status}
-            </span>
-          </div>
-        )}
-      </div>
+              Backend unavailable
+            </p>
+          )}
+
+          {data && (
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", justifyContent: "center" }}>
+              <span
+                aria-hidden="true"
+                style={{
+                  width: "0.75rem",
+                  height: "0.75rem",
+                  borderRadius: "50%",
+                  backgroundColor: data.status === "UP" ? "#2d7a2d" : "#c0392b",
+                  display: "inline-block",
+                }}
+              />
+              <span
+                style={{
+                  fontWeight: "bold",
+                  color: data.status === "UP" ? "#2d7a2d" : "#c0392b",
+                }}
+              >
+                {data.status}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
 
       <p style={{ marginTop: "2rem", color: "#666" }}>
         <Link to="/login" search={{ registered: undefined }} style={{ color: "#1558c0" }}>

@@ -17,14 +17,23 @@
     "dev": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "flutter run -d chrome --web-port 3301",
+        "command": "flutter run -d chrome --web-port 3301 --dart-define=BACKEND_ENABLED=false",
         "cwd": "{projectRoot}"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "flutter build web --release",
+        "command": "flutter build web --release --dart-define=BACKEND_ENABLED=false",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/build/web"],
+      "dependsOn": ["codegen"]
+    },
+    "build:configured": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "flutter build web --release --dart-define=BACKEND_ENABLED=true",
         "cwd": "{projectRoot}"
       },
       "outputs": ["{projectRoot}/build/web"],
@@ -94,7 +103,7 @@
       "dependsOn": ["codegen"],
       "inputs": ["default", "{projectRoot}/generated-contracts/**/*"],
       "options": {
-        "command": "flutter test --platform chrome test/web/reference_role_test.dart",
+        "command": "flutter test --platform chrome test/web",
         "cwd": "{projectRoot}"
       }
     },

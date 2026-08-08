@@ -2,7 +2,8 @@ FROM instrumentisto/flutter:3.41.5 AS build
 WORKDIR /app
 COPY . .
 RUN flutter pub get
-RUN flutter build web --release
+ARG BACKEND_ENABLED=false
+RUN flutter build web --release --dart-define=BACKEND_ENABLED=${BACKEND_ENABLED}
 
 FROM nginx:1.30.2-alpine
 

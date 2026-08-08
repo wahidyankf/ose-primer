@@ -2,9 +2,17 @@ import 'dart:js_interop';
 
 import 'package:web/web.dart';
 
+import '../config/backend_mode.dart';
+import '../models/health.dart';
 import '../services/auth_service.dart' as auth_svc;
 
-void render(Element parent) {
+typedef HealthCheck = Future<HealthResponse> Function();
+
+void render(
+  Element parent, {
+  bool backendEnabled = frontendBackendEnabled,
+  HealthCheck? healthCheck,
+}) {
   final main = document.createElement('main') as HTMLElement;
   main.style.setProperty('max-width', '40rem');
   main.style.setProperty('margin', '4rem auto');
@@ -47,6 +55,22 @@ void render(Element parent) {
   card.style.setProperty('background-color', '#ffffff');
   card.style.setProperty('box-shadow', '0 2px 8px rgba(0,0,0,0.08)');
 
+  if (!shouldRequestBackendHealth(backendEnabled)) {
+    final h2 = document.createElement('h2') as HTMLHeadingElement;
+    h2.textContent = 'Frontend-only start';
+    h2.style.setProperty('margin-top', '0');
+    h2.style.setProperty('margin-bottom', '1rem');
+    card.appendChild(h2);
+
+    final guidance = document.createElement('p') as HTMLParagraphElement;
+    guidance.textContent = frontendOnlyStartGuidance;
+    guidance.style.setProperty('margin', '0');
+    card.appendChild(guidance);
+    main.appendChild(card);
+    parent.appendChild(main);
+    return;
+  }
+
   final h2 = document.createElement('h2') as HTMLHeadingElement;
   h2.textContent = 'Backend Status';
   h2.style.setProperty('margin-top', '0');
@@ -85,8 +109,7 @@ void render(Element parent) {
   parent.appendChild(main);
 
   // Fetch health
-  auth_svc
-      .getHealth()
+  (healthCheck ?? auth_svc.getHealth)()
       .then((health) {
         statusEl.remove();
         final statusDiv = document.createElement('div') as HTMLDivElement;

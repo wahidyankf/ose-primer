@@ -160,6 +160,13 @@ jobs:
           if [ -n "$GATE_DOCTOR_TOOLS" ]; then
             npm run doctor -- --fix --tools "$GATE_DOCTOR_TOOLS"
           fi
+      # dart/flutter is absent from Doctor's tool inventory (DOCTOR_TOOL_INVENTORY in
+      # apps/rhino-cli/src/application/repo_config/mod.rs), so it can't be declared via
+      # `doctor-tools:` like the other external-tool gates above. format-verify-dart still
+      # needs the Dart SDK on PATH, so provision it directly for that one gate.
+      - name: Setup Flutter (format-verify-dart needs the Dart SDK)
+        if: matrix.gate.id == 'format-verify-dart'
+        uses: ./.github/actions/setup-flutter
       - env:
           GATE_ID: ${{ matrix.gate.id }}
         run: cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- gate run --surface=ci --only="$GATE_ID"

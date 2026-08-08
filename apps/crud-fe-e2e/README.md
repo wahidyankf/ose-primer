@@ -74,6 +74,9 @@ cd apps/crud-fe-e2e && npx playwright install --with-deps chromium && cd ../..
 # Run all BDD E2E tests headlessly (generates specs then runs)
 npm exec nx -- run crud-fe-e2e:test:e2e
 
+# 🧭 Check the frontend-only first screen (starts its own app; no backend needed)
+npm exec nx -- run crud-fe-e2e:test:e2e:frontend-only
+
 # Run with interactive Playwright UI
 npm exec nx -- run crud-fe-e2e:test:e2e:ui
 
@@ -92,6 +95,11 @@ nx typecheck crud-fe-e2e
 # Pre-push quality gate (typecheck + lint)
 npm exec nx -- run crud-fe-e2e:test:quick
 ```
+
+The generic `test:e2e` suite needs a running frontend and backend. The dedicated
+`test:e2e:frontend-only` target is the quick reader-journey check: it starts the full-stack Next
+reference in frontend-only mode, opens a real browser, and confirms that the welcome screen does
+not ask for backend health. You do not need to provide a backend or credential for that target.
 
 **See**: [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) for canonical E2E target names. `test:e2e` runs only on manual `workflow_dispatch` from the GitHub Actions UI, not on pre-push (cron schedules removed to conserve CI resources).
 

@@ -3,7 +3,8 @@ WORKDIR /app
 COPY package.json ./
 RUN npm install
 COPY . .
-RUN npx vite build
+ARG BACKEND_URL
+RUN BACKEND_URL="$BACKEND_URL" npx vite build
 
 FROM node:24.16.0-alpine3.22
 
