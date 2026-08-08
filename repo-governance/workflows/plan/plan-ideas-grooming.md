@@ -29,15 +29,15 @@ inputs:
     default: false
   - name: delivery-mode
     type: enum
-    values: [main-to-origin-main, worktree-to-pr]
+    values: [worktree-to-pr]
     description: >
-      This workflow's own git delivery behavior for the changes it makes to plans/ideas/**. Default
-      worktree-to-pr, per the Plans Organization Convention's Per-Repository Delivery Mode
-      Restrictions — main-to-origin-main has no executable path in ose-public, ose-primer, or
-      beaver-nest (main is branch-protected against direct pushes) and survives only as an
-      ose-private infrastructure-as-code carve-out. A caller targeting ose-private for a
-      plan-docs-only, infrastructure-as-code sweep may still override to main-to-origin-main for
-      that invocation.
+      This workflow's own git delivery behavior for the changes it makes to plans/ideas/**. Fixed at
+      worktree-to-pr — unconditional, no override. This workflow's write scope is strictly
+      plans/ideas/** (see the Scope Boundary below), which by construction is never an
+      infrastructure-as-code change, so the ose-private infrastructure-as-code carve-out (Plans
+      Organization Convention's Per-Repository Delivery Mode Restrictions) can never apply to an
+      invocation of this workflow, and main-to-origin-main is therefore not offered as a selectable
+      value here.
     required: false
     default: worktree-to-pr
 outputs:
@@ -106,17 +106,19 @@ dedicated `plan-ideas-grooming` delegated agent — the procedure lives entirely
 document, matching the pattern [`plan-execution`](./plan-execution.md) uses for its own
 orchestrator-run steps.
 
-Every git delivery under this workflow's `worktree-to-pr` default runs the full PR-Review
-Maker→Fixer Cycle per processed repo, per the
+Every git delivery under this workflow's `worktree-to-pr` default — unconditional, no override —
+runs the full PR-Review Maker→Fixer Cycle per processed repo, per the
 [Per-Repository Delivery Mode Restrictions](../../conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule):
-`main` is branch-protected against direct pushes in `ose-public`, `ose-primer`, and `beaver-nest`,
-so the historical `plans/**`-only
+`main` is branch-protected against direct pushes in `ose-public` and `ose-primer`, and `beaver-nest`
+is restricted to the same effect by convention (its `main` is not yet actually
+GitHub-branch-protected — see [Git Push Default Convention](../../development/workflow/git-push-default.md)
+for the live-verification detail), so the historical `plans/**`-only
 [**plan-docs-only carve-out**](./plan-planning.md#the-plan-docs-only-carve-out-superseded--retired-in-three-of-four-repos)
 is retired in those three repositories — a plan-docs-only change there uses `worktree-to-pr` like
 any other change. The carve-out survives, narrowed, only in `ose-private` as an
-infrastructure-as-code exception. A caller processing `ose-private` for a plan-docs-only,
-infrastructure-as-code sweep may still override `delivery-mode` to `main-to-origin-main` for that
-invocation.
+infrastructure-as-code exception — but this workflow's write scope is strictly `plans/ideas/**`
+(see the Scope Boundary below), which is never infrastructure-as-code work, so no invocation of this
+workflow can ever qualify for it. There is no override.
 
 ## Steps
 
@@ -177,10 +179,9 @@ When Step 4's determined target repo differs from an idea's current repo, reloca
 1. Write the file at the destination repo's resolved quadrant folder (with the Step 6 reshape, any
    Step 9 rename, and the Step 7 provenance line already applied — the file that lands is the final
    file, not a draft to be touched again).
-2. Commit and land that write on the destination repo's `main`, per the resolved `delivery-mode`
-   (`worktree-to-pr` by default — see the frontmatter's `delivery-mode` input — a branch, a PR,
-   review, and merge; `main-to-origin-main` only where the destination repo is `ose-private` and the
-   caller has overridden for that infrastructure-as-code invocation).
+2. Commit and land that write on the destination repo's `main`, per the fixed `delivery-mode`
+   (`worktree-to-pr`, unconditional — see the frontmatter's `delivery-mode` input — a branch, a PR,
+   review, and merge).
 3. **Verify the write landed** on the destination repo's `origin/main` before doing anything else —
    for `worktree-to-pr`, this means confirming the PR merged and `origin/main` moved, not merely that
    the PR opened.

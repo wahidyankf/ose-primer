@@ -682,8 +682,10 @@ is the contiguous run of phases ending at a delivery boundary — the unit, not 
 is what maps to a PR.
 
 The mapping from [Delivery Checklists Express a DAG](#delivery-checklists-express-a-dag-hard-rule)
-above sharpens: **one worktree → one branch → one PR → one delivery unit**, not one worktree → one
-branch → one PR → one phase.
+above sharpens: **one branch → one PR → one delivery unit**, not one branch → one PR → one phase. The
+**worktree** is a coarser unit still — see
+[Worktree Cap](#worktree-cap--one-worktree-per-repository-per-plan-hard-rule) below: a plan provisions
+at most one worktree per repository, reused across every delivery unit in that repo, not one per unit.
 
 1. **A PR opens only at a delivery boundary.** Phases inside a delivery unit that are not its
    boundary commit to the unit's branch and must still pass their own `### Phase N Gate`, but they
@@ -917,15 +919,24 @@ subsection states what is **actually allowed per repository**, and is the narrow
 Direct push to `origin main` is a scarce, protected capability going forward — not a convenience
 available wherever a plan finds it easier.
 
-- **`ose-public`, `ose-primer`, `beaver-nest`**: `main` is branch-protected against direct pushes,
+- **`ose-public`, `ose-primer`**: `main` is branch-protected against direct pushes,
   **including for repository admins**. `worktree-to-origin-main` and `main-to-origin-main` are
   therefore **unavailable** — no credential or role can push to `main` outside a merged PR.
   `main-to-pr` is not blocked by the protection (it still opens a PR) but is not used either: every
-  plan in these three repositories uses **`worktree-to-pr`**, with no exception. The
+  plan in these two repositories uses **`worktree-to-pr`**, with no exception. The
   [Plan-Docs-Only Carve-Out](../../workflows/plan/plan-planning.md#the-plan-docs-only-carve-out-superseded--retired-in-three-of-four-repos) and
-  the `.md`-only condition of the content restriction above are **retired** in these three
+  the `.md`-only condition of the content restriction above are **retired** in these two
   repositories — a protected `main` makes them moot regardless of file content, since there is no
   direct-push path left to carve out of.
+- **`beaver-nest`**: `main` is **NOT currently GitHub-branch-protected** (verified live 2026-08-08:
+  `gh api repos/wahidyankf/beaver-nest/branches/main` reports `"protected": false`, and
+  `gh api repos/wahidyankf/beaver-nest/rulesets` returns `[]`). `worktree-to-origin-main` and
+  `main-to-origin-main` therefore have a technically executable path here today — grouping this
+  repository with `ose-public` and `ose-primer` is this repo's own **policy/convention choice**, not
+  a GitHub-enforced one, pending a `[HUMAN]`-only GitHub settings change to add matching branch
+  protection. Until that gap is closed: every plan in `beaver-nest` still uses `worktree-to-pr` by
+  convention (see the enforcement note below), and a direct push that lands there anyway is
+  convention-noncompliant, not evidence of bypassed protection — there is nothing to bypass yet.
 - **`ose-private`**: `worktree-to-pr` is likewise the required mode for **every plan except**
   infrastructure-as-code plans (Terraform, Ansible, and equivalent state-changing infra work). Those
   plans use **`main-to-origin-main`**, because they need the real `.env` credentials and local
@@ -944,9 +955,13 @@ reason (secrets and state that cannot leave the primary checkout) closes the gap
 and "actually necessary" that the old `.md`-only carve-out left open everywhere.
 
 **Enforcement**: `plan-checker` flags a `## Delivery Mode` field naming `worktree-to-origin-main` or
-`main-to-origin-main` in `ose-public`, `ose-primer`, or `beaver-nest` as **HIGH** — those modes have
-no executable path in those repositories. It flags the same fields in `ose-private` as **HIGH**
-unless the plan is genuinely an infrastructure-as-code plan.
+`main-to-origin-main` in `ose-public` or `ose-primer` as **HIGH** — those modes have no executable
+path in those two repositories. It flags the same field for `beaver-nest` as **HIGH** too, as a
+policy violation of the convention above rather than a technical-inexecutability claim, since
+`beaver-nest`'s `main` is not yet GitHub-branch-protected (see above) — a direct push that actually
+lands there is a convention violation, not a bypassed-protection finding, until the protection gap is
+closed. It flags the same fields in `ose-private` as **HIGH** unless the plan is genuinely an
+infrastructure-as-code plan.
 
 **[AI] merges by default.** A `[HUMAN]` merge gate applies only where a plan's own step says so explicitly.
 The **preconditions are unchanged — only the actor is.** A PR still merges only when all five

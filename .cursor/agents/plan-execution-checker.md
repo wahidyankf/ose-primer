@@ -669,8 +669,16 @@ require the PR to be merged.
 - `*-to-pr` mode: archival-in-PR missing or deferred post-merge (where applicable): **HIGH**
 - Filing a finding solely because a `*-to-pr` PR remains unmerged: **not a finding** (false positive
   to avoid — flag the CHECK itself as wrong if this occurs)
-- Direct push landed on a protected repository's `main` (`ose-public`, `ose-primer`, `beaver-nest`,
-  or a non-infrastructure-as-code `ose-private` plan): **CRITICAL**
+- Direct push landed on a GitHub-branch-protected repository's `main` (`ose-public`, `ose-primer`, or
+  a non-infrastructure-as-code `ose-private` plan): **CRITICAL**
+- Direct push landed on `beaver-nest`'s `main`: **MEDIUM**, not CRITICAL — `beaver-nest` is
+  restricted to `worktree-to-pr` **by convention only**; its `main` is not yet actually
+  GitHub-branch-protected (verified live 2026-08-08: `protected: false`, no rulesets), so a landed
+  push bypasses nothing and is not evidence of bypassed protection. Rate it as a convention violation
+  (a plan should have used `worktree-to-pr`) pending the `[HUMAN]`-only GitHub settings change that
+  closes this gap — never rate it CRITICAL/bypassed-protection while the gap remains open. Re-check
+  this against live `gh api repos/wahidyankf/beaver-nest/branches/main` at review time in case the
+  gap has since been closed, in which case the CRITICAL rating above applies instead.
 - Non-infrastructure-as-code `ose-private` plan used a direct-push mode: **HIGH**
 
 - [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths

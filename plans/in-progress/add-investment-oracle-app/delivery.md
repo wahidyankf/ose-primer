@@ -12,7 +12,8 @@ checked), so this is a forward correction, not a rewrite of delivered history.
 
 ## Worktree
 
-Worktree path: `worktrees/add-investment-oracle-app/`, provisioned once at Phase 0a per the
+Worktree path: `worktrees/add-investment-oracle-app/`, provisioned once by the plan-execution Step 0
+gate per the
 [Worktree Cap](../../../repo-governance/conventions/structure/plans.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule)
 and reused, branch-switched, for the whole plan — this plan touches only this one repository, so it
 provisions exactly one worktree.
@@ -30,10 +31,10 @@ deleting the worktree after the plan is archived and pushed.
 ## Parallelization Model
 
 Phases pre-0 through 23 build up work locally inside the single shared worktree without pushing;
-Phase 24 is this plan's sole commit-and-push phase, and now also carries the archival move (`git mv`
-
-- README index updates) as a commit on the same PR branch, before the merge step. This plan is
-  naturally **one delivery unit, one branch, one PR** — see Phase 24 below, amended accordingly.
+Phase 24 is this plan's sole commit-and-push phase, and now also carries the archival move
+(`git mv` — README index updates) as a commit on the same PR branch, before the merge step. This
+plan is naturally **one delivery unit, one branch, one PR** — see Phase 24 below, amended
+accordingly.
 
 ### Delivery Boundaries
 

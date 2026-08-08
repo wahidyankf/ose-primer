@@ -128,13 +128,16 @@ question, not as a corroborating reference.
    the markdown gates where the change touches markdown.
 6. `git push origin HEAD:main` — push the worktree's branch tip directly onto the remote `main` ref.
    This is the **direct-push** landing path, and it is **restricted per repository**: `main` is
-   branch-protected against direct pushes (including for admins) in `ose-public`, `ose-primer`, and
-   `beaver-nest`, so this step has no executable path in those three repositories — only `ose-private`
-   infrastructure-as-code plans still use it. See
+   branch-protected against direct pushes (including for admins) in `ose-public` and `ose-primer`, so
+   this step has no executable path in those two repositories — only `ose-private` infrastructure-as-code
+   plans still use it. `beaver-nest` is restricted to the same effect **by convention**, though its
+   `main` is not yet actually GitHub-branch-protected (verified live 2026-08-08 — `protected: false`,
+   no rulesets), pending a `[HUMAN]`-only GitHub settings change; a direct push that lands there is a
+   convention violation, not a bypass of protection that does not yet exist. See
    [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule).
    When the unit of work instead lands through a branch and a pull request — the only path available in
-   the three protected repositories — this step becomes the PR's own push-and-merge, and step 7 needs
-   the branch cleanup below before it runs.
+   `ose-public`, `ose-primer`, and (by convention) `beaver-nest` — this step becomes the PR's own
+   push-and-merge, and step 7 needs the branch cleanup below before it runs.
 7. `git worktree remove <path>` — remove the worktree non-destructively, never with `--force` and
    never `rm -rf`, per the
    [No Destructive Git Operations Convention](./no-destructive-git-operations.md). If step 6 was a
