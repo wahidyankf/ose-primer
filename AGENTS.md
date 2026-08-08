@@ -5,7 +5,7 @@
 
 **Problem**: Maintaining quality and consistency across many specialized agents, agent skills, and extensive documentation is time-consuming and error-prone when done manually.
 
-**Solution**: Specialized AI (Artificial Intelligence) agents automate documentation, validation, content generation, and project planning — ensuring consistent quality, catching errors early, and freeing developers for high-value work.
+**Solution**: Specialized AI (Artificial Intelligence) agents automate documentation, validation, content generation, and project planning — consistent quality, early error-catching, freed developer time.
 
 ---
 
@@ -17,7 +17,7 @@ Instructions for AI agents working with this repository.
 
 ### Sibling repositories (no parent monorepo)
 
-`ose-primer` is one of four independently cloned repositories in the OSE (Open Sharia Enterprise) family. Treat each as a standalone git repository — there is no umbrella workspace, and the previously-used `ose-projects` parent has been deleted. **"All of the OSE repos" means exactly these four**, `beaver-nest` included despite sitting outside the propagation chain.
+`ose-primer` is one of four independently cloned repositories in the OSE (Open Sharia Enterprise) family — no umbrella workspace. **"All of the OSE repos" means exactly these four**, `beaver-nest` included despite sitting outside the propagation chain.
 
 - [`ose-public`](https://github.com/wahidyankf/ose-public) — public, MIT. Upstream platform monorepo.
 - [`ose-primer`](https://github.com/wahidyankf/ose-primer) — public, MIT. This repo; the template.
@@ -28,19 +28,27 @@ Propagation flows `ose-public → ose-primer → downstream forks` for governanc
 
 `apps/rhino-cli` must be byte-identical (zero carve-outs) across the three sync-loop repos
 (`ose-public`, `ose-primer`, `ose-private`), including its Gherkin behavior tree at
-`specs/apps/rhino/behavior/rhino-cli/gherkin/**` (every `.feature` and `README.md`), per the
+`specs/apps/rhino/behavior/rhino-cli/gherkin/**`, per the
 [SDLC Gate Standard](./docs/reference/sdlc-gate-standard.md#rhino-cli-byte-identity-boundary).
-`beaver-nest` carries a fork of it, not bound by that rule.
+`beaver-nest` carries a fork, not bound by that rule.
 
 **See**: [Repository Ecosystem Convention](./repo-governance/conventions/structure/repository-ecosystem.md) (canonical rules) and [Related Repositories reference](./docs/reference/related-repositories.md) (full catalogue).
 
 - **Node.js**: 24.13.1 (LTS - Long-Term Support, managed by Volta)
 - **npm**: 11.10.1
 - **Monorepo**: Nx with `apps/` and `libs/` structure
-- **Git Workflow**: Trunk Based Development (TBD). Every plan resolves to one of four **Delivery Modes** -- `worktree-to-pr` is the repo-wide default; the four-mode work-location/integration-target table is in the linked convention. `*-to-pr` modes run the
-  **PR-Review Maker→Fixer Cycle** (default 3 sequential CI-gated cycles) before the merge. **`[AI]` merges by default** in every mode; a `[HUMAN]` merge gate applies only where a plan's own step says so explicitly, with identical preconditions -- only the actor differs. **The PR is the independent merge point** -- N parallel units become N independently reviewed and merged PRs, which is why `worktree-to-pr` is the default; each change-producing DAG leaf gets its own worktree and PR (strict 1-PR ↔ 1-worktree), dependent nodes staying one PR. **Phase 0 opens no PR under any mode** -- setup/baseline is not a delivery node, so it pushes no branch and merges nothing; **the earliest PR is Phase 1**, and Phase 0's evidence rides it (see [§Phase 0 Opens No PR](./repo-governance/conventions/structure/plans.md#phase-0-opens-no-pr--the-earliest-pr-is-phase-1-hard-rule)). **PRs open at delivery boundaries, not every phase** -- a PR covers a **delivery unit**, the contiguous phases ending where work becomes independently shippable, so a plan opens one once at the end or several times through; folding independent nodes together to cut PR count stays forbidden (see [§PRs Open at Delivery Boundaries](./repo-governance/conventions/structure/plans.md#prs-open-at-delivery-boundaries-not-every-phase-hard-rule)). A PR merges only when **all five hardened preconditions** (a)-(e) hold, and the review loop did not exit `escalated` -- see the [PR Merge Protocol](./repo-governance/development/workflow/pr-merge-protocol.md). See the [Trunk Based Development Convention](./repo-governance/development/workflow/trunk-based-development.md#default-delivery-mode-worktree-to-pr), the [Git Push Default Convention](./repo-governance/development/workflow/git-push-default.md), and the [Plans Organization Convention §Delivery Mode](./repo-governance/conventions/structure/plans.md#delivery-mode) for the full three-tier precedence (invocation argument > plan `## Delivery Mode` field > default) and mechanics.
+- **Git Workflow**: Trunk Based Development (TBD). **`worktree-to-pr` is mandatory** -- `main` is
+  branch-protected, even for admins (`ose-private` alone has a narrow infra-as-code exception). Runs
+  the **PR-Review Maker→Fixer Cycle** (3 CI-gated cycles); **`[AI]` merges by default**, `[HUMAN]`
+  only where a plan's step says so. **One worktree per repo per plan (HARD RULE)** -- reused across
+  every delivery unit there; the **PR**, not the worktree, is the merge unit (1-PR↔1-branch, each DAG
+  leaf its own). PRs open at delivery boundaries, not every phase; Phase 0 opens none. See
+  [Git Push Default](./repo-governance/development/workflow/git-push-default.md),
+  [Plans §Delivery Mode](./repo-governance/conventions/structure/plans.md#delivery-mode),
+  [§Worktree Cap](./repo-governance/conventions/structure/plans.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule),
+  [§Per-Repo Restrictions](./repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule).
 - **Worktree path**: Default worktree location is `worktrees/<name>/` per the [Worktree Path Convention](./repo-governance/conventions/structure/worktree-path.md) — parallel-safe, gitignored, no override.
-- **Worktree toolchain init**: After creating or entering a worktree, agents must run BOTH `npm install` AND `npm run doctor -- --fix` in the root repository worktree, in that order — `postinstall` runs `npm run doctor || true`, which silently tolerates drift, so the explicit `--fix` call is required to converge the 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node). See [Infra: Development Environment Setup](./repo-governance/workflows/infra/infra-development-environment-setup.md) for the one-shot bootstrap and [Worktree Toolchain Initialization](./repo-governance/development/workflow/worktree-setup.md) for full rationale.
+- **Worktree toolchain init**: After creating or entering a worktree, run BOTH `npm install` AND `npm run doctor -- --fix`, in that order — `postinstall` alone silently tolerates drift, so the explicit `--fix` call is required to converge the 18+ polyglot toolchains. See [Infra: Development Environment Setup](./repo-governance/workflows/infra/infra-development-environment-setup.md) and [Worktree Toolchain Initialization](./repo-governance/development/workflow/worktree-setup.md).
 - **Integration diff review**: Read the incoming diff after rebase/pull/merge before continuing — [convention](./repo-governance/development/workflow/integration-diff-review.md).
 
 ## Dual-Binding Configuration
@@ -64,10 +72,8 @@ This repository maintains **dual compatibility** with two coding-agent platforms
 
 ### Agent Organization
 
-Specialized agents organized into families:
-
 The **[agent catalog](./.claude/agents/README.md) is authoritative** — every agent is listed there by
-family. Do not maintain a second roster here. Names follow `<domain>-<role>`:
+family; do not maintain a second roster here. Names follow `<domain>-<role>`:
 
 1. **maker / checker / fixer triads** — docs (plus tutorial, link, file-manager, and
    software-engineering-separation variants), readme, specs, ci, `swe-{code,ui}`,
@@ -77,20 +83,16 @@ family. Do not maintain a second roster here. Names follow `<domain>-<role>`:
    `social-linkedin-post-maker`. **Research** — `web-researcher`.
 3. **Project Planning** — `plan-{maker,checker,execution-checker,fixer}` and `repo-setup-manager`
    (Phase 0 setup and baseline). `plan-maker` grills the user before and after plan creation with
-   2–4 concrete options per question, one marked recommended, per the
-   [Grilling-With-Options Convention](./repo-governance/development/workflow/grilling-with-options.md);
-   checklists begin at Phase 0, every checkbox carries an `[AI]`/`[HUMAN]` marker, and every phase
-   closes with a `### Phase N Gate` plus a `> **Pause Safety**:` note. Execution is orchestrated by
-   the calling context via the
+   2–4 concrete options per question via the
+   [Grilling-With-Options Convention](./repo-governance/development/workflow/grilling-with-options.md).
+   Execution is orchestrated by the calling context via the
    [plan-execution](./repo-governance/workflows/plan/plan-execution.md) and
    [plan-planning](./repo-governance/workflows/plan/plan-planning.md) workflows — no dedicated
    executor subagent.
-4. **Testing** — `web-{exploratory,usability,design}-tester` (spec-aware correctness / spec-blind
-   first-time-user usability / design-aware runtime fidelity, the counterpart to `swe-ui-checker`)
-   plus `api-exploratory-tester` (live REST or GraphQL, HTTP/curl-driven, never a browser). All
-   non-destructive, each with a selectable **`output-mode`**: `plan` (default — a new backlog plan
-   folder), `delivery` (appends to an existing plan's `delivery.md`; the rule-15 retest mechanism),
-   `local-temp` (a scratch `local-temp/<YYYY-MM-DD>__<slug>/findings.md`).
+4. **Testing** — `web-{exploratory,usability,design}-tester` (spec-aware / spec-blind / design-aware,
+   the counterpart to `swe-ui-checker`) plus `api-exploratory-tester` (curl-driven, never a browser).
+   All non-destructive, each with a selectable **`output-mode`**: `plan` (default), `delivery`
+   (rule-15 retest), or `local-temp`.
 5. **PR Review Cycle** — `pr-review-scout-maker` classifies risk tier and assembles a shared brief;
    selected specialists fan out to `pr-review-synthesis-maker` (coordinator), which hands off to
    `pr-review-fixer`, for `*-to-pr` Delivery Mode plans. See
@@ -137,14 +139,14 @@ Three-stage quality workflow:
 
 **Categories** (representative examples — see full catalog below):
 
-- **Documentation**: `docs-applying-content-quality`, `docs-applying-diataxis-framework`, `docs-creating-accessible-diagrams`, `docs-creating-by-example-tutorials`, `docs-creating-in-the-field-tutorials`, `docs-validating-factual-accuracy`, `docs-validating-links`, `docs-validating-software-engineering-separation`
+- **Documentation**: `docs-applying-content-quality`, `docs-applying-diataxis-framework`, `docs-creating-accessible-diagrams`, and more
 - **README**: `readme-writing-readme-files`
 - **Planning**: `grill-me`, `plan-creating-project-plans`, `plan-writing-gherkin-criteria`
 - **Agent Development**: `agent-developing-agents`
 - **CI Standards**: `ci-standards`
-- **Repository Patterns**: `repo-applying-maker-checker-fixer`, `repo-assessing-criticality-confidence`, `repo-defining-workflows`, `repo-generating-validation-reports`, `repo-understanding-repository-architecture`
-- **Development Workflow**: `repo-practicing-trunk-based-development`, `swe-developing-applications-common`, `swe-developing-e2e-test-with-playwright`, `swe-developing-frontend-ui`
-- **Programming Languages**: `swe-programming-clojure`, `swe-programming-csharp`, `swe-programming-dart`, `swe-programming-elixir`, `swe-programming-fsharp`, `swe-programming-golang`, `swe-programming-java`, `swe-programming-kotlin`, `swe-programming-python`, `swe-programming-rust`, `swe-programming-typescript`
+- **Repository Patterns**: `repo-applying-maker-checker-fixer`, `repo-assessing-criticality-confidence`, `repo-defining-workflows`, and more
+- **Development Workflow**: `repo-practicing-trunk-based-development`, `swe-developing-applications-common`, `swe-developing-e2e-test-with-playwright`
+- **Programming Languages**: `swe-programming-{clojure,csharp,dart,elixir,fsharp,golang,java,kotlin,python,rust,typescript}`
 
 **Service Relationship**: Agent skills serve agents with knowledge and execution but don't govern them (service infrastructure, not governance layer).
 
@@ -233,9 +235,8 @@ invent `validate:{thing}` prefixes.
 ## Manual Verification & CI Blockers
 
 - **Verify behavior**: Browser-facing work first discovers a healthy installed integration, preferring
-  Chrome/Chromium through Chrome DevTools MCP or Playwright MCP, with an equivalent browser-driving
-  tool as fallback. Record the tool, fallback, and capability gaps; static inspection cannot replace a
-  working browser integration. Use curl for API-only surfaces
+  Chrome DevTools MCP or Playwright MCP, with a browser-driving fallback; static inspection cannot
+  replace a working browser integration. Use curl for API-only surfaces
   ([manual-behavioral-verification.md](./repo-governance/development/quality/manual-behavioral-verification.md)).
 - **User-facing delivery hardening**: For any user-facing change, follow the sixteen rules, including
   near-end EWT/UWT/DWT (web) or AET (API) retest rounds appended to `delivery.md` before archival
@@ -277,13 +278,13 @@ Plan mode for non-trivial tasks (3+ steps or architecture decisions), delegated 
 
 All agents follow foundational principles:
 
-1. **Deliberate Problem-Solving** - Think before coding; surface assumptions and tradeoffs rather than hiding confusion
+1. **Deliberate Problem-Solving** - Think before coding; surface assumptions and tradeoffs
 2. **Documentation First** - Documentation is mandatory, not optional
-3. **Accessibility First** - WCAG AA (Web Content Accessibility Guidelines Level AA) compliance
+3. **Accessibility First** - WCAG AA compliance
 4. **Simplicity Over Complexity** - Minimum viable abstraction
 5. **Explicit Over Implicit** - Clear tool permissions
 6. **Automation Over Manual** - Automate repetitive tasks
-7. **Root Cause Orientation** - Fix root causes, not symptoms; minimal impact; senior engineer standard
+7. **Root Cause Orientation** - Fix root causes, not symptoms; minimal impact
 
 **See**: [Principles README.md](./repo-governance/principles/README.md)
 
