@@ -100,6 +100,26 @@ Governance, conventions, agents, and skills flow `ose-public → ose-primer → 
 Private operational material does not flow into this template. `ose-primer` is a downstream
 template, not an upstream source: changes made here do not automatically flow back.
 
+## Sync cadence across repos
+
+The propagation summary above states **what** flows between repos; this states **how often** each
+sibling is brought current with `ose-public` — the three repos in the content-sync loop differ, and
+the difference is deliberate, not an oversight:
+
+- **`ose-private`** — kept **in real time**. `rhino-cli` and the shared `repo-governance/` content
+  (conventions, workflows, agent definitions) propagate to `ose-private` as they land in
+  `ose-public`, not on a batched schedule. That repo backs live authorized-maintainer and
+  infrastructure operations, so governance and tooling drift there is costly immediately, not just
+  eventually.
+- **`ose-primer`** (this repository) — kept on a **delayed** sync. As the reusable polyglot starter
+  template, `ose-primer` does not need every `ose-public` governance change the moment it lands;
+  batching updates conserves the review and propagation cost of a sync that public downstream
+  adopters do not need on a real-time cadence.
+- **`beaver-nest`** — **not synced** on an ongoing basis, consistent with its full exclusion from the
+  content-sync loop above. BeaverNest is planned to merge back into `ose-public` in the near term, so
+  investing in an ongoing sync mechanism for a repo expected to be reabsorbed is not worth the cost;
+  its `rhino-cli` fork and governance content are addressed at merge time instead.
+
 Keeping the family aligned is a **manual** discipline — there is no automated sync agent. Coordinated changes that must land in more than one repository are authored via the [plan-multi-repo-parity-planning workflow](../../repo-governance/workflows/plan/plan-multi-repo-parity-planning.md), then executed within each repository.
 
 ## Licensing

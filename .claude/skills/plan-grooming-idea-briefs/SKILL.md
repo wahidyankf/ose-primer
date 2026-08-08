@@ -31,11 +31,11 @@ backlog plan (that is `plan-idea-promotion-planning`).
 
 ## Inputs
 
-| Input           | Required | Default               | Notes                                                                                                                   |
-| --------------- | -------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `repos`         | yes      | none                  | Comma-separated repo paths. **Supply every repo in one run** — Steps 3 and 4 are inherently cross-repo.                 |
-| `dry-run`       | no       | `false`               | Compute and log every decision without writing.                                                                         |
-| `delivery-mode` | no       | `main-to-origin-main` | Direct push under the plans-only carve-out; override to `worktree-to-pr` for a large sweep a maintainer wants reviewed. |
+| Input           | Required | Default          | Notes                                                                                                                                                                                                                                                           |
+| --------------- | -------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `repos`         | yes      | none             | Comma-separated repo paths. **Supply every repo in one run** — Steps 3 and 4 are inherently cross-repo.                                                                                                                                                         |
+| `dry-run`       | no       | `false`          | Compute and log every decision without writing.                                                                                                                                                                                                                 |
+| `delivery-mode` | no       | `worktree-to-pr` | Fixed at `worktree-to-pr` — unconditional, no override. Write scope is strictly `plans/ideas/**`, never infrastructure-as-code, so the `ose-private` infra-as-code carve-out never applies here and `main-to-origin-main` is not offered as a selectable value. |
 
 ## Hard scope boundary
 

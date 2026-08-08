@@ -1,8 +1,49 @@
 # Delivery Checklist: `investment-oracle`
 
-Step-by-step phases. Each phase ends in a verifiable artifact. Tick items
-in order; push direct to `main` per Trunk Based Development
-([git-push-default](../../../repo-governance/development/workflow/git-push-default.md)).
+Step-by-step phases. Each phase ends in a verifiable artifact. Tick items in order.
+
+**Delivery Mode: `worktree-to-pr` (amended — direct push to `main` is no longer available).** This
+plan originally targeted direct push per Trunk Based Development
+([git-push-default](../../../repo-governance/development/workflow/git-push-default.md)), written
+before `main` in this repository became branch-protected (even for admins) and before the
+[Per-Repository Delivery Mode Restrictions](../../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule)
+rule made `worktree-to-pr` mandatory here. No phase in this plan has executed (0 of 195 items
+checked), so this is a forward correction, not a rewrite of delivered history.
+
+## Worktree
+
+Worktree path: `worktrees/add-investment-oracle-app/`, provisioned once by the plan-execution Step 0
+gate per the
+[Worktree Cap](../../../repo-governance/conventions/structure/plans.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule)
+and reused, branch-switched, for the whole plan — this plan touches only this one repository, so it
+provisions exactly one worktree.
+
+Optional manual pre-provisioning (run from repo root):
+
+```bash
+claude --worktree add-investment-oracle-app
+```
+
+The plan-execution Step 0 gate enters this worktree by default: it auto-provisions from the latest
+`origin/main` when missing, syncs with `origin/main` before implementing, and prompts before
+deleting the worktree after the plan is archived and pushed.
+
+## Parallelization Model
+
+Phases pre-0 through 23 build up work locally inside the single shared worktree without pushing;
+Phase 24 is this plan's sole commit-and-push phase, and now also carries the archival move
+(`git mv` — README index updates) as a commit on the same PR branch, before the merge step. This
+plan is naturally **one delivery unit, one branch, one PR** — see Phase 24 below, amended
+accordingly.
+
+### Delivery Boundaries
+
+| Phase(s) | Delivery unit                                                           | Worktree                               | Branch                      | PR opens          |
+| -------- | ----------------------------------------------------------------------- | -------------------------------------- | --------------------------- | ----------------- |
+| pre-0    | — (manual prerequisites, outside this repo)                             | —                                      | —                           | no                |
+| 0-23     | Investment Oracle app (build-up, no push)                               | `worktrees/add-investment-oracle-app/` | `add-investment-oracle-app` | no                |
+| 24       | Investment Oracle app (commit, push, review, archival-in-PR, merge)     | `worktrees/add-investment-oracle-app/` | `add-investment-oracle-app` | yes — at Phase 24 |
+| 25       | Post-merge (genuinely post-merge; no archival move here — see Phase 24) | `worktrees/add-investment-oracle-app/` | `add-investment-oracle-app` | no                |
 
 ## Phase pre-0 — Manual prerequisites
 
@@ -495,30 +536,42 @@ after Phase 16 FE e2e tests pass.
 creates (listed below) — never `.github/workflows/main-ci.yml`, which is deprecated,
 schedule/dispatch-only, and must not be monitored or gated on.
 
-- [ ] Push direct to `main` per Trunk Based Development
-      ([git-push-default](../../../repo-governance/development/workflow/git-push-default.md)):
-      `git push origin main`
-- [ ] Open the GitHub Actions tab for the `ose-primer` repository
-- [ ] Monitor the following workflows triggered by the push:
+- [ ] Push the branch and open a PR against `main`
+      (`git push origin add-investment-oracle-app` from the plan's worktree, then
+      `gh pr create --base main --head add-investment-oracle-app`) — direct push to `main` is
+      unavailable in this repository; see the amended Delivery Mode note above
+- [ ] Run the three-cycle PR-Review Maker→Fixer quality gate on the PR per
+      [PR Review Quality Gate](../../../repo-governance/workflows/pr/pr-review-quality-gate.md)
+- [ ] Monitor the following workflows triggered on the PR:
   - `test-investment-oracle-be`
   - `test-investment-oracle-fe`
   - `test-investment-oracle-be-e2e`
   - `test-investment-oracle-fe-e2e`
   - `build-investment-oracle-tauri`
-- [ ] Verify all CI checks pass (green status)
 - [ ] If any CI check fails, fix the root cause immediately and push a
-      follow-up commit; do NOT proceed until CI is green
+      follow-up commit to the same branch; do NOT merge until CI is green
 
-## Phase 25 — Plan archival
+### Archival (rides this PR — commits land on the PR branch, before merge)
 
-- [ ] Verify ALL delivery checklist items above are ticked
-- [ ] Verify CI is green on `main`
+Per [plan-execution §8. Finalization and Archival — Archival-in-PR](../../../repo-governance/workflows/plan/plan-execution.md#8-finalization-and-archival-sequential),
+this repo's `worktree-to-pr` mode requires the plan-folder move to be committed inside this
+delivering PR itself — not as a separate commit landed on `main` after merge, since `main` here has
+no post-merge direct-push path at all.
+
+- [ ] Verify ALL delivery checklist items above (Phases pre-0-24) are ticked
 - [ ] `git mv plans/in-progress/add-investment-oracle-app plans/done/<completion-date>__add-investment-oracle-app`
 - [ ] Update `plans/in-progress/README.md` — remove the plan entry
 - [ ] Update `plans/done/README.md` — add the plan entry with completion date
-- [ ] Commit: `chore(plans): move investment-oracle to done`
+- [ ] Commit and push to the same PR branch: `chore(plans): move investment-oracle to done`
+- [ ] Verify CI is still green on the PR branch after this commit
 
-## Phase 26 — Post-merge
+### Merge
+
+- [ ] Verify all CI checks pass (green status), including the archival commit above, and merge the
+      PR once the hardened preconditions hold, per
+      [PR Merge Protocol](../../../repo-governance/development/workflow/pr-merge-protocol.md)
+
+## Phase 25 — Post-merge
 
 - [ ] Update `plans/ideas/` and `plans/backlog/` with follow-up notes
       (export to PDF / DOCX, polyglot backend ports, real moderation

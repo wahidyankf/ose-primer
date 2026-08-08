@@ -397,6 +397,17 @@ After verifying archival (Step 5d), verify that execution actually happened insi
    - Worktree still present with NO recorded prompt/decline: **MEDIUM** finding (cleanup step skipped — worktrees accumulate).
    - Worktree deleted with NO recorded user confirmation: **HIGH** finding (deletion without explicit user approval violates the prompted-cleanup rule).
 
+6. **Worktree Cap — at most one `git worktree add` per repository, for the whole plan**
+   - Enumerate every `git worktree add` invocation attributable to this plan's execution for a given
+     repository (execution log entries, implementation-notes `Files Changed` provenance, or — where
+     available — shell-history/CI-log evidence). For a plan touching only this one repo, this is the
+     whole-plan count; for a multi-repo plan, count per repo separately.
+     [Worktree Cap](../../repo-governance/conventions/structure/plans.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule)
+     requires the SAME worktree to be reused, branch-switched, across every delivery unit landed in
+     that repo — never a second `git worktree add` for a repo the plan already has one open in.
+   - More than one `git worktree add` for the same repository within one plan's execution: **HIGH**
+     finding, citing each extra invocation's evidence.
+
 #### Finding Severity
 
 - Plan ran without a `## Worktree` section: **CRITICAL** (Step 0 gate breach)
@@ -405,6 +416,7 @@ After verifying archival (Step 5d), verify that execution actually happened insi
 - No worktree evidence in git history: **MEDIUM**
 - No `origin/main` freshness-sync evidence: **MEDIUM**
 - Worktree still present with no recorded cleanup prompt or decline: **MEDIUM**
+- More than one `git worktree add` for the same repository within one plan's execution: **HIGH**
 
 ### 10. Phase Gate and Execution Marker Post-Execution Validation (Step 5f-gates — MANDATORY)
 
@@ -631,6 +643,25 @@ require the PR to be merged.
    record that as a grandfathering note rather than a finding, and check only that no work was left
    unmerged. See
    [Plans Organization Convention §PRs Open at Delivery Boundaries](../../repo-governance/conventions/structure/plans.md#prs-open-at-delivery-boundaries-not-every-phase-hard-rule).
+6. **Per-Repository Delivery Mode Restrictions were actually honored during execution** — for each
+   repository this plan delivered into, confirm the ACTUAL push/merge history matches an executable
+   mode: no direct push to `origin main` in `ose-public`, `ose-primer`, or `beaver-nest` (verify via
+   `git log --first-parent origin/main` around the execution window for a commit whose parent is not
+   a merge commit from a PR, or a rejected-push log entry that was then correctly routed through a
+   PR instead), and no direct push to `origin main` in `ose-private` unless the plan is
+   infrastructure-as-code. A direct push that landed on `ose-public`, `ose-primer`, or a non-IaC
+   `ose-private` plan (it would only succeed if branch protection was itself misconfigured or
+   bypassed) is **CRITICAL** — it means a HARD RULE was violated at the platform level, not just
+   under-documented. A direct push that landed on `beaver-nest`'s `main` is **HIGH**, not
+   CRITICAL: `beaver-nest` is restricted to `worktree-to-pr` **by convention only** — its `main` is
+   not yet actually GitHub-branch-protected (verify live via
+   `gh api repos/wahidyankf/beaver-nest/branches/main`), so nothing is technically bypassed there, but
+   a landed, unreviewed push to a shared `main` is real, already-occurred harm and should not score
+   lower than the sibling declaration-time check (Finding Severity below, and `plan-checker.md`'s
+   equivalent Per-Repository Delivery Mode Restrictions item — both **HIGH**). Re-check the gap at
+   review time: once `beaver-nest`'s `main` protection is closed, the CRITICAL rating applies instead.
+   A non-IaC `ose-private` plan that used a direct-push mode: **HIGH**. See
+   [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule).
 
 #### Finding Severity
 
@@ -646,5 +677,20 @@ require the PR to be merged.
 - `*-to-pr` mode: archival-in-PR missing or deferred post-merge (where applicable): **HIGH**
 - Filing a finding solely because a `*-to-pr` PR remains unmerged: **not a finding** (false positive
   to avoid — flag the CHECK itself as wrong if this occurs)
+- Direct push landed on a GitHub-branch-protected repository's `main` (`ose-public`, `ose-primer`, or
+  a non-infrastructure-as-code `ose-private` plan): **CRITICAL**
+- Direct push landed on `beaver-nest`'s `main`: **HIGH**, not CRITICAL and not MEDIUM —
+  `beaver-nest` is restricted to `worktree-to-pr` **by convention only**; its `main` is not yet
+  actually GitHub-branch-protected (verified live 2026-08-08: `protected: false`, no rulesets), so a
+  landed push bypasses nothing technically and is not evidence of bypassed protection. But the push
+  still landed — real, already-occurred harm to a shared `main` — so it should not score lower than
+  the sibling declaration-time check at `plan-checker.md`'s equivalent Per-Repository Delivery Mode
+  Restrictions item, also **HIGH**. Rate it as a convention violation (a plan should have used
+  `worktree-to-pr`) pending the `[HUMAN]`-only GitHub settings change that closes this gap — never
+  rate it CRITICAL/bypassed-protection while the gap remains open, and never rate it MEDIUM given the
+  harm already occurred. Re-check this against live
+  `gh api repos/wahidyankf/beaver-nest/branches/main` at review time in case the gap has since been
+  closed, in which case the CRITICAL rating above applies instead.
+- Non-infrastructure-as-code `ose-private` plan used a direct-push mode: **HIGH**
 
 - [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths

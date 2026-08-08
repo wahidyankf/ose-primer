@@ -29,15 +29,17 @@ inputs:
     default: false
   - name: delivery-mode
     type: enum
-    values: [main-to-origin-main, worktree-to-pr]
+    values: [worktree-to-pr]
     description: >
-      This workflow's own git delivery behavior for the changes it makes to plans/ideas/**. Default
-      main-to-origin-main (direct commit + push to each processed repo's own main, per the
-      plan-docs-only carve-out — see plan-planning's Delivery Mode carve-out). A caller may override
-      to worktree-to-pr for a specific invocation (e.g., a particularly large sweep the maintainer
-      wants reviewed before it lands).
+      This workflow's own git delivery behavior for the changes it makes to plans/ideas/**. Fixed at
+      worktree-to-pr — unconditional, no override. This workflow's write scope is strictly
+      plans/ideas/** (see the Scope Boundary below), which by construction is never an
+      infrastructure-as-code change, so the ose-private infrastructure-as-code carve-out (Plans
+      Organization Convention's Per-Repository Delivery Mode Restrictions) can never apply to an
+      invocation of this workflow, and main-to-origin-main is therefore not offered as a selectable
+      value here.
     required: false
-    default: main-to-origin-main
+    default: worktree-to-pr
 outputs:
   - name: grooming-log-entries
     type: file-list
@@ -104,12 +106,19 @@ dedicated `plan-ideas-grooming` delegated agent — the procedure lives entirely
 document, matching the pattern [`plan-execution`](./plan-execution.md) uses for its own
 orchestrator-run steps.
 
-Every git delivery under this workflow's `main-to-origin-main` default follows the
-`plans/**`-only **plan-docs-only carve-out**
-([`plan-planning`](./plan-planning.md#the-plan-docs-only-carve-out)): since every path this
-workflow touches sits under `plans/ideas/**`, a direct push to each processed repo's own `main`
-needs no PR review cycle. A caller may still override `delivery-mode` to `worktree-to-pr` for a
-specific invocation.
+Every git delivery under this workflow's `worktree-to-pr` default — unconditional, no override —
+runs the full PR-Review Maker→Fixer Cycle per processed repo, per the
+[Per-Repository Delivery Mode Restrictions](../../conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule):
+`main` is branch-protected against direct pushes in `ose-public` and `ose-primer`, and `beaver-nest`
+is restricted to the same effect by convention (its `main` is not yet actually
+GitHub-branch-protected — see [Git Push Default Convention](../../development/workflow/git-push-default.md)
+for the live-verification detail), so the historical `plans/**`-only
+[**plan-docs-only carve-out**](./plan-planning.md#the-plan-docs-only-carve-out-superseded--retired-in-three-of-four-repos)
+is retired in those three repositories — a plan-docs-only change there uses `worktree-to-pr` like
+any other change. The carve-out survives, narrowed, only in `ose-private` as an
+infrastructure-as-code exception — but this workflow's write scope is strictly `plans/ideas/**`
+(see the Scope Boundary below), which is never infrastructure-as-code work, so no invocation of this
+workflow can ever qualify for it. There is no override.
 
 ## Steps
 
@@ -170,11 +179,14 @@ When Step 4's determined target repo differs from an idea's current repo, reloca
 1. Write the file at the destination repo's resolved quadrant folder (with the Step 6 reshape, any
    Step 9 rename, and the Step 7 provenance line already applied — the file that lands is the final
    file, not a draft to be touched again).
-2. Commit and push that write directly to the destination repo's `main`, per the resolved
-   `delivery-mode` (`main-to-origin-main` by default — see the frontmatter's `delivery-mode` input).
-3. **Verify the commit landed** on the destination repo's `origin/main` before doing anything else.
+2. Commit and land that write on the destination repo's `main`, per the fixed `delivery-mode`
+   (`worktree-to-pr`, unconditional — see the frontmatter's `delivery-mode` input — a branch, a PR,
+   review, and merge).
+3. **Verify the write landed** on the destination repo's `origin/main` before doing anything else —
+   for `worktree-to-pr`, this means confirming the PR merged and `origin/main` moved, not merely that
+   the PR opened.
 4. **Only after verification succeeds**, delete the original file from the source repo, as its own
-   separate commit and push.
+   separate commit landed the same way.
 
 If verification in step 3 fails or the run is interrupted before step 4 completes, **stop before
 the delete** — the idea now legitimately exists in both repos. Log the duplication explicitly as an
@@ -277,8 +289,10 @@ repo's own `plans/ideas/README.md` at the end of every run.
   idea against.
 - [Workflow Naming Convention](../../conventions/structure/workflow-naming.md) — defines the
   `grooming` type token this workflow's own filename uses (scope `plan`, type `grooming`).
-- [Plan-docs-only carve-out](./plan-planning.md#the-plan-docs-only-carve-out) — the basis for this
-  workflow's `main-to-origin-main` default delivery mode, since every path it touches sits under
+- [Plan-docs-only carve-out (superseded — retired in three of four repos)](./plan-planning.md#the-plan-docs-only-carve-out-superseded--retired-in-three-of-four-repos) —
+  historical context only: this workflow's default is `worktree-to-pr`, since the carve-out this
+  workflow previously relied on for a `main-to-origin-main` default survives only as an `ose-private`
+  infrastructure-as-code exception, even though every path this workflow touches sits under
   `plans/**`.
 - [File Naming Convention](../../conventions/structure/file-naming.md) — the kebab-case rule Step 9's
   rename criteria checks every filename against.
