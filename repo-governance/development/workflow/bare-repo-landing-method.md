@@ -127,9 +127,14 @@ question, not as a corroborating reference.
 5. **Run local quality gates** in the worktree — typecheck, lint, `test:quick`, `specs:coverage`, and
    the markdown gates where the change touches markdown.
 6. `git push origin HEAD:main` — push the worktree's branch tip directly onto the remote `main` ref.
-   This is the **direct-push** landing path. When the unit of work instead lands through a branch and
-   a pull request, this step becomes the PR's own push-and-merge, and step 7 needs the branch cleanup
-   below before it runs.
+   This is the **direct-push** landing path, and it is **restricted per repository**: `main` is
+   branch-protected against direct pushes (including for admins) in `ose-public`, `ose-primer`, and
+   `beaver-nest`, so this step has no executable path in those three repositories — only `ose-private`
+   infrastructure-as-code plans still use it. See
+   [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule).
+   When the unit of work instead lands through a branch and a pull request — the only path available in
+   the three protected repositories — this step becomes the PR's own push-and-merge, and step 7 needs
+   the branch cleanup below before it runs.
 7. `git worktree remove <path>` — remove the worktree non-destructively, never with `--force` and
    never `rm -rf`, per the
    [No Destructive Git Operations Convention](./no-destructive-git-operations.md). If step 6 was a

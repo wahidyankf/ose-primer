@@ -112,10 +112,22 @@ TBD addresses common problems with long-lived feature branches:
 > procedure that substitutes for it here. This repository's own **repo-wide default** is the
 > short-lived-branch-via-PR shape (`worktree-to-pr`) -- see
 > [Default Push and Worktree Execution](#default-push-and-worktree-execution) below.
+>
+> **Per-repository restriction (independent of the bare-repo caveat above)**: in `ose-public`,
+> `ose-primer`, and `beaver-nest`, `main` is branch-protected against direct pushes -- including for
+> admins -- so **neither direct-push mode has an executable path in those three repositories at all**,
+> bare-repo topology aside. In `ose-private`, both remain available only for infrastructure-as-code
+> plans. See
+> [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule)
+> for the full rule. The PASS example immediately below is therefore **not executable in this clone
+> (`ose-primer`)** -- it is retained as illustrative TBD vocabulary and remains genuinely runnable only
+> for `ose-private` infrastructure-as-code plans.
 
-**One available workflow**: commit directly to `main` when:
+**One available workflow, where the per-repository restriction above permits it**: commit directly to
+`main` when:
 
-PASS: **You should commit directly to `main` when**:
+PASS (only where the per-repository restriction above does not block it -- not currently `ose-primer`):
+**You should commit directly to `main` when**:
 
 - Change is small and well-tested
 - You're confident tests will pass
@@ -402,10 +414,13 @@ Opening every `worktree-to-pr` branch as a draft is deliberate:
 ### Direct-Push Modes Remain Available Where the Topology Supports Them
 
 Two modes commit and push directly to `origin main`, with `[AI]` performing the push itself -- no
-branch, no PR, no review gate:
+branch, no PR, no review gate. Availability gates on **two independent axes**, and both must clear
+before either mode is executable: repo topology (below) **and** per-repository branch-protection
+restriction (see the callout that follows).
 
 - **`worktree-to-origin-main`** -- work happens in a disposable worktree, but pushes land directly on
-  `origin main`. Available regardless of repo topology.
+  `origin main`. Available regardless of repo **topology** -- but see the branch-protection axis below,
+  which is independent of topology and blocks this mode entirely in three of the four repositories.
 - **`main-to-origin-main`** -- work happens in the primary checkout (no worktree), pushing directly to
   `origin main`. **Requires a primary checkout**: a bare repository (`core.bare=true`) has none, so
   this mode is unavailable there -- every mutation flows through a linked worktree instead, per the
@@ -415,14 +430,31 @@ branch, no PR, no review gate:
   today -- re-verify with `git worktree list` (look for the `(bare)` marker) or the labelled
   `core.bare` read, never `git rev-parse --is-bare-repository`, since topology can change.
 
+> **Branch-protection axis (independent of topology, and the binding constraint today)**: in
+> `ose-public`, `ose-primer`, and `beaver-nest`, `main` is branch-protected against direct pushes for
+> every actor, including admins -- a `pull_request` ruleset rule is active with `bypass_actors: []` and
+> `current_user_can_bypass: "never"`. **Neither direct-push mode has an executable path in those three
+> repositories, regardless of topology or worktree usage.** In `ose-private`, both remain available
+> only for infrastructure-as-code plans (Terraform, Ansible, and equivalent state-changing infra work
+> needing the primary checkout's real secrets and local state). See
+> [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule)
+> for the full rule. The `git push origin HEAD:main` example below is **not executable in this clone
+> (`ose-primer`)** today -- it is retained as illustrative TBD vocabulary for repositories or plan
+> types where the branch-protection axis does not block it.
+
 Both remain fully valid TBD flavors in the general case -- they are TBD's classic direct-commit shape,
 and this document keeps both in the vocabulary because a fresh clone of this public template may well
-have a primary checkout even where this clone does not. Select one of these over the default when the
-change is small, well-understood, does not warrant a review pass, and is actually available in the
-clone you are working in -- for example, a single-line typo fix or a mechanical rename.
+have a primary checkout even where this clone does not, and because `ose-private` infrastructure-as-code
+plans still execute them. Select one of these over the default only when the change is small,
+well-understood, does not warrant a review pass, and is actually available on **both** axes in the
+repository and clone you are working in -- for example, a single-line typo fix or a mechanical rename
+in a repository without the branch-protection restriction.
 
 ```bash
 # worktree-to-origin-main -- worktree isolation, direct push, no PR
+# NOT executable in ose-public, ose-primer, or beaver-nest (main is branch-protected against
+# direct pushes, no bypass_actors). Runnable only where the branch-protection axis permits it --
+# e.g. an ose-private infrastructure-as-code plan.
 git worktree add worktrees/typo-fix -b typo-fix
 cd worktrees/typo-fix
 # ... make changes ...
@@ -456,15 +488,22 @@ argument > plan field > default `worktree-to-pr`), never inferred from execution
 
 ### Decision Table
 
-| Situation                               | Resolved Delivery Mode (absent an explicit override)    |
-| --------------------------------------- | ------------------------------------------------------- |
-| Routine development, no mode specified  | `worktree-to-pr` (repo-wide default)                    |
-| Plan declares `worktree-to-origin-main` | Worktree work location, direct push to `origin main`    |
-| Plan declares `main-to-origin-main`     | Primary checkout, direct push to `origin main`          |
-| Plan declares `main-to-pr`              | Primary checkout, PR opened against `main`              |
-| Invocation argument names a valid mode  | The named mode overrides the plan field and the default |
-| Experimental/spike work                 | Developer's choice, any mode                            |
-| External contribution                   | Fork + PR (follows the `*-to-pr` review/merge protocol) |
+**Both direct-push rows below are per-repository restricted**: they resolve to a mode with no
+executable path in `ose-public`, `ose-primer`, or `beaver-nest` (main is branch-protected, no bypass
+actors), and to an `ose-private`-infrastructure-as-code-only path elsewhere. See
+[Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule).
+In `ose-primer` (this clone), both direct-push rows are non-executable; `worktree-to-pr` is the only
+applicable mode for routine development.
+
+| Situation                               | Resolved Delivery Mode (absent an explicit override)                                                                         |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Routine development, no mode specified  | `worktree-to-pr` (repo-wide default)                                                                                         |
+| Plan declares `worktree-to-origin-main` | Worktree work location, direct push to `origin main` -- **ose-private-IaC-only / no-longer-executable-here in `ose-primer`** |
+| Plan declares `main-to-origin-main`     | Primary checkout, direct push to `origin main` -- **ose-private-IaC-only / no-longer-executable-here in `ose-primer`**       |
+| Plan declares `main-to-pr`              | Primary checkout, PR opened against `main`                                                                                   |
+| Invocation argument names a valid mode  | The named mode overrides the plan field and the default                                                                      |
+| Experimental/spike work                 | Developer's choice, any mode -- subject to the same per-repository restriction above                                         |
+| External contribution                   | Fork + PR (follows the `*-to-pr` review/merge protocol)                                                                      |
 
 ### Key Principle
 
