@@ -38,7 +38,10 @@ Propagation flows `ose-public → ose-primer → downstream forks` for governanc
 - **npm**: 11.10.1
 - **Monorepo**: Nx with `apps/` and `libs/` structure
 - **Git Workflow**: Trunk Based Development (TBD). **`worktree-to-pr` is mandatory** -- `main` is
-  branch-protected, even for admins (`ose-private` alone has a narrow infra-as-code exception). Runs
+  branch-protected, even for admins, in `ose-public` and `ose-primer`; `beaver-nest` is held to the
+  same restriction **by convention only** (its `main` is not yet actually GitHub-branch-protected —
+  see [Git Push Default](./repo-governance/development/workflow/git-push-default.md)); `ose-private`
+  alone has a narrow infra-as-code exception. Runs
   the **PR-Review Maker→Fixer Cycle** (3 CI-gated cycles); **`[AI]` merges by default**, `[HUMAN]`
   only where a plan's step says so. **One worktree per repo per plan (HARD RULE)** -- reused across
   every delivery unit there; the **PR**, not the worktree, is the merge unit (1-PR↔1-branch, each DAG

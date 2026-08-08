@@ -33,13 +33,19 @@ This Skill provides comprehensive guidance on **Trunk Based Development (TBD)** 
 
 In this repo the default shape is `worktree-to-pr`: a short-lived plan branch in a disposable
 worktree, pushed to a draft PR, merged once the hardened preconditions hold. Committing straight to
-`main` is the `worktree-to-origin-main` / `main-to-origin-main` modes — both explicitly declared, but
-only `worktree-to-origin-main` is available in this clone today: `main-to-origin-main` requires a
-primary checkout, which a bare repository (`core.bare=true`) has none of, and this clone is currently
-bare. See [Delivery Mode](../../../repo-governance/conventions/structure/plans.md#delivery-mode) for
-the rule and the
+`main` is the `worktree-to-origin-main` / `main-to-origin-main` modes — both explicitly declared in
+the four-mode vocabulary. **Per-repository restriction, independent of any bare/non-bare clone
+state**: in `ose-public` and `ose-primer`, `main` is branch-protected against direct pushes —
+including for admins — so **neither direct-push mode has an executable path in this clone
+(`ose-primer`) at all**. `beaver-nest` is held to the same restriction by convention only (its `main`
+is not yet actually GitHub-branch-protected). In `ose-private`, both remain available only for
+infrastructure-as-code plans. See
+[Delivery Mode](../../../repo-governance/conventions/structure/plans.md#delivery-mode) and
+[Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule)
+for the full rule. The
 [Bare-Repo Base-Worktree Landing Method](../../../repo-governance/development/workflow/bare-repo-landing-method.md)
-for the worktree-based procedure that substitutes for it here.
+remains the applicable procedure only where a direct-push mode is genuinely available (e.g. an
+`ose-private` infrastructure-as-code plan run from a bare clone).
 
 ### Why TBD?
 
@@ -62,7 +68,7 @@ for the worktree-based procedure that substitutes for it here.
 
 ### Default Behavior
 
-**Work happens on short-lived branches that integrate into `main` continuously.** TBD's defining tenet is avoiding _long-lived_ branches, not avoiding branches: a short-lived branch reviewed via PR is a recognized TBD flavor, and it is this repo's default (`worktree-to-pr`). Direct commit to `main` remains fully supported for small, well-understood changes via the `worktree-to-origin-main` and `main-to-origin-main` modes — though only `worktree-to-origin-main` is available in this clone today, since `main-to-origin-main` requires a primary checkout this bare clone does not have; see the bareness carve-out under [What is Trunk Based Development?](#what-is-trunk-based-development).
+**Work happens on short-lived branches that integrate into `main` continuously.** TBD's defining tenet is avoiding _long-lived_ branches, not avoiding branches: a short-lived branch reviewed via PR is a recognized TBD flavor, and it is this repo's default (`worktree-to-pr`). Direct commit to `main` remains **explicitly declared** in the four-mode vocabulary (`worktree-to-origin-main`, `main-to-origin-main`), but **neither has an executable path in this clone (`ose-primer`)**: `main` is branch-protected against direct pushes here, including for admins — independent of the clone's bare/non-bare state. See the per-repository restriction under [What is Trunk Based Development?](#what-is-trunk-based-development).
 
 **Standard workflow** (the default `worktree-to-pr` mode):
 
@@ -100,24 +106,32 @@ Under a declared direct-push mode the same loop applies without steps 1 and 4 �
 
 Select `worktree-to-origin-main` — or, where the clone has a primary checkout, `main-to-origin-main`
 — pushing straight to `main` with no PR, for changes that are small, well-understood, and safe to
-integrate immediately. `main-to-origin-main` requires a primary checkout, which a bare repository
-(`core.bare=true`) has none of, and this clone is currently bare, so only `worktree-to-origin-main` is
-available here today — see the carve-out under
-[What is Trunk Based Development?](#what-is-trunk-based-development) above, the
-[Delivery Mode](../../../repo-governance/conventions/structure/plans.md#delivery-mode) rule, and the
-[Bare-Repo Base-Worktree Landing Method](../../../repo-governance/development/workflow/bare-repo-landing-method.md)
-for the worktree-based procedure that substitutes for it here. A non-bare clone of this public
-template may use either mode for:
+integrate immediately. **This is a two-axis check, and both axes must pass independently**:
+
+1. **Server-side branch protection** (repository-wide, independent of clone shape): `main` is
+   branch-protected against direct pushes — including for admins — in `ose-public` and `ose-primer`,
+   so **neither direct-push mode has an executable path in either repository, no matter how the local
+   clone is shaped**. `beaver-nest` is held to the same restriction by convention only (its `main` is
+   not yet actually GitHub-branch-protected). Only `ose-private` genuinely permits direct-push modes,
+   and only for infrastructure-as-code plans. See
+   [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule).
+2. **Local clone shape** (only relevant where axis 1 permits a direct push at all): `main-to-origin-main`
+   requires a primary checkout, which a bare repository (`core.bare=true`) has none of — see the
+   [Bare-Repo Base-Worktree Landing Method](../../../repo-governance/development/workflow/bare-repo-landing-method.md)
+   for the worktree-based procedure that substitutes for it in a bare clone.
+
+Where both axes permit it (today, only an `ose-private` infrastructure-as-code plan), use either mode
+for:
 
 - **Small bug fixes** where the failure and the fix are both obvious
 - **Small, safe refactors** with existing test coverage
 - **Documentation** and **configuration** touch-ups
 - **Dependency updates** that pass the full gate locally
 
-**Key principle**: the direct-push modes trade review for speed. Choose them when the change is small
-enough that the trade is obviously worth it and the chosen mode is actually available in the clone you
-are working in — and declare the mode explicitly in the plan, since it is a deliberate departure from
-the `worktree-to-pr` default rather than the assumed path.
+**Key principle**: the direct-push modes trade review for speed. Choose them only when both the
+per-repository restriction and the clone-shape check above genuinely permit it, and declare the mode
+explicitly in the plan, since it is a deliberate departure from the `worktree-to-pr` default rather
+than the assumed path.
 
 ## Keeping Branches Short-Lived
 

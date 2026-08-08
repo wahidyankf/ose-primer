@@ -658,10 +658,18 @@ require the PR to be merged.
    `git log --first-parent origin/main` around the execution window for a commit whose parent is not
    a merge commit from a PR, or a rejected-push log entry that was then correctly routed through a
    PR instead), and no direct push to `origin main` in `ose-private` unless the plan is
-   infrastructure-as-code. A direct push that landed in a protected repository (it would only
-   succeed if branch protection was itself misconfigured or bypassed) is **CRITICAL** — it means a
-   HARD RULE was violated at the platform level, not just under-documented. A non-IaC `ose-private`
-   plan that used a direct-push mode: **HIGH**. See
+   infrastructure-as-code. A direct push that landed on `ose-public`, `ose-primer`, or a non-IaC
+   `ose-private` plan (it would only succeed if branch protection was itself misconfigured or
+   bypassed) is **CRITICAL** — it means a HARD RULE was violated at the platform level, not just
+   under-documented. A direct push that landed on `beaver-nest`'s `main` is **HIGH**, not
+   CRITICAL: `beaver-nest` is restricted to `worktree-to-pr` **by convention only** — its `main` is
+   not yet actually GitHub-branch-protected (verify live via
+   `gh api repos/wahidyankf/beaver-nest/branches/main`), so nothing is technically bypassed there, but
+   a landed, unreviewed push to a shared `main` is real, already-occurred harm and should not score
+   lower than the sibling declaration-time check (Finding Severity below, and `plan-checker.md`'s
+   equivalent Per-Repository Delivery Mode Restrictions item — both **HIGH**). Re-check the gap at
+   review time: once `beaver-nest`'s `main` protection is closed, the CRITICAL rating applies instead.
+   A non-IaC `ose-private` plan that used a direct-push mode: **HIGH**. See
    [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule).
 
 #### Finding Severity
@@ -680,14 +688,18 @@ require the PR to be merged.
   to avoid — flag the CHECK itself as wrong if this occurs)
 - Direct push landed on a GitHub-branch-protected repository's `main` (`ose-public`, `ose-primer`, or
   a non-infrastructure-as-code `ose-private` plan): **CRITICAL**
-- Direct push landed on `beaver-nest`'s `main`: **MEDIUM**, not CRITICAL — `beaver-nest` is
-  restricted to `worktree-to-pr` **by convention only**; its `main` is not yet actually
-  GitHub-branch-protected (verified live 2026-08-08: `protected: false`, no rulesets), so a landed
-  push bypasses nothing and is not evidence of bypassed protection. Rate it as a convention violation
-  (a plan should have used `worktree-to-pr`) pending the `[HUMAN]`-only GitHub settings change that
-  closes this gap — never rate it CRITICAL/bypassed-protection while the gap remains open. Re-check
-  this against live `gh api repos/wahidyankf/beaver-nest/branches/main` at review time in case the
-  gap has since been closed, in which case the CRITICAL rating above applies instead.
+- Direct push landed on `beaver-nest`'s `main`: **HIGH**, not CRITICAL and not MEDIUM —
+  `beaver-nest` is restricted to `worktree-to-pr` **by convention only**; its `main` is not yet
+  actually GitHub-branch-protected (verified live 2026-08-08: `protected: false`, no rulesets), so a
+  landed push bypasses nothing technically and is not evidence of bypassed protection. But the push
+  still landed — real, already-occurred harm to a shared `main` — so it should not score lower than
+  the sibling declaration-time check at `plan-checker.md`'s equivalent Per-Repository Delivery Mode
+  Restrictions item, also **HIGH**. Rate it as a convention violation (a plan should have used
+  `worktree-to-pr`) pending the `[HUMAN]`-only GitHub settings change that closes this gap — never
+  rate it CRITICAL/bypassed-protection while the gap remains open, and never rate it MEDIUM given the
+  harm already occurred. Re-check this against live
+  `gh api repos/wahidyankf/beaver-nest/branches/main` at review time in case the gap has since been
+  closed, in which case the CRITICAL rating above applies instead.
 - Non-infrastructure-as-code `ose-private` plan used a direct-push mode: **HIGH**
 
 - [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
