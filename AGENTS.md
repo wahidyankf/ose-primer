@@ -171,17 +171,19 @@ Beyond markdown, the repo gates shell scripts, Dockerfiles, and GitHub Actions
 workflows at a uniform **warning-and-above** threshold, enforced in both CI
 (`.github/workflows/pr-quality-gate.yml`) and the local Husky hooks:
 
-- **shellcheck** (`--severity=warning`, root `.shellcheckrc`) — all tracked `.sh` files (CI `shellcheck` matrix leg)
-- **hadolint** (`--failure-threshold warning`, root `.hadolint.yaml`) — all Dockerfiles (CI `hadolint` matrix leg)
-- **actionlint** — all `.github/workflows/*.yml` (CI `actionlint` matrix leg)
+- **shellcheck** (`--severity=warning`, root `.shellcheckrc`) — all tracked `.sh` files
+- **hadolint** (`--failure-threshold warning`, root `.hadolint.yaml`) — all Dockerfiles
+- **actionlint** — all `.github/workflows/*.yml`
 
-Each linter's provisioning is registry-declared per gate (`doctor-tools:` in `repo-config.yml`), not
-a blanket `npm run doctor -- --fix`: the CI `gate` job reads each matrix leg's `doctor_tools` and
-runs `npm run doctor -- --fix --tools <tools>` only for what that leg declares. Locally, `npm run
-doctor -- --fix` (no `--tools` filter) still installs everything, including these three. The CI jobs
-are registry matrix legs named after their gate id (`${{ matrix.gate.id }}`), which is why they still
-display as `actionlint`/`hadolint`/`shellcheck` (Invariant A in the parity checklist) even though
-they run through the shared `gate` job rather than standalone job keys.
+All three run inside the `shell-docker-actions` CI gate group. Each linter's provisioning is
+registry-declared per gate (`doctor-tools:` in `repo-config.yml`), not a blanket `npm run doctor --
+--fix`: the CI `gate` job reads its matrix leg's union of `doctor_tools` and runs
+`apps/rhino-cli/scripts/rhino-bin.sh doctor --fix --tools <tools>` only for what that group
+declares — the CI runner has no Rust toolchain, so `npm run doctor` (which expands to `nx run
+rhino-cli:build`, requiring cargo) does not work in that job. Locally, `npm run doctor -- --fix` (no
+`--tools` filter) still installs everything, including these three. CI legs are named after their
+**`ci-group`** (`${{ matrix.group.group }}`), not their gate id — each gate's own result stays
+visible in the group's per-gate `PASS`/`FAIL` summary.
 
 **See**: [Cross-Language Lint Strictness](./repo-governance/development/quality/cross-language-lint-strictness.md)
 

@@ -66,7 +66,7 @@ Clippy's `clippy::pedantic` lint group catches unnecessary mutation:
 
 ```toml
 # .rustfmt.toml
-edition = "2021"
+edition = "2024"
 max_width = 100
 use_small_heuristics = "Default"
 reorder_imports = true
@@ -319,4 +319,4 @@ let result = unsafe {
 
 **Maintainers**: Platform Documentation Team
 
-**Rust Version**: 1.82+ (stable), Edition 2021
+**Rust Version**: MSRV declared in [`apps/rhino-cli/Cargo.toml`](../../../../../apps/rhino-cli/Cargo.toml); Edition 2024

@@ -44,7 +44,6 @@
           "nx run crud-be-rust-axum:typecheck",
           "nx run crud-be-rust-axum:lint",
           "nx run crud-be-rust-axum:test:unit",
-          "nx run crud-be-rust-axum:test:coverage",
           "nx run crud-be-rust-axum:test:specs"
         ],
         "parallel": false

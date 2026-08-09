@@ -346,7 +346,7 @@ step above.
 
 ```bash
 # Run the same registered gate without creating a throwaway commit
-cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- gate run --surface=pre-commit
+apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-commit
 ```
 
 **Pre-push** (runs the repository's affected quality gates):
