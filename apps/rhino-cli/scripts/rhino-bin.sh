@@ -21,8 +21,8 @@
 # (no LTO, higher codegen-unit parallelism, lower opt-level) that inherits
 # from `[profile.release]` in Cargo.toml, trading a little runtime speed for
 # much faster local rebuilds. The `build` Nx target and CI release artifacts
-# still use `--release`/`target/release/`, unchanged; see
-# plans/in-progress/optimize-cis/delivery.md.
+# still use `--release`/`target/release/`, unchanged; see the `optimize-cis`
+# plan in `ose-public`: plans/done/2026-08-09__optimize-cis/delivery.md.
 #
 # In every case, all arguments are passed through unchanged and the script
 # exits with the resolved binary's exit code (via `exec`, so no code is
