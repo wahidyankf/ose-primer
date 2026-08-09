@@ -123,53 +123,76 @@ jobs:
               cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- gate run --surface=ci --only="$gate_id"
             done
 
+  build-rhino:
+    name: Build rhino-cli (gate profile)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-rust
+      - run: cargo build --profile gate --manifest-path apps/rhino-cli/Cargo.toml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rhino-cli-gate-binary
+          path: apps/rhino-cli/target/gate/rhino-cli
+
   enumerate:
-    name: Enumerate registry CI gates
+    name: Enumerate registry CI gate groups
+    needs: build-rhino
     runs-on: ubuntu-latest
     outputs:
-      gates: ${{ steps.list.outputs.gates }}
+      groups: ${{ steps.list.outputs.groups }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-node
+      - uses: actions/download-artifact@v4
+        with:
+          name: rhino-cli-gate-binary
+          path: apps/rhino-cli/target/gate
+      - run: chmod +x apps/rhino-cli/target/gate/rhino-cli
+      - id: list
+        run: |
+          groups=$(RHINO_CLI_BIN="$PWD/apps/rhino-cli/target/gate/rhino-cli" apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=ci --format=json --by-group | jq -c .)
+          echo "groups=$groups" >> "$GITHUB_OUTPUT"
+
+  gate:
+    needs: [build-rhino, enumerate]
+    name: ${{ matrix.group.group }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        group: ${{ fromJson(needs.enumerate.outputs.groups) }}
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
-      - uses: ./.github/actions/setup-rust
-      - id: list
-        run: |
-          gates=$(cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- gate list --surface=ci --format=json | jq -c .)
-          echo "gates=$gates" >> "$GITHUB_OUTPUT"
-
-  gate:
-    needs: enumerate
-    name: ${{ matrix.gate.id }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        gate: ${{ fromJson(needs.enumerate.outputs.gates) }}
-    steps:
-      - uses: actions/checkout@v6
         with:
-          fetch-depth: ${{ matrix.gate.scope != 'affected-file-type' && 1 || 0 }}
-      - uses: ./.github/actions/setup-node
-      - uses: ./.github/actions/setup-rust
+          run-npm-ci: ${{ contains(matrix.group.doctor_tools, 'npm') }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: rhino-cli-gate-binary
+          path: apps/rhino-cli/target/gate
+      - run: chmod +x apps/rhino-cli/target/gate/rhino-cli
       - name: Provision registry-declared tools
-        env:
-          GATE_DOCTOR_TOOLS: ${{ join(matrix.gate.doctor_tools, ',') }}
         run: |
-          if [ -n "$GATE_DOCTOR_TOOLS" ]; then
-            npm run doctor -- --fix --tools "$GATE_DOCTOR_TOOLS"
+          tools="$GATE_DOCTOR_TOOLS"
+          if [ -n "$tools" ]; then
+            npm run doctor -- --fix --tools "$tools"
           fi
+        env:
+          GATE_DOCTOR_TOOLS: ${{ join(matrix.group.doctor_tools, ',') }}
       # dart/flutter is absent from Doctor's tool inventory (DOCTOR_TOOL_INVENTORY in
       # apps/rhino-cli/src/application/repo_config/mod.rs), so it can't be declared via
       # `doctor-tools:` like the other external-tool gates above. format-verify-dart still
-      # needs the Dart SDK on PATH, so provision it directly for that one gate.
+      # needs the Dart SDK on PATH, so provision it for whichever group carries that gate.
       - name: Setup Flutter (format-verify-dart needs the Dart SDK)
-        if: matrix.gate.id == 'format-verify-dart'
+        if: contains(matrix.group.gates, 'format-verify-dart')
         uses: ./.github/actions/setup-flutter
-      - env:
-          GATE_ID: ${{ matrix.gate.id }}
-        run: cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- gate run --surface=ci --only="$GATE_ID"
+      - run: apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=ci --group="$GROUP_ID"
+        env:
+          RHINO_CLI_BIN: ${{ github.workspace }}/apps/rhino-cli/target/gate/rhino-cli
+          GROUP_ID: ${{ matrix.group.group }}
 
   typescript:
     name: TypeScript quality gate
@@ -277,6 +300,16 @@ jobs:
           else
             echo "No affected tag:lang:rust projects — skipping"
           fi
+      # Coverage was lifted out of the local `test:quick` chain (DD-7) so pre-push stays fast. It
+      # still gates merge — `--fail-under-lines` lives in the target itself, so a coverage drop
+      # turns this job red exactly as it previously turned pre-push red.
+      - run: |
+          PROJECTS=$(npx nx show projects --affected --projects='tag:lang:rust' --json | jq -r 'join(",")')
+          if [ -n "$PROJECTS" ]; then
+            npx nx run-many -t test:coverage -p "$PROJECTS"
+          else
+            echo "No affected tag:lang:rust projects — skipping coverage"
+          fi
 
   elixir:
     name: Elixir quality gate
@@ -362,6 +395,7 @@ jobs:
     name: Quality gate
     needs:
       [
+        build-rhino,
         detect,
         format,
         enumerate,

@@ -10,7 +10,8 @@
 
 use std::ffi::{OsStr, OsString};
 use std::path::{Path, PathBuf};
-use std::process::Command;
+use std::process::{Command, Output};
+use std::time::SystemTime;
 
 use assert_cmd::cargo::cargo_bin;
 use cucumber::{World as _, given, then, when};
@@ -31,9 +32,21 @@ struct GateWorld {
     first_emitted_package: Option<Vec<u8>>,
     first_parity_manifest: Option<Vec<u8>>,
     pending_gate_type: Option<String>,
+    pending_ci_group: Option<String>,
     path: Option<OsString>,
     ci_changed_base: Option<String>,
     ci_arguments: Option<PathBuf>,
+    shim_target_dir: Option<TempDir>,
+    shim_override_dir: Option<TempDir>,
+    shim_override_bin: Option<PathBuf>,
+    shim_gate_bin_mtime: Option<SystemTime>,
+    shim_first_run: Option<Output>,
+    workflow_yaml: Option<String>,
+    build_rhino_publishes_artifact: Option<bool>,
+    gate_job_needs_build_rhino: Option<bool>,
+    gate_job_block: Option<String>,
+    no_npm_group_id: Option<String>,
+    msrv_preinstall_invocations: Option<Vec<String>>,
 }
 
 impl std::fmt::Debug for GateWorld {
@@ -53,9 +66,21 @@ impl GateWorld {
             first_emitted_package: None,
             first_parity_manifest: None,
             pending_gate_type: None,
+            pending_ci_group: None,
             path: None,
             ci_changed_base: None,
             ci_arguments: None,
+            shim_target_dir: None,
+            shim_override_dir: None,
+            shim_override_bin: None,
+            shim_gate_bin_mtime: None,
+            shim_first_run: None,
+            workflow_yaml: None,
+            build_rhino_publishes_artifact: None,
+            gate_job_needs_build_rhino: None,
+            gate_job_block: None,
+            no_npm_group_id: None,
+            msrv_preinstall_invocations: None,
         };
         for hook in ["commit-msg", "pre-commit", "pre-push"] {
             let path = world.root().join(".husky").join(hook);
@@ -197,18 +222,36 @@ impl GateWorld {
 
     fn list_pre_commit(&mut self) {
         let mut buffer = Vec::new();
-        let result = list::run_at_root(self.root(), "pre-commit", OutputFormat::Text, &mut buffer);
+        let result = list::run_at_root(
+            self.root(),
+            "pre-commit",
+            OutputFormat::Text,
+            false,
+            &mut buffer,
+        );
         assert!(result.is_ok(), "gate list must run: {result:?}");
         self.list_output = String::from_utf8(buffer).expect("list output is UTF-8");
     }
 
     fn list(&mut self, surface: &str, format: OutputFormat) {
         let mut buffer = Vec::new();
-        let result = list::run_at_root(self.root(), surface, format, &mut buffer);
+        let result = list::run_at_root(self.root(), surface, format, false, &mut buffer);
         self.succeeded = Some(result.is_ok());
         self.output = String::from_utf8_lossy(&buffer).into_owned();
         self.json_output = (result.is_ok() && format == OutputFormat::Json)
             .then(|| serde_json::from_str(&self.output).expect("gate list emits JSON"));
+        if let Err(error) = result {
+            self.output.push_str(&error.to_string());
+        }
+    }
+
+    fn list_grouped(&mut self, surface: &str, format: OutputFormat) {
+        let mut buffer = Vec::new();
+        let result = list::run_at_root(self.root(), surface, format, true, &mut buffer);
+        self.succeeded = Some(result.is_ok());
+        self.output = String::from_utf8_lossy(&buffer).into_owned();
+        self.json_output = (result.is_ok() && format == OutputFormat::Json)
+            .then(|| serde_json::from_str(&self.output).expect("gate list --by-group emits JSON"));
         if let Err(error) = result {
             self.output.push_str(&error.to_string());
         }
@@ -246,6 +289,24 @@ impl GateWorld {
             command.env("PATH", path);
         }
         let output = command.output().expect("run gate command");
+        self.succeeded = Some(output.status.success());
+        self.output = format!(
+            "{}{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+    }
+
+    fn run_gate_group(&mut self, surface: &str, group: &str) {
+        let mut command = self.fixture_rhino_command();
+        command
+            .args(["gate", "run"])
+            .arg(format!("--surface={surface}"))
+            .arg(format!("--group={group}"));
+        if let Some(path) = &self.path {
+            command.env("PATH", path);
+        }
+        let output = command.output().expect("run gate group command");
         self.succeeded = Some(output.status.success());
         self.output = format!(
             "{}{}",
@@ -453,15 +514,18 @@ fn given_staged_only_check(w: &mut GateWorld) {
 fn given_non_delegating_pre_push_hook(w: &mut GateWorld) {
     w.write(
         "repo-config.yml",
-        &config(&gate(
-            "pre-push-check",
-            "check",
-            "test:quick",
-            "nx",
-            concat!(
-                "      pre-push: { scope: affected-projects }\n",
-                "      ci: { scope: affected-projects }\n",
-            ),
+        &config(&format!(
+            "{}    ci-group: fixture-group\n",
+            gate(
+                "pre-push-check",
+                "check",
+                "test:quick",
+                "nx",
+                concat!(
+                    "      pre-push: { scope: affected-projects }\n",
+                    "      ci: { scope: affected-projects }\n",
+                ),
+            )
         )),
     );
     w.write(".husky/pre-push", "#!/bin/sh\necho stale\n");
@@ -471,21 +535,25 @@ fn given_non_delegating_pre_push_hook(w: &mut GateWorld) {
 fn given_undeclared_ci_command(w: &mut GateWorld) {
     w.write(
         "repo-config.yml",
-        &config(&gate(
-            "known-check",
-            "check",
-            "known-check",
-            "external",
-            "      ci: { scope: affected-projects }\n",
+        &config(&format!(
+            "{}    ci-group: fixture-group\n",
+            gate(
+                "known-check",
+                "check",
+                "known-check",
+                "external",
+                "      ci: { scope: affected-projects }\n",
+            )
         )),
     );
     w.write(
         ".github/workflows/pr-quality-gate.yml",
         concat!(
             "jobs:\n",
-            "  enumerate:\n    steps:\n      - run: rhino-cli gate list --surface=ci --format=json\n",
-            "  gate:\n    needs: enumerate\n    strategy:\n      matrix:\n        gate: '${{ fromJson(needs.enumerate.outputs.gates) }}'\n    steps:\n      - env:\n          GATE_ID: ${{ matrix.gate.id }}\n        run: rhino-cli gate run --surface=ci --only=\"$GATE_ID\"\n",
-            "  quality-gate:\n    needs: [enumerate, gate]\n    steps:\n      - run: rhino-cli gate run --surface=ci --only=unknown-check\n",
+            "  build-rhino:\n    steps:\n      - uses: actions/upload-artifact@v4\n",
+            "  enumerate:\n    needs: build-rhino\n    steps:\n      - run: rhino-cli gate list --surface=ci --format=json --by-group\n",
+            "  gate:\n    needs: [build-rhino, enumerate]\n    strategy:\n      matrix:\n        group: '${{ fromJson(needs.enumerate.outputs.groups) }}'\n    steps:\n      - run: rhino-cli gate run --surface=ci --group=\"$GROUP_ID\"\n        env:\n          GROUP_ID: ${{ matrix.group.group }}\n",
+            "  quality-gate:\n    needs: [build-rhino, enumerate, gate]\n    steps:\n      - run: rhino-cli gate run --surface=ci --only=unknown-check\n",
         ),
     );
 }
@@ -494,12 +562,15 @@ fn given_undeclared_ci_command(w: &mut GateWorld) {
 fn given_matrix_aggregate_missing_enumerate(w: &mut GateWorld) {
     w.write(
         "repo-config.yml",
-        &config(&gate(
-            "known-check",
-            "check",
-            "known-check",
-            "external",
-            "      ci: { scope: affected-projects }\n",
+        &config(&format!(
+            "{}    ci-group: fixture-group\n",
+            gate(
+                "known-check",
+                "check",
+                "known-check",
+                "external",
+                "      ci: { scope: affected-projects }\n",
+            )
         )),
     );
     w.write(
@@ -518,7 +589,7 @@ fn given_orphan_verifies(w: &mut GateWorld) {
     w.write(
         "repo-config.yml",
         &config(&format!(
-            "{}    verifies: missing-gate\n",
+            "{}    verifies: missing-gate\n    ci-group: fixture-group\n",
             gate(
                 "verify-format",
                 "check",
@@ -574,7 +645,7 @@ fn given_hand_wired_job(w: &mut GateWorld) {
     w.write(
         "repo-config.yml",
         &config(&format!(
-            "{}    wiring: hand-wired\n",
+            "{}    wiring: hand-wired\n    ci-group: fixture-group\n",
             gate(
                 "test-quick",
                 "check",
@@ -601,7 +672,7 @@ fn given_deleted_hand_wired_job(w: &mut GateWorld) {
     w.write(
         "repo-config.yml",
         &config(&format!(
-            "{}    wiring: hand-wired\n",
+            "{}    wiring: hand-wired\n    ci-group: fixture-group\n",
             gate(
                 "test-quick",
                 "check",
@@ -619,7 +690,7 @@ fn given_commented_hand_wired_command(w: &mut GateWorld) {
     w.write(
         "repo-config.yml",
         &config(&format!(
-            "{}    wiring: hand-wired\n",
+            "{}    wiring: hand-wired\n    ci-group: fixture-group\n",
             gate(
                 "test-quick",
                 "check",
@@ -644,7 +715,7 @@ fn given_inline_commented_hand_wired_command(w: &mut GateWorld) {
     w.write(
         "repo-config.yml",
         &config(&format!(
-            "{}    wiring: hand-wired\n",
+            "{}    wiring: hand-wired\n    ci-group: fixture-group\n",
             gate(
                 "test-quick",
                 "check",
@@ -669,7 +740,7 @@ fn given_quoted_hand_wired_command(w: &mut GateWorld) {
     w.write(
         "repo-config.yml",
         &config(&format!(
-            "{}    wiring: hand-wired\n",
+            "{}    wiring: hand-wired\n    ci-group: fixture-group\n",
             gate(
                 "test-quick",
                 "check",
@@ -694,7 +765,7 @@ fn given_disabled_hand_wired_command(w: &mut GateWorld) {
     w.write(
         "repo-config.yml",
         &config(&format!(
-            "{}    wiring: hand-wired\n",
+            "{}    wiring: hand-wired\n    ci-group: fixture-group\n",
             gate(
                 "test-quick",
                 "check",
@@ -719,7 +790,7 @@ fn given_normalized_disabled_hand_wired_command(w: &mut GateWorld) {
     w.write(
         "repo-config.yml",
         &config(&format!(
-            "{}    wiring: hand-wired\n",
+            "{}    wiring: hand-wired\n    ci-group: fixture-group\n",
             gate(
                 "test-quick",
                 "check",
@@ -744,7 +815,7 @@ fn given_falsey_disabled_hand_wired_commands(w: &mut GateWorld) {
     w.write(
         "repo-config.yml",
         &config(&format!(
-            "{}    wiring: hand-wired\n",
+            "{}    wiring: hand-wired\n    ci-group: fixture-group\n",
             gate(
                 "test-quick",
                 "check",
@@ -861,6 +932,41 @@ fn then_deleted_hand_wired_job_is_named(w: &mut GateWorld) {
     assert!(w.output.contains("pr-quality-gate.yml"));
 }
 
+#[given("a gate entry in repo-config.yml carrying a ci surface and no ci_group field")]
+fn given_ci_gate_without_ci_group(w: &mut GateWorld) {
+    // Deliberately omits `ci-group`: this scenario asserts on that absence, so
+    // unlike every other `ci`-surface fixture in this file it must NOT gain
+    // the `ci-group: fixture-group` line added elsewhere for DD-3.
+    w.write(
+        "repo-config.yml",
+        &config(&gate(
+            "missing-ci-group",
+            "check",
+            "md links validate",
+            "rhino-cli",
+            "      ci: { scope: all-file-type }\n",
+        )),
+    );
+}
+
+#[then("its output names the offending gate id")]
+fn then_ci_group_error_names_gate(w: &mut GateWorld) {
+    assert!(
+        w.output.contains("missing-ci-group"),
+        "missing offending gate id in {}",
+        w.output
+    );
+}
+
+#[then("its output states that ci_group is required")]
+fn then_ci_group_error_states_required(w: &mut GateWorld) {
+    assert!(
+        w.output.contains("ci_group is required"),
+        "missing ci_group explanation in {}",
+        w.output
+    );
+}
+
 #[given("pre-commit and pre-push invoke their declared gate surfaces")]
 fn given_delegating_hook_surfaces(w: &mut GateWorld) {
     w.write(
@@ -889,10 +995,10 @@ fn given_complete_shipped_registry(w: &mut GateWorld) {
     w.write(
         "repo-config.yml",
         &config(concat!(
-            "  - id: pre-commit-check\n    type: check\n    command: md links validate\n    kind: rhino-cli\n    surfaces:\n      pre-commit: { scope: other }\n      ci: { scope: all-file-type }\n",
-            "  - id: pre-push-check\n    type: check\n    command: test:quick\n    kind: nx\n    surfaces:\n      pre-push: { scope: affected-projects }\n      ci: { scope: affected-projects }\n",
+            "  - id: pre-commit-check\n    type: check\n    command: md links validate\n    kind: rhino-cli\n    ci-group: fixture-group\n    surfaces:\n      pre-commit: { scope: other }\n      ci: { scope: all-file-type }\n",
+            "  - id: pre-push-check\n    type: check\n    command: test:quick\n    kind: nx\n    ci-group: fixture-group\n    surfaces:\n      pre-push: { scope: affected-projects }\n      ci: { scope: affected-projects }\n",
             "  - id: generate-bindings\n    type: mutation\n    command: harness bindings generate\n    kind: rhino-cli\n    surfaces:\n      pre-commit: { scope: other }\n",
-            "  - id: test-quick\n    type: check\n    command: test:quick\n    kind: nx\n    wiring: hand-wired\n    surfaces:\n      ci: { scope: affected-projects }\n",
+            "  - id: test-quick\n    type: check\n    command: test:quick\n    kind: nx\n    wiring: hand-wired\n    ci-group: fixture-group\n    surfaces:\n      ci: { scope: affected-projects }\n",
         )),
     );
     w.write(
@@ -907,10 +1013,11 @@ fn given_complete_shipped_registry(w: &mut GateWorld) {
         ".github/workflows/pr-quality-gate.yml",
         concat!(
             "jobs:\n",
-            "  enumerate:\n    steps:\n      - run: rhino-cli gate list --surface=ci --format=json\n",
-            "  gate:\n    needs: enumerate\n    strategy:\n      matrix:\n        gate: '${{ fromJson(needs.enumerate.outputs.gates) }}'\n    steps:\n      - env:\n          GATE_ID: ${{ matrix.gate.id }}\n        run: rhino-cli gate run --surface=ci --only=\"$GATE_ID\"\n",
+            "  build-rhino:\n    steps:\n      - uses: actions/upload-artifact@v4\n",
+            "  enumerate:\n    needs: build-rhino\n    steps:\n      - run: rhino-cli gate list --surface=ci --format=json --by-group\n",
+            "  gate:\n    needs: [build-rhino, enumerate]\n    strategy:\n      matrix:\n        group: '${{ fromJson(needs.enumerate.outputs.groups) }}'\n    steps:\n      - uses: actions/download-artifact@v4\n      - run: rhino-cli gate run --surface=ci --group=\"$GROUP_ID\"\n        env:\n          GROUP_ID: ${{ matrix.group.group }}\n",
             "  test-quick:\n    steps:\n      - run: npx nx affected -t test:quick\n",
-            "  quality-gate:\n    needs: [enumerate, gate, test-quick]\n",
+            "  quality-gate:\n    needs: [build-rhino, enumerate, gate, test-quick]\n",
         ),
     );
 }
@@ -1404,6 +1511,60 @@ fn then_output_reports_type(w: &mut GateWorld, gate_type: String) {
     );
 }
 
+#[given("every ci-surface gate in the registry declares a ci_group")]
+fn given_every_ci_gate_declares_group(w: &mut GateWorld) {
+    w.write(
+        "repo-config.yml",
+        &config(concat!(
+            "  - id: markdown-links\n    type: check\n    command: md links validate\n    kind: rhino-cli\n    ci-group: markdown\n    surfaces:\n      ci: { scope: all-file-type }\n",
+            "  - id: markdown-mermaid\n    type: check\n    command: md mermaid validate\n    kind: rhino-cli\n    ci-group: markdown\n    surfaces:\n      ci: { scope: all-file-type }\n",
+            "  - id: shell-lint\n    type: check\n    command: shell lint\n    kind: external\n    ci-group: shell\n    surfaces:\n      ci: { scope: all-file-type }\n",
+        )),
+    );
+}
+
+#[when("\"rhino-cli gate list --surface=ci --format=json --by-group\" runs")]
+fn when_list_ci_json_by_group(w: &mut GateWorld) {
+    w.list_grouped("ci", OutputFormat::Json);
+}
+
+#[then("it emits one entry per distinct ci_group value")]
+fn then_group_output_has_one_entry_per_group(w: &mut GateWorld) {
+    assert!(w.is_success(), "gate list --by-group failed: {}", w.output);
+    let entries = w
+        .json_output
+        .as_ref()
+        .and_then(serde_json::Value::as_array)
+        .expect("JSON grouped gate-list output");
+    assert_eq!(
+        entries.len(),
+        2,
+        "expected one entry per distinct ci_group value: {entries:?}"
+    );
+}
+
+#[then("each entry lists its member gate ids in registry declaration order")]
+fn then_group_entries_list_members_in_order(w: &mut GateWorld) {
+    let entries = w
+        .json_output
+        .as_ref()
+        .and_then(serde_json::Value::as_array)
+        .expect("JSON grouped gate-list output");
+    let markdown = entries
+        .iter()
+        .find(|entry| entry["group"] == "markdown")
+        .expect("markdown group entry present");
+    assert_eq!(
+        markdown["gates"],
+        serde_json::json!(["markdown-links", "markdown-mermaid"])
+    );
+    let shell = entries
+        .iter()
+        .find(|entry| entry["group"] == "shell")
+        .expect("shell group entry present");
+    assert_eq!(shell["gates"], serde_json::json!(["shell-lint"]));
+}
+
 #[given(regex = r#"^a gate declares type "([^"]+)"$"#)]
 fn given_gate_type_for_field(w: &mut GateWorld, gate_type: String) {
     w.pending_gate_type = Some(gate_type);
@@ -1592,8 +1753,113 @@ fn then_emit_expands_kind_derived_command_once(w: &mut GateWorld) {
     assert_eq!(
         package["lint-staged"]["repo-config.yml"],
         serde_json::json!([
-            "bash -c 'cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- repo-config validate' --"
+            "bash -c 'apps/rhino-cli/scripts/rhino-bin.sh repo-config validate' --"
         ])
+    );
+}
+
+// Binds `gate-emission.feature`'s "Rhino CLI kind renders a resolver shim
+// invocation" scenario. `emit.rs`'s own unit test module already binds the
+// same Gherkin text at the unit level (see its doc comment there), but this
+// file's cucumber harness also scans the shared `gate-emission.feature` file
+// and requires its own step definitions to avoid an undefined-step failure.
+
+#[given("the registry declares a gate of kind \"rhino-cli\" on surface \"pre-commit\"")]
+fn given_rhino_cli_kind_emit_registry(w: &mut GateWorld) {
+    w.write(
+        "repo-config.yml",
+        &config(&gate(
+            "md-mermaid",
+            "check",
+            "md mermaid validate",
+            "rhino-cli",
+            "      pre-commit: { scope: affected-file-type, glob: '*.md' }\n",
+        )),
+    );
+    w.write(
+        "package.json",
+        "{\"name\":\"fixture\",\"lint-staged\":{}}\n",
+    );
+}
+
+#[then(
+    "the generated command invokes the resolver shim at \"apps/rhino-cli/scripts/rhino-bin.sh\""
+)]
+fn then_emit_invokes_resolver_shim(w: &mut GateWorld) {
+    assert!(w.is_success(), "gate emit failed: {}", w.output);
+    let command = emitted_md_lint_staged_command(w);
+    assert!(
+        command.contains("apps/rhino-cli/scripts/rhino-bin.sh"),
+        "expected the generated command to invoke the resolver shim: {command}"
+    );
+}
+
+#[then("the generated command contains no \"cargo run\" substring")]
+fn then_emit_contains_no_cargo_run(w: &mut GateWorld) {
+    let command = emitted_md_lint_staged_command(w);
+    assert!(
+        !command.contains("cargo run"),
+        "expected the generated command to contain no cargo run substring: {command}"
+    );
+}
+
+fn emitted_md_lint_staged_command(w: &GateWorld) -> String {
+    let package: serde_json::Value = serde_json::from_slice(
+        &std::fs::read(w.root().join("package.json")).expect("read emitted package"),
+    )
+    .expect("parse emitted package");
+    package["lint-staged"]["*.md"][0]
+        .as_str()
+        .expect("emitted command string")
+        .to_owned()
+}
+
+// Binds `gate-emission.feature`'s "Node-resolved external tools render a
+// repository-local bin path" scenario. `emit.rs`'s own unit test module
+// already binds the same Gherkin text at the unit level, but this file's
+// cucumber harness also scans the shared `gate-emission.feature` file and
+// requires its own step definitions to avoid an undefined-step failure.
+
+#[given("the registry declares an external gate whose tool resolves from node_modules")]
+fn given_node_resolved_external_gate_emit_registry(w: &mut GateWorld) {
+    w.write(
+        "repo-config.yml",
+        &config(
+            &gate(
+                "markdownlint",
+                "check",
+                "markdownlint-cli2",
+                "external",
+                "      pre-commit: { scope: affected-file-type, glob: '*.md' }\n",
+            )
+            .replace(
+                "kind: external\n",
+                "kind: external\n    doctor-tools: [npm]\n",
+            ),
+        ),
+    );
+    w.write(
+        "package.json",
+        "{\"name\":\"fixture\",\"lint-staged\":{}}\n",
+    );
+}
+
+#[then("the generated command invokes that tool through \"node_modules/.bin\"")]
+fn then_emit_invokes_node_modules_bin(w: &mut GateWorld) {
+    assert!(w.is_success(), "gate emit failed: {}", w.output);
+    let command = emitted_md_lint_staged_command(w);
+    assert!(
+        command.contains("node_modules/.bin/"),
+        "expected the generated command to invoke node_modules/.bin: {command}"
+    );
+}
+
+#[then("the generated command contains no \"npx\" substring")]
+fn then_emit_contains_no_npx(w: &mut GateWorld) {
+    let command = emitted_md_lint_staged_command(w);
+    assert!(
+        !command.contains("npx"),
+        "expected the generated command to contain no npx substring: {command}"
     );
 }
 
@@ -2127,9 +2393,17 @@ fn then_parity_source_drift_is_actionable(w: &mut GateWorld) {
     assert!(w.output.contains("apps/rhino-cli/src/main.rs"));
     assert!(
         w.output
-            .contains("byte-identical across ose-public, ose-primer, ose-private, and beaver-nest")
+            .contains("byte-identical across ose-public, ose-primer, and ose-private")
     );
     assert!(w.output.contains("rhino-cli parity manifest generate"));
+    // Negative guard, mirroring the unit test in `application::parity`: the
+    // boundary is three repos, and beaver-nest carries a fork of rhino-cli with
+    // no parity-manifest.sha256 to propagate into.
+    assert!(
+        !w.output.contains("beaver-nest"),
+        "the parity gate must not name beaver-nest: {}",
+        w.output
+    );
 }
 
 #[then("the parity gate names the edited test")]
@@ -2297,6 +2571,658 @@ fn given_formatted_elixir_fixtures(w: &mut GateWorld) {
         "formatted.exs",
         "repo-config.yml",
     ]);
+}
+
+#[given("a CI group containing several gates where exactly one fails")]
+fn given_ci_group_with_one_failure(w: &mut GateWorld) {
+    w.init_git();
+    w.write(
+        "repo-config.yml",
+        &config(concat!(
+            "  - id: group-first\n    type: check\n    command: true\n    kind: external\n    ci-group: sample-group\n    surfaces:\n      ci: { scope: other }\n",
+            "  - id: group-failing\n    type: check\n    command: false\n    kind: external\n    ci-group: sample-group\n    surfaces:\n      ci: { scope: other }\n",
+            "  - id: group-third\n    type: check\n    command: true\n    kind: external\n    ci-group: sample-group\n    surfaces:\n      ci: { scope: other }\n",
+            "  - id: other-group-gate\n    type: check\n    command: touch must-not-run.txt\n    kind: external\n    ci-group: other-group\n    surfaces:\n      ci: { scope: other }\n",
+        )),
+    );
+    w.pending_ci_group = Some("sample-group".to_owned());
+}
+
+#[when("\"rhino-cli gate run --surface=ci --group=<id>\" runs")]
+fn when_gate_group_runs(w: &mut GateWorld) {
+    let group = w
+        .pending_ci_group
+        .clone()
+        .expect("CI group must be configured");
+    w.run_gate_group("ci", &group);
+}
+
+#[then("its output contains a per-gate summary line for every gate in the group")]
+fn then_output_contains_group_summary(w: &mut GateWorld) {
+    for id in ["group-first", "group-failing", "group-third"] {
+        assert!(w.output.contains(id), "missing {id} in {}", w.output);
+    }
+    assert!(
+        !w.output.contains("other-group-gate"),
+        "a gate outside the selected group must not appear in the summary: {}",
+        w.output
+    );
+}
+
+#[then("the failing gate id appears on a line marked FAIL")]
+fn then_failing_gate_marked_fail(w: &mut GateWorld) {
+    assert!(
+        w.output
+            .lines()
+            .any(|line| line.contains("group-failing") && line.contains("FAIL")),
+        "no FAIL line naming group-failing in {}",
+        w.output
+    );
+}
+
+#[given("a CI group contains both an auto-dispatched gate and a hand-wired gate")]
+fn given_ci_group_with_hand_wired_gate(w: &mut GateWorld) {
+    w.init_git();
+    w.write(
+        "repo-config.yml",
+        &config(concat!(
+            "  - id: auto-dispatched\n    type: check\n    command: true\n    kind: external\n    ci-group: sample-group\n    surfaces:\n      ci: { scope: other }\n",
+            "  - id: hand-wired-gate\n    type: check\n    command: false\n    kind: external\n    wiring: hand-wired\n    ci-group: sample-group\n    surfaces:\n      ci: { scope: other }\n",
+        )),
+    );
+    w.pending_ci_group = Some("sample-group".to_owned());
+}
+
+#[then("only the auto-dispatched gate executes")]
+fn then_only_auto_dispatched_gate_executes(w: &mut GateWorld) {
+    assert!(
+        w.succeeded.unwrap_or(false),
+        "a group containing only an auto-dispatched gate (after excluding the hand-wired one) \
+         must succeed: {}",
+        w.output
+    );
+    assert!(
+        w.output.contains("auto-dispatched"),
+        "the auto-dispatched gate must appear in the group's summary: {}",
+        w.output
+    );
+}
+
+#[then("the hand-wired gate is absent from the group's summary")]
+fn then_hand_wired_gate_absent_from_summary(w: &mut GateWorld) {
+    assert!(
+        !w.output.contains("hand-wired-gate"),
+        "the hand-wired gate must never appear in the group's summary — it is dispatched by its \
+         own dedicated CI job, not by --group: {}",
+        w.output
+    );
+}
+
+// Binds `gate-binary-resolution.feature`'s two scenarios — "A swept target
+// directory produces a slow run, not a failure" and "RHINO_CLI_BIN takes
+// precedence over discovery" — against the real `rhino-bin.sh` resolver shim
+// script (not a fixture stand-in). The first scenario sandboxes tier 3
+// (build-then-execute) via a scratch `CARGO_TARGET_DIR`, so the real
+// `apps/rhino-cli/target/gate/rhino-cli` build artifact this test suite
+// itself may depend on is never touched. The second scenario proves no
+// `cargo build` occurred by stripping cargo's directory from PATH for that
+// invocation, rather than relying on timing.
+
+fn repo_root() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .ancestors()
+        .nth(2)
+        .expect("rhino-cli manifest has a repository-root ancestor")
+        .to_path_buf()
+}
+
+fn rhino_bin_shim_path() -> PathBuf {
+    repo_root().join("apps/rhino-cli/scripts/rhino-bin.sh")
+}
+
+/// The gate-profile binary these scenarios compare the resolver shim against,
+/// built on first use if it is absent.
+///
+/// The artifact is never guaranteed to exist: a fresh clone has never built it,
+/// and the ambient build-artifact sweeper deletes `target/` at any time,
+/// mid-run included. Assuming its presence made these scenarios pass only on a
+/// machine that happened to have built it. Building it here — once per test
+/// binary, under the same `--profile gate` the resolver shim itself uses —
+/// makes the comparison self-contained instead of environment-dependent.
+fn real_prebuilt_rhino_cli() -> PathBuf {
+    static BUILT: std::sync::OnceLock<PathBuf> = std::sync::OnceLock::new();
+    BUILT
+        .get_or_init(|| {
+            let binary = repo_root().join("apps/rhino-cli/target/gate/rhino-cli");
+            if binary.is_file() {
+                return binary;
+            }
+            let status = Command::new(std::env::var_os("CARGO").unwrap_or_else(|| "cargo".into()))
+                .args(["build", "--profile", "gate", "--manifest-path"])
+                .arg(repo_root().join("apps/rhino-cli/Cargo.toml"))
+                .status()
+                .expect("build the gate-profile rhino-cli binary");
+            assert!(
+                status.success() && binary.is_file(),
+                "cargo build --profile gate must produce {}",
+                binary.display()
+            );
+            binary
+        })
+        .clone()
+}
+
+/// Deterministic, side-effect-free probe args for exercising the resolver
+/// shim: `--say <msg>` echoes `<msg>` to stdout and exits `0` (unlike
+/// `--version`, which this CLI's own error-handling maps to exit `2` because
+/// clap's `DisplayVersion` pseudo-error is treated as a parse error).
+const RESOLVER_SHIM_PROBE_ARGS: [&str; 2] = ["--say", "resolver-shim-probe"];
+
+/// The current `PATH`, minus the directory containing the `cargo` binary
+/// that is running this test (resolved via the `CARGO` env var cargo sets
+/// for its own child processes). Used to prove a resolver-shim invocation
+/// never reached its `cargo build` fallback: if it had, the invocation would
+/// fail with "command not found" rather than succeed.
+fn path_without_cargo_directory() -> OsString {
+    let cargo_dir = std::env::var_os("CARGO")
+        .map(PathBuf::from)
+        .and_then(|cargo| cargo.parent().map(Path::to_path_buf));
+    let existing = std::env::var_os("PATH").expect("PATH is available");
+    let filtered =
+        std::env::split_paths(&existing).filter(|dir| Some(dir.as_path()) != cargo_dir.as_deref());
+    std::env::join_paths(filtered).expect("join PATH without cargo directory")
+}
+
+#[given("the rhino-cli binary is absent because the ambient sweeper removed target/")]
+fn given_swept_target_directory(w: &mut GateWorld) {
+    w.shim_target_dir = Some(TempDir::new().expect("create sandbox CARGO_TARGET_DIR"));
+}
+
+#[given("the environment variable RHINO_CLI_BIN points at an executable rhino-cli binary")]
+fn given_rhino_cli_bin_override(w: &mut GateWorld) {
+    let dir = TempDir::new().expect("create RHINO_CLI_BIN fixture directory");
+    let stub = dir.path().join("stub-rhino-cli");
+    std::fs::write(
+        &stub,
+        "#!/bin/sh\nprintf 'stub-rhino-cli-override-marker\\n'\nexit 0\n",
+    )
+    .expect("write RHINO_CLI_BIN stub");
+    make_executable(stub.clone());
+    w.shim_gate_bin_mtime = Some(
+        std::fs::metadata(real_prebuilt_rhino_cli())
+            .expect("read real prebuilt rhino-cli binary metadata")
+            .modified()
+            .expect("read real prebuilt rhino-cli binary mtime"),
+    );
+    w.shim_override_bin = Some(stub);
+    w.shim_override_dir = Some(dir);
+}
+
+#[when("a generated gate command runs through the resolver shim")]
+fn when_resolver_shim_runs(w: &mut GateWorld) {
+    let mut command = Command::new(rhino_bin_shim_path());
+    command.args(RESOLVER_SHIM_PROBE_ARGS);
+    if let Some(target_dir) = &w.shim_target_dir {
+        command.env("CARGO_TARGET_DIR", target_dir.path());
+    }
+    if let Some(bin) = &w.shim_override_bin {
+        command
+            .env("RHINO_CLI_BIN", bin)
+            .env("PATH", path_without_cargo_directory());
+    }
+    w.shim_first_run = Some(command.output().expect("run resolver shim"));
+}
+
+#[then("the shim builds the binary and then executes the requested gate")]
+fn then_shim_builds_and_executes(w: &mut GateWorld) {
+    let output = w
+        .shim_first_run
+        .as_ref()
+        .expect("resolver shim invocation recorded");
+    assert!(
+        output.status.success(),
+        "resolver shim must build then execute successfully: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let built_binary = w
+        .shim_target_dir
+        .as_ref()
+        .expect("sandbox target dir configured")
+        .path()
+        .join("gate/rhino-cli");
+    assert!(
+        built_binary.is_file(),
+        "resolver shim must build the binary into the sandbox target directory"
+    );
+}
+
+#[then("the gate reports the same result it would have reported with the binary present")]
+fn then_shim_output_matches_real_binary(w: &mut GateWorld) {
+    let shim_output = w
+        .shim_first_run
+        .as_ref()
+        .expect("resolver shim invocation recorded");
+    let direct_output = Command::new(real_prebuilt_rhino_cli())
+        .args(RESOLVER_SHIM_PROBE_ARGS)
+        .output()
+        .expect("run the real prebuilt rhino-cli binary directly");
+    assert_eq!(shim_output.status.code(), direct_output.status.code());
+    assert_eq!(shim_output.stdout, direct_output.stdout);
+}
+
+#[then("a subsequent invocation reuses the built binary without rebuilding")]
+fn then_subsequent_invocation_reuses_binary(w: &mut GateWorld) {
+    let target_dir = w
+        .shim_target_dir
+        .as_ref()
+        .expect("sandbox target dir configured");
+    let built_binary = target_dir.path().join("gate/rhino-cli");
+    let mtime_before = std::fs::metadata(&built_binary)
+        .expect("read sandbox binary metadata")
+        .modified()
+        .expect("read sandbox binary mtime");
+
+    let output = Command::new(rhino_bin_shim_path())
+        .args(RESOLVER_SHIM_PROBE_ARGS)
+        .env("CARGO_TARGET_DIR", target_dir.path())
+        .output()
+        .expect("run resolver shim a second time");
+    assert!(
+        output.status.success(),
+        "second resolver shim invocation must succeed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let mtime_after = std::fs::metadata(&built_binary)
+        .expect("read sandbox binary metadata after second invocation")
+        .modified()
+        .expect("read sandbox binary mtime after second invocation");
+    assert_eq!(
+        mtime_before, mtime_after,
+        "a second invocation must reuse the already-built binary, not rebuild it"
+    );
+}
+
+#[then("the shim executes the binary at that path")]
+fn then_shim_executes_override_binary(w: &mut GateWorld) {
+    let output = w
+        .shim_first_run
+        .as_ref()
+        .expect("resolver shim invocation recorded");
+    assert!(
+        output.status.success(),
+        "resolver shim must execute the RHINO_CLI_BIN override: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "stub-rhino-cli-override-marker",
+        "resolver shim must run the RHINO_CLI_BIN override binary, not a rebuilt one"
+    );
+}
+
+#[then("it performs no cargo build")]
+fn then_no_cargo_build_occurred(w: &mut GateWorld) {
+    // The invocation's PATH excluded cargo's directory (see
+    // `when_resolver_shim_runs`), so if the shim had fallen through to tier 3
+    // and invoked `cargo build`, the shell would report "command not found"
+    // and the shim would exit non-zero. A successful exit is therefore
+    // sufficient proof no cargo build was attempted; the mtime check below
+    // corroborates it.
+    let output = w
+        .shim_first_run
+        .as_ref()
+        .expect("resolver shim invocation recorded");
+    assert!(
+        output.status.success(),
+        "resolver shim must not attempt cargo build when RHINO_CLI_BIN is set: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let mtime_before = w
+        .shim_gate_bin_mtime
+        .expect("captured real prebuilt binary mtime before invocation");
+    let mtime_after = std::fs::metadata(real_prebuilt_rhino_cli())
+        .expect("read real prebuilt rhino-cli binary metadata after invocation")
+        .modified()
+        .expect("read real prebuilt rhino-cli binary mtime after invocation");
+    assert_eq!(
+        mtime_before, mtime_after,
+        "the real prebuilt binary must be untouched when RHINO_CLI_BIN overrides discovery"
+    );
+}
+
+// Binds `gate-execution.feature`'s "Gate group jobs consume a prebuilt
+// binary" scenario. Unlike the other scenarios in this file, this one is
+// fundamentally about the STATIC SHAPE of the real, checked-in
+// `.github/workflows/pr-quality-gate.yml` — there is nothing to execute, so
+// the honest binding parses that real file (via the same `repo_root()`
+// convention `gate-binary-resolution.feature`'s bindings already use for
+// repo-root-relative fixtures) and asserts on its actual structure.
+
+/// Returns the real `.github/workflows/pr-quality-gate.yml` contents.
+fn pr_quality_gate_workflow() -> String {
+    std::fs::read_to_string(repo_root().join(".github/workflows/pr-quality-gate.yml"))
+        .expect("read the real .github/workflows/pr-quality-gate.yml")
+}
+
+/// Extracts the line-based body of a top-level `jobs.<job_name>` block from
+/// `workflow`: everything after its `  <job_name>:` header up to (but not
+/// including) the next top-level job key. Plain line scanning — rather than a
+/// YAML parser — is sufficient for this repository's consistent two-space
+/// job-key indentation and keeps this structural assertion honest against the
+/// real file without pulling in `validate.rs`'s private `Workflow` struct.
+fn job_block(workflow: &str, job_name: &str) -> String {
+    let header = format!("  {job_name}:");
+    let mut found = false;
+    let mut block = Vec::new();
+    for line in workflow.lines() {
+        if !found {
+            if line.trim_end() == header {
+                found = true;
+            }
+            continue;
+        }
+        let is_sibling_job_header =
+            line.starts_with("  ") && !line.starts_with("   ") && line.trim_end().ends_with(':');
+        if is_sibling_job_header {
+            break;
+        }
+        block.push(line);
+    }
+    block.join("\n")
+}
+
+#[given("the build-rhino job has published the rhino-cli artifact for the run")]
+fn given_build_rhino_publishes_artifact(w: &mut GateWorld) {
+    let workflow = pr_quality_gate_workflow();
+    let build_rhino = job_block(&workflow, "build-rhino");
+    w.build_rhino_publishes_artifact = Some(build_rhino.contains("actions/upload-artifact"));
+    w.workflow_yaml = Some(workflow);
+}
+
+#[when("a gate group job executes")]
+fn when_gate_group_job_executes(w: &mut GateWorld) {
+    assert!(
+        w.build_rhino_publishes_artifact.unwrap_or(false),
+        "build-rhino must publish the rhino-cli artifact before a gate group job can consume it"
+    );
+    let workflow = w
+        .workflow_yaml
+        .clone()
+        .expect("the real workflow must be loaded by the Given step");
+    let gate_job = job_block(&workflow, "gate");
+    let needs_line = gate_job
+        .lines()
+        .find(|line| line.trim_start().starts_with("needs:"))
+        .unwrap_or_default();
+    w.gate_job_needs_build_rhino = Some(needs_line.contains("build-rhino"));
+    w.gate_job_block = Some(gate_job);
+}
+
+#[then("it downloads the artifact rather than building from source")]
+fn then_gate_downloads_artifact(w: &mut GateWorld) {
+    assert!(
+        w.gate_job_needs_build_rhino.unwrap_or(false),
+        "the gate job must declare needs: build-rhino"
+    );
+    let gate_job = w
+        .gate_job_block
+        .as_deref()
+        .expect("gate job block must be captured by the When step");
+    assert!(
+        gate_job.contains("actions/download-artifact"),
+        "the gate job must download the prebuilt rhino-cli-gate-binary artifact instead of \
+         building from source: {gate_job}"
+    );
+}
+
+#[then("it runs no cargo install command")]
+fn then_gate_runs_no_cargo_install(w: &mut GateWorld) {
+    let gate_job = w
+        .gate_job_block
+        .as_deref()
+        .expect("gate job block must be captured by the When step");
+    assert!(
+        !gate_job.contains("cargo install"),
+        "the gate job must never build rhino-cli from source via cargo install: {gate_job}"
+    );
+}
+
+#[then("its step list contains no Rust toolchain setup")]
+fn then_gate_has_no_rust_toolchain_setup(w: &mut GateWorld) {
+    let gate_job = w
+        .gate_job_block
+        .as_deref()
+        .expect("gate job block must be captured by the When step");
+    assert!(
+        !gate_job.contains("setup-rust"),
+        "the gate job must not run a Rust toolchain setup step (it consumes a prebuilt binary): \
+         {gate_job}"
+    );
+}
+
+// Binds `gate-execution.feature`'s "A gate group with no node tooling skips
+// npm ci" scenario. Like its sibling above, this is about the STATIC SHAPE of
+// the real, checked-in `.github/workflows/pr-quality-gate.yml` and
+// `.github/actions/setup-node/action.yml` — it parses both real files and
+// asserts on their actual structure, grounded in a real `ci-group` read from
+// the real `repo-config.yml` rather than a hypothetical one.
+
+#[given("a CI gate group whose gates require no node-resolved tool")]
+fn given_group_without_node_tool(w: &mut GateWorld) {
+    let repo_config = std::fs::read_to_string(repo_root().join("repo-config.yml"))
+        .expect("read the real repo-config.yml");
+    let mut group_has_npm: std::collections::HashMap<String, bool> =
+        std::collections::HashMap::new();
+    let mut current_group: Option<String> = None;
+    for line in repo_config.lines() {
+        let trimmed = line.trim_start();
+        if trimmed.starts_with("- id:") {
+            current_group = None;
+        } else if let Some(rest) = trimmed.strip_prefix("ci-group:") {
+            let group = rest.trim().to_string();
+            group_has_npm.entry(group.clone()).or_insert(false);
+            current_group = Some(group);
+        } else if trimmed.starts_with("doctor-tools:")
+            && trimmed.contains("npm")
+            && let Some(group) = &current_group
+        {
+            group_has_npm.insert(group.clone(), true);
+        }
+    }
+    let no_npm_group = group_has_npm
+        .into_iter()
+        .find(|(_, has_npm)| !has_npm)
+        .map(|(group, _)| group)
+        .expect("at least one real ci-group must have no npm-doctor-tool gate");
+    w.no_npm_group_id = Some(no_npm_group);
+    w.workflow_yaml = Some(pr_quality_gate_workflow());
+}
+
+#[when("that group's job executes")]
+fn when_no_npm_group_job_executes(w: &mut GateWorld) {
+    let workflow = w
+        .workflow_yaml
+        .clone()
+        .expect("the real workflow must be loaded by the Given step");
+    w.gate_job_block = Some(job_block(&workflow, "gate"));
+}
+
+#[then("its step list contains no npm ci invocation")]
+fn then_no_npm_group_skips_npm_ci(w: &mut GateWorld) {
+    let gate_job = w
+        .gate_job_block
+        .as_deref()
+        .expect("gate job block must be captured by the When step");
+    assert!(
+        gate_job.contains("run-npm-ci: ${{ contains(matrix.group.doctor_tools, 'npm') }}"),
+        "the gate job's setup-node step must gate run-npm-ci on the group's own doctor_tools: \
+         {gate_job}"
+    );
+
+    let setup_node_action =
+        std::fs::read_to_string(repo_root().join(".github/actions/setup-node/action.yml"))
+            .expect("read the real .github/actions/setup-node/action.yml");
+    assert!(
+        setup_node_action.contains("if: inputs.run-npm-ci == 'true'")
+            && setup_node_action.contains("run: npm ci"),
+        "setup-node's npm ci step must be gated on the run-npm-ci input, so a group whose \
+         doctor_tools excludes npm never runs it: {setup_node_action}"
+    );
+}
+
+#[then("every gate in the group still reports its baseline result")]
+fn then_group_gates_still_run(w: &mut GateWorld) {
+    let group_id = w
+        .no_npm_group_id
+        .as_deref()
+        .expect("group id must be captured by the Given step");
+    let gate_job = w
+        .gate_job_block
+        .as_deref()
+        .expect("gate job block must be captured by the When step");
+    let lines: Vec<&str> = gate_job.lines().collect();
+    let idx = lines
+        .iter()
+        .position(|line| line.contains("gate run --surface=ci"))
+        .unwrap_or_else(|| {
+            panic!("gate job must contain the gate run --surface=ci step for group {group_id}")
+        });
+    let mut start = idx;
+    while start > 0 && !lines[start].trim_start().starts_with("- ") {
+        start -= 1;
+    }
+    let step_lines = &lines[start..=idx];
+    assert!(
+        !step_lines
+            .iter()
+            .any(|line| line.trim_start().starts_with("if:")),
+        "the gate run step must be unconditional for group {group_id} — skipping npm ci must \
+         never skip running its gates: {step_lines:?}"
+    );
+}
+
+// Binds `gate-execution.feature`'s "The MSRV pre-install covers the toolchain
+// name cargo-hack requests" scenario. `cargo hack check --rust-version`
+// resolves a crate's `rust-version = "X.Y.Z"` floor to the toolchain name
+// `X.Y`, and rustup stores `X.Y` in a different directory from `X.Y.Z` — so
+// pre-installing only the patch-level name leaves every parallel
+// `compat:min-version` task racing rustup to download `X.Y` itself, which is
+// the exact race the pre-install step exists to prevent. This runs the real,
+// checked-in pre-install script against a fixture crate with a stub `rustup`
+// on PATH and asserts on the toolchain names it actually asks for.
+
+#[given("a crate declares a patch-level rust-version floor")]
+fn given_patch_level_msrv_floor(w: &mut GateWorld) {
+    w.write(
+        "apps/fixture-cli/Cargo.toml",
+        "[package]\nname = \"fixture-cli\"\nversion = \"0.1.0\"\nrust-version = \"1.95.0\"\n",
+    );
+    std::fs::create_dir_all(w.root().join("libs")).expect("create fixture libs directory");
+}
+
+#[when("the Rust setup action pre-installs the pinned MSRV toolchains")]
+fn when_msrv_preinstall_runs(w: &mut GateWorld) {
+    let action = std::fs::read_to_string(repo_root().join(".github/actions/setup-rust/action.yml"))
+        .expect("read the real .github/actions/setup-rust/action.yml");
+    let script = run_block(&action, "Pre-install pinned MSRV toolchain");
+
+    let stub_dir = w.root().join("stub-bin");
+    std::fs::create_dir_all(&stub_dir).expect("create stub bin directory");
+    let log = w.root().join("rustup-invocations.log");
+    let stub = stub_dir.join("rustup");
+    std::fs::write(
+        &stub,
+        format!("#!/bin/sh\nprintf '%s\\n' \"$*\" >>'{}'\n", log.display()),
+    )
+    .expect("write the stub rustup recorder");
+    make_executable(stub);
+
+    let inherited_path = std::env::var("PATH").unwrap_or_default();
+    let output = Command::new("bash")
+        .arg("-c")
+        .arg(&script)
+        .current_dir(w.root())
+        .env("PATH", format!("{}:{inherited_path}", stub_dir.display()))
+        .output()
+        .expect("run the real MSRV pre-install script");
+    assert!(
+        output.status.success(),
+        "the MSRV pre-install script must succeed on every supported host shell — stdout: {} \
+         stderr: {}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let recorded = std::fs::read_to_string(&log).unwrap_or_default();
+    w.msrv_preinstall_invocations = Some(recorded.lines().map(str::to_string).collect());
+}
+
+#[then("it installs that floor's major-minor toolchain name")]
+fn then_preinstall_covers_major_minor(w: &mut GateWorld) {
+    let invocations = w
+        .msrv_preinstall_invocations
+        .as_ref()
+        .expect("invocations must be recorded by the When step");
+    assert!(
+        invocations
+            .iter()
+            .any(|call| call.starts_with("toolchain install 1.95 ")
+                || call == "toolchain install 1.95"),
+        "the pre-install must install the major-minor toolchain `1.95` that cargo-hack resolves \
+         a `1.95.0` floor to, otherwise parallel compat:min-version tasks race rustup for it: \
+         {invocations:?}"
+    );
+}
+
+#[then("it installs the patch-level toolchain name too")]
+fn then_preinstall_covers_patch_level(w: &mut GateWorld) {
+    let invocations = w
+        .msrv_preinstall_invocations
+        .as_ref()
+        .expect("invocations must be recorded by the When step");
+    assert!(
+        invocations
+            .iter()
+            .any(|call| call.starts_with("toolchain install 1.95.0 ")
+                || call == "toolchain install 1.95.0"),
+        "the pre-install must still install the exact declared floor `1.95.0`, so a direct \
+         `cargo +1.95.0` invocation stays race-free too: {invocations:?}"
+    );
+}
+
+/// Extracts the body of the `run: |` block belonging to the first step whose
+/// `name:` contains `step_name_fragment`, dedented to column zero so it can be
+/// executed directly.
+fn run_block(action_yaml: &str, step_name_fragment: &str) -> String {
+    let lines: Vec<&str> = action_yaml.lines().collect();
+    let name_idx = lines
+        .iter()
+        .position(|line| line.contains("name:") && line.contains(step_name_fragment))
+        .unwrap_or_else(|| {
+            panic!("the action must declare a step named like {step_name_fragment}")
+        });
+    let run_idx = lines[name_idx..]
+        .iter()
+        .position(|line| line.trim_start().starts_with("run: |"))
+        .map_or_else(
+            || panic!("step {step_name_fragment} must carry a `run: |` block"),
+            |offset| name_idx + offset,
+        );
+    let first_body = lines
+        .get(run_idx + 1)
+        .unwrap_or_else(|| panic!("step {step_name_fragment} must carry a non-empty run block"));
+    let body_indent = first_body.len() - first_body.trim_start().len();
+
+    let mut body = String::new();
+    for line in &lines[run_idx + 1..] {
+        if !line.trim().is_empty() && line.len() - line.trim_start().len() < body_indent {
+            break;
+        }
+        body.push_str(line.get(body_indent..).unwrap_or(""));
+        body.push('\n');
+    }
+    body
 }
 
 #[tokio::main]
