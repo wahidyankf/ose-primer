@@ -74,7 +74,7 @@ demo Rust applications MUST use the following stack:
 - **cargo-llvm-cov** (RECOMMENDED) - LLVM-based coverage measurement
 - **cargo-tarpaulin** - Alternative coverage tool
 
-**Go Version Strategy**:
+**Rust Version Strategy**:
 
 - **Edition**: Rust 2024 (stabilized in 1.85.0, 2025-02-20)
 - **MSRV**: declared in [`apps/rhino-cli/Cargo.toml`](../../../../../apps/rhino-cli/Cargo.toml) (`rust-version` field); the floor is deliberately pinned to the same value as the `rust-toolchain.toml` channel, so there is exactly one supported Rust version, not a floor-and-ceiling range
@@ -242,7 +242,7 @@ graph LR
 **Version Management (REQUIRED)**:
 
 - MUST use `rust-toolchain.toml` to pin exact toolchain version
-- MUST specify `edition = "2021"` (or later) in `Cargo.toml`
+- MUST specify `edition = "2024"` (or later) in `Cargo.toml`
 - SHOULD use `rustup` for local toolchain management
 - MUST NOT rely on system-installed Rust without toolchain file verification
 

@@ -233,7 +233,7 @@ Enforcement is automated via `rhino-cli repo-governance vendor validate`.
 
 ```bash
 # Audit the repo-governance/ directory (default)
-cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- repo-governance vendor validate repo-governance/
+cargo run --profile gate --quiet --manifest-path apps/rhino-cli/Cargo.toml -- repo-governance vendor validate repo-governance/
 
 # Or via Nx (cached)
 npx nx run rhino-cli:governance:vendor-audit-validation

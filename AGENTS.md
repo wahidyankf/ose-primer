@@ -177,8 +177,10 @@ workflows at a uniform **warning-and-above** threshold, enforced in both CI
 
 All three run inside the `shell-docker-actions` CI gate group. Each linter's provisioning is
 registry-declared per gate (`doctor-tools:` in `repo-config.yml`), not a blanket `npm run doctor --
---fix`: the CI `gate` job reads its matrix leg's union of `doctor_tools` and runs `npm run doctor --
---fix --tools <tools>` only for what that group declares. Locally, `npm run doctor -- --fix` (no
+--fix`: the CI `gate` job reads its matrix leg's union of `doctor_tools` and runs
+`apps/rhino-cli/scripts/rhino-bin.sh doctor --fix --tools <tools>` only for what that group
+declares — the CI runner has no Rust toolchain, so `npm run doctor` (which expands to `nx run
+rhino-cli:build`, requiring cargo) does not work in that job. Locally, `npm run doctor -- --fix` (no
 `--tools` filter) still installs everything, including these three. CI legs are named after their
 **`ci-group`** (`${{ matrix.group.group }}`), not their gate id — each gate's own result stays
 visible in the group's per-gate `PASS`/`FAIL` summary.
