@@ -113,7 +113,7 @@ For a security concern, follow [SECURITY.md](./SECURITY.md); do not publish sens
 - [`ose-public`](https://github.com/wahidyankf/ose-public) — the public OSE platform.
 - [`ose-primer`](https://github.com/wahidyankf/ose-primer) — this reusable template and reference workspace.
 - [`ose-private`](https://github.com/wahidyankf/ose-private) — private operations for authorized maintainers.
-- [`beaver-nest`](https://github.com/wahidyankf/beaver-nest) — a separate product in the ecosystem.
+- [`archived repository`](https://github.com/wahidyankf/ose-public) — a separate product in the ecosystem.
 
 See [Related Repositories](./docs/reference/related-repositories.md) for the documented boundaries.
 

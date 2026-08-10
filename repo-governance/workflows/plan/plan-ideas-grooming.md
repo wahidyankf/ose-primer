@@ -109,7 +109,7 @@ orchestrator-run steps.
 Every git delivery under this workflow's `worktree-to-pr` default — unconditional, no override —
 runs the full PR-Review Maker→Fixer Cycle per processed repo, per the
 [Per-Repository Delivery Mode Restrictions](../../conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule):
-`main` is branch-protected against direct pushes in `ose-public` and `ose-primer`, and `beaver-nest`
+`main` is branch-protected against direct pushes in `ose-public` and `ose-primer`, and `archived repository`
 is restricted to the same effect by convention (its `main` is not yet actually
 GitHub-branch-protected — see [Git Push Default Convention](../../development/workflow/git-push-default.md)
 for the live-verification detail), so the historical `plans/**`-only

@@ -36,6 +36,6 @@ come here when you need exact structure, configuration, or ecosystem boundaries.
 
 ### Cross-Repository Context
 
-- [Related Repositories](./related-repositories.md) - Catalogue of the four sibling repositories in the Open Sharia Enterprise family (`ose-public`, `ose-primer`, `ose-private`, `beaver-nest`) with visibility, license, purpose, and each one's relationship to `ose-primer` — plus which repositories participate in content sync
+- [Related Repositories](./related-repositories.md) - Catalogue of the four sibling repositories in the Open Sharia Enterprise family (`ose-public`, `ose-primer`, `ose-private`, `archived repository`) with visibility, license, purpose, and each one's relationship to `ose-primer` — plus which repositories participate in content sync
 
 ---

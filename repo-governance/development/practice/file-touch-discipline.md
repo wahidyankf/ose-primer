@@ -90,7 +90,7 @@ Three failure modes, each observed in this repository family rather than hypothe
 ### What This Practice Covers
 
 - **Every session, in every OSE repository** — `ose-public`, `ose-primer`, `ose-private`,
-  `beaver-nest` — and in every location within them: worktrees, feature branches, and local `main`.
+  `archived repository` — and in every location within them: worktrees, feature branches, and local `main`.
 - **Every mutating operation**, not only git verbs: `Write`, `Edit`, file creation, `rm`, `mv`,
   formatter and codemod runs, generator output, and every git command that alters the working tree,
   the index, or the stash.
