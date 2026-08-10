@@ -1,13 +1,13 @@
 ---
 title: "Related Repositories"
-description: Catalogue of the four sibling repositories in the Open Sharia Enterprise family (ose-public, ose-primer, ose-private, beaver-nest), their visibility, licensing, purpose, and relationship to ose-primer.
+description: Catalogue of the four sibling repositories in the Open Sharia Enterprise family (ose-public, ose-primer, ose-private, archived repository), their visibility, licensing, purpose, and relationship to ose-primer.
 category: reference
 subcategory: ecosystem
 tags:
   - reference
   - ose-public
   - ose-private
-  - beaver-nest
+  - archived repository
   - ecosystem
   - cross-repo
 ---
@@ -16,33 +16,31 @@ tags:
 
 `ose-primer` is one of four sibling repositories in the Open Sharia Enterprise (OSE) family. The four repositories cross-reference each other directly — there is no parent container repository, no submodule wiring, and no shared workspace. This reference catalogues each sibling, its visibility, its license, and its relationship to `ose-primer`.
 
-The canonical rules governing this family live in the [Repository Ecosystem Convention](../../repo-governance/conventions/structure/repository-ecosystem.md). This document is the catalogue those rules mandate.
-
 ## Repository Catalogue
 
-| Repository                                                 | Visibility | License     | Purpose                                                                                         | Relationship to `ose-primer`                                                                                    |
-| ---------------------------------------------------------- | ---------- | ----------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| [`ose-public`](https://github.com/wahidyankf/ose-public)   | Public     | MIT         | Main OSE platform monorepo; upstream source of governance, conventions, agents, and skills      | **Upstream.** Governance artifacts originate there and propagate here.                                          |
-| [`ose-primer`](https://github.com/wahidyankf/ose-primer)   | Public     | MIT         | Repository template — clean MIT starting point for new OSE-style polyglot Nx monorepos          | This repository.                                                                                                |
-| [`ose-private`](https://github.com/wahidyankf/ose-private) | Private    | Proprietary | Private product operations and infrastructure for authorized maintainers                        | Listed for ecosystem context only; no private implementation detail or infrastructure flows into this template. |
-| [`beaver-nest`](https://github.com/wahidyankf/beaver-nest) | Public     | MIT         | BeaverNest — a personal operating layer (assistant, content builder, posting helper, workflows) | Cross-reference only. Scaffolded from this family but syncs no content in either direction.                     |
+| Repository                                                        | Visibility | License     | Purpose                                                                                                  | Relationship to `ose-primer`                                                                                    |
+| ----------------------------------------------------------------- | ---------- | ----------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| [`ose-public`](https://github.com/wahidyankf/ose-public)          | Public     | MIT         | Main OSE platform monorepo; upstream source of governance, conventions, agents, and skills               | **Upstream.** Governance artifacts originate there and propagate here.                                          |
+| [`ose-primer`](https://github.com/wahidyankf/ose-primer)          | Public     | MIT         | Repository template — clean MIT starting point for new OSE-style polyglot Nx monorepos                   | This repository.                                                                                                |
+| [`ose-private`](https://github.com/wahidyankf/ose-private)        | Private    | Proprietary | Private product operations and infrastructure for authorized maintainers                                 | Listed for ecosystem context only; no private implementation detail or infrastructure flows into this template. |
+| [`archived repository`](https://github.com/wahidyankf/ose-public) | Public     | MIT         | archived repository — a personal operating layer (assistant, content builder, posting helper, workflows) | Cross-reference only. Scaffolded from this family but syncs no content in either direction.                     |
 
 ## Terminology — "the OSE repos"
 
 When a request says **"all of the OSE repositories"**, **"all of the OSE repos"**, **"all four
 repos"**, or any equivalent collective phrase, it means exactly these four, and nothing else:
 
-| #   | Repository    |
-| --- | ------------- |
-| 1   | `ose-public`  |
-| 2   | `ose-primer`  |
-| 3   | `ose-private` |
-| 4   | `beaver-nest` |
+| #   | Repository            |
+| --- | --------------------- |
+| 1   | `ose-public`          |
+| 2   | `ose-primer`          |
+| 3   | `ose-private`         |
+| 4   | `archived repository` |
 
 Four consequences worth stating, because each has been a real source of ambiguity:
 
-- **`beaver-nest` is always included.** The collective term is **not** a synonym for the three-repo
-  parity loop. `beaver-nest` sits outside that loop but is a full family member.
+- **`archived repository` is always included.** The collective term is **not** a synonym for the three-repo
+  parity loop. `archived repository` sits outside that loop but is a full family member.
 - **Only these four.** Other repositories that happen to sit in the same parent directory on a
   developer machine are not part of the set.
 - **A change is incomplete until it lands in all four.** "Applied to the OSE repos" means four
@@ -62,7 +60,7 @@ flowchart LR
     public["ose-public<br/>(MIT, public)<br/>upstream platform"]
     primer["ose-primer<br/>(MIT, public)<br/>this repository"]
     private["ose-private<br/>(proprietary, private)<br/>infrastructure"]
-    beaver["beaver-nest<br/>(MIT, public)<br/>personal operating layer"]
+    beaver["archived repository<br/>(MIT, public)<br/>personal operating layer"]
 
     public -->|governance propagation| primer
     primer <-->|generic content sync| private
@@ -92,7 +90,7 @@ These are two separate questions, and conflating them is the most common error w
 - **Family membership** covers all four repositories. Every one of them MUST name the other three, with GitHub URLs, in its `README.md`, its `AGENTS.md`, and its own copy of this catalogue.
 - **Content sync** covers only three — `ose-public`, `ose-primer`, and `ose-private`. Generic content (governance docs, agents, skills, conventions, workflows, tooling) is kept aligned across those, with `ose-primer` as the shared upstream template.
 
-`beaver-nest` is a full family member that participates in **no** content sync. It scaffolded from this ecosystem, but no parity plan targets it, and adopting a family change there is a deliberate decision made inside that repository.
+`archived repository` is a full family member that participates in **no** content sync. It scaffolded from this ecosystem, but no parity plan targets it, and adopting a family change there is a deliberate decision made inside that repository.
 
 ## Propagation Summary
 
@@ -115,8 +113,8 @@ the difference is deliberate, not an oversight:
   template, `ose-primer` does not need every `ose-public` governance change the moment it lands;
   batching updates conserves the review and propagation cost of a sync that public downstream
   adopters do not need on a real-time cadence.
-- **`beaver-nest`** — **not synced** on an ongoing basis, consistent with its full exclusion from the
-  content-sync loop above. BeaverNest is planned to merge back into `ose-public` in the near term, so
+- **`archived repository`** — **not synced** on an ongoing basis, consistent with its full exclusion from the
+  content-sync loop above. archived repository is planned to merge back into `ose-public` in the near term, so
   investing in an ongoing sync mechanism for a repo expected to be reabsorbed is not worth the cost;
   its `rhino-cli` fork and governance content are addressed at merge time instead.
 
@@ -124,7 +122,7 @@ Keeping the family aligned is a **manual** discipline — there is no automated 
 
 ## Licensing
 
-`ose-public`, `ose-primer`, and `beaver-nest` are **MIT throughout**. See [LICENSING-NOTICE.md](../../LICENSING-NOTICE.md) for this repository's details. Consumers who fork `ose-primer` can build proprietary or open products on top without restriction.
+`ose-public`, `ose-primer`, and `archived repository` are **MIT throughout**. See [LICENSING-NOTICE.md](../../LICENSING-NOTICE.md) for this repository's details. Consumers who fork `ose-primer` can build proprietary or open products on top without restriction.
 
 `ose-private` is **proprietary**. It is listed here for ecosystem awareness; contributors to `ose-primer` are not expected to have access. Proprietary `ose-private` content MUST NOT flow into this MIT-licensed template.
 
@@ -136,9 +134,8 @@ Keeping the family aligned is a **manual** discipline — there is no automated 
 
 ## Links
 
-- [Repository Ecosystem Convention](../../repo-governance/conventions/structure/repository-ecosystem.md) — the canonical rules for this family.
 - [plan-multi-repo-parity-planning](../../repo-governance/workflows/plan/plan-multi-repo-parity-planning.md) — authoring coordinated multi-repo changes.
 - External: <https://github.com/wahidyankf/ose-public>
 - External: <https://github.com/wahidyankf/ose-primer>
 - External: <https://github.com/wahidyankf/ose-private>
-- External: <https://github.com/wahidyankf/beaver-nest>
+- External: <https://github.com/wahidyankf/ose-public>

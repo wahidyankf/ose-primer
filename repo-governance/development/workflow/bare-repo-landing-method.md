@@ -130,13 +130,13 @@ question, not as a corroborating reference.
    This is the **direct-push** landing path, and it is **restricted per repository**: `main` is
    branch-protected against direct pushes (including for admins) in `ose-public` and `ose-primer`, so
    this step has no executable path in those two repositories — only `ose-private` infrastructure-as-code
-   plans still use it. `beaver-nest` is restricted to the same effect **by convention**, though its
+   plans still use it. `archived repository` is restricted to the same effect **by convention**, though its
    `main` is not yet actually GitHub-branch-protected (verified live 2026-08-08 — `protected: false`,
    no rulesets), pending a `[HUMAN]`-only GitHub settings change; a direct push that lands there is a
    convention violation, not a bypass of protection that does not yet exist. See
    [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule).
    When the unit of work instead lands through a branch and a pull request — the only path available in
-   `ose-public`, `ose-primer`, and (by convention) `beaver-nest` — this step becomes the PR's own
+   `ose-public`, `ose-primer`, and (by convention) `archived repository` — this step becomes the PR's own
    push-and-merge, and step 7 needs the branch cleanup below before it runs.
 7. `git worktree remove <path>` — remove the worktree non-destructively, never with `--force` and
    never `rm -rf`, per the

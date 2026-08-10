@@ -928,13 +928,13 @@ available wherever a plan finds it easier.
   the `.md`-only condition of the content restriction above are **retired** in these two
   repositories — a protected `main` makes them moot regardless of file content, since there is no
   direct-push path left to carve out of.
-- **`beaver-nest`**: `main` is **NOT currently GitHub-branch-protected** (verified live 2026-08-08:
-  `gh api repos/wahidyankf/beaver-nest/branches/main` reports `"protected": false`, and
-  `gh api repos/wahidyankf/beaver-nest/rulesets` returns `[]`). `worktree-to-origin-main` and
+- **`archived repository`**: `main` is **NOT currently GitHub-branch-protected** (verified live 2026-08-08:
+  `gh api repos/wahidyankf/archived repository/branches/main` reports `"protected": false`, and
+  `gh api repos/wahidyankf/archived repository/rulesets` returns `[]`). `worktree-to-origin-main` and
   `main-to-origin-main` therefore have a technically executable path here today — grouping this
   repository with `ose-public` and `ose-primer` is this repo's own **policy/convention choice**, not
   a GitHub-enforced one, pending a `[HUMAN]`-only GitHub settings change to add matching branch
-  protection. Until that gap is closed: every plan in `beaver-nest` still uses `worktree-to-pr` by
+  protection. Until that gap is closed: every plan in `archived repository` still uses `worktree-to-pr` by
   convention (see the enforcement note below), and a direct push that lands there anyway is
   convention-noncompliant, not evidence of bypassed protection — there is nothing to bypass yet.
 - **`ose-private`**: `worktree-to-pr` is likewise the required mode for **every plan except**
@@ -956,9 +956,9 @@ and "actually necessary" that the old `.md`-only carve-out left open everywhere.
 
 **Enforcement**: `plan-checker` flags a `## Delivery Mode` field naming `worktree-to-origin-main` or
 `main-to-origin-main` in `ose-public` or `ose-primer` as **HIGH** — those modes have no executable
-path in those two repositories. It flags the same field for `beaver-nest` as **HIGH** too, as a
+path in those two repositories. It flags the same field for `archived repository` as **HIGH** too, as a
 policy violation of the convention above rather than a technical-inexecutability claim, since
-`beaver-nest`'s `main` is not yet GitHub-branch-protected (see above) — a direct push that actually
+`archived repository`'s `main` is not yet GitHub-branch-protected (see above) — a direct push that actually
 lands there is a convention violation, not a bypassed-protection finding, until the protection gap is
 closed. It flags the same fields in `ose-private` as **HIGH** unless the plan is genuinely an
 infrastructure-as-code plan.

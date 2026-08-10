@@ -191,7 +191,7 @@ Every plan resolves to exactly one **delivery mode** before execution begins, de
 - **`main-to-origin-main`** — primary checkout (no worktree), direct push to `origin main`, `[AI]` pushes directly.
 - **`main-to-pr`** — primary checkout (no worktree), PR opened against `main`, `[AI]` merges once the hardened preconditions hold (a `[HUMAN]` merge gate applies only where the plan's own step says so).
 
-**Per-repository restriction (HARD RULE)**: `worktree-to-origin-main` and `main-to-origin-main` have **no executable path** in `ose-public` or `ose-primer` — `main` is branch-protected against direct pushes there, including for admins. `beaver-nest` is held to the same restriction by convention only (its `main` is not yet actually GitHub-branch-protected, pending a `[HUMAN]`-only settings change). In `ose-private`, both direct-push modes are available only for infrastructure-as-code plans. Declaring a direct-push mode outside these carve-outs is a `plan-checker` HIGH finding, not a silent fallback. See [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule).
+**Per-repository restriction (HARD RULE)**: `worktree-to-origin-main` and `main-to-origin-main` have **no executable path** in `ose-public` or `ose-primer` — `main` is branch-protected against direct pushes there, including for admins. `archived repository` is held to the same restriction by convention only (its `main` is not yet actually GitHub-branch-protected, pending a `[HUMAN]`-only settings change). In `ose-private`, both direct-push modes are available only for infrastructure-as-code plans. Declaring a direct-push mode outside these carve-outs is a `plan-checker` HIGH finding, not a silent fallback. See [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule).
 
 `worktree-to-pr` is the safest default absent a reason to pick another mode — it isolates work and routes it through review before it touches `main`.
 
@@ -460,7 +460,7 @@ And their session is created with correct permissions
 
 **Direct-push modes (`worktree-to-origin-main`, `main-to-origin-main`)**:
 
-- **No executable path in `ose-public` or `ose-primer`** — `main` is branch-protected against direct pushes there, including for admins; `beaver-nest` is restricted to the same effect by convention only (see [Per-Repository Delivery Mode Restrictions](../../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule))
+- **No executable path in `ose-public` or `ose-primer`** — `main` is branch-protected against direct pushes there, including for admins; `archived repository` is restricted to the same effect by convention only (see [Per-Repository Delivery Mode Restrictions](../../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule))
 - Available in `ose-private` only for infrastructure-as-code plans
 - For small, obviously-safe changes where a PR adds no review value
 - Declare the mode explicitly in `## Delivery Mode` — never assume it

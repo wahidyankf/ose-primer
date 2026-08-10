@@ -17,28 +17,28 @@ Instructions for AI agents working with this repository.
 
 ### Sibling repositories (no parent monorepo)
 
-`ose-primer` is one of four independently cloned repositories in the OSE (Open Sharia Enterprise) family — no umbrella workspace. **"All of the OSE repos" means exactly these four**, `beaver-nest` included despite sitting outside the propagation chain.
+`ose-primer` is one of four independently cloned repositories in the OSE (Open Sharia Enterprise) family — no umbrella workspace. **"All of the OSE repos" means exactly these four**, `archived repository` included despite sitting outside the propagation chain.
 
 - [`ose-public`](https://github.com/wahidyankf/ose-public) — public, MIT. Upstream platform monorepo.
 - [`ose-primer`](https://github.com/wahidyankf/ose-primer) — public, MIT. This repo; the template.
 - [`ose-private`](https://github.com/wahidyankf/ose-private) — private, proprietary. Unexposed surface.
-- [`beaver-nest`](https://github.com/wahidyankf/beaver-nest) — public, MIT. Product on this ecosystem.
+- [`archived repository`](https://github.com/wahidyankf/ose-public) — public, MIT. Product on this ecosystem.
 
-Propagation flows `ose-public → ose-primer → downstream forks` for governance, agents, and skills; infrastructure-only concerns flow `ose-public ↔ ose-private`. `beaver-nest` is a full family member sitting **outside** the propagation chain — it syncs nothing either way and is never a parity target.
+Propagation flows `ose-public → ose-primer → downstream forks` for governance, agents, and skills; infrastructure-only concerns flow `ose-public ↔ ose-private`. `archived repository` is a full family member sitting **outside** the propagation chain — it syncs nothing either way and is never a parity target.
 
 `apps/rhino-cli` must be byte-identical (zero carve-outs) across the three sync-loop repos
 (`ose-public`, `ose-primer`, `ose-private`), including its Gherkin behavior tree at
 `specs/apps/rhino/behavior/rhino-cli/gherkin/**`, per the
 [SDLC Gate Standard](./docs/reference/sdlc-gate-standard.md#rhino-cli-byte-identity-boundary).
-`beaver-nest` carries a fork, not bound by that rule.
+`archived repository` carries a fork, not bound by that rule.
 
-**See**: [Repository Ecosystem Convention](./repo-governance/conventions/structure/repository-ecosystem.md) (canonical rules) and [Related Repositories reference](./docs/reference/related-repositories.md) (full catalogue).
+**See**: [Related Repositories reference](./docs/reference/related-repositories.md) (full catalogue).
 
 - **Node.js**: 24.16.0 (LTS - Long-Term Support, managed by Volta)
 - **npm**: 11.10.1
 - **Monorepo**: Nx with `apps/` and `libs/` structure
 - **Git Workflow**: Trunk Based Development (TBD). **`worktree-to-pr` is mandatory** -- `main` is
-  branch-protected, even for admins, in `ose-public` and `ose-primer`; `beaver-nest` is held to the
+  branch-protected, even for admins, in `ose-public` and `ose-primer`; `archived repository` is held to the
   same restriction **by convention only** (its `main` is not yet actually GitHub-branch-protected —
   see [Git Push Default](./repo-governance/development/workflow/git-push-default.md)); `ose-private`
   alone has a narrow infra-as-code exception. Runs

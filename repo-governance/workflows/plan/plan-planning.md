@@ -269,9 +269,9 @@ Full rule, capability boundary, operational limits, and identifier hygiene:
 
 ### The Plan-Docs-Only Carve-Out (Superseded — Retired in Three of Four Repos)
 
-**This carve-out is retired in `ose-public`, `ose-primer`, and `beaver-nest`**: `main` is
+**This carve-out is retired in `ose-public`, `ose-primer`, and `archived repository`**: `main` is
 branch-protected against direct pushes (including for admins) in `ose-public` and `ose-primer`;
-`beaver-nest` is restricted to the same effect by convention (its `main` is not yet actually
+`archived repository` is restricted to the same effect by convention (its `main` is not yet actually
 GitHub-branch-protected — see [Git Push Default Convention](../../development/workflow/git-push-default.md)
 for the live-verification detail), pending a `[HUMAN]`-only GitHub settings change. So there
 is no sanctioned direct-push path left to carve out of in any of the three — a plan-docs-only

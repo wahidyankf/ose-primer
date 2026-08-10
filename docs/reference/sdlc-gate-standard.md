@@ -16,7 +16,7 @@ created: 2026-06-30
 > Source of truth: [`tech-docs.md`](../../plans/done/2026-07-01__standardize-rhino-cli-sdlc-parity/tech-docs.md)
 
 This document defines the target standard for SDLC gate mechanics across the four OSE repositories:
-`ose-public`, `ose-primer`, `ose-private`, and `beaver-nest`. **Identical gate mechanics** means the
+`ose-public`, `ose-primer`, `ose-private`, and `archived repository`. **Identical gate mechanics** means the
 same check set, the same order, and the same invocation mechanism across the bound repos. The only sanctioned variation
 is the project/app set (and therefore the per-app deploy/CRON workflows and language-specific gate
 jobs). See [Divergence Policy](#divergence-policy) for the exact boundary.
@@ -233,7 +233,7 @@ carve-outs**. `apps/rhino-cli`'s `src/`, `Cargo.toml`, `Cargo.lock`, `project.js
 `tests/`, plus
 the Gherkin behavior tree at `specs/apps/rhino/behavior/rhino-cli/gherkin/**` (every `.feature` file and
 every `README.md`), are byte-identical across `ose-public`, `ose-primer`, `ose-private`, and
-`beaver-nest`. The canonical source carries the
+`archived repository`. The canonical source carries the
 **union command surface** — every repo's `rhino-cli` binary exposes the full command superset, and a
 command with no applicable projects in a given repo (for example, `java` in `ose-public`) is
 **dormant, not absent**, rather than removed from the binary. A **schema-parity gate**

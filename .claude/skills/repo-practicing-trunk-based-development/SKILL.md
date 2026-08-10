@@ -37,7 +37,7 @@ worktree, pushed to a draft PR, merged once the hardened preconditions hold. Com
 the four-mode vocabulary. **Per-repository restriction, independent of any bare/non-bare clone
 state**: in `ose-public` and `ose-primer`, `main` is branch-protected against direct pushes —
 including for admins — so **neither direct-push mode has an executable path in this clone
-(`ose-primer`) at all**. `beaver-nest` is held to the same restriction by convention only (its `main`
+(`ose-primer`) at all**. `archived repository` is held to the same restriction by convention only (its `main`
 is not yet actually GitHub-branch-protected). In `ose-private`, both remain available only for
 infrastructure-as-code plans. See
 [Delivery Mode](../../../repo-governance/conventions/structure/plans.md#delivery-mode) and
@@ -111,7 +111,7 @@ integrate immediately. **This is a two-axis check, and both axes must pass indep
 1. **Server-side branch protection** (repository-wide, independent of clone shape): `main` is
    branch-protected against direct pushes — including for admins — in `ose-public` and `ose-primer`,
    so **neither direct-push mode has an executable path in either repository, no matter how the local
-   clone is shaped**. `beaver-nest` is held to the same restriction by convention only (its `main` is
+   clone is shaped**. `archived repository` is held to the same restriction by convention only (its `main` is
    not yet actually GitHub-branch-protected). Only `ose-private` genuinely permits direct-push modes,
    and only for infrastructure-as-code plans. See
    [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule).
