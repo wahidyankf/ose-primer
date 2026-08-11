@@ -9,6 +9,7 @@ tags:
   - quality-gates
   - workflow
   - merge-preconditions
+created: 2026-04-04
 ---
 
 # PR Merge Protocol
@@ -43,18 +44,17 @@ This practice implements/respects the following conventions:
 
 A PR merges only when **all five** hold:
 
-- **(a)** the configured PR-review cycle (fan-out → `pr-review-synthesis-maker` → `pr-review-fixer`)
-  is complete (default 3 cycles) **and the review loop did not exit `escalated`** — see
-  [Loop-Exit and Escalation Rules](../../workflows/pr/pr-review-quality-gate.md#loop-exit-and-escalation-rules).
-  An `escalated` exit blocks the merge on its own, for **any** merge actor, and no combination of the
-  other four preconditions discharges it. The configured count is a **hard ceiling, not a floor** —
-  a PR merges once (b)-(e) also hold, never on additional cycles beyond this count;
-- **(b)** 0 CRITICAL and 0 HIGH findings are outstanding;
+- **(a)** the PR's behavior route is complete — an eligible PR reached the first completed specialist
+  cycle with zero code-related MEDIUM/HIGH/CRITICAL findings within the default maximum of seven,
+  while a noneligible PR has recorded classifier evidence and a green
+  `.github/workflows/pr-quality-gate.yml` run. A `blocked` route status prevents merge;
+- **(b)** 0 code-related CRITICAL, HIGH, and MEDIUM findings are outstanding;
 - **(c)** the branch is up-to-date with the latest `origin/main`, brought forward
   **non-destructively** if behind (never a shared-history rewrite);
-- **(d)** all PR quality gates are green (see Quality Gates below);
-- **(e)** the surface-conditional tester gates have been run and their defect findings resolved, or
-  the exemption is explicitly recorded.
+- **(d)** the route-required quality gate is green: all applicable local and CI gates for an eligible
+  PR; `.github/workflows/pr-quality-gate.yml` for a noneligible PR;
+- **(e)** the surface-conditional tester gates have been run and their defect findings resolved for
+  an eligible PR. A noneligible PR has no reachable behavior and does not run those tester gates.
 
 For every PR merge -- without exception -- the agent must:
 
@@ -62,17 +62,18 @@ For every PR merge -- without exception -- the agent must:
 2. Surface the PR status, including which gates passed and how each precondition was satisfied.
 3. Execute the merge -- `[AI]` is the default actor.
 
-**A `[HUMAN]` merge gate is an explicit per-plan opt-in**, applying only where a plan's own step
-says so. When a plan declares one, the agent stops at step 2 and hands off the ready-to-merge PR.
-**The preconditions are identical either way -- only the actor differs.** See
-[Plans Organization Convention §Delivery Mode](../../conventions/structure/plans.md#delivery-mode).
+`[AI]` is the merge actor once the preconditions hold, unless a separate, explicitly authorized
+exception says otherwise. This convergence plan has no human review or merge gate.
 
 **Preconditions are evaluated per merge.** Satisfying them for one PR says nothing about the next;
 each PR is assessed from zero against the full set.
 
 ## Quality Gates
 
-All of the following quality gates must pass before a PR is eligible for merge:
+An **eligible** PR must pass the applicable local and CI gates below. A **noneligible** PR requires
+only a successful `.github/workflows/pr-quality-gate.yml` run for its current head; it does not run
+the specialist cycle or surface tester gates. Both routes still require the shared preconditions,
+including the universal secret check.
 
 | Gate               | Tool           | What It Validates                                  |
 | ------------------ | -------------- | -------------------------------------------------- |
@@ -81,6 +82,15 @@ All of the following quality gates must pass before a PR is eligible for merge:
 | **test:quick**     | Nx affected    | Unit tests, build smoke tests, coverage thresholds |
 | **specs:coverage** | Nx affected    | Gherkin step definitions match feature files       |
 | **CI workflows**   | GitHub Actions | All configured CI checks for the repository        |
+
+### Universal Secret Check
+
+Before merging either route, inspect the PR diff and review evidence for a suspected secret exposure.
+If one exists, stop normal merge handling, contain and rotate the credential, then follow the full
+reachable-ref history-rewrite and replacement-PR procedure in
+[Secrets and Environment Standards](../../conventions/security/secrets-and-env-standards.md). A
+green quality gate, a noneligible classifier result, or a resolved review thread never authorizes
+merging a contaminated PR.
 
 ### No Bypass Without Explicit Permission
 
@@ -99,7 +109,7 @@ This protocol applies whenever a pull request exists as part of the development 
 
 - **`worktree-to-pr` (repo-wide default)**: every plan delivered without an explicit mode override
   resolves to this mode -- a short-lived plan branch, a draft PR opened against `main`, and this
-  protocol at merge time. See [The `worktree-to-pr` Terminal Step](#the-worktree-to-pr-terminal-step)
+  protocol at merge time. See [the `worktree-to-pr` terminal step](#the-worktree-to-pr-terminal-step)
   below for the full terminal-step sequence.
 - **`main-to-pr`**: primary-checkout work still routed through a PR follows the same protocol.
 - **External contributions**: PRs from external contributors follow this protocol.
@@ -110,7 +120,7 @@ This protocol does **not** apply to:
 - Direct commits under `worktree-to-origin-main` or `main-to-origin-main` (no PR exists to merge).
 - **A plan's Phase 0** (Environment Setup and Baseline) under any delivery mode -- it opens no PR, so there is nothing here to merge. The earliest phase that may open a PR, and therefore the earliest phase this protocol can govern, is **Phase 1**. See [Plans Organization Convention §Phase 0 Opens No PR](../../conventions/structure/plans.md#phase-0-opens-no-pr--the-earliest-pr-is-phase-1-hard-rule).
 - **A plan's intermediate phases** — those inside a delivery unit but not its **delivery boundary**. They open no PR, so this protocol has nothing to govern until the unit's boundary phase opens one. See [Plans Organization Convention §PRs Open at Delivery Boundaries](../../conventions/structure/plans.md#prs-open-at-delivery-boundaries-not-every-phase-hard-rule).
-- Environment branch deployments managed by CI (e.g., `prod-crud-fs-ts-nextjs`), which are governed by their own documented CI workflows.
+- Environment branch deployments managed by CI (e.g., `prod-ayokoding-www`), which are governed by their own documented CI workflows.
 
 ## The `worktree-to-pr` Terminal Step
 
@@ -121,20 +131,22 @@ the AI's work on a plan branch does not end at "all commits pushed." The termina
 is:
 
 1. Run the **PR-Review Maker→Fixer Cycle**
-   (`repo-governance/workflows/pr/pr-review-quality-gate.md`) -- sequential review/fix cycles
-   against the open PR, driving it toward a fully reviewed, green state.
-2. Confirm the
-   **[done-definition for `*-to-pr` modes](../../workflows/pr/pr-review-quality-gate.md#done-definition-for--to-pr-modes)**
-   is met. This protocol cites that definition rather than restating it here, so a future
-   strengthening of any item (for example, the requirement that an accepted fix be committed AND
-   pushed, not merely replied to) cannot silently drift out of sync between the two documents.
+   (`repo-governance/workflows/pr/pr-review-quality-gate.md`) -- first classify the open PR. Run
+   sequential specialist review/fix cycles only for the eligible route; a noneligible route verifies
+   the named `pr-quality-gate.yml` workflow instead.
+2. Confirm the **done-definition** is met:
+   - The eligible route stopped at its first clean cycle within the seven-cycle maximum, or the
+     noneligible route has recorded classifier evidence and its `pr-quality-gate.yml` run is green.
+   - Every inline review comment has a reply (resolved or explicitly addressed).
+   - All quality gates are GREEN -- both local (pre-push hook) and CI.
+   - Archival-in-PR is committed (ose-public only -- the plan folder's archival move lands in the same
+     PR, since the plan folder lives solely in this repo).
 3. Flip the PR from draft to ready for review (`gh pr ready`).
 
 **This done-definition is the AI's done-boundary.** Meeting it means the AI's work on the plan is
 complete -- it does **not** by itself mean the plan is merged. The merge is a separate, subsequent
-action gated on the five preconditions in [The Rule](#the-rule) above, performed by `[AI]` unless the
-plan declares a `[HUMAN]` gate. "Done" is not "merged" -- the merge sits outside the done-boundary
-entirely.
+action gated on the five preconditions in [The Rule](#the-rule) above and performed by `[AI]`.
+"Done" is not "merged" -- the merge sits outside the done-boundary entirely.
 
 ### Draft PR Lifecycle
 
@@ -152,7 +164,7 @@ open time.
    - Verify all quality gates have passed (see Quality Gates above).
    - Verify all five preconditions in [The Rule](#the-rule) hold.
    - Surface the PR status and how each precondition was satisfied.
-4. **The merge** -- `[AI]` by default, once the preconditions hold; `[HUMAN]` only where a plan's own step declares that gate. This step is outside the AI's done-boundary either way.
+4. **The merge** -- `[AI]`, once the preconditions hold. This step is outside the AI's done-boundary.
 
 An agent that opens a draft PR is **not** authorized to merge it on readiness alone --
 flipping to ready is the deliberate signal that the AI's own work is done, and the merge follows only
@@ -167,16 +179,16 @@ Before merging, the agent must confirm **all five** hardened preconditions (a)-(
 [the PR Review Quality Gate](../../workflows/pr/pr-review-quality-gate.md#hardened-merge-preconditions).
 Do not substitute the shorter list that used to live here.
 
-1. **(a)** The review cycles are complete **and the loop did not exit `escalated`** — an escalated
-   exit blocks the merge by itself, whatever the other four preconditions say. The configured count
-   is a **hard ceiling, not a floor** — a PR merges once (b)-(e) also hold, never on additional
-   cycles beyond this count.
-2. **(b)** 0 CRITICAL and 0 HIGH findings outstanding, verified against the PR's own diff rather than
-   against thread-resolution state.
+1. **(a)** The route is complete: eligible review stopped at its earliest clean cycle within seven;
+   noneligible review has classification evidence plus a green `pr-quality-gate.yml` run. `blocked`
+   never merges.
+2. **(b)** 0 code-related CRITICAL, HIGH, and MEDIUM findings outstanding, verified against the PR's
+   own diff rather than against thread-resolution state.
 3. **(c)** The branch is non-destructively up to date with the target branch (no merge conflicts).
-4. **(d)** All quality gates are green — local gates and CI — as of the PR's current head commit.
-5. **(e)** The surface-conditional tester gates have been run and their findings resolved, or a
-   no-reachable-behavior exemption is explicitly recorded.
+4. **(d)** The route-required quality gate is green as of the PR's current head: all applicable
+   gates for eligible work, or the named `pr-quality-gate.yml` workflow for noneligible work.
+5. **(e)** Eligible surface tester gates have run and their findings are resolved. A noneligible
+   route is explicitly exempt because its classifier evidence shows no reachable behavior.
 
 > **Why this list is spelled out in full.** It previously carried only three items — CI completed,
 > review comments checked, branch up to date — because it ran immediately before a **human approval
@@ -184,6 +196,23 @@ Do not substitute the shorter list that used to live here.
 > default, that backstop is gone and this is the last checklist an autonomous merge passes through.
 > An enumeration that was merely incomplete has become the thing standing in for a reviewer. Any
 > future edit must keep it congruent with (a)-(e); never shorten it.
+
+### Resolving Merge Conflicts in Generated Files
+
+Precondition (c) requires resolving any conflict against the target branch before merging. A
+`CONFLICTING` state after an otherwise-clean review cycle does not mean the PR's own work is
+wrong — it can be pure divergence from unrelated concurrent activity on the target branch,
+resolvable by a normal rebase or merge.
+
+When the conflicting hunk falls inside a **marker-owned or generated file** (a block regenerated
+by a registry/codegen command — e.g. `package.json`'s `lint-staged` block emitted from
+`repo-config.yml` via `gate emit`, or any other file a `validate`/`sync` command checks for drift),
+resolve the conflict at the **source** the generator reads from, then regenerate — never hand-resolve
+directly in the generated artifact. A hand-resolution can satisfy `git` while still drifting from
+what the generator would actually produce, and the repo's own drift-detection command (`gate validate`
+or the equivalent) exists specifically to catch that class of silent divergence. Re-run the generator,
+confirm the regenerated file is byte-identical to the hand-resolution (or replaces it), then re-run
+the drift check before proceeding.
 
 ### The Precondition Summary
 
@@ -200,17 +229,14 @@ Quality gates:
   CI workflows:  PASSED
 
 Preconditions:
-  (a) review cycles:     3/3 complete
-  (b) CRITICAL/HIGH:     0 / 0 outstanding
+  (a) review route:      eligible, clean at cycle 2 of 7
+  (b) C/H/M:             0 / 0 / 0 outstanding
   (c) branch vs main:    up to date (fast-forwarded, no rewrite)
   (d) quality gates:     all green (above)
   (e) tester gates:      run, findings resolved
 
 Merging PR #42.
 ```
-
-Where a plan declares a `[HUMAN]` merge gate, the agent prints the same summary and stops, handing
-off the ready-to-merge PR instead of merging.
 
 ### When Gates Fail
 
@@ -234,15 +260,15 @@ Quality gates:
 I will investigate and fix the lint errors before merging.
 ```
 
-## 📋 Examples
+## Examples
 
-### ✅ Correct agent behavior -- preconditions hold, `[AI]` merges
+### PASS: Correct agent behavior -- preconditions hold, `[AI]` merges
 
 ```
 Agent: All five merge preconditions hold for PR #42:
 
-  (a) review cycles:  3/3 complete
-  (b) CRITICAL/HIGH:  0 / 0 outstanding
+  (a) review route:   eligible, clean at cycle 2 of 7
+  (b) C/H/M:          0 / 0 / 0 outstanding
   (c) branch vs main: up to date
   (d) quality gates:  all green
   (e) tester gates:   run, findings resolved
@@ -250,24 +276,14 @@ Agent: All five merge preconditions hold for PR #42:
 Merging PR #42.
 ```
 
-### ✅ Correct agent behavior -- plan declares a `[HUMAN]` gate
-
-```
-Agent: All five merge preconditions hold for PR #42. This plan's
-       delivery checklist declares a [HUMAN] merge gate, so I am
-       handing off rather than merging.
-
-       PR is ready to merge: https://github.com/.../pull/42
-```
-
-### ❌ Incorrect agent behavior -- merging before the preconditions hold
+### FAIL: Incorrect agent behavior -- merging before the preconditions hold
 
 ```
 Agent: I created PR #42 and CI is green. Merging now.
-[merges after 1 of 3 review cycles -- precondition (a) unmet]
+[merges before the eligible route reaches a clean cycle -- precondition (a) unmet]
 ```
 
-### ❌ Incorrect agent behavior -- merging with failing gates
+### FAIL: Incorrect agent behavior -- merging with failing gates
 
 ```
 Agent: PR #42 has a failing lint check, but the rest passed.
@@ -275,21 +291,14 @@ Agent: PR #42 has a failing lint check, but the rest passed.
 [merges despite failing gate -- precondition (d) unmet]
 ```
 
-### ❌ Incorrect agent behavior -- merging through a declared `[HUMAN]` gate
-
-```
-Agent: All preconditions hold, so I merged PR #43.
-[the plan's own step declared a [HUMAN] merge gate; the default does not override it]
-```
-
-### ❌ Incorrect agent behavior -- carrying a bypass forward
+### FAIL: Incorrect agent behavior -- carrying a bypass forward
 
 ```
 User: [earlier] Merge PR #42 anyway despite specs:coverage.
 Agent: [later, different PR] Reusing that bypass to merge PR #43.
 ```
 
-### ✅ User explicitly bypasses a gate
+### PASS: User explicitly bypasses a gate
 
 ```
 Agent: PR #42 has all gates passing except specs:coverage, which
@@ -310,7 +319,7 @@ This rule applies to:
 - All automation scripts, npm scripts, and CI workflows that could trigger a PR merge.
 - All pull requests targeting any branch in the repository.
 
-## 🔗 Related Documentation
+## Related Documentation
 
 - [Git Push Safety Convention](./git-push-safety.md) -- Per-instance approval for destructive git operations; gated by a prompt because their safety is not mechanically checkable, unlike a PR merge's
 - [Plans Organization Convention §Delivery Mode](../../conventions/structure/plans.md#delivery-mode) -- Establishes `[AI]` merge as the default and `[HUMAN]` as the explicit per-plan opt-in this protocol implements

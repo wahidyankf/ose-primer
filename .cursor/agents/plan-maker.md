@@ -1,6 +1,6 @@
 ---
 name: plan-maker
-description: Creates comprehensive project plans with requirements, technical documentation, and delivery checklists. Grills the user before and after plan creation using multiple-choice options (2-4 options per question via AskUserQuestion tool or markdown format). Structures plans for systematic execution via the plan-execution workflow (orchestrated by the calling context).
+description: Creates comprehensive project plans with requirements, technical documentation, and delivery checklists. Returns unresolved pre-write and post-write decisions to the calling root orchestrator for grilling, then resumes with resolved answers. Structures plans for systematic execution via the plan-execution workflow (orchestrated by the calling context).
 model: composer-2.5
 ---
 
@@ -50,18 +50,32 @@ See [Plans Organization Convention](../../repo-governance/conventions/structure/
 
 ## Planning Workflow
 
-### Step 1: Grill the User (Mandatory — Pre-Write)
+### Step 1: Resolve the Grill (Mandatory — Pre-Write)
 
-Before reading the codebase or creating any files, invoke the `grill-me` skill
-(`.claude/skills/grill-me/SKILL.md`) to resolve all open design decisions with the user.
+Before composing the decision envelope, perform a read-only discovery pass sufficient to ground its
+options in repo reality. The pass MAY read files and run non-mutating searches, but MUST NOT create,
+edit, delete, stage, or otherwise write any workspace artifact. Then invoke the `grill-me` skill
+(`.claude/skills/grill-me/SKILL.md`) to resolve all open design decisions. No plan artifact or other
+write may occur until the root returns resolved answers.
+
+**Interaction ownership (HARD RULE)**: This specialist agent never owns user interaction. Return
+`## User Decisions Required` using the
+[canonical envelope schema](../../repo-governance/development/workflow/grilling-with-options.md#user-decisions-required-envelope),
+then stop before Step 2. Every `options` array MUST exhaustively list all substantive leaves. The
+root invokes `grill-me` through its native UI when available, then resumes or reinvokes this agent
+with the canonical [Resolved User Decisions Envelope](../../repo-governance/development/workflow/grilling-with-options.md#resolved-user-decisions-envelope).
+The root builds it from the original IDs after rendering and passes it verbatim; validate it before
+dependent work. A direct custom-agent or noninteractive caller receives the same envelope; never
+render a user prompt or infer an answer. The discovery pass is the only permitted work before that
+handoff.
 
 **Multiple-options requirement (HARD RULE)**: Every grill question MUST present 2-4 concrete
 options with trade-off descriptions — open-ended questions without options are FORBIDDEN. Every
 question MUST ALSO carry two standing options: a free-form **type-your-own (blank state)** path
 (explicit, never merely implicit — the most common omission) and a **"chat about this"** option
-for discussing the branch before deciding. Use the
-`AskUserQuestion` tool (preferred in Claude Code context) or the markdown question format from
-the `grill-me` skill. Read the codebase before asking so options are grounded in repo reality.
+for discussing the branch before deciding. Format every unresolved choice with the linked canonical
+envelope per the `grill-me` skill. Use the read-only discovery pass before composing it so options
+are grounded in repo reality.
 See [Grilling-With-Options Convention](../../repo-governance/development/workflow/grilling-with-options.md).
 
 Ask about (each as a structured multiple-choice question):
@@ -257,11 +271,22 @@ user or calling context specified a mode explicitly) → plan field (if a prior 
 declared one) → default `worktree-to-pr`. Never silently coerce an invalid non-empty value —
 treat it as a grill question instead (Step 8).
 
+**Per-Repository Delivery Mode Restrictions (HARD RULE) apply before a direct-push mode is ever
+authored**: `worktree-to-origin-main` and `main-to-origin-main` have no executable path in
+`ose-public` or `ose-primer` (`main` is branch-protected, including for admins). Only a genuinely
+infrastructure-as-code plan targeting `ose-private` may declare a direct-push mode. Do not author
+`worktree-to-origin-main` or `main-to-origin-main` for any plan targeting a restricted repo — resolve
+to `worktree-to-pr` (or
+`main-to-pr`) instead, since `plan-checker` item 9 will HIGH-flag the restricted mode on the very
+next check pass. See [Plans Organization Convention §Per-Repository Delivery Mode Restrictions
+(HARD RULE)](../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule).
+
 **For `*-to-pr` modes (`worktree-to-pr`, `main-to-pr`)**: the delivery checklist MUST emit the
 **PR-Review Maker→Fixer Cycle** steps (see
 [PR Review Quality Gate workflow](../../repo-governance/workflows/pr/pr-review-quality-gate.md)) —
-strictly sequential maker→fixer→maker→fixer→maker→fixer cycles (default 3), each cycle gated by a
-green CI run — **before** the PR-merge step. Recall "done" (a green, fully-reviewed PR) is NOT the
+first classify changed behavior: eligible work runs up to seven strictly sequential, CI-gated cycles
+and exits at the earliest clean code M/H/C result; noneligible work requires the named
+`pr-quality-gate.yml` workflow — **before** the PR-merge step. Recall "done" (a green, fully-reviewed PR) is NOT the
 same as "merged" — tag the PR merge itself `[AI]`, which is the default actor once the hardened
 preconditions hold, and do not treat plan completion as blocked on the merge happening. Emit a
 `[HUMAN]` merge step only where the plan explicitly opts into that gate; the preconditions are
@@ -275,29 +300,34 @@ for the authoritative mode table, precedence rule, and declaration syntax, and
 [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md)
 for the underlying git-workflow details.
 
-### Step 8: Grill the User (Mandatory — Post-Write)
+### Step 8: Resolve the Grill (Mandatory — Post-Write)
 
-After all plan files are written, invoke the `grill-me` skill again to validate the plan with
-the user before signaling done.
+After all plan files are written, invoke the `grill-me` skill again and resolve the validation grill
+before signaling done. Apply the Step 1 interaction-ownership rule: a delegated or noninteractive
+agent returns the exact `## User Decisions Required` envelope and stops; after the root resolves it
+through `grill-me`, resume or reinvoke this agent with the verbatim Resolved User Decisions Envelope
+and validate it before dependent work.
 
 **Multiple-options requirement (HARD RULE)**: Same as Step 1 — every validation question MUST
 present 2-4 concrete options plus the two standing options (free-form blank-state type and "chat
-about this"). Use `AskUserQuestion` tool (preferred) or markdown question format.
-Never present a binary yes/no without offering design alternatives. See
-[Grilling-With-Options Convention](../../repo-governance/development/workflow/grilling-with-options.md).
+about this"). Return only `## User Decisions Required` using the
+[canonical envelope schema](../../repo-governance/development/workflow/grilling-with-options.md#user-decisions-required-envelope).
+Never present a binary yes/no without offering design alternatives.
 
 Cover (each as a structured multiple-choice question):
 
-- Is `## Delivery Mode: <mode>` present alongside `## Worktree`, declaring one of the four valid
-  modes (defaulting to `worktree-to-pr` when unspecified), and — for `*-to-pr` modes — does the
-  checklist emit the PR-Review Maker→Fixer Cycle steps before the merge?
 - Does the plan structure match the user's intent? Are all acceptance criteria captured?
 - Are there open questions that surfaced during writing?
 - Is Gherkin completeness sufficient (every acceptance criterion has a scenario)?
+- Do all Gherkin scenarios follow the **step-keyword cardinality HARD rule** — exactly one
+  primary `Given`, one `When`, one `Then` per scenario, extras chained via `And`/`But`?
 - Is checklist granularity correct (each item is one concrete action; RED/GREEN/REFACTOR are
   separate checkboxes per the HARD RULE in
   [test-driven-development.md](../../repo-governance/development/workflow/test-driven-development.md))?
 - Is the `## Worktree` section present in `delivery.md`?
+- Is `## Delivery Mode: <mode>` present alongside `## Worktree`, declaring one of the four valid
+  modes (defaulting to `worktree-to-pr` when unspecified), and — for `*-to-pr` modes — does the
+  checklist emit the PR-Review Maker→Fixer Cycle steps before the merge?
 - Is Phase 0 (Environment Setup and Baseline) the first phase in `delivery.md`, with
   `repo-setup-manager` as the designated executor?
 - Is Phase 0 free of **every** PR/push/review/merge step — no `gh pr create`, no branch push, no
@@ -328,11 +358,11 @@ Cover (each as a structured multiple-choice question):
   per-course shape, the `## Corpus Disposition` declaration in `tech-docs.md`, and the
   `**Custodian**` line in `syllabus/README.md` — and that delivery steps produce them. See
   [Learning-Bearing Plans — Mandatory Syllabus Record](#learning-bearing-plans--mandatory-syllabus-record-hard-rule).
-- **Knowledge Capture phase present**: Does `delivery.md` end with a Knowledge Capture phase — the
-  FINAL substantive phase, immediately before Plan Archival — that scaffolds `learnings.md`, encodes
-  the open-ended triage rubric, states the code-routing rule (code-homed learnings are ALWAYS filed
-  as a separate `plans/backlog/` plan, never landed inline), and applies both the
-  secret/sensitivity gate and the repo-relevance gate? See the
+- **Knowledge Capture phase present**: Is a Knowledge Capture phase emitted as the FINAL substantive
+  phase of `delivery.md` (immediately before Plan Archival), with the `learnings.md` scaffold created,
+  the open-ended triage rubric encoded, the code-routing rule stated (code learnings ALWAYS filed as
+  a separate `plans/backlog/` plan, never inline), and both safety gates (secret/sensitivity,
+  repo-relevance) present? See the
   [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md).
 
 Revise files as needed based on user feedback. Signal done only after the user confirms the
@@ -476,13 +506,12 @@ exactly as the UI-design-funnel delivery section does above for UI-bearing plans
 ### Requirements Quality
 
 - User stories follow Gherkin format
-- Acceptance criteria are testable
+- Acceptance criteria are testable and follow the **step-keyword cardinality HARD rule**:
+  every `Scenario` uses exactly one primary `Given`, one `When`, and one `Then`; all extras
+  chain with `And`/`But`. `Background` blocks and `Scenario Outline` `Examples` tables are
+  exempt. See [Acceptance Criteria Convention §Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#step-keyword-cardinality-hard-rule).
 - Scope is clearly defined
 - Constraints are documented
-- **Gherkin keyword cardinality (HARD RULE)**: every `Scenario` uses exactly one primary
-  `Given`, one `When`, and one `Then`; extras chain with `And`/`But`. `Background` blocks
-  and `Scenario Outline` `Examples` tables are exempt. See
-  [HARD Rule — Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality).
 
 ### Technical Documentation Quality
 
@@ -496,20 +525,20 @@ exactly as the UI-design-funnel delivery section does above for UI-bearing plans
 
 When plan content (any of `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`) requires a visualisation, ALWAYS prefer Mermaid over ASCII art:
 
-- **Use Mermaid** (`flowchart LR`, `sequenceDiagram`, `stateDiagram-v2`, `erDiagram`, `classDiagram`, etc.) for all non-trivial visualisations — component interactions, data flows, sequences, state machines, decision branches.
+- **Use Mermaid** (`flowchart LR`, `sequenceDiagram`, `stateDiagram-v2`, `erDiagram`, `classDiagram`, etc.) for all non-trivial visualisations.
 - **Use ASCII art only** for simple directory trees or rare edge cases where Mermaid is genuinely not the right fit (e.g., table-like comparisons that render poorly in Mermaid).
 - Follow full Mermaid syntax rules in [repo-governance/conventions/formatting/diagrams.md](../../repo-governance/conventions/formatting/diagrams.md): `LR` orientation default, colour-blind-friendly palette, `%%` comment syntax.
 
-#### Diagram Coverage (proactive)
+**Extensive diagrams, not a token diagram**: for every distinct architectural concern the plan touches, add a dedicated diagram — one per concern. Do not produce one overloaded diagram and consider the requirement met. The concerns that warrant their own diagram when present:
 
-Plans must be diagram-rich. Do not wait to be asked — proactively add Mermaid diagrams wherever the per-document opportunity guide in [plans.md §Diagram Coverage Contract](../../repo-governance/conventions/structure/plans.md#diagram-coverage-contract) applies:
+- **Component interactions** — service/agent/library call graph (flowchart)
+- **Sequence or flow between agents or systems** — order-of-operations across processes (sequenceDiagram)
+- **State transitions** — entity lifecycle with named states and triggers (stateDiagram-v2)
+- **Decision branches** — conditional logic with multiple outcomes (flowchart with labelled edges)
+- **Dependency position** — upstream/downstream plan or system dependencies (flowchart)
+- **Phase/delivery flow** — phased delivery progression with gates and transition conditions (flowchart or stateDiagram-v2)
 
-- **`README.md`** — architecture/component-interaction flowcharts (`flowchart LR`) when the plan touches multiple services, agents, or apps; ER diagrams (`erDiagram`) for any data-model changes.
-- **`tech-docs.md`** — architecture/component-interaction flowcharts (`flowchart LR`); sequence diagrams (`sequenceDiagram`) for cross-system or cross-agent order-of-operations; state diagrams (`stateDiagram-v2`) for entity lifecycles; ER diagrams (`erDiagram`) for schema changes.
-- **`delivery.md`** — phase/dependency flowcharts (`flowchart LR` or `flowchart TD`) when phases have non-linear dependencies or parallel tracks.
-- **`prd.md`** — decision-branch flowcharts (`flowchart LR`) for non-trivial UX flows with more than one branch or outcome.
-
-The bias is: when a concept involves more than two interacting parts, an ordering, a lifecycle, or a branch, draw it. Plans that describe these structures only in prose are incomplete under the Diagram Coverage Contract.
+**Exception**: genuinely trivial/linear plans (single-file config bumps, renames, doc fixes, dependency bumps with no behavioural change) may skip diagrams entirely. For all other plans the extensive-where-appropriate rule applies.
 
 ### Delivery Checklist Quality
 
@@ -579,7 +608,7 @@ When a plan uses a **Per-Phase Integration Protocol** block (branch → commit �
 
 #### Delivery Boundaries Authoring Rule (HARD RULE)
 
-**A plan does not open a PR at every phase.** It opens one at each **delivery boundary** — the phase after which the accumulated work is an independently shippable increment. That may be a single boundary at the very end of the plan, or several across it. The contiguous run of phases ending at a boundary is a **delivery unit**, and the delivery unit — not the individual phase — is what maps to one worktree, one branch, and one PR.
+**A plan does not open a PR at every phase.** It opens one at each **delivery boundary** — the phase after which the accumulated work is an independently shippable increment. That may be a single boundary at the very end of the plan, or several across it. The contiguous run of phases ending at a boundary is a **delivery unit**, and the delivery unit — not the individual phase — is what maps to one branch and one PR. The **worktree** stays a coarser, per-repository unit: capped at one per repo per plan and reused — branch-switched — across every delivery unit landed there, per [Worktree Cap](../../repo-governance/conventions/structure/plans.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule).
 
 Decide boundaries at authoring time using the four-part boundary test (coherent / green standalone / defensible on `main` / reviewable whole) in [Plans Organization Convention §PRs Open at Delivery Boundaries](../../repo-governance/conventions/structure/plans.md#prs-open-at-delivery-boundaries-not-every-phase-hard-rule), then:
 
@@ -595,7 +624,9 @@ Decide boundaries at authoring time using the four-part boundary test (coherent 
 
 - [CLAUDE.md](../../CLAUDE.md) - Primary guidance
 - [Plans Organization Convention](../../repo-governance/conventions/structure/plans.md) - Plan structure and organization
+- [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md) - Mandatory final phase that triages the plan's `learnings.md` running log to a durable home (or an explicit discard) through both safety gates before archival
 - [Trunk Based Development Convention](../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow
+- [User-Facing Delivery Hardening Convention](../../repo-governance/development/quality/user-facing-delivery-hardening.md) - Fifteen durable rules for UI-bearing plans; emit delivery steps for rules 1–8 and 15 (visual-parity gate, design-system primitive naming, per-breakpoint responsive steps, mockup colors as theme tokens, value-bearing calculation tests, deploy-config-is-code, pre-archival production sign-off, checkbox lockstep, and — for web-UI plans — a near-end three-tester retest round (rule 15) whose EWT/UWT/DWT defect findings are appended to `delivery.md` as unchecked task-list items in a "Rule-15 retest follow-ups" section and ALL must be fixed (ticked) before archival — deferral of a defect finding requires explicit user permission and is allowed only when the fix is genuinely impossible; SG-### proposals and USS-### suggestions may be triaged or deferred)
 - [Manual Behavioral Verification Convention](../../repo-governance/development/quality/manual-behavioral-verification.md) - Mandatory Playwright/curl verification; emit the manual-assertion sections for any UI/API-touching plan
 - [Evidence Capture Convention](../../repo-governance/development/quality/evidence-capture.md) - Emit evidence-capture steps in manual-assertion sections: screenshots to the plan's `evidence/` subfolder (named by phase/locale/breakpoint), curl responses inlined in `delivery.md`, ALL supported locales covered
 
@@ -605,12 +636,7 @@ Decide boundaries at authoring time using the four-part boundary test (coherent 
 - [plan-execution workflow](../../repo-governance/workflows/plan/plan-execution.md) - Execute plans (calling context orchestrates; no dedicated subagent); invokes the `grill-me` skill to stress-test unresolved design decisions before execution begins
 - `plan-execution-checker` - Validates completed work
 - `plan-fixer` - Fixes plan issues
-- `grill-me` skill - Stress-test open design decisions before committing to implementation; every question presents 2-4 concrete options plus two standing options — a free-form blank-state type and a "chat about this" path (use `AskUserQuestion` tool in Claude Code or markdown format); invoke via the `grill-me` Skill when requirements have unresolved branches
-
-**Related Conventions:**
-
-- [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md) — Mandatory final phase that triages the plan's `learnings.md` running log to a durable home (or an explicit discard) through both safety gates before archival
-- [User-Facing Delivery Hardening Convention](../../repo-governance/development/quality/user-facing-delivery-hardening.md) — Emit delivery steps for rules 1–8: visual-parity sign-off before archival (rule 1), name the design-system primitive (rule 2), per-breakpoint responsive deliverables (rules 3–4), value-bearing tests (rule 5), mockup-colors-as-theme-tokens (rule 8).
+- `grill-me` skill - Stress-test open design decisions before committing to implementation; every question presents 2-4 concrete options plus two standing options — a free-form blank-state type and a "chat about this" path; this specialist returns unresolved decisions to the calling root and stops
 
 **Remember**: Good plans are executable blueprints, not vague intentions. Make them specific, structured, and actionable.
 
@@ -738,7 +764,9 @@ These are non-negotiable.
 
 **1. Phase 0: Environment Setup and Baseline** (the FIRST phase of every delivery checklist,
 delegated to `repo-setup-manager`; note the per-checkbox `[AI]` tags and the closing gate +
-Pause Safety note — the same shape every phase must follow):
+Pause Safety note — the same shape every phase must follow). **Phase 0 opens no PR under any
+Delivery Mode** — no push step, no `gh pr create`, no review cycle, no merge, no CI-verification
+step. Emit it exactly in this shape:
 
 ```markdown
 ## Phase 0: Environment Setup and Baseline
@@ -764,7 +792,7 @@ Pause Safety note — the same shape every phase must follow):
 > All checks below must pass before starting Phase 1.
 
 - [ ] [AI] `npm install` exited 0 and `npm run doctor -- --fix` reports no unresolved drift
-- [ ] [AI] `npx nx affected -t typecheck lint test:quick specs:coverage` baseline recorded and
+- [ ] [AI] `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push` baseline recorded and
       every preexisting failure resolved (zero unresolved)
 - [ ] [AI] Nothing was pushed and no PR exists for this branch — run both, reading the printed
       number (never `&&`-chaining, since `grep -c` exits 1 on a zero count):
@@ -784,10 +812,7 @@ Pause Safety note — the same shape every phase must follow):
 ```markdown
 ### Local Quality Gates (Before Push)
 
-- [ ] Run affected typecheck: `npx nx affected -t typecheck`
-- [ ] Run affected linting: `npx nx affected -t lint`
-- [ ] Run affected quick tests: `npx nx affected -t test:quick`
-- [ ] Run affected spec coverage: `npx nx affected -t specs:coverage`
+- [ ] Run the local pre-push gate set: `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push` (includes `nx affected -t test:quick`)
 - [ ] Fix ALL failures — including preexisting issues not caused by your changes
 - [ ] Re-run failing checks to confirm resolution
 - [ ] Verify zero failures before pushing
@@ -822,7 +847,7 @@ pushes nothing):
 ### Post-Push CI Verification
 
 - [ ] Push changes to the delivery target for the declared Delivery Mode (the PR branch under `worktree-to-pr` / `main-to-pr`; `origin main` under the direct-push modes)
-- [ ] Monitor ALL GitHub Actions workflows triggered by that push (for `*-to-pr` modes this is the PR's own check run); `.github/workflows/main-ci.yml` no longer exists (removed — its checks were folded into the gate registry driving `pr-quality-gate.yml`)
+- [ ] Monitor ALL GitHub Actions workflows triggered by that push (for `*-to-pr` modes this is the PR's own check run)
 - [ ] Verify ALL CI checks pass — no exceptions
 - [ ] If any CI check fails, fix immediately and push a follow-up commit
 - [ ] Repeat until ALL GitHub Actions pass with zero failures
@@ -872,31 +897,37 @@ a pause that is not real:
 Phase 0 and the final verification phase are legitimate gate-bearing phases even though they produce
 no commit.
 
-**6b. Knowledge Capture Phase** (MANDATORY — the FINAL substantive phase of every substantive
-plan's delivery checklist, positioned immediately before "Plan Archival"; see the
+**6b. Knowledge Capture Phase** (MANDATORY — the FINAL substantive phase of every substantive plan,
+immediately before "Plan Archival"; see the
 [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md)):
 
-Scaffold `learnings.md` in the plan folder (sibling to `delivery.md`) at plan-creation time — a
-transient running log the executor appends to during execution, one entry per generalizable
-learning, sanitized before it is ever written:
+Create `learnings.md` in the plan folder (sibling to `delivery.md`) at plan-creation time as the
+transient running log the executor appends to during execution — an entry per generalizable
+learning, sanitized per the secret/sensitivity gate before it is ever written.
+
+The file MUST open with an H1 — `# Learnings: <plan-identifier>` (the plan's folder slug) — before
+any entries. markdownlint MD041 requires a top-level heading as the first content line, so a
+scaffold of bare HTML comments fails the pre-commit markdown gate on the plan's first commit.
+
+Entry shape:
 
 ```markdown
 ## Learning: <one-line summary>
 
 - **Context**: what was being done when this surfaced
-- **Observation**: what was noticed (sanitized — see the secret/sensitivity gate below)
+- **Observation**: what was noticed (sanitized — see the secret/sensitivity gate)
 - **Why it might generalize**: the litmus reasoning
 ```
 
-Then emit the Knowledge Capture phase as the final phase of `delivery.md`, encoding the
+Then emit the Knowledge Capture phase itself as the final phase of `delivery.md`, encoding the
 **open-ended, principle-based triage rubric** (route each surviving learning to whichever durable
-home owns that kind of knowledge — `repo-governance/`, `docs/`, `.claude/agents/`,
-`.claude/skills/`, a post-mortem, or any other surface; discard anything that fails the litmus
-test: "would a durable surface catch this automatically next time?"), the **code-routing rule** (a
-learning whose home is `apps/`, `libs/`, or tests is ALWAYS filed as a separate
-`plans/backlog/<slug>/` plan and NEVER landed inline in this plan's own commits/PR — the only
-carve-out is a blocker genuinely required to finish this plan's own scope, per Root Cause
-Orientation), and both mandatory safety gates:
+home — `repo-governance/`, `docs/`, `.claude/agents/`, `.claude/skills/`, a post-mortem, or any
+other surface — owns that kind of knowledge; discard anything that fails the litmus test: "would a
+durable surface catch this automatically next time?"), the **code-routing rule** (a learning whose
+home is `apps/`, `libs/`, or tests is **ALWAYS** filed as a separate `plans/backlog/<slug>/` plan
+and **NEVER** landed inline in this plan's own commits/PR — the only carve-out is a blocker genuinely
+required to finish this plan's own scope, per Root Cause Orientation), and both mandatory safety
+gates:
 
 ```markdown
 ## Phase N: Knowledge Capture
@@ -910,20 +941,26 @@ Orientation), and both mandatory safety gates:
 - [ ] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize any secret,
       credential, token, or private hostname to a `<placeholder>` token, or discard if unsanitizable
       — acceptance: `learnings.md` contains no raw secret
-- [ ] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
-      in `ose-private` only and is NEVER cross-routed into `ose-public`/`ose-primer`
-      — acceptance: no infra-private content appears in this repo's routed output
+- [ ] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content
+      (Terraform, k3s, Proxmox, real hostnames/inventories) stays in `ose-private` only and is NEVER
+      cross-routed into `ose-public`/`ose-primer`; public-governance content may propagate via the
+      existing parity loop — acceptance: no infra-private content appears in this repo's routed
+      output
 - [ ] [AI] Route each surviving learning to exactly one durable home per the open-ended routing
-      matrix; code homes (`apps/`, `libs/`, tests) are ALWAYS filed as a separate
-      `plans/backlog/<slug>/` plan, NEVER landed inline
+      matrix — non-code homes may land inline (small edit) or as a `plans/backlog/` follow-up
+      (large); code homes (`apps/`, `libs/`, tests) are ALWAYS filed as a separate
+      `plans/backlog/<slug>/` plan and NEVER landed inline
       — acceptance: every `learnings.md` entry records its terminal routing state
 - [ ] [AI] For any entry routed to `plans/ideas/`, scan `plans/ideas/README.md` and the existing
-      two-pagers FIRST for a brief already covering the same area — fold in rather than creating a
-      new file (see [Integrate Before You Add](../../repo-governance/conventions/structure/plans.md#integrate-before-you-add-no-duplicate-two-pagers))
+      two-pagers FIRST for a brief already covering the same problem or area — fold the learning
+      into that brief instead of creating a new file; only create a new `plans/ideas/<slug>.md`
+      when the scan confirms no existing brief overlaps (see
+      [Integrate Before You Add](../../repo-governance/conventions/structure/plans.md#integrate-before-you-add-no-duplicate-two-pagers))
       — acceptance: the entry's routing line names either the folded-into brief or confirms the
       overlap scan found nothing
-- [ ] [AI] If no generalizable learning surfaced, record `No generalizable learnings — <reason>`
-      in `learnings.md` — acceptance: `learnings.md` is never silently empty
+- [ ] [AI] If no generalizable learning surfaced, record the explicit escape in `learnings.md`:
+      `No generalizable learnings — <one-line reason>` — acceptance: `learnings.md` is never
+      silently empty
 
 ### Phase N Gate
 
@@ -938,10 +975,10 @@ Orientation), and both mandatory safety gates:
 > every entry is terminal.
 ```
 
-Pure-docs and trivial plans (one-line rename, single broken-link fix) MAY skip the elaborate phase
-— the explicit "none" escape above satisfies the requirement without inventing insight the plan
-never produced. Never leave `learnings.md` silently absent with no explanation; `plan-checker`
-flags silent absence at MEDIUM.
+Pure-docs and trivial plans (one-line rename, single broken-link fix) MAY skip the elaborate phase —
+the explicit "none" escape above satisfies the requirement without inventing insight the plan never
+produced. Never leave `learnings.md` silently absent with no explanation; `plan-checker` flags
+silent absence at MEDIUM.
 
 ### Adapting to Plan Context
 

@@ -20,9 +20,9 @@ This Skill provides comprehensive guidance for creating **structured project pla
 
 ## Mandatory Pre-Write and Post-Write Grilling
 
-Before writing any plan content, resolve all open design decisions with the user via structured
-multiple-choice grilling (pre-write grill). After writing the plan, validate and stress-test it
-with the user the same way (post-write grill). Neither gate is optional.
+Before writing any plan content, the calling root resolves all open design decisions through a
+structured multiple-choice pre-write grill. After writing the plan, the root runs the same
+post-write validation grill. Neither gate is optional.
 
 **HARD RULE — 2-4 options required**: Every grilling question MUST present **2-4 concrete,
 mutually exclusive options**. Each option MUST state its trade-off in one sentence. Exactly one
@@ -30,12 +30,20 @@ option MUST be marked `(Recommended)` with a one-sentence rationale. Open-ended 
 options are FORBIDDEN. Resolve one decision per question; tightly coupled decisions may be batched
 in a single multi-question prompt.
 
-**Mechanism**: use the `AskUserQuestion` tool (or the harness's native interactive multiple-choice
-tool) first when available; fall back to inline markdown options when it is not.
+**Interaction ownership**: the root owns native UI interaction and, when it is noninteractive or
+lacks a native tool, emits markdown choices to its caller. A plan specialist never questions the
+user directly. It returns `## User Decisions Required` using the
+[canonical envelope schema](../../../repo-governance/development/workflow/grilling-with-options.md#user-decisions-required-envelope),
+with stable decision ID, question, recommended option and rationale, and exhaustive option objects
+with trade-offs, then stops. The root resolves the envelope and resumes or reinvokes the specialist
+with the canonical [Resolved User Decisions Envelope](../../../repo-governance/development/workflow/grilling-with-options.md#resolved-user-decisions-envelope),
+constructed from the original IDs after rendering and passed verbatim. The specialist validates it
+before dependent work. A direct custom-agent or noninteractive specialist caller receives the same
+envelope.
 
-**Explore before asking**: read the relevant repo artifacts before composing any question. Never
-ask the user something a file read can answer — the repo is the ground truth; the user is the
-tiebreaker for genuinely ambiguous decisions.
+**Explore before composing**: read the relevant repo artifacts before creating an envelope or root
+question. Never surface a decision a file read can answer — the repo is the ground truth; the user
+is the tiebreaker for genuinely ambiguous decisions.
 
 **Pre-write grill covers** (each as a structured multiple-choice question):
 
@@ -58,7 +66,8 @@ tiebreaker for genuinely ambiguous decisions.
 - Does `delivery.md` open with the `[AI]`/`[HUMAN]` executor legend, and is every step that only a human can do tagged `[HUMAN]`?
 - Does every phase end with a `### Phase N Gate` (must-pass verification) followed by a Pause Safety note?
 
-**Do NOT proceed to writing until all pre-write branches are resolved.** Unresolved design
+**Do NOT proceed to writing until all pre-write branches are resolved.** A specialist with any open
+branch returns `## User Decisions Required` and stops; it never infers an answer. Unresolved design
 decisions force expensive rewrites.
 
 See [Grilling-With-Options Convention](../../../repo-governance/development/workflow/grilling-with-options.md)
@@ -94,6 +103,114 @@ Naming is **stage-aware** — each lifecycle stage has its own rule:
 - Trailing slash indicates directory
 - Moving from `backlog/` → `in-progress/` is a pure move (neither carries a date prefix)
 - Add the completion date prefix when moving from `in-progress/` → `done/`
+
+## Mermaid Diagrams in Plans
+
+Plans MUST include **extensive Mermaid diagrams where appropriate**: every distinct architectural concern the plan touches that a reader would otherwise reconstruct mentally from prose SHOULD receive its own diagram — one diagram per concern, not one diagram total.
+
+Concerns that warrant their own diagram when present:
+
+- **Component interactions** — service/agent/library call graph
+- **Sequence or flow between agents or systems** — order-of-operations across processes
+- **State transitions** — entity lifecycle with named states and triggers
+- **Decision branches** — conditional logic with multiple outcomes
+- **Dependency position** — upstream/downstream plan or system dependencies
+- **Phase/delivery flow** — phased progression with gates and transition conditions
+
+Prefer multiple focused diagrams over one overloaded diagram. Trivial/linear plans (single-file config bumps, renames, doc fixes) may skip diagrams — this is the "where appropriate" escape hatch.
+
+**Authoritative rule**: [repo-governance/conventions/structure/plans.md §Diagrams in Plans](../../../repo-governance/conventions/structure/plans.md#diagrams-in-plans)
+
+**Palette and accessibility**: use the `docs-creating-accessible-diagrams` skill for the verified WCAG-compliant hex codes and color-blind-friendly palette.
+
+## UI Mockups in UI-Bearing Plans — the UI-design-funnel (HARD RULE)
+
+A plan is **UI-bearing** when it adds or changes user-facing screens or components under `apps/` or
+`libs/` (e.g. `libs/web-ui`). Pure refactors, no-UI plans, and governance-only plans are exempt —
+exactly as with the specs/Gherkin binding.
+
+Every UI-bearing plan MUST document its draft UI through the **UI-design-funnel**
+(diverge → narrow → select → justify), authored per the
+[UI Mockups in Plan Docs convention](../../../repo-governance/conventions/formatting/diagrams.md#ui-mockups-in-plan-docs).
+
+**PLACEMENT HARD RULE**: ALL funnel artefacts MUST be placed in the plan's **`prd.md`** — not in
+`README.md`, `brd.md`, `tech-docs.md`, or any separate file. Binary mockup image assets live
+under the plan's `assets/` folder and are referenced from `prd.md` via `![]()` image embeds.
+A UI-bearing plan whose `prd.md` does NOT contain the funnel record (all four stages plus embedded
+mockup links) fails the plan quality gate. See
+[UI Mockups in Plan Docs — Placement](../../../repo-governance/conventions/formatting/diagrams.md#placement--the-ui-lives-in-prdmd-hard-rule).
+
+The funnel produces four kinds of artefact, all visible in the plan (`prd.md` + the plan's
+`assets/`); no alternative is silently discarded:
+
+- **Both tiers per screen** — each screen gets a **low-fidelity** ASCII/Unicode wireframe in a
+  fenced code block AND a **high-fidelity** `.excalidraw.png` referenced via `![](./file)`, in
+  separate labelled subsections. Never use inline HTML+CSS, MDX, Mermaid-as-wireframe, or
+  `.excalidraw.svg` (GitHub strips/garbles them).
+- **Diverge** — **≥ 2 (aim for 3) genuinely different** named low-fi alternatives (Option A / B / C).
+- **Narrow** — the **2 strongest** carried forward as hi-fi `.excalidraw.png` finalists, with a
+  one-line drop reason for each alternative cut.
+- **Select** — the chosen design **named explicitly** (e.g. "Selected: Option A — Ranked Table").
+- **Justify** — a short **rationale / decision record** (a small table is enough): why the winner
+  won and why each runner-up lost.
+- **Grounding note (R5)** — before drafting either tier, survey the existing UI of the related
+  app(s) and lib(s) (`libs/web-ui` component inventory + tokens + Storybook, the target app's
+  shell, sibling screens; reference the `swe-developing-frontend-ui` skill) and reuse what already
+  exists; name any net-new component explicitly.
+- **Prior-art citation (R7)** — consult prior art on how comparable tools solve the screen via the
+  `web-researcher` agent, so the divergent alternatives are informed rather than invented.
+- **Responsive design (mobile/tablet/desktop)** — the funnel MUST address **responsive** behaviour,
+  **mobile-first**, across mobile (`< sm`), tablet (`md` ≥ 768 px), and desktop (`lg` ≥ 1024 px).
+  The low-fi tier must show the mobile↔desktop reflow where it differs (e.g. table → stacked cards,
+  side rail → top sheet); the selected design's record must state the **responsive strategy** per
+  breakpoint; and each finalist is evaluated on its **mobile-first responsive behaviour**, not its
+  desktop appearance alone. A desktop-only design is not a valid finalist.
+
+`plan-maker` requires these artefacts and emits delivery steps that produce them; `plan-checker`
+flags any missing artefact at HIGH criticality (its UI-design-funnel completeness step, sibling to
+the specs/Gherkin Step 5j); `plan-fixer` scaffolds the missing funnel sections. This mirrors the
+**Specs & Gherkin completeness (both paths)** binding: a UI-bearing plan never passes quality gates
+without its design funnel.
+
+### Design-funnel grilling questions (UI-bearing plans)
+
+For a UI-bearing plan, the specialist's envelope and the root-owned pre-write grill MUST cover the
+UI-design-funnel decisions as structured multiple-choice questions (each with 2-4 concrete options
+plus the two standing options — a free-form blank-state type and "chat about this"):
+
+- **Which alternatives?** Present 2-4 candidate low-fi layouts for the screen (e.g. Ranked Table /
+  Card Grid / Split Layout), each option stating its trade-off in one sentence, one marked
+  `(Recommended)`. The author must produce ≥2 genuinely different named alternatives.
+- **What prior art?** Present 2-4 ways to ground the alternatives (e.g. delegate a
+  `web-researcher` survey of comparable tools / reuse a named sibling screen pattern / blend the
+  web-ui kit only), so the diverge stage is informed rather than invented.
+- **Which selection, and why?** Present the finalists as options (e.g. Option A / Option B) and
+  capture the winning design plus one-sentence rationale, so Select + Justify are explicit.
+- **What responsive strategy?** Present 2-4 ways the selected layout reflows from **mobile** to
+  **desktop** (e.g. table collapses to stacked cards / side rail moves into a top sheet / two-pane
+  split becomes a single column), so the **responsive** behaviour across mobile/tablet/desktop is
+  decided mobile-first rather than designed desktop-only.
+
+See [Grilling-With-Options Convention](../../../repo-governance/development/workflow/grilling-with-options.md)
+for the authoritative multiple-choice format.
+
+## Learning-Bearing Plans — the Syllabus Record (HARD RULE)
+
+A plan is **learning-bearing** when its delivery checklist authors or restructures course, tutorial,
+or curriculum content — the direct learning-side analogue of "UI-bearing." Plans that only cite,
+link to, or lightly correct an existing corpus are exempt — exactly as with the specs/Gherkin and
+UI-design-funnel bindings above.
+
+Every learning-bearing plan MUST document its corpus through the required
+`syllabus/README.md` + `syllabus/courses/` + `syllabus/paths/` folder layout, the template-derived
+per-course shape, a `## Corpus Disposition` declaration in `tech-docs.md`, and a Custodian line in
+`syllabus/README.md`, authored per the
+[Learning-Plan `syllabus/` Folder Convention](../../../repo-governance/conventions/structure/learning-plan-syllabus.md).
+
+`plan-maker` requires these artefacts and emits delivery steps that produce them; `plan-checker`
+flags any missing artefact at HIGH criticality (its Learning-Bearing Syllabus Completeness step,
+Step 5n, sibling to the UI-design-funnel Step 5k); `plan-fixer` scaffolds the missing syllabus-record
+sections.
 
 ## Plan Structure
 
@@ -148,7 +265,7 @@ If the plan grows past 1000 lines or authoring feels crowded, promote to the fiv
 
 ## Worktree Specification (Mandatory — Applies to ALL Plans)
 
-Every plan MUST declare its worktree path before the delivery checklist begins. This is enforced by `plan-checker` (HIGH finding when missing) and the [plan-execution workflow Step 0 hard gate](../../../repo-governance/workflows/plan/plan-execution.md) — execution refuses to start if the section is absent. When the section is present, the executor enters the declared worktree by default: it auto-provisions from the latest `origin/main` when missing, syncs with `origin/main` before implementing, and prompts the user before deleting the worktree after the plan is archived and pushed.
+Every plan MUST declare its worktree path before the delivery checklist begins. This is enforced by `plan-checker` (HIGH finding when missing) and the [plan-execution workflow Step 0 hard gate](../../../repo-governance/workflows/plan/plan-execution.md) — execution refuses to start if the section is absent. When the section is present, the executor enters the declared worktree by default: it auto-provisions from the latest `origin/main` when missing, syncs with `origin/main` before implementing, and — per the [Worktree Cap HARD RULE](../../../repo-governance/conventions/structure/plans.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule) — is capped at **one worktree per repository per plan**, reused across every delivery unit landed there. Cleanup is immediate, not deferred: the worktree is removed the moment this plan is done using that repo, not batched with unrelated later steps.
 
 **Where to declare**:
 
@@ -173,7 +290,7 @@ Optional manual pre-provisioning (run from repo root):
 claude --worktree <plan-identifier>
 ```
 
-The plan-execution Step 0 gate enters this worktree by default: it auto-provisions from the latest `origin/main` when missing, syncs with `origin/main` before implementing, and prompts before deleting the worktree after the plan is archived and pushed.
+The plan-execution Step 0 gate enters this worktree by default: it auto-provisions from the latest `origin/main` when missing, syncs with `origin/main` before implementing, and — capped at one per repository per plan and reused across every delivery unit landed there — is removed immediately once the plan is done using this repo, not deferred to archival.
 
 See [Worktree Path Convention](../../../repo-governance/conventions/structure/worktree-path.md) and [Plans Organization Convention §Worktree Specification](../../../repo-governance/conventions/structure/plans.md#worktree-specification).
 ````
@@ -191,13 +308,21 @@ Every plan resolves to exactly one **delivery mode** before execution begins, de
 - **`main-to-origin-main`** — primary checkout (no worktree), direct push to `origin main`, `[AI]` pushes directly.
 - **`main-to-pr`** — primary checkout (no worktree), PR opened against `main`, `[AI]` merges once the hardened preconditions hold (a `[HUMAN]` merge gate applies only where the plan's own step says so).
 
-**Per-repository restriction (HARD RULE)**: `worktree-to-origin-main` and `main-to-origin-main` have **no executable path** in `ose-public` or `ose-primer` — `main` is branch-protected against direct pushes there, including for admins. `archived repository` is held to the same restriction by convention only (its `main` is not yet actually GitHub-branch-protected, pending a `[HUMAN]`-only settings change). In `ose-private`, both direct-push modes are available only for infrastructure-as-code plans. Declaring a direct-push mode outside these carve-outs is a `plan-checker` HIGH finding, not a silent fallback. See [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule).
+**Per-Repository Delivery Mode Restrictions (HARD RULE)**: the two direct-push modes above are not
+freely selectable in every repo. `main` is branch-protected (including for admins) in `ose-public`
+and `ose-primer`, so neither direct-push mode has an executable path there — `worktree-to-pr` is
+**mandatory**, not merely the safest default. Only `ose-private` retains a
+narrow surviving exception, and only for a genuinely infrastructure-as-code plan. See [Plans
+Organization Convention §Per-Repository Delivery Mode Restrictions (HARD RULE)](../../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule)
+for the full per-repo table and enforcement detail.
 
-`worktree-to-pr` is the safest default absent a reason to pick another mode — it isolates work and routes it through review before it touches `main`.
+`worktree-to-pr` is mandatory in `ose-public` and `ose-primer` — it is the safest choice everywhere
+else too, absent a reason to pick another mode in the one repo (`ose-private`) where an alternative
+is actually available.
 
-**Declare it explicitly**: `## Delivery Mode: worktree-to-pr` (or one of the other three modes), placed immediately alongside the `## Worktree` declaration. An unmarked plan resolves to the tier-3 default (`worktree-to-pr`) per the three-tier precedence algorithm (invocation argument → plan field → default).
+**Declare it explicitly**: `## Delivery Mode: worktree-to-pr` (or one of the other three modes, subject to the restriction above), placed immediately alongside the `## Worktree` declaration. An unmarked plan resolves to the tier-3 default (`worktree-to-pr`) per the three-tier precedence algorithm (invocation argument → plan field → default).
 
-**`*-to-pr` modes run the PR-Review Maker→Fixer Cycle**: for `worktree-to-pr` and `main-to-pr`, the delivery checklist's finalization phase MUST emit the [PR-Review Maker→Fixer Cycle workflow](../../../repo-governance/workflows/pr/pr-review-quality-gate.md) (a fixed N-cycle, default 3, sequential reviewer pipeline — eight discipline specialists fan out, `pr-review-synthesis-maker` consolidates into one review, `pr-review-fixer` resolves it — loop with a hard CI-green gate between cycles) before the PR is considered done. The merge itself sits outside this done-boundary — `[AI]` merges by default once the hardened preconditions hold, and a `[HUMAN]` merge gate applies only where the plan's own step says so explicitly.
+**Every PR uses the behavior classifier**: for `worktree-to-pr` and `main-to-pr`, the delivery checklist records the [PR-Review Maker→Fixer Cycle workflow](../../../repo-governance/workflows/pr/pr-review-quality-gate.md). Eligible executable work runs the sequential reviewer pipeline to the earliest clean code M/H/C result within the seven-cycle maximum; noneligible static work requires the named `pr-quality-gate.yml` workflow. The merge sits outside this done-boundary and `[AI]` merges once hardened preconditions hold.
 
 **Invalid values are a finding, never silently coerced**: a delivery-mode value that is not one of the four modes above is a `plan-checker` HIGH finding, not a silent fallback to the default.
 
@@ -207,9 +332,9 @@ Plans are executed by **execution-grade (sonnet-tier)** agents, not planning-gra
 
 **Every checkbox MUST contain all of the following that apply**:
 
-- **Explicit file path(s)** when the action touches a known file. When the path cannot be determined at authoring time, give the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/crud-fe-ts-nextjs/src/lib/` following the pattern of sibling `auth.ts`").
-- **Explicit shell command(s)** verbatim when applicable (e.g., `npx nx run crud-be-go-gin:test:quick`), not "run the lint".
-- **Concrete acceptance criterion** stating the observable change that proves done (e.g., "all assertions in `trpc.test.ts` pass", "`nx run crud-fe-ts-nextjs:typecheck` exits 0"). No bare "implement X", "set up Y", "configure Z".
+- **Explicit file path(s)** when the action touches a known file. When the path cannot be determined at authoring time, give the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/organiclever-www/src/lib/` following the pattern of sibling `auth.ts`").
+- **Explicit shell command(s)** verbatim when applicable (e.g., `npx nx run ose-web:test:quick`), not "run the lint".
+- **Concrete acceptance criterion** stating the observable change that proves done (e.g., "all assertions in `trpc.test.ts` pass", "`nx run ose-web:typecheck` exits 0"). No bare "implement X", "set up Y", "configure Z".
 
 **`plan-checker` flags violations as HIGH severity. `plan-fixer` rewrites offending items with maximum detail.**
 
@@ -224,9 +349,9 @@ Plans are executed by **execution-grade (sonnet-tier)** agents, not planning-gra
 **Good** (explicit path, explicit command, explicit criterion):
 
 ```markdown
-- [ ] Edit `apps/crud-fe-ts-nextjs/src/server/trpc.ts`: wrap the public router with
+- [ ] Edit `apps/ose-www/src/server/trpc.ts`: wrap the public router with
       `unstable_cache(..., { revalidate: 300 })`. Verify by running
-      `npx nx run crud-fe-ts-nextjs:test:quick` — all tests pass.
+      `npx nx run ose-web:test:quick` — all tests pass.
 ```
 
 **Bad**:
@@ -238,9 +363,9 @@ Plans are executed by **execution-grade (sonnet-tier)** agents, not planning-gra
 **Good**:
 
 ```markdown
-- [ ] Create `apps/crud-be-fsharp-giraffe/src/Middleware/RateLimit.fs` (siblings: `Auth.fs`, `Cors.fs`)
+- [ ] Create `apps/organiclever-be/src/Middleware/RateLimit.fs` (siblings: `Auth.fs`, `Cors.fs`)
       implementing token-bucket rate limiting per `tech-docs.md §Rate Limiting`. Verify by running
-      `npx nx run crud-be-fsharp-giraffe:test:unit` — new test `RateLimit_RejectsExceedingRequests` passes.
+      `npx nx run organiclever-be:test:unit` — new test `RateLimit_RejectsExceedingRequests` passes.
 ```
 
 **Bad**:
@@ -377,19 +502,6 @@ Reject these patterns at authoring time. `plan-checker` flags occurrences as HIG
 - **AP-9** — citing a behavior claim without a source
 - **AP-10** — cross-linking to a file that does not exist
 
-## No Secrets in Plans (HARD RULE)
-
-NEVER write system secrets into plan documents — they are committed to git and permanent.
-Prohibited values include SSH keys, passwords, sensitive/privileged usernames, API keys,
-tokens, OAuth client secrets, and database connection strings with real credentials.
-
-- Reference a secret by its variable name and location only: "set `DEPLOY_TOKEN` in `.env`".
-- Real values live in uncommitted files (`.env*` except `.env.example`, or another gitignored
-  location) — never in `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`, or `README.md`.
-- A pushed secret is a leaked secret; rotate immediately if one is committed.
-
-See [No Secrets in Committed Files Convention](../../../repo-governance/conventions/security/no-secrets-in-committed-files.md).
-
 ## Specialized-Executor Annotation
 
 Domain-specialized agents hallucinate less than generic orchestration. When a delivery checkbox names a domain that maps cleanly to a specialized agent, annotate the checkbox with the suggested executor.
@@ -397,8 +509,8 @@ Domain-specialized agents hallucinate less than generic orchestration. When a de
 **Annotation format** (sub-bullet under the checkbox prose, before any implementation notes):
 
 ```markdown
-- [ ] Edit `apps/crud-be-fsharp-giraffe/src/Domain/User.fs` [Repo-grounded]: add `email: string option` field
-      with case-insensitive uniqueness. Verify by running `nx run crud-be-fsharp-giraffe:test:unit` — new test
+- [ ] Edit `apps/organiclever-be/src/Domain/User.fs` [Repo-grounded]: add `email: string option` field
+      with case-insensitive uniqueness. Verify by running `nx run organiclever-be:test:unit` — new test
       `User_RejectsDuplicateEmailIgnoringCase` passes.
   - _Suggested executor: `swe-fsharp-dev`_
 ```
@@ -406,10 +518,10 @@ Domain-specialized agents hallucinate less than generic orchestration. When a de
 **When to annotate**:
 
 - Action touches a specific language file (`.fs`, `.go`, `.kt`, `.cs`, `.fsproj`, `.csproj`, etc.)
-- Action touches a specific app context (`apps/crud-fe-ts-nextjs/...` → content-maker for content)
+- Action touches a specific app context (`apps/ose-www/...` → `apps-ose-www-content-maker` for content)
 - Action is content/documentation (`docs-maker`, `readme-maker`, `specs-maker`)
 - Action is governance / repo rules (`repo-rules-maker`)
-- Action is content-platform skill domain (`docs-maker`, `docs-tutorial-maker`)
+- Action is content-platform skill domain (`apps-ayokoding-www-by-example-maker`, `apps-ayokoding-www-in-the-field-maker`, etc.)
 
 **When to skip annotation** (default plan-execution Agent Selection suffices):
 
@@ -439,7 +551,7 @@ Then they are redirected to the dashboard
 And their session is created with correct permissions
 ```
 
-**Step-Keyword Cardinality (HARD rule)**: Every `Scenario` MUST use exactly one primary `Given`, exactly one primary `When`, and exactly one primary `Then` — every additional precondition, action, or outcome is chained with `And` or `But`, never a repeated primary keyword. `Background` blocks and `Scenario Outline` `Examples` tables are exempt. See [HARD Rule — Step-Keyword Cardinality](../../../repo-governance/development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality).
+**Step-Keyword Cardinality (HARD Rule)**: Every `Scenario` MUST use exactly one primary `Given` line, exactly one primary `When` line, and exactly one primary `Then` line — chain every additional precondition, action, or outcome with `And`/`But`, never a repeated primary keyword. `Background` blocks and `Scenario Outline` `Examples` tables are exempt. See [Acceptance Criteria Convention §Step-Keyword Cardinality (HARD Rule)](../../../repo-governance/development/infra/acceptance-criteria.md#step-keyword-cardinality-hard-rule).
 
 **Best Practices**:
 
@@ -448,7 +560,7 @@ And their session is created with correct permissions
 - One scenario per user story
 - Make scenarios independent
 - Use consistent language
-- Obey the step-keyword cardinality HARD rule (one primary `Given`/`When`/`Then` each; extras via `And`/`But`)
+- Exactly one primary `Given`/`When`/`Then` per scenario; extras chained with `And`/`But` (see HARD rule above)
 
 ## Git Workflow in Plans
 
@@ -458,11 +570,12 @@ And their session is created with correct permissions
 - Draft PR against `main`; PR-Review Maker→Fixer Cycle before merge
 - Small, frequent commits; merge `[AI]` once the hardened preconditions hold
 
-**Direct-push modes (`worktree-to-origin-main`, `main-to-origin-main`)**:
+**Direct-push modes (`worktree-to-origin-main`, `main-to-origin-main`) — `ose-private` infrastructure-as-code plans only**:
 
-- **No executable path in `ose-public` or `ose-primer`** — `main` is branch-protected against direct pushes there, including for admins; `archived repository` is restricted to the same effect by convention only (see [Per-Repository Delivery Mode Restrictions](../../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule))
-- Available in `ose-private` only for infrastructure-as-code plans
-- For small, obviously-safe changes where a PR adds no review value
+- Not available in `ose-public`, `ose-primer` (branch-protected `main`, including for admins) — see
+  the Per-Repository Delivery Mode Restrictions HARD RULE above
+- Reachable only for a genuinely infrastructure-as-code plan in `ose-private`
+- For small, obviously-safe changes where a PR adds no review value, in that one repo
 - Declare the mode explicitly in `## Delivery Mode` — never assume it
 - No separate approval gate: declaring the mode IS the decision
 
@@ -480,8 +593,9 @@ sections, and new Skills for agent coverage, with its open questions and promoti
 
 ### 2. Planning (backlog/)
 
-**Gate**: Resolve all open design decisions with the user via pre-write grilling before writing
-any plan content. See [Mandatory Pre-Write and Post-Write Grilling](#mandatory-pre-write-and-post-write-grilling).
+**Gate**: The root resolves all open design decisions via pre-write grilling before the specialist
+writes plan content. A specialist returns `## User Decisions Required` and stops when any branch is
+open. See [Mandatory Pre-Write and Post-Write Grilling](#mandatory-pre-write-and-post-write-grilling).
 
 **Actions**:
 
@@ -505,8 +619,9 @@ any plan content. See [Mandatory Pre-Write and Post-Write Grilling](#mandatory-p
 
 ### 4. Completion (done/)
 
-**Gate**: Validate the finished plan with the user via post-write grilling before archiving. See
-[Mandatory Pre-Write and Post-Write Grilling](#mandatory-pre-write-and-post-write-grilling).
+**Gate**: The root validates the finished plan via post-write grilling before archiving. A
+specialist returns `## User Decisions Required` and stops until the root resumes it with answers.
+See [Mandatory Pre-Write and Post-Write Grilling](#mandatory-pre-write-and-post-write-grilling).
 
 **Actions**:
 
@@ -572,10 +687,13 @@ direct action + acceptance criterion instead.
 **Update after completion**:
 
 ```markdown
-- [x] **RED**: Write failing test for `validateEmail` in `libs/ts-utils/src/validation.test.ts`
-  - **Implementation Notes**: Test confirmed failing with "validateEmail is not defined"
+- [x] Step 1: Description
+  - [x] Substep 1.1
+  - [x] Substep 1.2
+  - **Implementation Notes**: What was done, decisions made
   - **Date**: 2026-01-02
   - **Status**: Completed
+  - **Files Changed**: List of modified files
 ```
 
 ### Validation Checklist
@@ -752,7 +870,14 @@ Knowledge Capture phase itself into every new substantive plan by default.
 ```markdown
 <!-- Knowledge Capture running log — append entries during execution. -->
 <!-- Triage every entry (or record the explicit "none" escape) before archival. -->
+
+# Learnings: <plan-identifier>
 ```
+
+The `# Learnings: <plan-identifier>` H1 is **mandatory**, not decorative: markdownlint MD041 requires
+the first line of content to be a top-level heading, so a scaffold of bare HTML comments fails the
+pre-commit markdown gate the moment the plan folder is first committed. Substitute the plan's own
+folder slug for `<plan-identifier>`.
 
 **Entry shape** (append during execution, the moment something generalizable is noticed — not
 reconstructed from memory at the end):
@@ -775,18 +900,21 @@ Plan Archival):
       surface would catch this automatically next time; discard the rest with a one-line reason.
 - [ ] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize to
       `<placeholder>` tokens or discard if the entry cannot be sanitized without losing its meaning.
-- [ ] [AI] Apply the **repo-relevance gate** to every surviving entry — content scoped to a sibling
-      repo's private concerns never cross-routes here, and vice versa.
+- [ ] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
+      in `ose-private` only; public-governance content may route to `ose-public`/`ose-primer`; never
+      cross-route private content into a public repo.
 - [ ] [AI] Route each surviving entry to exactly one durable home. The rubric is open-ended —
       route to whichever surface owns that kind of knowledge (`repo-governance/`, `docs/`,
       `.claude/agents/`, `.claude/skills/`, a post-mortem, or any other durable home), landing a
       small non-code edit inline or filing a `plans/backlog/<slug>/` follow-up plan for
       larger non-code work.
 - [ ] [AI] For any entry routed to `plans/ideas/`, scan `plans/ideas/README.md` and the existing
-      two-pagers FIRST for a brief already covering the same area — fold in rather than creating a
-      new file (see [Integrate Before You Add](../../../repo-governance/conventions/structure/plans.md#integrate-before-you-add-no-duplicate-two-pagers)).
-- [ ] [AI] **Code-routing rule**: if a learning's home is `apps/`, `libs/`, or `specs/`, file it as
-      a separate `plans/backlog/` plan — NEVER land it inline in this plan's commits/PR. The sole
+      two-pagers FIRST for a brief already covering the same problem or area — fold the learning
+      into that brief instead of creating a new file; only create a new `plans/ideas/<slug>.md`
+      when the scan confirms no existing brief overlaps (see
+      [Integrate Before You Add](../../../repo-governance/conventions/structure/plans.md#integrate-before-you-add-no-duplicate-two-pagers)).
+- [ ] [AI] **Code-routing rule**: if a learning's home is `apps/`, `libs/`, or tests, file it as a
+      separate `plans/backlog/` plan — NEVER land it inline in this plan's commits/PR. The sole
       carve-out is a bug/lint/test failure that blocks THIS plan's own scope — that is fixed inline
       as ordinary Root Cause Orientation work, not routed as a deferred learning.
 - [ ] [AI] Record the terminal state of every entry (routed inline / filed as backlog at `<path>` /
@@ -840,27 +968,27 @@ Every delivery plan MUST end with a plan archival section:
 
 ## Common Mistakes
 
-### ❌ Mistake 1: Missing acceptance criteria
+### Mistake 1: Missing acceptance criteria
 
 **Wrong**: Plan without Gherkin scenarios
 **Right**: Every plan has concrete acceptance criteria
 
-### ❌ Mistake 2: Vague requirements
+### Mistake 2: Vague requirements
 
 **Wrong**: "Improve system performance"
 **Right**: "Reduce API response time to <200ms for 95th percentile"
 
-### ❌ Mistake 3: No progress tracking
+### Mistake 3: No progress tracking
 
 **Wrong**: Never updating delivery checklist
 **Right**: Mark items complete with implementation notes
 
-### ❌ Mistake 4: Wrong folder placement
+### Mistake 4: Wrong folder placement
 
 **Wrong**: Active work in backlog/
 **Right**: Move to in-progress/ when starting work
 
-### ❌ Mistake 5: Code delivery items without TDD shape
+### Mistake 5: Code delivery items without TDD shape
 
 **Wrong**: Combining implementation and test into one checkbox
 
@@ -884,138 +1012,30 @@ Every delivery plan MUST end with a plan archival section:
 
 `plan-checker` flags combined TDD items as HIGH severity findings.
 
-## Diagram Coverage
-
-Plans must be **diagram-rich**. Visualize structure, flow, and decisions liberally — when a concept involves more than two interacting parts, an ordering, a lifecycle, or a branch, draw it rather than describing it in prose.
-
-**Per-document guide** (summary — authoritative source: [plans.md §Diagram Coverage Contract](../../../repo-governance/conventions/structure/plans.md#diagram-coverage-contract)):
-
-| Plan file      | Typical diagram opportunities                                                                                      |
-| -------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `README.md`    | Architecture/component flowcharts (`flowchart LR`); ER diagrams for data-model changes                             |
-| `tech-docs.md` | Architecture flowcharts; sequence diagrams for cross-system/agent order-of-operations; state diagrams; ER diagrams |
-| `delivery.md`  | Phase/dependency flowcharts when phases have non-linear dependencies or parallel tracks                            |
-| `prd.md`       | Decision-branch flowcharts for non-trivial UX flows with more than one branch or outcome                           |
-
-**plan-maker** must add diagrams proactively wherever the guide applies — not wait to be asked. **plan-checker** flags a missing warranted diagram as MEDIUM (Diagram Coverage Check). **plan-fixer** authors the diagram when the prose is unambiguous, or flags for plan-maker when relationships are not fully grounded in the plan text.
-
-Escape hatch: trivial single-file, rename, copy-edit, dependency-bump, and docs-only plans may skip diagrams.
-
-For accessible palette, syntax rules, and WCAG compliance, see [Color Accessibility Convention](../../../repo-governance/conventions/formatting/color-accessibility.md), [Diagram and Schema Convention](../../../repo-governance/conventions/formatting/diagrams.md), and the `docs-creating-accessible-diagrams` Skill.
-
-## UI Mockups in UI-Bearing Plans — the UI-design-funnel (HARD RULE)
-
-A plan is **UI-bearing** when it adds or changes user-facing screens or components under `apps/` or
-`libs/` (e.g. `libs/web-ui`). Pure refactors, no-UI plans, and governance-only plans are exempt —
-exactly as with the specs/Gherkin binding.
-
-Every UI-bearing plan MUST document its draft UI through the **UI-design-funnel**
-(diverge → narrow → select → justify), authored per the
-[UI Mockups in Plan Docs convention](../../../repo-governance/conventions/formatting/diagrams.md#ui-mockups-in-plan-docs).
-
-**PLACEMENT HARD RULE**: ALL funnel artefacts MUST be placed in the plan's **`prd.md`** — not in
-`README.md`, `brd.md`, `tech-docs.md`, or any separate file. Binary mockup image assets live
-under the plan's `assets/` folder and are referenced from `prd.md` via `![]()` image embeds.
-A UI-bearing plan whose `prd.md` does NOT contain the funnel record (all four stages plus embedded
-mockup links) fails the plan quality gate. See
-[UI Mockups in Plan Docs — Placement](../../../repo-governance/conventions/formatting/diagrams.md#placement--the-ui-lives-in-prdmd-hard-rule).
-
-The funnel produces four kinds of artefact, all visible in the plan (`prd.md` + the plan's
-`assets/`); no alternative is silently discarded:
-
-- **Both tiers per screen** — each screen gets a **low-fidelity** ASCII/Unicode wireframe in a
-  fenced code block AND a **high-fidelity** `.excalidraw.png` referenced via `![](./file)`, in
-  separate labelled subsections. Never use inline HTML+CSS, MDX, Mermaid-as-wireframe, or
-  `.excalidraw.svg` (GitHub strips/garbles them).
-- **Diverge** — **≥ 2 (aim for 3) genuinely different** named low-fi alternatives (Option A / B / C).
-- **Narrow** — the **2 strongest** carried forward as hi-fi `.excalidraw.png` finalists, with a
-  one-line drop reason for each alternative cut.
-- **Select** — the chosen design **named explicitly** (e.g. "Selected: Option A — Ranked Table").
-- **Justify** — a short **rationale / decision record** (a small table is enough): why the winner
-  won and why each runner-up lost.
-- **Grounding note (R5)** — before drafting either tier, survey the existing UI of the related
-  app(s) and lib(s) (`libs/web-ui` component inventory + tokens + Storybook, the target app's
-  shell, sibling screens; reference the `swe-developing-frontend-ui` skill) and reuse what already
-  exists; name any net-new component explicitly.
-- **Prior-art citation (R7)** — consult prior art on how comparable tools solve the screen via the
-  `web-researcher` agent, so the divergent alternatives are informed rather than invented.
-- **Responsive design (mobile/tablet/desktop)** — the funnel MUST address **responsive** behaviour,
-  **mobile-first**, across mobile (`< sm`), tablet (`md` ≥ 768 px), and desktop (`lg` ≥ 1024 px).
-  The low-fi tier must show the mobile↔desktop reflow where it differs (e.g. table → stacked cards,
-  side rail → top sheet); the selected design's record must state the **responsive strategy** per
-  breakpoint; and each finalist is evaluated on its **mobile-first responsive behaviour**, not its
-  desktop appearance alone. A desktop-only design is not a valid finalist.
-
-`plan-maker` requires these artefacts and emits delivery steps that produce them; `plan-checker`
-flags any missing artefact at HIGH criticality (its UI-design-funnel completeness step, sibling to
-the specs/Gherkin Step 5j); `plan-fixer` scaffolds the missing funnel sections. This mirrors the
-**Specs & Gherkin completeness (both paths)** binding: a UI-bearing plan never passes quality gates
-without its design funnel.
-
-### Design-funnel grilling questions (UI-bearing plans)
-
-When grilling the user on a UI-bearing plan, the pre-write grill MUST cover the UI-design-funnel
-decisions as structured multiple-choice questions (each with 2-4 concrete options plus the two
-standing options — a free-form blank-state type and "chat about this"):
-
-- **Which alternatives?** Present 2-4 candidate low-fi layouts for the screen (e.g. Ranked Table /
-  Card Grid / Split Layout), each option stating its trade-off in one sentence, one marked
-  `(Recommended)`. The author must produce ≥2 genuinely different named alternatives.
-- **What prior art?** Present 2-4 ways to ground the alternatives (e.g. delegate a
-  `web-researcher` survey of comparable tools / reuse a named sibling screen pattern / blend the
-  web-ui kit only), so the diverge stage is informed rather than invented.
-- **Which selection, and why?** Present the finalists as options (e.g. Option A / Option B) and ask
-  which design wins and the one-sentence rationale, so the Select + Justify stages are explicit.
-- **What responsive strategy?** Present 2-4 ways the selected layout reflows from **mobile** to
-  **desktop** (e.g. table collapses to stacked cards / side rail moves into a top sheet / two-pane
-  split becomes a single column), so the **responsive** behaviour across mobile/tablet/desktop is
-  decided mobile-first rather than designed desktop-only.
-
-See [Grilling-With-Options Convention](../../../repo-governance/development/workflow/grilling-with-options.md)
-for the authoritative multiple-choice format.
-
-## Learning-Bearing Plans — the Syllabus Record (HARD RULE)
-
-A plan is **learning-bearing** when its delivery checklist authors or restructures course, tutorial,
-or curriculum content — the direct learning-side analogue of "UI-bearing." Plans that only cite,
-link to, or lightly correct an existing corpus are exempt — exactly as with the specs/Gherkin and
-UI-design-funnel bindings above.
-
-Every learning-bearing plan MUST document its corpus through the required
-`syllabus/README.md` + `syllabus/courses/` + `syllabus/paths/` folder layout, the template-derived
-per-course shape, a `## Corpus Disposition` declaration in `tech-docs.md`, and a Custodian line in
-`syllabus/README.md`, authored per the
-[Learning-Plan `syllabus/` Folder Convention](../../../repo-governance/conventions/structure/learning-plan-syllabus.md).
-
-`plan-maker` requires these artefacts and emits delivery steps that produce them; `plan-checker`
-flags any missing artefact at HIGH criticality (its Learning-Bearing Syllabus Completeness step,
-Step 5n, sibling to the UI-design-funnel Step 5k); `plan-fixer` scaffolds the missing syllabus-record
-sections.
-
 ## References
 
 **Primary Convention**: [Plans Organization Convention](../../../repo-governance/conventions/structure/plans.md)
 
 **Related Conventions**:
 
-- [No Secrets in Committed Files Convention](../../../repo-governance/conventions/security/no-secrets-in-committed-files.md) - Hard iron rule: no system secret (keys, passwords, tokens, connection strings, etc.) may appear in any committed plan file. Use placeholders or env-var references instead.
+- [No Secrets in Git Convention](../../../repo-governance/conventions/security/no-secrets-in-committed-files.md) - Hard iron rule: no system secret (keys, passwords, tokens, connection strings, etc.) may appear in any committed plan file. Use placeholders or env-var references instead.
 - [Grilling-With-Options Convention](../../../repo-governance/development/workflow/grilling-with-options.md) - Every grill question MUST present 2-4 concrete options; open-ended questions are FORBIDDEN; one option marked recommended; interactive multiple-choice tool preferred
 - [Test-Driven Development Convention](../../../repo-governance/development/workflow/test-driven-development.md) - Mandates TDD (Red→Green→Refactor) for all code changes; defines the required RED/GREEN/REFACTOR three-substep shape for delivery checklists; includes HARD RULE against combining phases into one checkbox
 - [Plan Anti-Hallucination Convention](../../../repo-governance/development/quality/plan-anti-hallucination.md) - Pre-write verification recipes, repo-grounding rule, refuse-on-uncertainty, anti-pattern catalog (AP-1 through AP-10), specialized-executor annotation
 - [Trunk Based Development](../../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow (all development targets `main`; see [Delivery Mode](#delivery-mode-mandatory--applies-to-all-plans) above for how a plan reaches `main` — `worktree-to-pr` is the default, direct push is one of the other three modes)
 - [PR Merge Protocol](../../../repo-governance/development/workflow/pr-merge-protocol.md) - `[AI]` merges by default once the five hardened preconditions hold; a `[HUMAN]` merge gate is an explicit per-plan opt-in; all quality gates must pass before merge
 - [Feature Change Completeness](../../../repo-governance/development/quality/feature-change-completeness.md) - Specs, contracts, and tests must update with every feature change
+- [Knowledge Capture Convention](../../../repo-governance/development/quality/knowledge-capture.md) - The mandatory final `learnings.md` triage phase: open-ended principle-based routing rubric, the code-routing rule (code-homed learnings always become a separate `plans/backlog/` plan), and the two safety gates (secret/sensitivity, repo-relevance)
 - [Manual Behavioral Verification](../../../repo-governance/development/quality/manual-behavioral-verification.md) - Playwright MCP for UI, curl for API; ALL locales for multi-locale apps
 - [Evidence Capture Convention](../../../repo-governance/development/quality/evidence-capture.md) - Screenshots to the plan's `evidence/` subfolder (named by phase/locale/breakpoint), curl responses inlined in `delivery.md`, ALL supported locales covered
 - [CI Blocker Resolution](../../../repo-governance/development/quality/ci-blocker-resolution.md) - Preexisting CI failures must be fixed, never bypassed
 - [Acceptance Criteria Convention](../../../repo-governance/development/infra/acceptance-criteria.md) - Gherkin format details
 - [File Naming Convention](../../../repo-governance/conventions/structure/file-naming.md) - Naming standards
-- [Diagram and Schema Convention §UI Mockups in Plan Docs](../../../repo-governance/conventions/formatting/diagrams.md#ui-mockups-in-plan-docs) - UI-design-funnel: design-funnel rule for UI-bearing plans (low-fi ASCII alternatives → hi-fi Excalidraw finalists → named selection → rationale)
-- [Knowledge Capture Convention](../../../repo-governance/development/quality/knowledge-capture.md) - The mandatory final `learnings.md` triage phase: open-ended principle-based routing rubric, the code-routing rule (code-homed learnings always become a separate `plans/backlog/` plan), and the two safety gates (secret/sensitivity, repo-relevance)
 
 **Related Skills**:
 
-- `grill-me` - Mandatory pre-write and post-write grilling; every question presents 2-4 concrete options
+- `grill-me` - Mandatory pre-write and post-write grilling; specialists return the exact
+  `## User Decisions Required` envelope and the root renders its exhaustive choices
 - `plan-writing-gherkin-criteria` - Detailed Gherkin guidance
 - `repo-practicing-trunk-based-development` - Git workflow
 - `docs-applying-content-quality` - Universal content standards
