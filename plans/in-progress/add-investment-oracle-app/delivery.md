@@ -540,8 +540,11 @@ schedule/dispatch-only, and must not be monitored or gated on.
       (`git push origin add-investment-oracle-app` from the plan's worktree, then
       `gh pr create --base main --head add-investment-oracle-app`) — direct push to `main` is
       unavailable in this repository; see the amended Delivery Mode note above
-- [ ] Run the three-cycle PR-Review Maker→Fixer quality gate on the PR per
-      [PR Review Quality Gate](../../../repo-governance/workflows/pr/pr-review-quality-gate.md)
+- [ ] Classify the PR under the
+      [PR Review Quality Gate](../../../repo-governance/workflows/pr/pr-review-quality-gate.md): an
+      eligible executable-behavior diff runs sequential review cycles up to the seven-cycle ceiling
+      and exits at the first clean code-related Medium/High/Critical result; a noneligible static
+      diff requires only the named `pr-quality-gate` workflow before merge.
 - [ ] Monitor the following workflows triggered on the PR:
   - `test-investment-oracle-be`
   - `test-investment-oracle-fe`
