@@ -208,7 +208,7 @@ CHAIN_FILE="generated-reports/.execution-chain"
 `Given` line, exactly one primary `When` line, and exactly one primary `Then` line.
 Extras chain with `And`/`But`. `Background` blocks and `Scenario Outline` `Examples`
 tables are exempt. See
-[HARD Rule — Step-Keyword Cardinality](./acceptance-criteria.md#hard-rule--step-keyword-cardinality).
+[HARD Rule — Step-Keyword Cardinality](./acceptance-criteria.md#step-keyword-cardinality-hard-rule).
 
 **Good Example:**
 

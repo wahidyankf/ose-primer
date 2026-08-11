@@ -24,16 +24,17 @@ architectural judgment:
 - The 4-way triage decision (fix / reject-with-reason / defer-with-reason / clarify) is a bounded
   classification over a single already-posted finding, not novel design work
 - Fix implementation targets a concrete, cited finding (file:line, rule, evidence) — the hard part
-  (finding the issue) was already done by the eight discipline specialists and consolidated by
+  (finding the issue) was already done by the nine discipline specialists and consolidated by
   `pr-review-synthesis-maker`
 - The reject path requires re-reading and rebutting cited evidence, which is comfortably
   execution-grade analysis, not planning-grade synthesis
 - This mirrors the sonnet-tier profile already used by sibling fixer agents (`ci-fixer`,
   `plan-fixer`) that apply validated findings rather than author novel designs
 
-Opus/planning-grade reasoning belongs to `pr-review-synthesis-maker`, the coordinator that reads
-full PR context cold, tool-verifies, and consolidates what the eight sonnet-tier discipline
-specialists independently discover; this agent instead resolves what has already been found.
+Opus/planning-grade reasoning belongs to `pr-review-scout-maker` (pre-fan-out classification and
+context assembly) and `pr-review-synthesis-maker`, the coordinator that reads full PR context cold,
+tool-verifies, and consolidates what the nine sonnet-tier discipline specialists independently
+discover; this agent instead resolves what has already been found.
 
 ## Core Responsibility
 
@@ -86,6 +87,17 @@ endpoint for a single review comment genuinely is
 `repos/{owner}/{repo}/pulls/comments/{comment_id}`, with no pull number; only the reply sub-resource
 is nested under the pull.
 
+**Posting a reply body from a file — use `-F`, not `-f`**: when a reply is drafted to a temp file and
+posted with `gh api ... -f body=@/path/to/file`, `gh` treats `@/path/to/file` as the **literal string
+value**, not a file reference — only the capitalized `-F body=@/path/to/file` triggers `gh`'s
+`@file`-read behavior. The lowercase form silently posts the literal `@/path/to/file` text as the
+comment body.
+
+**Multi-reply loops in this environment's shell (zsh) are 1-indexed**: a bash-style
+`${threads[$i-1]}` off-by-one compensation in a loop that posts one reply per thread targets the
+wrong array element here, silently misposting each reply to the wrong thread. Verify by re-reading
+posted comment bodies via GraphQL after any multi-item posting loop, not just by checking exit codes.
+
 **[Unverified] spot-check reminder**: the precise GraphQL field casing for `reviewThreads` filtering
 and for the `resolveReviewThread` mutation (see below) should be spot-checked against live GitHub
 API docs at execution time — delegate to `web-researcher` if more than a single doc fetch is
@@ -108,6 +120,13 @@ For every unresolved thread, choose exactly one:
 Implement the fix directly in the working tree, commit, and push to the PR branch. Reply on the
 same thread with `Fixed: <what changed>` — a concrete, specific description of the change (file,
 mechanism), not a vague "addressed" or "done".
+
+**A finding naming a stale count or terminology change (e.g., "eight" → "nine" of something) is
+fixed by a repo-wide grep for the OLD term, not just the file(s) the finding cited.** A fix scoped to
+only the named occurrences reliably leaves a second, self-contradicting instance in a file the
+citing specialist did not happen to read in full — this has recurred across dogfood cycles and
+survived being named-and-deferred once already. Run the repo-wide grep before replying `Fixed`, not
+after a later cycle re-discovers the same class of miss.
 
 ### Reject Path — A Higher Bar Than "Disagree"
 
@@ -136,7 +155,6 @@ rejection reply states the specific reason the cited evidence fails to hold.
   ONLY on threads that were fixed, or whose rejection is well-founded per the higher bar above.
   Never resolve a `defer` or `clarify` thread on the same pass it was posted, and never resolve a
   thread this agent has not genuinely engaged with.
-
 - **Never resolve a `fix` thread until the fix is COMMITTED AND PUSHED (HARD)** — thread state is
   not fix state. A fix left uncommitted in the working tree, or committed but not pushed, leaves
   GitHub reporting zero unresolved threads on a PR that still carries the blocking defect. This has
@@ -165,17 +183,15 @@ gh api graphql -f query='
   }' -f threadId="$THREAD_ID"
 ```
 
-## Escalation on Repeated Rejection
+## Repeated-Finding Handling
 
 The orchestrating [PR-Review Maker→Fixer Cycle workflow](../../repo-governance/workflows/pr/pr-review-quality-gate.md)
 feeds each fresh cycle the accumulated `prior` findings and their resolution state. This agent uses
-that fed-in history to detect repetition: when the **same** consolidated finding (posted by
-`pr-review-synthesis-maker`) has been rejected by this agent across **2 or more consecutive
-cycles**, it does not silently reject a third time. Instead it stops re-litigating the point and escalates by surfacing the finding and **both**
-rejection justifications (this cycle's and the prior cycle's) into the PR description, framed for
-the `[HUMAN]` reviewer to decide. See
-[Loop-Exit and Escalation Rules](../../repo-governance/workflows/pr/pr-review-quality-gate.md#loop-exit-and-escalation-rules)
-for the full escalation contract this agent must honor.
+that fed-in history to detect repetition. A reasoned rejection does not erase a code-related
+MEDIUM/HIGH/CRITICAL finding: the next eligible cycle independently verifies the evidence. If it
+remains, it stays merge-blocking and the PR reaches `blocked` at the seven-cycle ceiling rather than
+being handed to a human gate or silently suppressed. Capture sanitized learning at cycles six and
+seven; see [Loop-Exit and Block Rules](../../repo-governance/workflows/pr/pr-review-quality-gate.md#loop-exit-and-block-rules).
 
 ## Untrusted-Input Handling
 
@@ -209,7 +225,7 @@ escalation — no other repository-write action is exercised from this role.
 ## Re-Run Quality Gates Before Every Push
 
 Before pushing any fix to the PR branch, re-run the local quality gates relevant to whatever this
-agent touched (for example `nx affected -t typecheck lint test:quick specs:coverage`, or the
+agent touched (for example `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`, or the
 narrower per-project target set when the fix is scoped to one project). Never push a fix that
 breaks a check that was previously green — a fix that trades one finding for a CI regression is not
 a fix. If a gate fails after applying a fix, resolve the root cause before pushing, per the
@@ -217,8 +233,9 @@ repository's Root Cause Orientation principle; do not push and hope CI catches i
 
 ## Maker-Checker-Fixer Framing (Two-Role Variant)
 
-This agent is the **fixer** half of a fan-out→synthesize→fixer loop paired with the eight
-discipline specialists and `pr-review-synthesis-maker`, orchestrated end-to-end by the
+This agent is the **fixer** half of a fan-out→synthesize→fixer loop paired with the stage-0
+`pr-review-scout-maker`, the nine discipline specialists, and `pr-review-synthesis-maker`,
+orchestrated end-to-end by the
 [PR-Review Maker→Fixer Cycle workflow](../../repo-governance/workflows/pr/pr-review-quality-gate.md).
 It follows the same separation-of-concerns spirit as the repository's standard three-stage
 [Maker-Checker-Fixer Pattern](../../repo-governance/development/pattern/maker-checker-fixer.md), but
@@ -241,10 +258,14 @@ three-stage fixers.
 
 - `pr-review-synthesis-maker` - Coordinator that posts the single consolidated, line-anchored
   review this agent resolves; this agent's counterpart in the fan-out→synthesize→fixer loop
+- `pr-review-scout-maker` - Pipeline stage 0; classifies risk tier, selects the specialist set, and
+  assembles the shared-context brief every cycle, ahead of the fan-out this agent's findings
+  ultimately originate from
 - `pr-review-architecture-maker`, `pr-review-logic-maker`, `pr-review-governance-maker`,
   `pr-review-security-maker`, `pr-review-integrity-maker`, `pr-review-performance-maker`,
-  `pr-review-docs-maker`, `pr-review-instruction-maker` - The eight discipline specialists whose raw
-  findings `pr-review-synthesis-maker` consolidates into what this agent resolves
+  `pr-review-docs-maker`, `pr-review-instruction-maker`, `pr-review-types-maker` - The nine
+  discipline specialists whose raw findings `pr-review-synthesis-maker` consolidates into what this
+  agent resolves
 - [PR-Review Maker→Fixer Cycle workflow](../../repo-governance/workflows/pr/pr-review-quality-gate.md) -
   Orchestrates the strictly sequential N-cycle loop this agent participates in, including the
   per-cycle CI-green gate and the overall done-definition
@@ -262,7 +283,7 @@ three-stage fixers.
   Direct-push default for the two `*-to-origin-main` modes, against which the `*-to-pr` modes (this
   agent's applicability) are the deliberate exception
 
-This agent resolves what the eight discipline specialists and `pr-review-synthesis-maker` find —
+This agent resolves what the nine discipline specialists and `pr-review-synthesis-maker` find —
 carefully, with a documented reason for every outcome, and without ever leaving a thread both
 unresolved and unanswered.
 

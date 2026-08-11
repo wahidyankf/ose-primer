@@ -78,7 +78,7 @@ Skill: `repo-generating-validation-reports` (progressive streaming)
    is exempt (immutable archive). Tracked `.feature` files belong to the deterministic
    `gherkin-keyword-cardinality` linter, not this step. Step 7 sub-check 7 is the authoritative
    statement of this scope. See
-   [HARD Rule — Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality).
+   [HARD Rule — Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#step-keyword-cardinality-hard-rule).
 
 **Detection Methods**:
 
@@ -730,7 +730,7 @@ See [Instruction-File Size Budget Convention](../../repo-governance/conventions/
    - Verify no stale "all specs are FSL" language without demo exception
    - **Criticality**: Missing LICENSE = CRITICAL; wrong license type = HIGH; cross-doc inconsistency = MEDIUM
 
-7. **Gherkin Keyword Cardinality (markdown fences)** (see [Acceptance Criteria Convention §HARD Rule — Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality)):
+7. **Gherkin Keyword Cardinality (markdown fences)** (see [Acceptance Criteria Convention §HARD Rule — Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#step-keyword-cardinality-hard-rule)):
    - Scope: ` ```gherkin ` fences in `repo-governance/`, `docs/`, `.claude/skills/`, and active plans (`plans/in-progress/`, `plans/backlog/`); `plans/done/` is exempt (immutable archive). Tracked `.feature` files are covered by the deterministic `repo-governance gherkin-keyword-cardinality` command, NOT this step.
    - For each fence, group lines by `Scenario` and count primary `Given`/`When`/`Then` keyword lines (a primary keyword starts the trimmed line; `And`/`But`/`*` never count; `Background` blocks and `Scenario Outline` `Examples` tables are exempt).
    - Flag any scenario with more than one primary keyword of the same type — UNLESS the fence carries an explicit deliberate-example label (e.g. a `# NON-CONFORMING EXAMPLE — deliberate…` comment inside the fence), which exempts it.

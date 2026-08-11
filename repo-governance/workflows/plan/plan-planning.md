@@ -45,7 +45,7 @@ outputs:
     description: Final audit report from plan-quality-gate
 ---
 
-# Plan Planning Workflow
+# Plan Establishment Workflow
 
 **Purpose**: Transform a user prompt describing a desired behavior or change into a
 production-ready plan in the resolved target stage (`plans/in-progress/` by default, or
@@ -59,7 +59,7 @@ steps below, `<plan-dir>` resolves as:
 
 - **`target-stage=in-progress`** (default): `plans/in-progress/<identifier>/` — no date prefix;
   the plan is immediately active.
-- **`target-stage=backlog`**: `plans/backlog/<identifier>/` — no date prefix
+- **`target-stage=backlog`**: `plans/backlog/<identifier>/` — no date prefix, per the
   [Plans Organization Convention](../../conventions/structure/plans.md); the plan is a
   proposal awaiting promotion.
 
@@ -267,16 +267,13 @@ Phase 0 so the human actions land in one sitting and the remaining phases stay `
 Full rule, capability boundary, operational limits, and identifier hygiene:
 [Vercel MCP Capability Convention](../../development/infra/vercel-mcp.md).
 
-### The Plan-Docs-Only Carve-Out (Superseded — Retired in Three of Four Repos)
+### The Plan-Docs-Only Carve-Out (Superseded — Retired in Two of Three Repos)
 
-**This carve-out is retired in `ose-public`, `ose-primer`, and `archived repository`**: `main` is
-branch-protected against direct pushes (including for admins) in `ose-public` and `ose-primer`;
-`archived repository` is restricted to the same effect by convention (its `main` is not yet actually
-GitHub-branch-protected — see [Git Push Default Convention](../../development/workflow/git-push-default.md)
-for the live-verification detail), pending a `[HUMAN]`-only GitHub settings change. So there
-is no sanctioned direct-push path left to carve out of in any of the three — a plan-docs-only
-change there uses `worktree-to-pr` like any other change. It survives, narrowed, in `ose-private`
-only as the infrastructure-as-code carve-out — see
+**This carve-out is retired in `ose-public` and `ose-primer`**: `main` is
+branch-protected against direct pushes in both repos (including for admins), so in
+both repositories a plan-docs-only change uses `worktree-to-pr` like any other change, since there is
+no direct-push path left to carve out of. It survives, narrowed, in
+`ose-private` only as the infrastructure-as-code carve-out — see
 [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule)
 for the current binding rule. The historical description below is kept for context.
 
@@ -479,17 +476,26 @@ Delegate via the Agent tool. Provide a self-contained handoff prompt containing 
    or archival follow-up. Follow [Plans Organization Convention §File-Impact Analysis Format](../../conventions/structure/plans.md#file-impact-analysis-format-hard-rule).
 
 `plan-maker` emits the final Knowledge Capture phase in `delivery.md` plus a `learnings.md`
-scaffold in the plan folder as part of every generated substantive plan, per the
+scaffold in the plan folder as part of every generated plan, per the
 [Knowledge Capture Convention](../../development/quality/knowledge-capture.md).
 
-**Note on plan-maker's own grill protocol**: `plan-maker` mandates a pre-write grill (Step 1) and
-a post-write grill (Step 8). When invoked by `plan-planning`, these become
-**validation passes** — macro-decisions are already resolved. Micro-decisions (exact Gherkin
-phrasing, section ordering, step granularity) are still resolved by plan-maker's grills.
+**Decision-envelope loop (HARD GATE)**: After every `plan-maker` invocation, inspect its response.
+If it returns `## User Decisions Required` in the
+[canonical envelope schema](../../development/workflow/grilling-with-options.md#user-decisions-required-envelope),
+the root invokes `grill-me` through the native UI when available (or emits the convention's markdown
+fallback to its caller), records the answers by stable decision ID, and resumes or reinvokes
+`plan-maker` with them. After rendering, the root MUST construct the canonical
+[Resolved User Decisions Envelope](../../development/workflow/grilling-with-options.md#resolved-user-decisions-envelope)
+from the original IDs and pass that payload verbatim; `plan-maker` validates it before dependent
+work. Repeat until `plan-maker` returns completed artifacts without an envelope.
+An envelope is a required checkpoint, not a failure, and MUST NOT skip plan-maker's post-write
+validation grill. Macro-decisions from Steps 1 and 3 remain resolved; later envelopes cover only
+newly discovered or validation-pass micro-decisions.
 
 **Output**: Plan files created in the resolved `<plan-dir>`.
 
-**On failure**: Terminate with status `fail`. Surface the error.
+**On failure**: Terminate with status `fail` only for a technical error. A
+`## User Decisions Required` envelope enters the loop above instead.
 
 ### 5. Plan Review (Sequential)
 
@@ -519,7 +525,9 @@ Read the created plan files and verify structural completeness before the qualit
 10. Verify `tech-docs.md` has a `## File-Impact Analysis` whose primary view is one root-relative,
     annotated file tree with `[E]`/`[N]`/`[D]`/`[G]` markers. If `### More Detail` exists, verify it
     immediately follows the tree and provides context rather than a second prose scope list.
-11. If structural gaps found: provide a focused prompt to `plan-maker` or fix trivially via `Edit`
+11. If structural gaps found: provide a focused prompt to `plan-maker` or fix trivially via `Edit`.
+    Any reinvoked `plan-maker` response follows the same decision-envelope loop from Step 4; do not
+    treat its envelope as the one-retry failure.
 
 **Output**: Plan structurally complete. Ready for quality gate.
 
@@ -554,10 +562,8 @@ Commit and push the plan to the confirmed target, then remove the worktree.
    `target-stage=backlog`, use `chore(plans): add <identifier> to backlog`)
 3. Push from the worktree to the confirmed target (default `origin main`):
    `git push <confirmed-target> HEAD:main`
-4. Monitor GitHub Actions: `gh run list --limit 5` — verify all triggered workflows complete
-   with `completed/success` conclusion. `.github/workflows/main-ci.yml` no longer exists (removed —
-   its checks were folded into the gate registry driving `pr-quality-gate.yml`), so it is never
-   among the workflows this push triggers
+4. Monitor GitHub Actions: `gh run list --limit 5` — verify all workflows triggered by the push
+   complete with `completed/success` conclusion.
 5. If a CI workflow fails: diagnose root cause, fix, push a follow-up commit, re-monitor
 6. After CI passes, remove the worktree from the repo root:
 
@@ -608,7 +614,7 @@ resolution.
 ## Related Workflows
 
 - [Plan Quality Gate](./plan-quality-gate.md) — called in Step 6
-- [Plan Execution](./plan-execution.md) — next workflow after plan-planning
+- [Plan Execution](./plan-execution.md) — next workflow after plan-establishment
 
 ## Related Documentation
 

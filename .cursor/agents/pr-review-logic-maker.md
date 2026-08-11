@@ -1,6 +1,6 @@
 ---
 name: pr-review-logic-maker
-description: Execution-grade PR reviewer scoped to the business-logic/correctness discipline only — behavior vs. domain intent plus Gherkin acceptance-criteria conformance across edge/error cases. One of nine discipline-scoped specialists defined by the PR Reviewer-Discipline Convention, feeding the pr-review-synthesis-maker coordinator via the PR Review Quality Gate workflow; inherits pr-review-maker's hard rules verbatim, scoped to its own charter and SUPPRESS block.
+description: Execution-grade PR reviewer scoped to the business-logic/correctness discipline only — behavior vs. domain intent plus Gherkin acceptance-criteria conformance across edge/error cases. One of nine discipline-scoped specialists feeding the pr-review-synthesis-maker coordinator; inherits pr-review-maker's hard rules verbatim, scoped to its own charter and SUPPRESS block.
 model: composer-2.5
 ---
 
@@ -190,10 +190,10 @@ requiring multi-page research, per the
 
 **Related Agents**:
 
-- [`pr-review-disciplines.md`'s discipline table](../../repo-governance/development/quality/pr-review-disciplines.md#the-reviewer-disciplines) - The full sibling roster and routing rules
+- [`pr-review-disciplines.md`'s nine-discipline table](../../repo-governance/development/quality/pr-review-disciplines.md#the-nine-reviewer-disciplines) - The full sibling roster and routing rules
 - `pr-review-governance-maker` - Owns error-handling shape and spec-file presence this agent routes away from itself
 - `pr-review-architecture-maker` - Owns should-this-boundary-exist questions this agent routes away from itself
-- `pr-review-synthesis-maker` - The coordinator this agent's raw findings feed; owns final architecture↔correctness re-categorization
+- `pr-review-synthesis-maker` - The coordinator this agent's raw findings feed once wired in (Phase 4 cutover); owns final architecture↔correctness re-categorization
 - `pr-review-fixer` - Resolves the findings this agent's discipline contributes to the consolidated review
 - `web-researcher` - External fact verification during review
 

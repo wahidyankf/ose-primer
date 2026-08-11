@@ -30,6 +30,11 @@ a single-repo plan's "done using it" coincides with plan-end; a multi-repo plan'
 repo's worktree is torn down as soon as that repo's own units land, independently of whether the
 plan's other repos are still in flight.
 
+**No confirmation prompt is required for an exact, self-created plan worktree.** Once all mandatory
+pre-removal checks pass, the AI executor removes the exact path recorded in the plan immediately.
+This authority never extends to a repository root, a wildcard, a worktree absent from the plan's
+file-touch ledger, or any worktree created by another actor; those remain out of scope.
+
 ## Principles Implemented/Respected
 
 - **[Deliberate Problem-Solving](../../principles/general/deliberate-problem-solving.md)**: Every
@@ -89,13 +94,14 @@ These bound every action the gate takes.
 - **Verify not in use before deleting.** Check, then delete. When in doubt, leave it. An artifact left
   behind costs disk; an artifact wrongly deleted costs someone else's work.
 - **Never delete a shared cache.** In particular, the **shared cargo `target/` directory** — the
-  symlinked shared build output — is depended on by concurrent builds in every other worktree. Removing it breaks them. The
+  symlinked shared build output introduced by the
+  [`rust-cargo-target-dir-sharing`](../../../plans/done/2026-07-19__rust-cargo-target-dir-sharing/)
+  plan — is depended on by concurrent builds in every other worktree. Removing it breaks them. The
   same reasoning applies to any shared cache: if another session can be relying on it, it is out of
-  scope for a plan-scoped cleanup. This ban binds **agents** specifically, and does not contradict the
-  ambient [Build-Artifact Sweeper Convention](../infra/build-artifact-sweeper.md), which may remove
-  the same cache on its own host-level schedule. A cache an agent must never delete can still
-  disappear between one command and the next — that is the environment behaving as documented, not a
-  rule violation by another actor.
+  scope for a plan-scoped cleanup. This binds **agents**, and it is not contradicted by the ambient
+  sweeper described in the [Build-Artifact Sweeper Convention](../infra/build-artifact-sweeper.md),
+  which may remove the same shared cache on its own schedule. A cache you must not delete can still
+  disappear; that is the environment, not a rule violation by another actor.
 - **Cleanup is itself non-destructive to others.** The gate may not use any operation that a
   concurrent actor could be harmed by. It removes; it never force-removes, rewrites, or prunes shared
   state.
@@ -195,12 +201,10 @@ Purge only the build output produced **inside this plan's own worktrees** — `t
 `.next/`, and build caches — after verifying non-use.
 
 Explicitly **skip** the shared cargo `target/` and every other shared cache, and run **no** `git gc`
-or `git prune` on the object store. History maintenance is a serialization point on a shared machine
+or `git prune` on the object store. If build output is already gone when this gate runs, that is the
+ambient sweeper, not a missed step — record it as swept and move on rather than rebuilding output
+solely to delete it. History maintenance is a serialization point on a shared machine
 and stays out of the cleanup gate entirely.
-
-If build output is already gone when this gate runs, that is the ambient
-[Build-Artifact Sweeper](../infra/build-artifact-sweeper.md), not a missed step in this plan. Record
-the artifact class as already swept and move on — do not rebuild it solely to delete it again.
 
 ## Related Documentation
 
@@ -214,18 +218,17 @@ the artifact class as already swept and move on — do not rebuild it solely to 
   set that bounds what this gate may do. `git branch -D`, `rm -rf` of a worktree, forced worktree
   removal, and object-store pruning are all forbidden there, which is why this convention prescribes
   `-d`, non-force removal, and no `gc`.
-- [File-Touch Discipline](../practice/file-touch-discipline.md) — cleanup is the moment this
-  matters most, because it is the moment an agent deliberately removes things. A worktree whose PR
-  has merged can still hold uncommitted work that was never part of that PR; the ledger is what
-  distinguishes your artifacts from another actor's, and uncommitted work has no recovery path.
+- [File-Touch Discipline](../practice/file-touch-discipline.md) — cleanup is the moment this matters
+  most, because it is the moment an agent deliberately removes things. A worktree whose PR has merged
+  can still hold uncommitted work that was never part of that PR; the ledger is what distinguishes
+  your artifacts from another actor's, and uncommitted work has no recovery path once deleted.
 - [Git Push Safety Convention](./git-push-safety.md) — the remote-side companion. Note the boundary
   set out in the Jurisdiction note above: remote **branch deletion** is gated here by the merged-check,
   not there by the force-push approval gate.
+- [Build-Artifact Sweeper Convention](../infra/build-artifact-sweeper.md) — the environment-side
+  counterpart. This gate governs what a **plan** deletes; that convention governs what the **host
+  machine** deletes on its own schedule, including the shared cargo `target/` this gate must leave
+  alone. Read together they answer "who removed this?" without either rule loosening.
 - [Agent Workflow Orchestration Convention](../agents/agent-workflow-orchestration.md) — the DAG model
   in which cleanup is the **terminal node**, depending on every delivery node so it cannot remove an
   artifact that in-flight work still needs.
-- [Build-Artifact Sweeper Convention](../infra/build-artifact-sweeper.md) — the environment-side
-  counterpart to this agent-side gate: it governs what the host machine may remove on its own
-  schedule, including the same shared cargo `target/` this convention forbids agents from deleting.
-  The two reconcile because they bind different actors — an agent's deletion ban is not violated by
-  the environment doing its own sweep.

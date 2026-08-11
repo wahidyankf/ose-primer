@@ -78,11 +78,11 @@ Per the [Content-Placement Rules](../../repo-governance/conventions/structure/pl
 - Personas listed (solo-maintainer hats + consuming agents; **not** external stakeholder roles — flag HIGH if present)
 - User stories follow `As a … I want … So that …` format
 - Acceptance criteria in Gherkin (Given / When / Then / And); flag if Gherkin lives in a different file
-- **Gherkin keyword cardinality (HARD RULE)**: every `Scenario` in Gherkin blocks MUST use
-  exactly one primary `Given`, one `When`, and one `Then` — extras chain with `And`/`But`.
-  Flag as **HIGH** any scenario with two or more primary `Given`, `When`, or `Then` keyword
-  lines. `Background` blocks and `Scenario Outline` `Examples` tables are exempt. See
-  [HARD Rule — Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality).
+- **Step-keyword cardinality HARD rule**: every `Scenario` uses exactly one primary `Given`,
+  one `When`, and one `Then`; extras chain with `And`/`But`. `Background` blocks and
+  `Scenario Outline` `Examples` tables are exempt. Flag violations as **HIGH**. Applies to
+  Gherkin fences in `plans/in-progress/` and `plans/backlog/`; `plans/done/` is exempt
+  (immutable archive). See [Acceptance Criteria Convention §Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#step-keyword-cardinality-hard-rule).
 - Product scope (in-scope + out-of-scope)
 - Product-level risks
 
@@ -112,24 +112,12 @@ Per the [Content-Placement Rules](../../repo-governance/conventions/structure/pl
 
 #### Diagram Format Check
 
-Audit all plan files (`README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`) for diagram format compliance. Two distinct sub-checks apply:
-
-**Sub-check A — ASCII-should-be-Mermaid (existing)**:
+Audit all plan files (`README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`) for diagram format compliance:
 
 - **Flag MEDIUM** when a plan contains ASCII art that depicts component interactions, data flows, sequences, state machines, or decision branches — a Mermaid diagram would be more appropriate.
 - **Acceptable ASCII** exception: simple directory-tree listings (e.g., `apps/foo/bar.ts`) are not diagrams and do not require flagging.
-
-**Sub-check B — Diagram Coverage Check (missing diagram — NEW)**:
-
-- **Flag MEDIUM** when a plan file's prose clearly describes one or more of the following but contains NO corresponding Mermaid diagram:
-  - Component interactions (which services, agents, apps, or libraries call which)
-  - Cross-system or cross-agent sequences (order-of-operations, async hand-offs)
-  - Entity state transitions (lifecycle with named states and triggers)
-  - Multi-outcome or nested decision branches (more than two outcomes, or nested conditionals)
-- Use the per-document opportunity guide to calibrate expectations per file: `README.md` warrants architecture/component flowcharts and ER diagrams for data-model changes; `tech-docs.md` warrants architecture flowcharts, sequence diagrams, state diagrams, and ER diagrams; `delivery.md` warrants phase/dependency flowcharts when phases have non-linear dependencies; `prd.md` warrants decision-branch flowcharts for non-trivial UX flows.
-- **Escape hatch**: do NOT flag trivial single-file, rename, copy-edit, dependency-bump, or docs-only plans (per [plans.md §When a Plan MAY Skip Diagrams](../../repo-governance/conventions/structure/plans.md#when-a-plan-may-skip-diagrams)).
-
-**Reference**: [repo-governance/conventions/structure/plans.md §Diagram Coverage Contract](../../repo-governance/conventions/structure/plans.md#diagram-coverage-contract) and [repo-governance/conventions/formatting/diagrams.md](../../repo-governance/conventions/formatting/diagrams.md).
+- **Flag MEDIUM (under-diagrammed plan)** when a non-trivial plan covers one or more diagram-warranting concerns but provides no diagram for that concern. The diagram-warranting concerns are: component interactions, sequence or flow between agents or systems, state transitions, decision branches, dependency position (upstream/downstream plan or system dependencies), and phase/delivery flow. Trivial/linear plans (single-file config bumps, renames, doc fixes, dependency bumps with no behavioural change) are exempt from this check. For all other plans, each identified concern without a diagram is a separate MEDIUM finding.
+- **Reference**: [repo-governance/conventions/structure/plans.md §Diagrams in Plans](../../repo-governance/conventions/structure/plans.md) and [repo-governance/conventions/formatting/diagrams.md](../../repo-governance/conventions/formatting/diagrams.md).
 
 ### 4. Delivery Checklist Validation
 
@@ -146,16 +134,14 @@ Audit all plan files (`README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery
 - **Executor tagging (HARD RULE)**: every checkbox declares `[AI]` / `[HUMAN]` / `[AI+HUMAN]` (unmarked = `[AI]`), with a legend at the top of the checklist. Flag any untagged or `[AI]`-tagged human-only step (physical acts, hardware/BIOS, external auth) as **HIGH**. Validated in detail by Step 5h (rule 14).
 - **Phase gate & natural pause (HARD RULE)**: every phase ends with a `### Phase N Gate` (must-pass checklist + Pause Safety note) and reaches a safe-to-stop state. Flag a phase missing its gate as **HIGH**; a non-pause phase that should be merged as **MEDIUM**. Validated in detail by Step 5i (rule 15).
 - **Phase 0 opens no PR (HARD RULE)**: Phase 0 is Environment Setup and Baseline — it carries no PR-creation, branch-push, PR-Review-Cycle, merge, `gh pr ready`, or post-push CI-verification step, under **any** Delivery Mode; the earliest phase that may open a PR is **Phase 1**. Flag any such step inside Phase 0, and any unscoped Per-Phase Integration Protocol block, as **HIGH**. Validated in detail by the [PR Step Authorization Check](#pr-step-authorization-check) and Step 5m (rule 19, item 7). See [Plans Organization Convention §Phase 0 Opens No PR](../../repo-governance/conventions/structure/plans.md#phase-0-opens-no-pr--the-earliest-pr-is-phase-1-hard-rule).
-- **PRs open at delivery boundaries, not every phase (HARD RULE)**: a plan opens a PR at each **delivery boundary** — the phase after which the accumulated work is independently shippable — not once per phase. The contiguous phases ending at a boundary form a **delivery unit**, and the unit maps to one branch, one PR (the **worktree** is NOT part of this 1:1 mapping — a plan touching one repository provisions at most one worktree for that repo, per the Worktree Cap rule below, and reuses it, branch-switched, across every delivery unit that repo produces). Flag as **HIGH** a PR-creation, PR-Review-Cycle, `gh pr ready`, merge, or post-push CI-verification step in a phase the plan does **not** name as a boundary; a change-producing phase absent from the `### Delivery Boundaries` table; or a final change-producing phase that is not a boundary. Flag as **MEDIUM** a missing `### Delivery Boundaries` table on a non-trivial plan, and a single end-of-plan boundary on a plan whose `## Parallelization Model` declares independent parallel nodes. Validated in detail by the [PR Step Authorization Check](#pr-step-authorization-check) and Step 5m (rule 19, item 8). See [Plans Organization Convention §PRs Open at Delivery Boundaries](../../repo-governance/conventions/structure/plans.md#prs-open-at-delivery-boundaries-not-every-phase-hard-rule) and [§Worktree Cap](../../repo-governance/conventions/structure/plans.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule).
-- **Worktree Cap (HARD RULE)**: a plan provisions **at most one worktree per repository**, regardless of how many independent DAG leaves or delivery units that plan produces in that repo — the worktree is reused, branch-switched, across every delivery unit landed there. Flag as **HIGH** a plan whose `## Parallelization Model` or `### Delivery Boundaries` table names **more than one worktree path for the same repository**. See [Plans Organization Convention §Worktree Cap](../../repo-governance/conventions/structure/plans.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule).
-- **Per-Repository Delivery Mode Restrictions (HARD RULE)**: `main` is branch-protected against direct pushes (including for admins) in `ose-public` and `ose-primer` — `worktree-to-origin-main` and `main-to-origin-main` have **no executable path** in those two repositories; `worktree-to-pr` is the only applicable mode there for routine development. `archived repository` is held to the same restriction **by convention**, not by GitHub enforcement — its `main` is not yet actually branch-protected (verified live 2026-08-08: `protected: false`, no rulesets), pending a `[HUMAN]`-only GitHub settings change; treat a declared direct-push mode there as a convention violation, not a technical-inexecutability finding. In `ose-private`, both direct-push modes remain available **only** for infrastructure-as-code plans (Terraform, Ansible, and equivalent state-changing infra work needing the primary checkout's real secrets and local state). Flag as **HIGH** a plan's `## Delivery Mode` field (or an invocation argument) declaring `worktree-to-origin-main` or `main-to-origin-main` for a target repository in `ose-public`, `ose-primer`, or `archived repository`; also flag as **HIGH** the same declaration for `ose-private` when the plan is not infrastructure-as-code. See [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule).
+- **PRs open at delivery boundaries, not every phase (HARD RULE)**: a plan opens a PR at each **delivery boundary** — the phase after which the accumulated work is independently shippable — not once per phase. The contiguous phases ending at a boundary form a **delivery unit**, and the unit maps to one branch, one PR — the **worktree** stays a coarser, per-repository unit, capped at one per repo per plan and reused across every delivery unit landed there (see [Worktree Cap](../../repo-governance/conventions/structure/plans.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule)). Flag as **HIGH** a PR-creation, PR-Review-Cycle, `gh pr ready`, merge, or post-push CI-verification step in a phase the plan does **not** name as a boundary; a change-producing phase absent from the `### Delivery Boundaries` table; or a final change-producing phase that is not a boundary. Flag as **MEDIUM** a missing `### Delivery Boundaries` table on a non-trivial plan, and a single end-of-plan boundary on a plan whose `## Parallelization Model` declares independent parallel nodes. Validated in detail by the [PR Step Authorization Check](#pr-step-authorization-check) and Step 5m (rule 19, item 8). See [Plans Organization Convention §PRs Open at Delivery Boundaries](../../repo-governance/conventions/structure/plans.md#prs-open-at-delivery-boundaries-not-every-phase-hard-rule).
 - **Specs & Gherkin delivery (per Two Paths)**: a plan that creates, modifies, or deletes observable behavior in `apps/`, `libs/`, or `specs/` MUST include delivery steps that add/update the companion `specs/` Gherkin `.feature` files and run `specs:coverage`. Validated in detail by Step 5j (rule 16). See [Feature Change Completeness Convention §Two Paths](../../repo-governance/development/quality/feature-change-completeness.md).
 - **Gherkin-tagged TDD steps (one scenario per cycle)**: every behavior-implementing RED→GREEN→REFACTOR cycle MUST target **exactly one** Gherkin scenario — the RED step carries a single-scenario `**Gherkin (binds) →** "<title>"` tag and embeds that scenario's complete `Given/When/Then` inline as a fenced ` ```gherkin ` block, verbatim-equal to the companion `.feature`. Flag as **HIGH**: a behavior RED step whose `binds` tag lists **more than one** scenario (must be split one-cycle-per-scenario), a behavior step missing its Gherkin tag, or a step whose inline `Given/When/Then` is absent or not verbatim-equal to the `.feature`. Two exceptions keep a multi-scenario `;`-list tag and are NOT split: pure-core (`**Gherkin (underpins) →**`) data/calc unit tests, and aggregate BDD binders (a feature-consuming unit test or `playwright-bdd` step-def file consuming the whole `.feature` for `specs:coverage`/E2E). Pure refactors, no-behavior-change bumps, and docs/governance-only steps are exempt. See [Gherkin-Tagged Delivery Steps](../../repo-governance/development/workflow/test-driven-development.md#gherkin-tagged-delivery-steps).
 - **UI-design-funnel completeness (UI-bearing plans)**: a plan that adds/changes user-facing screens or components under `apps/` or `libs/` MUST carry the design-funnel artefacts (≥2 named low-fi alternatives, 2 hi-fi `.excalidraw.png` finalists, a named selection, a rationale, a grounding/prior-art note, and a **responsive** strategy across mobile/tablet/desktop). Validated in detail by Step 5k (rule 17). Pure-refactor / no-UI / governance-only plans are exempt. See [UI Mockups in Plan Docs convention](../../repo-governance/conventions/formatting/diagrams.md#ui-mockups-in-plan-docs).
 - **Manual-assertion locale + evidence completeness (UI/API plans)**: a plan touching web UI or API MUST carry manual-assertion steps that (a) cover ALL supported locales for a multi-locale app and (b) capture committed evidence (screenshots to the plan's `evidence/` subfolder, curl responses inlined in `delivery.md`). Validated in detail by Step 5c (items 4 + 5). Single-locale-only verification on a multi-locale app, or a manual-assertion section with no evidence-capture step, is **HIGH**. See [Evidence Capture Convention](../../repo-governance/development/quality/evidence-capture.md).
 - **Rule-15 three-tester retest (web-UI feature-change plans)**: a web-UI **feature-change** plan MUST carry a near-end "Rule-15 three-tester retest" step running the [`web-ux-test-fixing-planning`](../../repo-governance/workflows/web/web-ux-test-fixing-planning.md) triad (`web-exploratory-tester` + `web-usability-tester` + `web-design-tester`) against the running target across ALL supported locales, with each `EWT-###`/`UWT-###`/`DWT-###` defect finding folded into `delivery.md` as an unchecked checkbox that MUST be fixed (ticked) before archival — deferral of an EWT/UWT/DWT defect finding requires explicit user permission and is allowed only when the fix is genuinely impossible. (`SG-###` spec-gap proposals and `USS-###` spec-suggestions are proposals, not defects, and may be triaged or deferred.) An unfixed EWT/UWT/DWT defect checkbox at archival time is a **HIGH** finding. A missing step, or single-locale-only scope, on a web-UI feature-change plan is **HIGH**. CLI/text output and pure governance/agent-definition plans are exempt. See [User-Facing Delivery Hardening](../../repo-governance/development/quality/user-facing-delivery-hardening.md) Rule 15.
 - **Rule-16 API exploratory retest (API feature-change plans)**: an API **feature-change** plan (REST or GraphQL endpoints in a backend or tRPC app) MUST carry a near-end "Rule-16 API exploratory retest" step running `api-exploratory-tester` (`output-mode: delivery`, the plan's `plan-path`) against the running endpoint(s) with the contract (OpenAPI 3.x / GraphQL SDL) as ground truth, with each `AET-###` defect finding folded into `delivery.md` as an unchecked checkbox that MUST be fixed (ticked) before archival — deferral of an AET defect finding requires explicit user permission and is allowed only when the fix is genuinely impossible. (`SG-###` spec-gap proposals are proposals, not defects, and may be triaged or deferred.) An unfixed `AET-###` defect checkbox at archival time is a **HIGH** finding. A missing step on an API feature-change plan is **HIGH**. The API tester never drives a browser, so this is independent of Rule 15 — a plan changing both a web UI and its API carries both retest steps. Frontend-only, CLI/text output, and pure governance/agent-definition plans are exempt. See [User-Facing Delivery Hardening](../../repo-governance/development/quality/user-facing-delivery-hardening.md) Rule 16.
-- **Knowledge Capture phase presence (substantive plans)**: a substantive plan's `delivery.md` MUST end with a Knowledge Capture phase — the final substantive phase, immediately before Plan Archival — that scaffolds `learnings.md`, applies the litmus test and both mandatory safety gates (secret/sensitivity, repo-relevance), and routes every surviving entry (code homes are ALWAYS filed as a separate `plans/backlog/` plan, never landed inline). A plan whose `delivery.md` records the explicit `No generalizable learnings — <reason>` escape is exempt from the phase requirement. Validated in detail by Step 5l (rule 18). See [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md).
+- **Knowledge Capture phase presence**: every substantive plan's `delivery.md` MUST carry a final Knowledge Capture phase (or an explicit "none" record) per the [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md). Validated in detail by Step 5l. Silent absence (no phase AND no explicit "none" record anywhere) is flagged **MEDIUM**; an explicit "none" record PASSES without a finding.
 
 #### PR Step Authorization Check
 
@@ -391,17 +377,17 @@ Update status to "Complete", add summary statistics and prioritized recommendati
 - `plan-execution-checker` - Validates completed work
 - `plan-fixer` - Fixes plan issues
 
+**Related Conventions:**
+
+- [User-Facing Delivery Hardening Convention](../../repo-governance/development/quality/user-facing-delivery-hardening.md) - Flag missing visual-parity gate (rule 1), mockup colors not expressed as theme tokens (rule 8), presence-only ordering tests that do not distinguish correct from buggy values (rule 5), missing per-breakpoint responsive deliverable steps (rules 3, 4), and a missing near-end three-tester retest step (rule 15) as HIGH findings on UI-bearing plans (rule 15 applies to web-UI plans only); an unfixed EWT/UWT/DWT defect checkbox at archival time is a HIGH finding — deferral of a defect finding requires explicit user permission and is allowed only when the fix is genuinely impossible (SG-### proposals and USS-### suggestions may still be triaged)
+- [Manual Behavioral Verification Convention](../../repo-governance/development/quality/manual-behavioral-verification.md) - Flag missing Playwright/curl manual-assertion steps for UI/API plans (Step 5c)
+- [Evidence Capture Convention](../../repo-governance/development/quality/evidence-capture.md) - Flag single-locale-only verification on multi-locale apps and manual-assertion sections lacking evidence-capture steps (screenshots to `evidence/`, inline curl output) as HIGH findings (Step 5c items 4 + 5)
+- [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md) - Flag silent absence of the final Knowledge Capture phase (no phase, no explicit "none" record) as MEDIUM (Step 5l); an explicit "none" record passes
+
 **Harness Conventions (Step 5g):**
 
 - [Multi-Harness Binding Convention](../../repo-governance/conventions/structure/multi-harness-binding.md) - Two-tier binding model and no-shadowing rule
 - [Governance Vendor-Independence Convention](../../repo-governance/conventions/structure/governance-vendor-independence.md) - Platform Binding Examples heading rule
-
-**Related Conventions:**
-
-- [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md) - Flag a substantive plan whose `delivery.md` has no Knowledge Capture phase and no explicit "none" record as MEDIUM (Step 5l); an explicit `No generalizable learnings — <reason>` record passes without a finding
-- [User-Facing Delivery Hardening Convention](../../repo-governance/development/quality/user-facing-delivery-hardening.md) - Flag missing visual-parity gate (rule 1), mockup colors not expressed as theme tokens (rule 8), presence-only ordering tests that do not distinguish correct from buggy values (rule 5), missing per-breakpoint responsive deliverable steps (rules 3, 4), and a missing near-end three-tester retest step (rule 15) as HIGH findings on UI-bearing plans (rule 15 applies to web-UI plans only); an unfixed EWT/UWT/DWT defect checkbox at archival time is a HIGH finding — deferral of a defect finding requires explicit user permission and is allowed only when the fix is genuinely impossible (SG-### proposals and USS-### suggestions may still be triaged)
-- [Manual Behavioral Verification Convention](../../repo-governance/development/quality/manual-behavioral-verification.md) - Flag missing Playwright/curl manual-assertion steps for UI/API plans (Step 5c)
-- [Evidence Capture Convention](../../repo-governance/development/quality/evidence-capture.md) - Flag single-locale-only verification on multi-locale apps and manual-assertion sections lacking evidence-capture steps (screenshots to `evidence/`, inline curl output) as HIGH findings (Step 5c items 4 + 5)
 
 ### Escalation After Repeated Disagreements
 
@@ -476,14 +462,14 @@ After validating delivery checklist structure (Step 5), verify the plan includes
 
 1. **Local Quality Gates Before Push**
    - Plan MUST include steps to run affected tests/checks locally before pushing
-   - Must reference the correct Nx commands: `nx affected -t typecheck lint test:quick specs:coverage`
+   - Must reference the correct local invocation: `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push` (the same registry-declared gate set `.husky/pre-push` invokes; includes `nx affected -t test:quick`)
    - Must mention the blast radius concept — only affected projects, not the entire repo
    - Must specify all relevant test levels: unit, integration, e2e (as applicable)
    - Must include linting and typecheck steps
 
 2. **Post-Push CI/CD Verification**
    - Plan MUST include steps to manually verify related GitHub Actions/workflows pass after the push — against the plan's declared delivery target (the PR's check run under `*-to-pr`; `origin main` under the direct-push modes). A plan that hardcodes `main` while declaring a `*-to-pr` mode is itself a finding
-   - Must specify WHICH workflows to monitor (not just "check CI") — `.github/workflows/main-ci.yml` must never be named: it no longer exists (removed — its checks were folded into the gate registry driving `pr-quality-gate.yml`)
+   - Must specify WHICH workflows to monitor (not just "check CI") from the workflows triggered by the push
    - Must include instructions to watch for failures and fix them before moving on
 
 3. **Development Environment Setup**
@@ -583,12 +569,26 @@ After validating manual assertions (Step 5c), verify the plan declares a worktre
    - The section SHOULD link to [Worktree Path Convention](../../repo-governance/conventions/structure/worktree-path.md) and/or [Plans Organization Convention §Worktree Specification](../../repo-governance/conventions/structure/plans.md#worktree-specification).
    - Missing cross-reference: **LOW** finding.
 
+5. **Worktree cap — at most one worktree path per repository (enforces [Worktree Cap](../../repo-governance/conventions/structure/plans.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule))**
+   - This check runs against the single repository `plan-checker` is invoked in (confirm with
+     `git remote get-url origin` or `repo-config.yml`'s declared repo name) — a plan's `delivery.md`
+     for this repo is scoped to that one repo, so every worktree path it names is implicitly a
+     same-repo claim.
+   - Collect every worktree path named in the plan: the top-level `## Worktree` declaration, every
+     `Worktree` column value in the `### Delivery Boundaries` table (inside `## Parallelization
+Model`), and any other `worktrees/<...>/` path mentioned in that section.
+   - **More than one distinct `worktrees/<...>/` path collected for this repo: HIGH finding.** The
+     cap permits exactly one worktree per repository per plan, reused — branch-switched — across
+     every delivery unit; a second distinct path is a defect even if each individual path is
+     correctly formatted per item 2 above.
+
 #### Finding Severity
 
 - Missing `## Worktree` section entirely: **HIGH**
 - Wrong path format or identifier mismatch: **HIGH**
 - Missing provisioning command: **MEDIUM**
 - Missing cross-reference link: **LOW**
+- More than one distinct worktree path named for this repository within one plan: **HIGH**
 
 ### 11. Execution-Grade Clarity Validation (Step 5e — MANDATORY HARD RULE)
 
@@ -599,16 +599,16 @@ After validating the worktree specification (Step 5d), audit every delivery chec
 Every checkbox in `delivery.md` (or the Delivery Checklist section of a single-file plan's `README.md`) MUST satisfy ALL of the following that apply to the action:
 
 1. **Explicit file path(s)** when the action touches a known file
-   - Acceptable: `apps/crud-be-ts-effect/src/server/trpc.ts`, `repo-governance/conventions/structure/plans.md`, etc.
-   - When the path cannot be determined at authoring time, the checkbox MUST give the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/crud-be-ts-effect/src/lib/` following the pattern of sibling `auth.ts`").
+   - Acceptable: `apps/ose-www/src/server/trpc.ts`, `repo-governance/conventions/structure/plans.md`, etc.
+   - When the path cannot be determined at authoring time, the checkbox MUST give the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/organiclever-www/src/lib/` following the pattern of sibling `auth.ts`").
    - Bare "the auth file", "the relevant config", "wherever needed": **HIGH** finding.
 
 2. **Explicit shell command(s)** when the action involves a command
-   - Acceptable: `npx nx run crud-be-ts-effect:test:quick`, `git mv plans/in-progress/foo plans/done/YYYY-MM-DD__foo`, etc.
+   - Acceptable: `npx nx run ose-web:test:quick`, `git mv plans/in-progress/foo plans/done/YYYY-MM-DD__foo`, etc.
    - Bare "run the lint", "run tests", "validate": **HIGH** finding.
 
 3. **Concrete acceptance criterion** stating the observable change that proves done
-   - Acceptable: "all assertions in `trpc.test.ts` pass", "`nx run crud-be-ts-effect:typecheck` exits 0", "`grep -c 'old-string' file.md` returns `0`".
+   - Acceptable: "all assertions in `trpc.test.ts` pass", "`nx run ose-web:typecheck` exits 0", "`grep -c 'old-string' file.md` returns `0`".
    - Bare "implement X", "set up Y", "configure Z", "add caching", "fix the bug": **HIGH** finding.
 
 #### How to Audit
@@ -879,9 +879,11 @@ user-facing screens or components under any `apps/**` or `libs/**` path (e.g. `l
    tier: **HIGH**. Use of a ruled-out format (inline HTML+CSS, MDX, Mermaid-as-wireframe,
    `.excalidraw.svg`): **HIGH**.
 4. **≥ 2 named low-fi alternatives** — The funnel's diverge stage MUST present at least two named,
-   genuinely different alternatives (Option A / B / …). None or only one: **HIGH**.
+   genuinely different alternatives (Option A / B / …), at least mobile + desktop where they differ.
+   None or only one: **HIGH**.
 5. **2 hi-fi `.excalidraw.png` finalists** — The narrow stage MUST carry the strongest alternatives
-   forward as hi-fi finalists. Missing the hi-fi finalists: **HIGH**.
+   forward as hi-fi finalists (`.excalidraw.png` or plain `.png`). Missing the hi-fi finalists:
+   **HIGH**.
 6. **Named selection** — The select stage MUST name the chosen design explicitly (e.g.
    "Selected: Option A — Ranked Table"). An unnamed/implicit selection: **HIGH**.
 7. **Rationale / decision record** — The justify stage MUST include a short rationale (a table is
@@ -913,43 +915,50 @@ user-facing screens or components under any `apps/**` or `libs/**` path (e.g. `l
 
 ### 18. Knowledge Capture Phase Presence (Step 5l — MANDATORY)
 
-Enforces the [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md).
-A substantive plan's `delivery.md` must end with a Knowledge Capture phase — the final substantive
-phase, immediately before Plan Archival — that scaffolds `learnings.md`, encodes the open-ended
-triage rubric, states the code-routing rule, and applies both mandatory safety gates.
+Enforces the [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md):
+every substantive plan's `delivery.md` (or a single-file plan's `README.md` Delivery Checklist
+section) MUST carry a final Knowledge Capture phase that triages the plan's transient `learnings.md`
+running log — through the open-ended, principle-based triage rubric, the code-routing rule, and both
+safety gates (secret/sensitivity, repo-relevance) — before the plan may be archived.
 
 #### What to Validate
 
-1. **Phase presence** — Does `delivery.md` carry a Knowledge Capture phase as its final substantive
-   phase (immediately before Plan Archival)? Trivial/pure-docs plans (one-line rename, single
-   broken-link fix) MAY skip the elaborate phase if `learnings.md` records the explicit "none" escape.
-2. **`learnings.md` scaffold** — Does the plan folder scaffold `learnings.md` (sibling to
-   `delivery.md`) at plan-creation time, ready for the executor to append entries during execution?
-3. **Both safety gates present** — Does the phase apply the **secret/sensitivity gate** (sanitize or
-   discard unsanitizable secrets) and the **repo-relevance gate** (infra-private content never
-   cross-routed out of `ose-private`) to every surviving entry?
-4. **Code-routing rule stated** — Does the phase state that a learning whose home is `apps/`,
-   `libs/`, or tests is ALWAYS filed as a separate `plans/backlog/<slug>/` plan and NEVER landed
-   inline in the current plan's own commits/PR?
-5. **`plans/ideas/` overlap-scan step stated** — Does the phase's routing checklist include the step
-   requiring, for any entry routed to `plans/ideas/`, a scan of `plans/ideas/README.md` and the
-   existing two-pagers FIRST for a brief already covering the same area — fold in rather than
-   creating a new file — per
-   [Integrate Before You Add](../../repo-governance/conventions/structure/plans.md#integrate-before-you-add-no-duplicate-two-pagers)?
-6. **Explicit "none" escape recognized** — A `learnings.md` (or Knowledge Capture phase) that records
-   `No generalizable learnings — <one-line reason>` is a **PASS**, not a finding. Only the silent
-   absence of both the phase AND any "none" record is penalized.
+1. **Phase presence** — `delivery.md` (or the single-file plan's Delivery Checklist section)
+   contains a Knowledge Capture phase: a phase whose heading or body references triaging
+   `learnings.md` against the routing matrix and both safety gates, positioned as the FINAL
+   substantive phase, immediately before the Plan Archival section.
+2. **Explicit "none" record PASSES** — if `learnings.md` (or the phase text itself) records the
+   explicit `No generalizable learnings — <reason>` escape, this is a **PASS**, not a finding. A
+   checker never penalizes an honest "none" — only silence is penalized.
+3. **Silent absence is the only violation** — flag a plan whose `delivery.md` has NO Knowledge
+   Capture phase at all AND no explicit "none" record anywhere (neither in `learnings.md` nor in
+   `delivery.md`) at **MEDIUM** criticality, per the
+   [Criticality Levels Convention](../../repo-governance/development/quality/criticality-levels.md).
+4. **Code-routing rule stated** — the phase's prose MUST state that a learning routed to `apps/`,
+   `libs/`, or tests is ALWAYS filed as a separate `plans/backlog/` plan and NEVER landed inline
+   (the current-plan-blocker carve-out aside). A phase present but missing this rule: **MEDIUM**.
+5. **Both safety gates present** — the phase MUST reference applying the secret/sensitivity gate
+   and the repo-relevance gate to every surviving entry before routing. A phase present but missing
+   either gate reference: **MEDIUM**.
+6. **`plans/ideas/` overlap-scan rule stated** — if the phase's routing matrix names `plans/ideas/`
+   as a candidate destination (it does by default per the standard scaffold), the phase's prose MUST
+   state that any entry routed there is checked against `plans/ideas/README.md` and the existing
+   two-pagers FIRST, folding into a brief that already covers the same area instead of creating a
+   new one, per
+   [Integrate Before You Add](../../repo-governance/conventions/structure/plans.md#integrate-before-you-add-no-duplicate-two-pagers).
+   A phase present but silent on this rule: **MEDIUM**.
+7. **Exemption** — pure-docs and trivial plans (a one-line rename, a single broken-link fix) MAY
+   skip an elaborate Knowledge Capture phase; the explicit "none" escape (or an equally explicit
+   note in `delivery.md`) satisfies the requirement. Verify any claimed exemption is legitimate; an
+   illegitimate exemption on a genuinely substantive plan is **MEDIUM**.
 
 #### Finding Severity
 
-- Substantive plan whose `delivery.md` has no Knowledge Capture phase and no explicit "none" record
-  anywhere: **MEDIUM**
-- Knowledge Capture phase present but missing the `learnings.md` scaffold, a safety gate, the
-  code-routing rule statement, or the `plans/ideas/` overlap-scan step: **MEDIUM**
-- Explicit `No generalizable learnings — <reason>` record present (phase or file): **not flagged**
-  (passes)
-- Trivial/pure-docs plan with no Knowledge Capture phase and no "none" record: **not flagged**
-  (exempt per the trivial-plan carve-out)
+- `delivery.md` has no Knowledge Capture phase and no explicit "none" record anywhere: **MEDIUM**
+- Explicit "none" record present (in `learnings.md` or `delivery.md`): **PASS** — not a finding
+- Phase present but missing the code-routing rule, either safety-gate reference, or the
+  `plans/ideas/` overlap-scan rule: **MEDIUM**
+- Illegitimate trivial-plan exemption used to skip on a genuinely substantive plan: **MEDIUM**
 
 ### 19. Delivery Mode Validation (Step 5m — MANDATORY)
 
@@ -971,9 +980,10 @@ mode additionally fixes the integration target and merge authority.
    However, `plan-maker` is instructed to always author the section explicitly (see
    `.claude/agents/plan-maker.md` Step 7) — flag a freshly-authored plan missing it entirely at
    **LOW** as a best-practice gap, not a correctness defect.
-3. **`*-to-pr` modes carry the PR-Review Maker→Fixer Cycle** — when the resolved mode is
-   `worktree-to-pr` or `main-to-pr`, `delivery.md` MUST emit the PR-Review Maker→Fixer Cycle steps
-   (strictly sequential maker→fixer cycles, default 3, CI-green-gated) per the
+3. **Every PR carries the behavior classifier** — when the resolved mode produces a PR,
+   `delivery.md` MUST record the canonical classifier: eligible executable work runs sequential,
+   CI-green-gated specialist cycles to the earliest clean code M/H/C result within seven; noneligible
+   work requires the named `pr-quality-gate.yml` workflow, per the
    [PR Review Quality Gate workflow](../../repo-governance/workflows/pr/pr-review-quality-gate.md),
    positioned before the PR-merge step. A `*-to-pr` plan whose checklist jumps straight
    from PR creation to the merge with no review-cycle steps is missing required steps.
@@ -989,10 +999,9 @@ mode additionally fixes the integration target and merge authority.
    `[AI]` (never gated behind an unrequested `[HUMAN]` approval step, per the existing
    [PR Step Authorization Check](#pr-step-authorization-check) —
    that check's "unsolicited PR step" framing now applies only to `*-to-origin-main`-mode plans,
-   since a PR step is expected and correct under `*-to-pr` modes.
+   since a PR step is expected and correct under `*-to-pr` modes).
 5. **"Done" is not "merged"** — a `*-to-pr` plan's own completion/Gate criteria MUST NOT require the
-   PR to actually be merged; a green, fully-reviewed PR awaiting its merge is a valid done state.
-   Flag a plan that conflates the two.
+   PR to actually be merged; a green, fully-reviewed PR awaiting its merge is a valid done state. Flag a plan that conflates the two.
 6. **Archival-in-PR present** — for `*-to-pr` modes (where the plan folder is tracked in the
    repo being delivered), the checklist MUST include an archival step — `git mv` the plan folder
    to `plans/done/`, plus README/index updates — committed **inside the delivering PR** itself
@@ -1010,29 +1019,19 @@ mode additionally fixes the integration target and merge authority.
    and confirm the phases carrying integration steps are a subset of the phases the
    `### Delivery Boundaries` table declares. Also confirm every change-producing phase appears in
    exactly one table row and that the last change-producing phase is a boundary.
-9. **Delivery mode is repo-executable (Per-Repository Delivery Mode Restrictions)** — for each
-   target repository the plan actually delivers into (the plan's own repo, or every repo named in a
-   multi-repo plan's `repos`-style input), check the resolved `## Delivery Mode` value (or the
-   default `worktree-to-pr` when unmarked) against that repo's known restriction: `main` is
-   branch-protected against direct pushes in `ose-public` and `ose-primer`, so
-   `worktree-to-origin-main` and `main-to-origin-main` have no executable path there at all.
-   `archived repository` is restricted to the same effect by convention — its `main` is not yet actually
-   GitHub-branch-protected (verified live 2026-08-08), so flag a declared direct-push mode there as a
-   convention violation rather than a technical-inexecutability claim. `worktree-to-pr` is the only
-   applicable mode in all three. In `ose-private`, both direct-push modes remain
-   valid only when the plan is infrastructure-as-code (Terraform, Ansible, or equivalent
-   state-changing infra work needing the primary checkout's real secrets and local state); flag a
-   non-IaC `ose-private` plan declaring either direct-push mode the same as the three-repo case.
-   Cross-check `## Delivery Mode` field, invocation-argument overrides, and any repo-scoped input
-   the plan itself declares (e.g. `plan-ideas-grooming`'s `repos` input) — a value valid in the
-   enum sense (item 1 above) can still be non-executable for the repo(s) actually targeted.
-10. **Worktree Cap — at most one worktree path per repository** — read the `## Parallelization
-Model` section and the `### Delivery Boundaries` table (or, absent a table, the `## Worktree`
-    section plus any per-delivery-unit worktree references in the phase text) and confirm at most
-    one distinct `worktrees/<name>/` path is named per target repository. A plan naming two or more
-    distinct worktree paths for the same repository — one per delivery unit, rather than one shared
-    and reused across units — violates the
-    [Worktree Cap](../../repo-governance/conventions/structure/plans.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule).
+9. **Per-repository delivery mode restriction (enforces [Per-Repository Delivery Mode
+   Restrictions](../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule))**
+   — determine the repository `plan-checker` is invoked in (`git remote get-url origin` or
+   `repo-config.yml`'s declared repo name); the resolved `## Delivery Mode` value (declared field, or
+   the tier-3 `worktree-to-pr` default when absent) is then checked against that repo:
+   - **`ose-public`, `ose-primer`**: a resolved mode of `worktree-to-origin-main` or
+     `main-to-origin-main` is **HIGH** — those modes have no executable path in these two
+     repositories (`main` is branch-protected against direct pushes, including for admins).
+   - **`ose-private`**: a resolved mode of `worktree-to-origin-main` or `main-to-origin-main` is
+     **HIGH** unless the plan is genuinely an infrastructure-as-code plan (its BRD/PRD or folder
+     content scopes it to Terraform, Ansible, or equivalent state-changing infra work needing the
+     primary checkout's real credentials/state) — read the plan's stated scope to decide, do not rely
+     on a bare self-declared label.
 
 #### Finding Severity
 
@@ -1052,12 +1051,10 @@ Model` section and the `### Delivery Boundaries` table (or, absent a table, the 
 - Final change-producing phase that is not a delivery boundary: **HIGH**
 - Missing `### Delivery Boundaries` table on a non-trivial plan: **MEDIUM**
 - Single end-of-plan boundary on a plan declaring independent parallel nodes: **MEDIUM**
-- `## Delivery Mode` (declared or defaulted) names a mode with no executable path for a target
-  repository — `worktree-to-origin-main` or `main-to-origin-main` in `ose-public`, `ose-primer`, or
-  `archived repository`; either direct-push mode in `ose-private` on a non-infrastructure-as-code plan:
-  **HIGH**
-- More than one distinct `worktrees/<name>/` path named for the same target repository across the
-  plan's `## Parallelization Model` / `### Delivery Boundaries` table: **HIGH**
+- Resolved mode of `worktree-to-origin-main`/`main-to-origin-main` in `ose-public` or `ose-primer`
+  (no executable path — mechanically protected `main`): **HIGH**
+- Resolved mode of `worktree-to-origin-main`/`main-to-origin-main` in `ose-private` on a plan that is
+  not genuinely infrastructure-as-code: **HIGH**
 
 ### 20. Learning-Bearing Syllabus Completeness (Step 5n — CONDITIONAL)
 

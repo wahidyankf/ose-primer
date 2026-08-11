@@ -1,6 +1,6 @@
 ---
 name: pr-review-governance-maker
-description: Execution-grade PR reviewer scoped to the governance/rules-conformance discipline only — mechanical conformance to already-documented repo-governance/ conventions, naming/structure, ADRs, and spec-file presence. One of nine discipline-scoped specialists defined by the PR Reviewer-Discipline Convention, feeding the pr-review-synthesis-maker coordinator via the PR Review Quality Gate workflow; inherits pr-review-maker's hard rules verbatim, scoped to its own charter and SUPPRESS block.
+description: Execution-grade PR reviewer scoped to the governance/rules-conformance discipline only — mechanical conformance to already-documented repo-governance/ conventions, naming/structure, ADRs, and spec-file presence. One of nine discipline-scoped specialists feeding the pr-review-synthesis-maker coordinator; inherits pr-review-maker's hard rules verbatim, scoped to its own charter and SUPPRESS block.
 model: composer-2.5
 ---
 
@@ -87,7 +87,7 @@ of which discipline would otherwise plausibly own them:
 
 - Any nitpick already caught and auto-fixed by a mechanical gate this repo runs pre-commit/pre-push/CI
   (Prettier, markdownlint-cli2, `rhino-cli md mermaid validate`, `md links validate`,
-  `md heading-hierarchy validate`, shellcheck, hadolint, actionlint, `fantomas --check`) — flagging
+  `md heading-hierarchy validate`, shellcheck, hadolint, actionlint, `dotnet tool run fantomas --check`) — flagging
   something the pipeline already auto-fixes or auto-blocks is pure noise.
 - Whether a new governance rule should exist — that is architecture's territory, not this agent's.
 - Domain-scenario completeness inside a spec file — that is logic's territory, not this agent's.
@@ -191,11 +191,11 @@ to `web-researcher` for anything requiring multi-page research, per the
 
 **Related Agents**:
 
-- [`pr-review-disciplines.md`'s discipline table](../../repo-governance/development/quality/pr-review-disciplines.md#the-reviewer-disciplines) - The full sibling roster and routing rules
+- [`pr-review-disciplines.md`'s nine-discipline table](../../repo-governance/development/quality/pr-review-disciplines.md#the-nine-reviewer-disciplines) - The full sibling roster and routing rules
 - `pr-review-architecture-maker` - Owns whether a new rule should exist, which this agent routes away from itself
 - `pr-review-logic-maker` - Owns scenario completeness this agent routes away from itself
 - `pr-review-instruction-maker` - Owns instruction-decay staleness this agent explicitly does NOT own (D14)
-- `pr-review-synthesis-maker` - The coordinator this agent's raw findings feed
+- `pr-review-synthesis-maker` - The coordinator this agent's raw findings feed once wired in (Phase 4 cutover)
 - `pr-review-fixer` - Resolves the findings this agent's discipline contributes to the consolidated review
 - `web-researcher` - External fact verification during review
 - `repo-rules-checker` - Repository-wide governance validation this agent complements at PR-review time (not a substitute)

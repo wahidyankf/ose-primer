@@ -1,141 +1,71 @@
 ---
 title: "Related Repositories"
-description: Catalogue of the four sibling repositories in the Open Sharia Enterprise family (ose-public, ose-primer, ose-private, archived repository), their visibility, licensing, purpose, and relationship to ose-primer.
+description: "How the Open Sharia Enterprise repositories differ and where to begin."
 category: reference
 subcategory: ecosystem
 tags:
   - reference
-  - ose-public
-  - ose-private
-  - archived repository
   - ecosystem
-  - cross-repo
+  - ose-primer
+created: 2026-04-18
 ---
 
 # Related Repositories
 
-`ose-primer` is one of four sibling repositories in the Open Sharia Enterprise (OSE) family. The four repositories cross-reference each other directly — there is no parent container repository, no submodule wiring, and no shared workspace. This reference catalogues each sibling, its visibility, its license, and its relationship to `ose-primer`.
+The OSE ecosystem has three sibling repositories. Each has a different job, so choose the one that
+matches what you are trying to understand rather than treating them as interchangeable copies.
 
-## Repository Catalogue
+| Repository                                               | Visibility  | Role                                                            | Start there when…                                                  |
+| -------------------------------------------------------- | ----------- | --------------------------------------------------------------- | ------------------------------------------------------------------ |
+| [`ose-public`](https://github.com/wahidyankf/ose-public) | Public, MIT | The OSE product platform and its public research                | You want to understand or run OSE itself.                          |
+| [`ose-primer`](https://github.com/wahidyankf/ose-primer) | Public, MIT | A reusable polyglot Nx starter built from OSE practices         | You want a starting point for a different product.                 |
+| `ose-private`                                            | Private     | Authorized product operations and local CoralPolyp sandbox work | You are an authorized maintainer following its private onboarding. |
 
-| Repository                                                        | Visibility | License     | Purpose                                                                                                  | Relationship to `ose-primer`                                                                                    |
-| ----------------------------------------------------------------- | ---------- | ----------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| [`ose-public`](https://github.com/wahidyankf/ose-public)          | Public     | MIT         | Main OSE platform monorepo; upstream source of governance, conventions, agents, and skills               | **Upstream.** Governance artifacts originate there and propagate here.                                          |
-| [`ose-primer`](https://github.com/wahidyankf/ose-primer)          | Public     | MIT         | Repository template — clean MIT starting point for new OSE-style polyglot Nx monorepos                   | This repository.                                                                                                |
-| [`ose-private`](https://github.com/wahidyankf/ose-private)        | Private    | Proprietary | Private product operations and infrastructure for authorized maintainers                                 | Listed for ecosystem context only; no private implementation detail or infrastructure flows into this template. |
-| [`archived repository`](https://github.com/wahidyankf/ose-public) | Public     | MIT         | archived repository — a personal operating layer (assistant, content builder, posting helper, workflows) | Cross-reference only. Scaffolded from this family but syncs no content in either direction.                     |
+## The two reader paths that matter most
 
-## Terminology — "the OSE repos"
+- Choose **OSE Public** when the question is about the OSE product, its public website, research, or
+  product engineering. Start with [Getting started with OSE Public](https://github.com/wahidyankf/ose-public/blob/main/docs/tutorials/getting-started-with-ose-public.md).
+- Choose **OSE Primer** when the question is how to adopt the governance, testing, automation, and
+  reference-app foundation in a new repository. Its README is the authoritative onboarding path.
 
-When a request says **"all of the OSE repositories"**, **"all of the OSE repos"**, **"all four
-repos"**, or any equivalent collective phrase, it means exactly these four, and nothing else:
+`ose-private` is not a public setup target. Its documentation and local sandbox instructions are
+available only to authorized maintainers; public documentation intentionally does not describe its
+internal implementation, access model, or operational layout.
 
-| #   | Repository            |
-| --- | --------------------- |
-| 1   | `ose-public`          |
-| 2   | `ose-primer`          |
-| 3   | `ose-private`         |
-| 4   | `archived repository` |
+## Shared boundaries
 
-Four consequences worth stating, because each has been a real source of ambiguity:
+`ose-public` and `ose-primer` share selected governance and tooling content, but their positioning is
+deliberately different: the former is the product platform; the latter is a starter. Their content
+parity is planned and reviewed, not assumed from folder names.
 
-- **`archived repository` is always included.** The collective term is **not** a synonym for the three-repo
-  parity loop. `archived repository` sits outside that loop but is a full family member.
-- **Only these four.** Other repositories that happen to sit in the same parent directory on a
-  developer machine are not part of the set.
-- **A change is incomplete until it lands in all four.** "Applied to the OSE repos" means four
-  repositories, not "the ones where it was convenient".
-- **Landing in all four is not the same as landing identically in all four.** Each repository's
-  footprint differs — a convention may reference a document one repo does not have, or govern a
-  surface that is empty there. Adapt per repository and say what differed; do not skip the repo, and
-  do not force an artefact that does not fit it.
-
-If a change genuinely should not apply to one of the four, name which one and why. Silently narrowing
-the set is the failure this definition exists to prevent.
-
-## Lineage
-
-```mermaid
-flowchart LR
-    public["ose-public<br/>(MIT, public)<br/>upstream platform"]
-    primer["ose-primer<br/>(MIT, public)<br/>this repository"]
-    private["ose-private<br/>(proprietary, private)<br/>infrastructure"]
-    beaver["archived repository<br/>(MIT, public)<br/>personal operating layer"]
-
-    public -->|governance propagation| primer
-    primer <-->|generic content sync| private
-    primer -->|template basis| forks["downstream forks"]
-    beaver -.->|cross-reference only| primer
-    beaver -.->|cross-reference only| public
-
-    classDef publicRepo fill:#029E73,stroke:#000,stroke-width:1px,color:#fff
-    classDef privateRepo fill:#0173B2,stroke:#000,stroke-width:1px,color:#fff
-    classDef primerRepo fill:#CC78BC,stroke:#000,stroke-width:1px,color:#000
-    classDef beaverRepo fill:#DE8F05,stroke:#000,stroke-width:1px,color:#000
-    classDef forkRepo fill:#949494,stroke:#000,stroke-width:1px,color:#000
-
-    class public publicRepo
-    class private privateRepo
-    class primer primerRepo
-    class beaver beaverRepo
-    class forks forkRepo
-```
-
-Colours follow the repository's [color-blind friendly palette](../../repo-governance/conventions/formatting/diagrams.md). Solid arrows are content flows. Dashed arrows are documentation cross-references only — no content sync crosses them.
-
-## Family Membership Versus Content Sync
-
-These are two separate questions, and conflating them is the most common error when reading this catalogue.
-
-- **Family membership** covers all four repositories. Every one of them MUST name the other three, with GitHub URLs, in its `README.md`, its `AGENTS.md`, and its own copy of this catalogue.
-- **Content sync** covers only three — `ose-public`, `ose-primer`, and `ose-private`. Generic content (governance docs, agents, skills, conventions, workflows, tooling) is kept aligned across those, with `ose-primer` as the shared upstream template.
-
-`archived repository` is a full family member that participates in **no** content sync. It scaffolded from this ecosystem, but no parity plan targets it, and adopting a family change there is a deliberate decision made inside that repository.
-
-## Propagation Summary
-
-Governance, conventions, agents, and skills flow `ose-public → ose-primer → downstream forks`.
-Private operational material does not flow into this template. `ose-primer` is a downstream
-template, not an upstream source: changes made here do not automatically flow back.
+The `apps/rhino-cli` source must stay byte-identical across `ose-public`, `ose-primer`, and
+`ose-private` — the same three-repository family this page describes. See the
+[SDLC gate standard](./sdlc-gate-standard.md#rhino-cli-byte-identity-boundary) for the policy.
 
 ## Sync cadence across repos
 
-The propagation summary above states **what** flows between repos; this states **how often** each
-sibling is brought current with `ose-public` — the three repos in the content-sync loop differ, and
-the difference is deliberate, not an oversight:
+Content parity and the `rhino-cli` byte-identity boundary above answer **what** stays identical;
+this answers **how often** each sibling repo is brought current with `ose-public` — the two siblings
+differ, and the difference is deliberate, not an oversight:
 
 - **`ose-private`** — kept **in real time**. `rhino-cli` and the shared `repo-governance/` content
   (conventions, workflows, agent definitions) propagate to `ose-private` as they land in
-  `ose-public`, not on a batched schedule. That repo backs live authorized-maintainer and
+  `ose-public`, not on a batched schedule. This repo backs live authorized-maintainer and
   infrastructure operations, so governance and tooling drift there is costly immediately, not just
   eventually.
-- **`ose-primer`** (this repository) — kept on a **delayed** sync. As the reusable polyglot starter
-  template, `ose-primer` does not need every `ose-public` governance change the moment it lands;
-  batching updates conserves the review and propagation cost of a sync that public downstream
-  adopters do not need on a real-time cadence.
-- **`archived repository`** — **not synced** on an ongoing basis, consistent with its full exclusion from the
-  content-sync loop above. archived repository is planned to merge back into `ose-public` in the near term, so
-  investing in an ongoing sync mechanism for a repo expected to be reabsorbed is not worth the cost;
-  its `rhino-cli` fork and governance content are addressed at merge time instead.
+- **`ose-primer`** — kept on a **delayed** sync. As the reusable polyglot starter, `ose-primer` does
+  not need every `ose-public` governance change the moment it lands; batching updates conserves the
+  review and propagation cost of a sync that public downstream adopters do not need on a real-time
+  cadence.
 
-Keeping the family aligned is a **manual** discipline — there is no automated sync agent. Coordinated changes that must land in more than one repository are authored via the [plan-multi-repo-parity-planning workflow](../../repo-governance/workflows/plan/plan-multi-repo-parity-planning.md), then executed within each repository.
+For portable governance, agent, and skill changes, public is the source, `ose-private` is reconciled
+immediately, and Primer receives its companion delivery in the same plan unless a plan explicitly
+records a bounded delay. Verify the portable manifest byte-for-byte; list private-only operational
+exceptions explicitly. Across all three repos, preserve active goals during runner contention and
+remove only each plan's own verified worktree immediately after that repository's final delivery.
 
-## Licensing
+## Contribution and access boundaries
 
-`ose-public`, `ose-primer`, and `archived repository` are **MIT throughout**. See [LICENSING-NOTICE.md](../../LICENSING-NOTICE.md) for this repository's details. Consumers who fork `ose-primer` can build proprietary or open products on top without restriction.
-
-`ose-private` is **proprietary**. It is listed here for ecosystem awareness; contributors to `ose-primer` are not expected to have access. Proprietary `ose-private` content MUST NOT flow into this MIT-licensed template.
-
-## Non-Goals for this document
-
-- This document does not describe parity mechanics or release cadence; those live in the multi-repo parity planning workflows under `repo-governance/workflows/plan/`.
-- This document does not enumerate every file-by-file classification. Per-gap classification is decided during each parity planning pass.
-- This document does not describe how to clone, set up, or build any sibling; that belongs in each sibling's own README.
-
-## Links
-
-- [plan-multi-repo-parity-planning](../../repo-governance/workflows/plan/plan-multi-repo-parity-planning.md) — authoring coordinated multi-repo changes.
-- External: <https://github.com/wahidyankf/ose-public>
-- External: <https://github.com/wahidyankf/ose-primer>
-- External: <https://github.com/wahidyankf/ose-private>
-- External: <https://github.com/wahidyankf/ose-public>
+External contribution intake is closed across this coordinated delivery. Public readers can explore,
+fork, and learn from the MIT repositories, but should not expect an external pull-request intake or
+access to private systems.

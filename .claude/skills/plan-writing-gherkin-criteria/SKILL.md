@@ -92,7 +92,7 @@ Scenario: Login succeeds
 
 (The fix replaces the second `When` with `And`.)
 
-**Canonical convention**: [HARD Rule — Step-Keyword Cardinality](../../../repo-governance/development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality)
+**Canonical convention**: [HARD Rule — Step-Keyword Cardinality](../../../repo-governance/development/infra/acceptance-criteria.md#step-keyword-cardinality-hard-rule)
 
 ## Basic Scenario Patterns
 

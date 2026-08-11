@@ -19,25 +19,36 @@ skills:
 
 - **Role**: Maker (blue)
 
-**Model Selection Justification**: This agent uses `model: sonnet` because governance
-convention creation is template-driven and layer-hierarchy-bound, not open-ended creative
-reasoning. The six-layer governance structure
-([model-selection.md](../../repo-governance/development/agents/model-selection.md)) provides
-the rubric; the agent applies it, not invents it. Sonnet
-([SWE-bench Verified: 79.6%](../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46))
-is sufficient for structured pattern-following at this scope. Tier change: OMIT→SONNET
-(2026-04-19).
+**Model Selection Justification**: This agent uses `model: sonnet` (Sonnet 4.6, 79.6% SWE-bench Verified
+— [benchmark reference](../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46)) because its work
+is driven by the six-layer governance hierarchy template, not open creative reasoning:
+
+- Conventions follow a fixed Diátaxis + governance layer structure defined in skills
+- Rule format and cross-reference patterns are pre-specified in the governance architecture
+- Output is document-in-a-template work, not novel system design
+- Sonnet 4.6 is fully sufficient for governance-layer-driven documentation generation
 
 Create repository rules and conventions.
 
 ## Reference
 
 - [Convention Writing Convention](../../repo-governance/conventions/writing/conventions.md)
-- Skills: `docs-applying-content-quality`, `repo-understanding-repository-architecture` (see frontmatter)
+- Skills: `docs-applying-diataxis-framework`, `docs-applying-content-quality`
 
 ## Workflow
 
-Document standards following convention structure (Purpose, Standards, Examples, Validation).
+Document standards following convention structure (Purpose, Standards, Examples, Validation). For a
+gate-surface rule change, update the registry-managed documentation to use `gate list`, verify the
+registry with `gate validate`, update affected workflow and hook documentation plus their indexes,
+then regenerate harness bindings from the canonical `.claude/` source.
+
+For any portable governance, agent, or skill rule, inventory every canonical consumer first and
+propagate it manually across `ose-public`, immediately to `ose-private`, and to `ose-primer` when the
+plan puts Primer in scope. Verify the declared portable manifest byte-for-byte and record only
+explicit private-only operational exceptions. Preserve the active goal during runner contention:
+investigate and poll patiently, never cancel merely because a runner is queued. Require immediate
+exact-path cleanup only for worktrees the plan itself created and verified; never touch foreign
+worktrees. Regenerate bindings after every `.claude/` edit and validate synchronization.
 
 ## Reference Documentation
 

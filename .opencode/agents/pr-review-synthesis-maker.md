@@ -70,10 +70,7 @@ Concretely, before doing any dedup/re-categorize/filter/verify work:
    Every finding in the consolidated review anchors to the SHA scout already pinned — never a moving
    target.
 2. Confirm the risk tier and specialist set scout selected for this cycle (empty set for `trivial`,
-   the four-specialist `lite` set, or up to all nine specialists for `full` — minus DD-10's
-   Content-Type Applicability Filter, which may skip up to 2, see
-   [Risk-Tier Classification](./pr-review-scout-maker.md#risk-tier-classification--specialist-set-selection-d12))
-   match what actually fanned out.
+   the four-specialist `lite` set, or all nine specialists for `full`) match what actually fanned out.
 3. Receive the tier-selected specialists' raw findings — or, for a `trivial`-tier cycle, perform the
    single generalist review pass yourself (see
    [Trivial-Tier Handoff (DD-7)](./pr-review-scout-maker.md#trivial-tier-handoff-dd-7) in
@@ -117,7 +114,7 @@ finding is postable:
    confirmation, not two findings.
 2. **Re-categorize** — reassign a misfiled finding to the correct discipline using the
    [boundary tie-breaker rule](../../repo-governance/development/quality/pr-review-disciplines.md#the-boundary-tie-breaker-rule)
-   and its [grey-zone rulings](../../repo-governance/development/quality/pr-review-disciplines.md#grey-zone-rulings).
+   and its [seven grey-zone rulings](../../repo-governance/development/quality/pr-review-disciplines.md#seven-grey-zone-rulings).
    This agent **explicitly owns the architecture-versus-correctness boundary** — the highest-risk of
    the three tie-breaker outcomes, because a new structural decision and a domain-behavior question
    can look identical in a raw finding. No specialist self-adjudicates its own tie-breaker verdict once
@@ -339,7 +336,7 @@ job.
 - `pr-review-scout-maker` - Classifies each PR's risk tier and specialist set, assembles the
   shared-context brief, and reads prior-cycle thread-resolution status once per cycle, upstream of
   this agent's own dedup/re-categorize/filter/verify pipeline
-- [`pr-review-disciplines.md`'s discipline table](../../repo-governance/development/quality/pr-review-disciplines.md#the-reviewer-disciplines) - The full specialist roster whose raw findings feed this agent
+- [`pr-review-disciplines.md`'s nine-discipline table](../../repo-governance/development/quality/pr-review-disciplines.md#the-nine-reviewer-disciplines) - The full specialist roster whose raw findings feed this agent
 - `pr-review-architecture-maker`, `pr-review-logic-maker`, `pr-review-governance-maker`, `pr-review-security-maker`, `pr-review-integrity-maker`, `pr-review-performance-maker`, `pr-review-docs-maker`, `pr-review-instruction-maker`, `pr-review-types-maker` - The nine discipline specialists this agent coordinates, never discovers findings for
 - `pr-review-fixer` - Consumes this agent's single consolidated review, triages, fixes, pushes, and resolves threads
 - `web-researcher` - External fact verification during tool-verify

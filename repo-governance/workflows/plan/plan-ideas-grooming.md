@@ -113,7 +113,7 @@ runs the full PR-Review Maker→Fixer Cycle per processed repo, per the
 is restricted to the same effect by convention (its `main` is not yet actually
 GitHub-branch-protected — see [Git Push Default Convention](../../development/workflow/git-push-default.md)
 for the live-verification detail), so the historical `plans/**`-only
-[**plan-docs-only carve-out**](./plan-planning.md#the-plan-docs-only-carve-out-superseded--retired-in-three-of-four-repos)
+[**plan-docs-only carve-out**](./plan-planning.md#the-plan-docs-only-carve-out-superseded--retired-in-two-of-three-repos)
 is retired in those three repositories — a plan-docs-only change there uses `worktree-to-pr` like
 any other change. The carve-out survives, narrowed, only in `ose-private` as an
 infrastructure-as-code exception — but this workflow's write scope is strictly `plans/ideas/**`
@@ -289,7 +289,7 @@ repo's own `plans/ideas/README.md` at the end of every run.
   idea against.
 - [Workflow Naming Convention](../../conventions/structure/workflow-naming.md) — defines the
   `grooming` type token this workflow's own filename uses (scope `plan`, type `grooming`).
-- [Plan-docs-only carve-out (superseded — retired in three of four repos)](./plan-planning.md#the-plan-docs-only-carve-out-superseded--retired-in-three-of-four-repos) —
+- [Plan-docs-only carve-out (superseded — retired in three of four repos)](./plan-planning.md#the-plan-docs-only-carve-out-superseded--retired-in-two-of-three-repos) —
   historical context only: this workflow's default is `worktree-to-pr`, since the carve-out this
   workflow previously relied on for a `main-to-origin-main` default survives only as an `ose-private`
   infrastructure-as-code exception, even though every path this workflow touches sits under

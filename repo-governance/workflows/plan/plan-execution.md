@@ -47,7 +47,8 @@ outputs:
 > **Pre-Execution Requirement**: Before executing, invoke the `grill-me` skill
 > (`.claude/skills/grill-me/SKILL.md`) to stress-test any unresolved design decisions in
 > the plan. Every question must present 2-4 concrete options (use an interactive
-> multiple-choice tool when available, or the markdown question format).
+> multiple-choice tool when available, or the markdown question format). See
+> [Grilling-With-Options Convention](../../development/workflow/grilling-with-options.md).
 
 ## Execution Mode
 
@@ -84,7 +85,10 @@ plans/backlog/<slug>/ plans/in-progress/<slug>/` (no date prefix; `in-progress/`
 8. Move plan folder to plans/done/ using git mv
 9. Show git status with modified files
 10. Wait for user commit approval
-11. After the archival is pushed to `origin main`, prompt the user to delete the plan's worktree (Step 8 worktree cleanup — never deletes without explicit confirmation)
+11. After the final delivery for each repository is pushed or merged, run the exact-path worktree
+    cleanup immediately. Verify the worktree is recorded as self-created for this plan, clean, and
+    fully pushed/merged; then use non-force `git worktree remove <exact-path>` without a confirmation
+    prompt. Never remove a repository root, wildcard path, or another actor's worktree.
 
 ## Orchestration Model
 
@@ -98,7 +102,7 @@ The orchestrator selects the best agent for each delivery checklist item using t
 
 0. **Suggested-executor annotation (HIGHEST priority)**: If the checkbox carries a `_Suggested executor: <agent-name>_` annotation per [Plan Anti-Hallucination Convention §Specialized-Agent Delegation](../../development/quality/plan-anti-hallucination.md#specialized-agent-delegation-hallucination-reduction), verify the agent file exists at `.claude/agents/<name>.md` and use that agent. The annotation is the plan author's explicit choice — it overrides heuristics 1–4 below. If the annotated agent does not exist, terminate the item with status `fail` and surface the missing-agent error to the user (do not silently fall back).
 
-1. **Match by project/app name**: If the checklist item names a specific app (e.g., `crud-be-fsharp-giraffe`), use the agent for that app's language (e.g., `swe-fsharp-dev`). Refer to [CLAUDE.md](../../../CLAUDE.md) for the full app list and their tech stacks.
+1. **Match by project/app name**: If the checklist item names a specific app (e.g., `organiclever-be`), use the agent for that app's language (e.g., `swe-rust-dev`). Refer to [CLAUDE.md](../../../CLAUDE.md) for the full app list and their tech stacks.
 
 2. **Match by file extension**: If the item references files with a recognizable extension (`.ts`, `.java`, `.py`, `.go`, `.kt`, `.fs`, `.cs`, `.clj`, `.ex`, `.rs`, `.dart`), use the corresponding `swe-{language}-dev` agent.
 
@@ -257,8 +261,9 @@ When execution begins (or re-begins in a new conversation), disk state wins:
 3. For every `- [ ]` — `TaskCreate` one task in reading order.
 4. If stale tasks from a prior run disagree with disk (e.g., task `completed` but checkbox `- [ ]`), delete the stale list and rebuild from current delivery.md.
 5. Flag any `- [x]` lacking implementation notes — possible silent batch-tick; the user may want to audit before continuing.
+6. **Resolve the plan path against the worktree, not the primary checkout.** For any plan whose delivery mode provisions a dedicated worktree (`worktree-to-pr`, `worktree-to-origin-main`), the worktree's copy of the plan folder is the ONLY authoritative on-disk location — it is the copy on the branch that becomes the PR. A same-named plan folder may still exist under the primary checkout's `plans/in-progress/` (e.g., left over from before the worktree was provisioned); reading or editing that copy instead is a silent-divergence trap — edits there never reach the branch, since the primary checkout isn't what gets pushed. If the same plan folder exists with uncommitted changes in BOTH the primary checkout and the worktree, treat it as a hard anomaly: stop, reconcile which content is accurate (verify independently against commit history / PR state, don't assume either copy), merge the genuinely-verified content into the worktree's copy, and flag the primary checkout's stray copy to the user for cleanup.
 
-6. **Rebuild the file-touch ledger before touching anything.** Disk-is-truth settles _what is done_; it does not settle _who did it_. A resumed run sees a dirty tree that may mix your prior work with a concurrent actor's, and the delivery checklist cannot distinguish them. Recover your ledger from the plan's implementation-notes `Files Changed` blocks and your session transcript. Until it is rebuilt, treat every modified and untracked path as foreign — no staging, no reverting, no cleanup. See [File-Touch Discipline](../../development/practice/file-touch-discipline.md).
+7. **Rebuild the file-touch ledger before touching anything.** Disk-is-truth settles _what is done_; it does not settle _who did it_. A resumed run sees a dirty tree that may mix your prior work with a concurrent actor's, and the delivery checklist cannot distinguish them. Recover your ledger from the plan's implementation-notes `Files Changed` blocks and your session transcript. Until it is rebuilt, treat every modified and untracked path as foreign — no staging, no reverting, no cleanup. See [File-Touch Discipline](../../development/practice/file-touch-discipline.md).
 
 ### Divergence handling
 
@@ -269,11 +274,11 @@ If a task is `completed` but the checkbox is `- [ ]`, OR a checkbox is `- [x]` b
 These rules govern ALL execution steps. No exception. No shortcut.
 
 1. **Granular Task Tracking (1:1 with delivery.md) — NON-NEGOTIABLE**: The harness task list IS the user's primary observability surface (see [Harness Task List as Primary Observability Surface](#harness-task-list-as-primary-observability-surface) above). Exactly ONE `TaskCreate` per delivery checklist item, including every nested `- [ ]` sub-bullet — sub-bullets are NEVER rolled into their parent. Task `subject` MUST short-form the checkbox text (drop articles, keep verb + object, ≤80 chars). At most ONE task in `in_progress` at any moment. Mark `in_progress` BEFORE any tool call advancing that item. Mark `completed` ONLY after the checkbox is ticked on disk AND the implementation-notes block is persisted under the ticked checkbox. FORBIDDEN: coarse tasks ("Execute Phase 2", "Apply fixes"), bulk creation ("one task per phase"), silent batch-completion (multiple checkboxes ticked in one `Edit` while one `TaskUpdate` closes), speculative completion (closing a task before disk reflects done state), title rewriting (renaming a task to summarize multiple items). Violations corrupt the user's view of execution and MUST trigger immediate rollback + reconciliation (disk wins).
-2. **Never Stop Before All Done (except [HUMAN] gates)**: Execute ALL `[AI]` items from first to last without stopping. No pauses between phases for `[AI]` work. No skipping items. The acceptable stops are: a hard technical blocker, OR a `[HUMAN]` / `[AI+HUMAN]` checkbox (including a `[HUMAN]` phase gate). At a `[HUMAN]` item the orchestrator STOPS, surfaces the item to the user with its acceptance criterion, and waits for the human to confirm completion before resuming — this is a legitimate, expected stop per [Plans Organization Convention §Executor Tagging — [AI] vs [HUMAN]](../../conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule). Unmarked checkboxes are treated as `[AI]`.
+2. **Never Stop Before All Done (except [HUMAN] gates)**: Execute ALL `[AI]` items from first to last without stopping. No pauses between phases for `[AI]` work. No skipping items. The acceptable stops are: a hard technical blocker, OR a `[HUMAN]` / `[AI+HUMAN]` checkbox (including a `[HUMAN]` phase gate). At a `[HUMAN]` item the orchestrator STOPS, surfaces the item to the user with its acceptance criterion, and waits for the human to confirm completion before resuming — this is a legitimate, expected stop per [Plans Organization Convention §Executor Tagging](../../conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule). Unmarked checkboxes are treated as `[AI]`.
 3. **Fix ALL Issues — Including Preexisting**: When ANY test, lint, typecheck, or quality gate fails — fix it. Even if it existed before your changes. Do NOT defer. Do NOT skip. Commit preexisting fixes separately.
 4. **Delivery.md Is Sacred — Atomic Sync Ritual**: After each item's work is done, run the three-step ritual before touching the next item: (a) `Edit` checkbox `- [ ]` → `- [x]` for THIS one item (no `replace_all`), (b) `Edit` implementation-notes block under the ticked checkbox (Date, Status, Files Changed, brief notes), (c) `TaskUpdate completed`. All three MUST land before moving on. If any step fails, roll back the others and leave the task in `in_progress`. Ticking multiple checkboxes in one Edit or deferring notes to end-of-phase is forbidden.
-5. **Local Quality Gates Before Push**: Run `npx nx affected -t typecheck lint test:quick specs:coverage` before every push. Fix ALL failures. Do NOT push with any failing check.
-6. **Post-Push CI Verification**: After every push, monitor ALL GitHub Actions workflows triggered by that push. `.github/workflows/main-ci.yml` no longer exists (removed — its checks were folded into the gate registry driving `pr-quality-gate.yml`), so there is nothing to exclude. Fix ALL failures (including preexisting). Do NOT proceed until CI is fully green.
+5. **Local Quality Gates Before Push**: Run `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push` (the same registry-declared gate set `.husky/pre-push` invokes; includes `nx affected -t test:quick`) before every push. Fix ALL failures. Do NOT push with any failing check.
+6. **Post-Push CI Verification**: After every push, monitor ALL GitHub Actions workflows triggered by that push. Fix ALL failures (including preexisting). Do NOT proceed until CI is fully green.
 7. **Thematic Commits**: Group related changes. Split different concerns. Follow Conventional Commits. Preexisting fixes get their own commits.
 8. **Manual Behavioral Assertions**: After quality gates pass, use Playwright MCP for web UI verification and curl for API verification. Fix any broken behavior before proceeding.
 9. **Progress Streaming (Observability)**: The live Task list is the user's monitoring window — keep it fresh in real time. Never run silent for more than one checkbox. After each phase completes, emit a one-line user-visible status: phase name, items ticked / total, files changed, any preexisting fixes.
@@ -297,7 +302,7 @@ MUST perform that same promotion for each plan first. See
 
 Plan execution happens on the plan's **work branch**, synced to the latest `origin/main`. The work branch is chosen by precedence: (1) a branch the **user explicitly specifies at invocation** — a dedicated worktree, the `main` checkout, or any other existing branch — wins; (2) if the user specifies nothing, the **plan docs win** — the plan's `## Worktree` section (or declared work branch) governs, and absent any override that defaults to a dedicated worktree provisioned from `origin/main`. Whichever branch is selected, the executor's **default first action is to pull the latest `origin/main` into that work branch** before any implementation, to minimize merge collisions later at push time. Executing a plan from a **stale** work branch — one not synced to the latest `origin/main` — is forbidden.
 
-**Delivery-mode resolution (same three-tier precedence)**: alongside the work-branch precedence above, the executor also resolves the plan's active **delivery mode**, using the identical three-tier pattern: (1) a mode given as an **invocation argument** wins; (2) if none is given, the plan's own `## Delivery Mode` declaration wins; (3) absent either, the default is **`worktree-to-pr`**. See [Plans Organization Convention §Delivery Mode](../../conventions/structure/plans.md#delivery-mode) for the full four-mode table and the precedence algorithm. Immediately after resolving, check repository availability: in `ose-public` and `ose-primer` a resolved `worktree-to-origin-main` or `main-to-origin-main` is an authoring-time error — those modes have no executable path there (branch-protected `main`) — terminate with status `fail` rather than attempt the push; `archived repository` is treated the same way by convention — its `main` is not yet actually GitHub-branch-protected (verified live 2026-08-08), so the push would technically succeed, but it is still a convention violation, not a sanctioned mode, pending a `[HUMAN]`-only GitHub settings change — terminate with status `fail` there too; in `ose-private` the same two modes are valid only for an infrastructure-as-code plan. See [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule). The resolved mode determines which work-location branch below applies:
+**Delivery-mode resolution (same three-tier precedence)**: alongside the work-branch precedence above, the executor also resolves the plan's active **delivery mode**, using the identical three-tier pattern: (1) a mode given as an **invocation argument** wins; (2) if none is given, the plan's own `## Delivery Mode` declaration wins; (3) absent either, the default is **`worktree-to-pr`**. See [Plans Organization Convention §Delivery Mode](../../conventions/structure/plans.md#delivery-mode) for the full four-mode table and the precedence algorithm. Immediately after resolving, check repository availability: in `ose-public` and `ose-primer` a resolved `worktree-to-origin-main` or `main-to-origin-main` is an authoring-time error — those modes have no executable path there (branch-protected `main`) — terminate with status `fail` rather than attempt the push; in `ose-private` the same two modes are valid only for an infrastructure-as-code plan. See [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule). The resolved mode determines which work-location branch below applies:
 
 - `worktree-to-pr` and `worktree-to-origin-main` — work happens in a dedicated **worktree**; follow the worktree provisioning and entry steps below.
 - `main-to-origin-main` and `main-to-pr` — work happens directly in the **primary checkout**; skip worktree provisioning entirely per the "Work-branch provisioning vs. entry" note immediately below, and apply the freshness gate (step 5) directly to the primary checkout.
@@ -322,10 +327,10 @@ The resolved delivery mode also determines the push target at each phase gate (S
 
         ```bash
         git fetch origin
-        git worktree add -b <plan-identifier> worktrees/<plan-identifier> origin/main
+        git worktree add -b <plan-identifier>-base worktrees/<plan-identifier> origin/main
         ```
 
-        If the branch `<plan-identifier>` already exists (e.g., a prior worktree was removed but its branch kept), reuse it instead: `git worktree add worktrees/<plan-identifier> <plan-identifier>`.
+        If the branch `<plan-identifier>-base` already exists (e.g., a prior worktree was removed but its branch kept), reuse it instead: `git worktree add worktrees/<plan-identifier> <plan-identifier>-base`.
 
      3. If `git worktree add` fails (e.g., path already exists as a stale entry), run `git worktree prune` and retry once; if it still fails, terminate with status `fail` and emit the error output verbatim.
      4. Run `npm install && npm run doctor -- --fix` in the root repository worktree to initialize the toolchain, per [Worktree Toolchain Initialization](../../development/workflow/worktree-setup.md).
@@ -394,7 +399,7 @@ Before implementing anything, ensure the development environment is ready.
 - Run `npm run doctor` to verify all tooling is installed
 - Set up project-specific requirements (env vars, DB, Docker, etc.) as specified in the plan
 - Verify dev server starts for affected projects
-- Run existing quality gates to establish a baseline: `npx nx affected -t typecheck lint test:quick`
+- Run existing quality gates to establish a baseline: `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push` (includes `nx affected -t test:quick`)
 - Note any preexisting failures — these MUST be fixed during execution (Iron Rule 3)
 - If the plan touches a Vercel-deployed surface, probe Vercel MCP availability and record the outcome
   (see [§Vercel MCP Availability](#vercel-mcp-availability-surface-conditional)). Where the plan's
@@ -424,16 +429,16 @@ For each checklist item in reading order (phase by phase, item by item, includin
    - For each cited symbol: `Grep` for evidence. Missing AND not marked `_New symbol_`: HALT.
    - **Refuse-on-uncertainty**: if a cited fact cannot be grounded and the checkbox does not mark it as new, the orchestrator MUST escalate rather than guess. Surface the failure to the user with the specific claim and the missing artifact.
 3. **Analyze the item** to determine whether to delegate to a specialized agent (see Agent Selection) or execute directly. If the checkbox carries a `_Suggested executor:_` annotation, use that agent (Priority 0). If the checklist text is otherwise ambiguous, the orchestrator MAY consult the plan's `brd.md` / `prd.md` / `tech-docs.md` for additional context — business intent lives in `brd.md`, product scope and Gherkin acceptance criteria in `prd.md`, architecture decisions in `tech-docs.md`.
-4. **Execution-marker check (`[AI]`/`[HUMAN]`)** — read the checkbox's execution marker (per [Plans Organization Convention §Executor Tagging — [AI] vs [HUMAN]](../../conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule)). `[AI]` or unmarked → execute normally (next bullet). `[HUMAN]` (or the human portion of an `[AI+HUMAN]` item) → the orchestrator MUST NOT attempt it: surface the item to the user verbatim with its acceptance criterion and any context they need, then STOP and wait for the user to confirm it is done before ticking the checkbox and continuing. For `[AI+HUMAN]`, perform the agent-preparable portion first, then hand off the human portion. This is a sanctioned stop (see Stopping rules) — not a violation of "never stop between phases."
+4. **Execution-marker check (`[AI]`/`[HUMAN]`)** — read the checkbox's execution marker (per [Plans Organization Convention §Executor Tagging](../../conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule)). `[AI]` or unmarked → execute normally (next bullet). `[HUMAN]` (or the human portion of an `[AI+HUMAN]` item) → the orchestrator MUST NOT attempt it: surface the item to the user verbatim with its acceptance criterion and any context they need, then STOP and wait for the user to confirm it is done before ticking the checkbox and continuing. For `[AI+HUMAN]`, perform the agent-preparable portion first, then hand off the human portion. This is a sanctioned stop (see Stopping rules) — not a violation of "never stop between phases."
 5. **Execute the item** — delegate to that agent via the Agent tool, or perform the edit/command directly. Only for THIS one checkbox.
 6. **Verify the work succeeded** — read the produced file, run the command, check the agent's output. The verification MUST match the acceptance criterion stated in the checkbox (Execution-Grade Clarity rule from the plans convention).
 7. **Knowledge Capture — running log (as-you-go)**: append a sanitized entry to `learnings.md`
    whenever this item surfaces a generalizable learning.
    - A workaround invented, a wrong assumption corrected, a tool/CLI quirk discovered, or any
-     insight passing the "would a durable surface catch this next time?" litmus qualifies; skip
-     silently when no such learning surfaces from this item.
+     insight passing the "would the system catch this next time?" litmus qualifies; skip silently
+     when no such learning surfaces from this item.
    - Create `learnings.md` (sibling of `delivery.md`) on first use if it does not yet exist.
-   - See the [Knowledge Capture Convention](../../development/quality/knowledge-capture.md) for the
+   - See the [Knowledge Capture Convention](../../development/quality/knowledge-capture.md) for
      entry shape and the secret/sensitivity sanitization rule.
 8. **Atomic Sync Ritual** — all three steps before any next-item work:
    a. `Edit` delivery.md to change `- [ ]` → `- [x]` for THIS one item (context-unique `old_string`; never `replace_all`; never tick multiple items in one Edit call).
@@ -471,11 +476,10 @@ After completing all items in a delivery phase, verify the phase's authored gate
 1. Run local quality gates:
 
    ```bash
-   npx nx affected -t typecheck
-   npx nx affected -t lint
-   npx nx affected -t test:quick
-   npx nx affected -t specs:coverage
+   apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push
    ```
+
+   (the same registry-declared gate set `.husky/pre-push` invokes; includes `nx affected -t test:quick`)
 
 2. If the plan involves integration or e2e tests, also run:
 
@@ -483,6 +487,13 @@ After completing all items in a delivery phase, verify the phase's authored gate
    npx nx affected -t test:integration
    npx nx affected -t test:e2e
    ```
+
+   **Transient contention flakes on a many-project affected run**: when `test:e2e` (or `build`) runs
+   across a large affected set on one shared local machine, expect occasional non-deterministic
+   failures unrelated to the plan's own diff — an evicted/stale build artifact under concurrent
+   `--parallel` builds, or a request timing out in a test that fires many concurrent HTTP calls. Before
+   treating any such failure as a regression, rebuild the affected project fresh and re-run just that
+   failing target in isolation; a clean pass there confirms contention, not a real defect.
 
 3. **Fix ALL failures** — including preexisting ones (Iron Rule 3)
 4. Re-run failing checks to confirm resolution
@@ -505,7 +516,7 @@ After completing all items in a delivery phase, verify the phase's authored gate
 
 ### 2c. Post-Push CI Verification (Sequential, After Each Push)
 
-After every push, verify CI on the resolved delivery mode's target — `origin main` for the direct-push modes (`worktree-to-origin-main`, `main-to-origin-main`), the PR branch for the `*-to-pr` modes (`worktree-to-pr`, `main-to-pr`). `.github/workflows/main-ci.yml` no longer exists (removed — its checks were folded into the gate registry driving `pr-quality-gate.yml`), so it is never among the workflows a push triggers.
+After every push, verify every GitHub Actions workflow triggered on the resolved delivery mode's target — `origin main` for the direct-push modes (`worktree-to-origin-main`, `main-to-origin-main`), the PR branch for the `*-to-pr` modes (`worktree-to-pr`, `main-to-pr`).
 
 **Phase 0 never reaches this step**: it pushes nothing (Step 2b), so it triggers no CI run and there is nothing to verify. Skip straight from the Phase 0 gate to Phase 1.
 
@@ -601,8 +612,10 @@ without evidence is incomplete. See [Evidence Capture Convention](../../developm
 
 - This step is MANDATORY when the plan touches web UI or API code
 - Skip ONLY if the plan touches no UI and no API (e.g., pure documentation or governance changes)
+- For multi-locale apps, testing ONLY the default locale is INCOMPLETE — verify ALL locales
 - Playwright MCP provides real browser interaction — use it to catch rendering, JS, and integration issues that automated tests may miss
 - curl provides direct HTTP verification — use it to catch response format, status code, and data issues
+- See [Evidence Capture Convention](../../development/quality/evidence-capture.md) for screenshot naming, locale requirements, and delivery.md format
 
 ### 3. Validation (Sequential)
 
@@ -734,27 +747,27 @@ defect checkbox in `delivery.md` is `- [x]` (fixed) — exactly as the rule-15 r
 rule 16.
 
 **Rule-15 web-UI three-tester retest (near-end, before archival)**: For **web-UI feature-change**
-plans specifically, after the implementation lands and the rule-1 visual sign-off is recorded, invoke
-each tester with **`output-mode: delivery`** and this plan's **`plan-path`** — the unified in-place
-mechanism that appends findings directly to the running plan's `delivery.md` rather than filing a
-separate backlog plan. Run all three testers against the running target URL(s) across all supported
-locales — the [`web-ux-test-fixing-planning`](../web/web-ux-test-fixing-planning.md) workflow:
+plans specifically, after the implementation lands and the rule-1 visual sign-off is recorded, run a
+**three-tester** round against the running target URL(s) across all supported locales — the
+[`web-ux-test-fixing-planning`](../web/web-ux-test-fixing-planning.md) workflow:
 `web-exploratory-tester` (correctness), `web-usability-tester` (usability), and `web-design-tester`
-(design fidelity). Its output is folded back into THIS plan, not a separate plan:
+(design fidelity). Invoke each tester with **`output-mode: delivery`** and the executing plan's
+`plan-path`; this is the unified mechanism that appends findings directly into THIS plan's
+`delivery.md` rather than filing a separate plan. Its output is folded back into THIS plan, not a separate plan:
 
-1. Each tester appends its findings to `delivery.md` as **new unchecked task-list checkboxes**,
-   source-attributed (`- [ ] EWT-NNN:` / `- [ ] UWT-NNN:` / `- [ ] DWT-NNN: <defect> — fix before
-archival`); each SG-### spec-gap / USS-### spec-suggestion is its own unchecked checkbox folded
-   into the specs/\*\* coverage steps; screenshots go to this plan's `evidence/`. Place findings in a
-   clearly labelled "Rule-15 three-tester retest follow-ups" section at the end of the checklist.
+1. Each tester with `output-mode: delivery` appends each finding to `delivery.md` as a **new
+   unchecked task-list checkbox**, source-attributed (`- [ ] EWT-NNN:` / `- [ ] UWT-NNN:` /
+   `- [ ] DWT-NNN: <defect> — fix before archival`), and each SG-### spec-gap / USS-### spec-suggestion
+   as its own unchecked checkbox folded into the specs/\*\* coverage steps. Findings land in a clearly
+   labelled "Rule-15 three-tester retest follow-ups" section at the end of the checklist.
 2. Each new checkbox materializes as exactly one harness task per the
    [Task-Checklist Synchronization](#task-checklist-synchronization) 1:1 mapping, giving the user
    live visibility of the retest backlog.
 3. Loop back into execution (Steps 2–7) to fix each finding and tick its checkbox via the Atomic
    Sync Ritual. Every EWT-NNN/UWT-NNN/DWT-NNN defect finding MUST be fixed and ticked — deferral
-   of a defect finding requires explicit user permission and is allowed only when the fix is
-   genuinely impossible. (`SG-###` spec-gap proposals and `USS-###` spec-suggestions are proposals,
-   not defects, and may be triaged or deferred with written rationale recorded under the checkbox.)
+   of a defect finding requires explicit user permission and is allowed only when the fix is genuinely impossible. (`SG-###` spec-gap proposals and `USS-###` spec-suggestions
+   are proposals, not defects, and may be triaged or deferred with written rationale recorded under
+   the checkbox.)
 4. Archival is blocked until every rule-15 EWT/UWT/DWT defect checkbox is `- [x]` (fixed).
 
 **Rule-16 API exploratory retest (near-end, before archival)**: For **API feature-change** plans
@@ -783,19 +796,22 @@ archival`), and each `SG-###` spec-gap as its own unchecked checkbox folded into
 A plan that changes BOTH a web UI and its API runs both the rule-15 and the rule-16 rounds, and both
 sets of defect checkboxes must be fixed before archival.
 
+If defects surface after archival, use the reopen path (rule 14) — move the folder back from
+`done/` to `in-progress/`, strip the completion-date prefix, and note the defect in `README.md`.
+
 **Knowledge Capture pre-archival gate (mandatory, before any archival step)**: Archival MUST NOT
 proceed until the plan's Knowledge Capture phase is complete.
 
 - Every entry in `learnings.md` (or the explicit "none" escape) reaches a terminal state: routed
   inline, filed as a `plans/backlog/` follow-up, or discarded with a one-line reason — zero entries
   left in an open, undecided state.
-- Both the secret/sensitivity gate and the repo-relevance gate have been applied to every surviving
-  entry before it was routed.
+- Both the secret/sensitivity gate and the repo-relevance gate have been applied to every
+  surviving entry before it was routed.
 - See the [Knowledge Capture Convention](../../development/quality/knowledge-capture.md) for the
-  full triage rubric, the litmus test, and both safety gates — this gate references that convention
-  rather than repeating its rubric.
-- A substantive plan with no Knowledge Capture phase and no explicit "none" record in
-  `learnings.md` is incomplete for archival purposes.
+  full triage rubric, the litmus test, and both safety gates — this gate references that
+  convention rather than repeating its rubric.
+- A plan with no Knowledge Capture phase and no explicit "none" record in `learnings.md` is
+  incomplete for archival purposes.
 
 **PR-Review Maker→Fixer Cycle gate (mandatory for `*-to-pr` modes, before archival and before the
 merge)**: When the delivery mode resolved in Step 0 is `worktree-to-pr` or `main-to-pr`,
@@ -804,24 +820,28 @@ archival additionally requires the
 against the plan's PR before any archival step below. This gate does not apply to the direct-push
 modes (`worktree-to-origin-main`, `main-to-origin-main`), which carry no PR and no review cycle.
 
-- Run the workflow's strictly sequential N-cycle loop (default **N = 3**): each cycle, the eight
-  discipline specialists fan out and `pr-review-synthesis-maker` posts one consolidated set of
+- Run the workflow's strictly sequential N-cycle loop (default **N = 3**): each cycle,
+  `pr-review-scout-maker` classifies and briefs the diff, nine discipline specialists fan out, and
+  `pr-review-synthesis-maker` posts one consolidated set of
   line-anchored findings against the PR's current head commit via the GitHub Reviews API, a
   `pr-review-fixer` triages and resolves every unresolved thread, and CI on the PR must be GREEN
   before the next cycle starts. See the linked workflow for the full Loop Algorithm, posting
   mechanics, and escalation rules.
-- **Done-definition for `*-to-pr` modes**: the workflow's own
-  [done-definition](../pr/pr-review-quality-gate.md#done-definition-for--to-pr-modes) — cited here
-  rather than restated, so a future strengthening of any item (for example, requiring an accepted
-  fix be committed AND pushed, not merely replied to) cannot silently drift out of sync between the
-  two documents. This invocation additionally requires that definition's item 4, Archival-in-PR
-  (below); item 4 is N/A for invocations that do not carry a plan folder.
+- **Done-definition for `*-to-pr` modes** (all four items required):
+  1. **N review cycles complete** (default 3 — a **hard ceiling**, never extended past this count)
+     **and the review loop did not exit `escalated`** — an escalated exit blocks the merge on its
+     own, whatever the other preconditions say.
+  2. **Every inline review comment is answered** — a fix applied and pushed, or a reasoned reject,
+     on every thread.
+  3. **All PR quality gates are GREEN** — both the local gates (Step 2b) and CI on the PR (Step 2c),
+     as of the PR's current head commit.
+  4. **Archival-in-PR is committed** — see below.
 - **Archival-in-PR**: for `*-to-pr` modes, the `git mv plans/in-progress/... plans/done/...` move
   (and the accompanying README index updates) is committed **inside the delivering PR itself**, as a
   normal commit on the PR branch pushed before the merge — not as a separate commit landed
   on `main` after merge. This keeps the archival move inside the same review cycle as the rest of the
   plan's changes, so the merged PR already contains the finished, archived plan.
-- The merge sits **outside** this AI done-boundary: once the done-definition items
+- The merge sits **outside** this AI done-boundary: once all four done-definition items
   are satisfied, the orchestrator holds a green, fully-reviewed, archival-included PR, and the merge
   follows — "done" is not the same as "merged" (see
   [Executor Tagging](../../conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule)).
@@ -918,11 +938,10 @@ modes (`worktree-to-origin-main`, `main-to-origin-main`), which carry no PR and 
      ```
 
   7. **Run or complete the PR-Review Maker→Fixer Cycle** against the PR (see the gate above) — because
-     each cycle's reviewer pipeline (eight specialists → `pr-review-synthesis-maker`) reviews the full
-     current state of the PR, its final pass also
-     covers this archival commit. Confirm the
-     [done-definition](../pr/pr-review-quality-gate.md#done-definition-for--to-pr-modes) is
-     satisfied, including the archival commit now present on the PR branch.
+     each cycle's reviewer pipeline (`pr-review-scout-maker` → nine specialists → `pr-review-synthesis-maker`) reviews the full
+     current state of the PR, its final pass also covers this archival commit. Confirm all four done-definition items are satisfied: N cycles
+     complete, every comment answered, all gates GREEN (including CI on this last push), and the
+     archival commit present on the PR branch.
   8. **Merge — `[AI]` by default**: once the done-definition is fully satisfied and the hardened
      merge preconditions (a)-(e) hold, surface the PR URL and the done-definition checklist, then
      merge. A `[HUMAN]` merge gate applies only where the plan's own step says so explicitly — in
@@ -1137,7 +1156,7 @@ The plan-execution-checker validates:
 - **Testing Requirements**: Tests written and passing as specified in plan
 - **Documentation**: Required documentation created and accurate
 - **Operational Readiness** (CRITICAL): The checker verifies ALL of the following were executed:
-  - **Local quality gates passed**: `nx affected -t typecheck lint test:quick specs:coverage` was run and passed with zero failures before every push
+  - **Local quality gates passed**: `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push` (or the equivalent `.husky/pre-push` invocation) was run and passed with zero failures before every push
   - **CI/CD fully green**: All GitHub Actions workflows passed after every push — no exceptions
   - **Preexisting issues fixed**: All encountered failures were fixed, including those not caused by the plan's changes (root cause orientation)
   - **Delivery.md updated progressively**: Checkboxes ticked sequentially with implementation notes, not batch-ticked at the end (verified via git history)
@@ -1222,6 +1241,9 @@ section for the required RED/GREEN/REFACTOR three-substep template (explicit fil
 - **[File Naming Convention](../../conventions/structure/file-naming.md)**: Workflow file follows plain name convention for workflows
 - **[Linking Convention](../../conventions/formatting/linking.md)**: All cross-references use GitHub-compatible markdown with `.md` extensions
 - **[Content Quality Principles](../../conventions/writing/quality.md)**: Active voice, proper heading hierarchy, single H1
+- **[Grilling-With-Options Convention](../../development/workflow/grilling-with-options.md)**:
+  Pre-execution grill MUST present 2-4 concrete options per question; open-ended questions
+  without options are FORBIDDEN
 
 ## Agents
 

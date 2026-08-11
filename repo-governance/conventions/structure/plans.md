@@ -8,6 +8,7 @@ tags:
   - plans
   - project-planning
   - organization
+created: 2025-12-05
 ---
 
 # Plans Organization Convention
@@ -63,7 +64,7 @@ The `plans/` folder serves as the workspace for project planning activities:
 
 **Key Distinction**: Plans are temporary working documents that eventually move to `done/` and may be archived, while `docs/` contains permanent documentation that evolves over time.
 
-**No secrets in plans**: Plan documents are committed to git — including `done/` history, which is permanent. Never put a secret value (credentials, SSH keys, tokens, API keys, sensitive usernames, or connection strings with real credentials) in any plan. Name the variable and state where the value lives, never the value itself. This is a hard iron rule — see [No Secrets in Committed Files Convention](../security/no-secrets-in-committed-files.md).
+**No secrets in plans**: Plan documents are committed to git — including `done/` history, which is permanent. Never put a secret value (credentials, SSH keys, tokens, API keys, sensitive usernames, or connection strings with real credentials) in any plan. Name the variable and state where the value lives, never the value itself. This is a hard iron rule — see [No Secrets in Git](../security/no-secrets-in-committed-files.md).
 
 ## ️ Folder Structure
 
@@ -159,7 +160,7 @@ Each `plans/ideas/<slug>.md` has an H1 title plus ~8 short sections, targeting �
    `> Idea, added YYYY-MM-DD.`
 2. **Problem / context** — a single specific example of why the status quo doesn't work, plus what
    prompted it — not an abstract pain point. **Ground it in concrete data points** where they exist:
-   counts, sizes, measurements (e.g. "59 missing step implementations", "AGENTS.md at 29,152 B against a
+   counts, sizes, measurements (e.g. "83 missing step definitions", "AGENTS.md at 29,983 B against a
    30,000 B limit", "4 files drifted"). A data-pointed problem is promotable; a vague one is not.
 3. **Why now** — the urgency, dependency, or opportunity window that makes this timely.
 4. **Prior art / precedents** — a short survey of who has already tackled this and how: two to five
@@ -201,7 +202,7 @@ Each `plans/ideas/<slug>.md` has an H1 title plus ~8 short sections, targeting �
   date, or an explicitly-labeled judgment call (_"Judgment call: we expect X; no baseline measured"_).
   This inherits the [BRD success-metric rule](#content-placement-rules-brdmd-vs-prdmd).
 - **The summary compresses the whole document**, it does not restate the problem paragraph.
-- **No secrets** — the folder is committed and world-readable; the [No Secrets in Committed Files Convention](../security/no-secrets-in-committed-files.md) hard rule applies in full.
+- **No secrets** — the folder is committed and world-readable; the [No Secrets in Git](../security/no-secrets-in-committed-files.md) hard rule applies in full.
 
 ### Difference from backlog/
 
@@ -240,6 +241,13 @@ plan-execution learnings here: a **future-work idea** that is richer than a one-
 plan-ready becomes a two-pager in `plans/ideas/`, rather than being filed straight as a backlog plan
 or discarded. The [Knowledge Capture Convention](../../development/quality/knowledge-capture.md)'s
 routing matrix names `plans/ideas/` as one of its candidate durable homes.
+
+### Worked Examples
+
+Two illustrative short-proposal artifacts already live in the repo's teaching content and are useful
+models for the two-pager's shape: a Shape Up pitch
+(`apps/ayokoding-www/content/en/learn/fundamentally-strong/software-engineer/software-product-engineering/learning/artifacts/ex-29-shape-up-pitch.md`)
+and a product brief (`…/ex-30-full-product-brief-consistency.md`).
 
 ## Plan Folder Naming
 
@@ -312,7 +320,7 @@ archiving from `in-progress/`, add the completion date prefix.
 > — SSH keys, passwords, sensitive usernames, API keys, tokens, or connection strings with real
 > credentials — in any plan file. Reference secrets by variable name and location only (e.g.
 > "set `DEPLOY_TOKEN` in `.env`"); real values belong in uncommitted files. See the
-> [No Secrets in Committed Files Convention](../security/no-secrets-in-committed-files.md).
+> [No Secrets in Git convention](../security/no-secrets-in-committed-files.md).
 
 Plans can use either **single-file** or **multi-file** structure depending on size and complexity.
 
@@ -368,7 +376,7 @@ If the author cannot comfortably fit both the condensed BRD and condensed PRD se
 ├── prd.md                   # Product Requirements Document
 ├── tech-docs.md             # Technical documentation and architecture
 ├── delivery.md              # Step-by-step delivery checklist
-├── learnings.md             # (transient) running log of generalizable learnings, triaged before archival
+├── learnings.md             # (transient) running log of generalizable learnings
 └── evidence/                # (optional) committed testing evidence — screenshots, curl responses
     ├── phase-1-homepage-en-1280px.png
     └── phase-2-api-health.txt
@@ -381,7 +389,7 @@ If the author cannot comfortably fit both the condensed BRD and condensed PRD se
 - **prd.md** — **Product Requirements Document**: product overview, personas, user stories (`As a … I want … So that …`), acceptance criteria in Gherkin, product scope (in-scope + out-of-scope features), product-level risks. **For UI-bearing plans** (those that add or change user-facing screens or components under `apps/` or `libs/`), `prd.md` additionally contains the complete **UI-design-funnel record**: the inline low-fidelity ASCII wireframes (Diverge stage, ≥ 2 named alternatives, at least mobile + desktop where they differ), the high-fidelity mockup embeds via `![]()` image links referencing the plan's `assets/` folder (Narrow stage finalists), the named selection (Select stage), and the rationale table (Justify stage). **For learning-bearing plans** (those whose delivery checklist authors or restructures course, tutorial, or curriculum content), `tech-docs.md` additionally requires a `## Corpus Disposition` declaration and the plan's `syllabus/` folder record, per the [Learning-Plan `syllabus/` Folder Convention](./learning-plan-syllabus.md). See [UI Mockups in Plan Docs — Placement](../formatting/diagrams.md#placement--the-ui-lives-in-prdmd-hard-rule) for the full placement rule.
 - **tech-docs.md**: architecture, design decisions with rationale, file-impact analysis, mechanics, dependencies, risks, rollback. No step-by-step checklist.
 - **delivery.md**: sequential, ticked checklist of executable steps (`- [ ]`), organized by phase if needed. Plan-execution workflow reads this file to drive execution; `plan-execution-checker` reads it to verify completion. Opens with the `[AI]`/`[HUMAN]` executor legend; each phase ends with a `### Phase N Gate` (must-pass verification) followed by a Pause Safety note. For substantive plans, the final phase before archival is the **Knowledge Capture** phase (see below).
-- **`learnings.md`** (transient): a running log of generalizable learnings accrued while executing `delivery.md` — appended to the moment an executor notices something worth keeping, not reconstructed from memory afterward. It is committed and moves with the plan folder through the lifecycle, but it is **never the system of record** — it is drained by the Knowledge Capture phase before archival and MAY be deleted from `plans/done/` at any later date. See the [Knowledge Capture Convention](../../development/quality/knowledge-capture.md) for the full running-log format, the open-ended triage matrix, and the two mandatory safety gates.
+- **`learnings.md`** (transient): a running log of generalizable learnings accrued while executing `delivery.md` — appended to in the moment an executor notices something worth keeping, not reconstructed from memory afterward. It is committed and moves with the plan folder through the lifecycle, but it is **never the system of record** — it is drained by the Knowledge Capture phase before archival and MAY be deleted from `plans/done/` at any later date. See the [Knowledge Capture Convention](../../development/quality/knowledge-capture.md) for the full running-log format, the open-ended triage matrix, and the two mandatory safety gates.
 - **`evidence/`** (optional): committed folder for testing evidence produced during plan execution — screenshots (one per breakpoint per locale), saved curl responses, Lighthouse reports, and other file-based artifacts referenced from `delivery.md` implementation notes. Created when the plan's first manual verification step runs. Moves with the plan folder on archival to `done/`. Binary files (PNG/JPG) are committed alongside the text files. See [Evidence Capture Convention](../../development/quality/evidence-capture.md).
 
 ### File-Impact Analysis Format (HARD RULE)
@@ -425,11 +433,10 @@ Every substantive plan's `delivery.md` MUST end with a **Knowledge Capture** pha
 before the Plan Archival phase. This phase triages every entry in `learnings.md` through the
 [Knowledge Capture Convention](../../development/quality/knowledge-capture.md)'s open-ended,
 principle-based routing matrix: each surviving learning is routed to exactly one durable home (a
-convention, a doc, an agent, a skill, code, or a post-mortem) — small non-code routings land inline
-in the current plan's own commits, large non-code routings and ALL code routings become a
+convention, a doc, an agent, a skill, code, a test, or a post-mortem) — small non-code routings land
+inline in the current plan's commits, large non-code routings and ALL code routings become a
 `plans/backlog/` follow-up plan, and non-generalizable entries are discarded with a one-line reason.
-Both safety gates (secret/sensitivity and repo-relevance) run on every surviving entry before it is
-routed.
+Two safety gates (secret/sensitivity and repo-relevance) run on every surviving entry before routing.
 
 Archival is **BLOCKED** until every `learnings.md` entry reaches a terminal state — routed inline,
 filed as backlog, or discarded — or the plan carries the explicit
@@ -498,9 +505,9 @@ Plans are executed by execution-grade (sonnet-tier) agents, not planning-grade a
 
 **Each checkbox MUST contain all of the following that apply:**
 
-- **Explicit file path(s)**: Name the exact file path(s) when known (e.g., `apps/crud-be-ts-effect/src/middleware/auth.ts`). When the path cannot be determined at authoring time (e.g., a new file whose location is implementation-dependent), provide the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/crud-be-ts-effect/src/` following the pattern of sibling `auth.ts`").
-- **Explicit shell command(s)**: State the verbatim invocation when a command is involved (e.g., `npx nx run crud-be-ts-effect:test:quick`), not a vague instruction like "run the lint".
-- **Concrete acceptance criterion**: State the observable change that proves done (e.g., "all assertions in `trpc.test.ts` pass" or "`nx run crud-be-ts-effect:typecheck` exits 0"). No bare "implement X", "set up Y", or "configure Z" without a concrete verifiable outcome.
+- **Explicit file path(s)**: Name the exact file path(s) when known (e.g., `apps/ose-www/src/server/trpc.ts`). When the path cannot be determined at authoring time (e.g., a new file whose location is implementation-dependent), provide the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/organiclever-www/src/lib/` following the pattern of sibling `auth.ts`").
+- **Explicit shell command(s)**: State the verbatim invocation when a command is involved (e.g., `npx nx run ose-www:test:quick`), not a vague instruction like "run the lint".
+- **Concrete acceptance criterion**: State the observable change that proves done (e.g., "all assertions in `trpc.test.ts` pass" or "`nx run ose-www:typecheck` exits 0"). No bare "implement X", "set up Y", or "configure Z" without a concrete verifiable outcome.
 - **One scenario per behavior cycle + inline Gherkin**: Every behavior-implementing
   RED→GREEN→REFACTOR cycle targets **exactly one** Gherkin scenario. Its RED step carries a
   single-scenario `**Gherkin (binds) →** "<title>"` tag line followed immediately by that
@@ -523,12 +530,12 @@ Plans are executed by execution-grade (sonnet-tier) agents, not planning-grade a
 **Good** (explicit path, explicit command, explicit criterion):
 
 ```markdown
-- [ ] Edit `apps/crud-be-ts-effect/src/middleware/auth.ts`: wrap the public router with
+- [ ] Edit `apps/ose-www/src/server/trpc.ts`: wrap the public router with
       `unstable_cache(..., { revalidate: 300 })`. Verify by running
-      `npx nx run crud-be-ts-effect:test:quick` — all tests pass.
+      `npx nx run ose-www:test:quick` — all tests pass.
 ```
 
-**Acceptance Criteria**: All user stories in `prd.md` (or the condensed PRD section of a single-file plan's `README.md`) must include testable acceptance criteria using Gherkin format. See [Acceptance Criteria Convention](../../development/infra/acceptance-criteria.md) for complete details, including the HARD rule that every `Scenario` uses exactly one primary `Given`, one `When`, and one `Then` (extras chained with `And`/`But`). See [HARD Rule — Step-Keyword Cardinality](../../development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality).
+**Acceptance Criteria**: All user stories in `prd.md` (or the condensed PRD section of a single-file plan's `README.md`) must include testable acceptance criteria using Gherkin format. See [Acceptance Criteria Convention](../../development/infra/acceptance-criteria.md) for complete details, including the **step-keyword cardinality HARD rule**: every `Scenario` uses exactly one primary `Given`, one `When`, and one `Then`; additional steps chain with `And`/`But`. `Background` blocks and `Scenario Outline` `Examples` tables are exempt. `plan-checker` and `repo-rules-checker` enforce this rule on Gherkin fences in `plans/in-progress/` and `plans/backlog/`; `plans/done/` is exempt as an immutable archive.
 
 ### Executor Tagging — [AI] vs [HUMAN] (HARD RULE)
 
@@ -546,7 +553,7 @@ Every delivery checklist item MUST make clear **who can execute it**. Some work 
 
 - **Create / provision the worktree** — `git worktree add worktrees/<id> -b <id>` is an ordinary git command the executor runs; the [plan-execution workflow](../../workflows/plan/plan-execution.md) Step 0 gate even auto-provisions it. Tag `[AI]`, never `[HUMAN]`.
 - **Commit and push** — the push target follows the plan's Delivery Mode (see [Delivery Mode](#delivery-mode) below), but the push itself is always `[AI]`. Under the repo-wide default `worktree-to-pr`, write the step as `- [ ] [AI] Commit and push to origin <pr-branch>`; under the direct-push modes (`worktree-to-origin-main`, `main-to-origin-main`), write `- [ ] [AI] Commit and push to origin main`. See the [Git Push Default Convention](../../development/workflow/git-push-default.md). There is **no** `[HUMAN]` "review the diff and approve push" gate in either case — pushing to a PR branch is not a merge, and the PR's own review cycle plus the hardened merge preconditions are what gate integration. Drop any approve-push gate unless the user or plan explicitly asked for an out-of-band sign-off on that change.
-- **Remove the worktree after archival** — `git worktree remove worktrees/<id>` is mechanical; the executor self-confirms via the safety preconditions (nothing uncommitted or unpushed) and prompts inline before deleting. Tag `[AI]`, never `[HUMAN]`.
+- **Remove the worktree after archival** — `git worktree remove worktrees/<id>` is mechanical; the executor self-confirms the safety preconditions (nothing uncommitted or unpushed), verifies that the exact path is this plan's own worktree, then removes it immediately without a confirmation prompt. Tag `[AI]`, never `[HUMAN]`.
 
 Any of these three steps becomes `[HUMAN]` or `[AI+HUMAN]` ONLY when the user or plan explicitly requested an out-of-band approval or sign-off for that specific change. Absent that explicit request, all three are `[AI]`.
 
@@ -555,7 +562,7 @@ Any of these three steps becomes `[HUMAN]` or `[AI+HUMAN]` ONLY when the user or
 **Placement**: the tag goes at the START of the checkbox text, immediately after `- [ ]`:
 
 ```markdown
-- [ ] [AI] Edit `apps/crud-be-ts-effect/src/middleware/auth.ts`: … — acceptance: …
+- [ ] [AI] Edit `apps/ose-www/src/server/trpc.ts`: … — acceptance: …
 - [ ] [HUMAN] Unplug the power cable to the test rig and confirm the LED is off — acceptance: operator confirms power removed
 ```
 
@@ -683,9 +690,9 @@ is what maps to a PR.
 
 The mapping from [Delivery Checklists Express a DAG](#delivery-checklists-express-a-dag-hard-rule)
 above sharpens: **one branch → one PR → one delivery unit**, not one branch → one PR → one phase. The
-**worktree** is a coarser unit still — see
-[Worktree Cap](#worktree-cap--one-worktree-per-repository-per-plan-hard-rule) below: a plan provisions
-at most one worktree per repository, reused across every delivery unit in that repo, not one per unit.
+**worktree** is a coarser, per-repository unit — capped at one per repo per plan and reused across
+every delivery unit landed there, never provisioned fresh per unit — per
+[Worktree Cap](#worktree-cap--one-worktree-per-repository-per-plan-hard-rule) below.
 
 1. **A PR opens only at a delivery boundary.** Phases inside a delivery unit that are not its
    boundary commit to the unit's branch and must still pass their own `### Phase N Gate`, but they
@@ -882,13 +889,7 @@ the human or agent declaring the mode must make, not one the algorithm enforces 
 
 `worktree-to-pr` is the **default** when no mode is otherwise specified: it isolates work in a
 disposable worktree and routes it through review before it touches `main`, so it is the safest
-choice absent a reason to pick another mode. The `*-to-pr` modes additionally run the
-PR-Review Maker→Fixer Cycle (`repo-governance/workflows/pr/pr-review-quality-gate.md`) before
-the PR is considered done. Selecting a `*-to-pr` mode authorizes PR steps at the plan's
-**delivery boundaries** only — never at every phase, per
-[PRs Open at Delivery Boundaries](#prs-open-at-delivery-boundaries-not-every-phase-hard-rule), and
-never at Phase 0 under any mode, per
-[Phase 0 Opens No PR](#phase-0-opens-no-pr--the-earliest-pr-is-phase-1-hard-rule).
+choice absent a reason to pick another mode.
 
 **`main-to-origin-main` carries a further content restriction, on top of Standard 2's
 selection-signal test in the
@@ -903,7 +904,7 @@ Absent one of these two, use `worktree-to-pr` even if a direct-push mode would o
 convenient. This restriction targets `main-to-origin-main` specifically — working directly in the
 primary checkout skips both PR review and worktree isolation, so it is held to a narrower bar than
 `worktree-to-origin-main`, which still isolates work from the primary checkout even though it also
-skips review. The [Plan-Docs-Only Carve-Out](../../workflows/plan/plan-planning.md#the-plan-docs-only-carve-out-superseded--retired-in-three-of-four-repos)
+skips review. The [Plan-Docs-Only Carve-Out](../../workflows/plan/plan-planning.md#the-plan-docs-only-carve-out-superseded--retired-in-two-of-three-repos)
 is the plan-authoring-time instance of condition 1 above — see that section for how the two
 reconcile when a plan folder's push includes non-markdown evidence files.
 
@@ -912,65 +913,22 @@ reconcile when a plan folder's push includes non-markdown evidence files.
 **below, which is the current binding rule** — read that subsection before relying on either
 condition above.
 
-### Per-Repository Delivery Mode Restrictions (HARD RULE)
+The `*-to-pr` modes additionally run the
+PR-Review Maker→Fixer Cycle (`repo-governance/workflows/pr/pr-review-quality-gate.md`) before
+the PR is considered done. Selecting a `*-to-pr` mode authorizes PR steps at the plan's
+**delivery boundaries** only — never at every phase, per
+[PRs Open at Delivery Boundaries](#prs-open-at-delivery-boundaries-not-every-phase-hard-rule), and
+never at Phase 0 under any mode, per
+[Phase 0 Opens No PR](#phase-0-opens-no-pr--the-earliest-pr-is-phase-1-hard-rule).
 
-The four-mode table and the content restriction above state what is theoretically possible; this
-subsection states what is **actually allowed per repository**, and is the narrower, binding rule.
-Direct push to `origin main` is a scarce, protected capability going forward — not a convenience
-available wherever a plan finds it easier.
-
-- **`ose-public`, `ose-primer`**: `main` is branch-protected against direct pushes,
-  **including for repository admins**. `worktree-to-origin-main` and `main-to-origin-main` are
-  therefore **unavailable** — no credential or role can push to `main` outside a merged PR.
-  `main-to-pr` is not blocked by the protection (it still opens a PR) but is not used either: every
-  plan in these two repositories uses **`worktree-to-pr`**, with no exception. The
-  [Plan-Docs-Only Carve-Out](../../workflows/plan/plan-planning.md#the-plan-docs-only-carve-out-superseded--retired-in-three-of-four-repos) and
-  the `.md`-only condition of the content restriction above are **retired** in these two
-  repositories — a protected `main` makes them moot regardless of file content, since there is no
-  direct-push path left to carve out of.
-- **`archived repository`**: `main` is **NOT currently GitHub-branch-protected** (verified live 2026-08-08:
-  `gh api repos/wahidyankf/archived repository/branches/main` reports `"protected": false`, and
-  `gh api repos/wahidyankf/archived repository/rulesets` returns `[]`). `worktree-to-origin-main` and
-  `main-to-origin-main` therefore have a technically executable path here today — grouping this
-  repository with `ose-public` and `ose-primer` is this repo's own **policy/convention choice**, not
-  a GitHub-enforced one, pending a `[HUMAN]`-only GitHub settings change to add matching branch
-  protection. Until that gap is closed: every plan in `archived repository` still uses `worktree-to-pr` by
-  convention (see the enforcement note below), and a direct push that lands there anyway is
-  convention-noncompliant, not evidence of bypassed protection — there is nothing to bypass yet.
-- **`ose-private`**: `worktree-to-pr` is likewise the required mode for **every plan except**
-  infrastructure-as-code plans (Terraform, Ansible, and equivalent state-changing infra work). Those
-  plans use **`main-to-origin-main`**, because they need the real `.env` credentials and local
-  infrastructure state (Terraform state and similar) that exist only in the primary checkout — never
-  in a worktree provisioned fresh from `origin/main` — per the
-  [secret- and state-dependent infra operations rule](../../workflows/plan/plan-execution.md#0-enter-the-designated-worktree-sequential-hard-gate).
-  This is narrower than the general `.md`-only / explicit-go-ahead content restriction above: the
-  carve-out is granted for the **infrastructure secrets/state reason specifically**, not for any
-  `.md`-only plan-docs change or ad-hoc go-ahead. A non-IaC, plan-docs-only change in `ose-private`
-  uses `worktree-to-pr` like everything else — the old two-condition test no longer applies there.
-
-**Why this is a hard rule**: a direct push bypasses the PR-Review Maker→Fixer Cycle entirely — no
-discipline-specialist fan-out, no synthesis pass, no fixer pass. Narrowing the surface where that
-bypass is even possible, across all four repositories, to the one case with a genuine technical
-reason (secrets and state that cannot leave the primary checkout) closes the gap between "convenient"
-and "actually necessary" that the old `.md`-only carve-out left open everywhere.
-
-**Enforcement**: `plan-checker` flags a `## Delivery Mode` field naming `worktree-to-origin-main` or
-`main-to-origin-main` in `ose-public` or `ose-primer` as **HIGH** — those modes have no executable
-path in those two repositories. It flags the same field for `archived repository` as **HIGH** too, as a
-policy violation of the convention above rather than a technical-inexecutability claim, since
-`archived repository`'s `main` is not yet GitHub-branch-protected (see above) — a direct push that actually
-lands there is a convention violation, not a bypassed-protection finding, until the protection gap is
-closed. It flags the same fields in `ose-private` as **HIGH** unless the plan is genuinely an
-infrastructure-as-code plan.
-
-**[AI] merges by default.** A `[HUMAN]` merge gate applies only where a plan's own step says so explicitly.
-The **preconditions are unchanged — only the actor is.** A PR still merges only when all five
-[hardened merge preconditions](../../workflows/pr/pr-review-quality-gate.md#hardened-merge-preconditions)
-hold — cited there rather than restated here, so a future strengthening of any clause (for example,
-a change to how the review-cycle count binds, which is today a **hard ceiling, not a floor**) cannot
-silently drift out of sync between the two documents. Inverting the default does not weaken any
-gate; it removes a queueing step that added latency without adding a check, since a human merging a
-PR that has already satisfied all five is performing a click, not a judgment.
+**[AI] merges by default.** Every PR first uses the canonical behavior classifier, not a separate
+plan-specific review path. Eligible executable work must reach its earliest clean code
+MEDIUM/HIGH/CRITICAL cycle within the seven-cycle maximum; noneligible static work requires the
+named `pr-quality-gate.yml` workflow. A blocked eligible PR never merges. The shared hardened
+preconditions still apply: no code-related CRITICAL/HIGH/MEDIUM finding outstanding, branch current
+with `origin/main` via a non-destructive forward update, route-required quality checks green, and
+eligible surface tester gates run and resolved — see the
+[PR Review Quality Gate workflow](../../workflows/pr/pr-review-quality-gate.md).
 
 Where a plan **does** want human judgment at the merge point — an irreversible migration, a
 production cutover, a change whose blast radius the gates cannot express — it says so explicitly in
@@ -1013,6 +971,51 @@ resolves to the tier-3 default per the algorithm above.
 See the [plan-execution workflow](../../workflows/plan/plan-execution.md) for how each mode changes
 Step 0 (worktree entry), the per-phase push target, and Step 8 (finalization and merge hand-off).
 
+### Per-Repository Delivery Mode Restrictions (HARD RULE)
+
+The four-mode table and the content restriction above state what is theoretically possible; this
+subsection states what is **actually allowed per repository**, and is the narrower, binding rule.
+Direct push to `origin main` is a scarce, protected capability going forward — not a convenience
+available wherever a plan finds it easier.
+
+- **`ose-public`, `ose-primer`**: `main` is branch-protected against direct pushes, **including for
+  repository admins** — verified live via a legacy `/branches/main/protection` check for
+  `ose-public` and a ruleset check for `ose-primer` (its protection is a repository ruleset, which
+  the legacy endpoint alone would misreport as unprotected). `worktree-to-origin-main` and
+  `main-to-origin-main` are therefore **unavailable** in these two repos — no credential or role can
+  push to `main` outside a merged PR.
+- **`ose-private`**: `worktree-to-pr` is likewise the required mode for **every plan except**
+  infrastructure-as-code plans (Terraform, Ansible, and equivalent state-changing infra work). Those
+  plans use **`main-to-origin-main`**, because they need the real `.env` credentials and local
+  infrastructure state (Terraform state and similar) that exist only in the primary checkout — never
+  in a worktree provisioned fresh from `origin/main` — per the
+  [secret- and state-dependent infra operations rule](../../workflows/plan/plan-execution.md#0-enter-the-designated-worktree-sequential-hard-gate).
+  This is narrower than the general `.md`-only / explicit-go-ahead content restriction above: the
+  carve-out is granted for the **infrastructure secrets/state reason specifically**, not for any
+  `.md`-only plan-docs change or ad-hoc go-ahead. A non-IaC, plan-docs-only change in `ose-private`
+  uses `worktree-to-pr` like everything else — the old two-condition test no longer applies there.
+  **`ose-private`'s own branch-protection state is unverified as of this PR** — its rules API returned
+  `403 Upgrade to GitHub Pro` when checked live, so this rule's restriction there rests on a
+  convention-enforced (not independently confirmed mechanically-enforced) footing until it is checked
+  with sufficient API access.
+
+`main-to-pr` is not blocked by protection in `ose-public` or `ose-primer` — it still opens a PR — but
+is not used either: every plan in both uses **`worktree-to-pr`**, with no exception. The
+[Plan-Docs-Only Carve-Out](../../workflows/plan/plan-planning.md#the-plan-docs-only-carve-out-superseded--retired-in-two-of-three-repos)
+and the `.md`-only condition of the content restriction above are **retired** in these two
+repositories — direct push is disallowed by this rule regardless of file content.
+
+**Why this is a hard rule**: a direct push bypasses the PR-Review Maker→Fixer Cycle entirely — no
+discipline-specialist fan-out, no synthesis pass, no fixer pass. Narrowing the surface where that
+bypass is even possible, across all three repositories, to the one case with a genuine technical
+reason (secrets and state that cannot leave the primary checkout) closes the gap between "convenient"
+and "actually necessary" that the old `.md`-only carve-out left open everywhere.
+
+**Enforcement**: `plan-checker` flags a `## Delivery Mode` field naming `worktree-to-origin-main` or
+`main-to-origin-main` in `ose-public` or `ose-primer` as **HIGH** — those modes have no executable
+path in those two repositories. It flags the same fields in `ose-private` as **HIGH** unless the plan
+is genuinely an infrastructure-as-code plan.
+
 ### Important Note on File Naming
 
 Files inside plan folders use descriptive kebab-case names or short industry-standard acronyms (e.g., `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`). The folder structure provides sufficient context, so the filename only needs to describe its purpose.
@@ -1049,29 +1052,34 @@ Plans differ from `docs/` in several important ways:
 
 ### Starting Work
 
-**Promotion precedes provisioning (HARD RULE)**: a plan in `backlog/` MUST be promoted to
-`in-progress/` — moved, committed, and pushed to `origin main` — on the **local `main` checkout**,
-never inside a worktree, BEFORE any worktree is provisioned or execution begins. The
-[plan-execution workflow's Step 0 gate](../../workflows/plan/plan-execution.md#0-enter-the-designated-worktree-sequential-hard-gate)
-performs this promotion automatically when invoked on a `plans/backlog/` plan path — see
-[Execute Plan from Backlog](../../workflows/plan/plan-execution.md#execute-plan-from-backlog). A plan
-is never executed directly out of `backlog/`.
+**Promote out of `backlog/` first — on the local `main` checkout, never inside a worktree.** A plan
+still sitting in `plans/backlog/` is never executed directly out of that folder; the promotion below
+is a mandatory precondition, not an optional courtesy, and it MUST land as a committed, pushed change
+on `origin main` before worktree provisioning or any implementation step begins. See
+[plan-execution → Execute Plan from Backlog](../../workflows/plan/plan-execution.md#execute-plan-from-backlog).
 
-1. **Promote from backlog** (on the local `main` checkout, never inside a worktree): Move plan folder from `backlog/[identifier]/` to `in-progress/[identifier]/` — a pure move; neither stage carries a date prefix.
+1. **Move folder** (on local `main`, before any worktree exists): Move plan folder from
+   `backlog/[identifier]/` to `in-progress/[identifier]/` — a pure move; neither stage carries a
+   date prefix.
 2. **Update index**: Update both `backlog/README.md` and `in-progress/README.md`
-3. **Git commit and push**: Commit the move with an appropriate message and push directly to `origin main` — this must land before any worktree is provisioned or execution begins.
+3. **Git commit and push**: Commit the move and push directly to `origin main` — only after this
+   push lands does execution proceed
 4. **Provision worktree** (optional — the plan-execution Step 0 gate auto-provisions from the latest `origin/main` when missing): Run `claude --worktree <plan-identifier>` from the repo root — this creates `worktrees/<plan-identifier>/` in the repo root (not `.claude/worktrees/`). See [Worktree Path Convention](./worktree-path.md).
 5. **Initialize toolchain**: In the root worktree, run `npm install && npm run doctor -- --fix`. See [Worktree Toolchain Initialization](../../development/workflow/worktree-setup.md).
 6. **Begin execution**: Start implementing according to delivery checklist
 
 ### Completing Work
 
-1. **Verify completion**: Ensure all deliverables and acceptance criteria met. For user-facing plans, the archival criterion (rule 10 of the [User-Facing Delivery Hardening Convention](../../development/quality/user-facing-delivery-hardening.md)) requires a production visual sign-off per breakpoint/locale before the plan may be moved to `done/`.
+1. **Verify completion**: Ensure all deliverables and acceptance criteria met — for UI-bearing plans, this includes the production visual sign-off (rule 10 of the [User-Facing Delivery Hardening Convention](../../development/quality/user-facing-delivery-hardening.md))
 2. **Add completion date prefix**: Rename folder from `in-progress/[identifier]/` to `done/YYYY-MM-DD__[identifier]/` using today's date (the completion date, not the original creation date)
 3. **Move folder**: Move renamed folder to `done/`
-4. **Update index**: Update both `in-progress/README.md` and `done/README.md`. Tick every delivery checkbox before archiving — the Atomic Sync Ritual (rule 13 of the [User-Facing Delivery Hardening Convention](../../development/quality/user-facing-delivery-hardening.md)) requires checkbox lockstep throughout execution, not batch-ticking at archival time.
+4. **Update index**: Update both `in-progress/README.md` and `done/README.md`
 5. **Git commit**: Commit the move with completion message
-6. **Archive**: Plan is now archived for historical reference. If a defect is found post-archival, reopen the plan by moving it back to `in-progress/` per rule 14 of the [User-Facing Delivery Hardening Convention](../../development/quality/user-facing-delivery-hardening.md) rather than creating a silent patch.
+6. **Archive**: Plan is now archived for historical reference
+
+**Checkbox lockstep (rule 13)**: tick each delivery checkbox only after the corresponding code, review, or evidence actually exists — not speculatively. See [User-Facing Delivery Hardening Convention](../../development/quality/user-facing-delivery-hardening.md) rule 13 for the full checkbox-lockstep requirement.
+
+**Reopen path (rule 14)**: if a production defect surfaces after archival, reopen the plan by moving it back from `done/` to `in-progress/`, stripping the completion-date prefix, and adding a dated note in `README.md` explaining the defect. See [User-Facing Delivery Hardening Convention](../../development/quality/user-facing-delivery-hardening.md) rule 14 for the full reopen procedure.
 
 ### Infra-Apply Gate (HARD RULE)
 
@@ -1098,12 +1106,10 @@ Each subfolder (`backlog/`, `in-progress/`, `done/`) has a `README.md` that:
 
 Files in `plans/` folder MUST use **Mermaid diagrams** as the primary format (same as all markdown files in the repository).
 
-**Opening principle — diagram-rich plans**: Plans should visualize structure, flow, and decisions liberally rather than describing them in prose. The bias is additive: when a concept involves more than two interacting parts, an ordering, a lifecycle, or a branch, draw it. A redundant diagram costs less than a missed architectural ambiguity.
-
 **Diagram Standards**:
 
 - **Primary Format**: Mermaid diagrams for all flowcharts, architecture diagrams, sequences
-- **ASCII Art**: Optional, only for simple directory trees or rare edge cases
+- **ASCII Art**: Optional for general diagrams (simple directory trees or rare edge cases), but **Required** as the low-fidelity wireframe tier for **UI-bearing plans** — see [UI Mockups in Plan Docs](../formatting/diagrams.md#ui-mockups-in-plan-docs) for the both-tiers rule, design funnel, and grounding rule
 - **Orientation**: Default to left-to-right (`flowchart LR` / `graph LR`) per the [Diagram and Schema Convention](../formatting/diagrams.md); use top-down only when semantically required
 - **Colors**: Use color-blind friendly palette from [Color Accessibility Convention](../formatting/color-accessibility.md)
 
@@ -1114,46 +1120,32 @@ Files in `plans/` folder MUST use **Mermaid diagrams** as the primary format (sa
 - Easy to update and maintain
 - Supports multiple diagram types (flowchart, sequence, class, ER, etc.)
 
-### Diagram Coverage Contract
+### When a Plan MUST Include a Diagram
 
-This is the named enforcement contract that governs diagram expectations across plan files. All three plan agents — **plan-maker**, **plan-checker**, and **plan-fixer** — operate against these rules.
+A plan MUST include extensive Mermaid diagrams where appropriate: every distinct architectural concern the plan touches that a reader would otherwise have to reconstruct mentally from prose SHOULD receive its own dedicated diagram. This means one diagram per concern, not one diagram total.
 
-#### Per-Document Diagram Opportunity Guide
-
-Each plan file has predictable diagram opportunities. Authors and validators use this guide to determine where diagrams are warranted.
-
-| Plan File      | Diagram types typically warranted                                                                                                                                                                                                                                     |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `README.md`    | Architecture and component-interaction flowcharts (`flowchart LR`) when the plan touches multiple services/agents/apps; ER diagrams (`erDiagram`) for data-model changes                                                                                              |
-| `tech-docs.md` | Architecture and component-interaction flowcharts (`flowchart LR`); sequence diagrams (`sequenceDiagram`) for cross-system or cross-agent order-of-operations; state diagrams (`stateDiagram-v2`) for entity lifecycles; ER diagrams (`erDiagram`) for schema changes |
-| `delivery.md`  | Phase/dependency flowcharts (`flowchart LR` or `flowchart TD`) showing phase ordering and gate flow when phases have non-linear dependencies or parallel tracks                                                                                                       |
-| `prd.md`       | User-flow and decision-branch flowcharts (`flowchart LR`) for non-trivial UX flows with more than one branch or outcome                                                                                                                                               |
-| `brd.md`       | Stakeholder or role-interaction diagrams when multiple roles interact in non-obvious ways; generally diagram-light unless the business process has branches                                                                                                           |
-
-#### When a Plan MUST Include a Diagram
-
-A plan MUST include at least one Mermaid diagram when the plan covers any of the following concerns and a reader would otherwise have to reconstruct the picture mentally from prose:
+The concerns that warrant their own diagram when present in a plan:
 
 - **Component interactions** — which services, agents, apps, or libraries call which, and through what contract (flowchart or C4-style diagram)
 - **Sequence or flow between agents or systems** — order-of-operations across processes, including async hand-offs and timeouts (sequenceDiagram)
 - **State transitions** — lifecycle of an entity (plan folder, request, deployment, entitlement) with named states and triggered transitions (stateDiagram-v2)
 - **Decision branches** — non-trivial conditional logic with more than two outcomes or nested decisions (flowchart with labelled edges)
+- **Dependency position** — upstream and downstream plan or system dependencies showing where this plan sits relative to sibling plans, services, or libraries it depends on or that depend on it (flowchart)
+- **Phase/delivery flow** — the phased delivery progression with gates, showing how phases sequence and what conditions govern transitions (flowchart or stateDiagram-v2)
 
-#### Agent Responsibilities Under This Contract
+**Prefer multiple focused diagrams over one overloaded diagram.** A plan covering N distinct architectural concerns should generally carry N diagrams — one per concern — rather than forcing all concerns into a single crowded chart.
 
-- **plan-maker** MUST proactively add diagrams wherever the per-document opportunity guide applies — not wait to be asked. Consult the guide for each file as it is authored; if the content fits a listed opportunity, include the diagram.
-- **plan-checker** MUST flag a MISSING diagram as a **MEDIUM** finding when a plan file's prose clearly describes component interactions, cross-system/agent sequences, entity state transitions, or multi-outcome/nested decision branches but contains NO corresponding Mermaid diagram. This is separate from (and in addition to) the existing ASCII-should-be-Mermaid check.
-- **plan-fixer** adds the missing diagram (HIGH confidence, auto-apply) when the plan prose unambiguously describes a flow, sequence, state, or decision that can be drawn directly from the text; when relationships are ambiguous or not fully grounded in the plan text, flags for plan-maker rather than fabricating — never invents relationships not present in the plan.
+If unsure whether a diagram is warranted for a given concern, add it. A redundant diagram costs less than a missed architectural ambiguity.
 
 ### When a Plan MAY Skip Diagrams
 
-Text-only is acceptable only when the plan is genuinely linear and trivially small:
+This section defines the "where appropriate" escape hatch for the extensive-diagram requirement above. Text-only is acceptable only when the plan is genuinely linear and trivially small — it touches no distinct architectural concern that a diagram would clarify:
 
 - Single-file README-only plans touching one file or one config value
 - Renames, copy edits, documentation fixes
 - Dependency bumps with no behavioural change
 
-This escape hatch keeps the Diagram Coverage Contract proportionate — do not apply it to plans with substantive architectural, product, or delivery complexity.
+For any plan that goes beyond these cases, the extensive-where-appropriate rule applies and each diagram-warranting concern listed above should have its own diagram.
 
 ### Accessibility and Palette Requirements
 
@@ -1204,7 +1196,7 @@ Plan files sit three directory levels deep from the repository root: `plans/` �
 | ------------------------------------------------ | -------------- |
 | `repo-governance/conventions/structure/plans.md` | `../../../`    |
 | `docs/how-to/organize-work.md`                   | `../../../`    |
-| `apps/crud-be-ts-effect/README.md`               | `../../../`    |
+| `apps/organiclever-be/README.md`                 | `../../../`    |
 | Sibling file in the same plan folder             | `./`           |
 
 **Two-pagers are one level shallower.** A two-pager lives directly at `plans/ideas/<slug>.md`
@@ -1249,9 +1241,8 @@ Use the verification tip from the [Linking Convention](../formatting/linking.md#
 - [Color Accessibility Convention](../formatting/color-accessibility.md) - Verified accessible palette, WCAG AA requirements, and color-blindness coverage for all diagram fills
 - [Worktree Path Convention](./worktree-path.md) - Worktree routing to `worktrees/<name>/` (referenced by the Worktree Specification rule above)
 - [Plan Anti-Hallucination Convention](../../development/quality/plan-anti-hallucination.md) - Pre-write verification recipes, repo-grounding rule, refuse-on-uncertainty, anti-pattern catalog (AP-1 through AP-10), specialized-executor annotation; consumed by the Execution-Grade Clarity rule above and by the four plan agents
-- [No Secrets in Committed Files Convention](../security/no-secrets-in-committed-files.md) - Hard iron rule prohibiting secret values in any committed file, including plans and their permanent `done/` history
 - [Grilling-With-Options Convention](../../development/workflow/grilling-with-options.md) - Every grill question during plan creation (pre-write, post-write) MUST present 2-4 concrete options with trade-off descriptions; open-ended questions without options are FORBIDDEN; consumed by plan-maker Steps 1 and 8
-- [User-Facing Delivery Hardening Convention](../../development/quality/user-facing-delivery-hardening.md) - Rule 10 (archival criterion = production visual sign-off per breakpoint/locale), rule 13 (Atomic Sync Ritual / checkbox lockstep throughout execution), and rule 14 (reopen path for post-archival defects) apply directly to the Completing Work lifecycle above
+- [No Secrets in Git Convention](../security/no-secrets-in-committed-files.md) - Hard iron rule prohibiting secret values in any committed file, including plans and their permanent `done/` history
 - [Evidence Capture Convention](../../development/quality/evidence-capture.md) - Standards for the plan `evidence/` subfolder: screenshot naming (phase/locale/breakpoint), curl/API response records, locale coverage requirements, and what `plan-execution-checker` validates
 
 **Development Guides**:
@@ -1259,6 +1250,15 @@ Use the verification tip from the [Linking Convention](../formatting/linking.md#
 - [AI Agents Convention](../../development/agents/ai-agents.md) - Standards for AI agents (including `plan-maker`, `plan-checker`, `plan-fixer`, `plan-execution-checker`)
 
 ## Best Practices
+
+### Never Put Secrets in Plans
+
+Plans are committed to git, so the [No Secrets in Git](../security/no-secrets-in-committed-files.md) hard iron
+rule applies in full. Never paste system secrets (SSH/private keys, passwords, API tokens, privileged
+usernames, certificates, connection strings, and similar) into any plan document. When a plan must
+reference a secret, name the environment variable (e.g. `DATABASE_URL`) or use a placeholder
+(`<API_TOKEN>`); the real value lives in an uncommitted `.env*` file (except `.env.example`) or
+another gitignored file.
 
 ### Keep Plans Focused
 
@@ -1286,15 +1286,6 @@ Use the verification tip from the [Linking Convention](../formatting/linking.md#
 - Always update subfolder README.md when moving plans
 - Keep descriptions current and accurate
 - Remove completed plans from in-progress index promptly
-
-### Never Put Secrets in Plans
-
-Plans are committed to git, so the [No Secrets in Committed Files](../security/no-secrets-in-committed-files.md) hard iron
-rule applies in full. Never paste system secrets (SSH/private keys, passwords, API tokens, privileged
-usernames, certificates, connection strings, and similar) into any plan document. When a plan must
-reference a secret, name the environment variable (e.g. `DATABASE_URL`) or use a placeholder
-(`<API_TOKEN>`); the real value lives in an uncommitted `.env*` file (except `.env.example`) or
-another gitignored file.
 
 ### Archive Completed Plans
 
@@ -1343,7 +1334,7 @@ Phased `- [ ]` items, one action per checkbox...
 
 ## Quality Gates
 
-`nx affected -t typecheck lint test:quick specs:coverage`, markdown lint, manual verification...
+`apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push` (includes `nx affected -t test:quick`), markdown lint, manual verification...
 
 ## Verification
 
