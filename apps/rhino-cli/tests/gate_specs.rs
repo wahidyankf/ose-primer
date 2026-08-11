@@ -580,7 +580,7 @@ fn given_matrix_aggregate_missing_enumerate(w: &mut GateWorld) {
         concat!(
             "jobs:\n",
             "  enumerate:\n    steps:\n      - run: rhino-cli gate list --surface=ci --format=json\n",
-            "  gate:\n    needs: enumerate\n    strategy:\n      matrix:\n        gate: '${{ fromJson(needs.enumerate.outputs.gates) }}'\n    steps:\n      - env:\n          GATE_ID: ${{ matrix.gate.id }}\n        run: rhino-cli gate run --surface=ci --only=\"$GATE_ID\"\n",
+            "  gate:\n    needs: enumerate\n    strategy:\n      matrix:\n        gate: '${{ fromJson(needs.enumerate.outputs.gates) }}'\n    steps:\n      - run: rhino-cli gate run --surface=ci --only=\"$GATE_ID\"\n        env:\n          GATE_ID: ${{ matrix.gate.id }}\n",
             "  quality-gate:\n    needs: gate\n",
         ),
     );
@@ -662,7 +662,7 @@ fn given_hand_wired_job(w: &mut GateWorld) {
         concat!(
             "jobs:\n",
             "  enumerate:\n    steps:\n      - run: rhino-cli gate list --surface=ci --format=json\n",
-            "  gate:\n    needs: enumerate\n    strategy:\n      matrix:\n        gate: '${{ fromJson(needs.enumerate.outputs.gates) }}'\n    steps:\n      - env:\n          GATE_ID: ${{ matrix.gate.id }}\n        run: rhino-cli gate run --surface=ci --only=\"$GATE_ID\"\n",
+            "  gate:\n    needs: enumerate\n    strategy:\n      matrix:\n        gate: '${{ fromJson(needs.enumerate.outputs.gates) }}'\n    steps:\n      - run: rhino-cli gate run --surface=ci --only=\"$GATE_ID\"\n        env:\n          GATE_ID: ${{ matrix.gate.id }}\n",
             "  test-quick:\n    steps:\n      - run: npx nx affected -t test:quick\n",
             "  quality-gate:\n    needs: [enumerate, gate, test-quick]\n",
         ),
@@ -966,6 +966,308 @@ fn then_ci_group_error_states_required(w: &mut GateWorld) {
         w.output.contains("ci_group is required"),
         "missing ci_group explanation in {}",
         w.output
+    );
+}
+
+/// Base fixture shared by the CI-workflow-shape scenarios below: a
+/// registry declaring one CI gate that also carries `doctor-tools`, plus a
+/// compliant `build-rhino`/`enumerate`/`gate`/`quality-gate` skeleton that
+/// satisfies `validate_ci_matrix_contract` and `validate_ci_doctor_bootstrap`
+/// on its own, so each scenario can introduce exactly one additional
+/// violation without also tripping an earlier, unrelated check.
+fn write_compliant_ci_matrix_fixture(w: &mut GateWorld) {
+    w.write(
+        "repo-config.yml",
+        &config(&format!(
+            "{}    doctor-tools: [shellcheck]\n    ci-group: fixture-group\n",
+            gate(
+                "shellcheck",
+                "check",
+                "shellcheck",
+                "external",
+                "      ci: { scope: all-file-type }\n",
+            )
+        )),
+    );
+    w.write(
+        ".github/workflows/pr-quality-gate.yml",
+        concat!(
+            "jobs:\n",
+            "  build-rhino:\n",
+            "    steps:\n",
+            "      - run: cargo build --profile gate --manifest-path apps/rhino-cli/Cargo.toml\n",
+            "  enumerate:\n",
+            "    needs: build-rhino\n",
+            "    steps:\n",
+            "      - run: rhino-cli gate list --surface=ci --format=json --by-group\n",
+            "  format:\n",
+            "    steps:\n",
+            "      - run: |\n",
+            "          tools=$(rhino-cli gate list --surface=pre-commit --format=json | jq -r '[.[] | .doctor_tools[]] | unique | join(\",\")')\n",
+            "          if [ -n \"$tools\" ]; then\n",
+            "            apps/rhino-cli/scripts/rhino-bin.sh doctor --fix --tools \"$tools\"\n",
+            "          fi\n",
+            "  gate:\n",
+            "    needs: [build-rhino, enumerate]\n",
+            "    strategy:\n",
+            "      matrix:\n",
+            "        group: ${{ fromJson(needs.enumerate.outputs.groups) }}\n",
+            "    steps:\n",
+            "      - run: rhino-cli gate run --surface=ci --group=\"$GROUP_ID\"\n",
+            "        env:\n",
+            "          GROUP_ID: ${{ matrix.group.group }}\n",
+            "      - run: |\n",
+            "          tools=\"$DOCTOR_TOOLS\"\n",
+            "          if [ -n \"$tools\" ]; then\n",
+            "            apps/rhino-cli/scripts/rhino-bin.sh doctor --fix --tools \"$tools\"\n",
+            "          fi\n",
+            "        env:\n",
+            "          DOCTOR_TOOLS: ${{ join(matrix.group.doctor_tools, ',') }}\n",
+            "  quality-gate:\n",
+            "    needs: [build-rhino, enumerate, gate]\n",
+        ),
+    );
+}
+
+#[given("the quality-gate job's needs list omits build-rhino")]
+fn given_quality_gate_missing_build_rhino(w: &mut GateWorld) {
+    w.write(
+        "repo-config.yml",
+        &config(&format!(
+            "{}    ci-group: fixture-group\n",
+            gate(
+                "known-check",
+                "check",
+                "known-check",
+                "external",
+                "      ci: { scope: affected-projects }\n",
+            )
+        )),
+    );
+    w.write(
+        ".github/workflows/pr-quality-gate.yml",
+        concat!(
+            "jobs:\n",
+            "  build-rhino:\n",
+            "    steps:\n",
+            "      - run: cargo build --profile gate --manifest-path apps/rhino-cli/Cargo.toml\n",
+            "  enumerate:\n",
+            "    needs: build-rhino\n",
+            "    steps:\n",
+            "      - run: rhino-cli gate list --surface=ci --format=json --by-group\n",
+            "  gate:\n",
+            "    needs: [build-rhino, enumerate]\n",
+            "    strategy:\n",
+            "      matrix:\n",
+            "        group: ${{ fromJson(needs.enumerate.outputs.groups) }}\n",
+            "    steps:\n",
+            "      - run: rhino-cli gate run --surface=ci --group=\"$GROUP_ID\"\n",
+            "        env:\n",
+            "          GROUP_ID: ${{ matrix.group.group }}\n",
+            "  quality-gate:\n",
+            "    needs: [enumerate, gate]\n",
+        ),
+    );
+}
+
+#[then("it fails and names build-rhino")]
+fn then_quality_gate_missing_build_rhino_names_it(w: &mut GateWorld) {
+    assert!(!w.is_success());
+    assert!(w.output.contains("build-rhino"));
+}
+
+#[given("a gate run --surface=ci step declares neither --only= nor --group=")]
+fn given_ci_gate_run_without_selector(w: &mut GateWorld) {
+    write_compliant_ci_matrix_fixture(w);
+    // The extra selector-less invocation must live inside the same workflow
+    // file `validate` reads (`pr-quality-gate.yml`), so append the offending
+    // step to a scratch job there rather than a second, unread workflow file.
+    let mut workflow =
+        std::fs::read_to_string(w.root().join(".github/workflows/pr-quality-gate.yml"))
+            .expect("read fixture workflow");
+    workflow.push_str("  extra-check:\n    steps:\n      - run: rhino-cli gate run --surface=ci\n");
+    w.write(".github/workflows/pr-quality-gate.yml", &workflow);
+}
+
+#[then("it fails and states that the invocation must select exactly one matrix gate")]
+fn then_ci_gate_run_missing_selector_fails(w: &mut GateWorld) {
+    assert!(!w.is_success());
+    assert!(w.output.contains("must select exactly one matrix gate"));
+}
+
+#[given("a gate run --surface=ci step's --group value matches no declared ci_group")]
+fn given_ci_gate_run_undeclared_group(w: &mut GateWorld) {
+    write_compliant_ci_matrix_fixture(w);
+    let mut workflow =
+        std::fs::read_to_string(w.root().join(".github/workflows/pr-quality-gate.yml"))
+            .expect("read fixture workflow");
+    workflow.push_str(
+        "  extra-check:\n    steps:\n      - run: rhino-cli gate run --surface=ci --group=unregistered-group\n",
+    );
+    w.write(".github/workflows/pr-quality-gate.yml", &workflow);
+}
+
+#[then("it fails and names the undeclared group id")]
+fn then_ci_gate_run_undeclared_group_names_it(w: &mut GateWorld) {
+    assert!(!w.is_success());
+    assert!(w.output.contains("unregistered-group"));
+}
+
+#[given("the gate job provisions Doctor tools via npm run doctor instead of the rhino-bin.sh shim")]
+fn given_gate_job_npm_run_doctor(w: &mut GateWorld) {
+    w.write(
+        "repo-config.yml",
+        &config(&format!(
+            "{}    doctor-tools: [shellcheck]\n    ci-group: fixture-group\n",
+            gate(
+                "shellcheck",
+                "check",
+                "shellcheck",
+                "external",
+                "      ci: { scope: all-file-type }\n",
+            )
+        )),
+    );
+    w.write(
+        ".github/workflows/pr-quality-gate.yml",
+        concat!(
+            "jobs:\n",
+            "  build-rhino:\n",
+            "    steps:\n",
+            "      - run: cargo build --profile gate --manifest-path apps/rhino-cli/Cargo.toml\n",
+            "  enumerate:\n",
+            "    needs: build-rhino\n",
+            "    steps:\n",
+            "      - run: rhino-cli gate list --surface=ci --format=json --by-group\n",
+            "  format:\n",
+            "    steps:\n",
+            "      - run: |\n",
+            "          tools=$(rhino-cli gate list --surface=pre-commit --format=json | jq -r '[.[] | .doctor_tools[]] | unique | join(\",\")')\n",
+            "          if [ -n \"$tools\" ]; then\n",
+            "            apps/rhino-cli/scripts/rhino-bin.sh doctor --fix --tools \"$tools\"\n",
+            "          fi\n",
+            "  gate:\n",
+            "    needs: [build-rhino, enumerate]\n",
+            "    strategy:\n",
+            "      matrix:\n",
+            "        group: ${{ fromJson(needs.enumerate.outputs.groups) }}\n",
+            "    steps:\n",
+            "      - run: rhino-cli gate run --surface=ci --group=\"$GROUP_ID\"\n",
+            "        env:\n",
+            "          GROUP_ID: ${{ matrix.group.group }}\n",
+            "      - run: |\n",
+            "          tools=\"$DOCTOR_TOOLS\"\n",
+            "          if [ -n \"$tools\" ]; then\n",
+            "            npm run doctor -- --fix --tools \"$tools\"\n",
+            "          fi\n",
+            "        env:\n",
+            "          DOCTOR_TOOLS: ${{ join(matrix.group.doctor_tools, ',') }}\n",
+            "  quality-gate:\n",
+            "    needs: [build-rhino, enumerate, gate]\n",
+        ),
+    );
+}
+
+#[then("it fails and names the gate job's stale Doctor bootstrap")]
+fn then_gate_job_npm_run_doctor_fails(w: &mut GateWorld) {
+    assert!(!w.is_success());
+    assert!(w.output.contains("format and matrix Doctor selections"));
+}
+
+#[given(
+    "a CI matrix dispatcher step interpolates matrix.group.group directly into its run body without env indirection"
+)]
+fn given_matrix_group_id_unsafe_splice(w: &mut GateWorld) {
+    w.write(
+        "repo-config.yml",
+        &config(&format!(
+            "{}    ci-group: fixture-group\n",
+            gate(
+                "known-check",
+                "check",
+                "known-check",
+                "external",
+                "      ci: { scope: affected-projects }\n",
+            )
+        )),
+    );
+    // The safe env-indirected dispatcher step is present, but a *second*
+    // step in the same job still splices the raw matrix expression directly
+    // into its `run:` body, with no `env:` indirection — this must fail even
+    // though the safe pattern exists somewhere in the job.
+    w.write(
+        ".github/workflows/pr-quality-gate.yml",
+        concat!(
+            "jobs:\n",
+            "  build-rhino:\n",
+            "    steps:\n",
+            "      - run: cargo build --profile gate --manifest-path apps/rhino-cli/Cargo.toml\n",
+            "  enumerate:\n",
+            "    needs: build-rhino\n",
+            "    steps:\n",
+            "      - run: rhino-cli gate list --surface=ci --format=json --by-group\n",
+            "  gate:\n",
+            "    needs: [build-rhino, enumerate]\n",
+            "    strategy:\n",
+            "      matrix:\n",
+            "        group: ${{ fromJson(needs.enumerate.outputs.groups) }}\n",
+            "    steps:\n",
+            "      - run: rhino-cli gate run --surface=ci --group=\"$GROUP_ID\"\n",
+            "        env:\n",
+            "          GROUP_ID: ${{ matrix.group.group }}\n",
+            "      - run: echo \"debug group id is ${{ matrix.group.group }}\"\n",
+            "  quality-gate:\n",
+            "    needs: [build-rhino, enumerate, gate]\n",
+        ),
+    );
+}
+
+#[then("it fails and states that the gate matrix id must be derived through env indirection")]
+fn then_matrix_group_id_unsafe_splice_fails(w: &mut GateWorld) {
+    assert!(!w.is_success());
+    assert!(w.output.contains("must derive its gate matrix"));
+}
+
+#[given(
+    "a CI matrix dispatcher step carries matrix.group.group through a differently-named env var"
+)]
+fn given_matrix_group_id_named_env_var(w: &mut GateWorld) {
+    w.write(
+        "repo-config.yml",
+        &config(&format!(
+            "{}    ci-group: fixture-group\n",
+            gate(
+                "known-check",
+                "check",
+                "known-check",
+                "external",
+                "      ci: { scope: affected-projects }\n",
+            )
+        )),
+    );
+    w.write(
+        ".github/workflows/pr-quality-gate.yml",
+        concat!(
+            "jobs:\n",
+            "  build-rhino:\n",
+            "    steps:\n",
+            "      - run: cargo build --profile gate --manifest-path apps/rhino-cli/Cargo.toml\n",
+            "  enumerate:\n",
+            "    needs: build-rhino\n",
+            "    steps:\n",
+            "      - run: rhino-cli gate list --surface=ci --format=json --by-group\n",
+            "  gate:\n",
+            "    needs: [build-rhino, enumerate]\n",
+            "    strategy:\n",
+            "      matrix:\n",
+            "        group: ${{ fromJson(needs.enumerate.outputs.groups) }}\n",
+            "    steps:\n",
+            "      - run: rhino-cli gate run --surface=ci --group=\"$CI_SELECTED_GROUP\"\n",
+            "        env:\n",
+            "          CI_SELECTED_GROUP: ${{ matrix.group.group }}\n",
+            "  quality-gate:\n",
+            "    needs: [build-rhino, enumerate, gate]\n",
+        ),
     );
 }
 
@@ -1468,6 +1770,126 @@ fn then_failed_restage_does_not_stage(w: &mut GateWorld) {
     assert!(output.stdout.is_empty());
 }
 
+#[given("two successful restaging mutations each change a distinct output file")]
+fn given_two_successful_restage_mutations(w: &mut GateWorld) {
+    w.init_git();
+    w.write("mutate-first.sh", "#!/bin/sh\nprintf first > first.txt\n");
+    w.write(
+        "mutate-second.sh",
+        "#!/bin/sh\nprintf second > second.txt\n",
+    );
+    w.write(
+        "repo-config.yml",
+        &config(&format!(
+            "{}    restages: true\n{}    restages: true\n",
+            gate(
+                "generate-first",
+                "mutation",
+                "sh mutate-first.sh",
+                "external",
+                "      pre-push: { scope: other }\n",
+            ),
+            gate(
+                "generate-second",
+                "mutation",
+                "sh mutate-second.sh",
+                "external",
+                "      pre-push: { scope: other }\n",
+            ),
+        )),
+    );
+}
+
+#[when("they run back to back")]
+fn when_two_restages_run_back_to_back(w: &mut GateWorld) {
+    w.write("unrelated.txt", "unrelated\n");
+    w.run_gate("pre-push", None);
+}
+
+#[then("each mutation's own output is staged and neither is attributed to the other")]
+fn then_each_restage_output_is_independently_staged(w: &mut GateWorld) {
+    assert!(w.is_success(), "restaging failed: {}", w.output);
+    let output = w
+        .fixture_git_command()
+        .args(["diff", "--cached", "--name-only"])
+        .output()
+        .expect("list staged outputs");
+    let mut staged = String::from_utf8(output.stdout)
+        .expect("staged paths are UTF-8")
+        .lines()
+        .map(str::to_owned)
+        .collect::<Vec<_>>();
+    staged.sort();
+    assert_eq!(
+        staged,
+        vec!["first.txt".to_owned(), "second.txt".to_owned()]
+    );
+    assert!(
+        w.root().join("unrelated.txt").exists(),
+        "unrelated untracked work must be left alone by both restaging gates"
+    );
+}
+
+#[given(
+    "two successful restaging mutations, the second of which also re-touches the first mutation's output file"
+)]
+fn given_second_restage_retouches_first_output(w: &mut GateWorld) {
+    w.init_git();
+    w.write("mutate-first.sh", "#!/bin/sh\nprintf first > first.txt\n");
+    w.write(
+        "mutate-second.sh",
+        "#!/bin/sh\nprintf overwritten > first.txt\nprintf second > second.txt\n",
+    );
+    w.write(
+        "repo-config.yml",
+        &config(&format!(
+            "{}    restages: true\n{}    restages: true\n",
+            gate(
+                "generate-first",
+                "mutation",
+                "sh mutate-first.sh",
+                "external",
+                "      pre-push: { scope: other }\n",
+            ),
+            gate(
+                "generate-second",
+                "mutation",
+                "sh mutate-second.sh",
+                "external",
+                "      pre-push: { scope: other }\n",
+            ),
+        )),
+    );
+}
+
+#[then(
+    "the second mutation's re-touch of that shared file is staged, not silently dropped by the threaded snapshot"
+)]
+fn then_second_restage_retouch_is_staged(w: &mut GateWorld) {
+    assert!(w.is_success(), "restaging failed: {}", w.output);
+    let staged_first = w
+        .fixture_git_command()
+        .args(["show", ":first.txt"])
+        .output()
+        .expect("read staged first.txt");
+    let staged_second = w
+        .fixture_git_command()
+        .args(["show", ":second.txt"])
+        .output()
+        .expect("read staged second.txt");
+    let worktree_diff = w
+        .fixture_git_command()
+        .args(["diff", "--name-only"])
+        .output()
+        .expect("list unstaged paths");
+    assert_eq!(staged_first.stdout, b"overwritten");
+    assert_eq!(staged_second.stdout, b"second");
+    assert!(
+        worktree_diff.stdout.is_empty(),
+        "gate 2's re-touch of first.txt must be fully staged, leaving nothing unstaged"
+    );
+}
+
 #[given("pre-commit contains eligible file gates and direct mutations")]
 fn given_pre_commit_batch(w: &mut GateWorld) {
     given_batch_and_direct_mutation(w);
@@ -1478,6 +1900,99 @@ fn then_one_batch_precedes_direct_mutation(w: &mut GateWorld) {
     assert!(w.is_success(), "pre-commit batch failed: {}", w.output);
     let calls = std::fs::read_to_string(w.root().join("calls.txt")).expect("read batch calls");
     assert_eq!(calls, "batch\ndirect\n");
+}
+
+#[given(
+    "a restaging mutation, then a batch-eligible entry that leaves its file modified, then another restaging mutation"
+)]
+fn given_restaging_batch_restaging_sequence(w: &mut GateWorld) {
+    w.init_git();
+    w.write(
+        "bin/generate-first",
+        "#!/bin/sh\nprintf 'first\\n' > first.txt\n",
+    );
+    make_executable(w.root().join("bin/generate-first"));
+    w.write(
+        "bin/generate-second",
+        "#!/bin/sh\nprintf 'second\\n' > second.txt\n",
+    );
+    make_executable(w.root().join("bin/generate-second"));
+    // Stands in for the real `npx -- lint-staged` batch: rewrites the staged
+    // markdown file's working-tree content without staging it.
+    w.write(
+        "bin/npx",
+        "#!/bin/sh\nprintf '# Changed\\nformatted\\n' > changed.md\n",
+    );
+    make_executable(w.root().join("bin/npx"));
+    w.prepend_bin_to_path("bin");
+    w.write("changed.md", "# Changed\n");
+    w.write(
+        "repo-config.yml",
+        &config(&format!(
+            "{}    restages: true\n{}{}    restages: true\n",
+            gate(
+                "generate-first",
+                "mutation",
+                "generate-first",
+                "external",
+                "      pre-commit: { scope: other }\n",
+            ),
+            "  - id: format-markdown\n    type: mutation\n    command: dirty-markdown\n    kind: external\n    category: formatter\n    surfaces:\n      pre-commit: { scope: affected-file-type, glob: '*.md' }\n",
+            gate(
+                "generate-second",
+                "mutation",
+                "generate-second",
+                "external",
+                "      pre-commit: { scope: other }\n",
+            ),
+        )),
+    );
+    w.stage(&["changed.md"]);
+}
+
+#[when("they run in that order")]
+fn when_restaging_batch_restaging_runs(w: &mut GateWorld) {
+    w.run_gate("pre-commit", None);
+}
+
+#[then(
+    "the second restaging gate stages only its own output and leaves the batch's leftover mutation unstaged"
+)]
+fn then_second_restage_leaves_batch_mutation_unstaged(w: &mut GateWorld) {
+    assert!(w.is_success(), "gate run failed: {}", w.output);
+    let staged_first = w
+        .fixture_git_command()
+        .args(["show", ":first.txt"])
+        .output()
+        .expect("read staged first.txt");
+    let staged_second = w
+        .fixture_git_command()
+        .args(["show", ":second.txt"])
+        .output()
+        .expect("read staged second.txt");
+    let staged_changed_md = w
+        .fixture_git_command()
+        .args(["show", ":changed.md"])
+        .output()
+        .expect("read staged changed.md");
+    let worktree_diff = String::from_utf8_lossy(
+        &w.fixture_git_command()
+            .args(["diff", "--name-only"])
+            .output()
+            .expect("list unstaged paths")
+            .stdout,
+    )
+    .lines()
+    .map(str::to_owned)
+    .collect::<Vec<_>>();
+    assert_eq!(staged_first.stdout, b"first\n");
+    assert_eq!(staged_second.stdout, b"second\n");
+    assert_eq!(
+        staged_changed_md.stdout, b"# Changed\n",
+        "the batch's leftover mutation must not be pulled into the index by the following \
+         restaging gate"
+    );
+    assert_eq!(worktree_diff, vec!["changed.md".to_string()]);
 }
 
 #[given("the surfaces as shipped by this plan")]
@@ -1565,6 +2080,54 @@ fn then_group_entries_list_members_in_order(w: &mut GateWorld) {
         .find(|entry| entry["group"] == "shell")
         .expect("shell group entry present");
     assert_eq!(shell["gates"], serde_json::json!(["shell-lint"]));
+}
+
+#[given("a ci_group's member gates declare overlapping and non-overlapping doctor_tools")]
+fn given_ci_group_overlapping_doctor_tools(w: &mut GateWorld) {
+    w.write(
+        "repo-config.yml",
+        &config(concat!(
+            "  - id: shell-lint\n    type: check\n    command: shell lint\n    kind: external\n    ci-group: shell\n    doctor-tools: [shellcheck, jq]\n    surfaces:\n      ci: { scope: all-file-type }\n",
+            "  - id: shell-format-check\n    type: check\n    command: shfmt --diff\n    kind: external\n    ci-group: shell\n    doctor-tools: [jq, shfmt]\n    surfaces:\n      ci: { scope: all-file-type }\n",
+            "  - id: markdown-links\n    type: check\n    command: md links validate\n    kind: rhino-cli\n    ci-group: markdown\n    surfaces:\n      ci: { scope: all-file-type }\n",
+        )),
+    );
+}
+
+#[then("each group entry's doctor_tools is the deduped, sorted union of its members' doctor_tools")]
+fn then_group_doctor_tools_is_deduped_sorted_union(w: &mut GateWorld) {
+    let entries = w
+        .json_output
+        .as_ref()
+        .and_then(serde_json::Value::as_array)
+        .expect("JSON grouped gate-list output");
+    let shell = entries
+        .iter()
+        .find(|entry| entry["group"] == "shell")
+        .expect("shell group entry present");
+    assert_eq!(
+        shell["doctor_tools"],
+        serde_json::json!(["jq", "shellcheck", "shfmt"]),
+        "doctor_tools must be the deduped, sorted union of every member gate's doctor_tools; got {shell:?}"
+    );
+}
+
+#[then("a group whose members declare no doctor_tools reports an empty array")]
+fn then_group_with_no_doctor_tools_reports_empty_array(w: &mut GateWorld) {
+    let entries = w
+        .json_output
+        .as_ref()
+        .and_then(serde_json::Value::as_array)
+        .expect("JSON grouped gate-list output");
+    let markdown = entries
+        .iter()
+        .find(|entry| entry["group"] == "markdown")
+        .expect("markdown group entry present");
+    assert_eq!(
+        markdown["doctor_tools"],
+        serde_json::json!([]),
+        "a group whose members declare no doctor_tools must report an empty array; got {markdown:?}"
+    );
 }
 
 #[given(regex = r#"^a gate declares type "([^"]+)"$"#)]
@@ -2009,6 +2572,23 @@ fn then_unknown_scope_is_explained(w: &mut GateWorld) {
     assert!(w.output.contains("all-file-type"));
 }
 
+#[given(regex = r#"^repo-config\.yml declares a gate with id "([^"]+)"$"#)]
+fn given_invalid_id_charset(w: &mut GateWorld, id: String) {
+    let id = id.into_boxed_str();
+    w.write(
+        "repo-config.yml",
+        &strict_config(&format!(
+            "  - id: {id}\n    type: check\n    command: true\n    kind: external\n    surfaces:\n      ci: {{ scope: all-file-type }}\n"
+        )),
+    );
+}
+
+#[then("the message names the offending gate id and states it must be lowercase kebab-case")]
+fn then_invalid_id_charset_is_explained(w: &mut GateWorld) {
+    assert!(w.output.contains("Invalid_ID"));
+    assert!(w.output.contains("kebab-case"));
+}
+
 #[given("repo-config.yml declares two gates both with id \"md-links\"")]
 fn given_duplicate_id(w: &mut GateWorld) {
     let duplicate = gate(
@@ -2399,7 +2979,7 @@ fn then_parity_source_drift_is_actionable(w: &mut GateWorld) {
     );
     assert!(w.output.contains("rhino-cli parity manifest generate"));
     // Negative guard, mirroring the unit test in `application::parity`: the
-    // boundary is three repos, and beaver-nest carries a fork of rhino-cli with
+    // boundary is three repos — beaver-nest carries a fork of rhino-cli with
     // no parity-manifest.sha256 to propagate into.
     assert!(
         !w.output.contains("beaver-nest"),
@@ -2667,6 +3247,32 @@ fn then_hand_wired_gate_absent_from_summary(w: &mut GateWorld) {
         "the hand-wired gate must never appear in the group's summary — it is dispatched by its \
          own dedicated CI job, not by --group: {}",
         w.output
+    );
+}
+
+#[given("a --group selector names a CI group id absent from the registry")]
+fn given_unknown_group_selector(w: &mut GateWorld) {
+    w.init_git();
+    w.write(
+        "repo-config.yml",
+        &config(
+            "  - id: group-member\n    type: check\n    command: touch must-not-run.txt\n    kind: external\n    ci-group: real-group\n    surfaces:\n      ci: { scope: other }\n",
+        ),
+    );
+    w.pending_ci_group = Some("unregistered-group".to_owned());
+}
+
+#[then("it fails before any leaf invocation and names the unknown group id")]
+fn then_unknown_group_fails_before_leaf(w: &mut GateWorld) {
+    assert!(!w.is_success());
+    assert!(
+        w.output.contains("unregistered-group"),
+        "missing the unknown group id in {}",
+        w.output
+    );
+    assert!(
+        !w.root().join("must-not-run.txt").exists(),
+        "no gate must run when the selected group id matches nothing"
     );
 }
 
@@ -2986,14 +3592,13 @@ fn then_no_cargo_build_occurred(w: &mut GateWorld) {
     // A prior version of this step corroborated that proof with a second
     // check: capturing the real, checked-out `apps/rhino-cli/target/gate/`
     // binary's mtime before the invocation and asserting it was unchanged
-    // afterward. That corroboration was removed (ose-public PR #162
-    // cycle-2 review, r3743500939) because it read a real, shared,
-    // un-sandboxed path outside this test's control. It reproduced a flake
-    // within 5 local runs of this suite: an unrelated concurrent invocation
-    // of this same test binary (or the documented ambient build-artifact
-    // sweeper) can touch that path in the narrow window between the two
-    // reads, and it added no proof beyond what the PATH-stripping check
-    // above already establishes.
+    // afterward. That corroboration was removed (PR #162 cycle-2 review,
+    // r3743500939) because it read a real, shared, un-sandboxed path outside
+    // this test's control. It reproduced a flake within 5 local runs of this
+    // suite: an unrelated concurrent invocation of this same test binary (or
+    // the documented ambient build-artifact sweeper) can touch that path in
+    // the narrow window between the two reads, and it added no proof beyond
+    // what the PATH-stripping check above already establishes.
     let output = w
         .shim_first_run
         .as_ref()

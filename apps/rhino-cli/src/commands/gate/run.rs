@@ -151,6 +151,16 @@ fn run_at_root_with_only_and_message_file(
         .collect::<Vec<_>>();
     let (changed_paths, tracked_paths) = candidate_paths(repo_root, &selected_gates, &surface)?;
     let mut batch_ran = false;
+    // Threaded worktree snapshot for restaging gates: gate N's "after" snapshot
+    // is, by construction, gate N+1's "before" snapshot whenever nothing else
+    // mutates the worktree between them (true today — every `restages: true`
+    // gate skips or continues immediately when it is not selected, and the
+    // lint-staged batch below invalidates this cache on the rare path where it
+    // runs between two restaging gates). Threading it here halves the Git
+    // process spawns for back-to-back restaging gates (4 -> 2 per gate) with no
+    // loss of per-gate mutation-output attribution — see
+    // `worktree_changed_paths` and `restage_mutation_outputs`.
+    let mut worktree_snapshot: Option<BTreeSet<String>> = None;
     // Every gate's outcome when running a selected group, reported as a
     // trailing summary once the whole group finishes (see below) — unlike the
     // ungrouped path, a group run does not stop at the first failure so every
@@ -165,36 +175,44 @@ fn run_at_root_with_only_and_message_file(
         {
             continue;
         }
-        let Some(files) = gate_candidate_files(
-            gate,
-            scope,
-            changed_paths.as_deref(),
-            tracked_paths.as_deref(),
-            writer,
-        )?
-        else {
-            continue;
+        let candidate_scope = candidate_scope(&scope.scope);
+        let excludes = gate.args.get("exclude").map_or(&[][..], Vec::as_slice);
+        let files = match candidate_scope {
+            CandidateScope::StagedFiles => matching_files(
+                changed_paths.as_deref().unwrap_or_default(),
+                scope,
+                excludes,
+            ),
+            CandidateScope::TrackedFiles => matching_files(
+                if scope_has_file_patterns(scope) {
+                    tracked_paths.as_deref().unwrap_or_default()
+                } else {
+                    &[]
+                },
+                scope,
+                excludes,
+            ),
+            _ => Vec::new(),
         };
+        if scope_has_file_patterns(scope)
+            && report_empty_scope_skip(writer, &gate.id, candidate_scope, &files)?
+        {
+            continue;
+        }
         if is_pre_commit_batch_eligible(gate, scope, &surface, only) {
             if batch_ran {
                 continue;
             }
-            writeln!(writer, "Running lint-staged batch")?;
-            let status = Command::new("npx")
-                .args(["--no", "--", "lint-staged"])
-                .current_dir(repo_root)
-                .status()?;
-            if !status.success() {
-                return Err(anyhow!("lint-staged batch failed"));
-            }
+            run_lint_staged_batch(repo_root, writer)?;
             batch_ran = true;
+            // The batch mutates an arbitrary, gate-independent file set, so any
+            // cached snapshot from an earlier restaging gate no longer reflects
+            // the worktree; force the next restaging gate to recompute fresh.
+            worktree_snapshot = None;
             continue;
         }
         writeln!(writer, "Running gate {}", gate.id)?;
-        let changed_before = gate
-            .restages
-            .then(|| worktree_changed_paths(repo_root))
-            .transpose()?;
+        let changed_before = restaging_before_snapshot(gate, &mut worktree_snapshot, repo_root)?;
         let status = run_leaf(
             &gate.kind,
             &gate.command,
@@ -209,13 +227,17 @@ fn run_at_root_with_only_and_message_file(
             None if !status.success() => return Err(anyhow!("gate {} failed", gate.id)),
             None => {}
         }
-        // Only a PASSING gate restages its mutation outputs. In a group run a
-        // failed gate does not abort the loop, so without this guard a failing
-        // formatter's partial output would be staged as if it had succeeded.
-        if status.success()
-            && let Some(changed_before) = changed_before
-        {
-            restage_mutation_outputs(repo_root, &changed_before)?;
+        if status.success() {
+            if let Some(changed_before) = changed_before {
+                let changed_after = restage_mutation_outputs(repo_root, &changed_before)?;
+                worktree_snapshot = Some(changed_after);
+            } else if gate.gate_type == GateType::Mutation {
+                // A non-restaging mutation (none exist in the registry today, but
+                // the schema permits one) can also change the worktree; drop the
+                // cache defensively rather than let a future gate misattribute
+                // outputs to the wrong gate.
+                worktree_snapshot = None;
+            }
         }
     }
     if let Some(group_id) = group {
@@ -283,6 +305,45 @@ fn report_group_summary(
     Ok(())
 }
 
+/// Runs the batched `lint-staged` invocation for eligible pre-commit gates.
+///
+/// # Errors
+///
+/// Returns an error when the batch process fails to start or exits non-zero.
+fn run_lint_staged_batch(repo_root: &Path, writer: &mut dyn Write) -> Result<(), Error> {
+    writeln!(writer, "Running lint-staged batch")?;
+    let status = Command::new("npx")
+        .args(["--no", "--", "lint-staged"])
+        .current_dir(repo_root)
+        .status()?;
+    if !status.success() {
+        return Err(anyhow!("lint-staged batch failed"));
+    }
+    Ok(())
+}
+
+/// Resolves a restaging gate's pre-mutation worktree snapshot, reusing the
+/// previous restaging gate's post-mutation snapshot when it is still valid
+/// (see the threading rationale at this function's call site) rather than
+/// rescanning the worktree. Returns `None` for a non-restaging gate.
+///
+/// # Errors
+///
+/// Returns an error when a fresh scan is required and Git cannot list paths.
+fn restaging_before_snapshot(
+    gate: &repo_config::GateEntry,
+    worktree_snapshot: &mut Option<BTreeSet<String>>,
+    repo_root: &Path,
+) -> Result<Option<BTreeSet<String>>, Error> {
+    if !gate.restages {
+        return Ok(None);
+    }
+    Ok(Some(match worktree_snapshot.take() {
+        Some(snapshot) => snapshot,
+        None => worktree_changed_paths(repo_root)?,
+    }))
+}
+
 /// Load the candidate paths required by a collection of selected gates.
 ///
 /// # Errors
@@ -334,47 +395,6 @@ fn validate_registry_semantics(
         "gate run: {} registry semantic finding(s); fix the key(s) listed above",
         findings.len()
     ))
-}
-
-/// Resolves the candidate file list one gate should run against.
-///
-/// Returns `Ok(None)` when the gate declares file patterns but nothing matched,
-/// meaning the caller skips it — the empty-scope skip is reported to `writer`
-/// as a side effect so the skip stays observable in hook output.
-///
-/// # Errors
-///
-/// Returns an error when the empty-scope skip line cannot be written.
-fn gate_candidate_files(
-    gate: &repo_config::GateEntry,
-    scope: &repo_config::SurfaceScope,
-    changed_paths: Option<&[String]>,
-    tracked_paths: Option<&[String]>,
-    writer: &mut dyn Write,
-) -> Result<Option<Vec<String>>, Error> {
-    let candidate_scope = candidate_scope(&scope.scope);
-    let excludes = gate.args.get("exclude").map_or(&[][..], Vec::as_slice);
-    let files = match candidate_scope {
-        CandidateScope::StagedFiles => {
-            matching_files(changed_paths.unwrap_or_default(), scope, excludes)
-        }
-        CandidateScope::TrackedFiles => matching_files(
-            if scope_has_file_patterns(scope) {
-                tracked_paths.unwrap_or_default()
-            } else {
-                &[]
-            },
-            scope,
-            excludes,
-        ),
-        _ => Vec::new(),
-    };
-    if scope_has_file_patterns(scope)
-        && report_empty_scope_skip(writer, &gate.id, candidate_scope, &files)?
-    {
-        return Ok(None);
-    }
-    Ok(Some(files))
 }
 
 /// Returns whether this entry belongs to the single aggregate pre-commit batch.
@@ -588,7 +608,15 @@ fn run_nx_leaf(
 ) -> Result<std::process::ExitStatus, Error> {
     let arguments = match scope {
         ScopeKind::AllProjects => vec!["exec", "nx", "--", "run-many", "--all", "-t", target],
-        _ => vec!["exec", "nx", "--", "affected", "-t", target],
+        // Every other scope kind runs against only the affected project set today.
+        // Matched explicitly (rather than via `_`) so that adding a new `ScopeKind`
+        // variant is a compile error here until this arm is deliberately updated,
+        // mirroring `candidate_scope`'s exhaustive match in this same file.
+        ScopeKind::AffectedProjects
+        | ScopeKind::AffectedFileType
+        | ScopeKind::AllFileType
+        | ScopeKind::Other
+        | ScopeKind::PathGated => vec!["exec", "nx", "--", "affected", "-t", target],
     };
     Command::new("npm")
         .args(arguments)
@@ -726,22 +754,37 @@ fn worktree_changed_paths(repo_root: &Path) -> Result<BTreeSet<String>, Error> {
 
 /// Stages files newly changed by a successful mutation gate.
 ///
+/// Returns the post-mutation worktree snapshot (`changed_after`, with this
+/// gate's own just-staged outputs removed) so the caller can thread it
+/// forward as the next restaging gate's `changed_before` baseline without a
+/// redundant rescan.
+///
+/// The returned snapshot deliberately excludes `outputs`: `changed_after` is
+/// captured *before* the `git add` below runs, so a raw pass-through would
+/// leave this gate's now-staged-and-clean paths sitting in the cache. A later
+/// gate that re-touches one of those same paths would then have its own
+/// re-mutation silently absorbed into the inherited baseline and never
+/// staged — the cached baseline would disagree with what a fresh rescan
+/// would report at that point, even though the whole point of the cache is
+/// to stand in for one. Removing `outputs` here keeps the threaded snapshot
+/// equivalent to a fresh rescan while still saving the rescan itself.
+///
 /// # Errors
 ///
 /// Returns an error when Git cannot inspect or stage mutation outputs.
 fn restage_mutation_outputs(
     repo_root: &Path,
     changed_before: &BTreeSet<String>,
-) -> Result<(), Error> {
+) -> Result<BTreeSet<String>, Error> {
     let changed_after = worktree_changed_paths(repo_root)?;
     let outputs = mutation_output_delta(changed_before, &changed_after);
     if outputs.is_empty() {
-        return Ok(());
+        return Ok(changed_after);
     }
     let status = Command::new("git")
         .arg("add")
         .arg("--")
-        .args(outputs)
+        .args(&outputs)
         .current_dir(repo_root)
         .env_remove("GIT_DIR")
         .env_remove("GIT_WORK_TREE")
@@ -749,7 +792,11 @@ fn restage_mutation_outputs(
     if !status.success() {
         return Err(anyhow!("git add mutation outputs failed"));
     }
-    Ok(())
+    let mut threaded_snapshot = changed_after;
+    for output in &outputs {
+        threaded_snapshot.remove(output);
+    }
+    Ok(threaded_snapshot)
 }
 
 /// Returns paths introduced into the worktree after a mutation gate runs.
@@ -957,6 +1004,47 @@ fn hand_wired_gate_never_reruns_inside_its_ci_group() {
         rendered.contains("auto-dispatched") && !rendered.contains("hand-wired-gate"),
         "the hand-wired gate must never appear in the group's summary — it is dispatched by its \
          own dedicated CI job, not by --group: {rendered}"
+    );
+}
+
+/// Binds the Gherkin scenario "An unknown group id fails before execution"
+/// (specs/apps/rhino/behavior/rhino-cli/gherkin/gate/gate-execution.feature).
+///
+/// Mirrors `--only`'s "Unknown or duplicate only ids fail before execution"
+/// coverage for the sibling `--group` selector: `resolve_group_gates`'s
+/// "no matching gates" `Err` path (LOG5) previously had zero test coverage.
+#[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::panic)]
+#[test]
+fn unknown_group_id_fails_before_execution() {
+    let repo = tempfile::TempDir::new().unwrap();
+    std::fs::write(
+        repo.path().join("repo-config.yml"),
+        concat!(
+            "gates:\n",
+            "  - id: group-member\n",
+            "    type: check\n",
+            "    command: touch must-not-run.txt\n",
+            "    kind: external\n",
+            "    ci-group: real-group\n",
+            "    surfaces:\n",
+            "      ci: { scope: other }\n",
+        ),
+    )
+    .unwrap();
+
+    let error = run_at_root_with_group(repo.path(), "ci", "unregistered-group", &mut Vec::new())
+        .unwrap_err()
+        .to_string();
+
+    assert!(
+        error.contains("unregistered-group"),
+        "an unknown --group id must fail before any leaf invocation and name the offending id; \
+         error={error:?}"
+    );
+    assert!(
+        !repo.path().join("must-not-run.txt").exists(),
+        "no gate must run when the selected group id matches nothing"
     );
 }
 
