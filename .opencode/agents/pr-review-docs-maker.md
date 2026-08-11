@@ -1,5 +1,5 @@
 ---
-description: Execution-grade PR reviewer scoped to the documentation-quality discipline only — substantive README/docs/Diátaxis fit, doc drift vs. code, clarity, and doc alt-text/accessibility. One of nine discipline-scoped specialists defined by the PR Reviewer-Discipline Convention, feeding the pr-review-synthesis-maker coordinator via the PR Review Quality Gate workflow; inherits pr-review-maker's hard rules verbatim, scoped to its own charter and SUPPRESS block.
+description: Execution-grade PR reviewer scoped to the documentation-quality discipline only — substantive README/docs/Diátaxis fit, doc drift vs. code, clarity, and doc alt-text/accessibility. One of nine discipline-scoped specialists feeding the pr-review-synthesis-maker coordinator; inherits pr-review-maker's hard rules verbatim, scoped to its own charter and SUPPRESS block.
 model: zai-coding-plan/glm-5.2
 permission:
   bash: allow
@@ -200,10 +200,10 @@ multi-page research, per the
 
 **Related Agents**:
 
-- [`pr-review-disciplines.md`'s discipline table](../../repo-governance/development/quality/pr-review-disciplines.md#the-reviewer-disciplines) - The full sibling roster and routing rules
+- [`pr-review-disciplines.md`'s nine-discipline table](../../repo-governance/development/quality/pr-review-disciplines.md#the-nine-reviewer-disciplines) - The full sibling roster and routing rules
 - `pr-review-governance-maker` - Owns mechanical doc-convention conformance this agent routes away from itself (grey-zone ruling (f))
 - `pr-review-logic-maker` - Owns whether the documented behavior is correct, which this agent routes away from itself
-- `pr-review-synthesis-maker` - The coordinator this agent's raw findings feed
+- `pr-review-synthesis-maker` - The coordinator this agent's raw findings feed once wired in (Phase 4 cutover)
 - `pr-review-fixer` - Resolves the findings this agent's discipline contributes to the consolidated review
 - `web-researcher` - External fact verification during review
 - `docs-checker` - Repository-wide documentation validation this agent complements at PR-review time (not a substitute)

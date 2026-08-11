@@ -339,7 +339,7 @@ local-temp/temp-backup-v2.tar.gz
 **Problem**: Using more than one primary `When` or `Then` keyword line in a single `Scenario`.
 This violates the HARD rule that every `Scenario` uses exactly one primary `Given`, one `When`,
 and one `Then`. See
-[HARD Rule — Step-Keyword Cardinality](./acceptance-criteria.md#hard-rule--step-keyword-cardinality).
+[HARD Rule — Step-Keyword Cardinality](./acceptance-criteria.md#step-keyword-cardinality-hard-rule).
 
 **Bad Example:**
 

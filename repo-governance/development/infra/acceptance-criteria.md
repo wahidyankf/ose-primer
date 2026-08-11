@@ -8,6 +8,7 @@ tags:
   - gherkin
   - testing
   - requirements
+created: 2025-12-07
 ---
 
 # Acceptance Criteria Convention
@@ -101,9 +102,7 @@ Scenario: [Concise description of behavior]
  But [constraint or exception]
 ```
 
-## HARD Rule — Step-Keyword Cardinality
-
-Every `Scenario` must use exactly one primary `Given`, exactly one primary `When`, and exactly one primary `Then`.
+## Step-Keyword Cardinality (HARD Rule)
 
 > **HARD rule — one primary keyword each**: Every `Scenario` MUST use exactly **one**
 > primary `Given` line, exactly **one** primary `When` line, and exactly **one** primary
@@ -138,7 +137,11 @@ Scenario: Login succeeds
 
 (The fix replaces the second `When` with `And`.)
 
-## ✅ Best Practices
+**Enforcement**: The deterministic `rhino-cli specs gherkin-cardinality validate`
+audit flags every `.feature` file that violates this rule. `plan-checker` and
+`repo-rules-checker` apply the same rule to Gherkin fences in plan markdown.
+
+## Best Practices
 
 ### 1. Be Specific with Concrete Values
 
@@ -332,9 +335,9 @@ Scenario: Tutorial content passes quality validation
  And Mermaid diagrams should use accessible color palette
 ```
 
-## ❌ Anti-Patterns
+## Anti-Patterns
 
-### ❌ Vague or Ambiguous Language
+### FAIL: Vague or Ambiguous Language
 
 ```gherkin
 Then the system should work correctly
@@ -344,7 +347,7 @@ Then users should be happy
 
 **Better**: Define specific, measurable criteria
 
-### ❌ Testing Implementation Details
+### FAIL: Testing Implementation Details
 
 ```gherkin
 Then the Redux store should be updated
@@ -354,7 +357,7 @@ Then the cache should be invalidated
 
 **Better**: Focus on observable behavior from user perspective
 
-### ❌ Multiple Behaviors in One Scenario
+### FAIL: Multiple Behaviors in One Scenario
 
 ```gherkin
 Scenario: Complete user workflow
@@ -363,7 +366,7 @@ Scenario: Complete user workflow
 
 **Better**: Split into separate scenarios (one behavior each)
 
-### ❌ Missing Context
+### FAIL: Missing Context
 
 ```gherkin
 When the button is clicked
@@ -374,25 +377,25 @@ Then something happens
 
 ## When to Use Acceptance Criteria
 
-### ✅ Project Plans
+### PASS: Project Plans
 
-- **Product requirements files** (`plans/*/prd.md`): Define Gherkin acceptance criteria for each user story (legacy plans may still use `requirements.md`)
+- **Product requirements files** (`plans/*/prd.md`): Define Gherkin acceptance criteria for each user story
 - **Delivery checklists**: Validate implementation against Gherkin scenarios
 - See [Plans Organization Convention](../../conventions/structure/plans.md)
 
-### ✅ Feature Specifications
+### PASS: Feature Specifications
 
 - **Feature docs**: Describe expected behavior for new features
 - **RFC documents**: Define acceptance criteria for proposed changes
 - **ADRs**: Specify outcomes of architectural decisions
 
-### ✅ API Documentation
+### PASS: API Documentation
 
 - **Endpoint specifications**: Describe request/response scenarios
 - **Error handling**: Define error conditions and responses
 - **Integration scenarios**: Describe cross-service behavior
 
-### ✅ Test Documentation
+### PASS: Test Documentation
 
 - **Test plans**: Structure test cases as Gherkin scenarios
 - **QA checklists**: Verify manual testing scenarios
@@ -502,8 +505,8 @@ graph TD
  F -- code written --> G[Write Step Definitions]
  G --> H[Run Automated Tests]
  H -- pass --> I[Feature Complete]
- H -- fail --> J[Fix Implementation]
- J --> H
+ H -- fail --> J[Fix & Re-run Tests]
+ J --> I
 
  style A fill:#0173B2,stroke:#000,color:#fff
  style B fill:#DE8F05,stroke:#000,color:#000
@@ -511,10 +514,11 @@ graph TD
  style J fill:#CC78BC,stroke:#000,color:#fff
 ```
 
-## 🔗 Related Conventions
+## Related Conventions
 
 - [BDD Spec-to-Test Mapping Convention](./bdd-spec-test-mapping.md) - Mandatory 1:1 mapping between CLI commands and Gherkin specifications
 - [Plans Organization Convention](../../conventions/structure/plans.md) - Where to use acceptance criteria in plans
+- Tutorial-quality criteria follow the canonical [Tutorial Convention](https://github.com/wahidyankf/ose-public/blob/main/repo-governance/conventions/tutorials/general.md).
 - [Content Quality Principles](../../conventions/writing/quality.md) - Writing clear, testable content
 
 ## Summary

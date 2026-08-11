@@ -81,6 +81,19 @@ finding as MEDIUM (manual review) or FALSE_POSITIVE rather than spawning a subag
 
 The `repo-applying-maker-checker-fixer` Skill provides complete mode parameter logic including mode levels, filtering, reporting, and workflow integration.
 
+## Grilling Interaction Contract
+
+When a MEDIUM-confidence finding requires an external decision, this specialist returns unresolved
+decisions as `## User Decisions Required` using the
+[canonical envelope schema](../../repo-governance/development/workflow/grilling-with-options.md#user-decisions-required-envelope),
+then stops before applying the dependent fix. Every `options` array MUST exhaustively list all
+substantive leaves. The root invokes `grill-me` through its native UI when available, then resumes or
+reinvokes this agent with the canonical [Resolved User Decisions Envelope](../../repo-governance/development/workflow/grilling-with-options.md#resolved-user-decisions-envelope).
+The root builds it from the original IDs after rendering and passes it verbatim; validate it before
+dependent work. A direct custom-agent or noninteractive caller receives the same envelope; never
+render a user prompt or infer an answer. For a four-mode or three-tag decision, the envelope lists
+all leaves; a Codex root uses the complete staged tree.
+
 ## How This Agent Works
 
 ### 1. Report Discovery
@@ -147,6 +160,28 @@ by reconciling the mode and the step rather than reflexively deleting the step:
   direct-push Delivery Mode does not loosen that boundary: a stray merge step under a direct-push
   mode is a separate finding to surface, not license to delete it here.
 
+#### Per-Repository Delivery Mode Restriction (per [Plans Organization Convention §Per-Repository Delivery Mode Restrictions (HARD RULE)](../../repo-governance/conventions/structure/plans.md#per-repository-delivery-mode-restrictions-hard-rule))
+
+When plan-checker flags its item 9 HIGH finding — a resolved `## Delivery Mode` of
+`worktree-to-origin-main` or `main-to-origin-main` in a repo where that mode has no executable path
+(`ose-public`, `ose-primer`) — this is a **different
+finding class from PR Step / Delivery Mode Reconciliation above** and takes a different fix:
+
+- **Always rewrite the resolved `## Delivery Mode` field to `worktree-to-pr`** (or `main-to-pr` if
+  the plan's own work location genuinely requires the primary checkout with no worktree). **Never**
+  merely delete the offending PR/push step — the mode itself is illegal for the repo, not the step.
+- After rewriting the mode, scaffold the missing PR-Review Maker→Fixer Cycle steps (see [Delivery
+  Mode Fixes](#delivery-mode-fixes) below) so the plan is executable under the corrected mode.
+- **The one narrow exception**: a genuinely infrastructure-as-code plan targeting `ose-private` may
+  keep a direct-push mode — verify the plan's own stated scope actually is infrastructure-as-code
+  (Terraform, Ansible, or equivalent state-changing infra work needing the primary checkout's real
+  secrets/local state) before treating this as the exception rather than the finding.
+- **Never silently coerce** an author's explicit mode choice without recording why in the fix
+  report — state the repo, the restriction that applies, and the corrected mode.
+
+Verify after fixing by re-running `plan-checker`'s item 9 detection and confirming the resolved mode
+no longer resolves to a direct-push mode in a restricted repo.
+
 #### Phase 0 PR/Push Step Removal (per [Plans Organization Convention §Phase 0 Opens No PR](../../repo-governance/conventions/structure/plans.md#phase-0-opens-no-pr--the-earliest-pr-is-phase-1-hard-rule))
 
 When plan-checker flags a PR-creation, branch-push, PR-Review-Cycle, merge, `gh pr ready`, or
@@ -191,7 +226,8 @@ not deleted — it is **relocated**. A PR opens once per delivery unit, at the u
   invent boundaries the delivery checklist does not support.
 - **If a change-producing phase appears in no row**, add it to the unit it belongs to rather than
   giving it a unit of its own — unless it is genuinely independent in the DAG, in which case it
-  gets its own unit, worktree, and PR.
+  gets its own unit, branch, and PR — the worktree stays the plan's single per-repo instance,
+  reused across every delivery unit landed there.
 - **If the last change-producing phase is not a boundary**, make it one. Work that never reaches a
   boundary never merges.
 - **Never fold two independent DAG nodes into one delivery unit** to silence a finding — that
@@ -300,10 +336,9 @@ The `repo-assessing-criticality-confidence` Skill provides complete confidence l
 - [Maker-Checker-Fixer Pattern Convention](../../repo-governance/development/pattern/maker-checker-fixer.md) - Three-stage workflow
 - [Test-Driven Development Convention §TDD Shape for Delivery Checklists](../../repo-governance/development/workflow/test-driven-development.md#tdd-shape-for-delivery-checklists) - Required three-substep template (RED/GREEN/REFACTOR) for rewriting TDD-shape violations flagged by plan-checker
 - [Multi-Harness Binding Convention](../../repo-governance/conventions/structure/multi-harness-binding.md) - Rules applied during harness-neutrality scan fixes (Step 5g findings)
-- [Plans Organization Convention §Executor Tagging](../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule) - `[AI]`/`[HUMAN]` marker rules, legend, handoff/resume signal requirement (Step 5h fixes)
-- [Plans Organization Convention §Phases as Natural Pauses With Clear Gates](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule) - Phase gate scaffold, Pause Safety note, barrier rule (Step 5h fixes)
-- [Diagram and Schema Convention §UI Mockups in Plan Docs](../../repo-governance/conventions/formatting/diagrams.md#ui-mockups-in-plan-docs) - Both-tiers rule, design funnel, grounding, and exemption rules scaffolded for UI-design-funnel gaps (Step 5k fixes)
-- [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md) - Scaffold a missing `learnings.md` and Knowledge Capture phase (Step 5l fixes)
+- [Plans Organization Convention §Execution Markers](../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule) - `[AI]`/`[HUMAN]` marker rules, legend, handoff/resume signal requirement (Step 5h fixes)
+- [Plans Organization Convention §Phase Gates and Natural Pauses](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule) - Phase gate scaffold, Pause Safety note, barrier rule (Step 5h fixes)
+- [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md) - Scaffold the missing final Knowledge Capture phase and `learnings.md` file when `plan-checker` flags silent absence
 
 You validate thoroughly, apply fixes confidently (for objective issues only), and report transparently. Your goal is to improve plan quality while avoiding false positives.
 
@@ -339,7 +374,7 @@ Add after the push step:
 ### Post-Push Verification
 
 - [ ] Push changes to the delivery target for the declared Delivery Mode (the PR branch under `worktree-to-pr` / `main-to-pr`; `origin main` under the direct-push modes)
-- [ ] Monitor GitHub Actions workflows for that push — the PR's check run under `*-to-pr` (list specific workflow names if known); `.github/workflows/main-ci.yml` no longer exists (removed — its checks were folded into the gate registry driving `pr-quality-gate.yml`)
+- [ ] Monitor GitHub Actions workflows triggered by that push — the PR's check run under `*-to-pr` (list specific workflow names if known)
 - [ ] Verify all CI checks pass
 - [ ] If any CI check fails, fix immediately and push a follow-up commit
 - [ ] Do NOT proceed to next delivery phase until CI is green
@@ -448,11 +483,169 @@ Add to the delivery checklist:
 - **MEDIUM Confidence**: Section exists but is vague — flag for manual review
 - **HIGH Confidence**: Section references wrong project/port — fix with correct values from plan context
 
+## UI-Design-Funnel Scaffolding Fixes
+
+When plan-checker reports a missing funnel artefact (Step 5k findings) on a **UI-bearing** plan
+(adds/changes user-facing screens or components under `apps/` or `libs/`), remediate by
+**scaffolding the missing funnel sections** so the author can fill them — not by inventing the
+design. Re-validate each finding before applying (confirm the plan is genuinely UI-bearing and the
+artefact is actually absent), and re-read the scaffolded section after editing. The artefacts and
+their shape are defined in the
+[UI Mockups in Plan Docs convention](../../repo-governance/conventions/formatting/diagrams.md#ui-mockups-in-plan-docs).
+
+### Confidence Assessment for the UI-design-funnel
+
+- **HIGH Confidence**: the plan is UI-bearing and a funnel section is completely absent from
+  `prd.md` — scaffold the missing stage(s) with stub placeholders for the author to fill,
+  inserting them directly into `prd.md`.
+- **HIGH Confidence**: funnel content exists but is located in the wrong plan file (e.g.
+  `README.md` or `tech-docs.md`) — move it to `prd.md` mechanically (the placement rule is
+  unambiguous: all four funnel stages belong in `prd.md`).
+- **MEDIUM Confidence**: a stage exists in `prd.md` but is thin (e.g. only one low-fi alternative,
+  no drop reasons, an unnamed selection) — add the missing skeleton and flag for author completion;
+  do NOT fabricate alternatives or a rationale.
+- **FALSE_POSITIVE**: the plan is a pure refactor, non-UI, or governance-only — exempt; report as
+  FALSE_POSITIVE and apply nothing.
+
+### How to Scaffold the Missing Funnel Sections
+
+Insert the funnel skeleton into the plan's **`prd.md`** (the mandatory placement — all funnel
+artefacts live in `prd.md`, not in `README.md`, `brd.md`, or `tech-docs.md`; binary image
+assets live under the plan's `assets/` folder and are referenced via `![]()` from `prd.md`).
+Use placeholders the author must replace; never invent the design content:
+
+````markdown
+## UI Design Funnel — <Screen Name>
+
+> _Scaffolded by plan-fixer — fill each placeholder. See the UI Mockups in Plan Docs convention._
+
+### Stage 1 — Diverge (Low-Fidelity Alternatives)
+
+#### Option A — <name>
+
+```
+<low-fi ASCII/Unicode wireframe — author to fill>
+```
+
+#### Option B — <name>
+
+```
+<second genuinely-different low-fi alternative — author to fill>
+```
+
+### Stage 2 — Narrow (Hi-Fi Finalists)
+
+<one-line drop reason for each alternative cut here>
+
+#### Finalist 1 — Option <X>
+
+![<alt text>](./assets/ui-<screen>-option-x.excalidraw.png)
+
+#### Finalist 2 — Option <Y>
+
+![<alt text>](./assets/ui-<screen>-option-y.excalidraw.png)
+
+### Stage 3 — Selection
+
+**Selected: Option <X> — <name>.** _(author: name the chosen design)_
+
+### Stage 4 — Rationale
+
+| Option | Outcome             | Why                   |
+| ------ | ------------------- | --------------------- |
+| <X>    | Chosen              | <author: why it won>  |
+| <Y>    | Runner-up / Dropped | <author: why it lost> |
+
+### Stage 5 — Responsive Strategy (mobile/tablet/desktop, mobile-first)
+
+| Breakpoint            | Layout behaviour for the selected design                         |
+| --------------------- | ---------------------------------------------------------------- |
+| Mobile (`< sm`)       | <author: how it stacks/collapses — the mobile-first base layout> |
+| Tablet (`md` ≥ 768)   | <author: what changes vs mobile>                                 |
+| Desktop (`lg` ≥ 1024) | <author: full layout — what expands/splits>                      |
+````
+
+When the checker flags the **responsive strategy** as missing (Step 5k rule 17 item 8), scaffold the
+Stage 5 responsive-strategy stub above — the mobile/tablet/desktop bullets the author must fill —
+and ensure the low-fi tier shows the mobile↔desktop reflow.
+
+Also scaffold the **grounding note (R5)** and **prior-art citation (R7)** when missing — add a stub
+delivery step delegating the survey to `web-researcher` (prior art) and the
+`swe-developing-frontend-ui` skill / `libs/web-ui` inventory (internal grounding), naming any
+net-new component. After scaffolding, re-run the checker's Step 5k mentally: every required artefact
+now has at least a placeholder section for the author to complete.
+
+## Learning-Bearing Syllabus-Record Scaffolding Fixes
+
+When plan-checker reports a missing syllabus artefact (Step 5n findings) on a **learning-bearing**
+plan (a plan whose delivery checklist authors or restructures course, tutorial, or curriculum
+content), remediate by **scaffolding the missing syllabus-record sections** so the author can fill
+them — never by inventing corpus content. Re-validate each finding before applying (confirm the plan
+is genuinely learning-bearing and the artefact is actually absent), and re-read the scaffolded
+section after editing. The artefacts and their shape are defined in the
+[Learning-Plan `syllabus/` Folder Convention](../../repo-governance/conventions/structure/learning-plan-syllabus.md).
+
+### Confidence Assessment for the Syllabus Record
+
+- **HIGH Confidence**: the plan is learning-bearing and the folder layout is completely absent —
+  scaffold `syllabus/README.md`, `syllabus/courses/README.md`, and `syllabus/paths/README.md` with
+  stub placeholders for the author to fill.
+- **HIGH Confidence**: the owning plan's `## Corpus Disposition` section, a consumer plan's
+  `## Corpus Custody` echo, or the Custodian line is absent — scaffold the missing declaration with
+  a placeholder value for the author to choose.
+- **MEDIUM Confidence**: a course file exists but is missing a REQUIRED template section — add the
+  missing section header with a placeholder; do NOT fabricate the course's concepts or prose.
+- **FALSE_POSITIVE**: the plan only reads, links to, or lightly corrects an existing corpus — exempt;
+  report as FALSE_POSITIVE and apply nothing.
+
+### How to Scaffold the Missing Syllabus Sections
+
+Insert the folder-layout stubs directly under the plan's own `syllabus/` folder. Never invent corpus
+content — every placeholder is left for the author to complete.
+
+`syllabus/README.md`:
+
+```markdown
+# <Corpus Name> — Syllabus
+
+> _Scaffolded by plan-fixer — fill each placeholder. See the Learning-Plan `syllabus/` Folder
+> Convention._
+
+**Custodian**: `<plan-id>` <!-- author: name the owning plan -->
+
+<one-paragraph corpus overview — author to fill>
+```
+
+`tech-docs.md` — the Corpus Disposition declaration (owning/custodian plan only):
+
+```markdown
+## Corpus Disposition
+
+`<archive-with-plan|promote-to:<path>>` <!-- author: choose exactly one -->
+```
+
+`tech-docs.md` — the Corpus Custody echo (consumer plan only; never combined with the Corpus
+Disposition block above — a plan carries exactly one of the two):
+
+```markdown
+## Corpus Custody
+
+`custodied-by:<plan-id>` <!-- author: name the corpus's owning plan -->
+```
+
+For a missing course file's REQUIRED skeleton, point the author at the copy-paste template in the
+[Learning-Plan `syllabus/` Folder Convention §Copy-Paste Course Template](../../repo-governance/conventions/structure/learning-plan-syllabus.md#copy-paste-course-template)
+rather than reproducing it inline — the template's REQUIRED sections are the source of truth and
+should not drift into a second copy inside this agent's own file.
+
+After scaffolding, re-run the checker's Step 5n mentally: every required artefact now has at least a
+placeholder for the author to complete.
+
 ## Diagram Format Fixes
 
-Two categories of diagram findings come from plan-checker. Handle them separately.
+This section covers two finding types emitted by plan-checker's Diagram Format Check: (1) ASCII art that should be Mermaid, and (2) under-diagrammed plans missing a diagram for a diagram-warranting concern.
 
-### ASCII-should-be-Mermaid Fixes
+### Finding Type 1: ASCII Art Should Be Mermaid
 
 When plan-checker reports a MEDIUM finding for ASCII art in plan files where Mermaid would be more appropriate, apply these fixes:
 
@@ -462,39 +655,7 @@ When plan-checker reports a MEDIUM finding for ASCII art in plan files where Mer
 - **MEDIUM Confidence**: ASCII art is ambiguous (e.g., a hybrid table/diagram). Flag for manual review.
 - **FALSE_POSITIVE**: ASCII art is a simple directory tree or file listing. These are explicitly exempted — do not convert.
 
-### Missing Diagram Fixes (Diagram Coverage Check)
-
-When plan-checker reports a MEDIUM finding for a missing diagram — prose that describes component interactions, sequences, state transitions, or decision branches but has no accompanying Mermaid diagram — apply these fixes:
-
-#### Confidence Assessment
-
-- **HIGH Confidence** (auto-apply): The plan prose unambiguously describes a relationship, flow, sequence, state, or decision branch that can be drawn directly and completely from the text. Author the Mermaid diagram using the accessible palette, insert it adjacent to the prose that prompted the finding, and apply without requesting confirmation.
-- **MEDIUM Confidence** (flag for plan-maker, do not auto-apply): Relationships are partially described, ambiguous, or require inferring details not present in the plan text. Add a `<!-- TODO: diagram warranted here — relationships unclear, delegate to plan-maker -->` comment at the location and include a note in the audit response describing what is missing.
-- **FALSE_POSITIVE**: The plan is genuinely trivial — single-file, rename, copy-edit, dependency-bump, or docs-only — and falls under the "When a Plan MAY Skip Diagrams" escape hatch. Do not add a diagram.
-
-#### Anti-hallucination rule
-
-**NEVER** invent relationships, node connections, participants, states, or transitions that are not explicitly stated or directly implied by the plan text. If the diagram would require fabricating details, treat as MEDIUM Confidence and flag for plan-maker instead.
-
-#### How to Author a Missing Diagram
-
-1. **Choose the right diagram type** using the per-document opportunity guide:
-   - Component interactions, architecture → `flowchart LR`
-   - Cross-system/agent order-of-operations → `sequenceDiagram`
-   - Entity lifecycle with named states → `stateDiagram-v2`
-   - Data model / schema → `erDiagram`
-   - Phase/gate ordering in `delivery.md` → `flowchart LR` or `flowchart TD`
-   - UX decision branches in `prd.md` → `flowchart LR`
-
-2. **Orientation**: default to `flowchart LR`; use top-down only when semantically required; add a `%%` comment explaining why.
-
-3. **Palette**: use only the eight verified accessible hex codes; never use red, green, or yellow fills. See the `docs-creating-accessible-diagrams` Skill and [repo-governance/conventions/formatting/diagrams.md](../../repo-governance/conventions/formatting/diagrams.md) for the full palette and syntax rules.
-
-4. **Placement**: insert the diagram block immediately after the prose section that describes the structure, before the next heading.
-
-**Reference**: [repo-governance/conventions/structure/plans.md §Diagram Coverage Contract](../../repo-governance/conventions/structure/plans.md#diagram-coverage-contract).
-
-### How to Convert ASCII Art to Mermaid
+#### How to Convert ASCII Art to Mermaid
 
 Follow [repo-governance/conventions/formatting/diagrams.md](../../repo-governance/conventions/formatting/diagrams.md) for full syntax rules. Key standards:
 
@@ -508,10 +669,33 @@ Follow [repo-governance/conventions/formatting/diagrams.md](../../repo-governanc
 
 3–5. Follow the color-blind-friendly palette, `%%` comment syntax, and common syntax pitfalls documented in the `docs-creating-accessible-diagrams` Skill and [repo-governance/conventions/formatting/diagrams.md](../../repo-governance/conventions/formatting/diagrams.md).
 
-### Exception: Do Not Convert
+#### Exception: Do Not Convert
 
 - Simple directory trees (`├── src/`, file listings) — acceptable ASCII, leave unchanged.
 - Tables or matrices where Mermaid would reduce readability — classify as FALSE_POSITIVE.
+
+### Finding Type 2: Under-Diagrammed Plan (Missing Diagram for a Concern)
+
+When plan-checker reports a MEDIUM finding for a non-trivial plan that covers a diagram-warranting concern but provides no diagram for it, add the missing Mermaid diagram.
+
+#### Confidence Assessment
+
+- **HIGH Confidence**: The concern is unambiguous from plan prose and the diagram type is deterministic (e.g., the plan describes a sequence of API calls → `sequenceDiagram`). Auto-add.
+- **MEDIUM Confidence**: The concern is present but the plan prose is too sparse to derive a correct diagram without invention. Flag for manual review — do not fabricate nodes or edges.
+- **FALSE_POSITIVE**: The plan is genuinely trivial/linear (single-file config bump, rename, doc fix, dependency bump with no behavioural change). These are exempt; report as FALSE_POSITIVE.
+
+#### How to Add a Missing Diagram
+
+1. **Identify the concern** from the plan-checker finding (component interactions, sequence/flow, state transitions, decision branches, dependency position, or phase/delivery flow).
+2. **Choose the diagram type**:
+   - Component interactions, dependency position, decision branches → `flowchart LR`
+   - Sequence or flow between agents/systems → `sequenceDiagram`
+   - State transitions or phase/delivery flow → `stateDiagram-v2` or `flowchart LR`
+3. **Derive nodes and edges from plan prose** — do not invent relationships not stated in the plan.
+4. **Apply the color-blind-friendly palette** per the `docs-creating-accessible-diagrams` Skill: verified hex codes, black borders (`stroke:#000000`), white text on dark fills.
+5. **Place the diagram** in the plan file where the concern is first described (e.g., a component interaction diagram in `tech-docs.md`; a phase/delivery flow diagram at the top of `delivery.md`).
+
+After adding, re-read the containing file section and confirm the diagram nodes match the entities named in the surrounding prose.
 
 ## Worktree Specification Fixes
 
@@ -566,10 +750,12 @@ for the authoritative mode table and precedence rule.
   is never in scope for this fix, and neither is any other merge-step tag value (see below).
 - **MEDIUM Confidence → grill first**: the declared Delivery Mode value is invalid/unrecognized, OR
   the merge step carries a tag other than `[AI]`, `[HUMAN]`, or `[AI+HUMAN]`. Do NOT guess which of
-  the four modes (or which of the three tags) was intended — surface it as a grill question (per
-  `grill-me`) with the valid options (four modes, `worktree-to-pr` marked `(Recommended)`; or the
-  three tags, plus the standing blank-state/"chat about this" options), before writing a value. A
-  merge step's tag is never mechanically retagged, at any confidence level — see
+  the four modes (or which of the three tags) was intended — follow the Grilling Interaction
+  Contract with the valid options (four modes, `worktree-to-pr` marked `(Recommended)`; or the three
+  tags), before writing a value. The envelope lists every leaf; when a native tool's option limit
+  requires staging, the root uses the convention's [staged decision procedure](../../repo-governance/development/workflow/grilling-with-options.md#staged-native-rendering),
+  preserving chat and the client-provided custom answer at every node. A merge step's tag is never
+  mechanically retagged, at any confidence level — see
   [How to Fix a Merge-Tag Mismatch](#how-to-fix-a-merge-tag-mismatch) below.
 
 ### How to Fix a Missing `## Delivery Mode` Section
@@ -578,13 +764,16 @@ Insert `## Delivery Mode: worktree-to-pr` immediately after the `## Worktree` se
 mode, absent any signal the user wants otherwise) — multi-file plans: in `delivery.md` before the
 first phase heading; single-file plans: in `README.md` before `## Delivery Checklist`. If the
 plan's existing checklist already shows direct-push-only steps (no PR step anywhere and no
-worktree at all), that is itself a signal to grill the user rather than silently defaulting.
+worktree at all), resolve it through the Grilling Interaction Contract rather than silently
+defaulting.
 
 ### How to Fix an Invalid Non-Empty Value
 
-Never silently coerce an invalid value to the default. Grill the user with the four-mode table
-(`worktree-to-pr` marked `(Recommended)`) plus the standing blank-state/"chat about this" options,
-then write whichever mode they select.
+Never silently coerce an invalid value to the default. Follow the Grilling Interaction Contract with
+all four modes (`worktree-to-pr` marked `(Recommended)`), then write the resolved mode. When the
+native tool's option limit requires staging, the root follows the convention's [staged decision
+procedure](../../repo-governance/development/workflow/grilling-with-options.md#staged-native-rendering)
+so every leaf remains reachable.
 
 ### How to Fix a `*-to-pr` Plan Missing the PR-Review Maker→Fixer Cycle
 
@@ -618,10 +807,11 @@ and a recipe's own confidence table (however "mechanical" or "HIGH confidence" i
 a narrower check layered on top, never a substitute. Concretely:
 
 - `*-to-pr` mode with the merge step carrying a tag other than `[AI]`, `[HUMAN]`, or `[AI+HUMAN]` →
-  do NOT retag it. Surface it as a MEDIUM-confidence grill question (per the Confidence Assessment
-  above) offering the three valid tags plus the standing blank-state/"chat about this" options, and
-  apply only whichever tag the user selects. An unrecognized tag may carry human-actor semantics
-  this agent must not silently strip — never assume it is safe to overwrite.
+  do NOT retag it. Follow the Grilling Interaction Contract with all three valid tags and apply only
+  the resolved tag. When the native tool's option limit requires staging, the root follows the
+  convention's [staged decision procedure](../../repo-governance/development/workflow/grilling-with-options.md#staged-native-rendering).
+  An unrecognized tag may carry human-actor semantics this agent must not silently strip —
+  never assume it is safe to overwrite.
 - **Never retag, delete, or otherwise remove a `[HUMAN]`- or `[AI+HUMAN]`-tagged merge step, in any
   Delivery Mode.** Per [Delivery Mode](../../repo-governance/conventions/structure/plans.md#delivery-mode),
   the tag on the merge step IS the plan's opt-in — there is no separate "explicit opt-in"
@@ -674,8 +864,8 @@ a merge step is a governance gate, not an under-specified action item, and its t
 ## Executor-Tagging and Phase-Gate Fixes (Step 5h Findings)
 
 When `plan-checker` reports executor-tag or phase-gate findings per
-[Plans Organization Convention §Executor Tagging](../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule)
-and [§Phases as Natural Pauses With Clear Gates](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule),
+[Plans Organization Convention §Execution Markers](../../repo-governance/conventions/structure/plans.md#executor-tagging--ai-vs-human-hard-rule)
+and [§Phase Gates and Natural Pauses](../../repo-governance/conventions/structure/plans.md#phases-as-natural-pauses-with-clear-gates-hard-rule),
 apply these fixes.
 
 ### 1. Missing Executor Legend
@@ -880,246 +1070,79 @@ rather than in theory. On a merge step, fix the claim in place or classify MEDIU
 line. See the hard rule at the top of this file and
 [How to Fix a Merge-Tag Mismatch](#how-to-fix-a-merge-tag-mismatch).
 
-## UI-Design-Funnel Scaffolding Fixes
-
-When plan-checker reports a missing funnel artefact (Step 5k findings) on a **UI-bearing** plan
-(adds/changes user-facing screens or components under `apps/` or `libs/`), remediate by
-**scaffolding the missing funnel sections** so the author can fill them — not by inventing the
-design. Re-validate each finding before applying (confirm the plan is genuinely UI-bearing and the
-artefact is actually absent), and re-read the scaffolded section after editing. The artefacts and
-their shape are defined in the
-[UI Mockups in Plan Docs convention](../../repo-governance/conventions/formatting/diagrams.md#ui-mockups-in-plan-docs).
-
-### Confidence Assessment for the UI-design-funnel
-
-- **HIGH Confidence**: the plan is UI-bearing and a funnel section is completely absent from
-  `prd.md` — scaffold the missing stage(s) with stub placeholders for the author to fill,
-  inserting them directly into `prd.md`.
-- **HIGH Confidence**: funnel content exists but is located in the wrong plan file (e.g.
-  `README.md` or `tech-docs.md`) — move it to `prd.md` mechanically (the placement rule is
-  unambiguous: all four funnel stages belong in `prd.md`).
-- **MEDIUM Confidence**: a stage exists in `prd.md` but is thin (e.g. only one low-fi alternative,
-  no drop reasons, an unnamed selection) — add the missing skeleton and flag for author completion;
-  do NOT fabricate alternatives or a rationale.
-- **FALSE_POSITIVE**: the plan is a pure refactor, non-UI, or governance-only — exempt; report as
-  FALSE_POSITIVE and apply nothing.
-
-### How to Scaffold the Missing Funnel Sections
-
-Insert the funnel skeleton into the plan's **`prd.md`** (the mandatory placement — all funnel
-artefacts live in `prd.md`, not in `README.md`, `brd.md`, or `tech-docs.md`; binary image
-assets live under the plan's `assets/` folder and are referenced via `![]()` from `prd.md`).
-Use placeholders the author must replace; never invent the design content:
-
-````markdown
-## UI Design Funnel — <Screen Name>
-
-> _Scaffolded by plan-fixer — fill each placeholder. See the UI Mockups in Plan Docs convention._
-
-### Stage 1 — Diverge (Low-Fidelity Alternatives)
-
-#### Option A — <name>
-
-```
-<low-fi ASCII/Unicode wireframe — author to fill>
-```
-
-#### Option B — <name>
-
-```
-<second genuinely-different low-fi alternative — author to fill>
-```
-
-### Stage 2 — Narrow (Hi-Fi Finalists)
-
-<one-line drop reason for each alternative cut here>
-
-#### Finalist 1 — Option <X>
-
-![<alt text>](./assets/ui-<screen>-option-x.excalidraw.png)
-
-#### Finalist 2 — Option <Y>
-
-![<alt text>](./assets/ui-<screen>-option-y.excalidraw.png)
-
-### Stage 3 — Selection
-
-**Selected: Option <X> — <name>.** _(author: name the chosen design)_
-
-### Stage 4 — Rationale
-
-| Option | Outcome             | Why                   |
-| ------ | ------------------- | --------------------- |
-| <X>    | Chosen              | <author: why it won>  |
-| <Y>    | Runner-up / Dropped | <author: why it lost> |
-
-### Stage 5 — Responsive Strategy (mobile/tablet/desktop, mobile-first)
-
-| Breakpoint            | Layout behaviour for the selected design                         |
-| --------------------- | ---------------------------------------------------------------- |
-| Mobile (`< sm`)       | <author: how it stacks/collapses — the mobile-first base layout> |
-| Tablet (`md` ≥ 768)   | <author: what changes vs mobile>                                 |
-| Desktop (`lg` ≥ 1024) | <author: full layout — what expands/splits>                      |
-````
-
-When the checker flags the **responsive strategy** as missing (Step 5k rule 17 item 8), scaffold the
-Stage 5 responsive-strategy stub above — the mobile/tablet/desktop bullets the author must fill —
-and ensure the low-fi tier shows the mobile↔desktop reflow.
-
-Also scaffold the **grounding note (R5)** and **prior-art citation (R7)** when missing — add a stub
-delivery step delegating the survey to `web-researcher` (prior art) and the
-`swe-developing-frontend-ui` skill / `libs/web-ui` inventory (internal grounding), naming any
-net-new component. After scaffolding, re-run the checker's Step 5k mentally: every required artefact
-now has at least a placeholder section for the author to complete.
-
-## Learning-Bearing Syllabus-Record Scaffolding Fixes
-
-When plan-checker reports a missing syllabus artefact (Step 5n findings) on a **learning-bearing**
-plan (a plan whose delivery checklist authors or restructures course, tutorial, or curriculum
-content), remediate by **scaffolding the missing syllabus-record sections** so the author can fill
-them — never by inventing corpus content. Re-validate each finding before applying (confirm the plan
-is genuinely learning-bearing and the artefact is actually absent), and re-read the scaffolded
-section after editing. The artefacts and their shape are defined in the
-[Learning-Plan `syllabus/` Folder Convention](../../repo-governance/conventions/structure/learning-plan-syllabus.md).
-
-### Confidence Assessment for the Syllabus Record
-
-- **HIGH Confidence**: the plan is learning-bearing and the folder layout is completely absent —
-  scaffold `syllabus/README.md`, `syllabus/courses/README.md`, and `syllabus/paths/README.md` with
-  stub placeholders for the author to fill.
-- **HIGH Confidence**: the owning plan's `## Corpus Disposition` section, a consumer plan's
-  `## Corpus Custody` echo, or the Custodian line is absent — scaffold the missing declaration with
-  a placeholder value for the author to choose.
-- **MEDIUM Confidence**: a course file exists but is missing a REQUIRED template section — add the
-  missing section header with a placeholder; do NOT fabricate the course's concepts or prose.
-- **FALSE_POSITIVE**: the plan only reads, links to, or lightly corrects an existing corpus — exempt;
-  report as FALSE_POSITIVE and apply nothing.
-
-### How to Scaffold the Missing Syllabus Sections
-
-Insert the folder-layout stubs directly under the plan's own `syllabus/` folder. Never invent corpus
-content — every placeholder is left for the author to complete.
-
-`syllabus/README.md`:
-
-```markdown
-# <Corpus Name> — Syllabus
-
-> _Scaffolded by plan-fixer — fill each placeholder. See the Learning-Plan `syllabus/` Folder
-> Convention._
-
-**Custodian**: `<plan-id>` <!-- author: name the owning plan -->
-
-<one-paragraph corpus overview — author to fill>
-```
-
-`tech-docs.md` — the Corpus Disposition declaration (owning/custodian plan only):
-
-```markdown
-## Corpus Disposition
-
-`<archive-with-plan|promote-to:<path>>` <!-- author: choose exactly one -->
-```
-
-`tech-docs.md` — the Corpus Custody echo (consumer plan only; never combined with the Corpus
-Disposition block above — a plan carries exactly one of the two):
-
-```markdown
-## Corpus Custody
-
-`custodied-by:<plan-id>` <!-- author: name the corpus's owning plan -->
-```
-
-For a missing course file's REQUIRED skeleton, point the author at the copy-paste template in the
-[Learning-Plan `syllabus/` Folder Convention §Copy-Paste Course Template](../../repo-governance/conventions/structure/learning-plan-syllabus.md#copy-paste-course-template)
-rather than reproducing it inline — the template's REQUIRED sections are the source of truth and
-should not drift into a second copy inside this agent's own file.
-
-After scaffolding, re-run the checker's Step 5n mentally: every required artefact now has at least a
-placeholder for the author to complete.
-
 ## Knowledge Capture Phase Scaffolding Fixes
 
-When plan-checker reports a missing Knowledge Capture phase and no explicit "none" record
-(Step 5l findings) on a substantive plan, remediate by **scaffolding `learnings.md` and the
-Knowledge Capture phase** so the executor can triage learnings going forward — not by inventing
-learnings that were never surfaced. Re-validate each finding before applying (confirm the plan is
-genuinely substantive and the phase/file is actually absent), and re-read the scaffolded content
-after editing. The convention and its rubric are defined in the
-[Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md).
+When `plan-checker`'s Step 5l flags a plan's `delivery.md` as missing the Knowledge Capture phase
+(silent absence — no phase, no explicit "none" record anywhere) per the
+[Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md),
+scaffold the missing phase and the `learnings.md` file. Never fabricate learnings the plan's
+execution never actually surfaced — scaffold structure, not content.
 
-### Confidence Assessment for Knowledge Capture Scaffolding
+### Confidence Assessment
 
-- **HIGH Confidence**: the plan is substantive, `learnings.md` is entirely absent, and `delivery.md`
-  has no Knowledge Capture phase and no "none" record anywhere — scaffold both the file and the
-  phase per the templates below.
-- **HIGH Confidence**: `learnings.md` exists with entries, but `delivery.md` has no Knowledge
-  Capture phase — scaffold the phase only, referencing the existing file.
-- **MEDIUM Confidence**: a Knowledge Capture phase exists but is thin (e.g. missing one of the two
-  safety gates, or missing the code-routing-rule statement) — add the missing checklist item(s)
-  and flag for author review; do NOT silently mark them complete.
-- **FALSE_POSITIVE**: the plan is trivial/pure-docs (one-line rename, single broken-link fix) and
-  genuinely produced no generalizable learning — exempt; report as FALSE_POSITIVE and apply nothing
-  beyond confirming (or adding, if entirely absent) the one-line "none" escape.
+- **HIGH Confidence**: the Knowledge Capture phase is completely absent from `delivery.md` (or the
+  single-file plan's Delivery Checklist section) AND `learnings.md` does not exist — scaffold both
+  the file and the phase using the templates below.
+- **MEDIUM Confidence**: it is unclear from the plan's own history whether execution genuinely
+  surfaced no learnings — scaffold the phase with the routing rubric and both safety gates intact,
+  but do NOT auto-write the explicit "none" escape on the executor's behalf; leave it for manual
+  completion and flag under `## Manual Review Required`.
+- **FALSE_POSITIVE**: a Knowledge Capture phase already exists under different heading wording
+  (e.g. `## Phase N: Learnings Triage`) or `learnings.md` already carries the explicit "none"
+  record — do not duplicate; at most rename the heading to match convention wording.
 
 ### How to Scaffold `learnings.md`
 
-Create the file in the plan folder, sibling to `delivery.md`, with a comment-only scaffold — never
-invent an entry:
+If the file does not exist, create it at the plan-folder root (sibling to `delivery.md`) with the
+transient running-log scaffold — a comment pointing at the convention, not fabricated entries:
 
 ```markdown
-<!-- Knowledge Capture running log — scaffolded by plan-fixer.
-     Append one "## Learning: <summary>" entry per generalizable learning surfaced during execution.
-     If none surface, replace this comment with: No generalizable learnings — <one-line reason>. -->
+<!-- Running log of generalizable learnings surfaced during execution. Triage every entry at
+     the Knowledge Capture phase before archival. See
+     repo-governance/development/quality/knowledge-capture.md -->
 ```
 
 ### How to Scaffold the Knowledge Capture Phase
 
-Insert the phase into `delivery.md` as the final substantive phase, immediately before
-"Plan Archival". Use placeholders and checklist items the executor fills in during execution —
-never pre-tick a scaffolded checkbox:
+Insert as the FINAL substantive phase in `delivery.md` (or the single-file plan's Delivery
+Checklist), immediately before the Plan Archival section:
 
 ```markdown
 ## Phase N: Knowledge Capture
 
-> _Scaffolded by plan-fixer — triage every surviving `learnings.md` entry before archival. See the
+> _Triage every surviving `learnings.md` entry before archival. See the
 > [Knowledge Capture Convention](../../repo-governance/development/quality/knowledge-capture.md)._
 
 - [ ] [AI] Apply the litmus test to every `learnings.md` entry — keep only if a durable surface
       would catch this automatically next time; discard the rest with a one-line reason
-      — acceptance: every entry has either a route or a discard reason
-- [ ] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize any secret,
-      credential, token, or private hostname to a `<placeholder>` token, or discard if unsanitizable
-      — acceptance: `learnings.md` contains no raw secret
-- [ ] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
-      in `ose-private` only and is NEVER cross-routed into `ose-public`/`ose-primer`
-      — acceptance: no infra-private content appears in this repo's routed output
+- [ ] [AI] Apply the secret/sensitivity gate — sanitize any secret, credential, token, or private
+      hostname to a `<placeholder>` token, or discard if unsanitizable
+- [ ] [AI] Apply the repo-relevance gate — infra-private content stays in `ose-private` only and is
+      NEVER cross-routed into `ose-public`/`ose-primer`
 - [ ] [AI] Route each surviving learning to exactly one durable home per the open-ended routing
       matrix; code homes (`apps/`, `libs/`, tests) are ALWAYS filed as a separate
-      `plans/backlog/<slug>/` plan, NEVER landed inline
-      — acceptance: every `learnings.md` entry records its terminal routing state
+      `plans/backlog/<slug>/` plan, NEVER landed inline (the only carve-out is a genuine blocker
+      required to finish this plan's own scope)
 - [ ] [AI] For any entry routed to `plans/ideas/`, scan `plans/ideas/README.md` and the existing
       two-pagers FIRST for a brief already covering the same area — fold in rather than creating a
       new file (see [Integrate Before You Add](../../repo-governance/conventions/structure/plans.md#integrate-before-you-add-no-duplicate-two-pagers))
 - [ ] [AI] If no generalizable learning surfaced, record `No generalizable learnings — <reason>`
-      in `learnings.md` — acceptance: `learnings.md` is never silently empty
+      in `learnings.md`
 
 ### Phase N Gate
 
 > All checks below must pass before Plan Archival.
 
-- [ ] [AI] Every `learnings.md` entry is in a terminal state (routed inline, filed as backlog, or
-      discarded with reason), or the file records the explicit "none" escape
+- [ ] [AI] Every `learnings.md` entry is terminal (routed inline / filed as backlog / discarded
+      with reason), or the explicit "none" escape is recorded
 - [ ] [AI] No code-homed learning landed inline in this plan's own commits/PR
 
-> **Pause Safety**: `learnings.md` is fully triaged (or explicitly recorded as empty); no future
-> process depends on querying it later. Safe to stop. To resume: re-read `learnings.md` and confirm
-> every entry is terminal.
+> **Pause Safety**: `learnings.md` is fully triaged (or explicitly empty). Safe to stop. To
+> resume: re-read `learnings.md` and confirm every entry is terminal.
 ```
 
-After scaffolding, re-read both `learnings.md` and the inserted phase to confirm the placeholders
-are syntactically well-formed markdown and correctly positioned as the final substantive phase
-before Plan Archival. Never auto-tick any of the scaffolded checkboxes — they gate the executor's
-own future triage work, not the fixer's.
+After scaffolding, re-read both the inserted phase and `learnings.md`; confirm the phase sits
+immediately before the Plan Archival section and the file exists at the plan-folder root. Do not
+auto-tick any of the scaffolded checkboxes — they are the author's/executor's remaining work.
 
 - [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths

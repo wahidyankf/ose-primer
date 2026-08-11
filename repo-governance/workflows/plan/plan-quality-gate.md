@@ -51,6 +51,7 @@ outputs:
 
 **Preferred Mode**: Agent Delegation — invoke `plan-checker` and `plan-fixer` via the Agent
 tool with `subagent_type` (see [Workflow Execution Modes Convention](../meta/execution-modes.md)).
+The calling root owns every user interaction; delegated specialists return decision envelopes.
 
 **Fallback Mode**: Manual Orchestration — execute workflow logic directly using
 Read/Write/Edit tools when Agent Delegation is unavailable.
@@ -68,9 +69,11 @@ The AI will:
 
 1. Invoke `plan-checker` via the Agent tool (reads plan files, writes audit report)
 2. Invoke `plan-fixer` via the Agent tool (reads audit, applies fixes, writes fix report)
-3. Iterate until zero findings achieved
-4. Show git status with modified files
-5. Wait for user commit approval
+3. Resolve any `## User Decisions Required` envelope through root-owned `grill-me`, then resume or
+   reinvoke the fixer
+4. Iterate until zero findings achieved
+5. Show git status with modified files
+6. Wait for user commit approval
 
 **Fallback (Manual Mode)**:
 
@@ -112,8 +115,7 @@ Run plan validation to identify completeness, accuracy, and hallucination issues
 - **Args**: `scope: {input.scope}`
 - **Output**: `{audit-report-1}` - Initial audit report in `generated-reports/`
 
-**Validation scope** (per `plan-checker` Steps 0–7, including mandatory Step 5 sub-steps
-5b / 5c / 5d / 5e / 5f / 5g / 5j / 5k / 5n):
+**Validation scope** (per `plan-checker` Steps 0-7 + 5b/5c/5d/5e/5f/5g/5h/5i/5j/5k/5n):
 
 - Structure (folder name, file layout, mandatory sections)
 - Requirements (BRD + PRD content placement, Gherkin)
@@ -130,6 +132,9 @@ Run plan validation to identify completeness, accuracy, and hallucination issues
 - **Harness-neutrality scan** (Step 5g — conditional: fires only when the plan touches agents,
   skills, rules, or `repo-governance/` paths) per the
   [Multi-Harness Binding Convention](../../conventions/structure/multi-harness-binding.md)
+- **Specs & Gherkin delivery coverage** (Step 5j — conditional: behavior-changing plans under
+  `apps/`/`libs/`/`specs/` must carry companion Gherkin + a `specs:coverage` gate) per the
+  [Feature Change Completeness Convention](../../development/quality/feature-change-completeness.md)
 - **UI-design-funnel completeness** (Step 5k — conditional: fires only on **UI-bearing** plans that
   add/change user-facing screens or components under `apps/` or `libs/`; FLAGS at HIGH any missing
   funnel artefact — ≥2 named low-fi alternatives, 2 hi-fi `.excalidraw.png` finalists, a named
@@ -193,7 +198,19 @@ Apply all validated fixes from the audit report.
 
 **Success criteria**: Fixer successfully applies all fixes without errors.
 
-**On failure**: Log errors, proceed to step 4 for verification.
+**Decision-envelope loop (HARD GATE)**: If `plan-fixer` returns `## User Decisions Required`, the
+root validates it against the
+[canonical envelope schema](../../development/workflow/grilling-with-options.md#user-decisions-required-envelope),
+invokes `grill-me` through its native UI when available (or emits the convention's markdown fallback
+to its caller), records answers by stable decision ID, and resumes or reinvokes `plan-fixer`. Repeat
+until the fixer returns completed fixes without an envelope. After rendering, the root MUST
+construct the canonical [Resolved User Decisions Envelope](../../development/workflow/grilling-with-options.md#resolved-user-decisions-envelope)
+from the original IDs and pass that payload verbatim; `plan-fixer` validates it before dependent
+work. An envelope is not a failure, skipped fix, or iteration; do not advance to Step 4 while it
+remains unresolved.
+
+**On failure**: For a technical error, log it and proceed to Step 4 for verification. Never classify
+a `## User Decisions Required` envelope as failure.
 
 **Notes**:
 
@@ -278,6 +295,8 @@ Report final status and summary.
 
 - Checker or fixer encountered technical errors
 
+`## User Decisions Required` is a resumable checkpoint, not a failure or partial result.
+
 **Note**: Below-threshold findings are reported in final audit but don't prevent success status. Success requires two consecutive zero-finding validations (consecutive pass requirement).
 
 ## Relationship to Delivery-Mode Done-Definition
@@ -288,19 +307,21 @@ resolves to one of four [Delivery Modes](../../conventions/structure/plans.md#de
 the three-tier precedence (invocation argument > plan field > `worktree-to-pr` default). For a plan
 executing under a `*-to-pr` mode (`worktree-to-pr` or `main-to-pr`), full "done" for the plan's
 actual delivery additionally requires satisfying the
-[Done-Definition for `*-to-pr` Modes](../pr/pr-review-quality-gate.md#done-definition-for--to-pr-modes)
-— cited there rather than restated here, so a future strengthening of any item (for example, the
-requirement that an accepted fix be committed AND pushed, not merely replied to) cannot silently
-drift out of sync between the two documents — before the merge. The two gates sit at different
-lifecycle stages: this workflow gates the plan document pre-execution; the PR-review cycle gates
-the delivered change pre-merge.
+[PR-Review Maker→Fixer Cycle](../pr/pr-review-quality-gate.md)'s done-definition — N review
+cycles complete, every inline comment answered, all PR gates GREEN, archival committed inside the
+PR — before the merge. The two gates sit at different lifecycle stages: this workflow
+gates the plan document pre-execution; the PR-review cycle gates the delivered change pre-merge.
 
-**The hardened merge preconditions** that gate that eventual merge are defined normatively in the
-[PR Review Quality Gate workflow](../pr/pr-review-quality-gate.md#hardened-merge-preconditions) —
-**all five** required, cited there rather than restated here so a future strengthening of any
-clause cannot silently drift out of sync between the two documents. `[AI]` merges once they hold;
-a `[HUMAN]` merge gate applies only where a plan's own step says so explicitly, with identical
-preconditions either way.
+**The hardened merge preconditions** that gate that eventual merge — **all five** required: (a) 3
+fan-out→`pr-review-synthesis-maker`→`pr-review-fixer` cycles complete (a **hard ceiling, not a
+floor** — a PR merges once (b)-(e) also hold, never on additional cycles) **and the loop not exited
+`escalated`**;
+(b) 0 CRITICAL + 0 HIGH findings outstanding;
+(c) the branch **up-to-date with the latest `origin/main`**, brought forward **non-destructively**
+if behind (never a shared-history rewrite); (d) all PR quality gates green; (e) the
+surface-conditional tester gates run and their defect findings resolved, or the exemption explicitly
+recorded. `[AI]` merges once they hold; a `[HUMAN]` merge gate applies only where a plan's own step
+says so explicitly, with identical preconditions either way.
 
 ## Example Usage
 
@@ -429,7 +450,7 @@ The plan-checker validates:
 - **Codebase Alignment**: References to existing files, patterns, and conventions
 - **Clarity**: Clear problem statements, well-defined scope, unambiguous requirements
 - **Operational Readiness** (CRITICAL): Plans must include all of the following:
-  - **Local quality gates**: Steps to run affected tests, linting, typecheck locally before pushing (`nx affected -t typecheck lint test:quick specs:coverage`)
+  - **Local quality gates**: Steps to run affected tests, linting, typecheck locally before pushing (`apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`, the same registry-declared gate set `.husky/pre-push` invokes; includes `nx affected -t test:quick`)
   - **Post-push CI verification**: Steps to monitor and verify GitHub Actions/workflows pass after
     the push — against the plan's declared delivery target (the PR's check run under `*-to-pr`,
     `origin main` under the direct-push modes) — with instructions to fix failures immediately. This
@@ -438,10 +459,10 @@ The plan-checker validates:
   - **Fix-all-issues instruction**: Explicit instruction to fix ALL failures found during quality gates — including preexisting issues not caused by the current changes (root cause orientation principle)
   - **Thematic commit guidance**: Instruction to commit changes thematically with Conventional Commits format, splitting different domains/concerns into separate commits
   - **Manual behavioral assertions**: Steps to use Playwright MCP for web UI verification (navigate, snapshot, click, check console errors) and curl for API verification (hit endpoints, check responses, test error cases) — applicable when the plan touches UI or API code
-  - **Knowledge Capture presence**: For substantive plans, `delivery.md` contains a Knowledge
-    Capture phase (or an explicit "none" record) and the plan folder carries a `learnings.md`
-    scaffold. Silent absence is flagged at MEDIUM. See the
-    [Knowledge Capture Convention](../../development/quality/knowledge-capture.md).
+- **Knowledge Capture presence**: For substantive plans, `delivery.md` contains a Knowledge
+  Capture phase (or an explicit "none" record) and the plan folder carries a `learnings.md`
+  scaffold. Silent absence is flagged at MEDIUM. See the
+  [Knowledge Capture Convention](../../development/quality/knowledge-capture.md).
 
 ## Final Audit Report Structure
 
@@ -489,7 +510,8 @@ Track across executions:
 
 ## Notes
 
-- **Fully automated**: No human checkpoints, runs to completion
+- **Root-orchestrated**: Runs automatically except explicit `## User Decisions Required`
+  checkpoints, which the root resolves and feeds back to the specialist
 - **Idempotent**: Safe to run multiple times, won't break working plans
 - **Conservative**: Fixer skips uncertain changes (preserves plan intent)
 - **Observable**: Generates audit reports for every iteration
@@ -501,7 +523,8 @@ This workflow ensures plan quality and implementation readiness through iterativ
 ## Principles Implemented/Respected
 
 - PASS: **Explicit Over Implicit**: All steps, conditions, and termination criteria are explicit
-- PASS: **Automation Over Manual**: Fully automated validation and fixing without human intervention
+- PASS: **Automation Over Manual**: Automates validation and unambiguous fixes while routing genuine
+  decisions through explicit root-owned checkpoints
 - PASS: **Simplicity Over Complexity**: Clear linear flow with loop control
 - PASS: **Accessibility First**: Generates human-readable audit reports
 - PASS: **Progressive Disclosure**: Can run with different scopes and iteration limits

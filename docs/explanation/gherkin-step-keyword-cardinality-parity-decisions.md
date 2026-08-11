@@ -251,7 +251,7 @@ is a silent divergence.
 
 ## Related Documentation
 
-- [HARD Rule — Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#hard-rule--step-keyword-cardinality) - The canonical rule text
+- [HARD Rule — Step-Keyword Cardinality](../../repo-governance/development/infra/acceptance-criteria.md#step-keyword-cardinality-hard-rule) - The canonical rule text
 - [BDD Spec-to-Test Mapping Convention](../../repo-governance/development/infra/bdd-spec-test-mapping.md) - How Gherkin connects to tests
 - [Plan Domain Parity — Design Decisions](./plan-domain-parity-decisions.md) - Precedent for this document format
 - [Plan](../../plans/done/2026-06-07__gherkin-step-keyword-cardinality/tech-docs.md) - Full deviation matrix and design decisions

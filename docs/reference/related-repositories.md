@@ -24,7 +24,7 @@ matches what you are trying to understand rather than treating them as interchan
 ## The two reader paths that matter most
 
 - Choose **OSE Public** when the question is about the OSE product, its public website, research, or
-  product engineering. Start with [Getting started with OSE Public](../tutorials/getting-started-with-ose-public.md).
+  product engineering. Start with [Getting started with OSE Public](https://github.com/wahidyankf/ose-public/blob/main/docs/tutorials/getting-started-with-ose-public.md).
 - Choose **OSE Primer** when the question is how to adopt the governance, testing, automation, and
   reference-app foundation in a new repository. Its README is the authoritative onboarding path.
 
