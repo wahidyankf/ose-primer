@@ -78,6 +78,7 @@ jobs:
 
   format:
     name: Auto-format affected (lint-staged)
+    needs: build-rhino
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -88,13 +89,20 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-rust
+      - uses: actions/download-artifact@v4
+        with:
+          name: rhino-cli-gate-binary
+          path: apps/rhino-cli/target/gate
+      - run: chmod +x apps/rhino-cli/target/gate/rhino-cli
       - name: Provision registry-declared pre-commit tools
         run: |
-          tools=$(cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- gate list --surface=pre-commit --format=json |
+          tools=$(apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=pre-commit --format=json |
             jq -r '[.[] | .doctor_tools[]] | unique | join(",")')
           if [ -n "$tools" ]; then
-            npm run doctor -- --fix --tools "$tools"
+            apps/rhino-cli/scripts/rhino-bin.sh doctor --fix --tools "$tools"
           fi
+        env:
+          RHINO_CLI_BIN: ${{ github.workspace }}/apps/rhino-cli/target/gate/rhino-cli
       - name: Format affected files with the project formatters (lint-staged)
         if: github.event_name == 'pull_request'
         run: |
@@ -297,7 +305,9 @@ jobs:
       - run: |
           PROJECTS=$(npx nx show projects --affected --projects='tag:lang:rust' --json | jq -r 'join(",")')
           if [ -n "$PROJECTS" ]; then
-            npx nx run-many -t typecheck lint test:quick specs:behavior:coverage -p "$PROJECTS"
+            # Rust targets share Cargo's registry and build locks. Keep the target families serial
+            # so the nested test:quick gate cannot contend with standalone checks on CI runners.
+            npx nx run-many -t typecheck lint test:quick specs:behavior:coverage -p "$PROJECTS" --parallel=1 --outputStyle=stream
           else
             echo "No affected tag:lang:rust projects — skipping"
           fi
@@ -307,7 +317,7 @@ jobs:
       - run: |
           PROJECTS=$(npx nx show projects --affected --projects='tag:lang:rust' --json | jq -r 'join(",")')
           if [ -n "$PROJECTS" ]; then
-            npx nx run-many -t test:coverage -p "$PROJECTS"
+            npx nx run-many -t test:coverage -p "$PROJECTS" --parallel=1 --outputStyle=stream
           else
             echo "No affected tag:lang:rust projects — skipping coverage"
           fi
