@@ -17,6 +17,7 @@ Grouped into Eisenhower quadrants by [`plan-ideas-grooming`](../../repo-governan
 No active plan waits on these and no live defect is running, but each carries a real stake. This is the plan-from-here quadrant.
 
 - [demo-apps-standards-recheck](./q2-not-urgent-important/demo-apps-standards-recheck.md) — re-verify the ose-primer demo apps still meet current repo standards.
+- [kotlin-gradle-jdk-toolchain-convergence](./q2-not-urgent-important/kotlin-gradle-jdk-toolchain-convergence.md) — converge `crud-be-kotlin-ktor`'s per-target JDK pinning into an asdf pin or a Gradle 9.1+ bump.
 
 ### Q4 — Neither Urgent nor Important
 
