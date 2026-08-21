@@ -1,5 +1,19 @@
 # ose-primer
 
+> **This repository is archived.** Everything in it still works — it just isn't maintained any
+> more, and it's here to read rather than to build on.
+>
+> Part of the reason is a happy one. When `ose-primer` started, standing up a polyglot Nx
+> workspace by hand was slow enough that a carefully curated starter saved a team real time.
+> That's much less true now. Coding agents have become good enough to bootstrap a workspace like
+> this straight from an existing repository — [`ose-public`](https://github.com/wahidyankf/ose-public)
+> — and then shape it around what the new project actually needs, instead of what a template
+> guessed it might need a year earlier. Keeping a second repository hand-synced with the first
+> stopped earning its keep.
+>
+> If you came here looking for a place to start, clone `ose-public` and ask your agent to adapt
+> it. Everything below still describes what this repository does, and it's all yours under MIT.
+
 🚀 A reusable Nx starter for teams that want a thoughtful, polyglot workspace before their product gets complicated.
 
 `ose-primer` gives you a working place to begin: example CRUD applications, shared contracts, quality gates, AI-ready repository guidance, and a documentation structure that can grow with your project. It is a template to adapt, not an OSE product to operate.
